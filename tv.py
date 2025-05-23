@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+import base64
+import json # Import json for API response parsing
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,8 +19,21 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # --- GitHub API Configuration ---
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
-# Retrieve GitHub Token from environment variable
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN') # This variable will hold the token passed from GitHub Actions
+# From environment variable
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+
+# --- Remote URL Configuration ---
+# The target repository and file path for urls.txt
+REPO_OWNER = "qjlxg"
+REPO_NAME = "362"
+URLS_FILE_PATH_IN_REPO = "data/urls.txt" # Path inside the repository
+BRANCH_NAME = "main" # Or "master" if your default branch is master
+
+# Raw URL for reading (for direct content access)
+REMOTE_URLS_TXT_RAW_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{BRANCH_NAME}/{URLS_FILE_PATH_IN_REPO}"
+# API URL for writing (for modifying file content)
+REMOTE_URLS_TXT_API_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{URLS_FILE_PATH_IN_REPO}"
+
 
 # Optimized and expanded search keywords
 SEARCH_KEYWORDS = [
@@ -27,45 +42,118 @@ SEARCH_KEYWORDS = [
     "iptv playlist extension:m3u,m3u8 in:file",
     "raw.githubusercontent.com path:.m3u8",
     "raw.githubusercontent.com path:.m3u",
-    # --- Newly added keywords ---
     "tv channels extension:m3u,m3u8 in:file",
     "live tv extension:m3u,m3u8 in:file",
     "playlist.m3u8 in:file",
     "index.m3u8 in:file",
     "channels.m3u in:file",
     "iptv links extension:m3u,m3u8 in:file"
-    # --- End of newly added keywords ---
 ]
 # Max results per page (GitHub API limit)
 PER_PAGE = 100
 # Limit total search pages to prevent excessive requests
 MAX_SEARCH_PAGES = 5
 
-# --- Helper Functions ---
+# --- Auxiliary Functions ---
 
-def read_txt_to_array(file_name):
-    """Reads content from a TXT file, one element per line."""
+def read_txt_to_array(file_path_or_url):
+    """
+    Reads content from a TXT file (local) or a remote URL, one element per line.
+    Now supports both local file paths and remote URLs.
+    """
     try:
-        with open(file_name, 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-            lines = [line.strip() for line in lines if line.strip()]
-            return lines
+        if file_path_or_url.startswith("http"): # It's a URL
+            logging.info(f"Attempting to read from remote URL: {file_path_or_url}")
+            response = requests.get(file_path_or_url, timeout=10)
+            response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+            lines = response.text.splitlines()
+        else: # Assume it's a local file path
+            logging.info(f"Attempting to read from local file: {file_path_or_url}")
+            with open(file_path_or_url, 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+        
+        lines = [line.strip() for line in lines if line.strip()]
+        return lines
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error reading from remote URL '{file_path_or_url}': {e}")
+        return []
     except FileNotFoundError:
-        logging.warning(f"File '{file_name}' not found. A new one will be created.")
+        logging.warning(f"Local file '{file_path_or_url}' not found, will return empty list.")
         return []
     except Exception as e:
-        logging.error(f"Error reading file '{file_name}': {e}")
+        logging.error(f"Error reading from '{file_path_or_url}': {e}")
         return []
 
 def write_array_to_txt(file_name, data_array):
-    """Writes array content to a TXT file, one element per line."""
+    """Writes array content to a local TXT file, one element per line."""
     try:
         with open(file_name, 'w', encoding='utf-8') as file:
             for item in data_array:
                 file.write(item + '\n')
         logging.info(f"Data successfully written to '{file_name}'.")
     except Exception as e:
-        logging.error(f"Error writing file '{file_name}': {e}")
+        logging.error(f"Error writing to local file '{file_name}': {e}")
+
+
+def write_array_to_remote_txt(api_url, github_token, repo_owner, repo_name, file_path_in_repo, data_array, branch_name):
+    """
+    Writes array content to a remote TXT file on GitHub using the Contents API.
+    This function also handles getting the current file's SHA.
+    """
+    if not github_token:
+        logging.error("GitHub token is not available for writing to remote repository.")
+        return False
+
+    headers = {
+        "Authorization": f"token {github_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    # 1. Get the current SHA of the file (required for updating)
+    try:
+        get_response = requests.get(api_url, headers=headers, params={"ref": branch_name}, timeout=10)
+        get_response.raise_for_status()
+        current_file_data = get_response.json()
+        current_sha = current_file_data.get('sha')
+        logging.info(f"Successfully retrieved current SHA for {file_path_in_repo}: {current_sha}")
+    except requests.exceptions.RequestException as e:
+        if e.response and e.response.status_code == 404:
+            logging.info(f"File {file_path_in_repo} not found in {branch_name} branch, it will be created.")
+            current_sha = None # File doesn't exist, will be created
+        else:
+            logging.error(f"Error getting current SHA for {file_path_in_repo}: {e}")
+            return False
+    except Exception as e:
+        logging.error(f"Unexpected error getting current SHA for {file_path_in_repo}: {e}")
+        return False
+
+    # 2. Prepare the new content and encode it to base64
+    new_content = "\n".join(data_array) + "\n" # Add a newline at the end
+    encoded_content = base64.b64encode(new_content.encode('utf-8')).decode('utf-8')
+
+    # 3. Prepare the PUT request payload
+    payload = {
+        "message": f"Update {file_path_in_repo} (by GitHub Actions)",
+        "content": encoded_content,
+        "branch": branch_name
+    }
+    if current_sha:
+        payload["sha"] = current_sha # Only include SHA if updating an existing file
+
+    # 4. Send the PUT request to update/create the file
+    try:
+        put_response = requests.put(api_url, headers=headers, json=payload, timeout=20)
+        put_response.raise_for_status() # Raise HTTPError for bad responses
+        logging.info(f"Data successfully written to remote file '{file_path_in_repo}' in '{repo_owner}/{repo_name}'.")
+        return True
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error writing to remote file '{file_path_in_repo}': {e}")
+        if e.response:
+            logging.error(f"Response status: {e.response.status_code}, content: {e.response.text}")
+        return False
+    except Exception as e:
+        logging.error(f"Unexpected error writing to remote file '{file_path_in_repo}': {e}")
+        return False
 
 def get_url_file_extension(url):
     """Gets the file extension from a URL."""
@@ -145,7 +233,6 @@ def process_url(url):
 def filter_and_modify_sources(corrections):
     """Filters and modifies channel names and URLs."""
     filtered_corrections = []
-    # Your filter lists remain unchanged
     name_dict = ['购物', '理财', '导视', '指南', '测试', '芒果', 'CGTN','(480p)','(360p)','(240p)','(406p)',' (540p)','(600p)','(576p)','[Not 24/7]','DJ','音乐','演唱会','舞曲','春晚','格斗','粤','祝','体育','广播','博斯','神话']
     url_dict = []
 
@@ -212,7 +299,7 @@ def check_rtp_url(url, timeout):
             s.settimeout(timeout)
             s.connect((host, port))
             s.sendto(b'', (host, port))
-            s.recv(1) # Try to receive data
+            s.recv(1)
         return True
     except (socket.timeout, socket.error) as e:
         logging.debug(f"RTP URL {url} check failed: {e}")
@@ -388,33 +475,34 @@ def merge_iptv_files(local_channels_directory):
     logging.info(f"\nAll regional channel list files merged. Output saved to: {iptv_list_file_path}")
 
 
-def auto_discover_github_urls(urls_file_path, github_token):
+def auto_discover_github_urls(urls_remote_raw_url, urls_remote_api_url, github_token):
     """
-    Automatically searches for public IPTV source URLs on GitHub and updates the urls.txt file.
+    Automatically searches for public IPTV source URLs on GitHub and updates the remote urls.txt file.
     """
     if not github_token:
         logging.warning("GITHUB_TOKEN environment variable not set. Skipping GitHub URL auto-discovery.")
         return
 
-    existing_urls = set(read_txt_to_array(urls_file_path))
+    # Read existing URLs from the remote file
+    existing_urls = set(read_txt_to_array(urls_remote_raw_url))
     found_urls = set()
     headers = {
         "Accept": "application/vnd.github.v3.text-match+json",
-        "Authorization": f"token {github_token}" # Ensure token is used here
+        "Authorization": f"token {github_token}"
     }
 
     logging.info("Starting auto-discovery of new IPTV source URLs from GitHub...")
 
     for i, keyword in enumerate(SEARCH_KEYWORDS):
-        if i > 0: # Wait before processing subsequent keywords
+        if i > 0:
             logging.info(f"Switching to the next keyword: '{keyword}'. Waiting for 10 seconds to avoid rate limits...")
-            time.sleep(10) # Increased wait time between keywords
+            time.sleep(10)
 
         page = 1
         while page <= MAX_SEARCH_PAGES:
             params = {
                 "q": keyword,
-                "sort": "indexed", # Sort by indexed time (latest updates)
+                "sort": "indexed",
                 "order": "desc",
                 "per_page": PER_PAGE,
                 "page": page
@@ -426,18 +514,17 @@ def auto_discover_github_urls(urls_file_path, github_token):
                     params=params,
                     timeout=20
                 )
-                response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+                response.raise_for_status()
                 data = response.json()
 
-                # Check GitHub API rate limit headers
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
                 
                 if rate_limit_remaining == 0:
-                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5 # Wait 5 extra seconds
+                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
                     logging.warning(f"GitHub API rate limit hit! Remaining requests: 0. Waiting {wait_seconds:.0f} seconds before retrying.")
                     time.sleep(wait_seconds)
-                    continue # Retry current page after waiting
+                    continue
 
                 if not data.get('items'):
                     logging.info(f"No more results found for keyword '{keyword}' on page {page}.")
@@ -447,7 +534,6 @@ def auto_discover_github_urls(urls_file_path, github_token):
                     html_url = item.get('html_url', '')
                     raw_url = None
                     
-                    # Attempt to construct raw.githubusercontent.com URL from html_url
                     match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
                     
                     if match:
@@ -458,7 +544,6 @@ def auto_discover_github_urls(urls_file_path, github_token):
                         raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
                     
                     if raw_url:
-                        # Ensure the URL is a valid m3u/m3u8/txt URL AND originates from raw.githubusercontent.com
                         if raw_url.startswith("https://raw.githubusercontent.com/") and \
                            raw_url.lower().endswith(('.m3u', '.m3u8', '.txt')):
                             cleaned_url = clean_url_params(raw_url)
@@ -471,27 +556,25 @@ def auto_discover_github_urls(urls_file_path, github_token):
 
                 logging.info(f"Keyword '{keyword}', page {page} search completed. Currently found {len(found_urls)} raw URLs.")
                 
-                # Check if there are more pages by comparing item count with PER_PAGE
                 if len(data['items']) < PER_PAGE:
-                    break # Reached last page or no more results
+                    break
 
                 page += 1
-                time.sleep(2) # Wait 2 seconds between page requests for the same keyword
+                time.sleep(2)
 
             except requests.exceptions.RequestException as e:
                 logging.error(f"GitHub API request failed (Keyword: {keyword}, Page: {page}): {e}")
-                # If it's a 403 Forbidden error, specifically handle rate limit
                 if response.status_code == 403:
                     rate_limit_reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
-                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5 # Wait 5 extra seconds
+                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
                     logging.warning(f"GitHub API rate limit hit! Waiting {wait_seconds:.0f} seconds before retrying.")
                     time.sleep(wait_seconds)
-                    continue # Retry the current page after waiting
+                    continue
                 else:
-                    break # Break on other errors for this keyword
+                    break
             except Exception as e:
                 logging.error(f"Unknown error during GitHub URL auto-discovery: {e}")
-                break # Break on unknown errors
+                break
 
     new_urls_count = 0
     for url in found_urls:
@@ -500,9 +583,22 @@ def auto_discover_github_urls(urls_file_path, github_token):
             new_urls_count += 1
 
     if new_urls_count > 0:
-        updated_urls = list(existing_urls)
-        write_array_to_txt(urls_file_path, updated_urls)
-        logging.info(f"Successfully discovered and added {new_urls_count} new GitHub IPTV source URLs to {urls_file_path}. Total URLs: {len(updated_urls)}")
+        updated_urls = sorted(list(existing_urls)) # Sort for consistent file content
+        logging.info(f"Attempting to write {new_urls_count} new GitHub IPTV source URLs to remote {URLS_FILE_PATH_IN_REPO}.")
+        # Use the new function to write to remote
+        success = write_array_to_remote_txt(
+            urls_remote_api_url,
+            github_token,
+            REPO_OWNER,
+            REPO_NAME,
+            URLS_FILE_PATH_IN_REPO,
+            updated_urls,
+            BRANCH_NAME
+        )
+        if success:
+            logging.info(f"Successfully updated remote {URLS_FILE_PATH_IN_REPO}. Current total URLs: {len(updated_urls)}")
+        else:
+            logging.error(f"Failed to update remote {URLS_FILE_PATH_IN_REPO}. Please check permissions and logs.")
     else:
         logging.info("No new GitHub IPTV source URLs discovered.")
 
@@ -510,9 +606,10 @@ def auto_discover_github_urls(urls_file_path, github_token):
 
 
 def main():
-    config_dir = os.path.join(os.getcwd(), 'config')
-    os.makedirs(config_dir, exist_ok=True)
-    urls_file_path = os.path.join(config_dir, 'urls.txt')
+    # We no longer need config_dir or local urls_file_path if reading/writing remotely
+    # config_dir = os.path.join(os.getcwd(), 'config')
+    # os.makedirs(config_dir, exist_ok=True)
+    # urls_file_path = os.path.join(config_dir, 'urls.txt') # No longer used for main urls.txt
 
     # --- START OF DEBUG LOGGING ---
     if os.getenv('GITHUB_TOKEN'):
@@ -521,20 +618,20 @@ def main():
         logging.error("环境变量 'GITHUB_TOKEN' IS NOT SET! Please check GitHub Actions workflow configuration.")
     # --- END OF DEBUG LOGGING ---
 
-    # 1. Automatically discover GitHub URLs and update urls.txt
-    auto_discover_github_urls(urls_file_path, GITHUB_TOKEN)
+    # 1. Automatically discover GitHub URLs and update the remote urls.txt
+    auto_discover_github_urls(REMOTE_URLS_TXT_RAW_URL, REMOTE_URLS_TXT_API_URL, GITHUB_TOKEN)
 
-    # 2. Read URLs to process from urls.txt (including newly discovered ones)
-    urls = read_txt_to_array(urls_file_path)
+    # 2. Read URLs to process from the remote urls.txt (including newly discovered ones)
+    urls = read_txt_to_array(REMOTE_URLS_TXT_RAW_URL) # Read from the remote URL
     if not urls:
-        logging.warning(f"No URLs found in {urls_file_path}, script will exit early.")
+        logging.warning(f"No URLs found in {REMOTE_URLS_TXT_RAW_URL}, script will exit early.")
         return
 
-    # 3. Process all channel lists from config/urls.txt
+    # 3. Process all channel lists from remote urls.txt
     all_channels = []
     with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(process_url, url): url for url in urls}
-        for future in as_completed(future_to_url):
+        for future in as_completed(futures):
             url = future_to_url[future]
             try:
                 for name, addr in future.result():
@@ -547,11 +644,12 @@ def main():
     unique_channels = list(set(filtered_channels))
     unique_channels_str = [f"{name},{url}" for name, url in unique_channels]
 
+    # Create a local iptv.txt for further processing/commit by GitHub Actions (optional, but good practice)
     iptv_file_path = os.path.join(os.getcwd(), 'iptv.txt')
     with open(iptv_file_path, 'w', encoding='utf-8') as f:
         for line in unique_channels_str:
             f.write(line + '\n')
-    logging.info(f"\nAll channels saved to: {iptv_file_path}, total channels collected: {len(unique_channels_str)}\n")
+    logging.info(f"\nAll channels saved to local file: {iptv_file_path}, total channels collected: {len(unique_channels_str)}\n")
 
     # 5. Multi-threaded channel validity and speed check
     logging.info("Starting multi-threaded channel validity and speed check...")
