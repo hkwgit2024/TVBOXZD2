@@ -35,10 +35,11 @@ jobs:
           sudo apt-get install -y ffmpeg # 安装 FFmpeg 及其相关工具（如 ffprobe）
 
       - name: Run main script # 步骤：运行你的主要 Python 脚本
-        env:
-          # 如果你的 tv.py 脚本需要访问 GitHub API 并使用了 Token，请取消下面的注释。
-          # 确保你在 GitHub 仓库设置的 Secrets 中创建了一个名为 'BOT' 的 Secret。
-          # GITHUB_TOKEN: ${{ secrets.BOT }} 
+        # 如果你的 tv.py 脚本不需要任何环境变量，可以直接删除 env: 这一行。
+        # 如果需要，请在下面添加，并注意缩进。
+        # 例如：
+        # env:
+        #   MY_VARIABLE: "some_value"
         run: python ${{ github.workspace }}/tv.py # 执行位于仓库根目录的 tv.py 脚本
 
       - name: Commit changes # 步骤：提交并推送所有更改
@@ -59,4 +60,4 @@ jobs:
           git pull origin main --rebase
           
           git push # 将本地更改推送到远程仓库的 'main' 分支
-        shell: /usr/bin/bash -e {0} # 指定此步骤使用 bash shell
+          shell: /usr/bin/bash -e {0} # 指定此步骤使用 bash shell
