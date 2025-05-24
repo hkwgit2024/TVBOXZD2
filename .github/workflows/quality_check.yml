@@ -1,39 +1,39 @@
 # .github/workflows/quality_check.yml
 name: IPTV 质量检查
 
-# 控制工作流何时运行
 on:
-  workflow_dispatch: # 允许手动从 GitHub Actions 界面触发工作流
+  workflow_dispatch:
   schedule:
-    # 每天 UTC 时间凌晨 0 点运行一次工作流
-    # 您可以根据需要调整这个 cron 表达式
-    - cron: '0 0 * * *' 
+    - cron: '0 0 * * *'
 
 jobs:
-  quality_check_job: # 定义一个名为 quality_check_job 的作业
-    runs-on: ubuntu-latest # 在最新的 Ubuntu 运行器上执行此作业
+  quality_check_job:
+    runs-on: ubuntu-latest
 
     steps:
     - name: 检出仓库代码
-      uses: actions/checkout@v4 # 使用 actions/checkout@v4 检出您的 GitHub 仓库代码
+      uses: actions/checkout@v4
 
     - name: 设置 Python 环境
-      uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 设置 Python 环境
+      uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # 指定使用 Python 3.x 版本
+        python-version: '3.x'
 
     - name: 安装 FFmpeg
       run: |
-        sudo apt-get update # 更新 apt 软件包列表
-        sudo apt-get install -y ffmpeg # 安装 FFmpeg 及其相关工具（包括 ffprobe）
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+        echo "FFmpeg 安装完成。"
+        # 额外检查，确认安装路径
+        which ffmpeg || echo "ffmpeg 未找到路径！"
+        which ffprobe || echo "ffprobe 未找到路径！"
+        ffmpeg -version || echo "ffmpeg version check failed!"
+        ffprobe -version || echo "ffprobe version check failed!"
 
     - name: 安装 Python 依赖
-      run: pip install -r requirements.txt # 安装 requirements.txt 文件中列出的所有 Python 依赖
+      run: pip install -r requirements.txt
 
     - name: 确保 iptv_list.txt 文件存在
-      # 此步骤旨在确认 iptv_list.txt 文件已存在于仓库根目录
-      # 如果您的主脚本在此之前运行并已将 iptv_list.txt 推送到仓库，则此文件会存在。
-      # 这是一个安全措施，以防文件不存在时脚本失败。
       run: |
         if [ ! -f iptv_list.txt ]; then
           echo "警告：仓库根目录未找到 iptv_list.txt。为测试目的创建虚拟文件。"
@@ -43,29 +43,30 @@ jobs:
           echo "iptv_list.txt 已存在，将使用现有文件进行质量检查。"
         fi
 
+    - name: **确认 FFmpeg 可用 (新增步骤)**
+      run: |
+        ffmpeg -version
+        ffprobe -version
+        echo "FFmpeg/FFprobe 版本信息已打印，确认可用。"
+      # 确保即使版本信息打印失败，也不会阻止后续步骤（但我们希望它成功）
+      # 这不是一个严格的错误检查，更多是用于调试
+      continue-on-error: false # 如果这里报错，停止工作流
+
     - name: 运行 IPTV 质量检查器
-      # 执行您的主质量检查脚本
-      # 由于 main_quality_checker.py 在 iptv-quality-checker/ 目录下，
-      # 且 iptv_list.txt 在仓库根目录，因此在 config/quality_config.py 中
-      # SOURCE_IPTV_FILE 应该设置为 "../iptv_list.txt"。
       run: python main_quality_checker.py
 
     - name: 上传高质量 IPTV 列表作为工件 (Artifact)
-      uses: actions/upload-artifact@v4 # 使用 actions/upload-artifact@v4 上传生成的列表文件
+      uses: actions/upload-artifact@v4
       with:
-        name: iptv-high-quality-list # 工件的名称，您可以在 GitHub Actions 界面下载它
-        path: iptv_high_quality.txt # 要上传的文件路径（相对于工作目录，即仓库根目录）
-        retention-days: 7 # 工件保留的天数（默认 90 天，这里设置为 7 天以节省空间）
+        name: iptv-high-quality-list
+        path: iptv_high_quality.txt
+        retention-days: 7
 
     - name: 提交并推送更改 (可选)
-      # 这一步会将更新后的 iptv_high_quality.txt 文件提交回您的仓库。
-      # 请注意：如果您的仓库需要更严格的权限或使用特定的部署密钥，此步骤可能需要额外配置。
-      # 对于公共仓库或个人使用，默认的 GITHUB_TOKEN 通常足够。
       run: |
-        git config user.name "GitHub Actions" # 设置 Git 用户名
-        git config user.email "actions@github.com" # 设置 Git 用户邮箱
-        git add iptv_high_quality.txt # 将 iptv_high_quality.txt 文件添加到 Git 暂存区
-        git commit -m "自动更新：高质量 IPTV 列表 ($(date +'%Y-%m-%d %H:%M'))" || echo "没有需要提交的更改" # 提交更改，如果没变化则不提交
-        git push || echo "推送失败或没有更改" # 推送更改到远程仓库
-      # 仅在前面的步骤成功时才运行此提交步骤
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add iptv_high_quality.txt
+        git commit -m "自动更新：高质量 IPTV 列表 ($(date +'%Y-%m-%d %H:%M'))" || echo "没有需要提交的更改"
+        git push || echo "推送失败或没有更改"
       if: success()
