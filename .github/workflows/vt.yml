@@ -1,0 +1,126 @@
+
+# 工作流名称，在 GitHub Actions 页面显示
+name: IPTV 频道更新
+
+# 触发条件
+on:
+  # 允许手动触发工作流
+  workflow_dispatch:
+  # 定时触发，每天 UTC 时间 0点、8点、16点运行
+  schedule:
+    - cron: '0 */8 * * *'
+
+
+jobs:
+  build:
+    # 运行环境：最新 Ubuntu 虚拟机
+    runs-on: ubuntu-latest
+    # 权限设置：允许写入仓库内容
+    permissions:
+      contents: write
+
+    steps:
+      # 步骤1：检查 BOT secret 是否存在
+      - name: 检查 BOT secret
+        run: |
+          if [ -z "${{ secrets.BOT }}" ]; then
+            echo "错误：未设置 BOT secret，请在 GitHub Secrets 中配置名为 BOT 的 Personal Access Token"
+            exit 1
+          fi
+        shell: bash
+
+      # 步骤2：检出代码
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取完整的提交历史，便于 rebase 操作
+          token: ${{ secrets.BOT }} # 使用 BOT secret 进行检出
+
+      # 步骤3：设置 Python 环境
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip' # 缓存 pip 依赖，加快后续运行
+
+      # 步骤4：安装 Python 依赖
+      - name: 安装 Python 依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests aiohttp beautifulsoup4 tenacity psutil
+        continue-on-error: true # 即使依赖安装失败，继续执行
+
+      # 步骤5：安装 FFmpeg（包含 ffprobe）
+      - name: 安装 FFmpeg
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
+        continue-on-error: true # 即使 FFmpeg 安装失败，继续执行
+
+      # 步骤6：运行主脚本
+      - name: 运行 IPTV 爬取脚本
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }} # 将 BOT secret 传递给脚本
+        run: |
+          # 运行脚本并将输出重定向到日志文件
+          python ${{ github.workspace }}/iptv_crawler.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，但继续执行后续步骤"
+        continue-on-error: true # 即使脚本失败，继续执行
+
+      # 步骤7：保存日志和生成文件为 artifact
+      - name: 保存日志和生成文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: iptv-results
+          path: |
+            *.txt
+            config/*.txt
+            地方频道/*.txt
+            iptv_crawler.log
+            iptv_crawler_output.log
+          retention-days: 7 # 保留7天
+        if: always() # 无论成功或失败都执行
+
+      # 步骤8：检查是否有文件更改
+      - name: 检查文件更改
+        id: check_changes
+        run: |
+          git add .
+          if git diff --staged --quiet; then
+            echo "没有文件更改"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "检测到文件更改"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      # 步骤9：提交更改
+      - name: 提交更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
+        continue-on-error: true
+
+      # 步骤10：拉取远程最新更改并推送
+      - name: 推送更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git fetch origin
+          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }} # 使用 BOT secret 进行推送
+        continue-on-error: true
+
+      # 步骤11：发送运行结果通知
+      - name: 发送运行结果通知
+        if: always()
+        run: |
+          echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
+          echo "请检查 artifact 中的 iptv_crawler.log 和 iptv_crawler_output.log"
+          if [ "${{ job.status }}" != "success" ]; then
+            echo "警告：工作流未完全成功，请检查日志和 artifact"
+          fi
+        shell: bash
