@@ -1,44 +1,49 @@
-name: vt
+name: vt # 工作流的名称
 
 on:
-  workflow_dispatch: # 手动触发
+  workflow_dispatch: # 允许手动从 GitHub Actions 界面触发工作流
   schedule:
-    - cron: '0 */8 * * *' # 每8小时运行一次
+    - cron: '0 */8 * * *' # 每8小时运行一次，例如：每天的 0点、8点、16点
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 运行器上执行
     permissions:
-      contents: write # 授予写入权限，以便脚本能够提交文件到仓库
+      contents: write # 授予工作流写入仓库内容的权限，以便进行 Git 提交
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout code # 步骤名称：检出代码
+        uses: actions/checkout@v4 # 使用 actions/checkout@v4 来检出仓库代码
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python # 步骤名称：设置 Python 环境
+        uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 来设置 Python
         with:
-          python-version: 3.12
+          python-version: 3.12 # 指定使用的 Python 版本为 3.12
 
-      - name: Install dependencies
+      - name: Install dependencies # 步骤名称：安装 Python 依赖
+        run: | # 执行多行命令
+          python -m pip install --upgrade pip # 升级 pip
+          pip install requests beautifulsoup4 tenacity # 安装所需的 Python 库
+
+      - name: Install FFmpeg (includes ffprobe) # 步骤名称：安装 FFmpeg (包含 ffprobe)
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 tenacity
+          sudo apt-get update # 更新 apt 包列表
+          sudo apt-get install -y ffmpeg # 安装 FFmpeg
 
-      - name: Install FFmpeg (includes ffprobe)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - name: Run main script
+      - name: Run main script # 步骤名称：运行主要脚本
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} # 这里使用你设置的 Secret 名称 'BOT'
-        run: python ${{ github.workspace }}/tv.py
+          # 注意：你的 `tv.py` 脚本如果需要 GitHub Token，确保这里配置正确
+          # GITHUB_TOKEN: ${{ secrets.BOT }} # 如果你的 Python 脚本需要此 Secret，请取消注释
+        run: python ${{ github.workspace }}/tv.py # 运行位于仓库根目录的 tv.py 脚本
 
-      - name: Commit changes
+      - name: Commit changes # 步骤名称：提交并推送更改
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add .
+          git config --global user.email "actions@github.com" # 配置 Git 用户邮箱
+          git config --global user.name "GitHub Actions" # 配置 Git 用户名
+          git add . # 添加所有更改的文件到暂存区
+          # 尝试提交更改，如果没有任何更改，则打印 "No changes to commit"
           git commit -m "Update IPTV channel list" || echo "No changes to commit"
-          git push
+          # 在推送之前，先拉取远程主分支的最新更改并进行 rebase，解决推送冲突
+          git pull origin main --rebase
+          git push # 推送更改到远程仓库
+        shell: /usr/bin/bash -e {0} # 指定 shell 为 bash
