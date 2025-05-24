@@ -22,16 +22,16 @@ GITHUB_TOKEN = os.getenv('GITHUB_TOKEN') # This variable will hold the token pas
 
 SEARCH_KEYWORDS = [
     "extension:m3u8 in:file",
-    "extension:m3u in:file",
-    "iptv playlist extension:m3u,m3u8 in:file",
-    "raw.githubusercontent.com path:.m3u8",
-    "raw.githubusercontent.com path:.m3u",
-    "tv channels extension:m3u,m3u8 in:file",
-    "live tv extension:m3u,m3u8 in:file",
-    "playlist.m3u8 in:file",
-    "index.m3u8 in:file",
-    "channels.m3u in:file",
-    "iptv links extension:m3u,m3u8 in:file"
+  #  "extension:m3u in:file",
+  #  "iptv playlist extension:m3u,m3u8 in:file",
+  #  "raw.githubusercontent.com path:.m3u8",
+  #  "raw.githubusercontent.com path:.m3u",
+  #  "tv channels extension:m3u,m3u8 in:file",
+  #  "live tv extension:m3u,m3u8 in:file",
+  #  "playlist.m3u8 in:file",
+  #  "index.m3u8 in:file",
+   # "channels.m3u in:file",
+   # "iptv links extension:m3u,m3u8 in:file"
 ]
 
 PER_PAGE = 100
