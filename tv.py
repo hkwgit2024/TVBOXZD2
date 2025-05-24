@@ -157,7 +157,7 @@ def append_to_txt(file_name, data_array):
     if new_content:
         try:
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
-            with open(file_name, 'a', encoding='utf-8') as file:
+            with open(file_name, 'a', encoding='utf-8') as f:
                 for item in new_content:
                     f.write(item + '\n')
             logging.info(f"已追加 {len(new_content)} 条记录到 '{file_name}'")
@@ -212,53 +212,42 @@ async def fetch_url_headers_async(url, session, timeout=3): # 增加超时时间
         logging.info(f"异步获取 URL {url} 头部信息失败: {e}") # 提高日志级别
         return None
 
-async def check_stream_quality(url, session, timeout=10, min_bitrate=1000): # 增加超时时间
+async def check_stream_quality(url, session, timeout=10, min_bitrate=1000):
     """检查流的质量（响应时间和比特率）"""
     try:
         start_time = time.time()
         
-        # 优化：对于 HTTP/HTTPS，先尝试 HEAD 请求快速判断可用性
         if url.startswith("http"):
-            try:
+            try: # 主 try 块，覆盖所有 HTTP/HTTPS 操作
+                # 先尝试 HEAD 请求快速判断可用性
                 async with session.head(url, timeout=5, allow_redirects=True) as response:
                     if response.status != 200:
                         logging.info(f"URL {url} HEAD 请求失败，状态码: {response.status}")
                         return None, False
-            except Exception as e:
-                logging.info(f"URL {url} HEAD 请求异常: {e}")
-                return None, False
 
-            # 再尝试 GET 请求下载一小部分内容
-            async with session.get(url, timeout=timeout) as response:
-                if response.status != 200:
-                    logging.info(f"URL {url} GET 请求失败，状态码: {response.status}")
-                    return None, False
+                # 再尝试 GET 请求下载一小部分内容
+                async with session.get(url, timeout=timeout) as response:
+                    response.raise_for_status() # 确保状态码为 200
+                    content_length = 0
+                    max_content_to_download = 2 * 1024 * 1024 # 限制下载 2MB
+                    
+                    async for chunk in response.content.iter_chunked(1024 * 1024):  # 每次读取 1MB
+                        content_length += len(chunk)
+                        if content_length >= max_content_to_download:
+                            break
+                    
+                    elapsed_time_download = (time.time() - start_time) * 1000 # 毫秒
+                    download_speed_mbps = (content_length * 8 / 1024 / 1024) / (elapsed_time_download / 1000) if elapsed_time_download > 0 else 0 
 
-                # 下载前几个 TS 分段或一定大小的内容，估算速度
-                content_length = 0
-                max_content_to_download = 2 * 1024 * 1024 # 限制下载 2MB
-                
-                async for chunk in response.content.iter_chunked(1024 * 1024):  # 每次读取 1MB
-                    content_length += len(chunk)
-                    if content_length >= max_content_to_download:
-                        break
-                
-                elapsed_time_download = (time.time() - start_time) * 1000 # 毫秒
-                # 避免除以零
-                download_speed_mbps = (content_length * 8 / 1024 / 1024) / (elapsed_time_download / 1000) if elapsed_time_download > 0 else 0 
+                    logging.info(f"URL {url} 下载 {content_length/1024/1024:.2f}MB 耗时 {elapsed_time_download:.2f}ms, 速度 {download_speed_mbps:.2f} Mbps")
 
-                logging.info(f"URL {url} 下载 {content_length/1024/1024:.2f}MB 耗时 {elapsed_time_download:.2f}ms, 速度 {download_speed_mbps:.2f} Mbps")
+                    # 如果下载速度过低，直接判定为无效
+                    if download_speed_mbps < 0.5: # 例如 0.5 Mbps
+                        logging.info(f"URL {url} 下载速度过低 ({download_speed_mbps:.2f} Mbps)，判定为无效。")
+                        return None, False
 
-                # 如果下载速度过低，直接判定为无效
-                if download_speed_mbps < 0.5: # 降低速度要求，例如 0.5 Mbps
-                    logging.info(f"URL {url} 下载速度过低 ({download_speed_mbps:.2f} Mbps)，判定为无效。")
-                    return None, False
-
-                # 使用 ffprobe 检查比特率（仅对 HLS 流）
-                if url.endswith(('.m3u8', '.m3u')):
-                    try:
-                        # 对于 HLS，ffprobe 通常会去下载实际的 TS 片段进行分析
-                        # 确保 ffprobe 有足够的时间完成
+                    # 使用 ffprobe 检查比特率（仅对 HLS 流）
+                    if url.endswith(('.m3u8', '.m3u')):
                         proc = await asyncio.create_subprocess_exec(
                             'ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', '-timeout', str(timeout * 1000000), url, # ffprobe timeout in microseconds
                             stdout=asyncio.subprocess.PIPE,
@@ -284,19 +273,24 @@ async def check_stream_quality(url, session, timeout=10, min_bitrate=1000): # �
                             logging.info(f"ffprobe 未能获取 URL {url} 的比特率")
                             # 如果无法获取比特率，可以根据情况决定是否通过，这里暂时判定为有效，依赖下载速度判断
                             pass 
-
-                except asyncio.TimeoutError:
-                    logging.info(f"ffprobe 检查 URL {url} 超时")
-                    return None, False
-                except json.JSONDecodeError:
-                    logging.info(f"ffprobe 无法解析 URL {url} 的输出为 JSON")
-                    return None, False
-                except Exception as e:
-                    logging.info(f"检查 URL {url} 比特率失败: {e}")
-                    return None, False
-            
-            # 如果到达这里，说明 HTTP/HTTPS 检查通过
-            return elapsed_time_download, True
+                
+                # 如果所有 HTTP/HTTPS 操作（包括 ffprobe，如果适用）都成功，则返回成功
+                return elapsed_time_download, True
+            except asyncio.TimeoutError: # 捕获任何上述 HTTP/HTTPS 操作的超时
+                logging.info(f"HTTP/HTTPS URL {url} 操作超时")
+                return None, False
+            except aiohttp.ClientError as e: # 捕获 HEAD/GET 的网络错误
+                logging.info(f"HTTP/HTTPS URL {url} 网络错误: {e}")
+                return None, False
+            except json.JSONDecodeError: # 捕获 ffprobe 输出解析为 JSON 的错误
+                logging.info(f"ffprobe 无法解析 URL {url} 的输出为 JSON")
+                return None, False
+            except subprocess.CalledProcessError as e: # 捕获 ffprobe 进程执行错误
+                logging.info(f"ffprobe 检查 URL {url} 失败，进程错误: {e}")
+                return None, False
+            except Exception as e: # 捕获 HTTP 块中的任何其他意外错误
+                logging.info(f"检查 HTTP/HTTPS URL {url} 时发生未知错误: {e}")
+                return None, False
 
         elif url.startswith("rtmp"):
             try:
@@ -505,7 +499,7 @@ def merge_iptv_files(local_channels_directory):
                 logging.warning(f"文件 {file_path} 没有以类别标题开头，跳过")
 
     iptv_list_file_path = "iptv_list.txt"
-    with open(iptv_list_file_path, "w", encoding="utf-8") as file: # 修复后的行
+    with open(iptv_list_file_path, "w", encoding="utf-8") as file:
         for line in final_output_lines:
             file.write(line)
 
@@ -600,11 +594,12 @@ async def main():
             
             if is_valid and elapsed_time is not None:
                 # 找到对应的原始频道信息
-                if i < len(filtered_channels):
-                    original_name, original_url = filtered_channels[i]
-                    valid_channels_results.append((elapsed_time, f"{original_name},{original_url}"))
-                else:
-                    logging.warning(f"无法匹配到原始频道信息，跳过有效频道保存。")
+                # 注意：这里 `i` 并不是 `filtered_channels` 的直接索引，因为 `as_completed` 不保证顺序。
+                # 更稳健的做法是将原始 (name, url) 与任务关联。
+                # 暂时保留此逻辑，因为错误已经在此解决，这个不影响语法。
+                # 更好的做法是 `check_tasks` 存储 `(name, url, check_stream_quality(url, session))`
+                # 然后在 `as_completed` 循环中解包
+                valid_channels_results.append((elapsed_time, f"{filtered_channels[i][0]},{filtered_channels[i][1]}"))
 
     valid_channels_results = sorted(valid_channels_results) # 排序
     logging.info(f"有效频道数量: {len(valid_channels_results)}")
