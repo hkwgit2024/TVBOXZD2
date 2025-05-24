@@ -58,7 +58,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}  # 传递 BOT secret
         run: |
-          python ${{ github.workspace }}/tv.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，继续执行后续步骤"
+          python ${{ github.workspace }}/iptv_crawler.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，继续执行后续步骤"
         continue-on-error: true
 
       # 步骤7：保存日志和生成文件
