@@ -1,0 +1,4 @@
+# requirements.txt
+requests
+beautifulsoup4
+tenacity
