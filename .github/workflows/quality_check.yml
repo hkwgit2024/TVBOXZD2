@@ -1,4 +1,4 @@
-name: IPTV 检测
+name: IPTV 频道检测
 
 on:
   workflow_dispatch:
