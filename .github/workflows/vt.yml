@@ -49,6 +49,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      # 步骤6：验证 ffprobe 是否可用
+      - name: 验证 ffprobe
+        run: |
+          if command -v ffprobe >/dev/null 2>&1; then
+            echo "ffprobe 已找到并可用！版本信息如下："
+            ffprobe -version # 打印版本信息，确认它能运行
+          else
+            echo "错误：ffprobe 未找到或无法执行！请检查上一步的 FFmpeg 安装日志。"
+            exit 1 # 如果 ffprobe 不可用，则中止工作流
+          fi
+
       # 步骤6：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
