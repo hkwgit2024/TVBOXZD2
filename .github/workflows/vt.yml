@@ -51,14 +51,10 @@ jobs:
           sudo apt-get install -y ffmpeg
         continue-on-error: true # 即使安装失败也继续执行，但建议关注日志
 
-      # 步骤6：运行 IPTV 爬取脚本
+# 步骤6：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
-        # 注意：这里将输出重定向到 iptv_crawler_output.log
-        # 如果脚本失败，请查看此文件获取详细错误信息。
-        # 调试阶段可以暂时移除 'continue-on-error: true'
-        run: |
-          python ${{ github.workspace }}/tv.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，继续执行后续步骤"
-        continue-on-error: true # 调试完成后可以根据需要决定是否启用
+        run: python ${{ github.workspace }}/tv.py
+        # 暂时移除 continue-on-error: true 和日志重定向
 
       # 步骤7：保存日志和生成文件
       - name: 保存日志和生成文件
