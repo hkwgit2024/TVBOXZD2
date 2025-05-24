@@ -461,5 +461,5 @@ def merge_iptv_files(local_channels_directory):
                 logging.warning(f"文件 {file_path} 没有以类别标题开头，跳过")
 
     iptv_list_file_path = "iptv_list.txt"
-    with open(iptv_list_file_path, "w", encoding=" TURBO模式：提高并发效率和播放流畅度
+    with open(iptv_list_file_path, "w", encoding="utf-8")
 
