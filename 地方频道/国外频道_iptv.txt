@@ -1,0 +1,36 @@
+国外频道,#genre#
+CNA ,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Sky News,http://ax.micaesoft.com/YMitv/YMITV_US_USnasatv_1.m3u8
+ABC News Live 9,https://abcnews-streams.akamaized.net/hls/live/2023568/abcnews9/master.m3u8
+ABC 7 Washington DC (WJLA) (720p),https://content.uplynk.com/40cec2bf074c40f08932da03ab4510be.m3u8
+ABC News Live 8,https://abcnews-streams.akamaized.net/hls/live/2023567/abcnews8/master.m3u8
+ABC 13 Las Vegas NV (KTNV) (720p),https://content.uplynk.com/channel/39919d3f7a074eefa8bf579214e952f9.m3u8
+ABC 15 Phoenix AZ (KNXVTV) (720p),https://content.uplynk.com/channel/9deaf22aaa33461f9cac22e030ed00ec.m3u8
+ABC 11 Louisville KY (WHAS) (1080p),https://livevideo01.whas11.com/hls/live/2016284/newscasts/live.m3u8
+ABC 3 Corpus Christi TX (KIII) (1080p),https://livevideo01.kiiitv.com/hls/live/2017378/newscasts/live.m3u8
+Sky News,http://ax.micaesoft.com/YMitv/YMITV_UK_UKskytv_2.m3u8
+CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+CNN,http://disfruta.net:80/erodriguez/jqD9QDy9VL/644
+ABC 7 Denver CO (KMGH) (720p),https://content.uplynk.com/channel/64ca339f04964a5e961c3207a7771bf1.m3u8
+ABC 4 Seattle WA (KOMOTV) (720p),https://content.uplynk.com/2c88dfe19e1447e6a6aa27e8e143a140.m3u8
+CNN,http://line.tektv.live/play/live.php
+ABC 24 Austin TX (KVUE) (1080p),https://livevideo01.kvue.com/hls/live/2016282/newscasts/live.m3u8
+CNBC,http://125.227.210.55:8152/VideoInput/play.ts
+ABC 5 Des Moines IA (WOI) (1080p),https://livevideo01.weareiowa.com/hls/live/2011593/newscasts/live.m3u8
+CNN Indonesia,http://live.cnnindonesia.com/livecnn/smil:cnntv.smil/playlist.m3u8
+ABC 10 Sacramento CA (KXTV) (1080p),https://livevideo01.abc10.com/hls/live/2014547/newscasts/live.m3u8
+ABC 5 Cleveland OH (WEWSTV) (1080p),https://wews-syndication.ewscloud.com/out/v1/72729e3f4dbe4aafbab93d6b1117e5f1/index.m3u8
+ABC 13 Grand Rapids MI (WZZM) (1080p),https://livevideo01.wzzm13.com/hls/live/2016280/newscasts/live.m3u8
+ABC 8 Dallas TX (WFAA) (1080p),https://livevideo01.wfaa.com/hls/live/2014541/newscasts/live.m3u8
+CNN,http://tunein.streamguys1.com/cnn-new
+ABC 16 Wilkes Barre PA (WNEP) (1080p),https://livevideo01.wnep.com/hls/live/2011655/newscasts/live.m3u8
+CNN INDONESIA,https://live.cnnindonesia.com:443/livecnn/smil:cnntv.smil/chunklist_w1241960898_b192000_sleng.m3u8
+CNBC INDONESIA,https://live.cnbcindonesia.com:443/livecnbc/smil:cnbctv.smil/chunklist_w290751272_b192000_sleng.m3u8
+CNBC,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/playlist.m3u8
+CNN Indonesia,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w1285822120_b384000_sleng.m3u8
+CNN Indonesia,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w672934803_b384000_sleng.m3u8
+CNBC,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/chunklist_b384000_sleng.m3u8
+ABC 24 Memphis TN (WATNTV) (1080p),https://livevideo01.localmemphis.com/hls/live/2011654/newscasts/live.m3u8
+ABC 13 Norfolk VA (WVEC) (1080p),https://livevideo01.13newsnow.com/hls/live/2014545/newscasts/live.m3u8
+ABC 8 Davenport IA (WQAD) (1080p),https://livevideo01.wqad.com/hls/live/2011657/newscasts/live.m3u8
+CNA,https://e4.endpoint.cdn.sctvonline.vn/hls/cna/index.m3u8|Referer=http://sctvonline.vn/
