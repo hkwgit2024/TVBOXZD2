@@ -51,8 +51,10 @@ jobs:
           sudo apt-get install -y ffmpeg
         continue-on-error: true # 即使安装失败也继续执行，但建议关注日志
 
-# 步骤6：运行 IPTV 爬取脚本
+      # 步骤6：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }}  # 设置 GITHUB_TOKEN 环境变量
         run: python ${{ github.workspace }}/tv.py
         # 暂时移除 continue-on-error: true 和日志重定向
 
