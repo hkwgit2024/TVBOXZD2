@@ -10,84 +10,64 @@ from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import json
-import hashlib # Added for content hashing
-from requests.adapters import HTTPAdapter # Added for connection pooling
-from requests.packages.urllib3.util.retry import Retry # Added for connection pooling
+import hashlib
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# --- Constants and Configuration ---
+# --- Configuration Loading ---
+CONFIG_FILE = os.path.join(os.getcwd(), 'config', 'config.json')
+
+def load_config(file_path):
+    """Loads configuration from a JSON file."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logging.error(f"Error: Config file '{file_path}' not found. Please create it in the 'config' directory.")
+        exit(1)
+    except json.JSONDecodeError as e:
+        logging.error(f"Error: Invalid JSON in config file '{file_path}': {e}")
+        exit(1)
+    except Exception as e:
+        logging.error(f"Error loading config file '{file_path}': {e}")
+        exit(1)
+
+# Load config early
+CONFIG = load_config(CONFIG_FILE)
+
+# --- Constants and Configuration (Now loaded from CONFIG) ---
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN') # This variable will hold the token passed from GitHub Actions
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 
-SEARCH_KEYWORDS = [
-    "extension:m3u8 in:file",
-    #"extension:m3u in:file",
-    #"iptv playlist extension:m3u,m3u8 in:file",
-   # "raw.githubusercontent.com path:.m3u8",
-  #  "raw.githubusercontent.com path:.m3u",
-  #  "tv channels extension:m3u,m3u8 in:file",
- #   "live tv extension:m3u,m3u8 in:file",
-  #  "playlist.m3u8 in:file",
-  #  "index.m3u8 in:file",
-  #  "channels.m3u in:file",
-  #  "iptv links extension:m3u,m3u8 in:file"
-]
+SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
+PER_PAGE = CONFIG.get('per_page', 100)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10)
+CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
 
-PER_PAGE = 100
-MAX_SEARCH_PAGES = 1
-GITHUB_API_TIMEOUT = 20
-GITHUB_API_RETRY_WAIT = 10 # seconds between keyword searches or after rate limit
-CHANNEL_FETCH_TIMEOUT = 15 # seconds for fetching URL content
-CHANNEL_CHECK_TIMEOUT = 6 # seconds for checking channel validity
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
 
-MAX_CHANNEL_URLS_PER_GROUP = 200 # Limit each channel to a maximum of 200 URLs in merged file
+NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
+URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 
-# Filter lists for channel names and URLs
-NAME_FILTER_WORDS = ['购物', '理财', '导视', '指南', '测试', '芒果', 'CGTN', '(480p)', '(360p)', '(240p)', '(406p)', ' (540p)', '(600p)', '(576p)', '[Not 24/7]', 'DJ', '音乐', '演唱会', '舞曲', '春晚', '格斗', '粤', '祝', '体育', '广播', '博斯', '神话']
-URL_FILTER_WORDS = [] # Currently empty, but kept for consistency
+CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 
-# Channel name cleaning replacements
-CHANNEL_NAME_REPLACEMENTS = {
-    "FHD": "", "HD": "", "hd": "", "频道": "", "高清": "",
-    "超清": "", "20M": "", "-": "", "4k": "", "4K": "", "4kR": ""
-}
+ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
 
-# Ordered categories for merging
-ORDERED_CATEGORIES = ["央视频道", "卫视频道", "湖南频道", "港台频道"]
+URL_STATES_FILE = "url_states.json"
 
-URL_STATES_FILE = "url_states.json" # File to store URL states for conditional fetching
+# --- URL Pre-screening Configuration (Now loaded from CONFIG) ---
+URL_PRE_SCREENING_CONFIG = CONFIG.get('url_pre_screening', {})
+ALLOWED_PROTOCOLS = set(URL_PRE_SCREENING_CONFIG.get('allowed_protocols', []))
+STREAM_EXTENSIONS = set(URL_PRE_SCREENING_CONFIG.get('stream_extensions', [])) # Set for faster lookup
 
-# --- URL Pre-screening Configuration ---
-# 允许的协议列表
-ALLOWED_PROTOCOLS = {'http', 'https', 'rtmp', 'rtp', 'p3p'}
-
-# 常见的流媒体文件扩展名 (可选，用于辅助判断)
-STREAM_EXTENSIONS = {'.m3u8', '.flv', '.mp4', '.ts', '.aac', '.mp3', '.ogg', '.webm', '.avi', '.mov', '.wmv', '.rm', '.rmvb', '.3gp', '.mkv'}
-
-# 常见的无效 URL 片段或模式 (可以根据实际情况增加)
-INVALID_URL_PATTERNS = [
-    r'example\.com', # 示例域名
-    r'test\.com',    # 测试域名
-    r'localhost',    # 本地地址
-    r'127\.0\.0\.1',  # 本地IP
-    r'\.png$',       # 图片文件
-    r'\.jpg$',
-    r'\.jpeg$',
-    r'\.gif$',
-    r'\.css$',       # 样式文件
-    r'\.js$',        # 脚本文件
-    r'\.html$',      # HTML 文件
-    r'\.xml$',       # XML 文件
-    r'(\s|%20)',     # URL中包含空格
-    r'null',         # 包含 "null" 字样
-    r'invalid',      # 包含 "invalid" 字样
-    r'error',        # 包含 "error" 字样
-    r'blank'         # 包含 "blank" 字样
-]
-# 编译正则表达式以提高效率
+INVALID_URL_PATTERNS = URL_PRE_SCREENING_CONFIG.get('invalid_url_patterns', [])
 COMPILED_INVALID_URL_PATTERNS = [re.compile(pattern, re.IGNORECASE) for pattern in INVALID_URL_PATTERNS]
 
 
@@ -96,12 +76,12 @@ session = requests.Session()
 session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
 
 # Configure a larger connection pool
-pool_size = 200 # Or adjust based on your ThreadPoolExecutor's max_workers
+pool_size = CONFIG.get('requests_pool_size', 200) # Added to config.json
 retry_strategy = Retry(
-    total=3,  # Total retries
-    backoff_factor=1,  # Factor for exponential backoff (1, 2, 4 seconds)
-    status_forcelist=[429, 500, 502, 503, 504], # Status codes to retry on
-    allowed_methods=["HEAD", "GET", "OPTIONS"] # Methods to retry
+    total=CONFIG.get('requests_retry_total', 3), # Added to config.json
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1), # Added to config.json
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
 )
 adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_retries=retry_strategy)
 session.mount("http://", adapter)
@@ -117,7 +97,7 @@ def read_txt_to_array(file_name):
             lines = [line.strip() for line in lines if line.strip()]
             return lines
     except FileNotFoundError:
-        logging.warning(f"File '{file_name}' not found. A new one will be created.")
+        logging.warning(f"File '{file_name}' not found.")
         return []
     except Exception as e:
         logging.error(f"Error reading file '{file_name}': {e}")
@@ -166,7 +146,7 @@ def clean_url_params(url):
     return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
 
 def load_url_states(file_path):
-    """从 JSON 文件加载 URL 状态。"""
+    """Loads URL states from a JSON file."""
     if os.path.exists(file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -177,7 +157,7 @@ def load_url_states(file_path):
     return {}
 
 def save_url_states(file_path, url_states):
-    """将 URL 状态保存到 JSON 文件。"""
+    """Saves URL states to a JSON file."""
     try:
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(url_states, f, indent=4, ensure_ascii=False)
@@ -190,7 +170,7 @@ def fetch_url_content_with_retry(url, url_states, url_states_file_path, timeout=
     Fetches URL content using requests with retries, supporting conditional requests
     and content hashing for update checks.
     """
-    logging.info(f"尝试抓取 URL: {url} (超时: {timeout}s)")
+    logging.info(f"Attempting to fetch URL: {url} (Timeout: {timeout}s)")
 
     headers = {}
     current_state = url_states.get(url, {})
@@ -206,7 +186,7 @@ def fetch_url_content_with_retry(url, url_states, url_states_file_path, timeout=
         response.raise_for_status()
 
         if response.status_code == 304:
-            logging.info(f"URL 内容 {url} 未修改 (304)。跳过下载。")
+            logging.info(f"URL content {url} not modified (304). Skipping download.")
             return None  # Indicate no new content
 
         content = response.text
@@ -214,7 +194,7 @@ def fetch_url_content_with_retry(url, url_states, url_states_file_path, timeout=
 
         # Check content hash if ETag/Last-Modified didn't prevent download
         if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
-            logging.info(f"URL 内容 {url} 基于哈希值是相同的。跳过下载。")
+            logging.info(f"URL content {url} is identical based on hash. Skipping download.")
             return None # Indicate no new content
 
         # Update state for the URL
@@ -226,14 +206,14 @@ def fetch_url_content_with_retry(url, url_states, url_states_file_path, timeout=
         }
         save_url_states(url_states_file_path, url_states) # Save states after each successful fetch
 
-        logging.info(f"成功获取 URL: {url} 的新内容。内容已更新。")
+        logging.info(f"Successfully fetched new content for URL: {url}. Content updated.")
         return content
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"获取 URL 时请求出错 (重试后失败): {url} - {e}")
+        logging.error(f"Request error when fetching URL (after retries): {url} - {e}")
         return None
     except Exception as e:
-        logging.error(f"获取 URL 时发生未知错误: {url} - {e}")
+        logging.error(f"Unknown error when fetching URL: {url} - {e}")
         return None
 
 
@@ -271,47 +251,47 @@ def extract_channels_from_url(url, url_states, url_states_file_path):
                     if channel_url:
                         extracted_channels.append((channel_name, channel_url))
                         channel_count += 1
-        logging.info(f"成功从 URL: {url} 中提取到 {channel_count} 个频道。")
+        logging.info(f"Successfully extracted {channel_count} channels from URL: {url}.")
     except Exception as e:
-        logging.error(f"从 {url} 提取频道时出错: {e}")
+        logging.error(f"Error extracting channels from {url}: {e}")
     return extracted_channels
 
 def pre_screen_url(url):
     """
-    预筛选 URL，排除明显无效或不相关的链接。
-    返回 True 表示通过预筛选，False 表示未通过。
+    Pre-screens URLs to exclude obviously invalid or irrelevant links.
+    Returns True if the URL passes pre-screening, False otherwise.
     """
     if not isinstance(url, str) or not url:
         return False
 
     parsed_url = urlparse(url)
 
-    # 1. 协议检查
+    # 1. Protocol check
     if parsed_url.scheme not in ALLOWED_PROTOCOLS:
-        # logging.debug(f"预筛选过滤 (协议): {url}")
+        # logging.debug(f"Pre-screen filtered (protocol): {url}")
         return False
 
-    # 2. 检查主机名/网络位置是否存在
+    # 2. Check if hostname/netloc exists
     if not parsed_url.netloc:
-        # logging.debug(f"预筛选过滤 (无主机名): {url}")
+        # logging.debug(f"Pre-screen filtered (no hostname): {url}")
         return False
 
-    # 3. 检查常见无效模式 (正则表达式)
+    # 3. Check for common invalid patterns (regex)
     for pattern in COMPILED_INVALID_URL_PATTERNS:
         if pattern.search(url):
-            logging.debug(f"预筛选过滤 (无效模式): {url}")
+            logging.debug(f"Pre-screen filtered (invalid pattern): {url}")
             return False
 
-    # 4. (可选) 检查文件扩展名，排除明显非视频的文件
-    # 注意：这可能会误杀一些没有扩展名的合法流，请谨慎使用或根据需要调整
+    # 4. (Optional) Check file extensions, exclude non-video files.
+    #    Commented out by default as it might filter valid streams without extensions.
     # extension = os.path.splitext(parsed_url.path)[1].lower()
     # if extension and extension not in STREAM_EXTENSIONS:
-    #     logging.debug(f"预筛选过滤 (非流媒体扩展名): {url}")
+    #     logging.debug(f"Pre-screen filtered (non-stream extension): {url}")
     #     return False
 
-    # 5. 长度检查 (避免过短的垃圾链接)
-    if len(url) < 15: # 比如一个有效的 http://a.b/c 至少需要 10 个字符
-        # logging.debug(f"预筛选过滤 (长度过短): {url}")
+    # 5. Length check (avoiding very short, possibly junk links)
+    if len(url) < 15: # e.g., a valid http://a.b/c is at least 10 chars
+        # logging.debug(f"Pre-screen filtered (too short): {url}")
         return False
 
     return True
@@ -322,27 +302,27 @@ def filter_and_modify_channels(channels):
     filtered_channels = []
     pre_screened_count = 0
     for name, url in channels:
-        # 0. URL 预筛选：先排除明显无效的链接
+        # 0. URL Pre-screening: first exclude obviously invalid links
         if not pre_screen_url(url):
-            logging.info(f"过滤频道 (预筛选未通过): {name},{url}")
+            logging.info(f"Filtering channel (pre-screen failed): {name},{url}")
             continue
         pre_screened_count += 1
 
         # Check against URL filter words
         if any(word in url for word in URL_FILTER_WORDS):
-            logging.info(f"过滤频道 (URL 匹配黑名单): {name},{url}")
+            logging.info(f"Filtering channel (URL matched blacklist): {name},{url}")
             continue
 
         # Check against name filter words (case-insensitive)
         if any(word.lower() in name.lower() for word in NAME_FILTER_WORDS):
-            logging.info(f"过滤频道 (名称匹配黑名单): {name},{url}")
+            logging.info(f"Filtering channel (name matched blacklist): {name},{url}")
             continue
 
         # Apply channel name replacements
         for old_str, new_str in CHANNEL_NAME_REPLACEMENTS.items():
             name = name.replace(old_str, new_str)
         filtered_channels.append((name, url))
-    logging.info(f"经过 URL 预筛选，剩余 {pre_screened_count} 个频道进入下一步过滤。")
+    logging.info(f"After URL pre-screening, {pre_screened_count} channels remain for further filtering.")
     return filtered_channels
 
 def clear_directory_txt_files(directory):
@@ -352,9 +332,9 @@ def clear_directory_txt_files(directory):
             file_path = os.path.join(directory, filename)
             try:
                 os.remove(file_path)
-                logging.info(f"已删除文件: {file_path}")
+                logging.info(f"Deleted file: {file_path}")
             except Exception as e:
-                logging.error(f"删除文件 {file_path} 时出错: {e}")
+                logging.error(f"Error deleting file {file_path}: {e}")
 
 # --- URL Validity Check Functions ---
 def check_http_url(url, timeout):
@@ -363,7 +343,7 @@ def check_http_url(url, timeout):
         response = session.head(url, timeout=timeout, allow_redirects=True)
         return 200 <= response.status_code < 400
     except requests.exceptions.RequestException as e:
-        logging.debug(f"HTTP URL {url} 检查失败: {e}")
+        logging.debug(f"HTTP URL {url} check failed: {e}")
         return False
 
 def check_rtmp_url(url, timeout):
@@ -372,7 +352,7 @@ def check_rtmp_url(url, timeout):
         # Check if ffprobe is available once
         subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        logging.warning("未找到 ffprobe 或其无法工作。RTMP 流无法检查。")
+        logging.warning("ffprobe not found or not working. RTMP stream check skipped.")
         return False
     try:
         result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
@@ -380,10 +360,10 @@ def check_rtmp_url(url, timeout):
                                      stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
     except subprocess.TimeoutExpired:
-        logging.debug(f"RTMP URL {url} 检查超时")
+        logging.debug(f"RTMP URL {url} check timed out")
         return False
     except Exception as e:
-        logging.debug(f"RTMP URL {url} 检查错误: {e}")
+        logging.debug(f"RTMP URL {url} check error: {e}")
         return False
 
 def check_rtp_url(url, timeout):
@@ -402,10 +382,10 @@ def check_rtp_url(url, timeout):
             s.recv(1) # Try to receive data
         return True
     except (socket.timeout, socket.error) as e:
-        logging.debug(f"RTP URL {url} 检查失败: {e}")
+        logging.debug(f"RTP URL {url} check failed: {e}")
         return False
     except Exception as e:
-        logging.debug(f"RTP URL {url} 检查错误: {e}")
+        logging.debug(f"RTP URL {url} check error: {e}")
         return False
 
 def check_p3p_url(url, timeout):
@@ -425,7 +405,7 @@ def check_p3p_url(url, timeout):
             response = s.recv(1024).decode('utf-8', errors='ignore')
             return "P3P" in response or response.startswith("HTTP/1.")
     except Exception as e:
-        logging.debug(f"P3P URL {url} 检查失败: {e}")
+        logging.debug(f"P3P URL {url} check failed: {e}")
         return False
 
 def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TIMEOUT):
@@ -443,7 +423,7 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
         elif url.startswith("rtp"):
             is_valid = check_rtp_url(url, timeout)
         else:
-            logging.debug(f"不支持的协议 {channel_name}: {url}")
+            logging.debug(f"Unsupported protocol for channel {channel_name}: {url}")
             return None, False
 
         elapsed_time = (time.time() - start_time) * 1000
@@ -452,7 +432,7 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
         else:
             return None, False
     except Exception as e:
-        logging.debug(f"检查频道 {channel_name} ({url}) 时出错: {e}")
+        logging.debug(f"Error checking channel {channel_name} ({url}): {e}")
         return None, False
 
 def process_single_channel_line(channel_line):
@@ -479,7 +459,7 @@ def check_channels_multithreaded(channel_lines, max_workers=200):
                 if elapsed_time is not None and result_line is not None:
                     results.append((elapsed_time, result_line))
             except Exception as exc:
-                logging.warning(f"频道行处理期间发生异常: {exc}")
+                logging.warning(f"Exception during channel line processing: {exc}")
 
     results.sort() # Sort by response time
     return results
@@ -563,20 +543,20 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                 final_output_lines.append(header + '\n')
                 final_output_lines.extend(group_and_limit_channels(lines[1:]))
             else:
-                logging.warning(f"文件 {file_path} 未以类别头开始。跳过。")
+                logging.warning(f"File {file_path} does not start with a category header. Skipping.")
 
     iptv_list_file_path = output_file_name
     with open(iptv_list_file_path, "w", encoding="utf-8") as iptv_list_file:
         iptv_list_file.writelines(final_output_lines)
 
-    logging.info(f"\n所有区域频道列表文件已合并。输出保存到: {iptv_list_file_path}")
+    logging.info(f"\nAll regional channel list files merged. Output saved to: {iptv_list_file_path}")
 
 def auto_discover_github_urls(urls_file_path, github_token):
     """
     Automatically searches for public IPTV source URLs on GitHub and updates the urls.txt file.
     """
     if not github_token:
-        logging.warning("环境变量 'GITHUB_TOKEN' 未设置。跳过 GitHub URL 自动发现。")
+        logging.warning("Environment variable 'GITHUB_TOKEN' is not set. Skipping GitHub URL auto-discovery.")
         return
 
     existing_urls = set(read_txt_to_array(urls_file_path))
@@ -586,11 +566,11 @@ def auto_discover_github_urls(urls_file_path, github_token):
         "Authorization": f"token {github_token}"
     }
 
-    logging.info("开始从 GitHub 自动发现新的 IPTV 源 URL...")
+    logging.info("Starting automatic discovery of new IPTV source URLs from GitHub...")
 
     for i, keyword in enumerate(SEARCH_KEYWORDS):
         if i > 0:
-            logging.info(f"切换到下一个关键词: '{keyword}'。等待 {GITHUB_API_RETRY_WAIT} 秒以避免速率限制...")
+            logging.info(f"Switching to next keyword: '{keyword}'. Waiting {GITHUB_API_RETRY_WAIT} seconds to avoid rate limits...")
             time.sleep(GITHUB_API_RETRY_WAIT)
 
         page = 1
@@ -617,12 +597,12 @@ def auto_discover_github_urls(urls_file_path, github_token):
 
                 if rate_limit_remaining == 0:
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logging.warning(f"GitHub API 速率限制达到！剩余请求: 0。等待 {wait_seconds:.0f} 秒后重试。")
+                    logging.warning(f"GitHub API rate limit reached! Remaining requests: 0. Waiting {wait_seconds:.0f} seconds before retrying.")
                     time.sleep(wait_seconds)
                     continue
 
                 if not data.get('items'):
-                    logging.info(f"关键词 '{keyword}' 在第 {page} 页未找到更多结果。")
+                    logging.info(f"No more results found for keyword '{keyword}' on page {page}.")
                     break
 
                 for item in data['items']:
@@ -632,7 +612,7 @@ def auto_discover_github_urls(urls_file_path, github_token):
                     match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
                     if match:
                         user = match.group(1)
-                        repo = match = match.group(2)
+                        repo = match.group(2)
                         branch = match.group(3)
                         path = match.group(4)
                         raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
@@ -644,13 +624,13 @@ def auto_discover_github_urls(urls_file_path, github_token):
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
                            pre_screen_url(cleaned_url): # Added pre-screening here
                             found_urls.add(cleaned_url)
-                            logging.debug(f"发现原始 GitHub URL (通过预筛选): {cleaned_url}")
+                            logging.debug(f"Discovered raw GitHub URL (passed pre-screen): {cleaned_url}")
                         else:
-                            logging.debug(f"跳过非原始 GitHub M3U/M3U8/TXT 链接或未通过预筛选: {raw_url}")
+                            logging.debug(f"Skipping non-raw GitHub M3U/M3U8/TXT link or failed pre-screen: {raw_url}")
                     else:
-                        logging.debug(f"无法从 HTML URL 构造原始 URL: {html_url}")
+                        logging.debug(f"Could not construct raw URL from HTML URL: {html_url}")
 
-                logging.info(f"关键词 '{keyword}'，第 {page} 页搜索完成。当前找到 {len(found_urls)} 个原始 URL。")
+                logging.info(f"Keyword '{keyword}', page {page} search completed. Currently found {len(found_urls)} raw URLs.")
 
                 if len(data['items']) < PER_PAGE:
                     break
@@ -659,17 +639,17 @@ def auto_discover_github_urls(urls_file_path, github_token):
                 time.sleep(2) # Wait 2 seconds between page requests for the same keyword
 
             except requests.exceptions.RequestException as e:
-                logging.error(f"GitHub API 请求失败 (关键词: {keyword}, 页码: {page}): {e}")
+                logging.error(f"GitHub API request failed (keyword: {keyword}, page: {page}): {e}")
                 if response.status_code == 403:
                     rate_limit_reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
                     wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
-                    logging.warning(f"GitHub API 速率限制达到！等待 {wait_seconds:.0f} 秒后重试。")
+                    logging.warning(f"GitHub API rate limit reached! Waiting {wait_seconds:.0f} seconds before retrying.")
                     time.sleep(wait_seconds)
                     continue
                 else:
                     break
             except Exception as e:
-                logging.error(f"GitHub URL 自动发现期间发生未知错误: {e}")
+                logging.error(f"Unknown error during GitHub URL auto-discovery: {e}")
                 break
 
     new_urls_count = 0
@@ -681,24 +661,24 @@ def auto_discover_github_urls(urls_file_path, github_token):
     if new_urls_count > 0:
         updated_urls = list(existing_urls)
         write_array_to_txt(urls_file_path, updated_urls)
-        logging.info(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URL 到 {urls_file_path}。总 URL 数量: {len(updated_urls)}")
+        logging.info(f"Successfully discovered and added {new_urls_count} new GitHub IPTV source URLs to {urls_file_path}. Total URLs: {len(updated_urls)}")
     else:
-        logging.info("未发现新的 GitHub IPTV 源 URL。")
+        logging.info("No new GitHub IPTV source URLs discovered.")
 
-    logging.info("GitHub URL 自动发现完成。")
+    logging.info("GitHub URL auto-discovery completed.")
 
 
 def main():
     config_dir = os.path.join(os.getcwd(), 'config')
     os.makedirs(config_dir, exist_ok=True)
     urls_file_path = os.path.join(config_dir, 'urls.txt')
-    url_states_file_path = os.path.join(config_dir, URL_STATES_FILE) # 新增 URL 状态文件路径
+    url_states_file_path = os.path.join(config_dir, URL_STATES_FILE)
 
     # --- START OF DEBUG LOGGING ---
     if os.getenv('GITHUB_TOKEN'):
-        logging.info("环境变量 'GITHUB_TOKEN' 已设置。")
+        logging.info("Environment variable 'GITHUB_TOKEN' is set.")
     else:
-        logging.error("环境变量 'GITHUB_TOKEN' 未设置！请检查 GitHub Actions 工作流配置。")
+        logging.error("Environment variable 'GITHUB_TOKEN' is NOT set! Please check GitHub Actions workflow configuration.")
     # --- END OF DEBUG LOGGING ---
 
     # 1. Automatically discover GitHub URLs and update urls.txt
@@ -707,12 +687,12 @@ def main():
     # 2. Read URLs to process from urls.txt (including newly discovered ones)
     urls = read_txt_to_array(urls_file_path)
     if not urls:
-        logging.warning(f"在 '{urls_file_path}' 中未找到任何URL，脚本将提前退出。")
+        logging.warning(f"No URLs found in '{urls_file_path}', script will exit early.")
         return
 
     # Load existing URL states
     url_states = load_url_states(url_states_file_path)
-    logging.info(f"已加载 {len(url_states)} 个 URL 的历史状态。")
+    logging.info(f"Loaded {len(url_states)} historical URL states.")
 
     # 3. Process all channel lists from config/urls.txt
     all_extracted_channels = set()
@@ -727,7 +707,7 @@ def main():
                 for name, addr in result_channels:
                     all_extracted_channels.add((name, addr))
             except Exception as exc:
-                logging.error(f"处理源 '{url}' 时发生异常: {exc}")
+                logging.error(f"Exception processing source '{url}': {exc}")
 
     # Save URL states after all URLs have been processed
     # (This ensures states are saved even if the script is interrupted later)
@@ -735,7 +715,7 @@ def main():
 
     # Convert set back to list for filtering
     all_extracted_channels_list = list(all_extracted_channels)
-    logging.info(f"\n已从所有源中提取到 {len(all_extracted_channels_list)} 个原始频道。")
+    logging.info(f"\nExtracted {len(all_extracted_channels_list)} raw channels from all sources.")
 
     # 4. Filter and clean channel names
     # This is where the pre-screening for individual channel URLs happens
@@ -743,19 +723,19 @@ def main():
     unique_filtered_channels = list(set(filtered_channels)) # Use set to ensure uniqueness again
     unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
 
-    logging.info(f"\n经过过滤和清洗后，剩余 {len(unique_filtered_channels_str)} 个独立频道。")
+    logging.info(f"\nAfter filtering and cleaning, {len(unique_filtered_channels_str)} unique channels remain.")
 
     # 5. Multi-threaded channel validity and speed check
-    logging.info("开始多线程频道有效性及速度检测...")
-    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
-    logging.info(f"有效且有响应的频道数量: {len(valid_channels_with_speed)}")
+    logging.info("Starting multi-threaded channel validity and speed detection...")
+    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str, max_workers=CONFIG.get('channel_check_workers', 200)) # Use config for workers
+    logging.info(f"Number of valid and responsive channels: {len(valid_channels_with_speed)}")
 
     # Write channels with speed to iptv_speed.txt
     iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
     write_sorted_channels_to_file(iptv_speed_file_path, valid_channels_with_speed)
     for elapsed_time, result in valid_channels_with_speed:
         channel_name, channel_url = result.split(',', 1)
-        logging.debug(f"检查成功: {channel_name},{channel_url} 响应时间: {elapsed_time:.0f} ms") # Changed to DEBUG
+        logging.debug(f"Check successful: {channel_name},{channel_url} response time: {elapsed_time:.0f} ms")
 
     # 6. Process regional channels and templates
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
@@ -786,14 +766,14 @@ def main():
 
         if "央视" in template_name or "CCTV" in template_name:
             current_template_matched_channels = sort_cctv_channels(current_template_matched_channels)
-            logging.info(f"已按数字顺序排序 '{template_name}' 频道。")
+            logging.info(f"Sorted '{template_name}' channels by number.")
 
         output_file_path = os.path.join(local_channels_directory, f"{template_name}_iptv.txt")
         with open(output_file_path, 'w', encoding='utf-8') as f:
             f.write(f"{template_name},#genre#\n")
             for channel in current_template_matched_channels:
                 f.write(channel + '\n')
-        logging.info(f"频道列表已写入: '{template_name}_iptv.txt', 包含 {len(current_template_matched_channels)} 个频道。")
+        logging.info(f"Channel list written to: '{template_name}_iptv.txt', containing {len(current_template_matched_channels)} channels.")
 
     # 7. Merge all IPTV files
     merge_local_channel_files(local_channels_directory, "iptv_list.txt")
@@ -809,18 +789,18 @@ def main():
     with open(unmatched_output_file_path, 'w', encoding='utf-8') as f:
         for channel_line in unmatched_channels_list:
             f.write(channel_line.split(',')[0].strip() + '\n')
-    logging.info(f"\n未匹配但已检测到的频道列表已保存到: '{unmatched_output_file_path}', 共 {len(unmatched_channels_list)} 个频道。")
+    logging.info(f"\nUnmatched but detected channel list saved to: '{unmatched_output_file_path}', total {len(unmatched_channels_list)} channels.")
 
     # Cleanup temporary files
     try:
         if os.path.exists('iptv.txt'):
             os.remove('iptv.txt')
-            logging.info(f"临时文件 'iptv.txt' 已删除。")
+            logging.info(f"Temporary file 'iptv.txt' deleted.")
         if os.path.exists('iptv_speed.txt'):
             os.remove('iptv_speed.txt')
-            logging.info(f"临时文件 'iptv_speed.txt' 已删除。")
+            logging.info(f"Temporary file 'iptv_speed.txt' deleted.")
     except OSError as e:
-        logging.warning(f"删除临时文件时出错: {e}")
+        logging.warning(f"Error deleting temporary files: {e}")
 
 if __name__ == "__main__":
     main()
