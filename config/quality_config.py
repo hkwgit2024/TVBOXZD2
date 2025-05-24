@@ -4,7 +4,7 @@
 SOURCE_IPTV_FILE = "iptv_list.txt" # Adjust this path relative to main_quality_checker.py
 
 # Output file for the filtered high-quality IPTV list
-OUTPUT_FILTERED_IPTV_FILE = "../iptv_high_quality.txt"
+OUTPUT_FILTERED_IPTV_FILE = "iptv_high_quality.txt"
 
 # Log file for the quality checker
 LOG_FILE = "quality_checker.log"
