@@ -5,4 +5,5 @@ __pycache__/
 .vscode/
 venv/
 *.pyc
-
+# Git 忽略文件
+config/url_states.json
