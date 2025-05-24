@@ -1,0 +1,75 @@
+# .github/workflows/quality_check.yml
+name: IPTV Quality Check
+
+on:
+  workflow_dispatch: # Allows manual trigger
+  schedule:
+    - cron: '0 0 * * *' # Run once every day at midnight UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install FFmpeg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+
+    - name: Install Python dependencies
+      run: pip install -r requirements.txt
+
+    - name: Download previous IPTV list (if exists)
+      # This step assumes your primary IPTV script outputs iptv_speed.txt
+      # You might need to adjust this if your main script is in a separate repo
+      # or if you need to fetch the file from an artifact or another source.
+      # For demonstration, we'll create a dummy one if not found.
+      run: |
+        echo "Placeholder for downloading/creating iptv_speed.txt"
+        # Example: If your main script uploads it as an artifact
+        # Replace with logic to fetch your actual iptv_speed.txt
+        echo "CCTV1,http://example.com/cctv1.m3u8" > iptv_speed.txt
+        echo "LocalChannel,http://example.com/local.m3u8" >> iptv_speed.txt
+        echo "Test Channel,http://devimages.apple.com/samplecode/adrendering/basic_ad.m3u8" >> iptv_speed.txt
+        
+        # If your main script is in the same repo, you might use:
+        # cp ../path/to/your/main_script/output/iptv_speed.txt . || echo "iptv_speed.txt not found, creating dummy for test"
+        
+        # Ensure the config points to this generated file
+        sed -i 's|SOURCE_IPTV_FILE = ".*"|SOURCE_IPTV_FILE = "../iptv_speed.txt"|g' config/quality_config.py
+
+
+    - name: Run IPTV Quality Checker
+      env:
+        # You might need a GITHUB_TOKEN if your main script fetches from GitHub
+        # This script doesn't directly use it, but if you re-integrate, it might.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: python main_quality_checker.py
+
+    - name: Upload high quality IPTV list as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: iptv-high-quality-list
+        path: iptv_high_quality.txt
+        retention-days: 7 # How long to keep the artifact
+
+    - name: Commit and push changes (optional)
+      # This step will commit the updated iptv_high_quality.txt back to your repo.
+      # Requires a PAT with repo scope if using a non-default GITHUB_TOKEN.
+      # Using default GITHUB_TOKEN is sufficient for pushing to same repo for small changes.
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add iptv_high_quality.txt
+        git commit -m "Auto-update: High quality IPTV list ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
+        git push || echo "Failed to push or no changes"
+      # Only run if there are changes to commit
+      if: success()
