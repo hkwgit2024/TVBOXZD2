@@ -43,7 +43,7 @@ jobs:
           echo "iptv_list.txt 已存在，将使用现有文件进行质量检查。"
         fi
 
-    - name: **确认 FFmpeg 可用 (新增步骤)**
+    - name: 确认 FFmpeg 可用 (新增步骤)
       run: |
         ffmpeg -version
         ffprobe -version
