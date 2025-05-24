@@ -1,18 +1,17 @@
 
+# 工作流名称，在 GitHub Actions 页面显示
 name: IPTV 频道更新
 
 # 触发条件
 on:
-  workflow_dispatch:  # 手动触发
+  workflow_dispatch:  # 允许手动触发
   schedule:
     - cron: '0 */8 * * *'  # 每天 UTC 时间 0:00、8:00、16:00
-
-# 设置工作流超时
-timeout-minutes: 360  # 6小时
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 360  # 移动到 jobs.build 级别，设置 6 小时超时
     permissions:
       contents: write
 
@@ -30,15 +29,15 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.BOT }}
+          fetch-depth: 0  # 获取完整提交历史，便于 rebase
+          token: ${{ secrets.BOT }}  # 使用 BOT secret
 
       # 步骤3：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: 'pip'  # 缓存 pip 依赖
 
       # 步骤4：安装 Python 依赖
       - name: 安装 Python 依赖
@@ -57,9 +56,9 @@ jobs:
       # 步骤6：运行主脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}  # 传递 BOT secret
         run: |
-          python ${{ github.workspace }}/tv.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，继续执行后续步骤"
+          python ${{ github.workspace }}/iptv_crawler.py > iptv_crawler_output.log 2>&1 || echo "脚本运行失败，继续执行后续步骤"
         continue-on-error: true
 
       # 步骤7：保存日志和生成文件
@@ -120,5 +119,3 @@ jobs:
             echo "警告：工作流未完全成功，请检查日志和 artifact"
           fi
         shell: bash
-
-
