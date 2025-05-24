@@ -13,29 +13,31 @@ import json
 import hashlib
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import yaml # 导入 yaml 模块
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- Configuration Loading ---
-CONFIG_FILE = os.path.join(os.getcwd(), 'config', 'config.json')
+# 定义配置文件路径，现在是 config.yaml
+CONFIG_FILE = os.path.join(os.getcwd(), 'config', 'config.yaml')
 
 def load_config(file_path):
-    """Loads configuration from a JSON file."""
+    """Loads configuration from a YAML file."""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            return yaml.safe_load(f) # 使用 yaml.safe_load 来加载 YAML 文件
     except FileNotFoundError:
         logging.error(f"Error: Config file '{file_path}' not found. Please create it in the 'config' directory.")
         exit(1)
-    except json.JSONDecodeError as e:
-        logging.error(f"Error: Invalid JSON in config file '{file_path}': {e}")
+    except yaml.YAMLError as e: # 捕获 YAML 解析相关的错误
+        logging.error(f"Error: Invalid YAML in config file '{file_path}': {e}")
         exit(1)
     except Exception as e:
         logging.error(f"Error loading config file '{file_path}': {e}")
         exit(1)
 
-# Load config early
+# Load config early at script startup
 CONFIG = load_config(CONFIG_FILE)
 
 # --- Constants and Configuration (Now loaded from CONFIG) ---
@@ -75,11 +77,11 @@ COMPILED_INVALID_URL_PATTERNS = [re.compile(pattern, re.IGNORECASE) for pattern 
 session = requests.Session()
 session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
 
-# Configure a larger connection pool
-pool_size = CONFIG.get('requests_pool_size', 200) # Added to config.json
+# Configure a larger connection pool using values from config.yaml
+pool_size = CONFIG.get('requests_pool_size', 200)
 retry_strategy = Retry(
-    total=CONFIG.get('requests_retry_total', 3), # Added to config.json
-    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1), # Added to config.json
+    total=CONFIG.get('requests_retry_total', 3),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS"]
 )
@@ -448,7 +450,7 @@ def process_single_channel_line(channel_line):
             return elapsed_time, f"{name},{url}"
     return None, None
 
-def check_channels_multithreaded(channel_lines, max_workers=200):
+def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_check_workers', 200)): # Use config for workers
     """Processes a list of channel lines concurrently for validity checking."""
     results = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -671,7 +673,7 @@ def auto_discover_github_urls(urls_file_path, github_token):
 def main():
     config_dir = os.path.join(os.getcwd(), 'config')
     os.makedirs(config_dir, exist_ok=True)
-    urls_file_path = os.path.join(config_dir, 'urls.txt')
+    urls_file_path = os.path.join(config_dir, 'urls.txt') # urls.txt 依然保持不变，因为它不是配置而是数据
     url_states_file_path = os.path.join(config_dir, URL_STATES_FILE)
 
     # --- START OF DEBUG LOGGING ---
@@ -727,7 +729,7 @@ def main():
 
     # 5. Multi-threaded channel validity and speed check
     logging.info("Starting multi-threaded channel validity and speed detection...")
-    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str, max_workers=CONFIG.get('channel_check_workers', 200)) # Use config for workers
+    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
     logging.info(f"Number of valid and responsive channels: {len(valid_channels_with_speed)}")
 
     # Write channels with speed to iptv_speed.txt
