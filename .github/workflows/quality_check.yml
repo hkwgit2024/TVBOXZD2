@@ -1,5 +1,5 @@
 # .github/workflows/quality_check.yml
-name: IPTV 质量检查
+name: IPTV 
 
 on:
   workflow_dispatch:
