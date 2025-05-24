@@ -1,75 +1,71 @@
 # .github/workflows/quality_check.yml
-name: IPTV Quality Check
+name: IPTV 质量检查
 
+# 控制工作流何时运行
 on:
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch: # 允许手动从 GitHub Actions 界面触发工作流
   schedule:
-    - cron: '0 0 * * *' # Run once every day at midnight UTC
+    # 每天 UTC 时间凌晨 0 点运行一次工作流
+    # 您可以根据需要调整这个 cron 表达式
+    - cron: '0 0 * * *' 
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  quality_check_job: # 定义一个名为 quality_check_job 的作业
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 运行器上执行此作业
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - name: 检出仓库代码
+      uses: actions/checkout@v4 # 使用 actions/checkout@v4 检出您的 GitHub 仓库代码
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 设置 Python 环境
       with:
-        python-version: '3.x'
+        python-version: '3.x' # 指定使用 Python 3.x 版本
 
-    - name: Install FFmpeg
+    - name: 安装 FFmpeg
       run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
+        sudo apt-get update # 更新 apt 软件包列表
+        sudo apt-get install -y ffmpeg # 安装 FFmpeg 及其相关工具（包括 ffprobe）
 
-    - name: Install Python dependencies
-      run: pip install -r requirements.txt
+    - name: 安装 Python 依赖
+      run: pip install -r requirements.txt # 安装 requirements.txt 文件中列出的所有 Python 依赖
 
-    - name: Download previous IPTV list (if exists)
-      # This step assumes your primary IPTV script outputs iptv_speed.txt
-      # You might need to adjust this if your main script is in a separate repo
-      # or if you need to fetch the file from an artifact or another source.
-      # For demonstration, we'll create a dummy one if not found.
+    - name: 确保 iptv_list.txt 文件存在
+      # 此步骤旨在确认 iptv_list.txt 文件已存在于仓库根目录
+      # 如果您的主脚本在此之前运行并已将 iptv_list.txt 推送到仓库，则此文件会存在。
+      # 这是一个安全措施，以防文件不存在时脚本失败。
       run: |
-        echo "Placeholder for downloading/creating iptv_speed.txt"
-        # Example: If your main script uploads it as an artifact
-        # Replace with logic to fetch your actual iptv_speed.txt
-        echo "CCTV1,http://example.com/cctv1.m3u8" > iptv_speed.txt
-        echo "LocalChannel,http://example.com/local.m3u8" >> iptv_speed.txt
-        echo "Test Channel,http://devimages.apple.com/samplecode/adrendering/basic_ad.m3u8" >> iptv_speed.txt
-        
-        # If your main script is in the same repo, you might use:
-        # cp ../path/to/your/main_script/output/iptv_speed.txt . || echo "iptv_speed.txt not found, creating dummy for test"
-        
-        # Ensure the config points to this generated file
-        sed -i 's|SOURCE_IPTV_FILE = ".*"|SOURCE_IPTV_FILE = "../iptv_speed.txt"|g' config/quality_config.py
+        if [ ! -f iptv_list.txt ]; then
+          echo "警告：仓库根目录未找到 iptv_list.txt。为测试目的创建虚拟文件。"
+          echo "CCTV1,http://example.com/cctv1.m3u8" > iptv_list.txt
+          echo "测试频道,http://devimages.apple.com/samplecode/adrendering/basic_ad.m3u8" >> iptv_list.txt
+        else
+          echo "iptv_list.txt 已存在，将使用现有文件进行质量检查。"
+        fi
 
-
-    - name: Run IPTV Quality Checker
-      env:
-        # You might need a GITHUB_TOKEN if your main script fetches from GitHub
-        # This script doesn't directly use it, but if you re-integrate, it might.
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: 运行 IPTV 质量检查器
+      # 执行您的主质量检查脚本
+      # 由于 main_quality_checker.py 在 iptv-quality-checker/ 目录下，
+      # 且 iptv_list.txt 在仓库根目录，因此在 config/quality_config.py 中
+      # SOURCE_IPTV_FILE 应该设置为 "../iptv_list.txt"。
       run: python main_quality_checker.py
 
-    - name: Upload high quality IPTV list as artifact
-      uses: actions/upload-artifact@v4
+    - name: 上传高质量 IPTV 列表作为工件 (Artifact)
+      uses: actions/upload-artifact@v4 # 使用 actions/upload-artifact@v4 上传生成的列表文件
       with:
-        name: iptv-high-quality-list
-        path: iptv_high_quality.txt
-        retention-days: 7 # How long to keep the artifact
+        name: iptv-high-quality-list # 工件的名称，您可以在 GitHub Actions 界面下载它
+        path: iptv_high_quality.txt # 要上传的文件路径（相对于工作目录，即仓库根目录）
+        retention-days: 7 # 工件保留的天数（默认 90 天，这里设置为 7 天以节省空间）
 
-    - name: Commit and push changes (optional)
-      # This step will commit the updated iptv_high_quality.txt back to your repo.
-      # Requires a PAT with repo scope if using a non-default GITHUB_TOKEN.
-      # Using default GITHUB_TOKEN is sufficient for pushing to same repo for small changes.
+    - name: 提交并推送更改 (可选)
+      # 这一步会将更新后的 iptv_high_quality.txt 文件提交回您的仓库。
+      # 请注意：如果您的仓库需要更严格的权限或使用特定的部署密钥，此步骤可能需要额外配置。
+      # 对于公共仓库或个人使用，默认的 GITHUB_TOKEN 通常足够。
       run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        git add iptv_high_quality.txt
-        git commit -m "Auto-update: High quality IPTV list ($(date +'%Y-%m-%d %H:%M'))" || echo "No changes to commit"
-        git push || echo "Failed to push or no changes"
-      # Only run if there are changes to commit
+        git config user.name "GitHub Actions" # 设置 Git 用户名
+        git config user.email "actions@github.com" # 设置 Git 用户邮箱
+        git add iptv_high_quality.txt # 将 iptv_high_quality.txt 文件添加到 Git 暂存区
+        git commit -m "自动更新：高质量 IPTV 列表 ($(date +'%Y-%m-%d %H:%M'))" || echo "没有需要提交的更改" # 提交更改，如果没变化则不提交
+        git push || echo "推送失败或没有更改" # 推送更改到远程仓库
+      # 仅在前面的步骤成功时才运行此提交步骤
       if: success()
