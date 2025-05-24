@@ -592,13 +592,20 @@ async def main():
         for i, future in enumerate(asyncio.as_completed(check_tasks)): # 遍历已完成的任务
             elapsed_time, is_valid = await future
             completed_checks += 1
-            logging.info(f"已完成 {completed_checks}/{total_checks} 个检查. URL: {filtered_channels[i][1]}, 有效性: {is_valid}") # 增加详细日志
-
+            # 确保 i 在 filtered_channels 索引范围内
+            if i < len(filtered_channels):
+                logging.info(f"已完成 {completed_checks}/{total_checks} 个检查. URL: {filtered_channels[i][1]}, 有效性: {is_valid}")
+            else:
+                logging.info(f"已完成 {completed_checks}/{total_checks} 个检查. 有效性: {is_valid}") # 无法获取原始URL
+            
             if is_valid and elapsed_time is not None:
                 # 找到对应的原始频道信息
-                original_name, original_url = filtered_channels[i]
-                valid_channels_results.append((elapsed_time, f"{original_name},{original_url}"))
-    
+                if i < len(filtered_channels):
+                    original_name, original_url = filtered_channels[i]
+                    valid_channels_results.append((elapsed_time, f"{original_name},{original_url}"))
+                else:
+                    logging.warning(f"无法匹配到原始频道信息，跳过有效频道保存。")
+
     valid_channels_results = sorted(valid_channels_results) # 排序
     logging.info(f"有效频道数量: {len(valid_channels_results)}")
 
