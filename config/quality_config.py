@@ -1,7 +1,7 @@
 # config/quality_config.py
 
 # Source file from your main IPTV script (e.g., iptv.txt, iptv_speed.txt, or iptv_list.txt)
-SOURCE_IPTV_FILE = "../iptv_speed.txt" # Adjust this path relative to main_quality_checker.py
+SOURCE_IPTV_FILE = "../iptv_list.txt" # Adjust this path relative to main_quality_checker.py
 
 # Output file for the filtered high-quality IPTV list
 OUTPUT_FILTERED_IPTV_FILE = "../iptv_high_quality.txt"
