@@ -188,8 +188,8 @@ def clean_url_params(url):
     parsed_url = urlparse(url)
     return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
 
-@retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True, retry=retry_if_exception_type(aiohttp.ClientError))
-async def fetch_url_content_async(url, session, timeout=10):
+@retry(stop=stop_after_attempt(5), wait=wait_fixed(8), reraise=True, retry=retry_if_exception_type(aiohttp.ClientError))
+async def fetch_url_content_async(url, session, timeout=38):
     try:
         async with session.get(url, timeout=timeout, allow_redirects=True) as response:
             response.raise_for_status()
@@ -199,8 +199,8 @@ async def fetch_url_content_async(url, session, timeout=10):
         logging.info(f"异步抓取 URL {url} 失败: {e}")
         return None, None
 
-@retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True, retry=retry_if_exception_type(aiohttp.ClientError))
-async def fetch_url_headers_async(url, session, timeout=5):
+@retry(stop=stop_after_attempt(8), wait=wait_fixed(28), reraise=True, retry=retry_if_exception_type(aiohttp.ClientError))
+async def fetch_url_headers_async(url, session, timeout=48):
     try:
         async with session.head(url, timeout=timeout, allow_redirects=True) as response:
             response.raise_for_status()
@@ -209,7 +209,7 @@ async def fetch_url_headers_async(url, session, timeout=5):
         logging.info(f"异步获取 URL {url} 头部信息失败: {e}")
         return None
 
-async def check_stream_quality(url, session, timeout=15, min_bitrate=1000):
+async def check_stream_quality(url, session, timeout=185, min_bitrate=1000):
     """检查流的质量（响应时间和比特率）"""
     try:
         start_time = time.time()
@@ -639,7 +639,7 @@ async def search_github_for_iptv_urls():
             for page in range(1, MAX_SEARCH_PAGES + 1):
                 search_url = f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}?q={keyword}&per_page={PER_PAGE}&page={page}"
                 try:
-                    async with session.get(search_url, timeout=15) as response:
+                    async with session.get(search_url, timeout=185) as response:
                         response.raise_for_status()
                         data = await response.json()
                         for item in data.get('items', []):
