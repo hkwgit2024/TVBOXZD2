@@ -1,7 +1,14 @@
 北京频道,#genre#
-北京青年,http://player.cntv.cn/standard/live_HLSDRM20180919.swf
+北京新闻,https://epg.pm/stream/865123cac907c93d2186e8568d28fb63942da98b296414683dae94946f56c93a.m3u8
 北京科教,http://player.cntv.cn/standard/live_HLSDRM20180606.swf
+北京青年,http://player.cntv.cn/standard/live_HLSDRM20180919.swf
 北京新闻,https://ls.qingting.fm/live/339/64k.m3u8
-北京新闻,https://brtv-radiolive.rbc.cn/alive/fm945.m3u8
+北京新闻,http://yc.myds.me:35455/bptv/10000100000000050000000003870780.m3u8
 北京生活,https://wstvcpudali.v.myalicdn.com/wstvcpud/udrmbtv7_1/index.m3u8
+北京新闻,https://brtv-radiolive.rbc.cn/alive/fm945.m3u8
 北京新闻,https://satellitepull.cnr.cn/live/wxbjxwgb/playlist.m3u8
+通州电视台,http://pull.dayuntongzhou.com/live/tztv.m3u8
+北京财经,https://tv.bfsu.edu.cn/hls/btv5hd.m3u8
+北京新闻,https://tv.bfsu.edu.cn/hls/btv5hd.m3u8
+北京卡酷少儿,https://tv.bfsu.edu.cn/hls/btv5hd.m3u8
+北京生活,https://tv.bfsu.edu.cn/hls/btv6hd.m3u8
