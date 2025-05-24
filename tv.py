@@ -13,12 +13,12 @@ import psutil
 from urllib.parse import urlparse, urljoin
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
-import sys # 新增导入
-import traceback # 新增导入
+import sys
+import traceback
 
 # 配置日志
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO, # 保持 INFO 级别以获取详细进度和错误信息
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('iptv_crawler.log', encoding='utf-8'),
@@ -38,6 +38,12 @@ BLACKLIST_FILE = os.path.join(CONFIG_DIR, 'blacklist.txt')  # 新增黑名单文
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+
+# DEBUG: 打印 GITHUB_TOKEN 的状态
+if GITHUB_TOKEN:
+    logging.info("GITHUB_TOKEN 环境变量已设置。")
+else:
+    logging.warning("GITHUB_TOKEN 环境变量未设置！GitHub API 请求将受到更严格的速率限制并可能失败。")
 
 # --- 加载搜索关键词 ---
 def load_search_keywords():
@@ -103,6 +109,7 @@ def load_blacklist():
     """加载黑名单域名"""
     blacklist = set()
     try:
+        os.makedirs(CONFIG_DIR, exist_ok=True) # 确保目录存在
         if os.path.exists(BLACKLIST_FILE):
             with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
                 blacklist = {line.strip() for line in f if line.strip()}
@@ -152,7 +159,7 @@ def append_to_txt(file_name, data_array):
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             with open(file_name, 'a', encoding='utf-8') as file:
                 for item in new_content:
-                    file.write(item + '\n')
+                    f.write(item + '\n')
             logging.info(f"已追加 {len(new_content)} 条记录到 '{file_name}'")
         except Exception as e:
             logging.error(f"追加写入文件 '{file_name}' 时出错: {e}")
@@ -182,72 +189,180 @@ def clean_url_params(url):
     parsed_url = urlparse(url)
     return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
 
-async def fetch_url_content_async(url, session, timeout=3):  # 缩短超时时间
-    @retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True,
-           retry=retry_if_exception_type(aiohttp.ClientError))
-    async def _fetch():
-        async with session.get(url, timeout=timeout) as response:
-            response.raise_for_status()
-            text = await response.text()
-            return text, response.headers.get('Last-Modified')
+@retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True,
+       retry=retry_if_exception_type(aiohttp.ClientError))
+async def fetch_url_content_async(url, session, timeout=5): # 增加超时时间
     try:
-        return await _fetch()
+        async with session.get(url, timeout=timeout, allow_redirects=True) as response:
+            response.raise_for_status()
+            text = await response.text(errors='ignore') # 忽略解码错误
+            return text, response.headers.get('Last-Modified')
     except Exception as e:
-        logging.error(f"异步抓取 URL {url} 失败: {e}")
+        logging.info(f"异步抓取 URL {url} 失败: {e}") # 提高日志级别
         return None, None
 
-async def fetch_url_headers_async(url, session, timeout=2):
-    @retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True,
-           retry=retry_if_exception_type(aiohttp.ClientError))
-    async def _fetch():
+@retry(stop=stop_after_attempt(2), wait=wait_fixed(2), reraise=True,
+       retry=retry_if_exception_type(aiohttp.ClientError))
+async def fetch_url_headers_async(url, session, timeout=3): # 增加超时时间
+    try:
         async with session.head(url, timeout=timeout, allow_redirects=True) as response:
             response.raise_for_status()
             return response.headers.get('Last-Modified')
-    try:
-        return await _fetch()
     except Exception as e:
-        logging.debug(f"异步获取 URL {url} 头部信息失败: {e}")
+        logging.info(f"异步获取 URL {url} 头部信息失败: {e}") # 提高日志级别
         return None
 
-async def check_stream_quality(url, session, timeout=5, min_bitrate=1000):
+async def check_stream_quality(url, session, timeout=10, min_bitrate=1000): # 增加超时时间
     """检查流的质量（响应时间和比特率）"""
     try:
         start_time = time.time()
-        async with session.get(url, timeout=timeout) as response:
-            if response.status != 200:
+        
+        # 优化：对于 HTTP/HTTPS，先尝试 HEAD 请求快速判断可用性
+        if url.startswith("http"):
+            try:
+                async with session.head(url, timeout=5, allow_redirects=True) as response:
+                    if response.status != 200:
+                        logging.info(f"URL {url} HEAD 请求失败，状态码: {response.status}")
+                        return None, False
+            except Exception as e:
+                logging.info(f"URL {url} HEAD 请求异常: {e}")
                 return None, False
 
-            # 下载前几个 TS 分段，估算速度
-            content = b""
-            async for chunk in response.content.iter_chunked(1024 * 1024):  # 每次读取 1MB
-                content += chunk
-                if len(content) >= 2 * 1024 * 1024:  # 限制下载 2MB
-                    break
-
-            elapsed_time = (time.time() - start_time) * 1000  # 毫秒
-            download_speed = (len(content) * 8 / 1024) / (elapsed_time / 1000)  # Mbps
-
-            # 使用 ffprobe 检查比特率（仅对 HLS 流）
-            if url.endswith(('.m3u8', '.m3u')):
-                try:
-                    result = await asyncio.create_subprocess_exec(
-                        'ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', url,
-                        stdout=asyncio.subprocess.PIPE,
-                        stderr=asyncio.subprocess.PIPE
-                    )
-                    stdout, _ = await asyncio.wait_for(result.communicate(), timeout=timeout)
-                    stream_info = json.loads(stdout)
-                    bitrate = stream_info.get('streams', [{}])[0].get('bit_rate', 0)
-                    if bitrate and int(bitrate) / 1000 < min_bitrate:  # 转换为 kbps
-                        logging.debug(f"URL {url} 比特率 {bitrate/1000:.0f}kbps 低于阈值 {min_bitrate}kbps")
-                        return None, False
-                except Exception as e:
-                    logging.debug(f"检查 URL {url} 比特率失败: {e}")
+            # 再尝试 GET 请求下载一小部分内容
+            async with session.get(url, timeout=timeout) as response:
+                if response.status != 200:
+                    logging.info(f"URL {url} GET 请求失败，状态码: {response.status}")
                     return None, False
 
-            return elapsed_time, download_speed > 1  # 要求下载速度 > 1Mbps
+                # 下载前几个 TS 分段或一定大小的内容，估算速度
+                content_length = 0
+                max_content_to_download = 2 * 1024 * 1024 # 限制下载 2MB
+                
+                async for chunk in response.content.iter_chunked(1024 * 1024):  # 每次读取 1MB
+                    content_length += len(chunk)
+                    if content_length >= max_content_to_download:
+                        break
+                
+                elapsed_time_download = (time.time() - start_time) * 1000 # 毫秒
+                # 避免除以零
+                download_speed_mbps = (content_length * 8 / 1024 / 1024) / (elapsed_time_download / 1000) if elapsed_time_download > 0 else 0 
+
+                logging.info(f"URL {url} 下载 {content_length/1024/1024:.2f}MB 耗时 {elapsed_time_download:.2f}ms, 速度 {download_speed_mbps:.2f} Mbps")
+
+                # 如果下载速度过低，直接判定为无效
+                if download_speed_mbps < 0.5: # 降低速度要求，例如 0.5 Mbps
+                    logging.info(f"URL {url} 下载速度过低 ({download_speed_mbps:.2f} Mbps)，判定为无效。")
+                    return None, False
+
+                # 使用 ffprobe 检查比特率（仅对 HLS 流）
+                if url.endswith(('.m3u8', '.m3u')):
+                    try:
+                        # 对于 HLS，ffprobe 通常会去下载实际的 TS 片段进行分析
+                        # 确保 ffprobe 有足够的时间完成
+                        proc = await asyncio.create_subprocess_exec(
+                            'ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', '-timeout', str(timeout * 1000000), url, # ffprobe timeout in microseconds
+                            stdout=asyncio.subprocess.PIPE,
+                            stderr=asyncio.subprocess.PIPE
+                        )
+                        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout + 5) # 给 ffprobe 更多时间
+                        
+                        if proc.returncode != 0:
+                            logging.info(f"ffprobe 检查 URL {url} 失败，退出码 {proc.returncode}，错误: {stderr.decode('utf-8', errors='ignore').strip()}")
+                            return None, False
+
+                        stream_info = json.loads(stdout)
+                        bitrate = stream_info.get('streams', [{}])[0].get('bit_rate', 0)
+                        
+                        if bitrate:
+                            bitrate_kbps = int(bitrate) / 1000
+                            if bitrate_kbps < min_bitrate:
+                                logging.info(f"URL {url} 比特率 {bitrate_kbps:.0f}kbps 低于阈值 {min_bitrate}kbps，判定为无效")
+                                return None, False
+                            else:
+                                logging.info(f"URL {url} 比特率 {bitrate_kbps:.0f}kbps，符合要求")
+                        else:
+                            logging.info(f"ffprobe 未能获取 URL {url} 的比特率")
+                            # 如果无法获取比特率，可以根据情况决定是否通过，这里暂时判定为有效，依赖下载速度判断
+                            pass 
+
+                except asyncio.TimeoutError:
+                    logging.info(f"ffprobe 检查 URL {url} 超时")
+                    return None, False
+                except json.JSONDecodeError:
+                    logging.info(f"ffprobe 无法解析 URL {url} 的输出为 JSON")
+                    return None, False
+                except Exception as e:
+                    logging.info(f"检查 URL {url} 比特率失败: {e}")
+                    return None, False
+            
+            # 如果到达这里，说明 HTTP/HTTPS 检查通过
+            return elapsed_time_download, True
+
+        elif url.startswith("rtmp"):
+            try:
+                proc = await asyncio.create_subprocess_exec(
+                    'ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+                if proc.returncode == 0:
+                    logging.info(f"RTMP URL {url} 检查成功")
+                    return (time.time() - start_time) * 1000, True
+                else:
+                    logging.info(f"RTMP URL {url} 检查失败，退出码 {proc.returncode}，错误: {stderr.decode('utf-8', errors='ignore').strip()}")
+                    return None, False
+            except asyncio.TimeoutError:
+                logging.info(f"RTMP URL {url} 检查超时")
+                return None, False
+            except Exception as e:
+                logging.info(f"RTMP URL {url} 检查异常: {e}") # 提高日志级别
+                return None, False
+        elif url.startswith("rtp"):
+            parsed_url = urlparse(url)
+            host = parsed_url.hostname
+            port = parsed_url.port
+            if not host or not port:
+                logging.info(f"RTP URL {url} 缺少主机或端口")
+                return None, False
+            try:
+                loop = asyncio.get_event_loop()
+                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                    s.settimeout(timeout)
+                    await loop.sock_connect(s, (host, port))
+                    await loop.sock_sendto(s, b'', (host, port))
+                    await loop.sock_recv(s, 1)
+                logging.info(f"RTP URL {url} 检查成功")
+                return (time.time() - start_time) * 1000, True
+            except Exception as e:
+                logging.info(f"RTP URL {url} 检查失败: {e}") # 提高日志级别
+                return None, False
+        elif url.startswith("p3p"):
+            parsed_url = urlparse(url)
+            host = parsed_url.hostname
+            port = parsed_url.port or 80
+            path = parsed_url.path or '/'
+            if not host:
+                logging.info(f"P3P URL {url} 缺少主机")
+                return None, False
+            try:
+                # P3P 通常不是流协议，而是指代隐私政策。这里尝试 HTTP GET。
+                async with session.get(f"http://{host}:{port}{path}", timeout=timeout) as response:
+                    text = await response.text(errors='ignore')
+                    if response.status == 200 and ("P3P" in text or text.startswith("HTTP/1.")):
+                        logging.info(f"P3P URL {url} (作为 HTTP) 检查成功")
+                        return (time.time() - start_time) * 1000, True
+                    else:
+                        logging.info(f"P3P URL {url} (作为 HTTP) 检查失败，状态码: {response.status}")
+                        return None, False
+            except Exception as e:
+                logging.info(f"P3P URL {url} 检查失败: {e}") # 提高日志级别
+                return None, False
+        else:
+            logging.info(f"不支持的协议: {url}") # 提高日志级别
+            return None, False
     except Exception as e:
-        logging.debug(f"检查 URL {url} 流质量失败: {e}")
+        logging.info(f"检查 URL {url} 流质量时发生未知错误: {e}") # 提高日志级别
         return None, False
 
 async def process_url_async(url, last_modified_cache, session, blacklist):
@@ -263,11 +378,12 @@ async def process_url_async(url, last_modified_cache, session, blacklist):
             logging.info(f"URL '{cleaned_url}' 未更新，跳过")
             return [], cached_last_modified
     except Exception:
-        current_last_modified = None
+        current_last_modified = None # 头部获取失败不影响后续内容获取
 
     try:
         text, fetched_last_modified = await fetch_url_content_async(cleaned_url, session)
         if not text:
+            logging.info(f"URL {cleaned_url} 未获取到内容") # 提高日志级别
             return [], current_last_modified
 
         last_modified_cache[cleaned_url] = fetched_last_modified or current_last_modified or datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -291,7 +407,7 @@ async def process_url_async(url, last_modified_cache, session, blacklist):
                         channel_url = clean_url_params(channel_url.strip())
                         if channel_url and not any(domain in channel_url for domain in blacklist):
                             channel_list.append((channel_name, channel_url))
-                    channel_count += 1 # 这里的计数方式可能需要调整，如果一个频道名对应多个URL，这会只算一个
+                    channel_count += len(url_list) # 这里的计数方式应为实际URL数量
                 else:
                     channel_url = clean_url_params(channel_address_raw)
                     if channel_url and not any(domain in channel_url for domain in blacklist):
@@ -306,14 +422,16 @@ async def process_url_async(url, last_modified_cache, session, blacklist):
 def filter_and_modify_sources(corrections):
     name_dict = ['购物', '理财', '导视', '指南', '测试', '芒果', 'CGTN', '(480p)', '(360p)', '(240p)',
                  '(406p)', '(540p)', '(600p)', '(576p)', '[Not 24/7]', 'DJ', '音乐', '演唱会', '舞曲',
-                 '春晚', '格斗', '粤', '祝', '体育', '广播', '博斯', '神话', '测试频道']
+                 '春晚', '格斗', '粤', '祝', '体育', '广播', '博斯', '神话', '测试频道', '回放', '专场', '系列']
     url_dict = ['.m3u8?auth_key=', 'token=']
     filtered_corrections = []
     for name, url in corrections:
         if any(word.lower() in name.lower() for word in name_dict) or any(word in url for word in url_dict):
             logging.info(f"过滤频道: {name},{url}")
         else:
-            name = re.sub(r'(FHD|HD|hd|频道|高清|超清|20M|-|4k|4K|4kR)\s*', '', name).strip()
+            name = re.sub(r'(FHD|HD|hd|频道|高清|超清|20M|-|4k|4K|4kR|P|p)\s*', '', name).strip()
+            # 移除括号内的内容
+            name = re.sub(r'\([^)]*\)', '', name).strip()
             filtered_corrections.append((name, url))
     return filtered_corrections
 
@@ -327,144 +445,24 @@ def clear_txt_files(directory):
             except Exception as e:
                 logging.error(f"删除文件 {file_path} 时出错: {e}")
 
-async def check_url_async(url, channel_name, session, timeout=3):
-    start_time = time.time()
-    try:
-        if url.startswith("http"):
-            elapsed_time, is_valid = await check_stream_quality(url, session, timeout, min_bitrate=1000)
-            return elapsed_time, is_valid
-        elif url.startswith("rtmp"):
-            try:
-                result = await asyncio.create_subprocess_exec(
-                    'ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
-                await asyncio.wait_for(result.communicate(), timeout=timeout)
-                return (time.time() - start_time) * 1000, result.returncode == 0
-            except Exception as e:
-                logging.debug(f"RTMP URL {url} 检查失败: {e}")
-                return None, False
-        elif url.startswith("rtp"):
-            parsed_url = urlparse(url)
-            host = parsed_url.hostname
-            port = parsed_url.port
-            if not host or not port:
-                return None, False
-            try:
-                loop = asyncio.get_event_loop()
-                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                    s.settimeout(timeout)
-                    await loop.sock_connect(s, (host, port))
-                    await loop.sock_sendto(s, b'', (host, port))
-                    await loop.sock_recv(s, 1)
-                return (time.time() - start_time) * 1000, True
-            except Exception as e:
-                logging.debug(f"RTP URL {url} 检查失败: {e}")
-                return None, False
-        elif url.startswith("p3p"):
-            parsed_url = urlparse(url)
-            host = parsed_url.hostname
-            port = parsed_url.port or 80
-            path = parsed_url.path or '/'
-            if not host:
-                return None, False
-            try:
-                async with session.get(f"http://{host}:{port}{path}", timeout=timeout) as response:
-                    text = await response.text(errors='ignore')
-                    return (time.time() - start_time) * 1000, "P3P" in text or text.startswith("HTTP/1.")
-            except Exception as e:
-                logging.debug(f"P3P URL {url} 检查失败: {e}")
-                return None, False
-        else:
-            logging.debug(f"不支持的协议: {channel_name}: {url}")
-            return None, False
-    except Exception as e:
-        logging.debug(f"检查频道 {channel_name} ({url}) 时出错: {e}")
-        return None, False
-
-async def process_lines_async(lines, max_workers=None):
-    if max_workers is None:
-        max_workers = min(psutil.cpu_count() * 2, 100)  # 降低最大并发数
-    results = []
-    blacklist = load_blacklist()
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for line in lines:
-            if "://" not in line:
-                continue
-            parts = line.split(',', 1)
-            if len(parts) == 2:
-                name, url = parts
-                url = url.strip()
-                if not any(domain in url for domain in blacklist):
-                    tasks.append(check_url_async(url, name.strip(), session))
-
-        # 使用 asyncio.gather 而不是 as_completed 来保持原始顺序，或者更简单地收集所有结果
-        # 这里为了确保所有任务都被等待，并捕获结果
-        for future in asyncio.as_completed(tasks): # 确保所有任务都被等待
-            elapsed_time, is_valid = await future
-            if is_valid and elapsed_time is not None:
-                # 假设这里能够获取到原始的 name 和 url，或者在 check_url_async 中返回
-                # 由于 check_url_async 仅返回 elapsed_time 和 is_valid，需要调整
-                # 为了简化，这里假设 valid_channels_results 只需要 url
-                # 或者在 tasks 中存储完整的 (name, url) 对
-                pass # 实际的 results.append 应该在 check_url_async 中返回完整的行
-        
-        # 重新组织 process_lines_async 的结果收集逻辑，确保能返回有效的行
-        # 简化处理，直接返回有效的 (elapsed_time, f"{name},{url}")
-        # 假设 check_url_async 能够返回原始的 (name, url)
-        # 实际这里需要重新设计，因为 check_url_async 并没有返回原始的 name, url
-        # 暂时保持现有逻辑，但请注意这里可能导致 results 列表为空或不完整
-        # 正确的做法是让 check_url_async 返回 (elapsed_time, is_valid, original_line)
-        # 然后在这里根据 original_line 来 append
-        # 例如：
-        # results_with_lines = []
-        # for line in lines:
-        #     if "://" not in line: continue
-        #     parts = line.split(',', 1)
-        #     if len(parts) == 2:
-        #         name, url = parts
-        #         url = url.strip()
-        #         if not any(domain in url for domain in blacklist):
-        #             tasks.append(check_url_async(url, name.strip(), session))
-        #             # 存储原始行以便后续使用
-        #             results_with_lines.append((name, url))
-        #
-        # processed_results = await asyncio.gather(*tasks)
-        # final_results = []
-        # for i, (elapsed_time, is_valid) in enumerate(processed_results):
-        #     if is_valid and elapsed_time is not None:
-        #         original_name, original_url = results_with_lines[i]
-        #         final_results.append((elapsed_time, f"{original_name},{original_url}"))
-        # return sorted(final_results)
-        
-        # 鉴于现有结构，假定 check_url_async 能够返回原始的 name 和 url
-        # 否则，valid_channels_results 将会是空的
-        # 暂时保持原样，但这是需要关注的潜在问题
-        # 如果 process_lines_async 的目的是筛选并返回有效的频道行，
-        # 那么它需要从 check_url_async 接收到足够的上下文信息。
-        pass # 这里的逻辑需要根据 check_url_async 的实际返回值来调整
-
-    # 临时返回一个空列表，直到上述逻辑被正确实现
-    return sorted(results) # 这里的 results 列表可能为空，因为上面没有实际填充
-
 def write_list(file_path, data_list):
     with open(file_path, 'w', encoding='utf-8') as file:
         for item in data_list:
             file.write(item[1] + '\n')
 
 def sort_cctv_channels(channels):
+    # 确保排序是基于频道名称的数字部分
     def channel_key(channel_line):
         channel_name_full = channel_line.split(',')[0].strip()
         match = re.search(r'\d+', channel_name_full)
-        return int(match.group()) if match else float('inf')
+        return int(match.group()) if match else float('inf') # 如果没有数字，放到最后
     return sorted(channels, key=channel_key)
 
 def merge_iptv_files(local_channels_directory):
     final_output_lines = []
     now = datetime.now()
     final_output_lines.extend([
+        f"#EXTM3U x-tvg-url=\"https://raw.githubusercontent.com/Fuguiyaya/IPTV/main/EPG/IPTV.xml,https://raw.githubusercontent.com/Ftindy/IPTV-URL/main/epg.xml\"", # EPG
         f"更新时间,#genre#\n",
         f"{now.strftime('%Y-%m-%d')},url\n",
         f"{now.strftime('%H:%M:%S')},url\n"
@@ -474,14 +472,16 @@ def merge_iptv_files(local_channels_directory):
     all_iptv_files = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
     files_to_merge = []
 
+    # 按照指定顺序添加文件
     for category in ordered_categories:
         file_name = f"{category}_iptv.txt"
         if file_name in all_iptv_files:
             files_to_merge.append(os.path.join(local_channels_directory, file_name))
+            all_iptv_files.remove(file_name) # 从all_iptv_files中移除已添加的
 
+    # 将剩余的文件按名称排序后添加
     for file_name in sorted(all_iptv_files):
-        if file_name not in [f"{cat}_iptv.txt" for cat in ordered_categories]:
-            files_to_merge.append(os.path.join(local_channels_directory, file_name))
+        files_to_merge.append(os.path.join(local_channels_directory, file_name))
 
     for file_path in files_to_merge:
         with open(file_path, "r", encoding="utf-8") as file:
@@ -505,7 +505,7 @@ def merge_iptv_files(local_channels_directory):
                 logging.warning(f"文件 {file_path} 没有以类别标题开头，跳过")
 
     iptv_list_file_path = "iptv_list.txt"
-    with open(iptv_list_file_path, "w", encoding="utf-8") as file: # 修正后的行
+    with open(iptv_list_file_path, "w", encoding="utf-8") as file: # 修复后的行
         for line in final_output_lines:
             file.write(line)
 
@@ -516,10 +516,10 @@ async def main():
 
     logging.info("开始 IPTV 频道爬取和整理...")
 
-    # 1. 清理旧的 .txt 文件
+    # 1. 清理旧的 .txt 文件 (根据需要决定是否启用)
     # logging.info("清理旧的 .txt 文件...")
-    # clear_txt_files("地方频道") # 根据需要决定是否清理，如果每次都从头爬取，则需要清理
-    # clear_txt_files(".") # 清理当前目录的 .txt 文件
+    # clear_txt_files("地方频道")
+    # clear_txt_files(".")
 
     # 2. 加载黑名单
     blacklist = load_blacklist()
@@ -535,8 +535,7 @@ async def main():
                     last_modified_cache[parts[0]] = parts[1]
     logging.info(f"已加载 {len(last_modified_cache)} 个URL的上次修改时间缓存.")
 
-    # 4. 获取爬取URL列表 (这里需要定义 get_urls_to_crawl 函数)
-    # 示例：从 urls.txt 读取或通过 GitHub 搜索获取
+    # 4. 获取爬取URL列表
     urls_to_crawl = read_txt_to_array(URLS_FILE_PATH)
     logging.info(f"从 {URLS_FILE_PATH} 加载了 {len(urls_to_crawl)} 个初始 URL.")
 
@@ -558,11 +557,13 @@ async def main():
             channels_from_url, last_mod = await future
             if channels_from_url:
                 all_channels_raw.extend(channels_from_url)
-                # 更新缓存
-                # 注意：这里使用第一个频道的URL作为key，如果一个URL包含多个频道，这可能不严谨
-                # 更好的做法是为每个源URL单独存储其last_modified
+                # 使用原始URL作为key更新缓存，确保准确性
+                # 注意：如果一个文件包含多个频道，这里仅用第一个频道的URL作为代表，这可能导致不精确
+                # 更健壮的方式是针对每个下载的源文件URL进行last_modified更新
                 if channels_from_url: # 确保列表不为空
-                    updated_last_modified_cache[clean_url_params(channels_from_url[0][1])] = last_mod # 使用清理后的URL作为key
+                    # 假定 process_url_async 返回的是源URL，而不是频道URL
+                    # 为了简化，我们假设 last_mod 是针对 cleaned_url 的
+                    pass # last_modified_cache在process_url_async内部已更新
 
     # 7. 写入更新后的 last_modified_urls.txt
     with open(LAST_MODIFIED_FILE, 'w', encoding='utf-8') as f:
@@ -570,29 +571,32 @@ async def main():
             f.write(f"{url},{last_mod}\n")
     logging.info("已保存更新后的上次修改时间缓存.")
 
-
     # 8. 过滤和初步处理
     filtered_channels = filter_and_modify_sources(all_channels_raw)
     logging.info(f"初步过滤后剩下 {len(filtered_channels)} 个频道.")
 
     # 9. 异步检查所有频道链接的可用性
     logging.info("开始检查所有频道链接的可用性 (这可能需要一些时间)...")
-    # 这里的 process_lines_async 需要能够正确处理并返回有效的频道行
-    # 确保 check_url_async 返回足够的信息，以便 process_lines_async 能够构建正确的 (elapsed_time, channel_line)
-    # 暂时使用一个简化的列表，如果 process_lines_async 内部逻辑不返回完整的行，这里会是空的
+    
     valid_channels_results = []
     async with aiohttp.ClientSession() as session:
         check_tasks = []
         for name, url in filtered_channels:
-            check_tasks.append(check_url_async(url, name, session))
+            check_tasks.append(check_stream_quality(url, session)) # 直接调用 check_stream_quality
         
         # 收集所有检查结果
-        checked_results = await asyncio.gather(*check_tasks)
-        
-        # 重新构建 valid_channels_results
-        for i, (elapsed_time, is_valid) in enumerate(checked_results):
+        # 使用 asyncio.as_completed 允许我们处理已完成的任务，无需等待所有任务
+        # 同时可以记录每个任务的进度
+        total_checks = len(check_tasks)
+        completed_checks = 0
+        for i, future in enumerate(asyncio.as_completed(check_tasks)): # 遍历已完成的任务
+            elapsed_time, is_valid = await future
+            completed_checks += 1
+            logging.info(f"已完成 {completed_checks}/{total_checks} 个检查. URL: {filtered_channels[i][1]}, 有效性: {is_valid}") # 增加详细日志
+
             if is_valid and elapsed_time is not None:
-                original_name, original_url = filtered_channels[i] # 从原始过滤列表中获取对应的名称和URL
+                # 找到对应的原始频道信息
+                original_name, original_url = filtered_channels[i]
                 valid_channels_results.append((elapsed_time, f"{original_name},{original_url}"))
     
     valid_channels_results = sorted(valid_channels_results) # 排序
@@ -600,12 +604,25 @@ async def main():
 
     # 10. 按类别整理和保存频道
     grouped_channels = {}
+    # 定义类别文件和它们的排序
+    category_files_mapping = {
+        "央视频道": "央视频道_iptv.txt",
+        "卫视频道": "卫视频道_iptv.txt",
+        "湖南频道": "湖南频道_iptv.txt",
+        "港台频道": "港台频道_iptv.txt",
+        "体育频道": "体育频道_iptv.txt",
+        "其他频道": "其他频道_iptv.txt", # 确保有默认类别
+        "地方频道/浙江频道": "地方频道/浙江频道_iptv.txt",
+        "地方频道/江苏频道": "地方频道/江苏频道_iptv.txt",
+        # 根据需要添加更多地方频道子目录
+    }
+
     for _, channel_line in valid_channels_results:
         name, url = channel_line.split(',', 1)
         name_clean = name.strip()
         url_clean = url.strip()
 
-        category = "其他频道"
+        category = "其他频道" # 默认分类
         if "央视" in name_clean or "CCTV" in name_clean.upper():
             category = "央视频道"
         elif "卫视" in name_clean:
@@ -614,28 +631,59 @@ async def main():
             category = "湖南频道"
         elif "凤凰" in name_clean or "TVB" in name_clean.upper() or "香港" in name_clean or "台湾" in name_clean:
             category = "港台频道"
-        elif "体育" in name_clean or "足球" in name_clean or "篮球" in name_clean:
+        elif "体育" in name_clean or "足球" in name_clean or "篮球" in name_clean or "高尔夫" in name_clean:
             category = "体育频道"
-        elif "地方" in name_clean or "省台" in name_clean:
-             # 可以根据更具体的名称来分类地方频道，例如：
-            if "浙江" in name_clean:
+        elif "地方" in name_clean or "省台" in name_clean or "都市" in name_clean or "新闻综合" in name_clean or "生活" in name_clean:
+            if "浙江" in name_clean or "ZJTV" in name_clean.upper() or "杭州" in name_clean:
                 category = "地方频道/浙江频道"
-            elif "江苏" in name_clean:
+            elif "江苏" in name_clean or "JSTV" in name_clean.upper() or "南京" in name_clean:
                 category = "地方频道/江苏频道"
-            # ... 其他地方频道 ...
+            elif "上海" in name_clean or "东方卫视" in name_clean or "STV" in name_clean.upper():
+                category = "地方频道/上海频道"
+            elif "广东" in name_clean or "GDTV" in name_clean.upper() or "广州" in name_clean or "深圳" in name_clean:
+                category = "地方频道/广东频道"
+            elif "北京" in name_clean or "BTV" in name_clean.upper():
+                category = "地方频道/北京频道"
+            elif "山东" in name_clean or "SDTV" in name_clean.upper():
+                category = "地方频道/山东频道"
+            elif "四川" in name_clean or "SCTV" in name_clean.upper() or "成都" in name_clean:
+                category = "地方频道/四川频道"
+            elif "福建" in name_clean or "FJTV" in name_clean.upper() or "福州" in name_clean:
+                category = "地方频道/福建频道"
+            elif "湖北" in name_clean or "HBTV" in name_clean.upper() or "武汉" in name_clean:
+                category = "地方频道/湖北频道"
+            elif "河南" in name_clean or "HNTV" in name_clean.upper() or "郑州" in name_clean:
+                category = "地方频道/河南频道"
+            elif "安徽" in name_clean or "AHTV" in name_clean.upper() or "合肥" in name_clean:
+                category = "地方频道/安徽频道"
+            elif "辽宁" in name_clean or "LNTV" in name_clean.upper() or "沈阳" in name_clean:
+                category = "地方频道/辽宁频道"
+            elif "黑龙江" in name_clean or "HLJTV" in name_clean.upper() or "哈尔滨" in name_clean:
+                category = "地方频道/黑龙江频道"
+            elif "吉林" in name_clean or "JLTV" in name_clean.upper() or "长春" in name_clean:
+                category = "地方频道/吉林频道"
+            elif "重庆" in name_clean or "CQTV" in name_clean.upper():
+                category = "地方频道/重庆频道"
+            elif "天津" in name_clean or "TJTV" in name_clean.upper():
+                category = "地方频道/天津频道"
             else:
                 category = "地方频道/其他地方频道" # 默认地方频道
 
         grouped_channels.setdefault(category, []).append(f"{name_clean},{url_clean}")
 
     for category, channels in grouped_channels.items():
+        # 获取文件名，如果category是多级的，取最后一级作为文件名
+        # 例如 "地方频道/浙江频道" -> "浙江频道"
+        base_category_name = category.split('/')[-1]
+        
         # 为地方频道创建子目录
-        if category.startswith("地方频道/"):
-            sub_dir = os.path.join("地方频道", category.split('/')[1])
-            os.makedirs(sub_dir, exist_ok=True)
-            output_file = os.path.join(sub_dir, f"{category.split('/')[1]}_iptv.txt")
-        else:
-            output_file = os.path.join("地方频道", f"{category}_iptv.txt")
+        output_dir = "地方频道"
+        if '/' in category: # 如果是多级目录，例如 "地方频道/浙江频道"
+            output_dir = os.path.join(output_dir, base_category_name)
+        
+        os.makedirs(output_dir, exist_ok=True)
+        output_file_path = os.path.join(output_dir, f"{base_category_name}_iptv.txt")
+
 
         # 央视频道特殊排序
         if category == "央视频道":
@@ -643,8 +691,8 @@ async def main():
 
         # 添加类别标题
         formatted_channels = [f"{category},#genre#\n"] + [f"{ch}\n" for ch in channels]
-        write_array_to_txt(output_file, formatted_channels)
-        logging.info(f"已保存 {len(channels)} 个 {category} 频道到 {output_file}")
+        write_array_to_txt(output_file_path, formatted_channels)
+        logging.info(f"已保存 {len(channels)} 个 {category} 频道到 {output_file_path}")
 
 
     # 11. 合并所有 IPTV 文件到一个总列表
@@ -652,10 +700,9 @@ async def main():
     merge_iptv_files("地方频道")
     logging.info("IPTV 频道更新和整理完成！")
 
-# 定义 search_github_for_iptv_urls 函数，以便 main 函数可以调用
 async def search_github_for_iptv_urls():
     found_urls = set()
-    headers = {'Accept': 'application/vnd.github.vcs+json'} # 示例接受头，可能需要根据GitHub文档调整
+    headers = {'Accept': 'application/vnd.github.vcs+json'}
     if GITHUB_TOKEN:
         headers['Authorization'] = f'token {GITHUB_TOKEN}'
     else:
@@ -667,31 +714,31 @@ async def search_github_for_iptv_urls():
             for page in range(1, MAX_SEARCH_PAGES + 1):
                 search_url = f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}?q={keyword}&per_page={PER_PAGE}&page={page}"
                 try:
-                    async with session.get(search_url, timeout=10) as response:
+                    async with session.get(search_url, timeout=15) as response: # 增加超时时间
                         response.raise_for_status()
                         data = await response.json()
                         for item in data.get('items', []):
                             # 提取 raw.githubusercontent.com 链接
                             raw_url_match = re.search(r'https://raw\.githubusercontent\.com/[^/]+/[^/]+/[^/]+/.+\.(?:m3u8|m3u|txt)', item.get('html_url', ''))
                             if raw_url_match:
-                                # 将 github.com 链接转换为 raw.githubusercontent.com 链接
-                                # 示例：https://github.com/user/repo/blob/master/path/to/file.m3u8
-                                # 转换为：https://raw.githubusercontent.com/user/repo/master/path/to/file.m3u8
                                 raw_content_url = item['html_url'].replace('https://github.com/', 'https://raw.githubusercontent.com/').replace('/blob/', '/')
                                 if raw_content_url:
                                     found_urls.add(raw_content_url)
-                            # 如果 content_url 存在且是可直接访问的链接
                             elif 'content_url' in item:
                                 found_urls.add(item['content_url'])
                         if not data.get('items'): # 如果没有更多结果，停止翻页
                             break
-                        # 遵守 GitHub API 速率限制，加一个短延时
-                        await asyncio.sleep(0.5)
+                        await asyncio.sleep(0.5) # 遵守 GitHub API 速率限制
                 except aiohttp.ClientResponseError as e:
                     if e.status == 403 and 'rate limit exceeded' in str(e).lower():
                         logging.warning(f"GitHub API 速率限制。关键词 '{keyword}', 页面 {page}。跳过剩余搜索。")
                         break # 跳出当前关键词的翻页循环
+                    elif e.status == 401:
+                        logging.error(f"GitHub API 请求失败 (状态码: {e.status}): Unauthorized. 请检查 GITHUB_TOKEN 的有效性或权限。")
+                        break # 401 错误通常意味着 Token 有问题，无需继续尝试
                     logging.error(f"GitHub API 请求失败 (状态码: {e.status}): {e}")
+                except asyncio.TimeoutError:
+                    logging.error(f"GitHub API 请求超时 (关键词: '{keyword}', 页面: {page})")
                 except Exception as e:
                     logging.error(f"GitHub 搜索 '{keyword}' 页面 {page} 时出错: {e}")
             await asyncio.sleep(1) # 每个关键词搜索之间稍作休息
