@@ -1,1 +1,5 @@
 甘肃频道,#genre#
+舟曲新闻,http://pili-live-hls.hfmt.net/gntv/zqtv.m3u8
+甘南综合,http://pili-live-hls.hfmt.net/gntv/gnhytv.m3u8
+玛曲综合,http://pili-live-hls.hfmt.net/gntv/mqtv.m3u8
+卓尼综合,http://pili-live-hls.hfmt.net/gntv/zntv.m3u8
