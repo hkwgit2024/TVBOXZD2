@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: 检出代码
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: 设置 Python 环境
       uses: actions/setup-python@v4
@@ -27,7 +27,7 @@ jobs:
       run: python vt.py
 
     - name: 上传测试日志
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: stream_logs
         path: stream_log.txt
