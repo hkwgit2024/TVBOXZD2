@@ -1,3 +1,41 @@
 国外频道,#genre#
-ABBA  The winner takes it all,https://hooksswr-a.akamaihd.net/99005/M0001410.012.mp3
+CNN,http://38.96.178.201:80/live/CNNHD/index.m3u8
+ABC News,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
+CNA ,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+CNA,https://raw.githubusercontent.com/FunctionError/Logos/main/PiratesTv/master.m3u8
+CNBC,http://fl5.moveonjoy.com/CNBC/index.m3u8
+ABC News Live 9,https://abcnews-streams.akamaized.net/hls/live/2023568/abcnews9/master.m3u8
+CNA ,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+阿里郎,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b2256000_sleng.m3u8
 CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+ABC News (720p),https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
+ABC News Live 8,https://abcnews-streams.akamaized.net/hls/live/2023567/abcnews8/master.m3u8
+CNBC,http://37.27.111.214:8080/live/102/hls.m3u8
+CNBC,http://friedbatter.gotdns.ch:80/play/live.php
+CNA,https://d2e1asnsl7br7b.cloudfront.net/4c152bfc7ad2463d928bfbec0990eaeb/index.m3u8
+CNA,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u8
+CNA,https://d2e1asnsl7br7b.cloudfront.net/4e4e0baa3d7b4c129b4f5655219e083d/index.m3u8
+CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+ABC News,http://38.96.178.201:80/live/ABCHD/index.m3u8
+CNN,http://kstv.us:8080/live/Wzt43zDP8x/2355011455/47760.ts
+ABC News,http://41.205.93.154/ABC/index.m3u8
+CNN Indonesia,http://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_b384000_sleng.m3u8
+CNN,http://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w2069650134_b280000_sleng.m3u8
+CNN INDONESIA,http://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w2069650134_b280000_sleng.m3u8
+阿里郎,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+ABC News Live,https://wikinew.newkso.ru/wiki/ustvabcnews/mono.m3u8
+CNA,https://live1.mediadesk.al/cnatvlive.m3u8
+CNA,https://tglmp03.akamaized.net/out/v1/43856347987b4da3890360b0d18b5dc5/manifest.mpd
+CNN Indonesia,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist.m3u8
+CNN Indonesia ,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w1759219752_b280000_sleng.m3u8
+CNN,https://turnerlive.warnermediacdn.com/hls/live/586495/cnngo/cnn_slate/VIDEO_0_3564000.m3u8
+CNBC INDONESIA,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/index.m3u8
+CNN INDONESIA,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/chunklist_w412735966_b384000_sleng.m3u8
+CNN INDONESIA,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/index.m3u8
+CNBC INDONESIA,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/chunklist_w1028346365_b384000_sleng.m3u8
+CNBC,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/eroz_brebes.m3u8
+CNBC INDONESIA,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/chunklist_w1352897452_b280000_sleng.m3u8
+CNA,https://rest-as.ott.kaltura.com/api_v3/service/assetFile/action/playManifest/partnerId/147/assetId/197985/assetType/media/assetFileId/5754149/contextType/PLAYBACK/isAltUrl/False/a.mpd
+CNN Indonesia,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/playlist.m3u8
+CNN INDONESIA,https://cdnjkt913.transvision.co.id:1000/live/master/5/4028c685651d7bcc01651f0e4ce10098/manifest.mpd
+ABC NEWS,https://ghp.ci/https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV24.m3u8

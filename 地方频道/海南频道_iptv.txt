@@ -1,1 +1,14 @@
 海南频道,#genre#
+海口二套生活娱乐频道,http://124.225.35.97:16080/live/tv2402.m3u8
+海口三套城乡经济频道,http://124.225.35.97:16080/live/tv2403.m3u8
+海口一套综合频道,http://124.225.35.97:16080/live/tv2401.m3u8
+海南新闻,http://ls.qingting.fm/live/1861.m3u8
+海南少儿,http://vapi.91kds.cc/live1/hitv.m3u8
+海南文旅,http://vapi.91kds.cc/live1/hitv.m3u8
+海南新闻,https://satellitepull.cnr.cn/live/wxhainxwgb/playlist.m3u8
+海南新闻,http://satellitepull.cnr.cn/live/wxhainxwgb/playlist.m3u8
+海南自贸,http://nn.7x9d.cn/地方台8563/海南.php
+海南文旅,http://nn.7x9d.cn/地方台8563/海南.php
+海南公共,http://nn.7x9d.cn/地方台8563/海南.php
+海南少儿,http://nn.7x9d.cn/地方台8563/海南.php
+海南新闻,http://nn.7x9d.cn/地方台8563/海南.php
