@@ -1,0 +1,52 @@
+name: Live Stream Test
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  test_streams:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        # Important: Fetch history to allow commits
+        fetch-depth: 0 # Fetches all history for the repository
+
+    - name: Set up Python environment
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+        sudo apt-get update && sudo apt-get install -y ffmpeg
+
+    - name: Run live stream test
+      run: python vt.py
+
+    - name: Commit and push successful streams
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add successful_streams.txt
+        # Check if there are any changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to successful_streams.txt to commit."
+        else
+          git commit -m "Update successful_streams.txt with latest test results"
+          git push
+        fi
+      env:
+        # Use a token with write access. GITHUB_TOKEN usually works.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload full test log (Optional, for debugging)
+      uses: actions/upload-artifact@v4
+      with:
+        name: stream_logs
+        path: stream_log.txt
