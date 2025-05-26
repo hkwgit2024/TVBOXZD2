@@ -1,4 +1,4 @@
-#g
+#gr
 import os
 import re
 import subprocess
@@ -47,11 +47,76 @@ for env_var, name in [
 GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
 GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
 
+# 加载配置文件
+def load_config(session):
+    raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{CONFIG_PATH_IN_REPO}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    try:
+        response = session.get(raw_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return yaml.safe_load(response.text)
+    except yaml.YAMLError as e:
+        logging.error(f"错误：远程配置文件 '{CONFIG_PATH_IN_REPO}' 中的 YAML 无效：{e}")
+        exit(1)
+    except requests.exceptions.RequestException as e:
+        logging.error(f"从 GitHub 获取 {CONFIG_PATH_IN_REPO} 发生错误：{e}")
+        exit(1)
+    except Exception as e:
+        logging.error(f"加载远程配置文件 '{CONFIG_PATH_IN_REPO}' 发生错误：{e}")
+        exit(1)
+
+# 初始化 Requests 会话（使用默认值）
+session = requests.Session()
+session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/100.0.4896.127"})
+retry_strategy = Retry(
+    total=3,  # 默认值
+    backoff_factor=1.5,  # 默认值
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(pool_connections=50, pool_maxsize=50, max_retries=retry_strategy)  # 默认值
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+# 加载 CONFIG
+CONFIG = load_config(session)
+
+# 更新会话配置（使用 CONFIG 中的值）
+retry_strategy = Retry(
+    total=CONFIG.get('requests_retry_total', 3),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(
+    pool_connections=CONFIG.get('requests_pool_size', 50),
+    pool_maxsize=CONFIG.get('requests_pool_size', 50),
+    max_retries=retry_strategy
+)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+# 配置参数
+GITHUB_API_BASE_URL = "https://api.github.com"
+SEARCH_CODE_ENDPOINT = "/search/code"
+SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
+PER_PAGE = CONFIG.get('per_page', 100)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 60)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 60)
+CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 30)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 5)
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
+NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
+URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
+CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
+ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
+
 # 异步 HTTP 客户端会话
 async def create_aiohttp_session():
     return aiohttp.ClientSession(
         headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/100.0.4896.127"},
-        timeout=aiohttp.ClientTimeout(total=CONFIG.get('channel_check_timeout', 5))
+        timeout=aiohttp.ClientTimeout(total=CHANNEL_CHECK_TIMEOUT)
     )
 
 # 从 GitHub 获取文件内容
@@ -59,7 +124,7 @@ def fetch_from_github(file_path_in_repo, session):
     raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = session.get(raw_url, headers=headers, timeout=CONFIG.get('github_api_timeout', 10))
+        response = session.get(raw_url, headers=headers, timeout=GITHUB_API_TIMEOUT)
         response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
@@ -101,52 +166,6 @@ def save_to_github(file_path_in_repo, content, commit_message, session):
     except requests.exceptions.RequestException as e:
         logging.error(f"将 {file_path_in_repo} 保存到 GitHub 发生错误：{e}")
         return False
-
-# 加载配置文件
-def load_config(session):
-    content = fetch_from_github(CONFIG_PATH_IN_REPO, session)
-    if content:
-        try:
-            return yaml.safe_load(content)
-        except yaml.YAMLError as e:
-            logging.error(f"错误：远程配置文件 '{CONFIG_PATH_IN_REPO}' 中的 YAML 无效：{e}")
-            exit(1)
-    logging.error(f"无法从 GitHub 的 '{CONFIG_PATH_IN_REPO}' 加载配置。")
-    exit(1)
-
-# 初始化 Requests 会话
-session = requests.Session()
-session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/100.0.4896.127"})
-retry_strategy = Retry(
-    total=CONFIG.get('requests_retry_total', 3),
-    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
-    status_forcelist=[429, 500, 502, 503, 504],
-    allowed_methods=["HEAD", "GET", "OPTIONS"]
-)
-adapter = HTTPAdapter(
-    pool_connections=CONFIG.get('requests_pool_size', 50),
-    pool_maxsize=CONFIG.get('requests_pool_size', 50),
-    max_retries=retry_strategy
-)
-session.mount("http://", adapter)
-session.mount("https://", adapter)
-
-# 加载配置
-CONFIG = load_config(session)
-GITHUB_API_BASE_URL = "https://api.github.com"
-SEARCH_CODE_ENDPOINT = "/search/code"
-SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
-PER_PAGE = CONFIG.get('per_page', 100)
-MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 60)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 60)
-CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 30)
-CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 5)
-MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
-NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
-URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
-CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
-ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
 
 # 动态生成年份关键词
 def generate_dynamic_keywords():
