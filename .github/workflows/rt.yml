@@ -2,51 +2,55 @@ name: Live Stream Test
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Allows manual triggering
+    - cron: '0 */6 * * *'  # 每 6 小时运行一次
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   test_streams:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: 检出代码
       uses: actions/checkout@v4
       with:
-        # Important: Fetch history to allow commits
-        fetch-depth: 0 # Fetches all history for the repository
+        # 关键：获取完整的历史记录，以便能够提交更改
+        fetch-depth: 0
 
-    - name: Set up Python environment
+    - name: 设置 Python 环境
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: 安装依赖和FFmpeg
       run: |
         pip install requests
         sudo apt-get update && sudo apt-get install -y ffmpeg
 
-    - name: Run live stream test
+    - name: 运行直播源测试脚本
       run: python vt.py
 
-    - name: Commit and push successful streams
+    - name: 提交并推送成功的直播源列表
+      # 只有当 successful_streams.txt 有内容更新时才进行提交
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git add successful_streams.txt
-        # Check if there are any changes to commit
+        # 检查是否有实际更改，避免空提交
         if git diff --staged --quiet; then
-          echo "No changes to successful_streams.txt to commit."
+          echo "successful_streams.txt 没有变化，跳过提交。"
         else
-          git commit -m "Update successful_streams.txt with latest test results"
+          git commit -m "chore: 更新 successful_streams.txt - 自动测试结果"
           git push
+          echo "successful_streams.txt 已更新并推送。"
         fi
       env:
-        # Use a token with write access. GITHUB_TOKEN usually works.
+        # GITHUB_TOKEN 是 GitHub Actions 自动提供的，通常具有写入权限
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload full test log (Optional, for debugging)
+    - name: 上传完整测试日志 (作为 Artifact)
       uses: actions/upload-artifact@v4
       with:
         name: stream_logs
         path: stream_log.txt
+        # 保留 artifact 7 天，可根据需要调整
+        retention-days: 7
