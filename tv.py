@@ -15,20 +15,17 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import yaml
 
-# 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_TOKEN = os.getenv('BOT')
 REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
 REPO_NAME = os.getenv('GITHUB_REPO_NAME')
-CONFIG_PATH_IN_REPO = os.getenv('GITHUB_CONFIG_PATH') 
-URLS_PATH_IN_REPO = os.getenv('GITHUB_URLS_PATH')     
-URL_STATES_PATH_IN_REPO = os.getenv('GITHUB_URL_STATES_PATH') 
+CONFIG_PATH_IN_REPO = os.getenv('GITHUB_CONFIG_PATH')
+URLS_PATH_IN_REPO = os.getenv('GITHUB_URLS_PATH')
+URL_STATES_PATH_IN_REPO = os.getenv('GITHUB_URL_STATES_PATH')
 
-# --- 检查关键环境变量是否设置 ---
 if not GITHUB_TOKEN:
-    logging.error("错误：环境变量 'GITHUB_TOKEN' 未设置。请确保已配置 GitHub Actions Secret 或本地环境变量。")
+    logging.error("错误：环境变量 'BOT' 未设置。请确保已配置 GitHub Actions Secret 或本地环境变量。")
     exit(1)
 if not REPO_OWNER:
     logging.error("错误：环境变量 'GITHUB_REPO_OWNER' 未设置。请指定私有仓库的所有者。")
@@ -46,19 +43,10 @@ if not URL_STATES_PATH_IN_REPO:
     logging.error("错误：环境变量 'GITHUB_URL_STATES_PATH' 未设置。请指定 url_states.json 在私有仓库中的路径。")
     exit(1)
 
-
-# 根据环境变量构建 GitHub URL
-GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main" # 假设是 'main' 分支
+GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
 GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
 
-# --- GitHub API 辅助函数（与之前相同） ---
 def fetch_from_github(file_path_in_repo):
-    """从私有 GitHub 仓库获取文件内容。"""
-    # 这里的检查实际上已经在脚本启动时完成了，但保留以增加函数独立性
-    if not REPO_OWNER or not REPO_NAME or not GITHUB_TOKEN:
-        logging.error("GitHub 仓库详情或 token 未设置。无法获取远程文件。")
-        return None
-
     raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
@@ -71,9 +59,6 @@ def fetch_from_github(file_path_in_repo):
         return None
 
 def get_current_sha(file_path_in_repo):
-    """获取仓库中当前文件的 SHA，更新时需要。"""
-    if not REPO_OWNER or not REPO_NAME or not GITHUB_TOKEN:
-        return None
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
@@ -85,11 +70,6 @@ def get_current_sha(file_path_in_repo):
         return None
 
 def save_to_github(file_path_in_repo, content, commit_message):
-    """将内容保存到私有 GitHub 仓库中的文件（创建或更新）。"""
-    if not REPO_OWNER or not REPO_NAME or not GITHUB_TOKEN:
-        logging.error("GitHub 仓库详情或 token 未设置。无法保存远程文件。")
-        return False
-
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     sha = get_current_sha(file_path_in_repo)
     
@@ -104,11 +84,11 @@ def save_to_github(file_path_in_repo, content, commit_message):
     payload = {
         "message": commit_message,
         "content": encoded_content,
-        "branch": "main" # 或者你的默认分支，例如 "main"
+        "branch": "main"
     }
     
     if sha:
-        payload["sha"] = sha # 如果是更新现有文件，包含 SHA
+        payload["sha"] = sha
         logging.info(f"正在更新 GitHub 上现有文件 {file_path_in_repo}。")
     else:
         logging.info(f"GitHub 上未找到文件 {file_path_in_repo}，正在创建新文件。")
@@ -123,10 +103,8 @@ def save_to_github(file_path_in_repo, content, commit_message):
         logging.error(f"GitHub API 响应：{response.text if 'response' in locals() else 'N/A'}")
         return False
 
-# --- 配置加载 ---
 def load_config():
-    """从 GitHub 远程 YAML 文件加载配置。"""
-    content = fetch_from_github(CONFIG_PATH_IN_REPO) # 使用环境变量获取的路径
+    content = fetch_from_github(CONFIG_PATH_IN_REPO)
     if content:
         try:
             return yaml.safe_load(content)
@@ -139,10 +117,8 @@ def load_config():
     logging.error(f"无法从 GitHub 的 '{CONFIG_PATH_IN_REPO}' 加载配置。")
     exit(1)
 
-# 在脚本启动时尽早加载配置
 CONFIG = load_config()
 
-# --- 常量和配置（现在从 CONFIG 加载） ---
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
@@ -162,7 +138,6 @@ CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 
 ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
 
-# 全局请求会话
 session = requests.Session()
 session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
 
@@ -177,10 +152,7 @@ adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_re
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
-# --- 辅助函数（与之前相同，但远程文件操作函数内部使用环境变量获取的路径） ---
-
 def read_txt_to_array_local(file_name):
-    """从 TXT 文件读取内容，每行一个元素。"""
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
             lines = file.readlines()
@@ -194,7 +166,6 @@ def read_txt_to_array_local(file_name):
         return []
 
 def write_array_to_txt_local(file_name, data_array):
-    """将数组内容写入 TXT 文件，每行一个元素。"""
     try:
         with open(file_name, 'w', encoding='utf-8') as file:
             for item in data_array:
@@ -204,13 +175,11 @@ def write_array_to_txt_local(file_name, data_array):
         logging.error(f"写入文件 '{file_name}' 发生错误：{e}")
 
 def get_url_file_extension(url):
-    """从 URL 获取文件扩展名。"""
     parsed_url = urlparse(url)
     extension = os.path.splitext(parsed_url.path)[1].lower()
     return extension
 
 def convert_m3u_to_txt(m3u_content):
-    """将 m3u/m3u8 内容转换为 TXT 格式的频道名称和地址。"""
     lines = m3u_content.split('\n')
     txt_lines = []
     channel_name = ""
@@ -227,40 +196,34 @@ def convert_m3u_to_txt(m3u_content):
         elif line and not line.startswith('#'):
             if channel_name:
                 txt_lines.append(f"{channel_name},{line}")
-            channel_name = "" # 找到 URL 后重置频道名称
+            channel_name = ""
     return '\n'.join(txt_lines)
 
 def clean_url_params(url):
-    """清除 URL 中的查询参数和片段标识符，只保留基本 URL。"""
     parsed_url = urlparse(url)
     return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
 
 def load_url_states_remote():
-    """从 GitHub 远程 JSON 文件加载 URL 状态。"""
-    content = fetch_from_github(URL_STATES_PATH_IN_REPO) # 使用环境变量获取的路径
+    content = fetch_from_github(URL_STATES_PATH_IN_REPO)
     if content:
         try:
             return json.loads(content)
         except json.JSONDecodeError as e:
             logging.error(f"解码远程 '{URL_STATES_PATH_IN_REPO}' 中的 JSON 发生错误：{e}。将从空状态开始。")
             return {}
-    return {} # 如果文件未找到或获取失败，返回空
+    return {}
 
 def save_url_states_remote(url_states):
-    """将 URL 状态保存到 GitHub 远程 JSON 文件。"""
     try:
         content = json.dumps(url_states, indent=4, ensure_ascii=False)
-        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态") # 使用环境变量获取的路径
+        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
         if not success:
              logging.error(f"将远程 URL 状态保存到 '{URL_STATES_PATH_IN_REPO}' 发生错误。")
     except Exception as e:
         logging.error(f"将 URL 状态保存到远程 '{URL_STATES_PATH_IN_REPO}' 发生错误：{e}")
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
-def fetch_url_content_with_retry(url, url_states): # 移除了 url_states_file_path 参数，因为保存操作在函数内部直接调用远程函数
-    """
-    使用带有重试的请求获取 URL 内容，支持条件请求和内容哈希以进行更新检查。
-    """
+def fetch_url_content_with_retry(url, url_states):
     logging.info(f"尝试获取 URL：{url} (超时：{CHANNEL_FETCH_TIMEOUT}s)")
 
     headers = {}
@@ -277,14 +240,14 @@ def fetch_url_content_with_retry(url, url_states): # 移除了 url_states_file_p
 
         if response.status_code == 304:
             logging.info(f"URL 内容 {url} 未修改 (304)。跳过下载。")
-            return None  # 表示没有新内容
+            return None
 
         content = response.text
         content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
         if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
             logging.info(f"URL 内容 {url} 基于哈希是相同的。跳过下载。")
-            return None # 表示没有新内容
+            return None
 
         url_states[url] = {
             'etag': response.headers.get('ETag'),
@@ -292,7 +255,7 @@ def fetch_url_content_with_retry(url, url_states): # 移除了 url_states_file_p
             'content_hash': content_hash,
             'last_checked': datetime.now().isoformat()
         }
-        save_url_states_remote(url_states) # 保存状态到远程
+        save_url_states_remote(url_states)
 
         logging.info(f"成功获取 URL：{url} 的新内容。内容已更新。")
         return content
@@ -305,14 +268,12 @@ def fetch_url_content_with_retry(url, url_states): # 移除了 url_states_file_p
         return None
 
 
-def extract_channels_from_url(url, url_states): # 移除了 url_states_file_path 参数
-    """从给定 URL 获取并提取频道名称/URL 对。"""
+def extract_channels_from_url(url, url_states):
     extracted_channels = []
     try:
-        # fetch_url_content_with_retry 内部会处理远程状态保存
         text = fetch_url_content_with_retry(url, url_states)
-        if text is None: # 内容未修改或错误
-            return [] # 如果没有新内容或错误，返回空列表
+        if text is None:
+            return []
 
         if get_url_file_extension(url) in [".m3u", ".m3u8"]:
             text = convert_m3u_to_txt(text)
@@ -344,11 +305,6 @@ def extract_channels_from_url(url, url_states): # 移除了 url_states_file_path
     return extracted_channels
 
 def pre_screen_url(url):
-    """
-    预筛选 URL，排除明显无效或不相关的链接。
-    如果 URL 通过预筛选，返回 True，否则返回 False。
-    """
-    # 逻辑与之前相同
     if not isinstance(url, str) or not url:
         return False
 
@@ -374,8 +330,6 @@ def pre_screen_url(url):
 
 
 def filter_and_modify_channels(channels):
-    """筛选和修改频道名称和 URL，并执行预筛选。"""
-    # 逻辑与之前相同
     filtered_channels = []
     pre_screened_count = 0
     for name, url in channels:
@@ -399,8 +353,6 @@ def filter_and_modify_channels(channels):
     return filtered_channels
 
 def clear_directory_txt_files(directory):
-    """删除指定目录中所有 TXT 文件。"""
-    # 逻辑与之前相同
     for filename in os.listdir(directory):
         if filename.endswith('.txt'):
             file_path = os.path.join(directory, filename)
@@ -410,7 +362,6 @@ def clear_directory_txt_files(directory):
             except Exception as e:
                 logging.error(f"删除文件 {file_path} 发生错误：{e}")
 
-# --- URL 有效性检查函数（与之前相同） ---
 def check_http_url(url, timeout):
     try:
         response = session.head(url, timeout=timeout, allow_redirects=True)
@@ -604,17 +555,14 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                 logging.warning(f"文件 {file_path} 未以类别标题开头。跳过。")
 
     iptv_list_file_path = output_file_name
-    with open(iptv_list_file_path, "w", encoding="utf-8") as iptv_list_file:
+    with open(iptv_list_file_path, "w", encoding='utf-8') as iptv_list_file:
         iptv_list_file.writelines(final_output_lines)
 
     logging.info(f"\n所有区域频道列表文件已合并。输出已保存到：{iptv_list_file_path}")
 
 def auto_discover_github_urls(urls_file_path_remote, github_token):
-    """
-    自动在 GitHub 上搜索公共 IPTV 源 URL，并更新远程 urls.txt 文件。
-    """
     if not github_token:
-        logging.warning("环境变量 'GITHUB_TOKEN' 未设置。跳过 GitHub URL 自动发现。")
+        logging.warning("环境变量 'BOT' 未设置。跳过 GitHub URL 自动发现。")
         return
 
     existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
@@ -726,38 +674,18 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
 
 def main():
-    # 移除了本地 config 目录的创建，因为现在都是远程文件
-
-    # --- 启动时的调试日志 ---
-    # 这些检查已经在脚本顶部完成，以确保在任何函数调用之前环境变量都已设置。
-    # 这里可以保留，但它们是冗余的，除非你想在 main 函数内部重复检查。
-    # if GITHUB_TOKEN:
-    #     logging.info("环境变量 'GITHUB_TOKEN' 已设置。")
-    # else:
-    #     logging.error("环境变量 'GITHUB_TOKEN' 未设置！请检查 GitHub Actions 工作流配置。")
-    
-    # if not REPO_OWNER or not REPO_NAME:
-    #     logging.error("环境变量 GITHUB_REPO_OWNER 或 GITHUB_REPO_NAME 未设置。远程操作将失败。")
-    #     return
-    # --- 调试日志结束 ---
-
-    # 1. 自动发现 GitHub URL 并更新 urls.txt (远程)
     auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
 
-    # 2. 从 urls.txt 读取要处理的 URL (远程)
     urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
     if not urls:
         logging.warning(f"在远程 '{URLS_PATH_IN_REPO}' 中未找到 URL，脚本将提前退出。")
         return
 
-    # 加载现有 URL 状态 (远程)
     url_states = load_url_states_remote()
     logging.info(f"已加载 {len(url_states)} 个历史 URL 状态。")
 
-    # 3. 处理来自远程 config/urls.txt 的所有频道列表
     all_extracted_channels = set()
-    with ThreadPoolExecutor(max_workers=5) as executor: # 用于获取初始 M3U/TXT 文件
-        # extract_channels_from_url 不再需要 url_states_file_path 参数
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
         for future in as_completed(future_to_url):
             url = future_to_url[future]
@@ -768,33 +696,27 @@ def main():
             except Exception as exc:
                 logging.error(f"处理源 '{url}' 时发生异常：{exc}")
 
-    # 保存 URL 状态（远程），确保即使脚本稍后中断，状态也能保存
     save_url_states_remote(url_states)
 
-    # 将集合转换回列表以进行过滤
     all_extracted_channels_list = list(all_extracted_channels)
     logging.info(f"\n从所有源提取了 {len(all_extracted_channels_list)} 个原始频道。")
 
-    # 4. 过滤和清理频道名称
     filtered_channels = filter_and_modify_channels(all_extracted_channels_list)
     unique_filtered_channels = list(set(filtered_channels))
     unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
 
     logging.info(f"\n过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
 
-    # 5. 多线程频道有效性和速度检查
     logging.info("正在启动多线程频道有效性和速度检测...")
     valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
     logging.info(f"有效且响应的频道数量：{len(valid_channels_with_speed)}")
 
-    # 将带速度的频道写入 iptv_speed.txt (本地临时文件)
     iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
     write_sorted_channels_to_file(iptv_speed_file_path, valid_channels_with_speed)
     for elapsed_time, result in valid_channels_with_speed:
         channel_name, channel_url = result.split(',', 1)
         logging.debug(f"检查成功：{channel_name},{channel_url} 响应时间：{elapsed_time:.0f} 毫秒")
 
-    # 6. 处理区域频道和模板（使用本地文件作为模板和输出）
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
     os.makedirs(local_channels_directory, exist_ok=True)
     clear_directory_txt_files(local_channels_directory)
@@ -831,11 +753,9 @@ def main():
                 f.write(channel + '\n')
         logging.info(f"频道列表已写入：'{template_name}_iptv.txt'，包含 {len(current_template_matched_channels)} 个频道。")
 
-    # 7. 合并所有 IPTV 文件 (本地输出)
     final_iptv_list_output_file = "iptv_list.txt"
     merge_local_channel_files(local_channels_directory, final_iptv_list_output_file)
 
-    # 可选：将最终的 iptv_list.txt 推送到远程仓库
     try:
         with open(final_iptv_list_output_file, "r", encoding="utf-8") as f:
             final_iptv_content = f.read()
@@ -844,7 +764,6 @@ def main():
     except Exception as e:
         logging.error(f"无法将 {final_iptv_list_output_file} 推送到 GitHub：{e}")
 
-    # 8. 查找不匹配的频道 (本地输出)
     unmatched_channels_list = []
     for channel_line in channels_for_matching:
         channel_name = channel_line.split(',', 1)[0].strip()
@@ -857,7 +776,6 @@ def main():
             f.write(channel_line.split(',')[0].strip() + '\n')
     logging.info(f"\n已保存不匹配但已检测到的频道列表到：'{unmatched_output_file_path}'，总共 {len(unmatched_channels_list)} 个频道。")
 
-    # 清理临时文件 (本地)
     try:
         if os.path.exists('iptv.txt'):
             os.remove('iptv.txt')
