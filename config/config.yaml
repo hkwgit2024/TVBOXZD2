@@ -18,7 +18,7 @@ search_keywords:
   - "playlist.m3u8"
   - "channels.txt" # 很多直播源列表是纯文本格式
   - "epg.pw" # 这是一个提供EPG和直播源的网站，其链接可能出现在repo中
-  - "raw.githubusercontent.com m3u" # 专门搜索raw链接
+  - "raw.bgithub.xyz m3u" # 专门搜索raw链接
 
   # 中文关键词 (强烈推荐，因为很多国内源用中文描述)
   - "直播源"
@@ -43,8 +43,8 @@ search_keywords:
 # 其他配置（保持不变或根据你的需求调整）
 per_page: 100
 max_search_pages: 5
-github_api_timeout: 20
-github_api_retry_wait: 10
+github_api_timeout: 38
+github_api_retry_wait: 48
 channel_fetch_timeout: 15
 channel_check_timeout: 6
 max_channel_urls_per_group: 200
@@ -164,8 +164,8 @@ url_pre_screening:
     - "http://.*\\.js$"  # 排除JS文件
     - "http://.*\\.html$" # 排除HTML页面 (除非是直接的M3U8下载页)
     - "github\\.com" # 排除github页面链接，只保留raw链接
-    - "raw.githubusercontent.com/.*\\.md$" # 排除Markdown文件
-    - "raw.githubusercontent.com/.*\\.json$" # 排除JSON文件，除非它们是已知的IPTV格式
+    - "raw.bgithub.xyz/.*\\.md$" # 排除Markdown文件
+    - "raw.bgithub.xyz/.*\\.json$" # 排除JSON文件，除非它们是已知的IPTV格式
     - "youtube\\.com/watch" # 排除YouTube视频页面
     - "youku\\.com" # 排除优酷
     - "qq\\.com" # 排除腾讯
