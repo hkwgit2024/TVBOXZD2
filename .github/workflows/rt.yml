@@ -13,7 +13,6 @@ jobs:
     - name: 检出代码
       uses: actions/checkout@v4
       with:
-        # 关键：获取完整的历史记录，以便能够提交更改
         fetch-depth: 0
 
     - name: 设置 Python 环境
@@ -30,21 +29,19 @@ jobs:
       run: python vt.py
 
     - name: 提交并推送成功的直播源列表
-      # 只有当 successful_streams.txt 有内容更新时才进行提交
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git add successful_streams.txt
-        # 检查是否有实际更改，避免空提交
         if git diff --staged --quiet; then
           echo "successful_streams.txt 没有变化，跳过提交。"
         else
           git commit -m "chore: 更新 successful_streams.txt - 自动测试结果"
+          git pull --rebase origin main
           git push
           echo "successful_streams.txt 已更新并推送。"
         fi
       env:
-        # GITHUB_TOKEN 是 GitHub Actions 自动提供的，通常具有写入权限
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: 上传完整测试日志 (作为 Artifact)
@@ -52,5 +49,4 @@ jobs:
       with:
         name: stream_logs
         path: stream_log.txt
-        # 保留 artifact 7 天，可根据需要调整
         retention-days: 7
