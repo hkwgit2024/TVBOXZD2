@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import time
+import os
 
 # 直播源文件路径
 TVLIST_FILE = "iptv_list.txt"
@@ -50,7 +51,8 @@ def check_stream_status(url):
     try:
         # 增加 headers 模拟浏览器请求，有时可以提高成功率
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
-        response = requests.get(url, timeout=5, headers=headers, stream=True) # stream=True 避免一次性下载整个流
+        # stream=True 避免一次性下载整个流，timeout 设置为5秒
+        response = requests.get(url, timeout=5, headers=headers, stream=True)
         if response.status_code == 200:
             result = f"✅ 直播源可用: {url}"
             print(result)
@@ -80,8 +82,10 @@ def check_stream_status(url):
 
 def get_stream_info(url):
     """获取直播流的码率、分辨率、格式"""
+    # 确保 ffprobe 已安装并配置在 PATH 中
     command = ["ffprobe", "-v", "error", "-print_format", "json", "-show_streams", url]
     try:
+        # 增加 timeout 参数，防止 ffprobe 卡住
         result = subprocess.run(command, capture_output=True, text=True, timeout=10) # 10秒超时
         if result.returncode == 0:
             print(f"📊 直播流信息 ({url}):\n{result.stdout}")
@@ -114,10 +118,16 @@ def measure_latency(url):
     log_result(result)
 
 def main():
-    # 清空之前的成功文件内容，以便每次运行都是最新的
-    open(SUCCESS_FILE, 'w', encoding='utf-8').close() 
-    # 清空之前的日志文件内容
-    open(LOG_FILE, 'w', encoding='utf-8').close()
+    # 清空之前的成功文件内容和日志文件内容，以便每次运行都是最新的
+    # 检查文件是否存在，如果不存在则创建，存在则清空
+    for f_path in [SUCCESS_FILE, LOG_FILE]:
+        if os.path.exists(f_path):
+            open(f_path, 'w', encoding='utf-8').close()
+        else:
+            # 文件不存在时，简单地创建一个空文件
+            with open(f_path, 'w', encoding='utf-8') as f:
+                pass
+
 
     stream_list = read_stream_list(TVLIST_FILE)
 
