@@ -2,6 +2,7 @@ import requests
 import subprocess
 import time
 import os
+import json # 导入 json 模块，用于解析 ffprobe 的输出
 
 # 直播源文件路径
 TVLIST_FILE = "iptv_list.txt"
@@ -84,24 +85,45 @@ def get_stream_info(url):
     """获取直播流的码率、分辨率、格式"""
     # 确保 ffprobe 已安装并配置在 PATH 中
     command = ["ffprobe", "-v", "error", "-print_format", "json", "-show_streams", url]
+    process = None # 初始化 process 变量
     try:
-        # 增加 timeout 参数，防止 ffprobe 卡住
-        result = subprocess.run(command, capture_output=True, text=True, timeout=10) # 10秒超时
-        if result.returncode == 0:
-            print(f"📊 直播流信息 ({url}):\n{result.stdout}")
-            log_result(f"📊 直播流信息 ({url}): {result.stdout}")
+        # 使用 Popen 来获取更多进程控制权
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        # communicate() 方法会等待子进程结束，并捕获其 stdout 和 stderr
+        # 增加超时时间，以应对 ffprobe 可能卡住的情况
+        stdout, stderr = process.communicate(timeout=15) # 15秒超时
+
+        if process.returncode == 0:
+            try:
+                # 尝试解析 ffprobe 的 JSON 输出
+                info = json.loads(stdout)
+                # 你可以在这里进一步解析 'info' 来提取码率、分辨率、格式等具体信息
+                print(f"📊 直播流信息 ({url}):\n{json.dumps(info, indent=2)}")
+                log_result(f"📊 直播流信息 ({url}): {stdout}")
+            except json.JSONDecodeError:
+                print(f"❌ ffprobe 输出不是有效的JSON ({url}): {stdout}")
+                log_result(f"❌ ffprobe 输出不是有效的JSON ({url}): {stdout}")
         else:
-            print(f"❌ ffprobe 执行失败 ({url}): {result.stderr}")
-            log_result(f"❌ ffprobe 执行失败 ({url}): {result.stderr}")
+            print(f"❌ ffprobe 执行失败 ({url}): {stderr}")
+            log_result(f"❌ ffprobe 执行失败 ({url}): {stderr}")
     except FileNotFoundError:
         print(f"❌ ffprobe 未找到。请确保已安装 FFmpeg 且 ffprobe 在系统 PATH 中。")
         log_result(f"❌ ffprobe 未找到。请确保已安装 FFmpeg 且 ffprobe 在系统 PATH 中。")
     except subprocess.TimeoutExpired:
+        # 如果 ffprobe 超时，确保终止该进程
+        if process:
+            process.kill()
+            # 再次调用 communicate() 来清理管道并确保进程完全终止
+            stdout, stderr = process.communicate()
         print(f"❌ ffprobe 获取信息超时 ({url})")
         log_result(f"❌ ffprobe 获取信息超时 ({url})")
     except Exception as e:
         print(f"❌ 获取直播流信息时发生未知错误: {e} ({url})")
         log_result(f"❌ 获取直播流信息时发生未知错误: {e} ({url})")
+    finally:
+        # 确保 ffprobe 进程无论如何都已终止
+        if process and process.poll() is None: # 如果进程仍在运行
+            process.kill()
 
 def measure_latency(url):
     """测量直播源的延迟 (仅测量连接时间)"""
@@ -128,7 +150,6 @@ def main():
             with open(f_path, 'w', encoding='utf-8') as f:
                 pass
 
-
     stream_list = read_stream_list(TVLIST_FILE)
 
     if not stream_list:
@@ -140,10 +161,17 @@ def main():
 
     for url in stream_list:
         print(f"\n🔎 测试直播源: {url}")
+        # 在执行每个检查之前打印 DEBUG 信息，以帮助定位卡顿点
+        print(f"DEBUG: 正在检查状态: {url}")
         if check_stream_status(url):
+            print(f"DEBUG: 状态检查通过，正在获取流信息: {url}")
             # 只有当 check_stream_status 成功时才尝试获取 ffprobe 信息和测量延迟
             get_stream_info(url)
+            print(f"DEBUG: 流信息获取完成，正在测量延迟: {url}")
             measure_latency(url)
+            print(f"DEBUG: 延迟测量完成: {url}")
+        else:
+            print(f"DEBUG: 状态检查失败，跳过信息和延迟测量: {url}")
         time.sleep(0.5) # 稍微暂停一下，避免请求过快被服务器拒绝
 
     print(f"\n✅ 测试完成，详细日志已保存至 {LOG_FILE}，成功直播源已保存至 {SUCCESS_FILE}")
