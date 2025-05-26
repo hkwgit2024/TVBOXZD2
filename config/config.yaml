@@ -1,0 +1,237 @@
+# GitHub 搜索配置
+search_keywords:
+  # 英文关键词
+  - "m3u8 playlist"
+  - "iptv list"
+  - "m3u"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "stream list"
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
+  - "iptv.m3u"
+  - "playlist.m3u8"
+  - "channels.txt" # 很多直播源列表是纯文本格式
+  - "epg.pw" # 这是一个提供EPG和直播源的网站，其链接可能出现在repo中
+  - "raw.githubusercontent.com m3u" # 专门搜索raw链接
+
+  # 中文关键词 (强烈推荐，因为很多国内源用中文描述)
+  - "直播源"
+  - "电视直播"
+  - "IPTV直播"
+  - "M3U直播"
+  - "M3U8直播"
+  - "频道列表"
+  - "免费直播"
+  - "公共直播"
+  - "聚合直播"
+  - "直播源.txt"
+  - "电视直播.m3u"
+  - "电视直播.m3u8"
+  - "iptv源"
+  - "直播地址"
+  - "网络电视"
+  - "节目单"
+  - "最新直播源"
+  - "稳定直播源"
+
+# 其他配置（保持不变或根据你的需求调整）
+per_page: 100
+max_search_pages: 5
+github_api_timeout: 20
+github_api_retry_wait: 10
+channel_fetch_timeout: 15
+channel_check_timeout: 6
+max_channel_urls_per_group: 200
+
+name_filter_words:
+  - "测试"
+  - "失效"
+  - "demo"
+  - "backup"
+  - "内测"
+  - "测试频道"
+  - "广告"
+
+url_filter_words:
+  - "test"
+  - "demo"
+  - "example"
+  - "ads"
+  - "invalid"
+
+channel_name_replacements:
+  "CCTV": "CCTV"
+  "CHC": "CHC"
+  "TVB": "TVB"
+  "星空": "星空"
+  "凤凰": "凤凰"
+  "龙珠": "龙珠"
+  "斗鱼": "斗鱼"
+  "虎牙": "虎牙"
+  "蓝光": "" # 移除“蓝光”字样
+  "超清": "" # 移除“超清”字样
+  "高清": "" # 移除“高清”字样
+  "HD": "" # 移除“HD”字样
+  "全高清": ""
+  "1080P": ""
+  "720P": ""
+  "4K": ""
+  "CCTV": "CCTV" # 确保统一格式
+
+ordered_categories:
+  - "CCTV频道" # 对应你的模板文件名
+  - "央视"
+  - "卫视频道"
+  - "湖南频道"
+  - "上海频道"
+  - "广东频道"
+  - "江苏频道"
+  - "浙江频道"
+  - "北京频道"
+  - "天津频道"
+  - "重庆频道"
+  - "河北频道"
+  - "山西频道"
+  - "内蒙频道"
+  - "辽宁频道"
+  - "吉林频道"
+  - "黑龙江频道"
+  - "安徽频道"
+  - "福建频道"
+  - "江西频道"
+  - "山东频道"
+  - "河南频道"
+  - "湖北频道"
+  - "湖南频道"
+  - "广西频道"
+  - "海南频道"
+  - "四川频道"
+  - "贵州频道"
+  - "云南频道"
+  - "西藏频道"
+  - "陕西频道"
+  - "甘肃频道"
+  - "青海频道"
+  - "宁夏频道"
+  - "新疆频道"
+  - "港台频道"
+  - "国外频道"
+
+url_pre_screening:
+  allowed_protocols:
+    - "http"
+    - "https"
+    - "rtmp" # RTMP流
+    - "rtp"  # RTP流 (通常用于内网或组播，但不排除有公网的)
+    - "p3p"  # 一些特殊协议
+  stream_extensions:
+    - ".m3u"
+    - ".m3u8"
+    - ".ts"
+    - ".mp4"
+    - ".flv"
+    - ".aac"
+    - ".mp3"
+    - ".mov"
+    - ".avi"
+    - ".webm"
+    - ".mpg"
+    - ".mpeg"
+    - ".rm"
+    - ".rmvb"
+    - ".wmv"
+    - ".mkv"
+  invalid_url_patterns:
+    - "\\.txt$" # 避免直接抓取原始的txt文件，因为我们已经处理了`name,url`格式
+    - "example\\.com" # 排除示例域名
+    - "testserver\\.com" # 排除测试服务器
+    - "localhost"
+    - "127\\.0\\.0\\.1"
+    - "privateip" # 排除私有IP段
+    - "0\\.0\\.0\\.0"
+    - "dummy"
+    - "demo"
+    - "http://.*\\.jpg$" # 排除图片链接
+    - "http://.*\\.png$"
+    - "http://.*\\.gif$"
+    - "http://.*\\.css$" # 排除CSS文件
+    - "http://.*\\.js$"  # 排除JS文件
+    - "http://.*\\.html$" # 排除HTML页面 (除非是直接的M3U8下载页)
+    - "github\\.com" # 排除github页面链接，只保留raw链接
+    - "raw.githubusercontent.com/.*\\.md$" # 排除Markdown文件
+    - "raw.githubusercontent.com/.*\\.json$" # 排除JSON文件，除非它们是已知的IPTV格式
+    - "youtube\\.com/watch" # 排除YouTube视频页面
+    - "youku\\.com" # 排除优酷
+    - "qq\\.com" # 排除腾讯
+    - "iqiyi\\.com" # 排除爱奇艺
+    - "bilibili\\.com" # 排除B站
+    - "live\\.bilibili\\.com" # B站直播
+    - "douyu\\.com" # 排除斗鱼
+    - "huya\\.com" # 排除虎牙
+    - "twitch\\.tv" # 排除Twitch
+    - "facebook\\.com" # 排除Facebook
+    - "twitter\\.com" # 排除Twitter
+    - "weibo\\.com" # 排除微博
+    - "tiktok\\.com" # 排除TikTok
+    - "douyin\\.com" # 排除抖音
+    - "kuaishou\\.com" # 排除快手
+    - "music\\.163\\.com" # 排除网易云音乐
+    - "mp\\.weixin\\.qq\\.com" # 排除微信公众号文章
+    - "\\.zip$" # 排除压缩包
+    - "(\\.rar|\\.7z|\\.tar|\\.gz|\\.tgz|\\.bz2|\\.xz)$" # 排除其他压缩包
+    - "(\\.pdf|\\.doc|\\.docx|\\.xls|\\.xlsx|\\.ppt|\\.pptx)$" # 排除文档文件
+    - "(\\.exe|\\.dll|\\.msi|\\.apk|\\.dmg|\\.pkg)$" # 排除可执行文件和安装包
+    - "vpn" # 排除VPN相关链接
+    - "proxy" # 排除代理相关链接
+    - "shadowsocks" # 排除Shadowsocks
+    - "v2ray" # 排除V2Ray
+    - "trojan" # 排除Trojan
+    - "surge" # 排除Surge
+    - "clash" # 排除Clash
+    - "clashx" # 排除ClashX
+    - "speedtest" # 排除测速链接
+    - "tracker" # 排除BT Tracker
+    - "torrent" # 排除Torrent
+    - "magnet" # 排除磁力链接
+    - "(\\d{1,3}\\.){3}\\d{1,3}/(24|28|30|32)" # 排除CIDR IP段
+    - "rtmp://.*:1935/live/" # 排除典型的CDN RTMP流，这些通常有复杂的鉴权
+    - "rtmp://.*\\.akamaized\\.net" # Akamai CDN
+    - "rtmp://.*\\.cloudfront\\.net" # CloudFront CDN
+    - "rtmp://.*\\.edgecastcdn\\.net" # Edgecast CDN
+    - "rtmp://.*\\.cdn\\.aliyuncs\\.com" # 阿里云CDN
+    - "rtmp://.*\\.wscloudcdn\\.com" # 网宿CDN
+    - "rtmp://.*\\.ccgslb\\.com" # 世纪互联CDN
+    - "rtmp://.*\\.hls\\.liveplay\\.myqcloud\\.com" # 腾讯云CDN
+    - "rtmp://.*\\.push\\.rtmp\\.qq\\.com" # 腾讯云推流
+    - "rtmp://.*\\.live\\.prod\\.bokecc\\.com" # 视博云直播
+    - "rtmp://.*\\.flv\\.cdn\\.huya\\.com" # 虎牙直播
+    - "rtmp://.*\\.douyucdn\\.cn" # 斗鱼直播
+    - "rtmp://.*\\.hixp2p\\.com" # HixP2P
+    - "rtmp://.*\\.live\\.cdn\\.cibn\\.cc" # CIBN
+    - "rtmp://.*\\.cdn\\.upgslb\\.com" # UPGS
+    - "rtmp://.*\\.aixiaoke\\.com" # 爱客
+    - "rtmp://.*\\.cdn\\.cloudvdn\\.com" # 云端视讯
+    - "rtmp://.*\\.cdn\\.fastweb\\.com\\.cn" # 宽带
+    - "rtmp://.*\\.live\\.cdn\\.qqurl\\.net" # 腾讯云直播
+    - "rtmp://.*\\.livepush\\.l\\.qq\\.com" # 腾讯云直播推流
+    - "rtmp://.*\\.bcloudlive\\.com" # B站直播
+    - "rtmp://.*\\.pull\\.yximgs\\.com" # 快手直播
+    - "rtmp://.*\\.cnhls\\.live" # CN Live
+    - "rtmp://.*\\.livepush\\.alicdn\\.com" # 阿里直播推流
+    - "rtmp://.*\\.alicdn\\.com/live/.*" # 阿里直播
+    - "rtmp://.*\\.live\\.cdn\\.tbs\\.com" # TBS
+    - "rtmp://.*\\.cdn\\.tvtcloud\\.com" # TVTCloud
+    - "rtmp://.*\\.cdn\\.vhd\\.io" # VHD.io
+    - "rtmp://.*\\.rtmp\\.bttv\\.cn" # BTTV
+    - "rtmp://.*\\.cctv\\.com" # CCTV官方RTMP (通常带鉴权)
+    - "rtmp://.*\\.cntv\\.cn" # CNTV官方RTMP (通常带鉴权)
+
+requests_pool_size: 200
+requests_retry_total: 3
+requests_retry_backoff_factor: 1
