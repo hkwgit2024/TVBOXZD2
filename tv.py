@@ -18,11 +18,11 @@ import yaml
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 GITHUB_TOKEN = os.getenv('BOT')
-REPO_OWNER = os.getenv('GITHUB_REPO_OWNER')
-REPO_NAME = os.getenv('GITHUB_REPO_NAME')
-CONFIG_PATH_IN_REPO = os.getenv('GITHUB_CONFIG_PATH')
-URLS_PATH_IN_REPO = os.getenv('GITHUB_URLS_PATH')
-URL_STATES_PATH_IN_REPO = os.getenv('GITHUB_URL_STATES_PATH')
+REPO_OWNER = os.getenv('REPO_OWNER')
+REPO_NAME = os.getenv('REPO_NAME')
+CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
+URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
+URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
 
 if not GITHUB_TOKEN:
     logging.error("错误：环境变量 'BOT' 未设置。请确保已配置 GitHub Actions Secret 或本地环境变量。")
