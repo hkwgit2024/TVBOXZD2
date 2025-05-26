@@ -1,0 +1,113 @@
+name: IPTV 频道更新
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */8 * * *'  # 每天 UTC 0:00、8:00、16:00
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2 小时超时
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检查 BOT secret
+        run: |
+          if [ -z "${{ secrets.BOT }}" ]; then
+            echo "错误：未设置 BOT secret"
+            exit 1
+          fi
+        shell: bash
+
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT }}
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+
+      - name: 安装 Python 依赖
+        run: |
+          pip install requests pyyaml aiohttp tenacity
+
+      - name: 安装 FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: 验证 ffprobe
+        run: |
+          if command -v ffprobe >/dev/null 2>&1; then
+            echo "ffprobe 已找到"
+            ffprobe -version
+          else
+            echo "错误：ffprobe 未找到"
+            exit 1
+          fi
+
+      - name: 运行 IPTV 爬取脚本
+        env:
+          BOT: ${{ secrets.BOT }}
+          REPO_OWNER: ${{ vars.REPO_OWNER }}
+          REPO_NAME: ${{ vars.REPO_NAME }}
+          CONFIG_PATH: ${{ vars.CONFIG_PATH }}
+          URLS_PATH: ${{ vars.URLS_PATH }}
+          URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
+          LOG_LEVEL: INFO
+        run: python ${{ github.workspace }}/tv.py
+
+      - name: 保存日志和生成文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: iptv-results
+          path: |
+            *.txt
+            config/*.txt
+            地方频道/*.txt
+            iptv_crawler.log
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6
+        if: always()
+
+      - name: 检查文件更改
+        id: check_changes
+        run: |
+          git add .
+          if git diff --staged --quiet; then
+            echo "没有文件更改"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "检测到文件更改"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: 提交更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
+
+      - name: 推送更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git fetch origin
+          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
+          git push origin main --force-with-lease
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }}
+
+      - name: 发送运行结果通知
+        run: |
+          echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
+          echo "请检查 artifact 中的 iptv_crawler.log"
