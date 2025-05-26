@@ -17,7 +17,8 @@ import yaml
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-GITHUB_TOKEN = os.getenv('BOT')
+# 更新环境变量名称，不再以 GITHUB_ 开头
+GITHUB_TOKEN = os.getenv('BOT') # 这个是 Secret，不需要改名
 REPO_OWNER = os.getenv('REPO_OWNER')
 REPO_NAME = os.getenv('REPO_NAME')
 CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
@@ -28,19 +29,19 @@ if not GITHUB_TOKEN:
     logging.error("错误：环境变量 'BOT' 未设置。请确保已配置 GitHub Actions Secret 或本地环境变量。")
     exit(1)
 if not REPO_OWNER:
-    logging.error("错误：环境变量 'GITHUB_REPO_OWNER' 未设置。请指定私有仓库的所有者。")
+    logging.error("错误：环境变量 'REPO_OWNER' 未设置。请指定私有仓库的所有者。")
     exit(1)
 if not REPO_NAME:
-    logging.error("错误：环境变量 'GITHUB_REPO_NAME' 未设置。请指定私有仓库的名称。")
+    logging.error("错误：环境变量 'REPO_NAME' 未设置。请指定私有仓库的名称。")
     exit(1)
 if not CONFIG_PATH_IN_REPO:
-    logging.error("错误：环境变量 'GITHUB_CONFIG_PATH' 未设置。请指定 config.yaml 在私有仓库中的路径。")
+    logging.error("错误：环境变量 'CONFIG_PATH' 未设置。请指定 config.yaml 在私有仓库中的路径。")
     exit(1)
 if not URLS_PATH_IN_REPO:
-    logging.error("错误：环境变量 'GITHUB_URLS_PATH' 未设置。请指定 urls.txt 在私有仓库中的路径。")
+    logging.error("错误：环境变量 'URLS_PATH' 未设置。请指定 urls.txt 在私有仓库中的路径。")
     exit(1)
 if not URL_STATES_PATH_IN_REPO:
-    logging.error("错误：环境变量 'GITHUB_URL_STATES_PATH' 未设置。请指定 url_states.json 在私有仓库中的路径。")
+    logging.error("错误：环境变量 'URL_STATES_PATH' 未设置。请指定 url_states.json 在私有仓库中的路径。")
     exit(1)
 
 GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
@@ -559,6 +560,21 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
         iptv_list_file.writelines(final_output_lines)
 
     logging.info(f"\n所有区域频道列表文件已合并。输出已保存到：{iptv_list_file_path}")
+
+def read_txt_to_array_remote(file_path_in_repo):
+    content = fetch_from_github(file_path_in_repo)
+    if content:
+        lines = content.split('\n')
+        return [line.strip() for line in lines if line.strip()]
+    return []
+
+def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
+    content = '\n'.join(data_array)
+    success = save_to_github(file_path_in_repo, content, commit_message)
+    if success:
+        logging.info(f"数据成功写入远程 '{file_path_in_repo}'。")
+    else:
+        logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
 
 def auto_discover_github_urls(urls_file_path_remote, github_token):
     if not github_token:
