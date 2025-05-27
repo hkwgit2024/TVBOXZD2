@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
-      contents: write
+      contents: write # 仍然需要写入权限，因为 tv.py 会通过 API 提交
 
     steps:
       - name: Check BOT secret
@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.BOT }}
+          token: ${{ secrets.BOT }} # 使用 BOT token 来克隆仓库，确保有权限
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +46,7 @@ jobs:
 
       - name: Run IPTV script
         env:
-          BOT: ${{ secrets.BOT }}
+          BOT: ${{ secrets.BOT }} # 传递 BOT token 给脚本
           REPO_OWNER: ${{ vars.REPO_OWNER }}
           REPO_NAME: ${{ vars.REPO_NAME }}
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
@@ -55,9 +55,10 @@ jobs:
           KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
         run: python tv.py
 
-      # 添加一个步骤来检查 config 目录下的文件，用于调试
+      # 这个步骤可以保留，用于调试，查看 tv.py 在本地生成了哪些文件
       - name: List files in config directory after script
         run: ls -l config/
+        # if-no-files-found: warn # 如果你希望文件不存在时只警告而不失败，可以添加此行
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -66,32 +67,31 @@ jobs:
           path: |
             output/iptv_results.txt
             output/iptv_results.m3u
-  
             iptv_crawler.log
           retention-days: 7
           if-no-files-found: warn
 
-      - name: Check for changes
-        id: check_changes
-        run: |
-          # 只追踪 output 目录下的文件，因为 config 目录下的文件由 Python 脚本直接通过 GitHub API 管理
-          git add output/iptv_results.txt output/iptv_results.m3u
-          if git diff --staged --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
+      # 以下是已被删除的 Git 提交和推送步骤，因为脚本已经通过 API 完成了这些
+      # - name: Check for changes
+      #   id: check_changes
+      #   run: |
+      #     git add output/iptv_results.txt output/iptv_results.m3u
+      #     if git diff --staged --quiet; then
+      #       echo "has_changes=false" >> $GITHUB_OUTPUT
+      #     else
+      #       echo "has_changes=true" >> $GITHUB_OUTPUT
+      #     fi
 
-      - name: Commit changes
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "Automated IPTV channel update ($(date +'%Y-%m-%d %H:%M'))"
+      # - name: Commit changes
+      #   if: steps.check_changes.outputs.has_changes == 'true'
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git commit -m "Automated IPTV channel update ($(date +'%Y-%m-%d %H:%M'))"
 
-      - name: Push changes
-        if: steps.check_changes.outputs.has_changes == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        run: |
-          git push https://x-access-token:${{ secrets.BOT }}@github.com/${{ vars.REPO_OWNER }}/${{ vars.REPO_NAME }}.git main
+      # - name: Push changes
+      #   if: steps.check_changes.outputs.has_changes == 'true'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.BOT }}
+      #   run: |
+      #     git push https://x-access-token:${{ secrets.BOT }}@github.com/${{ vars.REPO_OWNER }}/${{ vars.REPO_NAME }}.git main
