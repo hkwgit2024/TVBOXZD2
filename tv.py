@@ -1,3 +1,4 @@
+```python
 import os
 import re
 import subprocess
@@ -110,29 +111,29 @@ CONFIG = load_config()
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
-CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 60)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 60)
+CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 30)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 5)
 CHANNEL_CHECK_TIMEOUT_HTTP = CONFIG.get('channel_check_timeout_http', 3)
-MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
+CHANNEL_CHECK_WORKERS = CONFIG.get('channel_check_workers', 100)
+CHANNEL_CHECK_BATCH_SIZE = CONFIG.get('channel_check_batch_size', 1000)
+SEARCH_CACHE_TTL = CONFIG.get('search_cache_ttl', 3600)
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
 NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
-URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
-SEARCH_CACHE_TTL = CONFIG.get('search_cache_ttl', 3600)
-CHANNEL_CHECK_BATCH_SIZE = CONFIG.get('channel_check_batch_size', 1000)
-
-# 预编译正则表达式
-invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])]
-allowed_protocols = set(CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []))
+ALLOWED_PROTOCOLS = set(CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []))
+STREAM_EXTENSIONS = set(CONFIG.get('url_pre_screening', {}).get('stream_extensions', []))
+INVALID_URL_PATTERNS = [re.compile(pattern, re.IGNORECASE) for pattern in CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])]
 
 # 配置 HTTP 会话
 session = requests.Session()
 session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
-pool_size = CONFIG.get('requests_pool_size', 200)
+pool_size = CONFIG.get('requests_pool_size', 50)
 retry_strategy = Retry(
     total=CONFIG.get('requests_retry_total', 3),
-    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS"]
 )
@@ -236,7 +237,7 @@ def extract_channels_from_url(url, url_states):
         text = fetch_url_content_with_retry(url, url_states)
         if text is None:
             return []
-        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
+        if get_url_file_extension(url) in STREAM_EXTENSIONS:
             text = convert_m3u_to_txt(text)
         lines = text.split('\n')
         for line in lines:
@@ -263,9 +264,11 @@ def pre_screen_url(url):
     if not isinstance(url, str) or not url or len(url) < 15:
         return False
     parsed_url = urlparse(url)
-    if parsed_url.scheme not in allowed_protocols or not parsed_url.netloc:
+    if parsed_url.scheme not in ALLOWED_PROTOCOLS or not parsed_url.netloc:
         return False
-    for pattern in invalid_url_patterns:
+    if not any(parsed_url.path.lower().endswith(ext) for ext in STREAM_EXTENSIONS):
+        return False
+    for pattern in INVALID_URL_PATTERNS:
         if pattern.search(url):
             logging.debug(f"预筛选过滤（无效模式）：{url}")
             return False
@@ -276,12 +279,10 @@ def filter_and_modify_channels(channels):
     for name, url in channels:
         if not pre_screen_url(url):
             continue
-        if any(word in url for word in URL_FILTER_WORDS):
-            continue
         if any(word.lower() in name.lower() for word in NAME_FILTER_WORDS):
             continue
         for old_str, new_str in CHANNEL_NAME_REPLACEMENTS.items():
-            name = name.replace(old_str, new_str)
+            name = re.sub(re.escape(old_str), new_str, name, flags=re.IGNORECASE)
         filtered_channels.append((name, url))
     return filtered_channels
 
@@ -362,6 +363,39 @@ def check_p3p_url(url, timeout):
         logging.debug(f"P3P URL {url} 检查失败：{e}")
         return False
 
+def check_rtsp_url(url, timeout):
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port if parsed_url.port else 554
+        path = parsed_url.path if parsed_url.path else '/'
+        if not host:
+            return False
+        with socket.create_connection((host, port), timeout=timeout) as s:
+            request = f"DESCRIBE {url} RTSP/1.0\r\nCSeq: 1\r\nAccept: application/sdp\r\n\r\n"
+            s.sendall(request.encode())
+            response = s.recv(1024).decode('utf-8', errors='ignore')
+            return response.startswith("RTSP/1.0 200 OK")
+    except Exception as e:
+        logging.debug(f"RTSP URL {url} 检查失败：{e}")
+        return False
+
+def check_udp_url(url, timeout):
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port
+        if not host or not port:
+            return False
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(timeout)
+            s.sendto(b'', (host, port))
+            s.recv(1024)
+        return True
+    except (socket.timeout, socket.error) as e:
+        logging.debug(f"UDP URL {url} 检查失败：{e}")
+        return False
+
 def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TIMEOUT):
     start_time = time.time()
     is_valid = False
@@ -375,6 +409,10 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
             is_valid = check_rtmp_url(url, timeout)
         elif url.startswith("rtp"):
             is_valid = check_rtp_url(url, timeout)
+        elif url.startswith("rtsp"):
+            is_valid = check_rtsp_url(url, timeout)
+        elif url.startswith("udp"):
+            is_valid = check_udp_url(url, timeout)
         else:
             logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
             return None, False
@@ -427,7 +465,7 @@ async def check_channels_async(channel_lines, max_concurrent=100):
 
 def check_channels_multithreaded(channel_lines, max_workers=None):
     if max_workers is None:
-        max_workers = min(CONFIG.get('channel_check_workers', 200), psutil.cpu_count() * 10)
+        max_workers = min(CHANNEL_CHECK_WORKERS, psutil.cpu_count() * 10)
     results = []
     checked_count = 0
     total_channels = len(channel_lines)
@@ -590,7 +628,7 @@ def search_keyword(keyword, headers):
                     raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
                     cleaned_url = clean_url_params(raw_url)
                     if (cleaned_url.startswith("https://raw.githubusercontent.com/") and
-                        cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and
+                        any(cleaned_url.lower().endswith(ext) for ext in STREAM_EXTENSIONS) and
                         pre_screen_url(cleaned_url)):
                         found_urls.add(cleaned_url)
             page += 1
@@ -726,3 +764,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
