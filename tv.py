@@ -19,7 +19,7 @@ import yaml
 # 设置日志
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 环境变量
+
 GITHUB_TOKEN = os.getenv('BOT')
 REPO_OWNER = os.getenv('REPO_OWNER')
 REPO_NAME = os.getenv('REPO_NAME')
@@ -28,7 +28,7 @@ URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
 URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
 KEYWORD_STATS_PATH_IN_REPO = os.getenv('KEYWORD_STATS_PATH', 'config/keyword_stats.json')
 
-# 环境变量检查
+
 if not GITHUB_TOKEN:
     logging.error("错误：环境变量 'BOT' 未设置。")
     exit(1)
@@ -100,7 +100,6 @@ def save_to_github(file_path_in_repo, content, commit_message):
         return True
     except requests.exceptions.RequestException as e:
         logging.error(f"将 {file_path_in_repo} 保存到 GitHub 发生错误：{e}")
-        logging.error(f"GitHub API 响应：{response.text if 'response' in locals() else 'N/A'}")
         return False
 
 def load_config():
@@ -123,9 +122,9 @@ GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
-MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 3)
 GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 30)
 SEARCH_CACHE_TTL = CONFIG.get('search_cache_ttl', 3600)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
 CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
@@ -419,7 +418,6 @@ def check_p3p_url(url, timeout):
         return False
 
 def check_stream_quality(url, timeout=10):
-    """使用 ffprobe 检查视频流的分辨率、码率和帧率"""
     try:
         result = subprocess.run(
             ['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-print_format', 'json', url],
@@ -443,7 +441,7 @@ def check_stream_quality(url, timeout=10):
 
         resolution = f"{video_stream.get('width', 0)}x{video_stream.get('height', 0)}"
         bitrate = data.get('format', {}).get('bit_rate', '0')
-        bitrate = int(bitrate) // 1000 if bitrate else 0  # 转换为 kbps
+        bitrate = int(bitrate) // 1000 if bitrate else 0
         frame_rate = video_stream.get('avg_frame_rate', '0/1')
         frame_rate = eval(frame_rate) if '/' in frame_rate else float(frame_rate)
 
@@ -453,7 +451,6 @@ def check_stream_quality(url, timeout=10):
         return None, None, None
 
 def check_stream_stability(url, duration=10):
-    """测试流媒体稳定性，检查短时间内是否断流"""
     try:
         start_time = time.time()
         process = subprocess.Popen(
@@ -494,7 +491,7 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
             logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
             return None, False, None, None, None, False
 
-        elapsed_time = (time.time() - start_time) * 1000  # ms
+        elapsed_time = (time.time() - start_time) * 1000
         if is_valid:
             return elapsed_time, True, resolution, bitrate, frame_rate, is_stable
         else:
@@ -512,7 +509,7 @@ def process_single_channel_line(channel_line):
         url = url.strip()
         elapsed_time, is_valid, resolution, bitrate, frame_rate, is_stable = check_channel_validity_and_speed(name, url)
         if is_valid:
-            return elapsed_time, f"{name},{url},{elapsed_time:.0f},{resolution or '未知'},{bitrate or 0},{frame_rate or 0},{is_stable}", resolution, bitrate, frame_rate, is_stable
+            return elapsed_time, f"{name},{url},{elapsed_time:.0f},{resolution or '未知'},{bitrate or 0},{frame_rate or 0},{is_stable}"
     return None, None, None, None, None, None
 
 def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_check_workers', 50)):
@@ -539,7 +536,6 @@ def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_
     return results
 
 def match_channel_to_category(channel_name):
-    """根据模板匹配频道所属分类"""
     template_directory = os.path.join(os.getcwd(), '频道模板')
     os.makedirs(template_directory, exist_ok=True)
     template_files = [f for f in os.listdir(template_directory) if f.endswith('.txt')]
@@ -551,9 +547,7 @@ def match_channel_to_category(channel_name):
             return template_name
     return "其他频道"
 
-def write_sorted_channels_to_file(file_path):
-    """按分类分组写入 iptv_results.txt，并生成 iptv_results.m3u"""
-    # 分组频道
+def write_sorted_channels_to_file(file_path, data_list):
     grouped_channels = {cat: [] for cat in ORDERED_CATEGORIES}
     grouped_channels["其他频道"] = []
 
@@ -562,17 +556,16 @@ def write_sorted_channels_to_file(file_path):
         category = match_channel_to_category(channel_name)
         grouped_channels[category].append((elapsed_time, result_line))
 
-    # 写入 iptv_results.txt
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write("频道名称,URL,响应时间(ms),分辨率,码率(kbps),帧率(fps),稳定性\n")
         for category in ORDERED_CATEGORIES + ["其他频道"]:
             channels = grouped_channels.get(category, [])
             if channels:
                 file.write(f"{category},#genre#\n")
-                for elapsed_time, result_line in sorted(channels, key=lambda x: x[0]):  # 按响应时间排序
+                for elapsed_time, result_line in sorted(channels, key=lambda x: x[0]):
                     file.write(result_line + '\n')
 
-    # 生成 iptv_results.m3u
     m3u_path = file_path.replace('.txt', '.m3u')
     with open(m3u_path, 'w', encoding='utf-8') as file:
         file.write('#EXTM3U\n')
@@ -672,7 +665,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
                            pre_screen_url(cleaned_url):
                             keyword_urls.add(cleaned_url)
-                            logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{url}")
+                            logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{cleaned_url}")
                         else:
                             logging.debug(f"正在跳过非原始 GitHub M3U/M3U8/TEXT 链接或未通过预筛选：{raw_url}")
                     else:
@@ -686,10 +679,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
             except requests.exceptions.RequestException as e:
                 logging.error(f"GitHub API 请求失败（关键词：{keyword}，页码：{page}）：{e}")
-                if response.status_code == 403:
+                if 'response' in locals() and response.status_code == 403:
                     rate_limit_reset_time = response.headers.get('X-RateLimit-Reset', 0)
-                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + \
-                    5
+                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
                     logging.warning(f"GitHub API 速率限制已达到！等待时间 {wait_seconds:.0f} 秒后重试。")
                     time.sleep(wait_seconds)
                     continue
@@ -716,7 +708,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
     if new_urls_count > 0:
         updated_urls = list(existing_urls)
         write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 更新发现的新 URL 更新 urls.txt")
-        logging.warning(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URLs 到 {urls_file_path_remote}。。。 总 URL 数：{len(updated_urls)}")
+        logging.warning(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URLs 到 {urls_file_path_remote}。总 URL 数：{len(updated_urls)}")
     else:
         logging.warning("未发现新的 GitHub IPTV 源 URL。")
 
@@ -758,20 +750,20 @@ def main():
     valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
     logging.warning(f"有效且高质量的频道数量：{len(valid_channels_with_speed)}")
 
-    iptv_results_file_path = os.path.join(os.getcwd(), 'iptv_results.txt')
+    iptv_results_file_path = os.path.join(os.getcwd(), 'output', 'iptv_results.txt')
     os.makedirs(os.path.dirname(iptv_results_file_path), exist_ok=True)
     write_sorted_channels_to_file(iptv_results_file_path, valid_channels_with_speed)
 
     try:
         with open(iptv_results_file_path, "r", encoding='utf-8') as f:
             iptv_results_content = f.read()
-        save_to_github(f"iptv_results.txt", iptv_results_content, "更新 IPTV 效果测试结果")
+        save_to_github(f"output/iptv_results.txt", iptv_results_content, "更新 IPTV 效果测试结果")
         logging.warning(f"已将 {iptv_results_file_path} 推送到远程仓库。")
         
         with open(iptv_results_file_path.replace('.txt', '.m3u'), "r", encoding='utf-8') as f:
             iptv_results_m3u_content = f.read()
-        save_to_github(f"iptv_results.m3u", iptv_results_m3u_content, "更新 IPTV M3U 播放列表")
-        logging.warning(f"已将 iptv_results 推送到远程仓库。")
+        save_to_github(f"output/iptv_results.m3u", iptv_results_m3u_content, "更新 IPTV M3U 播放列表")
+        logging.warning(f"已将 iptv_results.m3u 推送到远程仓库。")
     except Exception as e:
         logging.error(f"无法将文件推送到 GitHub：{e}")
 
