@@ -618,12 +618,12 @@ def auto_discover_github_urls(urls_file_path, github_token):
                         repo = match.group(2)
                         branch = match.group(3)
                         path = match.group(4)
-                        raw_url = f"https://raw.bgithub.xyz/{user}/{repo}/{branch}/{path}"
+                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
 
                     if raw_url:
                         # Only add raw URLs that pass pre-screening
                         cleaned_url = clean_url_params(raw_url)
-                        if cleaned_url.startswith("https://raw.bgithub.xyz/") and \
+                        if cleaned_url.startswith("https://raw.githubusercontent.com/") and \
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
                            pre_screen_url(cleaned_url): # Added pre-screening here
                             found_urls.add(cleaned_url)
