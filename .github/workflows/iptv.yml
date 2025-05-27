@@ -1,0 +1,55 @@
+name: IPTV 更新频道
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */8 * * *'  # 每 8 小时
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check BOT secret
+        run: |
+          if [ -z "${{ secrets.BOT }}" ]; then
+            echo "错误：未设置 BOT secret"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: "${{ secrets.BOT }}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install requests pyyaml tenacity
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install ffmpeg -y
+
+      - name: Debug environment variables
+        run: env | grep -E 'BOT|REPO|CONFIG|PATH'
+
+      - name: Run IPTV script
+        env:
+          BOT: ${{ secrets.BOT }}
+          REPO_OWNER: ${{ vars.REPO_OWNER }}
+          REPO_NAME: ${{ vars.REPO_NAME }}
+          CONFIG_PATH: ${{ vars.CONFIG_PATH }}
+          URLS_PATH: ${{ vars.URLS_PATH }}
+          URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
+          KEYWORD_STATS_PATH
