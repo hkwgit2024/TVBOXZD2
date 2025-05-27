@@ -83,7 +83,7 @@ jobs:
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
           NOTIFICATION_WEBHOOK: ${{ secrets.NOTIFICATION_WEBHOOK }}  # 可选 Webhook
-        run: python ${{ github.workspace }}/optimized_iptv_script_with_cache.py
+        run: python ${{ github.workspace }}/tv.py
 
       # 步骤9：保存生成文件
       - name: 保存生成文件
