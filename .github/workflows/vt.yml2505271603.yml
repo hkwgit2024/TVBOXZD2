@@ -76,7 +76,7 @@ jobs:
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
           KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
-        run: python ${{ github.workspace }}/tv.py
+        run: python ${{ github.workspace }}/tv.py2505271603.py
 
       # 步骤9：保存日志和生成文件
       - name: 保存日志和生成文件
