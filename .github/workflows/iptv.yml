@@ -55,6 +55,10 @@ jobs:
           KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
         run: python tv.py
 
+      # 添加一个步骤来检查 config 目录下的文件，用于调试
+      - name: List files in config directory after script
+        run: ls -l config/
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -62,8 +66,7 @@ jobs:
           path: |
             output/iptv_results.txt
             output/iptv_results.m3u
-            config/*.json
-            config/*.txt
+  
             iptv_crawler.log
           retention-days: 7
           if-no-files-found: warn
@@ -71,7 +74,8 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          git add output/iptv_results.txt output/iptv_results.m3u config/url_states.json config/keyword_stats.json
+          # 只追踪 output 目录下的文件，因为 config 目录下的文件由 Python 脚本直接通过 GitHub API 管理
+          git add output/iptv_results.txt output/iptv_results.m3u
           if git diff --staged --quiet; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
