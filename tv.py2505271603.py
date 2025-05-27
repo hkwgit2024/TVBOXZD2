@@ -48,7 +48,7 @@ if not URL_STATES_PATH_IN_REPO:
     logging.error("错误：环境变量 'URL_STATES_PATH' 未设置。")
     exit(1)
 
-GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
+GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.bgithub.xyz/{REPO_OWNER}/{REPO_NAME}/main"
 GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
 
 def fetch_from_github(file_path_in_repo):
@@ -754,11 +754,11 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                         repo = match.group(2)
                         branch = match.group(3)
                         path = match.group(4)
-                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
+                        raw_url = f"https://raw.bgithub.xyz/{user}/{repo}/{branch}/{path}"
 
                     if raw_url:
                         cleaned_url = clean_url_params(raw_url)
-                        if cleaned_url.startswith("https://raw.githubusercontent.com/") and \
+                        if cleaned_url.startswith("https://raw.bgithub.xyz/") and \
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
                            pre_screen_url(cleaned_url):
                             keyword_urls.add(cleaned_url)
