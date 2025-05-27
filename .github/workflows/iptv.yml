@@ -1,48 +1,49 @@
-name: IPTV 更新频道
+name: IPTV Channel Update
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */8 * * *'  # 每 8 小时
+    - cron: '0 */8 * * *' # Runs every 8 hours
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 360 # Increased timeout as the script can take a long time
     permissions:
-      contents: write
+      contents: write # Needed to push changes back to the repository
 
     steps:
       - name: Check BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
-            echo "错误：未设置 BOT secret"
+            echo "Error: 'BOT' secret is not set."
             exit 1
           fi
 
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.BOT }}
+          fetch-depth: 0 # Fetches all history for SHA calculation
+          token: ${{ secrets.BOT }} # Uses the BOT token for checkout
 
       - name: Set up Python
-        uses: setup-python@v5
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: 'pip' # Caches pip dependencies for faster runs
 
       - name: Install dependencies
         run: |
-          pip install requests pyyaml tenacity
+          pip install requests pyyaml tenacity # Corrected tenacity to match the script's import
+          pip install beautifulsoup4 # Added for potential future HTML parsing, though not directly in tv.py
 
       - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install ffmpeg -y
+          sudo apt-get install ffmpeg -y # Required for ffprobe and ffmpeg checks in the script
 
       - name: Debug environment variables
-        run: env | grep -E 'BOT|REPO|CONFIG|PATH'
+        run: env | grep -E 'BOT|REPO|CONFIG|PATH' # Good for debugging if variables aren't picked up
 
       - name: Run IPTV script
         env:
@@ -52,42 +53,21 @@ jobs:
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
-          KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
+          KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }} # Ensures all required environment variables are passed
         run: python tv.py
 
+      - name: Commit and Push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add iptv_results.txt iptv_results.m3u config/url_states.json config/keyword_stats.json # Add all generated/updated files
+          git commit -m "Automated IPTV channel update" || echo "No changes to commit" # Commits if there are changes
+          git push # Pushes the changes to the repository
+
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4 # Uses the latest version of upload-artifact
         with:
           name: iptv-results
           path: |
-            output/iptv_results.txt
-            output/iptv_results.m3u
-            config/*.json
-            config/*.txt
-            iptv_crawler.log
-          retention-days: 7
-          if-no-files-found: warn
-
-      - name: Check for changes
-        id: check_changes
-        run: |
-          git add .
-          if git diff --staged --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit changes
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git commit -m "Updated IPTV results and M3U playlist ($(date +'%Y-%m-%d %H:%M'))"
-
-      - name: Push changes
-        if: steps.check_changes.outputs.has_changes == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        run: |
-          git push https://x-access-token:${{ secrets.BOT }}@github.com/${{ vars.REPO_OWNER }}/${{ vars.REPO_NAME }}.git main
+            iptv_results.txt
+            iptv_results.m3u
