@@ -42,7 +42,7 @@ for var, name in [
         logging.error(f"错误：环境变量 '{name}' 未设置。")
         exit(1)
 
-GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.bgithub.xyz/{REPO_OWNER}/{REPO_NAME}/main"
+GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
 GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
