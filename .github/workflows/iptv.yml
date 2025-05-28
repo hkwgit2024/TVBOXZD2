@@ -44,6 +44,9 @@ jobs:
           pip install requests aiohttp beautifulsoup4 tenacity psutil
           pip install pyyaml requests tenacity
 
+      - name: 设置时区
+        run: sudo timedatectl set-timezone 'Asia/Shanghai'        
+        
       # 步骤5：安装 FFmpeg (用于 ffprobe)
       - name: 安装 FFmpeg
         run: |
@@ -64,9 +67,8 @@ jobs:
       # 步骤6：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          # 将 BOT secret 传递给 Python 脚本，名称保持 BOT
+         
           BOT: ${{ secrets.BOT }} 
-          # 传递您的 Variables
           REPO_OWNER: ${{ vars.REPO_OWNER }}
           REPO_NAME: ${{ vars.REPO_NAME }}
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
@@ -83,7 +85,7 @@ jobs:
             *.txt
             config/*.txt
             地方频道/*.txt
-            iptv_crawler.log # 确保你的 Python 脚本输出日志到这个文件名，如果名称不同，请修改
+            iptv_crawler.log 
           retention-days: 7
           if-no-files-found: warn
           compression-level: 6
@@ -121,8 +123,7 @@ jobs:
           git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
           git push origin main
         env:
-          # 在推送步骤中也需要 BOT secret
-          GITHUB_TOKEN: ${{ secrets.BOT }} 
+         GITHUB_TOKEN: ${{ secrets.BOT }} 
 
       # 步骤11：发送运行结果通知
       - name: 发送运行结果通知
