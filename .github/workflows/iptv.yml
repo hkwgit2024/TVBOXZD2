@@ -1,68 +1,65 @@
+
 name: IPTV Channel Update
 
 on:
-  schedule:
-    - cron: '0 */8 * * *'
   workflow_dispatch:
-  push:
-    branches: ['main']
-    paths:
-      - 'tv.py'
-      - 'config/**'
-      - '频道模板/**'
+  schedule:
+    - cron: '0 */8 * * *'  # Runs every 8 hours
 
 jobs:
-  update-channels:
+  build:
     runs-on: ubuntu-latest
-
-    env:
-      BOT: ${{ secrets.BOT_TOKEN }}
-      REPO_OWNER: ${{ vars.REPO_OWNER }}
-      REPO_NAME: ${{ vars.REPO_NAME }}
-      CONFIG_PATH: ${{ vars.CONFIG_PATH }}
-      URLS_PATH: ${{ vars.URLS_PATH }}
-      URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
-      KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
-      REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-      REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+    timeout-minutes: 360
+    permissions:
+      contents: write # 仍然需要写入权限，因为 tv.py 会通过 API 提交
 
     steps:
-      - name: Checkout repository
+      - name: Check BOT secret
+        run: |
+          if [ -z "${{ secrets.BOT }}" ]; then
+            echo "Error: 'BOT' secret is not set."
+            exit 1
+          fi
+
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.BOT }} # 使用 BOT token 来克隆仓库，确保有权限
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-          python -m pip install --upgrade pip
-          pip install requests pyyaml retrying python-telegram-bot python-gitlab httpx aiohttp pypraw
+          pip install requests pyyaml tenacity
 
-      - name: Create necessary directories
+      - name: Install FFmpeg
         run: |
-          mkdir -p config
-          mkdir -p output
-          mkdir -p 频道模板
+          sudo apt-get update
+          sudo apt-get install ffmpeg -y
+
+      - name: Debug environment variables
+        run: env | grep -E 'BOT|REPO|CONFIG|PATH'
 
       - name: Run IPTV script
+        env:
+          BOT: ${{ secrets.BOT }} # 传递 BOT token 给脚本
+          REPO_OWNER: ${{ vars.REPO_OWNER }}
+          REPO_NAME: ${{ vars.REPO_NAME }}
+          CONFIG_PATH: ${{ vars.CONFIG_PATH }}
+          URLS_PATH: ${{ vars.URLS_PATH }}
+          URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
+          KEYWORD_STATS_PATH: ${{ vars.KEYWORD_STATS_PATH }}
         run: python tv.py
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add output/iptv_results.txt output/iptv_results.m3u config/*.json config/*.txt
-          git add iptv_results.txt iptv_results.m3u
-          if git diff-index --quiet HEAD; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update IPTV results and config"
-            git push
-          fi
+      # 这个步骤可以保留，用于调试，查看 tv.py 在本地生成了哪些文件
+      - name: List files in config directory after script
+        run: ls -l config/
+        # if-no-files-found: warn # 如果你希望文件不存在时只警告而不失败，可以添加此行
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -71,10 +68,31 @@ jobs:
           path: |
             output/iptv_results.txt
             output/iptv_results.m3u
-            iptv_results.txt
-            iptv_results.m3u
-            config/*.json
-            config/*.txt
             iptv_crawler.log
           retention-days: 7
           if-no-files-found: warn
+
+      # 以下是已被删除的 Git 提交和推送步骤，因为脚本已经通过 API 完成了这些
+      # - name: Check for changes
+      #   id: check_changes
+      #   run: |
+      #     git add output/iptv_results.txt output/iptv_results.m3u
+      #     if git diff --staged --quiet; then
+      #       echo "has_changes=false" >> $GITHUB_OUTPUT
+      #     else
+      #       echo "has_changes=true" >> $GITHUB_OUTPUT
+      #     fi
+
+      # - name: Commit changes
+      #   if: steps.check_changes.outputs.has_changes == 'true'
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git commit -m "Automated IPTV channel update ($(date +'%Y-%m-%d %H:%M'))"
+
+      # - name: Push changes
+      #   if: steps.check_changes.outputs.has_changes == 'true'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.BOT }}
+      #   run: |
+      #     git push https://x-access-token:${{ secrets.BOT }}@github.com/${{ vars.REPO_OWNER }}/${{ vars.REPO_NAME }}.git main
