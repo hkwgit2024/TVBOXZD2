@@ -1,3 +1,4 @@
+
 import os
 import re
 import subprocess
@@ -15,14 +16,9 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import yaml
 import shutil
-import praw
 
 # 设置日志
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
-log_file = os.path.join(os.getcwd(), 'iptv_crawler.log')
-file_handler = logging.FileHandler(log_file, encoding='utf-8')
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-logging.getLogger().addHandler(file_handler)
 
 # 环境变量
 GITHUB_TOKEN = os.getenv('BOT')
@@ -173,11 +169,9 @@ def save_search_cache(cache):
         content = json.dumps(cache, indent=4, ensure_ascii=False)
         success = save_to_github(KEYWORD_STATS_PATH_IN_REPO, content, "更新关键词搜索缓存")
         if not success:
-            logging.error(f"将关键词统计保存到 '{KEYWORD_STATS_PATH_IN_REPO}' 失败。")
-            return
-        logging.warning(f"成功保存关键词统计到 '{KEYWORD_STATS_PATH_IN_REPO}'")
+            logging.error(f"将关键词搜索缓存保存到 '{KEYWORD_STATS_PATH_IN_REPO}' 失败。")
     except Exception as e:
-        logging.error(f"将关键词统计保存到远程 '{KEYWORD_STATS_PATH_IN_REPO}' 发生错误：{e}")
+        logging.error(f"将关键词搜索缓存保存到远程 '{KEYWORD_STATS_PATH_IN_REPO}' 发生错误：{e}")
 
 def read_txt_to_array_local(file_name):
     try:
@@ -189,7 +183,7 @@ def read_txt_to_array_local(file_name):
         logging.warning(f"文件 '{file_name}' 未找到。")
         return []
     except Exception as e:
-        logging.error(f"读取文件 '{file_name}' 错误：{e}")
+        logging.error(f"读取文件 '{file_name}' 发生错误：{e}")
         return []
 
 def get_url_file_extension(url):
@@ -612,125 +606,6 @@ def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
     if not success:
         logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
 
-def extract_unavailable_domains_from_log(log_file_path):
-    unavailable_domains = set()
-    try:
-        with open(log_file_path, 'r', encoding='utf-8') as f:
-            log_content = f.read()
-        error_patterns = [
-            r"检查频道 .*?\((.*?)\) 网络错误：(NameResolutionError|ConnectionResetError|Timeout|RequestException)",
-            r"获取 URL .*? 发生请求错误：(.*?)\s+-",
-        ]
-        for pattern in error_patterns:
-            matches = re.finditer(pattern, log_content)
-            for match in matches:
-                url = match.group(1).strip()
-                parsed_url = urlparse(url)
-                domain = parsed_url.netloc.lower()
-                if domain and domain not in unavailable_domains:
-                    valid_domains = {'github.com', 'raw.githubusercontent.com'}
-                    if domain not in valid_domains:
-                        unavailable_domains.add(domain)
-        logging.warning(f"从日志中提取到 {len(unavailable_domains)} 个不可用域名")
-        return list(unavailable_domains)[:50]
-    except Exception as e:
-        logging.error(f"解析日志提取不可用域名失败：{e}")
-        return []
-
-def update_config_with_unavailable_domains(unavailable_domains):
-    if not unavailable_domains:
-        logging.warning("没有新的不可用域名需要添加到 url_filter_words")
-        return
-    try:
-        config_content = fetch_from_github(CONFIG_PATH_IN_REPO)
-        if not config_content:
-            logging.error(f"无法获取远程配置文件 {CONFIG_PATH_IN_REPO}")
-            return
-        config = yaml.safe_load(config_content)
-        current_filters = set(config.get('url_filter_words', []))
-        new_filters = current_filters.union(unavailable_domains)
-        if len(new_filters) == len(current_filters):
-            logging.warning("所有不可用域名已存在于 url_filter_words，无需更新")
-            return
-        config['url_filter_words'] = list(new_filters)
-        updated_yaml = yaml.safe_dump(config, allow_unicode=True)
-        success = save_to_github(CONFIG_PATH_IN_REPO, updated_yaml, f"自动添加 {len(new_filters) - len(current_filters)} 个不可用域名到 url_filter_words")
-        if success:
-            logging.warning(f"成功添加 {len(new_filters) - len(current_filters)} 个不可用域名到 {CONFIG_PATH_IN_REPO}")
-        else:
-            logging.error(f"更新 {CONFIG_PATH_IN_REPO} 失败")
-    except Exception as e:
-        logging.error(f"更新配置文件添加不可用域名失败：{e}")
-
-def discover_external_urls(urls_file_path_remote):
-    existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
-    new_urls = set()
-    
-    # iptv-org
-    if CONFIG.get('external_sources', {}).get('iptv_org', {}).get('enabled', False):
-        repo = CONFIG['external_sources']['iptv_org']['repo']
-        branch = CONFIG['external_sources']['iptv_org']['branch']
-        path = CONFIG['external_sources']['iptv_org']['path']
-        extensions = CONFIG['external_sources']['iptv_org']['extensions']
-        api_url = f"https://api.github.com/repos/{repo}/contents/{path}?ref={branch}"
-        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-        try:
-            response = session.get(api_url, headers=headers, timeout=10)
-            response.raise_for_status()
-            for item in response.json():
-                if item['type'] == 'file' and any(item['name'].endswith(ext) for ext in extensions):
-                    raw_url = item['download_url']
-                    if pre_screen_url(raw_url):
-                        new_urls.add(raw_url)
-                        logging.debug(f"发现 iptv-org URL：{raw_url}")
-        except Exception as e:
-            logging.error(f"从 iptv-org 获取 URL 失败：{e}")
-
-    # Reddit
-    if CONFIG.get('external_sources', {}).get('reddit', {}).get('enabled', False):
-        client_id = os.getenv('REDDIT_CLIENT_ID')
-        client_secret = os.getenv('REDDIT_CLIENT_SECRET')
-        if not client_id or not client_secret:
-            logging.warning("Reddit API 凭证未设置，跳过 Reddit 搜索")
-        else:
-            try:
-                reddit = praw.Reddit(
-                    client_id=client_id,
-                    client_secret=client_secret,
-                    user_agent="IPTV-Searcher/1.0"
-                )
-                subreddits = CONFIG['external_sources']['reddit']['subreddits']
-                max_posts = CONFIG['external_sources']['reddit']['max_posts']
-                keywords = CONFIG['external_sources']['reddit']['keywords']
-                url_pattern = re.compile(r'(https?://[^\s]+?\.(m3u8|m3u))', re.IGNORECASE)
-                
-                for subreddit_name in subreddits:
-                    subreddit = reddit.subreddit(subreddit_name)
-                    for post in subreddit.search(" OR ".join(keywords), limit=max_posts):
-                        for text in [post.title, post.selftext]:
-                            for match in url_pattern.finditer(text):
-                                url = match.group(1)
-                                if pre_screen_url(url):
-                                    new_urls.add(url)
-                                    logging.debug(f"发现 Reddit URL（帖子）：{url}")
-                        post.comments.replace_more(limit=0)
-                        for comment in post.comments.list():
-                            for match in url_pattern.finditer(comment.body):
-                                url = match.group(1)
-                                if pre_screen_url(url):
-                                    new_urls.add(url)
-                                    logging.debug(f"发现 Reddit URL（评论）：{url}")
-            except Exception as e:
-                logging.error(f"从 Reddit 获取 URL 失败：{e}")
-
-    new_urls_count = len(new_urls - existing_urls)
-    if new_urls_count > 0:
-        existing_urls.update(new_urls)
-        write_array_to_txt_remote(urls_file_path_remote, list(existing_urls), f"添加 {new_urls_count} 个外部源 URL")
-        logging.warning(f"发现 {new_urls_count} 个新外部 URL，总 URL 数：{len(existing_urls)}")
-    else:
-        logging.warning("未发现新的外部 URL")
-
 def auto_discover_github_urls(urls_file_path_remote, github_token):
     if not github_token:
         logging.warning("环境变量 'BOT' 未设置。跳过 GitHub URL 自动发现。")
@@ -857,7 +732,6 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
 def main():
     try:
-        discover_external_urls(URLS_PATH_IN_REPO)
         auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
 
         urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
@@ -919,16 +793,9 @@ def main():
             logging.warning(f"已将 iptv_results.m3u 推送到远程仓库。")
         except Exception as e:
             logging.error(f"无法将文件推送到 GitHub：{e}")
-
-        unavailable_domains = extract_unavailable_domains_from_log(log_file)
-        update_config_with_unavailable_domains(unavailable_domains)
-
     except Exception as e:
         logging.error(f"主程序执行失败：{e}")
         raise
-    finally:
-        logging.getLogger().removeHandler(file_handler)
-        file_handler.close()
 
 if __name__ == "__main__":
     main()
