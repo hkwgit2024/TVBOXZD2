@@ -1,42 +1,42 @@
-name: Run Extract Subscribe Link Script
+name: Node Search Workflow
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: '0 2 * * *'  # 每天上海时间上午10点（UTC 02:00）
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
-  run-script:
+  search-nodes:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai  # 设置时区为上海时间（CST，UTC+8）
 
     steps:
-    # 检出代码
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 设置 Python 环境
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9'  # 指定 Python 版本
+        python-version: '3.11'  # 使用 Python 3.11
 
-    # 安装依赖
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install requests pyyaml aiohttp
 
-    # 运行脚本
-    - name: Run extract_subscribe_link.py
-      run: python extract_subscribe_link.py
+    - name: Run node search script
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Secrets 存储 token
+      run: |
+        python github_node_search.py
 
-    # 上传输出文件
-    - name: Upload output file
-      uses: actions/upload-artifact@v4
-      with:
-        name: subscribe-links
-        path: data/s.txt
-        if-no-files-found: warn
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add data/hy2.txt data/url.txt
+        git commit -m "Update nodes and URLs [$(date -u '+%Y-%m-%dT%H:%M:%S+08:00')]" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
