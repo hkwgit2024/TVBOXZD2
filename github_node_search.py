@@ -16,13 +16,9 @@ if not GITHUB_TOKEN:
 
 g = Github(GITHUB_TOKEN)
 
-# 历史节点数据存储路径
 HISTORY_FILE = "data/nodes_history.json"
-# 输出文件路径
 OUTPUT_FILE = "data/hy2.txt"
 
-# 尝试加载历史节点数据
-# 结构: { "url": "last_found_timestamp" }
 nodes_history = {}
 if os.path.exists(HISTORY_FILE):
     try:
@@ -36,11 +32,16 @@ if os.path.exists(HISTORY_FILE):
         print(f"ERROR: Failed to load history file {HISTORY_FILE}: {e}. Starting with empty history.")
         nodes_history = {}
 
-# 本次运行找到的节点集合
 current_run_nodes = set()
 
 protocol_keywords = [
     "ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://",
+]
+
+# 恢复原始的搜索关键词列表，包含协议名称（如果需要）
+search_keywords = [
+    "ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://",
+    "vmess", "trojan", "ss", "ssr", "vless", "hysteria" # 重新加入协议名称，以扩大搜索范围
 ]
 
 search_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg'] 
@@ -57,17 +58,17 @@ excluded_extensions = [
 
 search_queries = []
 
-combined_protocol_query_part = " OR ".join([f'"{kw}"' for kw in protocol_keywords])
-
+# --- 恢复到之前的搜索查询生成方式 ---
 for ext in search_extensions:
-    search_queries.append(f'({combined_protocol_query_part}) in:file extension:{ext}')
+    for kw in search_keywords:
+        search_queries.append(f'"{kw}" in:file extension:{ext}')
 
-search_queries.append(f'({combined_protocol_query_part}) in:file filename:config') 
-search_queries.append(f'({combined_protocol_query_part}) in:file filename:nodes') 
-search_queries.append(f'({combined_protocol_query_part}) in:file filename:sub')
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config') 
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes') 
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
 
 excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-general_nodes_query = f'({combined_protocol_query_part}) in:file {excluded_query_part}'
+general_nodes_query = f'("ss://" OR "ssr://" OR "vmess://" OR "trojan://" OR "vless://" OR "hysteria://") in:file {excluded_query_part}'
 search_queries.append(general_nodes_query)
 
 print(f"DEBUG: Generated {len(search_queries)} search queries.")
@@ -179,20 +180,18 @@ for current_query in search_queries:
         print(f"An unexpected error occurred during search query '{current_query}': {e}")
         continue 
 
-# 更新历史节点数据
 current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
 newly_added_count = 0
 for node_link in current_run_nodes:
     if node_link not in nodes_history:
         newly_added_count += 1
-    nodes_history[node_link] = current_timestamp # 更新或添加时间戳
+    nodes_history[node_link] = current_timestamp 
 
 print(f"\n--- Node History Update ---")
 print(f"Found {len(current_run_nodes)} unique nodes in current run.")
 print(f"Newly added nodes to history: {newly_added_count}")
 print(f"Total nodes in history: {len(nodes_history)}")
 
-# 保存更新后的历史数据
 os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
 try:
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
@@ -201,7 +200,6 @@ try:
 except Exception as e:
     print(f"ERROR: Failed to save history file {HISTORY_FILE}: {e}")
 
-# 将本次运行找到的节点保存到输出文件
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     for node in sorted(list(current_run_nodes)):
