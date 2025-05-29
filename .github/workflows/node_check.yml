@@ -1,18 +1,19 @@
-name: node_check
+name: Search and Extract Nodes from GitHub
 
 on:
   workflow_dispatch:
     inputs:
       search_query_override:
-        description: 'Optional: Custom search query to override script defaults (e.g., "my_specific_keyword in:file extension:json")'
+        description: '可选：自定义搜索查询以覆盖脚本默认值（例如 "my_specific_keyword in:file extension:json"）'
         required: false
         default: ''
   schedule:
-    - cron: '0 2 * * *'  # 每天 UTC 2:00 运行（北京时间 10:00）
+    - cron: '0 2 * * *'
 
 jobs:
   run_node_extractor:
     runs-on: ubuntu-latest
+    timeout-minutes: 380 
 
     steps:
     - name: Checkout repository
@@ -21,7 +22,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: '3.13'
 
     - name: Install dependencies
       run: |
@@ -37,10 +38,12 @@ jobs:
         BOT: ${{ secrets.BOT }}
         OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
         PYTHONUNBUFFERED: "1"
+        PYTHON_LOG_LEVEL: "DEBUG"  # 启用调试日志
       run: |
         python extract_nodes.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
 
     - name: Upload Clash config as artifact
+      if: always()  # 即使失败也上传
       uses: actions/upload-artifact@v4
       with:
         name: clash-config
@@ -48,6 +51,7 @@ jobs:
         retention-days: 7
 
     - name: Upload node history as artifact
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: node-history
@@ -55,6 +59,7 @@ jobs:
         retention-days: 30
 
     - name: Upload log file as artifact
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: node-extractor-log
