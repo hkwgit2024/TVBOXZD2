@@ -1,0 +1,42 @@
+name: Run Extract Subscribe Link Script
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 设置 Python 环境
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'  # 指定 Python 版本
+
+    # 安装依赖
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    # 运行脚本
+    - name: Run extract_subscribe_link.py
+      run: python extract_subscribe_link.py
+
+    # 上传输出文件
+    - name: Upload output file
+      uses: actions/upload-artifact@v4
+      with:
+        name: subscribe-links
+        path: data/s.txt
+        if-no-files-found: warn
