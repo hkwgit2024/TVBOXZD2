@@ -1,0 +1,62 @@
+name: Search and Extract Nodes from GitHub
+
+on:
+  workflow_dispatch:
+    inputs:
+      search_query_override:
+        description: 'Optional: Custom search query to override script defaults (e.g., "my_specific_keyword in:file extension:json")'
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 2 * * *'  # 每天 UTC 2:00 运行（北京时间 10:00）
+
+jobs:
+  run_node_extractor:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install PyGithub PyYAML tqdm
+
+    - name: Create data directory
+      run: |
+        mkdir -p data
+
+    - name: Run Node Extraction Script
+      env:
+        BOT: ${{ secrets.BOT }}
+        OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
+        PYTHONUNBUFFERED: "1"
+      run: |
+        python node_extractor.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
+
+    - name: Upload Clash config as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: clash-config
+        path: data/clash_config.yaml
+        retention-days: 7
+
+    - name: Upload node history as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-history
+        path: data/nodes_history.json
+        retention-days: 30
+
+    - name: Upload log file as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-extractor-log
+        path: node_extractor.log
+        retention-days: 7
