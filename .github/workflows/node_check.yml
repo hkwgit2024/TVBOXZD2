@@ -1,4 +1,4 @@
-name: Search and Extract Nodes from GitHub
+name: node_check
 
 on:
   workflow_dispatch:
