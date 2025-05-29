@@ -2,12 +2,12 @@ name: Search and Extract Nodes from GitHub
 
 on:
   workflow_dispatch:
-   
+    # 允许手动触发工作流，可以在GitHub Actions页面上点击“Run workflow”按钮
     inputs:
-      search_query:
-        description: 'Optional: Custom search query for GitHub Code Search'
+      search_query_override:
+        description: 'Optional: Custom search query to override script defaults (e.g., "my_specific_keyword in:file extension:json")'
         required: false
-        default: ''
+        default: '' # 默认为空，表示使用脚本内部定义的查询
 
   schedule:
     # 每天凌晨2点（UTC时间）自动运行工作流
@@ -21,8 +21,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      # 如果您的Python脚本位于私有仓库中，并且您需要访问其他私有仓库进行搜索
-      # 确保actions/checkout有足够的权限（例如，使用GITHUB_TOKEN或Personal Access Token）
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -34,20 +32,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install PyGithub PyYAML
 
+    - name: Create data directory
+      run: |
+        mkdir -p data
+      # 确保data目录在脚本运行前存在，避免脚本内部创建失败
+
     - name: Run Node Extraction Script
       env:
-       
-        BOT: ${{ secrets.GH_TOKEN }}
-        CUSTOM_SEARCH_QUERY: ${{ github.event.inputs.search_query }} # 传递手动触发时的自定义查询
+        # 设置您的GitHub Token
+        # 强烈建议将此Token作为GitHub Secrets存储，以保护您的凭据
+        # 这里的GH_TOKEN是您在仓库Secrets中设置的名称
+        # 如果您的 Secret 名称是 BOT，请将 ${{ secrets.GH_TOKEN }} 改为 ${{ secrets.BOT }}
+        BOT: ${{ secrets.GH_TOKEN }} 
+        # 将手动触发时传入的自定义查询作为环境变量传递给脚本
+        # 脚本可以读取这个环境变量来决定是否覆盖其内部的 search_queries
+        OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }} 
       run: |
-        # 创建data目录，以防它不存在
-        mkdir -p data
-
         # 运行您的Python脚本
         # 假设您的Python脚本名为 `extract_nodes.py`
-        # 如果您在脚本中使用了 os.getenv("CUSTOM_SEARCH_QUERY")，它将优先使用手动触发时的输入
-        # 否则，脚本将使用其内部定义的搜索逻辑
-        python github_node_search.py
+        python extract_nodes.py
         
     - name: Upload extracted nodes as artifact
       uses: actions/upload-artifact@v4
