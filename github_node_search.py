@@ -23,8 +23,7 @@ extracted_nodes = set()
 # 'in:file' 搜索文件内容, 'extension:txt' 'extension:md' 'extension:yaml' 'extension:yml' 指定文件类型
 # 您可以根据实际情况调整这些关键字和组合
 search_keywords = [
-    "http", "https", "url", "link", "node", "server", "endpoint", "
-"
+"http", "https", "url", "link", "node", "server", "endpoint", ""
 ]
 
 # 组合搜索查询。GitHub搜索查询有长度限制，且过于复杂的查询可能导致性能问题。
