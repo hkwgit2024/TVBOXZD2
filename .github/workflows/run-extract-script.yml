@@ -26,6 +26,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests pyyaml aiohttp
 
+    - name: Verify BOT token
+      run: |
+        if [ -z "$BOT" ]; then
+          echo "错误: BOT 环境变量未设置"
+          exit 1
+        fi
+        echo "调试: BOT 环境变量已设置（前8位）: ${BOT:0:8}..."
+
     - name: Run node search script
       run: |
         python github_node_search.py
