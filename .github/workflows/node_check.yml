@@ -38,7 +38,7 @@ jobs:
         OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
         PYTHONUNBUFFERED: "1"
       run: |
-        python node_extractor.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
+        python extract_nodes.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
 
     - name: Upload Clash config as artifact
       uses: actions/upload-artifact@v4
