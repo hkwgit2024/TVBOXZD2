@@ -8,7 +8,7 @@ import asyncio
 import aiohttp
 from datetime import datetime, timezone
 from datetime import timedelta
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 
 # 配置
 GITHUB_API_URL = "https://api.github.com/search/code"
@@ -19,20 +19,20 @@ if not TOKEN:
 print("调试: BOT 环境变量已加载（前8位）: " + TOKEN[:8] + "...")
 HEADERS = {
     "Authorization": f"token {TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
+    "Accept": "application/vnd.github.v3+json",
+    "User-Agent": "Mozilla/5.0 (compatible; NodeSearchBot/1.0)"  # 添加 User-Agent
 }
-# 拆分搜索关键词
 SEARCH_QUERIES = [
-    "v2ray config extension:yaml",
-    "clash proxies extension:yaml",
-    "trojan nodes extension:txt",
-    "hysteria hy2",
-    "ssr shadowsocksr",
-    "vless server",
-    "wireguard config",
-    "socks5 proxy",
-    "free nodes",
-    "vpn subscription"
+    "v2ray config extension:yaml in:file",
+    "clash proxies extension:yaml in:file",
+    "trojan nodes extension:txt in:file",
+    "hysteria hy2 extension:txt",
+    "ssr shadowsocksr extension:txt",
+    "vless server extension:txt",
+    "free proxy subscription",
+    "clash config extension:yaml",
+    "v2ray nodes extension:txt",
+    "xray config extension:json"
 ]
 OUTPUT_DIR = "data"
 NODES_FILE = os.path.join(OUTPUT_DIR, "hy2.txt")
@@ -63,11 +63,15 @@ def load_existing_urls():
 
 # 检查文件是否更新
 def is_file_updated(repo, path, existing_timestamp):
-    commit_url = f"https://api.github.com/repos/{repo}/commits?path={path}&per_page=1"
+    commit_url = f"https://api.github.com/repos/{repo}/commits?path={quote(path)}&per_page=1"
     try:
         response = requests.get(commit_url, headers=HEADERS)
-        if response.status_code == 200 and response.json():
-            commit_date = response.json()[0]["commit"]["committer"]["date"]
+        if response.status_code == 200:
+            commits = response.json()
+            if not commits:
+                print(f"调试: {repo}/{path} 无提交历史，视为新文件")
+                return True, datetime.now(timezone.utc).isoformat()
+            commit_date = commits[0]["commit"]["committer"]["date"]
             commit_time = datetime.fromisoformat(commit_date.replace("Z", "+00:00"))
             if not existing_timestamp:
                 return True, commit_time.isoformat()
@@ -141,10 +145,15 @@ def decode_base64(content):
     except:
         return None
 
-# 解析 YAML 内容
-def parse_yaml(content):
+# 解析 YAML 或 JSON 内容
+def parse_config(content):
     try:
+        # 尝试 YAML 解析
         data = yaml.safe_load(content)
+        if data:
+            return data
+        # 尝试 JSON 解析
+        data = json.loads(content)
         return data
     except:
         return None
@@ -155,10 +164,11 @@ def clean_node(node):
 
 # 获取文件内容
 def get_file_content(repo, path):
-    raw_url = f"https://raw.githubusercontent.com/{repo}/{path}"
+    raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path)}"
     try:
-        response = requests.get(raw_url)
+        response = requests.get(raw_url, headers=HEADERS)
         if response.status_code == 200:
+            print(f"调试: 成功获取文件 {raw_url}")
             return response.text
         else:
             print(f"获取文件 {raw_url} 失败: {response.status_code}, {response.text}")
@@ -188,100 +198,112 @@ async def main():
     # 逐个执行搜索查询
     for query in SEARCH_QUERIES:
         print(f"调试: 执行搜索查询: {query}")
-        params = {"q": query, "per_page": 100}
-        try:
-            response = requests.get(GITHUB_API_URL, headers=HEADERS, params=params)
-            if response.status_code != 200:
-                print(f"GitHub API 请求失败 (查询: {query}): {response.status_code}, {response.text}")
-                continue
-            print(f"调试: 查询 {query} 获取 {len(response.json().get('items', []))} 条结果")
-        except Exception as e:
-            print(f"GitHub API 请求异常 (查询: {query}): {e}")
-            continue
-
-        data = response.json()
-        items = data.get("items", [])
-
-        for item in items:
-            repo = item["repository"]["full_name"]
-            path = item["path"]
-            raw_url = f"https://raw.githubusercontent.com/{repo}/{path}"
-
-            # 检查是否需要更新
-            existing_timestamp = unique_urls.get(raw_url)
-            should_update, new_timestamp = is_file_updated(repo, path, existing_timestamp)
-            if not should_update and existing_timestamp:
-                print(f"调试: 跳过未更新的 URL: {raw_url}")
+        for page in range(1, 3):  # 获取前2页
+            params = {"q": query, "per_page": 50, "page": page}
+            try:
+                response = requests.get(GITHUB_API_URL, headers=HEADERS, params=params)
+                if response.status_code != 200:
+                    print(f"GitHub API 请求失败 (查询: {query}, 页: {page}): {response.status_code}, {response.text}")
+                    continue
+                print(f"调试: 查询 {query} 页 {page} 获取 {len(response.json().get('items', []))} 条结果")
+            except Exception as e:
+                print(f"GitHub API 请求异常 (查询: {query}, 页: {page}): {e}")
                 continue
 
-            # 获取文件内容
-            file_content = get_file_content(repo, path)
-            if not file_content:
-                continue
+            data = response.json()
+            items = data.get("items", [])
 
-            # 测试 URL 连通性
-            if await test_url_connection(raw_url):
-                unique_urls[raw_url] = new_timestamp or datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8))).isoformat()
-                print(f"调试: URL {raw_url} 可连通，时间戳: {unique_urls[raw_url]}")
-            else:
-                print(f"调试: URL {raw_url} 不可连通，跳过")
+            for item in items:
+                repo = item["repository"]["full_name"]
+                path = item["path"]
+                raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path)}"
 
-            # 处理文件内容
-            lines = file_content.splitlines()
-            for line in lines:
-                line = line.strip()
-                if not line:
+                # 检查是否需要更新
+                existing_timestamp = unique_urls.get(raw_url)
+                should_update, new_timestamp = is_file_updated(repo, path, existing_timestamp)
+                if not should_update and existing_timestamp:
+                    print(f"调试: 跳过未更新的 URL: {raw_url}")
                     continue
 
-                # 尝试解析 Base64
-                decoded = decode_base64(line)
-                if decoded:
-                    line = decoded
+                # 获取文件内容
+                file_content = get_file_content(repo, path)
+                if not file_content:
+                    continue
 
-                # 检查是否为节点链接
-                is_node = any(line.startswith(protocol) for protocol in NODE_PROTOCOLS)
-                if is_node:
-                    cleaned_node = clean_node(line)
-                    if cleaned_node not in unique_nodes and await test_node_connection(cleaned_node):
-                        unique_nodes.add(cleaned_node)
-                        print(f"调试: 添加节点: {cleaned_node}")
+                # 测试 URL 连通性
+                if await test_url_connection(raw_url):
+                    unique_urls[raw_url] = new_timestamp or datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8))).isoformat()
+                    print(f"调试: URL {raw_url} 可连通，时间戳: {unique_urls[raw_url]}")
+                else:
+                    print(f"调试: URL {raw_url} 不可连通，跳过")
+                    continue
 
-                # 尝试解析 YAML
-                yaml_data = parse_yaml(line)
-                if yaml_data and isinstance(yaml_data, dict):
-                    proxies = yaml_data.get("proxies", [])
-                    for proxy in proxies:
-                        if isinstance(proxy, dict):
-                            node = None
-                            proxy_type = proxy.get("type")
-                            server = proxy.get("server")
-                            port = proxy.get("port")
-                            if server and port:
-                                if proxy_type == "ss":
-                                    node = f"ss://{proxy.get('cipher')}:{proxy.get('password')}@{server}:{port}"
-                                elif proxy_type == "vmess":
-                                    vmess_data = {
-                                        "v": "2",
-                                        "add": server,
-                                        "port": port,
-                                        "id": proxy.get("uuid"),
-                                        "aid": proxy.get("alterId", 0),
-                                        "type": "none"
-                                    }
-                                    node = f"vmess://{base64.b64encode(json.dumps(vmess_data).encode('utf-8')).decode('utf-8')}"
-                                elif proxy_type == "trojan":
-                                    node = f"trojan://{proxy.get('password')}@{server}:{port}"
-                                elif proxy_type == "hysteria2":
-                                    node = f"hy2://{proxy.get('password')}@{server}:{port}"
-                                elif proxy_type == "vless":
-                                    node = f"vless://{proxy.get('uuid')}@{server}:{port}"
-                                elif proxy_type == "socks5":
-                                    node = f"socks5://{proxy.get('username', '')}:{proxy.get('password', '')}@{server}:{port}"
-                                elif proxy_type == "wireguard":
-                                    node = f"wg://{server}:{port}"
-                                if node and clean_node(node) not in unique_nodes and await test_node_connection(clean_node(node)):
-                                    unique_nodes.add(clean_node(node))
-                                    print(f"调试: 添加 YAML 节点: {clean_node(node)}")
+                # 处理文件内容
+                lines = file_content.splitlines()
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    # 尝试解析 Base64
+                    decoded = decode_base64(line)
+                    if decoded:
+                        sub_lines = decoded.splitlines()
+                        for sub_line in sub_lines:
+                            sub_line = sub_line.strip()
+                            if not sub_line:
+                                continue
+                            is_node = any(sub_line.startswith(protocol) for protocol in NODE_PROTOCOLS)
+                            if is_node:
+                                cleaned_node = clean_node(sub_line)
+                                if cleaned_node not in unique_nodes and await test_node_connection(cleaned_node):
+                                    unique_nodes.add(cleaned_node)
+                                    print(f"调试: 添加节点: {cleaned_node}")
+
+                    # 检查是否为节点链接
+                    is_node = any(line.startswith(protocol) for protocol in NODE_PROTOCOLS)
+                    if is_node:
+                        cleaned_node = clean_node(line)
+                        if cleaned_node not in unique_nodes and await test_node_connection(cleaned_node):
+                            unique_nodes.add(cleaned_node)
+                            print(f"调试: 添加节点: {cleaned_node}")
+
+                    # 尝试解析 YAML 或 JSON
+                    config_data = parse_config(line)
+                    if config_data and isinstance(config_data, dict):
+                        proxies = config_data.get("proxies", []) or config_data.get("servers", []) or config_data.get("nodes", [])
+                        for proxy in proxies:
+                            if isinstance(proxy, dict):
+                                node = None
+                                proxy_type = proxy.get("type")
+                                server = proxy.get("server")
+                                port = proxy.get("port")
+                                if server and port:
+                                    if proxy_type == "ss":
+                                        node = f"ss://{proxy.get('cipher')}:{proxy.get('password')}@{server}:{port}"
+                                    elif proxy_type == "vmess":
+                                        vmess_data = {
+                                            "v": "2",
+                                            "add": server,
+                                            "port": port,
+                                            "id": proxy.get("uuid"),
+                                            "aid": proxy.get("alterId", 0),
+                                            "type": "none"
+                                        }
+                                        node = f"vmess://{base64.b64encode(json.dumps(vmess_data).encode('utf-8')).decode('utf-8')}"
+                                    elif proxy_type == "trojan":
+                                        node = f"trojan://{proxy.get('password')}@{server}:{port}"
+                                    elif proxy_type == "hysteria2":
+                                        node = f"hy2://{proxy.get('password')}@{server}:{port}"
+                                    elif proxy_type == "vless":
+                                        node = f"vless://{proxy.get('uuid')}@{server}:{port}"
+                                    elif proxy_type == "socks5":
+                                        node = f"socks5://{proxy.get('username', '')}:{proxy.get('password', '')}@{server}:{port}"
+                                    elif proxy_type == "wireguard":
+                                        node = f"wg://{server}:{port}"
+                                    if node and clean_node(node) not in unique_nodes and await test_node_connection(clean_node(node)):
+                                        unique_nodes.add(clean_node(node))
+                                        print(f"调试: 添加 YAML/JSON 节点: {clean_node(node)}")
 
     # 保存结果
     save_results()
