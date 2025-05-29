@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       search_query_override:
-        description: '可选：自定义搜索查询以覆盖脚本默认值（例如 "my_specific_keyword in:file extension:json"）'
+        description: '可选：自定义搜索查询以覆盖脚本默认值（例如 "ss:// in:file extension:yaml"）'
         required: false
         default: ''
   schedule:
@@ -13,7 +13,7 @@ on:
 jobs:
   run_node_extractor:
     runs-on: ubuntu-latest
-    timeout-minutes: 380 
+    timeout-minutes: 30  # 设置作业超时为 30 分钟
 
     steps:
     - name: Checkout repository
@@ -38,12 +38,12 @@ jobs:
         BOT: ${{ secrets.BOT }}
         OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
         PYTHONUNBUFFERED: "1"
-        PYTHON_LOG_LEVEL: "DEBUG"  # 启用调试日志
+        PYTHON_LOG_LEVEL: "DEBUG"
       run: |
         python extract_nodes.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
 
     - name: Upload Clash config as artifact
-      if: always()  # 即使失败也上传
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: clash-config
