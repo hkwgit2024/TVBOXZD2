@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PyGithub PyYAML requests # <--- 新增 requests 库
+        pip install PyGithub PyYAML requests
 
     - name: Create data directory
       run: |
@@ -42,7 +42,7 @@ jobs:
         python github_node_search.py
         
     - name: Upload extracted nodes as artifact
-      uses: actions:upload-artifact@v4
+      uses: actions/upload-artifact@v4 # <-- 已修正：这里是斜杠 "/"
       with:
         name: extracted-nodes
         path: data/hy2.txt
