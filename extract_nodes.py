@@ -20,30 +20,30 @@ logging.basicConfig(
 )
 
 # 命令行参数解析
-parser = argparse.ArgumentParser(description="GitHub Node Extractor")
-parser.add_argument("--output", default="data/clash_config.yaml", help="Output Clash config file path")
-parser.add_argument("--history", default="data/nodes_history.json", help="History file path")
-parser.add_argument("--config", default="config.yaml", help="Configuration file path")
+parser = argparse.ArgumentParser(description="GitHub 节点提取器")
+parser.add_argument("--output", default="data/clash_config.yaml", help="输出的 Clash 配置文件路径")
+parser.add_argument("--history", default="data/nodes_history.json", help="历史记录文件路径")
+parser.add_argument("--config", default="config.yaml", help="配置文件路径")
 args = parser.parse_args()
 
 # 加载配置文件
 def load_config(config_file):
     default_config = {
         "search": {
-            "extensions": ["txt", "yaml", "yml"],  # 精简扩展名
-            "keywords": ["ss://", "vmess://", "trojan://"],  # 精简关键词
+            "extensions": ["txt", "yaml", "yml"],
+            "keywords": ["ss://", "vmess://", "trojan://"],
             "excluded_extensions": [
                 "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
                 "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
                 "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
             ]
         },
-        "query_delay_seconds": 60,  # 增加查询间隔
+        "query_delay_seconds": 60,
         "max_file_size": 1_000_000,  # 1MB
         "history_expiry_days": 30,
-        "max_parallel_workers": 3,  # 减少并行线程
-        "max_backoff_seconds": 600,  # 增加最大退避时间
-        "max_pages_per_query": 10  # 限制每个查询的分页数
+        "max_parallel_workers": 3,
+        "max_backoff_seconds": 600,
+        "max_pages_per_query": 10
     }
     if os.path.exists(config_file):
         try:
@@ -241,10 +241,10 @@ def main():
         logging.info(f"正在 GitHub 上搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
         try:
             rate_limit_before = g.get_rate_limit().core
-            reset_timestamp = rate_limit_before reset_timestamp = rate_limit_before.reset.timestamp()
+            reset_timestamp = rate_limit_before.reset.timestamp()
             logging.info(f"查询前 - 剩余 API 调用次数：{rate_limit_before.remaining}/{rate_limit_before.limit}，重置时间：{time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}")
 
-            if rate_limit_before.remaining <= 20:  # 增加余量
+            if rate_limit_before.remaining <= 20:
                 wait_seconds = reset_timestamp - time.time() + 10
                 logging.warning(f"API 调用次数不足（剩余 {rate_limit_before.remaining}），等待 {wait_seconds:.1f} 秒直到 {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}...")
                 time.sleep(max(wait_seconds, 0))
@@ -260,7 +260,7 @@ def main():
                     logging.info(f"处理查询 '{current_query}' 的第 {page} 页")
                     process_search_results_parallel(results_page, CONFIG["max_parallel_workers"])
                     page_count += 1
-                    time.sleep(1)  # 每页请求间增加短暂延迟
+                    time.sleep(1)
                 except Exception as e:
                     if "403" in str(e):
                         logging.warning(f"第 {page} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
