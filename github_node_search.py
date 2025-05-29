@@ -5,6 +5,7 @@ import yaml
 import time
 from github import Github
 from github.GithubException import RateLimitExceededException
+import datetime # 新增导入 datetime 模块
 
 GITHUB_TOKEN = os.getenv("BOT") 
 
@@ -124,7 +125,9 @@ for current_query in search_queries:
     print(f"\nSearching GitHub for: '{current_query}'...")
     try:
         rate_limit_before = g.get_rate_limit().core
-        print(f"DEBUG: Before query - Remaining API calls: {rate_limit_before.remaining}/{rate_limit_before.limit}, Resets at: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(rate_limit_before.reset))}")
+        # 修正：将 datetime 对象转换为 timestamp
+        reset_timestamp = rate_limit_before.reset.timestamp() 
+        print(f"DEBUG: Before query - Remaining API calls: {rate_limit_before.remaining}/{rate_limit_before.limit}, Resets at: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}")
 
         search_results = g.search_code(query=current_query)
         
@@ -142,7 +145,9 @@ for current_query in search_queries:
     except RateLimitExceededException:
         print("\n--- GitHub API Rate Limit Exceeded ---")
         rate_limit = g.get_rate_limit().core
-        reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(rate_limit.reset))
+        # 修正：将 datetime 对象转换为 timestamp
+        reset_timestamp = rate_limit.reset.timestamp() 
+        reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
         print(f"Current remaining API calls: {rate_limit.remaining}")
         print(f"Rate limit will reset at: {reset_time_utc}")
         print("Stopping further GitHub API calls for this run due to rate limit.")
