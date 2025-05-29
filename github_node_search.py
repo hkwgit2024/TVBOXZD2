@@ -7,33 +7,25 @@ import re
 import asyncio
 import aiohttp
 from datetime import datetime, timezone
+from datetime import timedelta
 from urllib.parse import urlparse
 
-# 加载 YAML 配置文件
-def load_config(config_path="config.yaml"):
-    try:
-        with open(config_path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
-    except FileNotFoundError:
-        print(f"配置文件 {config_path} 不存在")
-        exit(1)
-    except Exception as e:
-        print(f"加载配置文件失败: {e}")
-        exit(1)
-
 # 配置
-config = load_config()
-GITHUB_API_URL = config.get("github_api_url", "https://api.github.com/search/code")
-TOKEN = config.get("github_token", os.getenv("GITHUB_TOKEN", "BOT"))
+GITHUB_API_URL = "https://api.github.com/search/code"
+TOKEN = os.getenv("BOT")
+if not TOKEN:
+    print("错误: 环境变量 BOT 未设置或为空")
+    exit(1)
+print("调试: BOT 环境变量已加载（前8位）: " + TOKEN[:8] + "...")  # 打印 token 前8位用于调试
 HEADERS = {
     "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.v3+json"
 }
-SEARCH_QUERY = config.get("search_query", "v2ray shadowsocks trojan hysteria hy2 ssr clash proxies nodes subscription config")
-OUTPUT_DIR = config.get("output_dir", "data")
-NODES_FILE = os.path.join(OUTPUT_DIR, config.get("nodes_file", "hy2.txt"))
-URLS_FILE = os.path.join(OUTPUT_DIR, config.get("urls_file", "url.txt"))
-NODE_PROTOCOLS = config.get("node_protocols", ["ss://", "vmess://", "trojan://", "hy2://", "ssr://"])
+SEARCH_QUERY = "v2ray shadowsocks trojan hysteria hy2 ssr clash vless wireguard socks5 http https proxy vpn shadowsocksr free server relay tunnel config subscription proxies nodes"
+OUTPUT_DIR = "data"
+NODES_FILE = os.path.join(OUTPUT_DIR, "hy2.txt")
+URLS_FILE = os.path.join(OUTPUT_DIR, "url.txt")
+NODE_PROTOCOLS = ["ss://", "vmess://", "trojan://", "hy2://", "ssr://", "vless://", "http://", "https://", "socks5://", "wg://"]
 
 # 确保输出目录存在
 if not os.path.exists(OUTPUT_DIR):
@@ -54,6 +46,7 @@ def load_existing_urls():
                         unique_urls[url] = timestamp
                     except:
                         continue
+    print(f"调试: 加载了 {len(unique_urls)} 个现有 URL")
     return unique_urls
 
 # 检查文件是否更新
@@ -68,8 +61,11 @@ def is_file_updated(repo, path, existing_timestamp):
                 return True, commit_time.isoformat()
             existing_time = datetime.fromisoformat(existing_timestamp.replace("Z", "+00:00"))
             return commit_time > existing_time, commit_time.isoformat()
-        return False, None
-    except:
+        else:
+            print(f"检查文件更新失败: {response.status_code}, {response.text}")
+            return False, None
+    except Exception as e:
+        print(f"检查文件更新异常: {e}")
         return False, None
 
 # 异步测试 URL 连通性
@@ -78,7 +74,8 @@ async def test_url_connection(url, timeout=5):
         async with aiohttp.ClientSession() as session:
             async with session.get(url, timeout=timeout) as response:
                 return response.status == 200
-    except:
+    except Exception as e:
+        print(f"测试 URL {url} 连通性失败: {e}")
         return False
 
 # 异步测试节点连通性
@@ -94,17 +91,34 @@ async def test_node_connection(node, timeout=5):
                         port = int(vmess_json.get("port", 0))
                     except:
                         return False
-                else:
-                    match = re.match(r"(ss|trojan|hy2|ssr)://[^@]+@([^:]+):(\d+)", node)
+                elif protocol == "vless://":
+                    match = re.match(r"vless://([^@]+)@([^:]+):(\d+)", node)
                     if match:
                         host, port = match.group(2), int(match.group(3))
                     else:
                         return False
-                async with aiohttp.ClientSession() as session:
-                    async with session.head(f"http://{host}:{port}", timeout=timeout) as response:
-                        return response.status == 200
+                elif protocol in ["http://", "https://"]:
+                    try:
+                        async with aiohttp.ClientSession() as session:
+                            async with session.head(node, timeout=timeout) as response:
+                                return response.status == 200
+                    except:
+                        return False
+                elif protocol == "wg://":
+                    return True  # WireGuard 跳过测试
+                else:
+                    match = re.match(r"(ss|trojan|hy2|ssr|socks5)://[^@]+@([^:]+):(\d+)", node)
+                    if match:
+                        host, port = match.group(2), int(match.group(3))
+                    else:
+                        return False
+                if protocol not in ["http://", "https://", "wg://"]:
+                    async with aiohttp.ClientSession() as session:
+                        async with session.head(f"http://{host}:{port}", timeout=timeout) as response:
+                            return response.status == 200
         return False
-    except:
+    except Exception as e:
+        print(f"测试节点 {node} 连通性失败: {e}")
         return False
 
 # 解析 Base64 编码
@@ -134,9 +148,12 @@ def get_file_content(repo, path):
         response = requests.get(raw_url)
         if response.status_code == 200:
             return response.text
-    except:
+        else:
+            print(f"获取文件 {raw_url} 失败: {response.status_code}, {response.text}")
+            return None
+    except Exception as e:
+        print(f"获取文件 {raw_url} 异常: {e}")
         return None
-    return None
 
 # 保存结果
 def save_results():
@@ -146,6 +163,7 @@ def save_results():
     with open(URLS_FILE, "w", encoding="utf-8") as f:
         for url, timestamp in unique_urls.items():
             f.write(f"{url} | {timestamp}\n")
+    print(f"调试: 保存了 {len(unique_nodes)} 个节点到 {NODES_FILE}，{len(unique_urls)} 个 URL 到 {URLS_FILE}")
 
 # 主逻辑
 async def main():
@@ -154,9 +172,14 @@ async def main():
 
     # 搜索 GitHub
     params = {"q": SEARCH_QUERY, "per_page": 100}
-    response = requests.get(GITHUB_API_URL, headers=HEADERS, params=params)
-    if response.status_code != 200:
-        print(f"GitHub API 请求失败: {response.status_code}")
+    try:
+        response = requests.get(GITHUB_API_URL, headers=HEADERS, params=params)
+        if response.status_code != 200:
+            print(f"GitHub API 请求失败: {response.status_code}, {response.text}")
+            return
+        print(f"调试: GitHub API 请求成功，获取 {len(response.json().get('items', []))} 条结果")
+    except Exception as e:
+        print(f"GitHub API 请求异常: {e}")
         return
 
     data = response.json()
@@ -171,6 +194,7 @@ async def main():
         existing_timestamp = unique_urls.get(raw_url)
         should_update, new_timestamp = is_file_updated(repo, path, existing_timestamp)
         if not should_update and existing_timestamp:
+            print(f"调试: 跳过未更新的 URL: {raw_url}")
             continue
 
         # 获取文件内容
@@ -180,7 +204,10 @@ async def main():
 
         # 测试 URL 连通性
         if await test_url_connection(raw_url):
-            unique_urls[raw_url] = new_timestamp or datetime.now(timezone.utc).isoformat()
+            unique_urls[raw_url] = new_timestamp or datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=8))).isoformat()
+            print(f"调试: URL {raw_url} 可连通，时间戳: {unique_urls[raw_url]}")
+        else:
+            print(f"调试: URL {raw_url} 不可连通，跳过")
 
         # 处理文件内容
         lines = file_content.splitlines()
@@ -200,6 +227,7 @@ async def main():
                 cleaned_node = clean_node(line)
                 if cleaned_node not in unique_nodes and await test_node_connection(cleaned_node):
                     unique_nodes.add(cleaned_node)
+                    print(f"调试: 添加节点: {cleaned_node}")
 
             # 尝试解析 YAML
             yaml_data = parse_yaml(line)
@@ -208,28 +236,35 @@ async def main():
                 for proxy in proxies:
                     if isinstance(proxy, dict):
                         node = None
-                        if proxy.get("type") in ["ss", "vmess", "trojan", "hysteria2"]:
-                            server = proxy.get("server")
-                            port = proxy.get("port")
-                            if server and port:
-                                if proxy["type"] == "ss":
-                                    node = f"ss://{proxy.get('cipher')}:{proxy.get('password')}@{server}:{port}"
-                                elif proxy["type"] == "vmess":
-                                    vmess_data = {
-                                        "v": "2",
-                                        "add": server,
-                                        "port": port,
-                                        "id": proxy.get("uuid"),
-                                        "aid": proxy.get("alterId", 0),
-                                        "type": "none"
-                                    }
-                                    node = f"vmess://{base64.b64encode(json.dumps(vmess_data).encode('utf-8')).decode('utf-8')}"
-                                elif proxy["type"] == "trojan":
-                                    node = f"trojan://{proxy.get('password')}@{server}:{port}"
-                                elif proxy["type"] == "hysteria2":
-                                    node = f"hy2://{proxy.get('password')}@{server}:{port}"
+                        proxy_type = proxy.get("type")
+                        server = proxy.get("server")
+                        port = proxy.get("port")
+                        if server and port:
+                            if proxy_type == "ss":
+                                node = f"ss://{proxy.get('cipher')}:{proxy.get('password')}@{server}:{port}"
+                            elif proxy_type == "vmess":
+                                vmess_data = {
+                                    "v": "2",
+                                    "add": server,
+                                    "port": port,
+                                    "id": proxy.get("uuid"),
+                                    "aid": proxy.get("alterId", 0),
+                                    "type": "none"
+                                }
+                                node = f"vmess://{base64.b64encode(json.dumps(vmess_data).encode('utf-8')).decode('utf-8')}"
+                            elif proxy_type == "trojan":
+                                node = f"trojan://{proxy.get('password')}@{server}:{port}"
+                            elif proxy_type == "hysteria2":
+                                node = f"hy2://{proxy.get('password')}@{server}:{port}"
+                            elif proxy_type == "vless":
+                                node = f"vless://{proxy.get('uuid')}@{server}:{port}"
+                            elif proxy_type == "socks5":
+                                node = f"socks5://{proxy.get('username', '')}:{proxy.get('password', '')}@{server}:{port}"
+                            elif proxy_type == "wireguard":
+                                node = f"wg://{server}:{port}"
                             if node and clean_node(node) not in unique_nodes and await test_node_connection(clean_node(node)):
                                 unique_nodes.add(clean_node(node))
+                                print(f"调试: 添加 YAML 节点: {clean_node(node)}")
 
     # 保存结果
     save_results()
