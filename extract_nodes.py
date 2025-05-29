@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 # 配置日志系统
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,  # 启用 DEBUG 日志
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.FileHandler("node_extractor.log"), logging.StreamHandler()]
 )
@@ -33,19 +33,19 @@ def load_config(config_file):
             "extensions": ["txt", "yaml", "yml", "json", "md"],
             "keywords": ["ss://", "vmess://", "trojan://"],
             "filenames": ["config", "nodes", "sub", "proxy", "subscription"],
-            "generic_terms": ["proxy", "vpn", "subscription", "shadowsocks", "v2ray"],
+            "generic_terms": ["proxy", "subscription", "shadowsocks", "v2ray"],
             "excluded_extensions": [
                 "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
                 "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
                 "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
             ]
         },
-        "query_delay_seconds": 10,  # 缩短等待时间
+        "query_delay_seconds": 5,  # 缩短等待时间
         "max_file_size": 2_000_000,  # 2MB
         "history_expiry_days": 30,
         "max_parallel_workers": 2,
         "max_backoff_seconds": 600,
-        "max_pages_per_query": 3
+        "max_pages_per_query": 2  # 减少分页
     }
     if os.path.exists(config_file):
         try:
@@ -106,8 +106,11 @@ if override_query:
     logging.info(f"使用覆盖查询：{override_query}")
 else:
     # 宽泛查询
-    for kw in protocol_keywords + generic_terms:
-        search_queries.append(f"{kw}")
+    for kw in protocol_keywords:
+        search_queries.append(f"{kw} in:file")  # 显式使用 in:file
+    # 通用术语
+    for term in generic_terms:
+        search_queries.append(f"{term} in:file")
     # 关键词 + 扩展名
     for ext in search_extensions:
         for kw in search_keywords:
@@ -118,10 +121,6 @@ else:
     # Base64 编码查询
     for b64_kw in base64_keywords:
         search_queries.append(f"{b64_kw} in:file")
-    # 排除扩展名
-    excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-    general_nodes_query = f'({" OR ".join([f"{kw}" for kw in protocol_keywords + generic_terms])}) in:file {excluded_query_part}'
-    search_queries.append(general_nodes_query)
 logging.info(f"生成了 {len(search_queries)} 个搜索查询")
 
 # 正则表达式
@@ -257,19 +256,22 @@ def process_search_result(result):
         file_content = result.decoded_content.decode('utf-8', errors='ignore')
         found_nodes = NODE_PATTERN.findall(file_content)
         current_run_nodes.update(found_nodes)
+        logging.debug(f"直接正则匹配找到 {len(found_nodes)} 个节点：{found_nodes}")
 
         # 应用提取器
         for extractor in extractors:
-            current_run_nodes.update(extractor.extract(file_content))
+            extracted_nodes = extractor.extract(file_content)
+            current_run_nodes.update(extracted_nodes)
+            logging.debug(f"{extractor.__class__.__name__} 提取到 {len(extracted_nodes)} 个节点：{extracted_nodes}")
 
         # 处理 Base64 编码内容
         base64_pattern = re.compile(r"[A-Za-z0-9+/]{16,}(?:={0,2})")
         for b64_str in base64_pattern.findall(file_content):
             for extractor in extractors:
                 if isinstance(extractor, Base64Extractor):
-                    current_run_nodes.update(extractor.extract(b64_str))
-
-        logging.debug(f"处理了 {result.path}（位于 {result.repository.full_name}）：找到 {len(found_nodes)} 个节点")
+                    extracted_nodes = extractor.extract(b64_str)
+                    current_run_nodes.update(extracted_nodes)
+                    logging.debug(f"Base64 提取到 {len(extracted_nodes)} 个节点：{extracted_nodes}")
 
     except UnknownObjectException as e:
         logging.warning(f"无法访问或对象不存在：{result.path}（位于 {result.repository.full_name}）：{e}")
@@ -305,29 +307,30 @@ def save_as_clash_config(nodes, output_file):
         ],
         "rules": ["MATCH,auto"]
     }
-    for node in sorted(nodes):
+
+    for node in sorted(nodes, key=None):
         proxy = parse_vmess_node(node) or parse_ss_node(node)
         if not proxy:
             proxy = {
-                "name": f"node-{len(clash_config['proxies'])}",
+                "name": f"node.split('://')[0]-{len(clash_config['proxies'])}",
                 "type": node.split("://")[0],
                 "server": "unknown",
                 "port": 0,
                 "node-url": node
             }
-        clash_config["proxies"].append(proxy)
+        clash_config["proxies'].append(proxy)
         clash_config["proxy-groups"][0]["proxies"].append(proxy["name"])
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    with open(output_file, "w", encoding="utf-8") as f:
-        yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
+    with open(output_file, "w', encoding="utf-8") as f:
+        yaml.safe_dump(clash_config, f, allow_unicode=True, sort_keys=False)
     logging.info(f"已保存 Clash 配置文件，包含 {len(clash_config['proxies'])} 个代理到 '{output_file}'")
 
 # 主逻辑
 def main():
     global current_run_nodes
     for query_idx, current_query in enumerate(search_queries):
-        logging.info(f"正在 GitHub 上搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
+        logging.info(f"正在搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
         try:
             rate_limit_before = g.get_rate_limit().core
             reset_timestamp = rate_limit_before.reset.timestamp()
@@ -361,6 +364,7 @@ def main():
                     if "403" in str(e):
                         logging.warning(f"第 {page + 1} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
                         wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
+                        logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                         time.sleep(wait_seconds)
                         continue
                     logging.error(f"处理第 {page + 1} 页时出错：{e}")
@@ -372,29 +376,28 @@ def main():
             logging.warning("GitHub API 速率限制已达上限")
             rate_limit = g.get_rate_limit().core
             reset_timestamp = rate_limit.reset.timestamp()
-            wait_seconds = reset_timestamp - time.time()
-            reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
-            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {int(wait_seconds)}秒...")
-            time.sleep(max(wait_seconds, 1))
+            wait_seconds = reset_timestamp - time.time() + 10
+            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {wait_seconds:.1f} 秒直到 {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}...")
+            time.sleep(max(wait_seconds, 0))
             continue
         except Exception as e:
             if "403" in str(e):
                 logging.warning(f"触发 403 Forbidden 错误，可能为次级速率限制：{e}")
-                wait_seconds = float(CONFIG["max_backoff_seconds"])
+                wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
                 logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                 time.sleep(wait_seconds)
                 continue
-            logging.error(f"搜索查询 '{current_query}' 期间发生错误：{e}")
-            time.sleep(float(CONFIG["query_delay_seconds"]))
+            logging.error(f"搜索查询 '{current_query}' 期间发生意外错误：{e}")
+            time.sleep(CONFIG["query_delay_seconds"])
             continue
 
     # 更新历史记录
     current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     newly_added_count = 0
-    for node in current_run_nodes:
-        if node not in nodes_history:
+    for node_link in current_run_nodes:
+        if node_link not in nodes_history:
             newly_added_count += 1
-        nodes_history[node] = current_timestamp
+        nodes_history[node_link] = current_timestamp
 
     # 清理过期记录
     nodes_history.update(clean_old_nodes(nodes_history))
