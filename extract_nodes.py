@@ -32,7 +32,7 @@ invalid_urls = {}
 async def test_node_connection(session, node, timeout=10):
     """测试节点连通性（仅对 HTTP/HTTPS 订阅链接）"""
     if node.startswith(('trojan://', 'vmess://', 'ss://', 'hy2://', 'vless://')):
-        return True
+        return True  # 非HTTP协议直接通过
     for attempt in range(3):
         try:
             async with session.head(node, timeout=timeout, allow_redirects=True) as response:
@@ -59,24 +59,27 @@ def parse_file_content(content):
     """解析文件内容，提取节点"""
     nodes = []
     
+    # 直接提取节点链接
     node_patterns = [
         r'(trojan://[^\s]+)',
         r'(vmess://[^\s]+)',
         r'(ss://[^\s]+)',
         r'(hy2://[^\s]+)',
         r'(vless://[^\s]+)',
-        r'(https?://[^\s]+)'
+        r'(https?://[^\s]+)'  # 订阅链接
     ]
     
     for pattern in node_patterns:
         matches = re.findall(pattern, content)
         nodes.extend(matches)
     
+    # Base64 解码
     for line in content.splitlines():
         decoded = recursive_decode_base64(line.strip())
         if decoded != line:
             nodes.extend(parse_file_content(decoded))
     
+    # 解析 YAML/JSON
     try:
         data = yaml.safe_load(content)
         if isinstance(data, dict):
@@ -98,6 +101,9 @@ def parse_file_content(content):
                                 nodes.append(node)
         except:
             pass
+    
+    if not nodes:
+        logger.info(f"文件无节点，内容前几行: {content[:100]}")
     
     return nodes
 
@@ -130,6 +136,7 @@ async def process_url(url, session):
         url_node_counts[url] = len(valid_nodes)
         if not valid_nodes:
             invalid_urls[url] = {'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'), 'reason': '无有效节点'}
+            logger.info(f"URL {url} 无有效节点，标记为无效")
         return len(nodes)
     return 0
 
@@ -158,7 +165,7 @@ async def main():
             for node in unique_nodes:
                 f.write(f"{node}\n")
     
-    # 保存无效 URL
+    # 保存无效 URL（追加模式，避免覆盖search_urls.py的结果）
     if invalid_urls:
         with open(os.path.join(DATA_DIR, 'invalid_urls.txt'), 'a', encoding='utf-8') as f:
             for url, info in invalid_urls.items():
@@ -169,6 +176,8 @@ async def main():
     for url, count in url_node_counts.items():
         if count > 0:
             logger.info(f"URL {url} 提供 {count} 个节点")
+        else:
+            logger.info(f"URL {url} 无节点")
     logger.info(f"无效 URL 数量: {len(invalid_urls)}")
 
 if __name__ == "__main__":
