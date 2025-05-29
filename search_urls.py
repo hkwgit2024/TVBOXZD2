@@ -5,6 +5,7 @@ import os
 import requests
 from datetime import datetime
 import pytz
+from urllib.parse import urlparse
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -27,12 +28,13 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 # 存储结果
 unique_urls = set()
-invalid_urls = set()
+invalid_urls = {}
 
 # GitHub API 请求头
 headers = {
     'Authorization': f'token {BOT_TOKEN}',
-    'Accept': 'application/vnd.github.v3+json'
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
 
 # 搜索查询
@@ -46,17 +48,20 @@ SEARCH_QUERIES = [
     'from:mahdibland extension:txt in:file'
 ]
 
-async def test_url_connection(session, url, timeout=10):
+async def test_url_connection(session, url, timeout=15):
     """测试 URL 是否可连接"""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
     for attempt in range(3):
         try:
-            async with session.head(url, timeout=timeout, allow_redirects=True) as response:
+            async with session.head(url, headers=headers, timeout=timeout, allow_redirects=True, proxy=None) as response:
                 if response.status == 200:
                     return True
-                logger.info(f"URL {url} 返回状态码: {response.status}")
+                logger.info(f"URL {url} 返回状态码: {response.status} (尝试 {attempt + 1}/3)")
         except Exception as e:
             logger.info(f"测试 URL {url} 失败 (尝试 {attempt + 1}/3): {str(e)}")
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
     return False
 
 def load_invalid_urls():
@@ -75,6 +80,11 @@ def load_invalid_urls():
 
 async def is_url_updated(session, url, invalid_timestamp):
     """检查 URL 是否有更新"""
+    headers = {
+        "Authorization": f"token {BOT_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
     try:
         parsed = urlparse(url)
         path_parts = parsed.path.split('/')
@@ -128,6 +138,7 @@ async def search_and_process(query, session, invalid_urls):
         except Exception as e:
             logger.info(f"搜索查询 {query} 页 {page} 失败: {str(e)}")
         page += 1
+        await asyncio.sleep(2)  # 避免 API 限流
     return processed_urls
 
 def save_results(invalid_urls):
