@@ -29,19 +29,22 @@ unique_nodes = set()
 url_node_counts = {}
 invalid_urls = {}
 
-async def test_node_connection(session, node, timeout=10):
+async def test_node_connection(session, node, timeout=15):
     """测试节点连通性（仅对 HTTP/HTTPS 订阅链接）"""
     if node.startswith(('trojan://', 'vmess://', 'ss://', 'hy2://', 'vless://')):
         return True  # 非HTTP协议直接通过
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
     for attempt in range(3):
         try:
-            async with session.head(node, timeout=timeout, allow_redirects=True) as response:
+            async with session.head(node, headers=headers, timeout=timeout, allow_redirects=True, proxy=None) as response:
                 if response.status == 200:
                     return True
-                logger.info(f"节点 {node} 返回状态码: {response.status}")
+                logger.info(f"节点 {node} 返回状态码: {response.status} (尝试 {attempt + 1}/3)")
         except Exception as e:
             logger.info(f"测试节点 {node} 失败 (尝试 {attempt + 1}/3): {str(e)}")
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
     return False
 
 def recursive_decode_base64(text):
@@ -76,50 +79,89 @@ def parse_file_content(content):
     # Base64 解码
     for line in content.splitlines():
         decoded = recursive_decode_base64(line.strip())
-        if decoded != line:
+        if decoded != line.strip():
             nodes.extend(parse_file_content(decoded))
     
-    # 解析 YAML/JSON
+    # 解析 YAML
     try:
         data = yaml.safe_load(content)
-        if isinstance(data, dict):
-            for key in ['proxies', 'servers', 'nodes', 'outbounds', 'proxy-groups']:
-                if key in data and isinstance(data[key], list):
-                    for item in data[key]:
-                        if isinstance(item, dict) and 'server' in item:
-                            node = f"{item.get('protocol', 'trojan')}://{item.get('password')}@{item['server']}:{item.get('port')}"
+        if isinstance(data, dict) and 'proxies' in data and isinstance(data['proxies'], list):
+            for item in data['proxies']:
+                if isinstance(item, dict):
+                    node_type = item.get('type', '').lower()
+                    if node_type in ['trojan', 'vmess', 'ss', 'vless']:
+                        server = item.get('server')
+                        port = item.get('port')
+                        password = item.get('password') or item.get('uuid')
+                        if server and port and password:
+                            try:
+                                if node_type == 'vmess':
+                                    node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
+                            elif node_type == 'ss':
+                                cipher = item.get('cipher', 'aes-256-gcm')
+                                node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
+                            else:
+                                node = f"{node_type}://{password}@{server}:{port}"
                             nodes.append(node)
-    except:
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict):
-                for key in ['proxies', 'servers', 'nodes', 'outbounds']:
-                    if key in data and isinstance(data[key], list):
-                        for item in data[key]:
-                            if isinstance(item, dict) and 'server' in item:
-                                node = f"{item.get('type', 'trojan')}://{item.get('password')}@{item['server']}:{item.get('port')}"
-                                nodes.append(node)
-        except:
-            pass
+    except yaml.YAMLError as e:
+        logger.info(f"YAML 解析失败: {str(e)}")
+    except Exception as e:
+        logger.info(f"解析 YAML 时出错: {str(e)}")
+    
+    # 解析 JSON
+    try:
+        data = json.loads(content)
+        if isinstance(data, dict) and 'proxies' in data and isinstance(data['proxies'], list):
+            for item in data['proxies']:
+                if isinstance(item, dict):
+                    node_type = item.get('type', '').lower()
+                    if node_type in ['trojan', 'vmess', 'ss', 'vless']:
+                        server = item.get('server')
+                        port = item.get('port')
+                        password = item.get('password') or item.get('uuid')
+                        if server and port and password:
+                            if node_type == 'vmess':
+                                node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
+                            elif node_type == 'ss':
+                                cipher = item.get('cipher', 'aes-256-gcm')
+                                node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
+                            else:
+                                node = f"{node_type}://{password}@{server}:{port}"
+                            nodes.append(node)
+    except json.JSONDecodeError as e:
+        logger.info(f"JSON 解析失败: {str(e)}")
+    except Exception as e:
+        logger.info(f"解析 JSON 时出错: {str(e)}")
     
     if not nodes:
         logger.info(f"文件无节点，内容前几行: {content[:100]}")
     
     return nodes
 
-async def fetch_file(session, url):
+async def fetch_file(session, url, retries=3):
     """获取文件内容"""
-    try:
-        async with session.get(url, timeout=10) as response:
-            if response.status == 200:
-                content = await response.text()
-                logger.info(f"成功获取文件 {url}")
-                return content
-            logger.info(f"获取文件 {url} 失败，状态码: {response.status}")
-            invalid_urls[url] = {'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'), 'reason': f'状态码 {response.status}'}
-    except Exception as e:
-        logger.info(f"获取文件 {url} 失败: {str(e)}")
-        invalid_urls[url] = {'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'), 'reason': str(e)}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
+    for attempt in range(retries):
+        try:
+            async with session.get(url, headers=headers, timeout=15, proxy=None) as response:
+                if response.status == 200:
+                    content = await response.text()
+                    logger.info(f"成功获取文件 {url}")
+                    return content
+                logger.info(f"获取文件 {url} 失败，状态码: {response.status} (尝试 {attempt + 1}/{retries})")
+                invalid_urls[url] = {
+                    'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
+                    'reason': f'状态码 {response.status}'
+                }
+        except Exception as e:
+            logger.info(f"获取文件 {url} 失败: {str(e)} (尝试 {attempt + 1}/{retries})")
+            invalid_urls[url] = {
+                'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
+                'reason': str(e)
+            }
+        await asyncio.sleep(2)  # 重试间隔
     return None
 
 async def process_url(url, session):
