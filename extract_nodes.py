@@ -12,21 +12,21 @@ from github import Github
 from github.GithubException import RateLimitExceededException, UnknownObjectException
 from tqdm import tqdm
 
-# 配置日志系统
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.FileHandler("node_extractor.log"), logging.StreamHandler()]
 )
 
-# 命令行参数解析
+# Parse command-line arguments
 parser = argparse.ArgumentParser(description="GitHub Node Extractor")
 parser.add_argument("--output", default="data/clash_config.yaml", help="Output Clash config file path")
 parser.add_argument("--history", default="data/nodes_history.json", help="History file path")
 parser.add_argument("--config", default="config.yaml", help="Configuration file path")
 args = parser.parse_args()
 
-# 加载配置文件
+# Load configuration file
 def load_config(config_file):
     default_config = {
         "search": {
@@ -57,14 +57,14 @@ CONFIG = load_config(args.config)
 HISTORY_FILE = args.history
 OUTPUT_FILE = args.output
 
-# 初始化 GitHub 客户端
+# Initialize GitHub client
 GITHUB_TOKEN = os.getenv("BOT")
 if not GITHUB_TOKEN:
     logging.error("GitHub token (BOT) not found. Please set the 'BOT' environment variable.")
     exit(1)
 g = Github(GITHUB_TOKEN)
 
-# 加载历史记录
+# Load history file
 nodes_history = {}
 if os.path.exists(HISTORY_FILE):
     try:
@@ -72,7 +72,7 @@ if os.path.exists(HISTORY_FILE):
             nodes_history = json.load(f)
         logging.info(f"Loaded {len(nodes_history)} nodes from history: {HISTORY_FILE}")
     except json.JSONDecodeError:
-        logging.warning(fbackward compatibilityCould not decode JSON from {HISTORY_FILE}. Starting with empty history.")
+        logging.warning(f"Could not decode JSON from {HISTORY_FILE}. Starting with empty history.")
         nodes_history = {}
     except Exception as e:
         logging.error(f"Failed to load history file {HISTORY_FILE}: {e}. Starting with empty history.")
@@ -80,29 +80,33 @@ if os.path.exists(HISTORY_FILE):
 
 current_run_nodes = set()
 
-# 协议和搜索关键词
+# Protocol and search keywords
 protocol_keywords = CONFIG["search"]["keywords"]
 search_keywords = protocol_keywords + [kw.split("://")[0] for kw in protocol_keywords if "://" in kw]
 search_extensions = CONFIG["search"]["extensions"]
 excluded_extensions = CONFIG["search"]["excluded_extensions"]
 
-# 生成搜索查询
+# Generate search queries
 search_queries = []
-for ext in search_extensions:
-    for kw in search_keywords:
-        search_queries.append(f'"{kw}" in:file extension:{ext}')
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config')
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes')
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
-excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-general_nodes_query = f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file {excluded_query_part}'
-search_queries.append(general_nodes_query)
+override_query = os.getenv("OVERRIDE_SEARCH_QUERY")
+if override_query:
+    search_queries.append(override_query)
+else:
+    for ext in search_extensions:
+        for kw in search_keywords:
+            search_queries.append(f'"{kw}" in:file extension:{ext}')
+    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config')
+    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes')
+    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
+    excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
+    general_nodes_query = f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file {excluded_query_part}'
+    search_queries.append(general_nodes_query)
 logging.info(f"Generated {len(search_queries)} search queries.")
 
-# 正则表达式
+# Regular expression for node extraction
 NODE_PATTERN = re.compile(r"(ss://[^\s]+|ssr://[^\s]+|vmess://[^\s]+|trojan://[^\s]+|vless://[^\s]+|hysteria://[^\s]+)")
 
-# 节点提取器接口
+# Node extractor interface
 class NodeExtractor:
     def extract(self, content):
         raise NotImplementedError
@@ -150,7 +154,7 @@ class YAMLExtractor(NodeExtractor):
 
 extractors = [Base64Extractor(), YAMLExtractor()]
 
-# 处理单个搜索结果
+# Process a single search result
 def process_search_result(result):
     global current_run_nodes
     try:
@@ -162,11 +166,11 @@ def process_search_result(result):
         found_nodes = NODE_PATTERN.findall(file_content)
         current_run_nodes.update(found_nodes)
 
-        # 应用提取器
+        # Apply extractors
         for extractor in extractors:
             current_run_nodes.update(extractor.extract(file_content))
 
-        # 处理 Base64 编码内容
+        # Process Base64 encoded content
         base64_pattern = re.compile(r"[A-Za-z0-9+/]{16,}(?:={0,2})")
         for b64_str in base64_pattern.findall(file_content):
             for extractor in extractors:
@@ -180,18 +184,18 @@ def process_search_result(result):
     except Exception as e:
         logging.error(f"Error processing {result.path} in {result.repository.full_name}: {e}")
 
-# 并行处理搜索结果
+# Parallel processing of search results
 def process_search_results_parallel(results, max_workers):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         list(tqdm(executor.map(process_search_result, results), desc="Processing search results", unit="file"))
 
-# 清理过期历史记录
+# Clean old history entries
 def clean_old_nodes(history):
     now = datetime.datetime.now(datetime.timezone.utc)
     cutoff = now - datetime.timedelta(days=CONFIG["history_expiry_days"])
     return {k: v for k, v in history.items() if datetime.datetime.fromisoformat(v) > cutoff}
 
-# 生成 Clash 配置文件
+# Generate Clash configuration
 def save_as_clash_config(nodes, output_file):
     clash_config = {
         "proxies": [],
@@ -209,13 +213,12 @@ def save_as_clash_config(nodes, output_file):
         ]
     }
     for idx, node in enumerate(sorted(nodes)):
-        # 简单处理：将节点链接作为名称，实际需解析节点详情
         proxy = {
             "name": f"node-{idx}",
-            "type": node.split("://")[0],  # 提取协议类型
-            "server": "unknown",  # 需解析节点获取实际服务器地址
-            "port": 0,  # 需解析节点获取实际端口
-            "node-url": node  # 保留原始节点链接
+            "type": node.split("://")[0],
+            "server": "unknown",
+            "port": 0,
+            "node-url": node
         }
         clash_config["proxies"].append(proxy)
         clash_config["proxy-groups"][0]["proxies"].append(f"node-{idx}")
@@ -225,7 +228,7 @@ def save_as_clash_config(nodes, output_file):
         yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
     logging.info(f"Saved Clash config with {len(nodes)} proxies to '{output_file}'")
 
-# 主逻辑
+# Main logic
 def main():
     global current_run_nodes
     for current_query in search_queries:
@@ -253,7 +256,7 @@ def main():
             logging.error(f"Unexpected error during search query '{current_query}': {e}")
             continue
 
-    # 更新历史记录
+    # Update history
     current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     newly_added_count = 0
     for node_link in current_run_nodes:
@@ -261,7 +264,7 @@ def main():
             newly_added_count += 1
         nodes_history[node_link] = current_timestamp
 
-    # 清理过期记录
+    # Clean expired history entries
     nodes_history.update(clean_old_nodes(nodes_history))
 
     logging.info(f"\n--- Node History Update ---")
@@ -269,7 +272,7 @@ def main():
     logging.info(f"Newly added nodes to history: {newly_added_count}")
     logging.info(f"Total nodes in history: {len(nodes_history)}")
 
-    # 保存历史记录
+    # Save history
     os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
     try:
         with open(HISTORY_FILE, "w", encoding="utf-8") as f:
@@ -278,7 +281,7 @@ def main():
     except Exception as e:
         logging.error(f"Failed to save history file {HISTORY_FILE}: {e}")
 
-    # 保存为 Clash 配置文件
+    # Save Clash configuration
     save_as_clash_config(current_run_nodes, OUTPUT_FILE)
 
 if __name__ == "__main__":
