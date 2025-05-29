@@ -43,7 +43,7 @@ jobs:
         # 强烈建议将此Token作为GitHub Secrets存储，以保护您的凭据。
         # 这里的 GH_TOKEN 是您在仓库Secrets中设置的名称。
         # 如果您的 Secret 名称是 BOT，请将 ${{ secrets.GH_TOKEN }} 改为 ${{ secrets.BOT }}。
-        BOT: ${{ secrets.GH_BOT }} 
+        BOT: ${{ secrets.BOT }} 
         # 将手动触发时传入的自定义查询作为环境变量传递给脚本。
         # 脚本可以读取这个环境变量来决定是否覆盖其内部的 search_queries。
         OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
