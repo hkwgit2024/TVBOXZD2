@@ -50,7 +50,7 @@ jobs:
       run: |
         # 运行您的Python脚本
         # 假设您的Python脚本名为 `extract_nodes.py`
-        python extract_nodes.py
+        python github_node_search.py
         
     - name: Upload extracted nodes as artifact
       uses: actions/upload-artifact@v4
