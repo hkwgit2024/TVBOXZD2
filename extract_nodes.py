@@ -30,19 +30,20 @@ args = parser.parse_args()
 def load_config(config_file):
     default_config = {
         "search": {
-            "extensions": ["txt", "md", "json", "yaml", "yml", "conf", "cfg"],
-            "keywords": ["ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://"],
+            "extensions": ["txt", "yaml", "yml"],  # 精简扩展名
+            "keywords": ["ss://", "vmess://", "trojan://"],  # 精简关键词
             "excluded_extensions": [
                 "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
                 "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
                 "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
             ]
         },
-        "query_delay_seconds": 38,
+        "query_delay_seconds": 60,  # 增加查询间隔
         "max_file_size": 1_000_000,  # 1MB
         "history_expiry_days": 30,
-        "max_parallel_workers": 5,
-        "max_backoff_seconds": 300  # 最大退避时间
+        "max_parallel_workers": 3,  # 减少并行线程
+        "max_backoff_seconds": 600,  # 增加最大退避时间
+        "max_pages_per_query": 10  # 限制每个查询的分页数
     }
     if os.path.exists(config_file):
         try:
@@ -97,9 +98,9 @@ else:
     for ext in search_extensions:
         for kw in search_keywords:
             search_queries.append(f'"{kw}" in:file extension:{ext}')
-    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config')
-    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes')
-    search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
+    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:config')
+    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:nodes')
+    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:sub')
     excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
     general_nodes_query = f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file {excluded_query_part}'
     search_queries.append(general_nodes_query)
@@ -188,8 +189,11 @@ def process_search_result(result):
 
 # 并行处理搜索结果
 def process_search_results_parallel(results, max_workers):
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        list(tqdm(executor.map(process_search_result, results), desc="处理搜索结果", unit="文件"))
+    try:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            list(tqdm(executor.map(process_search_result, results), desc="处理搜索结果", unit="文件"))
+    except Exception as e:
+        logging.error(f"并行处理搜索结果时出错：{e}")
 
 # 清理过期历史记录
 def clean_old_nodes(history):
@@ -233,38 +237,56 @@ def save_as_clash_config(nodes, output_file):
 # 主逻辑
 def main():
     global current_run_nodes
-    for current_query in search_queries:
-        logging.info(f"正在 GitHub 上搜索：'{current_query}'...")
+    for query_idx, current_query in enumerate(search_queries):
+        logging.info(f"正在 GitHub 上搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
         try:
             rate_limit_before = g.get_rate_limit().core
-            reset_timestamp = rate_limit_before.reset.timestamp()
+            reset_timestamp = rate_limit_before reset_timestamp = rate_limit_before.reset.timestamp()
             logging.info(f"查询前 - 剩余 API 调用次数：{rate_limit_before.remaining}/{rate_limit_before.limit}，重置时间：{time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}")
 
-            if rate_limit_before.remaining <= 10:  # 留一些余量
-                wait_seconds = reset_timestamp - time.time() + 5
-                logging.warning(f"API 调用次数不足（剩余 {rate_limit_before.remaining}），等待 {wait_seconds} 秒直到 {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}...")
+            if rate_limit_before.remaining <= 20:  # 增加余量
+                wait_seconds = reset_timestamp - time.time() + 10
+                logging.warning(f"API 调用次数不足（剩余 {rate_limit_before.remaining}），等待 {wait_seconds:.1f} 秒直到 {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}...")
                 time.sleep(max(wait_seconds, 0))
                 continue
 
-            search_results = g.search_code(query=current_query)
-            process_search_results_parallel(search_results, CONFIG["max_parallel_workers"])
-            logging.info(f"完成查询 '{current_query}' 的结果处理")
+            search_results = g.search_code(query=current_query, per_page=100)
+            page_count = 0
+            for page in range(1, CONFIG["max_pages_per_query"] + 1):
+                try:
+                    results_page = search_results.get_page(page - 1)
+                    if not results_page:
+                        break
+                    logging.info(f"处理查询 '{current_query}' 的第 {page} 页")
+                    process_search_results_parallel(results_page, CONFIG["max_parallel_workers"])
+                    page_count += 1
+                    time.sleep(1)  # 每页请求间增加短暂延迟
+                except Exception as e:
+                    if "403" in str(e):
+                        logging.warning(f"第 {page} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
+                        wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
+                        logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
+                        time.sleep(wait_seconds)
+                        continue
+                    logging.error(f"处理第 {page} 页时出错：{e}")
+                    break
+            logging.info(f"完成查询 '{current_query}' 的结果处理，共处理 {page_count} 页")
             time.sleep(CONFIG["query_delay_seconds"])
 
         except RateLimitExceededException:
             logging.warning("GitHub API 速率限制已达上限")
             rate_limit = g.get_rate_limit().core
             reset_timestamp = rate_limit.reset.timestamp()
-            wait_seconds = reset_timestamp - time.time() + 5
+            wait_seconds = reset_timestamp - time.time() + 10
             reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
-            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {wait_seconds} 秒直到 {reset_time_utc}...")
+            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {wait_seconds:.1f} 秒直到 {reset_time_utc}...")
             time.sleep(max(wait_seconds, 0))
             continue
         except Exception as e:
             if "403" in str(e):
-                logging.warning(f"遇到 403 Forbidden 错误，可能触发次级速率限制：{e}")
-                wait_seconds = min(CONFIG["max_backoff_seconds"], 300)  # 默认等待 5 分钟
-                logging.info(f"等待 {wait_seconds} 秒后重试...")
+                logging.warning(f"触发 403 Forbidden 错误，可能为次级速率限制：{e}")
+                wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
+                logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                 time.sleep(wait_seconds)
                 continue
             logging.error(f"搜索查询 '{current_query}' 期间发生意外错误：{e}")
