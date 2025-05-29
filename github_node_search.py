@@ -29,13 +29,14 @@ RAW_HEADERS = {
     "Accept": "application/octet-stream"
 }
 SEARCH_QUERIES = [
-    "clash proxies extension:yaml in:file -in:path manifest -in:path skaffold",
+    "clash proxies extension:yaml in:file -in:path manifest -in:path skaffold -in:path locale",
     "v2ray outbounds extension:json in:file",
     "trojan nodes extension:txt in:file",
     "hysteria hy2 extension:txt",
     "ssr shadowsocksr extension:txt",
     "vless server extension:txt",
     "free proxy subscription extension:txt",
+    "clash subs user:dongchengjie extension:yaml",
     "clash config user:freefq extension:yaml",
     "v2ray nodes user:Alvin9999 extension:txt",
     "xray config extension:json in:file"
@@ -67,6 +68,19 @@ def load_existing_urls():
                         continue
     print(f"调试: 加载了 {len(unique_urls)} 个现有 URL")
     return unique_urls
+
+# 获取仓库默认分支
+def get_default_branch(repo):
+    repo_url = f"https://api.github.com/repos/{repo}"
+    try:
+        response = requests.get(repo_url, headers=HEADERS)
+        if response.status_code == 200:
+            return response.json().get("default_branch", "main")
+        print(f"获取 {repo} 默认分支失败: {response.status_code}, {response.text}")
+        return "main"
+    except Exception as e:
+        print(f"获取 {repo} 默认分支异常: {e}")
+        return "main"
 
 # 检查文件是否更新
 def is_file_updated(repo, path, existing_timestamp):
@@ -106,8 +120,8 @@ async def test_node_connection(node, timeout=5):
     try:
         for protocol in NODE_PROTOCOLS:
             if node.startswith(protocol):
-                if protocol in ["hy2://", "wg://"]:
-                    return True  # 跳过 UDP 或复杂协议测试
+                if protocol in ["hy2://", "wg://", "trojan://"]:
+                    return True  # 跳过复杂协议测试
                 if protocol == "vmess://":
                     try:
                         vmess_data = base64.b64decode(node[len("vmess://"):]).decode("utf-8")
@@ -130,7 +144,7 @@ async def test_node_connection(node, timeout=5):
                     except:
                         return False
                 else:
-                    match = re.match(r"(ss|trojan|ssr|socks5)://[^@]+@([^:]+):(\d+)", node)
+                    match = re.match(r"(ss|ssr|socks5)://[^@]+@([^:]+):(\d+)", node)
                     if match:
                         host, port = match.group(2), int(match.group(3))
                     else:
@@ -178,11 +192,12 @@ def clean_node(node):
     return re.split(r"#", node)[0].strip()
 
 # 获取文件内容
-def get_file_content(repo, path):
+def get_file_content(repo, path, branch="main"):
     if not any(path.lower().endswith(ext) for ext in VALID_EXTENSIONS):
         print(f"调试: 跳过无效文件扩展名: {path}")
         return None
-    raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path, safe='')}"
+    raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{quote(path, safe='')}"
+    print(f"调试: 尝试获取文件: {raw_url}")
     try:
         response = requests.get(raw_url, headers=RAW_HEADERS)
         if response.status_code == 200:
@@ -234,7 +249,8 @@ async def main():
             for item in items:
                 repo = item["repository"]["full_name"]
                 path = item["path"]
-                raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path, safe='')}"
+                branch = get_default_branch(repo)
+                raw_url = f"https://raw.githubusercontent.com/{repo}/{branch}/{quote(path, safe='')}"
 
                 # 检查是否需要更新
                 existing_timestamp = unique_urls.get(raw_url)
@@ -244,7 +260,7 @@ async def main():
                     continue
 
                 # 获取文件内容
-                file_content = get_file_content(repo, path)
+                file_content = get_file_content(repo, path, branch)
                 if not file_content:
                     continue
 
@@ -289,7 +305,11 @@ async def main():
                     # 尝试解析 YAML 或 JSON
                     config_data = parse_config(line)
                     if config_data and isinstance(config_data, dict):
-                        proxies = config_data.get("proxies", []) or config_data.get("servers", []) or config_data.get("nodes", []) or config_data.get("outbounds", [])
+                        proxies = (config_data.get("proxies", []) or 
+                                  config_data.get("servers", []) or 
+                                  config_data.get("nodes", []) or 
+                                  config_data.get("outbounds", []) or 
+                                  config_data.get("proxy-groups", []))
                         for proxy in proxies:
                             if isinstance(proxy, dict):
                                 node = None
