@@ -1,255 +1,285 @@
-import aiohttp
-import asyncio
-import base64
-import json
-import logging
 import os
 import re
+import base64
 import yaml
-import requests
-from datetime import datetime
-import pytz
-from urllib.parse import urlparse
+import json
+import time
+import datetime
+import logging
+import argparse
+from concurrent.futures import ThreadPoolExecutor
+from github import Github
+from github.GithubException import RateLimitExceededException, UnknownObjectException
+from tqdm import tqdm
 
-# 设置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
-logger = logging.getLogger(__name__)
-handler = logging.FileHandler('data/extract.log')
-handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
-logger.addHandler(handler)
+# 配置日志系统
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.FileHandler("node_extractor.log"), logging.StreamHandler()]
+)
 
-# 上海时区
-SHANGHAI_TZ = pytz.timezone('Asia/Shanghai')
+# 命令行参数解析
+parser = argparse.ArgumentParser(description="GitHub Node Extractor")
+parser.add_argument("--output", default="data/clash_config.yaml", help="Output Clash config file path")
+parser.add_argument("--history", default="data/nodes_history.json", help="History file path")
+parser.add_argument("--config", default="config.yaml", help="Configuration file path")
+args = parser.parse_args()
 
-# 数据目录
-DATA_DIR = 'data'
-os.makedirs(DATA_DIR, exist_ok=True)
-
-# 存储结果
-unique_nodes = set()
-url_node_counts = {}
-invalid_urls = {}
-
-async def test_node_connection(session, node, timeout=15):
-    """测试节点连通性（仅对 HTTP/HTTPS 订阅链接）"""
-    if node.startswith(('trojan://', 'vmess://', 'ss://', 'hy2://', 'vless://')):
-        return True  # 非HTTP协议直接通过
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+# 加载配置文件
+def load_config(config_file):
+    default_config = {
+        "search": {
+            "extensions": ["txt", "md", "json", "yaml", "yml", "conf", "cfg"],
+            "keywords": ["ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://"],
+            "excluded_extensions": [
+                "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
+                "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
+                "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
+            ]
+        },
+        "query_delay_seconds": 38,
+        "max_file_size": 1_000_000,  # 1MB
+        "history_expiry_days": 30,
+        "max_parallel_workers": 5
     }
-    for attempt in range(3):
+    if os.path.exists(config_file):
         try:
-            async with session.head(node, headers=headers, timeout=timeout, allow_redirects=True, proxy=None) as response:
-                if response.status == 200:
-                    return True
-                logger.info(f"节点 {node} 返回状态码: {response.status} (尝试 {attempt + 1}/3)")
+            with open(config_file, "r", encoding="utf-8") as f:
+                user_config = yaml.safe_load(f)
+            default_config.update(user_config)
+            logging.info(f"Loaded configuration from {config_file}")
         except Exception as e:
-            logger.info(f"测试节点 {node} 失败 (尝试 {attempt + 1}/3): {str(e)}")
-        await asyncio.sleep(2)
-    return False
+            logging.warning(f"Failed to load config file {config_file}: {e}. Using default config.")
+    return default_config
 
-def recursive_decode_base64(text):
-    """递归解码 Base64 编码的内容"""
-    try:
-        decoded = base64.b64decode(text).decode('utf-8')
-        try:
-            return recursive_decode_base64(decoded)
-        except:
-            return decoded
-    except:
-        return text
+CONFIG = load_config(args.config)
+HISTORY_FILE = args.history
+OUTPUT_FILE = args.output
 
-def parse_file_content(content):
-    """解析文件内容，提取节点"""
-    nodes = []
-    
-    # 直接提取节点链接
-    node_patterns = [
-        r'(trojan://[^\s]+)',
-        r'(vmess://[^\s]+)',
-        r'(ss://[^\s]+)',
-        r'(hy2://[^\s]+)',
-        r'(vless://[^\s]+)',
-        r'(https?://[^\s]+)'  # 订阅链接
-    ]
-    
-    for pattern in node_patterns:
-        matches = re.findall(pattern, content)
-        nodes.extend(matches)
-    
-    # Base64 解码
-    for line in content.splitlines():
-        decoded = recursive_decode_base64(line.strip())
-        if decoded != line.strip():
-            nodes.extend(parse_file_content(decoded))
-    
-    # 解析 YAML
+# 初始化 GitHub 客户端
+GITHUB_TOKEN = os.getenv("BOT")
+if not GITHUB_TOKEN:
+    logging.error("GitHub token (BOT) not found. Please set the 'BOT' environment variable.")
+    exit(1)
+g = Github(GITHUB_TOKEN)
+
+# 加载历史记录
+nodes_history = {}
+if os.path.exists(HISTORY_FILE):
     try:
-        data = yaml.safe_load(content)
-        if isinstance(data, dict) and 'proxies' in data and isinstance(data['proxies'], list):
-            for item in data['proxies']:
-                if isinstance(item, dict):
-                    node_type = item.get('type', '').lower()
-                    if node_type in ['trojan', 'vmess', 'ss', 'vless']:
-                        server = item.get('server')
-                        port = item.get('port')
-                        password = item.get('password') or item.get('uuid')
-                        if server and port and password:
-                            try:
-                                if node_type == 'vmess':
-                                    node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
-                                elif node_type == 'ss':
-                                    cipher = item.get('cipher', 'aes-256-gcm')
-                                    node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
-                                else:
-                                    node = f"{node_type}://{password}@{server}:{port}"
-                                nodes.append(node)
-                            except Exception as e:
-                                logger.info(f"生成 {node_type} 节点失败: {str(e)}")
-    except yaml.YAMLError as e:
-        logger.info(f"YAML 解析失败: {str(e)}")
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            nodes_history = json.load(f)
+        logging.info(f"Loaded {len(nodes_history)} nodes from history: {HISTORY_FILE}")
+    except json.JSONDecodeError:
+        logging.warning(fbackward compatibilityCould not decode JSON from {HISTORY_FILE}. Starting with empty history.")
+        nodes_history = {}
     except Exception as e:
-        logger.info(f"解析 YAML 时出错: {str(e)}")
-    
-    # 解析 JSON
-    try:
-        data = json.loads(content)
-        if isinstance(data, dict) and 'proxies' in data and isinstance(data['proxies'], list):
-            for item in data['proxies']:
-                if isinstance(item, dict):
-                    node_type = item.get('type', '').lower()
-                    if node_type in ['trojan', 'vmess', 'ss', 'vless']:
-                        server = item.get('server')
-                        port = item.get('port')
-                        password = item.get('password') or item.get('uuid')
-                        if server and port and password:
-                            try:
-                                if node_type == 'vmess':
-                                    node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
-                                elif node_type == 'ss':
-                                    cipher = item.get('cipher', 'aes-256-gcm')
-                                    node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
-                                else:
-                                    node = f"{node_type}://{password}@{server}:{port}"
-                                nodes.append(node)
-                            except Exception as e:
-                                logger.info(f"生成 {node_type} 节点失败: {str(e)}")
-    except json.JSONDecodeError as e:
-        logger.info(f"JSON 解析失败: {str(e)}")
-    except Exception as e:
-        logger.info(f"解析 JSON 时出错: {str(e)}")
-    
-    if not nodes:
-        logger.info(f"文件无节点，内容前几行: {content[:100]}")
-    
-    return nodes
+        logging.error(f"Failed to load history file {HISTORY_FILE}: {e}. Starting with empty history.")
+        nodes_history = {}
 
-async def fetch_file(session, url, retries=3):
-    """获取文件内容"""
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br"
-    }
-    for attempt in range(retries):
+current_run_nodes = set()
+
+# 协议和搜索关键词
+protocol_keywords = CONFIG["search"]["keywords"]
+search_keywords = protocol_keywords + [kw.split("://")[0] for kw in protocol_keywords if "://" in kw]
+search_extensions = CONFIG["search"]["extensions"]
+excluded_extensions = CONFIG["search"]["excluded_extensions"]
+
+# 生成搜索查询
+search_queries = []
+for ext in search_extensions:
+    for kw in search_keywords:
+        search_queries.append(f'"{kw}" in:file extension:{ext}')
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config')
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes')
+search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
+excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
+general_nodes_query = f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file {excluded_query_part}'
+search_queries.append(general_nodes_query)
+logging.info(f"Generated {len(search_queries)} search queries.")
+
+# 正则表达式
+NODE_PATTERN = re.compile(r"(ss://[^\s]+|ssr://[^\s]+|vmess://[^\s]+|trojan://[^\s]+|vless://[^\s]+|hysteria://[^\s]+)")
+
+# 节点提取器接口
+class NodeExtractor:
+    def extract(self, content):
+        raise NotImplementedError
+
+class Base64Extractor(NodeExtractor):
+    def extract(self, content):
+        links = []
         try:
-            async with session.get(url, headers=headers, timeout=20, proxy=None) as response:
-                if response.status == 200:
-                    content = await response.text()
-                    logger.info(f"成功获取文件 {url}")
-                    return content
-                logger.info(f"获取文件 {url} 失败，状态码: {response.status} (尝试 {attempt + 1}/{retries})")
-                invalid_urls[url] = {
-                    'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
-                    'reason': f'状态码 {response.status}'
-                }
-        except Exception as e:
-            logger.info(f"获取文件 {url} 失败: {str(e)} (尝试 {attempt + 1}/{retries})")
-            invalid_urls[url] = {
-                'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
-                'reason': str(e)
+            cleaned_text = content.replace(" ", "").replace("\n", "").replace("\r", "")
+            padding_needed = 4 - (len(cleaned_text) % 4)
+            if padding_needed != 4:
+                cleaned_text += '=' * padding_needed
+            decoded_bytes = base64.b64decode(cleaned_text, validate=True)
+            decoded_string = decoded_bytes.decode('utf-8', errors='ignore')
+            links.extend(NODE_PATTERN.findall(decoded_string))
+        except Exception:
+            pass
+        return links
+
+class YAMLExtractor(NodeExtractor):
+    def extract(self, content):
+        links = []
+        try:
+            data = yaml.safe_load(content)
+            if isinstance(data, (dict, list)):
+                def find_urls_in_yaml(item):
+                    if isinstance(item, dict):
+                        for key, value in item.items():
+                            if isinstance(value, str):
+                                links.extend(NODE_PATTERN.findall(value))
+                            else:
+                                find_urls_in_yaml(value)
+                    elif isinstance(item, list):
+                        for value in item:
+                            if isinstance(value, str):
+                                links.extend(NODE_PATTERN.findall(value))
+                            else:
+                                find_urls_in_yaml(value)
+                    elif isinstance(item, str):
+                        links.extend(NODE_PATTERN.findall(item))
+                find_urls_in_yaml(data)
+        except yaml.YAMLError:
+            pass
+        return links
+
+extractors = [Base64Extractor(), YAMLExtractor()]
+
+# 处理单个搜索结果
+def process_search_result(result):
+    global current_run_nodes
+    try:
+        if result.size > CONFIG["max_file_size"]:
+            logging.warning(f"Skipping {result.path} in {result.repository.full_name}: File size {result.size} exceeds {CONFIG['max_file_size']} bytes.")
+            return
+
+        file_content = result.decoded_content.decode('utf-8', errors='ignore')
+        found_nodes = NODE_PATTERN.findall(file_content)
+        current_run_nodes.update(found_nodes)
+
+        # 应用提取器
+        for extractor in extractors:
+            current_run_nodes.update(extractor.extract(file_content))
+
+        # 处理 Base64 编码内容
+        base64_pattern = re.compile(r"[A-Za-z0-9+/]{16,}(?:={0,2})")
+        for b64_str in base64_pattern.findall(file_content):
+            for extractor in extractors:
+                if isinstance(extractor, Base64Extractor):
+                    current_run_nodes.update(extractor.extract(b64_str))
+
+        logging.debug(f"Processed {result.path} in {result.repository.full_name}: Found {len(found_nodes)} nodes.")
+
+    except UnknownObjectException as e:
+        logging.warning(f"Access denied or object not found for {result.path} in {result.repository.full_name}: {e}")
+    except Exception as e:
+        logging.error(f"Error processing {result.path} in {result.repository.full_name}: {e}")
+
+# 并行处理搜索结果
+def process_search_results_parallel(results, max_workers):
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        list(tqdm(executor.map(process_search_result, results), desc="Processing search results", unit="file"))
+
+# 清理过期历史记录
+def clean_old_nodes(history):
+    now = datetime.datetime.now(datetime.timezone.utc)
+    cutoff = now - datetime.timedelta(days=CONFIG["history_expiry_days"])
+    return {k: v for k, v in history.items() if datetime.datetime.fromisoformat(v) > cutoff}
+
+# 生成 Clash 配置文件
+def save_as_clash_config(nodes, output_file):
+    clash_config = {
+        "proxies": [],
+        "proxy-groups": [
+            {
+                "name": "auto",
+                "type": "url-test",
+                "proxies": [],
+                "url": "http://www.gstatic.com/generate_204",
+                "interval": 300
             }
-        await asyncio.sleep(2)
-    
-    # Fallback to synchronous requests
-    logger.info(f"异步请求失败，尝试同步请求 {url}")
-    try:
-        response = requests.get(url, headers=headers, timeout=20, proxies=None)
-        if response.status_code == 200:
-            content = response.text
-            logger.info(f"同步请求成功获取文件 {url}")
-            return content
-        logger.info(f"同步请求 {url} 失败，状态码: {response.status_code}")
-        invalid_urls[url] = {
-            'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
-            'reason': f'状态码 {response.status_code}'
+        ],
+        "rules": [
+            "MATCH,auto"
+        ]
+    }
+    for idx, node in enumerate(sorted(nodes)):
+        # 简单处理：将节点链接作为名称，实际需解析节点详情
+        proxy = {
+            "name": f"node-{idx}",
+            "type": node.split("://")[0],  # 提取协议类型
+            "server": "unknown",  # 需解析节点获取实际服务器地址
+            "port": 0,  # 需解析节点获取实际端口
+            "node-url": node  # 保留原始节点链接
         }
+        clash_config["proxies"].append(proxy)
+        clash_config["proxy-groups"][0]["proxies"].append(f"node-{idx}")
+
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
+    with open(output_file, "w", encoding="utf-8") as f:
+        yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
+    logging.info(f"Saved Clash config with {len(nodes)} proxies to '{output_file}'")
+
+# 主逻辑
+def main():
+    global current_run_nodes
+    for current_query in search_queries:
+        logging.info(f"Searching GitHub for: '{current_query}'...")
+        try:
+            rate_limit_before = g.get_rate_limit().core
+            reset_timestamp = rate_limit_before.reset.timestamp()
+            logging.info(f"Before query - Remaining API calls: {rate_limit_before.remaining}/{rate_limit_before.limit}, Resets at: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}")
+
+            search_results = g.search_code(query=current_query)
+            process_search_results_parallel(search_results, CONFIG["max_parallel_workers"])
+            logging.info(f"Finished processing results for query '{current_query}'")
+            time.sleep(CONFIG["query_delay_seconds"])
+
+        except RateLimitExceededException:
+            logging.warning("GitHub API Rate Limit Exceeded")
+            rate_limit = g.get_rate_limit().core
+            reset_timestamp = rate_limit.reset.timestamp()
+            wait_seconds = reset_timestamp - time.time() + 5
+            reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
+            logging.info(f"Current remaining API calls: {rate_limit.remaining}. Waiting {wait_seconds} seconds until {reset_time_utc}...")
+            time.sleep(max(wait_seconds, 0))
+            continue
+        except Exception as e:
+            logging.error(f"Unexpected error during search query '{current_query}': {e}")
+            continue
+
+    # 更新历史记录
+    current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    newly_added_count = 0
+    for node_link in current_run_nodes:
+        if node_link not in nodes_history:
+            newly_added_count += 1
+        nodes_history[node_link] = current_timestamp
+
+    # 清理过期记录
+    nodes_history.update(clean_old_nodes(nodes_history))
+
+    logging.info(f"\n--- Node History Update ---")
+    logging.info(f"Found {len(current_run_nodes)} unique nodes in current run.")
+    logging.info(f"Newly added nodes to history: {newly_added_count}")
+    logging.info(f"Total nodes in history: {len(nodes_history)}")
+
+    # 保存历史记录
+    os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+    try:
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(nodes_history, f, ensure_ascii=False, indent=2)
+        logging.info(f"Updated node history saved to '{HISTORY_FILE}'")
     except Exception as e:
-        logger.info(f"同步请求 {url} 失败: {str(e)}")
-        invalid_urls[url] = {
-            'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
-            'reason': str(e)
-        }
-    return None
+        logging.error(f"Failed to save history file {HISTORY_FILE}: {e}")
 
-async def process_url(url, session):
-    """处理单个 URL，提取节点"""
-    content = await fetch_file(session, url)
-    if content:
-        nodes = parse_file_content(content)
-        valid_nodes = []
-        for node in nodes:
-            if await test_node_connection(session, node):
-                unique_nodes.add(node)
-                valid_nodes.append(node)
-                logger.info(f"添加节点: {node}")
-        url_node_counts[url] = len(valid_nodes)
-        if not valid_nodes:
-            invalid_urls[url] = {'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'), 'reason': '无有效节点'}
-            logger.info(f"URL {url} 无有效节点，标记为无效")
-        return len(nodes)
-    return 0
-
-async def main():
-    """主函数"""
-    try:
-        with open(os.path.join(DATA_DIR, 'url.txt'), 'r', encoding='utf-8') as f:
-            urls = [line.strip().split(' | ')[1] for line in f if ' | ' in line]
-    except FileNotFoundError:
-        logger.error("url.txt 不存在")
-        return
-    
-    total_nodes = 0
-    processed_urls = 0
-    async with aiohttp.ClientSession() as session:
-        for url in urls:
-            total_nodes += await process_url(url, session)
-            processed_urls += 1
-            if processed_urls % 10 == 0:
-                logger.info(f"已处理 {processed_urls} 个 URL，共提取 {total_nodes} 个节点")
-            await asyncio.sleep(0.5)  # 控制请求速率
-    
-    # 保存节点
-    if unique_nodes:
-        with open(os.path.join(DATA_DIR, 'hy2.txt'), 'w', encoding='utf-8') as f:
-            for node in unique_nodes:
-                f.write(f"{node}\n")
-    
-    # 保存无效 URL（追加模式，避免覆盖search_urls.py的结果）
-    if invalid_urls:
-        with open(os.path.join(DATA_DIR, 'invalid_urls.txt'), 'a', encoding='utf-8') as f:
-            for url, info in invalid_urls.items():
-                f.write(f"{info['timestamp']} | {url} | {info['reason']}\n")
-    
-    # 统计
-    logger.info(f"统计: 共处理 {processed_urls} 个 URL，提取 {len(unique_nodes)} 个有效节点")
-    for url, count in url_node_counts.items():
-        if count > 0:
-            logger.info(f"URL {url} 提供 {count} 个节点")
-        else:
-            logger.info(f"URL {url} 无节点")
-    logger.info(f"无效 URL 数量: {len(invalid_urls)}")
+    # 保存为 Clash 配置文件
+    save_as_clash_config(current_run_nodes, OUTPUT_FILE)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
