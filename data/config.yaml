@@ -1,10 +1,11 @@
 search:
   extensions: ["txt", "yaml", "yml"]
   keywords: ["ss://", "vmess://", "trojan://"]
+  filenames: ["config", "nodes", "sub", "proxy"]
   excluded_extensions: ["zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico", "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"]
-query_delay_seconds: 60
+query_delay_seconds: 30
 max_file_size: 1000000
 history_expiry_days: 30
 max_parallel_workers: 3
 max_backoff_seconds: 600
-max_pages_per_query: 10
+max_pages_per_query: 5
