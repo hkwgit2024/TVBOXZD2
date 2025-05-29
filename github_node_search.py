@@ -4,7 +4,7 @@ import base64
 import yaml
 import time
 from github import Github
-from github.GithubException import RateLimitExceededException
+from github.GithubException import RateLimitExceededException, UnknownObjectException
 import datetime
 import json
 
@@ -38,10 +38,9 @@ protocol_keywords = [
     "ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://",
 ]
 
-# 恢复原始的搜索关键词列表，包含协议名称（如果需要）
 search_keywords = [
     "ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://",
-    "vmess", "trojan", "ss", "ssr", "vless", "hysteria" # 重新加入协议名称，以扩大搜索范围
+    "vmess", "trojan", "ss", "ssr", "vless", "hysteria" 
 ]
 
 search_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg'] 
@@ -58,7 +57,6 @@ excluded_extensions = [
 
 search_queries = []
 
-# --- 恢复到之前的搜索查询生成方式 ---
 for ext in search_extensions:
     for kw in search_keywords:
         search_queries.append(f'"{kw}" in:file extension:{ext}')
@@ -118,6 +116,7 @@ def extract_from_yaml(content):
 def process_search_result(result):
     global current_run_nodes
     try:
+        # 尝试获取文件内容
         file_content_bytes = result.decoded_content
         file_content = file_content_bytes.decode('utf-8', errors='ignore')
 
@@ -139,9 +138,13 @@ def process_search_result(result):
                 current_run_nodes.add(link)
 
     except RateLimitExceededException:
-        raise
+        raise # 速率限制异常仍然向上抛出，让主循环处理
+    except UnknownObjectException as e: # 捕获 PyGithub 的 UnknownObjectException
+        # 这种异常通常发生在尝试访问不存在或无权限的对象时（例如 403, 404）
+        print(f"WARNING: Access denied or object not found for {result.path} in repo {result.repository.full_name}: {e}. Skipping this file.")
+        pass # 跳过该文件，继续处理下一个
     except Exception as e:
-        print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}")
+        print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}. Skipping this file.")
         pass
 
 QUERY_DELAY_SECONDS = 5 
