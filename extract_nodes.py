@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import yaml
+import requests
 from datetime import datetime
 import pytz
 from urllib.parse import urlparse
@@ -34,7 +35,8 @@ async def test_node_connection(session, node, timeout=15):
     if node.startswith(('trojan://', 'vmess://', 'ss://', 'hy2://', 'vless://')):
         return True  # 非HTTP协议直接通过
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
     }
     for attempt in range(3):
         try:
@@ -146,11 +148,13 @@ def parse_file_content(content):
 async def fetch_file(session, url, retries=3):
     """获取文件内容"""
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br"
     }
     for attempt in range(retries):
         try:
-            async with session.get(url, headers=headers, timeout=15, proxy=None) as response:
+            async with session.get(url, headers=headers, timeout=20, proxy=None) as response:
                 if response.status == 200:
                     content = await response.text()
                     logger.info(f"成功获取文件 {url}")
@@ -166,7 +170,27 @@ async def fetch_file(session, url, retries=3):
                 'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
                 'reason': str(e)
             }
-        await asyncio.sleep(2)  # 重试间隔
+        await asyncio.sleep(2)
+    
+    # Fallback to synchronous requests
+    logger.info(f"异步请求失败，尝试同步请求 {url}")
+    try:
+        response = requests.get(url, headers=headers, timeout=20, proxies=None)
+        if response.status_code == 200:
+            content = response.text
+            logger.info(f"同步请求成功获取文件 {url}")
+            return content
+        logger.info(f"同步请求 {url} 失败，状态码: {response.status_code}")
+        invalid_urls[url] = {
+            'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
+            'reason': f'状态码 {response.status_code}'
+        }
+    except Exception as e:
+        logger.info(f"同步请求 {url} 失败: {str(e)}")
+        invalid_urls[url] = {
+            'timestamp': datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z'),
+            'reason': str(e)
+        }
     return None
 
 async def process_url(url, session):
