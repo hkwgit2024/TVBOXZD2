@@ -27,17 +27,31 @@ search_keywords = [
     "config", "source", "dest"
 ]
 
-# 定义要搜索的文件扩展名
-file_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg']
+# 定义要搜索的文件扩展名 (已包含 'md')
+# GitHub API 通常使用文件扩展名来搜索 Markdown 文件 (如 README.md)
+search_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg', 'ini', 'xml'] 
+
+# 定义要排除的文件扩展名
+# 这些文件通常不包含您要查找的“节点”链接，可减少无关搜索结果
+excluded_extensions = [
+    'zip', 'tar', 'gz', 'rar', '7z',  # 压缩文件
+    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'ico', # 图片文件
+    'mp3', 'wav', 'ogg', # 音频文件
+    'mp4', 'avi', 'mov', 'mkv', # 视频文件
+    'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', # 文档文件
+    'exe', 'dll', 'so', 'bin', # 可执行文件/二进制文件
+    'class', 'jar', 'pyc', # 编译后的代码或字节码
+    'min.js', 'min.css', # 压缩/混淆的JS/CSS (通常不包含可读的节点信息)
+    'lock', 'log', # 锁定文件和日志文件
+    'db', 'sqlite' # 数据库文件
+]
 
 # 构建搜索查询列表
 search_queries = []
 
-# 为每个关键字和每个文件扩展名组合生成一个查询
-# 例如："http" in:file extension:txt
-for ext in file_extensions:
+# 为每个关键字和每个“搜索扩展名”组合生成一个查询
+for ext in search_extensions:
     for kw in search_keywords:
-        # 使用双引号确保关键字作为完整单词匹配，而不是部分匹配
         search_queries.append(f'"{kw}" in:file extension:{ext}')
 
 # 添加针对特定文件名的搜索，但避免过于复杂的OR操作，只使用核心关键字
@@ -45,8 +59,11 @@ search_queries.append(f'("http" OR "https" OR "node") in:file filename:config')
 search_queries.append(f'("http" OR "https" OR "node") in:file filename:nodes') 
 
 # 添加一个针对所有文件类型但只包含核心关键字的通用搜索，以防遗漏
-search_queries.append(f'("http" OR "https" OR "node" OR "url") in:file')
-
+# 这里的 'NOT extension:...' 子句会排除不需要的扩展名
+# 注意：GitHub API 查询字符串有长度限制，如果排除的扩展名过多，可能导致查询过长
+excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
+general_keywords_query = f'("http" OR "https" OR "node" OR "url") in:file {excluded_query_part}'
+search_queries.append(general_keywords_query)
 
 # --- 正则表达式和解析函数 ---
 
