@@ -5,7 +5,8 @@ import yaml
 import time
 from github import Github
 from github.GithubException import RateLimitExceededException
-import datetime # 新增导入 datetime 模块
+import datetime
+import json
 
 GITHUB_TOKEN = os.getenv("BOT") 
 
@@ -15,11 +16,31 @@ if not GITHUB_TOKEN:
 
 g = Github(GITHUB_TOKEN)
 
-extracted_nodes = set()
+# 历史节点数据存储路径
+HISTORY_FILE = "data/nodes_history.json"
+# 输出文件路径
+OUTPUT_FILE = "data/hy2.txt"
 
-search_keywords = [
+# 尝试加载历史节点数据
+# 结构: { "url": "last_found_timestamp" }
+nodes_history = {}
+if os.path.exists(HISTORY_FILE):
+    try:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            nodes_history = json.load(f)
+        print(f"Loaded {len(nodes_history)} nodes from history: {HISTORY_FILE}")
+    except json.JSONDecodeError:
+        print(f"WARNING: Could not decode JSON from {HISTORY_FILE}. Starting with empty history.")
+        nodes_history = {}
+    except Exception as e:
+        print(f"ERROR: Failed to load history file {HISTORY_FILE}: {e}. Starting with empty history.")
+        nodes_history = {}
+
+# 本次运行找到的节点集合
+current_run_nodes = set()
+
+protocol_keywords = [
     "ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria://",
-    "vmess", "trojan", "ss", "ssr", "vless", "hysteria"
 ]
 
 search_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg'] 
@@ -36,17 +57,20 @@ excluded_extensions = [
 
 search_queries = []
 
-for ext in search_extensions:
-    for kw in search_keywords:
-        search_queries.append(f'"{kw}" in:file extension:{ext}')
+combined_protocol_query_part = " OR ".join([f'"{kw}"' for kw in protocol_keywords])
 
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:config') 
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:nodes') 
-search_queries.append(f'("ss://" OR "ssr://" OR "vmess://") in:file filename:sub')
+for ext in search_extensions:
+    search_queries.append(f'({combined_protocol_query_part}) in:file extension:{ext}')
+
+search_queries.append(f'({combined_protocol_query_part}) in:file filename:config') 
+search_queries.append(f'({combined_protocol_query_part}) in:file filename:nodes') 
+search_queries.append(f'({combined_protocol_query_part}) in:file filename:sub')
 
 excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-general_nodes_query = f'("ss://" OR "ssr://" OR "vmess://" OR "trojan://" OR "vless://" OR "hysteria://") in:file {excluded_query_part}'
+general_nodes_query = f'({combined_protocol_query_part}) in:file {excluded_query_part}'
 search_queries.append(general_nodes_query)
+
+print(f"DEBUG: Generated {len(search_queries)} search queries.")
 
 NODE_PATTERN = re.compile(r"(ss://[^\s]+|ssr://[^\s]+|vmess://[^\s]+|trojan://[^\s]+|vless://[^\s]+|hysteria://[^\s]+)")
 
@@ -91,19 +115,19 @@ def extract_from_yaml(content):
     return links
 
 def process_search_result(result):
-    global extracted_nodes
+    global current_run_nodes
     try:
         file_content_bytes = result.decoded_content
         file_content = file_content_bytes.decode('utf-8', errors='ignore')
 
         found_nodes = NODE_PATTERN.findall(file_content)
         for node_link in found_nodes:
-            extracted_nodes.add(node_link)
+            current_run_nodes.add(node_link)
 
         if result.path.lower().endswith(('.yaml', '.yml')):
             found_links_yaml = extract_from_yaml(file_content)
             for link in found_links_yaml:
-                extracted_nodes.add(link)
+                current_run_nodes.add(link)
 
         base64_pattern = re.compile(r"[A-Za-z0-9+/]{16,}(?:={0,2})") 
         potential_base64_strings = base64_pattern.findall(file_content)
@@ -111,7 +135,7 @@ def process_search_result(result):
         for b64_str in potential_base64_strings:
             found_links_b64 = extract_from_base64(b64_str)
             for link in found_links_b64:
-                extracted_nodes.add(link)
+                current_run_nodes.add(link)
 
     except RateLimitExceededException:
         raise
@@ -119,13 +143,12 @@ def process_search_result(result):
         print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}")
         pass
 
-QUERY_DELAY_SECONDS = 2 
+QUERY_DELAY_SECONDS = 5 
 
 for current_query in search_queries:
     print(f"\nSearching GitHub for: '{current_query}'...")
     try:
         rate_limit_before = g.get_rate_limit().core
-        # 修正：将 datetime 对象转换为 timestamp
         reset_timestamp = rate_limit_before.reset.timestamp() 
         print(f"DEBUG: Before query - Remaining API calls: {rate_limit_before.remaining}/{rate_limit_before.limit}, Resets at: {time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))}")
 
@@ -145,7 +168,6 @@ for current_query in search_queries:
     except RateLimitExceededException:
         print("\n--- GitHub API Rate Limit Exceeded ---")
         rate_limit = g.get_rate_limit().core
-        # 修正：将 datetime 对象转换为 timestamp
         reset_timestamp = rate_limit.reset.timestamp() 
         reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
         print(f"Current remaining API calls: {rate_limit.remaining}")
@@ -157,11 +179,32 @@ for current_query in search_queries:
         print(f"An unexpected error occurred during search query '{current_query}': {e}")
         continue 
 
-output_file_path = "data/hy2.txt"
-os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+# 更新历史节点数据
+current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+newly_added_count = 0
+for node_link in current_run_nodes:
+    if node_link not in nodes_history:
+        newly_added_count += 1
+    nodes_history[node_link] = current_timestamp # 更新或添加时间戳
 
-with open(output_file_path, "w", encoding="utf-8") as f:
-    for node in sorted(list(extracted_nodes)):
+print(f"\n--- Node History Update ---")
+print(f"Found {len(current_run_nodes)} unique nodes in current run.")
+print(f"Newly added nodes to history: {newly_added_count}")
+print(f"Total nodes in history: {len(nodes_history)}")
+
+# 保存更新后的历史数据
+os.makedirs(os.path.dirname(HISTORY_FILE), exist_ok=True)
+try:
+    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(nodes_history, f, ensure_ascii=False, indent=2)
+    print(f"Updated node history saved to '{HISTORY_FILE}'")
+except Exception as e:
+    print(f"ERROR: Failed to save history file {HISTORY_FILE}: {e}")
+
+# 将本次运行找到的节点保存到输出文件
+os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
+with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    for node in sorted(list(current_run_nodes)):
         f.write(node + "\n")
 
-print(f"\nExtracted {len(extracted_nodes)} unique nodes and saved to '{output_file_path}'")
+print(f"\nExtracted {len(current_run_nodes)} unique nodes and saved to '{OUTPUT_FILE}'")
