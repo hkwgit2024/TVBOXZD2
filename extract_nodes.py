@@ -97,12 +97,14 @@ def parse_file_content(content):
                             try:
                                 if node_type == 'vmess':
                                     node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
-                            elif node_type == 'ss':
-                                cipher = item.get('cipher', 'aes-256-gcm')
-                                node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
-                            else:
-                                node = f"{node_type}://{password}@{server}:{port}"
-                            nodes.append(node)
+                                elif node_type == 'ss':
+                                    cipher = item.get('cipher', 'aes-256-gcm')
+                                    node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
+                                else:
+                                    node = f"{node_type}://{password}@{server}:{port}"
+                                nodes.append(node)
+                            except Exception as e:
+                                logger.info(f"生成 {node_type} 节点失败: {str(e)}")
     except yaml.YAMLError as e:
         logger.info(f"YAML 解析失败: {str(e)}")
     except Exception as e:
@@ -120,14 +122,17 @@ def parse_file_content(content):
                         port = item.get('port')
                         password = item.get('password') or item.get('uuid')
                         if server and port and password:
-                            if node_type == 'vmess':
-                                node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
-                            elif node_type == 'ss':
-                                cipher = item.get('cipher', 'aes-256-gcm')
-                                node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
-                            else:
-                                node = f"{node_type}://{password}@{server}:{port}"
-                            nodes.append(node)
+                            try:
+                                if node_type == 'vmess':
+                                    node = f"vmess://{base64.b64encode(json.dumps(item).encode()).decode()}"
+                                elif node_type == 'ss':
+                                    cipher = item.get('cipher', 'aes-256-gcm')
+                                    node = f"ss://{base64.b64encode(f'{cipher}:{password}@{server}:{port}'.encode()).decode()}"
+                                else:
+                                    node = f"{node_type}://{password}@{server}:{port}"
+                                nodes.append(node)
+                            except Exception as e:
+                                logger.info(f"生成 {node_type} 节点失败: {str(e)}")
     except json.JSONDecodeError as e:
         logger.info(f"JSON 解析失败: {str(e)}")
     except Exception as e:
