@@ -11,11 +11,11 @@ on:
 jobs:
   search-and-extract:
     runs-on: ubuntu-latest
-    timeout-minutes: 30 # 设置 30 分钟超时
+    timeout-minutes: 30 # 30分钟超时
 
     env:
-      TZ: Asia/Shanghai
-      BOT: ${{ secrets.BOT_TOKEN }}
+      TZ: Asia/Shanghai # 设置上海时间
+      BOT: ${{ secrets.BOT }} # 引用Secrets中的BOT
 
     steps:
       - name: Checkout repository
@@ -30,6 +30,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install aiohttp requests pyyaml pytz
+
+      - name: Debug environment
+        run: |
+          echo "BOT=$BOT" # 调试BOT变量是否设置
+          env | grep BOT # 显示环境变量
 
       - name: Run URL search
         run: python search_urls.py
