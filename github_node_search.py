@@ -147,7 +147,7 @@ def process_search_result(result):
         print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}. Skipping this file.")
         pass
 
-QUERY_DELAY_SECONDS = 5 
+QUERY_DELAY_SECONDS = 38 
 
 for current_query in search_queries:
     print(f"\nSearching GitHub for: '{current_query}'...")
