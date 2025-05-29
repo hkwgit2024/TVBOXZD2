@@ -37,7 +37,7 @@ jobs:
     - name: Run Node Extraction Script
       env:
        
-        BOT: ${{ secrets.GH_TOKEN }} # 假设您在仓库Secrets中设置了名为GH_TOKEN的密钥
+        BOT: ${{ secrets.GH_TOKEN }}
         CUSTOM_SEARCH_QUERY: ${{ github.event.inputs.search_query }} # 传递手动触发时的自定义查询
       run: |
         # 创建data目录，以防它不存在
