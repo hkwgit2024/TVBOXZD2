@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PyGithub PyYAML
+        pip install PyGithub PyYAML # json 是标准库，无需安装
 
     - name: Create data directory
       run: |
@@ -46,4 +46,11 @@ jobs:
       with:
         name: extracted-nodes
         path: data/hy2.txt
-        retention-days: 7
+        retention-days: 7 
+
+    - name: Upload node history as artifact (optional)
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-history
+        path: data/nodes_history.json
+        retention-days: 30 # 可以设置更长的保留时间
