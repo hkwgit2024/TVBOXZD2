@@ -32,18 +32,19 @@ def load_config(config_file):
         "search": {
             "extensions": ["txt", "yaml", "yml"],
             "keywords": ["ss://", "vmess://", "trojan://"],
+            "filenames": ["config", "nodes", "sub", "proxy"],
             "excluded_extensions": [
                 "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
                 "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
                 "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
             ]
         },
-        "query_delay_seconds": 60,
+        "query_delay_seconds": 30,  # 减少等待时间
         "max_file_size": 1_000_000,  # 1MB
         "history_expiry_days": 30,
         "max_parallel_workers": 3,
         "max_backoff_seconds": 600,
-        "max_pages_per_query": 10
+        "max_pages_per_query": 5  # 减少分页
     }
     if os.path.exists(config_file):
         try:
@@ -86,6 +87,7 @@ current_run_nodes = set()
 protocol_keywords = CONFIG["search"]["keywords"]
 search_keywords = protocol_keywords + [kw.split("://")[0] for kw in protocol_keywords if "://" in kw]
 search_extensions = CONFIG["search"]["extensions"]
+search_filenames = CONFIG["search"].get("filenames", [])
 excluded_extensions = CONFIG["search"]["excluded_extensions"]
 
 # 生成搜索查询
@@ -95,19 +97,66 @@ if override_query:
     search_queries.append(override_query)
     logging.info(f"使用覆盖查询：{override_query}")
 else:
+    # 关键词 + 扩展名
     for ext in search_extensions:
         for kw in search_keywords:
-            search_queries.append(f'"{kw}" in:file extension:{ext}')
-    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:config')
-    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:nodes')
-    search_queries.append(f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file filename:sub')
+            search_queries.append(f"{kw} in:file extension:{ext}")
+    # 关键词 + 文件名
+    for fname in search_filenames:
+        search_queries.append(f'({" OR ".join([f"{kw}" for kw in protocol_keywords])}) in:file {fname}')
+    # 通用查询
     excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-    general_nodes_query = f'({" OR ".join([f'"{kw}"' for kw in protocol_keywords])}) in:file {excluded_query_part}'
+    general_nodes_query = f'({" OR ".join([f"{kw}" for kw in protocol_keywords])}) in:file {excluded_query_part}'
     search_queries.append(general_nodes_query)
 logging.info(f"生成了 {len(search_queries)} 个搜索查询")
 
 # 正则表达式
-NODE_PATTERN = re.compile(r"(ss://[^\s]+|ssr://[^\s]+|vmess://[^\s]+|trojan://[^\s]+|vless://[^\s]+|hysteria://[^\s]+)")
+NODE_PATTERN = re.compile(r"(ss://[^\s#]+|ssr://[^\s#]+|vmess://[^\s#]+|trojan://[^\s#]+|vless://[^\s#]+|hysteria://[^\s#]+)")
+
+# 解析节点
+def parse_vmess_node(node):
+    if node.startswith("vmess://"):
+        try:
+            decoded = base64.b64decode(node[8:].strip()).decode('utf-8')
+            vmess_data = json.loads(decoded)
+            return {
+                "name": vmess_data.get("ps", f"vmess-{time.time()}"),
+                "type": "vmess",
+                "server": vmess_data.get("add", "unknown"),
+                "port": int(vmess_data.get("port", 0)),
+                "uuid": vmess_data.get("id", ""),
+                "alterId": int(vmess_data.get("aid", 0)),
+                "cipher": vmess_data.get("scy", "auto"),
+                "tls": vmess_data.get("tls", "") == "tls",
+                "node-url": node
+            }
+        except Exception as e:
+            logging.warning(f"解析 vmess 节点失败：{e}")
+            return None
+    return None
+
+def parse_ss_node(node):
+    if node.startswith("ss://"):
+        try:
+            # ss://<base64_encoded>@<server>:<port>#<name>
+            decoded = base64.b64decode(node[5:].split('#')[0]).decode('utf-8')
+            user_info, server_port = decoded.split('@')
+            server, port = server_port.split(':')
+            method, password = user_info.split(':')
+            name = node.split('#')[-1] if '#' in node else f"ss-{time.time()}"
+            return {
+                "name": name,
+                "type": "ss",
+                "server": server,
+                "port": int(port),
+                "cipher": method,
+                "password": password,
+                "node-url": node
+            }
+        except Exception as e:
+            logging.warning(f"解析 ss 节点失败：{e}")
+            return None
+    return None
 
 # 节点提取器接口
 class NodeExtractor:
@@ -214,25 +263,25 @@ def save_as_clash_config(nodes, output_file):
                 "interval": 300
             }
         ],
-        "rules": [
-            "MATCH,auto"
-        ]
+        "rules": ["MATCH,auto"]
     }
-    for idx, node in enumerate(sorted(nodes)):
-        proxy = {
-            "name": f"node-{idx}",
-            "type": node.split("://")[0],
-            "server": "unknown",
-            "port": 0,
-            "node-url": node
-        }
+    for node in sorted(nodes):
+        proxy = parse_vmess_node(node) or parse_ss_node(node)
+        if not proxy:
+            proxy = {
+                "name": f"node-{len(clash_config['proxies'])}",
+                "type": node.split("://")[0],
+                "server": "unknown",
+                "port": 0,
+                "node-url": node
+            }
         clash_config["proxies"].append(proxy)
-        clash_config["proxy-groups"][0]["proxies"].append(f"node-{idx}")
+        clash_config["proxy-groups"][0]["proxies"].append(proxy["name"])
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
-    logging.info(f"已保存 Clash 配置文件，包含 {len(nodes)} 个代理到 '{output_file}'")
+    logging.info(f"已保存 Clash 配置文件，包含 {len(clash_config['proxies'])} 个代理到 '{output_file}'")
 
 # 主逻辑
 def main():
@@ -251,24 +300,31 @@ def main():
                 continue
 
             search_results = g.search_code(query=current_query, per_page=100)
+            total_results = search_results.totalCount
+            logging.info(f"查询 '{current_query}' 共找到 {total_results} 个结果")
+            if total_results == 0:
+                logging.info(f"查询 '{current_query}' 无结果，跳过处理")
+                time.sleep(CONFIG["query_delay_seconds"])
+                continue
+
             page_count = 0
-            for page in range(1, CONFIG["max_pages_per_query"] + 1):
+            for page in range(CONFIG["max_pages_per_query"]):
                 try:
-                    results_page = search_results.get_page(page - 1)
+                    results_page = search_results.get_page(page)
                     if not results_page:
                         break
-                    logging.info(f"处理查询 '{current_query}' 的第 {page} 页")
+                    logging.info(f"处理查询 '{current_query}' 的第 {page + 1} 页")
                     process_search_results_parallel(results_page, CONFIG["max_parallel_workers"])
                     page_count += 1
                     time.sleep(1)
                 except Exception as e:
                     if "403" in str(e):
-                        logging.warning(f"第 {page} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
+                        logging.warning(f"第 {page + 1} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
                         wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
                         logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                         time.sleep(wait_seconds)
                         continue
-                    logging.error(f"处理第 {page} 页时出错：{e}")
+                    logging.error(f"处理第 {page + 1} 页时出错：{e}")
                     break
             logging.info(f"完成查询 '{current_query}' 的结果处理，共处理 {page_count} 页")
             time.sleep(CONFIG["query_delay_seconds"])
