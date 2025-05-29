@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TZ: Asia/Shanghai  # 设置时区为上海时间（CST，UTC+8）
+      BOT: ${{ secrets.BOT }}  # 从 GitHub Secrets 加载 BOT token
 
     steps:
     - name: Checkout repository
@@ -26,8 +27,6 @@ jobs:
         pip install requests pyyaml aiohttp
 
     - name: Run node search script
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Secrets 存储 token
       run: |
         python github_node_search.py
 
@@ -35,8 +34,12 @@ jobs:
       run: |
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
-        git add data/hy2.txt data/url.txt
-        git commit -m "Update nodes and URLs [$(date -u '+%Y-%m-%dT%H:%M:%S+08:00')]" || echo "No changes to commit"
-        git push
+        if [ -f data/hy2.txt ] || [ -f data/url.txt ]; then
+          git add data/hy2.txt data/url.txt
+          git commit -m "Update nodes and URLs [$(date -u '+%Y-%m-%dT%H:%M:%S+08:00')]" || true
+          git push
+        else
+          echo "No output files to commit"
+        fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 用于 git push
