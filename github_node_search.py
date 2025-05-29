@@ -1,205 +1,163 @@
-import aiohttp
-import asyncio
-import base64
-import json
-import logging
 import os
 import re
-import requests
-import time
-from datetime import datetime
-import pytz
+import base64
 import yaml
-from urllib.parse import urlparse
+from github import Github
+from github.GithubException import RateLimitExceededException
 
-# 设置日志
-logging.basicConfig(level=logging.INFO, format='调试: %(message)s')
-logger = logging.getLogger(__name__)
+# --- 配置 ---
+# 假设您的token已经设置在环境变量中
+GITHUB_TOKEN = os.getenv("BOT") 
 
-# 环境变量
-BOT_TOKEN = os.getenv('BOT')
-if not BOT_TOKEN:
-    raise ValueError("BOT 环境变量未设置")
+if not GITHUB_TOKEN:
+    print("Error: GitHub token (BOT) not found. Please set the 'BOT' environment variable or assign it directly in the script.")
+    exit()
 
-# 上海时区
-SHANGHAI_TZ = pytz.timezone('Asia/Shanghai')
+g = Github(GITHUB_TOKEN)
 
-# 数据目录
-DATA_DIR = 'data'
-os.makedirs(DATA_DIR, exist_ok=True)
+# 用于存储去重后的节点
+extracted_nodes = set()
 
-# 存储结果
-unique_urls = set()
-unique_nodes = set()
-
-# GitHub API 请求头
-headers = {
-    'Authorization': f'token {BOT_TOKEN}',
-    'Accept': 'application/vnd.github.v3+json'
-}
-
-# 搜索查询
-SEARCH_QUERIES = [
-    'clash proxies extension:yaml in:file -manifest -skaffold -locale',
-    'v2ray outbounds extension:json in:file',
-    'trojan nodes extension:txt in:file',
-    'sing-box outbounds extension:json in:file',
-    'subscription extension:txt in:file',
-    'from:freefq extension:txt in:file',
-    'from:mahdibland extension:txt in:file'
+# --- 搜索关键字和策略 ---
+# 增加更多关键字，并考虑在不同的文件类型中搜索
+# 'in:file' 搜索文件内容, 'extension:txt' 'extension:md' 'extension:yaml' 'extension:yml' 指定文件类型
+# 您可以根据实际情况调整这些关键字和组合
+search_keywords = [
+    "http", "https", "url", "link", "node", "server", "endpoint", "
+"
 ]
 
-async def test_url_connection(session, url, timeout=10):
-    """测试 URL 是否可连接"""
-    for attempt in range(3):
-        try:
-            async with session.head(url, timeout=timeout, allow_redirects=True) as response:
-                if response.status == 200:
-                    return True
-                logger.info(f"URL {url} 返回状态码: {response.status}")
-        except Exception as e:
-            logger.info(f"测试 URL {url} 失败 (尝试 {attempt + 1}/3): {str(e)}")
-        await asyncio.sleep(1)
-    return False
+# 组合搜索查询。GitHub搜索查询有长度限制，且过于复杂的查询可能导致性能问题。
+# 建议分批进行搜索，或者使用更精炼的关键字组合。
+# 这里的示例是搜索所有文件中的这些关键字。
+# 如果需要，可以针对特定文件类型组合，例如：
+# search_queries = ["http extension:txt", "url extension:yaml", "node extension:md"]
+# 为了演示，我们先尝试一个相对宽泛的组合
+search_query_base = " OR ".join([f'"{kw}"' for kw in search_keywords])
+search_queries = [
+    f"{search_query_base} in:file extension:txt",
+    f"{search_query_base} in:file extension:md",
+    f"{search_query_base} in:file extension:json",
+    f"{search_query_base} in:file extension:yaml",
+    f"{search_query_base} in:file extension:yml",
+    f"{search_query_base} in:file extension:conf", # 常见配置
+    f"{search_query_base} in:file extension:cfg",
+    f"{search_query_base} in:file filename:config", # 查找名称中包含config的文件
+    f"{search_query_base} in:file filename:nodes", # 查找名称中包含nodes的文件
+    f"{search_query_base} in:file" # 更广泛的搜索
+]
 
-async def test_node_connection(session, node, timeout=10):
-    """测试节点连通性（仅对 HTTP/HTTPS 订阅链接）"""
-    if node.startswith(('trojan://', 'vmess://', 'ss://', 'hy2://', 'vless://')):
-        return True  # 非 HTTP 协议直接通过
-    return await test_url_connection(session, node, timeout)
 
-def recursive_decode_base64(text):
-    """递归解码 Base64 编码的内容"""
+# --- 正则表达式和解析函数 ---
+
+# 通用URL匹配模式。可以根据实际情况调整。
+# 这个模式会匹配以http(s)://开头的URL，直到遇到空格、引号、尖括号或换行。
+URL_PATTERN = re.compile(r"http[s]?://[^\s\"\'<>]+") 
+
+# 尝试解码Base64并提取链接
+def extract_from_base64(text):
     try:
-        decoded = base64.b64decode(text).decode('utf-8')
-        # 尝试再次解码，直到无法解码
-        try:
-            return recursive_decode_base64(decoded)
-        except:
-            return decoded
-    except:
-        return text
+        # Base64字符串通常是多行，所以需要移除空白符，并且长度是4的倍数
+        cleaned_text = text.replace(" ", "").replace("\n", "").replace("\r", "")
+        if len(cleaned_text) % 4 != 0:
+            # 尝试填充 Base64 字符串
+            padding_needed = 4 - (len(cleaned_text) % 4)
+            if padding_needed != 4: # Only add padding if it's not already a multiple of 4
+                cleaned_text += '=' * padding_needed
 
-def parse_file_content(content):
-    """解析文件内容，提取节点"""
-    nodes = []
-    
-    # 尝试直接提取节点链接
-    node_patterns = [
-        r'(trojan://[^\s]+)',
-        r'(vmess://[^\s]+)',
-        r'(ss://[^\s]+)',
-        r'(hy2://[^\s]+)',
-        r'(vless://[^\s]+)',
-        r'(https?://[^\s]+)'  # 订阅链接
-    ]
-    
-    for pattern in node_patterns:
-        matches = re.findall(pattern, content)
-        nodes.extend(matches)
-    
-    # 尝试 Base64 解码
-    for line in content.splitlines():
-        decoded = recursive_decode_base64(line.strip())
-        if decoded != line:
-            nodes.extend(parse_file_content(decoded))  # 递归解析解码内容
-    
-    # 尝试解析 YAML/JSON
+        decoded_bytes = base64.b64decode(cleaned_text, validate=True)
+        decoded_string = decoded_bytes.decode('utf-8', errors='ignore') # 忽略解码错误
+        return URL_PATTERN.findall(decoded_string)
+    except Exception:
+        return []
+
+# 尝试从YAML中提取链接
+def extract_from_yaml(content):
+    links = []
     try:
         data = yaml.safe_load(content)
-        if isinstance(data, dict):
-            for key in ['proxies', 'servers', 'nodes', 'outbounds', 'proxy-groups']:
-                if key in data and isinstance(data[key], list):
-                    for item in data[key]:
-                        if isinstance(item, dict) and 'server' in item:
-                            # 构造节点（简化示例）
-                            node = f"{item.get('protocol', 'trojan')}://{item.get('password')}@{item['server']}:{item.get('port')}"
-                            nodes.append(node)
-    except:
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict):
-                for key in ['proxies', 'servers', 'nodes', 'outbounds']:
-                    if key in data and isinstance(data[key], list):
-                        for item in data[key]:
-                            if isinstance(item, dict) and 'server' in item:
-                                node = f"{item.get('type', 'trojan')}://{item.get('password')}@{item['server']}:{item.get('port')}"
-                                nodes.append(node)
-        except:
-            pass
-    
-    if not nodes:
-        logger.info(f"文件无节点，内容前几行: {content[:100]}")
-    
-    return nodes
+        if isinstance(data, (dict, list)):
+            # 递归遍历YAML结构查找字符串中的URL
+            def find_urls_in_yaml(item):
+                if isinstance(item, dict):
+                    for key, value in item.items():
+                        if isinstance(value, str):
+                            links.extend(URL_PATTERN.findall(value))
+                        else:
+                            find_urls_in_yaml(value)
+                elif isinstance(item, list):
+                    for value in item:
+                        if isinstance(value, str):
+                            links.extend(URL_PATTERN.findall(value))
+                        else:
+                            find_urls_in_yaml(value)
+                elif isinstance(item, str): # 顶层如果是字符串
+                    links.extend(URL_PATTERN.findall(item))
+            find_urls_in_yaml(data)
+    except yaml.YAMLError:
+        pass # 不是有效的YAML
+    return links
 
-async def fetch_file(session, url):
-    """获取文件内容"""
+# --- 主逻辑 ---
+for current_query in search_queries:
+    print(f"\nSearching GitHub for: '{current_query}'...")
     try:
-        async with session.get(url, timeout=10) as response:
-            if response.status == 200:
-                content = await response.text()
-                logger.info(f"成功获取文件 {url}")
-                return content
-            logger.info(f"获取文件 {url} 失败，状态码: {response.status}")
+        # 使用 g.search_code 搜索代码文件
+        # 注意：每次查询都是独立的API调用，会消耗速率限制
+        for result in g.search_code(query=current_query):
+            try:
+                # 获取文件内容
+                file_content_bytes = result.decoded_content
+                file_content = file_content_bytes.decode('utf-8', errors='ignore')
+
+                # 1. 尝试从明文中提取链接
+                found_links_plain = URL_PATTERN.findall(file_content)
+                for link in found_links_plain:
+                    extracted_nodes.add(link)
+
+                # 2. 尝试从YAML中提取链接
+                # 只有当文件扩展名是yaml或yml时才尝试解析YAML
+                if result.path.lower().endswith(('.yaml', '.yml')):
+                    found_links_yaml = extract_from_yaml(file_content)
+                    for link in found_links_yaml:
+                        extracted_nodes.add(link)
+
+                # 3. 尝试识别并解码Base64，然后从解码后的内容中提取链接
+                # 这是一个启发式的方法，因为无法确定哪些字符串是Base64编码的链接
+                # 我们可以查找看起来像Base64的字符串（由特定字符集组成，长度是4的倍数）
+                # 这里的模式非常宽泛，可能会有很多误报
+                # 例如：匹配包含大写字母、小写字母、数字、+、/、= 的连续字符串
+                base64_pattern = re.compile(r"[A-Za-z0-9+/=]{16,}(?:={0,2})") # 至少16个字符长，且可能带填充
+                potential_base64_strings = base64_pattern.findall(file_content)
+
+                for b64_str in potential_base64_strings:
+                    found_links_b64 = extract_from_base64(b64_str)
+                    for link in found_links_b64:
+                        extracted_nodes.add(link)
+
+            except RateLimitExceededException:
+                print("Rate limit exceeded. Please wait and try again later.")
+                # 这里可以添加等待逻辑，例如 time.sleep(g.rate_limiting_resettime - time.time())
+                break # 跳出当前搜索结果循环，等待下次查询
+            except Exception as e:
+                # 忽略文件内容解码或处理中的个别错误
+                # print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}")
+                continue # 继续处理下一个文件
+
+    except RateLimitExceededException:
+        print("Rate limit exceeded for search query. Moving to next query or exiting.")
+        # 如果整个查询的速率限制被触发，则不再进行后续查询
+        break
     except Exception as e:
-        logger.info(f"获取文件 {url} 失败: {str(e)}")
-    return None
+        print(f"An error occurred during search query '{current_query}': {e}")
+        continue # 继续尝试下一个查询
 
-async def search_and_process(query, session):
-    """执行搜索并处理结果"""
-    page = 1
-    while page <= 2:  # 限制 2 页
-        try:
-            search_url = f"https://api.github.com/search/code?q={query}&per_page=50&page={page}"
-            response = requests.get(search_url, headers=headers)
-            if response.status_code == 200:
-                data = response.json()
-                items = data.get('items', [])
-                logger.info(f"查询 {query} 页 {page} 获取 {len(items)} 条结果")
-                
-                for item in items:
-                    raw_url = item['html_url'].replace('blob/', 'raw/')
-                    if await test_url_connection(session, raw_url):
-                        content = await fetch_file(session, raw_url)
-                        if content:
-                            nodes = parse_file_content(content)
-                            for node in nodes:
-                                if await test_node_connection(session, node):
-                                    unique_nodes.add(node)
-                                    logger.info(f"添加节点: {node}")
-                            unique_urls.add(raw_url)
-                            timestamp = datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z')
-                            logger.info(f"URL {raw_url} 可连通，时间戳: {timestamp}")
-            else:
-                logger.info(f"GitHub API 请求失败 (查询: {query}, 页: {page}): {response.status_code}, {response.text}")
-                break
-        except Exception as e:
-            logger.info(f"搜索查询 {query} 页 {page} 失败: {str(e)}")
-        page += 1
+# --- 保存结果 ---
+output_file_path = "data/hy2.txt"
+os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
 
-def save_results():
-    """保存结果到文件"""
-    if unique_urls:
-        with open(os.path.join(DATA_DIR, 'url.txt'), 'w', encoding='utf-8') as f:
-            for url in unique_urls:
-                timestamp = datetime.now(SHANGHAI_TZ).strftime('%Y-%m-%d %H:%M:%S %Z')
-                f.write(f"{timestamp} | {url}\n")
-    
-    if unique_nodes:
-        with open(os.path.join(DATA_DIR, 'hy2.txt'), 'w', encoding='utf-8') as f:
-            for node in unique_nodes:
-                f.write(f"{node}\n")
-    else:
-        logger.info("无节点保存，跳过 hy2.txt 写入")
+with open(output_file_path, "w", encoding="utf-8") as f:
+    for node in sorted(list(extracted_nodes)): # 可以选择排序
+        f.write(node + "\n")
 
-async def main():
-    """主函数"""
-    async with aiohttp.ClientSession() as session:
-        tasks = [search_and_process(query, session) for query in SEARCH_QUERIES]
-        await asyncio.gather(*tasks)
-    
-    save_results()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+print(f"\nExtracted {len(extracted_nodes)} unique nodes and saved to '{output_file_path}'")
