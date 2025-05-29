@@ -30,21 +30,22 @@ args = parser.parse_args()
 def load_config(config_file):
     default_config = {
         "search": {
-            "extensions": ["txt", "yaml", "yml"],
+            "extensions": ["txt", "yaml", "yml", "json", "md"],
             "keywords": ["ss://", "vmess://", "trojan://"],
-            "filenames": ["config", "nodes", "sub", "proxy"],
+            "filenames": ["config", "nodes", "sub", "proxy", "subscription"],
+            "generic_terms": ["proxy", "vpn", "subscription", "shadowsocks", "v2ray"],
             "excluded_extensions": [
                 "zip", "tar", "gz", "rar", "7z", "jpg", "jpeg", "png", "gif", "bmp", "svg", "ico",
                 "mp3", "wav", "ogg", "mp4", "avi", "mov", "mkv", "pdf", "doc", "docx", "xls",
                 "xlsx", "ppt", "pptx", "exe", "dll", "so", "bin", "class", "jar", "pyc"
             ]
         },
-        "query_delay_seconds": 30,  # 减少等待时间
-        "max_file_size": 1_000_000,  # 1MB
+        "query_delay_seconds": 10,  # 缩短等待时间
+        "max_file_size": 2_000_000,  # 2MB
         "history_expiry_days": 30,
-        "max_parallel_workers": 3,
+        "max_parallel_workers": 2,
         "max_backoff_seconds": 600,
-        "max_pages_per_query": 5  # 减少分页
+        "max_pages_per_query": 3
     }
     if os.path.exists(config_file):
         try:
@@ -88,7 +89,14 @@ protocol_keywords = CONFIG["search"]["keywords"]
 search_keywords = protocol_keywords + [kw.split("://")[0] for kw in protocol_keywords if "://" in kw]
 search_extensions = CONFIG["search"]["extensions"]
 search_filenames = CONFIG["search"].get("filenames", [])
+generic_terms = CONFIG["search"].get("generic_terms", [])
 excluded_extensions = CONFIG["search"]["excluded_extensions"]
+
+# 生成 Base64 编码的关键词
+def encode_base64(text):
+    return base64.b64encode(text.encode('utf-8')).decode('utf-8').rstrip('=')
+
+base64_keywords = [encode_base64(kw) for kw in protocol_keywords]
 
 # 生成搜索查询
 search_queries = []
@@ -97,6 +105,9 @@ if override_query:
     search_queries.append(override_query)
     logging.info(f"使用覆盖查询：{override_query}")
 else:
+    # 宽泛查询
+    for kw in protocol_keywords + generic_terms:
+        search_queries.append(f"{kw}")
     # 关键词 + 扩展名
     for ext in search_extensions:
         for kw in search_keywords:
@@ -104,9 +115,12 @@ else:
     # 关键词 + 文件名
     for fname in search_filenames:
         search_queries.append(f'({" OR ".join([f"{kw}" for kw in protocol_keywords])}) in:file {fname}')
-    # 通用查询
+    # Base64 编码查询
+    for b64_kw in base64_keywords:
+        search_queries.append(f"{b64_kw} in:file")
+    # 排除扩展名
     excluded_query_part = " ".join([f"-extension:{e}" for e in excluded_extensions])
-    general_nodes_query = f'({" OR ".join([f"{kw}" for kw in protocol_keywords])}) in:file {excluded_query_part}'
+    general_nodes_query = f'({" OR ".join([f"{kw}" for kw in protocol_keywords + generic_terms])}) in:file {excluded_query_part}'
     search_queries.append(general_nodes_query)
 logging.info(f"生成了 {len(search_queries)} 个搜索查询")
 
@@ -138,12 +152,12 @@ def parse_vmess_node(node):
 def parse_ss_node(node):
     if node.startswith("ss://"):
         try:
-            # ss://<base64_encoded>@<server>:<port>#<name>
-            decoded = base64.b64decode(node[5:].split('#')[0]).decode('utf-8')
+            parts = node[5:].split('#')
+            decoded = base64.b64decode(parts[0]).decode('utf-8')
             user_info, server_port = decoded.split('@')
             server, port = server_port.split(':')
             method, password = user_info.split(':')
-            name = node.split('#')[-1] if '#' in node else f"ss-{time.time()}"
+            name = parts[1] if len(parts) > 1 else f"ss-{time.time()}"
             return {
                 "name": name,
                 "type": "ss",
@@ -204,7 +218,33 @@ class YAMLExtractor(NodeExtractor):
             pass
         return links
 
-extractors = [Base64Extractor(), YAMLExtractor()]
+class JSONExtractor(NodeExtractor):
+    def extract(self, content):
+        links = []
+        try:
+            data = json.loads(content)
+            if isinstance(data, (dict, list)):
+                def find_urls_in_json(item):
+                    if isinstance(item, dict):
+                        for key, value in item.items():
+                            if isinstance(value, str):
+                                links.extend(NODE_PATTERN.findall(value))
+                            else:
+                                find_urls_in_json(value)
+                    elif isinstance(item, list):
+                        for value in item:
+                            if isinstance(value, str):
+                                links.extend(NODE_PATTERN.findall(value))
+                            else:
+                                find_urls_in_json(value)
+                    elif isinstance(item, str):
+                        links.extend(NODE_PATTERN.findall(item))
+                find_urls_in_json(data)
+        except json.JSONDecodeError:
+            pass
+        return links
+
+extractors = [Base64Extractor(), YAMLExtractor(), JSONExtractor()]
 
 # 处理单个搜索结果
 def process_search_result(result):
@@ -321,7 +361,6 @@ def main():
                     if "403" in str(e):
                         logging.warning(f"第 {page + 1} 页触发 403 Forbidden 错误，可能为次级速率限制：{e}")
                         wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
-                        logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                         time.sleep(wait_seconds)
                         continue
                     logging.error(f"处理第 {page + 1} 页时出错：{e}")
@@ -333,28 +372,29 @@ def main():
             logging.warning("GitHub API 速率限制已达上限")
             rate_limit = g.get_rate_limit().core
             reset_timestamp = rate_limit.reset.timestamp()
-            wait_seconds = reset_timestamp - time.time() + 10
+            wait_seconds = reset_timestamp - time.time()
             reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(reset_timestamp))
-            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {wait_seconds:.1f} 秒直到 {reset_time_utc}...")
-            time.sleep(max(wait_seconds, 0))
+            logging.info(f"当前剩余 API 调用次数：{rate_limit.remaining}，等待 {int(wait_seconds)}秒...")
+            time.sleep(max(wait_seconds, 1))
             continue
         except Exception as e:
             if "403" in str(e):
                 logging.warning(f"触发 403 Forbidden 错误，可能为次级速率限制：{e}")
-                wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
+                wait_seconds = float(CONFIG["max_backoff_seconds"])
                 logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
                 time.sleep(wait_seconds)
                 continue
-            logging.error(f"搜索查询 '{current_query}' 期间发生意外错误：{e}")
+            logging.error(f"搜索查询 '{current_query}' 期间发生错误：{e}")
+            time.sleep(float(CONFIG["query_delay_seconds"]))
             continue
 
     # 更新历史记录
     current_timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
     newly_added_count = 0
-    for node_link in current_run_nodes:
-        if node_link not in nodes_history:
+    for node in current_run_nodes:
+        if node not in nodes_history:
             newly_added_count += 1
-        nodes_history[node_link] = current_timestamp
+        nodes_history[node] = current_timestamp
 
     # 清理过期记录
     nodes_history.update(clean_old_nodes(nodes_history))
