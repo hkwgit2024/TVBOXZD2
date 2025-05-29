@@ -20,24 +20,31 @@ print("调试: BOT 环境变量已加载（前8位）: " + TOKEN[:8] + "...")
 HEADERS = {
     "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "Mozilla/5.0 (compatible; NodeSearchBot/1.0)"  # 添加 User-Agent
+    "User-Agent": "Mozilla/5.0 (compatible; NodeSearchBot/1.0)",
+    "Accept-Encoding": "gzip, deflate"
+}
+RAW_HEADERS = {
+    "Authorization": f"token {TOKEN}",
+    "User-Agent": "Mozilla/5.0 (compatible; NodeSearchBot/1.0)",
+    "Accept": "application/octet-stream"
 }
 SEARCH_QUERIES = [
-    "v2ray config extension:yaml in:file",
-    "clash proxies extension:yaml in:file",
+    "clash proxies extension:yaml in:file -in:path manifest -in:path skaffold",
+    "v2ray outbounds extension:json in:file",
     "trojan nodes extension:txt in:file",
     "hysteria hy2 extension:txt",
     "ssr shadowsocksr extension:txt",
     "vless server extension:txt",
-    "free proxy subscription",
-    "clash config extension:yaml",
-    "v2ray nodes extension:txt",
-    "xray config extension:json"
+    "free proxy subscription extension:txt",
+    "clash config user:freefq extension:yaml",
+    "v2ray nodes user:Alvin9999 extension:txt",
+    "xray config extension:json in:file"
 ]
 OUTPUT_DIR = "data"
 NODES_FILE = os.path.join(OUTPUT_DIR, "hy2.txt")
 URLS_FILE = os.path.join(OUTPUT_DIR, "url.txt")
 NODE_PROTOCOLS = ["ss://", "vmess://", "trojan://", "hy2://", "ssr://", "vless://", "http://", "https://", "socks5://", "wg://"]
+VALID_EXTENSIONS = {".yaml", ".yml", ".txt", ".json"}
 
 # 确保输出目录存在
 if not os.path.exists(OUTPUT_DIR):
@@ -63,7 +70,7 @@ def load_existing_urls():
 
 # 检查文件是否更新
 def is_file_updated(repo, path, existing_timestamp):
-    commit_url = f"https://api.github.com/repos/{repo}/commits?path={quote(path)}&per_page=1"
+    commit_url = f"https://api.github.com/repos/{repo}/commits?path={quote(path, safe='')}&per_page=1"
     try:
         response = requests.get(commit_url, headers=HEADERS)
         if response.status_code == 200:
@@ -99,6 +106,8 @@ async def test_node_connection(node, timeout=5):
     try:
         for protocol in NODE_PROTOCOLS:
             if node.startswith(protocol):
+                if protocol in ["hy2://", "wg://"]:
+                    return True  # 跳过 UDP 或复杂协议测试
                 if protocol == "vmess://":
                     try:
                         vmess_data = base64.b64decode(node[len("vmess://"):]).decode("utf-8")
@@ -120,18 +129,15 @@ async def test_node_connection(node, timeout=5):
                                 return response.status == 200
                     except:
                         return False
-                elif protocol == "wg://":
-                    return True  # WireGuard 跳过测试
                 else:
-                    match = re.match(r"(ss|trojan|hy2|ssr|socks5)://[^@]+@([^:]+):(\d+)", node)
+                    match = re.match(r"(ss|trojan|ssr|socks5)://[^@]+@([^:]+):(\d+)", node)
                     if match:
                         host, port = match.group(2), int(match.group(3))
                     else:
                         return False
-                if protocol not in ["http://", "https://", "wg://"]:
-                    async with aiohttp.ClientSession() as session:
-                        async with session.head(f"http://{host}:{port}", timeout=timeout) as response:
-                            return response.status == 200
+                async with aiohttp.ClientSession() as session:
+                    async with session.head(f"http://{host}:{port}", timeout=timeout) as response:
+                        return response.status == 200
         return False
     except Exception as e:
         print(f"测试节点 {node} 连通性失败: {e}")
@@ -144,6 +150,15 @@ def decode_base64(content):
         return decoded
     except:
         return None
+
+# 递归解码 Base64
+def recursive_decode_base64(content, depth=0, max_depth=3):
+    if depth >= max_depth:
+        return content
+    decoded = decode_base64(content)
+    if decoded:
+        return recursive_decode_base64(decoded, depth + 1, max_depth)
+    return content
 
 # 解析 YAML 或 JSON 内容
 def parse_config(content):
@@ -164,9 +179,12 @@ def clean_node(node):
 
 # 获取文件内容
 def get_file_content(repo, path):
-    raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path)}"
+    if not any(path.lower().endswith(ext) for ext in VALID_EXTENSIONS):
+        print(f"调试: 跳过无效文件扩展名: {path}")
+        return None
+    raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path, safe='')}"
     try:
-        response = requests.get(raw_url, headers=HEADERS)
+        response = requests.get(raw_url, headers=RAW_HEADERS)
         if response.status_code == 200:
             print(f"调试: 成功获取文件 {raw_url}")
             return response.text
@@ -216,7 +234,7 @@ async def main():
             for item in items:
                 repo = item["repository"]["full_name"]
                 path = item["path"]
-                raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path)}"
+                raw_url = f"https://raw.githubusercontent.com/{repo}/{quote(path, safe='')}"
 
                 # 检查是否需要更新
                 existing_timestamp = unique_urls.get(raw_url)
@@ -245,9 +263,9 @@ async def main():
                     if not line:
                         continue
 
-                    # 尝试解析 Base64
-                    decoded = decode_base64(line)
-                    if decoded:
+                    # 尝试递归解析 Base64
+                    decoded = recursive_decode_base64(line)
+                    if decoded != line:
                         sub_lines = decoded.splitlines()
                         for sub_line in sub_lines:
                             sub_line = sub_line.strip()
@@ -271,15 +289,15 @@ async def main():
                     # 尝试解析 YAML 或 JSON
                     config_data = parse_config(line)
                     if config_data and isinstance(config_data, dict):
-                        proxies = config_data.get("proxies", []) or config_data.get("servers", []) or config_data.get("nodes", [])
+                        proxies = config_data.get("proxies", []) or config_data.get("servers", []) or config_data.get("nodes", []) or config_data.get("outbounds", [])
                         for proxy in proxies:
                             if isinstance(proxy, dict):
                                 node = None
-                                proxy_type = proxy.get("type")
+                                proxy_type = proxy.get("type") or proxy.get("protocol")
                                 server = proxy.get("server")
                                 port = proxy.get("port")
                                 if server and port:
-                                    if proxy_type == "ss":
+                                    if proxy_type in ["ss", "shadowsocks"]:
                                         node = f"ss://{proxy.get('cipher')}:{proxy.get('password')}@{server}:{port}"
                                     elif proxy_type == "vmess":
                                         vmess_data = {
@@ -293,7 +311,7 @@ async def main():
                                         node = f"vmess://{base64.b64encode(json.dumps(vmess_data).encode('utf-8')).decode('utf-8')}"
                                     elif proxy_type == "trojan":
                                         node = f"trojan://{proxy.get('password')}@{server}:{port}"
-                                    elif proxy_type == "hysteria2":
+                                    elif proxy_type in ["hysteria2", "hy2"]:
                                         node = f"hy2://{proxy.get('password')}@{server}:{port}"
                                     elif proxy_type == "vless":
                                         node = f"vless://{proxy.get('uuid')}@{server}:{port}"
@@ -304,6 +322,14 @@ async def main():
                                     if node and clean_node(node) not in unique_nodes and await test_node_connection(clean_node(node)):
                                         unique_nodes.add(clean_node(node))
                                         print(f"调试: 添加 YAML/JSON 节点: {clean_node(node)}")
+                        # 检查根节点
+                        if not proxies and (server := config_data.get("server")) and (port := config_data.get("port")):
+                            proxy_type = config_data.get("type") or config_data.get("protocol")
+                            if proxy_type in ["ss", "shadowsocks"]:
+                                node = f"ss://{config_data.get('cipher')}:{config_data.get('password')}@{server}:{port}"
+                                if node and clean_node(node) not in unique_nodes and await test_node_connection(clean_node(node)):
+                                    unique_nodes.add(clean_node(node))
+                                    print(f"调试: 添加根节点: {clean_node(node)}")
 
     # 保存结果
     save_results()
