@@ -27,21 +27,25 @@ search_keywords = [
     "config", "source", "dest"
 ]
 
-# 组合搜索查询。GitHub搜索查询有长度限制，且过于复杂的查询可能导致性能问题。
-# 这里我们尝试通过文件扩展名来细分搜索，以提高效率和减少无关结果。
-# 可以根据需要调整或增加文件类型。
-search_queries = [
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:txt',
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:md',
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:json',
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:yaml',
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:yml',
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:conf', 
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file extension:cfg',
-    # 也可以搜索特定文件名模式
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file filename:config', 
-    f'({" OR ".join([f'"{kw}"' for kw in search_keywords])}) in:file filename:nodes', 
-]
+# 定义要搜索的文件扩展名
+file_extensions = ['txt', 'md', 'json', 'yaml', 'yml', 'conf', 'cfg']
+
+# 构建搜索查询列表
+search_queries = []
+
+# 为每个关键字和每个文件扩展名组合生成一个查询
+# 例如："http" in:file extension:txt
+for ext in file_extensions:
+    for kw in search_keywords:
+        # 使用双引号确保关键字作为完整单词匹配，而不是部分匹配
+        search_queries.append(f'"{kw}" in:file extension:{ext}')
+
+# 添加针对特定文件名的搜索，但避免过于复杂的OR操作，只使用核心关键字
+search_queries.append(f'("http" OR "https" OR "node") in:file filename:config') 
+search_queries.append(f'("http" OR "https" OR "node") in:file filename:nodes') 
+
+# 添加一个针对所有文件类型但只包含核心关键字的通用搜索，以防遗漏
+search_queries.append(f'("http" OR "https" OR "node" OR "url") in:file')
 
 
 # --- 正则表达式和解析函数 ---
@@ -133,6 +137,9 @@ def process_search_result(result):
         print(f"Error processing {result.path} in repo {result.repository.full_name}: {e}")
         pass # 继续处理下一个文件
 
+# 在每个查询之间添加短暂延迟，以避免过快达到速率限制
+QUERY_DELAY_SECONDS = 2 
+
 for current_query in search_queries:
     print(f"\nSearching GitHub for: '{current_query}'...")
     try:
@@ -140,6 +147,9 @@ for current_query in search_queries:
         # 注意：每次查询都是独立的API调用，会消耗速率限制
         for result in g.search_code(query=current_query):
             process_search_result(result)
+        
+        # 每次查询后延迟
+        time.sleep(QUERY_DELAY_SECONDS)
 
     except RateLimitExceededException:
         print("\n--- GitHub API Rate Limit Exceeded ---")
@@ -147,15 +157,14 @@ for current_query in search_queries:
         reset_time_utc = time.strftime('%Y-%m-%d %H:%M:%S UTC', time.gmtime(rate_limit.reset))
         print(f"Current remaining API calls: {rate_limit.remaining}")
         print(f"Rate limit will reset at: {reset_time_utc}")
-        # 如果在 Actions 中运行，可能会直接失败，否则可以等待
-        # time.sleep(max(0, rate_limit.reset - time.time() + 5)) # 等待直到重置时间 + 5秒余量
-        # 鉴于在 CI/CD 环境，通常直接停止并等待下次运行更合理
+        # 在 CI/CD 环境中，通常直接停止并等待下次运行更合理
         print("Stopping further GitHub API calls for this run due to rate limit.")
         break # 跳出所有查询循环
 
     except Exception as e:
         print(f"An unexpected error occurred during search query '{current_query}': {e}")
-        continue # 继续尝试下一个查询
+        # 继续尝试下一个查询，即使当前查询失败
+        continue 
 
 # --- 保存结果 ---
 output_file_path = "data/hy2.txt"
