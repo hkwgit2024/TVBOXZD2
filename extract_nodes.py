@@ -32,9 +32,14 @@ invalid_urls = []
 known_invalid_urls = set()
 if os.path.exists(invalid_urls_file):
     with open(invalid_urls_file, "r", encoding="utf-8") as f:
-        for line in f:
+        lines = f.readlines()
+        for line in lines:
             url = line.strip().split("|")[0]  # 提取 URL，忽略时间戳
             known_invalid_urls.add(url)
+    # 限制无效 URL 文件大小（保留最后 1000 条）
+    max_invalid_urls = 1000
+    with open(invalid_urls_file, "w", encoding="utf-8") as f:
+        f.writelines(lines[-max_invalid_urls:])
 
 # 设置请求头
 headers = {
@@ -179,7 +184,7 @@ for term in search_terms:
             # 检查扩展名
             file_extension = os.path.splitext(html_url)[1].lower()
             if file_extension in irrelevant_extensions:
-                print(f"跳过无关扩展名文件: {url} ({file_extension})")
+                print(f"跳过无关扩展名文件: {html_url} ({file_extension})")
                 invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 continue
             print(f"验证文件: {html_url}")
