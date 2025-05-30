@@ -4,6 +4,7 @@ import re
 import base64
 import yaml
 import json
+import time
 from urllib.parse import quote, urlencode
 from datetime import datetime
 
@@ -47,7 +48,7 @@ except requests.exceptions.RequestException as e:
 
 # 正则表达式匹配协议（放宽匹配）
 protocol_pattern = re.compile(r'(ss|hysteria2|vless|vmess|trojan)://[^\s]+', re.MULTILINE | re.IGNORECASE)
-# 正则表达式匹配 Base64 字符串（放宽长度）
+# 正则表达式匹配 Base64 字符串
 base64_pattern = re.compile(r'[A-Za-z0-9+/=]{8,}', re.MULTILINE)
 
 # 读取 data/hy2.txt
@@ -137,10 +138,10 @@ def extract_nodes_from_url(url):
         raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
         response = requests.get(raw_url, headers=headers, timeout=10)
         response.raise_for_status()
-        content = response.text[:1000]  # 限制内容长度，加快处理
+        content = response.text[:5000]  # 增加内容长度
         debug_logs.append(f"获取 {url} 内容成功，长度: {len(content)}")
 
-        # 保存内容片段用于调试
+        # 保存内容片段
         debug_logs.append(f"内容前100字符: {content[:100].replace('\n', ' ')}")
 
         # 提取明文协议
@@ -179,7 +180,6 @@ def extract_nodes_from_url(url):
             try:
                 yaml_data = yaml.safe_load(content)
                 if isinstance(yaml_data, dict):
-                    # 检查可能的 proxies 字段
                     for key in ['proxies', 'proxy', 'nodes', 'servers']:
                         if key in yaml_data:
                             for proxy in yaml_data.get(key, []):
@@ -206,10 +206,10 @@ for url in urls:
     p_nodes, y_nodes = extract_nodes_from_url(url)
     protocol_nodes.extend(p_nodes)
     yaml_nodes.extend(y_nodes)
-    time.sleep(0.5)  # 减小延时，提高效率
+    time.sleep(0.5)
 
 # 去重节点
-protocol_nodes = list(dict.fromkeys(protocol_nodes))  # 保留顺序去重
+protocol_nodes = list(dict.fromkeys(protocol_nodes))
 yaml_nodes = list({yaml.dump(node, allow_unicode=True, sort_keys=False): node for node in yaml_nodes}.values())
 debug_logs.append(f"\n总计提取 {len(protocol_nodes)} 个协议节点")
 debug_logs.append(f"总计提取 {len(yaml_nodes)} 个 YAML 节点")
