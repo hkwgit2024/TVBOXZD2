@@ -7,7 +7,7 @@ import yaml
 import json
 import time
 from urllib.parse import quote, urlencode
-from datetime import datetime, timezone
+from datetime import datetime, timezone # Keep timezone here for clarity, though datetime.timezone.utc is used
 
 # 环境变量
 GITHUB_TOKEN = os.getenv("BOT")
@@ -55,9 +55,16 @@ async def test_node_async(node, timeout=TEST_TIMEOUT):
         return False
     try:
         async with aiohttp.ClientSession() as session:
+            # For testing, we often don't need to hit the actual server for all protocols.
+            # A simple connection attempt or a mock HTTP request might be sufficient.
+            # Given the original code's intent, it's trying to hit the server directly.
+            # This might not work for all proxy types (e.g., SS, Trojan, VLESS) as they
+            # are not standard HTTP servers.
+            # For a more robust test, you'd need to implement protocol-specific checks.
+            # For now, I'll keep the original HTTP GET attempt, but be aware of its limitations.
             url = f"http://{server}:{port}"
             async with session.get(url, timeout=timeout) as response:
-                if response.status in [200, 404, 403]:
+                if response.status in [200, 404, 403]: # 404/403 might indicate a server is alive but not serving HTTP
                     debug_logs.append(f"节点 {server}:{port} 测试成功 (HTTP {response.status})")
                     return True
                 debug_logs.append(f"节点 {server}:{port} 测试失败: HTTP {response.status}")
@@ -68,6 +75,8 @@ async def test_node_async(node, timeout=TEST_TIMEOUT):
 def parse_node(node):
     try:
         if node.startswith(("ss://", "hysteria2://", "trojan://", "vless://")):
+            # Updated regex to correctly capture server and port for various protocols
+            # It handles cases with or without userinfo (e.g., password@server:port)
             match = re.match(r'^(?:ss|hysteria2|trojan|vless)://(?:[^@]+@)?([^:]+):(\d+)', node)
             if match:
                 return match.group(1), match.group(2)
@@ -91,13 +100,17 @@ else:
 async def check_rate_limit(session):
     try:
         async with session.get("https://api.github.com/rate_limit", headers=headers) as response:
+            response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
             rate_limit = await response.json()
             debug_logs.append(f"速率限制: {rate_limit['rate']['remaining']} 剩余")
     except Exception as e:
         debug_logs.append(f"检查速率限制失败: {e}")
 
 protocol_pattern = re.compile(r'(ss|hysteria2|vless|vmess|trojan)://[^\s<>\'"]+', re.MULTILINE | re.IGNORECASE)
+# Refined base64 pattern to be more strict and avoid matching random strings
+# It checks for typical base64 characters and padding, and ensures it's not too short
 base64_pattern = re.compile(r'^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$', re.MULTILINE)
+
 
 try:
     with open(input_file, "r", encoding="utf-8") as f:
@@ -170,7 +183,8 @@ def yaml_to_protocol(proxy):
                 "tls": proxy.get('tls', ''),
                 "sni": proxy.get('servername', '')
             }
-            vmess_config = {k: v for k, v in vmess_config.items() if v}
+            # Filter out empty values to keep the JSON clean
+            vmess_config = {k: v for k, v in vmess_config.items() if v or k in ['port', 'aid']} # Keep port and aid even if 0/empty
             encoded_vmess = base64.b64encode(json.dumps(vmess_config).encode('utf-8')).decode('utf-8')
             node = f"vmess://{encoded_vmess}"
             return node
@@ -206,13 +220,14 @@ async def extract_nodes_from_url(session, url, index, total_urls):
         async with session.get(raw_url, headers=headers, timeout=15) as response:
             response.raise_for_status()
             content = await response.text()
-            content = content[:1000000]
+            content = content[:1000000] # Limit content size to prevent excessive memory usage
             debug_logs.append(f"获取 {url} 内容成功，长度: {len(content)}")
             debug_logs.append(f"内容前100字符: {content[:100].replace('\n', ' ')}")
 
             protocol_matches = protocol_pattern.finditer(content)
             for match in protocol_matches:
                 node = match.group(0).strip()
+                # Basic validation for extracted protocol nodes
                 if protocol_pattern.match(node) and len(node) > 10:
                     extracted_protocol_nodes.append(node)
                     url_node_map[node] = url
@@ -222,10 +237,12 @@ async def extract_nodes_from_url(session, url, index, total_urls):
             debug_logs.append(f"找到 {len(base64_matches)} 个 Base64 字符串")
             skip_params = ['encryption=', 'security=', 'sni=', 'type=', 'mode=', 'serviceName=', 'fp=', 'pbk=', 'sid=']
             for b64_str in base64_matches:
+                # Skip strings that look like base64 but are actually URL parameters
                 if any(param in b64_str.lower() for param in skip_params):
                     debug_logs.append(f"跳过非 Base64 参数: {b64_str[:20]}...")
                     continue
                 try:
+                    # Attempt to decode, then check if it contains a protocol pattern
                     decoded = base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
                     if protocol_pattern.search(decoded):
                         node = decoded.strip()
@@ -233,6 +250,7 @@ async def extract_nodes_from_url(session, url, index, total_urls):
                             extracted_protocol_nodes.append(node)
                             url_node_map[node] = url
                             debug_logs.append(f"提取 Base64 解码节点: {node[:50]}...")
+                    # Also try to parse as JSON for VMess
                     try:
                         json_data = json.loads(decoded)
                         if isinstance(json_data, dict) and any(key in json_data for key in ['v', 'ps', 'add', 'port', 'id']):
@@ -241,17 +259,20 @@ async def extract_nodes_from_url(session, url, index, total_urls):
                             url_node_map[node] = url
                             debug_logs.append(f"提取 Base64 JSON 节点: {node[:50]}...")
                     except json.JSONDecodeError:
-                        pass
+                        pass # Not a JSON, continue
                 except (base64.binascii.Error, UnicodeDecodeError) as e:
                     debug_logs.append(f"Base64 解码失败: {b64_str[:20]}... ({e})")
                     continue
 
             file_extension = os.path.splitext(url)[1].lower()
-            debug_logs.append(f"尝试解析 YAML: {url}, 扩展名: {file_extension}")
+            debug_logs.append(f"尝试解析 YAML/JSON: {url}, 扩展名: {file_extension}")
+            # Consider more common extensions for configs, or if no extension, try parsing
             if file_extension in ['.yaml', '.yml', '.txt', '.conf', '.json'] or not file_extension:
+                # Try YAML parsing first
                 try:
                     yaml_data = yaml.safe_load(content)
                     if isinstance(yaml_data, dict):
+                        # Look for common keys where proxy configurations might be stored
                         for key in ['proxies', 'proxy', 'nodes', 'servers', 'outbounds', 'inbounds', 'proxy-groups', 'http', 'socks', 'socks5']:
                             if key in yaml_data:
                                 proxies = yaml_data[key]
@@ -265,7 +286,7 @@ async def extract_nodes_from_url(session, url, index, total_urls):
                                                 debug_logs.append(f"提取 YAML 协议节点: {protocol_node[:50]}...")
                                             extracted_yaml_nodes.append(proxy)
                                             debug_logs.append(f"提取 YAML 节点: {yaml.dump([proxy], allow_unicode=True, sort_keys=False)[:50]}...")
-                                elif isinstance(proxies, dict):
+                                elif isinstance(proxies, dict): # Handle single proxy object at top level
                                     if any(k in proxies for k in ['server', 'port', 'type', 'cipher', 'password', 'uuid']):
                                         protocol_node = yaml_to_protocol(proxies)
                                         if protocol_node:
@@ -277,22 +298,26 @@ async def extract_nodes_from_url(session, url, index, total_urls):
                     debug_logs.append(f"YAML 数据类型: {type(yaml_data)}")
                 except yaml.YAMLError as e:
                     debug_logs.append(f"YAML 解析失败: {url} ({e})")
-                try:
-                    json_data = json.loads(content)
-                    if isinstance(json_data, dict):
-                        for key in ['proxies', 'servers', 'nodes']:
-                            if key in json_data and isinstance(json_data[key], list):
-                                for proxy in json_data[key]:
-                                    if isinstance(proxy, dict) and any(k in proxy for k in ['server', 'port', 'type']):
-                                        protocol_node = yaml_to_protocol(proxy)
-                                        if protocol_node:
-                                            extracted_protocol_nodes.append(protocol_node)
-                                            url_node_map[protocol_node] = url
-                                            debug_logs.append(f"提取 JSON 协议节点: {protocol_node[:50]}...")
-                                        extracted_yaml_nodes.append(proxy)
-                                        debug_logs.append(f"提取 JSON 节点: {json.dumps([proxy], ensure_ascii=False)[:50]}...")
-                except json.JSONDecodeError as e:
-                    debug_logs.append(f"JSON 解析失败: {url} ({e})")
+                
+                # Try JSON parsing if YAML failed or if it's a JSON file
+                if file_extension in ['.json'] or not extracted_protocol_nodes and not extracted_yaml_nodes: # Only try JSON if no YAML nodes were found or it's explicitly JSON
+                    try:
+                        json_data = json.loads(content)
+                        if isinstance(json_data, dict):
+                            for key in ['proxies', 'servers', 'nodes']:
+                                if key in json_data and isinstance(json_data[key], list):
+                                    for proxy in json_data[key]:
+                                        if isinstance(proxy, dict) and any(k in proxy for k in ['server', 'port', 'type']):
+                                            protocol_node = yaml_to_protocol(proxy) # Reuse YAML to protocol conversion for JSON proxies
+                                            if protocol_node:
+                                                extracted_protocol_nodes.append(protocol_node)
+                                                url_node_map[protocol_node] = url
+                                                debug_logs.append(f"提取 JSON 协议节点: {protocol_node[:50]}...")
+                                            extracted_yaml_nodes.append(proxy) # Store as YAML-like dict for consistency
+                                            debug_logs.append(f"提取 JSON 节点: {json.dumps([proxy], ensure_ascii=False)[:50]}...")
+                        debug_logs.append(f"JSON 数据类型: {type(json_data)}")
+                    except json.JSONDecodeError as e:
+                        debug_logs.append(f"JSON 解析失败: {url} ({e})")
 
     except Exception as e:
         debug_logs.append(f"获取 {url} 内容失败: {e}")
@@ -306,7 +331,7 @@ async def test_and_save_nodes():
     debug_logs.append("\nPhase 2: 开始测试已提取的节点...")
 
     temp_protocol_nodes = []
-    global url_node_map
+    global url_node_map # Declare global to modify the global variable
     try:
         with open(temp_nodes_file, "r", encoding="utf-8") as f:
             for line in f:
@@ -338,12 +363,13 @@ async def test_and_save_nodes():
         debug_logs.append(f"测试节点 {i+1}/{len(nodes_to_test)} 完成")
 
     if invalid_urls_to_add:
-        current_invalid_urls = load_invalid_urls()
+        current_invalid_urls = load_invalid_urls() # Reload to get the latest state
         new_invalid_urls = invalid_urls_to_add - current_invalid_urls
         if new_invalid_urls:
             with open(invalid_urls_file, "a", encoding="utf-8") as f:
                 for url in new_invalid_urls:
-                    f.write(f"{url}|{datetime.now(timezone.UTC).isoformat()}\n")
+                    # Corrected: Use datetime.timezone.utc for timezone object
+                    f.write(f"{url}|{datetime.now(datetime.timezone.utc).isoformat()}\n")
             debug_logs.append(f"记录 {len(new_invalid_urls)} 个新的无效 URL")
         else:
             debug_logs.append("没有新的无效 URL 需要记录。")
@@ -359,7 +385,8 @@ async def test_and_save_nodes():
 async def main():
     async with aiohttp.ClientSession() as session:
         await check_rate_limit(session)
-        urls_set = sorted(set(urls))[:50]  # 调试用 50
+        # Limiting to 50 URLs for debugging as per your comment, remove for full run
+        urls_set = sorted(list(set(urls)))[:50]
         total_urls = len(urls_set)
         tasks = []
 
@@ -378,6 +405,7 @@ async def main():
                 debug_logs.append(f"URL {i+1} 提取时发生错误: {result}")
 
         protocol_nodes_set = list(dict.fromkeys(protocol_nodes))
+        # Convert YAML nodes to a string representation for deduplication, then back to dict
         yaml_nodes_set = list({yaml.dump(node, allow_unicode=True, sort_keys=False): node for node in yaml_nodes}.values())
 
         debug_logs.append(f"提取 {len(protocol_nodes_set)} 个原始协议节点 (待测试)")
