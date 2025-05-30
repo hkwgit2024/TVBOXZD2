@@ -7,9 +7,9 @@ jobs:
   download_yaml_files:
     runs-on: ubuntu-latest
     env:
-      GITHUB_OWNER: ${{ secrets.GITHUB_OWNER }}
-      GITHUB_REPO: ${{ secrets.GITHUB_REPO }}
-      GITHUB_TOKEN: ${{ secrets.BOT }}  # 你在Secrets中设置的BOT token
+      OWNER: ${{ secrets.OWNER }}      # 在仓库 Secrets 中设置
+      REPO: ${{ secrets.REPO }}
+      TOKEN: ${{ secrets.BOT }}         # 你的BOT Token
     steps:
       - name: 检出代码
         uses: actions/checkout@v3
