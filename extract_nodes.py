@@ -13,23 +13,7 @@ SEARCH_API_URL = "https://api.github.com/search/code"
 # 从环境变量获取 GitHub Personal Access Token
 GITHUB_TOKEN = os.getenv("BOT")
 
-# 需要搜索的代理配置片段
-search_terms = [
-    "hry01.2228333.xyz:62533",
-    "massdeu1.731732.xyz:19842",
-    "xfxssr.me",
-    "us01.sh-cloudflare.sbs:8443",
-    "okanc.node-is.green:21112",
-    "sq.yd.3.07.cdnlinkms001.xyz:20021",
-    "nnertn.airport.lat:25388",
-    "xdd.dashuai.cyou:45073",
-    "th01.airport.lat:20180",
-    "jpc5.426624.xyz:19842",
-    "zf.leifeng888.com:50240",
-    "tr01.airport.lat:20820",
-    "jp.xaa.app:443",
-    "zz.xinghongzf.xyz:17703"
-]
+search_terms = ["ss://", "hysteria2://", "vless://", "vmess://", "trojan://"]
 
 # 保存结果的文件路径
 output_file = "data/hy2.txt"
