@@ -55,32 +55,37 @@ print(f"速率限制: {rate_limit['rate']['remaining']} 剩余, 重置时间: {r
 def search_with_retry(term, page, max_retries=3):
     for attempt in range(max_retries):
         try:
+            print(f"尝试搜索 {term}（第 {page} 页），第 {attempt+1} 次")
             response = requests.get(SEARCH_API_URL, headers=headers, params=params)
             response.raise_for_status()
+            print(f"完成搜索 {term}（第 {page} 页），状态码: {response.status_code}")
             return response.json()
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 403:
                 print(f"搜索 {term}（第 {page} 页）失败，第 {attempt+1} 次重试: {e}")
-                time.sleep(10 * (attempt + 1))
+                time.sleep(5 * (attempt + 1))
             else:
                 raise e
         except requests.exceptions.RequestException as e:
             print(f"搜索 {term}（第 {page} 页）失败，第 {attempt+1} 次重试: {e}")
-            time.sleep(10 * (attempt + 1))
+            time.sleep(5 * (attempt + 1))
     print(f"搜索 {term}（第 {page} 页）失败，已达最大重试次数")
     return {"items": []}
 
 # 遍历搜索词
+max_pages = 5
 for term in search_terms:
     page = 1
-    while True:
+    while page <= max_pages:
         params = {
             "q": quote(term, safe=''),
             "per_page": 100,
             "page": page
         }
+        print(f"开始搜索 {term}（第 {page} 页）")
         data = search_with_retry(term, page)
         items = data.get("items", [])
+        print(f"完成搜索 {term}（第 {page} 页），找到 {len(items)} 条结果")
         if not items:
             break
         for item in items:
