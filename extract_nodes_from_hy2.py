@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 # 环境变量
 GITHUB_TOKEN = os.getenv("BOT")
 TEST_ENABLED = os.getenv("TEST_NODES", "true").lower() == "true"
-TEST_MAX_NODES = int(os.getenv("TEST_MAX_NODES", 50))  # 调试用 50
+TEST_MAX_NODES = int(os.getenv("TEST_MAX_NODES", 50))
 TEST_TIMEOUT = float(os.getenv("TEST_TIMEOUT", 5))
 
 # 文件路径
@@ -308,41 +308,40 @@ async def test_and_save_nodes():
     temp_protocol_nodes = []
     global url_node_map
     try:
-        with open(temp_nodes_file, 'r', encoding="utf-8") as f:
+        with open(temp_nodes_file, "r", encoding="utf-8") as f:
             for line in f:
-                parts = = line.strip().split('|', 1)
+                parts = line.strip().split('|', 1)
                 if len(parts) == 2:
-                    node, source_url = = parts
+                    node, source_url = parts
                     temp_protocol_nodes.append(node)
-                    url_node_map[node] = = source_url
+                    url_node_map[node] = source_url
                 else:
-                    debug_logs.append(f"警告: {line.strip()}")
+                    debug_logs.append(f"警告: 临时文件格式不正确: {line.strip()}")
         debug_logs.append(f"加载 {len(temp_protocol_nodes)} 个待测试节点")
     except FileNotFoundError:
-        debug_logs.append(f"错误：未找到 {temp_nodes_file}")
-            debug_logs.append(f"Error: Failed to load {temp_nodes_file}, skipping node testing.")
-        return None
+        debug_logs.append(f"错误：未找到 {temp_nodes_file}，跳过节点测试。")
+        return
 
     valid_protocol_nodes = []
-    invalid_urls_to_add = = set()
+    invalid_urls_to_add = set()
 
-    nodes_to_test = = temp_protocol_nodes[:TEST_MAX_NODES] if TEST_ENABLED else temp_protocol_nodes
+    nodes_to_test = temp_protocol_nodes[:TEST_MAX_NODES] if TEST_ENABLED else temp_protocol_nodes
     tasks = [test_node_async(node) for node in nodes_to_test]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     for i, (node, result) in enumerate(zip(nodes_to_test, results)):
         if result is True:
             valid_protocol_nodes.append(node)
         else:
-                source_url = = url_node_map.get(node)
+            source_url = url_node_map.get(node)
             if source_url:
                 invalid_urls_to_add.add(source_url)
-            debug_logs.append(f"测试节点 {i+1}/{len(nodes_to_test)} 完成")
+        debug_logs.append(f"测试节点 {i+1}/{len(nodes_to_test)} 完成")
 
     if invalid_urls_to_add:
-        current_invalid_urls = = load_invalid_urls()
-        new_invalid_urls = = invalid_urls_to_add - - current_invalid_urls
+        current_invalid_urls = load_invalid_urls()
+        new_invalid_urls = invalid_urls_to_add - current_invalid_urls
         if new_invalid_urls:
-            with open(invalid_urls_file, 'a', encoding="utf-8") as f:
+            with open(invalid_urls_file, "a", encoding="utf-8") as f:
                 for url in new_invalid_urls:
                     f.write(f"{url}|{datetime.now(timezone.UTC).isoformat()}\n")
             debug_logs.append(f"记录 {len(new_invalid_urls)} 个新的无效 URL")
@@ -351,20 +350,20 @@ async def test_and_save_nodes():
     else:
         debug_logs.append("没有因节点测试失败而需要记录的无效 URL。")
 
-    with open(protocol_output_file, 'w', encoding="utf-8") as f:
+    with open(protocol_output_file, "w", encoding="utf-8") as f:
         for node in valid_protocol_nodes:
-            f.write(node + + "\n")
+            f.write(f"{node}\n")
     debug_logs.append(f"保存 {len(valid_protocol_nodes)} 个有效协议节点到 {protocol_output_file}")
     print(f"提取并测试 {len(valid_protocol_nodes)} 个有效协议节点，已保存到 {protocol_output_file}")
 
 async def main():
     async with aiohttp.ClientSession() as session:
         await check_rate_limit(session)
-        urls_set = = list(set(urls))[:50]  # 限制 50 个 URL 便于调试
-        total_urls = = len(urls_set)
-        tasks = = []
+        urls_set = sorted(set(urls))[:50]  # 调试用 50
+        total_urls = len(urls_set)
+        tasks = []
 
-        debug_logs.append("Phase 1: 开始从所有URL提取节点...")
+        debug_logs.append("Phase 1: Starting to extract nodes from URLs...")
         for i, url in enumerate(urls_set):
             tasks.append(extract_nodes_from_url(session, url, i, total_urls))
 
@@ -372,35 +371,31 @@ async def main():
 
         for i, result in enumerate(results):
             if isinstance(result, tuple):
-                p_nodes, y_nodes = = result
+                p_nodes, y_nodes = result
                 protocol_nodes.extend(p_nodes)
                 yaml_nodes.extend(y_nodes)
             else:
                 debug_logs.append(f"URL {i+1} 提取时发生错误: {result}")
 
-        protocol_nodes_set = = list(dict.fromkeys(protocol_nodes))
-        yaml_nodes_set = = list({yaml.dump(node, allow_unicode=True, sort_keys=False): node for node in yaml_nodes}.values())
+        protocol_nodes_set = list(dict.fromkeys(protocol_nodes))
+        yaml_nodes_set = list({yaml.dump(node, allow_unicode=True, sort_keys=False): node for node in yaml_nodes}.values())
 
-        debug_logs.append(f"\n提取 {len(protocol_nodes_set)} 个原始协议节点 (待测试)")
+        debug_logs.append(f"提取 {len(protocol_nodes_set)} 个原始协议节点 (待测试)")
         debug_logs.append(f"提取 {len(yaml_nodes_set)} 个原始 YAML 节点")
 
-        with open(temp_nodes_file, 'w', encoding="utf-8") as f:
+        with open(temp_nodes_file, "w", encoding="utf-8") as f:
             for node in protocol_nodes_set:
                 f.write(f"{node}|{url_node_map.get(node, 'unknown')}\n")
         debug_logs.append(f"保存 {len(protocol_nodes_set)} 个未测试协议节点到 {temp_nodes_file}")
-        print(f"提取 {len(protocol_nodes_set)} 个原始协议节点，已保存到 {temp_nodes_file} (待测试)")
-
-        with open(yaml_output_file, 'w', encoding="utf-8") as f:
+        with open(yaml_output_file, "w", encoding="utf-8") as f:
             if yaml_nodes_set:
                 yaml.dump({"proxies": yaml_nodes_set}, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
             else:
                 f.write("# No YAML nodes found\n")
-        debug_logs.append(f"保存 {len(yaml_nodes_set)} 个 YAML 节点到 {yaml_output_file}")
-        print(f"提取 {len(yaml_nodes_set)} 个 YAML 节点，已保存到 {yaml_output_file}")
-
+        debug_logs.append(f"保存 {len(yaml_nodes_set)} 个 YAML 节点到 {yaml_nodes_file}")
         await test_and_save_nodes()
 
-        with open(debug_log_file, 'w', encoding="utf-8") as f:
+        with open(debug_log_file, "w", encoding="utf-8") as f:
             f.write("\n".join(debug_logs))
         print(f"调试日志已保存到 {debug_log_file}")
 
