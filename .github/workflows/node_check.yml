@@ -1,59 +1,60 @@
 name: Extract Nodes Workflow
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+     on:
+       push:
+         branches:
+           - main
+       workflow_dispatch:
 
-jobs:
-  extract-nodes:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+     jobs:
+       extract-nodes:
+         runs-on: ubuntu-latest
+         steps:
+           - name: Checkout repository
+             uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+           - name: Set up Python
+             uses: actions/setup-python@v5
+             with:
+               python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pyyaml
+           - name: Install dependencies
+             run: |
+               python -m pip install --upgrade pip
+               pip install requests pyyaml
 
-      - name: Run extract_nodes.py
-        env:
-          BOT: ${{ secrets.BOT }}
-        run: |
-          python extract_nodes.py | tee extract_nodes.log
-          cat extract_nodes.log
-        timeout-minutes: 10
+           - name: Run extract_nodes.py
+             env:
+               BOT: ${{ secrets.BOT }}
+             run: |
+               python extract_nodes.py | tee extract_nodes.log
+               cat extract_nodes.log
+             timeout-minutes: 10
 
-      - name: Run extract_nodes_from_hy2.py
-        env:
-          BOT: ${{ secrets.BOT }}
-        run: |
-          python extract_nodes_from_hy2.py | tee extract_nodes_from_hy2.log
-          cat extract_nodes_from_hy2.log
-        timeout-minutes: 5
+           - name: Run extract_nodes_from_hy2.py
+             env:
+               BOT: ${{ secrets.BOT }}
+             run: |
+               python extract_nodes_from_hy2.py | tee extract_nodes_from_hy2.log
+               cat extract_nodes_from_hy2.log
+             timeout-minutes: 5
 
-      - name: Upload logs as artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: extract-nodes-logs
-          path: |
-            extract_nodes.log
-            extract_nodes_from_hy2.log
+           - name: Upload logs as artifacts
+             if: always()
+             uses: actions/upload-artifact@v4
+             with:
+               name: extract-nodes-logs
+               path: |
+                 extract_nodes.log
+                 extract_nodes_from_hy2.log
 
-      - name: Commit and push changes
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml
-          git commit -m "Update hy2.txt, invalid_urls.txt, protocol_nodes.txt, and yaml_nodes.yaml with protocol URLs and nodes" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           - name: Commit and push changes
+             run: |
+               git config --global user.name 'GitHub Action'
+               git config --global user.email 'action@github.com'
+               git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml
+               git commit -m "Update hy2.txt, invalid_urls.txt, protocol_nodes.txt, and yaml_nodes.yaml" || echo "No changes to commit"
+               git pull --rebase origin main
+               git push
+             env:
+               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
