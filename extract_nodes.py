@@ -43,7 +43,7 @@ headers = {
 if GITHUB_TOKEN:
     headers["Authorization"] = f"token {GITHUB_TOKEN}"
 else:
-    print("警告：未找到 BOT 环境
+    print("警告：未找到 BOT 环境)
 
 变量，将使用未认证请求（速率限制较低）")
 
