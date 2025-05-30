@@ -52,8 +52,8 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/hy2.txt data/invalid_urls.txt data/nodes.txt
-          git commit -m "Update hy2.txt, invalid_urls.txt, and nodes.txt with protocol URLs and nodes" || echo "No changes to commit"
+          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml
+          git commit -m "Update hy2.txt, invalid_urls.txt, protocol_nodes.txt, and yaml_nodes.yaml with protocol URLs and nodes" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
