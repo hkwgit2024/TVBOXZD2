@@ -1,62 +1,70 @@
-name: Extract Nodes Workflow
+name: Extract and Test Proxy Nodes
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # 当推送到 main 分支时触发
+  workflow_dispatch: # 允许手动触发工作流
 
 jobs:
-  extract-nodes:
-    runs-on: ubuntu-latest
+  extract-and-test-nodes:
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 运行器上执行
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository # 步骤1: 检出代码
+        uses: actions/checkout@v4 # 使用 actions/checkout@v4 来获取仓库代码
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Python # 步骤2: 设置 Python 环境
+        uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 来安装 Python
         with:
-          python-version: '3.x'
+          python-version: '3.x' # 指定使用最新版本的 Python 3
 
-      - name: Install dependencies
+      - name: Install dependencies # 步骤3: 安装所需的 Python 依赖
         run: |
-          python3 -m pip install --upgrade pip
-          pip3 install requests pyyaml
+          python -m pip install --upgrade pip # 升级 pip
+          pip install aiohttp pyyaml # 安装 aiohttp (用于异步HTTP请求) 和 pyyaml (用于处理YAML文件)
 
-      - name: Run extract_nodes.py
-        env:
-          BOT: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python3 extract_nodes.py | tee extract_nodes.log
-          cat extract_nodes.log
-        timeout-minutes: 7
+      - name: Create data directory if not exists # 步骤4: 确保 data 目录存在
+        run: mkdir -p data # 如果 data 目录不存在，则创建它，防止脚本运行时出错
 
-      - name: Run extract_nodes_from_hy2.py
-        env:
-          BOT: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run node extraction and testing script # 步骤5: 运行节点提取和测试脚本
+        env: # 设置环境变量，这些变量可以在 Python 脚本中通过 os.getenv() 获取
+          BOT: ${{ secrets.GITHUB_TOKEN }} # GitHub Token，用于认证 GitHub API 请求 (如检查速率限制)，这是 GitHub Actions 提供的内置 token
+          TEST_NODES: "true" # 启用节点测试
+          TEST_MAX_NODES: "50" # 最多测试50个节点
+          TEST_TIMEOUT: "1" # 每个节点测试的超时时间为1秒
         run: |
-          python3 extract_nodes_from_hy2.py | tee extract_nodes_from_hy2.log
+          # 执行 Python 脚本，并将标准输出同时打印到控制台和 extract_nodes_from_hy2.log 文件
+          python extract_nodes_from_hy2.py | tee extract_nodes_from_hy2.log
+          # 打印日志文件内容，方便在 Actions 页面直接查看
           cat extract_nodes_from_hy2.log
-        timeout-minutes: 8
+        timeout-minutes: 15 # 设置此步骤的最大运行时间为15分钟
 
-      - name: Upload logs as artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload logs and data as artifacts # 步骤6: 上传日志和数据文件作为 Artifacts
+        if: always() # 无论上一步是否成功，都执行此步骤
+        uses: actions/upload-artifact@v4 # 使用 actions/upload-artifact@v4 来上传文件
         with:
-          name: extract-nodes-logs
-          path: |
-            extract_nodes.log
+          name: extracted-and-tested-nodes # Artifact 的名称
+          path: | # 指定要上传的文件和目录
             extract_nodes_from_hy2.log
             data/extract_debug.log
-          if-no-files-found: warn
+            data/temp_nodes.txt
+            data/protocol_nodes.txt
+            data/yaml_nodes.yaml
+            data/invalid_urls.txt
+          if-no-files-found: warn # 如果指定的文件或目录未找到，则发出警告而不是失败
 
-      - name: Commit and push changes
+      - name: Commit and push changes # 步骤7: 提交并推送更改回仓库
         run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml data/extract_debug.log || true
-          git commit -m "Update hy2.txt, invalid_urls.txt, protocol_nodes.txt, yaml_nodes.yaml, and debug log" || echo "No changes to commit"
-          git pull --force
-          git push
+          git config --global user.name 'GitHub Action' # 配置 Git 用户名
+          git config --global user.email 'action@github.com' # 配置 Git 用户邮箱
+          # 添加所有可能被修改或生成的数据文件到 Git 暂存区
+          # `|| true` 确保即使文件不存在或没有变化也不会导致命令失败
+          git add data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml data/extract_debug.log data/temp_nodes.txt || true
+          # 提交更改。如果没有任何更改，`--allow-empty-message` 和 `|| echo "No changes to commit"`
+          # 允许空提交信息（如果 Git 版本支持）或简单地跳过如果无内容可提交。
+          git commit -m "Update extracted and tested nodes, logs, and invalid URLs" || echo "No changes to commit"
+          git pull --rebase origin main # 在推送前拉取最新的 `main` 分支，避免冲突
+          git push # 推送更改
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用 GITHUB_TOKEN 进行认证以推送更改
