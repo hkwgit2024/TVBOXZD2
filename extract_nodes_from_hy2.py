@@ -5,8 +5,8 @@ import base64
 import yaml
 import os
 import json
-from urllib.parse import urlparse, unquote
-from datetime import datetime, timezone # 确保正确导入 timezone
+from urllib.parse import urlparse, unquote, parse_qs
+from datetime import datetime, timezone
 
 # --- Configuration ---
 # File paths
@@ -14,8 +14,8 @@ input_file = "data/hy2.txt"
 protocol_nodes_file = "data/protocol_nodes.txt"
 yaml_nodes_file = "data/yaml_nodes.yaml"
 temp_nodes_file = "data/temp_nodes.txt" # For raw extracted nodes before testing
-invalid_urls_file = "data/invalid_urls.txt"
-debug_log_file = "data/extraction_debug.log"
+invalid_urls_file = "data/invalid_urls.txt" # Note: This file is primarily updated by extract_nodes.py
+debug_log_file = "data/extraction_debug.log" # Updated name to match workflow
 
 # Ensure data directory exists
 os.makedirs("data", exist_ok=True)
@@ -198,7 +198,7 @@ async def test_nodes(protocol_nodes: set[str], session: aiohttp.ClientSession) -
     valid_nodes = set()
     invalid_nodes = set()
 
-    debug_logs.append(f"Starting test for {len(protocol_nodes)} protocol nodes...")
+    debug_logs.append(f"Starting simulated test for {len(protocol_nodes)} protocol nodes...")
 
     # NOTE: This is a placeholder for actual node testing.
     # A real implementation would involve:
@@ -219,16 +219,16 @@ async def test_nodes(protocol_nodes: set[str], session: aiohttp.ClientSession) -
         else:
             invalid_nodes.add(node)
         
-        if (i + 1) % 100 == 0:
-            debug_logs.append(f"Tested {i+1}/{len(protocol_nodes)} nodes. Valid: {len(valid_nodes)}, Invalid: {len(invalid_nodes)}")
+        if (i + 1) % 1000 == 0: # Log progress every 1000 nodes
+            debug_logs.append(f"Simulated test progress: {i+1}/{len(protocol_nodes)} nodes. Valid: {len(valid_nodes)}, Invalid: {len(invalid_nodes)}")
 
-    debug_logs.append(f"Finished testing nodes. Valid: {len(valid_nodes)}, Invalid: {len(invalid_nodes)}")
+    debug_logs.append(f"Finished simulated testing nodes. Valid: {len(valid_nodes)}, Invalid: {len(invalid_nodes)}")
     return valid_nodes, invalid_nodes
 
 async def test_and_save_nodes():
     """
-    Reads extracted nodes, performs testing, and saves valid nodes.
-    Also handles saving invalid URLs encountered during content fetching.
+    Reads extracted nodes, performs soft-deduplication,
+    simulated testing, and saves valid nodes.
     """
     all_raw_protocol_nodes = set()
     all_raw_yaml_nodes = [] # Collect all YAML/JSON nodes as dicts
@@ -254,7 +254,77 @@ async def test_and_save_nodes():
     except Exception as e:
         debug_logs.append(f"Error loading {yaml_nodes_file}: {e}")
 
-    # Process these raw nodes
+    # --- 新增：协议节点软去重逻辑 ---
+    unique_protocol_nodes_by_core_params = {} # 存储 {核心参数字符串: 最短/最完整的URL}
+    initial_protocol_node_count = len(all_raw_protocol_nodes)
+
+    for node_url in all_raw_protocol_nodes:
+        try:
+            parsed_url = urlparse(node_url)
+            scheme = parsed_url.scheme.lower() # 协议类型 (vless, vmess, trojan, ss, hysteria2)
+            
+            core_identifier = "" # 用于识别唯一节点的字符串
+
+            if scheme in ["vless", "vmess", "trojan"]:
+                host = parsed_url.hostname
+                port = parsed_url.port
+                # 对于 vless/vmess/trojan，用户 ID (UUID) 或密码是关键
+                # 这些通常在 URL 的 userinfo 部分 (如 vless://[uuid]@host:port)
+                # 或者 Base64 解码后的 JSON 配置中。这里简化处理。
+                # 更精确的去重需要解析 Base64 后的 JSON
+                userinfo = parsed_url.username if parsed_url.username else ""
+                
+                # 假设 host:port:userinfo 是一个不错的核心标识
+                core_identifier = f"{scheme}://{host}:{port}@{userinfo}" 
+                
+                # 如果核心标识相同，保留最短的 URL 或第一个发现的 URL
+                # 短的 URL 通常意味着更少的冗余参数
+                if core_identifier not in unique_protocol_nodes_by_core_params or \
+                   len(node_url) < len(unique_protocol_nodes_by_core_params[core_identifier]):
+                    unique_protocol_nodes_by_core_params[core_identifier] = node_url
+
+            elif scheme == "ss":
+                # SS 通常是 ss://base64(method:password@host:port)
+                # 或 ss://method:password@host:port
+                # 更精确的去重需要解码 base64 并解析
+                host = parsed_url.hostname
+                port = parsed_url.port
+                # 假设 host:port 是核心标识，忽略方法和密码差异进行初步去重
+                # 警告：这可能将不同密码但相同服务器端口的SS节点视为重复
+                core_identifier = f"{scheme}://{host}:{port}" 
+                if core_identifier not in unique_protocol_nodes_by_core_params or \
+                   len(node_url) < len(unique_protocol_nodes_by_core_params[core_identifier]):
+                    unique_protocol_nodes_by_core_params[core_identifier] = node_url
+                    
+            elif scheme == "hysteria2":
+                # Hysteria2 通常是 hysteria2://user:pass@host:port
+                host = parsed_url.hostname
+                port = parsed_url.port
+                # 假设 host:port 是核心标识
+                core_identifier = f"{scheme}://{host}:{port}"
+                if core_identifier not in unique_protocol_nodes_by_core_params or \
+                   len(node_url) < len(unique_protocol_nodes_by_core_params[core_identifier]):
+                    unique_protocol_nodes_by_core_params[core_identifier] = node_url
+
+            else:
+                # 对于无法解析或不识别的协议，直接使用原始 URL 作为标识（保持硬去重）
+                if node_url not in unique_protocol_nodes_by_core_params:
+                    unique_protocol_nodes_by_core_params[node_url] = node_url
+
+        except Exception as e:
+            debug_logs.append(f"Error parsing node URL for soft-deduplication: {node_url} - {e}")
+            # 如果解析失败，仍然将原始 URL 视为独立节点
+            if node_url not in unique_protocol_nodes_by_core_params:
+                unique_protocol_nodes_by_core_params[node_url] = node_url
+
+    # 将软去重后的节点更新到用于测试的集合中
+    all_raw_protocol_nodes = set(unique_protocol_nodes_by_core_params.values())
+    debug_logs.append(f"After soft-deduplication, {len(all_raw_protocol_nodes)} unique protocol nodes remain (reduced from {initial_protocol_node_count}).")
+    print(f"After soft-deduplication, {len(all_raw_protocol_nodes)} unique protocol nodes remain (reduced from {initial_protocol_node_count}).")
+
+    # --- 协议节点软去重逻辑结束 ---
+
+    # Process these raw nodes with simulated testing
     async with aiohttp.ClientSession() as session:
         valid_protocol_nodes, invalid_protocol_nodes = await test_nodes(all_raw_protocol_nodes, session)
 
@@ -264,7 +334,6 @@ async def test_and_save_nodes():
             f.write(node + "\n")
     debug_logs.append(f"Extracted and tested {len(valid_protocol_nodes)} valid protocol nodes, saved to {protocol_nodes_file}.")
     print(f"Extracted and tested {len(valid_protocol_nodes)} valid protocol nodes, saved to {protocol_nodes_file}")
-
 
     # Save YAML nodes (they don't undergo the same direct 'test_nodes' as protocols)
     # Deduplicate YAML nodes based on their content (e.g., by converting to JSON string)
@@ -283,18 +352,6 @@ async def test_and_save_nodes():
         yaml.dump(unique_yaml_nodes, f, allow_unicode=True, default_flow_style=False)
     debug_logs.append(f"Extracted {len(unique_yaml_nodes)} unique YAML/JSON nodes, saved to {yaml_nodes_file}.")
     print(f"Extracted {len(unique_yaml_nodes)} unique YAML/JSON nodes, saved to {yaml_nodes_file}")
-
-
-    # Save URLs that resulted in extraction failures to invalid_urls_file
-    # Note: This list might include URLs from the previous extract_nodes.py run if they failed verification there
-    # For this script, we're focusing on extraction failures *during* the fetch_url_content phase.
-    # To be precise, debug_logs would need to be parsed, or an explicit list of failed URLs maintained.
-    # For simplicity, if we want to log invalid URLs from the *current* extraction attempt, we need to add them here.
-    # The previous `extract_nodes.py` logs failed verifications there.
-    # Here, we'll just log any URL that had an error fetching content or parsing, to invalid_urls.txt.
-    # This requires `extract_nodes_from_url` to collect failed URLs explicitly.
-    # For now, let's just log a generic message about saving logs.
-
 
     # Ensure the temp nodes file is cleared or updated after processing
     # If all nodes are processed, we can clear this temp file.
@@ -335,14 +392,15 @@ async def main():
         ]
         await asyncio.gather(*tasks) # Run all extraction tasks concurrently
 
-    # Save raw extracted protocol nodes to temp file before testing
+    # Save raw extracted protocol nodes to temp file before testing (soft-deduplication happens later)
     with open(temp_nodes_file, "w", encoding="utf-8") as f:
         for node in sorted(list(all_protocol_nodes)):
             f.write(node + "\n")
-    debug_logs.append(f"Extracted {len(all_protocol_nodes)} raw protocol nodes, saved to {temp_nodes_file} (pending test).")
-    print(f"Extracted {len(all_protocol_nodes)} raw protocol nodes, saved to {temp_nodes_file} (pending test)")
+    debug_logs.append(f"Extracted {len(all_protocol_nodes)} raw protocol nodes, saved to {temp_nodes_file} (pending soft-deduplication and simulated test).")
+    print(f"Extracted {len(all_protocol_nodes)} raw protocol nodes, saved to {temp_nodes_file} (pending soft-deduplication and simulated test)")
 
     # Save raw extracted YAML/JSON nodes
+    # Note: YAML nodes are deduplicated in test_and_save_nodes, but raw ones are saved here first.
     with open(yaml_nodes_file, "w", encoding="utf-8") as f:
         yaml.dump(all_yaml_nodes, f, allow_unicode=True, default_flow_style=False)
     debug_logs.append(f"Extracted {len(all_yaml_nodes)} raw YAML nodes, saved to {yaml_nodes_file}.")
