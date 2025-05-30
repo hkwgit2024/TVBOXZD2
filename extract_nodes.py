@@ -4,8 +4,9 @@ import json
 import time
 import re
 import base64
-import yaml  # 需要安装 PyYAML: pip install pyyaml
+import yaml
 from urllib.parse import quote
+from datetime import datetime
 
 # GitHub API 基础 URL
 SEARCH_API_URL = "https://api.github.com/search/code"
@@ -13,16 +14,27 @@ SEARCH_API_URL = "https://api.github.com/search/code"
 # 从环境变量获取 GitHub Personal Access Token
 GITHUB_TOKEN = os.getenv("BOT")
 
+# 搜索词
 search_terms = ["ss://", "hysteria2://", "vless://", "vmess://", "trojan://"]
 
 # 保存结果的文件路径
 output_file = "data/hy2.txt"
+invalid_urls_file = "data/invalid_urls.txt"
 
 # 确保 data 目录存在
 os.makedirs("data", exist_ok=True)
 
-# 存储所有找到的 URL
+# 存储有效和无效 URL
 found_urls = []
+invalid_urls = []
+
+# 加载已知的无效 URL
+known_invalid_urls = set()
+if os.path.exists(invalid_urls_file):
+    with open(invalid_urls_file, "r", encoding="utf-8") as f:
+        for line in f:
+            url = line.strip().split("|")[0]  # 提取 URL，忽略时间戳
+            known_invalid_urls.add(url)
 
 # 设置请求头
 headers = {
@@ -45,6 +57,9 @@ base64_pattern = re.compile(r'[A-Za-z0-9+/=]{20,}', re.MULTILINE)
 
 # 验证文件内容是否包含目标协议
 def verify_content(url):
+    if url in known_invalid_urls:
+        print(f"跳过已知无效 URL: {url}")
+        return False
     try:
         raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
         response = requests.get(raw_url, headers=headers, timeout=10)
@@ -133,14 +148,15 @@ for term in search_terms:
         for item in items:
             html_url = item["html_url"]
             # 跳过已知无关文件
-            if any(ext in html_url for ext in ['gfwlist', 'ProxyGFW', 'gfw.txt', 'gfw.pac']):
+            if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac', 'domain.yml', 'proxy.yaml']):
                 print(f"跳过无关文件: {html_url}")
                 continue
             print(f"验证文件: {html_url}")
             if verify_content(html_url):
-                found_urls.append(html_url)
+                found_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 print(f"有效 URL: {html_url}")
             else:
+                invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 print(f"无效 URL: {html_url}（不包含目标协议）")
             if len(found_urls) >= max_urls:
                 break
@@ -153,10 +169,17 @@ for term in search_terms:
 
 # 去重 URL
 found_urls = list(set(found_urls))
+invalid_urls = list(set(invalid_urls))
 
-# 将找到的 URL 保存到文件
+# 保存有效 URL 到 data/hy2.txt
 with open(output_file, "w", encoding="utf-8") as f:
     for url in found_urls:
         f.write(url + "\n")
 
+# 保存无效 URL 到 data/invalid_urls.txt
+with open(invalid_urls_file, "a", encoding="utf-8") as f:
+    for url in invalid_urls:
+        f.write(url + "\n")
+
 print(f"找到 {len(found_urls)} 个包含目标协议的唯一 URL，已保存到 {output_file}")
+print(f"找到 {len(invalid_urls)} 个无效 URL，已保存到 {invalid_urls_file}")
