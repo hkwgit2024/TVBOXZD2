@@ -61,7 +61,7 @@ async def test_node_async(node, timeout=TEST_TIMEOUT):
                     debug_logs.append(f"节点 {server}:{port} 测试成功 (HTTP {response.status})")
                     return True
                 debug_logs.append(f"节点 {server}:{port} 测试失败: HTTP {response.status}")
-    except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+    except Exception as e:
         debug_logs.append(f"节点 {server}:{port} 测试失败: {e}")
     return False
 
@@ -363,7 +363,7 @@ async def main():
         total_urls = len(urls_set)
         tasks = []
 
-        debug_logs.append("Phase 1: Starting to extract nodes from URLs...")
+        debug_logs.append("Phase 1: 开始从所有URL提取节点...")
         for i, url in enumerate(urls_set):
             tasks.append(extract_nodes_from_url(session, url, i, total_urls))
 
@@ -387,12 +387,16 @@ async def main():
             for node in protocol_nodes_set:
                 f.write(f"{node}|{url_node_map.get(node, 'unknown')}\n")
         debug_logs.append(f"保存 {len(protocol_nodes_set)} 个未测试协议节点到 {temp_nodes_file}")
+        print(f"提取 {len(protocol_nodes_set)} 个原始协议节点，已保存到 {temp_nodes_file} (待测试)")
+
         with open(yaml_output_file, "w", encoding="utf-8") as f:
             if yaml_nodes_set:
                 yaml.dump({"proxies": yaml_nodes_set}, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
             else:
                 f.write("# No YAML nodes found\n")
-        debug_logs.append(f"保存 {len(yaml_nodes_set)} 个 YAML 节点到 {yaml_nodes_file}")
+        debug_logs.append(f"保存 {len(yaml_nodes_set)} 个 YAML 节点到 {yaml_output_file}")
+        print(f"提取 {len(yaml_nodes_set)} 个 YAML 节点，已保存到 {yaml_output_file}")
+
         await test_and_save_nodes()
 
         with open(debug_log_file, "w", encoding="utf-8") as f:
