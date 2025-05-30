@@ -1,67 +1,45 @@
-name: Search and Extract Nodes from GitHub
+name: Extract Nodes Workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      search_query_override:
-        description: '可选：自定义搜索查询以覆盖脚本默认值（例如 "ss:// in:file"）'
-        required: false
-        default: ''
-  schedule:
-    - cron: '0 2 * * *'
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
-  run_node_extractor:
+  extract-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 10  # 缩短超时时间
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      # 检出仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.13'
+      # 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'  # 使用最新 Python 3.x 版本
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install PyGithub PyYAML tqdm
+      # 安装依赖
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
-    - name: Create data directory
-      run: |
-        mkdir -p data
+      # 运行 extract_nodes.py 脚本
+      - name: Run extract_nodes.py
+        env:
+          BOT: ${{ secrets.BOT }}  # 从 GitHub Secrets 获取 BOT token
+        run: python extract_nodes.py
 
-    - name: Run Node Extraction Script
-      env:
-        BOT: ${{ secrets.BOT }}
-        OVERRIDE_SEARCH_QUERY: ${{ github.event.inputs.search_query_override }}
-        PYTHONUNBUFFERED: "1"
-        PYTHON_LOG_LEVEL: "DEBUG"
-      run: |
-        python extract_nodes.py --output data/clash_config.yaml --history data/nodes_history.json --config config.yaml
-
-    - name: Upload Clash config as artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: clash-config
-        path: data/clash_config.yaml
-        retention-days: 7
-
-    - name: Upload node history as artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-history
-        path: data/nodes_history.json
-        retention-days: 30
-
-    - name: Upload log file as artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-extractor-log
-        path: node_extractor.log
-        retention-days: 7
+      # 提交生成的文件（如果有更改）
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/hy2.txt
+          git commit -m "Update hy2.txt with extracted URLs" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 用于推送更改
