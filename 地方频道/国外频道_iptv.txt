@@ -1,31 +1,4 @@
 国外频道,#genre#
-ABC News Live 9,https://abcnews-streams.akamaized.net/hls/live/2023568/abcnews9/master.m3u8
-CNBC (IT),https://amg01079-nbcuuk-amg01079c1-lg-it-2033.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcpe-lgit/playlist.m3u8
-CNN FAST (ES),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lges/playlist.m3u8
-ABC News Live,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
-CNN FAST (DE),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgde/playlist.m3u8
-CNN FAST (BE),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgbe/playlist.m3u8
-CNBC (FR),https://amg01079-nbcuuk-amg01079c1-lg-fr-2032.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcpe-lgfr/playlist.m3u8
-CNN FAST (IT),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgit/playlist.m3u8
-CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-CNN FAST (GB),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lggb/playlist.m3u8
-CNBC (DE),https://amg01079-nbcuuk-amg01079c1-lg-de-2031.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcpe-lgde/playlist.m3u8
-CNN FAST (NL),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgnl/playlist.m3u8
-CNN FAST (PT),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgpt/playlist.m3u8
-CNN FAST (SE),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgse/playlist.m3u8
-ABC News Live 8,https://abcnews-streams.akamaized.net/hls/live/2023567/abcnews8/master.m3u8
-CNN FAST (NO),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgno/playlist.m3u8
-CNN FAST (IE),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgie/playlist.m3u8
-CNN FAST (AT),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgat/playlist.m3u8
-ABC NEWS,https://content.uplynk.com/channel/ext/72750b711f704e4a94b5cfe6dc99f5e1/wabc_24x7_news.m3u8
-ABC NEWS,https://abcnews-streams.akamaized.net/hls/live/2023560/abcnews1/master.m3u8
-CNBC (PT),https://amg01079-nbcuuk-amg01079c1-lg-pt-2035.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcpe-lgpt/playlist.m3u8
-CNN FAST (LU),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lglu/playlist.m3u8
-CNBC (ES),https://amg01079-nbcuuk-amg01079c1-lg-es-2034.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcpe-lges/playlist.m3u8
-CNN FAST (FI),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgfi/playlist.m3u8
-CNBC (UK),https://amg01079-nbcuuk-amg01079c2-lg-gb-2030.playouts.now.amagi.tv/playlist/amg01079-nbcuukfast-cnbcuk-lggb/playlist.m3u8
-CNN FAST (CH),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgch/playlist.m3u8
-CNN FAST (DK),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgdk/playlist.m3u8
-CNA,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-ABC NEWS,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
-CNN FAST (FR),https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00405-rakutentv-cnnfastlg-rakuten-lgfr/playlist.m3u8
+ABC News,https://ghp.ci/https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV24.m3u8
+CNN,https://turnerlive.warnermediacdn.com/hls/live/586495/cnngo/cnn_slate/VIDEO_0_3564000.m3u8
+CNN,http://38.96.178.201:80/live/CNNHD/index.m3u8
