@@ -4,9 +4,9 @@ import base64
 
 # 从环境变量获取
 GITHUB_API_URL = "https://api.github.com"
-OWNER = os.environ.get("GITHUB_OWNER")
-REPO = os.environ.get("GITHUB_REPO")
-TOKEN = os.environ.get("GITHUB_TOKEN")
+OWNER = os.environ.get("OWNER")
+REPO = os.environ.get("REPO")
+TOKEN = os.environ.get("TOKEN")
 
 HEADERS = {
     "Authorization": f"Bearer {TOKEN}",
