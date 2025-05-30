@@ -14,8 +14,14 @@ SEARCH_API_URL = "https://api.github.com/search/code"
 # 从环境变量获取 GitHub Personal Access Token
 GITHUB_TOKEN = os.getenv("BOT")
 
-# 搜索词
-search_terms = ["ss://", "hysteria2://", "vless://", "vmess://", "trojan://"]
+# 搜索词（优化为 YAML 相关和具体配置）
+search_terms = [
+    "type: ss", "type: hysteria2", "type: vless", "type: vmess", "type: trojan",
+    "proxies:",  # 匹配 YAML 配置
+    "ss://", "hysteria2://", "vless://", "vmess://", "trojan://",  # 保留明文协议
+    "dxzx.flyby-world.top",  # 示例域名
+    "6c29f92a-674e-4e13-93e0-bd965afc9226"  # 示例 UUID
+]
 
 # 保存结果的文件路径
 output_file = "data/hy2.txt"
@@ -119,17 +125,20 @@ def verify_content(url):
             except (base64.binascii.Error, UnicodeDecodeError):
                 continue
 
-        # 检查 YAML 格式（优先扩展名）
-        if file_extension in ['.yaml', '.yml']:
+        # 检查 YAML 格式（扩展到 .txt 和无扩展名）
+        if file_extension in ['.yaml', '.yml', '.txt'] or not file_extension:
             try:
                 yaml_data = yaml.safe_load(content)
                 if isinstance(yaml_data, dict) and 'proxies' in yaml_data:
                     for proxy in yaml_data.get('proxies', []):
-                        if isinstance(proxy, dict) and proxy.get('type') in ['ss', 'hysteria2', 'vless', 'vmess', 'trojan']:
+                        if isinstance(proxy, dict) and (
+                            proxy.get('type') in ['ss', 'hysteria2', 'vless', 'vmess', 'trojan'] or
+                            any(key in proxy for key in ['server', 'port', 'cipher', 'password', 'uuid'])
+                        ):
                             print(f"找到 YAML 协议: {url}")
                             return True
-            except yaml.YAMLError:
-                pass
+            except yaml.YAMLError as e:
+                print(f"YAML 解析失败: {url} ({e})")
 
         return False
     except requests.exceptions.RequestException as e:
@@ -177,7 +186,7 @@ for term in search_terms:
         for item in items:
             html_url = item["html_url"]
             # 跳过已知无关文件
-            if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac', 'domain.yml', 'proxy.yaml']):
+            if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac']):
                 print(f"跳过无关文件: {html_url}")
                 invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 continue
