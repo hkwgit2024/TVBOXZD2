@@ -5,10 +5,11 @@ import base64
 import yaml
 import json
 import time
+import socket
 from urllib.parse import quote, urlencode
 from datetime import datetime
 
-# GitHub API 基础 URL（用于检查速率限制）
+# GitHub API 基础 URL
 SEARCH_API_URL = "https://api.github.com/search/code"
 
 # 从环境变量获取 GitHub Personal Access Token
@@ -16,6 +17,7 @@ GITHUB_TOKEN = os.getenv("BOT")
 
 # 输入和输出文件路径
 input_file = "data/hy2.txt"
+invalid_urls_file = "data/invalid_urls.txt"
 protocol_output_file = "data/protocol_nodes.txt"
 yaml_output_file = "data/yaml_nodes.yaml"
 debug_log_file = "data/extract_debug.log"
@@ -28,6 +30,46 @@ protocol_nodes = []
 yaml_nodes = []
 debug_logs = []
 
+# 读取无效 URL
+def load_invalid_urls():
+    invalid_urls = set()
+    try:
+        with open(invalid_urls_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    invalid_urls.add(line.split("|")[0])
+        debug_logs.append(f"加载 {len(invalid_urls)} 个无效 URL")
+    except FileNotFoundError:
+        debug_logs.append(f"{invalid_urls_file} 未找到，将创建新文件")
+    return invalid_urls
+
+# 测试节点连通性
+def test_node(server, port, timeout=3):
+    try:
+        sock = socket.create_connection((server, int(port)), timeout=timeout)
+        sock.close()
+        debug_logs.append(f"节点 {server}:{port} 测试成功")
+        return True
+    except (socket.timeout, socket.gaierror, ConnectionRefusedError, ValueError) as e:
+        debug_logs.append(f"节点 {server}:{port} 测试失败: {e}")
+        return False
+
+# 解析节点以提取 server 和 port
+def parse_node(node):
+    try:
+        if node.startswith(("ss://", "hysteria2://", "trojan://", "vless://")):
+            match = re.match(r'^(?:ss|hysteria2|trojan|vless)://[^@]+@([^:]+):(\d+)', node)
+            if match:
+                return match.group(1), match.group(2)
+        elif node.startswith("vmess://"):
+            decoded = base64.b64decode(node[8:]).decode('utf-8')
+            config = json.loads(decoded)
+            return config.get('add'), config.get('port')
+    except Exception as e:
+        debug_logs.append(f"解析节点失败: {node[:50]}... ({e})")
+    return None, None
+
 # 设置请求头
 headers = {
     "Accept": "application/vnd.github.v3+json",
@@ -36,7 +78,7 @@ headers = {
 if GITHUB_TOKEN:
     headers["Authorization"] = f"token {GITHUB_TOKEN}"
 else:
-    debug_logs.append("警告：未找到 BOT 环境变量，将使用未认证请求（速率限制较低）")
+    debug_logs.append("警告：未找到 BOT 环境变量，将使用未认证请求")
 
 # 检查速率限制
 try:
@@ -46,16 +88,17 @@ try:
 except requests.exceptions.RequestException as e:
     debug_logs.append(f"检查速率限制失败: {e}")
 
-# 正则表达式匹配协议（放宽匹配）
+# 正则表达式匹配协议
 protocol_pattern = re.compile(r'(ss|hysteria2|vless|vmess|trojan)://[^\s]+', re.MULTILINE | re.IGNORECASE)
-# 正则表达式匹配 Base64 字符串
 base64_pattern = re.compile(r'[A-Za-z0-9+/=]{8,}', re.MULTILINE)
 
 # 读取 data/hy2.txt
 try:
     with open(input_file, "r", encoding="utf-8") as f:
         urls = [line.strip().split("|")[0] for line in f if line.strip()]
-    debug_logs.append(f"从 {input_file} 读取 {len(urls)} 个 URL")
+    invalid_urls = load_invalid_urls()
+    urls = [url for url in urls if url not in invalid_urls]
+    debug_logs.append(f"从 {input_file} 读取 {len(urls)} 个有效 URL（过滤后）")
 except FileNotFoundError:
     debug_logs.append(f"错误：未找到 {input_file}")
     exit(1)
@@ -138,18 +181,20 @@ def extract_nodes_from_url(url):
         raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
         response = requests.get(raw_url, headers=headers, timeout=10)
         response.raise_for_status()
-        content = response.text[:5000]  # 增加内容长度
+        content = response.text[:5000]
         debug_logs.append(f"获取 {url} 内容成功，长度: {len(content)}")
-
-        # 保存内容片段
         debug_logs.append(f"内容前100字符: {content[:100].replace('\n', ' ')}")
 
         # 提取明文协议
         protocol_matches = protocol_pattern.finditer(content)
         for match in protocol_matches:
             node = match.group(0).strip()
-            extracted_protocol_nodes.append(node)
-            debug_logs.append(f"提取明文节点: {node[:50]}...")
+            server, port = parse_node(node)
+            if server and port and test_node(server, port):
+                extracted_protocol_nodes.append(node)
+                debug_logs.append(f"提取明文节点: {node[:50]}...")
+            else:
+                debug_logs.append(f"无效节点: {node[:50]}...")
 
         # 提取 Base64 编码协议
         base64_matches = base64_pattern.findall(content)
@@ -160,15 +205,19 @@ def extract_nodes_from_url(url):
                 debug_logs.append(f"Base64 解码: {decoded[:50]}...")
                 if protocol_pattern.search(decoded):
                     node = decoded.strip()
-                    extracted_protocol_nodes.append(node)
-                    debug_logs.append(f"提取 Base64 解码节点: {node[:50]}...")
+                    server, port = parse_node(node)
+                    if server and port and test_node(server, port):
+                        extracted_protocol_nodes.append(node)
+                        debug_logs.append(f"提取 Base64 解码节点: {node[:50]}...")
                 # 尝试解析为 JSON（vmess://）
                 try:
                     json_data = json.loads(decoded)
                     if isinstance(json_data, dict) and any(key in json_data for key in ['v', 'ps', 'add', 'port', 'id']):
                         node = f"vmess://{base64.b64encode(json.dumps(json_data).encode('utf-8')).decode('utf-8')}"
-                        extracted_protocol_nodes.append(node)
-                        debug_logs.append(f"提取 Base64 JSON 节点: {node[:50]}...")
+                        server, port = parse_node(node)
+                        if server and port and test_node(server, port):
+                            extracted_protocol_nodes.append(node)
+                            debug_logs.append(f"提取 Base64 JSON 节点: {node[:50]}...")
                 except json.JSONDecodeError:
                     pass
             except (base64.binascii.Error, UnicodeDecodeError) as e:
@@ -186,8 +235,10 @@ def extract_nodes_from_url(url):
                                 if isinstance(proxy, dict) and any(k in proxy for k in ['server', 'port', 'type', 'cipher', 'password', 'uuid']):
                                     protocol_node = yaml_to_protocol(proxy)
                                     if protocol_node:
-                                        extracted_protocol_nodes.append(protocol_node)
-                                        debug_logs.append(f"提取 YAML 协议节点: {protocol_node[:50]}...")
+                                        server, port = parse_node(protocol_node)
+                                        if server and port and test_node(server, port):
+                                            extracted_protocol_nodes.append(protocol_node)
+                                            debug_logs.append(f"提取 YAML 协议节点: {protocol_node[:50]}...")
                                     extracted_yaml_nodes.append(proxy)
                                     debug_logs.append(f"提取 YAML 节点: {yaml.dump([proxy], allow_unicode=True, sort_keys=False)[:50]}...")
                 else:
@@ -197,11 +248,14 @@ def extract_nodes_from_url(url):
 
     except requests.exceptions.RequestException as e:
         debug_logs.append(f"获取 {url} 内容失败: {e}")
+        with open(invalid_urls_file, "a", encoding="utf-8") as f:
+            f.write(f"{url}|{datetime.utcnow().isoformat()}\n")
+        debug_logs.append(f"记录无效 URL: {url}")
 
     return extracted_protocol_nodes, extracted_yaml_nodes
 
 # 处理每个 URL
-urls = list(set(urls))  # 去重 URL
+urls = list(set(urls))
 for url in urls:
     p_nodes, y_nodes = extract_nodes_from_url(url)
     protocol_nodes.extend(p_nodes)
