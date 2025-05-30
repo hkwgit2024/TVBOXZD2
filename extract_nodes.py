@@ -3,6 +3,8 @@ import os
 import json
 import time
 import re
+import base64
+import yaml  # 需要安装 PyYAML: pip install pyyaml
 from urllib.parse import quote
 
 # GitHub API 基础 URL
@@ -52,8 +54,10 @@ response = requests.get("https://api.github.com/rate_limit", headers=headers)
 rate_limit = response.json()
 print(f"速率限制: {rate_limit['rate']['remaining']} 剩余, 重置时间: {rate_limit['rate']['reset']}")
 
-# 正则表达式匹配协议
+# 正则表达式匹配协议（明文）
 protocol_pattern = re.compile(r'^(ss|hysteria2|vless|vmess|trojan)://', re.MULTILINE)
+# 正则表达式匹配 Base64 字符串（可能的代理配置）
+base64_pattern = re.compile(r'[A-Za-z0-9+/=]{20,}', re.MULTILINE)
 
 # 验证文件内容是否包含目标协议
 def verify_content(url):
@@ -62,7 +66,44 @@ def verify_content(url):
         response = requests.get(raw_url, headers=headers, timeout=10)
         response.raise_for_status()
         content = response.text
-        return bool(protocol_pattern.search(content))
+
+        # 检查明文协议
+        if protocol_pattern.search(content):
+            print(f"找到明文协议: {url}")
+            return True
+
+        # 检查 Base64 编码
+        base64_matches = base64_pattern.findall(content)
+        for b64_str in base64_matches:
+            try:
+                decoded = base64.b64decode(b64_str).decode('utf-8')
+                if protocol_pattern.search(decoded):
+                    print(f"找到 Base64 解码协议: {url}")
+                    return True
+                # 尝试解析为 JSON（vmess:// 常见格式）
+                try:
+                    json_data = json.loads(decoded)
+                    if isinstance(json_data, dict) and any(key in json_data for key in ['v', 'ps', 'add', 'port', 'id']):
+                        print(f"找到 Base64 JSON 协议: {url}")
+                        return True
+                except json.JSONDecodeError:
+                    pass
+            except (base64.binascii.Error, UnicodeDecodeError):
+                continue
+
+        # 检查 YAML 格式
+        if url.endswith(('.yaml', '.yml')):
+            try:
+                yaml_data = yaml.safe_load(content)
+                if isinstance(yaml_data, dict) and 'proxies' in yaml_data:
+                    for proxy in yaml_data.get('proxies', []):
+                        if isinstance(proxy, dict) and proxy.get('type') in ['ss', 'hysteria2', 'vless', 'vmess', 'trojan']:
+                            print(f"找到 YAML 协议: {url}")
+                            return True
+            except yaml.YAMLError:
+                pass
+
+        return False
     except requests.exceptions.RequestException as e:
         print(f"验证 {url} 失败: {e}")
         return False
@@ -90,6 +131,7 @@ def search_with_retry(term, page, max_retries=3):
 
 # 遍历搜索词
 max_pages = 5
+max_urls = 100  # 限制最多验证 100 个 URL
 for term in search_terms:
     page = 1
     while page <= max_pages:
@@ -106,14 +148,24 @@ for term in search_terms:
             break
         for item in items:
             html_url = item["html_url"]
+            # 跳过已知无关文件
+            if any(ext in html_url for ext in ['gfwlist', 'ProxyGFW', 'gfw.txt', 'gfw.pac']):
+                print(f"跳过无关文件: {html_url}")
+                continue
             print(f"验证文件: {html_url}")
             if verify_content(html_url):
                 found_urls.append(html_url)
                 print(f"有效 URL: {html_url}")
             else:
                 print(f"无效 URL: {html_url}（不包含目标协议）")
+            if len(found_urls) >= max_urls:
+                break
+        if len(found_urls) >= max_urls:
+            break
         page += 1
         time.sleep(5)
+    if len(found_urls) >= max_urls:
+        break
 
 # 去重 URL
 found_urls = list(set(found_urls))
