@@ -43,7 +43,9 @@ headers = {
 if GITHUB_TOKEN:
     headers["Authorization"] = f"token {GITHUB_TOKEN}"
 else:
-    print("警告：未找到 BOT 环境变量，将使用未认证请求（速率限制较低）")
+    print("警告：未找到 BOT 环境
+
+变量，将使用未认证请求（速率限制较低）")
 
 # 检查速率限制
 response = requests.get("https://api.github.com/rate_limit", headers=headers)
@@ -55,11 +57,35 @@ protocol_pattern = re.compile(r'^(ss|hysteria2|vless|vmess|trojan)://', re.MULTI
 # 正则表达式匹配 Base64 字符串（可能的代理配置）
 base64_pattern = re.compile(r'[A-Za-z0-9+/=]{20,}', re.MULTILINE)
 
+# 无关扩展名（不太可能包含代理配置）
+irrelevant_extensions = [
+    '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.ico',  # 图片
+    '.md', '.markdown', '.rst',  # 文档
+    '.pdf', '.doc', '.docx', '.xls', '.xlsx',  # 办公文件
+    '.zip', '.tar', '.gz', '.rar',  # 压缩文件
+    '.exe', '.dll', '.bin',  # 可执行文件
+]
+
+# 优先扩展名（可能包含代理配置）
+priority_extensions = [
+    '.yaml', '.yml',  # Clash 配置
+    '.conf',  # 通用配置文件
+    '.json',  # JSON 格式配置
+    '.txt',  # 文本文件（需进一步检查）
+]
+
 # 验证文件内容是否包含目标协议
 def verify_content(url):
     if url in known_invalid_urls:
         print(f"跳过已知无效 URL: {url}")
         return False
+
+    # 检查扩展名
+    file_extension = os.path.splitext(url)[1].lower()
+    if file_extension in irrelevant_extensions:
+        print(f"跳过无关扩展名文件: {url} ({file_extension})")
+        return False
+
     try:
         raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
         response = requests.get(raw_url, headers=headers, timeout=10)
@@ -90,8 +116,8 @@ def verify_content(url):
             except (base64.binascii.Error, UnicodeDecodeError):
                 continue
 
-        # 检查 YAML 格式
-        if url.endswith(('.yaml', '.yml')):
+        # 检查 YAML 格式（优先扩展名）
+        if file_extension in ['.yaml', '.yml']:
             try:
                 yaml_data = yaml.safe_load(content)
                 if isinstance(yaml_data, dict) and 'proxies' in yaml_data:
@@ -150,6 +176,13 @@ for term in search_terms:
             # 跳过已知无关文件
             if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac', 'domain.yml', 'proxy.yaml']):
                 print(f"跳过无关文件: {html_url}")
+                invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
+                continue
+            # 检查扩展名
+            file_extension = os.path.splitext(html_url)[1].lower()
+            if file_extension in irrelevant_extensions:
+                print(f"跳过无关扩展名文件: {html_url} ({file_extension})")
+                invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 continue
             print(f"验证文件: {html_url}")
             if verify_content(html_url):
