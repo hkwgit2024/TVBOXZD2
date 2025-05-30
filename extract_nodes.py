@@ -2,6 +2,7 @@ import requests
 import os
 import json
 import time
+import re
 from urllib.parse import quote
 
 # GitHub API 基础 URL
@@ -51,12 +52,27 @@ response = requests.get("https://api.github.com/rate_limit", headers=headers)
 rate_limit = response.json()
 print(f"速率限制: {rate_limit['rate']['remaining']} 剩余, 重置时间: {rate_limit['rate']['reset']}")
 
+# 正则表达式匹配协议
+protocol_pattern = re.compile(r'^(ss|hysteria2|vless|vmess|trojan)://', re.MULTILINE)
+
+# 验证文件内容是否包含目标协议
+def verify_content(url):
+    try:
+        raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+        response = requests.get(raw_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        content = response.text
+        return bool(protocol_pattern.search(content))
+    except requests.exceptions.RequestException as e:
+        print(f"验证 {url} 失败: {e}")
+        return False
+
 # 搜索并重试
 def search_with_retry(term, page, max_retries=3):
     for attempt in range(max_retries):
         try:
             print(f"尝试搜索 {term}（第 {page} 页），第 {attempt+1} 次")
-            response = requests.get(SEARCH_API_URL, headers=headers, params=params)
+            response = requests.get(SEARCH_API_URL, headers=headers, params=params, timeout=10)
             response.raise_for_status()
             print(f"完成搜索 {term}（第 {page} 页），状态码: {response.status_code}")
             return response.json()
@@ -90,7 +106,12 @@ for term in search_terms:
             break
         for item in items:
             html_url = item["html_url"]
-            found_urls.append(html_url)
+            print(f"验证文件: {html_url}")
+            if verify_content(html_url):
+                found_urls.append(html_url)
+                print(f"有效 URL: {html_url}")
+            else:
+                print(f"无效 URL: {html_url}（不包含目标协议）")
         page += 1
         time.sleep(5)
 
@@ -102,4 +123,4 @@ with open(output_file, "w", encoding="utf-8") as f:
     for url in found_urls:
         f.write(url + "\n")
 
-print(f"找到 {len(found_urls)} 个唯一 URL，已保存到 {output_file}")
+print(f"找到 {len(found_urls)} 个包含目标协议的唯一 URL，已保存到 {output_file}")
