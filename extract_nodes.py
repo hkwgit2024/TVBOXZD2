@@ -43,9 +43,7 @@ headers = {
 if GITHUB_TOKEN:
     headers["Authorization"] = f"token {GITHUB_TOKEN}"
 else:
-    print("警告：未找到 BOT 环境)
-
-变量，将使用未认证请求（速率限制较低）")
+    print("警告：未找到 BOT 环境变量，将使用未认证请求（速率限制较低）")
 
 # 检查速率限制
 response = requests.get("https://api.github.com/rate_limit", headers=headers)
@@ -181,7 +179,7 @@ for term in search_terms:
             # 检查扩展名
             file_extension = os.path.splitext(html_url)[1].lower()
             if file_extension in irrelevant_extensions:
-                print(f"跳过无关扩展名文件: {html_url} ({file_extension})")
+                print(f"跳过无关扩展名文件: {url} ({file_extension})")
                 invalid_urls.append(f"{html_url}|{datetime.now().isoformat()}")
                 continue
             print(f"验证文件: {html_url}")
