@@ -18,6 +18,7 @@ GITHUB_TOKEN = os.getenv("BOT")
 
 # Broadened search terms for wider coverage
 search_terms = [
+    "v2ray  vmess" 
     "proxies type:",  # General YAML proxy configurations
     "server: port:",  # General server configurations
     "vless://", "vmess://", "trojan://", "ss://", "hysteria2://",  # Cleartext protocols
