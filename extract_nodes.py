@@ -14,9 +14,9 @@ from tqdm import tqdm
 
 # 配置日志系统
 logging.basicConfig(
-    level=logging.DEBUG,  # 启用 DEBUG 日志
+    level=logging.DEBUG,  # 确保 DEBUG 日志生效
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.FileHandler("node_extractor.log"), logging.StreamHandler()]
+    handlers=[logging.FileHandler("node_extractor.log", encoding="utf-8"), logging.StreamHandler()]
 )
 
 # 命令行参数解析
@@ -45,7 +45,7 @@ def load_config(config_file):
         "history_expiry_days": 30,
         "max_parallel_workers": 2,
         "max_backoff_seconds": 600,
-        "max_pages_per_query": 2  # 减少分页
+        "max_pages_per_query": 2
     }
     if os.path.exists(config_file):
         try:
@@ -92,12 +92,6 @@ search_filenames = CONFIG["search"].get("filenames", [])
 generic_terms = CONFIG["search"].get("generic_terms", [])
 excluded_extensions = CONFIG["search"]["excluded_extensions"]
 
-# 生成 Base64 编码的关键词
-def encode_base64(text):
-    return base64.b64encode(text.encode('utf-8')).decode('utf-8').rstrip('=')
-
-base64_keywords = [encode_base64(kw) for kw in protocol_keywords]
-
 # 生成搜索查询
 search_queries = []
 override_query = os.getenv("OVERRIDE_SEARCH_QUERY")
@@ -106,21 +100,16 @@ if override_query:
     logging.info(f"使用覆盖查询：{override_query}")
 else:
     # 宽泛查询
-    for kw in protocol_keywords:
-        search_queries.append(f"{kw} in:file")  # 显式使用 in:file
-    # 通用术语
-    for term in generic_terms:
-        search_queries.append(f"{term} in:file")
+    for kw in protocol_keywords + generic_terms:
+        search_queries.append(f"{kw} in:file")
     # 关键词 + 扩展名
     for ext in search_extensions:
         for kw in search_keywords:
             search_queries.append(f"{kw} in:file extension:{ext}")
     # 关键词 + 文件名
     for fname in search_filenames:
-        search_queries.append(f'({" OR ".join([f"{kw}" for kw in protocol_keywords])}) in:file {fname}')
-    # Base64 编码查询
-    for b64_kw in base64_keywords:
-        search_queries.append(f"{b64_kw} in:file")
+        for kw in protocol_keywords:
+            search_queries.append(f"{kw} in:file {fname}")
 logging.info(f"生成了 {len(search_queries)} 个搜索查询")
 
 # 正则表达式
@@ -187,8 +176,9 @@ class Base64Extractor(NodeExtractor):
             decoded_bytes = base64.b64decode(cleaned_text, validate=True)
             decoded_string = decoded_bytes.decode('utf-8', errors='ignore')
             links.extend(NODE_PATTERN.findall(decoded_string))
-        except Exception:
-            pass
+            logging.debug(f"Base64 解码内容：{decoded_string[:100]}...")
+        except Exception as e:
+            logging.debug(f"Base64 解码失败：{e}")
         return links
 
 class YAMLExtractor(NodeExtractor):
@@ -213,8 +203,8 @@ class YAMLExtractor(NodeExtractor):
                     elif isinstance(item, str):
                         links.extend(NODE_PATTERN.findall(item))
                 find_urls_in_yaml(data)
-        except yaml.YAMLError:
-            pass
+        except yaml.YAMLError as e:
+            logging.debug(f"YAML 解析失败：{e}")
         return links
 
 class JSONExtractor(NodeExtractor):
@@ -239,8 +229,8 @@ class JSONExtractor(NodeExtractor):
                     elif isinstance(item, str):
                         links.extend(NODE_PATTERN.findall(item))
                 find_urls_in_json(data)
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as e:
+            logging.debug(f"JSON 解析失败：{e}")
         return links
 
 extractors = [Base64Extractor(), YAMLExtractor(), JSONExtractor()]
@@ -267,11 +257,9 @@ def process_search_result(result):
         # 处理 Base64 编码内容
         base64_pattern = re.compile(r"[A-Za-z0-9+/]{16,}(?:={0,2})")
         for b64_str in base64_pattern.findall(file_content):
-            for extractor in extractors:
-                if isinstance(extractor, Base64Extractor):
-                    extracted_nodes = extractor.extract(b64_str)
-                    current_run_nodes.update(extracted_nodes)
-                    logging.debug(f"Base64 提取到 {len(extracted_nodes)} 个节点：{extracted_nodes}")
+            extracted_nodes = Base64Extractor().extract(b64_str)
+            current_run_nodes.update(extracted_nodes)
+            logging.debug(f"Base64 片段提取到 {len(extracted_nodes)} 个节点：{extracted_nodes}")
 
     except UnknownObjectException as e:
         logging.warning(f"无法访问或对象不存在：{result.path}（位于 {result.repository.full_name}）：{e}")
@@ -307,30 +295,29 @@ def save_as_clash_config(nodes, output_file):
         ],
         "rules": ["MATCH,auto"]
     }
-
-    for node in sorted(nodes, key=None):
+    for node in sorted(nodes):
         proxy = parse_vmess_node(node) or parse_ss_node(node)
         if not proxy:
             proxy = {
-                "name": f"node.split('://')[0]-{len(clash_config['proxies'])}",
+                "name": f"node-{len(clash_config['proxies'])}",
                 "type": node.split("://")[0],
                 "server": "unknown",
                 "port": 0,
                 "node-url": node
             }
-        clash_config["proxies'].append(proxy)
+        clash_config["proxies"].append(proxy)
         clash_config["proxy-groups"][0]["proxies"].append(proxy["name"])
 
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    with open(output_file, "w', encoding="utf-8") as f:
-        yaml.safe_dump(clash_config, f, allow_unicode=True, sort_keys=False)
+    with open(output_file, "w", encoding="utf-8") as f:
+        yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
     logging.info(f"已保存 Clash 配置文件，包含 {len(clash_config['proxies'])} 个代理到 '{output_file}'")
 
 # 主逻辑
 def main():
     global current_run_nodes
     for query_idx, current_query in enumerate(search_queries):
-        logging.info(f"正在搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
+        logging.info(f"正在 GitHub 上搜索（查询 {query_idx + 1}/{len(search_queries)}）：'{current_query}'...")
         try:
             rate_limit_before = g.get_rate_limit().core
             reset_timestamp = rate_limit_before.reset.timestamp()
@@ -381,13 +368,7 @@ def main():
             time.sleep(max(wait_seconds, 0))
             continue
         except Exception as e:
-            if "403" in str(e):
-                logging.warning(f"触发 403 Forbidden 错误，可能为次级速率限制：{e}")
-                wait_seconds = min(CONFIG["max_backoff_seconds"], 600)
-                logging.info(f"等待 {wait_seconds:.1f} 秒后重试...")
-                time.sleep(wait_seconds)
-                continue
-            logging.error(f"搜索查询 '{current_query}' 期间发生意外错误：{e}")
+            logging.error(f"搜索查询 '{current_query}' 期间发生错误：{e}")
             time.sleep(CONFIG["query_delay_seconds"])
             continue
 
