@@ -7,25 +7,38 @@ jobs:
   download_yaml_files:
     runs-on: ubuntu-latest
     env:
-      OWNER: ${{ secrets.OWNER }}      # 在仓库 Secrets 中设置
+      OWNER: ${{ secrets.OWNER }}
       REPO: ${{ secrets.REPO }}
-      TOKEN: ${{ secrets.BOT }}         # 你的BOT Token
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v3
+      TOKEN: ${{ secrets.TOKEN }}
+      pythonLocation: /opt/hostedtoolcache/Python/3.8.18/x64
+      PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.8.18/x64/lib/pkgconfig
+      Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.8.18/x64
+      Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.8.18/x64
+      Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.8.18/x64
+      LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.8.18/x64/lib
 
-      - name: 设置Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
+steps:
+  - name: 检出代码
+    uses: actions/checkout@v3
 
-      - name: 安装依赖
-        run: |
-          pip install requests
+  - name: 设置Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.8'
 
-      - name: 运行脚本
-        run: |
-          python node.py
+  - name: 安装依赖
+    run: |
+      pip install requests
 
-      - name: 查看结果
-        run: cat data/ji.txt
+  - name: 运行脚本
+    run: |
+      python node.py
+
+  - name: 查看结果
+    run: cat data/ji.txt
+
+  - name: 输出信息到 $GITHUB_OUTPUT
+    env:
+      OUTPUT_FILE: data/output.txt  # 可以自定义输出文件名
+    run: |
+      echo "所有Yaml内容已保存到 data/ji.txt" >> $GITHUB_OUTPUT
