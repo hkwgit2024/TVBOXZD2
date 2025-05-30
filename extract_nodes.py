@@ -17,7 +17,7 @@ GITHUB_TOKEN = os.getenv("BOT")
 
 # Broadened search terms for wider coverage
 search_terms = [
-    "v2ray  vmess",
+    "v2ray vmess",
     "proxies type:",
     "server: port:",
     "vless://", "vmess://", "trojan://", "ss://", "hysteria2://",
@@ -32,7 +32,7 @@ debug_log_file = "data/search_debug.log"
 
 # --- Setup ---
 os.makedirs("data", exist_ok=True)
-debug_logs = [] # Stores debug log messages
+debug_logs = []  # Stores debug log messages
 
 # --- Global Headers for GitHub API requests ---
 headers = {
@@ -44,7 +44,7 @@ if GITHUB_TOKEN:
 else:
     debug_logs.append("Warning: BOT environment variable not found. Proceeding with unauthenticated requests (lower rate limit).")
 
-# --- New: Lock for safe concurrent file writes to invalid_urls.txt ---
+# --- Lock for safe concurrent file writes to invalid_urls.txt ---
 invalid_urls_write_lock = asyncio.Lock()
 
 # --- Utility Functions ---
@@ -54,11 +54,11 @@ async def load_known_invalid_urls() -> set:
     if os.path.exists(invalid_urls_file):
         with open(invalid_urls_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
-        max_invalid_urls_to_load = 1000 # Limit to prevent excessive memory usage
+        max_invalid_urls_to_load = 1000  # Limit to prevent excessive memory usage
         for line in lines[-max_invalid_urls_to_load:]:
-            url_part = line.strip().split("|")
-            if url_part:
-                known_invalid_urls.add(url_part)
+            parts = line.strip().split("|")
+            if parts and parts[0]:
+                known_invalid_urls.add(parts[0])
         debug_logs.append(f"Loaded {len(known_invalid_urls)} known invalid URLs.")
     return known_invalid_urls
 
@@ -103,14 +103,18 @@ async def verify_content(session: aiohttp.ClientSession, url: str, known_invalid
         async with session.get(raw_url, headers=headers, timeout=20) as response:
             response.raise_for_status()
             content = await response.text()
-            content = content[:1000000]
+            content = content[:1000000]  # Limit content size to 1MB
 
             if protocol_pattern.search(content):
                 debug_logs.append(f"Found cleartext protocol in: {url}")
                 return True
 
             base64_matches = base64_pattern.findall(content)
+            skip_params = ['encryption=', 'security=', 'sni=', 'type=', 'mode=', 'serviceName=', 'fp=', 'pbk=', 'sid=']
             for b64_str in base64_matches:
+                if any(param in b64_str.lower() for param in skip_params):
+                    debug_logs.append(f"Skipping non-Base64 parameter: {b64_str[:20]}...")
+                    continue
                 try:
                     decoded = base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
                     if protocol_pattern.search(decoded):
@@ -123,22 +127,34 @@ async def verify_content(session: aiohttp.ClientSession, url: str, known_invalid
                             return True
                     except json.JSONDecodeError:
                         pass
-                except (base64.binascii.Error, UnicodeDecodeError):
+                except (base64.binascii.Error, UnicodeDecodeError) as e:
+                    debug_logs.append(f"Base64 decode failed for {b64_str[:20]}... in {url}: {e}")
                     continue
 
             if file_extension in {'.yaml', '.yml', '.conf', '.json'} or not file_extension:
                 try:
                     yaml_data = yaml.safe_load(content)
                     if isinstance(yaml_data, dict):
-                        for key in ['proxies', 'proxy', 'nodes', 'servers', 'outbounds']:
+                        for key in ['proxies', 'proxy', 'nodes', 'servers', 'outbounds', 'inbounds', 'proxy-groups']:
                             if key in yaml_data:
                                 proxies_config = yaml_data[key]
                                 if (isinstance(proxies_config, list) and any(isinstance(p, dict) and any(k in p for k in ['server', 'port', 'type']) for p in proxies_config)) or \
                                    (isinstance(proxies_config, dict) and any(k in proxies_config for k in ['server', 'port', 'type'])):
                                     debug_logs.append(f"Found YAML/JSON proxy config in: {url}")
                                     return True
-                except (yaml.YAMLError, json.JSONDecodeError):
-                    pass
+                except yaml.YAMLError as e:
+                    debug_logs.append(f"YAML parsing failed for {url}: {e}")
+                try:
+                    json_data = json.loads(content)
+                    if isinstance(json_data, dict):
+                        for key in ['proxies', 'servers', 'nodes', 'outbounds']:
+                            if key in json_data and isinstance(json_data[key], list):
+                                for proxy in json_data[key]:
+                                    if isinstance(proxy, dict) and any(k in proxy for k in ['server', 'port', 'type']):
+                                        debug_logs.append(f"Found JSON proxy config in: {url}")
+                                        return True
+                except json.JSONDecodeError as e:
+                    debug_logs.append(f"JSON parsing failed for {url}: {e}")
 
             debug_logs.append(f"No target protocol or valid configuration found in: {url}")
             await log_invalid_url(url, "No proxy configuration found")
@@ -171,26 +187,26 @@ async def log_invalid_url(url: str, reason: str):
 
 async def search_and_process(session: aiohttp.ClientSession, term: str, max_pages: int, max_urls_to_find: int, known_invalid_urls: set, found_urls_set: set):
     page = 1
-    current_search_count = 0
+    current_search_count = len(found_urls_set)
 
-    while page <= max_pages:
+    while page <= max_pages and current_search_count < max_urls_to_find:
         remaining_requests = await check_rate_limit(session)
         if remaining_requests < 20 and GITHUB_TOKEN:
             debug_logs.append(f"Rate limit approaching ({remaining_requests} left). Waiting for reset...")
-            reset_time_response = await session.get("https://api.github.com/rate_limit", headers=headers)
-            reset_data = await reset_time_response.json()
-            reset_timestamp = reset_data['rate']['reset']
-            wait_time = max(0, reset_timestamp - int(time.time())) + 10
-            debug_logs.append(f"Waiting {wait_time} seconds before next request.")
-            await asyncio.sleep(wait_time)
-            remaining_requests = await check_rate_limit(session)
-            if remaining_requests < 20 and GITHUB_TOKEN:
-                debug_logs.append("Rate limit did not reset as expected or still too low. Aborting current search term.")
-                break
+            async with session.get("https://api.github.com/rate_limit", headers=headers) as reset_time_response:
+                reset_data = await reset_time_response.json()
+                reset_timestamp = reset_data['rate']['reset']
+                wait_time = max(0, reset_timestamp - int(time.time())) + 10
+                debug_logs.append(f"Waiting {wait_time} seconds before next request.")
+                await asyncio.sleep(wait_time)
+                remaining_requests = await check_rate_limit(session)
+                if remaining_requests < 20:
+                    debug_logs.append("Rate limit did not reset as expected or still too low. Aborting current search term.")
+                    break
 
         params = {
             "q": quote(term, safe=''),
-            "per_page": 1000,
+            "per_page": 100,  # GitHub API max is 100
             "page": page
         }
         debug_logs.append(f"Searching for '{term}' (page {page})...")
@@ -220,9 +236,9 @@ async def search_and_process(session: aiohttp.ClientSession, term: str, max_page
             html_url = item["html_url"]
             if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac']):
                 debug_logs.append(f"Skipping irrelevant content: {html_url}")
-                await log_invalid_url(html_url, "Irrelevant content (keyword match)")  # Log skipped irrelevant URLs
+                await log_invalid_url(html_url, "Irrelevant content (keyword match)")
                 continue
-            if html_url in known_invalid_urls or f"{html_url}|" in "|".join(found_urls_set):
+            if html_url in known_invalid_urls or html_url in [entry.split("|")[0] for entry in found_urls_set]:
                 debug_logs.append(f"Skipping already processed or known invalid URL: {html_url}")
                 continue
             urls_to_verify.append(html_url)
@@ -234,28 +250,25 @@ async def search_and_process(session: aiohttp.ClientSession, term: str, max_page
             original_url = urls_to_verify[i]
             if result is True:
                 found_urls_set.add(f"{original_url}|{datetime.now(timezone.utc).isoformat()}")
-                current_search_count += 1
+                current_search_count = len(found_urls_set)
                 debug_logs.append(f"Valid URL found: {original_url} (Total found: {current_search_count})")
             elif isinstance(result, Exception):
                 debug_logs.append(f"Verification of {original_url} failed with exception: {result}")
-                # log_invalid_url is already called inside verify_content for exceptions
             else:
                 debug_logs.append(f"URL {original_url} did not pass verification.")
-                # log_invalid_url is already called inside verify_content for content not found
 
             if current_search_count >= max_urls_to_find:
                 debug_logs.append(f"Reached target of {max_urls_to_find} URLs. Stopping search.")
                 return
 
         page += 1
-        await asyncio.sleep(2 if GITHUB_TOKEN else 5 )
+        await asyncio.sleep(2 if GITHUB_TOKEN else 5)
 
     debug_logs.append(f"Search for '{term}' completed for all pages or no more results.")
 
 # --- Main Execution ---
 
 async def main():
-    """Main function to orchestrate the URL search and verification process."""
     async with aiohttp.ClientSession() as session:
         known_invalid_urls = await load_known_invalid_urls()
         found_urls_set = set()
@@ -265,26 +278,26 @@ async def main():
             debug_logs.append("Initial rate limit is 0. Cannot proceed with search.")
             return
 
-        max_urls_to_find = 200 
-        max_pages_per_term=5 
+        max_urls_to_find = 200
+        max_pages_per_term = 5
 
-        tasks=[]
-        for term in search_terms :
-             task=asyncio.create_task(search_and_process(session ,term ,max_pages_per_term ,max_urls_to_find ,known_invalid_urls ,found_urls_set))
-             tasks.append(task)
+        tasks = []
+        for term in search_terms:
+            task = asyncio.create_task(search_and_process(session, term, max_pages_per_term, max_urls_to_find, known_invalid_urls, found_urls_set))
+            tasks.append(task)
 
-         await asyncio.gather(*tasks ,return_exceptions=True )
+        await asyncio.gather(*tasks, return_exceptions=True)
 
-         found_urls_list=sorted(list(found_urls_set))
-         with open(output_file,"w",encoding="utf-8") as f :
-              for url_entry in found_urls_list :
-                 f.write(url_entry+"\n")
-         debug_logs.append(f"Found {len(found_urls_list)} URLs ,saved to {output_file}")
-         print(f"Found {len(found_urls_list)} URLs ,saved to {output_file}")
+        found_urls_list = sorted(list(found_urls_set))
+        with open(output_file, "w", encoding="utf-8") as f:
+            for url_entry in found_urls_list:
+                f.write(f"{url_entry}\n")
+        debug_logs.append(f"Found {len(found_urls_list)} URLs, saved to {output_file}")
+        print(f"Found {len(found_urls_list)} URLs, saved to {output_file}")
 
-         with open(debug_log_file,"w",encoding="utf-8") as f :
-              f.write("\n".join(debug_logs))
-         print(f"Debug logs saved to {debug_log_file}")
+        with open(debug_log_file, "w", encoding="utf-8") as f:
+            f.write("\n".join(debug_logs))
+        print(f"Debug logs saved to {debug_log_file}")
 
 if __name__ == "__main__":
-     asyncio.run(main())
+    asyncio.run(main())
