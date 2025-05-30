@@ -77,7 +77,10 @@ def main():
 
     with open('data/ji.txt', 'w', encoding='utf-8') as f:
         f.write("\n---\n".join(all_content))
-    print("所有Yaml内容已保存到 data/ji.txt")
+
+    # 写入输出信息到 $GITHUB_OUTPUT
+    import sys
+    sys.stdout.write("所有Yaml内容已保存到 data/ji.txt\n")
 
 if __name__ == "__main__":
     main()
