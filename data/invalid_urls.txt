@@ -828,3 +828,4 @@ https://github.com/SoominHeo/data/blob/a6adaa59b1dbb19d94264d8ad0ca252d3f54bdba/
 https://github.com/dholdaway/AI-Web-Scraper/blob/9d4bfeff24174d1776d2dafe28e134f316fef3a3/ollama_crawler/cve_results/CVE-2024-51304/secondary_content/show_bug.cgi%3Fid=526430_secondary.txt|2025-05-30T14:31:49.102042+00:00|No proxy configuration found
 https://github.com/teliten/teliten/blob/bc012eab7812e00bddfd5ce04701cfea3d01f9c5/en.wikipedia.org/wiki/Network_interface_controller|2025-05-30T14:31:49.142017+00:00|No proxy configuration found
 https://github.com/k37y/openshift-network-playground/blob/e09dc2adb9fc35da46ab670c8639d7cb430a13dd/ignition/00-core.ign|2025-05-30T14:31:49.179936+00:00|No proxy configuration found
+https://github.com/rootoooo/rootoooo.github.io/blob/6ff80348231e42efc5543877002bab6d726ba03d/qx.conf|2025-05-30T14:39:20.497653+00:00|No proxy configuration found
