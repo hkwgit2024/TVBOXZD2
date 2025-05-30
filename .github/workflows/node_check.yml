@@ -31,8 +31,8 @@ jobs:
           BOT: ${{ secrets.GITHUB_TOKEN }} # 传递 GitHub Token 用于 API 认证
         run: |
           # 运行脚本并将输出同时打印到控制台和日志文件
-          python extract_nodes.py | tee extract_nodes_discovery.log
-          # 注意：这里移除了 'cat extract_nodes_discovery.log'，因为 tee 已经会将内容输出到 stdout，Actions 会自动捕获。
+          # 将日志文件输出到 data/ 目录
+          python extract_nodes.py | tee data/extract_nodes_discovery.log
         timeout-minutes: 10 # 设置此步骤的超时时间
 
       - name: Run Node Extraction and Testing Script (extract_nodes_from_hy2.py) # 运行节点提取和测试脚本
@@ -44,8 +44,8 @@ jobs:
         run: |
           # 这个脚本现在会读取由 extract_nodes.py 生成的 data/hy2.txt
           # 运行脚本并将输出同时打印到控制台和日志文件
-          python extract_nodes_from_hy2.py | tee extract_nodes_processing.log
-          # 注意：这里移除了 'cat extract_nodes_processing.log'，原因同上。
+          # 将日志文件输出到 data/ 目录
+          python extract_nodes_from_hy2.py | tee data/extract_nodes_processing.log
         timeout-minutes: 15 # 设置此步骤的超时时间
 
       - name: Upload logs and data as artifacts # 上传日志和数据作为 Artifacts
@@ -53,16 +53,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: processed-proxy-nodes-artifacts # Artifact 的名称
-          path: |
-            extract_nodes_discovery.log # 搜索脚本的日志
-            extract_nodes_processing.log # 处理脚本的日志
-            data/search_debug.log # 搜索脚本的调试日志
-            data/extraction_debug.log # 处理脚本的调试日志 (注意文件名从 extract_debug.log 改为 extraction_debug.log 以匹配脚本)
-            # data/temp_nodes.txt # 移除此行，因为该文件在脚本运行结束时会被删除，不应作为 Artifact 上传
-            data/protocol_nodes.txt # 最终的有效协议节点列表
-            data/yaml_nodes.yaml # 最终的 YAML 节点列表
-            data/hy2.txt # extract_nodes.py 发现的原始 URL 列表
-            data/invalid_urls.txt # 自动记录的无效 URL 列表
+          path: data/ # **关键更改：直接上传整个 data 目录的内容**
+          # 移除了所有单独列出的文件，因为 data/temp_nodes.txt 应该被排除
+          # 这种方式更简洁，并且可以包含 data 目录下的所有相关文件
+
           if-no-files-found: warn # 如果文件未找到，只发出警告而不是失败
 
       - name: Commit and push changes # 提交并推送更改
@@ -70,21 +64,18 @@ jobs:
           git config --global user.name 'GitHub Action' # 配置 Git 用户名
           git config --global user.email 'action@github.com' # 配置 Git 用户邮箱
           
-          # 确保临时文件 data/temp_nodes.txt 不会被 Git 追踪或尝试添加
-          # 因为它在脚本运行结束后会被删除
-          git rm --cached data/temp_nodes.txt || true # 如果之前被追踪，则从 Git 索引中移除
-          git reset HEAD data/temp_nodes.txt || true # 如果被暂存，则取消暂存
+          # 移除任何尝试操作 data/temp_nodes.txt 的命令，因为它不应该被提交
+          # 脚本会在完成后删除它。
 
-          # 添加所有可能被修改或生成的文件到暂存区
-          # 明确列出所有需要提交的文件，包括日志文件（如果希望它们被提交到仓库）
-          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml data/search_debug.log data/extraction_debug.log
+          # 添加所有 data/ 目录下发生变化的文件
+          # 警告：如果 .gitignore 忽略了某些文件，它们将不会被添加。
+          # 如果希望强制添加被忽略的文件，请使用 git add -f data/
+          git add data/
           
           # 只有当有实际的更改需要提交时才执行 commit
           git diff --staged --quiet || git commit -m "Automated: Update proxy nodes and logs"
           
           # 推送更改到远程仓库
-          # 对于自动化工作流，直接 push 通常是可行的，如果存在并发推送，可能会有冲突，
-          # 但对于这类定期更新数据的场景，通常不是大问题。
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 传递 GitHub Token 用于 Git 推送
