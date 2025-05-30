@@ -48,12 +48,13 @@ jobs:
             extract_nodes.log
             extract_nodes_from_hy2.log
             data/extract_debug.log
+          if-no-files-found: warn
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml data/extract_debug.log
+          git add data/hy2.txt data/invalid_urls.txt data/protocol_nodes.txt data/yaml_nodes.yaml data/extract_debug.log || true
           git commit -m "Update hy2.txt, invalid_urls.txt, protocol_nodes.txt, yaml_nodes.yaml, and debug log" || echo "No changes to commit"
           git pull --rebase origin main
           git push
