@@ -1,3 +1,4 @@
+```python
 import os
 import re
 import subprocess
@@ -287,7 +288,6 @@ def pre_screen_url(url):
 
 def filter_and_modify_channels(channels):
     filtered_channels = []
-    # 预编译正则表达式
     replacement_patterns = [
         (re.compile(re.escape(old_str), re.IGNORECASE), new_str)
         for old_str, new_str in CHANNEL_NAME_REPLACEMENTS.items()
@@ -533,7 +533,7 @@ def process_single_channel_line(channel_line):
 
 def write_sorted_channels_to_file(file_path, data_list):
     with open(file_path, 'w', encoding='utf-8') as file:
-        for item in sorted(data_list, key=lambda x: x[0]):  # 按响应时间排序
+        for item in sorted(data_list, key=lambda x: x[0]):
             file.write(item[1] + '\n')
 
 def sort_cctv_channels(channels):
@@ -561,7 +561,7 @@ def group_and_limit_channels(lines):
             channel_name = channel_name.strip()
             url = url.strip()
             protocol = urlparse(url).scheme
-            priority = protocol_priority.index(protocol) if protocol in protocol_priority else len(protocol)
+            priority = protocol_priority.index(protocol) if protocol in protocol_priority else len(protocol_priority)
             if channel_name not in grouped_channels:
                 grouped_channels[channel_name] = []
             grouped_channels[channel_name].append((priority, line_content))
@@ -574,7 +574,7 @@ def group_and_limit_channels(lines):
 
 def merge_local_channel_files(local_channels_directory, output_file_name="iptv_list.txt"):
     final_output_lines = generate_update_time_header()
-    all_iptv = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
+    all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
     files_to_merge_paths = []
     processed_files = set()
     for category in ORDERED_CATEGORIES:
@@ -596,12 +596,11 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                 final_output_lines.append(header + '\n')
                 final_output_lines.extend(group_and_limit_channels(lines[1:]))
             else:
-                logging.warning(f"文件 '{file_path}' 未以类别标题开头。跳过。")
+                logging.warning(f"文件 {file_path} 未以类别标题开头。跳过。")
     iptv_list_file_path = output_file_name
     with open(iptv_list_file_path, "w", encoding='utf-8') as iptv_list_file:
         iptv_list_file.writelines(final_output_lines)
     logging.info(f"所有区域频道列表文件已合并。输出已保存到：{iptv_list_file_path}")
-    return final_output_lines
 
 def read_txt_to_array_remote(file_path_in_repo):
     content = fetch_from_github(file_path_in_repo)
@@ -612,16 +611,16 @@ def read_txt_to_array_remote(file_path_in_repo):
 def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
     content = '\n'.join(data_array)
     if save_to_github(file_path_in_repo, content, commit_message):
-        logging.info(f"成功写入远程 '{file_path}'。")
+        logging.info(f"成功写入远程 '{file_path_in_repo}'。")
     else:
-        logging.error(f"将数据写入远程 '{file_path}' 失败。")
+        logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
 
 def search_keyword(keyword, headers):
     found_urls = set()
     page = 1
     while page <= MAX_SEARCH_PAGES:
         params = {
-            "q": "extension,
+            "q": keyword,
             "sort": "indexed",
             "order": "desc",
             "per_page": PER_PAGE,
@@ -629,7 +628,7 @@ def search_keyword(keyword, headers):
         }
         try:
             response = session.get(
-                f"{GITHUB_API_BASE_URL}/{SEARCH_CODE_ENDPOINT}",
+                f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
                 headers=headers,
                 params=params,
                 timeout=GITHUB_API_TIMEOUT
@@ -649,16 +648,16 @@ def search_keyword(keyword, headers):
                 match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
                 if match:
                     user, repo, branch, path = match.groups()
-                    raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/path}"
+                    raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
                     cleaned_url = clean_url_params(raw_url)
                     if (cleaned_url.startswith("https://raw.githubusercontent.com/") and
-                            any(cleaned_url.lower().endswith(ext) for ext in STREAM_EXTENSIONS) and
-                            pre_screen_url(cleaned_url)):
-                    found_urls.add(cleaned_url)
+                        any(cleaned_url.lower().endswith(ext) for ext in STREAM_EXTENSIONS) and
+                        pre_screen_url(cleaned_url)):
+                        found_urls.add(cleaned_url)
             page += 1
             time.sleep(0.5)
         except requests.exceptions.RequestException as e:
-            logging.error(f"关键词 '{keyword}' to failed: {e}")
+            logging.error(f"关键词 '{keyword}' 搜索失败：{e}")
             break
     return keyword, found_urls
 
@@ -673,9 +672,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
         "Accept": "application/vnd.github.v3.text-match+json",
         "Authorization": f"token {github_token}"
     }
-    logging.info(f"正在从 GitHub 开始自动发现新的 IPTV 源 URL...")
+    logging.info("正在开始从 GitHub 自动发现新的 IPTV 源 URL...")
     for i, keyword in enumerate(SEARCH_KEYWORDS):
-        keyword_state = url_states.get(f"search:{keyword}', {}))
+        keyword_state = url_states.get(f"search:{keyword}", {})
         last_searched = keyword_state.get('last_searched')
         if last_searched:
             last_time = datetime.fromisoformat(last_searched)
@@ -694,20 +693,20 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 }
                 save_url_states_remote(url_states)
                 logging.info(f"关键词 '{keyword}' 搜索完成，发现 {len(urls)} 个 URL。")
-            time.sleep(1)
-        new_urls_count = len(found_urls - existing_urls)
-        if new_urls_count > 0:
-            updated_urls = list(existing_urls | found_urls)
-            write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现的新 URL 更新 urls.txt")
-            logging.info(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URLs。总 URL 数：{len(updated_urls)}")
-        else:
-            logging.info(f"未发现新的 GitHub IPTV 源 URL。")
+        time.sleep(0.5)
+    new_urls_count = len(found_urls - existing_urls)
+    if new_urls_count > 0:
+        updated_urls = list(existing_urls | found_urls)
+        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现的新 URL 更新 urls.txt")
+        logging.info(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URL。总 URL 数：{len(updated_urls)}")
+    else:
+        logging.info("未发现新的 GitHub IPTV 源 URL。")
 
 def main():
     auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
-    urls = read_txt_to_array_remote(URLS_PATH_IN_IN_REPO)
+    urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
     if not urls:
-        logging.warning(f"在远程 '{URLS_PATH}' 中未找到 URL，脚本将提前退出。")
+        logging.warning(f"在远程 '{URLS_PATH_IN_REPO}' 中未找到 URL，脚本将提前退出。")
         return
     url_states = load_url_states_remote()
     logging.info(f"已加载 {len(url_states)} 个历史 URL 状态。")
@@ -727,7 +726,7 @@ def main():
     filtered_channels = filter_and_modify_channels(list(all_extracted_channels))
     unique_filtered_channels = list(set(filtered_channels))
     unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
-    logging.info(f"过滤和清理后，剩余 {len(unique_filtered_channels)} 个唯一频道。")
+    logging.info(f"过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
     valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
     logging.info(f"有效且响应的频道数量：{len(valid_channels_with_speed)}")
     iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
@@ -744,7 +743,7 @@ def main():
         names_from_current_template = read_txt_to_array_local(os.path.join(template_directory, template_file))
         all_template_channel_names.update(names_from_current_template)
     unmatched_channels_list = []
-    movie_keywords = set(['电影', '影院', '影视', '动作', '喜剧', '纪录', '动画'])
+    movie_keywords = ['电影', '影院', '影视', '动作', '喜剧', '纪录', '动画']
     for template_file in template_files:
         template_channels_names = set(read_txt_to_array_local(os.path.join(template_directory, template_file)))
         template_name = os.path.splitext(template_file)[0]
@@ -753,8 +752,8 @@ def main():
             channel_name = channel_line.split(',', 1)[0].strip()
             if channel_name in template_channels_names:
                 current_template_matched_channels.append(channel_line)
-        if "CCTV" in template_name or "CCTV" in template_name.upper():
-            current_template_matched_channels = sort_cctv_to_channels(current_template_matched_channels)
+        if "央视" in template_name or "CCTV" in template_name:
+            current_template_matched_channels = sort_cctv_channels(current_template_matched_channels)
             logging.info(f"已按数字对 '{template_name}' 频道进行排序。")
         output_file_path = os.path.join(local_channels_directory, f"{template_name}_iptv.txt")
         with open(output_file_path, 'w', encoding='utf-8') as f:
@@ -796,3 +795,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
