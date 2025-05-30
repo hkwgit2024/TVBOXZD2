@@ -31,19 +31,29 @@ jobs:
           cat extract_nodes.log
         timeout-minutes: 10
 
-      - name: Upload log as artifact
+      - name: Run extract_nodes_from_hy2.py
+        env:
+          BOT: ${{ secrets.BOT }}
+        run: |
+          python extract_nodes_from_hy2.py | tee extract_nodes_from_hy2.log
+          cat extract_nodes_from_hy2.log
+        timeout-minutes: 5
+
+      - name: Upload logs as artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: extract-nodes-log
-          path: extract_nodes.log
+          name: extract-nodes-logs
+          path: |
+            extract_nodes.log
+            extract_nodes_from_hy2.log
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/hy2.txt
-          git commit -m "Update hy2.txt with protocol URLs" || echo "No changes to commit"
+          git add data/hy2.txt data/invalid_urls.txt data/nodes.txt
+          git commit -m "Update hy2.txt, invalid_urls.txt, and nodes.txt with protocol URLs and nodes" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
