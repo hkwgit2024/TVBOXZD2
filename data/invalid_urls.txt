@@ -831,3 +831,9 @@ https://github.com/k37y/openshift-network-playground/blob/e09dc2adb9fc35da46ab67
 https://github.com/rootoooo/rootoooo.github.io/blob/6ff80348231e42efc5543877002bab6d726ba03d/qx.conf|2025-05-30T14:39:20.497653+00:00|No proxy configuration found
 https://github.com/rootoooo/rootoooo.github.io/blob/39e81ac505286329712933413c98c6672bcc1ac7/qx.conf|2025-05-30T15:38:22.411061+00:00|No proxy configuration found
 https://github.com/gitpod-io/gitpod/blob/a6f6de2b05c6971f113d5b46ca5c7152842cefc0/docs/workspace/image-builder-mk3/sequencediagram.svg|2025-05-30T16:17:30.642345+00:00|Irrelevant file type
+https://github.com/ClickHouse/clickhouse-go/blob/71e39752a7e7d58dd1e2657fb4250ae136ab9105/README.md|2025-05-31T12:08:33.168805+00:00|Irrelevant file type
+https://github.com/thnetii/microsoft-odata-csdl/blob/7a45cfe5de00be96cd62779264245caaea6385fa/powerplatform/apis/shared_staffbase/swagger.json|2025-05-31T12:08:33.568152+00:00|No proxy configuration found
+https://github.com/telegeam/blog1/blob/5d691191c82a8856e50412bbda43d3e4b3ab910a/a/2024/1/20240124.txt|2025-05-31T12:08:33.571579+00:00|No proxy configuration found
+https://github.com/Raku/REA/blob/67cbc9f5c409e6df8322d090bbf9501b8418b070/meta/P/Proxy::Watched/Proxy::Watched:ver%3C0.0.2%3E:auth%3Ccpan:THINCH%3E.json|2025-05-31T12:08:33.573090+00:00|No proxy configuration found
+https://github.com/TsukemonoGit/lumilumi/blob/36e9ec73f0d326af05e6b0c73d27c7dec28840a2/README-ja.md|2025-05-31T12:08:33.596192+00:00|Irrelevant file type
+https://github.com/telegeam/blog1/blob/5d691191c82a8856e50412bbda43d3e4b3ab910a/a/2023/12/20231231.txt|2025-05-31T12:08:33.814616+00:00|No proxy configuration found
