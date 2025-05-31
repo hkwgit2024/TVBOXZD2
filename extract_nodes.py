@@ -1,303 +1,351 @@
-import aiohttp
-import asyncio
-import os
-import re
+import requests
 import base64
-import yaml
 import json
+import yaml
 import time
-from urllib.parse import quote
-from datetime import datetime, timezone
+import re
+import socket
+import logging
+from urllib.parse import urlparse, unquote
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# --- Configuration ---
-SEARCH_API_URL = "https://api.github.com/search/code"
+# --- 配置加载 ---
+CONFIG = {}
+logger = logging.getLogger(__name__)
 
-# Get GitHub Personal Access Token from environment variable
-GITHUB_TOKEN = os.getenv("BOT")
-
-# Broadened search terms for wider coverage
-search_terms = [
-    "v2ray vmess",
-    "proxies type:",
-    "server: port:",
-    "vless://", "vmess://", "trojan://", "ss://", "hysteria2://",
-    "filename:*.yaml", "filename:*.yml",
-    "proxy:", "nodes:", "servers:"
-]
-
-# File paths for output
-output_file = "data/hy2.txt"
-invalid_urls_file = "data/invalid_urls.txt"
-debug_log_file = "data/search_debug.log"
-
-# --- Setup ---
-os.makedirs("data", exist_ok=True)
-debug_logs = []  # Stores debug log messages
-
-# --- Global Headers for GitHub API requests ---
-headers = {
-    "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "Mozilla/5.0 (compatible; NodeExtractor/1.0)"
-}
-if GITHUB_TOKEN:
-    headers["Authorization"] = f"token {GITHUB_TOKEN}"
-else:
-    debug_logs.append("Warning: BOT environment variable not found. Proceeding with unauthenticated requests (lower rate limit).")
-
-# --- Lock for safe concurrent file writes to invalid_urls.txt ---
-invalid_urls_write_lock = asyncio.Lock()
-
-# --- Utility Functions ---
-
-async def load_known_invalid_urls() -> set:
-    known_invalid_urls = set()
-    if os.path.exists(invalid_urls_file):
-        with open(invalid_urls_file, "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        max_invalid_urls_to_load = 1000  # Limit to prevent excessive memory usage
-        for line in lines[-max_invalid_urls_to_load:]:
-            parts = line.strip().split("|")
-            if parts and parts[0]:
-                known_invalid_urls.add(parts[0])
-        debug_logs.append(f"Loaded {len(known_invalid_urls)} known invalid URLs.")
-    return known_invalid_urls
-
-async def check_rate_limit(session: aiohttp.ClientSession) -> int:
+def load_config(config_path="config/config_proxy.yaml"):
+    global CONFIG
     try:
-        async with session.get("https://api.github.com/rate_limit", headers=headers) as response:
-            response.raise_for_status()
-            rate_limit = await response.json()
-            remaining = rate_limit['rate']['remaining']
-            reset_time = datetime.fromtimestamp(rate_limit['rate']['reset'], tz=timezone.utc)
-            debug_logs.append(f"GitHub API Rate Limit: {remaining} remaining, resets at {reset_time}.")
-            return remaining
-    except Exception as e:
-        debug_logs.append(f"Failed to check rate limit: {e}")
-        return 0
+        with open(config_path, 'r', encoding='utf-8') as f:
+            CONFIG = yaml.safe_load(f)
+        logging.basicConfig(level=getattr(logging, CONFIG.get('log_level', 'INFO').upper()),
+                            format='%(asctime)s - %(levelname)s - %(message)s')
+        logger.info(f"配置加载成功：{config_path}")
+    except FileNotFoundError:
+        logger.error(f"配置文件未找到：{config_path}，请创建它。")
+        exit(1)
+    except yaml.YAMLError as e:
+        logger.error(f"配置文件解析错误：{e}")
+        exit(1)
 
-# --- Regex Patterns ---
-protocol_pattern = re.compile(r'(ss|hysteria2|vless|vmess|trojan)://[^\s<>"\'`]+', re.MULTILINE | re.IGNORECASE)
-base64_pattern = re.compile(r'(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?(?:[A-Za-z0-9+/]{16,})', re.MULTILINE)
+# --- GitHub 搜索模块 (与原tv.py类似) ---
+class GitHubSearcher:
+    def __init__(self):
+        self.headers = {'Accept': 'application/vnd.github.v3.text-match+json'}
+        # 实际项目中，你需要从环境变量或安全配置中获取 GitHub Token
+        # self.headers['Authorization'] = f"token {os.getenv('GITHUB_TOKEN')}"
+        self.base_url = "https://api.github.com/search/code"
+        self.search_cache = {} # 简单的内存缓存
+        self.load_cache(CONFIG.get('search_cache_path'))
 
-irrelevant_extensions = {
-    '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.ico',
-    '.md', '.markdown', '.rst', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
-    '.zip', '.tar', '.gz', '.rar', '.7z', '.exe', '.dll', '.bin', '.so', '.lib',
-    '.log', '.gitignore', '.editorconfig', '.gitattributes', '.iml',
-    '.svg', '.xml', '.html', '.htm', '.css', '.js', '.jsx', '.ts', '.tsx', '.py', '.java', '.c', '.cpp', '.h', '.hpp', '.php', '.go', '.rs', '.swift', '.kt', '.sh', '.bash', '.ps1', '.bat', '.cmd', '.rb', '.pl'
-}
-
-async def verify_content(session: aiohttp.ClientSession, url: str, known_invalid_urls: set) -> bool:
-    if url in known_invalid_urls:
-        debug_logs.append(f"Skipping known invalid URL: {url}")
-        return False
-
-    file_extension = os.path.splitext(url)[1].lower()
-    if file_extension in irrelevant_extensions and file_extension != '.txt':
-        debug_logs.append(f"Skipping irrelevant file extension: {url} ({file_extension})")
-        await log_invalid_url(url, "Irrelevant file type")
-        return False
-
-    raw_url = url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-    try:
-        async with session.get(raw_url, headers=headers, timeout=20) as response:
-            response.raise_for_status()
-            content = await response.text()
-            content = content[:1000000]  # Limit content size to 1MB
-
-            if protocol_pattern.search(content):
-                debug_logs.append(f"Found cleartext protocol in: {url}")
-                return True
-
-            base64_matches = base64_pattern.findall(content)
-            skip_params = ['encryption=', 'security=', 'sni=', 'type=', 'mode=', 'serviceName=', 'fp=', 'pbk=', 'sid=']
-            for b64_str in base64_matches:
-                if any(param in b64_str.lower() for param in skip_params):
-                    debug_logs.append(f"Skipping non-Base64 parameter: {b64_str[:20]}...")
-                    continue
-                try:
-                    decoded = base64.b64decode(b64_str, validate=True).decode('utf-8', errors='ignore')
-                    if protocol_pattern.search(decoded):
-                        debug_logs.append(f"Found Base64 decoded protocol in: {url}")
-                        return True
-                    try:
-                        json_data = json.loads(decoded)
-                        if isinstance(json_data, dict) and any(key in json_data for key in ['v', 'ps', 'add', 'port', 'id', 'proxies', 'outbounds']):
-                            debug_logs.append(f"Found Base64 JSON proxy config in: {url}")
-                            return True
-                    except json.JSONDecodeError:
-                        pass
-                except (base64.binascii.Error, UnicodeDecodeError) as e:
-                    debug_logs.append(f"Base64 decode failed for {b64_str[:20]}... in {url}: {e}")
-                    continue
-
-            if file_extension in {'.yaml', '.yml', '.conf', '.json'} or not file_extension:
-                try:
-                    yaml_data = yaml.safe_load(content)
-                    if isinstance(yaml_data, dict):
-                        for key in ['proxies', 'proxy', 'nodes', 'servers', 'outbounds', 'inbounds', 'proxy-groups']:
-                            if key in yaml_data:
-                                proxies_config = yaml_data[key]
-                                if (isinstance(proxies_config, list) and any(isinstance(p, dict) and any(k in p for k in ['server', 'port', 'type']) for p in proxies_config)) or \
-                                   (isinstance(proxies_config, dict) and any(k in proxies_config for k in ['server', 'port', 'type'])):
-                                    debug_logs.append(f"Found YAML/JSON proxy config in: {url}")
-                                    return True
-                except yaml.YAMLError as e:
-                    debug_logs.append(f"YAML parsing failed for {url}: {e}")
-                try:
-                    json_data = json.loads(content)
-                    if isinstance(json_data, dict):
-                        for key in ['proxies', 'servers', 'nodes', 'outbounds']:
-                            if key in json_data and isinstance(json_data[key], list):
-                                for proxy in json_data[key]:
-                                    if isinstance(proxy, dict) and any(k in proxy for k in ['server', 'port', 'type']):
-                                        debug_logs.append(f"Found JSON proxy config in: {url}")
-                                        return True
-                except json.JSONDecodeError as e:
-                    debug_logs.append(f"JSON parsing failed for {url}: {e}")
-
-            debug_logs.append(f"No target protocol or valid configuration found in: {url}")
-            await log_invalid_url(url, "No proxy configuration found")
-            return False
-
-    except aiohttp.ClientError as e:
-        debug_logs.append(f"Failed to fetch content for {url} (Network/HTTP error): {e}")
-        await log_invalid_url(url, f"Failed to fetch content: {type(e).__name__}")
-        return False
-    except asyncio.TimeoutError:
-        debug_logs.append(f"Timeout while fetching content for {url}.")
-        await log_invalid_url(url, "Fetch timeout")
-        return False
-    except Exception as e:
-        debug_logs.append(f"An unknown error occurred while verifying {url}: {e}")
-        await log_invalid_url(url, f"Verification error: {type(e).__name__}")
-        return False
-
-async def log_invalid_url(url: str, reason: str):
-    async with invalid_urls_write_lock:
+    def load_cache(self, path):
         try:
-            with open(invalid_urls_file, "a+", encoding="utf-8") as f:
-                f.seek(0)
-                existing_lines = f.readlines()
-                if not any(url in line for line in existing_lines):
-                    f.write(f"{url}|{datetime.now(timezone.utc).isoformat()}|{reason}\n")
-                    debug_logs.append(f"Logged invalid URL to {invalid_urls_file}: {url} (Reason: {reason})")
-        except Exception as e:
-            debug_logs.append(f"Error logging invalid URL {url} to {invalid_urls_file}: {e}")
+            with open(path, 'r', encoding='utf-8') as f:
+                self.search_cache = json.load(f)
+            logger.info(f"加载搜索缓存：{len(self.search_cache)} 条")
+        except (FileNotFoundError, json.JSONDecodeError):
+            logger.warning("未找到搜索缓存文件或文件损坏，将从头开始搜索。")
+            self.search_cache = {}
 
-async def search_and_process(session: aiohttp.ClientSession, term: str, max_pages: int, max_urls_to_find: int, known_invalid_urls: set, found_urls_set: set):
-    page = 1
-    current_search_count = len(found_urls_set)
+    def save_cache(self, path):
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(self.search_cache, f, ensure_ascii=False, indent=2)
+            logger.info("搜索缓存已保存。")
+        except IOError as e:
+            logger.error(f"保存搜索缓存失败: {e}")
 
-    while page <= max_pages and current_search_count < max_urls_to_find:
-        remaining_requests = await check_rate_limit(session)
-        if remaining_requests < 20 and GITHUB_TOKEN:
-            debug_logs.append(f"Rate limit approaching ({remaining_requests} left). Waiting for reset...")
-            async with session.get("https://api.github.com/rate_limit", headers=headers) as reset_time_response:
-                reset_data = await reset_time_response.json()
-                reset_timestamp = reset_data['rate']['reset']
-                wait_time = max(0, reset_timestamp - int(time.time())) + 10
-                debug_logs.append(f"Waiting {wait_time} seconds before next request.")
-                await asyncio.sleep(wait_time)
-                remaining_requests = await check_rate_limit(session)
-                if remaining_requests < 20:
-                    debug_logs.append("Rate limit did not reset as expected or still too low. Aborting current search term.")
+    def search_github(self, keyword):
+        query_url = f"{self.base_url}?q={keyword}&per_page={CONFIG['per_page']}"
+        results = []
+        for page in range(1, CONFIG['max_search_pages'] + 1):
+            url = f"{query_url}&page={page}"
+            if url in self.search_cache:
+                logger.info(f"从缓存获取搜索结果：{keyword} (页 {page})")
+                results.extend(self.search_cache[url])
+                continue
+
+            try:
+                response = requests.get(url, headers=self.headers, timeout=CONFIG['github_api_timeout'])
+                response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+                data = response.json()
+
+                # 检查速率限制
+                remaining_requests = int(response.headers.get('X-RateLimit-Remaining', 0))
+                if remaining_requests < CONFIG['rate_limit_threshold']:
+                    reset_time = int(response.headers.get('X-RateLimit-Reset', time.time()))
+                    wait_time = max(CONFIG['github_api_retry_wait'], reset_time - time.time() + 1)
+                    logger.warning(f"GitHub API 速率限制，剩余 {remaining_requests}。等待 {wait_time:.1f} 秒。")
+                    time.sleep(wait_time)
+
+                items = data.get('items', [])
+                if not items:
+                    break # 没有更多结果
+
+                # 提取 raw_url
+                current_page_urls = []
+                for item in items:
+                    if 'git_url' in item: # For code search, git_url often leads to raw content
+                        # Attempt to derive raw URL from git_url, it's often like:
+                        # git_url: https://api.github.com/repos/user/repo/git/blobs/sha
+                        # raw_url: https://raw.githubusercontent.com/user/repo/sha
+                        # This is a simplification; a more robust way is to fetch blob content.
+                        # For simple code search, the html_url might be more useful to get the repo
+                        html_url = item.get('html_url')
+                        if html_url and "blob" in html_url:
+                            raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+                            current_page_urls.append(raw_url)
+                        else:
+                            # Fallback for other item types, might need more specific handling
+                            logger.warning(f"Could not derive raw_url for item: {item.get('html_url')}")
+
+                results.extend(current_page_urls)
+                self.search_cache[url] = current_page_urls # 缓存当前页结果
+                logger.info(f"搜索到 {len(items)} 个项目，提取 {len(current_page_urls)} 个原始URL，关键词：{keyword} (页 {page})")
+
+                if len(items) < CONFIG['per_page']: # 如果当前页结果少于每页最大值，说明是最后一页
                     break
 
-        params = {
-            "q": quote(term, safe=''),
-            "per_page": 100,  # GitHub API max is 100
-            "page": page
-        }
-        debug_logs.append(f"Searching for '{term}' (page {page})...")
+            except requests.exceptions.RequestException as e:
+                logger.error(f"GitHub API 请求失败 for keyword '{keyword}', page {page}: {e}")
+                break # 失败就停止当前关键词的搜索
+            except Exception as e:
+                logger.error(f"处理 GitHub API 响应时发生错误: {e}")
+                break
+        return results
+
+    def get_all_raw_urls(self):
+        all_raw_urls = set()
+        keywords = CONFIG.get('search_keywords', [])
+        for keyword in keywords:
+            logger.info(f"开始搜索关键词: {keyword}")
+            urls = self.search_github(keyword)
+            all_raw_urls.update(urls)
+            if len(all_raw_urls) >= CONFIG['max_urls']:
+                logger.warning(f"已达到最大 URL 数量 {CONFIG['max_urls']}，停止搜索。")
+                break
+        self.save_cache(CONFIG.get('search_cache_path'))
+        return list(all_raw_urls)[:CONFIG['max_urls']]
+
+# --- 代理链接提取与解析模块 ---
+class ProxyExtractor:
+    def __init__(self):
+        self.session = requests.Session()
+        retry = requests.packages.urllib3.util.retry.Retry(
+            total=CONFIG.get('requests_retry_total', 3),
+            backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
+            status_forcelist=[500, 502, 503, 504]
+        )
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry, pool_connections=CONFIG.get('requests_pool_size', 100), pool_maxsize=CONFIG.get('requests_pool_size', 100))
+        self.session.mount('http://', adapter)
+        self.session.mount('https://', adapter)
+
+    def fetch_url_content(self, url):
+        try:
+            response = self.session.get(url, timeout=CONFIG['github_api_timeout'])
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.RequestException as e:
+            logger.error(f"无法获取 URL 内容 {url}: {e}")
+            return None
+
+    def extract_ss_link(self, line):
+        """
+        解析 Shadowsocks 链接。
+        SS 链接格式通常是 ss://[base64(method:password@server:port)]#tag
+        """
+        if not line.startswith("ss://"):
+            return None
 
         try:
-            async with session.get(SEARCH_API_URL, headers=headers, params=params, timeout=20) as response:
-                response.raise_for_status()
-                data = await response.json()
-        except aiohttp.ClientError as e:
-            debug_logs.append(f"Search for '{term}' (page {page}) failed (Network/HTTP error): {e}")
-            break
-        except asyncio.TimeoutError:
-            debug_logs.append(f"Search for '{term}' (page {page}) timed out.")
-            break
-        except Exception as e:
-            debug_logs.append(f"An error occurred during search for '{term}' (page {page}): {e}")
-            break
+            parts = line[5:].split('#', 1)
+            encoded_info = parts[0]
+            tag = unquote(parts[1]) if len(parts) > 1 else ""
 
-        items = data.get("items", [])
-        debug_logs.append(f"Found {len(items)} results for '{term}' (page {page}).")
-
-        if not items:
-            break
-
-        urls_to_verify = []
-        for item in items:
-            html_url = item["html_url"]
-            if any(ext in html_url.lower() for ext in ['gfwlist', 'proxygfw', 'gfw.txt', 'gfw.pac']):
-                debug_logs.append(f"Skipping irrelevant content: {html_url}")
-                await log_invalid_url(html_url, "Irrelevant content (keyword match)")
-                continue
-            if html_url in known_invalid_urls or html_url in [entry.split("|")[0] for entry in found_urls_set]:
-                debug_logs.append(f"Skipping already processed or known invalid URL: {html_url}")
-                continue
-            urls_to_verify.append(html_url)
-
-        verification_tasks = [verify_content(session, url, known_invalid_urls) for url in urls_to_verify]
-        verification_results = await asyncio.gather(*verification_tasks, return_exceptions=True)
-
-        for i, result in enumerate(verification_results):
-            original_url = urls_to_verify[i]
-            if result is True:
-                found_urls_set.add(f"{original_url}|{datetime.now(timezone.utc).isoformat()}")
-                current_search_count = len(found_urls_set)
-                debug_logs.append(f"Valid URL found: {original_url} (Total found: {current_search_count})")
-            elif isinstance(result, Exception):
-                debug_logs.append(f"Verification of {original_url} failed with exception: {result}")
+            # 尝试 Base64 解码，支持 URL 安全 Base64
+            decoded_info = base64.urlsafe_b64decode(encoded_info + '==').decode('utf-8')
+            
+            # 格式：method:password@server:port
+            match = re.match(r"([^:]+):([^@]+)@([^:]+):(\d+)", decoded_info)
+            if match:
+                method, password, server, port = match.groups()
+                return {
+                    "protocol": "ss",
+                    "server": server,
+                    "port": int(port),
+                    "method": method,
+                    "password": password,
+                    "tag": tag
+                }
             else:
-                debug_logs.append(f"URL {original_url} did not pass verification.")
+                logger.warning(f"无法解析 SS 链接信息: {decoded_info} (原始编码: {encoded_info})")
+                return None
+        except Exception as e:
+            logger.warning(f"解析 SS 链接 '{line}' 失败: {e}")
+            return None
 
-            if current_search_count >= max_urls_to_find:
-                debug_logs.append(f"Reached target of {max_urls_to_find} URLs. Stopping search.")
-                return
+    def extract_proxies_from_content(self, content):
+        proxies = []
+        if not content:
+            return proxies
 
-        page += 1
-        await asyncio.sleep(2 if GITHUB_TOKEN else 5)
+        lines = content.splitlines()
+        for line in lines:
+            line = line.strip()
+            if line.startswith("ss://"):
+                proxy_info = self.extract_ss_link(line)
+                if proxy_info:
+                    proxies.append(proxy_info)
+            # 这里可以添加对其他协议的解析逻辑
+            # elif line.startswith("vmess://"):
+            #     proxy_info = self.extract_vmess_link(line)
+            #     if proxy_info: proxies.append(proxy_info)
+            # elif line.startswith("hy2://"):
+            #     proxy_info = self.extract_hy2_link(line)
+            #     if proxy_info: proxies.append(proxy_info)
+        return proxies
 
-    debug_logs.append(f"Search for '{term}' completed for all pages or no more results.")
+    def get_proxies_from_urls(self, urls):
+        all_proxies = []
+        with ThreadPoolExecutor(max_workers=CONFIG.get('channel_extract_workers', 10)) as executor:
+            future_to_url = {executor.submit(self.fetch_url_content, url): url for url in urls}
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    content = future.result()
+                    if content:
+                        proxies_in_url = self.extract_proxies_from_content(content)
+                        all_proxies.extend(proxies_in_url)
+                        logger.info(f"从 {url} 提取到 {len(proxies_in_url)} 个代理节点。")
+                except Exception as e:
+                    logger.error(f"处理 URL {url} 时发生错误: {e}")
+        return all_proxies
 
-# --- Main Execution ---
+# --- 代理节点验证模块 ---
+class ProxyChecker:
+    def __init__(self):
+        self.proxy_states = {} # 存储代理状态的字典
+        self.load_states(CONFIG.get('proxy_states_path'))
 
-async def main():
-    async with aiohttp.ClientSession() as session:
-        known_invalid_urls = await load_known_invalid_urls()
-        found_urls_set = set()
+    def load_states(self, path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                self.proxy_states = json.load(f)
+            logger.info(f"加载代理状态缓存：{len(self.proxy_states)} 条")
+        except (FileNotFoundError, json.JSONDecodeError):
+            logger.warning("未找到代理状态缓存文件或文件损坏，将从头开始检测。")
+            self.proxy_states = {}
 
-        initial_rate_limit = await check_rate_limit(session)
-        if initial_rate_limit == 0 and GITHUB_TOKEN:
-            debug_logs.append("Initial rate limit is 0. Cannot proceed with search.")
-            return
+    def save_states(self, path):
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(self.proxy_states, f, ensure_ascii=False, indent=2)
+            logger.info("代理状态缓存已保存。")
+        except IOError as e:
+            logger.error(f"保存代理状态缓存失败: {e}")
 
-        max_urls_to_find = 200
-        max_pages_per_term = 5
+    def check_ss_proxy(self, proxy_info):
+        """
+        对 Shadowsocks 节点进行简单的 TCP 连接测试。
+        这只是验证服务器可达性，不验证代理功能。
+        """
+        server = proxy_info['server']
+        port = proxy_info['port']
+        key = f"{server}:{port}"
 
-        tasks = []
-        for term in search_terms:
-            task = asyncio.create_task(search_and_process(session, term, max_pages_per_term, max_urls_to_find, known_invalid_urls, found_urls_set))
-            tasks.append(task)
+        # 检查缓存
+        if key in self.proxy_states:
+            cached_status, timestamp = self.proxy_states[key]
+            if time.time() - timestamp < CONFIG.get('url_states_ttl', 604800): # 默认一周有效期
+                logger.debug(f"从缓存获取 SS 节点状态 {key}: {cached_status}")
+                return cached_status == "ok"
 
-        await asyncio.gather(*tasks, return_exceptions=True)
+        try:
+            sock = socket.create_connection((server, port), timeout=CONFIG['proxy_check_timeout'])
+            sock.close()
+            status = "ok"
+            logger.info(f"SS 节点可用: {server}:{port}")
+        except (socket.timeout, ConnectionRefusedError, OSError) as e:
+            status = "fail"
+            logger.debug(f"SS 节点不可用 {server}:{port}: {e}")
+        except Exception as e:
+            status = "fail"
+            logger.error(f"检测 SS 节点 {server}:{port} 时发生未知错误: {e}")
+        
+        self.proxy_states[key] = (status, time.time())
+        return status == "ok"
 
-        found_urls_list = sorted(list(found_urls_set))
-        with open(output_file, "w", encoding="utf-8") as f:
-            for url_entry in found_urls_list:
-                f.write(f"{url_entry}\n")
-        debug_logs.append(f"Found {len(found_urls_list)} URLs, saved to {output_file}")
-        print(f"Found {len(found_urls_list)} URLs, saved to {output_file}")
+    def check_all_proxies(self, proxies):
+        available_proxies = []
+        with ThreadPoolExecutor(max_workers=CONFIG.get('proxy_check_workers', 50)) as executor:
+            future_to_proxy = {}
+            for proxy in proxies:
+                if proxy['protocol'] == 'ss':
+                    future = executor.submit(self.check_ss_proxy, proxy)
+                    future_to_proxy[future] = proxy
+                # 这里可以添加其他协议的提交逻辑
+                # elif proxy['protocol'] == 'vmess':
+                #     future = executor.submit(self.check_vmess_proxy, proxy)
+                #     future_to_proxy[future] = proxy
 
-        with open(debug_log_file, "w", encoding="utf-8") as f:
-            f.write("\n".join(debug_logs))
-        print(f"Debug logs saved to {debug_log_file}")
+            for i, future in enumerate(as_completed(future_to_proxy), 1):
+                proxy = future_to_proxy[future]
+                is_available = False
+                try:
+                    is_available = future.result()
+                except Exception as e:
+                    logger.error(f"检测代理 {proxy.get('server')} 时发生异常: {e}")
+                
+                if is_available:
+                    available_proxies.append(proxy)
+                
+                # 打印进度
+                if i % 100 == 0:
+                    logger.info(f"已检测 {i}/{len(proxies)} 个代理节点。")
+        
+        self.save_states(CONFIG.get('proxy_states_path'))
+        return available_proxies
+
+# --- 主程序逻辑 ---
+def main():
+    load_config()
+
+    logger.info("开始搜索 GitHub 中的代理链接...")
+    searcher = GitHubSearcher()
+    raw_urls = searcher.get_all_raw_urls()
+    logger.info(f"共找到 {len(raw_urls)} 个潜在的原始文件 URL。")
+
+    logger.info("开始提取代理节点...")
+    extractor = ProxyExtractor()
+    extracted_proxies = extractor.get_proxies_from_urls(raw_urls)
+    logger.info(f"共提取到 {len(extracted_proxies)} 个代理节点。")
+
+    if not extracted_proxies:
+        logger.warning("未提取到任何代理节点，程序退出。")
+        return
+
+    logger.info("开始验证代理节点可用性...")
+    checker = ProxyChecker()
+    available_proxies = checker.check_all_proxies(extracted_proxies)
+    logger.info(f"共发现 {len(available_proxies)} 个可用代理节点。")
+
+    # 输出可用节点到文件
+    output_file_path = CONFIG.get('output_file', 'available_proxies.txt')
+    with open(output_file_path, 'w', encoding='utf-8') as f:
+        for proxy in available_proxies:
+            # 根据协议类型，将其转换回可用的链接格式
+            # 例如，对于SS：ss://base64(method:password@server:port)#tag
+            if proxy['protocol'] == 'ss':
+                info = f"{proxy['method']}:{proxy['password']}@{proxy['server']}:{proxy['port']}"
+                encoded_info = base64.urlsafe_b64encode(info.encode('utf-8')).decode('utf-8').rstrip('=')
+                link = f"ss://{encoded_info}"
+                if proxy.get('tag'):
+                    link += f"#{proxy['tag']}"
+                f.write(link + "\n")
+            # 添加其他协议的输出格式
+            # elif proxy['protocol'] == 'vmess':
+            #     f.write(vmess_to_link(proxy) + "\n")
+    logger.info(f"可用代理节点已保存到 {output_file_path}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
