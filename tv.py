@@ -1,421 +1,802 @@
-import requests
-import base64
-import json
-import yaml
-import time
+import os
 import re
+import subprocess
 import socket
+import time
+from datetime import datetime
 import logging
-import os # 导入 os 模块以获取环境变量
-from urllib.parse import urlparse, unquote
+import requests
+from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+import json
+import hashlib
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+import yaml
+import shutil
 
-# --- 配置加载 ---
-CONFIG = {}
-logger = logging.getLogger(__name__)
+# 设置日志
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def load_config(config_path="config_proxy.yaml"): # 现在在脚本同级目录查找 config_proxy.yaml
-    global CONFIG
+# 环境变量
+GITHUB_TOKEN = os.getenv('BOT')
+REPO_OWNER = os.getenv('REPO_OWNER')
+REPO_NAME = os.getenv('REPO_NAME')
+CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
+URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
+URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
+KEYWORD_STATS_PATH_IN_REPO = os.getenv('KEYWORD_STATS_PATH', 'config/keyword_stats.json')
+
+# 环境变量检查
+if not GITHUB_TOKEN:
+    logging.error("错误：环境变量 'BOT' 未设置。")
+    exit(1)
+if not REPO_OWNER:
+    logging.error("错误：环境变量 'REPO_OWNER' 未设置。")
+    exit(1)
+if not REPO_NAME:
+    logging.error("错误：环境变量 'REPO_NAME' 未设置。")
+    exit(1)
+if not CONFIG_PATH_IN_REPO:
+    logging.error("错误：环境变量 'CONFIG_PATH' 未设置。")
+    exit(1)
+if not URLS_PATH_IN_REPO:
+    logging.error("错误：环境变量 'URLS_PATH' 未设置。")
+    exit(1)
+if not URL_STATES_PATH_IN_REPO:
+    logging.error("错误：环境变量 'URL_STATES_PATH' 未设置。")
+    exit(1)
+
+GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
+GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
+
+def fetch_from_github(file_path_in_repo):
+    raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        with open(config_path, 'r', encoding='utf-8') as f:
-            CONFIG = yaml.safe_load(f)
-        # 配置日志级别和格式
-        logging.basicConfig(level=getattr(logging, CONFIG.get('log_level', 'INFO').upper()),
-                            format='%(asctime)s - %(levelname)s - %(message)s')
-        logger.info(f"配置加载成功：{config_path}")
-    except FileNotFoundError:
-        logger.error(f"配置文件未找到：{config_path}，请创建它。")
-        exit(1)
-    except yaml.YAMLError as e:
-        logger.error(f"配置文件解析错误：{e}")
-        exit(1)
+        response = requests.get(raw_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.text
+    except requests.exceptions.RequestException as e:
+        logging.error(f"从 GitHub 获取 {file_path_in_repo} 发生错误：{e}")
+        return None
 
-# --- GitHub 搜索模块 ---
-class GitHubSearcher:
-    def __init__(self):
-        self.headers = {'Accept': 'application/vnd.github.v3.text-match+json'}
-        # 从环境变量获取 GitHub Token
-        github_token = os.getenv('GITHUB_TOKEN')
-        if github_token:
-            self.headers['Authorization'] = f"token {github_token}"
-            logger.info("已从环境变量加载 GitHub Token。")
-        else:
-            logger.warning("未设置 GITHUB_TOKEN 环境变量。GitHub API 速率限制将非常低（未认证）。")
+def get_current_sha(file_path_in_repo):
+    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    try:
+        response = requests.get(api_url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.json().get('sha')
+    except requests.exceptions.RequestException as e:
+        logging.debug(f"获取 {file_path_in_repo} 的 SHA 发生错误（可能不存在）：{e}")
+        return None
 
-        self.base_url = "https://api.github.com/search/code"
-        self.search_cache = {} # 简单的内存缓存
-        self.load_cache(CONFIG.get('search_cache_path'))
-        self.session = requests.Session() # 使用 Session 提高性能和连接复用
+def save_to_github(file_path_in_repo, content, commit_message):
+    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
+    sha = get_current_sha(file_path_in_repo)
+    
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    
+    import base64
+    encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
 
-    def load_cache(self, path):
+    payload = {
+        "message": commit_message,
+        "content": encoded_content,
+        "branch": "main"
+    }
+    
+    if sha:
+        payload["sha"] = sha
+
+    try:
+        response = requests.put(api_url, headers=headers, json=payload)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        logging.error(f"将 {file_path_in_repo} 保存到 GitHub 发生错误：{e}")
+        return False
+
+def load_config():
+    content = fetch_from_github(CONFIG_PATH_IN_REPO)
+    if content:
         try:
-            with open(path, 'r', encoding='utf-8') as f:
-                self.search_cache = json.load(f)
-            logger.info(f"加载搜索缓存：{len(self.search_cache)} 条")
-        except (FileNotFoundError, json.JSONDecodeError):
-            logger.warning("未找到搜索缓存文件或文件损坏，将从头开始搜索。")
-            self.search_cache = {} # 确保在加载失败时初始化为空字典
-
-    def save_cache(self, path):
-        try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(self.search_cache, f, ensure_ascii=False, indent=2)
-            logger.info("搜索缓存已保存。")
-        except IOError as e:
-            logger.error(f"保存搜索缓存失败: {e}")
-
-    def search_github(self, keyword):
-        query_url = f"{self.base_url}?q={keyword}&per_page={CONFIG['per_page']}"
-        results = []
-        for page in range(1, CONFIG['max_search_pages'] + 1):
-            url = f"{query_url}&page={page}"
-            if url in self.search_cache:
-                logger.info(f"从缓存获取搜索结果：'{keyword}' (页 {page})")
-                results.extend(self.search_cache[url])
-                continue
-
-            try:
-                response = self.session.get(url, headers=self.headers, timeout=CONFIG['github_api_timeout'])
-                response.raise_for_status() # 对 4xx/5xx 响应抛出 HTTPError
-
-                data = response.json()
-
-                # 检查速率限制
-                remaining_requests = int(response.headers.get('X-RateLimit-Remaining', 0))
-                # X-RateLimit-Reset 是 UNIX 时间戳
-                reset_time_unix = int(response.headers.get('X-RateLimit-Reset', time.time()))
-                
-                if remaining_requests <= CONFIG['rate_limit_threshold']:
-                    current_time_unix = time.time()
-                    # 计算需要等待的时间，至少等待 retry_wait 秒，或者等到速率重置
-                    wait_time = max(CONFIG['github_api_retry_wait'], reset_time_unix - current_time_unix + 1)
-                    logger.warning(f"GitHub API 速率限制接近！剩余请求：{remaining_requests}。等待 {wait_time:.0f} 秒后重试。")
-                    time.sleep(wait_time)
-
-                items = data.get('items', [])
-                if not items:
-                    logger.info(f"关键词 '{keyword}' (页 {page}) 未找到更多结果。")
-                    break # 没有更多结果
-
-                # 提取 raw_url
-                current_page_urls = []
-                for item in items:
-                    html_url = item.get('html_url')
-                    if html_url and "github.com" in html_url and "/blob/" in html_url:
-                        # 转换成 raw.githubusercontent.com 链接
-                        raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-                        current_page_urls.append(raw_url)
-                    else:
-                        logger.debug(f"无法从 HTML URL 推导原始 URL: {html_url}")
-
-
-                results.extend(current_page_urls)
-                self.search_cache[url] = current_page_urls # 缓存当前页结果
-                logger.info(f"搜索到 {len(items)} 个项目，提取 {len(current_page_urls)} 个原始URL，关键词：'{keyword}' (页 {page})")
-
-                if len(items) < CONFIG['per_page']: # 如果当前页结果少于每页最大值，说明是最后一页
-                    break
-
-            except requests.exceptions.RequestException as e:
-                logger.error(f"GitHub API 请求失败 for keyword '{keyword}', page {page}: {e}")
-                # 如果是 401 Unauthorized，意味着认证失败，立即停止所有搜索
-                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code == 401:
-                    logger.critical("GitHub API 认证失败 (401 Unauthorized)。请检查 GITHUB_TOKEN 是否有效且权限正确。")
-                    return [] # 返回空列表，停止后续搜索
-                break # 其他请求失败也停止当前关键词的搜索
-            except Exception as e:
-                logger.error(f"处理 GitHub API 响应时发生错误: {e}")
-                break
-        return results
-
-    def get_all_raw_urls(self):
-        all_raw_urls = set()
-        keywords = CONFIG.get('search_keywords', [])
-        for keyword in keywords:
-            logger.info(f"开始搜索关键词: '{keyword}'")
-            urls = self.search_github(keyword)
-            
-            # 如果 search_github 因认证失败返回空列表，则直接退出
-            if not urls and self.headers.get('Authorization') and "token None" not in self.headers.get('Authorization'):
-                # 只有在设置了 token 但仍然返回空时，才认为是认证问题导致无法搜索
-                # 排除 token 为 None 的情况，因为那会在初始化时就警告了
-                if not urls and (not os.getenv('GITHUB_TOKEN') or 
-                                (self.headers.get('Authorization') and "token None" in self.headers.get('Authorization'))):
-                    logger.critical("未设置 GITHUB_TOKEN，或 GITHUB_TOKEN 无效，无法执行搜索。")
-                    return [] # 停止所有搜索
-
-            all_raw_urls.update(urls)
-            if len(all_raw_urls) >= CONFIG['max_urls']:
-                logger.warning(f"已达到最大 URL 数量 {CONFIG['max_urls']}，停止搜索。")
-                break
-        self.save_cache(CONFIG.get('search_cache_path'))
-        return list(all_raw_urls)[:CONFIG['max_urls']]
-
-# --- 代理链接提取与解析模块 ---
-class ProxyExtractor:
-    def __init__(self):
-        self.session = requests.Session()
-        retry = requests.packages.urllib3.util.retry.Retry(
-            total=CONFIG.get('requests_retry_total', 3),
-            backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
-            status_forcelist=[500, 502, 503, 504]
-        )
-        adapter = requests.adapters.HTTPAdapter(max_retries=retry, pool_connections=CONFIG.get('requests_pool_size', 100), pool_maxsize=CONFIG.get('requests_pool_size', 100))
-        self.session.mount('http://', adapter)
-        self.session.mount('https://', adapter)
-
-    def fetch_url_content(self, url):
-        """
-        获取 URL 内容。返回 (url, content) 对。
-        """
-        try:
-            response = self.session.get(url, timeout=CONFIG['github_api_timeout'])
-            response.raise_for_status()
-            logger.debug(f"成功获取 URL 内容: {url}")
-            return url, response.text
-        except requests.exceptions.RequestException as e:
-            logger.error(f"无法获取 URL 内容 {url}: {e}")
-            return url, None
-
-    def extract_ss_link(self, line):
-        """
-        解析 Shadowsocks 链接。
-        SS 链接格式通常是 ss://[base64(method:password@server:port)]#tag
-        """
-        if not line.startswith("ss://"):
-            return None
-
-        try:
-            parts = line[5:].split('#', 1)
-            encoded_info = parts[0]
-            tag = unquote(parts[1]) if len(parts) > 1 else ""
-
-            # 尝试 Base64 解码，支持 URL 安全 Base64，并处理可能的填充符缺失
-            # 尝试添加填充符直到长度是4的倍数
-            missing_padding = len(encoded_info) % 4
-            if missing_padding != 0:
-                encoded_info += '=' * (4 - missing_padding)
-
-            decoded_info_bytes = base64.urlsafe_b64decode(encoded_info)
-            decoded_info = decoded_info_bytes.decode('utf-8')
-            
-            # 格式：method:password@server:port
-            match = re.match(r"([^:]+):([^@]+)@([^:]+):(\d+)", decoded_info)
-            if match:
-                method, password, server, port = match.groups()
-                return {
-                    "protocol": "ss",
-                    "server": server,
-                    "port": int(port),
-                    "method": method,
-                    "password": password,
-                    "tag": tag
-                }
-            else:
-                logger.warning(f"无法解析 SS 链接信息: '{decoded_info}' (原始编码: '{encoded_info}')")
-                return None
+            return yaml.safe_load(content)
+        except yaml.YAMLError as e:
+            logging.error(f"错误：远程配置文件 '{CONFIG_PATH_IN_REPO}' 中的 YAML 无效：{e}")
+            exit(1)
         except Exception as e:
-            logger.warning(f"解析 SS 链接 '{line}' 失败: {e}")
+            logging.error(f"加载远程配置文件 '{CONFIG_PATH_IN_REPO}' 发生错误：{e}")
+            exit(1)
+    logging.error(f"无法从 GitHub 的 '{CONFIG_PATH_IN_REPO}' 加载配置。")
+    exit(1)
+
+CONFIG = load_config()
+
+GITHUB_API_BASE_URL = "https://api.github.com"
+SEARCH_CODE_ENDPOINT = "/search/code"
+SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
+PER_PAGE = CONFIG.get('per_page', 100)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 3)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 30)
+SEARCH_CACHE_TTL = CONFIG.get('search_cache_ttl', 3600)
+CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
+CHANNEL_STABILITY_TEST_DURATION = CONFIG.get('channel_stability_test_duration', 10)
+
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
+
+NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
+URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
+
+CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
+
+ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
+
+session = requests.Session()
+session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
+
+pool_size = CONFIG.get('requests_pool_size', 200)
+retry_strategy = Retry(
+    total=CONFIG.get('requests_retry_total', 3),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_retries=retry_strategy)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+def load_search_cache():
+    content = fetch_from_github(KEYWORD_STATS_PATH_IN_REPO)
+    if content:
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError as e:
+            logging.error(f"解码远程 '{KEYWORD_STATS_PATH_IN_REPO}' 中的 JSON 发生错误：{e}")
+            return {}
+    return {}
+
+def save_search_cache(cache):
+    try:
+        content = json.dumps(cache, indent=4, ensure_ascii=False)
+        success = save_to_github(KEYWORD_STATS_PATH_IN_REPO, content, "更新关键词搜索缓存")
+        if not success:
+            logging.error(f"将关键词搜索缓存保存到 '{KEYWORD_STATS_PATH_IN_REPO}' 失败。")
+    except Exception as e:
+        logging.error(f"将关键词搜索缓存保存到远程 '{KEYWORD_STATS_PATH_IN_REPO}' 发生错误：{e}")
+
+def read_txt_to_array_local(file_name):
+    try:
+        with open(file_name, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            lines = [line.strip() for line in lines if line.strip()]
+            return lines
+    except FileNotFoundError:
+        logging.warning(f"文件 '{file_name}' 未找到。")
+        return []
+    except Exception as e:
+        logging.error(f"读取文件 '{file_name}' 发生错误：{e}")
+        return []
+
+def get_url_file_extension(url):
+    parsed_url = urlparse(url)
+    extension = os.path.splitext(parsed_url.path)[1].lower()
+    return extension
+
+def convert_m3u_to_txt(m3u_content):
+    lines = m3u_content.split('\n')
+    txt_lines = []
+    channel_name = ""
+    for line in lines:
+        line = line.strip()
+        if line.startswith("#EXTM3U"):
+            continue
+        if line.startswith("#EXTINF"):
+            match = re.search(r'#EXTINF:.*?\,(.*)', line)
+            if match:
+                channel_name = match.group(1).strip()
+            else:
+                channel_name = "未知频道"
+        elif line and not line.startswith('#'):
+            if channel_name:
+                txt_lines.append(f"{channel_name},{line}")
+            channel_name = ""
+    return '\n'.join(txt_lines)
+
+def clean_url_params(url):
+    parsed_url = urlparse(url)
+    return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+
+def load_url_states_remote():
+    content = fetch_from_github(URL_STATES_PATH_IN_REPO)
+    if content:
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError as e:
+            logging.error(f"解码远程 '{URL_STATES_PATH_IN_REPO}' 中的 JSON 发生错误：{e}")
+            return {}
+    return {}
+
+def save_url_states_remote(url_states):
+    try:
+        content = json.dumps(url_states, indent=4, ensure_ascii=False)
+        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
+        if not success:
+            logging.error(f"将远程 URL 状态保存到 '{URL_STATES_PATH_IN_REPO}' 发生错误。")
+    except Exception as e:
+        logging.error(f"将 URL 状态保存到远程 '{URL_STATES_PATH_IN_REPO}' 发生错误：{e}")
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
+def fetch_url_content_with_retry(url, url_states):
+    headers = {}
+    current_state = url_states.get(url, {})
+
+    if 'etag' in current_state:
+        headers['If-None-Match'] = current_state['etag']
+    if 'last_modified' in current_state:
+        headers['If-Modified-Since'] = current_state['last_modified']
+
+    try:
+        response = session.get(url, headers=headers, timeout=CHANNEL_FETCH_TIMEOUT)
+        response.raise_for_status()
+
+        if response.status_code == 304:
             return None
 
-    def extract_proxies_from_content(self, content):
-        proxies = []
-        if not content:
-            return proxies
+        content = response.text
+        content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
-        lines = content.splitlines()
+        if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
+            return None
+
+        url_states[url] = {
+            'etag': response.headers.get('ETag'),
+            'last_modified': response.headers.get('Last-Modified'),
+            'content_hash': content_hash,
+            'last_checked': datetime.now().isoformat()
+        }
+        save_url_states_remote(url_states)
+
+        return content
+
+    except requests.exceptions.RequestException as e:
+        logging.error(f"获取 URL (重试后) 发生请求错误：{url} - {e}")
+        return None
+    except Exception as e:
+        logging.error(f"获取 URL 发生未知错误：{url} - {e}")
+        return None
+
+def extract_channels_from_url(url, url_states):
+    extracted_channels = []
+    try:
+        text = fetch_url_content_with_retry(url, url_states)
+        if text is None:
+            return []
+
+        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
+            text = convert_m3u_to_txt(text)
+
+        lines = text.split('\n')
+        channel_count = 0
         for line in lines:
             line = line.strip()
-            if line.startswith("ss://"):
-                proxy_info = self.extract_ss_link(line)
-                if proxy_info:
-                    proxies.append(proxy_info)
-            # TODO: 在这里添加对其他协议的解析逻辑 (例如 vmess://, hy2://, trojan:// 等)
-            # elif line.startswith("vmess://"):
-            #     proxy_info = self.extract_vmess_link(line)
-            #     if proxy_info: proxies.append(proxy_info)
-            # elif line.startswith("hy2://"):
-            #     proxy_info = self.extract_hy2_link(line)
-            #     if proxy_info: proxies.append(proxy_info)
-            # ...
-        return proxies
+            if "#genre#" not in line and "," in line and "://" in line:
+                parts = line.split(',', 1)
+                channel_name = parts[0].strip()
+                channel_address_raw = parts[1].strip()
 
-    def get_proxies_from_urls(self, urls):
-        all_proxies = []
-        # 使用 ThreadPoolExecutor 进行并发获取内容
-        with ThreadPoolExecutor(max_workers=CONFIG.get('channel_extract_workers', 10)) as executor:
-            future_to_url = {executor.submit(self.fetch_url_content, url): url for url in urls}
-            
-            for i, future in enumerate(as_completed(future_to_url), 1):
-                original_url = future_to_url[future]
-                try:
-                    url_fetched, content = future.result()
-                    if content:
-                        proxies_in_url = self.extract_proxies_from_content(content)
-                        all_proxies.extend(proxies_in_url)
-                        # logger.info(f"从 {url_fetched} 提取到 {len(proxies_in_url)} 个代理节点。") # 频繁打印，改为调试级别
-                        logger.debug(f"从 {url_fetched} 提取到 {len(proxies_in_url)} 个代理节点。")
-                except Exception as e:
-                    logger.error(f"处理 URL {original_url} 时发生错误: {e}")
-                
-                # 打印进度 (每处理 10% 或每 100 个 URL 打印一次)
-                if len(urls) > 0 and (i % (len(urls) // 10 + 1) == 0 or i == len(urls)):
-                    logger.info(f"已处理 {i}/{len(urls)} 个文件内容 URL。")
-
-        # 去重：基于协议+服务器+端口+方法作为唯一标识
-        unique_proxies = {}
-        for proxy in all_proxies:
-            # 对于 SS 节点，使用 server:port:method 作为唯一键
-            key = f"{proxy['protocol']}://{proxy['server']}:{proxy['port']}/{proxy['method']}"
-            unique_proxies[key] = proxy
-        
-        return list(unique_proxies.values())
-
-
-# --- 代理节点验证模块 ---
-class ProxyChecker:
-    def __init__(self):
-        self.proxy_states = {} # 存储代理状态的字典
-        self.load_states(CONFIG.get('proxy_states_path'))
-
-    def load_states(self, path):
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                loaded_states = json.load(f)
-                # 确保加载的是字典类型
-                if isinstance(loaded_states, dict):
-                    self.proxy_states = loaded_states
+                if '#' in channel_address_raw:
+                    url_list = channel_address_raw.split('#')
+                    for channel_url in url_list:
+                        channel_url = clean_url_params(channel_url.strip())
+                        if channel_url:
+                            extracted_channels.append((channel_name, channel_url))
+                            channel_count += 1
                 else:
-                    logger.warning(f"代理状态缓存文件 '{path}' 内容不是有效字典，将重新初始化。")
-                    self.proxy_states = {}
-            logger.info(f"加载代理状态缓存：{len(self.proxy_states)} 条")
-        except (FileNotFoundError, json.JSONDecodeError):
-            logger.warning("未找到代理状态缓存文件或文件损坏，将从头开始检测。")
-            self.proxy_states = {} # 确保在加载失败时初始化为空字典
+                    channel_url = clean_url_params(channel_address_raw)
+                    if channel_url:
+                        extracted_channels.append((channel_name, channel_url))
+                        channel_count += 1
+    except Exception as e:
+        logging.error(f"从 {url} 提取频道时发生错误：{e}")
+    return extracted_channels
 
-    def save_states(self, path):
-        try:
-            with open(path, 'w', encoding='utf-8') as f:
-                json.dump(self.proxy_states, f, ensure_ascii=False, indent=2)
-            logger.info("代理状态缓存已保存。")
-        except IOError as e:
-            logger.error(f"保存代理状态缓存失败: {e}")
+def pre_screen_url(url):
+    if not isinstance(url, str) or not url:
+        return False
 
-    def check_ss_proxy(self, proxy_info):
-        """
-        对 Shadowsocks 节点进行简单的 TCP 连接测试。
-        这只是验证服务器可达性，不验证代理功能。
-        """
-        server = proxy_info['server']
-        port = proxy_info['port']
-        # 使用 server:port:method 作为缓存键，更具体
-        key = f"{server}:{port}:{proxy_info.get('method', 'unknown')}" 
+    parsed_url = urlparse(url)
 
-        # 检查缓存
-        if key in self.proxy_states:
-            cached_status, timestamp = self.proxy_states[key]
-            # 检查缓存有效期 (默认一周)
-            if time.time() - timestamp < CONFIG.get('url_states_ttl', 604800): 
-                logger.debug(f"从缓存获取 SS 节点状态 {key}: {cached_status}")
-                return cached_status == "ok"
+    if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+        return False
 
-        try:
-            # 尝试建立 TCP 连接
-            sock = socket.create_connection((server, port), timeout=CONFIG['proxy_check_timeout'])
-            sock.close()
-            status = "ok"
-            logger.info(f"SS 节点可用: {server}:{port}")
-        except (socket.timeout, ConnectionRefusedError, OSError) as e:
-            status = "fail"
-            logger.debug(f"SS 节点不可用 {server}:{port}: {e}")
-        except Exception as e:
-            status = "fail"
-            logger.error(f"检测 SS 节点 {server}:{port} 时发生未知错误: {e}")
-        
-        self.proxy_states[key] = (status, time.time()) # 更新缓存状态和时间戳
-        return status == "ok"
+    if not parsed_url.netloc:
+        return False
 
-    def check_all_proxies(self, proxies):
-        available_proxies = []
-        with ThreadPoolExecutor(max_workers=CONFIG.get('proxy_check_workers', 50)) as executor:
-            future_to_proxy = {}
-            for proxy in proxies:
-                if proxy['protocol'] == 'ss':
-                    future = executor.submit(self.check_ss_proxy, proxy)
-                    future_to_proxy[future] = proxy
-                # TODO: 在这里添加其他协议的提交逻辑 (例如 vmess, hy2, trojan 的 check_xxx_proxy 方法)
-                # elif proxy['protocol'] == 'vmess':
-                #     future = executor.submit(self.check_vmess_proxy, proxy)
-                #     future_to_proxy[future] = proxy
-                # ...
+    invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
+    compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
+    for pattern in compiled_invalid_url_patterns:
+        if pattern.search(url):
+            logging.debug(f"预筛选过滤（无效模式）：{url}")
+            return False
 
-            for i, future in enumerate(as_completed(future_to_proxy), 1):
-                proxy = future_to_proxy[future]
-                is_available = False
-                try:
-                    is_available = future.result()
-                except Exception as e:
-                    logger.error(f"检测代理 {proxy.get('server')} 时发生异常: {e}")
-                
-                if is_available:
-                    available_proxies.append(proxy)
-                
-                # 打印进度 (每处理 10% 或每 100 个节点打印一次)
-                if len(future_to_proxy) > 0 and (i % (len(future_to_proxy) // 10 + 1) == 0 or i == len(future_to_proxy)):
-                    logger.info(f"已检测 {i}/{len(future_to_proxy)} 个代理节点。")
-        
-        self.save_states(CONFIG.get('proxy_states_path'))
-        return available_proxies
+    if len(url) < 15:
+        return False
 
-# --- 主程序逻辑 ---
+    return True
+
+def filter_and_modify_channels(channels):
+    filtered_channels = []
+    pre_screened_count = 0
+    for name, url in channels:
+        if not pre_screen_url(url):
+            continue
+        pre_screened_count += 1
+
+        if any(word in url for word in CONFIG.get('url_filter_words', [])):
+            continue
+
+        if any(word.lower() in name.lower() for word in CONFIG.get('name_filter_words', [])):
+            continue
+
+        for old_str, new_str in CONFIG.get('channel_name_replacements', {}).items():
+            name = name.replace(old_str, new_str)
+        filtered_channels.append((name, url))
+    return filtered_channels
+
+def check_http_url(url, timeout):
+    try:
+        response = session.head(url, timeout=timeout, allow_redirects=True)
+        return 200 <= response.status_code < 400
+    except requests.exceptions.RequestException as e:
+        logging.debug(f"HTTP URL {url} 检查失败：{e}")
+        return False
+
+def check_rtmp_url(url, timeout):
+    try:
+        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        logging.warning("未找到 ffprobe 或其无法工作。RTMP 流检查已跳过。")
+        return False
+    try:
+        result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, timeout=timeout)
+        return result.returncode == 0
+    except subprocess.TimeoutExpired:
+        logging.debug(f"RTMP URL {url} 检查超时")
+        return False
+    except Exception as e:
+        logging.debug(f"RTMP URL {url} 检查错误：{e}")
+        return False
+
+def check_rtp_url(url, timeout):
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port
+        if not host or not port:
+            return False
+
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(timeout)
+            s.connect((host, port))
+            s.sendto(b'', (host, port))
+            s.recv(1)
+        return True
+    except (socket.timeout, socket.error) as e:
+        logging.debug(f"RTP URL {url} 检查失败：{e}")
+        return False
+    except Exception as e:
+        logging.debug(f"RTP URL {url} 检查错误：{e}")
+        return False
+
+def check_p3p_url(url, timeout):
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port if parsed_url.port else 80
+        path = parsed_url.path if parsed_url.path else '/'
+
+        if not host:
+            return False
+
+        with socket.create_connection((host, port), timeout=timeout) as s:
+            request = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: Python\r\n\r\n"
+            s.sendall(request.encode())
+            response = s.recv(1024).decode('utf-8', errors='ignore')
+            return "P3P" in response or response.startswith("HTTP/1.")
+    except Exception as e:
+        logging.debug(f"P3P URL {url} 检查失败：{e}")
+        return False
+
+def check_stream_quality(url, timeout=10):
+    try:
+        result = subprocess.run(
+            ['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-print_format', 'json', url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout
+        )
+        if result.returncode != 0:
+            logging.debug(f"ffprobe 检查 {url} 失败：{result.stderr.decode()}")
+            return None, None, None
+
+        data = json.loads(result.stdout)
+        video_stream = None
+        for stream in data.get('streams', []):
+            if stream.get('codec_type') == 'video':
+                video_stream = stream
+                break
+
+        if not video_stream:
+            return None, None, None
+
+        resolution = f"{video_stream.get('width', 0)}x{video_stream.get('height', 0)}"
+        bitrate = data.get('format', {}).get('bit_rate', '0')
+        bitrate = int(bitrate) // 1000 if bitrate else 0
+        frame_rate = video_stream.get('avg_frame_rate', '0/1')
+        frame_rate = eval(frame_rate) if '/' in frame_rate else float(frame_rate)
+
+        return resolution, bitrate, frame_rate
+    except Exception as e:
+        logging.debug(f"ffprobe 检查 {url} 时发生错误：{e}")
+        return None, None, None
+
+def check_stream_stability(url, duration=10):
+    try:
+        start_time = time.time()
+        process = subprocess.Popen(
+            ['ffmpeg', '-i', url, '-f', 'null', '-'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        time.sleep(duration)
+        process.terminate()
+        process.wait(timeout=5)
+        return process.returncode == 0
+    except Exception as e:
+        logging.debug(f"稳定性测试 {url} 失败：{e}")
+        return False
+
+def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TIMEOUT):
+    start_time = time.time()
+    is_valid = False
+    resolution = bitrate = frame_rate = None
+    is_stable = False
+
+    try:
+        if url.startswith("udp"):
+            logging.debug(f"跳过不受支持的 UDP 协议：{url}")
+            return None, False, None, None, None, False
+        elif url.startswith("http"):
+            is_valid = check_http_url(url, timeout)
+            if is_valid:
+                resolution, bitrate, frame_rate = check_stream_quality(url, timeout)
+                is_stable = check_stream_stability(url, CHANNEL_STABILITY_TEST_DURATION)
+        elif url.startswith("p3p"):
+            is_valid = check_p3p_url(url, timeout)
+        elif url.startswith("rtmp"):
+            is_valid = check_rtmp_url(url, timeout)
+            if is_valid:
+                resolution, bitrate, frame_rate = check_stream_quality(url, timeout)
+                is_stable = check_stream_stability(url, CHANNEL_STABILITY_TEST_DURATION)
+        elif url.startswith("rtp"):
+            is_valid = check_rtp_url(url, timeout)
+        else:
+            logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
+            return None, False, None, None, None, False
+
+        elapsed_time = (time.time() - start_time) * 1000
+        if is_valid:
+            return elapsed_time, True, resolution, bitrate, frame_rate, is_stable
+        return None, False, None, None, None, False
+    except (requests.exceptions.RequestException, socket.gaierror) as e:
+        logging.debug(f"检查频道 {channel_name} ({url}) 网络错误：{e}")
+        return None, False, None, None, None, False
+    except Exception as e:
+        logging.debug(f"检查频道 {channel_name} ({url}) 未知错误：{e}")
+        return None, False, None, None, None, False
+
+def process_single_channel_line(channel_line):
+    try:
+        if "://" not in channel_line:
+            return None, None, None, None, None, None
+        parts = channel_line.split(',', 1)
+        if len(parts) != 2:
+            logging.debug(f"无效的频道行格式：{channel_line}")
+            return None, None, None, None, None, None
+        name, url = parts
+        url = url.strip()
+        elapsed_time, is_valid, resolution, bitrate, frame_rate, is_stable = check_channel_validity_and_speed(name, url)
+        if is_valid:
+            return elapsed_time, f"{name},{url},{elapsed_time:.0f},{resolution or '未知'},{bitrate or 0},{frame_rate or 0},{is_stable}", resolution, bitrate, frame_rate, is_stable
+        return None, None, None, None, None, None
+    except Exception as e:
+        logging.debug(f"处理频道行 {channel_line} 失败：{e}")
+        return None, None, None, None, None, None
+
+def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_check_workers', 50)):
+    results = []
+    checked_count = 0
+    total_channels = len(channel_lines)
+    logging.warning(f"开始多线程频道有效性和效果检测，总计 {total_channels} 个频道...")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_single_channel_line, line): line for line in channel_lines}
+        for future in as_completed(futures):
+            checked_count += 1
+            if checked_count % 100 == 0:
+                logging.warning(f"已检查 {checked_count}/{total_channels} 个频道...")
+            try:
+                result = future.result()
+                if len(result) != 6:
+                    logging.debug(f"频道行 {futures[future]} 返回值无效：{result}")
+                    continue
+                elapsed_time, result_line, resolution, bitrate, frame_rate, is_stable = result
+                if elapsed_time is not None and result_line is not None:
+                    if resolution and 'x' in resolution:
+                        width, height = map(int, resolution.split('x'))
+                        if height >= 720 and is_stable:
+                            results.append((elapsed_time, result_line))
+            except Exception as exc:
+                logging.debug(f"频道行 {futures[future]} 处理异常：{exc}")
+    logging.warning(f"完成频道检测，共找到 {len(results)} 个有效高质量频道")
+    return results
+
+def match_channel_to_category(channel_name):
+    template_directory = os.path.join(os.getcwd(), '频道模板')
+    os.makedirs(template_directory, exist_ok=True)
+    template_files = [f for f in os.listdir(template_directory) if f.endswith('.txt')]
+    
+    for template_file in template_files:
+        template_channels = read_txt_to_array_local(os.path.join(template_directory, template_file))
+        if channel_name in template_channels:
+            template_name = os.path.splitext(template_file)[0]
+            return template_name
+    return "其他频道"
+
+def write_sorted_channels_to_file(file_path, data_list):
+    grouped_channels = {cat: [] for cat in ORDERED_CATEGORIES}
+    grouped_channels["其他频道"] = []
+
+    for elapsed_time, result_line in data_list:
+        channel_name = result_line.split(',')[0].strip()
+        category = match_channel_to_category(channel_name)
+        grouped_channels[category].append((elapsed_time, result_line))
+
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    with open(file_path, 'w', encoding='utf-8') as file:
+        file.write("频道名称,URL,响应时间(ms),分辨率,码率(kbps),帧率(fps),稳定性\n")
+        for category in ORDERED_CATEGORIES + ["其他频道"]:
+            channels = grouped_channels.get(category, [])
+            if channels:
+                file.write(f"{category},#genre#\n")
+                for elapsed_time, result_line in sorted(channels, key=lambda x: x[0]):
+                    file.write(result_line + '\n')
+
+    m3u_path = file_path.replace('.txt', '.m3u')
+    with open(m3u_path, 'w', encoding='utf-8') as file:
+        file.write('#EXTM3U\n')
+        for category in ORDERED_CATEGORIES + ["其他频道"]:
+            channels = grouped_channels.get(category, [])
+            if channels:
+                file.write(f'#EXTINF:-1 tvg-name="{category}",{category}\n#EXTGRP:{category}\nhttp://example.com/placeholder.m3u8\n')
+                for elapsed_time, result_line in sorted(channels, key=lambda x: x[0]):
+                    name, url, *_ = result_line.split(',')
+                    file.write(f'#EXTINF:-1 tvg-name="{name}",{name}\n#EXTGRP:{category}\n{url}\n')
+
+def read_txt_to_array_remote(file_path_in_repo):
+    content = fetch_from_github(file_path_in_repo)
+    if content:
+        lines = content.split('\n')
+        return [line.strip() for line in lines if line.strip()]
+    return []
+
+def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
+    content = '\n'.join(data_array)
+    success = save_to_github(file_path_in_repo, content, commit_message)
+    if not success:
+        logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
+
+def auto_discover_github_urls(urls_file_path_remote, github_token):
+    if not github_token:
+        logging.warning("环境变量 'BOT' 未设置。跳过 GitHub URL 自动发现。")
+        return
+
+    existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
+    found_urls = set()
+    headers = {
+        "Accept": "application/vnd.github.v3.text-match+json",
+        "Authorization": f"token {github_token}"
+    }
+
+    search_cache = load_search_cache()
+    logging.warning("正在开始从 GitHub 自动发现新的 IPTV 源 URL...")
+
+    for i, keyword in enumerate(SEARCH_KEYWORDS):
+        if keyword in search_cache and search_cache[keyword].get('timestamp', 0) > time.time() - SEARCH_CACHE_TTL:
+            logging.warning(f"关键词 '{keyword}' 的搜索结果缓存有效，复用缓存中的 {len(search_cache[keyword]['urls'])} 个 URL。")
+            found_urls.update(search_cache[keyword]['urls'])
+            continue
+
+        if i > 0:
+            logging.warning(f"切换到下一个关键词：'{keyword}'。等待 {GITHUB_API_RETRY_WAIT} 秒以避免速率限制...")
+            time.sleep(GITHUB_API_RETRY_WAIT)
+
+        keyword_urls = set()
+        page = 1
+        while page <= MAX_SEARCH_PAGES:
+            params = {
+                "q": keyword,
+                "sort": "indexed",
+                "order": "desc",
+                "per_page": PER_PAGE,
+                "page": page
+            }
+            try:
+                response = session.get(
+                    f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
+                    headers=headers,
+                    params=params,
+                    timeout=GITHUB_API_TIMEOUT
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
+
+                if rate_limit_remaining <= CONFIG.get('rate_limit_threshold', 5):
+                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
+                    logging.warning(f"GitHub API 速率限制接近！剩余请求：{rate_limit_remaining}。等待 {wait_seconds:.0f} 秒后重试。")
+                    time.sleep(wait_seconds)
+                    continue
+
+                if not data.get('items'):
+                    break
+
+                for item in data['items']:
+                    html_url = item.get('html_url', '')
+                    raw_url = None
+
+                    match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
+                    if match:
+                        user = match.group(1)
+                        repo = match.group(2)
+                        branch = match.group(3)
+                        path = match.group(4)
+                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
+
+                    if raw_url:
+                        cleaned_url = clean_url_params(raw_url)
+                        if cleaned_url.startswith("https://raw.githubusercontent.com/") and \
+                           cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
+                           pre_screen_url(cleaned_url):
+                            keyword_urls.add(cleaned_url)
+                            logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{cleaned_url}")
+                        else:
+                            logging.debug(f"正在跳过非原始 GitHub M3U/M3U8/TEXT 链接或未通过预筛选：{raw_url}")
+                    else:
+                        logging.debug(f"无法从 HTML URL 构造原始 URL：{html_url}")
+
+                if len(data['items']) < PER_PAGE:
+                    break
+
+                page += 1
+                time.sleep(2)
+
+            except requests.exceptions.RequestException as e:
+                logging.error(f"GitHub API 请求失败（关键词：{keyword}，页码：{page}）：{e}")
+                if 'response' in locals() and response.status_code == 403:
+                    rate_limit_reset_time = response.headers.get('X-RateLimit-Reset', 0)
+                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
+                    logging.warning(f"GitHub API 速率限制已达到！等待时间 {wait_seconds:.0f} 秒后重试。")
+                    time.sleep(wait_seconds)
+                    continue
+                else:
+                    break
+            except Exception as e:
+                logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
+                break
+
+        search_cache[keyword] = {
+            'urls': list(keyword_urls),
+            'timestamp': time.time()
+        }
+        found_urls.update(keyword_urls)
+
+    save_search_cache(search_cache)
+
+    new_urls_count = 0
+    for url in found_urls:
+        if url not in existing_urls:
+            existing_urls.add(url)
+            new_urls_count += 1
+
+    if new_urls_count > 0:
+        updated_urls = list(existing_urls)
+        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 更新发现的新 URL 更新 urls.txt")
+        logging.warning(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URLs 到 {urls_file_path_remote}。总 URL 数：{len(updated_urls)}")
+    else:
+        logging.warning("未发现新的 GitHub IPTV 源 URL。")
+
+    logging.warning("GitHub URL 自动发现完成。")
+
 def main():
-    load_config()
+    try:
+        auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
 
-    logger.info("开始搜索 GitHub 中的代理链接...")
-    searcher = GitHubSearcher()
-    raw_urls = searcher.get_all_raw_urls()
-    
-    if not raw_urls:
-        logger.warning("未找到任何潜在的原始文件 URL，程序退出。请检查 GitHub Token 和搜索关键词。")
-        return
+        urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
+        if not urls:
+            logging.warning(f"在远程 '{URLS_PATH_IN_REPO}' 中未找到 URL，脚本将提前退出。")
+            return
 
-    logger.info(f"共找到 {len(raw_urls)} 个潜在的原始文件 URL。")
+        url_states = load_url_states_remote()
+        # 这里是之前报错的行。根据代码逻辑，url_states 应该是一个字典。
+        # 如果依然报错，请检查本行代码和上面 url_states 赋值之间，是否有其他代码意外修改了 url_states。
+        logging.warning(f"已加载到 {len(url_states)} 个历史 URL 状态。")
 
-    logger.info("开始提取代理节点...")
-    extractor = ProxyExtractor()
-    extracted_proxies = extractor.get_proxies_from_urls(raw_urls)
-    
-    if not extracted_proxies:
-        logger.warning("未提取到任何代理节点，程序退出。")
-        return
+        all_extracted_channels = set()
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    result_channels = future.result()
+                    for name, addr in result_channels:
+                        all_extracted_channels.add((name, addr))
+                except Exception as exc:
+                    logging.error(f"处理源 '{url}' 时发生异常：{exc}")
 
-    logger.info(f"共提取到 {len(extracted_proxies)} 个代理节点。")
+        save_url_states_remote(url_states)
 
-    logger.info("开始验证代理节点可用性...")
-    checker = ProxyChecker()
-    available_proxies = checker.check_all_proxies(extracted_proxies)
-    logger.info(f"共发现 {len(available_proxies)} 个可用代理节点。")
+        logging.warning(f"\n从所有源提取了 {len(all_extracted_channels)} 个原始频道。")
 
-    # 输出可用节点到文件
-    output_file_path = CONFIG.get('output_file', 'available_proxies.txt')
-    with open(output_file_path, 'w', encoding='utf-8') as f:
-        for proxy in available_proxies:
-            # 根据协议类型，将其转换回可用的链接格式
-            if proxy['protocol'] == 'ss':
-                # 重新构建 SS 链接，确保 Base64 编码正确
-                info = f"{proxy['method']}:{proxy['password']}@{proxy['server']}:{proxy['port']}"
-                encoded_info = base64.urlsafe_b64encode(info.encode('utf-8')).decode('utf-8').rstrip('=')
-                link = f"ss://{encoded_info}"
-                if proxy.get('tag'):
-                    # 确保 tag 被 URL 编码，避免特殊字符问题
-                    link += f"#{proxy['tag']}"
-                f.write(link + "\n")
-            # TODO: 添加其他协议的输出格式 (例如 vmess_to_link, hy2_to_link, trojan_to_link 函数)
-            # elif proxy['protocol'] == 'vmess':
-            #     # 假设有 vmess_to_link(proxy) 函数
-            #     f.write(vmess_to_link(proxy) + "\n")
-            # ...
-    logger.info(f"可用代理节点已保存到 {output_file_path}")
+        filtered_channels = filter_and_modify_channels(list(all_extracted_channels))
+        unique_filtered_channels = list(set(filtered_channels))
+        unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
+
+        logging.warning(f"\n过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
+
+        valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str)
+        logging.warning(f"有效且高质量的频道数量：{len(valid_channels_with_speed)}")
+
+        iptv_results_file_path = os.path.join(os.getcwd(), 'output', 'iptv_results.txt')
+        os.makedirs(os.path.dirname(iptv_results_file_path), exist_ok=True)
+        write_sorted_channels_to_file(iptv_results_file_path, valid_channels_with_speed)
+        logging.warning(f"已生成输出文件：{iptv_results_file_path}")
+        logging.warning(f"已生成 M3U 文件：{iptv_results_file_path.replace('.txt', '.m3u')}")
+
+        # 复制到本地根目录
+        local_txt_path = os.path.join(os.getcwd(), 'iptv_results.txt')
+        local_m3u_path = os.path.join(os.getcwd(), 'iptv_results.m3u')
+        shutil.copy(iptv_results_file_path, local_txt_path)
+        shutil.copy(iptv_results_file_path.replace('.txt', '.m3u'), local_m3u_path)
+        logging.warning(f"已在本地根目录生成文件：{local_txt_path}")
+        logging.warning(f"已在本地根目录生成 M3U 文件：{local_m3u_path}")
+
+        try:
+            with open(iptv_results_file_path, "r", encoding='utf-8') as f:
+                iptv_results_content = f.read()
+            save_to_github(f"output/iptv_results.txt", iptv_results_content, "更新 IPTV 效果测试结果")
+            logging.warning(f"已将 {iptv_results_file_path} 推送到远程仓库。")
+            
+            with open(iptv_results_file_path.replace('.txt', '.m3u'), "r", encoding='utf-8') as f:
+                iptv_results_m3u_content = f.read()
+            save_to_github(f"output/iptv_results.m3u", iptv_results_m3u_content, "更新 IPTV M3U 播放列表")
+            logging.warning(f"已将 iptv_results.m3u 推送到远程仓库。")
+        except Exception as e:
+            logging.error(f"无法将文件推送到 GitHub：{e}")
+    except Exception as e:
+        logging.error(f"主程序执行失败：{e}")
+        raise
 
 if __name__ == "__main__":
     main()
