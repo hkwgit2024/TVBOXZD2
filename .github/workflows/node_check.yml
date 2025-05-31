@@ -29,7 +29,7 @@ jobs:
 
       - name: Run URL Discovery Script (extract_nodes.py) # 运行 URL 发现脚本
         env:
-          BOT: ${{ secrets.GITHUB_TOKEN }} # 传递 GitHub Token 用于 API 认证
+          GITHUB_TOKEN: ${{ secrets.BOT }}
         run: |
           # 运行脚本并将输出同时打印到控制台和日志文件
           # 将日志文件输出到 data/ 目录
