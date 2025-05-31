@@ -1,0 +1,42 @@
+# GitHub 搜索配置
+search_keywords:
+  - "ss:// in:file"
+  - "shadowsocks subscribe in:file"
+  - "ss config raw.githubusercontent.com"
+  - "vmess:// in:file" # 也可以同时搜索其他类型，但本示例只处理 SS
+  - "hy2:// in:file"
+  # ... 其他代理协议关键词
+
+# GitHub API 每页结果数量
+per_page: 100
+
+# GitHub API 最大搜索页数
+max_search_pages: 5
+
+# GitHub API 请求超时时间（秒）
+github_api_timeout: 20
+
+# GitHub API 速率限制达到后等待时间（秒）
+github_api_retry_wait: 30
+
+# GitHub API 速率限制阈值
+rate_limit_threshold: 5
+
+# 代理节点验证超时时间（秒）
+proxy_check_timeout: 5
+
+# 最大 URL 数量 (用于搜索到的原始文件链接)
+max_urls: 500
+
+# 缓存文件路径
+search_cache_path: "config/search_cache_proxy.json"
+proxy_states_path: "config/proxy_states.json"
+
+# 日志级别
+log_level: "INFO" # 验证节点时，INFO级别可以显示更多进展
+
+# 最大并发工作线程数
+proxy_check_workers: 50
+
+# 输出文件名
+output_file: "available_proxies.txt"
