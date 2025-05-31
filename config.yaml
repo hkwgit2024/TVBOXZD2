@@ -1,12 +1,185 @@
-github_api_url: "https://api.github.com/search/code"
-github_token: "BOT"  # 替换为您的 GitHub Personal Access Token
-search_query: "v2ray shadowsocks trojan hysteria hy2 ssr clash proxies nodes subscription config"
-output_dir: "data"
-nodes_file: "hy2.txt"
-urls_file: "url.txt"
-node_protocols:
-  - "ss://"
-  - "vmess://"
-  - "trojan://"
-  - "hy2://"
-  - "ssr://"
+# GitHub 搜索配置
+search_keywords:
+  # Shadowsocks (SS)
+  - "ss:// in:file"
+  - "shadowsocks config in:file"
+  - "ss subscription in:file"
+  - "ss:// filetype:txt"
+  - "ss:// filetype:yaml"
+  - "ss:// filetype:json"
+  - "shadowsocks list"
+  - "free shadowsocks"
+  - "public shadowsocks"
+  - "shadowsocks raw.githubusercontent.com"
+  - "shadowsocks gist.github.com"
+  - "ss panel"
+  - "ss-link"
+
+  # Hysteria2 (Hy2)
+  - "hy2:// in:file"
+  - "hysteria2 config in:file"
+  - "hy2 subscription in:file"
+  - "hy2:// filetype:txt"
+  - "hy2:// filetype:yaml"
+  - "hysteria2 list"
+  - "free hysteria2"
+  - "hy2 raw.githubusercontent.com"
+
+  # V2Ray (VMess/VLESS)
+  - "vmess:// in:file"
+  - "vless:// in:file"
+  - "v2ray config in:file"
+  - "v2ray subscription in:file"
+  - "vmess:// filetype:txt"
+  - "vless:// filetype:txt"
+  - "v2ray list"
+  - "free v2ray"
+  - "public v2ray"
+  - "v2ray raw.githubusercontent.com"
+  - "v2ray gist.github.com"
+
+  # Trojan
+  - "trojan:// in:file"
+  - "trojan config in:file"
+  - "trojan subscription in:file"
+  - "trojan:// filetype:txt"
+  - "trojan:// filetype:yaml"
+  - "trojan list"
+  - "free trojan"
+  - "trojan raw.githubusercontent.com"
+
+  # Reality (Xray with Reality)
+  - "reality:// in:file"
+  - "xray reality config in:file"
+  - "reality subscription"
+  - "grpc:// in:file"
+
+  # Tuic
+  - "tuic:// in:file"
+  - "tuic config"
+  - "tuic list"
+
+  # WireGuard (wg)
+  - "wg:// in:file"
+  - "wireguard config in:file"
+  - "wireguard.conf"
+  - "wireguard list"
+
+  # Warp (Cloudflare Warp)
+  - "warp:// in:file"
+  - "cloudflare warp config"
+
+  # Shadow-Tls
+  - "shadow-tls:// in:file"
+  - "shadow-tls config"
+
+  # 通用订阅链接 / 文件名
+  - "subscribe url"
+  - "subscription link"
+  - "nodes.txt"
+  - "config.txt"
+  - "proxy.txt"
+  - "sub.txt"
+  - "nodes.yaml"
+  - "config.yaml"
+  - "proxy.yaml"
+  - "sub.yaml"
+  - "clash.yaml"
+  - "surge.conf"
+  - "v2rayN-sub"
+
+  # 额外平台/域名 (Raw content)
+  - "raw.githubusercontent.com ss://"
+  - "raw.githubusercontent.com vmess://"
+  - "raw.githubusercontent.com hy2://"
+  - "raw.githubusercontent.com trojan://"
+  - "gist.github.com ss://"
+  - "gist.github.com vmess://"
+  - "gist.github.com hy2://"
+  - "gist.github.com trojan://"
+  - "cdn.jsdelivr.net ss://"
+  - "fastly.net ss://"
+
+  # 中文关键词 (非常重要)
+  - "免费节点"
+  - "v2ray免费节点"
+  - "ss免费节点"
+  - "trojan免费节点"
+  - "hy2免费节点"
+  - "clash订阅"
+  - "v2ray订阅"
+  - "ssr订阅"
+  - "翻墙节点"
+  - "梯子节点"
+  - "机场订阅"
+  - "最新节点"
+  - "节点分享"
+  - "公益节点"
+  - "科学上网"
+  - "vmess链接"
+  - "vless链接"
+  - "ss链接"
+  - "hysteria2链接"
+  - "trojan链接"
+  - "reality链接"
+  - "tuic链接"
+  - "warp链接"
+  - "shadow-tls链接"
+  - "代理地址"
+  - "代理配置"
+  - "订阅地址"
+  - "节点列表"
+  - "分享节点"
+  - "可v2rayN"
+  - "小猫咪配置"
+  - "免费机场"
+  - "最新机场"
+
+# GitHub API 每页结果数量
+per_page: 100
+
+# GitHub API 最大搜索页数
+max_search_pages: 5
+
+# GitHub API 请求超时时间（秒）
+github_api_timeout: 20
+
+# GitHub API 速率限制达到后等待时间（秒）
+github_api_retry_wait: 30
+
+# GitHub API 速率限制阈值
+rate_limit_threshold: 5
+
+# 代理节点验证超时时间（秒）
+proxy_check_timeout: 5
+
+# 最大 URL 数量 (用于搜索到的原始文件链接)
+max_urls: 500
+
+# 缓存文件路径 (已调整为脚本同级目录)
+search_cache_path: "data/search_cache_proxy.json"
+proxy_states_path: "data/proxy_states.json"
+
+# 日志级别
+log_level: "INFO" # 验证节点时，INFO级别可以显示更多进展
+
+# 最大并发工作线程数
+proxy_check_workers: 50
+
+# 频道提取的最大并发线程数 (用于下载原始文件内容)
+channel_extract_workers: 10 # 这里的命名沿用了旧的，但功能是提取文件内容
+
+# Requests 库的重试总次数
+requests_retry_total: 3
+
+# Requests 库的重试间隔回退因子
+requests_retry_backoff_factor: 1.5
+
+# Requests 库的连接池大小
+requests_pool_size: 100
+
+# URL 状态缓存有效期（秒），决定多久重新检测一个节点
+url_states_ttl: 604800 # 默认一周
+
+# 输出文件名
+output_file: "data/available_proxies.txt"
