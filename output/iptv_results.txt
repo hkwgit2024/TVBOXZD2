@@ -1,1 +1,6 @@
 频道名称,URL,响应时间(ms),分辨率,码率(kbps),帧率(fps),稳定性
+其他频道,#genre#
+烟影视,http://live.yantaitv.cn/live/e9f1d9045d474c31884d13fa4ffbbd16/a4a9b3704d854756907845107cc56129-1.m3u8,13919,1280x720,0,25.0,True
+烟经济科技,http://live.yantaitv.cn/live/27f84144e95a4652ae9e5c211b2a6b55/405f3e33ba384aa0a16014d0becd1261-1.m3u8,13998,1280x720,0,25.0,True
+烟公共,http://live.yantaitv.cn/live/e50f104a4ffe4a41b2217cbda534146f/d86092e69df94668b33390278b061700-1.m3u8,14045,1280x720,0,25.0,True
+烟新闻综合,http://live.yantaitv.cn/live/3e81a8879da44c5dadf3bd9c10468e1c/9b776d420ee4438199b7657c8eb88f07-1.m3u8,15238,1280x720,0,25.0,True
