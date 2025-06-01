@@ -2,15 +2,75 @@
 #EXTINF:-1 tvg-name="其他频道",其他频道
 #EXTGRP:其他频道
 http://example.com/placeholder.m3u8
-#EXTINF:-1 tvg-name="烟影视",烟影视
+#EXTINF:-1 tvg-name="快手027",快手027
 #EXTGRP:其他频道
-http://live.yantaitv.cn/live/e9f1d9045d474c31884d13fa4ffbbd16/a4a9b3704d854756907845107cc56129-1.m3u8
-#EXTINF:-1 tvg-name="烟经济科技",烟经济科技
+http://txmov2.a.yximgs.com/upic/2019/06/01/02/BMjAxOTA2MDEwMjIyMjdfNDA3NzQzNTQ2XzEzNjAzNDMzMjM0XzFfMw==_b_Bb62a6726c2a3f41603a51b72ebfdbc21.mp4
+#EXTINF:-1 tvg-name="快手108",快手108
 #EXTGRP:其他频道
-http://live.yantaitv.cn/live/27f84144e95a4652ae9e5c211b2a6b55/405f3e33ba384aa0a16014d0becd1261-1.m3u8
-#EXTINF:-1 tvg-name="烟公共",烟公共
+http://txmov2.a.yximgs.com/upic/2019/03/24/09/BMjAxOTAzMjQwOTMwMzJfNTQ3NDc5NTI2XzExNjM0MDYyMDIzXzFfMw==_b_B41eb4a5f586179388f25ce538f57b3b6.mp4
+#EXTINF:-1 tvg-name="快手081",快手081
 #EXTGRP:其他频道
-http://live.yantaitv.cn/live/e50f104a4ffe4a41b2217cbda534146f/d86092e69df94668b33390278b061700-1.m3u8
+http://txmov2.a.yximgs.com/upic/2019/05/04/21/BMjAxOTA1MDQyMTQ3NDlfMTY4MDMwMTZfMTI3ODMxNDE3MTBfMV8z_b_B225e781541b586b7cef7e2f7da2cb0d0.mp4
+#EXTINF:-1 tvg-name="快手001",快手001
+#EXTGRP:其他频道
+http://txmov2.a.yximgs.com/upic/2019/05/08/19/BMjAxOTA1MDgxOTEwMzhfOTQ5MDc0NDhfMTI4ODIyNTEwNTBfMV8z_b_B18dbc72e456ba844ba2ac5329f605898.mp4
+#EXTINF:-1 tvg-name="快手109",快手109
+#EXTGRP:其他频道
+http://txmov2.a.yximgs.com/upic/2019/10/04/20/BMjAxOTEwMDQyMDQzMDFfMTM3OTk2OTkzXzE4MTk4Mjc3MDM3XzFfMw==_b_Bd2b3a2df0311ac7b780c1236f9ff6981.mp4
+#EXTINF:-1 tvg-name="TVA",TVA
+#EXTGRP:其他频道
+https://iptv.org.ua/wp-content/uploads/2022/01/Moyo-slayd33-shou.mp4
+#EXTINF:-1 tvg-name="快手003",快手003
+#EXTGRP:其他频道
+http://txmov2.a.yximgs.com/upic/2019/04/19/22/BMjAxOTA0MTkyMjMwNDJfMzAyMDEzMzFfMTIzMzY1NjU3MTNfMV8z_b_B44189a17e2ce8ee7bf18db70f7628e92.mp4
+#EXTINF:-1 tvg-name="快手098",快手098
+#EXTGRP:其他频道
+http://txmov2.a.yximgs.com/upic/2019/06/16/22/BMjAxOTA2MTYyMjM3MTZfMzM1Njc1OTNfMTQxNTYwMjI5NDZfMV8z_b_B3edf713c8ce0e133fbbdbcabb8da05b5.mp4
+#EXTINF:-1 tvg-name="快手023",快手023
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/06/04/13/BMjAxOTA2MDQxMzU1NDVfMTE1MTgwNDIxN18xMzcxOTU0NzQwM18xXzM=_b_B8c8e63dd9324bf7d8b77cc8878d2301c.mp4
+#EXTINF:-1 tvg-name="快手020",快手020
+#EXTGRP:其他频道
+http://hwmov.a.yximgs.com/upic/2019/07/21/02/BMjAxOTA3MjEwMjEyNDdfNzUxMTA4NDg2XzE1NDMwOTcyODU3XzFfMw==_b_B3a187214d5959e371f52950405eefd2c.mp4
+#EXTINF:-1 tvg-name="快手066",快手066
+#EXTGRP:其他频道
+http://alimov2.a.yximgs.com/upic/2018/12/20/09/BMjAxODEyMjAwOTQwNTdfMjA5MjE3NjVfOTQ1MzE2MTc4OV8xXzM=_b_B30b4404d77e6355fd480f13f03214c88.mp4
+#EXTINF:-1 tvg-name="快手015",快手015
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/04/21/11/BMjAxOTA0MjExMTExNDRfNDY4OTA4NTY2XzEyMzgzNjM5NDMzXzFfMw==_b_Bb56a471b9d4d1936e9d59d296c140a2a.mp4
+#EXTINF:-1 tvg-name="快手004",快手004
+#EXTGRP:其他频道
+http://txmov2.a.yximgs.com/upic/2018/09/15/20/BMjAxODA5MTUyMDA4MzVfMzM4MzExNjlfODA0NTg3MjM0MF8xXzM=_b_B8ec45f915c8a6c5464ed4406efce0099.mp4
+#EXTINF:-1 tvg-name="快手008",快手008
+#EXTGRP:其他频道
+http://alimov2.a.yximgs.com/upic/2019/06/23/08/BMjAxOTA2MjMwODEyMzVfNzk2MTEzMzM2XzE0MzYxOTc4MTc5XzFfMw==_b_Ba168ee45dec3eb81c44bd10a1c14990a.mp4
+#EXTINF:-1 tvg-name="快手115",快手115
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/05/14/15/BMjAxOTA1MTQxNTIzNDBfNzI2MTc2NTAyXzEzMDU5MTE2Njg1XzFfMw==_b_B9132f62c4fa5f418cca97a6613ff0eb2.mp4
+#EXTINF:-1 tvg-name="快手005",快手005
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/05/31/16/BMjAxOTA1MzExNjI5MzJfMTIyNDA5MjE1N18xMzU4NDQ4NTMyMl8xXzM=_b_Be270bbc7c414425c4a56fcd271b4e5f7.mp4
+#EXTINF:-1 tvg-name="t.me/IPTVM3Y",t.me/IPTVM3Y
+#EXTGRP:其他频道
+https://m3uplaylist-plum.vercel.app/m3u_playlist.m3u8
+#EXTINF:-1 tvg-name="快手002",快手002
+#EXTGRP:其他频道
+http://ydmov.a.yximgs.com/upic/2019/05/11/12/BMjAxOTA1MTExMjI0MzZfNTIxNDExMzRfMTI5NTcyODU1MzdfMl8z_b_Bf6122a7ddde55cdfffa359b19a1e7d7d.mp4
+#EXTINF:-1 tvg-name="快手129",快手129
+#EXTGRP:其他频道
+http://bdmov.a.yximgs.com/upic/2019/05/05/17/BMjAxOTA1MDUxNzQ4MTNfMTEzMjEzNDEyOV8xMjgwMTA4Nzk5NF8xXzM=_b_Bf03ed39dfeba0ba76012e79123409957.mp4
+#EXTINF:-1 tvg-name="快手100",快手100
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/05/24/00/BMjAxOTA1MjQwMDQ0NDVfNTg2NzYxNTUzXzEzMzQ4NDc2MzMyXzFfMw==_b_B3e21434cd0a8cf9ae0918f9d2e0fcb34.mp4
 #EXTINF:-1 tvg-name="烟新闻综合",烟新闻综合
 #EXTGRP:其他频道
 http://live.yantaitv.cn/live/3e81a8879da44c5dadf3bd9c10468e1c/9b776d420ee4438199b7657c8eb88f07-1.m3u8
+#EXTINF:-1 tvg-name="烟经济科技",烟经济科技
+#EXTGRP:其他频道
+http://live.yantaitv.cn/live/27f84144e95a4652ae9e5c211b2a6b55/405f3e33ba384aa0a16014d0becd1261-1.m3u8
+#EXTINF:-1 tvg-name="快手010",快手010
+#EXTGRP:其他频道
+http://jsmov2.a.yximgs.com/upic/2019/08/14/05/BMjAxOTA4MTQwNTU4MzdfMTU0NjM5MDVfMTYzNjU4MTk1MTZfMV8z_b_B95de6939eb71cbd33105b27ee6668d9e.mp4
+#EXTINF:-1 tvg-name="烟公共",烟公共
+#EXTGRP:其他频道
+http://live.yantaitv.cn/live/e50f104a4ffe4a41b2217cbda534146f/d86092e69df94668b33390278b061700-1.m3u8
