@@ -2,84 +2,105 @@
 #EXTINF:-1 tvg-name="其他频道",其他频道
 #EXTGRP:其他频道
 http://example.com/placeholder.m3u8
-#EXTINF:-1 tvg-name="TVBJ1",TVBJ1
-#EXTGRP:其他频道
-https://cdn3.163189.xyz/live/j1/stream.m3u8
-#EXTINF:-1 tvg-name="中天",中天
-#EXTGRP:其他频道
-http://cdn.iptv8k.top/dl/jspd.php
-#EXTINF:-1 tvg-name="电影_战争片",电影_战争片
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/21059574.flv
-#EXTINF:-1 tvg-name="电影_玄幻",电影_玄幻
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342414.flv
-#EXTINF:-1 tvg-name="电影_王晶",电影_王晶
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11602058.flv
-#EXTINF:-1 tvg-name="电影_周星星",电影_周星星
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11336587.flv
-#EXTINF:-1 tvg-name="电影_贺岁片",电影_贺岁片
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11601986.flv
-#EXTINF:-1 tvg-name="电影_经典港片",电影_经典港片
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11352965.flv
-#EXTINF:-1 tvg-name="电影_欢笑影院",电影_欢笑影院
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11352894.flv
-#EXTINF:-1 tvg-name="电影_嫣然影厅",电影_嫣然影厅
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11601977.flv
-#EXTINF:-1 tvg-name="ROCKENTERTAINMENT",ROCKENTERTAINMENT
-#EXTGRP:其他频道
-https://epg.pw/stream/8c8f12557120af11c0343207e354cbbaf692b5d271cb873dd58cc9632bb99845.ctv
-#EXTINF:-1 tvg-name="HBOHD",HBOHD
-#EXTGRP:其他频道
-https://epg.pw/stream/156d03c0710822ea87e710bd95411696255a5781cccce994c16990cc4cc3706e.ctv
 #EXTINF:-1 tvg-name="电影_黄渤",电影_黄渤
 #EXTGRP:其他频道
 http://cfss.cc/cdn/hy/11352876.flv
-#EXTINF:-1 tvg-name="电影_成龙",电影_成龙
+#EXTINF:-1 tvg-name="电影_经典港片",电影_经典港片
 #EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342386.flv
-#EXTINF:-1 tvg-name="电影_许冠英",电影_许冠英
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11601972.flv
-#EXTINF:-1 tvg-name="电影_谍战",电影_谍战
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/21059585.flv
-#EXTINF:-1 tvg-name="东森",东森
-#EXTGRP:其他频道
-https://stream1.freetv.fun/dong-sen-chao-shi-2.ctv
-#EXTINF:-1 tvg-name="电影_快意江湖",电影_快意江湖
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342435.flv
-#EXTINF:-1 tvg-name="电影_漫威",电影_漫威
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11602034.flv
-#EXTINF:-1 tvg-name="电影_战争",电影_战争
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/21059592.flv
-#EXTINF:-1 tvg-name="电影_梁家辉",电影_梁家辉
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342429.flv
-#EXTINF:-1 tvg-name="电影_黑帮斗争",电影_黑帮斗争
-#EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342419.flv
+http://cfss.cc/cdn/hy/11352965.flv
 #EXTINF:-1 tvg-name="电影_动作电影",电影_动作电影
 #EXTGRP:其他频道
 http://cfss.cc/cdn/hy/11602077.flv
-#EXTINF:-1 tvg-name="电影_沈腾",电影_沈腾
+#EXTINF:-1 tvg-name="电影_欢笑影院",电影_欢笑影院
 #EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11601968.flv
-#EXTINF:-1 tvg-name="电影_星爷",电影_星爷
+http://cfss.cc/cdn/hy/11352894.flv
+#EXTINF:-1 tvg-name="电影_快意江湖",电影_快意江湖
 #EXTGRP:其他频道
-http://cfss.cc/cdn/hy/11342412.flv
+http://cfss.cc/cdn/hy/11342435.flv
+#EXTINF:-1 tvg-name="电影_战争片",电影_战争片
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059574.flv
+#EXTINF:-1 tvg-name="电影_谍战",电影_谍战
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059585.flv
+#EXTINF:-1 tvg-name="电影_许冠英",电影_许冠英
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11601972.flv
+#EXTINF:-1 tvg-name="电影_王晶",电影_王晶
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11602058.flv
+#EXTINF:-1 tvg-name="电影_英叔",电影_英叔
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11342421.flv
+#EXTINF:-1 tvg-name="电影_蘑菇影厅",电影_蘑菇影厅
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11601981.flv
 #EXTINF:-1 tvg-name="电影_不挤影院",电影_不挤影院
 #EXTGRP:其他频道
 http://cfss.cc/cdn/hy/11352897.flv
+#EXTINF:-1 tvg-name="电影_贺岁",电影_贺岁
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11601971.flv
+#EXTINF:-1 tvg-name="电影_玄幻",电影_玄幻
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11342414.flv
+#EXTINF:-1 tvg-name="搞笑_陈翔六点半",搞笑_陈翔六点半
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11274154.flv
+#EXTINF:-1 tvg-name="东森",东森
+#EXTGRP:其他频道
+https://stream1.freetv.fun/dong-sen-chao-shi-2.ctv
+#EXTINF:-1 tvg-name="电影_功夫片",电影_功夫片
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11352941.flv
+#EXTINF:-1 tvg-name="电影_强森",电影_强森
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059581.flv
+#EXTINF:-1 tvg-name="虎牙TVB西游记",虎牙TVB西游记
+#EXTGRP:其他频道
+http://live.nctv.top/DJlio/huya.php
+#EXTINF:-1 tvg-name="电影_周星星",电影_周星星
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11336587.flv
+#EXTINF:-1 tvg-name="烟新闻综合",烟新闻综合
+#EXTGRP:其他频道
+http://live.yantaitv.cn/live/3e81a8879da44c5dadf3bd9c10468e1c/9b776d420ee4438199b7657c8eb88f07-1.m3u8
+#EXTINF:-1 tvg-name="成龙",成龙
+#EXTGRP:其他频道
+https://p6-dy.byteimg.com/origin/pgc-image/bebfddceee5c40f495882785675174cf
 #EXTINF:-1 tvg-name="电影_喜乐影院",电影_喜乐影院
 #EXTGRP:其他频道
 http://cfss.cc/cdn/hy/21059580.flv
+#EXTINF:-1 tvg-name="电影_战争",电影_战争
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059592.flv
+#EXTINF:-1 tvg-name="烟公共",烟公共
+#EXTGRP:其他频道
+http://live.yantaitv.cn/live/e50f104a4ffe4a41b2217cbda534146f/d86092e69df94668b33390278b061700-1.m3u8
+#EXTINF:-1 tvg-name="电影_贺岁片",电影_贺岁片
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11601986.flv
+#EXTINF:-1 tvg-name="电影_变形金刚",电影_变形金刚
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059596.flv
+#EXTINF:-1 tvg-name="电影_喜剧专场",电影_喜剧专场
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11602044.flv
+#EXTINF:-1 tvg-name="电影_古装片",电影_古装片
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11336590.flv
+#EXTINF:-1 tvg-name="电影_怪兽系列",电影_怪兽系列
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/21059554.flv
+#EXTINF:-1 tvg-name="电影_漫威",电影_漫威
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11602034.flv
+#EXTINF:-1 tvg-name="电影_黑帮斗争",电影_黑帮斗争
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11342419.flv
+#EXTINF:-1 tvg-name="烟经济科技",烟经济科技
+#EXTGRP:其他频道
+http://live.yantaitv.cn/live/27f84144e95a4652ae9e5c211b2a6b55/405f3e33ba384aa0a16014d0becd1261-1.m3u8
+#EXTINF:-1 tvg-name="电影_刘德华",电影_刘德华
+#EXTGRP:其他频道
+http://cfss.cc/cdn/hy/11342424.flv
