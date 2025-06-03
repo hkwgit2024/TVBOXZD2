@@ -11,7 +11,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def get_random_user_agent():
     user_agents = [
-        # 仅保留桌面端 User-Agent
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15'
     ]
@@ -23,14 +22,15 @@ def search_bing(query, page=1):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'DNT': '1',  # Do Not Track，减少移动端重定向
+        'Upgrade-Insecure-Requests': '1'
     }
-    url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}"
+    url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}&form=QBLH"
     logging.info(f"Requesting URL: {url} with headers: {headers['User-Agent']}")
     try:
         response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
-        # 检查是否为移动端页面
         is_mobile = 'mobile' in response.text.lower() or 'm.bing.com' in response.url
         logging.info(f"Page {page} for query '{query}' is {'mobile' if is_mobile else 'desktop'}")
         return response.text
@@ -51,22 +51,27 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
             'https://go.microsoft.com/',
             'https://support.microsoft.com/',
             'https://bingapp.microsoft.com/',
-            'https://www.bing.com/'  # 排除 Bing 自身链接
+            'https://www.microsoft.com/'
         ]
-        # 关键词相关性检查
         relevant_keywords = ['vpn', 'proxy', 'accelerator', 'airport', '加速器', '机场']
-        # 提取搜索结果区域的链接
-        for result in soup.find_all('li', class_='b_algo'):
+        # 尝试多种选择器以适配桌面和移动端
+        for result in soup.find_all(['li', 'div'], class_=['b_algo', 'b_algoGroup', 'b_result']):
             link = result.find('a', href=True)
             if link:
                 href = link['href']
                 if href.startswith(('http://', 'https://')):
                     clean_url, _ = urldefrag(href)
                     if not any(clean_url.startswith(domain) for domain in exclude_domains):
-                        # 检查 URL 是否包含相关关键词
-                        if any(keyword in clean_url.lower() for keyword in relevant_keywords):
+                        # 检查链接标题或描述是否包含关键词
+                        link_text = (link.get_text() or '').lower()
+                        parent_text = (result.get_text() or '').lower()
+                        if any(keyword in link_text or keyword in parent_text for keyword in relevant_keywords):
                             urls.add(clean_url)
                             logging.info(f"Extracted URL: {clean_url}")
+        if not urls:
+            # 记录页面中是否存在 b_algo
+            has_b_algo = bool(soup.find('li', class_='b_algo'))
+            logging.warning(f"No URLs extracted. b_algo found: {has_b_algo}")
         logging.info(f"Extracted {len(urls)} URLs from page")
         return urls
     except Exception as e:
@@ -86,7 +91,7 @@ def save_urls(urls, output_file):
 def main():
     queries = ['加速器', '机场']
     all_urls = set()
-    MAX_PAGES = 5 # 抓取前3页
+    MAX_PAGES = 3  # 恢复为3页，避免过多请求
 
     for query in queries:
         for page in range(1, MAX_PAGES + 1):
@@ -97,7 +102,7 @@ def main():
                 all_urls.update(urls)
             else:
                 logging.warning(f"No content returned for {query}, page {page}")
-            delay = random.uniform(1, 3)
+            delay = random.uniform(2, 4)  # 增加延时范围
             logging.info(f"Sleeping for {delay:.2f} seconds")
             time.sleep(delay)
     
