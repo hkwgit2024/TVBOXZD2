@@ -27,9 +27,11 @@ def search_bing(query, page=1):
         'Upgrade-Insecure-Requests': '1',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1'
+        'Sec-Fetch-User': '?1',
+        'Sec-CH-UA-Mobile': '?0',  # 强制桌面端
+        'Sec-CH-UA-Platform': '"Windows"'  # 模拟 Windows 平台
     }
-    url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}&mkt=zh-CN&setlang=zh-CN&form=QBLH"
+    url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}&mkt=zh-CN&setlang=zh-CN&form=QBLH&pc=U316"
     logging.info(f"Requesting URL: {url} with headers: {headers['User-Agent']}")
     try:
         response = requests.get(url, headers=headers, timeout=5)
@@ -57,25 +59,34 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
             'https://www.microsoft.com/',
             'https://www.bing.com/',
             'https://account.bing.com/',
-            'https://login.live.com/'
+            'https://login.live.com/',
+            'https://m.bing.com/'
         ]
-        # 提取搜索结果链接
-        for result in soup.find_all(['li', 'div'], class_=['b_algo', 'b_algoGroup', 'b_result', 'b_pag']):
-            link = result.find('a', href=True)
-            if link:
-                href = link['href']
-                if href.startswith(('http://', 'https://')):
-                    clean_url, _ = urldefrag(href)
-                    if not any(clean_url.startswith(domain) for domain in exclude_domains):
-                        urls.add(clean_url)
-                        logging.info(f"Extracted URL: {clean_url}")
+        # 优先提取 <div class="gs_cit"> 中的 data-url
+        for cit in soup.find_all('div', class_='gs_cit', attrs={'data-url': True}):
+            href = cit['data-url']
+            if href.startswith(('http://', 'https://')):
+                clean_url, _ = urldefrag(href)
+                if not any(clean_url.startswith(domain) for domain in exclude_domains):
+                    urls.add(clean_url)
+                    logging.info(f"Extracted URL: {clean_url}")
+        # 备用：提取 <ol id="b_results"> 内的 <a> 标签
         if not urls:
-            has_b_algo = bool(soup.find(['li', 'div'], class_=['b_algo', 'b_algoGroup', 'b_result']))
-            logging.warning(f"No URLs extracted. Relevant selectors found: {has_b_algo}")
-            # 保存部分 HTML 调试
             results_area = soup.find('ol', id='b_results')
             if results_area:
-                logging.debug(f"Results area HTML: {str(results_area)[:500]}...")
+                for link in results_area.find_all('a', href=True):
+                    href = link['href']
+                    if href.startswith(('http://', 'https://')):
+                        clean_url, _ = urldefrag(href)
+                        if not any(clean_url.startswith(domain) for domain in exclude_domains):
+                            urls.add(clean_url)
+                            logging.info(f"Extracted URL (fallback): {clean_url}")
+        if not urls:
+            has_results = bool(soup.find('ol', id='b_results'))
+            has_gs_cit = bool(soup.find('div', class_='gs_cit'))
+            logging.warning(f"No URLs extracted. b_results found: {has_results}, gs_cit found: {has_gs_cit}")
+            if has_results:
+                logging.debug(f"Results area HTML: {str(soup.find('ol', id='b_results'))[:500]}...")
         logging.info(f"Extracted {len(urls)} URLs from page")
         return urls
     except Exception as e:
