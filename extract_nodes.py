@@ -36,7 +36,7 @@ def load_config(config_path="config_proxy.yaml"):
 class GitHubSearcher:
     def __init__(self):
         self.headers = {'Accept': 'application/vnd.github.v3.text-match+json'}
-        github_token = os.getenv('GITHUB_TOKEN')
+        github_token = os.getenv('BOT')
         if github_token:
             self.headers['Authorization'] = f"token {github_token}"
             logger.info("GitHub Token loaded from environment variable.")
