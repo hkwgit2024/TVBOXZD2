@@ -33,9 +33,9 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull --rebase origin main  # Pull remote changes with rebase
         git add data/bing.txt
         git commit -m "Update bing search results" || echo "No changes to commit"
+        git pull --rebase origin main  # Pull after committing changes
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.BOT }}
+        GITHUB_TOKEN: ${{ secrets.BOT }}  # 使用名为 BOT 的 secret
