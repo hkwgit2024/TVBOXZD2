@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import os
 import re
 import subprocess
@@ -16,19 +17,27 @@ import hashlib
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import yaml
-import dns.resolver  # DNS 解析库，用于检查域名有效性
-import aiohttp  # 异步 HTTP 请求库
+import dns.resolver
+import aiohttp
 import asyncio
 from collections import defaultdict
-from tqdm import tqdm  # 进度条库
+from tqdm import tqdm
+import base64
 
-# 配置日志，WARNING 级别记录关键信息，DEBUG 记录调试细节
-logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
+# 配置日志，输出到文件和控制台
+logging.basicConfig(
+    level=logging.WARNING,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('iptv_crawler.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 
-# DNS 缓存，避免重复解析相同域名
+# DNS 缓存
 DNS_CACHE = defaultdict(lambda: None)
 
-# 环境变量，从 GitHub Actions 或本地环境读取
+# 环境变量
 GITHUB_TOKEN = os.getenv('BOT')
 REPO_OWNER = os.getenv('REPO_OWNER')
 REPO_NAME = os.getenv('REPO_NAME')
@@ -36,7 +45,7 @@ CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
 URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
 URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
 
-# 验证环境变量，确保必要配置存在
+# 验证环境变量
 for var, name in [(GITHUB_TOKEN, 'BOT'), (REPO_OWNER, 'REPO_OWNER'), (REPO_NAME, 'REPO_NAME'),
                   (CONFIG_PATH_IN_REPO, 'CONFIG_PATH'), (URLS_PATH_IN_REPO, 'URLS_PATH'),
                   (URL_STATES_PATH_IN_REPO, 'URL_STATES_PATH')]:
@@ -44,7 +53,7 @@ for var, name in [(GITHUB_TOKEN, 'BOT'), (REPO_OWNER, 'REPO_OWNER'), (REPO_NAME,
         logging.error(f"错误：环境变量 '{name}' 未设置。")
         exit(1)
 
-# GitHub 相关 URL
+# GitHub URL
 GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
 GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
 
@@ -60,8 +69,9 @@ def fetch_from_github(file_path_in_repo):
         logging.error(f"从 GitHub 获取 {file_path_in_repo} 发生错误：{e}")
         return None
 
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
 def get_current_sha(file_path_in_repo):
-    """获取 GitHub 文件的 SHA 值，用于更新文件"""
+    """获取 GitHub 文件的 SHA 值"""
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
@@ -69,18 +79,18 @@ def get_current_sha(file_path_in_repo):
         response.raise_for_status()
         return response.json().get('sha')
     except requests.exceptions.RequestException as e:
-        logging.debug(f"获取 {file_path_in_repo} 的 SHA 发生错误（可能不存在）：{e}")
+        logging.debug(f"获取 {file_path_in_repo} 的 SHA 发生错误：{e}")
         return None
 
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
 def save_to_github(file_path_in_repo, content, commit_message):
-    """将内容保存到 GitHub 仓库"""
+    """将内容保存到 GitHub 仓库，处理 409 冲突"""
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     sha = get_current_sha(file_path_in_repo)
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
         "Content-Type": "application/json"
     }
-    import base64
     encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
     payload = {
         "message": commit_message,
@@ -93,8 +103,14 @@ def save_to_github(file_path_in_repo, content, commit_message):
         response = requests.put(api_url, headers=headers, json=payload)
         response.raise_for_status()
         return True
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 409:
+            logging.warning(f"检测到 409 冲突，重试保存 {file_path_in_repo}")
+            raise  # 触发重试
+        logging.error(f"保存 {file_path_in_repo} 到 GitHub 发生错误：{e}")
+        return False
     except requests.exceptions.RequestException as e:
-        logging.error(f"将 {file_path_in_repo} 保存到 GitHub 发生错误：{e}")
+        logging.error(f"保存 {file_path_in_repo} 到 GitHub 发生错误：{e}")
         return False
 
 def load_config():
@@ -105,16 +121,17 @@ def load_config():
             return yaml.safe_load(content)
         except yaml.YAMLError as e:
             logging.error(f"错误：远程配置文件 '{CONFIG_PATH_IN_REPO}' 中的 YAML 无效：{e}")
-    logging.warning(f"无法加载远程配置文件，使用默认配置")
+    logging.warning("无法加载远程配置文件，使用默认配置")
     return {
-        'search_keywords': ['iptv playlist extension:m3u,m3u8 in:file', 'iptv m3u filetype:m3u'],
+        'search_keywords': ['iptv playlist extension:m3u,m3u8 in:file'],
         'per_page': 100,
         'max_search_pages': 5,
+        'max_urls': 1000,
         'github_api_timeout': 20,
-        'github_api_retry_wait': 12,
+        'github_api_retry_wait': 30,
         'channel_fetch_timeout': 15,
         'channel_check_timeout': 10,
-        'max_channel_urls_per_group': 200,
+        'max_channel_urls_per_group': 100,
         'name_filter_words': ['adult', 'xxx', 'test', 'demo'],
         'url_filter_words': ['login', 'signup', '.lat', '.ml', '.tk'],
         'channel_name_replacements': {'CCTV': '央视', 'HD': '高清'},
@@ -125,23 +142,24 @@ def load_config():
         },
         'requests_pool_size': 20,
         'requests_retry_total': 3,
-        'requests_retry_backoff_factor': 1,
+        'requests_retry_backoff_factor': 1.5,
         'channel_check_workers': 20
     }
 
 CONFIG = load_config()
 
-# 配置常量，从 config.yaml 读取
+# 配置常量
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+MAX_URLS = CONFIG.get('max_urls', 1000)
 GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 12)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 30)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
 CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 10)
-MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
 NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
 URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
@@ -154,7 +172,7 @@ session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)
 pool_size = CONFIG.get('requests_pool_size', 20)
 retry_strategy = Retry(
     total=CONFIG.get('requests_retry_total', 3),
-    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS"]
 )
@@ -163,20 +181,27 @@ session.mount("http://", adapter)
 session.mount("https://", adapter)
 
 def is_valid_domain(domain):
-    """检查域名是否可解析，带缓存和重试机制"""
+    """检查域名是否可解析，带缓存和异常处理"""
     if DNS_CACHE[domain] is not None:
         return DNS_CACHE[domain]
-    for _ in range(2):  # 重试两次
+    resolver = dns.resolver.Resolver()
+    resolver.nameservers = ['8.8.8.8', '1.1.1.1']  # 使用 Google 和 Cloudflare DNS
+    resolver.timeout = 2
+    resolver.lifetime = 5
+    for _ in range(2):
         try:
-            dns.resolver.resolve(domain, 'A')
+            resolver.resolve(domain, 'A')
             DNS_CACHE[domain] = True
             return True
-        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
             DNS_CACHE[domain] = False
             return False
         except dns.resolver.Timeout:
             time.sleep(1)
-    logging.debug(f"DNS 解析超时：{domain}")
+        except Exception as e:
+            logging.debug(f"DNS 解析错误：{domain}，错误：{e}")
+            DNS_CACHE[domain] = False
+            return False
     DNS_CACHE[domain] = False
     return False
 
@@ -225,12 +250,12 @@ def convert_m3u_to_txt(m3u_content):
     return '\n'.join(txt_lines)
 
 def clean_url_params(url):
-    """清理 URL 参数，保留方案、主机和路径"""
+    """清理 URL 参数"""
     parsed_url = urlparse(url)
     return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
 
 def load_url_states_remote():
-    """加载远程 URL 状态（ETag、Last-Modified 等）"""
+    """加载远程 URL 状态"""
     content = fetch_from_github(URL_STATES_PATH_IN_REPO)
     if content:
         try:
@@ -241,15 +266,14 @@ def load_url_states_remote():
     return {}
 
 def save_url_states_remote(url_states):
-    """保存 URL 状态到 GitHub"""
+    """保存 URL 状态到 GitHub，限制频率"""
     try:
         content = json.dumps(url_states, indent=4, ensure_ascii=False)
         save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
     except Exception as e:
         logging.error(f"保存 URL 状态到 '{URL_STATES_PATH_IN_REPO}' 错误：{e}")
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True,
-       retry=retry_if_exception_type(requests.exceptions.RequestException))
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
 def fetch_url_content_with_retry(url, url_states):
     """带重试机制获取 URL 内容"""
     parsed_url = urlparse(url)
@@ -314,7 +338,7 @@ def extract_channels_from_url(url, url_states):
     return extracted_channels
 
 def pre_screen_url(url):
-    """预筛选 URL，过滤无效或不合规的链接"""
+    """预筛选 URL"""
     if not isinstance(url, str) or not url:
         return False
     parsed_url = urlparse(url)
@@ -326,8 +350,12 @@ def pre_screen_url(url):
         if parsed_url.netloc.lower().endswith(tld):
             logging.debug(f"预筛选过滤（无效 TLD）：{url}")
             return False
-    if not is_valid_domain(parsed_url.netloc):
-        logging.debug(f"预筛选过滤（域名不可解析）：{url}")
+    try:
+        if not is_valid_domain(parsed_url.netloc):
+            logging.debug(f"预筛选过滤（域名不可解析）：{url}")
+            return False
+    except Exception as e:
+        logging.debug(f"预筛选 URL {url} 时 DNS 错误，跳过：{e}")
         return False
     invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
     compiled_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
@@ -347,7 +375,7 @@ def filter_and_modify_channels(channels):
         if not pre_screen_url(url):
             continue
         pre_screened_count += 1
-        if any(word in url for word in URL_FILTER_WORDS):
+        if any(word in url.lower() for word in URL_FILTER_WORDS):
             continue
         if any(word.lower() in name.lower() for word in NAME_FILTER_WORDS):
             continue
@@ -368,7 +396,7 @@ def clear_directory_txt_files(directory):
                 logging.error(f"删除文件 {file_path} 错误：{e}")
 
 async def check_http_url_async(url, timeout=CHANNEL_CHECK_TIMEOUT):
-    """异步检查 HTTP/HTTPS URL，验证是否为有效 IPTV 流"""
+    """异步检查 HTTP/HTTPS URL"""
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, timeout=timeout, allow_redirects=True) as response:
@@ -386,7 +414,7 @@ async def check_http_url_async(url, timeout=CHANNEL_CHECK_TIMEOUT):
         return False, f"错误：{str(e)}"
 
 def check_rtmp_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
-    """检查 RTMP URL，使用 ffprobe"""
+    """检查 RTMP URL"""
     try:
         subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
         cmd = ['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url, '-show_streams', '-print_format', 'json']
@@ -425,7 +453,7 @@ def check_rtp_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
         return False, f"错误：{str(e)}"
 
 def check_p3p_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
-    """检查 P3P URL，降级为 HTTP 检查"""
+    """检查 P3P URL"""
     try:
         parsed_url = urlparse(url)
         host = parsed_url.hostname
@@ -445,9 +473,6 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
     """检查频道连通性和速度"""
     start_time = time.time()
     parsed_url = urlparse(url)
-    if not is_valid_domain(parsed_url.netloc):
-        logging.debug(f"跳过无效域名：{url}")
-        return None, False, f"DNS 解析失败：{parsed_url.netloc}"
     try:
         if url.startswith("http"):
             loop = asyncio.get_event_loop()
@@ -510,7 +535,7 @@ def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_
 def write_sorted_channels_to_file(file_path, data_list):
     """将排序后的频道写入文件"""
     with open(file_path, 'w', encoding='utf-8') as file:
-        for item in sorted(data_list, key=lambda x: x[0]):  # 按响应时间排序
+        for item in sorted(data_list, key=lambda x: x[0]):
             file.write(item[1] + '\n')
 
 def sort_cctv_channels(channels):
@@ -627,7 +652,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 data = response.json()
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-                if rate_limit_remaining < 5:
+                if rate_limit_remaining < CONFIG.get('rate_limit_threshold', 5):
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
                     logging.warning(f"GitHub API 接近速率限制（剩余：{rate_limit_remaining}），等待 {wait_seconds:.0f} 秒...")
                     time.sleep(wait_seconds)
@@ -643,7 +668,12 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                         if (cleaned_url.startswith("https://raw.githubusercontent.com/") and
                             cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and
                             pre_screen_url(cleaned_url)):
-                            found_urls.add(cleaned_url)
+                            try:
+                                head_response = session.head(cleaned_url, timeout=5)
+                                if head_response.status_code == 200:
+                                    found_urls.add(cleaned_url)
+                            except requests.exceptions.RequestException:
+                                pass
                 logging.warning(f"关键词 '{keyword}' 第 {page} 页发现 {len(data['items'])} 个结果")
                 page += 1
                 time.sleep(1)
@@ -653,9 +683,8 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                     logging.warning(f"GitHub API 速率限制，等待 {wait_seconds:.0f} 秒...")
                     time.sleep(wait_seconds)
                     continue
-                else:
-                    logging.error(f"GitHub API 请求失败（关键词：{keyword}，页：{page}）：{e}")
-                    break
+                logging.error(f"GitHub API 请求失败（关键词：{keyword}，页：{page}）：{e}")
+                break
     new_urls_count = len(found_urls - existing_urls)
     if new_urls_count > 0:
         updated_urls = list(existing_urls | found_urls)
@@ -664,7 +693,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
     logging.warning("GitHub URL 自动发现完成")
 
 def main():
-    """主函数，协调所有操作"""
+    """主函数"""
     try:
         auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
         urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
@@ -674,7 +703,7 @@ def main():
         url_states = load_url_states_remote()
         logging.warning(f"加载 {len(url_states)} 个历史 URL 状态")
         all_extracted_channels = set()
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        with ThreadPoolExecutor(max_workers=CONFIG.get('channel_extract_workers', 10)) as executor:
             future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
             for future in as_completed(future_to_url):
                 try:
@@ -718,7 +747,7 @@ def main():
                 f.write(f"{template_name},#genre#\n")
                 for channel in matched_channels:
                     f.write(channel + '\n')
-            logging.warning(f"频道列表写入：'{template_name}_iptv.txt'，包含 {len(matched_channels)} 个频道")
+            logging.warning(f"频道列表写入：'{output_file_path}'，包含 {len(matched_channels)} 个频道")
         final_iptv_list_output_file = "iptv_list.txt"
         merge_local_channel_files(local_channels_directory, final_iptv_list_output_file)
         try:
@@ -735,7 +764,7 @@ def main():
         unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
         with open(unmatched_output_file_path, 'w', encoding='utf-8') as f:
             for channel_line in unmatched_channels:
-                f.write(channel_line.split(',')[0].strip() + '\n')
+                f.write(channel_line.split('\n')[0].strip() + '\n')
         logging.warning(f"保存未匹配频道到：'{unmatched_output_file_path}'，共 {len(unmatched_channels)} 个")
         for temp_file in ['iptv.txt', 'iptv_speed.txt']:
             if os.path.exists(temp_file):
