@@ -15,8 +15,9 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import yaml
 import psutil
-import asyncio # 用于异步HTTP请求
-import aiohttp # 异步HTTP客户端库
+import asyncio
+import aiohttp
+import base64 # 导入base64模块用于解码文件内容
 
 # --- 配置日志 ---
 # 将日志级别从 ERROR 提升到 INFO，以便输出更详细的运行过程信息
@@ -29,6 +30,8 @@ REPO_NAME = os.getenv('REPO_NAME')
 CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
 URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
 URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
+# 增加一个环境变量来指定仓库的分支，默认为 'main'
+GITHUB_REPO_BRANCH = os.getenv('GITHUB_REPO_BRANCH', 'main')
 
 # 验证所有必需的环境变量是否已设置
 for var, name in [
@@ -54,16 +57,15 @@ DEFAULT_HEADERS = {
 GITHUB_API_BASE_URL = "https://api.github.com"
 
 # 本地文件路径，用于中间操作和最终输出
-LOCAL_CONFIG_PATH = "config.yaml"
-LOCAL_URLS_PATH = "urls.txt"
-LOCAL_URL_STATES_PATH = "url_states.json"
+LOCAL_CONFIG_PATH = "config.yaml" # 这个是历史遗留，实际上不会用到本地路径
+LOCAL_URLS_PATH = "urls.txt"      # 同上
+LOCAL_URL_STATES_PATH = "url_states.json" # 同上
 LOCAL_TEMPLATE_FILE = "template.txt"
 LOCAL_SOURCE_FILE = "source.txt"
 LOCAL_GITHUB_M3U_FILE = "github_m3u_channels.txt"
 LOCAL_IPTV_LIST_FILE = "iptv_list.txt"
 
 # 线程池最大工作线程数，用于并发处理URL
-# 增加并发量以提高效率，但需注意系统资源限制
 MAX_WORKERS = 50 
 # URL 请求超时时间（秒），避免无限等待
 URL_REQUEST_TIMEOUT = 10 
@@ -71,20 +73,16 @@ URL_REQUEST_TIMEOUT = 10
 ASYNC_URL_CHECK_TIMEOUT = 5
 
 # --- 全局 Requests 会话配置 ---
-# 创建一个全局的 Requests 会话，以复用TCP连接并配置重试策略
 global_session = requests.Session()
-# 定义重试策略
 retry_strategy = Retry(
     total=5,  # 总共重试次数，包括第一次请求
     backoff_factor=1,  # 重试间隔因子，第一次1s，第二次2s，以此类推
     status_forcelist=[429, 500, 502, 503, 504],  # 对这些HTTP状态码进行重试
     allowed_methods=["HEAD", "GET", "OPTIONS"]  # 只对这些HTTP方法进行重试
 )
-# 将重试策略挂载到HTTP和HTTPS适配器上
 adapter = HTTPAdapter(max_retries=retry_strategy)
 global_session.mount("http://", adapter)
 global_session.mount("https://", adapter)
-# 更新会话的默认请求头
 global_session.headers.update(DEFAULT_HEADERS)
 
 # --- GitHub API 相关函数 ---
@@ -105,7 +103,7 @@ def check_github_api_rate_limit():
     url = f"{GITHUB_API_BASE_URL}/rate_limit"
     try:
         response = global_session.get(url, headers=get_github_headers(), timeout=5)
-        response.raise_for_status() # 检查HTTP响应状态码，非2xx会抛出异常
+        response.raise_for_status() 
         rate_limit_data = response.json()
         core_limit = rate_limit_data.get('resources', {}).get('core', {})
         remaining = core_limit.get('remaining', 0)
@@ -114,7 +112,6 @@ def check_github_api_rate_limit():
         reset_datetime = datetime.fromtimestamp(reset_time_timestamp)
         logging.info(f"GitHub API 速率限制：总数 {core_limit.get('limit')}, 剩余 {remaining}, 重置时间 {reset_datetime}")
 
-        # 如果剩余请求次数低于阈值，等待直到重置时间
         if remaining < 100: # 设置一个阈值，例如低于100次就等待
             current_time = datetime.now().timestamp()
             wait_time = max(0, reset_time_timestamp - current_time + 5) # 额外等待5秒作为缓冲
@@ -131,21 +128,37 @@ def check_github_api_rate_limit():
 def get_file_from_github(repo_owner, repo_name, file_path, branch="main"):
     """
     从 GitHub 仓库获取文件内容。
-    使用 raw.githubusercontent.com 获取原始文件，更稳定且不受GitHub API限制。
+    对于私有仓库，使用 GitHub Contents API 获取文件内容，该内容是 Base64 编码的。
     """
-    url = f"https://raw.githubusercontent.com/{repo_owner}/{repo_name}/{branch}/{file_path}"
-    logging.info(f"尝试从 GitHub 获取文件: {url}")
+    url = f"{GITHUB_API_BASE_URL}/repos/{repo_owner}/{repo_name}/contents/{file_path}?ref={branch}"
+    logging.info(f"尝试从 GitHub API 获取文件: {url}")
     try:
-        response = global_session.get(url, headers=DEFAULT_HEADERS, timeout=URL_REQUEST_TIMEOUT)
+        response = global_session.get(url, headers=get_github_headers(), timeout=URL_REQUEST_TIMEOUT)
         response.raise_for_status() # 如果状态码不是2xx，抛出HTTPError
-        logging.info(f"成功获取文件: {file_path}")
-        return response.text
+
+        file_data = response.json()
+        if 'content' in file_data:
+            # 文件内容是Base64编码的，需要解码
+            decoded_content = base64.b64decode(file_data['content']).decode('utf-8')
+            logging.info(f"成功从 GitHub API 获取并解码文件: {file_path}")
+            return decoded_content
+        else:
+            logging.error(f"从 GitHub API 获取文件 {file_path} 成功，但未找到 'content' 字段。")
+            return None
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"从 GitHub API 获取文件 {file_path} 失败: HTTP错误 {e.response.status_code} - {e.response.text}")
+        if e.response.status_code == 404:
+            logging.error(f"请检查文件路径 '{file_path}' 或分支名 '{branch}' 是否正确。")
+        elif e.response.status_code == 401 or e.response.status_code == 403:
+            logging.error(f"GitHub API 认证失败或无权限访问私有仓库。请检查 BOT 令牌的权限。")
+        return None
     except requests.exceptions.RequestException as e:
-        logging.error(f"从 GitHub 获取文件 {file_path} 失败: {e}")
+        logging.error(f"从 GitHub API 获取文件 {file_path} 失败: 网络或请求错误 - {e}")
         return None
     except Exception as e:
         logging.error(f"获取 GitHub 文件时发生意外错误 {file_path}: {e}")
         return None
+
 
 def save_to_github(file_path, content, commit_message):
     """
@@ -169,13 +182,13 @@ def save_to_github(file_path, content, commit_message):
         else:
             get_response.raise_for_status() # 如果是其他错误，抛出异常
 
-        # base64编码内容
-        encoded_content = content.encode("utf-8").decode("base64")
+        # Base64编码内容
+        encoded_content = base64.b64encode(content.encode("utf-8")).decode("utf-8")
 
         data = {
             "message": commit_message,
             "content": encoded_content,
-            "branch": "main" # 默认推送到main分支
+            "branch": GITHUB_REPO_BRANCH # 使用环境变量指定的分支
         }
         if sha:
             data["sha"] = sha # 如果是更新操作，需要提供SHA值
@@ -191,9 +204,9 @@ def save_to_github(file_path, content, commit_message):
         logging.error(f"保存到 GitHub 时发生意外错误 for {file_path}: {e}")
 
 # --- 文件加载/保存函数 ---
-def load_config():
+def load_config(branch="main"):
     """加载远程 GitHub 仓库中的配置文件。"""
-    config_content = get_file_from_github(REPO_OWNER, REPO_NAME, CONFIG_PATH_IN_REPO)
+    config_content = get_file_from_github(REPO_OWNER, REPO_NAME, CONFIG_PATH_IN_REPO, branch=branch)
     if config_content:
         try:
             config = yaml.safe_load(config_content)
@@ -205,9 +218,9 @@ def load_config():
     logging.error("未能从 GitHub 加载 config.yaml 内容。")
     return None
 
-def load_urls():
+def load_urls(branch="main"):
     """加载远程 GitHub 仓库中的 urls.txt 文件。"""
-    urls_content = get_file_from_github(REPO_OWNER, REPO_NAME, URLS_PATH_IN_REPO)
+    urls_content = get_file_from_github(REPO_OWNER, REPO_NAME, URLS_PATH_IN_REPO, branch=branch)
     if urls_content:
         urls = [url.strip() for url in urls_content.splitlines() if url.strip()]
         logging.info(f"加载 {len(urls)} 个 URL。")
@@ -215,9 +228,9 @@ def load_urls():
     logging.warning("未能从 GitHub 加载 urls.txt 内容，将使用空列表。")
     return []
 
-def load_url_states():
+def load_url_states(branch="main"):
     """加载远程 GitHub 仓库中的 url_states.json 文件，用于记录URL状态。"""
-    states_content = get_file_from_github(REPO_OWNER, REPO_NAME, URL_STATES_PATH_IN_REPO)
+    states_content = get_file_from_github(REPO_OWNER, REPO_NAME, URL_STATES_PATH_IN_REPO, branch=branch)
     if states_content:
         try:
             states = json.loads(states_content)
@@ -282,11 +295,11 @@ def fetch_github_search_results(config):
 def extract_raw_url(item):
     """
     从 GitHub 搜索结果中提取原始文件 URL (raw.githubusercontent.com 链接)。
+    注意：GitHub 搜索 API 提供的文件链接通常是公开的 `raw.githubusercontent.com` 链接。
+    对于M3U8的流媒体文件，通常是公开的，所以这里保留这个逻辑。
     """
     html_url = item.get("html_url")
     if html_url:
-        # 将 https://github.com/owner/repo/blob/branch/path/to/file 转换为
-        # https://raw.githubusercontent.com/owner/repo/branch/path/to/file
         raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
         return raw_url
     return None
@@ -295,13 +308,12 @@ def extract_raw_url(item):
 def fetch_file_content(url):
     """
     获取原始文件内容。使用 tenacity 库进行重试，处理临时的网络问题。
+    此函数主要用于处理M3U8文件本身的URL，这些通常是公开的。
     """
     logging.info(f"尝试获取文件内容: {url}")
     try:
-        # 使用 stream=True 可以处理大文件，避免一次性加载到内存
         response = global_session.get(url, stream=True, timeout=URL_REQUEST_TIMEOUT)
         response.raise_for_status()
-        # 读取内容，这里假设M3U/M3U8文件不会特别大，直接读text
         content = response.text
         logging.info(f"成功获取文件内容: {url} (大小: {len(content)} 字节)")
         return content
@@ -482,10 +494,6 @@ def update_channels_from_url(url, template_channel_names, matched_channels, url_
             channels_from_url = process_m3u_content(content, template_channel_names)
             
             valid_channels_count = 0
-            # 使用 asyncio.run 在线程中运行异步函数
-            # 注意: asyncio.run 只能在一个线程中调用一次事件循环。
-            # 这里是为每个URL单独调用，或者可以考虑在主线程中收集所有 stream_url，然后批量异步检查。
-            # 为了简化，暂时保持每个URL内同步调用 asyncio.run
             
             stream_urls_to_check = [stream_url for _, stream_url in channels_from_url]
             # 对从当前M3U/M3U8文件中提取出的所有流URL进行批量异步有效性检查
@@ -495,15 +503,6 @@ def update_channels_from_url(url, template_channel_names, matched_channels, url_
             for name, stream_url in channels_from_url:
                 # 检查流URL是否在有效列表中
                 if stream_url in valid_stream_urls_set:
-                    # 使用锁机制确保对共享字典的安全更新
-                    # 由于 concurrent.futures.ThreadPoolExecutor 内部的 tasks 是通过队列调度，
-                    # 多个线程会同时尝试修改 matched_channels。
-                    # 虽然Python的字典操作本身是原子性的，但为了确保线程安全地更新数据结构，
-                    # 尤其是在复杂的并发场景下，使用锁是更安全的做法。
-                    # 然而，在这个脚本中，由于是简单的键值对更新，Python的 GIL (全局解释器锁)
-                    # 实际上会保证字典操作的原子性。但如果操作更复杂，或者涉及到多个步骤，
-                    # 锁是必须的。这里为了避免过度复杂化，暂时不加锁，
-                    # 依靠 GIL 的原子性保证。如果出现并发问题，可以考虑引入 `threading.Lock()`。
                     matched_channels[name] = stream_url
                     valid_channels_count += 1
                 else:
@@ -533,6 +532,11 @@ def merge_local_channel_files(directory, output_file):
     """
     logging.info(f"开始合并本地频道文件到 {output_file}...")
     all_channels = set() # 使用集合自动去重
+    # 确保 directory 存在
+    if not os.path.exists(directory):
+        logging.warning(f"本地目录 '{directory}' 不存在，跳过文件合并。")
+        return
+        
     for filename in os.listdir(directory):
         # 只处理 .txt 文件，并且跳过一些已知的文件名，如 ip.txt
         if filename.endswith(".txt") and filename not in ["ip.txt", "ipv6.txt"]: 
@@ -559,14 +563,14 @@ def main():
     logging.info("脚本开始执行。")
 
     # 1. 加载配置、URL 和状态
-    config = load_config()
+    # 传入 GITHUB_REPO_BRANCH 环境变量作为分支参数
+    config = load_config(branch=GITHUB_REPO_BRANCH)
     if not config:
         logging.error("无法加载配置，脚本退出。")
         return
 
-    # 从 GitHub 加载现有的 URLs 和 URL 状态
-    existing_urls = load_urls()
-    url_states = load_url_states()
+    existing_urls = load_urls(branch=GITHUB_REPO_BRANCH)
+    url_states = load_url_states(branch=GITHUB_REPO_BRANCH)
 
     # 确保本地输出目录存在
     local_channels_directory = "output"
@@ -574,7 +578,7 @@ def main():
     logging.info(f"确保本地输出目录 '{local_channels_directory}' 存在。")
 
     # 2. 从 template.txt 加载模板频道
-    template_content = get_file_from_github(REPO_OWNER, REPO_NAME, LOCAL_TEMPLATE_FILE)
+    template_content = get_file_from_github(REPO_OWNER, REPO_NAME, LOCAL_TEMPLATE_FILE, branch=GITHUB_REPO_BRANCH)
     if not template_content:
         logging.error(f"无法加载模板文件 {LOCAL_TEMPLATE_FILE}，脚本退出。")
         return
@@ -584,7 +588,7 @@ def main():
     logging.info(f"加载 {len(template_channels_raw)} 个模板频道。")
 
     # 3. 从 source.txt 加载待匹配频道
-    source_content = get_file_from_github(REPO_OWNER, REPO_NAME, LOCAL_SOURCE_FILE)
+    source_content = get_file_from_github(REPO_OWNER, REPO_NAME, LOCAL_SOURCE_FILE, branch=GITHUB_REPO_BRANCH)
     channels_for_matching = []
     if source_content:
         channels_for_matching = [line.strip() for line in source_content.splitlines() if line.strip()]
@@ -593,6 +597,9 @@ def main():
         logging.warning(f"无法加载 {LOCAL_SOURCE_FILE}，将不会有额外的频道进行匹配。")
     
     # 4. 获取 GitHub 搜索结果
+    # 注意：GitHub 搜索 API 只能搜索公开仓库的代码。
+    # 如果您需要搜索私有仓库中的文件，需要使用其他方式（例如GitHub Actions的checkout操作后，在本地文件系统搜索）
+    # 但根据您原始脚本的 intent，这里仍然是针对公开搜索。
     github_search_items = fetch_github_search_results(config)
     github_raw_urls = [extract_raw_url(item) for item in github_search_items if extract_raw_url(item)]
     # 去重并过滤黑名单中的 URL
@@ -603,20 +610,16 @@ def main():
     logging.info(f"总计 {len(all_urls_to_check)} 个 URL 需要进行有效性检查和频道匹配。")
 
     # 5. 并发处理 URL，获取有效频道
-    # current_template_matched_channels 存储当前运行周期匹配到的频道
-    # 使用线程安全的字典操作 (Python的GIL在简单字典操作上提供了原子性)
     current_template_matched_channels = {} 
 
     # 使用 ThreadPoolExecutor 进行并发 URL 处理
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # 提交所有URL处理任务
         futures = {executor.submit(update_channels_from_url, url, all_template_channel_names_processed, current_template_matched_channels, url_states): url for url in all_urls_to_check}
         
-        # 监控任务完成情况
         for future in as_completed(futures):
             url = futures[future]
             try:
-                future.result() # 获取结果，如果任务中发生异常，此处会重新抛出
+                future.result() 
             except Exception as exc:
                 logging.error(f'处理 URL {url} 时发生异常: {exc}')
 
@@ -649,21 +652,16 @@ def main():
         logging.error(f"无法将 {final_iptv_list_output_file} 推送到 GitHub：{e}")
 
     # 8. 找出未匹配的频道并保存
-    # 这里的逻辑是找出那些在 source.txt 中，但不在 template.txt 里的频道（或者更准确地说，是未被匹配到的频道）
-    # 原始脚本的逻辑是找出不在 template_channels_raw 中的 channels_for_matching
     unmatched_channels_list = []
     for channel_line in channels_for_matching:
         channel_name_raw = channel_line.split(',', 1)[0].strip()
-        # 将待匹配频道名也进行标准化，与模板频道进行比较
         cleaned_channel_name = channel_name_raw.lower().replace(" ", "")
-        # 如果这个频道名不在模板频道处理后的集合中，则认为是未匹配的
         if cleaned_channel_name not in all_template_channel_names_processed:
             unmatched_channels_list.append(channel_line)
     
     unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
     with open(unmatched_output_file_path, 'w', encoding='utf-8') as f:
         for channel_line in unmatched_channels_list:
-            # 原始脚本只写入频道名部分
             f.write(channel_line.split(',')[0].strip() + "\n") 
     logging.info(f"已将 {len(unmatched_channels_list)} 个未匹配频道保存到本地 {unmatched_output_file_path}。")
 
