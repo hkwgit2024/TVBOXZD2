@@ -131,13 +131,13 @@ class GitHubSearcher:
         self.lock = threading.Lock()
 
     def _get_github_token(self):
-        token = os.getenv('BOT')  # 修改为从 BOT 环境变量加载
+        token = os.getenv('BOT')
         if token:
             logger.info("GitHub Token loaded from environment variable BOT.")
             return token
         else:
             logger.error("GitHub Token not found in environment variable BOT. Please set BOT environment variable.")
-            sys.exit(1)  # 立即退出并提示配置 token
+            sys.exit(1)
             return None
 
     def _check_rate_limit(self, session):
@@ -225,7 +225,7 @@ class GitHubSearcher:
                 except requests.exceptions.HTTPError as e:
                     if e.response.status_code == 401:
                         logger.error("GitHub API authentication failed. Please verify BOT environment variable.")
-                        sys.exit(1)  # 立即退出
+                        sys.exit(1)
                     elif e.response.status_code == 403 and 'rate limit exceeded' in e.response.text:
                         logger.warning(f"GitHub API rate limit exceeded for keyword '{keyword}'. Will wait and retry.")
                         self._check_rate_limit(session)
