@@ -3,3 +3,6 @@ pyyaml==6.0.2
 aiohttp==3.10.5
 tenacity==9.0.0
 psutil==6.0.0
+beautifulsoup4
+selenium
+webdriver_manager # 用于自动下载 ChromeDriver
