@@ -43,6 +43,7 @@ jobs:
         run: |
           pip install requests aiohttp beautifulsoup4 tenacity psutil
           pip install pyyaml requests tenacity
+          pip install dnspython
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'        
