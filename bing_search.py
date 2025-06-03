@@ -11,14 +11,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def get_random_user_agent():
     user_agents = [
+        # 仅保留桌面端 User-Agent
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
-        'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
-        'Mozilla/5.0 (Linux; Android 10; SM-T510) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36',
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
-        'Mozilla/5.0 (Linux; Android 11; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
-        'Mozilla/5.0 (Linux; Android 10; HarmonyOS; NOH-AN00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
-        'Mozilla/5.0 (Linux; Android 10; HUAWEI MatePad 10.8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Safari/537.36'
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15'
     ]
     return random.choice(user_agents)
 
@@ -35,7 +30,9 @@ def search_bing(query, page=1):
     try:
         response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
-        logging.info(f"Successfully fetched page {page} for query: {query}")
+        # 检查是否为移动端页面
+        is_mobile = 'mobile' in response.text.lower() or 'm.bing.com' in response.url
+        logging.info(f"Page {page} for query '{query}' is {'mobile' if is_mobile else 'desktop'}")
         return response.text
     except requests.RequestException as e:
         logging.error(f"Error fetching {url}: {e}")
@@ -53,9 +50,12 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
             'https://jingyan.baidu.com/',
             'https://go.microsoft.com/',
             'https://support.microsoft.com/',
-            'https://bingapp.microsoft.com/'  # 新增排除 Bing 应用链接
+            'https://bingapp.microsoft.com/',
+            'https://www.bing.com/'  # 排除 Bing 自身链接
         ]
-        # 只提取搜索结果区域的链接（<li class="b_algo"> 内的 <a> 标签）
+        # 关键词相关性检查
+        relevant_keywords = ['vpn', 'proxy', 'accelerator', 'airport', '加速器', '机场']
+        # 提取搜索结果区域的链接
         for result in soup.find_all('li', class_='b_algo'):
             link = result.find('a', href=True)
             if link:
@@ -63,8 +63,10 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
                 if href.startswith(('http://', 'https://')):
                     clean_url, _ = urldefrag(href)
                     if not any(clean_url.startswith(domain) for domain in exclude_domains):
-                        urls.add(clean_url)
-                        logging.info(f"Extracted URL: {clean_url}")
+                        # 检查 URL 是否包含相关关键词
+                        if any(keyword in clean_url.lower() for keyword in relevant_keywords):
+                            urls.add(clean_url)
+                            logging.info(f"Extracted URL: {clean_url}")
         logging.info(f"Extracted {len(urls)} URLs from page")
         return urls
     except Exception as e:
@@ -84,7 +86,7 @@ def save_urls(urls, output_file):
 def main():
     queries = ['加速器', '机场']
     all_urls = set()
-    MAX_PAGES = 5  # 抓取前3页
+    MAX_PAGES = 5 # 抓取前3页
 
     for query in queries:
         for page in range(1, MAX_PAGES + 1):
