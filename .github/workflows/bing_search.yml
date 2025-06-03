@@ -26,6 +26,8 @@ jobs:
 
     - name: Run search script
       run: python bing_search.py
+      env:
+        PYTHONUNBUFFERED: 1  # 确保日志实时输出
 
     - name: Commit and push results
       run: |
