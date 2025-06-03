@@ -33,7 +33,7 @@ def search_bing(query, page=1):
     url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}"
     logging.info(f"Requesting URL: {url} with headers: {headers['User-Agent']}")
     try:
-        response = requests.get(url, headers=headers, timeout=5)  # 缩短超时时间
+        response = requests.get(url, headers=headers, timeout=5)
         response.raise_for_status()
         logging.info(f"Successfully fetched page {page} for query: {query}")
         return response.text
@@ -52,14 +52,19 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
             'https://www.zhihu.com/',
             'https://jingyan.baidu.com/',
             'https://go.microsoft.com/',
-            'https://support.microsoft.com/'
+            'https://support.microsoft.com/',
+            'https://bingapp.microsoft.com/'  # 新增排除 Bing 应用链接
         ]
-        for link in soup.find_all('a', href=True):
-            href = link['href']
-            if href.startswith(('http://', 'https://')):
-                clean_url, _ = urldefrag(href)
-                if not any(clean_url.startswith(domain) for domain in exclude_domains):
-                    urls.add(clean_url)
+        # 只提取搜索结果区域的链接（<li class="b_algo"> 内的 <a> 标签）
+        for result in soup.find_all('li', class_='b_algo'):
+            link = result.find('a', href=True)
+            if link:
+                href = link['href']
+                if href.startswith(('http://', 'https://')):
+                    clean_url, _ = urldefrag(href)
+                    if not any(clean_url.startswith(domain) for domain in exclude_domains):
+                        urls.add(clean_url)
+                        logging.info(f"Extracted URL: {clean_url}")
         logging.info(f"Extracted {len(urls)} URLs from page")
         return urls
     except Exception as e:
@@ -79,7 +84,7 @@ def save_urls(urls, output_file):
 def main():
     queries = ['加速器', '机场']
     all_urls = set()
-    MAX_PAGES = 8  # 抓取前3页
+    MAX_PAGES = 5  # 抓取前3页
 
     for query in queries:
         for page in range(1, MAX_PAGES + 1):
@@ -90,7 +95,6 @@ def main():
                 all_urls.update(urls)
             else:
                 logging.warning(f"No content returned for {query}, page {page}")
-            # 随机延时1-3秒
             delay = random.uniform(1, 3)
             logging.info(f"Sleeping for {delay:.2f} seconds")
             time.sleep(delay)
