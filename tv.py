@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-IPTV 频道检测脚本，用于从 GitHub 自动发现 IPTV 源，提取频道并检测连通性，生成最终播放列表。
-优化版本修复了低有效频道率和长运行时间问题，新增异步检查和详细日志。
-"""
-
 import os
 import re
 import subprocess
