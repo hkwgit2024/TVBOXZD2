@@ -33,6 +33,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git pull --rebase origin main  # Pull remote changes with rebase
         git add data/bing.txt
         git commit -m "Update bing search results" || echo "No changes to commit"
         git push
