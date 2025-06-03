@@ -367,8 +367,8 @@ def check_rtmp_url(url, timeout):
         return False
     try:
         result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE, timeout=timeout)
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
     except subprocess.TimeoutExpired:
         logging.debug(f"RTMP URL {url} 检查超时")
@@ -739,8 +739,6 @@ def main():
             return
 
         url_states = load_url_states_remote()
-        # 这里是之前报错的行。根据代码逻辑，url_states 应该是一个字典。
-        # 如果依然报错，请检查本行代码和上面 url_states 赋值之间，是否有其他代码意外修改了 url_states。
         logging.warning(f"已加载到 {len(url_states)} 个历史 URL 状态。")
 
         all_extracted_channels = set()
