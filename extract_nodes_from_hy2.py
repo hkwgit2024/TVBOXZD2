@@ -13,8 +13,12 @@ import requests
 import yaml
 import os
 
-# 设置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# 设置日志，确保实时输出
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
 logger = logging.getLogger(__name__)
 
 # 定义协议类型
@@ -74,15 +78,22 @@ class CacheManager:
     def _load_cache(self):
         try:
             with open(self.cache_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                cache = json.load(f)
+                # 清理过期或无效缓存
+                if cache.get("data"):
+                    cache["data"] = {k: v for k, v in cache["data"].items() if v.get("status") in ["success", "failed"]}
+                return cache
         except (FileNotFoundError, json.JSONDecodeError):
             return {"timestamp": 0, "data": {}}
 
     def _save_cache(self):
         with self.lock:
-            with open(self.cache_path, 'w', encoding='utf-8') as f:
-                json.dump(self.cache_data, f, indent=4)
-            logger.info(f"Cache saved to {self.cache_path}.")
+            try:
+                with open(self.cache_path, 'w', encoding='utf-8') as f:
+                    json.dump(self.cache_data, f, indent=4)
+                logger.info(f"Cache saved to {self.cache_path}.")
+            except Exception as e:
+                logger.error(f"Failed to save cache to {self.cache_path}: {e}")
 
     def is_cache_valid(self):
         config = Config()
@@ -115,13 +126,13 @@ class GitHubSearcher:
     def __init__(self):
         config = Config()
         self.search_keywords = config.get('search_keywords')
-        self.per_page = config.get('per_page')
-        self.max_search_pages = config.get('max_search_pages')
-        self.github_api_timeout = config.get('github_api_timeout')
-        self.github_api_retry_wait = config.get('github_api_retry_wait')
-        self.rate_limit_threshold = config.get('rate_limit_threshold')
-        self.max_urls = config.get('max_urls')
-        self.search_cache = CacheManager(config.get('search_cache_path'), 'search_cache_ttl')
+        self.per_page = config.get('per_page', 100)
+        self.max_search_pages = config.get('max_search_pages', 3)
+        self.github_api_timeout = config.get('github_api_timeout', 20)
+        self.github_api_retry_wait = config.get('github_api_retry_wait', 30)
+        self.rate_limit_threshold = config.get('rate_limit_threshold', 10)
+        self.max_urls = config.get('max_urls', 100)  # 降低默认值
+        self.search_cache = CacheManager(config.get('search_cache_path', 'data/search_cache.json'), 'search_cache_ttl')
 
         self.github_token = self._get_github_token()
         self.headers = {
@@ -141,7 +152,6 @@ class GitHubSearcher:
         else:
             logger.error("GitHub Token not found in GITHUB_TOKEN or BOT environment variables. Please set one.")
             sys.exit(1)
-            return None
 
     def _check_rate_limit(self, session):
         try:
@@ -179,12 +189,12 @@ class GitHubSearcher:
 
         session = requests.Session()
         retry_strategy = requests.packages.urllib3.util.retry.Retry(
-            total=Config().get('requests_retry_total'),
-            backoff_factor=Config().get('requests_retry_backoff_factor'),
+            total=Config().get('requests_retry_total', 3),
+            backoff_factor=Config().get('requests_retry_backoff_factor', 1.5),
             status_forcelist=[429, 500, 502, 503, 504],
             allowed_methods={"HEAD", "GET", "OPTIONS"}
         )
-        adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy, pool_connections=Config().get('requests_pool_size'), pool_maxsize=Config().get('requests_pool_size'))
+        adapter = requests.adapters.HTTPAdapter(max_retries=retry_strategy, pool_connections=Config().get('requests_pool_size', 50), pool_maxsize=Config().get('requests_pool_size', 50))
         session.mount("http://", adapter)
         session.mount("https://", adapter)
 
@@ -256,25 +266,26 @@ class ProxyExtractor:
     def __init__(self, raw_urls, initial_nodes=None):
         config = Config()
         self.raw_urls = raw_urls
-        self.initial_nodes = initial_nodes or []  # 从 data/hy2.txt 加载的直接节点
-        self.proxy_states_cache = CacheManager(config.get('proxy_states_path'), 'proxy_states_ttl')
-        self.proxy_check_timeout = config.get('proxy_check_timeout')
-        self.proxy_check_workers = config.get('proxy_check_workers')
-        self.channel_extract_workers = config.get('channel_extract_workers')
-        self.requests_retry_total = config.get('requests_retry_total')
-        self.requests_retry_backoff_factor = config.get('requests_retry_backoff_factor')
-        self.requests_pool_size = config.get('requests_pool_size')
-        self.output_file = config.get('output_file')
+        self.initial_nodes = initial_nodes or []
+        self.proxy_states_cache = CacheManager(config.get('proxy_states_path', 'data/hy2_states_cache.json'), 'proxy_states_ttl')
+        self.proxy_check_timeout = config.get('proxy_check_timeout', 5)
+        self.proxy_check_workers = config.get('proxy_check_workers', 20)  # 降低默认值
+        self.channel_extract_workers = config.get('channel_extract_workers', 5)  # 降低默认值
+        self.requests_retry_total = config.get('requests_retry_total', 3)
+        self.requests_retry_backoff_factor = config.get('requests_retry_backoff_factor', 1.5)
+        self.requests_pool_size = config.get('requests_pool_size', 50)
+        self.output_file = config.get('output_file', 'data/available_proxies.txt')
 
-        self.available_proxies = []  # 存储所有可用的代理节点
+        self.available_proxies = []
         self.lock = threading.Lock()
-        self.parsed_nodes_cache = set()  # 去重缓存
+        self.parsed_nodes_cache = set()
         self.url_processing_cache = self.proxy_states_cache.get_data()
 
     def load_hy2_txt(self):
         """
         从 data/hy2.txt 加载 URL 或代理链接，区分 URL 和节点。
         """
+        start_time = time.time()
         try:
             with open('data/hy2.txt', 'r', encoding='utf-8') as f:
                 lines = [line.strip() for line in f if line.strip()]
@@ -289,16 +300,20 @@ class ProxyExtractor:
                     urls.append(line)
                 else:
                     logger.debug(f"Ignoring invalid line in data/hy2.txt: {line}")
-            logger.info(f"Loaded {len(urls)} URLs and {len(nodes)} nodes from data/hy2.txt")
+            logger.info(f"Loaded {len(urls)} URLs and {len(nodes)} nodes from data/hy2.txt in {time.time() - start_time:.2f}s")
             return urls, nodes
         except FileNotFoundError:
-            logger.error("File data/hy2.txt not found")
+            logger.warning("File data/hy2.txt not found, proceeding without it")
+            return [], []
+        except Exception as e:
+            logger.error(f"Error reading data/hy2.txt: {e}")
             return [], []
 
     def _download_content(self, url):
         """
         下载 URL 内容。
         """
+        start_time = time.time()
         session = requests.Session()
         retry_strategy = requests.packages.urllib3.util.retry.Retry(
             total=self.requests_retry_total,
@@ -313,9 +328,13 @@ class ProxyExtractor:
         try:
             response = session.get(url, timeout=self.proxy_check_timeout)
             response.raise_for_status()
+            logger.debug(f"Downloaded {url} in {time.time() - start_time:.2f}s")
             return response.text
+        except requests.exceptions.HTTPError as e:
+            logger.warning(f"HTTP error downloading {url} in {time.time() - start_time:.2f}s: {e.response.status_code} {e.response.reason}")
+            return None
         except requests.exceptions.RequestException as e:
-            logger.warning(f"Failed to download content from {url}: {e}")
+            logger.warning(f"Failed to download {url} in {time.time() - start_time:.2f}s: {e}")
             return None
 
     def _parse_node(self, link):
@@ -639,6 +658,7 @@ class ProxyExtractor:
         """
         从下载的内容中提取代理节点。
         """
+        start_time = time.time()
         nodes = []
         if not content:
             return nodes
@@ -698,6 +718,7 @@ class ProxyExtractor:
             if node:
                 nodes.append(node)
 
+        logger.info(f"Extracted {len(nodes)} nodes from content in {time.time() - start_time:.2f}s")
         return nodes
 
     def _process_url(self, url):
@@ -736,9 +757,10 @@ class ProxyExtractor:
         """
         从 URL 和初始节点中提取并验证代理。
         """
+        start_time = time.time()
         logger.info(f"Starting to extract and verify proxies from {len(self.raw_urls)} URLs and {len(self.initial_nodes)} initial nodes.")
 
-        # 先添加初始节点（从 data/hy2.txt 直接解析的节点）
+        # 先添加初始节点
         with self.lock:
             for node in self.initial_nodes:
                 node_str = json.dumps(node, sort_keys=True)
@@ -749,18 +771,31 @@ class ProxyExtractor:
 
         # 处理 URL
         with ThreadPoolExecutor(max_workers=self.channel_extract_workers) as executor:
-            list(executor.map(self._process_url, self.raw_urls))
+            futures = [executor.submit(self._process_url, url) for url in self.raw_urls]
+            for future in ThreadPoolExecutor.as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    logger.warning(f"Error processing URL: {e}")
 
-        logger.info(f"Finished extracting. Total unique nodes found: {len(self.available_proxies)}")
+        logger.info(f"Finished extracting {len(self.available_proxies)} unique nodes in {time.time() - start_time:.2f}s")
         
         self.proxy_states_cache.set_data(self.url_processing_cache)
 
-        # 验证节点可用性
+        # 验证节点
+        start_time = time.time()
         final_available_proxies = []
-        for node in self.available_proxies:
-            if self._test_proxy_connection(node):
-                final_available_proxies.append(node)
+        with ThreadPoolExecutor(max_workers=self.proxy_check_workers) as executor:
+            future_to_proxy = {executor.submit(self._test_proxy_connection, proxy): proxy for proxy in self.available_proxies}
+            for future in ThreadPoolExecutor.as_completed(future_to_proxy):
+                proxy = future_to_proxy[future]
+                try:
+                    if future.result():
+                        final_available_proxies.append(proxy)
+                except Exception as e:
+                    logger.warning(f"Error testing proxy {proxy.get('protocol')}://{proxy.get('server')}:{proxy.get('port')}: {e}")
 
+        logger.info(f"Verified {len(final_available_proxies)} available proxies in {time.time() - start_time:.2f}s")
         self._save_proxies_to_file(final_available_proxies)
         logger.info(f"Saved {len(final_available_proxies)} available proxies to {self.output_file}")
 
@@ -768,41 +803,48 @@ class ProxyExtractor:
         """
         将可用代理保存到文件。
         """
-        with open(self.output_file, 'w', encoding='utf-8') as f:
-            for proxy in proxies:
-                line = ""
-                proto = proxy.get('protocol')
-                server = proxy.get('server', 'N/A')
-                port = proxy.get('port', 'N/A')
-                tag = proxy.get('tag', 'N/A')
+        try:
+            os.makedirs(os.path.dirname(self.output_file), exist_ok=True)
+            with open(self.output_file, 'w', encoding='utf-8') as f:
+                for proxy in proxies:
+                    line = ""
+                    proto = proxy.get('protocol')
+                    server = proxy.get('server', 'N/A')
+                    port = proxy.get('port', 'N/A')
+                    tag = proxy.get('tag', 'N/A')
 
-                if proto == PROTOCOL_TYPE_SS:
-                    line = f"ss://... (SS) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_VMESS:
-                    line = f"vmess://... (VMess) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_VLESS:
-                    line = f"vless://... (VLESS) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_HY2:
-                    line = f"hy2://... (Hysteria2) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_TROJAN:
-                    line = f"trojan://... (Trojan) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_REALITY:
-                    line = f"reality://... (Reality) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_TUIC:
-                    line = f"tuic://... (Tuic) {server}:{port} - {tag}"
-                elif proto == PROTOCOL_TYPE_WG:
-                    line = f"wg://... (WireGuard) - {tag}"
-                elif proto == PROTOCOL_TYPE_WARP:
-                    line = f"warp://... (WARP) - {tag}"
-                elif proto == PROTOCOL_TYPE_SHADOW_TLS:
-                    line = f"shadow-tls://... (Shadow-TLS) {server}:{port} - {tag}"
-                
-                if line:
-                    f.write(line + "\n")
-                else:
-                    f.write(json.dumps(proxy, ensure_ascii=False) + "\n")
-
-        logger.info(f"Available proxies saved to {self.output_file}")
+                    if proto == PROTOCOL_TYPE_SS:
+                        info = f"{proxy['method']}:{proxy['password']}@{server}:{port}"
+                        encoded_info = base64.urlsafe_b64encode(info.encode('utf-8')).decode('utf-8').rstrip('=')
+                        line = f"ss://{encoded_info}"
+                        if tag != f"{server}:{port}":
+                            line += f"#{tag}"
+                    elif proto == PROTOCOL_TYPE_HY2:
+                        line = f"hy2://... (Hysteria2) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_VMESS:
+                        line = f"vmess://... (VMess) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_VLESS:
+                        line = f"vless://... (VLESS) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_TROJAN:
+                        line = f"trojan://... (Trojan) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_REALITY:
+                        line = f"reality://... (Reality) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_TUIC:
+                        line = f"tuic://... (Tuic) {server}:{port} - {tag}"
+                    elif proto == PROTOCOL_TYPE_WG:
+                        line = f"wg://... (WireGuard) - {tag}"
+                    elif proto == PROTOCOL_TYPE_WARP:
+                        line = f"warp://... (WARP) - {tag}"
+                    elif proto == PROTOCOL_TYPE_SHADOW_TLS:
+                        line = f"shadow-tls://... (Shadow-TLS) {server}:{port} - {tag}"
+                    
+                    if line:
+                        f.write(line + "\n")
+                    else:
+                        f.write(json.dumps(proxy, ensure_ascii=False) + "\n")
+            logger.info(f"Available proxies saved to {self.output_file}")
+        except Exception as e:
+            logger.error(f"Error saving proxies to {self.output_file}: {e}")
 
     def _test_proxy_connection(self, proxy_info):
         """
@@ -813,41 +855,39 @@ class ProxyExtractor:
         protocol = proxy_info.get('protocol')
 
         if not server or not port:
+            logger.debug(f"Proxy {protocol} missing server or port")
             return False
 
         try:
             s = socket.create_connection((server, port), timeout=self.proxy_check_timeout)
             s.close()
-            logger.debug(f"Proxy {protocol}://{server}:{port} is connectable.")
             return True
+        except socket.timeout:
+            logger.debug(f"Proxy {protocol}://{server}:{port} timed out")
+            return False
+        except ConnectionRefusedError:
+            logger.debug(f"Proxy {protocol}://{server}:{port} connection refused")
+            return False
         except Exception as e:
             logger.debug(f"Proxy {protocol}://{server}:{port} connection failed: {e}")
             return False
 
 # --- 主函数 ---
 def main():
+    start_time = time.time()
     config_instance = Config()
     
     searcher = GitHubSearcher()
     raw_urls = searcher.search_github()
+    logger.info(f"Found {len(raw_urls)} raw URLs from GitHub in {time.time() - start_time:.2f}s")
 
-    # 如果 GitHub 搜索无结果，尝试加载 data/hy2.txt
-    if not raw_urls:
-        logger.info("No raw URLs found from GitHub, attempting to load from data/hy2.txt")
-        extractor = ProxyExtractor([], [])
-        raw_urls, initial_nodes = extractor.load_hy2_txt()
-    else:
-        initial_nodes = []
-        logger.info(f"Found {len(raw_urls)} raw URLs from GitHub.")
-
-    # 即使有 GitHub URL，也尝试加载 data/hy2.txt 以补充
-    extractor = ProxyExtractor(raw_urls, initial_nodes)
-    hy2_urls, hy2_nodes = extractor.load_hy2_txt()
+    # 始终加载 data/hy2.txt
+    extractor = ProxyExtractor(raw_urls, [])
+    hy2_urls, initial_nodes = extractor.load_hy2_txt()
     raw_urls.extend(hy2_urls)
-    initial_nodes.extend(hy2_nodes)
 
     if not raw_urls and not initial_nodes:
-        logger.info("No raw URLs or nodes found from GitHub or data/hy2.txt.")
+        logger.warning("No raw URLs or nodes found from GitHub or data/hy2.txt.")
         return
 
     logger.info(f"Processing {len(raw_urls)} URLs and {len(initial_nodes)} nodes.")
