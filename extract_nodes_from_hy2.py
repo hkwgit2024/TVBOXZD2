@@ -7,7 +7,7 @@ import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlparse, parse_qs
 
 import requests
 import yaml
@@ -124,19 +124,22 @@ class GitHubSearcher:
         self.search_cache = CacheManager(config.get('search_cache_path'), 'search_cache_ttl')
 
         self.github_token = self._get_github_token()
-        self.headers = {'Authorization': f'token {self.github_token}'} if self.github_token else {}
+        self.headers = {
+            'Authorization': f'token {self.github_token}',
+            'Accept': 'application/vnd.github.v3+json'
+        } if self.github_token else {'Accept': 'application/vnd.github.v3+json'}
         self.base_url = "https://api.github.com/search/code"
 
         self.found_raw_urls = set()
         self.lock = threading.Lock()
 
     def _get_github_token(self):
-        token = os.getenv('BOT')
+        token = os.getenv('GITHUB_TOKEN') or os.getenv('BOT')
         if token:
-            logger.info("GitHub Token loaded from environment variable BOT.")
+            logger.info(f"GitHub Token loaded from environment variable {'GITHUB_TOKEN' if os.getenv('GITHUB_TOKEN') else 'BOT'}.")
             return token
         else:
-            logger.error("GitHub Token not found in environment variable BOT. Please set BOT environment variable.")
+            logger.error("GitHub Token not found in GITHUB_TOKEN or BOT environment variables. Please set one.")
             sys.exit(1)
             return None
 
@@ -157,6 +160,12 @@ class GitHubSearcher:
                 time.sleep(wait_time)
                 return True
             return False
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 403:
+                logger.error(f"GitHub API 403 Forbidden: {e.response.text}")
+                return True
+            logger.error(f"Error checking GitHub API rate limit: {e}")
+            return False
         except requests.exceptions.RequestException as e:
             logger.error(f"Error checking GitHub API rate limit: {e}")
             return False
@@ -165,6 +174,8 @@ class GitHubSearcher:
         if self.search_cache.is_cache_valid():
             self.found_raw_urls = set(self.search_cache.get_data())
             logger.info(f"Loaded search cache with {len(self.found_raw_urls)} entries.")
+            if self.found_raw_urls:
+                return list(self.found_raw_urls)
 
         session = requests.Session()
         retry_strategy = requests.packages.urllib3.util.retry.Retry(
@@ -187,7 +198,8 @@ class GitHubSearcher:
                 if len(self.found_raw_urls) >= self.max_urls:
                     break
 
-                self._check_rate_limit(session)
+                if self._check_rate_limit(session):
+                    continue
 
                 params = {
                     'q': keyword,
@@ -202,20 +214,15 @@ class GitHubSearcher:
                     items = data.get('items', [])
                     current_page_urls = set()
                     for item in items:
-                        raw_url = item.get('raw_url')
-                        if raw_url:
+                        html_url = item.get('html_url')
+                        if html_url and "github.com" in html_url and "/blob/" in html_url:
+                            raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                             current_page_urls.add(raw_url)
-                        elif "raw.githubusercontent.com" in keyword or "gist.github.com" in keyword:
-                            if item.get('html_url') and ("raw.githubusercontent.com" in item['html_url'] or "gist.github.com" in item['html_url']):
-                                if "/blob/" in item['html_url']:
-                                    potential_raw_url = item['html_url'].replace("/blob/", "/raw/")
-                                    current_page_urls.add(potential_raw_url)
-                                elif "/gist.github.com/" in item['html_url'] and "/raw/" in item['html_url']:
-                                    current_page_urls.add(item['html_url'])
-                    
+                        else:
+                            logger.debug(f"No valid html_url in item: {json.dumps(item, indent=2)}")
+
                     with self.lock:
                         self.found_raw_urls.update(current_page_urls)
-                    
                     logger.info(f"Found {len(items)} items, extracted {len(current_page_urls)} raw URLs for '{keyword}' (page {page}). Total collected: {len(self.found_raw_urls)}")
 
                     if len(items) < self.per_page:
@@ -223,12 +230,15 @@ class GitHubSearcher:
                         break
 
                 except requests.exceptions.HTTPError as e:
-                    if e.response.status_code == 401:
-                        logger.error("GitHub API authentication failed. Please verify BOT environment variable.")
+                    if e.response" in dir(e) and e.response.status_code == 401:
+                        logger.error("GitHub API authentication failed (401 Unauthorized). Please verify GITHUB_TOKEN or BOT.")
                         sys.exit(1)
-                    elif e.response.status_code == 403 and 'rate limit exceeded' in e.response.text:
-                        logger.warning(f"GitHub API rate limit exceeded for keyword '{keyword}'. Will wait and retry.")
-                        self._check_rate_limit(session)
+                    elif e.response.status_code == 403:
+                        logger.warning(f"GitHub API 403 Forbidden for keyword '{keyword}' (page {page}): {e.response.text}")
+                        if 'rate limit' in e.response.text.lower():
+                            self._check_rate_limit(session)
+                        else:
+                            break
                     else:
                         logger.error(f"HTTP error for keyword '{keyword}' (page {page}): {e}")
                         break
@@ -238,14 +248,15 @@ class GitHubSearcher:
         
         self.search_cache.set_data(list(self.found_raw_urls))
         if not self.found_raw_urls:
-            logger.warning("No potential raw file URLs found. Please check BOT token, search keywords, or increase max_search_pages.")
+            logger.warning("No potential raw file URLs found from GitHub. Will check data/hy2.txt as fallback.")
         return list(self.found_raw_urls)
 
 # --- 节点提取和验证类 ---
 class ProxyExtractor:
-    def __init__(self, raw_urls):
+    def __init__(self, raw_urls, initial_nodes=None):
         config = Config()
         self.raw_urls = raw_urls
+        self.initial_nodes = initial_nodes or []  # 从 data/hy2.txt 加载的直接节点
         self.proxy_states_cache = CacheManager(config.get('proxy_states_path'), 'proxy_states_ttl')
         self.proxy_check_timeout = config.get('proxy_check_timeout')
         self.proxy_check_workers = config.get('proxy_check_workers')
@@ -255,22 +266,39 @@ class ProxyExtractor:
         self.requests_pool_size = config.get('requests_pool_size')
         self.output_file = config.get('output_file')
 
-        self.available_proxies = []
+        self.available_proxies = []  # 存储所有可用的代理节点
         self.lock = threading.Lock()
-        self.parsed_nodes_cache = set()
+        self.parsed_nodes_cache = set()  # 去重缓存
         self.url_processing_cache = self.proxy_states_cache.get_data()
 
     def load_hy2_txt(self):
+        """
+        从 data/hy2.txt 加载 URL 或代理链接，区分 URL 和节点。
+        """
         try:
             with open('data/hy2.txt', 'r', encoding='utf-8') as f:
-                urls = [line.strip() for line in f if line.strip()]
-            logger.info(f"Loaded {len(urls)} URLs from data/hy2.txt")
-            return urls
+                lines = [line.strip() for line in f if line.strip()]
+            urls = []
+            nodes = []
+            for line in lines:
+                if line.startswith(('ss://', 'vmess://', 'vless://', 'trojan://', 'hy2://', 'tuic://', 'wg://', 'warp://', 'shadow-tls://')):
+                    node = self._parse_node(line)
+                    if node:
+                        nodes.append(node)
+                elif line.startswith(('http://', 'https://')):
+                    urls.append(line)
+                else:
+                    logger.debug(f"Ignoring invalid line in data/hy2.txt: {line}")
+            logger.info(f"Loaded {len(urls)} URLs and {len(nodes)} nodes from data/hy2.txt")
+            return urls, nodes
         except FileNotFoundError:
             logger.error("File data/hy2.txt not found")
-            return []
+            return [], []
 
     def _download_content(self, url):
+        """
+        下载 URL 内容。
+        """
         session = requests.Session()
         retry_strategy = requests.packages.urllib3.util.retry.Retry(
             total=self.requests_retry_total,
@@ -290,6 +318,30 @@ class ProxyExtractor:
             logger.warning(f"Failed to download content from {url}: {e}")
             return None
 
+    def _parse_node(self, link):
+        """
+        解析单条代理链接，调用对应协议的解析方法。
+        """
+        if link.startswith("ss://"):
+            return self._parse_ss(link)
+        elif link.startswith("vmess://"):
+            return self._parse_vmess(link)
+        elif link.startswith("vless://"):
+            return self._parse_vless(link)
+        elif link.startswith("trojan://"):
+            return self._parse_trojan(link)
+        elif link.startswith("hy2://"):
+            return self._parse_hy2(link)
+        elif link.startswith("tuic://"):
+            return self._parse_tuic(link)
+        elif link.startswith("wg://"):
+            return self._parse_wireguard(link)
+        elif link.startswith("warp://"):
+            return self._parse_warp(link)
+        elif link.startswith("shadow-tls://"):
+            return self._parse_shadow_tls(link)
+        return None
+
     def _parse_ss(self, link):
         try:
             encoded_part = link[5:]
@@ -301,7 +353,7 @@ class ProxyExtractor:
             try:
                 missing_padding = len(encoded_part) % 4
                 if missing_padding:
-                    encoded_part += '='* (4 - missing_padding)
+                    encoded_part += '=' * (4 - missing_padding)
                 decoded_info = base64.urlsafe_b64decode(encoded_part).decode('utf-8')
             except (base64.binascii.Error, UnicodeDecodeError) as e:
                 try:
@@ -339,7 +391,7 @@ class ProxyExtractor:
             try:
                 missing_padding = len(encoded_json) % 4
                 if missing_padding:
-                    encoded_json += '='* (4 - missing_padding)
+                    encoded_json += '=' * (4 - missing_padding)
                 decoded_json = base64.b64decode(encoded_json).decode('utf-8')
             except (base64.binascii.Error, UnicodeDecodeError) as e:
                 try:
@@ -384,33 +436,27 @@ class ProxyExtractor:
             
             tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
 
+            query_params = parse_qs(parsed.query)
             node_data = {
                 "protocol": PROTOCOL_TYPE_VLESS,
                 "server": parsed.hostname,
                 "port": parsed.port,
                 "uuid": uuid_part,
-                "flow": parsed.query.get('flow', [''])[0],
-                "security": parsed.query.get('security', [''])[0],
-                "encryption": parsed.query.get('encryption', ['none'])[0],
-                "type": parsed.query.get('type', ['tcp'])[0],
-                "host": parsed.query.get('host', [''])[0],
-                "path": parsed.query.get('path', [''])[0],
-                "sni": parsed.query.get('sni', [''])[0],
-                "fp": parsed.query.get('fp', [''])[0],
-                "pbk": parsed.query.get('pbk', [''])[0],
-                "sid": parsed.query.get('sid', [''])[0],
+                "flow": query_params.get('flow', [''])[0],
+                "security": query_params.get('security', [''])[0],
+                "encryption": query_params.get('encryption', ['none'])[0],
+                "type": query_params.get('type', ['tcp'])[0],
+                "host": query_params.get('host', [''])[0],
+                "path": query_params.get('path', [''])[0],
+                "sni": query_params.get('sni', [''])[0],
+                "fp": query_params.get('fp', [''])[0],
+                "pbk": query_params.get('pbk', [''])[0],
+                "sid": query_params.get('sid', [''])[0],
                 "tag": tag
             }
 
             if node_data.get('security') == 'reality':
                 node_data['protocol'] = PROTOCOL_TYPE_REALITY
-
-            query_params = {k: v[0] for k, v in parsed.query.items()}
-            node_data.update(query_params)
-            
-            keys_to_remove = ['username', 'password', 'hostname', 'fragment', 'query']
-            for key in keys_to_remove:
-                node_data.pop(key, None)
 
             return node_data
         except Exception as e:
@@ -429,27 +475,20 @@ class ProxyExtractor:
             
             tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
 
+            query_params = parse_qs(parsed.query)
             node_data = {
                 "protocol": PROTOCOL_TYPE_TROJAN,
                 "server": parsed.hostname,
                 "port": parsed.port,
                 "password": password,
-                "security": parsed.query.get('security', ['tls'])[0],
-                "type": parsed.query.get('type', ['tcp'])[0],
-                "host": parsed.query.get('host', [''])[0],
-                "path": parsed.query.get('path', [''])[0],
-                "sni": parsed.query.get('sni', [''])[0],
-                "alpn": parsed.query.get('alpn', [''])[0],
+                "security": query_params.get('security', ['tls'])[0],
+                "type": query_params.get('type', ['tcp'])[0],
+                "host": query_params.get('host', [''])[0],
+                "path": query_params.get('path', [''])[0],
+                "sni": query_params.get('sni', [''])[0],
+                "alpn": query_params.get('alpn', [''])[0],
                 "tag": tag
             }
-
-            query_params = {k: v[0] for k, v in parsed.query.items()}
-            node_data.update(query_params)
-            
-            keys_to_remove = ['username', 'password', 'hostname', 'fragment', 'query']
-            for key in keys_to_remove:
-                node_data.pop(key, None)
-
             return node_data
         except Exception as e:
             logger.warning(f"Failed to parse Trojan link '{link}': {e}")
@@ -461,14 +500,14 @@ class ProxyExtractor:
                 parsed = urlparse(link)
                 if parsed.hostname and parsed.port:
                     tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
+                    query_params = parse_qs(parsed.query)
                     node_data = {
                         "protocol": PROTOCOL_TYPE_HY2,
                         "server": parsed.hostname,
                         "port": parsed.port,
                         "tag": tag
                     }
-                    query_params = {k: v[0] for k, v in parsed.query.items()}
-                    node_data.update(query_params)
+                    node_data.update({k: v[0] for k, v in query_params.items()})
                     return node_data
                 
                 encoded_json = link[6:]
@@ -515,6 +554,7 @@ class ProxyExtractor:
             
             tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
 
+            query_params = parse_qs(parsed.query)
             node_data = {
                 "protocol": PROTOCOL_TYPE_TUIC,
                 "server": parsed.hostname,
@@ -523,9 +563,7 @@ class ProxyExtractor:
                 "password": password,
                 "tag": tag
             }
-            query_params = {k: v[0] for k, v in parsed.query.items()}
-            node_data.update(query_params)
-
+            node_data.update({k: v[0] for k, v in query_params.items()})
             return node_data
         except Exception as e:
             logger.warning(f"Failed to parse TUIC link '{link}': {e}")
@@ -583,12 +621,13 @@ class ProxyExtractor:
             
             tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
 
+            query_params = parse_qs(parsed.query)
             node_data = {
                 "protocol": PROTOCOL_TYPE_SHADOW_TLS,
                 "server": parsed.hostname,
                 "port": parsed.port,
-                "password": parsed.query.get('password', [''])[0],
-                "sni": parsed.query.get('sni', [''])[0],
+                "password": query_params.get('password', [''])[0],
+                "sni": query_params.get('sni', [''])[0],
                 "tag": tag
             }
             return node_data
@@ -597,7 +636,13 @@ class ProxyExtractor:
             return None
 
     def _extract_nodes_from_content(self, content):
+        """
+        从下载的内容中提取代理节点。
+        """
         nodes = []
+        if not content:
+            return nodes
+
         ss_links = re.findall(r'ss://[a-zA-Z0-9%_-]+(?:=|==)?(?:#.+)?', content)
         for link in ss_links:
             node = self._parse_ss(link)
@@ -656,6 +701,9 @@ class ProxyExtractor:
         return nodes
 
     def _process_url(self, url):
+        """
+        处理单个 URL，下载内容并提取节点。
+        """
         if self.proxy_states_cache.is_cache_valid() and url in self.url_processing_cache:
             status = self.url_processing_cache[url].get("status")
             if status == "failed":
@@ -685,8 +733,21 @@ class ProxyExtractor:
             self.url_processing_cache[url] = {"status": "success", "timestamp": int(time.time()), "nodes_count": 0}
 
     def extract_and_verify_proxies(self):
-        logger.info(f"Starting to extract and verify proxies from {len(self.raw_urls)} URLs.")
-        
+        """
+        从 URL 和初始节点中提取并验证代理。
+        """
+        logger.info(f"Starting to extract and verify proxies from {len(self.raw_urls)} URLs and {len(self.initial_nodes)} initial nodes.")
+
+        # 先添加初始节点（从 data/hy2.txt 直接解析的节点）
+        with self.lock:
+            for node in self.initial_nodes:
+                node_str = json.dumps(node, sort_keys=True)
+                if node_str not in self.parsed_nodes_cache:
+                    self.parsed_nodes_cache.add(node_str)
+                    self.available_proxies.append(node)
+            logger.info(f"Added {len(self.initial_nodes)} nodes from data/hy2.txt. Total unique nodes: {len(self.available_proxies)}")
+
+        # 处理 URL
         with ThreadPoolExecutor(max_workers=self.channel_extract_workers) as executor:
             list(executor.map(self._process_url, self.raw_urls))
 
@@ -694,14 +755,19 @@ class ProxyExtractor:
         
         self.proxy_states_cache.set_data(self.url_processing_cache)
 
+        # 验证节点可用性
         final_available_proxies = []
         for node in self.available_proxies:
-            final_available_proxies.append(node)
+            if self._test_proxy_connection(node):
+                final_available_proxies.append(node)
 
         self._save_proxies_to_file(final_available_proxies)
         logger.info(f"Saved {len(final_available_proxies)} available proxies to {self.output_file}")
 
     def _save_proxies_to_file(self, proxies):
+        """
+        将可用代理保存到文件。
+        """
         with open(self.output_file, 'w', encoding='utf-8') as f:
             for proxy in proxies:
                 line = ""
@@ -739,6 +805,9 @@ class ProxyExtractor:
         logger.info(f"Available proxies saved to {self.output_file}")
 
     def _test_proxy_connection(self, proxy_info):
+        """
+        测试代理节点的 TCP 连接。
+        """
         server = proxy_info.get('server')
         port = proxy_info.get('port')
         protocol = proxy_info.get('protocol')
@@ -762,16 +831,27 @@ def main():
     searcher = GitHubSearcher()
     raw_urls = searcher.search_github()
 
+    # 如果 GitHub 搜索无结果，尝试加载 data/hy2.txt
     if not raw_urls:
         logger.info("No raw URLs found from GitHub, attempting to load from data/hy2.txt")
-        extractor = ProxyExtractor([])
-        raw_urls = extractor.load_hy2_txt()
-
-    if raw_urls:
-        extractor = ProxyExtractor(raw_urls)
-        extractor.extract_and_verify_proxies()
+        extractor = ProxyExtractor([], [])
+        raw_urls, initial_nodes = extractor.load_hy2_txt()
     else:
-        logger.info("No raw URLs found from GitHub or data/hy2.txt.")
+        initial_nodes = []
+        logger.info(f"Found {len(raw_urls)} raw URLs from GitHub.")
+
+    # 即使有 GitHub URL，也尝试加载 data/hy2.txt 以补充
+    extractor = ProxyExtractor(raw_urls, initial_nodes)
+    hy2_urls, hy2_nodes = extractor.load_hy2_txt()
+    raw_urls.extend(hy2_urls)
+    initial_nodes.extend(hy2_nodes)
+
+    if not raw_urls and not initial_nodes:
+        logger.info("No raw URLs or nodes found from GitHub or data/hy2.txt.")
+        return
+
+    logger.info(f"Processing {len(raw_urls)} URLs and {len(initial_nodes)} nodes.")
+    extractor.extract_and_verify_proxies()
 
 if __name__ == "__main__":
     main()
