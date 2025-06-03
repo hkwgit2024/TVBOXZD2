@@ -92,7 +92,7 @@ def extract_urls_from_bing_html(html_content):
                 
     return list(extracted_urls)
 
-def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3): # 新增 max_pages_per_keyword 参数
+def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3):
     all_extracted_urls = set()
     
     chrome_options = Options()
@@ -138,8 +138,6 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
                         driver.get(search_url)
                     else:
                         # 对于后续页，我们需要找到并点击“下一页”链接
-                        # Bing 的下一页链接通常有 class="sb_pagN"
-                        # 或者在 pagination 区域查找包含 "Next" 文本的链接
                         try:
                             # 尝试查找 class="sb_pagN" 的链接
                             next_page_link = WebDriverWait(driver, 10).until(
@@ -170,6 +168,9 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
                     current_url = driver.current_url
                     print(f"  浏览器当前 URL for '{keyword}' (Page {current_page_num}): {current_url}")
 
+                    # --- 修正：将 html_content 的获取移到条件判断之前 ---
+                    html_content = driver.page_source 
+                    
                     # 截图和 HTML 保存可以调整，这里只保存第一页的
                     if current_page_num == 1:
                         screenshot_path = os.path.join(output_dir, f"bing_screenshot_{keyword}.png")
@@ -182,8 +183,6 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
                         print(f"  已将 '{keyword}' 的第 1 页 HTML 保存到 {html_debug_file} 以供调试。")
 
 
-                    html_content = driver.page_source
-                    
                     if "b_results" not in html_content:
                         print(f"  警告：'{keyword}' (Page {current_page_num}) 的 HTML 内容似乎不包含预期的搜索结果区域 (b_results)。可能已被阻止或显示验证码。")
                     
@@ -248,10 +247,9 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
     print(f"已提取 {len(processed_urls)} 个不重复的（格式化和过滤后）网址，并保存到 {final_output_path}")
 
 if __name__ == "__main__":
-    keywords_to_search = ["加速器", "免费机场","代理"]
+    keywords_to_search = ["加速器", "免费机场", "代理"] # 更新了关键词列表，以匹配您日志中的
     output_filename = "bing.txt"
     # 设置每个关键词最多抓取的页数
-    # 警告：抓取页数越多，运行时间越长，被检测到的风险也越高。建议从小页数开始测试。
     max_pages = 3 
     
     bing_search_and_extract_urls(keywords_to_search, output_filename, max_pages_per_keyword=max_pages)
