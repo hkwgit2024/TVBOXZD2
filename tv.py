@@ -11,7 +11,7 @@ import logging
 import requests
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_fixed
 import json
 import hashlib
 from requests.adapters import HTTPAdapter
@@ -24,7 +24,7 @@ from collections import defaultdict
 from tqdm import tqdm
 import base64
 
-# 配置日志，输出到文件和控制台
+# 配置日志
 logging.basicConfig(
     level=logging.WARNING,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -84,7 +84,7 @@ def get_current_sha(file_path_in_repo):
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
 def save_to_github(file_path_in_repo, content, commit_message):
-    """将内容保存到 GitHub 仓库，处理 409 冲突"""
+    """将内容保存到 GitHub 仓库"""
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     sha = get_current_sha(file_path_in_repo)
     headers = {
@@ -104,12 +104,6 @@ def save_to_github(file_path_in_repo, content, commit_message):
         response.raise_for_status()
         return True
     except requests.exceptions.HTTPError as e:
-        if e.response.status_code == 409:
-            logging.warning(f"检测到 409 冲突，重试保存 {file_path_in_repo}")
-            raise  # 触发重试
-        logging.error(f"保存 {file_path_in_repo} 到 GitHub 发生错误：{e}")
-        return False
-    except requests.exceptions.RequestException as e:
         logging.error(f"保存 {file_path_in_repo} 到 GitHub 发生错误：{e}")
         return False
 
@@ -126,11 +120,11 @@ def load_config():
         'search_keywords': ['iptv playlist extension:m3u,m3u8 in:file'],
         'per_page': 100,
         'max_search_pages': 5,
-        'max_urls': 1000,
+        'max_urls': 2000,
         'github_api_timeout': 20,
-        'github_api_retry_wait': 30,
+        'github_api_retry_wait': 20,
         'channel_fetch_timeout': 15,
-        'channel_check_timeout': 10,
+        'channel_check_timeout': 12,
         'max_channel_urls_per_group': 100,
         'name_filter_words': ['adult', 'xxx', 'test', 'demo'],
         'url_filter_words': ['login', 'signup', '.lat', '.ml', '.tk'],
@@ -138,12 +132,13 @@ def load_config():
         'ordered_categories': ['央视', '卫视', '地方'],
         'url_pre_screening': {
             'allowed_protocols': ['http', 'https', 'rtmp', 'rtp', 'p3p'],
+            'stream_extensions': ['.m3u', '.m3u8'],
             'invalid_url_patterns': ['.*\\.onion$', '.*\\.local$', '.*\\.lat$']
         },
         'requests_pool_size': 20,
         'requests_retry_total': 3,
         'requests_retry_backoff_factor': 1.5,
-        'channel_check_workers': 20
+        'channel_check_workers': 10
     }
 
 CONFIG = load_config()
@@ -154,11 +149,11 @@ SEARCH_CODE_ENDPOINT = "/search/code"
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-MAX_URLS = CONFIG.get('max_urls', 1000)
+MAX_URLS = CONFIG.get('max_urls', 2000)
 GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 30)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 20)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
-CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 10)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 12)
 MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
 NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
 URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
@@ -168,42 +163,33 @@ INVALID_TLDS = {'.local', '.invalid', '.test', '.example', '.lat', '.ml', '.tk'}
 
 # 初始化 requests 会话
 session = requests.Session()
-session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})
+session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
 pool_size = CONFIG.get('requests_pool_size', 20)
 retry_strategy = Retry(
     total=CONFIG.get('requests_retry_total', 3),
     backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1.5),
-    status_forcelist=[429, 500, 502, 503, 504],
-    allowed_methods=["HEAD", "GET", "OPTIONS"]
+    status_forcelist=[429, 500, 502, 503, 504]
 )
 adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_retries=retry_strategy)
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
 def is_valid_domain(domain):
-    """检查域名是否可解析，带缓存和异常处理"""
+    """检查域名是否可解析"""
     if DNS_CACHE[domain] is not None:
         return DNS_CACHE[domain]
     resolver = dns.resolver.Resolver()
-    resolver.nameservers = ['8.8.8.8', '1.1.1.1']  # 使用 Google 和 Cloudflare DNS
+    resolver.nameservers = ['8.8.8.8', '1.1.1.1']
     resolver.timeout = 2
     resolver.lifetime = 5
-    for _ in range(2):
-        try:
-            resolver.resolve(domain, 'A')
-            DNS_CACHE[domain] = True
-            return True
-        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
-            DNS_CACHE[domain] = False
-            return False
-        except dns.resolver.Timeout:
-            time.sleep(1)
-        except Exception as e:
-            logging.debug(f"DNS 解析错误：{domain}，错误：{e}")
-            DNS_CACHE[domain] = False
-            return False
-    DNS_CACHE[domain] = False
-    return False
+    try:
+        resolver.resolve(domain, 'A')
+        DNS_CACHE[domain] = True
+        return True
+    except Exception as e:
+        logging.debug(f"DNS 解析错误：{domain}，错误：{e}")
+        DNS_CACHE[domain] = False
+        return False
 
 def read_txt_to_array_local(file_name):
     """读取本地文本文件到数组"""
@@ -232,7 +218,7 @@ def get_url_file_extension(url):
     return os.path.splitext(parsed_url.path)[1].lower()
 
 def convert_m3u_to_txt(m3u_content):
-    """将 M3U 格式转换为 TXT 格式（频道名,URL）"""
+    """将 M3U 格式转换为 TXT 格式"""
     lines = m3u_content.split('\n')
     txt_lines = []
     channel_name = ""
@@ -266,7 +252,7 @@ def load_url_states_remote():
     return {}
 
 def save_url_states_remote(url_states):
-    """保存 URL 状态到 GitHub，限制频率"""
+    """保存 URL 状态到 GitHub"""
     try:
         content = json.dumps(url_states, indent=4, ensure_ascii=False)
         save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
@@ -301,10 +287,10 @@ def fetch_url_content_with_retry(url, url_states):
             'content_hash': content_hash,
             'last_checked': datetime.now().isoformat()
         }
-        save_url_states_remote(url_states)
         return content
     except requests.exceptions.RequestException as e:
         logging.error(f"获取 URL {url} 错误：{e}")
+        url_states[url] = {'last_checked': datetime.now().isoformat(), 'status': 'error', 'reason': str(e)}
         return None
 
 def extract_channels_from_url(url, url_states):
@@ -314,7 +300,7 @@ def extract_channels_from_url(url, url_states):
         text = fetch_url_content_with_retry(url, url_states)
         if text is None:
             return []
-        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
+        if get_url_file_extension(url) in CONFIG['url_pre_screening']['stream_extensions']:
             text = convert_m3u_to_txt(text)
         lines = text.split('\n')
         for line in lines:
@@ -342,29 +328,23 @@ def pre_screen_url(url):
     if not isinstance(url, str) or not url:
         return False
     parsed_url = urlparse(url)
-    if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+    if parsed_url.scheme not in CONFIG['url_pre_screening']['allowed_protocols']:
         return False
     if not parsed_url.netloc:
         return False
     for tld in INVALID_TLDS:
         if parsed_url.netloc.lower().endswith(tld):
-            logging.debug(f"预筛选过滤（无效 TLD）：{url}")
             return False
     try:
         if not is_valid_domain(parsed_url.netloc):
-            logging.debug(f"预筛选过滤（域名不可解析）：{url}")
             return False
-    except Exception as e:
-        logging.debug(f"预筛选 URL {url} 时 DNS 错误，跳过：{e}")
+    except Exception:
         return False
-    invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
+    invalid_url_patterns = CONFIG['url_pre_screening']['invalid_url_patterns']
     compiled_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
     for pattern in compiled_patterns:
         if pattern.search(url):
-            logging.debug(f"预筛选过滤（无效模式）：{url}")
             return False
-    if len(url) < 15:
-        return False
     return True
 
 def filter_and_modify_channels(channels):
@@ -416,20 +396,12 @@ async def check_http_url_async(url, timeout=CHANNEL_CHECK_TIMEOUT):
 def check_rtmp_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
     """检查 RTMP URL"""
     try:
-        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
         cmd = ['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url, '-show_streams', '-print_format', 'json']
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout, text=True)
         if result.returncode == 0:
-            try:
-                streams = json.loads(result.stdout).get('streams', [])
-                return len(streams) > 0, "有效 RTMP 流"
-            except json.JSONDecodeError:
-                return False, "无效 ffprobe 输出"
+            streams = json.loads(result.stdout).get('streams', [])
+            return len(streams) > 0, "有效 RTMP 流"
         return False, f"ffprobe 失败：{result.stderr}"
-    except subprocess.TimeoutExpired:
-        return False, "超时"
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        return False, f"ffprobe 错误：{str(e)}"
     except Exception as e:
         return False, f"错误：{str(e)}"
 
@@ -447,8 +419,6 @@ def check_rtp_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
             s.sendto(b'', (host, port))
             s.recv(1)
         return True, "有效 RTP 连接"
-    except (socket.timeout, socket.error) as e:
-        return False, f"套接字错误：{str(e)}"
     except Exception as e:
         return False, f"错误：{str(e)}"
 
@@ -469,14 +439,13 @@ def check_p3p_url(url, timeout=CHANNEL_CHECK_TIMEOUT):
     except Exception as e:
         return False, f"错误：{str(e)}"
 
-def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TIMEOUT):
+async def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TIMEOUT):
     """检查频道连通性和速度"""
     start_time = time.time()
     parsed_url = urlparse(url)
     try:
-        if url.startswith("http"):
-            loop = asyncio.get_event_loop()
-            is_valid, reason = loop.run_until_complete(check_http_url_async(url, timeout))
+        if url.startswith(("http", "https")):
+            is_valid, reason = await check_http_url_async(url, timeout)
         elif url.startswith("rtmp"):
             is_valid, reason = check_rtmp_url(url, timeout)
         elif url.startswith("rtp"):
@@ -484,13 +453,11 @@ def check_channel_validity_and_speed(channel_name, url, timeout=CHANNEL_CHECK_TI
         elif url.startswith("p3p"):
             is_valid, reason = check_p3p_url(url, timeout)
         else:
-            logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
-            return None, False, f"不支持的协议：{urlparse(url).scheme}"
+            return None, False, f"不支持的协议：{parsed_url.scheme}"
         elapsed_time = (time.time() - start_time) * 1000
         return elapsed_time if is_valid else None, is_valid, reason
     except Exception as e:
-        logging.debug(f"检查频道 {channel_name} ({url}) 错误：{e}")
-        return None, False, f"常规错误：{str(e)}"
+        return None, False, f"错误：{str(e)}"
 
 async def process_single_channel_line_async(channel_line, timeout=CHANNEL_CHECK_TIMEOUT):
     """异步处理单条频道行"""
@@ -501,7 +468,7 @@ async def process_single_channel_line_async(channel_line, timeout=CHANNEL_CHECK_
         return None, None, "无效频道格式"
     name, url = parts
     url = url.strip()
-    elapsed_time, is_valid, reason = check_channel_validity_and_speed(name, url, timeout)
+    elapsed_time, is_valid, reason = await check_channel_validity_and_speed(name, url, timeout)
     return elapsed_time, f"{name},{url}" if is_valid else None, reason
 
 async def check_channels_async(channel_lines, timeout=CHANNEL_CHECK_TIMEOUT):
@@ -510,26 +477,21 @@ async def check_channels_async(channel_lines, timeout=CHANNEL_CHECK_TIMEOUT):
     failure_reasons = defaultdict(int)
     total_channels = len(channel_lines)
     logging.warning(f"开始异步频道有效性和速度检测，总计 {total_channels} 个频道...")
-    async with aiohttp.ClientSession() as session:
-        tasks = [process_single_channel_line_async(line, timeout) for line in channel_lines]
-        for future in tqdm(asyncio.as_completed(tasks), total=total_channels, desc="检查频道"):
-            elapsed_time, result_line, reason = await future
-            if elapsed_time is not None and result_line is not None:
-                results.append((elapsed_time, result_line))
-            failure_reasons[reason] += 1
+    tasks = [process_single_channel_line_async(line, timeout) for line in channel_lines]
+    for future in tqdm(asyncio.as_completed(tasks), total=total_channels, desc="检查频道"):
+        elapsed_time, result_line, reason = await future
+        if elapsed_time is not None and result_line is not None:
+            results.append((elapsed_time, result_line))
+        failure_reasons[reason] += 1
     logging.warning("频道检测完成，失败原因统计：")
     for reason, count in failure_reasons.items():
         logging.warning(f"{reason}: {count} 频道")
     logging.warning(f"有效频道数量：{len(results)}")
     return results
 
-def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_check_workers', 20)):
+def check_channels_multithreaded(channel_lines, max_workers=CONFIG.get('channel_check_workers', 10)):
     """多线程协调异步检查"""
-    loop = asyncio.get_event_loop()
-    if loop.is_closed():
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-    results = loop.run_until_complete(check_channels_async(channel_lines))
+    results = asyncio.run(check_channels_async(channel_lines))
     return results
 
 def write_sorted_channels_to_file(file_path, data_list):
@@ -595,8 +557,6 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
             if '#genre#' in header:
                 final_output_lines.append(header + '\n')
                 final_output_lines.extend(group_and_limit_channels(lines[1:]))
-            else:
-                logging.warning(f"文件 {file_path} 未以类别标题开头，跳过")
     with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
         iptv_list_file.writelines(final_output_lines)
     logging.warning(f"所有频道文件已合并，输出保存至：{output_file_name}")
@@ -623,6 +583,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
         return
     existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
     found_urls = set()
+    invalid_urls = set()
     headers = {
         "Accept": "application/vnd.github.v3.text-match+json",
         "Authorization": f"token {github_token}"
@@ -651,10 +612,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 response.raise_for_status()
                 data = response.json()
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
                 if rate_limit_remaining < CONFIG.get('rate_limit_threshold', 5):
-                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logging.warning(f"GitHub API 接近速率限制（剩余：{rate_limit_remaining}），等待 {wait_seconds:.0f} 秒...")
+                    wait_seconds = max(0, int(response.headers.get('X-RateLimit-Reset', 0)) - time.time()) + 5
+                    logging.warning(f"GitHub API 接近速率限制，等待 {wait_seconds:.0f} 秒...")
                     time.sleep(wait_seconds)
                 if not data.get('items'):
                     break
@@ -666,30 +626,28 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                         raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
                         cleaned_url = clean_url_params(raw_url)
                         if (cleaned_url.startswith("https://raw.githubusercontent.com/") and
-                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and
+                            cleaned_url.lower().endswith(tuple(CONFIG['url_pre_screening']['stream_extensions'])) and
                             pre_screen_url(cleaned_url)):
                             try:
                                 head_response = session.head(cleaned_url, timeout=5)
                                 if head_response.status_code == 200:
                                     found_urls.add(cleaned_url)
+                                else:
+                                    invalid_urls.add(cleaned_url)
                             except requests.exceptions.RequestException:
-                                pass
+                                invalid_urls.add(cleaned_url)
                 logging.warning(f"关键词 '{keyword}' 第 {page} 页发现 {len(data['items'])} 个结果")
                 page += 1
                 time.sleep(1)
             except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 403:
-                    wait_seconds = max(0, int(response.headers.get('X-RateLimit-Reset', 0)) - time.time()) + 5
-                    logging.warning(f"GitHub API 速率限制，等待 {wait_seconds:.0f} 秒...")
-                    time.sleep(wait_seconds)
-                    continue
                 logging.error(f"GitHub API 请求失败（关键词：{keyword}，页：{page}）：{e}")
                 break
     new_urls_count = len(found_urls - existing_urls)
-    if new_urls_count > 0:
-        updated_urls = list(existing_urls | found_urls)
+    if new_urls_count > 0 or invalid_urls:
+        updated_urls = list((existing_urls | found_urls) - invalid_urls)
         write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现新 URL")
-        logging.warning(f"发现并添加 {new_urls_count} 个新 IPTV 源 URL，总计：{len(updated_urls)}")
+        write_array_to_txt_local("invalid_urls.txt", list(invalid_urls))
+        logging.warning(f"发现 {new_urls_count} 个新 URL，移除 {len(invalid_urls)} 个失效 URL，总计：{len(updated_urls)}")
     logging.warning("GitHub URL 自动发现完成")
 
 def main():
@@ -703,7 +661,7 @@ def main():
         url_states = load_url_states_remote()
         logging.warning(f"加载 {len(url_states)} 个历史 URL 状态")
         all_extracted_channels = set()
-        with ThreadPoolExecutor(max_workers=CONFIG.get('channel_extract_workers', 10)) as executor:
+        with ThreadPoolExecutor(max_workers=CONFIG.get('channel_extract_workers', 5)) as executor:
             future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
             for future in as_completed(future_to_url):
                 try:
