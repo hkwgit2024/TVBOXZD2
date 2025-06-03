@@ -230,10 +230,10 @@ class GitHubSearcher:
                         break
 
                 except requests.exceptions.HTTPError as e:
-                    if e.response" in dir(e) and e.response.status_code == 401:
+                    if hasattr(e, 'response') and e.response.status_code == 401:
                         logger.error("GitHub API authentication failed (401 Unauthorized). Please verify GITHUB_TOKEN or BOT.")
                         sys.exit(1)
-                    elif e.response.status_code == 403:
+                    elif hasattr(e, 'response') and e.response.status_code == 403:
                         logger.warning(f"GitHub API 403 Forbidden for keyword '{keyword}' (page {page}): {e.response.text}")
                         if 'rate limit' in e.response.text.lower():
                             self._check_rate_limit(session)
