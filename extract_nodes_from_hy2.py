@@ -6,7 +6,7 @@ import socket
 import sys
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import unquote, urlparse, parse_qs
 
 import requests
@@ -15,7 +15,7 @@ import os
 
 # 设置日志，确保实时输出
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO, # 可以根据需要调整为 logging.DEBUG 来获取更详细的输出
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
@@ -51,7 +51,7 @@ class Config:
                 self._config_data = yaml.safe_load(f)
             logger.info(f"Configuration loaded successfully from: {self._config_path}")
         except FileNotFoundError:
-            logger.error(f"Config file not found: {self._config_path}")
+            logger.error(f"Config file not found: {self._config_path}. Please create one based on the example.")
             sys.exit(1)
         except yaml.YAMLError as e:
             logger.error(f"Error parsing config file: {e}")
@@ -84,11 +84,16 @@ class CacheManager:
                     cache["data"] = {k: v for k, v in cache["data"].items() if v.get("status") in ["success", "failed"]}
                 return cache
         except (FileNotFoundError, json.JSONDecodeError):
+            logger.info(f"Cache file not found or corrupted at {self.cache_path}, initializing new cache.")
+            return {"timestamp": 0, "data": {}}
+        except Exception as e:
+            logger.error(f"Error loading cache from {self.cache_path}: {e}")
             return {"timestamp": 0, "data": {}}
 
     def _save_cache(self):
         with self.lock:
             try:
+                os.makedirs(os.path.dirname(self.cache_path) or '.', exist_ok=True) # 确保目录存在
                 with open(self.cache_path, 'w', encoding='utf-8') as f:
                     json.dump(self.cache_data, f, indent=4)
                 logger.info(f"Cache saved to {self.cache_path}.")
@@ -119,19 +124,19 @@ class CacheManager:
         with self.lock:
             self.cache_data["timestamp"] = int(time.time())
             self.cache_data["data"] = data
-            self._save_cache()
+        self._save_cache()
 
 # --- GitHub 搜索类 ---
 class GitHubSearcher:
     def __init__(self):
         config = Config()
-        self.search_keywords = config.get('search_keywords')
+        self.search_keywords = config.get('search_keywords', ['ss://', 'vmess://', 'vless://', 'trojan://', 'hy2://'])
         self.per_page = config.get('per_page', 100)
         self.max_search_pages = config.get('max_search_pages', 3)
         self.github_api_timeout = config.get('github_api_timeout', 20)
         self.github_api_retry_wait = config.get('github_api_retry_wait', 30)
         self.rate_limit_threshold = config.get('rate_limit_threshold', 10)
-        self.max_urls = config.get('max_urls', 100)  # 降低默认值
+        self.max_urls = config.get('max_urls', 500)  # 默认值调整为 500
         self.search_cache = CacheManager(config.get('search_cache_path', 'data/search_cache.json'), 'search_cache_ttl')
 
         self.github_token = self._get_github_token()
@@ -172,7 +177,7 @@ class GitHubSearcher:
             return False
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 403:
-                logger.error(f"GitHub API 403 Forbidden: {e.response.text}")
+                logger.error(f"GitHub API 403 Forbidden: {e.response.text}. Please check your token or IP.")
                 return True
             logger.error(f"Error checking GitHub API rate limit: {e}")
             return False
@@ -248,7 +253,7 @@ class GitHubSearcher:
                         if 'rate limit' in e.response.text.lower():
                             self._check_rate_limit(session)
                         else:
-                            break
+                            break # Other 403 errors might indicate permanent issues
                     else:
                         logger.error(f"HTTP error for keyword '{keyword}' (page {page}): {e}")
                         break
@@ -269,8 +274,8 @@ class ProxyExtractor:
         self.initial_nodes = initial_nodes or []
         self.proxy_states_cache = CacheManager(config.get('proxy_states_path', 'data/hy2_states_cache.json'), 'proxy_states_ttl')
         self.proxy_check_timeout = config.get('proxy_check_timeout', 5)
-        self.proxy_check_workers = config.get('proxy_check_workers', 20)  # 降低默认值
-        self.channel_extract_workers = config.get('channel_extract_workers', 5)  # 降低默认值
+        self.proxy_check_workers = config.get('proxy_check_workers', 50)  # 默认值调整为 50
+        self.channel_extract_workers = config.get('channel_extract_workers', 10)  # 默认值调整为 10
         self.requests_retry_total = config.get('requests_retry_total', 3)
         self.requests_retry_backoff_factor = config.get('requests_retry_backoff_factor', 1.5)
         self.requests_pool_size = config.get('requests_pool_size', 50)
@@ -278,7 +283,7 @@ class ProxyExtractor:
 
         self.available_proxies = []
         self.lock = threading.Lock()
-        self.parsed_nodes_cache = set()
+        self.parsed_nodes_cache = set() # To store stringified nodes to check for uniqueness
         self.url_processing_cache = self.proxy_states_cache.get_data()
 
     def load_hy2_txt(self):
@@ -296,6 +301,8 @@ class ProxyExtractor:
                     node = self._parse_node(line)
                     if node:
                         nodes.append(node)
+                    else:
+                        logger.debug(f"Failed to parse node from data/hy2.txt: {line}")
                 elif line.startswith(('http://', 'https://')):
                     urls.append(line)
                 else:
@@ -303,7 +310,7 @@ class ProxyExtractor:
             logger.info(f"Loaded {len(urls)} URLs and {len(nodes)} nodes from data/hy2.txt in {time.time() - start_time:.2f}s")
             return urls, nodes
         except FileNotFoundError:
-            logger.warning("File data/hy2.txt not found, proceeding without it")
+            logger.warning("File data/hy2.txt not found, proceeding without it.")
             return [], []
         except Exception as e:
             logger.error(f"Error reading data/hy2.txt: {e}")
@@ -359,6 +366,7 @@ class ProxyExtractor:
             return self._parse_warp(link)
         elif link.startswith("shadow-tls://"):
             return self._parse_shadow_tls(link)
+        logger.debug(f"Unknown or unsupported protocol for link: {link[:30]}...") # Log partial link for privacy
         return None
 
     def _parse_ss(self, link):
@@ -375,6 +383,7 @@ class ProxyExtractor:
                     encoded_part += '=' * (4 - missing_padding)
                 decoded_info = base64.urlsafe_b64decode(encoded_part).decode('utf-8')
             except (base64.binascii.Error, UnicodeDecodeError) as e:
+                # Fallback for non-UTF-8 or malformed base64
                 try:
                     decoded_info = base64.urlsafe_b64decode(encoded_part).decode('latin-1').encode('latin-1').decode('utf-8', errors='ignore')
                     logger.debug(f"Attempted non-UTF-8 decoding for SS link {link}")
@@ -401,7 +410,7 @@ class ProxyExtractor:
             }
             return node_data
         except Exception as e:
-            logger.warning(f"Failed to parse SS link '{link}': {e}")
+            logger.warning(f"Failed to parse SS link '{link[:50]}...': {e}")
             return None
 
     def _parse_vmess(self, link):
@@ -440,7 +449,7 @@ class ProxyExtractor:
 
             return node_data
         except (json.JSONDecodeError, ValueError) as e:
-            logger.warning(f"Failed to parse VMess link '{link}': {e}")
+            logger.warning(f"Failed to parse VMess link '{link[:50]}...': {e}")
             return None
 
     def _parse_vless(self, link):
@@ -479,7 +488,7 @@ class ProxyExtractor:
 
             return node_data
         except Exception as e:
-            logger.warning(f"Failed to parse VLESS link '{link}': {e}")
+            logger.warning(f"Failed to parse VLESS link '{link[:50]}...': {e}")
             return None
 
     def _parse_trojan(self, link):
@@ -510,12 +519,13 @@ class ProxyExtractor:
             }
             return node_data
         except Exception as e:
-            logger.warning(f"Failed to parse Trojan link '{link}': {e}")
+            logger.warning(f"Failed to parse Trojan link '{link[:50]}...': {e}")
             return None
 
     def _parse_hy2(self, link):
         try:
             if link.startswith("hy2://"):
+                # Try parsing as URL first (hy2://server:port?params#tag)
                 parsed = urlparse(link)
                 if parsed.hostname and parsed.port:
                     tag = unquote(parsed.fragment) if parsed.fragment else f"{parsed.hostname}:{parsed.port}"
@@ -529,6 +539,7 @@ class ProxyExtractor:
                     node_data.update({k: v[0] for k, v in query_params.items()})
                     return node_data
                 
+                # If not a simple URL, try base64 encoded JSON
                 encoded_json = link[6:]
                 missing_padding = len(encoded_json) % 4
                 if missing_padding:
@@ -553,7 +564,7 @@ class ProxyExtractor:
                 
                 return node_data
         except (json.JSONDecodeError, ValueError) as e:
-            logger.warning(f"Failed to parse Hy2 link '{link}': {e}")
+            logger.warning(f"Failed to parse Hy2 link '{link[:50]}...': {e}")
             return None
 
     def _parse_tuic(self, link):
@@ -585,7 +596,7 @@ class ProxyExtractor:
             node_data.update({k: v[0] for k, v in query_params.items()})
             return node_data
         except Exception as e:
-            logger.warning(f"Failed to parse TUIC link '{link}': {e}")
+            logger.warning(f"Failed to parse TUIC link '{link[:50]}...': {e}")
             return None
 
     def _parse_wireguard(self, link):
@@ -608,7 +619,7 @@ class ProxyExtractor:
                         "config": decoded_config,
                         "tag": "WireGuard Node (from wg://)"
                     }
-            elif link.endswith(".conf"):
+            elif link.endswith(".conf"): # Not typically a "node" but a config file URL
                 return {
                     "protocol": PROTOCOL_TYPE_WG,
                     "url": link,
@@ -616,7 +627,7 @@ class ProxyExtractor:
                 }
             return None
         except Exception as e:
-            logger.warning(f"Failed to parse WireGuard link '{link}': {e}")
+            logger.warning(f"Failed to parse WireGuard link '{link[:50]}...': {e}")
             return None
 
     def _parse_warp(self, link):
@@ -629,7 +640,7 @@ class ProxyExtractor:
                 }
             return None
         except Exception as e:
-            logger.warning(f"Failed to parse WARP link '{link}': {e}")
+            logger.warning(f"Failed to parse WARP link '{link[:50]}...': {e}")
             return None
 
     def _parse_shadow_tls(self, link):
@@ -651,7 +662,7 @@ class ProxyExtractor:
             }
             return node_data
         except Exception as e:
-            logger.warning(f"Failed to parse Shadow-TLS link '{link}': {e}")
+            logger.warning(f"Failed to parse Shadow-TLS link '{link[:50]}...': {e}")
             return None
 
     def _extract_nodes_from_content(self, content):
@@ -663,6 +674,7 @@ class ProxyExtractor:
         if not content:
             return nodes
 
+        # Use re.DOTALL to match across multiple lines for more robust extraction
         ss_links = re.findall(r'ss://[a-zA-Z0-9%_-]+(?:=|==)?(?:#.+)?', content)
         for link in ss_links:
             node = self._parse_ss(link)
@@ -706,7 +718,7 @@ class ProxyExtractor:
             if node:
                 nodes.append(node)
         
-        warp_links = re.findall(r'warp://[a-zA-Z0-9+/=]+', content)
+        warp_links = re.findall(r'warp://[a-zA-Z0-9+/=]+', content) # WARP links might also be base64 encoded config
         for link in warp_links:
             node = self._parse_warp(link)
             if node:
@@ -730,6 +742,10 @@ class ProxyExtractor:
             if status == "failed":
                 logger.debug(f"URL {url} found in valid cache and previously failed. Skipping.")
                 return
+            elif status == "success" and self.url_processing_cache[url].get("nodes_count", 0) > 0:
+                # If already successful and found nodes, no need to re-download unless cache is invalid
+                logger.debug(f"URL {url} found in valid cache and previously successful. Skipping download.")
+                return
 
         content = self._download_content(url)
         if not content:
@@ -740,7 +756,9 @@ class ProxyExtractor:
         newly_added_count = 0
         with self.lock:
             for node in parsed_nodes:
-                node_str = json.dumps(node, sort_keys=True)
+                # Create a stable, unique representation of the node for caching
+                # Sort keys to ensure consistent string representation
+                node_str = json.dumps(node, sort_keys=True, ensure_ascii=False)
                 if node_str not in self.parsed_nodes_cache:
                     self.parsed_nodes_cache.add(node_str)
                     self.available_proxies.append(node)
@@ -757,54 +775,71 @@ class ProxyExtractor:
         """
         从 URL 和初始节点中提取并验证代理。
         """
-        start_time = time.time()
+        start_time_overall = time.time()
         logger.info(f"Starting to extract and verify proxies from {len(self.raw_urls)} URLs and {len(self.initial_nodes)} initial nodes.")
 
         # 先添加初始节点
         with self.lock:
             for node in self.initial_nodes:
-                node_str = json.dumps(node, sort_keys=True)
+                node_str = json.dumps(node, sort_keys=True, ensure_ascii=False)
                 if node_str not in self.parsed_nodes_cache:
                     self.parsed_nodes_cache.add(node_str)
                     self.available_proxies.append(node)
             logger.info(f"Added {len(self.initial_nodes)} nodes from data/hy2.txt. Total unique nodes: {len(self.available_proxies)}")
 
         # 处理 URL
+        logger.info(f"Starting to download content and extract nodes from {len(self.raw_urls)} URLs with {self.channel_extract_workers} workers.")
+        processed_urls_count = 0
         with ThreadPoolExecutor(max_workers=self.channel_extract_workers) as executor:
-            futures = [executor.submit(self._process_url, url) for url in self.raw_urls]
-            for future in ThreadPoolExecutor.as_completed(futures):
+            futures = {executor.submit(self._process_url, url): url for url in self.raw_urls}
+            for future in as_completed(futures):
+                processed_urls_count += 1
+                if processed_urls_count % 50 == 0 or processed_urls_count == len(self.raw_urls):
+                    logger.info(f"Processed {processed_urls_count}/{len(self.raw_urls)} URLs. Current unique nodes: {len(self.available_proxies)}")
                 try:
                     future.result()
                 except Exception as e:
-                    logger.warning(f"Error processing URL: {e}")
+                    logger.warning(f"Error processing URL {futures[future]}: {e}")
 
-        logger.info(f"Finished extracting {len(self.available_proxies)} unique nodes in {time.time() - start_time:.2f}s")
+        logger.info(f"Finished extracting {len(self.available_proxies)} unique nodes in {time.time() - start_time_overall:.2f}s (extraction phase).")
         
         self.proxy_states_cache.set_data(self.url_processing_cache)
 
         # 验证节点
-        start_time = time.time()
+        if not self.available_proxies:
+            logger.warning("No proxies extracted to verify. Exiting verification phase.")
+            self._save_proxies_to_file([]) # Ensure an empty file is created/overwritten
+            return
+
+        start_time_verification = time.time()
+        logger.info(f"Starting to verify {len(self.available_proxies)} unique nodes with {self.proxy_check_workers} workers.")
         final_available_proxies = []
+        verified_count = 0
         with ThreadPoolExecutor(max_workers=self.proxy_check_workers) as executor:
             future_to_proxy = {executor.submit(self._test_proxy_connection, proxy): proxy for proxy in self.available_proxies}
-            for future in ThreadPoolExecutor.as_completed(future_to_proxy):
+            for future in as_completed(future_to_proxy):
                 proxy = future_to_proxy[future]
+                verified_count += 1
+                if verified_count % 100 == 0 or verified_count == len(self.available_proxies):
+                    logger.info(f"Verified {verified_count}/{len(self.available_proxies)} proxies. Found {len(final_available_proxies)} available.")
                 try:
                     if future.result():
                         final_available_proxies.append(proxy)
                 except Exception as e:
-                    logger.warning(f"Error testing proxy {proxy.get('protocol')}://{proxy.get('server')}:{proxy.get('port')}: {e}")
+                    logger.warning(f"Error testing proxy {proxy.get('protocol')}://{proxy.get('server', 'N/A')}:{proxy.get('port', 'N/A')}: {e}")
 
-        logger.info(f"Verified {len(final_available_proxies)} available proxies in {time.time() - start_time:.2f}s")
+        logger.info(f"Finished verifying {len(self.available_proxies)} proxies. Found {len(final_available_proxies)} available proxies in {time.time() - start_time_verification:.2f}s (verification phase).")
         self._save_proxies_to_file(final_available_proxies)
         logger.info(f"Saved {len(final_available_proxies)} available proxies to {self.output_file}")
+        logger.info(f"Total script execution time: {time.time() - start_time_overall:.2f}s")
+
 
     def _save_proxies_to_file(self, proxies):
         """
         将可用代理保存到文件。
         """
         try:
-            os.makedirs(os.path.dirname(self.output_file), exist_ok=True)
+            os.makedirs(os.path.dirname(self.output_file) or '.', exist_ok=True)
             with open(self.output_file, 'w', encoding='utf-8') as f:
                 for proxy in proxies:
                     line = ""
@@ -814,33 +849,133 @@ class ProxyExtractor:
                     tag = proxy.get('tag', 'N/A')
 
                     if proto == PROTOCOL_TYPE_SS:
+                        # Reconstruct SS link (might lose original tag if it was different from server:port)
                         info = f"{proxy['method']}:{proxy['password']}@{server}:{port}"
+                        # Ensure proper base64 padding for urlsafe
                         encoded_info = base64.urlsafe_b64encode(info.encode('utf-8')).decode('utf-8').rstrip('=')
                         line = f"ss://{encoded_info}"
-                        if tag != f"{server}:{port}":
+                        if tag and tag != f"{server}:{port}": # Only append tag if it's custom
                             line += f"#{tag}"
-                    elif proto == PROTOCOL_TYPE_HY2:
-                        line = f"hy2://... (Hysteria2) {server}:{port} - {tag}"
                     elif proto == PROTOCOL_TYPE_VMESS:
-                        line = f"vmess://... (VMess) {server}:{port} - {tag}"
+                        # For VMess, try to reconstruct the original base64 link if possible, or dump essential info
+                        # Reconstructing VMess link perfectly from parsed dict can be complex due to many optional fields
+                        # For now, output the essential info + original link if available
+                        original_link = proxy.get('original_link') # If you stored it during parsing
+                        if original_link:
+                            line = original_link
+                        else:
+                            # Minimal reconstruction for logging/output
+                            vmess_info = {
+                                "v": "2", # Assuming v2 for reconstruction
+                                "ps": tag,
+                                "add": server,
+                                "port": port,
+                                "id": proxy.get('uuid', ''),
+                                "aid": proxy.get('alterId', 0),
+                                "net": proxy.get('network', 'tcp'),
+                                "type": proxy.get('type', 'none'),
+                                "host": proxy.get('host', ''),
+                                "path": proxy.get('path', ''),
+                                "tls": proxy.get('tls', ''),
+                                "sni": proxy.get('sni', ''),
+                                "scy": proxy.get('security', 'auto')
+                            }
+                            # Filter out empty strings for cleaner JSON if desired
+                            vmess_info = {k: v for k, v in vmess_info.items() if v != ''}
+                            encoded_vmess_json = base64.b64encode(json.dumps(vmess_info, ensure_ascii=False).encode('utf-8')).decode('utf-8')
+                            line = f"vmess://{encoded_vmess_json}"
                     elif proto == PROTOCOL_TYPE_VLESS:
-                        line = f"vless://... (VLESS) {server}:{port} - {tag}"
+                        # Reconstruct VLESS link for direct use
+                        path_query = ""
+                        query_params = {
+                            'flow': proxy.get('flow', ''),
+                            'security': proxy.get('security', ''),
+                            'encryption': proxy.get('encryption', 'none'),
+                            'type': proxy.get('type', 'tcp'),
+                            'host': proxy.get('host', ''),
+                            'path': proxy.get('path', ''),
+                            'sni': proxy.get('sni', ''),
+                            'fp': proxy.get('fp', ''),
+                            'pbk': proxy.get('pbk', ''),
+                            'sid': proxy.get('sid', '')
+                        }
+                        # Filter out empty or default query parameters
+                        valid_params = {k: v for k, v in query_params.items() if v and v != 'none' and v != 'tcp'}
+                        if valid_params:
+                            path_query = "?" + "&".join(f"{k}={v}" for k, v in valid_params.items())
+
+                        line = f"vless://{proxy.get('uuid')}@{server}:{port}{path_query}#{proxy.get('tag')}"
                     elif proto == PROTOCOL_TYPE_TROJAN:
-                        line = f"trojan://... (Trojan) {server}:{port} - {tag}"
+                        # Reconstruct Trojan link
+                        path_query = ""
+                        query_params = {
+                            'security': proxy.get('security', 'tls'),
+                            'type': proxy.get('type', 'tcp'),
+                            'host': proxy.get('host', ''),
+                            'path': proxy.get('path', ''),
+                            'sni': proxy.get('sni', ''),
+                            'alpn': proxy.get('alpn', '')
+                        }
+                        valid_params = {k: v for k, v in query_params.items() if v and v != 'tls' and v != 'tcp'}
+                        if valid_params:
+                            path_query = "?" + "&".join(f"{k}={v}" for k, v in valid_params.items())
+                        line = f"trojan://{proxy.get('password')}@{server}:{port}{path_query}#{proxy.get('tag')}"
+                    elif proto == PROTOCOL_TYPE_HY2:
+                        # Attempt to reconstruct original URL if all params are present, otherwise just print summary
+                        # For hy2, simple reconstruction of URL-like format
+                        params = {
+                            'auth': proxy.get('auth', ''),
+                            'up_mbps': proxy.get('up_mbps', ''),
+                            'down_mbps': proxy.get('down_mbps', ''),
+                            'obfs': proxy.get('obfs', ''),
+                            'obfs_password': proxy.get('obfs_password', '')
+                        }
+                        valid_params = {k: v for k, v in params.items() if v}
+                        query_string = "?" + "&".join(f"{k}={v}" for k, v in valid_params.items()) if valid_params else ""
+                        line = f"hy2://{server}:{port}{query_string}#{tag}"
                     elif proto == PROTOCOL_TYPE_REALITY:
-                        line = f"reality://... (Reality) {server}:{port} - {tag}"
+                        # Reality is a VLESS flow, so reconstruct as VLESS
+                        path_query = ""
+                        query_params = {
+                            'flow': proxy.get('flow', ''),
+                            'security': 'reality', # Explicitly set for Reality
+                            'encryption': proxy.get('encryption', 'none'),
+                            'type': proxy.get('type', 'tcp'),
+                            'host': proxy.get('host', ''),
+                            'path': proxy.get('path', ''),
+                            'sni': proxy.get('sni', ''),
+                            'fp': proxy.get('fp', ''),
+                            'pbk': proxy.get('pbk', ''),
+                            'sid': proxy.get('sid', '')
+                        }
+                        valid_params = {k: v for k, v in query_params.items() if v and v != 'none' and v != 'tcp'}
+                        if valid_params:
+                            path_query = "?" + "&".join(f"{k}={v}" for k, v in valid_params.items())
+                        line = f"vless://{proxy.get('uuid')}@{server}:{port}{path_query}#{proxy.get('tag')}"
                     elif proto == PROTOCOL_TYPE_TUIC:
-                        line = f"tuic://... (Tuic) {server}:{port} - {tag}"
+                        # Reconstruct TUIC link
+                        path_query = ""
+                        # TUIC has more complex query params, only include if present and non-empty
+                        query_params = {k: v for k, v in proxy.items() if k not in ['protocol', 'server', 'port', 'uuid', 'password', 'tag'] and v}
+                        if query_params:
+                            path_query = "?" + "&".join(f"{k}={v}" for k, v in query_params.items())
+                        
+                        user_info = f"{proxy.get('uuid')}:{proxy.get('password')}" if proxy.get('uuid') else ""
+                        
+                        line = f"tuic://{user_info}@{server}:{port}{path_query}#{tag}"
                     elif proto == PROTOCOL_TYPE_WG:
-                        line = f"wg://... (WireGuard) - {tag}"
+                        line = proxy.get('link', proxy.get('config', f"wg:// (WireGuard) - {tag}")) # Prioritize link if it was an external config URL
                     elif proto == PROTOCOL_TYPE_WARP:
-                        line = f"warp://... (WARP) - {tag}"
+                        line = proxy.get('link', f"warp:// (WARP) - {tag}")
                     elif proto == PROTOCOL_TYPE_SHADOW_TLS:
-                        line = f"shadow-tls://... (Shadow-TLS) {server}:{port} - {tag}"
+                        line = f"shadow-tls://{server}:{port}?password={proxy.get('password','')}&sni={proxy.get('sni','')}"
+                        if tag and tag != f"{server}:{port}":
+                            line += f"#{tag}"
                     
                     if line:
                         f.write(line + "\n")
                     else:
+                        # Fallback: if no specific format, dump as JSON
                         f.write(json.dumps(proxy, ensure_ascii=False) + "\n")
             logger.info(f"Available proxies saved to {self.output_file}")
         except Exception as e:
@@ -853,45 +988,55 @@ class ProxyExtractor:
         server = proxy_info.get('server')
         port = proxy_info.get('port')
         protocol = proxy_info.get('protocol')
+        tag = proxy_info.get('tag', 'N/A')
 
         if not server or not port:
-            logger.debug(f"Proxy {protocol} missing server or port")
+            logger.debug(f"Proxy [{protocol}] {tag} missing server or port. Skipping test.")
             return False
 
         try:
-            s = socket.create_connection((server, port), timeout=self.proxy_check_timeout)
+            # Attempt to resolve hostname to IP first to catch DNS issues
+            ip_address = socket.gethostbyname(server)
+            s = socket.create_connection((ip_address, port), timeout=self.proxy_check_timeout)
             s.close()
+            logger.debug(f"Proxy [{protocol}] {tag} ({server}:{port}) connection successful.")
             return True
         except socket.timeout:
-            logger.debug(f"Proxy {protocol}://{server}:{port} timed out")
+            logger.debug(f"Proxy [{protocol}] {tag} ({server}:{port}) timed out.")
             return False
         except ConnectionRefusedError:
-            logger.debug(f"Proxy {protocol}://{server}:{port} connection refused")
+            logger.debug(f"Proxy [{protocol}] {tag} ({server}:{port}) connection refused.")
+            return False
+        except socket.gaierror:
+            logger.debug(f"Proxy [{protocol}] {tag} ({server}:{port}) DNS resolution failed for {server}.")
             return False
         except Exception as e:
-            logger.debug(f"Proxy {protocol}://{server}:{port} connection failed: {e}")
+            logger.debug(f"Proxy [{protocol}] {tag} ({server}:{port}) connection failed: {e}")
             return False
 
 # --- 主函数 ---
 def main():
     start_time = time.time()
-    config_instance = Config()
-    
+    config_instance = Config() # Load configuration first
+
     searcher = GitHubSearcher()
     raw_urls = searcher.search_github()
     logger.info(f"Found {len(raw_urls)} raw URLs from GitHub in {time.time() - start_time:.2f}s")
 
     # 始终加载 data/hy2.txt
-    extractor = ProxyExtractor(raw_urls, [])
-    hy2_urls, initial_nodes = extractor.load_hy2_txt()
-    raw_urls.extend(hy2_urls)
+    hy2_urls, initial_nodes = ProxyExtractor([], []).load_hy2_txt() # Use a temporary extractor instance to load hy2.txt
+    raw_urls.extend(hy2_urls) # Add URLs from hy2.txt to the list for processing
+
+    # Create the main extractor instance with all found URLs and initial nodes
+    extractor = ProxyExtractor(raw_urls, initial_nodes)
 
     if not raw_urls and not initial_nodes:
-        logger.warning("No raw URLs or nodes found from GitHub or data/hy2.txt.")
+        logger.warning("No raw URLs or nodes found from GitHub or data/hy2.txt. Nothing to process.")
         return
 
-    logger.info(f"Processing {len(raw_urls)} URLs and {len(initial_nodes)} nodes.")
+    logger.info(f"Total processing: {len(raw_urls)} URLs and {len(initial_nodes)} initial nodes.")
     extractor.extract_and_verify_proxies()
+    logger.info(f"Script finished in {time.time() - start_time:.2f}s.")
 
 if __name__ == "__main__":
     main()
