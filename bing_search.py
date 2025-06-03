@@ -28,16 +28,22 @@ def search_bing(query, page=1):
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'none',
         'Sec-Fetch-User': '?1',
-        'Sec-CH-UA-Mobile': '?0',  # 强制桌面端
-        'Sec-CH-UA-Platform': '"Windows"'  # 模拟 Windows 平台
+        'Sec-CH-UA': '"Not A;Brand";v="99", "Chromium";v="91", "Google Chrome";v="91"',
+        'Sec-CH-UA-Mobile': '?0',
+        'Sec-CH-UA-Platform': '"Windows"',
+        'Cache-Control': 'no-cache'
     }
     url = f"https://www.bing.com/search?q={query}&first={(page-1)*10}&mkt=zh-CN&setlang=zh-CN&form=QBLH&pc=U316"
     logging.info(f"Requesting URL: {url} with headers: {headers['User-Agent']}")
     try:
-        response = requests.get(url, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, timeout=8)
         response.raise_for_status()
         is_mobile = 'mobile' in response.text.lower() or 'm.bing.com' in response.url
         logging.info(f"Page {page} for query '{query}' is {'mobile' if is_mobile else 'desktop'}")
+        if is_mobile:
+            logging.warning("Mobile page detected, saving HTML for debugging")
+            with open(f'page_{query}_{page}.html', 'w', encoding='utf-8') as f:
+                f.write(response.text)
         return response.text
     except requests.RequestException as e:
         logging.error(f"Error fetching {url}: {e}")
@@ -60,9 +66,12 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
             'https://www.bing.com/',
             'https://account.bing.com/',
             'https://login.live.com/',
-            'https://m.bing.com/'
+            'https://m.bing.com/',
+            'https://www.youtube.com/',
+            'https://www.bilibili.com/',
+            'https://www.tiktok.com/'
         ]
-        # 优先提取 <div class="gs_cit"> 中的 data-url
+        # 优先提取 <div class="gs_cit"> 的 data-url
         for cit in soup.find_all('div', class_='gs_cit', attrs={'data-url': True}):
             href = cit['data-url']
             if href.startswith(('http://', 'https://')):
@@ -71,16 +80,15 @@ def extract_urls(html_content, base_url="https://www.bing.com"):
                     urls.add(clean_url)
                     logging.info(f"Extracted URL: {clean_url}")
         # 备用：提取 <ol id="b_results"> 内的 <a> 标签
-        if not urls:
-            results_area = soup.find('ol', id='b_results')
-            if results_area:
-                for link in results_area.find_all('a', href=True):
-                    href = link['href']
-                    if href.startswith(('http://', 'https://')):
-                        clean_url, _ = urldefrag(href)
-                        if not any(clean_url.startswith(domain) for domain in exclude_domains):
-                            urls.add(clean_url)
-                            logging.info(f"Extracted URL (fallback): {clean_url}")
+        results_area = soup.find('ol', id='b_results')
+        if results_area and not urls:
+            for link in results_area.find_all('a', href=True):
+                href = link['href']
+                if href.startswith(('http://', 'https://')):
+                    clean_url, _ = urldefrag(href)
+                    if not any(clean_url.startswith(domain) for domain in exclude_domains):
+                        urls.add(clean_url)
+                        logging.info(f"Extracted URL (fallback): {clean_url}")
         if not urls:
             has_results = bool(soup.find('ol', id='b_results'))
             has_gs_cit = bool(soup.find('div', class_='gs_cit'))
@@ -117,7 +125,7 @@ def main():
                 all_urls.update(urls)
             else:
                 logging.warning(f"No content returned for {query}, page {page}")
-            delay = random.uniform(2, 4)
+            delay = random.uniform(3, 5)  # 增加延时
             logging.info(f"Sleeping for {delay:.2f} seconds")
             time.sleep(delay)
     
