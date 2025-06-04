@@ -1,0 +1,164 @@
+{
+    "GitHub": [
+        {
+            "url": "https://github.com/clash-verge-rev/clash-verge-rev",
+            "available": true
+        },
+        {
+            "url": "https://github.com/jia110/jia110.github.io/",
+            "available": true
+        },
+        {
+            "url": "https://github.com/jia110/jia110.github.io/issues",
+            "available": true
+        },
+        {
+            "url": "https://github.com/tuna/",
+            "available": true
+        },
+        {
+            "url": "https://github.com/tuna/issues",
+            "available": true
+        },
+        {
+            "url": "https://github.com/tuna/mirror-web",
+            "available": true
+        },
+        {
+            "url": "https://github.com/tuna/tunasync",
+            "available": true
+        },
+        {
+            "url": "https://github.com/tuna/tunasync-scripts",
+            "available": true
+        },
+        {
+            "url": "https://github.com/ustclug/discussions/",
+            "available": true
+        },
+        {
+            "url": "https://github.com/ustclug/mirrorrequest/",
+            "available": true
+        },
+        {
+            "url": "https://github.com/ustclug/ustcmirror-images",
+            "available": true
+        },
+        {
+            "url": "https://github.com/ustclug/yuki",
+            "available": true
+        },
+        {
+            "url": "https://jia110.github.io/about.htm",
+            "available": true
+        },
+        {
+            "url": "https://jia110.github.io/index.htm",
+            "available": true
+        },
+        {
+            "url": "https://mirrors.ustc.edu.cn/help/github-release.html",
+            "available": true
+        },
+        {
+            "url": "https://github.com.cnpmjs.org/",
+            "available": false
+        },
+        {
+            "url": "https://github.com/example/issues\",",
+            "available": false
+        },
+        {
+            "url": "https://github.com/example/mirror-request\",",
+            "available": false
+        },
+        {
+            "url": "https://github.com/mirrorz-org/mirrorz/blob/master/.github/workflows/deploy.yml).",
+            "available": false
+        },
+        {
+            "url": "https://github.com/mirrorz-org/oh-my-mirrorz)",
+            "available": false
+        },
+        {
+            "url": "https://github.com/mirrorz-org/org/>",
+            "available": false
+        },
+        {
+            "url": "https://kkgithub.com/",
+            "available": false
+        },
+        {
+            "url": "https://mirrors.tuna.tsinghua.edu.cn/github/",
+            "available": false
+        },
+        {
+            "url": "https://mirrors.ustc.edu.cn/github-release/",
+            "available": false
+        }
+    ],
+    "Wikipedia": [
+        {
+            "url": "https://zh.wikipedia.org/",
+            "available": true
+        },
+        {
+            "url": "https://google.150123.xyz/aaabbbccc/https/zh.wikipedia.org/wiki/Wikipedia:%E9%A6%96%E9%A1%B5",
+            "available": false
+        },
+        {
+            "url": "https://zhwk.kkwiki.win/wiki/Wikipedia:%E9%A6%96%E9%A1%B5",
+            "available": false
+        }
+    ],
+    "Google": [
+        {
+            "url": "https://groups.google.com/forum/#!forum/tuna-general",
+            "available": true
+        },
+        {
+            "url": "https://scholar.lanfanshu.cn/",
+            "available": true
+        },
+        {
+            "url": "https://scholar.niostack.com/",
+            "available": true
+        },
+        {
+            "url": "https://www.dotaindex.com/scholar",
+            "available": true
+        },
+        {
+            "url": "https://android.googlesource.com/mirror/manifest\",",
+            "available": false
+        },
+        {
+            "url": "https://google.150123.xyz/aaabbbccc/https/duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat&duckai=1m",
+            "available": false
+        },
+        {
+            "url": "https://google.150123.xyz/aaabbbccc/https/scholar.google.com",
+            "available": false
+        },
+        {
+            "url": "https://google.150123.xyz/aaabbbccc/https/www.bing.com",
+            "available": false
+        },
+        {
+            "url": "https://google.897653.xyz/aaabbbccc/https/duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat&duckai=1",
+            "available": false
+        },
+        {
+            "url": "https://google.897653.xyz/aaabbbccc/https/scholar.google.com",
+            "available": false
+        },
+        {
+            "url": "https://google.897653.xyz/aaabbbccc/https/www.bing.comg",
+            "available": false
+        },
+        {
+            "url": "https://scholar.google.com/",
+            "available": false
+        }
+    ]
+}
