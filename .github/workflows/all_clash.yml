@@ -40,12 +40,14 @@ jobs:
       run: |
         python subscribe/all_clash.py
         ls -lh data/  # 调试：查看生成的文件
+        cat error.log  # 调试：查看错误日志
 
     - name: 提交更改
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add data/all_clash.txt*  # 添加所有分割文件
+        git add error.log  # 添加日志文件以便调试
         git add .
         git commit -m "$(date '+%Y-%m-%d %H:%M:%S')" || echo "Nothing to commit"
 
