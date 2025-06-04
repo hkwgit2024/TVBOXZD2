@@ -37,5 +37,4 @@ jobs:
           git commit -m "Update mirror URLs [ci skip]" || echo "No changes to commit"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
+          GITHUB_TOKEN: ${{ secrets.BOT }}
