@@ -1,6 +1,6 @@
 更新时间,#genre#
 2025-06-04,url
-15:17:40,url
+16:42:00,url
 卫视频道,#genre#
 北京频道,#genre#
 上海频道,#genre#
@@ -8,6 +8,7 @@
 江苏频道,#genre#
 浙江频道,#genre#
 湖南频道,#genre#
+长沙新闻,http://phoneal.qing.mgtv.com/nn_live/nn_x64/dWlwPTEwMy4zOS4yMjYuMTAwJnRlcm09NSZxaWQ9JmNkbmV4X2lkPWFsX3Bob25lMyZjaHM9JmRlZj0xJnM9NTQ2ZDE3ZTY5N2JmNjE3YTEyZWRkODBkOGExZTQxN2YmdWlkPSZ1dWlkPTY5OGVhZjJjMWE2YTAwNGM5MDk4NDNjMTM1NGY3MTFiLTY3MjdlMjY0JnY9MiZhcz0wJmVzPTE3NDkwNTI4MzU,/CSXWMPP360.m3u8
 天津频道,#genre#
 重庆频道,#genre#
 河北频道,#genre#
