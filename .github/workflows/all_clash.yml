@@ -5,7 +5,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - 'subscribe/all_clash.py'
+      - 'subscribe/all_clash.py' # 确保脚本路径正确
   schedule:
     - cron: '0 */3 * * *'  # 每3小时运行一次
 
@@ -13,7 +13,7 @@ jobs:
   collect:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # 确保有写入权限来提交文件
 
     steps:
     - name: Checkout code
@@ -32,37 +32,43 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install requests python-dotenv tqdm PyYAML pysocks
+        # 只安装脚本实际需要的依赖：requests, tqdm, PyYAML
+        pip install requests tqdm PyYAML
         pip list  # 调试：列出安装的依赖版本
 
     - name: Run collection script
       env:
         URL_SOURCE: ${{ secrets.URL_SOURCE }}
-        ENABLE_PROTOCOL_TEST: ${{ vars.ENABLE_PROTOCOL_TEST || 'false' }}  # 默认禁用协议级测试
+        # ENABLE_PROTOCOL_TEST 相关的环境变量已不再被 all_clash.py 直接使用，因此在这里可以忽略或移除
       run: |
-        # 动态构造命令，根据 ENABLE_PROTOCOL_TEST 的值决定是否添加 --enable_protocol_test
-        PROTOCOL_TEST_FLAG=""
-        if [ "$ENABLE_PROTOCOL_TEST" = "true" ]; then
-          PROTOCOL_TEST_FLAG="--enable_protocol_test"
-        fi
-        python subscribe/all_clash.py $PROTOCOL_TEST_FLAG --test_timeout=2.0 --max_test_workers=4
+        # 运行主脚本，使用其自身的命令行参数
+        # --output 指定输出文件路径，这里使用 data/all_clash.txt
+        # --timeout 使用 workflow vars 或默认值 60
+        # --max_success 使用 workflow vars 或默认值 99999
+        python subscribe/all_clash.py --output data/all_clash.txt --timeout ${{ vars.REQUEST_TIMEOUT || 60 }} --max_success ${{ vars.MAX_SUCCESS_NODES || 99999 }}
+        
         echo "=== 生成文件列表 ==="
         ls -lh data/ || echo "data/ directory not found"
         echo "=== 错误日志 ==="
         cat error.log || echo "error.log not found"
-        echo "=== 成功 URL 数量 ==="
-        wc -l data/successful_urls.txt || echo "successful_urls.txt not found"
-        echo "=== 失败 URL 数量 ==="
-        wc -l data/failed_urls.txt || echo "failed_urls.txt not found"
+        # 移除不再生成的文件检查（successful_urls.txt 和 failed_urls.txt）
+        # echo "=== 成功 URL 数量 ==="
+        # wc -l data/successful_urls.txt || echo "successful_urls.txt not found"
+        # echo "=== 失败 URL 数量 ==="
+        # wc -l data/failed_urls.txt || echo "failed_urls.txt not found"
         echo "=== 输出文件内容预览（前10行） ==="
-        head -n 10 data/all_clash_*.txt || echo "No all_clash_*.txt files found"
+        head -n 10 data/all_clash.txt || echo "data/all_clash.txt not found" # 更新文件名
 
     - name: 提交更改
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        git add data/all_clash_*.txt data/successful_urls.txt data/failed_urls.txt error.log
-        git add .
+        # 只添加实际生成的文件：data/all_clash.txt 和 error.log
+        git add data/all_clash.txt error.log
+        # 移除不再需要添加的文件
+        # git add data/successful_urls.txt data/failed_urls.txt
+        
+        # 检查是否有实际更改，有更改才提交
         git diff --staged --quiet || git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
         # 如果没有更改，打印提示
         git diff --staged --quiet && echo "No changes to commit"
