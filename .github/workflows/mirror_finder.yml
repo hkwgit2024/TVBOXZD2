@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for proper merge
+          token: ${{ secrets.BOT }}  # Use BOT token for checkout
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,8 +36,9 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
+          git pull origin main --rebase  # Pull and rebase to resolve conflicts
           git add data/
           git commit -m "Update mirror URLs [ci skip]" || echo "No changes to commit"
-          git push
+          git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}  # Use BOT token for push
