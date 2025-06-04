@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 import os
 import requests
@@ -33,6 +32,7 @@ args = parser.parse_args()
 MAX_SUCCESS = args.max_success
 TIMEOUT = args.timeout
 OUTPUT_FILE = args.output
+MAX_FILE_SIZE = 95 * 1024 * 1024  # 95 MB，留余量
 
 def is_valid_url(url):
     """验证URL格式是否合法"""
@@ -97,16 +97,27 @@ print(f"经过格式验证的有效URL数量：{len(valid_urls)}")
 # 确保输出目录存在
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
-# 处理URL内容
+# 处理URL内容并分割输出文件
 success_count = 0
-with open(OUTPUT_FILE, 'w', encoding='utf-8') as out_file:
-    with ThreadPoolExecutor(max_workers=16) as executor:
-        future_to_url = {executor.submit(fetch_url, url): url for url in valid_urls}
-        for future in tqdm(as_completed(future_to_url), total=len(valid_urls), desc="处理URL"):
-            result = future.result()
-            if result and success_count < MAX_SUCCESS:
-                out_file.write(result.strip() + '\n')
-                success_count += 1
+file_index = 1
+current_size = 0
+out_file = open(f"{OUTPUT_FILE}.{file_index}", 'w', encoding='utf-8')
+
+with ThreadPoolExecutor(max_workers=16) as executor:
+    future_to_url = {executor.submit(fetch_url, url): url for url in valid_urls}
+    for future in tqdm(as_completed(future_to_url), total=len(valid_urls), desc="处理URL"):
+        result = future.result()
+        if result and success_count < MAX_SUCCESS:
+            result_size = len(result.encode('utf-8'))
+            if current_size + result_size > MAX_FILE_SIZE:
+                out_file.close()
+                file_index += 1
+                out_file = open(f"{OUTPUT_FILE}.{file_index}", 'w', encoding='utf-8')
+                current_size = 0
+            out_file.write(result.strip() + '\n')
+            current_size += result_size
+            success_count += 1
+out_file.close()
 
 # 最终结果报告
 print("\n" + "=" * 50)
@@ -117,4 +128,4 @@ if len(valid_urls) > 0:
     print(f"有效内容率：{success_count/len(valid_urls):.1%}")
 if success_count < MAX_SUCCESS:
     print("警告：未能达到目标数量，原始列表可能有效URL不足")
-print(f"结果文件已保存至：{OUTPUT_FILE}")
+print(f"结果文件已保存至：{OUTPUT_FILE}.1, {OUTPUT_FILE}.2, ...")
