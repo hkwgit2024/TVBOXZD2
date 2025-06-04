@@ -45,6 +45,7 @@ jobs:
           pip install pyyaml requests tenacity
           pip install dnspython
           pip install requests pyyaml dnspython aiohttp tqdm
+          pip install aiofiles
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'        
