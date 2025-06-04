@@ -1,25 +1,21 @@
 # -*- coding: utf-8 -*-
 import os
 import requests
-import socket
-import subprocess
-import time
+from urllib.parse import urlparse
 import base64
 import logging
-import yaml
-import hashlib
-import json
-from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import argparse
-import socks  # 需要安装 pysocks: pip install pysocks
+import re
+import yaml # 导入yaml库
+import json # 导入json库，用于处理yaml中的字典结构节点
 
-# --- 配置日志 ---
-logging.basicConfig(filename='error.log', level=logging.DEBUG,
+# 配置日志
+logging.basicConfig(filename='error.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-# --- 请求头 ---
+# 请求头
 headers = {
     'User-Agent': (
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
@@ -29,393 +25,241 @@ headers = {
     'Accept-Encoding': 'gzip, deflate'
 }
 
-# --- 命令行参数 ---
-parser = argparse.ArgumentParser(description="URL内容获取脚本，支持节点连通性测试和协议级测试")
-parser.add_argument('--max_success', type=int, default=99999, help="目标成功节点数量")
+# 命令行参数
+parser = argparse.ArgumentParser(description="URL内容获取脚本，支持多个URL来源和节点解析")
+parser.add_argument('--max_success', type=int, default=99999, help="目标成功数量")
 parser.add_argument('--timeout', type=int, default=60, help="请求超时时间（秒）")
 parser.add_argument('--output', type=str, default='data/all_clash.txt', help="输出文件路径")
-parser.add_argument('--max_size', type=int, default=100*1024*1024, help="单个文件最大大小（字节，100MB）")
-parser.add_argument('--max_total_size', type=int, default=1*1024*1024*1024, help="总输出大小限制（字节，1GB）")
-parser.add_argument('--test_timeout', type=float, default=2.0, help="节点测试超时时间（秒）")
-parser.add_argument('--max_test_workers', type=int, default=8, help="节点测试的最大并发数")
-parser.add_argument('--enable_protocol_test', action='store_true', help="启用协议级测试（Shadowsocks 和 Trojan）")
 args = parser.parse_args()
 
 MAX_SUCCESS = args.max_success
 TIMEOUT = args.timeout
 OUTPUT_FILE = args.output
-MAX_FILE_SIZE = args.max_size
-TOTAL_SIZE_LIMIT = args.max_total_size
-TEST_TIMEOUT = args.test_timeout
-MAX_TEST_WORKERS = args.max_test_workers
-ENABLE_PROTOCOL_TEST = args.enable_protocol_test
+TEMP_MERGED_FILE = 'temp_merged_nodes.txt' # 中间文件路径
 
-# --- 辅助函数 ---
 def is_valid_url(url):
+    """验证URL格式是否合法，仅接受 http 或 https 方案"""
     try:
         result = urlparse(url)
         return all([result.scheme in ['http', 'https'], result.netloc])
     except Exception:
         return False
 
-def get_url_list(source_url):
-    print(f"正在从源获取URL列表: {source_url}")
+def get_url_list_from_remote(url_source):
+    """从给定的公开网址获取 URL 列表"""
     try:
-        response = requests.get(source_url, headers=headers, timeout=60)
+        response = requests.get(url_source, headers=headers, timeout=10)
         response.raise_for_status()
-        raw_urls = response.text.splitlines()
-        valid_urls = [url.strip() for url in raw_urls if is_valid_url(url.strip())]
-        print(f"从 {source_url} 获取到 {len(valid_urls)} 个有效URL")
-        return valid_urls
+        text_content = response.text.strip()
+        raw_urls = [line.strip() for line in text_content.splitlines() if line.strip()]
+        print(f"从 {url_source} 获取到 {len(raw_urls)} 个URL")
+        return raw_urls
     except Exception as e:
-        print(f"获取URL列表失败 ({source_url}): {e}")
-        logging.error(f"Failed to get URL list from {source_url}: {e}")
+        logging.error(f"获取URL列表失败: {url_source} - {e}")
         return []
 
-def ping_node(server, timeout=TEST_TIMEOUT):
+def parse_content_to_nodes(content):
+    """
+    从文本内容中解析出各种类型的节点。
+    支持 Base64 解码、Clash YAML 格式的proxies，以及多种节点协议的直接链接。
+    """
+    if not content:
+        return []
+
+    found_nodes = set()
+    processed_content = content
+
+    # 1. 尝试 Base64 解码
     try:
-        cmd = ['ping', '-n' if os.name == 'nt' else '-c', '2', server]
-        subprocess.run(cmd, timeout=timeout, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        logging.info(f"Ping successful for {server}")
-        return True
-    except subprocess.CalledProcessError:
-        logging.warning(f"Ping failed for {server}")
-        return False
+        decoded_bytes = base64.b64decode(content)
+        processed_content = decoded_bytes.decode('utf-8')
+        # 记录解码成功的信息
+        logging.info("内容成功 Base64 解码。")
+    except Exception:
+        # 如果不是有效的Base64，就用原始内容
+        pass
+
+    # 2. 尝试 YAML 解析 (主要用于 Clash 配置)
+    try:
+        # 使用 safe_load 防止任意代码执行
+        parsed_data = yaml.safe_load(processed_content)
+        if isinstance(parsed_data, dict) and 'proxies' in parsed_data and isinstance(parsed_data['proxies'], list):
+            # 这是一个 Clash 配置的 proxies 部分
+            for proxy_entry in parsed_data['proxies']:
+                if isinstance(proxy_entry, dict):
+                    # 将代理字典转换为一个稳定的字符串表示形式，方便去重
+                    # 使用 JSON dumps 可以保证字典键的顺序，使得去重更可靠
+                    node_str_representation = json.dumps(proxy_entry, sort_keys=True, ensure_ascii=False) # ensure_ascii=False for Chinese chars
+                    found_nodes.add(node_str_representation)
+                # 兼容直接包含节点字符串的情况
+                elif isinstance(proxy_entry, str) and (
+                    proxy_entry.startswith("vmess://") or 
+                    proxy_entry.startswith("trojan://") or 
+                    proxy_entry.startswith("ss://") or 
+                    proxy_entry.startswith("ssr://") or
+                    proxy_entry.startswith("vless://") or
+                    proxy_entry.startswith("hy://") or 
+                    proxy_entry.startswith("hy2://") or 
+                    proxy_entry.startswith("hysteria://") or 
+                    proxy_entry.startswith("hysteria2://")
+                ):
+                    found_nodes.add(proxy_entry.strip())
+            logging.info("内容成功解析为 Clash YAML。")
+        elif isinstance(parsed_data, list):
+            # 有些订阅可能直接返回一个节点列表（YAML格式）
+            for item in parsed_data:
+                if isinstance(item, str):
+                    found_nodes.add(item.strip())
+            logging.info("内容成功解析为 YAML 列表。")
+    except yaml.YAMLError:
+        # 不是有效的 YAML 格式，忽略此错误，继续尝试正则表达式
+        pass
     except Exception as e:
-        logging.error(f"Ping error for {server}: {e}")
-        return False
+        logging.error(f"YAML 解析失败: {e}")
+        pass
 
-def test_node_connectivity(server, port, timeout=TEST_TIMEOUT):
+    # 3. 通过正则表达式提取节点（处理明文、非标准格式等）
+    # 仅匹配节点协议前缀，不再包含 http:// 或 https://
+    node_pattern = re.compile(
+        r'(vmess://\S+|'
+        r'trojan://\S+|'
+        r'ss://\S+|'
+        r'ssr://\S+|'
+        r'vless://\S+|'
+        r'hy://\S+|'
+        r'hy2://\S+|'
+        r'hysteria://\S+|'
+        r'hysteria2://\S+)'
+    )
+    
+    # 尝试在原始内容和解码后的内容中都查找
+    matches = node_pattern.findall(content)
+    for match in matches:
+        found_nodes.add(match.strip())
+    
+    if content != processed_content: # 如果成功解码了，也要在解码后的内容中查找
+        matches_decoded = node_pattern.findall(processed_content)
+        for match in matches_decoded:
+            found_nodes.add(match.strip())
+
+    return list(found_nodes)
+
+def fetch_and_parse_url(url):
+    """获取URL内容并解析出节点"""
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(timeout)
-        sock.connect((server, int(port)))
-        sock.close()
-        logging.info(f"Node {server}:{port} is reachable (TCP)")
-        return True
-    except Exception as e:
-        logging.error(f"Node {server}:{port} connection failed (TCP): {e}")
-        return False
-
-def test_proxy_node(node_line, timeout=TEST_TIMEOUT):
-    if not ENABLE_PROTOCOL_TEST:
-        return True  # 如果未启用协议级测试，直接返回 True
-    try:
-        if node_line.startswith('ss://'):
-            # 解析 Shadowsocks 节点
-            _, rest = node_line.split('://', 1)
-            user_info, host_port = rest.split('@', 1)
-            method, password = user_info.split(':', 1)
-            server, port = host_port.split('#', 1)[0].split(':', 1)
-            socks.set_default_proxy(socks.SOCKS5, server, int(port), username=method, password=password)
-            socket.socket = socks.socksocket
-            response = requests.get('https://api.ipify.org', timeout=timeout)
-            logging.info(f"Node {server}:{port} is working (Shadowsocks). External IP: {response.text}")
-            return True
-        elif node_line.startswith('trojan://'):
-            # 解析 Trojan 节点（仅示例，实际需 Trojan 客户端支持）
-            _, rest = node_line.split('://', 1)
-            password, host_port = rest.split('@', 1)
-            server, port = host_port.split('#', 1)[0].split(':', 1)
-            # Trojan 测试需要专用客户端（如 trojan-go），此处仅模拟 TCP 测试
-            logging.warning(f"Trojan protocol test not fully implemented, falling back to TCP test for {server}:{port}")
-            return test_node_connectivity(server, port, timeout)
-        else:
-            logging.warning(f"Protocol test not supported for {node_line}")
-            return True  # 对不支持的协议跳过协议级测试
-    except Exception as e:
-        logging.error(f"Proxy test failed for {node_line}: {e}")
-        return False
-    finally:
-        socket.socket = socket._socket.socket  # 重置 socket 以避免影响后续请求
-
-def test_node_async(node_line):
-    try:
-        node_key = get_node_key(node_line)
-        if node_key[0] in ['ss', 'vless', 'trojan', 'hysteria2', 'ssr']:
-            server, port = node_key[-2], node_key[-1]
-            if ping_node(server) and test_node_connectivity(server, port):
-                if test_proxy_node(node_line):
-                    return node_line
-        logging.warning(f"Skipping node with unsupported key format or failed test: {node_line}")
-        return None
-    except Exception as e:
-        logging.error(f"Error testing node {node_line}: {e}")
-        return None
-
-def get_node_key(node_line):
-    node_line = node_line.strip()
-    fallback_key = ('fallback_hash', hashlib.sha256(node_line.encode('utf-8')).hexdigest())
-    try:
-        if '://' not in node_line:
-            return fallback_key
-        protocol_part, rest = node_line.split('://', 1)
-        protocol = protocol_part.lower()
-        rest_no_fragment = rest.split('#', 1)[0]  # 移除 # 后的名称
-
-        if protocol == 'vmess':
-            try:
-                encoded_json = rest_no_fragment
-                missing_padding = len(encoded_json) % 4
-                if missing_padding:
-                    encoded_json += '=' * (4 - missing_padding)
-                decoded_json_str = base64.b64decode(encoded_json).decode('utf-8')
-                config = json.loads(decoded_json_str)
-                uuid = config.get('id')
-                server_address = str(config.get('add', '')).lower().rstrip('.')
-                port = str(config.get('port', ''))
-                if uuid and server_address and port:
-                    return ('vmess', uuid, server_address, port)
-            except Exception:
-                return fallback_key
-
-        elif protocol == 'ssr':
-            try:
-                decoded_ssr = base64.urlsafe_b64decode(rest_no_fragment + '=' * (4 - len(rest_no_fragment) % 4)).decode('utf-8')
-                parts = decoded_ssr.split(':')
-                if len(parts) >= 6:
-                    server_host = parts[0].lower().rstrip('.')
-                    server_port = parts[1]
-                    password = parts[5].split('/')[0]
-                    return ('ssr', password, server_host, server_port)
-                return fallback_key
-            except Exception:
-                return fallback_key
-
-        elif protocol in ['ss', 'vless', 'trojan', 'hysteria2']:
-            user_info = ""
-            host_spec_part = rest_no_fragment
-            if '@' in rest_no_fragment:
-                user_info, host_spec_part = rest_no_fragment.split('@', 1)
-            server_host = ""
-            server_port = ""
-            if '?' in host_spec_part:
-                host_spec_part, _ = host_spec_part.split('?', 1)
-            last_colon_idx = host_spec_part.rfind(':')
-            if last_colon_idx != -1 and host_spec_part[last_colon_idx:].lstrip(':').isdigit():
-                server_port = host_spec_part[last_colon_idx+1:]
-                server_host = host_spec_part[:last_colon_idx].lower().rstrip('.')
-                if server_host.startswith('[') and server_host.endswith(']'):
-                    server_host = server_host[1:-1]
-            else:
-                server_host = host_spec_part.lower().rstrip('.')
-            identifier = user_info
-
-            if protocol == 'ss':
-                if ':' in identifier:
-                    method, password = identifier.split(':', 1)
-                    if server_host and server_port:
-                        return (protocol, method, password, server_host, server_port)
-                return fallback_key
-            elif protocol in ['vless', 'trojan', 'hysteria2']:
-                uuid_or_password = identifier
-                if uuid_or_password and server_host and server_port:
-                    return (protocol, uuid_or_password, server_host, server_port)
-                return fallback_key
-        else:
-            logging.warning(f"Unsupported protocol {protocol} in node: {node_line}")
-            return fallback_key
-    except Exception as e:
-        logging.debug(f"Failed to get node key for {node_line}: {e}")
-        return fallback_key
-
-def fetch_url(url):
-    attempts = 3
-    for attempt in range(1, attempts + 1):
-        try:
-            resp = requests.get(url, headers=headers, timeout=TIMEOUT)
-            resp.raise_for_status()
-            return resp.text.strip()
-        except requests.exceptions.RequestException as e:
-            logging.warning(f"Attempt {attempt} failed for {url}: {e}")
-            if attempt == attempts:
-                logging.error(f"Failed to fetch {url} after {attempts} attempts")
-                raise
-            time.sleep(2 ** attempt)  # Exponential backoff: 2, 4, 8 seconds
-
-def process_url(url):
-    try:
-        head_resp = requests.head(url, headers=headers, timeout=TIMEOUT, allow_redirects=True)
-        head_resp.raise_for_status()
-        content_type = head_resp.headers.get('Content-Type', '')
-        content_length = int(head_resp.headers.get('Content-Length', 0))
+        resp = requests.get(url, headers=headers, timeout=TIMEOUT)
+        resp.raise_for_status()
+        content = resp.text.strip()
         
-        if 'text' not in content_type.lower() and 'application/x-yaml' not in content_type.lower() and 'application/json' not in content_type.lower():
-            logging.warning(f"Skipping {url}: Invalid Content-Type: {content_type}")
-            return None, url, False
-        if content_length > 10 * 1024 * 1024:
-            logging.warning(f"Skipping {url}: Content too large ({content_length} bytes)")
-            return None, url, False
+        # 简单过滤一些无效内容
+        if len(content) < 10:
+            logging.warning(f"获取到内容过短，可能无效: {url}")
+            return []
         
-        text_content = fetch_url(url)
-        decoded_content = None
-        is_base64_decoded = False
-        
-        try:
-            decoded_content = base64.b64decode(text_content).decode('utf-8')
-            is_base64_decoded = True
-        except (base64.binascii.Error, UnicodeDecodeError):
-            pass
-
-        content_to_parse = decoded_content if is_base64_decoded else text_content
-
-        try:
-            yaml_config = yaml.safe_load(content_to_parse)
-            if isinstance(yaml_config, dict) and 'proxies' in yaml_config and isinstance(yaml_config['proxies'], list):
-                proxy_nodes = []
-                for proxy in yaml_config['proxies']:
-                    if isinstance(proxy, dict) and 'type' in proxy and 'server' in proxy and 'port' in proxy:
-                        proxy_nodes.append(str(proxy))
-                    else:
-                        logging.warning(f"Skipping invalid proxy in Clash config from {url}: {proxy}")
-                if proxy_nodes:
-                    return content_to_parse, url, True
-                else:
-                    logging.warning(f"Clash config found but no valid proxies extracted from {url}.")
-                    return None, url, False
-            else:
-                if len(text_content) > 50 and any(text_content.startswith(p) for p in ["ss://", "vmess://", "vless://", "trojan://", "hysteria2://"]):
-                    return content_to_parse, url, True
-                else:
-                    logging.warning(f"Content is too short or not a recognized format: {url}")
-                    return None, url, False
-        except yaml.YAMLError:
-            if len(text_content) > 50 and any(text_content.startswith(p) for p in ["ss://", "vmess://", "vless://", "trojan://", "hysteria2://"]):
-                return content_to_parse, url, True
-            else:
-                logging.warning(f"Direct text content is too short or not recognized: {url}")
-                return None, url, False
-        except Exception as e:
-            logging.error(f"Error during content parsing for {url}: {e}")
-            return None, url, False
-    except requests.exceptions.Timeout:
-        logging.error(f"Request timed out: {url}")
-        return None, url, False
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request failed for {url}: {e}")
-        return None, url, False
+        # 将获取到的内容传递给解析函数
+        nodes = parse_content_to_nodes(content)
+        return nodes
     except Exception as e:
-        logging.error(f"Unhandled error processing {url}: {e}")
-        return None, url, False
+        logging.error(f"获取或解析URL内容失败: {url} - {e}")
+        return []
 
-# --- 主程序逻辑 ---
+# --- 主程序流程 ---
+
+# 从环境变量中读取 URL_SOURCE 并调试
 URL_SOURCE = os.environ.get("URL_SOURCE")
 print(f"调试信息 - 读取到的 URL_SOURCE 值: {URL_SOURCE}")
-if not URL_SOURCE:
-    print("错误：环境变量 'URL_SOURCE' 未设置。请设置环境变量并重试。")
-    logging.critical("Environment variable 'URL_SOURCE' not set. Exiting.")
-    exit(1)
 
-url_sources = [URL_SOURCE]
-all_raw_urls = []
-for source in url_sources:
-    raw_urls = get_url_list(source)
-    all_raw_urls.extend(raw_urls)
+initial_urls_to_fetch = set()
 
-unique_urls = list(sorted(list({url.strip() for url in all_raw_urls if url.strip()})))
-print(f"合并后唯一URL数量：{len(unique_urls)}")
+# 从远程 URL_SOURCE 获取 URL 列表
+if URL_SOURCE:
+    print(f"将从远程URL_SOURCE获取订阅链接: {URL_SOURCE}")
+    raw_urls_from_remote = get_url_list_from_remote(URL_SOURCE)
+    # 将从远程获取的URL添加到待处理队列，这里假设这些URL都是订阅链接
+    for url in raw_urls_from_remote:
+        if is_valid_url(url): # 确保是有效的HTTP/HTTPS链接才加入fetch队列
+            initial_urls_to_fetch.add(url)
+        else: # 如果不是有效的URL，但可能是直接的节点字符串，也先尝试解析并添加到临时集合
+            # 这种情况是为了处理 URL_SOURCE 中直接包含节点字符串的情况，而非订阅链接
+            nodes_from_direct_string = parse_content_to_nodes(url)
+            if nodes_from_direct_string:
+                # 这种情况下，直接将解析出的节点添加到阶段一的合并集合中
+                # 这样做是为了确保这些直接的节点字符串也能参与去重和保存
+                # 注意：temp_merged_nodes_set 在这里还没有初始化，需要先初始化
+                # 或者将这部分节点收集起来，在阶段一执行前统一处理
+                # 考虑到多线程，我们统一在阶段一的循环后收集
+                pass # 暂时不做特殊处理，让 fetch_and_parse_url 来处理，如果它是URL会请求，如果不是URL，会作为字符串被 parse_content_to_nodes 处理
+else:
+    print("错误：环境变量 'URL_SOURCE' 未设置。无法获取订阅链接。")
+    exit(1) # 如果没有URL_SOURCE，则脚本无法执行
 
-output_dir = os.path.dirname(OUTPUT_FILE)
-os.makedirs(output_dir, exist_ok=True)
+# 确保输出目录存在
+os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
-successful_urls = []
-failed_urls = []
-seen_node_keys = set()
-success_count = 0
-file_index = 1
-current_file_size = 0
-total_size = 0
-base_output_file = os.path.splitext(OUTPUT_FILE)[0]
-extension = os.path.splitext(OUTPUT_FILE)[1]
+# 阶段一：解析URL内容，下载并合并多个URL的节点到临时文件
+print("\n--- 阶段一：获取并合并所有来源的节点 ---")
+temp_merged_nodes_set = set() # 用于阶段一的去重
 
-def open_new_output_file(index):
-    file_path = f"{base_output_file}_{index}{extension}"
-    logging.info(f"Opening new output file: {file_path}")
-    return open(file_path, 'w', encoding='utf-8')
+total_urls_to_process = len(initial_urls_to_fetch)
+processed_count = 0
 
-out_file = None
+if total_urls_to_process > 0:
+    with ThreadPoolExecutor(max_workers=16) as executor:
+        future_to_url = {executor.submit(fetch_and_parse_url, url): url for url in initial_urls_to_fetch}
+        for future in tqdm(as_completed(future_to_url), total=total_urls_to_process, desc="处理URL并解析节点"):
+            url = future_to_url[future]
+            try:
+                nodes = future.result()
+                for node in nodes:
+                    temp_merged_nodes_set.add(node) # 添加到集合进行去重
+                processed_count += 1
+            except Exception as e:
+                logging.error(f"处理URL {url} 出现异常: {e}")
+
+# 将阶段一收集到的节点写入临时文件
+with open(TEMP_MERGED_FILE, 'w', encoding='utf-8') as temp_file:
+    for node in temp_merged_nodes_set:
+        temp_file.write(node.strip() + '\n')
+
+print(f"\n阶段一完成。从所有订阅链接中合并到 {len(temp_merged_nodes_set)} 个唯一节点，已保存至 {TEMP_MERGED_FILE}")
+
+# 阶段二：从聚合的节点文件中再次进行去重后输出保存
+print("\n--- 阶段二：最终去重并保存节点 ---")
+final_unique_nodes = set()
 try:
-    out_file = open_new_output_file(file_index)
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        future_to_url = {executor.submit(process_url, url): url for url in unique_urls}
-        for future in tqdm(as_completed(future_to_url), total=len(unique_urls), desc="处理URL"):
-            result_content, original_url, success = future.result()
-            if result_content and success_count < MAX_SUCCESS:
-                nodes = result_content.strip().splitlines()
-                nodes = [node.strip() for node in nodes if node.strip()]
-                if not nodes:
-                    logging.warning(f"No valid nodes found in {original_url}")
-                    failed_urls.append(original_url)
-                    continue
-                # 过滤过期节点
-                nodes = [node for node in nodes if not any(keyword in node for keyword in ['过期', '续费', 'expired'])]
-                # 异步测试节点连通性
-                with ThreadPoolExecutor(max_workers=MAX_TEST_WORKERS) as test_executor:
-                    valid_nodes = list(test_executor.map(test_node_async, nodes))
-                    valid_nodes = [n for n in valid_nodes if n]
-                
-                current_batch_unique_nodes = []
-                for node_line in valid_nodes:
-                    node_key = get_node_key(node_line)
-                    if node_key in seen_node_keys:
-                        logging.debug(f"Duplicate node skipped: {node_line} (key: {node_key})")
-                        continue
-                    seen_node_keys.add(node_key)
-                    current_batch_unique_nodes.append(node_line)
-                    success_count += 1
-                    logging.info(f"Added valid node: {node_line}")
-                    if success_count >= MAX_SUCCESS:
-                        break
-                
-                if current_batch_unique_nodes:
-                    content_to_write = '\n'.join(current_batch_unique_nodes)
-                    result_bytes = (content_to_write + '\n').encode('utf-8')
-                    if total_size + len(result_bytes) > TOTAL_SIZE_LIMIT:
-                        logging.warning(f"Reached total size limit ({TOTAL_SIZE_LIMIT / (1024*1024):.2f} MB). Stopping write operations.")
-                        if out_file and not out_file.closed:
-                            out_file.close()
-                        break
-                    if current_file_size + len(result_bytes) > MAX_FILE_SIZE:
-                        logging.info(f"Current file {out_file.name} reached max size. Switching to new file.")
-                        if out_file and not out_file.closed:
-                            out_file.close()
-                        file_index += 1
-                        current_file_size = 0
-                        out_file = open_new_output_file(file_index)
-                    out_file.write(content_to_write + '\n')
-                    current_file_size += len(result_bytes)
-                    total_size += len(result_bytes)
-                    successful_urls.append(original_url)
-                    logging.info(f"Processed {original_url}: {len(nodes)} nodes found, {len(current_batch_unique_nodes)} unique and valid nodes added")
-                else:
-                    logging.warning(f"No valid nodes after testing for {original_url}")
-                    failed_urls.append(original_url)
-            else:
-                if not result_content and not success:
-                    failed_urls.append(original_url)
-            if success_count >= MAX_SUCCESS:
-                logging.info(f"Reached MAX_SUCCESS ({MAX_SUCCESS}) unique nodes. Terminating further URL processing.")
-                break
-finally:
-    if out_file and not out_file.closed:
-        out_file.close()
-        logging.info(f"Closed final output file: {out_file.name}")
+    with open(TEMP_MERGED_FILE, 'r', encoding='utf-8') as temp_file:
+        for line in temp_file:
+            stripped_line = line.strip()
+            if stripped_line:
+                final_unique_nodes.add(stripped_line)
+except FileNotFoundError:
+    print(f"警告：未找到临时文件 {TEMP_MERGED_FILE}，可能阶段一没有成功获取到任何节点。")
+except Exception as e:
+    logging.error(f"读取临时文件 {TEMP_MERGED_FILE} 失败: {e}")
 
-with open(os.path.join(output_dir, 'successful_urls.txt'), 'w', encoding='utf-8') as f:
-    f.write('\n'.join(successful_urls))
-print(f"成功URL记录至：{os.path.join(output_dir, 'successful_urls.txt')}")
+success_count = 0
+with open(OUTPUT_FILE, 'w', encoding='utf-8') as out_file:
+    for node in sorted(list(final_unique_nodes)): # 排序后写入，方便查看和比较
+        if success_count < MAX_SUCCESS:
+            out_file.write(node + '\n')
+            success_count += 1
+        else:
+            break
 
-with open(os.path.join(output_dir, 'failed_urls.txt'), 'w', encoding='utf-8') as f:
-    f.write('\n'.join(failed_urls))
-print(f"失败URL记录至：{os.path.join(output_dir, 'failed_urls.txt')}")
+# 清理临时文件
+if os.path.exists(TEMP_MERGED_FILE):
+    os.remove(TEMP_MERGED_FILE)
+    print(f"已删除临时文件：{TEMP_MERGED_FILE}")
 
+# 最终结果报告
 print("\n" + "=" * 50)
 print("最终结果：")
-print(f"处理URL总数：{len(unique_urls)}")
-print(f"成功获取并去重节点数：{success_count}")
-print(f"输出文件数量：{file_index}")
-print(f"总输出大小：{total_size / (1024*1024):.2f} MB")
-if len(unique_urls) > 0:
-    print(f"成功处理URL率：{len(successful_urls)/len(unique_urls):.1%}")
-print(f"结果文件已保存至：{base_output_file}_[1-{file_index}]{extension}")
+print(f"待处理订阅链接总数：{len(initial_urls_to_fetch)}")
+print(f"初步聚合的唯一节点数：{len(temp_merged_nodes_set)}")
+print(f"最终去重并成功保存的节点数：{success_count}")
+if len(temp_merged_nodes_set) > 0:
+    print(f"最终有效内容率（相对于初步聚合）：{success_count/len(temp_merged_nodes_set):.1%}")
+if success_count < MAX_SUCCESS:
+    print("警告：未能达到目标数量，原始列表可能有效URL/节点不足，或部分URL获取失败。")
+print(f"结果文件已保存至：{OUTPUT_FILE}")
 print("=" * 50)
