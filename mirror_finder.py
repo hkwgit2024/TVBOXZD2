@@ -1,7 +1,9 @@
+
 import requests
 import os
 from bs4 import BeautifulSoup
 import json
+import csv
 from datetime import datetime
 import re
 
@@ -47,11 +49,11 @@ def fetch_mirror_urls_from_web():
                 if not href.startswith("http"):
                     href = requests.compat.urljoin(url, href)
                 
-                if "github" in href.lower() and href not in mirrors["GitHub"]:
+                if "github" in href.lower() and href not in [m["url"] for m in mirrors["GitHub"]]:
                     mirrors["GitHub"].append({"url": href, "available": check_url_availability(href)})
-                elif "wikipedia" in href.lower() and href not in mirrors["Wikipedia"]:
+                elif "wikipedia" in href.lower() and href not in [m["url"] for m in mirrors["Wikipedia"]]:
                     mirrors["Wikipedia"].append({"url": href, "available": check_url_availability(href)})
-                elif ("google" in href.lower() or "scholar" in href.lower()) and href not in mirrors["Google"]:
+                elif ("google" in href.lower() or "scholar" in href.lower()) and href not in [m["url"] for m in mirrors["Google"]]:
                     mirrors["Google"].append({"url": href, "available": check_url_availability(href)})
         except requests.RequestException as e:
             print(f"Error fetching URLs from {url}: {e}")
@@ -93,7 +95,6 @@ def fetch_mirror_urls_from_github():
 
 def fetch_mirror_urls_from_search():
     # Simulate search engine results (replace with SerpAPI or similar if available)
-    # Static list for demonstration; ideally, use an API like SerpAPI
     search_results = [
         "https://github.com.cnpmjs.org/",
         "https://zh.wikipedia.org/",
@@ -141,12 +142,22 @@ def merge_mirrors(*mirror_lists):
 def save_to_file(mirrors, data_dir):
     # Generating timestamp for the output file
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_file = os.path.join(data_dir, f"mirror_urls_{timestamp}.json")
+    json_file = os.path.join(data_dir, f"mirror_urls_{timestamp}.json")
+    csv_file = os.path.join(data_dir, f"mirror_urls_{timestamp}.csv")
     
-    # Saving mirrors to a JSON file
-    with open(output_file, "w", encoding="utf-8") as f:
+    # Save JSON
+    with open(json_file, "w", encoding="utf-8") as f:
         json.dump(mirrors, f, ensure_ascii=False, indent=4)
-    print(f"Mirror URLs saved to {output_file}")
+    
+    # Save CSV
+    with open(csv_file, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Service", "URL", "Available"])  # CSV header
+        for service, urls in mirrors.items():
+            for item in urls:
+                writer.writerow([service, item["url"], item["available"]])
+    
+    print(f"Mirror URLs saved to {json_file} and {csv_file}")
 
 def main():
     # Ensure data directory exists
