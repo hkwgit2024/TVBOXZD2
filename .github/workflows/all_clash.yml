@@ -33,7 +33,6 @@ jobs:
     - name: Install dependencies
       run: |
         pip install requests python-dotenv tqdm PyYAML pysocks
-        # tenacity 已移除，因为脚本使用自定义重试逻辑
         pip list  # 调试：列出安装的依赖版本
 
     - name: Run collection script
@@ -41,7 +40,12 @@ jobs:
         URL_SOURCE: ${{ secrets.URL_SOURCE }}
         ENABLE_PROTOCOL_TEST: ${{ vars.ENABLE_PROTOCOL_TEST || 'false' }}  # 默认禁用协议级测试
       run: |
-        python subscribe/all_clash.py --enable_protocol_test=$ENABLE_PROTOCOL_TEST --test_timeout=2.0 --max_test_workers=4
+        # 动态构造命令，根据 ENABLE_PROTOCOL_TEST 的值决定是否添加 --enable_protocol_test
+        PROTOCOL_TEST_FLAG=""
+        if [ "$ENABLE_PROTOCOL_TEST" = "true" ]; then
+          PROTOCOL_TEST_FLAG="--enable_protocol_test"
+        fi
+        python subscribe/all_clash.py $PROTOCOL_TEST_FLAG --test_timeout=2.0 --max_test_workers=4
         echo "=== 生成文件列表 ==="
         ls -lh data/ || echo "data/ directory not found"
         echo "=== 错误日志 ==="
