@@ -41,10 +41,10 @@ jobs:
         URL_SOURCE: ${{ secrets.URL_SOURCE }}
       run: |
         # 运行主脚本，使用其自身的命令行参数
-        # --output 指定输出文件路径，这里使用 data/all_clash.txt
+        # --output 指定输出文件路径，这里使用 data/all_clash.yaml
         # --timeout 使用 workflow vars 或默认值 60
         # --max_success 使用 workflow vars 或默认值 99999
-        python subscribe/all_clash.py --output data/all_clash.txt --timeout ${{ vars.REQUEST_TIMEOUT || 60 }} --max_success ${{ vars.MAX_SUCCESS_NODES || 99999 }}
+        python subscribe/all_clash.py --output data/all_clash.yaml --timeout ${{ vars.REQUEST_TIMEOUT || 60 }} --max_success ${{ vars.MAX_SUCCESS_NODES || 99999 }}
         
         echo "=== 生成文件列表 ==="
         ls -lh data/ || echo "data/ directory not found"
@@ -57,14 +57,14 @@ jobs:
         echo "=== 失败 URL 数量 ==="
         wc -l data/failed_urls.txt || echo "failed_urls.txt not found" # 更新
         echo "=== 输出文件内容预览（前10行） ==="
-        head -n 10 data/all_clash.txt || echo "data/all_clash.txt not found" # 更新文件名
+        head -n 10 data/all_clash.yaml || echo "data/all_clash.yaml not found" # 更新文件名
 
     - name: 提交更改
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        # 添加所有新生成的文件以及原有的 all_clash.txt 和 error.log
-        git add data/all_clash.txt data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt error.log
+        # 添加所有新生成的文件以及原有的 all_clash.yaml 和 error.log
+        git add data/all_clash.yaml data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt error.log
         
         # 检查是否有实际更改，有更改才提交
         git diff --staged --quiet || git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
