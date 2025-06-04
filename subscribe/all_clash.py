@@ -13,9 +13,11 @@ import json
 import csv
 import hashlib
 import ipaddress
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # 配置日志
-logging.basicConfig(filename='error.log', level=logging.ERROR,
+logging.basicConfig(filename='error.log', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 请求头
@@ -31,11 +33,11 @@ headers = {
 # 命令行参数解析
 parser = argparse.ArgumentParser(description="URL内容获取脚本，支持多个URL来源和节点解析")
 parser.add_argument('--max_success', type=int, default=99999, help="目标成功数量")
-parser.add_argument('--timeout', type=int, default=60, help="请求超时时间（秒）")
+parser.add_argument('--timeout', type=int, default=30, help="请求超时时间（秒）")
 parser.add_argument('--output', type=str, default='data/all_clash.yaml', help="输出文件路径")
 args = parser.parse_args()
 
-# 全局变量，从命令行参数或默认值获取
+# 全局变量
 MAX_SUCCESS = args.max_success
 TIMEOUT = args.timeout
 OUTPUT_FILE = args.output
@@ -44,7 +46,7 @@ STATISTICS_FILE = 'data/url_statistics.csv'
 SUCCESS_URLS_FILE = 'data/successful_urls.txt'
 FAILED_URLS_FILE = 'data/failed_urls.txt'
 
-# 定义如果节点名称包含这些关键词，则直接删除该节点
+# 定义删除关键词
 DELETE_KEYWORDS = [
     '剩余流量', '套餐到期', '流量', '到期', '过期', '免费', '试用', '体验', '限时', '限制',
     '已用', '可用', '不足', '到期时间', '倍率', '返利', '充值', '续费', '用量', '订阅'
@@ -75,7 +77,11 @@ def is_valid_ip_address(host):
 def get_url_list_from_remote(url_source):
     """从给定的公开网址获取 URL 列表"""
     try:
-        response = requests.get(url_source, headers=headers, timeout=10)
+        session = requests.Session()
+        retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
+        response = session.get(url_source, headers=headers, timeout=10)
         response.raise_for_status()
         text_content = response.text.strip()
         raw_urls = [line.strip() for line in text_content.splitlines() if line.strip()]
@@ -86,10 +92,7 @@ def get_url_list_from_remote(url_source):
         return []
 
 def parse_content_to_nodes(content):
-    """
-    从文本内容中解析出各种类型的节点。
-    返回的节点格式保持原始字符串或字典形式。
-    """
+    """从文本内容中解析出节点"""
     if not content:
         return []
 
@@ -110,7 +113,6 @@ def parse_content_to_nodes(content):
         if isinstance(parsed_data, dict) and 'proxies' in parsed_data and isinstance(parsed_data['proxies'], list):
             for proxy_entry in parsed_data['proxies']:
                 if isinstance(proxy_entry, dict):
-                    # 确保 name 字段是字符串
                     if 'name' in proxy_entry and not isinstance(proxy_entry['name'], str):
                         proxy_entry['name'] = str(proxy_entry['name'])
                     found_nodes.append(proxy_entry)
@@ -159,33 +161,46 @@ def parse_content_to_nodes(content):
 def fetch_and_parse_url(url):
     """
     获取URL内容并解析出节点。
-    返回一个元组：(节点列表, 是否成功, 错误信息(如果失败))
+    返回 (节点列表, 是否成功, 错误信息, 状态码)
     """
+    session = requests.Session()
+    retries = Retry(total=2, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+
     try:
-        resp = requests.get(url, headers=headers, timeout=TIMEOUT)
+        logging.debug(f"开始请求 URL: {url}")
+        resp = session.get(url, headers=headers, timeout=TIMEOUT)
         resp.raise_for_status()
         content = resp.text.strip()
         
         if len(content) < 10:
             logging.warning(f"获取到内容过短，可能无效: {url}")
-            return [], False, "内容过短"
+            return [], False, "内容过短", resp.status_code
         
         nodes = parse_content_to_nodes(content)
-        return nodes, True, None
+        logging.debug(f"URL {url} 解析到 {len(nodes)} 个节点")
+        return nodes, True, None, resp.status_code
     except requests.exceptions.Timeout:
         logging.error(f"请求超时: {url}")
-        return [], False, "请求超时"
+        return [], False, "请求超时", None
+    except requests.exceptions.ConnectionError as e:
+        logging.error(f"连接失败: {url} - {e}")
+        return [], False, f"连接失败: {e}", None
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"HTTP错误: {url} - {e}")
+        return [], False, f"HTTP错误: {e}", None
     except requests.exceptions.RequestException as e:
         logging.error(f"请求失败: {url} - {e}")
-        return [], False, f"请求失败: {e}"
+        return [], False, f"请求失败: {e}", None
     except Exception as e:
         logging.error(f"处理URL异常: {url} - {e}")
-        return [], False, f"未知异常: {e}"
+        return [], False, f"未知异常: {e}", None
 
 def write_statistics_to_csv(statistics_data, filename):
     """将统计数据写入CSV文件"""
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['URL', '节点数量', '状态', '错误信息']
+        fieldnames = ['URL', '节点数量', '状态', '错误信息', '状态码']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
@@ -201,21 +216,17 @@ def write_urls_to_file(urls, filename):
     print(f"URL列表已保存至：{filename}")
 
 def clean_node_name(name, index=None):
-    """
-    清理节点名称，移除冗余信息，保留核心关键字，并生成更直观的名称。
-    """
+    """清理节点名称"""
     if not isinstance(name, str):
         name = str(name)
 
     cleaned_name = name.strip()
 
-    # 1. 移除括号内的次要信息
     cleaned_name = re.sub(r'【[^】]*?(流量|到期|过期|充值|续费)[^】]*】', '', cleaned_name)
     cleaned_name = re.sub(r'\[[^]]*?(流量|到期|过期|充值|续费)[^\]]*\]', '', cleaned_name)
     cleaned_name = re.sub(r'\([^)]*?(流量|到期|过期|充值|续费)[^)]*\)', '', cleaned_name)
     cleaned_name = re.sub(r'（[^）]*?(流量|到期|过期|充值|续费)[^）]*）', '', cleaned_name)
 
-    # 2. 移除冗余关键词
     redundant_keywords_to_remove = [
         r'\d+%', r'\d{4}-\d{2}-\d{2}', r'\d{2}-\d{2}', r'x\d+',
         r'秒杀', r'活动', r'新年', r'福利', r'VIP\d*', r'Pro', r'Lite', r'Plus',
@@ -227,13 +238,9 @@ def clean_node_name(name, index=None):
     for keyword in redundant_keywords_to_remove:
         cleaned_name = re.sub(keyword, ' ', cleaned_name, flags=re.IGNORECASE).strip()
 
-    # 3. 保留更多有意义的字符
     cleaned_name = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9\s\.\-_@#|]', ' ', cleaned_name)
-
-    # 4. 合并多个空格并去除首尾空格
     cleaned_name = re.sub(r'\s+', ' ', cleaned_name).strip()
 
-    # 5. 标准化区域名称
     region_map = {
         '香港': 'HK', '台湾': 'TW', '日本': 'JP', '新加坡': 'SG', '美国': 'US', '英国': 'UK',
         '德国': 'DE', '韩国': 'KR', '马来': 'MY', '泰国': 'TH', '菲律宾': 'PH', '越南': 'VN',
@@ -243,7 +250,6 @@ def clean_node_name(name, index=None):
     for full_name, short_name in region_map.items():
         cleaned_name = cleaned_name.replace(full_name, short_name)
 
-    # 6. 提取有意义的关键词
     meaningful_keywords = ['IPLC', 'IEPL', '专线', '中转', '直连']
     preserved_info = []
     for keyword in meaningful_keywords:
@@ -254,7 +260,6 @@ def clean_node_name(name, index=None):
     if node_number_match:
         preserved_info.append(node_number_match.group(0))
 
-    # 7. 构建更直观的名称
     if not cleaned_name or len(cleaned_name) <= 3:
         cleaned_name = 'Node'
         if any(region in name for region in region_map.values()):
@@ -265,20 +270,16 @@ def clean_node_name(name, index=None):
         if preserved_info:
             cleaned_name += ' ' + ' '.join(preserved_info)
 
-    # 8. 添加节点编号
     if index is not None:
         cleaned_name += f"-{index:02d}"
 
-    # 9. 截断过长名称
     if len(cleaned_name) > 80:
         cleaned_name = cleaned_name[:80].rstrip() + '...'
 
     return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
 
 def _generate_node_fingerprint(node):
-    """
-    为Clash代理字典或节点链接生成一个唯一的指纹（哈希值）。
-    """
+    """为节点生成唯一指纹"""
     if isinstance(node, dict):
         fingerprint_data = {
             'type': node.get('type'),
@@ -364,9 +365,7 @@ def _generate_node_fingerprint(node):
     return None
 
 def deduplicate_and_standardize_nodes(raw_nodes_list):
-    """
-    对混合格式的节点进行去重，标准化为Clash YAML代理字典，并根据关键词过滤。
-    """
+    """对节点进行去重和标准化"""
     unique_node_fingerprints = set()
     final_clash_proxies = []
 
@@ -376,11 +375,11 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
 
         if isinstance(node, dict):
             clash_proxy_dict = node
-            node_raw_name = str(node.get('name', ''))  # 强制转换为字符串
+            node_raw_name = str(node.get('name', '')) 
         elif isinstance(node, str):
             try:
                 parsed_url = urlparse(node)
-                node_raw_name = str(parsed_url.fragment)  # 强制转换为字符串
+                node_raw_name = str(parsed_url.fragment) 
                 if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
                     logging.warning(f"跳过无效协议的节点: {node[:50]}...")
                     continue
@@ -526,10 +525,8 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 clash_proxy_dict = None
 
         if clash_proxy_dict:
-            # 强制将 name_to_check 转换为字符串
             name_to_check = str(node_raw_name or clash_proxy_dict.get('name', ''))
 
-            # 检查是否包含删除关键词
             should_delete_node = False
             for keyword in DELETE_KEYWORDS:
                 try:
@@ -545,19 +542,16 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
             if should_delete_node:
                 continue
 
-            # 验证服务器地址
             server = clash_proxy_dict.get('server', '')
             if server and not (is_valid_ip_address(server) or re.match(r'^[a-zA-Z0-9\-\.]+$', server)):
                 logging.warning(f"跳过无效服务器地址的节点: {server} in {clash_proxy_dict.get('name', 'Unknown')}")
                 continue
 
-            # 清理节点名称
             clash_proxy_dict['name'] = clean_node_name(
                 clash_proxy_dict.get('name', f"{clash_proxy_dict.get('type', 'Unknown')} {clash_proxy_dict.get('server', '')}:{clash_proxy_dict.get('port', '')}"),
                 index=idx + 1
             )
 
-            # 使用指纹进行去重
             fingerprint = _generate_node_fingerprint(clash_proxy_dict)
             if fingerprint and fingerprint not in unique_node_fingerprints:
                 unique_node_fingerprints.add(fingerprint)
@@ -596,11 +590,11 @@ for entry in raw_urls_from_source:
         parsed_nodes = parse_content_to_nodes(entry)
         if parsed_nodes:
             all_parsed_nodes_raw.extend(parsed_nodes)
-            stat_entry = {'URL': entry, '节点数量': len(parsed_nodes), '状态': '直接解析成功', '错误信息': ''}
+            stat_entry = {'URL': entry, '节点数量': len(parsed_nodes), '状态': '直接解析成功', '错误信息': '', '状态码': None}
             url_statistics.append(stat_entry)
             successful_urls.append(entry)
         else:
-            stat_entry = {'URL': entry, '节点数量': 0, '状态': '直接解析失败', '错误信息': '非URL且无法解析为节点'}
+            stat_entry = {'URL': entry, '节点数量': 0, '状态': '直接解析失败', '错误信息': '非URL且无法解析为节点', '状态码': None}
             url_statistics.append(stat_entry)
             failed_urls.append(entry)
 
@@ -610,18 +604,32 @@ total_urls_to_process_via_http = len(urls_to_fetch)
 if total_urls_to_process_via_http > 0:
     with ThreadPoolExecutor(max_workers=16) as executor:
         future_to_url = {executor.submit(fetch_and_parse_url, url): url for url in urls_to_fetch}
-        for future in tqdm(as_completed(future_to_url), total=total_urls_to_process_via_http, desc="通过HTTP/HTTPS请求并解析节点"):
+        for future in tqdm(as_completed(future_to_url), total=total_urls_to_process_via_http, desc="通过HTTP/HTTPS请求并解析节点", mininterval=1.0):
             url = future_to_url[future]
-            nodes, success, error_message = future.result()
+            nodes, success, error_message, status_code = future.result()
 
-            stat_entry = {'URL': url, '节点数量': len(nodes), '状态': '成功' if success else '失败', '错误信息': error_message if error_message else ''}
+            stat_entry = {
+                'URL': url,
+                '节点数量': len(nodes),
+                '状态': '成功' if success else '失败',
+                '错误信息': error_message if error_message else '',
+                '状态码': status_code
+            }
             url_statistics.append(stat_entry)
 
             if success:
                 successful_urls.append(url)
                 all_parsed_nodes_raw.extend(nodes)
+                print(f"成功处理 URL: {url}, 节点数: {len(nodes)}, 状态码: {status_code}")
             else:
                 failed_urls.append(url)
+                print(f"失败 URL: {url}, 错误: {error_message}")
+
+            # 提前终止：如果已收集足够节点
+            if len(all_parsed_nodes_raw) >= MAX_SUCCESS * 2:  # 假设去重后损失一半
+                print("已收集足够节点，提前终止请求")
+                executor._threads.clear()  # 清空线程池
+                break
 
 final_unique_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
 
