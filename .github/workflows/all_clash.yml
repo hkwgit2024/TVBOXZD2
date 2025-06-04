@@ -35,6 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
        pip install requests python-dotenv tqdm PyYAML
+       pip install tenacity
         
     - name: Run collection script
       env:
