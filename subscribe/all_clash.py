@@ -32,7 +32,8 @@ args = parser.parse_args()
 MAX_SUCCESS = args.max_success
 TIMEOUT = args.timeout
 OUTPUT_FILE = args.output
-MAX_FILE_SIZE = 95 * 1024 * 1024  # 95 MB，留余量
+MAX_FILE_SIZE = 90 * 1024 * 1024  # 90 MB，留余量
+MAX_CONTENT_SIZE = 10 * 1024 * 1024  # 单个 URL 内容最大 10 MB
 
 def is_valid_url(url):
     """验证URL格式是否合法"""
@@ -62,11 +63,22 @@ def fetch_url(url):
         resp.raise_for_status()
         content = resp.text.strip()
         if len(content) < 10 or any(x in content for x in ["DOMAIN", "port", "proxies", "[]", "{}"]):
+            logging.info(f"跳过无效内容: {url}")
             return None
         try:
             decoded_content = base64.b64decode(content).decode('utf-8')
+            content_size = len(decoded_content.encode('utf-8'))
+            if content_size > MAX_CONTENT_SIZE:
+                logging.warning(f"内容过大，跳过: {url} ({content_size} bytes)")
+                return None
+            logging.info(f"成功处理 (Base64): {url}, 内容长度: {content_size} bytes")
             return decoded_content
         except Exception:
+            content_size = len(content.encode('utf-8'))
+            if content_size > MAX_CONTENT_SIZE:
+                logging.warning(f"内容过大，跳过: {url} ({content_size} bytes)")
+                return None
+            logging.info(f"成功处理 (非Base64): {url}, 内容长度: {content_size} bytes")
             return content if len(content) > 10 else None
     except Exception as e:
         logging.error(f"处理失败: {url} - {e}")
@@ -109,8 +121,12 @@ with ThreadPoolExecutor(max_workers=16) as executor:
         result = future.result()
         if result and success_count < MAX_SUCCESS:
             result_size = len(result.encode('utf-8'))
+            if result_size > MAX_FILE_SIZE:
+                logging.warning(f"单条内容过大，跳过: {future_to_url[future]} ({result_size} bytes)")
+                continue
             if current_size + result_size > MAX_FILE_SIZE:
                 out_file.close()
+                logging.info(f"关闭文件 {OUTPUT_FILE}.{file_index}, 大小: {current_size} bytes")
                 file_index += 1
                 out_file = open(f"{OUTPUT_FILE}.{file_index}", 'w', encoding='utf-8')
                 current_size = 0
@@ -118,12 +134,14 @@ with ThreadPoolExecutor(max_workers=16) as executor:
             current_size += result_size
             success_count += 1
 out_file.close()
+logging.info(f"关闭文件 {OUTPUT_FILE}.{file_index}, 大小: {current_size} bytes")
 
 # 最终结果报告
 print("\n" + "=" * 50)
 print("最终结果：")
 print(f"处理URL总数：{len(valid_urls)}")
 print(f"成功获取内容数：{success_count}")
+print(f"生成文件数：{file_index}")
 if len(valid_urls) > 0:
     print(f"有效内容率：{success_count/len(valid_urls):.1%}")
 if success_count < MAX_SUCCESS:
