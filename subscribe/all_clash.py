@@ -65,7 +65,6 @@ def is_valid_ip_address(host):
         return True
     except ValueError:
         try:
-            # 对于 IPv6 地址，检查是否被正确包裹在方括号中
             if host.startswith('[') and host.endswith(']'):
                 ipaddress.ip_address(host[1:-1])
                 return True
@@ -105,12 +104,15 @@ def parse_content_to_nodes(content):
     except Exception:
         pass
 
-    # 2. 尝试 YAML 解析 (主要用于 Clash 配置)
+    # 2. 尝试 YAML 解析
     try:
         parsed_data = yaml.safe_load(processed_content)
         if isinstance(parsed_data, dict) and 'proxies' in parsed_data and isinstance(parsed_data['proxies'], list):
             for proxy_entry in parsed_data['proxies']:
                 if isinstance(proxy_entry, dict):
+                    # 确保 name 字段是字符串
+                    if 'name' in proxy_entry and not isinstance(proxy_entry['name'], str):
+                        proxy_entry['name'] = str(proxy_entry['name'])
                     found_nodes.append(proxy_entry)
                 elif isinstance(proxy_entry, str) and any(proxy_entry.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
                     found_nodes.append(proxy_entry.strip())
@@ -120,6 +122,8 @@ def parse_content_to_nodes(content):
                 if isinstance(item, str):
                     found_nodes.append(item.strip())
                 elif isinstance(item, dict):
+                    if 'name' in item and not isinstance(item['name'], str):
+                        item['name'] = str(item['name'])
                     found_nodes.append(item)
             logging.info("内容成功解析为 YAML 列表。")
     except yaml.YAMLError:
@@ -128,7 +132,7 @@ def parse_content_to_nodes(content):
         logging.error(f"YAML 解析失败: {e}")
         pass
 
-    # 3. 通过正则表达式提取节点（处理明文、非标准格式等）
+    # 3. 通过正则表达式提取节点
     node_pattern = re.compile(
         r'(vmess://\S+|'
         r'trojan://\S+|'
@@ -196,69 +200,80 @@ def write_urls_to_file(urls, filename):
             f.write(url + '\n')
     print(f"URL列表已保存至：{filename}")
 
-def clean_node_name(name):
+def clean_node_name(name, index=None):
     """
-    清理节点名称，移除冗余信息，只保留核心关键字。
+    清理节点名称，移除冗余信息，保留核心关键字，并生成更直观的名称。
     """
     if not isinstance(name, str):
-        return str(name)
+        name = str(name)
 
     cleaned_name = name.strip()
 
-    # 1. 移除各种括号及其内部内容 (包括全角和半角)
-    cleaned_name = re.sub(r'【[^】]*】', '', cleaned_name)
-    cleaned_name = re.sub(r'\[[^\]]*\]', '', cleaned_name)
-    cleaned_name = re.sub(r'\([^\)]*\)', '', cleaned_name)
-    cleaned_name = re.sub(r'（[^）]*）', '', cleaned_name)
-    cleaned_name = re.sub(r'\{[^}]*\}', '', cleaned_name)
-    cleaned_name = re.sub(r'＜[^＞]*＞', '', cleaned_name)
-    cleaned_name = re.sub(r'<[^>]*>', '', cleaned_name)
+    # 1. 移除括号内的次要信息
+    cleaned_name = re.sub(r'【[^】]*?(流量|到期|过期|充值|续费)[^】]*】', '', cleaned_name)
+    cleaned_name = re.sub(r'\[[^]]*?(流量|到期|过期|充值|续费)[^\]]*\]', '', cleaned_name)
+    cleaned_name = re.sub(r'\([^)]*?(流量|到期|过期|充值|续费)[^)]*\)', '', cleaned_name)
+    cleaned_name = re.sub(r'（[^）]*?(流量|到期|过期|充值|续费)[^）]*）', '', cleaned_name)
 
-    # 2. 移除常见的冗余关键词（不包含在 DELETE_KEYWORDS 中的）
+    # 2. 移除冗余关键词
     redundant_keywords_to_remove = [
-        r'\[\d+\]', # [1], [2] 这种序号
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', # IP地址
-        r'x\d+', # x1, x2 等倍率标识
-        r'\d+%', # 100% 这种百分比
-        r'\d{4}-\d{2}-\d{2}', # 日期 YYYY-MM-DD
-        r'\d{2}-\d{2}', # 日期 MM-DD
-        r'IPLC', r'IEPL', r'NAT', r'UDP', r'TCP', r'隧道', r'直连', r'中转', r'回国',
-        r'线路', r'入口', r'出口', r'节点', r'负载均衡', r'普通', r'优质', r'高级', r'超清',
-        r'秒杀', r'活动', r'新年', r'福利', r'VIP', r'VIP\d+', r'Pro', r'Lite', r'Plus',
-        r'SS', r'SSR', r'VMESS', r'VLESS', r'TROJAN', r'HYSTERIA', r'HYSTERIA2', r'HY', r'HY2', # 协议名
-        r'自动', r'手动', r'自选', r'香港', r'台湾', r'日本', r'韩国', r'新加坡', r'美国', r'英国', r'德国',
-        r'France', r'Canada', r'Australia', r'Russia', r'Brazil', r'India', r'UAE',
-        r'HK', r'TW', r'JP', r'KR', r'SG', r'US', r'UK', r'DE', r'FR', r'CA', r'AU', r'RU', r'BR', r'IN', r'AE',
-        r'地区', r'城市', r'编号', r'序号', r'数字', r'号', r'服', r'群', r'组', r'专线', r'加速',
-        r'(\d+ms)', # 100ms 这种延迟标记
-        r'(\d+\.\d+kbps)', r'(\d+\.\d+mbps)', r'(\d+kbps)', r'(\d+mbps)', # 速度标记
-        r'\\n', r'\\r', # 换行符
-        r'\d+\.\d+G|\d+G', # 流量信息
-        r'\[\d+\]' # 再次去除数字在方括号内
+        r'\d+%', r'\d{4}-\d{2}-\d{2}', r'\d{2}-\d{2}', r'x\d+',
+        r'秒杀', r'活动', r'新年', r'福利', r'VIP\d*', r'Pro', r'Lite', r'Plus',
+        r'自动', r'手动', r'自选',
+        r'(\d+\.\d+kbps)', r'(\d+\.\d+mbps)', r'(\d+kbps)', r'(\d+mbps)',
+        r'\\n', r'\\r', r'\d+\.\d+G|\d+G',
     ]
 
     for keyword in redundant_keywords_to_remove:
         cleaned_name = re.sub(keyword, ' ', cleaned_name, flags=re.IGNORECASE).strip()
 
-    # 3. 移除特殊字符（只保留汉字、字母、数字、点、横线、下划线、空格）
-    cleaned_name = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9\s\.\-_]', ' ', cleaned_name)
+    # 3. 保留更多有意义的字符
+    cleaned_name = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9\s\.\-_@#|]', ' ', cleaned_name)
 
-    # 4. 合并多个空格为一个，并去除首尾空格
+    # 4. 合并多个空格并去除首尾空格
     cleaned_name = re.sub(r'\s+', ' ', cleaned_name).strip()
 
-    # 5. 常见缩写或变体的标准化
-    cleaned_name = cleaned_name.replace('香港', 'HK').replace('台湾', 'TW').replace('日本', 'JP').replace('新加坡', 'SG')
-    cleaned_name = cleaned_name.replace('美国', 'US').replace('英国', 'UK').replace('德国', 'DE').replace('韩国', 'KR')
-    cleaned_name = cleaned_name.replace('马来', 'MY').replace('泰国', 'TH').replace('菲律宾', 'PH').replace('越南', 'VN')
-    cleaned_name = cleaned_name.replace('印尼', 'ID').replace('印度', 'IN').replace('澳洲', 'AU').replace('加拿大', 'CA')
-    cleaned_name = cleaned_name.replace('俄罗斯', 'RU').replace('巴西', 'BR').replace('意大利', 'IT').replace('荷兰', 'NL')
-    cleaned_name = cleaned_name.replace('中国', 'CN')
+    # 5. 标准化区域名称
+    region_map = {
+        '香港': 'HK', '台湾': 'TW', '日本': 'JP', '新加坡': 'SG', '美国': 'US', '英国': 'UK',
+        '德国': 'DE', '韩国': 'KR', '马来': 'MY', '泰国': 'TH', '菲律宾': 'PH', '越南': 'VN',
+        '印尼': 'ID', '印度': 'IN', '澳洲': 'AU', '加拿大': 'CA', '俄罗斯': 'RU', '巴西': 'BR',
+        '意大利': 'IT', '荷兰': 'NL', '中国': 'CN'
+    }
+    for full_name, short_name in region_map.items():
+        cleaned_name = cleaned_name.replace(full_name, short_name)
 
-    # 6. 截断过长名称，保留前50个字符
-    if len(cleaned_name) > 50:
-        cleaned_name = cleaned_name[:50] + '...'
+    # 6. 提取有意义的关键词
+    meaningful_keywords = ['IPLC', 'IEPL', '专线', '中转', '直连']
+    preserved_info = []
+    for keyword in meaningful_keywords:
+        if keyword.lower() in cleaned_name.lower():
+            preserved_info.append(keyword)
+    
+    node_number_match = re.search(r'(?<!\d)\d{1,2}(?!\d)|Node\d{1,2}', cleaned_name, re.IGNORECASE)
+    if node_number_match:
+        preserved_info.append(node_number_match.group(0))
 
-    return cleaned_name if cleaned_name else "Unknown Node"
+    # 7. 构建更直观的名称
+    if not cleaned_name or len(cleaned_name) <= 3:
+        cleaned_name = 'Node'
+        if any(region in name for region in region_map.values()):
+            for region in region_map.values():
+                if region in name:
+                    cleaned_name = region
+                    break
+        if preserved_info:
+            cleaned_name += ' ' + ' '.join(preserved_info)
+
+    # 8. 添加节点编号
+    if index is not None:
+        cleaned_name += f"-{index:02d}"
+
+    # 9. 截断过长名称
+    if len(cleaned_name) > 80:
+        cleaned_name = cleaned_name[:80].rstrip() + '...'
+
+    return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
 
 def _generate_node_fingerprint(node):
     """
@@ -309,7 +324,6 @@ def _generate_node_fingerprint(node):
         return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
     elif isinstance(node, str):
         try:
-            # 验证节点是否为有效的协议 URL
             if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
                 logging.warning(f"无效的节点协议: {node[:50]}...")
                 return None
@@ -320,10 +334,9 @@ def _generate_node_fingerprint(node):
             path = parsed_url.path
             query_params = parse_qs(parsed_url.query)
             
-            # 验证 netloc 中的主机部分
             host = netloc.split(':')[0] if ':' in netloc else netloc
             if is_valid_ip_address(host) and host.startswith('[') and host.endswith(']'):
-                host = host[1:-1]  # 移除 IPv6 地址的方括号
+                host = host[1:-1]
             elif not is_valid_ip_address(host) and not re.match(r'^[a-zA-Z0-9\-\.]+$', host):
                 logging.warning(f"无效的主机名: {host} in {node[:50]}...")
                 return None
@@ -353,39 +366,34 @@ def _generate_node_fingerprint(node):
 def deduplicate_and_standardize_nodes(raw_nodes_list):
     """
     对混合格式的节点进行去重，标准化为Clash YAML代理字典，并根据关键词过滤。
-    返回一个列表，其中包含唯一的、标准化的Clash代理字典。
     """
     unique_node_fingerprints = set()
     final_clash_proxies = []
 
-    for node in raw_nodes_list:
+    for idx, node in enumerate(raw_nodes_list):
         clash_proxy_dict = None
-        node_raw_name = ""  # 用于检查是否包含删除关键词的原始名称
+        node_raw_name = ""
 
         if isinstance(node, dict):
             clash_proxy_dict = node
-            node_raw_name = node.get('name', '')
+            node_raw_name = str(node.get('name', ''))  # 强制转换为字符串
         elif isinstance(node, str):
             try:
                 parsed_url = urlparse(node)
-                node_raw_name = parsed_url.fragment  # 提取 # 后面的部分
-                # 验证节点协议
+                node_raw_name = str(parsed_url.fragment)  # 强制转换为字符串
                 if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
                     logging.warning(f"跳过无效协议的节点: {node[:50]}...")
                     continue
-
-                # 验证主机名或 IP 地址
                 host = parsed_url.hostname or ''
                 if host and not (is_valid_ip_address(host) or re.match(r'^[a-zA-Z0-9\-\.]+$', host)):
                     logging.warning(f"跳过无效主机名的节点: {host} in {node[:50]}...")
                     continue
 
-                # 尝试将 URL 转换为 Clash 代理字典
                 if node.startswith("vmess://"):
                     decoded = base64.b64decode(node[len("vmess://"):].encode('utf-8')).decode('utf-8')
                     config = json.loads(decoded)
                     clash_proxy_dict = {
-                        'name': config.get('ps', 'VMess Node'),
+                        'name': str(config.get('ps', 'VMess Node')),
                         'type': 'vmess',
                         'server': config.get('add'),
                         'port': int(config.get('port')),
@@ -410,7 +418,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     port = parsed.port
                     query = parse_qs(parsed.query)
                     clash_proxy_dict = {
-                        'name': parsed.fragment or 'Trojan Node',
+                        'name': str(parsed.fragment or 'Trojan Node'),
                         'type': 'trojan',
                         'server': server,
                         'port': port,
@@ -433,7 +441,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         port = int(server_port[1])
                         
                         clash_proxy_dict = {
-                            'name': parsed_url.fragment or 'SS Node',
+                            'name': str(parsed_url.fragment or 'SS Node'),
                             'type': 'ss',
                             'server': server,
                             'port': port,
@@ -451,7 +459,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     query = parse_qs(parsed.query)
                     
                     clash_proxy_dict = {
-                        'name': parsed.fragment or 'VLESS Node',
+                        'name': str(parsed.fragment or 'VLESS Node'),
                         'type': 'vless',
                         'server': server,
                         'port': port,
@@ -475,7 +483,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     query = parse_qs(parsed.query)
 
                     clash_proxy_dict = {
-                        'name': parsed.fragment or 'Hysteria Node',
+                        'name': str(parsed.fragment or 'Hysteria Node'),
                         'type': 'hysteria',
                         'server': server,
                         'port': port,
@@ -495,7 +503,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     query = parse_qs(parsed.query)
 
                     clash_proxy_dict = {
-                        'name': parsed.fragment or 'Hysteria2 Node',
+                        'name': str(parsed.fragment or 'Hysteria2 Node'),
                         'type': 'hysteria2',
                         'server': server,
                         'port': port,
@@ -518,13 +526,19 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 clash_proxy_dict = None
 
         if clash_proxy_dict:
-            # 检查原始名称是否包含删除关键词
-            should_delete_node = False
-            name_to_check = node_raw_name or clash_proxy_dict.get('name', '')
+            # 强制将 name_to_check 转换为字符串
+            name_to_check = str(node_raw_name or clash_proxy_dict.get('name', ''))
 
+            # 检查是否包含删除关键词
+            should_delete_node = False
             for keyword in DELETE_KEYWORDS:
-                if keyword.lower() in name_to_check.lower():
-                    logging.info(f"节点 '{name_to_check}' 包含删除关键词 '{keyword}'，已跳过。")
+                try:
+                    if keyword.lower() in name_to_check.lower():
+                        logging.info(f"节点 '{name_to_check}' 包含删除关键词 '{keyword}'，已跳过。")
+                        should_delete_node = True
+                        break
+                except AttributeError as e:
+                    logging.error(f"检查删除关键词时出错: name_to_check={name_to_check}, type={type(name_to_check)}, node={clash_proxy_dict.get('name', 'Unknown')} - {e}")
                     should_delete_node = True
                     break
             
@@ -538,7 +552,10 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 continue
 
             # 清理节点名称
-            clash_proxy_dict['name'] = clean_node_name(clash_proxy_dict.get('name', f"{clash_proxy_dict.get('type', 'Unknown')} {clash_proxy_dict.get('server', '')}:{clash_proxy_dict.get('port', '')}"))
+            clash_proxy_dict['name'] = clean_node_name(
+                clash_proxy_dict.get('name', f"{clash_proxy_dict.get('type', 'Unknown')} {clash_proxy_dict.get('server', '')}:{clash_proxy_dict.get('port', '')}"),
+                index=idx + 1
+            )
 
             # 使用指纹进行去重
             fingerprint = _generate_node_fingerprint(clash_proxy_dict)
