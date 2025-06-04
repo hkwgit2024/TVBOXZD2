@@ -15,20 +15,43 @@ def ensure_data_directory():
     return data_dir
 
 def check_url_availability(url):
-    # Checking if a URL is accessible
+    # Checking if a URL is accessible and resembles a GitHub mirror
     try:
         response = requests.head(url, timeout=5, allow_redirects=True)
-        return response.status_code == 200
+        if response.status_code == 200:
+            # Verify if the URL behaves like a GitHub mirror (e.g., contains GitHub-like paths)
+            response = requests.get(url, timeout=10, allow_redirects=True)
+            return "github.com" in response.url or "git" in response.text.lower()
+        return False
     except requests.RequestException:
         return False
 
+def is_valid_mirror_url(url, service):
+    # Filter for valid mirror URLs, excluding project pages, issues, or help pages
+    invalid_patterns = [
+        r"/issues", r"/pull", r"/wiki", r"/discussions", r"/blob", r"/tree",
+        r"/commit", r"/releases", r"/help", r"/about", r"/index\.htm",
+        r"/\.github/", r"/readme", r"/license"
+    ]
+    if any(re.search(pattern, url, re.IGNORECASE) for pattern in invalid_patterns):
+        return False
+    # Known mirror domains for GitHub
+    github_mirror_domains = [
+        "github.com.cnpmjs.org", "ghproxy.com", "gitclone.com", "github.io",
+        "fastgit.org", "gh.api.99988866.xyz", "github.moeyy.xyz"
+    ]
+    if service == "GitHub":
+        return any(domain in url.lower() for domain in github_mirror_domains)
+    return True  # For Wikipedia and Google, rely on keyword match and availability
+
 def fetch_mirror_urls_from_web():
-    # Define multiple target URLs for mirror sites
+    # Define target URLs for mirror sites
     target_urls = [
-        "https://jia110.github.io/",  # GitHub mirror collection
-        "https://mirrors.tuna.tsinghua.edu.cn/",  # Tsinghua mirror list
-        "https://mirrors.ustc.edu.cn/",  # USTC mirror list
-        "https://mirrorz.org/list"  # Mirrorz.org for comprehensive mirror lists
+        "https://jia110.github.io/",
+        "https://mirrors.tuna.tsinghua.edu.cn/",
+        "https://mirrors.ustc.edu.cn/",
+        "https://mirrorz.org/list",
+        "https://mirrors.sjtug.sjtu.edu.cn/"  # Added SJTU mirror
     ]
     
     mirrors = {
@@ -49,11 +72,11 @@ def fetch_mirror_urls_from_web():
                 if not href.startswith("http"):
                     href = requests.compat.urljoin(url, href)
                 
-                if "github" in href.lower() and href not in [m["url"] for m in mirrors["GitHub"]]:
+                if "github" in href.lower() and is_valid_mirror_url(href, "GitHub") and href not in [m["url"] for m in mirrors["GitHub"]]:
                     mirrors["GitHub"].append({"url": href, "available": check_url_availability(href)})
-                elif "wikipedia" in href.lower() and href not in [m["url"] for m in mirrors["Wikipedia"]]:
+                elif "wikipedia" in href.lower() and is_valid_mirror_url(href, "Wikipedia") and href not in [m["url"] for m in mirrors["Wikipedia"]]:
                     mirrors["Wikipedia"].append({"url": href, "available": check_url_availability(href)})
-                elif ("google" in href.lower() or "scholar" in href.lower()) and href not in [m["url"] for m in mirrors["Google"]]:
+                elif ("google" in href.lower() or "scholar" in href.lower()) and is_valid_mirror_url(href, "Google") and href not in [m["url"] for m in mirrors["Google"]]:
                     mirrors["Google"].append({"url": href, "available": check_url_availability(href)})
         except requests.RequestException as e:
             print(f"Error fetching URLs from {url}: {e}")
@@ -82,11 +105,11 @@ def fetch_mirror_urls_from_github():
         # Extract URLs using regex
         urls = re.findall(r'(https?://[^\s]+)', content)
         for url in urls:
-            if "github" in url.lower() and url not in [m["url"] for m in mirrors["GitHub"]]:
+            if "github" in url.lower() and is_valid_mirror_url(url, "GitHub") and url not in [m["url"] for m in mirrors["GitHub"]]:
                 mirrors["GitHub"].append({"url": url, "available": check_url_availability(url)})
-            elif "wikipedia" in url.lower() and url not in [m["url"] for m in mirrors["Wikipedia"]]:
+            elif "wikipedia" in url.lower() and is_valid_mirror_url(url, "Wikipedia") and url not in [m["url"] for m in mirrors["Wikipedia"]]:
                 mirrors["Wikipedia"].append({"url": url, "available": check_url_availability(url)})
-            elif ("google" in url.lower() or "scholar" in url.lower()) and url not in [m["url"] for m in mirrors["Google"]]:
+            elif ("google" in url.lower() or "scholar" in url.lower()) and is_valid_mirror_url(url, "Google") and url not in [m["url"] for m in mirrors["Google"]]:
                 mirrors["Google"].append({"url": url, "available": check_url_availability(url)})
     except requests.RequestException as e:
         print(f"Error fetching GitHub repo data: {e}")
@@ -94,13 +117,17 @@ def fetch_mirror_urls_from_github():
     return mirrors
 
 def fetch_mirror_urls_from_search():
-    # Simulate search engine results (replace with SerpAPI or similar if available)
+    # Simulate search engine results with known GitHub mirrors
     search_results = [
         "https://github.com.cnpmjs.org/",
+        "https://ghproxy.com/",
+        "https://gitclone.com/",
+        "https://fastgit.org/",
+        "https://gh.api.99988866.xyz/",
+        "https://github.moeyy.xyz/",
         "https://zh.wikipedia.org/",
         "https://scholar.google.com/",
-        "https://ghproxy.com/",
-        "https://mirrors.tuna.tsinghua.edu.cn/github/",
+        "https://mirrors.tuna.tsinghua.edu.cn/github/"
     ]
     
     mirrors = {
@@ -110,11 +137,11 @@ def fetch_mirror_urls_from_search():
     }
 
     for url in search_results:
-        if "github" in url.lower() and url not in [m["url"] for m in mirrors["GitHub"]]:
+        if "github" in url.lower() and is_valid_mirror_url(url, "GitHub") and url not in [m["url"] for m in mirrors["GitHub"]]:
             mirrors["GitHub"].append({"url": url, "available": check_url_availability(url)})
-        elif "wikipedia" in url.lower() and url not in [m["url"] for m in mirrors["Wikipedia"]]:
+        elif "wikipedia" in url.lower() and is_valid_mirror_url(url, "Wikipedia") and url not in [m["url"] for m in mirrors["Wikipedia"]]:
             mirrors["Wikipedia"].append({"url": url, "available": check_url_availability(url)})
-        elif ("google" in url.lower() or "scholar" in url.lower()) and url not in [m["url"] for m in mirrors["Google"]]:
+        elif ("google" in url.lower() or "scholar" in url.lower()) and is_valid_mirror_url(url, "Google") and url not in [m["url"] for m in mirrors["Google"]]:
             mirrors["Google"].append({"url": url, "available": check_url_availability(url)})
 
     return mirrors
@@ -133,7 +160,7 @@ def merge_mirrors(*mirror_lists):
                 if item["url"] not in [m["url"] for m in merged[key]]:
                     merged[key].append(item)
     
-    # Sort by URL and availability
+    # Sort by availability (true first) and URL
     for key in merged:
         merged[key].sort(key=lambda x: (not x["available"], x["url"]))
     
