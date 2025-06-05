@@ -28,12 +28,21 @@ jobs:
         BOT: ${{ secrets.BOT }}
       run: python download_tvbox_configs.py
 
+    - name: Debug directory contents
+      run: |
+        echo "Listing contents of tvbox directory:"
+        ls -la tvbox || echo "tvbox directory is empty or does not exist"
+
     - name: Commit and push changes
       run: |
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
-        git add tvbox/*
-        git commit -m "Update TVBox config files" || echo "No changes to commit"
-        git push
+        if [ -n "$(git status tvbox --porcelain)" ]; then
+          git add tvbox/*
+          git commit -m "Update TVBox config files" || echo "No changes to commit"
+          git push
+        else
+          echo "No changes in tvbox directory to commit"
+        fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.BOT }}
