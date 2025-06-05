@@ -48,7 +48,7 @@ def search_and_download_configs():
         exit(1)
 
     # 搜索仓库
-    query = 'spider+config'  # 调整为更广的查询，可改为 'spider+wallpaper' 或其他
+    query = 'spider+wallpaper'  # 恢复原始查询，可根据需要调整为 'spider+config' 或 'tvbox+spider'
     params = {'q': query, 'per_page': 100}
     
     try:
@@ -64,18 +64,24 @@ def search_and_download_configs():
         repo_name = repo['full_name']
         print(f"检查仓库: {repo_name}")
         
-        # 使用代码搜索查找 config.json
-        code_query = f'repo:{repo_name} config.json'
+        # 搜索 JSON 文件
+        code_query = f'repo:{repo_name} filename:*.json'  # 搜索所有 JSON 文件
         try:
             code_response = requests.get(CODE_SEARCH_URL, headers=HEADERS, params={'q': code_query})
+            if code_response.status_code == 403:
+                print(f"跳过 {repo_name}: 403 Forbidden (可能是私有仓库或权限不足)")
+                continue
             code_response.raise_for_status()
             files = code_response.json().get('items', [])
-            print(f"仓库 {repo_name} 找到 {len(files)} 个 config.json 文件")
+            print(f"仓库 {repo_name} 找到 {len(files)} 个 JSON 文件")
             
             for file in files:
-                raw_url = file['html_url'].replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
-                filename = sanitize_filename(f"{repo_name.split('/')[-1]}_{file['name']}")
-                download_file(raw_url, filename)
+                if file['name'].endswith('.json'):
+                    raw_url = file['html_url'].replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
+                    filename = sanitize_filename(f"{repo_name.split('/')[-1]}_{file['name']}")
+                    download_file(raw_url, filename)
+                else:
+                    print(f"跳过非 JSON 文件: {file['name']} 在 {repo_name}")
         except requests.RequestException as e:
             print(f"代码搜索失败 {repo_name}: {e}")
 
