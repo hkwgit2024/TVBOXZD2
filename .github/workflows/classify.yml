@@ -1,6 +1,7 @@
 name: Classify TV Channels
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'iptv_list.txt'  # 当 iptv_list.txt 更新时触发
