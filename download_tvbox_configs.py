@@ -24,7 +24,7 @@ KEYWORDS = ['spider', 'sites', 'key', 'lives', 'ads', 'wallpaper']
 SAVE_DIR = './tvbox'
 
 # 时间戳文件
-TIMESTAMP_FILE = './last_search_timestamp.txt'
+TIMESTAMP_FILE = './tvbox/last_search_timestamp.txt'
 
 # 创建保存目录（如果不存在）
 os.makedirs(SAVE_DIR, exist_ok=True)
