@@ -9,7 +9,12 @@ SEARCH_URL = 'https://api.github.com/search/repositories'
 DOWNLOAD_DIR = 'tvbox'
 
 # 确保下载目录存在
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+try:
+    if not os.path.exists(DOWNLOAD_DIR):
+        os.makedirs(DOWNLOAD_DIR)
+except OSError as e:
+    print(f"创建目录 {DOWNLOAD_DIR} 失败: {e}")
+    exit(1)
 
 def sanitize_filename(filename):
     """清理文件名，移除非法字符"""
@@ -26,20 +31,29 @@ def download_file(url, filename):
     
     response = requests.get(url, headers=HEADERS)
     if response.status_code == 200:
-        with open(os.path.join(DOWNLOAD_DIR, new_filename), 'wb') as f:
-            f.write(response.content)
-        print(f"已下载: {new_filename}")
+        try:
+            with open(os.path.join(DOWNLOAD_DIR, new_filename), 'wb') as f:
+                f.write(response.content)
+            print(f"已下载: {new_filename}")
+        except OSError as e:
+            print(f"写入文件 {new_filename} 失败: {e}")
     else:
         print(f"下载失败 {url}: {response.status_code}")
 
 def search_and_download_configs():
     """搜索并下载 TVBox 配置文件"""
+    if not GITHUB_TOKEN:
+        print("错误: 未设置 BOT 环境变量 (GitHub Token)")
+        exit(1)
+
     query = 'tvbox+config+language:json'  # 搜索 TVBox 相关的 JSON 配置文件
     params = {'q': query, 'per_page': 100}
     
-    response = requests.get(SEARCH_URL, headers=HEADERS, params=params)
-    if response.status_code != 200:
-        print(f"搜索失败: {response.status_code}")
+    try:
+        response = requests.get(SEARCH_URL, headers=HEADERS, params=params)
+        response.raise_for_status()  # 检查请求是否成功
+    except requests.RequestException as e:
+        print(f"搜索失败: {e}")
         return
 
     repos = response.json().get('items', [])
@@ -48,10 +62,13 @@ def search_and_download_configs():
         raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/config.json"
         
         # 检查文件是否存在
-        file_response = requests.head(raw_url, headers=HEADERS)
-        if file_response.status_code == 200:
-            filename = sanitize_filename(f"{repo_name.split('/')[-1]}_config.json")
-            download_file(raw_url, filename)
+        try:
+            file_response = requests.head(raw_url, headers=HEADERS)
+            if file_response.status_code == 200:
+                filename = sanitize_filename(f"{repo_name.split('/')[-1]}_config.json")
+                download_file(raw_url, filename)
+        except requests.RequestException as e:
+            print(f"检查文件 {raw_url} 失败: {e}")
 
 if __name__ == "__main__":
     search_and_download_configs()
