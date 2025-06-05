@@ -12,7 +12,7 @@ DOWNLOAD_DIR = 'tvbox'
 try:
     if not os.path.exists(DOWNLOAD_DIR):
         os.makedirs(DOWNLOAD_DIR)
-except OSError as e:
+except OAuthError as e:
     print(f"创建目录 {DOWNLOAD_DIR} 失败: {e}")
     exit(1)
 
@@ -29,16 +29,16 @@ def download_file(url, filename):
         new_filename = f"{base}_{counter}{ext}"
         counter += 1
     
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code == 200:
-        try:
-            with open(os.path.join(DOWNLOAD_DIR, new_filename), 'wb') as f:
-                f.write(response.content)
-            print(f"已下载: {new_filename}")
-        except OSError as e:
-            print(f"写入文件 {new_filename} 失败: {e}")
-    else:
-        print(f"下载失败 {url}: {response.status_code}")
+    try:
+        response = requests.get(url, headers=HEADERS)
+        response.raise_for_status()
+        with open(os.path.join(DOWNLOAD_DIR, new_filename), 'wb') as f:
+            f.write(response.content)
+        print(f"已下载: {new_filename}")
+    except requests.RequestException as e:
+        print(f"下载失败 {url}: {e}")
+    except OSError as e:
+        print(f"写入文件 {new_filename} 失败: {e}")
 
 def search_and_download_configs():
     """搜索并下载 TVBox 配置文件"""
@@ -46,7 +46,7 @@ def search_and_download_configs():
         print("错误: 未设置 BOT 环境变量 (GitHub Token)")
         exit(1)
 
-    query = 'tvbox+config+language:json'  # 搜索 TVBox 相关的 JSON 配置文件
+    query = 'spider+wallpaper'  # 搜索与 spider 和 wallpaper 相关的配置文件
     params = {'q': query, 'per_page': 100}
     
     try:
@@ -61,7 +61,6 @@ def search_and_download_configs():
         repo_name = repo['full_name']
         raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/config.json"
         
-        # 检查文件是否存在
         try:
             file_response = requests.head(raw_url, headers=HEADERS)
             if file_response.status_code == 200:
