@@ -1,6 +1,7 @@
 import requests
 import os
 import re
+import json
 
 # GitHub API 配置
 GITHUB_TOKEN = os.getenv('BOT')  # 从环境变量获取 Token
@@ -21,8 +22,18 @@ def sanitize_filename(filename):
     """清理文件名，移除非法字符"""
     return re.sub(r'[^\w\-\.]', '_', filename)
 
+def check_file_content(file_path):
+    """检查 JSON 文件内容是否同时包含 'spider' 和 'wallpaper'"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read().lower()  # 转换为小写以忽略大小写
+            return 'spider' in content and 'wallpaper' in content
+    except (OSError, UnicodeDecodeError) as e:
+        print(f"读取文件 {file_path} 失败: {e}")
+        return False
+
 def download_file(url, filename):
-    """下载文件并处理重名"""
+    """下载文件并处理重名，检查内容后决定是否保留"""
     base, ext = os.path.splitext(filename)
     counter = 1
     new_filename = filename
@@ -30,25 +41,36 @@ def download_file(url, filename):
         new_filename = f"{base}_{counter}{ext}"
         counter += 1
     
+    file_path = os.path.join(DOWNLOAD_DIR, new_filename)
     try:
         response = requests.get(url, headers=HEADERS)
         response.raise_for_status()
-        with open(os.path.join(DOWNLOAD_DIR, new_filename), 'wb') as f:
+        with open(file_path, 'wb') as f:
             f.write(response.content)
-        print(f"已下载: {new_filename}")
+        
+        # 检查文件内容
+        if check_file_content(file_path):
+            print(f"已下载并保留: {new_filename} (包含 spider 和 wallpaper)")
+            return True
+        else:
+            print(f"删除 {new_filename}: 不包含 spider 和 wallpaper")
+            os.remove(file_path)
+            return False
     except requests.RequestException as e:
         print(f"下载失败 {url}: {e}")
+        return False
     except OSError as e:
         print(f"写入文件 {new_filename} 失败: {e}")
+        return False
 
 def search_and_download_configs():
-    """搜索并下载配置文件"""
+    """搜索并下载 TVBox 配置文件"""
     if not GITHUB_TOKEN:
         print("错误: 未设置 BOT 环境变量 (GitHub Token)")
         exit(1)
 
     # 搜索仓库
-    query = 'spider+wallpaper'  # 恢复原始查询，可根据需要调整为 'spider+config' 或 'tvbox+spider'
+    query = 'tvbox+spider+wallpaper'  # 搜索 TVBox 相关的仓库，包含 spider 和 wallpaper
     params = {'q': query, 'per_page': 100}
     
     try:
