@@ -7,7 +7,7 @@ on:
     paths:
       - 'subscribe/all_clash.py' # 确保脚本路径正确
   schedule:
-    - cron: '0 */3 * * *'  # 每3小时运行一次
+    - cron: '0 */23 * * *'  # 每23小时运行一次
 
 jobs:
   collect:
