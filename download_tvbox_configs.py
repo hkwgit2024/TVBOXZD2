@@ -1,111 +1,60 @@
-import requests
 import os
-import re
+import requests
 import json
+from datetime import datetime
 
-# GitHub API 配置
-GITHUB_TOKEN = os.getenv('BOT')  # 从环境变量获取 Token
-HEADERS = {'Authorization': f'token {GITHUB_TOKEN}', 'Accept': 'application/vnd.github.v3+json'}
-SEARCH_URL = 'https://api.github.com/search/repositories'
-CODE_SEARCH_URL = 'https://api.github.com/search/code'
-DOWNLOAD_DIR = 'tvbox'
+# GitHub API Token，从环境变量中获取
+TOKEN = os.getenv('BOT')
 
-# 确保下载目录存在
-try:
-    if not os.path.exists(DOWNLOAD_DIR):
-        os.makedirs(DOWNLOAD_DIR)
-except OSError as e:
-    print(f"创建目录 {DOWNLOAD_DIR} 失败: {e}")
-    exit(1)
+# GitHub API 搜索 URL
+SEARCH_URL = 'https://api.github.com/search/code'
 
-def sanitize_filename(filename):
-    """清理文件名，移除非法字符"""
-    return re.sub(r'[^\w\-\.]', '_', filename)
+# 搜索关键词
+KEYWORDS = ['spider', 'sites', 'key', 'lives', 'ads', 'wallpaper']
 
-def check_file_content(file_path):
-    """检查 JSON 文件内容是否同时包含 'spider' 和 'wallpaper'"""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read().lower()  # 转换为小写以忽略大小写
-            return 'spider' in content and 'wallpaper' in content
-    except (OSError, UnicodeDecodeError) as e:
-        print(f"读取文件 {file_path} 失败: {e}")
-        return False
+# 保存目录
+SAVE_DIR = './tvbox'
 
-def download_file(url, filename):
-    """下载文件并处理重名，检查内容后决定是否保留"""
-    base, ext = os.path.splitext(filename)
-    counter = 1
-    new_filename = filename
-    while os.path.exists(os.path.join(DOWNLOAD_DIR, new_filename)):
-        new_filename = f"{base}_{counter}{ext}"
-        counter += 1
-    
-    file_path = os.path.join(DOWNLOAD_DIR, new_filename)
-    try:
-        response = requests.get(url, headers=HEADERS)
-        response.raise_for_status()
-        with open(file_path, 'wb') as f:
-            f.write(response.content)
-        
-        # 检查文件内容
-        if check_file_content(file_path):
-            print(f"已下载并保留: {new_filename} (包含 spider 和 wallpaper)")
-            return True
-        else:
-            print(f"删除 {new_filename}: 不包含 spider 和 wallpaper")
-            os.remove(file_path)
-            return False
-    except requests.RequestException as e:
-        print(f"下载失败 {url}: {e}")
-        return False
-    except OSError as e:
-        print(f"写入文件 {new_filename} 失败: {e}")
-        return False
+# 创建保存目录（如果不存在）
+os.makedirs(SAVE_DIR, exist_ok=True)
 
-def search_and_download_configs():
-    """搜索并下载 TVBox 配置文件"""
-    if not GITHUB_TOKEN:
-        print("错误: 未设置 BOT 环境变量 (GitHub Token)")
-        exit(1)
-
-    # 搜索仓库
-    query = 'tvbox+spider+wallpaper'  # 搜索 TVBox 相关的仓库，包含 spider 和 wallpaper
+# 搜索并下载文件
+def search_and_download():
+    headers = {'Authorization': f'token {TOKEN}'}
+    # 构造搜索查询：文件名包含 json，扩展名为 json，且包含指定关键词
+    query = 'filename:json extension:json ' + ' '.join(KEYWORDS)
     params = {'q': query, 'per_page': 100}
     
-    try:
-        response = requests.get(SEARCH_URL, headers=HEADERS, params=params)
-        response.raise_for_status()
-        repos = response.json().get('items', [])
-        print(f"找到 {len(repos)} 个仓库")
-    except requests.RequestException as e:
-        print(f"仓库搜索失败: {e}")
+    # 发送搜索请求
+    response = requests.get(SEARCH_URL, headers=headers, params=params)
+    if response.status_code != 200:
+        print(f"错误：API 请求失败，状态码 {response.status_code}")
         return
-
-    for repo in repos:
-        repo_name = repo['full_name']
-        print(f"检查仓库: {repo_name}")
+    
+    # 解析搜索结果
+    results = response.json().get('items', [])
+    for item in results:
+        repo = item['repository']['full_name']  # 仓库名
+        path = item['path']  # 文件路径
+        download_url = f'https://raw.githubusercontent.com/{repo}/main/{path}'
         
-        # 搜索 JSON 文件
-        code_query = f'repo:{repo_name} filename:*.json'  # 搜索所有 JSON 文件
-        try:
-            code_response = requests.get(CODE_SEARCH_URL, headers=HEADERS, params={'q': code_query})
-            if code_response.status_code == 403:
-                print(f"跳过 {repo_name}: 403 Forbidden (可能是私有仓库或权限不足)")
-                continue
-            code_response.raise_for_status()
-            files = code_response.json().get('items', [])
-            print(f"仓库 {repo_name} 找到 {len(files)} 个 JSON 文件")
+        # 下载文件
+        file_response = requests.get(download_url)
+        if file_response.status_code == 200:
+            file_name = os.path.basename(path)  # 获取原始文件名
+            save_path = os.path.join(SAVE_DIR, file_name)
             
-            for file in files:
-                if file['name'].endswith('.json'):
-                    raw_url = file['html_url'].replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
-                    filename = sanitize_filename(f"{repo_name.split('/')[-1]}_{file['name']}")
-                    download_file(raw_url, filename)
-                else:
-                    print(f"跳过非 JSON 文件: {file['name']} 在 {repo_name}")
-        except requests.RequestException as e:
-            print(f"代码搜索失败 {repo_name}: {e}")
+            # 处理重名文件：如果文件已存在，添加时间戳
+            if os.path.exists(save_path):
+                timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+                save_path = os.path.join(SAVE_DIR, f"{file_name}_{timestamp}")
+            
+            # 保存文件
+            with open(save_path, 'wb') as f:
+                f.write(file_response.content)
+            print(f"已下载：{save_path}")
+        else:
+            print(f"下载失败：{download_url}")
 
-if __name__ == "__main__":
-    search_and_download_configs()
+if __name__ == '__main__':
+    search_and_download()
