@@ -663,7 +663,7 @@ def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
 
 # --- GitHub URL 自动发现函数 ---
 def auto_discover_github_urls(urls_file_path_remote, github_token):
-    """自动从 GitHub 发现新的 IPTV 源 URL，并记录每个关键词找到的 URL 数量。"""
+    """自动从 GitHub 发现新的 IPTV 源 URL。"""
     if not github_token:
         logging.warning("环境变量 'BOT' 未设置。跳过 GitHub URL 自动发现。")
         return
@@ -677,11 +677,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
     logging.warning("正在开始从 GitHub 自动发现新的 IPTV 源 URL...")
 
-    # 记录每个关键词找到的 URL 数量
-    keyword_url_counts = {keyword: 0 for keyword in SEARCH_KEYWORDS}
-
     for i, keyword in enumerate(SEARCH_KEYWORDS):
-        keyword_found_urls = set()  # 记录当前关键词找到的 URL
         if i > 0:
             logging.warning(f"切换到下一个关键词：'{keyword}'。等待 {GITHUB_API_RETRY_WAIT} 秒以避免速率限制...")
             time.sleep(GITHUB_API_RETRY_WAIT)
@@ -736,7 +732,6 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
                            pre_screen_url(cleaned_url):
                             found_urls.add(cleaned_url)
-                            keyword_found_urls.add(cleaned_url)
                             logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{cleaned_url}")
                         else:
                             logging.debug(f"正在跳过非原始 GitHub M3U/M3U8/TXT 链接或未通过预筛选：{raw_url}")
@@ -762,26 +757,6 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
             except Exception as e:
                 logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
                 break
-
-        # 记录当前关键词找到的 URL 数量
-        keyword_url_counts[keyword] = len(keyword_found_urls)
-        logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
-
-    # 总结每个关键词的 URL 数量并建议删除无效关键词
-    logging.warning("\n=== 关键词搜索结果总结 ===")
-    low_result_threshold = 5  # 定义结果较少的阈值
-    low_or_no_result_keywords = []
-    for keyword, count in keyword_url_counts.items():
-        logging.warning(f"关键词 '{keyword}'：{count} 个 URL")
-        if count <= low_result_threshold:
-            low_or_no_result_keywords.append((keyword, count))
-
-    if low_or_no_result_keywords:
-        logging.warning(f"\n建议从 config.yaml 的 search_keywords 中删除以下结果较少（≤{low_result_threshold}）或无结果的关键词，以节省时间和 API 请求：")
-        for keyword, count in low_or_no_result_keywords:
-            logging.warning(f"  - '{keyword}' （找到 {count} 个 URL）")
-    else:
-        logging.warning("所有关键词均有合理数量的搜索结果，无需删除。")
 
     new_urls_count = 0
     for url in found_urls:
