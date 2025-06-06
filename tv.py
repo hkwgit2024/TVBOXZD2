@@ -139,7 +139,7 @@ NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
 URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
-STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24) # 新增：跳过失败视频流的冷却时间（小时）
+STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
 
 # 配置 requests 会话
 session = requests.Session()
@@ -178,6 +178,18 @@ def write_array_to_txt_local(file_name, data_array):
                 file.write(item + '\n')
     except Exception as e:
         logging.error(f"写入文件 '{file_name}' 发生错误：{e}")
+
+# --- 新增函数：清空目录中的 TXT 文件 ---
+def clear_directory_txt_files(directory):
+    """清空指定目录中的所有 .txt 文件。"""
+    try:
+        for file_name in os.listdir(directory):
+            if file_name.endswith('.txt'):
+                file_path = os.path.join(directory, file_name)
+                os.remove(file_path)
+                logging.debug(f"已删除旧文件：{file_path}")
+    except Exception as e:
+        logging.error(f"清空目录 {directory} 中的 .txt 文件时发生错误：{e}")
 
 # --- URL 处理和频道提取函数 ---
 def get_url_file_extension(url):
@@ -236,10 +248,7 @@ def save_url_states_remote(url_states):
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
 def fetch_url_content_with_retry(url, url_states):
-    """
-    尝试获取 URL 内容，带重试机制，并利用 ETag/Last-Modified/Content-Hash 避免重复下载。
-    会更新 url_states 中的 etag, last_modified, content_hash 和 last_checked。
-    """
+    """尝试获取 URL 内容，带重试机制，并利用 ETag/Last-Modified/Content-Hash 避免重复下载。"""
     headers = {}
     current_state = url_states.get(url, {})
 
@@ -254,32 +263,27 @@ def fetch_url_content_with_retry(url, url_states):
 
         if response.status_code == 304:
             logging.debug(f"URL 内容 {url} 未修改 (304)。跳过下载。")
-            # 即使304，也更新 last_checked
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked'] = datetime.now().isoformat()
-            return None # 表示内容未更新，无需处理
+            return None
 
         content = response.text
         content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
         if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
             logging.debug(f"URL 内容 {url} 基于哈希是相同的。跳过下载。")
-            # 即使哈希相同，也更新 last_checked
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked'] = datetime.now().isoformat()
-            return None # 表示内容未更新，无需处理
+            return None
 
-        # 内容有更新，保存新状态
         url_states[url] = {
             'etag': response.headers.get('ETag'),
             'last_modified': response.headers.get('Last-Modified'),
             'content_hash': content_hash,
             'last_checked': datetime.now().isoformat()
         }
-        # 注意: 这里不立即保存 url_states_remote，因为提取多个 URL 后统一保存更高效。
-        # 实际保存会在 main 函数中进行。
 
         logging.debug(f"成功获取 URL：{url} 的新内容。内容已更新。")
         return content
@@ -296,7 +300,7 @@ def extract_channels_from_url(url, url_states):
     extracted_channels = []
     try:
         text = fetch_url_content_with_retry(url, url_states)
-        if text is None: # 内容未更新或获取失败
+        if text is None:
             return []
 
         if get_url_file_extension(url) in [".m3u", ".m3u8"]:
@@ -348,7 +352,7 @@ def pre_screen_url(url):
             logging.debug(f"预筛选过滤（无效模式）：{url}")
             return False
 
-    if len(url) < 15: # 简单的长度过滤，避免异常短链接
+    if len(url) < 15:
         return False
 
     return True
@@ -390,16 +394,14 @@ def check_http_url(url, timeout):
 def check_rtmp_url(url, timeout):
     """检查 RTMP URL 是否可达（需要 ffprobe）。"""
     try:
-        # 尝试运行 ffprobe -h 来检查是否安装且可用
         subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
         logging.warning("未找到 ffprobe 或其无法工作。RTMP 流检查已跳过。")
-        return False # ffprobe 不可用，直接返回 False
+        return False
     try:
-        # 使用 ffprobe 检查 RTMP 流
         result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, timeout=timeout)
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
     except subprocess.TimeoutExpired:
         logging.debug(f"RTMP URL {url} 检查超时")
@@ -418,13 +420,10 @@ def check_rtp_url(url, timeout):
             logging.debug(f"RTP URL {url} 解析失败：缺少主机或端口。")
             return False
 
-        # RTP 通常使用 UDP
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.settimeout(timeout)
             s.connect((host, port))
-            # 发送一个空包，尝试触发响应（有些服务器可能不响应空包，但连接本身是验证）
             s.sendto(b'', (host, port))
-            # 尝试接收一个字节，如果成功则认为可达
             s.recv(1)
         return True
     except (socket.timeout, socket.error) as e:
@@ -439,7 +438,7 @@ def check_p3p_url(url, timeout):
     try:
         parsed_url = urlparse(url)
         host = parsed_url.hostname
-        port = parsed_url.port if parsed_url.port else 80 # P3P 通常是 HTTP 端口
+        port = parsed_url.port if parsed_url.port else 80
         path = parsed_url.path if parsed_url.path else '/'
 
         if not host:
@@ -450,46 +449,31 @@ def check_p3p_url(url, timeout):
             request = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: Python\r\n\r\n"
             s.sendall(request.encode())
             response = s.recv(1024).decode('utf-8', errors='ignore')
-            # 检查响应中是否包含 P3P 头部或是一个有效的 HTTP 响应开头
             return "P3P" in response or response.startswith("HTTP/1.")
     except Exception as e:
         logging.debug(f"P3P URL {url} 检查失败：{e}")
         return False
 
 def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHANNEL_CHECK_TIMEOUT):
-    """
-    检查单个频道的有效性和速度，并记录失败状态以便跳过。
-    参数:
-        channel_name (str): 频道名称。
-        url (str): 频道 URL。
-        url_states (dict): 存储所有 URL 状态的字典，用于读写。
-        timeout (int): 检查超时时间。
-    返回:
-        tuple: (elapsed_time, is_valid) 如果有效则返回响应时间，否则返回 None。
-    """
+    """检查单个频道的有效性和速度，并记录失败状态以便跳过。"""
     current_time = datetime.now()
-    
-    # 获取该 URL 的当前状态
     current_url_state = url_states.get(url, {})
 
-    # ===== 新增逻辑：检查是否需要跳过 =====
     if 'stream_check_failed_at' in current_url_state:
         last_failed_time_str = current_url_state['stream_check_failed_at']
         try:
             last_failed_datetime = datetime.fromisoformat(last_failed_time_str)
-            # 检查距离上次失败是否在冷却期内
             time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
             if time_since_failed_hours < STREAM_SKIP_FAILED_HOURS:
                 logging.debug(f"跳过频道 {channel_name} ({url})，因为在冷却期 ({STREAM_SKIP_FAILED_HOURS}h) 内检测失败。上次失败于 {last_failed_time_str}，已过 {time_since_failed_hours:.2f}h。")
-                return None, False # 跳过检测，返回无效
+                return None, False
         except ValueError:
             logging.warning(f"无法解析 URL {url} 的失败时间戳：{last_failed_time_str}")
-            # 如果时间戳格式错误，继续检测 (或选择直接跳过)
             pass
 
     start_time = time.time()
     is_valid = False
-    protocol_checked = False # 标记是否进行了协议检查
+    protocol_checked = False
 
     try:
         if url.startswith("http"):
@@ -506,23 +490,19 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHAN
             protocol_checked = True
         else:
             logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
-            # 更新状态为不支持的协议，不计入失败计数
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked_protocol_unsupported'] = current_time.isoformat()
-            # 清除之前的失败记录，因为它不是真正的“失败”
             url_states[url].pop('stream_check_failed_at', None)
             url_states[url].pop('stream_fail_count', None)
-            url_states[url]['last_stream_checked'] = current_time.isoformat() # 记录最后检测时间
+            url_states[url]['last_stream_checked'] = current_time.isoformat()
             return None, False
 
         elapsed_time = (time.time() - start_time) * 1000
 
-        # ===== 新增逻辑：更新成功/失败状态 =====
         if is_valid:
             if url not in url_states:
                 url_states[url] = {}
-            # 成功了就清除失败记录
             url_states[url].pop('stream_check_failed_at', None)
             url_states[url].pop('stream_fail_count', None)
             url_states[url]['last_successful_stream_check'] = current_time.isoformat()
@@ -530,7 +510,6 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHAN
             logging.debug(f"频道 {channel_name} ({url}) 检测成功，耗时 {elapsed_time:.0f} 毫秒。")
             return elapsed_time, True
         else:
-            # 失败了，记录失败时间并增加失败次数
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['stream_check_failed_at'] = current_time.isoformat()
@@ -539,7 +518,6 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHAN
             logging.debug(f"频道 {channel_name} ({url}) 检测失败。")
             return None, False
     except Exception as e:
-        # 异常也视为失败
         if url not in url_states:
             url_states[url] = {}
         url_states[url]['stream_check_failed_at'] = current_time.isoformat()
@@ -557,7 +535,7 @@ def process_single_channel_line(channel_line, url_states):
     if len(parts) == 2:
         name, url = parts
         url = url.strip()
-        elapsed_time, is_valid = check_channel_validity_and_speed(name, url, url_states) # 传递 url_states
+        elapsed_time, is_valid = check_channel_validity_and_speed(name, url, url_states)
         if is_valid:
             return elapsed_time, f"{name},{url}"
     return None, None
@@ -569,7 +547,6 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
     total_channels = len(channel_lines)
     logging.warning(f"开始多线程频道有效性和速度检测，总计 {total_channels} 个频道...")
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 传递 url_states 给每一个 Future
         futures = {executor.submit(process_single_channel_line, line, url_states): line for line in channel_lines}
         for future in as_completed(futures):
             checked_count += 1
@@ -598,7 +575,7 @@ def sort_cctv_channels(channels):
         match = re.search(r'\d+', channel_name_full)
         if match:
             return int(match.group())
-        return float('inf') # 没有数字的排在最后
+        return float('inf')
 
     return sorted(channels, key=channel_key)
 
@@ -624,7 +601,6 @@ def group_and_limit_channels(lines):
 
     final_grouped_lines = []
     for channel_name in grouped_channels:
-        # 限制每个频道名称下的 URL 数量
         for ch_line in grouped_channels[channel_name][:MAX_CHANNEL_URLS_PER_GROUP]:
             final_grouped_lines.append(ch_line + '\n')
     return final_grouped_lines
@@ -639,14 +615,12 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
     files_to_merge_paths = []
     processed_files = set()
 
-    # 优先按照 ORDERED_CATEGORIES 的顺序合并
     for category in ORDERED_CATEGORIES:
         file_name = f"{category}_iptv.txt"
         if file_name in all_iptv_files_in_dir and file_name not in processed_files:
             files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
             processed_files.add(file_name)
 
-    # 然后合并所有剩余的 _iptv.txt 文件（按字母顺序）
     for file_name in sorted(all_iptv_files_in_dir):
         if file_name not in processed_files:
             files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
@@ -744,7 +718,6 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                     html_url = item.get('html_url', '')
                     raw_url = None
 
-                    # 从 html_url 构造 raw_url
                     match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
                     if match:
                         user = match.group(1)
@@ -757,7 +730,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                         cleaned_url = clean_url_params(raw_url)
                         if cleaned_url.startswith("https://raw.githubusercontent.com/") and \
                            cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
-                           pre_screen_url(cleaned_url): # 再次通过预筛选
+                           pre_screen_url(cleaned_url):
                             found_urls.add(cleaned_url)
                             logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{cleaned_url}")
                         else:
@@ -765,11 +738,11 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                     else:
                         logging.debug(f"无法从 HTML URL 构造原始 URL：{html_url}")
 
-                if len(data['items']) < PER_PAGE: # 如果返回的条目少于每页限制，说明已是最后一页
+                if len(data['items']) < PER_PAGE:
                     break
 
                 page += 1
-                time.sleep(2) # 页面之间的延迟，避免频繁请求
+                time.sleep(2)
 
             except requests.exceptions.RequestException as e:
                 logging.error(f"GitHub API 请求失败（关键词：{keyword}，页码：{page}）：{e}")
@@ -778,9 +751,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                     wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
                     logging.warning(f"GitHub API 速率限制已达到！等待 {wait_seconds:.0f} 秒后重试。")
                     time.sleep(wait_seconds)
-                    continue # 重新尝试当前页面
+                    continue
                 else:
-                    break # 其他请求错误则停止当前关键词的搜索
+                    break
             except Exception as e:
                 logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
                 break
@@ -817,8 +790,7 @@ def main():
 
     # 步骤 4: 从所有源提取频道，并更新 URL 内容状态
     all_extracted_channels = set()
-    # 使用多线程并行获取所有 URL 的内容并提取频道
-    with ThreadPoolExecutor(max_workers=5) as executor: # 可以根据并发需求调整线程数
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
         for future in as_completed(future_to_url):
             url = future_to_url[future]
@@ -829,23 +801,22 @@ def main():
             except Exception as exc:
                 logging.error(f"处理源 '{url}' 时发生异常：{exc}")
 
-    # 步骤 5: 保存更新后的 URL 内容状态 (etag, content_hash 等)
+    # 步骤 5: 保存更新后的 URL 内容状态
     save_url_states_remote(url_states)
     logging.warning(f"\n从所有源提取了 {len(all_extracted_channels)} 个原始频道。")
 
     # 步骤 6: 过滤和清理频道
-    filtered_channels = filter_and_modify_channels(list(all_extracted_channels)) # 转换为列表以便过滤
-    unique_filtered_channels = list(set(filtered_channels)) # 确保唯一性
+    filtered_channels = filter_and_modify_channels(list(all_extracted_channels))
+    unique_filtered_channels = list(set(filtered_channels))
     unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
 
     logging.warning(f"\n过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
 
     # 步骤 7: 多线程检查频道有效性及速度
-    # 传递 url_states 以便 check_channel_validity_and_speed 函数可以读写状态
     valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str, url_states)
     logging.warning(f"有效且响应的频道数量：{len(valid_channels_with_speed)}")
 
-    # 步骤 8: 保存所有频道检测后的最新状态 (包括视频流检测失败记录)
+    # 步骤 8: 保存所有频道检测后的最新状态
     save_url_states_remote(url_states)
     logging.warning("频道检测状态已保存到远程。")
 
@@ -856,15 +827,14 @@ def main():
     # 步骤 10: 准备本地频道目录和模板
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
     os.makedirs(local_channels_directory, exist_ok=True)
-    clear_directory_txt_files(local_channels_directory) # 清空旧的分类文件
+    clear_directory_txt_files(local_channels_directory)
 
     template_directory = os.path.join(os.getcwd(), '频道模板')
-    os.makedirs(template_directory, exist_ok=True) # 确保模板目录存在
+    os.makedirs(template_directory, exist_ok=True)
     template_files = [f for f in os.listdir(template_directory) if f.endswith('.txt')]
 
     channels_for_matching = read_txt_to_array_local(iptv_speed_file_path)
 
-    # 收集所有模板中的频道名称，以便找出未匹配的
     all_template_channel_names = set()
     for template_file in template_files:
         names_from_current_template = read_txt_to_array_local(os.path.join(template_directory, template_file))
@@ -881,7 +851,6 @@ def main():
             if channel_name in template_channels_names:
                 current_template_matched_channels.append(channel_line)
 
-        # 特殊处理央视频道排序
         if "央视" in template_name or "CCTV" in template_name:
             current_template_matched_channels = sort_cctv_channels(current_template_matched_channels)
             logging.warning(f"已按数字对 '{template_name}' 频道进行排序。")
@@ -916,14 +885,12 @@ def main():
     unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
     with open(unmatched_output_file_path, 'w', encoding='utf-8') as f:
         for channel_line in unmatched_channels_list:
-            # 只写入频道名称，方便人工审核
             f.write(channel_line.split(',')[0].strip() + '\n')
     logging.warning(f"\n已保存不匹配但已检测到的频道列表到：'{unmatched_output_file_path}'，总共 {len(unmatched_channels_list)} 个频道。")
 
     # 步骤 15: 清理临时文件
     try:
-        # 删除 'iptv.txt' 和 'iptv_speed.txt' (如果存在)
-        if os.path.exists('iptv.txt'): # 注意：脚本中似乎没有生成 iptv.txt，但保留删除逻辑
+        if os.path.exists('iptv.txt'):
             os.remove('iptv.txt')
             logging.debug(f"已删除临时文件 'iptv.txt'。")
         if os.path.exists('iptv_speed.txt'):
