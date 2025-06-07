@@ -1,0 +1,17 @@
+{
+  "https://raw.githubusercontent.com/ckadams7876/addon/ecfa174000e912639b9b380901acc0bee31a703a/streams/us.m3u": {
+    "etag": "W/\"b8208f39385ee131b9ff41e20d34b4f9355db333a842ad32138a18b7429be7f9\"",
+    "last_modified": "",
+    "timestamp": 1749280863.504667
+  },
+  "https://raw.githubusercontent.com/junguler/m3u-audiobooks/74aef44b9907978c5a252e4609e91e0437843149/alan_watt_archive/part2/alan-watt-cttm-liveon-rbn-733-should-father-forgive-them-who-know-what-they-do-dec-232010.m3u": {
+    "etag": "W/\"35f683d3e8425cac22cffd477e22af95e669fbe7f7833ce227502653c44d7a79\"",
+    "last_modified": "",
+    "timestamp": 1749280863.5512955
+  },
+  "https://raw.githubusercontent.com/adminouyang/dszby/866e5117303988e0a88ab106ba077d722038c94d/py/GTJM/%E7%BD%91%E7%BB%9C%E6%94%B6%E9%9B%86.m3u": {
+    "etag": "W/\"eccae52f6eda44b9dae3e7a1013b043e3fc8a306c02da249f00a97604b343cc3\"",
+    "last_modified": "",
+    "timestamp": 1749280863.5925086
+  }
+}
