@@ -6,6 +6,7 @@ import re
 from urllib.parse import urlparse, urljoin
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from concurrent.futures import ThreadPoolExecutor
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -18,6 +19,7 @@ REPO_URL = os.getenv('REPO_URL')
 # 输出目录和文件
 OUTPUT_DIR = 'data'
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'valid_urls.m3u')
+ERROR_LOG = os.path.join(OUTPUT_DIR, 'error_log.txt')
 
 def ensure_output_dir():
     """确保输出目录存在"""
@@ -28,7 +30,7 @@ def ensure_output_dir():
 def create_session():
     """创建带重试机制的请求会话"""
     session = requests.Session()
-    retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
     return session
@@ -43,7 +45,7 @@ def validate_token():
         session = create_session()
         response = session.get('https://api.github.com/user', headers=headers, timeout=5)
         if response.status_code == 200:
-            logger.info(f"GitHub token is valid for user: {response.json().get('login')}")
+            logger.info(f"GitHub token is valid for user: {response-jejson().get('login')}")
             return True
         else:
             logger.error(f"Invalid GitHub token (status {response.status_code}): {response.text}")
@@ -99,6 +101,7 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     current_extgrp = None
     stream_count = 0
     m3u_name = None
+    is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
     
     for line in lines:
         line = line.strip()
@@ -117,7 +120,6 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
         elif line.startswith('#EXTGRP'):
             current_extgrp = line.replace('#EXTGRP:', '').strip()
         elif line.startswith('频道,#genre#'):
-            # 处理自定义格式
             try:
                 channel_name, url = line.split(',', 1)
                 channel_name = channel_name.replace('频道', '').strip()
@@ -132,11 +134,15 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
                     channel_name = current_extinf.split(',')[-1].strip() if ',' in current_extinf else f"Stream_{playlist_index}_{stream_count}"
                     if not channel_name:
                         channel_name = f"Stream_{playlist_index}_{stream_count}"
+                    if is_vod:
+                        channel_name += ' [VOD]'
                     group_title = re.search(r'group-title="([^"]*)"', current_extinf)
                     group_title = group_title.group(1) if group_title else current_extgrp
                 elif current_stream_inf:
                     program_id = re.search(r'PROGRAM-ID=(\d+)', current_stream_inf)
                     channel_name = f"Stream_{playlist_index}_{stream_count}_{program_id.group(1) if program_id else 'Unknown'}"
+                    if is_vod:
+                        channel_name += ' [VOD]'
                     group_title = re.search(r'group-title="([^"]*)"', current_stream_inf)
                     group_title = group_title.group(1) if group_title else current_extgrp or m3u_name
                 else:
@@ -157,6 +163,19 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     
     return channels, m3u_name
 
+def validate_key_url(key_url, base_url=None):
+    """验证加密密钥 URL 是否可访问"""
+    if not key_url:
+        return False
+    key_url = urljoin(base_url, key_url) if base_url and not key_url.startswith(('http://', 'https://')) else key_url
+    try:
+        session = create_session()
+        response = session.head(key_url, timeout=5, allow_redirects=True)
+        return response.status_code == 200
+    except requests.RequestException as e:
+        logger.warning(f"Failed to validate key URL {key_url}: {str(e)}")
+        return False
+
 def fetch_m3u_playlist(url, playlist_index):
     """获取并解析 M3U 播放列表"""
     try:
@@ -167,10 +186,20 @@ def fetch_m3u_playlist(url, playlist_index):
         response.raise_for_status()
         base_url = url.rsplit('/', 1)[0] + '/'
         channels, m3u_name = parse_m3u_content(response.text, playlist_index, base_url, url.split('/')[-1])
+        
+        # 检查加密密钥
+        key_match = re.search(r'#EXT-X-KEY:METHOD=AES-128,URI="([^"]*)"', response.text)
+        if key_match and not validate_key_url(key_match.group(1), base_url):
+            logger.warning(f"Encryption key inaccessible for playlist {url}, marking channels as unverified")
+            for i, (name, stream_url, group_title) in enumerate(channels):
+                channels[i] = (name + ' [Unverified]', stream_url, group_title)
+        
         logger.info(f"Fetched {len(channels)} channels from {url}")
         return channels
     except requests.RequestException as e:
         logger.error(f"Failed to fetch playlist {url}: {str(e)}")
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Failed to fetch {url}: {str(e)}\n")
         return []
 
 def validate_m3u8_url(url):
@@ -184,15 +213,18 @@ def validate_m3u8_url(url):
         if response.status_code == 200:
             return True
         logger.warning(f"Invalid URL (status {response.status_code}): {url}")
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Invalid URL (status {response.status_code}): {url}\n")
         return False
     except requests.RequestException as e:
         logger.warning(f"Failed to validate URL {url}: {str(e)}")
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Failed to validate {url}: {str(e)}\n")
         return False
 
 def classify_channel(channel_name, group_title=None, url=None):
     """根据 group-title、EXTGRP、频道名称或 URL 推断分类"""
     if group_title:
-        # 翻译俄文分类
         translations = {
             'Общие': '综合',
             'Новостные': '新闻',
@@ -201,24 +233,28 @@ def classify_channel(channel_name, group_title=None, url=None):
             'Музыка': '音乐',
             'Детские': '少儿',
             'Документальные': '纪录',
-            'Образовательные': '科教'
+            'Образовательные': '科教',
+            'Развлекательные': '娱乐',
+            'Познавательные': '教育'
         }
         return translations.get(group_title, group_title)
     categories = {
-        '综合': ['综合', 'cctv-1', 'cctv-2', 'general', 'первый канал', 'россия', 'нтв', 'твц', 'рен тв'],
+        '综合': ['综合', 'cctv-1', 'cctv-2', 'general', 'первый канал', 'россия', 'нтв', 'твц', 'рен тв', 'ucomist'],
         '体育': ['sport', 'espn', 'nba', 'cctv-5'],
         '电影': ['movie', 'cinema', 'film', 'cctv-6', 'cinemax'],
-        '音乐': ['music', 'mtv', 'cctv-15', 'praise_him'],
+        '音乐': ['music', 'mtv', 'cctv-15', 'praise_him', '30a music'],
         '新闻': ['news', 'cnn', 'bbc', 'cctv-13', 'abcnews', 'известия', 'россия 24', 'рбк', 'euronews', 'настоящее время'],
-        '少儿': ['kids', 'children', 'cctv-14'],
+        '少儿': ['kids', 'children', 'cctv-14', '3abn kids'],
         '科教': ['science', 'education', 'cctv-10'],
         '戏曲': ['opera', 'cctv-11'],
         '社会与法': ['law', 'cctv-12'],
         '国防军事': ['military', 'cctv-7'],
         '纪录': ['documentary', 'cctv-9'],
-        '国外频道': ['persian', 'french', 'international', 'abtvusa', 'rtvi', 'соловиёвlive'],
-        '地方频道': ['sacramento', 'local', 'cablecast'],
-        '流媒体': ['stream', 'kwikmotion', '30a-tv', 'uplynk', 'jsrdn'],
+        '国外频道': ['persian', 'french', 'international', 'abtvusa', 'rtvi', 'соловиёвlive', '3abn french'],
+        '地方频道': ['sacramento', 'local', 'cablecast', 'access sacramento'],
+        '流媒体': ['stream', 'kwikmotion', '30a-tv', 'uplynk', 'jsrdn', 'darcizzle', 'beachy', 'sidewalks'],
+        '娱乐': ['entertainment', 'развлекательные'],
+        '教育': ['education', 'познавательные'],
         '其他频道': []
     }
     channel_name_lower = channel_name.lower()
@@ -228,41 +264,10 @@ def classify_channel(channel_name, group_title=None, url=None):
             return category
     return '其他频道'
 
-def generate_m3u_file(channels):
-    """生成可用直播源的 .m3u 文件，符合指定格式"""
-    unique_channels = []
-    seen = set()
-    for name, url, group_title in channels:
-        key = (name.lower(), url)
-        if key not in seen:
-            seen.add(key)
-            unique_channels.append((name, url, group_title))
-    
-    classified = {}
-    valid_count = 0
-    for name, url, group_title in unique_channels:
-        if validate_m3u8_url(url):
-            category = classify_channel(name, group_title, url)
-            if category not in classified:
-                classified[category] = []
-            classified[category].append((name, url))
-            valid_count += 1
-            logger.info(f"Valid URL: {name}, {url}, Category: {category}")
-        else:
-            logger.warning(f"Invalid URL: {name}, {url}")
-    
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        f.write('更新时间,#genre#\n')
-        f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
-        f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
-        for category in sorted(classified.keys()):
-            if classified[category]:
-                f.write(f"{category},#genre#\n")
-                for name, url in classified[category]:
-                    f.write(f"{name},{url}\n")
-    
-    logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
-    logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
+def fetch_playlist_wrapper(args):
+    """线程池包装函数"""
+    url, index = args
+    return fetch_m3u_playlist(url, index)
 
 def main():
     ensure_output_dir()
@@ -272,14 +277,47 @@ def main():
         return
     
     all_channels = []
-    max_urls = 9999  # 限制处理的最大 URL 数量
-    for i, url in enumerate(urls[:max_urls]):
-        channels = fetch_m3u_playlist(url, i)
-        all_channels.extend(channels)
-        logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
+    max_urls = 500  # 增加到 500 个 URL
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        results = executor.map(fetch_playlist_wrapper, [(url, i) for i, url in enumerate(urls[:max_urls])])
+        for i, channels in enumerate(results):
+            all_channels.extend(channels)
+            logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
     
     if all_channels:
-        generate_m3u_file(all_channels)
+        unique_channels = []
+        seen = set()
+        for name, url, group_title in all_channels:
+            key = (name.lower(), url)
+            if key not in seen:
+                seen.add(key)
+                unique_channels.append((name, url, group_title))
+        
+        classified = {}
+        valid_count = 0
+        for name, url, group_title in unique_channels:
+            if validate_m3u8_url(url):
+                category = classify_channel(name, group_title, url)
+                if category not in classified:
+                    classified[category] = []
+                classified[category].append((name, url))
+                valid_count += 1
+                logger.info(f"Valid URL: {name}, {url}, Category: {category}")
+            else:
+                logger.warning(f"Invalid URL: {name}, {url}")
+        
+        with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+            f.write('更新时间,#genre#\n')
+            f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
+            f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
+            for category in sorted(classified.keys()):
+                if classified[category]:
+                    f.write(f"{category},#genre#\n")
+                    for name, url in classified[category]:
+                        f.write(f"{name},{url}\n")
+        
+        logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
+        logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
     else:
         logger.error("No valid channels found. Exiting.")
 
