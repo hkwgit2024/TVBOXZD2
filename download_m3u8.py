@@ -38,7 +38,7 @@ def ensure_output_dir():
     logger.info(f"Output directory ready: {OUTPUT_DIR}")
 
 async def create_session():
-    timeout = aiohttp.ClientTimeout(total=8, connect=2, sock_connect=2)  # 缩短超时
+    timeout = aiohttp.ClientTimeout(total=8, connect=5, sock_connect=5)  # 缩短超时
     return aiohttp.ClientSession(timeout=timeout)
 
 async def validate_token(session):
@@ -322,7 +322,7 @@ async def main():
                     logger.info(f"Valid URL: {unique_channels[i][0]}, {unique_channels[i][1]}")
 
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                f.write('#EXTM3U\n')
+                
                 f.write('# Note: [VOD] indicates Video on Demand streams.\n')
                 f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
                 for category in sorted(classified.keys()):
