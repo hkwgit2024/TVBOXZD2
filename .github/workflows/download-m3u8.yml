@@ -1,0 +1,36 @@
+name: Download and Validate M3U8 URLs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  download-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Run script
+      env:
+        BOT: ${{ secrets.BOT }}
+        REPO_URL: ${{ secrets.REPO_URL }}
+      run: python download_m3u8.py
+
+    - name: Upload results
+      uses: actions/upload-artifact@v4
+      with:
+        name: valid-m3u8-urls
+        path: data/valid_urls.m3u
