@@ -272,7 +272,7 @@ def main():
         return
     
     all_channels = []
-    max_urls = 100  # 限制处理的最大 URL 数量
+    max_urls = 9999  # 限制处理的最大 URL 数量
     for i, url in enumerate(urls[:max_urls]):
         channels = fetch_m3u_playlist(url, i)
         all_channels.extend(channels)
