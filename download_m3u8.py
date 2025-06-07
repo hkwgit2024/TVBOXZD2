@@ -101,7 +101,7 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     stream_count = 0
     m3u_name = None
     is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
-    max_channels = 100  # 限制每个 M3U 文件的频道数量
+    max_channels = 1000  # 限制每个 M3U 文件的频道数量
     
     for line in lines:
         if stream_count >= max_channels:
@@ -267,7 +267,7 @@ def main():
         return
     
     all_channels = []
-    max_urls = 6  # 保持 100 个 URL，优化后可增加
+    max_urls = 10000  # 保持 100 个 URL，优化后可增加
     with ThreadPoolExecutor(max_workers=20) as executor:
         results = executor.map(fetch_playlist_wrapper, [(url, i) for i, url in enumerate(urls[:max_urls])])
         for i, channels in enumerate(results):
