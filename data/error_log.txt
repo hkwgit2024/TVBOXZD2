@@ -793,3 +793,103 @@ Failed to validate http://50.7.234.10:8278/zhongshihd_twn/playlist.m3u8?tid=MB8B
 Failed to validate https://cmctv.ios.internapcdn.net/cmctv_vitalstream_com/live_1/CMCU-92/playlist.m3u8: HTTPSConnectionPool(host='cmctv.ios.internapcdn.net', port=443): Max retries exceeded with url: /cmctv_vitalstream_com/live_1/CMCU-92/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f8f8c7f7e90>, 'Connection to cmctv.ios.internapcdn.net timed out. (connect timeout=5)'))
 Failed to validate http://topfi.ios.internapcdn.net/topfi/live_1/Test/Test.m3u8: HTTPConnectionPool(host='topfi.ios.internapcdn.net', port=80): Max retries exceeded with url: /topfi/live_1/Test/Test.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f8f8c66e0d0>, 'Connection to topfi.ios.internapcdn.net timed out. (connect timeout=5)'))
 Invalid URL (status 404): https://play.accolamedia.id/accola/psj.stream/playlist.m3u8
+Failed to validate https://stream.persiantv1.com/ptv1/playlist1/index.m3u8: HTTPSConnectionPool(host='stream.persiantv1.com', port=443): Max retries exceeded with url: /ptv1/playlist1/index.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1dda8390>: Failed to resolve 'stream.persiantv1.com' ([Errno -2] Name or service not known)"))
+Failed to validate http://hlsdpi-cdn-chqtx02.totalstream.net/dpilive/247retro/ret/dai/playlist.m3u8: HTTPConnectionPool(host='hlsdpi-cdn-chqtx02.totalstream.net', port=80): Max retries exceeded with url: /dpilive/247retro/ret/dai/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f6e1ddaa150>, 'Connection to hlsdpi-cdn-chqtx02.totalstream.net timed out. (connect timeout=3)'))
+Failed to validate https://cdn.appv.jagobd.com:444/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/abtvusa.stream/playlist.m3u8: HTTPSConnectionPool(host='cdn.appv.jagobd.com', port=444): Max retries exceeded with url: /c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI/abtvusa.stream/playlist.m3u8 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f6e1ddba990>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Failed to validate https://a.jsrdn.com/broadcast/542cb2ce3c/+0000/c.m3u8: HTTPSConnectionPool(host='a.jsrdn.com', port=443): Max retries exceeded with url: /broadcast/542cb2ce3c/+0000/c.m3u8 (Caused by ReadTimeoutError("HTTPSConnectionPool(host='a.jsrdn.com', port=443): Read timed out. (read timeout=3)"))
+Failed to validate http://31.220.41.88:8081/live/us-cinemaxaction.stream/playlist.m3u8: HTTPConnectionPool(host='31.220.41.88', port=8081): Max retries exceeded with url: /live/us-cinemaxaction.stream/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f6e1dda9cd0>, 'Connection to 31.220.41.88 timed out. (connect timeout=3)'))
+Invalid URL (status 403): https://tve-live-lln.warnermediacdn.com/hls/live/2023183/aseast/noslate/VIDEO_1_5128000.m3u8
+Invalid URL (status 403): https://tve-live-lln.warnermediacdn.com/hls/live/2023183/aseast/noslate/VIDEO_3_1928000.m3u8
+Invalid URL (status 403): https://tve-live-lln.warnermediacdn.com/hls/live/2023185/aswest/noslate/VIDEO_1_5128000.m3u8
+Invalid URL (status 403): https://tve-live-lln.warnermediacdn.com/hls/live/2023185/aswest/noslate/VIDEO_3_1928000.m3u8
+Failed to validate https://gizmeon.s.llnwi.net/channellivev3/live/master.m3u8?channel=275: HTTPSConnectionPool(host='gizmeon.s.llnwi.net', port=443): Max retries exceeded with url: /channellivev3/live/master.m3u8?channel=275 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1ddcaf90>: Failed to resolve 'gizmeon.s.llnwi.net' ([Errno -2] Name or service not known)"))
+Failed to validate https://akaku.vod.castus.tv/live/ch1.m3u8: HTTPSConnectionPool(host='akaku.vod.castus.tv', port=443): Max retries exceeded with url: /live/ch1.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1deea2d0>, 'Connection to akaku.vod.castus.tv timed out. (connect timeout=3)'))
+Failed to validate https://akaku.vod.castus.tv/live/ch2.m3u8: HTTPSConnectionPool(host='akaku.vod.castus.tv', port=443): Max retries exceeded with url: /live/ch2.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1ddc8b50>, 'Connection to akaku.vod.castus.tv timed out. (connect timeout=3)'))
+Failed to validate https://akaku.vod.castus.tv/live/ch3.m3u8: HTTPSConnectionPool(host='akaku.vod.castus.tv', port=443): Max retries exceeded with url: /live/ch3.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1dddcd50>, 'Connection to akaku.vod.castus.tv timed out. (connect timeout=3)'))
+Invalid URL (status 404): https://597f64b67707a.streamlock.net/alkerazatv.org/alkerazatv.smil/playlist.m3u8
+Invalid URL (status 403): https://bcovlive-a.akamaihd.net/ebf15ff84e98490e8b00209ed77c77f5/us-east-1/6240731308001/playlist.m3u8
+Failed to validate http://209.91.213.10:8088/play/a013: HTTPConnectionPool(host='209.91.213.10', port=8088): Max retries exceeded with url: /play/a013 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f6e1ddc9e90>, 'Connection to 209.91.213.10 timed out. (connect timeout=3)'))
+Invalid URL (status 403): https://bcovlive-a.akamaihd.net/bdbdca51c15243fbaca92fd54c42d45a/us-east-1/6245817279001/playlist.m3u8
+Failed to validate http://170.178.189.66:1935/live/Stream1/playlist.m3u8: HTTPConnectionPool(host='170.178.189.66', port=1935): Max retries exceeded with url: /live/Stream1/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f6e1dda9250>, 'Connection to 170.178.189.66 timed out. (connect timeout=3)'))
+Failed to validate https://ampmedia.secure.footprint.net/egress/bhandler/ampmedia/streama/manifest.m3u8: HTTPSConnectionPool(host='ampmedia.secure.footprint.net', port=443): Max retries exceeded with url: /egress/bhandler/ampmedia/streama/manifest.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1dddf990>: Failed to resolve 'ampmedia.secure.footprint.net' ([Errno -2] Name or service not known)"))
+Failed to validate https://ampmedia.secure.footprint.net/egress/bhandler/ampmedia/streamb/manifest.m3u8: HTTPSConnectionPool(host='ampmedia.secure.footprint.net', port=443): Max retries exceeded with url: /egress/bhandler/ampmedia/streamb/manifest.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1dd9ffd0>: Failed to resolve 'ampmedia.secure.footprint.net' ([Errno -2] Name or service not known)"))
+Failed to validate https://pasadenamed.secure.footprint.net/egress/bhandler/pasadenamed/streamb/playlist.m3u8: HTTPSConnectionPool(host='pasadenamed.secure.footprint.net', port=443): Max retries exceeded with url: /egress/bhandler/pasadenamed/streamb/playlist.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1ddca390>: Failed to resolve 'pasadenamed.secure.footprint.net' ([Errno -2] Name or service not known)"))
+Invalid URL (status 404): https://agp-nimble.streamguys1.com/AGCC/AGCC/playlist.m3u8
+Invalid URL (status 404): https://cdn3.wowza.com/5/UHh3aHM1bTBsY1Uw/diffusion/canal17/playlist.m3u8
+Failed to validate https://5b0f5374bdf0c.streamlock.net:444/LiveTV/ATLHD/playlist.m3u8: HTTPSConnectionPool(host='5b0f5374bdf0c.streamlock.net', port=444): Max retries exceeded with url: /LiveTV/ATLHD/playlist.m3u8 (Caused by SSLError(SSLCertVerificationError(1, "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for '5b0f5374bdf0c.streamlock.net'. (_ssl.c:1016)")))
+Invalid URL (status 404): https://content.uplynk.com/channel/5688add7ce704ce1a27ab62bb44044b9.m3u8
+Failed to validate https://cdn.herringnetwork.com/80A4DFF/awee_nva/AWE_Encore.m3u8: HTTPSConnectionPool(host='cdn.herringnetwork.com', port=443): Max retries exceeded with url: /80A4DFF/awee_nva/AWE_Encore.m3u8 (Caused by ResponseError('too many 502 error responses'))
+Failed to validate https://dikcfc9915kp8.cloudfront.net/hls/1080p/playlist.m3u8: HTTPSConnectionPool(host='dikcfc9915kp8.cloudfront.net', port=443): Max retries exceeded with url: /hls/1080p/playlist.m3u8 (Caused by ReadTimeoutError("HTTPSConnectionPool(host='dikcfc9915kp8.cloudfront.net', port=443): Read timed out. (read timeout=3)"))
+Failed to validate https://dikcfc9915kp8.cloudfront.net/hls/main.m3u8: HTTPSConnectionPool(host='dikcfc9915kp8.cloudfront.net', port=443): Max retries exceeded with url: /hls/main.m3u8 (Caused by ReadTimeoutError("HTTPSConnectionPool(host='dikcfc9915kp8.cloudfront.net', port=443): Read timed out. (read timeout=3)"))
+Failed to validate https://vblive-c.viebit.com/072e341f-100d-4da1-9c18-65370ebf35c6/playlist.m3u8: HTTPSConnectionPool(host='vblive-c.viebit.com', port=443): Max retries exceeded with url: /072e341f-100d-4da1-9c18-65370ebf35c6/playlist.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f6e1ddbbbd0>: Failed to resolve 'vblive-c.viebit.com' ([Errno -2] Name or service not known)"))
+Invalid URL (status 403): https://bcovlive-a.akamaihd.net/8e64fad5ddbe4d3e95b23b0f9c062f03/us-east-1/6240731308001/playlist.m3u8
+Failed to validate http://stream04.amp.csulb.edu:1935/Beach_TV/smil:BeachTV.smil/playlist.m3u8: HTTPConnectionPool(host='stream04.amp.csulb.edu', port=1935): Max retries exceeded with url: /Beach_TV/smil:BeachTV.smil/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f6e1ddcbc50>, 'Connection to stream04.amp.csulb.edu timed out. (connect timeout=3)'))
+Failed to validate https://uni5rtmp.tulix.tv/betterhealth/betterhealth/playlist.m3u8: HTTPSConnectionPool(host='uni5rtmp.tulix.tv', port=443): Max retries exceeded with url: /betterhealth/betterhealth/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1dd80bd0>, 'Connection to uni5rtmp.tulix.tv timed out. (connect timeout=3)'))
+Invalid URL (status 404): https://uni10rtmp.tulix.tv/betterhealth/betterhealth.stream/playlist.m3u8
+Failed to validate https://uni5rtmp.tulix.tv/betternature/betternature/playlist.m3u8: HTTPSConnectionPool(host='uni5rtmp.tulix.tv', port=443): Max retries exceeded with url: /betternature/betternature/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1dda9d10>, 'Connection to uni5rtmp.tulix.tv timed out. (connect timeout=3)'))
+Invalid URL (status 404): https://uni10rtmp.tulix.tv/betternature/betternature.stream/playlist.m3u8
+Failed to validate https://uni5rtmp.tulix.tv/betterlife/betterlife/playlist.m3u8: HTTPSConnectionPool(host='uni5rtmp.tulix.tv', port=443): Max retries exceeded with url: /betterlife/betterlife/playlist.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6e1dda8650>, 'Connection to uni5rtmp.tulix.tv timed out. (connect timeout=3)'))
+Invalid URL (status 404): https://uni10rtmp.tulix.tv/betterlife/betterlife.stream/playlist.m3u8
+Invalid URL (status 404): http://stream.iphonewebtown.com:1935/bibleexplorations/bexplorationsmobile.stream/playlist.m3u8
+Failed to validate http://gideommd.mmdlive.lldns.net/gideommd/46c072b287224782a4d4ce93c3646589/manifest.m3u8: HTTPConnectionPool(host='gideommd.mmdlive.lldns.net', port=80): Max retries exceeded with url: /gideommd/46c072b287224782a4d4ce93c3646589/manifest.m3u8 (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f6e1e0f8dd0>: Failed to resolve 'gideommd.mmdlive.lldns.net' ([Errno -3] Temporary failure in name resolution)"))
+Invalid URL (status 400): https://theblaze4.akamaized.net/hls/live/699982/theblaze/cm-dvr/master.m3u8
+Failed to validate https://tv.ensonhaber.com/tv/tr/bloomberght/index.m3u8: HTTPSConnectionPool(host='tv.ensonhaber.com', port=443): Max retries exceeded with url: /tv/tr/bloomberght/index.m3u8 (Caused by ResponseError('too many 500 error responses'))
+Invalid URL (status 403): https://stream1.freetv.fun/amcdian-ying-1.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/amcdian-ying-2.m3u8
+Failed to validate http://50.7.234.10:8278/eyetvxiju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=3c3d3d423c8cb419f027d31857477e68: HTTPConnectionPool(host='50.7.234.10', port=8278): Max retries exceeded with url: /eyetvxiju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=3c3d3d423c8cb419f027d31857477e68 (Caused by ReadTimeoutError("HTTPConnectionPool(host='50.7.234.10', port=8278): Read timed out. (read timeout=3)"))
+Failed to validate http://50.7.234.10:8278/eyetvxiju_twn/playlist.m3u8?tid=ME3E6686724066867240&ct=19254&tsum=728fc49fcd53cd770381ffd87883b1d1: HTTPConnectionPool(host='50.7.234.10', port=8278): Max retries exceeded with url: /eyetvxiju_twn/playlist.m3u8?tid=ME3E6686724066867240&ct=19254&tsum=728fc49fcd53cd770381ffd87883b1d1 (Caused by ReadTimeoutError("HTTPConnectionPool(host='50.7.234.10', port=8278): Read timed out. (read timeout=3)"))
+Invalid URL (status 403): https://stream1.freetv.fun/tvbsya-zhou-14.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/tvbsya-zhou-2.m3u8
+Failed to validate http://m3u8ts.vip-tptv.xyz:50515/4gtv-live088/index.m3u8?proxy=true: HTTPConnectionPool(host='m3u8ts.vip-tptv.xyz', port=50515): Max retries exceeded with url: /4gtv-live088/index.m3u8?proxy=true (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6e1dda8f10>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Invalid URL (status 403): https://tv.iill.top/4gtv/285
+Failed to validate http://50.7.234.10:8278/eltayingju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=55fa777976b94e6a6b6fd9a6e692789d: HTTPConnectionPool(host='50.7.234.10', port=8278): Max retries exceeded with url: /eltayingju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=55fa777976b94e6a6b6fd9a6e692789d (Caused by ReadTimeoutError("HTTPConnectionPool(host='50.7.234.10', port=8278): Read timed out. (read timeout=3)"))
+Invalid URL (status 403): https://stream1.freetv.fun/ai-er-da-ying-ju-2.m3u8
+Invalid URL (status 404): http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=a66de9&tk=922ba46651d3
+Invalid URL (status 403): https://live.iill.top/douyu/9639225
+Invalid URL (status 403): https://stream1.freetv.fun/dong-sen-dian-ying-1.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/dong-sen-dian-ying-2.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/dong-sen-dian-ying-5.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/dong-sen-dian-ying-7.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/dong-sen-dian-ying-8.ctv
+Invalid URL (status 404): http://58.39.190.143:35455/douyu/12459039
+Invalid URL (status 403): http://zzy789.xyz/douyu1.php?id=10297898
+Invalid URL (status 403): http://zzy789.xyz/douyu1.php?id=7623292
+Invalid URL (status 405): http://live.nctv.top/DJlio/douyu.php?id=434971
+Invalid URL (status 405): http://live.nctv.top/DJlio/douyu.php?id=5061550
+Invalid URL (status 405): http://live.nctv.top/DJlio/douyu.php?id=4290711
+Invalid URL (status 405): http://live.nctv.top/DJlio/douyu.php?id=5522351
+Invalid URL (status 404): http://58.39.190.143:35455/douyu/9548850
+Invalid URL (status 404): http://58.39.190.143:35455/douyu/7119207
+Invalid URL (status 404): http://58.39.190.143:35455/douyu/7356023
+Invalid URL (status 405): http://live.nctv.top/DJlio/douyu.php?id=7356023
+Invalid URL (status 405): http://lxajh.top/tv/douyu.php?id=3928
+Invalid URL (status 403): https://stream1.freetv.fun/jing-tian-xi-ju-2.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/jing-yang-xi-ju-1.ctv
+Invalid URL (status 403): https://stream1.freetv.fun/mei-ya-dian-ying-2.ctv
+Invalid URL (status 403): https://stream1.freetv.fun/san-li-xi-ju-4.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/san-li-xi-ju-3.ctv
+Invalid URL (status 404): http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=94f909&tk=922ba46651d3
+Invalid URL (status 405): http://huanqiuzhibo.cn/manifest/douyu.php?id=85894
+Invalid URL (status 403): https://stream1.freetv.fun/tian-ying-dian-ying-1.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/wei-lai-dian-ying-1.m3u8
+Invalid URL (status 403): https://stream1.freetv.fun/wei-lai-dian-ying-3.m3u8
+Failed to validate http://m3u8ts.vip-tptv.xyz:50515/4gtv-live010/index.m3u8?proxy=true: HTTPConnectionPool(host='m3u8ts.vip-tptv.xyz', port=50515): Max retries exceeded with url: /4gtv-live010/index.m3u8?proxy=true (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6e1dde7790>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Invalid URL (status 403): https://tv.iill.top/4gtv/270
+Invalid URL (status 403): https://tv.iill.top/4gtv/244
+Failed to validate http://mianti.pendy.dpdns.org/4gtv-live010/index.m3u8?proxy=true: HTTPConnectionPool(host='mianti.pendy.dpdns.org', port=80): Max retries exceeded with url: /4gtv-live010/index.m3u8?proxy=true (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f6e1dda8090>: Failed to resolve 'mianti.pendy.dpdns.org' ([Errno -2] Name or service not known)"))
+Invalid URL (status 404): https://www.freetv.top/migu/952383261.m3u8?migutoken=0f03f8a6f21f3e880b2ed92692fbe91d8dfce085abaada08b765403bb02ba21efe24ac5dfc6309d458109e6269008dda7a81bf1db4a96cdd7f6a515525d70c5c0bd48cff6a5c04883f4bb888b7
+Failed to validate http://mianti.pendy.dpdns.org/li-litv-ftv15/index.m3u8?proxy=true: HTTPConnectionPool(host='mianti.pendy.dpdns.org', port=80): Max retries exceeded with url: /li-litv-ftv15/index.m3u8?proxy=true (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f6e1ddf4950>: Failed to resolve 'mianti.pendy.dpdns.org' ([Errno -2] Name or service not known)"))
+Failed to validate http://mianti.pendy.dpdns.org/litv-ftv15/index.m3u8?proxy=true: HTTPConnectionPool(host='mianti.pendy.dpdns.org', port=80): Max retries exceeded with url: /litv-ftv15/index.m3u8?proxy=true (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7f6e1def3350>: Failed to resolve 'mianti.pendy.dpdns.org' ([Errno -2] Name or service not known)"))
+Failed to validate http://m3u8ts.vip-tptv.xyz:50515/li-litv-ftv15/index.m3u8?proxy=true: HTTPConnectionPool(host='m3u8ts.vip-tptv.xyz', port=50515): Max retries exceeded with url: /li-litv-ftv15/index.m3u8?proxy=true (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6e1dde6090>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Failed to validate http://m3u8ts.vip-tptv.xyz:50515/litv-ftv15/index.m3u8?proxy=true: HTTPConnectionPool(host='m3u8ts.vip-tptv.xyz', port=50515): Max retries exceeded with url: /litv-ftv15/index.m3u8?proxy=true (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f6e1ddf4610>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Invalid URL (status 403): https://tv.iill.top/4gtv/212
+Invalid URL (status 501): http://8hb85846je10.vicp.fun:8001/bysid/1.m3u8
+Invalid URL (status 501): http://m.osvs.asia:8000/bysid/1.m3u8
+Invalid URL (status 501): http://tri-metal.dsmynas.net:8000/bysid/1.m3u8
+Invalid URL (status 501): http://8hb85846je10.vicp.fun:5000/bysid/85.m3u8
+Invalid URL (status 501): http://bziyunshao.synology.me:8890/bysid/85.m3u8
+Invalid URL (status 501): http://tri-metal.dsmynas.net:8001/bysid/85.m3u8
+Invalid URL (status 501): http://8hb85846je10.vicp.fun:5000/bysid/83.m3u8
+Invalid URL (status 501): http://bziyunshao.synology.me:8890/bysid/83.m3u8
+Invalid URL (status 501): http://tri-metal.dsmynas.net:8001/bysid/83.m3u8
+Invalid URL (status 404): https://play.accolamedia.id/accola/psj.stream/playlist.m3u8

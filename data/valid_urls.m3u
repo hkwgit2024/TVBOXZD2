@@ -1,342 +1,35 @@
-#EXTM3U
-更新时间,#genre#
-2025-06-07,http://example.com/1.m3u8
-07:23:54,http://example.com/2.m3u8
 # Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).
 # Note: [Unverified] indicates streams with potentially inaccessible encryption keys.
+antena_tv_1080p_3d967089.m3u8,#genre#
+Stream_4_0_1,https://5ca9af4645e15.streamlock.net/grd/videogrd/playlist.m3u8
 其他频道,#genre#
-30A Music (720p),https://30a-tv.com/music.m3u8
-3ABN Praise Him Music Network (720p),https://3abn-live.akamaized.net/hls/live/2010551/Praise_Him/master.m3u8
 AKC TV (1080p),https://broadcast.blivenyc.com/speed/broadcast/22/desktop-playlist.m3u8
 AKC TV Meet the Breeds (1080p),https://broadcast.blivenyc.com/speed/broadcast/71/desktop-playlist.m3u8
 AKC TV Puppies (1080p),https://broadcast.blivenyc.com/speed/broadcast/29/desktop-playlist.m3u8
-Ace TV (KCKS-LD3) (480p),https://cdn.igocast.com/channel3_hls/channel3_master.m3u8
-Action (KCKS-LD4) (480p),https://cdn.igocast.com/channel4_hls/channel4_master.m3u8
-Al Horreya TV (1080p),http://media.smc-host.com:1935/alhorreya.tv/mp4:alhorreya3/playlist.m3u8
 Al Horreya TV (720p),http://media.smc-host.com:1935/alhorreya.tv/alhorreya.smil/playlist.m3u8
+Al Horreya TV (1080p),http://media.smc-host.com:1935/alhorreya.tv/mp4:alhorreya3/playlist.m3u8
 Al Hurra (720p),https://mbnv-video-ingest.akamaized.net/hls/live/2038904/MBNV_ALHURRA_MAIN_HLS/merge.m3u8
 Aliento Vision (720p) [Not 24/7],http://209.133.209.195:1935/AlientoSD/smil:AlientoSD.smil/playlist.m3u8
-America's Voice (KCKS-LD5) (480p) [Not 24/7],https://cdn.igocast.com/channel5_hls/channel5_master.m3u8
-Atlanta's 57 WATC 57.1 (720p),https://uni01rtmp.tulix.tv/watc57/watc57/playlist.m3u8
-Atlanta's 57 WATC TOO 57.2 (720p),https://uni01rtmp.tulix.tv/watc57-2/watc57-2/playlist.m3u8
+Atlanta Channel (720p),http://media4.tripsmarter.com:1935/LiveTV/ACVBHD/playlist.m3u8
 BabyTV (1080p),http://194.163.179.246/slovenci/djeciji/babytv.m3u8
+Beach TV Florida & Alabama (720p),http://media4.tripsmarter.com:1935/LiveTV/DTVHD/playlist.m3u8
+Beach TV Panama City (720p),http://media4.tripsmarter.com:1935/LiveTV/BTVHD/playlist.m3u8
 Beverly Hills Television 10 (720p),https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/beverlyhills/G0072_006/playlist.m3u8
 Beverly Hills Television 35 (720p),https://cdn3.wowza.com/5/V2Y2VmhqMEFDTUkx/beverlyhills/G0072_007/playlist.m3u8
 Biz TV (1080p),https://thegateway.app/BizAndYou/BizTV/playlist.m3u8
-Boomerang Slovenia,http://194.163.179.246/slovenci/djeciji/boomerang.m3u8
-Burbank Channel (720p),https://cdn3.wowza.com/5/djRwZmQvTEJidmZD/burbank/G0240_009/playlist.m3u8
-Buzzr (1080p),https://buzzrota-web.amagi.tv/playlist.m3u8
-Buzzr (KCKS-LD1) (480p),https://cdn.igocast.com/channel1_hls/channel1_master.m3u8
-CBS 3 Omaha NE (KMTV-TV) (720p),https://content.uplynk.com/4a09fbea28ef4f32bce095e9eae04bd8.m3u8
-CBS 3 Omaha NE (KMTV-TV) (720p),https://content.uplynk.com/channel/328d1434fb51476cb6567c74d5b2cc70.m3u8
-CMC (California Music Channel),https://cmc-ono.amagi.tv/playlist.m3u8
-CNBC Indonesia (720p),https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/playlist.m3u8
-CSat TV (1080p) [Not 24/7],http://media.smc-host.com:1935/csat.tv/smil:csat.smil/playlist.m3u8
-CTN (360p),http://rtmp.ottdemo.rrsat.com/ctntv/ctntvmulti.smil/playlist.m3u8
-CTN (360p) [Not 24/7],https://rrsatrtmp.tulix.tv/ctntv/ctntvmulti.smil/playlist.m3u8
-Calabasas Channel (480p),https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/calabasas/G0009_003/playlist.m3u8
-Cerritos TV3 (360p),https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/cerritos/G0010_002/playlist.m3u8
-Channel 11 Scottsdale AZ,https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/scottsdale/G0040_007/chunklist.m3u8
-Christian Youth Channel (CYC) (1080p),http://media3.smc-host.com:1935/cycnow.com/smil:cyc.smil/playlist.m3u8
-Christian Youth Channel (CYC) (1080p),http://media.smc-host.com:1935/cycnow.com/cyc2/playlist.m3u8
-Classic Arts Showcase,https://classicarts.akamaized.net/hls/live/1024257/CAS/master.m3u8
-Cloudflare TV (720p),https://cloudflare.tv/hls/live.m3u8
-Costa Mesa's Municipal Access Channel CMTV 3 (720p),https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/costamesa/G0075_002/playlist.m3u8
-Del Mar TV (720p),https://d25ykpi2vxhoyc.cloudfront.net/delmar-cdn/dmtv/playlist.m3u8
-EWTN Asia-Pacific (720p) [Not 24/7],https://cdn3.wowza.com/1/QmVNUVhTNTZSS3Uz/YWQ0aHpi/hls/live/playlist.m3u8
-EWTN Canada (720p) [Not 24/7],https://cdn3.wowza.com/1/YW5wSWZiRGd2eFlU/bGV0aVBq/hls/live/playlist.m3u8
-EWTN Europe (720p) [Not 24/7],https://cdn3.wowza.com/1/T2NXeHF6UGlGbHY3/WFluRldQ/hls/live/playlist.m3u8
-EWTN el Canal Católico (720p) [Not 24/7],https://cdn3.wowza.com/1/SmVrQmZCUXZhVDgz/b3J3MFJv/hls/live/playlist.m3u8
-Elbeshara GTV (1080p) [Not 24/7],http://media3.smc-host.com:1935/elbesharagtv.com/gtv.smil/playlist.m3u8
-FIGHT SPORTS (1080p),https://shls-fight-sports-ak.akamaized.net/out/v1/ee7e6475b12e484bbfa5c31461ad4306/index.m3u8
-Fountain Valley TV Channel 3 (360p),https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/fountainvalley/G0806_001/playlist.m3u8
-Grit Xtra,https://scripps-gritxtra-1-us.vizio.wurl.tv/playlist.m3u8
-HollyWire (720p),https://bozztv.com/hwotta/playlist/playlist.m3u8
-Humraaz TV [Not 24/7],https://cdn61.liveonlineservices.com/hls/humraaz.m3u8
-IMPACT! Wrestling (1080p),https://d2p372oxiwmcn1.cloudfront.net/hls/main.m3u8
-InfoWars (540p),https://freespeech.akamaized.net/hls/live/2016712/live1/playlist.m3u8
-Irvine Community Television (720p),https://cdn3.wowza.com/5/WDIrTW5sM1JEY1NN/irvine/G0016_010/playlist.m3u8
-JBS (404p) [Not 24/7],http://uni8rtmp.tulix.tv:1935/shalomtv-pc/smil:shalomtv.smil/master.m3u8
-JBS (404p) [Not 24/7],http://uni8rtmp.tulix.tv:1935/shalomtv-pc/smil:shalomtv.smil/playlist.m3u8
-JBS (404p) [Not 24/7],https://uni8rtmp.tulix.tv/shalomtv-pc/smil:shalomtv.smil/master.m3u8
-Jewelry TV (KCKS-LD12) (480p),https://cdn.igocast.com/channel12_hls/channel12_master.m3u8
-Juventud Renovada en el Espiritu Santo (720p) [Not 24/7],http://teleredmcp.com:1935/jrestv/jrestv/playlist.m3u8
-KALO TV (432p),https://10380e91fda5e303.mediapackage.us-west-2.amazonaws.com/out/v1/e8a622ce6ed34d07b468dd6ea2f94ee8/index.m3u8
-KBEV Spectrum Channel 6 [Beverly Hills] (1080p),https://s3-us-west-2.amazonaws.com/beverly-hills-high-school.castus-vod/live/ch1/video.m3u8
-KBSV/AssyriaSat (720p) [Not 24/7],http://66.242.170.53/hls/live/temp/index.m3u8
-Kern County Television,https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/kern/G0169_003/playlist.m3u8
-Lao-Thai US TV (720p),https://livefta.malimarcdn.com/ftaedge00/laothaius.sdp/playlist.m3u8
-Lax Sports Network TV (720p),https://1840769862.rsc.cdn77.org/FTF/LSN_SCTE.m3u8
-Loupe 4K (2160p),http://d2dw21aq0j0l5c.cloudfront.net/playlist.m3u8
-MCN6 (1080p) [Not 24/7],https://d18fcxaqfnwjhj.cloudfront.net/CDN_Ingest/MCN6_MAIN.smil/Playlist.m3u8
-MCN6 Music Channel (1080p) [Not 24/7],https://d18fcxaqfnwjhj.cloudfront.net/CDN_Ingest/MCN6_MUSIC.smil/Playlist.m3u8
-Midpen Media Center Youth Education and Sports Channel 28 (720p),https://5c2974786200d.streamlock.net/live-chan28/ngrp:ch28_all/playlist.m3u8
-Moorpark Government Channel (360p),https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/moorpark/G0086_003/playlist.m3u8
-MyEncinitasTV (Encinitas CA) (360p),https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/encinitas/G0322_002/playlist.m3u8
-NASA TV Media (720p),https://ntv2.akamaized.net/hls/live/2013923/NASA-NTV2-HLS/master.m3u8
-NASA TV Public (720p),https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8
-NBC 15 Madison WI (WMTV) (720p),https://ad-playlistserver.aws.syncbak.com/playlist/899088/master.m3u8?access_token=eyJhbGciOiJIUzI1NiIsImtpZCI6IkdyYXkyMDE2MDgyOSIsInN1YiI6IioiLCJ0eXAiOiJKV1QifQ.eyJleHAiOjE3OTAzNjkxMDUsImlzcyI6IldMUyIsIm1kNSI6ImJhZTU4Y2ZlZWM2NmU1MjZkNmVjZmE1YmUzNTQxMzQ4IiwibWlkIjoiODk5MDg4In0.vBWkHmqS3z3dpq8UWfbk4wFd-vQlj6B0up-rpt7X_7Q
-NBC 5 Seattle WA (KING) (1080p),https://livevideo01.king5.com/hls/live/2006665/live/live.m3u8
-NTD TV (New Tang Dynasty Television),http://cnhls.ntdtv.com/cn/live400/playlist.m3u8
-NTD TV East (New Tang Dynasty Television),https://ntd02.akamaized.net/NTDA/index.m3u8
-NTD TV UK (New Tang Dynasty Television),https://ntd02.akamaized.net/NTD-UK/index.m3u8
-Napa Valley TV Public Access Channel 28 (480p),https://cdn3.wowza.com/5/WDIrTW5sM1JEY1NN/napatv/G0360_004/playlist.m3u8
-Newport Beach Television (720p),https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/newportbeach/G0064_003/playlist.m3u8
-Ontario Public Access Channel (360p),https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/ontarioca/G2446_002/playlist.m3u8
-Orange TV (720p),http://otv3.ocfl.net:1936/OrangeTV/smil:OrangeTV.smil/playlist.m3u8
-PBS Create Los Angeles CA (KLCS-DT3) (720p) [Geo-blocked],https://d1mxoeplf1ak5a.cloudfront.net/index.m3u8
-Payam-e-Afghan TV (480p) [Not 24/7],http://g5nl6xx5lpq6-hls-live.5centscdn.com/live1234/2621b29e501b445fabf227b086123b70.sdp/mono.m3u8
-Pinole Community Television (PCTV) Channel 26 (Pinole CA) (480p),https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/pinole/G0032_004/playlist.m3u8
-Pinole Community Television (PCTV) Channel 28 (Pinole CA) (480p),https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/pinole/G0032_002/playlist.m3u8
-Placentia TV (Placentia CA) (720p),https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/placentia/G0928_002/playlist.m3u8
-QVC Italia (540p),https://qrg.akamaized.net/hls/live/2017383/lsqvc1it/master.m3u8
-QVC Japan (720p),https://cdn-live1.qvc.jp/iPhone/1501/1501.m3u8
-Red Apple 21 (Fairfax County Public Schools) (480p) [Not 24/7],https://cs.ebmcdn.net/eastbay-live-hs-1/fcps/mp4:fcps/playlist.m3u8
-Retro TV (KCKS-LD9) (480p),https://cdn.igocast.com/channel9_hls/channel9_master.m3u8
-Rev'n (KCKS-LD7) (480p),https://cdn.igocast.com/channel7_hls/channel7_master.m3u8
-Shop LC (1080p),https://cdn-shop-lc-01.akamaized.net/Content/DASH_DASH/Live/channel(ott)/master.mpd
-Shop LC (KCKS-LD10) (480p) [Not 24/7],https://cdn.igocast.com/channel10_hls/channel10_master.m3u8
-Shout! Factory TV (1080p),https://shoutfactory-shoutfactory-zype.amagi.tv/playlist.m3u8
-Spirit TV (720p) [Not 24/7],https://cdnlive.myspirit.tv/LS-ATL-43240-2/index.m3u8
-Tastemade (1080p),https://tastemadessai.akamaized.net/amagi_hls_data_tastemade-tastemade/CDN/playlist.m3u8
-Tempe Channel 11,https://cdn3.wowza.com/5/cFh0V0QwUVc4SDl2/tempe/G0355_003/chunklist.m3u8
-The Wall Street Journal Live (720p),https://d155hi8td9k2ns.cloudfront.net/out/wapo-medialive3-rtmp/live.m3u8
-This TV Network (480p),https://cdn.igocast.com/channel11_hls/channel11_master.m3u8
-Toonami Aftermath East (480p),http://api.toonamiaftermath.com:3000/est/playlist.m3u8
-Toonami Aftermath Radio (480p),http://api.toonamiaftermath.com:3000/radio/playlist.m3u8
-UN Web TV (540p),https://cdnapi.kaltura.com/p/2503451/sp/250345100/playManifest/entryId/1_gb6tjmle/protocol/https/format/applehttp/a.m3u8
-Untamed Sports TV (KCKS-LD8) (480p) [Not 24/7],https://cdn.igocast.com/channel8_hls/channel8_master.m3u8
-Vice East,https://d2do1g43aq7264.cloudfront.net/playlist.m3u8
-WCCA 194 Worcester MA (WCCA-TV) (480p),https://worcester.vod.castus.tv/live/ch1.m3u8
-WeatherNation (KCKS-LD6) (480p) [Not 24/7],https://cdn.igocast.com/channel6_hls/channel6_master.m3u8
-Yahoo! Finance (1080p),https://d1ewctnvcwvvvu.cloudfront.net/playlist.m3u8
-Youtoo America (1080p),https://thegateway.app/YouToo/YTamerica/playlist.m3u8
-Youtoo America (1080p),https://thegateway.app/YouToo/CueTones/playlist.m3u8
-myTV San Antonio TX (KCWX-TV) (720p) [Not 24/7],http://65.36.6.216:1935/live/kcwx.smil/playlist.m3u8
-猪哥亮音乐秀,http://37.27.111.214:8080/live/35/hls.m3u8
-番薯音乐台,http://61.216.67.119:1935/TWHG/E1/chunklist_w7058102.m3u8#http://61.216.67.119:1935/TWHG/E1/chunklist_w70581102.m3u8
-番薯音乐台,http://61.216.67.119:1935/TWHG/E1/chunklist_w705811302.m3u8
-纬来体育,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=1978&tk=e640d0a1bf70
-纬来体育,https://cdn.iptv8k.top/dl/jrys.php?id=291&time=20240926215313&ip=111.229.253.40
-纬来体育,https://cdn.iptv8k.top/dl/jrys.php?id=292&time=20240926215313&ip=111.229.253.40
-纬来体育台,http://50.7.234.10:8278/videolandsport/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=993b502f89231e1bd03940a81ba8cabc
 国外频道,#genre#
 3ABN French (720p),https://3abn-live.akamaized.net/hls/live/2010546-b/French/master.m3u8
 3ABN French (720p),https://3abn-live.akamaized.net/hls/live/2010546/French/master.m3u8
 地方频道,#genre#
-AXN,https://live.tvfix.org/live/axn/index.m3u8
-AXN,http://50.7.234.10:8278/axn_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=eb2e561779222434cac30788692a0ec5
 Access Sacramento Channel 17,https://reflect-access-sacramento.cablecast.tv/live-7/live/live.m3u8
 Access Sacramento Channel 18,https://reflect-access-sacramento.cablecast.tv/live-8/live/live.m3u8
-Carlsbad City TV Channel (Carlsbad CA) (720p),https://edge-f.swagit.com/live/carlsbadca/live-3-a-1/playlist.m3u8
-City of Oakland (KTOP) (480p),https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/oakland/G0219_002/playlist.m3u8
-CityTV San Diego (360p),https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/sandiego/G1826_005/playlist.m3u8
-Contra Costa College TV [Geo-blocked],https://reflect-contra-costa.cablecast.tv/live-7/live/WIFI-696k-360p/WIFI-696k-360p.m3u8
-Cupertino City Channel (720p),https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/cupertino/G0067_003/playlist.m3u8
-DreAMCatcher,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=b0e078&tk=922ba46651d3
-EYETV戏剧台,http://50.7.234.10:8278/eyetvxiju_twn/playlist.m3u8?tid=ME3E6686724066867240&ct=19254&tsum=728fc49fcd53cd770381ffd87883b1d1
-Fairfield Government Access Channel 26 (Fairfield CA) (720p) [Geo-blocked],https://reflect-fairfield-ca.cablecast.tv/live-8/live/live.m3u8
-Fontana Community Television (720p) [Geo-blocked],https://reflect-watchkfon-fontana.cablecast.tv/live-3/live/live.m3u8
-Fresno CMAC 1 Public Channel (720p),https://reflect-vod-cmac.cablecast.tv/live-11/live/live.m3u8
-Fresno CMAC 3 Government Channel (720p),https://reflect-vod-cmac.cablecast.tv/live-13/live/live.m3u8
-Glendale TV (720p) [Geo-blocked],https://reflect-gtv6-glendale.cablecast.tv/live-2/live/live.m3u8
-KCAT Public Media TV (1080p),https://reflect-kcat-live.cablecast.tv/live-2/live/live.m3u8
-LA CityView 35 (1080p),https://reflect-losangeles.cablecast.tv/live-3/live/live.m3u8
-Lakewood CityTV (720p),https://s3-us-west-2.amazonaws.com/lakewood.castus-vod/live/ch1/video.m3u8
-Los Angeles Local Television Channel 36 (1080p),https://reflect-channel36-la.cablecast.tv/live-3/live/live.m3u8
-Orange TV3,https://cdn3.wowza.com/5/R09KQXpaMWlrRjly/cityoforange/G1025_004/playlist.m3u8
-SF Commons Channel 29 (San Francisco CA) (480p),https://reflect-bayarea.cablecast.tv/live-5/live/live.m3u8
-SF Commons Channel 76 (San Francisco CA) (480p),https://reflect-bayarea.cablecast.tv/live-6/live/live.m3u8
-TVB,http://php.jdshipin.com/TVOD/iptv.php?id=j2
-TVB,http://50.7.234.10:8278/Tvbjade/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=daebd658e5b9b29cbe56ab0e6fe81ae7
-TVBClassic,http://50.7.234.10:8278/Tvbclassic/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=d65fb48fcd150facb9a4533b9229516a
-TVBJ1美,http://php.jdshipin.com/PLTV/iptv.php?id=j1
-TVBJ2,http://50.7.234.10:8278/j2_twn/playlist.m3u8?tid=ME0E4382171043821710&ct=19237&tsum=6f10351124a4eb90780b2f84b2c4d349
-TVBS,http://50.7.234.10:8278/tvbs/playlist.m3u8?tid=ME2E6545230665452306&ct=19234&tsum=ff0df01c2935843c8c4543428728ce28
-TVBS,http://50.7.234.10:8278/tvbs/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=e8588e7519aabaea4dd3e62a6f2e193e
-TVBSAsia,http://50.7.234.10:8278/Tvbasia/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=8f9757afe3ce27008c69e1e55f138887
-TVBS亚洲,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8?zshijd
-TVBS欢乐台,http://50.7.234.10:8278/tvbshuanle_twn/playlist.m3u8?tid=MBCB7220883472208834&ct=19234&tsum=82bece8e29754b899ffb60e5246dfc74
-TVBS欢乐台,http://50.7.234.10:8278/tvbshuanle_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=907472da94c4b947513e7befdce8071b
-TVB亚洲武侠,http://php.jdshipin.com/TVOD/iptv.php?id=yzwx
-TVB华丽台,http://php.jdshipin.com:8880/smt.php?id=Tvbjade
-TVB明珠,http://php.jdshipin.com/TVOD/iptv.php?id=mzt
-TVB星河台,http://50.7.234.10:8278/Xinhe/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=2924352d2c5512857400ab6f5863079a
-TVB翡翠台4K,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fct4
-TVB翡翠台（备用）,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fct3
-WKAQ-DT1 (Telemundo Puerto Rico),https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8
-三立台湾台,http://50.7.234.10:8278/sanlitaiwan/playlist.m3u8?tid=MD3D6272113862721138&ct=19344&tsum=67db4abe16d57b8ac1ca573eab42c5e4
-三立台湾台,http://50.7.234.10:8278/sanlitaiwan/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=94eb46a81567fa794ff9d30cdbc87237
-三立台湾台,https://cdn.iptv8k.top/dl/jrys.php?id=269&time=20240926215313&ip=111.229.253.40
-三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?ct=19226&tid=MBDB8405357084053570&tsum=78944c0951d21a699e46fff4318a3799
-三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?tid=MCFC5174201151742011&ct=19193&tsum=27477ddeec029345da276c2c903f09c2
-三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?tid=MA8A4626080046260800&ct=19053&tsum=205a453781925ebfb8996c1db8d4ed59
-三立都会,http://50.7.234.10:8278/sanlidouhui_twn/playlist.m3u8?tid=md028b33ea0f7&ct=19361&tsum=1930e4b2cfbbd2f9f821af1c41e8d18d
-东森幼幼,http://50.7.234.10:8278/yoyo_twn/playlist.m3u8?tid=MEBE7340063173400631&ct=19225&tsum=e95304aa3743de8d4f23a23642d4d8a5
-东森幼幼YoyoTV,http://50.7.234.10:8278/yoyo_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=3ef68750fb4c330909e7e893f9be5acd
-东森洋片,https://cdn.iptv8k.top/dl/jrys.php?id=232&time=20240926215313&ip=111.229.253.40
-东森洋片,http://50.7.234.10:8278/ettvwestern/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=c03f602775dbe8075949100987b2b1be
-东森洋片,http://50.7.234.10:8278/ettvwestern/playlist.m3u8?tid=mfdfc048e6c2416337202&ct=17874&tsum=cad39b26202d525ea820bee1d69e545f
-东森财经,http://50.7.234.10:8278/ettvcaijing_twn/playlist.m3u8?tid=MD5D9010164090101640&ct=19225&tsum=cc229773020f89af853b23d81e0e6371
-东森财经,http://50.7.234.10:8278/ettvcaijing_twn/playlist.m3u8?tid=MEFE2625686426256864&ct=19234&tsum=c294dfaad2db8dd9c4cf483c6888b31b
-东森财经,http://50.7.234.10:8278/ettvcaijing_twn/playlist.m3u8?tid=MB8B2069463920694639&ct=19249&tsum=05ff51a1b274ce7d31d05bbf11df18ad
-东森财经,http://50.7.234.10:8278/ettvcaijing_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=31baa4e2ca87271b454e5acc0e7d0e6c
-东森超视,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=9639&tk=e640d0a1bf70
-东森超视,https://cdn.iptv8k.top/dl/jrys.php?id=216&time=20240926215313&ip=111.229.253.40
-东森超视,https://cdn.iptv8k.top/dl/jrys.php?id=217&time=20240926215313&ip=111.229.253.40
-中华小当家,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=8291&tk=e640d0a1bf70
-中天亚洲,http://50.7.234.10:8278/ctiasia_twn/playlist.m3u8?tid=MC3C8838319088383190&ct=19226&tsum=6eaf7a477dd08b06a5dc54b4c05e52e1
-中天亚洲,http://50.7.234.10:8278/ctiasia_twn/playlist.m3u8?tid=MFFF9983745599837455&ct=19193&tsum=ee61e179a8c619a076c515514d68e24e
-中天亚洲台,http://50.7.234.10:8278/ctiasia_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=e54497f1f00af5ef3ebb4cc3bdcccd7b
-中视,http://37.27.111.214:8080/live/7/hls.m3u8
-中视经典台,http://50.7.234.10:8278/zhongshi_twn/playlist.m3u8?tid=MECE1189477111894771&ct=19234&tsum=582d215df269921b0c0ce288b5fac94a
-中视经典台,http://50.7.234.10:8278/zhongshi_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=86f5fb6a8714c45232b98be14354a259
-中视经典台,http://50.7.234.10:8278/zhongshi_twn/playlist.m3u8?tid=mffe9aaf8765f&ct=18335&tsum=bcdd7a2ce4a5498b1449cb26a01150c0
-八大第一台,http://50.7.234.10:8278/badafirst/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=18d4fa55a0b4471e515c3d1eb672ff4c
-公视,http://50.7.234.10:8278/ctv_taiwan/playlist.m3u8?tid=MCCC8750228587502285&ct=19225&tsum=aca6268c0dd9f618ed5e944942132557
-公视,http://50.7.234.10:8278/ctv_taiwan/playlist.m3u8?tid=MD4D6839548568395485&ct=19193&tsum=56b3e3b150f4fcbc1877e081b313bcd4
-公视,http://50.7.234.10:8278/ctv_taiwan/playlist.m3u8?tid=m33b41eb996d0&ct=18336&tsum=ea5304d5140e9a3d2a32aece896feeed
-公视,http://50.7.234.10:8278/ctv_taiwan/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=c2eefa8bfe5160d3436f2a4280ad9e49
-凤凰中文,http://203.205.191.53/qctv.fengshows.cn/live/0701pcc72.m3u8
-凤凰中文,http://php.jdshipin.com/TVOD/iptv.php?id=fhzw
-凤凰中文,https://k44991.kylintv.tv/live/pxna_iphone.m3u8
-凤凰中文,https://cdn.iptv8k.top/dl/jrys.php?id=19&time=20240926215313&ip=111.229.253.40
-凤凰中文,https://live.tvfix.org/live/fhzw/index.m3u8
-凤凰中文,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=8654&tk=e503191f8e20
-凤凰中文,http://playtv-live.ifeng.com/live/06OLEGEGM4G_audio.m3u8
-凤凰资讯台,http://203.205.191.53/qctv.fengshows.cn/live/0701pin72.m3u8
-凤凰资讯台,http://php.jdshipin.com/TVOD/iptv.php?id=fhzx
-凤凰资讯台,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fhzx
-凤凰资讯台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=5282&tk=2aca1ad9a849
-凤凰资讯台,http://php.jdshipin.com/TVOD/iptv.php?id=fhzx2
-凤凰资讯台,https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
-凤凰资讯台,http://playtv-live.ifeng.com/live/06OLEEWQKN4_audio.m3u8
-凤凰香港,http://php.jdshipin.com/PLTV/iptv.php?id=fhhk
-凤凰香港,http://php.jdshipin.com/TVOD/iptv.php?id=fhhk
-凤凰香港,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fhhk
-凤凰香港,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=3523&tk=7877e7cc41c7
-凤凰香港,http://203.205.191.53/qctv.fengshows.cn/live/0701phk72.m3u8
-凤凰香港,https://cdn.iptv8k.top/dl/jrys.php?id=18&time=20240926215313&ip=111.229.253.40
-凤凰香港,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fhhk2
-凤凰香港备用,http://php.jdshipin.com/TVOD/iptv.php?id=fhhk2
-华丽台,http://50.7.234.10:8278/Wlt/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=4543d1f8ec962a0819af06238735f0dc
-台视,http://50.7.234.10:8278/ttv_taiwan/playlist.m3u8?ct=17874&tid=mdea1ba75c9e516139101&tsum=95f1742d36f959fe6e241587a4f8e970
-台视,http://50.7.234.10:8278/ttv_taiwan/playlist.m3u8?tid=MEDE4406594744065947&ct=19193&tsum=079f13bae33c63d33bb128fd265e8466
-台视,http://50.7.234.10:8278/ttv_taiwan/playlist.m3u8?tid=mdea1ba75c9e516139101&ct=17874&tsum=95f1742d36f959fe6e241587a4f8e970
-大爱1台,http://50.7.234.10:8278/daai_twn/playlist.m3u8?tid=ME5E3594665135946651&ct=19249&tsum=1628ac38fd6a79879fccae39de8e845b
-大爱2台,http://50.7.234.10:8278/catchplay_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=31804f6110d740f8d0d1c96d197747fe
-大爱一台,http://50.7.234.10:8278/daai_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=2544bc50a343b2fe0e0bad2edefc1c9c
-大爱电视,http://50.7.234.10:8278/daai_twn/playlist.m3u8?tid=MA0A6700404967004049&ct=19234&tsum=dbfb051e0bfc38759da1cee228ea083a
-大爱电视,http://50.7.234.10:8278/daai_twn/playlist.m3u8?tid=MF5F4357730143577301&ct=19225&tsum=10c092424b1c12259444b68ad663c9eb
-天映,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=aa8f6c&tk=922ba46651d3
-天映,http://php.jdshipin.com:8880/smt.php?id=Celestial
-天映,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=ea7cfb&tk=922ba46651d3
-天映经典台,https://live.tvfix.org/live/tyjd/1/v1000000/index.m3u8
-天映经典台,https://cdn.iptv8k.top/dl/jrys.php?id=71&time=20240926215313&ip=111.229.253.40
-天映经典台,https://live.tvfix.org/live/tyjd/index.m3u8
-天映经典台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=ce5aa8&tk=922ba46651d3
-天良,http://60.248.91.20:8000/main
-寰宇财经台,http://50.7.234.10:8278/huanyutaiwan_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=7cdcbabc5d74dc1ef516bfe350edbe62
-张晓英一小段幽默戏剧小品wmv,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=bafdef&tk=922ba46651d3
-无线亚洲,https://live.tvfix.org/live/tvbs/2/v4000000/index.m3u8
-无线千禧,http://php.jdshipin.com/smt.php?id=Tvbclassic
-无线华丽台,http://php.jdshipin.com:8880/smt.php?id=Wlt
-无线明珠,http://php.jdshipin.com/PLTV/iptv.php?id=mzt
-无线明珠台,http://php.jdshipin.com:8880/smt.php?id=pearl_twn
-无线明珠粤高,http://php.jdshipin.com/TVOD/iptv.php?id=mzt2
-无线明珠粤高,http://php.jdshipin.com/PLTV/iptv.php?id=mzt2
-无线翡翠,http://php.jdshipin.com/PLTV/iptv.php?id=fct2
-无线翡翠,http://php.jdshipin.com/PLTV/iptv.php?id=fct3
-无线翡翠,http://php.jdshipin.com/TVOD/iptv.php?id=fct3
-无线翡翠,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=e58d15&tk=922ba46651d3
-无线翡翠,http://php.jdshipin.com/smt.php?id=jade_twn
-无线翡翠,https://short-link.me/-jBE
-无线翡翠,https://short-link.me/-jBU
-无线翡翠频4k,http://php.jdshipin.com/TVOD/iptv.php?id=fct4
-无线翡翠频4k,http://php.jdshipin.com/PLTV/iptv.php?id=fct4
-无线赛马,https://short-link.me/-jBx
-杨钰莹轻轻告诉你,http://vodcdn.video.taobao.com/oss/ali-video/1905c60363f40cea52f342ec59132da0/video.m3u8
-民视,http://37.27.111.214:8080/live/6/hls.m3u8
-民视台湾台,http://50.7.234.10:8278/ftvtaiwan_twn/playlist.m3u8?tid=MDFD6045594360455943&ct=19193&tsum=0de4f998b15ba8f2ecdaa107d866212a
-民视台湾台,http://50.7.234.10:8278/ftvtaiwan_twn/playlist.m3u8?tid=MEFE5254515252545152&ct=19249&tsum=c17f872b1772df8f76032030cc40bdbd
-民视台湾台,http://50.7.234.10:8278/ftvtaiwan_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=6b406a3e29a0d6a467a9daf7e2c53c93
-民视第一台,http://50.7.234.10:8278/lunghuajingdian_twn/playlist.m3u8?tid=MC2C7597780175977801&ct=19249&tsum=b7602981567d8f0171e8de29154f5014
-民视第一台,http://50.7.234.10:8278/lunghuajingdian_twn/playlist.m3u8?tid=MC3C1265283912652839&ct=19234&tsum=4ccb0d02f19e4fabf66e28d18b606f6c
-民视第一台,http://50.7.234.10:8278/lunghuajingdian_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=036b899d76f305b70c91acb1ecbe20f0
-港剧台2,http://live.nctv.top/DJlio/douyu.php?id=5261342
-爱尔达影剧台,http://50.7.234.10:8278/eltayingju_twn/playlist.m3u8?tid=MFBF4492563944925639&ct=19225&tsum=d4fb09f164ea4850c14546a14d075d04
-爱尔达影剧台,http://50.7.234.10:8278/eltayingju_twn/playlist.m3u8?tid=MFFF8590726285907262&ct=19249&tsum=ae4cb19fed11696df934d6e2489e2978
-番薯,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=d47f2a&tk=922ba46651d3
-番薯,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=419794&tk=922ba46651d3
-番薯,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=1c8c4e&tk=922ba46651d3
-番薯111,http://61.216.67.119:1935/TWHG/E1/chunklist_w70581102.m3u8
-纬来日本台,http://50.7.234.10:8278/videolandjapan/playlist.m3u8?tid=MBEB7017910870179108&ct=19346&tsum=f7186077b9ae7cdb1970969bd90a4d0a
-纬来精彩台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=66cd30&tk=922ba46651d3
-纬来育乐,https://cdn.iptv8k.top/dl/jrys.php?id=289&time=20240926215313&ip=111.229.253.40
-美亚C,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=1b3c68&tk=922ba46651d3
-美亚C,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=b4e3da&tk=922ba46651d3
-美亚C,http://ottproxy2.ist.ooo/livehls/MOB-U1-NO/03.m3u8
-美亚C,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=d79d07&tk=922ba46651d3
-翡翠台,http://php.jdshipin.com/TVOD/iptv.php?id=fct2
-翡翠台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=0401&tk=2aca1ad9a849
-翡翠台,https://cdn.iptv8k.top/dl/jrys.php?id=3&time=20240926215313&ip=111.229.253.40
-翡翠台,http://50.7.234.10:8278/jade_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=6955e849ff6cf5029870c9beea45140b
-翡翠台版TVBJ1,http://php.jdshipin.com/TVOD/iptv.php?id=j1
-虎牙TVB西游记,http://live.nctv.top/DJlio/huya.php?id=23735126
-西安戏剧台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=f438ba&tk=922ba46651d3
-闽寰宇全视界,https://short-link.me/13qAZ
-阿里郎电台视频,https://amdlive-ch03-ctnd-com.akamaized.net/arirang_3ch/smil:arirang_3ch.smil/playlist.m3u8
-靖天,http://50.7.234.10:8278/jingtianintl_twn/playlist.m3u8?tid=MC7C4153806141538061&ct=19254&tsum=79854f3ccdc23693ea39da52af54d35b
-靖天,http://50.7.234.10:8278/jingtianintl_twn/playlist.m3u8?tid=ME4E7632479576324795&ct=19226&tsum=9922eeed6392b21e1710ba791cc599d6
-靖天台,http://50.7.234.10:8278/jingtianintl_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=f248882755c1a89b3ecd48fc5d3aed03
-靖天戏剧台,https://cdn.iptv8k.top/dl/jrys.php?id=318&time=20240926215313&ip=111.229.253.40
-靖天映画台,https://cdn.iptv8k.top/dl/jrys.php?id=320&time=20240926215313&ip=111.229.253.40
-靖天资讯台,https://cdn.iptv8k.top/dl/jrys.php?id=315&time=20240926215313&ip=111.229.253.40
-龙华偶像台,http://50.7.234.10:8278/lunghuaidol_twn/playlist.m3u8?tid=MD6D6087277960872779&ct=19249&tsum=83e30fd8200429793355d21bf37719ff
-龙华偶像台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=5fbde1&tk=922ba46651d3
-龙华偶像台,http://50.7.234.10:8278/lunghuaidol_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=14be9b171ed76d59e0b7297a333079a4
-龙华卡通台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=d65cc5&tk=922ba46651d3
-龙华戏剧台,http://50.7.234.10:8278/lunghuaxiju_twn/playlist.m3u8?tid=m5c1b0bf1531015581628&ct=17874&tsum=2d2c4d6761fa92d63b97c0fe787007cb
-龙华戏剧台,http://50.7.234.10:8278/lunghuaxiju_twn/playlist.m3u8?tid=ME6E4094688440946884&ct=19234&tsum=dcb21e7462cf3104b9c2e9d3ede30359
-龙华日韩台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=d0c46e&tk=922ba46651d3
-龙华经典台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=5434db&tk=922ba46651d3
-龙祥时代,http://50.7.234.10:8278/lungxiangtime_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=525f1c9e0b438304ca9f31eb061c4710
-娱乐,#genre#
-Fun Roads (404p),http://104.143.4.5:2080/funroads.m3u8
-MCN6 Arts Channel (1080p) [Not 24/7],https://d18fcxaqfnwjhj.cloudfront.net/CDN_Ingest/MCN6_COMEDY.smil/Playlist.m3u8
-TVBEntertainment,http://50.7.234.10:8278/Tvbentertainment/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=f730c95b6c5085de2443b8a85e0ffc53
-中天娱乐,http://50.7.234.10:8278/ctient/playlist.m3u8?tid=MDED1780059017800590&ct=19226&tsum=4d05ea700aa8fd436b51ce703680e674
-中天娱乐,http://50.7.234.10:8278/ctient/playlist.m3u8?tid=MC9C7081133170811331&ct=19249&tsum=8b08b54208f3ee30e12f419d587f46ac
 少儿,#genre#
-3ABN Kids Network (720p),https://3abn-live.akamaized.net/hls/live/2010550/Kids/master.m3u8
 3ABN Kids Network (720p),https://3abn-live.akamaized.net/hls/live/2010550-b/Kids/master.m3u8
+3ABN Kids Network (720p),https://3abn-live.akamaized.net/hls/live/2010550/Kids/master.m3u8
 Aghapy Kids (1080p),https://5b622f07944df.streamlock.net/aghapykids.tv/aghapykids2/playlist.m3u8
-KidsFlix (1080p) [Not 24/7],https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=50
-PBS Kids Eastern/Central (1080p),https://livestream.pbskids.org/out/v1/1e3d77b418ad4a819b3f4c80ac0373b5/est.m3u8
-PBS Kids Eastern/Central (720p),https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8
-靖天卡通台,http://50.7.234.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=ME5E1118588611185886&ct=19234&tsum=9c155f39f9a4dcbe438a21f39a33ce77
-靖天卡通台,http://50.7.234.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=MD1D2636832926368329&ct=19226&tsum=22c17cfa6920f0b4a9d45746ac25c547
-靖天卡通台,http://50.7.234.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=MEEE6701222267012222&ct=19226&tsum=c1da0f03bc493ce969726d15fc9c0286
-靖天卡通台,http://50.7.234.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=m1465dab025b5&ct=18335&tsum=ba935e583d90bfbe1d1d9662e9ac600c
-靖天卡通台,http://50.7.234.10:8278/jingtiancartoon_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=388ac680c557bb97ab578a0716d7174a
 新闻,#genre#
-12 News Beaumont TX (KBMT) (1080p),https://livevideo01.12newsnow.com/hls/live/2017379/newscasts/live.m3u8
-3 Studios Cleveland OH (WKYC) (1080p),https://livevideo01.wkyc.com/hls/live/2015504/newscasts/live.m3u8
-ABC 10 Sacramento CA (KXTV) (1080p),https://livevideo01.abc10.com/hls/live/2014547/newscasts/live.m3u8
-ABC 11 Louisville KY (WHAS) (1080p),https://livevideo01.whas11.com/hls/live/2016284/newscasts/live.m3u8
-ABC 13 Grand Rapids MI (WZZM) (1080p),https://livevideo01.wzzm13.com/hls/live/2016280/newscasts/live.m3u8
-ABC 13 Norfolk VA (WVEC) (1080p),https://livevideo01.13newsnow.com/hls/live/2014545/newscasts/live.m3u8
-ABC 16 Wilkes Barre PA (WNEP) (1080p),https://livevideo01.wnep.com/hls/live/2011655/newscasts/live.m3u8
-ABC 24 Austin TX (KVUE) (1080p),https://livevideo01.kvue.com/hls/live/2016282/newscasts/live.m3u8
-ABC 24 Memphis TN (WATN-TV) (1080p),https://livevideo01.localmemphis.com/hls/live/2011654/newscasts/live.m3u8
-ABC 3 Corpus Christi TX (KIII) (1080p),https://livevideo01.kiiitv.com/hls/live/2017378/newscasts/live.m3u8
-ABC 5 Des Moines IA (WOI) (1080p),https://livevideo01.weareiowa.com/hls/live/2011593/newscasts/live.m3u8
-ABC 7 Los Angeles CA (KABC-TV) (720p),https://content.uplynk.com/channel/ext/2118d9222a87420ab69223af9cfa0a0f/kabc_24x7_news.m3u8
-ABC 8 Dallas TX (WFAA) (1080p),https://livevideo01.wfaa.com/hls/live/2014541/newscasts/live.m3u8
-ABC 8 Davenport IA (WQAD) (1080p),https://livevideo01.wqad.com/hls/live/2011657/newscasts/live.m3u8
 ABC News (720p),https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
 ABC News Live 1 (720p),https://abcnews-streams.akamaized.net/hls/live/2023560/abcnews1/master.m3u8
-ABC News Live 10 (720p),https://abcnews-streams.akamaized.net/hls/live/2023569/abcnews10/master.m3u8
 ABC News Live 2 (720p),https://abcnews-streams.akamaized.net/hls/live/2023561/abcnews2/master.m3u8
 ABC News Live 3 (720p),https://abcnews-streams.akamaized.net/hls/live/2023562/abcnews3/master.m3u8
 ABC News Live 4 (720p),https://abcnews-streams.akamaized.net/hls/live/2023563/abcnews4/master.m3u8
@@ -345,100 +38,12 @@ ABC News Live 6 (720p),https://abcnews-streams.akamaized.net/hls/live/2023565/ab
 ABC News Live 7 (720p),https://abcnews-streams.akamaized.net/hls/live/2023566/abcnews7/master.m3u8
 ABC News Live 8 (720p),https://abcnews-streams.akamaized.net/hls/live/2023567/abcnews8/master.m3u8
 ABC News Live 9 (720p),https://abcnews-streams.akamaized.net/hls/live/2023568/abcnews9/master.m3u8
-ABC News New York NY (WABC-TV) (720p),https://content.uplynk.com/channel/ext/72750b711f704e4a94b5cfe6dc99f5e1/wabc_24x7_news.m3u8
-CBS 10 Columbus OH (WBNS-TV) (1080p),https://livevideo01.10tv.com/hls/live/2013836/newscasts/live.m3u8
-CBS 10 Tampa FL (WTSP) (1080p),https://livevideo01.wtsp.com/hls/live/2015503/newscasts/live.m3u8
-CBS 11 Houston TX (KHOU) (1080p),https://livevideo01.khou.com/hls/live/2014966/newscasts/live.m3u8
-CBS 11 Toledo OH (WTOL) (1080p),https://livevideo01.wtol.com/hls/live/2017153/newscasts/live.m3u8
-CBS 13 Macon GA (WMAZ-TV) (1080p),https://livevideo01.13wmaz.com/hls/live/2017376/newscasts/live.m3u8
-CBS 19 Columbia SC (WLTX) (1080p),https://livevideo01.wltx.com/hls/live/2017152/newscasts/live.m3u8
-CBS 19 Tyler TX (KYTX) (1080p),https://livevideo01.cbs19.tv/hls/live/2017377/newscasts/live.m3u8
-CBS 2 Greensboro NC (WFMY) (1080p),https://livevideo01.wfmynews2.com/hls/live/2016285/newscasts/live.m3u8
-CBS 2 Spokane WA (KREM) (1080p),https://livevideo01.krem.com/hls/live/2017156/newscasts/live.m3u8
-CBS 4 New Orleans LA (WWL-TV) (1080p),https://livevideo01.wwltv.com/hls/live/2016516/newscasts/live.m3u8
-CBS 5 Ft Smith AR (KFSM-TV) (1080p),https://livevideo01.5newsonline.com/hls/live/2011653/newscasts/live.m3u8
-CBS 5 San Antonio TX (KENS) (1080p),https://livevideo01.kens5.com/hls/live/2016281/newscasts/live.m3u8
-CBS 8 San Diego CA (KFMB-TV) (1080p),https://livevideo01.cbs8.com/hls/live/2014967/newscasts/live.m3u8
-CBS 9 Washington DC (WUSA) (1080p),https://livevideo01.wusa9.com/hls/live/2015498/newscasts/live.m3u8
-CBS News (720p),https://cbsn-us.cbsnstream.cbsnews.com/out/v1/55a8648e8f134e82a470f83d562deeca/master.m3u8
-CBS News Baltimore (720p),https://cbsnews.akamaized.net/hls/live/2020607/cbsnlineup_8/master.m3u8
-CBS News Chicago (720p),https://cbsn-chi.cbsnstream.cbsnews.com/out/v1/b2fc0d5715d54908adf07f97d2616646/master.m3u8
-CBS News Colorado (720p),https://cbsn-den.cbsnstream.cbsnews.com/out/v1/2e49baf2906244ecb01b07d9885fbe7a/master.m3u8
-CBS News Dallas Ft Worth (720p),https://cbsn-dal.cbsnstream.cbsnews.com/out/v1/ffa98bbf7d2b4c038c229bd4d9122708/master.m3u8
-CBS News Los Angeles (720p),https://cbsn-la.cbsnstream.cbsnews.com/out/v1/57b6c4534a164accb6b1872b501e0028/master.m3u8
-CBS News Miami (720p),https://cbsn-mia.cbsnstream.cbsnews.com/out/v1/ac174b7938264d24ae27e56f6584bca0/master.m3u8
-CBS News New York (720p),https://www.cbsnews.com/common/video/cbsn-ny-prod.m3u8
-CBS News Pittsburgh (720p),https://cbsn-pit.cbsnstream.cbsnews.com/out/v1/6966dabf8150405ab26f854e3cd6a2b8/master.m3u8
-CBS News Sacramento (720p),https://cbsnews.akamaized.net/hls/live/2020607/cbsnsac_2/master.m3u8
-CBS THV11 Little Rock AR (KTHV) (1080p),https://livevideo01.thv11.com/hls/live/2017154/newscasts/live.m3u8
-Fox 15 West Texas Abilene TX (KXVA) (1080p),https://livevideo01.myfoxzone.com/hls/live/2017381/newscasts/live.m3u8
-Fox 43 Harrisburg PA (WPMT) (1080p),https://livevideo01.fox43.com/hls/live/2011656/newscasts/live.m3u8
-Fox 54.1 Huntsville AL (WZDX) (1080p),https://livevideo01.rocketcitynow.com/hls/live/2011659/newscasts/live.m3u8
-Fox 61 Hartford CT (WTIC-TV) (1080p),https://livevideo01.fox61.com/hls/live/2011658/newscasts/live.m3u8
-KFSN News,https://content.uplynk.com/channel/ext/96195dc445894d079a91958abba8d3af/kfsn_24x7_news.m3u8
-KGO-TV News (720p),https://content.uplynk.com/channel/ext/4413701bf5a1488db55b767f8ae9d4fa/kgo_24x7_news.m3u8
-KSBY News San Louis Obispo CA (720p),https://content.uplynk.com/channel/5545aa8a7e5a480d85fd1cff8d0cf610.m3u8
-KTRK TV News (720p),https://content.uplynk.com/channel/ext/1efe3bfc4d1e4b5db5e5085a535b510b/ktrk_24x7_news.m3u8
-NBC / ABC Jacksonville FL (WTLV) (1080p),https://livevideo01.firstcoastnews.com/hls/live/2014550/newscasts/live.m3u8
-NBC 11 Minneapolis MN (KARE) (1080p),https://livevideo01.kare11.com/hls/live/2014544/newscasts/live.m3u8
-NBC 12 Phoenix AZ (KPNX) (1080p),https://livevideo01.12news.com/hls/live/2015501/newscasts/live.m3u8
-NBC 2 Buffalo NY (WGRZ) (1080p),https://livevideo01.wgrz.com/hls/live/2016286/newscasts/live.m3u8
-NBC 36 Charlotte NC (WCNC-TV) (1080p),https://livevideo01.wcnc.com/hls/live/2015505/newscasts/live.m3u8
-NBC 5 St. Louis MO (KSDK) (1080p),https://livevideo01.ksdk.com/hls/live/2014965/newscasts/live.m3u8
-NBC 6 College Station TX (KAGS) (1080p),https://livevideo01.kagstv.com/hls/live/2016283/newscasts/live.m3u8
-NBC 6 Waco TX (KCEN) (1080p),https://livevideo01.kcentv.com/hls/live/2017155/newscasts/live.m3u8
-NBC 7 Boise ID (KTVB) (1080p),https://livevideo01.ktvb.com/hls/live/2014542/newscasts/live.m3u8
-NBC 8 Portland OR (KGW) (1080p),https://livevideo01.kgw.com/hls/live/2015506/newscasts/live.m3u8
-NBC 9 Denver CO (KUSA) (1080p),https://livevideo01.9news.com/hls/live/2014548/newscasts/live.m3u8
-NBC NewsWest 9 Midland-Odessa TX (KWES) (1080p),https://livevideo01.newswest9.com/hls/live/2017380/newscasts/live.m3u8
-NewsNet (720p) [Not 24/7],https://2-fss-2.streamhoster.com/pl_138/amlst:201950-1311088/playlist.m3u8
-NewsNet (KCKS-LD2) (480p) [Not 24/7],https://cdn.igocast.com/channel2_hls/channel2_master.m3u8
-Newsy (1080p),https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/e3e6e29095844c4ba7d887f01e44a5ef/index.m3u8
-Newsy (720p),https://content.uplynk.com/channel/1f93c13275024afb9e0ead299624073d.m3u8
-Newsy (720p),https://content.uplynk.com/channel/4bb4901b934c4e029fd4c1abfc766c37.m3u8
-TVBS新闻台,http://50.7.234.10:8278/tvbs_n/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=d686e9ec5c6eda876ad3695acb7d31e6
-TVB娱乐新闻台,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fct2
-TVB无线新闻台,http://php.jdshipin.com/TVOD/iptv.php?id=tvbxw
-Top Stories by Newsy (720p),https://content.uplynk.com/channel/33c48f602cfd4474b957eb4ad999caf8.m3u8
-WFTX News Fort Myers FL (720p),https://content.uplynk.com/channel/8975f81e6efd4e609873c3e8e25c7756.m3u8
-WLS TV News (720p),https://content.uplynk.com/channel/ext/aac37e2c66614e699fb189ab391084ff/wls_24x7_news.m3u8
-WPTV News West Palm Beach FL (720p),https://content.uplynk.com/channel/b02350ef854c4eef8358eead1f59a5cc.m3u8
-WPVI-TV News (720p),https://content.uplynk.com/channel/ext/10b98e7c615f43a98b180d51797e74aa/wpvi_24x7_news.m3u8
-WTVD TV News (720p),https://content.uplynk.com/channel/ext/f05837c508c44712aa7129d531f7dbe6/wtvd_24x7_news.m3u8
-WTWC (News),https://content.uplynk.com/channel/aa92b664ac5941de81cd410803329da2.m3u8
-三立新闻台,https://cdn.iptv8k.top/dl/jrys.php?id=273&time=20240926215313&ip=111.229.253.40
-东森新闻台,http://50.7.234.10:8278/ettvnews/playlist.m3u8?tid=ME5E8863997888639978&ct=19193&tsum=6b0236441f10a7195fb35fe7997db68c
-东森新闻台,http://50.7.234.10:8278/ettvnews/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=16a9e2e8be05f668cad9097c270e0c51
-东森新闻台,http://50.7.234.10:8278/ettvnews/playlist.m3u8?tid=MD8D8672451386724513&ct=19234&tsum=d08fdb1dd5078503ffd859a065bc9290
-中天娱乐,http://50.7.234.10:8278/ctient/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=19a390e7b22b5afc0735e04bbc90552e
-中天新闻台,http://cdn.iptv8k.top/dl/jspd.php?id=1
-中天新闻台,http://222.128.55.152:9080/live/fc.m3u8
-中视新闻台,http://50.7.234.10:8278/ca73a13c37/playlist.m3u8?tid=mee3f06f682eb&ct=18335&tsum=7491cceca17c1e2af05824583855f8bd
-中视新闻台,http://50.7.234.10:8278/zhongshinews_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=8449d53c267773b9c7c539a32606fca3
-台视新闻台,http://50.7.234.10:8278/ttvnews_twn/playlist.m3u8?tid=MBBB6637589866375898&ct=19234&tsum=d2c641a325bf02e0b68c4f245e0165b0
-台视新闻台,http://50.7.234.10:8278/ttvnews_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=414c772db10e777fc32c998755aa24b5
-台视新闻台,http://222.128.55.152:9080/live/ts.m3u8
-大爱电视,http://50.7.234.10:8278/daai_twn/playlist.m3u8?tid=m22178fccc70212656308&ct=17874&tsum=68bbc63cc5cb649ef5df75b1f0296336
-寰宇新闻台,http://222.128.55.152:9080/live/hy.m3u8
-寰宇新闻台,http://50.7.234.10:8278/huanyuxinwen_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=2e4ba5060f39aa293606ab3341b4fcde
-无线新闻台,http://50.7.234.10:8278/inews_twn/playlist.m3u8?tid=MD8D9734527497345274&ct=19249&tsum=88c5d57f9fdce89810d61e1001910a80
-民视新闻台,http://50.7.234.10:8278/ftvnew_taiwan/playlist.m3u8?tid=MF1F9892989898929898&ct=19234&tsum=454a768519608690638d11c0258cdcbe
-民视新闻台,http://50.7.234.10:8278/ftvnew_taiwan/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=9787063f7ed8e759418ccc1220dffe5f
-民视新闻台,http://50.7.234.10:8278/ftvnew_taiwan/playlist.m3u8?tid=ME4E4172771041727710&ct=19226&tsum=7b91c7af6212419479b392ff575e0689
-纬来日本台,http://50.7.234.10:8278/videolandjapan/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=09c1aab182bbc53e5157be27f449d381
+ABC News Live 10 (720p),https://abcnews-streams.akamaized.net/hls/live/2023569/abcnews10/master.m3u8
 流媒体,#genre#
-23 ABC Bakersfield CA (KERO) (720p),https://content.uplynk.com/channel/ff809e6d9ec34109abfb333f0d4444b5.m3u8
 30A Darcizzle Offshore (720p),https://30a-tv.com/darcizzle.m3u8
 30A Investment Pitch (720p),https://30a-tv.com/feeds/xodglobal/30atv.m3u8
 30A Sidewalks (720p),https://30a-tv.com/sidewalks.m3u8
 30A The Beach Show (720p),https://30a-tv.com/beachy.m3u8
-ABC 13 Las Vegas NV (KTNV) (720p),https://content.uplynk.com/channel/39919d3f7a074eefa8bf579214e952f9.m3u8
-ABC 15 Phoenix AZ (KNXV-TV) (720p),https://content.uplynk.com/channel/9deaf22aaa33461f9cac22e030ed00ec.m3u8
-ABC 4 Seattle WA (KOMO-TV) (720p),https://content.uplynk.com/2c88dfe19e1447e6a6aa27e8e143a140.m3u8
-ABC 7 Denver CO (KMGH) (720p),https://content.uplynk.com/channel/64ca339f04964a5e961c3207a7771bf1.m3u8
-ABC 7 Washington DC (WJLA) (720p),https://content.uplynk.com/40cec2bf074c40f08932da03ab4510be.m3u8
-AMG TV (1080p),https://2-fss-2.streamhoster.com/pl_138/201660-1270634-1/playlist.m3u8
-ARTN TV (1080p) [Not 24/7],https://streamer1.connectto.com/ARTN_mobile/index.m3u8
 Al-Fady TV (1080p) [Not 24/7],https://5d658d7e9f562.streamlock.net/alfadytv.tv/alfadytv.smil/playlist.m3u8
 Aliento Vision (720p) [Not 24/7],http://livestreamcdn.net:1935/AlientoSD/smil:AlientoSD.smil/playlist.m3u8
 Alkarma TV Australia (1080p),https://5a8308add0b31.streamlock.net/alkarmatv.com/alkarmaau.smil/playlist.m3u8
@@ -453,166 +58,157 @@ Almagd TV Middle East (1080p) [Not 24/7],https://597f64b67707a.streamlock.net/al
 Almagd TV North America (1080p),https://5aafcc5de91f1.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8
 America's Voice (720p),https://content.uplynk.com/channel/26bd482ffe364a1282bc3df28bd3c21f.m3u8
 Amga TV (720p) [Not 24/7],https://streamer1.connectto.com/AMGA_WEB_1202/playlist.m3u8
-Bloomberg Quicktake (1080p),https://bloomberg.com/media-manifest/streams/qt.m3u8
-Bloomberg TV Asia (720p),https://bloomberg.com/media-manifest/streams/asia.m3u8
-Bloomberg TV Asia Live Event (720p),https://bloomberg.com/media-manifest/streams/asia-event.m3u8
-Bloomberg TV Australia (270p),https://bloomberg.com/media-manifest/streams/aus.m3u8
-Bloomberg TV EMEA Live Event (720p),https://bloomberg.com/media-manifest/streams/eu-event.m3u8
-Bloomberg TV Europe (720p),https://bloomberg.com/media-manifest/streams/eu.m3u8
-Bloomberg TV US (720p),https://bloomberg.com/media-manifest/streams/us.m3u8
-Bloomberg TV US Live Event (720p),https://bloomberg.com/media-manifest/streams/us-event.m3u8
-Bloomberg TV US Politics Live Event (720p),https://bloomberg.com/media-manifest/streams/politics.m3u8
-Bloomberg TV+ (1080p),https://bloomberg.com/media-manifest/streams/phoenix-us.m3u8
-CBS 6 Albany NY (WRGB) (720p),https://content.uplynk.com/channel/bba3e7da884a49bba96341ecf5128f0f.m3u8
-CSat TV (1080p) [Not 24/7],https://5d12bc59c4748.streamlock.net/redirect/csat.tv/csat.smil?type=m3u8
-CSat TV (1080p) [Not 24/7],https://5b622f07944df.streamlock.net/csat.tv/csat.smil/playlist.m3u8
-CT-N Live Stream 2 (360p) [Not 24/7],http://video.ct-n.com/live/web2stream/playlist.m3u8
-CT-N TV Conneticut (720p) [Not 24/7],http://video.ct-n.com/live/ctnstream/playlist_DVR.m3u8
-Camp Spoopy (576p),https://stream.ads.ottera.tv/playlist.m3u8?network_id=269
-Charge! (720p),http://content.uplynk.com/channel/37eb732888614810b512fdd82604244e.m3u8
-Comet (720p),http://content.uplynk.com/channel/3e45c6b5354a40f787e0b2aadb0f5d6a.m3u8
-Cooking Panda (576p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=46
-EMT Media TV Los Angeles CA [Geo-blocked],https://mediaplatform.streamingmediahosting.com/p/14135/sp/1413500/playManifest/entryId/0_lkq7fay8/format/applehttp/protocol/https/uiConfId/6710347/a.m3u8
-Extrema TV (720p),http://livestreamcdn.net:1935/ExtremaTV/ExtremaTV/playlist.m3u8
-Fox 28 Savannah GA (WTGS) (720p),https://content.uplynk.com/channel/e56ba52a1b9d45ad8c8a033fd83fe480.m3u8
-Fox Weather (720p),https://247wlive.foxweather.com/stream/index.m3u8
-High Vision (1080p) [Not 24/7],https://streamer1.connectto.com/HIGHVISION_WEB_1205/tracks-v1a1/mono.m3u8
-Hmong TV Network (720p),https://livefta.malimarcdn.com/ftaedge00/cvabroadcasting.stream/playlist.m3u8
-KSCE Vida Cristiana (360p),https://2-fss-2.streamhoster.com/pl_120/200226-1449024-1/playlist.m3u8
-KVVB-TV 33 Victor Valley (1080p) [Not 24/7],https://2-fss-2.streamhoster.com/pl_138/amlst:201950-1309230/playlist.m3u8
-LIFE! End Times TV (360p),https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8
-Life! Christian Broadcasting Network (360p),https://2-fss-2.streamhoster.com/pl_138/200226-1359204-1/playlist.m3u8
-Logos TV (720p) [Not 24/7],https://5aafcc5de91f1.streamlock.net/logoschannel.com/logostv.smil/playlist.m3u8
-Logos TV English (1080p) [Not 24/7],https://5aafcc5de91f1.streamlock.net/logoschannel.com/logoseng/playlist.m3u8
-Miami TV Jenny Live (720p) [Not 24/7],https://59ec5453559f0.streamlock.net/JennyLive/JennyLive/playlist.m3u8
-Midpen Media Center Arts Issues and Lifestyles Channel 30 (720p),https://5c2974786200d.streamlock.net/live-chan30/ngrp:ch30_all/playlist.m3u8
-Midpen Media Center Diversity and Culture Channel 75 (720p),https://5c2974786200d.streamlock.net/live-chan75/ngrp:ch75_all/playlist.m3u8
-Midpen Media Center Government etc Channel 26 (720p),https://5c2974786200d.streamlock.net/live-chan26/ngrp:ch26_all/playlist.m3u8
-Midpen Media Center Government etc Channel 29 (720p),https://5c2974786200d.streamlock.net/live-chan29/ngrp:ch29_all/playlist.m3u8
-Millbrae Community Television (720p),https://603591da64140.streamlock.net/live/mp4:MCTVtest_aac/playlist.m3u8
-Mission TV (1080p) [Not 24/7],https://6096a9cf11ae5.streamlock.net:1943/live/missiontv/playlist.m3u8
-Mission TV (720p) [Not 24/7],http://stream.missiontv.com:1935/live/missiontv_720p/playlist.m3u8
-Mobile County Public Schools TV Network (MCPSS),https://5b200f5268ceb.streamlock.net/MCPSS/MCPSS247.smil/playlist.m3u8
-Mohabat TV (540p),http://media.mohabat.tv:1935/live_transcoder/ngrp:mohabat.stream_all/playlist.m3u8
-Morro Bay Channel 20 (480p),https://agp-nimble.streamguys1.com/MBCh20/MBCh20/playlist.m3u8
-NBC 26 Green Bay WI (WGBA) (720p),https://content.uplynk.com/channel/1fbfb28ae5044f619f75ae0adb011989.m3u8
-NRB TV (480p),https://uni6rtmp.tulix.tv/nrbnetwork/myStream.sdp/playlist.m3u8
-Nickelodeon Australia (576p),http://c0.cdn.trinity-tv.net/stream/7tsewn83ddjifz69us9je7eftbm5nuausb4dsvz9g5aydin9672n734qbb9jgcfpiqtpwudvs9dpi2udjc3eh4h462eie5azjmfbfgfjeqfuhjmmgx9zuj736ijg7nffhf8rviq5svkgxbp639y9nfgc.m3u8
-Nothing Scripted (720p),https://30a-tv.com/NothingScripted.m3u8
-Omid Javedan (720p) [Not 24/7],http://livestream.5centscdn.com/shaditv/23abe62a446fc05ce0a6c810f4045308.sdp/index.m3u8
-Outdoor Channel (1080p) [Not 24/7],http://ott.watch/stream/E7Q3UVKI5H/211.m3u8
-PBS KET Louisville KY (WKMJ-TV) (720p),https://2-fss-1.streamhoster.com/pl_134/amlst:200914-1282960/playlist.m3u8
-PBS MPT Baltimore MD (WMPB) (1080p),https://2-fss-2.streamhoster.com/pl_138/amlst:201814-1291584/playlist.m3u8
-PIX11 New York NY (720p),https://content.uplynk.com/channel/98828f7707b84dc496472d5789143df2.m3u8
-Party Tyme Karaoke (720p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=64
-SKWAD (1080p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=71
-SLO County Channel 21 (360p),https://agp-nimble.streamguys1.com/SLOC/SLOC/playlist.m3u8
+AMG TV (1080p),https://2-fss-2.streamhoster.com/pl_138/201660-1270634-1/playlist.m3u8
+ARTN TV (1080p) [Not 24/7],https://streamer1.connectto.com/ARTN_mobile/index.m3u8
+Beach TV Florida & Alabama (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/DTVHD/playlist.m3u8
+Beach TV Key West & Florida Keys (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/KTVHD/playlist.m3u8
+Beach TV Panama City (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/BTVHD/playlist.m3u8
 Stream_2_0,https://archive.org/download/alan-watt-cttm-liveon-rbn-733-should-father-forgive-them-who-know-what-they-do-dec-232010/Alan_Watt_CTTM_LIVEonRBN_733_Should_Father_Forgive_Them_Who_Know_What_They_Do_Dec232010.mp3
-TBD. (720p),https://content.uplynk.com/channel/1831163f97674328ad9f4b4814ed39c5.m3u8
-TD Ameritrade Network (1080p),https://content.uplynk.com/channel/f9aafa1f132e40af9b9e7238bc18d128.m3u8
-TG Junior (1080p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=31
-TVB,https://cdn.163189.xyz/live/tvbp/stream.m3u8
-TVBJ1,https://cdn3.163189.xyz/live/j1/stream.m3u8
-TVB功夫,https://lb-mvtv-live.v2h-cdn.com/redirect/asia_action1/1asia_action.stream?type=m3u8
-The Archive (486p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=74
-The Retro Channel (1080p) [Not 24/7],https://5fd5567570c0e.streamlock.net/theretrochannel/stream/playlist.m3u8
-Toon Goggles (1080p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=36
-Toon Goggles (720p),https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=37
-UCTV University of California (720p) [Not 24/7],https://59e8e1c60a2b2.streamlock.net/509/509.stream/playlist.m3u8
-VSiN (720p),https://stream.rcncdn.com/live/vsinproxy.m3u8
-Village of Hastings-On-Hudson NY (WHOH-TV) (360p),http://stream.swagit.com/live-edge/hastingsonhudsonny/smil:std-4x3-1-a/playlist.m3u8
-WBRZ Weather Channel Baton Rouge LA,https://d2a6g6zgxepbwi.cloudfront.net/wbrz-edge/weather.stream_360p/playlist.m3u8
-WLNG Radio (410p) [Not 24/7],http://wlngstudiowebcam.srfms.com:1935/wlngstudiowebcam/livestream/playlist.m3u8
-White Plains Community Media (360p),https://stream.swagit.com/live-edge/whiteplainsny/smil:std-4x3-1-b/playlist.m3u8
-凤凰中文,https://cdn.163189.xyz/live/fhzw/stream.m3u8
-凤凰中文,http://cdn.163189.xyz/live/fhzw/stream.m3u8
-凤凰资讯台,http://cdn3.163189.xyz/live/fhzx/stream.m3u8
-凤凰资讯台,https://cdn3.163189.xyz/live/fhzx/stream.m3u8
-凤凰资讯台,https://cdn6.163189.xyz/live/fhzx/stream.m3u8
-凤凰香港,https://cdn6.163189.xyz/live/fhhk/stream.m3u8
-凤凰香港,http://cdn3.132.us.kg/live/fhhk/stream.m3u8
-无线明珠,http://cdn5.132.us.kg/live/mzt/stream.m3u8
-无线翡翠,http://cdn3.132.us.kg/live/fct/stream.m3u8
-无线翡翠频4k,http://cdn.163189.xyz/live/fct4k/stream.m3u8
-翡翠台,https://cdn3.163189.xyz/live/fct/stream.m3u8
-翡翠台4K,https://cdn.163189.xyz/live/fct4k/stream.m3u8
-龙华偶像台,https://cdn8.163189.xyz/live/lhox/stream.m3u8
-龙华偶像台,https://cdn3.132.us.kg/live/lhox/stream.m3u8
-龙华卡通台,https://cdn3.132.us.kg/live/lhkt/stream.m3u8
-龙华卡通台,https://cdn8.163189.xyz/live/lhkt/stream.m3u8
-龙华戏剧台,https://cdn8.163189.xyz/live/lhxj/stream.m3u8
-龙华日韩台,https://cdn8.163189.xyz/live/lhrh/stream.m3u8
-龙华日韩台,https://cdn3.132.us.kg/live/lhrh/stream.m3u8
-龙华经典台,https://cdn3.132.us.kg/live/lhjd/stream.m3u8
-龙华经典台,https://cdn8.163189.xyz/live/lhjd/stream.m3u8
-电影,#genre#
+Stream_5_0,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_000_b033cb6b.ts?_cb=1747548012
+Stream_5_1,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_001_b033cb6b.ts?_cb=1747548012
+Stream_5_2,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_002_b033cb6b.ts?_cb=1747548012
+Stream_5_3,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_003_b033cb6b.ts?_cb=1747548012
+Stream_5_4,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_004_b033cb6b.ts?_cb=1747548012
+Stream_5_5,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_005_b033cb6b.ts?_cb=1747548012
+Stream_5_6,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_006_b033cb6b.ts?_cb=1747548012
+Stream_5_7,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_007_b033cb6b.ts?_cb=1747548012
+Stream_5_8,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_008_b033cb6b.ts?_cb=1747548012
+Stream_5_9,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_009_b033cb6b.ts?_cb=1747548012
+Stream_5_10,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_010_b033cb6b.ts?_cb=1747548012
+Stream_5_11,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_011_b033cb6b.ts?_cb=1747548012
+Stream_5_12,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_012_b033cb6b.ts?_cb=1747548012
+Stream_5_13,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_013_b033cb6b.ts?_cb=1747548012
+Stream_5_14,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_014_b033cb6b.ts?_cb=1747548012
+Stream_5_15,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_015_b033cb6b.ts?_cb=1747548012
+Stream_5_16,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_016_b033cb6b.ts?_cb=1747548012
+Stream_5_17,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_017_b033cb6b.ts?_cb=1747548012
+Stream_5_18,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_018_b033cb6b.ts?_cb=1747548012
+Stream_5_19,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_019_b033cb6b.ts?_cb=1747548012
+Stream_5_20,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_020_b033cb6b.ts?_cb=1747548012
+Stream_5_21,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_021_b033cb6b.ts?_cb=1747548012
+Stream_5_22,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_022_b033cb6b.ts?_cb=1747548012
+Stream_5_23,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_023_b033cb6b.ts?_cb=1747548012
+Stream_5_24,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_024_b033cb6b.ts?_cb=1747548012
+Stream_5_25,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_025_b033cb6b.ts?_cb=1747548012
+Stream_5_26,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_026_b033cb6b.ts?_cb=1747548012
+Stream_5_27,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_027_b033cb6b.ts?_cb=1747548012
+Stream_5_28,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_028_b033cb6b.ts?_cb=1747548012
+Stream_5_29,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_029_b033cb6b.ts?_cb=1747548012
+Stream_5_30,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_030_b033cb6b.ts?_cb=1747548012
+Stream_5_31,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_031_b033cb6b.ts?_cb=1747548012
+Stream_5_32,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_032_b033cb6b.ts?_cb=1747548012
+Stream_5_33,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_033_b033cb6b.ts?_cb=1747548012
+Stream_5_34,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_034_b033cb6b.ts?_cb=1747548012
+Stream_5_35,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_035_b033cb6b.ts?_cb=1747548012
+Stream_5_36,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_036_b033cb6b.ts?_cb=1747548012
+Stream_5_37,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_037_b033cb6b.ts?_cb=1747548012
+Stream_5_38,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_038_b033cb6b.ts?_cb=1747548012
+Stream_5_39,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_039_b033cb6b.ts?_cb=1747548012
+Stream_5_40,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_040_b033cb6b.ts?_cb=1747548012
+Stream_5_41,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_041_b033cb6b.ts?_cb=1747548012
+Stream_5_42,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_042_b033cb6b.ts?_cb=1747548012
+Stream_5_43,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_043_b033cb6b.ts?_cb=1747548012
+Stream_5_44,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_044_b033cb6b.ts?_cb=1747548012
+Stream_5_45,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_045_b033cb6b.ts?_cb=1747548012
+Stream_5_46,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_046_b033cb6b.ts?_cb=1747548012
+Stream_5_47,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_047_b033cb6b.ts?_cb=1747548012
+Stream_5_48,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_048_b033cb6b.ts?_cb=1747548012
+Stream_5_49,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_049_b033cb6b.ts?_cb=1747548012
+Stream_5_50,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_050_b033cb6b.ts?_cb=1747548012
+Stream_5_51,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_051_b033cb6b.ts?_cb=1747548012
+Stream_5_52,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_052_b033cb6b.ts?_cb=1747548012
+Stream_5_53,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_053_b033cb6b.ts?_cb=1747548012
+Stream_5_54,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_054_b033cb6b.ts?_cb=1747548012
+Stream_5_55,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_055_b033cb6b.ts?_cb=1747548012
+Stream_5_56,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_056_b033cb6b.ts?_cb=1747548012
+Stream_5_57,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_057_b033cb6b.ts?_cb=1747548012
+Stream_5_58,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_058_b033cb6b.ts?_cb=1747548012
+Stream_5_59,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_059_b033cb6b.ts?_cb=1747548012
+Stream_5_60,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_060_b033cb6b.ts?_cb=1747548012
+Stream_5_61,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_061_b033cb6b.ts?_cb=1747548012
+Stream_5_62,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_062_b033cb6b.ts?_cb=1747548012
+Stream_5_63,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_063_b033cb6b.ts?_cb=1747548012
+Stream_5_64,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_064_b033cb6b.ts?_cb=1747548012
+Stream_5_65,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_065_b033cb6b.ts?_cb=1747548012
+Stream_5_66,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_066_b033cb6b.ts?_cb=1747548012
+Stream_5_67,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_067_b033cb6b.ts?_cb=1747548012
+Stream_5_68,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_068_b033cb6b.ts?_cb=1747548012
+Stream_5_69,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_069_b033cb6b.ts?_cb=1747548012
+Stream_5_70,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_070_b033cb6b.ts?_cb=1747548012
+Stream_5_71,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_071_b033cb6b.ts?_cb=1747548012
+Stream_5_72,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_072_b033cb6b.ts?_cb=1747548012
+Stream_5_73,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_073_b033cb6b.ts?_cb=1747548012
+Stream_5_74,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_074_b033cb6b.ts?_cb=1747548012
+Stream_5_75,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_075_b033cb6b.ts?_cb=1747548012
+Stream_5_76,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_076_b033cb6b.ts?_cb=1747548012
+Stream_5_77,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_077_b033cb6b.ts?_cb=1747548012
+Stream_5_78,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_078_b033cb6b.ts?_cb=1747548012
+Stream_5_79,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_079_b033cb6b.ts?_cb=1747548012
+Stream_5_80,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_080_b033cb6b.ts?_cb=1747548012
+Stream_5_81,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_081_b033cb6b.ts?_cb=1747548012
+Stream_5_82,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_082_b033cb6b.ts?_cb=1747548012
+Stream_5_83,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_083_b033cb6b.ts?_cb=1747548012
+Stream_5_84,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_084_b033cb6b.ts?_cb=1747548012
+Stream_5_85,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_085_b033cb6b.ts?_cb=1747548012
+Stream_5_86,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_086_b033cb6b.ts?_cb=1747548012
+Stream_5_87,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_087_b033cb6b.ts?_cb=1747548012
+Stream_5_88,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_088_b033cb6b.ts?_cb=1747548012
+Stream_5_89,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_089_b033cb6b.ts?_cb=1747548012
+Stream_5_90,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_090_b033cb6b.ts?_cb=1747548012
+Stream_5_91,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_091_b033cb6b.ts?_cb=1747548012
+Stream_5_92,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_092_b033cb6b.ts?_cb=1747548012
+Stream_5_93,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_093_b033cb6b.ts?_cb=1747548012
+Stream_5_94,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_094_b033cb6b.ts?_cb=1747548012
+Stream_5_95,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_095_b033cb6b.ts?_cb=1747548012
+Stream_5_96,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_096_b033cb6b.ts?_cb=1747548012
+Stream_5_97,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_097_b033cb6b.ts?_cb=1747548012
+Stream_5_98,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_098_b033cb6b.ts?_cb=1747548012
+Stream_5_99,https://raw.githubusercontent.com/git32max/3c7d99d3ac061cc8/refs/heads/master/480p/segments/segment_099_b033cb6b.ts?_cb=1747548012
+港澳频道,#genre#
 1905国内电影台,http://php.jdshipin.com:8880/1905.php?id=1905dy
 1905国外电影台,http://php.jdshipin.com:8880/1905.php?id=1905dy2
 JStar极限电影台,http://u9v.cn/5FZsLd
-Toonami Aftermath Movies (540p),http://api.toonamiaftermath.com:3000/movies/playlist.m3u8
-东森电影台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=9901&tk=e640d0a1bf70
-天映电影台,https://short-link.me/20250528b6
-神乐欧美影院,http://tc-tct.douyucdn2.cn/dyliveflv1a/20415rnWbjg6Ex1K_2000.flv?wsAuth=3b64dd17d293b133c58bda21e3147e5b&token=cpn-androidmpro-0-20415-b6774b3b3249db1768f0ac048c5ed218ac54e1f82b04b2bf&logo=0&expire=0&did=d010b07dcb997ada9934081c873542f0&origin=tct&vhost=play2
-经典电影台2,http://huanqiuzhibo.cn/manifest/douyu.php?id=6091425
-美亚电影台,https://live.tvfix.org/live/mydy/index.m3u8
-龙祥时代电影台,http://50.7.234.10:8278/lungxiangtime_twn/playlist.m3u8?tid=MADA6805114368051143&ct=18392&tsum=d6a1f02ca9abd5368d2a365e40247ae8
-龙祥电影台,https://short-link.me/20250528b8
-电视剧,#genre#
-TVB明珠剧集,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=5300&tk=97475bb89d45
 TVB翡翠剧集,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=9478&tk=97475bb89d45
-东森戏剧台,http://50.7.234.10:8278/ettvdrama/playlist.m3u8?tid=MFBF4367295743672957&ct=19234&tsum=de5315ac3cf9b1b8ff44e5a9e3ad16a9
-东森戏剧台,http://50.7.234.10:8278/ettvdrama/playlist.m3u8?tid=m921dcb630ebe17354109&ct=17874&tsum=695370160923af940d1a90d44c262acc
+TVB明珠剧集,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=5300&tk=97475bb89d45
+爱尔达影剧台,http://50.7.234.10:8278/eltadrama_twn/playlist.m3u8?tid=mea60e416943110603068&ct=17874&tsum=ede38d2a218a34b5397af9d19e0c39a3
+爱尔达影剧台,http://50.7.234.10:8278/eltayingju_twn/playlist.m3u8?tid=MFBF4492563944925639&ct=19225&tsum=d4fb09f164ea4850c14546a14d075d04
+爱尔达影剧台,http://50.7.234.10:8278/eltayingju_twn/playlist.m3u8?tid=MFFF8590726285907262&ct=19249&tsum=ae4cb19fed11696df934d6e2489e2978
 八大戏剧台,http://50.7.234.10:8278/badadrama/playlist.m3u8?tid=MBCB2433143824331438&ct=19254&tsum=51660c351b3991d81434e43bd1ab720e
 八大戏剧台,http://50.7.234.10:8278/badadrama/playlist.m3u8?tid=ME3E7432781774327817&ct=19193&tsum=504532547ffc646858157dd724bca18d
 八大戏剧台,http://50.7.234.10:8278/badadrama/playlist.m3u8?tid=ME4E4734124647341246&ct=19225&tsum=c4e596572a79ad99675ee2137d1cc43d
 八大戏剧台,http://50.7.234.10:8278/badadrama/playlist.m3u8?tid=m6e4372d7fc8217605152&ct=17874&tsum=d9af89e299560350336e22c1418e6b54
-爱尔达影剧台,http://50.7.234.10:8278/eltadrama_twn/playlist.m3u8?tid=mea60e416943110603068&ct=17874&tsum=ede38d2a218a34b5397af9d19e0c39a3
-社会与法,#genre#
-CT-N Court Feed (360p) [Not 24/7],http://video.ct-n.com/live/ctnSupreme/playlist_DVR.m3u8
-Court TV (720p),https://content.uplynk.com/channel/6c0bd0f94b1d4526a98676e9699a10ef.m3u8
-科教,#genre#
-Fresno CMAC 2 Education Channel (720p),https://reflect-vod-cmac.cablecast.tv/live-12/live/live.m3u8
-Napa Valley TV Education Access Channel 27 (480p),https://cdn3.wowza.com/5/WDIrTW5sM1JEY1NN/napatv/G0360_003/playlist.m3u8
-综合,#genre#
-Atlanta Channel (720p),http://media4.tripsmarter.com:1935/LiveTV/ACVBHD/playlist.m3u8
-Beach TV Florida & Alabama (720p),http://media4.tripsmarter.com:1935/LiveTV/DTVHD/playlist.m3u8
-Beach TV Florida & Alabama (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/DTVHD/playlist.m3u8
-Beach TV Key West & Florida Keys (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/KTVHD/playlist.m3u8
+八大戏剧台,http://50.7.234.10:8278/badadrama/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=3ff25d182ead16720e0a035c94a0a786
+东森电影台,http://50.7.234.10:8278/ettvmovie/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=8521db60d49af33060b2d4b3262a1097
+东森电影台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=9901&tk=e640d0a1bf70
+东森戏剧台,http://50.7.234.10:8278/ettvdrama/playlist.m3u8?tid=MFBF4367295743672957&ct=19234&tsum=de5315ac3cf9b1b8ff44e5a9e3ad16a9
+东森戏剧台,http://50.7.234.10:8278/ettvdrama/playlist.m3u8?tid=m921dcb630ebe17354109&ct=17874&tsum=695370160923af940d1a90d44c262acc
+东森戏剧台,http://50.7.234.10:8278/ettvdrama/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=27c02fdd5a4eed4ac948d8c250b3b732
+港剧台2,http://live.nctv.top/DJlio/douyu.php?id=5261342
+好莱坞电影台,http://50.7.234.10:8278/hollywoodmovies_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=4a6d1876ce8e327ae3b4e63ca6829252
+经典电影台2,http://huanqiuzhibo.cn/manifest/douyu.php?id=6091425
+靖天戏剧台,https://cdn.iptv8k.top/dl/jrys.php?id=318&time=20240926215313&ip=111.229.253.40
+龙华电影台,http://50.7.234.10:8278/xingwei_movie/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=b380c8ef3016f04d9ed8ee1a811c1bf4
+龙华电影台,https://cdn8.163189.xyz/live/lhdy/stream.m3u8
+龙华戏剧台,http://50.7.234.10:8278/lunghuaxiju_twn/playlist.m3u8?tid=ME6E4094688440946884&ct=19234&tsum=dcb21e7462cf3104b9c2e9d3ede30359
+龙华戏剧台,http://50.7.234.10:8278/lunghuaxiju_twn/playlist.m3u8?tid=m5c1b0bf1531015581628&ct=17874&tsum=2d2c4d6761fa92d63b97c0fe787007cb
+龙华戏剧台,http://50.7.234.10:8278/lunghuaxiju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=051b4915ad14d1352236c31f5d8ccce4
+龙华戏剧台,https://cdn8.163189.xyz/live/lhxj/stream.m3u8
+龙祥电影台,https://short-link.me/20250528b8
+龙祥时代电影台,http://50.7.234.10:8278/lungxiangtime_twn/playlist.m3u8?tid=MADA6805114368051143&ct=18392&tsum=d6a1f02ca9abd5368d2a365e40247ae8
+美亚电影台,http://50.7.234.10:8278/meiyamovie_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=5d5f2284a5f896d6519e0aa61fe765c9
+美亚电影台,https://live.tvfix.org/live/mydy/index.m3u8
+三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?ct=19226&tid=MBDB8405357084053570&tsum=78944c0951d21a699e46fff4318a3799
+三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?tid=MA8A4626080046260800&ct=19053&tsum=205a453781925ebfb8996c1db8d4ed59
+三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?tid=MCFC5174201151742011&ct=19193&tsum=27477ddeec029345da276c2c903f09c2
+三立戏剧台,http://50.7.234.10:8278/sanlixiju_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=5edb8766a19ad58cfefb87e5a089393e
+神乐欧美影院,http://tc-tct.douyucdn2.cn/dyliveflv1a/20415rnWbjg6Ex1K_2000.flv?wsAuth=3b64dd17d293b133c58bda21e3147e5b&token=cpn-androidmpro-0-20415-b6774b3b3249db1768f0ac048c5ed218ac54e1f82b04b2bf&logo=0&expire=0&did=d010b07dcb997ada9934081c873542f0&origin=tct&vhost=play2
+天映电影台,https://short-link.me/20250528b6
+纬来电影台,http://50.7.234.10:8278/videolandmovie/playlist.m3u8?ct=18335&tid=ma2dac66da407&tsum=9a5a39559f64a71081ef9b3a85f2886c
+纬来电影台,http://50.7.234.10:8278/videolandmovie/playlist.m3u8?tid=ma2dac66da407&ct=18335&tsum=9a5a39559f64a71081ef9b3a85f2886c
+西安戏剧台,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=f438ba&tk=922ba46651d3
+张晓英一小段幽默戏剧小品wmv,http://kkk.jjjj.jiduo.me/api.php?n=tttt&id=bafdef&tk=922ba46651d3
+音乐,#genre#
+3ABN Praise Him Music Network (720p),https://3abn-live.akamaized.net/hls/live/2010551/Praise_Him/master.m3u8
+30A Music (720p),https://30a-tv.com/music.m3u8
 Beach TV Myrtle Beach & The Grand Strand (720p),http://media4.tripsmarter.com:1935/LiveTV/MTVHD/playlist.m3u8
 Beach TV Myrtle Beach & The Grand Strand (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/MTVHD/playlist.m3u8
-Beach TV Panama City (720p),http://media4.tripsmarter.com:1935/LiveTV/BTVHD/playlist.m3u8
-Beach TV Panama City (720p),https://5ed325193d4e1.streamlock.net:444/LiveTV/BTVHD/playlist.m3u8
-CBN News (1080p),https://bcovlive-a.akamaihd.net/re8d9f611ee4a490a9bb59e52db91414d/us-east-1/734546207001/playlist.m3u8
-HTV 1 Houston Television (720p),https://stream.swagit.com/live-edge/houstontx/smil:hd-16x9-2-a/playlist.m3u8
-HTV 2 Houston Television (720p),https://stream.swagit.com/live-edge/houstontx/smil:hd-16x9-2-b/playlist.m3u8
-MGM HD USA (576p),http://c0.cdn.trinity-tv.net/stream/uq2t763988wmx82xs37vrzrtrvaz686y22jd9gcgvgbhu88g6dntdb82kggx9zgvpvwj5wisyi5mgwwgdqzm7d6xbf7yvctwzvhsu3t57ms3wa4qxwyeuqk3ayrdwx3k2b6cdtnrydx9qa3ezqzea===.m3u8
-My Madison TV (WISC-DT2) (720p),https://ad-playlistserver.aws.syncbak.com/playlist/13613390/master.m3u8?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkdyYXkyMDE2MDgyOSJ9.eyJtaWQiOjEzNjEzMzkwLCJtZDUiOiI2Y2M5MzczYjIxZWIwNzQ4ZDA0YTRlYzYyMjU2YjBhMiIsImlhdCI6MTQ5NzM4MTU5NywiaXNzIjoiU3luY2JhayIsInN1YiI6IkdyYXkifQ.qJPiMCbnGjAn9wgPrGjVl3M9Xfc4CVSyoZTZ5OH-1jo
-New Orleans Television (NOTV) (720p),http://media4.tripsmarter.com:1935/LiveTV/NOTVHD/playlist.m3u8
-The Shopping Channel (720p),https://tscstreaming-lh.akamaihd.net/i/TSCLiveStreaming_1@91031/master.m3u8
-三立综合台,http://50.7.234.10:8278/sanlizhonghe/playlist.m3u8?tid=m3362167a08a014596868&ct=17874&tsum=4472a7c943b67bf52fe5e836ca9f3b6b
-三立综合台,http://50.7.234.10:8278/sanlizhonghe/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=f00d56a283715a9549f7bfcac85a1e3a
-东森综合台,http://50.7.234.10:8278/ettvzhonghe/playlist.m3u8?tid=MC4C1214674912146749&ct=19254&tsum=9b96a50ba99dca1a02a27b05a6fb4b0d
-东森综合台,https://cdn.iptv8k.top/dl/jrys.php?id=220&time=20240926215313&ip=111.229.253.40
-东森综合台,https://cdn.iptv8k.top/dl/jrys.php?id=221&time=20240926215313&ip=111.229.253.40
-东森综合台,http://50.7.234.10:8278/ettvzhonghe/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=8908613c59328719e4b4264d598f7ddd
-中天综合台,http://50.7.234.10:8278/ctizhonghe/playlist.m3u8?tid=MB6B3888954738889547&ct=19254&tsum=d0cb922e44e8a16bea598530697c581e
-中天综合台,http://50.7.234.10:8278/ctizhonghe/playlist.m3u8?tid=m85005aeec85b14021104&ct=17874&tsum=69f19f4b12ab79d2ee683b28cdb1c8ca
-中天综合台,http://50.7.234.10:8278/ctizhonghe/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=27715b42827ed898125640b4891ddde9
-中视,http://50.7.234.10:8278/zhongshihd_twn/playlist.m3u8?tid=MB4B2404962324049623&ct=19193&tsum=671b112a447ed494ae6219c14d0fab93
-中视,http://50.7.234.10:8278/zhongshihd_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=b9082a07f9f4586dc6b7dbb15aed0ead
-八大综合台,http://50.7.234.10:8278/badazhonghe/playlist.m3u8?ct=19225&tid=MC7C4692263546922635&tsum=ffdc7a6397b511103e0df0b92e678790
-八大综合台,http://50.7.234.10:8278/badazhonghe/playlist.m3u8?tid=MC5C5422299054222990&ct=19193&tsum=8189d5b21bdeabdffa3d2b2cbeaae0ae
-八大综合台,http://50.7.234.10:8278/badazhonghe/playlist.m3u8?tid=MC7C4692263546922635&ct=19225&tsum=ffdc7a6397b511103e0df0b92e678790
-八大综合台,http://50.7.234.10:8278/badazhonghe/playlist.m3u8?tid=MCFC9951205299512052&ct=19249&tsum=dc4ca0de5e57c9f4caee0bb4e80c098a
-八大综合台,http://50.7.234.10:8278/badazhonghe/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=42e7966509bfe40dcd38f5b07d50179a
-凤凰卫视,http://php.jdshipin.com:8880/TVOD/iptv.php?id=fhzw
-华视,http://50.7.234.10:8278/ctshd_twn/playlist.m3u8?ct=19226&tid=MAFA1309481213094812&tsum=429f7c40691cdcc6c1fb108dbd11e002
-华视,http://50.7.234.10:8278/ctshd_twn/playlist.m3u8?tid=MAFA1309481213094812&ct=19226&tsum=429f7c40691cdcc6c1fb108dbd11e002
-华视,http://50.7.234.10:8278/ctshd_twn/playlist.m3u8?tid=MD3D4860867448608674&ct=19193&tsum=773d4005ddbc68ed16154cc49ba1fc76
-华视,http://50.7.234.10:8278/ctshd_twn/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=7b3b84a5c2d51d342b01b432389aac57
-华视CH12,http://50.7.234.10:8278/ctshd_twn/playlist.m3u8?tid=m760743cf1f5e&ct=18335&tsum=9b0d2efb292253075aa4ec25cc439b81
-民视,http://50.7.234.10:8278/ftvhd_taiwan/playlist.m3u8?ct=18335&tid=m15b424641a89&tsum=ba82cdbfb8253c45a13df5354e6d0dbc
-民视,http://50.7.234.10:8278/ftvhd_taiwan/playlist.m3u8?tid=m15b424641a89&ct=18335&tsum=ba82cdbfb8253c45a13df5354e6d0dbc
-民视,http://50.7.234.10:8278/ftvhd_taiwan/playlist.m3u8?tid=mc42afe745533&ct=11448811&tsum=8742eae9e34ff529729460b85da292c8
-民视,http://50.7.234.10:8278/ftvhd_taiwan/playlist.m3u8?tid=15141291&ct=17990&tsum=ab93fcdf581cc3f483e1ceede13312ce
-龙华电影台,https://cdn8.163189.xyz/live/lhdy/stream.m3u8
