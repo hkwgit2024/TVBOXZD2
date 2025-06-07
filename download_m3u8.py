@@ -8,7 +8,6 @@ from urllib.parse import urlparse, urljoin
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from concurrent.futures import ThreadPoolExecutor
-import shutil
 import time
 
 # 设置日志
@@ -49,14 +48,6 @@ def save_cache(data, file_path):
     """保存缓存文件"""
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-
-def backup_output():
-    """备份现有的输出文件"""
-    if os.path.exists(OUTPUT_FILE):
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        backup_path = os.path.join(OUTPUT_DIR, f'valid_urls_backup_{timestamp}.txt')
-        shutil.copy(OUTPUT_FILE, backup_path)
-        logger.info(f"Backed up {OUTPUT_FILE} to {backup_path}")
 
 def create_session():
     """创建带重试机制的请求会话"""
@@ -363,7 +354,6 @@ def fetch_playlist_wrapper(args):
 
 def main():
     ensure_output_dir()
-    backup_output()
     urls = fetch_urls()
     if not urls:
         logger.error("No URLs fetched. Exiting.")
@@ -404,9 +394,6 @@ def main():
         
         if valid_count > 0:
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-               
-                
-
                 for category in sorted(classified.keys()):
                     if classified[category]:
                         f.write(f"{category},#genre#\n")
