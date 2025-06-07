@@ -374,7 +374,7 @@ def main():
     
     # Limit the number of M3U playlists to fetch to avoid excessive processing time
     # This also helps manage GitHub API rate limits if many URLs point to GitHub.
-    max_playlists_to_fetch = 50 # Adjusted based on potential long runtime, can be increased if needed
+    max_playlists_to_fetch = 2 # Adjusted based on potential long runtime, can be increased if needed
 
     # Filter out URLs that were recently successful or failed
     filtered_urls = []
