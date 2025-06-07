@@ -1,14 +1,14 @@
 name: Download and Validate M3U8 URLs
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行一次
 
 jobs:
   download-and-validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 330  # 设置 330 分钟超时
+    timeout-minutes: 330 # 设置 330 分钟超时，保持不变
 
     steps:
     - name: Checkout repository
@@ -17,12 +17,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.11' # 保持 Python 3.11
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install requests aiohttp # 添加 aiohttp 依赖
+
+    - name: Install FFmpeg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg # 在 Ubuntu 上安装 FFmpeg
 
     - name: Cache data directory
       uses: actions/cache@v4
@@ -34,8 +39,8 @@ jobs:
 
     - name: Run script
       env:
-        BOT: ${{ secrets.BOT }}
-        REPO_URL: ${{ secrets.REPO_URL }}
+        BOT: ${{ secrets.BOT }} # 使用您已有的 BOT 环境变量
+        REPO_URL: ${{ secrets.REPO_URL }} # 您的 urls.txt 所在的原始 GitHub 仓库 URL
       run: python download_m3u8.py
 
     - name: Upload results
@@ -46,12 +51,13 @@ jobs:
         if-no-files-found: warn
 
     - name: Commit and push results
-      if: always()
+      if: always() # 确保即使前面的步骤失败也会尝试提交
       run: |
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
-        git add data/
-        git commit -m "Update M3U8 results [ci skip]" || echo "No changes to commit"
+        git add data/valid_urls.txt # 只添加更新后的 TXT 文件
+        git add data/failed_cache.json # 添加失效缓存文件
+        git commit -m "Update M3U8 results (TXT format) [ci skip]" || echo "No changes to commit"
         git push origin main
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 用于提交的 token
