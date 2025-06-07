@@ -8,6 +8,7 @@ on:
 jobs:
   download-and-validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 330  # 设置 330 分钟超时
 
     steps:
     - name: Checkout repository
@@ -23,6 +24,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
 
+    - name: Cache data directory
+      uses: actions/cache@v4
+      with:
+        path: data/
+        key: ${{ runner.os }}-data-${{ github.run_id }}
+        restore-keys: |
+          ${{ runner.os }}-data-
+
     - name: Run script
       env:
         BOT: ${{ secrets.BOT }}
@@ -32,5 +41,17 @@ jobs:
     - name: Upload results
       uses: actions/upload-artifact@v4
       with:
-        name: valid-m3u8-urls
-        path: data/valid_urls.m3u
+        name: m3u8-results
+        path: data/
+        if-no-files-found: warn
+
+    - name: Commit and push results
+      if: always()
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add data/
+        git commit -m "Update M3U8 results [ci skip]" || echo "No changes to commit"
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
