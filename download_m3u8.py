@@ -2,13 +2,11 @@ import os
 import asyncio
 import aiohttp
 import logging
-import argparse
 from datetime import datetime
 import re
 from urllib.parse import urlparse, urljoin
+from concurrent.futures import ThreadPoolExecutor
 import signal
-import json
-import math
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -22,9 +20,8 @@ REPO_URL = os.getenv('REPO_URL')
 OUTPUT_DIR = 'data'
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'valid_urls.m3u')
 ERROR_LOG = os.path.join(OUTPUT_DIR, 'error_log.txt')
-TEMP_FILE = os.path.join(OUTPUT_DIR, 'temp_channels.json')
 
-# 信号处理
+# 信号处理，防止脚本卡死
 def handle_shutdown(loop):
     tasks = [task for task in asyncio.all_tasks(loop) if task is not asyncio.current_task()]
     for task in tasks:
@@ -34,14 +31,17 @@ def handle_shutdown(loop):
     loop.close()
 
 def ensure_output_dir():
+    """确保输出目录存在"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     logger.info(f"Output directory ready: {OUTPUT_DIR}")
 
 async def create_session():
-    timeout = aiohttp.ClientTimeout(total=8, connect=5, sock_connect=5)  # 缩短超时
+    """创建带重试机制的异步会话"""
+    timeout = aiohttp.ClientTimeout(total=10, connect=3, sock_connect=3)
     return aiohttp.ClientSession(timeout=timeout)
 
 async def validate_token(session):
+    """验证 GitHub token 是否有效"""
     if not GITHUB_TOKEN:
         logger.error("BOT environment variable is not set.")
         return False
@@ -59,6 +59,7 @@ async def validate_token(session):
         return False
 
 async def fetch_urls(session):
+    """从私有仓库获取 urls.txt"""
     if not REPO_URL:
         logger.error("REPO_URL environment variable is not set.")
         return []
@@ -87,6 +88,7 @@ async def fetch_urls(session):
         return []
 
 def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None):
+    """解析 M3U 内容，提取频道名称、URL 和 group-title 或 EXTGRP"""
     lines = content.splitlines()
     channels = []
     current_extinf = None
@@ -95,7 +97,7 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     stream_count = 0
     m3u_name = None
     is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
-    max_channels = 100  # 降低单文件频道上限
+    max_channels = 100
 
     for line in lines:
         if stream_count >= max_channels:
@@ -156,6 +158,7 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     return channels, m3u_name
 
 async def fetch_m3u_playlist(session, url, playlist_index):
+    """异步获取并解析 M3U 播放列表"""
     try:
         logger.info(f"Fetching playlist {playlist_index + 1}: {url}")
         headers = {'Authorization': f'token {GITHUB_TOKEN}'} if url.startswith(('https://github.com', 'https://raw.githubusercontent.com')) else {}
@@ -179,6 +182,7 @@ async def fetch_m3u_playlist(session, url, playlist_index):
         return []
 
 async def validate_m3u8_url(session, url):
+    """异步验证链接是否可用"""
     if url.startswith('udp://') or 'udp/' in url or url.endswith('.ts'):
         logger.info(f"Skipping validation for UDP or .ts URL: {url}")
         return True
@@ -197,6 +201,7 @@ async def validate_m3u8_url(session, url):
         return False
 
 def classify_channel(channel_name, group_title=None, url=None):
+    """根据 group-title、EXTGRP、频道名称或 URL 推断分类"""
     if group_title:
         translations = {
             'Общие': '综合', 'Новостные': '新闻', 'Спорт': '体育', 'Фильмы': '电影', 'Музыка': '音乐',
@@ -229,79 +234,47 @@ def classify_channel(channel_name, group_title=None, url=None):
             return category
     return '其他频道'
 
-async def process_urls(urls, shard_index, total_shards):
+async def main():
+    ensure_output_dir()
     async with await create_session() as session:
         if not await validate_token(session):
             logger.error("Cannot proceed without a valid token. Exiting.")
-            return []
+            return
 
-        # 分片处理
-        shard_size = math.ceil(len(urls) / total_shards)
-        start_idx = shard_index * shard_size
-        end_idx = min(start_idx + shard_size, len(urls))
-        shard_urls = urls[start_idx:end_idx]
-        logger.info(f"Processing shard {shard_index + 1}/{total_shards}: {len(shard_urls)} URLs")
-
-        all_channels = []
-        semaphore = asyncio.Semaphore(5)  # 降低并发
-
-        async def fetch_with_semaphore(url, index):
-            async with semaphore:
-                return await fetch_m3u_playlist(session, url, index)
-
-        tasks = [fetch_with_semaphore(url, i) for i, url in enumerate(shard_urls)]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                logger.error(f"Error processing URL {shard_urls[i]}: {str(result)}")
-            else:
-                all_channels.extend(result)
-                logger.info(f"Processed {i + 1}/{len(shard_urls)} URLs in shard {shard_index + 1}")
-
-        # 保存中间结果到临时文件
-        with open(TEMP_FILE, 'a', encoding='utf-8') as f:
-            for name, url, group_title in all_channels:
-                json.dump({'name': name, 'url': url, 'group_title': group_title}, f, ensure_ascii=False)
-                f.write('\n')
-
-        return all_channels
-
-async def main():
-    parser = argparse.ArgumentParser(description="Process M3U8 URLs with sharding")
-    parser.add_argument('--shard', type=int, default=0, help="Shard index (0-based)")
-    parser.add_argument('--total-shards', type=int, default=1, help="Total number of shards")
-    args = parser.parse_args()
-
-    ensure_output_dir()
-    async with await create_session() as session:
         urls = await fetch_urls(session)
         if not urls:
             logger.error("No URLs fetched. Exiting.")
             return
 
-        # 分片处理
-        all_channels = await process_urls(urls, args.shard, args.total_shards)
+        all_channels = []
+        max_urls = 10000
+        semaphore = asyncio.Semaphore(10)  # 限制并发请求
 
-        # 合并结果（仅在最后一个分片或单分片时执行）
-        if args.shard == args.total_shards - 1 or args.total_shards == 1:
+        async def fetch_with_semaphore(url, index):
+            async with semaphore:
+                return await fetch_m3u_playlist(session, url, index)
+
+        tasks = [fetch_with_semaphore(url, i) for i, url in enumerate(urls[:max_urls])]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                logger.error(f"Error processing URL {urls[i]}: {str(result)}")
+            else:
+                all_channels.extend(result)
+                logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
+
+        if all_channels:
             unique_channels = []
             seen = set()
-            if os.path.exists(TEMP_FILE):
-                with open(TEMP_FILE, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        try:
-                            channel = json.loads(line.strip())
-                            key = (channel['name'].lower(), channel['url'])
-                            if key not in seen:
-                                seen.add(key)
-                                unique_channels.append((channel['name'], channel['url'], channel['group_title']))
-                        except json.JSONDecodeError:
-                            continue
+            for name, url, group_title in all_channels:
+                key = (name.lower(), url)
+                if key not in seen:
+                    seen.add(key)
+                    unique_channels.append((name, url, group_title))
 
             classified = {}
             valid_count = 0
-            semaphore = asyncio.Semaphore(3)  # 验证时进一步降低并发
-
+            semaphore = asyncio.Semaphore(5)  # 验证时的并发限制
             async def validate_with_semaphore(name, url, group_title):
                 async with semaphore:
                     if await validate_m3u8_url(session, url):
@@ -322,8 +295,8 @@ async def main():
                     logger.info(f"Valid URL: {unique_channels[i][0]}, {unique_channels[i][1]}")
 
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                
-                f.write('# Note: [VOD] indicates Video on Demand streams.\n')
+                f.write('#EXTM3U\n')
+                f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
                 f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
                 for category in sorted(classified.keys()):
                     if classified[category]:
@@ -333,10 +306,8 @@ async def main():
 
             logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
             logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
-
-            # 清理临时文件
-            if os.path.exists(TEMP_FILE):
-                os.remove(TEMP_FILE)
+        else:
+            logger.error("No valid channels found. Exiting.")
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
