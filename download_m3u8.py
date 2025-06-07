@@ -441,7 +441,7 @@ def main():
     all_channels_from_playlists = []
     
     # 限制获取的M3U文件数量，用于测试或资源限制
-    max_playlists_to_fetch = 3 
+    max_playlists_to_fetch = 9999 
     
     # 并发获取M3U播放列表
     logger.info(f"Starting to fetch and parse {min(len(urls_to_fetch), max_playlists_to_fetch)} M3U playlists concurrently...")
