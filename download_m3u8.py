@@ -49,7 +49,6 @@ def parse_m3u_content(content):
         elif line.startswith('#EXTINF'):
             current_extinf = line
         elif line.endswith('.m3u8') and current_extinf:
-            # 提取频道名称（最后一个逗号后的内容）
             try:
                 channel_name = current_extinf.split(',')[-1].strip()
                 if not channel_name:
@@ -59,7 +58,7 @@ def parse_m3u_content(content):
                 logger.warning(f"Invalid #EXTINF format: {current_extinf}")
             current_extinf = None
         else:
-            current_extinf = None  # 重置无效行
+            current_extinf = None
     
     return channels
 
@@ -114,7 +113,6 @@ def generate_m3u_file(channels):
     # 写入 M3U 文件
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         # 写入更新时间
-        current_date"!date": "2025-06-07", "http://example.com/1.m3u8"
         f.write('更新时间,#genre#\n')
         f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
         f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
