@@ -406,8 +406,8 @@ def main():
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                
                 f.write('更新时间,#genre#\n')
-                f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
-                f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
+                f.write(f"{datetime.now().strftime('%Y-%m-%d')},")
+                f.write(f"{datetime.now().strftime('%H:%M:%S')},")
                 f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
                 f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
                 for category in sorted(classified.keys()):
