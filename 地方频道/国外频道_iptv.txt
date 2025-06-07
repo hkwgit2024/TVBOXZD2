@@ -1,16 +1,1 @@
 国外频道,#genre#
-AXN,http://hdtvtw.com/hstvs.php
-华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist1.m3u8
-半岛新闻,http://live-hls-web-aja.getaj.net/AJA/02.m3u8
-华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist0.m3u8
-AXN,http://fastream.xyz:8080/alealejandra/bgZS147/236400
-AXN,http://clubtv.link/jun01/phpcode/lista0.php
-探索亚洲,http://hdtvtw.com/hstvs.php
-AXN,http://pn-tv.xyz:8080/MauricioGonzalez1/BkyHWnsehTA7/14460
-CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
-CBNNews,https://bcovlive-a.akamaihd.net/re8d9f611ee4a490a9bb59e52db91414d/us-east-1/734546207001/playlist.m3u8
-Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
-CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-半岛新闻,https://live-hls-web-aje.getaj.net/AJE/01.m3u8
-AXN,http://home-playtv.com:8080/ArianLatino/EEtduxpDYqNh/439779
-动物星球,http://hdtvtw.com/hstvs.php
