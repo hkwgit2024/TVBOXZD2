@@ -95,7 +95,7 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     stream_count = 0
     m3u_name = None
     is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
-    max_channels = 500  # 降低单文件频道上限
+    max_channels = 100  # 降低单文件频道上限
 
     for line in lines:
         if stream_count >= max_channels:
