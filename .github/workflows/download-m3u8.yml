@@ -1,0 +1,108 @@
+name: Download and Validate M3U8 URLs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  download-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        shard: [0, 1, 2, 3]  # 4 个分片
+      fail-fast: false  # 允许部分分片失败
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install aiohttp
+
+    - name: Cache data directory
+      uses: actions/cache@v4
+      with:
+        path: data/
+        key: ${{ runner.os }}-data-${{ github.run_id }}-${{ matrix.shard }}
+        restore-keys: |
+          ${{ runner.os }}-data-
+
+    - name: Run script
+      env:
+        BOT: ${{ secrets.BOT }}
+        REPO_URL: ${{ secrets.REPO_URL }}
+      run: |
+        python download_m3u8.py --shard ${{ matrix.shard }} --total-shards 4 2>&1 | tee script_output.log
+
+    - name: Upload script logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: script-logs-shard-${{ matrix.shard }}
+        path: script_output.log
+        if-no-files-found: warn
+
+    - name: Upload results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: m3u8-results-shard-${{ matrix.shard }}
+        path: data/
+        if-no-files-found: warn
+
+  merge-results:
+    runs-on: ubuntu-latest
+    needs: download-and-validate
+    if: always()
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download all shard results
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+
+    - name: Merge results
+      run: |
+        mkdir -p data
+        find artifacts/m3u8-results-shard-* -type f -name "*.m3u" -exec cat {} >> data/valid_urls.m3u \;
+        find artifacts/m3u8-results-shard-* -type f -name "*.txt" -exec cat {} >> data/error_log.txt \;
+
+    - name: Commit and push results
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        git add data/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update M3U8 results [ci skip]"
+          git push origin main
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Notify on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { owner, repo } = context.repo;
+          const runId = context.runId;
+          await github.rest.issues.create({
+            owner,
+            repo,
+            title: `Workflow Failure: Run ${runId}`,
+            body: `Workflow failed for run ${runId}. Check logs: https://github.com/${owner}/${repo}/actions/runs/${runId}`
+          });
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
