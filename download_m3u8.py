@@ -372,7 +372,7 @@ def main():
     success_cache = load_cache(SUCCESS_FILE)
     failed_cache = load_cache(FAILED_FILE)
     all_channels = []
-    max_urls = 100
+    max_urls = 3
     
     with ThreadPoolExecutor(max_workers=30) as executor:
         results = executor.map(fetch_playlist_wrapper, [(url, i, success_cache, failed_cache) for i, url in enumerate(urls[:max_urls])])
