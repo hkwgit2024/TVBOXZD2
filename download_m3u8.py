@@ -74,7 +74,7 @@ def validate_token():
     try:
         headers = {'Authorization': f'token {GITHUB_TOKEN}'}
         session = create_session()
-        response = session.get('https://api.github.com/user', headers=headers, timeout=1.5)
+        response = session.get('https://api.github.com/user', headers=headers, timeout=1.2)
         if response.status_code == 200:
             logger.info(f"GitHub token is valid for user: {response.json().get('login')}")
             return True
@@ -129,7 +129,7 @@ def check_url_updated(url, cache):
     try:
         session = create_session()
         headers = {'If-None-Match': cache[url].get('etag', ''), 'If-Modified-Since': cache[url].get('last_modified', '')}
-        response = session.head(url, headers=headers, timeout=1.5)
+        response = session.head(url, headers=headers, timeout=1.2)
         if response.status_code == 304:
             logger.info(f"URL {url} not modified since last run, skipping.")
             return False
@@ -266,7 +266,7 @@ def validate_m3u8_url(url, failed_cache):
         return True
     try:
         session = create_session()
-        response = session.head(url, timeout=1.5, allow_redirects=True)
+        response = session.head(url, timeout=1.2, allow_redirects=True)
         if response.status_code == 200:
             return True
         logger.warning(f"Invalid URL (status {response.status_code}): {url}")
@@ -372,7 +372,7 @@ def main():
     success_cache = load_cache(SUCCESS_FILE)
     failed_cache = load_cache(FAILED_FILE)
     all_channels = []
-    max_urls = 5
+    max_urls = 100
     
     with ThreadPoolExecutor(max_workers=30) as executor:
         results = executor.map(fetch_playlist_wrapper, [(url, i, success_cache, failed_cache) for i, url in enumerate(urls[:max_urls])])
@@ -406,8 +406,6 @@ def main():
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                
                 f.write('更新时间,#genre#\n')
-                f.write(f"{datetime.now().strftime('%Y-%m-%d')},")
-                f.write(f"{datetime.now().strftime('%H:%M:%S')},")
                 f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
                 f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
                 for category in sorted(classified.keys()):
