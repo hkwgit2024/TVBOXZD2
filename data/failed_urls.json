@@ -3174,5 +3174,9 @@
   "http://topfi.ios.internapcdn.net/topfi/live_1/Test/Test.m3u8": {
     "reason": "HTTPConnectionPool(host='topfi.ios.internapcdn.net', port=80): Max retries exceeded with url: /topfi/live_1/Test/Test.m3u8 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x7f8f8c66e0d0>, 'Connection to topfi.ios.internapcdn.net timed out. (connect timeout=5)'))",
     "timestamp": 1749281034.632493
+  },
+  "https://play.accolamedia.id/accola/psj.stream/playlist.m3u8": {
+    "reason": "Status 404",
+    "timestamp": 1749284233.5988605
   }
 }

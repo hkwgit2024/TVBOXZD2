@@ -13,5 +13,15 @@
     "etag": "W/\"eccae52f6eda44b9dae3e7a1013b043e3fc8a306c02da249f00a97604b343cc3\"",
     "last_modified": "",
     "timestamp": 1749280863.5925086
+  },
+  "https://raw.githubusercontent.com/bugsfreeweb/LiveTVCollector/6bcece5060df31aefb18d583053a1a02c4f4d3be/BugsfreeStreams/StreamsTV-ID/psj_tv_7e2d79c8.m3u8": {
+    "etag": "W/\"4bd39f5a7c3ecf9e0235e9c01b1621a01955f68e25fa24ebb7f4ea02ce9e5fbd\"",
+    "last_modified": "",
+    "timestamp": 1749284232.1445513
+  },
+  "https://raw.githubusercontent.com/bugsfreeweb/LiveTVCollector/5591f3da422de83eedfb411da270ec84131c39b1/BugsfreeStreams/StreamsTV-MX/antena_tv_1080p_3d967089.m3u8": {
+    "etag": "W/\"6d1319096c74cf804750bbe775cb54306605a831666ad8fd056600438cf6c82c\"",
+    "last_modified": "",
+    "timestamp": 1749284232.1615362
   }
 }
