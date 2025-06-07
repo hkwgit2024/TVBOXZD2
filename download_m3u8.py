@@ -270,4 +270,161 @@ def validate_m3u8_url(url, failed_cache):
         if response.status_code == 200:
             return True
         logger.warning(f"Invalid URL (status {response.status_code}): {url}")
-        failed_cache[url] = {'
+        failed_cache[url] = {'reason': f'Status {response.status_code}', 'timestamp': time.time()}
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Invalid URL (status {response.status_code}): {url}\n")
+        return False
+    except requests.RequestException as e:
+        logger.warning(f"Failed to validate URL {url}: {str(e)}")
+        failed_cache[url] = {'reason': str(e), 'timestamp': time.time()}
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Failed to validate {url}: {str(e)}\n")
+        return False
+
+def classify_channel(channel_name, group_title=None, url=None):
+    """智能分类，支持非中文翻译，移除音乐和体育"""
+    if group_title:
+        translations = {
+            # 俄文
+            'Общие': '综合',
+            'Новостные': '新闻',
+            'Фильмы': '电影',
+            'Детские': '少儿',
+            'Документальные': '纪录',
+            'Образовательные': '科教',
+            'Развлекательные': '娱乐',
+            'Познавательные': '教育',
+            # 英文
+            'General': '综合',
+            'News': '新闻',
+            'Movies': '电影',
+            'Kids': '少儿',
+            'Documentary': '纪录',
+            'Education': '科教',
+            'Entertainment': '娱乐',
+            'Learning': '教育',
+            # 法文
+            'Général': '综合',
+            'Actualités': '新闻',
+            'Films': '电影',
+            'Enfants': '少儿',
+            'Documentaire': '纪录',
+            'Éducation': '科教',
+            'Divertissement': '娱乐',
+            # 西班牙文
+            'General': '综合',
+            'Noticias': '新闻',
+            'Películas': '电影',
+            'Niños': '少儿',
+            'Documental': '纪录',
+            'Educación': '科教',
+            'Entretenimiento': '娱乐',
+            # 其他语言
+            'أخبار': '新闻',  # 阿拉伯文
+            '映画': '电影',    # 日文
+        }
+        if any(keyword in group_title.lower() for keyword in ['music', 'музыка', 'musique', 'música', 'sport', 'спорт', 'deportes']):
+            return '其他频道'
+        return translations.get(group_title, '其他频道')
+    
+    categories = {
+        '综合': ['综合', 'cctv-1', 'cctv-2', 'general', 'первый канал', 'россия', 'нтв', 'твц', 'рен тв', 'ucomist', 'hd'],
+        '新闻': ['news', 'cnn', 'bbc', 'cctv-13', 'abcnews', 'известия', 'россия 24', 'рбк', 'euronews', 'настоящее время'],
+        '电影': ['movie', 'cinema', 'film', 'cctv-6', 'cinemax', 'hbo'],
+        '少儿': ['kids', 'children', 'cctv-14', '3abn kids', 'cartoon', 'disney'],
+        '科教': ['science', 'education', 'cctv-10', 'discovery', 'national geographic'],
+        '戏曲': ['opera', 'cctv-11', 'theater'],
+        '社会与法': ['law', 'cctv-12', 'court', 'justice'],
+        '国防军事': ['military', 'cctv-7', 'army', 'defense'],
+        '纪录': ['documentary', 'cctv-9', 'docu', 'history'],
+        '国外频道': ['persian', 'french', 'international', 'abtvusa', 'rtvi', 'соловиёвlive', '3abn french', 'al jazeera'],
+        '地方频道': ['sacramento', 'local', 'cablecast', 'access sacramento', 'city'],
+        '流媒体': ['stream', 'kwikmotion', '30a-tv', 'uplynk', 'jsrdn', 'darcizzle', 'beachy', 'sidewalks'],
+        '娱乐': ['entertainment', 'развлекательные', 'fun', 'comedy', 'variety'],
+        '教育': ['education', 'познавательные', 'learning', 'study', 'course'],
+        '其他频道': []
+    }
+    
+    channel_name_lower = channel_name.lower()
+    url_lower = url.lower() if url else ''
+    if any(keyword in channel_name_lower for keyword in ['music', 'mtv', 'praise_him', '30a music', 'melody', 'sport', 'espn', 'nba', 'football', 'tennis']) or \
+       any(keyword in url_lower for keyword in ['music', 'sport']):
+        return '其他频道'
+    
+    for category, keywords in categories.items():
+        if any(keyword in channel_name_lower for keyword in keywords) or any(keyword in url_lower for keyword in keywords):
+            return category
+    return '其他频道'
+
+def fetch_playlist_wrapper(args):
+    """线程池包装函数"""
+    url, index, success_cache, failed_cache = args
+    return fetch_m3u_playlist(url, index, success_cache, failed_cache)
+
+def main():
+    ensure_output_dir()
+    backup_output()
+    urls = fetch_urls()
+    if not urls:
+        logger.error("No URLs fetched. Exiting.")
+        return
+    
+    success_cache = load_cache(SUCCESS_FILE)
+    failed_cache = load_cache(FAILED_FILE)
+    all_channels = []
+    max_urls = 100
+    
+    with ThreadPoolExecutor(max_workers=30) as executor:
+        results = executor.map(fetch_playlist_wrapper, [(url, i, success_cache, failed_cache) for i, url in enumerate(urls[:max_urls])])
+        for i, channels in enumerate(results):
+            all_channels.extend(channels)
+            logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
+    
+    if all_channels:
+        unique_channels = []
+        seen = set()
+        for name, url, group_title in all_channels:
+            key = (name.lower(), url)
+            if key not in seen:
+                seen.add(key)
+                unique_channels.append((name, url, group_title))
+        
+        classified = {}
+        valid_count = 0
+        for name, url, group_title in unique_channels:
+            if validate_m3u8_url(url, failed_cache):
+                category = classify_channel(name, group_title, url)
+                if category not in classified:
+                    classified[category] = []
+                classified[category].append((name, url))
+                valid_count += 1
+                logger.info(f"Valid URL: {name}, {url}, Category: {category}")
+            else:
+                logger.warning(f"Invalid URL: {name}, {url}")
+        
+        if valid_count > 0:
+            with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+               
+                f.write('更新时间,#genre#\n')
+                f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
+                f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
+                f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
+                f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
+                for category in sorted(classified.keys()):
+                    if classified[category]:
+                        f.write(f"{category},#genre#\n")
+                        for name, url in classified[category]:
+                            f.write(f"{name},{url}\n")
+            
+            logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
+            logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
+        else:
+            logger.error("No valid channels found, retaining previous output file.")
+        
+        save_cache(success_cache, SUCCESS_FILE)
+        save_cache(failed_cache, FAILED_FILE)
+    else:
+        logger.error("No valid channels found, retaining previous output file.")
+
+if __name__ == "__main__":
+    main()
