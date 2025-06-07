@@ -1,12 +1,12 @@
 import os
-import requests
+import asyncio
+import aiohttp
 import logging
 from datetime import datetime
 import re
 from urllib.parse import urlparse, urljoin
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 from concurrent.futures import ThreadPoolExecutor
+import signal
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,71 +21,67 @@ OUTPUT_DIR = 'data'
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'valid_urls.m3u')
 ERROR_LOG = os.path.join(OUTPUT_DIR, 'error_log.txt')
 
+# 信号处理，防止脚本卡死
+def handle_shutdown(loop):
+    tasks = [task for task in asyncio.all_tasks(loop) if task is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+    loop.stop()
+    loop.run_until_complete(loop.shutdown_asyncgens())
+    loop.close()
+
 def ensure_output_dir():
     """确保输出目录存在"""
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-        logger.info(f"Created output directory: {OUTPUT_DIR}")
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    logger.info(f"Output directory ready: {OUTPUT_DIR}")
 
-def create_session():
-    """创建带重试机制的请求会话"""
-    session = requests.Session()
-    retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
-    session.mount('http://', HTTPAdapter(max_retries=retries))
-    session.mount('https://', HTTPAdapter(max_retries=retries))
-    return session
+async def create_session():
+    """创建带重试机制的异步会话"""
+    timeout = aiohttp.ClientTimeout(total=10, connect=3, sock_connect=3)
+    return aiohttp.ClientSession(timeout=timeout)
 
-def validate_token():
+async def validate_token(session):
     """验证 GitHub token 是否有效"""
     if not GITHUB_TOKEN:
-        logger.error("BOT environment variable is not set. Please set a valid GitHub token with 'repo' scope.")
+        logger.error("BOT environment variable is not set.")
         return False
     try:
         headers = {'Authorization': f'token {GITHUB_TOKEN}'}
-        session = create_session()
-        response = session.get('https://api.github.com/user', headers=headers, timeout=3)
-        if response.status_code == 200:
-            logger.info(f"GitHub token is valid for user: {response.json().get('login')}")
-            return True
-        else:
-            logger.error(f"Invalid GitHub token (status {response.status_code}): {response.text}")
-            return False
-    except requests.RequestException as e:
+        async with session.get('https://api.github.com/user', headers=headers) as response:
+            if response.status == 200:
+                logger.info(f"GitHub token is valid for user: {(await response.json()).get('login')}")
+                return True
+            else:
+                logger.error(f"Invalid GitHub token (status {response.status}): {await response.text()}")
+                return False
+    except Exception as e:
         logger.error(f"Failed to validate GitHub token: {str(e)}")
         return False
 
-def fetch_urls():
+async def fetch_urls(session):
     """从私有仓库获取 urls.txt"""
-    if not validate_token():
-        logger.error("Cannot proceed without a valid token. Exiting.")
-        return []
     if not REPO_URL:
-        logger.error("REPO_URL environment variable is not set. Please set the correct URL for urls.txt.")
+        logger.error("REPO_URL environment variable is not set.")
         return []
-    
     parsed_url = urlparse(REPO_URL)
     if parsed_url.netloc == 'github.com':
         path_parts = parsed_url.path.split('/raw/')
         if len(path_parts) != 2:
-            logger.error(f"Invalid REPO_URL format: {REPO_URL}. Expected format: https://github.com/owner/repo/raw/branch/path/to/urls.txt")
+            logger.error(f"Invalid REPO_URL format: {REPO_URL}")
             return []
         raw_url = f"https://raw.githubusercontent.com{path_parts[0]}/{path_parts[1]}"
     else:
         raw_url = REPO_URL
-    
+
     headers = {'Authorization': f'token {GITHUB_TOKEN}'}
     try:
         logger.info(f"Fetching urls.txt from {raw_url}")
-        session = create_session()
-        response = session.get(raw_url, headers=headers, timeout=10)
-        response.raise_for_status()
-        urls = [line.strip() for line in response.text.splitlines() if line.strip()]
-        if not urls:
-            logger.warning(f"urls.txt is empty at {raw_url}. Check the file content.")
-        else:
+        async with session.get(raw_url, headers=headers) as response:
+            response.raise_for_status()
+            urls = [line.strip() for line in (await response.text()).splitlines() if line.strip()]
             logger.info(f"Fetched {len(urls)} URLs from urls.txt")
-        return urls
-    except requests.RequestException as e:
+            return urls
+    except Exception as e:
         logger.error(f"Failed to fetch urls.txt from {raw_url}: {str(e)}")
         with open(ERROR_LOG, 'a', encoding='utf-8') as f:
             f.write(f"Failed to fetch {raw_url}: {str(e)}\n")
@@ -101,8 +97,8 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     stream_count = 0
     m3u_name = None
     is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
-    max_channels = 1000  # 限制每个 M3U 文件的频道数量
-    
+    max_channels = 1000
+
     for line in lines:
         if stream_count >= max_channels:
             logger.info(f"Reached max channels ({max_channels}) for playlist {playlist_index + 1}")
@@ -150,63 +146,55 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
                     group_title = group_title.group(1) if group_title else current_extgrp or m3u_name
                 else:
                     continue
-                
+
                 stream_url = urljoin(base_url, line) if base_url and not line.startswith(('http://', 'https://', 'udp://')) else line
                 channels.append((channel_name, stream_url, group_title))
                 stream_count += 1
-            except IndexError:
-                logger.warning(f"Invalid format: {current_extinf or current_stream_inf}")
+            except Exception as e:
+                logger.warning(f"Invalid format: {current_extinf or current_stream_inf}, Error: {str(e)}")
             current_extinf = None
             current_stream_inf = None
             current_extgrp = None
-        else:
-            current_extinf = None
-            current_stream_inf = None
-            current_extgrp = None
-    
     return channels, m3u_name
 
-def fetch_m3u_playlist(url, playlist_index):
-    """获取并解析 M3U 播放列表"""
+async def fetch_m3u_playlist(session, url, playlist_index):
+    """异步获取并解析 M3U 播放列表"""
     try:
         logger.info(f"Fetching playlist {playlist_index + 1}: {url}")
-        session = create_session()
         headers = {'Authorization': f'token {GITHUB_TOKEN}'} if url.startswith(('https://github.com', 'https://raw.githubusercontent.com')) else {}
-        response = session.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        base_url = url.rsplit('/', 1)[0] + '/'
-        channels, m3u_name = parse_m3u_content(response.text, playlist_index, base_url, url.split('/')[-1])
-        
-        # 检查加密密钥（仅记录，不验证）
-        key_match = re.search(r'#EXT-X-KEY:METHOD=AES-128,URI="([^"]*)"', response.text)
-        if key_match:
-            logger.info(f"Found encryption key for playlist {url}: {key_match.group(1)}")
-            for i, (name, stream_url, group_title) in enumerate(channels):
-                channels[i] = (name + ' [Unverified]', stream_url, group_title)
-        
-        logger.info(f"Fetched {len(channels)} channels from {url}")
-        return channels
-    except requests.RequestException as e:
+        async with session.get(url, headers=headers) as response:
+            response.raise_for_status()
+            base_url = url.rsplit('/', 1)[0] + '/'
+            content = await response.text()
+            channels, m3u_name = parse_m3u_content(content, playlist_index, base_url, url.split('/')[-1])
+
+            key_match = re.search(r'#EXT-X-KEY:METHOD=AES-128,URI="([^"]*)"', content)
+            if key_match:
+                logger.info(f"Found encryption key for playlist {url}: {key_match.group(1)}")
+                channels = [(name + ' [Unverified]', stream_url, group_title) for name, stream_url, group_title in channels]
+
+            logger.info(f"Fetched {len(channels)} channels from {url}")
+            return channels
+    except Exception as e:
         logger.error(f"Failed to fetch playlist {url}: {str(e)}")
         with open(ERROR_LOG, 'a', encoding='utf-8') as f:
             f.write(f"Failed to fetch {url}: {str(e)}\n")
         return []
 
-def validate_m3u8_url(url):
-    """验证链接是否可用"""
+async def validate_m3u8_url(session, url):
+    """异步验证链接是否可用"""
     if url.startswith('udp://') or 'udp/' in url or url.endswith('.ts'):
         logger.info(f"Skipping validation for UDP or .ts URL: {url}")
         return True
     try:
-        session = create_session()
-        response = session.head(url, timeout=3, allow_redirects=True)
-        if response.status_code == 200:
-            return True
-        logger.warning(f"Invalid URL (status {response.status_code}): {url}")
-        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
-            f.write(f"Invalid URL (status {response.status_code}): {url}\n")
-        return False
-    except requests.RequestException as e:
+        async with session.head(url, allow_redirects=True) as response:
+            if response.status == 200:
+                return True
+            logger.warning(f"Invalid URL (status {response.status}): {url}")
+            with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+                f.write(f"Invalid URL (status {response.status}): {url}\n")
+            return False
+    except Exception as e:
         logger.warning(f"Failed to validate URL {url}: {str(e)}")
         with open(ERROR_LOG, 'a', encoding='utf-8') as f:
             f.write(f"Failed to validate {url}: {str(e)}\n")
@@ -216,16 +204,8 @@ def classify_channel(channel_name, group_title=None, url=None):
     """根据 group-title、EXTGRP、频道名称或 URL 推断分类"""
     if group_title:
         translations = {
-            'Общие': '综合',
-            'Новостные': '新闻',
-            'Спорт': '体育',
-            'Фильмы': '电影',
-            'Музыка': '音乐',
-            'Детские': '少儿',
-            'Документальные': '纪录',
-            'Образовательные': '科教',
-            'Развлекательные': '娱乐',
-            'Познавательные': '教育'
+            'Общие': '综合', 'Новостные': '新闻', 'Спорт': '体育', 'Фильмы': '电影', 'Музыка': '音乐',
+            'Детские': '少儿', 'Документальные': '纪录', 'Образовательные': '科教', 'Развлекательные': '娱乐', 'Познавательные': '教育'
         }
         return translations.get(group_title, group_title)
     categories = {
@@ -254,62 +234,89 @@ def classify_channel(channel_name, group_title=None, url=None):
             return category
     return '其他频道'
 
-def fetch_playlist_wrapper(args):
-    """线程池包装函数"""
-    url, index = args
-    return fetch_m3u_playlist(url, index)
-
-def main():
+async def main():
     ensure_output_dir()
-    urls = fetch_urls()
-    if not urls:
-        logger.error("No URLs fetched. Exiting.")
-        return
-    
-    all_channels = []
-    max_urls = 10000  # 保持 100 个 URL，优化后可增加
-    with ThreadPoolExecutor(max_workers=20) as executor:
-        results = executor.map(fetch_playlist_wrapper, [(url, i) for i, url in enumerate(urls[:max_urls])])
-        for i, channels in enumerate(results):
-            all_channels.extend(channels)
-            logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
-    
-    if all_channels:
-        unique_channels = []
-        seen = set()
-        for name, url, group_title in all_channels:
-            key = (name.lower(), url)
-            if key not in seen:
-                seen.add(key)
-                unique_channels.append((name, url, group_title))
-        
-        classified = {}
-        valid_count = 0
-        for name, url, group_title in unique_channels:
-            if validate_m3u8_url(url):
-                category = classify_channel(name, group_title, url)
-                if category not in classified:
-                    classified[category] = []
-                classified[category].append((name, url))
-                valid_count += 1
-                logger.info(f"Valid URL: {name}, {url}, Category: {category}")
-            else:
-                logger.warning(f"Invalid URL: {name}, {url}")
-        
-        with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    async with await create_session() as session:
+        if not await validate_token(session):
+            logger.error("Cannot proceed without a valid token. Exiting.")
+            return
 
-            f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
-            f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
-            for category in sorted(classified.keys()):
-                if classified[category]:
-                    f.write(f"{category},#genre#\n")
-                    for name, url in classified[category]:
-                        f.write(f"{name},{url}\n")
-        
-        logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
-        logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
-    else:
-        logger.error("No valid channels found. Exiting.")
+        urls = await fetch_urls(session)
+        if not urls:
+            logger.error("No URLs fetched. Exiting.")
+            return
+
+        all_channels = []
+        max_urls = 10000
+        semaphore = asyncio.Semaphore(10)  # 限制并发请求
+
+        async def fetch_with_semaphore(url, index):
+            async with semaphore:
+                return await fetch_m3u_playlist(session, url, index)
+
+        tasks = [fetch_with_semaphore(url, i) for i, url in enumerate(urls[:max_urls])]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                logger.error(f"Error processing URL {urls[i]}: {str(result)}")
+            else:
+                all_channels.extend(result)
+                logger.info(f"Processed {i + 1}/{min(len(urls), max_urls)} URLs")
+
+        if all_channels:
+            unique_channels = []
+            seen = set()
+            for name, url, group_title in all_channels:
+                key = (name.lower(), url)
+                if key not in seen:
+                    seen.add(key)
+                    unique_channels.append((name, url, group_title))
+
+            classified = {}
+            valid_count = 0
+            semaphore = asyncio.Semaphore(5)  # 验证时的并发限制
+            async def validate_with_semaphore(name, url, group_title):
+                async with semaphore:
+                    if await validate_m3u8_url(session, url):
+                        category = classify_channel(name, group_title, url)
+                        if category not in classified:
+                            classified[category] = []
+                        classified[category].append((name, url))
+                        return True
+                    return False
+
+            tasks = [validate_with_semaphore(name, url, group_title) for name, url, group_title in unique_channels]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for i, result in enumerate(results):
+                if isinstance(result, Exception):
+                    logger.warning(f"Error validating {unique_channels[i][1]}: {str(result)}")
+                elif result:
+                    valid_count += 1
+                    logger.info(f"Valid URL: {unique_channels[i][0]}, {unique_channels[i][1]}")
+
+            with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+                f.write('#EXTM3U\n')
+                f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
+                f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
+                for category in sorted(classified.keys()):
+                    if classified[category]:
+                        f.write(f"{category},#genre#\n")
+                        for name, url in classified[category]:
+                            f.write(f"{name},{url}\n")
+
+            logger.info(f"Saved {valid_count} valid URLs to {OUTPUT_FILE}")
+            logger.info(f"Categories found: {', '.join(sorted(classified.keys()))}")
+        else:
+            logger.error("No valid channels found. Exiting.")
 
 if __name__ == "__main__":
-    main()
+    loop = asyncio.get_event_loop()
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(sig, lambda: handle_shutdown(loop))
+    try:
+        loop.run_until_complete(main())
+    except KeyboardInterrupt:
+        logger.info("Script interrupted by user")
+        handle_shutdown(loop)
+    finally:
+        loop.close()
