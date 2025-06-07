@@ -3,7 +3,7 @@ import requests
 import logging
 from datetime import datetime
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -50,7 +50,6 @@ def fetch_urls():
         logger.error("REPO_URL environment variable is not set. Please set the correct URL for urls.txt.")
         return []
     
-    # 转换为 raw.githubusercontent.com 格式
     parsed_url = urlparse(REPO_URL)
     if parsed_url.netloc == 'github.com':
         path_parts = parsed_url.path.split('/raw/')
@@ -76,14 +75,15 @@ def fetch_urls():
         logger.error(f"Failed to fetch urls.txt from {raw_url}: {str(e)}")
         logger.error(f"Response headers: {response.headers if 'response' in locals() else 'N/A'}")
         logger.error(f"Debug info: Repository host={parsed_url.netloc}, path={parsed_url.path}")
-        logger.error("Please verify: 1) REPO_URL points to a valid raw file (e.g., https://raw.githubusercontent.com/.../urls.txt), 2) BOT token has 'repo' scope, 3) urls.txt exists in the repository.")
+        logger.error("Please verify: 1) REPO_URL points to a valid raw file (e.g., https://raw.githubusercontent.com/.../urls.txt), 2) BOT token has 'repo' scope, 3) urls.txt exists.")
         return []
 
-def parse_m3u_content(content):
+def parse_m3u_content(content, playlist_index, base_url=None):
     """解析 M3U 内容，提取频道名称、URL 和 group-title"""
     lines = content.splitlines()
     channels = []
     current_extinf = None
+    stream_count = 0
     
     for line in lines:
         line = line.strip()
@@ -91,37 +91,69 @@ def parse_m3u_content(content):
             continue
         elif line.startswith('#EXTINF'):
             current_extinf = line
-        elif line.endswith('.m3u8') and current_extinf:
+        elif line.startswith('#EXT-X-STREAM-INF'):
+            current_stream_inf = line
+        elif (line.endswith('.m3u8') or line.endswith('.ve') or line.startswith('http://') or line.startswith('udp://')) and (current_extinf or current_stream_inf):
             try:
-                channel_name = current_extinf.split(',')[-1].strip()
-                if not channel_name:
-                    channel_name = 'Unknown Channel'
-                group_title = re.search(r'group-title="([^"]*)"', current_extinf)
-                group_title = group_title.group(1) if group_title else None
-                channels.append((channel_name, line, group_title))
+                if current_extinf:
+                    channel_name = current_extinf.split(',')[-1].strip() if ',' in current_extinf else f"Stream_{playlist_index}_{stream_count}"
+                    if not channel_name:
+                        channel_name = f"Stream_{playlist_index}_{stream_count}"
+                    group_title = re.search(r'group-title="([^"]*)"', current_extinf)
+                    group_title = group_title.group(1) if group_title else None
+                else:  # #EXT-X-STREAM-INF
+                    program_id = re.search(r'PROGRAM-ID=(\d+)', current_stream_inf)
+                    channel_name = f"Stream_{playlist_index}_{stream_count}_{program_id.group(1) if program_id else 'Unknown'}"
+                    group_title = re.search(r'group-title="([^"]*)"', current_stream_inf)
+                    group_title = group_title.group(1) if group_title else None
+                
+                # 处理相对 URL
+                stream_url = urljoin(base_url, line) if base_url and not line.startswith(('http://', 'https://', 'udp://')) else line
+                channels.append((channel_name, stream_url, group_title))
+                stream_count += 1
             except IndexError:
-                logger.warning(f"Invalid #EXTINF format: {current_extinf}")
+                logger.warning(f"Invalid format: {current_extinf or current_stream_inf}")
             current_extinf = None
+            current_stream_inf = None
         else:
             current_extinf = None
+            current_stream_inf = None
     
     return channels
 
-def fetch_m3u_playlist(url):
-    """获取并解析 M3U 播放列表"""
+def fetch_m3u_playlist(url, playlist_index):
+    """获取并解析 M3U 播放列表，处理变体流"""
     try:
         logger.info(f"Fetching playlist: {url}")
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, headers={'Authorization': f'token {GITHUB_TOKEN}'}, timeout=10)
         response.raise_for_status()
-        channels = parse_m3u_content(response.text)
+        base_url = url.rsplit('/', 1)[0] + '/'  # 用于解析相对 URL
+        channels = parse_m3u_content(response.text, playlist_index, base_url)
         logger.info(f"Fetched {len(channels)} channels from {url}")
+        
+        # 处理变体流（#EXT-X-STREAM-INF 指向的 .m3u8）
+        variant_channels = []
+        for name, stream_url, group_title in channels:
+            if stream_url.endswith('.m3u8'):
+                try:
+                    logger.info(f"Fetching variant playlist: {stream_url}")
+                    variant_response = requests.get(stream_url, timeout=10)
+                    variant_response.raise_for_status()
+                    variant_channels.extend(parse_m3u_content(variant_response.text, playlist_index, stream_url.rsplit('/', 1)[0] + '/'))
+                except requests.RequestException as e:
+                    logger.warning(f"Failed to fetch variant playlist {stream_url}: {str(e)}")
+        channels.extend(variant_channels)
+        
         return channels
     except requests.RequestException as e:
         logger.error(f"Failed to fetch playlist {url}: {str(e)}")
         return []
 
 def validate_m3u8_url(url):
-    """验证 .m3u8 链接是否可用"""
+    """验证链接是否可用"""
+    if url.startswith('udp://') or 'udp/' in url:
+        logger.info(f"Skipping validation for UDP URL: {url}")
+        return True
     try:
         response = requests.head(url, timeout=5, allow_redirects=True)
         if response.status_code == 200:
@@ -137,18 +169,26 @@ def classify_channel(channel_name, group_title=None):
     if group_title:
         return group_title
     categories = {
-        '新闻': ['news', 'cnn', 'bbc'],
-        '体育': ['sport', 'espn', 'nba'],
-        '电影': ['movie', 'cinema', 'film'],
-        '音乐': ['music', 'mtv'],
-        '国外频道': ['persian', 'french', 'kids', 'international'],
-        '卫视频道': []
+        '综合': ['综合', 'cctv-1', 'cctv-2', 'general'],
+        '体育': ['sport', 'espn', 'nba', 'cctv-5'],
+        '电影': ['movie', 'cinema', 'film', 'cctv-6'],
+        '音乐': ['music', 'mtv', 'cctv-15'],
+        '新闻': ['news', 'cnn', 'bbc', 'cctv-13'],
+        '少儿': ['kids', 'children', 'cctv-14'],
+        '科教': ['science', 'education', 'cctv-10'],
+        '戏曲': ['opera', 'cctv-11'],
+        '社会与法': ['law', 'cctv-12'],
+        '国防军事': ['military', 'cctv-7'],
+        '纪录': ['documentary', 'cctv-9'],
+        '国外频道': ['persian', 'french', 'international'],
+        '流媒体': ['stream', 'kwikmotion'],
+        '其他频道': []
     }
     channel_name_lower = channel_name.lower()
     for category, keywords in categories.items():
         if any(keyword in channel_name_lower for keyword in keywords):
             return category
-    return '卫视频道'
+    return '其他频道'
 
 def generate_m3u_file(channels):
     """生成可用直播源的 .m3u 文件，符合指定格式"""
@@ -191,8 +231,8 @@ def main():
         return
     
     all_channels = []
-    for url in urls:
-        channels = fetch_m3u_playlist(url)
+    for i, url in enumerate(urls):
+        channels = fetch_m3u_playlist(url, i)
         all_channels.extend(channels)
     
     if all_channels:
