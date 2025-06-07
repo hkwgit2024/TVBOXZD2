@@ -91,11 +91,12 @@ def fetch_urls():
         return []
 
 def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None):
-    """解析 M3U 内容，提取频道名称、URL 和 group-title"""
+    """解析 M3U 内容，提取频道名称、URL 和 group-title 或 EXTGRP"""
     lines = content.splitlines()
     channels = []
     current_extinf = None
     current_stream_inf = None
+    current_extgrp = None
     stream_count = 0
     m3u_name = None
     
@@ -104,7 +105,6 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
         if not line:
             continue
         if line.startswith('#EXTM3U'):
-            # 提取播放列表名称
             name_match = re.search(r'name="([^"]*)"', line)
             m3u_name = name_match.group(1) if name_match else playlist_name
             continue
@@ -114,19 +114,31 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
         elif line.startswith('#EXT-X-STREAM-INF'):
             current_stream_inf = line
             current_extinf = None
-        elif (line.endswith(('.m3u8', '.ve')) or line.startswith(('http://', 'https://', 'udp://'))):
+        elif line.startswith('#EXTGRP'):
+            current_extgrp = line.replace('#EXTGRP:', '').strip()
+        elif line.startswith('频道,#genre#'):
+            # 处理自定义格式
+            try:
+                channel_name, url = line.split(',', 1)
+                channel_name = channel_name.replace('频道', '').strip()
+                channels.append((channel_name, url, '自定义'))
+                stream_count += 1
+            except ValueError:
+                logger.warning(f"Invalid custom format: {line}")
+            continue
+        elif (line.endswith(('.m3u8', '.ve', '.ts')) or line.startswith(('http://', 'https://', 'udp://'))):
             try:
                 if current_extinf:
                     channel_name = current_extinf.split(',')[-1].strip() if ',' in current_extinf else f"Stream_{playlist_index}_{stream_count}"
                     if not channel_name:
                         channel_name = f"Stream_{playlist_index}_{stream_count}"
                     group_title = re.search(r'group-title="([^"]*)"', current_extinf)
-                    group_title = group_title.group(1) if group_title else None
+                    group_title = group_title.group(1) if group_title else current_extgrp
                 elif current_stream_inf:
                     program_id = re.search(r'PROGRAM-ID=(\d+)', current_stream_inf)
                     channel_name = f"Stream_{playlist_index}_{stream_count}_{program_id.group(1) if program_id else 'Unknown'}"
                     group_title = re.search(r'group-title="([^"]*)"', current_stream_inf)
-                    group_title = group_title.group(1) if group_title else m3u_name
+                    group_title = group_title.group(1) if group_title else current_extgrp or m3u_name
                 else:
                     continue
                 
@@ -137,9 +149,11 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
                 logger.warning(f"Invalid format: {current_extinf or current_stream_inf}")
             current_extinf = None
             current_stream_inf = None
+            current_extgrp = None
         else:
             current_extinf = None
             current_stream_inf = None
+            current_extgrp = None
     
     return channels, m3u_name
 
@@ -161,8 +175,8 @@ def fetch_m3u_playlist(url, playlist_index):
 
 def validate_m3u8_url(url):
     """验证链接是否可用"""
-    if url.startswith('udp://') or 'udp/' in url:
-        logger.info(f"Skipping validation for UDP URL: {url}")
+    if url.startswith('udp://') or 'udp/' in url or url.endswith('.ts'):
+        logger.info(f"Skipping validation for UDP or .ts URL: {url}")
         return True
     try:
         session = create_session()
@@ -176,22 +190,33 @@ def validate_m3u8_url(url):
         return False
 
 def classify_channel(channel_name, group_title=None, url=None):
-    """根据 group-title、频道名称或 URL 推断分类"""
+    """根据 group-title、EXTGRP、频道名称或 URL 推断分类"""
     if group_title:
-        return group_title
+        # 翻译俄文分类
+        translations = {
+            'Общие': '综合',
+            'Новостные': '新闻',
+            'Спорт': '体育',
+            'Фильмы': '电影',
+            'Музыка': '音乐',
+            'Детские': '少儿',
+            'Документальные': '纪录',
+            'Образовательные': '科教'
+        }
+        return translations.get(group_title, group_title)
     categories = {
-        '综合': ['综合', 'cctv-1', 'cctv-2', 'general'],
+        '综合': ['综合', 'cctv-1', 'cctv-2', 'general', 'первый канал', 'россия', 'нтв', 'твц', 'рен тв'],
         '体育': ['sport', 'espn', 'nba', 'cctv-5'],
         '电影': ['movie', 'cinema', 'film', 'cctv-6', 'cinemax'],
         '音乐': ['music', 'mtv', 'cctv-15', 'praise_him'],
-        '新闻': ['news', 'cnn', 'bbc', 'cctv-13', 'abcnews'],
+        '新闻': ['news', 'cnn', 'bbc', 'cctv-13', 'abcnews', 'известия', 'россия 24', 'рбк', 'euronews', 'настоящее время'],
         '少儿': ['kids', 'children', 'cctv-14'],
         '科教': ['science', 'education', 'cctv-10'],
         '戏曲': ['opera', 'cctv-11'],
         '社会与法': ['law', 'cctv-12'],
         '国防军事': ['military', 'cctv-7'],
         '纪录': ['documentary', 'cctv-9'],
-        '国外频道': ['persian', 'french', 'international', 'abtvusa'],
+        '国外频道': ['persian', 'french', 'international', 'abtvusa', 'rtvi', 'соловиёвlive'],
         '地方频道': ['sacramento', 'local', 'cablecast'],
         '流媒体': ['stream', 'kwikmotion', '30a-tv', 'uplynk', 'jsrdn'],
         '其他频道': []
@@ -247,7 +272,7 @@ def main():
         return
     
     all_channels = []
-    max_urls = 10000  # 限制处理的最大 URL 数量，防止超时
+    max_urls = 100  # 限制处理的最大 URL 数量
     for i, url in enumerate(urls[:max_urls]):
         channels = fetch_m3u_playlist(url, i)
         all_channels.extend(channels)
