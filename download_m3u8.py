@@ -405,9 +405,8 @@ def main():
         if valid_count > 0:
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                
-                f.write('更新时间,#genre#\n')
-                f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
-                f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
+                
+
                 for category in sorted(classified.keys()):
                     if classified[category]:
                         f.write(f"{category},#genre#\n")
