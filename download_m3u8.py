@@ -30,7 +30,7 @@ def ensure_output_dir():
 def create_session():
     """创建带重试机制的请求会话"""
     session = requests.Session()
-    retries = Retry(total=5, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+    retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
     session.mount('http://', HTTPAdapter(max_retries=retries))
     session.mount('https://', HTTPAdapter(max_retries=retries))
     return session
@@ -43,9 +43,9 @@ def validate_token():
     try:
         headers = {'Authorization': f'token {GITHUB_TOKEN}'}
         session = create_session()
-        response = session.get('https://api.github.com/user', headers=headers, timeout=5)
+        response = session.get('https://api.github.com/user', headers=headers, timeout=3)
         if response.status_code == 200:
-            logger.info(f"GitHub token is valid for user: {response-jejson().get('login')}")
+            logger.info(f"GitHub token is valid for user: {response.json().get('login')}")
             return True
         else:
             logger.error(f"Invalid GitHub token (status {response.status_code}): {response.text}")
@@ -87,9 +87,8 @@ def fetch_urls():
         return urls
     except requests.RequestException as e:
         logger.error(f"Failed to fetch urls.txt from {raw_url}: {str(e)}")
-        logger.error(f"Response headers: {response.headers if 'response' in locals() else 'N/A'}")
-        logger.error(f"Debug info: Repository host={parsed_url.netloc}, path={parsed_url.path}")
-        logger.error("Please verify: 1) REPO_URL points to a valid raw file, 2) BOT token has 'repo' scope, 3) urls.txt exists.")
+        with open(ERROR_LOG, 'a', encoding='utf-8') as f:
+            f.write(f"Failed to fetch {raw_url}: {str(e)}\n")
         return []
 
 def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None):
@@ -102,8 +101,12 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     stream_count = 0
     m3u_name = None
     is_vod = '#EXT-X-PLAYLIST-TYPE:VOD' in content
+    max_channels = 100  # 限制每个 M3U 文件的频道数量
     
     for line in lines:
+        if stream_count >= max_channels:
+            logger.info(f"Reached max channels ({max_channels}) for playlist {playlist_index + 1}")
+            break
         line = line.strip()
         if not line:
             continue
@@ -163,19 +166,6 @@ def parse_m3u_content(content, playlist_index, base_url=None, playlist_name=None
     
     return channels, m3u_name
 
-def validate_key_url(key_url, base_url=None):
-    """验证加密密钥 URL 是否可访问"""
-    if not key_url:
-        return False
-    key_url = urljoin(base_url, key_url) if base_url and not key_url.startswith(('http://', 'https://')) else key_url
-    try:
-        session = create_session()
-        response = session.head(key_url, timeout=5, allow_redirects=True)
-        return response.status_code == 200
-    except requests.RequestException as e:
-        logger.warning(f"Failed to validate key URL {key_url}: {str(e)}")
-        return False
-
 def fetch_m3u_playlist(url, playlist_index):
     """获取并解析 M3U 播放列表"""
     try:
@@ -187,10 +177,10 @@ def fetch_m3u_playlist(url, playlist_index):
         base_url = url.rsplit('/', 1)[0] + '/'
         channels, m3u_name = parse_m3u_content(response.text, playlist_index, base_url, url.split('/')[-1])
         
-        # 检查加密密钥
+        # 检查加密密钥（仅记录，不验证）
         key_match = re.search(r'#EXT-X-KEY:METHOD=AES-128,URI="([^"]*)"', response.text)
-        if key_match and not validate_key_url(key_match.group(1), base_url):
-            logger.warning(f"Encryption key inaccessible for playlist {url}, marking channels as unverified")
+        if key_match:
+            logger.info(f"Found encryption key for playlist {url}: {key_match.group(1)}")
             for i, (name, stream_url, group_title) in enumerate(channels):
                 channels[i] = (name + ' [Unverified]', stream_url, group_title)
         
@@ -209,7 +199,7 @@ def validate_m3u8_url(url):
         return True
     try:
         session = create_session()
-        response = session.head(url, timeout=5, allow_redirects=True)
+        response = session.head(url, timeout=3, allow_redirects=True)
         if response.status_code == 200:
             return True
         logger.warning(f"Invalid URL (status {response.status_code}): {url}")
@@ -277,8 +267,8 @@ def main():
         return
     
     all_channels = []
-    max_urls = 500  # 增加到 500 个 URL
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    max_urls = 100  # 保持 100 个 URL，优化后可增加
+    with ThreadPoolExecutor(max_workers=20) as executor:
         results = executor.map(fetch_playlist_wrapper, [(url, i) for i, url in enumerate(urls[:max_urls])])
         for i, channels in enumerate(results):
             all_channels.extend(channels)
@@ -307,9 +297,12 @@ def main():
                 logger.warning(f"Invalid URL: {name}, {url}")
         
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+            f.write('#EXTM3U\n')
             f.write('更新时间,#genre#\n')
             f.write(f"{datetime.now().strftime('%Y-%m-%d')},http://example.com/1.m3u8\n")
             f.write(f"{datetime.now().strftime('%H:%M:%S')},http://example.com/2.m3u8\n")
+            f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
+            f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
             for category in sorted(classified.keys()):
                 if classified[category]:
                     f.write(f"{category},#genre#\n")
