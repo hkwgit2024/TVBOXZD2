@@ -5,6 +5,7 @@ import socket
 import time
 from datetime import datetime
 import logging
+from logging.handlers import RotatingFileHandler  # 修复：显式导入 RotatingFileHandler
 import requests
 import aiohttp
 import asyncio
@@ -24,7 +25,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.handlers.RotatingFileHandler('iptv_script.log', maxBytes=10*1024*1024, backupCount=5)
+        RotatingFileHandler('iptv_script.log', maxBytes=10*1024*1024, backupCount=5)
     ]
 )
 
@@ -170,21 +171,21 @@ CONFIG = load_config()
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 30)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
-CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
-MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 8)
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 100)
 NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
-URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
+URL_FILTER_WORDS = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
-ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
+CATEGORY_RULES = CONFIG.get('category_rules', [])
 STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
 
 # 配置 HTTP 会话
 session = requests.Session()
 session.headers.update({"User-Agent": "Mozilla/5.0"})
-retry_strategy = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
-adapter = HTTPAdapter(pool_connections=200, pool_maxsize=200, max_retries=retry_strategy)
+retry_strategy = Retry(total=3, backoff_factor=1.5, status_forcelist=[429, 500, 502, 503, 504])
+adapter = HTTPAdapter(pool_connections=100, pool_maxsize=100, max_retries=retry_strategy)
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
@@ -282,9 +283,13 @@ def extract_channels_from_url(url, url_states):
         line = line.strip()
         if "#genre#" not in line and "," in line and "://" in line:
             name, url = line.split(',', 1)
+            name = name.strip()
             url = clean_url_params(url.strip())
-            if url:
-                channels.append((name.strip(), url))
+            # 应用名称替换规则
+            for old, new in CHANNEL_NAME_REPLACEMENTS.items():
+                name = name.replace(old, new)
+            if url and not any(word in name.lower() for word in NAME_FILTER_WORDS) and not any(pat in url.lower() for pat in URL_FILTER_WORDS):
+                channels.append((name, url))
     logging.info(f"从 {url} 提取 {len(channels)} 个频道")
     return channels
 
@@ -333,18 +338,23 @@ async def check_channels_async(channels, url_states):
 # 频道分类和文件处理
 def categorize_channel(channel_name):
     """动态分类频道"""
-    if re.search(r'央视|CCTV', channel_name, re.IGNORECASE):
-        return '央视频道'
-    elif re.search(r'少儿|动画', channel_name, re.IGNORECASE):
-        return '少儿和动画频道'
-    return '其他'
+    for rule in CATEGORY_RULES:
+        if re.search(rule['pattern'], channel_name, re.IGNORECASE):
+            return rule['category']
+    return next((rule['default'] for rule in CATEGORY_RULES if 'default' in rule), '其他')
 
 def merge_local_channel_files(channels_dir, output_file="iptv_list.txt"):
     """合并频道文件"""
     output_lines = [f"更新时间,#genre#\n{datetime.now().strftime('%Y-%m-%d')},url\n{datetime.now().strftime('%H:%M:%S')},url\n"]
     file_handler = FileHandler()
     
-    for category in ORDERED_CATEGORIES:
+    categories = set()
+    for file_name in os.listdir(channels_dir):
+        if file_name.endswith('_iptv.txt'):
+            category = file_name.replace('_iptv.txt', '')
+            categories.add(category)
+    
+    for category in sorted(categories):
         file_path = os.path.join(channels_dir, f"{category}_iptv.txt")
         lines = file_handler.read_txt(file_path)
         if lines:
