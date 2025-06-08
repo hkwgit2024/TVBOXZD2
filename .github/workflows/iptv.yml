@@ -1,21 +1,19 @@
-
 name: IPTV 频道更新
 
-# 触发条件
 on:
   workflow_dispatch:  # 允许手动触发
   schedule:
     - cron: '0 */8 * * *'  # 每天 UTC 时间 0:00、8:00、16:00
 
 jobs:
-  build:
+  update-iptv:
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # 设置 6 小时超时
+    timeout-minutes: 360
     permissions:
-      contents: write # 授予写入权限，用于提交和推送更改
+      contents: write
 
     steps:
-      # 步骤1：检查 BOT secret
+      # 步骤 1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
@@ -24,62 +22,68 @@ jobs:
           fi
         shell: bash
 
-      # 步骤2：检出代码
+      # 步骤 2：检出代码
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整提交历史，便于 rebase
-          token: ${{ secrets.BOT }}  # 使用 BOT secret 进行认证
+          fetch-depth: 0
+          token: ${{ secrets.BOT }}
 
-      # 步骤3：设置 Python 环境
+      # 步骤 3：检查 GitHub API 速率限制
+      - name: 检查 GitHub API 速率限制
+        run: |
+          curl -H "Authorization: token ${{ secrets.BOT }}" https://api.github.com/rate_limit
+        continue-on-error: true
+
+      # 步骤 4：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'  # 缓存 pip 依赖
+          cache: 'pip'
 
-      # 步骤4：安装 Python 依赖
+      # 步骤 5：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil
-          pip install pyyaml requests tenacity
-          pip install dnspython
-          pip install requests pyyaml dnspython aiohttp tqdm
-          pip install aiofiles
+          pip install requests aiohttp pyyaml tenacity dnspython tqdm aiofiles
 
+      # 步骤 6：设置时区
       - name: 设置时区
-        run: sudo timedatectl set-timezone 'Asia/Shanghai'        
-        
-      # 步骤5：安装 FFmpeg (用于 ffprobe)
+        run: sudo timedatectl set-timezone 'Asia/Shanghai'
+
+      # 步骤 7：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 步骤6：验证 ffprobe 是否可用
+      # 步骤 8：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
-            echo "ffprobe 已找到并可用！版本信息如下："
-            ffprobe -version # 打印版本信息，确认它能运行
+            echo "ffprobe 已安装："
+            ffprobe -version
           else
-            echo "错误：ffprobe 未找到或无法执行！请检查上一步的 FFmpeg 安装日志。"
-            exit 1 # 如果 ffprobe 不可用，则中止工作流
+            echo "错误：ffprobe 未找到"
+            exit 1
           fi
 
-      # 步骤6：运行 IPTV 爬取脚本
+      # 步骤 9：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-         
-          BOT: ${{ secrets.BOT }} 
+          BOT: ${{ secrets.BOT }}
           REPO_OWNER: ${{ vars.REPO_OWNER }}
           REPO_NAME: ${{ vars.REPO_NAME }}
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
-        run: python ${{ github.workspace }}/tv.py
+        run: |
+          python --version
+          python -c "from logging.handlers import RotatingFileHandler; print('日志模块导入成功')"
+          python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_script.log
+        continue-on-error: true
 
-      # 步骤7：保存日志和生成文件
+      # 步骤 10：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
@@ -88,15 +92,13 @@ jobs:
             *.txt
             config/*.txt
             地方频道/*.txt
-            iptv_crawler.log 
+            iptv_script.log
           retention-days: 7
           if-no-files-found: warn
           compression-level: 6
-          overwrite: false
-          include-hidden-files: false
         if: always()
 
-      # 步骤8：检查文件更改
+      # 步骤 11：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -110,26 +112,55 @@ jobs:
           fi
         shell: bash
 
-      # 步骤9：提交更改
+      # 步骤 12：检查合并冲突
+      - name: 检查合并冲突
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git fetch origin
+          git diff --name-only --diff-filter=U > conflicts.txt
+          if [ -s conflicts.txt ]; then
+            echo "错误：检测到合并冲突，以下文件有冲突："
+            cat conflicts.txt
+            exit 1
+          fi
+        shell: bash
+
+      # 步骤 13：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
+          git commit -m "更新 IPTV 频道列表 ($(date -u +'%Y-%m-%d %H:%M UTC'))"
 
-      # 步骤10：推送更改
+      # 步骤 14：推送更改
       - name: 推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git fetch origin
-          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
-          git push origin main
+          git rebase origin/main || {
+            echo "Rebase 失败，尝试合并"
+            git rebase --abort
+            git merge origin/main --no-edit
+            git push origin main
+          }
         env:
-         GITHUB_TOKEN: ${{ secrets.BOT }} 
+          GITHUB_TOKEN: ${{ secrets.BOT }}
 
-      # 步骤11：发送运行结果通知
-      - name: 发送运行结果通知
-        run: |
-          echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
-          echo "请检查 artifact 中的 iptv_crawler.log 以获取详细信息"
+      # 步骤 15：发送通知
+      - name: 发送通知
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.BOT }}
+          script: |
+            const fs = require('fs');
+            const logContent = fs.existsSync('iptv_script.log') ? fs.readFileSync('iptv_script.log', 'utf8').slice(-1000) : '无日志';
+            const status = '${{ job.status }}';
+            const message = `IPTV 频道更新工作流完成\n状态: ${status}\n日志摘要:\n${logContent}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 1,
+              body: message
+            });
