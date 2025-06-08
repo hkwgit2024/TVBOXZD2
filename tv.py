@@ -5,7 +5,7 @@ import socket
 import time
 from datetime import datetime
 import logging
-from logging.handlers import RotatingFileHandler  # 修复：显式导入 RotatingFileHandler
+from logging.handlers import RotatingFileHandler
 import requests
 import aiohttp
 import asyncio
@@ -170,7 +170,7 @@ def load_config():
 CONFIG = load_config()
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
-MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 3)  # 降低页面数
 GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 30)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
 CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 8)
@@ -241,9 +241,9 @@ async def fetch_url_content_async(url, url_states, timeout=CHANNEL_FETCH_TIMEOUT
     """异步获取 URL 内容"""
     headers = {}
     current_state = url_states.get(url, {})
-    if 'etag' in current_state:
+    if 'etag' in current_state and current_state['etag']:
         headers['If-None-Match'] = current_state['etag']
-    if 'last_modified' in current_state:
+    if 'last_modified' in current_state and current_state['last_modified']:
         headers['If-Modified-Since'] = current_state['last_modified']
 
     async with aiohttp.ClientSession() as session:
@@ -285,7 +285,6 @@ def extract_channels_from_url(url, url_states):
             name, url = line.split(',', 1)
             name = name.strip()
             url = clean_url_params(url.strip())
-            # 应用名称替换规则
             for old, new in CHANNEL_NAME_REPLACEMENTS.items():
                 name = name.replace(old, new)
             if url and not any(word in name.lower() for word in NAME_FILTER_WORDS) and not any(pat in url.lower() for pat in URL_FILTER_WORDS):
@@ -365,6 +364,7 @@ def merge_local_channel_files(channels_dir, output_file="iptv_list.txt"):
     logging.info(f"合并频道文件到 {output_file}")
 
 # 主逻辑
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(30), retry=retry_if_exception_type(requests.exceptions.HTTPError))
 def discover_urls():
     """发现 GitHub URL"""
     file_handler = FileHandler(is_remote=True, github_token=GITHUB_TOKEN)
@@ -382,14 +382,27 @@ def discover_urls():
                     timeout=GITHUB_API_TIMEOUT
                 )
                 response.raise_for_status()
+                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+                if rate_limit_remaining < 10:
+                    reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+                    wait_seconds = max(0, reset_time - int(time.time())) + 5
+                    logging.warning(f"API 速率限制接近，剩余 {rate_limit_remaining} 次，等待 {wait_seconds} 秒")
+                    time.sleep(wait_seconds)
                 for item in response.json().get('items', []):
                     match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', item.get('html_url', ''))
                     if match:
                         raw_url = f"https://raw.githubusercontent.com/{match.group(1)}/{match.group(2)}/{match.group(3)}/{match.group(4)}"
                         if raw_url.endswith(('.m3u', '.m3u8', '.txt')):
                             found_urls.add(clean_url_params(raw_url))
+            except requests.exceptions.HTTPError as e:
+                logging.error(f"搜索 {keyword} 失败：{e}")
+                if e.response.status_code == 403:
+                    logging.warning("可能触发 GitHub API 速率限制，重试中...")
+                    raise
+                continue
             except requests.exceptions.RequestException as e:
                 logging.error(f"搜索 {keyword} 失败：{e}")
+                continue
     
     new_urls = found_urls - existing_urls
     if new_urls:
