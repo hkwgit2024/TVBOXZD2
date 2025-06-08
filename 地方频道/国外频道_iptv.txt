@@ -1,6 +1,11 @@
 国外频道,#genre#
-华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist0.m3u8
+CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist1.m3u8
+半岛新闻,https://live-hls-web-aje.getaj.net/AJE/01.m3u8
+ABCNews,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
 CBNNews,https://bcovlive-a.akamaihd.net/re8d9f611ee4a490a9bb59e52db91414d/us-east-1/734546207001/playlist.m3u8
-半岛新闻,http://live-hls-web-aja.getaj.net/AJA/02.m3u8
+FOXNewsNow,https://fox-foxnewsnow-samsungus.amagi.tv/playlist.m3u8
 Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+半岛新闻,http://live-hls-web-aja.getaj.net/AJA/02.m3u8
+华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist0.m3u8
