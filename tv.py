@@ -140,8 +140,6 @@ URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
 STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
-STREAM_FAIL_THRESHOLD = CONFIG.get('stream_fail_threshold', 3) # 新增配置项，用于控制频道保留策略
-STREAM_RETENTION_HOURS = CONFIG.get('stream_retention_hours', 72) # 新增配置项
 
 # 配置 requests 会话
 session = requests.Session()
@@ -532,14 +530,15 @@ def process_single_channel_line(channel_line, url_states):
     """处理单行频道数据，进行有效性检查。"""
     if "://" not in channel_line:
         logging.debug(f"跳过无效频道行（无协议）：{channel_line}")
-        return None, None, False
+        return None, None
     parts = channel_line.split(',', 1)
     if len(parts) == 2:
         name, url = parts
         url = url.strip()
         elapsed_time, is_valid = check_channel_validity_and_speed(name, url, url_states)
-        return elapsed_time, f"{name},{url}", is_valid
-    return None, None, False
+        if is_valid:
+            return elapsed_time, f"{name},{url}"
+    return None, None
 
 def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.get('channel_check_workers', 200)):
     """多线程检查频道有效性。"""
@@ -554,8 +553,9 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
             if checked_count % 100 == 0:
                 logging.warning(f"已检查 {checked_count}/{total_channels} 个频道...")
             try:
-                elapsed_time, result_line, is_valid = future.result()
-                results.append((elapsed_time, result_line, is_valid))
+                elapsed_time, result_line = future.result()
+                if elapsed_time is not None and result_line is not None:
+                    results.append((elapsed_time, result_line))
             except Exception as exc:
                 logging.warning(f"频道行处理期间发生异常：{exc}")
 
@@ -763,9 +763,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
                 break
 
-    # 记录当前关键词找到的 URL 数量
-    keyword_url_counts[keyword] = len(keyword_found_urls)
-    logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
+        # 记录当前关键词找到的 URL 数量
+        keyword_url_counts[keyword] = len(keyword_found_urls)
+        logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
 
     # 总结每个关键词的 URL 数量并建议删除无效关键词
     logging.warning("\n=== 关键词搜索结果总结 ===")
@@ -838,43 +838,8 @@ def main():
     logging.warning(f"\n过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
 
     # 步骤 7: 多线程检查频道有效性及速度
-    checked_channels_data = check_channels_multithreaded(unique_filtered_channels_str, url_states)
-    
-    # NEW: Filter channels based on validity and historical data from url_states
-    final_valid_channels = []
-    for elapsed_time, channel_line, is_valid in checked_channels_data:
-        if channel_line is None:
-            continue
-        
-        name, url = channel_line.split(',', 1)
-        url = url.strip()
-        
-        current_state = url_states.get(url, {})
-        
-        # 包含条件：
-        # 1. 当前有效
-        # 2. 或者，曾经有效且失败次数未超过阈值 (STREAM_FAIL_THRESHOLD)
-        # 3. 或者，在 STREAM_RETENTION_HOURS 内成功过，即使暂时失败
-        if is_valid:
-            final_valid_channels.append((elapsed_time, channel_line))
-        elif current_state.get('last_successful_stream_check') and \
-             current_state.get('stream_fail_count', 0) < STREAM_FAIL_THRESHOLD:
-            final_valid_channels.append((elapsed_time, channel_line))
-        elif 'last_successful_stream_check' in current_state:
-            last_successful_time_str = current_state['last_successful_stream_check']
-            try:
-                last_successful_datetime = datetime.fromisoformat(last_successful_time_str)
-                time_since_successful_hours = (datetime.now() - last_successful_datetime).total_seconds() / 3600
-                if time_since_successful_hours < STREAM_RETENTION_HOURS:
-                    final_valid_channels.append((elapsed_time, channel_line))
-            except ValueError:
-                logging.warning(f"无法解析 URL {url} 的成功时间戳：{last_successful_time_str}")
-                pass
-
-    # Sort final_valid_channels by speed (elapsed_time)
-    final_valid_channels.sort(key=lambda x: x[0] if x[0] is not None else float('inf'))
-
-    logging.warning(f"最终将包含在列表中的有效且响应的频道数量：{len(final_valid_channels)}")
+    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str, url_states)
+    logging.warning(f"有效且响应的频道数量：{len(valid_channels_with_speed)}")
 
     # 步骤 8: 保存所有频道检测后的最新状态
     save_url_states_remote(url_states)
@@ -882,7 +847,7 @@ def main():
 
     # 步骤 9: 将有效频道写入临时文件
     iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
-    write_sorted_channels_to_file(iptv_speed_file_path, final_valid_channels)
+    write_sorted_channels_to_file(iptv_speed_file_path, valid_channels_with_speed)
 
     # 步骤 10: 准备本地频道目录和模板
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
