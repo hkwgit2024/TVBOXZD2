@@ -1,656 +1,550 @@
 URL,节点数量,状态,错误信息,状态码
-https://vless.saisansei.com,0,成功,,200
-http://vless.205678.xyz,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://vless.205678.xyz/,
-https://vless.kasuganosorah.com,0,成功,,200
-https://k.kaleo-vless.sbs,0,成功,,200
-https://sub.enlightvworker.top,0,成功,,200
-http://sub.funnymud.icu,0,成功,,200
-https://www.ikun123.com,0,成功,,200
-http://v2ray.keepminer.com,0,成功,,200
-http://vgram.my,0,成功,,200
-https://subs.n256.com,0,失败,内容过短,200
-http://vless.vinedn.top,0,成功,,200
-https://vless.airlan.eu.org,0,成功,,200
-https://pxstore.my.id,0,成功,,200
-https://vless.tomleung.cn,0,成功,,200
-http://freeroad.org,0,成功,,200
-https://vless.lanxb.sbs,0,失败,HTTP错误: 432 Client Error: status code 432 for url: https://vless.lanxb.sbs/,
-http://quiz.int.vidio.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://vless.misaki.buzz,0,成功,,200
-https://down.zyq.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='down.zyq.xyz', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'down.zyq.xyz'. (_ssl.c:1017)"")))",
-http://quiz.int.vidio.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='quiz.int.vidio.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb997b0>: Failed to resolve 'quiz.int.vidio.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://dyq.rayray666.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='dyq.rayray666.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd38b20>: Failed to resolve 'dyq.rayray666.us.kg' ([Errno -2] Name or service not known)""))",
-http://quiz.vidio.com.bukan.kirek.web.id,0,失败,"连接失败: HTTPConnectionPool(host='quiz.vidio.com.bukan.kirek.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb99060>: Failed to resolve 'quiz.vidio.com.bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-http://www.vpnsayagratis.com,4,成功,,200
-https://b.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='b.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://vless.baopu.xyz,0,成功,,200
-https://45.77.180.183:6061,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6061): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://vless.leoyon.top,0,成功,,200
-https://v2.19870323.xyz,0,成功,,200
-http://ns1.ndeso.web.id,0,失败,"连接失败: HTTPConnectionPool(host='ns1.ndeso.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda6e30>: Failed to resolve 'ns1.ndeso.web.id' ([Errno -2] Name or service not known)""))",
-http://www.ikun123.com,0,成功,,200
-http://cache.netflix.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd30490>: Failed to resolve 'cache.netflix.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.tonglingchaoren.sbs,0,成功,,200
-https://vless.youtz.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.youtz.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd32cb0>: Failed to resolve 'vless.youtz.us.kg' ([Errno -2] Name or service not known)""))",
-http://cloudflare.fangzh.win,0,成功,,200
-https://vless.dengyueqi.sbs,0,成功,,200
-https://v.404168.xyz,0,成功,,200
-https://vercel.xcye.cloudns.org,0,失败,"连接失败: HTTPSConnectionPool(host='vercel.xcye.cloudns.org', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd033d0>: Failed to resolve 'vercel.xcye.cloudns.org' ([Errno -2] Name or service not known)""))",
-http://vless.lanxb.sbs,0,成功,,200
-https://ex030.zpwlgzs.com:20852,0,成功,,200
-http://yh.pages.011123.xyz,0,成功,,200
-http://support.zoom.us.irul.arivpremium.biz.id,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.irul.arivpremium.biz.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd01cc0>: Failed to resolve 'support.zoom.us.irul.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-https://ac.klw315511.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ac.klw315511.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd02890>: Failed to resolve 'ac.klw315511.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.620077.xyz,0,成功,,200
-https://vless.ljff.eu.org,0,成功,,200
-https://io.ruangguru.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='io.ruangguru.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd03970>: Failed to resolve 'io.ruangguru.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://home.babynan.top,0,成功,,200
-https://vless.205678.xyz,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://vless.205678.xyz/,
-http://haiz.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='haiz.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd14730>: Failed to resolve 'haiz.us.kg' ([Errno -2] Name or service not known)""))",
-https://yh.pages.011123.xyz,0,成功,,200
-http://s.37624682.xyz,0,成功,,200
-https://support.zoom.us.vipren.biz.id,4,成功,,200
-https://ns1.ndeso.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='ns1.ndeso.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd03700>: Failed to resolve 'ns1.ndeso.web.id' ([Errno -2] Name or service not known)""))",
-http://vle.didu.fun,0,成功,,200
-https://vless.misaki.buzz,0,成功,,200
-http://bpb1.vssh.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='bpb1.vssh.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd31150>: Failed to resolve 'bpb1.vssh.us.kg' ([Errno -2] Name or service not known)""))",
-https://quiz.int.vidio.com.bukan.kirek.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.int.vidio.com.bukan.kirek.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd17490>: Failed to resolve 'quiz.int.vidio.com.bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-http://mahardika.regarstore.xyz,6,成功,,200
-https://45.77.180.183:6512,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6512): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://gtw.526566.xyz,2,成功,,200
-https://vless.currydrunt.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.currydrunt.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acb99c30>: Failed to resolve 'vless.currydrunt.us.kg' ([Errno -2] Name or service not known)""))",
-http://elearning.telkomuniversity.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='elearning.telkomuniversity.ac.id.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa26e0>: Failed to resolve 'elearning.telkomuniversity.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.9521.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.9521.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd39270>: Failed to resolve 'vless.9521.us.kg' ([Errno -2] Name or service not known)""))",
-https://wavelee.lol,0,失败,"连接失败: HTTPSConnectionPool(host='wavelee.lol', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd33fa0>: Failed to resolve 'wavelee.lol' ([Errno -2] Name or service not known)""))",
-http://blog.webex.com.vless.awerty.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='blog.webex.com.vless.awerty.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd33130>: Failed to resolve 'blog.webex.com.vless.awerty.us.kg' ([Errno -2] Name or service not known)""))",
-http://bakrie.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='bakrie.ac.id.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd306d0>: Failed to resolve 'bakrie.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://panel.evamo.ir,0,成功,,200
-http://sub.hk.moyu.host,2,成功,,200
-https://nv64.myhoshop.ir,0,成功,,200
-https://vless.tonglingchaoren.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='vless.tonglingchaoren.sbs', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1017)')))",
-https://165.22.57.53:8443,0,失败,"连接失败: HTTPSConnectionPool(host='165.22.57.53', port=8443): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f92acd33310>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-http://account.midtrans.com.sg.misteri.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='account.midtrans.com.sg.misteri.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd33a30>: Failed to resolve 'account.midtrans.com.sg.misteri.us.kg' ([Errno -2] Name or service not known)""))",
-http://yxdy.coinspace.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='yxdy.coinspace.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd33460>: Failed to resolve 'yxdy.coinspace.us.kg' ([Errno -2] Name or service not known)""))",
-http://v2.5269.best,0,失败,"连接失败: HTTPConnectionPool(host='v2.5269.best', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce20e0>: Failed to resolve 'v2.5269.best' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6513,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6513): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://vless.5giot.cyou,0,成功,,200
-https://sub.dingyue.moyu.host,2,成功,,200
-https://sub.yhope.eu.org,0,成功,,200
-http://vless2.zk2psvk.sbs,0,成功,,200
-http://proxybee.ai,0,成功,,200
-http://sentry-uit.line-apps.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sentry-uit.line-apps.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce3880>: Failed to resolve 'sentry-uit.line-apps.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://hello.itlemon.sbs,0,成功,,200
-https://loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce1c30>: Failed to resolve 'loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://haiz.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='haiz.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce2b30>: Failed to resolve 'haiz.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.gzcantona.sbs,0,成功,,200
-https://bakrie.ac.id.08.basmallah.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='bakrie.ac.id.08.basmallah.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce2b90>: Failed to resolve 'bakrie.ac.id.08.basmallah.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.914520.xyz,0,失败,"请求失败: HTTPSConnectionPool(host='vless.914520.xyz', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
-https://elearning.telkomuniversity.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='elearning.telkomuniversity.ac.id.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd02890>: Failed to resolve 'elearning.telkomuniversity.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://tg.lmaiwyy.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='tg.lmaiwyy.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2ca90>: Failed to resolve 'tg.lmaiwyy.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-https://vless.mokenano.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.mokenano.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2f010>: Failed to resolve 'vless.mokenano.us.kg' ([Errno -2] Name or service not known)""))",
-https://df.imgsrc.xyz,0,成功,,200
-https://drnajdi.com,2,成功,,200
-http://v2.histb.com,0,失败,HTTP错误: 530 Server Error: <none> for url: https://v2.histb.com/,
-https://vless.refs8.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='vless.refs8.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd039d0>: Failed to resolve 'vless.refs8.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-http://vlessc.fc88.top,0,成功,,200
-http://notls.easxcss123.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='notls.easxcss123.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd72e30>: Failed to resolve 'notls.easxcss123.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.bighasea.top,0,成功,,200
-http://vless.taohuajianxian.com,0,失败,"连接失败: HTTPConnectionPool(host='vless.taohuajianxian.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd71180>: Failed to resolve 'vless.taohuajianxian.com' ([Errno -2] Name or service not known)""))",
-https://web.101514.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='web.101514.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd728f0>: Failed to resolve 'web.101514.xyz' ([Errno -2] Name or service not known)""))",
-https://vless.qiudx.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='vless.qiudx.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd70820>: Failed to resolve 'vless.qiudx.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-https://www.1230101.xyz,0,成功,,200
-https://45.77.180.183:6556,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6556): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://vless.qiudx.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='vless.qiudx.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd705b0>: Failed to resolve 'vless.qiudx.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-https://kk.lvbv.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='kk.lvbv.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acae9000>: Failed to resolve 'kk.lvbv.us.kg' ([Errno -2] Name or service not known)""))",
-http://sub.enlightvworker.top,0,成功,,200
-http://aio.awerty.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='aio.awerty.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acae8d60>: Failed to resolve 'aio.awerty.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless2.zk2psvk.sbs,0,成功,,200
-http://cache.netflix.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2e560>: Failed to resolve 'cache.netflix.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6561,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6561): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://158.180.67.180:22222,0,失败,"连接失败: HTTPSConnectionPool(host='158.180.67.180', port=22222): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f92acaea740>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-http://wk3.technet360.net,0,成功,,200
-http://vless.youtz.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.youtz.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce3940>: Failed to resolve 'vless.youtz.us.kg' ([Errno -2] Name or service not known)""))",
-http://lingqiu.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='lingqiu.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce23e0>: Failed to resolve 'lingqiu.us.kg' ([Errno -2] Name or service not known)""))",
-http://quiz.vidio.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='quiz.vidio.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce28c0>: Failed to resolve 'quiz.vidio.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://zoomgov.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zoomgov.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce1b10>: Failed to resolve 'zoomgov.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://san-jose.mousse.cc,0,失败,"连接失败: HTTPSConnectionPool(host='san-jose.mousse.cc', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1017)')))",
-https://yxdy.coinspace.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='yxdy.coinspace.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2f700>: Failed to resolve 'yxdy.coinspace.us.kg' ([Errno -2] Name or service not known)""))",
-https://gendar.ariy.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='gendar.ariy.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2f250>: Failed to resolve 'gendar.ariy.us.kg' ([Errno -2] Name or service not known)""))",
-https://arthu.wunianless.icu,0,成功,,200
-https://dd.dodod.eu.org,0,成功,,200
-http://investors.spotify.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://blog.unixweb.org,0,成功,,200
-https://vless.graydove.sbs,0,成功,,200
-https://blog.write.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='blog.write.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd001c0>: Failed to resolve 'blog.write.us.kg' ([Errno -2] Name or service not known)""))",
-http://io.ruangguru.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='io.ruangguru.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd03d30>: Failed to resolve 'io.ruangguru.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless-cm.ajsom1n.sbs,0,成功,,200
-https://vless.xianjian10.top,0,成功,,200
-https://sakera.cloudproxyip.my.id,4,成功,,200
-http://vless.botvion.com,0,成功,,200
-http://vipren.biz.id,4,成功,,200
-http://dingyue.daigm251314.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='dingyue.daigm251314.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd38a90>: Failed to resolve 'dingyue.daigm251314.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6775,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6775): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://cf-vless.bk-water.top,0,成功,,200
-https://bk.ssone.edu.eu.org,0,成功,,200
-https://45.77.180.183:6603,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6603): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://netflix.com.sg9.hc-store.my.id,0,成功,,200
-http://arthu.wunianless.icu,0,成功,,200
-http://vless.4349.cloud,0,失败,"连接失败: HTTPConnectionPool(host='vless.4349.cloud', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb9a950>: Failed to resolve 'vless.4349.cloud' ([Errno -2] Name or service not known)""))",
-http://v.404168.xyz,0,成功,,200
-https://sub.hk.moyu.host,2,成功,,200
-https://vless.90180270.xyz,0,成功,,200
-http://vlesssup.darkmoon.sbs,0,成功,,200
-http://nv64.myhoshop.ir,0,成功,,200
-https://45.77.180.183:6161,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6161): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://45.77.180.183:6380,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6380): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://sub.zylf.eu.org,0,成功,,200
-http://dyq.rayray666.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='dyq.rayray666.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2fb80>: Failed to resolve 'dyq.rayray666.us.kg' ([Errno -2] Name or service not known)""))",
-https://investor.fb.com.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='investor.fb.com.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda6a70>: Failed to resolve 'investor.fb.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://sentry-uit.line-apps.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sentry-uit.line-apps.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda76a0>: Failed to resolve 'sentry-uit.line-apps.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.gpt45.cn,0,成功,,200
-http://cache.netflix.com.servpn.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.servpn.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd33040>: Failed to resolve 'cache.netflix.com.servpn.us.kg' ([Errno -2] Name or service not known)""))",
-http://siakad.esaunggul.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='siakad.esaunggul.ac.id.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda5600>: Failed to resolve 'siakad.esaunggul.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://cmliuvl.yangfeng.rr.nu,0,失败,"连接失败: HTTPSConnectionPool(host='cmliuvl.yangfeng.rr.nu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92affa10f0>: Failed to resolve 'cmliuvl.yangfeng.rr.nu' ([Errno -2] Name or service not known)""))",
-http://valess.linzhi.sbs,0,成功,,200
-http://yonghuang.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='yonghuang.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb9a5f0>: Failed to resolve 'yonghuang.us.kg' ([Errno -2] Name or service not known)""))",
-https://account-gopay.midtrans.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='account-gopay.midtrans.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd39030>: Failed to resolve 'account-gopay.midtrans.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://youxuanvvvip.1919444.xyz,2,成功,,200
-https://45.77.180.183:6134,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6134): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://sub.itit.tk,0,成功,,200
-https://ikun123.com,0,成功,,200
-http://api.midtrans.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='api.midtrans.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd712d0>: Failed to resolve 'api.midtrans.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://v2ray.kuivless.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='v2ray.kuivless.sbs', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1017)')))",
-http://investors.spotify.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='investors.spotify.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd71db0>: Failed to resolve 'investors.spotify.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://caa0.fvnam.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='caa0.fvnam.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd73fa0>: Failed to resolve 'caa0.fvnam.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.sxlf.mom,0,成功,,200
-https://sub.menglan.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sub.menglan.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd71b40>: Failed to resolve 'sub.menglan.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.chattycrow.app,0,成功,,200
-https://io2.hubregion.com,0,成功,,200
-https://a.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='a.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-http://sub.menglan.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sub.menglan.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addcbf10>: Failed to resolve 'sub.menglan.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.graydove.sbs,0,成功,,200
-https://vless.301605.xyz,0,成功,,200
-http://1st.tscvlessndsfe.sbs,0,成功,,200
-https://aio.awerty.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='aio.awerty.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acb994e0>: Failed to resolve 'aio.awerty.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.ayam.eu.org,0,成功,,200
-https://chat.sociomile.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='chat.sociomile.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addca6e0>: Failed to resolve 'chat.sociomile.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://dingyueqi.ban12138.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='dingyueqi.ban12138.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc9cc0>: Failed to resolve 'dingyueqi.ban12138.us.kg' ([Errno -2] Name or service not known)""))",
-http://zip.psto.buzz,0,成功,,200
-https://vless.102837.xyz,0,成功,,200
-https://investors.spotify.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='investors.spotify.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd39360>: Failed to resolve 'investors.spotify.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-http://vless.90180270.xyz,0,成功,,200
-https://www.ftp117771.hostfx.ru,0,失败,"连接失败: HTTPSConnectionPool(host='www.ftp117771.hostfx.ru', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addc8d30>: Failed to resolve 'www.ftp117771.hostfx.ru' ([Errno -3] Temporary failure in name resolution)""))",
-http://vless2.clayhk.sbs,0,成功,,200
-https://toiletbomber.129615.xyz,0,成功,,200
-https://1st.tscvlessndsfe.sbs,0,失败,HTTP错误: 432 Client Error: status code 432 for url: https://1st.tscvlessndsfe.sbs/,
-https://shop.mirer.cfd,0,成功,,200
-http://dy.qnhm.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='dy.qnhm.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda46a0>: Failed to resolve 'dy.qnhm.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.ehsanranjer.ir,0,成功,,200
-https://live.iflix.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='live.iflix.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda5120>: Failed to resolve 'live.iflix.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://bakrie.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='bakrie.ac.id.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda6d40>: Failed to resolve 'bakrie.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://test.mbhd.ir,0,成功,,200
-http://ppnrn.keruismp.com,0,成功,,200
-http://one.hollyhappy.nyc.mn,0,成功,,200
-https://vless.914520.xyz,0,失败,"请求失败: HTTPSConnectionPool(host='vless.914520.xyz', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
-https://account.midtrans.com.sg.misteri.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='account.midtrans.com.sg.misteri.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addc8f40>: Failed to resolve 'account.midtrans.com.sg.misteri.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6400,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6400): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://b.renqing.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='b.renqing.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa1ea0>: Failed to resolve 'b.renqing.us.kg' ([Errno -2] Name or service not known)""))",
-http://zaintest.vuclip.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zaintest.vuclip.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd39360>: Failed to resolve 'zaintest.vuclip.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-http://investors.spotify.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='investors.spotify.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addca7d0>: Failed to resolve 'investors.spotify.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://t.13112221.xyz,12,成功,,200
-http://besturn.eu.org,0,成功,,200
-https://0518github.20111121.xyz,0,成功,,200
-https://45.77.180.183:6433,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6433): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://investor.fb.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='investor.fb.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb9a080>: Failed to resolve 'investor.fb.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://vlesssup.darkmoon.sbs,0,成功,,200
-http://vless.gongmu319.top,0,成功,,200
-http://dyq.yydsss.ggff.net,0,失败,"连接失败: HTTPConnectionPool(host='dyq.yydsss.ggff.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb99300>: Failed to resolve 'dyq.yydsss.ggff.net' ([Errno -3] Temporary failure in name resolution)""))",
-https://vless.1024369.xyz,0,成功,,200
-http://vless.dengyueqi.sbs,0,成功,,200
-https://vless.vinedn.top,0,成功,,200
-http://vless.ayaa.cc,0,失败,"连接失败: HTTPConnectionPool(host='vless.ayaa.cc', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa1900>: Failed to resolve 'vless.ayaa.cc' ([Errno -5] No address associated with hostname)""))",
-http://85.229.143.239,0,失败,"连接失败: HTTPConnectionPool(host='85.229.143.239', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f92adda7df0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-https://170.106.143.142:20852,0,失败,"连接失败: HTTPSConnectionPool(host='170.106.143.142', port=20852): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '170.106.143.142'. (_ssl.c:1017)"")))",
-http://support.zoom.us.agus.arivpremium.biz.id,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.agus.arivpremium.biz.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa1960>: Failed to resolve 'support.zoom.us.agus.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-https://vless.020815.xyz,0,失败,"请求失败: HTTPSConnectionPool(host='vless.020815.xyz', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
-https://www.opentunnel.net,0,成功,,200
-http://kk.lvbv.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='kk.lvbv.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda6890>: Failed to resolve 'kk.lvbv.us.kg' ([Errno -2] Name or service not known)""))",
-http://ava.game.naver.com.threeyas.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.threeyas.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda5ab0>: Failed to resolve 'ava.game.naver.com.threeyas.us.kg' ([Errno -2] Name or service not known)""))",
-http://vl.reya.cn,0,成功,,200
-http://www.ftp117771.hostfx.ru,0,失败,"连接失败: HTTPConnectionPool(host='www.ftp117771.hostfx.ru', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda5810>: Failed to resolve 'www.ftp117771.hostfx.ru' ([Errno -3] Temporary failure in name resolution)""))",
-http://sb.b.cdgb.ddns-ip.net,0,失败,"连接失败: HTTPConnectionPool(host='sb.b.cdgb.ddns-ip.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce1450>: Failed to resolve 'sb.b.cdgb.ddns-ip.net' ([Errno -2] Name or service not known)""))",
-https://investors.spotify.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://brcp15.hostfx.ru,0,失败,"连接失败: HTTPSConnectionPool(host='brcp15.hostfx.ru', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce10f0>: Failed to resolve 'brcp15.hostfx.ru' ([Errno -3] Temporary failure in name resolution)""))",
-https://www.jingrunyuan.com,0,失败,"连接失败: HTTPSConnectionPool(host='www.jingrunyuan.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.jingrunyuan.com'. (_ssl.c:1017)"")))",
-https://45.77.180.183:6352,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6352): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd71330>: Failed to resolve 'edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://fool.synxz.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='fool.synxz.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd73130>: Failed to resolve 'fool.synxz.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.ddong1031.top,0,成功,,200
-https://yxdy.0520165.xyz,2,成功,,200
-http://vless.pist1688.sbs,0,成功,,200
-https://blog.webex.com.vless.awerty.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='blog.webex.com.vless.awerty.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd73340>: Failed to resolve 'blog.webex.com.vless.awerty.us.kg' ([Errno -2] Name or service not known)""))",
-https://uk-1.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='uk-1.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://vless.mudu.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.mudu.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce14e0>: Failed to resolve 'vless.mudu.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.020815.xyz,0,失败,"请求失败: HTTPSConnectionPool(host='vless.020815.xyz', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
-https://dingyue.shuizhucha.tk,2,成功,,200
-https://io.ruangguru.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://vless-us.wfuhsn.cloudns.be,0,成功,,200
-https://wepc.wiki,0,成功,,200
-http://dingyue.shuizhucha.tk,2,成功,,200
-https://vipren.biz.id,4,成功,,200
-https://45.77.180.183:6605,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6605): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://vless.best-promise.com,0,失败,"连接失败: HTTPSConnectionPool(host='vless.best-promise.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda7fa0>: Failed to resolve 'vless.best-promise.com' ([Errno -2] Name or service not known)""))",
-http://vless-us.wfuhsn.cloudns.be,0,成功,,200
-http://render.okkkk.tk,0,成功,,200
-http://eme.jaachfaf.jiafgho.4.reza1653subsaba.ir,0,失败,"连接失败: HTTPConnectionPool(host='eme.jaachfaf.jiafgho.4.reza1653subsaba.ir', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda60b0>: Failed to resolve 'eme.jaachfaf.jiafgho.4.reza1653subsaba.ir' ([Errno -2] Name or service not known)""))",
-https://benbenai.my-reader.org,2,成功,,200
-https://wk2.jonysing.top,0,成功,,200
-http://vless.gpt45.cn,0,成功,,200
-https://vless.akazyb.help,0,成功,,200
-http://clashverge.net,0,成功,,200
-http://io.ruangguru.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='io.ruangguru.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb99690>: Failed to resolve 'io.ruangguru.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless-cm.ajsom1n.sbs,0,成功,,200
-http://youxuanvvvip.1919444.xyz,2,成功,,200
-http://live.iflix.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='live.iflix.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda47f0>: Failed to resolve 'live.iflix.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://tx.pwh.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='tx.pwh.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda5600>: Failed to resolve 'tx.pwh.us.kg' ([Errno -2] Name or service not known)""))",
-http://sg7.regarstore.xyz,6,成功,,200
-https://v2ray.keepminer.com,0,成功,,200
-http://io.ruangguru.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='io.ruangguru.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addcbca0>: Failed to resolve 'io.ruangguru.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-http://keny.goodd.fun,0,成功,,200
-http://io2.hubregion.com,0,成功,,200
-http://blog.webex.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://vle.didu.fun,0,成功,,200
-https://vless.ayaa.cc,0,失败,"连接失败: HTTPSConnectionPool(host='vless.ayaa.cc', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd717b0>: Failed to resolve 'vless.ayaa.cc' ([Errno -5] No address associated with hostname)""))",
-https://456.chengshan.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='456.chengshan.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda64d0>: Failed to resolve '456.chengshan.us.kg' ([Errno -2] Name or service not known)""))",
-https://gtw.526566.xyz,2,成功,,200
-https://quiz.vidio.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.vidio.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda61d0>: Failed to resolve 'quiz.vidio.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://ava.game.naver.com.threeyas.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ava.game.naver.com.threeyas.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda4160>: Failed to resolve 'ava.game.naver.com.threeyas.us.kg' ([Errno -2] Name or service not known)""))",
-https://robin.nscl.ir,235,成功,,200
-https://uuip.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='uuip.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd732b0>: Failed to resolve 'uuip.us.kg' ([Errno -2] Name or service not known)""))",
-https://docker.1919444.xyz,0,成功,,200
-https://blog.unixweb.org,0,成功,,200
-https://45.77.180.183:6510,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6510): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://dd.ikunlover.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='dd.ikunlover.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda7640>: Failed to resolve 'dd.ikunlover.us.kg' ([Errno -2] Name or service not known)""))",
-https://render.okkkk.tk,0,成功,,200
-https://8.217.70.96,0,失败,"连接失败: HTTPSConnectionPool(host='8.217.70.96', port=443): Max retries exceeded with url: / (Caused by ProtocolError('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer')))",
-http://vless.kasuganosorah.com,0,成功,,200
-https://vless.712416.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='vless.712416.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce0e20>: Failed to resolve 'vless.712416.xyz' ([Errno -2] Name or service not known)""))",
-https://quiz.int.vidio.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.int.vidio.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce3910>: Failed to resolve 'quiz.int.vidio.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-http://sub.lssu.cn,0,成功,,200
-http://uk-1.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='uk-1.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://renqing.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='renqing.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd71090>: Failed to resolve 'renqing.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless0.mer1.top,0,成功,,200
-http://test.mbhd.ir,0,成功,,200
-http://vless.leoyon.top,0,成功,,200
-https://quiz.vidio.com.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.vidio.com.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd73040>: Failed to resolve 'quiz.vidio.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.gongmu319.top,0,成功,,200
-http://vless.iamqw.top,0,成功,,200
-https://45.77.180.183:6331,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6331): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://bukan.kirek.web.id,0,失败,"连接失败: HTTPConnectionPool(host='bukan.kirek.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd02980>: Failed to resolve 'bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-http://iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-http://vless.5giot.cyou,0,成功,,200
-http://vless.testvless.club,0,成功,,200
-http://quiz.int.vidio.com.bukan.kirek.web.id,0,失败,"连接失败: HTTPConnectionPool(host='quiz.int.vidio.com.bukan.kirek.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd38040>: Failed to resolve 'quiz.int.vidio.com.bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-https://luedong.eu.org,0,失败,HTTP错误: 522 Server Error: <none> for url: https://luedong.eu.org/,
-http://dinayue.audijp.top,2,成功,,200
-http://init.blog,0,成功,,200
-http://www.764793-ck34382.tmweb.ru,0,成功,,200
-https://vless.8800.pw,0,失败,"连接失败: HTTPSConnectionPool(host='vless.8800.pw', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce1510>: Failed to resolve 'vless.8800.pw' ([Errno -2] Name or service not known)""))",
-http://yxdy.0520165.xyz,2,成功,,200
-http://vless.llioney.top,0,成功,,200
-http://vpn.zhangangui.cn,0,成功,,200
-http://edgesub.hl6q0q.dynv6.net,0,失败,"连接失败: HTTPConnectionPool(host='edgesub.hl6q0q.dynv6.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce1ab0>: Failed to resolve 'edgesub.hl6q0q.dynv6.net' ([Errno -5] No address associated with hostname)""))",
-https://vpn.zhangangui.cn,0,成功,,200
-http://vless.alencage.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.alencage.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce3220>: Failed to resolve 'vless.alencage.us.kg' ([Errno -2] Name or service not known)""))",
-https://dingyueqi.ban12138.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='dingyueqi.ban12138.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd00f10>: Failed to resolve 'dingyueqi.ban12138.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.testvless.club,0,成功,,200
-http://vless.akazyb.help,0,成功,,200
-https://besturn.eu.org,0,成功,,200
-https://vless.iamqw.top,0,成功,,200
-http://sub.198198.sbs,2,成功,,200
-https://hc-store.my.id,0,成功,,200
-http://sg9.hc-store.my.id,0,成功,,200
-http://456.chengshan.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='456.chengshan.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda6050>: Failed to resolve '456.chengshan.us.kg' ([Errno -2] Name or service not known)""))",
-http://www.opentunnel.net,0,成功,,200
-http://suub.chuan888.ggff.net,0,失败,"连接失败: HTTPConnectionPool(host='suub.chuan888.ggff.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda4760>: Failed to resolve 'suub.chuan888.ggff.net' ([Errno -2] Name or service not known)""))",
-http://sub.dingyue.moyu.host,2,成功,,200
-http://zoomgov.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zoomgov.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb9b070>: Failed to resolve 'zoomgov.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://http-injector-iphone.es.programy.net.pl,0,成功,,200
-https://vless.kidict.com,0,成功,,200
-http://ava.game.naver.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb99ba0>: Failed to resolve 'ava.game.naver.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://cmvless.miliba.top,0,成功,,200
-http://vless.mokenano.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.mokenano.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb9ac80>: Failed to resolve 'vless.mokenano.us.kg' ([Errno -2] Name or service not known)""))",
-http://bakrie.ac.id.08.basmallah.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='bakrie.ac.id.08.basmallah.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda42e0>: Failed to resolve 'bakrie.ac.id.08.basmallah.us.kg' ([Errno -2] Name or service not known)""))",
-https://unnes.ac.id.main.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='unnes.ac.id.main.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda55d0>: Failed to resolve 'unnes.ac.id.main.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://222.64.211.221:6688,0,失败,"连接失败: HTTPConnectionPool(host='222.64.211.221', port=6688): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f92acd02920>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-https://io.ruangguru.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='io.ruangguru.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acb99d20>: Failed to resolve 'io.ruangguru.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://github.vless.ventle.top,0,成功,,200
-http://vless.liudong123.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.liudong123.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade28430>: Failed to resolve 'vless.liudong123.us.kg' ([Errno -2] Name or service not known)""))",
-https://vlessc.fc88.top,0,成功,,200
-https://45.77.180.183:6050,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6050): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://img.email3.vidio.com.mau.fairyvpn.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='img.email3.vidio.com.mau.fairyvpn.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda56c0>: Failed to resolve 'img.email3.vidio.com.mau.fairyvpn.us.kg' ([Errno -2] Name or service not known)""))",
-http://df.imgsrc.xyz,0,成功,,200
-http://stickershop.line.me.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='stickershop.line.me.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acb99a80>: Failed to resolve 'stickershop.line.me.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless-4096.cmtest.sbs,0,成功,,200
-https://pani.ariyell.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='pani.ariyell.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda7970>: Failed to resolve 'pani.ariyell.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.5202026.xyz,0,成功,,200
-http://vless-4096.cmtest.sbs,0,成功,,200
-http://vless.adlnixon.top,0,成功,,200
-http://support.zoom.us.vipren.biz.id,4,成功,,200
-https://45.77.180.183:6348,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6348): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://vless.4glife.cn,0,成功,,200
-https://vl.reya.cn,0,成功,,200
-https://dingyueqi-1.161521.xyz,2,成功,,200
-http://agus.arivpremium.biz.id,0,失败,"连接失败: HTTPConnectionPool(host='agus.arivpremium.biz.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc9b70>: Failed to resolve 'agus.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-https://bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addc8790>: Failed to resolve 'bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://vless.gzcantona.sbs,0,成功,,200
-https://investor.fb.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='investor.fb.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade5e5c0>: Failed to resolve 'investor.fb.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6264,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6264): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://df.game.naver.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='df.game.naver.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd38cd0>: Failed to resolve 'df.game.naver.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-http://sub.milan5.tk,0,失败,"连接失败: HTTPConnectionPool(host='sub.milan5.tk', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade5c130>: Failed to resolve 'sub.milan5.tk' ([Errno -2] Name or service not known)""))",
-https://vf291.myhoshop.ir,0,成功,,200
-https://cmvless.kanny.top,0,成功,,200
-http://vless.chengongjian.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.chengongjian.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade5e6b0>: Failed to resolve 'vless.chengongjian.us.kg' ([Errno -2] Name or service not known)""))",
-http://wavelee.lol,0,失败,"连接失败: HTTPConnectionPool(host='wavelee.lol', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc8670>: Failed to resolve 'wavelee.lol' ([Errno -2] Name or service not known)""))",
-http://uuip.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='uuip.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acce22f0>: Failed to resolve 'uuip.us.kg' ([Errno -2] Name or service not known)""))",
-https://b.renqing.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='b.renqing.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce2f50>: Failed to resolve 'b.renqing.us.kg' ([Errno -2] Name or service not known)""))",
-https://zoomgov.vipren.biz.id,6156,成功,,200
-http://vless.102837.xyz,0,成功,,200
-http://liu-youxuan.menmen.filegear-sg.me,2,成功,,200
-https://vless-123.bereketli.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='vless-123.bereketli.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade5c9d0>: Failed to resolve 'vless-123.bereketli.xyz' ([Errno -2] Name or service not known)""))",
-http://vless-123.bereketli.xyz,0,失败,"连接失败: HTTPConnectionPool(host='vless-123.bereketli.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa3880>: Failed to resolve 'vless-123.bereketli.xyz' ([Errno -2] Name or service not known)""))",
-http://vless.tomleung.cn,0,成功,,200
-http://ccv.sosorg.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ccv.sosorg.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2fe50>: Failed to resolve 'ccv.sosorg.us.kg' ([Errno -2] Name or service not known)""))",
-https://sub.itit.tk,0,成功,,200
-https://vless.4349.cloud,0,失败,"连接失败: HTTPSConnectionPool(host='vless.4349.cloud', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2c520>: Failed to resolve 'vless.4349.cloud' ([Errno -2] Name or service not known)""))",
-http://vless-online.wancheng.icu,0,失败,"连接失败: HTTPConnectionPool(host='vless-online.wancheng.icu', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2f070>: Failed to resolve 'vless-online.wancheng.icu' ([Errno -2] Name or service not known)""))",
-http://vless.kidict.com,0,成功,,200
-https://vless.4glife.cn,0,成功,,200
-http://8.220.195.244:8010,0,失败,请求超时,
-https://vless-online.wancheng.icu,0,失败,"连接失败: HTTPSConnectionPool(host='vless-online.wancheng.icu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acb9b280>: Failed to resolve 'vless-online.wancheng.icu' ([Errno -2] Name or service not known)""))",
-http://bugwildcard.bmkg.xyz,0,失败,"连接失败: HTTPConnectionPool(host='bugwildcard.bmkg.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2cb20>: Failed to resolve 'bugwildcard.bmkg.xyz' ([Errno -2] Name or service not known)""))",
-http://vless.937848.xyz,0,失败,"连接失败: HTTPConnectionPool(host='vless.937848.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2f2b0>: Failed to resolve 'vless.937848.xyz' ([Errno -2] Name or service not known)""))",
-http://vless.2zav.com,0,成功,,200
-https://cloaksnk.terentev.com,0,失败,"连接失败: HTTPSConnectionPool(host='cloaksnk.terentev.com', port=443): Max retries exceeded with url: / (Caused by ReadTimeoutError(""HTTPSConnectionPool(host='cloaksnk.terentev.com', port=443): Read timed out. (read timeout=60)""))",
-https://vl.121112.eu.org,0,成功,,200
-http://ayu.pw,0,失败,请求超时,
-https://none.blue,0,成功,,200
-http://hc-store.my.id,0,成功,,200
-https://143.198.92.78:81,0,失败,请求超时,
-https://vless.2zav.com,0,成功,,200
-http://quiz.int.vidio.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='quiz.int.vidio.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd02380>: Failed to resolve 'quiz.int.vidio.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.refs8.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='vless.refs8.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd003d0>: Failed to resolve 'vless.refs8.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-http://vless.301605.xyz,0,成功,,200
-http://none.blue,0,成功,,200
-http://216.185.57.122,0,失败,请求超时,
-https://45.77.180.183:6070,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6070): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://vless.aiopay.sbs,0,成功,,200
-https://www.uslzc2024888.top:7510,0,失败,"连接失败: HTTPSConnectionPool(host='www.uslzc2024888.top', port=7510): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1017)')))",
-http://178.236.243.127,0,失败,请求超时,
-https://quiz.vidio.com.bukan.kirek.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.vidio.com.bukan.kirek.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd020b0>: Failed to resolve 'quiz.vidio.com.bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-https://vless.9521.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.9521.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd012a0>: Failed to resolve 'vless.9521.us.kg' ([Errno -2] Name or service not known)""))",
-https://wk3.technet360.net,0,成功,,200
-http://vless.nornia.top,0,成功,,200
-https://yangfeng.rr.nu,0,失败,"连接失败: HTTPSConnectionPool(host='yangfeng.rr.nu', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd72e30>: Failed to resolve 'yangfeng.rr.nu' ([Errno -2] Name or service not known)""))",
-https://vless.ddong1031.top,0,成功,,200
-https://yonghuang.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='yonghuang.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade29ba0>: Failed to resolve 'yonghuang.us.kg' ([Errno -2] Name or service not known)""))",
-http://realityvpn.ru,0,成功,,200
-http://b.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='b.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://sub.funnymud.icu,0,成功,,200
-http://x15spain.devefun.net,0,失败,请求超时,
-http://vless.620077.xyz,0,成功,,200
-http://216.185.57.21,0,失败,请求超时,
-http://216.185.57.191,0,失败,请求超时,
-http://cmvless.kanny.top,0,成功,,200
-https://vgram.my,0,成功,,200
-https://vless-sub.waterdrop.eu.org,0,成功,,200
-https://cache.netflix.com.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade745e0>: Failed to resolve 'cache.netflix.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://ikun123.com,0,成功,,200
-http://cf-vless.bk-water.top,0,成功,,200
-https://threeyas.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='threeyas.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3ec80>: Failed to resolve 'threeyas.us.kg' ([Errno -2] Name or service not known)""))",
-https://quiz.int.vidio.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://vless.hjlin.top,0,成功,,200
-https://vless.narutos.link,0,成功,,200
-http://vpn.qeunso.com,0,失败,请求超时,
-https://fylink.tech,0,成功,,200
-https://hawktuah.ignorelist.com,0,成功,,200
-http://vf291.myhoshop.ir,0,成功,,200
-https://45.77.180.183:6543,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6543): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://vless.adlnixon.top,0,成功,,200
-http://tydv.jilian.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='tydv.jilian.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda5ae0>: Failed to resolve 'tydv.jilian.filegear-sg.me' ([Errno -2] Name or service not known)""))",
-http://chat.sociomile.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='chat.sociomile.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2e2f0>: Failed to resolve 'chat.sociomile.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://support.zoom.us.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2e8c0>: Failed to resolve 'support.zoom.us.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://v2.histb.com,0,失败,HTTP错误: 530 Server Error: <none> for url: https://v2.histb.com/,
-http://sub.xzqmn.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sub.xzqmn.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2c970>: Failed to resolve 'sub.xzqmn.us.kg' ([Errno -2] Name or service not known)""))",
-http://netflix.com.sg9.hc-store.my.id,0,成功,,200
-https://sub.198198.sbs,2,成功,,200
-http://blog.write.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='blog.write.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa2680>: Failed to resolve 'blog.write.us.kg' ([Errno -2] Name or service not known)""))",
-http://bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92affa3370>: Failed to resolve 'bugwildcard.cloudproxyip.my.id.sakera.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-http://threeyas.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='threeyas.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd2e1d0>: Failed to resolve 'threeyas.us.kg' ([Errno -2] Name or service not known)""))",
-https://liu-youxuan.menmen.filegear-sg.me,2,成功,,200
-http://v2.19870323.xyz,0,成功,,200
-http://avovpn.net,0,成功,,200
-https://unixetc.com:8443,0,成功,,200
-https://realityvpn.ru,0,成功,,200
-https://45.77.180.183:6500,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6500): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://118.170.88.222:3000,0,失败,请求超时,
-https://x.rackvps.eu.org,0,成功,,200
-http://vless.linliqun.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.linliqun.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc8370>: Failed to resolve 'vless.linliqun.us.kg' ([Errno -2] Name or service not known)""))",
-https://xyzone.net,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://xyzone.net/,
-http://down.zyq.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='down.zyq.xyz', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'down.zyq.xyz'. (_ssl.c:1017)"")))",
-https://tg.lmaiwyy.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='tg.lmaiwyy.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acce1390>: Failed to resolve 'tg.lmaiwyy.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
-https://quiz.int.vidio.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.int.vidio.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade29060>: Failed to resolve 'quiz.int.vidio.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://dingyueqi-1.161521.xyz,2,成功,,200
-https://www.764793-ck34382.tmweb.ru,0,成功,,200
-http://vpntrip.rodya.ru,0,失败,"连接失败: HTTPConnectionPool(host='vpntrip.rodya.ru', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade766e0>: Failed to resolve 'vpntrip.rodya.ru' ([Errno -2] Name or service not known)""))",
-https://siakad.esaunggul.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='siakad.esaunggul.ac.id.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade74a90>: Failed to resolve 'siakad.esaunggul.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://avovpn.net,0,成功,,200
-https://t.gogolimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='t.gogolimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade76200>: Failed to resolve 't.gogolimit.us.kg' ([Errno -2] Name or service not known)""))",
-https://cao.songjing.mom,0,成功,,200
-https://zip.psto.buzz,0,成功,,200
-https://us01.hitk.cc:4433,0,失败,"连接失败: HTTPSConnectionPool(host='us01.hitk.cc', port=4433): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1017)')))",
-https://45.77.180.183:6779,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6779): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://quiz.int.vidio.com.sg7.regarstore.xyz,6,成功,,200
-https://sb.b.cdgb.ddns-ip.net,0,失败,"连接失败: HTTPSConnectionPool(host='sb.b.cdgb.ddns-ip.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3fb50>: Failed to resolve 'sb.b.cdgb.ddns-ip.net' ([Errno -2] Name or service not known)""))",
-http://quiz.vidio.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='quiz.vidio.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acae93c0>: Failed to resolve 'quiz.vidio.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://k.kaleo-vless.sbs,0,成功,,200
-http://a.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='a.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-http://vless.mudu.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.mudu.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade0dbd0>: Failed to resolve 'vless.mudu.us.kg' ([Errno -2] Name or service not known)""))",
-https://notls.easxcss123.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='notls.easxcss123.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acaebb50>: Failed to resolve 'notls.easxcss123.us.kg' ([Errno -2] Name or service not known)""))",
-https://servpn.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='servpn.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acaeb790>: Failed to resolve 'servpn.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.bighasea.top,0,成功,,200
-https://vless.itboy.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='vless.itboy.sbs', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLError(1, '[SSL: TLSV1_UNRECOGNIZED_NAME] tlsv1 unrecognized name (_ssl.c:1017)')))",
-https://eme.jaachfaf.jiafgho.4.reza1653subsaba.ir,0,失败,"连接失败: HTTPSConnectionPool(host='eme.jaachfaf.jiafgho.4.reza1653subsaba.ir', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acae9f00>: Failed to resolve 'eme.jaachfaf.jiafgho.4.reza1653subsaba.ir' ([Errno -2] Name or service not known)""))",
-https://vless.hjlin.top,0,成功,,200
-https://45.77.180.183:6514,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6514): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://vless.botvion.com,0,成功,,200
-https://io.ruangguru.com.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='io.ruangguru.com.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd325c0>: Failed to resolve 'io.ruangguru.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://support.zoom.us.agus.arivpremium.biz.id,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.agus.arivpremium.biz.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd307c0>: Failed to resolve 'support.zoom.us.agus.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-http://ads.ruangguru.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://github.vless.ventle.top,0,成功,,200
-https://api.midtrans.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://proxybee.ai,0,成功,,200
-https://suub.chuan888.ggff.net,0,失败,"连接失败: HTTPSConnectionPool(host='suub.chuan888.ggff.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addf6c80>: Failed to resolve 'suub.chuan888.ggff.net' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:5901,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=5901): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd31990>: Failed to resolve 'edge-ig-mqtt-p4-shv-sin6.facebook.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://ac.klw315511.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ac.klw315511.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd335b0>: Failed to resolve 'ac.klw315511.us.kg' ([Errno -2] Name or service not known)""))",
-http://cache.netflix.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd311e0>: Failed to resolve 'cache.netflix.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.linliqun.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.linliqun.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd308b0>: Failed to resolve 'vless.linliqun.us.kg' ([Errno -2] Name or service not known)""))",
-https://edgesub.hl6q0q.dynv6.net,0,失败,"连接失败: HTTPSConnectionPool(host='edgesub.hl6q0q.dynv6.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd304f0>: Failed to resolve 'edgesub.hl6q0q.dynv6.net' ([Errno -5] No address associated with hostname)""))",
-https://45.77.180.183:6580,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6580): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://dy.qnhm.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='dy.qnhm.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade0f130>: Failed to resolve 'dy.qnhm.us.kg' ([Errno -2] Name or service not known)""))",
-https://tx.pwh.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='tx.pwh.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade0f1f0>: Failed to resolve 'tx.pwh.us.kg' ([Errno -2] Name or service not known)""))",
-http://fylink.tech,0,成功,,200
-https://sub.milan5.tk,0,失败,"连接失败: HTTPSConnectionPool(host='sub.milan5.tk', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade5ec80>: Failed to resolve 'sub.milan5.tk' ([Errno -2] Name or service not known)""))",
-http://drnajdi.com,2,成功,,200
-https://blog-page.bolong.eu.org,0,成功,,200
-https://s1.ridzx08.me,2,成功,,200
-https://techomespace.com,0,成功,,200
-https://vless.chengongjian.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.chengongjian.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade74ca0>: Failed to resolve 'vless.chengongjian.us.kg' ([Errno -2] Name or service not known)""))",
-https://forum.opentunnel.net,0,成功,,200
-https://sg9.hc-store.my.id,0,成功,,200
-https://unnes.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='unnes.ac.id.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade747c0>: Failed to resolve 'unnes.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://764793-ck34382.tmweb.ru,0,成功,,200
-http://vless.ehsanranjer.ir,0,成功,,200
-https://es.3328.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='es.3328.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade76980>: Failed to resolve 'es.3328.us.kg' ([Errno -2] Name or service not known)""))",
-http://de-1.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='de-1.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://62.3.15.219:7510,0,失败,"连接失败: HTTPSConnectionPool(host='62.3.15.219', port=7510): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '62.3.15.219'. (_ssl.c:1017)"")))",
-http://v2ray.kuivless.sbs,0,失败,HTTP错误: 403 Client Error: Forbidden for url: http://v2ray.kuivless.sbs/,
-https://one.hollyhappy.nyc.mn,0,成功,,200
-http://cpvl.archerwsg.top,0,成功,,200
-https://fool.synxz.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='fool.synxz.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2f3d0>: Failed to resolve 'fool.synxz.us.kg' ([Errno -2] Name or service not known)""))",
-https://cache.netflix.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd2f6a0>: Failed to resolve 'cache.netflix.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6799,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6799): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://enclypt.com,0,成功,,200
-https://sg7.regarstore.xyz,6,成功,,200
-https://dinayue.audijp.top,2,成功,,200
-https://cmvless.miliba.top,0,成功,,200
-http://benbenai.my-reader.org,2,成功,,200
-http://toiletbomber.129615.xyz,0,成功,,200
-https://45.77.180.183:6755,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6755): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://singapore.asia-servers.dynv6.net,0,失败,"连接失败: HTTPSConnectionPool(host='singapore.asia-servers.dynv6.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd16a70>: Failed to resolve 'singapore.asia-servers.dynv6.net' ([Errno -2] Name or service not known)""))",
-https://s.37624682.xyz,0,成功,,200
-http://caa0.fvnam.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='caa0.fvnam.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd17340>: Failed to resolve 'caa0.fvnam.us.kg' ([Errno -2] Name or service not known)""))",
-https://cache.netflix.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd16da0>: Failed to resolve 'cache.netflix.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.nornia.top,0,成功,,200
-https://bugwildcard.bmkg.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='bugwildcard.bmkg.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3ca90>: Failed to resolve 'bugwildcard.bmkg.xyz' ([Errno -2] Name or service not known)""))",
-http://sakera.cloudproxyip.my.id,4,成功,,200
-https://45.77.180.183:6405,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6405): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://archives.lovelycoder.com,0,成功,,200
-https://dingyue.daigm251314.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='dingyue.daigm251314.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade8e7d0>: Failed to resolve 'dingyue.daigm251314.us.kg' ([Errno -2] Name or service not known)""))",
-https://dd.ikunlover.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='dd.ikunlover.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd17130>: Failed to resolve 'dd.ikunlover.us.kg' ([Errno -2] Name or service not known)""))",
-http://t.13112221.xyz,12,成功,,200
-https://zaintest.vuclip.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zaintest.vuclip.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd14cd0>: Failed to resolve 'zaintest.vuclip.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-http://support.zoom.us.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92accac8b0>: Failed to resolve 'support.zoom.us.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.aiopay.sbs,0,成功,,200
-http://developers.sahabatssh.com,0,成功,,200
-https://cf2.ssone.eu.org,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://cf2.ssone.eu.org/,
-http://pani.ariyell.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='pani.ariyell.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade293f0>: Failed to resolve 'pani.ariyell.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless0.mer1.top,0,成功,,200
-http://vless.swqz.mom,0,成功,,200
-http://vless.ginnnnn.xyz,0,成功,,200
-http://vless.liuwushui.sbs,0,成功,,200
-https://getkaring.com,0,成功,,200
-https://mcsu6b.freeliudefei0522.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='mcsu6b.freeliudefei0522.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addca0e0>: Failed to resolve 'mcsu6b.freeliudefei0522.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.best-promise.com,0,失败,"连接失败: HTTPConnectionPool(host='vless.best-promise.com', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade747c0>: Failed to resolve 'vless.best-promise.com' ([Errno -2] Name or service not known)""))",
-https://support.zoom.us.irul.arivpremium.biz.id,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.irul.arivpremium.biz.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade76d40>: Failed to resolve 'support.zoom.us.irul.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-https://proxy1.freebenkyo.xyz,0,成功,,200
-http://wepc.wiki,0,成功,,200
-https://vless.liudong123.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.liudong123.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3f100>: Failed to resolve 'vless.liudong123.us.kg' ([Errno -2] Name or service not known)""))",
-https://blog.webex.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://unnes.ac.id.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='unnes.ac.id.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade3e020>: Failed to resolve 'unnes.ac.id.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://zoomgov.vipren.biz.id,6156,成功,,200
-https://inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade0f610>: Failed to resolve 'inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-https://46.183.117.129,0,失败,请求超时,
-http://a.renqing.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='a.renqing.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acaea440>: Failed to resolve 'a.renqing.us.kg' ([Errno -2] Name or service not known)""))",
-https://ccv.sosorg.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ccv.sosorg.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade76500>: Failed to resolve 'ccv.sosorg.us.kg' ([Errno -2] Name or service not known)""))",
-https://de-1.iranarg.com,0,失败,"连接失败: HTTPSConnectionPool(host='de-1.iranarg.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)')))",
-https://47.129.213.216,0,失败,请求超时,
-https://cache.netflix.com.servpn.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.servpn.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd32d10>: Failed to resolve 'cache.netflix.com.servpn.us.kg' ([Errno -2] Name or service not known)""))",
-http://0518github.20111121.xyz,0,成功,,200
-http://techomespace.com,0,成功,,200
-http://es.3328.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='es.3328.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd31d80>: Failed to resolve 'es.3328.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless-pro.19900508.xyz,0,成功,,200
-https://vless.pist1688.sbs,0,成功,,200
-https://panel.evamo.ir,0,成功,,200
-http://renqing.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='renqing.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade0cac0>: Failed to resolve 'renqing.us.kg' ([Errno -2] Name or service not known)""))",
-http://robin.nscl.ir,235,成功,,200
-https://sub.lssu.cn,0,成功,,200
-http://vless.saisansei.com,0,成功,,200
-https://45.77.180.183:6036,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6036): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://enclypt.com,0,成功,,200
-https://quiz.int.vidio.com.sg7.regarstore.xyz,6,成功,,200
-http://getkaring.com,0,成功,,200
-https://vless.wyhlyq.eu.org,0,成功,,200
-https://client.opentunnel.net,0,成功,,200
-https://vless2.clayhk.sbs,0,成功,,200
-https://a.renqing.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='a.renqing.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd38a00>: Failed to resolve 'a.renqing.us.kg' ([Errno -2] Name or service not known)""))",
-https://img.email3.vidio.com.mau.fairyvpn.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='img.email3.vidio.com.mau.fairyvpn.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda61d0>: Failed to resolve 'img.email3.vidio.com.mau.fairyvpn.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.1024369.xyz,0,成功,,200
-http://web.101514.xyz,0,失败,"连接失败: HTTPConnectionPool(host='web.101514.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade77700>: Failed to resolve 'web.101514.xyz' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6601,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6601): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://pxstore.my.id,0,成功,,200
-https://investors.spotify.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='investors.spotify.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade76da0>: Failed to resolve 'investors.spotify.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://www.proxybee.ai,0,成功,,200
-https://vless-2.han6068.sbs,0,失败,HTTP错误: 432 Client Error: status code 432 for url: https://vless-2.han6068.sbs/,
-https://mahardika.regarstore.xyz,6,成功,,200
-http://www.jingrunyuan.com,7,成功,,200
-https://45.77.180.183:6482,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6482): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://vless-pro.19900508.xyz,0,成功,,200
-http://vless-2.han6068.sbs,0,成功,,200
-https://199.19.108.31:59999,0,失败,"连接失败: HTTPSConnectionPool(host='199.19.108.31', port=59999): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '199.19.108.31'. (_ssl.c:1017)"")))",
-http://s1.ridzx08.me,2,成功,,200
-https://vless.ginnnnn.xyz,0,成功,,200
-http://38.179.87.49,0,失败,"连接失败: HTTPConnectionPool(host='38.179.87.49', port=80): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f92acd02b30>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-https://myclash.dailyoff.no,0,成功,,200
-http://hello.itlemon.sbs,0,失败,HTTP错误: 432 Client Error:  for url: http://hello.itlemon.sbs/,
-http://vless.8800.pw,0,失败,"连接失败: HTTPConnectionPool(host='vless.8800.pw', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc98d0>: Failed to resolve 'vless.8800.pw' ([Errno -2] Name or service not known)""))",
-https://vless.sxlf.mom,0,成功,,200
-https://45.77.180.183:6686,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6686): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://45.77.180.183:6700,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6700): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://cao.songjing.mom,0,成功,,200
-https://bpb1.vssh.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='bpb1.vssh.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd00b80>: Failed to resolve 'bpb1.vssh.us.kg' ([Errno -2] Name or service not known)""))",
-https://v2.5269.best,0,失败,"连接失败: HTTPSConnectionPool(host='v2.5269.best', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92adda4250>: Failed to resolve 'v2.5269.best' ([Errno -2] Name or service not known)""))",
-http://account-gopay.midtrans.com.multi.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='account-gopay.midtrans.com.multi.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda6830>: Failed to resolve 'account-gopay.midtrans.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://valess.linzhi.sbs,0,成功,,200
-http://investor.fb.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='investor.fb.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda6890>: Failed to resolve 'investor.fb.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92acd01690>: Failed to resolve 'inputbugwildcard.cloudproxyip.my.id.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
-http://vless.712416.xyz,0,失败,"连接失败: HTTPConnectionPool(host='vless.712416.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade0ef50>: Failed to resolve 'vless.712416.xyz' ([Errno -2] Name or service not known)""))",
-http://servpn.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='servpn.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade0ebc0>: Failed to resolve 'servpn.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.swqz.mom,0,成功,,200
-https://yxdy.studyzy.eu.org,2,成功,,200
-https://momai.dev,0,成功,,200
-http://vless.5202026.xyz,0,成功,,200
-https://vless.bess02.eu.org,0,失败,"连接失败: HTTPSConnectionPool(host='vless.bess02.eu.org', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade0d3f0>: Failed to resolve 'vless.bess02.eu.org' ([Errno -2] Name or service not known)""))",
-https://vless.937848.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='vless.937848.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addc85e0>: Failed to resolve 'vless.937848.xyz' ([Errno -2] Name or service not known)""))",
-https://api.midtrans.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='api.midtrans.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addc80d0>: Failed to resolve 'api.midtrans.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://45.77.180.183:6440,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6440): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://vless.chattycrow.app,0,成功,,200
-http://t.gogolimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='t.gogolimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92addc9a80>: Failed to resolve 't.gogolimit.us.kg' ([Errno -2] Name or service not known)""))",
-https://sub.xzqmn.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sub.xzqmn.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92addcba60>: Failed to resolve 'sub.xzqmn.us.kg' ([Errno -2] Name or service not known)""))",
-https://cpvl.archerwsg.top,0,成功,,200
-https://vless.tx88.eu.org,0,成功,,200
-https://myfreevpn.eu.org,0,成功,,200
-http://gendar.ariy.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='gendar.ariy.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92adda69b0>: Failed to resolve 'gendar.ariy.us.kg' ([Errno -2] Name or service not known)""))",
-https://dyq.yydsss.ggff.net,0,失败,"连接失败: HTTPSConnectionPool(host='dyq.yydsss.ggff.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd38f40>: Failed to resolve 'dyq.yydsss.ggff.net' ([Errno -3] Temporary failure in name resolution)""))",
-http://io.ruangguru.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://vpn.qeunso.com,0,失败,请求超时,
-https://vless.llioney.top,0,成功,,200
-http://vless.currydrunt.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.currydrunt.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92accc5b70>: Failed to resolve 'vless.currydrunt.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.liuwushui.sbs,0,成功,,200
-https://ads.ruangguru.com.sakera.cloudproxyip.my.id,4,成功,,200
-http://api.midtrans.com.sakera.cloudproxyip.my.id,4,成功,,200
-https://bukan.kirek.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='bukan.kirek.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92acd01ba0>: Failed to resolve 'bukan.kirek.web.id' ([Errno -2] Name or service not known)""))",
-https://vless.cncj8.dynv6.net,0,成功,,200
-http://ava.game.naver.com.free.2359.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.free.2359.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade5e2f0>: Failed to resolve 'ava.game.naver.com.free.2359.us.kg' ([Errno -2] Name or service not known)""))",
-http://home.babynan.top,0,成功,,200
-https://45.77.180.183:6662,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6662): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-http://115.222.219.174:83,0,失败,"连接失败: HTTPConnectionPool(host='115.222.219.174', port=83): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f92ade5de70>: Failed to establish a new connection: [Errno 111] Connection refused'))",
-http://764793-ck34382.tmweb.ru,0,成功,,200
-https://cloudflare.fangzh.win,0,成功,,200
-https://45.77.180.183:6661,0,失败,"连接失败: HTTPSConnectionPool(host='45.77.180.183', port=6661): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '45.77.180.183'. (_ssl.c:1017)"")))",
-https://ava.game.naver.com.multi.2359.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ava.game.naver.com.multi.2359.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade2abc0>: Failed to resolve 'ava.game.naver.com.multi.2359.us.kg' ([Errno -2] Name or service not known)""))",
-https://pavles.upeet.eu.org,0,成功,,200
-http://www.proxybee.ai,0,成功,,200
-http://vless.xianjian10.top,0,成功,,200
-http://proxy1.freebenkyo.xyz,0,成功,,200
-http://shop.mirer.cfd,0,成功,,200
-http://docker.1919444.xyz,0,成功,,200
-https://vless.alencage.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.alencage.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3e8f0>: Failed to resolve 'vless.alencage.us.kg' ([Errno -2] Name or service not known)""))",
-http://vless.itboy.sbs,0,成功,,200
-https://chat.nbhd.cloud,0,失败,"连接失败: HTTPSConnectionPool(host='chat.nbhd.cloud', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'chat.nbhd.cloud'. (_ssl.c:1017)"")))",
-https://vless.ciceboy.pp.ua,0,成功,,200
-https://tydv.jilian.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='tydv.jilian.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade5e530>: Failed to resolve 'tydv.jilian.filegear-sg.me' ([Errno -2] Name or service not known)""))",
-https://agus.arivpremium.biz.id,0,失败,"连接失败: HTTPSConnectionPool(host='agus.arivpremium.biz.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3c460>: Failed to resolve 'agus.arivpremium.biz.id' ([Errno -2] Name or service not known)""))",
-https://df.game.naver.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='df.game.naver.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3e6e0>: Failed to resolve 'df.game.naver.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
-https://vless.taohuajianxian.com,0,失败,"连接失败: HTTPSConnectionPool(host='vless.taohuajianxian.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7f92ade3f6d0>: Failed to resolve 'vless.taohuajianxian.com' ([Errno -2] Name or service not known)""))",
-http://brcp15.hostfx.ru,0,失败,"连接失败: HTTPConnectionPool(host='brcp15.hostfx.ru', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7f92ade3c910>: Failed to resolve 'brcp15.hostfx.ru' ([Errno -3] Temporary failure in name resolution)""))",
-https://vless.openfine.xyz,0,失败,请求超时,
-https://107.150.46.252:58000,0,失败,请求超时,
-http://vless.openfine.xyz,0,失败,请求超时,
-https://kf-hk-003.hitk.cc:4455,0,失败,请求超时,
-https://www.welcomewalls.com,0,失败,请求超时,
-http://216.185.57.178,0,失败,请求超时,
-http://www.ayu.pw,0,失败,请求超时,
-https://hello.welcomewalls.com,0,失败,请求超时,
-https://keny.goodd.fun,0,失败,请求超时,
+https://sub-trojan.08050611.xyz,2,成功,,200
+http://findingvpn.com,0,失败,HTTP错误: 403 Client Error: Forbidden for url: http://findingvpn.com/,
+http://5.wwttw.com,0,失败,HTTP错误: 403 Client Error: Forbidden for url: http://5.wwttw.com/,
+https://www.surfcon.xyz,0,成功,,200
+https://argo.juju.nyc.mn,1,成功,,200
+http://argo.juju.nyc.mn,1,成功,,200
+http://www.v2nodes.com,0,成功,,200
+https://ne.prostovpn.net,0,成功,,200
+http://fsid.web.id,60,成功,,200
+http://com.fstores.web.id,60,成功,,200
+http://xyr911.top,0,成功,,200
+https://mobile.opennet.dev,0,成功,,200
+https://vlessprimeworker.psxuu.sbs,0,成功,,200
+http://cf-dy.538598.xyz,0,失败,"连接失败: HTTPConnectionPool(host='cf-dy.538598.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ff5e0>: Failed to resolve 'cf-dy.538598.xyz' ([Errno -2] Name or service not known)""))",
+http://vless-edgetunnel.weijiehuang.com,0,失败,"请求失败: HTTPSConnectionPool(host='vless-edgetunnel.weijiehuang.com', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+https://www.testpartner.ru,0,成功,,200
+http://www.chinesestreet.nl,0,成功,,200
+https://cmvless.pengdaye.top,0,失败,"连接失败: HTTPSConnectionPool(host='cmvless.pengdaye.top', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448e18d0>: Failed to resolve 'cmvless.pengdaye.top' ([Errno -2] Name or service not known)""))",
+http://lyucean.com,0,成功,,200
+https://198.204.241.235:58000,0,失败,"连接失败: HTTPSConnectionPool(host='198.204.241.235', port=58000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fcf447ff070>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://vless.myros.xyz,0,成功,,200
+https://test.luotao0324.sbs,0,成功,,200
+http://mfmo2854.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='mfmo2854.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481e140>: Failed to resolve 'mfmo2854.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+https://df.game.naver.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='df.game.naver.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447fe8f0>: Failed to resolve 'df.game.naver.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://dingyue.lihuayun.top,0,成功,,200
+https://bakrie.ac.id.sg1.misubufuruvvip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='bakrie.ac.id.sg1.misubufuruvvip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481c250>: Failed to resolve 'bakrie.ac.id.sg1.misubufuruvvip.my.id' ([Errno -2] Name or service not known)""))",
+https://vless.318400.xyz,0,成功,,200
+https://dyq.5200506.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='dyq.5200506.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44828220>: Failed to resolve 'dyq.5200506.xyz' ([Errno -2] Name or service not known)""))",
+http://bimbel.ruangguru.com.freeproxy.biz.id,0,失败,"请求失败: HTTPSConnectionPool(host='bimbel.ruangguru.com.freeproxy.biz.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+https://support.zoom.us.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b9c90>: Failed to resolve 'support.zoom.us.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://pages.amktiao.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='pages.amktiao.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481cf70>: Failed to resolve 'pages.amktiao.us.kg' ([Errno -2] Name or service not known)""))",
+http://nb.g9.lol,0,成功,,200
+http://www.udemy.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='www.udemy.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44861660>: Failed to resolve 'www.udemy.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://io.ruangguru.com.freevpn.najah.biz.id,90,成功,,200
+https://edgesub.jaysongroup.top,0,成功,,200
+http://support.zoom.us.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448b9900>: Failed to resolve 'support.zoom.us.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://wain.liudg.ggff.net,2,成功,,200
+http://zhangyuanyin.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zhangyuanyin.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44862860>: Failed to resolve 'zhangyuanyin.us.kg' ([Errno -2] Name or service not known)""))",
+https://sg2.ztx.me,0,失败,"连接失败: HTTPSConnectionPool(host='sg2.ztx.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481c4c0>: Failed to resolve 'sg2.ztx.me' ([Errno -2] Name or service not known)""))",
+http://support.zoom.us.vmesscf.budisite.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.vmesscf.budisite.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481c4f0>: Failed to resolve 'support.zoom.us.vmesscf.budisite.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.mudrenizm.ru,0,成功,,200
+https://www.gitlx.com,0,成功,,200
+https://df.game.naver.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='df.game.naver.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481f640>: Failed to resolve 'df.game.naver.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://ava.game.naver.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481f4f0>: Failed to resolve 'ava.game.naver.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless06.trevely.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless06.trevely.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e8e20>: Failed to resolve 'vless06.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless.katomakoto.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.katomakoto.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447eb3d0>: Failed to resolve 'vless.katomakoto.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.playtoearn.fun,0,成功,,200
+https://shayshayblack11.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='shayshayblack11.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ebb80>: Failed to resolve 'shayshayblack11.us.kg' ([Errno -2] Name or service not known)""))",
+http://free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='free-cf.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e89d0>: Failed to resolve 'free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://mute-vpn.net,0,成功,,200
+http://cnwv0110.jeffrey.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='cnwv0110.jeffrey.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44829360>: Failed to resolve 'cnwv0110.jeffrey.us.kg' ([Errno -2] Name or service not known)""))",
+https://bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481e500>: Failed to resolve 'bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://blog.webex.com.freevpn.ndeso.web.id,90,成功,,200
+https://karing.kkhome.top,0,成功,,200
+http://vless.ifyou.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless.ifyou.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ffeb0>: Failed to resolve 'vless.ifyou.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless.318400.xyz,0,成功,,200
+http://ava.game.naver.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.free-cf.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ff970>: Failed to resolve 'ava.game.naver.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://investor.fb.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='investor.fb.com.free-cf.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ffeb0>: Failed to resolve 'investor.fb.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://v2nodes.com,0,成功,,200
+http://karing.kkhome.top,0,成功,,200
+https://free.mediafairy.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='free.mediafairy.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481cbb0>: Failed to resolve 'free.mediafairy.web.id' ([Errno -2] Name or service not known)""))",
+https://sub.xn--4gqa0ey62s18n.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sub.xn--4gqa0ey62s18n.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b83d0>: Failed to resolve 'sub.xn--4gqa0ey62s18n.us.kg' ([Errno -2] Name or service not known)""))",
+http://com.isidomain.web.id,0,失败,"请求失败: HTTPConnectionPool(host='com.isidomain.web.id', port=80): Max retries exceeded with url: / (Caused by ResponseError('too many 503 error responses'))",
+https://3y3dy.xlnets.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='3y3dy.xlnets.sbs', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448292d0>: Failed to resolve '3y3dy.xlnets.sbs' ([Errno -2] Name or service not known)""))",
+https://siakad.esaunggul.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='siakad.esaunggul.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448bac20>: Failed to resolve 'siakad.esaunggul.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://ns1.mihanhost.info,0,成功,,200
+http://ssl.opennet.dev,0,成功,,200
+https://chat.sociomile.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='chat.sociomile.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448bbd90>: Failed to resolve 'chat.sociomile.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://bakrie.ac.id.sg1.misubufuruvvip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='bakrie.ac.id.sg1.misubufuruvvip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481c790>: Failed to resolve 'bakrie.ac.id.sg1.misubufuruvvip.my.id' ([Errno -2] Name or service not known)""))",
+https://agfg3h42g2.443vpn.online,0,成功,,200
+https://zhangyuanyin.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zhangyuanyin.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448bbb80>: Failed to resolve 'zhangyuanyin.us.kg' ([Errno -2] Name or service not known)""))",
+http://gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448bb9a0>: Failed to resolve 'gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.surfcon.xyz,0,成功,,200
+http://sing.0000002.best,0,成功,,200
+https://bbs.syh.pp.ua,0,成功,,200
+http://a.tjx520.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='a.tjx520.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481e1a0>: Failed to resolve 'a.tjx520.us.kg' ([Errno -2] Name or service not known)""))",
+http://inconigtovpn.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='inconigtovpn.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47a86bf0>: Failed to resolve 'inconigtovpn.us.kg' ([Errno -2] Name or service not known)""))",
+http://fotbo.com.ua,0,成功,,200
+https://w.159632.xyz,0,成功,,200
+https://break.alknet-smi.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='break.alknet-smi.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aee350>: Failed to resolve 'break.alknet-smi.my.id' ([Errno -2] Name or service not known)""))",
+https://quiz.int.vidio.com.freexxx.xhamster.biz.id,90,成功,,200
+http://ttvtt.jilian.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ttvtt.jilian.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47a878b0>: Failed to resolve 'ttvtt.jilian.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless.mambaout.me,0,成功,,200
+https://sakha.epolice.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sakha.epolice.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448633d0>: Failed to resolve 'sakha.epolice.us.kg' ([Errno -2] Name or service not known)""))",
+http://sds.jilian.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='sds.jilian.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44861390>: Failed to resolve 'sds.jilian.filegear-sg.me' ([Errno -2] Name or service not known)""))",
+https://vless.williamvless.sbs,0,成功,,200
+http://vless1.seatime.sbs,0,成功,,200
+http://advanced.jntm.buzz,0,成功,,200
+http://vless07.trevely.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless07.trevely.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447bdcc0>: Failed to resolve 'vless07.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+https://ads.ruangguru.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ads.ruangguru.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447bfd30>: Failed to resolve 'ads.ruangguru.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://lsj.360832.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='lsj.360832.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447be890>: Failed to resolve 'lsj.360832.xyz' ([Errno -2] Name or service not known)""))",
+https://zoomgov.com.fstores.web.id:2083,60,成功,,200
+https://mute-vpn.net,0,成功,,200
+http://vless1.who-is-joe.sbs,0,成功,,200
+https://pizzicotto.be,0,成功,,200
+https://vless.xlzq.buzz,0,成功,,200
+https://siakad.esaunggul.ac.id.free.mediafairy.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='siakad.esaunggul.ac.id.free.mediafairy.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44861cc0>: Failed to resolve 'siakad.esaunggul.ac.id.free.mediafairy.web.id' ([Errno -2] Name or service not known)""))",
+http://yxdy.cjwy.top,0,失败,"连接失败: HTTPConnectionPool(host='yxdy.cjwy.top', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ebe50>: Failed to resolve 'yxdy.cjwy.top' ([Errno -2] Name or service not known)""))",
+http://flyw.xiadao.vip,0,成功,,200
+https://beta.zoom.us.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='beta.zoom.us.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ea530>: Failed to resolve 'beta.zoom.us.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://ads.ruangguru.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='ads.ruangguru.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447beb00>: Failed to resolve 'ads.ruangguru.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://chenruivless.mfmo2855.dynv6.net,0,失败,"连接失败: HTTPConnectionPool(host='chenruivless.mfmo2855.dynv6.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ea5f0>: Failed to resolve 'chenruivless.mfmo2855.dynv6.net' ([Errno -2] Name or service not known)""))",
+http://investors.spotify.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='investors.spotify.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481bb50>: Failed to resolve 'investors.spotify.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://zaintest.vuclip.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='zaintest.vuclip.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481b040>: Failed to resolve 'zaintest.vuclip.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://217.12.47.71:8195,0,失败,"连接失败: HTTPConnectionPool(host='217.12.47.71', port=8195): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf47a86ce0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+http://gopay-raccoon.gojekapi.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='gopay-raccoon.gojekapi.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47a87910>: Failed to resolve 'gopay-raccoon.gojekapi.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://www.zyq.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='www.zyq.xyz', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.zyq.xyz'. (_ssl.c:1017)"")))",
+https://www.pittagizem.be,0,成功,,200
+http://bansos.pertamaxx.net,0,成功,,200
+http://buyttvp.online,0,成功,,200
+https://proxysite.guru,0,成功,,200
+https://www.tkgj.life,0,失败,"连接失败: HTTPSConnectionPool(host='www.tkgj.life', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.tkgj.life'. (_ssl.c:1017)"")))",
+http://blog.saofan.top,1,成功,,200
+http://vortexxx1337.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vortexxx1337.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44862e00>: Failed to resolve 'vortexxx1337.us.kg' ([Errno -2] Name or service not known)""))",
+https://yxym-auto.ceshi0.eu.org,2,成功,,200
+https://trial.sshs8.com,0,成功,,200
+https://vpiran2.top,0,成功,,200
+http://ovsea.link,0,失败,"连接失败: HTTPSConnectionPool(host='ovsea.link', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'ovsea.link'. (_ssl.c:1017)"")))",
+https://ovsea.link,0,失败,"连接失败: HTTPSConnectionPool(host='ovsea.link', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'ovsea.link'. (_ssl.c:1017)"")))",
+https://live.iflix.com.vless.awerty.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='live.iflix.com.vless.awerty.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44905360>: Failed to resolve 'live.iflix.com.vless.awerty.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless1.who-is-joe.sbs,0,成功,,200
+https://com.isidomain.web.id,133200,成功,,200
+https://advanced.jntm.buzz,0,成功,,200
+http://blog.vcvit.me,0,成功,,200
+http://ads.ruangguru.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='ads.ruangguru.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44905720>: Failed to resolve 'ads.ruangguru.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://vmesscf.budisite.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vmesscf.budisite.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447fedd0>: Failed to resolve 'vmesscf.budisite.us.kg' ([Errno -2] Name or service not known)""))",
+http://cdnlist2.v2box.org,0,成功,,200
+http://io.ruangguru.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='io.ruangguru.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447fc3a0>: Failed to resolve 'io.ruangguru.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://najah.biz.id,4,成功,,200
+http://vless-pro.synervolt.net,0,成功,,200
+https://hondaotothaibinh5s.com,0,成功,,200
+https://0519trojan.20111121.xyz,0,成功,,200
+http://vlessprimeworker.psxuu.sbs,0,成功,,200
+https://blog.335780.xyz,0,成功,,200
+https://nav.666888.tk,0,成功,,200
+http://nav.666888.tk,0,成功,,200
+http://chat.sociomile.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='chat.sociomile.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491c910>: Failed to resolve 'chat.sociomile.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://a.tjx520.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='a.tjx520.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b8eb0>: Failed to resolve 'a.tjx520.us.kg' ([Errno -2] Name or service not known)""))",
+http://cmvless.pengdaye.top,0,失败,"连接失败: HTTPConnectionPool(host='cmvless.pengdaye.top', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448bb7f0>: Failed to resolve 'cmvless.pengdaye.top' ([Errno -2] Name or service not known)""))",
+http://chocolate.kelake.tk,2,成功,,200
+http://sub.subeithor.icu,0,成功,,200
+http://cf-vless.reason195.filegear-sg.me,0,成功,,200
+http://vless.xhsapp.icu,0,成功,,200
+https://tr.v2nodes.com,0,成功,,200
+http://ardavpn.com,0,成功,,200
+http://ava.game.naver.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='ava.game.naver.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aedea0>: Failed to resolve 'ava.game.naver.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://pages.amktiao.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='pages.amktiao.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b8580>: Failed to resolve 'pages.amktiao.us.kg' ([Errno -2] Name or service not known)""))",
+http://0519trojan.20111121.xyz,0,成功,,200
+http://blog.335780.xyz,0,成功,,200
+https://cnwv0110.jeffrey.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='cnwv0110.jeffrey.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481f010>: Failed to resolve 'cnwv0110.jeffrey.us.kg' ([Errno -2] Name or service not known)""))",
+https://bila.kurnia.fun,0,失败,"连接失败: HTTPSConnectionPool(host='bila.kurnia.fun', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447e9cf0>: Failed to resolve 'bila.kurnia.fun' ([Errno -3] Temporary failure in name resolution)""))",
+http://ruahcare.com,0,成功,,200
+https://quiz.int.vidio.com.freeproxy.biz.id,0,失败,"请求失败: HTTPSConnectionPool(host='quiz.int.vidio.com.freeproxy.biz.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+https://vless.yuze.nyc.mn,0,成功,,200
+http://vless.gawei.sbs,0,成功,,200
+https://vless.liujh.cfd,0,成功,,200
+http://vless-plus.776776.xyz,0,成功,,200
+https://b.personalaccount.store-vpn.my.id,0,失败,内容过短,200
+https://surfcon.xyz,0,成功,,200
+https://vless.qioo.fun,0,成功,,200
+http://tweek.top,0,成功,,200
+https://support.zoom.us.vmesscf.budisite.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.vmesscf.budisite.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44862830>: Failed to resolve 'support.zoom.us.vmesscf.budisite.us.kg' ([Errno -2] Name or service not known)""))",
+https://inconigtovpn.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='inconigtovpn.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448bb430>: Failed to resolve 'inconigtovpn.us.kg' ([Errno -2] Name or service not known)""))",
+https://zaintest.vuclip.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zaintest.vuclip.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4491d060>: Failed to resolve 'zaintest.vuclip.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://wit.kurnia.fun,0,失败,"连接失败: HTTPConnectionPool(host='wit.kurnia.fun', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447fe920>: Failed to resolve 'wit.kurnia.fun' ([Errno -3] Temporary failure in name resolution)""))",
+http://v.axyz.top,0,失败,"连接失败: HTTPConnectionPool(host='v.axyz.top', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491e230>: Failed to resolve 'v.axyz.top' ([Errno -2] Name or service not known)""))",
+https://blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44862ad0>: Failed to resolve 'blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+https://shaogroup.top,0,失败,"连接失败: HTTPSConnectionPool(host='shaogroup.top', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44861270>: Failed to resolve 'shaogroup.top' ([Errno -2] Name or service not known)""))",
+https://dedi.xl-unlimited.web.id,90,成功,,200
+http://vless.shunyue.club,0,成功,,200
+http://vless.etxx.cc,0,失败,"连接失败: HTTPConnectionPool(host='vless.etxx.cc', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481fd30>: Failed to resolve 'vless.etxx.cc' ([Errno -2] Name or service not known)""))",
+https://sds.jilian.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='sds.jilian.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447feef0>: Failed to resolve 'sds.jilian.filegear-sg.me' ([Errno -2] Name or service not known)""))",
+http://vless.hiyoi.com,0,成功,,200
+https://vlessip.marico.top,0,成功,,200
+https://io.ruangguru.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='io.ruangguru.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44904700>: Failed to resolve 'io.ruangguru.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://v.adamworks.top,0,成功,,200
+https://zh.v2nodes.com,0,成功,,200
+http://velss.wanwankan.asia,0,成功,,200
+http://zdy.vyvy.my,2,成功,,200
+https://sanqi.sanqifen2124.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='sanqi.sanqifen2124.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44861f90>: Failed to resolve 'sanqi.sanqifen2124.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+http://hondaotothaibinh5s.com,0,成功,,200
+https://vless.shunyue.club,0,成功,,200
+https://cf-dy.538598.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='cf-dy.538598.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eac20>: Failed to resolve 'cf-dy.538598.xyz' ([Errno -2] Name or service not known)""))",
+https://cdnlist2.v2box.org,0,成功,,200
+https://dilipmasale.com,0,失败,"连接失败: HTTPSConnectionPool(host='dilipmasale.com', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44904fa0>: Failed to resolve 'dilipmasale.com' ([Errno -3] Temporary failure in name resolution)""))",
+http://www.xn--kcrx7j1r9ar2e.xyz,0,成功,,200
+https://vlesspro.yinyongpeng.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vlesspro.yinyongpeng.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4491fd90>: Failed to resolve 'vlesspro.yinyongpeng.us.kg' ([Errno -2] Name or service not known)""))",
+https://v2rayng.lk1337.top,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://v2rayng.lk1337.top/,
+http://media-cgk1-1.cdn.whatsapp.net.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='media-cgk1-1.cdn.whatsapp.net.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ebd00>: Failed to resolve 'media-cgk1-1.cdn.whatsapp.net.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://trndc03.1way.eu.org,0,成功,,200
+http://abrco.io,0,成功,,200
+http://xhamster.biz.id,4,成功,,200
+https://opentunnel.net,0,成功,,200
+http://cmvl.hongkongdna.com,0,成功,,200
+https://chocolate.kelake.tk,2,成功,,200
+http://turah.my.id,4,成功,,200
+https://www.vpsdhw.com,0,成功,,200
+https://media-cgk1-1.cdn.whatsapp.net.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='media-cgk1-1.cdn.whatsapp.net.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ebd00>: Failed to resolve 'media-cgk1-1.cdn.whatsapp.net.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://quiz.int.vidio.com.free-cf.turah.my.id,0,失败,"连接失败: HTTPConnectionPool(host='quiz.int.vidio.com.free-cf.turah.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47a865c0>: Failed to resolve 'quiz.int.vidio.com.free-cf.turah.my.id' ([Errno -2] Name or service not known)""))",
+http://zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47a87b20>: Failed to resolve 'zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.hotu.uk,0,成功,,200
+https://www.fast-ssh.com,0,成功,,200
+http://www.opensignal.com.v.htetfreenet.com,0,成功,,200
+http://page.2234566.xyz,0,成功,,200
+https://ess.testzzxx.sbs,0,成功,,200
+https://v23.shdaliri.ir,0,成功,,200
+http://dyq.5200506.xyz,0,失败,"连接失败: HTTPConnectionPool(host='dyq.5200506.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491fe80>: Failed to resolve 'dyq.5200506.xyz' ([Errno -2] Name or service not known)""))",
+http://proxy.ycode.asia,0,成功,,200
+https://nontontv.vidio.com.isidomain.web.id,0,失败,"请求失败: HTTPSConnectionPool(host='nontontv.vidio.com.isidomain.web.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 503 error responses'))",
+http://cnvt.hutail.xyz,0,成功,,200
+https://xhamster.biz.id,4,成功,,200
+http://91.103.252.4:3000,0,失败,"连接失败: HTTPConnectionPool(host='91.103.252.4', port=3000): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf4481a950>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://vless1.seatime.sbs,0,成功,,200
+https://unityvpn-v2ray.apps112.com,0,成功,,200
+http://api.midtrans.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='api.midtrans.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447eb400>: Failed to resolve 'api.midtrans.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://dedi.xl-unlimited.web.id,90,成功,,200
+https://df.game.naver.com.break.alknet-smi.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='df.game.naver.com.break.alknet-smi.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44939bd0>: Failed to resolve 'df.game.naver.com.break.alknet-smi.my.id' ([Errno -2] Name or service not known)""))",
+http://1y1dy.xlnets.sbs,0,失败,"连接失败: HTTPConnectionPool(host='1y1dy.xlnets.sbs', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448281c0>: Failed to resolve '1y1dy.xlnets.sbs' ([Errno -2] Name or service not known)""))",
+https://ttvtt.jilian.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ttvtt.jilian.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481cbb0>: Failed to resolve 'ttvtt.jilian.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless06.trevely.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless06.trevely.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eb9d0>: Failed to resolve 'vless06.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+http://vl.19870530.xyz,2,成功,,200
+https://minzhi.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='minzhi.xyz', port=443): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fcf447e9090>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://5.wwttw.com,0,失败,HTTP错误: 403 Client Error: Forbidden for url: https://5.wwttw.com/,
+http://beta.zoom.us.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='beta.zoom.us.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ea890>: Failed to resolve 'beta.zoom.us.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://investor.fb.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='investor.fb.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eb6d0>: Failed to resolve 'investor.fb.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://inconigto.web.id,0,失败,HTTP错误: 404 Client Error: Not Found for url: https://inconigto.web.id/,
+https://cache.netflix.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44862290>: Failed to resolve 'cache.netflix.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://v23.shdaliri.ir,0,成功,,200
+https://ava.game.naver.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='ava.game.naver.com.free-cf.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eaaa0>: Failed to resolve 'ava.game.naver.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://www.opennet.me,0,成功,,200
+https://digiram.ru,0,成功,,200
+https://naura.kurnia.fun,0,失败,"连接失败: HTTPSConnectionPool(host='naura.kurnia.fun', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481ee90>: Failed to resolve 'naura.kurnia.fun' ([Errno -3] Temporary failure in name resolution)""))",
+https://lyucean.com,0,成功,,200
+https://bansos.pertamaxx.net,0,成功,,200
+https://mfmo2854.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='mfmo2854.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44828220>: Failed to resolve 'mfmo2854.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+http://vless.colf.fun,0,成功,,200
+http://vidio.com.isidomain.web.id,133200,成功,,200
+https://vless-cf.khd-hsgf.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless-cf.khd-hsgf.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4493a530>: Failed to resolve 'vless-cf.khd-hsgf.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.colf.fun,0,成功,,200
+http://ess.testzzxx.sbs,0,成功,,200
+http://vpn.lucka.biz.id,90,成功,,200
+https://v.adamworks.top,0,成功,,200
+https://vless.lightcode.fun,0,成功,,200
+http://rev.linkman.top,0,成功,,200
+http://sub-trojan.08050611.xyz,2,成功,,200
+http://instajokar.site,0,失败,"连接失败: HTTPConnectionPool(host='instajokar.site', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448283d0>: Failed to resolve 'instajokar.site' ([Errno -2] Name or service not known)""))",
+https://vless.jerax.eu.org,0,成功,,200
+https://www.opennet.dev,0,成功,,200
+https://v.axyz.top,0,失败,"连接失败: HTTPSConnectionPool(host='v.axyz.top', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4493a500>: Failed to resolve 'v.axyz.top' ([Errno -2] Name or service not known)""))",
+https://rev.linkman.top,0,成功,,200
+https://bimbel.ruangguru.com.fsid.web.id,60,成功,,200
+https://gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf449390c0>: Failed to resolve 'gopay-raccoon.gojekapi.com.vvip.inconigtomode.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.xhsapp.icu,0,成功,,200
+http://vless08.trevely.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless08.trevely.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44939cc0>: Failed to resolve 'vless08.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.ly3665.buzz,0,成功,,200
+https://com.fstores.web.id,60,成功,,200
+http://df.game.naver.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='df.game.naver.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44950460>: Failed to resolve 'df.game.naver.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://cdn.appsflayer.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='cdn.appsflayer.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44907b80>: Failed to resolve 'cdn.appsflayer.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://cf.qzjj.eu.org,0,失败,"连接失败: HTTPSConnectionPool(host='cf.qzjj.eu.org', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448283d0>: Failed to resolve 'cf.qzjj.eu.org' ([Errno -2] Name or service not known)""))",
+http://vless.yuze.nyc.mn,0,成功,,200
+http://www.vmless.site,0,成功,,200
+http://vless.weilong.sbs,0,成功,,200
+http://109.191.87.41,0,失败,请求超时,
+https://95.182.122.140,0,失败,请求超时,
+http://sub.naiyou.buzz,0,成功,,200
+http://agfg3h42g2.443vpn.online,0,成功,,200
+http://blog.5205230.xyz,0,成功,,200
+http://inconigto.web.id,0,失败,HTTP错误: 404 Client Error: Not Found for url: https://inconigto.web.id/,
+https://vless-page.mao1neng2yong.eu.org,0,失败,"请求失败: HTTPSConnectionPool(host='vless-page.mao1neng2yong.eu.org', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+http://mobile.opennet.dev,0,成功,,200
+https://main.wudage.site,0,成功,,200
+https://h2a-22.wlhhha.dynv6.net,5,成功,,200
+http://test.359227772.xyz,0,成功,,200
+http://www.testpartner.ru,0,成功,,200
+https://cache.netflix.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='cache.netflix.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ea3e0>: Failed to resolve 'cache.netflix.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://zaintest.vuclip.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zaintest.vuclip.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447eb460>: Failed to resolve 'zaintest.vuclip.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless.shiyanchu.dynv6.net,0,成功,,200
+https://cloudyu.top,0,成功,,200
+https://vl.19870530.xyz,2,成功,,200
+https://fast-ssh.com,0,成功,,200
+https://ads.ruangguru.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='ads.ruangguru.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44828490>: Failed to resolve 'ads.ruangguru.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://vless.guoqtest.sbs,0,成功,,200
+http://vless.hotu.uk,0,成功,,200
+http://member.155win.com,0,失败,"连接失败: HTTPSConnectionPool(host='member.155win.com', port=443): Max retries exceeded with url: / (Caused by ReadTimeoutError(""HTTPSConnectionPool(host='member.155win.com', port=443): Read timed out. (read timeout=60)""))",
+https://convert.stonewater.pp.ua,0,失败,"连接失败: HTTPSConnectionPool(host='convert.stonewater.pp.ua', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481eef0>: Failed to resolve 'convert.stonewater.pp.ua' ([Errno -2] Name or service not known)""))",
+https://www.udemy.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='www.udemy.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481ded0>: Failed to resolve 'www.udemy.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.guoqtest.sbs,0,成功,,200
+https://sub.fastest.cloudns.biz,1,成功,,200
+https://yxdy.cjwy.top,0,失败,"连接失败: HTTPSConnectionPool(host='yxdy.cjwy.top', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44905cc0>: Failed to resolve 'yxdy.cjwy.top' ([Errno -2] Name or service not known)""))",
+https://cnvt.hutail.xyz,0,成功,,200
+https://109.69.58.220:8443,0,失败,请求超时,
+https://isidomain.web.id,133200,成功,,200
+https://vless08.trevely.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless08.trevely.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481cc40>: Failed to resolve 'vless08.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+http://dingyue.monkeyboss.dynv6.net,0,失败,"连接失败: HTTPConnectionPool(host='dingyue.monkeyboss.dynv6.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448634f0>: Failed to resolve 'dingyue.monkeyboss.dynv6.net' ([Errno -2] Name or service not known)""))",
+https://vvs2024liaoya.konamichina.com,0,成功,,200
+https://92.112.23.235,0,失败,请求超时,
+https://fi2-node.proxier.cc,0,成功,,200
+https://qwer.brookguidehelper.dynv6.net,0,成功,,200
+https://hongxianyun.top,2,成功,,200
+https://www.xn--jprx39f24f0ny.xyz,0,成功,,200
+http://36.232.10.108:3000,0,失败,请求超时,
+http://114.217.250.211:9997,0,失败,请求超时,
+https://dy.135051.filegear-sg.me,0,失败,"连接失败: HTTPSConnectionPool(host='dy.135051.filegear-sg.me', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44907c70>: Failed to resolve 'dy.135051.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+http://vless03.trevely.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless03.trevely.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491e0b0>: Failed to resolve 'vless03.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+https://ava.game.naver.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='ava.game.naver.com.loss.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4491e7d0>: Failed to resolve 'ava.game.naver.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://152.53.34.165:8090,0,失败,请求超时,
+https://vless-edgetunnel.weijiehuang.com,0,失败,"请求失败: HTTPSConnectionPool(host='vless-edgetunnel.weijiehuang.com', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+http://vpiran2.top,0,成功,,200
+https://mjdy.ambercc.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='mjdy.ambercc.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481dba0>: Failed to resolve 'mjdy.ambercc.us.kg' ([Errno -2] Name or service not known)""))",
+https://free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='free-cf.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b8f10>: Failed to resolve 'free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://vmless.site,0,成功,,200
+https://gopay-raccoon.gojekapi.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='gopay-raccoon.gojekapi.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448bb460>: Failed to resolve 'gopay-raccoon.gojekapi.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://page.2234566.xyz,0,成功,,200
+http://vless.williamvless.sbs,0,成功,,200
+https://fsid.web.id,60,成功,,200
+http://test.luotao0324.sbs,0,成功,,200
+http://219.134.222.110:8090,0,失败,"连接失败: HTTPConnectionPool(host='219.134.222.110', port=8090): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf44906cb0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+http://x1ch-ovh.devefun.net,0,失败,请求超时,
+https://vmless.site,0,成功,,200
+http://break.alknet-smi.my.id,0,失败,"连接失败: HTTPConnectionPool(host='break.alknet-smi.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447fe710>: Failed to resolve 'break.alknet-smi.my.id' ([Errno -2] Name or service not known)""))",
+http://vps.dreamer.sbs,0,成功,,200
+http://vmesscf.budisite.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vmesscf.budisite.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491f430>: Failed to resolve 'vmesscf.budisite.us.kg' ([Errno -2] Name or service not known)""))",
+http://tischenko.su,0,成功,,200
+https://multi.swdstore.xyz,40,成功,,200
+https://vless.katomakoto.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.katomakoto.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4491c1c0>: Failed to resolve 'vless.katomakoto.us.kg' ([Errno -2] Name or service not known)""))",
+http://139.198.108.97:8080,0,失败,请求超时,
+https://ava.game.naver.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='ava.game.naver.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44828070>: Failed to resolve 'ava.game.naver.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://m.opennet.dev,0,成功,,200
+https://bk.saofan.top,1,成功,,200
+https://vless.gawei.sbs,0,成功,,200
+http://siakad.esaunggul.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='siakad.esaunggul.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44953310>: Failed to resolve 'siakad.esaunggul.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://clashx.cc,0,成功,,200
+https://vm.yumday.org,0,成功,,200
+http://01.dingyueqi001.xcqqxc.dynv6.net,0,失败,"连接失败: HTTPConnectionPool(host='01.dingyueqi001.xcqqxc.dynv6.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44861630>: Failed to resolve '01.dingyueqi001.xcqqxc.dynv6.net' ([Errno -2] Name or service not known)""))",
+https://www.1998123.xyz,0,成功,,200
+https://vless.wandouvpn.top,0,成功,,200
+http://shayshayblack11.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='shayshayblack11.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e8c70>: Failed to resolve 'shayshayblack11.us.kg' ([Errno -2] Name or service not known)""))",
+https://sub.dearmer1993.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sub.dearmer1993.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eace0>: Failed to resolve 'sub.dearmer1993.us.kg' ([Errno -2] Name or service not known)""))",
+https://dabanc.anyxi.com:63001,0,成功,,200
+http://nicedy.771949.xyz,2,成功,,200
+http://loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448bb8e0>: Failed to resolve 'loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://fast-ssh.com,0,成功,,200
+https://tapps.center,0,成功,,200
+http://fi2-node.proxier.cc,0,成功,,200
+http://vless.ly3665.buzz,0,成功,,200
+http://shenyuan911.pro,0,失败,"连接失败: HTTPSConnectionPool(host='shenyuan911.pro', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'shenyuan911.pro'. (_ssl.c:1017)"")))",
+http://proxysite.guru,0,成功,,200
+https://1y1dy.xlnets.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='1y1dy.xlnets.sbs', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481c730>: Failed to resolve '1y1dy.xlnets.sbs' ([Errno -2] Name or service not known)""))",
+http://sub.fastest.cloudns.biz,1,成功,,200
+https://blog.vcvit.me,0,成功,,200
+http://naura.kurnia.fun,0,失败,"连接失败: HTTPConnectionPool(host='naura.kurnia.fun', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481c490>: Failed to resolve 'naura.kurnia.fun' ([Errno -3] Temporary failure in name resolution)""))",
+https://napsternetv-v2ray-vpn-client.apps112.com,0,成功,,200
+https://vless07.trevely.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless07.trevely.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481e800>: Failed to resolve 'vless07.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+http://main.wudage.site,0,成功,,200
+https://vless03.trevely.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless03.trevely.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44861600>: Failed to resolve 'vless03.trevely.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless-pro.synervolt.net,0,成功,,200
+https://ceshi.johnny-wang.dynv6.net,0,失败,"连接失败: HTTPSConnectionPool(host='ceshi.johnny-wang.dynv6.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448b8f10>: Failed to resolve 'ceshi.johnny-wang.dynv6.net' ([Errno -2] Name or service not known)""))",
+http://mudrenizm.ru,0,成功,,200
+https://www.xn--4gqvd380bmxm29yd5fjj5a.xyz,0,成功,,200
+https://vless.mambaout.me,0,成功,,200
+https://rayi.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='rayi.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448e1fc0>: Failed to resolve 'rayi.us.kg' ([Errno -2] Name or service not known)""))",
+https://api.midtrans.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='api.midtrans.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448e0490>: Failed to resolve 'api.midtrans.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://blog.159632.xyz,0,成功,,200
+http://vlessip.marico.top,0,成功,,200
+https://qifei.117996.xyz,2,成功,,200
+http://27.12.145.68:8848,0,失败,"连接失败: HTTPConnectionPool(host='27.12.145.68', port=8848): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf47aefc70>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aec670>: Failed to resolve 'zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+http://worker.sacreations.live,1,成功,,200
+http://bk.saofan.top,1,成功,,200
+https://sub.xn--1uvv4lnwhh50b.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='sub.xn--1uvv4lnwhh50b.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aec460>: Failed to resolve 'sub.xn--1uvv4lnwhh50b.us.kg' ([Errno -2] Name or service not known)""))",
+https://okv.sosorg.ggff.net,0,失败,"连接失败: HTTPSConnectionPool(host='okv.sosorg.ggff.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aeea70>: Failed to resolve 'okv.sosorg.ggff.net' ([Errno -2] Name or service not known)""))",
+http://vless.wandouvpn.top,0,成功,,200
+https://www.vmless.site,0,成功,,200
+http://surfcon.xyz,0,成功,,200
+http://3y3dy.xlnets.sbs,0,失败,"连接失败: HTTPConnectionPool(host='3y3dy.xlnets.sbs', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aec130>: Failed to resolve '3y3dy.xlnets.sbs' ([Errno -2] Name or service not known)""))",
+http://vlesspro.yinyongpeng.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vlesspro.yinyongpeng.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481afb0>: Failed to resolve 'vlesspro.yinyongpeng.us.kg' ([Errno -2] Name or service not known)""))",
+https://quiz.int.vidio.com.free-cf.turah.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='quiz.int.vidio.com.free-cf.turah.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481a710>: Failed to resolve 'quiz.int.vidio.com.free-cf.turah.my.id' ([Errno -2] Name or service not known)""))",
+http://whyvpn.my.id,0,成功,,200
+http://edgesub.jaysongroup.top,0,成功,,200
+http://cache.netflix.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448e2470>: Failed to resolve 'cache.netflix.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://test.359227772.xyz,0,成功,,200
+http://dy.135051.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='dy.135051.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448b9ba0>: Failed to resolve 'dy.135051.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+http://slinkspace.ru,0,成功,,200
+https://cf-vless.reason195.filegear-sg.me,0,成功,,200
+https://support.zoom.us.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='support.zoom.us.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aec4c0>: Failed to resolve 'support.zoom.us.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://opentunnel.net,0,成功,,200
+https://okv.sosorg.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='okv.sosorg.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aefe20>: Failed to resolve 'okv.sosorg.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless-cf.khd-hsgf.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='vless-cf.khd-hsgf.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448e3a00>: Failed to resolve 'vless-cf.khd-hsgf.us.kg' ([Errno -2] Name or service not known)""))",
+https://vless.weilong.sbs,0,成功,,200
+http://isidomain.web.id,0,失败,"请求失败: HTTPConnectionPool(host='isidomain.web.id', port=80): Max retries exceeded with url: / (Caused by ResponseError('too many 503 error responses'))",
+http://vvs2024liaoya.konamichina.com,0,成功,,200
+http://vless.yunding.sbs,0,成功,,200
+http://216.185.57.229,0,失败,请求超时,
+https://jiedian.aozakiaoko.red,0,成功,,200
+http://www.1998123.xyz,0,成功,,200
+https://flyw.xiadao.vip,0,成功,,200
+https://kabeneko-vpn.com,0,成功,,200
+https://vortexxx1337.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vortexxx1337.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eaf50>: Failed to resolve 'vortexxx1337.us.kg' ([Errno -2] Name or service not known)""))",
+http://yang-zi.com,0,成功,,200
+https://vless.etxx.cc,0,失败,"连接失败: HTTPSConnectionPool(host='vless.etxx.cc', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ea2f0>: Failed to resolve 'vless.etxx.cc' ([Errno -2] Name or service not known)""))",
+http://g4d.xingtaishi.com,0,失败,HTTP错误: 404 Client Error: Not Found for url: http://g4d.xingtaishi.com/,
+http://bcrkk.cutnupvinyl.com,0,成功,,200
+http://v2nodes.com,0,成功,,200
+https://cache.netflix.com.freevpn.bmkg.xyz,0,失败,"请求失败: HTTPSConnectionPool(host='cache.netflix.com.freevpn.bmkg.xyz', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 429 error responses'))",
+http://139.198.114.239:8080,0,失败,请求超时,
+http://bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e9000>: Failed to resolve 'bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://mjdy.ambercc.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='mjdy.ambercc.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44988250>: Failed to resolve 'mjdy.ambercc.us.kg' ([Errno -2] Name or service not known)""))",
+https://dingyue.lihuayun.top,0,成功,,200
+http://www.ahxzztb.com,0,成功,,200
+http://swhmy.com,0,成功,,200
+https://investors.spotify.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='investors.spotify.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aef400>: Failed to resolve 'investors.spotify.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://worker.sacreations.live,1,成功,,200
+http://v2rayng.lk1337.top,2,成功,,200
+http://sub.xn--4gqa0ey62s18n.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sub.xn--4gqa0ey62s18n.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aecaf0>: Failed to resolve 'sub.xn--4gqa0ey62s18n.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.fulione666.space,0,成功,,200
+https://xyr911.top,0,成功,,200
+http://www.pittagizem.be,0,成功,,200
+http://hongxianyun.top,2,成功,,200
+http://okt.sosorg.861120.xyz,0,失败,"连接失败: HTTPConnectionPool(host='okt.sosorg.861120.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aec4c0>: Failed to resolve 'okt.sosorg.861120.xyz' ([Errno -2] Name or service not known)""))",
+https://blog.webex.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='blog.webex.com.bjir.telegwkenalimit.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481d660>: Failed to resolve 'blog.webex.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://m.opennet.dev,0,成功,,200
+https://tischenko.su,0,失败,"连接失败: HTTPSConnectionPool(host='tischenko.su', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'tischenko.su'. (_ssl.c:1017)"")))",
+http://zaintest.vuclip.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='zaintest.vuclip.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aef850>: Failed to resolve 'zaintest.vuclip.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+http://sakha.epolice.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sakha.epolice.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aeee30>: Failed to resolve 'sakha.epolice.us.kg' ([Errno -2] Name or service not known)""))",
+https://kabeneko-vpn.vpn-navi.com,0,成功,,200
+http://edge.iikun.fun,0,失败,"连接失败: HTTPConnectionPool(host='edge.iikun.fun', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aee1a0>: Failed to resolve 'edge.iikun.fun' ([Errno -2] Name or service not known)""))",
+http://support.zoom.us.freevpn.bmkg.xyz,0,失败,"请求失败: HTTPConnectionPool(host='support.zoom.us.freevpn.bmkg.xyz', port=80): Max retries exceeded with url: / (Caused by ResponseError('too many 429 error responses'))",
+https://www.opennet.me,0,成功,,200
+https://nb.g9.lol,0,成功,,200
+http://okt.sosorg.ggff.net,0,失败,"连接失败: HTTPConnectionPool(host='okt.sosorg.ggff.net', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447febf0>: Failed to resolve 'okt.sosorg.ggff.net' ([Errno -2] Name or service not known)""))",
+http://cache.netflix.com.freevpn.bmkg.xyz,0,失败,"请求失败: HTTPConnectionPool(host='cache.netflix.com.freevpn.bmkg.xyz', port=80): Max retries exceeded with url: / (Caused by ResponseError('too many 429 error responses'))",
+http://139.198.109.38:8080,0,失败,请求超时,
+http://vless.xlzq.buzz,0,成功,,200
+https://ruahcare.com,0,失败,"连接失败: HTTPSConnectionPool(host='ruahcare.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'ruahcare.com'. (_ssl.c:1017)"")))",
+https://139.59.113.63:2096,0,失败,"连接失败: HTTPSConnectionPool(host='139.59.113.63', port=2096): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fcf448616c0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://bimbel.ruangguru.com.freeproxy.biz.id,0,失败,"请求失败: HTTPSConnectionPool(host='bimbel.ruangguru.com.freeproxy.biz.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+https://high.angelbamboo.sbs,0,成功,,200
+https://vless.yunding.sbs,0,成功,,200
+https://141.148.177.44:8148,0,失败,"连接失败: HTTPSConnectionPool(host='141.148.177.44', port=8148): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '141.148.177.44'. (_ssl.c:1017)"")))",
+https://47.242.38.251:8196,0,失败,"连接失败: HTTPSConnectionPool(host='47.242.38.251', port=8196): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '47.242.38.251'. (_ssl.c:1017)"")))",
+http://www.gitlx.com,0,成功,,200
+https://ads.ruangguru.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='ads.ruangguru.com.free-cf.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eb2e0>: Failed to resolve 'ads.ruangguru.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://okt.sosorg.ggff.net,0,失败,"连接失败: HTTPSConnectionPool(host='okt.sosorg.ggff.net', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447ebc70>: Failed to resolve 'okt.sosorg.ggff.net' ([Errno -2] Name or service not known)""))",
+https://edge.iikun.fun,0,失败,"连接失败: HTTPSConnectionPool(host='edge.iikun.fun', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aef5b0>: Failed to resolve 'edge.iikun.fun' ([Errno -2] Name or service not known)""))",
+https://slinkspace.ru,0,成功,,200
+http://okv.sosorg.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='okv.sosorg.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aeca90>: Failed to resolve 'okv.sosorg.us.kg' ([Errno -2] Name or service not known)""))",
+http://lsj.360832.xyz,0,失败,"连接失败: HTTPConnectionPool(host='lsj.360832.xyz', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aef580>: Failed to resolve 'lsj.360832.xyz' ([Errno -2] Name or service not known)""))",
+http://v2rayssr.com,0,成功,,200
+http://rayi.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='rayi.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aef550>: Failed to resolve 'rayi.us.kg' ([Errno -2] Name or service not known)""))",
+http://xray.icic.work,0,成功,,200
+http://blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf47aec520>: Failed to resolve 'blog.webex.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+http://b.aibbb.de,0,失败,HTTP错误: 404 Client Error: Not Found for url: https://b.aibbb.de/,
+https://itnots.ru,0,成功,,200
+http://103.186.117.162:81,0,失败,"连接失败: HTTPConnectionPool(host='103.186.117.162', port=81): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf4491d150>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+http://wbz.wbzkoi.dns.army,0,失败,"连接失败: HTTPConnectionPool(host='wbz.wbzkoi.dns.army', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448e2b00>: Failed to resolve 'wbz.wbzkoi.dns.army' ([Errno -2] Name or service not known)""))",
+http://119.134.111.124:8090,0,失败,"连接失败: HTTPConnectionPool(host='119.134.111.124', port=8090): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcf47aef700>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://vless.ifyou.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='vless.ifyou.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf47aeedd0>: Failed to resolve 'vless.ifyou.us.kg' ([Errno -2] Name or service not known)""))",
+http://zhuanhuan.xuege.online,0,成功,,200
+https://www.buyttvp.online,0,成功,,200
+https://yang-zi.com,0,成功,,200
+http://investors.spotify.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='investors.spotify.com.free-cf.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448e2230>: Failed to resolve 'investors.spotify.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://switchyomega.org,0,成功,,200
+https://141.227.138.29,0,失败,请求超时,
+http://www.opennet.dev,0,成功,,200
+https://blog.5205230.xyz,0,成功,,200
+http://df.game.naver.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='df.game.naver.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447a4730>: Failed to resolve 'df.game.naver.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+http://investor.fb.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='investor.fb.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf449889d0>: Failed to resolve 'investor.fb.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://w.159632.xyz,0,成功,,200
+https://abrco.io,0,成功,,200
+https://sub.subeithor.icu,0,成功,,200
+http://freeproxy.biz.id,0,失败,"请求失败: HTTPSConnectionPool(host='freeproxy.biz.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+http://st.edwardsvless.sbs,0,成功,,200
+http://live.iflix.com.vless.awerty.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='live.iflix.com.vless.awerty.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447a4250>: Failed to resolve 'live.iflix.com.vless.awerty.us.kg' ([Errno -2] Name or service not known)""))",
+https://vps.dreamer.sbs,0,成功,,200
+https://zhuanhuan.xuege.online,0,成功,,200
+http://ads.ruangguru.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='ads.ruangguru.com.free-cf.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4491ca00>: Failed to resolve 'ads.ruangguru.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+https://zoomgov.com.fstores.web.id,60,成功,,200
+https://ardavpn.com,0,成功,,200
+http://www.fast-ssh.com,0,成功,,200
+https://blog.webex.com.free-cf.cloudproxyip.my.id,0,失败,"连接失败: HTTPSConnectionPool(host='blog.webex.com.free-cf.cloudproxyip.my.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf4481e500>: Failed to resolve 'blog.webex.com.free-cf.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://cloudyu.top,0,成功,,200
+http://sub.dearmer1993.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sub.dearmer1993.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ebb80>: Failed to resolve 'sub.dearmer1993.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.ruahcare.com,0,成功,,200
+http://blog.webex.com.bjir.telegwkenalimit.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='blog.webex.com.bjir.telegwkenalimit.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf4481f580>: Failed to resolve 'blog.webex.com.bjir.telegwkenalimit.us.kg' ([Errno -2] Name or service not known)""))",
+https://api.midtrans.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='api.midtrans.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44907370>: Failed to resolve 'api.midtrans.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://iclash.pro,0,成功,,200
+http://shuangke.sbs,0,失败,"连接失败: HTTPConnectionPool(host='shuangke.sbs', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448e3cd0>: Failed to resolve 'shuangke.sbs' ([Errno -3] Temporary failure in name resolution)""))",
+http://cdn.appsflayer.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='cdn.appsflayer.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e8ee0>: Failed to resolve 'cdn.appsflayer.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://subscribe.soaringeagle.uk,0,失败,"连接失败: HTTPSConnectionPool(host='subscribe.soaringeagle.uk', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448e3dc0>: Failed to resolve 'subscribe.soaringeagle.uk' ([Errno -5] No address associated with hostname)""))",
+https://nicedy.771949.xyz,2,成功,,200
+https://buyttvp.online,0,成功,,200
+https://shenyuan911.pro,0,失败,"连接失败: HTTPSConnectionPool(host='shenyuan911.pro', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, ""[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'shenyuan911.pro'. (_ssl.c:1017)"")))",
+http://support.zoom.us.multi.swdstore.xyz,40,成功,,200
+http://zaintest.vuclip.com.multi.swdstore.xyz,40,成功,,200
+https://hi.bug-barrel.top,0,成功,,200
+https://xray.icic.work,0,成功,,200
+https://okt.sosorg.861120.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='okt.sosorg.861120.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448e1330>: Failed to resolve 'okt.sosorg.861120.xyz' ([Errno -2] Name or service not known)""))",
+http://df.game.naver.com.break.alknet-smi.my.id,0,失败,"连接失败: HTTPConnectionPool(host='df.game.naver.com.break.alknet-smi.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44950eb0>: Failed to resolve 'df.game.naver.com.break.alknet-smi.my.id' ([Errno -2] Name or service not known)""))",
+http://www.kabeneko-vpn.vpn-navi.com,0,成功,,200
+https://www.kabeneko-vpn.vpn-navi.com,0,成功,,200
+http://zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447e9f90>: Failed to resolve 'zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+http://vless.myros.xyz,0,成功,,200
+https://cmvl.hongkongdna.com,0,成功,,200
+http://quiz.int.vidio.com.freeproxy.biz.id,0,失败,"请求失败: HTTPSConnectionPool(host='quiz.int.vidio.com.freeproxy.biz.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+http://bimbel.ruangguru.com.fsid.web.id,60,成功,,200
+https://ssl.opennet.dev,0,成功,,200
+http://qifei.117996.xyz,2,成功,,200
+https://www.opensignal.com.v.htetfreenet.com,0,成功,,200
+http://support.zoom.us.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='support.zoom.us.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf447ea770>: Failed to resolve 'support.zoom.us.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://yxip-sub.554234.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='yxip-sub.554234.xyz', port=443): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fcf4498b7c0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+https://zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg,0,失败,"连接失败: HTTPSConnectionPool(host='zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44988af0>: Failed to resolve 'zaintest.vuclip.com.bxie84k3ndk.zifxoyfpuf0uf0ycphcoyf0684wd.us.kg' ([Errno -2] Name or service not known)""))",
+http://quiz.int.vidio.com.freexxx.xhamster.biz.id,90,成功,,200
+https://sub2vless.88660088.xyz,0,失败,"连接失败: HTTPSConnectionPool(host='sub2vless.88660088.xyz', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf44988550>: Failed to resolve 'sub2vless.88660088.xyz' ([Errno -2] Name or service not known)""))",
+http://shaogroup.top,0,失败,"连接失败: HTTPConnectionPool(host='shaogroup.top', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44951d80>: Failed to resolve 'shaogroup.top' ([Errno -2] Name or service not known)""))",
+http://www.buyttvp.online,0,成功,,200
+https://vless-us.xxcworld.sbs,0,失败,"连接失败: HTTPSConnectionPool(host='vless-us.xxcworld.sbs', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf447eb8b0>: Failed to resolve 'vless-us.xxcworld.sbs' ([Errno -2] Name or service not known)""))",
+http://jiedian.aozakiaoko.red,0,成功,,200
+http://nontontv.vidio.com.isidomain.web.id,133200,成功,,200
+http://v2box.pro,0,成功,,200
+https://blog.saofan.top,1,成功,,200
+https://ads.ruangguru.com.inconigto.web.id,0,失败,"连接失败: HTTPSConnectionPool(host='ads.ruangguru.com.inconigto.web.id', port=443): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPSConnection object at 0x7fcf448616c0>: Failed to resolve 'ads.ruangguru.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://www.ahxzztb.com,0,成功,,200
+https://sg1.ztx.me,0,失败,"连接失败: HTTPSConnectionPool(host='sg1.ztx.me', port=443): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fcf44988730>: Failed to establish a new connection: [Errno 101] Network is unreachable'))",
+https://swhmy.com,0,成功,,200
+https://xn---fuliopencom-yx9u76q9y7ht2omx4b.fulistart.com,0,成功,,200
+https://st.edwardsvless.sbs,0,成功,,200
+http://sub.xn--1uvv4lnwhh50b.us.kg,0,失败,"连接失败: HTTPConnectionPool(host='sub.xn--1uvv4lnwhh50b.us.kg', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf448b9390>: Failed to resolve 'sub.xn--1uvv4lnwhh50b.us.kg' ([Errno -2] Name or service not known)""))",
+http://www.vpsdhw.com,0,成功,,200
+https://vless-plus.776776.xyz,0,成功,,200
+http://sanqi.sanqifen2124.filegear-sg.me,0,失败,"连接失败: HTTPConnectionPool(host='sanqi.sanqifen2124.filegear-sg.me', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf449519c0>: Failed to resolve 'sanqi.sanqifen2124.filegear-sg.me' ([Errno -3] Temporary failure in name resolution)""))",
+https://support.zoom.us.regarstore.my.id,0,失败,"请求失败: HTTPSConnectionPool(host='support.zoom.us.regarstore.my.id', port=443): Max retries exceeded with url: / (Caused by ResponseError('too many 500 error responses'))",
+http://cache.netflix.com.loss.cloudproxyip.my.id,0,失败,"连接失败: HTTPConnectionPool(host='cache.netflix.com.loss.cloudproxyip.my.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44989150>: Failed to resolve 'cache.netflix.com.loss.cloudproxyip.my.id' ([Errno -2] Name or service not known)""))",
+http://api.midtrans.com.inconigto.web.id,0,失败,"连接失败: HTTPConnectionPool(host='api.midtrans.com.inconigto.web.id', port=80): Max retries exceeded with url: / (Caused by NameResolutionError(""<urllib3.connection.HTTPConnection object at 0x7fcf44861780>: Failed to resolve 'api.midtrans.com.inconigto.web.id' ([Errno -2] Name or service not known)""))",
+https://vpn.lucka.biz.id,90,成功,,200
+http://x1swe-ovh.devefun.net,0,失败,请求超时,
+http://116.1.30.84:8090,0,失败,请求超时,
+http://www.2best.my.id,0,失败,请求超时,
+https://x1swe-ovh.devefun.net,0,失败,请求超时,
+https://www.2best.my.id,0,失败,请求超时,
+http://182.151.104.129:8888,0,失败,请求超时,
+https://92.112.20.237,0,失败,请求超时,
+http://54.152.178.59,0,失败,请求超时,
+http://139.198.115.221:8080,0,失败,请求超时,
+https://107.172.204.10.sslip.io,0,失败,请求超时,
+http://139.198.125.32:8080,0,失败,请求超时,
+https://154.40.52.90:10000,0,失败,请求超时,
+https://x1ch-ovh.devefun.net,0,失败,请求超时,
+https://proxy.ycode.asia,0,失败,请求超时,
+https://switchyomega.org,0,成功,,200
