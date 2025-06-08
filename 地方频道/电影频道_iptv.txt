@@ -1,5 +1,5 @@
 电影频道,#genre#
-CHC家庭,http://php.jdshipin.com/TVOD/iptv.php
 CHC动作,http://php.jdshipin.com/TVOD/iptv.php
 CHC影迷,http://php.jdshipin.com/TVOD/iptv.php
+CHC家庭,http://php.jdshipin.com/TVOD/iptv.php
 澳门莲花,http://anren.live/HK/BiIOU11uLA.m3u8
