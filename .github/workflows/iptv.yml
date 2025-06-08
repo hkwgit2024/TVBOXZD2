@@ -76,7 +76,11 @@ jobs:
           python -c "from logging.handlers import RotatingFileHandler; print('日志模块导入成功')"
           python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_script.log
         continue-on-error: true
-
+        
+      - name: 检查 GitHub API 速率限制
+        run: |
+         curl -H "Authorization: token ${{ secrets.BOT }}" https://api.github.com/rate_limit
+         
       # 步骤 9：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
