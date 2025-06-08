@@ -167,6 +167,7 @@ ClassicArtsShowcase,https://classicarts.akamaized.net/hls/live/1024257/CAS/maste
 CollierTV,https://reflect-collier-countyboc.cablecast.tv/live-4/live/live.m3u8
 CupertinoCityChannel,https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/cupertino/G0067_003/playlist.m3u8
 GCNAmerica,http://liveen24-manminglobal3.ktcdn.co.kr/liveen24/gcnus_1300k.stream/playlist.m3u8
+KBSVDT1,http://66.242.170.53/hls/live/temp/index.m3u8
 KartoonChannel!,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-kartoonchannel-samsungnz/playlist.m3u8
 KevinHart'sLOL!Network,https://lol-lolnetwork-2-nl.samsung.wurl.tv/playlist.m3u8
 MartinCountyTV,https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/martin/G0074_002/playlist.m3u8
@@ -175,7 +176,7 @@ TakbeerTV,https://ap02.iqplay.tv:8082/iqb8002/t5kb86/playlist.m3u8
 VoAPersian,https://voa-ingest.akamaized.net/hls/live/2033876/tvmc07/playlist.m3u8
 半岛,http://live-hls-web-aja.getaj.net/AJA/02.m3u8
 其他,#genre#
-14:20:53,url
+15:20:48,url
 2025-06-08,url
 30ADarcizzleOffshore,https://30a-tv.com/darcizzle.m3u8
 30AInvestmentPitch,https://30a-tv.com/feeds/xodglobal/30atv.m3u8
@@ -344,15 +345,18 @@ EstrellaNews,https://estrella-news-oando.amagi.tv/playlist.m3u8
 FLTV,https://cdn3.wowza.com/5/cFh0V0QwUVc4SDl2/fortlauderdale/G1118_002/playlist.m3u8
 FashionTV,http://lb.streaming.sk/fashiontv/stream/chunklist_w1402273512.m3u8
 FernandinaBeachChannel,https://edge-f.swagit.com/live/fernandinabeachfl/live-1-a/playlist.m3u8
+FideleTV,https://59d39900ebfb8.streamlock.net/FIDELETV/FIDELETV/playlist.m3u8
 FoxNewsChannel,http://247preview.foxnews.com/hls/live/2020027/fncv3preview/primary.m3u8
 FoxWeather,https://247wlive.foxweather.com/stream/index.m3u8
 FreeSpeechTV,https://edge.fstv-live-linear-channel.top.comcast.net/Content/HLS_HLSv3/Live/channel(b168a609-19c1-2203-ae1d-6b9726f05e67)/index.m3u8
 GBNews,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-gbnewsnz-samsungnz/playlist.m3u8
 GarshomTV,https://og2qd3aal7an-hls-live.5centscdn.com/garshomtv/d0dbe915091d400bd8ee7f27f0791303.sdp/playlist.m3u8
+GlobalBuddhistNetwork,https://github.com/BellezaEmporium/IPTV_Exception/raw/master/channels/us/gbnus.m3u8
 Go2Travel,https://go2thls.wns.live/hls/stream.m3u8
 GovernmentTV16,https://livestream.telvue.com/nashuanh3/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8
 GreensboroTV,https://lin12.isilive.ca/live/greensboro/GTN/index.m3u8
 HKTV,https://reflect-hktv.cablecast.tv/live-3/live/live.m3u8
+HarPalGeo,https://jk3lz82elw79-hls-live.5centscdn.com/harPalGeo/955ad3298db330b5ee880c2c9e6f23a0.sdp/harPalGeo/Live1/index.m3u8
 HillsboroughTV,https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/hillsboroughcounty/G2155_002/playlist.m3u8
 HollyWire,https://bozztv.com/hwotta/playlist/playlist.m3u8
 Horse&CountryTV,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00810-horsecountrytvl-hncfreenz-samsungnz/playlist.m3u8
@@ -494,6 +498,7 @@ TDAmeritradeNetwork,https://content.uplynk.com/channel/f9aafa1f132e40af9b9e7238b
 THAIPBS3,http://thaipbs-live.cdn.byteark.com/live/playlist_480p/index.m3u8
 TJC,https://cdn-shop-lc-01.akamaized.net/Content/HLS_HLS/Live/channel(TJCOTT)/index.m3u8
 TMTV,https://hls.tmtv.live/hls/stream.m3u8
+TUTV,https://livestream.telvue.com/templeuni1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8
 TV84,https://cdn20.liveonlineservices.com/hls/tv84.m3u8
 TW视,http://38.64.72.148:80/hls/modn/list/4013/chunklist1.m3u8
 Tastemade,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00047-tastemade-tmintlaus-samsungnz/playlist.m3u8
@@ -511,6 +516,7 @@ TopStoriesbyNewsy,https://content.uplynk.com/channel/33c48f602cfd4474b957eb4ad99
 TrueHistory,https://linear-188.frequency.stream/dist/glewedtv/188/hls/master/playlist.m3u8
 V2BEATTV,https://abr.de1se01.v2beat.live/playlist.m3u8
 VICETV,https://d2do1g43aq7264.cloudfront.net/playlist.m3u8
+VSiN,https://stream.rcncdn.com/live/vsinproxy.m3u8
 VelayatTVNetwork,https://nl.livekadeh.com/hls2/velayattv.m3u8
 VoxAfrica,http://188.227.164.31/tsstreamer/VoxAfrica_SD.ts
 W14DKD1,https://2-fss-2.streamhoster.com/pl_118/amlst:204972-1949480/playlist.m3u8
