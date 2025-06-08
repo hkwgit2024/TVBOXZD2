@@ -63,8 +63,8 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        # 添加所有新生成的文件以及原有的 all_clash.yaml 和 error.log
-        git add data/all_clash.yaml data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt error.log
+        
+        git add data/all_clash.yaml data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt
         
         # 检查是否有实际更改，有更改才提交
         git diff --staged --quiet || git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
