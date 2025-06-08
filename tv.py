@@ -77,8 +77,11 @@ def get_current_sha(file_path_in_repo):
         logging.debug(f"获取 {file_path_in_repo} 的 SHA 发生错误（可能不存在）：{e}")
         return None
 
-def save_to_github(file_path_in_repo, content, commit_message):
-    """将内容保存（创建或更新）到 GitHub 仓库。"""
+def save_to_github(file_path_in_repo, content, commit_message, backup=True):
+    """
+    将内容保存（创建或更新）到 GitHub 仓库。
+    如果 backup 为 True，则在保存前尝试备份现有文件。
+    """
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     sha = get_current_sha(file_path_in_repo)
     
@@ -98,7 +101,35 @@ def save_to_github(file_path_in_repo, content, commit_message):
     
     if sha:
         payload["sha"] = sha
-    
+        if backup:
+            # 尝试获取旧内容并备份
+            old_content = fetch_from_github(file_path_in_repo)
+            if old_content:
+                backup_file_path = f"{file_path_in_repo}.bak"
+                # 为了简化，这里直接在 GitHub 上创建一个 .bak 文件。
+                # 更严谨的做法是先获取内容并备份到本地，再提交。
+                # 但 GitHub API 不直接支持“备份”功能，只能创建/更新文件。
+                # 所以我们只能在上传新文件前，把旧文件内容作为新文件上传到 backup_file_path
+                backup_commit_message = f"备份 {file_path_in_repo} 于 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                logging.warning(f"正在创建 {file_path_in_repo} 的备份到 {backup_file_path}...")
+                try:
+                    backup_payload = {
+                        "message": backup_commit_message,
+                        "content": base64.b64encode(old_content.encode('utf-8')).decode('utf-8'),
+                        "branch": "main"
+                    }
+                    # 尝试获取备份文件的 SHA，如果存在则更新，否则创建
+                    backup_sha = get_current_sha(backup_file_path)
+                    if backup_sha:
+                        backup_payload["sha"] = backup_sha
+
+                    backup_response = requests.put(f"{GITHUB_API_CONTENTS_BASE_URL}/{backup_file_path}", headers=headers, json=backup_payload)
+                    backup_response.raise_for_status()
+                    logging.warning(f"成功备份 {file_path_in_repo} 到 {backup_file_path}。")
+                except requests.exceptions.RequestException as bk_e:
+                    logging.error(f"备份 {file_path_in_repo} 到 {backup_file_path} 失败：{bk_e}")
+                    logging.error(f"GitHub API 备份响应：{backup_response.text if 'backup_response' in locals() else 'N/A'}")
+
     try:
         response = requests.put(api_url, headers=headers, json=payload)
         response.raise_for_status()
@@ -240,7 +271,8 @@ def save_url_states_remote(url_states):
     """保存 URL 状态到远程 JSON 文件。"""
     try:
         content = json.dumps(url_states, indent=4, ensure_ascii=False)
-        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
+        # 调用修改后的 save_to_github，对 URL 状态文件也进行备份
+        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态", backup=True)
         if not success:
             logging.error(f"将远程 URL 状态保存到 '{URL_STATES_PATH_IN_REPO}' 发生错误。")
     except Exception as e:
@@ -654,10 +686,11 @@ def read_txt_to_array_remote(file_path_in_repo):
         return [line.strip() for line in lines if line.strip()]
     return []
 
-def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
+def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message, backup=True):
     """将数组内容写入远程 GitHub 仓库的 TXT 文件。"""
     content = '\n'.join(data_array)
-    success = save_to_github(file_path_in_repo, content, commit_message)
+    # 调用修改后的 save_to_github，对 urls.txt 也进行备份
+    success = save_to_github(file_path_in_repo, content, commit_message, backup=backup)
     if not success:
         logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
 
@@ -791,7 +824,8 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
     if new_urls_count > 0:
         updated_urls = list(existing_urls)
-        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现的新 URL 更新 urls.txt")
+        # 在这里调用带有备份功能的 write_array_to_txt_remote
+        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现的新 URL 更新 urls.txt", backup=True)
         logging.warning(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URL 到 {urls_file_path_remote}。总 URL 数：{len(updated_urls)}")
     else:
         logging.warning("未发现新的 GitHub IPTV 源 URL。")
@@ -895,7 +929,8 @@ def main():
     try:
         with open(final_iptv_list_output_file, "r", encoding="utf-8") as f:
             final_iptv_content = f.read()
-        save_to_github(f"output/{final_iptv_list_output_file}", final_iptv_content, "更新最终 IPTV 列表")
+        # 在这里调用带有备份功能的 save_to_github
+        save_to_github(f"output/{final_iptv_list_output_file}", final_iptv_content, "更新最终 IPTV 列表", backup=True)
         logging.warning(f"已将 {final_iptv_list_output_file} 推送到远程仓库。")
     except Exception as e:
         logging.error(f"无法将 {final_iptv_list_output_file} 推送到 GitHub：{e}")
