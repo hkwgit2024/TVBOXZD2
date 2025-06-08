@@ -1,19 +1,18 @@
 name: IPTV 频道更新
 
 on:
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 */8 * * *'  # 每天 UTC 时间 0:00、8:00、16:00
+    - cron: '0 */8 * * *'
 
 jobs:
   update-iptv:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 360  # 恢复 6 小时超时
     permissions:
       contents: write
 
     steps:
-      # 步骤 1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
@@ -22,59 +21,45 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 2：检出代码
       - name: 检出代码
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.BOT }}
 
-      # 步骤 3：检查 GitHub API 速率限制
       - name: 检查 GitHub API 速率限制
         run: |
-          curl -H "Authorization: token ${{ secrets.BOT }}" https://api.github.com/rate_limit
-        continue-on-error: true
+          curl -H "Authorization: token ${{ secrets.BOT }}" \
+          https://api.github.com/rate_limit
 
-      # 步骤 4：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      # 步骤 5：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp pyyaml tenacity dnspython tqdm aiofiles
+          pip install --upgrade pip
+          pip install requests pyyaml aiohttp beautifulsoup4 tenacity aiofiles psutil dnspython tqdm
 
-      # 步骤 6：检查 Python 环境
-      - name: 检查 Python 环境
-        run: |
-          python --version
-          pip list
-
-      # 步骤 7：设置时区
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # 步骤 8：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 步骤 9：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
-            echo "ffprobe 已安装："
+            echo "ffprobe 已找到并可用！版本信息如下："
             ffprobe -version
           else
-            echo "错误：ffprobe 未找到"
+            echo "错误：ffprobe 未找到或无法执行！请检查上一步的 FFmpeg 安装日志。"
             exit 1
-          fi
 
-      # 步骤 10：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
           BOT: ${{ secrets.BOT }}
@@ -83,22 +68,24 @@ jobs:
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
+          LOG_LEVEL: "DEBUG"
         run: |
           python --version
           python -c "from logging.handlers import RotatingFileHandler; print('日志模块导入成功')"
-          python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_script.log
-        continue-on-error: true
+          python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_crawler.log  # 统一为 iptv_crawler.log
+        # 移除 continue-on-error: true，确保失败时终止
 
-      # 步骤 11：检查文件状态
       - name: 检查文件状态
         run: |
           echo "检查文件状态："
           ls -lh config/*.json || echo "无 JSON 文件"
           ls -lh *.txt || echo "无 TXT 文件"
           ls -lh 地方频道/*.txt || echo "无分类文件"
+          ls -lh output/*.txt || echo "无输出文件"
+          cat unmatched_channels.txt || echo "unmatched_channels.txt 为空或不存在"
+          cat output/iptv_list.txt || echo "iptv_list.txt 为空或不存在"
         continue-on-error: true
 
-      # 步骤 12：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
@@ -108,13 +95,13 @@ jobs:
             config/*.txt
             config/*.json
             地方频道/*.txt
-            iptv_script.log
+            output/*.txt
+            iptv_crawler.log
           retention-days: 7
           if-no-files-found: warn
           compression-level: 6
         if: always()
 
-      # 步骤 13：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -126,11 +113,15 @@ jobs:
             echo "检测到文件更改"
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-        shell: bash
 
-      # 步骤 14：检查合并冲突
+      - name: 强制提交空更改
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          git commit --allow-empty -m "强制提交空更改以记录运行 ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+
       - name: 检查合并冲突
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' || steps.force_commit.outputs.has_changes == 'true'
         run: |
           git fetch origin
           git diff --name-only --diff-filter=U > conflicts.txt
@@ -139,31 +130,27 @@ jobs:
             cat conflicts.txt
             exit 1
           fi
-        shell: bash
 
-      # 步骤 15：提交更改
       - name: 提交更改
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' || steps.force_commit.outputs.has_changes == 'true'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git commit -m "更新 IPTV 频道列表 ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+          git commit -m "更新 IPTV 频道列表 ($(date -u +'%Y-%m-%d %H:%M UTC'))" || true
 
-      # 步骤 16：推送更改
       - name: 推送更改
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' || steps.force_commit.outputs.has_changes == 'true'
         run: |
           git fetch origin
           git rebase origin/main || {
             echo "Rebase 失败，尝试合并"
             git rebase --abort
-            git merge origin/main --no-edit
-            git push origin main
+            git merge origin/main --no-ff
           }
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
 
-      # 步骤 17：发送通知
       - name: 发送通知
         if: always()
         uses: actions/github-script@v7
@@ -171,7 +158,7 @@ jobs:
           github-token: ${{ secrets.BOT }}
           script: |
             const fs = require('fs');
-            const logContent = fs.existsSync('iptv_script.log') ? fs.readFileSync('iptv_script.log', 'utf8').slice(-5000) : '无日志';
+            const logContent = fs.existsSync('iptv_crawler.log') ? fs.readFileSync('iptv_crawler.log', 'utf8').slice(-10000) : '无日志';
             const status = '${{ job.status }}';
             const message = `IPTV 频道更新工作流完成\n状态: ${status}\n日志摘要:\n${logContent}`;
             await github.rest.issues.createComment({
