@@ -73,7 +73,7 @@ class FileHandler:
             return []
 
     def write_txt(self, path, data, commit_message=None, backup=True):
-        content = '\n'.join(data)
+        content = '\n'.join(data) if isinstance(data, list) else data
         if self.is_remote:
             return save_to_github(path, content, commit_message, backup)
         try:
@@ -174,6 +174,8 @@ URL_FILTER_WORDS = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 CATEGORY_RULES = CONFIG.get('category_rules', [])
 STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
+CHANNEL_CACHE_PATH = CONFIG.get('paths', {}).get('channel_cache_file', 'config/channel_cache.json')
+CHANNEL_CACHE_TTL = CONFIG.get('channel_cache_ttl', 86400)  # 默认 24 小时
 
 # 配置 HTTP 会话
 session = requests.Session()
@@ -222,12 +224,30 @@ def save_url_states(url_states):
     try:
         content = json.dumps(url_states, indent=4, ensure_ascii=False)
         save_to_github(URL_STATES_PATH, content, "更新 URL 状态", backup=True)
+        logger.info("成功保存 url_states 到 config/url_states.json")
     except Exception as e:
-        logger.error(f"保存 URL 状态失败：{e}")
+        logger.error(f"保存 url_states 失败：{e}")
+
+# 频道缓存管理
+def load_channel_cache():
+    content = fetch_from_github(CHANNEL_CACHE_PATH)
+    try:
+        return json.loads(content) if content else {}
+    except json.JSONDecodeError as e:
+        logger.error(f"解码 {CHANNEL_CACHE_PATH} 失败：{e}")
+        return {}
+
+def save_channel_cache(channel_cache):
+    try:
+        content = json.dumps(channel_cache, indent=4, ensure_ascii=False)
+        file_handler = FileHandler(is_remote=True, github_token=GITHUB_TOKEN)
+        file_handler.write_txt(CHANNEL_CACHE_PATH, [content], "更新频道缓存", backup=True)
+        logger.info("成功保存 channel_cache 到 config/channel_cache.json")
+    except Exception as e:
+        logger.error(f"保存 channel_cache 失败：{e}")
 
 # 异步 URL 内容获取
 async def fetch_url_content_async(url, url_states, timeout=CHANNEL_FETCH_TIMEOUT):
-    # 初始化 url_states 条目
     if url not in url_states:
         url_states[url] = {}
     
@@ -244,12 +264,14 @@ async def fetch_url_content_async(url, url_states, timeout=CHANNEL_FETCH_TIMEOUT
                 if response.status == 304:
                     url_states[url]['last_checked'] = datetime.now().isoformat()
                     logger.info(f"URL 未更改：{url}")
+                    save_url_states(url_states)
                     return None
                 content = await response.text()
                 content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
                 if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
                     url_states[url]['last_checked'] = datetime.now().isoformat()
                     logger.info(f"URL 内容未变：{url}")
+                    save_url_states(url_states)
                     return None
                 url_states[url].update({
                     'etag': response.headers.get('ETag'),
@@ -258,19 +280,20 @@ async def fetch_url_content_async(url, url_states, timeout=CHANNEL_FETCH_TIMEOUT
                     'last_checked': datetime.now().isoformat()
                 })
                 logger.info(f"成功获取 URL 内容：{url}")
+                save_url_states(url_states)
                 return content
         except aiohttp.ClientError as e:
             logger.error(f"获取 URL {url} 失败：{e}")
+            url_states[url]['last_failed'] = datetime.now().isoformat()
+            save_url_states(url_states)
             return None
 
 def extract_channels_from_url(url, url_states):
-    # 验证 URL 文件扩展名
     ext = get_url_file_extension(url)
     if ext not in ['.m3u', '.m3u8', '.txt']:
         logger.warning(f"跳过无效文件扩展名：{url} ({ext})")
         return []
     
-    # 创建新事件循环
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
@@ -294,16 +317,27 @@ def extract_channels_from_url(url, url_states):
                     channels.append((name, url))
         logger.info(f"从 {url} 提取 {len(channels)} 个频道")
         return channels
+    except Exception as e:
+        logger.error(f"提取频道失败：{url}，错误：{e}")
+        return []
     finally:
         loop.close()
 
 # 频道验证
-async def check_channel_validity_async(name, url, url_states, timeout=CHANNEL_CHECK_TIMEOUT):
+async def check_channel_validity_async(name, url, url_states, channel_cache, timeout=CHANNEL_CHECK_TIMEOUT):
     if url not in url_states:
         url_states[url] = {}
     
     current_time = datetime.now()
     current_state = url_states[url]
+    cache_entry = channel_cache.get(url, {})
+    
+    # 检查缓存
+    if cache_entry.get('is_valid') and 'last_successful_check' in cache_entry:
+        last_check = datetime.fromisoformat(cache_entry['last_successful_check'])
+        if (current_time - last_check).total_seconds() < CHANNEL_CACHE_TTL:
+            logger.info(f"使用缓存：{name} ({url})，有效")
+            return cache_entry.get('elapsed_time'), True
     
     if 'stream_check_failed_at' in current_state:
         last_failed = datetime.fromisoformat(current_state['stream_check_failed_at'])
@@ -318,30 +352,66 @@ async def check_channel_validity_async(name, url, url_states, timeout=CHANNEL_CH
             elapsed_time = (time.time() - start_time) * 1000
             
             url_states[url]['last_stream_checked'] = current_time.isoformat()
+            channel_cache[url] = {
+                'name': name,
+                'is_valid': is_valid,
+                'elapsed_time': elapsed_time if is_valid else None,
+                'last_stream_checked': current_time.isoformat()
+            }
             if is_valid:
                 url_states[url].pop('stream_check_failed_at', None)
                 url_states[url].pop('stream_fail_count', None)
                 url_states[url]['last_successful_stream_check'] = current_time.isoformat()
+                channel_cache[url]['last_successful_check'] = current_time.isoformat()
                 logger.info(f"频道验证成功：{name} ({url})，耗时 {elapsed_time:.2f}ms")
-                return elapsed_time, True
             else:
                 url_states[url]['stream_check_failed_at'] = current_time.isoformat()
                 url_states[url]['stream_fail_count'] = current_state.get('stream_fail_count', 0) + 1
+                channel_cache[url]['last_failed_check'] = current_time.isoformat()
                 logger.warning(f"频道验证失败：{name} ({url})，状态码 {response.status}")
-                return None, False
+            
+            save_url_states(url_states)
+            save_channel_cache(channel_cache)
+            return elapsed_time if is_valid else None, is_valid
         except aiohttp.ClientError as e:
             url_states[url]['stream_check_failed_at'] = current_time.isoformat()
             url_states[url]['stream_fail_count'] = current_state.get('stream_fail_count', 0) + 1
             url_states[url]['last_stream_checked'] = current_time.isoformat()
+            channel_cache[url] = {
+                'name': name,
+                'is_valid': False,
+                'elapsed_time': None,
+                'last_stream_checked': current_time.isoformat(),
+                'last_failed_check': current_time.isoformat()
+            }
+            save_url_states(url_states)
+            save_channel_cache(channel_cache)
             logger.warning(f"频道验证失败：{name} ({url})，错误：{e}")
             return None, False
 
-async def check_channels_async(channels, url_states):
-    tasks = [check_channel_validity_async(name, url, url_states) for name, url in channels]
+async def check_channels_async(channels, url_states, channel_cache):
+    tasks = [check_channel_validity_async(name, url, url_states, channel_cache) for name, url in channels]
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    valid_channels = [(t, f"{name},{url}") for (t, valid), (name, url) in zip(results, channels) if valid]
+    valid_channels = []
+    for (t, valid), (name, url) in zip(results, channels):
+        if isinstance(t, Exception):
+            logger.error(f"验证频道 {name} ({url}) 时发生异常：{t}")
+            continue
+        if valid:
+            valid_channels.append((t, f"{name},{url}"))
     logger.info(f"有效频道数量：{len(valid_channels)}")
+    save_channel_cache(channel_cache)  # 确保最终保存
     return valid_channels
+
+# 关键词统计保存
+def save_keyword_stats(keyword_stats):
+    try:
+        content = json.dumps(keyword_stats, indent=4, ensure_ascii=False)
+        file_handler = FileHandler(is_remote=True, github_token=GITHUB_TOKEN)
+        file_handler.write_txt("config/keyword_stats.json", [content], "更新关键词统计", backup=True)
+        logger.info("成功保存 keyword_stats 到 config/keyword_stats.json")
+    except Exception as e:
+        logger.error(f"保存 keyword_stats 失败：{e}")
 
 # 频道分类和文件处理
 def categorize_channel(channel_name):
@@ -371,7 +441,7 @@ def merge_local_channel_files(channels_dir, output_file="iptv_list.txt"):
     logger.info(f"合并频道文件到 {output_file}")
 
 # 主逻辑
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(30), retry=retry_if_exception_type(requests.exceptions.HTTPError))
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(60), retry=retry_if_exception_type(requests.exceptions.HTTPError))
 def discover_urls():
     global keyword_stats
     file_handler = FileHandler(is_remote=True, github_token=GITHUB_TOKEN)
@@ -424,7 +494,8 @@ def discover_urls():
         file_handler.write_txt(URLS_PATH, list(found_urls), "更新 URL 列表", backup=True)
         logger.info(f"发现 {len(new_urls)} 个新 URL")
     
-    # 打印关键词统计
+    save_keyword_stats(keyword_stats)
+    
     logger.info("关键词搜索统计：")
     for keyword, stats in keyword_stats.items():
         logger.info(f"关键词 '{keyword}': 成功 {stats['success']} 次，失败 {stats['failed']} 次，发现 {len(stats['urls'])} 个 URL")
@@ -433,44 +504,61 @@ def main():
     file_handler = FileHandler(is_remote=True, github_token=GITHUB_TOKEN)
     local_file_handler = FileHandler()
     
-    # 发现 URL
-    discover_urls()
-    
-    # 提取和过滤频道
-    urls = file_handler.read_txt(URLS_PATH)
-    url_states = load_url_states()
-    channels = set()
-    for url in urls:
-        channels.update(extract_channels_from_url(url, url_states))
-    
-    # 异步验证频道
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
     try:
-        valid_channels = loop.run_until_complete(check_channels_async(channels, url_states))
-    finally:
-        loop.close()
+        # 发现 URL
+        discover_urls()
+        
+        # 加载状态和缓存
+        url_states = load_url_states()
+        channel_cache = load_channel_cache()
+        
+        # 提取和过滤频道
+        urls = file_handler.read_txt(URLS_PATH)
+        channels = set()
+        for url in urls:
+            try:
+                channels.update(extract_channels_from_url(url, url_states))
+            except Exception as e:
+                logger.error(f"处理 URL {url} 失败：{e}")
+                continue
+        
+        # 异步验证频道
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            valid_channels = loop.run_until_complete(check_channels_async(channels, url_states, channel_cache))
+        finally:
+            loop.close()
+        
+        # 保存状态和缓存
+        save_url_states(url_states)
+        save_channel_cache(channel_cache)
+        
+        # 分类和保存
+        channels_dir = CONFIG.get('paths', {}).get('channels_dir', '地方频道')
+        os.makedirs(channels_dir, exist_ok=True)
+        
+        grouped_channels = {}
+        for _, line in valid_channels:
+            name = line.split(',', 1)[0]
+            category = categorize_channel(name)
+            grouped_channels.setdefault(category, []).append(line)
+        
+        for category, lines in grouped_channels.items():
+            local_file_handler.write_txt(os.path.join(channels_dir, f"{category}_iptv.txt"), lines, f"保存 {category} 频道")
+        
+        # 合并和上传
+        merge_local_channel_files(channels_dir)
+        final_content = local_file_handler.read_txt("iptv_list.txt")
+        file_handler.write_txt("output/iptv_list.txt", final_content, "更新 IPTV 列表", backup=True)
     
-    # 保存状态
-    save_url_states(url_states)
-    
-    # 分类和保存
-    channels_dir = CONFIG.get('paths', {}).get('channels_dir', '地方频道')
-    os.makedirs(channels_dir, exist_ok=True)
-    
-    grouped_channels = {}
-    for _, line in valid_channels:
-        name = line.split(',', 1)[0]
-        category = categorize_channel(name)
-        grouped_channels.setdefault(category, []).append(line)
-    
-    for category, lines in grouped_channels.items():
-        local_file_handler.write_txt(os.path.join(channels_dir, f"{category}_iptv.txt"), lines, f"保存 {category} 频道")
-    
-    # 合并和上传
-    merge_local_channel_files(channels_dir)
-    final_content = local_file_handler.read_txt("iptv_list.txt")
-    file_handler.write_txt("output/iptv_list.txt", final_content, "更新 IPTV 列表", backup=True)
+    except Exception as e:
+        logger.error(f"主程序执行失败：{e}")
+        # 确保即使失败也保存所有状态
+        save_url_states(url_states)
+        save_channel_cache(channel_cache)
+        save_keyword_stats(keyword_stats)
+        raise
 
 if __name__ == "__main__":
     main()
