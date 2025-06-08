@@ -8,9 +8,9 @@ on:
 jobs:
   update-iptv:
     runs-on: ubuntu-latest
-    timeout-minutes: 620  # 缩短超时时间到 2 小时
+    timeout-minutes: 360
     permissions:
-      contents: write  # 授予写入权限
+      contents: write
 
     steps:
       # 步骤 1：检查 BOT secret
@@ -26,32 +26,38 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整提交历史
+          fetch-depth: 0
           token: ${{ secrets.BOT }}
 
-      # 步骤 3：设置 Python 环境
+      # 步骤 3：检查 GitHub API 速率限制
+      - name: 检查 GitHub API 速率限制
+        run: |
+          curl -H "Authorization: token ${{ secrets.BOT }}" https://api.github.com/rate_limit
+        continue-on-error: true
+
+      # 步骤 4：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      # 步骤 4：安装 Python 依赖
+      # 步骤 5：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
           pip install requests aiohttp pyyaml tenacity dnspython tqdm aiofiles
 
-      # 步骤 5：设置时区
+      # 步骤 6：设置时区
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # 步骤 6：安装 FFmpeg
+      # 步骤 7：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 步骤 7：验证 ffprobe
+      # 步骤 8：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
@@ -62,7 +68,7 @@ jobs:
             exit 1
           fi
 
-      # 步骤 8：运行 IPTV 爬取脚本
+      # 步骤 9：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
           BOT: ${{ secrets.BOT }}
@@ -76,12 +82,8 @@ jobs:
           python -c "from logging.handlers import RotatingFileHandler; print('日志模块导入成功')"
           python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_script.log
         continue-on-error: true
-        
-      - name: 检查 GitHub API 速率限制
-        run: |
-         curl -H "Authorization: token ${{ secrets.BOT }}" https://api.github.com/rate_limit
-         
-      # 步骤 9：保存日志和生成文件
+
+      # 步骤 10：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
@@ -96,7 +98,7 @@ jobs:
           compression-level: 6
         if: always()
 
-      # 步骤 10：检查文件更改
+      # 步骤 11：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -110,7 +112,7 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 11：检查合并冲突
+      # 步骤 12：检查合并冲突
       - name: 检查合并冲突
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -123,7 +125,7 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 12：提交更改
+      # 步骤 13：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -131,7 +133,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git commit -m "更新 IPTV 频道列表 ($(date -u +'%Y-%m-%d %H:%M UTC'))"
 
-      # 步骤 13：推送更改
+      # 步骤 14：推送更改
       - name: 推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -145,7 +147,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
 
-      # 步骤 14：发送通知
+      # 步骤 15：发送通知
       - name: 发送通知
         if: always()
         uses: actions/github-script@v7
