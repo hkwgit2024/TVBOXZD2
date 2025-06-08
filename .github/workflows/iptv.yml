@@ -8,7 +8,7 @@ on:
 jobs:
   update-iptv:
     runs-on: ubuntu-latest
-    timeout-minutes: 120  # 缩短超时时间到 2 小时
+    timeout-minutes: 620  # 缩短超时时间到 2 小时
     permissions:
       contents: write  # 授予写入权限
 
@@ -72,8 +72,10 @@ jobs:
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
         run: |
+          python --version
+          python -c "from logging.handlers import RotatingFileHandler; print('日志模块导入成功')"
           python ${{ github.workspace }}/tv.py 2>&1 | tee iptv_script.log
-        continue-on-error: true  # 即使脚本失败也继续后续步骤
+        continue-on-error: true
 
       # 步骤 9：保存日志和生成文件
       - name: 保存日志和生成文件
@@ -153,6 +155,6 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: 1,  # 假设有一个专门的 Issue 用于通知
+              issue_number: 1,
               body: message
             });
