@@ -17,7 +17,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # 配置日志
-logging.basicConfig(filename='error.log', level=logging.DEBUG,
+logging.basicConfig(filename='error.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 请求头
@@ -33,7 +33,7 @@ headers = {
 # 命令行参数解析
 parser = argparse.ArgumentParser(description="URL内容获取脚本，支持多个URL来源和节点解析")
 parser.add_argument('--max_success', type=int, default=99999, help="目标成功数量")
-parser.add_argument('--timeout', type=int, default=30, help="请求超时时间（秒）")
+parser.add_argument('--timeout', type=int, default=45, help="请求超时时间（秒）")
 parser.add_argument('--output', type=str, default='data/all_clash.yaml', help="输出文件路径")
 parser.add_argument('--no-proxy-groups', action='store_true', default=True, help="不生成 proxy-groups 部分，仅输出 proxies")
 args = parser.parse_args()
@@ -49,7 +49,7 @@ FAILED_URLS_FILE = 'data/failed_urls.txt'
 
 # 定义删除关键词
 DELETE_KEYWORDS = [
-    '剩余流量', '套餐到期', '流量', '到期', '过期', '免费', '试用', '体验', '限时', '限制',
+    '剩余流量', '套餐到期', '剩余流量', '流量', '到期', '过期', '免费', '试着用', '体验', '限时', '限制',
     '已用', '可用', '不足', '到期时间', '倍率', '返利', '充值', '续费', '用量', '订阅'
 ]
 
@@ -665,11 +665,6 @@ if total_urls_to_process_via_http > 0:
             else:
                 failed_urls.append(url)
                 print(f"失败 URL: {url}, 错误: {error_message}")
-
-            if len(all_parsed_nodes_raw) >= MAX_SUCCESS * 2:
-                print("已收集足够节点，提前终止请求")
-                executor._threads.clear()
-                break
 
 final_unique_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
 
