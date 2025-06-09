@@ -1,5 +1,3 @@
-#.REQ PLAYlLIST PREMIUM ,#genre#
-REQ PLAYLIST HUB/WA 085794973101,https://youtube.com/@lga775iptv
 +1,#genre#
 Channel 4 +1,https://olsp.live.dash.c4assets.com/dash_iso_sp_tl/live/channel(c4)/manifest.mpd
 FTV +1,https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8
