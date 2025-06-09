@@ -56,6 +56,22 @@ DELETE_KEYWORDS = [
     '已用', '可用', '不足', '到期时间', '倍率', '返利', '充值', '续费', '用量', '订阅'
 ]
 
+# 定义常见占位符 UUID/密码，这些不会作为唯一性判断依据
+COMMON_UUID_PLACEHOLDERS = [
+    "aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1", # 你提供的示例中的占位符
+    "00000000-0000-0000-0000-000000000000",
+    "d23b3208-d01d-40d3-b1d6-fe1e48edcb74" # 常见的伪造UUID
+    # 可以根据观察到的其他常见占位符补充
+]
+
+# 定义常见占位符密码
+COMMON_PASSWORD_PLACEHOLDERS = [
+    "aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1", # 你提供的示例中的占位符
+    "password", "123456", "000000", "test", "demo", "free"
+    # 可以根据观察到的其他常见占位符补充
+]
+
+
 def is_valid_url(url):
     """
     验证URL格式是否合法，仅接受 http 或 https 方案。
@@ -166,7 +182,7 @@ def parse_content_to_nodes(content):
         r'(vmess://\S+|'
         r'trojan://\S+|'
         r'ss://\S+|'
-        r'ssr://\S+|'
+        r'ssr://\S+|' # SSR 也是 URL 形式
         r'vless://\S+|'
         r'hy://\S+|'
         r'hy2://\S+|'
@@ -283,22 +299,23 @@ def clean_node_name(name, index=None):
         '香港': 'HK', '台湾': 'TW', '日本': 'JP', '新加坡': 'SG', '美国': 'US', '英国': 'UK',
         '德国': 'DE', '韩国': 'KR', '马来': 'MY', '泰国': 'TH', 'PH': 'PH', '越南': 'VN',
         '印尼': 'ID', '印度': 'IN', '澳洲': 'AU', '加拿大': 'CA', '俄罗斯': 'RU', '巴西': 'BR',
-        '意大利': 'IT', '荷兰': 'NL', '中国': 'CN' # 添加中国
+        '意大利': 'IT', '荷兰': 'NL', '中国': 'CN', '深圳': 'SZ', '上海': 'SH', '北京': 'BJ',
+        '广州': 'GZ', '杭州': 'HZ' # 增加一些城市简称
     }
     for full_name, short_name in region_map.items():
         cleaned_name = cleaned_name.replace(full_name, short_name)
 
     # 尝试保留一些有意义的关键词，例如专线信息
-    meaningful_keywords = ['IPLC', 'IEPL', '专线', '中转', '直连']
+    meaningful_keywords = ['IPLC', 'IEPL', '专线', '中转', '直连', 'CDN']
     preserved_info = []
     for keyword in meaningful_keywords:
         if keyword.lower() in cleaned_name.lower():
             preserved_info.append(keyword)
     
     # 尝试保留节点编号
-    node_number_match = re.search(r'(?<!\d)\d{1,2}(?!\d)|Node\d{1,2}', cleaned_name, re.IGNORECASE)
+    node_number_match = re.search(r'(?<!\d)(?:[Nn]ode|Server)?\s?(\d{1,3})(?!\d)', cleaned_name) # 匹配 Node1, Server 2, 123
     if node_number_match:
-        preserved_info.append(node_number_match.group(0))
+        preserved_info.append(node_number_match.group(1))
 
     # 如果清理后名称过短或为空，尝试使用区域名或默认名称
     if not cleaned_name or len(cleaned_name) <= 3:
@@ -315,359 +332,219 @@ def clean_node_name(name, index=None):
     # 添加序号，确保名称唯一性 (在最终输出时再统一添加，这里只是一个通用清理函数)
     # 脚本的实际实现中，序号是在 deduplicate_and_standardize_nodes 中添加的
     if index is not None:
-        cleaned_name += f"-{index:02d}"
+        # 确保序号格式一致，例如两位数
+        cleaned_name += f"-{index:03d}" # 更改为三位数序号
 
     # 限制名称长度
     if len(cleaned_name) > 80:
         cleaned_name = cleaned_name[:80].rstrip() + '...'
 
-    return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
+    return cleaned_name if cleaned_name else f"Node-{index:03d}" if index is not None else "Unknown Node"
 
-def _generate_node_fingerprint(node):
+def _normalize_dict_for_fingerprint(data):
     """
-    为节点生成唯一指纹（哈希值）。
-    这是去重逻辑的核心。
-    改进点：更全面地处理 ws-opts 和 grpc-opts，确保其完整内容影响指纹。
-    标准化空值、默认值和布尔值。
+    递归地标准化字典，以便生成稳定的指纹。
+    - 键转换为小写
+    - 值去除首尾空白
+    - 移除 None 或空字符串的值
+    - 列表进行排序
+    - 嵌套字典递归处理
     """
-    if isinstance(node, dict):
-        # 提取核心参数，这些参数是节点身份的关键
-        fingerprint_data = {
-            'type': node.get('type'),
-            'server': node.get('server'),
-            'port': node.get('port'),
-        }
+    if not isinstance(data, dict):
+        return data # 非字典类型直接返回
 
-        # 统一处理 servername/sni/host
-        servername_key = node.get('servername') or node.get('sni') or node.get('host')
-        if servername_key:
-            fingerprint_data['servername'] = servername_key.lower().strip()
+    normalized = {}
+    for k, v in data.items():
+        if isinstance(v, dict):
+            normalized_v = _normalize_dict_for_fingerprint(v)
+            if normalized_v: # 只有非空字典才保留
+                normalized[k.lower()] = normalized_v
+        elif isinstance(v, list):
+            # 对列表元素进行标准化并排序
+            normalized_list = sorted([str(item).lower().strip() for item in v if str(item).strip()])
+            if normalized_list: # 只有非空列表才保留
+                normalized[k.lower()] = normalized_list
+        elif v is not None and str(v).strip() != '': # 忽略 None 和空字符串
+            # 统一布尔值表示
+            if isinstance(v, bool):
+                normalized[k.lower()] = str(v).lower()
+            else:
+                normalized[k.lower()] = str(v).lower().strip()
+    return normalized
 
-        node_type = node.get('type')
+def _get_node_core_params(node_dict):
+    """
+    从标准化的Clash节点字典中提取核心参数集，用于生成指纹。
+    这是去重逻辑的核心，旨在忽略非核心或动态变化的参数。
+    """
+    core_params = {
+        'type': node_dict.get('type'),
+        'server': node_dict.get('server'),
+        'port': node_dict.get('port'),
+    }
 
-        # === 协议特定参数 ===
-        if node_type == 'vmess':
-            fingerprint_data['uuid'] = node.get('uuid') or node.get('id')
-            fingerprint_data['alterId'] = node.get('alterId') or node.get('aid')
-            fingerprint_data['cipher'] = node.get('cipher') # vmess 也有 cipher
-            fingerprint_data['network'] = node.get('network')
-            # 统一 tls 为布尔值
-            fingerprint_data['tls'] = bool(node.get('tls'))
-            # 统一 skip-cert-verify 为布尔值
-            fingerprint_data['skip-cert-verify'] = bool(node.get('skip-cert-verify'))
-            
-            # 改进：标准化和哈希整个 ws-opts 或 grpc-opts 字典
-            # 移除空值或默认值，确保字典一致性
-            if node.get('ws-opts'):
-                standardized_ws_opts = {}
-                # 只保留有意义的 ws-opts 字段
-                if node['ws-opts'].get('path') and node['ws-opts']['path'] != '/':
-                    standardized_ws_opts['path'] = node['ws-opts']['path']
-                if node['ws-opts'].get('headers') and isinstance(node['ws-opts']['headers'], dict):
-                    standardized_headers = {k.lower(): v.lower() for k, v in node['ws-opts']['headers'].items() if v}
-                    if standardized_headers:
-                        standardized_ws_opts['headers'] = standardized_headers
-                
-                if standardized_ws_opts: # 只有非空才加入指纹
-                    ws_opts_str = json.dumps(standardized_ws_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-            
-            if node.get('grpc-opts'):
-                standardized_grpc_opts = {}
-                if node['grpc-opts'].get('serviceName'):
-                    standardized_grpc_opts['serviceName'] = node['grpc-opts']['serviceName']
-                
-                if standardized_grpc_opts: # 只有非空才加入指纹
-                    grpc_opts_str = json.dumps(standardized_grpc_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
+    node_type = node_dict.get('type')
 
-        elif node_type == 'trojan':
-            fingerprint_data['password'] = node.get('password')
-            fingerprint_data['network'] = node.get('network')
-            fingerprint_data['tls'] = bool(node.get('tls'))
-            fingerprint_data['skip-cert-verify'] = bool(node.get('skip-cert-verify'))
-            # Trojan 可能有 ws-opts/grpc-opts，处理方式同 VMess
-            if node.get('ws-opts'):
-                standardized_ws_opts = {}
-                if node['ws-opts'].get('path') and node['ws-opts']['path'] != '/':
-                    standardized_ws_opts['path'] = node['ws-opts']['path']
-                if node['ws-opts'].get('headers') and isinstance(node['ws-opts']['headers'], dict):
-                    standardized_headers = {k.lower(): v.lower() for k, v in node['ws-opts']['headers'].items() if v}
-                    if standardized_headers:
-                        standardized_ws_opts['headers'] = standardized_headers
-                if standardized_ws_opts:
-                    ws_opts_str = json.dumps(standardized_ws_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-            
-            if node.get('grpc-opts'):
-                standardized_grpc_opts = {}
-                if node['grpc-opts'].get('serviceName'):
-                    standardized_grpc_opts['serviceName'] = node['grpc-opts']['serviceName']
-                if standardized_grpc_opts:
-                    grpc_opts_str = json.dumps(standardized_grpc_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
+    # 处理 servername/sni：如果与 server 不同，则加入，否则忽略
+    servername = node_dict.get('servername') or node_dict.get('sni')
+    if servername and str(servername).lower().strip() != str(node_dict.get('server', '')).lower().strip():
+        core_params['servername'] = servername
+
+    # 处理 skip-cert-verify, 统一为布尔值
+    if node_dict.get('skip-cert-verify') is not None:
+        core_params['skip-cert-verify'] = bool(node_dict['skip-cert-verify'])
+    elif node_type in ['trojan', 'vless', 'vmess', 'hysteria', 'hysteria2'] and node_dict.get('tls'):
+         # 对于开启TLS的节点，如果明确指定 skip-cert-verify=False，则认为证书验证是严格的，否则默认为True
+        core_params['skip-cert-verify'] = bool(node_dict.get('skip-cert-verify', False))
 
 
-        elif node_type == 'ss':
-            fingerprint_data['cipher'] = node.get('cipher')
-            fingerprint_data['password'] = node.get('password')
-            fingerprint_data['plugin'] = node.get('plugin')
-            if node.get('plugin-opts'):
-                standardized_plugin_opts = {k.lower(): v.lower() for k, v in node['plugin-opts'].items() if v} # 统一处理plugin-opts
-                if standardized_plugin_opts:
-                    plugin_opts_str = json.dumps(standardized_plugin_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['plugin-opts-hash'] = hashlib.sha256(plugin_opts_str.encode('utf-8')).hexdigest()
-
-        elif node_type == 'vless':
-            fingerprint_data['uuid'] = node.get('uuid') or node.get('id')
-            fingerprint_data['network'] = node.get('network')
-            fingerprint_data['tls'] = bool(node.get('tls'))
-            fingerprint_data['skip-cert-verify'] = bool(node.get('skip-cert-verify'))
-            # 统一 flow 字段，如果是空字符串则移除
-            if node.get('flow') and node['flow'] != '':
-                fingerprint_data['flow'] = node['flow']
-
-            fingerprint_data['xudp'] = bool(node.get('xudp'))
-            fingerprint_data['udp-over-tcp'] = bool(node.get('udp-over-tcp'))
-
-            # 处理 ws-opts 和 grpc-opts，同 VMess
-            if node.get('ws-opts'):
-                standardized_ws_opts = {}
-                if node['ws-opts'].get('path') and node['ws-opts']['path'] != '/':
-                    standardized_ws_opts['path'] = node['ws-opts']['path']
-                if node['ws-opts'].get('headers') and isinstance(node['ws-opts']['headers'], dict):
-                    standardized_headers = {k.lower(): v.lower() for k, v in node['ws-opts']['headers'].items() if v}
-                    if standardized_headers:
-                        standardized_ws_opts['headers'] = standardized_headers
-                if standardized_ws_opts:
-                    ws_opts_str = json.dumps(standardized_ws_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-            
-            if node.get('grpc-opts'):
-                standardized_grpc_opts = {}
-                if node['grpc-opts'].get('serviceName'):
-                    standardized_grpc_opts['serviceName'] = node['grpc-opts']['serviceName']
-                if standardized_grpc_opts:
-                    grpc_opts_str = json.dumps(standardized_grpc_opts, sort_keys=True, ensure_ascii=False)
-                    fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
-            
-        elif node_type in ['hysteria', 'hysteria2', 'hy', 'hy2']:
-            fingerprint_data['password'] = node.get('password') # Hysteria2 用 password
-            fingerprint_data['auth_str'] = node.get('auth_str') # Hysteria 用 auth_str
-            fingerprint_data['obfs'] = node.get('obfs')
-            fingerprint_data['obfs-password'] = node.get('obfs-password')
-            fingerprint_data['tls'] = bool(node.get('tls'))
-            fingerprint_data['skip-cert-verify'] = bool(node.get('skip-cert-verify'))
-            fingerprint_data['protocol'] = node.get('protocol')
-            # ALPN 列表排序后加入，并过滤空字符串
-            alpn_list = [a.strip().lower() for a in node.get('alpn', []) if a.strip()]
-            if alpn_list:
-                fingerprint_data['alpn'] = sorted(alpn_list)
-            
-            # 带宽信息通常不作为指纹，除非特别需要
-            # fingerprint_data['up'] = node.get('up')
-            # fingerprint_data['down'] = node.get('down')
-
-        # 最终标准化和哈希
-        # 将所有指纹数据项标准化为字符串，并转换为小写，去除首尾空白
-        # 确保 None 值处理为 ''，使不同表示的空值具有相同指纹
-        normalized_data = {k: str(v).lower().strip() if v is not None else '' for k, v in fingerprint_data.items()}
+    # 协议特定参数
+    if node_type == 'vmess':
+        uuid = node_dict.get('uuid') or node_dict.get('id')
+        if uuid and str(uuid).lower() not in COMMON_UUID_PLACEHOLDERS:
+            core_params['uuid'] = uuid
+        core_params['alterId'] = int(node_dict.get('alterId', 0) or node_dict.get('aid', 0)) # alterId 影响连接
+        core_params['cipher'] = node_dict.get('cipher') # VMess 的加密方式
+        core_params['network'] = node_dict.get('network')
+        core_params['tls'] = bool(node_dict.get('tls')) # VMess 的 tls
         
-        # 移除空值，防止 json.dumps 为 null 或 "" 生成不同表示
-        normalized_data = {k: v for k, v in normalized_data.items() if v != ''}
+        # 处理 ws-opts
+        ws_opts = node_dict.get('ws-opts')
+        if isinstance(ws_opts, dict):
+            standardized_ws_opts = {}
+            # 只有当 path 不为 '/' 或存在有意义的 headers 时才加入
+            if ws_opts.get('path') and ws_opts['path'] != '/':
+                standardized_ws_opts['path'] = ws_opts['path']
+            if ws_opts.get('headers') and isinstance(ws_opts['headers'], dict):
+                # 对 headers 字典进行标准化：键小写，值小写并去空白
+                standardized_headers = {k.lower(): str(v).lower().strip() for k, v in ws_opts['headers'].items() if str(v).strip()}
+                if standardized_headers:
+                    standardized_ws_opts['headers'] = standardized_headers
+            if standardized_ws_opts:
+                core_params['ws-opts'] = standardized_ws_opts
 
-        # 将标准化后的数据转换为JSON字符串，并排序键以保证一致性，最后进行SHA256哈希
-        stable_json = json.dumps(normalized_data, sort_keys=True, ensure_ascii=False)
-        # logging.debug(f"Generated fingerprint JSON for node {node.get('name', 'N/A')}: {stable_json}")
-        return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
-    
-    elif isinstance(node, str):
-        # 对于 URL 字符串形式的节点，直接从 URL 中提取关键信息生成指纹
-        try:
-            if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
-                logging.warning(f"无效的节点协议: {node[:50]}...")
-                return None
+        # 处理 grpc-opts
+        grpc_opts = node_dict.get('grpc-opts')
+        if isinstance(grpc_opts, dict) and grpc_opts.get('serviceName'):
+            core_params['grpc-opts'] = {'serviceName': grpc_opts['serviceName']} # 只关心 serviceName
 
-            parsed_url = urlparse(node)
-            scheme = parsed_url.scheme.lower()
-            netloc = parsed_url.netloc.lower()
-            path = parsed_url.path.lower()
+    elif node_type == 'trojan':
+        password = node_dict.get('password')
+        if password and str(password).lower() not in COMMON_PASSWORD_PLACEHOLDERS:
+            core_params['password'] = password
+        core_params['network'] = node_dict.get('network')
+        core_params['tls'] = bool(node_dict.get('tls'))
+        
+        # Trojan 可能有 ws-opts/grpc-opts
+        ws_opts = node_dict.get('ws-opts')
+        if isinstance(ws_opts, dict):
+            standardized_ws_opts = {}
+            if ws_opts.get('path') and ws_opts['path'] != '/':
+                standardized_ws_opts['path'] = ws_opts['path']
+            if ws_opts.get('headers') and isinstance(ws_opts['headers'], dict):
+                standardized_headers = {k.lower(): str(v).lower().strip() for k, v in ws_opts['headers'].items() if str(v).strip()}
+                if standardized_headers:
+                    standardized_ws_opts['headers'] = standardized_headers
+            if standardized_ws_opts:
+                core_params['ws-opts'] = standardized_ws_opts
+        
+        grpc_opts = node_dict.get('grpc-opts')
+        if isinstance(grpc_opts, dict) and grpc_opts.get('serviceName'):
+            core_params['grpc-opts'] = {'serviceName': grpc_opts['serviceName']}
+
+    elif node_type == 'ss':
+        core_params['cipher'] = node_dict.get('cipher')
+        password = node_dict.get('password')
+        if password and str(password).lower() not in COMMON_PASSWORD_PLACEHOLDERS:
+            core_params['password'] = password
+        
+        # 处理 plugin 和 plugin-opts
+        if node_dict.get('plugin'):
+            core_params['plugin'] = node_dict['plugin']
+            if node_dict.get('plugin-opts'):
+                # 对 plugin-opts 字典进行标准化
+                standardized_plugin_opts = {k.lower(): str(v).lower().strip() for k, v in node_dict['plugin-opts'].items() if str(v).strip()}
+                if standardized_plugin_opts:
+                    core_params['plugin-opts'] = standardized_plugin_opts
+
+    elif node_type == 'vless':
+        uuid = node_dict.get('uuid') or node_dict.get('id')
+        if uuid and str(uuid).lower() not in COMMON_UUID_PLACEHOLDERS:
+            core_params['uuid'] = uuid
+        core_params['network'] = node_dict.get('network')
+        core_params['tls'] = bool(node_dict.get('tls'))
+        # 只有非空字符串才加入 flow
+        if node_dict.get('flow') and node_dict['flow'] != '':
+            core_params['flow'] = node_dict['flow']
+        
+        core_params['xudp'] = bool(node_dict.get('xudp'))
+        core_params['udp-over-tcp'] = bool(node_dict.get('udp-over-tcp'))
+
+        # 处理 ws-opts
+        ws_opts = node_dict.get('ws-opts')
+        if isinstance(ws_opts, dict):
+            standardized_ws_opts = {}
+            if ws_opts.get('path') and ws_opts['path'] != '/':
+                standardized_ws_opts['path'] = ws_opts['path']
+            if ws_opts.get('headers') and isinstance(ws_opts['headers'], dict):
+                standardized_headers = {k.lower(): str(v).lower().strip() for k, v in ws_opts['headers'].items() if str(v).strip()}
+                if standardized_headers:
+                    standardized_ws_opts['headers'] = standardized_headers
+            if standardized_ws_opts:
+                core_params['ws-opts'] = standardized_ws_opts
+        
+        # 处理 grpc-opts
+        grpc_opts = node_dict.get('grpc-opts')
+        if isinstance(grpc_opts, dict) and grpc_opts.get('serviceName'):
+            core_params['grpc-opts'] = {'serviceName': grpc_opts['serviceName']}
             
-            # 解析查询参数，并进行标准化
-            query_params_raw = parse_qs(parsed_url.query)
-            normalized_query_params = {}
-            for k, v_list in query_params_raw.items():
-                k_lower = k.lower()
-                # 对于某些参数，例如 alpn，需要特殊处理列表
-                if k_lower == 'alpn':
-                    normalized_query_params[k_lower] = sorted([val.strip().lower() for val in v_list if val.strip()])
-                else:
-                    normalized_query_params[k_lower] = str(v_list[0]).lower().strip()
-            
-            host = netloc.split(':')[0] if ':' in netloc else netloc
-            if is_valid_ip_address(host) and host.startswith('[') and host.endswith(']'):
-                host = host[1:-1] # 移除IPv6地址的方括号
-            elif not is_valid_ip_address(host) and not re.match(r'^[a-zA-Z0-9\-\.]+$', host):
-                # 这种情况下，如果host无效，也应该返回None，或者进一步处理
-                logging.warning(f"无效的主机名: {host} in {node[:50]}...")
-                return None
+    elif node_type in ['hysteria', 'hy']:
+        password = node_dict.get('password') # Hysteria 使用 password
+        auth_str = node_dict.get('auth_str') # Hysteria 也可能使用 auth_str
+        if password and str(password).lower() not in COMMON_PASSWORD_PLACEHOLDERS:
+            core_params['password'] = password
+        elif auth_str and str(auth_str).lower() not in COMMON_PASSWORD_PLACEHOLDERS:
+            core_params['auth_str'] = auth_str
+        
+        core_params['network'] = node_dict.get('protocol', 'udp') # Hysteria 的 protocol 字段
+        core_params['tls'] = bool(node_dict.get('tls'))
 
-            # 构建指纹部件字典，这样可以统一处理并排序
-            fingerprint_data = {
-                'scheme': scheme,
-                'host': host,
-                'port': netloc.split(':')[-1] if ':' in netloc else '',
-                'path': path,
-            }
+        alpn_list = [a.strip().lower() for a in node_dict.get('alpn', []) if a.strip()]
+        if alpn_list:
+            core_params['alpn'] = sorted(alpn_list) # ALPN 列表排序
 
-            # 协议特定参数
-            if scheme == 'vmess':
-                # vmess 链接是 base64(json)，需要进一步解析其内部参数
-                try:
-                    decoded = base64.b64decode(node[len("vmess://"):].encode('utf-8')).decode('utf-8')
-                    config = json.loads(decoded)
-                    fingerprint_data['uuid'] = str(config.get('id', '')).lower()
-                    fingerprint_data['alterId'] = str(config.get('aid', 0)).lower()
-                    fingerprint_data['cipher'] = str(config.get('scy', 'auto')).lower()
-                    fingerprint_data['network'] = str(config.get('net', '')).lower()
-                    fingerprint_data['tls'] = str(bool(config.get('tls') == 'tls')).lower()
-                    fingerprint_data['skip-cert-verify'] = str(bool(config.get('scy') == 'true')).lower() # 这里的 scy 可能是 skip-cert-verify
-                    
-                    # 统一 servername
-                    vmess_servername = config.get('sni') or config.get('host') or config.get('add')
-                    if vmess_servername:
-                        fingerprint_data['servername'] = vmess_servername.lower().strip()
+    elif node_type in ['hysteria2', 'hy2']:
+        password = node_dict.get('password')
+        if password and str(password).lower() not in COMMON_PASSWORD_PLACEHOLDERS:
+            core_params['password'] = password
+        
+        core_params['obfs'] = node_dict.get('obfs')
+        core_params['obfs-password'] = node_dict.get('obfs-password')
+        core_params['tls'] = bool(node_dict.get('tls'))
 
-                    if config.get('net') == 'ws':
-                        ws_opts = {}
-                        if config.get('path') and config['path'] != '/':
-                            ws_opts['path'] = config['path'].lower()
-                        if config.get('host'):
-                            ws_opts['headers'] = {'host': config['host'].lower()}
-                        if ws_opts:
-                            ws_opts_str = json.dumps(ws_opts, sort_keys=True, ensure_ascii=False)
-                            fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-                    
-                    if config.get('net') == 'grpc':
-                        grpc_opts = {}
-                        if config.get('path'): # grpc 的 path 通常是 serviceName
-                            grpc_opts['serviceName'] = config['path'].lower()
-                        if grpc_opts:
-                            grpc_opts_str = json.dumps(grpc_opts, sort_keys=True, ensure_ascii=False)
-                            fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
+        alpn_list = [a.strip().lower() for a in node_dict.get('alpn', []) if a.strip()]
+        if alpn_list:
+            core_params['alpn'] = sorted(alpn_list) # ALPN 列表排序
 
-                except Exception as e:
-                    logging.warning(f"vmess URL 解析失败: {node[:50]}... - {e}")
-                    return None
-            
-            # 其他协议直接从 query_params 中提取
-            elif scheme == 'trojan':
-                fingerprint_data['password'] = normalized_query_params.get('password', '') or parsed_url.username.lower() # Trojan password
-                fingerprint_data['network'] = normalized_query_params.get('type', 'tcp').lower()
-                fingerprint_data['tls'] = str(True).lower() # Trojan 默认 tls 为 true
-                fingerprint_data['skip-cert-verify'] = normalized_query_params.get('allowinsecure', '0').lower() == '1'
-                fingerprint_data['servername'] = normalized_query_params.get('sni', fingerprint_data.get('host', '')).lower()
-                
-                if fingerprint_data['network'] == 'ws':
-                    ws_opts = {}
-                    if normalized_query_params.get('path') and normalized_query_params['path'] != '/':
-                        ws_opts['path'] = normalized_query_params['path']
-                    if normalized_query_params.get('host'):
-                        ws_opts['headers'] = {'host': normalized_query_params['host']}
-                    if ws_opts:
-                        ws_opts_str = json.dumps(ws_opts, sort_keys=True, ensure_ascii=False)
-                        fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-                if fingerprint_data['network'] == 'grpc':
-                    grpc_opts = {}
-                    if normalized_query_params.get('servicename'):
-                        grpc_opts['serviceName'] = normalized_query_params['servicename']
-                    if grpc_opts:
-                        grpc_opts_str = json.dumps(grpc_opts, sort_keys=True, ensure_ascii=False)
-                        fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
+    # 对整个核心参数字典进行标准化，去除空值等
+    return _normalize_dict_for_fingerprint(core_params)
 
-            elif scheme == 'ss':
-                # SS链接通常在userinfo部分 Base64编码
-                try:
-                    userinfo_base64 = parsed_url.netloc.split('@')[0]
-                    decoded_userinfo = base64.b64decode(userinfo_base64.encode('utf-8')).decode('utf-8')
-                    parts = decoded_userinfo.split(':', 1)
-                    fingerprint_data['cipher'] = parts[0].lower()
-                    fingerprint_data['password'] = parts[1].lower() if len(parts) > 1 else ''
+def _generate_stable_fingerprint_from_params(params_dict):
+    """
+    将标准化的核心参数字典转换为稳定的JSON字符串，并计算SHA256指纹。
+    """
+    if not params_dict:
+        return None
 
-                    if normalized_query_params.get('plugin'):
-                        fingerprint_data['plugin'] = normalized_query_params['plugin']
-                        if normalized_query_params.get('plugin_opts'):
-                            plugin_opts_dict = {}
-                            for opt_pair in normalized_query_params['plugin_opts'].split(';'):
-                                if '=' in opt_pair:
-                                    k, v = opt_pair.split('=', 1)
-                                    plugin_opts_dict[k.lower()] = v.lower()
-                            if plugin_opts_dict:
-                                plugin_opts_str = json.dumps(plugin_opts_dict, sort_keys=True, ensure_ascii=False)
-                                fingerprint_data['plugin-opts-hash'] = hashlib.sha256(plugin_opts_str.encode('utf-8')).hexdigest()
-                except Exception as e:
-                    logging.warning(f"SS URL 解析失败: {node[:50]}... - {e}")
-                    return None
-
-            elif scheme == 'vless':
-                fingerprint_data['uuid'] = parsed_url.username.lower()
-                fingerprint_data['network'] = normalized_query_params.get('type', 'tcp').lower()
-                fingerprint_data['tls'] = normalized_query_params.get('security', '').lower() == 'tls'
-                fingerprint_data['skip-cert-verify'] = normalized_query_params.get('allowinsecure', '0').lower() == '1'
-                if normalized_query_params.get('flow') and normalized_query_params['flow'] != '':
-                    fingerprint_data['flow'] = normalized_query_params['flow']
-                fingerprint_data['servername'] = normalized_query_params.get('sni', fingerprint_data.get('host', '')).lower()
-                fingerprint_data['xudp'] = normalized_query_params.get('xudp', '0').lower() == '1'
-                fingerprint_data['udp-over-tcp'] = normalized_query_params.get('udp_over_tcp', 'false').lower() == 'true'
-
-                if fingerprint_data['network'] == 'ws':
-                    ws_opts = {}
-                    if normalized_query_params.get('path') and normalized_query_params['path'] != '/':
-                        ws_opts['path'] = normalized_query_params['path']
-                    if normalized_query_params.get('host'):
-                        ws_opts['headers'] = {'host': normalized_query_params['host']}
-                    if ws_opts:
-                        ws_opts_str = json.dumps(ws_opts, sort_keys=True, ensure_ascii=False)
-                        fingerprint_data['ws-opts-hash'] = hashlib.sha256(ws_opts_str.encode('utf-8')).hexdigest()
-                if fingerprint_data['network'] == 'grpc':
-                    grpc_opts = {}
-                    if normalized_query_params.get('servicename'):
-                        grpc_opts['serviceName'] = normalized_query_params['servicename']
-                    if grpc_opts:
-                        grpc_opts_str = json.dumps(grpc_opts, sort_keys=True, ensure_ascii=False)
-                        fingerprint_data['grpc-opts-hash'] = hashlib.sha256(grpc_opts_str.encode('utf-8')).hexdigest()
-
-            elif scheme in ['hysteria', 'hy']:
-                fingerprint_data['auth_str'] = normalized_query_params.get('auth', '').lower()
-                fingerprint_data['alpn'] = normalized_query_params.get('alpn', [])
-                fingerprint_data['network'] = normalized_query_params.get('protocol', 'udp').lower()
-                fingerprint_data['skip-cert-verify'] = normalized_query_params.get('insecure', '0').lower() == '1'
-                fingerprint_data['servername'] = normalized_query_params.get('peer', fingerprint_data.get('host', '')).lower()
-            
-            elif scheme in ['hysteria2', 'hy2']:
-                fingerprint_data['password'] = parsed_url.username.lower()
-                fingerprint_data['obfs'] = normalized_query_params.get('obfs', '').lower()
-                fingerprint_data['obfs-password'] = normalized_query_params.get('obfsparam', '').lower()
-                fingerprint_data['tls'] = str(True).lower()
-                fingerprint_data['skip-cert-verify'] = normalized_query_params.get('insecure', '0').lower() == '1'
-                fingerprint_data['servername'] = normalized_query_params.get('sni', fingerprint_data.get('host', '')).lower()
-                fingerprint_data['alpn'] = normalized_query_params.get('alpn', [])
-
-            # 最终标准化和哈希
-            normalized_data = {k: v for k, v in fingerprint_data.items() if v} # 移除空值
-
-            stable_json = json.dumps(normalized_data, sort_keys=True, ensure_ascii=False)
-            return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
-
-        except Exception as e:
-            logging.warning(f"生成URL节点指纹失败: {node[:50]}... - {e}")
-            return None
-    return None
+    # 确保JSON序列化是稳定的（键排序，非ASCII字符保留）
+    stable_json = json.dumps(params_dict, sort_keys=True, ensure_ascii=False)
+    # logging.debug(f"Fingerprint JSON: {stable_json}") # 用于调试
+    return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
 
 def deduplicate_and_standardize_nodes(raw_nodes_list):
     """
     对节点进行去重和标准化。
-    将各种原始节点格式转换为统一的Clash代理字典格式，并基于指纹进行去重。
+    将各种原始节点格式转换为统一的Clash代理字典格式，并基于核心参数指纹进行去重。
     """
     unique_node_fingerprints = set()
     final_clash_proxies = []
@@ -688,7 +565,8 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 node_raw_name = str(parsed_url.fragment or '') 
                 
                 # 检查协议是否有效
-                if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
+                protocol_scheme = parsed_url.scheme.lower()
+                if not any(protocol_scheme == p for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
                     logging.warning(f"跳过无效协议的节点: {node[:50]}...")
                     continue
                 
@@ -699,13 +577,9 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     continue
 
                 # 根据协议类型进行解析并转换为Clash字典格式
-                if node.startswith("vmess://"):
+                if protocol_scheme == "vmess":
                     decoded = base64.b64decode(node[len("vmess://"):].encode('utf-8')).decode('utf-8')
                     config = json.loads(decoded)
-                    
-                    # VMess: 统一处理 tls 和 skip-cert-verify
-                    tls_enabled = (config.get('tls') == 'tls')
-                    skip_cert = (config.get('scy') == 'true') # scy 字段在某些工具中也表示 skip-cert-verify
                     
                     clash_proxy_dict = {
                         'name': str(config.get('ps', 'VMess Node')),
@@ -716,13 +590,10 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'alterId': int(config.get('aid', 0)),
                         'cipher': config.get('scy', 'auto'), 
                         'network': config.get('net'),
-                        'tls': tls_enabled,
-                        'skip-cert-verify': skip_cert,
+                        'tls': (config.get('tls') == 'tls'),
+                        'skip-cert-verify': (config.get('scy', 'false') == 'true'), # scy 字段在某些工具中也表示 skip-cert-verify
                         'servername': config.get('sni') or config.get('host') or config.get('add'),
                     }
-                    if clash_proxy_dict['servername'] == clash_proxy_dict['server']: # 如果 servername 和 server 相同，则移除 servername
-                        del clash_proxy_dict['servername']
-                    
                     # ws-opts
                     if config.get('net') == 'ws':
                         ws_opts = {}
@@ -732,7 +603,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                             ws_opts['headers'] = {'Host': config['host']}
                         if ws_opts:
                             clash_proxy_dict['ws-opts'] = ws_opts
-                    
                     # grpc-opts
                     if config.get('net') == 'grpc':
                         grpc_opts = {}
@@ -741,15 +611,12 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         if grpc_opts:
                             clash_proxy_dict['grpc-opts'] = grpc_opts
                     
-                elif node.startswith("trojan://"):
+                elif protocol_scheme == "trojan":
                     parsed = urlparse(node)
                     password = parsed.username
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-                    
-                    # Trojan: 统一处理 skip-cert-verify
-                    skip_cert = query.get('allowInsecure', ['0'])[0] == '1'
                     
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Trojan Node'),
@@ -759,13 +626,9 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'password': password,
                         'network': query.get('type', ['tcp'])[0],
                         'tls': True,
-                        'skip-cert-verify': skip_cert,
+                        'skip-cert-verify': (query.get('allowInsecure', ['0'])[0] == '1'),
                         'servername': query.get('sni', [server])[0]
                     }
-                    if clash_proxy_dict['servername'] == clash_proxy_dict['server']: # 如果 servername 和 server 相同，则移除 servername
-                        del clash_proxy_dict['servername']
-
-                    # Trojan协议也可能通过查询参数携带ws或grpc信息
                     if query.get('type', [''])[0] == 'ws':
                         ws_opts = {}
                         if query.get('path', [''])[0] and query['path'][0] != '/':
@@ -781,7 +644,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         if grpc_opts:
                             clash_proxy_dict['grpc-opts'] = grpc_opts
 
-                elif node.startswith("ss://"):
+                elif protocol_scheme == "ss":
                     decoded_part = node[len("ss://"):].split('#', 1)[0]
                     try:
                         decoded_info = base64.b64decode(decoded_part.encode('utf-8')).decode('utf-8')
@@ -801,7 +664,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                             'cipher': method,
                             'password': password,
                         }
-                        # 处理 SS 插件
                         query_params = parse_qs(parsed_url.query)
                         if 'plugin' in query_params:
                             clash_proxy_dict['plugin'] = query_params.get('plugin', [''])[0]
@@ -816,18 +678,56 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     except Exception as e:
                         logging.warning(f"SS节点解析失败: {node[:50]}... - {e}")
                         clash_proxy_dict = None
+                
+                elif protocol_scheme == "ssr":
+                    # SSR 链接解析更复杂，需要单独处理
+                    # SSR 链接格式通常是 ssr://<base64_encoded_info>
+                    # <base64_encoded_info> = <server>:<port>:<protocol>:<method>:<obfs>:<password_base64_encoded>/?obfsparam=<obfsparam_base64>&protoparam=<protoparam_base64>&remarks=<remarks_base64>&group=<group_base64>&udp=<udp_enabled>
+                    try:
+                        decoded_info = base64.b64decode(node[len("ssr://"):].split('#', 1)[0]).decode('utf-8')
+                        parts = decoded_info.split(':', 5) # server:port:protocol:method:obfs:password
+                        server = parts[0]
+                        port = int(parts[1])
+                        protocol = parts[2]
+                        method = parts[3]
+                        obfs = parts[4]
+                        password_b64 = parts[5].split('/?', 1)[0]
+                        password = base64.b64decode(password_b64.encode('utf-8')).decode('utf-8')
 
-                elif node.startswith("vless://"):
+                        clash_proxy_dict = {
+                            'name': str(parsed_url.fragment or 'SSR Node'),
+                            'type': 'ssr', # Clash 对 SSR 支持可能有限，这里保留
+                            'server': server,
+                            'port': port,
+                            'cipher': method,
+                            'password': password,
+                            'protocol': protocol,
+                            'obfs': obfs
+                        }
+                        
+                        query_params_str = parts[5].split('/?', 1)[1] if '/?' in parts[5] else ''
+                        query_params = parse_qs(query_params_str)
+
+                        if 'obfsparam' in query_params:
+                            clash_proxy_dict['obfs-param'] = base64.b64decode(query_params['obfsparam'][0].encode('utf-8')).decode('utf-8')
+                        if 'protoparam' in query_params:
+                            clash_proxy_dict['protocol-param'] = base64.b64decode(query_params['protoparam'][0].encode('utf-8')).decode('utf-8')
+                        if 'udp' in query_params:
+                            clash_proxy_dict['udp'] = (query_params['udp'][0] == '1')
+                        
+                        # SSR 的 name 通常在 remarks 中
+                        if 'remarks' in query_params:
+                             clash_proxy_dict['name'] = base64.b64decode(query_params['remarks'][0].encode('utf-8')).decode('utf-8')
+                    except Exception as e:
+                        logging.warning(f"SSR节点解析失败: {node[:50]}... - {e}")
+                        clash_proxy_dict = None
+
+                elif protocol_scheme == "vless":
                     parsed = urlparse(node)
                     uuid = parsed.username
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-                    
-                    # VLESS: 统一处理 tls 和 skip-cert-verify, flow
-                    tls_enabled = query.get('security', [''])[0] == 'tls'
-                    skip_cert = query.get('allowInsecure', ['0'])[0] == '1'
-                    flow_value = query.get('flow', [''])[0]
                     
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'VLESS Node'),
@@ -836,16 +736,14 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'port': port,
                         'uuid': uuid,
                         'network': query.get('type', ['tcp'])[0],
-                        'tls': tls_enabled,
-                        'skip-cert-verify': skip_cert,
+                        'tls': (query.get('security', [''])[0] == 'tls'),
+                        'skip-cert-verify': (query.get('allowInsecure', ['0'])[0] == '1'),
                         'servername': query.get('sni', [server])[0],
-                        'xudp': query.get('xudp', ['0'])[0] == '1',
-                        'udp-over-tcp': query.get('udp_over_tcp', ['false'])[0] == 'true',
+                        'xudp': (query.get('xudp', ['0'])[0] == '1'),
+                        'udp-over-tcp': (query.get('udp_over_tcp', ['false'])[0] == 'true'),
                     }
-                    if flow_value: # 只有非空才添加 flow
-                        clash_proxy_dict['flow'] = flow_value
-                    if clash_proxy_dict['servername'] == clash_proxy_dict['server']: # 如果 servername 和 server 相同，则移除 servername
-                        del clash_proxy_dict['servername']
+                    if query.get('flow', [''])[0]:
+                        clash_proxy_dict['flow'] = query['flow'][0]
 
                     if query.get('type', [''])[0] == 'ws':
                         ws_opts = {}
@@ -862,15 +760,11 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         if grpc_opts:
                             clash_proxy_dict['grpc-opts'] = grpc_opts
                         
-                elif node.startswith("hysteria://") or node.startswith("hy://"):
+                elif protocol_scheme in ["hysteria", "hy"]:
                     parsed = urlparse(node)
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-
-                    # Hysteria: 统一处理 skip-cert-verify, alpn
-                    skip_cert = query.get('insecure', ['0'])[0] == '1'
-                    alpn_list = [a.strip() for a in query.get('alpn', [''])[0].split(',') if a.strip()]
 
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Hysteria Node'),
@@ -879,28 +773,24 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'port': port,
                         'auth_str': query.get('auth', [''])[0],
                         'network': query.get('protocol', ['udp'])[0],
-                        'skip-cert-verify': skip_cert,
+                        'skip-cert-verify': (query.get('insecure', ['0'])[0] == '1'),
                         'servername': query.get('peer', [server])[0],
+                        'tls': True # Hysteria 默认带 TLS
                     }
+                    alpn_list = [a.strip() for a in query.get('alpn', [''])[0].split(',') if a.strip()]
                     if alpn_list:
                         clash_proxy_dict['alpn'] = alpn_list
                     if query.get('up_mbps', ['0'])[0] != '0':
                         clash_proxy_dict['up'] = int(query['up_mbps'][0])
                     if query.get('down_mbps', ['0'])[0] != '0':
                         clash_proxy_dict['down'] = int(query['down_mbps'][0])
-                    if clash_proxy_dict['servername'] == clash_proxy_dict['server']:
-                        del clash_proxy_dict['servername']
                     
-                elif node.startswith("hysteria2://") or node.startswith("hy2://"):
+                elif protocol_scheme in ["hysteria2", "hy2"]:
                     parsed = urlparse(node)
                     password = parsed.username
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-
-                    # Hysteria2: 统一处理 skip-cert-verify, alpn
-                    skip_cert = query.get('insecure', ['0'])[0] == '1'
-                    alpn_list = [a.strip() for a in query.get('alpn', [''])[0].split(',') if a.strip()]
 
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Hysteria2 Node'),
@@ -909,17 +799,16 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'port': port,
                         'password': password,
                         'tls': True,
-                        'skip-cert-verify': skip_cert,
+                        'skip-cert-verify': (query.get('insecure', ['0'])[0] == '1'),
                         'servername': query.get('sni', [server])[0],
                     }
                     if query.get('obfs', [''])[0]:
                         clash_proxy_dict['obfs'] = query['obfs'][0]
                     if query.get('obfsParam', [''])[0]:
                         clash_proxy_dict['obfs-password'] = query['obfsParam'][0]
+                    alpn_list = [a.strip() for a in query.get('alpn', [''])[0].split(',') if a.strip()]
                     if alpn_list:
                         clash_proxy_dict['alpn'] = alpn_list
-                    if clash_proxy_dict['servername'] == clash_proxy_dict['server']:
-                        del clash_proxy_dict['servername']
 
             except Exception as e:
                 logging.warning(f"URL节点转换为Clash字典失败: {node[:50]}... - {e}")
@@ -951,7 +840,9 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 continue
 
             # 生成指纹并进行去重
-            fingerprint = _generate_node_fingerprint(clash_proxy_dict)
+            core_params = _get_node_core_params(clash_proxy_dict)
+            fingerprint = _generate_stable_fingerprint_from_params(core_params)
+            
             if fingerprint and fingerprint not in unique_node_fingerprints:
                 unique_node_fingerprints.add(fingerprint)
                 # 清理节点名称，并添加序号
@@ -962,6 +853,8 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                 final_clash_proxies.append(clash_proxy_dict)
             else:
                 logging.debug(f"重复节点（按指纹）：{clash_proxy_dict.get('name', '')} - {fingerprint}")
+        else:
+            logging.debug(f"无法转换为Clash字典的原始节点或URL: {str(node)[:80]}...")
 
     return final_clash_proxies
 
@@ -1038,10 +931,12 @@ if total_urls_to_process_via_http > 0:
                 print(f"失败 URL: {url}, 错误: {error_message}")
 
             # 提前终止机制：如果已收集到足够多的原始节点（MAX_SUCCESS的两倍，考虑到去重损失），则停止请求
+            # 这里的判断条件可以根据实际情况调整，比如 len(all_parsed_nodes_raw) > MAX_SUCCESS * 1.5 
+            # 也可以直接不设置提前终止，等待所有URL处理完毕
             if len(all_parsed_nodes_raw) >= MAX_SUCCESS * 2:
                 print(f"已收集足够原始节点 ({len(all_parsed_nodes_raw)})，达到 MAX_SUCCESS * 2，提前终止后续请求。")
                 # 显式关闭线程池中的线程
-                executor._threads.clear() 
+                executor.shutdown(wait=True, cancel_futures=True) # 确保所有任务被取消并线程关闭
                 break
 
 # 对所有收集到的原始节点进行去重和标准化
@@ -1078,6 +973,7 @@ for node in proxies_to_output:
         proxy_names_in_group.append(node['name'])
     else:
         # 兜底处理，确保即使没有name也能添加到组
+        # 这种情况通常不应该发生，因为 clean_node_name 会确保有名称
         proxy_names_in_group.append(f"{node.get('type', 'Unknown')} {node.get('server', '')}")
 
 # 构建最终的Clash配置字典
@@ -1095,13 +991,38 @@ clash_config = {
             'url': 'http://www.gstatic.com/generate_204', # Google的无内容响应页面，常用于测速
             'interval': 300, # 测速间隔300秒
             'proxies': proxy_names_in_group
+        },
+        {
+            'name': '📈 手动排序', # 增加一个按ping排序的组，方便手动选择
+            'type': 'select',
+            'proxies': ['DIRECT'] + sorted(proxy_names_in_group) # 按名称排序
+        },
+        # 增加一些常见的策略组
+        {
+            'name': '🌍 国外流量',
+            'type': 'select',
+            'proxies': ['♻️ 自动选择', '🚀 节点选择']
+        },
+        {
+            'name': '🪜 漏网之鱼',
+            'type': 'select',
+            'proxies': ['♻️ 自动选择', '🚀 节点选择', 'DIRECT']
+        },
+        {
+            'name': '🛑 广告拦截',
+            'type': 'select',
+            'proxies': ['REJECT', 'DIRECT']
+        },
+        {
+            'name': '📢 其他',
+            'type': 'select',
+            'proxies': ['DIRECT', '♻️ 自动选择']
         }
-        # 可以根据需要添加更多的代理组和规则
     ],
     'rules': [
-        # 例如：
-        # 'DOMAIN-SUFFIX,google.com,♻️ 自动选择',
-        # 'GEOIP,CN,DIRECT',
+        # 添加一些基础规则
+        'DOMAIN-SUFFIX,cn,DIRECT',
+        'GEOIP,CN,DIRECT',
         'MATCH,🚀 节点选择' # 默认规则，所有未匹配的流量走节点选择组
     ]
 }
