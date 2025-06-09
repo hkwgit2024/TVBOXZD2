@@ -1,14 +1,70 @@
 proxies:
-- name: 04-16
-  port: 19013
-  server: f10001.flyflylflyflysbs.sbs
-  type: trojan
+- name: HK02-主线路-01
+  port: 25002
+  server: b.baodesign.top
+  type: vmess
   network: tcp
+  tls: false
   udp: true
-  sni: sg02.ckcloud.info
-  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  version: '2'
+  servername: ''
   skip-cert-verify: true
-- name: 01-06
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: TW01-主线路-02
+  port: 25009
+  server: a.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: TW02-主线路-03
+  port: 25010
+  server: b.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: SG01-主线路-04
+  port: 25007
+  server: c.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: SG02-主线路-05
+  port: 25008
+  server: d.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: JP01-主线路-06
   port: 25003
   server: c.baodesign.top
   type: vmess
@@ -21,19 +77,1210 @@ proxies:
   cipher: auto
   uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
   alterId: 0
+- name: JP02-主线路-07
+  port: 25004
+  server: d.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: US01-主线路-08
+  port: 25005
+  server: a.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: US02-主线路-09
+  port: 25006
+  server: b.baodesign.top
+  type: vmess
+  network: tcp
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
+  skip-cert-verify: true
+  cipher: auto
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
+  alterId: 0
+- name: SG 01 | 专线-10
+  port: 63150
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: sg01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: SG 01-12
+  port: 26606
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 02-13
+  port: 26606
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 01-14
+  port: 26606
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 01-15
+  port: 26606
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 04-16
+  port: 19013
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 05-17
+  port: 19013
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 02-18
+  port: 19013
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: SG 03-19
+  port: 19013
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sg02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK01 | NEW-20
+  port: 62082
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: hk05.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: HK01_专线 | NEW-21
+  port: 62082
+  server: fl0022.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: hk05.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: HK01-22
+  port: 16706
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk05.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK02-23
+  port: 16706
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk05.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK01-24
+  port: 16706
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk05.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK01-25
+  port: 16706
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk05.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK01_专线-26
+  port: 16706
+  server: fl0022.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk05.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK04-27
+  port: 25106
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK05-28
+  port: 25106
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK02_专线 3-29
+  port: 25106
+  server: fl0022.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK 07-30
+  port: 27969
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK 08-31
+  port: 27969
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK 07-32
+  port: 27969
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK 08-33
+  port: 27969
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK03_专线-34
+  port: 27969
+  server: fl0022.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK04_专线 | NEW-35
+  port: 59614
+  server: fl0022.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: hk04.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: HK10-36
+  port: 10187
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK12-37
+  port: 10187
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK11-38
+  port: 10187
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK12-39
+  port: 10187
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: HK04_专线-40
+  port: 10187
+  server: fl0022.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: hk04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP01-41
+  port: 29496
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP02-42
+  port: 29496
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP01-43
+  port: 29496
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP01-44
+  port: 29496
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP02 | NEW-45
+  port: 43372
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: jp03.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: JP04 | NEW-46
+  port: 43372
+  server: f10002.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: jp03.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: JP05-47
+  port: 39520
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP06-48
+  port: 39520
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: JP02-49
+  port: 39520
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: jp03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 01-50
+  port: 19949
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 02-51
+  port: 19949
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 01-52
+  port: 19949
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 01-53
+  port: 19949
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 04-54
+  port: 49148
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 05-55
+  port: 49148
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 02-56
+  port: 49148
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: TW 02-57
+  port: 49148
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: tw02.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: KR 02 | NEW-58
+  port: 22850
+  server: f10001.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: sk01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: KR 01 | NEW-59
+  port: 22850
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: sk01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: KR 01-61
+  port: 42751
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: KR 03-62
+  port: 42751
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: sk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: MY西亚01-63
+  port: 14900
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: my01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: MY西亚02-64
+  port: 14900
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: my01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: MY西亚03-65
+  port: 14900
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: my01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: MY西亚01-66
+  port: 14900
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: my01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: VN01_-68
+  port: 55474
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: vn01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: VN02_-69
+  port: 55474
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: vn01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: IN01-70
+  port: 47497
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: id01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: IN02-71
+  port: 47497
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: id01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: IN01-72
+  port: 47497
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: id01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: IN01-73
+  port: 47497
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: id01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: DE03 | NEW-74
+  port: 24413
+  server: f10001.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: de01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: DE01 | NEW-75
+  port: 24413
+  server: f10011.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: de01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: DE01 | NEW-76
+  port: 24413
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: de01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: DE01-77
+  port: 43654
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: de01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: UK01-78
+  port: 30273
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: uk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: UK02-79
+  port: 30273
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: uk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: UK01-80
+  port: 30273
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: uk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: UK01-81
+  port: 30273
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: uk01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: 澳大利亚01-82
+  port: 20650
+  server: f10002.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: aus01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: 澳大利亚02-83
+  port: 20650
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: aus01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: 澳大利亚03-84
+  port: 20650
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: aus01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: 澳大利亚04-85
+  port: 20650
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: aus01.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: 土耳其 01 | NEW-86
+  port: 54902
+  server: f10001.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: tur01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: 土耳其 02 | NEW-87
+  port: 54902
+  server: f10003.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: tur01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: 土耳其 01 | NEW-88
+  port: 54902
+  server: f10011.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: tur01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: 土耳其 01 | NEW-89
+  port: 54902
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: tur01.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US02 | NEW-90
+  port: 20701
+  server: f10003.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us03.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US01 | NEW-91
+  port: 20701
+  server: f10001.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us03.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US01 | NEW-92
+  port: 20701
+  server: f10011.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us03.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US02-93
+  port: 51345
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: US01-94
+  port: 51345
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us03.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: US 03 | NEW-95
+  port: 61379
+  server: f10002.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us2.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US 04 | NEW-96
+  port: 61379
+  server: f10003.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us2.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US 02 | NEW-97
+  port: 61379
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us2.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US 02 | NEW-98
+  port: 61379
+  server: f10011.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: us2.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: VN 04 | NEW-99
+  port: 64436
+  server: f10003.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: vn02.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: VN 05 | NEW-100
+  port: 64436
+  server: f10001.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: vn02.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: VN 02 | NEW-101
+  port: 64436
+  server: f10011.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: vn02.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: VN 02 | NEW-102
+  port: 64436
+  server: f10021.flyflylflyflysbs.sbs
+  type: vmess
+  network: grpc
+  tls: true
+  udp: true
+  version: '2'
+  servername: vn02.ckcloud.info
+  skip-cert-verify: true
+  cipher: auto
+  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  alterId: 0
+- name: US05-103
+  port: 58563
+  server: f10003.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: US06-104
+  port: 58563
+  server: f10001.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: US03-105
+  port: 58563
+  server: f10011.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
+- name: US04-106
+  port: 58563
+  server: f10021.flyflylflyflysbs.sbs
+  type: trojan
+  network: tcp
+  udp: true
+  sni: us04.ckcloud.info
+  password: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  skip-cert-verify: true
 proxy-groups:
 - name: 🚀 节点选择
   type: select
   proxies:
   - DIRECT
-  - 04-16
-  - 01-06
+  - HK02-主线路-01
+  - TW01-主线路-02
+  - TW02-主线路-03
+  - SG01-主线路-04
+  - SG02-主线路-05
+  - JP01-主线路-06
+  - JP02-主线路-07
+  - US01-主线路-08
+  - US02-主线路-09
+  - SG 01 | 专线-10
+  - SG 01-12
+  - SG 02-13
+  - SG 01-14
+  - SG 01-15
+  - SG 04-16
+  - SG 05-17
+  - SG 02-18
+  - SG 03-19
+  - HK01 | NEW-20
+  - HK01_专线 | NEW-21
+  - HK01-22
+  - HK02-23
+  - HK01-24
+  - HK01-25
+  - HK01_专线-26
+  - HK04-27
+  - HK05-28
+  - HK02_专线 3-29
+  - HK 07-30
+  - HK 08-31
+  - HK 07-32
+  - HK 08-33
+  - HK03_专线-34
+  - HK04_专线 | NEW-35
+  - HK10-36
+  - HK12-37
+  - HK11-38
+  - HK12-39
+  - HK04_专线-40
+  - JP01-41
+  - JP02-42
+  - JP01-43
+  - JP01-44
+  - JP02 | NEW-45
+  - JP04 | NEW-46
+  - JP05-47
+  - JP06-48
+  - JP02-49
+  - TW 01-50
+  - TW 02-51
+  - TW 01-52
+  - TW 01-53
+  - TW 04-54
+  - TW 05-55
+  - TW 02-56
+  - TW 02-57
+  - KR 02 | NEW-58
+  - KR 01 | NEW-59
+  - KR 01-61
+  - KR 03-62
+  - MY西亚01-63
+  - MY西亚02-64
+  - MY西亚03-65
+  - MY西亚01-66
+  - VN01_-68
+  - VN02_-69
+  - IN01-70
+  - IN02-71
+  - IN01-72
+  - IN01-73
+  - DE03 | NEW-74
+  - DE01 | NEW-75
+  - DE01 | NEW-76
+  - DE01-77
+  - UK01-78
+  - UK02-79
+  - UK01-80
+  - UK01-81
+  - 澳大利亚01-82
+  - 澳大利亚02-83
+  - 澳大利亚03-84
+  - 澳大利亚04-85
+  - 土耳其 01 | NEW-86
+  - 土耳其 02 | NEW-87
+  - 土耳其 01 | NEW-88
+  - 土耳其 01 | NEW-89
+  - US02 | NEW-90
+  - US01 | NEW-91
+  - US01 | NEW-92
+  - US02-93
+  - US01-94
+  - US 03 | NEW-95
+  - US 04 | NEW-96
+  - US 02 | NEW-97
+  - US 02 | NEW-98
+  - VN 04 | NEW-99
+  - VN 05 | NEW-100
+  - VN 02 | NEW-101
+  - VN 02 | NEW-102
+  - US05-103
+  - US06-104
+  - US03-105
+  - US04-106
 - name: ♻️ 自动选择
   type: url-test
   url: http://www.gstatic.com/generate_204
   interval: 300
   proxies:
-  - 04-16
-  - 01-06
+  - HK02-主线路-01
+  - TW01-主线路-02
+  - TW02-主线路-03
+  - SG01-主线路-04
+  - SG02-主线路-05
+  - JP01-主线路-06
+  - JP02-主线路-07
+  - US01-主线路-08
+  - US02-主线路-09
+  - SG 01 | 专线-10
+  - SG 01-12
+  - SG 02-13
+  - SG 01-14
+  - SG 01-15
+  - SG 04-16
+  - SG 05-17
+  - SG 02-18
+  - SG 03-19
+  - HK01 | NEW-20
+  - HK01_专线 | NEW-21
+  - HK01-22
+  - HK02-23
+  - HK01-24
+  - HK01-25
+  - HK01_专线-26
+  - HK04-27
+  - HK05-28
+  - HK02_专线 3-29
+  - HK 07-30
+  - HK 08-31
+  - HK 07-32
+  - HK 08-33
+  - HK03_专线-34
+  - HK04_专线 | NEW-35
+  - HK10-36
+  - HK12-37
+  - HK11-38
+  - HK12-39
+  - HK04_专线-40
+  - JP01-41
+  - JP02-42
+  - JP01-43
+  - JP01-44
+  - JP02 | NEW-45
+  - JP04 | NEW-46
+  - JP05-47
+  - JP06-48
+  - JP02-49
+  - TW 01-50
+  - TW 02-51
+  - TW 01-52
+  - TW 01-53
+  - TW 04-54
+  - TW 05-55
+  - TW 02-56
+  - TW 02-57
+  - KR 02 | NEW-58
+  - KR 01 | NEW-59
+  - KR 01-61
+  - KR 03-62
+  - MY西亚01-63
+  - MY西亚02-64
+  - MY西亚03-65
+  - MY西亚01-66
+  - VN01_-68
+  - VN02_-69
+  - IN01-70
+  - IN02-71
+  - IN01-72
+  - IN01-73
+  - DE03 | NEW-74
+  - DE01 | NEW-75
+  - DE01 | NEW-76
+  - DE01-77
+  - UK01-78
+  - UK02-79
+  - UK01-80
+  - UK01-81
+  - 澳大利亚01-82
+  - 澳大利亚02-83
+  - 澳大利亚03-84
+  - 澳大利亚04-85
+  - 土耳其 01 | NEW-86
+  - 土耳其 02 | NEW-87
+  - 土耳其 01 | NEW-88
+  - 土耳其 01 | NEW-89
+  - US02 | NEW-90
+  - US01 | NEW-91
+  - US01 | NEW-92
+  - US02-93
+  - US01-94
+  - US 03 | NEW-95
+  - US 04 | NEW-96
+  - US 02 | NEW-97
+  - US 02 | NEW-98
+  - VN 04 | NEW-99
+  - VN 05 | NEW-100
+  - VN 02 | NEW-101
+  - VN 02 | NEW-102
+  - US05-103
+  - US06-104
+  - US03-105
+  - US04-106
 rules:
 - MATCH,🚀 节点选择
