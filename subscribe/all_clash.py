@@ -21,7 +21,7 @@ import random
 # 配置日志
 logging.basicConfig(
     filename='error.log',
-    level=logging.INFO,  # 减少DEBUG日志，提高性能
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
@@ -55,7 +55,7 @@ DELETE_KEYWORDS = [
     '已用', '可用', '不足', '到期时间', '倍率', '返利', '充值', '续费', '用量', '订阅'
 ]
 
-# 预编译正则表达式，提高性能
+# 预编译正则表达式
 region_pattern = re.compile(r'\b(HK|TW|JP|SG|US|UK|DE|KR|MY|TH|PH|VN|ID|IN|AU|CA|RU|BR|IT|NL|CN|AE|AD|KZ)\b', re.IGNORECASE)
 provider_pattern = re.compile(r'\b(AWS|Amazon|Akamai|Oracle|Alibaba|Google|Tencent|Vultr|OVH|DigitalOcean|Core Labs|Cloudflare)\b', re.IGNORECASE)
 node_pattern = re.compile(
@@ -165,10 +165,7 @@ def parse_content_to_nodes(content):
     return found_nodes
 
 def fetch_and_parse_url(url):
-    """
-    获取URL内容并解析出节点。
-    返回 (节点列表, 是否成功, 错误信息, 状态码)
-    """
+    """获取URL内容并解析出节点"""
     session = requests.Session()
     retries = Retry(total=2, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
     session.mount('http://', HTTPAdapter(max_retries=retries))
@@ -474,11 +471,11 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Hysteria2 Node'),
                         'type': 'hysteria2',
-                        'server': parsed_url,
-                        'port': 'port',
+                        'server': server,
+                        'port': port,
                         'password': password,
                         'obfs': query.get('obfs', [''])[0],
-                        'obfs-password': query.get('password', [''])[0],
+                        'obfs-password': query.get('obfs-password', [''])[0],
                         'tls': True,
                         'skip-cert-verify': query.get('insecure', ['0'])[0] == '1',
                         'sni': query.get('sni', [server])[0],
@@ -490,21 +487,17 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         del clash_proxy_dict['obfs-password']
                     if not clash_proxy_dict['alpn']:
                         del clash_proxy_dict['alpn']
-                except Exception as e:
-                    logging.warning(f"URL节点转换为Clash字典失败: {node[:50]}... - {e}")
-                    clash_proxy_dict = None
+            except Exception as e:
+                logging.warning(f"URL节点转换为Clash字典失败: {node[:50]}... - {e}")
+                clash_proxy_dict = None
 
         if clash_proxy_dict:
-            # 过滤包含删除关键词的节点
-            if any(keyword.lower() in node_raw_name.lower() for keyword in DELETE_KEYWORDS:
+            if any(keyword.lower() in node_raw_name.lower() for keyword in DELETE_KEYWORDS):
                 continue
-
             server = clash_proxy_dict.get('server', '')
             if server and not (is_valid_ip_address(server) or re.match(r'^[a-zA-Z0-9\-\.]+$', server)):
-                logging.warning(f"忽略无效服务器地址的节点: {server}")
                 continue
 
-            # 提取地区和提供商
             region = 'Unknown'
             provider = 'Unknown'
             region_match = region_pattern.search(node_raw_name)
@@ -514,39 +507,32 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
             if provider_match:
                 provider = provider_match.group(0).title()
 
-            # 清理节点名称
             clash_proxy_dict['name'] = clean_node_name(node_raw_name, idx + 1)
-
-            # 生成指纹并去重
             fingerprint = _generate_node_fingerprint(clash_proxy_dict)
             if fingerprint and fingerprint not in unique_node_fingerprints:
                 unique_node_fingerprints.add(fingerprint)
                 group_key = (region, provider, clash_proxy_dict.get('type', 'Unknown'))
                 grouped_nodes[group_key].append(clash_proxy_dict)
 
-    # 动态分配所有唯一节点，保持多样性
     final_clash_proxies = []
     region_counts = defaultdict(int)
     protocol_counts = defaultdict(int)
 
-    # 按地区和协议排序，确保多样性
     sorted_groups = sorted(grouped_nodes.items(), key=lambda x: len(x[1]), reverse=True)
-    
     for (region, provider, protocol), nodes in sorted_groups:
-        # 随机选择一个代表性节点（可扩展为按质量排序）
         selected = random.choice(nodes)
         final_clash_proxies.append(selected)
         region_counts[region] += 1
         protocol_counts[protocol.lower()] += 1
 
-    logging.info(f"去重后节点数：{len(final_clash_proxies)}")
-    logging.info(f"地区分布：{dict(region_counts)}")
-    logging.info(f"协议分布：{dict(protocol_counts)}")
+    logging.info(f"去重后节点数: {len(final_clash_proxies)}")
+    logging.info(f"地区分布: {dict(region_counts)}")
+    logging.info(f"协议分布: {dict(protocol_counts)}")
     return final_clash_proxies
 
 # 主程序流程
-URL_SOURCE = os.environ.get('URL_SOURCE')
-print(f"调试信息 - 读取到的 URL 来源：{source: {URL_SOURCE}")
+URL_SOURCE = os.environ.get("URL_SOURCE")
+print(f"调试信息 - 读取到的 URL_SOURCE 值: {URL_SOURCE}")
 
 if not URL_SOURCE:
     print("错误：环境变量 'URL_SOURCE' 未设置。无法获取订阅链接。")
@@ -569,19 +555,31 @@ for entry in raw_urls_from_source:
     if is_valid_url(entry):
         urls_to_fetch.add(entry)
     else:
-        print(f"发现非HTTP/HTTPS条目，尝试直接解析：{entry[:80]}...")
-        parsed_nodes = parse_content_to_nodes(entry.strip())
+        print(f"发现非HTTP/HTTPS条目，尝试直接解析: {entry[:80]}...")
+        parsed_nodes = parse_content_to_nodes(entry)
         if parsed_nodes:
             all_parsed_nodes_raw.extend(parsed_nodes)
-            stat_entry = {'URL': 'entry['URL'], '节点数量': len(parsed_nodes)}, 'Status': 'Success', 'Error Message': 'Directly parsed successfully'}, 'Status Code': None}
+            stat_entry = {
+                'URL': entry,
+                '节点数量': len(parsed_nodes),
+                '状态': '成功',
+                '错误信息': '直接解析成功',
+                '状态码': None
+            }
             url_statistics.append(stat_entry)
             successful_urls.append(entry)
         else:
-            stat_entry = {'entry: 'URL', 'failed_urls': 0}, 'Status': 'Failed', 'Error Message': '非URL且无法解析为节点'}, 'Status Code': None}
+            stat_entry = {
+                'URL': entry,
+                '节点数量': 0,
+                '状态': '失败',
+                '错误信息': '非URL且无法解析为节点',
+                '状态码': None
+            }
             url_statistics.append(stat_entry)
             failed_urls.append(entry)
 
-print("\n--- 阶段 1：获取并合并所有订阅链接中的节点 ---")
+print("\n--- 阶段一：获取并合并所有订阅链接中的节点 ---")
 total_urls_to_process_via_http = len(urls_to_fetch)
 
 if total_urls_to_process_via_http > 0:
@@ -598,7 +596,6 @@ if total_urls_to_process_via_http > 0:
                 '状态码': status_code
             }
             url_statistics.append(stat_entry)
-
             if success:
                 successful_urls.append(url)
                 all_parsed_nodes_raw.extend(nodes)
@@ -609,24 +606,24 @@ if total_urls_to_process_via_http > 0:
 
 final_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
 
-with open(TEMP_MERGED_NODES_RAW_FILE, 'w', encoding='utf-8') as f:
+with open(TEMP_MERGED_NODES_RAW_FILE, 'w', encoding='utf-8') as temp_file:
     for node in final_clash_proxies:
         if isinstance(node, dict):
-            f.write(json.dumps(node, ensure_ascii=False) + '\n')
+            temp_file.write(json.dumps(node, ensure_ascii=False) + '\n')
         else:
-            f.write(str(node).strip() + '\n')
+            temp_file.write(node.strip() + '\n')
 
-print(f"\n阶段一完成。合并到 {len(final_clash_proxies)} 个唯一Clash代理字典，保存至 {TEMP_MERGED_NODES_RAW_FILE}")
+print(f"\n阶段一完成。合并到 {len(final_clash_proxies)} 个唯一Clash代理字典，已保存至 {TEMP_MERGED_NODES_RAW_FILE}")
 
 write_statistics_to_csv(url_statistics, STATISTICS_FILE)
 write_urls_to_file(successful_urls, SUCCESS_URLS_FILE)
-write_urls_to_file(failed_urls, FAILED_URLS_FILE))
+write_urls_to_file(failed_urls, FAILED_URLS_FILE)
 
 print("\n--- 阶段二：输出最终 Clash YAML 配置 ---")
 if not OUTPUT_FILE.endswith(('.yaml', '.yml')):
     OUTPUT_FILE = os.path.splitext(OUTPUT_FILE)[0] + '.yaml'
 
-proxies_to_output = final_clash_proxies  # 输出所有唯一节点
+proxies_to_output = final_clash_proxies
 
 proxy_names_in_group = []
 for node in proxies_to_output:
@@ -639,7 +636,7 @@ clash_config = {
     'proxies': proxies_to_output,
     'proxy-groups': [
         {
-            'name': '🚖 节点选择',
+            'name': '🚀 节点选择',
             'type': 'select',
             'proxies': ['DIRECT'] + proxy_names_in_group
         },
@@ -652,7 +649,7 @@ clash_config = {
         }
     ],
     'rules': [
-        'MATCH', '🚖 节点选择'
+        'MATCH,🚀 节点选择'
     ]
 }
 
@@ -662,24 +659,23 @@ try:
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as out_file:
         yaml.dump(clash_config, out_file, allow_unicode=True, default_flow_style=False, sort_keys=False)
     print(f"最终 Clash YAML 配置已保存至：{OUTPUT_FILE}")
-
 except Exception as e:
     logging.error(f"写入最终 Clash YAML 文件失败: {e}")
-    print(f"错误：写入最终 Clash YAML 文件失败: {str(e)}")
+    print(f"错误：写入最终 Clash YAML 文件失败: {e}")
 
 if os.path.exists(TEMP_MERGED_NODES_RAW_FILE):
     os.remove(TEMP_MERGED_NODES_RAW_FILE)
     print(f"已删除临时文件：{TEMP_MERGED_NODES_RAW_FILE}")
 
-print("\n" + "="*50)
+print("\n" + "=" * 50)
 print("最终结果：")
-print(f"原始来源总条目数：{len(raw_urls_from_source}")
+print(f"原始来源总条目数：{len(raw_urls_from_source)}")
 print(f"其中需要HTTP/HTTPS请求的订阅链接数：{len(urls_to_fetch)}")
 print(f"其中直接解析的非URL字符串数：{len(raw_urls_from_source) - len(urls_to_fetch)}")
 print(f"成功处理的URL/字符串总数：{len(successful_urls)}")
 print(f"失败的URL/字符串总数：{len(failed_urls)}")
-print(f"初步聚合的原始节点数（去重和过滤前）：{len(all_failed_urls_raw)}")
-print(f"去重、标准化和过滤后的节点数：{len(final_clash_proxies)}")
+print(f"初步聚合的原始节点数（去重和过滤前）：{len(all_parsed_nodes_raw)}")
+print(f"去重、标准化和过滤后的唯一Clash代理数：{len(final_clash_proxies)}")
 print(f"最终输出到Clash YAML文件的节点数：{success_count}")
 if len(final_clash_proxies) > 0:
     print(f"最终有效内容率（相对于去重过滤后）：{success_count/len(final_clash_proxies):.1%}")
