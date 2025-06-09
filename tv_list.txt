@@ -1,6 +1,7 @@
 新闻财经,#genre#
 凤凰资讯,http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8
 凤凰资讯,https://raw.githubusercontent.com/lem85930/YTM/main/凤凰资讯台.m3u8
+民视新闻,https://smart.pendy.dpdns.org/youtube.php
 香港Now新闻CH332,http://livetv.dnsfor.me:80/channel.4.m3u8
 香港无线财经•资讯,http://livetv.dnsfor.me:80/channel.11.m3u8
 CCTV央视,#genre#
@@ -85,6 +86,7 @@ NASATV,https://ntv2.akamaized.net/hls/live/2013923/NASA-NTV2-HLS/master.m3u8
 NASATVPublic,https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8
 PlacentiaTV,https://cdn3.wowza.com/5/M0lyamVmM2JWcjhQ/placentia/G0928_002/playlist.m3u8
 TemeculaTV,https://reflect-temecula.cablecast.tv/live-2/live/live.m3u8
+三立,https://smart.pendy.dpdns.org/youtube.php
 东森,https://raw.githubusercontent.com/lem85930/YTM/main/东森财经新闻.m3u8
 中天,https://raw.githubusercontent.com/lem85930/YTM/main/中天新闻.m3u8
 凤凰中文,http://antiserver.kuwo.cn/anti.s
@@ -110,10 +112,14 @@ AdultSwimRickandMorty,https://adultswim-vodlive.cdn.turner.com/live/rick-and-mor
 AfrobeatTVEntertainment,https://stream.ecable.tv/afrobeats/index.m3u8
 AlHiwarTV,https://mn-nl.mncdn.com/alhiwar_live/smil:alhiwar.smil/playlist.m3u8
 AlmagdTVNorthAmerica,https://5aafcc5de91f1.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8
+AstroSuperSport4K1,http://clientsportals.tv:2095/play/live.php
+AstroSuperSport4K2,http://line.tektv.live/play/live.php
+AstroSuperSport4K3,http://ultratv.one:2095/xMsGHAzQ/kYuckAK/348094
 BBCArabic,https://vs-cmaf-pushb-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_arabic_tv/pc_hd_abr_v2.mpd
 BEKSportsWest,https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEW.smil/playlist.m3u8
 BXArts,https://reflect-stream-bronxnet.cablecast.tv/live-19/live/live.m3u8
 BeachTVMyrtleBeach&TheGrandStrand,http://media4.tripsmarter.com:1935/LiveTV/MTVHD/playlist.m3u8
+CNA亚洲,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 CNN,https://turnerlive.warnermediacdn.com/hls/live/586495/cnngo/cnn_slate/VIDEO_0_3564000.m3u8
 CityofFortPierce,https://edge-f.swagit.com/live/fortpiercefl/live-1-a/playlist.m3u8
 ClassicArtsShowcase,https://classicarts.akamaized.net/hls/live/1024257/CAS/master.m3u8
@@ -126,9 +132,14 @@ KBSVDT1,http://66.242.170.53/hls/live/temp/index.m3u8
 KartoonChannel!,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-kartoonchannel-samsungnz/playlist.m3u8
 KevinHart'sLOL!Network,https://lol-lolnetwork-2-nl.samsung.wurl.tv/playlist.m3u8
 MartinCountyTV,https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/martin/G0074_002/playlist.m3u8
+NowSportsUHDHK1,http://ultratv.one:2095/xMsGHAzQ/kYuckAK/117957
+NowSportsUHDHK2,http://line.tektv.live/play/live.php
 RTHTV1,https://2-fss-2.streamhoster.com/pl_120/amlst:206708-4203440/playlist.m3u8
 RTNews,https://rt-glb.rttv.com/live/rtnews/playlist.m3u8
+Sport5,http://clientsportals.tv:2095/play/live.php
 TakbeerTV,https://ap02.iqplay.tv:8082/iqb8002/t5kb86/playlist.m3u8
+VSportsUHD,http://clientsportals.tv:2095/play/live.php
+VSportsUHD备,http://ultratv.one:2095/xMsGHAzQ/kYuckAK/31644
 VoAPersian,https://voa-ingest.akamaized.net/hls/live/2033876/tvmc07/playlist.m3u8
 ZiggoSport4K,http://live.iptvtotaal.com:8000/awpreneniptv/09HZaVeOmh/20560
 法国时尚,http://lb.streaming.sk/fashiontv/stream/chunklist_w1702070444.m3u8
@@ -217,6 +228,7 @@ AlmagdTVMiddleEast,https://597f64b67707a.streamlock.net/almagd.tv/almagd.smil/pl
 America'sVoice,https://content.uplynk.com/channel/26bd482ffe364a1282bc3df28bd3c21f.m3u8
 Ameritrade,https://tdameritrade-vizio.amagi.tv/playlist.m3u8
 AnandTV,https://live-anandtv.anandmedia.net/anandtvapp/anandtv/index.m3u8
+ArirangEnglish,http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 AtlantaChannel,http://media4.tripsmarter.com:1935/LiveTV/ACVBHD/playlist.m3u8
 AvangTV,https://hls.avang.live/hls/stream.m3u8
 BEKNews,https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEeast.smil/playlist.m3u8
@@ -288,11 +300,13 @@ Community12TV,https://lin10.isilive.ca/live/gainesville/live/index.m3u8
 CommunityTVChannel189,https://reflect-tacm.cablecast.tv/live-3/live/live.m3u8
 CoralGablesTV,https://cdn3.wowza.com/5/R09KQXpaMWlrRjly/coralgables/G0937_004/playlist.m3u8
 DD,https://edge-hls.doppiocdn.live/hls/183440286/master/183440286_auto.m3u8
+DIGI,http://clientsportals.tv:2095/play/live.php
 DMTV,https://d25ykpi2vxhoyc.cloudfront.net/delmar-cdn/dmtv/playlist.m3u8
 Dateline24/7,https://dz59iptwz5rxs.cloudfront.net/live/master.m3u8
 DeenTV,https://ap02.iqplay.tv:8082/iqb8002/d33ntv/playlist.m3u8
 Denver8TV,https://cdn3.wowza.com/5/bGZUOHp2TnhudnM2/denver/G0080_002/playlist.m3u8
 DiscoverFilm,https://discoverfilm-discoverfilm-1-nl.samsung.wurl.tv/playlist.m3u8
+DiscoveryScience,https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Discoveryscience2/default/manifest.mpd
 Dr.GeneScott,https://wescottcc.piksel.tech/Manifest/UTB-NetworkStream.m3u8
 DunyaNewsUK,https://ukintl.dunyanews.tv/liveuk/ngrp:dunyalive_all/playlist.m3u8
 ESPN,http://svtv.xyz:8080/sandra30abril/CQNFV/274927
@@ -353,6 +367,7 @@ KCWXDT1,http://65.36.6.216:1935/live/kcwx.smil/playlist.m3u8
 KERODT1,https://content.uplynk.com/channel/ff809e6d9ec34109abfb333f0d4444b5.m3u8
 KHOUDT1,https://livevideo01.khou.com/hls/live/2014966/newscasts/live.m3u8
 KIIOLD4,https://streamer1.connectto.com/AABC_WEB_1201/index.m3u8
+KJLADT16,https://59d39900ebfb8.streamlock.net/8478/8478/playlist.m3u8
 KMBYLD5,https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8
 KMTVDT1,https://content.uplynk.com/4a09fbea28ef4f32bce095e9eae04bd8.m3u8
 KNOVCD1,http://media4.tripsmarter.com:1935/LiveTV/NOTVHD/playlist.m3u8
@@ -416,6 +431,8 @@ MyEncinitasTV,https://cdn3.wowza.com/5/RXJNMFI3VlVkOEFP/encinitas/G0322_002/play
 NBCLX,https://nbculocallive.akamaized.net/hls/live/2037096/lx/use1.m3u8
 NCTVChannel14,https://s3-us-west-2.amazonaws.com/newington.castus-vod/live/ch1/video.m3u8
 NCTVChannel16,https://s3-us-west-2.amazonaws.com/newington.castus-vod/live/ch2/video.m3u8
+NDTVIndia,https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Ndtvindia2/default/manifest.mpd
+NEWSnet,https://cdn.igocast.com/channel2_hls/channel2_master.m3u8
 NYXT,https://reflect-stream-bronxnet.cablecast.tv/live-10/live/live.m3u8
 NagoTV,https://lakay.online/public/nagotv/index.fmp4.m3u8
 NapaValleyChannel27,https://cdn3.wowza.com/5/WDIrTW5sM1JEY1NN/napatv/G0360_003/playlist.m3u8
@@ -426,6 +443,7 @@ Newsy,https://547f72e6652371c3.mediapackage.us-east-1.amazonaws.com/out/v1/e3e6e
 NothingScripted,https://30a-tv.com/NothingScripted.m3u8
 Now70s,https://lightning-now70s-samsungnz.amagi.tv/playlist.m3u8
 Now80s,https://lightning-now80s-samsungnz.amagi.tv/playlist.m3u8
+OAN,http://oneamericanews-roku-us.amagi.tv/playlist.m3u8
 OmidJavedan,http://livestream.5centscdn.com/shaditv/23abe62a446fc05ce0a6c810f4045308.sdp/index.m3u8
 OntarioPublicAccessChannel,https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/ontarioca/G2446_002/playlist.m3u8
 OpcionTV,https://5790d294af2dc.streamlock.net/8066/8066/playlist.m3u8
@@ -465,6 +483,7 @@ StocktonGovTV,https://cdn3.wowza.com/5/dk84U1p2UUdoMGxT/stockton/G0044_008/playl
 TBCN,https://reflect-tampa-bay-community.cablecast.tv/live-16/live/live.m3u8
 TDAmeritradeNetwork,https://content.uplynk.com/channel/f9aafa1f132e40af9b9e7238bc18d128.m3u8
 TJC,https://cdn-shop-lc-01.akamaized.net/Content/HLS_HLS/Live/channel(TJCOTT)/index.m3u8
+TLC,https://d1g8wgjurz8via.cloudfront.net/bpk-tv/Tlc2/default/manifest.mpd
 TMTV,https://hls.tmtv.live/hls/stream.m3u8
 TUTV,https://livestream.telvue.com/templeuni1/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8
 TV84,https://cdn20.liveonlineservices.com/hls/tv84.m3u8
@@ -526,6 +545,7 @@ Yahoo!Finance,https://d1ewctnvcwvvvu.cloudfront.net/playlist.m3u8
 YahooFinance,https://d1ewctnvcwvvvu.cloudfront.net/playlist.m3u8
 YoutooAmerica,https://thegateway.app/YouToo/CueTones/playlist.m3u8
 bonappetit,https://bonappetit-samsung.amagi.tv/playlist.m3u8
+loupe4K,https://d2dw21aq0j0l5c.cloudfront.net/playlist_3840x2160.m3u8
 “中”于文文体面,https://vdse.bdstatic.com//f18bdf41f28b68a1b0177fa5e5cdf8fe.mp4
 “中”任齐贤心太软,http://vodcdn.video.taobao.com/oss/ali-video/1675208d8b5f0f0d8ce09236f4068dfe/video.m3u8
 “中”光良童话,http://vodcdn.video.taobao.com/oss/ali-video/e2c54a5b89aaa794cfc186c41d2ef348/video.m3u8
@@ -934,5 +954,7 @@ bonappetit,https://bonappetit-samsung.amagi.tv/playlist.m3u8
 兵团,https://liveout.btzx.com.cn/62ds9e/yil08g.m3u8
 寰宇,https://raw.githubusercontent.com/lem85930/YTM/main/寰宇新闻.m3u8
 嵊州,http://l.cztvcloud.com/channels/lantian/SXshengzhou1/720p.m3u8
+斗鱼4K,http://epg.112114.xyz/douyu/9249162
+爱自然,https://d18dyiwu97wm6q.cloudfront.net/playlist2160p.m3u8
 视,https://raw.githubusercontent.com/lem85930/YTM/main/台视新闻.m3u8
 青田,http://l.cztvcloud.com/channels/lantian/SXqingtian1/720p.m3u8
