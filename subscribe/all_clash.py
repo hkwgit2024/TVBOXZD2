@@ -17,8 +17,11 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # 配置日志
-logging.basicConfig(filename='error.log', level=logging.error,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename='error.log',
+    level=logging.DEBUG,  # 启用调试日志以便排查
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 # 请求头
 headers = {
@@ -85,7 +88,7 @@ def get_url_list_from_remote(url_source):
         response.raise_for_status()
         text_content = response.text.strip()
         raw_urls = [line.strip() for line in text_content.splitlines() if line.strip()]
-        print(f"从 {url_source} 获取到 {len(raw_urls)} 个URL")
+        logging.info(f"从 {url_source} 获取到 {len(raw_urls)} 个URL")
         return raw_urls
     except Exception as e:
         logging.error(f"获取URL列表失败: {url_source} - {e}")
@@ -279,50 +282,81 @@ def clean_node_name(name, index=None):
     return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
 
 def _generate_node_fingerprint(node):
-    """为节点生成唯一指纹"""
+    """为节点生成唯一指纹，优化去重逻辑"""
+    def normalize_value(value):
+        """规范化字段值，确保一致性"""
+        if value is None:
+            return ''
+        if isinstance(value, (list, tuple)):
+            return ','.join(str(v).lower().strip() for v in value if v)
+        return str(value).lower().strip()
+
+    def normalize_dict(d):
+        """规范化字典中的值"""
+        return {k: normalize_value(v) for k, v in d.items() if v is not None}
+
     if isinstance(node, dict):
         fingerprint_data = {
-            'type': node.get('type'),
-            'server': node.get('server'),
-            'port': node.get('port'),
+            'type': normalize_value(node.get('type')),
+            'server': normalize_value(node.get('server')),
+            'port': normalize_value(node.get('port')),
         }
 
-        node_type = node.get('type')
+        node_type = node.get('type', '').lower()
         if node_type == 'vmess':
-            fingerprint_data['uuid'] = node.get('uuid') or node.get('id')
-            fingerprint_data['alterId'] = node.get('alterId') or node.get('aid')
-            fingerprint_data['network'] = node.get('network')
-            fingerprint_data['tls'] = node.get('tls')
-            fingerprint_data['sni'] = node.get('sni') or node.get('host')
-            fingerprint_data['path'] = node.get('path')
+            fingerprint_data.update({
+                'uuid': normalize_value(node.get('uuid') or node.get('id')),
+                'alterId': normalize_value(node.get('alterId') or node.get('aid')),
+                'network': normalize_value(node.get('network')),
+                'tls': normalize_value(node.get('tls')),
+                'sni': normalize_value(node.get('sni') or node.get('host')),
+                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
+                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
+                'grpc_serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName') if node.get('grpc-opts') else None),
+            })
         elif node_type == 'trojan':
-            fingerprint_data['password'] = node.get('password')
-            fingerprint_data['network'] = node.get('network')
-            fingerprint_data['tls'] = node.get('tls')
-            fingerprint_data['sni'] = node.get('sni') or node.get('host')
-            fingerprint_data['skip-cert-verify'] = node.get('skip-cert-verify')
+            fingerprint_data.update({
+                'password': normalize_value(node.get('password')),
+                'network': normalize_value(node.get('network')),
+                'tls': normalize_value(node.get('tls')),
+                'sni': normalize_value(node.get('sni') or node.get('host')),
+                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
+                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
+                'skip-cert-verify': normalize_value(node.get('skip-cert-verify')),
+            })
         elif node_type == 'ss':
-            fingerprint_data['cipher'] = node.get('cipher')
-            fingerprint_data['password'] = node.get('password')
+            fingerprint_data.update({
+                'cipher': normalize_value(node.get('cipher')),
+                'password': normalize_value(node.get('password')),
+            })
         elif node_type == 'vless':
-            fingerprint_data['uuid'] = node.get('uuid') or node.get('id')
-            fingerprint_data['network'] = node.get('network')
-            fingerprint_data['tls'] = node.get('tls')
-            fingerprint_data['sni'] = node.get('sni') or node.get('host')
-            fingerprint_data['path'] = node.get('path')
-            fingerprint_data['flow'] = node.get('flow')
+            fingerprint_data.update({
+                'uuid': normalize_value(node.get('uuid') or node.get('id')),
+                'network': normalize_value(node.get('network')),
+                'tls': normalize_value(node.get('tls')),
+                'sni': normalize_value(node.get('sni') or node.get('host')),
+                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
+                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
+                'grpc_serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName') if node.get('grpc-opts') else None),
+                'flow': normalize_value(node.get('flow')),
+            })
         elif node_type in ['hysteria', 'hysteria2', 'hy', 'hy2']:
-            fingerprint_data['password'] = node.get('password')
-            fingerprint_data['obfs'] = node.get('obfs')
-            fingerprint_data['obfs-password'] = node.get('obfs-password')
-            fingerprint_data['tls'] = node.get('tls')
-            fingerprint_data['sni'] = node.get('sni') or node.get('host')
-            fingerprint_data['alpn'] = node.get('alpn')
-            fingerprint_data['skip-cert-verify'] = node.get('skip-cert-verify')
+            fingerprint_data.update({
+                'password': normalize_value(node.get('password') or node.get('auth_str')),
+                'obfs': normalize_value(node.get('obfs')),
+                'obfs-password': normalize_value(node.get('obfs-password')),
+                'tls': normalize_value(node.get('tls')),
+                'sni': normalize_value(node.get('sni') or node.get('host')),
+                'alpn': normalize_value(node.get('alpn')),
+                'skip-cert-verify': normalize_value(node.get('skip-cert-verify')),
+            })
 
-        normalized_data = {k: str(v).lower().strip() if v is not None else '' for k, v in fingerprint_data.items()}
-        stable_json = json.dumps(normalized_data, sort_keys=True, ensure_ascii=False)
-        return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
+        # 确保所有字段都参与指纹计算，排序以保证一致性
+        stable_json = json.dumps(normalize_dict(fingerprint_data), sort_keys=True, ensure_ascii=False)
+        fingerprint = hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
+        logging.debug(f"Generated fingerprint for dict node {node.get('name', 'Unknown')}: {fingerprint}")
+        return fingerprint
+
     elif isinstance(node, str):
         try:
             if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
@@ -330,38 +364,42 @@ def _generate_node_fingerprint(node):
                 return None
 
             parsed_url = urlparse(node)
-            scheme = parsed_url.scheme
-            netloc = parsed_url.netloc
-            path = parsed_url.path
-            query_params = parse_qs(parsed_url.query)
-            
+            scheme = parsed_url.scheme.lower()
+            netloc = parsed_url.netloc.lower()
+            path = parsed_url.path.lower()
+            query_params = parse_qs(parsed_url.query, keep_blank_values=True)
+
             host = netloc.split(':')[0] if ':' in netloc else netloc
+            port = netloc.split(':')[1] if ':' in netloc else ''
             if is_valid_ip_address(host) and host.startswith('[') and host.endswith(']'):
                 host = host[1:-1]
             elif not is_valid_ip_address(host) and not re.match(r'^[a-zA-Z0-9\-\.]+$', host):
                 logging.warning(f"无效的主机名: {host} in {node[:50]}...")
                 return None
 
-            normalized_query_params = {}
-            for k, v in query_params.items():
-                normalized_query_params[k.lower()] = str(v[0]).lower().strip()
+            normalized_query_params = normalize_dict({k: v[0] for k, v in query_params.items()})
             
             fingerprint_parts = [
                 scheme,
-                host.lower(),
-                netloc.lower().split(':')[-1] if ':' in netloc else '',
-                path.lower()
+                host,
+                port,
+                path,
             ]
 
-            sorted_query_keys = sorted(normalized_query_params.keys())
+            # 包含所有查询参数（排除非关键字段）
+            excluded_keys = ['name', 'ps', 'remarks', 'info', 'usage', 'expire', 'ud', 'up', 'dn', 'package', 'nodeName', 'nodeid', 'ver']
+            sorted_query_keys = sorted(k for k in normalized_query_params.keys() if k not in excluded_keys)
             for k in sorted_query_keys:
-                if k not in ['name', 'ps', 'remarks', 'info', 'flow', 'usage', 'expire', 'ud', 'up', 'dn', 'package', 'nodeName', 'nodeid', 'ver']:
-                    fingerprint_parts.append(f"{k}={normalized_query_params[k]}")
+                fingerprint_parts.append(f"{k}={normalized_query_params[k]}")
 
-            return hashlib.sha256("".join(fingerprint_parts).encode('utf-8')).hexdigest()
+            fingerprint = hashlib.sha256("".join(fingerprint_parts).encode('utf-8')).hexdigest()
+            logging.debug(f"Generated fingerprint for string node {node[:50]}...: {fingerprint}")
+            return fingerprint
         except Exception as e:
             logging.warning(f"生成URL节点指纹失败: {node[:50]}... - {e}")
             return None
+
+    logging.warning(f"无效的节点类型: {type(node)}")
     return None
 
 def deduplicate_and_standardize_nodes(raw_nodes_list):
@@ -369,6 +407,8 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
     unique_node_fingerprints = set()
     final_clash_proxies = []
 
+    logging.info(f"去重前节点数: {len(raw_nodes_list)}")
+    
     for idx, node in enumerate(raw_nodes_list):
         clash_proxy_dict = None
         node_raw_name = ""
@@ -559,6 +599,8 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
             else:
                 logging.debug(f"重复节点（按指纹）：{clash_proxy_dict.get('name', '')} - {fingerprint}")
 
+    logging.info(f"去重后唯一指纹数: {len(unique_node_fingerprints)}")
+    logging.info(f"去重后节点数: {len(final_clash_proxies)}")
     return final_clash_proxies
 
 # --- 主程序流程 ---
