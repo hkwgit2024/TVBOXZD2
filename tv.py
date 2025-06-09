@@ -190,47 +190,35 @@ def read_existing_channels(file_path):
 
 def write_sorted_channels_to_file(file_path, data_list):
     """将排序后的频道数据追加到文件，并去重。"""
-    # 读取现有频道
     existing_channels = read_existing_channels(file_path)
     new_channels = set()
     
-    # 提取新数据中的频道
     for _, line in data_list:
         if ',' in line:
             name, url = line.split(',', 1)
             new_channels.add((name.strip(), url.strip()))
     
-    # 合并并去重
     all_channels = existing_channels | new_channels
     
-    # 追加写入
     try:
         with open(file_path, 'a', encoding='utf-8') as file:
             for name, url in all_channels:
-                if (name, url) not in existing_channels:  # 只追加新频道
+                if (name, url) not in existing_channels:
                     file.write(f"{name},{url}\n")
         logging.debug(f"已追加 {len(all_channels - existing_channels)} 个新频道到 {file_path}")
     except Exception as e:
         logging.error(f"追加写入文件 '{file_path}' 发生错误：{e}")
 
-# --- 新增函数：清空目录中的 TXT 文件（已注释，不使用） ---
-# def clear_directory_txt_files(directory):
-#     """清空指定目录中的所有 .txt 文件。"""
-#     try:
-#         for file_name in os.listdir(directory):
-#             if file_name.endswith('.txt'):
-#                 file_path = os.path.join(directory, file_name)
-#                 os.remove(file_path)
-#                 logging.debug(f"已删除旧文件：{file_path}")
-#     except Exception as e:
-#         logging.error(f"清空目录 {directory} 中的 .txt 文件时发生错误：{e}")
-
 # --- URL 处理和频道提取函数 ---
 def get_url_file_extension(url):
     """获取 URL 的文件扩展名。"""
-    parsed_url = urlparse(url)
-    extension = os.path.splitext(parsed_url.path)[1].lower()
-    return extension
+    try:
+        parsed_url = urlparse(url)
+        extension = os.path.splitext(parsed_url.path)[1].lower()
+        return extension
+    except ValueError as e:
+        logging.debug(f"获取 URL 扩展名失败：{url} - {e}")
+        return ""
 
 def convert_m3u_to_txt(m3u_content):
     """将 M3U 格式内容转换为 TXT 格式（频道名,URL）。"""
@@ -255,8 +243,12 @@ def convert_m3u_to_txt(m3u_content):
 
 def clean_url_params(url):
     """清理 URL 参数，只保留协议、域名和路径。"""
-    parsed_url = urlparse(url)
-    return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+    try:
+        parsed_url = urlparse(url)
+        return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+    except ValueError as e:
+        logging.debug(f"清理 URL 参数失败：{url} - {e}")
+        return url
 
 # --- URL 状态管理函数 ---
 def load_url_states_remote():
@@ -346,21 +338,33 @@ def extract_channels_from_url(url, url_states):
             line = line.strip()
             if "#genre#" not in line and "," in line and "://" in line:
                 parts = line.split(',', 1)
-                channel_name = parts[0].strip()
-                channel_address_raw = parts[1].strip()
+                if len(parts) != 2:
+                    logging.debug(f"跳过无效频道行（格式错误）：{line}")
+                    continue
+                channel_name, channel_address_raw = parts
+                channel_name = channel_name.strip()
+                channel_address_raw = channel_address_raw.strip()
+
+                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
+                    logging.debug(f"跳过无效频道 URL（无有效协议）：{line}")
+                    continue
 
                 if '#' in channel_address_raw:
                     url_list = channel_address_raw.split('#')
                     for channel_url in url_list:
                         channel_url = clean_url_params(channel_url.strip())
-                        if channel_url:
+                        if channel_url and pre_screen_url(channel_url):
                             extracted_channels.append((channel_name, channel_url))
                             channel_count += 1
+                        else:
+                            logging.debug(f"跳过无效或未通过预筛选的频道 URL：{channel_url}")
                 else:
                     channel_url = clean_url_params(channel_address_raw)
-                    if channel_url:
+                    if channel_url and pre_screen_url(channel_url):
                         extracted_channels.append((channel_name, channel_url))
                         channel_count += 1
+                    else:
+                        logging.debug(f"跳过无效或未通过预筛选的频道 URL：{channel_url}")
         logging.debug(f"成功从 URL：{url} 中提取 {channel_count} 个频道。")
     except Exception as e:
         logging.error(f"从 {url} 提取频道时发生错误：{e}")
@@ -369,27 +373,42 @@ def extract_channels_from_url(url, url_states):
 def pre_screen_url(url):
     """预筛选 URL，根据配置检查协议、长度和无效模式。"""
     if not isinstance(url, str) or not url:
+        logging.debug(f"预筛选过滤（无效类型或空）：{url}")
         return False
 
-    parsed_url = urlparse(url)
-
-    if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+    if not re.match(r'^[a-zA-Z0-9+.-]+://', url):
+        logging.debug(f"预筛选过滤（无有效协议）：{url}")
         return False
 
-    if not parsed_url.netloc:
+    if re.search(r'[^\x00-\x7F]', url) or ' ' in url:
+        logging.debug(f"预筛选过滤（包含非法字符或空格）：{url}")
         return False
 
-    invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
-    compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
-    for pattern in compiled_invalid_url_patterns:
-        if pattern.search(url):
-            logging.debug(f"预筛选过滤（无效模式）：{url}")
+    try:
+        parsed_url = urlparse(url)
+        if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+            logging.debug(f"预筛选过滤（协议不受支持）：{url}")
             return False
 
-    if len(url) < 15:
-        return False
+        if not parsed_url.netloc:
+            logging.debug(f"预筛选过滤（无网络位置）：{url}")
+            return False
 
-    return True
+        invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
+        compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
+        for pattern in compiled_invalid_url_patterns:
+            if pattern.search(url):
+                logging.debug(f"预筛选过滤（无效模式）：{url}")
+                return False
+
+        if len(url) < 15:
+            logging.debug(f"预筛选过滤（URL 太短）：{url}")
+            return False
+
+        return True
+    except ValueError as e:
+        logging.debug(f"预筛选过滤（URL 解析错误）：{url} - {e}")
+        return False
 
 def filter_and_modify_channels(channels):
     """过滤和修改频道名称及 URL。"""
@@ -592,7 +611,6 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
                     results.append((elapsed_time, result_line))
             except Exception as exc:
                 logging.warning(f"频道行处理期间发生异常：{exc}")
-
     return results
 
 # --- 文件合并和排序函数 ---
@@ -624,11 +642,9 @@ def group_and_limit_channels(lines):
 
 def merge_local_channel_files(local_channels_directory, output_file_name="iptv_list.txt"):
     """合并本地生成的频道列表文件，追加模式并去重。"""
-    # 读取现有输出文件中的频道
     existing_channels = read_existing_channels(output_file_name)
     final_output_lines = []
     
-    # 只在文件为空时添加更新时间头
     if not existing_channels:
         final_output_lines.extend(generate_update_time_header())
 
@@ -664,13 +680,11 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                         name, url = line.split(',', 1)
                         new_channels.add((name.strip(), url.strip()))
 
-    # 合并并去重
     all_channels = existing_channels | new_channels
     for name, url in all_channels:
-        if (name, url) not in existing_channels:  # 只追加新频道
+        if (name, url) not in existing_channels:
             final_output_lines.append(f"{name},{url}\n")
 
-    # 追加写入
     try:
         with open(output_file_name, "a", encoding='utf-8') as iptv_list_file:
             iptv_list_file.writelines(final_output_lines)
@@ -710,11 +724,10 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
     logging.warning("正在开始从 GitHub 自动发现新的 IPTV 源 URL...")
 
-    # 记录每个关键词找到的 URL 数量
     keyword_url_counts = {keyword: 0 for keyword in SEARCH_KEYWORDS}
 
     for i, keyword in enumerate(SEARCH_KEYWORDS):
-        keyword_found_urls = set()  # 记录当前关键词找到的 URL
+        keyword_found_urls = set()
         if i > 0:
             logging.warning(f"切换到下一个关键词：'{keyword}'。等待 {GITHUB_API_RETRY_WAIT} 秒以避免速率限制...")
             time.sleep(GITHUB_API_RETRY_WAIT)
@@ -796,13 +809,11 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
                 break
 
-        # 记录当前关键词找到的 URL 数量
         keyword_url_counts[keyword] = len(keyword_found_urls)
         logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
 
-    # 总结每个关键词的 URL 数量并建议删除无效关键词
     logging.warning("\n=== 关键词搜索结果总结 ===")
-    low_result_threshold = 5  # 定义结果较少的阈值
+    low_result_threshold = 5
     low_or_no_result_keywords = []
     for keyword, count in keyword_url_counts.items():
         logging.warning(f"关键词 '{keyword}'：{count} 个 URL")
@@ -864,7 +875,16 @@ def main():
     logging.warning(f"\n从所有源提取了 {len(all_extracted_channels)} 个原始频道。")
 
     # 步骤 6: 过滤和清理频道
-    filtered_channels = filter_and_modify_channels(list(all_extracted_channels))
+    filtered_channels = []
+    for channel in all_extracted_channels:
+        try:
+            filtered = filter_and_modify_channels([channel])
+            filtered_channels.extend(filtered)
+        except Exception as e:
+            name, url = channel
+            logging.error(f"过滤频道 {name},{url} 时发生错误：{e}，跳过此频道。")
+            continue
+
     unique_filtered_channels = list(set(filtered_channels))
     unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
 
@@ -885,8 +905,6 @@ def main():
     # 步骤 10: 准备本地频道目录和模板
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
     os.makedirs(local_channels_directory, exist_ok=True)
-    # 不清空目录，保留旧文件
-    # clear_directory_txt_files(local_channels_directory)
 
     template_directory = os.path.join(os.getcwd(), '频道模板')
     os.makedirs(template_directory, exist_ok=True)
@@ -915,21 +933,19 @@ def main():
             logging.warning(f"已按数字对 '{template_name}' 频道进行排序。")
 
         output_file_path = os.path.join(local_channels_directory, f"{template_name}_iptv.txt")
-        # 读取现有频道进行去重
         existing_channels = read_existing_channels(output_file_path)
         new_channels = set()
         for channel in current_template_matched_channels:
             name, url = channel.split(',', 1)
             new_channels.add((name.strip(), url.strip()))
         
-        # 合并并去重
         all_channels = existing_channels | new_channels
         try:
             with open(output_file_path, 'a', encoding='utf-8') as f:
-                if not existing_channels:  # 文件为空时写入标题
+                if not existing_channels:
                     f.write(f"{template_name},#genre#\n")
                 for name, url in all_channels:
-                    if (name, url) not in existing_channels:  # 只追加新频道
+                    if (name, url) not in existing_channels:
                         f.write(f"{name},{url}\n")
             logging.warning(f"频道列表已追加到：'{template_name}_iptv.txt'，新增 {len(all_channels - existing_channels)} 个频道。")
         except Exception as e:
@@ -939,7 +955,7 @@ def main():
     final_iptv_list_output_file = "iptv_list.txt"
     merge_local_channel_files(local_channels_directory, final_iptv_list_output_file)
 
-    # 步骤 13: 上传最终的 IPTV 列表到 GitHub（保持覆盖模式）
+    # 步骤 13: 上传最终的 IPTV 列表到 GitHub
     try:
         with open(final_iptv_list_output_file, "r", encoding="utf-8") as f:
             final_iptv_content = f.read()
@@ -956,19 +972,17 @@ def main():
             unmatched_channels_list.append(channel_line)
 
     unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
-    # 读取现有未匹配频道
     existing_unmatched = read_existing_channels(unmatched_output_file_path)
     new_unmatched = set()
     for channel in unmatched_channels_list:
         name, url = channel.split(',', 1)
         new_unmatched.add((name.strip(), url.strip()))
     
-    # 合并并去重
     all_unmatched = existing_unmatched | new_unmatched
     try:
         with open(unmatched_output_file_path, 'a', encoding='utf-8') as f:
             for name, url in all_unmatched:
-                if (name, url) not in existing_unmatched:  # 只追加新频道
+                if (name, url) not in existing_unmatched:
                     f.write(f"{name}\n")
         logging.warning(f"\n已追加不匹配但已检测到的频道列表到：'{unmatched_output_file_path}'，新增 {len(all_unmatched - existing_unmatched)} 个频道。")
     except Exception as e:
