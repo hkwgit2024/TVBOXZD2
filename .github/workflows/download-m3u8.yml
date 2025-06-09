@@ -1,84 +1,112 @@
 name: Download and Validate M3U8 URLs
 
 on:
+  # 允许手动从 GitHub UI 触发工作流
   workflow_dispatch:
+  # 每天 UTC 时间午夜 00:00 自动运行
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
   download-and-validate:
     runs-on: ubuntu-latest
+    # 设置作业最长运行时间为 280 分钟（4 小时 40 分钟），超时将强制终止
     timeout-minutes: 280
 
     steps:
-    - name: Checkout repository
+    - name: Checkout repository # 步骤 1: 克隆代码仓库
       uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: Set up Python # 步骤 2: 设置 Python 环境
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install dependencies # 步骤 3: 安装 Python 依赖
       run: |
         python -m pip install --upgrade pip
         pip install aiohttp
 
-    - name: Cache data directory
+    - name: Cache data directory # 步骤 4: 缓存 'data/' 目录以加快后续运行
       uses: actions/cache@v4
       with:
         path: data/
-        key: ${{ runner.os }}-data-${{ github.run_id }}  # 回退到使用 run_id
+        key: ${{ runner.os }}-data-${{ github.run_id }} # 使用 run_id 作为唯一键
         restore-keys: |
-          ${{ runner.os }}-data-
+          ${{ runner.os }}-data- # 恢复键，尝试匹配操作系统和数据标识符
 
-    - name: Run script
+    - name: Run script # 步骤 5: 运行 M3U8 下载和验证脚本
       env:
-        BOT: ${{ secrets.BOT }}
-        REPO_URL: ${{ secrets.REPO_URL }}
+        BOT: ${{ secrets.BOT }} # 从 GitHub Secrets 获取 BOT 环境变量
+        REPO_URL: ${{ secrets.REPO_URL }} # 从 GitHub Secrets 获取 REPO_URL 环境变量
       run: |
+        # 运行 Python 脚本，并将其所有输出重定向到 script_output.log
         python download_m3u8.py 2>&1 | tee script_output.log
+      # 如果此步骤失败，整个作业将立即停止
       continue-on-error: false
 
-    - name: Upload script logs
+    - name: Upload script logs # 步骤 6: 上传脚本运行日志
+      # 无论前一步成功或失败，都执行此步骤
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: script-logs
         path: script_output.log
+        # 如果未找到文件，发出警告而不是失败
         if-no-files-found: warn
 
-    - name: Upload results
+    - name: Upload results # 步骤 7: 上传 'data/' 目录下的结果
+      # 无论前一步成功或失败，都执行此步骤
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: m3u8-results
         path: data/
+        # 如果未找到文件，发出警告而不是失败
         if-no-files-found: warn
 
-    - name: Commit and push results
+    - name: Commit and push results # 步骤 8: 提交并推送结果到仓库
+      # 无论前一步成功或失败，都执行此步骤，确保结果被提交
       if: always()
       run: |
+        # 配置 Git 用户信息
         git config --global user.name 'GitHub Action'
         git config --global user.email 'action@github.com'
+        
+        # 将 data/ 目录下的所有更改添加到 Git 暂存区
         git add data/
+        
+        # 检查暂存区是否有实际的更改需要提交
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
+          echo "Changes detected, committing and pushing..."
+          # 关键修改：在推送前拉取最新更改，解决“rejected”错误
+          # 先获取远程仓库的最新状态
+          git fetch origin
+          # 尝试合并远程 main 分支到当前本地分支。
+          # 如果有冲突且无法自动解决，此命令会失败，并根据 '|| exit 1' 导致步骤失败。
+          # 这样可以确保只有在成功合并远程更改后才会进行提交和推送。
+          git merge origin/main -m "Merge remote changes before pushing from workflow" || { echo "Merge failed, exiting commit step."; exit 1; }
+          
+          # 提交更改，并使用 [ci skip] 避免触发其他 CI 工具
           git commit -m "Update M3U8 results [ci skip]"
+          # 推送更改到 origin 的 main 分支
           git push origin main
         fi
       env:
+        # 使用 GitHub 提供的令牌进行身份验证
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Notify on failure
+    - name: Notify on failure # 步骤 9: 如果工作流失败，创建 GitHub Issue 通知
+      # 仅在工作流失败时执行此步骤
       if: failure()
       uses: actions/github-script@v7
       with:
         script: |
           const { owner, repo } = context.repo;
           const runId = context.runId;
-          // 创建新的 issue 用于通知
+          // 创建新的 issue 用于通知失败
           await github.rest.issues.create({
             owner,
             repo,
@@ -86,4 +114,5 @@ jobs:
             body: `Workflow failed for run ${runId}. Check logs: https://github.com/${owner}/${repo}/actions/runs/${runId}`
           });
       env:
+        # 使用 GitHub 提供的令牌进行身份验证以创建 Issue
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
