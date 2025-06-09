@@ -17,7 +17,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # 配置日志
-logging.basicConfig(filename='error.log', level=logging.DEBUG,
+logging.basicConfig(filename='error.log', level=logging.error,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 请求头
