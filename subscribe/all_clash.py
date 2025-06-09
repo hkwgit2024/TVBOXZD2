@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import requests
-from urllib.parse import urlparse, parse_qs, urlencode
+from urllib.parse import urlparse, parse_qs
 import base64
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,11 +15,13 @@ import hashlib
 import ipaddress
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from collections import defaultdict
+import random
 
 # 配置日志
 logging.basicConfig(
     filename='error.log',
-    level=logging.DEBUG,  # 启用调试日志以便排查
+    level=logging.INFO,  # 减少DEBUG日志，提高性能
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
@@ -35,7 +37,7 @@ headers = {
 
 # 命令行参数解析
 parser = argparse.ArgumentParser(description="URL内容获取脚本，支持多个URL来源和节点解析")
-parser.add_argument('--max_success', type=int, default=99999, help="目标成功数量")
+parser.add_argument('--max_success', type=int, default=44, help="目标成功数量，默认44")
 parser.add_argument('--timeout', type=int, default=30, help="请求超时时间（秒）")
 parser.add_argument('--output', type=str, default='data/all_clash.yaml', help="输出文件路径")
 args = parser.parse_args()
@@ -54,6 +56,21 @@ DELETE_KEYWORDS = [
     '剩余流量', '套餐到期', '流量', '到期', '过期', '免费', '试用', '体验', '限时', '限制',
     '已用', '可用', '不足', '到期时间', '倍率', '返利', '充值', '续费', '用量', '订阅'
 ]
+
+# 预编译正则表达式，提高性能
+region_pattern = re.compile(r'\b(HK|TW|JP|SG|US|UK|DE|KR|MY|TH|PH|VN|ID|IN|AU|CA|RU|BR|IT|NL|CN|AE|AD|KZ)\b', re.IGNORECASE)
+provider_pattern = re.compile(r'\b(AWS|Amazon|Akamai|Oracle|Alibaba|Google|Tencent|Vultr|OVH|DigitalOcean|Core Labs|Cloudflare)\b', re.IGNORECASE)
+node_pattern = re.compile(
+    r'(vmess://\S+|'
+    r'trojan://\S+|'
+    r'ss://\S+|'
+    r'ssr://\S+|'
+    r'vless://\S+|'
+    r'hy://\S+|'
+    r'hy2://\S+|'
+    r'hysteria://\S+|'
+    r'hysteria2://\S+)'
+)
 
 def is_valid_url(url):
     """验证URL格式是否合法，仅接受 http 或 https 方案"""
@@ -138,18 +155,6 @@ def parse_content_to_nodes(content):
         pass
 
     # 3. 通过正则表达式提取节点
-    node_pattern = re.compile(
-        r'(vmess://\S+|'
-        r'trojan://\S+|'
-        r'ss://\S+|'
-        r'ssr://\S+|'
-        r'vless://\S+|'
-        r'hy://\S+|'
-        r'hy2://\S+|'
-        r'hysteria://\S+|'
-        r'hysteria2://\S+)'
-    )
-    
     matches = node_pattern.findall(content)
     for match in matches:
         found_nodes.append(match.strip())
@@ -205,7 +210,6 @@ def write_statistics_to_csv(statistics_data, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['URL', '节点数量', '状态', '错误信息', '状态码']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
         writer.writeheader()
         for row in statistics_data:
             writer.writerow(row)
@@ -219,196 +223,131 @@ def write_urls_to_file(urls, filename):
     print(f"URL列表已保存至：{filename}")
 
 def clean_node_name(name, index=None):
-    """清理节点名称"""
+    """清理节点名称，增强地区和提供商解析"""
     if not isinstance(name, str):
         name = str(name)
 
     cleaned_name = name.strip()
 
+    # 删除无关信息
     cleaned_name = re.sub(r'【[^】]*?(流量|到期|过期|充值|续费)[^】]*】', '', cleaned_name)
     cleaned_name = re.sub(r'\[[^]]*?(流量|到期|过期|充值|续费)[^\]]*\]', '', cleaned_name)
     cleaned_name = re.sub(r'\([^)]*?(流量|到期|过期|充值|续费)[^)]*\)', '', cleaned_name)
     cleaned_name = re.sub(r'（[^）]*?(流量|到期|过期|充值|续费)[^）]*）', '', cleaned_name)
 
-    redundant_keywords_to_remove = [
+    redundant_keywords = [
         r'\d+%', r'\d{4}-\d{2}-\d{2}', r'\d{2}-\d{2}', r'x\d+',
         r'秒杀', r'活动', r'新年', r'福利', r'VIP\d*', r'Pro', r'Lite', r'Plus',
-        r'自动', r'手动', r'自选',
-        r'(\d+\.\d+kbps)', r'(\d+\.\d+mbps)', r'(\d+kbps)', r'(\d+mbps)',
+        r'自动', r'手动', r'自选', r'(\d+\.\d+kbps)', r'(\d+\.\d+mbps)', r'(\d+kbps)', r'(\d+mbps)',
         r'\\n', r'\\r', r'\d+\.\d+G|\d+G',
     ]
-
-    for keyword in redundant_keywords_to_remove:
+    for keyword in redundant_keywords:
         cleaned_name = re.sub(keyword, ' ', cleaned_name, flags=re.IGNORECASE).strip()
 
     cleaned_name = re.sub(r'[^\u4e00-\u9fa5a-zA-Z0-9\s\.\-_@#|]', ' ', cleaned_name)
     cleaned_name = re.sub(r'\s+', ' ', cleaned_name).strip()
 
+    # 地区和提供商映射
     region_map = {
         '香港': 'HK', '台湾': 'TW', '日本': 'JP', '新加坡': 'SG', '美国': 'US', '英国': 'UK',
-        '德国': 'DE', '韩国': 'KR', '马来': 'MY', '泰国': 'TH', '菲律宾': 'PH', '越南': 'VN',
-        '印尼': 'ID', '印度': 'IN', '澳洲': 'AU', '加拿大': 'CA', '俄罗斯': 'RU', '巴西': 'BR',
-        '意大利': 'IT', '荷兰': 'NL', '中国': 'CN'
+        '德国': 'DE', '韩国': 'KR', '马来西亚': 'MY', '泰国': 'TH', '菲律宾': 'PH', '越南': 'VN',
+        '印尼': 'ID', '印度': 'IN', '澳大利亚': 'AU', '加拿大': 'CA', '俄罗斯': 'RU', '巴西': 'BR',
+        '意大利': 'IT', '荷兰': 'NL', '中国': 'CN', '阿联酋': 'AE', '安道尔': 'AD', '哈萨克斯坦': 'KZ'
     }
-    for full_name, short_name in region_map.items():
-        cleaned_name = cleaned_name.replace(full_name, short_name)
+    provider_map = {
+        'Amazon': 'AWS', 'Oracle': 'Oracle', 'Alibaba': 'Alibaba', 'Google': 'Google',
+        'Tencent': 'Tencent', 'Vultr': 'Vultr', 'OVH': 'OVH', 'DigitalOcean': 'DO',
+        'Akamai': 'Akamai', 'Core Labs': 'CoreLabs', 'Cloudflare': 'CF'
+    }
 
+    # 提取地区和提供商
+    region = None
+    provider = None
+    region_match = region_pattern.search(cleaned_name)
+    provider_match = provider_pattern.search(cleaned_name)
+    if region_match:
+        region = region_match.group(0).upper()
+    if provider_match:
+        provider = provider_match.group(0).title()
+        for full_name, short_name in provider_map.items():
+            if full_name.lower() in provider.lower():
+                provider = short_name
+                break
+
+    # 保留关键信息
     meaningful_keywords = ['IPLC', 'IEPL', '专线', '中转', '直连']
-    preserved_info = []
-    for keyword in meaningful_keywords:
-        if keyword.lower() in cleaned_name.lower():
-            preserved_info.append(keyword)
+    preserved_info = [kw for kw in meaningful_keywords if kw.lower() in cleaned_name.lower()]
     
     node_number_match = re.search(r'(?<!\d)\d{1,2}(?!\d)|Node\d{1,2}', cleaned_name, re.IGNORECASE)
     if node_number_match:
         preserved_info.append(node_number_match.group(0))
 
-    if not cleaned_name or len(cleaned_name) <= 3:
-        cleaned_name = 'Node'
-        if any(region in name for region in region_map.values()):
-            for region in region_map.values():
-                if region in name:
-                    cleaned_name = region
-                    break
-        if preserved_info:
-            cleaned_name += ' ' + ' '.join(preserved_info)
-
+    # 构建名称
+    parts = []
+    if region:
+        parts.append(region)
+    if provider:
+        parts.append(provider)
+    if preserved_info:
+        parts.append('_'.join(preserved_info))
+    if not parts:
+        parts.append('Node')
     if index is not None:
-        cleaned_name += f"-{index:02d}"
-
+        parts.append(f"{index:02d}")
+    
+    cleaned_name = '-'.join(parts)
+    
     if len(cleaned_name) > 80:
         cleaned_name = cleaned_name[:80].rstrip() + '...'
 
     return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
 
 def _generate_node_fingerprint(node):
-    """为节点生成唯一指纹，优化去重逻辑"""
+    """为节点生成唯一指纹，简化字段以减少重复"""
     def normalize_value(value):
-        """规范化字段值，确保一致性"""
-        if value is None:
-            return ''
-        if isinstance(value, (list, tuple)):
-            return ','.join(str(v).lower().strip() for v in value if v)
-        return str(value).lower().strip()
-
-    def normalize_dict(d):
-        """规范化字典中的值"""
-        return {k: normalize_value(v) for k, v in d.items() if v is not None}
+        return '' if value is None else str(value).lower().strip()
 
     if isinstance(node, dict):
         fingerprint_data = {
             'type': normalize_value(node.get('type')),
             'server': normalize_value(node.get('server')),
             'port': normalize_value(node.get('port')),
+            'network': normalize_value(node.get('network')),
+            'tls': normalize_value(node.get('tls')),
+            'sni': normalize_value(node.get('sni') or node.get('host')),
         }
-
-        node_type = node.get('type', '').lower()
-        if node_type == 'vmess':
-            fingerprint_data.update({
-                'uuid': normalize_value(node.get('uuid') or node.get('id')),
-                'alterId': normalize_value(node.get('alterId') or node.get('aid')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'sni': normalize_value(node.get('sni') or node.get('host')),
-                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
-                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
-                'grpc_serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName') if node.get('grpc-opts') else None),
-            })
-        elif node_type == 'trojan':
-            fingerprint_data.update({
-                'password': normalize_value(node.get('password')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'sni': normalize_value(node.get('sni') or node.get('host')),
-                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
-                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
-                'skip-cert-verify': normalize_value(node.get('skip-cert-verify')),
-            })
-        elif node_type == 'ss':
-            fingerprint_data.update({
-                'cipher': normalize_value(node.get('cipher')),
-                'password': normalize_value(node.get('password')),
-            })
-        elif node_type == 'vless':
-            fingerprint_data.update({
-                'uuid': normalize_value(node.get('uuid') or node.get('id')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'sni': normalize_value(node.get('sni') or node.get('host')),
-                'path': normalize_value(node.get('ws-opts', {}).get('path') if node.get('ws-opts') else None),
-                'ws_headers_host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host') if node.get('ws-opts') else None),
-                'grpc_serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName') if node.get('grpc-opts') else None),
-                'flow': normalize_value(node.get('flow')),
-            })
-        elif node_type in ['hysteria', 'hysteria2', 'hy', 'hy2']:
-            fingerprint_data.update({
-                'password': normalize_value(node.get('password') or node.get('auth_str')),
-                'obfs': normalize_value(node.get('obfs')),
-                'obfs-password': normalize_value(node.get('obfs-password')),
-                'tls': normalize_value(node.get('tls')),
-                'sni': normalize_value(node.get('sni') or node.get('host')),
-                'alpn': normalize_value(node.get('alpn')),
-                'skip-cert-verify': normalize_value(node.get('skip-cert-verify')),
-            })
-
-        # 确保所有字段都参与指纹计算，排序以保证一致性
-        stable_json = json.dumps(normalize_dict(fingerprint_data), sort_keys=True, ensure_ascii=False)
+        stable_json = json.dumps(fingerprint_data, sort_keys=True, ensure_ascii=False)
         fingerprint = hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
-        logging.debug(f"Generated fingerprint for dict node {node.get('name', 'Unknown')}: {fingerprint}")
         return fingerprint
 
     elif isinstance(node, str):
         try:
             if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
-                logging.warning(f"无效的节点协议: {node[:50]}...")
                 return None
-
             parsed_url = urlparse(node)
             scheme = parsed_url.scheme.lower()
             netloc = parsed_url.netloc.lower()
-            path = parsed_url.path.lower()
-            query_params = parse_qs(parsed_url.query, keep_blank_values=True)
-
             host = netloc.split(':')[0] if ':' in netloc else netloc
             port = netloc.split(':')[1] if ':' in netloc else ''
             if is_valid_ip_address(host) and host.startswith('[') and host.endswith(']'):
                 host = host[1:-1]
             elif not is_valid_ip_address(host) and not re.match(r'^[a-zA-Z0-9\-\.]+$', host):
-                logging.warning(f"无效的主机名: {host} in {node[:50]}...")
                 return None
-
-            normalized_query_params = normalize_dict({k: v[0] for k, v in query_params.items()})
-            
-            fingerprint_parts = [
-                scheme,
-                host,
-                port,
-                path,
-            ]
-
-            # 包含所有查询参数（排除非关键字段）
-            excluded_keys = ['name', 'ps', 'remarks', 'info', 'usage', 'expire', 'ud', 'up', 'dn', 'package', 'nodeName', 'nodeid', 'ver']
-            sorted_query_keys = sorted(k for k in normalized_query_params.keys() if k not in excluded_keys)
-            for k in sorted_query_keys:
-                fingerprint_parts.append(f"{k}={normalized_query_params[k]}")
-
-            fingerprint = hashlib.sha256("".join(fingerprint_parts).encode('utf-8')).hexdigest()
-            logging.debug(f"Generated fingerprint for string node {node[:50]}...: {fingerprint}")
+            fingerprint_parts = [scheme, host, port]
+            fingerprint = hashlib.sha256(''.join(fingerprint_parts).encode('utf-8')).hexdigest()
             return fingerprint
-        except Exception as e:
-            logging.warning(f"生成URL节点指纹失败: {node[:50]}... - {e}")
+        except Exception:
             return None
 
-    logging.warning(f"无效的节点类型: {type(node)}")
     return None
 
 def deduplicate_and_standardize_nodes(raw_nodes_list):
-    """对节点进行去重和标准化"""
+    """优化去重逻辑，确保44个节点，保持地区、提供商、协议多样性"""
     unique_node_fingerprints = set()
-    final_clash_proxies = []
+    grouped_nodes = defaultdict(list)
 
     logging.info(f"去重前节点数: {len(raw_nodes_list)}")
-    
+
     for idx, node in enumerate(raw_nodes_list):
         clash_proxy_dict = None
         node_raw_name = ""
@@ -419,13 +358,11 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
         elif isinstance(node, str):
             try:
                 parsed_url = urlparse(node)
-                node_raw_name = str(parsed_url.fragment) 
+                node_raw_name = str(parsed_url.fragment)
                 if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
-                    logging.warning(f"跳过无效协议的节点: {node[:50]}...")
                     continue
                 host = parsed_url.hostname or ''
                 if host and not (is_valid_ip_address(host) or re.match(r'^[a-zA-Z0-9\-\.]+$', host)):
-                    logging.warning(f"跳过无效主机名的节点: {host} in {node[:50]}...")
                     continue
 
                 if node.startswith("vmess://"):
@@ -478,7 +415,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         server_port = parts[1].split(':', 1)
                         server = server_port[0]
                         port = int(server_port[1])
-                        
                         clash_proxy_dict = {
                             'name': str(parsed_url.fragment or 'SS Node'),
                             'type': 'ss',
@@ -487,8 +423,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                             'cipher': method,
                             'password': password,
                         }
-                    except Exception as e:
-                        logging.warning(f"SS节点解析失败: {node[:50]}... - {e}")
+                    except Exception:
                         clash_proxy_dict = None
                 elif node.startswith("vless://"):
                     parsed = urlparse(node)
@@ -496,7 +431,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-                    
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'VLESS Node'),
                         'type': 'vless',
@@ -520,7 +454,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Hysteria Node'),
                         'type': 'hysteria',
@@ -540,7 +473,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     server = parsed.hostname
                     port = parsed.port
                     query = parse_qs(parsed.query)
-
                     clash_proxy_dict = {
                         'name': str(parsed.fragment or 'Hysteria2 Node'),
                         'type': 'hysteria2',
@@ -561,50 +493,58 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                     if not clash_proxy_dict['alpn']:
                         del clash_proxy_dict['alpn']
             except Exception as e:
-                logging.warning(f"URL节点转换为Clash字典失败: {node[:50]}... - {e}")
                 clash_proxy_dict = None
 
         if clash_proxy_dict:
-            name_to_check = str(node_raw_name or clash_proxy_dict.get('name', ''))
-
-            should_delete_node = False
-            for keyword in DELETE_KEYWORDS:
-                try:
-                    if keyword.lower() in name_to_check.lower():
-                        logging.info(f"节点 '{name_to_check}' 包含删除关键词 '{keyword}'，已跳过。")
-                        should_delete_node = True
-                        break
-                except AttributeError as e:
-                    logging.error(f"检查删除关键词时出错: name_to_check={name_to_check}, type={type(name_to_check)}, node={clash_proxy_dict.get('name', 'Unknown')} - {e}")
-                    should_delete_node = True
-                    break
-            
-            if should_delete_node:
+            if any(keyword.lower() in node_raw_name.lower() for keyword in DELETE_KEYWORDS):
                 continue
-
             server = clash_proxy_dict.get('server', '')
             if server and not (is_valid_ip_address(server) or re.match(r'^[a-zA-Z0-9\-\.]+$', server)):
-                logging.warning(f"跳过无效服务器地址的节点: {server} in {clash_proxy_dict.get('name', 'Unknown')}")
                 continue
 
-            clash_proxy_dict['name'] = clean_node_name(
-                clash_proxy_dict.get('name', f"{clash_proxy_dict.get('type', 'Unknown')} {clash_proxy_dict.get('server', '')}:{clash_proxy_dict.get('port', '')}"),
-                index=idx + 1
-            )
+            # 提取地区和提供商
+            region = 'Unknown'
+            provider = 'Unknown'
+            region_match = region_pattern.search(node_raw_name)
+            provider_match = provider_pattern.search(node_raw_name)
+            if region_match:
+                region = region_match.group(0).upper()
+            if provider_match:
+                provider = provider_match.group(0).title()
 
+            clash_proxy_dict['name'] = clean_node_name(node_raw_name, idx + 1)
             fingerprint = _generate_node_fingerprint(clash_proxy_dict)
             if fingerprint and fingerprint not in unique_node_fingerprints:
                 unique_node_fingerprints.add(fingerprint)
-                final_clash_proxies.append(clash_proxy_dict)
-            else:
-                logging.debug(f"重复节点（按指纹）：{clash_proxy_dict.get('name', '')} - {fingerprint}")
+                group_key = (region, provider, clash_proxy_dict.get('type', 'Unknown'))
+                grouped_nodes[group_key].append(clash_proxy_dict)
 
-    logging.info(f"去重后唯一指纹数: {len(unique_node_fingerprints)}")
+    # 配额分配
+    region_quota = {'AE': 15, 'SG': 10, 'ID': 10, 'AD': 2, 'KZ': 2, 'Unknown': 5}  # 总计 44
+    protocol_quota = {'vless': 22, 'trojan': 22}
+    final_clash_proxies = []
+
+    for (region, provider, protocol), nodes in grouped_nodes.items():
+        if len(final_clash_proxies) >= MAX_SUCCESS:
+            break
+        if region_quota.get(region, 0) > 0 and protocol_quota.get(protocol.lower(), 0) > 0:
+            selected = random.sample(nodes, min(len(nodes), region_quota[region], protocol_quota[protocol.lower()]))
+            final_clash_proxies.extend(selected)
+            region_quota[region] -= len(selected)
+            protocol_quota[protocol.lower()] -= len(selected)
+
+    # 补充不足的节点
+    if len(final_clash_proxies) < MAX_SUCCESS:
+        remaining = MAX_SUCCESS - len(final_clash_proxies)
+        all_nodes = [node for nodes in grouped_nodes.values() for node in nodes]
+        available_nodes = [n for n in all_nodes if n not in final_clash_proxies]
+        extra_nodes = random.sample(available_nodes, min(remaining, len(available_nodes)))
+        final_clash_proxies.extend(extra_nodes)
+
     logging.info(f"去重后节点数: {len(final_clash_proxies)}")
     return final_clash_proxies
 
-# --- 主程序流程 ---
-
+# 主程序流程
 URL_SOURCE = os.environ.get("URL_SOURCE")
 print(f"调试信息 - 读取到的 URL_SOURCE 值: {URL_SOURCE}")
 
@@ -649,7 +589,6 @@ if total_urls_to_process_via_http > 0:
         for future in tqdm(as_completed(future_to_url), total=total_urls_to_process_via_http, desc="通过HTTP/HTTPS请求并解析节点", mininterval=1.0):
             url = future_to_url[future]
             nodes, success, error_message, status_code = future.result()
-
             stat_entry = {
                 'URL': url,
                 '节点数量': len(nodes),
@@ -658,7 +597,6 @@ if total_urls_to_process_via_http > 0:
                 '状态码': status_code
             }
             url_statistics.append(stat_entry)
-
             if success:
                 successful_urls.append(url)
                 all_parsed_nodes_raw.extend(nodes)
@@ -666,11 +604,9 @@ if total_urls_to_process_via_http > 0:
             else:
                 failed_urls.append(url)
                 print(f"失败 URL: {url}, 错误: {error_message}")
-
-            # 提前终止：如果已收集足够节点
-            if len(all_parsed_nodes_raw) >= MAX_SUCCESS * 2:  # 假设去重后损失一半
+            if len(all_parsed_nodes_raw) >= MAX_SUCCESS * 2:
                 print("已收集足够节点，提前终止请求")
-                executor._threads.clear()  # 清空线程池
+                executor._threads.clear()
                 break
 
 final_unique_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
@@ -689,18 +625,16 @@ write_urls_to_file(successful_urls, SUCCESS_URLS_FILE)
 write_urls_to_file(failed_urls, FAILED_URLS_FILE)
 
 print("\n--- 阶段二：输出最终 Clash YAML 配置 ---")
-
 if not OUTPUT_FILE.endswith(('.yaml', '.yml')):
     OUTPUT_FILE = os.path.splitext(OUTPUT_FILE)[0] + '.yaml'
 
-proxies_to_output = final_unique_clash_proxies[:MAX_SUCCESS]
+if len(final_unique_clash_proxies) < MAX_SUCCESS:
+    logging.warning(f"去重后节点数 {len(final_unique_clash_proxies)} 小于目标 {MAX_SUCCESS}")
+    proxies_to_output = final_unique_clash_proxies
+else:
+    proxies_to_output = final_unique_clash_proxies[:MAX_SUCCESS]
 
-proxy_names_in_group = []
-for node in proxies_to_output:
-    if isinstance(node, dict) and 'name' in node:
-        proxy_names_in_group.append(node['name'])
-    else:
-        proxy_names_in_group.append(f"{node.get('type', 'Unknown')} {node.get('server', '')}")
+proxy_names_in_group = [node['name'] for node in proxies_to_output if isinstance(node, dict) and 'name' in node]
 
 clash_config = {
     'proxies': proxies_to_output,
