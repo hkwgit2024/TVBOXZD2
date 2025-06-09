@@ -17,8 +17,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from collections import defaultdict
 import random
-import socket # 新增：用于DNS解析
-import functools # 新增：用于缓存
 
 # 配置日志
 logging.basicConfig(
@@ -71,17 +69,6 @@ node_pattern = re.compile(
     r'hysteria://\S+|'
     r'hysteria2://\S+)'
 )
-
-# 全局DNS缓存
-@functools.lru_cache(maxsize=512) # 缓存512个DNS解析结果
-def resolve_hostname_cached(hostname):
-    """缓存DNS解析结果，避免重复查询"""
-    try:
-        # 尝试解析IPv4地址，对于去重来说，解析到相同IP通常意味着同一服务器
-        # 注意：如果同一域名有多个IP，这里只取第一个
-        return socket.gethostbyname(hostname)
-    except socket.gaierror:
-        return None
 
 def is_valid_url(url):
     """验证URL格式是否合法，仅接受 http 或 https 方案"""
@@ -170,7 +157,6 @@ def parse_content_to_nodes(content):
     for match in matches:
         found_nodes.append(match.strip())
     
-    # 对解码后的内容再次进行正则匹配，防止有些订阅是嵌套的Base64编码
     if content != processed_content:
         matches_decoded = node_pattern.findall(processed_content)
         for match in matches_decoded:
@@ -312,115 +298,36 @@ def clean_node_name(name, index=None):
     return cleaned_name if cleaned_name else f"Node-{index:02d}" if index is not None else "Unknown Node"
 
 def _generate_node_fingerprint(node):
-    """为节点生成唯一指纹，加入更多协议细节和DNS解析后的IP以实现更彻底去重"""
+    """为节点生成唯一指纹，简化字段以减少重复"""
     def normalize_value(value):
         return '' if value is None else str(value).lower().strip()
 
     if isinstance(node, dict):
-        # 基础指纹数据
         fingerprint_data = {
             'type': normalize_value(node.get('type')),
+            'server': normalize_value(node.get('server')),
             'port': normalize_value(node.get('port')),
+            'network': normalize_value(node.get('network')),
+            'tls': normalize_value(node.get('tls')),
+            'sni': normalize_value(node.get('sni') or node.get('host')),
         }
-
-        server = normalize_value(node.get('server'))
-        resolved_ip = None
-        if server and not is_valid_ip_address(server): # 如果是域名，尝试解析
-            resolved_ip = resolve_hostname_cached(server)
-            if resolved_ip:
-                fingerprint_data['server'] = normalize_value(resolved_ip) # 使用解析IP
-            else:
-                fingerprint_data['server'] = server # 解析失败，退回使用域名
-        else:
-            fingerprint_data['server'] = server # 是IP地址，直接使用
-
-        # 添加协议特有字段
-        node_type = node.get('type', '').lower()
-        if node_type == 'vmess':
-            grpc_opts = node.get('grpc-opts')
-            ws_opts = node.get('ws-opts')
-            fingerprint_data.update({
-                'uuid': normalize_value(node.get('uuid')),
-                'alterId': normalize_value(node.get('alterId')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'servername': normalize_value(node.get('servername')),
-                # 修复：安全地获取嵌套值，如果外层字典为 None 则使用空字符串
-                'ws-path': normalize_value(ws_opts.get('path')) if ws_opts else '',
-                'ws-headers-host': normalize_value(ws_opts.get('headers', {}).get('Host')) if ws_opts else '',
-                'grpc-serviceName': normalize_value(grpc_opts.get('serviceName')) if grpc_opts else '',
-                'fingerprint': normalize_value(node.get('fingerprint')), # VMess指纹 (用于XTLS/Reality)
-                'reality-pbk': normalize_value(node.get('reality-pbk')), # Reality公钥
-                'version': normalize_value(node.get('version')), # 协议版本
-            })
-        elif node_type == 'trojan':
-            fingerprint_data.update({
-                'password': normalize_value(node.get('password')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'sni': normalize_value(node.get('sni')),
-                'flow': normalize_value(node.get('flow')), # 对于XTLS很重要
-            })
-        elif node_type == 'ss':
-            fingerprint_data.update({
-                'cipher': normalize_value(node.get('cipher')),
-                'password': normalize_value(node.get('password')),
-                'plugin': normalize_value(node.get('plugin')),
-                'plugin-opts': normalize_value(node.get('plugin-opts')),
-            })
-        elif node_type == 'vless':
-            grpc_opts = node.get('grpc-opts')
-            ws_opts = node.get('ws-opts')
-            fingerprint_data.update({
-                'uuid': normalize_value(node.get('uuid')),
-                'network': normalize_value(node.get('network')),
-                'tls': normalize_value(node.get('tls')),
-                'servername': normalize_value(node.get('servername')),
-                'flow': normalize_value(node.get('flow')),
-                # 修复：安全地获取嵌套值
-                'ws-path': normalize_value(ws_opts.get('path')) if ws_opts else '',
-                'ws-headers-host': normalize_value(ws_opts.get('headers', {}).get('Host')) if ws_opts else '',
-                'grpc-serviceName': normalize_value(grpc_opts.get('serviceName')) if grpc_opts else '',
-            })
-        elif node_type in ['hysteria', 'hy']:
-            fingerprint_data.update({
-                'auth_str': normalize_value(node.get('auth_str')),
-                'alpn': ','.join(sorted([normalize_value(a) for a in node.get('alpn', [])])), # ALPN列表排序后拼接
-                'network': normalize_value(node.get('network')),
-                'sni': normalize_value(node.get('sni')),
-                'up_mbps': normalize_value(node.get('up_mbps')),
-                'down_mbps': normalize_value(node.get('down_mbps')),
-                'obfs': normalize_value(node.get('obfs')),
-                'obfs-password': normalize_value(node.get('obfs-password')),
-            })
-        elif node_type in ['hysteria2', 'hy2']:
-            fingerprint_data.update({
-                'password': normalize_value(node.get('password')),
-                'obfs': normalize_value(node.get('obfs')),
-                'obfs-password': normalize_value(node.get('obfs-password')),
-                'sni': normalize_value(node.get('sni')),
-                'alpn': ','.join(sorted([normalize_value(a) for a in node.get('alpn', [])])),
-            })
-
         stable_json = json.dumps(fingerprint_data, sort_keys=True, ensure_ascii=False)
-        return hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
+        fingerprint = hashlib.sha256(stable_json.encode('utf-8')).hexdigest()
+        return fingerprint
 
     elif isinstance(node, str):
-        # 对于URL字符串，在解析成Clash字典前，也可以尝试做一些基础的IP去重
         try:
+            if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
+                return None
             parsed_url = urlparse(node)
             scheme = parsed_url.scheme.lower()
             netloc = parsed_url.netloc.lower()
             host = netloc.split(':')[0] if ':' in netloc else netloc
             port = netloc.split(':')[1] if ':' in netloc else ''
-
-            resolved_ip = None
-            if host and not is_valid_ip_address(host):
-                resolved_ip = resolve_hostname_cached(host)
-                if resolved_ip:
-                    host = resolved_ip # 使用解析IP进行指纹计算
-            
-            # 这里仅做基础的 URL 字符串指纹，因为后续会尝试转换为 Clash 字典
+            if is_valid_ip_address(host) and host.startswith('[') and host.endswith(']'):
+                host = host[1:-1]
+            elif not is_valid_ip_address(host) and not re.match(r'^[a-zA-Z0-9\-\.]+$', host):
+                return None
             fingerprint_parts = [scheme, host, port]
             fingerprint = hashlib.sha256(''.join(fingerprint_parts).encode('utf-8')).hexdigest()
             return fingerprint
@@ -430,9 +337,9 @@ def _generate_node_fingerprint(node):
     return None
 
 def deduplicate_and_standardize_nodes(raw_nodes_list):
-    """去重逻辑，输出所有指纹唯一的节点，不再按类别随机选择，以最大化去重效果"""
+    """去重逻辑，输出所有唯一节点，保持多样性"""
     unique_node_fingerprints = set()
-    final_clash_proxies = []
+    grouped_nodes = defaultdict(list)
 
     logging.info(f"去重前节点数: {len(raw_nodes_list)}")
 
@@ -440,19 +347,22 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
         clash_proxy_dict = None
         node_raw_name = ""
 
-        # 将 URL 字符串转换为 Clash 代理字典，并尽可能填充所有字段
         if isinstance(node, dict):
             clash_proxy_dict = node
-            node_raw_name = str(node.get('name', ''))
+            node_raw_name = str(node.get('name', '')) 
         elif isinstance(node, str):
             try:
                 parsed_url = urlparse(node)
-                node_raw_name = str(parsed_url.fragment) # 尝试从fragment获取名称
-                
-                # 检查协议类型，并进行详细解析
+                node_raw_name = str(parsed_url.fragment)
+                if not any(node.startswith(p + '://') for p in ["vmess", "trojan", "ss", "ssr", "vless", "hy", "hy2", "hysteria", "hysteria2"]):
+                    continue
+                host = parsed_url.hostname or ''
+                if host and not (is_valid_ip_address(host) or re.match(r'^[a-zA-Z0-9\-\.]+$', host)):
+                    continue
+
                 if node.startswith("vmess://"):
-                    decoded_bytes = base64.b64decode(node[len("vmess://"):].encode('utf-8'))
-                    config = json.loads(decoded_bytes.decode('utf-8'))
+                    decoded = base64.b64decode(node[len("vmess://"):].encode('utf-8')).decode('utf-8')
+                    config = json.loads(decoded)
                     clash_proxy_dict = {
                         'name': str(config.get('ps', 'VMess Node')),
                         'type': 'vmess',
@@ -467,9 +377,6 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'servername': config.get('sni') or config.get('host'),
                         'ws-opts': {'path': config.get('path', '/'), 'headers': {'Host': config.get('host')}} if config.get('net') == 'ws' else None,
                         'grpc-opts': {'serviceName': config.get('path', '')} if config.get('net') == 'grpc' else None,
-                        'fingerprint': config.get('fp'),
-                        'reality-pbk': config.get('pbk'),
-                        'version': config.get('v'),
                     }
                     if clash_proxy_dict.get('ws-opts') == {'path': '/', 'headers': {'Host': ''}}:
                         clash_proxy_dict['ws-opts'] = None
@@ -490,8 +397,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'network': query.get('type', ['tcp'])[0],
                         'tls': True,
                         'skip-cert-verify': query.get('allowInsecure', ['0'])[0] == '1',
-                        'sni': query.get('sni', [server])[0],
-                        'flow': query.get('flow', [''])[0],
+                        'sni': query.get('sni', [server])[0]
                     }
                 elif node.startswith("ss://"):
                     decoded_part = node[len("ss://"):].split('#', 1)[0]
@@ -504,18 +410,13 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         server_port = parts[1].split(':', 1)
                         server = server_port[0]
                         port = int(server_port[1])
-                        fragment = urlparse(node).fragment
-                        query_params = parse_qs(urlparse(node).query) # 从url获取query参数
-                        
                         clash_proxy_dict = {
-                            'name': str(fragment or 'SS Node'),
+                            'name': str(parsed_url.fragment or 'SS Node'),
                             'type': 'ss',
                             'server': server,
                             'port': port,
                             'cipher': method,
                             'password': password,
-                            'plugin': query_params.get('plugin', [''])[0],
-                            'plugin-opts': query_params.get('obfs', [''])[0], # SS plugin-opts 通常在obfs字段
                         }
                     except Exception:
                         clash_proxy_dict = None
@@ -533,7 +434,7 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'uuid': uuid,
                         'network': query.get('type', ['tcp'])[0],
                         'tls': True if query.get('security', [''])[0] == 'tls' else False,
-                        'skip-cert-verify': query.get('flow', [''])[0] == 'xtls-rprx-direct', # Clash vless flow is tied to skip-cert-verify
+                        'skip-cert-verify': query.get('flow', [''])[0] == 'xtls-rprx-direct',
                         'servername': query.get('sni', [server])[0],
                         'flow': query.get('flow', [''])[0],
                         'ws-opts': {'path': query.get('path', ['/'])[0], 'headers': {'Host': query.get('host', [''])[0]}} if query.get('type', [''])[0] == 'ws' else None,
@@ -557,18 +458,10 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'alpn': query.get('alpn', [''])[0].split(','),
                         'network': query.get('protocol', ['udp'])[0],
                         'skip-cert-verify': query.get('insecure', ['0'])[0] == '1',
-                        'sni': query.get('peer', [server])[0],
-                        'up_mbps': int(query.get('upmbps', ['0'])[0]),
-                        'down_mbps': int(query.get('downmbps', ['0'])[0]),
-                        'obfs': query.get('obfs', [''])[0],
-                        'obfs-password': query.get('obfsParam', [''])[0],
+                        'sni': query.get('peer', [server])[0]
                     }
-                    if not clash_proxy_dict['alpn'] or clash_proxy_dict['alpn'] == ['']:
-                        clash_proxy_dict.pop('alpn')
-                    if not clash_proxy_dict['obfs']:
-                        clash_proxy_dict.pop('obfs')
-                    if not clash_proxy_dict['obfs-password']:
-                        clash_proxy_dict.pop('obfs-password')
+                    if not clash_proxy_dict['alpn']:
+                        del clash_proxy_dict['alpn']
                 elif node.startswith("hysteria2://") or node.startswith("hy2://"):
                     parsed = urlparse(node)
                     password = parsed.username
@@ -589,45 +482,55 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
                         'alpn': query.get('alpn', [''])[0].split(',')
                     }
                     if not clash_proxy_dict['obfs']:
-                        clash_proxy_dict.pop('obfs')
+                        del clash_proxy_dict['obfs']
                     if not clash_proxy_dict['obfs-password']:
-                        clash_proxy_dict.pop('obfs-password')
-                    if not clash_proxy_dict['alpn'] or clash_proxy_dict['alpn'] == ['']:
-                        clash_proxy_dict.pop('alpn')
-                else:
-                    # 如果不是已知的协议URL，跳过
-                    continue
+                        del clash_proxy_dict['obfs-password']
+                    if not clash_proxy_dict['alpn']:
+                        del clash_proxy_dict['alpn']
             except Exception as e:
                 logging.warning(f"URL节点转换为Clash字典失败: {node[:50]}... - {e}")
                 clash_proxy_dict = None
 
         if clash_proxy_dict:
-            # 1. 过滤掉名称中包含删除关键词的节点
             if any(keyword.lower() in node_raw_name.lower() for keyword in DELETE_KEYWORDS):
                 continue
-            
-            # 2. 验证服务器地址是否合法（IP或域名格式）
-            server_host = clash_proxy_dict.get('server', '')
-            if server_host and not (is_valid_ip_address(server_host) or re.match(r'^[a-zA-Z0-9\-\.]+$', server_host)):
+            server = clash_proxy_dict.get('server', '')
+            if server and not (is_valid_ip_address(server) or re.match(r'^[a-zA-Z0-9\-\.]+$', server)):
                 continue
 
-            # 3. 生成更精确的节点指纹
+            region = 'Unknown'
+            provider = 'Unknown'
+            region_match = region_pattern.search(node_raw_name)
+            provider_match = provider_pattern.search(node_raw_name)
+            if region_match:
+                region = region_match.group(0).upper()
+            if provider_match:
+                provider = provider_match.group(0).title()
+
+            clash_proxy_dict['name'] = clean_node_name(node_raw_name, idx + 1)
             fingerprint = _generate_node_fingerprint(clash_proxy_dict)
-            
-            # 4. 如果指纹是唯一的，则添加到最终列表
             if fingerprint and fingerprint not in unique_node_fingerprints:
                 unique_node_fingerprints.add(fingerprint)
-                # 清理和标准化节点名称
-                clash_proxy_dict['name'] = clean_node_name(node_raw_name, len(final_clash_proxies) + 1)
-                final_clash_proxies.append(clash_proxy_dict) # 直接添加指纹唯一的节点
+                group_key = (region, provider, clash_proxy_dict.get('type', 'Unknown'))
+                grouped_nodes[group_key].append(clash_proxy_dict)
+
+    final_clash_proxies = []
+    region_counts = defaultdict(int)
+    protocol_counts = defaultdict(int)
+
+    sorted_groups = sorted(grouped_nodes.items(), key=lambda x: len(x[1]), reverse=True)
+    for (region, provider, protocol), nodes in sorted_groups:
+        selected = random.choice(nodes)
+        final_clash_proxies.append(selected)
+        region_counts[region] += 1
+        protocol_counts[protocol.lower()] += 1
 
     logging.info(f"去重后节点数: {len(final_clash_proxies)}")
+    logging.info(f"地区分布: {dict(region_counts)}")
+    logging.info(f"协议分布: {dict(protocol_counts)}")
     return final_clash_proxies
 
 # 主程序流程
-# 从环境变量中获取 URL_SOURCE。
-# 确保在运行脚本前设置好这个环境变量，例如：
-# export URL_SOURCE="https://raw.githubusercontent.com/example/sub_list.txt"
 URL_SOURCE = os.environ.get("URL_SOURCE")
 print(f"调试信息 - 读取到的 URL_SOURCE 值: {URL_SOURCE}")
 
@@ -636,11 +539,9 @@ if not URL_SOURCE:
     logging.error("未设置 URL_SOURCE 环境变量")
     exit(1)
 
-# 创建输出目录
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(STATISTICS_FILE), exist_ok=True)
 
-# 从远程获取原始 URL 列表
 raw_urls_from_source = get_url_list_from_remote(URL_SOURCE)
 
 urls_to_fetch = set()
@@ -698,12 +599,11 @@ if total_urls_to_process_via_http > 0:
             if success:
                 successful_urls.append(url)
                 all_parsed_nodes_raw.extend(nodes)
-                # print(f"成功处理 URL: {url}, 节点数: {len(nodes)}, 状态码: {status_code}") # 避免 tqdm 进度条被中断
+                print(f"成功处理 URL: {url}, 节点数: {len(nodes)}, 状态码: {status_code}")
             else:
                 failed_urls.append(url)
-                # print(f"失败 URL: {url}, 错误: {error_message}") # 避免 tqdm 进度条被中断
+                print(f"失败 URL: {url}, 错误: {error_message}")
 
-# 核心变化：调用去重和标准化函数，现在它会返回所有指纹独特的节点
 final_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
 
 with open(TEMP_MERGED_NODES_RAW_FILE, 'w', encoding='utf-8') as temp_file:
@@ -729,6 +629,8 @@ proxy_names_in_group = []
 for node in proxies_to_output:
     if isinstance(node, dict) and 'name' in node:
         proxy_names_in_group.append(node['name'])
+    else:
+        proxy_names_in_group.append(f"{node.get('type', 'Unknown')} {node.get('server', '')}")
 
 clash_config = {
     'proxies': proxies_to_output,
