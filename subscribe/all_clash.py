@@ -337,15 +337,18 @@ def _generate_node_fingerprint(node):
         # 添加协议特有字段
         node_type = node.get('type', '').lower()
         if node_type == 'vmess':
+            grpc_opts = node.get('grpc-opts')
+            ws_opts = node.get('ws-opts')
             fingerprint_data.update({
                 'uuid': normalize_value(node.get('uuid')),
                 'alterId': normalize_value(node.get('alterId')),
                 'network': normalize_value(node.get('network')),
                 'tls': normalize_value(node.get('tls')),
                 'servername': normalize_value(node.get('servername')),
-                'ws-path': normalize_value(node.get('ws-opts', {}).get('path')),
-                'ws-headers-host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host')),
-                'grpc-serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName')),
+                # 修复：安全地获取嵌套值，如果外层字典为 None 则使用空字符串
+                'ws-path': normalize_value(ws_opts.get('path')) if ws_opts else '',
+                'ws-headers-host': normalize_value(ws_opts.get('headers', {}).get('Host')) if ws_opts else '',
+                'grpc-serviceName': normalize_value(grpc_opts.get('serviceName')) if grpc_opts else '',
                 'fingerprint': normalize_value(node.get('fingerprint')), # VMess指纹 (用于XTLS/Reality)
                 'reality-pbk': normalize_value(node.get('reality-pbk')), # Reality公钥
                 'version': normalize_value(node.get('version')), # 协议版本
@@ -366,15 +369,18 @@ def _generate_node_fingerprint(node):
                 'plugin-opts': normalize_value(node.get('plugin-opts')),
             })
         elif node_type == 'vless':
+            grpc_opts = node.get('grpc-opts')
+            ws_opts = node.get('ws-opts')
             fingerprint_data.update({
                 'uuid': normalize_value(node.get('uuid')),
                 'network': normalize_value(node.get('network')),
                 'tls': normalize_value(node.get('tls')),
                 'servername': normalize_value(node.get('servername')),
                 'flow': normalize_value(node.get('flow')),
-                'ws-path': normalize_value(node.get('ws-opts', {}).get('path')),
-                'ws-headers-host': normalize_value(node.get('ws-opts', {}).get('headers', {}).get('Host')),
-                'grpc-serviceName': normalize_value(node.get('grpc-opts', {}).get('serviceName')),
+                # 修复：安全地获取嵌套值
+                'ws-path': normalize_value(ws_opts.get('path')) if ws_opts else '',
+                'ws-headers-host': normalize_value(ws_opts.get('headers', {}).get('Host')) if ws_opts else '',
+                'grpc-serviceName': normalize_value(grpc_opts.get('serviceName')) if grpc_opts else '',
             })
         elif node_type in ['hysteria', 'hy']:
             fingerprint_data.update({
@@ -619,6 +625,9 @@ def deduplicate_and_standardize_nodes(raw_nodes_list):
     return final_clash_proxies
 
 # 主程序流程
+# 从环境变量中获取 URL_SOURCE。
+# 确保在运行脚本前设置好这个环境变量，例如：
+# export URL_SOURCE="https://raw.githubusercontent.com/example/sub_list.txt"
 URL_SOURCE = os.environ.get("URL_SOURCE")
 print(f"调试信息 - 读取到的 URL_SOURCE 值: {URL_SOURCE}")
 
@@ -627,9 +636,11 @@ if not URL_SOURCE:
     logging.error("未设置 URL_SOURCE 环境变量")
     exit(1)
 
+# 创建输出目录
 os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 os.makedirs(os.path.dirname(STATISTICS_FILE), exist_ok=True)
 
+# 从远程获取原始 URL 列表
 raw_urls_from_source = get_url_list_from_remote(URL_SOURCE)
 
 urls_to_fetch = set()
@@ -687,10 +698,10 @@ if total_urls_to_process_via_http > 0:
             if success:
                 successful_urls.append(url)
                 all_parsed_nodes_raw.extend(nodes)
-                print(f"成功处理 URL: {url}, 节点数: {len(nodes)}, 状态码: {status_code}")
+                # print(f"成功处理 URL: {url}, 节点数: {len(nodes)}, 状态码: {status_code}") # 避免 tqdm 进度条被中断
             else:
                 failed_urls.append(url)
-                print(f"失败 URL: {url}, 错误: {error_message}")
+                # print(f"失败 URL: {url}, 错误: {error_message}") # 避免 tqdm 进度条被中断
 
 # 核心变化：调用去重和标准化函数，现在它会返回所有指纹独特的节点
 final_clash_proxies = deduplicate_and_standardize_nodes(all_parsed_nodes_raw)
@@ -718,8 +729,6 @@ proxy_names_in_group = []
 for node in proxies_to_output:
     if isinstance(node, dict) and 'name' in node:
         proxy_names_in_group.append(node['name'])
-    # else: # 这一行通常不会被触发，因为 deduplicate_and_standardize_nodes 总是返回字典
-    #     proxy_names_in_group.append(f"{node.get('type', 'Unknown')} {node.get('server', '')}")
 
 clash_config = {
     'proxies': proxies_to_output,
