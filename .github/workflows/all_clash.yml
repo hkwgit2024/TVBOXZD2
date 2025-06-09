@@ -31,7 +31,7 @@ jobs:
         python-version: '3.10'
     - name: Install dependencies
       run: |
-        pip install requests tqdm PyYAML
+        pip install requests tqdm PyYAML urllib3
         pip list
     - name: Run collection script
       env:
@@ -39,7 +39,7 @@ jobs:
       run: |
         echo "=== 列出 Python 脚本 ==="
         ls -lh subscribe/*.py || echo "No Python scripts found"
-        python subscribe/all_clash.py --output data/all_clash.yaml --timeout ${{ vars.REQUEST_TIMEOUT || 60 }} --max_success ${{ vars.MAX_SUCCESS_NODES || 99999 }}
+        python subscribe/all_clash.py --output data/all_clash.yaml --timeout ${{ vars.REQUEST_TIMEOUT || 30 }}
         echo "Script exit code: $?"
         echo "=== 检查生成文件 ==="
         ls -lh data/ || echo "No files found in data/"
