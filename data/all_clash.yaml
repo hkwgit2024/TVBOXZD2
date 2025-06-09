@@ -1,144 +1,276 @@
 proxies:
-- name: 2-12593
-  type: vless
-  server: 104.18.86.131
-  port: 443
-  uuid: c98a16e4-0dc5-42f0-b3db-30f04525c123
+- name: Node-3013
+  type: vmess
+  server: 162.159.45.64
+  port: 2086
+  uuid: 7d92ffc9-02e1-4087-8a46-cc4d76560917
+  alterId: 0
+  cipher: auto
+  udp: true
+  tls: false
   network: ws
-  tls: true
-  skip-cert-verify: false
-  servername: vless5-edu.pages.dev
-  flow: ''
+  servername: m116.164748.xyz
   ws-opts:
-    path: /?ed=2560
+    path: github.com/Alvin9999
     headers:
-      Host: vless5-edu.pages.dev
-  grpc-opts: null
-- name: AD-20-693
-  type: vless
-  server: ads.ruangguru.com.freexxx.ndeso.xyz
-  port: 443
-  uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
-  network: ws
-  tls: true
-  skip-cert-verify: false
-  servername: ads.ruangguru.com.freexxx.ndeso.xyz
-  flow: ''
-  ws-opts:
-    path: /Free-CF-Proxy-AD1
-    headers:
-      Host: ads.ruangguru.com.freexxx.ndeso.xyz
-  grpc-opts: null
-- name: AD-20-11550
+      Host: m116.164748.xyz
+- name: 1-19097
   type: trojan
-  server: investor.fb.com.freevpn.xhamster.biz.id
+  server: edfabb2e1b0707a046faffc99f7f39b6.v1.cac.node-is.green
+  port: 49348
+  password: ce71384b-7966-4139-a2f5-5d2ef263afb3
+  network: tcp
+  tls: true
+  skip-cert-verify: true
+  sni: fi.cacnord.bilibili.com
+- name: 专线_05-35352
+  type: vless
+  server: pq.aws15.yydjc.top
+  port: 443
+  uuid: 4f0e94e6-b781-41ec-98a1-7f2176d4263c
+  udp: true
+  tls: true
+  skip-cert-verify: false
+  flow: xtls-rprx-vision
+  client-fingerprint: ios
+  servername: dyn.felissimo.co.jp
+  reality-opts:
+    public-key: XDOJMg-h4KXwKN5KelFXi1bFB8XBmM1XtxgdHnw6qik
+    short-id: 56e852ac
+- name: IPLC_03-24968
+  type: ss
+  server: twct03.graniterapids.com
+  port: 5185
+  cipher: rc4-md5
+  password: 26d8vZ
+  udp: true
+- name: 专线-27127
+  server: onejp.888553.xyz
+  port: 31584
+  client-fingerprint: chrome
+  type: hysteria2
+  password: 2d068322-b0e3-4c35-991e-58d46d8775f8
+  auth: 2d068322-b0e3-4c35-991e-58d46d8775f8
+  sni: onejp.888553.xyz
+  skip-cert-verify: false
+- name: AD-20-13015
+  type: trojan
+  server: api.midtrans.com.freexxx.turah.my.id
   port: 443
   password: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
   network: ws
   tls: true
   skip-cert-verify: false
-  sni: investor.fb.com.freevpn.xhamster.biz.id
-- name: Node-12528
-  type: vmess
-  server: 104.18.149.76
-  port: 443
-  uuid: de94cc0a-0592-4969-b1fc-97ea8f0ea0b3
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  skip-cert-verify: false
-  servername: us.kkp.me.eu.org
-  ws-opts:
-    path: /aa
-    headers:
-      Host: us.kkp.me.eu.org
-  grpc-opts: null
-- name: 40-12540
-  type: trojan
-  server: 185.16.110.113
-  port: 443
-  password: 6884d714-d3c4-4b49-aa20-767ea92837d6
-  network: ws
-  tls: true
-  skip-cert-verify: false
-  sni: icecream.955850.xyz
-- name: SG-DO-7902
+  sni: api.midtrans.com.freexxx.turah.my.id
+- name: AD-20-1418
   type: vless
-  server: vless-cf.mioch.online
-  port: 80
-  uuid: Password
+  server: io.ruangguru.com.freexxx.ndeso.xyz
+  port: 443
+  uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
   network: ws
-  tls: false
+  tls: true
   skip-cert-verify: false
-  servername: vless-cf.mioch.online
+  servername: io.ruangguru.com.freexxx.ndeso.xyz
   flow: ''
   ws-opts:
-    path: /sg1
+    path: /Free-CF-Proxy-AD1
     headers:
-      Host: vless-cf.mioch.online
+      Host: io.ruangguru.com.freexxx.ndeso.xyz
   grpc-opts: null
-- name: AE-9-12739
+- name: AE-9-1582
+  type: trojan
+  server: lbso.bnnodeservice.com
+  port: 32017
+  password: d9ee78a4-ddf6-4650-979e-4eb2c72fd11d
+  network: tcp
+  tls: true
+  skip-cert-verify: true
+  sni: cert.bitbyte.one
+- name: AE-9-30877
   type: vless
   server: farsidutch.nl
-  port: 30206
-  uuid: c2ecd018-3559-48ab-a879-44cf71098130
-  network: grpc
+  port: 16344
+  uuid: ff9bebc5-7d9c-44ac-93c2-eef35603d63a
+  network: tcp
   tls: false
   skip-cert-verify: false
   servername: farsidutch.nl
   flow: ''
   ws-opts: null
   grpc-opts: null
-- name: Node-4705
+- name: Node-13388
   type: hysteria
-  server: 185.22.155.71
-  port: 10803
+  server: 195.154.200.178
+  port: 44557
   auth_str: dongtaiwang.com
   alpn:
   - h3</p>
   network: udp
   skip-cert-verify: true
   sni: apple.com
-- name: ID-20-9415
+- name: 5-21430
+  password: ddc132a6a3
+  server: catlog.flareai.science
+  type: http
+  port: 11543
+  username: b74b2457b5
+  tls: true
+  skip-cert-verify: null
+- name: SG-DO-03
   type: vless
-  server: fstores.web.id
+  server: mioch.online
   port: 443
-  uuid: 52e83d4c-2d10-4835-9bc1-e6bff658d96e
+  uuid: Password
   network: ws
   tls: true
   skip-cert-verify: false
-  servername: fstores.web.id
+  servername: mioch.online
+  flow: ''
+  ws-opts:
+    path: /sg1
+    headers:
+      Host: mioch.online
+  grpc-opts: null
+- name: SG-18-17185
+  type: trojan
+  server: 13.229.126.77
+  port: 14822
+  password: eQlCz7DG3SDT
+  network: tcp
+  tls: true
+  skip-cert-verify: false
+  sni: appsvs.shop
+- name: CA-3-17170
+  type: trojan
+  server: 35.182.156.67
+  port: 14822
+  password: plDez)(gXYve
+  network: tcp
+  tls: true
+  skip-cert-verify: false
+  sni: appsvs.shop
+- name: HK-直连_6-15946
+  server: 2a0f:7803:fb31:22::a
+  port: 51825
+  type: vless
+  uuid: 28aef439-a02b-4db8-e95a-6f3bb790a512
+  tls: true
+  tfo: false
+  flow: xtls-rprx-vision
+  skip-cert-verify: false
+  reality-opts:
+    public-key: 9rx7JwMO-KRZZEM9TQBO19BOAmmGjJyjN86ll2J7uVc
+  servername: www.icloud.com
+  client-fingerprint: chrome
+  network: tcp
+- name: DE-7-17174
+  type: trojan
+  server: 35.158.61.10
+  port: 14813
+  password: qRaRSTEuwAy5
+  network: tcp
+  tls: true
+  skip-cert-verify: false
+  sni: appsvs.shop
+- name: AD-9-9663
+  type: hysteria2
+  server: 152.67.95.183
+  port: 35000
+  password: d1c23f75-0182-40df-a321-9f6c8bba30f4
+  tls: true
+  skip-cert-verify: true
+  sni: www.apple.com
+  alpn:
+  - ''
+- name: AE-9-22999
+  type: hysteria2
+  server: 68.233.105.39
+  port: 50000
+  password: 496d4a22-c5f8-4170-bba2-23aa252350d2
+  tls: true
+  skip-cert-verify: true
+  sni: fastcdn.hoyoverse.com
+  alpn:
+  - ''
+- name: CF-26735
+  server: developers.cloudflare.com
+  port: 2095
+  client-fingerprint: randomized
+  type: vless
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  tls: false
+  tfo: false
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: ID-20-1817
+  type: vless
+  server: a.fstores.web.id
+  port: 443
+  uuid: 55a0cc6a-7b67-4d4d-87c1-6d1f80d7a0f4
+  network: ws
+  tls: true
+  skip-cert-verify: false
+  servername: a.fstores.web.id
   flow: ''
   ws-opts:
     path: /ID1
     headers:
-      Host: fstores.web.id
+      Host: a.fstores.web.id
   grpc-opts: null
-- name: ID-20-9416
+- name: ID-20-10431
   type: trojan
-  server: fstores.web.id
+  server: b.fstores.web.id
   port: 443
-  password: 52e83d4c-2d10-4835-9bc1-e6bff658d96e
+  password: a09f9d8a-294a-4b67-a555-24435a1b77c2
   network: ws
   tls: true
   skip-cert-verify: false
-  sni: fstores.web.id
-- name: Node-4707
-  type: hysteria2
-  server: 45.129.2.108
-  port: 30033
-  password: dongtaiwang.com
+  sni: b.fstores.web.id
+- name: 61-17977
+  type: ssr
+  server: v3.cdn.ew3ns.net
+  port: 31206
+  cipher: chacha20-ietf
+  password: yT6Am5
+  protocol: auth_aes128_md5
+  protocol-param: 393994:tMYYQH
+  obfs: tls1.2_ticket_auth
+  obfs-param: 9ea1c393994.microsoft.com
+- name: KR-17-17184
+  type: trojan
+  server: 52.78.143.136
+  port: 14787
+  password: hFkaShOhZSdh
+  network: tcp
   tls: true
+  skip-cert-verify: false
+  sni: appsvs.shop
+- name: HK-4-17294
+  port: 11329
+  server: 119.96.137.5
+  type: vmess
+  network: ws
+  tls: false
+  udp: true
+  version: '2'
+  servername: ''
   skip-cert-verify: true
-  sni: www.bing.com</p>
-  alpn:
-  - ''
-- name: ID-Google-7262
+  ws-opts:
+    path: /
+    headers:
+      host: ''
+  cipher: auto
+  uuid: fc7eb111-1292-4706-f4fb-afba1958924c
+  alterId: 0
+- name: ID-Google-23122
   type: vless
   server: vip.arivganteng.biz.id
   port: 443
-  uuid: e4f7a20f-ee47-4927-a8a8-054f148feaba
+  uuid: a815c387-8264-46d9-9c15-0757a61bf5b0
   network: ws
   tls: true
   skip-cert-verify: false
@@ -149,61 +281,226 @@ proxies:
     headers:
       Host: vip.arivganteng.biz.id
   grpc-opts: null
-- name: AE-20-4166
+- name: AD-8-28115
+  type: ss
+  server: hn.uu361.vip
+  port: 61544
+  cipher: chacha20-ietf-poly1305
+  password: a135e51b-f74a-4be1-9943-3664c0a32942
+- name: NL-445
   type: trojan
-  server: investors.spotify.com.aink.workerz.site
+  server: 41.216.177.41
   port: 443
-  password: a6d9324d-fb90-424d-b9ca-95e98b5cb40e
+  password: 274c1b23-2bfe-40ac-943c-ebc1aa044b22
+  network: tcp
+  tls: true
+  skip-cert-verify: true
+  sni: 41.216.177.41
+- name: Node-785
+  type: socks5
+  server: 127.0.0.1
+  port: 1080
+- name: AE-3-17290
+  type: ss
+  server: 42.240.132.91
+  port: 0
+  cipher: none
+  password: 0cf52016-ba98-319d-de8c-84dbfac9cccc
+- name: KR-19374
+  type: ss
+  server: 3.38.102.147
+  port: 443
+  cipher: aes-256-cfb
+  password: yijian0503
+- name: TW-19608
+  type: trojan
+  server: 167.68.4.223
+  port: 2096
+  password: Aimer
   network: ws
   tls: true
+  skip-cert-verify: true
+  sni: epcca.ambercc.filegear-sg.me
+- name: JP-19609
+  type: trojan
+  server: 125.94.40.162
+  port: 21125
+  password: f57f01e6-9bb1-4277-a5cb-75ad0ce1fa11
+  network: tcp
+  tls: true
   skip-cert-verify: false
-  sni: investors.spotify.com.aink.workerz.site
-- name: ID-Google-7462
+  sni: k12.tudou211.com
+- name: US-19612
+  type: vless
+  server: 51.81.37.20
+  port: 443
+  uuid: c4fa89d4-fcb9-48ba-adbc-665181cc817f
+  network: tcp
+  tls: true
+  skip-cert-verify: false
+  servername: 147135010072.sec21org.com
+  flow: ''
+  ws-opts: null
+  grpc-opts: null
+- name: HK-20532
+  type: trojan
+  server: hk-server-02.selfupay.com
+  port: 443
+  password: YWVzLTI1Ni1nY206WWd1c0gyTac5a3ef0-b4ablWNFc1RmRBNk5NQU5KSnga3fa58ac5a3ef0-b4a36ebef7d1b1d6205fd0c55f28800e674
+  network: tcp
+  tls: true
+  skip-cert-verify: false
+  sni: hk-server-02.selfupay.com
+- name: ID-Google-23322
   type: trojan
   server: vip.arivganteng.biz.id
   port: 443
-  password: 4641fedb-bd78-481a-bee9-5171e9fd2046
+  password: f06b9c74-f898-43d7-8557-efd6c5986c00
   network: ws
   tls: true
   skip-cert-verify: false
   sni: vip.arivganteng.biz.id
+- name: IT-26739
+  server: itarmy.com.ua
+  port: 2095
+  client-fingerprint: randomized
+  type: vless
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  tls: false
+  tfo: false
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: MY-9-34471
+  type: vless
+  server: csuzhou01.1cooldns.com
+  port: 23301
+  uuid: 459b4a80-bd61-4ecd-a26b-e9c1809d9e45
+  network: tcp
+  tls: false
+  skip-cert-verify: false
+  servername: www.nvidia.com
+  flow: xtls-rprx-vision
+  ws-opts: null
+  grpc-opts: null
+- name: UK-35275
+  type: ss
+  server: mx2.drawnrisha.one
+  port: 55988
+  password: FjgGNNHQiELzxXmaHRxxtQbxDDvGXFxYdTbYe91JKZsjvKLHoY9rn9ruYE45377WjtU3m4kmXQZDXiHBJsgVfhmpawEoGvq9
+  cipher: chacha20-ietf-poly1305
+- name: SG-35276
+  type: ss
+  server: 13.229.232.1
+  port: 443
+  password: amazonskr05
+  cipher: aes-256-cfb
+- name: JP-Google-35279
+  type: ss
+  server: 43.207.213.253
+  port: 443
+  password: amazonskr05
+  cipher: aes-256-cfb
+- name: US-8-35281
+  type: ss
+  server: 205.134.180.139
+  port: 443
+  password: lWaGPVFjmnag
+  cipher: chacha20-ietf-poly1305
 proxy-groups:
 - name: 🚀 节点选择
   type: select
   proxies:
   - DIRECT
-  - 2-12593
-  - AD-20-693
-  - AD-20-11550
-  - Node-12528
-  - 40-12540
-  - SG-DO-7902
-  - AE-9-12739
-  - Node-4705
-  - ID-20-9415
-  - ID-20-9416
-  - Node-4707
-  - ID-Google-7262
-  - AE-20-4166
-  - ID-Google-7462
+  - Node-3013
+  - 1-19097
+  - 专线_05-35352
+  - IPLC_03-24968
+  - 专线-27127
+  - AD-20-13015
+  - AD-20-1418
+  - AE-9-1582
+  - AE-9-30877
+  - Node-13388
+  - 5-21430
+  - SG-DO-03
+  - SG-18-17185
+  - CA-3-17170
+  - HK-直连_6-15946
+  - DE-7-17174
+  - AD-9-9663
+  - AE-9-22999
+  - CF-26735
+  - ID-20-1817
+  - ID-20-10431
+  - 61-17977
+  - KR-17-17184
+  - HK-4-17294
+  - ID-Google-23122
+  - AD-8-28115
+  - NL-445
+  - Node-785
+  - AE-3-17290
+  - KR-19374
+  - TW-19608
+  - JP-19609
+  - US-19612
+  - HK-20532
+  - ID-Google-23322
+  - IT-26739
+  - MY-9-34471
+  - UK-35275
+  - SG-35276
+  - JP-Google-35279
+  - US-8-35281
 - name: ♻️ 自动选择
   type: url-test
   url: http://www.gstatic.com/generate_204
   interval: 300
   proxies:
-  - 2-12593
-  - AD-20-693
-  - AD-20-11550
-  - Node-12528
-  - 40-12540
-  - SG-DO-7902
-  - AE-9-12739
-  - Node-4705
-  - ID-20-9415
-  - ID-20-9416
-  - Node-4707
-  - ID-Google-7262
-  - AE-20-4166
-  - ID-Google-7462
+  - Node-3013
+  - 1-19097
+  - 专线_05-35352
+  - IPLC_03-24968
+  - 专线-27127
+  - AD-20-13015
+  - AD-20-1418
+  - AE-9-1582
+  - AE-9-30877
+  - Node-13388
+  - 5-21430
+  - SG-DO-03
+  - SG-18-17185
+  - CA-3-17170
+  - HK-直连_6-15946
+  - DE-7-17174
+  - AD-9-9663
+  - AE-9-22999
+  - CF-26735
+  - ID-20-1817
+  - ID-20-10431
+  - 61-17977
+  - KR-17-17184
+  - HK-4-17294
+  - ID-Google-23122
+  - AD-8-28115
+  - NL-445
+  - Node-785
+  - AE-3-17290
+  - KR-19374
+  - TW-19608
+  - JP-19609
+  - US-19612
+  - HK-20532
+  - ID-Google-23322
+  - IT-26739
+  - MY-9-34471
+  - UK-35275
+  - SG-35276
+  - JP-Google-35279
+  - US-8-35281
 rules:
 - MATCH,🚀 节点选择
