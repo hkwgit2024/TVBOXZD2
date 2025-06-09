@@ -1,39 +1,39 @@
 proxies:
-- name: 05-17
+- name: 04-16
   port: 19013
-  server: f10002.flyflylflyflysbs.sbs
+  server: f10001.flyflylflyflysbs.sbs
   type: trojan
   network: tcp
   udp: true
   sni: sg02.ckcloud.info
   password: 47d472bc-4260-4707-8373-523c3d7e6d9b
   skip-cert-verify: true
-- name: 02-98
-  port: 61379
-  server: f10011.flyflylflyflysbs.sbs
+- name: 01-06
+  port: 25003
+  server: c.baodesign.top
   type: vmess
-  network: grpc
-  tls: true
+  network: tcp
+  tls: false
   udp: true
   version: '2'
-  servername: us2.ckcloud.info
+  servername: ''
   skip-cert-verify: true
   cipher: auto
-  uuid: 47d472bc-4260-4707-8373-523c3d7e6d9b
+  uuid: ba2e86ee-65fc-4b4e-97c7-165b5b64023b
   alterId: 0
 proxy-groups:
 - name: 🚀 节点选择
   type: select
   proxies:
   - DIRECT
-  - 05-17
-  - 02-98
+  - 04-16
+  - 01-06
 - name: ♻️ 自动选择
   type: url-test
   url: http://www.gstatic.com/generate_204
   interval: 300
   proxies:
-  - 05-17
-  - 02-98
+  - 04-16
+  - 01-06
 rules:
 - MATCH,🚀 节点选择
