@@ -15,6 +15,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Clean working directory
+      run: |
+        git reset --hard
+        git clean -fd
+        echo "Working directory cleaned"
     - name: Create data directory
       run: |
         mkdir -p data
@@ -50,26 +55,30 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        for file in data/all_clash.yaml.gz data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt; do
+        echo "=== 检查文件存在 ==="
+        for file in data/all_clash.yaml data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt; do
           if [ -f "$file" ]; then
-            echo "Adding $file"
+            echo "Found $file, size: $(ls -lh $file | awk '{print $5}')"
             git add "$file"
           else
             echo "File $file not found"
           fi
         done
-        git diff --staged --quiet || git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-        git diff --staged --quiet && echo "No changes to commit"
-    - name: 拉取远程并变基
+        echo "=== 提交变更 ==="
+        if ! git diff --staged --quiet; then
+          git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          echo "Changes committed"
+        else
+          echo "No changes to commit"
+        fi
+    - name: 拉取远程并合并
       run: |
-        git status
-        git diff --name-only
         git fetch origin
-        git checkout -- .
-        git pull --rebase origin main || {
-          echo "Rebase failed, attempting to resolve conflicts";
-          git rebase --abort;
-          git pull --merge origin main;
+        git pull origin main --no-rebase || {
+          echo "Merge failed, attempting to resolve";
+          git merge --abort;
+          git reset --hard origin/main;
+          echo "Reset to origin/main";
         }
     - name: 推送更改
       uses: ad-m/github-push-action@master
