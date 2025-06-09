@@ -1,7 +1,0 @@
-更新时间,#genre#
-2025-06-07,http://example.com/1.m3u8
-08:17:13,http://example.com/2.m3u8
-# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).
-# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.
-其他频道,#genre#
-Stream_4_0_1,https://5ca9af4645e15.streamlock.net/grd/videogrd/playlist.m3u8
