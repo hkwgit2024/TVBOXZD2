@@ -1,48 +1,45 @@
 proxies:
-- name: Node-1428
+- name: 2-7232
   type: vless
-  server: 104.31.16.95
-  port: 2053
-  uuid: 39a91eaf-a379-4fff-a9c8-1cb01442b76f
-  network: ws
-  tls: true
+  server: 77.110.116.32
+  port: 45467
+  uuid: e23e3004-1526-4d6d-b207-8cf7f48f2c1a
+  network: tcp
+  tls: false
   skip-cert-verify: false
-  servername: ir.akcovufun.ir
-  flow: ''
-  ws-opts:
-    path: /
-    headers:
-      Host: ir.akcovufun.ir
+  servername: google.com
+  flow: xtls-rprx-vision
+  ws-opts: null
   grpc-opts: null
-- name: AD-20-6719
+- name: AD-20-2002
   type: vless
-  server: ads.ruangguru.com.freexxx.najah.biz.id
+  server: io.ruangguru.com.freexxx.bmkg.xyz
   port: 443
   uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
   network: ws
   tls: true
   skip-cert-verify: false
-  servername: ads.ruangguru.com.freexxx.najah.biz.id
+  servername: io.ruangguru.com.freexxx.bmkg.xyz
   flow: ''
   ws-opts:
     path: /Free-CF-Proxy-AD1
     headers:
-      Host: ads.ruangguru.com.freexxx.najah.biz.id
+      Host: io.ruangguru.com.freexxx.bmkg.xyz
   grpc-opts: null
-- name: AD-20-7530
+- name: AD-20-14335
   type: trojan
-  server: freexxx.ndeso.web.id
+  server: support.zoom.us.web.bmkg.xyz
   port: 443
   password: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
   network: ws
   tls: true
   skip-cert-verify: false
-  sni: freexxx.ndeso.web.id
-- name: Node-951
+  sni: support.zoom.us.web.bmkg.xyz
+- name: Node-6801
   type: vmess
-  server: 154.26.134.221
-  port: 54813
-  uuid: df9c6e9e-9e7a-4d06-88bb-9b29337b973f
+  server: 135.125.182.74
+  port: 28213
+  uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
   alterId: 0
   cipher: auto
   network: tcp
@@ -51,26 +48,53 @@ proxies:
   servername: ''
   ws-opts: null
   grpc-opts: null
-- name: 2-1242
+- name: 40-7058
   type: trojan
-  server: www.digitalocean.com
+  server: 217.163.76.221
   port: 443
-  password: d0298536-d670-4045-bbb1-ddd5ea68683e
+  password: 6884d714-d3c4-4b49-aa20-767ea92837d6
   network: ws
   tls: true
   skip-cert-verify: false
-  sni: azadnet-5vk.pages.dev
-- name: Node-14919
+  sni: icecream.955850.xyz
+- name: SG-DO-6370
+  type: vless
+  server: vless-cf.mioch.online
+  port: 443
+  uuid: Password
+  network: ws
+  tls: true
+  skip-cert-verify: false
+  servername: vless-cf.mioch.online
+  flow: ''
+  ws-opts:
+    path: /sg1
+    headers:
+      Host: vless-cf.mioch.online
+  grpc-opts: null
+- name: Node-191
   type: hysteria
-  server: 195.154.200.178
-  port: 46938
+  server: 176.32.35.226
+  port: 62003
   auth_str: dongtaiwang.com
   alpn:
   - h3</p>
   network: udp
   skip-cert-verify: true
   sni: apple.com
-- name: Node-14913
+- name: AE-9-7178
+  type: vless
+  server: farsidutch.nl
+  port: 33522
+  uuid: 319682e5-53ab-485b-9e94-ed4fd3ea55d1
+  network: kcp
+  tls: false
+  skip-cert-verify: false
+  servername: farsidutch.nl
+  flow: ''
+  ws-opts: null
+  grpc-opts: null
+- name: Node-186
   type: hysteria2
   server: 46.29.163.171
   port: 30033
@@ -80,11 +104,35 @@ proxies:
   sni: www.bing.com</p>
   alpn:
   - ''
-- name: ID-Google-12443
+- name: ID-20-10886
+  type: vless
+  server: b.fstores.web.id
+  port: 443
+  uuid: 9285db40-611c-4ab7-802e-3596816ab862
+  network: ws
+  tls: true
+  skip-cert-verify: false
+  servername: b.fstores.web.id
+  flow: ''
+  ws-opts:
+    path: /ID1
+    headers:
+      Host: b.fstores.web.id
+  grpc-opts: null
+- name: ID-20-3799
+  type: trojan
+  server: a.fstores.web.id
+  port: 443
+  password: 04b5dfc2-b410-4c65-8e89-8708a4946913
+  network: ws
+  tls: true
+  skip-cert-verify: false
+  sni: a.fstores.web.id
+- name: ID-Google-18509
   type: vless
   server: vip.arivganteng.biz.id
   port: 80
-  uuid: 69fa9430-3d4f-4831-978c-157982161975
+  uuid: 1be2c81e-75c2-4eaf-8795-a37b10a3f150
   network: ws
   tls: false
   skip-cert-verify: false
@@ -95,11 +143,20 @@ proxies:
     headers:
       Host: vip.arivganteng.biz.id
   grpc-opts: null
-- name: ID-Google-12641
+- name: AE-20-9761
+  type: trojan
+  server: investors.spotify.com.aink.workerz.site
+  port: 443
+  password: e5feebe5-23f0-451f-9032-e05fb6ef0378
+  network: ws
+  tls: true
+  skip-cert-verify: false
+  sni: investors.spotify.com.aink.workerz.site
+- name: ID-Google-18707
   type: trojan
   server: vip.arivganteng.biz.id
   port: 443
-  password: 6c156a00-ed66-4d2f-b918-f9230e311709
+  password: 1acda24a-4444-4741-98c6-6064a5ed68f3
   network: ws
   tls: true
   skip-cert-verify: false
@@ -109,28 +166,38 @@ proxy-groups:
   type: select
   proxies:
   - DIRECT
-  - Node-1428
-  - AD-20-6719
-  - AD-20-7530
-  - Node-951
-  - 2-1242
-  - Node-14919
-  - Node-14913
-  - ID-Google-12443
-  - ID-Google-12641
+  - 2-7232
+  - AD-20-2002
+  - AD-20-14335
+  - Node-6801
+  - 40-7058
+  - SG-DO-6370
+  - Node-191
+  - AE-9-7178
+  - Node-186
+  - ID-20-10886
+  - ID-20-3799
+  - ID-Google-18509
+  - AE-20-9761
+  - ID-Google-18707
 - name: ♻️ 自动选择
   type: url-test
   url: http://www.gstatic.com/generate_204
   interval: 300
   proxies:
-  - Node-1428
-  - AD-20-6719
-  - AD-20-7530
-  - Node-951
-  - 2-1242
-  - Node-14919
-  - Node-14913
-  - ID-Google-12443
-  - ID-Google-12641
+  - 2-7232
+  - AD-20-2002
+  - AD-20-14335
+  - Node-6801
+  - 40-7058
+  - SG-DO-6370
+  - Node-191
+  - AE-9-7178
+  - Node-186
+  - ID-20-10886
+  - ID-20-3799
+  - ID-Google-18509
+  - AE-20-9761
+  - ID-Google-18707
 rules:
 - MATCH,🚀 节点选择
