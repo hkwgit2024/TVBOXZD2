@@ -1,5 +1,4 @@
 name: all_clash
-
 on:
   workflow_dispatch:
   push:
@@ -8,43 +7,37 @@ on:
       - 'subscribe/all_clash.py'
   schedule:
     - cron: '0 */23 * * *'
-
 jobs:
   collect:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        persist-credentials: true
-
+    - name: Create data directory
+      run: |
+        mkdir -p data
     - name: 设置时区
       run: sudo timedatectl set-timezone 'Asia/Shanghai'
-
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-
     - name: Install dependencies
       run: |
         pip install requests tqdm PyYAML
         pip list
-
     - name: Run collection script
       env:
         URL_SOURCE: ${{ secrets.URL_SOURCE }}
       run: |
+        echo "=== 列出 Python 脚本 ==="
+        ls -lh subscribe/*.py || echo "No Python scripts found"
         python subscribe/all_clash.py --output data/all_clash.yaml --timeout ${{ vars.REQUEST_TIMEOUT || 60 }} --max_success ${{ vars.MAX_SUCCESS_NODES || 99999 }}
-        
-        echo "=== 生成文件列表 ==="
-        ls -lh data/ || echo "data/ directory not found"
-        echo "=== 错误日志 ==="
-        cat error.log || echo "error.log not found"
+        echo "Script exit code: $?"
+        echo "=== 检查生成文件 ==="
+        ls -lh data/ || echo "No files found in data/"
         echo "=== URL 统计 CSV 文件 ==="
         cat data/url_statistics.csv || echo "url_statistics.csv not found"
         echo "=== 成功 URL 数量 ==="
@@ -53,43 +46,33 @@ jobs:
         wc -l data/failed_urls.txt || echo "failed_urls.txt not found"
         echo "=== 输出文件内容预览（前10行） ==="
         head -n 10 data/all_clash.yaml || echo "data/all_clash.yaml not found"
-
-    - name: 清理工作目录
-      run: |
-        # 重置未跟踪的文件和未暂存的更改，确保工作目录干净
-        git reset --hard
-        git clean -fd
-        echo "Working directory cleaned"
-
     - name: 提交更改
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        
-        # 添加所有需要提交的文件
-        git add data/all_clash.yaml data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt
-        
-        # 检查是否有实际更改，有更改才提交
-        if ! git diff --staged --quiet; then
-          git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-          echo "Changes committed"
-        else
-          echo "No changes to commit"
-        fi
-
-    - name: 拉取远程并合并
+        for file in data/all_clash.yaml.gz data/url_statistics.csv data/successful_urls.txt data/failed_urls.txt; do
+          if [ -f "$file" ]; then
+            echo "Adding $file"
+            git add "$file"
+          else
+            echo "File $file not found"
+          fi
+        done
+        git diff --staged --quiet || git commit -m "Update proxy nodes: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+        git diff --staged --quiet && echo "No changes to commit"
+    - name: 拉取远程并变基
       run: |
+        git status
+        git diff --name-only
         git fetch origin
-        # 使用 merge 代替 rebase，避免复杂的冲突处理
-        git pull origin main --no-rebase || {
-          echo "Merge failed, attempting to resolve";
-          git merge --abort;
-          git reset --hard origin/main;
-          echo "Reset to origin/main";
+        git checkout -- .
+        git pull --rebase origin main || {
+          echo "Rebase failed, attempting to resolve conflicts";
+          git rebase --abort;
+          git pull --merge origin main;
         }
-
     - name: 推送更改
       uses: ad-m/github-push-action@master
       with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: main
-        ssh-key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
