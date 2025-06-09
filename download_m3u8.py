@@ -18,7 +18,7 @@ REPO_URL = os.getenv('REPO_URL')
 
 # 输出目录和文件
 OUTPUT_DIR = 'data'
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'valid_urls.m3u')
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, 'valid_urls.txt')
 ERROR_LOG = os.path.join(OUTPUT_DIR, 'error_log.txt')
 
 # 信号处理，防止脚本卡死
@@ -295,9 +295,7 @@ async def main():
                     logger.info(f"Valid URL: {unique_channels[i][0]}, {unique_channels[i][1]}")
 
             with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                f.write('#EXTM3U\n')
-                f.write('# Note: [VOD] indicates Video on Demand streams, which may require specific clients (e.g., VLC, Kodi).\n')
-                f.write('# Note: [Unverified] indicates streams with potentially inaccessible encryption keys.\n')
+
                 for category in sorted(classified.keys()):
                     if classified[category]:
                         f.write(f"{category},#genre#\n")
