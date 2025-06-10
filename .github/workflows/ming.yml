@@ -30,23 +30,19 @@ jobs:
           mkdir -p subscribe/mining
           
           # 创建占位符文件，防止脚本因文件不存在而报错
+          # 注意：这些文件路径需要与你的 Python 脚本内部定义的路径一致
           touch subscribe/mining/sub_info.yaml
           touch subscribe/mining/sub_info.txt # 如果你的脚本会生成这个文件
           touch subscribe/mining/mining_config.yaml
           touch subscribe/mining/TGsources.yaml
 
-      - name: Copy script to working directory # 步骤 5: 将脚本复制到统一的工作目录
-        run: |
-          cp mining_check.py subscribe/mining/mining_check.py # 假设你的脚本文件名为 mining_check.py 位于根目录
-
-      - name: Run mining_check.py script # 步骤 6: 运行 Python 脚本
+      - name: Run mining_check.py script # 步骤 5 (原步骤 6): 运行 Python 脚本
         # 切换到脚本所在目录运行，这样脚本内部的相对路径（./）就能正确解析
         run: |
-          cd subscribe/mining
           python mining_check.py
         working-directory: ./subscribe/mining # 设置此步骤的工作目录
 
-      - name: Commit and push changes # 步骤 7: 提交并推送结果文件
+      - name: Commit and push changes # 步骤 6 (原步骤 7): 提交并推送结果文件
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "feat: Update generated subscribe data in subscribe/mining" # 提交信息
