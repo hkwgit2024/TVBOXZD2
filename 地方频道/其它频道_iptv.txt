@@ -2852,3 +2852,11 @@ AlJazeeraEnglish,https://live-hls-web-aje.getaj.net/AJE/02.m3u8
 ArirangArirang,http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/chunklist.m3u8
 BBCWorldNews,https://vs-hls-push-ww-live.akamaized.net/x=4/i=urn:bbc:pips:service:bbc_news_channel_hd/t=3840/v=pv14/b=5070016/main.m3u8
 Беларусь5Интернет,https://ngtrk.dc.beltelecom.by/ngtrk/smil:belarus5int.smil/playlist.m3u8
+CartoonNetwork,https://iptvcable.netlify.app/Altogether-007/Cartoon/CartoonNetworkhin.m3u8
+卫视,http://58.221.214.82:9901/tsfile/live/0131_1.m3u8
+OKMagdeburg,http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-magdeburg_high/playlist.m3u8
+卫视,http://qwt.zhibotv.top:2016/%E5%85%A8%E7%BD%91%E9%80%9A.php
+OKWernigerode,http://58bd5b7a98e04.streamlock.net/medienasa-live/mp4:ok-wernigerode_high/playlist.m3u8
+OKStendal,http://58bd5b7a98e04.streamlock.net/medienasa-live/ok-stendal_high/playlist.m3u8
+ChannelNewsAsia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Kronehit,https://bitcdn-kronehit.bitmovin.com/v2/hls/playlist.m3u8
