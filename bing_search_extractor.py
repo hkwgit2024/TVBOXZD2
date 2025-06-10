@@ -250,6 +250,6 @@ if __name__ == "__main__":
     keywords_to_search = ["加速器", "subscribe?token=", "/s/"] # 更新了关键词列表，以匹配您日志中的
     output_filename = "bing.txt"
     # 设置每个关键词最多抓取的页数
-    max_pages = 3 
+    max_pages = 30 
     
     bing_search_and_extract_urls(keywords_to_search, output_filename, max_pages_per_keyword=max_pages)
