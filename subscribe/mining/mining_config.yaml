@@ -12,4 +12,4 @@ sources:
     - https://qingyun.zybs.eu.org/api/v1/client/subscribe?token=5c59615ac85188cf1ec4d96e1ca7df25
     - https://vvs.e54.site/api/v1/client/subscribe?token=abbc9aefba2e8b192d1707b6b57ff539
     - https://dl.vfkum.website/api/v1/client/subscribe?token=37fd90476b252e3b704aef66036b1e42
-  output: sub/sources/miningAll.yaml
+  output: dtat/miningAll.yaml
