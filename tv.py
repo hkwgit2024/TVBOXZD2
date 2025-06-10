@@ -17,7 +17,7 @@ import yaml
 import base64
 
 # 配置日志
-logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 从环境变量获取配置
 GITHUB_TOKEN = os.getenv('BOT')
