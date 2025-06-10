@@ -340,10 +340,10 @@ if "__name__==__main__":#主程序开始的地方
     #INFO_YAML = './2.yaml'
     #CONFIG_YAML = './_1.yaml'
     #TG_SOURCE_PATH = './TG.yaml'
-    INFO_YAML = './utils/airport/mining/sub_info.yaml'
-    INFO_YAML_WEB = './sub/sources/sub_info.txt'
-    CONFIG_YAML = './utils/airport/mining/mining_config.yaml'
-    TG_SOURCE_PATH = './utils/collectTGsub/TGsources.yaml'
+    INFO_YAML = './subscribe/mining/sub_info.yaml'
+    INFO_YAML_WEB = './subscribe/mining/sub_info.txt' # 如果你希望txt文件也在这里
+    CONFIG_YAML = './subscribe/mining/mining_config.yaml'
+    TG_SOURCE_PATH = './subscribe/mining/TGsources.yaml'
 
     subs = []
     
