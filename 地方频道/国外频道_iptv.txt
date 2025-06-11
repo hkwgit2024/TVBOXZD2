@@ -77,3 +77,17 @@ AXN,https://stream1.freetv.fun/axn-4.m3u8
 CNN,http://serv8.iptv11.com:8080/CNNInternational/video.m3u8
 CNN,https://turnerlive.warnermediacdn.com/hls/live/586497/cnngo/cnni/VIDEO_0_3564000.m3u8
 CNN,https://epg.pw/stream/6867cfc871d3ad07a4868b49db2fd265d4a423cfd09feb138739f9be5143a1c0.ctv
+华语电视2,http://38.64.72.148:80/hls/modn/list/4003/playlist.m3u8
+KBS1,https://pixman.mytvsuper.com.mp/histar
+动物星球,https://smart.pendy.dpdns.org/Smart.php
+Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b656000_sleng.m3u8
+动物星球,https://pixman.mytvsuper.com.mp/Smart.php
+CNA,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u8
+Arirang,https://smart.pendy.dpdns.org/Smart.php
+Astr欢喜,https://pixman.mytvsuper.com.mp/Smart.php
+AXN,https://pixman.mytvsuper.com.mp/histar
+Arirang,https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+ABCNews,https://pixman.mytvsuper.com.mp/histar
+华语电视2,http://38.64.72.148:80/hls/modn/list/4002/chunklist1.m3u8
+动物星球,https://pixman.mytvsuper.com.mp/histar
+探索亚洲,https://pixman.mytvsuper.com.mp/histar
