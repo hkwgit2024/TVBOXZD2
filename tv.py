@@ -25,8 +25,7 @@ REPO_OWNER = os.getenv('REPO_OWNER')
 REPO_NAME = os.getenv('REPO_NAME')
 CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
 URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
-URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
-KEYWORD_STATS_PATH_IN_REPO = os.getenv('KEYWORD_STATS_PATH', 'keyword_stats.json')  # 新增：keyword_stats.json 路径
+URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH', 'config/url_states.json')  # 明确指定 url_states.json 路径
 
 # 检查环境变量是否设置
 for var, name in [(GITHUB_TOKEN, 'BOT'), (REPO_OWNER, 'REPO_OWNER'), (REPO_NAME, 'REPO_NAME'),
@@ -108,53 +107,41 @@ def check_file_size(content, file_path_in_repo, max_size_mb=50):
         return False
     return True
 
-# 新增：保存 keyword_stats.json 并清理旧数据
-def save_keyword_stats(keyword_stats, retention_days=30, max_size_mb=50):
-    """保存关键词统计数据到 keyword_stats.json，并清理旧数据以控制体积。"""
-    file_path_in_repo = KEYWORD_STATS_PATH_IN_REPO
+# 修改：保存 url_states 并清理旧数据
+def save_url_states_remote(url_states, retention_days=30, max_size_mb=50):
+    """保存 URL 状态到远程 JSON 文件，并清理旧数据以控制体积。"""
+    file_path_in_repo = URL_STATES_PATH_IN_REPO
     try:
-        # 加载现有统计数据
-        existing_stats = {}
-        content = fetch_from_github(file_path_in_repo)
-        if content:
-            try:
-                existing_stats = json.loads(content)
-            except json.JSONDecodeError:
-                logging.warning(f"远程 {file_path_in_repo} 解码失败，从空数据开始。")
-
         # 清理超过保留时间的记录
         cutoff_date = (datetime.now() - timedelta(days=retention_days)).isoformat()
-        existing_stats = {
-            k: v for k, v in existing_stats.items()
-            if v.get('timestamp', '') > cutoff_date
-        }
-
-        # 添加新数据
-        current_time = datetime.now().isoformat()
-        for keyword, count in keyword_stats.items():
-            existing_stats[keyword] = {
-                'count': count,
-                'timestamp': current_time
-            }
+        cleaned_states = {}
+        for url, state in url_states.items():
+            last_checked = state.get('last_checked') or state.get('last_stream_checked')
+            if last_checked and last_checked > cutoff_date:
+                cleaned_states[url] = state
+            else:
+                logging.debug(f"清理旧 URL 状态：{url}，最后检查时间：{last_checked}")
 
         # 序列化并检查大小
-        content = json.dumps(existing_stats, indent=4, ensure_ascii=False)
+        content = json.dumps(cleaned_states, indent=4, ensure_ascii=False)
         if not check_file_size(content, file_path_in_repo, max_size_mb):
             # 归档旧数据
-            archive_path = f"archive/keyword_stats_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-            save_to_github(archive_path, content, f"归档旧关键词统计数据")
+            archive_path = f"archive/url_states_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            save_to_github(archive_path, content, f"归档旧 URL 状态数据")
             logging.warning(f"文件过大，已归档到 {archive_path}，清空主文件。")
-            existing_stats = {keyword: {'count': count, 'timestamp': current_time} for keyword, count in keyword_stats.items()}
-            content = json.dumps(existing_stats, indent=4, ensure_ascii=False)
+            # 只保留最近 1000 条记录（可调整）
+            cleaned_states = dict(list(cleaned_states.items())[-1000:])
+            content = json.dumps(cleaned_states, indent=4, ensure_ascii=False)
 
         # 保存到 GitHub
-        success = save_to_github(file_path_in_repo, content, "更新关键词统计数据")
-        if success:
-            logging.info(f"成功保存 {file_path_in_repo}，记录数：{len(existing_stats)}")
-        else:
-            logging.error(f"保存 {file_path_in_repo} 失败。")
+        if check_file_size(content, file_path_in_repo):
+            success = save_to_github(file_path_in_repo, content, "更新 URL 状态")
+            if not success:
+                logging.error(f"将远程 URL 状态保存到 '{file_path_in_repo}' 发生错误。")
+            else:
+                logging.info(f"成功保存 {file_path_in_repo}，记录数：{len(cleaned_states)}")
     except Exception as e:
-        logging.error(f"保存 {file_path_in_repo} 发生错误：{e}")
+        logging.error(f"将 URL 状态保存到远程 '{file_path_in_repo}' 发生错误：{e}")
 
 def load_config():
     """从 GitHub 仓库加载并解析 YAML 配置文件。"""
@@ -309,17 +296,6 @@ def load_url_states_remote():
             logging.error(f"解码远程 '{URL_STATES_PATH_IN_REPO}' 中的 JSON 发生错误：{e}。将从空状态开始。")
             return {}
     return {}
-
-def save_url_states_remote(url_states):
-    """保存 URL 状态到远程 JSON 文件。"""
-    try:
-        content = json.dumps(url_states, indent=4, ensure_ascii=False)
-        if check_file_size(content, URL_STATES_PATH_IN_REPO):
-            success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
-            if not success:
-                logging.error(f"将远程 URL 状态保存到 '{URL_STATES_PATH_IN_REPO}' 发生错误。")
-    except Exception as e:
-        logging.error(f"将 URL 状态保存到远程 '{URL_STATES_PATH_IN_REPO}' 发生错误：{e}")
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
 def fetch_url_content_with_retry(url, url_states):
@@ -861,9 +837,6 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
         keyword_url_counts[keyword] = len(keyword_found_urls)
         logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
-
-    # 保存关键词统计数据
-    save_keyword_stats(keyword_url_counts)
 
     logging.warning("\n=== 关键词搜索结果总结 ===")
     low_result_threshold = 5
