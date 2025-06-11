@@ -296,15 +296,8 @@ if __name__ == "__main__":
     # 配置要搜索的关键词
     keywords_to_search = [ 
         "subscribe?token=", 
-        "/s/",
-        "vless config telegram", 
-        "vmess config telegram",
-        "trojan config telegram",
-        "ss config telegram",
-        "shadowsocks config telegram",
-        "v2ray config telegram",
-        "free vpn config telegram",
-        "proxy config telegram"
+        "/s/"
+
     ]
     output_filename = "bing.txt"
     max_pages = 30 # 每个关键词最多抓取的页数
