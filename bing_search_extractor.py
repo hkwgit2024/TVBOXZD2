@@ -4,7 +4,7 @@ import os
 import time
 import random
 import base64
-from urllib.parse import unquote, urlparse, parse_qs
+from urllib.parse import unquote, urlparse, parse_qs, urlunparse
 
 # 导入 Selenium 相关的库
 from selenium import webdriver
@@ -19,7 +19,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException, NoS
 
 def decode_bing_redirect_url(bing_redirect_link):
     """
-    从 Bing 的重定向链接中解码出真实的网址。
+    尝试从 Bing 的重定向链接中解码出真实的网址。
     """
     try:
         parsed_url = urlparse(bing_redirect_link)
@@ -37,15 +37,13 @@ def decode_bing_redirect_url(bing_redirect_link):
                 decoded_url = decoded_bytes.decode('utf-8')
 
                 final_url = unquote(decoded_url)
-                print(f"  解码重定向链接: {bing_redirect_link} -> {final_url}")
 
                 if (final_url.startswith('http://') or final_url.startswith('https://')) and \
                    "bing.com" not in final_url and "microsoft.com" not in final_url:
                     return final_url.strip()
     except Exception as e:
-        print(f"  解码重定向链接 '{bing_redirect_link}' 时发生错误: {e}")
+        pass
     return None
-
 
 def extract_urls_from_bing_html(html_content):
     """
@@ -56,52 +54,58 @@ def extract_urls_from_bing_html(html_content):
 
     # 策略 1: 查找主要搜索结果链接
     for algo_div in soup.find_all('li', class_='b_algo'):
-        link_tag = algo_div.find('a', href=True)  # 直接查找 <a> 标签
-        if link_tag:
-            href = link_tag['href']
-            if href and (href.startswith('http://') or href.startswith('https://')):
-                if "bing.com" not in href and "microsoft.com" not in href:
-                    extracted_urls.add(href.strip())
-            if "bing.com/ck/a?" in href and "u=" in href:
-                decoded_url = decode_bing_redirect_url(href)
-                if decoded_url:
-                    extracted_urls.add(decoded_url)
-
-    # 策略 2: 查找所有 <a> 标签中的链接
+        h2_tag = algo_div.find('h2')
+        if h2_tag:
+            link_tag = h2_tag.find('a', href=True)
+            if link_tag:
+                href = link_tag['href']
+                if href and (href.startswith('http://') or href.startswith('https://')):
+                    if "bing.com" not in href and "microsoft.com" not in href:
+                        extracted_urls.add(href.strip())
+                if "bing.com/ck/a?" in href and "u=" in href:
+                    decoded_url = decode_bing_redirect_url(href)
+                    if decoded_url:
+                        extracted_urls.add(decoded_url)
+    
+    # 策略 2: 查找广告或特殊结果区域的链接
     for link_tag in soup.find_all('a', href=True):
         href = link_tag['href']
         if href and (href.startswith('http://') or href.startswith('https://')):
             if "bing.com" not in href and "microsoft.com" not in href and not href.startswith("javascript:"):
                 extracted_urls.add(href.strip())
+        
         if "bing.com/ck/a?" in href and "u=" in href:
             decoded_url = decode_bing_redirect_url(href)
             if decoded_url:
                 extracted_urls.add(decoded_url)
 
+    # 旧的策略，保留但优先级降低
+    for div_tag in soup.find_all('div', class_='gs_cit'):
+        data_url = div_tag.get('data-url')
+        if data_url and (data_url.startswith('http://') or data_url.startswith('https://')):
+            extracted_urls.add(data_url.strip())
+
+    for siteurl_div in soup.find_all('div', class_='gs_cit_siteurl'):
+        url_text = siteurl_div.get_text()
+        if url_text and (url_text.startswith('http://') or url_text.startswith('https://')):
+            extracted_urls.add(url_text.strip())
+                
     return list(extracted_urls)
 
-
 def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3):
-    """
-    使用 Selenium 搜索 Bing 并提取 URL，保存到指定文件。
-    """
     all_extracted_urls = set()
     
-    # 配置 Chrome 选项
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument(
-        f"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        f"(KHTML, like Gecko) Chrome/{random.randint(80,120)}.0.4472.{random.randint(100,999)} Safari/537.36"
-    )
+    chrome_options.add_argument(f"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{random.randint(80,120)}.0.4472.{random.randint(100,999)} Safari/537.36")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--incognito")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option('useAutomationExtension', False)
-    chrome_options.add_argument('--log-level=3')
+    chrome_options.add_argument('--log-level=3') 
     chrome_options.add_argument('--silent')
 
     driver = None
@@ -112,7 +116,6 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
         service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         
-        # 隐藏 WebDriver 特征
         driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
             "source": """
                 Object.defineProperty(navigator, 'webdriver', {
@@ -130,43 +133,45 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
                 print(f"  正在抓取第 {current_page_num} 页...")
 
                 try:
-                    # 加载页面
+                    # 对于第一页直接get，对于后续页面通过点击或URL构建
                     if current_page_num == 1:
                         driver.get(search_url)
                     else:
-                        # 尝试点击“下一页”按钮
+                        # 对于后续页，我们需要找到并点击“下一页”链接
                         try:
+                            # 尝试查找 class="sb_pagN" 的链接
                             next_page_link = WebDriverWait(driver, 10).until(
-                                EC.element_to_be_clickable((
-                                    By.XPATH,
-                                    "//a[@aria-label='Next page'] | //a[contains(text(), '下一页')] | "
-                                    "//a[contains(text(), 'Next')] | //a[@class='sb_pagN']"
-                                ))
+                                EC.element_to_be_clickable((By.CSS_SELECTOR, "a.sb_pagN"))
                             )
                             next_page_link.click()
-                            print(f"  点击了 '下一页' 链接。")
+                            print(f"  点击了 '下一页' 按钮。")
                         except TimeoutException:
-                            print("  未找到有效的下一页链接，停止翻页。")
-                            break
+                            # 如果没有找到 sb_pagN，尝试找其他表示下一页的链接
+                            print("  未找到 class='sb_pagN' 的下一页链接。尝试查找其他翻页元素。")
+                            try:
+                                # 寻找文本为 "Next" 的链接，或带有特定aria-label的链接
+                                next_page_link = WebDriverWait(driver, 10).until(
+                                    EC.element_to_be_clickable((By.XPATH, "//a[@aria-label='Next page'] | //a[contains(text(), '下一页')] | //a[contains(text(), 'Next')]"))
+                                )
+                                next_page_link.click()
+                                print(f"  点击了其他 '下一页' 链接。")
+                            except TimeoutException:
+                                print("  未找到有效的下一页链接，停止翻页。")
+                                break # 找不到下一页链接，结束当前关键词的翻页
 
-                    # 等待搜索结果区域加载
+                    # 等待页面加载完成，可以等待搜索结果区域再次可见
                     WebDriverWait(driver, 30).until(
-                        EC.presence_of_element_located((By.ID, "b_results"))
+                        EC.presence_of_element_located((By.ID, "b_results")) 
                     )
+                    time.sleep(random.uniform(3, 8)) # 在获取 HTML 前再等待一段时间，确保JS加载完成
+                    
+                    current_url = driver.current_url
+                    print(f"  浏览器当前 URL for '{keyword}' (Page {current_page_num}): {current_url}")
 
-                    # 模拟滚动页面以加载动态内容
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                    time.sleep(random.uniform(3, 8))
-
-                    # 获取页面 HTML
-                    html_content = driver.page_source
-
-                    # 检查是否触发验证码
-                    if "captcha" in html_content.lower():
-                        print(f"  警告：'{keyword}' (Page {current_page_num}) 检测到验证码，停止抓取。")
-                        break
-
-                    # 保存第一页的截图和 HTML 以供调试
+                    # --- 修正：将 html_content 的获取移到条件判断之前 ---
+                    html_content = driver.page_source 
+                    
+                    # 截图和 HTML 保存可以调整，这里只保存第一页的
                     if current_page_num == 1:
                         screenshot_path = os.path.join(output_dir, f"bing_screenshot_{keyword}.png")
                         driver.save_screenshot(screenshot_path)
@@ -177,73 +182,74 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
                             f.write(html_content)
                         print(f"  已将 '{keyword}' 的第 1 页 HTML 保存到 {html_debug_file} 以供调试。")
 
-                    # 检查搜索结果区域是否存在
+
                     if "b_results" not in html_content:
-                        print(f"  警告：'{keyword}' (Page {current_page_num}) 的 HTML 内容似乎不包含预期的搜索结果区域 (b_results)。")
-
-                    # 提取 URL
+                        print(f"  警告：'{keyword}' (Page {current_page_num}) 的 HTML 内容似乎不包含预期的搜索结果区域 (b_results)。可能已被阻止或显示验证码。")
+                    
                     urls_from_page = extract_urls_from_bing_html(html_content)
-                    print(f"  从第 {current_page_num} 页提取到 {len(urls_from_page)} 个 URL：")
-                    for url in urls_from_page[:5]:  # 打印前 5 个 URL
-                        print(f"    - {url}")
-                    all_extracted_urls.update(urls_from_page)
+                    for url in urls_from_page:
+                        all_extracted_urls.add(url)
 
-                    # 随机延迟以降低反爬风险
-                    time.sleep(random.uniform(8, 15))
+                    time.sleep(random.uniform(5, 10)) # 每页抓取之间增加随机延迟
                     current_page_num += 1
 
                 except TimeoutException:
-                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时等待页面元素超时。")
-                    break
+                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时等待页面元素超时。可能加载缓慢或被阻止，停止翻页。")
+                    break # 遇到超时，停止当前关键词的翻页
                 except NoSuchElementException:
                     print(f"  无法找到下一页链接，'{keyword}' (Page {current_page_num}) 的翻页结束。")
-                    break
+                    break # 找不到下一页按钮，停止当前关键词的翻页
                 except WebDriverException as e:
-                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时发生 WebDriver 错误: {e}。")
+                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时发生 WebDriver 错误: {e}，停止翻页。")
                     break
                 except Exception as e:
-                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时发生未知错误: {e}。")
+                    print(f"  搜索 '{keyword}' (Page {current_page_num}) 时发生未知错误: {e}，停止翻页。")
                     break
 
     except WebDriverException as e:
         print(f"初始化 WebDriver 失败: {e}")
-        print("请检查 Chrome 浏览器和 ChromeDriver 的安装与兼容性。")
+        print("请检查 GitHub Actions 环境中 Chrome 浏览器和 ChromeDriver 的安装与兼容性。")
     finally:
         if driver:
             driver.quit()
 
-    # 处理和过滤 URL
+    # --- URL 格式化并排除特定域名 ---
     processed_urls = set()
     excluded_domains = {
         "en.wikipedia.org",
         "github.com",
-        # 可添加更多排除的域名
+        # 您可以在这里添加更多需要排除的域名，例如：
+        # "example.com",
+        # "another-site.org",
     }
 
     for url in all_extracted_urls:
         try:
             parsed = urlparse(url)
-            # 排除特定域名
+            # 只保留 scheme (http/https) 和 netloc (域名)
+            base_url = urlunparse((parsed.scheme, parsed.netloc, '', '', '', ''))
+            
+            # 检查域名是否在排除列表中
             if parsed.netloc not in excluded_domains:
-                processed_urls.add(url)  # 保留完整 URL
+                processed_urls.add(base_url)
             else:
                 print(f"排除 URL: {url} (域名: {parsed.netloc})")
         except Exception as e:
             print(f"处理 URL '{url}' 时发生错误: {e}")
-            processed_urls.add(url)  # 如果处理失败，保留原始 URL
+            processed_urls.add(url) # 如果处理失败，保留原始URL
 
-    # 保存去重后的 URL 到文件
+    # 保存去重后的（且已格式化和过滤后的）URL 到文件
     final_output_path = os.path.join(output_dir, output_file)
     with open(final_output_path, 'w', encoding='utf-8') as f:
         for url in sorted(list(processed_urls)):
             f.write(url + '\n')
     print(f"\n--- 抓取完成 ---")
-    print(f"已提取 {len(processed_urls)} 个不重复的网址，并保存到 {final_output_path}")
-
+    print(f"已提取 {len(processed_urls)} 个不重复的（格式化和过滤后）网址，并保存到 {final_output_path}")
 
 if __name__ == "__main__":
-    keywords_to_search = ["/api/v1/client/subscribe?token="]
+    keywords_to_search = [ "科学上网","云加速","稳定梯子","高速翻墙","VPN服务","全球节点","网络加速","数据保护","跨境上网","海外访问","地址防失联发布页","注册忘记","密码","简体中文","高速稳定","加速器"] 
     output_filename = "bing.txt"
-    max_pages = 30
+    # 设置每个关键词最多抓取的页数
+    max_pages = 30 
     
     bing_search_and_extract_urls(keywords_to_search, output_filename, max_pages_per_keyword=max_pages)
