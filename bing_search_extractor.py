@@ -242,7 +242,7 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
 
 
 if __name__ == "__main__":
-    keywords_to_search = ["subscribe?token=", "/s/"]
+    keywords_to_search = ["/api/v1/client/subscribe?token="]
     output_filename = "bing.txt"
     max_pages = 30
     
