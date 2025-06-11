@@ -247,7 +247,7 @@ def bing_search_and_extract_urls(keywords, output_file, max_pages_per_keyword=3)
     print(f"已提取 {len(processed_urls)} 个不重复的（格式化和过滤后）网址，并保存到 {final_output_path}")
 
 if __name__ == "__main__":
-    keywords_to_search = ["加速器", "subscribe?token=", "/s/"] # 更新了关键词列表，以匹配您日志中的
+    keywords_to_search = [ "subscribe?token=", "/s/"] 
     output_filename = "bing.txt"
     # 设置每个关键词最多抓取的页数
     max_pages = 30 
