@@ -732,7 +732,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
             processed_files.add(file_name)
 
     new_channels = set()
-    for file_path in files_to_process):
+    for file_path in files_to_process:
         try:
             with open(file_path, "r", encoding="utf-8") as file:
                 lines = file.readlines()
