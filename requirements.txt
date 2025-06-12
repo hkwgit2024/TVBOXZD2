@@ -5,4 +5,9 @@ tenacity==9.0.0
 psutil==6.0.0
 beautifulsoup4
 selenium
+fuzzywuzzy
+python-Levenshtein
+sentence-transformers
+scikit-learn
+joblib
 webdriver_manager # 用于自动下载 ChromeDriver
