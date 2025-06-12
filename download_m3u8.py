@@ -4,12 +4,23 @@ import aiohttp
 import logging
 import re
 import json
+import yaml
 from urllib.parse import urlparse, urljoin
 from pathlib import Path
 from functools import wraps
 from datetime import datetime, timedelta
 from typing import List, Tuple, Dict, Optional
-from fuzzywuzzy import fuzz  # 模糊匹配
+from fuzzywuzzy import fuzz
+from bs4 import BeautifulSoup
+from tenacity import retry, stop_after_attempt, wait_fixed
+try:
+    from sentence_transformers import SentenceTransformer
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.linear_model import LogisticRegression
+    import joblib
+    ML_AVAILABLE = True
+except ImportError:
+    ML_AVAILABLE = False
 
 # 配置日志
 logging.basicConfig(
@@ -26,12 +37,15 @@ class Config:
     OUTPUT_DIR = Path('data')
     OUTPUT_FILE = OUTPUT_DIR / 'valid_urls.txt'
     ERROR_LOG = OUTPUT_DIR / 'error_log.txt'
-    CATEGORIES_FILE = Path('categories.json')
+    CATEGORIES_FILE = Path('categories.yaml')  # 改为 YAML
     CATEGORY_CACHE = Path('data/category_cache.json')
+    MODEL_FILE = Path('classifier_model.pkl')
+    TRAINING_DATA = Path('training_data.json')
     MAX_URLS = 10000
     MAX_CHANNELS = 50
     SEMAPHORE_LIMIT = 10
     TIMEOUT = aiohttp.ClientTimeout(total=10, connect=3)
+    USE_ML = os.getenv('USE_ML', 'false').lower() == 'true'
 
 # 自定义异常
 class TokenInvalidError(Exception):
@@ -78,7 +92,8 @@ async def validate_token(session: aiohttp.ClientSession) -> bool:
             return True
         raise TokenInvalidError(f"Invalid token (status {response.status})")
 
-# 获取 URLs
+# 获取 URLs（支持 HTML 解析）
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 @handle_exceptions
 async def fetch_urls(session: aiohttp.ClientSession) -> List[str]:
     if not Config.REPO_URL:
@@ -95,7 +110,13 @@ async def fetch_urls(session: aiohttp.ClientSession) -> List[str]:
     headers = {'Authorization': f'token {Config.GITHUB_TOKEN}'}
     async with session.get(raw_url, headers=headers) as response:
         response.raise_for_status()
-        urls = [line.strip() for line in (await response.text()).splitlines() if line.strip()]
+        content = await response.text()
+        # 如果是 HTML，尝试解析
+        if raw_url.endswith('.html'):
+            soup = BeautifulSoup(content, 'html.parser')
+            urls = [a['href'] for a in soup.find_all('a', href=True) if a['href'].endswith(('.m3u', '.m3u8'))]
+        else:
+            urls = [line.strip() for line in content.splitlines() if line.strip()]
         logger.info(f"Fetched {len(urls)} URLs")
         return urls
 
@@ -165,6 +186,7 @@ def parse_m3u_content(content: str, playlist_index: int, base_url: str = None, p
     return channels, m3u_name
 
 # 获取 M3U 播放列表
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 @handle_exceptions
 async def fetch_m3u_playlist(session: aiohttp.ClientSession, url: str, index: int) -> List[Tuple[str, str, str]]:
     headers = {'Authorization': f'token {Config.GITHUB_TOKEN}'} if 'github.com' in url else {}
@@ -180,6 +202,7 @@ async def fetch_m3u_playlist(session: aiohttp.ClientSession, url: str, index: in
         return channels, m3u_name
 
 # 验证 M3U8 URL
+@retry(stop=stop_after_attempt(2), wait=wait_fixed(1))
 @handle_exceptions
 async def validate_m3u8_url(session: aiohttp.ClientSession, url: str) -> bool:
     if url.startswith('udp://') or url.endswith('.ts'):
@@ -191,7 +214,7 @@ async def validate_m3u8_url(session: aiohttp.ClientSession, url: str) -> bool:
         log_error(f"Invalid URL (status {response.status}): {url}")
         return False
 
-# 加载分类规则
+# 加载分类规则（支持 YAML）
 def load_categories() -> Dict[str, Dict[str, List[str]]]:
     default_categories = {
         '综合': {
@@ -227,7 +250,7 @@ def load_categories() -> Dict[str, Dict[str, List[str]]]:
     }
     if Config.CATEGORIES_FILE.exists():
         with Config.CATEGORIES_FILE.open('r', encoding='utf-8') as f:
-            return json.load(f)
+            return yaml.safe_load(f)
     return default_categories
 
 # 加载分类缓存
@@ -243,6 +266,15 @@ def save_category_cache(cache: Dict[str, str]):
     with Config.CATEGORY_CACHE.open('w', encoding='utf-8') as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
 
+# ML 分类（可选）
+def load_ml_classifier():
+    if not ML_AVAILABLE or not Config.MODEL_FILE.exists():
+        logger.warning("ML classifier not available or model file missing")
+        return None, None
+    model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+    classifier = joblib.load(Config.MODEL_FILE)
+    return model, classifier
+
 # 分类频道
 def classify_channel(channel_name: str, group_title: Optional[str], url: Optional[str], playlist_name: Optional[str] = None) -> str:
     cache = load_category_cache()
@@ -250,6 +282,19 @@ def classify_channel(channel_name: str, group_title: Optional[str], url: Optiona
     if cache_key in cache:
         return cache[cache_key]
 
+    # ML 分类（如果启用）
+    if Config.USE_ML and ML_AVAILABLE:
+        model, classifier = load_ml_classifier()
+        if model and classifier:
+            text = f"{channel_name} {group_title or ''} {url or ''} {playlist_name or ''}".strip()
+            embedding = model.encode([text])[0]
+            category = classifier.predict([embedding])[0]
+            cache[cache_key] = category
+            save_category_cache(cache)
+            logger.debug(f"ML classified {channel_name} as {category}")
+            return category
+
+    # 规则分类
     categories = load_categories()
     translations = {
         'Общие': '综合', 'Новостные': '新闻', 'Спорт': '体育', 'Фильмы': '电影',
@@ -278,7 +323,7 @@ def classify_channel(channel_name: str, group_title: Optional[str], url: Optiona
                 fuzz.partial_ratio(keyword, url_lower),
                 fuzz.partial_ratio(keyword, playlist_lower)
             )
-            if score > 80:  # 模糊匹配阈值
+            if score > 80:
                 if score > best_match[1]:
                     best_match = (category, score)
         # 正则匹配
@@ -320,8 +365,7 @@ async def main():
         semaphore = asyncio.Semaphore(Config.SEMAPHORE_LIMIT)
         async def fetch_with_semaphore(url: str, index: int):
             async with semaphore:
-                result = await fetch_m3u_playlist(session, url, index)
-                return result
+                return await fetch_m3u_playlist(session, url, index)
 
         tasks = [fetch_with_semaphore(url, i) for i, url in enumerate(urls[:Config.MAX_URLS])]
         for i, result in enumerate(await asyncio.gather(*tasks, return_exceptions=True)):
@@ -335,7 +379,7 @@ async def main():
             unique_channels = []
             seen = set()
             for name, url, group, m3u_name in all_channels:
-                key = (name.lower(), url)
+                key = (name lower(), url)
                 if key not in seen:
                     seen.add(key)
                     unique_channels.append((name, url, group, m3u_name))
