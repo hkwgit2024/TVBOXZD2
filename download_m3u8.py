@@ -9,6 +9,7 @@ from pathlib import Path
 from functools import wraps
 from datetime import datetime, timedelta
 from typing import List, Tuple, Dict, Optional
+from fuzzywuzzy import fuzz  # 模糊匹配
 
 # 配置日志
 logging.basicConfig(
@@ -25,11 +26,12 @@ class Config:
     OUTPUT_DIR = Path('data')
     OUTPUT_FILE = OUTPUT_DIR / 'valid_urls.txt'
     ERROR_LOG = OUTPUT_DIR / 'error_log.txt'
+    CATEGORIES_FILE = Path('categories.json')
+    CATEGORY_CACHE = Path('data/category_cache.json')
     MAX_URLS = 10000
     MAX_CHANNELS = 50
     SEMAPHORE_LIMIT = 10
     TIMEOUT = aiohttp.ClientTimeout(total=10, connect=3)
-    CATEGORIES_FILE = Path('categories.json')
 
 # 自定义异常
 class TokenInvalidError(Exception):
@@ -170,12 +172,12 @@ async def fetch_m3u_playlist(session: aiohttp.ClientSession, url: str, index: in
         response.raise_for_status()
         base_url = url.rsplit('/', 1)[0] + '/'
         content = await response.text()
-        channels, _ = parse_m3u_content(content, index, base_url, url.split('/')[-1])
+        channels, m3u_name = parse_m3u_content(content, index, base_url, url.split('/')[-1])
         if key_match := re.search(r'#EXT-X-KEY:METHOD=AES-128,URI="([^"]*)"', content):
             logger.info(f"Found encryption key: {key_match.group(1)}")
             channels = [(name + ' [Unverified]', url, group) for name, url, group in channels]
         logger.info(f"Fetched {len(channels)} channels from {url}")
-        return channels
+        return channels, m3u_name
 
 # 验证 M3U8 URL
 @handle_exceptions
@@ -190,34 +192,118 @@ async def validate_m3u8_url(session: aiohttp.ClientSession, url: str) -> bool:
         return False
 
 # 加载分类规则
-def load_categories() -> Dict[str, List[str]]:
+def load_categories() -> Dict[str, Dict[str, List[str]]]:
+    default_categories = {
+        '综合': {
+            'keywords': ['综合', 'cctv-1', 'cctv-2', 'general', 'первый канал', 'россия'],
+            'regex': [r'cctv-\d+$', r'general.*hd'],
+            'url_patterns': [r'general\.iptv\.com'],
+            'filename_hints': ['general', 'cctv']
+        },
+        '体育': {
+            'keywords': ['sport', 'espn', 'cctv-5', 'nba'],
+            'regex': [r'cctv-5\+', r'sports?.*\d'],
+            'url_patterns': [r'sport\.stream\.tv'],
+            'filename_hints': ['sport', 'sports']
+        },
+        '电影': {
+            'keywords': ['movie', 'cinema', 'cctv-6', 'film'],
+            'regex': [r'cinema.*hd'],
+            'url_patterns': [],
+            'filename_hints': ['movie', 'film']
+        },
+        '新闻': {
+            'keywords': ['news', 'cnn', 'bbc', 'cctv-13', 'россия 24'],
+            'regex': [],
+            'url_patterns': [r'news\.live'],
+            'filename_hints': ['news']
+        },
+        '其他频道': {
+            'keywords': [],
+            'regex': [],
+            'url_patterns': [],
+            'filename_hints': []
+        }
+    }
     if Config.CATEGORIES_FILE.exists():
         with Config.CATEGORIES_FILE.open('r', encoding='utf-8') as f:
             return json.load(f)
-    return {
-        '综合': ['综合', 'cctv-1', 'general', 'первый канал'],
-        '体育': ['sport', 'espn', 'cctv-5'],
-        '电影': ['movie', 'cinema', 'cctv-6'],
-        '新闻': ['news', 'cnn', 'cctv-13', 'россия 24'],
-        '少儿': ['kids', 'cctv-14'],
-        '科教': ['science', 'cctv-10'],
-        '其他频道': []
-    }
+    return default_categories
+
+# 加载分类缓存
+def load_category_cache() -> Dict[str, str]:
+    if Config.CATEGORY_CACHE.exists():
+        with Config.CATEGORY_CACHE.open('r', encoding='utf-8') as f:
+            return json.load(f)
+    return {}
+
+# 保存分类缓存
+def save_category_cache(cache: Dict[str, str]):
+    Config.CATEGORY_CACHE.parent.mkdir(parents=True, exist_ok=True)
+    with Config.CATEGORY_CACHE.open('w', encoding='utf-8') as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
 
 # 分类频道
-def classify_channel(channel_name: str, group_title: Optional[str], url: Optional[str]) -> str:
+def classify_channel(channel_name: str, group_title: Optional[str], url: Optional[str], playlist_name: Optional[str] = None) -> str:
+    cache = load_category_cache()
+    cache_key = f"{channel_name}|{group_title or ''}|{url or ''}|{playlist_name or ''}"
+    if cache_key in cache:
+        return cache[cache_key]
+
     categories = load_categories()
     translations = {
-        'Общие': '综合', 'Новостные': '新闻', 'Спорт': '体育', 'Фильмы': '电影'
+        'Общие': '综合', 'Новостные': '新闻', 'Спорт': '体育', 'Фильмы': '电影',
+        'Музыка': '音乐', 'Детские': '少儿', 'Документальные': '纪录'
     }
-    if group_title and (translated := translations.get(group_title, group_title)) in categories:
-        return translated
     name_lower = channel_name.lower()
     url_lower = url.lower() if url else ''
-    for category, keywords in categories.items():
-        if any(keyword in name_lower or keyword in url_lower for keyword in keywords):
-            return category
-    return '其他频道'
+    playlist_lower = playlist_name.lower() if playlist_name else ''
+    group_title_translated = translations.get(group_title, group_title) if group_title else None
+
+    # 优先匹配 group-title
+    if group_title_translated and group_title_translated in categories:
+        cache[cache_key] = group_title_translated
+        save_category_cache(cache)
+        return group_title_translated
+
+    # 模糊匹配和正则匹配
+    best_match = ('其他频道', 0)
+    for category, rules in categories.items():
+        if category == '其他频道':
+            continue
+        # 关键词模糊匹配
+        for keyword in rules['keywords']:
+            score = max(
+                fuzz.partial_ratio(keyword, name_lower),
+                fuzz.partial_ratio(keyword, url_lower),
+                fuzz.partial_ratio(keyword, playlist_lower)
+            )
+            if score > 80:  # 模糊匹配阈值
+                if score > best_match[1]:
+                    best_match = (category, score)
+        # 正则匹配
+        for regex in rules['regex']:
+            if (re.search(regex, name_lower) or
+                (url_lower and re.search(regex, url_lower)) or
+                (playlist_lower and re.search(regex, playlist_lower))):
+                best_match = (category, 100)
+                break
+        # URL 模式匹配
+        for pattern in rules['url_patterns']:
+            if url_lower and re.search(pattern, url_lower):
+                best_match = (category, 100)
+                break
+        # 文件名提示
+        for hint in rules['filename_hints']:
+            if playlist_lower and hint in playlist_lower:
+                best_match = (category, 90)
+                break
+
+    result = best_match[0]
+    cache[cache_key] = result
+    save_category_cache(cache)
+    logger.debug(f"Classified {channel_name} as {result}")
+    return result
 
 # 主逻辑
 async def main():
@@ -234,36 +320,38 @@ async def main():
         semaphore = asyncio.Semaphore(Config.SEMAPHORE_LIMIT)
         async def fetch_with_semaphore(url: str, index: int):
             async with semaphore:
-                return await fetch_m3u_playlist(session, url, index)
+                result = await fetch_m3u_playlist(session, url, index)
+                return result
 
         tasks = [fetch_with_semaphore(url, i) for i, url in enumerate(urls[:Config.MAX_URLS])]
-        for i, channels in enumerate(await asyncio.gather(*tasks, return_exceptions=True)):
-            if not isinstance(channels, Exception):
-                all_channels.extend(channels)
+        for i, result in enumerate(await asyncio.gather(*tasks, return_exceptions=True)):
+            if not isinstance(result, Exception):
+                channels, m3u_name = result
+                all_channels.extend((name, url, group, m3u_name) for name, url, group in channels)
                 logger.info(f"Processed {i + 1}/{len(tasks)} URLs")
 
         if all_channels:
             # 去重
             unique_channels = []
             seen = set()
-            for name, url, group in all_channels:
+            for name, url, group, m3u_name in all_channels:
                 key = (name.lower(), url)
                 if key not in seen:
                     seen.add(key)
-                    unique_channels.append((name, url, group))
+                    unique_channels.append((name, url, group, m3u_name))
 
             # 验证并分类
             classified = {}
             valid_count = 0
-            async def validate_with_semaphore(name: str, url: str, group: str):
+            async def validate_with_semaphore(name: str, url: str, group: str, m3u_name: str):
                 async with semaphore:
                     if await validate_m3u8_url(session, url):
-                        category = classify_channel(name, group, url)
+                        category = classify_channel(name, group, url, m3u_name)
                         classified.setdefault(category, []).append((name, url))
                         return True
                     return False
 
-            tasks = [validate_with_semaphore(name, url, group) for name, url, group in unique_channels]
+            tasks = [validate_with_semaphore(name, url, group, m3u_name) for name, url, group, m3u_name in unique_channels]
             results = await asyncio.gather(*tasks, return_exceptions=True)
             valid_count = sum(1 for r in results if r is True)
 
