@@ -3,7 +3,7 @@ import re
 import subprocess
 import socket
 import time
-from datetime import datetime
+from datetime import datetime, timedelta # Import timedelta
 import logging
 import requests
 from urllib.parse import urlparse
@@ -140,6 +140,9 @@ URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
 CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
 ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
 STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
+# New config parameter for URL state expiration (e.g., 90 days)
+URL_STATE_EXPIRATION_DAYS = CONFIG.get('url_state_expiration_days', 90) 
+
 
 # 配置 requests 会话
 session = requests.Session()
@@ -252,15 +255,34 @@ def clean_url_params(url):
 
 # --- URL 状态管理函数 ---
 def load_url_states_remote():
-    """从远程加载 URL 状态 JSON 文件。"""
+    """从远程加载 URL 状态 JSON 文件，并清理过期状态。"""
     content = fetch_from_github(URL_STATES_PATH_IN_REPO)
+    url_states = {}
     if content:
         try:
-            return json.loads(content)
+            url_states = json.loads(content)
         except json.JSONDecodeError as e:
             logging.error(f"解码远程 '{URL_STATES_PATH_IN_REPO}' 中的 JSON 发生错误：{e}。将从空状态开始。")
             return {}
-    return {}
+    
+    # Clean up expired states
+    current_time = datetime.now()
+    updated_url_states = {}
+    for url, state in url_states.items():
+        if 'last_checked' in state:
+            try:
+                last_checked_datetime = datetime.fromisoformat(state['last_checked'])
+                if (current_time - last_checked_datetime).days < URL_STATE_EXPIRATION_DAYS:
+                    updated_url_states[url] = state
+                else:
+                    logging.debug(f"移除过期 URL 状态：{url} (上次检查于 {state['last_checked']})")
+            except ValueError:
+                logging.warning(f"无法解析 URL {url} 的 last_checked 时间戳：{state['last_checked']}，保留其状态。")
+                updated_url_states[url] = state
+        else: # If no last_checked, keep it for now or decide based on other criteria
+            updated_url_states[url] = state
+            
+    return updated_url_states
 
 def save_url_states_remote(url_states):
     """保存 URL 状态到远程 JSON 文件。"""
@@ -453,8 +475,8 @@ def check_rtmp_url(url, timeout):
         return False
     try:
         result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, timeout=timeout)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
     except subprocess.TimeoutExpired:
         logging.debug(f"RTMP URL {url} 检查超时")
@@ -671,23 +693,33 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
             if not lines:
                 continue
 
-            header = lines[0].strip()
-            if '#genre#' in header:
-                final_output_lines.append(header + '\n')
-                for line in lines[1:]:
-                    line = line.strip()
-                    if line and ',' in line:
-                        name, url = line.split(',', 1)
-                        new_channels.add((name.strip(), url.strip()))
+            # Skip header lines if they exist, or handle them based on your merge logic.
+            # Here, I'm assuming the first line might be a category header like "Category,#genre#"
+            # and subsequent lines are channel data.
+            # If the category header should only appear once at the top of the merged file,
+            # this logic might need adjustment. For now, it will append if existing_channels is empty.
+            if '#genre#' in lines[0].strip():
+                # If you want to include category headers for each merged section in the final output,
+                # you can add it here. Otherwise, ensure it's handled only once at the top.
+                pass 
+            
+            for line in lines: # Iterate through all lines to extract channels
+                line = line.strip()
+                if line and ',' in line and '#genre#' not in line: # Exclude #genre# lines from being treated as channels
+                    name, url = line.split(',', 1)
+                    new_channels.add((name.strip(), url.strip()))
 
     all_channels = existing_channels | new_channels
-    for name, url in all_channels:
-        if (name, url) not in existing_channels:
-            final_output_lines.append(f"{name},{url}\n")
+    
+    # Sort all_channels before writing to ensure consistent output
+    sorted_all_channels = sorted(list(all_channels), key=lambda x: x[0])
 
+    # Rewrite the entire file instead of appending, to ensure order and cleanliness
     try:
-        with open(output_file_name, "a", encoding='utf-8') as iptv_list_file:
-            iptv_list_file.writelines(final_output_lines)
+        with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
+            iptv_list_file.writelines(generate_update_time_header()) # Add header again
+            for name, url in sorted_all_channels:
+                iptv_list_file.write(f"{name},{url}\n")
         logging.warning(f"\n所有区域频道列表文件已合并并追加。输出已保存到：{output_file_name}")
     except Exception as e:
         logging.error(f"追加写入文件 '{output_file_name}' 发生错误：{e}")
@@ -854,7 +886,7 @@ def main():
         return
 
     # 步骤 3: 加载历史 URL 状态
-    url_states = load_url_states_remote()
+    url_states = load_url_states_remote() # This now handles expiration
     logging.warning(f"已加载 {len(url_states)} 个历史 URL 状态。")
 
     # 步骤 4: 从所有源提取频道，并更新 URL 内容状态
@@ -872,7 +904,7 @@ def main():
 
     # 步骤 5: 保存更新后的 URL 内容状态
     save_url_states_remote(url_states)
-    logging.warning(f"\n从所有源提取了 {len(all_extracted_channels)} 个原始频道。")
+    logging.warning("频道检测状态已保存到远程。")
 
     # 步骤 6: 过滤和清理频道
     filtered_channels = []
@@ -900,7 +932,19 @@ def main():
 
     # 步骤 9: 将有效频道追加到临时文件
     iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
-    write_sorted_channels_to_file(iptv_speed_file_path, valid_channels_with_speed)
+    # Changed to 'w' mode to overwrite and then re-add header for consistent formatting
+    # The previous logic relied on write_sorted_channels_to_file which appends and deduplicates,
+    # but the final merge_local_channel_files function already handles deduplication and sorting for the final output.
+    # For intermediate file 'iptv_speed.txt', it's better to ensure it's clean for each run.
+    try:
+        with open(iptv_speed_file_path, 'w', encoding='utf-8') as file:
+            # You might choose to add a header here if needed for debugging this specific file
+            for elapsed_time, line_content in valid_channels_with_speed:
+                file.write(f"{line_content}\n") # Just write the channel line, speed is for sorting/info
+        logging.debug(f"有效频道列表已写入到 {iptv_speed_file_path}")
+    except Exception as e:
+        logging.error(f"写入文件 '{iptv_speed_file_path}' 发生错误：{e}")
+
 
     # 步骤 10: 准备本地频道目录和模板
     local_channels_directory = os.path.join(os.getcwd(), '地方频道')
@@ -939,17 +983,19 @@ def main():
             name, url = channel.split(',', 1)
             new_channels.add((name.strip(), url.strip()))
         
-        all_channels = existing_channels | new_channels
+        all_channels_for_template = existing_channels | new_channels
+        
+        # Sort channels for this specific template file
+        sorted_template_channels = sorted(list(all_channels_for_template), key=lambda x: x[0])
+
         try:
-            with open(output_file_path, 'a', encoding='utf-8') as f:
-                if not existing_channels:
-                    f.write(f"{template_name},#genre#\n")
-                for name, url in all_channels:
-                    if (name, url) not in existing_channels:
-                        f.write(f"{name},{url}\n")
-            logging.warning(f"频道列表已追加到：'{template_name}_iptv.txt'，新增 {len(all_channels - existing_channels)} 个频道。")
+            with open(output_file_path, 'w', encoding='utf-8') as f: # Changed to 'w' mode to overwrite and sort
+                f.write(f"{template_name},#genre#\n") # Always write the category header
+                for name, url in sorted_template_channels:
+                    f.write(f"{name},{url}\n")
+            logging.warning(f"频道列表已写入到：'{template_name}_iptv.txt'，总计 {len(all_channels_for_template)} 个频道。")
         except Exception as e:
-            logging.error(f"追加写入文件 '{output_file_path}' 发生错误：{e}")
+            logging.error(f"写入文件 '{output_file_path}' 发生错误：{e}")
 
     # 步骤 12: 合并所有分类的频道文件，生成最终 IPTV 列表
     final_iptv_list_output_file = "iptv_list.txt"
@@ -969,28 +1015,35 @@ def main():
     for channel_line in channels_for_matching:
         channel_name = channel_line.split(',', 1)[0].strip()
         if channel_name not in all_template_channel_names:
-            unmatched_channels_list.append(channel_line)
+            unmatched_channels_list.append(channel_name) # Store just the name
 
     unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
-    existing_unmatched = read_existing_channels(unmatched_output_file_path)
-    new_unmatched = set()
-    for channel in unmatched_channels_list:
-        name, url = channel.split(',', 1)
-        new_unmatched.add((name.strip(), url.strip()))
     
-    all_unmatched = existing_unmatched | new_unmatched
+    # Read existing unmatched names (not name,url pairs)
+    existing_unmatched_names = set()
     try:
-        with open(unmatched_output_file_path, 'a', encoding='utf-8') as f:
-            for name, url in all_unmatched:
-                if (name, url) not in existing_unmatched:
-                    f.write(f"{name}\n")
-        logging.warning(f"\n已追加不匹配但已检测到的频道列表到：'{unmatched_output_file_path}'，新增 {len(all_unmatched - existing_unmatched)} 个频道。")
+        with open(unmatched_output_file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                existing_unmatched_names.add(line.strip())
+    except FileNotFoundError:
+        pass # File might not exist yet
+
+    new_unmatched_names = set(unmatched_channels_list) # Convert list to set for easy union
+
+    all_unmatched_names = existing_unmatched_names | new_unmatched_names
+    
+    # Sort and write to file
+    try:
+        with open(unmatched_output_file_path, 'w', encoding='utf-8') as f: # Overwrite to ensure sorted and unique
+            for name in sorted(list(all_unmatched_names)):
+                f.write(f"{name}\n")
+        logging.warning(f"\n已将不匹配但已检测到的频道名称列表写入到：'{unmatched_output_file_path}'，总计 {len(all_unmatched_names)} 个名称。")
     except Exception as e:
-        logging.error(f"追加写入文件 '{unmatched_output_file_path}' 发生错误：{e}")
+        logging.error(f"写入文件 '{unmatched_output_file_path}' 发生错误：{e}")
 
     # 步骤 15: 清理临时文件
     try:
-        if os.path.exists('iptv.txt'):
+        if os.path.exists('iptv.txt'): # This file is not generated in the current script, might be legacy
             os.remove('iptv.txt')
             logging.debug(f"已删除临时文件 'iptv.txt'。")
         if os.path.exists('iptv_speed.txt'):
