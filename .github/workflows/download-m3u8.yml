@@ -3,12 +3,12 @@ name: Download and Validate M3U8 URLs
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 午夜运行
+    - cron: '0 0 * * *'
 
 jobs:
   download-and-validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # 缩短超时时间
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10' # 与脚本一致
+        python-version: '3.10'
 
     - name: Cache pip dependencies
       uses: actions/cache@v4
@@ -29,13 +29,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        [ -f requirements.txt ] && pip install -r requirements.txt || pip install aiohttp python-dotenv
+        [ -f requirements.txt ] && pip install -r requirements.txt || pip install aiohttp fuzzywuzzy python-Levenshtein
 
     - name: Cache data directory
       uses: actions/cache@v4
       with:
         path: data/
-        key: ${{ runner.os }}-data-${{ hashFiles('data/**') }} # 用文件内容哈希
+        key: ${{ runner.os }}-data-${{ hashFiles('data/**') }}
         restore-keys: ${{ runner.os }}-data-
 
     - name: Run script
@@ -43,7 +43,7 @@ jobs:
         BOT: ${{ secrets.BOT }}
         REPO_URL: ${{ secrets.REPO_URL }}
       run: |
-        python m3u_parser.py 2>&1 | tee script_output.log
+        time python m3u_parser.py 2>&1 | tee script_output.log
 
     - name: Upload logs
       if: always()
@@ -74,7 +74,7 @@ jobs:
           echo "No changes to commit"
         else
           git pull origin main --rebase
-          git commit -m "Update M3U8 results [skip ci]"
+          git commit -m "Update M3U8 results and category cache [skip ci]"
           git push origin main
         fi
       env:
@@ -96,12 +96,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Notify on success (optional)
+    - name: Notify on success
       if: success()
       run: |
         VALID_COUNT=$(grep -c "Valid URL" script_output.log || echo 0)
         echo "Workflow succeeded with $VALID_COUNT valid URLs"
-        # 可选：发送到 Slack 或 Telegram
-        # curl -X POST -H 'Content-type: application/json' \
-        #   --data "{\"text\":\"Workflow succeeded with $VALID_COUNT valid URLs\"}" \
-        #   ${{ secrets.SLACK_WEBHOOK_URL }}
