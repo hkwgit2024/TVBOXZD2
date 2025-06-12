@@ -1033,7 +1033,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token, keyword_stats
     if new_urls_count > 0:
         updated_urls = sorted(existing_urls)
         write_array_to(updated_urls(updated_file_path_remote, updated_urls, "通过 GitHub 发现更新 urls.txt"))
-        logging.warning(f"成功添加 {new_urls_count} 个新 URL 到 {urls_file_path_remote}}")
+        logging.warning(f"成功添加 {new_urls_count} 个新 URL 到 {urls_file_path_remote}")
         else:
             logging.warning("未发现新 URL。")
 
