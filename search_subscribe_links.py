@@ -2,30 +2,35 @@ import os
 import requests
 import json
 import time
-from urllib.parse import urlparse, quote
+from urllib.parse import urlparse
 from datetime import datetime
 import logging
 
+# 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# GitHub API 配置
 GITHUB_API_URL = "https://api.github.com/search/code"
 TOKEN = os.getenv("BOT_TOKEN")
 HEADERS = {
     "Authorization": f"token {TOKEN}",
-    "Accept": "application/vnd.github.v3.text-match+json"
+    "Accept": "application/vnd.github.v3.text-match+json"  # 启用text-match以获取代码片段
 }
-SEARCH_QUERY = quote("/api/v1/client/subscribe?token=")
+SEARCH_QUERY = "/api/v1/client/subscribe?token="  # 恢复原始查询
 
+# 数据存储目录
 DATA_DIR = "data"
 OUTPUT_FILE = os.path.join(DATA_DIR, "subscribe_links.txt")
 
 def ensure_data_dir():
+    """确保数据目录存在"""
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
         logger.info(f"Created directory: {DATA_DIR}")
 
 def test_url_connectivity(url):
+    """测试URL连通性"""
     try:
         response = requests.head(url, timeout=5, allow_redirects=True)
         return response.status_code == 200
@@ -34,26 +39,27 @@ def test_url_connectivity(url):
         return False
 
 def get_domain(url):
+    """提取URL的域名"""
     try:
         return urlparse(url).netloc
     except:
         return ""
 
 def search_github():
+    """搜索GitHub中的订阅链接"""
     if not TOKEN:
         logger.error("BOT_TOKEN is not set in environment variables")
         return set()
         
     unique_urls = set()
     page = 1
-    per_page = 30
+    per_page = 30  # 减少每页结果以降低速率限制影响
 
     while True:
         params = {
             "q": SEARCH_QUERY,
             "per_page": per_page,
-            "page": page,
-            "sort": "indexed"  # 按索引排序
+            "page": page
         }
         
         try:
@@ -62,20 +68,19 @@ def search_github():
             response.raise_for_status()
             data = response.json()
             items = data.get("items", [])
-            logger.info(f"API response items count: {len(items)}, total_count: {data.get('total_count', 0)}")
+            logger.info(f"API response items count: {len(items)}")
             
             if not items:
                 logger.info("No more results found, stopping search")
                 break
                 
             for item in items:
+                # 将html_url转换为raw URL
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+                # 检查text_matches中的代码片段
                 text_matches = item.get("text_matches", [])
-                logger.info(f"Text matches for {raw_url}: {json.dumps(text_matches, indent=2)}")
-                # 检查是否包含目标字符串（放宽匹配）
                 for match in text_matches:
-                    fragment = match.get("fragment", "")
-                    if "/api/v1/client/subscribe?token=" in fragment or "subscribe?token=" in fragment:
+                    if SEARCH_QUERY in match.get("fragment", ""):
                         unique_urls.add(raw_url)
                         logger.info(f"Added URL: {raw_url}")
                         break
@@ -86,10 +91,10 @@ def search_github():
                 remaining = int(response.headers["X-RateLimit-Remaining"])
                 if remaining < 20:
                     logger.warning(f"Approaching rate limit ({remaining} remaining), sleeping...")
-                    time.sleep(60)  # 增加休眠时间
+                    time.sleep(30)
                     
             page += 1
-            time.sleep(5)
+            time.sleep(2)  # 增加请求间隔
             
         except requests.RequestException as e:
             logger.error(f"Error during GitHub API request: {e}, Response: {response.text}")
@@ -98,6 +103,7 @@ def search_github():
     return unique_urls
 
 def save_urls(urls):
+    """保存URL到文件，并测试连通性"""
     ensure_data_dir()
     valid_urls = []
     
@@ -113,14 +119,18 @@ def save_urls(urls):
     return valid_urls
 
 def main():
+    """主函数"""
     logger.info("Starting GitHub API search for subscribe links")
     
+    # 搜索链接
     urls = search_github()
     logger.info(f"Found {len(urls)} unique URLs")
     
+    # 保存并测试连通性
     valid_urls = save_urls(urls)
     logger.info(f"Saved {len(valid_urls)} valid URLs to {OUTPUT_FILE}")
     
+    # 按域名统计
     domains = {}
     for url in valid_urls:
         domain = get_domain(url)
