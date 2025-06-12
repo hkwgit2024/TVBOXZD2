@@ -11,6 +11,11 @@ from functools import wraps
 from datetime import datetime
 from typing import List, Tuple, Dict, Optional, Any
 
+# 确保 tenacity, beautifulsoup4, fuzzywuzzy 及其相关依赖在文件顶部正确导入
+from tenacity import retry, stop_after_attempt, wait_fixed
+from bs4 import BeautifulSoup
+from fuzzywuzzy import fuzz
+
 # 尝试导入机器学习相关的库，如果失败则禁用ML功能
 try:
     from sentence_transformers import SentenceTransformer
@@ -20,6 +25,7 @@ try:
 except ImportError:
     ML_AVAILABLE = False
     print("Warning: Machine Learning libraries (sentence-transformers, scikit-learn, joblib) not found. ML classification will be disabled.")
+
 
 # --- 配置日志 ---
 logging.basicConfig(
@@ -158,6 +164,10 @@ async def fetch_urls(session: aiohttp.ClientSession) -> List[str]:
             # 如果是 HTML 内容，尝试解析其中的 M3U/M3U8 链接
             content_type = response.headers.get('Content-Type', '')
             if raw_url.endswith('.html') or 'text/html' in content_type:
+                # 检查 BeautifulSoup 是否可用
+                if 'BeautifulSoup' not in globals(): # 检查 BeautifulSoup 是否已导入
+                    logger.error("BeautifulSoup is not installed. Cannot parse HTML content for M3U/M3U8 links. Please install it (pip install beautifulsoup4).")
+                    return []
                 soup = BeautifulSoup(content, 'html.parser')
                 for a_tag in soup.find_all('a', href=True):
                     href = a_tag['href']
@@ -340,7 +350,7 @@ async def validate_m3u8_url(session: aiohttp.ClientSession, url: str) -> bool:
         return True
     
     # 清理 URL 中的非法字符，以便在日志中安全显示，避免 upload-artifact 报错
-    clean_url_for_log = clean_filename(url)
+    clean_url_for_log = clean_filename(url) # 确保这里使用了 clean_filename
 
     try:
         async with session.head(url, allow_redirects=True) as response:
@@ -536,17 +546,26 @@ def classify_channel(channel_name: str, group_title: Optional[str], url: Optiona
             continue # 其他频道是默认值，不用于匹配
 
         # 关键词模糊匹配
-        for keyword in rules.get('keywords', []):
-            kw_lower = keyword.lower()
-            score = max(
-                fuzz.partial_ratio(kw_lower, name_lower),
-                fuzz.partial_ratio(kw_lower, url_lower),
-                fuzz.partial_ratio(kw_lower, playlist_lower)
-            )
-            if score > 80: # 设一个阈值，比如80分以上才算有效匹配
-                if score > best_match[1]:
-                    best_match = (category, score)
-        
+        # 确保 fuzzywuzzy 库已安装
+        if 'fuzz' in globals():
+            for keyword in rules.get('keywords', []):
+                kw_lower = keyword.lower()
+                score = max(
+                    fuzz.partial_ratio(kw_lower, name_lower),
+                    fuzz.partial_ratio(kw_lower, url_lower),
+                    fuzz.partial_ratio(kw_lower, playlist_lower)
+                )
+                if score > 80: # 设一个阈值，比如80分以上才算有效匹配
+                    if score > best_match[1]:
+                        best_match = (category, score)
+        else:
+            # 如果 fuzzywuzzy 未安装，则跳过模糊匹配，只进行精确匹配
+            for keyword in rules.get('keywords', []):
+                if kw_lower in name_lower or kw_lower in url_lower or kw_lower in playlist_lower:
+                    if 85 > best_match[1]: # 给予比模糊匹配稍低的默认分数
+                        best_match = (category, 85)
+                    break # 找到一个精确匹配就够了
+
         # 正则表达式匹配
         for regex_pattern in rules.get('regex', []):
             try:
@@ -642,7 +661,13 @@ async def main():
                 log_error(f"Failed to fetch or parse playlist from: {urls[i]}")
             elif result:
                 channels, m3u_name = result
-                all_channels.extend((name, url, group, m3u_name) for name, url, group in channels)
+                # 确保在将频道添加到 all_channels 之前，频道名称和组名是干净的
+                cleaned_channels = []
+                for name, url_ch, group in channels:
+                    cleaned_name = clean_filename(name) # 对频道名称进行清理
+                    cleaned_group = clean_filename(group) if group else group # 对组名进行清理
+                    cleaned_channels.append((cleaned_name, url_ch, cleaned_group))
+                all_channels.extend((name, url, group, m3u_name) for name, url, group in cleaned_channels)
                 logger.info(f"Processed {i + 1}/{len(tasks)} playlist sources. Added {len(channels)} channels.")
 
         if all_channels:
