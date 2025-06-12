@@ -1057,4 +1057,3 @@ def sort_cctv_channels(channels):
     return sorted(channels, key=sort_key)
 
 if __name__ == "__main__":
-    main()
