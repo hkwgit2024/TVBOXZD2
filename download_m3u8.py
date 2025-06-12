@@ -46,8 +46,8 @@ class Config:
     CATEGORY_CACHE = OUTPUT_DIR / 'category_cache.json' # 分类缓存文件
     MODEL_FILE = OUTPUT_DIR / 'classifier_model.pkl' # ML 模型文件 (修改为在data/目录下)
     TRAINING_DATA = OUTPUT_DIR / 'training_data.json' # ML 训练数据 (修改为在data/目录下)
-    MAX_URLS = 10000 # 最大处理的M3U/M3U8文件数量
-    MAX_CHANNELS = 50 # 每个M3U/M3U8文件中最大解析的频道数量
+    MAX_URLS = 100000 # 最大处理的M3U/M3U8文件数量
+    MAX_CHANNELS = 100000 # 每个M3U/M3U8文件中最大解析的频道数量
     SEMAPHORE_LIMIT = 10 # 并发请求的限制
     TIMEOUT = aiohttp.ClientTimeout(total=10, connect=3) # 请求超时时间
     USE_ML = os.getenv('USE_ML', 'false').lower() == 'true' # 是否启用ML分类
