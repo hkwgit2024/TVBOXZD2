@@ -16,7 +16,7 @@ DEBUG_MODE = False  # 设置为 False 以禁用页数限制和调试模式，进
 # DEBUG_MAX_SEARCH_PAGES = 3 # 调试模式下最多搜索的页数，当 DEBUG_MODE 为 False 时此行无效
 # --- 搜索时间过滤 START ---
 # 只搜索最近 N 天内有更新的仓库。设置为 0 或 None 则不进行时间过滤。
-SEARCH_UPDATED_DAYS_AGO = 7 # 例如：只搜索最近 7 天内有更新的仓库
+SEARCH_UPDATED_DAYS_AGO = 70 # 例如：只搜索最近 7 天内有更新的仓库
 # --- 搜索时间过滤 END ---
 # --- 调试配置 END ---
 
