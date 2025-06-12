@@ -1,7 +1,7 @@
 name: Download and Validate M3U8 URLs
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动触发
   schedule:
     - cron: '0 0 * * *' # 每天 UTC 0 点 0 分运行
 
@@ -13,46 +13,59 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # 获取完整的 Git 历史，以便 rebase 正常工作
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.10' # 确保使用您脚本兼容的 Python 版本
 
-    - name: Cache pip dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: ${{ runner.os }}-pip-
-
-    # 移除了 Selenium 相关的系统依赖安装，因为脚本中未使用
-    # 如果您的 Python 脚本后续需要浏览器自动化，请再添加回来
+    # 移除了缓存 pip 依赖的步骤，因为不再使用 requirements.txt
+    # - name: Cache pip dependencies
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: ~/.cache/pip
+    #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }} # 这个键现在会失效
+    #     restore-keys: ${{ runner.os }}-pip-
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        # 如果启用ML，确保安装ML库，例如：
-        # pip install sentence-transformers scikit-learn joblib fuzzywuzzy beautifulsoup4 pyyaml aiohttp tenacity
-        # 建议requirements.txt中列出所有依赖
+        # 直接安装此脚本所需的所有库
+        # 如果您不使用机器学习功能，可以移除 sentence-transformers, scikit-learn, joblib
+        pip install \
+          aiohttp \
+          pyyaml \
+          tenacity \
+          beautifulsoup4 \
+          fuzzywuzzy \
+          python-Levenshtein \
+          sentence-transformers \
+          scikit-learn \
+          joblib
 
-    - name: Cache data directory
-      uses: actions/cache@v4
-      with:
-        path: data/
-        # 确保缓存 key 包含 data 目录下的重要文件，例如 category_cache.json, classifier_model.pkl
-        key: ${{ runner.os }}-data-${{ hashFiles('data/**') }}
-        restore-keys: ${{ runner.os }}-data-
+    - name: Pull latest changes before running script
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
+        # 在生成文件之前，先拉取并 rebase 最新代码，避免提交冲突
+        git pull origin main --rebase
+
+    - name: Clean data directory (ensure fresh start for generated files)
+      run: |
+        # 强制删除 data/ 目录及其所有内容，然后重新创建
+        rm -rf data/
+        mkdir -p data/
+      # 这个步骤即使在缓存恢复失败的情况下也应运行，以确保一个干净的开始
+      if: always()
 
     - name: Run script
       env:
         BOT: ${{ secrets.BOT }}
         REPO_URL: ${{ secrets.REPO_URL }}
-        USE_ML: 'false'  # 可设置为 'true' 启用 ML。请确保 data/classifier_model.pkl 存在
+        USE_ML: 'false'  # 可设置为 'true' 启用 ML。如果启用，请确保 data/classifier_model.pkl 存在
       run: |
-        # 确保 data 目录存在，如果缓存没有恢复
-        mkdir -p data/
         # 运行 Python 脚本并将所有输出重定向到文件
         time python download_m3u8.py 2>&1 | tee script_output.log
 
@@ -112,8 +125,6 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          # 拉取最新代码并进行 rebase，避免推送到冲突
-          git pull origin main --rebase
           # 提交更改，并使用 [skip ci] 避免无限循环触发
           git commit -m "Update M3U8 results and category cache [skip ci]"
           # 推送更改
