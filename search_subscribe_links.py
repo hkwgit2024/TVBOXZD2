@@ -15,7 +15,7 @@ HEADERS = {
     "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.v3.text-match+json"
 }
-SEARCH_QUERY = quote("subscribe?token=")  # 放宽查询
+SEARCH_QUERY = quote("/api/v1/client/subscribe?token=")
 
 DATA_DIR = "data"
 OUTPUT_FILE = os.path.join(DATA_DIR, "subscribe_links.txt")
@@ -52,7 +52,8 @@ def search_github():
         params = {
             "q": SEARCH_QUERY,
             "per_page": per_page,
-            "page": page
+            "page": page,
+            "sort": "indexed"  # 按索引排序
         }
         
         try:
@@ -71,9 +72,13 @@ def search_github():
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 text_matches = item.get("text_matches", [])
                 logger.info(f"Text matches for {raw_url}: {json.dumps(text_matches, indent=2)}")
-                # 临时跳过 text_matches 检查，添加所有 URL
-                unique_urls.add(raw_url)
-                logger.info(f"Added URL: {raw_url}")
+                # 检查是否包含目标字符串（放宽匹配）
+                for match in text_matches:
+                    fragment = match.get("fragment", "")
+                    if "/api/v1/client/subscribe?token=" in fragment or "subscribe?token=" in fragment:
+                        unique_urls.add(raw_url)
+                        logger.info(f"Added URL: {raw_url}")
+                        break
                         
             logger.info(f"Processed page {page}, found {len(unique_urls)} unique URLs so far")
             
@@ -81,10 +86,10 @@ def search_github():
                 remaining = int(response.headers["X-RateLimit-Remaining"])
                 if remaining < 20:
                     logger.warning(f"Approaching rate limit ({remaining} remaining), sleeping...")
-                    time.sleep(30)
+                    time.sleep(60)  # 增加休眠时间
                     
             page += 1
-            time.sleep(5)  # 增加间隔以降低速率限制风险
+            time.sleep(5)
             
         except requests.RequestException as e:
             logger.error(f"Error during GitHub API request: {e}, Response: {response.text}")
