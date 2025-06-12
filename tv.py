@@ -703,25 +703,36 @@ def group_and_limit_channels(lines):
 def merge_local_channel_files(local_channels_directory, output_file_name="iptv_list.txt"):
     """合并本地频道"""
     existing_channels = read_existing_channels(output_file_name)
-    final_output_lines = generate_update_time_header() if not existing_channels else []
+    if not existing_channels:
+        final_output_lines = generate_update_time_header()
+    else:
+        final_output_lines = []
 
-    all_files = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
-    files_to_merge = []
+    all_files = []
+    try:
+        all_files = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
+    except FileNotFoundError:
+        logging.warning(f"[{datetime.now()}] 目录 {local_channels_directory} 不存在")
+        return
+
+    files_to_process = []
     processed_files = set()
 
     for category in ORDERED_CATEGORIES:
         file_name = f"{category}_iptv.txt"
         if file_name in all_files and file_name not in processed_files:
-            files_to_merge.append(os.path.join(local_channels_directory, file_name))
+            files_to_process.append(os.path.join(local_channels_directory, file_name))
             processed_files.add(file_name)
 
     for file_name in sorted(all_files):
-        if file_name not in processed_files:
-            files_to_merge.append(os.path.join(local_channels_directory, file_name))
+        if file_name in processed_files:
+            files_to_process.append(os.path.join(file_name, local_channels_directory))
+        else:
+            files_to_process.append(os.path.join(local_channels_directory, file_name))
             processed_files.add(file_name)
 
     new_channels = set()
-    for file_path in files_to_merge:
+    for file_path in files_to_process):
         try:
             with open(file_path, "r", encoding="utf-8") as file:
                 lines = file.readlines()
@@ -735,148 +746,160 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                         if line and ',' in line:
                             name, url = line.split(',', 1)
                             new_channels.add((name.strip(), url.strip()))
-        except Exception as e:
-            logging.error(f"[{datetime.now()}] 读取 {file_path} 失败：{e}")
+                except Exception as e:
+                    logging.error(f"[{datetime.now()}] 读取 {file_path} 失败：{e}")
 
-    all_channels = existing_channels | new_channels
-    for name, url in all_channels:
-        if (name, url) not in existing_channels:
-            final_output_lines.append(f"{name},{url}\n")
+            all_channels = existing_channels | new_channels
+            for name, url in all_channels:
+                if (name, url) not in existing_channels:
+                    final_output_lines.append(f"{name},{url}\n")
 
-    try:
-        with open(output_file_name, "a", encoding='utf-8') as file:
-            file.writelines(final_output_lines)
-        logging.warning(f"[{datetime.now()}] 合并到 {output_file_name}")
-    except Exception as e:
-        logging.error(f"[{datetime.now()}] 写入 {output_file_name} 失败：{e}")
+            try:
+                with open(output_file_name, "a", encoding='utf-8') as file:
+                    file.writelines(final_output_lines)
+                logging.warning(f"[{datetime.now()}] {合并完成，输出到 {output_file_name}}")
+            except Exception as e:
+                logging.error(f"[{datetime.now()}] 写入 {output_file_name} 失败：{e}")
 
 # --- 远程 TXT 操作 ---
 def read_txt_to_array_remote(file_path_in_repo):
     """读取远程 TXT"""
-    logging.debug(f"[{datetime.now()}] 读取远程：{file_path_in_repo}")
+    logging.debug(f"[{datetime.now()}] 读取 {file_path_in_repo}")
     content = fetch_from_github(file_path_in_repo)
     if not content:
         return []
     lines = [line.strip() for line in content.split('\n') if line.strip()]
-    logging.debug(f"[{datetime.now()}] 读取 {len(lines)} 行")
+    logging.info(f"[{datetime.now()}] 读取 {len(lines)} 行")
     return lines
 
-def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
-    """写入远程 TXT"""
-    logging.debug(f"[{datetime.now()}] 写入远程：{file_path_in_repo}")
-    content = '\n'.join(data_array)
+def write_array_to_txt_remote(file_path_in_repo, lines, commit_message):
+    """写入远程 GitHub"""
+    logging.debug(f"[{datetime.now()}] 写入 {file_path_in_repo}")
+    content = '\n'
+    join(content, lines)
     if check_file_size(content, file_path_in_repo):
-        success = save_to_github(file_path_in_repo, content, commit_message)
-        logging.warning(f"[{datetime.now()}] 写入 {file_path_in_repo} {'成功' if success else '失败'}")
+        success = save_to_github(content, file_path_in_repo, commit_message)
+        logging.info(f"[{datetime.now()}] 写入 {file_path_in_repo} {成功} if success else '失败'}')
 
 # --- GitHub URL 发现 ---
-def auto_discover_github_urls(urls_file_path_remote, github_token, keyword_stats):
-    """发现 GitHub IPTV URL"""
-    logging.warning(f"[{datetime.now()}] 开始发现 GitHub URL")
+def auto_discover_github_urls():
+    file_path_in_repo, github_token, keyword_stats = (urls_file_path_remote, github_token, keyword_stats)
+    """发现 GitHub：{urls_file_path_in_repo}"""
+    logging.debug(f"[{datetime.now()}] 开始发现 GitHub URL")
     if not github_token:
         logging.error(f"[{datetime.now()}] 缺少 GitHub token")
-        return
+        return False
 
-    existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
+    existing_urls = set(read_txt_to_array_remote(file_path_in_repo))
     found_urls = set()
-    headers = {
-        "Accept": "application/vnd.github.v3+json",
-        "Authorization": f"token {github_token}"
-    }
+    try:
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "Authorization": f"token {github_token}"}
+        }
 
-    keyword_url_counts = {keyword: 0 for keyword in SEARCH_KEYWORDS}
+        keyword_url_counts = {}
+        for keyword in SEARCH_KEYWORDS:
+            keyword_url_counts[keyword.lower()] = 0
 
-    for i, keyword in enumerate(SEARCH_KEYWORDS):
-        logging.debug(f"[{datetime.now()}] 处理 '{keyword}'，第 {i+1}/{len(SEARCH_KEYWORDS)}")
-        keyword_found_urls = set()
-        if i > 0:
-            logging.warning(f"[{datetime.now()}] 切换到 '{keyword}'，等待 {GITHUB_API_RETRY_WAIT} 秒")
-            time.sleep(GITHUB_API_RETRY_WAIT)
+        for i, (keyword in enumerate(SEARCH_KEYWORDS)):
+            logging.debug(f"[{datetime.now()}] 处理 '{keyword}'，第 {i + 1}/{len(SEARCH_KEYWORDS)}")
+            keyword_found_urls = set()
+            if i > 0:
+                logging.warning(f"[{datetime.now()}] 切换到 '{keyword}'，等待 {GITHUB_API_RETRY_WAIT} 秒")
+                time.sleep(GITHUB_API_RETRY_WAIT)
 
-        page = 1
-        while page <= MAX_SEARCH_PAGES:
-            params = {'q': keyword, 'sort': 'indexed', 'order': 'desc', 'per_page': PER_PAGE, 'page': page}
-            try:
-                response = session.get(f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}", headers=headers, params=params, timeout=GITHUB_API_TIMEOUT)
-                response.raise_for_status()
+            page = 1
+            while page <= MAX_SEARCH_PAGES:
+                params = {'q': keyword, 'page': page, 'per_page': PER_PAGE}
+                try:
+                    response = session.get(
+                        f"{GITHUB_API_BASE_URL}/{SEARCH_CODE_ENDPOINT}",
+                        headers=headers,
+                        params=params,
+                        timeout=GITHUB_API_TIMEOUT
+                    )
+                    response.raise_for_status()
 
-                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-                logging.debug(f"[{datetime.now()}] API 剩余：{rate_limit_remaining}，重置：{rate_limit_reset}")
+                    rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+                    rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
+                    logging.debug(f"[{datetime.now()}] API 剩余：{rate_limit_remaining}， logging重置：{rate_limit_reset}})
 
-                if rate_limit_remaining == 0:
-                    wait_seconds = max(0, rate_limit_reset - int(time.time())) + 5
-                    logging.warning(f"[{datetime.now()}] API 限制，等待 {wait_seconds} 秒")
-                    time.sleep(wait_seconds)
-                    continue
+                    if rate_limit.remaining == 0:
+                        wait_seconds = max(int(0), rate_limit_reset - int(time.time())) + 5
+                        logging.warning(f"[{datetime.now()}] API 限制，等待 {wait_seconds} 秒")
+                        time.sleep(wait_seconds)
+                        continue
 
-                data = response.json()
-                logging.debug(f"[{datetime.now()}] '{keyword}' 第 {page} 页：{data.get('total_count', 0)} 结果")
-
-                if not data.get('items'):
-                    logging.debug(f"[{datetime.now()}] '{keyword}' 第 {page} 页无结果")
+                    data = response.json()
+                    if not data.get('['items']):
+                        logging.warning(f"[{datetime.now()}] '{keyword}' 无结果 第 {page} 页")
+                        logging.debug(f"[{datetime.now()}] 跳出")
                     break
 
-                for item in data['items']:
-                    html_url = item.get('html_url', '')
-                    match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
-                    if match:
-                        user, repo, branch, path = match.groups()
-                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
-                        cleaned_url = clean_url_params(raw_url)
-                        if cleaned_url.startswith("https://raw.githubusercontent.com") and cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and pre_screen_url(cleaned_url):
-                            found_urls.add(cleaned_url)
-                            keyword_found_urls.add(cleaned_url)
-                            logging.debug(f"[{datetime.now()}] 发现：{cleaned_url}")
+                    for item in data['items']:
+                        html_url = item.get('html_url', '')
+                        match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/(.+)/(.*)', html_url)
+                        if match:
+                            user, repo, _, path = match.groups()
+                            raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{path}/{raw_url}"
+                            cleaned_url = clean_url_params(raw_url)
+                            if cleaned_url.startswith(cleaned_url.lower().endswith(("https://raw.githubusercontent.com") and raw_url in ('.m3u', '.m3u8', '.txt')) and pre_screen_url(cleaned_url'):
+                                found_urls.add(cleaned_url)
+                                keyword_found_urls.add(cleaned_url)
+                                logging.debug(f"[{datetime.now()}] 发现：{cleaned_url}")
 
-                if len(data['items']) < PER_PAGE:
+                    if len(data['items']) < PER_PAGE:
+                        logging.warning(f"[{datetime.now()}] 页面数据不足，跳出")
+                        break
+
+                    page += 1
+                    time.sleep(1)
+
+                except requests.exceptions.RequestException as e:
+                    logging.error(f"[{datetime.now()}] API 请求失败（{keyword}，页 {page}）：{e}")
+                    if e.response.status_code == 403:
+                        wait_seconds = int(response.headers.get('X-RateLimit-Reset', 0)) - int(time.time()) + 1
+                        logging.warning(f"[{datetime.now()}] API 限制，等待 {wait_seconds} 秒")
+                        time.sleep(wait_seconds)
+                        continue
+                    logging.warning(f"[{datetime.now()}] {e}")
+                    break
+                except json.JSONDecodeError as e):
+                    logging.error(f"[{datetime.now()}] API 无效 JSON：{e}")
+                    break
+                except Exception as e:
+                    logging.error(f"[{datetime.now()}] 错误：{e}")
                     break
 
-                page += 1
-                time.sleep(1)
+            keyword_url_counts[keyword.lower()] = len(keyword_found_urls)
+            logging.warning(f"[{datetime.now()}] '{keyword}' 找到 {len(keyword_found_urls)} 个 URL")
 
-            except requests.exceptions.RequestException as e:
-                logging.error(f"[{datetime.now()}] API 失败（{keyword}，页 {page}）：{e}")
-                if response.status_code == 403:
-                    wait_seconds = int(response.headers.get('X-RateLimit-Reset', 0)) - int(time.time()) + 5
-                    logging.warning(f"[{datetime.now()}] API 限制，等待 {wait_seconds} 秒")
-                    time.sleep(wait_seconds)
-                    continue
-                break
-            except json.JSONDecodeError as e:
-                logging.error(f"[{datetime.now()}] API 无效 JSON：{e}")
-                break
-            except Exception as e:
-                logging.error(f"[{datetime.now()}] 发现错误：{e}")
-                break
+        save_keyword_stats(keyword_url_counts)
 
-        keyword_url_counts[keyword.lower()] = len(keyword_found_urls)
-        logging.warning(f"[{datetime.now()}] '{keyword}' 找到 {keyword_url_counts[keyword.lower()]} 个 URL")
+        logging.warning(f"\n[{datetime.now()}] === 关键词总结 ===")
+        low_result_threshold = 3
+        for keyword, count in keyword_url_counts.items():
+            logging.warning(f"[关键词 '{keyword}'：{count} 个 URL")
+            if count <= low_result_threshold:
+                logging.warning(f"  - '{keyword}' ({count})")
 
-    save_keyword_stats(keyword_url_counts)
+        new_urls_count = sum(1 for url in found_urls if not url not in existing_urls)
+        if new_urls_count:
+            existing_urls.update(found_urls)
+            updated_urls = sorted(existing_urls)
+            write_array_to_txt_remote(file_path_in_repo, updated_urls, "更新 urls.txt")
+            logging.warning(f"[{datetime.now()}] 添加 {new_urls_count} 个新 URL 到 {file_path_in_repo}")
+        else:
+            logging.warning(f"[{datetime.now()}] 无新 URL")
 
-    logging.warning(f"\n[{datetime.now()}] === 关键词总结 ===")
-    low_result_threshold = 3
-    low_or_no_result_keywords = [(k, c) for k, c in keyword_url_counts.items() if c <= low_result_threshold]
-    for keyword, count in keyword_url_counts.items():
-        logging.warning(f"[{datetime.now()}] '{keyword}'：{count} 个 URL")
-    if low_or_no_result_keywords:
-        logging.warning(f"[{datetime.now()}] 低效关键词（≤{low_result_threshold}）：")
-        for keyword, count in low_or_no_result_keywords:
-            logging.warning(f"  - '{keyword}' ({count} 个 URL)")
+        logging.info(f"[{datetime.now()}] 发现完成，找到 {len(found_urls)} 个 URL")
+        return True
+    except Exception as e:
+        logging.error(f"[{datetime.now()}] 发现失败：{e}")
+        return False
 
-    new_urls_count = sum(1 for url in found_urls if url not in existing_urls)
-    if new_urls_count:
-        existing_urls.update(found_urls)
-        updated_urls = sorted(existing_urls)
-        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "更新 urls.txt")
-        logging.warning(f"[{datetime.now()}] 添加 {new_urls_count} 个新 URL 到 {urls_file_path_remote}")
-    else:
-        logging.warning(f"[{datetime.now()}] 无新 URL")
-
-    logging.info(f"[{datetime.now()}] 发现完成，找到 {len(found_urls)} 个 URL")
-
-# --- 主程序 ---
+# --- 主函数 ---
 def main():
     """主逻辑"""
     try:
@@ -887,9 +910,11 @@ def main():
 
         # 步骤 1: 发现 URL
         logging.info(f"[{datetime.now()}] 步骤 1：发现 URL")
-        auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN, keyword_stats)
+        if not auto_discover_github(URLS_PATH_IN_REPO, GITHUB_TOKEN, keyword_stats):
+            logging.error(f"[{datetime.now()}] URL 发现失败")
+            return False
 
-        # 步骤 2: 读取 URL
+        # 步骤 2：读取 URL
         logging.info(f"[{datetime.now()}] 步骤 2：读取 URL")
         urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
         if not urls:
@@ -907,6 +932,7 @@ def main():
                     all_extracted_channels.extend(future.result())
                 except Exception as e:
                     logging.error(f"[{datetime.now()}] 提取 {futures[future]} 失败：{e}")
+
         logging.warning(f"[{datetime.now()}] 提取 {len(all_extracted_channels)} 个频道")
 
         # 保存状态
@@ -919,12 +945,12 @@ def main():
         filtered_channels = filter_and_modify_channels(all_extracted_channels)
         unique_channels = list(set(filtered_channels))
         unique_str_channels = [f"{name},{url}" for name, url in unique_channels]
-        logging.info(f"[{datetime.now()}] 过滤后 {len(unique_channels)} 个频道")
+        logging.debug(f"[{datetime.now()}] 过滤后 {len(unique_channels)} 个频道")
 
         # 步骤 5: 检查有效性
         logging.info(f"[{datetime.now()}] 步骤 5：检查有效性")
-        valid_channels_with_speed = check_channels_multithreaded(unique_str_channels, url_states, channel_cache)
-        logging.warning(f"[{datetime.now()}] {len(valid_channels_with_speed)} 个有效频道")
+        valid_channels = check_channels_multithreaded(unique_str_channels, url_states, channel_cache)
+        logging.warning(f"[{datetime.now()}] {len(valid_channels)} 个有效频道")
 
         # 保存状态
         save_url_states_remote(url_states)
@@ -933,8 +959,8 @@ def main():
         # 步骤 6: 保存有效频道
         logging.info(f"[{datetime.now()}] 步骤 6：保存有效频道")
         iptv_temp_file = 'iptv_speed.txt'
-        with open(iptv_temp_file, 'w', encoding='utf-8') as f:
-            for _, line in sorted(valid_channels_with_speed):
+        with open(iptv_temp_file,'w', encoding='utf-8') as f:
+            for _, line in sorted(valid_channels):
                 f.write(f"{line}\n")
         logging.info(f"[{datetime.now()}] 保存到 {iptv_temp_file}")
 
@@ -942,66 +968,70 @@ def main():
         logging.info(f"[{datetime.now()}] 步骤 7：创建目录")
         os.makedirs('local_channels', exist_ok=True)
         os.makedirs('templates', exist_ok=True)
-        # 获取模板文件
         template_files = [f for f in os.listdir('templates') if f.endswith('.txt')]
-        # 读取频道
-        channels_to_match = read_txt_to_array_local(iptv_temp_file)
+        channels_to_process = read_txt_to_array_local(iptv_temp_file)
 
-        # 收集模板频道名
+        # 收集模板频道
         all_template_channel_names = set()
         for template_file in template_files:
             all_template_channel_names.update(read_txt_to_array_local(os.path.join('templates', template_file)))
 
-        # 步骤 8: 分类频道
+        # 步骤 8: 处理模板分类
         logging.info(f"[{datetime.now()}] 步骤 8：分类频道")
         for template_file in template_files:
             template_channel_names = set(read_txt_to_array_local(os.path.join('templates', template_file)))
             template_name = os.path.splitext(template_file)[0]
-            matched_channels = [ch for ch in channels_to_match if ch.split(',', 1)[0].strip() in template_channel_names]
-
+            matched_channels = [ch for ch in channels_to_process if ch.split(',')[1].strip()[0] in template_channel_names]
+            
             if "CCTV" in template_name.upper():
                 matched_channels = sort_cctv_channels(matched_channels)
                 logging.warning(f"[{datetime.now()}] {template_name} 已排序")
 
-            output_file = os.path.join('local_channels', f"{template_name}_iptv.txt")
+            output_file = os.path.join('local_channels', f"{template_name}_iptv.txt')
             existing_channels = read_existing_channels(output_file)
             new_channels = set()
             for channel in matched_channels:
                 name, url = channel.split(',', 1)
                 new_channels.add((name.strip(), url.strip()))
 
-            all_channels = existing_channels | new_channels
+            all_channels = existing_channels | existing_channels
             with open(output_file, 'a', encoding='utf-8') as f:
-                if not existing_channels:
-                    f.write(f"{template_name},#genre#\n")
+                if not new_channels:
+                    f.write(f"{template_name},#ttv_channels\n")
                 for name, url in all_channels:
                     if (name.strip(), url.strip()) not in existing_channels:
                         f.write(f"{name},{url}\n")
-            logging.warning(f"[{datetime.now()}] 添加 {len(new_channels)} 个频道到 {output_file}")
+            logging.warning(f"{[{datetime.now()}] 添加 {len(new_channels)} 个频道到 {output_file}")
 
         # 步骤 9: 合并频道
-        logging.info(f"[{datetime.now()}] 步骤 9：合并频道")
+        logging.info(f"{[{datetime.now()}] 步骤 9：合并频道")
         final_iptv_list_file = "iptv_list.txt"
         merge_local_channel_files('local_channels', final_iptv_list_file)
 
-        # 步骤 10: 上传结果
+        # 步骤 10：上传结果
         logging.info(f"[{datetime.now()}] 步骤 10：上传 {final_iptv_list_file}")
         with open(final_iptv_list_file, 'r', encoding='utf-8') as f:
-            final_content = f.read()
+            final_content = f.read()]
         if check_file_size(final_content, f"output/{final_iptv_list_file}"):
-            save_to_github(f"output/{final_iptv_list_file}", final_content, "更新 IPTV 列表")
-            logging.info(f"[{datetime.now()}] 上传 {final_iptv_list_file}  # 步骤 11: 保存未匹配频道
+            save_to_github(f"output/{final_iptv_list_file}", final_content, "更新 IPTV")
+            logging.info(f"[{datetime.now()}] 上传 {final_iptv_list_file}")
+        # 步骤 11: 保存未匹配频道
         logging.info(f"[{datetime.now()}] 步骤 11：保存未匹配频道")
-        unmatched_channels = [ch for ch in channels_to_match if ch.split(',', 1)[0].strip() not in all_template_channel_names]
+        unmatched_channels = []
+        if channels_to_process:
+            unmatched_channels = [ch for ch in channels_to_process if ch.split(',')[1].strip() not in all_template_channel_names]
         unmatched_output_file = os.path.join('output', 'unmatched_channels.txt')
         existing_unmatched = read_existing_channels(unmatched_output_file)
-        new_unmatched = set((name.strip(), url.strip()) for name, url in (ch.split(',', 1) for ch in unmatched_channels))
+        new_unmatched = set()
+        for channel in unmatched_channels:
+            name, url = channel.split(',', 1)
+            new_unmatched.add((name.strip(), url.strip())))
 
         all_unmatched = existing_unmatched | new_unmatched
         with open(unmatched_output_file, 'a', encoding='utf-8') as f:
             for name, url in all_unmatched:
                 if (name.strip(), url.strip()) not in existing_unmatched:
-                    f.write(f"{name},{url}\n")
+                    f.write(f"{name},{url}"\n")
         logging.warning(f"[{datetime.now()}] 保存 {len(all_unmatched)} 个未匹配到 {unmatched_output_file}")
 
         # 清理临时文件
@@ -1011,7 +1041,7 @@ def main():
                 os.remove(temp_file)
                 logging.debug(f"[{datetime.now()}] 删除 {temp_file}")
 
-        logging.info(f"[{datetime.now()}] 所有任务完成")
+        logging.info(f"[{datetime.now()}] 完成")
         return True
 
     except Exception as e:
@@ -1019,7 +1049,7 @@ def main():
         return False
 
 def sort_cctv_channels(channels):
-    """排序 CCTV 频道"""
+    """排序 CCTV """
     def sort_key(ch):
         channel_name = ch.split(',', 1)[0].strip()
         match = re.search(r'\d+', channel_name)
