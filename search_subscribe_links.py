@@ -195,7 +195,7 @@ async def search_github():
 
     unique_raw_urls = set()
     page = 1
-    per_page = 10
+    per_page = 100
 
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
         while True:
