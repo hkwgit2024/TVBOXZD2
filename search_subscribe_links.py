@@ -16,8 +16,8 @@ from tenacity import retry, stop_after_attempt, wait_exponential # 确保已导�
 # DEBUG_MAX_SEARCH_PAGES = 3 # 调试模式下最多搜索的页数，例如只搜索 3 页
 
 # 如果想进行完整搜索，将 DEBUG_MODE 设为 False 或直接注释掉
-DEBUG_MODE = False
-DEBUG_MAX_SEARCH_PAGES = 0 # 当 DEBUG_MODE 为 False 时，此值不生效
+DEBUG_MODE = True
+DEBUG_MAX_SEARCH_PAGES = 3 # 当 DEBUG_MODE 为 False 时，此值不生效
 # --- 调试配置 END ---
 
 # 配置日志
