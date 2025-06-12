@@ -1,0 +1,36 @@
+name: Search Subscribe Links
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天运行一次
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  search-links:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+        
+    - name: Run search script
+      env:
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      run: python search_subscribe_links.py
+      
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/subscribe_links.txt
+        git commit -m "Update subscribe links [skip ci]" || echo "No changes to commit"
+        git push
