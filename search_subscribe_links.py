@@ -6,6 +6,7 @@ import yaml
 import logging
 import re
 import random
+import time  # Added missing import
 from urllib.parse import urlparse
 from datetime import datetime
 from tenacity import retry, stop_after_attempt, wait_exponential
