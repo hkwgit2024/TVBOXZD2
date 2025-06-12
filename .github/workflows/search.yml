@@ -1,3 +1,4 @@
+```yaml
 name: Search Subscribe Links
 
 on:
@@ -24,7 +25,7 @@ jobs:
         
     - name: Run search script
       env:
-        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        BOT_TOKEN: ${{ secrets.BOT }}  # 修改为 secrets.BOT
       run: python search_subscribe_links.py
       
     - name: Commit and push changes
@@ -34,3 +35,4 @@ jobs:
         git add data/subscribe_links.txt
         git commit -m "Update subscribe links [skip ci]" || echo "No changes to commit"
         git push
+```
