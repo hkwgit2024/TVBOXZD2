@@ -8,12 +8,17 @@ import re
 import random
 import time
 from urllib.parse import urlparse
-from datetime import datetime, timezone # 导入 timezone 以处理时区
+from datetime import datetime, timezone
+from tenacity import retry, stop_after_attempt, wait_exponential # 确保已导入 tenacity 相关的模块
 
-# --- 新增调试配置 START ---
-DEBUG_MODE = True  # 设置为 True 开启调试模式
-DEBUG_MAX_SEARCH_PAGES = 3 # 调试模式下最多搜索的页数，例如只搜索 3 页
-# --- 新增调试配置 END ---
+# --- 调试配置 START ---
+# DEBUG_MODE = True  # 设置为 True 开启调试模式
+# DEBUG_MAX_SEARCH_PAGES = 3 # 调试模式下最多搜索的页数，例如只搜索 3 页
+
+# 如果想进行完整搜索，将 DEBUG_MODE 设为 False 或直接注释掉
+DEBUG_MODE = False
+DEBUG_MAX_SEARCH_PAGES = 0 # 当 DEBUG_MODE 为 False 时，此值不生效
+# --- 调试配置 END ---
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -213,15 +218,15 @@ async def search_github():
 
     unique_raw_urls = set()
     page = 1
-    per_page = 100 # <--- 已修改：每次获取 100 个结果，以减少 API 调用次数
+    per_page = 100 # <--- 修改：每次获取 100 个结果，以减少 API 调用次数
 
     async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
         while True:
-            # --- 新增调试模式限制 START ---
+            # --- 调试模式限制 START ---
             if DEBUG_MODE and page > DEBUG_MAX_SEARCH_PAGES:
                 logger.info(f"DEBUG_MODE is ON. Reached max search pages ({DEBUG_MAX_SEARCH_PAGES}), stopping GitHub search.")
                 break
-            # --- 新增调试模式限制 END ---
+            # --- 调试模式限制 END ---
 
             params = {"q": SEARCH_QUERY, "per_page": per_page, "page": page}
             try:
@@ -261,8 +266,8 @@ async def search_github():
                     reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
                     current_time = int(time.time())
 
-                    # 只有当剩余请求数较低时才休眠
-                    if remaining < 100: # 稍微提高阈值，更早进入等待
+                    # 只有当剩余请求数较低时才休眠，稍微提高阈值，更早进入等待
+                    if remaining < 100:
                         sleep_duration = max(10, (reset_time - current_time) + 5)
                         logger.warning(f"Approaching rate limit ({remaining} remaining), sleeping {sleep_duration}s.")
                         await asyncio.sleep(sleep_duration)
