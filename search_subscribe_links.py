@@ -80,6 +80,7 @@ def parse_expiry(expiry):
         except (ValueError, TypeError):
             return None
 
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 async def test_subscription_status(session, url, timeout=10):
     """测试订阅链接状态，包括到期时间和剩余流量"""
     headers = {'User-Agent': get_random_user_agent()}
@@ -92,11 +93,12 @@ async def test_subscription_status(session, url, timeout=10):
         'error': None
     }
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
-    async def fetch():
+    try:
         async with session.get(url, headers=headers, timeout=timeout) as response:
             if response.status < 200 or response.status >= 300:
-                raise aiohttp.ClientResponseError(response.request_info, response.history, status=response.status)
+                raise aiohttp.ClientResponseError(
+                    response.request_info, response.history, status=response.status
+                )
             content_type = response.headers.get('Content-Type', '').lower()
             text = await response.text()
 
@@ -107,39 +109,35 @@ async def test_subscription_status(session, url, timeout=10):
             else:
                 data = {'raw': text}
 
-            return response.status, data
+            result['is_valid'] = True
 
-    try:
-        status, data = await fetch()
-        result['is_valid'] = True
+            # 解析常见字段
+            for key in ('status', 'state'):
+                if key in data:
+                    result['status'] = data[key].lower()
+                    break
 
-        # 解析常见字段
-        for key in ('status', 'state'):
-            if key in data:
-                result['status'] = data[key].lower()
-                break
+            for key in ('remaining_traffic', 'traffic_left', 'data_left'):
+                if key in data:
+                    result['remaining_traffic'] = parse_traffic(data[key])
+                    break
 
-        for key in ('remaining_traffic', 'traffic_left', 'data_left'):
-            if key in data:
-                result['remaining_traffic'] = parse_traffic(data[key])
-                break
+            for key in ('expire_time', 'expires_at', 'expiry'):
+                if key in data:
+                    result['expiry_date'] = parse_expiry(data[key])
+                    break
 
-        for key in ('expire_time', 'expires_at', 'expiry'):
-            if key in data:
-                result['expiry_date'] = parse_expiry(data[key])
-                break
+            # 判断是否过期
+            if result['expiry_date'] and result['expiry_date'] < datetime.now(result['expiry_date'].tzinfo or None):
+                result['status'] = 'expired'
+                result['is_valid'] = False
 
-        # 判断是否过期
-        if result['expiry_date'] and result['expiry_date'] < datetime.now(result['expiry_date'].tzinfo or None):
-            result['status'] = 'expired'
-            result['is_valid'] = False
+            # 判断是否无流量
+            if result['remaining_traffic'] <= 0 and result['status'] != 'expired':
+                result['status'] = 'no_traffic'
+                result['is_valid'] = False
 
-        # 判断是否无流量
-        if result['remaining_traffic'] <= 0 and result['status'] != 'expired':
-            result['status'] = 'no_traffic'
-            result['is_valid'] = False
-
-    except (aiohttp.ClientError, json.JSONDecodeError, yaml.YAMLError, ValueError) as e:
+    except (aiohttp.ClientError, json.JSONDecodeError, yaml.YAMLError) as e:
         result['error'] = str(e)
         logger.warning(f"Failed to validate {url}: {e}")
 
@@ -147,11 +145,11 @@ async def test_subscription_status(session, url, timeout=10):
 
 async def validate_subscriptions(urls, max_concurrent=10):
     """批量验证订阅链接"""
-    async with timeout, session = aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
         semaphore = asyncio.Semaphore(max_concurrent)
         async def fetch_with_semaphore(url):
             async with semaphore:
-                return await test_subscription_status(url, session)
+                return await test_subscription_status(session, url)
         tasks = [fetch_with_semaphore(url) for url in urls]
         return await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -163,24 +161,28 @@ def save_urls_by_status(results):
     no_traffic_urls = []
 
     for result in results:
-        if result['error']:
+        if not isinstance(result, dict) or result.get('error'):
             continue
         if result['is_valid']:
-            valid_urls.append(f"{result['url']} (Status: {result['status']}, Traffic: {result['remaining_traffic'] / 1024 / 1024 / 1024:.2f}GB, Expiry: {result['expiry_date'] or 'N/A'})")
+            valid_urls.append(
+                f"{result['url']} (Status: {result['status']}, "
+                f"Traffic: {result['remaining_traffic'] / 1024 / 1024 / 1024:.2f}GB, "
+                f"Expiry: {result['expiry_date'] or 'N/A'})"
+            )
         elif result['status'] == 'expired':
             expired_urls.append(f"{result['url']} (Expiry: {result['expiry_date'] or 'N/A'})")
         elif result['status'] == 'no_traffic':
-            no_traffic_urls.append(f"{result['url']}")
+            no_traffic_urls.append(f"{result['url']} (No traffic)")
 
     for file, urls, label in [
-        ('OUTPUT_FILE_VALID, valid_urls', 'Valid URLs'),
-        ('OUTPUT_FILE_EXPIRED, expired_urls', 'Expired URLs'),
-        ('OUTPUT_FILE_NO_TRAFFIC', 'no_traffic_urls', 'No Traffic URLs')
+        (OUTPUT_FILE_VALID, valid_urls, "Valid URLs"),
+        (OUTPUT_FILE_EXPIRED, expired_urls, "Expired URLs"),
+        (OUTPUT_FILE_NO_TRAFFIC, no_traffic_urls, "No Traffic URLs")
     ]:
-    with open(file, "w", encoding="utf-8") as f:
-        for url in urls:
-            f.write(f"{url}\n")
-    logger.info(f"Saved {len(urls)} {label} to {file}")
+        with open(file, "w", encoding="utf-8") as f:
+            for url in urls:
+                f.write(f"{url}\n")
+        logger.info(f"Saved {len(urls)} {label} to {file}")
 
     return len(valid_urls)
 
@@ -192,21 +194,16 @@ async def search_github():
 
     unique_raw_urls = set()
     page = 1
-        per_page = 10
+    per_page = 10
 
-    async with timeout, session = aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
         while True:
-            params = {
-                "q": SEARCH_QUERY,
-                "per_page": per_page,
-                "page": page
-            }
-
+            params = {"q": SEARCH_QUERY, "per_page": per_page, "page": page}
             try:
                 github_headers = HEADERS.copy()
                 github_headers['User-Agent'] = get_random_user_agent()
 
-                async with session.get(GITHUB_API_URL, headers=headers=github_headers, params=params):
+                async with session.get(GITHUB_API_URL, headers=github_headers, params=params) as response:
                     response.raise_for_status()
                     data = await response.json()
                     items = data.get("items", [])
@@ -215,37 +212,38 @@ async def search_github():
                         logger.info("No more results found, stopping search.")
                         break
 
-                for item in items:
-                    html_url = item["html_url"]
-                    if "/blob/" in html_url:
-                        raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-                    elif "/tree/" in html_url:
-                        logger.warning(f"Skipping directory URL: {html_url}")
-                        continue
-                    raw_url = html_url.replace("github.com", "")raw.githubusercontent.com"
+                    for item in items:
+                        html_url = item["html_url"]
+                        if "/blob/" in html_url:
+                            raw_url = html_url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
+                        elif "/tree/" in html_url:
+                            logger.warning(f"Skipping directory URL: {html_url}")
+                            continue
+                        else:
+                            raw_url = html_url.replace("github.com", "raw.githubusercontent.com")
 
-                    text_matches = item.get("text_matches", [])
-                    for match in text_matches:
-                        if SEARCH_QUERY in match.get("fragment", ""):
-                            unique_raw_urls.add(raw_url)
-                            logger.debug(f"Found raw URL: {raw_url}")
-                            break
+                        text_matches = item.get("text_matches", [])
+                        for match in text_matches:
+                            if SEARCH_QUERY in match.get("fragment", ""):
+                                unique_raw_urls.add(raw_url)
+                                logger.debug(f"Found raw URL: {raw_url}")
+                                break
 
-                logger.info(f"Processed page {page}, found {len(unique_raw_urls)} unique raw URLs.")
+                    logger.info(f"Processed page {page}, found {len(unique_raw_urls)} unique raw URLs.")
 
-                # 速率限制处理
-                remaining = int(response.headers.get("X-RateLimit-Remaining", 100))
-                reset_time = int(response.headers.get("X-RateLimit-Reset", 0)))
-                current_time = int(time.time())
+                    # 速率限制处理
+                    remaining = int(response.headers.get("X-RateLimit-Remaining", 100))
+                    reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
+                    current_time = int(time.time())
 
-                if remaining < 50:
-                    sleep_duration = max(10, (reset_time - current_time) + 5)
-                    logger.warning(f"Approaching rate limit ({remaining}), sleeping {sleep_duration}s.")
-                    await asyncio.sleep(sleep_duration)
-                else:
-                    await asyncio.sleep(2)
+                    if remaining < 50:
+                        sleep_duration = max(10, (reset_time - current_time) + 5)
+                        logger.warning(f"Approaching rate limit ({remaining}), sleeping {sleep_duration}s.")
+                        await asyncio.sleep(sleep_duration)
+                    else:
+                        await asyncio.sleep(2)
 
-                page += 1
+                    page += 1
 
             except (aiohttp.ClientError, json.JSONDecodeError) as e:
                 logger.error(f"GitHub API request failed for page {page}: {e}")
@@ -256,14 +254,14 @@ async def search_github():
 async def fetch_and_extract_subscribe_links(raw_url, session):
     """从GitHub raw URL 下载内容并提取订阅链接"""
     try:
-        async with session.get(raw_url, headers={'headers': {'User-Agent': get_random_user_agent()}}) as response:
+        async with session.get(raw_url, headers={'User-Agent': get_random_user_agent()}) as response:
             if response.status != 200:
                 logger.error(f"Failed to fetch {raw_url}: Status {response.status}")
                 return []
 
             content = await response.text()
             found_matches = re.findall(SUBSCRIBE_LINK_REGEX, content)
-            logger.info(f"Extracted {len(found_matches)} subscribe links from {raw_url}")
+            logger.debug(f"Extracted {len(found_matches)} subscribe links from {raw_url}")
             return found_matches
 
     except aiohttp.ClientError as e:
@@ -273,17 +271,23 @@ async def fetch_and_extract_subscribe_links(raw_url, session):
 async def process_raw_urls(raw_urls):
     """处理所有 raw URL，提取订阅链接"""
     all_subscribe_links = set()
-    async with aiohttp.ClientSession() as session:
-        tasks = [(await fetch_and_extract_subscribe_links(raw_url, session) for raw_url in raw_urls)]
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+        tasks = [fetch_and_extract_subscribe_links(raw_url, session) for raw_url in raw_urls]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         for result in results:
             if isinstance(result, list):
-                continue
-            for link in result:
-                all_subscribe_links.add(link)
+                all_subscribe_links.update(result)
 
     return all_subscribe_links
+
+def get_domain(url):
+    """提取URL的域名"""
+    try:
+        return urlparse(url).netloc
+    except Exception as e:
+        logger.error(f"Error parsing domain from URL {url}: {e}")
+        return ""
 
 async def main():
     """主函数"""
