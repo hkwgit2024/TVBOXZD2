@@ -1,3 +1,4 @@
+
 import os
 import requests
 import json
@@ -12,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 # GitHub API 配置
 GITHUB_API_URL = "https://api.github.com/search/code"
-TOKEN = os.getenv("BOT_TOKEN")  # 确保在环境变量中设置 BOT_TOKEN
+TOKEN = os.getenv("BOT_TOKEN")
 HEADERS = {
     "Authorization": f"token {TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
+    "Accept": "application/vnd.github.v3.text-match+json"  # 启用text-match以获取代码片段
 }
-SEARCH_QUERY = "/api/v1/client/subscribe?token="
+SEARCH_QUERY = "/api/v1/client/subscribe?token="  # 恢复原始查询
 
 # 数据存储目录
 DATA_DIR = "data"
@@ -47,9 +48,13 @@ def get_domain(url):
 
 def search_github():
     """搜索GitHub中的订阅链接"""
+    if not TOKEN:
+        logger.error("BOT_TOKEN is not set in environment variables")
+        return set()
+        
     unique_urls = set()
     page = 1
-    per_page = 100
+    per_page = 30  # 减少每页结果以降低速率限制影响
 
     while True:
         params = {
@@ -59,33 +64,41 @@ def search_github():
         }
         
         try:
+            logger.info(f"Current time: {datetime.now()}")
             response = requests.get(GITHUB_API_URL, headers=HEADERS, params=params)
             response.raise_for_status()
             data = response.json()
+            items = data.get("items", [])
+            logger.info(f"API response items count: {len(items)}")
             
-            if not data.get("items"):
+            if not items:
+                logger.info("No more results found, stopping search")
                 break
                 
-            for item in data["items"]:
-                # 获取代码片段的原始URL
+            for item in items:
+                # 将html_url转换为raw URL
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
-                if SEARCH_QUERY in item["html_url"]:
-                    unique_urls.add(raw_url)
-                    
+                # 检查text_matches中的代码片段
+                text_matches = item.get("text_matches", [])
+                for match in text_matches:
+                    if SEARCH_QUERY in match.get("fragment", ""):
+                        unique_urls.add(raw_url)
+                        logger.info(f"Added URL: {raw_url}")
+                        break
+                        
             logger.info(f"Processed page {page}, found {len(unique_urls)} unique URLs so far")
             
-            # 处理API速率限制
             if "X-RateLimit-Remaining" in response.headers:
                 remaining = int(response.headers["X-RateLimit-Remaining"])
-                if remaining < 10:
-                    logger.warning("Approaching rate limit, sleeping...")
-                    time.sleep(60)
+                if remaining < 20:
+                    logger.warning(f"Approaching rate limit ({remaining} remaining), sleeping...")
+                    time.sleep(30)
                     
             page += 1
-            time.sleep(1)  # 避免请求过快
+            time.sleep(2)  # 增加请求间隔
             
         except requests.RequestException as e:
-            logger.error(f"Error during GitHub API request: {e}")
+            logger.error(f"Error during GitHub API request: {e}, Response: {response.text}")
             break
             
     return unique_urls
