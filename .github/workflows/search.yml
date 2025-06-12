@@ -1,4 +1,4 @@
-```yaml
+
 name: Search Subscribe Links
 
 on:
@@ -35,4 +35,3 @@ jobs:
         git add data/subscribe_links.txt
         git commit -m "Update subscribe links [skip ci]" || echo "No changes to commit"
         git push
-```
