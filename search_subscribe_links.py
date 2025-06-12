@@ -9,11 +9,11 @@ import random
 import time
 from urllib.parse import urlparse
 from datetime import datetime, timezone
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, stop_after_attempt, wait_exponential, RetryError # 确保导入 RetryError
 
 # --- 调试配置 START ---
 DEBUG_MODE = True  # <--- 请确保这里是 True，如果想进行完整搜索，改为 False
-DEBUG_MAX_SEARCH_PAGES = 10 # 调试模式下最多搜索的页数，例如只搜索 3 页
+DEBUG_MAX_SEARCH_PAGES = 30 # 调试模式下最多搜索的页数，例如只搜索 3 页
 # --- 调试配置 END ---
 
 # 配置日志
@@ -95,9 +95,8 @@ def parse_expiry(expiry):
         except (ValueError, TypeError):
             return None
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
-async def test_subscription_status(session, url, timeout=15): # <--- 优化点1: 增加超时时间到 15 秒
-    """测试订阅链接状态，包括到期时间和剩余流量"""
+async def _test_subscription_status_inner(session, url, timeout):
+    """实际执行订阅状态测试的内部函数，用于 tenacity 重试"""
     headers = {'User-Agent': get_random_user_agent()}
     result = {
         'url': url,
@@ -108,63 +107,89 @@ async def test_subscription_status(session, url, timeout=15): # <--- 优化点1:
         'error': None
     }
 
-    try:
-        async with session.get(url, headers=headers, timeout=timeout) as response:
-            if response.status < 200 or response.status >= 300:
-                # 对于某些 HTTP 错误码，也认为是无效的，但记录下来
-                result['error'] = f"HTTP Status {response.status}"
-                result['is_valid'] = False
-                logger.warning(f"Failed to validate {url}: {response.status}")
-                # 不需要抛出异常让 tenacity 重试，因为状态码就是明确的失败
-                return result
+    async with session.get(url, headers=headers, timeout=timeout) as response:
+        if response.status < 200 or response.status >= 300:
+            # 对于某些 HTTP 错误码，也认为是无效的，但记录下来
+            result['error'] = f"HTTP Status {response.status}"
+            result['is_valid'] = False
+            logger.warning(f"Failed to validate {url}: {response.status}")
+            return result # 返回结果，而不是抛出异常让 tenacity 重试
 
-            content_type = response.headers.get('Content-Type', '').lower()
-            text = await response.text()
+        content_type = response.headers.get('Content-Type', '').lower()
+        text = await response.text()
 
-            if 'json' in content_type:
-                data = json.loads(text)
-            elif 'yaml' in content_type or text.strip().startswith('---'):
-                data = yaml.safe_load(text)
-            else:
-                data = {'raw_content': text} # 对于非 JSON/YAML 内容，仍然记录 raw text
+        if 'json' in content_type:
+            data = json.loads(text)
+        elif 'yaml' in content_type or text.strip().startswith('---'):
+            data = yaml.safe_load(text)
+        else:
+            data = {'raw_content': text} # 对于非 JSON/YAML 内容，仍然记录 raw text
 
-            result['is_valid'] = True
+        result['is_valid'] = True
 
-            # 解析常见字段
-            for key in ('status', 'state'):
-                if key in data:
-                    result['status'] = str(data[key]).lower() # 确保转换为字符串再转小写
-                    break
+        # 解析常见字段
+        for key in ('status', 'state'):
+            if key in data:
+                result['status'] = str(data[key]).lower() # 确保转换为字符串再转小写
+                break
 
-            for key in ('remaining_traffic', 'traffic_left', 'data_left'):
-                if key in data:
-                    result['remaining_traffic'] = parse_traffic(data[key])
-                    break
+        for key in ('remaining_traffic', 'traffic_left', 'data_left'):
+            if key in data:
+                result['remaining_traffic'] = parse_traffic(data[key])
+                break
 
-            for key in ('expire_time', 'expires_at', 'expiry'):
-                if key in data:
-                    result['expiry_date'] = parse_expiry(data[key])
-                    break
+        for key in ('expire_time', 'expires_at', 'expiry'):
+            if key in data:
+                result['expiry_date'] = parse_expiry(data[key])
+                break
 
-            # 判断是否过期 (确保当前时间也带时区信息进行比较)
-            now_utc = datetime.now(timezone.utc)
-            if result['expiry_date'] and result['expiry_date'] < now_utc:
-                result['status'] = 'expired'
-                result['is_valid'] = False
+        # 判断是否过期 (确保当前时间也带时区信息进行比较)
+        now_utc = datetime.now(timezone.utc)
+        if result['expiry_date'] and result['expiry_date'] < now_utc:
+            result['status'] = 'expired'
+            result['is_valid'] = False
 
-            # 判断是否无流量
-            if result['remaining_traffic'] <= 0 and result['status'] not in ('expired', 'unavailable'): # unavailable 状态通常表示服务暂时不可用，不代表无流量
-                result['status'] = 'no_traffic'
-                result['is_valid'] = False
-
-    except (aiohttp.ClientError, json.JSONDecodeError, yaml.YAMLError, ValueError, TypeError) as e: # 捕获更多可能的解析错误
-        result['error'] = str(e)
-        # 对于连接错误、DNS 错误、SSL 错误等，记录为警告
-        logger.warning(f"Failed to validate {url}: {type(e).__name__} - {e}")
-        # 如果是连接或超时错误，retry 机制会自动处理，这里不再次抛出，而是返回结果
-        return result
+        # 判断是否无流量
+        if result['remaining_traffic'] <= 0 and result['status'] not in ('expired', 'unavailable'):
+            result['status'] = 'no_traffic'
+            result['is_valid'] = False
 
     return result
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+async def test_subscription_status(session, url, timeout=15):
+    """
+    测试订阅链接状态，增加了对 RetryError 的处理，
+    确保即使重试失败，也不会向上抛出异常，而是返回一个失败结果。
+    """
+    try:
+        # 调用内部函数，实际的重试逻辑在这里执行
+        return await _test_subscription_status_inner(session, url, timeout)
+    except RetryError as e:
+        # 优化点: 捕获 tenacity 的 RetryError，并返回一个失败结果
+        result = {
+            'url': url,
+            'is_valid': False,
+            'status': 'failed_retry',
+            'remaining_traffic': 0,
+            'expiry_date': None,
+            'error': f"All retries failed: {e.last_attempt.exception()}" # 获取最后一次尝试的异常信息
+        }
+        logger.warning(f"Failed to validate {url} after multiple retries: {result['error']}")
+        return result
+    except (aiohttp.ClientError, json.JSONDecodeError, yaml.YAMLError, ValueError, TypeError) as e:
+        # 其他非 RetryError 的客户端错误
+        result = {
+            'url': url,
+            'is_valid': False,
+            'status': 'validation_error',
+            'remaining_traffic': 0,
+            'expiry_date': None,
+            'error': f"{type(e).__name__} - {e}"
+        }
+        logger.warning(f"Failed to validate {url}: {result['error']}")
+        return result
+
 
 async def validate_subscriptions(urls, max_concurrent=10):
     """批量验证订阅链接"""
@@ -377,8 +402,8 @@ async def main():
     # 验证订阅链接状态
     if subscribe_links:
         logger.info(f"Validating {len(subscribe_links)} subscribe links...")
-        results = await validate_subscriptions(list(subscribe_links)) # 将 set 转换为 list
-        valid_count = save_urls_by_status(results) # save_urls_by_status 现在也会返回有效链接数量
+        results = await validate_subscriptions(list(subscribe_links))
+        valid_count = save_urls_by_status(results)
         logger.info(f"Validation complete. Found {valid_count} valid subscribe links.")
     else:
         logger.info("No subscribe links found to validate.")
