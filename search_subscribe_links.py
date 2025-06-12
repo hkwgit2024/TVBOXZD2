@@ -15,7 +15,7 @@ HEADERS = {
     "Authorization": f"token {TOKEN}",
     "Accept": "application/vnd.github.v3.text-match+json"
 }
-SEARCH_QUERY = quote("/api/v1/client/subscribe?token=")
+SEARCH_QUERY = quote("subscribe?token=")  # 放宽查询
 
 DATA_DIR = "data"
 OUTPUT_FILE = os.path.join(DATA_DIR, "subscribe_links.txt")
@@ -61,7 +61,7 @@ def search_github():
             response.raise_for_status()
             data = response.json()
             items = data.get("items", [])
-            logger.info(f"API response items count: {len(items)}")
+            logger.info(f"API response items count: {len(items)}, total_count: {data.get('total_count', 0)}")
             
             if not items:
                 logger.info("No more results found, stopping search")
@@ -70,11 +70,10 @@ def search_github():
             for item in items:
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 text_matches = item.get("text_matches", [])
-                for match in text_matches:
-                    if "/api/v1/client/subscribe?token=" in match.get("fragment", ""):
-                        unique_urls.add(raw_url)
-                        logger.info(f"Added URL: {raw_url}")
-                        break
+                logger.info(f"Text matches for {raw_url}: {json.dumps(text_matches, indent=2)}")
+                # 临时跳过 text_matches 检查，添加所有 URL
+                unique_urls.add(raw_url)
+                logger.info(f"Added URL: {raw_url}")
                         
             logger.info(f"Processed page {page}, found {len(unique_urls)} unique URLs so far")
             
@@ -85,7 +84,7 @@ def search_github():
                     time.sleep(30)
                     
             page += 1
-            time.sleep(2)
+            time.sleep(5)  # 增加间隔以降低速率限制风险
             
         except requests.RequestException as e:
             logger.error(f"Error during GitHub API request: {e}, Response: {response.text}")
