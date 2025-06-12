@@ -50,7 +50,7 @@ jobs:
         REPO_URL: ${{ secrets.REPO_URL }}
         USE_ML: 'false'  # 可设置为 'true' 启用 ML
       run: |
-        time python m3u_parser.py 2>&1 | tee script_output.log
+        time python download_m3u8.py 2>&1 | tee script_output.log
 
     - name: Upload logs
       if: always()
