@@ -5,7 +5,7 @@ name: IPTV 频道更新
 on:
   workflow_dispatch:  # 允许手动触发
   schedule:
-    - cron: '0 */8 * * *'  # 每天 UTC 时间 0:00、8:00、16:00
+    - cron: '0 */168 * * *'  # 每天 UTC 时间 0:00、8:00、16:00
 
 jobs:
   build:
