@@ -3,10 +3,10 @@ import re
 import subprocess
 import socket
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta # Import timedelta
 import logging
 import requests
-from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
+from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import json
@@ -16,728 +16,1052 @@ from requests.packages.urllib3.util.retry import Retry
 import yaml
 import base64
 
-# --- 配置日志 ---
-LOG_FILE = 'iptv_crawler.log'
-logging.basicConfig(
-    level=logging.INFO, # 默认日志级别改为 INFO
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(LOG_FILE, encoding='utf-8'), # 记录到文件
-        logging.StreamHandler() # 同时输出到控制台
-    ]
-)
+# 配置日志
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# --- 从环境变量获取配置 ---
+# 从环境变量获取配置
 GITHUB_TOKEN = os.getenv('BOT')
 REPO_OWNER = os.getenv('REPO_OWNER')
 REPO_NAME = os.getenv('REPO_NAME')
-CONFIG_PATH = os.getenv('CONFIG_PATH')
+CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
 URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
 URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
 
 # 检查环境变量是否设置
 if not GITHUB_TOKEN:
-    logging.error("错误：环境变量 'BOT' 未设置。请检查你的 CI/CD 配置。")
+    logging.error("错误：环境变量 'BOT' 未设置。")
     exit(1)
 if not REPO_OWNER:
-    logging.error("错误：环境变量 'REPO_OWNER' 未设置。请检查你的 CI/CD 配置。")
+    logging.error("错误：环境变量 'REPO_OWNER' 未设置。")
     exit(1)
 if not REPO_NAME:
-    logging.error("错误：环境变量 'REPO_NAME' 未设置。请检查你的 CI/CD 配置。")
+    logging.error("错误：环境变量 'REPO_NAME' 未设置。")
     exit(1)
-if not CONFIG_PATH:
-    logging.error("错误：环境变量 'CONFIG_PATH' 未设置。请检查你的 CI/CD 配置。")
+if not CONFIG_PATH_IN_REPO:
+    logging.error("错误：环境变量 'CONFIG_PATH' 未设置。")
     exit(1)
 if not URLS_PATH_IN_REPO:
-    logging.error("错误：环境变量 'URLS_PATH' 未设置。请检查你的 CI/CD 配置。")
+    logging.error("错误：环境变量 'URLS_PATH' 未设置。")
     exit(1)
 if not URL_STATES_PATH_IN_REPO:
-    logging.error("错误：环境变量 'URL_STATES_PATH' 未设置。请检查你的 CI/CD 配置。")
+    logging.error("错误：环境变量 'URL_STATES_PATH' 未设置。")
     exit(1)
 
-# GitHub API 基础 URL
-GITHUB_API_BASE = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
-HEADERS = {
-    "Authorization": f"token {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github.v3+json"
-}
+# GitHub 仓库的基础 URL
+GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
+GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
+GITHUB_API_BASE_URL = "https://api.github.com"
+SEARCH_CODE_ENDPOINT = "/search/code"
 
-# --- 常量定义 ---
-TEMP_IPTV_FILE = 'iptv.txt' # 存放抓取到的所有有效频道的临时文件
-TEMP_IPTV_SPEED_FILE = 'iptv_speed.txt' # 如果有测速功能，可能是测速结果
-UNMATCHED_CHANNELS_FILE = "unmatched_channels.txt" # 存放未匹配分类的频道名称列表
-FINAL_IPTV_LIST_FILE = "iptv_list.txt" # 最终生成的 IPTV 列表文件
-
-# --- 配置重试机制 ---
-# 对于 HTTP 请求的重试策略
-retry_strategy = Retry(
-    total=3,                # 总重试次数
-    backoff_factor=1,       # 退避因子，每次重试等待时间倍增
-    status_forcelist=[429, 500, 502, 503, 504],  # 对这些状态码进行重试
-    allowed_methods=["HEAD", "GET", "PUT", "DELETE", "OPTIONS", "TRACE"] # 允许重试的方法
-)
-adapter = HTTPAdapter(max_retries=retry_strategy)
-http = requests.Session()
-http.mount("https://", adapter)
-http.mount("http://", adapter)
-
-# --- 全局变量 ---
-CONFIG = {}
-URL_STATES = {}
-ORDERED_CATEGORIES = [] # 存储配置中定义的有序分类
-
-# --- 辅助函数 ---
-def calculate_md5(data):
-    """计算数据的 MD5 值"""
-    return hashlib.md5(data).hexdigest()
-
-def clean_url_params(url):
-    """
-    清理 URL 中的特定参数，但保留核心路径和查询参数。
-    主要删除常见的缓存buster参数（以下划线或问号开头）。
-    """
-    parsed_url = urlparse(url)
-    query_params = parse_qs(parsed_url.query)
-    
-    # 过滤掉以下划线或问号开头的参数
-    # doseq=True 确保列表值参数被正确编码 (e.g., ?param=a&param=b)
-    filtered_params = {k: v for k, v in query_params.items() if not k.startswith('_') and not k.startswith('?')}
-    
-    new_query = urlencode(filtered_params, doseq=True)
-    
-    # 重构 URL，只替换查询部分
-    cleaned_url = urlunparse((
-        parsed_url.scheme,
-        parsed_url.netloc,
-        parsed_url.path,
-        parsed_url.params,
-        new_query,
-        parsed_url.fragment
-    ))
-    return cleaned_url
-
-# --- GitHub API 交互函数 ---
-@retry(stop=stop_after_attempt(5), wait=wait_fixed(2), reraise=True)
-def get_github_file_content(path):
-    """
-    从 GitHub 获取文件内容。
-    """
-    url = f"{GITHUB_API_BASE}/{path}"
-    logging.debug(f"正在从 GitHub 获取文件：{url}")
+# --- GitHub 文件操作函数 ---
+def fetch_from_github(file_path_in_repo):
+    """从 GitHub 仓库获取文件内容。"""
+    raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = http.get(url, headers=HEADERS)
+        response = requests.get(raw_url, headers=headers, timeout=10)
         response.raise_for_status()
-        content = response.json()
-        if content and 'content' in content:
-            return base64.b64decode(content['content']).decode('utf-8'), content['sha']
-        return None, None
+        return response.text
     except requests.exceptions.RequestException as e:
-        logging.error(f"从 GitHub 获取文件 '{path}' 失败: {e}")
-        raise
+        logging.error(f"从 GitHub 获取 {file_path_in_repo} 发生错误：{e}")
+        return None
 
-@retry(stop=stop_after_attempt(5), wait=wait_fixed(2), reraise=True)
-def get_current_sha(path):
-    """
-    获取 GitHub 上文件的当前 SHA 值。如果文件不存在，返回 None。
-    """
-    url = f"{GITHUB_API_BASE}/{path}"
-    logging.debug(f"正在获取文件 '{path}' 的 SHA 值...")
+def get_current_sha(file_path_in_repo):
+    """获取 GitHub 仓库中文件的当前 SHA 值。"""
+    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
+    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = http.get(url, headers=HEADERS)
-        if response.status_code == 404:
-            logging.info(f"文件 '{path}' 在 GitHub 上不存在 (404)。")
-            return None
+        response = requests.get(api_url, headers=headers, timeout=10)
         response.raise_for_status()
         return response.json().get('sha')
     except requests.exceptions.RequestException as e:
-        # 对于其他非 404 的错误，记录为错误
-        logging.error(f"获取文件 '{path}' 的 SHA 发生错误: {e}")
-        raise
+        logging.debug(f"获取 {file_path_in_repo} 的 SHA 发生错误（可能不存在）：{e}")
+        return None
 
-@retry(stop=stop_after_attempt(5), wait=wait_fixed(2), reraise=True)
-def update_github_file(path, content, message, sha=None):
-    """
-    更新 GitHub 上的文件。
-    """
-    url = f"{GITHUB_API_BASE}/{path}"
-    logging.info(f"正在更新 GitHub 文件：{path}")
-    data = {
-        "message": message,
-        "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
-        "branch": "main" # 假定操作 main 分支
+def save_to_github(file_path_in_repo, content, commit_message):
+    """将内容保存（创建或更新）到 GitHub 仓库。"""
+    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
+    sha = get_current_sha(file_path_in_repo)
+    
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Content-Type": "application/json"
     }
+    
+    encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
+
+    payload = {
+        "message": commit_message,
+        "content": encoded_content,
+        "branch": "main"
+    }
+    
     if sha:
-        data["sha"] = sha # 必须提供 SHA 来更新现有文件
+        payload["sha"] = sha
     
     try:
-        response = http.put(url, headers=HEADERS, json=data)
+        response = requests.put(api_url, headers=headers, json=payload)
         response.raise_for_status()
-        logging.info(f"文件 '{path}' 更新成功。")
-        return response.json().get('content', {}).get('sha')
+        return True
     except requests.exceptions.RequestException as e:
-        logging.error(f"更新 GitHub 文件 '{path}' 失败: {e}")
-        raise
+        logging.error(f"将 {file_path_in_repo} 保存到 GitHub 发生错误：{e}")
+        logging.error(f"GitHub API 响应：{response.text if 'response' in locals() else 'N/A'}")
+        return False
 
-# --- 配置加载函数 ---
 def load_config():
-    """
-    加载并验证配置文件。
-    """
-    global CONFIG, ORDERED_CATEGORIES
-    config_file_content, _ = get_github_file_content(CONFIG_PATH)
-    if not config_file_content:
-        logging.error(f"无法加载配置文件 '{CONFIG_PATH}'。请确保文件存在且可访问。")
-        exit(1)
+    """从 GitHub 仓库加载并解析 YAML 配置文件。"""
+    content = fetch_from_github(CONFIG_PATH_IN_REPO)
+    if content:
+        try:
+            return yaml.safe_load(content)
+        except yaml.YAMLError as e:
+            logging.error(f"错误：远程配置文件 '{CONFIG_PATH_IN_REPO}' 中的 YAML 无效：{e}")
+            exit(1)
+        except Exception as e:
+            logging.error(f"加载远程配置文件 '{CONFIG_PATH_IN_REPO}' 发生错误：{e}")
+            exit(1)
+    logging.error(f"无法从 GitHub 的 '{CONFIG_PATH_IN_REPO}' 加载配置。")
+    exit(1)
+
+# 加载配置
+CONFIG = load_config()
+
+# 从配置中获取参数
+SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
+PER_PAGE = CONFIG.get('per_page', 100)
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10)
+CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
+CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
+MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
+NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
+URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
+CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
+ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
+STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
+# New config parameter for URL state expiration (e.g., 90 days)
+URL_STATE_EXPIRATION_DAYS = CONFIG.get('url_state_expiration_days', 90) 
+
+
+# 配置 requests 会话
+session = requests.Session()
+session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
+pool_size = CONFIG.get('requests_pool_size', 200)
+retry_strategy = Retry(
+    total=CONFIG.get('requests_retry_total', 3),
+    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_retries=retry_strategy)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
+
+# --- 本地文件操作函数 ---
+def read_txt_to_array_local(file_name):
+    """从本地 TXT 文件读取内容到数组。"""
+    try:
+        with open(file_name, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            lines = [line.strip() for line in lines if line.strip()]
+            return lines
+    except FileNotFoundError:
+        logging.warning(f"文件 '{file_name}' 未找到。")
+        return []
+    except Exception as e:
+        logging.error(f"读取文件 '{file_name}' 发生错误：{e}")
+        return []
+
+def read_existing_channels(file_path):
+    """读取文件中已有的频道（名称, URL）组合，用于去重。"""
+    existing_channels = set()
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if line and ',' in line and not line.startswith('#'):
+                    parts = line.split(',', 1)
+                    if len(parts) == 2:
+                        name, url = parts
+                        existing_channels.add((name.strip(), url.strip()))
+    except FileNotFoundError:
+        pass  # 文件不存在时返回空集合
+    except Exception as e:
+        logging.error(f"读取文件 '{file_path}' 进行去重时发生错误：{e}")
+    return existing_channels
+
+def write_sorted_channels_to_file(file_path, data_list):
+    """将排序后的频道数据追加到文件，并去重。"""
+    existing_channels = read_existing_channels(file_path)
+    new_channels = set()
+    
+    for _, line in data_list:
+        if ',' in line:
+            name, url = line.split(',', 1)
+            new_channels.add((name.strip(), url.strip()))
+    
+    all_channels = existing_channels | new_channels
     
     try:
-        CONFIG = yaml.safe_load(config_file_content)
-        logging.info("配置加载成功。")
-    except yaml.YAMLError as e:
-        logging.error(f"解析配置文件 '{CONFIG_PATH}' 失败: {e}")
-        exit(1)
+        with open(file_path, 'a', encoding='utf-8') as file:
+            for name, url in all_channels:
+                if (name, url) not in existing_channels:
+                    file.write(f"{name},{url}\n")
+        logging.debug(f"已追加 {len(all_channels - existing_channels)} 个新频道到 {file_path}")
+    except Exception as e:
+        logging.error(f"追加写入文件 '{file_path}' 发生错误：{e}")
 
-    # 验证关键配置项
-    required_keys = ['rules', 'categories', 'check_timeout', 'request_timeout', 'channel_check_workers']
-    for key in required_keys:
-        if key not in CONFIG:
-            logging.error(f"配置中缺少关键项: '{key}'。请检查 '{CONFIG_PATH}' 文件。")
-            logging.warning(f"参考示例配置: 请检查 'config.yaml.example' 文件以获取正确的配置结构。")
-            exit(1)
-            
-    # 填充有序分类
-    ORDERED_CATEGORIES = [item['name'] for item in CONFIG.get('categories', [])]
-    if not ORDERED_CATEGORIES:
-        logging.warning("配置中未找到 'categories' 或其为空。频道将按默认顺序排序。")
+# --- URL 处理和频道提取函数 ---
+def get_url_file_extension(url):
+    """获取 URL 的文件扩展名。"""
+    try:
+        parsed_url = urlparse(url)
+        extension = os.path.splitext(parsed_url.path)[1].lower()
+        return extension
+    except ValueError as e:
+        logging.debug(f"获取 URL 扩展名失败：{url} - {e}")
+        return ""
 
-    # 确保 URL_STATES 文件存在
-    global URL_STATES
-    url_states_content, _ = get_github_file_content(URL_STATES_PATH_IN_REPO)
-    if url_states_content:
+def convert_m3u_to_txt(m3u_content):
+    """将 M3U 格式内容转换为 TXT 格式（频道名,URL）。"""
+    lines = m3u_content.split('\n')
+    txt_lines = []
+    channel_name = ""
+    for line in lines:
+        line = line.strip()
+        if line.startswith("#EXTM3U"):
+            continue
+        if line.startswith("#EXTINF"):
+            match = re.search(r'#EXTINF:.*?\,(.*)', line)
+            if match:
+                channel_name = match.group(1).strip()
+            else:
+                channel_name = "未知频道"
+        elif line and not line.startswith('#'):
+            if channel_name:
+                txt_lines.append(f"{channel_name},{line}")
+            channel_name = ""
+    return '\n'.join(txt_lines)
+
+def clean_url_params(url):
+    """清理 URL 参数，只保留协议、域名和路径。"""
+    try:
+        parsed_url = urlparse(url)
+        return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+    except ValueError as e:
+        logging.debug(f"清理 URL 参数失败：{url} - {e}")
+        return url
+
+# --- URL 状态管理函数 ---
+def load_url_states_remote():
+    """从远程加载 URL 状态 JSON 文件，并清理过期状态。"""
+    content = fetch_from_github(URL_STATES_PATH_IN_REPO)
+    url_states = {}
+    if content:
         try:
-            URL_STATES = json.loads(url_states_content)
-            logging.info("URL 状态文件加载成功。")
+            url_states = json.loads(content)
         except json.JSONDecodeError as e:
-            logging.warning(f"解析 URL 状态文件 '{URL_STATES_PATH_IN_REPO}' 失败: {e}。将从空状态开始。")
-            URL_STATES = {}
-    else:
-        logging.info(f"URL 状态文件 '{URL_STATES_PATH_IN_REPO}' 不存在或为空，将从空状态开始。")
-        URL_STATES = {}
-
-
-# --- URL 和频道处理函数 ---
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(1), retry=retry_if_exception_type(requests.exceptions.RequestException))
-def fetch_url_content_with_retry(url):
-    """
-    使用重试机制获取 URL 内容，并进行缓存检查。
-    """
-    global URL_STATES
+            logging.error(f"解码远程 '{URL_STATES_PATH_IN_REPO}' 中的 JSON 发生错误：{e}。将从空状态开始。")
+            return {}
     
-    current_state = URL_STATES.get(url, {})
+    # Clean up expired states
+    current_time = datetime.now()
+    updated_url_states = {}
+    for url, state in url_states.items():
+        if 'last_checked' in state:
+            try:
+                last_checked_datetime = datetime.fromisoformat(state['last_checked'])
+                if (current_time - last_checked_datetime).days < URL_STATE_EXPIRATION_DAYS:
+                    updated_url_states[url] = state
+                else:
+                    logging.debug(f"移除过期 URL 状态：{url} (上次检查于 {state['last_checked']})")
+            except ValueError:
+                logging.warning(f"无法解析 URL {url} 的 last_checked 时间戳：{state['last_checked']}，保留其状态。")
+                updated_url_states[url] = state
+        else: # If no last_checked, keep it for now or decide based on other criteria
+            updated_url_states[url] = state
+            
+    return updated_url_states
+
+def save_url_states_remote(url_states):
+    """保存 URL 状态到远程 JSON 文件。"""
+    try:
+        content = json.dumps(url_states, indent=4, ensure_ascii=False)
+        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "更新 URL 状态")
+        if not success:
+            logging.error(f"将远程 URL 状态保存到 '{URL_STATES_PATH_IN_REPO}' 发生错误。")
+    except Exception as e:
+        logging.error(f"将 URL 状态保存到远程 '{URL_STATES_PATH_IN_REPO}' 发生错误：{e}")
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
+def fetch_url_content_with_retry(url, url_states):
+    """尝试获取 URL 内容，带重试机制，并利用 ETag/Last-Modified/Content-Hash 避免重复下载。"""
     headers = {}
+    current_state = url_states.get(url, {})
+
     if 'etag' in current_state:
         headers['If-None-Match'] = current_state['etag']
     if 'last_modified' in current_state:
         headers['If-Modified-Since'] = current_state['last_modified']
 
     try:
-        response = http.get(url, headers=headers, timeout=CONFIG['request_timeout'])
+        response = session.get(url, headers=headers, timeout=CHANNEL_FETCH_TIMEOUT)
         response.raise_for_status()
 
         if response.status_code == 304:
-            logging.debug(f"URL {url} 内容未修改 (304 Not Modified)。")
-            # 即使未修改，也更新检查时间
-            URL_STATES[url]['last_checked'] = datetime.now().isoformat()
-            # 返回 None 表示内容未变，可以继续使用旧内容。
-            # 这里返回旧的 content_hash，以便调用方可以根据需要使用旧数据
-            return None, current_state.get('content_hash') 
-        
+            logging.debug(f"URL 内容 {url} 未修改 (304)。跳过下载。")
+            if url not in url_states:
+                url_states[url] = {}
+            url_states[url]['last_checked'] = datetime.now().isoformat()
+            return None
+
         content = response.text
-        content_hash = calculate_md5(content.encode('utf-8'))
+        content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
-        # 如果内容哈希相同，也视为未修改
-        if current_state.get('content_hash') == content_hash:
-            logging.debug(f"URL {url} 内容哈希未修改，使用缓存内容。")
-            URL_STATES[url]['last_checked'] = datetime.now().isoformat()
-            return None, content_hash
+        if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
+            logging.debug(f"URL 内容 {url} 基于哈希是相同的。跳过下载。")
+            if url not in url_states:
+                url_states[url] = {}
+            url_states[url]['last_checked'] = datetime.now().isoformat()
+            return None
 
-        # 更新状态
-        URL_STATES[url] = {
-            'etag': response.headers.get('ETag', ''),
-            'last_modified': response.headers.get('Last-Modified', ''),
+        url_states[url] = {
+            'etag': response.headers.get('ETag'),
+            'last_modified': response.headers.get('Last-Modified'),
             'content_hash': content_hash,
             'last_checked': datetime.now().isoformat()
         }
-        logging.info(f"已获取并更新 URL {url} 的内容。")
-        return content, content_hash
 
-    except requests.exceptions.Timeout:
-        logging.warning(f"获取 URL '{url}' 超时。")
-        return None, None
+        logging.debug(f"成功获取 URL：{url} 的新内容。内容已更新。")
+        return content
+
     except requests.exceptions.RequestException as e:
-        logging.warning(f"获取 URL '{url}' 发生网络错误: {e}")
-        return None, None
+        logging.error(f"获取 URL (重试后) 发生请求错误：{url} - {e}")
+        return None
     except Exception as e:
-        logging.error(f"获取 URL '{url}' 发生未知错误: {e}")
-        return None, None
-
-def extract_channels_from_url(url_item):
-    """
-    从给定的 URL 中提取频道。
-    url_item 是一个字典，包含 'url' 和可能的 'category' 信息。
-    """
-    url = url_item['url']
-    logging.info(f"正在从 URL '{url}' 提取频道...")
-    content, _ = fetch_url_content_with_retry(url) # content_hash在这里不需要直接使用
-
-    if content is None:
-        logging.warning(f"无法获取 URL '{url}' 的内容或内容未更新，跳过频道提取。")
-        return []
-
-    channels = []
-    lines = content.splitlines()
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('#'):
-            parts = line.split(',', 1)
-            if len(parts) == 2:
-                name = parts[0].strip()
-                channel_url = parts[1].strip()
-                channels.append({"name": name, "url": channel_url})
-    logging.info(f"从 URL '{url}' 提取到 {len(channels)} 个频道。")
-    return channels
-
-def get_channel_urls(urls_config):
-    """
-    从配置的 URL 列表中并行提取所有频道。
-    """
-    all_channels = []
-    urls_to_process = []
-
-    # 检查 URL 状态，避免重复抓取近期已检查的 URL
-    for url_item in urls_config:
-        url = url_item['url']
-        last_checked_str = URL_STATES.get(url, {}).get('last_checked')
-        if last_checked_str:
-            last_checked = datetime.fromisoformat(last_checked_str)
-            # 如果上次检查在 6 小时内，跳过抓取
-            if datetime.now() - last_checked < timedelta(hours=6):
-                logging.info(f"URL '{url}' 最近已检查过 (上次检查：{last_checked_str})，跳过抓取。")
-                continue
-        urls_to_process.append(url_item) # 传递整个 url_item
-    
-    if not urls_to_process:
-        logging.info("所有频道源 URL 均在近期已检查，无需重新抓取。")
-        return []
-
-    logging.info(f"准备从 {len(urls_to_process)} 个 URL 抓取频道内容...")
-    # 使用线程池并行处理
-    with ThreadPoolExecutor(max_workers=5) as executor: # 可以根据需要调整 worker 数量
-        future_to_url_item = {executor.submit(extract_channels_from_url, url_item): url_item for url_item in urls_to_process}
-        for future in as_completed(future_to_url_item):
-            url_item = future_to_url_item[future]
-            try:
-                channels = future.result()
-                all_channels.extend(channels)
-            except Exception as exc:
-                logging.error(f"处理 URL '{url_item['url']}' 时发生异常: {exc}")
-    
-    logging.info(f"已从 {len(urls_to_process)} 个 URL 中提取到 {len(all_channels)} 个频道。")
-    return all_channels
-
-# --- 频道校验函数 ---
-def check_ffprobe_exists():
-    """检查系统是否安装了 ffprobe"""
-    try:
-        subprocess.run(['ffprobe', '-h'], capture_output=True, check=True, timeout=5)
-        return True
-    except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
-        return False
-
-FFPROBE_AVAILABLE = check_ffprobe_exists()
-if not FFPROBE_AVAILABLE:
-    logging.warning("警告：未检测到 'ffprobe'。RTMP、RTP 和 P3P 流的有效性将无法检查。")
-
-def check_rtmp_url(url, timeout):
-    """
-    使用 ffprobe 检查 RTMP、RTP 或 P3P 流的有效性。
-    需要系统安装 ffprobe。
-    """
-    if not FFPROBE_AVAILABLE:
-        logging.debug(f"ffprobe 不可用，跳过 RTMP/RTP/P3P 流检查：{url}")
-        return False
-
-    ffprobe_path = 'ffprobe' # 假设 ffprobe 在 PATH 中
-    
-    command = [
-        ffprobe_path,
-        '-v', 'quiet',
-        '-print_format', 'json',
-        '-show_format',
-        '-select_streams', 'v:0', # 尝试获取视频流信息
-        '-timeout', str(int(timeout * 1000000)), # ffprobe timeout 单位是微秒
-        '-i', url
-    ]
-    try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
-        if result.returncode == 0 and ("streams" in result.stdout or "format" in result.stdout):
-            # 简单的检查，只要ffprobe能解析出流信息就认为有效
-            return True
-        else:
-            logging.debug(f"ffprobe 检查失败，URL: {url}, 返回码: {result.returncode}, 输出: {result.stderr or result.stdout}")
-            return False
-    except subprocess.TimeoutExpired:
-        logging.debug(f"ffprobe 检查 RTMP/RTP/P3P URL '{url}' 超时。")
-        return False
-    except Exception as e:
-        logging.debug(f"ffprobe 检查 RTMP/RTP/P3P URL '{url}' 发生错误: {e}")
-        return False
-
-def check_channel(channel):
-    """
-    检查单个频道的 URL 是否有效。
-    """
-    name = channel["name"]
-    url = channel["url"]
-    parsed_url = urlparse(url)
-    
-    # 过滤掉不符合规则的频道
-    for rule in CONFIG['rules']:
-        if rule['type'] == 'exclude':
-            if 'keyword' in rule and re.search(rule['keyword'], name, re.IGNORECASE):
-                logging.debug(f"频道 '{name}' (URL: {url}) 因名称匹配排除规则 '{rule['keyword']}' 被跳过。")
-                return None
-            if 'url_pattern' in rule and re.search(rule['url_pattern'], url, re.IGNORECASE):
-                logging.debug(f"频道 '{name}' (URL: {url}) 因 URL 匹配排除规则 '{rule['url_pattern']}' 被跳过。")
-                return None
-        if rule['type'] == 'include':
-            # 包含规则，如果名称或 URL 不匹配任何包含规则，则跳过
-            # 注意：此处逻辑是“如果所有包含规则都不匹配，则跳过”，这可能需要根据实际需求调整
-            # 当前实现是：只要有一个包含规则不匹配就跳过
-            if 'keyword' in rule and not re.search(rule['keyword'], name, re.IGNORECASE):
-                logging.debug(f"频道 '{name}' (URL: {url}) 因名称不匹配包含规则 '{rule['keyword']}' 被跳过。")
-                return None
-            if 'url_pattern' in rule and not re.search(rule['url_pattern'], url, re.IGNORECASE):
-                logging.debug(f"频道 '{name}' (URL: {url}) 因 URL 不匹配包含规则 '{rule['url_pattern']}' 被跳过。")
-                return None
-
-    # 根据协议进行检查
-    if parsed_url.scheme in ['http', 'https']:
-        try:
-            response = http.head(url, timeout=CONFIG['check_timeout'], allow_redirects=True)
-            if response.status_code == 200:
-                logging.debug(f"频道 '{name}' (URL: {url}) HTTP/HTTPS 状态码 200。")
-                return channel
-            elif 300 <= response.status_code < 400:
-                logging.debug(f"频道 '{name}' (URL: {url}) HTTP/HTTPS 发生重定向 (状态码 {response.status_code})。")
-                # 可以选择是否追踪重定向后的 URL，并返回新的 URL
-                # return {"name": name, "url": response.url} 
-                return channel # 暂时只返回原始频道，如果重定向后的 URL 也是有效的，则认为原始 URL 也可达
-            else:
-                logging.debug(f"频道 '{name}' (URL: {url}) HTTP/HTTPS 状态码 {response.status_code}。")
-                return None
-        except requests.exceptions.RequestException as e:
-            logging.debug(f"频道 '{name}' (URL: {url}) HTTP/HTTPS 请求失败: {e}")
-            return None
-    elif parsed_url.scheme in ['rtmp', 'rtp', 'p3p']:
-        # 对于流媒体协议，使用 ffprobe 检查
-        if check_rtmp_url(url, CONFIG['check_timeout']):
-            logging.debug(f"频道 '{name}' (URL: {url}) RTMP/RTP/P3P 检查成功。")
-            return channel
-        else:
-            logging.debug(f"频道 '{name}' (URL: {url}) RTMP/RTP/P3P 检查失败。")
-            return None
-    elif parsed_url.scheme == 'udp':
-        # UDP 流通常不需要 HTTP 请求，而是尝试连接
-        try:
-            host = parsed_url.hostname
-            port = parsed_url.port
-            if host and port:
-                # 尝试连接 UDP 端口，但不发送数据
-                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-                    sock.settimeout(CONFIG['check_timeout'])
-                    sock.connect((host, port))
-                    logging.debug(f"频道 '{name}' (URL: {url}) UDP 连接成功。")
-                    return channel
-            return None
-        except socket.error as e:
-            logging.debug(f"频道 '{name}' (URL: {url}) UDP 连接失败: {e}")
-            return None
-    else:
-        logging.debug(f"频道 '{name}' (URL: {url}) 使用不支持的协议 '{parsed_url.scheme}'。")
+        logging.error(f"获取 URL 发生未知错误：{url} - {e}")
         return None
 
-def check_channels_multithreaded(channels):
-    """
-    多线程检查频道列表。
-    """
-    valid_channels = []
-    unmatched_names = set() # 存储不匹配的频道名称
-    
-    total_channels = len(channels)
-    logging.info(f"开始多线程检查 {total_channels} 个频道。")
+def extract_channels_from_url(url, url_states):
+    """从给定的 URL 中提取频道。"""
+    extracted_channels = []
+    try:
+        text = fetch_url_content_with_retry(url, url_states)
+        if text is None:
+            return []
 
-    with ThreadPoolExecutor(max_workers=CONFIG['channel_check_workers']) as executor:
-        future_to_channel = {executor.submit(check_channel, ch): ch for ch in channels}
-        
-        for i, future in enumerate(as_completed(future_to_channel)):
-            original_channel = future_to_channel[future]
+        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
+            text = convert_m3u_to_txt(text)
+
+        lines = text.split('\n')
+        channel_count = 0
+        for line in lines:
+            line = line.strip()
+            if "#genre#" not in line and "," in line and "://" in line:
+                parts = line.split(',', 1)
+                if len(parts) != 2:
+                    logging.debug(f"跳过无效频道行（格式错误）：{line}")
+                    continue
+                channel_name, channel_address_raw = parts
+                channel_name = channel_name.strip()
+                channel_address_raw = channel_address_raw.strip()
+
+                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
+                    logging.debug(f"跳过无效频道 URL（无有效协议）：{line}")
+                    continue
+
+                if '#' in channel_address_raw:
+                    url_list = channel_address_raw.split('#')
+                    for channel_url in url_list:
+                        channel_url = clean_url_params(channel_url.strip())
+                        if channel_url and pre_screen_url(channel_url):
+                            extracted_channels.append((channel_name, channel_url))
+                            channel_count += 1
+                        else:
+                            logging.debug(f"跳过无效或未通过预筛选的频道 URL：{channel_url}")
+                else:
+                    channel_url = clean_url_params(channel_address_raw)
+                    if channel_url and pre_screen_url(channel_url):
+                        extracted_channels.append((channel_name, channel_url))
+                        channel_count += 1
+                    else:
+                        logging.debug(f"跳过无效或未通过预筛选的频道 URL：{channel_url}")
+        logging.debug(f"成功从 URL：{url} 中提取 {channel_count} 个频道。")
+    except Exception as e:
+        logging.error(f"从 {url} 提取频道时发生错误：{e}")
+    return extracted_channels
+
+def pre_screen_url(url):
+    """预筛选 URL，根据配置检查协议、长度和无效模式。"""
+    if not isinstance(url, str) or not url:
+        logging.debug(f"预筛选过滤（无效类型或空）：{url}")
+        return False
+
+    if not re.match(r'^[a-zA-Z0-9+.-]+://', url):
+        logging.debug(f"预筛选过滤（无有效协议）：{url}")
+        return False
+
+    if re.search(r'[^\x00-\x7F]', url) or ' ' in url:
+        logging.debug(f"预筛选过滤（包含非法字符或空格）：{url}")
+        return False
+
+    try:
+        parsed_url = urlparse(url)
+        if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+            logging.debug(f"预筛选过滤（协议不受支持）：{url}")
+            return False
+
+        if not parsed_url.netloc:
+            logging.debug(f"预筛选过滤（无网络位置）：{url}")
+            return False
+
+        invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
+        compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
+        for pattern in compiled_invalid_url_patterns:
+            if pattern.search(url):
+                logging.debug(f"预筛选过滤（无效模式）：{url}")
+                return False
+
+        if len(url) < 15:
+            logging.debug(f"预筛选过滤（URL 太短）：{url}")
+            return False
+
+        return True
+    except ValueError as e:
+        logging.debug(f"预筛选过滤（URL 解析错误）：{url} - {e}")
+        return False
+
+def filter_and_modify_channels(channels):
+    """过滤和修改频道名称及 URL。"""
+    filtered_channels = []
+    pre_screened_count = 0
+    for name, url in channels:
+        if not pre_screen_url(url):
+            logging.debug(f"正在过滤频道（预筛选失败）：{name},{url}")
+            continue
+        pre_screened_count += 1
+
+        if any(word in url for word in CONFIG.get('url_filter_words', [])):
+            logging.debug(f"正在过滤频道（URL 匹配黑名单）：{name},{url}")
+            continue
+
+        if any(word.lower() in name.lower() for word in CONFIG.get('name_filter_words', [])):
+            logging.debug(f"正在过滤频道（名称匹配黑名单）：{name},{url}")
+            continue
+
+        for old_str, new_str in CONFIG.get('channel_name_replacements', {}).items():
+            name = name.replace(old_str, new_str)
+        filtered_channels.append((name, url))
+    logging.debug(f"URL 预筛选后，剩余 {pre_screened_count} 个频道等待进一步过滤。")
+    return filtered_channels
+
+# --- 频道有效性检查函数 ---
+def check_http_url(url, timeout):
+    """检查 HTTP/HTTPS URL 是否可达。"""
+    try:
+        response = session.head(url, timeout=timeout, allow_redirects=True)
+        return 200 <= response.status_code < 400
+    except requests.exceptions.RequestException as e:
+        logging.debug(f"HTTP URL {url} 检查失败：{e}")
+        return False
+
+def check_rtmp_url(url, timeout):
+    """检查 RTMP URL 是否可达（需要 ffprobe）。"""
+    try:
+        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        logging.warning("未找到 ffprobe 或其无法工作。RTMP 流检查已跳过。")
+        return False
+    try:
+        result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, timeout=timeout)
+        return result.returncode == 0
+    except subprocess.TimeoutExpired:
+        logging.debug(f"RTMP URL {url} 检查超时")
+        return False
+    except Exception as e:
+        logging.debug(f"RTMP URL {url} 检查错误：{e}")
+        return False
+
+def check_rtp_url(url, timeout):
+    """检查 RTP URL 是否可达（通过 UDP 尝试连接）。"""
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port
+        if not host or not port:
+            logging.debug(f"RTP URL {url} 解析失败：缺少主机或端口。")
+            return False
+
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(timeout)
+            s.connect((host, port))
+            s.sendto(b'', (host, port))
+            s.recv(1)
+        return True
+    except (socket.timeout, socket.error) as e:
+        logging.debug(f"RTP URL {url} 检查失败：{e}")
+        return False
+    except Exception as e:
+        logging.debug(f"RTP URL {url} 检查错误：{e}")
+        return False
+
+def check_p3p_url(url, timeout):
+    """检查 P3P URL 是否可达（简单 TCP 连接和 HTTP 响应头检查）。"""
+    try:
+        parsed_url = urlparse(url)
+        host = parsed_url.hostname
+        port = parsed_url.port if parsed_url.port else 80
+        path = parsed_url.path if parsed_url.path else '/'
+
+        if not host:
+            logging.debug(f"P3P URL {url} 解析失败：缺少主机。")
+            return False
+
+        with socket.create_connection((host, port), timeout=timeout) as s:
+            request = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: Python\r\n\r\n"
+            s.sendall(request.encode())
+            response = s.recv(1024).decode('utf-8', errors='ignore')
+            return "P3P" in response or response.startswith("HTTP/1.")
+    except Exception as e:
+        logging.debug(f"P3P URL {url} 检查失败：{e}")
+        return False
+
+def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHANNEL_CHECK_TIMEOUT):
+    """检查单个频道的有效性和速度，并记录失败状态以便跳过。"""
+    current_time = datetime.now()
+    current_url_state = url_states.get(url, {})
+
+    if 'stream_check_failed_at' in current_url_state:
+        last_failed_time_str = current_url_state['stream_check_failed_at']
+        try:
+            last_failed_datetime = datetime.fromisoformat(last_failed_time_str)
+            time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
+            if time_since_failed_hours < STREAM_SKIP_FAILED_HOURS:
+                logging.debug(f"跳过频道 {channel_name} ({url})，因为在冷却期 ({STREAM_SKIP_FAILED_HOURS}h) 内检测失败。上次失败于 {last_failed_time_str}，已过 {time_since_failed_hours:.2f}h。")
+                return None, False
+        except ValueError:
+            logging.warning(f"无法解析 URL {url} 的失败时间戳：{last_failed_time_str}")
+            pass
+
+    start_time = time.time()
+    is_valid = False
+    protocol_checked = False
+
+    try:
+        if url.startswith("http"):
+            is_valid = check_http_url(url, timeout)
+            protocol_checked = True
+        elif url.startswith("p3p"):
+            is_valid = check_p3p_url(url, timeout)
+            protocol_checked = True
+        elif url.startswith("rtmp"):
+            is_valid = check_rtmp_url(url, timeout)
+            protocol_checked = True
+        elif url.startswith("rtp"):
+            is_valid = check_rtp_url(url, timeout)
+            protocol_checked = True
+        else:
+            logging.debug(f"频道 {channel_name} 的协议不受支持：{url}")
+            if url not in url_states:
+                url_states[url] = {}
+            url_states[url]['last_checked_protocol_unsupported'] = current_time.isoformat()
+            url_states[url].pop('stream_check_failed_at', None)
+            url_states[url].pop('stream_fail_count', None)
+            url_states[url]['last_stream_checked'] = current_time.isoformat()
+            return None, False
+
+        elapsed_time = (time.time() - start_time) * 1000
+
+        if is_valid:
+            if url not in url_states:
+                url_states[url] = {}
+            url_states[url].pop('stream_check_failed_at', None)
+            url_states[url].pop('stream_fail_count', None)
+            url_states[url]['last_successful_stream_check'] = current_time.isoformat()
+            url_states[url]['last_stream_checked'] = current_time.isoformat()
+            logging.debug(f"频道 {channel_name} ({url}) 检测成功，耗时 {elapsed_time:.0f} 毫秒。")
+            return elapsed_time, True
+        else:
+            if url not in url_states:
+                url_states[url] = {}
+            url_states[url]['stream_check_failed_at'] = current_time.isoformat()
+            url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
+            url_states[url]['last_stream_checked'] = current_time.isoformat()
+            logging.debug(f"频道 {channel_name} ({url}) 检测失败。")
+            return None, False
+    except Exception as e:
+        if url not in url_states:
+            url_states[url] = {}
+        url_states[url]['stream_check_failed_at'] = current_time.isoformat()
+        url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
+        url_states[url]['last_stream_checked'] = current_time.isoformat()
+        logging.debug(f"检查频道 {channel_name} ({url}) 时发生错误：{e}")
+        return None, False
+
+def process_single_channel_line(channel_line, url_states):
+    """处理单行频道数据，进行有效性检查。"""
+    if "://" not in channel_line:
+        logging.debug(f"跳过无效频道行（无协议）：{channel_line}")
+        return None, None
+    parts = channel_line.split(',', 1)
+    if len(parts) == 2:
+        name, url = parts
+        url = url.strip()
+        elapsed_time, is_valid = check_channel_validity_and_speed(name, url, url_states)
+        if is_valid:
+            return elapsed_time, f"{name},{url}"
+    return None, None
+
+def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.get('channel_check_workers', 200)):
+    """多线程检查频道有效性。"""
+    results = []
+    checked_count = 0
+    total_channels = len(channel_lines)
+    logging.warning(f"开始多线程频道有效性和速度检测，总计 {total_channels} 个频道...")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_single_channel_line, line, url_states): line for line in channel_lines}
+        for future in as_completed(futures):
+            checked_count += 1
+            if checked_count % 100 == 0:
+                logging.warning(f"已检查 {checked_count}/{total_channels} 个频道...")
             try:
-                valid_ch = future.result()
-                if valid_ch:
-                    valid_channels.append(valid_ch)
-                    # 检查是否匹配分类，如果不匹配则加入未匹配列表
-                    matched_category = False
-                    for category_item in CONFIG['categories']:
-                        if re.search(category_item['pattern'], valid_ch['name'], re.IGNORECASE):
-                            matched_category = True
-                            break
-                    if not matched_category:
-                        unmatched_names.add(valid_ch['name'])
-                
-                # 打印进度
-                if (i + 1) % 100 == 0 or (i + 1) == total_channels:
-                    logging.info(f"已检查 {i + 1}/{total_channels} 个频道...")
-
+                elapsed_time, result_line = future.result()
+                if elapsed_time is not None and result_line is not None:
+                    results.append((elapsed_time, result_line))
             except Exception as exc:
-                logging.error(f"频道 '{original_channel['name']}' (URL: {original_channel['url']}) 检查时发生异常: {exc}")
+                logging.warning(f"频道行处理期间发生异常：{exc}")
+    return results
+
+# --- 文件合并和排序函数 ---
+def generate_update_time_header():
+    """生成文件顶部的更新时间信息。"""
+    now = datetime.now()
+    return [
+        f"更新时间,#genre#\n",
+        f"{now.strftime('%Y-%m-%d')},url\n",
+        f"{now.strftime('%H:%M:%S')},url\n"
+    ]
+
+def group_and_limit_channels(lines):
+    """对频道进行分组并限制每个频道名称下的 URL 数量。"""
+    grouped_channels = {}
+    for line_content in lines:
+        line_content = line_content.strip()
+        if line_content:
+            channel_name = line_content.split(',', 1)[0].strip()
+            if channel_name not in grouped_channels:
+                grouped_channels[channel_name] = []
+            grouped_channels[channel_name].append(line_content)
+
+    final_grouped_lines = []
+    for channel_name in grouped_channels:
+        for ch_line in grouped_channels[channel_name][:MAX_CHANNEL_URLS_PER_GROUP]:
+            final_grouped_lines.append(ch_line + '\n')
+    return final_grouped_lines
+
+def merge_local_channel_files(local_channels_directory, output_file_name="iptv_list.txt"):
+    """合并本地生成的频道列表文件，追加模式并去重。"""
+    existing_channels = read_existing_channels(output_file_name)
+    final_output_lines = []
     
-    logging.info(f"频道检查完成。发现 {len(valid_channels)} 个有效频道。")
-    if unmatched_names:
-        logging.warning(f"发现 {len(unmatched_names)} 个未匹配分类的有效频道名称。")
-    return valid_channels, list(unmatched_names)
+    if not existing_channels:
+        final_output_lines.extend(generate_update_time_header())
 
-# --- 文件合并和写入函数 ---
-def sort_channels_by_category(channels):
-    """
-    根据配置中的类别规则对频道进行排序。
-    """
-    sorted_channels_dict = {category: [] for category in ORDERED_CATEGORIES}
-    other_channels = []
+    all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
 
-    for channel in channels:
-        matched = False
-        for category_item in CONFIG['categories']:
-            # 尝试匹配分类模式
-            if re.search(category_item['pattern'], channel['name'], re.IGNORECASE):
-                sorted_channels_dict[category_item['name']].append(channel)
-                matched = True
-                break
-        if not matched:
-            other_channels.append(channel) # 放到“其他”类别
+    files_to_merge_paths = []
+    processed_files = set()
 
-    # 按照配置的顺序组合
-    final_m3u_lines = ["#EXTM3U"] # M3U 文件开头
-    
     for category in ORDERED_CATEGORIES:
-        category_channels = sorted(sorted_channels_dict[category], key=lambda x: (x['name'], x['url']))
-        if category_channels:
-            final_m3u_lines.append(f"\n#EXTINF:-1 group-title=\"{category}\",{category}") # 类别标题
-            for ch in category_channels:
-                final_m3u_lines.append(f"#EXTINF:-1 group-title=\"{category}\",{ch['name']}")
-                final_m3u_lines.append(ch['url'])
+        file_name = f"{category}_iptv.txt"
+        if file_name in all_iptv_files_in_dir and file_name not in processed_files:
+            files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
+            processed_files.add(file_name)
+
+    for file_name in sorted(all_iptv_files_in_dir):
+        if file_name not in processed_files:
+            files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
+            processed_files.add(file_name)
+
+    new_channels = set()
+    for file_path in files_to_merge_paths:
+        with open(file_path, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            if not lines:
+                continue
+
+            # Skip header lines if they exist, or handle them based on your merge logic.
+            # Here, I'm assuming the first line might be a category header like "Category,#genre#"
+            # and subsequent lines are channel data.
+            # If the category header should only appear once at the top of the merged file,
+            # this logic might need adjustment. For now, it will append if existing_channels is empty.
+            if '#genre#' in lines[0].strip():
+                # If you want to include category headers for each merged section in the final output,
+                # you can add it here. Otherwise, ensure it's handled only once at the top.
+                pass 
+            
+            for line in lines: # Iterate through all lines to extract channels
+                line = line.strip()
+                if line and ',' in line and '#genre#' not in line: # Exclude #genre# lines from being treated as channels
+                    name, url = line.split(',', 1)
+                    new_channels.add((name.strip(), url.strip()))
+
+    all_channels = existing_channels | new_channels
     
-    # 添加“其他”频道
-    if other_channels:
-        other_channels_sorted = sorted(other_channels, key=lambda x: (x['name'], x['url']))
-        final_m3u_lines.append(f"\n#EXTINF:-1 group-title=\"其他\",其他") # 其他类别标题
-        for ch in other_channels_sorted:
-            final_m3u_lines.append(f"#EXTINF:-1 group-title=\"其他\",{ch['name']}")
-            final_m3u_lines.append(ch['url'])
+    # Sort all_channels before writing to ensure consistent output
+    sorted_all_channels = sorted(list(all_channels), key=lambda x: x[0])
 
-    return "\n".join(final_m3u_lines)
+    # Rewrite the entire file instead of appending, to ensure order and cleanliness
+    try:
+        with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
+            iptv_list_file.writelines(generate_update_time_header()) # Add header again
+            for name, url in sorted_all_channels:
+                iptv_list_file.write(f"{name},{url}\n")
+        logging.warning(f"\n所有区域频道列表文件已合并并追加。输出已保存到：{output_file_name}")
+    except Exception as e:
+        logging.error(f"追加写入文件 '{output_file_name}' 发生错误：{e}")
 
-def write_unmatched_channels_to_file(unmatched_channels_list, unmatched_output_file_path):
-    """
-    将不匹配分类的频道名称写入文件，并进行去重合并。
-    """
+# --- 远程 TXT 文件操作函数 ---
+def read_txt_to_array_remote(file_path_in_repo):
+    """从远程 GitHub 仓库的 TXT 文件读取内容到数组。"""
+    content = fetch_from_github(file_path_in_repo)
+    if content:
+        lines = content.split('\n')
+        return [line.strip() for line in lines if line.strip()]
+    return []
+
+def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
+    """将数组内容写入远程 GitHub 仓库的 TXT 文件。"""
+    content = '\n'.join(data_array)
+    success = save_to_github(file_path_in_repo, content, commit_message)
+    if not success:
+        logging.error(f"将数据写入远程 '{file_path_in_repo}' 失败。")
+
+# --- GitHub URL 自动发现函数 ---
+def auto_discover_github_urls(urls_file_path_remote, github_token):
+    """自动从 GitHub 发现新的 IPTV 源 URL，并记录每个关键词找到的 URL 数量。"""
+    if not github_token:
+        logging.warning("环境变量 'BOT' 未设置。跳过 GitHub URL 自动发现。")
+        return
+
+    existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
+    found_urls = set()
+    headers = {
+        "Accept": "application/vnd.github.v3.text-match+json",
+        "Authorization": f"token {github_token}"
+    }
+
+    logging.warning("正在开始从 GitHub 自动发现新的 IPTV 源 URL...")
+
+    keyword_url_counts = {keyword: 0 for keyword in SEARCH_KEYWORDS}
+
+    for i, keyword in enumerate(SEARCH_KEYWORDS):
+        keyword_found_urls = set()
+        if i > 0:
+            logging.warning(f"切换到下一个关键词：'{keyword}'。等待 {GITHUB_API_RETRY_WAIT} 秒以避免速率限制...")
+            time.sleep(GITHUB_API_RETRY_WAIT)
+
+        page = 1
+        while page <= MAX_SEARCH_PAGES:
+            params = {
+                "q": keyword,
+                "sort": "indexed",
+                "order": "desc",
+                "per_page": PER_PAGE,
+                "page": page
+            }
+            try:
+                response = session.get(
+                    f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
+                    headers=headers,
+                    params=params,
+                    timeout=GITHUB_API_TIMEOUT
+                )
+                response.raise_for_status()
+                data = response.json()
+
+                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
+
+                if rate_limit_remaining == 0:
+                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
+                    logging.warning(f"GitHub API 速率限制已达到！剩余请求：0。等待 {wait_seconds:.0f} 秒后重试。")
+                    time.sleep(wait_seconds)
+                    continue
+
+                if not data.get('items'):
+                    logging.debug(f"在关键词 '{keyword}' 的第 {page} 页上未找到更多结果。")
+                    break
+
+                for item in data['items']:
+                    html_url = item.get('html_url', '')
+                    raw_url = None
+
+                    match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
+                    if match:
+                        user = match.group(1)
+                        repo = match.group(2)
+                        branch = match.group(3)
+                        path = match.group(4)
+                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{path}"
+
+                    if raw_url:
+                        cleaned_url = clean_url_params(raw_url)
+                        if cleaned_url.startswith("https://raw.githubusercontent.com/") and \
+                           cleaned_url.lower().endswith(('.m3u', '.m3u8', '.txt')) and \
+                           pre_screen_url(cleaned_url):
+                            found_urls.add(cleaned_url)
+                            keyword_found_urls.add(cleaned_url)
+                            logging.debug(f"已发现原始 GitHub URL（通过预筛选）：{cleaned_url}")
+                        else:
+                            logging.debug(f"正在跳过非原始 GitHub M3U/M3U8/TXT 链接或未通过预筛选：{raw_url}")
+                    else:
+                        logging.debug(f"无法从 HTML URL 构造原始 URL：{html_url}")
+
+                if len(data['items']) < PER_PAGE:
+                    break
+
+                page += 1
+                time.sleep(2)
+
+            except requests.exceptions.RequestException as e:
+                logging.error(f"GitHub API 请求失败（关键词：{keyword}，页码：{page}）：{e}")
+                if response.status_code == 403:
+                    rate_limit_reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+                    wait_seconds = max(0, rate_limit_reset_time - time.time()) + 5
+                    logging.warning(f"GitHub API 速率限制已达到！等待 {wait_seconds:.0f} 秒后重试。")
+                    time.sleep(wait_seconds)
+                    continue
+                else:
+                    break
+            except Exception as e:
+                logging.error(f"GitHub URL 自动发现期间发生未知错误：{e}")
+                break
+
+        keyword_url_counts[keyword] = len(keyword_found_urls)
+        logging.warning(f"关键词 '{keyword}' 找到 {keyword_url_counts[keyword]} 个有效 URL。")
+
+    logging.warning("\n=== 关键词搜索结果总结 ===")
+    low_result_threshold = 5
+    low_or_no_result_keywords = []
+    for keyword, count in keyword_url_counts.items():
+        logging.warning(f"关键词 '{keyword}'：{count} 个 URL")
+        if count <= low_result_threshold:
+            low_or_no_result_keywords.append((keyword, count))
+
+    if low_or_no_result_keywords:
+        logging.warning(f"\n建议从 config.yaml 的 search_keywords 中删除以下结果较少（≤{low_result_threshold}）或无结果的关键词，以节省时间和 API 请求：")
+        for keyword, count in low_or_no_result_keywords:
+            logging.warning(f"  - '{keyword}' （找到 {count} 个 URL）")
+    else:
+        logging.warning("所有关键词均有合理数量的搜索结果，无需删除。")
+
+    new_urls_count = 0
+    for url in found_urls:
+        if url not in existing_urls:
+            existing_urls.add(url)
+            new_urls_count += 1
+
+    if new_urls_count > 0:
+        updated_urls = list(existing_urls)
+        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "通过 GitHub 发现的新 URL 更新 urls.txt")
+        logging.warning(f"成功发现并添加了 {new_urls_count} 个新的 GitHub IPTV 源 URL 到 {urls_file_path_remote}。总 URL 数：{len(updated_urls)}")
+    else:
+        logging.warning("未发现新的 GitHub IPTV 源 URL。")
+
+    logging.warning("GitHub URL 自动发现完成。")
+
+# --- 主程序逻辑 ---
+def main():
+    # 步骤 1: 自动发现新的 GitHub URL
+    auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
+
+    # 步骤 2: 读取所有待处理的 URL
+    urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
+    if not urls:
+        logging.warning(f"在远程 '{URLS_PATH_IN_REPO}' 中未找到 URL，脚本将提前退出。")
+        return
+
+    # 步骤 3: 加载历史 URL 状态
+    url_states = load_url_states_remote() # This now handles expiration
+    logging.warning(f"已加载 {len(url_states)} 个历史 URL 状态。")
+
+    # 步骤 4: 从所有源提取频道，并更新 URL 内容状态
+    all_extracted_channels = set()
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_url = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                result_channels = future.result()
+                for name, addr in result_channels:
+                    all_extracted_channels.add((name, addr))
+            except Exception as exc:
+                logging.error(f"处理源 '{url}' 时发生异常：{exc}")
+
+    # 步骤 5: 保存更新后的 URL 内容状态
+    save_url_states_remote(url_states)
+    logging.warning("频道检测状态已保存到远程。")
+
+    # 步骤 6: 过滤和清理频道
+    filtered_channels = []
+    for channel in all_extracted_channels:
+        try:
+            filtered = filter_and_modify_channels([channel])
+            filtered_channels.extend(filtered)
+        except Exception as e:
+            name, url = channel
+            logging.error(f"过滤频道 {name},{url} 时发生错误：{e}，跳过此频道。")
+            continue
+
+    unique_filtered_channels = list(set(filtered_channels))
+    unique_filtered_channels_str = [f"{name},{url}" for name, url in unique_filtered_channels]
+
+    logging.warning(f"\n过滤和清理后，剩余 {len(unique_filtered_channels_str)} 个唯一频道。")
+
+    # 步骤 7: 多线程检查频道有效性及速度
+    valid_channels_with_speed = check_channels_multithreaded(unique_filtered_channels_str, url_states)
+    logging.warning(f"有效且响应的频道数量：{len(valid_channels_with_speed)}")
+
+    # 步骤 8: 保存所有频道检测后的最新状态
+    save_url_states_remote(url_states)
+    logging.warning("频道检测状态已保存到远程。")
+
+    # 步骤 9: 将有效频道追加到临时文件
+    iptv_speed_file_path = os.path.join(os.getcwd(), 'iptv_speed.txt')
+    # Changed to 'w' mode to overwrite and then re-add header for consistent formatting
+    # The previous logic relied on write_sorted_channels_to_file which appends and deduplicates,
+    # but the final merge_local_channel_files function already handles deduplication and sorting for the final output.
+    # For intermediate file 'iptv_speed.txt', it's better to ensure it's clean for each run.
+    try:
+        with open(iptv_speed_file_path, 'w', encoding='utf-8') as file:
+            # You might choose to add a header here if needed for debugging this specific file
+            for elapsed_time, line_content in valid_channels_with_speed:
+                file.write(f"{line_content}\n") # Just write the channel line, speed is for sorting/info
+        logging.debug(f"有效频道列表已写入到 {iptv_speed_file_path}")
+    except Exception as e:
+        logging.error(f"写入文件 '{iptv_speed_file_path}' 发生错误：{e}")
+
+
+    # 步骤 10: 准备本地频道目录和模板
+    local_channels_directory = os.path.join(os.getcwd(), '地方频道')
+    os.makedirs(local_channels_directory, exist_ok=True)
+
+    template_directory = os.path.join(os.getcwd(), '频道模板')
+    os.makedirs(template_directory, exist_ok=True)
+    template_files = [f for f in os.listdir(template_directory) if f.endswith('.txt')]
+
+    channels_for_matching = read_txt_to_array_local(iptv_speed_file_path)
+
+    all_template_channel_names = set()
+    for template_file in template_files:
+        names_from_current_template = read_txt_to_array_local(os.path.join(template_directory, template_file))
+        all_template_channel_names.update(names_from_current_template)
+
+    # 步骤 11: 根据模板分类并追加频道文件
+    for template_file in template_files:
+        template_channels_names = set(read_txt_to_array_local(os.path.join(template_directory, template_file)))
+        template_name = os.path.splitext(template_file)[0]
+
+        current_template_matched_channels = []
+        for channel_line in channels_for_matching:
+            channel_name = channel_line.split(',', 1)[0].strip()
+            if channel_name in template_channels_names:
+                current_template_matched_channels.append(channel_line)
+
+        if "央视" in template_name or "CCTV" in template_name:
+            current_template_matched_channels = sort_cctv_channels(current_template_matched_channels)
+            logging.warning(f"已按数字对 '{template_name}' 频道进行排序。")
+
+        output_file_path = os.path.join(local_channels_directory, f"{template_name}_iptv.txt")
+        existing_channels = read_existing_channels(output_file_path)
+        new_channels = set()
+        for channel in current_template_matched_channels:
+            name, url = channel.split(',', 1)
+            new_channels.add((name.strip(), url.strip()))
+        
+        all_channels_for_template = existing_channels | new_channels
+        
+        # Sort channels for this specific template file
+        sorted_template_channels = sorted(list(all_channels_for_template), key=lambda x: x[0])
+
+        try:
+            with open(output_file_path, 'w', encoding='utf-8') as f: # Changed to 'w' mode to overwrite and sort
+                f.write(f"{template_name},#genre#\n") # Always write the category header
+                for name, url in sorted_template_channels:
+                    f.write(f"{name},{url}\n")
+            logging.warning(f"频道列表已写入到：'{template_name}_iptv.txt'，总计 {len(all_channels_for_template)} 个频道。")
+        except Exception as e:
+            logging.error(f"写入文件 '{output_file_path}' 发生错误：{e}")
+
+    # 步骤 12: 合并所有分类的频道文件，生成最终 IPTV 列表
+    final_iptv_list_output_file = "iptv_list.txt"
+    merge_local_channel_files(local_channels_directory, final_iptv_list_output_file)
+
+    # 步骤 13: 上传最终的 IPTV 列表到 GitHub
+    try:
+        with open(final_iptv_list_output_file, "r", encoding="utf-8") as f:
+            final_iptv_content = f.read()
+        save_to_github(f"output/{final_iptv_list_output_file}", final_iptv_content, "更新最终 IPTV 列表")
+        logging.warning(f"已将 {final_iptv_list_output_file} 推送到远程仓库。")
+    except Exception as e:
+        logging.error(f"无法将 {final_iptv_list_output_file} 推送到 GitHub：{e}")
+
+    # 步骤 14: 找出并追加未匹配的频道名称
+    unmatched_channels_list = []
+    for channel_line in channels_for_matching:
+        channel_name = channel_line.split(',', 1)[0].strip()
+        if channel_name not in all_template_channel_names:
+            unmatched_channels_list.append(channel_name) # Store just the name
+
+    unmatched_output_file_path = os.path.join(os.getcwd(), 'unmatched_channels.txt')
+    
+    # Read existing unmatched names (not name,url pairs)
     existing_unmatched_names = set()
     try:
-        if os.path.exists(unmatched_output_file_path):
-            with open(unmatched_output_file_path, 'r', encoding='utf-8') as f:
-                for line in f:
-                    existing_unmatched_names.add(line.strip())
+        with open(unmatched_output_file_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                existing_unmatched_names.add(line.strip())
     except FileNotFoundError:
-        pass # 文件不存在是正常情况，无需报错
+        pass # File might not exist yet
 
-    new_unmatched_names = set(unmatched_channels_list)
-    
-    # 合并现有和新的不匹配名称
+    new_unmatched_names = set(unmatched_channels_list) # Convert list to set for easy union
+
     all_unmatched_names = existing_unmatched_names | new_unmatched_names
     
+    # Sort and write to file
     try:
-        with open(unmatched_output_file_path, 'w', encoding='utf-8') as f:
+        with open(unmatched_output_file_path, 'w', encoding='utf-8') as f: # Overwrite to ensure sorted and unique
             for name in sorted(list(all_unmatched_names)):
                 f.write(f"{name}\n")
         logging.warning(f"\n已将不匹配但已检测到的频道名称列表写入到：'{unmatched_output_file_path}'，总计 {len(all_unmatched_names)} 个名称。")
-    except IOError as e: # 更具体的异常
-        logging.error(f"写入文件 '{unmatched_output_file_path}' 发生 IO 错误：{e}")
     except Exception as e:
-        logging.error(f"写入文件 '{unmatched_output_file_path}' 发生未知错误：{e}")
+        logging.error(f"写入文件 '{unmatched_output_file_path}' 发生错误：{e}")
 
-def merge_local_channel_files(source_dir, output_file_name):
-    """
-    合并本地的频道文件（包括临时文件和配置中指定的分类文件），
-    进行去重和排序，并生成最终的 M3U 列表。
-    """
-    all_channels = {} # 使用字典进行去重：{(name, url): channel_dict}
-    
-    logging.info(f"正在合并本地文件 '{source_dir}' 中的频道。")
-    
-    # 1. 首先添加临时文件中的频道
-    temp_iptv_file_path = os.path.join(source_dir, TEMP_IPTV_FILE)
-    if os.path.exists(temp_iptv_file_path):
-        try:
-            with open(temp_iptv_file_path, "r", encoding="utf-8") as file:
-                for line in file:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        parts = line.split(',', 1)
-                        if len(parts) == 2:
-                            name = parts[0].strip()
-                            url = clean_url_params(parts[1].strip()) # 清理 URL
-                            all_channels[(name, url)] = {"name": name, "url": url}
-            logging.info(f"已从临时文件 '{TEMP_IPTV_FILE}' 中加载频道。")
-        except FileNotFoundError: # 理论上上面if os.path.exists已经检查了，这里只是防御性编程
-            pass 
-        except Exception as e:
-            logging.error(f"读取临时文件 '{TEMP_IPTV_FILE}' 发生错误: {e}")
-
-    # 2. 然后添加配置中指定的分类文件中的频道
-    for category_item in CONFIG['categories']:
-        file_name = category_item.get('file')
-        if file_name:
-            file_path = os.path.join(source_dir, file_name)
-            if os.path.exists(file_path):
-                try:
-                    with open(file_path, "r", encoding="utf-8") as file:
-                        for line in file:
-                            line = line.strip()
-                            # 尝试解析 M3U 格式的频道信息
-                            if line.startswith("#EXTINF:-1"):
-                                # 提取名称
-                                name_match = re.search(r',([^,]+)$', line)
-                                if name_match:
-                                    name = name_match.group(1).strip()
-                                else:
-                                    logging.warning(f"无法从 EXTINF 行提取频道名称：{line}")
-                                    continue
-                                # 下一行通常是 URL
-                                try:
-                                    url = next(file).strip()
-                                    if url:
-                                        url = clean_url_params(url)
-                                        all_channels[(name, url)] = {"name": name, "url": url}
-                                except StopIteration:
-                                    logging.warning(f"EXTINF 行 '{line}' 后缺少 URL。")
-                                    break # 提前结束，防止无限循环
-                            elif line and not line.startswith('#'): # 兼容非M3U格式的 name,url
-                                parts = line.split(',', 1)
-                                if len(parts) == 2:
-                                    name = parts[0].strip()
-                                    url = clean_url_params(parts[1].strip())
-                                    all_channels[(name, url)] = {"name": name, "url": url}
-
-                    logging.info(f"已从分类文件 '{file_name}' 中加载频道。")
-                except FileNotFoundError:
-                    logging.warning(f"配置中的本地分类文件 '{file_name}' 未找到，跳过合并。")
-                except Exception as e:
-                    logging.error(f"读取本地分类文件 '{file_name}' 发生错误: {e}")
-            else:
-                logging.debug(f"本地分类文件 '{file_name}' 不存在，跳过。")
-
-
-    final_channels_list = list(all_channels.values())
-    logging.info(f"合并所有本地文件后，总计 {len(final_channels_list)} 个频道（已去重）。")
-    
-    # 排序频道并生成 M3U 内容
-    m3u_content = sort_channels_by_category(final_channels_list)
-
+    # 步骤 15: 清理临时文件
     try:
-        with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
-            iptv_list_file.write(m3u_content)
-        logging.info(f"已将合并、去重和排序后的频道列表写入到：'{output_file_name}'。")
-    except IOError as e:
-        logging.error(f"写入文件 '{output_file_name}' 发生 IO 错误：{e}")
-    except Exception as e:
-        logging.error(f"写入文件 '{output_file_name}' 发生未知错误：{e}")
+        if os.path.exists('iptv.txt'): # This file is not generated in the current script, might be legacy
+            os.remove('iptv.txt')
+            logging.debug(f"已删除临时文件 'iptv.txt'。")
+        if os.path.exists('iptv_speed.txt'):
+            os.remove('iptv_speed.txt')
+            logging.debug(f"已删除临时文件 'iptv_speed.txt'。")
+    except OSError as e:
+        logging.warning(f"删除临时文件时发生错误：{e}")
 
-# --- 主函数 ---
-def main():
-    start_time = time.time()
-    logging.info("IPTV 频道抓取和管理脚本开始运行...")
+def sort_cctv_channels(channels):
+    """对央视频道进行数字排序。"""
+    def channel_key(channel_line):
+        channel_name_full = channel_line.split(',')[0].strip()
+        match = re.search(r'\d+', channel_name_full)
+        if match:
+            return int(match.group())
+        return float('inf')
 
-    # 步骤 1: 加载配置
-    load_config()
-
-    # 步骤 2: 获取所有待抓取的 URL
-    urls_to_crawl_content, _ = get_github_file_content(URLS_PATH_IN_REPO)
-    if not urls_to_crawl_content:
-        logging.error(f"无法从 '{URLS_PATH_IN_REPO}' 获取 URL 列表，脚本终止。")
-        exit(1)
-
-    urls_config = []
-    try:
-        urls_config = json.loads(urls_to_crawl_content)
-    except json.JSONDecodeError as e:
-        logging.error(f"解析 URL 列表文件 '{URLS_PATH_IN_REPO}' 失败: {e}。请检查 JSON 格式。")
-        exit(1)
-
-    # 步骤 3: 从所有 URL 中提取频道
-    all_extracted_channels = get_channel_urls(urls_config)
-    logging.info(f"已从所有配置的 URL 中提取到 {len(all_extracted_channels)} 个频道。")
-
-    # 步骤 4: 多线程检查频道有效性
-    valid_channels, unmatched_names = check_channels_multithreaded(all_extracted_channels)
-
-    # 步骤 5: 将所有有效频道写入临时文件 iptv.txt
-    try:
-        with open(TEMP_IPTV_FILE, 'w', encoding='utf-8') as f:
-            for ch in valid_channels:
-                f.write(f"{ch['name']},{ch['url']}\n")
-        logging.info(f"所有有效频道已写入临时文件 '{TEMP_IPTV_FILE}'，共 {len(valid_channels)} 个。")
-    except IOError as e:
-        logging.error(f"写入临时文件 '{TEMP_IPTV_FILE}' 发生 IO 错误: {e}")
-        # 这里可以选择是否终止脚本，如果临时文件写入失败，后续合并可能会有问题
-        exit(1) 
-
-    # 步骤 6: 写入不匹配的频道名称列表
-    write_unmatched_channels_to_file(unmatched_names, UNMATCHED_CHANNELS_FILE)
-
-    # 步骤 7: 合并本地的频道文件，生成最终的 iptv_list.txt
-    # '.', 'iptv_list.txt' 表示在当前目录下生成 iptv_list.txt
-    merge_local_channel_files('.', FINAL_IPTV_LIST_FILE) 
-
-    # 步骤 8: 更新 URL 状态文件到 GitHub
-    url_states_sha = get_current_sha(URL_STATES_PATH_IN_REPO)
-    new_url_states_content = json.dumps(URL_STATES, indent=4, ensure_ascii=False)
-    update_github_file(URL_STATES_PATH_IN_REPO, new_url_states_content, "更新 URL 抓取状态", url_states_sha)
-
-    # 步骤 9: 更新 iptv_list.txt 到 GitHub
-    iptv_list_sha = get_current_sha(FINAL_IPTV_LIST_FILE) # 获取本地生成的文件的 SHA
-    with open(FINAL_IPTV_LIST_FILE, 'r', encoding='utf-8') as f:
-        final_iptv_content = f.read()
-    update_github_file(FINAL_IPTV_LIST_FILE, final_iptv_content, "更新 IPTV 频道列表", iptv_list_sha)
-
-    # 步骤 10: 更新 unmatched_channels.txt 到 GitHub
-    unmatched_file_sha = get_current_sha(UNMATCHED_CHANNELS_FILE)
-    with open(UNMATCHED_CHANNELS_FILE, 'r', encoding='utf-8') as f:
-        unmatched_content = f.read()
-    update_github_file(UNMATCHED_CHANNELS_FILE, unmatched_content, "更新不匹配频道名称列表", unmatched_file_sha)
-    
-    # 步骤 11: 清理临时文件
-    try:
-        if os.path.exists(TEMP_IPTV_FILE):
-            os.remove(TEMP_IPTV_FILE)
-            logging.debug(f"已删除临时文件 '{TEMP_IPTV_FILE}'。")
-        if os.path.exists(TEMP_IPTV_SPEED_FILE): # 如果有测速功能产生此文件
-            os.remove(TEMP_IPTV_SPEED_FILE)
-            logging.debug(f"已删除临时文件 '{TEMP_IPTV_SPEED_FILE}'。")
-    except Exception as e:
-        logging.error(f"清理临时文件时发生错误: {e}")
-
-    end_time = time.time()
-    duration = end_time - start_time
-    logging.info(f"IPTV 频道抓取和管理脚本运行结束。总耗时：{duration:.2f} 秒。")
+    return sorted(channels, key=channel_key)
 
 if __name__ == "__main__":
     main()
