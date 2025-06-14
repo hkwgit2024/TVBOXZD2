@@ -1,0 +1,40 @@
+name: Process IPTV List
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间 0 点运行
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  process-iptv:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Run IPTV processing script
+      run: |
+        python tvbox/process_iptv.py
+
+    - name: Commit and push generated files
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        git add tvbox/*.txt tvbox/*.m3u
+        git commit -m 'Update generated IPTV files' || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
