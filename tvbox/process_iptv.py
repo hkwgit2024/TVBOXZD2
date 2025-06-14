@@ -184,11 +184,20 @@ class IPTVProcessor:
                     line = line.strip()
                     if not line or line.startswith('#'):
                         continue
+                    # 尝试用制表符分割
                     parts = line.split('\t')
+                    delimiter = '\t'
+                    if len(parts) < 2:
+                        # 尝试用逗号分割
+                        parts = line.split(',')
+                        delimiter = ','
                     if len(parts) < 2:
                         logging.warning(f"无效行格式: {line}")
                         continue
-                    name, url = parts[0], parts[-1]
+                    name, url = parts[0].strip(), parts[-1].strip()
+                    if not name or not url:
+                        logging.warning(f"空名称或URL: {line}")
+                        continue
                     if not url.startswith(('http://', 'https://')):
                         logging.warning(f"无效 URL 格式: {url}")
                         continue
@@ -196,6 +205,7 @@ class IPTVProcessor:
                         logging.info(f"排除条目: {name}")
                         continue
                     entries.append((name, url))
+                    logging.debug(f"解析成功: {name} | {url} (分隔符: {delimiter})")
         except Exception as e:
             logging.error(f"解析文件 {self.input_file} 失败: {e}")
             return categorized
