@@ -1,0 +1,829 @@
+# 频道名称替换规则
+channel_name_replacements:
+  "AMC电影": "AMC"
+  "DWEnglish": "DW"
+  "amc电影频英": "AMC"
+  "ArirangEnglish": "Arirang"
+  "ArirangTV": "Arirang"
+  "Arirang综": "Arirang"
+  "AXN電影": "AXN"
+  "AXN頻道": "AXN"
+  "BBC_News": "BBC News"
+  "BBCNews": "BBC News"
+  "BBC新闻": "BBC News"
+  "Bloomberg_TV": "Bloomberg TV"
+  "CBSN": "CBS News"
+  "CHC动作电影": "CHC动作"
+  "CHC家庭电影": "CHC家庭"
+  "CHC家庭影院": "CHC家庭"
+  "CHC影迷电影": "CHC影迷"
+  "CNA": "CNA"
+  "CNA亚洲新闻": "CNA"
+  "CNN News": "CNN"
+  "CNN新闻": "CNN"
+  "FOX NEWS": "Fox News"
+  "HBo": "HBO"
+  "HBO_HD": "HBO"
+  "HBOFamily": "HBO家庭"
+  "HBO家庭": "HBO家庭"
+  "HBO强档": "HBO强档"
+  "HBO原创": "HBO原创"
+  "MyTime Movie Network": "MyTime Movies"
+  "Mytime Movie Network": "MyTime Movies"
+  "NBC NEWS": "NBC News"
+  "NowNews": "Now新闻"
+  "Now新聞": "Now新闻"
+  "TVBS": "TVBS新闻"
+  "TVBS-Asia": "TVBS亚洲"
+  "TVBSAsia(TVBS亚洲)": "TVBS亚洲"
+  "NHK新闻英": "NHK"
+  "华视戲劇": "华视戏剧"
+  "TVBSHD": "TVBS新闻"
+  "TVBSNEWS": "TVBS新闻"
+  "TVBS新闻": "TVBS新闻"
+  "tvbs新闻": "TVBS新闻"
+  "TVBS新闻Asia": "TVBS亚洲"
+  "TVBS新闻HD": "TVBS新闻"
+  "TVBS新闻NEW": "TVBS新闻"
+  "TVBS新闻NEWS": "TVBS新闻"
+  "TVBS新闻新闻": "TVBS新闻"
+  "TVBS新闻新聞": "TVBS新闻"
+  "TVBS新闻亚洲": "TVBS亚洲"
+  "TVBS新闻亞洲": "TVBS亚洲"
+  "tvbs欢乐": "TVBS欢乐"
+  "TVBS新闻欢乐": "TVBS欢乐"
+  "TVBS亚洲台": "TVBS亚洲"
+  "TVBS亞洲": "TVBS亚洲"
+  "ELta影剧": "爱尔达影剧"
+  "TVBTVBTVB翡翠": "TVB翡翠"
+  "TVBTVBTVB翡翠（）": "TVB翡翠"
+  "TVBTVBTVB翡翠4K": "TVB翡翠"
+  "TVBTVB翡翠": "TVB翡翠"
+  "TVBTVB翡翠4K": "TVB翡翠"
+  "TVBTVB翡翠*": "TVB翡翠"
+  "TVBTVB翡翠版TVBJ1": "TVB翡翠"
+  "TVBTVB翡翠剧集": "TVB翡翠"
+  "TVBTVB翡翠台": "TVB翡翠"
+  "TVBTVB明珠": "TVB明珠"
+  "TVBTVB明珠*": "TVB明珠"
+  "TVBTVB明珠剧集": "TVB明珠"
+  "TVB翡翠（）": "TVB翡翠"
+  "TVB功夫": "TVB功夫"
+  "TVB华丽": "TVB华丽"
+  "TVB经典电影*": "TVB经典电影"
+  "TVB美亚电影": "美亚电影"
+  "TVB明珠": "TVB明珠"
+  "TVB明珠台": "TVB明珠"
+  "TVB千禧经典电影": "TVB千禧经典电影"
+  "TVB无线新闻": "TVB新闻"
+  "TVB无线新闻*": "TVB新闻"
+  "TVB新聞": "TVB新闻"
+  "TVB无线星河": "TVB星河"
+  "TVB星河国语": "TVB星河"
+  "TVB亚洲剧": "TVB亚洲剧"
+  "TVB亚洲武侠": "TVB亚洲武侠"
+  "TVB娱乐新闻": "TVB娱乐新闻"
+  "TW视新闻": "台视新闻"
+  "阿里郎": "Arirang"
+  "澳门卫星": "澳视资讯"
+  "澳門MACAU衛星道": "澳视资讯"
+  "澳門資訊": "澳视资讯"
+  "澳视澳门": "澳视资讯"
+  "澳视综艺": "澳视综艺"
+  "澳視澳門": "澳视资讯"
+  "八大第1": "八大第一"
+  "八大第一": "八大第一"
+  "八大综合": "八大綜合"
+  "八大綜合": "八大綜合"
+  "半·新闻": "半岛新闻"
+  "半岛英语": "半岛新闻"
+  "半島新聞「英語」": "半岛新闻"
+  "东森": "东森新闻"
+  "东森卫视": "东森新闻"
+  "东森新闻": "东森新闻"
+  "东森新闻美洲2": "东森新闻美洲"
+  "东森新闻财经新闻": "东森新闻"
+  "东森新闻超视": "东森超视"
+  "东森新闻超视*": "东森超视"
+  "东森新闻电影": "东森电影"
+  "东森新闻新闻": "东森新闻"
+  "东森新闻亚洲新闻": "东森新闻"
+  "东森新闻洋片": "东森洋片"
+  "东森新闻洋片*": "东森洋片"
+  "东森新闻综合": "东森新闻"
+  "东森新闻综合*": "东森新闻"
+  "東森財經新聞": "东森新闻"
+  "东森新闻[720p]": "东森新闻"
+  "東森超視": "东森超视"
+  "東森超視34.5": "东森超视"
+  "东森超视34.5": "东森超视"
+  "東森美洲": "东森美洲"
+  "東森新聞": "东森新闻"
+  "東森洋片": "东森洋片"
+  "東森綜合": "东森新闻"
+  "番薯": "番薯台"
+  "翡翠": "TVB翡翠"
+  "翡翠台": "TVB翡翠"
+  "凤凰卫视*": "凤凰中文"
+  "凤凰卫视中文": "凤凰中文"
+  "凤凰卫视资讯": "凤凰资讯"
+  "凤凰中文": "凤凰中文"
+  "凤凰资讯": "凤凰资讯"
+  "凤凰资讯*": "凤凰资讯"
+  "鳳凰中文": "凤凰中文"
+  "鳳凰資訊": "凤凰资讯"
+  "湖北衛視": "湖北卫视"
+  "湖南衛視": "湖南卫视"
+  "华视": "华视"
+  "华视HD": "华视"
+  "华视新闻": "华视新闻"
+  "華麗HD": "无线华丽"
+  "華視": "华视"
+  "華語電視2": "华语电视2"
+  "華語電視3": "华语电视3"
+  "寰宇新闻": "寰宇新闻"
+  "寰宇新聞": "寰宇新闻"
+  "寰宇湾[720p]": "寰宇新闻"
+  "经典": "经典电影"
+  "经典电影": "经典电影"
+  "经典影视": "经典电影"
+  "靖天國際": "靖天国际"
+  "靖天卡通": "靖天卡通"
+  "靖天戏剧*": "靖天戏剧"
+  "靖天映电影画": "靖天电影"
+  "靖天资讯": "靖天资讯"
+  "靖天资讯*": "靖天资讯"
+  "靖洋戏剧": "靖洋戏剧"
+  "镜电视新闻": "镜电视"
+  "鏡新聞": "镜电视"
+  "镜新闻[720p]": "镜电视"
+  "開电视視": "开电视"
+  "龍華偶像": "龙华偶像"
+  "龍華戲劇": "龙华戏剧"
+  "龍華洋片": "龙华洋片"
+  "龙华电影[720p]": "龙华电影"
+  "龙华经典电影": "龙华电影"
+  "龍祥电视影": "龙祥电影"
+  "美亚电影粤": "美亚电影"
+  "面包": "香港面包"
+  "民视": "民视第一"
+  "民视湾": "民视第一"
+  "民视第一第一": "民视第一"
+  "民视新闻": "民视新闻"
+  "民视第一新闻HD": "民视新闻"
+  "民视新闻*": "民视新闻"
+  "民视新闻HD": "民视新闻"
+  "民视新闻台HD": "民视新闻"
+  "民視": "民视新闻"
+  "民視第一": "民视第一"
+  "民視第一臺": "民视第一"
+  "民視新聞": "民视新闻"
+  "明珠": "TVB明珠"
+  "求索纪录高清": "求索纪录"
+  "三立": "三立综合"
+  "三立iNEWS": "三立新闻"
+  "三立新闻iNEWS": "三立新闻"
+  "三立综合INEWS": "三立新闻"
+  "三立综合NEWS+": "三立新闻"
+  "三立综合台live": "三立综合"
+  "三立综合台新聞": "三立新闻"
+  "三立综合湾": "三立新闻"
+  "三立综合戏剧": "三立戏剧"
+  "三立综合戏剧*": "三立戏剧"
+  "三立综合新闻": "三立新闻"
+  "三立综合新闻2": "三立新闻"
+  "三立综合新聞": "三立新闻"
+  "三立综合新聞+": "三立新闻"
+  "台視新聞": "台视新闻"
+  "臺視新聞": "台视新闻"
+  "探索亞洲": "探索亚洲"
+  "天映": "天映电影"
+  "天映电影": "天映电影"
+  "天映电影电影": "天映电影"
+  "天映电影经典电影": "天映电影"
+  "天映电影经典电影*": "天映电影"
+  "天映经典*": "天映电影"
+  "无线TVBTVB翡翠": "TVB翡翠"
+  "无线TVB翡翠": "TVB翡翠"
+  "无线TVB明珠": "TVB明珠"
+  "无线TVB明珠粤高": "TVB明珠"
+  "无线翡翠台": "TVB翡翠"
+  "无线华丽": "TVB华丽"
+  "无线华丽国标": "TVB华丽"
+  "无线星河": "TVB星河"
+  "无线亚洲": "TVBS亚洲"
+  "無線新聞": "无线新闻"
+  "香港面包": "香港面包"
+  "香港卫视HKS": "香港卫视"
+  "香港香港面包": "香港面包"
+  "新加坡国际": "CNA"
+  "新加坡中文": "CNA"
+  "新视觉HD": "新视觉"
+  "星河台": "TVB星河"
+  "亚洲新闻1080P": "CNA"
+  "亚洲新闻720P": "CNA"
+  "有线新闻": "有线新闻"
+  "有線新聞": "有线新闻"
+  "有線新聞HD": "有线新闻"
+  "中视": "中视经典"
+  "中视经典青采[720p]": "中视经典"
+  "中视经典": "中视经典"
+  "中视新闻": "中视新闻"
+  "中视经典新聞": "民视新闻"
+  "中視": "中视经典"
+  "中視新聞": "中视新闻"
+  "中视经典新闻": "中视新闻"
+  "中天": "中天新闻"
+  "中天新闻台新闻": "中天新闻"
+  "中天新闻台新聞": "中天新闻"
+  "中天新闻台亞洲": "中天新闻亚洲"
+  "中天新闻台娱乐": "中天新闻"
+  "中天新闻台综合": "中天新闻"
+  "中天新闻新闻": "中天新闻"
+  "中天新闻新闻*": "中天新闻"
+  "中天新闻新闻2": "中天新闻"
+  "中天新闻新聞": "中天新闻"
+  "中天新闻新聞「迴圈」": "中天新闻"
+  "中天新闻娱乐": "中天新闻"
+  "中天新聞台 (1080p)": "中天新闻"
+  "[HD]tvb星河(备)": "TVB星河"
+  "HKS": "香港卫视"
+  "fhd": ""
+  "hd": ""
+  "频道": ""
+  "超清": ""
+  "4k": ""
+  "4kr": ""
+  "20m": ""
+  "-": " "
+  "测试": ""
+  "失效": ""
+  "直播": ""
+  "省台": ""
+  "市台": ""
+  "标清": ""
+  "低清": ""
+  "sd": ""
+  "(直播)": ""
+  "测试源": ""
+  "备用": ""
+  "backup": ""
+  "临时": ""
+  "temp": ""
+  "高码": ""
+  "梅州": ""
+  "东联": ""
+  "山东": ""
+  "斯特": ""
+  "标测": ""
+  "频高": ""
+  "频标": ""
+  "频特": ""
+  "限效": ""
+  " ": ""
+  "▶️": ""
+  "🎞️": ""
+  "🐼": ""
+  "(1080p)": ""
+  "(720p)": ""
+  "[Geo blocked]": ""
+  "(JP)": ""
+  "(Korea)": ""
+  "(Chile)": ""
+  "(Rusia)": ""
+  "(Taiwan)": ""
+  "(Turquia)": ""
+  "(Colombia/USA)": ""
+  "(España/UK)": ""
+  "(Brasil)": ""
+  "(Australia)": ""
+  "(Canada)": ""
+  "(Alemania)": ""
+  "(Ucrania)": ""
+  "(Peru)": ""
+  "(Uruguay)": ""
+  "(Costa Rica)": ""
+  "(Ecuador)": ""
+  "(El Salvador)": ""
+  "(Nicaragua)": ""
+  "(Rep. Dominicana)": ""
+  "(Italia)": ""
+  "(Kosovo)": ""
+  "(AU)": ""
+  "(BR)": ""
+  "(US)": ""
+  "(GB)": ""
+  "(FR)": ""
+  "(DE)": ""
+  "(IT)": ""
+  "(CA)": ""
+  "(IE)": ""
+  "(FI)": ""
+  "(NL)": ""
+  "(AT)": ""
+  "(CH)": ""
+  "(MX)": ""
+  "(ES)": ""
+  "(KR)": ""
+  "中央": "CCTV"
+  "央视": "CCTV"
+  "CCTV01": "CCTV1"
+  "CCTV02": "CCTV2"
+  "CCTV03": "CCTV3"
+  "CCTV04": "CCTV4"
+  "CCTV05": "CCTV5"
+  "CCTV06": "CCTV6"
+  "CCTV07": "CCTV7"
+  "CCTV08": "CCTV8"
+  "CCTV09": "CCTV9"
+  "CCTV1 综合": "CCTV1"
+  "CCTV2 财经": "CCTV2"
+  "CCTV3 综艺": "CCTV3"
+  "CCTV4 中文国际": "CCTV4"
+  "CCTV4 美洲": "CCTV4美洲"
+  "CCTV4 欧洲": "CCTV4欧洲"
+  "CCTV5 体育": "CCTV5"
+  "CCTV5+ 体育赛事": "CCTV5+"
+  "CCTV6 电影": "CCTV6"
+  "CCTV7 国防军事": "CCTV7"
+  "CCTV8 电视剧": "CCTV8"
+  "CCTV9 纪录": "CCTV9"
+  "CCTV10 科教": "CCTV10"
+  "CCTV11 戏曲": "CCTV11"
+  "CCTV12 社会与法": "CCTV12"
+  "CCTV13 新闻": "CCTV13"
+  "CCTV14 少儿": "CCTV14"
+  "CCTV15 音乐": "CCTV15"
+  "CCTV16 奥林匹克": "CCTV16"
+  "CCTV17 农业农村": "CCTV17"
+  "CCTV+": "CCTV"
+  "CCTVCCTN 国际": "CCTV国际"
+  "CCTVCCTV台球": "CCTV台球"
+  "CCTVCCTV文化精品": "CCTV文化精品"
+  "CCTV兵器": "CCTV兵器"
+  "CCTV精品": "CCTV精品"
+  "CCTV赛事": "CCTV赛事"
+  "CCTV综合频高": "CCTV1"
+  "頻道": "频道"
+  "視頻": "视频"
+  "電": "电视"
+  "台": ""
+  "频": ""
+  "标加": ""
+  "频国": "粤"
+  "频贰": "2"
+  "频壹": "1"
+  "高特": "2"
+  "(HK)": ""
+  "[HD]": ""
+  
+# ... 其他配置 ...url_states.json 的过期清理逻辑
+url_state_expiration_days: 90 # URL 状态的过期天数，例如 90 天
+# 新增的历史url配置项，用于控制频道保留策略
+stream_fail_threshold: 18 # 频道连续检查失败的阈值，超过此阈值才从列表中移除
+stream_retention_hours: 1368 # 频道在最近多少小时内成功过，即使暂时失败也保留
+# GitHub 搜索配置
+search_keywords:
+  # 英文关键词
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "playlist.m3u8 in:file"
+  - "index.m3u8 in:file"
+  - "channels.m3u in:file"
+  - "m3u8 playlist"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+
+
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
+  - "iptv.m3u"
+  - "raw.bgithub.xyz m3u"
+
+  - "cdn.jsdelivr.net m3u"
+  - "fastly.net m3u8"
+  - "gitee.com m3u"
+  - "iptv source"
+ 
+  - "m3u8 source"
+  - "CCTV6"
+  - "m3u8 source"
+
+  - "m3u playlist 2025"
+  - "m3u playlist 2026"
+  - "live channels m3u"
+  - "iptv m3u8 2025"
+  - "iptv m3u8 2026"
+  - "hls stream"
+  - "Arirang"
+
+  - "iptv epg"
+  - "iptv github"
+  - "cloudflare stream m3u8"
+ 
+  # 中文关键词
+  - "阿里郎"
+  - "天映电影"
+  - "TVB"
+  - "TVBS"
+  - "年代新闻"
+  - "CNA"
+  - "CCTV6"
+  - "CCTV1"
+  - "CCTV5"
+  - "CCTV13"
+  - "湖南卫视"
+  - "浙江卫视"
+  - "东方卫视"
+  - "江苏卫视"
+  - "北京卫视"
+  - "凤凰卫视"
+  - "海外直播"
+  - "体育直播"
+  - "电影频道"
+  - "少儿频道"
+  - "纪录片频道"
+  - "音乐频道"
+  - "财经频道"
+  - "教育频道"
+  - "生活频道"
+  - "中天新闻"
+  - "EPG"
+  - "RTHK"
+  - "电影"
+  - "高清直播"
+  - "4K直播"
+  - "IPTV2025"
+ 
+
+
+# 动态分类规则
+category_rules:
+  - pattern: "央视|CCTV"
+    category: "央视频道"
+  - pattern: "少儿|动画"
+    category: "少儿和动画频道"
+  - pattern: "电影|影院"
+    category: "电影频道"
+  - pattern: "新闻|资讯"
+    category: "新闻频道"
+  - pattern: "体育"
+    category: "体育频道"
+  - default: "其他"
+
+# 文件路径配置
+paths:
+  channels_dir: "地方频道"
+  output_dir: "output"
+  final_iptv_file: "iptv_list.txt"
+  channel_cache_file: "config/channel_cache.json"  # 新增
+  keyword_stats_file: "config/keyword_stats.json"  # 新增
+
+# GitHub API 配置
+per_page: 100
+max_search_pages: 5
+github_api_timeout: 30
+github_api_retry_wait: 30
+rate_limit_threshold: 5
+search_updated_within_days: 30  # 新增指定时间参数
+
+# 频道抓取和检查配置
+channel_fetch_timeout: 15
+channel_check_timeout: 8
+protocol_timeouts:
+  http: 3
+  https: 3
+  rtmp: 5
+  rtp: 5
+  p3p: 5
+  udp: 5
+  rtsp: 5
+protocol_priority:
+  - "http"
+  - "https"
+  - "rtmp"
+  - "rtsp"
+  - "rtp"
+  - "udp"
+  - "p3p"
+max_channel_urls_per_group: 100
+channel_check_workers: 100
+channel_extract_workers: 10
+
+# Requests 配置
+requests_pool_size: 100
+requests_retry_total: 3
+requests_retry_backoff_factor: 1.5
+
+# 缓存配置
+url_states_ttl: 604800  # 7 天
+channel_cache_ttl: 86400  # 1 天
+
+# 日志级别
+log_level: "INFO"
+
+# 输出格式
+output_format: "m3u"
+
+# EPG 配置（暂时禁用）
+epg_enabled: false
+epg_search_keywords:
+  - "epg xmltv"
+  - "iptv epg xml"
+epg_max_urls: 10
+
+# --- URL 预筛选规则 (初步筛选) ---
+# 这些规则定义了哪些协议和流媒体文件扩展名是被允许的。
+url_pre_screening:
+  # 允许的协议列表。只有使用这些协议的URL才会被考虑。
+  allowed_protocols:
+    - "http"   # 超文本传输协议
+    - "https"  # 安全超文本传输协议
+    - "rtmp"   # 实时消息传输协议（常用于流媒体）
+    - "rtp"    # 实时传输协议（常用于流媒体）
+    - "p3p"    # 平台隐私偏好项目（较少见，通常与隐私政策相关，可根据需求决定是否保留）
+    - "udp"    # 用户数据报协议（底层协议，通常不直接出现在URL中，可能指某些特定的URL格式）
+    - "rtsp"   # 实时流协议
+
+  # 允许的流媒体文件扩展名列表。只有以这些扩展名结尾的URL才会被考虑为流媒体。
+  stream_extensions:
+    - ".m3u8"  # HLS 播放列表
+    - ".m3u"   # 音频播放列表
+    - ".flv"   # Flash Video
+    - ".mp4"   # MPEG-4 视频文件
+    - ".ts"    # MPEG 传输流 (HLS切片常见)
+    - ".hls"   # 通常指HLS流本身，而非文件扩展名，但在此处作为标识
+    - ".dash"  # 通常指DASH流本身，而非文件扩展名，但在此处作为标识
+
+# --- 无效 URL 模式 (进一步排除) ---
+# 这些规则定义了在满足初步筛选条件后，哪些URL模式是“不想要”的，将会被排除。
+invalid_url_patterns:
+  # 音乐、歌曲、综艺录播
+  - "vdse\\.bdstatic\\.com"                     # 排除所有来自 vdse.bdstatic.com 的链接（歌曲、音乐录播）
+  - "vd2\\.bdstatic\\.com"                      # 排除所有来自 vd2.bdstatic.com 的链接（歌曲、音乐录播）
+  - "vd3\\.bdstatic\\.com"                      # 排除所有来自 vd3.bdstatic.com 的链接（歌曲、音乐录播）
+  - "vd4\\.bdstatic\\.com"                      # 排除所有来自 vd4.bdstatic.com 的链接（歌曲、音乐录播）
+  - "vodcdn\\.video\\.taobao\\.com"             # 排除所有来自 vodcdn.video.taobao.com 的链接（歌曲、音乐录播）
+  - "cloud\\.video\\.taobao\\.com"              # 排除所有来自 cloud.video.taobao.com 的链接（韩语歌曲、音乐录播）
+  - "15799848\\.s21v\\.faiusr\\.com"           # 排除所有来自 15799848.s21v.faiusr.com 的链接（歌曲、音乐录播）
+  - "txmov2\\.a\\.kwimgs\\.com"                # 排除所有来自 txmov2.a.kwimgs.com 的链接（歌曲、音乐录播）
+  - "video30\\.avnyg\\.com"                    # 排除所有来自 video30.avnyg.com 的链接（音乐录播）
+  - "videomy\\.yongaomy\\.com"                 # 排除所有来自 videomy.yongaomy.com 的链接（音乐录播）
+  - "antiserver\\.kuwo\\.cn"                   # 排除所有来自 antiserver.kuwo.cn 的链接（歌曲、音乐录播）
+
+  # 视频/直播平台
+  - "youtube\\.com\/(watch|embed|live)"       # 排除YouTube的视频、嵌入和直播链接
+  - "bilibili\\.com"                          # 排除Bilibili的所有链接
+  - "twitch\\.tv"                             # 排除Twitch的所有链接
+  - "facebook\\.com\/(watch|live)"            # 排除Facebook的视频和直播链接
+
+  # 社交媒体
+  - "twitter\\.com"                           # 排除Twitter的所有链接
+  - "instagram\\.com"                         # 排除Instagram的所有链接
+  - "linkedin\\.com"                          # 排除LinkedIn的所有链接
+  - "pinterest\\.com"                         # 排除Pinterest的所有链接
+  - "plus\\.google\\.com"                      # 排除Google Plus的所有链接（已弃用，但保留以防旧链接）
+  - "weibo\\.com"                             # 排除微博的所有链接
+  - "douyin\\.com"                            # 排除抖音的所有链接
+  - "kuaishou\\.com"                          # 排除快手的所有链接
+
+  # 广播/直播服务
+  - "satellitepull\\.cnr\\.cn"                 # 排除所有来自 satellitepull.cnr.cn 的广播
+  - "ali-m-l\\.cztv\\.com"                     # 排除所有来自 ali-m-l.cztv.com 的广播
+  - "epg\\.pw"                                # 排除所有来自 epg.pw 域名的链接
+  - "live\\.pull\\.hebtv\\.com"                 # 排除所有来自 live.pull.hebtv.com 的景区直播链接
+
+  # 文件类型排除（与 stream_extensions 互补）
+  - "\\.(png|jpe?g|gif|bmp|webp|svg|ico|mov|avi|wmv|flv|webm|mp3|wav|ogg|aac|pdf|docx?|xlsx?|pptx?|epub|zip|rar|7z|tar|gz|tgz|bz2|xz|exe|dll|msi|apk|dmg|pkg|iso|img|css|js|xml|txt|md|json|ya?ml|csv|log|bak|ini|cfg|conf|woff2?|ttf|otf|eot)$"  # 排除常见图片、音视频、文档、样式、脚本、字体等文件
+ 
+ # 状态/权限/功能性页面排除
+  - "example\\.com"                              # 排除 example.com 域名（测试/占位符）
+  - "test\\.com"                                 # 排除 test.com 域名（测试）
+  - "localhost"                                  # 排除 localhost（本地主机）链接
+  - "127\\.0\\.0\\.1"                             # 排除本地回环地址
+  - "0\\.0\\.0\\.0"                              # 排除无效或默认的IP地址
+  - "expired"                                    # 排除包含“过期”字样的链接
+  - "failed"                                     # 排除包含“失败”字样的链接
+  - "blocked"                                    # 排除包含“已阻止”字样的链接
+  - "private"                                    # 排除包含“私人”字样的链接
+  - "auth"                                       # 排除包含“认证”字样的链接（如认证页面）
+  - "login"                                      # 排除登录页面链接
+  - "signup"                                     # 排除注册页面链接
+  - "register"                                   # 排除注册页面链接（signup的变体）
+  - "forgot-password"                            # 排除找回密码页面
+  - "reset-password"                             # 排除重置密码页面
+  - "forbidden"                                  # 排除包含“禁止访问”字样的链接
+  - "denied"                                     # 排除包含“拒绝访问”字样的链接
+  - "vip"                                        # 排除VIP或会员专属链接
+  - "paywall"                                    # 排除付费墙链接
+  - "subscribe"                                  # 排除订阅页面链接
+  - "cart"                                       # 排除购物车页面
+  - "checkout"                                   # 排除结算页面
+  - "order"                                      # 排除订单相关页面
+  - "account"                                    # 排除用户账户页面
+  - "profile"                                    # 排除用户个人资料页面
+  - "dashboard"                                  # 排除用户仪表盘页面
+  - "admin"                                      # 排除后台管理页面
+  - "settings"                                   # 排除设置页面
+  - "preferences"                                # 排除偏好设置页面
+  - "security"                                   # 排除安全设置页面
+  - "privacy"                                    # 排除隐私政策页面
+  - "terms"                                      # 排除服务条款页面
+  - "sitemap(\\.xml|\\.html)?"                   # 排除Sitemap文件或页面（通常只包含链接，不含内容）
+  - "robots\\.txt"                               # 排除robots.txt文件
+  - "404|error"                                  # 排除404错误页面或其他错误页面
+  - "search\\?q="                                # 排除搜索结果页面（通常由查询参数 q 定义）
+  - "page=\\d+"                                  # 排除带页码的URL（如分页链接，除非你想抓取所有页）
+  - "sort="                                      # 排除排序参数（如 sort=price_asc）
+  - "filter="                                    # 排除过滤参数
+  - "category="                                  # 排除分类参数（如果分类页面不包含内容）
+
+  # 追踪、分析和广告链接排除
+  - "\\?(.*&)?utm_(source|medium|campaign|term|content|id)=" # 排除常见的UTM营销追踪参数
+  - "\\?(.*&)?_ga="                               # 排除Google Analytics相关参数
+  - "\\?(.*&)?gclid="                             # 排除Google Ads点击ID
+  - "ad(s)?(click)?|banner|affiliate|tracking|pixel|conversion" # 排除包含广告、追踪、像素、转换等字样的链接
+  - "doubleclick\\.net"                           # 广告网络域名
+  - "googlesyndication\\.com"                     # 排除Google广告网络域名
+  - "adservice\\.google\\.com"                   # 排除Google广告服务域名
+  - "cdn-.*?\\.ads|.*?\\.adman|.*?\\.adserver"    # 排除一些常见的CDN和广告服务器模式
+  - "click\\?|redirect\\?|outlink\\?"             # 排除常见的点击跳转或外部链接重定向
+
+  # 非 HTTP/HTTPS 协议链接排除
+  - "^mailto:"                                   # 排除邮件链接
+  - "^tel:"                                      # 排除电话链接
+  - "^javascript:"                               # 排除JavaScript伪协议链接
+  - "^ftp:"                                      # 排除FTP链接
+
+# --- 频道名称过滤词列表 ---
+# 自动筛选掉那些不想要、不相关、或者质量不高的频道。
+name_filter_words:
+  # 状态、测试、无效或临时频道
+  - "[not 24/7]"  # 非全天候频道
+  - "测试"
+  - "demo"        # 演示
+  - "backup"      # 备份
+  - "内测"
+  - "测试频道"
+  - "失效"
+  - "已过期"
+  - "禁用"
+  - "无效"
+  - "勿扰"
+  - "仅供参考"
+  - "过期"
+  - "不可用"
+  - "样本"
+  - "temp"        # 临时
+  - "无效源"
+  - "错误"
+  - "故障"
+  - "未授权"
+  - "维护"
+  - "调试"
+  - "离线"
+  - "断流"
+  - "待定"
+  - "静默"
+  - "黑屏"
+  - "无信号"
+  - "卡顿"
+  - "删除"
+  - "替换"
+  - "备用"
+
+  # 画质和清晰度相关
+  - "(480p)"
+  - "(360p)"
+  - "(240p)"
+  - "(406p)"
+  - "(540p)"
+  - "(600p)"
+  - "(576p)"
+  - "低清"
+  - "标清"
+
+  - "流畅"
+  - "渣画质"
+  - "LQ"          # Low Quality
+  - "SD"          # Standard Definition
+
+  - "2K"
+  - "4K"          # 如果你不想保留4K频道（例如，源不稳定或带宽限制）
+  - "8K"
+
+  # 广告、购物、理财、导视相关
+  - "购物"
+  - "理财"
+  - "导视"
+  - "指南"
+  - "广告"
+  - "宣传"
+  - "推销"
+  - "促销"
+
+  - "节目单"
+
+  # 音乐、娱乐、演出类
+  - "dj"
+  - "背景音乐"
+  - "纯音乐"
+  - "演唱会"
+  - "舞曲"
+  - "春晚"
+  - "粤语歌曲"
+  - "粤语音乐"
+  - "音乐"          # 如果只关心非音乐类节目
+  - "歌曲"
+  - "KTV"
+  - "MV"
+  - "演唱"
+  - "剧场"
+  - "戏曲"
+  - "歌剧"
+  - "舞蹈"
+  - "脱口秀"
+  - "相声"
+  - "小品"
+
+  # 体育、游戏、格斗类
+  - "体育"
+  - "格斗"
+  - "足球"
+  - "篮球"
+  - "排球"
+  - "乒乓"
+  - "羽毛球"
+  - "赛事"
+  - "比赛"
+  - "游戏"
+  - "电竞"
+  - "直播"        # 如果你不希望包含直播流，只想要固定的电视频道
+
+  # 地域、语言或其他特定标识
+  - "全景"
+  - "祝"          # 祝福语，通常出现在测试流或不规范名称中
+  - "广播"
+  - "radio"       # 广播电台
+  - "fm"          # 调频广播
+  - "卫星"
+ 
+  # 特定平台、品牌或非通用名称
+  - "芒果"          # 湖南卫视相关
+  - "cgtn"        # 中国环球电视网
+  - "博斯"          # 台湾的付费频道品牌
+  - "神话"          # 可能指特定电影或剧集
+  - "pcnlid"      # 特定标识符，可能是用户ID或内部编号
+  - "sem moderação" # 葡萄牙语，意为“无节制”或“不限制”，可能是某些成人内容或特定节目
+  - "eixo do mal" # 葡萄牙语，意为“邪恶轴心”，可能与政治或特定内容相关
+  - "卫视"          # 如果你只想筛选央视频道
+  
+  - "教育"          # 教育类频道
+
+  - "纪实"          # 纪录片频道
+  - "科教"          # 科学教育频道
+  - "生活"
+  - "时尚"
+  - "旅游"
+  - "美食"
+  - "健康"
+  - "军事"
+  - "财经"
+
+  - "访谈"
+  - "专题"
+  - "回放"
+  - "点播"
+  - "系列"
+  - "精华"
+  - "片段"
+  - "剪辑"
+  - "花絮"
+  - "预告"
+  - "推荐"
+  - "精选"
+  - "会员"
+  - "加密"
+  - "付费"
+  - "vip"
+  - "订阅"
+  - "限定"
+  - "独家"
+  - "自制"
+  - "内部"
+  - "私享"
+
+  # 更通用的排除地方频道（正则表达式）
+  # 匹配大部分省级行政区划后接“频道”、“卫视”、“电视台”等词
+  - "(安徽|北京|重庆|福建|甘肃|广西|贵州|海南|河北|河南|黑龙江|湖北|湖南|吉林|江苏|江西|辽宁|内蒙古|宁夏|青海|山东|山西|陕西|上海|四川|天津|西藏|新疆|云南|浙江)(频道|卫视|电视台|影视频道|新闻频道|综合|教育|都市|生活|公共|综艺|少儿|文化|经济|体育|农村|法制|青少|旅游|艺术|影视|剧|影)$"
+  # 匹配不带“频道”等后缀的行政区划名称（防止漏掉只写省份名的）
+  - "^(安徽|北京|重庆|福建|甘肃|广西|贵州|海南|河北|河南|黑龙江|湖北|湖南|吉林|江苏|江西|辽宁|内蒙古|宁夏|青海|山东|山西|陕西|上海|四川|天津|西藏|新疆|云南|浙江)$"
+  # 排除所有名称中包含“地方”或“省”/“市”/“区”+“级”的频道
+  - "(地方|省级|市级|区级)"
+
+  # 如果还需要排除常见的城市级地方频道，可以加入常见的城市名列表
+  # 这一行被注释掉了，因为列表可能非常长，且会大幅增加匹配复杂性。
+  # - "(成都|广州|深圳|杭州|武汉|南京|哈尔滨|长春|沈阳|济南|青岛|大连|厦门|福州|宁波|温州|苏州|无锡|常州|郑州|洛阳|合肥|南昌|长沙|南宁|贵阳|昆明|拉萨|乌鲁木齐|呼和浩特|银川|西宁|兰州|太原|石家庄|济南|青岛|烟台|威海|淄博|潍坊|临沂|济宁|泰安|聊城|德州|滨州|东营|菏泽|枣庄|莱芜|日照|漳州|泉州|莆田|三明|南平|龙岩|宁德|桂林|柳州|梧州|北海|防城港|钦州|玉林|百色|贺州|河池|来宾|崇左|遵义|六盘水|安顺|毕节|铜仁|黔西南|黔东南|黔南|三亚|琼海|文昌|万宁|东方|定安|屯昌|澄迈|临高|白沙|昌江|乐东|陵水|保亭|琼中|儋州|海口)(频道|卫视|电视台|综合|新闻|都市|生活|公共|教育|综艺|少儿|文化|经济|体育|法制|青少|旅游|艺术|影视|剧|影)$"
