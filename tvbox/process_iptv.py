@@ -212,26 +212,35 @@ class IPTVProcessor:
         return categorized
 
     def write_output_files(self, categorized: Dict[str, List[Tuple[str, str]]]):
-        """生成分类后的文件，支持 txt 和 m3u 格式"""
+        """生成合并的输出文件，支持 txt 和 m3u 格式"""
         os.makedirs(self.output_dir, exist_ok=True)
         output_formats = self.config.get('output_formats', ['txt', 'm3u'])
 
-        for category, entries in categorized.items():
-            if "txt" in output_formats:
-                output_file = os.path.join(self.output_dir, f'{category}.txt')
-                with open(output_file, 'w', encoding='utf-8') as f:
+        if "txt" in output_formats:
+            output_file = os.path.join(self.output_dir, 'output.txt')
+            with open(output_file, 'w', encoding='utf-8') as f:
+                total_entries = 0
+                for category, entries in sorted(categorized.items()):
+                    f.write(f"# {category}\n")
                     for name, url in entries:
                         f.write(f'{name}\t{url}\n')
-                logging.info(f"生成 TXT 文件: {output_file}，条目数: {len(entries)}")
+                        total_entries += 1
+                    f.write("\n")
+            logging.info(f"生成 TXT 文件: {output_file}，总条目数: {total_entries}")
 
-            if "m3u" in output_formats:
-                output_file = os.path.join(self.output_dir, f'{category}.m3u')
-                m3u_content = '#EXTM3U\n'
+        if "m3u" in output_formats:
+            output_file = os.path.join(self.output_dir, 'output.m3u')
+            m3u_content = '#EXTM3U\n'
+            total_entries = 0
+            for category, entries in sorted(categorized.items()):
+                m3u_content += f'#EXTINF:-1 group-title="{category}",{category}\n#EXTVLCOPT:network-caching=1000\n\n'
                 for name, url in entries:
-                    m3u_content += f'#EXTINF:-1,{name}\n{url}\n'
-                with open(output_file, 'w', encoding='utf-8') as f:
-                    f.write(m3u_content)
-                logging.info(f"生成 M3U 文件: {output_file}，条目数: {len(entries)}")
+                    m3u_content += f'#EXTINF:-1 group-title="{category}",{name}\n{url}\n'
+                    total_entries += 1
+                m3u_content += '\n'
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(m3u_content)
+            logging.info(f"生成 M3U 文件: {output_file}，总条目数: {total_entries}")
 
     def process(self):
         """执行处理流程"""
