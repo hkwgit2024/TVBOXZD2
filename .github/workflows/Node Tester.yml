@@ -1,55 +1,74 @@
-name: Node Tester # 工作流的名称，在 GitHub Actions 页面会显示
+name: Node Proxy Test
 
 on:
-  workflow_dispatch: # 允许在 GitHub Actions 界面手动触发此工作流
-  schedule:
-    - cron: '0 * * * *' # 定时任务：每小时的第0分钟运行（即每小时运行一次）。
-                        # 你可以根据需要调整这个 cron 表达式。
-                        # 例如：'0 0 * * *' 每天午夜运行一次。
-                        # cron 表达式的格式：分钟 小时 日 月 星期 (都用UTC时间)
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  test-nodes:
-    runs-on: ubuntu-latest # 指定工作流运行的操作系统环境，这里使用最新的 Ubuntu 虚拟机
+  test-proxies:
+    runs-on: ubuntu-latest # GitHub Actions Runner 操作系统
 
     steps:
-    - name: Checkout repository # 步骤1：检出你的 GitHub 仓库代码
-      uses: actions/checkout@v4 # 使用官方的 checkout action 来获取仓库内容
+      - name: Checkout repository # 步骤1：检出代码
+        uses: actions/checkout@v4
 
-    - name: List files for debugging # 步骤2 (可选，用于调试)：列出仓库中的所有文件和目录
-      # 如果你遇到文件找不到的问题（例如 `ENOENT` 错误），这个步骤可以帮助你确认文件结构。
-      # 确认 `package.json` 和 `test_nodes.js` 是否在预期路径。
-      run: ls -R
+      - name: Set up Node.js # 步骤2：设置 Node.js 环境
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Set up Node.js # 步骤3：设置 Node.js 运行环境
-      uses: actions/setup-node@v4 # 使用官方的 setup-node action
-      with:
-        node-version: '20' # 指定使用的 Node.js 版本，建议使用 LTS 版本
+      - name: Cache Node Modules # 步骤3：缓存 node_modules 减少安装时间
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-    - name: Install dependencies # 步骤4：安装 JavaScript 依赖（例如 js-yaml）
-      # npm 默认会查找当前目录下的 package.json 文件
-      run: npm install
-      working-directory: ./ # <-- **重要：** 确保这个路径是 `package.json` 所在的目录
-                            # 如果 `package.json` 在仓库根目录，用 `./`
-                            # 如果在子目录（例如 `my-app/`），请改为 `./my-app/`
+      - name: Install Dependencies # 步骤4：安装项目依赖
+        run: npm install
 
-    - name: Run Node Tests # 步骤5：运行你的节点测试脚本
-      run: node test_nodes.js
-      working-directory: ./ # <-- **重要：** 确保这个路径是 `test_nodes.js` 所在的目录
-                            # 如果 `test_nodes.js` 在仓库根目录，用 `./`
-                            # 如果在子目录（例如 `my-app/`），请改为 `./my-app/`
+      - name: Create tools and temp directories # 创建必要的目录
+        run: |
+          mkdir -p tools
+          mkdir -p data # 如果data目录不存在的话，确保创建
+          mkdir -p temp # 用于存放临时的Clash配置文件
 
-    - name: Commit test results # 步骤6：将测试结果文件提交回仓库
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        # 检查 data/521.yaml 是否存在，如果存在才添加和提交
-        if [ -f data/521.yaml ]; then # <-- 添加这一行
-          git add data/521.yaml
-          git commit -m "Update node test results [skip ci]" || echo "No changes to commit"
-          git push
-        else # <-- 添加这一行
-          echo "data/521.yaml not found, skipping commit." # <-- 添加这一行
-        fi # <-- 添加这一行
-      env:
-        GITHUB_TOKEN: ${{ secrets.BOT }}
+      - name: Download Clash Core # 步骤5：下载 Clash 核心
+        run: |
+          CLASH_VERSION="v1.17.0" # <-- 检查并使用最新版本
+          # 请根据你的 GitHub Actions Runner 操作系统选择正确的 URL
+          # For Linux AMD64:
+          CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-${CLASH_VERSION}.gz"
+          # For macOS AMD64: (如果你在macOS runner上运行)
+          # CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-darwin-amd64-${CLASH_VERSION}.gz"
+          
+          wget -q ${CLASH_URL} -O clash.gz
+          gzip -d clash.gz
+          mv clash tools/clash # 移动到 tools 目录
+          chmod +x tools/clash # 添加执行权限
+          tools/clash -v # 验证下载和权限
+
+      - name: Run Node.js Tests # 步骤6：运行 Node.js 测试脚本
+        run: node test_nodes.js
+        env:
+          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用，对于 Node.js 20+ 可能不是必需的但加上无害
+
+      - name: Commit test results # 步骤7：将测试结果文件提交回仓库
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -f data/521.yaml ]; then
+            git add data/521.yaml
+            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit"
+            git push
+          else
+            echo "data/521.yaml not found, skipping commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
