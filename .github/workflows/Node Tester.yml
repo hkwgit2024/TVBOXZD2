@@ -12,7 +12,9 @@ on:
 jobs:
   test-proxies:
     runs-on: ubuntu-latest # 指定运行作业的操作系统，这里是最新版的 Ubuntu
-    shell: /usr/bin/bash -e {0} # 这将为该作业中的所有 'run' 命令设置默认 shell
+    defaults: # 设置默认配置
+      run: # 为所有 run 命令设置默认 shell
+        shell: bash # 使用 bash shell，简化的写法，相当于 /usr/bin/bash -e
 
     steps:
       - name: 检出仓库代码 # 步骤 1：克隆你的代码仓库
