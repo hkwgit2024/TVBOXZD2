@@ -84,11 +84,8 @@ async function testDownloadSpeed(url, sizeBytes = 1000000, timeout = 10000) { //
 }
 
 // 辅助函数：根据代理信息生成一个临时的 Clash 配置文件
-// !! 重要：此函数需要根据你 520.yaml 中代理的实际字段进行精确映射 !!
-// 请参考 Clash 官方文档：https://clash.gitbook.io/doc/
+// !! 重要：此函数已根据你提供的 520.yaml 示例进行调整 !!
 function generateClashConfig(proxy) {
-    // 基础 Clash 配置，只包含一个代理和一个代理组
-    // 注意：Clash 配置中 servername 字段通常用于SNI，而不是单独的host
     const config = {
         'port': 7890, // Clash 监听的 HTTP 代理端口
         'socks-port': 7891, // Clash 监听的 SOCKS5 代理端口
@@ -108,8 +105,7 @@ function generateClashConfig(proxy) {
         type: proxy.type,
         server: proxy.server,
         port: proxy.port,
-        udp: proxy.udp || false, // 默认禁用 UDP
-        tls: proxy.tls || false, // 默认禁用 TLS
+        udp: proxy.udp || false, // 从 520.yaml 读取 udp: True/False
         'skip-cert-verify': proxy['skip-cert-verify'] || false, // 默认不跳过证书验证
     };
 
@@ -117,56 +113,40 @@ function generateClashConfig(proxy) {
     switch (proxy.type.toLowerCase()) {
         case 'vless':
             clashProxy.uuid = proxy.uuid;
-            clashProxy.network = proxy.network; // tcp, ws, grpc, h2
-            if (proxy.flow) clashProxy.flow = proxy.flow; // VLESS flow
-            if (proxy.servername) clashProxy.servername = proxy.servername; // VLESS SNI
-            if (proxy.alpn) clashProxy.alpn = proxy.alpn; // ALPN
+            // 你的 520.yaml 示例中没有明确 network，通常 VLESS 默认 TCP
+            // 如果有 network 字段，Clash 会自动处理，这里可以不强制设置
+            // clashProxy.network = proxy.network || 'tcp'; // 默认 TCP
 
-            // WebSocket (ws)
-            if (proxy.network === 'ws' && proxy['ws-opts']) {
-                clashProxy['ws-opts'] = {
-                    path: proxy['ws-opts'].path || '/',
-                    headers: proxy['ws-opts'].headers || {}
-                };
+            // Clash 的 TLS 设置
+            clashProxy.tls = proxy.tls || false;
+            if (proxy.servername) {
+                clashProxy.servername = proxy.servername; // SNI
             }
-            // gRPC
-            if (proxy.network === 'grpc' && proxy['grpc-opts']) {
-                clashProxy['grpc-opts'] = {
-                    'grpc-service-name': proxy['grpc-opts']['grpc-service-name']
-                };
+            if (proxy.alpn) {
+                clashProxy.alpn = proxy.alpn; // ALPN
             }
-            // HTTP/2 (h2)
-            if (proxy.network === 'h2' && proxy['h2-opts']) {
-                clashProxy['h2-opts'] = {
-                    host: proxy['h2-opts'].host || [proxy.servername || proxy.server] // Host for h2
-                };
-            }
+            // 如果你的 520.yaml 后来加入了 ws-opts, grpc-opts 等，需要在这里添加
+            // 例如：
+            // if (proxy['ws-opts']) {
+            //     clashProxy['ws-opts'] = {
+            //         path: proxy['ws-opts'].path || '/',
+            //         headers: proxy['ws-opts'].headers || {}
+            //     };
+            //     clashProxy.network = 'ws'; // 如果有 ws-opts，则网络类型是 ws
+            // }
+            // 同理处理 grpc-opts, h2-opts
             break;
         case 'trojan':
             clashProxy.password = proxy.password;
-            if (proxy.network) clashProxy.network = proxy.network; // tcp, ws, grpc, h2
-            if (proxy.servername) clashProxy.servername = proxy.servername; // Trojan SNI
-            if (proxy.alpn) clashProxy.alpn = proxy.alpn; // ALPN
-
-            // WebSocket (ws)
-            if (proxy.network === 'ws' && proxy['ws-opts']) {
-                clashProxy['ws-opts'] = {
-                    path: proxy['ws-opts'].path || '/',
-                    headers: proxy['ws-opts'].headers || {}
-                };
+            // Clash 的 TLS 设置
+            clashProxy.tls = proxy.tls || false; // Trojan 通常也伴随 TLS
+            if (proxy.servername) {
+                clashProxy.servername = proxy.servername; // SNI
             }
-            // gRPC
-            if (proxy.network === 'grpc' && proxy['grpc-opts']) {
-                clashProxy['grpc-opts'] = {
-                    'grpc-service-name': proxy['grpc-opts']['grpc-service-name']
-                };
+            if (proxy.alpn) {
+                clashProxy.alpn = proxy.alpn; // ALPN
             }
-            // HTTP/2 (h2)
-            if (proxy.network === 'h2' && proxy['h2-opts']) {
-                clashProxy['h2-opts'] = {
-                    host: proxy['h2-opts'].host || [proxy.servername || proxy.server] // Host for h2
-                };
-            }
+            // 如果有 ws-opts, grpc-opts 等，也需要在这里添加
             break;
         case 'ss': // Shadowsocks
             clashProxy.cipher = proxy.cipher;
@@ -177,7 +157,6 @@ function generateClashConfig(proxy) {
             clashProxy.pluginOpts = proxy.pluginOpts; // plugin-opts
             break;
         case 'ssr': // ShadowsocksR (注意 Clash 对 SSR 支持可能不完全或需要 Clash.Meta)
-            // SSR 参数通常更复杂，如果需要，请根据 Clash.Meta 文档添加
             clashProxy.password = proxy.password;
             clashProxy.obfs = proxy.obfs;
             clashProxy.protocol = proxy.protocol;
@@ -185,7 +164,6 @@ function generateClashConfig(proxy) {
             clashProxy.protocolParam = proxy.protoparam;
             clashProxy.cipher = proxy.cipher;
             break;
-        // 其他协议类型（如 HTTP, SOCKS5 等）如果需要，也在这里添加
         default:
             console.warn(`未知或不支持的代理类型，可能无法正确配置 Clash: ${proxy.type}`);
             break;
@@ -335,7 +313,7 @@ async function runNodeTests() {
                     await fs.unlink(configFilePath); // 删除临时配置文件
                     console.log(`  - 已删除临时配置文件: ${configFileName}`);
                 } catch (unlinkError) {
-                    console.warn(`  - 无法删除临时配置文件 ${configFileName}:`, unlinkError.message);
+                    console.warn(`  - 无法删除临时配置文件 ${configFilePath}:`, unlinkError.message);
                 }
             }
 
