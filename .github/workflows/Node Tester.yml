@@ -7,17 +7,17 @@ on:
   pull_request:
     branches:
       - main # 当有针对 main 分支的 Pull Request 时触发
-  workflow_dispatch: # 允许你通过 GitHub UI 手动触发此工作流
+  workflow_dispatch: # 允许通过 GitHub UI 手动触发工作流
 
 jobs:
   test-proxies:
-    runs-on: ubuntu-latest # 指定运行作业的操作系统，这里是最新版的 Ubuntu
+    runs-on: ubuntu-latest # 使用最新版 Ubuntu 运行
     defaults: # 设置默认配置
       run: # 为所有 run 命令设置默认 shell
-        shell: bash # 使用 bash shell，简化的写法，相当于 /usr/bin/bash -e
+        shell: bash # 使用 bash shell，等效于 /usr/bin/bash -e
 
     steps:
-      - name: 检出仓库代码 # 步骤 1：克隆你的代码仓库
+      - name: 检出仓库代码 # 步骤 1：克隆代码仓库
         uses: actions/checkout@v4
 
       - name: 设置 Node.js 环境 # 步骤 2：配置 Node.js 环境
@@ -25,36 +25,55 @@ jobs:
         with:
           node-version: '20' # 使用 Node.js 20 版本
 
-      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，以加快后续运行速度
+      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，加速构建
         uses: actions/cache@v4
         with:
-          path: ~/.npm # 缓存 npm 包的路径
+          path: ~/.npm # 缓存 npm 包路径
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # 缓存键
           restore-keys: |
             ${{ runner.os }}-node- # 恢复缓存键
 
-      - name: 安装依赖 # 步骤 4：安装 package.json 中定义的项目依赖
-        run: npm install
+      - name: 安装依赖 # 步骤 4：安装 package.json 中的依赖
+        run: npm ci # 使用 npm ci 确保一致性安装
 
-      - name: 创建必要目录 # 步骤 5：确保存在所需的目录
+      - name: 创建必要目录 # 步骤 5：确保所需目录存在
         run: |
           mkdir -p tools # 用于存放 Clash 可执行文件
           mkdir -p data  # 用于存放 520.yaml 和 521.yaml
-          mkdir -p temp  # 用于存放临时的 Clash 配置文件
+          mkdir -p temp  # 用于存放临时配置文件
 
-      - name: 下载 Clash 核心 # 步骤 6：下载并准备 Clash 核心可执行文件（包含详细日志）
+      - name: 下载并验证 Clash 核心 # 步骤 6：动态获取并下载最新 Clash 版本
         run: |
-          CLASH_VERSION="v1.17.0" # <-- 请检查 Clash GitHub 发布页以获取最新的稳定版本
-          CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-${CLASH_VERSION}.gz"
-          
-          echo "尝试从以下 URL 下载 Clash: ${CLASH_URL}"
-          wget -v ${CLASH_URL} -O clash.gz
-          if [ $? -ne 0 ]; then
-            echo "wget 下载 Clash 失败。退出。"
-            exit 1
+          # 从 GitHub API 获取最新版本号
+          CLASH_VERSION=$(curl -s https://api.github.com/repos/WindSpiritSR/clash/releases/latest | grep -oE '"tag_name":"[^"]+"' | cut -d'"' -f4)
+          if [ -z "$CLASH_VERSION" ]; then
+            echo "警告：无法获取最新 Clash 版本，回退到 v1.18.0"
+            CLASH_VERSION="v1.18.0"
           fi
+          
+          CLASH_URL="https://github.com/WindSpiritSR/clash/releases/download/${CLASH_VERSION}/clash-linux-${CLASH_VERSION}.pkg.tar.zst"
+          FALLBACK_URL="https://release.dreamacro.workers.dev/${CLASH_VERSION}/clash-linux-${CLASH_VERSION}.pkg.tar.zst}"
+          
+          echo "尝试从主 URL 下载 Clash: ${CLASH_URL}"
+          wget -v "${CLASH_URL}" -O clash.gz || {
+            echo "主 URL 下载失败，尝试备用 URL: ${FALLBACK_URL}"
+            wget -v "${FALLBACK_URL}" -O clash.gz
+            if [ $? -ne 0 ]; then
+              echo "备用 URL 下载失败。退出。"
+              exit 1
+            fi
+          }
+          
           echo "已下载 clash.gz。文件大小:"
           ls -lh clash.gz
+
+          # 验证文件完整性（需从发布页面获取 SHA256 校验和）
+          # 示例：EXPECTED_SHA256="从发布页面获取"
+          # echo "${EXPECTED_SHA256} clash.gz" | sha256sum -c -
+          # if [ $? -ne 0 ]; then
+          #   echo "校验和验证失败。退出。"
+          #   exit 1
+          # fi
 
           echo "尝试解压 clash.gz..."
           gzip -d clash.gz
@@ -89,21 +108,21 @@ jobs:
           fi
           echo "Clash 可执行文件验证成功。"
 
-      - name: 运行 Node.js 测试 # 步骤 7：执行你的 Node.js 测试脚本
+      - name: 运行 Node.js 测试 # 步骤 7：执行 Node.js 测试脚本
         run: node test_nodes.js
         env:
-          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用 (Node.js 20+ 可能不再严格需要)
+          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用
 
-      - name: 提交测试结果 # 步骤 8：将生成的测试结果提交回仓库
+      - name: 提交测试结果 # 步骤 8：将测试结果提交回仓库
         run: |
           git config user.name "github-actions[bot]" # 配置 Git 用户名
           git config user.email "github-actions[bot]@users.noreply.github.com" # 配置 Git 用户邮箱
-          if [ -f data/521.yaml ]; then # 检查 521.yaml 文件是否存在
-            git add data/521.yaml # 添加 521.yaml 到暂存区
-            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit" # 提交更改，并跳过再次触发 CI
+          if [ -f data/521.yaml ]; then # 检查 521.yaml 是否存在
+            git add data/521.yaml # 添加 521.yaml
+            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit" # 提交并跳过 CI
             git push # 推送更改
           else
             echo "data/521.yaml 未找到，跳过提交。"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 内置的令牌，用于访问仓库
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用 GitHub 令牌推送
