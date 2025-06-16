@@ -95,12 +95,14 @@ jobs:
               file clash_core* || true
               exit 1
             fi
-            # 解压后文件名为 mihomo-linux-amd64
-            if [ -f mihomo-linux-amd64 ]; then
-              echo "解压生成 mihomo-linux-amd64 文件"
+            # 解压后文件名为 clash_core
+            if [ -f clash_core ]; then
+              echo "解压生成 clash_core 文件，移动到 mihomo-linux-amd64"
+              mv clash_core mihomo-linux-amd64
             else
-              echo "::error::未找到解压后的 mihomo-linux-amd64 文件，退出。"
+              echo "::error::未找到解压后的 clash_core 文件，退出。"
               ls -lh
+              file * || true
               exit 1
             fi
           elif [[ "$(file clash_core.gz)" == *"Zstandard compressed"* ]]; then
