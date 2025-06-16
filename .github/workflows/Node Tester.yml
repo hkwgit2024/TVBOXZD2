@@ -1,48 +1,48 @@
-name: Node Proxy Test
+name: Node Proxy Test # 工作流的名称
 
 on:
   push:
     branches:
-      - main
+      - main # 当推送到 main 分支时触发
   pull_request:
     branches:
-      - main
-  workflow_dispatch:
+      - main # 当有针对 main 分支的 Pull Request 时触发
+  workflow_dispatch: # 允许你通过 GitHub UI 手动触发此工作流
 
 jobs:
   test-proxies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 指定运行作业的操作系统，这里是最新版的 Ubuntu
     shell: /usr/bin/bash -e {0} # 这将为该作业中的所有 'run' 命令设置默认 shell
 
     steps:
-      - name: 检出仓库代码
+      - name: 检出仓库代码 # 步骤 1：克隆你的代码仓库
         uses: actions/checkout@v4
 
-      - name: 设置 Node.js 环境
+      - name: 设置 Node.js 环境 # 步骤 2：配置 Node.js 环境
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20' # 使用 Node.js 20 版本
 
-      - name: 缓存 Node 模块
+      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，以加快后续运行速度
         uses: actions/cache@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm # 缓存 npm 包的路径
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # 缓存键
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-node- # 恢复缓存键
 
-      - name: 安装依赖
+      - name: 安装依赖 # 步骤 4：安装 package.json 中定义的项目依赖
         run: npm install
 
-      - name: 创建必要目录
+      - name: 创建必要目录 # 步骤 5：确保存在所需的目录
         run: |
-          mkdir -p tools
-          mkdir -p data
-          mkdir -p temp
+          mkdir -p tools # 用于存放 Clash 可执行文件
+          mkdir -p data  # 用于存放 520.yaml 和 521.yaml
+          mkdir -p temp  # 用于存放临时的 Clash 配置文件
 
-      - name: 下载 Clash 核心
+      - name: 下载 Clash 核心 # 步骤 6：下载并准备 Clash 核心可执行文件（包含详细日志）
         run: |
-          CLASH_VERSION="v1.17.0"
+          CLASH_VERSION="v1.17.0" # <-- 请检查 Clash GitHub 发布页以获取最新的稳定版本
           CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-${CLASH_VERSION}.gz"
           
           echo "尝试从以下 URL 下载 Clash: ${CLASH_URL}"
@@ -87,21 +87,21 @@ jobs:
           fi
           echo "Clash 可执行文件验证成功。"
 
-      - name: 运行 Node.js 测试
+      - name: 运行 Node.js 测试 # 步骤 7：执行你的 Node.js 测试脚本
         run: node test_nodes.js
         env:
-          NODE_OPTIONS: "--experimental-fetch"
+          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用 (Node.js 20+ 可能不再严格需要)
 
-      - name: 提交测试结果
+      - name: 提交测试结果 # 步骤 8：将生成的测试结果提交回仓库
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -f data/521.yaml ]; then
-            git add data/521.yaml
-            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit"
-            git push
+          git config user.name "github-actions[bot]" # 配置 Git 用户名
+          git config user.email "github-actions[bot]@users.noreply.github.com" # 配置 Git 用户邮箱
+          if [ -f data/521.yaml ]; then # 检查 521.yaml 文件是否存在
+            git add data/521.yaml # 添加 521.yaml 到暂存区
+            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit" # 提交更改，并跳过再次触发 CI
+            git push # 推送更改
           else
             echo "data/521.yaml 未找到，跳过提交。"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 内置的令牌，用于访问仓库
