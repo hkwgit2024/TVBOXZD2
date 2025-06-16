@@ -1,0 +1,23 @@
+{
+  "name": "vt",
+  "version": "1.0.0",
+  "description": "https://github.com/mlzlzj/df",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qjlxg/vt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qjlxg/vt/issues"
+  },
+  "homepage": "https://github.com/qjlxg/vt#readme",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
