@@ -53,8 +53,8 @@ jobs:
           # 获取最新 mihomo 版本号，保留 'v' 前缀以匹配下载 URL
           CLASH_VERSION=$(curl -s --retry 3 https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.tag_name')
           if [ -z "$CLASH_VERSION" ]; then
-            echo "::warning::无法获取 MetaCubeX/mihomo 最新版本，回退到 v1.18.2"
-            CLASH_VERSION="v1.18.2"
+            echo "::warning::无法获取 MetaCubeX/mihomo 最新版本，回退到 v1.19.10"
+            CLASH_VERSION="v1.19.10"
           fi
           echo "检测到的版本: ${CLASH_VERSION}"
 
@@ -68,7 +68,7 @@ jobs:
           DOWNLOADED=false
           for URL in "${CLASH_URLS[@]}"; do
             echo "尝试从 ${URL} 下载..."
-            wget -q --show-progress --retry-connrefused --tries=3 -L "${URL}" -O clash_core && {
+            wget -q --show-progress --retry-connrefused --tries=3 -L "${URL}" -O clash_core.gz && {
               DOWNLOADED=true
               DOWNLOADED_URL="${URL}"
               break
@@ -81,21 +81,28 @@ jobs:
             exit 1
           fi
           
-          echo "已下载文件：clash_core（来自 ${DOWNLOADED_URL}）"
-          ls -lh clash_core
+          echo "已下载文件：clash_core.gz（来自 ${DOWNLOADED_URL}）"
+          ls -lh clash_core.gz
           echo "文件类型："
-          file clash_core
+          file clash_core.gz
           
-          echo "尝试解压 clash_core..."
-          if [[ "$(file clash_core)" == *"gzip compressed"* ]]; then
-            gzip -d clash_core
+          echo "尝试解压 clash_core.gz..."
+          if [[ "$(file clash_core.gz)" == *"gzip compressed"* ]]; then
+            mv clash_core.gz clash_core.gz.tmp # 临时重命名以确保 .gz 后缀
+            gunzip clash_core.gz.tmp
             if [ $? -ne 0 ]; then
-              echo "::error::gzip 解压失败，退出。"
+              echo "::error::gunzip 解压失败，退出。"
               exit 1
             fi
-            mv clash_core mihomo || true # 解压后文件名为 clash_core，去除 .gz
-          elif [[ "$(file clash_core)" == *"Zstandard compressed"* ]]; then
-            zstd -d clash_core -o clash.tar
+            # 解压后文件名为 mihomo-linux-amd64（根据 file 输出的 was 字段）
+            if [ -f mihomo-linux-amd64 ]; then
+              echo "解压生成 mihomo-linux-amd64 文件"
+            else
+              echo "::error::未找到解压后的 mihomo-linux-amd64 文件，退出。"
+              exit 1
+            fi
+          elif [[ "$(file clash_core.gz)" == *"Zstandard compressed"* ]]; then
+            zstd -d clash_core.gz -o clash.tar
             if [ $? -ne 0 ]; then
               echo "::error::zstd 解压失败，退出。"
               exit 1
@@ -105,12 +112,13 @@ jobs:
               echo "::error::tar 解压失败，退出。"
               exit 1
             fi
-            # 查找解压后的文件（mihomo 或 clash）
+            # 查找解压后的文件
             if [ -f mihomo ]; then
               echo "找到 mihomo 文件"
+              mv mihomo mihomo-linux-amd64
             elif [ -f clash ]; then
-              echo "找到 clash 文件，移动到 mihomo"
-              mv clash mihomo
+              echo "找到 clash 文件，移动到 mihomo-linux-amd64"
+              mv clash mihomo-linux-amd64
             else
               echo "::error::未找到 mihomo 或 clash 文件，退出。"
               exit 1
@@ -121,10 +129,10 @@ jobs:
           fi
           
           echo "解压后文件："
-          ls -lh mihomo || ls -lh clash || true
+          ls -lh mihomo-linux-amd64 || true
           
           echo "移动到 tools/clash..."
-          mv mihomo tools/clash
+          mv mihomo-linux-amd64 tools/clash
           if [ $? -ne 0 ]; then
             echo "::error::移动文件失败，退出。"
             exit 1
