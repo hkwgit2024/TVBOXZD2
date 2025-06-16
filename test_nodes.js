@@ -63,12 +63,13 @@ async function runNodeTests() {
     const inputFilePath = path.join(__dirname, 'data', '520.yaml');
     const outputFilePath = path.join(__dirname, 'data', '521.yaml');
 
-    let nodesConfig;
+    let proxiesConfig;
     try {
         const fileContent = await fs.readFile(inputFilePath, 'utf8');
-        nodesConfig = yaml.load(fileContent);
-        if (!nodesConfig || !Array.isArray(nodesConfig.nodes)) {
-            throw new Error('520.yaml 文件格式不正确，缺少 "nodes" 数组。');
+        proxiesConfig = yaml.load(fileContent);
+        // *** 关键修改：检查 proxies 数组而不是 nodes 数组 ***
+        if (!proxiesConfig || !Array.isArray(proxiesConfig.proxies)) {
+            throw new Error('520.yaml 文件格式不正确，缺少 "proxies" 数组。');
         }
     } catch (error) {
         console.error(`读取或解析 520.yaml 失败: ${error.message}`);
@@ -78,24 +79,52 @@ async function runNodeTests() {
         };
     }
 
-    console.log(`开始测试 ${nodesConfig.nodes.length} 个节点...`);
+    console.log(`开始测试 ${proxiesConfig.proxies.length} 个代理...`);
     const testResults = [];
 
-    for (const node of nodesConfig.nodes) {
-        console.log(`正在测试节点: ${node.name}`);
+    for (const proxy of proxiesConfig.proxies) { // *** 关键修改：遍历 proxies ***
+        const nodeName = proxy.name || "未知名称";
+        const serverAddress = proxy.server; // 获取代理的服务器地址
+        const testUrl = `http://${serverAddress}:80`; // 默认使用 HTTP 80 端口测试连通性
+
+        // 如果代理有 'tls: True' 或 'port' 等信息，可以尝试构建更精确的测试URL
+        // 这里只是一个简单的示例，可能需要根据你的代理类型和端口进行调整
+        // 例如，如果明确知道是 HTTPS 代理或 VLESS/Trojan 等需要特定端口和 TLS 的协议，可能需要构建一个更复杂的测试URL
+        let testTargetUrl = testUrl;
+        if (proxy.tls === true && proxy.port) {
+            testTargetUrl = `https://${serverAddress}:${proxy.port}`;
+        } else if (proxy.port) {
+            testTargetUrl = `http://${serverAddress}:${proxy.port}`;
+        }
+
+        // 对于某些特殊的 servername，可能需要用 servername 来构造 URL
+        if (proxy.servername) {
+            // 这里只是一个简单的处理，可能不适用于所有情况
+            // 更复杂的代理测试需要根据协议类型（vless, trojan等）构建对应的URL或使用专用工具
+            if (proxy.tls === true && proxy.port) {
+                 testTargetUrl = `https://${proxy.servername}:${proxy.port}`;
+            } else if (proxy.port) {
+                 testTargetUrl = `http://${proxy.servername}:${proxy.port}`;
+            } else {
+                 testTargetUrl = `http://${proxy.servername}`; // 默认HTTP 80
+            }
+        }
+
+        console.log(`正在测试代理: ${nodeName} (目标: ${testTargetUrl})`);
         const result = {
-            name: node.name,
-            url: node.url,
-            latency_ms: await testLatency(node.url),
+            name: nodeName,
+            server: serverAddress, // 记录原始服务器地址
+            test_target_url: testTargetUrl, // 记录用于测试的 URL
+            latency_ms: await testLatency(testTargetUrl),
             download_speed: "未测试"
         };
 
-        // 如果节点URL看起来像一个下载链接，则进行下载测速
-        if (node.url.includes('speed.cloudflare.com/__down') || node.url.includes('github.com/releases/download')) {
+        // 如果测试URL看起来像一个下载链接，则进行下载测速
+        if (testTargetUrl.includes('speed.cloudflare.com/__down') || testTargetUrl.includes('github.com/releases/download')) {
              // 从 URL 中提取下载字节数，如果没有则默认 1MB
-            const bytesMatch = node.url.match(/bytes=(\d+)/);
+            const bytesMatch = testTargetUrl.match(/bytes=(\d+)/);
             const downloadSizeBytes = bytesMatch ? parseInt(bytesMatch[1], 10) : 1000000;
-            result.download_speed = await testDownloadSpeed(node.url, downloadSizeBytes);
+            result.download_speed = await testDownloadSpeed(testTargetUrl, downloadSizeBytes);
         }
         
         testResults.push(result);
@@ -103,7 +132,7 @@ async function runNodeTests() {
 
     const finalReport = {
         timestamp: new Date().toISOString(),
-        tested_nodes_count: testResults.length,
+        tested_proxies_count: testResults.length,
         results: testResults
     };
 
