@@ -6,18 +6,16 @@ on:
       - main # 当推送到 main 分支时触发
   pull_request:
     branches:
-      - main # 当有针对 main 分支的 Pull Request 时触发
-  workflow_dispatch: # 允许通过 GitHub UI 手动触发工作流
+      - main # 当有针对 main 分分支的 Pull Request 时触发
+  workflow_dispatch: # 允许你通过 GitHub UI 手动触发此工作流
 
 jobs:
   test-proxies:
-    runs-on: ubuntu-latest # 使用最新版 Ubuntu 运行
-    defaults: # 设置默认配置
-      run: # 为所有 run 命令设置默认 shell
-        shell: bash # 使用 bash shell，等效于 /usr/bin/bash -e
+    runs-on: ubuntu-latest # 指定运行作业的操作系统，这里是最新版的 Ubuntu
+    shell: bash # 为该作业中的所有 'run' 命令设置默认 shell 为 bash，确保脚本兼容性
 
     steps:
-      - name: 检出仓库代码 # 步骤 1：克隆代码仓库
+      - name: 检出仓库代码 # 步骤 1：克隆你的代码仓库
         uses: actions/checkout@v4
 
       - name: 设置 Node.js 环境 # 步骤 2：配置 Node.js 环境
@@ -25,92 +23,99 @@ jobs:
         with:
           node-version: '20' # 使用 Node.js 20 版本
 
-      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，加速构建
+      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，以加快后续运行速度
         uses: actions/cache@v4
         with:
-          path: ~/.npm # 缓存 npm 包路径
+          path: ~/.npm # 缓存 npm 包的路径
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # 缓存键
           restore-keys: |
             ${{ runner.os }}-node- # 恢复缓存键
 
-      - name: 安装依赖 # 步骤 4：安装 package.json 中的依赖
-        run: npm ci # 使用 npm ci 确保一致性安装
+      - name: 安装依赖 # 步骤 4：安装 package.json 中定义的项目依赖
+        run: npm ci # 使用 npm ci 确保一致性安装，推荐用于 CI/CD 环境
 
-      - name: 创建必要目录 # 步骤 5：确保所需目录存在
+      - name: 创建必要目录 # 步骤 5：确保存在所需的目录
         run: |
           mkdir -p tools # 用于存放 Clash 可执行文件
           mkdir -p data  # 用于存放 520.yaml 和 521.yaml
-          mkdir -p temp  # 用于存放临时配置文件
+          mkdir -p temp  # 用于存放临时的 Clash 配置文件
 
-      - name: 下载并验证 Clash 核心 # 步骤 6：动态获取并下载最新 Clash/mihomo 版本
+      - name: 下载并验证 Clash 核心 # 步骤 6：动态获取并下载最新 Mihomo (Clash) 版本
         run: |
-          # 安装 zstd 以支持可能的 .zst 文件
-          sudo apt-get update && sudo apt-get install -y zstd
+          # 确保安装了 jq 和 zstd，用于 JSON 解析和 Zstandard 解压
+          sudo apt-get update && sudo apt-get install -y jq zstd
           
           # 从 GitHub API 获取最新 mihomo 版本号
-          CLASH_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | grep -oE '"tag_name":"[^"]+"' | cut -d'"' -f4 | sed 's/^v//')
+          # 使用 jq 更精确地从 JSON 中提取 tag_name，并移除 'v' 前缀
+          CLASH_VERSION=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.tag_name | lstrip("v")')
           if [ -z "$CLASH_VERSION" ]; then
             echo "::warning::无法获取 MetaCubeX/mihomo 最新版本，回退到 v1.18.2"
-            CLASH_VERSION="v1.18.2"
+            CLASH_VERSION="1.18.2" # 如果 API 获取失败，使用一个已知的稳定版本作为回退
           fi
-          
-          # 尝试多种可能的文件名
+          echo "检测到的 Mihomo 版本: v${CLASH_VERSION}" # 打印检测到的版本号
+
+          # 尝试多种下载 URL，优先下载 .gz 格式，其次是 .tar.zst 格式
           CLASH_URLS=(
             "https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_VERSION}/mihomo-linux-amd64-v${CLASH_VERSION}.gz"
-            "https://github.com/WindSpiritSR/clash/releases/download/v${CLASH_VERSION}/clash-linux-amd64-v3-v${CLASH_VERSION}.gz"
+            "https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_VERSION}/mihomo-linux-amd64-v${CLASH_VERSION}.tar.zst"
+            # 如果你有其他备用下载源（例如 WindSpiritSR/clash），可以按照相同模式添加
+            # "https://github.com/WindSpiritSR/clash/releases/download/v${CLASH_VERSION}/clash-linux-amd64-v3-v${CLASH_VERSION}.gz"
           )
           
           DOWNLOADED=false
           for URL in "${CLASH_URLS[@]}"; do
             echo "尝试从 URL 下载: ${URL}"
-            wget -v "${URL}" -O clash.gz && {
+            # 使用 -L 选项跟随重定向，确保下载成功。-q 静默模式，--show-progress 显示进度
+            wget -q --show-progress -L "${URL}" -O clash_core && {
               DOWNLOADED=true
-              break
+              break # 下载成功后退出循环
             }
             echo "::warning::下载失败: ${URL}"
           done
           
           if [ "$DOWNLOADED" != "true" ]; then
             echo "::error::所有 URL 下载均失败。退出。"
-            exit 1
+            exit 1 # 如果所有下载尝试都失败，则终止工作流
           fi
           
-          echo "已下载 clash.gz。文件大小:"
-          ls -lh clash.gz
+          echo "已下载核心文件。文件大小:"
+          ls -lh clash_core # 显示下载文件的信息
           echo "检查文件类型:"
-          file clash.gz
-          
-          echo "尝试解压 clash.gz..."
-          if [[ "$(file clash.gz)" == *"gzip compressed"* ]]; then
-            gzip -d clash.gz
-            if [ $? -ne 0 ]; then
-              echo "::error::gzip 解压失败。退出。"
-              exit 1
-            fi
-            mv clash mihomo
-          elif [[ "$(file clash.gz)" == *"Zstandard compressed"* ]]; then
-            zstd -d clash.gz -o clash.tar
-            tar -xf clash.tar -C .
-            mv mihomo tools/clash || mv clash tools/clash
-            if [ $? -ne 0 ]; then
-              echo "::error::zstd 或 tar 处理失败。退出。"
+          file clash_core # 检查文件类型，判断是 gzip 还是 zstd
+
+          echo "尝试解压核心文件..."
+          if [[ "$(file clash_core)" == *"gzip compressed"* ]]; then
+            gzip -d clash_core # 解压 gzip 文件
+            mv clash_core.bak mihomo # gzip -d 可能会把原文件重命名为 .bak，解压后的文件是原名
+            echo "gzip 解压成功。"
+          elif [[ "$(file clash_core)" == *"Zstandard compressed"* ]]; then
+            zstd -d clash_core -o clash_core.tar # 解压 zstd 文件到 .tar 归档
+            tar -xf clash_core.tar -C . # 解压 tar 归档
+            echo "Zstandard 解压成功。"
+            # Zstandard 解压后，通常会得到一个名为 'mihomo' 的可执行文件
+            # 检查解压后是否存在 'mihomo' 或 'clash'，并统一命名
+            if [ -f mihomo ]; then
+              echo "检测到解压后的 'mihomo' 文件。"
+            elif [ -f clash ]; then
+              echo "检测到解压后的 'clash' 文件。"
+              mv clash mihomo # 统一命名为 mihomo
+            else
+              echo "::error::Zstandard 解压后未找到 mihomo 或 clash 可执行文件。退出。"
               exit 1
             fi
           else
-            echo "::error::未知文件格式，退出。"
+            echo "::error::未知文件格式或解压类型不支持，退出。"
             exit 1
           fi
           
-          echo "已解压文件。文件大小:"
-          ls -lh mihomo || ls -lh clash || true
-          
-          echo "移动文件到 tools/clash..."
-          mv mihomo tools/clash || mv clash tools/clash || true
+          # 统一将解压后的文件移动到 tools/clash，以便后续步骤调用
+          echo "移动可执行文件到 tools/clash..."
+          mv mihomo tools/clash
           if [ $? -ne 0 ]; then
             echo "::error::移动可执行文件失败。退出。"
             exit 1
           fi
-          echo "Clash 已移动到 tools/clash。tools/ 目录内容:"
+          echo "核心已移动到 tools/clash。tools/ 目录内容:"
           ls -lh tools/
           
           echo "设置 tools/clash 的执行权限..."
@@ -124,28 +129,32 @@ jobs:
           file tools/clash
           
           echo "验证 Clash 可执行文件..."
+          # 运行 Clash 核心，检查其版本信息，确保可执行
           tools/clash -v || {
             echo "::error::Clash 可执行文件验证失败，输出如下："
-            tools/clash -v 2>&1
+            tools/clash -v 2>&1 # 打印错误输出
             exit 1
           }
           echo "Clash 可执行文件验证成功。"
 
-      - name: 运行 Node.js 测试 # 步骤 7：执行 Node.js 测试脚本
+      - name: 运行 Node.js 测试 # 步骤 7：执行你的 Node.js 测试脚本
         run: node test_nodes.js
         env:
-          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用
+          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用 (Node.js 20+ 可能不再严格需要)
 
-      - name: 提交测试结果 # 步骤 8：将测试结果提交回仓库
+      - name: 提交测试结果 # 步骤 8：将生成的测试结果提交回仓库
         run: |
           git config user.name "github-actions[bot]" # 配置 Git 用户名
           git config user.email "github-actions[bot]@users.noreply.github.com" # 配置 Git 用户邮箱
-          if [ -f data/521.yaml ]; then # 检查 521.yaml 是否存在
-            git add data/521.yaml # 添加 521.yaml
-            git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit" # 提交并跳过 CI
+          if [ -f data/521.yaml ]; then # 检查 521.yaml 文件是否存在
+            git add data/521.yaml # 添加 521.yaml 到暂存区
+            # 提交更改，如果没有任何更改则跳过提交，并跳过再次触发 CI
+            git commit -m "Update node test results (via Mihomo/Clash) [skip ci]" || echo "No changes to commit" 
             git push # 推送更改
           else
             echo "data/521.yaml 未找到，跳过提交。"
           fi
         env:
-          BOT: ${{ secrets.BOT }} # 使用重命名为 BOT 的令牌
+          GITHUB_TOKEN: ${{ secrets.BOT }} # GitHub 内置的令牌，用于访问仓库
+          # 如果你的仓库是私有的，或者需要更高级权限，你可能需要使用你自定义的 BOT 令牌
+          # BOT: ${{ secrets.BOT }} # 假设你已将自定义令牌配置为名为 BOT 的 Secret
