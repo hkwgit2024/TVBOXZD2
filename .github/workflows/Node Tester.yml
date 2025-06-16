@@ -88,17 +88,19 @@ jobs:
           
           echo "尝试解压 clash_core.gz..."
           if [[ "$(file clash_core.gz)" == *"gzip compressed"* ]]; then
-            mv clash_core.gz clash_core.gz.tmp # 临时重命名以确保 .gz 后缀
-            gunzip clash_core.gz.tmp
+            gunzip -f clash_core.gz
             if [ $? -ne 0 ]; then
               echo "::error::gunzip 解压失败，退出。"
+              ls -lh
+              file clash_core* || true
               exit 1
             fi
-            # 解压后文件名为 mihomo-linux-amd64（根据 file 输出的 was 字段）
+            # 解压后文件名为 mihomo-linux-amd64
             if [ -f mihomo-linux-amd64 ]; then
               echo "解压生成 mihomo-linux-amd64 文件"
             else
               echo "::error::未找到解压后的 mihomo-linux-amd64 文件，退出。"
+              ls -lh
               exit 1
             fi
           elif [[ "$(file clash_core.gz)" == *"Zstandard compressed"* ]]; then
@@ -114,17 +116,19 @@ jobs:
             fi
             # 查找解压后的文件
             if [ -f mihomo ]; then
-              echo "找到 mihomo 文件"
+              echo "找到 mihomo 文件，移动到 mihomo-linux-amd64"
               mv mihomo mihomo-linux-amd64
             elif [ -f clash ]; then
               echo "找到 clash 文件，移动到 mihomo-linux-amd64"
               mv clash mihomo-linux-amd64
             else
               echo "::error::未找到 mihomo 或 clash 文件，退出。"
+              ls -lh
               exit 1
             fi
           else
             echo "::error::未知文件格式，退出。"
+            file clash_core.gz
             exit 1
           fi
           
@@ -135,6 +139,7 @@ jobs:
           mv mihomo-linux-amd64 tools/clash
           if [ $? -ne 0 ]; then
             echo "::error::移动文件失败，退出。"
+            ls -lh
             exit 1
           fi
           echo "tools/ 目录内容："
