@@ -34,45 +34,6 @@ async function testLatency(url, timeout = 5000, proxyAgent) {
     }
 }
 
-async function testDownloadSpeed(url, sizeBytes = 1000000, timeout = 10000, proxyAgent) {
-    const start = Date.now();
-    try {
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
-        const response = await fetch(url, {
-            method: 'GET',
-            signal: controller.signal,
-            dispatcher: proxyAgent
-        });
-        clearTimeout(id);
-
-        if (!response.ok) {
-            return `下载失败 (状态码: ${response.status})`;
-        }
-
-        const reader = response.body.getReader();
-        let downloadedBytes = 0;
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            downloadedBytes += value.length;
-            if (downloadedBytes >= sizeBytes) break;
-        }
-
-        const duration = (Date.now() - start) / 1000;
-        if (duration === 0) return "计算错误 (持续时间为0)";
-        const speedMbps = (downloadedBytes * 8 / (1024 * 1024)) / duration;
-        return `${speedMbps.toFixed(2)} Mbps (${(downloadedBytes / (1024 * 1024)).toFixed(2)} MB)`;
-    } catch (error) {
-        if (error.name === 'AbortError') {
-            return `下载超时 (${timeout}ms)`;
-        } else if (error.cause && error.cause.code) {
-            return `下载网络错误: ${error.cause.code}`;
-        }
-        return `下载测试异常: ${error.message.substring(0, 50)}...`;
-    }
-}
-
 async function checkClashReady(controllerUrl, timeout = 5000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
@@ -105,7 +66,7 @@ function generateClashConfig(proxy, basePort = 7890) {
         type: proxy.type.toLowerCase() === 'hy' ? 'hysteria' : proxy.type.toLowerCase() === 'hy2' ? 'hysteria2' : proxy.type,
         server: proxy.server,
         port: proxy.port,
-        udp: proxy.udp ?? true, // Hysteria 默认 UDP
+        udp: proxy.udp ?? true,
         'skip-cert-verify': proxy['skip-cert-verify'] ?? false,
     };
 
@@ -167,9 +128,10 @@ function generateClashConfig(proxy, basePort = 7890) {
             clashProxy.protocol = proxy.protocol || 'udp';
             clashProxy.tls = proxy.tls ?? true;
             if (proxy.sni) clashProxy.sni = proxy.sni;
+            if (proxy.ports) clashProxy.ports = proxy.ports;
             break;
         case 'hysteria2':
-            clashProxy.password = proxy.password || proxy.auth;
+            clashProxy.password = proxy.auth || proxy.password;
             if (proxy.up) clashProxy.up = proxy.up;
             if (proxy.down) clashProxy.down = proxy.down;
             if (proxy.obfs) {
@@ -193,7 +155,7 @@ function generateClashConfig(proxy, basePort = 7890) {
         proxies: [proxyName]
     });
     config.rules.push('MATCH,Proxy');
-    return yaml.dump(config, { lineWidth: -1 });
+    return { config: yaml.dump(config, { lineWidth: -1 }), proxy: clashProxy };
 }
 
 async function runNodeTests() {
@@ -219,9 +181,9 @@ async function runNodeTests() {
 
     const { results: testResults } = await PromisePool
         .for(proxiesConfig.proxies)
-        .withConcurrency(2)
+        .withConcurrency(5)
         .process(async (proxy, index) => {
-            const basePort = 7890 + (index % 2) * 2; // 交替使用 7890/7892
+            const basePort = 7890 + (index % 2) * 2;
             const nodeName = proxy.name || `node_${index}`;
             const safeNodeName = nodeName.replace(/[^a-zA-Z0-9_-]/g, '_');
             const configFileName = `clash-config-${safeNodeName}-${basePort}.yaml`;
@@ -243,19 +205,21 @@ async function runNodeTests() {
                 test_target_url: 'http://captive.apple.com',
                 status: '未开始',
                 latency_ms: 'N/A',
-                download_speed: '未测试'
+                download_speed: '未测试',
+                originalProxy: proxy // 保留原始配置
             };
 
             try {
                 await fs.mkdir(path.join(__dirname, 'temp'), { recursive: true });
 
-                const clashConfigContent = generateClashConfig(proxy, basePort);
-                if (!clashConfigContent) {
+                const clashConfigResult = generateClashConfig(proxy, basePort);
+                if (!clashConfigResult) {
                     status = `不支持的代理类型: ${proxy.type}`;
                     result.status = status;
                     return result;
                 }
 
+                const { config: clashConfigContent, proxy: clashProxy } = clashConfigResult;
                 await fs.writeFile(configFilePath, clashConfigContent, 'utf8');
                 console.log(`  - 已生成 Clash 配置: ${configFileName}`);
 
@@ -301,6 +265,7 @@ async function runNodeTests() {
                 if (typeof latency === 'number') {
                     status = '成功';
                     console.log(`  - ${nodeName} 延迟: ${latency}ms`);
+                    result.clashProxy = clashProxy; // 保存生成的 Clash 代理配置
                 } else {
                     status = `代理连接失败: ${latency}`;
                     console.log(`  - ${nodeName} 代理测试失败: ${latency}`);
@@ -337,25 +302,63 @@ async function runNodeTests() {
             return result;
         });
 
-    const finalReport = {
-        timestamp: new Date().toISOString(),
-        tested_proxies_count: testResults.length,
-        results: testResults
+    // 生成客户端可用的配置文件
+    const successfulProxies = testResults
+        .filter(result => result.status === '成功' && result.clashProxy)
+        .map(result => ({
+            ...result.clashProxy,
+            name: `${result.name} (${result.latency_ms}ms)` // 添加延迟到名称
+        }));
+
+    const clientConfig = {
+        port: 7890,
+        'socks-port': 7891,
+        'allow-lan': false,
+        'mode': 'rule',
+        'log-level': 'info',
+        'external-controller': '127.0.0.1:9090',
+        proxies: successfulProxies,
+        'proxy-groups': [
+            {
+                name: 'Proxy',
+                type: 'select',
+                proxies: successfulProxies.map(proxy => proxy.name)
+            },
+            {
+                name: 'Auto',
+                type: 'url-test',
+                proxies: successfulProxies.map(proxy => proxy.name),
+                url: 'http://www.gstatic.com/generate_204',
+                interval: 300
+            }
+        ],
+        rules: [
+            'DOMAIN-SUFFIX,google.com,Proxy',
+            'DOMAIN-SUFFIX,netflix.com,Proxy',
+            'GEOIP,CN,DIRECT',
+            'MATCH,Proxy'
+        ]
     };
 
     try {
-        await fs.writeFile(outputFilePath, yaml.dump(finalReport, { lineWidth: -1 }), 'utf8');
-        console.log(`\n测试结果已写入 ${outputFilePath}`);
+        await fs.writeFile(outputFilePath, yaml.dump(clientConfig, { lineWidth: -1 }), 'utf8');
+        console.log(`\n成功节点 (${successfulProxies.length}) 已写入 ${outputFilePath}`);
     } catch (error) {
         console.error(`写入 521.yaml 失败: ${error.message}`);
     }
 
-    return finalReport;
+    return {
+        timestamp: new Date().toISOString(),
+        tested_proxies_count: testResults.length,
+        successful_count: successfulProxies.length,
+        results: testResults
+    };
 }
 
 if (require.main === module) {
     runNodeTests().then(results => {
         console.log('\n--- 测试完成 ---');
+        console.log(`成功节点: ${results.successful_count}/${results.tested_proxies_count}`);
     }).catch(error => {
         console.error('运行测试失败:', error);
         process.exit(1);
