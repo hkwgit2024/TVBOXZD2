@@ -15,7 +15,7 @@ const { ProxyAgent } = require('undici'); // 用于配置 fetch 使用代理
  * @param {ProxyAgent} proxyAgent - 用于 fetch 请求的 Undici ProxyAgent 实例。
  * @returns {Promise<number|string>} 成功则返回延迟（毫秒），否则返回错误字符串。
  */
-async function testLatency(url, timeout = 3000, proxyAgent) {
+async function testLatency(url, timeout = 5000, proxyAgent) { // 增加默认超时时间到 5000ms
     const start = Date.now();
     let timeoutId; // 用于存储 setTimeout 返回的 ID
     try {
@@ -44,7 +44,7 @@ async function testLatency(url, timeout = 3000, proxyAgent) {
 
         if (error.name === 'AbortError') {
             return `超时 (${timeout}ms)`;
-        } else if (error.cause && error.cause.code) { // 捕获更具体的网络错误码 (ECONNRESET, ECONNREFUSED)
+        } else if (error.cause && error.cause.code) { // 捕获更具体的网络错误码 (ECONNRESET, ECONNREFUSED, UND_ERR_SOCKET)
             return `网络错误: ${error.cause.code}`;
         }
         return `连接错误: ${error.message.substring(0, 50)}...`; // 截断错误信息
@@ -196,18 +196,21 @@ function generateClashConfig(proxy, port = 7890) {
  * @param {number} delay - 每次重试之间的延迟（毫秒）。
  * @returns {Promise<boolean>} 如果 Clash API 响应则返回 true，否则返回 false。
  */
-async function checkClashReady(port, retries = 5, delay = 1000) { // 增加延迟到 1000ms
+async function checkClashReady(port, retries = 10, delay = 1000) { // 增加重试次数到 10，每次延迟 1 秒
     const controllerPort = port + 2; // 面板端口通常是 HTTP 代理端口 + 2
     for (let i = 0; i < retries; i++) {
         try {
             // 注意这里不使用 proxyAgent，直接连接到本地 Clash API
-            const response = await fetch(`http://127.0.0.1:${controllerPort}/version`, { timeout: 1000 }); // 给 API 响应 1 秒超时
+            const response = await fetch(`http://127.0.0.1:${controllerPort}/version`, { timeout: 2000 }); // 给 API 响应 2 秒超时
             if (response.ok) {
                 console.log(`Clash API 在端口 ${controllerPort} 已准备就绪。`);
                 return true;
             }
         } catch (error) {
-            // console.warn(`Clash API 未就绪（端口 ${controllerPort}），重试中... (${error.message.substring(0,50)})`); // 调试时可开启
+            // 在重试期间，不打印警告以减少日志噪音，除非是最后一次重试
+            if (i === retries - 1) {
+                 console.warn(`Clash API 未就绪（端口 ${controllerPort}），最后一次尝试失败: ${error.message.substring(0,50)}`);
+            }
         }
         await new Promise(resolve => setTimeout(resolve, delay)); // 使用全局 setTimeout
     }
@@ -224,34 +227,38 @@ async function killClashProcess(pid, port) {
     try {
         process.kill(pid, 'SIGTERM'); // 尝试发送 SIGTERM 信号
         await new Promise(resolve => setTimeout(resolve, 500)); // 等待进程优雅关闭
-        
-        // 使用 lsof 和 kill -9 确保端口被强制释放，防止残留进程
-        const { exec } = require('child_process');
-        await new Promise(resolve => exec(`lsof -ti :${port} | xargs kill -9 2>/dev/null`, (error, stdout, stderr) => {
-            if (error) {
-                console.warn(`WARN: Failed to kill process on port ${port} forcefully: ${error.message}`);
-            }
-            resolve();
-        }));
-        await new Promise(resolve => exec(`lsof -ti :${port + 1} | xargs kill -9 2>/dev/null`, (error, stdout, stderr) => {
-            if (error) {
-                console.warn(`WARN: Failed to kill process on port ${port + 1} forcefully: ${error.message}`);
-            }
-            resolve();
-        }));
-         await new Promise(resolve => exec(`lsof -ti :${port + 2} | xargs kill -9 2>/dev/null`, (error, stdout, stderr) => {
-            if (error) {
-                console.warn(`WARN: Failed to kill process on port ${port + 2} forcefully: ${error.message}`);
-            }
-            resolve();
-        }));
-        console.log(`已尝试终止 Clash PID ${pid} 并释放端口 ${port}。`);
-
+        console.log(`已尝试终止 Clash PID ${pid} (SIGTERM)。`);
     } catch (error) {
         if (error.code !== 'ESRCH') { // ESRCH 表示进程不存在，这是预期的
-            console.warn(`WARNING: Failed to kill PID ${pid}: ${error.message}`);
+            console.warn(`WARNING: Failed to send SIGTERM to PID ${pid}: ${error.message}`);
+        } else {
+            console.log(`Clash PID ${pid} 已不存在（可能已退出）。`);
         }
     }
+
+    // 强制终止残留进程并释放端口
+    const { exec } = require('child_process');
+    const portsToKill = [port, port + 1, port + 2];
+    for (const p of portsToKill) {
+        try {
+            // 使用 lsof 和 kill -9 确保端口被强制释放
+            // `-r` 选项用于 xargs: If the standard input consists solely of blank lines, or of zero-length non-blank lines if the -L or -t options are not used, no commands will be run.
+            // `2>/dev/null` 再次确保 stderr 不会污染主输出，特别是当 `lsof` 没有找到进程时。
+            await new Promise(resolve => exec(`lsof -ti :${p} | xargs -r kill -9 2>/dev/null`, (error, stdout, stderr) => {
+                if (error) {
+                    // 仅当错误信息不是因为“没有此类进程”或“命令未找到”时才警告
+                    if (!stderr.includes('No such process') && !error.message.includes('No such process') && !error.message.includes('command not found')) {
+                        console.warn(`WARN: 尝试强制终止端口 ${p} 失败: ${error.message.substring(0, 100)}...`);
+                    }
+                }
+                resolve();
+            }));
+        } catch (e) {
+            // 只有当 exec 本身同步抛出错误时（非常罕见）才会触发此处的 catch
+            console.warn(`WARN: 强制终止端口 ${p} 时发生意外错误: ${e.message}`);
+        }
+    }
+    console.log(`已尝试释放端口 ${port}, ${port+1}, ${port+2}。`);
 }
 
 // --- 主测试函数 ---
@@ -315,6 +322,7 @@ async function runNodeTests() {
             let clashProcess = null;
             let latency = 'N/A';
             let status = 'Failed';
+            let clashOutput = ''; // 用于捕获 Clash 进程的 stderr/stdout
 
             const result = {
                 name: nodeName,
@@ -342,7 +350,6 @@ async function runNodeTests() {
                 });
 
                 // 捕获 Clash 进程的日志输出，以备调试
-                let clashOutput = '';
                 clashProcess.stdout.on('data', data => clashOutput += data.toString());
                 clashProcess.stderr.on('data', data => clashOutput += data.toString());
 
@@ -350,7 +357,7 @@ async function runNodeTests() {
 
                 // 3. 等待 Clash 启动并初始化 (增加重试次数和延迟)
                 if (!await checkClashReady(port, 10, 1000)) { // 尝试 10 次，每次等待 1 秒
-                    throw new Error(`Clash failed to start or respond on port ${port}. Output: ${clashOutput.substring(0, 500)}...`);
+                    throw new Error(`Clash failed to start or respond on port ${port}.`); // 移除日志中的 Clash output，因为它会在 finally 中统一打印
                 }
 
                 // 4. 执行实际的代理测试
@@ -368,7 +375,20 @@ async function runNodeTests() {
                 // 5. 停止 Clash 客户端并清理临时文件
                 if (clashProcess && !clashProcess.killed) {
                     await killClashProcess(clashProcess.pid, port);
+                } else if (clashProcess && clashProcess.exitCode !== null) {
+                    // 如果 Clash 进程已经退出（非手动终止），打印其退出码和捕获的日志
+                    console.warn(`  - Clash 进程在测试前/中途异常退出 (${nodeName}). Exit Code: ${clashProcess.exitCode || 'N/A'}. Signal: ${clashProcess.signal || 'N/A'}`);
                 }
+
+                // 如果测试失败，且有 Clash 输出，打印 Clash 的日志
+                if (result.status.startsWith('失败') || result.status.startsWith('错误')) {
+                    if (clashOutput) {
+                        console.error(`  - Clash 详细输出 (${nodeName}):\n${clashOutput.substring(0, 2000)}...\n`); // 打印 Clash 日志，截取前 2000 字符
+                    } else {
+                        console.warn(`  - Clash 未输出任何日志 (${nodeName})，可能启动失败或无详细错误信息。`);
+                    }
+                }
+
                 try {
                     await fs.unlink(configFilePath); // 删除临时配置文件
                     // console.log(`  - 已删除临时配置文件: ${configFileName}`); // 日志过多，调试时开启
