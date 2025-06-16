@@ -7,22 +7,23 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   test-proxies:
-    runs-on: ubuntu-latest # GitHub Actions Runner 操作系统
+    runs-on: ubuntu-latest
+    shell: /usr/bin/bash -e {0} # 这将为该作业中的所有 'run' 命令设置默认 shell
 
     steps:
-      - name: Checkout repository # 步骤1：检出代码
+      - name: 检出仓库代码
         uses: actions/checkout@v4
 
-      - name: Set up Node.js # 步骤2：设置 Node.js 环境
+      - name: 设置 Node.js 环境
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Cache Node Modules # 步骤3：缓存 node_modules 减少安装时间
+      - name: 缓存 Node 模块
         uses: actions/cache@v4
         with:
           path: ~/.npm
@@ -30,36 +31,68 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install Dependencies # 步骤4：安装项目依赖
+      - name: 安装依赖
         run: npm install
 
-      - name: Create tools and temp directories # 创建必要的目录
+      - name: 创建必要目录
         run: |
           mkdir -p tools
-          mkdir -p data # 如果data目录不存在的话，确保创建
-          mkdir -p temp # 用于存放临时的Clash配置文件
+          mkdir -p data
+          mkdir -p temp
 
-      - name: Download Clash Core # 步骤5：下载 Clash 核心
+      - name: 下载 Clash 核心
         run: |
-          CLASH_VERSION="v1.17.0" # <-- 检查并使用最新版本
-          # 请根据你的 GitHub Actions Runner 操作系统选择正确的 URL
-          # For Linux AMD64:
+          CLASH_VERSION="v1.17.0"
           CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-${CLASH_VERSION}.gz"
-          # For macOS AMD64: (如果你在macOS runner上运行)
-          # CLASH_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-darwin-amd64-${CLASH_VERSION}.gz"
           
-          wget -q ${CLASH_URL} -O clash.gz
-          gzip -d clash.gz
-          mv clash tools/clash # 移动到 tools 目录
-          chmod +x tools/clash # 添加执行权限
-          tools/clash -v # 验证下载和权限
+          echo "尝试从以下 URL 下载 Clash: ${CLASH_URL}"
+          wget -v ${CLASH_URL} -O clash.gz
+          if [ $? -ne 0 ]; then
+            echo "wget 下载 Clash 失败。退出。"
+            exit 1
+          fi
+          echo "已下载 clash.gz。文件大小:"
+          ls -lh clash.gz
 
-      - name: Run Node.js Tests # 步骤6：运行 Node.js 测试脚本
+          echo "尝试解压 clash.gz..."
+          gzip -d clash.gz
+          if [ $? -ne 0 ]; then
+            echo "gzip 解压失败。退出。"
+            exit 1
+          fi
+          echo "已解压 clash。文件大小:"
+          ls -lh clash
+
+          echo "移动 clash 到 tools/clash..."
+          mv clash tools/clash
+          if [ $? -ne 0 ]; then
+            echo "移动 clash 可执行文件失败。退出。"
+            exit 1
+          fi
+          echo "Clash 已移动到 tools/clash。tools/ 目录内容:"
+          ls -lh tools/
+
+          echo "设置 tools/clash 的执行权限..."
+          chmod +x tools/clash
+          if [ $? -ne 0 ]; then
+            echo "设置执行权限失败。退出。"
+            exit 1
+          fi
+
+          echo "验证 Clash 可执行文件..."
+          tools/clash -v
+          if [ $? -ne 0 ]; then
+            echo "Clash 可执行文件验证失败。退出。"
+            exit 1
+          fi
+          echo "Clash 可执行文件验证成功。"
+
+      - name: 运行 Node.js 测试
         run: node test_nodes.js
         env:
-          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用，对于 Node.js 20+ 可能不是必需的但加上无害
+          NODE_OPTIONS: "--experimental-fetch"
 
-      - name: Commit test results # 步骤7：将测试结果文件提交回仓库
+      - name: 提交测试结果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -68,7 +101,7 @@ jobs:
             git commit -m "Update node test results (via Clash) [skip ci]" || echo "No changes to commit"
             git push
           else
-            echo "data/521.yaml not found, skipping commit."
+            echo "data/521.yaml 未找到，跳过提交。"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}
