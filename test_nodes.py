@@ -10,6 +10,7 @@ import base64
 import json
 import socket
 import logging
+import argparse
 from typing import Dict, List
 from yaml import SafeLoader
 from urllib.parse import urlparse, unquote, parse_qs
@@ -24,7 +25,7 @@ logging.basicConfig(
     ]
 )
 
-# --- YAML 相关配置 ---
+# --- YAML 自定义构造函数 ---
 def str_constructor(loader, node):
     return str(node.value)
 
@@ -34,6 +35,13 @@ SafeLoader.add_constructor('!str', str_constructor)
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('127.0.0.1', port)) == 0
+
+# --- 命令行参数解析 ---
+def parse_args():
+    parser = argparse.ArgumentParser(description="Test proxy nodes with chunk support")
+    parser.add_argument('--start', type=int, default=0, help='Start index of node URLs')
+    parser.add_argument('--end', type=int, default=float('inf'), help='End index of node URLs')
+    return parser.parse_args()
 
 # --- 节点解析函数 ---
 def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
@@ -84,7 +92,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                         'port': int(port),
                         'cipher': cipher,
                         'password': password,
-                        'udp': True
+                        'udp': True,
+                        'original_url': node_url
                     }
                 except Exception:
                     pass
@@ -99,7 +108,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                     'port': int(port),
                     'cipher': cipher,
                     'password': password,
-                    'udp': True
+                    'udp': True,
+                    'original_url': node_url
                 }
 
         elif scheme == "vless":
@@ -128,7 +138,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                 'port': port,
                 'uuid': uuid,
                 'network': query_params.get('type', ['tcp'])[0],
-                'udp': True
+                'udp': True,
+                'original_url': node_url
             }
 
             if query_params.get('security', [''])[0] == 'tls':
@@ -166,7 +177,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                     'alterId': int(vmess_data.get('aid', 0)),
                     'cipher': vmess_data.get('scy', 'auto'),
                     'network': vmess_data.get('net', 'tcp'),
-                    'udp': True
+                    'udp': True,
+                    'original_url': node_url
                 }
 
                 if vmess_data.get('tls', '') == 'tls':
@@ -219,7 +231,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                 'tls': True,
                 'servername': query_params.get('sni', [server])[0],
                 'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1' or
-                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true'
+                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true',
+                'original_url': node_url
             }
             return node_config
 
@@ -257,7 +270,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                 'tls': True,
                 'servername': query_params.get('sni', [server])[0],
                 'skip-cert-verify': query_params.get('insecure', ['0'])[0] == '1' or
-                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true'
+                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true',
+                'original_url': node_url
             }
             return node_config
 
@@ -283,7 +297,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                     'password': password,
                     'protocol': protocol,
                     'obfs': obfs,
-                    'udp': True
+                    'udp': True,
+                    'original_url': node_url
                 }
 
                 if 'obfsparam' in query_params:
@@ -304,7 +319,7 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
         logging.warning(f"解析节点URL失败 (URL: {node_url}, 错误: {e})")
         return None
 
-# --- 验证函数 ---
+# --- 验证代理配置 ---
 def validate_proxy(proxy: Dict, original_url: str, index: int) -> tuple[bool, str]:
     required_fields = {'name': str, 'server': str, 'port': int, 'type': str}
     protocol_specific_fields = {
@@ -335,9 +350,11 @@ def validate_proxy(proxy: Dict, original_url: str, index: int) -> tuple[bool, st
 
     return True, ""
 
-# --- 测试代理函数 ---
-async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, clash_port: int = 7890) -> Dict:
+# --- 测试代理 ---
+async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, base_port: int = 7890) -> Dict:
     proxy_name = proxy.get('name', 'unknown')
+    clash_port = base_port + (hash(proxy_name) % 1000) * 2  # 动态分配端口
+
     if is_port_in_use(clash_port) or is_port_in_use(clash_port + 1):
         return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"端口 {clash_port} 或 {clash_port + 1} 被占用", 'original_url': proxy.get('original_url', 'N/A')}
 
@@ -352,42 +369,48 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
 
     os.makedirs('temp', exist_ok=True)
     clean_proxy_name = re.sub(r'[^\w.-]', '_', proxy_name)[:100]
-    config_path = f'temp/config_{clean_proxy_name}.yaml'
+    config_path = f'temp/config_{clean_proxy_name}_{clash_port}.yaml'
 
     try:
         with open(config_path, 'w', encoding='utf-8') as f:
             yaml.dump(config, f, allow_unicode=True)
-    except Exception as e:
-        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}", 'original_url': proxy.get('original_url', 'N/A')}
+    except IOError as e:
+        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置文件失败: {str(e)}", 'original_url': proxy.get('original_url', 'N/A')}
 
-    proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
-    await asyncio.sleep(2)
-
+    proc = None
     result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None, 'original_url': proxy.get('original_url', 'N/A')}
     try:
-        start_time = time.time()
-        async with session.get(
-            'http://ipinfo.io',
-            proxy=f'http://127.0.0.1:{clash_port}',
-            timeout=5
-        ) as response:
-            if response.status == 200:
-                result['status'] = '可用'
-                result['latency'] = (time.time() - start_time) * 1000
-    except Exception:
-        try:
-            async with session.get(
-                'http://ipinfo.io',
-                proxy=f'socks5://127.0.0.1:{clash_port + 1}',
-                timeout=5
-            ) as response:
-                if response.status == 200:
-                    result['status'] = '可用'
-                    result['latency'] = (time.time() - start_time) * 1000
-        except Exception as e:
-            result['error'] = f"测试失败: {str(e)}"
+        proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
+        await asyncio.sleep(2)
+
+        for attempt in range(3):
+            try:
+                start_time = time.time()
+                async with session.get(
+                    'http://ipinfo.io',
+                    proxy=f'http://127.0.0.1:{clash_port}',
+                    timeout=5
+                ) as response:
+                    if response.status == 200:
+                        result['status'] = '可用'
+                        result['latency'] = (time.time() - start_time) * 1000
+                        break
+                async with session.get(
+                    'http://ipinfo.io',
+                    proxy=f'socks5://127.0.0.1:{clash_port + 1}',
+                    timeout=5
+                ) as response:
+                    if response.status == 200:
+                        result['status'] = '可用'
+                        result['latency'] = (time.time() - start_time) * 1000
+                        break
+            except (aiohttp.ClientError, asyncio.TimeoutError) as e:
+                if attempt == 2:
+                    result['error'] = f"测试失败 (重试 3 次): {str(e)}"
+                await asyncio.sleep(1)
+
     finally:
-        if proc.poll() is None:
+        if proc and proc.poll() is None:
             try:
                 os.killpg(os.getpgid(proc.pid), subprocess.signal.SIGTERM)
                 proc.wait(timeout=2)
@@ -398,12 +421,24 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
                 os.remove(config_path)
             except OSError as e:
                 logging.warning(f"删除临时文件 {config_path} 失败: {e}")
+
     return result
 
 # --- 主函数 ---
 async def main():
-    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+    args = parse_args()
+    nodes_url = "https://raw.githubusercontent.com/qjlxg/nhgrok/refs/heads/main/test_nodes.txt"
     raw_node_urls = []
+
+    # 加载缓存
+    cache_file = 'data/test_cache.yaml'
+    cache = {}
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as f:
+                cache = yaml.safe_load(f) or {}
+        except Exception as e:
+            logging.warning(f"加载缓存失败: {e}")
 
     async with aiohttp.ClientSession() as session:
         try:
@@ -416,7 +451,8 @@ async def main():
                     line for line in raw_node_urls
                     if re.match(r'^[a-zA-Z0-9]+://[^\s]+$', line) and len(line) < 2048
                 ]
-            logging.info(f"过滤后剩余 {len(raw_node_urls)} 条节点URL。")
+                raw_node_urls = raw_node_urls[args.start:min(args.end, len(raw_node_urls))]
+            logging.info(f"过滤后剩余 {len(raw_node_urls)} 条节点URL (分片 {args.start}-{args.end})。")
         except aiohttp.ClientError as e:
             logging.error(f"从 URL 下载节点列表失败 ({nodes_url}): {e}")
             sys.exit(1)
@@ -425,22 +461,21 @@ async def main():
             sys.exit(1)
 
     if not raw_node_urls:
-        logging.info("未从 URL 读取到任何节点URL。")
+        logging.info("未从 URL 获取到任何有效的节点URL。")
         sys.exit(0)
 
     parsed_proxies = []
-    invalid_node_urls = []
-    for i, url in enumerate(raw_node_urls):
+    invalid_nodes = []
+    for i, url in enumerate(raw_node_urls, start=args.start):
         parsed_proxy = parse_node_url_to_mihomo_config(url)
         if parsed_proxy:
-            parsed_proxy['original_url'] = url
             is_valid, error = validate_proxy(parsed_proxy, url, i)
             if is_valid:
                 parsed_proxies.append(parsed_proxy)
             else:
-                invalid_node_urls.append({'url': url, 'error': error})
+                invalid_nodes.append({'url': url, 'error': error})
         else:
-            invalid_node_urls.append({'url': url, 'error': "无法解析或不支持的节点URL格式"})
+            invalid_nodes.append({'url': url, 'error': '无法解析或不支持的节点URL格式'})
 
     # 去重
     unique_proxies = []
@@ -453,18 +488,22 @@ async def main():
     parsed_proxies = unique_proxies
     logging.info(f"去重后剩余 {len(parsed_proxies)} 个代理节点。")
 
-    if invalid_node_urls:
+    # 应用缓存
+    new_proxies = [p for p in parsed_proxies if p['original_url'] not in cache or cache[p['original_url']].get('status') != '可用']
+    logging.info(f"从缓存中跳过 {len(parsed_proxies) - len(new_proxies)} 个已测试节点。")
+    parsed_proxies = new_proxies
+
+    if invalid_nodes:
         os.makedirs('data', exist_ok=True)
-        with open('data/invalid_nodes.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump({'invalid_urls': invalid_node_urls}, f, allow_unicode=True, sort_keys=False)
-        logging.info(f"发现 {len(invalid_node_urls)} 个无法解析或无效的节点URL，详情见 data/invalid_nodes.yaml")
+        with open(f'data/invalid_nodes_{args.start}_{args.end}.yaml', 'w', encoding='utf-8') as f:
+            yaml.dump({'invalid_urls': invalid_nodes}, f, allow_unicode=True, sort_keys=False)
+        logging.info(f"发现 {len(invalid_nodes)} 个无效节点URL，保存至 data/invalid_nodes_{args.start}_{args.end}.yaml")
 
     if not parsed_proxies:
-        logging.info("没有可用于测试的有效代理节点。")
+        logging.info("没有可测试的有效代理节点。")
         sys.exit(0)
 
-    os.makedirs('data', exist_ok=True)
-    results_list = []
+    results = []
     semaphore = asyncio.Semaphore(5)
     batch_size = 5
 
@@ -475,23 +514,33 @@ async def main():
     for i in range(0, len(parsed_proxies), batch_size):
         batch = parsed_proxies[i:i + batch_size]
         tasks = [test_proxy_with_semaphore(proxy, session, './tools/clash', semaphore) for proxy in batch]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        for result in results:
+        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+        for result in batch_results:
             if isinstance(result, dict):
-                results_list.append(result)
+                results.append(result)
                 logging.info(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''} (原始URL: {result['original_url']})")
             else:
                 logging.error(f"测试过程中发生未知错误: {result}")
 
-    final_successful_proxies = [res for res in results_list if res['status'] == '可用']
+    # 保存结果
+    successful_proxies = [r for r in results if r['status'] == '可用']
+    os.makedirs('data', exist_ok=True)
     try:
-        with open('data/521.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump({'proxies': final_successful_proxies}, f, allow_unicode=True, sort_keys=False)
-        logging.info(f"已将 {len(final_successful_proxies)} 个可用节点写入 data/521.yaml")
+        with open(f'data/521_{args.start}_{args.end}.yaml', 'w', encoding='utf-8') as f:
+            yaml.safe_dump({'proxies': successful_proxies}, f, allow_unicode=True, sort_keys=False)
+        logging.info(f"已将 {len(successful_proxies)} 个可用节点写入 data/521_{args.start}_{args.end}.yaml")
     except Exception as e:
-        logging.error(f"写入 data/521.yaml 失败: {e}")
+        logging.error(f"写入 data/521_{args.start}_{args.end}.yaml 失败: {e}")
         sys.exit(1)
+
+    # 更新缓存
+    try:
+        for result in results:
+            cache[result['original_url']] = {'status': result['status'], 'timestamp': time.time()}
+        with open(cache_file, 'w', encoding='utf-8') as f:
+            yaml.safe_dump({'cache': cache}, f, allow_unicode=True, sort_keys=False)
+    except Exception as e:
+        logging.warning(f"更新缓存失败: {e}")
 
     logging.info("测试完成。")
 
