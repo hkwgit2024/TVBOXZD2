@@ -165,10 +165,10 @@ jobs:
           }
           echo "可执行文件验证成功。"
 
-      - name: 运行 Node.js 测试 # 步骤 7：执行 Node.js 测试脚本
-        run: node test_nodes.js
-        env:
-          NODE_OPTIONS: "--experimental-fetch" # 确保 fetch API 可用
+          - name: 运行代理节点测试
+            run: |
+            chmod +x test_nodes.sh
+            ./test_nodes.sh
 
       - name: 提交测试结果 # 步骤 8：将测试结果提交回仓库
         run: |
