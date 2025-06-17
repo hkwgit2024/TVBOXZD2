@@ -1,56 +1,38 @@
-name: Node Proxy Test # 工作流的名称
+name: Node Proxy Test
 
 on:
   push:
     branches:
-      - main # 当推送到 main 分支时触发
+      - main
   pull_request:
     branches:
-      - main # 当有针对 main 分支的 Pull Request 时触发
-  workflow_dispatch: # 允许通过 GitHub UI 手动触发工作流
+      - main
+  workflow_dispatch:
 
 jobs:
   test-proxies:
-    runs-on: ubuntu-latest # 使用最新版 Ubuntu 运行
+    runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash # 为所有 run 命令设置默认 shell，确保 bash 环境
+        shell: bash
 
     steps:
-      - name: 检出仓库代码 # 步骤 1：克隆代码仓库
+      - name: 检出仓库代码
         uses: actions/checkout@v4
 
-      - name: 设置 Node.js 环境 # 步骤 2：配置 Node.js 环境
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20' # 使用 Node.js 20 版本
-
-      - name: 缓存 Node 模块 # 步骤 3：缓存 npm 依赖，加速构建
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm # 缓存 npm 包路径
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} # 缓存键
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: 安装依赖 # 步骤 4：安装 package.json 中的依赖
-        run: npm ci # 使用 npm ci 确保一致性安装
-
-      - name: 创建必要目录 # 步骤 5：确保所需目录存在
+      - name: 创建必要目录
         run: |
-          mkdir -p tools # 用于存放 Clash 可执行文件
-          mkdir -p data  # 用于存放 520.yaml 和 521.yaml
-          mkdir -p temp  # 用于存放临时配置文件
+          mkdir -p tools
+          mkdir -p data
+          mkdir -p temp
 
-      - name: 下载并验证 Clash 核心 # 步骤 6：动态获取并下载最新 Mihomo/Clash 版本
+      - name: 下载并验证 Clash 核心
         run: |
-          # 安装 jq 和 zstd，确保 JSON 解析和解压支持
-          sudo apt-get update && sudo apt-get install -y jq zstd || {
-            echo "::error::无法安装 jq 或 zstd，退出。"
+          sudo apt-get update && sudo apt-get install -y jq zstd yq || {
+            echo "::error::无法安装 jq、zstd 或 yq，退出。"
             exit 1
           }
           
-          # 获取最新 mihomo 版本号，保留 'v' 前缀以匹配下载 URL
           CLASH_VERSION=$(curl -s --retry 3 https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.tag_name')
           if [ -z "$CLASH_VERSION" ]; then
             echo "::warning::无法获取 MetaCubeX/mihomo 最新版本，回退到 v1.19.10"
@@ -58,7 +40,6 @@ jobs:
           fi
           echo "检测到的版本: ${CLASH_VERSION}"
 
-          # 定义可能的下载 URL
           CLASH_URLS=(
             "https://github.com/MetaCubeX/mihomo/releases/download/${CLASH_VERSION}/mihomo-linux-amd64-${CLASH_VERSION}.gz"
             "https://github.com/MetaCubeX/mihomo/releases/download/${CLASH_VERSION}/mihomo-linux-amd64-compatible-${CLASH_VERSION}.gz"
@@ -95,7 +76,6 @@ jobs:
               file clash_core* || true
               exit 1
             fi
-            # 解压后文件名为 clash_core
             if [ -f clash_core ]; then
               echo "解压生成 clash_core 文件，移动到 mihomo-linux-amd64"
               mv clash_core mihomo-linux-amd64
@@ -116,7 +96,6 @@ jobs:
               echo "::error::tar 解压失败，退出。"
               exit 1
             fi
-            # 查找解压后的文件
             if [ -f mihomo ]; then
               echo "找到 mihomo 文件，移动到 mihomo-linux-amd64"
               mv mihomo mihomo-linux-amd64
@@ -165,16 +144,19 @@ jobs:
           }
           echo "可执行文件验证成功。"
 
-          - name: 运行代理节点测试
-            run: |
-            chmod +x test_nodes.sh
-            ./test_nodes.sh
+      - name: 运行代理节点测试
+        run: |
+          if [ ! -f test_nodes.sh ]; then
+            echo "::error::未找到 test_nodes.sh 脚本，退出。"
+            exit 1
+          fi
+          chmod +x test_nodes.sh
+          ./test_nodes.sh
 
-      - name: 提交测试结果 # 步骤 8：将测试结果提交回仓库
+      - name: 提交测试结果
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # 配置 git 使用令牌认证
           git remote set-url origin https://x:${{ secrets.BOT }}@github.com/${{ github.repository }}.git
           if [ -f data/521.yaml ]; then
             git add data/521.yaml
@@ -184,4 +166,4 @@ jobs:
             echo "data/521.yaml 未找到，跳过提交。"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} # 使用 BOT 令牌
+          GITHUB_TOKEN: ${{ secrets.BOT }}
