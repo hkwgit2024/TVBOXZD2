@@ -19,9 +19,17 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          pip install requests speedtest-cli
+          # 安装 Python 依赖
+          pip install requests
+          # 安装 Speedtest CLI (新版命令为 speedtest)
+          # 注意：官方推荐的安装方式，而不是通过 pip 或 apt
+          # 参见 https://www.speedtest.net/apps/cli
+          curl -s https://install.speedtest.net/app/cli/install.deb | sudo bash
+          
+          # 安装 netcat (用于测试本地代理端口) 和 curl
           sudo apt-get update
-          sudo apt-get install -y curl
+          sudo apt-get install -y netcat-traditional curl
+
       - name: Run node test script
         run: python test_nodes.py
       - name: Upload results
