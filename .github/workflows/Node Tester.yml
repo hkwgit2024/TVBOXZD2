@@ -25,12 +25,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml aiohttp
 
-      - name: 下载 Clash 二进制文件
+      - name: 下载 Mihomo (Clash.Meta) 二进制文件
         run: |
-          mkdir -p tools
-          wget -O tools/clash.gz https://github.com/Dreamacro/clash/releases/download/v1.18.0/clash-linux-amd64-v1.18.0.gz
-          gunzip tools/clash.gz
-          chmod +x tools/clash
+         mkdir -p tools
+    # 请将下面的 URL 替换为从 MetaCubeX/mihomo/releases 复制的最新版本链接
+        wget -O tools/clash.gz https://github.com/MetaCubeX/mihomo/releases/download/v1.18.0/mihomo-linux-amd64-v1.18.0.gz # 请替换为实际的最新版本链接！
+        gunzip tools/clash.gz
+        chmod +x tools/clash
+    # 提醒：您的 test_nodes.py 可能需要调整以兼容 mihomo 的行为，虽然大部分情况下是兼容的
 
       - name: 运行代理节点测试
         run: |
