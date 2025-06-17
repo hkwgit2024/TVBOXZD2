@@ -12,7 +12,7 @@ CACHE_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/
 URL_PATTERN = r'https?://[^\s<>"]+(?:/s/|/api/v1/client/)[^\s<>"]+'
 
 # 保存文件的目录
-OUTPUT_DIR = "decoded_files"
+
 RESULT_FILE = "config/cache.txt"
 
 # 确保输出目录和结果文件目录存在
@@ -27,12 +27,12 @@ def fix_base64_padding(encoded_str):
     return encoded_str + "=" * ((4 - len(encoded_str) % 4) % 4)
 
 def decode_base64(content):
-    """尝试解码Base64内容"""
+    """尝试解码Base64内容，始终返回 (decoded_content, error)"""
     try:
         cleaned_content = content.strip()
         padded_content = fix_base64_padding(cleaned_content)
         decoded = base64.b64decode(padded_content, validate=True)
-        return decoded
+        return decoded, None
     except Exception as e:
         return None, f"Base64解码失败: {e}"
 
@@ -100,6 +100,7 @@ def main():
                 with open(RESULT_FILE, "a", encoding="utf-8") as f:
                     f.write(f"\nURL: {url}\n访问失败: {e}\n")
                 print(f"访问URL失败: {url}, 错误: {e}")
+                continue  # 继续处理下一个URL
 
     except requests.RequestException as e:
         with open(RESULT_FILE, "a", encoding="utf-8") as f:
