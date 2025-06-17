@@ -102,8 +102,7 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                     'password': password,
                     'udp': True,
                     'original_url': node_url
-                }
-
+                    }
         return None
 
     except Exception as e:
@@ -250,6 +249,7 @@ async def main():
                     line for line in raw_node_urls
                     if re.match(r'^ss://[^\s]+$', line, re.IGNORECASE) and len(line) < 2048
                 ]
+                logging.info(f"节点列表总长度: {len(raw_node_urls)}")
                 raw_node_urls = raw_node_urls[args.start:min(args.end, len(raw_node_urls))]
             logging.info(f"过滤后剩余 {len(raw_node_urls)} 条 Shadowsocks 节点URL (分片 {args.start}-{args.end})。")
         except aiohttp.ClientError as e:
@@ -301,8 +301,8 @@ async def main():
         sys.exit(0)
 
     results = []
-    semaphore = asyncio.Semaphore(3)  # 降低并发数
-    batch_size = 3  # 减少批次大小
+    semaphore = asyncio.Semaphore(3)
+    batch_size = 3
 
     async def test_proxy_with_semaphore(proxy, session, clash_bin, semaphore):
         async with semaphore:
