@@ -97,6 +97,14 @@ def parse_node(line):
 def generate_sing_box_config(node, temp_config_file):
     config = {
         "log": {"level": "error"},
+        "inbounds": [ # 新增 inbounds 配置
+            {
+                "type": "socks",
+                "tag": "socks-in",
+                "listen": "127.0.0.1",
+                "listen_port": 1080
+            }
+        ],
         "outbounds": [
             {
                 "type": node["type"],
@@ -104,7 +112,15 @@ def generate_sing_box_config(node, temp_config_file):
                 "server": node["ip"],
                 "server_port": int(node["port"]),
             }
-        ]
+        ],
+        "route": { # 新增路由规则，确保所有流量通过代理
+            "rules": [
+                {
+                    "outbound": "proxy",
+                    "ip_is_private": False # 确保非私有 IP 走代理
+                }
+            ]
+        }
     }
     if node["type"] == "hysteria2":
         config["outbounds"][0]["password"] = node["password"]
@@ -131,11 +147,31 @@ def test_connectivity(sing_box_bin, config_file):
             stderr=subprocess.PIPE,
         )
         time.sleep(2)  # 等待连接建立
-        process.terminate()
-        process.wait(timeout=5)
-        return True
+        # 尝试连接本地 SOCKS5 端口以确认 sing-box 启动并监听
+        try:
+            sock_test = subprocess.run(
+                ["nc", "-zv", "127.0.0.1", "1080", "-w", "1"], # 使用 nc 进行端口连通性测试，超时1秒
+                capture_output=True,
+                timeout=2,
+            )
+            if sock_test.returncode == 0:
+                print("sing-box SOCKS5 代理已启动并监听。")
+                is_connected = True
+            else:
+                print(f"sing-box SOCKS5 代理未成功监听: {sock_test.stderr.decode().strip()}")
+                is_connected = False
+        except FileNotFoundError:
+            print("nc 命令未找到，跳过 SOCKS5 端口监听测试。请确保安装 netcat。")
+            is_connected = True # 如果没有nc，暂时假设可以连通
+        except subprocess.TimeoutExpired:
+            print("连接 SOCKS5 端口超时。")
+            is_connected = False
+        finally:
+            process.terminate()
+            process.wait(timeout=5)
+        return is_connected
     except Exception as e:
-        print(f"连通性测试失败: {str(e)}")
+        print(f"连通性测试失败 (sing-box 启动): {str(e)}")
         return False
 
 # 测试下载和上传速度
@@ -149,8 +185,15 @@ def test_download_speed(sing_box_bin, config_file):
         )
         time.sleep(2)  # 等待代理启动
         # 使用 speedtest-cli 通过代理测试速度
+        # 注意：speedtest-cli 不支持 --server 后面直接跟代理地址，
+        # 而是需要设置环境变量 ALL_PROXY 或 HTTPS_PROXY
+        # 这里使用ALL_PROXY，因为speedtest-cli可能会用http或https连接
+        env = os.environ.copy()
+        env["ALL_PROXY"] = "socks5://127.0.0.1:1080"
+        
         result = subprocess.run(
-            ["speedtest-cli", "--json", "--server", "socks5://127.0.0.1:1080"],
+            ["speedtest", "--format=json", "--timeout=20"], # 新版speedtest-cli命令
+            env=env, # 传入环境变量
             capture_output=True,
             text=True,
             timeout=30,
@@ -159,15 +202,33 @@ def test_download_speed(sing_box_bin, config_file):
         proxy_process.wait(timeout=5)
         if result.returncode == 0:
             data = json.loads(result.stdout)
-            download_mbps = data["download"] / 1_000_000  # 转换为 Mbps
-            upload_mbps = data["upload"] / 1_000_000  # 转换为 Mbps
-            return download_mbps, upload_mbps
+            # Speedtest CLI新版JSON输出结构调整
+            download_mbps = data.get("download", {}).get("bandwidth", 0) / 125000 # bits/s to MB/s
+            upload_mbps = data.get("upload", {}).get("bandwidth", 0) / 125000 # bits/s to MB/s
+            
+            # 由于speedtest CLI的JSON输出变化较大，这里取bandwidth并转换为Mbps
+            # bandwidth是bits/s，除以 1_000_000 得到 Mbps (bits/s)
+            download_mbps = download_mbps * 8
+            upload_mbps = upload_mbps * 8
+            
+            # 获取延迟 (ping)
+            ping_latency = data.get("ping", {}).get("latency", 0)
+
+            return download_mbps, upload_mbps, ping_latency
         else:
-            print(f"speedtest-cli 失败: {result.stderr}")
-            return 0, 0
+            print(f"speedtest-cli 失败，错误代码: {result.returncode}, 错误输出: {result.stderr.strip()}")
+            return 0, 0, 0
+    except FileNotFoundError:
+        print("speedtest 命令未找到。请确保已安装 Speedtest CLI (新版命令为 speedtest)。")
+        return 0, 0, 0
+    except subprocess.TimeoutExpired:
+        print("速度测试超时。")
+        proxy_process.terminate() # 确保进程被终止
+        proxy_process.wait(timeout=5)
+        return 0, 0, 0
     except Exception as e:
         print(f"速度测试失败: {str(e)}")
-        return 0, 0
+        return 0, 0, 0
 
 # 主函数
 def main():
@@ -190,9 +251,9 @@ def main():
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
                 generate_sing_box_config(node, temp_config.name)
                 is_connected = test_connectivity(sing_box_bin, temp_config.name)
-                download_mbps, upload_mbps = 0, 0
+                download_mbps, upload_mbps, ping_latency = 0, 0, 0
                 if is_connected:
-                    download_mbps, upload_mbps = test_download_speed(sing_box_bin, temp_config.name)
+                    download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config.name)
                 results.append({
                     "node": node["raw"],
                     "ip": node["ip"],
@@ -201,8 +262,13 @@ def main():
                     "connected": is_connected,
                     "download_mbps": round(download_mbps, 2),
                     "upload_mbps": round(upload_mbps, 2),
+                    "ping_latency_ms": round(ping_latency, 2),
                 })
                 os.unlink(temp_config.name)
+    
+    # 根据下载速度排序
+    results.sort(key=lambda x: x["download_mbps"], reverse=True)
+
     with open(output_file, "w", encoding="utf-8") as f:
         for result in results:
             f.write(json.dumps(result, ensure_ascii=False) + "\n")
