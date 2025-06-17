@@ -19,7 +19,7 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          pip install requests
+          pip install requests speedtest-cli
           sudo apt-get update
           sudo apt-get install -y curl
       - name: Run node test script
