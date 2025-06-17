@@ -5,9 +5,16 @@ import os
 import subprocess
 import time
 import argparse
+import base64
+import json
 from typing import Dict, List, Optional
 from urllib.parse import urlparse, parse_qs, unquote
 import re
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 async def fetch_proxies(url: str) -> List[Dict]:
     """从远程 URL 下载并解析代理节点"""
@@ -15,7 +22,7 @@ async def fetch_proxies(url: str) -> List[Dict]:
         try:
             async with session.get(url, timeout=30) as response:
                 if response.status != 200:
-                    print(f"无法从 {url} 获取代理节点: HTTP {response.status}")
+                    logger.error(f"无法从 {url} 获取代理节点: HTTP {response.status}")
                     return []
                 content = await response.text()
             proxies = []
@@ -23,66 +30,92 @@ async def fetch_proxies(url: str) -> List[Dict]:
                 proxy = parse_proxy_line(line.strip())
                 if proxy:
                     proxies.append(proxy)
-            print(f"从 {url} 加载了 {len(proxies)} 个代理节点")
+            logger.info(f"从 {url} 加载了 {len(proxies)} 个代理节点")
             return proxies
         except Exception as e:
-            print(f"获取代理节点失败: {e}")
+            logger.error(f"获取代理节点失败: {e}")
             return []
 
 def parse_proxy_line(line: str) -> Optional[Dict]:
     """解析单行代理 URI，支持多种协议"""
     try:
-        # 分离 URI 和节点名称（#后的部分）
+        # 分离 URI 和节点名称
         parts = line.split('#', 1)
         uri = parts[0]
         name = unquote(parts[1]) if len(parts) > 1 else f"未知节点_{time.time()}"  # 解码节点名称
         url_parts = urlparse(uri)
         scheme = url_parts.scheme.lower()
-        proxy = {'name': f"{scheme}_{url_parts.netloc}_{name}"}
+        proxy = {'name': name}  # 使用解码后的名称
 
         if scheme == 'ss':
-            # Shadowsocks: ss://cipher:password@server:port
-            auth_data = url_parts.netloc.split('@')
-            if len(auth_data) != 2:
-                print(f"解析 SS 节点失败，格式错误: {uri}")
-                return None
-            proxy['type'] = 'ss'
+            # Shadowsocks: ss://cipher:password@server:port 或 ss://base64@server:port
             try:
-                cipher_password, server_port = auth_data[0], auth_data[1]
-                if ':' not in cipher_password:
-                    print(f"SS 节点缺少加密方法或密码: {uri}")
+                auth_data = url_parts.netloc.split('@')
+                if len(auth_data) != 2:
+                    logger.warning(f"解析 SS 节点失败，格式错误: {uri}")
                     return None
-                proxy['cipher'], proxy['password'] = cipher_password.split(':')
-                proxy['server'], proxy['port'] = server_port.split(':')
-                proxy['port'] = int(proxy['port'])
-            except ValueError:
-                print(f"SS 节点解析失败，无效格式: {uri}")
+                server_port = auth_data[1].split(':')
+                if len(server_port) != 2:
+                    logger.warning(f"SS 节点无效服务器或端口: {uri}")
+                    return None
+                proxy['type'] = 'ss'
+                proxy['server'] = server_port[0]
+                proxy['port'] = int(server_port[1])
+                # 处理 Base64 编码的 cipher:password
+                auth = auth_data[0]
+                if auth.startswith('YWVz') or auth.startswith('Y2hhY2hh'):  # Base64 前缀
+                    decoded_auth = base64.b64decode(auth + '==' * (-len(auth) % 4)).decode('utf-8')
+                    if ':' not in decoded_auth:
+                        logger.warning(f"SS 节点缺少加密方法或密码: {uri}")
+                        return None
+                    proxy['cipher'], proxy['password'] = decoded_auth.split(':')
+                else:
+                    if ':' not in auth:
+                        logger.warning(f"SS 节点缺少加密方法或密码: {uri}")
+                        return None
+                    proxy['cipher'], proxy['password'] = auth.split(':')
+                return proxy
+            except Exception as e:
+                logger.warning(f"解析 SS 节点失败: {uri}, 错误: {e}")
                 return None
-            return proxy
 
         elif scheme == 'vmess':
-            # VMess: vmess://uuid@server:port?params
-            auth_data = url_parts.netloc.split('@')
-            if len(auth_data) != 2:
-                print(f"解析 VMess 节点失败，格式错误: {uri}")
+            # VMess: vmess://base64 或 vmess://uuid@server:port?params
+            try:
+                if url_parts.netloc:  # URI 格式
+                    auth_data = url_parts.netloc.split('@')
+                    if len(auth_data) != 2:
+                        logger.warning(f"解析 VMess 节点失败，格式错误: {uri}")
+                        return None
+                    proxy['type'] = 'vmess'
+                    proxy['uuid'] = auth_data[0]
+                    server_port = auth_data[1].split(':')
+                    proxy['server'] = server_port[0]
+                    proxy['port'] = int(server_port[1])
+                    params = parse_qs(url_parts.query)
+                else:  # Base64 编码的 JSON
+                    decoded = base64.b64decode(uri[8:] + '==' * (-len(uri[8:]) % 4)).decode('utf-8')
+                    config = json.loads(decoded)
+                    proxy['type'] = 'vmess'
+                    proxy['server'] = config['add']
+                    proxy['port'] = int(config['port'])
+                    proxy['uuid'] = config['id']
+                    proxy['alterId'] = int(config.get('aid', '0'))
+                    proxy['network'] = config.get('net', 'tcp')
+                    proxy['tls'] = config.get('tls', '') == 'tls'
+                    proxy['sni'] = config.get('host', '')
+                    proxy['path'] = config.get('path', '')
+                    proxy['name'] = unquote(config.get('ps', name))  # 解码 ps 字段
+                return proxy
+            except Exception as e:
+                logger.warning(f"解析 VMess 节点失败: {uri}, 错误: {e}")
                 return None
-            proxy['type'] = 'vmess'
-            proxy['uuid'] = auth_data[0]
-            server_port = auth_data[1].split(':')
-            proxy['server'] = server_port[0]
-            proxy['port'] = int(server_port[1])
-            params = parse_qs(url_parts.query)
-            proxy['alterId'] = int(params.get('alterId', ['0'])[0])
-            proxy['network'] = params.get('network', ['tcp'])[0]
-            proxy['tls'] = params.get('tls', [''])[0] == 'tls'
-            proxy['sni'] = params.get('sni', [''])[0]
-            return proxy
 
         elif scheme == 'vless':
             # VLESS: vless://uuid@server:port?params
             auth_data = url_parts.netloc.split('@')
             if len(auth_data) != 2:
-                print(f"解析 VLESS 节点失败，格式错误: {uri}")
+                logger.warning(f"解析 VLESS 节点失败，格式错误: {uri}")
                 return None
             proxy['type'] = 'vless'
             proxy['uuid'] = auth_data[0]
@@ -100,11 +133,10 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
             # Trojan: trojan://password@server:port?params
             auth_data = url_parts.netloc.split('@')
             if len(auth_data) != 2:
-                print(f"解析 Trojan 节点失败，格式错误: {uri}")
+                logger.warning(f"解析 Trojan 节点失败，格式错误: {uri}")
                 return None
             proxy['type'] = 'trojan'
             proxy['password'] = auth_data[0]
-            # 处理 IPv6 地址（如 [2606:4700:...]）
             server_port = auth_data[1]
             ipv6_match = re.match(r'\[(.*?)\]:(\d+)', server_port)
             if ipv6_match:
@@ -115,7 +147,7 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
                     proxy['server'], proxy['port'] = server_port.split(':')
                     proxy['port'] = int(proxy['port'])
                 except ValueError:
-                    print(f"Trojan 节点解析失败，无效服务器或端口: {uri}")
+                    logger.warning(f"Trojan 节点无效服务器或端口: {uri}")
                     return None
             params = parse_qs(url_parts.query)
             proxy['sni'] = params.get('sni', [''])[0]
@@ -129,13 +161,13 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
             # Hysteria2: hysteria2://password@server:port?params
             auth_data = url_parts.netloc.split('@')
             if len(auth_data) != 2:
-                print(f"解析 Hysteria2 节点失败，格式错误: {uri}")
+                logger.warning(f"解析 Hysteria2 节点失败，格式错误: {uri}")
                 return None
             proxy['type'] = 'hysteria2'
             proxy['password'] = auth_data[0]
             server_port = auth_data[1].split(':')
             if len(server_port) != 2:
-                print(f"Hysteria2 节点解析失败，无效服务器或端口: {uri}")
+                logger.warning(f"Hysteria2 节点无效服务器或端口: {uri}")
                 return None
             proxy['server'] = server_port[0]
             proxy['port'] = int(server_port[1])
@@ -148,13 +180,12 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
             return proxy
 
         elif scheme == 'ssr':
-            # ShadowsocksR: ssr://server:port:protocol:method:obfs:password/?params
+            # ShadowsocksR: ssr://base64
             try:
-                import base64
-                decoded = base64.b64decode(line[6:]).decode('utf-8')
+                decoded = base64.b64decode(uri[6:] + '==' * (-len(uri[6:]) % 4)).decode('utf-8')
                 parts = decoded.split(':')
                 if len(parts) < 6:
-                    print(f"解析 SSR 节点失败，格式错误: {line}")
+                    logger.warning(f"解析 SSR 节点失败，格式错误: {uri}")
                     return None
                 proxy['type'] = 'ssr'
                 proxy['server'] = parts[0]
@@ -162,20 +193,20 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
                 proxy['protocol'] = parts[2]
                 proxy['cipher'] = parts[3]
                 proxy['obfs'] = parts[4]
-                proxy['password'] = base64.b64decode(parts[5].split('/')[0]).decode('utf-8')
+                proxy['password'] = base64.b64decode(parts[5].split('/')[0] + '==' * (-len(parts[5].split('/')[0]) % 4)).decode('utf-8')
                 params = parse_qs(decoded.split('?')[1]) if '?' in decoded else {}
-                proxy['obfs-param'] = params.get('obfsparam', [''])[0]
-                proxy['protocol-param'] = params.get('protoparam', [''])[0]
+                proxy['obfs-param'] = base64.b64decode(params.get('obfsparam', [''])[0] + '==' * (-len(params.get('obfsparam', [''])[0]) % 4)).decode('utf-8') if params.get('obfsparam') else ''
+                proxy['protocol-param'] = base64.b64decode(params.get('protoparam', [''])[0] + '==' * (-len(params.get('protoparam', [''])[0]) % 4)).decode('utf-8') if params.get('protoparam') else ''
                 return proxy
             except Exception as e:
-                print(f"解析 SSR 节点失败: {e}")
+                logger.warning(f"解析 SSR 节点失败: {uri}, 错误: {e}")
                 return None
 
         else:
-            print(f"不支持的协议: {scheme}")
+            logger.warning(f"不支持的协议: {scheme}")
             return None
     except Exception as e:
-        print(f"解析代理行失败 {line}: {e}")
+        logger.warning(f"解析代理行失败 {line}: {e}")
         return None
 
 async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, clash_port: int = 7890) -> Dict:
@@ -220,7 +251,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
                 os.remove(config_path)
     except Exception as e:
         result['error'] = f"配置生成失败: {str(e)}"
-    print(f"{proxy['name']}: {result['status']}, 延迟: {result['latency']:.2f}ms")
+    logger.info(f"{proxy['name']}: {result['status']}, 延迟: {result['latency']:.2f}ms")
     return result
 
 async def main():
@@ -241,7 +272,7 @@ async def main():
     async with aiohttp.ClientSession() as session:
         proxies = await fetch_proxies(proxy_url)
         if not proxies:
-            print("没有可测试的代理节点")
+            logger.error("没有可测试的代理节点")
             return
 
         # 分片处理
@@ -249,7 +280,7 @@ async def main():
         start = args.chunk * chunk_size
         end = start + chunk_size if args.chunk < args.total_chunks - 1 else len(proxies)
         proxies = proxies[start:end]
-        print(f"测试分片 {args.chunk}/{args.total_chunks}: {len(proxies)} 个节点")
+        logger.info(f"测试分片 {args.chunk}/{args.total_chunks}: {len(proxies)} 个节点")
 
         results = []
         for i in range(0, len(proxies), batch_size):
@@ -265,7 +296,7 @@ async def main():
             yaml.dump([r['proxy'] for r in results if r['status'] == '可用'], f, allow_unicode=True)
         with open(f'data/invalid_nodes{output_prefix}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump([r['proxy'] for r in results if r['status'] == '不可用'], f, allow_unicode=True)
-        print(f"结果已保存至 data/521{output_prefix}.yaml 和 data/invalid_nodes{output_prefix}.yaml")
+        logger.info(f"结果已保存至 data/521{output_prefix}.yaml 和 data/invalid_nodes{output_prefix}.yaml")
 
 if __name__ == '__main__':
     asyncio.run(main())
