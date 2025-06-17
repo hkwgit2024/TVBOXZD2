@@ -427,7 +427,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
 # --- 主函数 ---
 async def main():
     args = parse_args()
-    nodes_url = "https://raw.githubusercontent.com/qjlxg/nhgrok/refs/heads/main/test_nodes.txt"
+    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
     raw_node_urls = []
 
     # 加载缓存
