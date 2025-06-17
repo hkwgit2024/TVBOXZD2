@@ -5,326 +5,63 @@ import os
 import subprocess
 import sys
 import time
-import re
 import base64
 import json
 from typing import Dict, List
+from urllib.parse import urlparse, parse_qs
 from yaml import SafeLoader
-from urllib.parse import urlparse, unquote, parse_qs
 
-# --- YAML 相关配置 ---
+# 自定义 YAML 构造函数，处理 !<str> 标签
 def str_constructor(loader, node):
     return str(node.value)
 
+# 注册自定义构造函数
 SafeLoader.add_constructor('!str', str_constructor)
 
-# --- 节点解析函数 ---
-def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
-    """
-    解析节点URL，将其转换为Mihomo (Clash.Meta) 配置字典格式。
-    支持 ss, vless, vmess, trojan, hysteria2, ssr。
-    """
-    node_url = node_url.strip()
-    if not node_url:
-        return None
-
-    # 清理不可见字符并处理编码问题
-    node_url = node_url.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore').strip()
-    node_url = ''.join(char for char in node_url if ord(char) >= 32 or char == '/').strip()
-
-    # 清理多余的 ://（如 trojan://://）
-    node_url = re.sub(r'([a-zA-Z0-9]+):/+', r'\1://', node_url)
-
-    # 检查协议格式，允许包含数字的协议（如 hysteria2）
-    if not re.match(r'^[a-zA-Z0-9]+://', node_url):
-        print(f"警告: 无法识别的URL格式 (非协议开头): {node_url}")
-        return None
-
-    # 处理标签（URL 片段）
-    tag = "Unnamed Node"
-    url_parts = node_url.split('#', 1)
-    node_url_clean = url_parts[0]
-    if len(url_parts) > 1:
-        tag = unquote(url_parts[1])
-
-    try:
-        parsed_url = urlparse(node_url_clean)
-        scheme = parsed_url.scheme.lower()
-        netloc = parsed_url.netloc
-        query_params = parse_qs(parsed_url.query)
-
-        if not netloc or netloc.startswith('//'):
-            raise ValueError("URL netloc 格式错误或为空")
-
-        if scheme == "ss":
-            # Shadowsocks: ss://[cipher:password@]server:port 或 ss://base64_encoded
-            if "@" not in netloc:
-                try:
-                    encoded_part = node_url_clean[len("ss://"):]
-                    decoded_info = base64.urlsafe_b64decode(encoded_part + '==').decode('utf-8')
-                    cipher_password, address_port = decoded_info.split('@')
-                    cipher, password = cipher_password.split(':')
-                    server, port = address_port.split(':')
-                    return {
-                        'name': tag,
-                        'type': 'ss',
-                        'server': server,
-                        'port': int(port),
-                        'cipher': cipher,
-                        'password': password,
-                        'udp': True
-                    }
-                except Exception:
-                    pass
-
-            match = re.match(r'([^:]+):([^@]+)@([^:]+):(\d+)', netloc)
-            if match:
-                cipher, password, server, port = match.groups()
-                return {
-                    'name': tag,
-                    'type': 'ss',
-                    'server': server,
-                    'port': int(port),
-                    'cipher': cipher,
-                    'password': password,
-                    'udp': True
-                }
-
-        elif scheme == "vless":
-            if '@' not in netloc:
-                raise ValueError("VLESS URL 格式错误: 缺少 @ 分隔符")
-            uuid, server_port_str = netloc.split('@', 1)
-
-            server, port = None, None
-            if server_port_str.startswith('['):
-                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
-                if match_ipv6:
-                    server, port = match_ipv6.groups()
-                else:
-                    raise ValueError(f"VLESS IPv6 地址格式错误: {server_port_str}")
-            else:
-                if ':' not in server_port_str:
-                    raise ValueError(f"VLESS 地址格式错误: 缺少端口: {server_port_str}")
-                server, port = server_port_str.split(':', 1)
-                port = int(port)
-
-            node_config = {
-                'name': tag,
-                'type': 'vless',
-                'server': server,
-                'port': port,
-                'uuid': uuid,
-                'network': query_params.get('type', ['tcp'])[0],
-                'udp': True
-            }
-
-            if query_params.get('security', [''])[0] == 'tls':
-                node_config.update({
-                    'tls': True,
-                    'servername': query_params.get('sni', [server])[0],
-                    'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1' or
-                                        query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true',
-                    'fingerprint': query_params.get('fp', [None])[0]
-                })
-
-            if node_config['network'] == 'ws':
-                node_config.update({
-                    'ws-path': query_params.get('path', ['/'])[0],
-                    'ws-headers': {'Host': query_params.get('host', [server])[0]}
-                })
-            elif node_config['network'] == 'grpc':
-                node_config.update({
-                    'grpc-service-name': query_params.get('serviceName', [''])[0],
-                    'grpc-enable-health-check': query_params.get('enableHealthCheck', ['false'])[0].lower() == 'true'
-                })
-
-            return node_config
-
-        elif scheme == "vmess":
-            try:
-                decoded_str = base64.b64decode(node_url_clean[len("vmess://"):] + '==').decode('utf-8')
-                vmess_data = json.loads(decoded_str)
-                node_config = {
-                    'name': vmess_data.get('ps', tag),
-                    'type': 'vmess',
-                    'server': vmess_data['add'],
-                    'port': int(vmess_data['port']),
-                    'uuid': vmess_data['id'],
-                    'alterId': int(vmess_data.get('aid', 0)),
-                    'cipher': vmess_data.get('scy', 'auto'),
-                    'network': vmess_data.get('net', 'tcp'),
-                    'udp': True
-                }
-
-                if vmess_data.get('tls', '') == 'tls':
-                    node_config.update({
-                        'tls': True,
-                        'servername': vmess_data.get('host', vmess_data['add']),
-                        'skip-cert-verify': vmess_data.get('allowInsecure', '0') == '1',
-                        'fingerprint': vmess_data.get('fp')
-                    })
-
-                if node_config['network'] == 'ws':
-                    node_config.update({
-                        'ws-path': vmess_data.get('path', '/'),
-                        'ws-headers': {'Host': vmess_data.get('host', vmess_data['add'])}
-                    })
-                elif node_config['network'] == 'grpc':
-                    node_config['grpc-service-name'] = vmess_data.get('serviceName', '')
-
-                return node_config
-            except Exception as e:
-                print(f"VMess 解析失败 (URL: {node_url}): {e}")
-                return None
-
-        elif scheme == "trojan":
-            if '@' not in netloc:
-                raise ValueError("Trojan URL 格式错误: 缺少 @ 分隔符")
-            password, server_port_str = netloc.split('@', 1)
-
-            server, port = None, None
-            if server_port_str.startswith('['):
-                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
-                if match_ipv6:
-                    server, port = match_ipv6.groups()
-                else:
-                    raise ValueError(f"Trojan IPv6 地址格式错误: {server_port_str}")
-            else:
-                if ':' not in server_port_str:
-                    raise ValueError(f"Trojan 地址格式错误: 缺少端口: {server_port_str}")
-                server, port = server_port_str.split(':', 1)
-                port = int(port)
-
-            node_config = {
-                'name': tag,
-                'type': 'trojan',
-                'server': server,
-                'port': port,
-                'password': password,
-                'udp': True,
-                'tls': True,
-                'servername': query_params.get('sni', [server])[0],
-                'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1' or
-                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true'
-            }
-            return node_config
-
-        elif scheme == "hysteria2":
-            if '@' not in netloc:
-                raise ValueError("Hysteria2 URL 格式错误: 缺少 @ 分隔符")
-            password, server_port_str = netloc.split('@', 1)
-
-            server, port = None, None
-            if server_port_str.startswith('['):
-                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
-                if match_ipv6:
-                    server, port = match_ipv6.groups()
-                else:
-                    raise ValueError(f"Hysteria2 IPv6 地址格式错误: {server_port_str}")
-            else:
-                if ':' not in server_port_str:
-                    raise ValueError(f"Hysteria2 地址格式错误: 缺少端口: {server_port_str}")
-                server, port = server_port_str.split(':', 1)
-                port = int(port)
-
-            node_config = {
-                'name': tag,
-                'type': 'hysteria2',
-                'server': server,
-                'port': port,
-                'password': password,
-                'udp': True,
-                'obfs': query_params.get('obfs', [None])[0],
-                'obfs-password': query_params.get('obfsParam', [None])[0],
-                'up': int(query_params.get('up', ['0'])[0]),
-                'down': int(query_params.get('down', ['0'])[0]),
-                'auth': password,
-                'tls': True,
-                'servername': query_params.get('sni', [server])[0],
-                'skip-cert-verify': query_params.get('insecure', ['0'])[0] == '1' or
-                                    query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true'
-            }
-            return node_config
-
-        elif scheme == "ssr":
-            try:
-                encoded_params = node_url_clean[len("ssr://"):]
-                decoded_params = base64.urlsafe_b64decode(encoded_params + '==').decode('utf-8')
-                parts = decoded_params.split(':')
-                if len(parts) < 6:
-                    raise ValueError("SSR URL 基础格式错误: 部分不足6个")
-
-                server, port, protocol, method, obfs, password_base64 = parts
-                password_base64, query_string = password_base64.split('/', 1) if '/' in password_base64 else (password_base64, '')
-                query_params = parse_qs(query_string.split('#')[0]) if query_string else {}
-                password = unquote(base64.urlsafe_b64decode(password_base64 + '==').decode('utf-8'))
-
-                ssr_config = {
-                    'name': tag,
-                    'type': 'ssr',
-                    'server': server,
-                    'port': int(port),
-                    'cipher': method,
-                    'password': password,
-                    'protocol': protocol,
-                    'obfs': obfs,
-                    'udp': True
-                }
-
-                if 'obfsparam' in query_params:
-                    ssr_config['obfs-param'] = unquote(base64.urlsafe_b64decode(query_params['obfsparam'][0] + '==').decode('utf-8'))
-                if 'protoparam' in query_params:
-                    ssr_config['protocol-param'] = unquote(base64.urlsafe_b64decode(query_params['protoparam'][0] + '==').decode('utf-8'))
-
-                return ssr_config
-            except Exception as e:
-                print(f"SSR 解析失败 (URL: {node_url}): {e}")
-                return None
-
-        else:
-            print(f"警告: 未知或不支持的节点协议: {scheme} ({node_url})")
-            return None
-
-    except Exception as e:
-        print(f"解析节点URL失败 (URL: {node_url}, 错误: {e})")
-        return None
-
-# --- 验证函数 ---
-def validate_proxy(proxy: Dict, original_url: str, index: int) -> tuple[bool, str]:
-    """验证代理节点格式，返回 (is_valid, error_message)"""
-    required_fields = {'name': str, 'server': str, 'port': int, 'type': str}
+def validate_proxy(proxy: Dict, index: int) -> tuple[bool, str]:
+    """验证代理节点格式，返回 (是否有效, 错误信息)"""
+    required_fields = {
+        'name': str,
+        'server': str,
+        'port': int,
+        'type': str
+    }
     protocol_specific_fields = {
         'trojan': [('password', str)],
         'vmess': [('uuid', str)],
         'vless': [('uuid', str)],
         'ss': [('cipher', str), ('password', str)],
-        'hysteria2': [('password', str), ('auth', str)],
-        'ssr': [('cipher', str), ('password', str), ('protocol', str), ('obfs', str)]
+        'hysteria2': [('password', str)]
     }
 
+    # 检查必要字段
     for field, field_type in required_fields.items():
         if field not in proxy:
-            return False, f"节点 {index} (URL: {original_url}) 缺少字段: {field}"
+            return False, f"节点 {index} 缺少字段: {field}"
         if not isinstance(proxy[field], field_type):
-            return False, f"节点 {index} (URL: {original_url}) 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
+            return False, f"节点 {index} 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
 
+    # 检查协议特定字段
     proxy_type = proxy.get('type')
     if proxy_type in protocol_specific_fields:
         for field, field_type in protocol_specific_fields[proxy_type]:
             if field not in proxy:
-                return False, f"节点 {index} ({proxy_type}, URL: {original_url}) 缺少字段: {field}"
+                return False, f"节点 {index} ({proxy_type}) 缺少字段: {field}"
             if not isinstance(proxy[field], field_type):
-                return False, f"节点 {index} ({proxy_type}, URL: {original_url}) 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
+                return False, f"节点 {index} ({proxy_type}) 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
 
+    # 检查 name 唯一性（简单检查，实际应在全局验证）
     if not proxy['name'].strip():
-        return False, f"节点 {index} (URL: {original_url}) name 为空"
+        return False, f"节点 {index} name 为空"
 
     return True, ""
 
-# --- 测试代理函数 ---
 async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, clash_port: int = 7890) -> Dict:
     """测试单个代理节点，返回结果"""
     proxy_name = proxy.get('name', 'unknown')
+    print(f"测试代理节点: {proxy_name}")
+
+    # 写入临时 Clash 配置文件
     config = {
         'port': clash_port,
         'socks-port': clash_port + 1,
@@ -333,23 +70,22 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         'proxy-groups': [{'name': 'auto', 'type': 'select', 'proxies': [proxy_name]}],
         'rules': ['MATCH,auto']
     }
-
     os.makedirs('temp', exist_ok=True)
-    clean_proxy_name = re.sub(r'[^\w.-]', '_', proxy_name)[:100]
-    config_path = f'temp/config_{clean_proxy_name}.yaml'
-
+    config_path = f'temp/config_{proxy_name}.yaml'
     try:
         with open(config_path, 'w', encoding='utf-8') as f:
             yaml.dump(config, f, allow_unicode=True)
     except Exception as e:
-        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}", 'original_url': proxy.get('original_url', 'N/A')}
+        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}"}
 
-    proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=os.setsid)
-    await asyncio.sleep(2)
+    # 启动 Clash
+    proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    await asyncio.sleep(2)  # 等待 Clash 启动
 
-    result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None, 'original_url': proxy.get('original_url', 'N/A')}
+    result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None}
     try:
         start_time = time.time()
+        # 测试 HTTP 代理
         async with session.get(
             'http://www.google.com',
             proxy=f'http://127.0.0.1:{clash_port}',
@@ -357,9 +93,10 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         ) as response:
             if response.status == 200:
                 result['status'] = '可用'
-                result['latency'] = (time.time() - start_time) * 1000
+                result['latency'] = (time.time() - start_time) * 1000  # 毫秒
     except Exception:
         try:
+            # 回退测试 SOCKS5 代理（适用于 trojan, hysteria2 等）
             async with session.get(
                 'http://www.google.com',
                 proxy=f'socks5://127.0.0.1:{clash_port + 1}',
@@ -367,95 +104,217 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
             ) as response:
                 if response.status == 200:
                     result['status'] = '可用'
-                    result['latency'] = (time.time() - start_time) * 1000
+                    result['latency'] = (time.time() - start_time) * 1000  # 毫秒
         except Exception as e:
             result['error'] = f"测试失败: {str(e)}"
     finally:
-        if proc.poll() is None:
-            try:
-                os.killpg(os.getpgid(proc.pid), subprocess.signal.SIGTERM)
-            except OSError:
-                pass
+        proc.terminate()
         try:
             os.remove(config_path)
-        except OSError:
+        except:
             pass
     return result
 
-# --- 主函数 ---
-async def main():
-    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
-    raw_node_urls = []
+def parse_proxy_line(line: str) -> Dict:
+    """解析单行代理配置，返回代理字典"""
+    line = line.strip()
+    if not line:
+        return None
 
+    try:
+        url_parts = urlparse(line)
+        scheme = url_parts.scheme.lower()
+        proxy = {'name': url_parts.fragment or f"{scheme}_node_{url_parts.netloc}"}
+
+        if scheme == 'ss':
+            # Shadowsocks: ss://<base64_encoded_data>@<server>:<port>#<name>
+            auth_data = url_parts.netloc.split('@')
+            if len(auth_data) == 2:
+                server_port = auth_data[1].split(':')
+                if len(server_port) != 2:
+                    return None
+                proxy['type'] = 'ss'
+                proxy['server'] = server_port[0]
+                proxy['port'] = int(server_port[1])
+                # 解码 Base64 数据
+                decoded = base64.urlsafe_b64decode(auth_data[0] + '==' * (-len(auth_data[0]) % 4)).decode('utf-8')
+                cipher_password = decoded.split(':')
+                if len(cipher_password) != 2:
+                    return None
+                proxy['cipher'] = cipher_password[0]
+                proxy['password'] = cipher_password[1]
+            else:
+                return None
+
+        elif scheme == 'ssr':
+            # ShadowsocksR: ssr://<base64_encoded_data>
+            decoded = base64.urlsafe_b64decode(line[6:] + '==' * (-len(line[6:]) % 4)).decode('utf-8')
+            parts = decoded.split(':')
+            if len(parts) < 6:
+                return None
+            proxy['type'] = 'ss'
+            proxy['server'] = parts[0]
+            proxy['port'] = int(parts[1])
+            proxy['cipher'] = parts[3]
+            proxy['password'] = base64.urlsafe_b64decode(parts[5].split('/')[0] + '==' * (-len(parts[5].split('/')[0]) % 4)).decode('utf-8')
+            params = parse_qs(url_parts.query)
+            proxy['name'] = base64.urlsafe_b64decode(params.get('remarks', [''])[0] + '==' * (-len(params.get('remarks', [''])[0]) % 4)).decode('utf-8') if 'remarks' in params else proxy['name']
+
+        elif scheme == 'vmess':
+            # VMess: vmess://<base64_encoded_json>
+            decoded = base64.urlsafe_b64decode(line[8:] + '==' * (-len(line[8:]) % 4)).decode('utf-8')
+            vmess_config = json.loads(decoded)
+            proxy['type'] = 'vmess'
+            proxy['server'] = vmess_config.get('add')
+            proxy['port'] = int(vmess_config.get('port'))
+            proxy['uuid'] = vmess_config.get('id')
+            proxy['alterId'] = int(vmess_config.get('aid', 0))
+            proxy['cipher'] = vmess_config.get('scy', 'auto')
+            proxy['network'] = vmess_config.get('net', 'tcp')
+            proxy['tls'] = vmess_config.get('tls') == 'tls'
+            proxy['name'] = vmess_config.get('ps', proxy['name'])
+            if proxy['network'] == 'ws':
+                proxy['ws-opts'] = {
+                    'path': vmess_config.get('path', '/'),
+                    'headers': {'Host': vmess_config.get('host', '')}
+                }
+            if proxy['tls']:
+                proxy['servername'] = vmess_config.get('sni', '')
+
+        elif scheme == 'vless':
+            # VLESS: vless://<uuid>@<server>:<port>?<params>#<name>
+            auth_data = url_parts.netloc.split('@')
+            if len(auth_data) != 2:
+                return None
+            proxy['type'] = 'vless'
+            proxy['uuid'] = auth_data[0]
+            server_port = auth_data[1].split(':')
+            if len(server_port) != 2:
+                return None
+            proxy['server'] = server_port[0]
+            proxy['port'] = int(server_port[1])
+            params = parse_qs(url_parts.query)
+            proxy['encryption'] = params.get('encryption', ['none'])[0]
+            proxy['security'] = params.get('security', ['none'])[0]
+            proxy['type'] = params.get('type', ['tcp'])[0]
+            if proxy['type'] == 'ws':
+                proxy['ws-opts'] = {
+                    'path': params.get('path', ['/'])[0],
+                    'headers': {'Host': params.get('host', [''])[0]}
+                }
+            if proxy['security'] == 'tls':
+                proxy['servername'] = params.get('sni', [''])[0]
+
+        elif scheme == 'trojan':
+            # Trojan: trojan://<password>@<server>:<port>?<params>#<name>
+            auth_data = url_parts.netloc.split('@')
+            if len(auth_data) != 2:
+                return None
+            proxy['type'] = 'trojan'
+            proxy['password'] = auth_data[0]
+            server_port = auth_data[1].split(':')
+            if len(server_port) != 2:
+                return None
+            proxy['server'] = server_port[0]
+            proxy['port'] = int(server_port[1])
+            params = parse_qs(url_parts.query)
+            proxy['sni'] = params.get('sni', [''])[0]
+            proxy['network'] = params.get('type', ['tcp'])[0]
+            if proxy['network'] == 'grpc':
+                proxy['grpc-opts'] = {'grpc-service-name': params.get('serviceName', [''])[0]}
+            proxy['skip-cert-verify'] = params.get('allowInsecure', ['0'])[0] == '1'
+
+        elif scheme == 'hysteria2':
+            # Hysteria2: hysteria2://<password>@<server>:<port>?<params>#<name>
+            auth_data = url_parts.netloc.split('@')
+            if len(auth_data) != 2:
+                return None
+            proxy['type'] = 'hysteria2'
+            proxy['password'] = auth_data[0]
+            server_port = auth_data[1].split(':')
+            if len(server_port) != 2:
+                return None
+            proxy['server'] = server_port[0]
+            proxy['port'] = int(server_port[1])
+            params = parse_qs(url_parts.query)
+            proxy['sni'] = params.get('sni', [''])[0]
+            proxy['skip-cert-verify'] = params.get('insecure', ['0'])[0] == '1'
+            proxy['mport'] = params.get('mport', [''])[0]
+            proxy['obfs'] = params.get('obfs', ['none'])[0]
+
+        else:
+            return None
+
+        return proxy
+    except Exception as e:
+        print(f"解析代理失败: {line[:50]}... 错误: {str(e)}")
+        return None
+
+async def fetch_proxies(url: str) -> List[Dict]:
+    """从指定 URL 获取代理列表"""
     async with aiohttp.ClientSession() as session:
         try:
-            print(f"尝试从 URL 下载节点列表: {nodes_url}")
-            async with session.get(nodes_url, timeout=10) as response:
-                response.raise_for_status()
-                content = await response.text(encoding='utf-8')
-                raw_node_urls = [line.strip() for line in content.splitlines() if line.strip() and not line.startswith('#')]
-            print(f"成功从 URL 下载 {len(raw_node_urls)} 条节点URL。")
-        except aiohttp.ClientError as e:
-            print(f"错误: 从 URL 下载节点列表失败 ({nodes_url}): {e}")
-            sys.exit(1)
+            async with session.get(url, timeout=30) as response:
+                if response.status != 200:
+                    print(f"获取代理列表失败，状态码: {response.status}")
+                    return []
+                content = await response.text()
+                proxies = []
+                for line in content.splitlines():
+                    proxy = parse_proxy_line(line)
+                    if proxy:
+                        proxies.append(proxy)
+                return proxies
         except Exception as e:
-            print(f"发生未知错误: {e}")
-            sys.exit(1)
+            print(f"获取代理列表失败: {str(e)}")
+            return []
 
-    if not raw_node_urls:
-        print("未从 URL 读取到任何节点URL。")
-        sys.exit(0)
+async def main():
+    # 从 URL 获取代理列表
+    proxy_url = 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt'
+    proxies = await fetch_proxies(proxy_url)
 
-    parsed_proxies = []
-    invalid_node_urls = []
-    for i, url in enumerate(raw_node_urls):
-        parsed_proxy = parse_node_url_to_mihomo_config(url)
-        if parsed_proxy:
-            parsed_proxy['original_url'] = url
-            is_valid, error = validate_proxy(parsed_proxy, url, i)
-            if is_valid:
-                parsed_proxies.append(parsed_proxy)
-            else:
-                invalid_node_urls.append({'url': url, 'error': error})
-        else:
-            invalid_node_urls.append({'url': url, 'error': "无法解析或不支持的节点URL格式"})
-
-    if invalid_node_urls:
-        os.makedirs('data', exist_ok=True)
-        with open('data/invalid_nodes.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump({'invalid_urls': invalid_node_urls}, f, allow_unicode=True, sort_keys=False)
-        print(f"发现 {len(invalid_node_urls)} 个无法解析或无效的节点URL，详情见 data/invalid_nodes.yaml")
-
-    if not parsed_proxies:
-        print("没有可用于测试的有效代理节点。")
-        sys.exit(0)
-
-    os.makedirs('data', exist_ok=True)
-    results_list = []
-    batch_size = 20  # 减少批量大小以避免资源耗尽
-
-    for i in range(0, len(parsed_proxies), batch_size):
-        batch = parsed_proxies[i:i + batch_size]
-        tasks = [test_proxy(proxy, session, './tools/clash') for proxy in batch]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        for result in results:
-            if isinstance(result, dict):
-                results_list.append(result)
-                print(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''} (原始URL: {result['original_url']})")
-            else:
-                print(f"测试过程中发生未知错误: {result}")
-
-    final_successful_proxies = [res for res in results_list if res['status'] == '可用']
-    try:
-        with open('data/521.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump({'proxies': final_successful_proxies}, f, allow_unicode=True, sort_keys=False)
-        print(f"已将 {len(final_successful_proxies)} 个可用节点写入 data/521.yaml")
-    except Exception as e:
-        print(f"写入 data/521.yaml 失败: {e}")
+    if not proxies:
+        print("未找到代理节点")
         sys.exit(1)
 
-    print("测试完成。")
+    # 验证节点格式
+    valid_proxies = []
+    invalid_proxies = []
+    for i, proxy in enumerate(proxies):
+        is_valid, error = validate_proxy(proxy, i)
+        if is_valid:
+            valid_proxies.append(proxy)
+        else:
+            invalid_proxies.append({'name': proxy.get('name', f'节点_{i}'), 'error': error})
+
+    # 记录无效节点
+    if invalid_proxies:
+        os.makedirs('data', exist_ok=True)
+        with open('data/invalid_nodes.yaml', 'w', encoding='utf-8') as f:
+            yaml.dump({'invalid_proxies': invalid_proxies}, f, allow_unicode=True)
+        print(f"发现 {len(invalid_proxies)} 个无效节点，详情见 data/invalid_nodes.yaml")
+
+    # 创建输出文件
+    os.makedirs('data', exist_ok=True)
+    with open('data/521.yaml', 'w', encoding='utf-8') as f:
+        f.write('results:\n')
+
+    # 配置 aiohttp 会话
+    async with aiohttp.ClientSession() as session:
+        # 分批并发测试（每批 50 个节点）
+        batch_size = 50
+        for i in range(0, len(valid_proxies), batch_size):
+            batch = valid_proxies[i:i + batch_size]
+            tasks = [test_proxy(proxy, session, './tools/clash') for proxy in batch]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            # 写入结果
+            with open('data/521.yaml', 'a', encoding='utf-8') as f:
+                for result in results:
+                    if isinstance(result, dict):
+                        yaml.dump([result], f, allow_unicode=True)
+                        print(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''}")
 
 if __name__ == "__main__":
     asyncio.run(main())
