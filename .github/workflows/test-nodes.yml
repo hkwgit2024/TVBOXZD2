@@ -9,8 +9,7 @@ on:
 
 jobs:
   test-nodes:
-    # 将 runs-on 从 ubuntu-latest 改为 ubuntu-22.04
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,18 +21,16 @@ jobs:
         run: |
           # 安装 Python 依赖
           pip install requests
-          
-          # 安装 Speedtest CLI (新版命令为 speedtest)
-          # 这是官方推荐的通过 apt 仓库安装的方式，适用于 Ubuntu 22.04
+          # 安装 Speedtest CLI（官方 Ookla 版本）
           sudo apt-get update
           sudo apt-get install -y apt-transport-https curl gnupg2
           curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
           sudo apt-get update
           sudo apt-get install -y speedtest
-          
-          # 安装 netcat (用于测试本地代理端口)
+          # 验证 speedtest 安装
+          speedtest --version || { echo "Speedtest CLI 安装失败"; exit 1; }
+          # 安装 netcat
           sudo apt-get install -y netcat-traditional
-
       - name: Run node test script
         run: python test_nodes.py
       - name: Upload results
