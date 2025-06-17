@@ -8,6 +8,7 @@ import time
 from urllib.parse import urlparse, parse_qs
 import tempfile
 import requests
+import glob
 
 # 确保 data 目录存在
 if not os.path.exists("data"):
@@ -16,7 +17,6 @@ if not os.path.exists("data"):
 # 目标 URL 和输出文件
 url = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 output_file = "data/collectSub.txt"
-test_file_url = "http://speedtest.ftp.otenet.gr/files/test10m.bin"  # 10MB 测试文件
 
 # 下载最新 sing-box 二进制文件
 def download_sing_box():
@@ -29,18 +29,28 @@ def download_sing_box():
             response.raise_for_status()
             release = response.json()
             # 查找 linux-amd64 的 tar.gz 文件
+            sing_box_url = None
             for asset in release["assets"]:
                 if "linux-amd64" in asset["name"] and asset["name"].endswith(".tar.gz"):
                     sing_box_url = asset["browser_download_url"]
                     break
-            else:
+            if not sing_box_url:
                 raise Exception("未找到适用于 linux-amd64 的 sing-box 二进制文件")
             sing_box_tar = "sing-box.tar.gz"
             urllib.request.urlretrieve(sing_box_url, sing_box_tar)
             subprocess.run(["tar", "-xzf", sing_box_tar], check=True)
-            # 假设解压后的目录结构为 sing-box-<version>/sing-box
-            subprocess.run(["mv", "sing-box-*/sing-box", sing_box_bin], check=True)
+            # 查找解压后的 sing-box 二进制文件
+            binary_paths = glob.glob("**/sing-box", recursive=True) or glob.glob("sing-box")
+            if not binary_paths:
+                raise Exception("未找到解压后的 sing-box 二进制文件")
+            subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True)
             subprocess.run(["chmod", "+x", sing_box_bin], check=True)
+            # 清理临时文件和目录
+            if os.path.exists(sing_box_tar):
+                os.remove(sing_box_tar)
+            for dir_path in glob.glob("sing-box*"):
+                if os.path.isdir(dir_path):
+                    subprocess.run(["rm", "-rf", dir_path], check=True)
         except Exception as e:
             print(f"下载 sing-box 失败: {str(e)}")
             raise
@@ -128,7 +138,7 @@ def test_connectivity(sing_box_bin, config_file):
         print(f"连通性测试失败: {str(e)}")
         return False
 
-# 测试下载速度
+# 测试下载和上传速度
 def test_download_speed(sing_box_bin, config_file):
     try:
         # 启动 sing-box 代理
@@ -138,25 +148,26 @@ def test_download_speed(sing_box_bin, config_file):
             stderr=subprocess.PIPE,
         )
         time.sleep(2)  # 等待代理启动
-        # 使用 curl 通过代理下载测试文件
-        start_time = time.time()
+        # 使用 speedtest-cli 通过代理测试速度
         result = subprocess.run(
-            ["curl", "-x", "socks5://127.0.0.1:1080", "-o", "/dev/null", "--silent", test_file_url],
+            ["speedtest-cli", "--json", "--server", "socks5://127.0.0.1:1080"],
             capture_output=True,
-            timeout=20,
+            text=True,
+            timeout=30,
         )
-        end_time = time.time()
         proxy_process.terminate()
         proxy_process.wait(timeout=5)
         if result.returncode == 0:
-            duration = end_time - start_time
-            speed_mbps = (10 * 8) / duration  # 10MB 文件，转换为 Mbps
-            return speed_mbps
+            data = json.loads(result.stdout)
+            download_mbps = data["download"] / 1_000_000  # 转换为 Mbps
+            upload_mbps = data["upload"] / 1_000_000  # 转换为 Mbps
+            return download_mbps, upload_mbps
         else:
-            return 0
+            print(f"speedtest-cli 失败: {result.stderr}")
+            return 0, 0
     except Exception as e:
-        print(f"下载速度测试失败: {str(e)}")
-        return 0
+        print(f"速度测试失败: {str(e)}")
+        return 0, 0
 
 # 主函数
 def main():
@@ -179,16 +190,17 @@ def main():
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
                 generate_sing_box_config(node, temp_config.name)
                 is_connected = test_connectivity(sing_box_bin, temp_config.name)
-                speed_mbps = 0
+                download_mbps, upload_mbps = 0, 0
                 if is_connected:
-                    speed_mbps = test_download_speed(sing_box_bin, temp_config.name)
+                    download_mbps, upload_mbps = test_download_speed(sing_box_bin, temp_config.name)
                 results.append({
                     "node": node["raw"],
                     "ip": node["ip"],
                     "port": node["port"],
                     "type": node["type"],
                     "connected": is_connected,
-                    "speed_mbps": round(speed_mbps, 2),
+                    "download_mbps": round(download_mbps, 2),
+                    "upload_mbps": round(upload_mbps, 2),
                 })
                 os.unlink(temp_config.name)
     with open(output_file, "w", encoding="utf-8") as f:
