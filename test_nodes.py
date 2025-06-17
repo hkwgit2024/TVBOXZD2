@@ -10,6 +10,7 @@ import tempfile
 import requests
 import glob
 from datetime import datetime
+import binascii
 
 # 确保 data 目录存在
 if not os.path.exists("data"):
@@ -76,9 +77,10 @@ def parse_node(line):
                 "raw": line
             }
         elif line.startswith("ss://"):
-            # 尝试修复 base64 填充问题
             base64_str = line[5:].split("#")[0]
-            base64_str = base64_str + "=" * (-len(base64_str) % 4)  # 补齐填充
+            # 清理 base64 字符串，仅保留有效字符
+            base64_str = re.sub(r'[^A-Za-z0-9+/=]', '', base64_str)
+            base64_str = base64_str + "=" * (-len(base64_str) % 4)
             try:
                 decoded = base64.b64decode(base64_str, validate=True).decode("utf-8", errors="ignore")
                 userinfo, ip_port = decoded.split("@")
@@ -92,6 +94,9 @@ def parse_node(line):
                     "password": password,
                     "raw": line
                 }
+            except binascii.Error as e:
+                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): 无效 base64 编码 - {str(e)}")
+                return None
             except Exception as e:
                 print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): {str(e)}")
                 return None
@@ -246,7 +251,7 @@ def test_download_speed(sing_box_bin, config_file):
         env["HTTPS_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTP_PROXY"] = "socks5://127.0.0.1:1080"
         result = subprocess.run(
-            ["speedtest", "--format=json", "--timeout=30"],
+            ["speedtest", "--format=json"],
             env=env,
             capture_output=True,
             text=True,
