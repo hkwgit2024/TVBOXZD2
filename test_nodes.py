@@ -441,7 +441,7 @@ async def main():
         logging.error(f"Clash 二进制文件 {clash_bin} 不可执行")
         sys.exit(1)
 
-    nodes_url = "https://raw.githubusercontent.com/qjlxg/nhgrok/refs/heads/main/test_nodes.txt"
+    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
     raw_node_urls = []
 
     # 加载缓存
