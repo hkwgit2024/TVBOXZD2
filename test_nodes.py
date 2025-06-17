@@ -15,7 +15,7 @@ import socket
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Set
 import aiofiles
-import re # Added import for re
+import re
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -51,8 +51,14 @@ def get_node_key(proxy: Dict) -> str:
     if not isinstance(proxy, dict):
         logger.warning(f"get_node_key 收到非字典类型: {proxy}. 跳过生成键。")
         return "" # 如果不是字典，则返回空字符串，表示无法生成有效键
+    # 对于不同类型的代理，可能需要不同的键来生成唯一标识
+    # 这里我们尝试使用最通用的 'server', 'port', 'name'
+    # 如果缺少，可以尝试其他组合或返回空字符串
     required_keys = ['server', 'port', 'name']
     if not all(key in proxy for key in required_keys):
+        # 尝试使用 name 作为 fallback key，但警告缺少关键信息
+        if 'name' in proxy:
+            return f"UNKNOWN:{proxy['name']}"
         logger.warning(f"代理缺少生成节点键所需的信息: {proxy}. 跳过生成键。")
         return "" # 如果缺少必要键，也返回空字符串
     return f"{proxy['server']}:{proxy['port']}:{proxy['name']}"
@@ -74,77 +80,189 @@ async def fetch_proxies(url: str) -> List[Dict]:
             logger.error(f"获取代理节点失败: {e}")
             return []
 
-def parse_proxy_line(line: str) -> Optional[Dict]:
-    """解析单行代理 URI，支持 Trojan, SS, Vmess, Hysteria2"""
+def decode_base64_url_safe(data: str) -> Optional[str]:
+    """
+    安全地解码 Base64 URL safe 字符串，处理填充问题。
+    """
+    if not data:
+        return None
+    # Base64 URL safe 编码中，'-' 替换 '+'，'_' 替换 '/'
+    # 填充字符 '=' 可能被省略
+    data = data.replace('-', '+').replace('_', '/')
+    # 自动添加缺失的填充字符
+    missing_padding = len(data) % 4
+    if missing_padding:
+        data += '=' * (4 - missing_padding)
     try:
+        return base64.b64decode(data).decode('utf-8')
+    except (base64.binascii.Error, UnicodeDecodeError) as e:
+        logger.warning(f"Base64 解码失败: {e}, 原始数据: {data[:50]}...")
+        return None
+
+def parse_proxy_line(line: str) -> Optional[Dict]:
+    """解析单行代理 URI，支持 Trojan, SS, Vmess, Hysteria2, Vless, SSR"""
+    try:
+        # 检查是否为 base64 订阅链接
+        if line.startswith("ss://") or line.startswith("vmess://") or line.startswith("trojan://") or line.startswith("vless://") or line.startswith("ssr://"):
+            pass # 直接处理
+        else:
+            # 尝试 Base64 解码整个行，这可能是订阅文件的情况
+            decoded_line = decode_base64_url_safe(line)
+            if decoded_line:
+                # 如果解码后得到多行，则递归处理
+                for sub_line in decoded_line.splitlines():
+                    parsed_sub_line = parse_proxy_line(sub_line.strip())
+                    if parsed_sub_line:
+                        return parsed_sub_line # 仅返回第一个成功解析的
+            logger.warning(f"不支持的协议或格式错误: {line}")
+            return None
+
         parts = line.split('#', 1)
         uri = parts[0]
-        name = unquote(parts[1]) if len(parts) > 1 else f"未知节点_{time.time()}"
+        name = unquote(parts[1]) if len(parts) > 1 else f"未知节点_{int(time.time() * 1000)}"
         url_parts = urlparse(uri)
         scheme = url_parts.scheme.lower()
         proxy = {'name': name, 'tested_at': datetime.now().isoformat()}  # 添加时间戳
 
         if scheme == 'trojan':
+            # trojan://password@server:port?params#name
             auth_data = url_parts.netloc.split('@')
             if len(auth_data) != 2:
                 logger.warning(f"解析 Trojan 节点失败，格式错误: {uri}")
                 return None
             proxy['type'] = 'trojan'
             proxy['password'] = auth_data[0]
-            server_port = auth_data[1]
-            if ipv6_match := re.match(r'\[(.*?)\]:(\d+)', server_port):
-                proxy['server'], proxy['port'] = ipv6_match.group(1), int(ipv6_match.group(2))
+            server_port_str = auth_data[1]
+            
+            # 改进 IPv6 解析
+            ipv6_match = re.match(r'\[([0-9a-fA-F:]+)\]:(\d+)', server_port_str)
+            if ipv6_match:
+                proxy['server'] = ipv6_match.group(1)
+                proxy['port'] = int(ipv6_match.group(2))
             else:
-                host, port_str = server_port.split(':')
-                proxy['server'] = host
-                proxy['port'] = int(port_str)
+                # 兼容 IPv4 和域名
+                server_parts = server_port_str.split(':')
+                if len(server_parts) != 2:
+                    logger.warning(f"解析 Trojan 节点失败，服务器/端口格式错误: {server_port_str}")
+                    return None
+                proxy['server'] = server_parts[0]
+                proxy['port'] = int(server_parts[1])
+
             params = parse_qs(url_parts.query)
             proxy['sni'] = params.get('sni', [''])[0]
-            # Trojan 使用 allowInsecure 参数
-            proxy['skip-cert-verify'] = params.get('allowInsecure', ['0'])[0] == '1'
-            proxy['network'] = params.get('type', ['tcp'])[0]
+            proxy['skip-cert-verify'] = params.get('allowInsecure', ['0'])[0] == '1' # Clash/Mihomo 的参数名
+            proxy['network'] = params.get('type', ['tcp'])[0] # 例如: ws
             proxy['path'] = params.get('path', [''])[0]
             proxy['host'] = params.get('host', [''])[0]
+            # 根据网络类型添加额外参数 (Clash/Mihomo 兼容)
+            if proxy['network'] == 'ws':
+                proxy['ws-path'] = proxy.pop('path')
+                proxy['ws-headers'] = {'Host': proxy.pop('host')} if proxy['host'] else {}
             return proxy
+
         elif scheme == 'ss':
+            # ss://method:password@server:port#name 或 ss://base64encoded_info#name
+            decoded_netloc = decode_base64_url_safe(url_parts.netloc)
+            if not decoded_netloc:
+                logger.warning(f"解析 Shadowsocks 节点失败，Base64 解码错误: {uri}")
+                return None
+            
             try:
-                # Shadowsocks URI 格式通常为 base64(method:password@server:port)
-                # 或者直接是 ss://method:password@server:port#name
-                # 这里假设是 base64(method:password@server:port)
-                decoded_uri = base64.b64decode(url_parts.netloc).decode('utf-8')
-                parts = decoded_uri.split('@')
-                if len(parts) != 2: raise ValueError("无效的 Shadowsocks URI 格式")
-                method_passwd = parts[0].split(':', 1)
-                server_port = parts[1].split(':', 1)
+                method_passwd, server_port = decoded_netloc.split('@')
+                method, password = method_passwd.split(':', 1)
+                server, port_str = server_port.split(':', 1)
 
                 proxy['type'] = 'ss'
-                proxy['cipher'] = method_passwd[0]
-                proxy['password'] = method_passwd[1]
-                proxy['server'] = server_port[0]
-                proxy['port'] = int(server_port[1])
+                proxy['cipher'] = method
+                proxy['password'] = password
+                proxy['server'] = server
+                proxy['port'] = int(port_str)
                 return proxy
+            except ValueError as ve:
+                logger.warning(f"解析 Shadowsocks 节点失败，格式错误 {decoded_netloc}: {ve}")
+                return None
             except Exception as ss_e:
                 logger.warning(f"解析 Shadowsocks 节点失败 {uri}: {ss_e}")
                 return None
+
         elif scheme == 'vmess':
-            # VMESS URI 通常是 base64 编码的 JSON 字符串
+            # vmess://base64encoded_json#name
+            decoded_vmess = decode_base64_url_safe(url_parts.netloc)
+            if not decoded_vmess:
+                logger.warning(f"解析 Vmess 节点失败，Base64 解码错误: {uri}")
+                return None
             try:
-                decoded_vmess = base64.b64decode(url_parts.netloc).decode('utf-8')
                 vmess_data = json.loads(decoded_vmess)
                 proxy['type'] = 'vmess'
                 proxy['server'] = vmess_data.get('add')
                 proxy['port'] = int(vmess_data.get('port'))
                 proxy['uuid'] = vmess_data.get('id')
-                proxy['alterId'] = vmess_data.get('aid', 0)
+                proxy['alterId'] = int(vmess_data.get('aid', 0))
                 proxy['cipher'] = vmess_data.get('scy', 'auto') # security
                 proxy['network'] = vmess_data.get('net', 'tcp')
                 proxy['tls'] = vmess_data.get('tls', '') == 'tls'
-                proxy['ws-path'] = vmess_data.get('path', '')
-                proxy['ws-headers'] = {'Host': vmess_data.get('host', '')} if vmess_data.get('host') else {}
+                # Clash/Mihomo 兼容参数
+                if proxy['network'] == 'ws':
+                    proxy['ws-path'] = vmess_data.get('path', '')
+                    proxy['ws-headers'] = {'Host': vmess_data.get('host', '')} if vmess_data.get('host') else {}
+                elif proxy['network'] == 'h2': # HTTP/2
+                    proxy['h2-path'] = vmess_data.get('path', '')
+                    proxy['h2-host'] = [vmess_data.get('host', '')] if vmess_data.get('host') else []
+                # 其他传输协议的参数
                 return proxy
+            except json.JSONDecodeError as jde:
+                logger.warning(f"解析 Vmess 节点失败，JSON 解码错误: {jde}, 原始数据: {decoded_vmess[:100]}...")
+                return None
             except Exception as vmess_e:
                 logger.warning(f"解析 Vmess 节点失败 {uri}: {vmess_e}")
                 return None
+
+        elif scheme == 'vless':
+            # vless://uuid@server:port?params#name
+            # Vless 协议通常没有密码，直接是 UUID
+            uuid_server_port = url_parts.netloc
+            uuid_data = uuid_server_port.split('@')
+            if len(uuid_data) != 2:
+                logger.warning(f"解析 Vless 节点失败，格式错误: {uri}")
+                return None
+            
+            proxy['type'] = 'vless'
+            proxy['uuid'] = uuid_data[0]
+            server_port_str = uuid_data[1]
+
+            # 改进 IPv6 解析，与 Trojan 类似
+            ipv6_match = re.match(r'\[([0-9a-fA-F:]+)\]:(\d+)', server_port_str)
+            if ipv6_match:
+                proxy['server'] = ipv6_match.group(1)
+                proxy['port'] = int(ipv6_match.group(2))
+            else:
+                server_parts = server_port_str.split(':')
+                if len(server_parts) != 2:
+                    logger.warning(f"解析 Vless 节点失败，服务器/端口格式错误: {server_port_str}")
+                    return None
+                proxy['server'] = server_parts[0]
+                proxy['port'] = int(server_parts[1])
+
+            params = parse_qs(url_parts.query)
+            proxy['network'] = params.get('type', ['tcp'])[0] # 例如: ws, h2, grpc
+            proxy['tls'] = params.get('security', [''])[0] == 'tls'
+            proxy['flow'] = params.get('flow', [''])[0] # VLESS XTLS / Reality
+            
+            # 传输协议特定参数
+            if proxy['network'] == 'ws':
+                proxy['ws-path'] = params.get('path', [''])[0]
+                proxy['ws-headers'] = {'Host': params.get('host', [''])[0]} if params.get('host', [''])[0] else {}
+            elif proxy['network'] == 'h2':
+                proxy['h2-path'] = params.get('path', [''])[0]
+                proxy['h2-host'] = [params.get('host', [''])[0]] if params.get('host', [''])[0] else []
+            elif proxy['network'] == 'grpc':
+                proxy['grpc-service-name'] = params.get('serviceName', [''])[0]
+                proxy['grpc-enable-multi-request'] = params.get('multiRequest', ['0'])[0] == '1'
+            
+            proxy['skip-cert-verify'] = params.get('allowInsecure', ['0'])[0] == '1' # 通用参数
+            proxy['sni'] = params.get('sni', [''])[0] # 通用 TLS SNI
+            return proxy
+
         elif scheme == 'hy2' or scheme == 'hysteria2':
             # Hysteria2 URI 格式: hy2://password@server:port?sni=example.com&obfs=none&obfs-password=
             try:
@@ -157,7 +275,8 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
                     logger.warning(f"解析 Hysteria2 节点失败，缺少服务器和端口信息: {uri}")
                     return None
 
-                if ipv6_match := re.match(r'\[(.*?)\]:(\d+)', server_port_str):
+                ipv6_match = re.match(r'\[([0-9a-fA-F:]+)\]:(\d+)', server_port_str)
+                if ipv6_match:
                     server, port = ipv6_match.group(1), int(ipv6_match.group(2))
                 else:
                     server, port_str = server_port_str.split(':')
@@ -172,12 +291,57 @@ def parse_proxy_line(line: str) -> Optional[Dict]:
                 proxy['obfs'] = params.get('obfs', ['none'])[0]
                 proxy['obfs-password'] = params.get('obfs-password', [''])[0]
                 proxy['sni'] = params.get('sni', [''])[0]
-                # Hysteria2 使用 'insecure' 参数而不是 'allowInsecure'
                 proxy['skip-cert-verify'] = params.get('insecure', ['0'])[0] == '1' 
                 return proxy
             except Exception as hy2_e:
                 logger.warning(f"解析 Hysteria2 节点失败 {uri}: {hy2_e}")
                 return None
+        
+        elif scheme == 'ssr':
+            # ssr://base64encoded_payload#name
+            decoded_payload = decode_base64_url_safe(url_parts.netloc)
+            if not decoded_payload:
+                logger.warning(f"解析 SSR 节点失败，Base64 解码错误: {uri}")
+                return None
+            
+            try:
+                # SSR 负载格式: server:port:protocol:method:obfs:password_base64/?params_base64
+                server, port_str, protocol, method, obfs, password_base64_part = decoded_payload.split(':', 5)
+                password_base64 = password_base64_part.split('/?')[0]
+                
+                proxy['type'] = 'ssr'
+                proxy['server'] = server
+                proxy['port'] = int(port_str)
+                proxy['protocol'] = protocol
+                proxy['cipher'] = method
+                proxy['obfs'] = obfs
+                proxy['password'] = decode_base64_url_safe(password_base64) or '' # 密码再次 Base64 解码
+
+                params_str = decoded_payload.split('/?', 1)[1] if '/?' in decoded_payload else ''
+                params = parse_qs(params_str)
+                
+                # SSR 特定参数
+                proxy['obfs-param'] = decode_base64_url_safe(params.get('obfsparam', [''])[0]) or ''
+                proxy['protocol-param'] = decode_base64_url_safe(params.get('protoparam', [''])[0]) or ''
+                
+                # Clash/Mihomo 对 SSR 的支持通常有限，这里尝试构建最兼容的格式
+                # 转换为 Clash 兼容的 Shadowsocks 节点，如果可能
+                if proxy['protocol'] == 'origin' and proxy['obfs'] == 'plain':
+                    logger.info(f"SSR 节点 {name} 转换为 SS 节点。")
+                    proxy['type'] = 'ss'
+                    proxy['cipher'] = proxy['cipher']
+                    # name, server, port, password 已经设置
+                    return proxy
+                else:
+                    logger.warning(f"SSR 节点 {name} (协议: {protocol}, 混淆: {obfs}) 无法完全转换为 Clash 兼容配置，可能无法工作。")
+                    return proxy
+            except ValueError as ve:
+                logger.warning(f"解析 SSR 节点失败，格式错误 {decoded_payload}: {ve}")
+                return None
+            except Exception as ssr_e:
+                logger.warning(f"解析 SSR 节点失败 {uri}: {ssr_e}")
+                return None
+
         else:
             logger.warning(f"不支持的协议: {scheme}. URI: {uri}")
             return None
@@ -201,7 +365,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
     # 确保代理字典包含所有必要的键来构建 Clash 配置
     required_clash_keys = ['name', 'type', 'server', 'port']
     if not all(key in proxy for key in required_clash_keys):
-        result['error'] = "代理配置缺少必要信息 (name, type, server, port)。"
+        result['error'] = "代理配置缺少 Clash/Mihomo 配置所需信息 (name, type, server, port)。"
         logger.error(f"代理配置缺少必要信息: {proxy}")
         return result
 
@@ -211,7 +375,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         'external-controller': f'127.0.0.1:{clash_port + 2}',
         'allow-lan': False,
         'mode': 'rule',
-        'log-level': 'error',
+        'log-level': 'warning', # 调整日志级别，减少无关输出
         'proxies': [proxy],
         'proxy-groups': [{'name': 'auto', 'type': 'select', 'proxies': [proxy['name']]}],
         'rules': ['MATCH,auto']
@@ -225,23 +389,26 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
             yaml.dump(config, f, allow_unicode=True)
 
         # 启动 Clash 进程
-        # stderr=subprocess.PIPE 允许我们捕获 Clash 的错误输出
-        proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        await asyncio.sleep(2) # 给予 Clash 启动时间
-
+        proc = subprocess.Popen([clash_bin, '-f', config_path], 
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) # 使用 text=True 自动处理编码
+        
+        # 给予 Clash 启动时间，并捕获启动时的日志
+        await asyncio.sleep(2) 
+        
         # 检查 Clash 进程是否已退出（启动失败）
         if proc.poll() is not None:
             stdout, stderr = proc.communicate(timeout=1) # 尝试读取剩余输出
-            result['error'] = (f"Clash 启动失败. 退出码: {proc.returncode}, "
-                               f"标准输出: {stdout.decode(errors='ignore').strip()}, "
-                               f"标准错误: {stderr.decode(errors='ignore').strip()}")
+            result['error'] = (f"Clash 启动失败. 退出码: {proc.returncode}. "
+                               f"标准输出: {stdout.strip()}. "
+                               f"标准错误: {stderr.strip()}. "
+                               "这通常意味着配置错误或 Clash 不支持此代理类型。")
             logger.error(result['error'])
             return result
 
         try:
             start_time = time.time()
             async with session.get(
-                'http://www.cloudflare.com',  # 使用 Cloudflare 作为测试目标
+                'http://www.cloudflare.com/cdn-cgi/trace',  # 使用 Cloudflare Trace，它能返回 IP 和其他信息，有助于验证代理工作
                 proxy=f'http://127.0.0.1:{clash_port}',
                 timeout=10
             ) as response:
@@ -262,16 +429,16 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         # 如果代理不可用，尝试从 Clash 进程的标准错误输出中获取更多信息
         if result['status'] == '不可用' and proc.poll() is None: # 仅当 Clash 仍在运行时
             try:
-                # 给 Clash 一些时间写入日志，然后尝试读取其错误输出
-                await asyncio.sleep(1) 
+                # 尝试读取 Clash 在测试期间可能产生的日志
                 stdout, stderr = proc.communicate(timeout=1)
-                clash_log = stderr.decode(errors='ignore').strip()
+                clash_log = stderr.strip()
                 if clash_log:
                     result['error'] += f" | Clash 日志: {clash_log}"
             except subprocess.TimeoutExpired:
-                proc.kill() # 如果超时，则强制终止进程
+                # 如果读取日志超时，强制终止进程
+                proc.kill() 
                 stdout, stderr = proc.communicate()
-                clash_log = stderr.decode(errors='ignore').strip()
+                clash_log = stderr.strip()
                 if clash_log:
                     result['error'] += f" | Clash 日志 (强制终止): {clash_log}"
             except Exception as log_e:
@@ -297,7 +464,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
                 logger.warning(f"删除配置文件 {config_path} 失败: {e}")
     
     logger.info(f"🔒 {proxy.get('type', 'UNKNOWN').upper()}-{proxy.get('network', 'TCP').upper()}-{'TLS' if proxy.get('sni') else 'NA'} "
-                f"{proxy.get('name', 'Unnamed')}: {result['status']}, 延迟: {result['latency']:.2f}ms")
+                f"{proxy.get('name', 'Unnamed')}: {result['status']}, 延迟: {result['latency']:.2f}ms. 错误: {result['error']}")
     return result
 
 async def main():
@@ -307,7 +474,7 @@ async def main():
                         help='代理节点 URL')
     parser.add_argument('--clash-bin', default='./tools/clash', help='Clash 二进制路径')
     # 调整批量测试节点数，通常不宜过高，避免资源耗尽
-    parser.add_argument('--batch-size', type=int, default=max(10, psutil.cpu_count() * 2), help='批量测试节点数') 
+    parser.add_argument('--batch-size', type=int, default=max(5, psutil.cpu_count() * 2), help='批量测试节点数') 
     parser.add_argument('--invalid-file', default='data/invalid_nodes.yaml', help='不可用节点文件')
     parser.add_argument('--valid-file', default='data/521.yaml', help='可用节点文件')
     parser.add_argument('--expire-days', type=int, default=7, help='不可用节点过期天数')
@@ -330,7 +497,7 @@ async def main():
             logger.error("没有可测试的代理节点")
             return
 
-        # 过滤新增节点，确保只有有效的且未曾测试过的节点被加入
+        # 过滤新增节点
         new_proxies = [p for p in proxies if get_node_key(p) and get_node_key(p) not in invalid_keys and get_node_key(p) not in valid_keys]
         logger.info(f"总节点数: {len(proxies)}, 新增节点: {len(new_proxies)}, 已知可用: {len(valid_nodes)}, 已知不可用: {len(invalid_nodes)}")
 
@@ -345,11 +512,6 @@ async def main():
             results.extend(batch_results)
 
         # 合并结果并进行去重
-        new_valid = [r['proxy'] for r in results if r['status'] == '可用']
-        new_invalid = [r['proxy'] for r in results if r['status'] == '不可用']
-        
-        # 更新可用节点（保留旧的可用节点 + 新测试的可用节点）
-        # 使用字典进行去重，键是节点唯一标识
         all_valid_temp = {}
         for node in valid_nodes:
             key = get_node_key(node)
