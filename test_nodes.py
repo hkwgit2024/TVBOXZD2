@@ -427,7 +427,21 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
 # --- 主函数 ---
 async def main():
     args = parse_args()
-    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+
+    # 设置工作目录为仓库根目录
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    logging.info(f"当前工作目录: {os.getcwd()}")
+
+    # 检查 Clash 二进制文件
+    clash_bin = './tools/clash'
+    if not os.path.isfile(clash_bin):
+        logging.error(f"Clash 二进制文件 {clash_bin} 不存在")
+        sys.exit(1)
+    if not os.access(clash_bin, os.X_OK):
+        logging.error(f"Clash 二进制文件 {clash_bin} 不可执行")
+        sys.exit(1)
+
+    nodes_url = "https://raw.githubusercontent.com/qjlxg/nhgrok/refs/heads/main/test_nodes.txt"
     raw_node_urls = []
 
     # 加载缓存
@@ -513,7 +527,7 @@ async def main():
 
     for i in range(0, len(parsed_proxies), batch_size):
         batch = parsed_proxies[i:i + batch_size]
-        tasks = [test_proxy_with_semaphore(proxy, session, './tools/clash', semaphore) for proxy in batch]
+        tasks = [test_proxy_with_semaphore(proxy, session, clash_bin, semaphore) for proxy in batch]
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
         for result in batch_results:
             if isinstance(result, dict):
