@@ -123,7 +123,7 @@ def parse_proxy_line(line: str) -> Dict:
 
     try:
         url_parts = urlparse(line)
-        scheme = url_parts.scheme
+        scheme = url_parts.scheme.lower()
         proxy = {'name': url_parts.fragment or f"{scheme}_node_{url_parts.netloc}"}
 
         if scheme == 'ss':
@@ -137,7 +137,7 @@ def parse_proxy_line(line: str) -> Dict:
                 proxy['server'] = server_port[0]
                 proxy['port'] = int(server_port[1])
                 # 解码 Base64 数据
-                decoded = base64.urlsafe_b64decode(auth_data[0]).decode('utf-8')
+                decoded = base64.urlsafe_b64decode(auth_data[0] + '==' * (-len(auth_data[0]) % 4)).decode('utf-8')
                 cipher_password = decoded.split(':')
                 if len(cipher_password) != 2:
                     return None
@@ -148,7 +148,7 @@ def parse_proxy_line(line: str) -> Dict:
 
         elif scheme == 'ssr':
             # ShadowsocksR: ssr://<base64_encoded_data>
-            decoded = base64.urlsafe_b64decode(line[6:]).decode('utf-8')
+            decoded = base64.urlsafe_b64decode(line[6:] + '==' * (-len(line[6:]) % 4)).decode('utf-8')
             parts = decoded.split(':')
             if len(parts) < 6:
                 return None
@@ -156,13 +156,13 @@ def parse_proxy_line(line: str) -> Dict:
             proxy['server'] = parts[0]
             proxy['port'] = int(parts[1])
             proxy['cipher'] = parts[3]
-            proxy['password'] = base64.urlsafe_b64decode(parts[5].split('/')[0]).decode('utf-8')
+            proxy['password'] = base64.urlsafe_b64decode(parts[5].split('/')[0] + '==' * (-len(parts[5].split('/')[0]) % 4)).decode('utf-8')
             params = parse_qs(url_parts.query)
-            proxy['name'] = base64.urlsafe_b64decode(params.get('remarks', [''])[0]).decode('utf-8') if 'remarks' in params else proxy['name']
+            proxy['name'] = base64.urlsafe_b64decode(params.get('remarks', [''])[0] + '==' * (-len(params.get('remarks', [''])[0]) % 4)).decode('utf-8') if 'remarks' in params else proxy['name']
 
         elif scheme == 'vmess':
             # VMess: vmess://<base64_encoded_json>
-            decoded = base64.urlsafe_b64decode(line[8:]).decode('utf-8')
+            decoded = base64.urlsafe_b64decode(line[8:] + '==' * (-len(line[8:]) % 4)).decode('utf-8')
             vmess_config = json.loads(decoded)
             proxy['type'] = 'vmess'
             proxy['server'] = vmess_config.get('add')
@@ -212,36 +212,35 @@ def parse_proxy_line(line: str) -> Dict:
                 return None
             proxy['type'] = 'trojan'
             proxy['password'] = auth_data[0]
-            server_port = auth';
-
-/**
- * The document content was truncated. The following assumptions and completions are made to provide a working solution:
- * - The script continues parsing for `trojan` and `hysteria2` protocols.
- * - The rest of the script remains consistent with the provided structure.
- * Below is the complete modified script with the necessary changes to handle the dynamic `ss.txt` content.
- */
-
+            server_port = auth_data[1].split(':')
+            if len(server_port) != 2:
+                return None
             proxy['server'] = server_port[0]
             proxy['port'] = int(server_port[1])
             params = parse_qs(url_parts.query)
             proxy['sni'] = params.get('sni', [''])[0]
-            proxy['type'] = params.get('type', ['tcp'])[0]
-            if proxy['type'] == 'grpc':
+            proxy['network'] = params.get('type', ['tcp'])[0]
+            if proxy['network'] == 'grpc':
                 proxy['grpc-opts'] = {'grpc-service-name': params.get('serviceName', [''])[0]}
             proxy['skip-cert-verify'] = params.get('allowInsecure', ['0'])[0] == '1'
 
         elif scheme == 'hysteria2':
             # Hysteria2: hysteria2://<password>@<server>:<port>?<params>#<name>
             auth_data = url_parts.netloc.split('@')
+            if len(auth_data) != 2:
+                return None
             proxy['type'] = 'hysteria2'
             proxy['password'] = auth_data[0]
             server_port = auth_data[1].split(':')
+            if len(server_port) != 2:
+                return None
             proxy['server'] = server_port[0]
             proxy['port'] = int(server_port[1])
             params = parse_qs(url_parts.query)
             proxy['sni'] = params.get('sni', [''])[0]
             proxy['skip-cert-verify'] = params.get('insecure', ['0'])[0] == '1'
             proxy['mport'] = params.get('mport', [''])[0]
+            proxy['obfs'] = params.get('obfs', ['none'])[0]
 
         else:
             return None
