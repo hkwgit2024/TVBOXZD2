@@ -4,8 +4,9 @@ const path = require('path');
 const { PromisePool } = require('@supercharge/promise-pool');
 const { spawn } = require('child_process');
 const { ProxyAgent } = require('undici');
+const dns = require('dns').promises;
 
-async function testLatency(url, timeout = 3000, proxyAgent) {
+async function testLatency(url, timeout, proxyAgent) {
     const start = Date.now();
     try {
         const controller = new AbortController();
@@ -66,7 +67,7 @@ function generateClashConfig(proxy, port = 7890) {
         'socks-port': port + 1,
         'allow-lan': false,
         'mode': 'rule',
-        'log-level': 'error',
+        'log-level': 'info',
         'external-controller': `127.0.0.1:${port + 2}`,
         proxies: [],
         'proxy-groups': [{ name: 'Proxy', type: 'select', proxies: [] }],
@@ -138,42 +139,6 @@ function generateClashConfig(proxy, port = 7890) {
                 };
             }
             break;
-        // Optional: Restore other types if needed
-        /*
-        case 'ssr':
-            if (!proxy.password || !proxy.cipher) throw new Error('SSR requires password and cipher');
-            clashProxy.password = proxy.password;
-            clashProxy.cipher = proxy.cipher;
-            if (proxy.obfs) clashProxy.obfs = proxy.obfs;
-            if (proxy.protocol) clashProxy.protocol = proxy.protocol;
-            if (proxy.obfsparam) clashProxy.obfsParam = proxy.obfsparam;
-            if (proxy.protoparam) clashProxy.protocolParam = proxy.protoparam;
-            break;
-        case 'hysteria':
-        case 'hy':
-            if (!proxy.auth) throw new Error('Hysteria requires auth');
-            clashProxy.auth = proxy.auth;
-            clashProxy.network = proxy.network || 'udp';
-            clashProxy.tls = proxy.tls || false;
-            if (proxy.servername) clashProxy.servername = proxy.servername;
-            if (proxy.alpn) clashProxy.alpn = proxy.alpn;
-            if (proxy.ports) clashProxy.ports = proxy.ports;
-            if (proxy.up) clashProxy.up = proxy.up;
-            if (proxy.down) clashProxy.down = proxy.down;
-            if (proxy.obfs) clashProxy.obfs = proxy.obfs;
-            if (proxy.obfsParam) clashProxy.obfsParam = proxy.obfsParam;
-            clashProxy.fastOpen = proxy.fastOpen || false;
-            break;
-        case 'hysteria2':
-        case 'hy2':
-            if (!proxy.password) throw new Error('Hysteria2 requires password');
-            clashProxy.password = proxy.password;
-            clashProxy.tls = proxy.tls || false;
-            if (proxy.servername) clashProxy.servername = proxy.servername;
-            if (proxy.alpn) clashProxy.alpn = proxy.alpn;
-            clashProxy.fastOpen = proxy.fastOpen || false;
-            break;
-        */
         default:
             throw new Error(`Unsupported proxy type: ${proxy.type}`);
     }
@@ -183,7 +148,7 @@ function generateClashConfig(proxy, port = 7890) {
     return yaml.dump(config, { lineWidth: -1 });
 }
 
-async function checkClashReady(port, retries = 5, delay = 500) {
+async function checkClashReady(port, retries = 10, delay = 500) {
     for (let i = 0; i < retries; i++) {
         try {
             const response = await fetch(`http://127.0.0.1:${port + 2}/version`);
@@ -205,14 +170,25 @@ async function killClashProcess(pid, port) {
     }
 }
 
+async function validateServer(server) {
+    try {
+        await dns.lookup(server);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 async function runNodeTests() {
     const inputFilePath = path.join(__dirname, 'data', '520.yaml');
     const outputConfigPath = path.join(__dirname, 'data', '521.yaml');
     const outputReportPath = path.join(__dirname, 'data', '521_detailed_report.yaml');
-    const basePorts = [7890, 7893, 7896]; // 3 concurrent ports
-    const testUrl = 'http://captive.apple.com'; // Primary test endpoint
-    const fallbackTestUrl = 'http://connectivitycheck.gstatic.com/generate_204'; // Fallback
-    const downloadTestUrl = 'http://speedtest.tele2.net/1MB.zip'; // Optional download test
+    const basePorts = [7890, 7893]; // 2 concurrent ports
+    const testUrls = [
+        'http://connectivitycheck.gstatic.com/generate_204',
+        'http://captive.apple.com'
+    ];
+    const downloadTestUrl = 'http://speedtest.tele2.net/1MB.zip';
 
     let proxiesConfig;
     try {
@@ -230,76 +206,59 @@ async function runNodeTests() {
         'icook.hk', 'icook.tw', 'time.is', 'www.gov.ua',
         'www.hugedomains.com', 'ip.sb', 'xn--b6gac.eu.org'
     ];
-    const validProxies = proxiesConfig.proxies.filter(proxy => {
+    const validProxies = [];
+    for (const proxy of proxiesConfig.proxies) {
         if (!proxy.server || !proxy.port || !proxy.type) {
             console.warn(`Skipping proxy ${proxy.name}: missing server, port, or type`);
-            return false;
+            continue;
         }
         if (invalidDomains.some(domain => proxy.server.includes(domain))) {
             console.warn(`Skipping proxy ${proxy.name}: invalid server domain (${proxy.server})`);
-            return false;
+            continue;
         }
         if (!/^[a-zA-Z0-9.-]+$|^(\d{1,3}\.){3}\d{1,3}$/.test(proxy.server)) {
             console.warn(`Skipping proxy ${proxy.name}: malformed server (${proxy.server})`);
-            return false;
+            continue;
+        }
+        if (!(await validateServer(proxy.server))) {
+            console.warn(`Skipping proxy ${proxy.name}: server not resolvable (${proxy.server})`);
+            continue;
         }
         switch (proxy.type.toLowerCase()) {
             case 'vless':
                 if (!proxy.uuid) {
                     console.warn(`Skipping proxy ${proxy.name}: VLESS missing uuid`);
-                    return false;
+                    continue;
                 }
                 break;
             case 'trojan':
                 if (!proxy.password) {
                     console.warn(`Skipping proxy ${proxy.name}: Trojan missing password`);
-                    return false;
+                    continue;
                 }
                 break;
             case 'ss':
                 if (!proxy.cipher || !proxy.password) {
                     console.warn(`Skipping proxy ${proxy.name}: SS missing cipher or password`);
-                    return false;
+                    continue;
                 }
                 break;
             case 'vmess':
                 if (!proxy.uuid) {
                     console.warn(`Skipping proxy ${proxy.name}: VMess missing uuid`);
-                    return false;
+                    continue;
                 }
                 break;
-            // Optional: Add validation for other types
-            /*
-            case 'ssr':
-                if (!proxy.password || !proxy.cipher) {
-                    console.warn(`Skipping proxy ${proxy.name}: SSR missing password or cipher`);
-                    return false;
-                }
-                break;
-            case 'hysteria':
-            case 'hy':
-                if (!proxy.auth) {
-                    console.warn(`Skipping proxy ${proxy.name}: Hysteria missing auth`);
-                    return false;
-                }
-                break;
-            case 'hysteria2':
-            case 'hy2':
-                if (!proxy.password) {
-                    console.warn(`Skipping proxy ${proxy.name}: Hysteria2 missing password`);
-                    return false;
-                }
-                break;
-            */
         }
-        return true;
-    });
+        validProxies.push(proxy);
+    }
 
-    console.log(`Testing ${validProxies.length} proxies with concurrency 3...`);
+    console.log(`Testing ${validProxies.length} proxies with concurrency 2...`);
 
-    const { results: testResults } = await PromisePool
+    const testResults = [];
+    await PromisePool
         .for(validProxies)
-        .withConcurrency(3)
+        .withConcurrency(2)
         .process(async (proxy, index) => {
             const port = basePorts[index % basePorts.length];
             const proxyAgent = new ProxyAgent(`http://127.0.0.1:${port}`);
@@ -316,7 +275,7 @@ async function runNodeTests() {
                 server: proxy.server,
                 port: proxy.port,
                 type: proxy.type,
-                test_target_url: testUrl,
+                test_target_url: testUrls[0],
                 status: 'Failed',
                 latency_ms: 'N/A',
                 download_speed: 'Not Tested'
@@ -327,6 +286,10 @@ async function runNodeTests() {
                 const clashConfigContent = generateClashConfig(proxy, port);
                 await fs.writeFile(configFilePath, clashConfigContent, 'utf8');
 
+                // Clean ports before starting Clash
+                const { exec } = require('child_process');
+                await new Promise(resolve => exec(`lsof -ti :${port},${port + 1},${port + 2} | xargs kill -9 2>/dev/null`, resolve));
+
                 clashProcess = spawn(path.join(__dirname, 'tools', 'clash'), ['-f', configFilePath], {
                     stdio: ['ignore', 'pipe', 'pipe']
                 });
@@ -336,17 +299,19 @@ async function runNodeTests() {
                 clashProcess.stderr.on('data', data => clashOutput += data);
 
                 if (!await checkClashReady(port)) {
-                    throw new Error(`Clash failed to start: ${clashOutput.substring(0, 100)}`);
+                    throw new Error(`Clash failed to start: ${clashOutput.substring(0, 200)}`);
                 }
 
-                latency = await testLatency(testUrl, 3000, proxyAgent);
-                if (typeof latency !== 'number') {
-                    latency = await testLatency(fallbackTestUrl, 3000, proxyAgent); // Try fallback URL
+                for (const url of testUrls) {
+                    latency = await testLatency(url, 2000, proxyAgent);
+                    if (typeof latency === 'number') {
+                        result.test_target_url = url;
+                        break;
+                    }
                 }
 
                 if (typeof latency === 'number') {
                     status = 'Success';
-                    // Optional: Test download speed if latency test succeeds
                     downloadSpeed = await testDownloadSpeed(downloadTestUrl, 1000000, 10000, proxyAgent);
                 } else {
                     status = `Failed: ${latency}`;
@@ -369,7 +334,12 @@ async function runNodeTests() {
             }
 
             console.log(`Tested ${nodeName}: ${status}`);
-            return result;
+            testResults.push(result);
+
+            // Write partial results to file to reduce memory usage
+            if (testResults.length % 100 === 0) {
+                await fs.writeFile(outputReportPath, yaml.dump({ results: testResults }, { lineWidth: -1 }), 'utf8');
+            }
         });
 
     // Generate importable config
@@ -379,7 +349,7 @@ async function runNodeTests() {
         'socks-port': 7891,
         'allow-lan': false,
         'mode': 'rule',
-        'log-level': 'error',
+        'log-level': 'info',
         'external-controller': '127.0.0.1:9090',
         proxies: successfulProxies.map(result => {
             const originalProxy = proxiesConfig.proxies.find(p => p.name === result.name);
@@ -387,8 +357,8 @@ async function runNodeTests() {
         }).filter(p => p !== null),
         'proxy-groups': [
             { name: 'Proxy', type: 'select', proxies: successfulProxies.map(p => p.name) },
-            { name: 'Fallback', type: 'fallback', proxies: successfulProxies.map(p => p.name), url: testUrl, interval: 300 },
-            { name: 'Auto', type: 'url-test', proxies: successfulProxies.map(p => p.name), url: testUrl, interval: 300 }
+            { name: 'Fallback', type: 'fallback', proxies: successfulProxies.map(p => p.name), url: testUrls[0], interval: 300 },
+            { name: 'Auto', type: 'url-test', proxies: successfulProxies.map(p => p.name), url: testUrls[0], interval: 300 }
         ],
         rules: [
             'DOMAIN-SUFFIX,google.com,Proxy',
