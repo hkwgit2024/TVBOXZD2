@@ -8,15 +8,15 @@ import time
 from typing import Dict, List
 from yaml import SafeLoader
 
-# --- 自定义 YAML 构造函数 ---
+# --- Custom YAML constructor ---
 def str_constructor(loader, node):
     return str(node.value)
 
 SafeLoader.add_constructor('!str', str_constructor)
 
-# --- 节点格式验证函数 ---
+# --- Proxy Validation Function ---
 def validate_proxy(proxy: Dict, index: int) -> tuple[bool, str]:
-    """验证代理节点格式，返回 (是否有效, 错误信息)"""
+    """Validates the proxy node format, returns (is_valid, error_message)"""
     required_fields = {
         'name': str,
         'server': str,
@@ -31,35 +31,35 @@ def validate_proxy(proxy: Dict, index: int) -> tuple[bool, str]:
         'hysteria2': [('password', str)]
     }
 
-    # 检查必要字段
+    # Check required fields
     for field, field_type in required_fields.items():
         if field not in proxy:
-            return False, f"节点 {index} 缺少字段: {field}"
+            return False, f"Node {index} is missing field: {field}"
         if not isinstance(proxy[field], field_type):
-            return False, f"节点 {index} 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
+            return False, f"Node {index} field {field} has wrong type, expected {field_type.__name__}, got {type(proxy[field]).__name__}"
 
-    # 检查协议特定字段
+    # Check protocol-specific fields
     proxy_type = proxy.get('type')
     if proxy_type in protocol_specific_fields:
         for field, field_type in protocol_specific_fields[proxy_type]:
             if field not in proxy:
-                return False, f"节点 {index} ({proxy_type}) 缺少字段: {field}"
+                return False, f"Node {index} ({proxy_type}) is missing field: {field}"
             if not isinstance(proxy[field], field_type):
-                return False, f"节点 {index} ({proxy_type}) 字段 {field} 类型错误，期望 {field_type.__name__}，实际 {type(proxy[field]).__name__}"
+                return False, f"Node {index} ({proxy_type}) field {field} has wrong type, expected {field_type.__name__}, got {type(proxy[field]).__name__}"
 
-    # 检查 name 唯一性（简单检查，实际应在全局验证）
+    # Check name uniqueness (simple check, actual check should be global)
     if not proxy['name'].strip():
-        return False, f"节点 {index} name 为空"
+        return False, f"Node {index} name is empty"
 
     return True, ""
 
-# --- 测试代理节点函数 ---
+# --- Test Proxy Node Function ---
 async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, clash_port: int = 7890) -> Dict:
-    """测试单个代理节点，返回结果"""
+    """Tests a single proxy node, returns the result"""
     proxy_name = proxy.get('name', 'unknown')
-    print(f"测试代理节点: {proxy_name}")
+    print(f"Testing proxy node: {proxy_name}")
 
-    # 写入临时 Clash 配置文件
+    # Write temporary Clash configuration file
     config = {
         'port': clash_port,
         'socks-port': clash_port + 1,
@@ -74,130 +74,131 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         with open(config_path, 'w') as f:
             yaml.dump(config, f, allow_unicode=True)
     except Exception as e:
-        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}"}
+        return {'name': proxy_name, 'status': 'Unavailable', 'latency': None, 'error': f"Failed to write config: {str(e)}"}
 
-    proc = None # 初始化进程变量
-    result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None}
+    proc = None # Initialize process variable
+    result = {'name': proxy_name, 'status': 'Unavailable', 'latency': None, 'error': None}
     
-    # --- 增加 Clash/Mihomo 启动尝试和健康检查 ---
+    # --- Increase Clash/Mihomo startup attempts and health checks ---
     max_clash_startup_retries = 3
-    clash_startup_delay = 5 # 每次启动等待时间
-    clash_api_url = f'http://127.0.0.1:{clash_port}/proxies' # Clash/Mihomo API，用于健康检查
+    clash_startup_delay = 5 # Wait time for each startup attempt
+    clash_api_url = f'http://127.0.0.1:{clash_port}/proxies' # Clash/Mihomo API for health check
 
     for attempt in range(max_clash_startup_retries):
         proc = subprocess.Popen([clash_bin, '-f', config_path, '-d', 'temp'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        # '-d temp' 参数让 Clash/Mihomo 将日志和缓存放在 temp 目录下，保持主目录干净
+        # '-d temp' parameter makes Clash/Mihomo put logs and cache in the temp directory, keeping the main directory clean
         
-        await asyncio.sleep(clash_startup_delay) # 延长等待时间
+        await asyncio.sleep(clash_startup_delay) # Extend waiting time
 
-        # 尝试连接API端口进行健康检查
+        # Try to connect to the API port for a health check
         try:
             async with session.get(clash_api_url, timeout=3) as api_response:
                 if api_response.status == 200:
-                    # API 可达，说明 Clash/Mihomo 已启动
-                    print(f"  {proxy_name}: Clash/Mihomo 核心启动成功 (尝试 {attempt + 1}/{max_clash_startup_retries})")
-                    break # 成功启动，跳出重试循环
+                    # API is reachable, indicating Clash/Mihomo has started
+                    print(f"  {proxy_name}: Clash/Mihomo core started successfully (Attempt {attempt + 1}/{max_clash_startup_retries})")
+                    break # Successfully started, exit retry loop
                 else:
-                    print(f"  {proxy_name}: Clash/Mihomo API 响应异常 {api_response.status} (尝试 {attempt + 1}/{max_clash_startup_retries})")
+                    print(f"  {proxy_name}: Clash/Mihomo API response error {api_response.status} (Attempt {attempt + 1}/{max_clash_startup_retries})")
         except Exception as e:
-            print(f"  {proxy_name}: Clash/Mihomo API 连接失败: {e} (尝试 {attempt + 1}/{max_clash_startup_retries})")
+            print(f"  {proxy_name}: Clash/Mihomo API connection failed: {e} (Attempt {attempt + 1}/{max_clash_startup_retries})")
         
-        # 如果当前尝试失败，终止旧进程并准备下一次尝试
+        # If current attempt fails, terminate old process and prepare for next attempt
         if proc:
             proc.terminate()
-            await asyncio.sleep(1) # 给进程一些时间终止
-            proc.kill() # 确保进程被杀死
+            await asyncio.sleep(1) # Give process some time to terminate
+            proc.kill() # Ensure process is killed
             await asyncio.sleep(0.5)
 
-    if proc is None or proc.poll() is not None: # 如果进程未启动或已终止
-        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': "Clash/Mihomo 核心未能成功启动"}
+    if proc is None or proc.poll() is not None: # If process did not start or already terminated
+        return {'name': proxy_name, 'status': 'Unavailable', 'latency': None, 'error': "Clash/Mihomo core failed to start"}
 
-    # --- 增加测试重试机制 ---
+    # --- Add testing retry mechanism ---
     max_test_retries = 2
-    test_timeout = 10 # 延长测试超时时间
+    test_timeout = 10 # Extend testing timeout
     success = False
 
-    for attempt in range(max_test_retries):
-        try:
-            start_time = time.time()
-            # 优先测试 HTTP 代理
-            async with session.get(
-                'http://www.google.com/generate_204', # 使用一个轻量且稳定的测试URL
-                proxy=f'http://127.0.0.1:{clash_port}',
-                timeout=test_timeout
-            ) as response:
-                if response.status == 204: # google.com/generate_204 返回 204 No Content
-                    result['status'] = '可用'
-                    result['latency'] = (time.time() - start_time) * 1000  # 毫秒
-                    success = True
-                    break
-        except Exception as e:
-            # 如果 HTTP 测试失败，尝试 SOCKS5
+    # Main try block for the actual proxy testing logic
+    try: 
+        for attempt in range(max_test_retries):
             try:
-                start_time_socks5 = time.time() # 重新计时 SOCKS5
+                start_time = time.time()
+                # Prefer testing HTTP proxy
                 async with session.get(
-                    'http://www.google.com/generate_204',
-                    proxy=f'socks5://127.0.0.1:{clash_port + 1}',
+                    'http://www.google.com/generate_204', # Use a lightweight and stable test URL
+                    proxy=f'http://127.0.0.1:{clash_port}',
                     timeout=test_timeout
                 ) as response:
-                    if response.status == 204:
-                        result['status'] = '可用'
-                        result['latency'] = (time.time() - start_time_socks5) * 1000  # 毫秒
+                    if response.status == 204: # google.com/generate_204 returns 204 No Content
+                        result['status'] = 'Available'
+                        result['latency'] = (time.time() - start_time) * 1000  # Milliseconds
                         success = True
                         break
-            except Exception as socks5_e:
-                result['error'] = f"测试失败 (尝试 {attempt + 1}/{max_test_retries}): HTTP ({e}) / SOCKS5 ({socks5_e})"
-                if attempt < max_test_retries - 1:
-                    await asyncio.sleep(5) # 失败后等待片刻再重试
-                continue # 继续下一次重试循环
-        
-        if success:
-            break # 如果测试成功，跳出重试循环
-
-    finally:
-        # --- 清理 Clash/Mihomo 进程和文件 ---
+            except Exception as e:
+                # If HTTP test fails, try SOCKS5
+                try:
+                    start_time_socks5 = time.time() # Reset timer for SOCKS5
+                    async with session.get(
+                        'http://www.google.com/generate_204',
+                        proxy=f'socks5://127.0.0.1:{clash_port + 1}',
+                        timeout=test_timeout
+                    ) as response:
+                        if response.status == 204:
+                            result['status'] = 'Available'
+                            result['latency'] = (time.time() - start_time_socks5) * 1000  # Milliseconds
+                            success = True
+                            break
+                except Exception as socks5_e:
+                    result['error'] = f"Test failed (Attempt {attempt + 1}/{max_test_retries}): HTTP ({e}) / SOCKS5 ({socks5_e})"
+                    if attempt < max_test_retries - 1:
+                        await asyncio.sleep(5) # Wait a bit before retrying after failure
+                    continue # Continue to the next retry loop
+            
+            if success:
+                break # If test successful, exit retry loop
+    finally: # This finally block is correctly associated with the main try block above
+        # --- Clean up Clash/Mihomo process and files ---
         if proc:
             try:
                 proc.terminate()
                 await asyncio.sleep(1)
-                if proc.poll() is None: # 如果进程仍在运行，强制杀死
+                if proc.poll() is None: # If process is still running, force kill
                     proc.kill()
             except ProcessLookupError:
-                pass # 进程可能已经结束
+                pass # Process might have already ended
 
         try:
             os.remove(config_path)
-            # 清理 Clash/Mihomo 在 temp 目录生成的额外文件（如geoip.dat等）
+            # Clean up extra files generated by Clash/Mihomo in the temp directory (like geoip.dat etc.)
             for f in os.listdir('temp'):
-                if f.startswith(f"config_{proxy_name}") or f.endswith(".dat"): # 更精确的清理规则
+                if f.startswith(f"config_{proxy_name}") or f.endswith(".dat"): # More precise cleanup rules
                     try:
                         os.remove(os.path.join('temp', f))
                     except OSError:
-                        pass # 文件可能不存在或正在被使用
+                        pass # File might not exist or be in use
         except OSError:
-            pass # 文件可能不存在
+            pass # File might not exist
 
     return result
 
-# --- 主函数 ---
+# --- Main function ---
 async def main():
-    # 读取 520.yaml
+    # Read 520.yaml
     try:
         with open('data/520.yaml', 'r') as f:
             config = yaml.load(f, Loader=SafeLoader)
         proxies = config.get('proxies', [])
     except yaml.YAMLError as e:
-        print(f"解析 520.yaml 失败: {str(e)}")
+        print(f"Failed to parse 520.yaml: {str(e)}")
         sys.exit(1)
     except Exception as e:
-        print(f"读取 520.yaml 失败: {str(e)}")
+        print(f"Failed to read 520.yaml: {str(e)}")
         sys.exit(1)
 
     if not proxies:
-        print("未找到代理节点")
+        print("No proxy nodes found")
         sys.exit(1)
 
-    # 验证节点格式
+    # Validate node format
     valid_proxies = []
     invalid_proxies = []
     for i, proxy in enumerate(proxies):
@@ -205,30 +206,30 @@ async def main():
         if is_valid:
             valid_proxies.append(proxy)
         else:
-            invalid_proxies.append({'name': proxy.get('name', f'节点_{i}'), 'error': error})
+            invalid_proxies.append({'name': proxy.get('name', f'Node_{i}'), 'error': error})
 
-    # 记录无效节点
+    # Log invalid nodes
     if invalid_proxies:
         with open('data/invalid_nodes.yaml', 'w') as f:
             yaml.dump({'invalid_proxies': invalid_proxies}, f, allow_unicode=True)
-        print(f"发现 {len(invalid_proxies)} 个无效节点，详情见 data/invalid_nodes.yaml")
+        print(f"Found {len(invalid_proxies)} invalid nodes, see data/invalid_nodes.yaml for details")
 
-    # 创建输出文件
+    # Create output file
     os.makedirs('data', exist_ok=True)
     with open('data/521.yaml', 'w') as f:
         f.write('results:\n')
 
-    # 配置 aiohttp 会话
+    # Configure aiohttp session
     async with aiohttp.ClientSession() as session:
-        # 分批并发测试（每批 50 个节点）
-        # 注意：这里的 batch_size = 50 意味着同时启动 50 个 Clash/Mihomo 实例。
-        # 在 GitHub Actions 上可能对资源造成较大压力。
-        # 如果仍然出现不稳定的情况，可以尝试降低 batch_size，例如 10-20。
-        batch_size = 20 # 降低批处理大小，减少并发实例数
+        # Batch concurrent testing (50 nodes per batch)
+        # Note: batch_size = 50 here means launching 50 Clash/Mihomo instances simultaneously.
+        # On GitHub Actions, this might put significant pressure on resources.
+        # If instability persists, consider lowering batch_size, e.g., 10-20.
+        batch_size = 20 # Lower batch size to reduce concurrent instances
         
-        # 使用 asyncio.Semaphore 进一步控制并发，即使 batch_size 较大
-        # 例如，限制同时运行的 test_proxy 任务不超过 10 个
-        semaphore = asyncio.Semaphore(10) # 控制同时测试的节点数量
+        # Use asyncio.Semaphore to further control concurrency, even with a larger batch_size
+        # For example, limit to no more than 10 test_proxy tasks running simultaneously
+        semaphore = asyncio.Semaphore(10) # Controls the number of nodes tested concurrently
 
         tasks = []
         for proxy in valid_proxies:
@@ -237,19 +238,19 @@ async def main():
                     return await test_proxy(proxy, session, './tools/clash')
             tasks.append(limited_test())
         
-        # 收集所有结果
+        # Collect all results
         all_results = []
-        # 使用 tqdm 或其他方式显示进度（可选，但在GH Actions日志中效果有限）
+        # Use tqdm or other methods to display progress (optional, but limited effect in GH Actions logs)
         for i, future in enumerate(asyncio.as_completed(tasks)):
             result = await future
             if isinstance(result, dict):
                 all_results.append(result)
                 with open('data/521.yaml', 'a') as f:
-                    yaml.dump([result], f, allow_unicode=True, indent=2) # 增加 indent 提高可读性
-                print(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''}{'，错误: ' + result['error'] if result['error'] else ''}")
+                    yaml.dump([result], f, allow_unicode=True, indent=2) # Increase indent for readability
+                print(f"{result['name']}: {result['status']}{'，Latency: %.2fms' % result['latency'] if result['latency'] else ''}{'，Error: ' + result['error'] if result['error'] else ''}")
             else:
-                # 处理异常，例如 asyncio.CancelledError
-                print(f"任务完成异常: {result}")
+                # Handle exceptions, e.g., asyncio.CancelledError
+                print(f"Task completed with an exception: {result}")
 
 if __name__ == "__main__":
     asyncio.run(main())
