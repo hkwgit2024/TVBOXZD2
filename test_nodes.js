@@ -4,7 +4,6 @@ const path = require('path');
 const { PromisePool } = require('@supercharge/promise-pool');
 const { spawn } = require('child_process');
 const { ProxyAgent } = require('undici');
-const dns = require('dns').promises;
 
 async function testLatency(url, timeout, proxyAgent) {
     const start = Date.now();
@@ -67,7 +66,7 @@ function generateClashConfig(proxy, port = 7890) {
         'socks-port': port + 1,
         'allow-lan': false,
         'mode': 'rule',
-        'log-level': 'info',
+        'log-level': 'error',
         'external-controller': `127.0.0.1:${port + 2}`,
         proxies: [],
         'proxy-groups': [{ name: 'Proxy', type: 'select', proxies: [] }],
@@ -148,7 +147,7 @@ function generateClashConfig(proxy, port = 7890) {
     return yaml.dump(config, { lineWidth: -1 });
 }
 
-async function checkClashReady(port, retries = 10, delay = 500) {
+async function checkClashReady(port, retries = 15, delay = 200) {
     for (let i = 0; i < retries; i++) {
         try {
             const response = await fetch(`http://127.0.0.1:${port + 2}/version`);
@@ -170,21 +169,14 @@ async function killClashProcess(pid, port) {
     }
 }
 
-async function validateServer(server) {
-    try {
-        await dns.lookup(server);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
 async function runNodeTests() {
     const inputFilePath = path.join(__dirname, 'data', '520.yaml');
     const outputConfigPath = path.join(__dirname, 'data', '521.yaml');
     const outputReportPath = path.join(__dirname, 'data', '521_detailed_report.yaml');
-    const basePorts = [7890, 7893]; // 2 concurrent ports
+    const clashLogPath = path.join(__dirname, 'temp', 'clash.log');
+    const basePorts = [7890]; // 1 concurrent port
     const testUrls = [
+        'http://www.msftconnecttest.com/connecttest.txt',
         'http://connectivitycheck.gstatic.com/generate_204',
         'http://captive.apple.com'
     ];
@@ -220,10 +212,6 @@ async function runNodeTests() {
             console.warn(`Skipping proxy ${proxy.name}: malformed server (${proxy.server})`);
             continue;
         }
-        if (!(await validateServer(proxy.server))) {
-            console.warn(`Skipping proxy ${proxy.name}: server not resolvable (${proxy.server})`);
-            continue;
-        }
         switch (proxy.type.toLowerCase()) {
             case 'vless':
                 if (!proxy.uuid) {
@@ -253,14 +241,15 @@ async function runNodeTests() {
         validProxies.push(proxy);
     }
 
-    console.log(`Testing ${validProxies.length} proxies with concurrency 2...`);
+    console.log(`Testing ${validProxies.length} proxies with concurrency 1...`);
 
     const testResults = [];
+    const clashLogStream = require('fs').createWriteStream(clashLogPath, { flags: 'a' });
     await PromisePool
         .for(validProxies)
-        .withConcurrency(2)
+        .withConcurrency(1)
         .process(async (proxy, index) => {
-            const port = basePorts[index % basePorts.length];
+            const port = basePorts[0];
             const proxyAgent = new ProxyAgent(`http://127.0.0.1:${port}`);
             const nodeName = proxy.name || 'Unknown';
             const safeNodeName = nodeName.replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -295,8 +284,14 @@ async function runNodeTests() {
                 });
 
                 let clashOutput = '';
-                clashProcess.stdout.on('data', data => clashOutput += data);
-                clashProcess.stderr.on('data', data => clashOutput += data);
+                clashProcess.stdout.on('data', data => {
+                    clashOutput += data;
+                    clashLogStream.write(`[${nodeName}] ${data}`);
+                });
+                clashProcess.stderr.on('data', data => {
+                    clashOutput += data;
+                    clashLogStream.write(`[${nodeName}] ${data}`);
+                });
 
                 if (!await checkClashReady(port)) {
                     throw new Error(`Clash failed to start: ${clashOutput.substring(0, 200)}`);
@@ -336,11 +331,11 @@ async function runNodeTests() {
             console.log(`Tested ${nodeName}: ${status}`);
             testResults.push(result);
 
-            // Write partial results to file to reduce memory usage
-            if (testResults.length % 100 === 0) {
-                await fs.writeFile(outputReportPath, yaml.dump({ results: testResults }, { lineWidth: -1 }), 'utf8');
-            }
+            // Stream results to file
+            await fs.writeFile(outputReportPath, yaml.dump({ results: testResults }, { lineWidth: -1 }), 'utf8');
         });
+
+    clashLogStream.end();
 
     // Generate importable config
     const successfulProxies = testResults.filter(result => result.status === 'Success');
@@ -349,7 +344,7 @@ async function runNodeTests() {
         'socks-port': 7891,
         'allow-lan': false,
         'mode': 'rule',
-        'log-level': 'info',
+        'log-level': 'error',
         'external-controller': '127.0.0.1:9090',
         proxies: successfulProxies.map(result => {
             const originalProxy = proxiesConfig.proxies.find(p => p.name === result.name);
