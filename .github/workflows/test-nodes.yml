@@ -5,7 +5,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 1 * * *'  # 每天运行一次
+    - cron: '0 0 * * *'  # 每天运行一次
+  workflow_dispatch:  # 添加手动触发
 
 jobs:
   test-nodes:
@@ -19,22 +20,18 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          # 安装 Python 依赖
           pip install requests
-          # 安装 Speedtest CLI（官方 Ookla 版本）
           sudo apt-get update
           sudo apt-get install -y apt-transport-https curl gnupg2
           curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
           sudo apt-get update
           sudo apt-get install -y speedtest
-          # 验证 speedtest 安装
           speedtest --version || { echo "Speedtest CLI 安装失败"; exit 1; }
-          # 安装 netcat
           sudo apt-get install -y netcat-traditional
       - name: Run node test script
         run: python test_nodes.py
       - name: Upload results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: result
           path: data/collectSub.txt
