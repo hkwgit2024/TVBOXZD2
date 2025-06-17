@@ -7,6 +7,7 @@ import base64
 import time
 from urllib.parse import urlparse, parse_qs
 import tempfile
+import requests
 
 # 确保 data 目录存在
 if not os.path.exists("data"):
@@ -17,16 +18,32 @@ url = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config
 output_file = "data/collectSub.txt"
 test_file_url = "http://speedtest.ftp.otenet.gr/files/test10m.bin"  # 10MB 测试文件
 
-# 下载 sing-box 二进制文件
+# 下载最新 sing-box 二进制文件
 def download_sing_box():
-    sing_box_url = "https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz"
-    sing_box_tar = "sing-box.tar.gz"
     sing_box_bin = "./sing-box"
     if not os.path.exists(sing_box_bin):
-        urllib.request.urlretrieve(sing_box_url, sing_box_tar)
-        subprocess.run(["tar", "-xzf", sing_box_tar], check=True)
-        subprocess.run(["mv", "sing-box-*/sing-box", sing_box_bin], check=True)
-        subprocess.run(["chmod", "+x", sing_box_bin], check=True)
+        # 使用 GitHub API 获取最新 release
+        api_url = "https://api.github.com/repos/SagerNet/sing-box/releases/latest"
+        try:
+            response = requests.get(api_url, headers={"Accept": "application/vnd.github+json"})
+            response.raise_for_status()
+            release = response.json()
+            # 查找 linux-amd64 的 tar.gz 文件
+            for asset in release["assets"]:
+                if "linux-amd64" in asset["name"] and asset["name"].endswith(".tar.gz"):
+                    sing_box_url = asset["browser_download_url"]
+                    break
+            else:
+                raise Exception("未找到适用于 linux-amd64 的 sing-box 二进制文件")
+            sing_box_tar = "sing-box.tar.gz"
+            urllib.request.urlretrieve(sing_box_url, sing_box_tar)
+            subprocess.run(["tar", "-xzf", sing_box_tar], check=True)
+            # 假设解压后的目录结构为 sing-box-<version>/sing-box
+            subprocess.run(["mv", "sing-box-*/sing-box", sing_box_bin], check=True)
+            subprocess.run(["chmod", "+x", sing_box_bin], check=True)
+        except Exception as e:
+            print(f"下载 sing-box 失败: {str(e)}")
+            raise
     return sing_box_bin
 
 # 解析节点配置
@@ -144,7 +161,11 @@ def test_download_speed(sing_box_bin, config_file):
 # 主函数
 def main():
     sing_box_bin = download_sing_box()
-    urllib.request.urlretrieve(url, "nodes.txt")
+    try:
+        urllib.request.urlretrieve(url, "nodes.txt")
+    except Exception as e:
+        print(f"下载节点文件失败: {str(e)}")
+        return
     results = []
     with open("nodes.txt", "r", encoding="utf-8") as f:
         for line in f:
