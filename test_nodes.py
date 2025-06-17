@@ -31,6 +31,13 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
     if not node_url:
         return None
 
+    # --- 关键修改：更彻底的URL清理 ---
+    # 移除 BOM 字节 (如果存在) 和其他非打印 ASCII 字符
+    node_url = node_url.encode('utf-8').decode('utf-8', 'ignore').strip()
+    # 进一步移除常见的不可见Unicode字符，如零宽度空格等
+    node_url = ''.join(char for char in node_url if char.isprintable() or char.isspace() or char == '/') # 允许斜杠
+    node_url = node_url.strip() # 再次清理首尾空格
+
     # Handle completely malformed URLs that don't even look like a protocol
     if not re.match(r'^[a-zA-Z]+://', node_url):
         print(f"警告: 无法识别的URL格式 (非协议开头): {node_url}")
