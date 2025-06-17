@@ -1,169 +1,51 @@
-name: Node Proxy Test
+name: Proxy Node Test
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
   workflow_dispatch:
 
 jobs:
-  test-proxies:
+  test-nodes:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
 
     steps:
-      - name: 检出仓库代码
+      - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 创建必要目录
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装 Python 依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml aiohttp
+
+      - name: 下载 Clash 二进制文件
         run: |
           mkdir -p tools
-          mkdir -p data
-          mkdir -p temp
-
-      - name: 下载并验证 Clash 核心
-        run: |
-          sudo apt-get update && sudo apt-get install -y jq zstd yq || {
-            echo "::error::无法安装 jq、zstd 或 yq，退出。"
-            exit 1
-          }
-          
-          CLASH_VERSION=$(curl -s --retry 3 https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.tag_name')
-          if [ -z "$CLASH_VERSION" ]; then
-            echo "::warning::无法获取 MetaCubeX/mihomo 最新版本，回退到 v1.19.10"
-            CLASH_VERSION="v1.19.10"
-          fi
-          echo "检测到的版本: ${CLASH_VERSION}"
-
-          CLASH_URLS=(
-            "https://github.com/MetaCubeX/mihomo/releases/download/${CLASH_VERSION}/mihomo-linux-amd64-${CLASH_VERSION}.gz"
-            "https://github.com/MetaCubeX/mihomo/releases/download/${CLASH_VERSION}/mihomo-linux-amd64-compatible-${CLASH_VERSION}.gz"
-            "https://github.com/WindSpiritSR/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-v3-${CLASH_VERSION}.gz"
-          )
-          
-          DOWNLOADED=false
-          for URL in "${CLASH_URLS[@]}"; do
-            echo "尝试从 ${URL} 下载..."
-            wget -q --show-progress --retry-connrefused --tries=3 -L "${URL}" -O clash_core.gz && {
-              DOWNLOADED=true
-              DOWNLOADED_URL="${URL}"
-              break
-            }
-            echo "::warning::下载失败: ${URL}"
-          done
-          
-          if [ "$DOWNLOADED" != "true" ]; then
-            echo "::error::所有 URL 下载均失败，退出。"
-            exit 1
-          fi
-          
-          echo "已下载文件：clash_core.gz（来自 ${DOWNLOADED_URL}）"
-          ls -lh clash_core.gz
-          echo "文件类型："
-          file clash_core.gz
-          
-          echo "尝试解压 clash_core.gz..."
-          if [[ "$(file clash_core.gz)" == *"gzip compressed"* ]]; then
-            gunzip -f clash_core.gz
-            if [ $? -ne 0 ]; then
-              echo "::error::gunzip 解压失败，退出。"
-              ls -lh
-              file clash_core* || true
-              exit 1
-            fi
-            if [ -f clash_core ]; then
-              echo "解压生成 clash_core 文件，移动到 mihomo-linux-amd64"
-              mv clash_core mihomo-linux-amd64
-            else
-              echo "::error::未找到解压后的 clash_core 文件，退出。"
-              ls -lh
-              file * || true
-              exit 1
-            fi
-          elif [[ "$(file clash_core.gz)" == *"Zstandard compressed"* ]]; then
-            zstd -d clash_core.gz -o clash.tar
-            if [ $? -ne 0 ]; then
-              echo "::error::zstd 解压失败，退出。"
-              exit 1
-            fi
-            tar -xf clash.tar
-            if [ $? -ne 0 ]; then
-              echo "::error::tar 解压失败，退出。"
-              exit 1
-            fi
-            if [ -f mihomo ]; then
-              echo "找到 mihomo 文件，移动到 mihomo-linux-amd64"
-              mv mihomo mihomo-linux-amd64
-            elif [ -f clash ]; then
-              echo "找到 clash 文件，移动到 mihomo-linux-amd64"
-              mv clash mihomo-linux-amd64
-            else
-              echo "::error::未找到 mihomo 或 clash 文件，退出。"
-              ls -lh
-              exit 1
-            fi
-          else
-            echo "::error::未知文件格式，退出。"
-            file clash_core.gz
-            exit 1
-          fi
-          
-          echo "解压后文件："
-          ls -lh mihomo-linux-amd64 || true
-          
-          echo "移动到 tools/clash..."
-          mv mihomo-linux-amd64 tools/clash
-          if [ $? -ne 0 ]; then
-            echo "::error::移动文件失败，退出。"
-            ls -lh
-            exit 1
-          fi
-          echo "tools/ 目录内容："
-          ls -lh tools/
-          
-          echo "设置执行权限..."
+          wget -O tools/clash.gz https://github.com/Dreamacro/clash/releases/download/v1.18.0/clash-linux-amd64-v1.18.0.gz
+          gunzip tools/clash.gz
           chmod +x tools/clash
-          if [ $? -ne 0 ]; then
-            echo "::error::设置执行权限失败，退出。"
-            exit 1
-          fi
-          
-          echo "检查文件类型："
-          file tools/clash
-          
-          echo "验证可执行文件..."
-          tools/clash -v || {
-            echo "::error::验证失败，输出如下："
-            tools/clash -v 2>&1
-            exit 1
-          }
-          echo "可执行文件验证成功。"
 
       - name: 运行代理节点测试
         run: |
-          if [ ! -f test_nodes.sh ]; then
-            echo "::error::未找到 test_nodes.sh 脚本，退出。"
+          if [ ! -f test_nodes.py ]; then
+            echo "::error::未找到 test_nodes.py 脚本，退出。"
             exit 1
           fi
-          chmod +x test_nodes.sh
-          ./test_nodes.sh
+          python test_nodes.py
 
       - name: 提交测试结果
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x:${{ secrets.BOT }}@github.com/${{ github.repository }}.git
-          if [ -f data/521.yaml ]; then
-            git add data/521.yaml
-            git commit -m "Update node test results (via Mihomo/Clash) [skip ci]" || echo "No changes to commit"
-            git push
-          else
-            echo "data/521.yaml 未找到，跳过提交。"
-          fi
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/521.yaml data/invalid_nodes.yaml
+          git commit -m "Update proxy test results" || echo "无变更"
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
