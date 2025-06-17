@@ -23,13 +23,11 @@ output_file = "data/collectSub.txt"
 def download_sing_box():
     sing_box_bin = "./sing-box"
     if not os.path.exists(sing_box_bin):
-        # 使用 GitHub API 获取最新 release
         api_url = "https://api.github.com/repos/SagerNet/sing-box/releases/latest"
         try:
             response = requests.get(api_url, headers={"Accept": "application/vnd.github+json"})
             response.raise_for_status()
             release = response.json()
-            # 查找 linux-amd64 的 tar.gz 文件
             sing_box_url = None
             for asset in release["assets"]:
                 if "linux-amd64" in asset["name"] and asset["name"].endswith(".tar.gz"):
@@ -39,19 +37,15 @@ def download_sing_box():
                 raise Exception("未找到适用于 linux-amd64 的 sing-box 二进制文件")
             sing_box_tar = "sing-box.tar.gz"
             urllib.request.urlretrieve(sing_box_url, sing_box_tar)
-            # 记录解压前的目录
             pre_dirs = set(glob.glob("sing-box*"))
             subprocess.run(["tar", "-xzf", sing_box_tar], check=True)
-            # 查找解压后的 sing-box 二进制文件
             binary_paths = glob.glob("**/sing-box", recursive=True) or glob.glob("sing-box")
             if not binary_paths:
                 raise Exception("未找到解压后的 sing-box 二进制文件")
             subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True)
             subprocess.run(["chmod", "+x", sing_box_bin], check=True)
-            # 清理临时文件和解压目录
             if os.path.exists(sing_box_tar):
                 os.remove(sing_box_tar)
-            # 仅清理新生成的 sing-box 目录
             post_dirs = set(glob.glob("sing-box*"))
             for dir_path in post_dirs - pre_dirs:
                 if os.path.isdir(dir_path):
@@ -70,13 +64,37 @@ def parse_node(line):
             ip, port = ip_port.split(":") if ":" in ip_port else (ip_port, "443")
             query = parse_qs(url.query)
             password = query.get("password", [""])[0]
-            return {"type": "hysteria2", "ip": ip, "port": port, "password": password, "raw": line}
+            sni = query.get("sni", [""])[0]
+            insecure = query.get("insecure", ["0"])[0] == "1"
+            return {
+                "type": "hysteria2",
+                "ip": ip,
+                "port": port,
+                "password": password,
+                "sni": sni,
+                "insecure": insecure,
+                "raw": line
+            }
         elif line.startswith("ss://"):
-            decoded = base64.b64decode(line[5:].split("#")[0]).decode()
-            userinfo, ip_port = decoded.split("@")
-            cipher, password = userinfo.split(":")
-            ip, port = ip_port.split(":")
-            return {"type": "ss", "ip": ip, "port": port, "cipher": cipher, "password": password, "raw": line}
+            # 尝试修复 base64 填充问题
+            base64_str = line[5:].split("#")[0]
+            base64_str = base64_str + "=" * (-len(base64_str) % 4)  # 补齐填充
+            try:
+                decoded = base64.b64decode(base64_str, validate=True).decode("utf-8", errors="ignore")
+                userinfo, ip_port = decoded.split("@")
+                cipher, password = userinfo.split(":")
+                ip, port = ip_port.split(":")
+                return {
+                    "type": "ss",
+                    "ip": ip,
+                    "port": port,
+                    "cipher": cipher,
+                    "password": password,
+                    "raw": line
+                }
+            except Exception as e:
+                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): {str(e)}")
+                return None
         elif line.startswith("trojan://"):
             url = urlparse(line)
             userinfo, ip_port = url.netloc.split("@")
@@ -90,15 +108,29 @@ def parse_node(line):
             ip, port = ip_port.split(":") if ":" in ip_port else (ip_port, "443")
             query = parse_qs(url.query)
             transport = query.get("type", ["tcp"])[0]
-            return {"type": "vless", "ip": ip, "port": port, "uuid": uuid, "transport": transport, "raw": line}
+            return {
+                "type": "vless",
+                "ip": ip,
+                "port": port,
+                "uuid": uuid,
+                "transport": transport,
+                "raw": line
+            }
         elif line.startswith("vmess://"):
-            decoded = json.loads(base64.b64decode(line[8:]).decode())
+            decoded = json.loads(base64.b64decode(line[8:]).decode("utf-8", errors="ignore"))
             transport = decoded.get("net", "tcp")
-            return {"type": "vmess", "ip": decoded["add"], "port": str(decoded["port"]), "uuid": decoded["id"], "transport": transport, "raw": line}
+            return {
+                "type": "vmess",
+                "ip": decoded["add"],
+                "port": str(decoded["port"]),
+                "uuid": decoded["id"],
+                "transport": transport,
+                "raw": line
+            }
         else:
             return None
     except Exception as e:
-        print(f"[{datetime.now()}] 解析节点失败: {line}, 错误: {str(e)}")
+        print(f"[{datetime.now()}] 解析节点失败 ({line}): {str(e)}")
         return None
 
 # 生成 sing-box 配置文件
@@ -132,6 +164,11 @@ def generate_sing_box_config(node, temp_config_file):
     }
     if node["type"] == "hysteria2":
         config["outbounds"][0]["password"] = node["password"]
+        config["outbounds"][0]["tls"] = {
+            "enabled": True,
+            "server_name": node["sni"] if node["sni"] else node["ip"],
+            "insecure": node["insecure"]
+        }
     elif node["type"] == "ss":
         config["outbounds"][0]["method"] = node["cipher"]
         config["outbounds"][0]["password"] = node["password"]
@@ -160,8 +197,7 @@ def test_connectivity(sing_box_bin, config_file):
             stderr=subprocess.PIPE,
             text=True
         )
-        time.sleep(2)  # 等待连接建立
-        # 使用 nc 测试本地 SOCKS5 端口
+        time.sleep(2)
         sock_test = subprocess.run(
             ["nc", "-zv", "127.0.0.1", "1080", "-w", "1"],
             capture_output=True,
@@ -198,20 +234,17 @@ def test_connectivity(sing_box_bin, config_file):
 def test_download_speed(sing_box_bin, config_file):
     proxy_process = None
     try:
-        # 启动 sing-box 代理
         proxy_process = subprocess.Popen(
             [sing_box_bin, "run", "-c", config_file],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
         )
-        time.sleep(2)  # 等待代理启动
-        # 设置代理环境变量
+        time.sleep(2)
         env = os.environ.copy()
         env["ALL_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTPS_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTP_PROXY"] = "socks5://127.0.0.1:1080"
-        # 使用 speedtest 命令
         result = subprocess.run(
             ["speedtest", "--format=json", "--timeout=30"],
             env=env,
@@ -221,9 +254,8 @@ def test_download_speed(sing_box_bin, config_file):
         )
         if result.returncode == 0:
             data = json.loads(result.stdout)
-            # 鲁棒地获取带宽和延迟
-            download_mbps = (data.get("download", {}).get("bandwidth", 0) * 8) / 1_000_000  # bits/s to Mbps
-            upload_mbps = (data.get("upload", {}).get("bandwidth", 0) * 8) / 1_000_000  # bits/s to Mbps
+            download_mbps = (data.get("download", {}).get("bandwidth", 0) * 8) / 1_000_000
+            upload_mbps = (data.get("upload", {}).get("bandwidth", 0) * 8) / 1_000_000
             ping_latency = data.get("ping", {}).get("latency", 0)
             return download_mbps, upload_mbps, ping_latency
         else:
@@ -262,7 +294,7 @@ def main():
         print(f"[{datetime.now()}] 下载节点文件失败: {str(e)}")
         return
     results = []
-    with open("nodes.txt", "r", encoding="utf-8") as f:
+    with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -288,7 +320,6 @@ def main():
                     "ping_latency_ms": round(ping_latency, 2),
                 })
                 os.unlink(temp_config.name)
-    # 按下载速度排序
     results.sort(key=lambda x: x["download_mbps"], reverse=True)
     with open(output_file, "w", encoding="utf-8") as f:
         for result in results:
