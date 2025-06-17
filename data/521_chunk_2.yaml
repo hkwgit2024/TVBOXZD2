@@ -1,10 +1,30 @@
 - host: ttfang.fange.me
-  name: 🔒 TR-WS-TLS 🇰🇷 KR-59.26.30.111:17682
+  name: 🔒 TR-WS-TLS 🇰🇷 KR-121.167.145.40:25156
   network: ws
   password: ttfang
   path: /
-  port: 17682
-  server: 59.26.30.111
+  port: 25156
+  server: 121.167.145.40
+  skip-cert-verify: true
+  sni: ttfang.fange.me
+  type: trojan
+- host: c2.validbv3528.eu.org
+  name: 🔒 TR-WS-TLS 🏴‍☠️ NA-104.16.83.43:443
+  network: ws
+  password: Ng35283528
+  path: /?ed=2560
+  port: 443
+  server: 104.16.83.43
+  skip-cert-verify: false
+  sni: c2.validbv3528.eu.org
+  type: trojan
+- host: ttfang.fange.me
+  name: 🔒 TR-WS-TLS 🇹🇼 TW-220.135.202.250:81
+  network: ws
+  password: ttfang
+  path: /
+  port: 81
+  server: 220.135.202.250
   skip-cert-verify: true
   sni: ttfang.fange.me
   type: trojan
@@ -18,6 +38,56 @@
   skip-cert-verify: false
   sni: ttfang.fange.me
   type: trojan
+- host: ocost-dy.wmlefl.cc
+  name: 🔒 TR-WS-TLS 🏴‍☠️ NA-104.18.2.108:8443
+  network: ws
+  password: slch2024
+  path: /
+  port: 8443
+  server: 104.18.2.108
+  skip-cert-verify: false
+  sni: ocost-dy.wmlefl.cc
+  type: trojan
+- host: ocost-dy.wmlefl.cc
+  name: 🔒 TR-WS-TLS 🏴‍☠️ NA-104.18.3.150:443
+  network: ws
+  password: slch2024
+  path: /
+  port: 443
+  server: 104.18.3.150
+  skip-cert-verify: false
+  sni: ocost-dy.wmlefl.cc
+  type: trojan
+- host: ''
+  name: 🔒 TR-TCP-TLS 🇫🇷 FR-51.15.68.121:1935
+  network: tcp
+  password: Bm92516VO0
+  path: ''
+  port: 1935
+  server: 51.15.68.121
+  skip-cert-verify: false
+  sni: x11-amsterdam-scaleway-v2-c88f0.devefun.org
+  type: trojan
+- host: ttfang.fange.me
+  name: 🔒 TR-WS-TLS 🇰🇷 KR-61.83.219.114:14491
+  network: ws
+  password: ttfang
+  path: /
+  port: 14491
+  server: 61.83.219.114
+  skip-cert-verify: true
+  sni: ttfang.fange.me
+  type: trojan
+- host: torjan.xn--xhq44j.eu.org
+  name: 🔒 TR-WS-TLS 🇺🇸 US-216.24.57.30:443
+  network: ws
+  password: tg-fq521free
+  path: /
+  port: 443
+  server: 216.24.57.30
+  skip-cert-verify: false
+  sni: torjan.xn--xhq44j.eu.org
+  type: trojan
 - host: ttfang.fange.me
   name: 🔒 TR-WS-TLS 🇮🇳 IN-13.233.5.49:443
   network: ws
@@ -28,24 +98,14 @@
   skip-cert-verify: true
   sni: ttfang.fange.me
   type: trojan
-- host: ''
-  name: 🔒 TR-TCP-TLS 🇩🇪 DE-18.156.138.162:22222
-  network: tcp
-  password: telegram-id-privatevpns
-  path: ''
-  port: 22222
-  server: 18.156.138.162
-  skip-cert-verify: false
-  sni: trojan.burgerip.co.uk
-  type: trojan
 - host: ttfang.fange.me
-  name: 🔒 TR-WS-TLS 🇰🇷 KR-220.87.229.22:29340
+  name: 🔒 TR-WS-TLS 🇮🇳 IN-166.0.244.206:2053
   network: ws
   password: ttfang
   path: /
-  port: 29340
-  server: 220.87.229.22
-  skip-cert-verify: false
+  port: 2053
+  server: 166.0.244.206
+  skip-cert-verify: true
   sni: ttfang.fange.me
   type: trojan
 - host: ttfang.fange.me
@@ -58,29 +118,33 @@
   skip-cert-verify: true
   sni: ttfang.fange.me
   type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: '@kingofilter ALL'
-  password: Bog0ELmMM9DSxDdQ
+- host: torjan.xn--xhq44j.eu.org
+  name: 🔒 TR-WS-NA 🇷🇺 RU-45.67.215.95:443
+  network: ws
+  password: tg-fq521free
+  path: /
   port: 443
-  server: 85.210.120.237
+  server: 45.67.215.95
+  skip-cert-verify: false
+  sni: torjan.xn--xhq44j.eu.org
+  type: trojan
+- cipher: aes-256-cfb
+  name: '@awlix_ir'
+  password: ZET59LF6DvCC8KVt
+  port: 9005
+  server: 45.89.52.66
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: '@Awlix_ir'
+  password: 1RWwXhwfAB5gAEozU4G2Pg
+  port: 8080
+  server: 45.87.175.157
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: '@awlix_ir'
   password: 4a2rfixophdjffa8KVA4Aa
   port: 8080
   server: 45.158.171.132
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 🇬🇧@FreakConfig
-  password: Bog0ELmMM9DSxDdQ
-  port: 443
-  server: 85.210.120.237
-  type: ss
-- cipher: aes-256-cfb
-  name: '@Hope_Net'
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  port: 38388
-  server: 103.186.154.33
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: برای اتصال دائمی جوین شو🍦@Outline_ir
@@ -94,23 +158,29 @@
   port: 8080
   server: 45.87.175.157
   type: ss
-- cipher: aes-128-gcm
-  name: '@Hope_Net'
-  password: shadowsocks
-  port: 443
-  server: 173.244.56.6
-  type: ss
-- cipher: aes-128-gcm
-  name: '@Hope_Net'
-  password: shadowsocks
-  port: 443
-  server: 37.19.198.244
+- cipher: aes-256-gcm
+  name: '@awlix_ir'
+  password: Y6R9pAtvxxzmGC
+  port: 8888
+  server: 23.154.136.51
   type: ss
 - cipher: chacha20-ietf-poly1305
-  name: '@Vpn_Tehran+🔥+کانفیگ+ویژه+در+تلگرام'
-  password: cvII85TrW6n0OGyfpHVS1u
+  name: برای اتصال دائمی جوین شو🍦@Outline_ir
+  password: 1RWwXhwfAB5gAEozU4G2Pg
   port: 8080
-  server: 45.87.175.178
+  server: 45.87.175.166
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: '@kingofilter'
+  password: Bog0ELmMM9DSxDdQ
+  port: 443
+  server: series-a2-me.varzesh360.co
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: 'کانال ما در تلگرام: V2rayng_Fast@'
+  password: yMX9WGPgUEcRZmlaa0YHHC
+  port: 23492
+  server: 103.106.1.92
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: 🟣🔥 کانال سرور اختصاصی با سرعت بالا تضمینی @Outlinev_2rayNG
@@ -119,40 +189,10 @@
   server: 45.158.171.60
   type: ss
 - cipher: chacha20-ietf-poly1305
-  name: '@kingofilter'
-  password: 4a2rfixophdjffa8KVA4Aa
-  port: 8080
-  server: 45.87.175.164
-  type: ss
-- cipher: chacha20-ietf-poly1305
   name: (@VmessProtocol)برای خرید و اتصال دائمی جوین شو🇩🇪
-  password: 4a2rfixophdjffa8KVA4Aa
+  password: 1RWwXhwfAB5gAEozU4G2Pg
   port: 8080
-  server: 45.158.171.132
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: Free&#036; 170 ID(@Outline_Vpn)
-  password: mps3FwmDjLrWaOVg
-  port: 443
-  server: series-a2.samanehha.co
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 🇬🇧@Flyv2ray
-  password: Bog0ELmMM9DSxDdQ
-  port: 443
-  server: 85.210.120.237
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '@V2ray1_Ng'
-  password: 4a2rfixophdjffa8KVA4Aa
-  port: 8080
-  server: 45.87.175.164
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '@Vpn_Tehran+🔥+کانفیگ+ویژه+در+تلگرام'
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  port: 8080
-  server: 45.87.175.22
+  server: 45.87.175.181
   type: ss
 - cipher: aes-128-cfb
   name: '@Hope_Net'
@@ -161,22 +201,10 @@
   server: 109.201.152.181
   type: ss
 - cipher: chacha20-ietf-poly1305
-  name: Free&#036; 190 ID(@Outline_Vpn)
-  password: u17T3BvpYaaiuW2c
-  port: 443
-  server: api.namasha.co
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '@Vpn_Tehran+🔥+کانفیگ+ویژه+در+تلگرام'
-  password: Bog0ELmMM9DSxDdQ
-  port: 443
-  server: series-a2-me.varzesh360.co
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '@Vpn_Tehran+✅️+کانفیگ+ویژه+در+تلگرام'
-  password: mps3FwmDjLrWaOVg
-  port: 443
-  server: series-a1.samanehha.co
+  name: (@VmessProtocol)برای خرید و اتصال دائمی جوین شو🇩🇪
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  port: 8080
+  server: 45.87.175.35
   type: ss
 - cipher: chacha20-ietf-poly1305
   name: 🇬🇧
@@ -184,30 +212,28 @@
   port: 443
   server: 85.210.120.237
   type: ss
-- cipher: chacha20-ietf-poly1305
+- cipher: aes-256-cfb
   name: '@awlix_ir'
-  password: 4a2rfixophdjffa8KVA4Aa
-  port: 8080
-  server: 45.158.171.151
+  password: f8f7aCzcPKbsF8p3
+  port: 989
+  server: 154.223.16.212
   type: ss
-- cipher: chacha20-ietf-poly1305
-  name: (@VmessProtocol)برای خرید و اتصال دائمی جوین شو🇩🇪
-  password: cvII85TrW6n0OGyfpHVS1u
-  port: 8080
-  server: 45.87.175.178
+- cipher: aes-256-cfb
+  name: 🇻🇳 一元机场:ssrsub.de 越南 05
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  port: 38388
+  server: 103.186.155.20
   type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 🇺🇸 一元机场:ssrsub.de 美国 68
-  password: Bog0ELmMM9DSxDdQ
-  port: 443
-  server: 85.210.120.237
-  type: ss
-- cipher: aes-256-gcm
-  name: :美国-ss-38.121.43.71:443-可用-直连-不支持Netflix
-  password: pKEW8JPByTVTLtM
-  port: 443
-  server: 38.121.43.71
-  type: ss
+- host: ttfang.fange.me
+  name: 韩国+V2CROSS.COM
+  network: ws
+  password: ttfang
+  path: /
+  port: 14074
+  server: 211.248.229.186
+  skip-cert-verify: true
+  sni: ttfang.fange.me
+  type: trojan
 - host: ttfang.fange.me
   name: 韩国+V2CROSS.COM
   network: ws
@@ -218,51 +244,113 @@
   skip-cert-verify: true
   sni: ttfang.fange.me
   type: trojan
+- host: ttfang.fange.me
+  name: 韩国+KT电信
+  network: ws
+  password: ttfang
+  path: /
+  port: 10126
+  server: 121.154.79.130
+  skip-cert-verify: true
+  sni: ttfang.fange.me
+  type: trojan
 - cipher: aes-256-cfb
-  name: 未知节点_1750144030.5123773
+  name: 未知节点_1750146854.0503294
   password: f8f7aCzcPKbsF8p3
   port: 989
   server: 171.22.254.17
   type: ss
 - cipher: aes-256-cfb
-  name: 未知节点_1750144030.5179062
+  name: 未知节点_1750146854.1013753
   password: f8f7aCzcPKbsF8p3
   port: 989
-  server: 195.154.185.174
-  type: ss
-- cipher: aes-256-cfb
-  name: 未知节点_1750144030.5729656
-  password: f8f7aCzcPKbsF8p3
-  port: 989
-  server: 37.143.129.230
+  server: 192.36.27.94
   type: ss
 - cipher: aes-128-gcm
-  name: 未知节点_1750144030.585158
+  name: 未知节点_1750146854.1287217
   password: shadowsocks
   port: 443
   server: 212.102.53.195
   type: ss
+- cipher: aes-256-cfb
+  name: 未知节点_1750146854.2160842
+  obfs: tls1.2_ticket_auth
+  obfs-param: ====
+  password: eAokbaDN6
+  port: 8081
+  protocol: origin
+  protocol-param: ====
+  server: jp-am48-6.eqnode.net
+  type: ssr
+- cipher: aes-256-cfb
+  name: 未知节点_1750146854.2471108
+  obfs: tls1.2_ticket_auth
+  obfs-param: ====
+  password: eAokbaDN6
+  port: 8081
+  protocol: origin
+  protocol-param: ====
+  server: jp-am48-6.eqnode.net
+  type: ssr
+- cipher: aes-256-cfb
+  name: 未知节点_1750146854.320708
+  obfs: tls1.2_ticket_auth
+  obfs-param: ''
+  password: eAokbaDN6
+  port: 8081
+  protocol: origin
+  protocol-param: ''
+  server: jp-am48-6.eqnode.net
+  type: ssr
 - cipher: aes-256-gcm
-  name: 未知节点_1750144030.959546
+  name: 未知节点_1750146854.505514
+  password: KixLvKzwjekG00rm
+  port: 8080
+  server: 38.68.134.190
+  type: ss
+- cipher: aes-256-gcm
+  name: 未知节点_1750146854.5094793
   password: FoOiGlkAA9yPEGP
   port: 7306
   server: 38.68.135.18
   type: ss
 - cipher: aes-128-gcm
-  name: 未知节点_1750144031.0143943
+  name: 未知节点_1750146854.565364
   password: shadowsocks
   port: 443
   server: 212.102.53.196
   type: ss
 - cipher: aes-128-gcm
-  name: 未知节点_1750144031.0391464
+  name: 未知节点_1750146854.580346
   password: shadowsocks
   port: 443
-  server: 212.102.53.197
+  server: 212.102.53.194
   type: ss
 - cipher: aes-128-gcm
-  name: 未知节点_1750144031.0498307
+  name: 未知节点_1750146854.588893
   password: shadowsocks
   port: 443
-  server: 212.102.53.198
+  server: 212.102.53.79
   type: ss
+- cipher: aes-128-gcm
+  name: 未知节点_1750146854.5991912
+  password: shadowsocks
+  port: 443
+  server: 212.102.53.78
+  type: ss
+- cipher: aes-128-gcm
+  name: 未知节点_1750146854.6002574
+  password: shadowsocks
+  port: 443
+  server: 212.102.53.80
+  type: ss
+- cipher: aes-256-cfb
+  name: 未知节点_1750146854.8070874
+  obfs: tls1.2_ticket_auth
+  obfs-param: ''
+  password: eAokbaDN6
+  port: 8081
+  protocol: origin
+  protocol-param: ''
+  server: jp-am48-6.eqnode.net
+  type: ssr
