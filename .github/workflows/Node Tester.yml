@@ -38,13 +38,27 @@ jobs:
       - name: 下载 Mihomo (Clash.Meta) 二进制文件
         run: |
           mkdir -p tools
-          wget -O tools/clash.gz https://github.com/MetaCubeX/mihomo/releases/download/v1.19.10/mihomo-linux-amd64-compatible-v1.19.10.gz || \
-          wget -O tools/clash.gz https://ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/v1.19.10/mihomo-linux-amd64-compatible-v1.19.10.gz || \
+          wget -O tools/clash.gz https://github.com/MetaCubeX/mihomo/releases/download/v1.19.10/mihomo-linux-amd64-v1.19.10.gz || \
+          wget -O tools/clash.gz https://ghproxy.com/https://github.com/MetaCubeX/mihomo/releases/download/v1.19.10/mihomo-linux-amd64-v1.19.10.gz || \
           { echo "::error::无法下载 mihomo v1.19.10 二进制文件，请检查 https://github.com/MetaCubeX/mihomo/releases/tag/v1.19.10"; exit 1; }
+          ls -l tools/
           gunzip tools/clash.gz
-          mv tools/clash tools/clash-bin  # 重命名以避免冲突
+          ls -l tools/
+          mv tools/clash tools/clash-bin
           chmod +x tools/clash-bin
+          ls -l tools/
           ./tools/clash-bin -v | grep "v1.19.10" || { echo "::error::Mihomo 版本不匹配，非 v1.19.10"; exit 1; }
+
+      - name: 验证 Clash 二进制文件
+        run: |
+          if [ ! -f tools/clash-bin ]; then
+            echo "::error::Clash 二进制文件 tools/clash-bin 不存在"
+            exit 1
+          fi
+          if [ ! -x tools/clash-bin ]; then
+            echo "::error::Clash 二进制文件 tools/clash-bin 不可执行"
+            exit 1
+          fi
 
       - name: 运行代理节点测试
         run: |
