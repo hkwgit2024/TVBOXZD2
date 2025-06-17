@@ -4,13 +4,15 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # 每天 UTC 00:00（日本时间 09:00）
   workflow_dispatch:
 
 jobs:
   test-nodes:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        chunk: [[0, 8000], [8000, 16000], [16000, 24000], [24000, 32266]]  # 4 分片
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
@@ -24,6 +26,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyyaml aiohttp
+
+      - name: 缓存测试结果
+        uses: actions/cache@v4
+        with:
+          path: data/test_cache.yaml
+          key: test-cache-${{ github.sha }}
+          restore-keys: |
+            test-cache-
 
       - name: 下载 Mihomo (Clash.Meta) 二进制文件
         run: |
@@ -51,22 +61,25 @@ jobs:
             echo "::error::未找到 test_nodes.py 脚本，退出。"
             exit 1
           fi
-          python test_nodes.py
+          python test_nodes.py --start ${{ matrix.chunk[0] }} --end ${{ matrix.chunk[1] }}
           if [ $? -ne 0 ]; then
             echo "::error::test_nodes.py 执行失败"
             exit 1
           fi
+        env:
+          TEST_TIMEOUT: 1800  # 每分片 30 分钟超时
 
       - name: 上传测试结果到工件
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-chunk-${{ matrix.chunk[0] }}-${{ matrix.chunk[1] }}
           path: |
             data/521_*.yaml
             data/invalid_nodes_*.yaml
             test_nodes.log
 
-      - name: 提交测试结果
+      - name: 合并结果并提交
+        if: matrix.chunk[0] == 0
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
