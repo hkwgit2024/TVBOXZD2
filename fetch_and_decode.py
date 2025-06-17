@@ -4,7 +4,7 @@ import os
 
 # 定义目标 URL 和输出文件路径
 url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/trial.cache"
-output_file = "data/cache.txt"
+output_file = "config/cache.txt"
 
 # 确保输出目录存在
 os.makedirs(os.path.dirname(output_file), exist_ok=True)
