@@ -1,112 +1,59 @@
-name: Proxy Node Test
+
+name: Proxy Node Test # 工作流名称
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # 当代码推送到 main 分支时触发
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 00:00（日本时间 09:00）
-  workflow_dispatch:
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行，相当于日本时间上午 9:00
+  workflow_dispatch: # 允许手动触发工作流
 
 jobs:
   test-nodes:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        chunk: [[0, 4000], [4000, 8000]]  # 2 分片，基于实际节点数 ~8,000
+    runs-on: ubuntu-latest # 在 Ubuntu 最新版本上运行
+
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # 使用 actions/checkout@v4 检出仓库代码
 
       - name: 设置 Python 环境
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5 # 设置 Python 3.11 环境
         with:
           python-version: '3.11'
 
       - name: 安装 Python 依赖
-        run: |
+        run: | # 安装 pip 并安装 pyyaml 和 aiohttp
           python -m pip install --upgrade pip
           pip install pyyaml aiohttp
 
-      - name: 缓存测试结果
-        uses: actions/cache@v4
-        with:
-          path: data/test_cache.yaml
-          key: test-cache-${{ github.sha }}
-          restore-keys: |
-            test-cache-
-
       - name: 下载 Mihomo (Clash.Meta) 二进制文件
-        run: |
+        run: | # 创建 tools 目录并下载 Mihomo v1.19.10 版本
           mkdir -p tools
+          # 使用 v1.19.10 版本的 mihomo-linux-amd64.gz
           wget -O tools/clash.gz https://github.com/MetaCubeX/mihomo/releases/download/v1.19.10/mihomo-linux-amd64-v1.19.10.gz
-          gunzip tools/clash.gz
-          chmod +x tools/clash
-          ./tools/clash -v | grep "v1.19.10" || { echo "::error::Mihomo 版本不匹配，非 v1.19.10"; exit 1; }
-
-      - name: 验证 Clash 二进制文件
-        run: |
-          if [ ! -f tools/clash ]; then
-            echo "::error::Clash 二进制文件 tools/clash 不存在"
-            exit 1
-          fi
-          if [ ! -x tools/clash ]; then
-            echo "::error::Clash 二进制文件 tools/clash 不可执行"
-            exit 1
-          fi
-          ls -l tools/
+          gunzip tools/clash.gz # 解压
+          chmod +x tools/clash # 添加执行权限
+          # 提醒：您的 test_nodes.py 可能需要调整以兼容 mihomo 的行为，虽然大部分情况下是兼容的
 
       - name: 运行代理节点测试
-        run: |
+        run: | # 检查 test_nodes.py 是否存在，然后运行它
           if [ ! -f test_nodes.py ]; then
             echo "::error::未找到 test_nodes.py 脚本，退出。"
             exit 1
           fi
-          python test_nodes.py --start ${{ matrix.chunk[0] }} --end ${{ matrix.chunk[1] }}
-          if [ $? -ne 0 ]; then
-            echo "::error::test_nodes.py 执行失败"
-            exit 1
-          fi
-        env:
-          TEST_TIMEOUT: 1800  # 每分片 30 分钟超时
+          python test_nodes.py
 
-      - name: 上传测试结果到工件
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-chunk-${{ matrix.chunk[0] }}-${{ matrix.chunk[1] }}
-          path: |
-            data/521_*.yaml
-            data/invalid_nodes_*.yaml
-            test_nodes.log
-
-      - name: 合并结果并提交
-        if: matrix.chunk[0] == 0
-        run: |
+      - name: 提交测试结果
+        run: | # 配置 Git 用户信息，添加文件，拉取最新更改，然后提交并推送
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          python -c "
-          import yaml
-          import os
-          results = []
-          invalid_urls = []
-          for f in os.listdir('data'):
-              if f.startswith('521_') and f.endswith('.yaml'):
-                  with open(f'data/{f}', 'r', encoding='utf-8') as file:
-                      data = yaml.safe_load(file)
-                      if data and 'proxies' in data:
-                          results.extend(data['proxies'])
-              if f.startswith('invalid_nodes_') and f.endswith('.yaml'):
-                  with open(f'data/{f}', 'r', encoding='utf-8') as file:
-                      data = yaml.safe_load(file)
-                      if data and 'invalid_urls' in data:
-                          invalid_urls.extend(data['invalid_urls'])
-          with open('data/521.yaml', 'w', encoding='utf-8') as f:
-              yaml.safe_dump({'proxies': results}, f, allow_unicode=True)
-          with open('data/invalid_nodes.yaml', 'w', encoding='utf-8') as f:
-              yaml.safe_dump({'invalid_urls': invalid_urls}, f, allow_unicode=True)
-          "
           git add data/521.yaml data/invalid_nodes.yaml
+          # 在提交前先拉取最新更改并尝试 rebase，解决因远程有新提交而导致的推送失败
+          # 如果 git pull --rebase 失败（例如，存在无法自动解决的合并冲突），
+          # 这里的 '|| true' 会防止整个步骤失败，但请注意这可能掩盖深层问题。
+          # 对于自动化流程，通常期望 git pull 能自动处理。
           git pull --rebase origin main || true
-          git commit -m "Update proxy test results" || true
-          git push
+          git commit -m "Update proxy test results" || true # 提交更改，如果没有变更则不报错
+          git push # 推送更改
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.BOT }} # 使用名为 BOT 的 GitHub Secret 作为认证 token
