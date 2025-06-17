@@ -21,14 +21,17 @@ jobs:
         run: |
           # 安装 Python 依赖
           pip install requests
-          # 安装 Speedtest CLI (新版命令为 speedtest)
-          # 注意：官方推荐的安装方式，而不是通过 pip 或 apt
-          # 参见 https://www.speedtest.net/apps/cli
-          curl -s https://install.speedtest.net/app/cli/install.deb | sudo bash
           
-          # 安装 netcat (用于测试本地代理端口) 和 curl
+          # 安装 Speedtest CLI (新版命令为 speedtest)
+          # 这是官方推荐的通过 apt 仓库安装的方式
           sudo apt-get update
-          sudo apt-get install -y netcat-traditional curl
+          sudo apt-get install -y apt-transport-https curl gnupg2
+          curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
+          sudo apt-get update
+          sudo apt-get install -y speedtest
+          
+          # 安装 netcat (用于测试本地代理端口)
+          sudo apt-get install -y netcat-traditional
 
       - name: Run node test script
         run: python test_nodes.py
