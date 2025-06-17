@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史以避免推送冲突
 
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
@@ -34,12 +36,15 @@ jobs:
           gunzip tools/clash.gz
           chmod +x tools/clash
 
-      - name: 运行代理节点测试
+      - name: 检查 test_nodes.py
         run: |
           if [ ! -f test_nodes.py ]; then
             echo "::error::未找到 test_nodes.py 脚本，退出。"
             exit 1
           fi
+
+      - name: 运行代理节点测试
+        run: |
           python test_nodes.py --chunk ${{ matrix.chunk }} --total-chunks 4
 
       - name: 提交测试结果
@@ -47,9 +52,9 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add data/521_chunk_${{ matrix.chunk }}.yaml data/invalid_nodes_chunk_${{ matrix.chunk }}.yaml
-          git commit -m "Update proxy test results [chunk ${{ matrix.chunk }}]" || true
+          git commit -m "更新代理测试结果 [分片 ${{ matrix.chunk }}]" || true
           git fetch origin main
-          git rebase origin/main || (git rebase --abort && git reset --hard origin/main && git add data/521_chunk_${{ matrix.chunk }}.yaml data/invalid_nodes_chunk_${{ matrix.chunk }}.yaml && git commit -m "Update proxy test results [chunk ${{ matrix.chunk }}]" || true)
+          git rebase origin/main || (git rebase --abort && git reset --hard origin/main && git add data/521_chunk_${{ matrix.chunk }}.yaml data/invalid_nodes_chunk_${{ matrix.chunk }}.yaml && git commit -m "更新代理测试结果 [分片 ${{ matrix.chunk }}]" || true)
           git push --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
