@@ -9,7 +9,8 @@ on:
 
 jobs:
   test-nodes:
-    runs-on: ubuntu-latest
+    # 将 runs-on 从 ubuntu-latest 改为 ubuntu-22.04
+    runs-on: ubuntu-22.04 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,7 +24,7 @@ jobs:
           pip install requests
           
           # 安装 Speedtest CLI (新版命令为 speedtest)
-          # 这是官方推荐的通过 apt 仓库安装的方式
+          # 这是官方推荐的通过 apt 仓库安装的方式，适用于 Ubuntu 22.04
           sudo apt-get update
           sudo apt-get install -y apt-transport-https curl gnupg2
           curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
