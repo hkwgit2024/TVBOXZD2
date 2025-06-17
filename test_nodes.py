@@ -13,16 +13,18 @@ import json
 import re
 
 # --- YAML 相关配置 (保持不变) ---
+# 自定义 YAML 构造函数，处理 !<str> 标签
 def str_constructor(loader, node):
     return str(node.value)
 
+# 注册自定义构造函数
 SafeLoader.add_constructor('!str', str_constructor)
 
 # --- 节点解析函数 ---
 def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
     """
     解析节点URL，将其转换为Mihomo (Clash.Meta) 配置字典格式。
-    支持 ss, vless, vmess, trojan, hysteria2。
+    支持 ss, vless, vmess, trojan, hysteria2, ssr。
     这是一个简化示例，实际解析需要更复杂的逻辑来处理不同协议和参数。
     """
     node_url = node_url.strip()
@@ -80,8 +82,17 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
             if '@' not in uuid_host_port:
                 raise ValueError("VLESS URL 格式错误: 缺少 @ 分隔符")
             uuid, server_port_str = uuid_host_port.split('@', 1)
-            server, port_str = server_port_str.split(':', 1)
-            port = int(port_str)
+
+            # 修复 IPv6 地址解析，正确提取服务器和端口
+            if server_port_str.startswith('['): # IPv6 地址
+                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
+                if not match_ipv6:
+                    raise ValueError(f"VLESS IPv6 地址格式错误: {server_port_str}")
+                server = match_ipv6.group(1)
+                port = int(match_ipv6.group(2))
+            else: # IPv4 地址或域名
+                server, port_str = server_port_str.split(':', 1)
+                port = int(port_str)
 
             query_params = parse_qs(parsed_url.query)
             
@@ -154,8 +165,17 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
             if '@' not in password_host_port:
                  raise ValueError("Trojan URL 格式错误: 缺少 @ 分隔符")
             password, server_port_str = password_host_port.split('@', 1)
-            server, port_str = server_port_str.split(':', 1)
-            port = int(port_str)
+
+            # 修复 IPv6 地址解析，正确提取服务器和端口
+            if server_port_str.startswith('['): # IPv6 地址
+                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
+                if not match_ipv6:
+                    raise ValueError(f"Trojan IPv6 地址格式错误: {server_port_str}")
+                server = match_ipv6.group(1)
+                port = int(match_ipv6.group(2))
+            else: # IPv4 地址或域名
+                server, port_str = server_port_str.split(':', 1)
+                port = int(port_str)
 
             query_params = parse_qs(parsed_url.query)
 
@@ -182,8 +202,17 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
             if '@' not in password_host_port:
                 raise ValueError("Hysteria2 URL 格式错误: 缺少 @ 分隔符")
             password, server_port_str = password_host_port.split('@', 1)
-            server, port_str = server_port_str.split(':', 1)
-            port = int(port_str)
+
+            # 修复 IPv6 地址解析，正确提取服务器和端口
+            if server_port_str.startswith('['): # IPv6 地址
+                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
+                if not match_ipv6:
+                    raise ValueError(f"Hysteria2 IPv6 地址格式错误: {server_port_str}")
+                server = match_ipv6.group(1)
+                port = int(match_ipv6.group(2))
+            else: # IPv4 地址或域名
+                server, port_str = server_port_str.split(':', 1)
+                port = int(port_str)
 
             query_params = parse_qs(parsed_url.query)
 
@@ -196,8 +225,8 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
                 'udp': True,
                 'obfs': query_params.get('obfs', [None])[0],
                 'obfs-password': query_params.get('obfsParam', [None])[0],
-                'up': int(query_params.get('up', [0])[0]), # 上行带宽
-                'down': int(query_params.get('down', [0])[0]), # 下行带宽
+                'up': int(query_params.get('up', ['0'])[0]), # 上行带宽
+                'down': int(query_params.get('down', ['0'])[0]), # 下行带宽
                 'auth': password # Hysteria2 的 password 也是 auth
             }
             # Hysteria2 默认加密，通常有 TLS
@@ -208,6 +237,64 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
 
             return node_config
 
+        elif node_url.startswith("ssr://"):
+            # SSR 协议解析
+            try:
+                # SSR 链接是 ssr://base64_encoded_params
+                encoded_params = node_url[6:].split('#')[0]
+                # SSR 的 base64 编码通常是 URL safe base64，并且没有填充
+                decoded_params = base64.urlsafe_b64decode(encoded_params + '==').decode('utf-8')
+
+                # 格式: server:port:protocol:method:obfs:password_base64/?params
+                parts = decoded_params.split(':')
+                if len(parts) < 6:
+                    raise ValueError("SSR URL 基础格式错误")
+
+                server = parts[0]
+                port = int(parts[1])
+                protocol = parts[2]
+                method = parts[3]
+                obfs = parts[4]
+                
+                # password 是 base64 编码的
+                password_base64_part = parts[5]
+                # 检查 password_base64_part 是否包含 /
+                if '/' in password_base64_part:
+                    password_base64, query_string_with_fragment = password_base64_part.split('/', 1)
+                    # 处理 query string 和 fragment
+                    query_params = parse_qs(query_string_with_fragment.split('#')[0])
+                else:
+                    password_base64 = password_base64_part
+                    query_params = {}
+
+                password = unquote(base64.urlsafe_b64decode(password_base64 + '==').decode('utf-8'))
+
+                # Mihomo 的 SSR 配置
+                ssr_config = {
+                    'name': tag,
+                    'type': 'ssr',
+                    'server': server,
+                    'port': port,
+                    'cipher': method,
+                    'password': password,
+                    'protocol': protocol,
+                    'obfs': obfs,
+                    'udp': True
+                }
+
+                # 处理 obfsparam 和 protoparam
+                if 'obfsparam' in query_params:
+                    # obfsparam 通常也是 base64 编码的
+                    ssr_config['obfs-param'] = unquote(base64.urlsafe_b64decode(query_params['obfsparam'][0] + '==').decode('utf-8'))
+                if 'protoparam' in query_params:
+                    # protoparam 通常也是 base64 编码的
+                    ssr_config['protocol-param'] = unquote(base64.urlsafe_b64decode(query_params['protoparam'][0] + '==').decode('utf-8'))
+                
+                return ssr_config
+
+            except Exception as e:
+                print(f"SSR 解析失败 (URL: {node_url}): {e}")
+                return None
         else:
             print(f"警告: 未知或不支持的节点协议: {node_url}")
             return None
@@ -230,7 +317,8 @@ def validate_proxy(proxy: Dict, original_url: str, index: int) -> tuple[bool, st
         'vmess': [('uuid', str)],
         'vless': [('uuid', str)],
         'ss': [('cipher', str), ('password', str)],
-        'hysteria2': [('password', str), ('auth', str)] # Hysteria2 特有的 auth 字段
+        'hysteria2': [('password', str), ('auth', str)], # Hysteria2 特有的 auth 字段
+        'ssr': [('cipher', str), ('password', str), ('protocol', str), ('obfs', str)] # SSR 字段
     }
 
     # 检查必要字段
@@ -259,8 +347,6 @@ def validate_proxy(proxy: Dict, original_url: str, index: int) -> tuple[bool, st
 async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str, clash_port: int = 7890) -> Dict:
     """测试单个代理节点，返回结果"""
     proxy_name = proxy.get('name', 'unknown')
-    # Store the original URL for better error reporting in the final output
-    original_url = proxy.pop('original_url', 'N/A')
     print(f"测试代理节点: {proxy_name}")
 
     # 写入临时 Clash 配置文件
@@ -273,23 +359,25 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         'rules': ['MATCH,auto']
     }
     os.makedirs('temp', exist_ok=True)
-    config_path = f'temp/config_{proxy_name}.yaml'
+    # 清理文件名中的非法字符，避免路径问题
+    clean_proxy_name = re.sub(r'[^\w.-]', '_', proxy_name)[:100] # Limit length for filenames
+    config_path = f'temp/config_{clean_proxy_name}.yaml'
     try:
         with open(config_path, 'w') as f:
             yaml.dump(config, f, allow_unicode=True)
     except Exception as e:
-        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}", 'original_url': original_url}
+        return {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': f"写入配置失败: {str(e)}"}
 
     # 启动 Clash
     proc = subprocess.Popen([clash_bin, '-f', config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     await asyncio.sleep(2)  # 等待 Clash 启动
 
-    result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None, 'original_url': original_url}
+    result = {'name': proxy_name, 'status': '不可用', 'latency': None, 'error': None}
     try:
         start_time = time.time()
         # 测试 HTTP 代理
         async with session.get(
-            'http://www.google.com',
+            'http://www.google.com', # Use a reliable public endpoint
             proxy=f'http://127.0.0.1:{clash_port}',
             timeout=5
         ) as response:
@@ -300,7 +388,7 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
         try:
             # 回退测试 SOCKS5 代理（适用于 trojan, hysteria2 等）
             async with session.get(
-                'http://www.google.com',
+                'http://www.google.com', # Use a reliable public endpoint
                 proxy=f'socks5://127.0.0.1:{clash_port + 1}',
                 timeout=5
             ) as response:
@@ -320,35 +408,30 @@ async def test_proxy(proxy: Dict, session: aiohttp.ClientSession, clash_bin: str
 # --- 主函数 (主要修改部分) ---
 async def main():
     # 从 URL 下载节点列表
-    node_list_url = 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt'
+    nodes_url = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
     raw_node_urls = []
-    
-    print(f"正在从 {node_list_url} 下载节点列表...")
+
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.get(node_list_url, timeout=10) as response:
-                response.raise_for_status() # Raises an exception for HTTP errors (400 or 500)
-                content = await response.text()
+            print(f"尝试从 URL 下载节点列表: {nodes_url}")
+            async with session.get(nodes_url, timeout=10) as response:
+                response.raise_for_status() # Raises an HTTPError for bad responses (4xx or 5xx)
+                content = await response.text(encoding='utf-8')
                 for line in content.splitlines():
                     line = line.strip()
                     if line and not line.startswith('#'): # 忽略空行和以 # 开头的注释行
                         raw_node_urls.append(line)
-            print("节点列表下载成功。")
+            print(f"成功从 URL 下载 {len(raw_node_urls)} 条节点URL。")
         except aiohttp.ClientError as e:
-            print(f"错误: 从 {node_list_url} 下载节点列表失败: {e}")
-            sys.exit(1)
-        except asyncio.TimeoutError:
-            print(f"错误: 从 {node_list_url} 下载节点列表超时。")
+            print(f"错误: 从 URL 下载节点列表失败 ({nodes_url}): {e}")
             sys.exit(1)
         except Exception as e:
-            print(f"未知错误: 下载节点列表时发生: {e}")
+            print(f"发生未知错误: {e}")
             sys.exit(1)
 
     if not raw_node_urls:
         print("未从 URL 读取到任何节点URL。")
         sys.exit(0)
-
-    print(f"成功读取 {len(raw_node_urls)} 条节点URL。")
 
     # 解析并验证节点格式
     parsed_proxies = []
@@ -356,8 +439,8 @@ async def main():
     for i, url in enumerate(raw_node_urls):
         parsed_proxy = parse_node_url_to_mihomo_config(url)
         if parsed_proxy:
-            # Add original_url to the proxy dict for better error reporting later
-            parsed_proxy['original_url'] = url 
+            # 添加原始URL到代理字典，方便在测试结果中追踪
+            parsed_proxy['original_url'] = url
             is_valid, error = validate_proxy(parsed_proxy, url, i) # 传递原始URL以便调试
             if is_valid:
                 parsed_proxies.append(parsed_proxy)
@@ -381,21 +464,21 @@ async def main():
     os.makedirs('data', exist_ok=True)
     results_list = [] # 收集所有测试结果
     
-    # 配置 aiohttp 会话 (再次创建，因为前面下载时已经关闭了)
-    async with aiohttp.ClientSession() as session:
-        # 分批并发测试
-        batch_size = 50
-        for i in range(0, len(parsed_proxies), batch_size):
-            batch = parsed_proxies[i:i + batch_size]
-            tasks = [test_proxy(proxy, session, './tools/clash') for proxy in batch]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+    # 分批并发测试
+    batch_size = 50
+    for i in range(0, len(parsed_proxies), batch_size):
+        batch = parsed_proxies[i:i + batch_size]
+        tasks = [test_proxy(proxy, session, './tools/clash') for proxy in batch]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
-            for result in results:
-                if isinstance(result, dict):
-                    results_list.append(result)
-                    print(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''} (URL: {result.get('original_url', 'N/A')})")
-                else:
-                    print(f"测试过程中发生未知错误: {result}")
+        for result in results:
+            if isinstance(result, dict):
+                results_list.append(result)
+                # 打印原始URL以便追踪
+                original_url_in_result = result.get('original_url', 'N/A')
+                print(f"{result['name']}: {result['status']}{'，延迟: %.2fms' % result['latency'] if result['latency'] else ''} (原始URL: {original_url_in_result})")
+            else:
+                print(f"测试过程中发生未知错误: {result}")
 
     # 将所有测试结果写入 data/521.yaml
     final_successful_proxies = [res for res in results_list if res['status'] == '可用']
