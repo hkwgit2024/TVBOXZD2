@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        chunk: [[0, 8000], [8000, 16000], [16000, 24000], [24000, 32266]]  # 4 分片
+        chunk: [[0, 4000], [4000, 8000]]  # 2 分片，基于实际节点数 ~8,000
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
