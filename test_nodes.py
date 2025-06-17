@@ -12,7 +12,7 @@ import base64
 import json
 import re
 
-# --- YAML 相关配置 (保持不变) ---
+# --- YAML 相关配置 ---
 # 自定义 YAML 构造函数，处理 !<str> 标签
 def str_constructor(loader, node):
     return str(node.value)
@@ -109,80 +109,94 @@ def parse_node_url_to_mihomo_config(node_url: str) -> Dict | None:
             port = None
             if server_port_str.startswith('['): # Potential IPv6 address
                 # Look for the closing bracket and then the port
-                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)<span class="math-inline">', server\_port\_str\)
-if match\_ipv6\:
-server \= match\_ipv6\.group\(1\)
-port \= int\(match\_ipv6\.group\(2\)\)
-else\:
-raise ValueError\(f"VLESS IPv6 地址格式错误或不完整 \(期望 \[ipv6\]\:port\)\: \{server\_port\_str\}"\)
-else\: \# IPv4 address or domain
-if '\:' not in server\_port\_str\:
-raise ValueError\(f"VLESS IPv4/Domain 地址格式错误\: 缺少端口\: \{server\_port\_str\}"\)
-server, port\_str \= server\_port\_str\.split\('\:', 1\)
-port \= int\(port\_str\)
-node\_config \= \{
-'name'\: tag,
-'type'\: 'vless',
-'server'\: server,
-'port'\: port,
-'uuid'\: uuid,
-'network'\: query\_params\.get\('type', \['tcp'\]\)\[0\],
-'udp'\: True
-\}
-if 'security' in query\_params and query\_params\['security'\]\[0\] \=\= 'tls'\:
-node\_config\['tls'\] \= True
-node\_config\['servername'\] \= query\_params\.get\('sni', \[server\]\)\[0\]
-node\_config\['skip\-cert\-verify'\] \= query\_params\.get\('allowInsecure', \['0'\]\)\[0\] \=\= '1' or \\
-query\_params\.get\('skip\-cert\-verify', \['false'\]\)\[0\]\.lower\(\) \=\= 'true'
-node\_config\['fingerprint'\] \= query\_params\.get\('fp', \[None\]\)\[0\]
-if node\_config\['network'\] \=\= 'ws'\:
-node\_config\['ws\-path'\] \= query\_params\.get\('path', \['/'\]\)\[0\]
-node\_config\['ws\-headers'\] \= \{'Host'\: query\_params\.get\('host', \[server\]\)\[0\]\}
-elif node\_config\['network'\] \=\= 'grpc'\:
-node\_config\['grpc\-service\-name'\] \= query\_params\.get\('serviceName', \[''\]\)\[0\]
-node\_config\['grpc\-enable\-health\-check'\] \= query\_params\.get\('enableHealthCheck', \['false'\]\)\[0\]\.lower\(\) \=\= 'true'
-return node\_config
-elif scheme \=\= "vmess"\:
-\# VMess node is Base64 encoded JSON
-try\:
-\# Remove scheme and decode
-decoded\_str \= base64\.b64decode\(node\_url\_clean\[len\("vmess\://"\)\:\] \+ '\=\='\)\.decode\('utf\-8'\) \# \+ '\=\=' for padding
-vmess\_data \= json\.loads\(decoded\_str\)
-\# Map VMess fields to Mihomo format
-node\_config \= \{
-'name'\: vmess\_data\.get\('ps', tag\),
-'type'\: 'vmess',
-'server'\: vmess\_data\['add'\],
-'port'\: int\(vmess\_data\['port'\]\),
-'uuid'\: vmess\_data\['id'\],
-'alterId'\: int\(vmess\_data\.get\('aid', 0\)\),
-'cipher'\: vmess\_data\.get\('scy', 'auto'\), \# security
-'network'\: vmess\_data\.get\('net', 'tcp'\),
-'udp'\: True
-\}
-if vmess\_data\.get\('tls', ''\) \=\= 'tls'\:
-node\_config\['tls'\] \= True
-node\_config\['servername'\] \= vmess\_data\.get\('host', vmess\_data\['add'\]\)
-node\_config\['skip\-cert\-verify'\] \= vmess\_data\.get\('allowInsecure', '0'\) \=\= '1'
-node\_config\['fingerprint'\] \= vmess\_data\.get\('fp'\)
-if node\_config\['network'\] \=\= 'ws'\:
-node\_config\['ws\-path'\] \= vmess\_data\.get\('path', '/'\)
-node\_config\['ws\-headers'\] \= \{'Host'\: vmess\_data\.get\('host', vmess\_data\['add'\]\)\}
-elif node\_config\['network'\] \=\= 'grpc'\:
-node\_config\['grpc\-service\-name'\] \= vmess\_data\.get\('serviceName', ''\)
-return node\_config
-except Exception as e\:
-print\(f"VMess 解析失败 \(URL\: \{node\_url\}\)\: \{e\}"\)
-return None
-elif scheme \=\= "trojan"\:
-password\_host\_port \= netloc
-if '@' not in password\_host\_port\:
-raise ValueError\("Trojan URL 格式错误\: 缺少 @ 分隔符"\)
-password, server\_port\_str \= password\_host\_port\.split\('@', 1\)
-server \= None
-port \= None
-if server\_port\_str\.startswith\('\['\)\: \# Potential IPv6 address
-match\_ipv6 \= re\.match\(r'^\\\[\(\[0\-9a\-fA\-F\:\.\]\+\)\\\]\:\(\\d\+\)</span>', server_port_str)
+                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
+                if match_ipv6:
+                    server = match_ipv6.group(1)
+                    port = int(match_ipv6.group(2))
+                else:
+                    raise ValueError(f"VLESS IPv6 地址格式错误或不完整 (期望 [ipv6]:port): {server_port_str}")
+            else: # IPv4 address or domain
+                if ':' not in server_port_str:
+                    raise ValueError(f"VLESS IPv4/Domain 地址格式错误: 缺少端口: {server_port_str}")
+                server, port_str = server_port_str.split(':', 1)
+                port = int(port_str)
+
+            node_config = {
+                'name': tag,
+                'type': 'vless',
+                'server': server,
+                'port': port,
+                'uuid': uuid,
+                'network': query_params.get('type', ['tcp'])[0],
+                'udp': True
+            }
+
+            if 'security' in query_params and query_params['security'][0] == 'tls':
+                node_config['tls'] = True
+                node_config['servername'] = query_params.get('sni', [server])[0]
+                node_config['skip-cert-verify'] = query_params.get('allowInsecure', ['0'])[0] == '1' or \
+                                                  query_params.get('skip-cert-verify', ['false'])[0].lower() == 'true'
+                node_config['fingerprint'] = query_params.get('fp', [None])[0]
+
+            if node_config['network'] == 'ws':
+                node_config['ws-path'] = query_params.get('path', ['/'])[0]
+                node_config['ws-headers'] = {'Host': query_params.get('host', [server])[0]}
+            elif node_config['network'] == 'grpc':
+                node_config['grpc-service-name'] = query_params.get('serviceName', [''])[0]
+                node_config['grpc-enable-health-check'] = query_params.get('enableHealthCheck', ['false'])[0].lower() == 'true'
+
+            return node_config
+
+        elif scheme == "vmess":
+            # VMess node is Base64 encoded JSON
+            try:
+                # Remove scheme and decode
+                decoded_str = base64.b64decode(node_url_clean[len("vmess://"):] + '==').decode('utf-8') # + '==' for padding
+                vmess_data = json.loads(decoded_str)
+
+                # Map VMess fields to Mihomo format
+                node_config = {
+                    'name': vmess_data.get('ps', tag),
+                    'type': 'vmess',
+                    'server': vmess_data['add'],
+                    'port': int(vmess_data['port']),
+                    'uuid': vmess_data['id'],
+                    'alterId': int(vmess_data.get('aid', 0)),
+                    'cipher': vmess_data.get('scy', 'auto'), # security
+                    'network': vmess_data.get('net', 'tcp'),
+                    'udp': True
+                }
+
+                if vmess_data.get('tls', '') == 'tls':
+                    node_config['tls'] = True
+                    node_config['servername'] = vmess_data.get('host', vmess_data['add'])
+                    node_config['skip-cert-verify'] = vmess_data.get('allowInsecure', '0') == '1'
+                    node_config['fingerprint'] = vmess_data.get('fp')
+
+                if node_config['network'] == 'ws':
+                    node_config['ws-path'] = vmess_data.get('path', '/')
+                    node_config['ws-headers'] = {'Host': vmess_data.get('host', vmess_data['add'])}
+                elif node_config['network'] == 'grpc':
+                    node_config['grpc-service-name'] = vmess_data.get('serviceName', '')
+
+                return node_config
+
+            except Exception as e:
+                print(f"VMess 解析失败 (URL: {node_url}): {e}")
+                return None
+
+        elif scheme == "trojan":
+            password_host_port = netloc
+            
+            if '@' not in password_host_port:
+                 raise ValueError("Trojan URL 格式错误: 缺少 @ 分隔符")
+            
+            password, server_port_str = password_host_port.split('@', 1)
+
+            server = None
+            port = None
+            if server_port_str.startswith('['): # Potential IPv6 address
+                match_ipv6 = re.match(r'^\[([0-9a-fA-F:.]+)\]:(\d+)$', server_port_str)
                 if match_ipv6:
                     server = match_ipv6.group(1)
                     port = int(match_ipv6.group(2))
