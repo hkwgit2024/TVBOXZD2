@@ -498,11 +498,9 @@ def parse_hysteria1_link(link_str, index):
         if 'alpn' in query_params:
             proxy_config['alpn'] = query_params['alpn'][0].split(',')
 
-        # Hysteria1 specific bandwidth settings - Reverting to 'up' and 'down' as per Clash Meta v1.19.10 error log
-        if 'up' in query_params:
-            proxy_config['up'] = int(query_params['up'][0])
-        if 'down' in query_params:
-            proxy_config['down'] = int(query_params['down'][0])
+        # Hysteria1 specific bandwidth settings - Always include 'up' and 'down' with defaults if not present
+        proxy_config['up'] = int(query_params['up'][0]) if 'up' in query_params else 100 # Default to 100 Mbps
+        proxy_config['down'] = int(query_params['down'][0]) if 'down' in query_params else 100 # Default to 100 Mbps
 
         if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
             proxy_config['skip-cert-verify'] = True
@@ -609,6 +607,13 @@ def generate_clash_config(node_links, output_path):
     if not proxies:
         print("No valid proxies generated from node links. Aborting config generation.")
         return False
+    
+    # --- Debugging specific proxy 11 if it exists ---
+    if len(proxies) >= 11:
+        print(f"\n[DEBUG] Configuration for proxy 11 (index 10):")
+        print(json.dumps(proxies[10], indent=2, ensure_ascii=False))
+        print("-" * 30)
+    # --- End Debugging ---
 
     # Define the structure of the Clash configuration
     clash_config = {
