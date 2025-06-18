@@ -21,7 +21,7 @@ GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
-        "url": "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
+        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
         "type": "plain", # 当前的纯文本URL列表
     },
     # 示例：如果您有一个YAML格式的代理配置URL，可以这样添加
