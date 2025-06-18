@@ -1,18 +1,23 @@
 name: Test Nodes
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
   test-nodes:
     runs-on: ubuntu-24.04
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          repository: qjlxg/vt
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
@@ -24,15 +29,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Cache sing-box
+      - name: Cache sing-box Binary
+        id: cache-sing-box
         uses: actions/cache@v4
         with:
           path: clash_bin
-          key: Linux-sing-box-${{ runner.os }}-v1.9.7
-          restore-keys: Linux-sing-box-${{ runner.os }}-
+          key: Linux-sing-box-Linux-v1.9.7
+          restore-keys: Linux-sing-box-Linux-
 
       - name: Download sing-box
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-sing-box.outputs.cache-hit != 'true'
         run: |
           wget https://github.com/SagerNet/sing-box/releases/download/v1.9.7/sing-box-1.9.7-linux-amd64.tar.gz
           tar -xzf sing-box-1.9.7-linux-amd64.tar.gz
@@ -42,14 +48,14 @@ jobs:
 
       - name: Run Speed Tester
         env:
-          SINGBOX_LOG_PATH: sing-box.log
+          SINGBOX_LOG_PATH: data/sing-box.log
         run: |
           mkdir -p data
           python speed_tester.py || true
 
       - name: Display sing-box Debug Log
-        if: always()
-        run: cat sing-box.log || echo "No debug log available."
+        run: |
+          cat data/sing-box.log || echo "No debug log available."
 
       - name: Upload sing-box Config
         uses: actions/upload-artifact@v4
@@ -62,12 +68,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sing-box-debug-log
-          path: sing-box.log
+          path: data/sing-box.log
           if-no-files-found: ignore
 
-      - name: Commit Results
+      - name: Commit and Push Results
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}
         run: |
           git config user.name "GitHub Actions"
           git config user.email "github-actions[bot]@users.noreply.github.com"
