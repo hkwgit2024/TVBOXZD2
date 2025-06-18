@@ -124,9 +124,6 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
             shutil.move(extracted_name, clash_exec_path)
             print(f"[DEBUG] Moved successfully.")
 
-        print(f"[DEBUG] Removing temporary archive/file: {temp_archive_path}")
-        os.remove(temp_archive_path)
-
         print(f"[DEBUG] Setting executable permission for: {clash_exec_path}")
         subprocess.run(["chmod", "+x", clash_exec_path], check=True)
         print(f"[DEBUG] Executable now ready at: {clash_exec_path}")
@@ -501,11 +498,11 @@ def parse_hysteria1_link(link_str, index):
         if 'alpn' in query_params:
             proxy_config['alpn'] = query_params['alpn'][0].split(',')
 
-        # Hysteria1 specific bandwidth settings
+        # Hysteria1 specific bandwidth settings - Reverting to 'up' and 'down' as per Clash Meta v1.19.10 error log
         if 'up' in query_params:
-            proxy_config['uplink_bandwidth'] = int(query_params['up'][0]) # Changed to uplink_bandwidth
+            proxy_config['up'] = int(query_params['up'][0])
         if 'down' in query_params:
-            proxy_config['downlink_bandwidth'] = int(query_params['down'][0]) # Changed to downlink_bandwidth
+            proxy_config['down'] = int(query_params['down'][0])
 
         if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
             proxy_config['skip-cert-verify'] = True
