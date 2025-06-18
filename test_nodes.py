@@ -258,4 +258,4 @@ def test_connectivity(sing_box_bin, config_file):
         )
         time.sleep(2)
         sock_test = subprocess.run(
-            ["nc", "-zv", "127.0.0.1", "1080", "-w
+            ["nc", "-zv", "127.0.0.1", "1080", "-w]
