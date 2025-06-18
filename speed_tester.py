@@ -370,10 +370,11 @@ def fetch_and_parse_nodes():
             is_yaml_content = False
             yaml_data_from_content = None
             if node_format == "clash-yaml" or node_format == "auto":
-                # --- 新增：尝试清理 YAML 中的非标准标签 ---
-                # 这是一个临时性的清理，旨在处理 pyyaml 无法识别的 !<str> 标签
-                # 移除 !<tag> 和其后的空白字符，只保留值
-                cleaned_yaml_content = re.sub(r'![a-zA-Z0-9_]+\s*', '', processed_content)
+                # --- 改进：更精确地清理 YAML 中的非标准标签 ---
+                # 目标是移除 `!<tag_name>`，无论其后面是否有空格或值
+                # 示例: `!<str> 123` -> ` 123` ; `!<str>123` -> `123`
+                # 这个正则表达式 `!\S+` 会匹配 `!` 后面的所有非空白字符，直到遇到空格或行尾
+                cleaned_yaml_content = re.sub(r'!\S+', '', processed_content)
                 # ----------------------------------------
                 try:
                     # 尝试加载清理后的内容
