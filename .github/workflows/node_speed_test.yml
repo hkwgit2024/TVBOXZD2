@@ -2,7 +2,7 @@ name: Proxy Tester Workflow
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 运行
+    - cron: '0 3 * * *' # 每天 UTC 时间 00:00 运行
   workflow_dispatch: # 允许手动触发
 
 jobs:
@@ -69,9 +69,11 @@ jobs:
           git config --global user.email "action@github.com"
           git add data/collectSub.txt
           git commit -m "Update proxy test results" || echo "No changes to commit"
+          # 在推送之前先拉取远程更改
+          git pull --rebase origin main || { echo "Failed to pull changes, attempting to push anyway (may fail)"; }
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}
 
       # 清理
       - name: Clean up
