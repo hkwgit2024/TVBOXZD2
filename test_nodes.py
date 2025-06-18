@@ -16,6 +16,7 @@ import socket
 import sys
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from urllib3 import poolmanager # 导入 poolmanager
 import psutil
 
 # 确保日志实时输出
@@ -268,12 +269,9 @@ def generate_sing_box_config(node, temp_config_file, log_file_path):
 
 # 自定义 HTTPAdapter，强制 IPv4
 class SocksIPv4Adapter(HTTPAdapter):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def init_poolmanager(self, connections, max_runs, block=False):
         # 覆盖此方法以设置 socket_options
-        self.poolmanager = self.PoolManager(
+        self.poolmanager = poolmanager.PoolManager( # 使用导入的 poolmanager.PoolManager
             num_pools=connections,
             maxsize=max_runs,
             block=block,
