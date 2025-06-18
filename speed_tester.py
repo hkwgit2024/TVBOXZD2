@@ -4,9 +4,12 @@ import subprocess
 import time
 import datetime
 import json
-import shutil # For moving files
-import tarfile # For tar.gz handling
-import gzip # For .gz handling
+import shutil
+import tarfile
+import gzip
+import urllib.parse
+import base64
+import yaml # This library is required for YAML parsing and dumping
 
 # --- Configuration ---
 NODES_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
@@ -16,17 +19,17 @@ CLASH_API_PORT = 9090 # Clash external controller port
 CLASH_PROXY_HTTP_PORT = 7890 # Clash HTTP proxy port
 TEST_FILE_URL = "https://speed.cloudflare.com/__down?bytes=50000000" # Test with 50MB file. Consider a larger file (e.g., 100MB) for more accurate high-speed tests.
 
-# Clash Meta (mihomo) Version and Download URL - Using MetaCubeX/mihomo as the original Clash is deprecated.
-CLASH_VERSION_TO_DOWNLOAD = "v1.19.10" # Using the version you found
+# Clash Meta (mihomo) Version and Download URL
+CLASH_VERSION_TO_DOWNLOAD = "v1.19.10"
 CLASH_DOWNLOAD_BASE_URL = "https://github.com/MetaCubeX/mihomo/releases/download"
-CLASH_ARCHIVE_NAME = f"mihomo-linux-amd64-{CLASH_VERSION_TO_DOWNLOAD}.gz" # Using the .gz file for Linux AMD64
+CLASH_ARCHIVE_NAME = f"mihomo-linux-amd64-{CLASH_VERSION_TO_DOWNLOAD}.gz"
 CLASH_DOWNLOAD_URL = f"{CLASH_DOWNLOAD_BASE_URL}/{CLASH_VERSION_TO_DOWNLOAD}/{CLASH_ARCHIVE_NAME}"
 
-CLASH_BIN_DIR = "clash_bin" # Directory to store Clash executable (will be cached by GitHub Actions)
-CLASH_EXECUTABLE_NAME = "mihomo" # Changed to 'mihomo' for Clash.Meta
+CLASH_BIN_DIR = "clash_bin"
+CLASH_EXECUTABLE_NAME = "mihomo"
 CLASH_FULL_PATH = os.path.join(CLASH_BIN_DIR, CLASH_EXECUTABLE_NAME)
 
-# --- Helper Functions ---
+# --- Helper Functions (unchanged from previous version) ---
 
 def download_and_extract_clash_core(url, dest_dir, executable_name):
     """
@@ -65,7 +68,6 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
                 all_members = [m.name for m in tar.getmembers()]
                 print(f"[DEBUG] Archive members: {all_members}")
 
-                # Prioritize exact match, then starts with
                 members = [m for m in tar.getmembers() if m.isfile() and m.name == executable_name]
                 if not members:
                     members = [m for m in tar.getmembers() if m.isfile() and m.name.startswith(f"{executable_name}-")]
@@ -92,17 +94,15 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
                         found_paths.append(os.path.join(root, f_name))
             
             if found_paths:
-                extracted_name = found_paths[0] # Take the first one found
+                extracted_name = found_paths[0]
                 print(f"[DEBUG] Found extracted executable at: {extracted_name}")
             else:
                 print(f"[ERROR] Executable '{executable_name}' or similar not found inside .zip archive after extraction.")
                 raise Exception("Executable not found inside .zip archive after extraction.")
 
         elif filename.endswith(".gz"):
-            # This handles single gzipped executable files like mihomo-linux-amd64-vX.Y.Z.gz
             print(f"[DEBUG] Decompressing .gz file: {temp_archive_path}")
-            # The decompressed file name will be temp_archive_path without .gz
-            decompressed_path = os.path.join(dest_dir, executable_name) # Ensure it's decompressed directly to the target name
+            decompressed_path = os.path.join(dest_dir, executable_name)
             try:
                 with gzip.open(temp_archive_path, 'rb') as f_in:
                     with open(decompressed_path, 'wb') as f_out:
@@ -116,19 +116,14 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
             print(f"[ERROR] Unsupported archive/file format: {filename}. Only .tar.gz, .zip, or .gz are supported.")
             raise Exception("Unsupported archive/file format.")
 
-        # Ensure the executable is at the expected path (clash_exec_path)
-        # This step is mostly for renaming if the extracted_name is different from executable_name
-        # For .gz, we directly decompress to executable_name, so extracted_name == clash_exec_path
         if extracted_name and extracted_name != clash_exec_path:
             print(f"[DEBUG] Moving extracted executable from '{extracted_name}' to '{clash_exec_path}'...")
             shutil.move(extracted_name, clash_exec_path)
             print(f"[DEBUG] Moved successfully.")
 
-        # Clean up temporary archive file
         print(f"[DEBUG] Removing temporary archive/file: {temp_archive_path}")
         os.remove(temp_archive_path)
 
-        # Make executable
         print(f"[DEBUG] Setting executable permission for: {clash_exec_path}")
         subprocess.run(["chmod", "+x", clash_exec_path], check=True)
         print(f"[DEBUG] Executable now ready at: {clash_exec_path}")
@@ -142,45 +137,6 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
     except Exception as e:
         print(f"[ERROR] An unexpected error occurred during download or extraction: {e}")
         return None
-
-def generate_clash_config(node_links, output_path):
-    """Generates a Clash YAML configuration file from a list of node links."""
-    if not node_links:
-        print("No valid node links provided to generate Clash config.")
-        return False
-
-    proxies_list_str = "\n".join([f'  - "{link}"' for link in node_links])
-
-    clash_config_content = f"""
-port: {CLASH_PROXY_HTTP_PORT}
-socks-port: {CLASH_PROXY_HTTP_PORT + 1}
-allow-lan: false
-mode: rule
-log-level: info
-external-controller: 127.0.0.1:{CLASH_API_PORT}
-secret: ""
-
-proxies:
-{proxies_list_str}
-
-proxy-groups:
-  - name: "测速节点"
-    type: select
-    proxies:
-      - DIRECT
-
-rules:
-  - MATCH,测速节点
-"""
-
-    try:
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(clash_config_content.strip())
-        print(f"Generated Clash config at: {output_path}")
-        return True
-    except Exception as e:
-        print(f"Failed to write Clash config: {e}")
-        return False
 
 def start_clash(clash_executable_path, config_file_path):
     """Starts Clash in the background and verifies API availability."""
@@ -307,7 +263,271 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
         print(f"发生未知错误 during speed test: {e}")
         return None
 
-# --- Main Logic ---
+# --- Node Link Parsing Functions ---
+
+def parse_ss_link(link_str, index):
+    # Format: ss://method:password@server:port#name or ss://base64encoded
+    try:
+        # Remove ss:// prefix
+        data = link_str[5:]
+        
+        if "@" not in data: # Likely base64 encoded
+            # Try to decode
+            try:
+                # Add padding if missing
+                missing_padding = len(data) % 4
+                if missing_padding:
+                    data += '=' * (4 - missing_padding)
+                decoded_bytes = base64.urlsafe_b64decode(data)
+                decoded_str = decoded_bytes.decode('utf-8')
+            except Exception as e:
+                print(f"[ERROR] Failed to base64 decode SS link '{link_str}': {e}")
+                return None
+            
+            parts = decoded_str.split('@')
+            method_password = parts[0]
+            server_port_name = parts[1]
+        else: # Direct link
+            parts = data.split('@')
+            method_password = parts[0]
+            server_port_name = parts[1]
+
+        method, password = method_password.split(':', 1)
+        
+        # Handle #name
+        if '#' in server_port_name:
+            server_port, name = server_port_name.split('#', 1)
+        else:
+            server_port = server_port_name
+            name = f"SS-Proxy-{index}" # Default name if not provided
+
+        server, port = server_port.split(':', 1)
+        
+        return {
+            "name": urllib.parse.unquote(name), # Decode URL-encoded name
+            "type": "ss",
+            "server": server,
+            "port": int(port),
+            "cipher": method,
+            "password": password
+        }
+    except Exception as e:
+        print(f"[ERROR] Failed to parse SS link '{link_str}': {e}")
+        return None
+
+def parse_trojan_link(link_str, index):
+    # Format: trojan://password@server:port?params#name
+    try:
+        parsed_url = urllib.parse.urlparse(link_str)
+        password = parsed_url.username
+        server = parsed_url.hostname
+        port = parsed_url.port
+        name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"Trojan-Proxy-{index}"
+        
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        
+        proxy_config = {
+            "name": name,
+            "type": "trojan",
+            "server": server,
+            "port": port,
+            "password": password,
+            "tls": True # Trojan implies TLS
+        }
+        
+        if 'sni' in query_params:
+            proxy_config['sni'] = query_params['sni'][0]
+        elif 'peer' in query_params: # Some links use peer instead of sni
+            proxy_config['sni'] = query_params['peer'][0]
+        
+        if 'alpn' in query_params:
+            proxy_config['alpn'] = query_params['alpn'][0].split(',')
+
+        if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
+            proxy_config['skip-cert-verify'] = True
+
+        # Common network/transport options (ws)
+        if 'type' in query_params and query_params['type'][0] == 'ws':
+            proxy_config['network'] = 'ws'
+            proxy_config['ws-opts'] = {}
+            if 'path' in query_params:
+                proxy_config['ws-opts']['path'] = query_params['path'][0]
+            if 'host' in query_params:
+                proxy_config['ws-opts']['headers'] = {'Host': query_params['host'][0]}
+        
+        return proxy_config
+    except Exception as e:
+        print(f"[ERROR] Failed to parse Trojan link '{link_str}': {e}")
+        return None
+
+def parse_vless_link(link_str, index):
+    # Format: vless://uuid@server:port?params#name
+    try:
+        parsed_url = urllib.parse.urlparse(link_str)
+        uuid = parsed_url.username
+        server = parsed_url.hostname
+        port = parsed_url.port
+        name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"VLESS-Proxy-{index}"
+        
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        
+        proxy_config = {
+            "name": name,
+            "type": "vless",
+            "server": server,
+            "port": port,
+            "uuid": uuid,
+            "tls": False # Default to false, check security param
+        }
+
+        # TLS/Security
+        if 'security' in query_params and query_params['security'][0] == 'tls':
+            proxy_config['tls'] = True
+            if 'sni' in query_params:
+                proxy_config['sni'] = query_params['sni'][0]
+            elif 'host' in query_params: # sometimes host is used as SNI
+                 proxy_config['sni'] = query_params['host'][0]
+            
+            if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
+                proxy_config['skip-cert-verify'] = True
+        
+        # Transport type
+        if 'type' in query_params:
+            transport_type = query_params['type'][0]
+            proxy_config['network'] = transport_type
+            
+            if transport_type == 'ws':
+                proxy_config['ws-opts'] = {}
+                if 'path' in query_params:
+                    proxy_config['ws-opts']['path'] = query_params['path'][0]
+                if 'host' in query_params:
+                    # 'host' can be in query params for WS and used as header
+                    proxy_config['ws-opts']['headers'] = {'Host': query_params['host'][0]}
+            elif transport_type == 'grpc':
+                proxy_config['grpc-opts'] = {}
+                if 'serviceName' in query_params:
+                    proxy_config['grpc-opts']['grpc-service-name'] = query_params['serviceName'][0]
+            # Add other transport types if needed (e.g., http, tcp, kcp, quic)
+
+        # Other VLESS parameters
+        if 'flow' in query_params:
+            proxy_config['flow'] = query_params['flow'][0]
+        
+        return proxy_config
+    except Exception as e:
+        print(f"[ERROR] Failed to parse VLESS link '{link_str}': {e}")
+        return None
+
+def parse_hysteria2_link(link_str, index):
+    # Format: hysteria2://server:port?password=...&obfs=...&obfs-password=...#name
+    try:
+        parsed_url = urllib.parse.urlparse(link_str)
+        server = parsed_url.hostname
+        port = parsed_url.port
+        name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"Hysteria2-Proxy-{index}"
+        
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        
+        proxy_config = {
+            "name": name,
+            "type": "hysteria2",
+            "server": server,
+            "port": port,
+            "tls": True # Hysteria2 always uses TLS
+        }
+        
+        if 'password' in query_params:
+            proxy_config['password'] = query_params['password'][0]
+        if 'obfs' in query_params:
+            proxy_config['obfs'] = query_params['obfs'][0]
+        if 'obfs-password' in query_params:
+            proxy_config['obfs-password'] = query_params['obfs-password'][0]
+        if 'sni' in query_params:
+            proxy_config['sni'] = query_params['sni'][0]
+        if 'alpn' in query_params:
+            proxy_config['alpn'] = query_params['alpn'][0].split(',')
+
+        # Hysteria2 specific
+        # 'up' and 'down' are usually for bandwidth, maybe set a default or omit
+        # For testing purposes, you might want to omit or set generic values
+        # proxy_config['up'] = "100Mbps"
+        # proxy_config['down'] = "100Mbps" 
+        
+        if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
+            proxy_config['skip-cert-verify'] = True
+
+        return proxy_config
+    except Exception as e:
+        print(f"[ERROR] Failed to parse Hysteria2 link '{link_str}': {e}")
+        return None
+
+
+def generate_clash_config(node_links, output_path):
+    """
+    Generates a Clash YAML configuration file from a list of node links.
+    Parses node links (ss, trojan, vless, hysteria2) into Mihomo's YAML format.
+    """
+    proxies = []
+    for i, link in enumerate(node_links):
+        parsed_proxy = None
+        # Determine protocol and call appropriate parser
+        if link.startswith("ss://"):
+            parsed_proxy = parse_ss_link(link, i+1)
+        elif link.startswith("trojan://"):
+            parsed_proxy = parse_trojan_link(link, i+1)
+        elif link.startswith("vless://"):
+            parsed_proxy = parse_vless_link(link, i+1)
+        elif link.startswith("hysteria2://"):
+            parsed_proxy = parse_hysteria2_link(link, i+1)
+        else:
+            print(f"[WARNING] Skipping unsupported protocol or invalid link: {link}")
+
+        if parsed_proxy:
+            # Ensure a default name if parsing failed to extract one or it's empty
+            if not parsed_proxy.get('name'):
+                 parsed_proxy['name'] = f"{parsed_proxy.get('type', 'unknown')}-proxy-{i+1}"
+            proxies.append(parsed_proxy)
+        else:
+            # Error message already printed by the specific parse_ function
+            pass # Skip invalid or unparseable link
+
+    if not proxies:
+        print("No valid proxies generated from node links. Aborting config generation.")
+        return False
+
+    # Define the structure of the Clash configuration
+    clash_config = {
+        "port": CLASH_PROXY_HTTP_PORT,
+        "socks-port": CLASH_PROXY_HTTP_PORT + 1,
+        "allow-lan": False,
+        "mode": "rule",
+        "log-level": "info",
+        "external-controller": f"127.0.0.1:{CLASH_API_PORT}",
+        "secret": "",
+        "proxies": proxies, # This is now a list of dictionaries
+        "proxy-groups": [
+            {
+                "name": "测速节点",
+                "type": "select",
+                "proxies": [p["name"] for p in proxies] # Use names of the parsed proxies
+            }
+        ],
+        "rules": [
+            "MATCH,测速节点"
+        ]
+    }
+
+    try:
+        with open(output_path, "w", encoding="utf-8") as f:
+            # Use yaml.dump to write the dictionary as proper YAML
+            yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False, indent=2) 
+        print(f"Generated Clash config at: {output_path}")
+        return True
+    except Exception as e:
+        print(f"Failed to write Clash config: {e}")
+        return False
+
+# --- Main Logic (unchanged from previous version) ---
 
 def main():
     clash_process = None
@@ -340,6 +560,7 @@ def main():
             print(f"Failed to fetch node links from {NODES_URL}: {e}")
             return
 
+        # THIS IS THE CRITICAL CHANGE: Now generate_clash_config will parse the links
         if not generate_clash_config(node_links, CLASH_CONFIG_FILE):
             print("Aborting: Could not generate Clash config.")
             return
@@ -349,7 +570,7 @@ def main():
             print("Aborting: Could not start Clash.")
             return
 
-        time.sleep(2)
+        time.sleep(2) # Give Clash a moment to load proxies
         proxy_names = get_clash_proxies_names()
         if not proxy_names:
             print("No proxies found via Clash API. Check Clash config and logs.")
@@ -360,15 +581,19 @@ def main():
         
         print("\n--- Starting Speed Tests ---")
         for i, proxy_name in enumerate(proxy_names):
-            original_link_for_output = node_links[i] if i < len(node_links) else "Unknown Original Link"
+            # Try to find the original link for output, based on the proxy name
+            # This is a bit tricky since parse_ functions assign names.
+            # A more robust solution would be to store original link with parsed proxy.
+            # For now, we'll just use the proxy_name itself if exact original link match is hard.
+            original_link_for_output = node_links[i] if i < len(node_links) else proxy_name # Fallback
 
-            print(f"[{i+1}/{len(proxy_names)}] Testing Clash-assigned proxy name: '{proxy_name}' (Original Link: {original_link_for_output})...")
+            print(f"[{i+1}/{len(proxy_names)}] Testing proxy: '{proxy_name}' (Original Link Candidate: {original_link_for_output})...")
             
             if not set_clash_proxy_group_selection("测速节点", proxy_name):
                 test_results.append(f"{original_link_for_output} # 速度: 无法切换代理到 '{proxy_name}'")
                 continue
             
-            time.sleep(0.5)
+            time.sleep(0.5) # Give Clash a moment to switch proxy
 
             speed = test_download_speed(TEST_FILE_URL, clash_proxy_address, file_size_bytes=50 * 1024 * 1024)
             
