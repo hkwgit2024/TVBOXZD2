@@ -46,6 +46,35 @@ def is_valid_ipv6(addr):
 
 def get_proxies():
     """从节点源获取代理列表"""
+    all_proxies = []
+    for source in NODES_SOURCES:
+        url = source["url"]
+        source_type = source["type"]
+        logging.info(f"Fetching proxies from {url} (type: {source_type})...")
+        try:
+            response = requests.get(url, timeout=TIMEOUT_SECONDS)
+            response.raise_for_status() # 检查HTTP请求是否成功
+
+            content = response.text
+            if source_type == "base64": # 如果有Base64编码的订阅
+                try:
+                    content = base64.b64decode(content).decode('utf-8')
+                except Exception as e:
+                    logging.error(f"Failed to decode Base64 content from {url}: {e}")
+                    continue
+
+            # 按行分割代理链接，并过滤空行
+            lines = [line.strip() for line in content.splitlines() if line.strip()]
+            all_proxies.extend(lines)
+            logging.info(f"Successfully fetched {len(lines)} proxies from {url}.")
+
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Failed to fetch proxies from {url}: {e}")
+        except Exception as e:
+            logging.error(f"An unexpected error occurred while processing {url}: {e}")
+
+    # 限制代理数量以避免过多的测试
+    return all_proxies[:MAX_PROXIES]
 
 
 def decode_proxy(proxy_url):
@@ -79,23 +108,45 @@ def decode_proxy(proxy_url):
                 logging.error(f"Invalid Trojan URL format, missing '@': {proxy_url}")
                 return None
             password, addr = parsed.netloc.split("@", 1)
-            hostname = addr.split(":")[0] if ":" in addr else addr
-            if hostname.startswith("[") and not is_valid_ipv6(hostname):
-                logging.error(f"Invalid IPv6 address in Trojan URL: {proxy_url}")
-                return None
+            # 修正 IPv6 地址解析逻辑
+            hostname_port = addr.split("?", 1)[0] # 分离出 hostname:port 部分
+            if hostname_port.startswith("[") and "]" in hostname_port:
+                # 这是一个 IPv6 地址，提取地址和端口
+                match = re.match(r'^\[([0-9a-fA-F:]+)\](?::(\d+))?$', hostname_port)
+                if not match:
+                    logging.error(f"Invalid IPv6 address format in Trojan URL: {proxy_url}")
+                    return None
+                hostname = match.group(1)
+                port = int(match.group(2)) if match.group(2) else 443
+                if not is_valid_ipv6(hostname): # 再次验证 IPv6
+                    logging.error(f"Decoded IPv6 is not valid in Trojan URL: {proxy_url}")
+                    return None
+                hostname = f"[{hostname}]" # 重新添加方括号以匹配 sing-box 期望
+            else:
+                # 可能是 IPv4 或域名
+                parts = hostname_port.split(":")
+                hostname = parts[0]
+                port = int(parts[1]) if len(parts) > 1 else 443
+
             query = urllib.parse.parse_qs(parsed.query)
-            port = parsed.port or 443
             return {
                 "type": "trojan",
-                "tag": query.get("name", ["trojan-node"])[0] or "trojan-node",
+                "tag": urllib.parse.unquote(query.get("name", ["trojan-node"])[0]) or "trojan-node", # 解码tag中的URL编码字符
                 "server": hostname,
                 "server_port": int(port),
                 "password": password,
                 "tls": {
                     "enabled": True,
-                    "server_name": query.get("sni", [""])[0] or hostname,
+                    "server_name": query.get("sni", [""])[0] or hostname.strip("[]"), # SNI不应该包含方括号
                     "insecure": query.get("allowInsecure", ["0"])[0] == "1",
                 },
+                "transport": { # 针对Trojan WS 添加 transport
+                    "type": query.get("type", [""])[0],
+                    "path": query.get("path", [""])[0],
+                    "headers": {
+                        "Host": query.get("host", [""])[0]
+                    }
+                } if query.get("type", [""])[0] == "ws" else None # 只有当type是ws时才添加transport
             }
 
         elif scheme == "ss":
@@ -109,7 +160,7 @@ def decode_proxy(proxy_url):
                 hostname, port = parsed.path.lstrip("/").split(":")
             return {
                 "type": "shadowsocks",
-                "tag": parsed.fragment or "ss-node",
+                "tag": urllib.parse.unquote(parsed.fragment) or "ss-node", # 解码tag中的URL编码字符
                 "server": hostname,
                 "server_port": int(port),
                 "method": method,
@@ -121,23 +172,35 @@ def decode_proxy(proxy_url):
                 logging.error(f"Invalid Hysteria2 URL format, missing '@': {proxy_url}")
                 return None
             password, addr = parsed.netloc.split("@", 1)
-            hostname = addr.split(":")[0] if ":" in addr else addr
-            if hostname.startswith("[") and not is_valid_ipv6(hostname):
-                logging.error(f"Invalid IPv6 address in Hysteria2 URL: {proxy_url}")
-                return None
+            hostname_port = addr.split("?", 1)[0]
+            if hostname_port.startswith("[") and "]" in hostname_port:
+                match = re.match(r'^\[([0-9a-fA-F:]+)\](?::(\d+))?$', hostname_port)
+                if not match:
+                    logging.error(f"Invalid IPv6 address format in Hysteria2 URL: {proxy_url}")
+                    return None
+                hostname = match.group(1)
+                port = int(match.group(2)) if match.group(2) else 443
+                if not is_valid_ipv6(hostname):
+                    logging.error(f"Decoded IPv6 is not valid in Hysteria2 URL: {proxy_url}")
+                    return None
+                hostname = f"[{hostname}]"
+            else:
+                parts = hostname_port.split(":")
+                hostname = parts[0]
+                port = int(parts[1]) if len(parts) > 1 else 443
+
             query = urllib.parse.parse_qs(parsed.query)
-            port = parsed.port or 443
             obfs = query.get("obfs", [""])[0]
             obfs_password = query.get("obfs-password", [""])[0]
             config = {
                 "type": "hysteria2",
-                "tag": query.get("name", ["hy2-node"])[0] or "hy2-node",
+                "tag": urllib.parse.unquote(query.get("name", ["hy2-node"])[0]) or "hy2-node", # 解码tag中的URL编码字符
                 "server": hostname,
                 "server_port": int(port),
                 "password": password,
                 "tls": {
                     "enabled": True,
-                    "server_name": query.get("sni", [""])[0] or hostname,
+                    "server_name": query.get("sni", [""])[0] or hostname.strip("[]"),
                     "insecure": query.get("insecure", ["0"])[0] == "1",
                 },
             }
@@ -158,6 +221,10 @@ def decode_proxy(proxy_url):
 
 def generate_singbox_config(proxy):
     """生成 sing-box 配置文件"""
+    # 移除可能存在的 transport 为 None 的情况，否则会写入 null
+    if "transport" in proxy and proxy["transport"] is None:
+        del proxy["transport"]
+
     config = {
         "log": {
             "level": "debug",
@@ -181,7 +248,7 @@ def generate_singbox_config(proxy):
         "route": {
             "geoip": {
                 "path": GEOIP_DB_PATH,
-                "download_url": "https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db",
+                "download_url": "https://github.com/SagerNet/sing-box/releases/latest/download/geoip.db", # 注意这里是sing-box，不是sing-geoip
                 "download_detour": "direct",
             },
             "rules": [
@@ -200,6 +267,23 @@ def generate_singbox_config(proxy):
         json.dump(config, f, indent=2)
     return SINGBOX_CONFIG_PATH
 
+def wait_for_port(host, port, timeout=30, interval=1):
+    """等待端口变得可用"""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(interval)
+            s.connect((host, port))
+            s.close()
+            logging.info(f"Port {port} is open!")
+            return True
+        except (socket.error, ConnectionRefusedError):
+            logging.info(f"Waiting for port {port}...")
+            time.sleep(interval)
+    logging.error(f"Port {port} did not open within {timeout} seconds.")
+    return False
+
 def test_proxy(proxy):
     """测试代理节点速度"""
     process = None
@@ -210,17 +294,36 @@ def test_proxy(proxy):
             logging.error(f"Invalid sing-box config for {proxy['tag']}: {result.stderr}")
             return None
 
+        # 确保 sing-box 启动命令是正确的，并能捕获日志
         process = subprocess.Popen(
             [SINGBOX_BIN_PATH, "run", "-c", config_path],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=subprocess.STDOUT, # 将 stderr 合并到 stdout 以便统一捕获
             text=True,
+            bufsize=1, # 行缓冲
+            universal_newlines=True,
         )
-        time.sleep(10)
 
-        if process.poll() is not None:
-            stderr = process.stderr.read()
-            logging.error(f"sing-box failed to start for {proxy['tag']}: {stderr}")
+        # 启动一个线程来读取 sing-box 的输出
+        def log_singbox_output():
+            for line in iter(process.stdout.readline, ''):
+                # 写入到 sing-box.log 文件
+                with open(SINGBOX_LOG_PATH, "a") as log_f:
+                    log_f.write(line)
+                # 也可以选择打印到控制台，但通常日志文件足够
+                # logging.debug(f"sing-box: {line.strip()}")
+
+        import threading
+        log_thread = threading.Thread(target=log_singbox_output)
+        log_thread.daemon = True # 设置为守护线程，主程序退出时自动终止
+        log_thread.start()
+
+        # 等待 sing-box 启动并监听端口
+        if not wait_for_port('127.0.0.1', PROXY_PORT, timeout=30): # 增加等待时间
+            if process.poll() is not None:
+                logging.error(f"sing-box process exited prematurely for {proxy['tag']}.")
+            else:
+                logging.error(f"sing-box did not become ready for {proxy['tag']}.")
             return None
 
         for test_url in TEST_URLS:
@@ -229,7 +332,7 @@ def test_proxy(proxy):
                 response = requests.get(
                     test_url,
                     proxies={"http": f"http://127.0.0.1:{PROXY_PORT}", "https": f"http://127.0.0.1:{PROXY_PORT}"},
-                    timeout=TIMEOUT_SECONDS,
+                    timeout=TIMEOUT_SECONDS, # 保持这个超时不变，它指的是HTTP请求超时
                 )
                 latency = (time.time() - start_time) * 1000
                 if response.status_code == 200:
@@ -246,13 +349,16 @@ def test_proxy(proxy):
         return None
     finally:
         if process:
+            # 尝试优雅终止 sing-box 进程
+            process.terminate()
             try:
-                process.terminate()
                 process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                logging.warning(f"Failed to terminate sing-box process for {proxy.get('tag', 'unknown')}")
+                logging.warning(f"Failed to terminate sing-box process for {proxy.get('tag', 'unknown')}, killing it.")
                 process.kill()
-                process.wait(timeout=5)
+                process.wait(timeout=5) # 等待被杀死
+
+        # 清理配置文件
         if os.path.exists(SINGBOX_CONFIG_PATH):
             os.remove(SINGBOX_CONFIG_PATH)
 
@@ -267,6 +373,8 @@ def main():
     for proxy_url in proxies:
         proxy = decode_proxy(proxy_url)
         if proxy:
+            # 打印正在测试的代理，方便调试
+            logging.info(f"Testing proxy: {proxy.get('tag', 'unknown_tag')} - {proxy_url}")
             result = test_proxy(proxy)
             if result:
                 results.append(result)
@@ -274,9 +382,14 @@ def main():
     results.sort(key=lambda x: x["latency"])
     with open(OUTPUT_SUB_FILE, "w") as f:
         for result in results:
-            proxy_tag = result["proxy"]["tag"]
-            proxy_url = next((url for url in proxies if proxy_tag in url), proxy_tag)
-            f.write(f"{proxy_url}#{result['latency']:.2f}ms\n")
+            # 这里需要找到原始的代理URL，如果tag不唯一可能会有问题，需要更精确匹配
+            # 暂时用proxy['tag']来查找原始URL，但可能需要优化
+            original_proxy_url = "N/A"
+            for url in proxies:
+                if result['proxy']['tag'] in url: # 简单的包含判断，可能不准确
+                    original_proxy_url = url
+                    break
+            f.write(f"{original_proxy_url}#{result['latency']:.2f}ms\n")
 
     logging.info(f"Saved {len(results)} valid proxies to {OUTPUT_SUB_FILE}")
 
