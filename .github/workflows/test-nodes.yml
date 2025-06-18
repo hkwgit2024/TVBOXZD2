@@ -11,6 +11,7 @@ on:
 jobs:
   test-nodes:
     runs-on: ubuntu-22.04
+    timeout-minutes: 30  # 设置工作流超时
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,12 +19,19 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          cache: 'pip'  # 启用 pip 缓存
+          cache: 'pip'
+      - name: Check resources
+        run: |
+          echo "磁盘空间:"
+          df -h
+          echo "内存使用:"
+          free -h
       - name: Install dependencies
         run: |
-          pip install requests speedtest-cli pysocks
-          # 验证 pysocks 安装
+          pip install requests speedtest-cli pysocks urllib3
           python -c "import socks" || { echo "pysocks 安装失败"; exit 1; }
+          python -c "import speedtest" || { echo "speedtest-cli 安装失败"; exit 1; }
+          python -c "import requests" || { echo "requests 安装失败"; exit 1; }
           sudo apt-get update
           sudo apt-get install -y apt-transport-https curl gnupg2
           curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
