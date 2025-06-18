@@ -6,31 +6,37 @@ import subprocess
 import time
 import urllib.parse
 import requests
+import socket
 
 # 常量定义
 SINGBOX_BIN_PATH = "./clash_bin/sing-box"
 SINGBOX_CONFIG_PATH = "sing-box-config.json"
-SINGBOX_LOG_PATH = "data/sing-box.log"
+SINGBOX_LOG_PATH = os.getenv("SINGBOX_LOG_PATH", "data/sing-box.log")
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/nodes.txt",
-        "type": "plain",
-    },
     {
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
         "type": "plain",
     },
 ]
 MAX_PROXIES = 1000
-TEST_URL = "http://www.google.com"
+TEST_URL = "http://www.cloudflare.com"
 TIMEOUT_SECONDS = 5
+PROXY_PORT = 1080
 
 # 确保输出目录存在
 for path in [OUTPUT_SUB_FILE, SINGBOX_LOG_PATH]:
     dirname = os.path.dirname(path)
     if dirname:
         os.makedirs(dirname, exist_ok=True)
+
+def is_valid_ipv6(addr):
+    """验证 IPv6 地址格式"""
+    try:
+        socket.inet_pton(socket.AF_INET6, addr.strip("[]"))
+        return True
+    except (socket.error, ValueError):
+        return False
 
 def get_proxies():
     """从节点源获取代理列表"""
@@ -72,11 +78,14 @@ def decode_proxy(proxy_url):
             }
 
         elif scheme == "trojan":
+            hostname = parsed.hostname
+            if hostname and hostname.startswith("[") and not is_valid_ipv6(hostname):
+                raise ValueError(f"Invalid IPv6 address: {hostname}")
             query = urllib.parse.parse_qs(parsed.query)
             return {
                 "type": "trojan",
                 "tag": query.get("name", ["trojan-node"])[0] or "trojan-node",
-                "server": parsed.hostname,
+                "server": hostname,
                 "server_port": int(parsed.port or 443),
                 "password": parsed.netloc.split("@")[0],
                 "tls": {
@@ -118,6 +127,14 @@ def generate_singbox_config(proxy):
             "level": "debug",
             "output": SINGBOX_LOG_PATH,
         },
+        "inbounds": [
+            {
+                "type": "http",
+                "tag": "http-in",
+                "listen": "127.0.0.1",
+                "listen_port": PROXY_PORT,
+            },
+        ],
         "outbounds": [
             proxy,
             {
@@ -128,7 +145,7 @@ def generate_singbox_config(proxy):
         "route": {
             "rules": [
                 {
-                    "domain": ["www.google.com"],
+                    "domain": ["www.cloudflare.com"],
                     "outbound": proxy["tag"],
                 },
                 {
@@ -150,13 +167,20 @@ def test_proxy(proxy):
             [SINGBOX_BIN_PATH, "run", "-c", config_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
-        time.sleep(2)  # 等待 sing-box 启动
+        time.sleep(3)  # 等待 sing-box 启动
+
+        # 检查 sing-box 是否运行
+        if process.poll() is not None:
+            stderr = process.stderr.read()
+            print(f"sing-box failed to start: {stderr}")
+            return None
 
         start_time = time.time()
         response = requests.get(
             TEST_URL,
-            proxies={"http": "http://127.0.0.1:1080", "https": "http://127.0.0.1:1080"},
+            proxies={"http": f"http://127.0.0.1:{PROXY_PORT}", "https": f"http://127.0.0.1:{PROXY_PORT}"},
             timeout=TIMEOUT_SECONDS,
         )
         latency = (time.time() - start_time) * 1000  # 毫秒
@@ -198,7 +222,9 @@ def main():
     results.sort(key=lambda x: x["latency"])
     with open(OUTPUT_SUB_FILE, "w") as f:
         for result in results:
-            proxy_url = proxies[proxies.index(result["proxy"]["tag"])]
+            # 查找原始 proxy_url
+            proxy_tag = result["proxy"]["tag"]
+            proxy_url = next((url for url in proxies if proxy_tag in url), proxy_tag)
             f.write(f"{proxy_url}#{result['latency']:.2f}ms\n")
 
     print(f"Saved {len(results)} valid proxies to {OUTPUT_SUB_FILE}")
