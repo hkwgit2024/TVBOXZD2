@@ -293,73 +293,46 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
 def parse_ss_link(link_str, index):
     # Format: ss://[base64-encoded-userinfo]@server:port#name or ss://method:password@server:port#name
     try:
-        # Remove ss:// prefix
-        data = link_str[5:]
+        # Use urlparse for initial breakdown, it handles @ and # well
+        parsed_url = urllib.parse.urlparse(link_str)
         
-        if '@' not in data:
-            print(f"[ERROR] Invalid SS link format (missing @ after ss://): '{link_str}'")
-            return None # Must have an @ to separate userinfo from host:port
-        
-        userinfo_part, host_port_fragment = data.split('@', 1)
+        if not parsed_url.netloc: # netloc contains userinfo@host:port
+            print(f"[ERROR] Invalid SS link format (missing network location/credentials): '{link_str}'")
+            return None
 
-        method_password_raw = userinfo_part
-        # Try to base64 decode the userinfo_part
+        # Userinfo part (method:password)
+        userinfo_raw = parsed_url.username
+        if not userinfo_raw:
+             print(f"[ERROR] Invalid SS link format (missing userinfo before @): '{link_str}'")
+             return None
+
+        method_password_raw = userinfo_raw
         try:
-            # Add padding if missing (base64.urlsafe_b64decode requires correct padding)
-            missing_padding = len(userinfo_part) % 4
+            # Try to base64 decode the userinfo_raw
+            missing_padding = len(userinfo_raw) % 4
             if missing_padding:
-                userinfo_part += '=' * (4 - missing_padding)
-            decoded_bytes = base64.urlsafe_b64decode(userinfo_part)
+                userinfo_raw += '=' * (4 - missing_padding)
+            decoded_bytes = base64.urlsafe_b64decode(userinfo_raw)
             method_password_raw = decoded_bytes.decode('utf-8')
         except Exception:
             # If decoding fails, assume it's not base64 encoded (direct method:password)
-            pass # method_password_raw remains userinfo_part
-        
-        # Now method_password_raw should be "method:password"
+            pass
+
         if ':' not in method_password_raw:
-            print(f"[ERROR] Invalid SS link format (missing method:password in '{method_password_raw}'): '{link_str}'")
+            print(f"[ERROR] Invalid SS link format (malformed method:password in '{method_password_raw}'): '{link_str}'")
             return None
         method, password = method_password_raw.split(':', 1)
-        
-        # Handle #name
-        if '#' in host_port_fragment:
-            server_port_str, name = host_port_fragment.split('#', 1)
-        else:
-            server_port_str = host_port_fragment
-            name = f"SS-Proxy-{index}" # Default name if not provided
 
-        # --- NEW/IMPROVED IPv6 parsing logic ---
-        server = None
-        port = None
-        if server_port_str.startswith('[') and ']:' in server_port_str:
-            # Format: [ipv6_address]:port
-            parts = server_port_str.split(']:', 1)
-            server = parts[0][1:] # Remove leading '['
-            if len(parts) > 1:
-                try:
-                    port = int(parts[1])
-                except ValueError:
-                    print(f"[ERROR] Invalid port number in SS link '{link_str}' (IPv6 format): {parts[1]}")
-                    return None
-            else:
-                 print(f"[ERROR] Invalid SS link format (missing port for IPv6 address): '{link_str}'")
-                 return None
-        elif ':' in server_port_str:
-            # Format: server:port (IPv4 or hostname)
-            server, port_str = server_port_str.split(':', 1)
-            try:
-                port = int(port_str)
-            except ValueError:
-                print(f"[ERROR] Invalid port number in SS link '{link_str}': {port_str}")
-                return None
+        server = parsed_url.hostname
+        port = parsed_url.port
+        name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"SS-Proxy-{index}"
         
-        if not (server and port is not None): # Check if server and a valid port were found
-            print(f"[ERROR] Invalid SS link format (missing server or port, or malformed address:port in '{server_port_str}'): '{link_str}'")
+        if not (server and port is not None): # Check for server and valid port
+            print(f"[ERROR] Invalid SS link (missing server or port): '{link_str}'")
             return None
-        # --- END NEW/IMPROVED IPv6 parsing logic ---
-        
+
         return {
-            "name": urllib.parse.unquote(name), # Decode URL-encoded name
+            "name": name,
             "type": "ss",
             "server": server,
             "port": port,
@@ -481,25 +454,72 @@ def parse_vless_link(link_str, index):
         print(f"[ERROR] Failed to parse VLESS link '{link_str}': {e}")
         return None
 
-def parse_hysteria2_link(link_str, index):
-    # Format: hysteria2://server:port?password=...&obfs=...&obfs-password=...#name
-    # Note: The log shows 'hysteria://', but you asked for 'hysteria2://' parser.
-    # The links in the log start with 'hysteria://'.
-    # This parser assumes 'hysteria2://' protocol. If links are 'hysteria://',
-    # they might be for Hysteria1 and require different parsing.
+def parse_hysteria1_link(link_str, index):
+    # Format: hysteria://server:port?auth=...&obfs=...&obfs-password=...#name
     try:
-        # Check for both hysteria2:// and hysteria:// for flexibility
-        if link_str.startswith("hysteria2://"):
-            protocol_prefix_len = len("hysteria2://")
-        elif link_str.startswith("hysteria://"): # Likely Hysteria1 if no '2'
-            print(f"[WARNING] Detected 'hysteria://' protocol. Parsing as Hysteria2. This might be incorrect if it's Hysteria1.")
-            protocol_prefix_len = len("hysteria://")
-        else:
-            print(f"[ERROR] Invalid Hysteria link protocol: '{link_str}'")
+        # Temporarily use a dummy scheme to let urlparse handle server:port and query/fragment
+        temp_link = "dummy://" + link_str[len("hysteria://"):]
+        parsed_url = urllib.parse.urlparse(temp_link)
+        
+        server = parsed_url.hostname
+        port = parsed_url.port
+        name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"Hysteria-Proxy-{index}"
+        
+        if not (server and port): # Basic validation
+            print(f"[ERROR] Invalid Hysteria (Hysteria1) link (missing server or port): '{link_str}'")
             return None
 
-        # Temporarily remove protocol for parsing
-        temp_link = "dummy://" + link_str[protocol_prefix_len:]
+        query_params = urllib.parse.parse_qs(parsed_url.query)
+        
+        proxy_config = {
+            "name": name,
+            "type": "hysteria", # Hysteria1 type in Clash Meta
+            "server": server,
+            "port": port,
+            "tls": True # Hysteria1 implies TLS
+        }
+        
+        if 'auth' in query_params:
+            proxy_config['auth'] = query_params['auth'][0]
+        elif 'password' in query_params: # Some links might use 'password' for auth
+            proxy_config['auth'] = query_params['password'][0]
+
+        if 'obfs' in query_params:
+            obfs_val = query_params['obfs'][0]
+            if obfs_val.lower() == 'true': # Convert string "true" to boolean True
+                proxy_config['obfs'] = True
+            elif obfs_val.lower() == 'false':
+                proxy_config['obfs'] = False
+            else: # For values like 'salamander'
+                proxy_config['obfs'] = obfs_val
+        
+        if 'obfs-password' in query_params:
+            proxy_config['obfs-password'] = query_params['obfs-password'][0]
+        
+        if 'sni' in query_params:
+            proxy_config['sni'] = query_params['sni'][0]
+        if 'alpn' in query_params:
+            proxy_config['alpn'] = query_params['alpn'][0].split(',')
+
+        # Hysteria1 specific bandwidth settings
+        if 'up' in query_params:
+            proxy_config['up'] = query_params['up'][0]
+        if 'down' in query_params:
+            proxy_config['down'] = query_params['down'][0]
+
+        if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
+            proxy_config['skip-cert-verify'] = True
+
+        return proxy_config
+    except Exception as e:
+        print(f"[ERROR] Failed to parse Hysteria (Hysteria1) link '{link_str}': {e}")
+        return None
+
+def parse_hysteria2_link(link_str, index):
+    # Format: hysteria2://server:port?password=...&obfs=...&obfs-password=...#name
+    try:
+        # Temporarily use a dummy scheme to let urlparse handle server:port and query/fragment
+        temp_link = "dummy://" + link_str[len("hysteria2://"):]
         parsed_url = urllib.parse.urlparse(temp_link)
         
         server = parsed_url.hostname
@@ -531,12 +551,6 @@ def parse_hysteria2_link(link_str, index):
         if 'alpn' in query_params:
             proxy_config['alpn'] = query_params['alpn'][0].split(',')
 
-        # Hysteria2 specific
-        # 'up' and 'down' are usually for bandwidth, maybe set a default or omit
-        # For testing purposes, you might want to omit or set generic values
-        # proxy_config['up'] = "100Mbps"
-        # proxy_config['down'] = "100Mbps" 
-        
         if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
             proxy_config['skip-cert-verify'] = True
 
@@ -549,7 +563,7 @@ def parse_hysteria2_link(link_str, index):
 def generate_clash_config(node_links, output_path):
     """
     Generates a Clash YAML configuration file from a list of node links.
-    Parses node links (ss, trojan, vless, hysteria2) into Mihomo's YAML format.
+    Parses node links (ss, trojan, vless, hysteria, hysteria2) into Mihomo's YAML format.
     Ensures unique proxy names.
     """
     proxies = []
@@ -564,8 +578,9 @@ def generate_clash_config(node_links, output_path):
             parsed_proxy = parse_trojan_link(link, i+1)
         elif link.startswith("vless://"):
             parsed_proxy = parse_vless_link(link, i+1)
-        elif link.startswith("hysteria2://") or link.startswith("hysteria://"):
-            # Handle both hysteria2:// and older hysteria:// for now
+        elif link.startswith("hysteria://"): # Check Hysteria1 first
+            parsed_proxy = parse_hysteria1_link(link, i+1)
+        elif link.startswith("hysteria2://"): # Then Hysteria2
             parsed_proxy = parse_hysteria2_link(link, i+1)
         else:
             print(f"[WARNING] Skipping unsupported protocol or invalid link: {link}")
