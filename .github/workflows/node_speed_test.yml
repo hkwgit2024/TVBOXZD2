@@ -1,83 +1,80 @@
-name: Node Speed Test
+name: Test Nodes
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   test-nodes:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
+    runs-on: ubuntu-24.04
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y unzip
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          python -m pip install --upgrade pip
+          pip install requests
 
-    - name: Cache Clash core
-      id: cache-clash
-      uses: actions/cache@v4
-      with:
-        path: clash_bin
-        # 建议更新key以反映版本，以便在Clash版本更新时强制重新下载
-        key: ${{ runner.os }}-clash-core-v1.19.10-v1 
-        restore-keys: |
-          ${{ runner.os }}-clash-core-
+      - name: Cache sing-box
+        uses: actions/cache@v4
+        with:
+          path: clash_bin
+          key: Linux-sing-box-${{ runner.os }}-v1.9.7
+          restore-keys: Linux-sing-box-${{ runner.os }}-
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests
-        pip install pyyaml
+      - name: Download sing-box
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/SagerNet/sing-box/releases/download/v1.9.7/sing-box-1.9.7-linux-amd64.tar.gz
+          tar -xzf sing-box-1.9.7-linux-amd64.tar.gz
+          mkdir -p clash_bin
+          mv sing-box-1.9.7-linux-amd64/sing-box clash_bin/sing-box
+          chmod +x clash_bin/sing-box
 
-    - name: Run node speed test script
-      run: |
-        mkdir -p data
-        python speed_tester.py || true  # Prevent workflow failure for debugging
+      - name: Run Speed Tester
+        env:
+          SINGBOX_LOG_PATH: sing-box.log
+        run: |
+          mkdir -p data
+          python speed_tester.py || true
 
-    # !! 新增步骤 !!
-    # 上传生成的 Clash 配置文件，这是诊断 SS 链接解析问题的关键
-    - name: Upload Clash Config
-      if: always() # 确保即使脚本失败也上传
-      uses: actions/upload-artifact@v4
-      with:
-        name: clash-config-file # Artifact 名称
-        path: clash_config.yaml # 指向生成的配置文件
-        if-no-files-found: ignore # 如果文件不存在也不要报错
+      - name: Display sing-box Debug Log
+        if: always()
+        run: cat sing-box.log || echo "No debug log available."
 
-    # 上传 Clash Meta 的详细调试日志
-    - name: Upload Clash Debug Log
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: clash-debug-log # Artifact 名称
-        path: clash_bin/clash_debug.log # 指向 Clash 调试日志文件
-        if-no-files-found: ignore
+      - name: Upload sing-box Config
+        uses: actions/upload-artifact@v4
+        with:
+          name: sing-box-config-file
+          path: sing-box-config.json
+          if-no-files-found: ignore
 
-    - name: Commit and push results
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        # 检查文件是否存在且非空，并且有实际变化才提交
-        if [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
-          git add data/collectSub.txt
-          git commit -m "Update node speed test results [skip ci]"
-          git push
-        else
-          echo "No valid changes to commit (file missing, empty, or unchanged)."
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.BOT }}
+      - name: Upload sing-box Debug Log
+        uses: actions/upload-artifact@v4
+        with:
+          name: sing-box-debug-log
+          path: sing-box.log
+          if-no-files-found: ignore
+
+      - name: Commit Results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
+            git add data/collectSub.txt
+            git commit -m "Update node speed test results [skip ci]"
+            git push
+          else
+            echo "No valid changes to commit."
+          fi
