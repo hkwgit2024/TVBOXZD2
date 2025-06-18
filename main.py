@@ -20,7 +20,7 @@ GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
-        "url": "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
+        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/singbox.json",
         "type": "plain",
     },
 ]
