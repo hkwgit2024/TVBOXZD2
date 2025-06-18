@@ -20,7 +20,7 @@ GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
+        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
         "type": "plain",
     },
 ]
