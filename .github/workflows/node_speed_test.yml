@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11' # 使用 Python 3.11（可根据需要调整）
+          python-version: '3.11'
 
       # 安装 Python 依赖
       - name: Install Python dependencies
@@ -30,10 +30,23 @@ jobs:
       - name: Install sing-box
         run: |
           mkdir -p clash_bin
-          curl -L -o clash_bin/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz
-          tar -xzf clash_bin/sing-box.tar.gz -C clash_bin
+          # 使用固定版本（例如 v1.10.0，根据需要更新）
+          SINGBOX_VERSION="v1.10.0"
+          SINGBOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz"
+          echo "Downloading sing-box from $SINGBOX_URL"
+          curl -L -o clash_bin/sing-box.tar.gz "$SINGBOX_URL" || { echo "Download failed"; exit 1; }
+          # 检查文件大小（确保下载有效）
+          if [ $(stat -c%s clash_bin/sing-box.tar.gz) -lt 1000 ]; then
+            echo "Downloaded file is too small, likely invalid"
+            exit 1
+          fi
+          # 验证文件是否为 gzip 格式
+          file clash_bin/sing-box.tar.gz
+          tar -xzf clash_bin/sing-box.tar.gz -C clash_bin || { echo "Tar extraction failed"; exit 1; }
           mv clash_bin/sing-box-*/sing-box clash_bin/sing-box
           chmod +x clash_bin/sing-box
+          # 验证 sing-box 可执行
+          ./clash_bin/sing-box version || { echo "sing-box is not executable"; exit 1; }
 
       # 运行 Python 脚本
       - name: Run proxy tester script
@@ -50,7 +63,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 清理（可选）
+      # 清理
       - name: Clean up
         if: always()
         run: |
