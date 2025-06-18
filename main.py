@@ -30,10 +30,10 @@ OUTPUT_SUB_FILE = "data/collectSub.txt"
 # 节点源配置列表
 # 每个字典包含 'url' (节点订阅地址) 和 'type' (plain, base64, yaml)
 NODES_SOURCES = [
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-        "type": "plain",
-    },
+   # {
+   #     "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+   #      "type": "plain",
+   # },
     {
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
         "type": "yaml",
