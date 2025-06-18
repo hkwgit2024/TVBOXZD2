@@ -16,6 +16,7 @@ import socket
 import sys
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+import psutil
 
 # 确保日志实时输出
 def log(message):
@@ -32,7 +33,24 @@ speedtest_log = "data/speedtest_errors.log"
 
 # 环境检查
 log(f"Python 版本: {sys.version}")
-log(f"依赖检查: requests={requests.__version__}, speedtest-cli={'installed' if 'speedtest' in sys.modules else 'not installed'}, pysocks={'installed' if 'socks' in sys.modules else 'not installed'}")
+try:
+    import speedtest
+    speedtest_installed = "installed"
+except ImportError:
+    speedtest_installed = "not installed"
+log(f"依赖检查: requests={requests.__version__}, speedtest-cli={speedtest_installed}, pysocks={'installed' if 'socks' in sys.modules else 'not installed'}")
+
+# 清理残留 sing-box 进程
+def kill_sing_box():
+    for proc in psutil.process_iter(['name']):
+        if proc.info['name'] == 'sing-box':
+            log(f"发现残留 sing-box 进程 (PID: {proc.pid})，尝试终止")
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except psutil.TimeoutExpired:
+                proc.kill()
+                log(f"强制杀死 sing-box 进程 (PID: {proc.pid})")
 
 # 下载最新 sing-box 二进制文件
 def download_sing_box():
@@ -183,7 +201,7 @@ def parse_node(line):
 def generate_sing_box_config(node, temp_config_file):
     log(f"生成 sing-box 配置文件: {node['ip']}:{node['port']} ({node['type']})")
     config = {
-        "log": {"level": "info"},
+        "log": {"level": "debug"},  # 提高日志级别
         "inbounds": [
             {
                 "type": "socks",
@@ -210,11 +228,8 @@ def generate_sing_box_config(node, temp_config_file):
         },
         "dns": {
             "servers": [
-                {
-                    "tag": "google",
-                    "address": "8.8.8.8",
-                    "detour": "proxy"
-                }
+                {"tag": "google", "address": "8.8.8.8", "detour": "proxy"},
+                {"tag": "cloudflare", "address": "1.1.1.1", "detour": "proxy"}
             ]
         }
     }
@@ -240,32 +255,43 @@ def generate_sing_box_config(node, temp_config_file):
         config["outbounds"][0]["uuid"] = node["uuid"]
         if node["transport"] != "tcp":
             config["outbounds"][0]["transport"] = {"type": node["transport"]}
-    with open(temp_config_file, "w") as f:
-        json.dump(config, f, indent=2)
+    try:
+        with open(temp_config_file, "w") as f:
+            json.dump(config, f, indent=2)
+    except Exception as e:
+        log(f"生成配置文件失败: {str(e)}")
+        raise
 
 # 测试 HTTP 连通性
 def test_http_connectivity():
     log("开始 HTTP 连通性测试")
-    try:
-        socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
-        socket.socket = socks.socksocket
-        response = requests.get("http://ipinfo.io/json", timeout=10)
-        if response.status_code == 200:
-            log(f"HTTP 连通性测试通过: {response.json().get('ip')}")
-            return True
-        else:
-            log(f"HTTP 连通性测试失败: 状态码 {response.status_code}")
-            return False
-    except Exception as e:
-        log(f"HTTP 连通性测试失败: {str(e)}")
-        return False
-    finally:
-        socks.set_default_proxy(None)
-        socket.socket = socket._socket.socket
+    urls = ["http://ipinfo.io/json", "http://www.google.com"]
+    for test_url in urls:
+        log(f"测试 URL: {test_url}")
+        try:
+            socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
+            socket.socket = socks.socksocket
+            session = requests.Session()
+            retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+            session.mount("http://", HTTPAdapter(max_retries=retries))
+            response = session.get(test_url, timeout=10)
+            if response.status_code == 200:
+                log(f"HTTP 连通性测试通过: {test_url}")
+                return True
+            else:
+                log(f"HTTP 连通性测试失败: {test_url}, 状态码 {response.status_code}")
+        except Exception as e:
+            log(f"HTTP 连通性测试失败: {test_url}, 错误: {str(e)}")
+        finally:
+            socks.set_default_proxy(None)
+            socket.socket = socket._socket.socket
+    log("所有 HTTP 测试 URL 均失败")
+    return False
 
 # 测试连通性
 def test_connectivity(sing_box_bin, config_file):
     log("开始连通性测试")
+    kill_sing_box()  # 清理残留进程
     process = None
     try:
         process = subprocess.Popen(
@@ -289,6 +315,8 @@ def test_connectivity(sing_box_bin, config_file):
             log(f"sing-box SOCKS5 代理未成功监听: {sock_test.stderr.strip()}")
             if stderr:
                 log(f"sing-box 错误输出: {stderr.strip()}")
+                with open(speedtest_log, "a") as f:
+                    f.write(f"[{datetime.now()}] sing-box 连通性测试错误: {stderr.strip()}\n")
             return False
     except FileNotFoundError:
         log("nc 或 sing-box 命令未找到，请确保已安装 netcat 和 sing-box")
@@ -303,13 +331,20 @@ def test_connectivity(sing_box_bin, config_file):
         if process:
             process.terminate()
             try:
+                stderr = process.stderr.read()
+                if stderr:
+                    with open(speedtest_log, "a") as f:
+                        f.write(f"[{datetime.now()}] sing-box 连通性测试终止错误: {stderr.strip()}\n")
                 process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 process.kill()
+                log("强制终止 sing-box 进程")
+            kill_sing_box()
 
 # 测试下载和上传速度（使用 speedtest-cli Python 库）
 def test_download_speed(sing_box_bin, config_file):
     log("开始速度测试")
+    kill_sing_box()  # 清理残留进程
     proxy_process = None
     try:
         proxy_process = subprocess.Popen(
@@ -318,7 +353,7 @@ def test_download_speed(sing_box_bin, config_file):
             stderr=subprocess.PIPE,
             text=True
         )
-        time.sleep(10)
+        time.sleep(15)  # 延长等待时间
         log("代理环境变量: socks5://127.0.0.1:1080")
         if not test_http_connectivity():
             log("跳过 speedtest，因 HTTP 连通性测试失败")
@@ -347,12 +382,14 @@ def test_download_speed(sing_box_bin, config_file):
             stderr = proxy_process.stderr.read()
             if stderr:
                 with open(speedtest_log, "a") as f:
-                    f.write(f"[{datetime.now()}] sing-box 错误输出: {stderr.strip()}\n")
+                    f.write(f"[{datetime.now()}] sing-box 速度测试错误: {stderr.strip()}\n")
             proxy_process.terminate()
             try:
                 proxy_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 proxy_process.kill()
+                log("强制终止 sing-box 进程")
+            kill_sing_box()
 
 # 主函数
 def main():
@@ -377,42 +414,60 @@ def main():
     log("节点文件下载完成")
     results = []
     node_count = 0
-    max_nodes = 100  # 限制测试节点数量
-    with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
-        for line in f:
-            if node_count >= max_nodes:
-                log(f"达到最大节点限制 ({max_nodes})，停止解析")
-                break
-            line = line.strip()
-            if not line:
-                continue
-            node = parse_node(line)
-            if not node:
-                continue
-            node_count += 1
-            log(f"测试节点: {node['ip']}:{node['port']} ({node['type']})")
-            with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
-                generate_sing_box_config(node, temp_config.name)
-                is_connected = test_connectivity(sing_box_bin, temp_config.name)
-                download_mbps, upload_mbps, ping_latency = 0, 0, 0
-                if is_connected:
-                    download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config.name)
-                results.append({
-                    "node": node["raw"],
-                    "ip": node["ip"],
-                    "port": node["port"],
-                    "type": node["type"],
-                    "connected": is_connected,
-                    "download_mbps": round(download_mbps, 2),
-                    "upload_mbps": round(upload_mbps, 2),
-                    "ping_latency_ms": round(ping_latency, 2),
-                })
-                os.unlink(temp_config.name)
-    results.sort(key=lambda x: x["download_mbps"], reverse=True)
-    with open(output_file, "w", encoding="utf-8") as f:
-        for result in results:
-            f.write(json.dumps(result, ensure_ascii=False) + "\n")
-    log(f"测试完成，结果已保存到 {output_file}")
+    max_nodes = 100
+    total_nodes = 0
+    try:
+        with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
+            lines = [line.strip() for line in f if line.strip()]
+            total_nodes = len(lines)
+            log(f"节点文件包含 {total_nodes} 个节点")
+            for line in lines:
+                if node_count >= max_nodes:
+                    log(f"达到最大节点限制 ({max_nodes})，停止解析")
+                    break
+                try:
+                    node = parse_node(line)
+                    if not node:
+                        continue
+                    node_count += 1
+                    log(f"测试节点 {node_count}/{total_nodes}: {node['ip']}:{node['port']} ({node['type']})")
+                    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
+                        temp_config_name = temp_config.name
+                        generate_sing_box_config(node, temp_config_name)
+                        is_connected = test_connectivity(sing_box_bin, temp_config_name)
+                        download_mbps, upload_mbps, ping_latency = 0, 0, 0
+                        if is_connected:
+                            download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config_name)
+                        results.append({
+                            "node": node["raw"],
+                            "ip": node["ip"],
+                            "port": node["port"],
+                            "type": node["type"],
+                            "connected": is_connected,
+                            "download_mbps": round(download_mbps, 2),
+                            "upload_mbps": round(upload_mbps, 2),
+                            "ping_latency_ms": round(ping_latency, 2),
+                        })
+                    try:
+                        os.unlink(temp_config_name)
+                    except Exception as e:
+                        log(f"删除临时文件 {temp_config_name} 失败: {str(e)}")
+                except Exception as e:
+                    log(f"处理节点 {line[:50]}... 失败: {str(e)}")
+                    with open(speedtest_log, "a") as f:
+                        f.write(f"[{datetime.now()}] 处理节点失败: {line[:50]}... - {str(e)}\n")
+                    continue
+    except Exception as e:
+        log(f"读取节点文件失败: {str(e)}")
+        return
+    try:
+        results.sort(key=lambda x: x["download_mbps"], reverse=True)
+        with open(output_file, "w", encoding="utf-8") as f:
+            for result in results:
+                f.write(json.dumps(result, ensure_ascii=False) + "\n")
+        log(f"测试完成，共测试 {node_count} 个节点，结果已保存到 {output_file}")
+    except Exception as e:
+        log(f"保存结果失败: {str(e)}")
 
 if __name__ == "__main__":
     main()
