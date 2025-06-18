@@ -165,7 +165,7 @@ def parse_node(line):
 # 生成 sing-box 配置文件
 def generate_sing_box_config(node, temp_config_file):
     config = {
-        "log": {"level": "info"},  # 提高日志级别
+        "log": {"level": "info"},
         "inbounds": [
             {
                 "type": "socks",
@@ -190,7 +190,7 @@ def generate_sing_box_config(node, temp_config_file):
                 }
             ]
         },
-        "dns": {  # 添加 DNS 配置
+        "dns": {
             "servers": [
                 {
                     "tag": "google",
@@ -228,7 +228,6 @@ def generate_sing_box_config(node, temp_config_file):
 # 测试 HTTP 连通性
 def test_http_connectivity():
     try:
-        # 设置 SOCKS5 代理
         socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
         socket.socket = socks.socksocket
         response = requests.get("http://ipinfo.io/json", timeout=10)
@@ -242,7 +241,6 @@ def test_http_connectivity():
         print(f"[{datetime.now()}] HTTP 连通性测试失败: {str(e)}")
         return False
     finally:
-        # 重置 socket
         socks.set_default_proxy(None)
         socket.socket = socket._socket.socket
 
@@ -258,4 +256,126 @@ def test_connectivity(sing_box_bin, config_file):
         )
         time.sleep(2)
         sock_test = subprocess.run(
-            ["nc", "-zv", "127.0.0.1", "1080", "-w]
+            ["nc", "-zv", "127.0.0.1", "1080", "-w", "1"],
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        if sock_test.returncode == 0:
+            print(f"[{datetime.now()}] sing-box SOCKS5 代理已启动并监听")
+            return True
+        else:
+            stderr = process.stderr.read()
+            print(f"[{datetime.now()}] sing-box SOCKS5 代理未成功监听: {sock_test.stderr.strip()}")
+            if stderr:
+                print(f"[{datetime.now()}] sing-box 错误输出: {stderr.strip()}")
+            return False
+    except FileNotFoundError:
+        print(f"[{datetime.now()}] nc 或 sing-box 命令未找到，请确保已安装 netcat 和 sing-box")
+        return False
+    except subprocess.TimeoutExpired:
+        print(f"[{datetime.now()}] 连接 SOCKS5 端口超时")
+        return False
+    except Exception as e:
+        print(f"[{datetime.now()}] 连通性测试失败 (sing-box 启动): {str(e)}")
+        return False
+    finally:
+        if process:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                process.kill()
+
+# 测试下载和上传速度（使用 speedtest-cli Python 库）
+def test_download_speed(sing_box_bin, config_file):
+    proxy_process = None
+    try:
+        proxy_process = subprocess.Popen(
+            [sing_box_bin, "run", "-c", config_file],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        time.sleep(10)
+        print(f"[{datetime.now()}] 代理环境变量: socks5://127.0.0.1:1080")
+        if not test_http_connectivity():
+            print(f"[{datetime.now()}] 跳过 speedtest，因 HTTP 连通性测试失败")
+            return 0, 0, 0
+        import speedtest
+        s = speedtest.Speedtest()
+        s.get_best_server()
+        s.download()
+        s.upload()
+        results = s.results.dict()
+        download_mbps = results["download"] / 1_000_000
+        upload_mbps = results["upload"] / 1_000_000
+        ping_latency = results["ping"]
+        return download_mbps, upload_mbps, ping_latency
+    except ImportError:
+        print(f"[{datetime.now()}] speedtest-cli 库未安装，请运行 `pip install speedtest-cli`")
+        return 0, 0, 0
+    except Exception as e:
+        print(f"[{datetime.now()}] 速度测试失败: {str(e)}")
+        with open(speedtest_log, "a") as f:
+            f.write(f"[{datetime.now()}] 速度测试失败: {str(e)}\n")
+        return 0, 0, 0
+    finally:
+        if proxy_process:
+            process_stderr = proxy_process.stderr.read()
+            if process_stderr:
+                with open(speedtest_log, "a") as f:
+                    f.write(f"[{datetime.now()}] sing-box 错误输出: {process_stderr.strip()}\n")
+            proxy_process.terminate()
+            try:
+                proxy_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proxy_process.kill()
+
+# 主函数
+def main():
+    try:
+        sing_box_bin = download_sing_box()
+    except Exception as e:
+        print(f"[{datetime.now()}] 初始化失败: {str(e)}")
+        return
+    try:
+        urllib.request.urlretrieve(url, "nodes.txt")
+    except Exception as e:
+        print(f"[{datetime.now()}] 下载节点文件失败: {str(e)}")
+        return
+    results = []
+    with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            node = parse_node(line)
+            if not node:
+                continue
+            print(f"[{datetime.now()}] 测试节点: {node['ip']}:{node['port']} ({node['type']})")
+            with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
+                generate_sing_box_config(node, temp_config.name)
+                is_connected = test_connectivity(sing_box_bin, temp_config.name)
+                download_mbps, upload_mbps, ping_latency = 0, 0, 0
+                if is_connected:
+                    download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config.name)
+                results.append({
+                    "node": node["raw"],
+                    "ip": node["ip"],
+                    "port": node["port"],
+                    "type": node["type"],
+                    "connected": is_connected,
+                    "download_mbps": round(download_mbps, 2),
+                    "upload_mbps": round(upload_mbps, 2),
+                    "ping_latency_ms": round(ping_latency, 2),
+                })
+                os.unlink(temp_config.name)
+    results.sort(key=lambda x: x["download_mbps"], reverse=True)
+    with open(output_file, "w", encoding="utf-8") as f:
+        for result in results:
+            f.write(json.dumps(result, ensure_ascii=False) + "\n")
+    print(f"[{datetime.now()}] 测试完成，结果已保存到 {output_file}")
+
+if __name__ == "__main__":
+    main()
