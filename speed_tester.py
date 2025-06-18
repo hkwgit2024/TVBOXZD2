@@ -347,6 +347,7 @@ def parse_link(link, i):
 def fetch_and_parse_nodes():
     """从配置的来源获取并解析所有节点"""
     all_parsed_proxies = []
+    seen_proxy_names = set() # 用于跟踪已见的代理名称
 
     for source in NODES_SOURCES:
         url = source["url"]
@@ -366,28 +367,29 @@ def fetch_and_parse_nodes():
                     print(f"Warning: Failed to base64 decode {url}. Treating as plain text. Error: {e}")
                     processed_content = content
 
-            # 调整 is_yaml 的判断，避免重复加载 YAML 内容
             is_yaml_content = False
             yaml_data_from_content = None
             if node_format == "clash-yaml" or node_format == "auto":
-                # --- 再次改进：更彻底地清理 YAML 中的非标准标签 ---
-                # 这个正则表达式会匹配 '!' 后面跟着任何非空白字符至少一次，然后可能跟着一个空格或冒号，
-                # 直到遇到非字母数字字符或者行尾。
-                # 示例: `password: !<str> 3767...`  -> `password: 3767...`
-                # 示例: `name: !tagged_value some_value` -> `name: some_value`
-                cleaned_yaml_content = re.sub(r'!\S+(\s*|\s*:)', ' ', processed_content)
+                # 更彻底地清理 YAML 中的非标准标签
+                # 这个正则表达式会匹配 '!' 后面的所有非空白字符，直到遇到空格或行尾
+                # 然后替换为只保留原值
+                # 例如: `password: !<str> 3767107462583558144` 变为 `password: 3767107462583558144`
+                # 这样做是为了解决 `could not determine a constructor for the tag 'str'` 错误
+                cleaned_yaml_content = re.sub(r'!\S+\s*', '', processed_content)
+                
+                # 进一步处理可能存在的冒号后的非标准标签，例如 `key: !<tag>value`
+                cleaned_yaml_content = re.sub(r':\s*!\S+', ':', cleaned_yaml_content)
+
 
                 try:
-                    # 尝试加载清理后的内容
                     yaml_data_from_content = yaml.full_load(cleaned_yaml_content)
                     if isinstance(yaml_data_from_content, dict) and 'proxies' in yaml_data_from_content and isinstance(yaml_data_from_content['proxies'], list):
                         is_yaml_content = True
                 except yaml.YAMLError as e:
                     print(f"Warning: Failed to parse CLEANED YAML from {url}. Error: {e}")
-                    # 为了调试，如果清理后仍然失败，打印部分清理后的内容
-                    # print("--- Partial Cleaned Content for Debugging ---")
-                    # print("\n".join(cleaned_yaml_content.splitlines()[:20])) # 打印前20行
-                    # print("---------------------------------------------")
+                    print("--- Partial Cleaned Content for Debugging (first 50 lines) ---")
+                    print("\n".join(cleaned_yaml_content.splitlines()[:50])) # 打印前50行
+                    print("---------------------------------------------")
                 except Exception as e:
                     print(f"Warning: An unexpected error occurred during CLEANED YAML check for {url}. Error: {e}")
             
@@ -395,6 +397,18 @@ def fetch_and_parse_nodes():
                 print(f"Successfully parsed Clash YAML proxies from {url} (after cleaning tags)")
                 for proxy_dict in yaml_data_from_content['proxies']:
                     if isinstance(proxy_dict, dict) and 'name' in proxy_dict and 'type' in proxy_dict:
+                        original_name = proxy_dict["name"]
+                        # 检查并处理重复的代理名称
+                        if original_name in seen_proxy_names:
+                            counter = 1
+                            new_name = f"{original_name}-{counter}"
+                            while new_name in seen_proxy_names:
+                                counter += 1
+                                new_name = f"{original_name}-{counter}"
+                            proxy_dict["name"] = new_name
+                            print(f"Duplicate proxy name '{original_name}' found. Renaming to '{new_name}'.")
+                        
+                        seen_proxy_names.add(proxy_dict["name"])
                         all_parsed_proxies.append(proxy_dict)
                     else:
                         print(f"Warning: Invalid proxy entry in YAML from {url}: {proxy_dict}")
@@ -411,6 +425,18 @@ def fetch_and_parse_nodes():
                     continue
                 proxy = parse_link(link.strip(), i)
                 if proxy:
+                    original_name = proxy["name"]
+                    # 检查并处理重复的代理名称
+                    if original_name in seen_proxy_names:
+                        counter = 1
+                        new_name = f"{original_name}-{counter}"
+                        while new_name in seen_proxy_names:
+                            counter += 1
+                            new_name = f"{original_name}-{counter}"
+                        proxy["name"] = new_name
+                        print(f"Duplicate proxy name '{original_name}' found. Renaming to '{new_name}'.")
+
+                    seen_proxy_names.add(proxy["name"])
                     all_parsed_proxies.append(proxy)
 
         except requests.exceptions.RequestException as e:
