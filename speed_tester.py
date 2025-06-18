@@ -1,176 +1,148 @@
-
 import requests
 import os
 import subprocess
 import time
 import datetime
 import json
-import shutil
-import tarfile
-import hashlib
-import platform
-import logging
+import shutil # For moving files
+import tarfile # For tar.gz handling
+import gzip # For .gz handling
 
 # --- Configuration ---
 NODES_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 OUTPUT_FILE = "data/collectSub.txt"
 CLASH_CONFIG_FILE = "clash_config.yaml"
-CLASH_API_PORT = 9090
-CLASH_PROXY_HTTP_PORT = 7890
-TEST_FILE_URL = "https://speed.cloudflare.com/__down?bytes=50000000"
-CLASH_VERSION_TO_DOWNLOAD = "v1.18.0"
-CLASH_DOWNLOAD_BASE_URL = "https://github.com/Dreamacro/clash/releases/download"
-CLASH_ARCHIVE_NAME = f"clash-linux-amd64-{CLASH_VERSION_TO_DOWNLOAD}.tar.gz"
+CLASH_API_PORT = 9090 # Clash external controller port
+CLASH_PROXY_HTTP_PORT = 7890 # Clash HTTP proxy port
+TEST_FILE_URL = "https://speed.cloudflare.com/__down?bytes=50000000" # Test with 50MB file. Consider a larger file (e.g., 100MB) for more accurate high-speed tests.
+
+# Clash Meta (mihomo) Version and Download URL - Using MetaCubeX/mihomo as the original Clash is deprecated.
+CLASH_VERSION_TO_DOWNLOAD = "v1.19.10" # Using the version you found
+CLASH_DOWNLOAD_BASE_URL = "https://github.com/MetaCubeX/mihomo/releases/download"
+CLASH_ARCHIVE_NAME = f"mihomo-linux-amd64-{CLASH_VERSION_TO_DOWNLOAD}.gz" # Using the .gz file for Linux AMD64
 CLASH_DOWNLOAD_URL = f"{CLASH_DOWNLOAD_BASE_URL}/{CLASH_VERSION_TO_DOWNLOAD}/{CLASH_ARCHIVE_NAME}"
-CLASH_BIN_DIR = "clash_bin"
-CLASH_EXECUTABLE_NAME = "clash"
+
+CLASH_BIN_DIR = "clash_bin" # Directory to store Clash executable (will be cached by GitHub Actions)
+CLASH_EXECUTABLE_NAME = "mihomo" # Changed to 'mihomo' for Clash.Meta
 CLASH_FULL_PATH = os.path.join(CLASH_BIN_DIR, CLASH_EXECUTABLE_NAME)
 
-# Setup logging
-logging.basicConfig(
-    filename="clash_script.log",
-    level=logging.DEBUG,  # Change to DEBUG for more detailed logs
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
 # --- Helper Functions ---
-
-def get_latest_clash_version():
-    logging.debug("Fetching latest Clash version from GitHub API")
-    try:
-        response = requests.get("https://api.github.com/repos/Dreamacro/clash/releases/latest", timeout=10)
-        response.raise_for_status()
-        version = response.json()['tag_name']
-        logging.info(f"Latest Clash version: {version}")
-        return version
-    except Exception as e:
-        logging.error(f"Failed to fetch latest Clash version: {e}")
-        return CLASH_VERSION_TO_DOWNLOAD
-
-def check_clash_version(exec_path):
-    logging.debug(f"Checking Clash version for {exec_path}")
-    try:
-        result = subprocess.run([exec_path, "--version"], capture_output=True, text=True, check=True)
-        version = result.stdout.strip().split()[-1]
-        logging.info(f"Clash version: {version}")
-        return version
-    except Exception as e:
-        logging.error(f"Failed to check Clash version: {e}")
-        return None
-
-def calculate_sha256(file_path):
-    logging.debug(f"Calculating SHA256 for {file_path}")
-    sha256 = hashlib.sha256()
-    try:
-        with open(file_path, "rb") as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                sha256.update(chunk)
-        checksum = sha256.hexdigest()
-        logging.info(f"SHA256 for {file_path}: {checksum}")
-        return checksum
-    except Exception as e:
-        logging.error(f"Failed to calculate SHA256 for {file_path}: {e}")
-        return None
 
 def download_and_extract_clash_core(url, dest_dir, executable_name):
     """
     Downloads and extracts Clash core to dest_dir.
-    Checks if the executable already exists, is executable, and matches the latest version.
+    Checks if the executable already exists and is executable to avoid re-downloading.
+    Handles .tar.gz, .zip, and .gz (gzipped executable) formats.
     Returns path to executable or None on failure.
     """
-    logging.info(f"Starting download and extraction for Clash core. URL: {url}, Dest: {dest_dir}")
     os.makedirs(dest_dir, exist_ok=True)
+    
     clash_exec_path = os.path.join(dest_dir, executable_name)
 
-    # Check if executable exists and is valid
-    latest_version = get_latest_clash_version()
+    # Check if executable already exists and is executable
     if os.path.exists(clash_exec_path) and os.path.isfile(clash_exec_path) and os.access(clash_exec_path, os.X_OK):
-        current_version = check_clash_version(clash_exec_path)
-        if current_version and latest_version in current_version:
-            logging.info(f"Valid Clash executable (version {current_version}) found at {clash_exec_path}. Skipping download.")
-            return clash_exec_path
-        else:
-            logging.warning(f"Clash executable invalid or version mismatch (current: {current_version}, expected: {latest_version}). Removing and redownloading.")
-            try:
-                os.remove(clash_exec_path)
-                logging.info(f"Removed invalid Clash executable: {clash_exec_path}")
-            except Exception as e:
-                logging.error(f"Failed to remove invalid Clash executable: {e}")
+        print(f"[DEBUG] Executable already exists and is executable at {clash_exec_path}. Skipping download.")
+        return clash_exec_path
 
-    logging.info(f"Downloading Clash core from: {url}")
+    print(f"[DEBUG] Executable not found or not executable. Attempting to download from: {url}")
     try:
-        response = requests.get(url, stream=True, timeout=30)
-        response.raise_for_status()
+        print(f"[DEBUG] Initiating download of {url}...")
+        response = requests.get(url, stream=True)
+        response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
+        
         filename = url.split('/')[-1]
         temp_archive_path = os.path.join(dest_dir, filename)
 
-        logging.debug(f"Saving downloaded archive to: {temp_archive_path}")
         with open(temp_archive_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
-        logging.info(f"Downloaded Clash core archive to: {temp_archive_path}")
+        print(f"[DEBUG] Downloaded archive/file to: {temp_archive_path}")
 
-        # Optional: Verify checksum (requires SHA256 from GitHub release)
-        # expected_sha256 = "..."  # Replace with actual SHA256
-        # if expected_sha256 and calculate_sha256(temp_archive_path) != expected_sha256:
-        #     logging.error(f"Checksum mismatch for {temp_archive_path}. Redownloading...")
-        #     os.remove(temp_archive_path)
-        #     return download_and_extract_clash_core(url, dest_dir, executable_name)
-
-        logging.debug(f"Extracting archive: {temp_archive_path}")
         extracted_name = None
         if filename.endswith(".tar.gz"):
+            print(f"[DEBUG] Extracting .tar.gz archive: {temp_archive_path}")
             with tarfile.open(temp_archive_path, "r:gz") as tar:
-                members = [m for m in tar.getmembers() if m.isfile() and (m.name == executable_name or m.name.startswith(f"{executable_name}-"))]
+                all_members = [m.name for m in tar.getmembers()]
+                print(f"[DEBUG] Archive members: {all_members}")
+
+                # Prioritize exact match, then starts with
+                members = [m for m in tar.getmembers() if m.isfile() and m.name == executable_name]
                 if not members:
-                    logging.error("Clash executable not found inside .tar.gz archive.")
-                    raise Exception("Clash executable not found inside .tar.gz archive.")
+                    members = [m for m in tar.getmembers() if m.isfile() and m.name.startswith(f"{executable_name}-")]
+
+                if not members:
+                    print(f"[ERROR] Executable '{executable_name}' or starting with '{executable_name}-' not found inside .tar.gz archive.")
+                    raise Exception("Executable not found inside .tar.gz archive.")
+                
                 clash_member = members[0]
-                logging.debug(f"Found Clash executable in archive: {clash_member.name}")
+                print(f"[DEBUG] Found executable member: {clash_member.name}. Extracting...")
                 tar.extract(clash_member, path=dest_dir)
                 extracted_name = os.path.join(dest_dir, clash_member.name)
+                print(f"[DEBUG] Extracted to: {extracted_name}")
+
         elif filename.endswith(".zip"):
-            logging.debug("Extracting .zip archive using unzip")
-            result = subprocess.run(["unzip", "-o", temp_archive_path, "-d", dest_dir], capture_output=True, text=True, check=True)
-            logging.debug(f"Unzip output: {result.stdout}")
+            print(f"[DEBUG] Extracting .zip archive: {temp_archive_path}")
+            subprocess.run(["unzip", "-o", temp_archive_path, "-d", dest_dir], check=True, capture_output=True, text=True)
+            print(f"[DEBUG] Zip extraction complete to {dest_dir}. Searching for executable...")
+            
             found_paths = []
             for root, _, files in os.walk(dest_dir):
                 for f_name in files:
-                    if f_name == executable_name or f_name.startswith(f"{executable_name}-") and not f_name.endswith(('.zip', '.tar.gz')):
+                    if f_name == executable_name or f_name.startswith(f"{executable_name}-") and not f_name.endswith(('.zip', '.tar.gz', '.gz')):
                         found_paths.append(os.path.join(root, f_name))
+            
             if found_paths:
-                extracted_name = found_paths[0]
-                logging.info(f"Found Clash executable in .zip: {extracted_name}")
+                extracted_name = found_paths[0] # Take the first one found
+                print(f"[DEBUG] Found extracted executable at: {extracted_name}")
             else:
-                logging.error("Clash executable not found inside .zip archive after extraction.")
-                raise Exception("Clash executable not found inside .zip archive after extraction.")
+                print(f"[ERROR] Executable '{executable_name}' or similar not found inside .zip archive after extraction.")
+                raise Exception("Executable not found inside .zip archive after extraction.")
+
+        elif filename.endswith(".gz"):
+            # This handles single gzipped executable files like mihomo-linux-amd64-vX.Y.Z.gz
+            print(f"[DEBUG] Decompressing .gz file: {temp_archive_path}")
+            # The decompressed file name will be temp_archive_path without .gz
+            decompressed_path = os.path.join(dest_dir, executable_name) # Ensure it's decompressed directly to the target name
+            try:
+                with gzip.open(temp_archive_path, 'rb') as f_in:
+                    with open(decompressed_path, 'wb') as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                extracted_name = decompressed_path
+                print(f"[DEBUG] Decompressed to: {extracted_name}")
+            except Exception as e:
+                print(f"[ERROR] Failed to decompress .gz file: {e}")
+                raise Exception(f"Failed to decompress .gz file: {e}")
         else:
-            logging.error(f"Unsupported archive format: {filename}. Only .tar.gz or .zip are supported.")
-            raise Exception("Unsupported archive format. Only .tar.gz or .zip are supported.")
+            print(f"[ERROR] Unsupported archive/file format: {filename}. Only .tar.gz, .zip, or .gz are supported.")
+            raise Exception("Unsupported archive/file format.")
 
+        # Ensure the executable is at the expected path (clash_exec_path)
+        # This step is mostly for renaming if the extracted_name is different from executable_name
+        # For .gz, we directly decompress to executable_name, so extracted_name == clash_exec_path
         if extracted_name and extracted_name != clash_exec_path:
-            logging.debug(f"Moving extracted Clash from {extracted_name} to {clash_exec_path}")
+            print(f"[DEBUG] Moving extracted executable from '{extracted_name}' to '{clash_exec_path}'...")
             shutil.move(extracted_name, clash_exec_path)
-            logging.info(f"Moved extracted Clash to: {clash_exec_path}")
+            print(f"[DEBUG] Moved successfully.")
 
-        logging.debug(f"Removing temporary archive: {temp_archive_path}")
+        # Clean up temporary archive file
+        print(f"[DEBUG] Removing temporary archive/file: {temp_archive_path}")
         os.remove(temp_archive_path)
 
-        logging.debug(f"Setting executable permissions for: {clash_exec_path}")
-        subprocess.run(["chmod", "+x", clash_exec_path], check=True, capture_output=True, text=True)
-        logging.info(f"Clash executable ready at: {clash_exec_path}")
+        # Make executable
+        print(f"[DEBUG] Setting executable permission for: {clash_exec_path}")
+        subprocess.run(["chmod", "+x", clash_exec_path], check=True)
+        print(f"[DEBUG] Executable now ready at: {clash_exec_path}")
         return clash_exec_path
     except requests.exceptions.RequestException as e:
-        logging.error(f"Network error during Clash download: {e}")
+        print(f"[ERROR] Network error during download: {e}")
         return None
     except subprocess.CalledProcessError as e:
-        logging.error(f"Extraction failed: {e.stderr}")
+        print(f"[ERROR] Extraction/decompression failed. Stderr:\n{e.stderr}\nStdout:\n{e.stdout}")
         return None
     except Exception as e:
-        logging.error(f"Failed to download or extract Clash core: {e}")
+        print(f"[ERROR] An unexpected error occurred during download or extraction: {e}")
         return None
 
-# ... (rest of the script remains unchanged, included for completeness)
 def generate_clash_config(node_links, output_path):
     """Generates a Clash YAML configuration file from a list of node links."""
     if not node_links:
@@ -221,7 +193,7 @@ def start_clash(clash_executable_path, config_file_path):
             text=True
         )
         
-        time.sleep(3)
+        time.sleep(3) 
 
         if process.poll() is not None:
             stdout, stderr = process.communicate()
@@ -389,6 +361,7 @@ def main():
         print("\n--- Starting Speed Tests ---")
         for i, proxy_name in enumerate(proxy_names):
             original_link_for_output = node_links[i] if i < len(node_links) else "Unknown Original Link"
+
             print(f"[{i+1}/{len(proxy_names)}] Testing Clash-assigned proxy name: '{proxy_name}' (Original Link: {original_link_for_output})...")
             
             if not set_clash_proxy_group_selection("测速节点", proxy_name):
@@ -396,6 +369,7 @@ def main():
                 continue
             
             time.sleep(0.5)
+
             speed = test_download_speed(TEST_FILE_URL, clash_proxy_address, file_size_bytes=50 * 1024 * 1024)
             
             if speed is not None:
