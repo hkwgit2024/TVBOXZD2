@@ -294,20 +294,29 @@ def test_http_connectivity():
             socket.socket = socks.socksocket
             
             session = requests.Session()
-            retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+            # 减少重试次数和超时
+            retries = Retry(total=1, status_forcelist=[429, 500, 502, 503, 504])
             
             # 使用自定义的 SocksIPv4Adapter 来强制 IPv4
             session.mount("http://", SocksIPv4Adapter(max_retries=retries))
             session.mount("https://", SocksIPv4Adapter(max_retries=retries)) 
 
-            response = session.get(test_url, timeout=10)
+            response = session.get(test_url, timeout=5) # 减少超时时间
             if response.status_code == 200:
                 log(f"HTTP 连通性测试通过: {test_url}")
                 return True
             else:
                 log(f"HTTP 连通性测试失败: {test_url}, 状态码 {response.status_code}")
+        except requests.exceptions.ConnectionError as e:
+            # 特别处理 Errno 92，因为它表明代理本身无法连接
+            if "[Errno 92] Protocol not available" in str(e):
+                log(f"HTTP 连通性测试失败: {test_url}, 错误: 代理连接协议不可用 ({e})")
+            else:
+                log(f"HTTP 连通性测试失败: {test_url}, 错误: {e}")
+            return False # 遇到连接错误直接返回 False，不再尝试其他URL
         except Exception as e:
             log(f"HTTP 连通性测试失败: {test_url}, 错误: {str(e)}")
+            return False # 遇到其他错误也直接返回 False
         finally:
             # 恢复默认的 socket
             socks.set_default_proxy(None)
