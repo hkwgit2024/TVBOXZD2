@@ -22,13 +22,13 @@ NODES_SOURCES = [
     },
     # 您可以根据需要添加更多节点来源，例如：
     # {
-    #     "url": "http://example.com/your_base64_encoded_subscription.txt",
-    #     "format": "base64-links"
+    #       "url": "http://example.com/your_base64_encoded_subscription.txt",
+    #       "format": "base64-links"
     # },
-     {
+    {
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
-         "format": "clash-yaml"
-     }
+        "format": "clash-yaml"
+    }
 ]
 
 CLASH_CORE_VERSION = "v1.19.10" # Mihomo 版本
@@ -54,6 +54,10 @@ def is_base64(s):
     try:
         decoded_bytes = base64.b64decode(s.strip(), validate=True)
         # 进一步检查解码内容是否看起来像文本，避免二进制数据误判
+        # 这里的判断可能会过于严格，实际中更常见的是直接尝试解码，如果无异常就认为是Base64
+        # 但为了避免二进制数据的误判，这里添加了尝试解码为UTF-8的逻辑
+        # 如果解码为UTF-8失败，可能它仍然是有效的Base64编码，只是内容不是文本
+        # 根据实际需要调整这里的严格程度
         return decoded_bytes.decode('utf-8') is not None
     except Exception:
         return False
@@ -67,14 +71,14 @@ def is_yaml(s):
         return isinstance(data, dict) or isinstance(data, list)
     except yaml.YAMLError:
         return False
-    except Exception:
+    except Exception: # 捕获其他可能的异常，例如解析器内部错误
         return False
 
 # --- Core Functions ---
 
 def setup_clash_core():
     """下载并解压 Clash Core"""
-    os.makedirs("clash_bin", exist_ok=True)
+    os.makedirs("clash_bin", exist_ok=True) # 确保 clash_bin 目录存在
     if not os.path.exists(CLASH_BIN_PATH):
         print(f"Downloading Clash core from {CLASH_DOWNLOAD_URL}...")
         try:
@@ -315,7 +319,7 @@ def parse_link(link, i):
                     proxy_dict['grpc-opts'] = grpc_opts
 
             return proxy_dict
-        
+            
         elif link.startswith("hy2://"):
             # Hysteria2 链接格式: hy2://uuid@server:port?params#name
             parsed_url = urlparse(link)
@@ -385,7 +389,8 @@ def fetch_and_parse_nodes():
                     processed_content = content # 解码失败则回退为原始内容
 
             # 2. 尝试 YAML 解析 (Clash proxies 格式)
-            if node_format == "clash-yaml" or (node_format == "auto" and is_yaml(processed_content)):
+            # 只有在明确指定为 clash-yaml 格式或 auto 模式下检测到 YAML 时才尝试解析
+            if node_format == "clash-yaml" or (node_format == "auto" and is_yaml(processed_content) and 'proxies' in yaml.safe_load(processed_content)):
                 try:
                     yaml_data = yaml.safe_load(processed_content)
                     if isinstance(yaml_data, dict) and 'proxies' in yaml_data and isinstance(yaml_data['proxies'], list):
@@ -482,7 +487,7 @@ def test_proxy(proxy_name):
 
         # 切换代理
         response = requests.put(f"{CLASH_API_URL}/proxies/%E6%B5%8B%E9%80%9F", # '测速' URL 编码
-                                headers=headers, json=payload, timeout=5)
+                                 headers=headers, json=payload, timeout=5)
         response.raise_for_status() # 检查切换是否成功
         print(f"Switched proxy to: {proxy_name}")
         time.sleep(1) # 等待代理切换生效
@@ -494,7 +499,7 @@ def test_proxy(proxy_name):
             total_size = 0
             for chunk in r.iter_content(chunk_size=8192):
                 total_size += len(chunk)
-        
+            
         end_time = time.time()
         duration = end_time - start_time
         
@@ -519,6 +524,11 @@ def test_proxy(proxy_name):
 
 def main():
     os.makedirs("data", exist_ok=True) # 确保 data 目录存在
+    # 清空旧日志文件。注意：此行应在 setup_clash_core() 之前，因为 setup_clash_core 会确保 clash_bin 存在。
+    # 也可以在 setup_clash_core() 中创建 clash_bin 后再清空日志。
+    # 但根据当前逻辑，这里先尝试清空，如果 clash_bin 不存在，会在 open() 时引发错误。
+    # 更好的做法是在确保目录存在后再清空。
+    # 鉴于 setup_clash_core 已经处理了 clash_bin 的创建，我们可以在这里直接清空。
     open(CLASH_LOG_PATH, 'w').close() # 清空旧日志文件
 
     setup_clash_core()
@@ -539,14 +549,20 @@ def main():
         results.append(f"# 节点测速结果 - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
         # 添加默认的DIRECT和REJECT组的测试结果（通常无法测速，只是占位）
-        results.append("Proxy: COMPATIBLE # 速度: 无法切换代理到 'COMPATIBLE'")
-        results.append("Proxy: PASS # 速度: 无法切换代理到 'PASS'")
-        results.append("Proxy: REJECT-DROP # 速度: 无法切换代理到 'REJECT-DROP'")
+        # 这些不是实际的代理，而是Clash的特殊组，通常不能直接测速
+        results.append("Proxy: DIRECT # 速度: (无法直接测速此Clash内置组)")
+        results.append("Proxy: REJECT # 速度: (无法直接测速此Clash内置组)")
+        # 兼容旧配置可能存在的组，如果它们是“Select”类型，且被设置为默认值，它们通常会代理流量。
+        # 但直接对它们进行测速意义不大，Clash API测速是针对具体的proxies名称。
+        results.append("Proxy: COMPATIBLE # 速度: (无法切换到此虚拟组)")
+        results.append("Proxy: PASS # 速度: (无法切换到此虚拟组)")
+        results.append("Proxy: REJECT-DROP # 速度: (无法切换到此虚拟组)")
+
 
         for proxy in proxies:
             result = test_proxy(proxy["name"])
             results.append(result)
-        
+            
         with open(COLLECT_SUB_PATH, 'w', encoding='utf-8') as f:
             for line in results:
                 f.write(line + "\n")
