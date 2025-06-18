@@ -16,7 +16,7 @@ import socket
 import sys
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from urllib3 import poolmanager # 导入 poolmanager
+from urllib3 import poolmanager
 import psutil
 
 # 确保日志实时输出
@@ -30,7 +30,7 @@ if not os.path.exists("data"):
 # 目标 URL 和输出文件
 url = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 output_file = "data/collectSub.txt"
-speedtest_log = "data/speedtest_errors.log" # 用于记录总体速度测试失败和节点处理失败信息
+speedtest_log = "data/speedtest_errors.log"
 
 # 环境检查
 log(f"Python 版本: {sys.version}")
@@ -82,8 +82,8 @@ def download_sing_box():
             binary_paths = glob.glob("**/sing-box", recursive=True) or glob.glob("sing-box")
             if not binary_paths:
                 raise Exception("未找到解压后的 sing-box 二进制文件")
-            subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True, timeout=10)
-            subprocess.run(["chmod", "+x", sing_box_bin], check=True, timeout=10)
+                subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True, timeout=10)
+                subprocess.run(["chmod", "+x", sing_box_bin], check=True, timeout=10)
             if os.path.exists(sing_box_tar):
                 os.remove(sing_box_tar)
             post_dirs = set(glob.glob("sing-box*"))
@@ -143,7 +143,6 @@ def parse_node(line):
             except ValueError as e:
                 log(f"解析 ss 节点失败 ({line[:50]}...): {str(e)}")
             try:
-                # 尝试非base64编码解析
                 if "@" in raw_config:
                     userinfo, ip_port = raw_config.split("@")
                     cipher, password = userinfo.split(":")
@@ -205,7 +204,7 @@ def generate_sing_box_config(node, temp_config_file, log_file_path):
     config = {
         "log": {
             "level": "debug",
-            "output": log_file_path # 将日志输出到文件
+            "output": log_file_path
         },
         "inbounds": [
             {
@@ -269,79 +268,68 @@ def generate_sing_box_config(node, temp_config_file, log_file_path):
 
 # 自定义 HTTPAdapter，强制 IPv4
 class SocksIPv4Adapter(HTTPAdapter):
-    def init_poolmanager(self, connections, max_runs, block=False):
-        # 覆盖此方法以设置 socket_options
-        self.poolmanager = poolmanager.PoolManager( # 使用导入的 poolmanager.PoolManager
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = poolmanager.PoolManager(
             num_pools=connections,
-            maxsize=max_runs,
+            maxsize=maxsize,
             block=block,
-            # 设置 socket_options 来强制 IPv4
-            socket_options=[
-                (socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
-            ]
+            socket_options=[(socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)]
         )
 
 # 测试 HTTP 连通性
-def test_http_connectivity():
+def test_http_connectivity(log_file_path):
     log("开始 HTTP 连通性测试")
-    urls = ["http://ipinfo.io/json", "http://www.google.com"]
-
-    for test_url in urls:
-        log(f"测试 URL: {test_url}")
+    start_time = time.time()
+    test_url = "http://ipinfo.io/json"
+    log(f"测试 URL: {test_url}")
+    original_timeout = socket.getdefaulttimeout()
+    try:
+        socket.setdefaulttimeout(3)  # 全局 socket 超时
+        socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
+        socket.socket = socks.socksocket
+        session = requests.Session()
+        retries = Retry(total=1, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
+        session.mount("http://", SocksIPv4Adapter(max_retries=retries))
+        session.mount("https://", SocksIPv4Adapter(max_retries=retries))
+        response = session.get(test_url, timeout=3)
+        if response.status_code == 200:
+            log(f"HTTP 连通性测试通过: {test_url}")
+            duration = time.time() - start_time
+            log(f"HTTP 测试耗时: {duration:.2f} 秒")
+            return True
+        else:
+            log(f"HTTP 连通性测试失败: {test_url}, 状态码 {response.status_code}")
+    except Exception as e:
+        log(f"HTTP 连通性测试失败: {test_url}, 错误: {str(e)}")
         try:
-            # 设置 PySocks 为全局代理
-            socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
-            socket.socket = socks.socksocket
-            
-            session = requests.Session()
-            # 减少重试次数和超时
-            retries = Retry(total=1, status_forcelist=[429, 500, 502, 503, 504])
-            
-            # 使用自定义的 SocksIPv4Adapter 来强制 IPv4
-            session.mount("http://", SocksIPv4Adapter(max_retries=retries))
-            session.mount("https://", SocksIPv4Adapter(max_retries=retries)) 
-
-            response = session.get(test_url, timeout=5) # 减少超时时间
-            if response.status_code == 200:
-                log(f"HTTP 连通性测试通过: {test_url}")
-                return True
-            else:
-                log(f"HTTP 连通性测试失败: {test_url}, 状态码 {response.status_code}")
-        except requests.exceptions.ConnectionError as e:
-            # 特别处理 Errno 92，因为它表明代理本身无法连接
-            if "[Errno 92] Protocol not available" in str(e):
-                log(f"HTTP 连通性测试失败: {test_url}, 错误: 代理连接协议不可用 ({e})")
-            else:
-                log(f"HTTP 连通性测试失败: {test_url}, 错误: {e}")
-            return False # 遇到连接错误直接返回 False，不再尝试其他URL
-        except Exception as e:
-            log(f"HTTP 连通性测试失败: {test_url}, 错误: {str(e)}")
-            return False # 遇到其他错误也直接返回 False
-        finally:
-            # 恢复默认的 socket
-            socks.set_default_proxy(None)
-            socket.socket = socket._socket.socket
-
-    log("所有 HTTP 测试 URL 均失败")
+            with open(log_file_path, "r") as f:
+                sing_box_log = f.read().strip()
+                if sing_box_log:
+                    log(f"sing-box 日志摘要: {sing_box_log[-200:]}")
+        except Exception as log_e:
+            log(f"读取 sing-box 日志失败: {str(log_e)}")
+    finally:
+        socket.setdefaulttimeout(original_timeout)
+        socks.set_default_proxy(None)
+        socket.socket = socket._socket.socket
+        duration = time.time() - start_time
+        log(f"HTTP 测试耗时: {duration:.2f} 秒")
     return False
 
-# 测试连通性 (检查 sing-box SOCKS5 代理是否在本地端口监听)
-def test_connectivity(sing_box_bin, config_file):
+# 测试连通性
+def test_connectivity(sing_box_bin, config_file, log_file_path):
     log("开始连通性测试")
-    kill_sing_box()  # 清理残留进程
+    kill_sing_box()
     process = None
     try:
         process = subprocess.Popen(
             [sing_box_bin, "run", "-c", config_file],
-            stdout=subprocess.PIPE, # 仍然捕获 stdout
-            # stderr 不再直接捕获，因为它被重定向到文件了
+            stdout=subprocess.PIPE,
             text=True
         )
-        time.sleep(2) # 给 sing-box 启动留出时间
-        
-        # 尝试连接 sing-box 的本地 SOCKS5 端口
+        time.sleep(2)
         sock_test = subprocess.run(
-            ["nc", "-zv", "127.0.0.1", "1080", "-w", "1"], # 使用 netcat 检查端口
+            ["nc", "-zv", "127.0.0.1", "1080", "-w", "1"],
             capture_output=True,
             text=True,
             timeout=2
@@ -351,7 +339,13 @@ def test_connectivity(sing_box_bin, config_file):
             return True
         else:
             log(f"sing-box SOCKS5 代理未成功监听: {sock_test.stderr.strip()}")
-            # 这里不再读取 sing-box 的 stderr，因为它的详细日志已经输出到单独的文件了
+            try:
+                with open(log_file_path, "r") as f:
+                    sing_box_log = f.read().strip()
+                    if sing_box_log:
+                        log(f"sing-box 日志摘要: {sing_box_log[-200:]}")
+            except Exception as e:
+                log(f"读取 sing-box 日志失败: {str(e)}")
             return False
     except FileNotFoundError:
         log("nc 或 sing-box 命令未找到，请确保已安装 netcat 和 sing-box")
@@ -363,7 +357,6 @@ def test_connectivity(sing_box_bin, config_file):
         log(f"连通性测试失败 (sing-box 启动): {str(e)}")
         return False
     finally:
-        # 无论测试成功与否，都尝试终止 sing-box 进程
         if process:
             process.terminate()
             try:
@@ -371,73 +364,60 @@ def test_connectivity(sing_box_bin, config_file):
             except subprocess.TimeoutExpired:
                 process.kill()
                 log("强制终止 sing-box 进程")
-            kill_sing_box() # 再次确保清理
+            kill_sing_box()
 
-# 测试下载和上传速度（使用 speedtest-cli Python 库）
-def test_download_speed(sing_box_bin, config_file):
+# 测试下载和上传速度
+def test_download_speed(sing_box_bin, config_file, log_file_path):
     log("开始速度测试")
-    kill_sing_box()  # 清理残留进程
+    kill_sing_box()
     proxy_process = None
     try:
         proxy_process = subprocess.Popen(
             [sing_box_bin, "run", "-c", config_file],
-            stdout=subprocess.PIPE, # 仍然捕获 stdout
-            # stderr 不再直接捕获，因为它被重定向到文件了
+            stdout=subprocess.PIPE,
             text=True
         )
-        time.sleep(15)  # 延长等待时间，给 sing-box 充分时间稳定连接
+        time.sleep(5)  # 缩短等待时间
         log("代理环境变量: socks5://127.0.0.1:1080")
-        
-        # 依赖 HTTP 连通性测试结果来决定是否进行 speedtest
-        if not test_http_connectivity():
+        if not test_http_connectivity(log_file_path):
             log("跳过 speedtest，因 HTTP 连通性测试失败")
             return 0, 0, 0
-
         log("执行 speedtest-cli 命令")
-        
-        # 设置环境变量，确保 speedtest-cli 使用 sing-box 代理
-        # 注意：这里我们使用 ALL_PROXY, HTTP_PROXY, HTTPS_PROXY 并指定 socks5
         env = os.environ.copy()
         env["ALL_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTPS_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTP_PROXY"] = "socks5://127.0.0.1:1080"
-        
-        # 执行 speedtest 命令
         result = subprocess.run(
-            ["speedtest", "--format=json", "--accept-license"], # 使用 --accept-license 避免交互式确认
+            ["speedtest", "--format=json", "--accept-license"],
             env=env,
             capture_output=True,
             text=True,
-            timeout=45 # 增加超时时间，等待 speedtest 完成
+            timeout=45
         )
-
         if result.returncode == 0:
             speedtest_output = result.stdout.strip()
             try:
                 results = json.loads(speedtest_output)
-                # speedtest-cli 的 bandwidth 是 bytes/sec，需要乘以 8 转换为 bits/sec
-                download_mbps = results["download"]["bandwidth"] * 8 / 1_000_000 # 转换为 Mbps
-                upload_mbps = results["upload"]["bandwidth"] * 8 / 1_000_000 # 转换为 Mbps
+                download_mbps = results["download"]["bandwidth"] * 8 / 1_000_000
+                upload_mbps = results["upload"]["bandwidth"] * 8 / 1_000_000
                 ping_latency = results["ping"]["latency"]
                 log(f"速度测试完成: 下载 {download_mbps:.2f} Mbps, 上传 {upload_mbps:.2f} Mbps, 延迟 {ping_latency:.2f} ms")
                 return download_mbps, upload_mbps, ping_latency
             except json.JSONDecodeError:
                 log(f"speedtest 输出非 JSON 格式或解析失败: {speedtest_output}")
-                # 写入错误日志
                 with open(speedtest_log, "a") as f:
                     f.write(f"[{datetime.now()}] speedtest JSON解析失败: {speedtest_output}\n")
                 return 0, 0, 0
         else:
             log(f"speedtest 失败，错误代码: {result.returncode}, 输出: {result.stderr.strip()}")
-            # 写入错误日志
             with open(speedtest_log, "a") as f:
                 f.write(f"[{datetime.now()}] speedtest 失败，错误代码: {result.returncode}, 输出: {result.stderr.strip()}\n")
             return 0, 0, 0
     except FileNotFoundError:
-        log("speedtest 命令未找到，请确保已安装 speedtest CLI (`pip install speedtest-cli` 或通过系统包管理器)")
+        log("speedtest 命令未找到，请确保已安装 speedtest CLI")
         return 0, 0, 0
     except subprocess.TimeoutExpired:
-        log(f"速度测试超时 ({45}秒)，可能是 sing-box 或远程节点无响应")
+        log(f"速度测试超时 (45秒)，可能是 sing-box 或远程节点无响应")
         with open(speedtest_log, "a") as f:
             f.write(f"[{datetime.now()}] 速度测试超时\n")
         return 0, 0, 0
@@ -447,7 +427,6 @@ def test_download_speed(sing_box_bin, config_file):
             f.write(f"[{datetime.now()}] 速度测试失败: {str(e)}\n")
         return 0, 0, 0
     finally:
-        # 无论测试成功与否，都尝试终止 sing-box 进程
         if proxy_process:
             proxy_process.terminate()
             try:
@@ -455,7 +434,7 @@ def test_download_speed(sing_box_bin, config_file):
             except subprocess.TimeoutExpired:
                 proxy_process.kill()
                 log("强制终止 sing-box 进程")
-            kill_sing_box() # 再次确保清理
+            kill_sing_box()
 
 # 主函数
 def main():
@@ -465,72 +444,57 @@ def main():
     except Exception as e:
         log(f"初始化失败: {str(e)}")
         return
-    
     log("开始下载节点文件")
     session = requests.Session()
     retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
     session.mount("https://", HTTPAdapter(max_retries=retries))
     try:
         response = session.get(url, timeout=10)
-        response.raise_for_status() # 检查 HTTP 错误状态码
+        response.raise_for_status()
         with open("nodes.txt", "w", encoding="utf-8") as f:
             f.write(response.text)
     except Exception as e:
         log(f"下载节点文件失败: {str(e)}")
         return
     log("节点文件下载完成")
-    
     results = []
     node_count = 0
-    max_nodes = 100 # 最多测试100个节点，你可以根据需要调整此值
+    max_nodes = 100
     total_nodes = 0
-
     try:
         with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
             lines = [line.strip() for line in f if line.strip()]
             total_nodes = len(lines)
             log(f"节点文件包含 {total_nodes} 个节点")
-            
             for line in lines:
                 if node_count >= max_nodes:
                     log(f"达到最大节点限制 ({max_nodes})，停止解析和测试")
                     break
-                
-                node = None # 初始化 node 变量
-                # 为 sing-box 创建一个独立的日志文件
-                sing_box_log_path = os.path.join("data", f"sing-box_node_{node_count + 1}.log") # 从1开始计数
-                temp_config_name = None # 初始化临时配置文件名
-                
+                node = None
+                sing_box_log_path = os.path.join("data", f"sing-box_node_{node_count + 1}.log")
+                temp_config_name = None
                 try:
                     node = parse_node(line)
                     if not node:
                         log(f"跳过无法解析的节点: {line[:50]}...")
                         continue
-                    
                     node_count += 1
                     log(f"--- 开始测试节点 {node_count}/{total_nodes}: {node['ip']}:{node['port']} ({node['type']}) ---")
-                    
-                    # 使用 NamedTemporaryFile 来安全地创建和管理临时文件
                     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
                         temp_config_name = temp_config.name
-                        generate_sing_box_config(node, temp_config_name, sing_box_log_path) # 传递日志文件路径
-
-                    # 1. 首先测试 sing-box 本地 SOCKS5 代理是否启动
-                    is_socks_connected = test_connectivity(sing_box_bin, temp_config_name)
-                    
+                        generate_sing_box_config(node, temp_config_name, sing_box_log_path)
+                    is_socks_connected = test_connectivity(sing_box_bin, temp_config_name, sing_box_log_path)
                     download_mbps, upload_mbps, ping_latency = 0, 0, 0
                     if is_socks_connected:
-                        # 2. 如果本地代理启动，则尝试通过代理进行速度测试
-                        download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config_name)
+                        download_mbps, upload_mbps, ping_latency = test_download_speed(sing_box_bin, temp_config_name, sing_box_log_path)
                     else:
                         log(f"节点 {node['ip']}:{node['port']} 的 sing-box SOCKS5 代理未启动，跳过速度测试。")
-
                     results.append({
                         "node": node["raw"],
                         "ip": node["ip"],
                         "port": node["port"],
                         "type": node["type"],
-                        "connected": (download_mbps > 0 and upload_mbps > 0), # 根据速度判断是否成功连接
+                        "connected": (download_mbps > 0 and upload_mbps > 0),
                         "download_mbps": round(download_mbps, 2),
                         "upload_mbps": round(upload_mbps, 2),
                         "ping_latency_ms": round(ping_latency, 2),
@@ -539,9 +503,8 @@ def main():
                     log(f"处理节点 {node_count}/{total_nodes} ({line[:50]}...) 失败: {str(e)}")
                     with open(speedtest_log, "a") as f:
                         f.write(f"[{datetime.now()}] 处理节点失败: {line[:50]}... - {str(e)}\n")
-                    # 如果发生异常，也应该将该节点记录下来
                     results.append({
-                        "node": line, # 记录原始行
+                        "node": line,
                         "ip": node['ip'] if node else "N/A",
                         "port": node['port'] if node else "N/A",
                         "type": node['type'] if node else "N/A",
@@ -552,7 +515,6 @@ def main():
                         "error": str(e)
                     })
                 finally:
-                    # 确保临时配置文件被删除
                     if temp_config_name and os.path.exists(temp_config_name):
                         try:
                             os.unlink(temp_config_name)
@@ -561,12 +523,8 @@ def main():
     except Exception as e:
         log(f"读取节点文件 'nodes.txt' 失败: {str(e)}")
         return
-    
     try:
-        # 对结果进行排序，通常按下载速度排序
         results.sort(key=lambda x: x["download_mbps"], reverse=True)
-        
-        # 将结果写入最终输出文件
         with open(output_file, "w", encoding="utf-8") as f:
             for result in results:
                 f.write(json.dumps(result, ensure_ascii=False) + "\n")
