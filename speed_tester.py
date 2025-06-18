@@ -347,7 +347,7 @@ def parse_link(link, i):
 def fetch_and_parse_nodes():
     """从配置的来源获取并解析所有节点"""
     all_parsed_proxies = []
-    seen_proxy_names = set() # 用于跟踪已见的代理名称
+    seen_proxy_names = set() # 用于跟踪已见的代理名称 (在函数开始时初始化一次)
 
     for source in NODES_SOURCES:
         url = source["url"]
@@ -371,15 +371,14 @@ def fetch_and_parse_nodes():
             yaml_data_from_content = None
             if node_format == "clash-yaml" or node_format == "auto":
                 # 更彻底地清理 YAML 中的非标准标签
-                # 这个正则表达式会匹配 '!' 后面的所有非空白字符，直到遇到空格或行尾
-                # 然后替换为只保留原值
-                # 例如: `password: !<str> 3767107462583558144` 变为 `password: 3767107462583558144`
-                # 这样做是为了解决 `could not determine a constructor for the tag 'str'` 错误
-                cleaned_yaml_content = re.sub(r'!\S+\s*', '', processed_content)
+                # 匹配 '!' 后面跟着非空白字符，然后是空格、冒号或行尾
+                # 例如: `password: !<str> 3767107462583558144` -> `password: 3767107462583558144`
+                # 例如: `name: !tagged_value some_value` -> `name: some_value`
+                # 例如: `key: !tag value` -> `key: value`
+                cleaned_yaml_content = re.sub(r'!\S+(\s*|:\s*)', '', processed_content)
                 
-                # 进一步处理可能存在的冒号后的非标准标签，例如 `key: !<tag>value`
-                cleaned_yaml_content = re.sub(r':\s*!\S+', ':', cleaned_yaml_content)
-
+                # 额外的清理，以防有其他未预料的格式问题
+                cleaned_yaml_content = cleaned_yaml_content.replace('\r', '') # 移除回车符
 
                 try:
                     yaml_data_from_content = yaml.full_load(cleaned_yaml_content)
