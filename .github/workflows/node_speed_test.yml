@@ -10,12 +10,20 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      - name: Debug Repository Info
+        run: |
+          echo "Repository: qjlxg/sh"
+          curl -H "Authorization: token ${{ secrets.BOT }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/qjlxg/sh || echo "Failed to fetch repo info"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           repository: qjlxg/sh
+          ref: main  # 显式指定分支
           fetch-depth: 1
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT }}  # 使用 BOT 令牌
 
       - name: Set up Python
         uses: actions/setup-python@v5
