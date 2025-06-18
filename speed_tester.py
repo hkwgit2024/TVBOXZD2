@@ -6,13 +6,11 @@ import subprocess
 import time
 import urllib.parse
 import requests
-import yaml
 
 # 常量定义
-CLASH_BIN_PATH = "./clash_bin/mihomo"
-CLASH_CONFIG_PATH = "clash_config.yaml"
-CLASH_LOG_PATH = "clash_bin/clash_debug.log"
-CLASH_API_URL = "http://127.0.0.1:9090"
+SINGBOX_BIN_PATH = "./clash_bin/sing-box"
+SINGBOX_CONFIG_PATH = "sing-box-config.json"
+SINGBOX_LOG_PATH = "sing-box.log"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
@@ -24,11 +22,11 @@ NODES_SOURCES = [
         "type": "plain",
     },
 ]
-MAX_PROXIES = 1000  # 限制最大代理数量，防止内存溢出
+MAX_PROXIES = 1000  # 限制最大代理数量
 
 # 确保输出目录存在
 os.makedirs(os.path.dirname(OUTPUT_SUB_FILE), exist_ok=True)
-os.makedirs(os.path.dirname(CLASH_LOG_PATH), exist_ok=True)
+os.makedirs(os.path.dirname(SINGBOX_LOG_PATH), exist_ok=True)
 
 def extract_host_port(netloc_part):
     """提取主机和端口，支持 IPv4 和 IPv6"""
@@ -78,11 +76,11 @@ def parse_link(link):
             return {
                 "type": "ss",
                 "config": {
-                    "name": name,
-                    "type": "ss",
+                    "tag": name,
+                    "type": "shadowsocks",
                     "server": host,
-                    "port": port,
-                    "cipher": method,
+                    "server_port": port,
+                    "method": method,
                     "password": password,
                 },
             }
@@ -110,12 +108,12 @@ def parse_link(link):
             return {
                 "type": "ssr",
                 "config": {
-                    "name": name,
+                    "tag": name,
                     "type": "ssr",
                     "server": host,
-                    "port": int(port),
+                    "server_port": int(port),
                     "protocol": protocol,
-                    "cipher": method,
+                    "method": method,
                     "obfs": obfs,
                     "password": password,
                     **{f"obfs-{k}": v for k, v in params.items() if k.startswith("obfs")},
@@ -130,19 +128,19 @@ def parse_link(link):
             return {
                 "type": "vmess",
                 "config": {
-                    "name": vmess_data.get("ps", "Unnamed"),
+                    "tag": vmess_data.get("ps", "Unnamed"),
                     "type": "vmess",
                     "server": vmess_data.get("add"),
-                    "port": int(vmess_data.get("port")),
+                    "server_port": int(vmess_data.get("port")),
                     "uuid": vmess_data.get("id"),
-                    "alterId": int(vmess_data.get("aid", 0)),
-                    "cipher": vmess_data.get("type", "auto"),
-                    "tls": vmess_data.get("tls") == "tls",
+                    "security": vmess_data.get("type", "auto"),
+                    "alter_id": int(vmess_data.get("aid", 0)),
                     **{
                         k: v
                         for k, v in vmess_data.items()
                         if k in ["network", "ws-opts", "h2-opts", "grpc-opts"]
                     },
+                    "tls": {"enabled": vmess_data.get("tls") == "tls"} if vmess_data.get("tls") else {},
                 },
             }
         
@@ -155,15 +153,19 @@ def parse_link(link):
             return {
                 "type": "trojan",
                 "config": {
-                    "name": name,
+                    "tag": name,
                     "type": "trojan",
                     "server": host,
-                    "port": port or 443,
+                    "server_port": port or 443,
                     "password": password,
-                    "sni": query.get("sni", [host])[0],
+                    "tls": {
+                        "enabled": True,
+                        "server_name": query.get("sni", [host])[0],
+                        "insecure": query.get("allowInsecure", ["0"])[0] == "1",
+                    },
                     **{
                         k: query.get(k, [None])[0]
-                        for k in ["allowInsecure", "type", "path", "host"]
+                        for k in ["type", "path", "host"]
                         if query.get(k)
                     },
                 },
@@ -201,15 +203,15 @@ def fetch_and_parse_nodes():
                     continue
                 try:
                     parsed = parse_link(link)
-                    original_name = parsed["config"]["name"]
+                    original_name = parsed["config"]["tag"]
                     if original_name in seen_proxy_names:
                         counter = sum(
                             1 for name in seen_proxy_names if name.startswith(original_name)
                         )
                         new_name = f"{original_name}-{counter}"
-                        parsed["config"]["name"] = new_name
+                        parsed["config"]["tag"] = new_name
                         print(f"Duplicate proxy name '{original_name}' found. Renamed to '{new_name}'.")
-                    seen_proxy_names.add(parsed["config"]["name"])
+                    seen_proxy_names.add(parsed["config"]["tag"])
                     all_parsed_proxies.append(parsed["config"])
                 except Exception as e:
                     print(f"Warning: Failed to parse link '{link}'. Error: {e}")
@@ -220,97 +222,154 @@ def fetch_and_parse_nodes():
     print(f"Total parsed proxies: {len(all_parsed_proxies)}")
     return all_parsed_proxies
 
-def generate_clash_config(proxies):
-    """生成 Clash 配置文件"""
-    config = {
-        "port": 7890,
-        "socks-port": 7891,
-        "allow-lan": False,
-        "mode": "rule",
-        "log-level": "debug",
-        "external-controller": "127.0.0.1:9090",
-        "secret": "",
-        "proxies": proxies,
-        "proxy-groups": [
-            {"name": "测速", "type": "select", "proxies": [p["name"] for p in proxies]},
-            {"name": "DIRECT", "type": "direct"},
-            {"name": "REJECT", "type": "reject"},
-        ],
-        "rules": ["MATCH,测速"],
-    }
-    with open(CLASH_CONFIG_PATH, "w", encoding="utf-8") as f:
-        yaml.dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-    print(f"Clash config generated at {CLASH_CONFIG_PATH}")
+def generate_singbox_config(proxies):
+    """生成 sing-box 配置文件"""
+    outbounds = []
+    for proxy in proxies:
+        if proxy["type"] == "shadowsocks":
+            outbounds.append(proxy)
+        elif proxy["type"] == "vmess":
+            outbounds.append(proxy)
+        elif proxy["type"] == "trojan":
+            outbounds.append(proxy)
+        elif proxy["type"] == "ssr":
+            print(f"Warning: SSR proxy '{proxy['tag']}' may not be supported by sing-box. Skipping.")
+            continue
 
-def start_clash():
-    """启动 Clash 核心并捕获详细日志"""
-    print("Starting Clash core...")
-    with open(CLASH_LOG_PATH, "a", encoding="utf-8") as log_file:
-        log_file.write(f"--- Clash Core Log Start ({time.strftime('%Y-%m-%d %H:%M:%S')}) ---\n")
-        clash_process = subprocess.Popen(
-            [CLASH_BIN_PATH, "-f", CLASH_CONFIG_PATH, "-d", "."],
+    config = {
+        "log": {
+            "level": "debug",
+            "output": SINGBOX_LOG_PATH,
+        },
+        "outbounds": [
+            *outbounds,
+            {"type": "direct", "tag": "direct"},
+            {"type": "block", "tag": "block"},
+        ],
+        "inbounds": [
+            {
+                "type": "http",
+                "tag": "http-in",
+                "listen": "127.0.0.1",
+                "listen_port": 7890,
+            },
+            {
+                "type": "socks",
+                "tag": "socks-in",
+                "listen": "127.0.0.1",
+                "listen_port": 7891,
+            },
+        ],
+        "route": {
+            "rules": [
+                {"outbound": "block", "protocol": ["dns"]},
+                {"outbound": outbounds[0]["tag"] if outbounds else "direct", "network": ["tcp", "udp"]},
+            ],
+        },
+    }
+    with open(SINGBOX_CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+    print(f"sing-box config generated at {SINGBOX_CONFIG_PATH}")
+    return SINGBOX_CONFIG_PATH
+
+def start_singbox(config_path):
+    """启动 sing-box 核心并捕获详细日志"""
+    print("Starting sing-box core...")
+    with open(SINGBOX_LOG_PATH, "a", encoding="utf-8") as log_file:
+        log_file.write(f"--- sing-box Core Log Start ({time.strftime('%Y-%m-%d %H:%M:%S')}) ---\n")
+        singbox_process = subprocess.Popen(
+            [SINGBOX_BIN_PATH, "run", "-c", config_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,
         )
-        # 实时捕获输出
         while True:
-            stdout_line = clash_process.stdout.readline()
-            stderr_line = clash_process.stderr.readline()
+            stdout_line = singbox_process.stdout.readline()
+            stderr_line = singbox_process.stderr.readline()
             if stdout_line:
                 log_file.write(stdout_line)
                 print(stdout_line.strip())
             if stderr_line:
                 log_file.write(stderr_line)
                 print(stderr_line.strip())
-            if clash_process.poll() is not None:
+            if singbox_process.poll() is not None:
                 break
-        # 读取剩余输出
-        stdout_rest, stderr_rest = clash_process.communicate(timeout=5)
+        stdout_rest, stderr_rest = singbox_process.communicate(timeout=5)
         log_file.write(stdout_rest)
         log_file.write(stderr_rest)
-        if clash_process.returncode != 0:
-            raise Exception(f"Clash core exited with code {clash_process.returncode}. Check log for details.")
+        if singbox_process.returncode != 0:
+            raise Exception(f"sing-box core exited with code {singbox_process.returncode}. Check log for details.")
 
-    # 检查 API 可用性
-    api_ready = False
+    proxy_ready = False
     for i in range(10):
         try:
-            response = requests.get(f"{CLASH_API_URL}/configs", timeout=2)
+            response = requests.get(
+                "https://www.google.com",
+                proxies={"https": "http://127.0.0.1:7890"},
+                timeout=2,
+            )
             if response.status_code == 200:
-                print("Clash API is reachable.")
-                api_ready = True
+                print("sing-box proxy is reachable.")
+                proxy_ready = True
                 break
         except Exception as e:
-            print(f"Error checking Clash API: {e}")
+            print(f"Error checking sing-box proxy: {e}")
         time.sleep(2)
-    if not api_ready:
-        raise Exception("Clash API did not become reachable within expected time.")
+    if not proxy_ready:
+        raise Exception("sing-box proxy did not become reachable within expected time.")
 
-    print("Clash core started.")
-    return clash_process
+    print("sing-box core started.")
+    return singbox_process
 
-def test_proxy(proxy_name):
+def test_proxy(proxy_name, proxies, config_path):
     """测试代理节点速度"""
     try:
-        payload = {"name": proxy_name}
-        response = requests.put(
-            f"{CLASH_API_URL}/proxies/测速", json=payload, timeout=5
-        )
-        response.raise_for_status()
+        temp_config = {
+            "log": {"level": "debug", "output": SINGBOX_LOG_PATH},
+            "outbounds": [
+                next(p for p in proxies if p["tag"] == proxy_name),
+                {"type": "direct", "tag": "direct"},
+                {"type": "block", "tag": "block"},
+            ],
+            "inbounds": [
+                {"type": "http", "tag": "http-in", "listen": "127.0.0.1", "listen_port": 7890},
+                {"type": "socks", "tag": "socks-in", "listen": "127.0.0.1", "listen_port": 7891},
+            ],
+            "route": {"rules": [{"outbound": proxy_name, "network": ["tcp", "udp"]}]},
+        }
+        temp_config_path = f"sing-box-temp-{proxy_name}.json"
+        with open(temp_config_path, "w", encoding="utf-8") as f:
+            json.dump(temp_config, f, ensure_ascii=False, indent=2)
+        
+        temp_process = start_singbox(temp_config_path)
+        
         start_time = time.time()
         test_response = requests.get(
-            "https://www.google.com", proxies={"https": "http://127.0.0.1:7890"}, timeout=10
+            "https://www.google.com",
+            proxies={"https": "http://127.0.0.1:7890"},
+            timeout=10,
         )
         elapsed = time.time() - start_time
         if test_response.status_code == 200:
-            speed = (len(test_response.content) / 1024 / 1024) / elapsed  # MB/s
-            return speed * 8  # 转换为 Mbps
+            speed = (len(test_response.content) / 1024 / 1024) / elapsed
+            speed_mbps = speed * 8
+            print(f"Proxy: {proxy_name} # Speed: {speed_mbps:.2f} Mbps")
+            return speed_mbps
         return 0
+    
     except Exception as e:
         print(f"Error testing proxy {proxy_name}: {e}")
         return 0
+    finally:
+        if temp_process and temp_process.poll() is None:
+            temp_process.terminate()
+            try:
+                temp_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                temp_process.kill()
+        if os.path.exists(temp_config_path):
+            os.remove(temp_config_path)
 
 def main():
     """主函数"""
@@ -322,37 +381,37 @@ def main():
         print("No valid proxies found. Exiting.")
         return
     
-    generate_clash_config(proxies)
+    config_path = generate_singbox_config(proxies)
     print(f"Generated config in {time.time() - start_time:.2f} seconds.")
     
-    clash_process = None
+    singbox_process = None
     try:
-        clash_process = start_clash()
+        singbox_process = start_singbox(config_path)
         results = []
         for proxy in proxies:
-            speed = test_proxy(proxy["name"])
+            if proxy["type"] == "ssr":
+                continue
+            speed = test_proxy(proxy["tag"], proxies, config_path)
             if speed > 0:
-                print(f"Proxy: {proxy['name']} # Speed: {speed:.2f} Mbps")
                 results.append((proxy, speed))
         
-        # 按速度排序并保存前 10 个结果
         results.sort(key=lambda x: x[1], reverse=True)
         with open(OUTPUT_SUB_FILE, "w", encoding="utf-8") as f:
             for proxy, speed in results[:10]:
-                f.write(f"{yaml.dump([proxy], allow_unicode=True)}\n# Speed: {speed:.2f} Mbps\n")
+                f.write(f"{json.dumps(proxy, ensure_ascii=False)}\n# Speed: {speed:.2f} Mbps\n")
         print(f"Results saved to {OUTPUT_SUB_FILE}")
     
     except Exception as e:
         print(f"Error in main loop: {e}")
     
     finally:
-        if clash_process and clash_process.poll() is None:
-            print("Terminating Clash core...")
-            clash_process.terminate()
+        if singbox_process and singbox_process.poll() is None:
+            print("Terminating sing-box core...")
+            singbox_process.terminate()
             try:
-                clash_process.wait(timeout=5)
+                singbox_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                clash_process.kill()
+                singbox_process.kill()
         print(f"Total execution time: {time.time() - start_time:.2f} seconds.")
 
 if __name__ == "__main__":
