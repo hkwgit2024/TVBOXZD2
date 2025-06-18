@@ -17,7 +17,9 @@ OUTPUT_FILE = "data/collectSub.txt"
 CLASH_CONFIG_FILE = "clash_config.yaml"
 CLASH_API_PORT = 9090 # Clash external controller port
 CLASH_PROXY_HTTP_PORT = 7890 # Clash HTTP proxy port
-TEST_FILE_URL = "https://speed.cloudflare.com/__down?bytes=50000000" # Test with 50MB file. Consider a larger file (e.g., 100MB) for more accurate high-speed tests.
+# 更改测速URL以尝试提高成功率和获取更多信息
+TEST_FILE_URL = "http://ipv4.download.thinkbroadband.com/5MB.zip" # 5MB测试文件
+# TEST_FILE_URL = "http://cachefly.cachefly.net/100mb.test" # 100MB测试文件，如果5MB成功可以尝试这个
 
 # Clash Meta (mihomo) Version and Download URL
 CLASH_VERSION_TO_DOWNLOAD = "v1.19.10"
@@ -135,7 +137,7 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
         print(f"[ERROR] Extraction/decompression failed. Stderr:\n{e.stderr}\nStdout:\n{e.stdout}")
         return None
     except Exception as e:
-        print(f"[ERROR] An unexpected error occurred during download or extraction: {e}")
+        print(f"An unexpected error occurred during download or extraction: {e}")
         return None
 
 def start_clash(clash_executable_path, config_file_path):
@@ -242,7 +244,7 @@ def set_clash_proxy_group_selection(group_name, proxy_name):
         print(f"Failed to set Clash proxy group selection for '{group_name}' to '{proxy_name}': {e}")
         return False
 
-def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
+def test_download_speed(url, proxy_address, file_size_bytes=5 * 1024 * 1024): # Adjusted default test size for 5MB.zip
     """Tests download speed using the specified proxy."""
     proxies = {
         "http": proxy_address,
@@ -255,11 +257,14 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
         response = requests.get(url, proxies=proxies, stream=True, timeout=90) # Increased timeout to 90 seconds
         response.raise_for_status()
 
+        # Check content-length from headers if available, for more accurate comparison
+        expected_size = int(response.headers.get('content-length', file_size_bytes))
+        
         for chunk in response.iter_content(chunk_size=8192):
             if chunk:
                 downloaded_bytes += len(chunk)
                 # Stop if we've downloaded enough, or if response is unexpectedly smaller
-                if downloaded_bytes >= file_size_bytes or len(chunk) == 0:
+                if downloaded_bytes >= expected_size or len(chunk) == 0:
                     break
         
         end_time = time.time()
@@ -499,8 +504,18 @@ def parse_hysteria1_link(link_str, index):
             proxy_config['alpn'] = query_params['alpn'][0].split(',')
 
         # Hysteria1 specific bandwidth settings - Always include 'up' and 'down' with defaults if not present
-        proxy_config['up'] = int(query_params['up'][0]) if 'up' in query_params else 100 # Default to 100 Mbps
-        proxy_config['down'] = int(query_params['down'][0]) if 'down' in query_params else 100 # Default to 100 Mbps
+        # Use int(value) if present, else default to 100 Mbps (Clash Meta v1.19.10 seems to require them)
+        try:
+            proxy_config['up'] = int(query_params['up'][0]) if 'up' in query_params and query_params['up'][0].isdigit() else 100
+        except ValueError:
+            print(f"[WARNING] Invalid 'up' bandwidth value in Hysteria1 link: '{query_params['up'][0]}'. Defaulting to 100.")
+            proxy_config['up'] = 100
+        
+        try:
+            proxy_config['down'] = int(query_params['down'][0]) if 'down' in query_params and query_params['down'][0].isdigit() else 100
+        except ValueError:
+            print(f"[WARNING] Invalid 'down' bandwidth value in Hysteria1 link: '{query_params['down'][0]}'. Defaulting to 100.")
+            proxy_config['down'] = 100
 
         if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
             proxy_config['skip-cert-verify'] = True
@@ -609,8 +624,12 @@ def generate_clash_config(node_links, output_path):
         return False
     
     # --- Debugging specific proxy 11 if it exists ---
-    if len(proxies) >= 11:
-        print(f"\n[DEBUG] Configuration for proxy 11 (index 10):")
+    # The "proxy 11" error corresponds to index 10 in a 0-indexed list
+    if len(proxies) > 10: # Check if there's at least an 11th proxy
+        print(f"\n[DEBUG] Configuration for proxy 11 (original index: {node_links.index(node_links[i-1]) + 1 if i > 0 else 'N/A'}, list index 10):")
+        # Try to find the original link string for the 11th proxy if possible for better context
+        # This is tricky because `proxies` list skips invalid ones. 
+        # For simplicity, we print the 11th *successfully parsed* proxy.
         print(json.dumps(proxies[10], indent=2, ensure_ascii=False))
         print("-" * 30)
     # --- End Debugging ---
@@ -621,7 +640,7 @@ def generate_clash_config(node_links, output_path):
         "socks-port": CLASH_PROXY_HTTP_PORT + 1,
         "allow-lan": False,
         "mode": "rule",
-        "log-level": "info", # Keep info level for now to get useful logs
+        "log-level": "debug", # Changed to debug for more detailed logs from Clash
         "external-controller": f"127.0.0.1:{CLASH_API_PORT}",
         "secret": "",
         "proxies": proxies, # This is now a list of dictionaries
@@ -717,7 +736,8 @@ def main():
             
             time.sleep(0.5) # Give Clash a moment to switch proxy
 
-            speed = test_download_speed(TEST_FILE_URL, clash_proxy_address, file_size_bytes=50 * 1024 * 1024)
+            # Pass the expected file size to the test function
+            speed = test_download_speed(TEST_FILE_URL, clash_proxy_address, file_size_bytes=5 * 1024 * 1024) 
             
             if speed is not None:
                 test_results.append(f"Proxy: {proxy_name} # 速度: {speed:.2f} MB/s")
