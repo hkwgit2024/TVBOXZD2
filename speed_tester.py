@@ -455,7 +455,7 @@ def parse_vless_link(link_str, index):
         return None
 
 def parse_hysteria1_link(link_str, index):
-    # Format: hysteria://server:port?auth=...&obfs=...&obfs-password=...#name
+    # Format: hysteria://server:port?auth=...&obfs=...&obfs-password=...&up=...&down=...#name
     try:
         # Temporarily use a dummy scheme to let urlparse handle server:port and query/fragment
         temp_link = "dummy://" + link_str[len("hysteria://"):]
@@ -503,9 +503,9 @@ def parse_hysteria1_link(link_str, index):
 
         # Hysteria1 specific bandwidth settings
         if 'up' in query_params:
-            proxy_config['up'] = query_params['up'][0]
+            proxy_config['uplink_bandwidth'] = int(query_params['up'][0]) # Changed to uplink_bandwidth
         if 'down' in query_params:
-            proxy_config['down'] = query_params['down'][0]
+            proxy_config['downlink_bandwidth'] = int(query_params['down'][0]) # Changed to downlink_bandwidth
 
         if 'skipCertVerify' in query_params and query_params['skipCertVerify'][0] == '1':
             proxy_config['skip-cert-verify'] = True
