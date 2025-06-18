@@ -11,7 +11,7 @@ on:
 jobs:
   test-nodes:
     runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    timeout-minutes: 30  # 设置工作流超时
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,11 +28,10 @@ jobs:
           free -h
       - name: Install dependencies
         run: |
-          pip install requests speedtest-cli pysocks urllib3 psutil
+          pip install requests speedtest-cli pysocks urllib3
           python -c "import socks" || { echo "pysocks 安装失败"; exit 1; }
           python -c "import speedtest" || { echo "speedtest-cli 安装失败"; exit 1; }
           python -c "import requests" || { echo "requests 安装失败"; exit 1; }
-          python -c "import psutil" || { echo "psutil 安装失败"; exit 1; }
           sudo apt-get update
           sudo apt-get install -y apt-transport-https curl gnupg2
           curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
@@ -40,4 +39,16 @@ jobs:
           sudo apt-get install -y speedtest
           speedtest --accept-license
           speedtest --version || { echo "Speedtest CLI 安装失败"; exit 1; }
-          speed
+          speedtest --help
+          sudo apt-get install -y netcat-traditional
+      - name: Check Python syntax
+        run: python -m py_compile test_nodes.py
+      - name: Run node test script
+        run: python test_nodes.py
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            data/collectSub.txt
+            data/speedtest_errors.log
