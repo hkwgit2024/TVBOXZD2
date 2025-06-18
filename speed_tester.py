@@ -1,3 +1,4 @@
+
 import requests
 import os
 import subprocess
@@ -26,33 +27,50 @@ CLASH_EXECUTABLE_NAME = "clash"
 CLASH_FULL_PATH = os.path.join(CLASH_BIN_DIR, CLASH_EXECUTABLE_NAME)
 
 # Setup logging
-logging.basicConfig(filename="clash_script.log", level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    filename="clash_script.log",
+    level=logging.DEBUG,  # Change to DEBUG for more detailed logs
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # --- Helper Functions ---
 
 def get_latest_clash_version():
+    logging.debug("Fetching latest Clash version from GitHub API")
     try:
-        response = requests.get("https://api.github.com/repos/Dreamacro/clash/releases/latest")
+        response = requests.get("https://api.github.com/repos/Dreamacro/clash/releases/latest", timeout=10)
         response.raise_for_status()
-        return response.json()['tag_name']
+        version = response.json()['tag_name']
+        logging.info(f"Latest Clash version: {version}")
+        return version
     except Exception as e:
         logging.error(f"Failed to fetch latest Clash version: {e}")
         return CLASH_VERSION_TO_DOWNLOAD
 
 def check_clash_version(exec_path):
+    logging.debug(f"Checking Clash version for {exec_path}")
     try:
         result = subprocess.run([exec_path, "--version"], capture_output=True, text=True, check=True)
         version = result.stdout.strip().split()[-1]
+        logging.info(f"Clash version: {version}")
         return version
-    except Exception:
+    except Exception as e:
+        logging.error(f"Failed to check Clash version: {e}")
         return None
 
 def calculate_sha256(file_path):
+    logging.debug(f"Calculating SHA256 for {file_path}")
     sha256 = hashlib.sha256()
-    with open(file_path, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            sha256.update(chunk)
-    return sha256.hexdigest()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                sha256.update(chunk)
+        checksum = sha256.hexdigest()
+        logging.info(f"SHA256 for {file_path}: {checksum}")
+        return checksum
+    except Exception as e:
+        logging.error(f"Failed to calculate SHA256 for {file_path}: {e}")
+        return None
 
 def download_and_extract_clash_core(url, dest_dir, executable_name):
     """
@@ -60,49 +78,61 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
     Checks if the executable already exists, is executable, and matches the latest version.
     Returns path to executable or None on failure.
     """
+    logging.info(f"Starting download and extraction for Clash core. URL: {url}, Dest: {dest_dir}")
     os.makedirs(dest_dir, exist_ok=True)
     clash_exec_path = os.path.join(dest_dir, executable_name)
 
-    # Check if executable exists and has correct version
+    # Check if executable exists and is valid
     latest_version = get_latest_clash_version()
     if os.path.exists(clash_exec_path) and os.path.isfile(clash_exec_path) and os.access(clash_exec_path, os.X_OK):
         current_version = check_clash_version(clash_exec_path)
         if current_version and latest_version in current_version:
-            logging.info(f"Clash executable (version {current_version}) is up-to-date at {clash_exec_path}. Skipping download.")
+            logging.info(f"Valid Clash executable (version {current_version}) found at {clash_exec_path}. Skipping download.")
             return clash_exec_path
         else:
-            logging.info(f"Clash executable version mismatch or invalid (current: {current_version}, expected: {latest_version}). Redownloading...")
+            logging.warning(f"Clash executable invalid or version mismatch (current: {current_version}, expected: {latest_version}). Removing and redownloading.")
+            try:
+                os.remove(clash_exec_path)
+                logging.info(f"Removed invalid Clash executable: {clash_exec_path}")
+            except Exception as e:
+                logging.error(f"Failed to remove invalid Clash executable: {e}")
 
     logging.info(f"Downloading Clash core from: {url}")
     try:
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, timeout=30)
         response.raise_for_status()
         filename = url.split('/')[-1]
         temp_archive_path = os.path.join(dest_dir, filename)
 
+        logging.debug(f"Saving downloaded archive to: {temp_archive_path}")
         with open(temp_archive_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
         logging.info(f"Downloaded Clash core archive to: {temp_archive_path}")
 
-        # Placeholder for checksum verification (replace with actual SHA256 from release)
-        # expected_sha256 = "..."  # Fetch from GitHub release
-        # if not verify_clash_integrity(temp_archive_path, expected_sha256):
+        # Optional: Verify checksum (requires SHA256 from GitHub release)
+        # expected_sha256 = "..."  # Replace with actual SHA256
+        # if expected_sha256 and calculate_sha256(temp_archive_path) != expected_sha256:
         #     logging.error(f"Checksum mismatch for {temp_archive_path}. Redownloading...")
         #     os.remove(temp_archive_path)
         #     return download_and_extract_clash_core(url, dest_dir, executable_name)
 
+        logging.debug(f"Extracting archive: {temp_archive_path}")
         extracted_name = None
         if filename.endswith(".tar.gz"):
             with tarfile.open(temp_archive_path, "r:gz") as tar:
                 members = [m for m in tar.getmembers() if m.isfile() and (m.name == executable_name or m.name.startswith(f"{executable_name}-"))]
                 if not members:
+                    logging.error("Clash executable not found inside .tar.gz archive.")
                     raise Exception("Clash executable not found inside .tar.gz archive.")
                 clash_member = members[0]
+                logging.debug(f"Found Clash executable in archive: {clash_member.name}")
                 tar.extract(clash_member, path=dest_dir)
                 extracted_name = os.path.join(dest_dir, clash_member.name)
         elif filename.endswith(".zip"):
-            subprocess.run(["unzip", "-o", temp_archive_path, "-d", dest_dir], check=True, capture_output=True, text=True)
+            logging.debug("Extracting .zip archive using unzip")
+            result = subprocess.run(["unzip", "-o", temp_archive_path, "-d", dest_dir], capture_output=True, text=True, check=True)
+            logging.debug(f"Unzip output: {result.stdout}")
             found_paths = []
             for root, _, files in os.walk(dest_dir):
                 for f_name in files:
@@ -110,18 +140,25 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
                         found_paths.append(os.path.join(root, f_name))
             if found_paths:
                 extracted_name = found_paths[0]
+                logging.info(f"Found Clash executable in .zip: {extracted_name}")
             else:
+                logging.error("Clash executable not found inside .zip archive after extraction.")
                 raise Exception("Clash executable not found inside .zip archive after extraction.")
         else:
+            logging.error(f"Unsupported archive format: {filename}. Only .tar.gz or .zip are supported.")
             raise Exception("Unsupported archive format. Only .tar.gz or .zip are supported.")
 
         if extracted_name and extracted_name != clash_exec_path:
+            logging.debug(f"Moving extracted Clash from {extracted_name} to {clash_exec_path}")
             shutil.move(extracted_name, clash_exec_path)
             logging.info(f"Moved extracted Clash to: {clash_exec_path}")
 
+        logging.debug(f"Removing temporary archive: {temp_archive_path}")
         os.remove(temp_archive_path)
-        subprocess.run(["chmod", "+x", clash_exec_path], check=True)
-        logging.info(f"Clash executable now at: {clash_exec_path}")
+
+        logging.debug(f"Setting executable permissions for: {clash_exec_path}")
+        subprocess.run(["chmod", "+x", clash_exec_path], check=True, capture_output=True, text=True)
+        logging.info(f"Clash executable ready at: {clash_exec_path}")
         return clash_exec_path
     except requests.exceptions.RequestException as e:
         logging.error(f"Network error during Clash download: {e}")
@@ -133,7 +170,7 @@ def download_and_extract_clash_core(url, dest_dir, executable_name):
         logging.error(f"Failed to download or extract Clash core: {e}")
         return None
 
-# ... (rest of the script remains unchanged)
+# ... (rest of the script remains unchanged, included for completeness)
 def generate_clash_config(node_links, output_path):
     """Generates a Clash YAML configuration file from a list of node links."""
     if not node_links:
@@ -142,28 +179,26 @@ def generate_clash_config(node_links, output_path):
 
     proxies_list_str = "\n".join([f'  - "{link}"' for link in node_links])
 
-    # The '测速节点' (Test Node) group will be used to select individual proxies via API.
-    # The 'MATCH,测速节点' rule will ensure all traffic for testing goes through this group.
     clash_config_content = f"""
 port: {CLASH_PROXY_HTTP_PORT}
 socks-port: {CLASH_PROXY_HTTP_PORT + 1}
-allow-lan: false # Set to true if you need to access from other machines
-mode: rule # Rule mode allows for custom routing
+allow-lan: false
+mode: rule
 log-level: info
 external-controller: 127.0.0.1:{CLASH_API_PORT}
-secret: "" # No secret for local API communication (for GitHub Actions, keep it simple)
+secret: ""
 
 proxies:
 {proxies_list_str}
 
 proxy-groups:
-  - name: "测速节点" # A selector group for our testing
+  - name: "测速节点"
     type: select
     proxies:
-      - DIRECT # Default placeholder. Will be dynamically changed via API.
+      - DIRECT
 
 rules:
-  - MATCH,测速节点 # Route all traffic through our testing group
+  - MATCH,测速节点
 """
 
     try:
@@ -179,28 +214,24 @@ def start_clash(clash_executable_path, config_file_path):
     """Starts Clash in the background and verifies API availability."""
     try:
         print(f"Starting Clash from {clash_executable_path} with config {config_file_path}...")
-        # Use subprocess.Popen for non-blocking start
         process = subprocess.Popen(
             [clash_executable_path, "-f", config_file_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True # Decode stdout/stderr as text
+            text=True
         )
         
-        # Give Clash some initial time to start up
-        time.sleep(3) 
+        time.sleep(3)
 
-        # Check if Clash process exited prematurely
         if process.poll() is not None:
             stdout, stderr = process.communicate()
             print(f"Clash exited prematurely. Stdout:\n{stdout}\nStderr:\n{stderr}")
-            return None # Clash failed to start
+            return None
         
         print(f"Clash started (PID: {process.pid}). Waiting for API to become available...")
         
-        # Verify Clash API is reachable
         api_url = f"http://127.0.0.1:{CLASH_API_PORT}/configs"
-        for i in range(15): # Retry up to 15 times (max 30 seconds wait)
+        for i in range(15):
             try:
                 response = requests.get(api_url, timeout=2)
                 if response.status_code == 200:
@@ -218,14 +249,14 @@ def start_clash(clash_executable_path, config_file_path):
 
 def stop_clash(clash_process):
     """Stops the Clash process gracefully."""
-    if clash_process and clash_process.poll() is None: # If process is still running
+    if clash_process and clash_process.poll() is None:
         print("Stopping Clash process...")
         try:
-            clash_process.terminate() # Send SIGTERM
-            clash_process.wait(timeout=5) # Wait for it to terminate
+            clash_process.terminate()
+            clash_process.wait(timeout=5)
         except subprocess.TimeoutExpired:
             print("Clash did not terminate gracefully, sending SIGKILL.")
-            clash_process.kill() # Force kill
+            clash_process.kill()
             clash_process.wait(timeout=5)
         print("Clash process stopped.")
     else:
@@ -235,15 +266,10 @@ def get_clash_proxies_names():
     """Fetches all available proxy names from Clash API."""
     api_url = f"http://127.0.0.1:{CLASH_API_PORT}/proxies"
     try:
-        response = requests.get(api_url, timeout=10) # Increased timeout for API calls
+        response = requests.get(api_url, timeout=10)
         response.raise_for_status()
         data = response.json()
         
-        # Filter out proxy groups and internal proxies (like 'DIRECT', 'REJECT')
-        # We want the names of the actual proxy nodes loaded from the config.
-        # Clash's /proxies endpoint lists both individual proxies and proxy groups.
-        # Individual proxies usually have type like 'Shadowsocks', 'Vmess', 'Trojan', etc.
-        # Proxy groups have type 'Selector', 'URLTest', 'Fallback'.
         proxy_names = [
             name for name, proxy_info in data['proxies'].items() 
             if proxy_info.get('type') not in ['Selector', 'URLTest', 'Fallback', 'Direct', 'Reject']
@@ -278,25 +304,20 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
     start_time = time.time()
     downloaded_bytes = 0
     try:
-        # Use stream=True to handle large files efficiently
-        # Add headers to request a specific byte range to ensure the server
-        # sends at least the desired amount of data, if it supports Range requests.
-        # However, for Cloudflare's __down endpoint, it's already size-controlled.
-        # headers = {"Range": f"bytes=0-{file_size_bytes-1}"}
-        response = requests.get(url, proxies=proxies, stream=True, timeout=60) # Increased timeout for download
-        response.raise_for_status() # Raise an exception for bad status codes
+        response = requests.get(url, proxies=proxies, stream=True, timeout=60)
+        response.raise_for_status()
 
-        for chunk in response.iter_content(chunk_size=8192): # Iterate in chunks
+        for chunk in response.iter_content(chunk_size=8192):
             if chunk:
                 downloaded_bytes += len(chunk)
-                if downloaded_bytes >= file_size_bytes: # Stop once desired size is reached
+                if downloaded_bytes >= file_size_bytes:
                     break
         
         end_time = time.time()
         duration = end_time - start_time
 
         if duration > 0 and downloaded_bytes > 0:
-            speed_mb_s = (downloaded_bytes / (1024 * 1024)) / duration # MB/s
+            speed_mb_s = (downloaded_bytes / (1024 * 1024)) / duration
             return speed_mb_s
         else:
             print(f"No data downloaded or zero duration for {url}")
@@ -307,7 +328,7 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
     except requests.exceptions.ConnectionError:
         print(f"连接错误 (通过 {proxy_address}).")
         return None
-    except requests.exceptions.RequestException as e: # Catch all other requests-related errors
+    except requests.exceptions.RequestException as e:
         print(f"下载失败 (通过 {proxy_address}): {e}")
         return None
     except Exception as e:
@@ -317,15 +338,12 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
 # --- Main Logic ---
 
 def main():
-    clash_process = None # Initialize clash_process to None
+    clash_process = None
 
     try:
-        # 1. Create data directory for output
         os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-        # Create Clash bin directory if not exists
         os.makedirs(CLASH_BIN_DIR, exist_ok=True)
 
-        # 2. Download and extract Clash core (will use cached if available)
         clash_executable_path = download_and_extract_clash_core(
             CLASH_DOWNLOAD_URL, CLASH_BIN_DIR, CLASH_EXECUTABLE_NAME
         )
@@ -333,13 +351,11 @@ def main():
             print("Aborting: Could not get Clash core executable.")
             return
 
-        # 3. Fetch node links from the remote URL
         print(f"Fetching node links from: {NODES_URL}")
         try:
-            response = requests.get(NODES_URL, timeout=15) # Increased timeout for fetching nodes
+            response = requests.get(NODES_URL, timeout=15)
             response.raise_for_status()
             raw_node_links = response.text.splitlines()
-            # Filter out empty lines, comments, and strip whitespace
             node_links = [
                 link.strip() for link in raw_node_links
                 if link.strip() and not link.strip().startswith("#")
@@ -352,49 +368,34 @@ def main():
             print(f"Failed to fetch node links from {NODES_URL}: {e}")
             return
 
-        # 4. Generate Clash YAML configuration
         if not generate_clash_config(node_links, CLASH_CONFIG_FILE):
             print("Aborting: Could not generate Clash config.")
             return
 
-        # 5. Start Clash
         clash_process = start_clash(clash_executable_path, CLASH_CONFIG_FILE)
         if not clash_process:
             print("Aborting: Could not start Clash.")
             return
 
-        # 6. Get proxy names from Clash API
-        # Give Clash a moment to fully parse proxies after startup
-        time.sleep(2) 
+        time.sleep(2)
         proxy_names = get_clash_proxies_names()
         if not proxy_names:
             print("No proxies found via Clash API. Check Clash config and logs.")
             return
 
-        # 7. Perform speed tests for each node
         test_results = []
         clash_proxy_address = f"http://127.0.0.1:{CLASH_PROXY_HTTP_PORT}"
         
         print("\n--- Starting Speed Tests ---")
         for i, proxy_name in enumerate(proxy_names):
-            # Attempt to find the original link for better context in output
-            # This is a heuristic as Clash's internal proxy names might not directly map to original links
-            # if the link itself doesn't contain a name.
-            # A more robust solution would involve parsing the name from the link during config generation
-            # and mapping it. For now, we'll try to use the corresponding original link by index.
             original_link_for_output = node_links[i] if i < len(node_links) else "Unknown Original Link"
-
             print(f"[{i+1}/{len(proxy_names)}] Testing Clash-assigned proxy name: '{proxy_name}' (Original Link: {original_link_for_output})...")
             
-            # Set the "测速节点" (Test Node) proxy group to use the current proxy
             if not set_clash_proxy_group_selection("测速节点", proxy_name):
                 test_results.append(f"{original_link_for_output} # 速度: 无法切换代理到 '{proxy_name}'")
                 continue
             
-            # Give Clash a small moment to apply the proxy switch
             time.sleep(0.5)
-
-            # Perform the download test
             speed = test_download_speed(TEST_FILE_URL, clash_proxy_address, file_size_bytes=50 * 1024 * 1024)
             
             if speed is not None:
@@ -404,10 +405,8 @@ def main():
                 test_results.append(f"{original_link_for_output} # 速度: 测试失败")
                 print("  -> Speed: TEST FAILED")
             
-            # Add a small delay between tests to be gentle on resources and APIs
             time.sleep(0.5)
 
-        # 8. Save test results to file
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(f"# 节点测速结果 - {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             for result in test_results:
@@ -415,7 +414,6 @@ def main():
         print(f"\nAll test results saved to {OUTPUT_FILE}")
 
     finally:
-        # Ensure Clash process is stopped even if errors occur
         stop_clash(clash_process)
 
 if __name__ == "__main__":
