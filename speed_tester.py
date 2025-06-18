@@ -27,7 +27,7 @@ NODES_SOURCES = [
     # },
     {
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
-        "format": "clash-yaml"
+        "format": "clash-yaml" # 明确指定为 clash-yaml 格式，即使 is_yaml 失败也要尝试
     }
 ]
 
@@ -50,28 +50,24 @@ def is_base64(s):
     """简单的Base64字符串启发式检测"""
     if not isinstance(s, str) or not s.strip():
         return False
-    # 尝试解码并检查是否是有效的UTF-8
     try:
         decoded_bytes = base64.b64decode(s.strip(), validate=True)
-        # 进一步检查解码内容是否看起来像文本，避免二进制数据误判
-        # 这里的判断可能会过于严格，实际中更常见的是直接尝试解码，如果无异常就认为是Base64
-        # 但为了避免二进制数据的误判，这里添加了尝试解码为UTF-8的逻辑
-        # 如果解码为UTF-8失败，可能它仍然是有效的Base64编码，只是内容不是文本
-        # 根据实际需要调整这里的严格程度
+        # 尝试解码为UTF-8以避免二进制数据误判
         return decoded_bytes.decode('utf-8') is not None
     except Exception:
         return False
 
 def is_yaml(s):
-    """尝试判断字符串是否是YAML格式"""
+    """尝试判断字符串是否是YAML格式 (使用 full_load 以支持更多标签)"""
     if not isinstance(s, str) or not s.strip():
         return False
     try:
-        data = yaml.safe_load(s)
+        # 尝试使用 full_load 处理可能存在的自定义标签
+        data = yaml.full_load(s)
         return isinstance(data, dict) or isinstance(data, list)
     except yaml.YAMLError:
         return False
-    except Exception: # 捕获其他可能的异常，例如解析器内部错误
+    except Exception:
         return False
 
 # --- Core Functions ---
@@ -105,19 +101,15 @@ def parse_link(link, i):
 
     try:
         if link.startswith("ss://"):
-            # SS 链接格式: ss://method:password@server:port#name
-            # 或者 ss://base64_encoded_userinfo@server:port#name
             parts = link[5:].split('@')
             if len(parts) != 2:
                 raise ValueError("Invalid SS link format (missing @)")
 
             user_info_encoded = parts[0]
             try:
-                # 尝试 Base64 解码 userinfo 部分，处理可能存在的填充
                 user_info_decoded = base64.b64decode(user_info_encoded + '==').decode('utf-8')
                 method, password = user_info_decoded.split(':', 1)
             except Exception:
-                # 如果解码失败，假定 userinfo 未编码
                 method, password = user_info_encoded.split(':', 1)
             
             server_port_name = parts[1]
@@ -138,9 +130,7 @@ def parse_link(link, i):
             }
 
         elif link.startswith("vmess://"):
-            # VMESS 链接是 Base64 编码的 JSON
             encoded_data = link[8:]
-            # 兼容处理 Base64 填充
             missing_padding = len(encoded_data) % 4
             if missing_padding != 0:
                 encoded_data += '=' * (4 - missing_padding)
@@ -153,7 +143,7 @@ def parse_link(link, i):
             port = int(vmess_data.get('port'))
             uuid = vmess_data.get('id')
             alterId = int(vmess_data.get('aid', 0))
-            cipher = vmess_data.get('scy', 'auto') # Clash uses 'cipher' for security type
+            cipher = vmess_data.get('scy', 'auto')
 
             proxy_dict = {
                 "name": name,
@@ -165,7 +155,6 @@ def parse_link(link, i):
                 "cipher": cipher
             }
 
-            # 处理网络传输协议
             network = vmess_data.get('net', 'tcp')
             proxy_dict['network'] = network
 
@@ -173,7 +162,7 @@ def parse_link(link, i):
                 ws_opts = {}
                 if 'path' in vmess_data:
                     ws_opts['path'] = vmess_data['path']
-                if 'host' in vmess_data: # Host header
+                if 'host' in vmess_data:
                     ws_opts['headers'] = {'Host': vmess_data['host']}
                 if ws_opts:
                     proxy_dict['ws-opts'] = ws_opts
@@ -183,27 +172,25 @@ def parse_link(link, i):
                     grpc_opts['service-name'] = vmess_data['serviceName']
                 if grpc_opts:
                     proxy_dict['grpc-opts'] = grpc_opts
-            elif network == 'h2': # http/2
+            elif network == 'h2':
                 h2_opts = {}
                 if 'path' in vmess_data:
                     h2_opts['path'] = vmess_data['path']
                 if h2_opts:
                     proxy_dict['h2-opts'] = h2_opts
 
-            # TLS 选项
             if vmess_data.get('tls', '0') == 'tls':
                 proxy_dict['tls'] = True
-                if 'host' in vmess_data: # VMESS的host字段通常用作SNI
+                if 'host' in vmess_data:
                     proxy_dict['servername'] = vmess_data['host']
-                if vmess_data.get('allowInsecure', '0') == '1': # insecure/跳过证书验证
+                if vmess_data.get('allowInsecure', '0') == '1':
                     proxy_dict['skip-cert-verify'] = True
                 if 'alpn' in vmess_data and vmess_data['alpn']:
                     proxy_dict['alpn'] = [s.strip() for s in vmess_data['alpn'].split(',')]
 
-            # 旧版混淆 obfs
-            if vmess_data.get('type') == 'http': # HTTP 混淆
+            if vmess_data.get('type') == 'http':
                 proxy_dict['network'] = 'http'
-            elif vmess_data.get('obfs') == 'websocket': # 旧版 WS 混淆
+            elif vmess_data.get('obfs') == 'websocket':
                 proxy_dict['network'] = 'ws'
                 ws_opts = proxy_dict.get('ws-opts', {})
                 if 'obfs-host' in vmess_data:
@@ -214,7 +201,7 @@ def parse_link(link, i):
 
         elif link.startswith("vless://"):
             parsed_url = urlparse(link)
-            userinfo_part = parsed_url.netloc # uuid@server:port
+            userinfo_part = parsed_url.netloc
             uuid = userinfo_part.split('@')[0]
             server_port = userinfo_part.split('@')[1]
             server = server_port.split(':')[0]
@@ -231,26 +218,25 @@ def parse_link(link, i):
                 "uuid": uuid,
             }
 
-            # 处理查询参数
             if 'tls' in params:
                 proxy_dict['tls'] = params['tls'][0].lower() == 'true'
             if 'flow' in params:
                 proxy_dict['flow'] = params['flow'][0]
-            if 'sni' in params: # servername for SNI
+            if 'sni' in params:
                 proxy_dict['servername'] = params['sni'][0]
             if 'alpn' in params and params['alpn'][0]:
                 proxy_dict['alpn'] = [s.strip() for s in params['alpn'][0].split(',')]
             if 'skip-cert-verify' in params:
                 proxy_dict['skip-cert-verify'] = params['skip-cert-verify'][0].lower() == 'true'
 
-            network = params.get('type', ['tcp'])[0] # VLESS type in query means network type
+            network = params.get('type', ['tcp'])[0]
             proxy_dict['network'] = network
 
             if network == 'ws':
                 ws_opts = {}
                 if 'path' in params:
                     ws_opts['path'] = params['path'][0]
-                if 'host' in params: # host in query is for Host header in ws-opts
+                if 'host' in params:
                     ws_opts['headers'] = {'Host': params['host'][0]}
                 if ws_opts:
                     proxy_dict['ws-opts'] = ws_opts
@@ -260,7 +246,7 @@ def parse_link(link, i):
                     grpc_opts['service-name'] = params['serviceName'][0]
                 if grpc_opts:
                     proxy_dict['grpc-opts'] = grpc_opts
-            elif network == 'h2': # http/2
+            elif network == 'h2':
                 h2_opts = {}
                 if 'path' in params:
                     h2_opts['path'] = params['path'][0]
@@ -270,10 +256,8 @@ def parse_link(link, i):
             return proxy_dict
 
         elif link.startswith("trojan://"):
-            # Trojan 链接格式: trojan://password@server:port#name
-            # 或 trojan://password@server:port?params#name
             parsed_url = urlparse(link)
-            userinfo_part = parsed_url.netloc # password@server:port
+            userinfo_part = parsed_url.netloc
             password = userinfo_part.split('@')[0]
             server_port = userinfo_part.split('@')[1]
             server = server_port.split(':')[0]
@@ -288,10 +272,9 @@ def parse_link(link, i):
                 "server": server,
                 "port": port,
                 "password": password,
-                "tls": True # Trojan 默认开启 TLS
+                "tls": True
             }
 
-            # 处理查询参数
             if 'sni' in params:
                 proxy_dict['servername'] = params['sni'][0]
             if 'skip-cert-verify' in params:
@@ -299,15 +282,14 @@ def parse_link(link, i):
             if 'alpn' in params and params['alpn'][0]:
                 proxy_dict['alpn'] = [s.strip() for s in params['alpn'][0].split(',')]
 
-            # WebSocket 或 gRPC over Trojan
-            network = params.get('type', ['tcp'])[0] # type in query means network type
+            network = params.get('type', ['tcp'])[0]
             proxy_dict['network'] = network
 
             if network == 'ws':
                 ws_opts = {}
                 if 'path' in params:
                     ws_opts['path'] = params['path'][0]
-                if 'host' in params: # host in query is for Host header in ws-opts
+                if 'host' in params:
                     ws_opts['headers'] = {'Host': params['host'][0]}
                 if ws_opts:
                     proxy_dict['ws-opts'] = ws_opts
@@ -321,9 +303,8 @@ def parse_link(link, i):
             return proxy_dict
             
         elif link.startswith("hy2://"):
-            # Hysteria2 链接格式: hy2://uuid@server:port?params#name
             parsed_url = urlparse(link)
-            userinfo_part = parsed_url.netloc # uuid@server:port
+            userinfo_part = parsed_url.netloc
             auth = userinfo_part.split('@')[0]
             server_port = userinfo_part.split('@')[1]
             server = server_port.split(':')[0]
@@ -337,19 +318,17 @@ def parse_link(link, i):
                 "type": "hysteria2",
                 "server": server,
                 "port": port,
-                "password": auth, # Hysteria2 uses password field for authentication string
-                "tls": True, # Hysteria2 always uses TLS
+                "password": auth,
+                "tls": True,
             }
 
-            # Handle query parameters
             if 'insecure' in params:
-                proxy_dict['insecure'] = params['insecure'][0].lower() == '1' # Insecure means skip-cert-verify
+                proxy_dict['insecure'] = params['insecure'][0].lower() == '1'
             if 'sni' in params:
                 proxy_dict['servername'] = params['sni'][0]
             if 'alpn' in params and params['alpn'][0]:
                 proxy_dict['alpn'] = [s.strip() for s in params['alpn'][0].split(',')]
 
-            # Hysteria2 specific parameters (optional)
             if 'fastopen' in params:
                 proxy_dict['fast-open'] = params['fastopen'][0].lower() == '1'
             if 'mptcp' in params:
@@ -374,39 +353,46 @@ def fetch_and_parse_nodes():
         node_format = source.get("format", "auto")
         print(f"Fetching nodes from: {url} (Format: {node_format})")
         try:
-            response = requests.get(url, timeout=15) # Increased timeout
+            response = requests.get(url, timeout=15)
             response.raise_for_status()
             content = response.text
 
             processed_content = content
-            # 1. 尝试 Base64 解码
             if node_format == "base64-links" or (node_format == "auto" and is_base64(content)):
                 try:
                     processed_content = base64.b64decode(content).decode('utf-8')
                     print(f"Successfully decoded content from base64 for {url}")
                 except Exception as e:
                     print(f"Warning: Failed to base64 decode {url}. Treating as plain text. Error: {e}")
-                    processed_content = content # 解码失败则回退为原始内容
+                    processed_content = content
 
-            # 2. 尝试 YAML 解析 (Clash proxies 格式)
-            # 只有在明确指定为 clash-yaml 格式或 auto 模式下检测到 YAML 时才尝试解析
-            if node_format == "clash-yaml" or (node_format == "auto" and is_yaml(processed_content) and 'proxies' in yaml.safe_load(processed_content)):
+            # 调整 is_yaml 的判断，避免重复加载 YAML 内容
+            is_yaml_content = False
+            yaml_data_from_content = None
+            if node_format == "clash-yaml" or node_format == "auto":
                 try:
-                    yaml_data = yaml.safe_load(processed_content)
-                    if isinstance(yaml_data, dict) and 'proxies' in yaml_data and isinstance(yaml_data['proxies'], list):
-                        print(f"Successfully parsed Clash YAML proxies from {url}")
-                        for proxy_dict in yaml_data['proxies']:
-                            if isinstance(proxy_dict, dict) and 'name' in proxy_dict and 'type' in proxy_dict:
-                                all_parsed_proxies.append(proxy_dict)
-                            else:
-                                print(f"Warning: Invalid proxy entry in YAML from {url}: {proxy_dict}")
-                        continue # YAML 格式处理完毕，跳到下一个来源
-                    else:
-                        print(f"Warning: YAML from {url} does not contain a valid 'proxies' list. Treating as plain links.")
+                    # 尝试加载一次，并保存结果
+                    yaml_data_from_content = yaml.full_load(processed_content)
+                    if isinstance(yaml_data_from_content, dict) and 'proxies' in yaml_data_from_content and isinstance(yaml_data_from_content['proxies'], list):
+                        is_yaml_content = True
                 except yaml.YAMLError as e:
-                    print(f"Warning: Failed to parse YAML from {url}. Treating as plain links. Error: {e}")
+                    print(f"Warning: Failed to parse YAML from {url}. Error: {e}")
+                except Exception as e:
+                    print(f"Warning: An unexpected error occurred during YAML check for {url}. Error: {e}")
             
-            # 3. 如果不是 YAML 或 YAML 不包含 proxies，则视为纯文本链接列表
+            if is_yaml_content:
+                print(f"Successfully parsed Clash YAML proxies from {url}")
+                for proxy_dict in yaml_data_from_content['proxies']:
+                    if isinstance(proxy_dict, dict) and 'name' in proxy_dict and 'type' in proxy_dict:
+                        all_parsed_proxies.append(proxy_dict)
+                    else:
+                        print(f"Warning: Invalid proxy entry in YAML from {url}: {proxy_dict}")
+                continue # YAML 格式处理完毕，跳到下一个来源
+            elif node_format == "clash-yaml": # 如果明确指定为 clash-yaml 但解析失败
+                print(f"Error: Format explicitly set to 'clash-yaml' for {url}, but content is not valid Clash YAML. Skipping.")
+                continue
+
+
             raw_links = processed_content.splitlines()
             print(f"Processing {len(raw_links)} raw links from {url}")
             for i, link in enumerate(raw_links):
@@ -430,10 +416,10 @@ def generate_clash_config(proxies):
         "port": 7890,
         "socks-port": 7891,
         "allow-lan": False,
-        "mode": "rule", # 可以根据需要改为 global 或 direct
-        "log-level": "debug", # 关键的调试日志级别
+        "mode": "rule",
+        "log-level": "debug",
         "external-controller": "127.0.0.1:9090",
-        "secret": "", # API 密钥，如果不需要可以留空
+        "secret": "",
         "proxies": proxies,
         "proxy-groups": [
             {
@@ -462,14 +448,51 @@ def generate_clash_config(proxies):
 def start_clash():
     """启动 Clash Core"""
     print("Starting Clash core...")
-    # 指定日志文件
+    os.makedirs(os.path.dirname(CLASH_LOG_PATH), exist_ok=True) # 确保日志文件目录存在
+    with open(CLASH_LOG_PATH, 'w') as log_file: # 每次启动前清空日志
+        log_file.write(f"--- Clash Core Log Start ({time.strftime('%Y-%m-%d %H:%M:%S')}) ---\n")
+    
     clash_process = subprocess.Popen(
         [CLASH_BIN_PATH, "-f", CLASH_CONFIG_PATH, "-d", "."],
-        stdout=open(CLASH_LOG_PATH, 'a'), # Append to log file
-        stderr=subprocess.STDOUT
+        stdout=subprocess.PIPE, # 捕获 stdout
+        stderr=subprocess.PIPE, # 捕获 stderr
+        text=True # 以文本模式处理，方便读取
     )
-    # 等待 Clash 启动
-    time.sleep(5) # 给予更多时间确保Clash完全启动
+
+    # 实时读取并写入日志文件
+    # 使用线程或非阻塞IO来避免阻塞，但这里简化处理，先启动再读取
+    # 更好的方式是使用 select 或 asyncio
+    
+    # 立即检查进程是否存活，并等待API
+    time.sleep(2) # 初始等待
+
+    api_ready = False
+    for i in range(10): # 尝试连接API 10次
+        if clash_process.poll() is not None: # 如果进程已退出
+            print("Clash process exited prematurely.")
+            clash_stdout, clash_stderr = clash_process.communicate(timeout=5)
+            with open(CLASH_LOG_PATH, 'a') as log_file:
+                log_file.write("\n--- Clash Process STDOUT/STDERR ---\n")
+                log_file.write(clash_stdout)
+                log_file.write(clash_stderr)
+                log_file.write("\n--- End of Clash Process STDOUT/STDERR ---\n")
+            raise Exception("Clash core exited prematurely. Check log for details.")
+
+        try:
+            response = requests.get(f"{CLASH_API_URL}/configs", timeout=2)
+            if response.status_code == 200:
+                print("Clash API is reachable.")
+                api_ready = True
+                break
+        except requests.exceptions.ConnectionError:
+            pass # API not yet ready
+        except Exception as e:
+            print(f"Error checking Clash API: {e}")
+        time.sleep(2)
+
+    if not api_ready:
+        raise Exception("Clash API did not become reachable within expected time.")
+
     print("Clash core started.")
     return clash_process
 
@@ -482,23 +505,28 @@ def test_proxy(proxy_name):
         payload = {"name": proxy_name}
         
         # 确保API可用
+        # 这一步在 start_clash 中已经有检查，这里再次检查确保稳健性
         response = requests.get(f"{CLASH_API_URL}/proxies", timeout=5)
-        response.raise_for_status() # 检查API是否响应
+        response.raise_for_status()
 
         # 切换代理
         response = requests.put(f"{CLASH_API_URL}/proxies/%E6%B5%8B%E9%80%9F", # '测速' URL 编码
                                  headers=headers, json=payload, timeout=5)
-        response.raise_for_status() # 检查切换是否成功
+        response.raise_for_status()
         print(f"Switched proxy to: {proxy_name}")
         time.sleep(1) # 等待代理切换生效
 
         # 进行测速
         start_time = time.time()
+        # 注意：使用 requests.Session() 可以重用连接，提高效率，但这里为了简单直接使用 requests.get
         with requests.get(SPEED_TEST_URL, stream=True, timeout=SPEED_TEST_TIMEOUT, proxies={'http': CLASH_PROXY_URL, 'https': CLASH_PROXY_URL}) as r:
-            r.raise_for_status()
+            r.raise_for_status() # 检查HTTP响应状态码 (2xx success)
             total_size = 0
+            # 限制下载大小，避免长时间运行，或者如果文件比预期大
             for chunk in r.iter_content(chunk_size=8192):
                 total_size += len(chunk)
+                if total_size >= 5 * 1024 * 1024: # 如果下载量达到5MB就停止
+                    break
             
         end_time = time.time()
         duration = end_time - start_time
@@ -524,11 +552,10 @@ def test_proxy(proxy_name):
 
 def main():
     os.makedirs("data", exist_ok=True) # 确保 data 目录存在
-    # 清空旧日志文件。注意：此行应在 setup_clash_core() 之前，因为 setup_clash_core 会确保 clash_bin 存在。
-    # 也可以在 setup_clash_core() 中创建 clash_bin 后再清空日志。
-    # 但根据当前逻辑，这里先尝试清空，如果 clash_bin 不存在，会在 open() 时引发错误。
-    # 更好的做法是在确保目录存在后再清空。
-    # 鉴于 setup_clash_core 已经处理了 clash_bin 的创建，我们可以在这里直接清空。
+    # setup_clash_core 会确保 clash_bin 存在
+    # 所以清空日志文件可以放在 start_clash 函数内部，确保目录已创建
+    # 或者像这样，在 main 函数开始时就处理
+    os.makedirs(os.path.dirname(CLASH_LOG_PATH), exist_ok=True) # 确保日志文件目录存在
     open(CLASH_LOG_PATH, 'w').close() # 清空旧日志文件
 
     setup_clash_core()
@@ -549,14 +576,12 @@ def main():
         results.append(f"# 节点测速结果 - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
         # 添加默认的DIRECT和REJECT组的测试结果（通常无法测速，只是占位）
-        # 这些不是实际的代理，而是Clash的特殊组，通常不能直接测速
-        results.append("Proxy: DIRECT # 速度: (无法直接测速此Clash内置组)")
-        results.append("Proxy: REJECT # 速度: (无法直接测速此Clash内置组)")
-        # 兼容旧配置可能存在的组，如果它们是“Select”类型，且被设置为默认值，它们通常会代理流量。
-        # 但直接对它们进行测速意义不大，Clash API测速是针对具体的proxies名称。
-        results.append("Proxy: COMPATIBLE # 速度: (无法切换到此虚拟组)")
-        results.append("Proxy: PASS # 速度: (无法切换到此虚拟组)")
-        results.append("Proxy: REJECT-DROP # 速度: (无法切换到此虚拟组)")
+        # 这些是Clash内置的特殊组，不能像普通代理一样进行测速
+        results.append("Proxy: DIRECT # 速度: (Clash内置组)")
+        results.append("Proxy: REJECT # 速度: (Clash内置组)")
+        results.append("Proxy: COMPATIBLE # 速度: (Clash内置组)")
+        results.append("Proxy: PASS # 速度: (Clash内置组)")
+        results.append("Proxy: REJECT-DROP # 速度: (Clash内置组)")
 
 
         for proxy in proxies:
@@ -571,8 +596,16 @@ def main():
     finally:
         if clash_process:
             print("Terminating Clash core...")
+            # 捕获并记录Clash关闭前的任何输出
+            clash_stdout, clash_stderr = clash_process.communicate(timeout=5)
+            with open(CLASH_LOG_PATH, 'a') as log_file:
+                log_file.write("\n--- Clash Process STDOUT/STDERR (on exit) ---\n")
+                log_file.write(clash_stdout)
+                log_file.write(clash_stderr)
+                log_file.write("\n--- End of Clash Process STDOUT/STDERR (on exit) ---\n")
+            
             clash_process.terminate()
-            clash_process.wait(timeout=10) # 等待进程结束
+            clash_process.wait(timeout=10)
             print("Clash core terminated.")
 
 if __name__ == "__main__":
