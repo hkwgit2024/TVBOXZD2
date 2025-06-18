@@ -21,14 +21,14 @@ NODES_SOURCES = [
         "format": "auto"
     },
     # 您可以根据需要添加更多节点来源，例如：
-    # {
-    #       "url": "http://example.com/your_base64_encoded_subscription.txt",
-    #       "format": "base64-links"
-    # },
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
-        "format": "clash-yaml" # 明确指定为 clash-yaml 格式，即使 is_yaml 失败也要尝试
-    }
+     {
+          "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+          "format": "auto"
+     },
+   # {
+    #    "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
+    #    "format": "clash-yaml" # 明确指定为 clash-yaml 格式，即使 is_yaml 失败也要尝试
+   # }
 ]
 
 CLASH_CORE_VERSION = "v1.19.10" # Mihomo 版本
