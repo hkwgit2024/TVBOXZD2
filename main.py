@@ -8,7 +8,7 @@ import urllib.parse
 import requests
 import socket
 import logging
-import yaml 
+import yaml
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,14 +21,15 @@ GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
    # {
-   #     "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt", 
-   #     "type": "plain",
+   #     "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt", # 根据您的日志调整了默认源
+  #      "type": "plain",
   #  },
-   
-     {
-         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
-         "type": "yaml",
-     }
+    # 示例：如果您有一个YAML格式的代理配置URL，可以这样添加
+    # 根据您的错误日志，我推测您可能测试过或希望测试以下URL
+    {
+        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
+        "type": "yaml",
+    },
 ]
 MAX_PROXIES = 1000
 TEST_URLS = ["https://www.google.com", "http://www.example.com", "https://www.cloudflare.com"]
@@ -106,10 +107,11 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
         outbound["alter_id"] = yaml_proxy_dict.get("alterId", 0) # Clash 使用 alterId
         
         # 修正：VMess TCP 传输不需要单独的 "transport" 字段
-        if yaml_proxy_dict.get("network") not in ["tcp", ""]: # 只有在不是纯TCP时才添加transport
-            transport_type = yaml_proxy_dict["network"]
-            outbound["transport"] = {"type": transport_type}
-            if transport_type == "ws":
+        # 安全地获取 network 类型
+        vmess_network_type = yaml_proxy_dict.get("network") 
+        if vmess_network_type not in ["tcp", "", None]: # 只有在不是纯TCP或空/None时才添加transport
+            outbound["transport"] = {"type": vmess_network_type}
+            if vmess_network_type == "ws":
                 outbound["transport"]["path"] = yaml_proxy_dict.get("ws-path", "")
                 outbound["transport"]["headers"] = {"Host": yaml_proxy_dict.get("ws-headers", {}).get("Host", "")}
             # Add other transport types if needed for YAML VMess
