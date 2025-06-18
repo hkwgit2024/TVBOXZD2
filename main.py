@@ -9,39 +9,60 @@ import requests
 import socket
 import logging
 import yaml
+import threading
+import concurrent.futures
 
-# 配置日志
+# --- 配置日志 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 常量定义
+# --- 常量定义 ---
+# sing-box 二进制文件路径 (请根据您的实际情况调整)
 SINGBOX_BIN_PATH = "./clash_bin/sing-box"
+# sing-box 配置文件路径
 SINGBOX_CONFIG_PATH = "sing-box-config.json"
+# sing-box 日志文件路径
 SINGBOX_LOG_PATH = os.getenv("SINGBOX_LOG_PATH", "data/sing-box.log")
+# GeoIP 数据库路径 (用于 sing-box 路由)
 GEOIP_DB_PATH = "data/geoip.db"
+# 输出有效代理的文件
 OUTPUT_SUB_FILE = "data/collectSub.txt"
+
+# 节点源配置列表
+# 每个字典包含 'url' (节点订阅地址) 和 'type' (plain, base64, yaml)
 NODES_SOURCES = [
-   # {
-   #     "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt", # 根据您的日志调整了默认源
-  #      "type": "plain",
-  #  },
-    # 示例：如果您有一个YAML格式的代理配置URL，可以这样添加
-    # 根据您的错误日志，我推测您可能测试过或希望测试以下URL
+    {
+        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+        "type": "plain",
+    },
     {
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
         "type": "yaml",
     },
 ]
-MAX_PROXIES = 1000
+
+# 最大处理的代理数量，防止一次性处理过多导致内存或时间问题
+MAX_PROXIES = 2500 # 适当增加以覆盖更多节点，但仍需注意性能
+
+# 用于测试代理连通性的 URL 列表
 TEST_URLS = ["https://www.google.com", "http://www.example.com", "https://www.cloudflare.com"]
-TIMEOUT_SECONDS = 10
+# 单个 HTTP 请求的超时时间
+HTTP_TIMEOUT_SECONDS = 10
+# sing-box 启动后等待端口开放的超时时间
+SINGBOX_STARTUP_TIMEOUT = 30
+# 代理的监听端口
 PROXY_PORT = 1080
 
-# 确保输出目录存在
+# 并行测试的线程数
+# 建议根据您的 CPU 核心数和网络带宽进行调整，过多的线程可能导致反效果
+CONCURRENT_TESTS = 10 # 提高并行度
+
+# --- 确保输出目录存在 ---
 for path in [OUTPUT_SUB_FILE, SINGBOX_LOG_PATH, GEOIP_DB_PATH]:
     dirname = os.path.dirname(path)
     if dirname:
         os.makedirs(dirname, exist_ok=True)
 
+# --- 辅助函数：IPv6 验证 ---
 def is_valid_ipv6(addr):
     """验证 IPv6 地址格式"""
     try:
@@ -51,6 +72,7 @@ def is_valid_ipv6(addr):
     except (socket.error, ValueError):
         return False
 
+# --- 核心函数：将 YAML 代理字典转换为 sing-box 配置格式 ---
 def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
     """
     将单个 YAML 代理字典（例如来自 Clash 配置）
@@ -64,7 +86,7 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
     port = yaml_proxy_dict.get("port")
 
     if not server or not port:
-        logging.error(f"YAML代理中缺少服务器或端口: {yaml_proxy_dict}")
+        logging.error(f"YAML代理中缺少服务器或端口，跳过: {yaml_proxy_dict}")
         return None
 
     # sing-box 出站基础结构
@@ -104,7 +126,7 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
     elif p_type == "vmess":
         outbound["uuid"] = yaml_proxy_dict.get("uuid")
         outbound["security"] = yaml_proxy_dict.get("cipher", "auto") # Clash 中的 'cipher' 映射到 sing-box 的 'security'
-        outbound["alter_id"] = yaml_proxy_dict.get("alterId", 0) # Clash 使用 alterId
+        outbound["alter_id"] = int(yaml_proxy_dict.get("alterId", 0)) # Clash 使用 alterId
         
         # 修正：VMess TCP 传输不需要单独的 "transport" 字段
         # 安全地获取 network 类型
@@ -140,24 +162,32 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
         if tls_enabled: # 重新检查TLS是否启用，因为VLESS通常有特殊TLS要求
             tls_obj = outbound.get("tls", {"enabled": True}) # 获取或创建tls对象
             if yaml_proxy_dict.get("security") == "reality": # Reality是TLS的一个子类型
-                tls_obj["reality"] = { # Reality需要一个嵌套的字典
+                # !!! 关键修正: 移除 "handshake" 字段，它在 sing-box 中不存在于 reality 对象下
+                tls_obj["reality"] = { 
                     "enabled": True,
-                    "handshake": yaml_proxy_dict.get("reality-handshake", server), # 根据实际YAML字段调整
-                    "fingerprint": yaml_proxy_dict.get("fingerprint"),
-                    "server_name": yaml_proxy_dict.get("sni", server) # Reality的SNI通常在Reality对象内或被Reality覆盖
+                    "public_key": yaml_proxy_dict.get("public-key"), # Clash YAML中使用 public-key
+                    "short_id": yaml_proxy_dict.get("short-id"),     # Clash YAML中使用 short-id
+                    "server_name": yaml_proxy_dict.get("sni", server), # Reality的SNI通常在Reality对象内或被Reality覆盖
+                    "fingerprint": yaml_proxy_dict.get("fingerprint") # Fingerprint 可以在 Reality 内部
                 }
-            # Add other TLS options specific to VLESS from YAML if needed
+                if not tls_obj["reality"].get("public_key") or not tls_obj["reality"].get("short_id"):
+                    logging.error(f"YAML VLESS Reality 代理缺少必要的 public_key 或 short_id，跳过: {yaml_proxy_dict.get('name')}")
+                    return None
             
             outbound["tls"] = tls_obj # 更新tls配置
             
-            outbound["tls"]["xver"] = yaml_proxy_dict.get("xver", 0) # 仅当存在时添加
-            if "fingerprint" in yaml_proxy_dict: # 指纹通常在 tls 根或 reality 中
+            # 指纹和 xver 既可能在 TLS 根级别，也可能在 Reality 中
+            # 仅当不在 Reality 配置中时才添加到 TLS 根级别
+            if "fingerprint" in yaml_proxy_dict and "reality" not in outbound["tls"]:
                 outbound["tls"]["fingerprint"] = yaml_proxy_dict["fingerprint"]
-            
+            if "xver" in yaml_proxy_dict:
+                outbound["tls"]["xver"] = int(yaml_proxy_dict["xver"]) # xver 是整数
+
     # 根据需要添加其他代理类型
 
     return outbound
 
+# --- 核心函数：解析代理 URL 字符串并转换为 sing-box 配置格式 ---
 def parse_proxy_url_string(proxy_url):
     """解码代理 URL 字符串并转换为 sing-box 配置格式"""
     # 快速检查，跳过明显不是 URL 的行
@@ -471,21 +501,21 @@ def parse_proxy_url_string(proxy_url):
                     "server_name": query.get("sni", [""])[0] or hostname.strip("[]"),
                     "insecure": query.get("insecure", ["0"])[0] == "1",
                 }
-                # Reality 配置需要是一个字典，并且必须有 public_key 和 short_id
+                # Reality 配置需要是一个字典
                 if query.get("security", [""])[0] == "reality":
                     pbk = query.get("pbk", [""])[0]
                     sid = query.get("sid", [""])[0]
+                    # !!! 关键修正: 移除 "handshake" 字段，它在 sing-box 中不存在于 reality 对象下
                     if not pbk or not sid:
                         logging.error(f"VLESS Reality 代理缺少必要的 public_key (pbk) 或 short_id (sid)，跳过: {proxy_url}")
                         return None
-
                     vless_config["tls"]["reality"] = {
                         "enabled": True,
-                        "handshake": query.get("fp", [""])[0], # 通常 reality 的 fp 和 sni 会是独立的
-                        "public_key": pbk,
-                        "short_id": sid,
+                        "public_key": pbk, # "pbk" from URL query
+                        "short_id": sid, # "sid" from URL query
                         "xver": int(query.get("xver", ["0"])[0]),
-                        "spider_x": query.get("spiderX", [""])[0], # 可选
+                        "spider_x": query.get("spiderX", [""])[0],
+                        "server_name": query.get("fp", [""])[0] # In reality, fp is often the server_name or related
                     }
                     # Reality 的 server_name 常常和外部 SNI 一致或覆盖
                     if query.get("sni", [""])[0]:
@@ -494,10 +524,11 @@ def parse_proxy_url_string(proxy_url):
                          vless_config["tls"]["reality"]["server_name"] = hostname.strip("[]")
 
                 # 指纹和 xver 既可能在 TLS 根级别，也可能在 Reality 中
-                if query.get("fp", [""])[0] and "reality" not in vless_config["tls"]: # 指纹通常是 tls 根级别的，如果不是 Reality
+                # 仅当不在 Reality 配置中时才添加到 TLS 根级别
+                if query.get("fp", [""])[0] and "reality" not in vless_config["tls"]:
                     vless_config["tls"]["fingerprint"] = query.get("fp", [""])[0]
                 
-                if query.get("xver", ["0"])[0] != "0" and "reality" not in vless_config["tls"]: # xver 也是 TLS 根级别的
+                if query.get("xver", ["0"])[0] != "0" and "reality" not in vless_config["tls"]:
                     vless_config["tls"]["xver"] = int(query.get("xver", ["0"])[0])
 
 
@@ -515,6 +546,7 @@ def parse_proxy_url_string(proxy_url):
         logging.error(f"解析代理 URL 失败 {proxy_url}: {e}")
         return None
 
+# --- 获取代理列表 ---
 def get_proxies():
     """
     从节点源获取代理列表。
@@ -526,7 +558,7 @@ def get_proxies():
         source_type = source["type"]
         logging.info(f"正在从 {url} (类型: {source_type}) 获取代理...")
         try:
-            response = requests.get(url, timeout=TIMEOUT_SECONDS)
+            response = requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
             response.raise_for_status() # 检查 HTTP 请求是否成功
 
             content = response.text
@@ -577,6 +609,7 @@ def get_proxies():
     # 限制代理数量
     return all_singbox_proxies[:MAX_PROXIES]
 
+# --- 生成 sing-box 配置文件 ---
 def generate_singbox_config(proxy):
     """生成 sing-box 配置文件"""
     # 移除可能存在的 transport 为 None 的情况，否则会写入 null
@@ -627,6 +660,7 @@ def generate_singbox_config(proxy):
         json.dump(config, f, indent=2)
     return SINGBOX_CONFIG_PATH
 
+# --- 等待端口开放 ---
 def wait_for_port(host, port, timeout=30, interval=1):
     """等待端口变得可用"""
     start_time = time.time()
@@ -639,11 +673,12 @@ def wait_for_port(host, port, timeout=30, interval=1):
             logging.info(f"端口 {port} 已打开!")
             return True
         except (socket.error, ConnectionRefusedError):
-            logging.info(f"正在等待端口 {port}...")
+            # logging.debug(f"正在等待端口 {port}...") # 避免过多日志
             time.sleep(interval)
     logging.error(f"端口 {port} 在 {timeout} 秒内未打开。")
     return False
 
+# --- 测试代理节点速度 ---
 def test_proxy(proxy):
     """测试代理节点速度"""
     process = None
@@ -651,7 +686,7 @@ def test_proxy(proxy):
         config_path = generate_singbox_config(proxy)
         result = subprocess.run([SINGBOX_BIN_PATH, "check", "-c", config_path], capture_output=True, text=True)
         if result.returncode != 0:
-            logging.error(f"代理 {proxy['tag']} 的 sing-box 配置无效: {result.stderr}")
+            logging.error(f"代理 {proxy['tag']} 的 sing-box 配置无效: {result.stderr.strip()}") # strip 去除多余空白
             return None
 
         process = subprocess.Popen(
@@ -659,76 +694,94 @@ def test_proxy(proxy):
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
-            bufsize=1,
-            universal_newlines=True,
+            bufsize=1, # 行缓冲
+            universal_newlines=True, # 确保在不同OS下正确处理行尾
         )
 
+        # 启动一个独立的线程来读取 sing-box 的输出并写入日志文件，避免阻塞
         def log_singbox_output():
             for line in iter(process.stdout.readline, ''):
-                with open(SINGBOX_LOG_PATH, "a") as log_f:
-                    log_f.write(line)
-
-        import threading
+                # 过滤掉 sing-box 启动时的 INFO 级别的繁琐日志，只保留 ERROR/FATAL 或特定关键信息
+                if "INFO" not in line or "starting sing-box" in line or "main: configuration loaded" in line or "main: started" in line:
+                    with open(SINGBOX_LOG_PATH, "a") as log_f:
+                        log_f.write(line)
+                
         log_thread = threading.Thread(target=log_singbox_output)
-        log_thread.daemon = True
+        log_thread.daemon = True  # 守护线程，主程序退出时自动终止
         log_thread.start()
 
-        if not wait_for_port('127.0.0.1', PROXY_PORT, timeout=30):
+        if not wait_for_port('127.0.0.1', PROXY_PORT, timeout=SINGBOX_STARTUP_TIMEOUT):
             if process.poll() is not None:
                 logging.error(f"sing-box 进程提前退出，代理为 {proxy['tag']}。")
             else:
                 logging.error(f"sing-box 对于代理 {proxy['tag']} 未能准备就绪。")
             return None
 
+        # 针对每个测试 URL 进行测试
         for test_url in TEST_URLS:
             try:
                 start_time = time.time()
                 response = requests.get(
                     test_url,
                     proxies={"http": f"http://127.0.0.1:{PROXY_PORT}", "https": f"http://127.0.0.1:{PROXY_PORT}"},
-                    timeout=TIMEOUT_SECONDS,
+                    timeout=HTTP_TIMEOUT_SECONDS,
                 )
                 latency = (time.time() - start_time) * 1000
                 if response.status_code == 200:
                     logging.info(f"代理 {proxy['tag']} 成功通过 {test_url}, 延迟 {latency:.2f}ms")
-                    return {"proxy": proxy, "latency": latency}
+                    return {"proxy": proxy, "latency": latency} # 找到一个成功就返回
                 else:
                     logging.warning(f"代理 {proxy['tag']} 未能通过 {test_url}, 状态码 {response.status_code}")
             except requests.RequestException as e:
                 logging.error(f"代理 {proxy['tag']} 测试 {test_url} 失败: {e}")
-        return None
+        return None # 所有测试 URL 都失败了
 
     except subprocess.SubprocessError as e:
-        logging.error(f"代理 {proxy.get('tag', 'unknown')} 测试失败: {e}")
+        logging.error(f"执行 sing-box 时发生子进程错误，代理 {proxy.get('tag', 'unknown')}: {e}")
+        return None
+    except Exception as e:
+        logging.error(f"测试代理 {proxy.get('tag', 'unknown')} 时发生意外错误: {e}")
         return None
     finally:
         if process:
-            process.terminate()
+            process.terminate() # 首先尝试优雅终止
             try:
-                process.wait(timeout=5)
+                process.wait(timeout=5) # 给它5秒钟时间终止
             except subprocess.TimeoutExpired:
                 logging.warning(f"未能终止代理 {proxy.get('tag', 'unknown')} 的 sing-box 进程，正在强制杀死。")
-                process.kill()
-                process.wait(timeout=5)
+                process.kill() # 强制杀死
+                process.wait(timeout=5) # 再次等待，确保进程完全结束
 
+        # 清理配置文件
         if os.path.exists(SINGBOX_CONFIG_PATH):
             os.remove(SINGBOX_CONFIG_PATH)
 
+# --- 主函数 ---
 def main():
     """主函数：获取、测试代理并保存结果"""
+    logging.info("开始获取代理节点...")
     proxies_to_test = get_proxies() # 现在这里直接返回 sing-box 对象
+    logging.info(f"共获取到 {len(proxies_to_test)} 个代理节点。")
+
     if not proxies_to_test:
         logging.error("没有找到代理可以测试。")
         return
 
     results = []
-    # 直接遍历 sing-box 代理对象
-    for proxy_obj in proxies_to_test:
-        if proxy_obj:
-            logging.info(f"正在测试代理: {proxy_obj.get('tag', 'unknown_tag')} - {proxy_obj.get('server', 'unknown_server')}:{proxy_obj.get('server_port', 'unknown_port')}")
-            result = test_proxy(proxy_obj)
-            if result:
-                results.append(result)
+    # 使用 ThreadPoolExecutor 进行并行测试
+    # `max_workers` 控制同时运行的代理测试数量
+    with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENT_TESTS) as executor:
+        # 提交所有代理测试任务
+        future_to_proxy = {executor.submit(test_proxy, proxy_obj): proxy_obj for proxy_obj in proxies_to_test}
+        
+        for future in concurrent.futures.as_completed(future_to_proxy):
+            proxy_obj = future_to_proxy[future]
+            try:
+                result = future.result() # 获取测试结果
+                if result:
+                    results.append(result)
+            except Exception as exc:
+                logging.error(f"代理 {proxy_obj.get('tag', 'unknown')} 生成异常: {exc}")
 
     results.sort(key=lambda x: x["latency"])
     with open(OUTPUT_SUB_FILE, "w") as f:
@@ -741,6 +794,8 @@ def main():
             f.write(f"{proxy_info}#{result['latency']:.2f}ms\n")
 
     logging.info(f"已保存 {len(results)} 个有效代理到 {OUTPUT_SUB_FILE}")
+    if len(results) == 0:
+        logging.warning("没有找到任何有效的代理节点。")
 
 if __name__ == "__main__":
     main()
