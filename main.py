@@ -175,23 +175,33 @@ def parse_proxy_url_string(proxy_url):
             if missing_padding:
                 vmess_data_str += '=' * (4 - missing_padding)
             
+            vmess_decoded_bytes = None
             try:
                 vmess_decoded_bytes = base64.b64decode(vmess_data_str)
             except base64.binascii.Error as e:
                 logging.error(f"VMess Base64 解码失败 (填充或格式错误) for {proxy_url}: {e}")
                 return None
             
+            if vmess_decoded_bytes is None: # Should not happen if previous try-except works, but for safety
+                return None
+
+            vmess_data = None
             try:
                 # 尝试用 UTF-8 解码，如果失败，尝试忽略或替换错误字符
                 vmess_data = json.loads(vmess_decoded_bytes.decode('utf-8'))
-            except (json.JSONDecodeError, UnicodeDecodeError) as e:
-                logging.warning(f"VMess JSON 或 UTF-8 解码失败，尝试宽松模式 for {proxy_url}: {e}")
+            except UnicodeDecodeError as e:
+                logging.warning(f"VMess UTF-8 解码失败，尝试宽松模式 for {proxy_url}: {e}")
                 try:
-                    # 尝试用 'replace' 错误处理方式解码
                     vmess_data = json.loads(vmess_decoded_bytes.decode('utf-8', errors='replace'))
-                except json.JSONDecodeError as e_replace:
-                    logging.error(f"VMess JSON 解码失败 (宽松模式也失败) for {proxy_url}: {e_replace}")
+                except json.JSONDecodeError as e_json_fallback:
+                    logging.error(f"VMess JSON 解码失败 (UTF-8 宽松模式后) for {proxy_url}: {e_json_fallback}")
                     return None
+            except json.JSONDecodeError as e:
+                logging.error(f"VMess JSON 解码失败 (原始内容结构问题) for {proxy_url}: {e}")
+                return None
+            
+            if vmess_data is None: # If all attempts failed
+                return None
             
             transport_type = vmess_data.get("net", "tcp")
             
