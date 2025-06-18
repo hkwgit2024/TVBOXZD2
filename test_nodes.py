@@ -13,6 +13,13 @@ from datetime import datetime
 import binascii
 import socks
 import socket
+import sys
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+# 确保日志实时输出
+def log(message):
+    print(f"[{datetime.now()}] {message}", flush=True)
 
 # 确保 data 目录存在
 if not os.path.exists("data"):
@@ -23,13 +30,21 @@ url = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config
 output_file = "data/collectSub.txt"
 speedtest_log = "data/speedtest_errors.log"
 
+# 环境检查
+log(f"Python 版本: {sys.version}")
+log(f"依赖检查: requests={requests.__version__}, speedtest-cli={'installed' if 'speedtest' in sys.modules else 'not installed'}, pysocks={'installed' if 'socks' in sys.modules else 'not installed'}")
+
 # 下载最新 sing-box 二进制文件
 def download_sing_box():
     sing_box_bin = "./sing-box"
     if not os.path.exists(sing_box_bin):
+        log("开始下载 sing-box")
         api_url = "https://api.github.com/repos/SagerNet/sing-box/releases/latest"
+        session = requests.Session()
+        retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+        session.mount("https://", HTTPAdapter(max_retries=retries))
         try:
-            response = requests.get(api_url, headers={"Accept": "application/vnd.github+json"})
+            response = session.get(api_url, headers={"Accept": "application/vnd.github+json"}, timeout=10)
             response.raise_for_status()
             release = response.json()
             sing_box_url = None
@@ -39,28 +54,32 @@ def download_sing_box():
                     break
             if not sing_box_url:
                 raise Exception("未找到适用于 linux-amd64 的 sing-box 二进制文件")
+            log(f"下载 sing-box tar 文件: {sing_box_url}")
             sing_box_tar = "sing-box.tar.gz"
-            urllib.request.urlretrieve(sing_box_url, sing_box_tar)
+            with urllib.request.urlopen(sing_box_url, timeout=30) as response, open(sing_box_tar, "wb") as f:
+                f.write(response.read())
             pre_dirs = set(glob.glob("sing-box*"))
-            subprocess.run(["tar", "-xzf", sing_box_tar], check=True)
+            subprocess.run(["tar", "-xzf", sing_box_tar], check=True, timeout=30)
             binary_paths = glob.glob("**/sing-box", recursive=True) or glob.glob("sing-box")
             if not binary_paths:
                 raise Exception("未找到解压后的 sing-box 二进制文件")
-            subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True)
-            subprocess.run(["chmod", "+x", sing_box_bin], check=True)
+            subprocess.run(["mv", binary_paths[0], sing_box_bin], check=True, timeout=10)
+            subprocess.run(["chmod", "+x", sing_box_bin], check=True, timeout=10)
             if os.path.exists(sing_box_tar):
                 os.remove(sing_box_tar)
             post_dirs = set(glob.glob("sing-box*"))
             for dir_path in post_dirs - pre_dirs:
                 if os.path.isdir(dir_path):
-                    subprocess.run(["rm", "-rf", dir_path], check=True)
+                    subprocess.run(["rm", "-rf", dir_path], check=True, timeout=10)
         except Exception as e:
-            print(f"[{datetime.now()}] 下载 sing-box 失败: {str(e)}")
+            log(f"下载 sing-box 失败: {str(e)}")
             raise
+    log("sing-box 下载完成")
     return sing_box_bin
 
 # 解析节点配置
 def parse_node(line):
+    log(f"解析节点: {line[:50]}...")
     try:
         if line.startswith("hysteria2://"):
             url = urlparse(line)
@@ -81,7 +100,6 @@ def parse_node(line):
             }
         elif line.startswith("ss://"):
             raw_config = line[5:].split("#")[0]
-            # 尝试作为 base64 解码
             base64_str = re.sub(r'[^A-Za-z0-9+/=]', '', raw_config)
             base64_str = base64_str + "=" * (-len(base64_str) % 4)
             try:
@@ -102,10 +120,9 @@ def parse_node(line):
                     "raw": line
                 }
             except binascii.Error as e:
-                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): 无效 base64 编码 - {str(e)}")
+                log(f"解析 ss 节点失败 ({line[:50]}...): 无效 base64 编码 - {str(e)}")
             except ValueError as e:
-                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): {str(e)}")
-            # 尝试非 base64 格式 (cipher:password@ip:port)
+                log(f"解析 ss 节点失败 ({line[:50]}...): {str(e)}")
             try:
                 if "@" in raw_config:
                     userinfo, ip_port = raw_config.split("@")
@@ -122,7 +139,7 @@ def parse_node(line):
                         "raw": line
                     }
             except Exception as e:
-                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): 非 base64 格式解析错误 - {str(e)}")
+                log(f"解析 ss 节点失败 ({line[:50]}...): 非 base64 格式解析错误 - {str(e)}")
             return None
         elif line.startswith("trojan://"):
             url = urlparse(line)
@@ -159,11 +176,12 @@ def parse_node(line):
         else:
             return None
     except Exception as e:
-        print(f"[{datetime.now()}] 解析节点失败 ({line}): {str(e)}")
+        log(f"解析节点失败 ({line[:50]}...): {str(e)}")
         return None
 
 # 生成 sing-box 配置文件
 def generate_sing_box_config(node, temp_config_file):
+    log(f"生成 sing-box 配置文件: {node['ip']}:{node['port']} ({node['type']})")
     config = {
         "log": {"level": "info"},
         "inbounds": [
@@ -227,18 +245,19 @@ def generate_sing_box_config(node, temp_config_file):
 
 # 测试 HTTP 连通性
 def test_http_connectivity():
+    log("开始 HTTP 连通性测试")
     try:
         socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 1080)
         socket.socket = socks.socksocket
         response = requests.get("http://ipinfo.io/json", timeout=10)
         if response.status_code == 200:
-            print(f"[{datetime.now()}] HTTP 连通性测试通过: {response.json().get('ip')}")
+            log(f"HTTP 连通性测试通过: {response.json().get('ip')}")
             return True
         else:
-            print(f"[{datetime.now()}] HTTP 连通性测试失败: 状态码 {response.status_code}")
+            log(f"HTTP 连通性测试失败: 状态码 {response.status_code}")
             return False
     except Exception as e:
-        print(f"[{datetime.now()}] HTTP 连通性测试失败: {str(e)}")
+        log(f"HTTP 连通性测试失败: {str(e)}")
         return False
     finally:
         socks.set_default_proxy(None)
@@ -246,6 +265,7 @@ def test_http_connectivity():
 
 # 测试连通性
 def test_connectivity(sing_box_bin, config_file):
+    log("开始连通性测试")
     process = None
     try:
         process = subprocess.Popen(
@@ -262,22 +282,22 @@ def test_connectivity(sing_box_bin, config_file):
             timeout=2
         )
         if sock_test.returncode == 0:
-            print(f"[{datetime.now()}] sing-box SOCKS5 代理已启动并监听")
+            log("sing-box SOCKS5 代理已启动并监听")
             return True
         else:
             stderr = process.stderr.read()
-            print(f"[{datetime.now()}] sing-box SOCKS5 代理未成功监听: {sock_test.stderr.strip()}")
+            log(f"sing-box SOCKS5 代理未成功监听: {sock_test.stderr.strip()}")
             if stderr:
-                print(f"[{datetime.now()}] sing-box 错误输出: {stderr.strip()}")
+                log(f"sing-box 错误输出: {stderr.strip()}")
             return False
     except FileNotFoundError:
-        print(f"[{datetime.now()}] nc 或 sing-box 命令未找到，请确保已安装 netcat 和 sing-box")
+        log("nc 或 sing-box 命令未找到，请确保已安装 netcat 和 sing-box")
         return False
     except subprocess.TimeoutExpired:
-        print(f"[{datetime.now()}] 连接 SOCKS5 端口超时")
+        log("连接 SOCKS5 端口超时")
         return False
     except Exception as e:
-        print(f"[{datetime.now()}] 连通性测试失败 (sing-box 启动): {str(e)}")
+        log(f"连通性测试失败 (sing-box 启动): {str(e)}")
         return False
     finally:
         if process:
@@ -289,6 +309,7 @@ def test_connectivity(sing_box_bin, config_file):
 
 # 测试下载和上传速度（使用 speedtest-cli Python 库）
 def test_download_speed(sing_box_bin, config_file):
+    log("开始速度测试")
     proxy_process = None
     try:
         proxy_process = subprocess.Popen(
@@ -298,9 +319,9 @@ def test_download_speed(sing_box_bin, config_file):
             text=True
         )
         time.sleep(10)
-        print(f"[{datetime.now()}] 代理环境变量: socks5://127.0.0.1:1080")
+        log("代理环境变量: socks5://127.0.0.1:1080")
         if not test_http_connectivity():
-            print(f"[{datetime.now()}] 跳过 speedtest，因 HTTP 连通性测试失败")
+            log("跳过 speedtest，因 HTTP 连通性测试失败")
             return 0, 0, 0
         import speedtest
         s = speedtest.Speedtest()
@@ -311,21 +332,22 @@ def test_download_speed(sing_box_bin, config_file):
         download_mbps = results["download"] / 1_000_000
         upload_mbps = results["upload"] / 1_000_000
         ping_latency = results["ping"]
+        log(f"速度测试完成: 下载 {download_mbps:.2f} Mbps, 上传 {upload_mbps:.2f} Mbps, 延迟 {ping_latency:.2f} ms")
         return download_mbps, upload_mbps, ping_latency
     except ImportError:
-        print(f"[{datetime.now()}] speedtest-cli 库未安装，请运行 `pip install speedtest-cli`")
+        log("speedtest-cli 库未安装，请运行 `pip install speedtest-cli`")
         return 0, 0, 0
     except Exception as e:
-        print(f"[{datetime.now()}] 速度测试失败: {str(e)}")
+        log(f"速度测试失败: {str(e)}")
         with open(speedtest_log, "a") as f:
             f.write(f"[{datetime.now()}] 速度测试失败: {str(e)}\n")
         return 0, 0, 0
     finally:
         if proxy_process:
-            process_stderr = proxy_process.stderr.read()
-            if process_stderr:
+            stderr = proxy_process.stderr.read()
+            if stderr:
                 with open(speedtest_log, "a") as f:
-                    f.write(f"[{datetime.now()}] sing-box 错误输出: {process_stderr.strip()}\n")
+                    f.write(f"[{datetime.now()}] sing-box 错误输出: {stderr.strip()}\n")
             proxy_process.terminate()
             try:
                 proxy_process.wait(timeout=5)
@@ -334,26 +356,41 @@ def test_download_speed(sing_box_bin, config_file):
 
 # 主函数
 def main():
+    log("脚本开始运行")
     try:
         sing_box_bin = download_sing_box()
     except Exception as e:
-        print(f"[{datetime.now()}] 初始化失败: {str(e)}")
+        log(f"初始化失败: {str(e)}")
         return
+    log("开始下载节点文件")
+    session = requests.Session()
+    retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+    session.mount("https://", HTTPAdapter(max_retries=retries))
     try:
-        urllib.request.urlretrieve(url, "nodes.txt")
+        response = session.get(url, timeout=10)
+        response.raise_for_status()
+        with open("nodes.txt", "w", encoding="utf-8") as f:
+            f.write(response.text)
     except Exception as e:
-        print(f"[{datetime.now()}] 下载节点文件失败: {str(e)}")
+        log(f"下载节点文件失败: {str(e)}")
         return
+    log("节点文件下载完成")
     results = []
+    node_count = 0
+    max_nodes = 100  # 限制测试节点数量
     with open("nodes.txt", "r", encoding="utf-8", errors="ignore") as f:
         for line in f:
+            if node_count >= max_nodes:
+                log(f"达到最大节点限制 ({max_nodes})，停止解析")
+                break
             line = line.strip()
             if not line:
                 continue
             node = parse_node(line)
             if not node:
                 continue
-            print(f"[{datetime.now()}] 测试节点: {node['ip']}:{node['port']} ({node['type']})")
+            node_count += 1
+            log(f"测试节点: {node['ip']}:{node['port']} ({node['type']})")
             with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_config:
                 generate_sing_box_config(node, temp_config.name)
                 is_connected = test_connectivity(sing_box_bin, temp_config.name)
@@ -375,7 +412,7 @@ def main():
     with open(output_file, "w", encoding="utf-8") as f:
         for result in results:
             f.write(json.dumps(result, ensure_ascii=False) + "\n")
-    print(f"[{datetime.now()}] 测试完成，结果已保存到 {output_file}")
+    log(f"测试完成，结果已保存到 {output_file}")
 
 if __name__ == "__main__":
     main()
