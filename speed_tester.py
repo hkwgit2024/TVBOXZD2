@@ -370,18 +370,23 @@ def fetch_and_parse_nodes():
             is_yaml_content = False
             yaml_data_from_content = None
             if node_format == "clash-yaml" or node_format == "auto":
+                # --- 新增：尝试清理 YAML 中的非标准标签 ---
+                # 这是一个临时性的清理，旨在处理 pyyaml 无法识别的 !<str> 标签
+                # 移除 !<tag> 和其后的空白字符，只保留值
+                cleaned_yaml_content = re.sub(r'![a-zA-Z0-9_]+\s*', '', processed_content)
+                # ----------------------------------------
                 try:
-                    # 尝试加载一次，并保存结果
-                    yaml_data_from_content = yaml.full_load(processed_content)
+                    # 尝试加载清理后的内容
+                    yaml_data_from_content = yaml.full_load(cleaned_yaml_content)
                     if isinstance(yaml_data_from_content, dict) and 'proxies' in yaml_data_from_content and isinstance(yaml_data_from_content['proxies'], list):
                         is_yaml_content = True
                 except yaml.YAMLError as e:
-                    print(f"Warning: Failed to parse YAML from {url}. Error: {e}")
+                    print(f"Warning: Failed to parse CLEANED YAML from {url}. Error: {e}")
                 except Exception as e:
-                    print(f"Warning: An unexpected error occurred during YAML check for {url}. Error: {e}")
+                    print(f"Warning: An unexpected error occurred during CLEANED YAML check for {url}. Error: {e}")
             
             if is_yaml_content:
-                print(f"Successfully parsed Clash YAML proxies from {url}")
+                print(f"Successfully parsed Clash YAML proxies from {url} (after cleaning tags)")
                 for proxy_dict in yaml_data_from_content['proxies']:
                     if isinstance(proxy_dict, dict) and 'name' in proxy_dict and 'type' in proxy_dict:
                         all_parsed_proxies.append(proxy_dict)
@@ -389,7 +394,7 @@ def fetch_and_parse_nodes():
                         print(f"Warning: Invalid proxy entry in YAML from {url}: {proxy_dict}")
                 continue # YAML 格式处理完毕，跳到下一个来源
             elif node_format == "clash-yaml": # 如果明确指定为 clash-yaml 但解析失败
-                print(f"Error: Format explicitly set to 'clash-yaml' for {url}, but content is not valid Clash YAML. Skipping.")
+                print(f"Error: Format explicitly set to 'clash-yaml' for {url}, but content is not valid Clash YAML even after cleaning. Skipping.")
                 continue
 
 
@@ -459,11 +464,6 @@ def start_clash():
         text=True # 以文本模式处理，方便读取
     )
 
-    # 实时读取并写入日志文件
-    # 使用线程或非阻塞IO来避免阻塞，但这里简化处理，先启动再读取
-    # 更好的方式是使用 select 或 asyncio
-    
-    # 立即检查进程是否存活，并等待API
     time.sleep(2) # 初始等待
 
     api_ready = False
@@ -505,7 +505,6 @@ def test_proxy(proxy_name):
         payload = {"name": proxy_name}
         
         # 确保API可用
-        # 这一步在 start_clash 中已经有检查，这里再次检查确保稳健性
         response = requests.get(f"{CLASH_API_URL}/proxies", timeout=5)
         response.raise_for_status()
 
@@ -518,11 +517,9 @@ def test_proxy(proxy_name):
 
         # 进行测速
         start_time = time.time()
-        # 注意：使用 requests.Session() 可以重用连接，提高效率，但这里为了简单直接使用 requests.get
         with requests.get(SPEED_TEST_URL, stream=True, timeout=SPEED_TEST_TIMEOUT, proxies={'http': CLASH_PROXY_URL, 'https': CLASH_PROXY_URL}) as r:
             r.raise_for_status() # 检查HTTP响应状态码 (2xx success)
             total_size = 0
-            # 限制下载大小，避免长时间运行，或者如果文件比预期大
             for chunk in r.iter_content(chunk_size=8192):
                 total_size += len(chunk)
                 if total_size >= 5 * 1024 * 1024: # 如果下载量达到5MB就停止
@@ -552,9 +549,6 @@ def test_proxy(proxy_name):
 
 def main():
     os.makedirs("data", exist_ok=True) # 确保 data 目录存在
-    # setup_clash_core 会确保 clash_bin 存在
-    # 所以清空日志文件可以放在 start_clash 函数内部，确保目录已创建
-    # 或者像这样，在 main 函数开始时就处理
     os.makedirs(os.path.dirname(CLASH_LOG_PATH), exist_ok=True) # 确保日志文件目录存在
     open(CLASH_LOG_PATH, 'w').close() # 清空旧日志文件
 
@@ -576,7 +570,6 @@ def main():
         results.append(f"# 节点测速结果 - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
         # 添加默认的DIRECT和REJECT组的测试结果（通常无法测速，只是占位）
-        # 这些是Clash内置的特殊组，不能像普通代理一样进行测速
         results.append("Proxy: DIRECT # 速度: (Clash内置组)")
         results.append("Proxy: REJECT # 速度: (Clash内置组)")
         results.append("Proxy: COMPATIBLE # 速度: (Clash内置组)")
@@ -596,7 +589,6 @@ def main():
     finally:
         if clash_process:
             print("Terminating Clash core...")
-            # 捕获并记录Clash关闭前的任何输出
             clash_stdout, clash_stderr = clash_process.communicate(timeout=5)
             with open(CLASH_LOG_PATH, 'a') as log_file:
                 log_file.write("\n--- Clash Process STDOUT/STDERR (on exit) ---\n")
