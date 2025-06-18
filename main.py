@@ -16,17 +16,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 SINGBOX_BIN_PATH = "./clash_bin/sing-box"
 SINGBOX_CONFIG_PATH = "sing-box-config.json"
 SINGBOX_LOG_PATH = os.getenv("SINGBOX_LOG_PATH", "data/sing-box.log")
-GEOIP_DB_PATH = "data/geoip.db"  # 本地 geoip.db 路径
+GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+        "url": "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
         "type": "plain",
     },
 ]
 MAX_PROXIES = 1000
-TEST_URL = "http://www.cloudflare.com"
-TIMEOUT_SECONDS = 5
+TEST_URLS = ["https://www.google.com", "http://www.example.com", "https://www.cloudflare.com"]
+TIMEOUT_SECONDS = 10
 PROXY_PORT = 1080
 
 # 确保输出目录存在
@@ -38,26 +38,15 @@ for path in [OUTPUT_SUB_FILE, SINGBOX_LOG_PATH, GEOIP_DB_PATH]:
 def is_valid_ipv6(addr):
     """验证 IPv6 地址格式"""
     try:
-        socket.inet_pton(socket.AF_INET6, addr.strip("[]"))
+        addr = addr.strip("[]")
+        socket.inet_pton(socket.AF_INET6, addr)
         return True
     except (socket.error, ValueError):
         return False
 
 def get_proxies():
     """从节点源获取代理列表"""
-    proxies = []
-    for source in NODES_SOURCES:
-        try:
-            response = requests.get(source["url"], timeout=10)
-            response.raise_for_status()
-            if source["type"] == "plain":
-                lines = response.text.strip().split("\n")
-                for line in lines:
-                    if line.startswith(("vmess://", "trojan://", "ss://")):
-                        proxies.append(line)
-        except requests.RequestException as e:
-            logging.error(f"Failed to fetch {source['url']}: {e}")
-    return proxies[:MAX_PROXIES]
+,…
 
 def decode_proxy(proxy_url):
     """解码代理 URL 并转换为 sing-box 配置格式"""
@@ -86,19 +75,25 @@ def decode_proxy(proxy_url):
             }
 
         elif scheme == "trojan":
-            hostname = parsed.hostname
-            if hostname and hostname.startswith("[") and not is_valid_ipv6(hostname):
-                raise ValueError(f"Invalid IPv6 address: {hostname}")
+            if "@" not in parsed.netloc:
+                logging.error(f"Invalid Trojan URL format, missing '@': {proxy_url}")
+                return None
+            password, addr = parsed.netloc.split("@", 1)
+            hostname = addr.split(":")[0] if ":" in addr else addr
+            if hostname.startswith("[") and not is_valid_ipv6(hostname):
+                logging.error(f"Invalid IPv6 address in Trojan URL: {proxy_url}")
+                return None
             query = urllib.parse.parse_qs(parsed.query)
+            port = parsed.port or 443
             return {
                 "type": "trojan",
                 "tag": query.get("name", ["trojan-node"])[0] or "trojan-node",
                 "server": hostname,
-                "server_port": int(parsed.port or 443),
-                "password": parsed.netloc.split("@")[0],
+                "server_port": int(port),
+                "password": password,
                 "tls": {
                     "enabled": True,
-                    "server_name": query.get("sni", [""])[0],
+                    "server_name": query.get("sni", [""])[0] or hostname,
                     "insecure": query.get("allowInsecure", ["0"])[0] == "1",
                 },
             }
@@ -120,6 +115,38 @@ def decode_proxy(proxy_url):
                 "method": method,
                 "password": password,
             }
+
+        elif scheme == "hy2":
+            if "@" not in parsed.netloc:
+                logging.error(f"Invalid Hysteria2 URL format, missing '@': {proxy_url}")
+                return None
+            password, addr = parsed.netloc.split("@", 1)
+            hostname = addr.split(":")[0] if ":" in addr else addr
+            if hostname.startswith("[") and not is_valid_ipv6(hostname):
+                logging.error(f"Invalid IPv6 address in Hysteria2 URL: {proxy_url}")
+                return None
+            query = urllib.parse.parse_qs(parsed.query)
+            port = parsed.port or 443
+            obfs = query.get("obfs", [""])[0]
+            obfs_password = query.get("obfs-password", [""])[0]
+            config = {
+                "type": "hysteria2",
+                "tag": query.get("name", ["hy2-node"])[0] or "hy2-node",
+                "server": hostname,
+                "server_port": int(port),
+                "password": password,
+                "tls": {
+                    "enabled": True,
+                    "server_name": query.get("sni", [""])[0] or hostname,
+                    "insecure": query.get("insecure", ["0"])[0] == "1",
+                },
+            }
+            if obfs and obfs_password:
+                config["obfs"] = {
+                    "type": obfs,
+                    "password": obfs_password,
+                }
+            return config
 
         else:
             logging.warning(f"Unsupported scheme: {scheme}")
@@ -153,13 +180,13 @@ def generate_singbox_config(proxy):
         ],
         "route": {
             "geoip": {
-                "path": GEOIP_DB_PATH,  # 指定本地 geoip.db
-                "download_url": "https://github.com/SagerNet/sing-geoip/releases/download/2025.05.20/geoip.db",
+                "path": GEOIP_DB_PATH,
+                "download_url": "https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db",
                 "download_detour": "direct",
             },
             "rules": [
                 {
-                    "domain": ["www.cloudflare.com"],
+                    "domain": ["www.google.com", "www.example.com", "www.cloudflare.com"],
                     "outbound": proxy["tag"],
                 },
                 {
@@ -175,12 +202,12 @@ def generate_singbox_config(proxy):
 
 def test_proxy(proxy):
     """测试代理节点速度"""
+    process = None
     try:
         config_path = generate_singbox_config(proxy)
-        # 验证配置
         result = subprocess.run([SINGBOX_BIN_PATH, "check", "-c", config_path], capture_output=True, text=True)
         if result.returncode != 0:
-            logging.error(f"Invalid sing-box config: {result.stderr}")
+            logging.error(f"Invalid sing-box config for {proxy['tag']}: {result.stderr}")
             return None
 
         process = subprocess.Popen(
@@ -189,39 +216,45 @@ def test_proxy(proxy):
             stderr=subprocess.PIPE,
             text=True,
         )
-        time.sleep(5)  # 增加等待时间
+        time.sleep(10)
 
-        # 检查 sing-box 是否运行
         if process.poll() is not None:
             stderr = process.stderr.read()
-            logging.error(f"sing-box failed to start: {stderr}")
+            logging.error(f"sing-box failed to start for {proxy['tag']}: {stderr}")
             return None
 
-        start_time = time.time()
-        response = requests.get(
-            TEST_URL,
-            proxies={"http": f"http://127.0.0.1:{PROXY_PORT}", "https": f"http://127.0.0.1:{PROXY_PORT}"},
-            timeout=TIMEOUT_SECONDS,
-        )
-        latency = (time.time() - start_time) * 1000  # 毫秒
-        process.terminate()
-        process.wait(timeout=5)
+        for test_url in TEST_URLS:
+            try:
+                start_time = time.time()
+                response = requests.get(
+                    test_url,
+                    proxies={"http": f"http://127.0.0.1:{PROXY_PORT}", "https": f"http://127.0.0.1:{PROXY_PORT}"},
+                    timeout=TIMEOUT_SECONDS,
+                )
+                latency = (time.time() - start_time) * 1000
+                if response.status_code == 200:
+                    logging.info(f"Proxy {proxy['tag']} succeeded with {test_url}, latency {latency:.2f}ms")
+                    return {"proxy": proxy, "latency": latency}
+                else:
+                    logging.warning(f"Proxy {proxy['tag']} failed with {test_url}, status {response.status_code}")
+            except requests.RequestException as e:
+                logging.error(f"Proxy {proxy['tag']} test failed with {test_url}: {e}")
+        return None
 
-        if response.status_code == 200:
-            return {"proxy": proxy, "latency": latency}
-        else:
-            logging.warning(f"Proxy {proxy['tag']} failed with status {response.status_code}")
-            return None
-
-    except (requests.RequestException, subprocess.SubprocessError) as e:
+    except subprocess.SubprocessError as e:
         logging.error(f"Proxy {proxy.get('tag', 'unknown')} test failed: {e}")
         return None
     finally:
-        try:
-            process.terminate()
-            process.wait(timeout=5)
-        except:
-            pass
+        if process:
+            try:
+                process.terminate()
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                logging.warning(f"Failed to terminate sing-box process for {proxy.get('tag', 'unknown')}")
+                process.kill()
+                process.wait(timeout=5)
+        if os.path.exists(SINGBOX_CONFIG_PATH):
+            os.remove(SINGBOX_CONFIG_PATH)
 
 def main():
     """主函数：获取、测试代理并保存结果"""
@@ -238,7 +271,6 @@ def main():
             if result:
                 results.append(result)
 
-    # 按延迟排序并保存结果
     results.sort(key=lambda x: x["latency"])
     with open(OUTPUT_SUB_FILE, "w") as f:
         for result in results:
