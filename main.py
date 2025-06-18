@@ -21,8 +21,8 @@ GEOIP_DB_PATH = "data/geoip.db"
 OUTPUT_SUB_FILE = "data/collectSub.txt"
 NODES_SOURCES = [
     {
-        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-        "type": "plain", # 当前的纯文本URL列表
+        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt", # 根据您的日志调整了默认源
+        "type": "plain",
     },
     # 示例：如果您有一个YAML格式的代理配置URL，可以这样添加
     # {
@@ -104,18 +104,16 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
         outbound["uuid"] = yaml_proxy_dict.get("uuid")
         outbound["security"] = yaml_proxy_dict.get("cipher", "auto") # Clash 中的 'cipher' 映射到 sing-box 的 'security'
         outbound["alter_id"] = yaml_proxy_dict.get("alterId", 0) # Clash 使用 alterId
-        # 根据 sing-box 文档，VMess TCP 传输无需单独的 "transport" 字段
-        if yaml_proxy_dict.get("network") == "tcp":
-            pass # No specific transport config needed for plain TCP
-        elif "network" in yaml_proxy_dict:
-            # Re-use existing transport logic if it's not plain TCP
+        
+        # 修正：VMess TCP 传输不需要单独的 "transport" 字段
+        if yaml_proxy_dict.get("network") not in ["tcp", ""]: # 只有在不是纯TCP时才添加transport
             transport_type = yaml_proxy_dict["network"]
             outbound["transport"] = {"type": transport_type}
             if transport_type == "ws":
                 outbound["transport"]["path"] = yaml_proxy_dict.get("ws-path", "")
                 outbound["transport"]["headers"] = {"Host": yaml_proxy_dict.get("ws-headers", {}).get("Host", "")}
             # Add other transport types if needed for YAML VMess
-
+        
         # TLS for VMess, if enabled in YAML
         if yaml_proxy_dict.get("tls", False):
             outbound["tls"] = {
@@ -135,13 +133,25 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
     elif p_type == "vless":
         outbound["uuid"] = yaml_proxy_dict.get("uuid")
         outbound["flow"] = yaml_proxy_dict.get("flow") # VLESS 特有
+        
         # VLESS 几乎总是使用 TLS
         if tls_enabled: # 重新检查TLS是否启用，因为VLESS通常有特殊TLS要求
-            outbound["tls"]["reality"] = yaml_proxy_dict.get("reality", {}).get("enabled", False)
-            outbound["tls"]["xver"] = yaml_proxy_dict.get("xver", 0)
-            outbound["tls"]["fingerprint"] = yaml_proxy_dict.get("fingerprint")
-            # 添加 VLESS TLS specific fields here if needed by sing-box
-
+            tls_obj = outbound.get("tls", {"enabled": True}) # 获取或创建tls对象
+            if yaml_proxy_dict.get("security") == "reality": # Reality是TLS的一个子类型
+                tls_obj["reality"] = { # Reality需要一个嵌套的字典
+                    "enabled": True,
+                    "handshake": yaml_proxy_dict.get("reality-handshake", server), # 根据实际YAML字段调整
+                    "fingerprint": yaml_proxy_dict.get("fingerprint"),
+                    "server_name": yaml_proxy_dict.get("sni", server) # Reality的SNI通常在Reality对象内或被Reality覆盖
+                }
+                tls_obj["server_name"] = yaml_proxy_dict.get("sni", server) # 外层SNI也保留
+            
+            outbound["tls"] = tls_obj # 更新tls配置
+            
+            outbound["tls"]["xver"] = yaml_proxy_dict.get("xver", 0) # 仅当存在时添加
+            if "fingerprint" in yaml_proxy_dict: # 指纹通常在 tls 根或 reality 中
+                outbound["tls"]["fingerprint"] = yaml_proxy_dict["fingerprint"]
+            
     # 根据需要添加其他代理类型
 
     return outbound
@@ -149,17 +159,39 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
 def parse_proxy_url_string(proxy_url):
     """解码代理 URL 字符串并转换为 sing-box 配置格式"""
     try:
+        # 首先尝试解析 URL，如果 URL 格式本身就有问题，就直接跳过
         parsed = urllib.parse.urlparse(proxy_url)
         scheme = parsed.scheme
+        if not scheme or not parsed.netloc: # 缺少scheme或netloc，视为无效URL
+            logging.error(f"无效或不完整的 URL 格式，跳过: {proxy_url}")
+            return None
 
         if scheme == "vmess":
             # 修正 Base64 解码的 padding 问题
             vmess_data_str = parsed.netloc
+            # Base64解码前尝试去除不规范字符，只保留有效的Base64字符和等于号
+            vmess_data_str = re.sub(r'[^a-zA-Z0-9+/=]', '', vmess_data_str)
             missing_padding = len(vmess_data_str) % 4
             if missing_padding:
                 vmess_data_str += '=' * (4 - missing_padding)
             
-            vmess_data = json.loads(base64.b64decode(vmess_data_str).decode('utf-8'))
+            try:
+                vmess_decoded_bytes = base64.b64decode(vmess_data_str)
+            except base64.binascii.Error as e:
+                logging.error(f"VMess Base64 解码失败 (填充或格式错误) for {proxy_url}: {e}")
+                return None
+            
+            try:
+                # 尝试用 UTF-8 解码，如果失败，尝试忽略或替换错误字符
+                vmess_data = json.loads(vmess_decoded_bytes.decode('utf-8'))
+            except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                logging.warning(f"VMess JSON 或 UTF-8 解码失败，尝试宽松模式 for {proxy_url}: {e}")
+                try:
+                    # 尝试用 'replace' 错误处理方式解码
+                    vmess_data = json.loads(vmess_decoded_bytes.decode('utf-8', errors='replace'))
+                except json.JSONDecodeError as e_replace:
+                    logging.error(f"VMess JSON 解码失败 (宽松模式也失败) for {proxy_url}: {e_replace}")
+                    return None
             
             transport_type = vmess_data.get("net", "tcp")
             
@@ -248,14 +280,65 @@ def parse_proxy_url_string(proxy_url):
             }
 
         elif scheme == "ss":
+            # 修正 Base64 解码的 padding 问题
+            # Shadowsocks URL 的 Base64 部分通常在 netloc (method:password@server:port) 或只有 netloc (method:password)
+            # 这里假定 Base64 部分是整个 auth
             if "@" in parsed.netloc:
                 auth, addr = parsed.netloc.split("@")
-                method, password = base64.b64decode(auth).decode().split(":")
-                hostname, port = addr.split(":")
-            else:
-                method_password = base64.b64decode(parsed.netloc).decode()
-                method, password = method_password.split(":")
-                hostname, port = parsed.path.lstrip("/").split(":")
+                
+                auth_str = auth
+                # Base64解码前尝试去除不规范字符
+                auth_str = re.sub(r'[^a-zA-Z0-9+/=]', '', auth_str)
+                missing_padding = len(auth_str) % 4
+                if missing_padding:
+                    auth_str += '=' * (4 - missing_padding)
+
+                try:
+                    # 使用 errors='replace' 处理解码错误
+                    method_password = base64.b64decode(auth_str).decode('utf-8', errors='replace')
+                    # 增加 split 的 maxsplit 参数以防止 extra ':' in password
+                    method, password = method_password.split(":", 1)
+                except (base64.binascii.Error, ValueError, UnicodeDecodeError) as e:
+                    logging.error(f"Shadowsocks Base64 解码或解析失败 (auth部分) for {proxy_url}: {e}")
+                    return None
+
+                # 提取 hostname 和 port
+                if ':' in addr:
+                    hostname_parts = addr.split(':')
+                    hostname = ':'.join(hostname_parts[:-1]) # Reconstruct hostname in case of IPv6 without brackets
+                    port = hostname_parts[-1]
+                else:
+                    hostname = addr
+                    port = 443 # Default port for SS if not specified in URL
+
+            else: # ss://base64encoded_method_password@host:port (不常见但可能)
+                method_password_str = parsed.netloc
+                # Base64解码前尝试去除不规范字符
+                method_password_str = re.sub(r'[^a-zA-Z0-9+/=]', '', method_password_str)
+                missing_padding = len(method_password_str) % 4
+                if missing_padding:
+                    method_password_str += '=' * (4 - missing_padding)
+
+                try:
+                    method_password = base64.b64decode(method_password_str).decode('utf-8', errors='replace')
+                    method, password = method_password.split(":", 1) # 增加 maxsplit
+                except (base64.binascii.Error, ValueError, UnicodeDecodeError) as e:
+                    logging.error(f"Shadowsocks Base64 解码或解析失败 (netloc部分) for {proxy_url}: {e}")
+                    return None
+                
+                # Path可能包含host:port
+                if not parsed.path.lstrip("/"): # 如果path是空的，则视为无效
+                    logging.error(f"Shadowsocks URL 缺少服务器信息: {proxy_url}")
+                    return None
+                
+                path_parts = parsed.path.lstrip("/").split(":")
+                if len(path_parts) > 1:
+                    hostname = ':'.join(path_parts[:-1]) # Reconstruct hostname for IPv6
+                    port = path_parts[-1]
+                else:
+                    hostname = path_parts[0]
+                    port = 443 # Default port if not in path
+
             return {
                 "type": "shadowsocks",
                 "tag": urllib.parse.unquote(parsed.fragment) or "ss-node",
@@ -336,9 +419,7 @@ def parse_proxy_url_string(proxy_url):
             query = urllib.parse.parse_qs(parsed.query)
             tag = urllib.parse.unquote(parsed.fragment) or "vless-node"
 
-            # VLESS TLS 和传输
-            # security=tls 或 security=reality 都表示 TLS 启用
-            tls_enabled = query.get("security", [""])[0] in ["tls", "reality"] or query.get("type", [""])[0] in ["ws", "grpc"] # 补充判断
+            tls_enabled = query.get("security", [""])[0] in ["tls", "reality"] or query.get("type", [""])[0] in ["ws", "grpc"]
             transport_type = query.get("type", [""])[0]
 
             transport_config = None
@@ -355,9 +436,7 @@ def parse_proxy_url_string(proxy_url):
                     "type": "grpc",
                     "service_name": query.get("serviceName", [""])[0]
                 }
-            # VLESS TCP 不需要 transport 配置
-            elif transport_type == "tcp":
-                transport_config = None # 显式设置为 None
+            # VLESS TCP 不需要 transport 配置，默认是 None
 
             vless_config = {
                 "type": "vless",
@@ -373,11 +452,38 @@ def parse_proxy_url_string(proxy_url):
                     "enabled": True,
                     "server_name": query.get("sni", [""])[0] or hostname.strip("[]"),
                     "insecure": query.get("insecure", ["0"])[0] == "1",
-                    "reality": query.get("security", [""])[0] == "reality",
-                    "xver": int(query.get("xver", ["0"])[0]),
-                    "fingerprint": query.get("fp", [""])[0]
                 }
-            if transport_config: # 只有当 transport_config 不为 None 时才添加
+                # Reality 配置需要是一个字典，并且必须有 public_key 和 short_id
+                if query.get("security", [""])[0] == "reality":
+                    pbk = query.get("pbk", [""])[0]
+                    sid = query.get("sid", [""])[0]
+                    if not pbk or not sid:
+                        logging.error(f"VLESS Reality 代理缺少必要的 public_key (pbk) 或 short_id (sid)，跳过: {proxy_url}")
+                        return None
+
+                    vless_config["tls"]["reality"] = {
+                        "enabled": True,
+                        "handshake": query.get("fp", [""])[0], # 通常 reality 的 fp 和 sni 会是独立的
+                        "public_key": pbk,
+                        "short_id": sid,
+                        "xver": int(query.get("xver", ["0"])[0]),
+                        "spider_x": query.get("spiderX", [""])[0], # 可选
+                    }
+                    # Reality 的 server_name 常常和外部 SNI 一致或覆盖
+                    if query.get("sni", [""])[0]:
+                         vless_config["tls"]["reality"]["server_name"] = query.get("sni", [""])[0]
+                    elif hostname.strip("[]"):
+                         vless_config["tls"]["reality"]["server_name"] = hostname.strip("[]")
+
+                # 指纹和 xver 既可能在 TLS 根级别，也可能在 Reality 中
+                if query.get("fp", [""])[0] and "reality" not in vless_config["tls"]: # 指纹通常是 tls 根级别的，如果不是 Reality
+                    vless_config["tls"]["fingerprint"] = query.get("fp", [""])[0]
+                
+                if query.get("xver", ["0"])[0] != "0" and "reality" not in vless_config["tls"]: # xver 也是 TLS 根级别的
+                    vless_config["tls"]["xver"] = int(query.get("xver", ["0"])[0])
+
+
+            if transport_config:
                 vless_config["transport"] = transport_config
 
             return vless_config
@@ -387,6 +493,7 @@ def parse_proxy_url_string(proxy_url):
             return None
 
     except Exception as e:
+        # 记录导致解析失败的原始 URL 及其具体的错误信息
         logging.error(f"解析代理 URL 失败 {proxy_url}: {e}")
         return None
 
@@ -407,7 +514,12 @@ def get_proxies():
             content = response.text
             if source_type == "base64":
                 try:
-                    content = base64.b64decode(content).decode('utf-8')
+                    # 对于 Base64 解码，同样去除不规范字符并填充
+                    content = re.sub(r'[^a-zA-Z0-9+/=]', '', content)
+                    missing_padding = len(content) % 4
+                    if missing_padding:
+                        content += '=' * (4 - missing_padding)
+                    content = base64.b64decode(content).decode('utf-8', errors='replace') # 使用 errors='replace' 处理解码错误
                 except Exception as e:
                     logging.error(f"无法解码来自 {url} 的 Base64 内容: {e}")
                     continue
