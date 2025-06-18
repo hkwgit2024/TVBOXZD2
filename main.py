@@ -34,14 +34,14 @@ NODES_SOURCES = [
        "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
          "type": "plain",
      },
-    #{
-    #    "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
-   #     "type": "yaml",
-  #  },
+    {
+        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
+        "type": "yaml",
+   },
 ]
 
 # 最大处理的代理数量，防止一次性处理过多导致内存或时间问题
-MAX_PROXIES = 2500 # 适当增加以覆盖更多节点，但仍需注意性能
+MAX_PROXIES = 25000 # 适当增加以覆盖更多节点，但仍需注意性能
 
 # 用于测试代理连通性的 URL 列表
 TEST_URLS = ["https://www.google.com", "http://www.example.com", "https://www.cloudflare.com"]
