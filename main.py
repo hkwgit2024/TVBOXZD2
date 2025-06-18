@@ -26,7 +26,7 @@ NODES_SOURCES = [
   #  },
    
      {
-         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
+         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
          "type": "yaml",
      }
 ]
