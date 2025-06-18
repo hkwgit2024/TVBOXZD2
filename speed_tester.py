@@ -370,12 +370,13 @@ def fetch_and_parse_nodes():
             is_yaml_content = False
             yaml_data_from_content = None
             if node_format == "clash-yaml" or node_format == "auto":
-                # --- 改进：更精确地清理 YAML 中的非标准标签 ---
-                # 目标是移除 `!<tag_name>`，无论其后面是否有空格或值
-                # 示例: `!<str> 123` -> ` 123` ; `!<str>123` -> `123`
-                # 这个正则表达式 `!\S+` 会匹配 `!` 后面的所有非空白字符，直到遇到空格或行尾
-                cleaned_yaml_content = re.sub(r'!\S+', '', processed_content)
-                # ----------------------------------------
+                # --- 再次改进：更彻底地清理 YAML 中的非标准标签 ---
+                # 这个正则表达式会匹配 '!' 后面跟着任何非空白字符至少一次，然后可能跟着一个空格或冒号，
+                # 直到遇到非字母数字字符或者行尾。
+                # 示例: `password: !<str> 3767...`  -> `password: 3767...`
+                # 示例: `name: !tagged_value some_value` -> `name: some_value`
+                cleaned_yaml_content = re.sub(r'!\S+(\s*|\s*:)', ' ', processed_content)
+
                 try:
                     # 尝试加载清理后的内容
                     yaml_data_from_content = yaml.full_load(cleaned_yaml_content)
@@ -383,6 +384,10 @@ def fetch_and_parse_nodes():
                         is_yaml_content = True
                 except yaml.YAMLError as e:
                     print(f"Warning: Failed to parse CLEANED YAML from {url}. Error: {e}")
+                    # 为了调试，如果清理后仍然失败，打印部分清理后的内容
+                    # print("--- Partial Cleaned Content for Debugging ---")
+                    # print("\n".join(cleaned_yaml_content.splitlines()[:20])) # 打印前20行
+                    # print("---------------------------------------------")
                 except Exception as e:
                     print(f"Warning: An unexpected error occurred during CLEANED YAML check for {url}. Error: {e}")
             
