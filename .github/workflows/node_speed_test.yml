@@ -1,3 +1,4 @@
+
 name: Node Speed Test
 
 on:
@@ -11,7 +12,7 @@ on:
 jobs:
   test-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # Fail if job runs longer than 60 minutes
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -32,7 +33,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: clash_bin
-        key: ${{ runner.os }}-clash-core-v1.18.0-v1 # Update if CLASH_VERSION_TO_DOWNLOAD changes
+        key: ${{ runner.os }}-clash-core-v1.18.0-v1
         restore-keys: |
           ${{ runner.os }}-clash-core-
 
@@ -44,18 +45,26 @@ jobs:
     - name: Run node speed test script
       run: |
         mkdir -p data
-        python speed_tester.py
+        python speed_tester.py || true  # Prevent workflow failure for debugging
+
+    - name: Upload logs for debugging
+      if: always()  # Upload logs even if script fails
+      uses: actions/upload-artifact@v4
+      with:
+        name: clash-logs
+        path: clash_script.log
+        if-no-files-found: ignore
 
     - name: Commit and push results
       run: |
         git config user.name "GitHub Actions"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add data/collectSub.txt
-        if [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
+        if [ -f data/collectSub.txt ] && [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
+          git add data/collectSub.txt
           git commit -m "Update node speed test results [skip ci]"
           git push
         else
-          echo "No valid changes to commit (file empty or unchanged)."
+          echo "No valid changes to commit (file missing, empty, or unchanged)."
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.BOT }}
