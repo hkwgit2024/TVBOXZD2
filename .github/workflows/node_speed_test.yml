@@ -30,24 +30,32 @@ jobs:
       - name: Install sing-box
         run: |
           mkdir -p clash_bin
-          # 使用正确的文件名
           SINGBOX_VERSION="1.10.0"
           SINGBOX_URL="https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz"
           echo "Downloading sing-box from $SINGBOX_URL"
           curl -L -o clash_bin/sing-box.tar.gz "$SINGBOX_URL" || { echo "Download failed"; exit 1; }
-          # 检查文件大小
           if [ $(stat -c%s clash_bin/sing-box.tar.gz) -lt 1000 ]; then
             echo "Downloaded file is too small, likely invalid"
-            cat clash_bin/sing-box.tar.gz # 输出文件内容以调试
+            cat clash_bin/sing-box.tar.gz
             exit 1
           fi
-          # 验证 gzip 格式
           file clash_bin/sing-box.tar.gz
           tar -xzf clash_bin/sing-box.tar.gz -C clash_bin || { echo "Tar extraction failed"; exit 1; }
           mv clash_bin/sing-box-*/sing-box clash_bin/sing-box
           chmod +x clash_bin/sing-box
-          # 验证 sing-box
           ./clash_bin/sing-box version || { echo "sing-box is not executable"; exit 1; }
+
+      # 下载 geoip.db
+      - name: Download geoip.db
+        run: |
+          mkdir -p data
+          GEOIP_URL="https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db"
+          echo "Downloading geoip.db from $GEOIP_URL"
+          curl -L -o data/geoip.db "$GEOIP_URL" || { echo "Download geoip.db failed"; exit 1; }
+          if [ $(stat -c%s data/geoip.db) -lt 1000 ]; then
+            echo "Downloaded geoip.db is too small, likely invalid"
+            exit 1
+          fi
 
       # 运行 Python 脚本
       - name: Run proxy tester script
@@ -69,3 +77,4 @@ jobs:
         if: always()
         run: |
           rm -rf clash_bin/sing-box.tar.gz
+          rm -rf data/geoip.db
