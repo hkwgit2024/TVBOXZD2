@@ -210,7 +210,7 @@ def get_clash_proxies_names():
 
 def set_clash_proxy_group_selection(group_name, proxy_name):
     """Sets the selected proxy for a specific proxy group via Clash API."""
-    api_url = f"http://127.0.0.1:{CLASH_API_PORT}/proxies/{group_name}"
+    api_url = f"http://127.00.1:{CLASH_API_PORT}/proxies/{group_name}"
     headers = {'Content-Type': 'application/json'}
     payload = {'name': proxy_name}
     try:
@@ -285,13 +285,24 @@ def parse_ss_link(link_str, index):
                 return None
             
             parts = decoded_str.split('@')
+            # Check if parts has at least two elements before unpacking
+            if len(parts) < 2:
+                print(f"[ERROR] Invalid SS link format after decoding (missing @): '{decoded_str}' from original '{link_str}'")
+                return None
             method_password = parts[0]
             server_port_name = parts[1]
         else: # Direct link
             parts = data.split('@')
+            if len(parts) < 2:
+                print(f"[ERROR] Invalid SS link format (missing @): '{link_str}'")
+                return None
             method_password = parts[0]
             server_port_name = parts[1]
 
+        # Check if method_password has method:password before splitting
+        if ':' not in method_password:
+            print(f"[ERROR] Invalid SS link format (missing method:password in '{method_password}'): '{link_str}'")
+            return None
         method, password = method_password.split(':', 1)
         
         # Handle #name
@@ -301,6 +312,9 @@ def parse_ss_link(link_str, index):
             server_port = server_port_name
             name = f"SS-Proxy-{index}" # Default name if not provided
 
+        if ':' not in server_port:
+            print(f"[ERROR] Invalid SS link format (missing server:port in '{server_port}'): '{link_str}'")
+            return None
         server, port = server_port.split(':', 1)
         
         return {
@@ -324,6 +338,10 @@ def parse_trojan_link(link_str, index):
         port = parsed_url.port
         name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"Trojan-Proxy-{index}"
         
+        if not (password and server and port): # Basic validation
+            print(f"[ERROR] Invalid Trojan link (missing password, server or port): '{link_str}'")
+            return None
+
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
         proxy_config = {
@@ -369,6 +387,10 @@ def parse_vless_link(link_str, index):
         port = parsed_url.port
         name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"VLESS-Proxy-{index}"
         
+        if not (uuid and server and port): # Basic validation
+            print(f"[ERROR] Invalid VLESS link (missing uuid, server or port): '{link_str}'")
+            return None
+
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
         proxy_config = {
@@ -420,17 +442,38 @@ def parse_vless_link(link_str, index):
 
 def parse_hysteria2_link(link_str, index):
     # Format: hysteria2://server:port?password=...&obfs=...&obfs-password=...#name
+    # Note: The log shows 'hysteria://', but you asked for 'hysteria2://' parser.
+    # The links in the log start with 'hysteria://'.
+    # This parser assumes 'hysteria2://' protocol. If links are 'hysteria://',
+    # they might be for Hysteria1 and require different parsing.
     try:
-        parsed_url = urllib.parse.urlparse(link_str)
+        # Check for both hysteria2:// and hysteria:// for flexibility
+        if link_str.startswith("hysteria2://"):
+            protocol_prefix_len = len("hysteria2://")
+        elif link_str.startswith("hysteria://"): # Likely Hysteria1 if no '2'
+            print(f"[WARNING] Detected 'hysteria://' protocol. Parsing as Hysteria2. This might be incorrect if it's Hysteria1.")
+            protocol_prefix_len = len("hysteria://")
+        else:
+            print(f"[ERROR] Invalid Hysteria link protocol: '{link_str}'")
+            return None
+
+        # Temporarily remove protocol for parsing
+        temp_link = "dummy://" + link_str[protocol_prefix_len:]
+        parsed_url = urllib.parse.urlparse(temp_link)
+        
         server = parsed_url.hostname
         port = parsed_url.port
         name = urllib.parse.unquote(parsed_url.fragment) if parsed_url.fragment else f"Hysteria2-Proxy-{index}"
         
+        if not (server and port): # Basic validation
+            print(f"[ERROR] Invalid Hysteria2 link (missing server or port): '{link_str}'")
+            return None
+
         query_params = urllib.parse.parse_qs(parsed_url.query)
         
         proxy_config = {
             "name": name,
-            "type": "hysteria2",
+            "type": "hysteria2", # Force type to hysteria2
             "server": server,
             "port": port,
             "tls": True # Hysteria2 always uses TLS
@@ -466,8 +509,11 @@ def generate_clash_config(node_links, output_path):
     """
     Generates a Clash YAML configuration file from a list of node links.
     Parses node links (ss, trojan, vless, hysteria2) into Mihomo's YAML format.
+    Ensures unique proxy names.
     """
     proxies = []
+    existing_proxy_names = set() # To keep track of names already used
+
     for i, link in enumerate(node_links):
         parsed_proxy = None
         # Determine protocol and call appropriate parser
@@ -477,15 +523,31 @@ def generate_clash_config(node_links, output_path):
             parsed_proxy = parse_trojan_link(link, i+1)
         elif link.startswith("vless://"):
             parsed_proxy = parse_vless_link(link, i+1)
-        elif link.startswith("hysteria2://"):
+        elif link.startswith("hysteria2://") or link.startswith("hysteria://"):
+            # Handle both hysteria2:// and older hysteria:// for now
             parsed_proxy = parse_hysteria2_link(link, i+1)
         else:
             print(f"[WARNING] Skipping unsupported protocol or invalid link: {link}")
 
         if parsed_proxy:
-            # Ensure a default name if parsing failed to extract one or it's empty
-            if not parsed_proxy.get('name'):
-                 parsed_proxy['name'] = f"{parsed_proxy.get('type', 'unknown')}-proxy-{i+1}"
+            # --- START: Unique Name Generation Logic ---
+            base_name = parsed_proxy.get('name')
+            if not base_name:
+                base_name = f"{parsed_proxy.get('type', 'unknown')}-proxy-{i+1}"
+            
+            # Clean up base_name for file system / YAML compatibility if needed
+            # For now, just focus on uniqueness.
+            
+            unique_name = base_name
+            counter = 1
+            while unique_name in existing_proxy_names:
+                unique_name = f"{base_name}_{counter}"
+                counter += 1
+            
+            parsed_proxy['name'] = unique_name
+            existing_proxy_names.add(unique_name)
+            # --- END: Unique Name Generation Logic ---
+            
             proxies.append(parsed_proxy)
         else:
             # Error message already printed by the specific parse_ function
@@ -585,9 +647,12 @@ def main():
             # This is a bit tricky since parse_ functions assign names.
             # A more robust solution would be to store original link with parsed proxy.
             # For now, we'll just use the proxy_name itself if exact original link match is hard.
-            original_link_for_output = node_links[i] if i < len(node_links) else proxy_name # Fallback
+            # We assume proxy_names order roughly corresponds to node_links order, but it's not guaranteed.
+            # A better approach would be to store original_link in the proxy_config dict and retrieve it here.
+            # For now, we'll use proxy_name for result.
+            original_link_for_output = f"Proxy: {proxy_name}" # Use parsed name in output
 
-            print(f"[{i+1}/{len(proxy_names)}] Testing proxy: '{proxy_name}' (Original Link Candidate: {original_link_for_output})...")
+            print(f"[{i+1}/{len(proxy_names)}] Testing proxy: '{proxy_name}'...")
             
             if not set_clash_proxy_group_selection("测速节点", proxy_name):
                 test_results.append(f"{original_link_for_output} # 速度: 无法切换代理到 '{proxy_name}'")
