@@ -2,8 +2,8 @@ name: Test Nodes
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
-  workflow_dispatch:  # 支持手动触发
+    - cron: '0 4 * * *'  # 每天 UTC 04:00 运行（北京时间 12:00）
+  workflow_dispatch:
 
 jobs:
   test-nodes:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: qjlxg/vt
+          repository: qjlxg/sh
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -34,8 +34,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: clash_bin
-          key: Linux-sing-box-Linux-v1.9.7
-          restore-keys: Linux-sing-box-Linux-
+          key: Linux-sing-box-v1.9.7
+          restore-keys: Linux-sing-box-
 
       - name: Download sing-box
         if: steps.cache-sing-box.outputs.cache-hit != 'true'
@@ -57,6 +57,10 @@ jobs:
         run: |
           cat data/sing-box.log || echo "No debug log available."
 
+      - name: Display collectSub Output
+        run: |
+          cat data/collectSub.txt || echo "No collectSub output available."
+
       - name: Upload sing-box Config
         uses: actions/upload-artifact@v4
         with:
@@ -71,16 +75,23 @@ jobs:
           path: data/sing-box.log
           if-no-files-found: ignore
 
+      - name: Upload collectSub Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: collect-sub
+          path: data/collectSub.txt
+          if-no-files-found: ignore
+
       - name: Commit and Push Results
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions-bot@users.noreply.github.com"
+          if [[ -s data/collectSub.txt ]] && ! git diff --cached --exit-code; then
             git add data/collectSub.txt
             git commit -m "Update node speed test results [skip ci]"
-            git push
+            git push origin main
           else
             echo "No valid changes to commit."
           fi
