@@ -266,50 +266,42 @@ def test_download_speed(url, proxy_address, file_size_bytes=50 * 1024 * 1024):
 # --- Node Link Parsing Functions ---
 
 def parse_ss_link(link_str, index):
-    # Format: ss://method:password@server:port#name or ss://base64encoded
+    # Format: ss://[base64-encoded-userinfo]@server:port#name or ss://method:password@server:port#name
     try:
         # Remove ss:// prefix
         data = link_str[5:]
         
-        if "@" not in data: # Likely base64 encoded
-            # Try to decode
-            try:
-                # Add padding if missing
-                missing_padding = len(data) % 4
-                if missing_padding:
-                    data += '=' * (4 - missing_padding)
-                decoded_bytes = base64.urlsafe_b64decode(data)
-                decoded_str = decoded_bytes.decode('utf-8')
-            except Exception as e:
-                print(f"[ERROR] Failed to base64 decode SS link '{link_str}': {e}")
-                return None
-            
-            parts = decoded_str.split('@')
-            # Check if parts has at least two elements before unpacking
-            if len(parts) < 2:
-                print(f"[ERROR] Invalid SS link format after decoding (missing @): '{decoded_str}' from original '{link_str}'")
-                return None
-            method_password = parts[0]
-            server_port_name = parts[1]
-        else: # Direct link
-            parts = data.split('@')
-            if len(parts) < 2:
-                print(f"[ERROR] Invalid SS link format (missing @): '{link_str}'")
-                return None
-            method_password = parts[0]
-            server_port_name = parts[1]
+        if '@' not in data:
+            print(f"[ERROR] Invalid SS link format (missing @ after ss://): '{link_str}'")
+            return None # Must have an @ to separate userinfo from host:port
+        
+        userinfo_part, host_port_fragment = data.split('@', 1)
 
-        # Check if method_password has method:password before splitting
-        if ':' not in method_password:
-            print(f"[ERROR] Invalid SS link format (missing method:password in '{method_password}'): '{link_str}'")
+        method_password_raw = userinfo_part
+        # Try to base64 decode the userinfo_part
+        try:
+            # Add padding if missing (base64.urlsafe_b64decode requires correct padding)
+            missing_padding = len(userinfo_part) % 4
+            if missing_padding:
+                userinfo_part += '=' * (4 - missing_padding)
+            decoded_bytes = base64.urlsafe_b64decode(userinfo_part)
+            method_password_raw = decoded_bytes.decode('utf-8')
+        except Exception as e:
+            # If decoding fails, assume it's not base64 encoded (direct method:password)
+            # print(f"[DEBUG] Userinfo part '{userinfo_part}' not base64-encoded or invalid: {e}")
+            pass # method_password_raw remains userinfo_part
+        
+        # Now method_password_raw should be "method:password"
+        if ':' not in method_password_raw:
+            print(f"[ERROR] Invalid SS link format (missing method:password in '{method_password_raw}'): '{link_str}'")
             return None
-        method, password = method_password.split(':', 1)
+        method, password = method_password_raw.split(':', 1)
         
         # Handle #name
-        if '#' in server_port_name:
-            server_port, name = server_port_name.split('#', 1)
+        if '#' in host_port_fragment:
+            server_port, name = host_port_fragment.split('#', 1)
         else:
-            server_port = server_port_name
+            server_port = host_port_fragment
             name = f"SS-Proxy-{index}" # Default name if not provided
 
         if ':' not in server_port:
