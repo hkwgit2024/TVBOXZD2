@@ -29,6 +29,9 @@ CLASH_BIN_DIR = "clash_bin"
 CLASH_EXECUTABLE_NAME = "mihomo"
 CLASH_FULL_PATH = os.path.join(CLASH_BIN_DIR, CLASH_EXECUTABLE_NAME)
 
+# Global variable to store Clash log path (for main function to access)
+CLASH_LOG_FILE = os.path.join(CLASH_BIN_DIR, "clash_debug.log")
+
 # --- Helper Functions ---
 
 def download_and_extract_clash_core(url, dest_dir, executable_name):
@@ -143,24 +146,36 @@ def start_clash(clash_executable_path, config_file_path):
     try:
         print(f"Starting Clash from {clash_executable_path} with config {config_file_path}...")
         
-        # Set ulimit -n for the current process before starting Clash
-        # This is done by running a shell command that first sets ulimit
-        # and then executes Clash.
-        command = f"ulimit -n 65535 && {clash_executable_path} -f {config_file_path}"
+        # Ensure log directory exists
+        os.makedirs(os.path.dirname(CLASH_LOG_FILE), exist_ok=True)
         
-        process = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True # Important: run with shell=True to execute ulimit
-        )
+        # Redirect stdout and stderr to a log file
+        with open(CLASH_LOG_FILE, "w") as log_file:
+            # Set ulimit -n for the current process before starting Clash
+            command = f"ulimit -n 65535 && {clash_executable_path} -f {config_file_path}"
+            
+            process = subprocess.Popen(
+                command,
+                stdout=log_file, # Redirect stdout to file
+                stderr=log_file, # Redirect stderr to file
+                text=True,
+                shell=True # Important: run with shell=True to execute ulimit
+            )
         
         time.sleep(3) 
 
         if process.poll() is not None:
-            stdout, stderr = process.communicate()
-            print(f"Clash exited prematurely. Stdout:\n{stdout}\nStderr:\n{stderr}")
+            # If Clash exited prematurely, it might have written to the log file
+            print(f"Clash exited prematurely. Checking log file: {CLASH_LOG_FILE}")
+            try:
+                with open(CLASH_LOG_FILE, "r") as f:
+                    print("Clash Log (tail):")
+                    # Print last few lines of the log
+                    log_lines = f.readlines()
+                    for line in log_lines[-20:]: # Print last 20 lines
+                        print(line.strip())
+            except Exception as e:
+                print(f"Could not read Clash log file: {e}")
             return None
         
         print(f"Clash started (PID: {process.pid}). Waiting for API to become available...")
@@ -589,7 +604,7 @@ def generate_clash_config(node_links, output_path):
         "socks-port": CLASH_PROXY_HTTP_PORT + 1,
         "allow-lan": False,
         "mode": "rule",
-        "log-level": "info",
+        "log-level": "info", # Keep info level for now to get useful logs
         "external-controller": f"127.0.0.1:{CLASH_API_PORT}",
         "secret": "",
         "proxies": proxies, # This is now a list of dictionaries
@@ -648,7 +663,6 @@ def main():
             print(f"Failed to fetch node links from {NODES_URL}: {e}")
             return
 
-        # THIS IS THE CRITICAL CHANGE: Now generate_clash_config will parse the links
         if not generate_clash_config(node_links, CLASH_CONFIG_FILE):
             print("Aborting: Could not generate Clash config.")
             return
@@ -656,6 +670,15 @@ def main():
         clash_process = start_clash(clash_executable_path, CLASH_CONFIG_FILE)
         if not clash_process:
             print("Aborting: Could not start Clash.")
+            # If Clash fails to start, also try to print its log if it was created
+            if os.path.exists(CLASH_LOG_FILE):
+                try:
+                    with open(CLASH_LOG_FILE, "r") as f:
+                        print(f"Content of Clash log file ({CLASH_LOG_FILE}):")
+                        for line in f.readlines()[-50:]: # Print last 50 lines
+                            print(line.strip())
+                except Exception as e:
+                    print(f"Could not read Clash log file: {e}")
             return
 
         time.sleep(2) # Give Clash a moment to load proxies
@@ -696,6 +719,18 @@ def main():
 
     finally:
         stop_clash(clash_process)
+        # Always try to print the end of the Clash log file
+        if os.path.exists(CLASH_LOG_FILE):
+            try:
+                with open(CLASH_LOG_FILE, "r") as f:
+                    print(f"\n--- Clash Debug Log ({CLASH_LOG_FILE}) ---")
+                    log_lines = f.readlines()
+                    # Print only the last 100 lines to avoid excessively long logs
+                    for line in log_lines[-100:]: 
+                        print(line.strip())
+                    print(f"--- End of Clash Debug Log ---")
+            except Exception as e:
+                print(f"Could not read Clash log file at the end: {e}")
 
 if __name__ == "__main__":
     main()
