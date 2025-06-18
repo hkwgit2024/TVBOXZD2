@@ -1,105 +1,57 @@
-name: Test Nodes
+name: Proxy Tester Workflow
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # 每天 UTC 04:00 运行（北京时间 12:00）
-  workflow_dispatch:
+    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 运行
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  test-nodes:
-    runs-on: ubuntu-24.04
+  test-proxies:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Debug Repository Info
-        run: |
-          echo "Repository: qjlxg/sh"
-          curl -H "Authorization: token ${{ secrets.BOT }}" \
-               -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/repos/qjlxg/sh || echo "Failed to fetch repo info"
-
-      - name: Checkout Repository
+      # 检出仓库代码
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          repository: qjlxg/sh
-          ref: main  # 显式指定分支
-          fetch-depth: 1
-          token: ${{ secrets.BOT }}  # 使用 BOT 令牌
 
+      # 设置 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11' # 使用 Python 3.11（可根据需要调整）
 
-      - name: Install Dependencies
+      # 安装 Python 依赖
+      - name: Install Python dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Cache sing-box Binary
-        id: cache-sing-box
-        uses: actions/cache@v4
-        with:
-          path: clash_bin
-          key: Linux-sing-box-v1.9.7
-          restore-keys: Linux-sing-box-
-
-      - name: Download sing-box
-        if: steps.cache-sing-box.outputs.cache-hit != 'true'
+      # 下载 sing-box 可执行文件
+      - name: Install sing-box
         run: |
-          wget https://github.com/SagerNet/sing-box/releases/download/v1.9.7/sing-box-1.9.7-linux-amd64.tar.gz
-          tar -xzf sing-box-1.9.7-linux-amd64.tar.gz
           mkdir -p clash_bin
-          mv sing-box-1.9.7-linux-amd64/sing-box clash_bin/sing-box
+          curl -L -o clash_bin/sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz
+          tar -xzf clash_bin/sing-box.tar.gz -C clash_bin
+          mv clash_bin/sing-box-*/sing-box clash_bin/sing-box
           chmod +x clash_bin/sing-box
 
-      - name: Run Speed Tester
+      # 运行 Python 脚本
+      - name: Run proxy tester script
+        run: python main.py
+
+      # 检查输出文件并提交更改
+      - name: Commit and push results
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/collectSub.txt
+          git commit -m "Update proxy test results" || echo "No changes to commit"
+          git push
         env:
-          SINGBOX_LOG_PATH: data/sing-box.log
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 清理（可选）
+      - name: Clean up
+        if: always()
         run: |
-          mkdir -p data
-          python speed_tester.py || true
-
-      - name: Display sing-box Debug Log
-        run: |
-          cat data/sing-box.log || echo "No debug log available."
-
-      - name: Display collectSub Output
-        run: |
-          cat data/collectSub.txt || echo "No collectSub output available."
-
-      - name: Upload sing-box Config
-        uses: actions/upload-artifact@v4
-        with:
-          name: sing-box-config-file
-          path: sing-box-config.json
-          if-no-files-found: ignore
-
-      - name: Upload sing-box Debug Log
-        uses: actions/upload-artifact@v4
-        with:
-          name: sing-box-debug-log
-          path: data/sing-box.log
-          if-no-files-found: ignore
-
-      - name: Upload collectSub Output
-        uses: actions/upload-artifact@v4
-        with:
-          name: collect-sub
-          path: data/collectSub.txt
-          if-no-files-found: ignore
-
-      - name: Commit and Push Results
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions-bot@users.noreply.github.com"
-          if [[ -s data/collectSub.txt ]] && ! git diff --cached --exit-code; then
-            git add data/collectSub.txt
-            git commit -m "Update node speed test results [skip ci]"
-            git push origin main
-          else
-            echo "No valid changes to commit."
-          fi
+          rm -rf clash_bin/sing-box.tar.gz
