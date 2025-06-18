@@ -77,12 +77,14 @@ def parse_node(line):
                 "raw": line
             }
         elif line.startswith("ss://"):
-            base64_str = line[5:].split("#")[0]
-            # 清理 base64 字符串，仅保留有效字符
-            base64_str = re.sub(r'[^A-Za-z0-9+/=]', '', base64_str)
+            raw_config = line[5:].split("#")[0]
+            # 尝试作为 base64 解码
+            base64_str = re.sub(r'[^A-Za-z0-9+/=]', '', raw_config)
             base64_str = base64_str + "=" * (-len(base64_str) % 4)
             try:
                 decoded = base64.b64decode(base64_str, validate=True).decode("utf-8", errors="ignore")
+                if "@" not in decoded:
+                    raise ValueError("解码后不包含 @ 分隔符")
                 userinfo, ip_port = decoded.split("@")
                 cipher, password = userinfo.split(":")
                 ip, port = ip_port.split(":")
@@ -96,10 +98,25 @@ def parse_node(line):
                 }
             except binascii.Error as e:
                 print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): 无效 base64 编码 - {str(e)}")
-                return None
-            except Exception as e:
+            except ValueError as e:
                 print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): {str(e)}")
-                return None
+            # 尝试非 base64 格式 (cipher:password@ip:port)
+            try:
+                if "@" in raw_config:
+                    userinfo, ip_port = raw_config.split("@")
+                    cipher, password = userinfo.split(":")
+                    ip, port = ip_port.split(":")
+                    return {
+                        "type": "ss",
+                        "ip": ip,
+                        "port": port,
+                        "cipher": cipher,
+                        "password": password,
+                        "raw": line
+                    }
+            except Exception as e:
+                print(f"[{datetime.now()}] 解析 ss 节点失败 ({line}): 非 base64 格式解析错误 - {str(e)}")
+            return None
         elif line.startswith("trojan://"):
             url = urlparse(line)
             userinfo, ip_port = url.netloc.split("@")
@@ -245,17 +262,18 @@ def test_download_speed(sing_box_bin, config_file):
             stderr=subprocess.PIPE,
             text=True
         )
-        time.sleep(2)
+        time.sleep(5)  # 增加等待时间，确保代理启动
         env = os.environ.copy()
         env["ALL_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTPS_PROXY"] = "socks5://127.0.0.1:1080"
         env["HTTP_PROXY"] = "socks5://127.0.0.1:1080"
+        print(f"[{datetime.now()}] 代理环境变量: {env.get('ALL_PROXY')}")
         result = subprocess.run(
-            ["speedtest", "--format=json"],
+            ["speedtest", "--format=json", "--accept-license"],
             env=env,
             capture_output=True,
             text=True,
-            timeout=45
+            timeout=60
         )
         if result.returncode == 0:
             data = json.loads(result.stdout)
