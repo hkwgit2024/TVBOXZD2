@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # 允许手动触发工作流
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # 每6小时运行一次
+    - cron: '0 */6 * * *'
 
 jobs:
   test-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # 设置超时时间
+    timeout-minutes: 60
 
     steps:
     - name: Checkout repository
@@ -20,21 +20,20 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.9' # 指定Python版本
+        python-version: '3.9'
 
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y unzip # 安装unzip用于解压，如果需要
+        sudo apt-get install -y unzip
 
     - name: Cache Clash core
       id: cache-clash
       uses: actions/cache@v4
       with:
-        # 缓存路径
         path: clash_bin
-        # 缓存键，根据操作系统和Clash版本命名
-        key: ${{ runner.os }}-clash-core-v1.19.10-v1 # 更新key以匹配新版本
+        # 建议更新key以反映版本，以便在Clash版本更新时强制重新下载
+        key: ${{ runner.os }}-clash-core-v1.19.10-v1 
         restore-keys: |
           ${{ runner.os }}-clash-core-
 
@@ -42,37 +41,38 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests
-        pip install pyyaml # 确保安装了pyyaml
+        pip install pyyaml
 
     - name: Run node speed test script
       run: |
         mkdir -p data
-        python speed_tester.py || true  # 运行Python脚本，`|| true` 确保即使脚本失败工作流也不会立即中断，方便调试
+        python speed_tester.py || true  # Prevent workflow failure for debugging
 
-    # 新增或修改：上传 Clash 的调试日志
-    - name: Upload Clash Debug Log
-      if: always() # 确保即使前面的步骤失败也上传日志
+    # !! 新增步骤 !!
+    # 上传生成的 Clash 配置文件，这是诊断 SS 链接解析问题的关键
+    - name: Upload Clash Config
+      if: always() # 确保即使脚本失败也上传
       uses: actions/upload-artifact@v4
       with:
-        name: clash-debug-log # Artifact 的名称
-        path: clash_bin/clash_debug.log # 正确的日志文件路径
-        if-no-files-found: ignore # 如果文件不存在，不报错
+        name: clash-config-file # Artifact 名称
+        path: clash_config.yaml # 指向生成的配置文件
+        if-no-files-found: ignore # 如果文件不存在也不要报错
 
-    # 上传测速结果文件
-    - name: Upload Speed Test Results
+    # 上传 Clash Meta 的详细调试日志
+    - name: Upload Clash Debug Log
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: speed-test-results
-        path: data/collectSub.txt
+        name: clash-debug-log # Artifact 名称
+        path: clash_bin/clash_debug.log # 指向 Clash 调试日志文件
         if-no-files-found: ignore
 
     - name: Commit and push results
       run: |
         git config user.name "GitHub Actions"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        # 检查文件是否存在、非空且有变化，再执行commit和push
-        if [ -f data/collectSub.txt ] && [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
+        # 检查文件是否存在且非空，并且有实际变化才提交
+        if [ -s data/collectSub.txt ] && ! git diff --cached --exit-code; then
           git add data/collectSub.txt
           git commit -m "Update node speed test results [skip ci]"
           git push
@@ -80,5 +80,4 @@ jobs:
           echo "No valid changes to commit (file missing, empty, or unchanged)."
         fi
       env:
-        # 确保 BOT secret 有写入权限，例如 PERSONAL_ACCESS_TOKEN
         GITHUB_TOKEN: ${{ secrets.BOT }}
