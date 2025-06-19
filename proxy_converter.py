@@ -6,6 +6,7 @@ import logging
 import re
 import urllib.parse
 import yaml
+import os
 import argparse
 import uuid # 用于 VMess 默认 UUID，虽然实际节点会有自己的 UUID
 from collections import defaultdict
