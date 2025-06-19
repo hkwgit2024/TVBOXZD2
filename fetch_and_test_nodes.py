@@ -1,10 +1,27 @@
+#!/usr/bin/env python3
+
 import requests
 import base64
 import os
 import json
 import subprocess
 import time
+import logging
 from urllib.parse import urlparse, parse_qs
+from datetime import datetime
+import speedtest
+from typing import List, Dict
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('node_speed_test.log')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # 节点来源
 SOURCES = [
@@ -13,7 +30,7 @@ SOURCES = [
 ]
 
 # 拉取节点
-def fetch_nodes_from_url(url):
+def fetch_nodes_from_url(url: str) -> List[str]:
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -23,12 +40,13 @@ def fetch_nodes_from_url(url):
         except:
             data = response.text
         nodes = [node.strip() for node in data.splitlines() if node.strip()]
+        logger.info(f"Fetched {len(nodes)} nodes from {url}")
         return nodes
     except Exception as e:
-        print(f"Error fetching from {url}: {e}")
+        logger.error(f"Error fetching from {url}: {e}")
         return []
 
-def fetch_all_nodes():
+def fetch_all_nodes() -> List[str]:
     all_nodes = []
     for source in SOURCES:
         nodes = fetch_nodes_from_url(source)
@@ -36,7 +54,7 @@ def fetch_all_nodes():
     return list(set(all_nodes))  # 去重
 
 # 解析节点
-def parse_vless_uri(uri):
+def parse_vless_uri(uri: str) -> Dict:
     parsed = urlparse(uri)
     uuid = parsed.username
     host = parsed.hostname
@@ -55,29 +73,54 @@ def parse_vless_uri(uri):
         }]
     }
 
-def parse_vmess_uri(uri):
-    # 简化示例，需完善
-    return {
-        "outbounds": [{
-            "protocol": "vmess",
-            "settings": {
-                "vnext": [{"address": "example.com", "port": 443, "users": [{"id": "uuid"}]}]
-            }
-        }]
-    }
+def parse_vmess_uri(uri: str) -> Dict:
+    try:
+        data = json.loads(base64.b64decode(uri[8:]).decode('utf-8'))
+        return {
+            "outbounds": [{
+                "protocol": "vmess",
+                "settings": {
+                    "vnext": [{
+                        "address": data["add"],
+                        "port": int(data["port"]),
+                        "users": [{"id": data["id"]}]
+                    }]
+                },
+                "streamSettings": {
+                    "network": data.get("net", "tcp"),
+                    "security": data.get("tls", "none"),
+                }
+            }]
+        }
+    except Exception as e:
+        logger.error(f"Error parsing VMess URI: {e}")
+        return None
 
-def parse_ss_uri(uri):
-    # 简化示例，需完善
-    return {
-        "outbounds": [{
-            "protocol": "shadowsocks",
-            "settings": {
-                "servers": [{"address": "example.com", "port": 8388, "method": "aes-256-gcm", "password": "password"}]
-            }
-        }]
-    }
+def parse_ss_uri(uri: str) -> Dict:
+    try:
+        # ss://method:password@host:port#name
+        auth = base64.b64decode(uri[5:].split('#')[0]).decode('utf-8')
+        method, rest = auth.split(':')
+        password, server = rest.split('@')
+        host, port = server.split(':')
+        return {
+            "outbounds": [{
+                "protocol": "shadowsocks",
+                "settings": {
+                    "servers": [{
+                        "address": host,
+                        "port": int(port),
+                        "method": method,
+                        "password": password
+                    }]
+                }
+            }]
+        }
+    except Exception as e:
+        logger.error(f"Error parsing SS URI: {e}")
+        return None
 
-def parse_node(uri):
+def parse_node(uri: str) -> Dict:
     if uri.startswith("vless://"):
         return parse_vless_uri(uri)
     elif uri.startswith("vmess://"):
@@ -86,30 +129,37 @@ def parse_node(uri):
         return parse_ss_uri(uri)
     return None
 
-# 测试下载速度（复用 mullvad_speed_test.py 逻辑）
-def test_download_speed(url="http://speedtest.tele2.net/100MB.zip"):
-    start_time = time.time()
+# 运行 speedtest（复用 mullvad_speed_test.py 逻辑）
+def run_speedtest() -> Dict:
     try:
-        response = requests.get(url, stream=True, timeout=30)
-        total_size = 0
-        with open("testfile", "wb") as f:
-            for chunk in response.iter_content(chunk_size=1024):
-                if chunk:
-                    f.write(chunk)
-                    total_size += len(chunk)
-        end_time = time.time()
-        os.remove("testfile")
-        duration = end_time - start_time
-        speed_mbps = (total_size * 8 / 1024 / 1024) / duration
-        return speed_mbps
-    except:
-        return 0
+        logger.info("Running speedtest...")
+        s = speedtest.Speedtest()
+        s.get_best_server()
+        download_speed = s.download() / 1_000_000  # Mbps
+        upload_speed = s.upload() / 1_000_000      # Mbps
+        results = s.results.dict()
+        return {
+            "download_speed": download_speed,
+            "upload_speed": upload_speed,
+            "ping": results.get('ping', 0),
+            "jitter": results.get('jitter', 0),
+            "packet_loss": results.get('packetLoss', 0)
+        }
+    except Exception as e:
+        logger.error(f"Error running speedtest: {e}")
+        return {
+            "download_speed": 0,
+            "upload_speed": 0,
+            "ping": 0,
+            "jitter": 0,
+            "packet_loss": 100
+        }
 
-# 主逻辑
+# 主测试逻辑
 def run_speed_test():
     nodes = fetch_all_nodes()
     if not nodes:
-        print("No nodes fetched")
+        logger.error("No nodes fetched")
         return
     
     results = []
@@ -125,10 +175,16 @@ def run_speed_test():
                 json.dump(config, f)
             
             xray_process = subprocess.Popen(["xray", "-c", config_file])
-            time.sleep(5)
+            time.sleep(5)  # 等待连接
             
-            speed = test_download_speed()
-            results.append({"node": node, "speed_mbps": speed, "status": "OK"})
+            speed_result = run_speedtest()
+            results.append({
+                "node": node,
+                "speed_mbps": speed_result["download_speed"],
+                "upload_mbps": speed_result["upload_speed"],
+                "ping_ms": speed_result["ping"],
+                "status": "OK"
+            })
             
             xray_process.terminate()
             os.remove(config_file)
@@ -136,15 +192,16 @@ def run_speed_test():
             results.append({"node": node, "speed_mbps": 0, "status": f"Failed: {str(e)}"})
     
     # 保存结果
-    with open("results.json", "w") as f:
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    with open(f"results_{timestamp}.json", "w") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     
-    with open("results.md", "w") as f:
-        f.write("| Node | Speed (Mbps) | Status |\n")
-        f.write("|------|--------------|--------|\n")
+    with open(f"results_{timestamp}.md", "w") as f:
+        f.write("| Node | Download (Mbps) | Upload (Mbps) | Ping (ms) | Status |\n")
+        f.write("|------|-----------------|---------------|-----------|--------|\n")
         for result in results:
             node_name = result["node"][:50] + "..." if len(result["node"]) > 50 else result["node"]
-            f.write(f"| {node_name} | {result['speed_mbps']:.2f} | {result['status']} |\n")
+            f.write(f"| {node_name} | {result['speed_mbps']:.2f} | {result['upload_mbps']:.2f} | {result['ping_ms']:.2f} | {result['status']} |\n")
 
 if __name__ == "__main__":
     run_speed_test()
