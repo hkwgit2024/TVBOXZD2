@@ -27,22 +27,22 @@ MAX_FAILED_PROXIES = 10000  # 最大保存的失败节点数
 
 # 节点源配置列表
 NODES_SOURCES = [
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
-        "type": "plain",
-    },
-    {
+   # {
+   #     "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+   #     "type": "plain",
+   # },
+   {
         "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
         "type": "plain",
     },
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
-        "type": "yaml",
-    },
-    {
-        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
-        "type": "yaml",
-    },
+   # {
+   #     "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
+   #     "type": "yaml",
+   # },
+   # {
+  #      "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
+  #      "type": "yaml",
+  #  },
 ]
 
 MAX_PROXIES = 925000
