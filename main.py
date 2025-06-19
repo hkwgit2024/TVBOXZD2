@@ -5,7 +5,6 @@ import re
 import subprocess
 import time
 import urllib.parse
-import requests
 import socket
 import logging
 import yaml
@@ -13,7 +12,8 @@ import threading
 import concurrent.futures
 import random
 from hashlib import md5
-
+import aiohttp
+import asyncio
 
 # --- 配置日志 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -29,30 +29,20 @@ MAX_FAILED_PROXIES = 10000  # 最大保存的失败节点数
 
 # 节点源配置列表
 NODES_SOURCES = [
-   # {
-   #     "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
-   #     "type": "plain",
-   # },
-   {
+    {
         "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
         "type": "plain",
     },
-   # {
-   #     "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
-   #     "type": "yaml",
-   # },
-   # {
-  #      "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
-  #      "type": "yaml",
-  #  },
 ]
 
 MAX_PROXIES = 925000
-TEST_URLS = ["https://www.youtube.com", "https://www.netflix.com", "https://api.twitter.com"]
-HTTP_TIMEOUT_SECONDS = 5
+TEST_URLS = ["https://t.me", "https://www.tiktok.com", "https://www.youtube.com"]
+HTTP_TIMEOUT_SECONDS = 8  # 增加超时时间
 SINGBOX_STARTUP_TIMEOUT = 30
 BASE_PROXY_PORT = 1080
-CONCURRENT_TESTS = 5
+CONCURRENT_TESTS = 2  # 降低并发数
+SPEEDTEST_URL = "http://speed.hetzner.de/1GB.bin"  # 使用更稳定的 Speedtest URL
+SPEEDTEST_MIN_THROUGHPUT = 100000  # 最低吞吐量（字节/秒）
 
 # --- 确保输出目录存在 ---
 for path in [OUTPUT_SUB_FILE, SINGBOX_LOG_PATH, GEOIP_DB_PATH, FAILED_PROXIES_FILE]:
@@ -71,7 +61,6 @@ def is_valid_ipv6(addr):
 
 # --- 辅助函数：生成代理的唯一标识 ---
 def generate_proxy_id(proxy):
-    """根据代理的关键字段生成唯一ID（MD5哈希）"""
     key_fields = {
         "type": proxy.get("type", ""),
         "server": proxy.get("server", ""),
@@ -85,7 +74,6 @@ def generate_proxy_id(proxy):
 
 # --- 辅助函数：加载历史失败节点 ---
 def load_failed_proxies():
-    """加载历史失败节点"""
     if not os.path.exists(FAILED_PROXIES_FILE):
         return set()
     try:
@@ -98,11 +86,9 @@ def load_failed_proxies():
 
 # --- 辅助函数：保存失败节点 ---
 def save_failed_proxies(failed_proxy_ids):
-    """保存失败节点，限制最大数量"""
     try:
         existing_failed = load_failed_proxies()
         existing_failed.update(failed_proxy_ids)
-        # 限制最大数量
         if len(existing_failed) > MAX_FAILED_PROXIES:
             existing_failed = set(list(existing_failed)[-MAX_FAILED_PROXIES:])
         with open(FAILED_PROXIES_FILE, "w") as f:
@@ -112,7 +98,6 @@ def save_failed_proxies(failed_proxy_ids):
 
 # --- 辅助函数：加载历史可用节点 ---
 def load_existing_proxies():
-    """加载历史可用节点（从 OUTPUT_SUB_FILE）"""
     existing_proxies = set()
     if not os.path.exists(OUTPUT_SUB_FILE):
         return existing_proxies
@@ -130,7 +115,6 @@ def load_existing_proxies():
 
 # --- 辅助函数：将 sing-box 代理对象转换回 URL ---
 def singbox_to_proxy_url(proxy):
-    """将 sing-box 格式的代理对象转换回标准代理 URL"""
     try:
         proxy_type = proxy.get("type")
         tag = proxy.get("tag", f"{proxy_type}-node")
@@ -247,6 +231,10 @@ def singbox_to_proxy_url(proxy):
             elif transport.get("type") == "grpc":
                 query_params["type"] = "grpc"
                 query_params["serviceName"] = transport.get("service_name", "")
+            elif transport.get("type") == "httpupgrade":
+                query_params["type"] = "httpupgrade"
+                query_params["path"] = transport.get("path", "/")
+                query_params["host"] = transport.get("headers", {}).get("Host", "")
             query_string = urllib.parse.urlencode(query_params)
             fragment = urllib.parse.quote(tag)
             return f"vless://{uuid}@{hostname}:{port}{'' if not query_string else '?' + query_string}#{fragment}"
@@ -277,20 +265,21 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
         "server_port": int(port),
     }
 
-    tls_enabled = yaml_proxy_dict.get("tls", False) or yaml_proxy_dict.get("network") in ["ws", "grpc"]
+    tls_enabled = yaml_proxy_dict.get("tls", False) or yaml_proxy_dict.get("network") in ["ws", "grpc", "httpupgrade"]
     if tls_enabled:
         outbound["tls"] = {
             "enabled": True,
             "server_name": yaml_proxy_dict.get("sni", server),
-            "insecure": False,  # 严格验证证书
+            "insecure": False,
         }
 
     transport_type = yaml_proxy_dict.get("network")
-    if transport_type == "ws":
+    if transport_type in ["ws", "grpc", "httpupgrade"]:
         outbound["transport"] = {
-            "type": "ws",
-            "path": yaml_proxy_dict.get("ws-path", "/"),
-            "headers": {"Host": yaml_proxy_dict.get("ws-headers", {}).get("Host", server)}
+            "type": transport_type,
+            "path": yaml_proxy_dict.get("ws-path", "/") if transport_type == "ws" else yaml_proxy_dict.get("path", "/"),
+            "headers": {"Host": yaml_proxy_dict.get("ws-headers", {}).get("Host", server)} if transport_type in ["ws", "httpupgrade"] else {},
+            "service_name": yaml_proxy_dict.get("serviceName", "") if transport_type == "grpc" else ""
         }
 
     if p_type == "ss":
@@ -302,18 +291,6 @@ def _convert_yaml_to_singbox_proxy_object(yaml_proxy_dict):
         outbound["uuid"] = yaml_proxy_dict.get("uuid")
         outbound["security"] = yaml_proxy_dict.get("cipher", "auto")
         outbound["alter_id"] = int(yaml_proxy_dict.get("alterId", 0))
-        vmess_network_type = yaml_proxy_dict.get("network")
-        if vmess_network_type not in ["tcp", "", None]:
-            outbound["transport"] = {"type": vmess_network_type}
-            if vmess_network_type == "ws":
-                outbound["transport"]["path"] = yaml_proxy_dict.get("ws-path", "")
-                outbound["transport"]["headers"] = {"Host": yaml_proxy_dict.get("ws-headers", {}).get("Host", "")}
-        if yaml_proxy_dict.get("tls", False):
-            outbound["tls"] = {
-                "enabled": True,
-                "server_name": yaml_proxy_dict.get("sni", server),
-                "insecure": False
-            }
     elif p_type == "hysteria2":
         outbound["password"] = yaml_proxy_dict.get("password")
         if "obfs" in yaml_proxy_dict:
@@ -388,6 +365,12 @@ def parse_proxy_url_string(proxy_url):
                     "path": vmess_data.get("path", ""),
                     "headers": {"Host": vmess_data.get("host", "")} if vmess_data.get("host") else {}
                 }
+            elif transport_type == "httpupgrade":
+                transport_config = {
+                    "type": "httpupgrade",
+                    "path": vmess_data.get("path", ""),
+                    "headers": {"Host": vmess_data.get("host", "")} if vmess_data.get("host") else {}
+                }
 
             vmess_outbound = {
                 "type": "vmess",
@@ -436,6 +419,14 @@ def parse_proxy_url_string(proxy_url):
             if network_type == "ws":
                 transport_config = {
                     "type": "ws",
+                    "path": query.get("path", ["/"])[0],
+                    "headers": {
+                        "Host": query.get("host", [""])[0] or hostname.strip("[]")
+                    }
+                }
+            elif network_type == "httpupgrade":
+                transport_config = {
+                    "type": "httpupgrade",
                     "path": query.get("path", ["/"])[0],
                     "headers": {
                         "Host": query.get("host", [""])[0] or hostname.strip("[]")
@@ -567,7 +558,7 @@ def parse_proxy_url_string(proxy_url):
 
             query = urllib.parse.parse_qs(parsed.query)
             tag = urllib.parse.unquote(parsed.fragment) or "vless-node"
-            tls_enabled = query.get("security", [""])[0] in ["tls", "reality"] or query.get("type", [""])[0] in ["ws", "grpc"]
+            tls_enabled = query.get("security", [""])[0] in ["tls", "reality"] or query.get("type", [""])[0] in ["ws", "grpc", "httpupgrade"]
             transport_type = query.get("type", [""])[0]
             transport_config = None
             if transport_type == "ws":
@@ -582,6 +573,14 @@ def parse_proxy_url_string(proxy_url):
                 transport_config = {
                     "type": "grpc",
                     "service_name": query.get("serviceName", [""])[0]
+                }
+            elif transport_type == "httpupgrade":
+                transport_config = {
+                    "type": "httpupgrade",
+                    "path": query.get("path", ["/"])[0],
+                    "headers": {
+                        "Host": query.get("host", [""])[0] or hostname.strip("[]")
+                    }
                 }
 
             vless_config = {
@@ -608,12 +607,8 @@ def parse_proxy_url_string(proxy_url):
                         "enabled": True,
                         "public_key": pbk,
                         "short_id": sid,
-                        "server_name": query.get("fp", [""])[0],
+                        "server_name": query.get("fp", [""])[0] or hostname.strip("[]"),
                     }
-                    if query.get("sni", [""])[0]:
-                        vless_config["tls"]["reality"]["server_name"] = query.get("sni", [""])[0]
-                    elif hostname.strip("[]"):
-                        vless_config["tls"]["reality"]["server_name"] = hostname.strip("[]")
                 if query.get("fp", [""])[0] and "reality" not in vless_config["tls"]:
                     vless_config["tls"]["fingerprint"] = query.get("fp", [""])[0]
                 if query.get("xver", ["0"])[0] != "0" and "reality" not in vless_config["tls"]:
@@ -656,7 +651,6 @@ def get_proxies():
                     yaml_data = yaml.safe_load(content)
                     if isinstance(yaml_data, dict) and "proxies" in yaml_data and isinstance(yaml_data["proxies"], list):
                         for yaml_proxy_dict in yaml_data["proxies"]:
-                            # 预过滤无效YAML代理
                             if not yaml_proxy_dict.get("server") or not yaml_proxy_dict.get("port"):
                                 logging.debug(f"无效YAML代理，缺少server或port: {yaml_proxy_dict.get('name')}")
                                 continue
@@ -682,7 +676,6 @@ def get_proxies():
             lines = [line.strip() for line in content.splitlines() if line.strip()]
             for line in lines:
                 singbox_proxy_obj = parse_proxy_url_string(line)
-                # 预过滤无效URL代理
                 if singbox_proxy_obj and singbox_proxy_obj.get("server") and singbox_proxy_obj.get("server_port"):
                     if singbox_proxy_obj.get("type") in ["ss", "trojan", "hysteria2"] and not singbox_proxy_obj.get("password"):
                         logging.debug(f"无效URL代理，缺少password: {line[:50]}")
@@ -710,8 +703,7 @@ def generate_singbox_config(proxy, port):
             "output": SINGBOX_LOG_PATH,
         },
         "dns": {
-            "servers": [{"tag": "local-dns", "address": "202.96.128.86"},{"tag": "backup-dns", "address": "120.196.165.24"}],
-          
+            "servers": [{"tag": "local-dns", "address": "8.8.8.8"}, {"tag": "backup-dns", "address": "1.1.1.1"}],
         },
         "inbounds": [
             {
@@ -736,7 +728,7 @@ def generate_singbox_config(proxy, port):
             },
             "rules": [
                 {
-                    "domain": ["www.youtube.com", "www.netflix.com", "api.twitter.com"],
+                    "domain": ["t.me", "www.tiktok.com", "www.youtube.com"],
                     "outbound": proxy["tag"],
                 },
                 {
@@ -767,11 +759,32 @@ def wait_for_port(host, port, timeout=30, interval=1):
     logging.error(f"端口 {port} 在 {timeout} 秒内未打开。")
     return False
 
+# --- 异步测试 URL 连接性 ---
+async def test_url_async(session, url, proxy_url, timeout):
+    try:
+        start_time = time.time()
+        async with session.get(url, proxy=proxy_url, timeout=timeout) as response:
+            latency = (time.time() - start_time) * 1000
+            if response.status == 200:
+                logging.info(f"测试 {url} 成功，延迟 {latency:.2f}ms")
+                return latency
+            else:
+                logging.warning(f"测试 {url} 失败，状态码 {response.status}")
+                return None
+    except Exception as e:
+        logging.error(f"测试 {url} 失败: {e}")
+        return None
+
 # --- 测试代理节点速度 ---
-def test_proxy(proxy, retries=2):
+async def test_proxy(proxy, retries=2):
     port = BASE_PROXY_PORT + random.randint(1, 1000)
     process = None
     proxy_id = generate_proxy_id(proxy)
+    # 预检查服务器可达性
+    if not is_server_reachable(proxy["server"], proxy["server_port"]):
+        logging.debug(f"服务器 {proxy['server']}:{proxy['server_port']} 不可达，跳过")
+        return None, proxy_id
+
     for attempt in range(retries):
         try:
             config_path = generate_singbox_config(proxy, port)
@@ -801,45 +814,40 @@ def test_proxy(proxy, retries=2):
                 else:
                     logging.error(f"sing-box 对于代理 {proxy['tag']} 未能准备就绪。")
                 return None, proxy_id
-            latencies = []
-            for test_url in TEST_URLS:
-                try:
-                    start_time = time.time()
-                    response = requests.get(
-                        test_url,
-                        proxies={"http": f"socks5://127.0.0.1:{port}", "https": f"socks5://127.0.0.1:{port}"},
-                        timeout=HTTP_TIMEOUT_SECONDS,
-                    )
-                    latency = (time.time() - start_time) * 1000
-                    if response.status_code == 200:
-                        latencies.append(latency)
-                        logging.info(f"代理 {proxy['tag']} 成功通过 {test_url}, 延迟 {latency:.2f}ms")
-                    else:
-                        logging.warning(f"代理 {proxy['tag']} 未能通过 {test_url}, 状态码 {response.status_code}")
-                        return None, proxy_id
-                except requests.RequestException as e:
-                    logging.error(f"代理 {proxy['tag']} 测试 {test_url} 失败: {e}")
+
+            # 异步测试 URL
+            proxy_url = f"socks5://127.0.0.1:{port}"
+            async with aiohttp.ClientSession() as session:
+                tasks = [test_url_async(session, url, proxy_url, HTTP_TIMEOUT_SECONDS) for url in TEST_URLS]
+                latencies = await asyncio.gather(*tasks)
+                latencies = [l for l in latencies if l is not None]
+                if not latencies:
+                    logging.warning(f"代理 {proxy['tag']} 所有 URL 测试失败")
                     return None, proxy_id
+                avg_latency = sum(latencies) / len(latencies)
+                logging.info(f"代理 {proxy['tag']} 平均延迟: {avg_latency:.2f}ms")
+
+            # 测试吞吐量
             try:
-                start_time = time.time()
-                response = requests.get(
-                    "https://speedtest.net/speedtest-server.zip",
-                    proxies={"http": f"socks5://127.0.0.1:{port}", "https": f"socks5://127.0.0.1:{port}"},
-                    timeout=30,
-                    stream=True
-                )
-                total_bytes = 0
-                for chunk in response.iter_content(chunk_size=1024):
-                    total_bytes += len(chunk)
-                    if total_bytes > 10 * 1024 * 1024:
-                        break
-                throughput = total_bytes / (time.time() - start_time) / 1024 / 1024
-                logging.info(f"代理 {proxy['tag']} 吞吐量: {throughput:.2f} MB/s")
-            except requests.RequestException as e:
+                async with aiohttp.ClientSession() as session:
+                    start_time = time.time()
+                    async with session.get(SPEEDTEST_URL, proxy=proxy_url, timeout=SPEEDTEST_TIMEOUT_SECONDS) as response:
+                        total_bytes = 0
+                        async for chunk in response.content.iter_chunked(1024):
+                            total_bytes += len(chunk)
+                            if total_bytes > 10 * 1024 * 1024:  # 限制 10MB
+                                break
+                        throughput = total_bytes / (time.time() - start_time) / 1024 / 1024
+                        if throughput < SPEEDTEST_MIN_THROUGHPUT / 1024 / 1024:
+                            logging.warning(f"代理 {proxy['tag']} 吞吐量 {throughput:.2f} MB/s 低于最低要求")
+                            return None, proxy_id
+                        logging.info(f"代理 {proxy['tag']} 吞吐量: {throughput:.2f} MB/s")
+            except Exception as e:
                 logging.error(f"代理 {proxy['tag']} 吞吐量测试失败: {e}")
                 return None, proxy_id
-            avg_latency = sum(latencies) / len(latencies)
+
             return {"proxy": proxy, "latency": avg_latency, "throughput": throughput}, None
+
         except subprocess.SubprocessError as e:
             logging.error(f"执行 sing-box 时发生子进程错误，代理 {proxy.get('tag', 'unknown')}: {e}")
             return None, proxy_id
@@ -889,8 +897,9 @@ def main():
     # 测试新节点
     results = []
     failed_proxies = set()
+    loop = asyncio.get_event_loop()
     with concurrent.futures.ThreadPoolExecutor(max_workers=CONCURRENT_TESTS) as executor:
-        future_to_proxy = {executor.submit(test_proxy, proxy): proxy for proxy in new_proxies}
+        future_to_proxy = {executor.submit(lambda p: loop.run_until_complete(test_proxy(p)), proxy): proxy for proxy in new_proxies}
         for future in concurrent.futures.as_completed(future_to_proxy):
             proxy = future_to_proxy[future]
             try:
