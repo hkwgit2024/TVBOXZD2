@@ -10,9 +10,9 @@ MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt" # 临时文件，用于合并
 # 你可以在这里添加/删除/修改你的节点来源网址
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-    "https://raw.githubusercontent.com/freefq/free/master/v2ray"
-    "https://raw.githubusercontent.com/learnhard-cn/free_proxy_ss/main/free"
-     
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
+    
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
 
