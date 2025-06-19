@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Script started at $(date)" # Add this line
 # 定义日志文件和输出文件的路径
 LOG_FILE="node_connectivity_results.log"
 OUTPUT_DIR="data"
