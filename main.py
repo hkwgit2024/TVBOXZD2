@@ -711,7 +711,7 @@ def generate_singbox_config(proxy, port):
         },
         "dns": {
             "servers": [{"tag": "local-dns", "address": "202.96.128.86"}],
-            "default_server": "local-dns"
+           # "default_server": "local-dns"
         },
         "inbounds": [
             {
