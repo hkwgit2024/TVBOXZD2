@@ -84,7 +84,7 @@ test_node() {
     if [ "${failed_nodes[$NODE_LINK]}" ]; then
         log INFO "跳过已知的失败节点: $NODE_LINK"
         return
-    
+    fi
     # 提取 IP/Hostname 和 Port
     if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2)://(.+@)?([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
@@ -134,7 +134,6 @@ test_node() {
         log WARN "  - 结果: 无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)"
         echo "$NODE_LINK" >> "$FAILED_FILE"
     fi
-}
 
 # 导出函数和环境变量以供 parallel 使用
 export -f test_node
