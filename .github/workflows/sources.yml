@@ -1,4 +1,4 @@
-name: 更新和转换代理节点
+name: 更新和转换
 
 on:
   workflow_dispatch: # 允许手动触发
