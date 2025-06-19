@@ -3,42 +3,39 @@ name: 测试
 on:
   schedule:
     - cron: '0 3 * * *' # 每天 UTC 凌晨 3:00 运行
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test_node_connectivity:
     runs-on: ubuntu-latest
-    
-    # 授予 GITHUB_TOKEN (或其他 Token) 写入仓库内容的权限
-    # 对于自定义 PAT (BOT)，确保它在创建时拥有 repo 权限
     permissions:
-      contents: write 
-
+      contents: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        # persist-credentials 必须为 true，以允许后续的 git push 操作
-        # !!! 关键 !!! 使用您自定义的名为 BOT 的 Secret
         persist-credentials: true
-        token: ${{ secrets.BOT }} 
+        token: ${{ secrets.BOT }}
 
-    - name: Set up dependencies
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y curl netcat-openbsd # 确保安装 netcat-openbsd
+        sudo apt-get install -y curl netcat-openbsd dnsutils jq
 
     - name: Make script executable
       run: chmod +x speed_test.sh
 
-    - name: Run node connectivity test and push results
-      # 脚本会负责创建 data/sub.txt 并推送到仓库
-      # !!! 关键 !!! 将您的 BOT Secret 作为环境变量传递给脚本
+    - name: Run node connectivity test
       env:
-        GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }} 
+        GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }}
+        DEBUG: false # 可手动设置为 true 启用调试日志
       run: ./speed_test.sh
 
-    - name: Upload connectivity test results # 仍然上传完整的日志以供调试
+    - name: Upload test results
       uses: actions/upload-artifact@v4
       with:
         name: node-connectivity-results
