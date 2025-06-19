@@ -11,8 +11,8 @@ MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt" # 临时文件，用于合并
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
+   # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
 
 # 日志函数
