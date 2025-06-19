@@ -6,7 +6,6 @@ OUTPUT_DIR="data"
 SUCCESS_FILE="$OUTPUT_DIR/sub.txt"  # 成功节点输出文件
 FAILED_FILE="$OUTPUT_DIR/failed_nodes.txt"  # 失败节点输出文件
 MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt"  # 临时合并文件
-PREV_FAILED_NODES="prev_failed_nodes.txt"  # 存储上一次运行的失败节点
 
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
@@ -38,6 +37,9 @@ command -v dig >/dev/null 2>&1 || {
 command -v nc >/dev/null 2>&1 || {
     log ERROR "nc 命令未找到，请确保安装 netcat（例如：sudo apt-get install netcat）"
     exit 1
+}
+command -v parallel >/dev/null 2>&1 || {
+    log WARN "parallel 命令未找到，将使用串行执行（建议安装：sudo apt-get install parallel）"
 }
 
 # 下载并合并节点配置文件
@@ -73,7 +75,7 @@ test_node() {
     local NODE_LINK="$1"
     local IP=""
     local PORT=""
-    local HOSTNAME=""
+    local HOSTNAME_OR_IP=""
 
     # 跳过空行和注释
     [[ -z "$NODE_LINK" || "$NODE_LINK" =~ ^# ]] && return
@@ -85,18 +87,18 @@ test_node() {
     }
 
     # 提取 IP/Hostname 和 Port
-    if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2):\/\/(.+@)?([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)(\/?.*) ]]; then
+    if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2)://(.+@)?([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
         PORT="${BASH_REMATCH[4]}"
-    elif [[ "$NODE_LINK" == ss://* ]]; then
-        SS_HOST_PORT=$(echo "$NODE_LINK" | grep -oE '@([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)' | head -n 1)
+    elif [[ "$NODE_LINK" =~ ^ss:// ]]; then
+        SS_HOST_PORT=$(echo "$NODE_LINK" | grep -oE '@([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+)' | head -n 1)
         if [ -n "$SS_HOST_PORT" ]; then
             HOSTNAME_OR_IP=$(echo "$SS_HOST_PORT" | cut -d'@' -f2 | cut -d':' -f1)
             PORT=$(echo "$SS_HOST_PORT" | cut -d':' -f2)
         else
             BASE64_PART=$(echo "$NODE_LINK" | sed 's/ss:\/\///' | cut -d'@' -f1)
             DECODED_PART=$(echo "$BASE64_PART" | base64 -d 2>/dev/null)
-            if [ $? -eq 0 ] && [[ "$DECODED_PART" =~ ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+) ]]; then
+            if [[ "$DECODED_PART" =~ ([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
                 HOSTNAME_OR_IP="${BASH_REMATCH[1]}"
                 PORT="${BASH_REMATCH[2]}"
             fi
@@ -135,16 +137,38 @@ test_node() {
     fi
 }
 
-# 并行测试节点（限制并发数为 10 以避免资源耗尽）
+# 导出函数和环境变量以供 parallel 使用
 export -f test_node
-export LOG_FILE SUCCESS_FILE FAILED_FILE
-cat "$MERGED_NODES_TEMP_FILE" | parallel -j 10 test_node
+export LOG_FILE SUCCESS_FILE FAILED_FILE failed_nodes
+
+# 测试节点（优先使用 parallel，若不可用则串行）
+if command -v parallel >/dev/null 2>&1; then
+    log INFO "使用 parallel 并行测试节点（并发数：10）"
+    cat "$MERGED_NODES_TEMP_FILE" | parallel -j 10 test_node
+else
+    log INFO "使用串行测试节点"
+    while IFS= read -r line; do
+        test_node "$line"
+    done < "$MERGED_NODES_TEMP_FILE"
+fi
 
 # 清理临时文件
-rm "$MERGED_NODES_TEMP_FILE"
+rm -f "$MERGED_NODES_TEMP_FILE"
 
 log INFO "所有节点连接性测试完成。成功节点已保存到 $SUCCESS_FILE"
 log INFO "失败节点已保存到 $FAILED_FILE"
+
+# 统计信息
+total_nodes=$(grep -v '^#' "$SUCCESS_FILE" "$FAILED_FILE" | wc -l)
+success_nodes=$(grep -v '^#' "$SUCCESS_FILE" | wc -l)
+failed_nodes=$(grep -v '^#' "$FAILED_FILE" | wc -l)
+skipped_nodes=$((${#failed_nodes[@]} - failed_nodes))
+
+log INFO "测试统计："
+log INFO "  - 总节点数: $total_nodes"
+log INFO "  - 成功节点数: $success_nodes"
+log INFO "  - 失败节点数: $failed_nodes"
+log INFO "  - 跳过节点数: $skipped_nodes"
 
 # --- Git 推送逻辑 ---
 log INFO "开始将成功节点推送到 GitHub 仓库..."
@@ -154,8 +178,8 @@ git config user.name "GitHub Actions"
 git config user.email "actions@github.com"
 
 # 检查是否有更改
-if git diff --quiet "$SUCCESS_FILE"; then
-    log INFO "成功节点文件 $SUCCESS_FILE 无更改，无需提交"
+if git diff --quiet "$SUCCESS_FILE" "$FAILED_FILE"; then
+    log INFO "成功节点和失败节点文件无更改，无需提交"
 else
     git add "$SUCCESS_FILE" "$FAILED_FILE"
     git commit -m "Update successful and failed nodes (automated by GitHub Actions)" || true
