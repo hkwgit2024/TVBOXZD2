@@ -1,14 +1,20 @@
 #!/bin/bash
 
+# 定义日志文件和成功节点文件的路径
 LOG_FILE="node_connectivity_results.log"
-SUCCESS_NODES_FILE="successful_nodes.log" # 新增：保存成功节点的日志文件
+OUTPUT_DIR="data" # 输出目录
+OUTPUT_FILE="$OUTPUT_DIR/sub.txt" # 成功节点输出文件
 
 echo "开始节点连接性测试..." > "$LOG_FILE"
 echo "测试时间: $(date)" >> "$LOG_FILE"
 echo "-------------------------------------" >> "$LOG_FILE"
 
-echo "将成功连接的节点保存到: $SUCCESS_NODES_FILE" > "$SUCCESS_NODES_FILE" # 清空并初始化成功节点文件
-echo "-------------------------------------" >> "$SUCCESS_NODES_FILE"
+# 确保输出目录存在
+mkdir -p "$OUTPUT_DIR"
+
+# 清空并初始化成功节点文件
+echo "# Successful Nodes (Updated by GitHub Actions at $(date))" > "$OUTPUT_FILE"
+echo "-------------------------------------" >> "$OUTPUT_FILE"
 
 echo "下载节点配置文件..."
 curl -s -o config_all_merged_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt
@@ -21,7 +27,6 @@ fi
 echo "文件下载成功。开始解析节点并测试连接性..." | tee -a "$LOG_FILE"
 
 # 确保安装了 dnsutils (用于 dig 命令)
-# 重定向输出到 /dev/null 防止污染日志
 sudo apt-get update >/dev/null 2>&1
 sudo apt-get install -y dnsutils >/dev/null 2>&1
 
@@ -29,29 +34,21 @@ while IFS= read -r NODE_LINK; do
     # 跳过空行和注释
     [[ -z "$NODE_LINK" || "$NODE_LINK" =~ ^# ]] && continue
 
-    # 重置 IP 和 PORT
     IP=""
     PORT=""
-    HOSTNAME="" # 确保每次循环都重置
+    HOSTNAME=""
 
     # 尝试提取 VLESS/VMESS/Trojan/Hysteria2 等协议的 IP/Hostname 和 Port
-    # 模式: protocol://[user@]IP_OR_HOST:PORT?...
-    # 捕获协议头，然后是用户部分(可选)，然后是 IP/主机名和端口
     if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2):\/\/(.+@)?([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)(\/?.*) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
         PORT="${BASH_REMATCH[4]}"
     elif [[ "$NODE_LINK" == ss://* ]]; then
-        # 对于 Shadowsocks (SS) 链接，提取 @ 符号后面的部分，然后 Base64 解码 (如果需要)
-        # 尝试从 @hostname:port 或 @ip:port 格式中直接提取
         SS_HOST_PORT=$(echo "$NODE_LINK" | grep -oE '@([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)' | head -n 1)
         if [ -n "$SS_HOST_PORT" ]; then
             HOSTNAME_OR_IP=$(echo "$SS_HOST_PORT" | cut -d'@' -f2 | cut -d':' -f1)
             PORT=$(echo "$SS_HOST_PORT" | cut -d':' -f2)
         else
-            # 如果直接提取失败，尝试 Base64 解码 SS 链接的用户信息部分
-            # 注意：某些 SS 链接的加密信息在 Base64 解码后才包含 Host:Port
             BASE64_PART=$(echo "$NODE_LINK" | sed 's/ss:\/\///' | cut -d'@' -f1)
-            # 尝试解码并检查是否包含 IP:PORT
             DECODED_PART=$(echo "$BASE64_PART" | base64 -d 2>/dev/null)
             if [ $? -eq 0 ] && [[ "$DECODED_PART" =~ ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+) ]]; then
                 HOSTNAME_OR_IP="${BASH_REMATCH[1]}"
@@ -60,16 +57,11 @@ while IFS= read -r NODE_LINK; do
         fi
     fi
 
-    # 检查是否提取到了 IP 或 Hostname 和 Port
     if [ -n "$HOSTNAME_OR_IP" ] && [ -n "$PORT" ]; then
-        # 如果是域名，尝试解析为 IP
         if [[ "$HOSTNAME_OR_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ || "$HOSTNAME_OR_IP" =~ ^\[?[0-9a-fA-F:]+\]?$ ]]; then
-            # 已经是 IP 地址
             IP="$HOSTNAME_OR_IP"
         else
-            # 是域名，尝试 DNS 解析
             echo "尝试解析域名: $HOSTNAME_OR_IP" | tee -a "$LOG_FILE"
-            # dig +short 命令获取IP地址，如果有多条记录只取第一条IPv4
             RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A | head -n 1)
             if [ -n "$RESOLVED_IP" ]; then
                 IP="$RESOLVED_IP"
@@ -88,18 +80,36 @@ while IFS= read -r NODE_LINK; do
 
     echo "正在测试节点连接: $IP:$PORT (来自 $NODE_LINK)" | tee -a "$LOG_FILE"
 
-    # 使用 nc 进行端口连通性测试
-    # -z: 零I/O模式 (扫描端口)
-    # -w 3: 超时3秒
     nc -z -w 3 "$IP" "$PORT" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "  - 结果: 成功连接到 $IP:$PORT" | tee -a "$LOG_FILE"
-        echo "$NODE_LINK" >> "$SUCCESS_NODES_FILE" # 将成功连接的完整节点链接保存到新文件
+        echo "$NODE_LINK" >> "$OUTPUT_FILE" # 将成功连接的完整节点链接保存到指定的输出文件
     else
         echo "  - 结果: 无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)" | tee -a "$LOG_FILE"
     fi
     echo "-------------------------------------" | tee -a "$LOG_FILE"
-done < config_all_merged_nodes.txt # 从文件中读取每一行
+done < config_all_merged_nodes.txt
 
 echo "所有节点连接性测试完成。结果已保存到 $LOG_FILE" | tee -a "$LOG_FILE"
-echo "成功连接的节点已保存到 $SUCCESS_NODES_FILE" | tee -a "$LOG_FILE"
+echo "成功连接的节点已保存到 $OUTPUT_FILE" | tee -a "$LOG_FILE"
+
+# --- Git 推送逻辑 ---
+echo "开始将成功节点推送到 GitHub 仓库..." | tee -a "$LOG_FILE"
+
+# 配置 Git
+git config user.name "GitHub Actions"
+git config user.email "actions@github.com"
+
+# 添加文件并提交
+# 确保添加的是 data/sub.txt
+git add "$OUTPUT_FILE"
+# 使用 || true 防止在没有更改时导致 commit 失败
+git commit -m "Update successful nodes in data/sub.txt (automated by GitHub Actions)" || true
+
+# 推送更改 (使用 GITHUB_TOKEN)
+# GITHUB_TOKEN 是 GitHub Actions 自动提供的，通常具有足够的权限来推送到当前仓库的非保护分支
+# 它不需要额外在 Secrets 中创建
+git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+git push origin HEAD:${GITHUB_REF##*/} # 推送到当前分支
+
+echo "成功节点已推送到 GitHub 仓库。" | tee -a "$LOG_FILE"
