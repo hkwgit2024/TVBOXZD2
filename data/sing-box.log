@@ -1,0 +1,2442 @@
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1528
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1452
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1918
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2034
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1631
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [3107420907 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56664
+INFO [3987193041 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59070
+DEBUG [3107420907 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56664: EOF
+DEBUG [3987193041 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59070: EOF
+INFO [1222421012 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:32920
+INFO [123511118 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56392
+DEBUG [123511118 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56392: EOF
+DEBUG [1222421012 2ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:32920: EOF
+INFO [4280596052 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41040
+DEBUG [4280596052 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41040: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1351
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1960
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1340
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1650
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1695
+INFO sing-box started (0.00s)
+INFO [2070623849 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54602
+DEBUG [2070623849 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54602: EOF
+INFO [1463141812 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35426
+INFO [3418655061 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53970
+DEBUG [3418655061 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53970: EOF
+DEBUG [1463141812 1ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35426: EOF
+INFO [767821120 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33724
+INFO [1691077722 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57392
+DEBUG [1691077722 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57392: EOF
+DEBUG [767821120 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33724: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1445
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1882
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1709
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1306
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1815
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [1443133564 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33550
+DEBUG [1443133564 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33550: EOF
+INFO [16790825 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43412
+DEBUG [16790825 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43412: EOF
+INFO [2990461448 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41424
+DEBUG [2990461448 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41424: EOF
+INFO [75233260 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35996
+DEBUG [75233260 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35996: EOF
+INFO [4141034968 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42396
+DEBUG [4141034968 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42396: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1681
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1118
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1906
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1324
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1659
+INFO sing-box started (0.00s)
+INFO [2776786101 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53886
+DEBUG [2776786101 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53886: EOF
+INFO [4232770542 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46836
+DEBUG [4232770542 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46836: EOF
+INFO [1705847293 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54630
+DEBUG [1705847293 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54630: EOF
+INFO [3485581195 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55206
+DEBUG [3485581195 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55206: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1929
+INFO [2301380041 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57990
+DEBUG [2301380041 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57990: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1438
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1980
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1775
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1369
+INFO sing-box started (0.00s)
+INFO [2726470094 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42326
+DEBUG [2726470094 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42326: EOF
+INFO [471951042 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34920
+DEBUG [471951042 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34920: EOF
+INFO [2530975698 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48048
+DEBUG [2530975698 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48048: EOF
+INFO [2428565675 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60498
+DEBUG [2428565675 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60498: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1184
+INFO sing-box started (0.00s)
+INFO [4216233732 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50206
+DEBUG [4216233732 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50206: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1274
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1983
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1135
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2011
+INFO sing-box started (0.00s)
+INFO [2136132515 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59094
+DEBUG [2136132515 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59094: EOF
+INFO [2014917806 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58996
+DEBUG [2014917806 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58996: EOF
+INFO [4200441359 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50488
+DEBUG [4200441359 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50488: EOF
+INFO [4026983683 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42218
+DEBUG [4026983683 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42218: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1096
+INFO sing-box started (0.00s)
+INFO [1522124500 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47280
+DEBUG [1522124500 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47280: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1484
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1529
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1448
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1905
+INFO sing-box started (0.00s)
+INFO [3776685501 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53462
+DEBUG [3776685501 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53462: EOF
+INFO [49624088 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54336
+DEBUG [49624088 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54336: EOF
+INFO [157272522 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55356
+DEBUG [157272522 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55356: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1405
+INFO sing-box started (0.00s)
+INFO [2337500992 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52948
+DEBUG [2337500992 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52948: EOF
+INFO [1435629157 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58308
+DEBUG [1435629157 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58308: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2064
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1459
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1787
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1224
+INFO sing-box started (0.00s)
+INFO [2870818752 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46056
+DEBUG [2870818752 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46056: EOF
+INFO [1989301633 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37444
+DEBUG [1989301633 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37444: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1576
+INFO sing-box started (0.00s)
+INFO [829038364 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47054
+DEBUG [829038364 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47054: EOF
+INFO [3703535802 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54228
+DEBUG [3703535802 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54228: EOF
+INFO [915549427 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43424
+DEBUG [915549427 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43424: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1802
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2045
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1203
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1408
+INFO sing-box started (0.00s)
+INFO [4188156127 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51922
+DEBUG [4188156127 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51922: EOF
+INFO [4258668296 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55910
+DEBUG [4258668296 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55910: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1926
+INFO sing-box started (0.00s)
+INFO [2054917821 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37894
+DEBUG [2054917821 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37894: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1964
+INFO [1794845024 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36392
+DEBUG [1794845024 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36392: EOF
+INFO sing-box started (0.00s)
+INFO [3720953858 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57968
+DEBUG [3720953858 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57968: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1615
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1563
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1736
+INFO sing-box started (0.00s)
+INFO [583660528 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55136
+DEBUG [583660528 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55136: EOF
+INFO [82298521 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54520
+DEBUG [82298521 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54520: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1635
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1589
+INFO sing-box started (0.00s)
+INFO [2394937371 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39466
+DEBUG [2394937371 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39466: EOF
+INFO [1191129608 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38078
+DEBUG [1191129608 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38078: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1667
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1659
+INFO sing-box started (0.00s)
+INFO [3151058139 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49156
+DEBUG [3151058139 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49156: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1394
+INFO sing-box started (0.00s)
+INFO [770214692 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36730
+DEBUG [770214692 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36730: EOF
+INFO [756501945 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40134
+DEBUG [756501945 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40134: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1708
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1927
+INFO [500925888 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58354
+DEBUG [500925888 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58354: EOF
+INFO sing-box started (0.00s)
+INFO [3376306796 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42126
+DEBUG [3376306796 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42126: EOF
+INFO router: updated default interface eth0, index 2
+INFO [1934641586 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58576
+INFO router: loaded geoip database: 237 codes
+DEBUG [1934641586 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58576: EOF
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2018
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1202
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1299
+INFO sing-box started (0.00s)
+INFO [3009998548 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48878
+DEBUG [3009998548 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48878: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1898
+INFO [1186818381 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38662
+DEBUG [1186818381 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38662: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1236
+INFO sing-box started (0.00s)
+INFO [1914438523 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60800
+DEBUG [1914438523 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60800: EOF
+INFO [1762807963 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55170
+DEBUG [1762807963 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55170: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1685
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1753
+INFO sing-box started (0.00s)
+INFO [4077084809 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52858
+DEBUG [4077084809 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52858: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1509
+INFO sing-box started (0.00s)
+INFO [1112388213 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45184
+DEBUG [1112388213 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45184: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1431
+INFO sing-box started (0.00s)
+INFO [3326551703 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57754
+DEBUG [3326551703 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57754: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1214
+INFO sing-box started (0.00s)
+INFO [3428806887 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47112
+DEBUG [3428806887 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47112: EOF
+INFO [3135884470 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43050
+DEBUG [3135884470 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43050: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1688
+INFO [1919320400 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39892
+DEBUG [1919320400 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39892: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1333
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1285
+INFO sing-box started (0.00s)
+INFO [528786130 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58454
+DEBUG [528786130 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58454: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1772
+INFO sing-box started (0.00s)
+INFO [541614701 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48036
+DEBUG [541614701 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48036: EOF
+INFO [310325379 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47440
+DEBUG [310325379 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47440: EOF
+INFO [1434231487 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48938
+DEBUG [1434231487 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48938: EOF
+INFO [1141045994 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56712
+DEBUG [1141045994 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56712: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1537
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1089
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1976
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1501
+INFO sing-box started (0.00s)
+INFO [1053622920 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58652
+DEBUG [1053622920 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58652: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1462
+INFO sing-box started (0.00s)
+INFO [2197080750 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51434
+DEBUG [2197080750 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51434: EOF
+INFO [607331421 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59506
+DEBUG [607331421 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59506: EOF
+INFO [1227077266 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46390
+DEBUG [1227077266 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46390: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1329
+INFO [964628355 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57996
+DEBUG [964628355 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57996: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1480
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1408
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1971
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [4174254269 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48806
+DEBUG [4174254269 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48806: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1287
+INFO sing-box started (0.00s)
+INFO [2460397847 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44226
+DEBUG [2460397847 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44226: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1607
+INFO sing-box started (0.00s)
+INFO [1317100487 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44128
+DEBUG [1317100487 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44128: EOF
+INFO [2419493078 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47448
+DEBUG [2419493078 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47448: EOF
+INFO [4154003690 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53322
+DEBUG [4154003690 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53322: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1441
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1675
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO sing-box started (0.00s)
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1764
+INFO sing-box started (0.00s)
+INFO [4054892262 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57236
+DEBUG [4054892262 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57236: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1835
+INFO sing-box started (0.00s)
+INFO [1951848537 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40290
+DEBUG [1951848537 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40290: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1885
+INFO sing-box started (0.00s)
+INFO [4169610652 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52354
+DEBUG [4169610652 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52354: EOF
+INFO [3622350140 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55286
+DEBUG [3622350140 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55286: EOF
+INFO [3959836772 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55536
+DEBUG [3959836772 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55536: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1880
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1812
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1676
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [1682155671 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58406
+DEBUG [1682155671 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58406: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1274
+INFO sing-box started (0.00s)
+INFO [1625370705 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50936
+DEBUG [1625370705 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50936: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1994
+INFO sing-box started (0.00s)
+INFO [515652751 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42894
+DEBUG [515652751 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42894: EOF
+INFO [2177727150 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38644
+DEBUG [2177727150 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38644: EOF
+INFO [1384370489 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49244
+DEBUG [1384370489 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49244: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1661
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1112
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1814
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [321510249 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57164
+DEBUG [321510249 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57164: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1436
+INFO sing-box started (0.00s)
+INFO [744456221 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48522
+DEBUG [744456221 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48522: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1778
+INFO sing-box started (0.00s)
+INFO [3080482513 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52122
+DEBUG [3080482513 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52122: EOF
+INFO [644993598 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59528
+INFO [2806697543 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45514
+DEBUG [644993598 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59528: EOF
+DEBUG [2806697543 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45514: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1967
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1506
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1946
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [1950968196 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53158
+DEBUG [1950968196 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53158: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1808
+INFO sing-box started (0.00s)
+INFO [561334703 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53208
+DEBUG [561334703 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53208: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1780
+INFO sing-box started (0.00s)
+INFO [1329954627 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53132
+DEBUG [1329954627 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53132: EOF
+INFO [795213656 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40186
+DEBUG [795213656 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40186: EOF
+INFO [4053016992 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60870
+DEBUG [4053016992 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60870: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1226
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1962
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1223
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [1988933842 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50340
+DEBUG [1988933842 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50340: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1951
+INFO sing-box started (0.00s)
+INFO [1228015291 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51418
+DEBUG [1228015291 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51418: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1186
+INFO sing-box started (0.00s)
+INFO [1403781114 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53244
+DEBUG [1403781114 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53244: EOF
+INFO [639237357 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46066
+DEBUG [639237357 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46066: EOF
+INFO [13578777 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40272
+DEBUG [13578777 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40272: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1851
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1816
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1494
+INFO sing-box started (0.00s)
+INFO [3079535426 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60866
+DEBUG [3079535426 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60866: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1928
+INFO sing-box started (0.00s)
+INFO [3784586355 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55512
+DEBUG [3784586355 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55512: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2015
+INFO sing-box started (0.00s)
+INFO [66344091 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49112
+DEBUG [66344091 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49112: EOF
+INFO [658044760 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33664
+DEBUG [658044760 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33664: EOF
+INFO [1915075693 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56320
+DEBUG [1915075693 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56320: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1705
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1200
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1753
+INFO sing-box started (0.00s)
+INFO [2383975497 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42432
+DEBUG [2383975497 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42432: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1669
+INFO sing-box started (0.00s)
+INFO [135643051 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37382
+DEBUG [135643051 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37382: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1312
+INFO sing-box started (0.00s)
+INFO [3414883620 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36224
+DEBUG [3414883620 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36224: EOF
+INFO [3058907097 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56802
+DEBUG [3058907097 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56802: EOF
+INFO [253285440 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55424
+DEBUG [253285440 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55424: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1635
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1286
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2009
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO sing-box started (0.00s)
+INFO [452687465 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36062
+DEBUG [452687465 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36062: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1303
+INFO sing-box started (0.00s)
+INFO [913030294 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37738
+DEBUG [913030294 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37738: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1314
+INFO sing-box started (0.00s)
+INFO [1639837137 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39898
+DEBUG [1639837137 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39898: EOF
+INFO [1014677696 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54924
+DEBUG [1014677696 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54924: EOF
+INFO [679760390 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45234
+DEBUG [679760390 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45234: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2074
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1290
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1238
+INFO sing-box started (0.00s)
+INFO [4262123733 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60412
+DEBUG [4262123733 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60412: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1506
+INFO sing-box started (0.00s)
+INFO [2763135368 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35590
+DEBUG [2763135368 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35590: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1155
+INFO sing-box started (0.00s)
+INFO [2133976594 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55902
+DEBUG [2133976594 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55902: EOF
+INFO [163744629 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36070
+DEBUG [163744629 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36070: EOF
+INFO [1852155893 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41020
+DEBUG [1852155893 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41020: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1182
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1921
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1589
+INFO sing-box started (0.00s)
+INFO [2278135424 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55884
+DEBUG [2278135424 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55884: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1888
+INFO sing-box started (0.00s)
+INFO [2245774146 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35930
+DEBUG [2245774146 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35930: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1385
+INFO sing-box started (0.00s)
+INFO [964949989 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57058
+DEBUG [964949989 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57058: EOF
+INFO [1373361017 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41282
+DEBUG [1373361017 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41282: EOF
+INFO [3817592829 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41226
+DEBUG [3817592829 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41226: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1662
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1219
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1835
+INFO sing-box started (0.00s)
+INFO [435305058 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54026
+DEBUG [435305058 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54026: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1178
+INFO sing-box started (0.00s)
+INFO [3406515987 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59462
+DEBUG [3406515987 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59462: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1797
+INFO sing-box started (0.00s)
+INFO [298835685 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46196
+DEBUG [298835685 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46196: EOF
+INFO [951365970 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60402
+DEBUG [951365970 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60402: EOF
+INFO [1691780141 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51556
+DEBUG [1691780141 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51556: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1619
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1450
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1683
+INFO sing-box started (0.00s)
+INFO [2668090835 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48932
+DEBUG [2668090835 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48932: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1313
+INFO sing-box started (0.00s)
+INFO [2097449434 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37666
+DEBUG [2097449434 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37666: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1515
+INFO sing-box started (0.00s)
+INFO [704527514 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53808
+DEBUG [704527514 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53808: EOF
+INFO [902810828 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59018
+DEBUG [902810828 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59018: EOF
+INFO [3535726890 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:32874
+DEBUG [3535726890 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:32874: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1946
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2003
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1200
+INFO sing-box started (0.00s)
+INFO [1285945904 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46768
+DEBUG [1285945904 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46768: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1838
+INFO sing-box started (0.00s)
+INFO [1295070707 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43422
+DEBUG [1295070707 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43422: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1421
+INFO sing-box started (0.00s)
+INFO [190109952 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54454
+DEBUG [190109952 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54454: EOF
+INFO [2829774123 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46696
+DEBUG [2829774123 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46696: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1086
+INFO sing-box started (0.00s)
+INFO [354570726 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48804
+DEBUG [354570726 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48804: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2007
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1247
+INFO sing-box started (0.00s)
+INFO [1303248828 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57690
+DEBUG [1303248828 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57690: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1924
+INFO sing-box started (0.00s)
+INFO [57273630 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52182
+DEBUG [57273630 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52182: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2036
+INFO sing-box started (0.00s)
+INFO [218774958 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34320
+DEBUG [218774958 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34320: EOF
+INFO [1263688076 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45690
+DEBUG [1263688076 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45690: EOF
+INFO [1090536348 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60372
+DEBUG [1090536348 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60372: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1215
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1907
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2018
+INFO sing-box started (0.00s)
+INFO [121117048 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39324
+DEBUG [121117048 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39324: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1846
+INFO sing-box started (0.00s)
+INFO [532417752 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57660
+DEBUG [532417752 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57660: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1395
+INFO sing-box started (0.00s)
+INFO [921024159 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34810
+DEBUG [921024159 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34810: EOF
+INFO [511865907 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52678
+DEBUG [511865907 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52678: EOF
+INFO [2691832909 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50252
+DEBUG [2691832909 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50252: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1818
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1445
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1951
+INFO sing-box started (0.00s)
+INFO [1049496064 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58382
+DEBUG [1049496064 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58382: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1552
+INFO sing-box started (0.00s)
+INFO [1729646113 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55504
+DEBUG [1729646113 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55504: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1597
+INFO sing-box started (0.00s)
+INFO [1164618717 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39588
+DEBUG [1164618717 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39588: EOF
+INFO [99677171 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57452
+DEBUG [99677171 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57452: EOF
+INFO [2069109527 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50998
+DEBUG [2069109527 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50998: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2042
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1617
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1895
+INFO sing-box started (0.00s)
+INFO [2432100336 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52786
+DEBUG [2432100336 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52786: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1748
+INFO sing-box started (0.00s)
+INFO [320138979 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:32774
+DEBUG [320138979 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:32774: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1214
+INFO sing-box started (0.00s)
+INFO [164893048 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52696
+DEBUG [164893048 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52696: EOF
+INFO [1679725506 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51484
+DEBUG [1679725506 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51484: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1371
+INFO sing-box started (0.00s)
+INFO [3343854977 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59502
+DEBUG [3343854977 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59502: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1836
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2032
+INFO sing-box started (0.00s)
+INFO [3015335261 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49694
+DEBUG [3015335261 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49694: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1557
+INFO sing-box started (0.00s)
+INFO [2088208066 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41088
+DEBUG [2088208066 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41088: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2064
+INFO sing-box started (0.00s)
+INFO [1666216132 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38904
+DEBUG [1666216132 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38904: EOF
+INFO [3474828532 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55572
+DEBUG [3474828532 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55572: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1744
+INFO sing-box started (0.00s)
+INFO [2879188739 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56514
+DEBUG [2879188739 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56514: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1477
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1486
+INFO sing-box started (0.00s)
+INFO [2126786432 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51286
+DEBUG [2126786432 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51286: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1087
+INFO sing-box started (0.00s)
+INFO [171901490 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37024
+DEBUG [171901490 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37024: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1702
+INFO sing-box started (0.00s)
+INFO [3306293794 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54614
+DEBUG [3306293794 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54614: EOF
+INFO [4046876048 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51946
+DEBUG [4046876048 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51946: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1984
+INFO sing-box started (0.00s)
+INFO [2935286672 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46800
+DEBUG [2935286672 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46800: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1981
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1772
+INFO sing-box started (0.00s)
+INFO [781847547 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:32936
+DEBUG [781847547 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:32936: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1555
+INFO sing-box started (0.00s)
+INFO [789455019 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53118
+DEBUG [789455019 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53118: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1836
+INFO sing-box started (0.00s)
+INFO [2636858459 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56022
+DEBUG [2636858459 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56022: EOF
+INFO [3757186905 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47856
+DEBUG [3757186905 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47856: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1137
+INFO sing-box started (0.00s)
+INFO [3109521951 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36306
+DEBUG [3109521951 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36306: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1927
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1766
+INFO sing-box started (0.00s)
+INFO [3294562870 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39522
+DEBUG [3294562870 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39522: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1199
+INFO sing-box started (0.00s)
+INFO [2800688633 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38062
+DEBUG [2800688633 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38062: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1451
+INFO sing-box started (0.00s)
+INFO [3801909979 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46144
+DEBUG [3801909979 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46144: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1930
+INFO sing-box started (0.00s)
+INFO [3739238214 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55970
+DEBUG [3739238214 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55970: EOF
+INFO [166146965 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46882
+DEBUG [166146965 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46882: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2040
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1625
+INFO sing-box started (0.00s)
+INFO [2889107539 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42568
+DEBUG [2889107539 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42568: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1155
+INFO sing-box started (0.00s)
+INFO [153865238 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48174
+DEBUG [153865238 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48174: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1149
+INFO sing-box started (0.00s)
+INFO [1410779264 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44588
+DEBUG [1410779264 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44588: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1957
+INFO sing-box started (0.00s)
+INFO [3482316589 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37252
+DEBUG [3482316589 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37252: EOF
+INFO [393027748 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39260
+DEBUG [393027748 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39260: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1492
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1860
+INFO sing-box started (0.00s)
+INFO [2848683843 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57506
+DEBUG [2848683843 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57506: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1335
+INFO sing-box started (0.00s)
+INFO [3849917111 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44762
+DEBUG [3849917111 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44762: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1844
+INFO sing-box started (0.00s)
+INFO [3345719830 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33790
+DEBUG [3345719830 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33790: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1757
+INFO sing-box started (0.00s)
+INFO [2231791328 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56226
+DEBUG [2231791328 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56226: EOF
+INFO [2316139298 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33222
+DEBUG [2316139298 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33222: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1879
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1500
+INFO sing-box started (0.00s)
+INFO [2867381852 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51840
+DEBUG [2867381852 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51840: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1655
+INFO sing-box started (0.00s)
+INFO [2248318218 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37324
+DEBUG [2248318218 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37324: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1325
+INFO sing-box started (0.00s)
+INFO [2879574181 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45634
+DEBUG [2879574181 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45634: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1484
+INFO sing-box started (0.00s)
+INFO [242357257 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34746
+DEBUG [242357257 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34746: EOF
+INFO [785978699 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60300
+DEBUG [785978699 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60300: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1562
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1417
+INFO sing-box started (0.00s)
+INFO [819577146 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47706
+DEBUG [819577146 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47706: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1372
+INFO sing-box started (0.00s)
+INFO [709917148 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54806
+DEBUG [709917148 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54806: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1116
+INFO sing-box started (0.00s)
+INFO [2469840393 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34120
+DEBUG [2469840393 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34120: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1445
+INFO sing-box started (0.00s)
+INFO [1902443744 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47412
+DEBUG [1902443744 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47412: EOF
+INFO [1848764282 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50824
+DEBUG [1848764282 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50824: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2043
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2011
+INFO sing-box started (0.00s)
+INFO [632814240 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37560
+DEBUG [632814240 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37560: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1607
+INFO sing-box started (0.00s)
+INFO [3176650676 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35194
+DEBUG [3176650676 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35194: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1765
+INFO sing-box started (0.00s)
+INFO [1500778591 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38306
+DEBUG [1500778591 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38306: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1477
+INFO sing-box started (0.00s)
+INFO [4011176681 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43492
+DEBUG [4011176681 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43492: EOF
+INFO [1964556173 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54328
+DEBUG [1964556173 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54328: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1835
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1424
+INFO sing-box started (0.00s)
+INFO [797089325 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39948
+DEBUG [797089325 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39948: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2018
+INFO sing-box started (0.00s)
+INFO [1665503060 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34348
+DEBUG [1665503060 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34348: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2038
+INFO sing-box started (0.00s)
+INFO [3979241393 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35782
+DEBUG [3979241393 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35782: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1364
+INFO sing-box started (0.00s)
+INFO [3429986469 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44876
+DEBUG [3429986469 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44876: EOF
+INFO [1722914733 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35782
+DEBUG [1722914733 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35782: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1504
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1826
+INFO sing-box started (0.00s)
+INFO [3701475907 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52292
+DEBUG [3701475907 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52292: EOF
+INFO [1365437538 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41076
+DEBUG [1365437538 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41076: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1593
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1964
+INFO sing-box started (0.00s)
+INFO [1642692496 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46260
+DEBUG [1642692496 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46260: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1665
+INFO sing-box started (0.00s)
+INFO [2578980200 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37096
+DEBUG [2578980200 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37096: EOF
+INFO [4034403147 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42626
+DEBUG [4034403147 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42626: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1321
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1132
+INFO sing-box started (0.00s)
+INFO [1080347445 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44382
+DEBUG [1080347445 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44382: EOF
+INFO [3000847750 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54000
+DEBUG [3000847750 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54000: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1672
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1594
+INFO sing-box started (0.00s)
+INFO [1582452454 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36580
+DEBUG [1582452454 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36580: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1844
+INFO sing-box started (0.00s)
+INFO [4293358252 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41054
+DEBUG [4293358252 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41054: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1114
+INFO [4034382426 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53920
+DEBUG [4034382426 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53920: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1947
+INFO sing-box started (0.00s)
+INFO [3738750584 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58222
+DEBUG [3738750584 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58222: EOF
+INFO [3973684378 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39964
+DEBUG [3973684378 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39964: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1931
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1147
+INFO sing-box started (0.00s)
+INFO [1796170732 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59046
+DEBUG [1796170732 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59046: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1109
+INFO sing-box started (0.00s)
+INFO [3057250519 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50010
+DEBUG [3057250519 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50010: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1546
+INFO [3722047994 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52680
+DEBUG [3722047994 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52680: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1305
+INFO sing-box started (0.00s)
+INFO [2722675380 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42960
+DEBUG [2722675380 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42960: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2011
+INFO sing-box started (0.00s)
+INFO [1330608130 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40104
+DEBUG [1330608130 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40104: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1191
+INFO sing-box started (0.00s)
+INFO [1887041884 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52722
+DEBUG [1887041884 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52722: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1292
+INFO sing-box started (0.00s)
+INFO [3775387470 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33302
+DEBUG [3775387470 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33302: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1645
+INFO [2736300300 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56842
+DEBUG [2736300300 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56842: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1267
+INFO sing-box started (0.00s)
+INFO [3491245366 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60300
+DEBUG [3491245366 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60300: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1433
+INFO [1206997590 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54618
+DEBUG [1206997590 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54618: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1395
+INFO sing-box started (0.00s)
+INFO [91804144 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53486
+DEBUG [91804144 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53486: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1443
+INFO sing-box started (0.00s)
+INFO [2758603997 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35792
+DEBUG [2758603997 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35792: EOF
+INFO [108600880 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51948
+DEBUG [108600880 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51948: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1319
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1903
+INFO sing-box started (0.00s)
+INFO [2213493184 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42802
+DEBUG [2213493184 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42802: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1210
+INFO [3060011215 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46964
+DEBUG [3060011215 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46964: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1187
+INFO sing-box started (0.00s)
+INFO [6397789 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50726
+DEBUG [6397789 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50726: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1739
+INFO sing-box started (0.00s)
+INFO [4274234962 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48198
+DEBUG [4274234962 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48198: EOF
+INFO [2426819651 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56102
+DEBUG [2426819651 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56102: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1935
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1871
+INFO sing-box started (0.00s)
+INFO [372345337 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56038
+DEBUG [372345337 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56038: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1549
+INFO [1756272315 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48600
+DEBUG [1756272315 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48600: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1988
+INFO sing-box started (0.00s)
+INFO [660151076 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45406
+DEBUG [660151076 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45406: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1604
+INFO sing-box started (0.00s)
+INFO [2849636948 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50204
+DEBUG [2849636948 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50204: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1216
+INFO sing-box started (0.00s)
+INFO [1522399627 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42094
+DEBUG [1522399627 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42094: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1314
+INFO sing-box started (0.00s)
+INFO [3499729934 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38754
+DEBUG [3499729934 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38754: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1614
+INFO [1551284921 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49654
+DEBUG [1551284921 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49654: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1512
+INFO sing-box started (0.00s)
+INFO [1133559570 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55148
+DEBUG [1133559570 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55148: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1595
+INFO sing-box started (0.00s)
+INFO [2127339790 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56856
+DEBUG [2127339790 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56856: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1527
+INFO sing-box started (0.00s)
+INFO [2818575262 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52652
+DEBUG [2818575262 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52652: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1605
+INFO sing-box started (0.00s)
+INFO [426672850 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48272
+DEBUG [426672850 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48272: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2006
+INFO sing-box started (0.00s)
+INFO [90553661 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48236
+DEBUG [90553661 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48236: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1652
+INFO sing-box started (0.00s)
+INFO [734244958 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43014
+DEBUG [734244958 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43014: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1409
+INFO sing-box started (0.00s)
+INFO [3493440025 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56780
+DEBUG [3493440025 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56780: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2015
+INFO sing-box started (0.00s)
+INFO [2801457258 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41578
+DEBUG [2801457258 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41578: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1785
+INFO sing-box started (0.00s)
+INFO [1585523405 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54224
+DEBUG [1585523405 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54224: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1577
+INFO sing-box started (0.00s)
+INFO [3544988856 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39642
+DEBUG [3544988856 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39642: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1526
+INFO sing-box started (0.00s)
+INFO [1109492249 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41128
+DEBUG [1109492249 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41128: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1216
+INFO sing-box started (0.00s)
+INFO [205134304 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45072
+DEBUG [205134304 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45072: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2057
+INFO sing-box started (0.00s)
+INFO [3074618495 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57686
+DEBUG [3074618495 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57686: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1334
+INFO sing-box started (0.00s)
+INFO [4047577602 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44780
+DEBUG [4047577602 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44780: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1179
+INFO sing-box started (0.00s)
+INFO [3782339083 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35988
+DEBUG [3782339083 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35988: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1534
+INFO sing-box started (0.00s)
+INFO [599738503 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56876
+DEBUG [599738503 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56876: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1806
+INFO sing-box started (0.00s)
+INFO [1286306380 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39190
+DEBUG [1286306380 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39190: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1173
+INFO sing-box started (0.00s)
+INFO [1995912539 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60346
+DEBUG [1995912539 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60346: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1828
+INFO sing-box started (0.00s)
+INFO [814621334 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46090
+DEBUG [814621334 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46090: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1166
+INFO sing-box started (0.00s)
+INFO [357384741 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53564
+DEBUG [357384741 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53564: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1694
+INFO sing-box started (0.00s)
+INFO [3558855876 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40560
+DEBUG [3558855876 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40560: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1930
+INFO sing-box started (0.00s)
+INFO [567561100 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60746
+DEBUG [567561100 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60746: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1841
+INFO sing-box started (0.00s)
+INFO [892100480 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48960
+DEBUG [892100480 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48960: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1261
+INFO sing-box started (0.00s)
+INFO [1256909222 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59046
+DEBUG [1256909222 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59046: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1089
+INFO sing-box started (0.00s)
+INFO [432301387 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48968
+DEBUG [432301387 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48968: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1476
+INFO sing-box started (0.00s)
+INFO [2670430381 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36118
+DEBUG [2670430381 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36118: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1779
+INFO sing-box started (0.00s)
+INFO [1333468052 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60724
+DEBUG [1333468052 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60724: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1565
+INFO sing-box started (0.00s)
+INFO [1205038258 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36732
+DEBUG [1205038258 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36732: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1220
+INFO sing-box started (0.00s)
+INFO [438921780 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33050
+DEBUG [438921780 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33050: EOF
+INFO [3393968923 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42506
+DEBUG [3393968923 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42506: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1581
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1641
+INFO sing-box started (0.00s)
+INFO [3601628792 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43794
+DEBUG [3601628792 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43794: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2003
+INFO sing-box started (0.00s)
+INFO [596161816 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45946
+DEBUG [596161816 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45946: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1294
+INFO sing-box started (0.00s)
+INFO [3442780270 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57196
+DEBUG [3442780270 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57196: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1369
+INFO sing-box started (0.00s)
+INFO [3954513895 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49482
+DEBUG [3954513895 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49482: EOF
+INFO [2498685460 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38682
+DEBUG [2498685460 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38682: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1179
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1203
+INFO sing-box started (0.00s)
+INFO [1039093797 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35090
+DEBUG [1039093797 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35090: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1296
+INFO sing-box started (0.00s)
+INFO [255173209 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56110
+DEBUG [255173209 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56110: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1153
+INFO sing-box started (0.00s)
+INFO [3507030771 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33868
+DEBUG [3507030771 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33868: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1424
+INFO sing-box started (0.00s)
+INFO [154765015 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59254
+DEBUG [154765015 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59254: EOF
+INFO [1721891339 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58688
+DEBUG [1721891339 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58688: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1934
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1634
+INFO sing-box started (0.00s)
+INFO [1686583377 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50368
+DEBUG [1686583377 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50368: EOF
+INFO [429238750 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45706
+DEBUG [429238750 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45706: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1719
+INFO sing-box started (0.00s)
+INFO [2150379846 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40450
+DEBUG [2150379846 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40450: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1519
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1332
+INFO sing-box started (0.00s)
+INFO [1170932949 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46854
+DEBUG [1170932949 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46854: EOF
+INFO [3485568502 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60280
+DEBUG [3485568502 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60280: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1293
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1820
+INFO sing-box started (0.00s)
+INFO [2666009484 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38432
+DEBUG [2666009484 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38432: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1656
+INFO sing-box started (0.00s)
+INFO [2547795924 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35350
+DEBUG [2547795924 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35350: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1315
+INFO sing-box started (0.00s)
+INFO [2426498881 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42928
+DEBUG [2426498881 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42928: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1153
+INFO sing-box started (0.00s)
+INFO [710440107 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43416
+DEBUG [710440107 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43416: EOF
+INFO [1889960904 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40980
+DEBUG [1889960904 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40980: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1101
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1915
+INFO sing-box started (0.00s)
+INFO [417958972 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43752
+DEBUG [417958972 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43752: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2039
+INFO sing-box started (0.00s)
+INFO [2505964410 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54678
+DEBUG [2505964410 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54678: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1130
+INFO sing-box started (0.00s)
+INFO [592529224 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45710
+DEBUG [592529224 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45710: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2002
+INFO sing-box started (0.00s)
+INFO [1805202000 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45468
+DEBUG [1805202000 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45468: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1441
+INFO sing-box started (0.00s)
+INFO [1847257928 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43740
+DEBUG [1847257928 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43740: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1833
+INFO sing-box started (0.00s)
+INFO [3352292103 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57452
+DEBUG [3352292103 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57452: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1662
+INFO sing-box started (0.00s)
+INFO [2191013128 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34914
+DEBUG [2191013128 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34914: EOF
+INFO [799002343 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35560
+DEBUG [799002343 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35560: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1468
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1406
+INFO sing-box started (0.00s)
+INFO [3889449887 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:43452
+DEBUG [3889449887 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:43452: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1566
+INFO sing-box started (0.00s)
+INFO [1115144491 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54742
+DEBUG [1115144491 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54742: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1467
+INFO sing-box started (0.00s)
+INFO [2431158820 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59932
+DEBUG [2431158820 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59932: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2001
+INFO sing-box started (0.00s)
+INFO [2853011795 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40772
+DEBUG [2853011795 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40772: EOF
+INFO [2507228285 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59120
+DEBUG [2507228285 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59120: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1777
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1700
+INFO sing-box started (0.00s)
+INFO [3782525284 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36544
+DEBUG [3782525284 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36544: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1559
+INFO sing-box started (0.00s)
+INFO [469185795 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:32904
+DEBUG [469185795 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:32904: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1615
+INFO sing-box started (0.00s)
+INFO [3217820302 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48588
+DEBUG [3217820302 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48588: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1745
+INFO sing-box started (0.00s)
+INFO [2627869989 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36772
+DEBUG [2627869989 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36772: EOF
+INFO [3612355250 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49294
+DEBUG [3612355250 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49294: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1646
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1326
+INFO sing-box started (0.00s)
+INFO [896260313 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51842
+DEBUG [896260313 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51842: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1240
+INFO sing-box started (0.00s)
+INFO [2911951895 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:49592
+DEBUG [2911951895 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:49592: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1695
+INFO sing-box started (0.00s)
+INFO [1137187401 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35076
+DEBUG [1137187401 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35076: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1597
+INFO sing-box started (0.00s)
+INFO [2832352241 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38532
+DEBUG [2832352241 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38532: EOF
+INFO [217644916 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51880
+DEBUG [217644916 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51880: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1207
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1224
+INFO sing-box started (0.00s)
+INFO [1646505168 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34660
+DEBUG [1646505168 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34660: EOF
+INFO [3192161026 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45238
+DEBUG [3192161026 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45238: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1969
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1904
+INFO sing-box started (0.00s)
+INFO [3226504673 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36694
+DEBUG [3226504673 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36694: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1252
+INFO sing-box started (0.00s)
+INFO [3887296019 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39046
+DEBUG [3887296019 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39046: EOF
+INFO [4192145556 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45004
+DEBUG [4192145556 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45004: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1215
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1204
+INFO sing-box started (0.00s)
+INFO [1974859487 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58524
+DEBUG [1974859487 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58524: EOF
+INFO [3504338282 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37162
+DEBUG [3504338282 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37162: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1670
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1838
+INFO sing-box started (0.00s)
+INFO [2829723443 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:50064
+DEBUG [2829723443 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:50064: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1559
+INFO sing-box started (0.00s)
+INFO [970005845 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37666
+DEBUG [970005845 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37666: EOF
+INFO [3163696164 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34134
+DEBUG [3163696164 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34134: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1374
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1629
+INFO sing-box started (0.00s)
+INFO [1642591029 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55300
+DEBUG [1642591029 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55300: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1132
+INFO [970315096 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52200
+INFO sing-box started (0.00s)
+DEBUG [970315096 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52200: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1352
+INFO sing-box started (0.00s)
+INFO [131600702 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41652
+DEBUG [131600702 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41652: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1185
+INFO sing-box started (0.00s)
+INFO [2458825146 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42972
+DEBUG [2458825146 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42972: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1998
+INFO sing-box started (0.00s)
+INFO [340102036 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47880
+DEBUG [340102036 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47880: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1543
+INFO sing-box started (0.00s)
+INFO [1443228844 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52476
+DEBUG [1443228844 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52476: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1854
+INFO sing-box started (0.00s)
+INFO [441525921 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46246
+DEBUG [441525921 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46246: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2066
+INFO sing-box started (0.00s)
+INFO [1688313734 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33230
+DEBUG [1688313734 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33230: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1977
+INFO sing-box started (0.00s)
+INFO [1355330282 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52178
+DEBUG [1355330282 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52178: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1412
+INFO sing-box started (0.00s)
+INFO [2431064739 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51896
+DEBUG [2431064739 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51896: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1422
+INFO sing-box started (0.00s)
+INFO [3052973724 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46054
+DEBUG [3052973724 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46054: EOF
+INFO [1661575571 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53612
+DEBUG [1661575571 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53612: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1605
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1379
+INFO sing-box started (0.00s)
+INFO [712347622 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52074
+DEBUG [712347622 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52074: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1403
+INFO sing-box started (0.00s)
+INFO [2918555267 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53874
+DEBUG [2918555267 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53874: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1996
+INFO sing-box started (0.00s)
+INFO [2335387289 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48494
+DEBUG [2335387289 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48494: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1694
+INFO sing-box started (0.00s)
+INFO [2588313426 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48450
+DEBUG [2588313426 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48450: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1733
+INFO sing-box started (0.00s)
+INFO [2776243243 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48704
+DEBUG [2776243243 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48704: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2066
+INFO sing-box started (0.00s)
+INFO [1618424003 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47906
+DEBUG [1618424003 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47906: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1088
+INFO sing-box started (0.00s)
+INFO [1753595726 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51852
+DEBUG [1753595726 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51852: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1482
+INFO sing-box started (0.00s)
+INFO [3311899885 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45240
+DEBUG [3311899885 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45240: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1332
+INFO sing-box started (0.00s)
+INFO [1639797799 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38478
+DEBUG [1639797799 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38478: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2009
+INFO sing-box started (0.00s)
+INFO [2607792337 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53638
+DEBUG [2607792337 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53638: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1081
+INFO sing-box started (0.00s)
+INFO [2661987620 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37266
+DEBUG [2661987620 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37266: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1653
+INFO sing-box started (0.00s)
+INFO [2180143784 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40060
+DEBUG [2180143784 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40060: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1579
+INFO sing-box started (0.00s)
+INFO [857689726 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37086
+DEBUG [857689726 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37086: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1878
+INFO sing-box started (0.00s)
+INFO [4036681333 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36180
+DEBUG [4036681333 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36180: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1853
+INFO sing-box started (0.00s)
+INFO [688516695 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55304
+DEBUG [688516695 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55304: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1307
+INFO sing-box started (0.00s)
+INFO [2416816984 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37136
+DEBUG [2416816984 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37136: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1154
+INFO sing-box started (0.00s)
+INFO [1479824522 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57152
+DEBUG [1479824522 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57152: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1262
+INFO sing-box started (0.00s)
+INFO [3967284590 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:38862
+DEBUG [3967284590 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:38862: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1534
+INFO sing-box started (0.00s)
+INFO [416012869 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:36642
+DEBUG [416012869 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:36642: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1400
+INFO sing-box started (0.00s)
+INFO [1662697280 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55974
+DEBUG [1662697280 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55974: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1213
+INFO sing-box started (0.00s)
+INFO [1023232253 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45796
+DEBUG [1023232253 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45796: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1578
+INFO sing-box started (0.00s)
+INFO [47961998 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52842
+DEBUG [47961998 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52842: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1437
+INFO sing-box started (0.00s)
+INFO [2587002226 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:42964
+DEBUG [2587002226 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:42964: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1175
+INFO sing-box started (0.00s)
+INFO [2872218669 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54098
+DEBUG [2872218669 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54098: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:2045
+INFO sing-box started (0.00s)
+INFO [4088935767 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57810
+DEBUG [4088935767 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57810: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1978
+INFO sing-box started (0.00s)
+INFO [3132714316 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:37974
+DEBUG [3132714316 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:37974: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1568
+INFO sing-box started (0.00s)
+INFO [340989534 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:58176
+DEBUG [340989534 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:58176: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1200
+INFO sing-box started (0.00s)
+INFO [1680440685 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:34894
+DEBUG [1680440685 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:34894: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1491
+INFO sing-box started (0.00s)
+INFO [3022135245 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48186
+DEBUG [3022135245 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48186: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1287
+INFO sing-box started (0.00s)
+INFO [3431434401 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46246
+DEBUG [3431434401 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46246: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1993
+INFO sing-box started (0.00s)
+INFO [3162692448 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33944
+DEBUG [3162692448 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33944: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1817
+INFO sing-box started (0.00s)
+INFO [2885250933 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:55990
+DEBUG [2885250933 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:55990: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1799
+INFO sing-box started (0.00s)
+INFO [4187521051 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48452
+DEBUG [4187521051 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48452: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1321
+INFO sing-box started (0.00s)
+INFO [3026301312 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:54322
+DEBUG [3026301312 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:54322: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1188
+INFO sing-box started (0.00s)
+INFO [2440413822 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:48396
+DEBUG [2440413822 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:48396: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1362
+INFO sing-box started (0.00s)
+INFO [2774855271 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45438
+DEBUG [2774855271 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45438: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1208
+INFO sing-box started (0.00s)
+INFO [775049012 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33832
+DEBUG [775049012 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33832: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1667
+INFO [4254911249 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56548
+DEBUG [4254911249 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56548: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1147
+INFO sing-box started (0.00s)
+INFO [2092011209 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:57988
+DEBUG [2092011209 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:57988: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1199
+INFO sing-box started (0.00s)
+INFO [4195713600 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59788
+DEBUG [4195713600 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59788: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1724
+INFO sing-box started (0.00s)
+INFO [2055041007 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:35806
+DEBUG [2055041007 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:35806: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1359
+INFO sing-box started (0.00s)
+INFO [4032834659 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44688
+DEBUG [4032834659 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44688: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1452
+INFO sing-box started (0.00s)
+INFO [4092000216 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40880
+DEBUG [4092000216 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40880: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1904
+INFO sing-box started (0.00s)
+INFO [783432924 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:51846
+DEBUG [783432924 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:51846: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1645
+INFO sing-box started (0.00s)
+INFO [3399704714 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59474
+DEBUG [3399704714 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59474: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1810
+INFO sing-box started (0.00s)
+INFO [3242447333 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:41188
+DEBUG [3242447333 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:41188: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1565
+INFO sing-box started (0.00s)
+INFO [4086959438 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:33132
+DEBUG [4086959438 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:33132: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1358
+INFO [2437331535 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:40156
+DEBUG [2437331535 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:40156: EOF
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1141
+INFO sing-box started (0.00s)
+INFO [1108739900 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:39322
+DEBUG [1108739900 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:39322: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1869
+INFO sing-box started (0.00s)
+INFO [2223842162 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:59508
+DEBUG [2223842162 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:59508: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1788
+INFO sing-box started (0.00s)
+INFO [3712398414 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:47200
+DEBUG [3712398414 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:47200: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1476
+INFO sing-box started (0.00s)
+INFO [1143674732 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:44958
+DEBUG [1143674732 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:44958: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1307
+INFO sing-box started (0.00s)
+INFO [3181177780 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:45174
+DEBUG [3181177780 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:45174: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1968
+INFO sing-box started (0.00s)
+INFO [2282243915 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60220
+DEBUG [2282243915 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60220: EOF
+INFO [27563148 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:56640
+DEBUG [27563148 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:56640: EOF
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1461
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: loaded geoip database: 237 codes
+INFO inbound/socks[socks-in]: tcp server started at 127.0.0.1:1183
+INFO sing-box started (0.00s)
+INFO [26081001 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:53046
+DEBUG [26081001 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:53046: EOF
+INFO [183528992 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:46782
+DEBUG [183528992 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:46782: EOF
+INFO [625957967 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52358
+DEBUG [625957967 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52358: EOF
+INFO [2730257331 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:52632
+DEBUG [2730257331 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:52632: EOF
+INFO [454788291 0ms] inbound/socks[socks-in]: inbound connection from 127.0.0.1:60188
+DEBUG [454788291 0ms] inbound/socks[socks-in]: connection closed: process connection from 127.0.0.1:60188: EOF
