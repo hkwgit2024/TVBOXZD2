@@ -330,7 +330,7 @@ def singbox_to_proxy_config(proxy):
                 "host": proxy.get("h2_host", ""),
                 "headers": {"Host": [proxy.get("h2_host", "")]} if proxy.get("h2_host") else {}, # sing-box http transport requires Host in headers
                 "method": "GET",
-                ""protocol_version"": "2"
+                "protocol_version": "2"
             }
         elif network == "http":
             config["transport"] = {
@@ -378,7 +378,7 @@ def singbox_to_proxy_config(proxy):
                 "host": proxy.get("h2_host", ""),
                 "headers": {"Host": [proxy.get("h2_host", "")]} if proxy.get("h2_host") else {},
                 "method": "GET",
-                ""protocol_version"": "2"
+                "protocol_version": "2"
             }
         elif config["network"] == "http":
              config["transport"] = {
