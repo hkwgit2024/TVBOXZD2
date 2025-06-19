@@ -12,7 +12,7 @@ concurrency:
 jobs:
   test_node_connectivity:
     runs-on: ubuntu-latest
-    timeout-minutes: 30 # 预期 18-20 分钟
+    timeout-minutes: 30
     permissions:
       contents: write
     steps:
@@ -22,10 +22,23 @@ jobs:
         persist-credentials: true
         token: ${{ secrets.BOT }}
 
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: /var/cache/apt
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/speed_test.sh') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y curl netcat-openbsd dnsutils jq
+
+    - name: Configure Git
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "actions@github.com"
 
     - name: Make script executable
       run: chmod +x speed_test.sh
@@ -33,19 +46,23 @@ jobs:
     - name: Run node connectivity test
       env:
         GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }}
-        DEBUG: false
-        PARALLEL_JOBS: 20
-      run: ./speed_test.sh
+        DEBUG: true # 启用调试日志
+        PARALLEL_JOBS: 30
+      run: ./speed_test.sh || { echo "Script failed"; exit 1; }
 
     - name: Check temporary files (debug)
       if: always()
       run: |
-        ls -l /tmp/tmp*
-        wc -l /tmp/tmp*
+        ls -l /tmp/ || echo "No files in /tmp"
+        find /tmp -type f -name 'tmp*' -exec wc -l {} \;
 
     - name: Upload test results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: node-connectivity-results
-        path: node_connectivity_results.log
+        path: |
+          node_connectivity_results.log
+          debug.log
+          error.log
         retention-days: 7
