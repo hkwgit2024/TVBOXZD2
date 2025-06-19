@@ -46,15 +46,17 @@ jobs:
     - name: Run node connectivity test
       env:
         GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }}
-        DEBUG: true # 启用调试日志
+        DEBUG: true
         PARALLEL_JOBS: 30
       run: ./speed_test.sh || { echo "Script failed"; exit 1; }
 
     - name: Check temporary files (debug)
       if: always()
       run: |
+        echo "Listing all files in /tmp:"
         ls -l /tmp/ || echo "No files in /tmp"
-        find /tmp -type f -name 'tmp*' -exec wc -l {} \;
+        echo "Checking temporary files:"
+        find /tmp -type f -name 'tmp*' -exec sh -c 'echo "File: {}"; cat {}; echo ""' \;
 
     - name: Upload test results
       if: always()
@@ -63,6 +65,6 @@ jobs:
         name: node-connectivity-results
         path: |
           node_connectivity_results.log
-          debug.log
-          error.log
+          data/sub.txt
+          data/failed_nodes.log
         retention-days: 7
