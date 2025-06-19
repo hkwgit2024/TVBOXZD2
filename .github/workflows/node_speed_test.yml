@@ -1,40 +1,32 @@
-name: VPN Speed Test
+name: Node Connectivity Test
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 0 点运行
-  push:
-    branches: [main]
-  workflow_dispatch:  # 支持手动触发
+    - cron: '0 3 * * *' # 每天 UTC 凌晨 3:00
+  workflow_dispatch:
 
 jobs:
-  test:
+  test_node_connectivity:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+    - name: Set up dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl netcat # 确保安装 netcat
+        
+    - name: Make script executable
+      run: chmod +x speed_test.sh # 假设你将新脚本保存为 speed_test.sh
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          # 安装 xray-core
-          wget https://github.com/XTLS/Xray-core/releases/latest/download/xray-linux-64.zip
-          unzip xray-linux-64.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/xray
+    - name: Run node connectivity test
+      run: ./speed_test.sh
 
-      - name: Run speed test
-        run: python fetch_and_test_nodes.py
-
-      - name: Commit and push results
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add results.json results.md
-          git commit -m "Update VPN speed test results" || echo "No changes to commit"
-          git push
+    - name: Upload connectivity test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-connectivity-results
+        path: node_connectivity_results.log
+        retention-days: 7
