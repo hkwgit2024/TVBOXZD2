@@ -14,6 +14,7 @@ import random
 from hashlib import md5
 import aiohttp
 import asyncio
+import requests
 
 # --- 配置日志 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
