@@ -13,6 +13,9 @@ jobs:
     steps:
     - name: 检出仓库代码
       uses: actions/checkout@v4
+      # 确保即使在旧的本地分支上，也能正确获取到最新的远程分支信息
+      with:
+        fetch-depth: 0 # 获取所有历史，这有助于后续的pull/rebase操作
 
     - name: 设置 Python 环境
       uses: actions/setup-python@v5
@@ -42,3 +45,10 @@ jobs:
           data/nodes.txt
           data/clash.yaml
         branch: main # 或者您的默认分支名称，例如 master
+        # ==== 修复 Git 拒绝推送错误的关键行 ====
+        # 在推送前尝试拉取远程分支的最新更改。
+        # '--rebase --autostash' 会尝试将本地更改“重放”到远程最新提交之上，保持提交历史干净。
+        # 如果你更倾向于合并提交（即创建一个新的合并提交），可以使用 '--no-ff' 或不指定参数，让其默认合并。
+        # 对于自动化更新文件，rebase 通常是更好的选择，因为它避免了额外的合并提交。
+        pull_options: '--rebase --autostash'
+        # ======================================
