@@ -1,35 +1,44 @@
-name: Update Proxy Nodes
+name: 更新和转换代理节点
 
 on:
   workflow_dispatch: # 允许手动触发
   schedule:
-    # 每天凌晨2点（UTC时间）运行，转换为JST是上午11点
+    # 每天凌晨2点（UTC时间）运行，转换为日本时间是上午11点
     - cron: '0 2 * * *'
 
 jobs:
-  update-nodes:
+  update-and-convert-nodes:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: 检出仓库代码
       uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: 设置 Python 环境
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # 使用Python 3的最新版本
+        python-version: '3.x' # 使用 Python 3 的最新版本
 
-    - name: Install dependencies
+    - name: 安装依赖库
       run: |
         python -m pip install --upgrade pip
-        pip install requests pyyaml
+        # 安装所需库：aiohttp (用于异步请求), pyyaml (用于 YAML 解析), requests (如果未来有同步请求需求)
+        pip install aiohttp pyyaml requests
 
-    - name: Run node update script
-      run: python update_nodes.py
+    - name: 运行代理转换脚本
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --clash-output data/clash.yaml --max-concurrency 50 --timeout 20
+      # 使用命令行参数来运行脚本，更灵活
+      # --sources: 指定源 URL 文件
+      # --output: 指定纯节点 URL 输出文件
+      # --clash-output: 指定 Clash YAML 输出文件
+      # --max-concurrency: 最大并发请求数
+      # --timeout: 请求超时时间
 
-    - name: Commit and push changes
+    - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "自动更新代理节点"
-        file_pattern: data/sources.txt
+        commit_message: "自动更新代理节点及生成 Clash 配置"
+        file_pattern: |
+          data/nodes.txt
+          data/clash.yaml
         branch: main # 或者您的默认分支名称，例如 master
