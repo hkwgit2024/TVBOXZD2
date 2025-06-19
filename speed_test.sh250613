@@ -28,7 +28,7 @@ CONNECT_TIMEOUT=5   # nc 连接超时时间 (秒)
 log() {
     local level=$1 # INFO, WARN, ERROR
     shift
-    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE">&2
+    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE"
 }
 
 # 定义关联数组存储上次失败的节点
