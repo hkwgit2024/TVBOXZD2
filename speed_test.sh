@@ -100,7 +100,7 @@ test_single_node() {
         local VMESS_JSON=$(echo "$NODE_LINK" | sed 's/^vmess:\/\///' | base64 -d 2>/dev/null)
         if [ $? -eq 0 ]; then
             HOSTNAME_OR_IP=$(echo "$VMESS_JSON" | jq -r '.add // empty' 2>/dev/null)
-            PORT=$(echo "$VMESS_JSON" | jq -r '.port // empty' 2>/dev/nul)
+            PORT=$(echo "$VMESS_JSON" | jq -r '.port // empty' 2>/dev/null)
             if [ -z "$HOSTNAME_OR_IP" ] || [ -z "$PORT" ]; then
                 log_debug "$LOG_PREFIX - 无法从 vmess JSON 解析 add 或 port: $NODE_LINK"
                 echo "FAILED:$NODE_LINK"
