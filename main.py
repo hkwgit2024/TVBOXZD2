@@ -710,8 +710,8 @@ def generate_singbox_config(proxy, port):
             "output": SINGBOX_LOG_PATH,
         },
         "dns": {
-            "servers": [{"tag": "local-dns", "address": "202.96.128.86"}],
-           # "default_server": "local-dns"
+            "servers": [{"tag": "local-dns", "address": "202.96.128.86"},{"tag": "backup-dns", "address": "120.196.165.24"}],
+          
         },
         "inbounds": [
             {
