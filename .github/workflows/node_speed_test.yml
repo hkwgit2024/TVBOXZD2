@@ -2,7 +2,7 @@ name: 测试
 
 on:
   schedule:
-    - cron: '0 3 * * *' # 每天 UTC 凌晨 3:00 运行
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -12,6 +12,7 @@ concurrency:
 jobs:
   test_node_connectivity:
     runs-on: ubuntu-latest
+    timeout-minutes: 30 # 预期 18-20 分钟
     permissions:
       contents: write
     steps:
@@ -32,8 +33,15 @@ jobs:
     - name: Run node connectivity test
       env:
         GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }}
-        DEBUG: false # 可手动设置为 true 启用调试日志
+        DEBUG: false
+        PARALLEL_JOBS: 20
       run: ./speed_test.sh
+
+    - name: Check temporary files (debug)
+      if: always()
+      run: |
+        ls -l /tmp/tmp*
+        wc -l /tmp/tmp*
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
