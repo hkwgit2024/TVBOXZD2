@@ -6,7 +6,7 @@ echo "测试时间: $(date)" >> "$LOG_FILE"
 echo "-------------------------------------" >> "$LOG_FILE"
 
 echo "下载节点配置文件..."
-curl -s -o config_all_merged_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt
+curl -s -o config_all_merged_nodes.txt https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt
 
 if [ ! -f "config_all_merged_nodes.txt" ]; then
     echo "错误：未能下载 config_all_merged_nodes.txt 文件。" | tee -a "$LOG_FILE"
