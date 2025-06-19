@@ -1,12 +1,17 @@
 #!/bin/bash
 
 LOG_FILE="node_connectivity_results.log"
+SUCCESS_NODES_FILE="successful_nodes.log" # 新增：保存成功节点的日志文件
+
 echo "开始节点连接性测试..." > "$LOG_FILE"
 echo "测试时间: $(date)" >> "$LOG_FILE"
 echo "-------------------------------------" >> "$LOG_FILE"
 
+echo "将成功连接的节点保存到: $SUCCESS_NODES_FILE" > "$SUCCESS_NODES_FILE" # 清空并初始化成功节点文件
+echo "-------------------------------------" >> "$SUCCESS_NODES_FILE"
+
 echo "下载节点配置文件..."
-curl -s -o config_all_merged_nodes.txt https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt
+curl -s -o config_all_merged_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt
 
 if [ ! -f "config_all_merged_nodes.txt" ]; then
     echo "错误：未能下载 config_all_merged_nodes.txt 文件。" | tee -a "$LOG_FILE"
@@ -16,6 +21,7 @@ fi
 echo "文件下载成功。开始解析节点并测试连接性..." | tee -a "$LOG_FILE"
 
 # 确保安装了 dnsutils (用于 dig 命令)
+# 重定向输出到 /dev/null 防止污染日志
 sudo apt-get update >/dev/null 2>&1
 sudo apt-get install -y dnsutils >/dev/null 2>&1
 
@@ -26,7 +32,7 @@ while IFS= read -r NODE_LINK; do
     # 重置 IP 和 PORT
     IP=""
     PORT=""
-    HOSTNAME=""
+    HOSTNAME="" # 确保每次循环都重置
 
     # 尝试提取 VLESS/VMESS/Trojan/Hysteria2 等协议的 IP/Hostname 和 Port
     # 模式: protocol://[user@]IP_OR_HOST:PORT?...
@@ -43,7 +49,9 @@ while IFS= read -r NODE_LINK; do
             PORT=$(echo "$SS_HOST_PORT" | cut -d':' -f2)
         else
             # 如果直接提取失败，尝试 Base64 解码 SS 链接的用户信息部分
+            # 注意：某些 SS 链接的加密信息在 Base64 解码后才包含 Host:Port
             BASE64_PART=$(echo "$NODE_LINK" | sed 's/ss:\/\///' | cut -d'@' -f1)
+            # 尝试解码并检查是否包含 IP:PORT
             DECODED_PART=$(echo "$BASE64_PART" | base64 -d 2>/dev/null)
             if [ $? -eq 0 ] && [[ "$DECODED_PART" =~ ([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+) ]]; then
                 HOSTNAME_OR_IP="${BASH_REMATCH[1]}"
@@ -86,6 +94,7 @@ while IFS= read -r NODE_LINK; do
     nc -z -w 3 "$IP" "$PORT" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "  - 结果: 成功连接到 $IP:$PORT" | tee -a "$LOG_FILE"
+        echo "$NODE_LINK" >> "$SUCCESS_NODES_FILE" # 将成功连接的完整节点链接保存到新文件
     else
         echo "  - 结果: 无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)" | tee -a "$LOG_FILE"
     fi
@@ -93,3 +102,4 @@ while IFS= read -r NODE_LINK; do
 done < config_all_merged_nodes.txt # 从文件中读取每一行
 
 echo "所有节点连接性测试完成。结果已保存到 $LOG_FILE" | tee -a "$LOG_FILE"
+echo "成功连接的节点已保存到 $SUCCESS_NODES_FILE" | tee -a "$LOG_FILE"
