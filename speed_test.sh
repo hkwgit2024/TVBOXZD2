@@ -5,18 +5,19 @@ LOG_FILE="node_connectivity_results.log"
 OUTPUT_DIR="data"
 SUCCESS_FILE="$OUTPUT_DIR/sub.txt"        # 成功节点输出文件
 FAILED_FILE="$OUTPUT_DIR/failed_nodes.log" # 失败节点输出文件
-MERGED_NODES_TEMP_FILE=$(mktemp) # 使用 mktemp 创建唯一的临时文件，用于合并所有来源的原始节点列表
-ALL_TEST_RESULTS_TEMP_FILE=$(mktemp) # 新增：用于收集所有并行测试结果的临时文件
+MERGED_NODES_TEMP_FILE=$(mktemp) # 用于合并所有来源的原始节点列表
+ALL_TEST_RESULTS_TEMP_FILE=$(mktemp) # 用于收集所有并行测试结果的临时文件
+# 新增临时文件，用于存储本次运行的成功/失败节点（去重前）
+CURRENT_RUN_SUCCESS_TEMP_FILE=$(mktemp)
+CURRENT_RUN_FAILED_TEMP_FILE=$(mktemp)
 
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
-    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-    #"https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
-    #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
-    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
+    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+    # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
-
-
 )
 
 # 配置参数
@@ -72,32 +73,42 @@ check_dependencies() {
         log ERROR "wc 命令未找到"
         exit 1
     }
+    # 检查 base64 命令，用于 ss 链接解码
+    command -v base64 >/dev/null 2>&1 || {
+        log ERROR "base64 命令未找到，请确保安装 coreutils"
+        exit 1
+    }
 }
 
 # 核心函数：测试单个节点连接性
 # 此函数在子进程中运行，并通过标准输出返回结果
 test_single_node() {
     local NODE_LINK="$1"
-    local LOG_PREFIX="[TEST]" # 用于在日志中区分，并非实际写入结果文件
+    local LOG_PREFIX="[TEST]"
 
     local IP=""
     local PORT=""
     local HOSTNAME_OR_IP=""
 
     # 提取 IP/Hostname 和 Port
-    if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2):\/\/(.+@)?([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
+    # 统一匹配 IP/Hostname:Port 部分
+    if [[ "$NODE_LINK" =~ ^(hysteria2|vless|vmess|trojan):\/\/(.+@)?([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
         PORT="${BASH_REMATCH[4]}"
     elif [[ "$NODE_LINK" =~ ^ss:// ]]; then
-        # 尝试直接从URL中匹配 hostname:port
-        if echo "$NODE_LINK" | grep -oE '@([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+)' | head -n 1 | grep -qE '.'; then
-            HOSTNAME_OR_IP=$(echo "$NODE_LINK" | grep -oE '@([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+)' | head -n 1 | cut -d'@' -f2 | cut -d':' -f1)
-            PORT=$(echo "$NODE_HOST_PORT" | grep -oE '@([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+)' | head -n 1 | cut -d':' -f2)
+        # SS 链接的解析需要更健壮，考虑 base64 解码后的情况
+        local PART_AFTER_SS=$(echo "$NODE_LINK" | sed 's/^ss:\/\///')
+        # 尝试直接从 @ 后面提取 hostname:port
+        if [[ "$PART_AFTER_SS" =~ @([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+) ]]; then
+            HOSTNAME_OR_IP="${BASH_REMATCH[1]}"
+            PORT="${BASH_REMATCH[2]}"
         else
-            # 尝试base64解码
-            local BASE64_PART=$(echo "$NODE_LINK" | sed 's/ss:\/\///' | cut -d'@' -f1)
-            local DECODED_PART=$(echo "$BASE64_PART" | base64 -d 2>/dev/null)
-            if [ $? -eq 0 ] && [[ "$DECODED_PART" =~ ([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
+            # 尝试 base64 解码获取 hostname:port (对于部分没有@的SS链接)
+            local BASE64_PART=$(echo "$PART_AFTER_SS" | cut -d'@' -f1)
+            # 兼容base64编码可能包含urlsafe字符的情况
+            local DECODED_AUTH=$(echo "$BASE64_PART" | tr '_-' '+/' | base64 -d 2>/dev/null)
+            
+            if [ $? -eq 0 ] && [[ "$DECODED_AUTH" =~ ([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+) ]]; then
                 HOSTNAME_OR_IP="${BASH_REMATCH[1]}"
                 PORT="${BASH_REMATCH[2]}"
             fi
@@ -111,14 +122,30 @@ test_single_node() {
     fi
 
     # 如果是 IP 地址（IPv4 或 IPv6），直接使用
-    if [[ "$HOSTNAME_OR_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ || "$HOSTNAME_OR_IP" =~ ^\[?[0-9a-fA-F:]+\]?$ ]]; then
+    # 移除 IPv6 地址的方括号以便 dig 和 nc 处理，但测试时要加回去
+    local TARGET_HOST="$HOSTNAME_OR_IP"
+    if [[ "$HOSTNAME_OR_IP" =~ ^\[([0-9a-fA-F:]+)\]$ ]]; then
+        IP="${BASH_REMATCH[1]}" # 提取方括号内的 IPv6 地址
+        TARGET_HOST="$HOSTNAME_OR_IP" # 对于 nc，保持方括号
+    elif [[ "$HOSTNAME_OR_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         IP="$HOSTNAME_OR_IP"
     else
         # 否则，解析域名
         # log INFO "$LOG_PREFIX 尝试解析域名: $HOSTNAME_OR_IP" # 并行时日志会非常多，此处可省略
-        RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A "$HOSTNAME_OR_IP" AAAA | head -n 1)
+        # 同时查询 A 和 AAAA 记录，并优先使用 IPv4
+        RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A | head -n 1) # 先尝试 IPv4
+        if [ -z "$RESOLVED_IP" ]; then
+            RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" AAAA | head -n 1) # 再尝试 IPv6
+        fi
+
         if [ -n "$RESOLVED_IP" ]; then
             IP="$RESOLVED_IP"
+            # 如果解析到的是 IPv6，nc 需要带方括号
+            if [[ "$IP" =~ : ]]; then
+                TARGET_HOST="[$IP]"
+            else
+                TARGET_HOST="$IP"
+            fi
             log INFO "$LOG_PREFIX - 解析结果: $HOSTNAME_OR_IP -> $IP"
         else
             log WARN "$LOG_PREFIX - 无法解析域名: $HOSTNAME_OR_IP (原始链接: $NODE_LINK)"
@@ -127,13 +154,15 @@ test_single_node() {
         fi
     fi
 
-    log INFO "$LOG_PREFIX 正在测试节点连接: $IP:$PORT (来自 $NODE_LINK)"
-    nc -z -w "$CONNECT_TIMEOUT" "$IP" "$PORT" >/dev/null 2>&1
+    log INFO "$LOG_PREFIX 正在测试节点连接: $TARGET_HOST:$PORT (来自 $NODE_LINK)"
+    # 使用 nc -G 4 (如果支持，某些版本不支持) 或其他方式处理 IPv6，或直接使用目标主机名
+    # 对于 IPv6，nc 命令需要用方括号括起来 [IP_ADDRESS]
+    nc -z -w "$CONNECT_TIMEOUT" "$TARGET_HOST" "$PORT" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
-        log INFO "$LOG_PREFIX - 结果: 成功连接到 $IP:$PORT"
+        log INFO "$LOG_PREFIX - 结果: 成功连接到 $TARGET_HOST:$PORT"
         echo "SUCCESS:$NODE_LINK" # 输出成功标记和节点链接到 stdout
     else
-        log WARN "$LOG_PREFIX - 结果: 无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)"
+        log WARN "$LOG_PREFIX - 结果: 无法连接到 $TARGET_HOST:$PORT (可能被防火墙阻止或服务未运行)"
         echo "FAILED:$NODE_LINK" # 输出失败标记和节点链接到 stdout
     fi
 }
@@ -147,12 +176,6 @@ export CONNECT_TIMEOUT
 # --- 主逻辑开始 ---
 log INFO "开始节点连接性测试..."
 mkdir -p "$OUTPUT_DIR"
-
-# 清空并初始化输出文件 (只保留头部，实际节点数据将在后面追加)
-echo "# Successful Nodes (Updated by GitHub Actions at $(date))" > "$SUCCESS_FILE"
-echo "-------------------------------------" >> "$SUCCESS_FILE"
-echo "# Failed Nodes (Updated by GitHub Actions at $(date))" > "$FAILED_FILE"
-echo "-------------------------------------" >> "$FAILED_FILE"
 
 # 检查依赖
 check_dependencies
@@ -175,6 +198,7 @@ if [ ! -s "$MERGED_NODES_TEMP_FILE" ]; then
     log ERROR "未能下载任何节点配置文件，或所有文件都为空"
     rm -f "$MERGED_NODES_TEMP_FILE"
     rm -f "$ALL_TEST_RESULTS_TEMP_FILE" # 清理新生成的临时文件
+    rm -f "$CURRENT_RUN_SUCCESS_TEMP_FILE" "$CURRENT_RUN_FAILED_TEMP_FILE" # 清理新增的临时文件
     exit 1
 fi
 
@@ -193,9 +217,9 @@ cat "$MERGED_NODES_TEMP_FILE" | grep -vE '^(#|--|$)' | while IFS= read -r NODE_L
         ((SKIPPED_COUNT++))
         echo "FAILED:$NODE_LINK" >> "$ALL_TEST_RESULTS_TEMP_FILE" # 将跳过的节点直接写入结果临时文件
     else
-        echo "$NODE_LINK" # 非跳过节点传递给 xargs 进行测试
+        printf "%s\n" "$NODE_LINK" # 非跳过节点传递给 xargs 进行测试
     fi
-done | xargs -P "$PARALLEL_JOBS" -I {} bash -c 'test_single_node "$@"' _ {} >> "$ALL_TEST_RESULTS_TEMP_FILE" # test_single_node 的 stdout 重定向到此文件
+done | xargs -P "$PARALLEL_JOBS" -d '\n' -I {} bash -c 'test_single_node "$@"' _ {} >> "$ALL_TEST_RESULTS_TEMP_FILE"
 
 # 清理合并后的原始节点列表临时文件
 rm -f "$MERGED_NODES_TEMP_FILE"
@@ -203,23 +227,34 @@ rm -f "$MERGED_NODES_TEMP_FILE"
 # 处理所有测试结果，填充 SUCCESS_FILE 和 FAILED_FILE
 log INFO "处理所有测试结果并写入最终文件..."
 
-# 从 ALL_TEST_RESULTS_TEMP_FILE 中提取成功和失败的节点
+# 从 ALL_TEST_RESULTS_TEMP_FILE 中提取成功和失败的节点，写入本次运行的临时文件
 # 使用 cut -d':' -f2- 来获取冒号后面的完整链接，因为链接中可能有冒号
-SUCCESS_NODES_RAW=$(grep '^SUCCESS:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2-)
-FAILED_NODES_RAW=$(grep '^FAILED:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2-)
+grep '^SUCCESS:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2- | sort -u > "$CURRENT_RUN_SUCCESS_TEMP_FILE"
+grep '^FAILED:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2- | sort -u > "$CURRENT_RUN_FAILED_TEMP_FILE"
 
-# 将去重后的成功节点追加到 SUCCESS_FILE
-if [ -n "$SUCCESS_NODES_RAW" ]; then
-    echo "$SUCCESS_NODES_RAW" | sort -u >> "$SUCCESS_FILE"
-fi
+# --- 追加保存和全局去重逻辑 ---
 
-# 将去重后的失败节点追加到 FAILED_FILE
-if [ -n "$FAILED_NODES_RAW" ]; then
-    echo "$FAILED_NODES_RAW" | sort -u >> "$FAILED_FILE"
+# 1. 处理成功节点：合并旧的成功节点和本次成功节点，去重后写回
+if [ -f "$SUCCESS_FILE" ]; then
+    grep -vE '^(#|--|$)' "$SUCCESS_FILE" >> "$CURRENT_RUN_SUCCESS_TEMP_FILE" # 将旧的成功节点内容追加到临时文件
 fi
+# 写入新的头部信息，然后将去重后的所有成功节点追加到 SUCCESS_FILE
+echo "# Successful Nodes (Updated by GitHub Actions at $(date))" > "$SUCCESS_FILE"
+echo "-------------------------------------" >> "$SUCCESS_FILE"
+sort -u "$CURRENT_RUN_SUCCESS_TEMP_FILE" >> "$SUCCESS_FILE"
+
+
+# 2. 处理失败节点：合并旧的失败节点和本次失败节点，去重后写回
+if [ -f "$FAILED_FILE" ]; then
+    grep -vE '^(#|--|$)' "$FAILED_FILE" >> "$CURRENT_RUN_FAILED_TEMP_FILE" # 将旧的失败节点内容追加到临时文件
+fi
+# 写入新的头部信息，然后将去重后的所有失败节点追加到 FAILED_FILE
+echo "# Failed Nodes (Updated by GitHub Actions at $(date))" > "$FAILED_FILE"
+echo "-------------------------------------" >> "$FAILED_FILE"
+sort -u "$CURRENT_RUN_FAILED_TEMP_FILE" >> "$FAILED_FILE"
 
 # 清理所有测试结果的临时文件
-rm -f "$ALL_TEST_RESULTS_TEMP_FILE"
+rm -f "$ALL_TEST_RESULTS_TEMP_FILE" "$CURRENT_RUN_SUCCESS_TEMP_FILE" "$CURRENT_RUN_FAILED_TEMP_FILE"
 
 log INFO "所有节点连接性测试完成。成功节点已保存到 $SUCCESS_FILE"
 log INFO "失败节点已保存到 $FAILED_FILE"
@@ -244,21 +279,26 @@ git config user.name "GitHub Actions"
 git config user.email "actions@github.com"
 
 # 检查是否有更改
-# git diff --quiet --exit-code HEAD "$SUCCESS_FILE" "$FAILED_FILE" 比较的是工作区和HEAD的差异
-# 如果文件内容只更新了时间戳，这个检查可能会通过，导致不提交
-# 为了确保即使只有时间戳也提交，可以简化为直接 add/commit，让 git 自己判断是否有实际内容变化
-git add "$SUCCESS_FILE" "$FAILED_FILE"
-if ! git commit -m "Update node connectivity results (automated by GitHub Actions)"; then
-    log INFO "没有新的节点连接性结果需要提交。"
+# 改进 Git 提交检查逻辑：使用 git status --porcelain 检查是否有实际的文件改动
+# 这样即使只有时间戳改变也不会触发空提交
+if ! git diff --quiet --exit-code "$SUCCESS_FILE" "$FAILED_FILE"; then
+    log INFO "检测到文件内容有实际更改，准备提交。"
+    git add "$SUCCESS_FILE" "$FAILED_FILE"
+    if ! git commit -m "Update node connectivity results (automated by GitHub Actions)"; then
+        log WARN "Git 提交失败，可能没有实际内容更改或遇到其他问题。"
+    else
+        # 设置远程仓库URL，使用 GitHub Actions 提供的 token 进行认证
+        # GH_TOKEN_FOR_PUSH 应该作为环境变量从工作流传入
+        git remote set-url origin "https://x-access-token:${GH_TOKEN_FOR_PUSH}@github.com/${GITHUB_REPOSITORY}.git"
+        # 推送当前分支的HEAD到远程同名分支
+        git push origin HEAD:${GITHUB_REF##*/} || {
+            log ERROR "推送失败，请检查 Git 配置或网络"
+            exit 1
+        }
+        log INFO "成功节点和失败节点已推送到 GitHub 仓库"
+    fi
 else
-    # 设置远程仓库URL，使用 GitHub Actions 提供的 token 进行认证
-    git remote set-url origin "https://x-access-token:${GH_TOKEN_FOR_PUSH}@github.com/${GITHUB_REPOSITORY}.git"
-    # 推送当前分支的HEAD到远程同名分支
-    git push origin HEAD:${GITHUB_REF##*/} || {
-        log ERROR "推送失败，请检查 Git 配置或网络"
-        exit 1
-    }
-    log INFO "成功节点和失败节点已推送到 GitHub 仓库"
+    log INFO "没有新的节点连接性结果需要提交（文件内容无实际更改）。"
 fi
 
 log INFO "节点连接性测试和推送流程完成。"
