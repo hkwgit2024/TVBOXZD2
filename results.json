@@ -1,0 +1,52 @@
+[
+  {
+    "node": "ss://YWVzLTEyOC1nY206NDk2MzlmYTYtZmJmMy00YmU1LThjYmYtZjA2ZGI5Zjg5ODA0@dxzx.flyby-world.top:59058#yandex-96",
+    "speed_mbps": 94.65355619613712,
+    "status": "OK"
+  },
+  {
+    "node": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw==@185.153.197.5:989#4FreeIran-1324",
+    "speed_mbps": 91.32094506299673,
+    "status": "OK"
+  },
+  {
+    "node": "hy2://3a9f4a28@47.79.89.136:16494?insecure=1&sni=www.bing.com#Hysteria2-JP",
+    "speed_mbps": 0,
+    "status": "Unsupported protocol"
+  },
+  {
+    "node": "vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway",
+    "speed_mbps": 113.27125425656308,
+    "status": "OK"
+  },
+  {
+    "node": "hy2://e68fcb50-b886-4280-ad1c-5d18ff322b01@qymg.qy1357.top:30003?insecure=1&sni=qymg.qy1357.top#yandex-220",
+    "speed_mbps": 0,
+    "status": "Unsupported protocol"
+  },
+  {
+    "node": "ss://YWVzLTI1Ni1jZmI6WG44aktkbURNMDBJZU8lIyQjZkpBTXRzRUFFVU9wSC9ZV1l0WXFERm5UMFNW@103.186.155.18:38388#4FreeIran-1055",
+    "speed_mbps": 96.06810400496683,
+    "status": "OK"
+  },
+  {
+    "node": "trojan://Bm92516VO0@51.15.68.121:1935?security=tls&sni=x11-amsterdam-scaleway-v2-c88f0.devefun.org&type=tcp#4FreeIran-5411",
+    "speed_mbps": 0,
+    "status": "Unsupported protocol"
+  },
+  {
+    "node": "hy2://e68fcb50-b886-4280-ad1c-5d18ff322b01@qyxjp.qy1357.top:30005?insecure=1&sni=qyxjp.qy1357.top#yandex-223",
+    "speed_mbps": 0,
+    "status": "Unsupported protocol"
+  },
+  {
+    "node": "ss://YWVzLTI1Ni1jZmI6WG44aktkbURNMDBJZU8lIyQjZkpBTXRzRUFFVU9wSC9ZV1l0WXFERm5UMFNW@103.186.154.26:38388#4FreeIran-1042",
+    "speed_mbps": 117.32031323288194,
+    "status": "OK"
+  },
+  {
+    "node": "hy2://e68fcb50-b886-4280-ad1c-5d18ff322b01@qyyg.qy1357.top:30003?insecure=1&sni=qyyg.qy1357.top#yandex-224",
+    "speed_mbps": 0,
+    "status": "Unsupported protocol"
+  }
+]
