@@ -16,18 +16,17 @@ NODE_SOURCES=(
 )
 
 # 配置参数
-PARALLEL_JOBS=10
+PARALLEL_JOBS=20
 CONNECT_TIMEOUT=5
-DEBUG=${DEBUG:-false} # 调试模式，默认关闭
+DEBUG=${DEBUG:-false}
 
 # 日志函数
 log() {
     local level=$1
     shift
-    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE"
+    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" >> "$LOG_FILE"
 }
 
-# 调试日志函数
 log_debug() {
     if [ "$DEBUG" = "true" ]; then
         log INFO "$@"
@@ -47,6 +46,11 @@ load_failed_nodes() {
             FAILED_NODES["$node"]=1
         done < "$FAILED_FILE"
         log INFO "加载了 ${#FAILED_NODES[@]} 个上次失败的节点"
+        if [ ${#FAILED_NODES[@]} -gt 10000 ]; then
+            log WARN "失败节点数过多 (${#FAILED_NODES[@]})，清空历史失败节点"
+            unset FAILED_NODES
+            declare -A FAILED_NODES
+        fi
     else
         log INFO "未找到上次失败的节点文件: $FAILED_FILE"
     fi
@@ -60,6 +64,9 @@ check_dependencies() {
             exit 1
         }
     done
+    # 设置 DNS 缓存
+    echo "nameserver 8.8.8.8" > /tmp/resolv.conf
+    export RESOLV_CONF=/tmp/resolv.conf
 }
 
 # 测试单个节点连接性
@@ -70,7 +77,6 @@ test_single_node() {
     local PORT=""
     local HOSTNAME_OR_IP=""
 
-    # 提取 IP/Hostname 和 Port
     if [[ "$NODE_LINK" =~ ^(hysteria2|vless|trojan):\/\/(.+@)?([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
         PORT="${BASH_REMATCH[4]}"
@@ -87,18 +93,21 @@ test_single_node() {
                 PORT="${BASH_REMATCH[2]}"
             fi
         fi
+    elif [[ "$NODE_LINK" =~ ^vmess://(.+)@([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+) ]]; then
+        HOSTNAME_OR_IP="${BASH_REMATCH[2]}"
+        PORT="${BASH_REMATCH[3]}"
     elif [[ "$NODE_LINK" =~ ^vmess:// ]]; then
         local VMESS_JSON=$(echo "$NODE_LINK" | sed 's/^vmess:\/\///' | base64 -d 2>/dev/null)
         if [ $? -eq 0 ]; then
-            HOSTNAME_OR_IP=$(echo "$VMESS_JSON" | jq -r '.add' 2>/dev/null)
-            PORT=$(echo "$VMESS_JSON" | jq -r '.port' 2>/dev/null)
+            HOSTNAME_OR_IP=$(echo "$VMESS_JSON" | jq -r '.add // empty' 2>/dev/null)
+            PORT=$(echo "$VMESS_JSON" | jq -r '.port // empty' 2>/dev/nul)
             if [ -z "$HOSTNAME_OR_IP" ] || [ -z "$PORT" ]; then
-                log WARN "$LOG_PREFIX - 无法从 vmess JSON 解析 add 或 port: $NODE_LINK"
+                log_debug "$LOG_PREFIX - 无法从 vmess JSON 解析 add 或 port: $NODE_LINK"
                 echo "FAILED:$NODE_LINK"
                 return
             fi
         else
-            log WARN "$LOG_PREFIX - 无法解码 vmess 链接: $NODE_LINK"
+            log_debug "$LOG_PREFIX - 无法解码 vmess 链接: $NODE_LINK"
             echo "FAILED:$NODE_LINK"
             return
         fi
@@ -110,7 +119,6 @@ test_single_node() {
         return
     fi
 
-    # 处理 IP 或域名
     local TARGET_HOST="$HOSTNAME_OR_IP"
     if [[ "$HOSTNAME_OR_IP" =~ ^\[([0-9a-fA-F:]+)\]$ ]]; then
         IP="${BASH_REMATCH[1]}"
@@ -132,16 +140,14 @@ test_single_node() {
             fi
             log_debug "$LOG_PREFIX - 解析结果: $HOSTNAME_OR_IP -> $IP"
         else
-            log WARN "$LOG_PREFIX - 无法解析域名: $HOSTNAME_OR_IP (原始链接: $NODE_LINK)"
+            log WARN "$LOG_PREFIX - 无法解析域名: $HOSTNAME_OR_IP"
             echo "FAILED:$NODE_LINK"
             return
         fi
     fi
 
-    log_debug "$LOG_PREFIX - 正在测试节点连接: $TARGET_HOST:$PORT (来自 $NODE_LINK)"
     nc -z -w "$CONNECT_TIMEOUT" "$TARGET_HOST" "$PORT" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
-        log INFO "$LOG_PREFIX - 结果: 成功连接到 $TARGET_HOST:$PORT"
         echo "SUCCESS:$NODE_LINK"
     else
         log WARN "$LOG_PREFIX - 结果: 无法连接到 $TARGET_HOST:$PORT"
@@ -149,7 +155,6 @@ test_single_node() {
     fi
 }
 
-# 导出函数和变量
 export -f test_single_node
 export -f log
 export -f log_debug
@@ -157,13 +162,11 @@ export LOG_FILE
 export CONNECT_TIMEOUT
 export DEBUG
 
-# 主逻辑
 log INFO "开始节点连接性测试..."
 mkdir -p "$OUTPUT_DIR"
 check_dependencies
 load_failed_nodes
 
-# 下载并合并节点
 log INFO "下载并合并节点配置文件..."
 for url in "${NODE_SOURCES[@]}"; do
     log INFO "  - 正在下载: $url"
@@ -180,25 +183,32 @@ sort -u "$MERGED_NODES_TEMP_FILE" -o "$MERGED_NODES_TEMP_FILE"
 TOTAL_UNIQUE_NODES=$(grep -vE '^(#|--|$)' "$MERGED_NODES_TEMP_FILE" 2>/dev/null | wc -l || echo 0)
 log INFO "所有配置文件下载并合并成功（去重后），共计 ${TOTAL_UNIQUE_NODES} 个节点"
 
-# 并行测试
 log INFO "开始并行测试 ${PARALLEL_JOBS} 个节点..."
-cat "$MERGED_NODES_TEMP_FILE" | grep -vE '^(#|--|$)' | while IFS= read -r NODE_LINK; do
-    if [[ -n "${FAILED_NODES[$NODE_LINK]}" ]]; then
-        ((SKIPPED_COUNT++))
-        echo "FAILED:$NODE_LINK" >> "$ALL_TEST_RESULTS_TEMP_FILE"
-    else
-        printf "%s\n" "$NODE_LINK"
-    fi
-done | xargs -P "$PARALLEL_JOBS" -d '\n' -I {} bash -c 'test_single_node "$@"' _ {} >> "$ALL_TEST_RESULTS_TEMP_FILE"
-
+split -l 5000 "$MERGED_NODES_TEMP_FILE" node_batch_
+for batch in node_batch_*; do
+    log INFO "处理批次 $batch..."
+    processed_count=0
+    cat "$batch" | grep -vE '^(#|--|$)' | while IFS= read -r NODE_LINK; do
+        if [[ -n "${FAILED_NODES[$NODE_LINK]}" ]]; then
+            ((SKIPPED_COUNT++))
+            echo "FAILED:$NODE_LINK" >> "$ALL_TEST_RESULTS_TEMP_FILE"
+        else
+            printf "%s\n" "$NODE_LINK"
+            ((processed_count++))
+            if (( processed_count % 1000 == 0 )); then
+                log INFO "批次 $batch 已处理 $processed_count 个节点..."
+            fi
+        fi
+    done | xargs -P "$PARALLEL_JOBS" -d '\n' -I {} bash -c 'test_single_node "$@"' _ {} >> "$ALL_TEST_RESULTS_TEMP_FILE"
+    log INFO "批次 $batch 处理完成"
+    rm "$batch"
+done
 rm -f "$MERGED_NODES_TEMP_FILE"
 
-# 处理测试结果
 log INFO "处理测试结果并写入文件..."
 grep '^SUCCESS:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2- | sort -u > "$CURRENT_RUN_SUCCESS_TEMP_FILE"
 grep '^FAILED:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2- | sort -u > "$CURRENT_RUN_FAILED_TEMP_FILE"
 
-# 合并成功节点
 if [ -f "$SUCCESS_FILE" ]; then
     grep -vE '^(#|--|$)' "$SUCCESS_FILE" 2>/dev/null >> "$CURRENT_RUN_SUCCESS_TEMP_FILE"
 fi
@@ -206,7 +216,6 @@ echo "# Successful Nodes (Updated by GitHub Actions at $(date))" > "$SUCCESS_FIL
 echo "-------------------------------------" >> "$SUCCESS_FILE"
 sort -u "$CURRENT_RUN_SUCCESS_TEMP_FILE" >> "$SUCCESS_FILE"
 
-# 合并失败节点
 if [ -f "$FAILED_FILE" ]; then
     grep -vE '^(#|--|$)' "$FAILED_FILE" 2>/dev/null >> "$CURRENT_RUN_FAILED_TEMP_FILE"
 fi
@@ -216,7 +225,6 @@ sort -u "$CURRENT_RUN_FAILED_TEMP_FILE" >> "$FAILED_FILE"
 
 rm -f "$ALL_TEST_RESULTS_TEMP_FILE" "$CURRENT_RUN_SUCCESS_TEMP_FILE" "$CURRENT_RUN_FAILED_TEMP_FILE"
 
-# 统计
 success_nodes_count=$(grep -vE '^(#|--|$)' "$SUCCESS_FILE" 2>/dev/null | wc -l || echo 0)
 failed_nodes_count=$(grep -vE '^(#|--|$)' "$FAILED_FILE" 2>/dev/null | wc -l || echo 0)
 total_processed_nodes=$((success_nodes_count + failed_nodes_count + SKIPPED_COUNT))
@@ -227,7 +235,6 @@ log INFO "  - 成功连接节点数: $success_nodes_count"
 log INFO "  - 失败节点数: $failed_nodes_count"
 log INFO "  - 跳过上次失败的节点数: $SKIPPED_COUNT"
 
-# Git 推送
 log INFO "开始将结果推送到 GitHub 仓库..."
 git config user.name "GitHub Actions"
 git config user.email "actions@github.com"
