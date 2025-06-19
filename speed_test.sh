@@ -28,7 +28,7 @@ CONNECT_TIMEOUT=5   # nc 连接超时时间 (秒)
 log() {
     local level=$1 # INFO, WARN, ERROR
     shift
-    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE"
+    echo "[$level] $(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE">&2
 }
 
 # 定义关联数组存储上次失败的节点
@@ -204,7 +204,10 @@ fi
 
 # 去重合并后的节点
 sort -u "$MERGED_NODES_TEMP_FILE" -o "$MERGED_NODES_TEMP_FILE"
-log INFO "所有配置文件下载并合并成功（去重后），开始解析节点并测试连接性..."
+# --- 新增的统计行 ---
+TOTAL_UNIQUE_NODES=$(grep -vE '^(#|--|$)' "$MERGED_NODES_TEMP_FILE" 2>/dev/null | wc -l || echo 0) # 确保即使文件为空也不报错
+log INFO "所有配置文件下载并合并成功（去重后），共计 ${TOTAL_UNIQUE_NODES} 个节点，开始解析节点并测试连接性..."
+# --- 结束新增 ---
 
 # 开始并行测试节点
 log INFO "开始并行测试 ${PARALLEL_JOBS} 个节点..."
@@ -236,7 +239,8 @@ grep '^FAILED:' "$ALL_TEST_RESULTS_TEMP_FILE" | cut -d':' -f2- | sort -u > "$CUR
 
 # 1. 处理成功节点：合并旧的成功节点和本次成功节点，去重后写回
 if [ -f "$SUCCESS_FILE" ]; then
-    grep -vE '^(#|--|$)' "$SUCCESS_FILE" >> "$CURRENT_RUN_SUCCESS_TEMP_FILE" # 将旧的成功节点内容追加到临时文件
+    # 仅当文件存在且非空时，才追加其内容（跳过头部和分隔符）
+    grep -vE '^(#|--|$)' "$SUCCESS_FILE" 2>/dev/null >> "$CURRENT_RUN_SUCCESS_TEMP_FILE"
 fi
 # 写入新的头部信息，然后将去重后的所有成功节点追加到 SUCCESS_FILE
 echo "# Successful Nodes (Updated by GitHub Actions at $(date))" > "$SUCCESS_FILE"
@@ -246,7 +250,8 @@ sort -u "$CURRENT_RUN_SUCCESS_TEMP_FILE" >> "$SUCCESS_FILE"
 
 # 2. 处理失败节点：合并旧的失败节点和本次失败节点，去重后写回
 if [ -f "$FAILED_FILE" ]; then
-    grep -vE '^(#|--|$)' "$FAILED_FILE" >> "$CURRENT_RUN_FAILED_TEMP_FILE" # 将旧的失败节点内容追加到临时文件
+    # 仅当文件存在且非空时，才追加其内容（跳过头部和分隔符）
+    grep -vE '^(#|--|$)' "$FAILED_FILE" 2>/dev/null >> "$CURRENT_RUN_FAILED_TEMP_FILE"
 fi
 # 写入新的头部信息，然后将去重后的所有失败节点追加到 FAILED_FILE
 echo "# Failed Nodes (Updated by GitHub Actions at $(date))" > "$FAILED_FILE"
