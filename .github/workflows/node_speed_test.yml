@@ -1,8 +1,9 @@
+
 name: Proxy Tester Workflow
 
 on:
   schedule:
-    - cron: '0 3 * * *' # 每天 UTC 时间 03:00 运行
+    - cron: '0 3 * * *' # 每天 UTC 时间 00:00 运行
   workflow_dispatch: # 允许手动触发
 
 jobs:
@@ -24,25 +25,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install requests
           pip install requests pyyaml
-
-      # 测试网络连通性
-      - name: Test network connectivity
-        run: |
-          curl -I https://www.google.com
-          curl -I https://www.youtube.com
-
-      # 检查代理源
-      - name: Check proxy source
-        run: |
-          curl -L https://raw.githubusercontent.com/qjlxg/test/refs/heads/main/configtg.txt | head -n 10
-
-      # 保存代理源用于调试
-      - name: Save proxy source for debugging
-        run: |
-          mkdir -p config
-          curl -L -o config/configtg.txt https://raw.githubusercontent.com/qjlxg/test/refs/heads/main/configtg.txt
-          head -n 10 config/configtg.txt
 
       # 下载 sing-box 可执行文件
       - name: Install sing-box
@@ -57,6 +41,7 @@ jobs:
             cat clash_bin/sing-box.tar.gz
             exit 1
           fi
+          file clash_bin/sing-box.tar.gz
           tar -xzf clash_bin/sing-box.tar.gz -C clash_bin || { echo "Tar extraction failed"; exit 1; }
           mv clash_bin/sing-box-*/sing-box clash_bin/sing-box
           chmod +x clash_bin/sing-box
@@ -78,16 +63,15 @@ jobs:
       - name: Run proxy tester script
         run: python main.py
 
-      # 提交更改
+      # 检查输出文件并提交更改
       - name: Commit and push results
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          mkdir -p data
-          chmod -R u+w data
           git add data/collectSub.txt
           git commit -m "Update proxy test results" || echo "No changes to commit"
-          git pull --rebase origin main || echo "Pull failed, continuing with push"
+          # 在推送之前先拉取远程更改
+          git pull --rebase origin main || { echo "Failed to pull changes, attempting to push anyway (may fail)"; }
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
