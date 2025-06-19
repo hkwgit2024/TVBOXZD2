@@ -26,6 +26,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests
+          pip install aiohttp
           pip install requests pyyaml
 
       # 下载 sing-box 可执行文件
