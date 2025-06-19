@@ -10,7 +10,7 @@ MERGED_NODES_TEMP_FILE=$(mktemp) # 使用 mktemp 创建唯一的临时文件
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
 )
 
 # 配置参数
