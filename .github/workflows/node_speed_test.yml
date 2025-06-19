@@ -16,7 +16,7 @@ jobs:
     - name: Set up dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y curl netcat # 确保安装 netcat
+        ssudo apt-get install -y curl netcat-openbsd # 确保安装 netcat-openbsd
         
     - name: Make script executable
       run: chmod +x speed_test.sh # 假设你将新脚本保存为 speed_test.sh
