@@ -84,8 +84,7 @@ test_node() {
     if [ "${failed_nodes[$NODE_LINK]}" ]; then
         log INFO "跳过已知的失败节点: $NODE_LINK"
         return
-    }
-
+    
     # 提取 IP/Hostname 和 Port
     if [[ "$NODE_LINK" =~ ^(vless|vmess|trojan|hy2)://(.+@)?([0-9a-zA-Z.-]+\[?[0-9a-fA-F:]+\]?):([0-9]+) ]]; then
         HOSTNAME_OR_IP="${BASH_REMATCH[3]}"
