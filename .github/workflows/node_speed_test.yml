@@ -72,6 +72,7 @@ jobs:
           git add data/collectSub.txt
           git add data/failed_proxies.json
           git add data/sing-box.log
+          git add data/sub.txt
           
           git commit -m "Update proxy test results" || echo "No changes to commit"
           # 在推送之前先拉取远程更改
