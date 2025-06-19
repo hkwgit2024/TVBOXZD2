@@ -11,7 +11,9 @@ import logging
 import yaml
 import threading
 import concurrent.futures
+import random
 from hashlib import md5
+
 
 # --- 配置日志 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
