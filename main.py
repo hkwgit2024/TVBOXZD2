@@ -37,690 +37,839 @@ NODES_SOURCES = [
 ]
 
 MAX_PROXIES = 925000
-TEST_URLS = ["https://t.me", "https://www.tiktok.com", "https://www.google.com/generate_204"]
-TEST_TIMEOUT = 10  # 测试超时时间（秒）
-DOWNLOAD_TEST_SIZE = 1 * 1024 * 1024  # 下载测试文件大小，1MB
-MIN_THROUGHPUT = 0.5 * 1024 * 1024 # 最小吞吐量，0.5MB/s
+TEST_URLS = ["https://t.me", "https://www.tiktok.com", "https://www.youtube.com"]
+HTTP_TIMEOUT_SECONDS = 8  # 增加超时时间
+SINGBOX_STARTUP_TIMEOUT = 30
+BASE_PROXY_PORT = 1080
+CONCURRENT_TESTS = 2  # 降低并发数
+SPEEDTEST_URL = "http://speed.hetzner.de/1GB.bin"
+SPEEDTEST_MIN_THROUGHPUT = 100000  # 最低吞吐量（字节/秒）
 
+# --- 确保输出目录存在 ---
+for path in [OUTPUT_SUB_FILE, SINGBOX_LOG_PATH, GEOIP_DB_PATH, FAILED_PROXIES_FILE]:
+    dirname = os.path.dirname(path)
+    if dirname:
+        os.makedirs(dirname, exist_ok=True)
 
-# --- 辅助函数 ---
+# --- 辅助函数：IPv6 验证 ---
+def is_valid_ipv6(addr):
+    try:
+        addr = addr.strip("[]")
+        socket.inet_pton(socket.AF_INET6, addr)
+        return True
+    except (socket.error, ValueError):
+        return False
+
+# --- 辅助函数：生成代理 ID ---
+def generate_proxy_id(proxy):
+    # 使用代理的完整信息生成一个哈希ID
+    return md5(json.dumps(proxy, sort_keys=True).encode('utf-8')).hexdigest()
+
+# --- 辅助函数：加载/保存失败节点 ---
 def load_failed_proxies():
-    """加载之前保存的失败代理ID"""
     if os.path.exists(FAILED_PROXIES_FILE):
-        with open(FAILED_PROXIES_FILE, 'r') as f:
-            return set(json.load(f))
+        try:
+            with open(FAILED_PROXIES_FILE, 'r', encoding='utf-8') as f:
+                return set(json.load(f))
+        except json.JSONDecodeError:
+            logging.warning(f"无法解析 {FAILED_PROXIES_FILE}，将创建一个新的。")
+            return set()
     return set()
 
 def save_failed_proxies(failed_proxies):
-    """保存失败代理ID，限制最大数量"""
-    with open(FAILED_PROXIES_FILE, 'w') as f:
-        # 只保留最新的 MAX_FAILED_PROXIES 条记录
-        json.dump(list(failed_proxies)[-MAX_FAILED_PROXIES:], f)
+    # 只保留最新的 MAX_FAILED_PROXIES 个失败节点
+    failed_proxies_list = list(failed_proxies)[-MAX_FAILED_PROXIES:]
+    with open(FAILED_PROXIES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(failed_proxies_list, f, ensure_ascii=False, indent=2)
 
-def generate_proxy_id(proxy):
-    """生成代理的唯一ID"""
-    # 使用代理的完整信息进行哈希，确保唯一性
-    return md5(json.dumps(proxy, sort_keys=True).encode('utf-8')).hexdigest()
+# --- 辅助函数：加载/保存可用节点 ---
+def load_existing_proxies():
+    existing_proxies = set()
+    if os.path.exists(OUTPUT_SUB_FILE):
+        try:
+            with open(OUTPUT_SUB_FILE, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        existing_proxies.add(line)
+        except Exception as e:
+            logging.warning(f"加载现有代理文件 {OUTPUT_SUB_FILE} 失败: {e}")
+    return existing_proxies
 
-def singbox_to_proxy_url(proxy_data):
-    """将sing-box代理数据转换为URL格式"""
-    proxy_type = proxy_data.get("type")
-    if proxy_type == "hysteria2":
-        server = proxy_data["server"]
-        port = proxy_data["server_port"]
-        password = proxy_data["password"]
-        obfs = proxy_data.get("obfs")
-        obfs_password = proxy_data.get("obfs_password")
+# --- 辅助函数：解析代理 URL (新版本) ---
+def parse_proxy_url(url_string):
+    """
+    解析代理 URL 字符串并将其转换为 sing-box 配置字典。
+    支持 VLESS, Shadowsocks (SS), VMess 协议。
+    """
+    try:
+        parsed_url = urllib.parse.urlparse(url_string)
+        scheme = parsed_url.scheme.lower()
         
-        url = f"hysteria2://{urllib.parse.quote_plus(password)}@{server}:{port}"
-        params = []
-        if obfs == "tls":
-            params.append("obfs=tls")
-            if obfs_password:
-                params.append(f"obfs-password={urllib.parse.quote_plus(obfs_password)}")
-        if params:
-            url += "?" + "&".join(params)
+        proxy_info = {"type": scheme}
         
-        # 添加别名
-        # 尝试从 tag 或 server 获取别名，或使用默认
-        alias = proxy_data.get("tag") or server
-        url += f"#{urllib.parse.quote_plus(alias)}"
-        return url
-    elif proxy_type == "tuic":
-        server = proxy_data["server"]
-        port = proxy_data["server_port"]
-        uuid = proxy_data["uuid"]
-        password = proxy_data["password"]
-        congestion_controller = proxy_data.get("congestion_controller", "bbr")
-        zero_rtt_handshake = str(proxy_data.get("zero_rtt_handshake", "true")).lower()
+        # 提取标签
+        if parsed_url.fragment:
+            proxy_info["tag"] = urllib.parse.unquote(parsed_url.fragment)
         
-        # TUIC URL 格式通常不包含所有参数在 URL 中，可能需要特别处理
-        # 这是一个简化的示例，可能需要根据实际客户端支持的TUIC URL格式进行调整
-        url = f"tuic://{urllib.parse.quote_plus(uuid)}:{urllib.parse.quote_plus(password)}@{server}:{port}?" \
-              f"congestion_controller={congestion_controller}&" \
-              f"zero_rtt_handshake={zero_rtt_handshake}"
-        
-        # 添加别名
-        alias = proxy_data.get("tag") or server
-        url += f"#{urllib.parse.quote_plus(alias)}"
-        return url
-    elif proxy_type == "vless":
-        server = proxy_data["server"]
-        port = proxy_data["server_port"]
-        uuid = proxy_data["uuid"]
-        flow = proxy_data.get("flow", "")
-        # VLESS XTLS flow support
-        if flow:
-            flow_param = f"&flow={flow}"
+        if scheme == "vless":
+            # netloc 格式: uuid@server:port
+            if "@" not in parsed_url.netloc:
+                logging.warning(f"VLESS URL格式错误: 缺少'@' - {url_string}")
+                return None
+            
+            # 使用 rsplit 确保正确分离最后一个冒号前的服务器部分，处理 IPv6 地址
+            uuid_and_addr, port_str = parsed_url.netloc.rsplit(":", 1) 
+            uuid, server = uuid_and_addr.split("@", 1)
+            
+            proxy_info["uuid"] = uuid
+            proxy_info["server"] = server.strip("[]") # 移除 IPv6 地址的方括号
+            try:
+                proxy_info["server_port"] = int(port_str)
+            except ValueError:
+                logging.warning(f"VLESS URL端口号无效: {port_str} - {url_string}")
+                return None
+
+            # 解析查询参数
+            query_params = urllib.parse.parse_qs(parsed_url.query)
+            
+            # 常见 VLESS 参数
+            proxy_info["security"] = query_params.get("security", [""])[0]
+            proxy_info["flow"] = query_params.get("flow", [""])[0]
+            proxy_info["tls_fingerprint"] = query_params.get("fp", [""])[0]
+            proxy_info["tls_sni"] = query_params.get("sni", [""])[0]
+            
+            alpn = query_params.get("alpn", [""])
+            if alpn and alpn[0]:
+                proxy_info["tls_alpn"] = alpn[0].split(',')
+            else:
+                proxy_info["tls_alpn"] = []
+
+            proxy_info["reality_public_key"] = query_params.get("pbk", [""])[0]
+            proxy_info["reality_short_id"] = query_params.get("sid", [""])[0]
+
+            # 网络特定参数
+            network_type = query_params.get("type", ["tcp"])[0]
+            proxy_info["network"] = network_type
+
+            if network_type == "ws":
+                proxy_info["ws_path"] = query_params.get("path", ["/"])[0]
+                host = query_params.get("host", [""])[0]
+                if host:
+                    proxy_info["ws_headers"] = {"Host": host}
+            elif network_type == "grpc":
+                proxy_info["grpc_service_name"] = query_params.get("serviceName", [""])[0]
+                proxy_info["grpc_mode"] = query_params.get("mode", ["gun"])[0]
+            elif network_type == "httpupgrade":
+                proxy_info["httpupgrade_path"] = query_params.get("path", ["/"])[0]
+                proxy_info["httpupgrade_host"] = query_params.get("host", [""])[0]
+            elif network_type == "h2":
+                proxy_info["h2_path"] = query_params.get("path", ["/"])[0]
+                proxy_info["h2_host"] = query_params.get("host", [""])[0]
+            elif network_type == "http":
+                proxy_info["http_path"] = query_params.get("path", ["/"])[0]
+                proxy_info["http_host"] = query_params.get("host", [""])[0]
+            elif network_type == "quic":
+                proxy_info["quic_security"] = query_params.get("quicSecurity", [""])[0]
+                proxy_info["quic_key"] = query_params.get("quicKey", [""])[0]
+                proxy_info["quic_header_type"] = query_params.get("quicHeaderType", [""])[0]
+
+        elif scheme == "ss":
+            # ss://base64encoded_credentials@server:port
+            if "@" not in parsed_url.netloc:
+                logging.warning(f"SS URL格式错误: 缺少'@' - {url_string}")
+                return None
+
+            encoded_credentials, server_port_str = parsed_url.netloc.split("@", 1)
+            
+            try:
+                # 尝试添加填充以确保 Base64 解码正确
+                missing_padding = len(encoded_credentials) % 4
+                if missing_padding:
+                    encoded_credentials += '=' * (4 - missing_padding)
+                decoded_credentials = base64.urlsafe_b64decode(encoded_credentials).decode('utf-8')
+            except Exception as e:
+                logging.warning(f"SS 凭证 Base64 解码失败: {e} - {url_string}")
+                return None
+
+            if ":" not in decoded_credentials:
+                logging.warning(f"SS 凭证格式错误: 缺少':' - {url_string}")
+                return None
+            
+            method, password = decoded_credentials.split(":", 1)
+            
+            server, port_str = server_port_str.rsplit(":", 1)
+            proxy_info["server"] = server.strip("[]")
+            try:
+                proxy_info["server_port"] = int(port_str)
+            except ValueError:
+                logging.warning(f"SS URL端口号无效: {port_str} - {url_string}")
+                return None
+            proxy_info["method"] = method
+            proxy_info["password"] = password
+
+        elif scheme == "vmess":
+            # vmess://base64encoded_json
+            try:
+                encoded_json = parsed_url.netloc
+                # 确保正确的 Base64 填充
+                missing_padding = len(encoded_json) % 4
+                if missing_padding:
+                    encoded_json += '=' * (4 - missing_padding)
+
+                decoded_json = base64.urlsafe_b64decode(encoded_json).decode('utf-8')
+                vmess_config = json.loads(decoded_json)
+                
+                # 将 VMess 配置映射到 sing-box proxy_info
+                proxy_info["server"] = vmess_config.get("add", "").strip("[]")
+                try:
+                    proxy_info["server_port"] = int(vmess_config.get("port"))
+                except (ValueError, TypeError):
+                    logging.warning(f"VMess URL端口号无效: {vmess_config.get('port')} - {url_string}")
+                    return None
+                proxy_info["uuid"] = vmess_config.get("id")
+                proxy_info["alterId"] = int(vmess_config.get("aid", 0))
+                proxy_info["security"] = vmess_config.get("scy", "auto") # VMess 中的加密方法
+                proxy_info["network"] = vmess_config.get("net", "tcp")
+                proxy_info["tls_sni"] = vmess_config.get("sni", "") # 用于 VMess TLS
+                
+                # VMess 特定网络设置
+                if proxy_info["network"] == "ws":
+                    proxy_info["ws_path"] = vmess_config.get("path", "/")
+                    host_header = vmess_config.get("host", "")
+                    if host_header:
+                        proxy_info["ws_headers"] = {"Host": host_header}
+                    
+                elif proxy_info["network"] == "http":
+                    proxy_info["http_path"] = vmess_config.get("path", "/")
+                    proxy_info["http_host"] = vmess_config.get("host", "")
+                
+                elif proxy_info["network"] == "h2":
+                    proxy_info["h2_path"] = vmess_config.get("path", "/")
+                    proxy_info["h2_host"] = vmess_config.get("host", "")
+
+            except (json.JSONDecodeError, UnicodeDecodeError, Exception) as e:
+                logging.warning(f"VMess URL解析或Base64/JSON解码失败: {e} - {url_string}")
+                return None
         else:
-            flow_param = ""
+            logging.warning(f"不支持的代理类型: {scheme} - {url_string}")
+            return None
 
-        # TLS settings
-        tls_settings = proxy_data.get("tls", {})
-        tls_query_params = []
-        if tls_settings.get("enabled"):
-            tls_query_params.append("security=tls")
-            sni = tls_settings.get("server_name")
-            if sni:
-                tls_query_params.append(f"sni={sni}")
-            alpn = tls_settings.get("alpn")
-            if alpn and isinstance(alpn, list):
-                tls_query_params.append(f"alpn={','.join(alpn)}")
-            fingerprint = tls_settings.get("reality_fingerprint")
-            if fingerprint:
-                tls_query_params.append(f"fp={fingerprint}")
-            pbk = tls_settings.get("reality_public_key")
-            if pbk:
-                tls_query_params.append(f"pbk={pbk}")
-            sid = tls_settings.get("reality_short_id")
-            if sid:
-                tls_query_params.append(f"sid={sid}")
+        # 如果没有在 URL 片段中指定标签，则生成一个默认标签
+        if "tag" not in proxy_info:
+            proxy_info["tag"] = f"{scheme}-{proxy_info.get('server', 'unknown')}:{proxy_info.get('server_port', 'unknown')}"
 
-            # Xver for VLESS Reality
-            if "xver" in tls_settings:
-                tls_query_params.append(f"xver={tls_settings['xver']}")
-
-        # Transport settings (ws, grpc, etc.)
-        transport_settings = proxy_data.get("transport", {})
-        transport_type = transport_settings.get("type")
-        transport_query_params = []
-        if transport_type == "ws":
-            transport_query_params.append("type=ws")
-            path = transport_settings.get("path", "/")
-            transport_query_params.append(f"path={urllib.parse.quote_plus(path)}")
-            headers = transport_settings.get("headers", {})
-            if "Host" in headers:
-                transport_query_params.append(f"host={urllib.parse.quote_plus(headers['Host'])}")
-        elif transport_type == "grpc":
-            transport_query_params.append("type=grpc")
-            service_name = transport_settings.get("service_name")
-            if service_name:
-                transport_query_params.append(f"serviceName={urllib.parse.quote_plus(service_name)}")
-            # 这里可以添加更多 gRPC 参数，例如 `blocking`
-
-        all_params = tls_query_params + transport_query_params
-        query_string = f"?{'&'.join(all_params)}{flow_param}" if all_params or flow_param else ""
-
-        # 添加别名
-        alias = proxy_data.get("tag") or server
-        return f"vless://{uuid}@{server}:{port}{query_string}#{urllib.parse.quote_plus(alias)}"
-    elif proxy_type == "vmess":
-        # VMess 编码与 VLESS 不同，需要转换为 base64
-        server = proxy_data["server"]
-        port = proxy_data["server_port"]
-        uuid = proxy_data["uuid"]
-        alter_id = proxy_data.get("alter_id", 0)
-        cipher = proxy_data.get("security", "auto")
-
-        # TLS settings
-        tls_settings = proxy_data.get("tls", {})
-        tls_enabled = tls_settings.get("enabled", False)
-        sni = tls_settings.get("server_name", "")
-        fingerprint = tls_settings.get("reality_fingerprint", "") # For Reality in VMess
-        pbk = tls_settings.get("reality_public_key", "")
-        sid = tls_settings.get("reality_short_id", "")
+        return proxy_info
         
-        # Transport settings
-        transport_settings = proxy_data.get("transport", {})
-        transport_type = transport_settings.get("type", "tcp")
-        path = transport_settings.get("path", "")
-        host = transport_settings.get("headers", {}).get("Host", "")
-        service_name = transport_settings.get("service_name", "") # For gRPC
+    except Exception as e:
+        logging.warning(f"解析代理 URL 时发生未知错误: {e} - {url_string}")
+        return None
 
-        vmess_json = {
-            "v": "2",
-            "ps": proxy_data.get("tag") or server, # 别名
+# --- 辅助函数：将代理字典转换为 sing-box 配置格式 ---
+def singbox_to_proxy_config(proxy):
+    proxy_type = proxy.get("type")
+    
+    config = {
+        "tag": proxy.get("tag", f"{proxy_type}-{proxy.get('server', 'unknown')}:{proxy.get('server_port', 'unknown')}"),
+        "type": proxy_type,
+        "server": proxy.get("server"),
+        "server_port": proxy.get("server_port"),
+    }
+
+    if proxy_type == "vless":
+        config["uuid"] = proxy.get("uuid")
+        config["flow"] = proxy.get("flow") if proxy.get("flow") else "" # Empty string if None
+        config["tls"] = {} if proxy.get("security") == "none" else {"enabled": True} # TLS enabled unless security is none
+        
+        if config["tls"]["enabled"]:
+            config["tls"]["reality"] = {
+                "enabled": True,
+                "public_key": proxy.get("reality_public_key"),
+                "short_id": proxy.get("reality_short_id"),
+            } if proxy.get("reality_public_key") and proxy.get("reality_short_id") else {"enabled": False}
+
+            if proxy.get("tls_sni"):
+                config["tls"]["server_name"] = proxy.get("tls_sni")
+            if proxy.get("tls_fingerprint"):
+                config["tls"]["fingerprint"] = proxy.get("tls_fingerprint")
+            if proxy.get("tls_alpn"):
+                config["tls"]["alpn"] = proxy.get("tls_alpn")
+
+        network = proxy.get("network", "tcp")
+        config["network"] = network
+        if network == "ws":
+            config["transport"] = {
+                "type": "ws",
+                "path": proxy.get("ws_path", "/"),
+                "headers": proxy.get("ws_headers", {}),
+            }
+        elif network == "grpc":
+            config["transport"] = {
+                "type": "grpc",
+                "service_name": proxy.get("grpc_service_name", ""),
+                "mode": proxy.get("grpc_mode", "gun"),
+            }
+        elif network == "httpupgrade":
+            config["transport"] = {
+                "type": "http_upgrade",
+                "path": proxy.get("httpupgrade_path", "/"),
+                "host": proxy.get("httpupgrade_host", ""),
+            }
+        elif network == "h2":
+            config["transport"] = {
+                "type": "http", # H2 in sing-box uses http transport type with protocol h2
+                "path": proxy.get("h2_path", "/"),
+                "host": proxy.get("h2_host", ""),
+                "headers": {"Host": [proxy.get("h2_host", "")]} if proxy.get("h2_host") else {}, # sing-box http transport requires Host in headers
+                "method": "GET",
+                "protocol_version": "2"
+            }
+        elif network == "http":
+            config["transport"] = {
+                "type": "http",
+                "path": proxy.get("http_path", "/"),
+                "host": proxy.get("http_host", ""),
+                "headers": {"Host": [proxy.get("http_host", "")]} if proxy.get("http_host") else {},
+                "method": "GET"
+            }
+        elif network == "quic":
+            config["transport"] = {
+                "type": "quic",
+                "quic_security": proxy.get("quic_security", ""),
+                "quic_key": proxy.get("quic_key", ""),
+                "quic_header_type": proxy.get("quic_header_type", ""),
+            }
+
+    elif proxy_type == "ss":
+        config["method"] = proxy.get("method")
+        config["password"] = proxy.get("password")
+
+    elif proxy_type == "vmess":
+        config["uuid"] = proxy.get("uuid")
+        config["alter_id"] = proxy.get("alterId", 0)
+        config["security"] = proxy.get("security", "auto")
+        config["network"] = proxy.get("network", "tcp")
+
+        # VMess TLS configuration
+        if proxy.get("tls_sni"):
+            config["tls"] = {"enabled": True, "server_name": proxy.get("tls_sni")}
+        else:
+            config["tls"] = {"enabled": False}
+
+        # VMess transport settings
+        if config["network"] == "ws":
+            config["transport"] = {
+                "type": "ws",
+                "path": proxy.get("ws_path", "/"),
+                "headers": proxy.get("ws_headers", {}),
+            }
+        elif config["network"] == "h2":
+             config["transport"] = {
+                "type": "http", # H2 in sing-box uses http transport type with protocol h2
+                "path": proxy.get("h2_path", "/"),
+                "host": proxy.get("h2_host", ""),
+                "headers": {"Host": [proxy.get("h2_host", "")]} if proxy.get("h2_host") else {},
+                "method": "GET",
+                "protocol_version": "2"
+            }
+        elif config["network"] == "http":
+             config["transport"] = {
+                "type": "http",
+                "path": proxy.get("http_path", "/"),
+                "host": proxy.get("http_host", ""),
+                "headers": {"Host": [proxy.get("http_host", "")]} if proxy.get("http_host") else {},
+                "method": "GET"
+            }
+        # Add other VMess network types if needed
+
+    # Add default tags if missing (e.g., for direct connections, or for a clean output)
+    if "tag" not in config or not config["tag"]:
+        config["tag"] = f"{proxy_type}-{proxy.get('server', 'unknown')}-{proxy.get('server_port', 'unknown')}"
+
+    return config
+
+# --- 辅助函数：将代理字典转换为标准的 URL 格式 (用于输出) ---
+def singbox_to_proxy_url(proxy):
+    proxy_type = proxy.get("type")
+    tag = proxy.get("tag", "").replace("#", "").replace("&", "") # Clean tag for URL fragment
+    server = proxy.get("server")
+    port = proxy.get("server_port")
+
+    if proxy_type == "vless":
+        uuid = proxy.get("uuid")
+        flow = proxy.get("flow", "")
+        security = "tls" if proxy.get("tls", {}).get("enabled") and not proxy.get("tls", {}).get("reality", {}).get("enabled") else "none"
+        
+        # Determine security based on TLS and Reality settings
+        if proxy.get("tls", {}).get("enabled"):
+            if proxy.get("tls", {}).get("reality", {}).get("enabled"):
+                security = "reality"
+            else:
+                security = "tls"
+        else:
+            security = "none"
+
+        fingerprint = proxy.get("tls", {}).get("fingerprint", "")
+        sni = proxy.get("tls", {}).get("server_name", "")
+        alpn = ",".join(proxy.get("tls", {}).get("alpn", []))
+        public_key = proxy.get("tls", {}).get("reality", {}).get("public_key", "")
+        short_id = proxy.get("tls", {}).get("reality", {}).get("short_id", "")
+        
+        network = proxy.get("network", "tcp")
+        
+        query_params = {}
+        if security != "none": # Only add security if it's not "none"
+            query_params["security"] = security
+        if flow:
+            query_params["flow"] = flow
+        if fingerprint:
+            query_params["fp"] = fingerprint
+        if sni:
+            query_params["sni"] = sni
+        if alpn:
+            query_params["alpn"] = alpn
+        if public_key:
+            query_params["pbk"] = public_key
+        if short_id:
+            query_params["sid"] = short_id
+
+        if network == "ws":
+            query_params["type"] = "ws"
+            path = proxy.get("transport", {}).get("path", "/")
+            if path != "/": # Only add path if not default
+                 query_params["path"] = path
+            headers = proxy.get("transport", {}).get("headers", {}).get("Host", "")
+            if headers:
+                query_params["host"] = headers
+        elif network == "grpc":
+            query_params["type"] = "grpc"
+            service_name = proxy.get("transport", {}).get("service_name", "")
+            mode = proxy.get("transport", {}).get("mode", "gun")
+            if service_name: # Only add serviceName if not empty
+                 query_params["serviceName"] = service_name
+            if mode != "gun": # Only add mode if not default
+                 query_params["mode"] = mode
+        elif network == "httpupgrade":
+            query_params["type"] = "httpupgrade"
+            path = proxy.get("transport", {}).get("path", "/")
+            if path != "/":
+                query_params["path"] = path
+            host = proxy.get("transport", {}).get("host", "")
+            if host:
+                query_params["host"] = host
+        elif network == "h2":
+            query_params["type"] = "h2"
+            path = proxy.get("transport", {}).get("path", "/")
+            if path != "/":
+                query_params["path"] = path
+            host = proxy.get("transport", {}).get("host", "")
+            if host:
+                query_params["host"] = host
+        elif network == "http":
+            query_params["type"] = "http"
+            path = proxy.get("transport", {}).get("path", "/")
+            if path != "/":
+                query_params["path"] = path
+            host = proxy.get("transport", {}).get("host", "")
+            if host:
+                query_params["host"] = host
+        elif network == "quic":
+            query_params["type"] = "quic"
+            quic_security = proxy.get("transport", {}).get("quic_security", "")
+            quic_key = proxy.get("transport", {}).get("quic_key", "")
+            quic_header_type = proxy.get("transport", {}).get("quic_header_type", "")
+            if quic_security:
+                query_params["quicSecurity"] = quic_security
+            if quic_key:
+                query_params["quicKey"] = quic_key
+            if quic_header_type:
+                query_params["quicHeaderType"] = quic_header_type
+        
+        # 构建查询字符串
+        query_string = urllib.parse.urlencode(query_params)
+        
+        # 构建 VLESS URL
+        vless_url = f"vless://{uuid}@{server}:{port}"
+        if query_string:
+            vless_url += f"?{query_string}"
+        if tag:
+            vless_url += f"#{tag}"
+        return vless_url
+
+    elif proxy_type == "ss":
+        method = proxy.get("method")
+        password = proxy.get("password")
+        credentials = f"{method}:{password}"
+        encoded_credentials = base64.urlsafe_b64encode(credentials.encode('utf-8')).decode('utf-8').rstrip('=')
+        
+        ss_url = f"ss://{encoded_credentials}@{server}:{port}"
+        if tag:
+            ss_url += f"#{tag}"
+        return ss_url
+
+    elif proxy_type == "vmess":
+        vmess_config = {
+            "v": "2", # VMess protocol version
+            "ps": tag, # Proxy remark/tag
             "add": server,
             "port": port,
-            "id": uuid,
-            "aid": alter_id,
-            "net": transport_type,
-            "type": "none", # 早期版本兼容，或根据实际协议
-            "host": host,
-            "path": path,
-            "tls": "tls" if tls_enabled else "",
-            "sni": sni, # 虽然不是标准字段，但一些客户端会解析
-            "fp": fingerprint, # Reality
-            "pbk": pbk, # Reality
-            "sid": sid # Reality
+            "id": proxy.get("uuid"),
+            "aid": proxy.get("alterId", 0),
+            "scy": proxy.get("security", "auto"),
+            "net": proxy.get("network", "tcp"),
+            "tls": "tls" if proxy.get("tls", {}).get("enabled") else "",
+            "sni": proxy.get("tls", {}).get("server_name", ""),
         }
-        
-        # gRPC special handling for VMess
-        if transport_type == "grpc":
-            vmess_json["type"] = "grpc" # 设置type为grpc
-            vmess_json["serviceName"] = service_name
 
-        # 对于 ws 协议，"type" 字段在一些客户端中会设置为 "ws"
-        if transport_type == "ws":
-            vmess_json["type"] = "ws"
+        # VMess transport settings
+        network = proxy.get("network", "tcp")
+        if network == "ws":
+            vmess_config["path"] = proxy.get("transport", {}).get("path", "/")
+            vmess_config["host"] = proxy.get("transport", {}).get("headers", {}).get("Host", "")
+        elif network == "h2":
+            vmess_config["path"] = proxy.get("transport", {}).get("path", "/")
+            vmess_config["host"] = proxy.get("transport", {}).get("host", "") # h2 host is directly host
+        elif network == "http":
+            vmess_config["path"] = proxy.get("transport", {}).get("path", "/")
+            vmess_config["host"] = proxy.get("transport", {}).get("host", "") # http host is directly host
 
 
-        # Base64 编码
-        vmess_encoded = base64.b64encode(json.dumps(vmess_json).encode('utf-8')).decode('utf-8')
-        return f"vmess://{vmess_encoded}"
-
-    logging.warning(f"不支持的代理类型: {proxy_type}")
+        encoded_json = base64.urlsafe_b64encode(json.dumps(vmess_config, ensure_ascii=False).encode('utf-8')).decode('utf-8')
+        vmess_url = f"vmess://{encoded_json.rstrip('=')}"
+        return vmess_url
+    
     return None
 
-def extract_proxies_from_url(url_list, existing_proxies_ids, max_proxies_to_fetch, failed_proxies_ids):
-    """从URL列表获取代理信息，跳过已存在或失败的代理"""
-    proxies = []
-    fetched_count = 0
-    for url_info in url_list:
-        if fetched_count >= max_proxies_to_fetch:
-            break
+# --- 核心函数：生成 sing-box 配置文件 ---
+def generate_singbox_config(proxy, proxy_port):
+    proxy_config = singbox_to_proxy_config(proxy)
+    if not proxy_config:
+        logging.error(f"无法为代理 {proxy.get('tag', 'unknown')} 生成 sing-box 配置。")
+        return None
 
-        url = url_info["url"]
-        proxy_type = url_info.get("type", "plain")
-        logging.info(f"开始从 {url} 获取代理，类型：{proxy_type}")
-        
-        try:
-            response = requests.get(url, timeout=15)
-            response.raise_for_status()
-            content = response.text
-
-            if proxy_type == "plain":
-                # 每行一个代理URL
-                lines = content.splitlines()
-                random.shuffle(lines) # 打乱顺序
-                for line in lines:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        # 尝试转换为sing-box格式
-                        singbox_proxy = proxy_url_to_singbox(line)
-                        if singbox_proxy:
-                            proxy_id = generate_proxy_id(singbox_proxy)
-                            if proxy_id not in existing_proxies_ids and proxy_id not in failed_proxies_ids:
-                                proxies.append(singbox_proxy)
-                                fetched_count += 1
-                                if fetched_count >= max_proxies_to_fetch:
-                                    break
-                            else:
-                                logging.debug(f"跳过已存在或失败的代理: {singbox_proxy.get('tag', 'unknown')}")
-                        else:
-                            logging.warning(f"无法解析的代理URL: {line[:50]}...")
-                    except Exception as e:
-                        logging.warning(f"处理代理URL失败 {line[:50]}...: {e}")
-            elif proxy_type == "base64":
-                decoded_content = base64.b64decode(content).decode('utf-8')
-                lines = decoded_content.splitlines()
-                random.shuffle(lines) # 打乱顺序
-                for line in lines:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        singbox_proxy = proxy_url_to_singbox(line)
-                        if singbox_proxy:
-                            proxy_id = generate_proxy_id(singbox_proxy)
-                            if proxy_id not in existing_proxies_ids and proxy_id not in failed_proxies_ids:
-                                proxies.append(singbox_proxy)
-                                fetched_count += 1
-                                if fetched_count >= max_proxies_to_fetch:
-                                    break
-                            else:
-                                logging.debug(f"跳过已存在或失败的代理: {singbox_proxy.get('tag', 'unknown')}")
-                        else:
-                            logging.warning(f"无法解析的代理URL: {line[:50]}...")
-                    except Exception as e:
-                        logging.warning(f"处理代理URL失败 {line[:50]}...: {e}")
-            else:
-                logging.warning(f"不支持的代理源类型: {proxy_type}")
-
-        except requests.exceptions.RequestException as e:
-            logging.error(f"从 {url} 获取代理失败: {e}")
-    logging.info(f"从所有源共获取到 {len(proxies)} 个新代理")
-    return proxies
-
-
-def proxy_url_to_singbox(proxy_url):
-    """将代理URL转换为sing-box配置格式"""
-    if proxy_url.startswith("hysteria2://"):
-        try:
-            # hysteria2://password@server:port?obfs=obfs_type&obfs-password=obfs_password#tag
-            parsed = urllib.parse.urlparse(proxy_url)
-            password = urllib.parse.unquote_plus(parsed.username or parsed.password or "") # 兼容旧格式
-            
-            server_parts = parsed.netloc.split('@')
-            if len(server_parts) > 1:
-                server_info = server_parts[1]
-            else:
-                server_info = server_parts[0] # 没有@，直接是server:port
-
-            server, port = server_info.split(':')
-            port = int(port)
-
-            query_params = urllib.parse.parse_qs(parsed.query)
-            obfs = query_params.get("obfs", [None])[0]
-            obfs_password = query_params.get("obfs-password", [None])[0]
-            
-            tag = urllib.parse.unquote_plus(parsed.fragment) if parsed.fragment else f"hysteria2-{server}"
-
-            singbox_config = {
-                "tag": tag,
-                "type": "hysteria2",
-                "server": server,
-                "server_port": port,
-                "password": password,
-                "tls": {
-                    "enabled": True,
-                    "insecure": True, # 默认设为true，实际使用中可能需要更严格的校验
-                    "server_name": server # 默认SNI与服务器地址相同
-                }
-            }
-            if obfs == "tls":
-                singbox_config["obfs"] = "tls"
-                if obfs_password:
-                    singbox_config["obfs_password"] = obfs_password
-            
-            return singbox_config
-        except Exception as e:
-            logging.error(f"解析Hysteria2 URL失败 {proxy_url}: {e}")
-            return None
-    elif proxy_url.startswith("tuic://"):
-        try:
-            # tuic://uuid:password@server:port?参数#tag
-            parsed = urllib.parse.urlparse(proxy_url)
-            
-            user_info = parsed.netloc.split('@')[0]
-            uuid, password = user_info.split(':')
-            
-            server_info = parsed.netloc.split('@')[1]
-            server, port = server_info.split(':')
-            port = int(port)
-
-            query_params = urllib.parse.parse_qs(parsed.query)
-            congestion_controller = query_params.get("congestion_controller", ["bbr"])[0]
-            zero_rtt_handshake = query_params.get("zero_rtt_handshake", ["true"])[0].lower() == "true"
-            
-            tag = urllib.parse.unquote_plus(parsed.fragment) if parsed.fragment else f"tuic-{server}"
-
-            singbox_config = {
-                "tag": tag,
-                "type": "tuic",
-                "server": server,
-                "server_port": port,
-                "uuid": uuid,
-                "password": password,
-                "congestion_controller": congestion_controller,
-                "zero_rtt_handshake": zero_rtt_handshake,
-                "tls": {
-                    "enabled": True,
-                    "insecure": True,
-                    "server_name": server
-                }
-            }
-            return singbox_config
-        except Exception as e:
-            logging.error(f"解析TUIC URL失败 {proxy_url}: {e}")
-            return None
-    elif proxy_url.startswith("vless://"):
-        try:
-            # vless://uuid@server:port?params#tag
-            parsed = urllib.parse.urlparse(proxy_url)
-            user_info, server_port = parsed.netloc.split('@')
-            uuid = user_info
-            server, port = server_port.split(':')
-            port = int(port)
-            
-            tag = urllib.parse.unquote_plus(parsed.fragment) if parsed.fragment else f"vless-{server}"
-
-            query_params = urllib.parse.parse_qs(parsed.query)
-
-            singbox_config = {
-                "tag": tag,
-                "type": "vless",
-                "server": server,
-                "server_port": port,
-                "uuid": uuid,
-                "tls": {"enabled": False, "insecure": True},
-                "transport": {"type": "tcp"}
-            }
-
-            # TLS settings
-            if query_params.get("security", [""])[0] == "tls":
-                singbox_config["tls"]["enabled"] = True
-                if "sni" in query_params:
-                    singbox_config["tls"]["server_name"] = query_params["sni"][0]
-                elif "host" in query_params: # Some clients might use host for SNI
-                    singbox_config["tls"]["server_name"] = query_params["host"][0]
-                if "alpn" in query_params:
-                    singbox_config["tls"]["alpn"] = query_params["alpn"][0].split(',')
-                if "fp" in query_params: # Reality fingerprint
-                    singbox_config["tls"]["reality_fingerprint"] = query_params["fp"][0]
-                if "pbk" in query_params: # Reality public key
-                    singbox_config["tls"]["reality_public_key"] = query_params["pbk"][0]
-                if "sid" in query_params: # Reality short ID
-                    singbox_config["tls"]["reality_short_id"] = query_params["sid"][0]
-                if "xver" in query_params: # VLESS Xver
-                    singbox_config["tls"]["xver"] = int(query_params["xver"][0])
-
-            # Flow
-            if "flow" in query_params:
-                singbox_config["flow"] = query_params["flow"][0]
-
-            # Transport settings
-            transport_type = query_params.get("type", ["tcp"])[0]
-            singbox_config["transport"]["type"] = transport_type
-            if transport_type == "ws":
-                singbox_config["transport"]["path"] = query_params.get("path", ["/"])[0]
-                host_header = query_params.get("host", [""])[0]
-                if host_header:
-                    singbox_config["transport"]["headers"] = {"Host": host_header}
-            elif transport_type == "grpc":
-                singbox_config["transport"]["service_name"] = query_params.get("serviceName", [""])[0]
-                # 更多 gRPC 参数可以根据需要添加
-
-            return singbox_config
-        except Exception as e:
-            logging.error(f"解析VLESS URL失败 {proxy_url}: {e}")
-            return None
-    elif proxy_url.startswith("vmess://"):
-        try:
-            # VMess URL 是 base64 编码的 JSON
-            encoded_str = proxy_url[len("vmess://"):]
-            decoded_json_str = base64.b64decode(encoded_str).decode('utf-8')
-            vmess_data = json.loads(decoded_json_str)
-
-            tag = vmess_data.get("ps", f"vmess-{vmess_data['add']}")
-            server = vmess_data["add"]
-            port = int(vmess_data["port"])
-            uuid = vmess_data["id"]
-            alter_id = int(vmess_data.get("aid", 0))
-            security = vmess_data.get("scy", vmess_data.get("s", "auto")) # scy for sing-box, s for v2rayN
-
-            singbox_config = {
-                "tag": tag,
-                "type": "vmess",
-                "server": server,
-                "server_port": port,
-                "uuid": uuid,
-                "alter_id": alter_id,
-                "security": security,
-                "tls": {"enabled": False, "insecure": True},
-                "transport": {"type": "tcp"}
-            }
-
-            # TLS
-            if vmess_data.get("tls") == "tls":
-                singbox_config["tls"]["enabled"] = True
-                if "sni" in vmess_data:
-                    singbox_config["tls"]["server_name"] = vmess_data["sni"]
-                elif "host" in vmess_data: # Fallback for SNI from host in some clients
-                    singbox_config["tls"]["server_name"] = vmess_data["host"]
-                # Reality in VMess (non-standard but some clients support)
-                if "fp" in vmess_data:
-                    singbox_config["tls"]["reality_fingerprint"] = vmess_data["fp"]
-                if "pbk" in vmess_data:
-                    singbox_config["tls"]["reality_public_key"] = vmess_data["pbk"]
-                if "sid" in vmess_data:
-                    singbox_config["tls"]["reality_short_id"] = vmess_data["sid"]
-
-            # Transport
-            transport_type = vmess_data.get("net", "tcp")
-            singbox_config["transport"]["type"] = transport_type
-            if transport_type == "ws":
-                singbox_config["transport"]["path"] = vmess_data.get("path", "/")
-                host_header = vmess_data.get("host", "")
-                if host_header:
-                    singbox_config["transport"]["headers"] = {"Host": host_header}
-            elif transport_type == "grpc":
-                singbox_config["transport"]["service_name"] = vmess_data.get("serviceName", "")
-                # 更多 gRPC 参数可以根据需要添加
-
-            return singbox_config
-        except Exception as e:
-            logging.error(f"解析VMess URL失败 {proxy_url}: {e}")
-            return None
-    return None
-
-def write_singbox_config(proxy, listen_port, dns_servers=None):
-    """生成并写入sing-box配置文件"""
-    # 构建 sing-box 配置
-    singbox_config = {
+    config = {
         "log": {
             "disabled": False,
             "output": SINGBOX_LOG_PATH,
             "level": "info",
-        },
-        "dns": {
-            "servers": [],
-            "rules": [],
-            "disable_cache": True,
-            "disable_expire": True,
+            "timestamp": True
         },
         "inbounds": [
             {
                 "type": "socks",
                 "tag": "socks-in",
                 "listen": "127.0.0.1",
-                "listen_port": listen_port,
+                "listen_port": proxy_port,
                 "sniff": True,
                 "udp_timeout": 300,
-            }
+            },
         ],
         "outbounds": [
-            proxy,  # 动态传入的代理配置
-            {
-                "type": "direct",
-                "tag": "direct",
-            },
-            {
-                "type": "block",
-                "tag": "block",
-            },
+            proxy_config, # 主代理
+            {"type": "direct", "tag": "direct"},
+            {"type": "block", "tag": "block"}
         ],
         "route": {
             "rules": [
-                {"protocol": "dns", "outbound": "dns-out"},
-                {"ip_is_private": True, "outbound": "direct"},
-                {"domain_suffix": ["t.me", "tiktok.com"], "outbound": proxy["tag"]}, # 特定域名走代理
-                {"outbound": proxy["tag"]},  # 所有流量通过代理
+                {
+                    "domain_suffix": [
+                        "download.windowsupdate.com",
+                        "msedge.net",
+                        "bing.com",
+                        "office.com",
+                        "live.com",
+                        "microsoft.com",
+                        "windowsupdate.com"
+                    ],
+                    "outbound": "direct"
+                },
+                {
+                    "ip_is_private": True,
+                    "outbound": "direct"
+                },
+                {
+                    "inbound": "socks-in",
+                    "outbound": proxy_config["tag"] # 默认通过主代理
+                }
             ],
-            "final": "direct", # 默认直连
+            "default_outbound": "direct"
         },
+        "dns": {
+            "servers": [
+                {"address": "1.1.1.1", "strategy": "prefer_ipv4", "detour": "direct"},
+                {"address": "8.8.8.8", "strategy": "prefer_ipv4", "detour": "direct"}
+            ],
+            "rules": [
+                {
+                    "domain_suffix": [
+                        "download.windowsupdate.com",
+                        "msedge.net",
+                        "bing.com",
+                        "office.com",
+                        "live.com",
+                        "microsoft.com",
+                        "windowsupdate.com"
+                    ],
+                    "outbound": "direct"
+                },
+                {
+                    "inbound": "socks-in",
+                    "outbound": proxy_config["tag"]
+                }
+            ]
+        }
     }
+    return config
 
-    # 根据传入的 DNS 服务器设置
-    if dns_servers:
-        for i, dns_ip in enumerate(dns_servers):
-            singbox_config["dns"]["servers"].append({"address": dns_ip, "strategy": "prefer_ipv4", "tag": f"dns-server-{i}"})
-        # 将 DNS 出站规则添加到路由中
-        singbox_config["outbounds"].append({
-            "type": "dns",
-            "tag": "dns-out"
-        })
-        # 确保 DNS 流量走直连或指定的 DNS
-        singbox_config["route"]["rules"].insert(0, {"rule_set": "geosite-category-ads-lh", "outbound": "block"})
-        singbox_config["route"]["rules"].insert(0, {"domain_suffix": ["t.me", "tiktok.com"], "outbound": proxy["tag"]}) # 确保这些也走代理的DNS
-        singbox_config["route"]["rules"].insert(0, {"outbound": "dns-out", "port": 53, "network": "udp"}) # 确保 DNS 请求走 dns-out
-        
-    else: # 如果没有指定，sing-box会使用系统DNS
-        # 确保 DNS 流量走直连
-        singbox_config["outbounds"].append({
-            "type": "dns",
-            "tag": "dns-out"
-        })
-        singbox_config["route"]["rules"].insert(0, {"rule_set": "geosite-category-ads-lh", "outbound": "block"})
-        singbox_config["route"]["rules"].insert(0, {"domain_suffix": ["t.me", "tiktok.com"], "outbound": proxy["tag"]})
-        singbox_config["route"]["rules"].insert(0, {"outbound": "dns-out", "port": 53, "network": "udp"})
-
-
-    with open(SINGBOX_CONFIG_PATH, 'w') as f:
-        json.dump(singbox_config, f, indent=2)
-
-def get_free_port():
-    """获取一个空闲端口"""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('127.0.0.1', 0))
-        return s.getsockname()[1]
-
-def run_singbox(listen_port):
-    """启动sing-box进程"""
-    # 确保日志文件和目录存在
-    os.makedirs(os.path.dirname(SINGBOX_LOG_PATH), exist_ok=True)
-
-    command = [
-        SINGBOX_BIN_PATH,
-        "-C", SINGBOX_CONFIG_PATH,
-        "run"
-    ]
-    process = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        encoding='utf-8'
-    )
-    # 等待 sing-box 启动
-    time.sleep(1) # 简单等待，可以根据日志判断是否启动成功
-    return process
-
-async def test_proxy_connectivity(proxy, dns_servers=None):
-    """
-    测试代理的连接和吞吐量。
-    返回 (延迟, 吞吐量) 或 (None, None)
-    """
-    listen_port = get_free_port()
-    write_singbox_config(proxy, listen_port, dns_servers)
-    singbox_process = run_singbox(listen_port)
+# --- 核心函数：获取远程节点 ---
+def get_remote_nodes():
+    all_proxies = []
+    failed_proxy_ids = load_failed_proxies()
     
-    # 检查sing-box是否成功启动
-    time.sleep(1) # 稍微延长等待时间
-    if singbox_process.poll() is not None:
-        stderr_output = singbox_process.stderr.read()
-        logging.error(f"Sing-box 启动失败，代理: {proxy.get('tag', 'unknown')}, 错误: {stderr_output}")
-        return None, None
-
-    proxy_url = f"socks5://127.0.0.1:{listen_port}"
-
-    latency = float('inf')
-    throughput = 0
-
-    try:
-        # 测试延迟
-        start_time = time.time()
-        async with aiohttp.ClientSession(trust_env=True) as session:
-            try:
-                # 使用代理访问一个公共的、轻量级的网站，例如 Google 的 204 页面
-                async with session.get("https://www.google.com/generate_204", 
-                                       proxy=proxy_url, 
-                                       timeout=TEST_TIMEOUT) as response:
-                    response.raise_for_status()
-                    latency = (time.time() - start_time) * 1000 # 毫秒
-                    logging.info(f"代理 {proxy.get('tag', 'unknown')} 延迟: {latency:.2f}ms")
-            except Exception as e:
-                logging.warning(f"代理 {proxy.get('tag', 'unknown')} 延迟测试失败: {e}")
-                return None, None # 延迟测试失败直接返回
-
-        # 测试吞吐量
+    for source in NODES_SOURCES:
+        url = source["url"]
+        source_type = source["type"]
+        
+        logging.info(f"正在从 {url} 获取节点...")
         try:
-            download_url = "https://cachefly.cachefly.net/100mb.test" # 使用一个大文件进行下载测试
-            start_time = time.time()
-            async with aiohttp.ClientSession(trust_env=True) as session:
-                async with session.get(download_url, proxy=proxy_url, timeout=TEST_TIMEOUT) as response:
-                    response.raise_for_status()
-                    total_downloaded = 0
-                    async for chunk in response.content.iter_chunked(8192):
-                        total_downloaded += len(chunk)
-                        if total_downloaded >= DOWNLOAD_TEST_SIZE: # 下载达到指定大小即停止
-                            break
+            response = requests.get(url, timeout=HTTP_TIMEOUT_SECONDS)
+            response.raise_for_status()
+            content = response.text
             
-            end_time = time.time()
-            duration = end_time - start_time
-            if duration > 0:
-                throughput = (total_downloaded / duration) / (1024 * 1024) # MB/s
-                logging.info(f"代理 {proxy.get('tag', 'unknown')} 吞吐量: {throughput:.2f}MB/s")
-            else:
-                logging.warning(f"代理 {proxy.get('tag', 'unknown')} 吞吐量测试时间过短或下载量为0。")
-                throughput = 0
-
-            # 检查吞吐量是否达到最低要求
-            if throughput < MIN_THROUGHPUT:
-                logging.warning(f"代理 {proxy.get('tag', 'unknown')} 吞吐量 {throughput:.2f}MB/s 低于最低要求 {MIN_THROUGHPUT:.2f}MB/s。")
-                return None, None # 吞吐量不达标也返回 None, None
-
-        except asyncio.TimeoutError:
-            logging.warning(f"代理 {proxy.get('tag', 'unknown')} 吞吐量测试超时。")
-            return None, None
+            if source_type == "plain":
+                lines = content.splitlines()
+                for line in lines:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    
+                    try:
+                        # 使用改进后的 parse_proxy_url
+                        proxy = parse_proxy_url(line)
+                        if proxy and generate_proxy_id(proxy) not in failed_proxy_ids:
+                            all_proxies.append(proxy)
+                    except Exception as e:
+                        logging.warning(f"无法解析代理 URL: {line} - {e}")
+            elif source_type == "base64":
+                try:
+                    decoded_content = base64.b64decode(content).decode('utf-8')
+                    lines = decoded_content.splitlines()
+                    for line in lines:
+                        line = line.strip()
+                        if not line or line.startswith("#"):
+                            continue
+                        try:
+                            proxy = parse_proxy_url(line)
+                            if proxy and generate_proxy_id(proxy) not in failed_proxy_ids:
+                                all_proxies.append(proxy)
+                        except Exception as e:
+                            logging.warning(f"无法解析 Base64 解码后的代理 URL: {line} - {e}")
+                except Exception as e:
+                    logging.warning(f"Base64 解码节点内容失败: {e}")
+            
+        except requests.exceptions.RequestException as e:
+            logging.error(f"获取节点源 {url} 失败: {e}")
         except Exception as e:
-            logging.warning(f"代理 {proxy.get('tag', 'unknown')} 吞吐量测试失败: {e}")
-            return None, None
+            logging.error(f"处理节点源 {url} 失败: {e}")
+            
+    logging.info(f"获取到 {len(all_proxies)} 个待测试节点。")
+    return all_proxies
 
-    except asyncio.TimeoutError:
-        logging.warning(f"代理 {proxy.get('tag', 'unknown')} 连接超时。")
-        return None, None
+# --- 异步函数：测试代理延迟 ---
+async def test_latency(proxy_port, test_url):
+    try:
+        start_time = time.time()
+        connector = aiohttp.TCPConnector(
+            family=socket.AF_INET,  # Force IPv4 to avoid IPv6 issues if sing-box is not fully configured for it
+            limit=0, # No limit on connections
+            ttl_dns_cache=300
+        )
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(test_url, proxy=f"http://127.0.0.1:{proxy_port}", timeout=HTTP_TIMEOUT_SECONDS) as response:
+                if response.status == 200:
+                    latency = (time.time() - start_time) * 1000  # 毫秒
+                    return latency
+                else:
+                    logging.debug(f"URL {test_url} 返回状态码 {response.status}")
+                    return float('inf')  # 返回无穷大表示失败
+    except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror) as e:
+        logging.debug(f"测试 URL {test_url} 延迟失败: {e}")
+        return float('inf')
     except Exception as e:
-        logging.warning(f"代理 {proxy.get('tag', 'unknown')} 连接或测试失败: {e}")
-        return None, None
+        logging.debug(f"测试 URL {test_url} 延迟时发生未知错误: {e}")
+        return float('inf')
+
+# --- 异步函数：测试代理吞吐量 ---
+async def test_throughput(proxy_port):
+    try:
+        start_time = time.time()
+        downloaded_bytes = 0
+        connector = aiohttp.TCPConnector(
+            family=socket.AF_INET,
+            limit=0,
+            ttl_dns_cache=300
+        )
+        async with aiohttp.ClientSession(connector=connector) as session:
+            async with session.get(SPEEDTEST_URL, proxy=f"http://127.0.0.1:{proxy_port}", timeout=HTTP_TIMEOUT_SECONDS) as response:
+                response.raise_for_status()
+                async for chunk in response.content.iter_chunked(8192):
+                    downloaded_bytes += len(chunk)
+                    if (time.time() - start_time) > HTTP_TIMEOUT_SECONDS:
+                        raise asyncio.TimeoutError("Speed test timed out")
+                
+                duration = time.time() - start_time
+                if duration > 0:
+                    throughput_bps = downloaded_bytes / duration
+                    return throughput_bps
+                return 0
+    except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError, socket.gaierror) as e:
+        logging.debug(f"测试吞吐量失败: {e}")
+        return 0
+    except Exception as e:
+        logging.debug(f"测试吞吐量时发生未知错误: {e}")
+        return 0
+
+# --- 核心测试逻辑 ---
+async def test_proxy(proxy, proxy_port, semaphore):
+    singbox_process = None
+    try:
+        async with semaphore:
+            # 1. 生成并保存 sing-box 配置
+            config = generate_singbox_config(proxy, proxy_port)
+            if not config:
+                return None
+            
+            with open(SINGBOX_CONFIG_PATH, 'w', encoding='utf-8') as f:
+                json.dump(config, f, ensure_ascii=False, indent=2)
+
+            # 2. 启动 sing-box
+            singbox_process = subprocess.Popen(
+                [SINGBOX_BIN_PATH, "run", "-c", SINGBOX_CONFIG_PATH],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1 # Line-buffered output
+            )
+
+            # 等待 sing-box 启动
+            startup_successful = False
+            start_time = time.time()
+            while time.time() - start_time < SINGBOX_STARTUP_TIMEOUT:
+                line = singbox_process.stderr.readline() # Read from stderr as sing-box logs to stderr by default
+                if "sing-box started" in line:
+                    startup_successful = True
+                    logging.debug(f"sing-box 在端口 {proxy_port} 启动成功。")
+                    break
+                elif singbox_process.poll() is not None: # Process exited
+                    logging.warning(f"sing-box 意外退出，可能配置有误。日志: {line.strip()}")
+                    break
+                await asyncio.sleep(0.1) # Avoid busy-waiting
+
+            if not startup_successful:
+                logging.warning(f"sing-box 未能在 {SINGBOX_STARTUP_TIMEOUT} 秒内启动，跳过代理测试: {proxy.get('tag', 'unknown')}")
+                return None
+
+            # 3. 测试延迟
+            latency = float('inf')
+            for test_url in TEST_URLS:
+                current_latency = await test_latency(proxy_port, test_url)
+                latency = min(latency, current_latency)
+                if latency != float('inf'): # If any URL works, consider it reachable for latency
+                    break
+
+            if latency == float('inf'):
+                logging.info(f"代理 {proxy.get('tag', 'unknown')} 延迟测试失败。")
+                return None
+
+            # 4. 测试吞吐量
+            throughput_bps = await test_throughput(proxy_port)
+            throughput_mbps = throughput_bps / (1024 * 1024)
+            if throughput_bps < SPEEDTEST_MIN_THROUGHPUT:
+                logging.info(f"代理 {proxy.get('tag', 'unknown')} 吞吐量不足 ({throughput_mbps:.2f} Mbps)。")
+                return None
+            
+            logging.info(f"代理 {proxy.get('tag', 'unknown')} 测试成功: 延迟 {latency:.2f}ms, 吞吐量 {throughput_mbps:.2f} Mbps")
+            return {"proxy": proxy, "latency": latency, "throughput": throughput_mbps}
+
+    except Exception as e:
+        logging.error(f"测试代理 {proxy.get('tag', 'unknown')} 时发生异常: {e}")
+        return None
     finally:
-        if singbox_process:
+        if singbox_process and singbox_process.poll() is None:
+            logging.debug(f"停止 sing-box 进程 (端口 {proxy_port})...")
             singbox_process.terminate()
-            singbox_process.wait(timeout=5)
-            if singbox_process.poll() is None:
+            try:
+                singbox_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
                 singbox_process.kill()
-        # 清理配置文件，但通常这不是必须的，因为每次都会覆盖
-        # if os.path.exists(SINGBOX_CONFIG_PATH):
-        #     os.remove(SINGBOX_CONFIG_PATH)
+                logging.warning(f"sing-box 进程强制关闭 (端口 {proxy_port}).")
+        # 清理配置，可选，但对于频繁测试有用
+        if os.path.exists(SINGBOX_CONFIG_PATH):
+            os.remove(SINGBOX_CONFIG_PATH)
 
-    return latency, throughput
+# --- 主执行逻辑 ---
+async def main():
+    logging.info("开始获取和测试代理。")
+    all_proxies = get_remote_nodes()
+    
+    if not all_proxies:
+        logging.info("没有获取到有效代理，退出。")
+        return
 
-def load_existing_proxies():
-    """加载已有的可用节点"""
-    if os.path.exists(OUTPUT_SUB_FILE):
-        with open(OUTPUT_SUB_FILE, 'r') as f:
-            return set(f.read().splitlines())
-    return set()
+    # 打乱代理列表以分散负载和避免对某些源的过度请求
+    random.shuffle(all_proxies)
 
-def run_tests_and_save_results(proxies):
-    """
-    运行代理测试并保存结果。
-    """
     results = []
     failed_proxies = load_failed_proxies()
     
-    # 定义中国联通的 DNS
-    union_dns_servers = ["202.106.0.20", "202.106.196.115"]
+    # 使用 Semaphore 控制并发量
+    semaphore = asyncio.Semaphore(CONCURRENT_TESTS)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=os.cpu_count() * 2) as executor:
-        future_to_proxy = {executor.submit(asyncio.run, test_proxy_connectivity(proxy, dns_servers=union_dns_servers)): proxy for proxy in proxies}
-        for future in concurrent.futures.as_completed(future_to_proxy):
-            proxy = future_to_proxy[future]
-            try:
-                latency, throughput = future.result()
-                if latency is not None and throughput is not None:
-                    results.append({"proxy": proxy, "latency": latency, "throughput": throughput})
-                    proxy_id = generate_proxy_id(proxy)
-                    if proxy_id in failed_proxies:
-                        failed_proxies.remove(proxy_id) # 成功则从失败列表中移除
-                else:
-                    failed_proxies.add(generate_proxy_id(proxy))
-            except Exception as exc:
-                logging.error(f"代理 {proxy.get('tag', 'unknown')} 生成异常: {exc}")
-                failed_proxies.add(generate_proxy_id(proxy))
+    tasks = []
+    current_proxy_port = BASE_PROXY_PORT
+    for proxy in all_proxies:
+        if len(results) >= MAX_PROXIES:
+            logging.info(f"已达到最大代理数量 {MAX_PROXIES}，停止测试。")
+            break
 
+        # 检查是否已是失败节点
+        if generate_proxy_id(proxy) in failed_proxies:
+            logging.debug(f"跳过已知的失败代理: {proxy.get('tag', 'unknown')}")
+            continue
+        
+        tasks.append(test_proxy(proxy, current_proxy_port, semaphore))
+        current_proxy_port += 1
+        # 重置端口如果超过某个范围，或者简单地让它增加
+        if current_proxy_port > BASE_PROXY_PORT + 5000: # 避免端口耗尽，可以根据需要调整
+            current_proxy_port = BASE_PROXY_PORT
+    
+    # 等待所有测试完成
+    for future in asyncio.as_completed(tasks):
+        try:
+            result = await future
+            if result:
+                results.append(result)
+            else:
+                # 如果测试失败，将代理ID添加到失败列表中
+                # 需要一种方式从 `test_proxy` 返回失败的代理信息
+                # 目前 `test_proxy` 返回 `None` 表示失败，这里需要改进以获取原始代理
+                # 暂时通过遍历原始 all_proxies 来匹配
+                pass 
+        except Exception as e:
+            logging.error(f"任务完成时发生未捕获的异常: {e}")
+
+    # 重新加载所有代理，并根据结果更新失败列表
+    # (此部分可能需要更复杂的逻辑，因为异步任务完成后，
+    # 难以直接从 `future` 获取到原始 `proxy` 对象来添加 `generate_proxy_id`)
+    # 简单的做法是，如果 `result` 是 None，则表示该代理失败，
+    # 但这需要 `test_proxy` 函数在返回 None 时也传递原始代理对象。
+    # 暂时先通过检查 `results` 中没有的代理来推断失败
+    succeeded_proxy_ids = {generate_proxy_id(r["proxy"]) for r in results}
+    for proxy in all_proxies:
+        proxy_id = generate_proxy_id(proxy)
+        if proxy_id not in succeeded_proxy_ids:
+            failed_proxies.add(proxy_id)
+            
     # 保存失败节点
     if failed_proxies:
         save_failed_proxies(failed_proxies)
@@ -734,50 +883,24 @@ def run_tests_and_save_results(proxies):
 
     # 保存新可用节点（去重并追加）
     new_proxy_urls = []
-    for result in results:
-        proxy_url = singbox_to_proxy_url(result["proxy"])
-        if proxy_url:
-            formatted_url = f"{proxy_url}#{result['latency']:.2f}ms,throughput={result['throughput']:.2f}MB/s"
-            if formatted_url not in existing_proxies:
-                new_proxy_urls.append(formatted_url)
-                existing_proxies.add(formatted_url)
+    with open(OUTPUT_SUB_FILE, 'a', encoding='utf-8') as f: # Use 'a' for append
+        for result in results:
+            proxy_url = singbox_to_proxy_url(result["proxy"])
+            if proxy_url:
+                # 格式化输出的 URL 包含延迟和吞吐量
+                formatted_url = f"{proxy_url}#{result['latency']:.2f}ms,throughput={result['throughput']:.2f}MB/s"
+                if formatted_url not in existing_proxies:
+                    new_proxy_urls.append(formatted_url)
+                    existing_proxies.add(formatted_url)
+                    f.write(f"{formatted_url}\n") # Write immediately to file
 
     if new_proxy_urls:
-        content = "\n".join(new_proxy_urls)
-        content_b64 = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-
-        with open(OUTPUT_SUB_FILE, 'a') as f: # 使用追加模式
-            for url in new_proxy_urls:
-                f.write(url + "\n")
-        logging.info(f"已将 {len(new_proxy_urls)} 个新可用节点追加到 {OUTPUT_SUB_FILE}")
+        logging.info(f"已添加 {len(new_proxy_urls)} 个新可用节点到 {OUTPUT_SUB_FILE}")
+        # 这里不再需要 base64 编码，因为我们是直接写入文件
     else:
-        logging.info("没有新的可用节点需要保存。")
+        logging.info("没有发现新的可用节点。")
 
-
-async def main():
-    """主函数"""
-    logging.info("开始更新代理...")
-    
-    existing_proxies_ids = {generate_proxy_id(proxy_url_to_singbox(url.split('#')[0])) 
-                            for url in load_existing_proxies() if proxy_url_to_singbox(url.split('#')[0])}
-    failed_proxies_ids = load_failed_proxies()
-
-    # 计算需要获取的新代理数量
-    current_proxies_count = len(existing_proxies_ids)
-    proxies_to_fetch = MAX_PROXIES - current_proxies_count
-    if proxies_to_fetch <= 0:
-        logging.info(f"已达到最大代理数量 {MAX_PROXIES}，无需获取新代理。")
-        return
-
-    proxies_to_test = extract_proxies_from_url(NODES_SOURCES, existing_proxies_ids, proxies_to_fetch, failed_proxies_ids)
-
-    if proxies_to_test:
-        logging.info(f"将测试 {len(proxies_to_test)} 个新代理...")
-        run_tests_and_save_results(proxies_to_test)
-    else:
-        logging.info("没有新代理需要测试。")
-
-    logging.info("代理更新完成。")
+    logging.info("代理测试和收集完成。")
 
 if __name__ == "__main__":
     asyncio.run(main())
