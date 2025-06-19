@@ -1,6 +1,5 @@
 #!/bin/bash
-set -x # 放在脚本执行的越早越好，这样能追踪到所有命令
-echo "Script started at $(date)" # 放在 set -x 之后，这样这行 echo 也会被追踪
+echo "Script started at $(date)" # 保留这行来确认脚本启动
 # 定义日志文件和输出文件的路径
 LOG_FILE="node_connectivity_results.log"
 OUTPUT_DIR="data"
