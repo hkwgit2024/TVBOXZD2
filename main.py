@@ -25,6 +25,10 @@ OUTPUT_SUB_FILE = "data/collectSub.txt"
 # 节点源配置列表
 NODES_SOURCES = [
     {
+        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+        "type": "plain",
+    },
+    {
         "url": "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
         "type": "plain",
     },
@@ -32,9 +36,13 @@ NODES_SOURCES = [
         "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/base64.yaml",
         "type": "yaml",
     },
+    {
+        "url": "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
+        "type": "yaml",
+    },
 ]
 
-MAX_PROXIES = 25000
+MAX_PROXIES = 925000
 TEST_URLS = ["https://www.google.com", "http://www.example.com", "https://www.cloudflare.com"]
 HTTP_TIMEOUT_SECONDS = 10
 SINGBOX_STARTUP_TIMEOUT = 30
