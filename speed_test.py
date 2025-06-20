@@ -12,21 +12,29 @@ import yaml
 
 # 常量定义
 SOCKS_PORT = 1080
-HTTP_PORT = 8080
-# 增加多个测试URL，提高测试的全面性
+HTTP_PORT = 8080 # 用于HTTP代理模式，方便requests库进行测试
+
+# 测试URLs，用于连通性测试
 TEST_URLS = [
     "https://www.tiktok.com",
     "https://www.google.com/generate_204", # Google的无内容页面，常用于检测网络连通性
     "http://connectivitycheck.gstatic.com/generate_204", # Android系统常用连通性检测URL
-    # "https://www.youtube.com", # 如果需要测试YouTube解锁，但可能更耗时且易被检测
 ]
+
+# 下载速度测试文件URL，使用Cloudflare的10MB测试文件
+DOWNLOAD_TEST_FILE_URL = "https://speed.cloudflare.com/__down?bytes=10000000" # 约10MB文件
+
 TEST_COUNT = 3  # 每个节点测试次数
-TIMEOUT = 5  # 单次请求超时时间（秒）
+TIMEOUT = 5  # 单次请求超时时间（秒），用于连接和短时间的数据传输
+DOWNLOAD_TIMEOUT = 30 # 下载文件时的读取超时时间，应适当延长
+
 MAX_NODES = 1000  # 最大测试节点数
 MAX_CONCURRENT = 10  # 最大并发线程数
 OUTPUT_DIR = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "sub.txt")
-LATENCY_THRESHOLD = 500  # 延迟阈值（毫秒），从1000降至500，筛选更高质量节点
+
+LATENCY_THRESHOLD = 500  # 延迟阈值（毫秒）。低于此值的延迟更优。
+MIN_DOWNLOAD_SPEED_KBPS = 100 # 最低下载速度阈值（KB/s）。例如 100 KB/s = 0.1 MB/s。
 
 # 支持的协议
 SINGBOX_PROTOCOLS = {"vmess", "vless", "trojan", "ss", "ssr", "hysteria2"}
@@ -49,7 +57,6 @@ def parse_vmess_url(url):
         return None
     try:
         encoded = url[len("vmess://"):]
-        # Base64解码时，需要填充'='以确保长度是4的倍数
         decoded = base64.urlsafe_b64decode(encoded + '=' * (-len(encoded) % 4)).decode("utf-8")
         return json.loads(decoded)
     except Exception as e:
@@ -114,7 +121,7 @@ def parse_ssr_url(url):
         if len(parts) < 6:
             return None
         server, port, protocol, method, obfs, password_encoded = parts[:6]
-        # SSR的密码也需要单独解码
+        
         password = base64.urlsafe_b64decode(password_encoded + '=' * (-len(password_encoded) % 4)).decode("utf-8")
         
         query = parse_qs(decoded.split('?')[-1]) if '?' in decoded else {}
@@ -142,10 +149,9 @@ def parse_ss_url(url):
     if not url.startswith("ss://"):
         return None
     try:
-        # SS URL的格式通常是 ss://base64(method:password)@server:port#remarks
         encoded_part = url[len("ss://"):url.index('@')]
         decoded_auth = base64.urlsafe_b64decode(encoded_part + '=' * (-len(encoded_part) % 4)).decode("utf-8")
-        method, password = decoded_auth.split(':', 1) # 只按第一个冒号分割
+        method, password = decoded_auth.split(':', 1)
         
         parsed_url = urlparse(url)
         return {
@@ -202,7 +208,7 @@ def generate_singbox_config(node_url):
                         "server_port": node_data["port"],
                         "password": node_data["password"],
                         "tls": {
-                            "disable_sni": node_data["insecure"], # 如果insecure为True，则禁用SNI
+                            "disable_sni": node_data["insecure"],
                             "server_name": node_data["sni"] or node_data["server"]
                         }
                     },
@@ -260,9 +266,9 @@ def generate_singbox_config(node_url):
                         "uuid": node_data["id"],
                         "flow": node_data["flow"],
                         "tls": {
-                            "enabled": node_data["security"] in ["tls", "reality"], # vless有tls和reality两种加密
+                            "enabled": node_data["security"] in ["tls", "reality"],
                             "server_name": node_data["sni"] or node_data["address"],
-                            "insecure": node_data["security"] == "none" # 如果security为none，则认为不安全连接
+                            "insecure": node_data["security"] == "none"
                         },
                         "transport": {
                             "type": node_data["network"],
@@ -376,15 +382,14 @@ def generate_xray_config(node_url):
             node_data = parse_vmess_url(node_url)
             if not node_data or not node_data.get("add") or not node_data.get("id"):
                 return None
-            # Xray配置中关于TLS和传输设置的映射可能与Sing-Box略有不同
+            
             stream_settings = {
                 "network": node_data.get("net", "tcp")
             }
-            if node_data.get("tls") == "tls": # vmess的tls字段通常是"tls"或空
+            if node_data.get("tls") == "tls":
                 stream_settings["security"] = "tls"
                 stream_settings["tlsSettings"] = {"serverName": node_data.get("host", "")}
             
-            # 根据传输类型添加特有设置
             if node_data.get("net") == "ws":
                 stream_settings["wsSettings"] = {
                     "path": node_data.get("path", "/"),
@@ -393,7 +398,7 @@ def generate_xray_config(node_url):
             elif node_data.get("net") == "http":
                 stream_settings["httpSettings"] = {
                     "path": node_data.get("path", "/"),
-                    "host": node_data.get("host", "").split(',') # Xray的httpSettings host是列表
+                    "host": node_data.get("host", "").split(',')
                 }
             
             return json.dumps({
@@ -430,7 +435,6 @@ def generate_xray_config(node_url):
                 stream_settings["security"] = node_data["security"]
                 stream_settings["tlsSettings"] = {"serverName": node_data["sni"] or node_data["address"]}
             
-            # 根据传输类型添加特有设置
             if node_data["network"] == "ws":
                 stream_settings["wsSettings"] = {
                     "path": node_data["path"],
@@ -471,7 +475,7 @@ def generate_xray_config(node_url):
 
             stream_settings = {
                 "network": node_data["network"],
-                "security": "tls", # Trojan协议本身就强制TLS
+                "security": "tls",
                 "tlsSettings": {"serverName": node_data["sni"] or node_data["address"]}
             }
 
@@ -545,81 +549,108 @@ def generate_xray_config(node_url):
 
 def run_single_test(core_name, config_path):
     """
-    运行单次代理核心测试，并返回延迟和结果。
+    运行单次代理核心测试，包括连通性和下载速度。
+    返回连接延迟、下载速度和测试结果字符串。
     """
     process = None
+    connect_latency = None
+    download_speed_kbps = 0
+    test_success = False # 用于判断连通性是否成功
+
     try:
         if core_name == "sing-box":
-            process = subprocess.Popen(["sing-box", "run", "-c", config_path], 
+            process = subprocess.Popen(["sing-box", "run", "-c", config_path],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif core_name == "xray":
-            process = subprocess.Popen(["xray", "-c", config_path], 
+            process = subprocess.Popen(["xray", "-c", config_path],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            return None, "Unknown core"
+            return None, None, "Unknown core"
 
-        time.sleep(1) # 等待代理核心启动
-        
-        # 尝试访问多个测试URL，只要有一个成功就算成功
-        total_latency = 0
-        success_count = 0
-        
+        time.sleep(1.5) # 给予代理核心充足的启动时间 (略微增加)
+
+        # 1. 连通性/延迟测试 (通过HTTP代理测试)
         for test_url in TEST_URLS:
             try:
                 start_time = time.time()
-                response = requests.get(test_url, proxies={"http": f"socks5://127.0.0.1:{SOCKS_PORT}"}, timeout=TIMEOUT)
-                latency = (time.time() - start_time) * 1000
-                if response.status_code == 200 or response.status_code == 204: # 204是成功但无内容的响应码
-                    total_latency += latency
-                    success_count += 1
-                    break # 只要有一个成功就跳出循环
-            except requests.exceptions.RequestException:
+                # 使用HTTP代理模式进行测试
+                response = requests.get(test_url, proxies={"http": f"http://127.0.0.1:{HTTP_PORT}", "https": f"http://127.0.0.1:{HTTP_PORT}"}, timeout=TIMEOUT)
+                connect_latency = (time.time() - start_time) * 1000 # 毫秒
+                if response.status_code in [200, 204]:
+                    test_success = True
+                    log_message("debug", f"Core {core_name} connected to {test_url} successfully. Latency: {connect_latency:.2f}ms")
+                    break # 只要一个URL连通成功就继续下一步
+            except requests.exceptions.RequestException as e:
+                log_message("debug", f"Core {core_name} failed to connect to {test_url} ({e}). Trying next URL.")
                 continue # 当前URL失败，尝试下一个
 
-        if process:
-            process.kill() # 终止代理核心进程
-            process.wait(timeout=1) # 等待进程彻底终止，避免僵尸进程
-            # 清理stdout和stderr缓冲区，避免死锁
-            try:
-                process.stdout.read()
-                process.stderr.read()
-            except ValueError: # 如果进程已关闭，读取可能会失败
-                pass
+        if not test_success:
+            return None, None, "Connection failed on all test URLs"
 
-        if success_count > 0:
-            return total_latency / success_count, "Success" # 返回平均延迟
-        else:
-            return None, "All test URLs failed"
+        # 2. 下载速度测试 (在连通性成功后进行)
+        try:
+            start_download_time = time.time()
+            with requests.get(DOWNLOAD_TEST_FILE_URL, proxies={"http": f"http://127.0.0.1:{HTTP_PORT}", "https": f"http://127.0.0.1:{HTTP_PORT}"}, stream=True, timeout=(TIMEOUT, DOWNLOAD_TIMEOUT)) as r:
+                r.raise_for_status() # 检查HTTP响应状态码，非2xx会抛出异常
+                total_downloaded_bytes = 0
+                for chunk in r.iter_content(chunk_size=8192): # 每次获取8KB数据
+                    if chunk:
+                        total_downloaded_bytes += len(chunk)
+            
+            end_download_time = time.time()
+            download_duration = end_download_time - start_download_time
+
+            if download_duration > 0:
+                download_speed_kbps = (total_downloaded_bytes / 1024) / download_duration # 计算KB/s
+
+            log_message("debug", f"Core {core_name} download speed: {download_speed_kbps:.2f} KB/s")
+
+        except requests.exceptions.RequestException as e:
+            log_message("error", f"Core {core_name} download test failed: {e}")
+            download_speed_kbps = 0 # 下载失败，速度设为0
+
+        return connect_latency, download_speed_kbps, "Success"
 
     except Exception as e:
+        log_message("error", f"Unexpected error during {core_name} test: {e}")
+        return None, None, f"Unexpected error: {e}"
+    finally:
         if process:
-            process.kill()
-            process.wait(timeout=1)
+            # 确保进程被终止，无论成功或失败
             try:
+                process.terminate() # 尝试优雅终止
+                process.wait(timeout=1) # 等待进程终止
+                if process.poll() is None: # 如果进程仍未终止
+                    process.kill() # 强制杀死
+                # 清理stdout和stderr缓冲区
                 process.stdout.read()
                 process.stderr.read()
-            except ValueError:
-                pass
-        return None, f"Test failed: {e}"
+            except Exception as e:
+                log_message("error", f"Failed to terminate {core_name} process: {e}")
+
 
 def run_test_with_retries(core_name, config_path):
     """
-    对一个节点进行多次测试，返回最佳（最低）延迟。
+    对一个节点进行多次测试，返回平均延迟和平均下载速度。
     """
     latencies = []
+    speeds = []
+    
     for i in range(TEST_COUNT):
-        latency, result = run_single_test(core_name, config_path)
-        if latency is not None:
+        latency, speed, result = run_single_test(core_name, config_path)
+        if latency is not None and speed is not None and result == "Success":
             latencies.append(latency)
+            speeds.append(speed)
         else:
             log_message("debug", f"Core {core_name} test attempt {i+1} failed: {result}")
     
-    if latencies:
-        # 返回所有成功测试的平均延迟
-        avg_latency = sum(latencies) / len(latencies)
-        return avg_latency, "Success"
+    avg_latency = sum(latencies) / len(latencies) if latencies else None
+    avg_speed = sum(speeds) / len(speeds) if speeds else None
+    
+    if avg_latency is not None and avg_speed is not None:
+        return avg_latency, avg_speed, "Success"
     else:
-        return None, "All test attempts failed"
+        return None, None, "All test attempts failed or invalid results"
 
 
 def process_node(node_url, index, total_nodes):
@@ -628,8 +659,9 @@ def process_node(node_url, index, total_nodes):
     """
     log_message("info", f"处理节点 {index}/{total_nodes}: {node_url}")
     protocol = node_url.split("://")[0].lower()
-    singbox_latency, singbox_result = None, "Skipped"
-    xray_latency, xray_result = None, "Skipped"
+    
+    singbox_latency, singbox_speed, singbox_result = None, None, "Skipped"
+    xray_latency, xray_speed, xray_result = None, None, "Skipped"
 
     # 测试 Sing-Box
     if protocol in SINGBOX_PROTOCOLS:
@@ -639,12 +671,14 @@ def process_node(node_url, index, total_nodes):
             try:
                 with open(singbox_config_path, "w") as f:
                     f.write(singbox_config)
-                singbox_latency, singbox_result = run_test_with_retries("sing-box", singbox_config_path)
-            finally: # 确保配置文件被删除
+                singbox_latency, singbox_speed, singbox_result = run_test_with_retries("sing-box", singbox_config_path)
+            except Exception as e:
+                log_message("error", f"Sing-Box test preparation failed for node {index}: {e}")
+            finally:
                 if os.path.exists(singbox_config_path):
                     os.remove(singbox_config_path)
         else:
-            singbox_latency, singbox_result = None, "Config generation failed"
+            singbox_result = "Config generation failed"
 
     # 测试 Xray
     if protocol in XRAY_PROTOCOLS:
@@ -654,17 +688,19 @@ def process_node(node_url, index, total_nodes):
             try:
                 with open(xray_config_path, "w") as f:
                     f.write(xray_config)
-                xray_latency, xray_result = run_test_with_retries("xray", xray_config_path)
-            finally: # 确保配置文件被删除
+                xray_latency, xray_speed, xray_result = run_test_with_retries("xray", xray_config_path)
+            except Exception as e:
+                log_message("error", f"Xray test preparation failed for node {index}: {e}")
+            finally:
                 if os.path.exists(xray_config_path):
                     os.remove(xray_config_path)
         else:
-            xray_latency, xray_result = None, "Config generation failed"
+            xray_result = "Config generation failed"
 
-    log_message("info", f"节点 {index} 结果: Sing-Box 延迟={singbox_latency}ms, 结果={singbox_result}; Xray 延迟={xray_latency}ms, 结果={xray_result}")
+    log_message("info", f"节点 {index} 结果: Sing-Box (延迟={singbox_latency:.2f}ms, 速度={singbox_speed:.2f}KB/s, 结果={singbox_result}); Xray (延迟={xray_latency:.2f}ms, 速度={xray_speed:.2f}KB/s, 结果={xray_result})")
     
-    # 返回原始URL和两个测试核心的结果，方便后续排序和筛选
-    return node_url, singbox_latency, singbox_result, xray_latency, xray_result
+    # 返回原始URL和两个测试核心的平均结果
+    return node_url, singbox_latency, singbox_speed, singbox_result, xray_latency, xray_speed, xray_result
 
 # --- 主逻辑函数 ---
 
@@ -680,7 +716,6 @@ def load_node_list(file_path="all_nodes.txt"):
         with open(file_path, "r", encoding="utf-8") as f:
             nodes = [line.strip() for line in f.readlines() if line.strip()]
         
-        # 严格匹配支持的协议
         pattern = re.compile(r"^(vmess|vless|trojan|ss|ssr|hysteria2)://[^\s]+$")
         nodes = [node for node in nodes if pattern.match(node)]
         
@@ -689,7 +724,7 @@ def load_node_list(file_path="all_nodes.txt"):
             return []
         
         log_message("info", f"成功加载 {len(nodes)} 个节点")
-        return nodes[:MAX_NODES] # 限制最大处理节点数
+        return nodes[:MAX_NODES]
     except Exception as e:
         log_message("error", f"加载节点列表失败: {e}")
         return []
@@ -699,59 +734,61 @@ def main():
     主函数，执行节点测试、筛选和结果保存。
     """
     start_time = time.time()
-    os.makedirs(OUTPUT_DIR, exist_ok=True) # 确保输出目录存在
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     nodes = load_node_list()
     if not nodes:
         log_message("error", "无节点可测试，退出")
         return
 
-    # 存储所有通过测试的节点及其最佳延迟
-    # 格式: (node_url, best_latency)
+    # 存储所有通过测试的节点及其最佳指标
+    # 格式: (node_url, best_latency, best_speed)
     qualified_nodes_info = [] 
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT) as executor:
-        # 提交所有节点的处理任务
         future_to_node = {executor.submit(process_node, node_url, i + 1, len(nodes)): node_url 
                           for i, node_url in enumerate(nodes)}
         
-        # 遍历已完成的任务
         for future in as_completed(future_to_node):
-            node_url_original = future_to_node[future] # 获取原始节点URL
+            node_url_original = future_to_node[future]
             try:
-                # result 是 (node_url, singbox_latency, singbox_result, xray_latency, xray_result)
-                node_url_returned, singbox_latency, singbox_result, xray_latency, xray_result = future.result()
+                node_url_returned, sb_lat, sb_spd, sb_res, xr_lat, xr_spd, xr_res = future.result()
                 
+                # 初始化最佳指标
                 best_latency = float('inf')
+                best_speed = 0.0
+
+                # 检查 Sing-Box 结果
+                if sb_lat is not None and sb_spd is not None and sb_lat < LATENCY_THRESHOLD and sb_spd >= MIN_DOWNLOAD_SPEED_KBPS:
+                    best_latency = min(best_latency, sb_lat)
+                    best_speed = max(best_speed, sb_spd)
                 
-                # 判断Sing-Box测试结果
-                if singbox_latency is not None and singbox_latency < LATENCY_THRESHOLD:
-                    best_latency = min(best_latency, singbox_latency)
+                # 检查 Xray 结果
+                if xr_lat is not None and xr_spd is not None and xr_lat < LATENCY_THRESHOLD and xr_spd >= MIN_DOWNLOAD_SPEED_KBPS:
+                    # 如果Xray比Sing-Box的延迟更低，或者延迟相同但速度更快，则更新
+                    if xr_lat < best_latency or (xr_lat == best_latency and xr_spd > best_speed):
+                        best_latency = xr_lat
+                        best_speed = xr_spd
                 
-                # 判断Xray测试结果
-                if xray_latency is not None and xray_latency < LATENCY_THRESHOLD:
-                    best_latency = min(best_latency, xray_latency)
-                
-                # 如果有任何一个核心测试成功且延迟在阈值内，则认为该节点合格
-                if best_latency != float('inf'):
-                    qualified_nodes_info.append((node_url_returned, best_latency))
+                # 如果找到了一个合格的节点（延迟和速度都符合要求）
+                if best_latency != float('inf') and best_speed >= MIN_DOWNLOAD_SPEED_KBPS:
+                    qualified_nodes_info.append((node_url_returned, best_latency, best_speed))
 
             except Exception as e:
                 log_message("error", f"处理节点 {node_url_original} 时发生异常: {e}")
 
-    # 根据最佳延迟进行排序（升序）
-    qualified_nodes_info.sort(key=lambda x: x[1])
+    # 优先按延迟排序（升序），延迟相同再按速度排序（降序）
+    qualified_nodes_info.sort(key=lambda x: (x[1], -x[2]))
 
-    # 提取合格节点的URL列表，并使用集合进行最终去重，同时保留顺序
+    # 提取合格节点的URL列表，并使用集合进行最终去重，同时保留排序
     final_sorted_unique_nodes = []
     seen_urls = set()
-    for url, latency in qualified_nodes_info:
+    for url, latency, speed in qualified_nodes_info:
         if url not in seen_urls:
             final_sorted_unique_nodes.append(url)
             seen_urls.add(url)
     
     # 保存结果到 data/sub.txt
-    # 注意：使用 "w" 模式，确保每次运行都覆盖旧文件，而不是追加
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         f.write(f"# Updated at {timestamp}\n")
