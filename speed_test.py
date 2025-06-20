@@ -13,9 +13,9 @@ import yaml
 # 常量定义
 SOCKS_PORT = 1080
 HTTP_PORT = 8080
-TEST_URL = "http://www.google.com"
+TEST_URL = "https://www.tiktok.com"
 TIMEOUT = 5  # 秒
-MAX_NODES = 100  # 最大测试节点数
+MAX_NODES = 1000  # 最大测试节点数
 MAX_CONCURRENT = 10  # 最大并发线程数
 OUTPUT_DIR = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "sub.txt")
