@@ -1,70 +1,34 @@
-name: 测试
+name: Speed Test Workflow
 
 on:
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 0 * * *' # 每天运行一次
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  test_node_connectivity:
+  test-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: write
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: true
-        token: ${{ secrets.BOT }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Cache dependencies
-      uses: actions/cache@v4
-      with:
-        path: /var/cache/apt
-        key: ${{ runner.os }}-apt-${{ hashFiles('**/speed_test.sh') }}
-        restore-keys: |
-          ${{ runner.os }}-apt-
+      - name: Set up Bash
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl netcat-openbsd dnsutils jq
+      - name: Run speed test
+        env:
+          BOT_TOKEN: ${{ secrets.BOT }}
+        run: |
+          chmod +x speed_test.sh
+          ./speed_test.sh
 
-    - name: Configure Git
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "actions@github.com"
-
-    - name: Make script executable
-      run: chmod +x speed_test.sh
-
-    - name: Run node connectivity test
-      env:
-        GH_TOKEN_FOR_PUSH: ${{ secrets.BOT }}
-        DEBUG: true
-        PARALLEL_JOBS: 30
-      run: ./speed_test.sh || { echo "Script failed"; exit 1; }
-
-    - name: Check temporary files (debug)
-      if: always()
-      run: |
-        echo "Listing all files in /tmp:"
-        ls -l /tmp/ || echo "No files in /tmp"
-        echo "Checking temporary files:"
-        find /tmp -type f -name 'tmp*' -exec sh -c 'echo "File: {}"; cat {}; echo ""' \;
-
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-connectivity-results
-        path: |
-          node_connectivity_results.log
-          data/sub.txt
-          data/failed_nodes.log
-        retention-days: 7
+      - name: Commit and push results
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/sub.txt data/failed_proxies.json
+          git commit -m "Update speed test results"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }}
