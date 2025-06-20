@@ -1,0 +1,68 @@
+name: Proxy Node Speed Test
+
+on:
+  push:
+    branches:
+      - main # 当 main 分支有推送时触发
+    paths:
+      - 'data/nodes.txt' # 如果 nodes.txt 更新，则触发
+  schedule:
+    - cron: '0 */6 * * *' # 每6小时运行一次 (UTC时间)，你可以根据需要调整
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  run_speed_test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # 设置一个合理的超时时间，例如 60 分钟
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 # 使用 actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5 # 使用 actions/setup-python@v5
+      with:
+        python-version: '3.x' # 使用最新的 Python 3 版本
+
+    - name: Install dependencies
+      run: |
+        pip install requests # Python requests 库
+        # jq is not needed for Python script, but if you used it in bash, it would be here
+
+    - name: Ensure data directory exists
+      run: |
+        mkdir -p data # 确保 data 目录存在，如果不存在则创建
+
+    - name: Run speed test script
+      env:
+        # 如果你的脚本需要 BOT TOKEN 来访问 GitHub API 或其他服务，可以在这里传递
+        # 但是对于从 raw.githubusercontent.com 下载文件，通常不需要 TOKEN
+        # 如果未来你需要通过 GitHub API 更新文件，则需要 BOT TOKEN
+        # BOT_TOKEN: ${{ secrets.BOT }} 
+        # For now, fetching public raw content doesn't need a token,
+        # but pushing back needs it via actions/checkout or git push
+        # We will set up git push with token in the commit step.
+        PYTHONUNBUFFERED: 1 # 实时显示 Python 输出
+      run: |
+        python speed_test2.py
+
+    - name: Commit results
+      # 只有当脚本运行成功且有文件变动时才提交，但如果希望即使失败也提交 failed_proxies.json，可以添加 if: always()
+      # 这里设置为 always() 确保无论如何都尝试提交更新后的文件
+      if: always()
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        
+        # Add all potentially changed files
+        git add data/sub.txt data/failed_proxies.json
+        
+        # Check if there are any changes to commit
+        if ! git diff --cached --exit-code; then
+          git commit -m "Update proxy node test results (automated by workflow run ${{ github.run_id }})"
+          # 使用 GITHUB_TOKEN 是 GitHub Actions 推荐的安全方式，无需额外配置 secrets.BOT
+          # GITHUB_TOKEN 是由 GitHub 自动注入的，拥有对当前仓库的写入权限（如果 repo 权限设置允许）
+          git push
+        else
+          echo "No changes to commit."
+        fi
