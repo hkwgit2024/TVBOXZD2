@@ -53023,5 +53023,170 @@
     "link": "ss://YWVzLTI1Ni1jZmI6WkVUNTlMRjZEdkNDOEtWdA@5.188.181.201:9005#4Nika-1246",
     "reason": "Connection Timeout",
     "timestamp": "2025-06-20T06:21:02.311732"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpJalZBaTh0VVlXdlkwc0huWXBObWtB@167.235.57.7:443#🔒 SS-TCP-NA 🇩🇪 DE-167.235.57.7:443",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-20T12:28:49.363153"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.66:34045?security=reality&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&type=tcp&fp=chrome&pbk=cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA&sid=e8ab71d0#🔒 VL-TCP-RLT 🇬🇧 GB-217.179.91.66:34045",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363176"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.66:34045?allowInsecure=0&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&fp=firefox&security=tls#4Nika-15465",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363185"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6WnBORERLUnU5TWFnTnZhZg@80.92.204.106:9015#4Nika-1248",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363191"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvSE9QMWJXRk1rUVZ4M1BkYmhSbE9r@77.239.116.76:8315#%F0%9F%87%AB%F0%9F%87%B7FR-77.239.116.76-0497",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363196"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.152:34045?security=reality&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&type=tcp&fp=firefox&pbk=cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA&sid=e8ab71d0#🔒 VL-TCP-RLT 🇬🇧 GB-217.179.91.152:34045",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363203"
+  },
+  {
+    "link": "vless://a93bf8ef-0b48-4c49-95ff-03d20d211025@109.61.17.90:6587?security=none&type=tcp&host=www.speedtest.net&headerType=http#4Nika-13488",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-20T12:28:49.363208"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.142:34045?security=reality&type=tcp&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&fp=firefox&sid=e8ab71d0&pbk=cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA#%F0%9F%87%AC%F0%9F%87%A7%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E8%8B%B1%E5%9B%BD%2018",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363213"
+  },
+  {
+    "link": "vless://f8729660-82eb-47e0-9f45-2984113316ca@185.204.171.31:1010?security=reality&sni=canva.com&type=tcp&fp=chrome&pbk=a0_d-hjj7ByzOdLnniZTHPcRIEnT9DtI1icnlrekuDM&sid=8a1fb5d015ab108c#4Nika-16581",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363220"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6U241QjdqVHFyNzZhQ0pUOA==@80.92.204.106:9097#%F0%9F%87%A9%F0%9F%87%AADE-80.92.204.106-5501",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363224"
+  },
+  {
+    "link": "vless://7bd34ebe-c323-46cf-8a16-3945e7e3fa83@92.246.139.182:8443?security=reality&flow=xtls-rprx-vision&sni=github.com&type=tcp&fp=chrome&pbk=C77mWXCK8T47d5c3Dyqjlqr4AJsWozMxhYhhq_GwQj8&sid=2c229e23f30b9a13#4Nika-11173",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363241"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.142:34045?security=reality&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&type=tcp&fp=firefox&pbk=cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA&sid=e8ab71d0#🔒 VL-TCP-RLT 🇬🇧 GB-217.179.91.142:34045",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363252"
+  },
+  {
+    "link": "vless://1a79d43f-b41c-496b-a241-dcbeefa81f0e@86.38.156.247:2053?security=tls&sni=0926.qiang2000.link&type=ws&host=0926.qiang2000.link&path=%2FTelegram%40mtmvpn%2F%3Fed%3D2560&fp=chrome#4Nika-7361",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363262"
+  },
+  {
+    "link": "vless://61fdfc54-3d88-553f-b811-746d7e805b02@102.129.165.109:2052?security=none&type=ws&host=speedtest.net&path=%2Fvless%23%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL#4Nika-10519",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363275"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6VE4yWXFnaHhlRkRLWmZMVQ==@217.30.10.18:9037#PL%F0%9F%87%B5%F0%9F%87%B1+%7C+217.30.10.18-9037+%7C+104.17ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363283"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpMdXh5TmV0Qm90@apple.slumbo.com:443#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+apple.slumbo.com-443+%7C+216.16ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363290"
+  },
+  {
+    "link": "vless://0e70a07d-0968-4d7a-b268-4a927e830d99@86.38.156.49:2053?encryption=none&security=tls&sni=vbb.wxgqlfx.cn&type=ws&host=vbb.wxgqlfx.cn&path=%2fTG%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa%3fed%3d2560#DE%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa+(17)",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363299"
+  },
+  {
+    "link": "trojan://dda4f3bf-85fb-41bd-9d8e-77a8a02dbd59@194.104.147.74:1053?security=tls&allowInsecure=1&type=tcp&headerType=none#https%3A%2F%2Ft.me%2Fxyfqzy",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363306"
+  },
+  {
+    "link": "vless://8e944e35-e17b-4ecb-8879-f62a2c4cf546@89.44.9.252:443?security=tls&sni=gift-4101664.FaraSorat.Net&type=ws&host=Paris1.FaraSorat.net#🔒 VL-WS-TLS 🇫🇷 FR-89.44.9.252:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363315"
+  },
+  {
+    "link": "vless://61fdfc54-3d88-553f-b811-746d7e805b02@102.129.165.109:2052?mode=gun&security=none&encryption=none&authority=%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL&type=grpc&serviceName=vless-grpc#4Nika-10518",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363326"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0ZDZlYzBlNi01YmJiLTQyYmMtYjEzNy03NzViNmI0ZDg3YjE@wh.fq-number-001.co:51625#NL+GCore+02",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363334"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphZTZlOTMzYi04ODc0LTRiZjQtYTM4NC0wZGUyMTZlZjJiZjQ@idn.fastsoonlink.com:40033#ID+PCHI+02",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363343"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidXMuZGFsYXpoaS5ldS5vcmciLCAidiI6ICIyIiwgInBzIjogIlx1NTJhMFx1NjJmZlx1NTkyNyBCZWxsIiwgInBvcnQiOiAyNDA5NiwgImlkIjogIjNlYTQ1ZGZkLTIxNTgtNDZmOS05NjBjLThhN2EyNGYzODA4MyIsICJhaWQiOiAiMCIsICJuZXQiOiAid3MiLCAidHlwZSI6ICIiLCAiaG9zdCI6ICJ1cy5kYWxhemhpLmV1Lm9yZyIsICJwYXRoIjogIi9ueXp0IiwgInRscyI6ICJ0bHMifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363351"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6U241QjdqVHFyNzZhQ0pUOA@80.92.204.106:9097#4Nika-1169",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363359"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpUMXBiN1h4eHJvbHZQU2IwdTJ4U09B@beacomf.xyz:8080#4Nika-672",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363369"
+  },
+  {
+    "link": "vless://f2901697-1bd6-47e1-a47e-da7875664980@2.144.5.144:80?security=none&type=tcp&host=my.irancell.ir&path=/XS_vpnRobot---XS_vpnRobot---XS_vpnRobot&headerType=http#🔒 VL-TCP-NONE 🇮🇷 IR-2.144.5.144:80",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363377"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTM5Ljk5LjEzNS4xODIiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogImU3ZGYwNTgyLWQxNjgtNDNhZi1iZmZmLTkwYzI1YWY3ZDA4NSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvdm1lc3MiLCAicG9ydCI6IDgwLCAicHMiOiAiNE5pa2EtMTg3MDgiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363382"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTkzLjEyMy41Ni43OSIsICJhaWQiOiAwLCAiaG9zdCI6ICIiLCAiaWQiOiAiOWI0NTZjMmEtZjJjMS00NWUxLTg3YTktYjc2MjhiMDRiYjI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9saW5rd3MiLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTE5OTg1IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLCAic25pIjogImJleW9uZGRzei5jZmQiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363386"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@217.179.91.152:34045?security=tls&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&fp=firefox&allowInsecure=0#🔒 VL-TCP-TLS 🇬🇧 GB-217.179.91.152:34045",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363394"
+  },
+  {
+    "link": "vless://f184c89c-80a4-4a3a-bc67-97db43266c11@142.171.156.182:15801?encryption=none&security=tls&sni=vdd.wxgqlfx.cn&type=ws&host=vdd.wxgqlfx.cn&path=%2fTG%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa%3fed%3d2560#US%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa+(29)",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363402"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6OVh3WXlac0s4U056UUR0WQ==@217.30.10.18:9059#PL%F0%9F%87%B5%F0%9F%87%B1+%7C+217.30.10.18-9059+%7C+101.69ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363407"
+  },
+  {
+    "link": "vless://61fdfc54-3d88-553f-b811-746d7e805b02@sitespeedtest.zaf.v2vless.site:2052?path=%2Fvless%23%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL%2C%40V2RAY_SPATIAL&security=none&encryption=none&host=speedtest.net&type=ws#4Nika-10520",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363412"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTU4LjE4MC4yMjguMjI2IiwgImFpZCI6IDAsICJob3N0IjogImJleW9uZGRzei5jZmQiLCAiaWQiOiAiOWI0NTZjMmEtZjJjMS00NWUxLTg3YTktYjc2MjhiMDRiYjI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTE5MDI3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T12:28:49.363416"
   }
 ]
