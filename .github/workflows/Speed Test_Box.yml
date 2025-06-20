@@ -1,4 +1,4 @@
-name: Node Box Test
+name: Node BOX Test
 
 on:
   schedule:
@@ -17,17 +17,31 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install -y dnsutils curl jq
+
+      - name: Install Python dependencies
+        run: |
           pip install requests pyyaml
-          # 安装 Sing-Box
-          curl -sL https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz -o sing-box.tar.gz
+
+      - name: Install Sing-Box
+        run: |
+          SING_BOX_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
+          SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION:1}-linux-amd64.tar.gz"
+          curl -sL "$SING_BOX_URL" -o sing-box.tar.gz
+          # 验证文件是否为 gzip 格式
+          file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "Error: Downloaded file is not a valid gzip archive"; exit 1; }
           tar -xzf sing-box.tar.gz
           sudo mv sing-box-*/sing-box /usr/local/bin/
-          # 安装 Xray Core
+          rm -rf sing-box.tar.gz sing-box-*
+          sing-box --version
+
+      - name: Install Xray Core
+        run: |
           bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
+          xray --version
 
       - name: Run speed test script
         run: |
@@ -38,8 +52,8 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log
-          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log
+          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
