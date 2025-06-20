@@ -1,9 +1,9 @@
-name: Node BOX Test
+name: Node Connectivity Test
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
-  workflow_dispatch:  # 支持手动触发
+    - cron: '0 0 * * *'  # Run daily at UTC 00:00
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   test-nodes:
@@ -28,20 +28,27 @@ jobs:
 
       - name: Install Sing-Box
         run: |
-          SING_BOX_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name')
+          # Retry curl up to 3 times to handle network issues
+          for i in {1..3}; do
+            SING_BOX_VERSION=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name') && break
+            echo "Retry $i: Failed to fetch Sing-Box version"
+            sleep 5
+          done
+          [ -z "$SING_BOX_VERSION" ] && { echo "Error: Could not fetch Sing-Box version"; exit 1; }
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION:1}-linux-amd64.tar.gz"
-          curl -sL "$SING_BOX_URL" -o sing-box.tar.gz
-          # 验证文件是否为 gzip 格式
+          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz
+          # Verify file is a valid gzip archive
           file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "Error: Downloaded file is not a valid gzip archive"; exit 1; }
           tar -xzf sing-box.tar.gz
           sudo mv sing-box-*/sing-box /usr/local/bin/
           rm -rf sing-box.tar.gz sing-box-*
-          sing-box --version
+          # Use correct version command
+          sing-box version
 
       - name: Install Xray Core
         run: |
-          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
-          xray --version
+          bash <(curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
+          xray version
 
       - name: Run speed test script
         run: |
