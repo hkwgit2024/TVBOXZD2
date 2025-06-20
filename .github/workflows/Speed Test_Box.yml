@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4  # 升级到 v4，保持最新
+        uses: actions/checkout@v4
 
       - name: 安装系统依赖
-        run: sudo apt-get update && sudo apt-get install -y jq
+        run: sudo apt-get update && sudo apt-get install -y jq netcat-openbsd
 
       - name: 设置 Python 环境
-        uses: actions/setup-python@v5  # 升级到 v5，指定 3.10
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -28,19 +28,17 @@ jobs:
       - name: 下载并安装 Sing-Box
         run: |
           SB_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
-          SB_ARCH="amd64"
-          curl -L -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
+          curl -L -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-amd64.tar.gz
           tar -xvf sing-box.tar.gz
-          sudo mv sing-box-${SB_VERSION}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
+          sudo mv sing-box-${SB_VERSION}-linux-amd64/sing-box /usr/local/bin/sing-box
           sudo chmod +x /usr/local/bin/sing-box
-          rm -rf sing-box.tar.gz sing-box-${SB_VERSION}-linux-${SB_ARCH}
+          rm -rf sing-box.tar.gz sing-box-${SB_VERSION}-linux-amd64
           sing-box version || { echo "错误：sing-box 版本检查失败"; exit 1; }
 
       - name: 下载并安装 Xray Core
         run: |
           XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
-          XR_ARCH="64"
-          curl -L -o xray.zip https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-${XR_ARCH}.zip
+          curl -L -o xray.zip https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-64.zip
           unzip -o xray.zip
           if [ -f xray ]; then
             sudo mv xray /usr/local/bin/xray
@@ -70,15 +68,20 @@ jobs:
 
       - name: 测试网络连通性
         run: |
-          echo "测试节点 IP 连通性："
-          ping -c 4 172.64.146.80 || true
-          ping -c 4 89.116.46.35 || true
-          ping -c 4 162.159.152.107 || true
+          echo "从 all_nodes.txt 提取节点 IP 和端口："
+          grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+' all_nodes.txt | head -n 10 | sort -u > nodes_ips.txt
+          while read -r ip_port; do
+            ip=${ip_port%:*}
+            port=${ip_port#*:}
+            echo "测试 IP $ip 端口 $port："
+            ping -c 4 $ip || true
+            nc -zv -w 5 $ip $port || true
+          done < nodes_ips.txt
           echo "测试节点域名解析和 TLS："
-          curl -v --resolve us2.vless.site:443:172.64.146.80 https://us2.vless.site:443 || true
-          curl -v --resolve s3.vs2024.us.kg:443:162.159.152.107 https://s3.vs2024.us.kg:443 || true
+          curl -v --resolve epcca.ambercc.filegear-sg.me:443:104.19.36.53 https://epcca.ambercc.filegear-sg.me:443 || true
+          openssl s_client -connect 104.19.36.53:443 -servername epcca.ambercc.filegear-sg.me </dev/null || true
           echo "测试下载测试 URL："
-          curl -I https://speed.cloudflare.com/__down?bytes=10000000 || true
+          curl -I https://testfile.org/10MB || true
 
       - name: 下载 all_nodes.txt
         run: |
@@ -118,4 +121,18 @@ jobs:
             mkdir -p data
             cp success_nodes.txt data/sub.txt
             git add data/sub.txt success_nodes.txt failed_nodes.txt test_results.log
-            git commit -m "更新速度测试结果于 $(date -u)" || echo "无更改需要
+            git commit -m "更新速度测试结果于 $(date -u)" || echo "无更改需要提交"
+            git push
+          else
+            echo "success_nodes.txt 为空或不存在，跳过提交"
+          fi
+
+      - name: 上传测试结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            success_nodes.txt
+            failed_nodes.txt
+            test_results.log
+            configs/*
