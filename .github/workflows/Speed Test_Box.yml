@@ -94,6 +94,7 @@ jobs:
       - name: Run speed test script
         run: |
           echo "正在运行速度测试脚本..."
+          export PATH="/usr/local/bin:$PATH"
           chmod +x speed_test.py
           python3 speed_test.py
           echo "速度测试脚本运行完成。"
