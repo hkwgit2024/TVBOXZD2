@@ -468,6 +468,7 @@ def generate_xray_config(node_url):
 
 # 测试节点延迟
 def run_test(core_name, config_path, node_url_original):
+    process = None # Initialize process to None
     try:
         if core_name == "sing-box":
             process = subprocess.Popen(["sing-box", "run", "-c", config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -480,7 +481,10 @@ def run_test(core_name, config_path, node_url_original):
         start_time = time.time()
         response = requests.get(TEST_URL, proxies={"http": f"socks5://127.0.0.1:{SOCKS_PORT}"}, timeout=TIMEOUT)
         latency = (time.time() - start_time) * 1000
-        process.kill()
+        
+        # Ensure process is terminated
+        if process:
+            process.kill()
 
         if response.status_code == 200:
             return latency, "Success"
@@ -507,10 +511,13 @@ def process_node(node_url, index, total_nodes):
         singbox_config = generate_singbox_config(node_url)
         if singbox_config:
             singbox_config_path = f"singbox_config_{index}.json"
-            with open(singbox_config_path, "w") as f:
-                f.write(singbox_config)
-            singbox_latency, singbox_result = run_test("sing-box", singbox_config_path, node_url)
-            os.remove(singbox_config_path)
+            try:
+                with open(singbox_config_path, "w") as f:
+                    f.write(singbox_config)
+                singbox_latency, singbox_result = run_test("sing-box", singbox_config_path, node_url)
+            finally: # Ensure config file is deleted even if run_test fails
+                if os.path.exists(singbox_config_path):
+                    os.remove(singbox_config_path)
         else:
             singbox_latency, singbox_result = None, "Config generation failed"
 
@@ -519,10 +526,13 @@ def process_node(node_url, index, total_nodes):
         xray_config = generate_xray_config(node_url)
         if xray_config:
             xray_config_path = f"xray_config_{index}.json"
-            with open(xray_config_path, "w") as f:
-                f.write(xray_config)
-            xray_latency, xray_result = run_test("xray", xray_config_path, node_url)
-            os.remove(xray_config_path)
+            try:
+                with open(xray_config_path, "w") as f:
+                    f.write(xray_config)
+                xray_latency, xray_result = run_test("xray", xray_config_path, node_url)
+            finally: # Ensure config file is deleted even if run_test fails
+                if os.path.exists(xray_config_path):
+                    os.remove(xray_config_path)
         else:
             xray_latency, xray_result = None, "Config generation failed"
 
@@ -558,25 +568,43 @@ def main():
         log_message("error", "无节点可测试，退出")
         return
 
-    results = []
+    results = [] # 存储所有通过测试的节点结果
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENT) as executor:
         future_to_node = {executor.submit(process_node, node_url, i + 1, len(nodes)): node_url for i, node_url in enumerate(nodes)}
         for future in as_completed(future_to_node):
             try:
                 result = future.result()
-                if result[0] and result[0] < LATENCY_THRESHOLD:
+                # 只要 Sing-Box 或 Xray 有一个成功且延迟在阈值内，就将其加入 results
+                if (result[0] is not None and result[0] < LATENCY_THRESHOLD) or \
+                   (result[3] is not None and result[3] < LATENCY_THRESHOLD):
                     results.append(result)
             except Exception as e:
                 log_message("error", f"节点处理失败: {e}")
 
-    # 按 Sing-Box 延迟排序
-    results.sort(key=lambda x: x[0] if x[0] is not None else float('inf'))
+    # 第一步：根据 Sing-Box 延迟（或 Xray 延迟，如果 Sing-Box 不可用）对结果进行排序
+    # 这将确保最终输出的节点是按延迟排序的
+    results.sort(key=lambda x: x[0] if x[0] is not None else (x[3] if x[3] is not None else float('inf')))
 
-    # 保存结果到 data/sub.txt（追加模式）
-    with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
+    # 第二步：从排序后的结果中提取所有合格的节点URL，准备去重
+    # 此处构建一个临时列表，用于收集所有通过测试的节点URL（可能包含重复）
+    temp_valid_urls = []
+    for node_result in results:
+        # node_result 是一个元组：(singbox_latency, node_url, singbox_result, xray_latency, xray_result)
+        # 我们需要的是原始的 node_url (即 node_result[1])
+        temp_valid_urls.append(node_result[1])
+
+    # 第三步：对节点URL列表进行去重
+    # 'dict.fromkeys()' 是一种简洁高效的去重方法
+    valid_nodes = list(dict.fromkeys(temp_valid_urls))
+
+    # 第四步：保存去重并排序后的结果到 data/sub.txt
+    #  IMPORTANT: 使用 "w" (写入) 模式，而非 "a" (追加)，以确保每次生成最新文件
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        # 写入更新时间戳
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-        f.write(f"\n# Updated at {timestamp}\n")
-        valid_nodes = [node[1] for node in results if node[0] is not None]
+        f.write(f"# Updated at {timestamp}\n") # 移除时间戳前的换行符
+
+        # 写入去重后的有效节点 URL
         for node_url in valid_nodes:
             f.write(f"{node_url}\n")
 
