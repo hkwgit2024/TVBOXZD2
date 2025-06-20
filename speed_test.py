@@ -1,257 +1,182 @@
-import subprocess
-import urllib.parse
-import logging
-import random
-import time
 import requests
+import base64
 import json
+import re
 import os
-from urllib.parse import urlparse, parse_qs
+import socket
+import struct
+from urllib.parse import urlparse, unquote
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
-# 配置日志
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('test_results.log'),
-        logging.StreamHandler()
-    ]
-)
+# 确保 data 目录存在
+if not os.path.exists('data'):
+    os.makedirs('data')
 
-DOWNLOAD_TEST_URL = "https://cloudflare.com/cdn-cgi/trace"  # 临时测试 URL，稍后替换为可靠下载文件
-DOWNLOAD_TEST_SIZE = 10_000  # 小文件测试，减少超时
-SAMPLE_SIZE = 63
-TIMEOUT = 20
-SPEED_THRESHOLD = 0.1  # Mbps，降低阈值以适应小文件测试
+# 配置项
+NODES_URL = "https://github.com/qjlxg/aggregator/raw/refs/heads/main/ss.txt"
+OUTPUT_FILE = "data/connected_nodes.txt"
+CONNECTION_TIMEOUT = 3 # 每个TCP连接的超时时间，适当缩短以提高效率
+MAX_WORKERS = 50 # 并发线程数，可以适当调整，对于100个节点，50个已经足够并行
 
-def log_message(level, message):
-    getattr(logging, level.lower())(message)
+# 新增：限制测试的节点数量
+# 设置为 None 或 0 则测试所有节点
+# 设置为一个正整数则只测试前 N 个节点
+LIMIT_NODES_COUNT = 100 
 
-def parse_node_url(node_url):
+def decode_base64_urlsafe(data):
+    """
+    解码 URL Safe Base64 编码，并添加填充。
+    """
+    missing_padding = len(data) % 4
+    if missing_padding:
+        data += '=' * (4 - missing_padding)
+    return base64.urlsafe_b64decode(data)
+
+def parse_node_link(link):
+    """
+    尝试解析不同协议的节点链接，提取服务器地址和端口。
+    这是一个简化的解析，不包含所有高级配置，但足以进行连通性测试。
+    """
     try:
-        parsed = urlparse(node_url)
-        scheme = parsed.scheme.lower()
-        if scheme not in ['hysteria2', 'vless', 'trojan', 'vmess']:
-            log_message("error", f"Unsupported protocol: {scheme}")
+        parsed_url = urlparse(link)
+        protocol = parsed_url.scheme
+
+        if protocol == "ss":
+            try:
+                # 尝试解码 netloc 部分 (如果它是 Base64)
+                decoded_netloc = base64.b64decode(parsed_url.netloc).decode('utf-8')
+                if '@' in decoded_netloc:
+                    _, addr_part = decoded_netloc.split('@', 1)
+                else:
+                    addr_part = decoded_netloc
+                
+                if ':' in addr_part:
+                    server, port_str = addr_part.rsplit(':', 1)
+                    return {"protocol": protocol, "server": server, "port": int(port_str), "original_link": link}
+            except Exception:
+                pass
+            
+            # 直接解析非 Base64 编码的 SS 链接
+            if '@' in parsed_url.netloc:
+                _, addr_part = parsed_url.netloc.split('@', 1)
+            else:
+                addr_part = parsed_url.netloc
+            
+            if ':' in addr_part:
+                server, port_str = addr_part.rsplit(':', 1)
+                return {"protocol": protocol, "server": server, "port": int(port_str), "original_link": link}
             return None
 
-        if scheme == 'hysteria2':
-            params = parse_qs(parsed.query)
-            return {
-                'protocol': 'hysteria2',
-                'host': parsed.hostname,
-                'port': int(parsed.port or 443),
-                'password': parsed.username,
-                'sni': params.get('sni', [''])[0],
-                'insecure': params.get('insecure', ['0'])[0] == '1'
-            }
-        elif scheme == 'vless':
-            params = parse_qs(parsed.query)
-            return {
-                'protocol': 'vless',
-                'uuid': parsed.username,
-                'host': parsed.hostname,
-                'port': int(parsed.port or 443),
-                'security': params.get('security', ['none'])[0],
-                'sni': params.get('sni', [''])[0],
-                'allowInsecure': params.get('allowInsecure', ['0'])[0] == '1',
-                'fp': params.get('fp', [''])[0],
-                'pbk': params.get('pbk', [''])[0],
-                'sid': params.get('sid', [''])[0],
-                'type': params.get('type', ['tcp'])[0],
-                'flow': params.get('flow', [''])[0],
-                'encryption': params.get('encryption', ['none'])[0]
-            }
-        return None
+        elif protocol == "ssr":
+            encoded_part = parsed_url.netloc + parsed_url.path + parsed_url.params + parsed_url.query + parsed_url.fragment
+            decoded_part = decode_base64_urlsafe(encoded_part).decode('utf-8')
+            parts = decoded_part.split(':')
+            if len(parts) >= 2:
+                server = parts[0]
+                port = int(parts[1])
+                return {"protocol": protocol, "server": server, "port": port, "original_link": link}
+            return None
+
+        elif protocol == "vmess":
+            encoded_json = parsed_url.netloc
+            decoded_json = decode_base64_urlsafe(encoded_json).decode('utf-8')
+            config = json.loads(decoded_json)
+            return {"protocol": protocol, "server": config.get("add"), "port": config.get("port"), "original_link": link}
+
+        elif protocol in ["trojan", "vless", "hysteria2"]:
+            if parsed_url.hostname and parsed_url.port:
+                return {"protocol": protocol, "server": parsed_url.hostname, "port": parsed_url.port, "original_link": link}
+            return None
+
+        else:
+            return None
+
     except Exception as e:
-        log_message("error", f"Failed to parse node URL {node_url}: {e}")
         return None
 
-def generate_singbox_config(node, index):
-    config = {
-        "log": {"level": "debug"},
-        "outbounds": [{
-            "type": node['protocol'],
-            "tag": "proxy",
-            "server": node['host'],
-            "server_port": node['port']
-        }],
-        "inbounds": [{
-            "type": "http",
-            "listen": "127.0.0.1",
-            "listen_port": 8089
-        }]
-    }
-    if node['protocol'] == 'hysteria2':
-        config['outbounds'][0].update({
-            "password": node['password'],
-            "tls": {
-                "enabled": True,
-                "server_name": node['sni'],
-                "insecure": node['insecure']
-            }
-        })
-    elif node['protocol'] == 'vless':
-        config['outbounds'][0].update({
-            "uuid": node['uuid'],
-            "flow": node['flow'] if node['flow'] else None,
-            "tls": {
-                "enabled": node['security'] != 'none',
-                "server_name": node['sni'],
-                "insecure": node['allowInsecure'],
-                "utls": {"enabled": True, "fingerprint": node['fp']} if node['fp'] else None,
-                "reality": {
-                    "enabled": node['security'] == 'reality',
-                    "public_key": node['pbk'],
-                    "short_id": node['sid']
-                } if node['security'] == 'reality' else None
-            },
-            "packet_encoding": "xudp" if node['flow'] == 'xtls-rprx-vision' else None
-        })
-        if node['type'] != 'tcp':
-            config['outbounds'][0]["transport"] = {"type": node['type']}
-    config_path = f"configs/singbox_config_{index}.json"
-    os.makedirs("configs", exist_ok=True)
-    with open(config_path, 'w') as f:
-        json.dump(config, f, indent=2)
-    return config_path
+def test_single_node(node_line):
+    """
+    测试单个节点的连通性，并返回结果。
+    """
+    original_line = node_line
+    decoded_link = ""
 
-def generate_xray_config(node, index):
-    config = {
-        "log": {"loglevel": "debug"},
-        "inbounds": [{
-            "port": 8089,
-            "protocol": "http",
-            "settings": {}
-        }],
-        "outbounds": [{
-            "protocol": node['protocol'],
-            "tag": "proxy",
-            "settings": {
-                "vnext": [{
-                    "address": node['host'],
-                    "port": node['port']
-                }]
-            }
-        }]
-    }
-    if node['protocol'] == 'vless':
-        config['outbounds'][0]['settings']['vnext'][0].update({
-            "users": [{"id": node['uuid'], "encryption": node['encryption'], "flow": node['flow']}]
-        })
-        config['outbounds'][0].update({
-            "streamSettings": {
-                "network": node['type'],
-                "security": "reality" if node['security'] == 'reality' else "none",
-                "realitySettings": {
-                    "publicKey": node['pbk'],
-                    "shortId": node['sid'],
-                    "serverName": node['sni'],
-                    "fingerprint": node['fp']
-                } if node['security'] == 'reality' else None,
-                "tlsSettings": {
-                    "serverName": node['sni'],
-                    "allowInsecure": node['allowInsecure'],
-                    "fingerprint": node['fp']
-                } if node['security'] == 'tls' else None
-            }
-        })
-    config_path = f"configs/xray_config_{index}.json"
-    os.makedirs("configs", exist_ok=True)
-    with open(config_path, 'w') as f:
-        json.dump(config, f, indent=2)
-    return config_path
+    if node_line.startswith(("ss://", "ssr://", "vmess://", "trojan://", "vless://", "hysteria2://")):
+        decoded_link = node_line
+    else:
+        try:
+            decoded_link = base64.b64decode(node_line).decode('utf-8')
+        except Exception:
+            return original_line, False, "Malformed or non-base64 node line"
 
-def test_download_speed(proxy_url):
-    try:
-        proxies = {"http": proxy_url, "https": proxy_url}
-        start_time = time.time()
-        response = requests.get(
-            DOWNLOAD_TEST_URL,
-            proxies=proxies,
-            timeout=TIMEOUT,
-            stream=True
-        )
-        response.raise_for_status()
-        total_downloaded = 0
-        for chunk in response.iter_content(chunk_size=8192):
-            total_downloaded += len(chunk)
-            if total_downloaded >= DOWNLOAD_TEST_SIZE:
-                break
-        elapsed = time.time() - start_time
-        speed_mbps = (total_downloaded * 8 / 1024 / 1024) / elapsed if elapsed > 0 else 0
-        return speed_mbps
-    except Exception as e:
-        log_message("debug", f"Download test failed: {str(e)}")
-        return 0
+    node_info = parse_node_link(decoded_link)
+    
+    if node_info:
+        server = node_info['server']
+        port = node_info['port']
+        protocol = node_info['protocol']
 
-def test_node(node, index, core_name, core_path):
-    config_path = generate_singbox_config(node, index) if core_name == "sing-box" else generate_xray_config(node, index)
-    process = None
-    try:
-        cmd = [core_path, "run", "-c", config_path]
-        process = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        time.sleep(2)  # 等待核心启动
-        proxy_url = "http://127.0.0.1:8089"
-        speeds = []
-        for i in range(3):
-            speed = test_download_speed(proxy_url)
-            if speed > 0:
-                speeds.append(speed)
-                log_message("info", f"Download test {i+1}/3 for node {index}: {speed:.2f} Mbps")
-            else:
-                log_message("debug", f"Download test {i+1} failed")
-                break
-        if speeds:
-            avg_speed = sum(speeds) / len(speeds)
-            if avg_speed >= SPEED_THRESHOLD:
-                return {"latency": 1500, "speed": avg_speed}
-    except Exception as e:
-        log_message("error", f"{core_name} test failed: {str(e)}")
-    finally:
-        if process:
-            process.terminate()
-            process.wait()
-            stdout, stderr = process.communicate()
-            if stdout:
-                log_message("debug", f"{core_name} stdout: {stdout}")
-            if stderr:
-                log_message("error", f"{core_name} stderr: {stderr}")
-    return None
+        if not server or not port:
+            return original_line, False, f"Parsed but missing server/port: {decoded_link[:50]}..."
+
+        try:
+            sock = socket.create_connection((server, port), timeout=CONNECTION_TIMEOUT)
+            sock.close()
+            return original_line, True, f"Connected to {protocol}://{server}:{port}"
+        except (socket.timeout, ConnectionRefusedError, socket.gaierror, OSError) as e:
+            return original_line, False, f"Failed to connect to {protocol}://{server}:{port} ({e})"
+    else:
+        return original_line, False, f"Unrecognized or unparseable node: {decoded_link[:50]}..."
 
 def main():
-    os.makedirs("configs", exist_ok=True)
-    with open("all_nodes.txt", "r") as f:
-        nodes = [line.strip() for line in f if line.strip()]
-    sampled_nodes = random.sample(nodes, min(SAMPLE_SIZE, len(nodes)))
+    start_time = time.time()
+    print("Starting node connectivity test...")
+
+    try:
+        response = requests.get(NODES_URL, timeout=15)
+        response.raise_for_status()
+        nodes_data = response.text.strip().split('\n')
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching nodes from {NODES_URL}: {e}")
+        return
+
+    nodes_data = [line.strip() for line in nodes_data if line.strip()]
     
-    success_nodes = []
-    failed_nodes = []
+    # 核心修改：根据 LIMIT_NODES_COUNT 限制节点数量
+    if LIMIT_NODES_COUNT and LIMIT_NODES_COUNT > 0:
+        nodes_data = nodes_data[:LIMIT_NODES_COUNT]
+        print(f"Limiting test to the first {LIMIT_NODES_COUNT} nodes.")
+
+    total_nodes = len(nodes_data)
+    print(f"Total valid nodes to process: {total_nodes}")
+
+    connected_nodes_list = []
     
-    for i, node_url in enumerate(sampled_nodes, 1):
-        log_message("info", f"Processing node {i}/{len(sampled_nodes)}: {node_url}")
-        node = parse_node_url(node_url)
-        if not node:
-            failed_nodes.append(f"{node_url} | Failed: invalid node format")
-            continue
-            
-        for core_name, core_path in [("sing-box", "/usr/local/bin/sing-box"), ("xray", "/usr/local/bin/xray")]:
-            result = test_node(node, i, core_name, core_path)
-            if result:
-                success_nodes.append(f"{node_url} | Latency={result['latency']:.2f}ms | Avg Speed={result['speed']:.2f}Mbps | Core={core_name}")
-                break
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future_to_node = {executor.submit(test_single_node, node_line): node_line for node_line in nodes_data}
+        
+        processed_count = 0
+        for future in as_completed(future_to_node):
+            original_line, is_connected, message = future.result()
+            processed_count += 1
+            if is_connected:
+                connected_nodes_list.append(original_line)
+                print(f"[{processed_count}/{total_nodes}] CONNECTED: {message[:100]}")
             else:
-                failed_nodes.append(f"{node_url} | Failed: {core_name} test failed")
-                
-    with open("success_nodes.txt", "w") as f:
-        f.write("\n".join(success_nodes))
-    with open("failed_nodes.txt", "w") as f:
-        f.write("\n".join(failed_nodes))
+                print(f"[{processed_count}/{total_nodes}] FAILED: {message[:100]}")
+            
+            if processed_count % 10 == 0 or processed_count == total_nodes: # 更频繁地输出进度，因为节点数量少
+                print(f"--- Processed {processed_count}/{total_nodes} nodes. Current connected: {len(connected_nodes_list)} ---")
+
+    with open(OUTPUT_FILE, 'w') as f:
+        for node in connected_nodes_list:
+            f.write(node + '\n')
+    
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Test completed in {elapsed_time:.2f} seconds.")
+    print(f"Filtered nodes (connected) saved to {OUTPUT_FILE}. Total connected: {len(connected_nodes_list)}")
 
 if __name__ == "__main__":
     main()
