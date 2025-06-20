@@ -18,11 +18,11 @@ logging.basicConfig(
     ]
 )
 
-DOWNLOAD_TEST_URL = "https://speed.hetzner.de/100MB.bin"
-DOWNLOAD_TEST_SIZE = 100_000_000
+DOWNLOAD_TEST_URL = "https://cloudflare.com/cdn-cgi/trace"  # 临时测试 URL，稍后替换为可靠下载文件
+DOWNLOAD_TEST_SIZE = 10_000  # 小文件测试，减少超时
 SAMPLE_SIZE = 63
 TIMEOUT = 20
-SPEED_THRESHOLD = 1.5  # Mbps
+SPEED_THRESHOLD = 0.1  # Mbps，降低阈值以适应小文件测试
 
 def log_message(level, message):
     getattr(logging, level.lower())(message)
@@ -62,7 +62,6 @@ def parse_node_url(node_url):
                 'flow': params.get('flow', [''])[0],
                 'encryption': params.get('encryption', ['none'])[0]
             }
-        # 其他协议（trojan、vmess）保持原有逻辑
         return None
     except Exception as e:
         log_message("error", f"Failed to parse node URL {node_url}: {e}")
@@ -70,11 +69,17 @@ def parse_node_url(node_url):
 
 def generate_singbox_config(node, index):
     config = {
+        "log": {"level": "debug"},
         "outbounds": [{
             "type": node['protocol'],
             "tag": "proxy",
             "server": node['host'],
             "server_port": node['port']
+        }],
+        "inbounds": [{
+            "type": "http",
+            "listen": "127.0.0.1",
+            "listen_port": 8089
         }]
     }
     if node['protocol'] == 'hysteria2':
@@ -84,29 +89,27 @@ def generate_singbox_config(node, index):
                 "enabled": True,
                 "server_name": node['sni'],
                 "insecure": node['insecure']
-            },
-            "udp": {
-                "enabled": True
             }
         })
     elif node['protocol'] == 'vless':
         config['outbounds'][0].update({
             "uuid": node['uuid'],
+            "flow": node['flow'] if node['flow'] else None,
             "tls": {
                 "enabled": node['security'] != 'none',
                 "server_name": node['sni'],
                 "insecure": node['allowInsecure'],
+                "utls": {"enabled": True, "fingerprint": node['fp']} if node['fp'] else None,
                 "reality": {
                     "enabled": node['security'] == 'reality',
                     "public_key": node['pbk'],
                     "short_id": node['sid']
                 } if node['security'] == 'reality' else None
             },
-            "transport": {
-                "type": node['type']
-            },
-            "flow": node['flow'] if node['flow'] else None
+            "packet_encoding": "xudp" if node['flow'] == 'xtls-rprx-vision' else None
         })
+        if node['type'] != 'tcp':
+            config['outbounds'][0]["transport"] = {"type": node['type']}
     config_path = f"configs/singbox_config_{index}.json"
     os.makedirs("configs", exist_ok=True)
     with open(config_path, 'w') as f:
@@ -115,6 +118,12 @@ def generate_singbox_config(node, index):
 
 def generate_xray_config(node, index):
     config = {
+        "log": {"loglevel": "debug"},
+        "inbounds": [{
+            "port": 8089,
+            "protocol": "http",
+            "settings": {}
+        }],
         "outbounds": [{
             "protocol": node['protocol'],
             "tag": "proxy",
@@ -128,20 +137,22 @@ def generate_xray_config(node, index):
     }
     if node['protocol'] == 'vless':
         config['outbounds'][0]['settings']['vnext'][0].update({
-            "users": [{"id": node['uuid'], "flow": node['flow']}]
+            "users": [{"id": node['uuid'], "encryption": node['encryption'], "flow": node['flow']}]
         })
         config['outbounds'][0].update({
             "streamSettings": {
                 "network": node['type'],
-                "security": node['security'],
+                "security": "reality" if node['security'] == 'reality' else "none",
                 "realitySettings": {
                     "publicKey": node['pbk'],
                     "shortId": node['sid'],
-                    "serverName": node['sni']
+                    "serverName": node['sni'],
+                    "fingerprint": node['fp']
                 } if node['security'] == 'reality' else None,
                 "tlsSettings": {
                     "serverName": node['sni'],
-                    "allowInsecure": node['allowInsecure']
+                    "allowInsecure": node['allowInsecure'],
+                    "fingerprint": node['fp']
                 } if node['security'] == 'tls' else None
             }
         })
@@ -168,7 +179,7 @@ def test_download_speed(proxy_url):
             if total_downloaded >= DOWNLOAD_TEST_SIZE:
                 break
         elapsed = time.time() - start_time
-        speed_mbps = (total_downloaded * 8 / 1024 / 1024) / elapsed
+        speed_mbps = (total_downloaded * 8 / 1024 / 1024) / elapsed if elapsed > 0 else 0
         return speed_mbps
     except Exception as e:
         log_message("debug", f"Download test failed: {str(e)}")
@@ -207,8 +218,10 @@ def test_node(node, index, core_name, core_path):
             process.terminate()
             process.wait()
             stdout, stderr = process.communicate()
+            if stdout:
+                log_message("debug", f"{core_name} stdout: {stdout}")
             if stderr:
-                log_message("error", f"{core_name} exited with stderr: {stderr}")
+                log_message("error", f"{core_name} stderr: {stderr}")
     return None
 
 def main():
