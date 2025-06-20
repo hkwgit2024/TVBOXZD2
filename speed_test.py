@@ -54,10 +54,16 @@ def load_failed_nodes():
 
 # 检查依赖
 def check_dependencies():
-    deps = ["sing-box", "xray", "dig"]
+    # ----> 重点修改：将 "sing-box" 和 "xray" 改为完整路径 <----
+    deps = ["/usr/local/bin/sing-box", "/usr/local/bin/xray", "dig"]
     for dep in deps:
         try:
-            subprocess.run([dep, "--version"], capture_output=True, check=True)
+            # 对于 /usr/local/bin 下的依赖，可以直接运行
+            if dep.startswith("/usr/local/bin/"):
+                subprocess.run([dep, "--version"], capture_output=True, check=True)
+            # 对于如 'dig' 这种通常在默认 PATH 中的命令，直接运行即可
+            else:
+                subprocess.run([dep, "--version"], capture_output=True, check=True)
         except (subprocess.CalledProcessError, FileNotFoundError):
             logger.error(f"依赖 '{dep}' 未找到，请确保已安装。")
             exit(1)
@@ -217,7 +223,8 @@ def test_node(node_link):
     # 测试连接（优先使用 Sing-Box）
     for attempt in range(RETRY_COUNT):
         try:
-            proc = subprocess.Popen(["sing-box", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # ----> 重点修改：将 "sing-box" 改为完整路径 <----
+            proc = subprocess.Popen(["/usr/local/bin/sing-box", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             time.sleep(1)  # 等待客户端启动
             result = subprocess.run(
                 ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
@@ -238,7 +245,8 @@ def test_node(node_link):
     # 备选：使用 Xray Core
     for attempt in range(RETRY_COUNT):
         try:
-            proc = subprocess.Popen(["xray", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # ----> 重点修改：将 "xray" 改为完整路径 <----
+            proc = subprocess.Popen(["/usr/local/bin/xray", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             time.sleep(1)
             result = subprocess.run(
                 ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
