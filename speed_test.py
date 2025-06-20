@@ -10,14 +10,11 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import urllib.parse
 import statistics
+import random
 
 # 配置常量
-SOCKS_PORT = 10808
-HTTP_PORT = 8088
-TEST_URLS = [
-    "http://connectivitycheck.gstatic.com/generate_204",
-    "https://www.google.com/generate_204"
-]
+SOCKS_PORT = 10809  # 更换端口避免冲突
+HTTP_PORT = 8089
 DOWNLOAD_TEST_URL = "https://speed.cloudflare.com/__down?bytes=10000000"
 DOWNLOAD_TEST_SIZE = 10_000_000  # 10MB in bytes
 MIN_AVG_SPEED_MBPS = 1.5  # 最低平均速度阈值 (Mbps)
@@ -26,9 +23,10 @@ CONFIG_DIR = "configs"
 LOG_FILE = "test_results.log"
 SUCCESS_FILE = "success_nodes.txt"
 FAILED_FILE = "failed_nodes.txt"
-TIMEOUT = 15
-RETRY_COUNT = 3
+TIMEOUT = 20  # 下载测试超时时间
+RETRY_COUNT = 3  # 重试次数
 MAX_WORKERS = 5  # 控制并行测试数量
+SAMPLE_SIZE = 100  # 随机抽样测试的节点数（设为 0 测试所有节点）
 
 # 配置日志
 logging.basicConfig(
@@ -70,6 +68,9 @@ def parse_node_url(node_url):
             if 'tls' in params.get('security', ['']) and not params.get('sni'):
                 log_message("error", f"Missing sni for TLS node: {node_url}")
                 return None
+            if params.get('type') == ['ws'] and not params.get('path'):
+                log_message("error", f"Missing path for WebSocket node: {node_url}")
+                return None
             return {
                 'scheme': scheme,
                 'uuid': parsed.username,
@@ -110,6 +111,10 @@ def parse_node_url(node_url):
         elif scheme == 'vmess':
             try:
                 config = json.loads(base64.b64decode(parsed.netloc).decode('utf-8'))
+                required_fields = ['add', 'port', 'id']
+                if not all(field in config for field in required_fields):
+                    log_message("error", f"Missing required fields in VMess node: {node_url}")
+                    return None
                 return {
                     'scheme': scheme,
                     'config': config,
@@ -191,7 +196,7 @@ def generate_singbox_config(node, index):
             if 'tls' in node['params'].get('security', ['']):
                 outbound["tls"] = {
                     "enabled": True,
-                    "server_name": node['params'].get('sni', [''])[0],
+                    "server_name": node['params'].get('sni', [''])[0] or node['host'],
                     "min_version": "1.2",
                     "max_version": "1.3"
                 }
@@ -282,7 +287,7 @@ def generate_singbox_config(node, index):
             json.dump(config, f, indent=2)
         return config_path
     except Exception as e:
-        log_message("error", f"Failed to generate sing-box config for {node['remark']}: {str(e)}")
+        log_message("error", f"Failed to generate sing-box config for {node.get('remark', 'unknown')}: {str(e)}")
         return None
 
 def generate_xray_config(node, index):
@@ -324,7 +329,7 @@ def generate_xray_config(node, index):
             if 'tls' in node['params'].get('security', ['']):
                 outbound["streamSettings"]["security"] = "tls"
                 outbound["streamSettings"]["tlsSettings"] = {
-                    "serverName": node['params'].get('sni', [''])[0],
+                    "serverName": node['params'].get('sni', [''])[0] or node['host'],
                     "minVersion": "1.2",
                     "maxVersion": "1.3"
                 }
@@ -419,69 +424,59 @@ def generate_xray_config(node, index):
             json.dump(config, f, indent=2)
         return config_path
     except Exception as e:
-        log_message("error", f"Failed to generate xray config for {node['remark']}: {str(e)}")
+        log_message("error", f"Failed to generate xray config for {node.get('remark', 'unknown')}: {str(e)}")
         return None
 
 def run_single_test(core_name, config_path, node_url, index, total):
-    """运行单个核心测试"""
+    """运行单个核心测试，仅进行下载测试"""
     process = None
     connect_latency = None
     download_speeds = []
-    test_success = False
     error_message = None
     try:
         log_message("debug", f"Starting {core_name} for node {index}/{total}: {node_url}")
         cmd = ["sing-box", "run", "-c", config_path] if core_name == "sing-box" else ["xray", "-c", config_path]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        time.sleep(5)  # 等待核心启动
+        time.sleep(10)  # 延长等待时间
+        # 检查核心是否仍在运行
         if process.poll() is not None:
-            stdout, stderr = process.communicate()
-            error_message = f"{core_name} exited prematurely: {stderr}"
+            stdout, stderr = process.communicate(timeout=5)
+            error_message = f"{core_name} exited prematurely: stdout={stdout}, stderr={stderr}"
             log_message("error", error_message)
             return None, None, error_message
-
+        # 测试本地代理
+        try:
+            response = requests.get(f"http://127.0.0.1:{HTTP_PORT}", timeout=2)
+            log_message("debug", f"Local proxy test for {core_name}: Status code {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            error_message = f"Local proxy test failed for {core_name}: {str(e)}"
+            log_message("error", error_message)
+            return None, None, error_message
         proxies = {
             "http": f"http://127.0.0.1:{HTTP_PORT}",
             "https": f"http://127.0.0.1:{HTTP_PORT}",
             "socks": f"socks5://127.0.0.1:{SOCKS_PORT}"
         }
         session = setup_requests_session()
-
-        # 测试连通性和延迟
-        for test_url in TEST_URLS:
-            try:
-                start_time = time.time()
-                response = session.get(test_url, proxies=proxies, timeout=TIMEOUT, verify=False)
-                if response.status_code in [200, 204]:
-                    connect_latency = (time.time() - start_time) * 1000  # ms
-                    test_success = True
-                    break
-                else:
-                    log_message("debug", f"Test failed for {test_url}: Status code {response.status_code}")
-            except requests.exceptions.RequestException as e:
-                log_message("debug", f"Test failed for {test_url}: {str(e)}")
-
-        if not test_success:
-            error_message = "Connection test failed"
-            return None, None, error_message
-
-        # 下载速度测试
+        # 直接进行下载测试
         for attempt in range(1, DOWNLOAD_ATTEMPTS + 1):
             try:
                 start_time = time.time()
-                response = session.get(DOWNLOAD_TEST_URL, proxies=proxies, timeout=TIMEOUT * 2, verify=False)
+                response = session.get(DOWNLOAD_TEST_URL, proxies=proxies, timeout=TIMEOUT, verify=False)
                 if response.status_code == 200:
                     elapsed_time = time.time() - start_time
-                    speed_mbps = (DOWNLOAD_TEST_SIZE * 8 / 1_000_000) / elapsed_time  # Mbps
+                    speed_mbps = (DOWNLOAD_TEST_SIZE * 8 / 1_000_000) / elapsed_time
                     download_speeds.append(speed_mbps)
                     log_message("info", f"Download test {attempt}/{DOWNLOAD_ATTEMPTS} for node {index}/{total}: {speed_mbps:.2f} Mbps")
+                    connect_latency = elapsed_time * 1000 if connect_latency is None else connect_latency
                 else:
                     log_message("debug", f"Download test {attempt} failed: Status code {response.status_code}")
             except requests.exceptions.RequestException as e:
                 log_message("debug", f"Download test {attempt} failed: {str(e)}")
                 download_speeds.append(0)
-
-        return connect_latency, download_speeds, None
+        if not download_speeds or all(s == 0 for s in download_speeds):
+            error_message = "All download tests failed"
+        return connect_latency, download_speeds, error_message
     except Exception as e:
         error_message = f"Error in {core_name}: {str(e)}"
         log_message("error", error_message)
@@ -524,10 +519,10 @@ def process_node(node_url, index, total):
 
     for core_name, config_path in cores:
         latency, speeds, error = run_single_test(core_name, config_path, node_url, index, total)
-        if latency is not None and speeds and any(s > 0 for s in speeds):
+        if speeds and any(s > 0 for s in speeds):
             avg_speed = statistics.mean([s for s in speeds if s > 0])
-            if avg_speed >= MIN_AVG_SPEED_MBPS and latency < best_latency:
-                best_latency = latency
+            if avg_speed >= MIN_AVG_SPEED_MBPS and (latency or float('inf')) < best_latency:
+                best_latency = latency or float('inf')
                 best_speeds = speeds
                 best_core = core_name
                 error_message = None
@@ -551,12 +546,21 @@ def main():
     with open("all_nodes.txt", "r") as f:
         nodes = [line.strip() for line in f if line.strip()]
 
+    if SAMPLE_SIZE > 0:
+        nodes = random.sample(nodes, min(SAMPLE_SIZE, len(nodes)))
+        log_message("info", f"Testing {len(nodes)} randomly sampled nodes")
+    else:
+        log_message("info", f"Testing all {len(nodes)} nodes")
+
     os.makedirs(CONFIG_DIR, exist_ok=True)
     open(SUCCESS_FILE, "w").close()
     open(FAILED_FILE, "w").close()
 
     for index, node_url in enumerate(nodes, 1):
-        process_node(node_url, index, len(nodes))
-
-if __name__ == "__main__":
+        try:
+            process_node(node_url, index, len(nodes))
+        except Exception as e:
+            log_message("error", f"Error processing node {index}/{len(nodes)}: {node_url}, error: {str(e)}}")
+            with open(FAILED_FILE, "a") as f:
+                f.write(f"{node_url} | Failed: {str(e)}"\nif __name__ == "__main__":
     main()
