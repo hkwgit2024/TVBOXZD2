@@ -25,7 +25,7 @@ LIMIT_NODES_COUNT = 100
 
 # 新增：配置 DNS 服务器 (可以添加多个，会按顺序尝试)
 # 例如：Google DNS, Cloudflare DNS, Quad9 DNS, 或您认为在本地网络环境中表现良好的DNS
-DNS_SERVERS = ['202.96.128.86', '120.196.165.24', ] # 您已将此设置为您的本地DNS，保持不变
+DNS_SERVERS = ['202.96.128.86', '120.196.165.24', ] # 保持您设置的本地 DNS
 
 # 初始化 DNS 解析器
 resolver = dns.resolver.Resolver(configure=False) # configure=False 禁用系统默认配置
@@ -61,22 +61,28 @@ def resolve_hostname(hostname):
     尝试解析主机名到 IP 地址。
     """
     if is_ip_address(hostname):
-        # print(f"Hostname {hostname} is already an IP. Skipping DNS resolution.") # 调试信息
-        return hostname
+        return hostname # 如果已经是IP地址，直接返回
 
-    print(f"Attempting to resolve {hostname} using custom DNS servers: {DNS_SERVERS}...") # 新增日志
+    # print(f"Attempting to resolve {hostname} using custom DNS servers: {DNS_SERVERS}...") # 调试日志
+
     try:
         # 尝试使用配置的 DNS 服务器解析
         answers = resolver.resolve(hostname, 'A') # 优先解析 IPv4
         for rdata in answers:
-            resolved_ip = rdata.address
-            print(f"Successfully resolved {hostname} to {resolved_ip} with custom DNS.") # 新增日志
-            return resolved_ip
+            # print(f"Successfully resolved {hostname} to {rdata.address} with custom DNS.") # 调试日志
+            return rdata.address
     except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.Timeout, dns.exception.DNSException) as e:
-        print(f"DNS resolution failed for {hostname} with custom DNS servers ({DNS_SERVERS}): {type(e).__name__} - {e}") # 新增日志
-        # === 核心修改：禁用回退机制，直接返回 None ===
-        return None
-    # return None # 这行也可以删除，因为前面的except块已经保证了返回
+        # print(f"DNS resolution failed for {hostname} with custom DNS ({DNS_SERVERS}): {type(e).__name__} - {e}") # 调试日志
+
+        # 如果配置的 DNS 服务器解析失败，尝试使用系统默认解析器（GitHub Actions 环境下的默认 DNS）
+        try:
+            ip_address = socket.gethostbyname(hostname)
+            # print(f"DNS resolution successful for {hostname} with system default: {ip_address}") # 调试日志
+            return ip_address
+        except socket.gaierror as e:
+            # print(f"System DNS resolution also failed for {hostname}: {e}") # 调试日志
+            return None
+    return None
 
 def parse_node_link(link):
     """
@@ -195,7 +201,7 @@ def test_single_node(node_line):
 
 def main():
     start_time = time.time()
-    print("Starting node connectivity test with DNS pre-resolution...")
+    print("Starting node connectivity test with DNS pre-resolution (with fallback to system DNS)...") # 更新提示
 
     try:
         response = requests.get(NODES_URL, timeout=15)
