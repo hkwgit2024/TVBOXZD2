@@ -197,6 +197,7 @@ def generate_singbox_config(node, index):
                 outbound["tls"] = {
                     "enabled": True,
                     "server_name": node['params'].get('sni', [''])[0] or node['host'],
+                    "insecure": True,  # 调试用，允许不安全连接
                     "min_version": "1.2",
                     "max_version": "1.3"
                 }
@@ -215,6 +216,7 @@ def generate_singbox_config(node, index):
                 outbound["tls"] = {
                     "enabled": True,
                     "server_name": node['params'].get('sni', [''])[0],
+                    "insecure": True,
                     "min_version": "1.2",
                     "max_version": "1.3"
                 }
@@ -244,6 +246,7 @@ def generate_singbox_config(node, index):
                 outbound["tls"] = {
                     "enabled": True,
                     "server_name": config_data.get('sni', config_data['add']),
+                    "insecure": True,
                     "min_version": "1.2",
                     "max_version": "1.3"
                 }
@@ -277,6 +280,7 @@ def generate_singbox_config(node, index):
                 outbound["tls"] = {
                     "enabled": True,
                     "server_name": node['params'].get('sni', [''])[0],
+                    "insecure": True,
                     "min_version": "1.2",
                     "max_version": "1.3"
                 }
@@ -285,6 +289,7 @@ def generate_singbox_config(node, index):
         os.makedirs(CONFIG_DIR, exist_ok=True)
         with open(config_path, "w") as f:
             json.dump(config, f, indent=2)
+        log_message("debug", f"Generated sing-box config at {config_path}")
         return config_path
     except Exception as e:
         log_message("error", f"Failed to generate sing-box config for {node.get('remark', 'unknown')}: {str(e)}")
@@ -330,6 +335,7 @@ def generate_xray_config(node, index):
                 outbound["streamSettings"]["security"] = "tls"
                 outbound["streamSettings"]["tlsSettings"] = {
                     "serverName": node['params'].get('sni', [''])[0] or node['host'],
+                    "allowInsecure": True,
                     "minVersion": "1.2",
                     "maxVersion": "1.3"
                 }
@@ -354,6 +360,7 @@ def generate_xray_config(node, index):
                     "security": "tls",
                     "tlsSettings": {
                         "serverName": node['params'].get('sni', [''])[0],
+                        "allowInsecure": True,
                         "minVersion": "1.2",
                         "maxVersion": "1.3"
                     }
@@ -392,6 +399,7 @@ def generate_xray_config(node, index):
                 outbound["streamSettings"]["security"] = "tls"
                 outbound["streamSettings"]["tlsSettings"] = {
                     "serverName": config_data.get('sni', config_data['add']),
+                    "allowInsecure": True,
                     "minVersion": "1.2",
                     "maxVersion": "1.3"
                 }
@@ -422,6 +430,7 @@ def generate_xray_config(node, index):
         os.makedirs(CONFIG_DIR, exist_ok=True)
         with open(config_path, "w") as f:
             json.dump(config, f, indent=2)
+        log_message("debug", f"Generated xray config at {config_path}")
         return config_path
     except Exception as e:
         log_message("error", f"Failed to generate xray config for {node.get('remark', 'unknown')}: {str(e)}")
@@ -437,7 +446,7 @@ def run_single_test(core_name, config_path, node_url, index, total):
         log_message("debug", f"Starting {core_name} for node {index}/{total}: {node_url}")
         cmd = ["sing-box", "run", "-c", config_path] if core_name == "sing-box" else ["xray", "-c", config_path]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        time.sleep(10)  # 延长等待时间
+        time.sleep(15)  # 延长等待时间
         # 检查核心是否仍在运行
         if process.poll() is not None:
             stdout, stderr = process.communicate(timeout=5)
@@ -539,6 +548,14 @@ def process_node(node_url, index, total):
 
 def main():
     """主函数"""
+    # 检查核心是否可用
+    for core in ["sing-box", "xray"]:
+        try:
+            result = subprocess.run([core, "version"], capture_output=True, text=True, timeout=5)
+            log_message("info", f"{core} version: {result.stdout.strip()}")
+        except Exception as e:
+            log_message("error", f"Failed to verify {core}: {str(e)}")
+
     if not os.path.exists("all_nodes.txt"):
         log_message("error", "Input file all_nodes.txt not found")
         return
@@ -560,7 +577,9 @@ def main():
         try:
             process_node(node_url, index, len(nodes))
         except Exception as e:
-            log_message("error", f"Error processing node {index}/{len(nodes)}: {node_url}, error: {str(e)}}")
+            log_message("error", f"Error processing node {index}/{len(nodes)}: {node_url}, error: {str(e)}")
             with open(FAILED_FILE, "a") as f:
-                f.write(f"{node_url} | Failed: {str(e)}"\nif __name__ == "__main__":
+                f.write(f"{node_url} | Failed: {str(e)}\n")
+
+if __name__ == "__main__":
     main()
