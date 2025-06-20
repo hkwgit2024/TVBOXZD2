@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install requests pyaml
+          pip install requests pyyaml
 
       - name: Install Sing-Box
         run: |
@@ -32,28 +32,30 @@ jobs:
           for i in {1..3}; do
             SING_BOX_VERSION=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name') && break
             echo "Retry $i: Failed to fetch Sing-Box version"
-            sleep 1
+            sleep 5
           done
           [ -z "$SING_BOX_VERSION" ] && { echo "Error: Could not fetch Sing-Box version"; exit 1; }
-          SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION:1}-linux-amd64.tar.gz"
-          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz
+          SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
+          echo "Downloading Sing-Box from $SING_BOX_URL"
+          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz || { echo "Error: Failed to download Sing-Box"; exit 1; }
           # Verify gzip format
           file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "Error: Downloaded file is not a valid gzip archive"; exit 1; }
-          tar -xzf sing-box.tar.gz
-          sudo mv sing-box-*/sing-box /usr/local/bin/
+          tar -xzf sing-box.tar.gz || { echo "Error: Failed to extract Sing-Box archive"; exit 1; }
+          SING_BOX_BINARY=$(find . -type f -name sing-box)
+          [ -z "$SING_BOX_BINARY" ] && { echo "Error: Sing-Box binary not found in archive"; exit 1; }
+          sudo mv "$SING_BOX_BINARY" /usr/local/bin/sing-box
+          sudo chmod +x /usr/local/bin/sing-box
           rm -rf sing-box.tar.gz sing-box-*
-          sing-box version
+          sing-box version || { echo "Error: Sing-Box installation failed"; exit 1; }
 
       - name: Install Xray Core
         run: |
-          # Download script to a temporary file
           curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
-          # Verify file exists and is not empty
           [ -s /tmp/install-xray.sh ] || { echo "Error: Failed to download Xray install script"; exit 1; }
           chmod +x /tmp/install-xray.sh
           sudo bash /tmp/install-xray.sh
           rm -f /tmp/install-xray.sh
-          xray version
+          xray version || { echo "Error: Xray installation failed"; exit 1; }
 
       - name: Run speed test script
         run: |
@@ -68,4 +70,4 @@ jobs:
           git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
         env:
-          BOT: ${{ secrets.BOT }}  # Renamed token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use standard token name
