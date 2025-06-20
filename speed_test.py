@@ -1,290 +1,320 @@
+#!/usr/bin/env python3
+
 import requests
-import subprocess
-import json
-import os
-import urllib.parse
-import time
+import re
 import base64
-from pathlib import Path
+import json
+import yaml
+import subprocess
+import time
+import logging
+import os
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import urlparse, parse_qs
+from hashlib import md5
 
-# 配置
-DATA_DIR = "data"
-SUB_FILE = f"{DATA_DIR}/sub.txt"
-FAILED_FILE = f"{DATA_DIR}/failed_proxies.json"
-TIMEOUT = 5 # nc 连接超时
-
-NODE_URLS = [
-    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt"
+# 常量定义
+LOG_FILE = "node_connectivity_results.log"
+OUTPUT_DIR = "data"
+SUCCESS_FILE = os.path.join(OUTPUT_DIR, "sub.txt")
+FAILED_FILE = os.path.join(OUTPUT_DIR, "failed_nodes.txt")
+UNPARSED_FILE = "unparsed_nodes.log"
+NODE_SOURCES = [
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
+    # 可添加其他节点来源 URL
 ]
+TIMEOUT = 10  # 测试超时时间（秒）
+MAX_WORKERS = 50  # 并发测试线程数（根据 GitHub Actions 性能调整）
+RETRY_COUNT = 2  # 每个节点重试次数
 
-# 支持的协议列表
-SUPPORTED_PROTOCOLS_PREFIXES = (
-    'hysteria2://', 'vmess://', 'trojan://', 'ss://', 'ssr://', 'vless://'
+# 设置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8", mode="a"),
+        logging.StreamHandler()
+    ]
 )
+logger = logging.getLogger(__name__)
 
-def setup_files():
-    """创建data目录和文件，并确保FAILED_FILE是有效的JSON列表"""
-    os.makedirs(DATA_DIR, exist_ok=True)
-    Path(SUB_FILE).touch() # 如果文件不存在则创建
-    
-    # 确保FAILED_FILE存在且是有效的JSON列表，如果不是则重置
-    if not os.path.exists(FAILED_FILE):
-        with open(FAILED_FILE, 'w') as f:
-            json.dump([], f)
-    else:
+# 加载已知失败节点
+def load_failed_nodes():
+    failed_nodes = set()
+    if os.path.exists(FAILED_FILE):
+        with open(FAILED_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    # 使用 MD5 哈希去重，兼容格式差异
+                    node_hash = md5(line.encode("utf-8")).hexdigest()
+                    failed_nodes.add(node_hash)
+    return failed_nodes
+
+# 检查依赖
+def check_dependencies():
+    deps = ["sing-box", "xray", "dig"]
+    for dep in deps:
         try:
-            with open(FAILED_FILE, 'r') as f:
-                content = json.load(f)
-                if not isinstance(content, list):
-                    raise ValueError("FAILED_FILE content is not a list")
-                for item in content:
-                    if not isinstance(item, dict) or 'host' not in item or 'port' not in item:
-                        if 'reason' not in item: 
-                            raise ValueError("Items in FAILED_FILE are not valid dictionaries (missing host/port)")
-        except (json.JSONDecodeError, ValueError) as e:
-            print(f"Warning: {FAILED_FILE} is corrupted or in an unexpected format ({e}). Resetting it.")
-            with open(FAILED_FILE, 'w') as f:
-                json.dump([], f) # 重置为有效的空列表
+            subprocess.run([dep, "--version"], capture_output=True, check=True)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            logger.error(f"依赖 '{dep}' 未找到，请确保已安装。")
+            exit(1)
 
-def fetch_nodes():
-    """获取节点列表并去重"""
-    print("Fetching nodes from remote URLs...")
-    nodes = set()
-    for url in NODE_URLS:
+# 解析明文节点
+def parse_plain_node(node_link):
+    pattern = r"^(hysteria2|vless|vmess|trojan|ss)://(.+@)?([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+)(\?.*)?$"
+    match = re.match(pattern, node_link)
+    if match:
+        protocol, _, hostname_or_ip, port, params = match.groups()
+        return {"protocol": protocol, "host": hostname_or_ip, "port": int(port), "params": params or "", "raw": node_link}
+    return None
+
+# 解析 Base64 节点
+def parse_base64_node(node_link):
+    match = re.match(r"^(ss|vmess)://([A-Za-z0-9+/=]+)", node_link)
+    if not match:
+        return None
+    protocol, base64_part = match.groups()
+    try:
+        decoded = base64.urlsafe_b64decode(base64_part.replace("_", "+").replace("-", "/")).decode("utf-8")
+    except Exception as e:
+        logger.warning(f"Base64 解码失败: {node_link} ({e})")
+        return None
+
+    if protocol == "vmess":
+        try:
+            vmess_data = json.loads(decoded)
+            return {
+                "protocol": "vmess",
+                "host": vmess_data.get("add"),
+                "port": int(vmess_data.get("port")),
+                "id": vmess_data.get("id", ""),
+                "params": "",
+                "raw": node_link
+            }
+        except json.JSONDecodeError:
+            logger.warning(f"VMess JSON 解析失败: {node_link}")
+            return None
+    elif protocol == "ss":
+        match = re.match(r"(.+)@([0-9a-zA-Z.-]+|\[[0-9a-fA-F:]+\]):([0-9]+)", decoded)
+        if match:
+            method_password, host, port = match.groups()
+            return {"protocol": "ss", "host": host, "port": int(port), "method_password": method_password, "raw": node_link}
+        logger.warning(f"SS 节点解析失败: {node_link}")
+        return None
+    return None
+
+# 解析 YAML 节点
+def parse_yaml_node(node_content):
+    try:
+        yaml_data = yaml.safe_load(node_content)
+        server = yaml_data.get("server")
+        port = yaml_data.get("port")
+        protocol = yaml_data.get("protocol", "unknown")
+        if server and port:
+            # 转换为标准 URI 格式以兼容客户端
+            raw = f"{protocol}://{server}:{port}"
+            return {"protocol": protocol, "host": server, "port": int(port), "params": "", "raw": raw}
+        logger.warning(f"YAML 节点缺少必要字段: {node_content}")
+        return None
+    except yaml.YAMLError:
+        logger.warning(f"YAML 解析失败: {node_content}")
+        return None
+
+# 综合解析函数
+def parse_node(node_link):
+    # 跳过空行、注释和分隔符
+    if not node_link or node_link.startswith("#") or node_link.startswith("-"):
+        return None
+    # 检查是否为已知失败节点
+    node_hash = md5(node_link.encode("utf-8")).hexdigest()
+    if node_hash in load_failed_nodes():
+        logger.info(f"跳过已知失败节点: {node_link}")
+        return None
+    # 尝试明文解析
+    result = parse_plain_node(node_link)
+    if result:
+        return result
+    # 尝试 Base64 解析
+    result = parse_base64_node(node_link)
+    if result:
+        return result
+    # 尝试 YAML 解析
+    result = parse_yaml_node(node_link)
+    if result:
+        return result
+    # 记录无法解析的节点
+    with open(UNPARSED_FILE, "a", encoding="utf-8") as f:
+        f.write(f"{node_link}\n")
+    logger.warning(f"无法解析节点: {node_link}")
+    return None
+
+# 解析域名
+def resolve_domain(host):
+    if re.match(r"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$", host) or re.match(r"^\[[0-9a-fA-F:]+\]$", host):
+        return host
+    try:
+        result = subprocess.run(["dig", "+short", "-t", "A", host, "@8.8.8.8"], capture_output=True, text=True)
+        ip = result.stdout.strip().split("\n")[0]
+        if not ip:
+            result = subprocess.run(["dig", "+short", "-t", "AAAA", host, "@8.8.8.8"], capture_output=True, text=True)
+            ip = result.stdout.strip().split("\n")[0]
+        if ip:
+            logger.info(f"域名解析: {host} -> {ip}")
+            return ip
+        logger.warning(f"无法解析域名: {host}")
+        return None
+    except subprocess.CalledProcessError:
+        logger.warning(f"域名解析失败: {host}")
+        return None
+
+# 测试节点（使用 Sing-Box 或 Xray Core）
+def test_node(node_link):
+    parsed = parse_node(node_link)
+    if not parsed:
+        return None, node_link
+
+    protocol = parsed["protocol"]
+    host = parsed["host"]
+    port = parsed["port"]
+    raw_node = parsed["raw"]
+
+    # 解析域名
+    ip = resolve_domain(host)
+    if not ip:
+        return None, node_link
+    target_host = f"[{ip}]" if ":" in ip else ip
+
+    # 准备 Sing-Box 配置
+    config = {
+        "log": {"disabled": True},
+        "inbounds": [{"type": "http", "listen": "127.0.0.1", "port": 1080}],
+        "outbounds": [{"type": protocol, "server": ip, "port": port}]
+    }
+
+    # 根据协议补充配置
+    if protocol == "ss":
+        method_password = parsed.get("method_password", "").split(":")
+        if len(method_password) == 2:
+            config["outbounds"][0]["method"] = method_password[0]
+            config["outbounds"][0]["password"] = method_password[1]
+    elif protocol == "vmess":
+        config["outbounds"][0]["uuid"] = parsed.get("id", "")
+    elif protocol == "vless":
+        config["outbounds"][0]["uuid"] = parse_qs(urlparse(node_link).query).get("uuid", [""])[0]
+    elif protocol == "trojan":
+        config["outbounds"][0]["password"] = parse_qs(urlparse(node_link).query).get("password", [""])[0]
+    elif protocol == "hysteria2":
+        config["outbounds"][0]["password"] = parse_qs(urlparse(node_link).query).get("auth", [""])[0]
+
+    # 保存临时配置文件
+    temp_config = f"/tmp/sing-box-config-{time.time()}.json"
+    with open(temp_config, "w", encoding="utf-8") as f:
+        json.dump(config, f)
+
+    # 测试连接（优先使用 Sing-Box）
+    for attempt in range(RETRY_COUNT):
+        try:
+            proc = subprocess.Popen(["sing-box", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(1)  # 等待客户端启动
+            result = subprocess.run(
+                ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
+                capture_output=True,
+                text=True
+            )
+            proc.terminate()
+            os.remove(temp_config)
+            if result.returncode == 0:
+                logger.info(f"成功连接到 {target_host}:{port} ({protocol})")
+                return raw_node, None
+            else:
+                logger.warning(f"尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol})")
+        except subprocess.CalledProcessError:
+            logger.warning(f"Sing-Box 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}")
+            os.remove(temp_config)
+
+    # 备选：使用 Xray Core
+    for attempt in range(RETRY_COUNT):
+        try:
+            proc = subprocess.Popen(["xray", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(1)
+            result = subprocess.run(
+                ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
+                capture_output=True,
+                text=True
+            )
+            proc.terminate()
+            if result.returncode == 0:
+                logger.info(f"Xray Core 成功连接到 {target_host}:{port} ({protocol})")
+                return raw_node, None
+            else:
+                logger.warning(f"Xray Core 尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol})")
+        except subprocess.CalledProcessError:
+            logger.warning(f"Xray Core 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}")
+        finally:
+            if os.path.exists(temp_config):
+                os.remove(temp_config)
+    return None, node_link
+
+# 主逻辑
+def main():
+    logger.info("开始节点连接性测试...")
+    logger.info(f"测试时间: {datetime.now()}")
+
+    # 创建输出目录
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    # 检查依赖
+    check_dependencies()
+
+    # 下载并合并节点
+    all_nodes = set()
+    for url in NODE_SOURCES:
+        logger.info(f"正在下载: {url}")
         try:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
-            for line in response.text.splitlines():
-                line = line.strip()
-                if line.startswith(SUPPORTED_PROTOCOLS_PREFIXES):
-                    # 移除URL中可能存在的注释部分，确保只处理原始链接
-                    if '#' in line:
-                        line = line.split('#')[0]
-                    # 移除vmess链接中可能存在的_1000ms后缀
-                    if line.startswith('vmess://') and line.endswith('_1000ms'):
-                        line = line[:-len('_1000ms')]
-                    
-                    nodes.add(line)
-        except Exception as e:
-            print(f"Failed to fetch {url}: {e}")
-    print(f"Fetched and deduplicated {len(nodes)} nodes.")
-    return list(nodes)
+            nodes = response.text.splitlines()
+            all_nodes.update(nodes)
+        except requests.RequestException as e:
+            logger.warning(f"无法下载 {url}: {e}")
 
-def parse_node(node):
-    """解析节点信息"""
-    try:
-        parsed = urllib.parse.urlparse(node)
-        scheme = parsed.scheme.lower()
+    if not all_nodes:
+        logger.error("未能下载任何节点配置文件。")
+        exit(1)
 
-        host = parsed.hostname
-        port = parsed.port
+    logger.info(f"共计 {len(all_nodes)} 个唯一节点，开始测试...")
 
-        if not host or not port:
-            if scheme == 'vmess':
-                try:
-                    # 确保Base64解码正确处理填充
-                    encoded_str = parsed.netloc
-                    missing_padding = len(encoded_str) % 4
-                    if missing_padding:
-                        encoded_str += '=' * (4 - missing_padding)
-                    
-                    decoded_str = base64.b64decode(encoded_str).decode('utf-8')
-                    vmess_config = json.loads(decoded_str)
-                    host = vmess_config.get('add')
-                    port = vmess_config.get('port')
-                    if host and port:
-                        port = int(port)
-                except Exception:
-                    pass
+    # 并行测试节点
+    success_nodes = []
+    failed_nodes = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        results = executor.map(test_node, all_nodes)
+        for success, failed in results:
+            if success:
+                success_nodes.append(success)
+            elif failed:
+                failed_nodes.append(failed)
 
-            elif scheme == 'ss':
-                try:
-                    if '@' in parsed.netloc:
-                        parts = parsed.netloc.split('@')[-1].split(':')
-                        if len(parts) >= 2:
-                            host = parts[0]
-                            port = int(parts[1])
-                    else: # 尝试base64解码
-                        encoded_netloc = parsed.netloc
-                        missing_padding = len(encoded_netloc) % 4
-                        if missing_padding:
-                            encoded_netloc += '=' * (4 - missing_padding)
-                        
-                        decoded_netloc = base64.b64decode(encoded_netloc).decode('utf-8')
-                        if '@' in decoded_netloc:
-                            parts = decoded_netloc.split('@')[-1].split(':')
-                            if len(parts) >= 2:
-                                host = parts[0]
-                                port = int(parts[1])
-                except Exception:
-                    pass
+    # 追加保存成功节点
+    with open(SUCCESS_FILE, "a", encoding="utf-8") as f:
+        f.write(f"\n# Successful Nodes (Appended at {datetime.now()})\n")
+        f.write("-------------------------------------\n")
+        for node in success_nodes:
+            f.write(f"{node}\n")
 
-            elif scheme == 'ssr':
-                try:
-                    if ':' in parsed.netloc: # SSR的netloc可能包含host:port
-                        parts = parsed.netloc.split(':')
-                        if len(parts) >= 2:
-                            host = parts[0]
-                            port = int(parts[1])
-                    # SSR的path部分也可能包含信息，这里简化处理只取host:port
-                except Exception:
-                    pass
+    # 追加保存失败节点
+    with open(FAILED_FILE, "a", encoding="utf-8") as f:
+        f.write(f"\n# Failed Nodes (Appended at {datetime.now()})\n")
+        f.write("-------------------------------------\n")
+        for node in failed_nodes:
+            f.write(f"{node}\n")
 
-        if not host or not port:
-            print(f"Could not parse host or port for {node}")
-            return None
-
-        # 如果端口仍然是None，设置默认值
-        if port is None:
-            if scheme in ['vmess', 'vless', 'trojan', 'hysteria2']:
-                port = 443 # 这些协议常见端口
-            elif scheme == 'ss':
-                port = 8080 # SS常见端口
-            elif scheme == 'ssr':
-                port = 443 # SSR也常见443/80
-
-        return {'host': host, 'port': port, 'protocol': scheme, 'original_node': node}
-    except Exception as e:
-        print(f"Parse error for {node}: {e}")
-        return None
-
-def is_failed_node(host, port, failed_nodes):
-    """检查节点是否在失败列表中"""
-    return any(isinstance(n, dict) and n.get('host') == host and n.get('port') == port for n in failed_nodes)
-
-def test_connectivity(host, port, protocol):
-    """使用nc测试端口连通性"""
-    try:
-        cmd = ['nc', '-z', '-w', str(TIMEOUT), host, str(port)]
-        if protocol == 'hysteria2':
-            cmd.insert(2, '-u')
-        
-        print(f"  Testing connectivity for {protocol.upper()} {host}:{port} with command: {' '.join(cmd)}")
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=TIMEOUT + 1)
-        
-        if result.returncode == 0:
-            print(f"  Connectivity successful for {host}:{port}.")
-            return True
-        else:
-            print(f"  Connectivity failed for {host}:{port}. Error: {result.stderr.strip() or result.stdout.strip()}")
-            return f"nc failed: {result.returncode}"
-    except subprocess.TimeoutExpired:
-        print(f"  Connectivity test timed out for {host}:{port}.")
-        return "timeout"
-    except Exception as e:
-        print(f"  Connectivity test error for {host}:{port}: {e}")
-        return f"Error: {e}"
-
-# update_node_name 函数现在只用于去除可能存在的旧注释
-def clean_node_url(node_url):
-    """移除URL中可能存在的注释部分，确保返回纯粹的节点链接"""
-    if '#' in node_url:
-        node_url = node_url.split('#')[0]
-    # 移除vmess链接中可能存在的_1000ms后缀 (再次确保)
-    if node_url.startswith('vmess://') and node_url.endswith('_1000ms'):
-        node_url = node_url[:-len('_1000ms')]
-    return node_url
-
-def main():
-    setup_files()
-    
-    # 读取当前的失败节点列表
-    current_failed_nodes = []
-    try:
-        with open(FAILED_FILE, 'r') as f:
-            current_failed_nodes = json.load(f)
-            if not isinstance(current_failed_nodes, list) or not all(isinstance(n, dict) and 'host' in n and 'port' in n for n in current_failed_nodes):
-                print(f"Warning: {FAILED_FILE} content is malformed. Resetting current failed nodes for this run.")
-                current_failed_nodes = []
-    except (json.JSONDecodeError, FileNotFoundError) as e:
-        print(f"Failed to load {FAILED_FILE} ({e}). Starting with an empty failed list for this run.")
-        current_failed_nodes = []
-        with open(FAILED_FILE, 'w') as f:
-            json.dump([], f)
-
-    # 获取所有待测试的节点
-    all_nodes_to_test = fetch_nodes()
-    
-    successful_nodes_this_run = set() # 存储本次运行中连通成功的原始节点链接 (使用set自动去重)
-    failed_nodes_this_run = [] # 存储本次运行中失败的节点 (用于追加到文件中)
-
-    for i, node_url in enumerate(all_nodes_to_test, 1):
-        # 确保在测试前节点URL是干净的，不带上次可能有的注释
-        clean_url = clean_node_url(node_url)
-
-        print(f"\nTesting node {i}/{len(all_nodes_to_test)}: {clean_url}")
-        parsed = parse_node(clean_url)
-        
-        if not parsed:
-            print("  Invalid node format or unparsable, skipping.")
-            host_temp, port_temp = "unknown", "unknown"
-            try:
-                temp_parsed = urllib.parse.urlparse(clean_url)
-                host_temp = temp_parsed.hostname or "unknown"
-                port_temp = temp_parsed.port or "unknown"
-            except:
-                pass
-            
-            node_info_failed = {'host': host_temp, 'port': port_temp, 'original_node': clean_url, 'reason': 'Parse Error', 'timestamp': time.time()}
-            if not any(n.get('host') == node_info_failed['host'] and n.get('port') == node_info_failed['port'] for n in failed_nodes_this_run):
-                failed_nodes_this_run.append(node_info_failed)
-            continue
-        
-        host, port, protocol, original_node = parsed['host'], parsed['port'], parsed['protocol'], parsed['original_node']
-        
-        # 检查是否为**之前**已失败的节点 (避免重复测试已知失败的)
-        if is_failed_node(host, port, current_failed_nodes):
-            print(f"  Node {host}:{port} ({protocol.upper()}) already failed in previous runs, skipping.")
-            node_info_failed = {'host': host, 'port': port, 'original_node': original_node, 'reason': 'Previously Failed', 'timestamp': time.time()}
-            if not any(n.get('host') == node_info_failed['host'] and n.get('port') == node_info_failed['port'] for n in failed_nodes_this_run):
-                failed_nodes_this_run.append(node_info_failed)
-            continue
-        
-        # --- 连通性测试 ---
-        conn_result = test_connectivity(host, port, protocol)
-        if conn_result is True:
-            # 连通性成功，添加到成功的集合中 (这里直接使用原始的、纯净的链接)
-            successful_nodes_this_run.add(original_node)
-        else:
-            print(f"  Connectivity test failed for {host}:{port}. Reason: {conn_result}")
-            node_info_failed = {'host': host, 'port': port, 'original_node': original_node, 'reason': conn_result, 'timestamp': time.time()}
-            if not any(n.get('host') == node_info_failed['host'] and n.get('port') == node_info_failed['port'] for n in failed_nodes_this_run):
-                failed_nodes_this_run.append(node_info_failed)
-
-    # --- 保存成功节点到 sub.txt (追加模式) ---
-    print(f"\nSaving successful nodes to {SUB_FILE} (appending)...")
-    with open(SUB_FILE, 'a') as f: # 'a' for append mode
-        for node_url in sorted(list(successful_nodes_this_run)): # 排序后写入，确保顺序一致
-            f.write(node_url + '\n')
-    print(f"Successfully appended {len(successful_nodes_this_run)} nodes to {SUB_FILE}.")
-    
-    # --- 保存失败节点到 failed_proxies.json (追加模式，需要先读后写去重) ---
-    print(f"\nSaving failed nodes to {FAILED_FILE} (appending)...")
-    # 先加载现有失败节点，去除重复（基于host+port），然后添加本次失败节点
-    final_failed_nodes = {} # 使用字典去重，键是 'host:port'
-    
-    # 将旧的失败节点加入，如果存在同host:port的，保留旧的理由，更新时间戳
-    for node_data in current_failed_nodes:
-        key = f"{node_data.get('host')}:{node_data.get('port')}"
-        final_failed_nodes[key] = node_data
-        
-    # 将本次失败的节点加入，会覆盖旧的（更新时间戳和最新失败原因）
-    for node_data in failed_nodes_this_run:
-        key = f"{node_data.get('host')}:{node_data.get('port')}"
-        final_failed_nodes[key] = node_data
-
-    # 将字典的值转换为列表
-    final_failed_list = list(final_failed_nodes.values())
-
-    with open(FAILED_FILE, 'w') as f: # 注意这里仍然是 'w'，因为是写入整个更新后的列表
-        json.dump(final_failed_list, f, indent=2)
-    print(f"Successfully updated {len(final_failed_list)} failed nodes in {FAILED_FILE}.")
-            
-    print(f"\nTest completed. Connectivity-tested nodes saved to {SUB_FILE}, failed nodes saved to {FAILED_FILE}.")
-    print("\nSummary of newly successful nodes (connectivity OK) added this run:")
-    for node_url in sorted(list(successful_nodes_this_run)):
-        print(node_url)
+    logger.info(f"成功节点已追加到 {SUCCESS_FILE}，共 {len(success_nodes)} 个")
+    logger.info(f"失败节点已追加到 {FAILED_FILE}，共 {len(failed_nodes)} 个")
+    logger.info("测试完成。")
 
 if __name__ == "__main__":
     main()
