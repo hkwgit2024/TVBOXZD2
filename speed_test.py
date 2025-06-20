@@ -22,11 +22,10 @@ FAILED_FILE = os.path.join(OUTPUT_DIR, "failed_nodes.txt")
 UNPARSED_FILE = "unparsed_nodes.log"
 NODE_SOURCES = [
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-    # 可添加其他节点来源 URL
 ]
-TIMEOUT = 10  # 测试超时时间（秒）
-MAX_WORKERS = 50  # 并发测试线程数（根据 GitHub Actions 性能调整）
-RETRY_COUNT = 2  # 每个节点重试次数
+TIMEOUT = 10
+MAX_WORKERS = 20
+RETRY_COUNT = 2
 
 # 设置日志
 logging.basicConfig(
@@ -47,25 +46,29 @@ def load_failed_nodes():
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    # 使用 MD5 哈希去重，兼容格式差异
                     node_hash = md5(line.encode("utf-8")).hexdigest()
                     failed_nodes.add(node_hash)
     return failed_nodes
 
 # 检查依赖
 def check_dependencies():
-    # ----> 重点修改：将 "sing-box" 和 "xray" 改为完整路径 <----
-    deps = ["/usr/local/bin/sing-box", "/usr/local/bin/xray", "dig"]
-    for dep in deps:
+    deps = [
+        ("/usr/local/bin/sing-box", "version"),
+        ("/usr/local/bin/xray", "--version"),
+        ("dig", "--version")
+    ]
+    for dep, version_arg in deps:
         try:
-            # 对于 /usr/local/bin 下的依赖，可以直接运行
-            if dep.startswith("/usr/local/bin/"):
-                subprocess.run([dep, "--version"], capture_output=True, check=True)
-            # 对于如 'dig' 这种通常在默认 PATH 中的命令，直接运行即可
-            else:
-                subprocess.run([dep, "--version"], capture_output=True, check=True)
-        except (subprocess.CalledProcessError, FileNotFoundError):
+            result = subprocess.run([dep, version_arg], capture_output=True, text=True, check=True)
+            logger.info(f"依赖 '{dep}' 检查成功，版本信息:\n{result.stdout}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"依赖 '{dep}' 执行 '{version_arg}' 失败: {e}\n stderr: {e.stderr}")
+            exit(1)
+        except FileNotFoundError:
             logger.error(f"依赖 '{dep}' 未找到，请确保已安装。")
+            exit(1)
+        except Exception as e:
+            logger.error(f"检查依赖 '{dep}' 时发生未知错误: {e}")
             exit(1)
 
 # 解析明文节点
@@ -120,7 +123,6 @@ def parse_yaml_node(node_content):
         port = yaml_data.get("port")
         protocol = yaml_data.get("protocol", "unknown")
         if server and port:
-            # 转换为标准 URI 格式以兼容客户端
             raw = f"{protocol}://{server}:{port}"
             return {"protocol": protocol, "host": server, "port": int(port), "params": "", "raw": raw}
         logger.warning(f"YAML 节点缺少必要字段: {node_content}")
@@ -131,27 +133,21 @@ def parse_yaml_node(node_content):
 
 # 综合解析函数
 def parse_node(node_link):
-    # 跳过空行、注释和分隔符
     if not node_link or node_link.startswith("#") or node_link.startswith("-"):
         return None
-    # 检查是否为已知失败节点
     node_hash = md5(node_link.encode("utf-8")).hexdigest()
     if node_hash in load_failed_nodes():
         logger.info(f"跳过已知失败节点: {node_link}")
         return None
-    # 尝试明文解析
     result = parse_plain_node(node_link)
     if result:
         return result
-    # 尝试 Base64 解析
     result = parse_base64_node(node_link)
     if result:
         return result
-    # 尝试 YAML 解析
     result = parse_yaml_node(node_link)
     if result:
         return result
-    # 记录无法解析的节点
     with open(UNPARSED_FILE, "a", encoding="utf-8") as f:
         f.write(f"{node_link}\n")
     logger.warning(f"无法解析节点: {node_link}")
@@ -176,7 +172,7 @@ def resolve_domain(host):
         logger.warning(f"域名解析失败: {host}")
         return None
 
-# 测试节点（使用 Sing-Box 或 Xray Core）
+# 测试节点
 def test_node(node_link):
     parsed = parse_node(node_link)
     if not parsed:
@@ -187,20 +183,17 @@ def test_node(node_link):
     port = parsed["port"]
     raw_node = parsed["raw"]
 
-    # 解析域名
     ip = resolve_domain(host)
     if not ip:
         return None, node_link
     target_host = f"[{ip}]" if ":" in ip else ip
 
-    # 准备 Sing-Box 配置
     config = {
         "log": {"disabled": True},
         "inbounds": [{"type": "http", "listen": "127.0.0.1", "port": 1080}],
         "outbounds": [{"type": protocol, "server": ip, "port": port}]
     }
 
-    # 根据协议补充配置
     if protocol == "ss":
         method_password = parsed.get("method_password", "").split(":")
         if len(method_password) == 2:
@@ -215,79 +208,83 @@ def test_node(node_link):
     elif protocol == "hysteria2":
         config["outbounds"][0]["password"] = parse_qs(urlparse(node_link).query).get("auth", [""])[0]
 
-    # 保存临时配置文件
     temp_config = f"/tmp/sing-box-config-{time.time()}.json"
-    with open(temp_config, "w", encoding="utf-8") as f:
-        json.dump(config, f)
+    try:
+        with open(temp_config, "w", encoding="utf-8") as f:
+            json.dump(config, f)
 
-    # 测试连接（优先使用 Sing-Box）
-    for attempt in range(RETRY_COUNT):
-        try:
-            # ----> 重点修改：将 "sing-box" 改为完整路径 <----
-            proc = subprocess.Popen(["/usr/local/bin/sing-box", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(1)  # 等待客户端启动
-            result = subprocess.run(
-                ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
-                capture_output=True,
-                text=True
-            )
-            proc.terminate()
-            os.remove(temp_config)
-            if result.returncode == 0:
-                logger.info(f"成功连接到 {target_host}:{port} ({protocol})")
-                return raw_node, None
-            else:
-                logger.warning(f"尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol})")
-        except subprocess.CalledProcessError:
-            logger.warning(f"Sing-Box 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}")
-            os.remove(temp_config)
+        for attempt in range(RETRY_COUNT):
+            try:
+                proc = subprocess.Popen(["/usr/local/bin/sing-box", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                time.sleep(1)
+                result = subprocess.run(
+                    ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
+                    capture_output=True,
+                    text=True
+                )
+                proc.terminate()
+                if result.returncode == 0:
+                    logger.info(f"成功连接到 {target_host}:{port} ({protocol})")
+                    return raw_node, None
+                else:
+                    logger.warning(f"尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol}), stderr: {result.stderr}")
+            except subprocess.CalledProcessError as e:
+                logger.warning(f"Sing-Box 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}, error: {e}")
+            finally:
+                if proc.poll() is None:
+                    proc.terminate()
 
-    # 备选：使用 Xray Core
-    for attempt in range(RETRY_COUNT):
-        try:
-            # ----> 重点修改：将 "xray" 改为完整路径 <----
-            proc = subprocess.Popen(["/usr/local/bin/xray", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(1)
-            result = subprocess.run(
-                ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
-                capture_output=True,
-                text=True
-            )
-            proc.terminate()
-            if result.returncode == 0:
-                logger.info(f"Xray Core 成功连接到 {target_host}:{port} ({protocol})")
-                return raw_node, None
-            else:
-                logger.warning(f"Xray Core 尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol})")
-        except subprocess.CalledProcessError:
-            logger.warning(f"Xray Core 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}")
-        finally:
-            if os.path.exists(temp_config):
-                os.remove(temp_config)
+        for attempt in range(RETRY_COUNT):
+            try:
+                proc = subprocess.Popen(["/usr/local/bin/xray", "run", "-c", temp_config], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                time.sleep(1)
+                result = subprocess.run(
+                    ["curl", "-x", "http://127.0.0.1:1080", "--max-time", str(TIMEOUT), "http://example.com"],
+                    capture_output=True,
+                    text=True
+                )
+                proc.terminate()
+                if result.returncode == 0:
+                    logger.info(f"Xray Core 成功连接到 {target_host}:{port} ({protocol})")
+                    return raw_node, None
+                else:
+                    logger.warning(f"Xray Core 尝试 {attempt + 1}/{RETRY_COUNT} 失败: {target_host}:{port} ({protocol}), stderr: {result.stderr}")
+            except subprocess.CalledProcessError as e:
+                logger.warning(f"Xray Core 测试失败，尝试 {attempt + 1}/{RETRY_COUNT}: {node_link}, error: {e}")
+            finally:
+                if proc.poll() is None:
+                    proc.terminate()
+    finally:
+        if os.path.exists(temp_config):
+            os.remove(temp_config)
     return None, node_link
+
+# 下载节点
+def download_nodes(url, retries=3):
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            return response.text.splitlines()
+        except requests.RequestException as e:
+            logger.warning(f"下载 {url} 失败，尝试 {attempt + 1}/{retries}: {e}")
+            time.sleep(5)
+    logger.error(f"无法下载 {url}，放弃重试")
+    return []
 
 # 主逻辑
 def main():
     logger.info("开始节点连接性测试...")
     logger.info(f"测试时间: {datetime.now()}")
 
-    # 创建输出目录
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    # 检查依赖
     check_dependencies()
 
-    # 下载并合并节点
     all_nodes = set()
     for url in NODE_SOURCES:
-        logger.info(f"正在下载: {url}")
-        try:
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            nodes = response.text.splitlines()
-            all_nodes.update(nodes)
-        except requests.RequestException as e:
-            logger.warning(f"无法下载 {url}: {e}")
+        nodes = download_nodes(url)
+        all_nodes.update(nodes)
 
     if not all_nodes:
         logger.error("未能下载任何节点配置文件。")
@@ -295,7 +292,6 @@ def main():
 
     logger.info(f"共计 {len(all_nodes)} 个唯一节点，开始测试...")
 
-    # 并行测试节点
     success_nodes = []
     failed_nodes = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -306,14 +302,12 @@ def main():
             elif failed:
                 failed_nodes.append(failed)
 
-    # 追加保存成功节点
     with open(SUCCESS_FILE, "a", encoding="utf-8") as f:
         f.write(f"\n# Successful Nodes (Appended at {datetime.now()})\n")
         f.write("-------------------------------------\n")
         for node in success_nodes:
             f.write(f"{node}\n")
 
-    # 追加保存失败节点
     with open(FAILED_FILE, "a", encoding="utf-8") as f:
         f.write(f"\n# Failed Nodes (Appended at {datetime.now()})\n")
         f.write("-------------------------------------\n")
