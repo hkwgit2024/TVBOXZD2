@@ -1,4 +1,4 @@
-name: Speed Test Workflow
+name: Speed Test 
 
 on:
   schedule:
