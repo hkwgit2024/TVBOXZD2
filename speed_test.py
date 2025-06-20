@@ -27,7 +27,7 @@ XRAY_PROTOCOLS = {"vmess", "vless", "trojan", "ss"}
 
 # 日志记录
 def log_message(level, message):
-    timestamp = datetime.now(timezone.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     print(f"[{timestamp}] [{level.upper()}] {message}")
 
 # 解析 vmess://
@@ -531,6 +531,9 @@ def process_node(node_url, index, total_nodes):
 
 # 加载本地节点列表
 def load_node_list(file_path="all_nodes.txt"):
+    if not os.path.exists(file_path):
+        log_message("error", f"节点文件 {file_path} 不存在")
+        return []
     try:
         log_message("info", f"从 {file_path} 加载节点列表...")
         with open(file_path, "r", encoding="utf-8") as f:
@@ -542,15 +545,13 @@ def load_node_list(file_path="all_nodes.txt"):
             return []
         log_message("info", f"成功加载 {len(nodes)} 个节点")
         return nodes[:MAX_NODES]
-    except FileNotFoundError:
-        log_message("error", f"节点文件 {file_path} 不存在")
-        return []
     except Exception as e:
         log_message("error", f"加载节点列表失败: {e}")
         return []
 
 # 主函数
 def main():
+    start_time = time.time()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     nodes = load_node_list()
     if not nodes:
@@ -573,7 +574,7 @@ def main():
 
     # 保存结果到 data/sub.txt（追加模式）
     with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
-        timestamp = datetime.now(timezone.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
         f.write(f"\n# Updated at {timestamp}\n")
         valid_nodes = [node[1] for node in results if node[0] is not None]
         for node_url in valid_nodes:
@@ -583,6 +584,8 @@ def main():
             base64_subscription = base64.urlsafe_b64encode(subscription_content.encode()).decode().rstrip("=")
             f.write(f"#base64\n{base64_subscription}\n")
         log_message("info", f"保存了 {len(valid_nodes)} 个有效节点到 {OUTPUT_FILE}")
+
+    log_message("info", f"总运行时间: {time.time() - start_time:.2f} 秒")
 
 if __name__ == "__main__":
     main()
