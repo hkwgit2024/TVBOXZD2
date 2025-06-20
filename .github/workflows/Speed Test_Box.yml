@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
-  # 也可以考虑定时触发，例如每天运行一次
-  # schedule:
-  #   - cron: '0 0 * * *' # 每天 UTC 0点运行
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 0点运行
 
 jobs:
   test_nodes:
@@ -16,6 +15,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Install jq
+      run: sudo apt-get update && sudo apt-get install -y jq
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -23,43 +25,34 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests  # 用于下载节点列表和测速
-        pip install urllib3   # requests 依赖
-        pip install pyyaml    # 如果需要解析YAML格式的订阅（尽管这里主要处理URL）
-        # 尝试安装用于解析v2ray协议的库
-        pip install v2ray-url-parser
-        # 尝试安装用于SSR解析的库（如果需要混淆和协议参数）
-        pip install ssr-parser # 如果需要更全面的 SSR 支持
-        # 如果以上库不够用，可能需要手动实现解析或者找到其他库
+        pip install requests pyyaml
+        # 如果找到正确的 V2Ray/SSR 解析库，添加在这里
+        # pip install git+https://github.com/<user>/<v2ray-url-parser-repo>.git
+        # pip install git+https://github.com/<user>/<ssr-parser-repo>.git
 
     - name: Download Sing-Box
       run: |
-        # 获取 Sing-Box 最新版本号，建议替换为最新稳定版
-        # 访问 https://api.github.com/repos/SagerNet/sing-box/releases/latest 获取最新 release 信息
-        SB_VERSION="1.8.0-rc.3" # 可以替换为 `$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep "tag_name" | cut -d : -f 2,3 | tr -d \"\, | cut -d v -f 2)`
-        SB_ARCH="amd64" # 根据运行环境选择架构
+        SB_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
+        SB_ARCH="amd64"
         curl -LO https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
         tar -xvf sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
         sudo mv sing-box-${SB_VERSION}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
         rm -rf sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz sing-box-${SB_VERSION}-linux-${SB_ARCH}
-        sing-box version # 验证是否安装成功
+        sing-box version
 
     - name: Download Xray Core
       run: |
-        # 获取 Xray Core 最新版本号，建议替换为最新稳定版
-        # 访问 https://api.github.com/repos/XTLS/Xray-core/releases/latest 获取最新 release 信息
-        XR_VERSION="1.8.0" # 可以替换为 `$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | grep "tag_name" | cut -d : -f 2,3 | tr -d \"\, | cut -d v -f 2)`
-        XR_ARCH="64" # 根据运行环境选择架构
+        XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
+        XR_ARCH="64"
         curl -LO https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-${XR_ARCH}.zip
         unzip Xray-linux-${XR_ARCH}.zip
         sudo mv xray /usr/local/bin/xray
-        rm -rf Xray-linux-${XR_ARCH}.zip geoip.dat geosite.dat # 移除多余文件
-        xray version # 验证是否安装成功
+        rm -rf Xray-linux-${XR_ARCH}.zip geoip.dat geosite.dat
+        xray version
 
     - name: Download all_nodes.txt
       run: |
         curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || echo "Failed to download all_nodes.txt, but continuing."
-        # 如果下载失败，确保脚本不会立即退出，后续可以处理空文件情况
 
     - name: Run speed test script
       env:
@@ -70,7 +63,6 @@ jobs:
       run: |
         git config user.name github-actions[bot]
         git config user.email github-actions[bot]@users.noreply.github.com
-        # 检查文件是否存在且有内容才添加和提交
         if [ -s data/sub.txt ]; then
           git add data/sub.txt
           git commit -m "Update speed test results at $(date -u)" || echo "No changes to commit"
