@@ -6,7 +6,8 @@ import time
 import requests
 import re
 from urllib.parse import urlparse, parse_qs, unquote
-from datetime import datetime
+from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
 
 # 常量定义
@@ -15,6 +16,7 @@ HTTP_PORT = 8080
 TEST_URL = "http://www.google.com"
 TIMEOUT = 5  # 秒
 MAX_NODES = 100  # 最大测试节点数
+MAX_CONCURRENT = 10  # 最大并发线程数
 OUTPUT_DIR = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "sub.txt")
 LATENCY_THRESHOLD = 1000  # 延迟阈值（毫秒）
@@ -25,7 +27,7 @@ XRAY_PROTOCOLS = {"vmess", "vless", "trojan", "ss"}
 
 # 日志记录
 def log_message(level, message):
-    timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = datetime.now(timezone.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
     print(f"[{timestamp}] [{level.upper()}] {message}")
 
 # 解析 vmess://
@@ -340,7 +342,7 @@ def generate_singbox_config(node_url):
 def generate_xray_config(node_url):
     try:
         if node_url.startswith("hysteria2://") or node_url.startswith("ssr://"):
-            return None  # Xray 不支持
+            return None
         elif node_url.startswith("vmess://"):
             node_data = parse_vmess_url(node_url)
             if not node_data or not node_data.get("add") or not node_data.get("id"):
@@ -466,7 +468,6 @@ def generate_xray_config(node_url):
 
 # 测试节点延迟
 def run_test(core_name, config_path, node_url_original):
-    log_message("info", f"测试 {core_name} 节点: {node_url_original}")
     try:
         if core_name == "sing-box":
             process = subprocess.Popen(["sing-box", "run", "-c", config_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -475,10 +476,10 @@ def run_test(core_name, config_path, node_url_original):
         else:
             return None, "Unknown core"
 
-        time.sleep(1)  # 等待服务启动
+        time.sleep(1)
         start_time = time.time()
         response = requests.get(TEST_URL, proxies={"http": f"socks5://127.0.0.1:{SOCKS_PORT}"}, timeout=TIMEOUT)
-        latency = (time.time() - start_time) * 1000  # 转换为毫秒
+        latency = (time.time() - start_time) * 1000
         process.kill()
 
         if response.status_code == 200:
@@ -493,6 +494,40 @@ def run_test(core_name, config_path, node_url_original):
         if process:
             process.kill()
         return None, f"Test failed: {e}"
+
+# 处理单个节点
+def process_node(node_url, index, total_nodes):
+    log_message("info", f"处理节点 {index}/{total_nodes}: {node_url}")
+    protocol = node_url.split("://")[0].lower()
+    singbox_latency, singbox_result = None, "Skipped"
+    xray_latency, xray_result = None, "Skipped"
+
+    # 测试 Sing-Box
+    if protocol in SINGBOX_PROTOCOLS:
+        singbox_config = generate_singbox_config(node_url)
+        if singbox_config:
+            singbox_config_path = f"singbox_config_{index}.json"
+            with open(singbox_config_path, "w") as f:
+                f.write(singbox_config)
+            singbox_latency, singbox_result = run_test("sing-box", singbox_config_path, node_url)
+            os.remove(singbox_config_path)
+        else:
+            singbox_latency, singbox_result = None, "Config generation failed"
+
+    # 测试 Xray
+    if protocol in XRAY_PROTOCOLS:
+        xray_config = generate_xray_config(node_url)
+        if xray_config:
+            xray_config_path = f"xray_config_{index}.json"
+            with open(xray_config_path, "w") as f:
+                f.write(xray_config)
+            xray_latency, xray_result = run_test("xray", xray_config_path, node_url)
+            os.remove(xray_config_path)
+        else:
+            xray_latency, xray_result = None, "Config generation failed"
+
+    log_message("info", f"节点 {index} 结果: Sing-Box 延迟={singbox_latency}ms, 结果={singbox_result}; Xray 延迟={xray_latency}ms, 结果={xray_result}")
+    return singbox_latency, node_url, singbox_result, xray_latency, xray_result
 
 # 加载本地节点列表
 def load_node_list(file_path="all_nodes.txt"):
@@ -523,48 +558,22 @@ def main():
         return
 
     results = []
-    for i, node_url in enumerate(nodes, 1):
-        log_message("info", f"处理节点 {i}/{len(nodes)}: {node_url}")
-        protocol = node_url.split("://")[0].lower()
-
-        singbox_latency, singbox_result = None, "Skipped"
-        xray_latency, xray_result = None, "Skipped"
-
-        # 测试 Sing-Box（仅对支持的协议）
-        if protocol in SINGBOX_PROTOCOLS:
-            singbox_config = generate_singbox_config(node_url)
-            if singbox_config:
-                singbox_config_path = "singbox_config.json"
-                with open(singbox_config_path, "w") as f:
-                    f.write(singbox_config)
-                singbox_latency, singbox_result = run_test("sing-box", singbox_config_path, node_url)
-                os.remove(singbox_config_path)
-            else:
-                singbox_latency, singbox_result = None, "Config generation failed"
-
-        # 测试 Xray（仅对支持的协议）
-        if protocol in XRAY_PROTOCOLS:
-            xray_config = generate_xray_config(node_url)
-            if xray_config:
-                xray_config_path = "xray_config.json"
-                with open(xray_config_path, "w") as f:
-                    f.write(xray_config)
-                xray_latency, xray_result = run_test("xray", xray_config_path, node_url)
-                os.remove(xray_config_path)
-            else:
-                xray_latency, xray_result = None, "Config generation failed"
-
-        # 保存结果（如果 Sing-Box 延迟有效）
-        if singbox_latency and singbox_latency < LATENCY_THRESHOLD:
-            results.append((singbox_latency, node_url, singbox_result, xray_latency, xray_result))
-        log_message("info", f"节点 {i} 结果: Sing-Box 延迟={singbox_latency}ms, 结果={singbox_result}; Xray 延迟={xray_latency}ms, 结果={xray_result}")
+    with ThreadPoolExecutor(max_workers=MAX_CONCURRENT) as executor:
+        future_to_node = {executor.submit(process_node, node_url, i + 1, len(nodes)): node_url for i, node_url in enumerate(nodes)}
+        for future in as_completed(future_to_node):
+            try:
+                result = future.result()
+                if result[0] and result[0] < LATENCY_THRESHOLD:
+                    results.append(result)
+            except Exception as e:
+                log_message("error", f"节点处理失败: {e}")
 
     # 按 Sing-Box 延迟排序
     results.sort(key=lambda x: x[0] if x[0] is not None else float('inf'))
 
     # 保存结果到 data/sub.txt（追加模式）
     with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+        timestamp = datetime.now(timezone.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
         f.write(f"\n# Updated at {timestamp}\n")
         valid_nodes = [node[1] for node in results if node[0] is not None]
         for node_url in valid_nodes:
