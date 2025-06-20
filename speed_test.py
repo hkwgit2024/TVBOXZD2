@@ -579,10 +579,7 @@ def main():
         valid_nodes = [node[1] for node in results if node[0] is not None]
         for node_url in valid_nodes:
             f.write(f"{node_url}\n")
-        if valid_nodes:
-            subscription_content = "\n".join(valid_nodes)
-            base64_subscription = base64.urlsafe_b64encode(subscription_content.encode()).decode().rstrip("=")
-            f.write(f"#base64\n{base64_subscription}\n")
+
         log_message("info", f"保存了 {len(valid_nodes)} 个有效节点到 {OUTPUT_FILE}")
 
     log_message("info", f"总运行时间: {time.time() - start_time:.2f} 秒")
