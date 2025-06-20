@@ -53188,5 +53188,10 @@
     "link": "vmess://eyJhZGQiOiAiMTU4LjE4MC4yMjguMjI2IiwgImFpZCI6IDAsICJob3N0IjogImJleW9uZGRzei5jZmQiLCAiaWQiOiAiOWI0NTZjMmEtZjJjMS00NWUxLTg3YTktYjc2MjhiMDRiYjI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTE5MDI3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
     "reason": "Connection Timeout",
     "timestamp": "2025-06-20T12:28:49.363416"
+  },
+  {
+    "link": "-------------------------------------",
+    "reason": "Parsing Error: Unsupported Protocol",
+    "timestamp": "2025-06-20T18:19:09.232042"
   }
 ]
