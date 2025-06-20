@@ -9,7 +9,7 @@ on:
 jobs:
   test_nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 360 # 设置最大运行时间为 6 小时 (6 * 60 = 360 分钟)
+    timeout-minutes: 360 # 设置最大运行时间为 6 小时
 
     steps:
     - name: Checkout repository
@@ -23,15 +23,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install requests dnspython # <--- 新增 dnspython 安装
 
     - name: Run node connectivity test script
       run: python speed_test.py
-      # env: # 环境变量目前不需要，移除了 GITHUB_TOKEN 的直接传递
 
     - name: Commit and push connected nodes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Update connected nodes list after connectivity test"
-        files: data/connected_nodes.txt # 更新为新的输出文件
-        # token: ${{ secrets.BOT }} # 如果需要特定权限，可以取消注释并确保 BOT secret 已设置且权限足够
+        files: data/connected_nodes.txt
