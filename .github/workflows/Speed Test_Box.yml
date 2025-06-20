@@ -34,10 +34,10 @@ jobs:
 
           for i in {1..3}; do
             echo "尝试 $i 次获取 Sing-Box 版本..."
-            RAW_RESPONSE=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest)
+            RAW_RESPONSE=$(curl -s --retry 3 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SagerNet/sing-box/releases/latest)
             echo "原始 API 响应内容 (用于调试):"
-            echo "$RAW_RESPONSE" | head -n 20
-            
+            printf "%s\n" "$RAW_RESPONSE" | head -n 20
+
             SING_BOX_VERSION=$(echo "$RAW_RESPONSE" | jq -r '.tag_name')
             echo "提取到的 Sing-Box 版本: $SING_BOX_VERSION"
 
@@ -54,13 +54,13 @@ jobs:
 
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
           echo "正在从 $SING_BOX_URL 下载 Sing-Box..."
-          
+
           DOWNLOAD_SUCCESS=false
           for i in $(seq 1 $SING_BOX_DOWNLOAD_RETRIES); do
             echo "尝试下载 (第 $i 次/$SING_BOX_DOWNLOAD_RETRIES)..."
-            Ascending
-            if curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz; then
+            if curl -sL --retry 3 --connect-timeout 10 --max-time 60 --verbose "$SING_BOX_URL" -o sing-box.tar.gz 2> curl.log; then
               echo "下载成功，正在验证文件类型..."
+              cat curl.log
               if file sing-box.tar.gz | grep -q "gzip compressed data"; then
                 echo "文件类型验证通过。"
                 DOWNLOAD_SUCCESS=true
@@ -71,6 +71,7 @@ jobs:
               fi
             else
               echo "下载失败，重试中..."
+              cat curl.log
             fi
             sleep 5
           done
@@ -88,8 +89,13 @@ jobs:
               EXTRACT_SUCCESS=true
               break
             else
-              echo "解压失败，可能是文件损坏，删除并重试下载。"
+              echo "解压失败，可能是文件损坏，重新下载..."
               rm -f sing-box.tar.gz
+              if curl -sL --retry 3 --connect-timeout 10 --max-time 60 --verbose "$SING_BOX_URL" -o sing-box.tar.gz 2>> curl.log; then
+                echo "重新下载成功，继续尝试解压..."
+              else
+                echo "重新下载失败，跳过本次解压尝试。"
+              fi
             fi
             sleep 5
           done
@@ -101,11 +107,12 @@ jobs:
 
           SING_BOX_BINARY=$(find . -type f -name sing-box -executable)
           [ -z "$SING_BOX_BINARY" ] && { echo "错误：在解压后的文件中未找到 Sing-Box 可执行文件。"; exit 1; }
-          
+
           echo "将 Sing-Box 移动到 /usr/local/bin..."
           sudo mv "$SING_BOX_BINARY" /usr/local/bin/sing-box || { echo "错误：移动 Sing-Box 文件失败。"; exit 1; }
           sudo chmod +x /usr/local/bin/sing-box
-          
+          ls -l /usr/local/bin/sing-box
+
           if /usr/local/bin/sing-box version; then
             echo "Sing-Box 成功安装到 /usr/local/bin/！"
           else
@@ -113,17 +120,17 @@ jobs:
             exit 1
           fi
 
-          rm -rf sing-box.tar.gz sing-box-*
+          rm -rf sing-box.tar.gz sing-box-* curl.log
 
       - name: Install Xray Core
         run: |
           echo "开始安装 Xray Core..."
-          curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
+          curl -L --retry 3 --connect-timeout 10 --max-time 60 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
           [ -s /tmp/install-xray.sh ] || { echo "错误：下载 Xray 安装脚本失败"; exit 1; }
           chmod +x /tmp/install-xray.sh
           sudo bash /tmp/install-xray.sh || { echo "错误：Xray 安装脚本执行失败。"; exit 1; }
           rm -f /tmp/install-xray.sh
-          
+
           if /usr/local/bin/xray version; then
             echo "Xray Core 成功安装到 /usr/local/bin/！"
           else
