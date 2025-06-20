@@ -1,193 +1,80 @@
-name: Node Connectivity Test
+name: Node Speed Test
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
-  workflow_dispatch:  # 允许手动触发
+  push:
+    branches:
+      - main
+  # 也可以考虑定时触发，例如每天运行一次
+  # schedule:
+  #   - cron: '0 0 * * *' # 每天 UTC 0点运行
 
 jobs:
-  test-nodes:
+  test_nodes:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y dnsutils curl jq
+    - name: Install Python dependencies
+      run: |
+        pip install requests  # 用于下载节点列表和测速
+        pip install urllib3   # requests 依赖
+        pip install pyyaml    # 如果需要解析YAML格式的订阅（尽管这里主要处理URL）
+        # 尝试安装用于解析v2ray协议的库
+        pip install v2ray-url-parser
+        # 尝试安装用于SSR解析的库（如果需要混淆和协议参数）
+        pip install ssr-parser # 如果需要更全面的 SSR 支持
+        # 如果以上库不够用，可能需要手动实现解析或者找到其他库
 
-      - name: Install Python dependencies
-        run: |
-          pip install requests pyyaml
+    - name: Download Sing-Box
+      run: |
+        # 获取 Sing-Box 最新版本号，建议替换为最新稳定版
+        # 访问 https://api.github.com/repos/SagerNet/sing-box/releases/latest 获取最新 release 信息
+        SB_VERSION="1.8.0-rc.3" # 可以替换为 `$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | grep "tag_name" | cut -d : -f 2,3 | tr -d \"\, | cut -d v -f 2)`
+        SB_ARCH="amd64" # 根据运行环境选择架构
+        curl -LO https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
+        tar -xvf sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
+        sudo mv sing-box-${SB_VERSION}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
+        rm -rf sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz sing-box-${SB_VERSION}-linux-${SB_ARCH}
+        sing-box version # 验证是否安装成功
 
-      - name: Install Sing-Box
-        run: |
-          echo "开始安装 Sing-Box..."
-          SING_BOX_DOWNLOAD_RETRIES=5
-          SING_BOX_EXTRACT_RETRIES=3
+    - name: Download Xray Core
+      run: |
+        # 获取 Xray Core 最新版本号，建议替换为最新稳定版
+        # 访问 https://api.github.com/repos/XTLS/Xray-core/releases/latest 获取最新 release 信息
+        XR_VERSION="1.8.0" # 可以替换为 `$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | grep "tag_name" | cut -d : -f 2,3 | tr -d \"\, | cut -d v -f 2)`
+        XR_ARCH="64" # 根据运行环境选择架构
+        curl -LO https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-${XR_ARCH}.zip
+        unzip Xray-linux-${XR_ARCH}.zip
+        sudo mv xray /usr/local/bin/xray
+        rm -rf Xray-linux-${XR_ARCH}.zip geoip.dat geosite.dat # 移除多余文件
+        xray version # 验证是否安装成功
 
-          for i in {1..3}; do
-            echo "尝试 $i 次获取 Sing-Box 版本..."
-            RAW_RESPONSE=$(curl -s --retry 3 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/SagerNet/sing-box/releases/latest)
-            echo "原始 API 响应内容 (用于调试):"
-            printf "%s\n" "$RAW_RESPONSE" | head -n 20
+    - name: Download all_nodes.txt
+      run: |
+        curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || echo "Failed to download all_nodes.txt, but continuing."
+        # 如果下载失败，确保脚本不会立即退出，后续可以处理空文件情况
 
-            SING_BOX_VERSION=$(echo "$RAW_RESPONSE" | jq -r '.tag_name')
-            echo "提取到的 Sing-Box 版本: $SING_BOX_VERSION"
+    - name: Run speed test script
+      env:
+        GITHUB_TOKEN: ${{ secrets.BOT }}
+      run: python speed_test.py
 
-            if [ -n "$SING_BOX_VERSION" ]; then
-              echo "成功获取到 Sing-Box 版本: $SING_BOX_VERSION"
-              break
-            else
-              echo "重试 $i 次：未能获取 Sing-Box 版本或版本为空。等待 5 秒后重试..."
-              sleep 5
-            fi
-          done
-
-          [ -z "$SING_BOX_VERSION" ] && { echo "错误：多次重试后仍无法获取 Sing-Box 版本。"; exit 1; }
-
-          SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
-          echo "正在从 $SING_BOX_URL 下载 Sing-Box..."
-
-          DOWNLOAD_SUCCESS=false
-          for i in $(seq 1 $SING_BOX_DOWNLOAD_RETRIES); do
-            echo "尝试下载 (第 $i 次/$SING_BOX_DOWNLOAD_RETRIES)..."
-            if curl -sL --retry 3 --connect-timeout 10 --max-time 60 --verbose "$SING_BOX_URL" -o sing-box.tar.gz 2> curl.log; then
-              echo "下载成功，正在验证文件类型..."
-              cat curl.log
-              if file sing-box.tar.gz | grep -q "gzip compressed data"; then
-                echo "文件类型验证通过。"
-                DOWNLOAD_SUCCESS=true
-                break
-              else
-                echo "下载的文件不是有效的 gzip 压缩包，删除并重试。"
-                rm -f sing-box.tar.gz
-              fi
-            else
-              echo "下载失败，重试中..."
-              cat curl.log
-            fi
-            sleep 5
-          done
-
-          if [ "$DOWNLOAD_SUCCESS" != "true" ]; then
-            echo "错误：经过多次尝试仍无法下载有效的 Sing-Box 归档文件。"
-            exit 1
-          fi
-
-          EXTRACT_SUCCESS=false
-          for i in $(seq 1 $SING_BOX_EXTRACT_RETRIES); do
-            echo "尝试解压 (第 $i 次/$SING_BOX_EXTRACT_RETRIES)..."
-            if tar -xzf sing-box.tar.gz; then
-              echo "解压成功。"
-              EXTRACT_SUCCESS=true
-              break
-            else
-              echo "解压失败，可能是文件损坏，重新下载..."
-              rm -f sing-box.tar.gz
-              if curl -sL --retry 3 --connect-timeout 10 --max-time 60 --verbose "$SING_BOX_URL" -o sing-box.tar.gz 2>> curl.log; then
-                echo "重新下载成功，继续尝试解压..."
-              else
-                echo "重新下载失败，跳过本次解压尝试。"
-              fi
-            fi
-            sleep 5
-          done
-
-          if [ "$EXTRACT_SUCCESS" != "true" ]; then
-            echo "错误：经过多次尝试仍无法成功解压 Sing-Box 归档文件。请检查下载源。"
-            exit 1
-          fi
-
-          SING_BOX_BINARY=$(find . -type f -name sing-box -executable)
-          [ -z "$SING_BOX_BINARY" ] && { echo "错误：在解压后的文件中未找到 Sing-Box 可执行文件。"; exit 1; }
-
-          echo "将 Sing-Box 移动到 /usr/local/bin..."
-          sudo mv "$SING_BOX_BINARY" /usr/local/bin/sing-box || { echo "错误：移动 Sing-Box 文件失败。"; exit 1; }
-          sudo chmod +x /usr/local/bin/sing-box
-          ls -l /usr/local/bin/sing-box
-
-          if /usr/local/bin/sing-box version; then
-            echo "Sing-Box 成功安装到 /usr/local/bin/！"
-          else
-            echo "错误：Sing-Box 未能成功安装到 /usr/local/bin/ 或无法执行。"
-            exit 1
-          fi
-
-          rm -rf sing-box.tar.gz sing-box-* curl.log
-
-      - name: Install Xray Core
-        run: |
-          echo "开始安装 Xray Core..."
-          curl -L --retry 3 --connect-timeout 10 --max-time 60 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
-          [ -s /tmp/install-xray.sh ] || { echo "错误：下载 Xray 安装脚本失败"; exit 1; }
-          chmod +x /tmp/install-xray.sh
-          sudo bash /tmp/install-xray.sh || { echo "错误：Xray 安装脚本执行失败。"; exit 1; }
-          rm -f /tmp/install-xray.sh
-
-          if /usr/local/bin/xray version; then
-            echo "Xray Core 成功安装到 /usr/local/bin/！"
-          else
-            echo "错误：Xray Core 未能成功安装到 /usr/local/bin/ 或无法执行。"
-            exit 1
-          fi
-          echo "Xray Core 安装完成并验证成功！"
-
-      - name: Run speed test script
-        run: |
-          echo "正在运行速度测试脚本..."
-          
-          # 确保 data/ 目录存在
-          mkdir -p data
-          
-          echo "--- 最终验证 /usr/local/bin/sing-box ---"
-          ls -l /usr/local/bin/sing-box
-          /usr/local/bin/sing-box version || { echo "错误：sing-box version 失败"; exit 1; }
-          echo "--- 最终验证 /usr/local/bin/xray ---"
-          ls -l /usr/local/bin/xray
-          /usr/local/bin/xray version || { echo "错误：xray version 失败"; exit 1; }
-          echo "-------------------------------------"
-          
-          echo "当前 PATH: $PATH"
-          which sing-box
-          which xray
-          
-          export PATH="/usr/local/bin:$PATH"
-          chmod +x speed_test.py
-          python3 speed_test.py 2>&1 | tee speed_test.log
-          echo "速度测试脚本运行完成。"
-
-      - name: Commit and push results
-        run: |
-          echo "正在提交并推送结果..."
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          
-          # 检查并添加存在的文件
-          FILES_TO_ADD=""
-          for file in data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log speed_test.log; do
-            if [ -f "$file" ]; then
-              FILES_TO_ADD="$FILES_TO_ADD $file"
-            else
-              echo "警告：文件 $file 不存在，跳过添加。"
-            fi
-          done
-          
-          # 如果有文件需要添加，则执行 git add 和 commit
-          if [ -n "$FILES_TO_ADD" ]; then
-            git add $FILES_TO_ADD
-            git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改。"
-          else
-            echo "没有可添加的文件，跳过提交。"
-          fi
-          
-          # 推送更改
-          git push || echo "推送失败，可能是没有更改或权限问题。"
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+    - name: Commit results
+      run: |
+        git config user.name github-actions[bot]
+        git config user.email github-actions[bot]@users.noreply.github.com
+        # 检查文件是否存在且有内容才添加和提交
+        if [ -s data/sub.txt ]; then
+          git add data/sub.txt
+          git commit -m "Update speed test results at $(date -u)" || echo "No changes to commit"
+          git push
+        else
+          echo "data/sub.txt is empty or does not exist, skipping commit."
+        fi
