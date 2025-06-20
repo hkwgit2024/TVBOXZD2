@@ -68,18 +68,14 @@ jobs:
 
       - name: 测试网络连通性
         run: |
-          echo "从 all_nodes.txt 提取节点 IP 和端口："
-          grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]+' all_nodes.txt | head -n 10 | sort -u > nodes_ips.txt
-          while read -r ip_port; do
-            ip=${ip_port%:*}
-            port=${ip_port#*:}
-            echo "测试 IP $ip 端口 $port："
-            ping -c 4 $ip || true
-            nc -zv -w 5 $ip $port || true
-          done < nodes_ips.txt
+          echo "测试你的节点 IP 和端口："
+          nc -zv -w 5 47.79.89.136 16494 || true
+          nc -zv -w 5 51.158.205.126 24957 || true
           echo "测试节点域名解析和 TLS："
-          curl -v --resolve epcca.ambercc.filegear-sg.me:443:104.19.36.53 https://epcca.ambercc.filegear-sg.me:443 || true
-          openssl s_client -connect 104.19.36.53:443 -servername epcca.ambercc.filegear-sg.me </dev/null || true
+          curl -v --resolve www.bing.com:443:47.79.89.136 https://www.bing.com:443 || true
+          curl -v --resolve www.yahoo.com:443:51.158.205.126 https://www.yahoo.com:443 || true
+          openssl s_client -connect 47.79.89.136:16494 -servername www.bing.com </dev/null || true
+          openssl s_client -connect 51.158.205.126:24957 -servername www.yahoo.com </dev/null || true
           echo "测试下载测试 URL："
           curl -I https://testfile.org/10MB || true
 
