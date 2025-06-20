@@ -1,35 +1,20 @@
 name: Node Speed Test
-
 on:
   push:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 0点运行
-
+    - cron: '0 0 * * *'
 jobs:
   test_nodes:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Install jq
-      run: sudo apt-get update && sudo apt-get install -y jq
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: actions/checkout@v3
+    - run: sudo apt-get update && sudo apt-get install -y jq
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-
-    - name: Install Python dependencies
-      run: |
-        pip install requests pyyaml
-        # 如果找到正确的 V2Ray/SSR 解析库，添加在这里
-        # pip install git+https://github.com/<user>/<v2ray-url-parser-repo>.git
-        # pip install git+https://github.com/<user>/<ssr-parser-repo>.git
-
+    - run: pip install requests pyyaml
     - name: Download Sing-Box
       run: |
         SB_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
@@ -39,7 +24,6 @@ jobs:
         sudo mv sing-box-${SB_VERSION}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
         rm -rf sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz sing-box-${SB_VERSION}-linux-${SB_ARCH}
         sing-box version
-
     - name: Download Xray Core
       run: |
         XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
@@ -54,7 +38,6 @@ jobs:
           exit 1
         fi
         rm -rf Xray-linux-${XR_ARCH}.zip geoip.dat geosite.dat
-
     - name: Download all_nodes.txt
       run: |
         curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || { echo "Failed to download all_nodes.txt"; exit 1; }
@@ -62,12 +45,10 @@ jobs:
           echo "Error: all_nodes.txt is empty"
           exit 1
         fi
-
     - name: Run speed test script
       env:
         GITHUB_TOKEN: ${{ secrets.BOT }}
       run: python speed_test.py
-
     - name: Commit results
       run: |
         git config user.name github-actions[bot]
