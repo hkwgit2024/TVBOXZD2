@@ -29,6 +29,9 @@ jobs:
       - name: Install Sing-Box
         run: |
           echo "开始安装 Sing-Box..."
+          SING_BOX_DOWNLOAD_RETRIES=5 # 增加下载重试次数
+          SING_BOX_EXTRACT_RETRIES=3  # 增加解压重试次数
+
           for i in {1..3}; do
             echo "尝试 $i 次获取 Sing-Box 版本..."
             RAW_RESPONSE=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest)
@@ -52,21 +55,59 @@ jobs:
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
           echo "正在从 $SING_BOX_URL 下载 Sing-Box..."
           
-          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz || { echo "错误：下载 Sing-Box 失败"; exit 1; }
+          # ----> 增强下载的健壮性 <----
+          DOWNLOAD_SUCCESS=false
+          for i in $(seq 1 $SING_BOX_DOWNLOAD_RETRIES); do
+            echo "尝试下载 (第 $i 次/$SING_BOX_DOWNLOAD_RETRIES)..."
+            if curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz; then
+              echo "下载成功，正在验证文件类型..."
+              if file sing-box.tar.gz | grep -q "gzip compressed data"; then
+                echo "文件类型验证通过。"
+                DOWNLOAD_SUCCESS=true
+                break
+              else
+                echo "下载的文件不是有效的 gzip 压缩包，删除并重试。"
+                rm -f sing-box.tar.gz
+              fi
+            else
+              echo "下载失败，重试中..."
+            fi
+            sleep 5
+          done
+
+          if [ "$DOWNLOAD_SUCCESS" != "true" ]; then
+            echo "错误：经过多次尝试仍无法下载有效的 Sing-Box 归档文件。"
+            exit 1
+          fi
+
+          # ----> 增强解压的健壮性 <----
+          EXTRACT_SUCCESS=false
+          for i in $(seq 1 $SING_BOX_EXTRACT_RETRIES); do
+            echo "尝试解压 (第 $i 次/$SING_BOX_EXTRACT_RETRIES)..."
+            if tar -xzf sing-box.tar.gz; then
+              echo "解压成功。"
+              EXTRACT_SUCCESS=true
+              break
+            else
+              echo "解压失败，可能是文件损坏，删除并重试下载（这会触发外部的下载重试）。"
+              rm -f sing-box.tar.gz # 删除可能损坏的文件，以便下次循环重新下载
+              # 这里我们不再直接 exit 1，而是让它跳出当前循环，如果外部下载重试循环还允许，则会再次下载
+            fi
+            sleep 5
+          done
+
+          if [ "$EXTRACT_SUCCESS" != "true" ]; then
+            echo "错误：经过多次尝试仍无法成功解压 Sing-Box 归档文件。请检查下载源。"
+            exit 1
+          fi
+
+          SING_BOX_BINARY=$(find . -type f -name sing-box -executable)
+          [ -z "$SING_BOX_BINARY" ] && { echo "错误：在解压后的文件中未找到 Sing-Box 可执行文件。"; exit 1; }
           
-          file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "错误：下载的文件不是有效的 gzip 压缩包。"; exit 1; }
-          
-          tar -xzf sing-box.tar.gz || { echo "错误：解压 Sing-Box 归档文件失败。"; exit 1; }
-          
-          SING_BOX_BINARY=$(find . -type f -name sing-box -executable) # 确保找到的是可执行文件
-          [ -z "$SING_BOX_BINARY" ] && { echo "错误：在归档文件中未找到 Sing-Box 可执行文件。"; exit 1; }
-          
-          # ----> 关键修改：明确将 Sing-Box 移动到 /usr/local/bin 并验证 <----
           echo "将 Sing-Box 移动到 /usr/local/bin..."
           sudo mv "$SING_BOX_BINARY" /usr/local/bin/sing-box || { echo "错误：移动 Sing-Box 文件失败。"; exit 1; }
-          sudo chmod +x /usr/local/bin/sing-box # 确保权限
+          sudo chmod +x /usr/local/bin/sing-box
           
-          # 重新验证 Sing-Box 安装，确保它在 /usr/local/bin/ 可执行
           if /usr/local/bin/sing-box version; then
             echo "Sing-Box 成功安装到 /usr/local/bin/！"
           else
@@ -74,7 +115,6 @@ jobs:
             exit 1
           fi
 
-          # 清理下载文件
           rm -rf sing-box.tar.gz sing-box-*
 
 
@@ -87,7 +127,6 @@ jobs:
           sudo bash /tmp/install-xray.sh || { echo "错误：Xray 安装脚本执行失败。"; exit 1; }
           rm -f /tmp/install-xray.sh
           
-          # ----> 关键修改：明确验证 Xray 是否在 /usr/local/bin/ 可执行 <----
           if /usr/local/bin/xray version; then
             echo "Xray Core 成功安装到 /usr/local/bin/！"
           else
@@ -101,7 +140,6 @@ jobs:
         run: |
           echo "正在运行速度测试脚本..."
           
-          # ----> 移除大部分诊断命令，但保留关键的最终验证 <----
           echo "--- 最终验证 /usr/local/bin/sing-box ---"
           ls -l /usr/local/bin/sing-box
           /usr/local/bin/sing-box version
@@ -110,9 +148,8 @@ jobs:
           /usr/local/bin/xray version
           echo "-------------------------------------"
 
-          # 确保 /usr/local/bin 在 PATH 中 (虽然 Python 脚本中已指定完整路径，但仍保留以防万一)
-          export PATH="/usr/local/bin:$PATH"
-          
+          export PATH="/usr/local/bin:$PATH" # 确保 PATH 仍然正确
+
           chmod +x speed_test.py
           python3 speed_test.py
           echo "速度测试脚本运行完成。"
@@ -122,10 +159,9 @@ jobs:
           echo "正在提交并推送结果..."
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          # 检查是否有文件发生变化，避免空提交
           git diff --quiet --exit-code data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log || git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log
           git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改。"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
- 
+        echo "结果提交并推送完成。"
