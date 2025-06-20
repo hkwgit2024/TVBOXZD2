@@ -2,8 +2,8 @@ name: Node Connectivity Test
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Run daily at UTC 00:00
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   test-nodes:
@@ -28,46 +28,86 @@ jobs:
 
       - name: Install Sing-Box
         run: |
-          # Retry fetching version 3 times
+          echo "开始安装 Sing-Box..."
+          # 尝试获取 Sing-Box 版本，最多重试 3 次
           for i in {1..3}; do
-            SING_BOX_VERSION=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name') && break
-            echo "Retry $i: Failed to fetch Sing-Box version"
-            sleep 5
+            echo "尝试 $i 次获取 Sing-Box 版本..."
+            # 使用 curl 获取最新发布信息，并保存原始响应
+            RAW_RESPONSE=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest)
+            echo "原始 API 响应内容 (用于调试):"
+            echo "$RAW_RESPONSE" | head -n 20 # 只显示前 20 行，避免日志过长
+            
+            # 从原始响应中提取 tag_name
+            SING_BOX_VERSION=$(echo "$RAW_RESPONSE" | jq -r '.tag_name')
+            echo "提取到的 Sing-Box 版本: $SING_BOX_VERSION" # 调试：查看提取的版本
+
+            # 检查版本是否成功提取
+            if [ -n "$SING_BOX_VERSION" ]; then
+              echo "成功获取到 Sing-Box 版本: $SING_BOX_VERSION"
+              break # 成功获取，退出循环
+            else
+              echo "重试 $i 次：未能获取 Sing-Box 版本或版本为空。等待 5 秒后重试..."
+              sleep 5
+            fi
           done
-          [ -z "$SING_BOX_VERSION" ] && { echo "Error: Could not fetch Sing-Box version"; exit 1; }
+
+          # 如果经过多次重试仍未获取到版本，则报错退出
+          [ -z "$SING_BOX_VERSION" ] && { echo "错误：多次重试后仍无法获取 Sing-Box 版本。请检查 GitHub API 状态或网络连接。"; exit 1; }
+
+          # 构建下载 URL
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
-          echo "Downloading Sing-Box from $SING_BOX_URL"
-          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz || { echo "Error: Failed to download Sing-Box"; exit 1; }
-          # Verify gzip format
-          file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "Error: Downloaded file is not a valid gzip archive"; exit 1; }
-          tar -xzf sing-box.tar.gz || { echo "Error: Failed to extract Sing-Box archive"; exit 1; }
+          echo "正在从 $SING_BOX_URL 下载 Sing-Box..."
+          
+          # 下载 Sing-Box
+          curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz || { echo "错误：下载 Sing-Box 失败"; exit 1; }
+          
+          # 验证是否为有效的 gzip 压缩包
+          file sing-box.tar.gz | grep -q "gzip compressed data" || { echo "错误：下载的文件不是有效的 gzip 压缩包。"; exit 1; }
+          
+          # 解压
+          tar -xzf sing-box.tar.gz || { echo "错误：解压 Sing-Box 归档文件失败。"; exit 1; }
+          
+          # 查找 Sing-Box 二进制文件并移动到 /usr/local/bin
           SING_BOX_BINARY=$(find . -type f -name sing-box)
-          [ -z "$SING_BOX_BINARY" ] && { echo "Error: Sing-Box binary not found in archive"; exit 1; }
+          [ -z "$SING_BOX_BINARY" ] && { echo "错误：在归档文件中未找到 Sing-Box 二进制文件。"; exit 1; }
           sudo mv "$SING_BOX_BINARY" /usr/local/bin/sing-box
           sudo chmod +x /usr/local/bin/sing-box
+          
+          # 清理下载文件
           rm -rf sing-box.tar.gz sing-box-*
-          sing-box version || { echo "Error: Sing-Box installation failed"; exit 1; }
+          
+          # 验证 Sing-Box 安装
+          sing-box version || { echo "错误：Sing-Box 安装失败或无法执行。"; exit 1; }
+          echo "Sing-Box 安装成功！"
 
       - name: Install Xray Core
         run: |
+          echo "开始安装 Xray Core..."
           curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
-          [ -s /tmp/install-xray.sh ] || { echo "Error: Failed to download Xray install script"; exit 1; }
+          [ -s /tmp/install-xray.sh ] || { echo "错误：下载 Xray 安装脚本失败"; exit 1; }
           chmod +x /tmp/install-xray.sh
           sudo bash /tmp/install-xray.sh
           rm -f /tmp/install-xray.sh
-          xray version || { echo "Error: Xray installation failed"; exit 1; }
+          xray version || { echo "错误：Xray 安装失败"; exit 1; }
+          echo "Xray Core 安装成功！"
 
       - name: Run speed test script
         run: |
+          echo "正在运行速度测试脚本..."
           chmod +x speed_test.py
           python3 speed_test.py
+          echo "速度测试脚本运行完成。"
 
       - name: Commit and push results
         run: |
+          echo "正在提交并推送结果..."
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log
-          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          # 检查是否有文件发生变化，避免空提交
+          git diff --quiet --exit-code data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log || git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log
+          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改。"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use standard token name
+          # 使用你的自定义秘密令牌名称
+          GITHUB_TOKEN: ${{ secrets.BOT }}
+    
