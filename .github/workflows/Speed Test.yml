@@ -1,9 +1,9 @@
-name: Speed Test 
+name: Node Connectivity Test
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天UTC 00:00运行
-  workflow_dispatch:  # 允许手动触发
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
   test-nodes:
@@ -15,23 +15,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y netcat-openbsd curl jq
-          pip install requests
+          sudo apt update
+          sudo apt install -y dnsutils curl jq
+          pip install requests pyyaml
+          # 安装 Sing-Box
+          curl -sL https://github.com/SagerNet/sing-box/releases/latest/download/sing-box-linux-amd64.tar.gz -o sing-box.tar.gz
+          tar -xzf sing-box.tar.gz
+          sudo mv sing-box-*/sing-box /usr/local/bin/
+          # 安装 Xray Core
+          bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
 
       - name: Run speed test script
-        run: python speed_test.py
+        run: |
+          chmod +x speed_test.py
+          python3 speed_test.py
 
       - name: Commit and push results
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add data/sub.txt data/failed_proxies.json
-          git commit -m "Update test results: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log
+          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
