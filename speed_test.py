@@ -21,7 +21,7 @@ CONNECTION_TIMEOUT = 3 # 每个TCP连接的超时时间
 MAX_WORKERS = 50 # 并发线程数
 
 # 新增：限制测试的节点数量 (为 None 或 0 则测试所有节点)
-LIMIT_NODES_COUNT = 100 
+LIMIT_NODES_COUNT = 5000
 
 # 新增：配置 DNS 服务器 (可以添加多个，会按顺序尝试)
 # 例如：Google DNS, Cloudflare DNS, Quad9 DNS, 或您认为在本地网络环境中表现良好的DNS
