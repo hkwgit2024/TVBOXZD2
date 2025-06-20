@@ -94,7 +94,23 @@ jobs:
       - name: Run speed test script
         run: |
           echo "正在运行速度测试脚本..."
+          
+          # ----> 关键诊断步骤：检查 sing-box 和 xray 的实际状态 <----
+          echo "--- 诊断 /usr/local/bin/sing-box ---"
+          ls -l /usr/local/bin/sing-box || echo "ls 失败: 文件不存在或无权限"
+          which sing-box || echo "which 失败: sing-box 不在 PATH 中可找到"
+          /usr/local/bin/sing-box version || echo "直接执行 sing-box 失败"
+
+          echo "--- 诊断 /usr/local/bin/xray ---"
+          ls -l /usr/local/bin/xray || echo "ls 失败: 文件不存在或无权限"
+          which xray || echo "which 失败: xray 不在 PATH 中可找到"
+          /usr/local/bin/xray version || echo "直接执行 xray 失败"
+          echo "-------------------------------------"
+
+          # 确保 /usr/local/bin 在 PATH 中 (虽然你已经在 Python 脚本中指定了完整路径，但保留此行仍有助于确保 shell 环境的一致性)
           export PATH="/usr/local/bin:$PATH"
+          
+          # 运行 Python 脚本 (假设 Python 脚本中已将 sing-box 和 xray 的调用改为完整路径)
           chmod +x speed_test.py
           python3 speed_test.py
           echo "速度测试脚本运行完成。"
@@ -111,4 +127,4 @@ jobs:
         env:
           # 使用你的自定义秘密令牌名称
           GITHUB_TOKEN: ${{ secrets.BOT }}
-    
+        echo "结果提交并推送完成。"
