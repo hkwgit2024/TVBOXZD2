@@ -29,8 +29,8 @@ jobs:
       - name: Install Sing-Box
         run: |
           echo "开始安装 Sing-Box..."
-          SING_BOX_DOWNLOAD_RETRIES=5 # 增加下载重试次数
-          SING_BOX_EXTRACT_RETRIES=3  # 增加解压重试次数
+          SING_BOX_DOWNLOAD_RETRIES=5
+          SING_BOX_EXTRACT_RETRIES=3
 
           for i in {1..3}; do
             echo "尝试 $i 次获取 Sing-Box 版本..."
@@ -55,10 +55,10 @@ jobs:
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION#v}-linux-amd64.tar.gz"
           echo "正在从 $SING_BOX_URL 下载 Sing-Box..."
           
-          # ----> 增强下载的健壮性 <----
           DOWNLOAD_SUCCESS=false
           for i in $(seq 1 $SING_BOX_DOWNLOAD_RETRIES); do
             echo "尝试下载 (第 $i 次/$SING_BOX_DOWNLOAD_RETRIES)..."
+            Ascending
             if curl -sL --retry 3 "$SING_BOX_URL" -o sing-box.tar.gz; then
               echo "下载成功，正在验证文件类型..."
               if file sing-box.tar.gz | grep -q "gzip compressed data"; then
@@ -80,7 +80,6 @@ jobs:
             exit 1
           fi
 
-          # ----> 增强解压的健壮性 <----
           EXTRACT_SUCCESS=false
           for i in $(seq 1 $SING_BOX_EXTRACT_RETRIES); do
             echo "尝试解压 (第 $i 次/$SING_BOX_EXTRACT_RETRIES)..."
@@ -89,9 +88,8 @@ jobs:
               EXTRACT_SUCCESS=true
               break
             else
-              echo "解压失败，可能是文件损坏，删除并重试下载（这会触发外部的下载重试）。"
-              rm -f sing-box.tar.gz # 删除可能损坏的文件，以便下次循环重新下载
-              # 这里我们不再直接 exit 1，而是让它跳出当前循环，如果外部下载重试循环还允许，则会再次下载
+              echo "解压失败，可能是文件损坏，删除并重试下载。"
+              rm -f sing-box.tar.gz
             fi
             sleep 5
           done
@@ -117,7 +115,6 @@ jobs:
 
           rm -rf sing-box.tar.gz sing-box-*
 
-
       - name: Install Xray Core
         run: |
           echo "开始安装 Xray Core..."
@@ -135,23 +132,25 @@ jobs:
           fi
           echo "Xray Core 安装完成并验证成功！"
 
-
       - name: Run speed test script
         run: |
           echo "正在运行速度测试脚本..."
           
           echo "--- 最终验证 /usr/local/bin/sing-box ---"
           ls -l /usr/local/bin/sing-box
-          /usr/local/bin/sing-box version
+          /usr/local/bin/sing-box version || { echo "错误：sing-box version 失败"; exit 1; }
           echo "--- 最终验证 /usr/local/bin/xray ---"
           ls -l /usr/local/bin/xray
-          /usr/local/bin/xray version
+          /usr/local/bin/xray version || { echo "错误：xray version 失败"; exit 1; }
           echo "-------------------------------------"
-
-          export PATH="/usr/local/bin:$PATH" # 确保 PATH 仍然正确
-
+          
+          echo "当前 PATH: $PATH"
+          which sing-box
+          which xray
+          
+          export PATH="/usr/local/bin:$PATH"
           chmod +x speed_test.py
-          python3 speed_test.py
+          python3 speed_test.py 2>&1 | tee speed_test.log
           echo "速度测试脚本运行完成。"
 
       - name: Commit and push results
@@ -164,4 +163,3 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
-
