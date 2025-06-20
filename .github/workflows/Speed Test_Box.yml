@@ -74,10 +74,12 @@ jobs:
           echo "测试节点域名解析和 TLS："
           curl -v --resolve www.bing.com:443:47.79.89.136 https://www.bing.com:443 || true
           curl -v --resolve www.yahoo.com:443:51.158.205.126 https://www.yahoo.com:443 || true
+          curl -v --resolve 1.812952.xyz:443:51.158.205.126 https://1.812952.xyz:443 || true
           openssl s_client -connect 47.79.89.136:16494 -servername www.bing.com </dev/null || true
           openssl s_client -connect 51.158.205.126:24957 -servername www.yahoo.com </dev/null || true
+          openssl s_client -connect 51.158.205.126:24957 -servername 1.812952.xyz </dev/null || true
           echo "测试下载测试 URL："
-          curl -I https://speed.hetzner.de/100MB.bin || true
+          curl -I https://cloudflare.com/cdn-cgi/trace || true
 
       - name: 下载 all_nodes.txt
         run: |
