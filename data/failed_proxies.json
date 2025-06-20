@@ -52823,5 +52823,205 @@
     "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU@18.237.109.159:443#4Nika-1294",
     "reason": "Connection Timeout",
     "timestamp": "2025-06-20T04:02:22.893752"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6VWtYUnNYdlI2YnVETUcyWQ==@45.89.52.66:9001#%F0%9F%87%B9%F0%9F%87%B7TR-45.89.52.66-5614",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311393"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6VlA4WlB4UXBKdFpSQ2pmWg==@80.92.204.106:9080#%F0%9F%87%A9%F0%9F%87%AADE-80.92.204.106-5493",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311420"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6SFNadXlKUWNXZThkeE5kRg==@45.89.52.66:9043#TR%F0%9F%87%B9%F0%9F%87%B7+%7C+45.89.52.66-9043+%7C+119.38ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311431"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTQ0LjI0LjIwMC4xNjQiLCAiYWlkIjogMCwgImhvc3QiOiAiYmV5b25kZHN6LmNmZCIsICJpZCI6ICI5YjQ1NmMyYS1mMmMxLTQ1ZTEtODdhOS1iNzYyOGIwNGJiMjQiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMTg3MzQiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311440"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6S0JHalpZY3k0U3lSU2htQQ@217.30.10.70:9044#4Nika-1139",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311449"
+  },
+  {
+    "link": "trojan://your_password@43.206.127.212:443?security=tls&sni=aws-jp-tokyo-1.f1rocketnode.com&allowInsecure=1&type=tcp#4Nika-6586",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311464"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjYzZ2c4RXJ1RG5Vcm16NA==@80.92.204.106:9010#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+80.92.204.106-9010+%7C+92ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311472"
+  },
+  {
+    "link": "vless://9db6acf4-d3d3-4176-f704-0da5f6da6165@185.248.187.69:10297?security=reality&flow=xtls-rprx-vision&sni=www.sega.com&type=raw&fp=chrome&pbk=UtL7E0Gmxj3X5JdcPAutpTRKo7K2hugkR0vwk2XroUM#🔒 VL-RAW-RLT 🇸🇬 SG-185.248.187.69:10297",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311485"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoi8J+Ht/Cfh7rkv4TnvZfmlq81IHwg4qyH77iPIDYuM01CL3MgfDUwJSIsImFkZCI6ImNtMS5hd3NsY24uaW5mbyIsInBvcnQiOjI1MjMwLCJpZCI6ImI3ODRmNDc5LTMyYzItNGZhOS1hNmY5LTBlOGQzZjhjYjRhZSIsInR5cGUiOiIiLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0bHMiOiIiLCJwYXRoIjoiLyIsImhvc3QiOiJjbTEuYXdzbGNuLmluZm8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311494"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6VWtYUnNYdlI2YnVETUcyWQ@45.89.52.66:9001#4Nika-1209",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311503"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4=@cn01.efan8867801.xyz:8774/?plugin=simple-obfs%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#%F0%9F%87%BA%F0%9F%87%B8%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E7%BE%8E%E5%9B%BD%2064",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311509"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8774?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506070920094-n6Kql0nGua.download.microsoft.com#%E7%BE%8E%E5%9B%BD2%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311518"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8774#4Nika-3219",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311527"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6Y3A4cFJTVUF5TGhUZlZXSA==@80.92.204.106:9064#%F0%9F%87%A9%F0%9F%87%AADE-80.92.204.106-1221",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311535"
+  },
+  {
+    "link": "vless://4e4c3377-d0c9-42ec-93fd-020be798baad@20.184.1.103:12015?security=tls&sni=mihu.sorry.ip-ddns.com&type=ws&host=mihu.sorry.ip-ddns.com&path=%2F%3Fed%3D2560&fp=random#🔒 VL-WS-TLS 🇸🇬 SG-20.184.1.103:12015",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311544"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6WnBORERLUnU5TWFnTnZhZg==@80.92.204.106:9015#%F0%9F%87%A9%F0%9F%87%AADE-80.92.204.106-0566",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311552"
+  },
+  {
+    "link": "vless://53fa8faf-ba4b-4322-9c69-a3e5b1555049@45.120.178.115:80?path=Telegram🇨🇳#🔒 VL-TCP-NA 🇳🇱 NL-45.120.178.115:80",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311581"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8766/?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#4Nika-3218",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311591"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6dWVMWFZrdmg0aGNraEVyUQ==@45.89.52.66:9060#🔒 SS-TCP-NA 🇹🇷 TR-45.89.52.66:9060",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311599"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8766?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-Bautep9ydo.download.microsoft.com#%E6%97%A5%E6%9C%AC%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311607"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6dWVMWFZrdmg0aGNraEVyUQ@45.89.52.66:9060#4Nika-1611",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311614"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8774?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#%E7%BE%8E%E5%9B%BD2%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311622"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6SmRtUks5Z01FcUZnczhuUA@45.89.52.66:9003#4Nika-1155",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311629"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6Y3A4cFJTVUF5TGhUZlZXSA@80.92.204.106:9064#4Nika-1252",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311636"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8774/?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#4Nika-3220",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311643"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6UzdLd1V1N3lCeTU4UzNHYQ@45.89.52.66:9042#4Nika-1177",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311650"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8774?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-Bautep9ydo.download.microsoft.com#%E7%BE%8E%E5%9B%BD2%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311659"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4=@cn01.efan8867801.xyz:8766/?plugin=simple-obfs%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#%F0%9F%87%AF%F0%9F%87%B5%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E6%97%A5%E6%9C%AC%2010",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311667"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8766?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506131022370-yLzbxEkmoB.download.microsoft.com#%E6%97%A5%E6%9C%AC%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311676"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4=@cn01.efan8867801.xyz:8766#11%7C%F0%9F%87%AF%F0%9F%87%B5%20%E6%97%A5%E6%9C%AC%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311681"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4=@cn01.efan8867801.xyz:8774#11%7C%F0%9F%87%BA%F0%9F%87%B8%20%E7%BE%8E%E5%9B%BD2%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311686"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTU4LjE4MC4yMjguMjI2IiwgImFpZCI6IDAsICJob3N0IjogIiIsICJpZCI6ICI5YjQ1NmMyYS1mMmMxLTQ1ZTEtODdhOS1iNzYyOGIwNGJiMjQiLCAibmV0IjogIndzIiwgInBhdGgiOiAiL2xpbmt3cyIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMTkwMjYiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogZmFsc2UsICJzbmkiOiAiYmV5b25kZHN6LmNmZCIsICJ0bHMiOiAidGxzIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311690"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6SFNadXlKUWNXZThkeE5kRg@45.89.52.66:9043#4Nika-1152",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311695"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6RVhOM1MzZVFwakU3RUp1OA==@80.92.204.106:9027#%F0%9F%87%A9%F0%9F%87%AADE-80.92.204.106-6085",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311699"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6SmRtUks5Z01FcUZnczhuUA==@45.89.52.66:9003#🔒 SS-TCP-NA 🇹🇷 TR-45.89.52.66:9003",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311704"
+  },
+  {
+    "link": "ss://cmM0LW1kNTplZmFuY2N5dW4@cn01.efan8867801.xyz:8766?plugin=obfs-local%3Bobfs%3Dhttp%3Bobfs-host%3D202506070920094-n6Kql0nGua.download.microsoft.com#%E6%97%A5%E6%9C%AC%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311709"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjYzZ2c4RXJ1RG5Vcm16NA@80.92.204.106:9010#4Nika-1475",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311717"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YTNHRll0MzZTbTgyVnlzOQ@45.89.52.66:9000#4Nika-1256",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311721"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6WkVUNTlMRjZEdkNDOEtWdA==@5.188.181.201:9005#🔒 SS-TCP-NA 🇪🇸 ES-5.188.181.201:9005",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311728"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6WkVUNTlMRjZEdkNDOEtWdA@5.188.181.201:9005#4Nika-1246",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-20T06:21:02.311732"
   }
 ]
