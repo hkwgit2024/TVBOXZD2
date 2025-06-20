@@ -1,136 +1,37 @@
-name: Node Speed Test
+name: Node Connectivity Test
+
 on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   test_nodes:
     runs-on: ubuntu-latest
+    timeout-minutes: 360 # 设置最大运行时间为 6 小时 (6 * 60 = 360 分钟)
+
     steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: 安装系统依赖
-        run: sudo apt-get update && sudo apt-get install -y jq netcat-openbsd
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
 
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
 
-      - name: 安装 Python 依赖
-        run: pip install requests pyyaml PySocks
+    - name: Run node connectivity test script
+      run: python speed_test.py
+      # env: # 环境变量目前不需要，移除了 GITHUB_TOKEN 的直接传递
 
-      - name: 下载并安装 Sing-Box
-        run: |
-          SB_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
-          curl -L -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-amd64.tar.gz
-          tar -xvf sing-box.tar.gz
-          sudo mv sing-box-${SB_VERSION}-linux-amd64/sing-box /usr/local/bin/sing-box
-          sudo chmod +x /usr/local/bin/sing-box
-          rm -rf sing-box.tar.gz sing-box-${SB_VERSION}-linux-amd64
-          sing-box version || { echo "错误：sing-box 版本检查失败"; exit 1; }
-
-      - name: 下载并安装 Xray Core
-        run: |
-          XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
-          curl -L -o xray.zip https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-64.zip
-          unzip -o xray.zip
-          if [ -f xray ]; then
-            sudo mv xray /usr/local/bin/xray
-            sudo chmod +x /usr/local/bin/xray
-            xray version || { echo "错误：xray 版本检查失败"; exit 1; }
-          else
-            echo "错误：未找到 xray 可执行文件"
-            exit 1
-          fi
-          rm -rf xray.zip geoip.dat geosite.dat
-
-      - name: 调试核心文件
-        run: |
-          echo "检查核心文件："
-          ls -l /usr/local/bin/sing-box
-          /usr/local/bin/sing-box version
-          ls -l /usr/local/bin/xray
-          /usr/local/bin/xray version
-          echo "检查系统资源："
-          free -h
-          df -h
-
-      - name: 检查端口占用
-        run: |
-          echo "检查端口 8089 和 10809 是否占用："
-          sudo netstat -tuln | grep ':8089\|:10809' || echo "未发现端口占用"
-
-      - name: 测试网络连通性
-        run: |
-          echo "测试你的节点 IP 和端口："
-          nc -zv -w 5 47.79.89.136 16494 || true
-          nc -zv -w 5 51.158.205.126 24957 || true
-          echo "测试节点域名解析和 TLS："
-          curl -v --resolve www.bing.com:443:47.79.89.136 https://www.bing.com:443 || true
-          curl -v --resolve www.yahoo.com:443:51.158.205.126 https://www.yahoo.com:443 || true
-          curl -v --resolve 1.812952.xyz:443:51.158.205.126 https://1.812952.xyz:443 || true
-          openssl s_client -connect 47.79.89.136:16494 -servername www.bing.com </dev/null || true
-          openssl s_client -connect 51.158.205.126:24957 -servername www.yahoo.com </dev/null || true
-          openssl s_client -connect 51.158.205.126:24957 -servername 1.812952.xyz </dev/null || true
-          echo "测试下载测试 URL："
-          curl -I https://cloudflare.com/cdn-cgi/trace || true
-
-      - name: 下载 all_nodes.txt
-        run: |
-          curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || { echo "错误：无法下载 all_nodes.txt"; exit 1; }
-          if [ ! -s all_nodes.txt ]; then
-            echo "错误：all_nodes.txt 为空"
-            exit 1
-          fi
-
-      - name: 调试 all_nodes.txt
-        run: |
-          echo "检查 all_nodes.txt："
-          ls -l all_nodes.txt
-          head -n 10 all_nodes.txt
-
-      - name: 运行速度测试脚本
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        run: python speed_test.py
-
-      - name: 验证配置文件
-        run: |
-          echo "验证生成的配置文件："
-          if ls configs/*.json 2>/dev/null; then
-            for config in configs/*.json; do
-              jq . "$config" || echo "错误：$config 配置文件无效"
-            done
-          else
-            echo "未找到配置文件"
-          fi
-
-      - name: 提交结果
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          if [ -s success_nodes.txt ]; then
-            mkdir -p data
-            cp success_nodes.txt data/sub.txt
-            git add data/sub.txt success_nodes.txt failed_nodes.txt test_results.log
-            git commit -m "更新速度测试结果于 $(date -u)" || echo "无更改需要提交"
-            git push
-          else
-            echo "success_nodes.txt 为空或不存在，跳过提交"
-          fi
-
-      - name: 上传测试结果
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: |
-            success_nodes.txt
-            failed_nodes.txt
-            test_results.log
-            configs/*
+    - name: Commit and push connected nodes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Update connected nodes list after connectivity test"
+        files: data/connected_nodes.txt # 更新为新的输出文件
+        # token: ${{ secrets.BOT }} # 如果需要特定权限，可以取消注释并确保 BOT secret 已设置且权限足够
