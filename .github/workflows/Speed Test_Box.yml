@@ -143,6 +143,9 @@ jobs:
         run: |
           echo "正在运行速度测试脚本..."
           
+          # 确保 data/ 目录存在
+          mkdir -p data
+          
           echo "--- 最终验证 /usr/local/bin/sing-box ---"
           ls -l /usr/local/bin/sing-box
           /usr/local/bin/sing-box version || { echo "错误：sing-box version 失败"; exit 1; }
@@ -165,8 +168,26 @@ jobs:
           echo "正在提交并推送结果..."
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git diff --quiet --exit-code data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log || git add data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log
-          git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改。"
-          git push
+          
+          # 检查并添加存在的文件
+          FILES_TO_ADD=""
+          for file in data/sub.txt data/failed_nodes.txt node_connectivity_results.log unparsed_nodes.log speed_test.log; do
+            if [ -f "$file" ]; then
+              FILES_TO_ADD="$FILES_TO_ADD $file"
+            else
+              echo "警告：文件 $file 不存在，跳过添加。"
+            fi
+          done
+          
+          # 如果有文件需要添加，则执行 git add 和 commit
+          if [ -n "$FILES_TO_ADD" ]; then
+            git add $FILES_TO_ADD
+            git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "没有需要提交的更改。"
+          else
+            echo "没有可添加的文件，跳过提交。"
+          fi
+          
+          # 推送更改
+          git push || echo "推送失败，可能是没有更改或权限问题。"
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
