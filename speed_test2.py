@@ -14,7 +14,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # --- 全局常量 ---
-NODES_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
+NODES_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
 SUB_FILE = "data/sub.txt"
 FAILED_FILE = "data/failed_proxies.json"
 MAX_WORKERS = 100  # 增加并发线程数，取决于网络和服务器承受能力
