@@ -164,4 +164,4 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
-        echo "结果提交并推送完成。"
+
