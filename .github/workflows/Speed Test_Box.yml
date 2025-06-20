@@ -77,7 +77,7 @@ jobs:
           openssl s_client -connect 47.79.89.136:16494 -servername www.bing.com </dev/null || true
           openssl s_client -connect 51.158.205.126:24957 -servername www.yahoo.com </dev/null || true
           echo "测试下载测试 URL："
-          curl -I https://testfile.org/10MB || true
+          curl -I https://speed.hetzner.de/100MB.bin || true
 
       - name: 下载 all_nodes.txt
         run: |
