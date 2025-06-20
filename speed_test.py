@@ -11,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
 
 # 常量定义
-SOCKS_PORT = 1080
-HTTP_PORT = 8080 # 用于HTTP代理模式，方便requests库进行测试
+SOCKS_PORT = 1359
+HTTP_PORT = 8081 
 
 # 测试URLs，用于连通性测试
 TEST_URLS = [
