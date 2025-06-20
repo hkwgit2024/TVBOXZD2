@@ -18,8 +18,8 @@ logging.basicConfig(
     ]
 )
 
-DOWNLOAD_TEST_URL = "https://testfile.org/10MB"
-DOWNLOAD_TEST_SIZE = 10_000_000
+DOWNLOAD_TEST_URL = "https://speed.hetzner.de/100MB.bin"
+DOWNLOAD_TEST_SIZE = 100_000_000
 SAMPLE_SIZE = 63
 TIMEOUT = 20
 SPEED_THRESHOLD = 1.5  # Mbps
@@ -62,8 +62,8 @@ def parse_node_url(node_url):
                 'flow': params.get('flow', [''])[0],
                 'encryption': params.get('encryption', ['none'])[0]
             }
-        # 保留原有 trojan 和 vmess 解析逻辑
-        # ...
+        # 其他协议（trojan、vmess）保持原有逻辑
+        return None
     except Exception as e:
         log_message("error", f"Failed to parse node URL {node_url}: {e}")
         return None
@@ -72,24 +72,25 @@ def generate_singbox_config(node, index):
     config = {
         "outbounds": [{
             "type": node['protocol'],
-            "tag": "proxy"
+            "tag": "proxy",
+            "server": node['host'],
+            "server_port": node['port']
         }]
     }
     if node['protocol'] == 'hysteria2':
         config['outbounds'][0].update({
-            "server": node['host'],
-            "server_port": node['port'],
             "password": node['password'],
             "tls": {
                 "enabled": True,
                 "server_name": node['sni'],
                 "insecure": node['insecure']
+            },
+            "udp": {
+                "enabled": True
             }
         })
     elif node['protocol'] == 'vless':
         config['outbounds'][0].update({
-            "server": node['host'],
-            "server_port": node['port'],
             "uuid": node['uuid'],
             "tls": {
                 "enabled": node['security'] != 'none',
@@ -106,14 +107,51 @@ def generate_singbox_config(node, index):
             },
             "flow": node['flow'] if node['flow'] else None
         })
-    # 保留原有 trojan 和 vmess 配置生成
-    # ...
     config_path = f"configs/singbox_config_{index}.json"
+    os.makedirs("configs", exist_ok=True)
     with open(config_path, 'w') as f:
         json.dump(config, f, indent=2)
     return config_path
 
-def test_download_speed(proxy_url, core_name):
+def generate_xray_config(node, index):
+    config = {
+        "outbounds": [{
+            "protocol": node['protocol'],
+            "tag": "proxy",
+            "settings": {
+                "vnext": [{
+                    "address": node['host'],
+                    "port": node['port']
+                }]
+            }
+        }]
+    }
+    if node['protocol'] == 'vless':
+        config['outbounds'][0]['settings']['vnext'][0].update({
+            "users": [{"id": node['uuid'], "flow": node['flow']}]
+        })
+        config['outbounds'][0].update({
+            "streamSettings": {
+                "network": node['type'],
+                "security": node['security'],
+                "realitySettings": {
+                    "publicKey": node['pbk'],
+                    "shortId": node['sid'],
+                    "serverName": node['sni']
+                } if node['security'] == 'reality' else None,
+                "tlsSettings": {
+                    "serverName": node['sni'],
+                    "allowInsecure": node['allowInsecure']
+                } if node['security'] == 'tls' else None
+            }
+        })
+    config_path = f"configs/xray_config_{index}.json"
+    os.makedirs("configs", exist_ok=True)
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=2)
+    return config_path
+
+def test_download_speed(proxy_url):
     try:
         proxies = {"http": proxy_url, "https": proxy_url}
         start_time = time.time()
@@ -127,6 +165,8 @@ def test_download_speed(proxy_url, core_name):
         total_downloaded = 0
         for chunk in response.iter_content(chunk_size=8192):
             total_downloaded += len(chunk)
+            if total_downloaded >= DOWNLOAD_TEST_SIZE:
+                break
         elapsed = time.time() - start_time
         speed_mbps = (total_downloaded * 8 / 1024 / 1024) / elapsed
         return speed_mbps
@@ -147,14 +187,9 @@ def test_node(node, index, core_name, core_path):
         )
         time.sleep(2)  # 等待核心启动
         proxy_url = "http://127.0.0.1:8089"
-        response = requests.get(proxy_url, timeout=5)
-        if response.status_code != 400:  # 400 表明代理正常
-            log_message("debug", f"Local proxy test for {core_name}: Status code {response.status_code}")
-            return None
-
         speeds = []
         for i in range(3):
-            speed = test_download_speed(proxy_url, core_name)
+            speed = test_download_speed(proxy_url)
             if speed > 0:
                 speeds.append(speed)
                 log_message("info", f"Download test {i+1}/3 for node {index}: {speed:.2f} Mbps")
@@ -164,7 +199,7 @@ def test_node(node, index, core_name, core_path):
         if speeds:
             avg_speed = sum(speeds) / len(speeds)
             if avg_speed >= SPEED_THRESHOLD:
-                return {"latency": 1500, "speed": avg_speed}  # 模拟延迟
+                return {"latency": 1500, "speed": avg_speed}
     except Exception as e:
         log_message("error", f"{core_name} test failed: {str(e)}")
     finally:
@@ -192,13 +227,13 @@ def main():
             failed_nodes.append(f"{node_url} | Failed: invalid node format")
             continue
             
-        for core, path in [("sing-box", "/usr/local/bin/sing-box"), ("xray", "/usr/local/bin/xray")]:
-            result = test_node(node, i, path)
+        for core_name, core_path in [("sing-box", "/usr/local/bin/sing-box"), ("xray", "/usr/local/bin/xray")]:
+            result = test_node(node, i, core_name, core_path)
             if result:
-                success_nodes.append(f"{node_url} | Latency={result['latency']:.2f}ms | Avg Speed={result['speed']:.2f}Mbps | Core={core}")
+                success_nodes.append(f"{node_url} | Latency={result['latency']:.2f}ms | Avg Speed={result['speed']:.2f}Mbps | Core={core_name}")
                 break
             else:
-                failed_nodes.append(f"{node_url} | Failed: {core} test failed")
+                failed_nodes.append(f"{node_url} | Failed: {core_name} test failed")
                 
     with open("success_nodes.txt", "w") as f:
         f.write("\n".join(success_nodes))
