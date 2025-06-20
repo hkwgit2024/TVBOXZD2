@@ -127,4 +127,3 @@ jobs:
         env:
           # 使用你的自定义秘密令牌名称
           GITHUB_TOKEN: ${{ secrets.BOT }}
-        echo "结果提交并推送完成。"
