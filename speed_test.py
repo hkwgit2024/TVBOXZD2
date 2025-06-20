@@ -34,7 +34,7 @@ OUTPUT_DIR = "data"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "sub.txt")
 
 LATENCY_THRESHOLD = 500  # 延迟阈值（毫秒）。低于此值的延迟更优。
-MIN_DOWNLOAD_SPEED_KBPS = 100 # 最低下载速度阈值（KB/s）。例如 100 KB/s = 0.1 MB/s。
+MIN_DOWNLOAD_SPEED_KBPS = 2048 # 最低下载速度阈值（KB/s）。例如 100 KB/s = 0.1 MB/s。
 
 # 支持的协议
 SINGBOX_PROTOCOLS = {"vmess", "vless", "trojan", "ss", "ssr", "hysteria2"}
