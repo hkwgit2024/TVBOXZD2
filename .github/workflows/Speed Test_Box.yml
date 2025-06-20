@@ -1,0 +1,121 @@
+name: Node Speed Test
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  test_nodes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4  # 升级到 v4，保持最新
+
+      - name: 安装系统依赖
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5  # 升级到 v5，指定 3.10
+        with:
+          python-version: '3.10'
+
+      - name: 安装 Python 依赖
+        run: pip install requests pyyaml PySocks
+
+      - name: 下载并安装 Sing-Box
+        run: |
+          SB_VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
+          SB_ARCH="amd64"
+          curl -L -o sing-box.tar.gz https://github.com/SagerNet/sing-box/releases/download/v${SB_VERSION}/sing-box-${SB_VERSION}-linux-${SB_ARCH}.tar.gz
+          tar -xvf sing-box.tar.gz
+          sudo mv sing-box-${SB_VERSION}-linux-${SB_ARCH}/sing-box /usr/local/bin/sing-box
+          sudo chmod +x /usr/local/bin/sing-box
+          rm -rf sing-box.tar.gz sing-box-${SB_VERSION}-linux-${SB_ARCH}
+          sing-box version || { echo "错误：sing-box 版本检查失败"; exit 1; }
+
+      - name: 下载并安装 Xray Core
+        run: |
+          XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
+          XR_ARCH="64"
+          curl -L -o xray.zip https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-${XR_ARCH}.zip
+          unzip -o xray.zip
+          if [ -f xray ]; then
+            sudo mv xray /usr/local/bin/xray
+            sudo chmod +x /usr/local/bin/xray
+            xray version || { echo "错误：xray 版本检查失败"; exit 1; }
+          else
+            echo "错误：未找到 xray 可执行文件"
+            exit 1
+          fi
+          rm -rf xray.zip geoip.dat geosite.dat
+
+      - name: 调试核心文件
+        run: |
+          echo "检查核心文件："
+          ls -l /usr/local/bin/sing-box
+          /usr/local/bin/sing-box version
+          ls -l /usr/local/bin/xray
+          /usr/local/bin/xray version
+          echo "检查系统资源："
+          free -h
+          df -h
+
+      - name: 检查端口占用
+        run: |
+          echo "检查端口 8089 和 10809 是否占用："
+          sudo netstat -tuln | grep ':8089\|:10809' || echo "未发现端口占用"
+
+      - name: 测试网络连通性
+        run: |
+          echo "测试节点 IP 连通性："
+          ping -c 4 172.64.146.80 || true
+          ping -c 4 89.116.46.35 || true
+          ping -c 4 162.159.152.107 || true
+          echo "测试节点域名解析和 TLS："
+          curl -v --resolve us2.vless.site:443:172.64.146.80 https://us2.vless.site:443 || true
+          curl -v --resolve s3.vs2024.us.kg:443:162.159.152.107 https://s3.vs2024.us.kg:443 || true
+          echo "测试下载测试 URL："
+          curl -I https://speed.cloudflare.com/__down?bytes=10000000 || true
+
+      - name: 下载 all_nodes.txt
+        run: |
+          curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || { echo "错误：无法下载 all_nodes.txt"; exit 1; }
+          if [ ! -s all_nodes.txt ]; then
+            echo "错误：all_nodes.txt 为空"
+            exit 1
+          fi
+
+      - name: 调试 all_nodes.txt
+        run: |
+          echo "检查 all_nodes.txt："
+          ls -l all_nodes.txt
+          head -n 10 all_nodes.txt
+
+      - name: 运行速度测试脚本
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }}
+        run: python speed_test.py
+
+      - name: 验证配置文件
+        run: |
+          echo "验证生成的配置文件："
+          if ls configs/*.json 2>/dev/null; then
+            for config in configs/*.json; do
+              jq . "$config" || echo "错误：$config 配置文件无效"
+            done
+          else
+            echo "未找到配置文件"
+          fi
+
+      - name: 提交结果
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+          if [ -s success_nodes.txt ]; then
+            mkdir -p data
+            cp success_nodes.txt data/sub.txt
+            git add data/sub.txt success_nodes.txt failed_nodes.txt test_results.log
+            git commit -m "更新速度测试结果于 $(date -u)" || echo "无更改需要
