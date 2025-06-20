@@ -24,15 +24,15 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install requests pyyaml
+          pip install requests pyaml
 
       - name: Install Sing-Box
         run: |
-          # Retry fetching version up to 3 times
+          # Retry fetching version 3 times
           for i in {1..3}; do
             SING_BOX_VERSION=$(curl -s --retry 3 https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r '.tag_name') && break
             echo "Retry $i: Failed to fetch Sing-Box version"
-            sleep 5
+            sleep 1
           done
           [ -z "$SING_BOX_VERSION" ] && { echo "Error: Could not fetch Sing-Box version"; exit 1; }
           SING_BOX_URL="https://github.com/SagerNet/sing-box/releases/download/${SING_BOX_VERSION}/sing-box-${SING_BOX_VERSION:1}-linux-amd64.tar.gz"
@@ -46,7 +46,13 @@ jobs:
 
       - name: Install Xray Core
         run: |
-          sudo bash <(curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh)
+          # Download script to a temporary file
+          curl -L --retry 3 https://github.com/XTLS/Xray-install/raw/main/install-release.sh -o /tmp/install-xray.sh
+          # Verify file exists and is not empty
+          [ -s /tmp/install-xray.sh ] || { echo "Error: Failed to download Xray install script"; exit 1; }
+          chmod +x /tmp/install-xray.sh
+          sudo bash /tmp/install-xray.sh
+          rm -f /tmp/install-xray.sh
           xray version
 
       - name: Run speed test script
@@ -62,4 +68,4 @@ jobs:
           git commit -m "Update node test results $(date -u +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git push
         env:
-          BOT: ${{ secrets.BOT }}  
+          BOT: ${{ secrets.BOT }}  # Renamed token
