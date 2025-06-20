@@ -45,14 +45,23 @@ jobs:
         XR_VERSION=$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases/latest | jq -r '.tag_name' | cut -d v -f 2)
         XR_ARCH="64"
         curl -LO https://github.com/XTLS/Xray-core/releases/download/v${XR_VERSION}/Xray-linux-${XR_ARCH}.zip
-        unzip Xray-linux-${XR_ARCH}.zip
-        sudo mv xray /usr/local/bin/xray
+        unzip -o Xray-linux-${XR_ARCH}.zip
+        if [ -f xray ]; then
+          sudo mv xray /usr/local/bin/xray
+          xray version || { echo "Error: xray version check failed"; exit 1; }
+        else
+          echo "Error: xray executable not found after unzip"
+          exit 1
+        fi
         rm -rf Xray-linux-${XR_ARCH}.zip geoip.dat geosite.dat
-        xray version
 
     - name: Download all_nodes.txt
       run: |
-        curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || echo "Failed to download all_nodes.txt, but continuing."
+        curl -o all_nodes.txt https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt || { echo "Failed to download all_nodes.txt"; exit 1; }
+        if [ ! -s all_nodes.txt ]; then
+          echo "Error: all_nodes.txt is empty"
+          exit 1
+        fi
 
     - name: Run speed test script
       env:
