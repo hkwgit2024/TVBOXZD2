@@ -3,9 +3,10 @@
 # ==============================================================================
 # 脚本配置
 # ==============================================================================
-
+# 定义输出目录
+OUTPUT_DIR="data"
 # 定义日志文件和成功节点文件的路径
-LOG_FILE="node_connectivity_results.log"
+LOG_FILE="$OUTPUT_DIR/node_connectivity_results.log"
 OUTPUT_DIR="data" # 输出目录
 OUTPUT_FILE="$OUTPUT_DIR/sub.txt" # 成功节点输出文件
 MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt" # 临时文件，用于合并所有来源
