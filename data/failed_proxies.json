@@ -2088,5 +2088,100 @@
     "link": "vmess://ewogICAgImFkZCI6ICIxNTguMTgwLjIyOC4yMjYiLAogICAgImFpZCI6IDAsCiAgICAiaG9zdCI6ICJiZXlvbmRkc3ouY2ZkIiwKICAgICJpZCI6ICI5YjQ1NmMyYS1mMmMxLTQ1ZTEtODdhOS1iNzYyOGIwNGJiMjQiLAogICAgIm5ldCI6ICJ3cyIsCiAgICAicGF0aCI6ICIvbGlua3dzIiwKICAgICJwb3J0IjogNDQzLAogICAgInBzIjogIvCfh67wn4e5SVQtMTU4LjE4MC4yMjguMjI2LTE2MjYiLAogICAgInRscyI6ICJ0bHMiLAogICAgInR5cGUiOiAiYXV0byIsCiAgICAic2VjdXJpdHkiOiAiYXV0byIsCiAgICAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLAogICAgInNuaSI6ICJiZXlvbmRkc3ouY2ZkIgp9",
     "reason": "Connection Timeout",
     "timestamp": "2025-06-21T01:08:51.460063"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2OTloT05jcDRMbVd1OENrNmhFUE0zNHR0ODlFcUFKNTBrN0ZiUkJkckJieGpYMW4@195.123.213.12:31348#4Nika-58",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834454"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2OTloT05jcDRMbVd1OENrNmhFUE0zNHR0ODlFcUFKNTBrN0ZiUkJkckJieGpYMW4=@195.123.213.12:31348#🔒 SS-TCP-NA 🇱🇻 LV-195.123.213.12:31348",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834488"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YWU2Mjc5MjAxNjhjMWNjZQ==@185.22.154.123:50120#6-14%F0%9F%99%88%40xkmfjd_%F0%9F%87%B7%F0%9F%87%BA",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834503"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YWU2Mjc5MjAxNjhjMWNjZUAxODUuMjIuMTU0LjEyMzo1MDEyMA==#NewYork PAC",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834514"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6R0E5S3plRWd2ZnhOcmdtTQ@80.92.204.106:9019#4Nika-1117",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834524"
+  },
+  {
+    "link": "vless://9c98ec59-231c-4091-ba05-a0c881021335@global-jp-1.node-ddns.netlib.net:26833?type=tcp&encryption=none&host=&path=&headerType=none&quicSecurity=none&serviceName=&security=reality&flow=xtls-rprx-vision&fp=chrome&sni=www.apple.com.cn&pbk=aKP8a6omJGKNiP9tmzgjeWrANyBgOCtzTB1R025qwHs&sid=84d7ec25#%F0%9F%87%AF%F0%9F%87%B5%20%E6%97%A5%E6%9C%AC%20Global",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834534"
+  },
+  {
+    "link": "vless://ee6774c0-9b19-4ff1-8b30-2da4b71977e2@8.210.92.24:80?security=tls&sni=edccr.aimercc.filegear-sg.me&type=ws&host=edccr.aimercc.filegear-sg.me&path=%2F%3Fed%3D2560%26proxyip%3Dts.hpc.tw#🔒 VL-WS-TLS 🇭🇰 HK-8.210.92.24:80",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834544"
+  },
+  {
+    "link": "vless://9c98ec59-231c-4091-ba05-a0c881021335@global-sg-1.node-ddns.netlib.net:26831?type=tcp&encryption=none&host=&path=&headerType=none&quicSecurity=none&serviceName=&security=reality&flow=xtls-rprx-vision&fp=chrome&sni=www.lamer.com.sg&pbk=iuidXWMghSXVudNoMUzMle51egXYMfogE812yLfJDCQ&sid=ac1757ec#%F0%9F%87%B8%F0%9F%87%AC%20%E6%96%B0%E5%8A%A0%E5%9D%A1%20Global",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834557"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU@global-sg-2.node-ddns.netlib.net:26832#%F0%9F%87%B8%F0%9F%87%AC%20%E6%96%B0%E5%8A%A0%E5%9D%A1%20Global%C2%B2",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834568"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@79.127.233.170:990#🔒 SS-TCP-NA 🇨🇦 CA-79.127.233.170:990",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834579"
+  },
+  {
+    "link": "vless://a7b98c63-c5bf-4f8e-916d-11161e8f822a@78.111.84.71:8443?security=none&type=tcp&host=zula.ir&headerType=http#🔒 VL-TCP-NONE 🇳🇱 NL-78.111.84.71:8443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834592"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@103.104.247.72:8080#🔒 SS-TCP-NA 🇳🇱 NL-103.104.247.72:8080",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834602"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpGdGMxN1ZIOVpYUU9ONXZzbEpDWW12@91.186.217.246:31764#4Nika-389",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834608"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206d0RadHhmSWszVWhhY0tIcmhvN2x4dw==@5.182.87.210:35961#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+5.182.87.210-35961+%7C+97.75ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834614"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTQ0LjI0LjIwMC4xNjQiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjliNDU2YzJhLWYyYzEtNDVlMS04N2E5LWI3NjI4YjA0YmIyNCIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvbGlua3dzIiwgInBvcnQiOiA0NDMsICJwcyI6ICI0TmlrYS0xODczMyIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiBmYWxzZSwgInNuaSI6ICJiZXlvbmRkc3ouY2ZkIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834620"
+  },
+  {
+    "link": "trojan://96983eb4-c8f1-316e-ab00-500014ed3d8b@official.taipeicitygovernment.co.ua:8443?security=tls#4Nika-4242",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834627"
+  },
+  {
+    "link": "vless://77f680d1-1881-4b16-9eac-b8882c05fe62@213.176.65.25:443?security=tls&sni=WWW.pegAh-Esfahan.De.&type=ws&host=WWW.pegAh-Esfahan.De.&fp=chrome&alpn=h2%2Chttp%2F1.1#🔒 VL-WS-TLS 🇫🇮 FI-213.176.65.25:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834634"
+  },
+  {
+    "link": "vless://07c846af-4106-4790-9f83-10994c9e03d4@ns4.esfahansiman.com:443?encryption=none&security=tls&sni=WWW.pegAh-Esfahan.De.&type=ws&host=WWW.pegAh-Esfahan.De.&path=%2fTELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config#%f0%9f%87%ae%f0%9f%87%b9%e6%84%8f%e5%a4%a7%e5%88%a91+%7c+%e2%ac%87%ef%b8%8f+3.5MB%2fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834641"
+  },
+  {
+    "link": "vless://c8a71f9b-692d-4916-ad73-f070ac00257f@ns4.esfahansiman.com:443?encryption=none&security=tls&sni=WWW.EsfahAnsimaN.infO.&type=ws&host=WWW.EsfahAnsimaN.infO.&path=%2fTELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config#%f0%9f%87%a9%f0%9f%87%aa%e5%be%b7%e5%9b%bd39+%7c+%e2%ac%87%ef%b8%8f+1.3MB%2fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834647"
   }
 ]
