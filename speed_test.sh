@@ -17,18 +17,15 @@ DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.json"
 CACHE_EXPIRATION_SECONDS=$((24 * 60 * 60)) # 24 hours
 
 # 定义同时进行的连接测试数量 (并发数)
-MAX_CONCURRENT_TESTS=10 # 示例：10 个并发连接测试，为了稳定，可以先从小数字开始
+MAX_CONCURRENT_TESTS=5 # 降低并发数以提高 UDP 测试稳定性
 
-# 定义单个节点连接测试的超时时间（秒）。
+# 定义单个节点连接测试的超时时间（秒）
 NODE_CONNECT_TIMEOUT=2 # 示例：2 秒超时
 
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
-    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-    #"https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
-    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
-    #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+    # 添加其他来源URL
 )
 
 # ==============================================================================
@@ -78,7 +75,7 @@ parse_node_link_details() {
         echo "$debug_log_prefix 识别协议: $type" >&2
     else
         echo "警告：无法识别的节点链接格式或协议: $link" >&2
-        echo "," # 返回空值
+        echo ",," # 返回空值（协议,host,port）
         return
     fi
 
@@ -150,15 +147,15 @@ parse_node_link_details() {
     # 验证解析结果
     if [[ -z "$parsed_host" || -z "$parsed_port" ]]; then
         echo "警告：无法从链接中解析出有效的 host 或 port: $link (解析结果: host='$parsed_host', port='$parsed_port')" >&2
-        echo "," # 返回空值
+        echo "$type,," # 返回协议和空值
         return
     fi
 
     echo "$debug_log_prefix 最终解析结果: host='$parsed_host', port='$parsed_port'" >&2
-    echo "$parsed_host,$parsed_port" # 返回 host 和 port
+    echo "$type,$parsed_host,$parsed_port" # 返回协议,host,port
 }
 
-# 定义一个函数来处理单个节点的连接性测试（供 xargs 调用）
+# 函数：处理单个节点的连接性测试（供 xargs 调用）
 test_node_connectivity_parallel() {
     local NODE_LINK="$1"
     local LOG_FILE_PATH="$2" # 日志文件路径
@@ -166,10 +163,14 @@ test_node_connectivity_parallel() {
     local CACHE_FILE_PATH="$4" # DNS 缓存文件路径
     local CONNECT_TIMEOUT="$5" # 连接超时
 
+    local PROTOCOL=""
     local IP=""
     local PORT=""
     local HOSTNAME_OR_IP=""
     local PARSED_DETAILS=""
+    local MAX_RETRIES=2 # 重试次数
+    local RETRY_COUNT=0
+    local SUCCESS=false
 
     # 子进程独立加载一个只读的 DNS 缓存
     declare -A CHILD_DNS_CACHE
@@ -185,13 +186,14 @@ test_node_connectivity_parallel() {
         done
     fi
 
-    # 解析 NODE_LINK 以提取 HOSTNAME_OR_IP 和 PORT
+    # 解析 NODE_LINK 以提取 PROTOCOL, HOSTNAME_OR_IP 和 PORT
     PARSED_DETAILS=$(parse_node_link_details "$NODE_LINK")
-    HOSTNAME_OR_IP=$(echo "$PARSED_DETAILS" | cut -d',' -f1)
-    PORT=$(echo "$PARSED_DETAILS" | cut -d',' -f2)
+    PROTOCOL=$(echo "$PARSED_DETAILS" | cut -d',' -f1)
+    HOSTNAME_OR_IP=$(echo "$PARSED_DETAILS" | cut -d',' -f2)
+    PORT=$(echo "$PARSED_DETAILS" | cut -d',' -f3)
 
-    if [ -z "$HOSTNAME_OR_IP" ] || [ -z "$PORT" ]; then
-        echo "警告：[PID $$] 无法从链接中解析 IP 或端口: $NODE_LINK" >> "$LOG_FILE_PATH"
+    if [ -z "$HOSTNAME_OR_IP" ] || [ -z "$PORT" ] || [ -z "$PROTOCOL" ]; then
+        echo "警告：[PID $$] 无法从链接中解析协议、IP 或端口: $NODE_LINK" >> "$LOG_FILE_PATH"
         echo "-------------------------------------" >> "$LOG_FILE_PATH"
         return
     fi
@@ -205,10 +207,9 @@ test_node_connectivity_parallel() {
             IP="${CHILD_DNS_CACHE[$HOSTNAME_OR_IP]}"
             echo "  - [PID $$] 从主进程预解析缓存获取 IP: $HOSTNAME_OR_IP -> $IP" >> "$LOG_FILE_PATH"
         else
-            # 这种情况不应该发生，除非主进程预解析失败或有新的未预解析域名
-            # 为了健壮性，这里也进行一次实时解析，但会打印警告
+            # 实时解析域名
             echo "  - [PID $$] 警告: 未在预解析缓存中找到域名 $HOSTNAME_OR_IP，尝试实时解析..." >> "$LOG_FILE_PATH"
-            local RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A | head -n 1) # 使用 1.1.1.1 DNS (或系统默认)
+            local RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
             if [ -n "$RESOLVED_IP" ]; then
                 IP="$RESOLVED_IP"
                 echo "  - [PID $$] 实时解析结果: $HOSTNAME_OR_IP -> $IP" >> "$LOG_FILE_PATH"
@@ -224,15 +225,35 @@ test_node_connectivity_parallel() {
         return
     fi
 
-    echo "正在测试节点连接: $IP:$PORT (来自 $NODE_LINK)" >> "$LOG_FILE_PATH"
+    echo "正在测试节点连接: $IP:$PORT (协议: $PROTOCOL, 来自 $NODE_LINK)" >> "$LOG_FILE_PATH"
 
-    # 使用 nc 命令测试连接性，使用定义的超时时间
-    nc -z -w "$CONNECT_TIMEOUT" "$IP" "$PORT" >/dev/null 2>&1
-    if [ $? -eq 0 ]; then
-        echo "  - 结果: [PID $$] 成功连接到 $IP:$PORT" >> "$LOG_FILE_PATH"
-        echo "$NODE_LINK" >> "$OUTPUT_FILE_PATH" # 将成功连接的完整节点链接保存到指定的输出文件
-    else
-        echo "  - 结果: [PID $$] 无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)" >> "$LOG_FILE_PATH"
+    # 根据协议选择测试方法
+    while [ $RETRY_COUNT -le $MAX_RETRIES ] && [ "$SUCCESS" = false ]; do
+        if [[ "$PROTOCOL" == "hy2" || "$PROTOCOL" == "hysteria2" ]]; then
+            # 使用 nc -u -z 测试 UDP 端口
+            echo "  - [PID $$] 执行 UDP 测试: nc -u -z -w $CONNECT_TIMEOUT $IP $PORT" >> "$LOG_FILE_PATH"
+            nc -u -z -w "$CONNECT_TIMEOUT" "$IP" "$PORT" >/dev/null 2>&1
+        else
+            # 使用 nc -z 测试 TCP 端口（适用于 ss、vless 等）
+            echo "  - [PID $$] 执行 TCP 测试: nc -z -w $CONNECT_TIMEOUT $IP $PORT" >> "$LOG_FILE_PATH"
+            nc -z -w "$CONNECT_TIMEOUT" "$IP" "$PORT" >/dev/null 2>&1
+        fi
+
+        if [ $? -eq 0 ]; then
+            echo "  - 结果: [PID $$] 成功连接到 $IP:$PORT" >> "$LOG_FILE_PATH"
+            echo "$NODE_LINK" >> "$OUTPUT_FILE_PATH" # 保存成功节点
+            SUCCESS=true
+        else
+            echo "  - 结果: [PID $$] 无法连接到 $IP:$PORT (尝试 $((RETRY_COUNT + 1))/$((MAX_RETRIES + 1)))" >> "$LOG_FILE_PATH"
+            ((RETRY_COUNT++))
+            if [ $RETRY_COUNT -le $MAX_RETRIES ]; then
+                sleep 1 # 等待 1 秒后重试
+            fi
+        fi
+    done
+
+    if [ "$SUCCESS" = false ]; then
+        echo "  - 结果: [PID $$] 最终无法连接到 $IP:$PORT (可能被防火墙阻止或服务未运行)" >> "$LOG_FILE_PATH"
     fi
     echo "-------------------------------------" >> "$LOG_FILE_PATH"
 }
@@ -253,7 +274,7 @@ echo "-------------------------------------" | tee -a "$LOG_FILE"
 mkdir -p "$OUTPUT_DIR"
 
 # 清空并初始化成功节点文件
-echo "# Successful Nodes (Updated by GitHub Actions at $(date '+%Y-%m-%d %H:%M:%S JST'))" > "$OUTPUT_FILE"
+echo "# Successful Nodes (Updated at $(date '+%Y-%m-%d %H:%M:%S JST'))" > "$OUTPUT_FILE"
 echo "-------------------------------------" >> "$OUTPUT_FILE"
 
 # 确保临时合并文件是空的，并在每次运行前创建/清空
@@ -263,8 +284,7 @@ echo "下载并合并节点配置文件..." | tee -a "$LOG_FILE"
 DOWNLOAD_SUCCESS=false # Flag to track if any download was successful
 for url in "${NODE_SOURCES[@]}"; do
     echo "正在下载: $url" | tee -a "$LOG_FILE"
-    # 使用 curl -sL --fail-with-body 来确保下载失败时返回非零状态码，并且错误信息在 stdout
-    # 将内容追加到临时文件
+    # 使用 curl -sL --fail-with-body 来确保下载失败时返回非零状态码
     if curl -sL --fail-with-body "$url" >> "$MERGED_NODES_TEMP_FILE"; then
         DOWNLOAD_SUCCESS=true
     else
@@ -272,22 +292,22 @@ for url in "${NODE_SOURCES[@]}"; do
     fi
 done
 
-# 再次检查合并后的临时文件是否为空或未成功下载任何内容
+# 检查合并后的临时文件是否为空或未成功下载任何内容
 if [ ! -f "$MERGED_NODES_TEMP_FILE" ] || [ ! -s "$MERGED_NODES_TEMP_FILE" ] || [ "$DOWNLOAD_SUCCESS" = false ]; then
-    echo "错误：未能下载任何节点配置文件，或所有文件都为空，或者下载完全失败。请检查 NODE_SOURCES URL 和网络连接。" | tee -a "$LOG_FILE"
+    echo "错误：未能下载任何节点配置文件，或所有文件都为空。请检查 NODE_SOURCES URL 和网络连接。" | tee -a "$LOG_FILE"
     if [ -f "$MERGED_NODES_TEMP_FILE" ]; then
         rm -f "$MERGED_NODES_TEMP_FILE"
     fi
-    exit 1 # Exit with an error code to stop the workflow
+    exit 1
 fi
 
 echo "所有配置文件下载并合并成功。开始解析节点并测试连接性..." | tee -a "$LOG_FILE"
 
-# 确保安装了 dnsutils (用于 dig 命令) 和 jq (用于处理 JSON)
-echo "检查并安装 dnsutils 和 jq..." | tee -a "$LOG_FILE"
-sudo apt-get update >/dev/null 2>&1 || { echo "ERROR: apt-get update failed. Cannot proceed with dependency installation." | tee -a "$LOG_FILE"; exit 1; }
-sudo apt-get install -y dnsutils jq >/dev/null 2>&1 || { echo "ERROR: apt-get install dnsutils or jq failed. Please ensure your package manager is configured correctly." | tee -a "$LOG_FILE"; exit 1; }
-echo "dnsutils 和 jq 检查/安装完成。" | tee -a "$LOG_FILE"
+# 确保安装了 dnsutils (用于 dig 命令)、jq (用于处理 JSON) 和 nc (用于连接测试)
+echo "检查并安装 dnsutils、jq 和 netcat..." | tee -a "$LOG_FILE"
+sudo apt-get update >/dev/null 2>&1 || { echo "错误：apt-get update 失败。" | tee -a "$LOG_FILE"; exit 1; }
+sudo apt-get install -y dnsutils jq netcat-traditional >/dev/null 2>&1 || { echo "错误：安装 dnsutils、jq 或 netcat-traditional 失败。" | tee -a "$LOG_FILE"; exit 1; }
+echo "dnsutils、jq 和 netcat 检查/安装完成。" | tee -a "$LOG_FILE"
 
 # ==============================================================================
 # 主进程：加载并预处理 DNS 缓存，提取所有域名进行解析
@@ -296,33 +316,39 @@ echo "dnsutils 和 jq 检查/安装完成。" | tee -a "$LOG_FILE"
 # 尝试从缓存文件加载旧的 DNS 缓存
 if [ -f "$DNS_CACHE_FILE" ]; then
     echo "从 $DNS_CACHE_FILE 加载 DNS 缓存并清理过期条目..." | tee -a "$LOG_FILE"
-    CURRENT_TIME=$(date +%s) # 获取当前 Unix 时间戳
+    CURRENT_TIME=$(date +%s)
 
-    mapfile -t CACHE_ENTRIES < <(jq -r 'keys[] as $key | "\($key) \(.[$key].ip) \(.[$key].timestamp)"' "$DNS_CACHE_FILE" 2>/dev/null)
-    
-    LOADED_COUNT=0
-    CLEANED_COUNT=0
+    # 检查缓存文件格式是否有效
+    if ! jq . "$DNS_CACHE_FILE" >/dev/null 2>&1; then
+        echo "警告：DNS 缓存文件 $DNS_CACHE_FILE 格式无效，将清空缓存。" | tee -a "$LOG_FILE"
+        > "$DNS_CACHE_FILE"
+    else
+        mapfile -t CACHE_ENTRIES < <(jq -r 'keys[] as $key | "\($key) \(.[$key].ip) \(.[$key].timestamp)"' "$DNS_CACHE_FILE" 2>/dev/null)
+        LOADED_COUNT=0
+        CLEANED_COUNT=0
 
-    for entry in "${CACHE_ENTRIES[@]}"; do
-        local key=$(echo "$entry" | cut -d' ' -f1)
-        local ip_value=$(echo "$entry" | cut -d' ' -f2)
-        local timestamp_value=$(echo "$entry" | cut -d' ' -f3)
+        for entry in "${CACHE_ENTRIES[@]}"; do
+            local key=$(echo "$entry" | awk '{print $1}')
+            local ip_value=$(echo "$entry" | awk '{print $2}')
+            local timestamp_value=$(echo "$entry" | awk '{print $3}')
 
-        if [[ -n "$key" && -n "$ip_value" && "$timestamp_value" =~ ^[0-9]+$ ]]; then
-            if (( CURRENT_TIME - timestamp_value < CACHE_EXPIRATION_SECONDS )); then
-                DNS_CACHE["$key"]="$ip_value,$timestamp_value" # 存入主进程缓存
-                ((LOADED_COUNT++))
+            if [[ -n "$key" && -n "$ip_value" && "$timestamp_value" =~ ^[0-9]+$ ]]; then
+                if (( CURRENT_TIME - timestamp_value < CACHE_EXPIRATION_SECONDS )); then
+                    DNS_CACHE["$key"]="$ip_value,$timestamp_value"
+                    ((LOADED_COUNT++))
+                else
+                    echo "  - 清理过期缓存: $key (过期于 $(date -d "@$timestamp_value"))" | tee -a "$LOG_FILE"
+                    ((CLEANED_COUNT++))
+                fi
             else
-                echo "  - 清理过期缓存: $key (过期于 $(date -d "@$timestamp_value"))" | tee -a "$LOG_FILE"
-                ((CLEANED_COUNT++))
+                echo "  - 警告: 缓存文件中发现无效条目: '$entry'，已忽略。" | tee -a "$LOG_FILE"
             fi
-        else
-            echo "  - 警告: 缓存文件 $DNS_CACHE_FILE 中发现无效条目: '$entry'，已忽略。" | tee -a "$LOG_FILE"
-        fi
-    done
-    echo "加载了 $LOADED_COUNT 个有效缓存条目，清理了 $CLEANED_COUNT 个过期条目。" | tee -a "$LOG_FILE"
+        done
+        echo "加载了 $LOADED_COUNT 个有效缓存条目，清理了 $CLEANED_COUNT 个过期条目。" | tee -a "$LOG_FILE"
+    fi
 else
     echo "未找到 DNS 缓存文件 $DNS_CACHE_FILE，将创建新缓存。" | tee -a "$LOG_FILE"
+    echo "{}" > "$DNS_CACHE_FILE"
 fi
 
 echo "开始预解析所有节点链接中的域名..." | tee -a "$LOG_FILE"
@@ -335,14 +361,14 @@ while IFS= read -r node_link; do
         continue # 跳过空行
     fi
 
-    # 尝试解析链接获取 host 和 port
+    # 尝试解析链接获取协议、host 和 port
     PARSED_DETAILS=$(parse_node_link_details "$node_link")
-    host=$(echo "$PARSED_DETAILS" | cut -d',' -f1)
+    host=$(echo "$PARSED_DETAILS" | cut -d',' -f2)
 
     if [[ -n "$host" ]] && ! is_ip_address "$host"; then
         # 如果是域名且不在已解析缓存中，或者已过期
         if [[ -z "${DNS_CACHE[$host]}" ]] || (( CURRENT_TIME - $(echo "${DNS_CACHE[$host]}" | cut -d',' -f2) >= CACHE_EXPIRATION_SECONDS )); then
-            ALL_DOMAINS_TO_RESOLVE["$host"]=1 # 标记此域名待解析
+            ALL_DOMAINS_TO_RESOLVE["$host"]=1
         fi
     fi
 done < "$MERGED_NODES_TEMP_FILE"
@@ -350,26 +376,24 @@ done < "$MERGED_NODES_TEMP_FILE"
 # 对所有需要解析的域名进行实际 DNS 查询
 for domain in "${!ALL_DOMAINS_TO_RESOLVE[@]}"; do
     if [[ -n "${DNS_CACHE[$domain]}" ]]; then
-        # 如果在加载阶段已经存在有效缓存，则跳过 dig
         echo "  - 域名 '$domain' 已存在有效缓存，跳过实时解析。" | tee -a "$LOG_FILE"
         continue
     fi
 
     echo "  - 预解析域名: $domain" | tee -a "$LOG_FILE"
-    resolved_ip=$(dig +short "$domain" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
+    resolved_ip=$(dig +short "$domain" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1)
     if [[ -n "$resolved_ip" ]]; then
-        DNS_CACHE["$domain"]="$resolved_ip,$CURRENT_TIME" # 存储 IP 和当前时间戳
+        DNS_CACHE["$domain"]="$resolved_ip,$CURRENT_TIME"
         ((PRE_RESOLVED_COUNT++))
         echo "  - 预解析成功: $domain -> $resolved_ip" | tee -a "$LOG_FILE"
     else
-        # 记录解析失败的域名，这些将不会被缓存
         echo "  - 警告: 预解析域名失败: $domain" | tee -a "$LOG_FILE"
         ((SKIPPED_DOMAIN_COUNT++))
     fi
 done
 echo "预解析完成。成功预解析 $PRE_RESOLVED_COUNT 个域名，跳过 $SKIPPED_DOMAIN_COUNT 个无法解析的域名。" | tee -a "$LOG_FILE"
 
-# 在并行测试前，将主进程更新后的 DNS_CACHE 写入文件，供子进程读取
+# 更新 DNS 缓存文件
 echo "更新主进程 DNS 缓存文件以供并行测试使用..." | tee -a "$LOG_FILE"
 json_output="{"
 first_entry=true
@@ -386,7 +410,7 @@ for key in "${!DNS_CACHE[@]}"; do
     json_output+="\"$key\":{\"ip\":\"$ip_val\",\"timestamp\":$timestamp_val}"
 done
 json_output+="}"
-echo "$json_output" | jq . > "$DNS_CACHE_FILE" 2>/dev/null || { echo "ERROR: 无法写入 DNS 缓存文件 $DNS_CACHE_FILE。" | tee -a "$LOG_FILE"; exit 1; }
+echo "$json_output" | jq . > "$DNS_CACHE_FILE" 2>/dev/null || { echo "错误：无法写入 DNS 缓存文件 $DNS_CACHE_FILE。" | tee -a "$LOG_FILE"; exit 1; }
 echo "主进程 DNS 缓存文件更新完成。" | tee -a "$LOG_FILE"
 
 # ==============================================================================
@@ -406,7 +430,7 @@ fi
 # 最终清理和完成
 # ==============================================================================
 
-# 清理临时文件，使用 -f 避免文件不存在时报错
+# 清理临时文件
 rm -f "$MERGED_NODES_TEMP_FILE"
 
 echo "所有节点连接性测试完成。结果已保存到 $LOG_FILE" | tee -a "$LOG_FILE"
