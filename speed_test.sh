@@ -103,16 +103,26 @@ parse_node_link_details() {
             local temp_link="${link#*://}" # 移除协议头
             local host_port_part=""
 
-            # Hysteria2 链接可能包含 @ 符号用于 auth 信息
+            # Hysteria2 链接通常格式为 hy2://[auth@]<host>:<port>[?<params>]
+            # 我们需要提取 host:port 部分，它在协议头之后，可能在 '@' 之后，直到 '?' 或 '#'
+            
+            # 首先，处理可能存在的认证信息（即 @ 符号之前的部分）
             if [[ "$temp_link" == *"@"* ]]; then
-                # 提取 @ 符号后面的部分，直到 ? 或 #
-                host_port_part=$(echo "$temp_link" | sed -E 's/^[^@]*@([^/?#]+).*$/\1/')
-            else
-                # 提取 // 协议头后面的部分，直到 ? 或 #
-                host_port_part=$(echo "$temp_link" | sed -E 's/^([^/?#]+).*$/\1/')
+                temp_link="${temp_link#*@}" # 移除 @ 之前的所有内容
+            fi
+
+            # 然后，提取主机和端口，直到第一个 '?' 或 '#'
+            # 注意：这里的顺序很重要，先检查 ? 再检查 #
+            if [[ "$temp_link" == * "?"* ]]; then # 包含 ?
+                host_port_part="${temp_link%%\?*}"
+            elif [[ "$temp_link" == *"#"* ]]; then # 包含 #
+                host_port_part="${temp_link%%\#*}"
+            else # 既不包含 ? 也不包含 #
+                host_port_part="$temp_link"
             fi
 
             # 从 host:port 部分提取主机和端口
+            # 这里的正则表达式看起来是正确的
             if [[ "$host_port_part" =~ ^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
                 parsed_host="${BASH_REMATCH[1]}"
                 parsed_port="${BASH_REMATCH[2]}"
