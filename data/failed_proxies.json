@@ -2183,5 +2183,65 @@
     "link": "vless://c8a71f9b-692d-4916-ad73-f070ac00257f@ns4.esfahansiman.com:443?encryption=none&security=tls&sni=WWW.EsfahAnsimaN.infO.&type=ws&host=WWW.EsfahAnsimaN.infO.&path=%2fTELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config#%f0%9f%87%a9%f0%9f%87%aa%e5%be%b7%e5%9b%bd39+%7c+%e2%ac%87%ef%b8%8f+1.3MB%2fs",
     "reason": "Connection Timeout",
     "timestamp": "2025-06-21T06:18:58.834647"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMjMuMTU3Ljg4LjIwIiwgImFpZCI6IDEsICJob3N0IjogIjIzLjE1Ny44OC4yMCIsICJpZCI6ICIwM2ZjYzYxOC1iOTNkLTY3OTYtNmFlZC04YTM4Yzk3NWQ1ODEiLCAibmV0IjogIndzIiwgInBhdGgiOiAibGlua3Z3cyIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMjAxNTYiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogZmFsc2UsICJzbmkiOiAiMjMuMTU3Ljg4LjIwIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614278"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTozY1RmRUFnQW5PZHFueTdGcDF2WXBm@77.83.246.74:443#🔒 SS-TCP-NA 🇵🇱 PL-77.83.246.74:443",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614300"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw==@121.127.46.147:989#%F0%9F%87%B8%F0%9F%87%AASE-121.127.46.147-0483",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614308"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206aVVCMDkyM1JCQQ==@154.3.8.151:30067#%F0%9F%87%BA%F0%9F%87%B8US-154.3.8.151-0395",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614313"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidWljZG4uY2YiLCAiYWlkIjogMCwgImhvc3QiOiAidWljZG4uY2YiLCAiaWQiOiAiYzY3NDdkYTQtZmIyZS00YTJhLWJkYjctODYxNGJkZDZiMGIzIiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9zc2hraXQvMTczNjk2MDExMS82Mzg1OWJjMTc3YTMzLyIsICJwb3J0IjogODAsICJwcyI6ICI0TmlrYS0yMTQwNSIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614319"
+  },
+  {
+    "link": "trojan://624c4a29-ca1a-44d4-9245-98f7b973ea3e@cmi.tw5.ty7.fun:1234?security=tls&allowInsecure=1&type=tcp&headerType=none#https%3A%2F%2Ft.me%2Fxyfqzy",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614325"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpMTElubVVCcnhNZ0VuODVZNnZWamVI@185.172.129.91:56220#US%F0%9F%87%BA%F0%9F%87%B8+%7C+185.172.129.91-56220+%7C+11.58ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614331"
+  },
+  {
+    "link": "vless://a13df940-020c-465f-bc89-ee5279b5cd6a@129.146.46.164:443?encryption=none&security=tls&type=ws&sni=bj.ylks01.eu.org&host=bj.ylks01.eu.org&path=%2f#TG%3A%40JUZIBAIPIAO%2B%2B%E7%BE%8E%E5%9B%BD_37",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614339"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@121.127.46.147:989#4Nika-1480",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614349"
+  },
+  {
+    "link": "vless://800a78d8-7ee3-442e-8ec2-e3309953dec3@211.61.33.122:17262?security=tls&sni=mot.luyuju.dpdns.org&type=ws&host=mot.luyuju.dpdns.org&path=%2F%3Fed%3D2560&fp=random&alpn=h3#4Nika-11315",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614360"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206NWJhZmJmNGQtNTgzNC00NWI5LTkzZWYtMWZlYjQ5YTFiN2I2@zfhk.521222.xyz:52170#HK%e9%a6%99%e6%b8%af1",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614370"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YzcyYzg4ZGUtZGU3My00MzNmLTg3OGItNTFhYzRmMjkzYWY3@zfa01.333210.xyz:50101#%E5%A5%97%E9%A4%90%E5%B7%B2%E5%88%B0%E6%9C%9F%E6%88%96%E6%B5%81%E9%87%8F%E7%94%A8%E5%B0%BD",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614379"
   }
 ]
