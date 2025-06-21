@@ -1,17 +1,21 @@
-# Successful Nodes (Updated by GitHub Actions at 2025-06-21 06:54:34 JST)
+# Successful Nodes (Updated at 2025-06-21 07:02:21 JST)
 -------------------------------------
-ss://77-9Z--_ve-_vXbvv73vv73Gm--_ve-_vTTvv71P77-9ee-_vX5zdu-_vXfvv70177-977-977-9Ou-_vWfvv73vv71277-977-9xpvvv73vv70077-9T--_vXnvv71-c3bvv71377-9Ne-_ve-_ve-_vQ==@185.39.204.29:443#%F0%9F%87%B9%F0%9F%87%B7[openproxylist.com]%20vless-TR
+hy2://dongtaiwang.com@46.29.163.171:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_2
+hy2://dongtaiwang.com@46.17.41.217:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_1
+hy2://dongtaiwang.com@45.129.2.108:50850?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_0
 ss://YWVzLTEyOC1nY206Nzk3Mzk4MzItYjg4OC00MTVhLWE0NTQtOGI1MzkxMWM5NDRh@vps.200566.xyz:30332#%F0%9F%87%B9%F0%9F%87%BC%20Chang-hua,%20CHA,%20Taiwan
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@223.165.4.173:990#%F0%9F%87%B9%F0%9F%87%BC%20Taipei,%20TPE,%20Taiwan
+ss://77-9Z--_ve-_vXbvv73vv73Gm--_ve-_vTTvv71P77-9ee-_vX5zdu-_vXfvv70177-977-977-9Ou-_vWfvv73vv71277-977-9xpvvv73vv70077-9T--_vXnvv71-c3bvv71377-9Ne-_ve-_ve-_vQ==@185.39.204.29:443#%F0%9F%87%B9%F0%9F%87%B7[openproxylist.com]%20vless-TR
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.60.233.173:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@tr.opengate.tech:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.128:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@185.123.101.241:990#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
-vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF
+ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.128:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2aVhIUUhmcEt6ZTBDRm0wNUE1bmti@h110vpntr.outlinekeys.net:65262#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
-vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.133.63.226:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
+vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway
+vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.125:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye
+hy2://3a9f4a28@47.79.89.136:16494?insecure=1&sni=www.bing.com#Hysteria2-JP
 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@119.59.98.58:990#%F0%9F%87%B9%F0%9F%87%AD%20Thailand
 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9602
 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9601

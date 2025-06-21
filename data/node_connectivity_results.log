@@ -1,31 +1,31 @@
 开始节点连接性测试...
-测试时间: 2025-06-21 06:54:34 JST
+测试时间: 2025-06-21 07:02:21 JST
 -------------------------------------
 下载并合并节点配置文件...
 正在下载: https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt
 所有配置文件下载并合并成功。开始解析节点并测试连接性...
-检查并安装 dnsutils 和 jq...
-dnsutils 和 jq 检查/安装完成。
+检查并安装 dnsutils、jq 和 netcat...
+dnsutils、jq 和 netcat 检查/安装完成。
 从 data/dns_cache.json 加载 DNS 缓存并清理过期条目...
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '1.prprcheng.top 218.15.1.189 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a.fstores.web.id 172.67.4.68 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'apiyhyzsj.gweuc.cn 120.236.198.164 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'beta.vless1.lk1337.top 104.21.15.225 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpsg.91king.win 111.45.33.25 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd 18.139.175.36 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd 13.213.58.33 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmisg.91king.win 112.29.213.232 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2sg.91king.win 112.29.213.232 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'console.03.aliyun.aq.kunlunaqs.com 120.240.167.113 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpntr.outlinekeys.net 62.133.63.21 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplsg.91king.win 120.241.29.131 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplsg.91king.win 120.232.223.195 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iost.prprcheng.top 49.7.219.53 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmth.91king.win 111.45.33.25 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmtr.91king.win 111.45.33.25 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-edge.xyz 120.241.29.138 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tr.opengate.tech 83.217.9.125 1750488631'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vps.200566.xyz 1.170.220.196 1750488631'，已忽略。
+  - 警告: 缓存文件中发现无效条目: '1.prprcheng.top 218.15.1.189 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'a.fstores.web.id 104.22.47.231 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'apiyhyzsj.gweuc.cn 120.236.198.164 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'beta.vless1.lk1337.top 104.21.15.225 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'bgpsg.91king.win 111.45.33.25 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd 18.139.175.36 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd 13.213.58.33 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'cmisg.91king.win 112.29.213.232 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'cn2sg.91king.win 112.29.213.232 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'console.03.aliyun.aq.kunlunaqs.com 120.240.167.113 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'h110vpntr.outlinekeys.net 62.133.63.21 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'iaplsg.91king.win 120.241.29.131 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'ieplsg.91king.win 120.232.223.195 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'iost.prprcheng.top 49.7.219.53 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'lmth.91king.win 111.45.33.25 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'lmtr.91king.win 112.29.213.232 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'p1.bxy-edge.xyz 120.241.29.138 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'tr.opengate.tech 62.133.63.226 1750488875'，已忽略。
+  - 警告: 缓存文件中发现无效条目: 'vps.200566.xyz 1.170.220.196 1750488875'，已忽略。
 加载了 0 个有效缓存条目，清理了 0 个过期条目。
 开始预解析所有节点链接中的域名...
   - 预解析域名: ieplsg.91king.win
@@ -33,7 +33,7 @@ dnsutils 和 jq 检查/安装完成。
   - 预解析域名: vps.200566.xyz
   - 预解析成功: vps.200566.xyz -> 1.170.220.196
   - 预解析域名: lmtr.91king.win
-  - 预解析成功: lmtr.91king.win -> 112.29.213.232
+  - 预解析成功: lmtr.91king.win -> 111.45.33.25
   - 预解析域名: console.03.aliyun.aq.kunlunaqs.com
   - 预解析成功: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
   - 预解析域名: tr.opengate.tech
@@ -41,7 +41,7 @@ dnsutils 和 jq 检查/安装完成。
   - 预解析域名: cmisg.91king.win
   - 预解析成功: cmisg.91king.win -> 112.29.213.232
   - 预解析域名: a.fstores.web.id
-  - 预解析成功: a.fstores.web.id -> 104.22.47.231
+  - 预解析成功: a.fstores.web.id -> 104.22.46.231
   - 预解析域名: p1.bxy-edge.xyz
   - 预解析成功: p1.bxy-edge.xyz -> 120.241.29.138
   - 预解析域名: 1.prprcheng.top
@@ -59,7 +59,7 @@ dnsutils 和 jq 检查/安装完成。
   - 预解析域名: iaplsg.91king.win
   - 预解析成功: iaplsg.91king.win -> 120.241.29.131
   - 预解析域名: beta.vless1.lk1337.top
-  - 预解析成功: beta.vless1.lk1337.top -> 104.21.15.225
+  - 预解析成功: beta.vless1.lk1337.top -> 172.67.208.38
   - 预解析域名: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd
   - 预解析成功: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
   - 预解析域名: h110vpntr.outlinekeys.net
@@ -69,142 +69,260 @@ dnsutils 和 jq 检查/安装完成。
 预解析完成。成功预解析 19 个域名，跳过 0 个无法解析的域名。
 更新主进程 DNS 缓存文件以供并行测试使用...
 主进程 DNS 缓存文件更新完成。
-开始并行测试节点连接，并发数: 10...
-正在测试节点连接: 45.129.2.108:50850 (来自 hy2://dongtaiwang.com@45.129.2.108:50850?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_0)
-正在测试节点连接: 223.165.4.173:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@223.165.4.173:990#%F0%9F%87%B9%F0%9F%87%BC%20Taipei,%20TPE,%20Taiwan)
-正在测试节点连接: 46.29.163.171:30033 (来自 hy2://dongtaiwang.com@46.29.163.171:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_2)
-  - [PID 4333] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45916 (来自 ss://YWVzLTEyOC1nY206Y2ZjNmYzZjc1ZjVlZjdiMjY2NWM=@console.03.aliyun.aq.kunlunaqs.com:45916?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20065)
-正在测试节点连接: 46.17.41.217:30033 (来自 hy2://dongtaiwang.com@46.17.41.217:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_1)
-  - [PID 4337] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45915 (来自 ss://YWVzLTEyOC1nY206Yjc0NTE4ZmI0OWJkNjQ1ZTZjZTc=@console.03.aliyun.aq.kunlunaqs.com:45915?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20031)
-  - [PID 4338] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45914 (来自 ss://YWVzLTEyOC1nY206YjI3MGZkNzdkYjJlY2I3YWNiYzg=@console.03.aliyun.aq.kunlunaqs.com:45914?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20030)
-  - [PID 4355] 从主进程预解析缓存获取 IP: vps.200566.xyz -> 1.170.220.196
-正在测试节点连接: 1.170.220.196:30332 (来自 ss://YWVzLTEyOC1nY206Nzk3Mzk4MzItYjg4OC00MTVhLWE0NTQtOGI1MzkxMWM5NDRh@vps.200566.xyz:30332#%F0%9F%87%B9%F0%9F%87%BC%20Chang-hua,%20CHA,%20Taiwan)
-  - [PID 4357] 从主进程预解析缓存获取 IP: lmtr.91king.win -> 112.29.213.232
-正在测试节点连接: 112.29.213.232:19926 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmtr.91king.win:19926#%F0%9F%87%B9%F0%9F%87%B7%E5%9C%9F%E8%80%B3%E5%85%B6%E4%B8%A8TR%CB%A3%C2%B9)
-正在测试节点连接: 185.39.204.29:443 (来自 ss://77-9Z--_ve-_vXbvv73vv73Gm--_ve-_vTTvv71P77-9ee-_vX5zdu-_vXfvv70177-977-977-9Ou-_vWfvv73vv71277-977-9xpvvv73vv70077-9T--_vXnvv71-c3bvv71377-9Ne-_ve-_ve-_vQ==@185.39.204.29:443#%F0%9F%87%B9%F0%9F%87%B7[openproxylist.com]%20vless-TR)
-  - 结果: [PID 4330] 无法连接到 45.129.2.108:50850 (可能被防火墙阻止或服务未运行)
+开始并行测试节点连接，并发数: 5...
+正在测试节点连接: 46.29.163.171:30033 (协议: hy2, 来自 hy2://dongtaiwang.com@46.29.163.171:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_2)
+  - [PID 4990] 执行 UDP 测试: nc -u -z -w 2 46.29.163.171 30033
+正在测试节点连接: 46.17.41.217:30033 (协议: hy2, 来自 hy2://dongtaiwang.com@46.17.41.217:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_1)
+  - [PID 4989] 执行 UDP 测试: nc -u -z -w 2 46.17.41.217 30033
+正在测试节点连接: 45.129.2.108:50850 (协议: hy2, 来自 hy2://dongtaiwang.com@45.129.2.108:50850?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_0)
+  - [PID 4988] 执行 UDP 测试: nc -u -z -w 2 45.129.2.108 50850
+  - [PID 4991] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45916 (协议: ss, 来自 ss://YWVzLTEyOC1nY206Y2ZjNmYzZjc1ZjVlZjdiMjY2NWM=@console.03.aliyun.aq.kunlunaqs.com:45916?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20065)
+  - [PID 4991] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45916
+  - [PID 4996] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45915 (协议: ss, 来自 ss://YWVzLTEyOC1nY206Yjc0NTE4ZmI0OWJkNjQ1ZTZjZTc=@console.03.aliyun.aq.kunlunaqs.com:45915?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20031)
+  - [PID 4996] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45915
+  - 结果: [PID 4990] 成功连接到 46.29.163.171:30033
 -------------------------------------
-  - 结果: [PID 4331] 无法连接到 46.17.41.217:30033 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4989] 成功连接到 46.17.41.217:30033
 -------------------------------------
-  - 结果: [PID 4332] 无法连接到 46.29.163.171:30033 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4988] 成功连接到 45.129.2.108:50850
 -------------------------------------
-  - 结果: [PID 4373] 成功连接到 185.39.204.29:443
+  - 结果: [PID 4991] 无法连接到 120.240.167.113:45916 (尝试 1/3)
+  - 结果: [PID 4996] 无法连接到 120.240.167.113:45915 (尝试 1/3)
+正在测试节点连接: 223.165.4.173:990 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@223.165.4.173:990#%F0%9F%87%B9%F0%9F%87%BC%20Taipei,%20TPE,%20Taiwan)
+  - [PID 5689] 执行 TCP 测试: nc -z -w 2 223.165.4.173 990
+  - [PID 5690] 从主进程预解析缓存获取 IP: vps.200566.xyz -> 1.170.220.196
+正在测试节点连接: 1.170.220.196:30332 (协议: ss, 来自 ss://YWVzLTEyOC1nY206Nzk3Mzk4MzItYjg4OC00MTVhLWE0NTQtOGI1MzkxMWM5NDRh@vps.200566.xyz:30332#%F0%9F%87%B9%F0%9F%87%BC%20Chang-hua,%20CHA,%20Taiwan)
+  - [PID 5690] 执行 TCP 测试: nc -z -w 2 1.170.220.196 30332
+  - [PID 5688] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45914 (协议: ss, 来自 ss://YWVzLTEyOC1nY206YjI3MGZkNzdkYjJlY2I3YWNiYzg=@console.03.aliyun.aq.kunlunaqs.com:45914?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20030)
+  - [PID 5688] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45914
+  - 结果: [PID 5690] 成功连接到 1.170.220.196:30332
 -------------------------------------
-  - 结果: [PID 4355] 成功连接到 1.170.220.196:30332
+  - 结果: [PID 5689] 成功连接到 223.165.4.173:990
 -------------------------------------
-  - 结果: [PID 4346] 成功连接到 223.165.4.173:990
+  - [PID 6117] 从主进程预解析缓存获取 IP: lmtr.91king.win -> 111.45.33.25
+正在测试节点连接: 111.45.33.25:19926 (协议: ss, 来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmtr.91king.win:19926#%F0%9F%87%B9%F0%9F%87%B7%E5%9C%9F%E8%80%B3%E5%85%B6%E4%B8%A8TR%CB%A3%C2%B9)
+  - [PID 6117] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19926
+正在测试节点连接: 185.39.204.29:443 (协议: ss, 来自 ss://77-9Z--_ve-_vXbvv73vv73Gm--_ve-_vTTvv71P77-9ee-_vX5zdu-_vXfvv70177-977-977-9Ou-_vWfvv73vv71277-977-9xpvvv73vv70077-9T--_vXnvv71-c3bvv71377-9Ne-_ve-_ve-_vQ==@185.39.204.29:443#%F0%9F%87%B9%F0%9F%87%B7[openproxylist.com]%20vless-TR)
+  - [PID 6154] 执行 TCP 测试: nc -z -w 2 185.39.204.29 443
+  - 结果: [PID 6154] 成功连接到 185.39.204.29:443
 -------------------------------------
-  - [PID 5713] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
-正在测试节点连接: 120.241.29.138:30473 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:30473#%F0%9F%87%B9%F0%9F%87%B7%20%E5%9C%9F%E8%80%B3%E5%85%B6%2001)
-  - [PID 5718] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45926 (来自 ss://YWVzLTEyOC1nY206NzQ1MmM1NTAzODNiZjYwYWM5ZDM=@console.03.aliyun.aq.kunlunaqs.com:45926?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%B7%20Turkey%20042)
-正在测试节点连接: 62.60.233.173:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.60.233.173:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - [PID 5741] 从主进程预解析缓存获取 IP: tr.opengate.tech -> 62.133.63.226
-正在测试节点连接: 62.133.63.226:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@tr.opengate.tech:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-正在测试节点连接: 83.217.9.128:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.128:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-正在测试节点连接: 185.123.101.241:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@185.123.101.241:990#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - 结果: [PID 5731] 成功连接到 62.60.233.173:2222
+  - [PID 6401] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
+正在测试节点连接: 120.241.29.138:30473 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:30473#%F0%9F%87%B9%F0%9F%87%B7%20%E5%9C%9F%E8%80%B3%E5%85%B6%2001)
+  - [PID 6401] 执行 TCP 测试: nc -z -w 2 120.241.29.138 30473
+  - [PID 4991] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45916
+  - [PID 4996] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45915
+  - 结果: [PID 5688] 无法连接到 120.240.167.113:45914 (尝试 1/3)
+  - 结果: [PID 6117] 无法连接到 111.45.33.25:19926 (尝试 1/3)
+  - 结果: [PID 6401] 无法连接到 120.241.29.138:30473 (尝试 1/3)
+  - 结果: [PID 4991] 无法连接到 120.240.167.113:45916 (尝试 2/3)
+  - 结果: [PID 4996] 无法连接到 120.240.167.113:45915 (尝试 2/3)
+  - [PID 5688] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45914
+  - [PID 6117] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19926
+  - [PID 6401] 执行 TCP 测试: nc -z -w 2 120.241.29.138 30473
+  - [PID 4991] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45916
+  - [PID 4996] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45915
+  - 结果: [PID 5688] 无法连接到 120.240.167.113:45914 (尝试 2/3)
+  - 结果: [PID 6117] 无法连接到 111.45.33.25:19926 (尝试 2/3)
+  - 结果: [PID 6401] 无法连接到 120.241.29.138:30473 (尝试 2/3)
+  - 结果: [PID 4991] 无法连接到 120.240.167.113:45916 (尝试 3/3)
+  - 结果: [PID 4991] 最终无法连接到 120.240.167.113:45916 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 5741] 成功连接到 62.133.63.226:2222
+  - 结果: [PID 4996] 无法连接到 120.240.167.113:45915 (尝试 3/3)
+  - 结果: [PID 4996] 最终无法连接到 120.240.167.113:45915 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 6020] 成功连接到 83.217.9.128:2222
+正在测试节点连接: 62.60.233.173:2222 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.60.233.173:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 6560] 执行 TCP 测试: nc -z -w 2 62.60.233.173 2222
+  - [PID 6559] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45926 (协议: ss, 来自 ss://YWVzLTEyOC1nY206NzQ1MmM1NTAzODNiZjYwYWM5ZDM=@console.03.aliyun.aq.kunlunaqs.com:45926?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%B7%20Turkey%20042)
+  - [PID 6559] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45926
+  - [PID 5688] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45914
+  - 结果: [PID 6560] 成功连接到 62.60.233.173:2222
 -------------------------------------
-  - 结果: [PID 6012] 成功连接到 185.123.101.241:990
+  - [PID 6844] 从主进程预解析缓存获取 IP: tr.opengate.tech -> 62.133.63.226
+正在测试节点连接: 62.133.63.226:2222 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@tr.opengate.tech:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 6844] 执行 TCP 测试: nc -z -w 2 62.133.63.226 2222
+  - [PID 6117] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19926
+  - 结果: [PID 6844] 成功连接到 62.133.63.226:2222
 -------------------------------------
-  - [PID 6547] 从主进程预解析缓存获取 IP: h110vpntr.outlinekeys.net -> 62.133.63.21
-正在测试节点连接: 62.133.63.21:65262 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2aVhIUUhmcEt6ZTBDRm0wNUE1bmti@h110vpntr.outlinekeys.net:65262#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-正在测试节点连接: 62.133.63.226:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.133.63.226:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-正在测试节点连接: 51.158.205.126:24957 (来自 vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway)
-  - [PID 6683] 从主进程预解析缓存获取 IP: beta.vless1.lk1337.top -> 104.21.15.225
-正在测试节点连接: 104.21.15.225:443 (来自 vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF)
-  - 结果: [PID 6683] 成功连接到 104.21.15.225:443
+正在测试节点连接: 185.123.101.241:990 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@185.123.101.241:990#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 6988] 执行 TCP 测试: nc -z -w 2 185.123.101.241 990
+  - [PID 6401] 执行 TCP 测试: nc -z -w 2 120.241.29.138 30473
+  - 结果: [PID 6988] 成功连接到 185.123.101.241:990
 -------------------------------------
-  - 结果: [PID 6547] 成功连接到 62.133.63.21:65262
+正在测试节点连接: 83.217.9.128:2222 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.128:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 7130] 执行 TCP 测试: nc -z -w 2 83.217.9.128 2222
+  - 结果: [PID 7130] 成功连接到 83.217.9.128:2222
 -------------------------------------
-  - 结果: [PID 6665] 成功连接到 51.158.205.126:24957
+  - [PID 7271] 从主进程预解析缓存获取 IP: h110vpntr.outlinekeys.net -> 62.133.63.21
+正在测试节点连接: 62.133.63.21:65262 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2aVhIUUhmcEt6ZTBDRm0wNUE1bmti@h110vpntr.outlinekeys.net:65262#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 7271] 执行 TCP 测试: nc -z -w 2 62.133.63.21 65262
+  - 结果: [PID 7271] 成功连接到 62.133.63.21:65262
 -------------------------------------
-  - 结果: [PID 6549] 成功连接到 62.133.63.226:2222
+正在测试节点连接: 62.133.63.226:2222 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.133.63.226:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 7414] 执行 TCP 测试: nc -z -w 2 62.133.63.226 2222
+  - 结果: [PID 7414] 成功连接到 62.133.63.226:2222
 -------------------------------------
-正在测试节点连接: 47.79.89.136:16494 (来自 hy2://3a9f4a28@47.79.89.136:16494?insecure=1&sni=www.bing.com#Hysteria2-JP)
-正在测试节点连接: 83.217.9.125:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.125:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - [PID 7224] 从主进程预解析缓存获取 IP: lmth.91king.win -> 111.45.33.25
-正在测试节点连接: 111.45.33.25:19927 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmth.91king.win:19927#%F0%9F%87%B9%F0%9F%87%AD%E6%B3%B0%E5%9B%BD%E4%B8%A8TH%CB%A3%C2%B9)
-  - [PID 7225] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
-正在测试节点连接: 120.241.29.138:19871 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:19871#%F0%9F%87%B9%F0%9F%87%AD%20%E6%B3%B0%E5%9B%BD%2001)
-  - 结果: [PID 7210] 成功连接到 83.217.9.125:2222
+正在测试节点连接: 51.158.205.126:24957 (协议: vless, 来自 vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway)
+  - [PID 7555] 执行 TCP 测试: nc -z -w 2 51.158.205.126 24957
+  - 结果: [PID 7555] 成功连接到 51.158.205.126:24957
 -------------------------------------
-  - 结果: [PID 7103] 无法连接到 47.79.89.136:16494 (可能被防火墙阻止或服务未运行)
+  - [PID 7696] 从主进程预解析缓存获取 IP: beta.vless1.lk1337.top -> 172.67.208.38
+正在测试节点连接: 172.67.208.38:443 (协议: vless, 来自 vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF)
+  - [PID 7696] 执行 TCP 测试: nc -z -w 2 172.67.208.38 443
+  - 结果: [PID 7696] 成功连接到 172.67.208.38:443
 -------------------------------------
-  - [PID 7656] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45925 (来自 ss://YWVzLTEyOC1nY206MWE0MDJiYWJjMDI0NjVmNDViZWE=@console.03.aliyun.aq.kunlunaqs.com:45925?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%AD%20Thailand%20041)
-正在测试节点连接: 119.59.98.58:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@119.59.98.58:990#%F0%9F%87%B9%F0%9F%87%AD%20Thailand)
-  - 结果: [PID 7667] 成功连接到 119.59.98.58:990
+正在测试节点连接: 47.79.89.136:16494 (协议: hy2, 来自 hy2://3a9f4a28@47.79.89.136:16494?insecure=1&sni=www.bing.com#Hysteria2-JP)
+  - [PID 7840] 执行 UDP 测试: nc -u -z -w 2 47.79.89.136 16494
+  - 结果: [PID 6559] 无法连接到 120.240.167.113:45926 (尝试 1/3)
+  - 结果: [PID 5688] 无法连接到 120.240.167.113:45914 (尝试 3/3)
+  - 结果: [PID 5688] 最终无法连接到 120.240.167.113:45914 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - [PID 7934] 从主进程预解析缓存获取 IP: ieplsg.91king.win -> 120.232.223.195
-正在测试节点连接: 120.232.223.195:21004 (来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@ieplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IEPL%CB%A3%C2%B3)
-  - 结果: [PID 4333] 无法连接到 120.240.167.113:45916 (可能被防火墙阻止或服务未运行)
+正在测试节点连接: 83.217.9.125:2222 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.125:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 7979] 执行 TCP 测试: nc -z -w 2 83.217.9.125 2222
+  - 结果: [PID 7979] 成功连接到 83.217.9.125:2222
 -------------------------------------
-  - 结果: [PID 4337] 无法连接到 120.240.167.113:45915 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 6117] 无法连接到 111.45.33.25:19926 (尝试 3/3)
+  - 结果: [PID 6117] 最终无法连接到 111.45.33.25:19926 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 4338] 无法连接到 120.240.167.113:45914 (可能被防火墙阻止或服务未运行)
+  - [PID 8120] 从主进程预解析缓存获取 IP: lmth.91king.win -> 111.45.33.25
+正在测试节点连接: 111.45.33.25:19927 (协议: ss, 来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmth.91king.win:19927#%F0%9F%87%B9%F0%9F%87%AD%E6%B3%B0%E5%9B%BD%E4%B8%A8TH%CB%A3%C2%B9)
+  - [PID 8120] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19927
+  - [PID 8243] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
+正在测试节点连接: 120.241.29.138:19871 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:19871#%F0%9F%87%B9%F0%9F%87%AD%20%E6%B3%B0%E5%9B%BD%2001)
+  - [PID 8243] 执行 TCP 测试: nc -z -w 2 120.241.29.138 19871
+  - 结果: [PID 6401] 无法连接到 120.241.29.138:30473 (尝试 3/3)
+  - 结果: [PID 6401] 最终无法连接到 120.241.29.138:30473 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 4357] 无法连接到 112.29.213.232:19926 (可能被防火墙阻止或服务未运行)
+  - [PID 8406] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45925 (协议: ss, 来自 ss://YWVzLTEyOC1nY206MWE0MDJiYWJjMDI0NjVmNDViZWE=@console.03.aliyun.aq.kunlunaqs.com:45925?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%AD%20Thailand%20041)
+  - [PID 8406] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45925
+  - [PID 6559] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45926
+  - 结果: [PID 7840] 成功连接到 47.79.89.136:16494
 -------------------------------------
-  - [PID 8074] 从主进程预解析缓存获取 IP: iaplsg.91king.win -> 120.241.29.131
-正在测试节点连接: 120.241.29.131:21004 (来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@iaplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IAPL%CB%A3%C2%B3)
-  - [PID 8076] 从主进程预解析缓存获取 IP: cn2sg.91king.win -> 112.29.213.232
-正在测试节点连接: 112.29.213.232:19805 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cn2sg.91king.win:19805#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CN2%CB%A3%C2%B9)
-  - [PID 8081] 从主进程预解析缓存获取 IP: cmisg.91king.win -> 112.29.213.232
-正在测试节点连接: 112.29.213.232:19705 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cmisg.91king.win:19705#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CMI%CB%A3%C2%B9)
-  - [PID 8089] 从主进程预解析缓存获取 IP: bgpsg.91king.win -> 111.45.33.25
-正在测试节点连接: 111.45.33.25:19905 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@bgpsg.91king.win:19905#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8BGP%CB%A3%C2%B9)
-  - 结果: [PID 5713] 无法连接到 120.241.29.138:30473 (可能被防火墙阻止或服务未运行)
+正在测试节点连接: 119.59.98.58:990 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@119.59.98.58:990#%F0%9F%87%B9%F0%9F%87%AD%20Thailand)
+  - [PID 8550] 执行 TCP 测试: nc -z -w 2 119.59.98.58 990
+  - 结果: [PID 8550] 成功连接到 119.59.98.58:990
 -------------------------------------
-  - 结果: [PID 5718] 无法连接到 120.240.167.113:45926 (可能被防火墙阻止或服务未运行)
+  - [PID 8691] 从主进程预解析缓存获取 IP: ieplsg.91king.win -> 120.232.223.195
+正在测试节点连接: 120.232.223.195:21004 (协议: ss, 来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@ieplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IEPL%CB%A3%C2%B3)
+  - [PID 8691] 执行 TCP 测试: nc -z -w 2 120.232.223.195 21004
+  - 结果: [PID 8120] 无法连接到 111.45.33.25:19927 (尝试 1/3)
+  - 结果: [PID 8243] 无法连接到 120.241.29.138:19871 (尝试 1/3)
+  - 结果: [PID 8406] 无法连接到 120.240.167.113:45925 (尝试 1/3)
+  - 结果: [PID 6559] 无法连接到 120.240.167.113:45926 (尝试 2/3)
+  - [PID 8120] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19927
+  - [PID 8243] 执行 TCP 测试: nc -z -w 2 120.241.29.138 19871
+  - [PID 8406] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45925
+  - [PID 6559] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45926
+  - 结果: [PID 8691] 无法连接到 120.232.223.195:21004 (尝试 1/3)
+  - [PID 8691] 执行 TCP 测试: nc -z -w 2 120.232.223.195 21004
+  - 结果: [PID 8120] 无法连接到 111.45.33.25:19927 (尝试 2/3)
+  - 结果: [PID 8243] 无法连接到 120.241.29.138:19871 (尝试 2/3)
+  - 结果: [PID 8406] 无法连接到 120.240.167.113:45925 (尝试 2/3)
+  - 结果: [PID 6559] 无法连接到 120.240.167.113:45926 (尝试 3/3)
+  - 结果: [PID 6559] 最终无法连接到 120.240.167.113:45926 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - [PID 8634] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
-正在测试节点连接: 13.213.58.33:443 (来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9602)
-  - [PID 8642] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd -> 18.139.175.36
-正在测试节点连接: 18.139.175.36:443 (来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9601)
-  - 结果: [PID 8634] 成功连接到 13.213.58.33:443
+  - [PID 8847] 从主进程预解析缓存获取 IP: iaplsg.91king.win -> 120.241.29.131
+正在测试节点连接: 120.241.29.131:21004 (协议: ss, 来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@iaplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IAPL%CB%A3%C2%B3)
+  - [PID 8847] 执行 TCP 测试: nc -z -w 2 120.241.29.131 21004
+  - [PID 8120] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19927
+  - [PID 8243] 执行 TCP 测试: nc -z -w 2 120.241.29.138 19871
+  - [PID 8406] 执行 TCP 测试: nc -z -w 2 120.240.167.113 45925
+  - 结果: [PID 8691] 无法连接到 120.232.223.195:21004 (尝试 2/3)
+  - [PID 8691] 执行 TCP 测试: nc -z -w 2 120.232.223.195 21004
+  - 结果: [PID 8847] 无法连接到 120.241.29.131:21004 (尝试 1/3)
+  - 结果: [PID 8120] 无法连接到 111.45.33.25:19927 (尝试 3/3)
+  - 结果: [PID 8120] 最终无法连接到 111.45.33.25:19927 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 8642] 成功连接到 18.139.175.36:443
+  - 结果: [PID 8243] 无法连接到 120.241.29.138:19871 (尝试 3/3)
+  - 结果: [PID 8243] 最终无法连接到 120.241.29.138:19871 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-正在测试节点连接: 213.35.108.22:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@213.35.108.22:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A13)
-正在测试节点连接: 168.138.165.109:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@168.138.165.109:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A14)
-  - 结果: [PID 7224] 无法连接到 111.45.33.25:19927 (可能被防火墙阻止或服务未运行)
+  - [PID 8996] 从主进程预解析缓存获取 IP: cn2sg.91king.win -> 112.29.213.232
+正在测试节点连接: 112.29.213.232:19805 (协议: ss, 来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cn2sg.91king.win:19805#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CN2%CB%A3%C2%B9)
+  - [PID 8996] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19805
+  - [PID 9116] 从主进程预解析缓存获取 IP: cmisg.91king.win -> 112.29.213.232
+正在测试节点连接: 112.29.213.232:19705 (协议: ss, 来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cmisg.91king.win:19705#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CMI%CB%A3%C2%B9)
+  - [PID 9116] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19705
+  - 结果: [PID 8406] 无法连接到 120.240.167.113:45925 (尝试 3/3)
+  - 结果: [PID 8406] 最终无法连接到 120.240.167.113:45925 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 7225] 无法连接到 120.241.29.138:19871 (可能被防火墙阻止或服务未运行)
+  - [PID 9282] 从主进程预解析缓存获取 IP: bgpsg.91king.win -> 111.45.33.25
+正在测试节点连接: 111.45.33.25:19905 (协议: ss, 来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@bgpsg.91king.win:19905#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8BGP%CB%A3%C2%B9)
+  - [PID 9282] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19905
+  - [PID 8847] 执行 TCP 测试: nc -z -w 2 120.241.29.131 21004
+  - 结果: [PID 8691] 无法连接到 120.232.223.195:21004 (尝试 3/3)
+  - 结果: [PID 8691] 最终无法连接到 120.232.223.195:21004 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - [PID 9190] 从主进程预解析缓存获取 IP: 1.prprcheng.top -> 218.15.1.189
-正在测试节点连接: 218.15.1.189:52490 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@1.prprcheng.top:52490#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
-正在测试节点连接: 140.245.58.56:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@140.245.58.56:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
-  - 结果: [PID 8914] 成功连接到 168.138.165.109:443
+  - [PID 9426] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
+正在测试节点连接: 13.213.58.33:443 (协议: ss, 来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9602)
+  - [PID 9426] 执行 TCP 测试: nc -z -w 2 13.213.58.33 443
+  - 结果: [PID 9426] 成功连接到 13.213.58.33:443
 -------------------------------------
-  - 结果: [PID 8915] 成功连接到 213.35.108.22:443
+  - 结果: [PID 8996] 无法连接到 112.29.213.232:19805 (尝试 1/3)
+  - [PID 9569] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd -> 18.139.175.36
+正在测试节点连接: 18.139.175.36:443 (协议: ss, 来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9601)
+  - [PID 9569] 执行 TCP 测试: nc -z -w 2 18.139.175.36 443
+  - 结果: [PID 9116] 无法连接到 112.29.213.232:19705 (尝试 1/3)
+  - 结果: [PID 9569] 成功连接到 18.139.175.36:443
 -------------------------------------
-  - 结果: [PID 7656] 无法连接到 120.240.167.113:45925 (可能被防火墙阻止或服务未运行)
+正在测试节点连接: 168.138.165.109:443 (协议: ss, 来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@168.138.165.109:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A14)
+  - [PID 9714] 执行 TCP 测试: nc -z -w 2 168.138.165.109 443
+  - 结果: [PID 9282] 无法连接到 111.45.33.25:19905 (尝试 1/3)
+  - 结果: [PID 9714] 成功连接到 168.138.165.109:443
 -------------------------------------
-  - [PID 9468] 从主进程预解析缓存获取 IP: iost.prprcheng.top -> 49.7.219.53
-正在测试节点连接: 49.7.219.53:34043 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@iost.prprcheng.top:34043#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A11)
-  - 结果: [PID 9192] 成功连接到 140.245.58.56:443
+正在测试节点连接: 213.35.108.22:443 (协议: ss, 来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@213.35.108.22:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A13)
+  - [PID 9856] 执行 TCP 测试: nc -z -w 2 213.35.108.22 443
+  - 结果: [PID 8847] 无法连接到 120.241.29.131:21004 (尝试 2/3)
+  - 结果: [PID 9856] 成功连接到 213.35.108.22:443
 -------------------------------------
-  - 结果: [PID 7934] 无法连接到 120.232.223.195:21004 (可能被防火墙阻止或服务未运行)
+  - [PID 9998] 从主进程预解析缓存获取 IP: 1.prprcheng.top -> 218.15.1.189
+正在测试节点连接: 218.15.1.189:52490 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@1.prprcheng.top:52490#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
+  - [PID 9998] 执行 TCP 测试: nc -z -w 2 218.15.1.189 52490
+  - [PID 8996] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19805
+  - [PID 9116] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19705
+  - [PID 9282] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19905
+  - [PID 8847] 执行 TCP 测试: nc -z -w 2 120.241.29.131 21004
+  - 结果: [PID 9998] 无法连接到 218.15.1.189:52490 (尝试 1/3)
+  - 结果: [PID 8996] 无法连接到 112.29.213.232:19805 (尝试 2/3)
+  - 结果: [PID 9116] 无法连接到 112.29.213.232:19705 (尝试 2/3)
+  - 结果: [PID 9282] 无法连接到 111.45.33.25:19905 (尝试 2/3)
+  - 结果: [PID 8847] 无法连接到 120.241.29.131:21004 (尝试 3/3)
+  - 结果: [PID 8847] 最终无法连接到 120.241.29.131:21004 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 8074] 无法连接到 120.241.29.131:21004 (可能被防火墙阻止或服务未运行)
+正在测试节点连接: 140.245.58.56:443 (协议: ss, 来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@140.245.58.56:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
+  - [PID 10150] 执行 TCP 测试: nc -z -w 2 140.245.58.56 443
+  - [PID 9998] 执行 TCP 测试: nc -z -w 2 218.15.1.189 52490
+  - 结果: [PID 10150] 成功连接到 140.245.58.56:443
 -------------------------------------
-  - 结果: [PID 8076] 无法连接到 112.29.213.232:19805 (可能被防火墙阻止或服务未运行)
+  - [PID 8996] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19805
+  - [PID 9116] 执行 TCP 测试: nc -z -w 2 112.29.213.232 19705
+  - [PID 10292] 从主进程预解析缓存获取 IP: iost.prprcheng.top -> 49.7.219.53
+正在测试节点连接: 49.7.219.53:34043 (协议: ss, 来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@iost.prprcheng.top:34043#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A11)
+  - [PID 10292] 执行 TCP 测试: nc -z -w 2 49.7.219.53 34043
+  - [PID 9282] 执行 TCP 测试: nc -z -w 2 111.45.33.25 19905
+  - 结果: [PID 9998] 无法连接到 218.15.1.189:52490 (尝试 2/3)
+  - 结果: [PID 8996] 无法连接到 112.29.213.232:19805 (尝试 3/3)
+  - 结果: [PID 8996] 最终无法连接到 112.29.213.232:19805 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 8081] 无法连接到 112.29.213.232:19705 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 9116] 无法连接到 112.29.213.232:19705 (尝试 3/3)
+  - 结果: [PID 9116] 最终无法连接到 112.29.213.232:19705 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 8089] 无法连接到 111.45.33.25:19905 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 10292] 无法连接到 49.7.219.53:34043 (尝试 1/3)
+  - 结果: [PID 9282] 无法连接到 111.45.33.25:19905 (尝试 3/3)
+  - 结果: [PID 9282] 最终无法连接到 111.45.33.25:19905 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 9190] 无法连接到 218.15.1.189:52490 (可能被防火墙阻止或服务未运行)
+  - [PID 9998] 执行 TCP 测试: nc -z -w 2 218.15.1.189 52490
+  - [PID 10292] 执行 TCP 测试: nc -z -w 2 49.7.219.53 34043
+  - 结果: [PID 9998] 无法连接到 218.15.1.189:52490 (尝试 3/3)
+  - 结果: [PID 9998] 最终无法连接到 218.15.1.189:52490 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 9468] 无法连接到 49.7.219.53:34043 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 10292] 无法连接到 49.7.219.53:34043 (尝试 2/3)
+  - [PID 10292] 执行 TCP 测试: nc -z -w 2 49.7.219.53 34043
+  - 结果: [PID 10292] 无法连接到 49.7.219.53:34043 (尝试 3/3)
+  - 结果: [PID 10292] 最终无法连接到 49.7.219.53:34043 (可能被防火墙阻止或服务未运行)
 -------------------------------------
 所有节点连接性测试完成。结果已保存到 data/node_connectivity_results.log
 成功连接的节点已保存到 data/sub.txt
