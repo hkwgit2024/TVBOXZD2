@@ -1,4 +1,4 @@
-name: 节点连通性速度测试
+name: 连通性
 
 on:
   schedule:
