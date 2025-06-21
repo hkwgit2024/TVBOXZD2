@@ -13,7 +13,7 @@ MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt"
 
 # DNS 缓存文件路径
 DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.json"
-# DNS 缓存有效期（秒），24 小时
+# DNS 缓存有效期（秒），72 小时
 CACHE_EXPIRATION_SECONDS=$((24 * 60 * 60))
 
 # 并发测试数量
