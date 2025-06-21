@@ -17,7 +17,7 @@ DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.json"
 CACHE_EXPIRATION_SECONDS=$((24 * 60 * 60)) # 24 hours
 
 # 定义同时进行的连接测试数量 (并发数)
-MAX_CONCURRENT_TESTS=20 # 示例：20 个并发连接测试
+MAX_CONCURRENT_TESTS=10 # 示例：20 个并发连接测试
 
 # 定义单个节点连接测试的超时时间（秒）。
 NODE_CONNECT_TIMEOUT=2 # 示例：2 秒超时
