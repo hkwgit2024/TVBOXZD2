@@ -18,7 +18,7 @@ jobs:
       - name: Set up Bash and dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y dnsutils netcat-openbsd curl coreutils jq
+          sudo apt-get install -y dnsutils netcat-openbsd curl coreutils jq parallel
 
       - name: Run speed test
         run: |
@@ -47,4 +47,13 @@ jobs:
             git push origin main
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} 
+          GITHUB_TOKEN: ${{ secrets.BOT }}
+
+      - name: Upload logs
+        if: always() # 即使失败也上传日志
+        uses: actions/upload-artifact@v4
+        with:
+          name: speed-test-logs
+          path: |
+            node_connectivity_results.log
+            speed_test_output.log
