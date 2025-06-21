@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT }} 
+          token: ${{ secrets.BOT }} # 使用默认 GITHUB_TOKEN
 
       - name: Set up Bash and dependencies
         run: |
@@ -24,7 +24,7 @@ jobs:
         run: |
           chmod +x speed_test.sh
           ./speed_test.sh 2>&1 | tee speed_test_output.log
-          if [ ${{ job.status }} != "success" ]; then
+          if [ $? -ne 0 ]; then
             echo "Speed test script failed. Check logs for details."
             cat speed_test_output.log
             exit 1
@@ -35,8 +35,11 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git fetch origin
+          # Stash any local changes to avoid rebase conflicts
+          git stash push --include-untracked
           git pull origin main --rebase
-          # Only add files that exist
+          git stash pop || true # Restore changes, ignore if no stash
+          # Add files if they exist
           [ -f data/sub.txt ] && git add data/sub.txt || echo "data/sub.txt not found, skipping"
           [ -f data/failed_proxies.json ] && git add data/failed_proxies.json || echo "data/failed_proxies.json not found, skipping"
           # Check if there are changes to commit
