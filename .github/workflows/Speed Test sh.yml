@@ -1,4 +1,4 @@
-name: 连通性速度测试
+name: 节点连通性速度测试
 
 on:
   schedule:
@@ -13,7 +13,8 @@ jobs:
       - name: 检出仓库代码
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT }} # 或者保留 ${{ secrets.BOT }} 如果您偏好使用该 Token
+      
+          token: ${{ secrets.BOT }}
 
       - name: 设置 Bash 及依赖项
         run: |
@@ -29,6 +30,8 @@ jobs:
           ./speed_test.sh
           if [ $? -ne 0 ]; then
             echo "错误：speed_test.sh 脚本执行失败。请查看 node_connectivity_results.log 获取详细信息。"
+            # 由于不再上传日志，如果脚本失败，这里可以考虑 cat node_connectivity_results.log 以便在Actions日志中查看
+            # cat node_connectivity_results.log
             exit 1 # 标记此步骤失败
           fi
           echo "脚本执行完成。详细信息请查看 node_connectivity_results.log 文件。"
@@ -38,10 +41,14 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
 
+          # 确保本地分支是最新的，但不要删除新生成的文件
           echo "正在同步本地分支到远程仓库..."
           git fetch origin
-          git checkout main # 切换到 main 分支
-          git reset --hard origin/main # 硬重置到最新的远程提交，清除所有未跟踪或未提交的本地更改
+          git checkout main # 确保在 main 分支
+          # 使用 git merge --ff-only 替代 git reset --hard
+          # 如果本地分支落后于远程且没有冲突，它会进行快进合并。
+          # 如果本地分支已经是最新的，则不会有任何操作。
+          git merge --ff-only origin/main || echo "本地分支已是最新的或需要手动合并（在CI中通常不会发生，可以忽略）"
 
           echo "正在添加生成的文件到 Git 暂存区..."
           [ -f "data/sub.txt" ] && git add data/sub.txt || echo "警告：未找到 data/sub.txt，跳过添加。"
@@ -56,15 +63,5 @@ jobs:
             echo "提交并推送更新完成。"
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} # 或者使用 ${{ secrets.BOT }}
-
-      - name: 上传日志和数据产物
-        if: always() # 即使前序步骤失败也始终上传
-        uses: actions/upload-artifact@v4
-        with:
-          name: speed-test-artifacts # 产物的名称
-          path: |
-            node_connectivity_results.log
-            data/
-            # speed_test_output.log # 如果您仍然需要脚本的控制台输出，请取消注释下面一行
-          retention-days: 7 # 可选：设置产物保留的天数
+        
+          GITHUB_TOKEN: ${{ secrets.BOT }}
