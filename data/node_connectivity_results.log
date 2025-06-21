@@ -1,5 +1,5 @@
 开始节点连接性测试...
-测试时间: 2025-06-21 06:42:47 JST
+测试时间: 2025-06-21 06:50:29 JST
 -------------------------------------
 下载并合并节点配置文件...
 正在下载: https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt
@@ -7,669 +7,25 @@
 检查并安装 dnsutils 和 jq...
 dnsutils 和 jq 检查/安装完成。
 从 data/dns_cache.json 加载 DNS 缓存并清理过期条目...
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '1.prprcheng.top 218.15.1.189 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '1000tw.mei.wiki 1.162.187.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '100dx.qikqik.xyz 123.129.211.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '160dx.czczcloud.top 123.129.211.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '170dx.babatspeed.xyz 123.129.211.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '2.ilgm.saint.ydns.eu 45.87.175.10 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '2gzdx21.453521.xyz 36.231.118.162 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '2sg13cb2b6b4d-9b32-01a8-7574-376a171bb832.170203.xyz 43.207.66.72 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '3bd9.55dba.e048.f65-fef1f.yfjcs.com 36.227.252.206 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '627130f3-sy41s0-szgp42-1g8k0.cm5.cnkuaishou.com 183.240.180.16 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '91947508-sy41s0-szj3jn-1qthu.cm5.cnkuaishou.com 183.240.180.16 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'IEPL.tube-cat.com 103.172.183.83 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'IEPL01.tube-cat.com 103.172.183.83 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'IEPL02.tube-cat.com 103.172.183.83 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'R1.tube-cat.com 154.64.226.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'R2.tube-cat.com 103.183.218.227 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'Speedtest.net 151.101.2.219 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'Tunll.speedx3net.ir 31.41.35.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a.fstores.web.id 104.22.47.231 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.h1.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.j1.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.j2.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.j3.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.s1.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.s2.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.u1.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.u2.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a4a09ce.u3.glados-config.net 52.196.144.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freevpn.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freevpn.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freevpn.turah.my.id 172.67.23.247 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freevpn.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freexxx.najah.biz.id 104.22.27.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freexxx.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freexxx.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.freexxx.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ads.ruangguru.com.web.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ae1.pptv-tv.store 188.208.110.247 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'agaungzhou01.bumbleshrimp.com 120.233.87.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ams5.vpntype.dev 85.158.110.62 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freevpn.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freevpn.ndeso.web.id 104.22.35.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freevpn.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freexxx.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freexxx.ndeso.web.id 104.22.34.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freexxx.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freexxx.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.freexxx.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'api.midtrans.com.web.bmkg.xyz 172.67.8.22 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'apiyhyzsj.gweuc.cn 120.236.198.164 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'arxfw2b78fi2q9hzylhn.freesocks.work 160.19.78.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'asia.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'atr01.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au01.graniterapids.com 118.184.136.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au02.graniterapids.com 118.184.136.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au03.graniterapids.com 118.184.136.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au04.graniterapids.com 118.184.136.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au05.graniterapids.com 118.184.136.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au1.pptv-tv.store 103.106.231.184 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'au2.pptv-tv.store 103.106.231.184 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'autf.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ava.game.naver.com.freevpn.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ava.game.naver.com.freevpn.ndeso.web.id 104.22.35.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ava.game.naver.com.freevpn.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ava.game.naver.com.freevpn.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ava.game.naver.com.web.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'b.fstores.web.id 104.22.46.231 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bb.tt43tt.dynv6.net 185.39.207.60 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bbtt.prprcheng.top 120.233.248.24 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'beesyar.org 45.87.175.164 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'beijing.mfa.ee 162.159.136.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'beta.mattenadene.org 94.131.21.174 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgphk.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpjp.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpkr.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpsg.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgptw.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpus.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-hk.03ezhg0qsa.download 120.232.153.15 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-jp.03ezhg0qsa.download 120.232.153.79 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-kr.03ezhg0qsa.download 120.232.153.79 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-sg.03ezhg0qsa.download 120.232.153.119 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-tw.03ezhg0qsa.download 120.232.153.119 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bit-us.03ezhg0qsa.download 120.232.153.119 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.freevpn.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.freevpn.ndeso.web.id 104.22.34.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.freexxx.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.freexxx.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.freexxx.ndeso.web.id 104.22.34.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'blog.webex.com.web.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c1.bujidao.org 104.21.18.37 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c2-4.bujidao.org 104.26.9.63 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c6.myzf.xyz 183.232.167.168 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h1.49d2.5e11.613.b297.djjsvip.cfd 1.162.152.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.5e11.613.b297.djjsvip.cfd 112.120.48.4 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.1.b297.djjsvip.cfd 54.178.18.225 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.2.b297.djjsvip.cfd 52.69.182.8 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd 18.139.175.36 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd 13.213.58.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h3.49d2.5e11.613.b297.djjsvip.cfd 112.120.48.45 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca01.graniterapids.com 118.184.136.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca02.graniterapids.com 118.184.136.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca03.graniterapids.com 118.184.136.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca04.graniterapids.com 118.184.136.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca05.graniterapids.com 118.184.136.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ca225.vpnbook.com 142.4.216.225 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freevpn.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freevpn.najah.biz.id 104.22.27.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freevpn.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freevpn.xhamster.biz.id 172.67.31.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freexxx.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freexxx.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.freexxx.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.unlimited.spauu.web.id 104.22.23.252 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cache.netflix.com.web.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cc.755657.xyz 103.170.72.179 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cd-bgp.und32w4732.top 8.137.145.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cdn.usmc.uk 45.64.22.41 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ch1.pptv-tv.store 194.87.18.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cm01.newcome.xyz 112.90.84.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmihk.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmijp.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmikr.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmisg.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmitw.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmius.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn01.efan8867801.xyz 183.240.211.96 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2hk.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2jp.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2kr.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2sg.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2tw.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2us.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cokecloudjp.cokecloud.top 42.4.52.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'console.01.aliyun.aq.kunlunaqs.com 58.63.247.148 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'console.02.aliyun.aq.kunlunaqs.com 58.63.247.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'console.03.aliyun.aq.kunlunaqs.com 120.240.167.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cyusd123.qeayr.cn 120.241.226.32 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'de1.pptv-tv.store 77.90.22.86 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'deepf.hjkdsak2.com 183.233.187.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'desrv.vmagnum.win 147.45.178.200 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'dh.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'dozo01.flztjc.top 125.88.196.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'es1.pptv-tv.store 5.134.118.171 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'exchange.gameaurela.click 141.98.4.67 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr.vmagnum.win 81.19.137.222 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr01.graniterapids.com 118.184.136.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr02.graniterapids.com 118.184.136.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr03.graniterapids.com 118.184.136.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr04.graniterapids.com 118.184.136.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr05.graniterapids.com 118.184.136.159 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fr1.pptv-tv.store 163.5.121.42 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fra5.vpntype.dev 95.164.68.37 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.cloudproxyip.my.id 104.22.70.81 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.ndeso.web.id 104.22.34.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freevpn.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.cloudproxyip.my.id 104.22.71.81 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.najah.biz.id 104.22.27.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.ndeso.web.id 104.22.35.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.ndeso.xyz 104.22.34.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'freexxx.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'fstores.web.id 172.67.4.68 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'gb1.pptv-tv.store 185.139.7.55 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'gd-ali.und32w4732.top 8.134.24.182 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge.opengate.tech 194.87.71.228 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge01.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge02.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge03.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge04.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge05.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ge06.htz.wtf 118.184.136.158 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'gy.ni8.me 120.237.60.45 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpnch.outlinekeys.net 45.95.232.236 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpnde.outlinekeys.net 62.133.60.60 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpnnl.outlinekeys.net 194.87.216.218 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpntr.outlinekeys.net 62.133.63.21 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpnus.outlinekeys.net 92.118.112.101 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hinet-wap.myddns.me 36.232.13.38 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hinet.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk01.zerobit.in 36.156.184.93 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk1.iqiyi-tv.site 185.244.208.225 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk1.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk2.iqiyi-tv.site 185.244.208.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk2.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hk3.iqiyi-tv.site 62.60.232.112 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkaia01.graniterapids.com 183.60.172.28 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt01.graniterapids.com 14.17.92.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt02.graniterapids.com 121.14.152.226 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt03.graniterapids.com 183.60.172.38 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt04.graniterapids.com 118.184.136.52 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt05.graniterapids.com 118.184.136.54 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt06.graniterapids.com 118.184.136.53 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hkt07.graniterapids.com 118.184.136.54 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hon5.vpntype.dev 103.253.43.210 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr01.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr02.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr03.graniterapids.com 118.184.136.151 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr04.graniterapids.com 118.184.136.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr06.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr07.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr08.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr09.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr10.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr11.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr12.graniterapids.com 118.184.136.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr13.graniterapids.com 118.184.136.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr14.graniterapids.com 118.184.136.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr15.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr16.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr17.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr18.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'hr19.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplhk.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iapljp.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplkr.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplsg.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iapltw.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplus.91king.win 120.241.29.131 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'id1.pptv-tv.store 111.47.212.172 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'idtf.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iepl.und32w4732.top 120.236.198.196 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplhk.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iepljp.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplkr.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplsg.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iepltw.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplus.91king.win 120.232.223.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ii.youaremygod.top 18.181.165.231 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'il.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in.pptv-tv.store 150.230.139.203 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in01.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in02.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in03.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in04.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in05.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in06.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in07.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'in08.graniterapids.com 118.184.136.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freevpn.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freevpn.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freevpn.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freexxx.cloudproxyip.my.id 172.67.36.124 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freexxx.ndeso.web.id 104.22.35.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freexxx.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investor.fb.com.freexxx.xhamster.biz.id 172.67.31.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.aink.workerz.site 104.22.12.167 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.najah.biz.id 172.67.20.205 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.ndeso.web.id 172.67.23.206 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freevpn.xhamster.biz.id 172.67.31.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freexxx.ndeso.xyz 104.22.35.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.freexxx.turah.my.id 104.22.8.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'investors.spotify.com.web.bmkg.xyz 172.67.8.22 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freevpn.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freevpn.ndeso.web.id 172.67.23.206 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freevpn.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freexxx.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freexxx.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freexxx.ndeso.xyz 104.22.34.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'io.ruangguru.com.freexxx.turah.my.id 172.67.23.247 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iohk2dhbuvdad.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iost.prprcheng.top 49.7.219.53 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ir01.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ir02.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ir03.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ir04.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ir05.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'it.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jikeq87.xyz 180.188.196.200 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'join.E-L-i-V-2-R-A-Y.fastly80-3.hosting-ip.com 151.101.194.165 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'join.e-l-i-v-2-r-a-y.fastly80-3.hosting-ip.com 151.101.0.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp001.421421.xyz 54.238.104.160 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp002.421421.xyz 54.95.13.133 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp003.421421.xyz 13.113.199.225 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp004.421421.xyz 54.250.246.7 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp005.421421.xyz 54.238.211.111 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp006.421421.xyz 52.192.206.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp007.421421.xyz 13.230.150.132 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp008.421421.xyz 13.114.101.115 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp01.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp02.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp03.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp04.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp06.graniterapids.com 118.184.136.151 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp07.graniterapids.com 118.184.136.150 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp08.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp09.graniterapids.com 118.184.136.151 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp1.pptv-tv.store 31.223.184.248 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp1.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp10.graniterapids.com 118.184.136.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp14.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp15.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp16.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp17.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp18.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp19.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp2.pptv-tv.store 31.223.184.173 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp2.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp20.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp22.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp23.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp24.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp25.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp26.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp27.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp28.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp29.graniterapids.com 118.184.136.149 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp3.pptv-tv.store 31.223.184.62 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp3.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp30.graniterapids.com 118.184.136.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp31.graniterapids.com 118.184.136.153 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jp32.graniterapids.com 118.184.136.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'js04.balala2016.xyz 183.232.139.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'jsm2.und32w4732.top 36.150.27.104 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kb.aws5.yydjc.top 13.231.104.155 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kb.aws7.yydjc.top 13.213.6.125 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kbgs.hinet.tw1.yydjc.top 111.243.85.103 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kh.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kp.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr01.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr02.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr03.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr04.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr05.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr06.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr07.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr08.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr09.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kr10.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame01.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame02.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame03.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame04.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame05.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame06.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame07.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame08.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame09.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krgame10.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk01.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk02.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk03.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk04.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk05.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk06.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk07.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk08.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk09.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'krsk10.graniterapids.com 118.184.136.156 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kz.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'kz.vmagnum.win 38.107.234.38 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lbsh.bnnodeservice.com 117.143.14.17 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lbso.bnnodeservice.com 183.240.139.181 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ldfgdfgdfus.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1cahsfvu2bisd-sc.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1faiubsvdnasjp2.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1hkv2b.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1jpfhssvb2-sc.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1sg2ffhbvjjwtu.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'li1us-fddfv2bgdha.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lidnaivos2nbsg.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freevpn.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freevpn.cloudproxyip.my.id 104.22.70.81 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freevpn.ndeso.web.id 172.67.23.206 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freevpn.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freevpn.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freexxx.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.freexxx.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'live.iflix.com.web.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lixiyjp12gvabkmno.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmar.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmau.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmbg.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmbr.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmca.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmde.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmeg.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmfr.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmid.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmin.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmit.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmmm.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmmo.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmmy.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmng.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmph.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmpk.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmru.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmth.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmtr.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmua.91king.win 111.45.33.25 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmuk.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmvn.91king.win 112.29.213.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lon5.vpntype.dev 85.239.60.43 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl04.saint.ydns.eu 45.87.175.65 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl10.saint.ydns.eu 45.87.175.92 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl12.saint.ydns.eu 45.87.175.35 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl13.saint.ydns.eu 45.87.175.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl14.saint.ydns.eu 45.87.175.164 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ltnl17.saint.ydns.eu 45.87.175.181 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'main.opengate.tech 85.90.208.235 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mb2.myzf.xyz 183.232.167.168 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'media.mothyleela.cfd 107.181.147.235 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mioch.online 104.21.66.86 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mltf.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mpkrykuslqfijsw-hk.fliggynode.com 38.150.12.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mpkrykuslqfijsw-jp.fliggynode.com 38.150.12.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mpkrykuslqfijsw-sg.fliggynode.com 38.150.12.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mpkrykuslqfijsw-tw.fliggynode.com 38.150.12.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mpkrykuslqfijsw-us.fliggynode.com 38.150.12.187 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'mx2.drawnrisha.one 185.5.38.111 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'my.noisydeysy.monster 208.67.105.196 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ngzyd.sub-zrj.com 120.233.31.185 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ni.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'nl1.pptv-tv.store 45.133.117.90 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'nsaghhfhintt100tw.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'nsaghhfhitw.559xp5.cn 156.226.83.40 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'old.afoothabs.monster 166.1.157.228 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'one007.kacloud.top 123.129.211.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-edge.xyz 120.241.29.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-fun1.xyz 120.241.29.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-fun2.xyz 120.232.129.208 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-fun3.xyz 222.187.225.198 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw01.graniterapids.com 118.184.136.48 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw02.graniterapids.com 118.184.136.51 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw03.graniterapids.com 118.184.136.53 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw04.graniterapids.com 118.184.136.56 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw05.graniterapids.com 118.184.136.48 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw06.graniterapids.com 118.184.136.58 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw07.graniterapids.com 118.184.136.54 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw08.graniterapids.com 118.184.136.56 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pccw09.graniterapids.com 118.184.136.57 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pl.vmagnum.win 45.144.49.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pl.vpnsparta.pro 45.144.49.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'portal.ninemakeda.cfd 107.181.151.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws11.yydjc.top 112.120.48.162 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws12.yydjc.top 219.76.131.41 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws13.yydjc.top 219.76.131.136 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws14.yydjc.top 112.120.48.132 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws15.yydjc.top 112.120.48.227 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws48.yydjc.top 54.249.56.94 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws49.yydjc.top 54.238.57.53 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws50.yydjc.top 13.231.107.201 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws51.yydjc.top 52.195.228.82 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws52.yydjc.top 57.182.23.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws53.yydjc.top 35.78.248.243 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws54.yydjc.top 54.199.150.15 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws55.yydjc.top 3.112.214.42 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws56.yydjc.top 54.65.206.120 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws57.yydjc.top 52.196.240.209 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws58.yydjc.top 13.213.64.212 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws59.yydjc.top 13.229.122.251 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws60.yydjc.top 18.141.158.36 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws61.yydjc.top 47.129.54.37 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws62.yydjc.top 122.248.219.62 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws63.yydjc.top 18.136.196.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws64.yydjc.top 13.250.102.79 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.aws65.yydjc.top 54.251.188.53 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.hinet.tw1.yydjc.top 1.161.47.214 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.hinet.tw2.yydjc.top 118.167.1.30 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pq.hinet.tw3.yydjc.top 1.162.155.85 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pr.fastsoonlink.com 120.236.198.182 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'premium.vkehi.shop 139.59.107.19 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pt.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'pvcc01.graniterapids.com 118.184.136.50 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'qc456987.qeayr.cn 36.151.65.8 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.freevpn.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.freevpn.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.freevpn.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.freexxx.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.freexxx.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'quiz.int.vidio.com.web.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru.vmagnum.win 45.139.24.24 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru01.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru02.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru03.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru04.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru05.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru06.fjk.wtf 118.184.136.130 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru1.pptv-tv.store 195.133.53.121 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru1.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ru2.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'rusrv.vpnsparta.pro 194.58.59.93 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'rutf.cokecloud.top 42.4.52.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 's20002625.qeayr.cn 120.241.236.44 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'scp-fasttttly.tencent.su 127.0.0.1 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'seoul1-2500m.yljc.online 199.59.243.228 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg001.421421.xyz 13.215.141.120 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg002.421421.xyz 18.143.76.123 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg003.421421.xyz 13.229.98.55 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg004.421421.xyz 54.251.196.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg005.421421.xyz 13.213.56.162 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg006.421421.xyz 13.215.179.93 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg007.421421.xyz 18.143.178.55 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg008.421421.xyz 13.212.4.254 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg01.graniterapids.com 119.147.105.137 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg02.graniterapids.com 14.17.92.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg03.graniterapids.com 121.14.152.226 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg04.graniterapids.com 183.60.172.38 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg05.graniterapids.com 118.184.136.50 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg06.graniterapids.com 118.184.136.55 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg07.graniterapids.com 118.184.136.50 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg08.graniterapids.com 118.184.136.51 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg09.graniterapids.com 118.184.136.60 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg1.pptv-tv.store 146.19.196.90 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg1.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg2.pptv-tv.store 103.172.116.219 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg2.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg3.pptv-tv.store 146.19.196.98 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sg3.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp01.graniterapids.com 118.184.136.146 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp02.graniterapids.com 118.184.136.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp03.graniterapids.com 118.184.136.148 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp04.graniterapids.com 118.184.136.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp05.graniterapids.com 118.184.136.148 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp06.graniterapids.com 118.184.136.146 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp07.graniterapids.com 118.184.136.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp08.graniterapids.com 118.184.136.148 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp09.graniterapids.com 118.184.136.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp10.graniterapids.com 118.184.136.148 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp11.graniterapids.com 118.184.136.146 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sgp12.graniterapids.com 118.184.136.147 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sin5.vpntype.dev 91.242.241.45 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'singapore1-2500m.yljc.online 199.59.243.228 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sp.bujidao302.com 172.67.188.9 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ss.sps1.sbs 62.109.21.178 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'support.zoom.us.freevpn.ndeso.xyz 104.22.34.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'support.zoom.us.freevpn.xhamster.biz.id 172.67.31.113 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'support.zoom.us.freexxx.turah.my.id 104.22.9.154 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'support.zoom.us.freexxx.xhamster.biz.id 104.22.77.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'support.zoom.us.web.bmkg.xyz 104.22.5.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'sz.myzf.xyz 120.232.217.162 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tel5.vpntype.dev 185.239.48.109 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'thtf.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tr.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tr.opengate.tech 83.217.9.125 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tr.vpnsparta.pro 62.133.63.212 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tttttttttttt.222769.xyz 172.67.191.174 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'turtf.cokecloud.top 42.4.52.152 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw.ssrxray.click 111.243.155.183 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw01.balala2016.xyz 36.227.233.216 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw01.graniterapids.com 118.184.136.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw02.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw03.graniterapids.com 118.184.136.142 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw04.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw05.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw06.352343.cc 36.231.81.170 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw06.graniterapids.com 118.184.136.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw07.352343.cc 36.231.119.94 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw07.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw08.graniterapids.com 118.184.136.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw09.graniterapids.com 118.184.136.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw1.344233.cc 111.250.110.1 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw1.pptv-tv.store 36.233.226.38 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw11.352343.cc 36.231.99.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw40.453521.xyz 111.250.98.104 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw5.453521.xyz 36.231.67.172 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tw7.344233.cc 36.227.193.117 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct01.graniterapids.com 118.184.136.142 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct02.graniterapids.com 118.184.136.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct03.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct04.graniterapids.com 118.184.136.142 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct05.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct06.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct07.graniterapids.com 118.184.136.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct08.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twct09.graniterapids.com 118.184.136.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame01.graniterapids.com 118.184.136.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame02.graniterapids.com 118.184.136.142 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame03.graniterapids.com 118.184.136.141 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame04.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame05.graniterapids.com 118.184.136.142 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame06.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame07.graniterapids.com 118.184.136.139 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame08.graniterapids.com 118.184.136.140 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'twgame09.graniterapids.com 118.184.136.138 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ua.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ua1.pptv-tv.store 185.126.114.211 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uj.aaaa.gay 74.48.130.250 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk-dc1.yangon.club 212.102.53.197 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk.vpnsparta.pro 46.226.163.225 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk01.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk02.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'uk04.graniterapids.com 118.184.136.157 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'unlimited.spauu.web.id 104.22.23.252 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us-w-s3.riot-cdn.com 209.141.53.75 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us001.421421.xyz 34.220.238.242 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us002.421421.xyz 35.88.70.32 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us003.421421.xyz 35.92.42.238 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us004.421421.xyz 35.87.79.198 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us01.graniterapids.com 118.184.136.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us02.graniterapids.com 118.184.136.144 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us03.graniterapids.com 118.184.136.145 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us04.graniterapids.com 118.184.136.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us05.graniterapids.com 118.184.136.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us06.graniterapids.com 118.184.136.144 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us07.graniterapids.com 118.184.136.145 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us08.graniterapids.com 118.184.136.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us09.graniterapids.com 118.184.136.143 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us1.pptv-tv.store 205.185.116.212 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us1.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us10.graniterapids.com 118.184.136.144 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us2.pptv-tv.store 209.141.62.236 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us2.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us3.pptv-tv.store 209.141.59.241 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'us3.vpn52.xyz 36.151.65.188 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'usla.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vip.arivganteng.biz.id 172.67.36.189 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vless-cf.mioch.online 104.21.66.86 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vn.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vn1.pptv-tv.store 103.179.173.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vn2.pptv-tv.store 103.179.173.232 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vps.200566.xyz 1.170.220.196 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'waphk.mjt000.com 172.192.14.195 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'war.ssvpnapp.win 45.144.48.63 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'web.bmkg.xyz 172.67.8.22 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.arizona.edu 151.101.202.133 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.clickbank.com 141.193.213.10 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.drctcldfa.com 104.21.80.1 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.eshipz.com 160.153.0.30 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.fastly.com 151.101.201.57 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.gov.uk 151.101.200.144 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.parsvds.com 172.67.69.236 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.paypal.com.cn 151.101.43.1 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www.speedtest.net 104.17.148.22 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'www2.broadalx.cfd 94.156.79.244 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'xcsgp.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'xd-sh.timiwc.com 36.156.184.35 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'xdtw.cokecloud.top 120.236.197.102 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'xj.cokecloud.top 178.239.124.134 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ynn.441166.xyz 75.2.115.196 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zaintest.vuclip.com.freevpn.bmkg.xyz 104.22.4.33 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zaintest.vuclip.com.freevpn.najah.biz.id 104.22.26.193 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zaintest.vuclip.com.freevpn.ndeso.web.id 172.67.23.206 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zaintest.vuclip.com.freevpn.ndeso.xyz 172.67.24.46 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zaintest.vuclip.com.freevpn.xhamster.biz.id 104.22.76.207 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero01.graniterapids.com 118.184.136.56 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero02.graniterapids.com 118.184.136.57 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero03.graniterapids.com 118.184.136.58 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero04.graniterapids.com 118.184.136.59 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero05.graniterapids.com 118.184.136.60 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zero06.graniterapids.com 118.184.136.61 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zf1.10101251.xyz 36.151.194.51 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zf2.10101251.xyz 120.198.71.135 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zfa01.333210.xyz 192.142.4.64 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zoomgov.com.vless-cf.mioch.online 104.21.66.86 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zula.ir 172.67.204.84 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zx01.endhigh.xyz 112.90.84.163 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zy.myzf.xyz 221.131.165.205 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zz.myzf.xyz 112.3.31.231 1750483543'，已忽略。
-  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'zz6.91js.pw 117.149.198.190 1750483543'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: '1.prprcheng.top 218.15.1.189 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'a.fstores.web.id 104.22.47.231 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'apiyhyzsj.gweuc.cn 120.236.198.164 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'beta.vless1.lk1337.top 172.67.208.38 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'bgpsg.91king.win 111.45.33.25 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd 18.139.175.36 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd 13.213.58.33 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cmisg.91king.win 112.29.213.232 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'cn2sg.91king.win 112.29.213.232 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'console.03.aliyun.aq.kunlunaqs.com 120.240.167.113 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'h110vpntr.outlinekeys.net 62.133.63.21 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iaplsg.91king.win 120.241.29.131 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'ieplsg.91king.win 120.232.223.195 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'iost.prprcheng.top 49.7.219.53 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmth.91king.win 111.45.33.25 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'lmtr.91king.win 111.45.33.25 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'p1.bxy-edge.xyz 120.241.29.138 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'tr.opengate.tech 83.217.9.128 1750488169'，已忽略。
+  - 警告: 缓存文件 data/dns_cache.json 中发现无效条目: 'vps.200566.xyz 1.170.220.196 1750488169'，已忽略。
 加载了 0 个有效缓存条目，清理了 0 个过期条目。
 开始预解析所有节点链接中的域名...
   - 预解析域名: ieplsg.91king.win
@@ -681,11 +37,11 @@ dnsutils 和 jq 检查/安装完成。
   - 预解析域名: console.03.aliyun.aq.kunlunaqs.com
   - 预解析成功: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
   - 预解析域名: tr.opengate.tech
-  - 预解析成功: tr.opengate.tech -> 83.217.9.128
+  - 预解析成功: tr.opengate.tech -> 83.217.9.125
   - 预解析域名: cmisg.91king.win
   - 预解析成功: cmisg.91king.win -> 112.29.213.232
   - 预解析域名: a.fstores.web.id
-  - 预解析成功: a.fstores.web.id -> 104.22.47.231
+  - 预解析成功: a.fstores.web.id -> 172.67.4.68
   - 预解析域名: p1.bxy-edge.xyz
   - 预解析成功: p1.bxy-edge.xyz -> 120.241.29.138
   - 预解析域名: 1.prprcheng.top
@@ -703,7 +59,7 @@ dnsutils 和 jq 检查/安装完成。
   - 预解析域名: iaplsg.91king.win
   - 预解析成功: iaplsg.91king.win -> 120.241.29.131
   - 预解析域名: beta.vless1.lk1337.top
-  - 预解析成功: beta.vless1.lk1337.top -> 172.67.208.38
+  - 预解析成功: beta.vless1.lk1337.top -> 104.21.15.225
   - 预解析域名: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd
   - 预解析成功: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
   - 预解析域名: h110vpntr.outlinekeys.net
@@ -714,141 +70,141 @@ dnsutils 和 jq 检查/安装完成。
 更新主进程 DNS 缓存文件以供并行测试使用...
 主进程 DNS 缓存文件更新完成。
 开始并行测试节点连接，并发数: 10...
-  - [PID 11436] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45916 (来自 ss://YWVzLTEyOC1nY206Y2ZjNmYzZjc1ZjVlZjdiMjY2NWM=@console.03.aliyun.aq.kunlunaqs.com:45916?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20065)
 正在测试节点连接: 45.129.2.108:50850 (来自 hy2://dongtaiwang.com@45.129.2.108:50850?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_0)
-正在测试节点连接: 46.29.163.171:30033 (来自 hy2://dongtaiwang.com@46.29.163.171:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_2)
 正在测试节点连接: 46.17.41.217:30033 (来自 hy2://dongtaiwang.com@46.17.41.217:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_1)
-  - [PID 11461] 从主进程预解析缓存获取 IP: lmtr.91king.win -> 111.45.33.25
-正在测试节点连接: 111.45.33.25:19926 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmtr.91king.win:19926#%F0%9F%87%B9%F0%9F%87%B7%E5%9C%9F%E8%80%B3%E5%85%B6%E4%B8%A8TR%CB%A3%C2%B9)
-  - [PID 11449] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
-正在测试节点连接: 120.240.167.113:45914 (来自 ss://YWVzLTEyOC1nY206YjI3MGZkNzdkYjJlY2I3YWNiYzg=@console.03.aliyun.aq.kunlunaqs.com:45914?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20030)
+  - [PID 4350] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45916 (来自 ss://YWVzLTEyOC1nY206Y2ZjNmYzZjc1ZjVlZjdiMjY2NWM=@console.03.aliyun.aq.kunlunaqs.com:45916?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20065)
 正在测试节点连接: 223.165.4.173:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@223.165.4.173:990#%F0%9F%87%B9%F0%9F%87%BC%20Taipei,%20TPE,%20Taiwan)
-  - [PID 11459] 从主进程预解析缓存获取 IP: vps.200566.xyz -> 1.170.220.196
-正在测试节点连接: 1.170.220.196:30332 (来自 ss://YWVzLTEyOC1nY206Nzk3Mzk4MzItYjg4OC00MTVhLWE0NTQtOGI1MzkxMWM5NDRh@vps.200566.xyz:30332#%F0%9F%87%B9%F0%9F%87%BC%20Chang-hua,%20CHA,%20Taiwan)
-  - [PID 11441] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 46.29.163.171:30033 (来自 hy2://dongtaiwang.com@46.29.163.171:30033?insecure=1&sni=www.bing.com#Russia_Moscow_hy2_2)
+  - [PID 4355] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+正在测试节点连接: 120.240.167.113:45914 (来自 ss://YWVzLTEyOC1nY206YjI3MGZkNzdkYjJlY2I3YWNiYzg=@console.03.aliyun.aq.kunlunaqs.com:45914?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20030)
+  - [PID 4368] 从主进程预解析缓存获取 IP: lmtr.91king.win -> 111.45.33.25
+正在测试节点连接: 111.45.33.25:19926 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmtr.91king.win:19926#%F0%9F%87%B9%F0%9F%87%B7%E5%9C%9F%E8%80%B3%E5%85%B6%E4%B8%A8TR%CB%A3%C2%B9)
+  - [PID 4354] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
 正在测试节点连接: 120.240.167.113:45915 (来自 ss://YWVzLTEyOC1nY206Yjc0NTE4ZmI0OWJkNjQ1ZTZjZTc=@console.03.aliyun.aq.kunlunaqs.com:45915?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%BC%20Taiwan%20031)
 正在测试节点连接: 185.39.204.29:443 (来自 ss://77-9Z--_ve-_vXbvv73vv73Gm--_ve-_vTTvv71P77-9ee-_vX5zdu-_vXfvv70177-977-977-9Ou-_vWfvv73vv71277-977-9xpvvv73vv70077-9T--_vXnvv71-c3bvv71377-9Ne-_ve-_ve-_vQ==@185.39.204.29:443#%F0%9F%87%B9%F0%9F%87%B7[openproxylist.com]%20vless-TR)
-  - 结果: [PID 11459] 成功连接到 1.170.220.196:30332
+  - [PID 4361] 从主进程预解析缓存获取 IP: vps.200566.xyz -> 1.170.220.196
+正在测试节点连接: 1.170.220.196:30332 (来自 ss://YWVzLTEyOC1nY206Nzk3Mzk4MzItYjg4OC00MTVhLWE0NTQtOGI1MzkxMWM5NDRh@vps.200566.xyz:30332#%F0%9F%87%B9%F0%9F%87%BC%20Chang-hua,%20CHA,%20Taiwan)
+  - 结果: [PID 4347] 无法连接到 45.129.2.108:50850 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11433] 无法连接到 45.129.2.108:50850 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4348] 无法连接到 46.17.41.217:30033 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11435] 无法连接到 46.29.163.171:30033 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4349] 无法连接到 46.29.163.171:30033 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11453] 成功连接到 223.165.4.173:990
+  - 结果: [PID 4383] 成功连接到 185.39.204.29:443
 -------------------------------------
-  - 结果: [PID 11434] 无法连接到 46.17.41.217:30033 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4361] 成功连接到 1.170.220.196:30332
 -------------------------------------
-  - 结果: [PID 11471] 成功连接到 185.39.204.29:443
+  - 结果: [PID 4359] 成功连接到 223.165.4.173:990
 -------------------------------------
-  - [PID 12823] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
+  - [PID 5728] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
 正在测试节点连接: 120.241.29.138:30473 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:30473#%F0%9F%87%B9%F0%9F%87%B7%20%E5%9C%9F%E8%80%B3%E5%85%B6%2001)
-  - [PID 12842] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+  - [PID 5730] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
 正在测试节点连接: 120.240.167.113:45926 (来自 ss://YWVzLTEyOC1nY206NzQ1MmM1NTAzODNiZjYwYWM5ZDM=@console.03.aliyun.aq.kunlunaqs.com:45926?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%B7%20Turkey%20042)
 正在测试节点连接: 62.60.233.173:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.60.233.173:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - [PID 12860] 从主进程预解析缓存获取 IP: tr.opengate.tech -> 83.217.9.128
-正在测试节点连接: 83.217.9.128:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@tr.opengate.tech:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
+  - [PID 5800] 从主进程预解析缓存获取 IP: tr.opengate.tech -> 83.217.9.125
+正在测试节点连接: 83.217.9.125:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@tr.opengate.tech:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
 正在测试节点连接: 185.123.101.241:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@185.123.101.241:990#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
 正在测试节点连接: 83.217.9.128:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.128:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - 结果: [PID 12849] 成功连接到 62.60.233.173:2222
+  - 结果: [PID 5735] 成功连接到 62.60.233.173:2222
 -------------------------------------
-  - 结果: [PID 12860] 成功连接到 83.217.9.128:2222
+  - 结果: [PID 5800] 成功连接到 83.217.9.125:2222
 -------------------------------------
-  - 结果: [PID 12887] 成功连接到 185.123.101.241:990
+  - 结果: [PID 5928] 成功连接到 185.123.101.241:990
 -------------------------------------
-  - 结果: [PID 12940] 成功连接到 83.217.9.128:2222
+  - 结果: [PID 6215] 成功连接到 83.217.9.128:2222
 -------------------------------------
-  - [PID 13657] 从主进程预解析缓存获取 IP: h110vpntr.outlinekeys.net -> 62.133.63.21
+  - [PID 6562] 从主进程预解析缓存获取 IP: h110vpntr.outlinekeys.net -> 62.133.63.21
 正在测试节点连接: 62.133.63.21:65262 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2aVhIUUhmcEt6ZTBDRm0wNUE1bmti@h110vpntr.outlinekeys.net:65262#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
 正在测试节点连接: 62.133.63.226:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@62.133.63.226:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
 正在测试节点连接: 51.158.205.126:24957 (来自 vless://ef1fdecb-e56f-4996-9b6a-da7ddb7f7c8d@51.158.205.126:24957?security=reality&sni=www.yahoo.com&allowInsecure=1&fp=chrome&pbk=Ok7Mg4VmHT4Typ9HydPSmHI55BgLONFk5ppLGiL8n1A&sid=4b4d9d72&type=tcp&flow=xtls-rprx-vision&encryption=none#NL-Scaleway)
-  - [PID 13676] 从主进程预解析缓存获取 IP: beta.vless1.lk1337.top -> 172.67.208.38
-正在测试节点连接: 172.67.208.38:443 (来自 vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF)
-  - 结果: [PID 13676] 成功连接到 172.67.208.38:443
+  - [PID 6772] 从主进程预解析缓存获取 IP: beta.vless1.lk1337.top -> 104.21.15.225
+正在测试节点连接: 104.21.15.225:443 (来自 vless://c7320fa7-90e9-4699-b2f2-63e02a591a73@beta.vless1.lk1337.top:443?security=tls&sni=beta.vless1.lk1337.top&fp=randomized&type=ws&path=/?ed%3D2048&host=beta.vless1.lk1337.top&encryption=none#%E8%8A%82%E7%82%B93-%E9%99%88%E7%9D%BF)
+  - 结果: [PID 6772] 成功连接到 104.21.15.225:443
+-------------------------------------
+  - 结果: [PID 6562] 成功连接到 62.133.63.21:65262
+-------------------------------------
+  - 结果: [PID 6651] 成功连接到 51.158.205.126:24957
+-------------------------------------
+  - 结果: [PID 6579] 成功连接到 62.133.63.226:2222
 -------------------------------------
 正在测试节点连接: 47.79.89.136:16494 (来自 hy2://3a9f4a28@47.79.89.136:16494?insecure=1&sni=www.bing.com#Hysteria2-JP)
-  - 结果: [PID 13671] 成功连接到 51.158.205.126:24957
--------------------------------------
-  - 结果: [PID 13657] 成功连接到 62.133.63.21:65262
--------------------------------------
-  - 结果: [PID 13660] 成功连接到 62.133.63.226:2222
--------------------------------------
-  - 结果: [PID 14213] 无法连接到 47.79.89.136:16494 (可能被防火墙阻止或服务未运行)
--------------------------------------
 正在测试节点连接: 83.217.9.125:2222 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpxc2NhdkY1VXZpSUwtOFYtRTRyYUJB@83.217.9.125:2222#%F0%9F%87%B9%F0%9F%87%B7%20Istanbul,%2034,%20T%C3%BCrkiye)
-  - [PID 14401] 从主进程预解析缓存获取 IP: lmth.91king.win -> 111.45.33.25
+  - [PID 7227] 从主进程预解析缓存获取 IP: lmth.91king.win -> 111.45.33.25
 正在测试节点连接: 111.45.33.25:19927 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@lmth.91king.win:19927#%F0%9F%87%B9%F0%9F%87%AD%E6%B3%B0%E5%9B%BD%E4%B8%A8TH%CB%A3%C2%B9)
-  - [PID 14408] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
+  - [PID 7279] 从主进程预解析缓存获取 IP: p1.bxy-edge.xyz -> 120.241.29.138
 正在测试节点连接: 120.241.29.138:19871 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU=@p1.bxy-edge.xyz:19871#%F0%9F%87%B9%F0%9F%87%AD%20%E6%B3%B0%E5%9B%BD%2001)
-  - [PID 14549] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
+  - 结果: [PID 7118] 无法连接到 47.79.89.136:16494 (可能被防火墙阻止或服务未运行)
+-------------------------------------
+  - 结果: [PID 7222] 成功连接到 83.217.9.125:2222
+-------------------------------------
+  - [PID 7671] 从主进程预解析缓存获取 IP: console.03.aliyun.aq.kunlunaqs.com -> 120.240.167.113
 正在测试节点连接: 120.240.167.113:45925 (来自 ss://YWVzLTEyOC1nY206MWE0MDJiYWJjMDI0NjVmNDViZWE=@console.03.aliyun.aq.kunlunaqs.com:45925?plugin=obfs-local;obfs%3Dhttp;obfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%B9%F0%9F%87%AD%20Thailand%20041)
-  - 结果: [PID 14351] 成功连接到 83.217.9.125:2222
--------------------------------------
 正在测试节点连接: 119.59.98.58:990 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@119.59.98.58:990#%F0%9F%87%B9%F0%9F%87%AD%20Thailand)
-  - 结果: [PID 14909] 成功连接到 119.59.98.58:990
+  - 结果: [PID 7673] 成功连接到 119.59.98.58:990
 -------------------------------------
-  - [PID 15047] 从主进程预解析缓存获取 IP: ieplsg.91king.win -> 120.232.223.195
+  - [PID 7949] 从主进程预解析缓存获取 IP: ieplsg.91king.win -> 120.232.223.195
 正在测试节点连接: 120.232.223.195:21004 (来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@ieplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IEPL%CB%A3%C2%B3)
-  - 结果: [PID 11436] 无法连接到 120.240.167.113:45916 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4350] 无法连接到 120.240.167.113:45916 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11461] 无法连接到 111.45.33.25:19926 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4355] 无法连接到 120.240.167.113:45914 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11449] 无法连接到 120.240.167.113:45914 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4368] 无法连接到 111.45.33.25:19926 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 11441] 无法连接到 120.240.167.113:45915 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 4354] 无法连接到 120.240.167.113:45915 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - [PID 15187] 从主进程预解析缓存获取 IP: iaplsg.91king.win -> 120.241.29.131
+  - [PID 8089] 从主进程预解析缓存获取 IP: iaplsg.91king.win -> 120.241.29.131
 正在测试节点连接: 120.241.29.131:21004 (来自 ss://YWVzLTI1Ni1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@iaplsg.91king.win:21004#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8IAPL%CB%A3%C2%B3)
-  - [PID 15220] 从主进程预解析缓存获取 IP: cn2sg.91king.win -> 112.29.213.232
+  - [PID 8103] 从主进程预解析缓存获取 IP: cn2sg.91king.win -> 112.29.213.232
 正在测试节点连接: 112.29.213.232:19805 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cn2sg.91king.win:19805#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CN2%CB%A3%C2%B9)
-  - [PID 15223] 从主进程预解析缓存获取 IP: cmisg.91king.win -> 112.29.213.232
+  - [PID 8111] 从主进程预解析缓存获取 IP: cmisg.91king.win -> 112.29.213.232
 正在测试节点连接: 112.29.213.232:19705 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@cmisg.91king.win:19705#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8CMI%CB%A3%C2%B9)
-  - [PID 15249] 从主进程预解析缓存获取 IP: bgpsg.91king.win -> 111.45.33.25
+  - [PID 8115] 从主进程预解析缓存获取 IP: bgpsg.91king.win -> 111.45.33.25
 正在测试节点连接: 111.45.33.25:19905 (来自 ss://YWVzLTEyOC1nY206ODlmZTZlNTMtN2JiOS00M2UzLTk4M2MtMjc2OGRmNTFhODQ2@bgpsg.91king.win:19905#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%A8BGP%CB%A3%C2%B9)
-  - 结果: [PID 12823] 无法连接到 120.241.29.138:30473 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 5728] 无法连接到 120.241.29.138:30473 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 12842] 无法连接到 120.240.167.113:45926 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 5730] 无法连接到 120.240.167.113:45926 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - [PID 15748] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
+  - [PID 8649] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
 正在测试节点连接: 13.213.58.33:443 (来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9602)
-  - [PID 15792] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd -> 18.139.175.36
+  - [PID 8657] 从主进程预解析缓存获取 IP: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd -> 18.139.175.36
 正在测试节点连接: 18.139.175.36:443 (来自 ss://77-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y677-93p3hrbbvv73vv71f77-977-9Ne-_vU_vv71t77-977-977-9du-_vdud77-977-9R3Y=@c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A1%E4%B8%89%E7%BD%91%E4%BC%98%E5%8C%9601)
-  - 结果: [PID 15748] 成功连接到 13.213.58.33:443
+  - 结果: [PID 8649] 成功连接到 13.213.58.33:443
 -------------------------------------
-  - 结果: [PID 15792] 成功连接到 18.139.175.36:443
+  - 结果: [PID 8657] 成功连接到 18.139.175.36:443
 -------------------------------------
 正在测试节点连接: 168.138.165.109:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@168.138.165.109:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A14)
 正在测试节点连接: 213.35.108.22:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@213.35.108.22:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A13)
-  - 结果: [PID 16028] 成功连接到 168.138.165.109:443
+  - 结果: [PID 7227] 无法连接到 111.45.33.25:19927 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 16072] 成功连接到 213.35.108.22:443
+  - 结果: [PID 7279] 无法连接到 120.241.29.138:19871 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 14401] 无法连接到 111.45.33.25:19927 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8929] 成功连接到 168.138.165.109:443
 -------------------------------------
-  - 结果: [PID 14408] 无法连接到 120.241.29.138:19871 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8934] 成功连接到 213.35.108.22:443
 -------------------------------------
-  - 结果: [PID 14549] 无法连接到 120.240.167.113:45925 (可能被防火墙阻止或服务未运行)
--------------------------------------
-  - [PID 16304] 从主进程预解析缓存获取 IP: 1.prprcheng.top -> 218.15.1.189
+  - [PID 9205] 从主进程预解析缓存获取 IP: 1.prprcheng.top -> 218.15.1.189
 正在测试节点连接: 218.15.1.189:52490 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@1.prprcheng.top:52490#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
 正在测试节点连接: 140.245.58.56:443 (来自 ss://a03vv73vv73vv71a77-977-977-977-977-9Gu-_vd-b77-9zr5777-977-977-977-9XO-tnDprTe-_ve-_ve-_vVrvv73vv73vv73vv73vv70a77-935vvv73Ovnvvv73vv73vv73vv71c762c@140.245.58.56:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A12)
-  - [PID 16423] 从主进程预解析缓存获取 IP: iost.prprcheng.top -> 49.7.219.53
+  - [PID 9431] 从主进程预解析缓存获取 IP: iost.prprcheng.top -> 49.7.219.53
 正在测试节点连接: 49.7.219.53:34043 (来自 ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY=@iost.prprcheng.top:34043#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A11)
-  - 结果: [PID 16345] 成功连接到 140.245.58.56:443
+  - 结果: [PID 7671] 无法连接到 120.240.167.113:45925 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 15047] 无法连接到 120.232.223.195:21004 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 9219] 成功连接到 140.245.58.56:443
 -------------------------------------
-  - 结果: [PID 15187] 无法连接到 120.241.29.131:21004 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 7949] 无法连接到 120.232.223.195:21004 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 15220] 无法连接到 112.29.213.232:19805 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8089] 无法连接到 120.241.29.131:21004 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 15223] 无法连接到 112.29.213.232:19705 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8103] 无法连接到 112.29.213.232:19805 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 15249] 无法连接到 111.45.33.25:19905 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8111] 无法连接到 112.29.213.232:19705 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 16304] 无法连接到 218.15.1.189:52490 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 8115] 无法连接到 111.45.33.25:19905 (可能被防火墙阻止或服务未运行)
 -------------------------------------
-  - 结果: [PID 16423] 无法连接到 49.7.219.53:34043 (可能被防火墙阻止或服务未运行)
+  - 结果: [PID 9205] 无法连接到 218.15.1.189:52490 (可能被防火墙阻止或服务未运行)
+-------------------------------------
+  - 结果: [PID 9431] 无法连接到 49.7.219.53:34043 (可能被防火墙阻止或服务未运行)
 -------------------------------------
 所有节点连接性测试完成。结果已保存到 data/node_connectivity_results.log
 成功连接的节点已保存到 data/sub.txt
