@@ -24,8 +24,9 @@ NODE_CONNECT_TIMEOUT=2 # 示例：2 秒超时
 
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
+    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+    #"https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
    # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
