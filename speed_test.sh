@@ -278,7 +278,7 @@ for domain in "${!ALL_DOMAINS_TO_RESOLVE[@]}"; do
     fi
 
     echo "  - 预解析域名: $domain" | tee -a "$LOG_FILE"
-    local resolved_ip=$(dig +short "$domain" A  | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
+    resolved_ip=$(dig +short "$domain" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
     if [[ -n "$resolved_ip" ]]; then
         DNS_CACHE["$domain"]="$resolved_ip,$CURRENT_TIME" # 存储 IP 和当前时间戳
         ((PRE_RESOLVED_COUNT++))
