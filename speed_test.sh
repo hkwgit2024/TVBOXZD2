@@ -28,7 +28,7 @@ NODE_CONNECT_TIMEOUT=2 # 示例：2 秒超时
 # 你可以在这里添加/删除/修改你的节点来源网址
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
    # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
