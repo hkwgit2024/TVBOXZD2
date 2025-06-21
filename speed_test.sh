@@ -2,7 +2,7 @@
 
 # 节点连接性测试脚本（并行化版本）
 # 功能：从多个源下载节点配置文件，并行测试节点连接性，保存成功和失败节点
-# 优化：支持 hysteria/hysteria2/ss/vmess 协议，修复节点编号，改进连接测试和 DNS 解析
+# 优化：修复语法错误，支持 hysteria/hysteria2/ss/vmess 协议，改进错误处理
 
 # --- 定义常量 ---
 LOG_FILE="${LOG_FILE:-node_connectivity_results.log}"
@@ -17,7 +17,7 @@ PARALLEL_JOBS="${PARALLEL_JOBS:-10}"
 
 # 定义节点来源 URL
 NODE_SOURCES=(
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/connected_nodes.txt"
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 )
 
 # --- 函数定义 ---
@@ -81,7 +81,7 @@ test_node_connectivity() {
         if [ $? -ne 0 ]; then
             failure_reason="VMess base64 decode failed"
             log "WARN: [$node_id] base64 解码失败: $node_link"
-            echo "{\"node\": \"$node_link\", \"reason\": \"$failure_reason\", \"node_id\": \"$node_id\"}" >> "$FAILED_TEMP_FILE"
+            echo "{\"node\": \"$node_id\", \"reason\": \"$failure_reason\", \"node_id\": \"$node_id\"}" >> "$FAILED_TEMP_FILE"
             return 1
         fi
         hostname_or_ip=$(echo "$decoded_json" | jq -r '.add' 2>/dev/null)
@@ -93,8 +93,8 @@ test_node_connectivity() {
             echo "{\"node\": \"$node_link\", \"reason\": \"$failure_reason\", \"node_id\": \"$node_id\"}" >> "$FAILED_TEMP_FILE"
             return 1
         fi
-        # 跳过 ws/tls 协议的连接测试
-        if [[ "$net" == "ws" || "$net" == "http" || "$net "¿ "grpc" ]]; then
+        # 跳过 ws/http/grpc 协议的连接测试
+        if [[ "$net" == "ws" || "$net" == "http" || "$net" == "grpc" ]]; then
             failure_reason="Unsupported protocol: $net"
             log "WARN: [$node_id] 不支持的协议 ($net): $node_link"
             echo "{\"node\": \"$node_link\", \"reason\": \"$failure_reason\", \"node_id\": \"$node_id\"}" >> "$FAILED_TEMP_FILE"
@@ -217,3 +217,4 @@ log "INFO: 成功连接节点数: $SUCCESS_COUNT，失败节点数: $FAILED_COUN
 rm -f "$MERGED_NODES_TEMP_FILE" "$SUCCESS_TEMP_FILE" "$SUCCESS_TEMP_FILE.tmp" "$FAILED_TEMP_FILE"
 
 log "INFO: 节点连接性测试流程完成。"
+exit 0
