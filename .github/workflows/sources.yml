@@ -13,29 +13,36 @@ jobs:
     steps:
     - name: 检出仓库代码
       uses: actions/checkout@v4
-      # 确保即使在旧的本地分支上，也能正确获取到最新的远程分支信息
+      # 获取所有历史，这对于后续的 pull/rebase 操作至关重要
       with:
-        fetch-depth: 0 # 获取所有历史，这有助于后续的pull/rebase操作
+        fetch-depth: 0
+
+    - name: 拉取远程最新更改
+      # 在这里执行 git pull，确保本地分支与远程分支同步
+      # 配置 Git 用户信息，以防 pull 产生合并提交时需要
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # 使用 --rebase --autostash 尝试将本地更改重放到远程最新提交之上
+        # 这通常能保持更干净的提交历史
+        git pull --rebase --autostash origin main || true
+        # `|| true` 的作用是：如果 pull 失败（例如，没有远程更改或发生复杂冲突），
+        # 不会中断整个工作流，而是允许后续步骤继续。
+        # 对于自动化更新，通常希望即使 pull 失败也尝试提交和推送。
+        # 如果你希望 pull 失败就停止，可以移除 `|| true`。
 
     - name: 设置 Python 环境
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # 使用 Python 3 的最新版本
+        python-version: '3.x'
 
     - name: 安装依赖库
       run: |
         python -m pip install --upgrade pip
-        # 安装所需库：aiohttp (用于异步请求), pyyaml (用于 YAML 解析), requests (如果未来有同步请求需求)
         pip install aiohttp pyyaml requests
 
     - name: 运行代理转换脚本
       run: python proxy_converter.py --sources sources.list --output data/nodes.txt --clash-output data/clash.yaml --max-concurrency 50 --timeout 20
-      # 使用命令行参数来运行脚本，更灵活
-      # --sources: 指定源 URL 文件
-      # --output: 指定纯节点 URL 输出文件
-      # --clash-output: 指定 Clash YAML 输出文件
-      # --max-concurrency: 最大并发请求数
-      # --timeout: 请求超时时间
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -44,11 +51,6 @@ jobs:
         file_pattern: |
           data/nodes.txt
           data/clash.yaml
-        branch: main # 或者您的默认分支名称，例如 master
-        # ==== 修复 Git 拒绝推送错误的关键行 ====
-        # 在推送前尝试拉取远程分支的最新更改。
-        # '--rebase --autostash' 会尝试将本地更改“重放”到远程最新提交之上，保持提交历史干净。
-        # 如果你更倾向于合并提交（即创建一个新的合并提交），可以使用 '--no-ff' 或不指定参数，让其默认合并。
-        # 对于自动化更新文件，rebase 通常是更好的选择，因为它避免了额外的合并提交。
-        pull_options: '--rebase --autostash'
-        # ======================================
+        branch: main
+        # 移除不受支持的 pull_options 参数
+        # pull_options: '--rebase --autostash' # <-- 移除这一行
