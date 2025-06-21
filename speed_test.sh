@@ -47,14 +47,10 @@ declare -A ALL_DOMAINS_TO_RESOLVE
 is_ip_address() {
     local host="$1"
     # 简单的 IPv4 和 IPv6 检查
-    # 考虑到 IPv6 地址可能被方括号包围，正则表达式需要处理
-    if [[ "$host" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then # IPv4
-        return 0
-    elif [[ "$host" =~ ^\[?([0-9a-fA-F:]+)\]?$ ]]; then # IPv6 (可能带方括号)
-        # 进一步验证 IPv6 格式是否有效（这里仅做基本匹配，不完全验证）
-        return 0
+    if [[ "$host" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ || "$host" =~ ^\[?[0-9a-fA-F:]+\]?$ ]]; then
+        return 0 # 是 IP 地址
     else
-        return 1
+        return 1 # 不是 IP 地址
     fi
 }
 
