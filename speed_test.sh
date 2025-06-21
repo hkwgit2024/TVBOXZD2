@@ -301,9 +301,9 @@ for key in "${!DNS_CACHE[@]}"; do
     else
         json_output+=","
     fi
-    local cached_data="${DNS_CACHE[$key]}"
-    local ip_val=$(echo "$cached_data" | cut -d',' -f1)
-    local timestamp_val=$(echo "$cached_data" | cut -d',' -f2)
+    cached_data="${DNS_CACHE[$key]}"
+    ip_val=$(echo "$cached_data" | cut -d',' -f1)
+    timestamp_val=$(echo "$cached_data" | cut -d',' -f2)
 
     json_output+="\"$key\":{\"ip\":\"$ip_val\",\"timestamp\":$timestamp_val}"
 done
