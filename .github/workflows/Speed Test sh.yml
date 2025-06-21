@@ -12,25 +12,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT }} 
 
-      - name: Set up Bash
-        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Set up Bash and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dnsutils netcat-openbsd curl coreutils jq
 
       - name: Run speed test
-        env:
-          BOT_TOKEN: ${{ secrets.BOT }}
         run: |
           chmod +x speed_test.sh
-          ./speed_test.sh
+          ./speed_test.sh 2>&1 | tee speed_test_output.log
+          if [ ${{ job.status }} != "success" ]; then
+            echo "Speed test script failed. Check logs for details."
+            cat speed_test_output.log
+            exit 1
+          fi
 
       - name: Commit and push results
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          # Add this line to pull the latest changes before pushing
+          git fetch origin
           git pull origin main --rebase
-          git add data/sub.txt data/failed_proxies.json
-          git commit -m "Update speed test results"
-          git push
+          # Only add files that exist
+          [ -f data/sub.txt ] && git add data/sub.txt || echo "data/sub.txt not found, skipping"
+          [ -f data/failed_proxies.json ] && git add data/failed_proxies.json || echo "data/failed_proxies.json not found, skipping"
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update speed test results - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push origin main
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.BOT }} 
