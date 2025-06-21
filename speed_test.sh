@@ -113,16 +113,16 @@ parse_node_link_details() {
 
             # 然后，提取主机和端口，直到第一个 '?' 或 '#'
             # 注意：这里的顺序很重要，先检查 ? 再检查 #
-            if [[ "$temp_link" == * "?"* ]]; then # 包含 ?
+            # 使用转义的问号 \? 在 [[ ... =~ ... ]] 中进行正则表达式匹配
+            if [[ "$temp_link" =~ \? ]]; then # 包含 ?
                 host_port_part="${temp_link%%\?*}"
-            elif [[ "$temp_link" == *"#"* ]]; then # 包含 #
+            elif [[ "$temp_link" =~ \# ]]; then # 包含 #
                 host_port_part="${temp_link%%\#*}"
             else # 既不包含 ? 也不包含 #
                 host_port_part="$temp_link"
             fi
 
             # 从 host:port 部分提取主机和端口
-            # 这里的正则表达式看起来是正确的
             if [[ "$host_port_part" =~ ^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
                 parsed_host="${BASH_REMATCH[1]}"
                 parsed_port="${BASH_REMATCH[2]}"
