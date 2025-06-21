@@ -1,16 +1,17 @@
 #!/bin/bash
 
-# 节点连接性测试脚本
-# 功能：从多个源下载节点配置文件，测试节点连接性，保存成功节点到文件
-# 优化版本：包含信号处理、可配置超时、统计信息等
+# 节点连接性测试脚本（并行化版本）
+# 功能：从多个源下载节点配置文件，并行测试节点连接性，保存成功节点到文件
+# 优化：使用 parallel 实现并行测试，增加效率
 
 # --- 定义常量 ---
-LOG_FILE="${LOG_FILE:-node_connectivity_results.log}" # 日志文件路径，可通过环境变量自定义
-OUTPUT_DIR="${OUTPUT_DIR:-data}"                      # 输出目录，可通过环境变量自定义
+LOG_FILE="${LOG_FILE:-node_connectivity_results.log}" # 日志文件路径
+OUTPUT_DIR="${OUTPUT_DIR:-data}"                      # 输出目录
 SUCCESS_FILE="${SUCCESS_FILE:-$OUTPUT_DIR/sub.txt}"  # 成功节点输出文件
 MERGED_NODES_TEMP_FILE=$(mktemp)                     # 临时文件：存储合并的节点
 SUCCESS_TEMP_FILE=$(mktemp)                          # 临时文件：存储本次运行的成功节点
-TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-5}"              # 连接超时时间（秒），可通过环境变量自定义
+TIMEOUT_SECONDS="${TIMEOUT_SECONDS:-5}"              # 连接超时时间（秒）
+PARALLEL_JOBS="${PARALLEL_JOBS:-10}"                 # 并行任务数，可通过环境变量自定义
 
 # 定义所有节点来源URL的数组
 NODE_SOURCES=(
@@ -23,17 +24,17 @@ NODE_SOURCES=(
 
 # --- 函数定义 ---
 
-# 日志函数：输出到控制台和日志文件
+# 日志函数：输出到控制台和日志文件（线程安全）
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $*" | tee -a "$LOG_FILE"
 }
 
 # 检查依赖函数：确保必要的命令存在
 check_dependencies() {
-    local deps=("dig" "nc" "curl" "base64" "sort" "wc")
+    local deps=("dig" "nc" "curl" "base64" "sort" "wc" "parallel")
     for dep in "${deps[@]}"; do
         command -v "$dep" >/dev/null 2>&1 || {
-            log "ERROR: 命令 '$dep' 未找到。请确保已安装（例如：sudo apt install dnsutils netcat-openbsd）"
+            log "ERROR: 命令 '$dep' 未找到。请确保已安装（例如：sudo apt install $dep）"
             exit 1
         }
     done
@@ -84,7 +85,7 @@ test_node_connectivity() {
         ip="$hostname_or_ip"
     else # Domain
         log "INFO: 尝试解析域名: $hostname_or_ip"
-        resolved_ips=$(dig +short "$hostname_or_ip" A AAAA 2>/dev/null) # 并行解析 A 和 AAAA 记录
+        resolved_ips=$(dig +short "$hostname_or_ip" A AAAA 2>/dev/null)
         ip=$(echo "$resolved_ips" | head -n 1)
         if [ -n "$ip" ]; then
             [[ "$ip" =~ : ]] && target_host="[$ip]" # 为 nc 格式化 IPv6
@@ -99,7 +100,7 @@ test_node_connectivity() {
     nc -z -w "$TIMEOUT_SECONDS" "$target_host" "$port" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         log "INFO: 成功连接到 $target_host:$port"
-        echo "$node_link" >> "$SUCCESS_TEMP_FILE"
+        echo "$node_link" >> "$SUCCESS_TEMP_FILE" # 写入成功节点
         return 0
     else
         log "WARN: 无法连接到 $target_host:$port (可能被防火墙阻止或服务未运行)"
@@ -122,7 +123,7 @@ mkdir -p "$OUTPUT_DIR"
 # 3. 检查依赖
 check_dependencies
 
-# 4. 下载并合并节点配置文件
+# 4. 下载63并合并节点配置文件
 log "INFO: 下载并合并节点配置文件..."
 for url in "${NODE_SOURCES[@]}"; do
     log "INFO: 正在下载: $url"
@@ -142,12 +143,13 @@ fi
 # 去重合并后的节点
 sort -u "$MERGED_NODES_TEMP_FILE" -o "$MERGED_NODES_TEMP_FILE"
 TOTAL_UNIQUE_NODES=$(grep -vE '^(#|--|$)' "$MERGED_NODES_TEMP_FILE" 2>/dev/null | wc -l || echo 0)
-log "INFO: 所有配置文件下载并合并成功（去重后），共计 ${TOTAL_UNIQUE_NODES} 个节点，开始解析节点并测试连接性..."
+log "INFO: 所有配置文件下载并合并成功（去重后），共计 ${TOTAL_UNIQUE_NODES} 个节点，开始并行测试连接性..."
 
-# 5. 逐个测试节点
-while IFS= read -r node_link; do
-    test_node_connectivity "$node_link"
-done < "$MERGED_NODES_TEMP_FILE"
+# 5. 并行测试节点
+log "INFO: 使用 $PARALLEL_JOBS 个并行任务测试节点..."
+export -f test_node_connectivity log # 导出函数供 parallel 使用
+export LOG_FILE SUCCESS_TEMP_FILE TIMEOUT_SECONDS # 导出变量
+grep -vE '^(#|--|$)' "$MERGED_NODES_TEMP_FILE" | parallel -j "$PARALLEL_JOBS" test_node_connectivity {}
 
 # 6. 合并和去重成功节点
 log "INFO: 合并并去重成功节点..."
