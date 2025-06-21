@@ -1,4 +1,4 @@
-name: 连通性
+name: 节点连通性速度测试
 
 on:
   schedule:
@@ -13,30 +13,22 @@ jobs:
       - name: 检出仓库代码
         uses: actions/checkout@v4
         with:
-          # 使用 GITHUB_TOKEN 通常足以在同一个仓库中进行推送操作。
-          # 如果您需要更广泛的权限或跨仓库访问，则使用 secrets.BOT 更合适。
-          # 对于此用例，出于简洁性和最小权限原则，GITHUB_TOKEN 是首选。
           token: ${{ secrets.BOT }} # 或者保留 ${{ secrets.BOT }} 如果您偏好使用该 Token
 
       - name: 设置 Bash 及依赖项
         run: |
           echo "正在更新 apt 软件包列表并安装依赖项..."
           sudo apt-get update || { echo "错误：apt-get update 失败，无法继续安装依赖项。" | exit 1; }
-          # 确保核心工具已安装。您的 Bash 脚本会重新检查并安装 dnsutils 和 jq。
           sudo apt-get install -y curl coreutils git netcat-openbsd || { echo "错误：安装核心依赖项失败。" | exit 1; }
           echo "核心依赖项安装完成。"
 
       - name: 运行节点连通性测试脚本
         run: |
           chmod +x speed_test.sh # 赋予脚本执行权限
-          # 执行脚本。脚本内部已处理详细日志输出到 node_connectivity_results.log。
-          # 此处直接运行脚本即可，不需要额外的 tee 重定向。
           echo "正在执行 speed_test.sh 脚本..."
           ./speed_test.sh
-          # 检查脚本的退出状态码
           if [ $? -ne 0 ]; then
             echo "错误：speed_test.sh 脚本执行失败。请查看 node_connectivity_results.log 获取详细信息。"
-            # cat node_connectivity_results.log # 如果需要，取消注释以在此处直接显示脚本的日志
             exit 1 # 标记此步骤失败
           fi
           echo "脚本执行完成。详细信息请查看 node_connectivity_results.log 文件。"
@@ -46,32 +38,24 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
 
-          # 确保本地分支与远程仓库同步，避免冲突
           echo "正在同步本地分支到远程仓库..."
           git fetch origin
           git checkout main # 切换到 main 分支
           git reset --hard origin/main # 硬重置到最新的远程提交，清除所有未跟踪或未提交的本地更改
 
-          # 将生成的文件添加到暂存区
           echo "正在添加生成的文件到 Git 暂存区..."
           [ -f "data/sub.txt" ] && git add data/sub.txt || echo "警告：未找到 data/sub.txt，跳过添加。"
           [ -f "data/dns_cache.json" ] && git add data/dns_cache.json || echo "警告：未找到 data/dns_cache.json，跳过添加。"
-          # 如果您的脚本以后会生成 data/failed_proxies.json，可以在此添加
-          # [ -f "data/failed_proxies.json" ] && git add data/failed_proxies.json || echo "警告：未找到 data/failed_proxies.json，跳过添加。"
 
-          # 检查是否有文件被暂存（即是否有更改）
           if git diff --staged --quiet; then
             echo "未检测到文件更改，跳过 Git 提交操作。"
           else
-            # 提交更改
             echo "检测到文件更改，正在提交并推送到仓库..."
             git commit -m "更新节点连通性测试结果和 DNS 缓存 - $(date '+%Y-%m-%d %H:%M:%S JST')"
-            # 推送更改到 main 分支
             git push origin main
             echo "提交并推送更新完成。"
           fi
         env:
-          # 使用 GITHUB_TOKEN 进行推送（默认具有推送权限）
           GITHUB_TOKEN: ${{ secrets.BOT }} # 或者使用 ${{ secrets.BOT }}
 
       - name: 上传日志和数据产物
@@ -80,7 +64,7 @@ jobs:
         with:
           name: speed-test-artifacts # 产物的名称
           path: |
-            node_connectivity_results.log # 脚本的主要详细日志
-            data/ # 上传整个 data 目录（包含 sub.txt 和 dns_cache.json）
-            # speed_test_output.log # 如果您仍然需要脚本的控制台输出，可以包含此文件
+            node_connectivity_results.log
+            data/
+            # speed_test_output.log # 如果您仍然需要脚本的控制台输出，请取消注释下面一行
           retention-days: 7 # 可选：设置产物保留的天数
