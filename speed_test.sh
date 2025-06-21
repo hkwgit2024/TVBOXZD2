@@ -129,7 +129,7 @@ test_node_connectivity_parallel() {
             # 这种情况不应该发生，除非主进程预解析失败或有新的未预解析域名
             # 为了健壮性，这里也进行一次实时解析，但会打印警告
             echo "  - [PID $$] 警告: 未在预解析缓存中找到域名 $HOSTNAME_OR_IP，尝试实时解析..." >> "$LOG_FILE_PATH"
-            local RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A @1.1.1.1 | head -n 1) # 使用 1.1.1.1 DNS
+            local RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A  | head -n 1) # 使用 1.1.1.1 DNS
             if [ -n "$RESOLVED_IP" ]; then
                 IP="$RESOLVED_IP"
                 echo "  - [PID $$] 实时解析结果: $HOSTNAME_OR_IP -> $IP" >> "$LOG_FILE_PATH"
@@ -278,7 +278,7 @@ for domain in "${!ALL_DOMAINS_TO_RESOLVE[@]}"; do
     fi
 
     echo "  - 预解析域名: $domain" | tee -a "$LOG_FILE"
-    local resolved_ip=$(dig +short "$domain" A @1.1.1.1 | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
+    local resolved_ip=$(dig +short "$domain" A  | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1) # 只取 IPv4
     if [[ -n "$resolved_ip" ]]; then
         DNS_CACHE["$domain"]="$resolved_ip,$CURRENT_TIME" # 存储 IP 和当前时间戳
         ((PRE_RESOLVED_COUNT++))
