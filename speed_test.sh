@@ -26,9 +26,9 @@ NODE_CONNECT_TIMEOUT=2 # 示例：2 秒超时
 NODE_SOURCES=(
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
     #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
-   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+    #"https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    #"https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
+    #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
 
 # ==============================================================================
@@ -59,21 +59,25 @@ is_ip_address() {
 }
 
 # 函数：从节点链接中解析出协议、主机和端口
-# 更新：此函数将只解析，不进行 DNS 解析，DNS 解析将在主进程中统一完成
 parse_node_link_details() {
     local link="$1"
     local parsed_host=""
     local parsed_port=""
-    local type="" # 用于识别协议类型
+    local type=""
+    local debug_log_prefix="DEBUG [parse_node_link_details]: "
 
-    # 统一移除链接末尾可能的回车符
-    link=$(echo "$link" | tr -d '\r')
+    # 统一移除链接末尾的回车符和换行符
+    link=$(echo "$link" | tr -d '\r\n')
+
+    # 调试信息：记录原始链接
+    echo "$debug_log_prefix 原始链接: $link" >&2
 
     # 从链接中提取协议类型
     if [[ "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/ ]]; then
         type="${BASH_REMATCH[1]}"
+        echo "$debug_log_prefix 识别协议: $type" >&2
     else
-        echo "警告：无法识别的节点链接格式或协议: $link" >&2 # 输出到标准错误
+        echo "警告：无法识别的节点链接格式或协议: $link" >&2
         echo "," # 返回空值
         return
     fi
@@ -89,62 +93,69 @@ parse_node_link_details() {
                 # 提取 @ 符号后面的部分，直到 ? 或 #
                 host_port_part=$(echo "$temp_link" | sed -E 's/^[^@]*@([^/?#]+).*$/\1/')
             else
-                # 提取 // 协议头后面的部分，直到 ? 或 #
+                # 提取协议头后面的部分，直到 ? 或 #
                 host_port_part=$(echo "$temp_link" | sed -E 's/^([^/?#]+).*$/\1/')
             fi
 
+            echo "$debug_log_prefix 提取的 host_port 部分: $host_port_part" >&2
+
             # 从 host:port 部分提取主机和端口
-            if [[ "$host_port_part" =~ ^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
-                parsed_host="${BASH_REMATCH[1]}"
-                parsed_port="${BASH_REMATCH[2]}"
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
+                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[1]}}"
+                parsed_port="${BASH_REMATCH[3]}"
             fi
             ;;
         hy2|hysteria2)
-            local temp_link="${link#*://}" # 移除协议头
+            # 移除协议头
+            local temp_link="${link#*://}"
             local host_port_part=""
+            local auth_part=""
 
-            # Hysteria2 链接通常格式为 hy2://[auth@]<host>:<port>[?<params>]
-            # 我们需要提取 host:port 部分，它在协议头之后，可能在 '@' 之后，直到 '?' 或 '#'
-            
-            # 首先，处理可能存在的认证信息（即 @ 符号之前的部分）
+            # 处理认证信息（如果存在 @ 符号）
             if [[ "$temp_link" == *"@"* ]]; then
-                temp_link="${temp_link#*@}" # 移除 @ 之前的所有内容
+                auth_part="${temp_link%%@*}" # 提取 @ 之前部分
+                temp_link="${temp_link#*@}"  # 移除 @ 之前部分
+                echo "$debug_log_prefix 提取的认证部分: $auth_part" >&2
             fi
 
-            # 然后，提取主机和端口，直到第一个 '?' 或 '#'
-            # 注意：这里的顺序很重要，先检查 ? 再检查 #
-            # 使用转义的问号 \? 在 [[ ... =~ ... ]] 中进行正则表达式匹配
-            if [[ "$temp_link" =~ \? ]]; then # 包含 ?
+            # 提取主机和端口部分，直到 ? 或 #
+            if [[ "$temp_link" =~ \? ]]; then
                 host_port_part="${temp_link%%\?*}"
-            elif [[ "$temp_link" =~ \# ]]; then # 包含 #
+            elif [[ "$temp_link" =~ \# ]]; then
                 host_port_part="${temp_link%%\#*}"
-            else # 既不包含 ? 也不包含 #
+            else
                 host_port_part="$temp_link"
             fi
 
+            echo "$debug_log_prefix 提取的 host_port 部分: $host_port_part" >&2
+
             # 从 host:port 部分提取主机和端口
-            if [[ "$host_port_part" =~ ^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|\[?[0-9a-fA-F:]+\]?|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
-                parsed_host="${BASH_REMATCH[1]}"
-                parsed_port="${BASH_REMATCH[2]}"
+            # 支持 IPv4、IPv6（带方括号）和域名
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
+                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[1]}}"
+                parsed_port="${BASH_REMATCH[3]}"
+            else
+                echo "警告：无法解析 hy2 链接的 host:port 部分: $host_port_part (完整链接: $link)" >&2
             fi
             ;;
         *)
-            # 其他未知协议，这里已经由前面的if语句捕获
+            echo "错误：未知协议类型: $type" >&2
             ;;
     esac
 
-    # 移除端口中的回车符（虽然上面已经统一移除链接的回车符，这里是双重保险）
-    parsed_port=$(echo "$parsed_port" | tr -d '\r')
-    parsed_host=$(echo "$parsed_host" | tr -d '\r')
+    # 清理主机和端口中的意外字符
+    parsed_host=$(echo "$parsed_host" | tr -d '\r\n')
+    parsed_port=$(echo "$parsed_port" | tr -d '\r\n')
 
-    # 确保 parsed_host 和 parsed_port 不为空
+    # 验证解析结果
     if [[ -z "$parsed_host" || -z "$parsed_port" ]]; then
-        echo "警告：无法从链接中解析 IP 或端口: $link (解析结果: host='$parsed_host', port='$parsed_port')" >&2 # 输出到标准错误
+        echo "警告：无法从链接中解析出有效的 host 或 port: $link (解析结果: host='$parsed_host', port='$parsed_port')" >&2
         echo "," # 返回空值
         return
     fi
 
-    echo "$parsed_host,$parsed_port" # 通过标准输出返回 host 和 port
+    echo "$debug_log_prefix 最终解析结果: host='$parsed_host', port='$parsed_port'" >&2
+    echo "$parsed_host,$parsed_port" # 返回 host 和 port
 }
 
 # 定义一个函数来处理单个节点的连接性测试（供 xargs 调用）
@@ -278,7 +289,6 @@ sudo apt-get update >/dev/null 2>&1 || { echo "ERROR: apt-get update failed. Can
 sudo apt-get install -y dnsutils jq >/dev/null 2>&1 || { echo "ERROR: apt-get install dnsutils or jq failed. Please ensure your package manager is configured correctly." | tee -a "$LOG_FILE"; exit 1; }
 echo "dnsutils 和 jq 检查/安装完成。" | tee -a "$LOG_FILE"
 
-
 # ==============================================================================
 # 主进程：加载并预处理 DNS 缓存，提取所有域名进行解析
 # ==============================================================================
@@ -378,7 +388,6 @@ done
 json_output+="}"
 echo "$json_output" | jq . > "$DNS_CACHE_FILE" 2>/dev/null || { echo "ERROR: 无法写入 DNS 缓存文件 $DNS_CACHE_FILE。" | tee -a "$LOG_FILE"; exit 1; }
 echo "主进程 DNS 缓存文件更新完成。" | tee -a "$LOG_FILE"
-
 
 # ==============================================================================
 # 并行执行节点测试
