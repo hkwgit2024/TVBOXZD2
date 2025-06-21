@@ -17,7 +17,7 @@ PARALLEL_JOBS="${PARALLEL_JOBS:-10}"
 
 # 定义节点来源 URL
 NODE_SOURCES=(
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/connected_nodes.txt"
 )
 
 # --- 函数定义 ---
