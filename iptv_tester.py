@@ -7,6 +7,9 @@ import time
 import subprocess
 import threading
 from urllib.parse import urljoin
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+import xml.etree.ElementTree as ET
 
 # --- 配置变量 ---
 LOCAL_IPTV_FILE = "iptv_list.txt"
@@ -14,13 +17,12 @@ CATEGORIES_FILE = "categories.yaml"
 FIRST_OUTPUT = "temp1.list.txt"
 SECOND_OUTPUT = "temp2.list.txt"
 FINAL_OUTPUT = "tv.list.txt"
-MAX_WORKERS = 4  # 降低并发，适合大多数环境
+MAX_WORKERS = 4  # 低并发，适合 GitHub Actions
 PRESCREEN_WORKERS = 20  # 预筛选并发
 FFMPEG_PATH = "ffmpeg"
 RETRY_INTERVAL = 2
-M3U8_WAIT = 2
 LOG_FILE = "test_errors.log"
-BATCH_SIZE = 1000  # 每批次处理1000个URL
+BATCH_SIZE = 1000  # 每批次处理 1000 个 URL
 log_lock = threading.Lock()
 
 # --- 日志记录 ---
@@ -37,10 +39,10 @@ def pre_check_url(url: str) -> bool:
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124'}
     try:
         log(f"预筛选: {url}", to_console=False)
-        response = requests.head(url, timeout=3, headers=headers, allow_redirects=True)
+        response = requests.head(url, timeout=2, headers=headers, allow_redirects=True)
         if 200 <= response.status_code < 400:
             return True
-        response = requests.get(url, timeout=3, stream=True, headers=headers)
+        response = requests.get(url, timeout=2, stream=True, headers=headers)
         return 200 <= response.status_code < 400
     except Exception as e:
         log(f"预筛选失败: {url} - {type(e).__name__}: {e}", to_console=False)
@@ -80,6 +82,18 @@ def check_ffmpeg_playback(url: str) -> bool:
         log(f"FFmpeg ({url}): 异常 - {type(e).__name__}: {e}", to_console=False)
         return False
 
+# --- 解析 SMIL 文件 ---
+def parse_smil(content: str) -> str:
+    try:
+        root = ET.fromstring(content)
+        for video in root.findall('.//video'):
+            src = video.get('src')
+            if src and '.m3u8' in src:
+                return src
+        return None
+    except:
+        return None
+
 # --- 单次连通性检查（无 FFmpeg） ---
 def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
     name = channel_data['name']
@@ -90,13 +104,18 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
         return (channel_data, False)
     
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124'}
+    session = requests.Session()
+    retries = Retry(total=2, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    
     try:
-        response = requests.get(url, timeout=5, stream=True, headers=headers)
+        response = session.get(url, timeout=5, stream=True, headers=headers)
         if not (200 <= response.status_code < 400):
             log(f"{name}: {url} - HTTP不可达")
             return (channel_data, False)
 
-        if '.m3u8' in url:
+        if '.m3u8' in url or '.smil' in url:
             m3u8_content_first = ""
             content_limit = 10 * 1024
             downloaded_size = 0
@@ -107,19 +126,33 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
                     break
             
             if not m3u8_content_first:
-                log(f"{name}: {url} - M3U8内容为空")
+                log(f"{name}: {url} - 内容为空")
                 return (channel_data, False)
+            
+            smil_url = parse_smil(m3u8_content_first)
+            if smil_url:
+                log(f"{name}: {url} - 检测到SMIL，重定向到 {smil_url}")
+                url = urljoin(url, smil_url)
+                channel_data['url'] = url
+                return check_link_connectivity_no_ffmpeg(channel_data)
+            
+            sub_m3u8_match = re.search(r'(https?://[^"\s]+?\.m3u8)', m3u8_content_first)
+            if sub_m3u8_match:
+                sub_m3u8_url = sub_m3u8_match.group(0)
+                log(f"{name}: {url} - 检测到嵌套M3U8，检查 {sub_m3u8_url}")
+                channel_data['url'] = sub_m3u8_url
+                return check_link_connectivity_no_ffmpeg(channel_data)
             
             if "#EXT-X-ENDLIST" in m3u8_content_first or "EXT-X-PLAYLIST-TYPE:VOD" in m3u8_content_first:
                 log(f"{name}: {url} - 非直播流")
                 return (channel_data, False)
 
             target_duration_match = re.search(r'#EXT-X-TARGETDURATION:(\d+)', m3u8_content_first)
-            wait_time = max(2, int(target_duration_match.group(1)) // 2) if target_duration_match else 2
+            wait_time = min(6, int(target_duration_match.group(1))) if target_duration_match else 3
             log(f"{name}: {url} - 等待 {wait_time} 秒进行M3U8动态性检查", to_console=False)
             time.sleep(wait_time)
 
-            response_second = requests.get(url, timeout=5, stream=True, headers=headers)
+            response_second = session.get(url, timeout=5, stream=True, headers=headers)
             if not (200 <= response_second.status_code < 400):
                 log(f"{name}: {url} - 第二次获取失败")
                 return (channel_data, False)
@@ -138,26 +171,12 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
             
             ts1 = re.findall(r'\S+\.ts', m3u8_content_first)
             ts2 = re.findall(r'\S+\.ts', m3u8_content_second)
-            if ts1 == ts2:
-                log(f"{name}: {url} - M3U8未更新")
-                return (channel_data, False)
+            seq1 = re.search(r'#EXT-X-MEDIA-SEQUENCE:(\d+)', m3u8_content_first)
+            if seq1 or ts1 != ts2:
+                return (channel_data, True)
+            log(f"{name}: {url} - M3U8未更新")
+            return (channel_data, False)
 
-            sub_link_match = re.search(r'(https?://[^"\s]+?\.m3u8|\S+\.ts)', m3u8_content_second)
-            if sub_link_match:
-                sub_link = sub_link_match.group(0)
-                full_sub_link = urljoin(url, sub_link)
-                try:
-                    sub_response = requests.get(full_sub_link, timeout=3, stream=True, headers=headers)
-                    if not (200 <= sub_response.status_code < 400):
-                        log(f"{name}: {url} - 子链接不可达")
-                        return (channel_data, False)
-                except requests.exceptions.RequestException as e:
-                    log(f"{name}: {url} - 子链接请求失败: {type(e).__name__}: {e}")
-                    return (channel_data, False)
-            else:
-                log(f"{name}: {url} - 无有效子链接")
-                return (channel_data, False)
-        
         return (channel_data, True)
     except requests.exceptions.Timeout:
         log(f"{name}: {url} - 请求超时")
@@ -253,7 +272,6 @@ def run_test(channels: list, output_file: str, test_round: int, use_ffmpeg: bool
     total_working_urls = 0
     check_func = check_link_connectivity_with_ffmpeg if use_ffmpeg else check_link_connectivity_no_ffmpeg
 
-    # 分批处理
     for batch_start in range(0, len(channels), BATCH_SIZE):
         batch_channels = channels[batch_start:batch_start + BATCH_SIZE]
         log(f"处理第 {test_round} 次测试，第 {batch_start // BATCH_SIZE + 1} 批，{len(batch_channels)} 个URL")
@@ -302,7 +320,6 @@ def run_test(channels: list, output_file: str, test_round: int, use_ffmpeg: bool
 def main():
     log("开始处理 IPTV 列表（三次逐次筛选测试）...")
 
-    # 检查 FFmpeg
     try:
         subprocess.run([FFMPEG_PATH, "-version"], capture_output=True, check=True)
         log("FFmpeg 检查通过")
@@ -310,7 +327,6 @@ def main():
         log(f"错误: FFmpeg 未安装或路径 '{FFMPEG_PATH}' 无效。")
         exit(1)
 
-    # 读取初始 IPTV 列表
     if os.path.exists(LOCAL_IPTV_FILE):
         try:
             log(f"读取 {LOCAL_IPTV_FILE}...")
@@ -329,14 +345,12 @@ def main():
         log("未找到任何频道。脚本退出。")
         exit(0)
 
-    # 预筛选
     log("开始预筛选（快速HTTP检查）...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=PRESCREEN_WORKERS) as executor:
         future_to_channel = {executor.submit(pre_check_url, channel['url']): channel for channel in channels}
         channels = [future_to_channel[future] for future in concurrent.futures.as_completed(future_to_channel) if future.result()]
     log(f"预筛选完成：保留 {len(channels)} 个URL。")
 
-    # 三次测试
     channels = run_test(channels, FIRST_OUTPUT, 1, use_ffmpeg=False)
     time.sleep(RETRY_INTERVAL)
     if channels:
