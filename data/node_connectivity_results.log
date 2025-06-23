@@ -1,870 +1,1288 @@
 开始测试...
-时间: 2025-06-23 02:13:37 JST
+时间: 2025-06-23 07:45:10 JST
 系统资源:                total        used        free      shared  buff/cache   available
-Mem:            15Gi       992Mi        13Gi        42Mi       1.4Gi        14Gi
+Mem:            15Gi       802Mi        13Gi        44Mi       1.5Gi        14Gi
 Swap:          4.0Gi          0B       4.0Gi
 文件描述符限制: 65536
 -------------------------------------
 下载节点配置...
-下载: https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt
-下载: https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt
-下载完成，节点数: 3619
+下载: https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt
+下载完成，节点数: 20791
 检查依赖...
-
-Running kernel seems to be up-to-date.
-
-Restarting services...
-
-Service restarts being deferred:
- systemctl restart hosted-compute-agent.service
-
-No containers need to be restarted.
-
-No user sessions are running outdated binaries.
-
-No VM guests are running outdated hypervisor (qemu) binaries on this host.
 依赖安装完成
 加载缓存: data/dns_cache.txt
 创建新缓存
 预解析域名...
-解析: Fox1-ov.com
-成功: Fox1-ov.com -> 85.208.139.105
+解析: 2024-us2a.88888806.xyz
+成功: 2024-us2a.88888806.xyz -> 199.59.243.228
+解析: kip.ns.cloudflare.com
+成功: kip.ns.cloudflare.com -> 173.245.59.128
+解析: pqawsjp1.aiopen.cfd
+成功: pqawsjp1.aiopen.cfd -> 172.233.219.123
 解析: series-a2.varzesh360.co
 成功: series-a2.varzesh360.co -> 172.187.104.55
-解析: FreakConfig.plantgreen.ir
-失败: FreakConfig.plantgreen.ir
-解析: 33333.need9ping.ir
-成功: 33333.need9ping.ir -> 147.45.221.133
-解析: aus.pagate.top
-成功: aus.pagate.top -> 129.146.241.150
-解析: dylan.ns.cloudflare.com
-成功: dylan.ns.cloudflare.com -> 108.162.195.187
-解析: uae.kitten-tube.com
-成功: uae.kitten-tube.com -> 185.253.116.130
-解析: chrome.phpdeb.ir
-成功: chrome.phpdeb.ir -> 46.38.148.47
-解析: cdn3.myandroidplus2.ir
-成功: cdn3.myandroidplus2.ir -> 212.80.18.216
-解析: www.bandmusic.ir
-成功: www.bandmusic.ir -> 104.21.32.1
-解析: trvip.irannoweb.art
-成功: trvip.irannoweb.art -> 62.60.176.109
-解析: mech.sharghidustrial.ir
-成功: mech.sharghidustrial.ir -> 88.218.17.244
-解析: 37050813702269272654038283817908.international-ixp.com
-成功: 37050813702269272654038283817908.international-ixp.com -> 94.101.177.223
-解析: alternative.anabelrz.xyz
-成功: alternative.anabelrz.xyz -> 62.60.176.78
-解析: Check-host.net
-成功: Check-host.net -> 104.21.74.214
-解析: waveconnection.hypedev.ir
-成功: waveconnection.hypedev.ir -> 85.133.199.174
-解析: arvancloud.de.ir.systemgamingirani.ir
-成功: arvancloud.de.ir.systemgamingirani.ir -> 103.252.90.40
-解析: 2bbc3bdd-sydb40-t2y6fc-17xo8.cm5.cnkuaishou.com
-成功: 2bbc3bdd-sydb40-t2y6fc-17xo8.cm5.cnkuaishou.com -> 183.240.180.16
-解析: fr.emergency.sibrayane.store
-成功: fr.emergency.sibrayane.store -> 5.182.46.64
-解析: www.you.com
-成功: www.you.com -> 172.64.146.80
-解析: www.iranserver.com
-成功: www.iranserver.com -> 185.116.161.116
-解析: dl2.meneteam.org
-成功: dl2.meneteam.org -> 185.215.228.90
-解析: sg2.6n6.net
-成功: sg2.6n6.net -> 103.253.24.248
-解析: l77.magicnetwork.info
-成功: l77.magicnetwork.info -> 85.133.250.18
-解析: Artemis.sbs
-成功: Artemis.sbs -> 104.21.57.204
+解析: f080e9368828d06169774bdc40449384.lh.gtm.node-is.green
+成功: f080e9368828d06169774bdc40449384.lh.gtm.node-is.green -> 18.162.116.7
+解析: sla.cn.964e995b760.gogodns.xin
+失败: sla.cn.964e995b760.gogodns.xin
+解析: tw.youxuan.wiki
+成功: tw.youxuan.wiki -> 114.41.23.197
+解析: sg01.trojanyyds.xyz
+成功: sg01.trojanyyds.xyz -> 48.210.245.1
+解析: 6ushrhml7ttpliy3.lovebaipiao.net
+失败: 6ushrhml7ttpliy3.lovebaipiao.net
+解析: my01.trojanyyds.xyz
+成功: my01.trojanyyds.xyz -> 48.210.245.1
+解析: c0b877b010f756eb3f9fb4fa613a4457.v1.cac.node-is.green
+成功: c0b877b010f756eb3f9fb4fa613a4457.v1.cac.node-is.green -> 43.198.245.7
+解析: kb.aws7.yydjc.top
+成功: kb.aws7.yydjc.top -> 13.213.6.125
+解析: www.okcupid.com
+成功: www.okcupid.com -> 104.18.160.63
+解析: t.nsa.cc
+成功: t.nsa.cc -> 104.18.219.57
+解析: fr2a.88888806.xyz
+成功: fr2a.88888806.xyz -> 199.59.243.228
+解析: m.cnmjin.net
+成功: m.cnmjin.net -> 183.236.51.41
+解析: pq.aws49.yydjc.top
+成功: pq.aws49.yydjc.top -> 54.238.57.53
+解析: fr.test3.net
+成功: fr.test3.net -> 51.159.59.186
+解析: kbawssg1.aiopen.cfd
+成功: kbawssg1.aiopen.cfd -> 172.233.219.123
+解析: harlan.ns.cloudflare.com
+成功: harlan.ns.cloudflare.com -> 162.159.44.250
+解析: 2bb03e708071e50f0cb0e0e577da7fa6.v1.cac.node-is.green
+成功: 2bb03e708071e50f0cb0e0e577da7fa6.v1.cac.node-is.green -> 18.166.65.133
+解析: haa.dashuai.cyou
+失败: haa.dashuai.cyou
+解析: in01.jssssss.com
+成功: in01.jssssss.com -> 82.152.164.10
+解析: uk.liangyuandian.top
+成功: uk.liangyuandian.top -> 172.192.28.185
+解析: 1d15c02e5f04e1761bbe8ee49317e1e4.v1.cac.node-is.green
+成功: 1d15c02e5f04e1761bbe8ee49317e1e4.v1.cac.node-is.green -> 18.162.116.7
+解析: whatismyipaddress.com
+成功: whatismyipaddress.com -> 104.19.222.79
+解析: ff9be167eeb1abe4cce6de34aee0c937.v1.cac.node-is.green
+成功: ff9be167eeb1abe4cce6de34aee0c937.v1.cac.node-is.green -> 54.46.46.224
+解析: uk01.trojanyyds.xyz
+成功: uk01.trojanyyds.xyz -> 48.210.245.1
+解析: add8e6695a702b7dfbe131b9c6192991.v1.cac.node-is.green
+成功: add8e6695a702b7dfbe131b9c6192991.v1.cac.node-is.green -> 18.163.102.188
+解析: 2bbed672604dea4d7e8ea9cbce100e56.lh.gtm.node-is.green
+成功: 2bbed672604dea4d7e8ea9cbce100e56.lh.gtm.node-is.green -> 18.166.70.110
+解析: pq.aws54.yydjc.top
+成功: pq.aws54.yydjc.top -> 54.199.150.15
+解析: beiyong-.596743944.top
+成功: beiyong-.596743944.top -> 103.37.45.74
+解析: sg-full.privateip.net
+成功: sg-full.privateip.net -> 188.166.189.168
+解析: bgp-xdd.blue-bgp.xyz
+成功: bgp-xdd.blue-bgp.xyz -> 209.209.48.19
+解析: sjgi.pages.dev
+成功: sjgi.pages.dev -> 172.66.44.185
+解析: www.digitalocean.com
+成功: www.digitalocean.com -> 104.19.174.68
+解析: e6da31c3d676592b7c7a4555c5b60362.v1.cac.node-is.green
+成功: e6da31c3d676592b7c7a4555c5b60362.v1.cac.node-is.green -> 18.163.102.188
+解析: pq.aws63.yydjc.top
+成功: pq.aws63.yydjc.top -> 18.136.196.137
+解析: romina.ns.cloudflare.com
+成功: romina.ns.cloudflare.com -> 162.159.38.159
+解析: official.taipeicitygovernment.kyiv.ua
+成功: official.taipeicitygovernment.kyiv.ua -> 14.215.39.157
+解析: fra-01.oci.ee
+成功: fra-01.oci.ee -> 132.226.201.225
+解析: us2.e5outllok.me
+成功: us2.e5outllok.me -> 199.59.243.228
+解析: cnamemt.cdncisco.org
+成功: cnamemt.cdncisco.org -> 199.59.243.228
+解析: 7ds1uygxq9jd77dlg9xee7dhmmptyho2.08.02.kr.6l6.site
+成功: 7ds1uygxq9jd77dlg9xee7dhmmptyho2.08.02.kr.6l6.site -> 120.233.87.89
+解析: 102.djr999998.eu.org
+成功: 102.djr999998.eu.org -> 104.21.88.224
+解析: proud-fire-1775.mahmmod2025.workers.dev
+成功: proud-fire-1775.mahmmod2025.workers.dev -> 172.67.194.31
+解析: jp3.qsm1.xyz
+成功: jp3.qsm1.xyz -> 112.29.213.238
+解析: www.visa.com.sg
+成功: www.visa.com.sg -> 104.18.12.229
+解析: kb.aws5.yydjc.top
+成功: kb.aws5.yydjc.top -> 13.231.104.155
 解析: www.visa.com
 成功: www.visa.com -> 104.18.15.19
-解析: ir2.servertopia.top
-成功: ir2.servertopia.top -> 45.159.148.165
-解析: lightning6.12speedtest.store
-成功: lightning6.12speedtest.store -> 151.101.64.155
-解析: sefareshi.ermiatech.com
-成功: sefareshi.ermiatech.com -> 85.133.194.177
-解析: hsyg.huasuan666.top
-成功: hsyg.huasuan666.top -> 83.147.17.147
-解析: jp.aeccssssss.xyz
-成功: jp.aeccssssss.xyz -> 52.194.220.160
-解析: hg.myyfqh.tech
-成功: hg.myyfqh.tech -> 27.102.138.202
+解析: dash.parspack.com
+成功: dash.parspack.com -> 104.22.32.78
+解析: pic.zarashop0.ir
+成功: pic.zarashop0.ir -> 157.180.95.180
+解析: mil-it.fromblancwithlove.com
+成功: mil-it.fromblancwithlove.com -> 84.17.58.134
+解析: sg008.421421.xyz
+成功: sg008.421421.xyz -> 13.212.84.104
+解析: d150b9d3866d3ef9d851f7d7fab8a3ae.v1.cac.node-is.green
+成功: d150b9d3866d3ef9d851f7d7fab8a3ae.v1.cac.node-is.green -> 18.163.102.188
+解析: cloudflare.182682.xyz
+成功: cloudflare.182682.xyz -> 104.21.227.134
+解析: 19237tj.matrixxx888.com
+成功: 19237tj.matrixxx888.com -> 103.135.102.151
+解析: official.taipeicitygovernment.if.ua
+成功: official.taipeicitygovernment.if.ua -> 14.215.39.157
+解析: jp.mjt001.com
+成功: jp.mjt001.com -> 172.192.14.195
 解析: codepen.io
 成功: codepen.io -> 104.16.147.32
-解析: 300232332.webnama.com.tr
-成功: 300232332.webnama.com.tr -> 91.99.150.157
-解析: c1.vact.ir
-成功: c1.vact.ir -> 10.10.34.36
-解析: yldl.ir
-成功: yldl.ir -> 5.57.38.13
-解析: playemlive.com
-成功: playemlive.com -> 81.28.12.12
-解析: sg4.6n6.net
-成功: sg4.6n6.net -> 91.192.81.167
-解析: positive.pingless.eu
-成功: positive.pingless.eu -> 185.239.2.110
-解析: hon5.vpntype.dev
-成功: hon5.vpntype.dev -> 103.253.43.210
-解析: tak.blushop1403.info
-成功: tak.blushop1403.info -> 84.47.233.98
+解析: tw40.453521.xyz
+成功: tw40.453521.xyz -> 111.250.98.104
+解析: 61e7009a4784a9c42b3d11eee81cf323.v1.cac.node-is.green
+成功: 61e7009a4784a9c42b3d11eee81cf323.v1.cac.node-is.green -> 43.198.245.7
+解析: official.taipeicitygovernment.dp.ua
+成功: official.taipeicitygovernment.dp.ua -> 14.215.39.157
+解析: official.tokyometropolis.kiev.ua
+成功: official.tokyometropolis.kiev.ua -> 14.215.39.157
+解析: IEPL02.tube-cat.com
+成功: IEPL02.tube-cat.com -> 157.254.38.210
+解析: hk.binguo.link
+失败: hk.binguo.link
 解析: tgju.org
 成功: tgju.org -> 104.26.14.85
-解析: FreakConfig.usecharge.ir
-成功: FreakConfig.usecharge.ir -> 10.10.34.36
-解析: tunnel.mikav2.site
-成功: tunnel.mikav2.site -> 185.243.51.73
-解析: vip3.digitalldns.net
-成功: vip3.digitalldns.net -> 193.151.132.171
-解析: sosooos.turbo2v.top
-成功: sosooos.turbo2v.top -> 212.16.86.125
-解析: war.ssvpnapp.win
-成功: war.ssvpnapp.win -> 45.144.48.63
-解析: www.vinatech.ir
-成功: www.vinatech.ir -> 185.143.234.120
+解析: official.taipeicitygovernment.chernovtsy.ua
+成功: official.taipeicitygovernment.chernovtsy.ua -> 14.215.39.157
+解析: maincraft.dpdns.org
+成功: maincraft.dpdns.org -> 172.67.178.14
+解析: tr.mjt000.com
+成功: tr.mjt000.com -> 172.192.14.195
+解析: www.parsvds.com
+成功: www.parsvds.com -> 104.26.14.16
+解析: 8a15ec8ddadf82444dd94a93cd1f220b.lh.gtm.node-is.green
+成功: 8a15ec8ddadf82444dd94a93cd1f220b.lh.gtm.node-is.green -> 18.163.194.91
 解析: api.namasha.co
 成功: api.namasha.co -> 85.210.221.139
-解析: srv3-grmny-mostaghim.vreexybot.shop
-成功: srv3-grmny-mostaghim.vreexybot.shop -> 62.60.155.216
-解析: Join--VPNCUSTOMIZE.V2ray.re
-失败: Join--VPNCUSTOMIZE.V2ray.re
-解析: b95aa806c9b03bbb.99vps.org
-成功: b95aa806c9b03bbb.99vps.org -> 79.175.188.158
-解析: server.com
-成功: server.com -> 172.67.196.208
-解析: supp.fixip3.top
-成功: supp.fixip3.top -> 185.14.160.118
+解析: official.tokyometropolis.odesa.ua
+成功: official.tokyometropolis.odesa.ua -> 120.241.226.94
+解析: 558dfed7b69bef2b83d7b1e07ba2c5c1.v1.cac.node-is.green
+成功: 558dfed7b69bef2b83d7b1e07ba2c5c1.v1.cac.node-is.green -> 18.166.70.110
+解析: 67f4ee6df1161aa70020855e0a604412.v1.cac.node-is.green
+成功: 67f4ee6df1161aa70020855e0a604412.v1.cac.node-is.green -> 54.46.46.224
+解析: 0539a4550a3926def84539252dd00a40.v1.cac.node-is.green
+成功: 0539a4550a3926def84539252dd00a40.v1.cac.node-is.green -> 54.46.46.224
+解析: wear.net
+成功: wear.net -> 199.232.210.133
+解析: f57492a37ff238c7b202f99150deea2f.v1.cac.node-is.green
+成功: f57492a37ff238c7b202f99150deea2f.v1.cac.node-is.green -> 18.166.57.250
+解析: official.taipeicitygovernment.biz.ua
+成功: official.taipeicitygovernment.biz.ua -> 120.241.226.93
+解析: ni.mjt000.com
+成功: ni.mjt000.com -> 172.192.14.195
+解析: lh2.node-is.green
+成功: lh2.node-is.green -> 120.198.71.199
+解析: z0qgp-g01.jp02-e3-vm0.entry.fr0528.art
+成功: z0qgp-g01.jp02-e3-vm0.entry.fr0528.art -> 18.179.22.212
+解析: b2314081447491d04d3391bef5a3af3a.v1.cac.node-is.green
+成功: b2314081447491d04d3391bef5a3af3a.v1.cac.node-is.green -> 54.46.46.224
+解析: s20002625.qeayr.cn
+成功: s20002625.qeayr.cn -> 120.241.236.44
+解析: official.tokyometropolis.kyiv.ua
+成功: official.tokyometropolis.kyiv.ua -> 120.241.226.93
+解析: 1bd28b8311251641dba444aee8981061.v1.cac.node-is.green
+成功: 1bd28b8311251641dba444aee8981061.v1.cac.node-is.green -> 18.166.57.250
 解析: series-a2-mec.varzesh360.co
 成功: series-a2-mec.varzesh360.co -> 85.210.221.139
-解析: Zula.ir
-成功: Zula.ir -> 194.50.216.61
-解析: x8-sweden-amazon-v2-cf9yw.devefun.org
-成功: x8-sweden-amazon-v2-cf9yw.devefun.org -> 51.20.38.227
-解析: mci1.magicvpn.shop
-成功: mci1.magicvpn.shop -> 199.59.243.228
-解析: kitab.ir
-成功: kitab.ir -> 45.156.185.106
-解析: tw2.ddns-link-b5.uk
-成功: tw2.ddns-link-b5.uk -> 36.227.235.19
+解析: c8217-b2a.h2.49d2.jse11.1.b297.djjsvip.cfd
+成功: c8217-b2a.h2.49d2.jse11.1.b297.djjsvip.cfd -> 54.178.18.225
+解析: 82ed995b7929d677a0b505a17da9c1e6.v1.cac.node-is.green
+成功: 82ed995b7929d677a0b505a17da9c1e6.v1.cac.node-is.green -> 18.162.116.7
+解析: fake.id.workers.dev
+成功: fake.id.workers.dev -> 104.21.32.1
+解析: e40b20637b41a80eef29f6a1f2ca1274.v1.cac.node-is.green
+成功: e40b20637b41a80eef29f6a1f2ca1274.v1.cac.node-is.green -> 54.46.46.224
+解析: angelina.ns.cloudflare.com
+成功: angelina.ns.cloudflare.com -> 172.64.34.232
+解析: jp.liangyuandian.top
+成功: jp.liangyuandian.top -> 172.192.28.185
+解析: 4daf41d7ded23be52a606c157b3c8a29.v1.cac.node-is.green
+成功: 4daf41d7ded23be52a606c157b3c8a29.v1.cac.node-is.green -> 18.166.65.133
+解析: other.binguo.link
+失败: other.binguo.link
+解析: f10021.flyflylflyflysbs.sbs
+成功: f10021.flyflylflyflysbs.sbs -> 183.56.253.191
+解析: 566042a5080469ed45c39b3c3b80cfdb.v1.cac.node-is.green
+成功: 566042a5080469ed45c39b3c3b80cfdb.v1.cac.node-is.green -> 18.163.194.91
+解析: gsawssg1.aiopen.cfd
+成功: gsawssg1.aiopen.cfd -> 172.233.219.78
 解析: live.skornorth.com
-成功: live.skornorth.com -> 146.75.30.133
-解析: jp.xn--mes358awwugpa.com
-成功: jp.xn--mes358awwugpa.com -> 13.231.63.88
-解析: uk1.test3.net
-成功: uk1.test3.net -> 51.38.65.155
-解析: Lightning6.12speedtest.store
-成功: Lightning6.12speedtest.store -> 151.101.64.155
-解析: Discord.gg
-成功: Discord.gg -> 162.159.136.234
-解析: Arv2ray.fastly80.hosting-ip.com
-成功: Arv2ray.fastly80.hosting-ip.com -> 151.101.194.165
-解析: www.speedtesT.NET
-成功: www.speedtesT.NET -> 104.17.148.22
-解析: c2.vact.ir
-成功: c2.vact.ir -> 10.10.34.36
-解析: 638856975835388923.yasuj-drc-tusabb.info
-成功: 638856975835388923.yasuj-drc-tusabb.info -> 178.128.6.121
-解析: hi.forgesis.ir
-成功: hi.forgesis.ir -> 95.179.159.217
-解析: abdzgg.teemazad.com
-成功: abdzgg.teemazad.com -> 45.93.171.171
-解析: example.com
-成功: example.com -> 23.192.228.80
-解析: vpnbigbang1.ddns.net
-失败: vpnbigbang1.ddns.net
-解析: ff2b1385ece9b21d.apollo99.click
-成功: ff2b1385ece9b21d.apollo99.click -> 46.38.150.214
-解析: www.tegzitp.net
-失败: www.tegzitp.net
-解析: iiiiop0.444752.xyz
-成功: iiiiop0.444752.xyz -> 172.67.157.254
-解析: de1.vip.edu.kg
-成功: de1.vip.edu.kg -> 206.189.57.145
-解析: 233d406d-sybgg0-t2wu4o-1qct1.hy2.gotochinatown.net
-成功: 233d406d-sybgg0-t2wu4o-1qct1.hy2.gotochinatown.net -> 107.167.18.102
-解析: api2.gamingserverstream.ir
-成功: api2.gamingserverstream.ir -> 212.16.71.109
-解析: FILTERK0SH.fastly80-2.hosting-ip.com
-成功: FILTERK0SH.fastly80-2.hosting-ip.com -> 151.101.64.155
-解析: all-vpncustomize.aparat.lol
-失败: all-vpncustomize.aparat.lol
-解析: jp5asdfghjtyhj.aeccssssss.xyz
-成功: jp5asdfghjtyhj.aeccssssss.xyz -> 36.150.27.96
-解析: check-host.net
-成功: check-host.net -> 172.67.163.103
-解析: df.xiguajiasu.xyz
-成功: df.xiguajiasu.xyz -> 94.177.131.150
-解析: panel.castomayz.ir
-失败: panel.castomayz.ir
-解析: hajibazari.deakhemashtiiirann.online
-成功: hajibazari.deakhemashtiiirann.online -> 185.83.182.8
-解析: 33aumoyel7.the-scary-deep-forest-of-my-mind.top
-成功: 33aumoyel7.the-scary-deep-forest-of-my-mind.top -> 5.160.35.248
-解析: de02.abvpn.ru
-成功: de02.abvpn.ru -> 95.164.47.60
-解析: rayo15.ultramat.co
-成功: rayo15.ultramat.co -> 185.215.228.234
-解析: VPNBIGBANG.ddns.net
-失败: VPNBIGBANG.ddns.net
-解析: ViraV2ray.fast.hosting-ip.com
-成功: ViraV2ray.fast.hosting-ip.com -> 151.101.64.155
-解析: join2.sevenoseven.tech
-失败: join2.sevenoseven.tech
-解析: cld1.niassa.ir
-失败: cld1.niassa.ir
-解析: jp3asdfghjtyhj.aeccssssss.xyz
-成功: jp3asdfghjtyhj.aeccssssss.xyz -> 36.150.27.96
-解析: www.zula.ir
-成功: www.zula.ir -> 194.50.216.61
-解析: ge.7gozar.net
-成功: ge.7gozar.net -> 178.239.145.39
-解析: visa.org
-成功: visa.org -> 104.26.13.101
-解析: rayo14.ultramat.co
-成功: rayo14.ultramat.co -> 185.215.228.234
-解析: jp2asdfghjtyhj.aeccssssss.xyz
-成功: jp2asdfghjtyhj.aeccssssss.xyz -> 36.150.27.96
-解析: nt5.vhuma.com
-成功: nt5.vhuma.com -> 89.47.198.147
-解析: 4444r.0890604.xyz
-成功: 4444r.0890604.xyz -> 104.21.13.36
-解析: wb.kaiqsz.com
-成功: wb.kaiqsz.com -> 120.198.71.173
-解析: 34r5.11890604.xyz
-成功: 34r5.11890604.xyz -> 172.67.205.131
-解析: server2.emralstore.com
-成功: server2.emralstore.com -> 109.122.243.109
-解析: Www.speedtest.net
-成功: Www.speedtest.net -> 104.17.148.22
-解析: www.Speedtest.net
-成功: www.Speedtest.net -> 104.17.147.22
+成功: live.skornorth.com -> 151.101.130.133
+解析: kaizen-us-6.mielink-dns2.com
+成功: kaizen-us-6.mielink-dns2.com -> 199.59.243.228
+解析: 2gzdx21.453521.xyz
+成功: 2gzdx21.453521.xyz -> 36.231.121.8
+解析: node-jp.dlg365.com
+成功: node-jp.dlg365.com -> 120.241.29.81
+解析: us1.vlessx.us
+成功: us1.vlessx.us -> 13.248.169.48
+解析: n1721118448.ryjml.cn
+成功: n1721118448.ryjml.cn -> 47.238.123.151
+解析: cyusd123.qeayr.cn
+成功: cyusd123.qeayr.cn -> 120.241.226.32
+解析: python.org
+成功: python.org -> 151.101.192.223
+解析: 87b480446d34c59eb1983d8cd72074b1.v1.cac.node-is.green
+成功: 87b480446d34c59eb1983d8cd72074b1.v1.cac.node-is.green -> 18.163.102.188
+解析: 2333353051aa834b2d932535cd5d12d2.v1.cac.node-is.green
+成功: 2333353051aa834b2d932535cd5d12d2.v1.cac.node-is.green -> 54.46.46.224
+解析: 21df2ddd098f0e1676ace7ab576b0295.lh.gtm.node-is.green
+成功: 21df2ddd098f0e1676ace7ab576b0295.lh.gtm.node-is.green -> 18.163.194.91
+解析: us.blazeppn.info
+成功: us.blazeppn.info -> 138.197.5.103
+解析: kaizen-hk-8.mielink-dns2.com
+成功: kaizen-hk-8.mielink-dns2.com -> 199.59.243.228
+解析: usla.mjt000.com
+成功: usla.mjt000.com -> 172.192.14.195
+解析: jp006.421421.xyz
+成功: jp006.421421.xyz -> 52.192.206.130
+解析: 230223a11975e5a5ae363ad874a6493c.v1.cac.node-is.green
+成功: 230223a11975e5a5ae363ad874a6493c.v1.cac.node-is.green -> 54.46.46.224
+解析: af.9901157.xyz
+成功: af.9901157.xyz -> 104.21.72.137
+解析: microsoft-hk.85413.xyz
+成功: microsoft-hk.85413.xyz -> 216.245.197.44
+解析: hk3.grpc.stream
+成功: hk3.grpc.stream -> 58.152.113.56
+解析: a03.taipeicitygovernment.cn.ua
+成功: a03.taipeicitygovernment.cn.ua -> 14.215.39.158
+解析: usa.liangyuandiancloud.com
+成功: usa.liangyuandiancloud.com -> 91.195.240.12
+解析: sg.liangyuandian.top
+成功: sg.liangyuandian.top -> 172.192.28.185
+解析: all.tellmethetrue.shop
+成功: all.tellmethetrue.shop -> 172.67.68.36
+解析: official.seoulcitygovernment.com.ua
+成功: official.seoulcitygovernment.com.ua -> 203.210.16.78
+解析: aws-ca-central-1.f1cflinea.com
+成功: aws-ca-central-1.f1cflinea.com -> 172.67.165.204
+解析: shenzhou05.mysynology.net
+成功: shenzhou05.mysynology.net -> 120.232.218.119
+解析: join.eliv2.ray.fastly80-3.hosting-ip.com
+成功: join.eliv2.ray.fastly80-3.hosting-ip.com -> 151.101.0.155
+解析: 863038210fdab7467c14f7c9c6e859ed.v1.cac.node-is.green
+成功: 863038210fdab7467c14f7c9c6e859ed.v1.cac.node-is.green -> 16.162.102.91
+解析: b2a3a4eafc7b33d0f1d9b7c4ad8c0091.lh.gtm.node-is.green
+成功: b2a3a4eafc7b33d0f1d9b7c4ad8c0091.lh.gtm.node-is.green -> 43.198.245.7
+解析: official.taipeicitygovernment.cn.ua
+成功: official.taipeicitygovernment.cn.ua -> 120.241.226.93
+解析: ua.mjt000.com
+成功: ua.mjt000.com -> 172.192.14.195
+解析: aws-ca-central-1.f1cflineb.com
+成功: aws-ca-central-1.f1cflineb.com -> 104.21.7.241
+解析: vmessorg.fastly80-3.hosting-ip.com
+成功: vmessorg.fastly80-3.hosting-ip.com -> 151.101.64.155
+解析: ww.speedmeter.life
+成功: ww.speedmeter.life -> 151.101.64.155
+解析: aws-uae-1.f1rocketnode.com
+成功: aws-uae-1.f1rocketnode.com -> 3.28.163.101
+解析: ignacio.ns.cloudflare.com
+成功: ignacio.ns.cloudflare.com -> 108.162.195.82
+解析: 124255a7509492cd27ac150429a8d918.v1.cac.node-is.green
+成功: 124255a7509492cd27ac150429a8d918.v1.cac.node-is.green -> 18.166.65.133
+解析: uicdn.cf
+成功: uicdn.cf -> 104.16.210.157
+解析: cat-1.opensvr.net
+成功: cat-1.opensvr.net -> 208.91.197.132
+解析: cf.zmdhc.com
+成功: cf.zmdhc.com -> 172.67.81.188
+解析: 39e687355c8ade7a6e4f6d05ad537b88.v1.cac.node-is.green
+成功: 39e687355c8ade7a6e4f6d05ad537b88.v1.cac.node-is.green -> 18.162.116.7
+解析: jp001.421421.xyz
+成功: jp001.421421.xyz -> 13.113.233.66
+解析: kaizen-tw-1.mielink-dns2.com
+成功: kaizen-tw-1.mielink-dns2.com -> 199.59.243.228
+解析: us.binguo.link
+失败: us.binguo.link
+解析: f1e128a473526e92e1ed18756ed42ee1.lh.gtm.node-is.green
+成功: f1e128a473526e92e1ed18756ed42ee1.lh.gtm.node-is.green -> 18.166.57.250
+解析: shsus.256709394.xyz
+失败: shsus.256709394.xyz
+解析: sg007.421421.xyz
+成功: sg007.421421.xyz -> 54.255.109.99
+解析: cloudgetservice.mcloudservice.site
+成功: cloudgetservice.mcloudservice.site -> 172.66.168.223
+解析: sg1.421421.xyz
+失败: sg1.421421.xyz
+解析: mltf.cokecloud.top
+成功: mltf.cokecloud.top -> 120.236.197.102
+解析: ti3hyra4.slashdevslashnetslashtun.net
+成功: ti3hyra4.slashdevslashnetslashtun.net -> 183.2.157.134
+解析: 97e9bd98b841127603d9d344b28341e0.v1.cac.node-is.green
+成功: 97e9bd98b841127603d9d344b28341e0.v1.cac.node-is.green -> 18.163.105.19
+解析: cccvffgty.444752.xyz
+成功: cccvffgty.444752.xyz -> 104.21.66.86
+解析: 76024b39ca9397405159f3b90f1989a3.v1.cac.node-is.green
+成功: 76024b39ca9397405159f3b90f1989a3.v1.cac.node-is.green -> 18.163.105.19
+解析: 8f8bdc367c4f7e6cc26912afe0aa3016.v1.cac.node-is.green
+成功: 8f8bdc367c4f7e6cc26912afe0aa3016.v1.cac.node-is.green -> 18.166.65.133
+解析: guolicheng.cc
+成功: guolicheng.cc -> 172.67.138.130
+解析: v24.heduian.link
+成功: v24.heduian.link -> 120.238.98.150
+解析: japan.com
+成功: japan.com -> 172.67.70.92
+解析: cljs.stablize.top
+成功: cljs.stablize.top -> 76.223.54.146
+解析: tw01.trojanyyds.xyz
+成功: tw01.trojanyyds.xyz -> 48.210.245.1
+解析: trus.moonfree.top
+成功: trus.moonfree.top -> 37.48.65.145
+解析: c2-4.bujidao.org
+成功: c2-4.bujidao.org -> 104.26.9.63
+解析: 83f358f268bab5d615ff7114ec5b14c2.lh.gtm.node-is.green
+成功: 83f358f268bab5d615ff7114ec5b14c2.lh.gtm.node-is.green -> 18.163.105.19
+解析: vpn_proxy_channel_vpn_proxy_channel.hohod.ir
+成功: vpn_proxy_channel_vpn_proxy_channel.hohod.ir -> 5.75.201.244
+解析: Shopify.com
+成功: Shopify.com -> 23.227.38.33
+解析: jp007.421421.xyz
+成功: jp007.421421.xyz -> 43.207.138.182
+解析: 233a2d5d671ed0357a4feb466ed84c0a.lh.gtm.node-is.green
+成功: 233a2d5d671ed0357a4feb466ed84c0a.lh.gtm.node-is.green -> 18.163.105.19
+解析: pq.aws61.yydjc.top
+成功: pq.aws61.yydjc.top -> 47.129.54.37
+解析: xcsgp.cokecloud.top
+成功: xcsgp.cokecloud.top -> 120.236.197.102
+解析: join.expressvpn_420.cloud1.hosting-ip.com
+成功: join.expressvpn_420.cloud1.hosting-ip.com -> 91.206.71.162
+解析: a4a8485fcce6b5c9da958bf20c106fe6.v1.cac.node-is.green
+成功: a4a8485fcce6b5c9da958bf20c106fe6.v1.cac.node-is.green -> 16.162.102.91
+解析: pq.aws59.yydjc.top
+成功: pq.aws59.yydjc.top -> 13.229.122.251
+解析: gl.ccccccccccccccccccccccccccccccccccccccccccc.cc
+成功: gl.ccccccccccccccccccccccccccccccccccccccccccc.cc -> 172.67.189.81
+解析: 0909decb39603b46255398976b6b5f0d.v1.cac.node-is.green
+成功: 0909decb39603b46255398976b6b5f0d.v1.cac.node-is.green -> 18.163.102.188
+解析: 19236tj.matrixxx888.com
+成功: 19236tj.matrixxx888.com -> 103.135.102.151
+解析: 75acf8d3ed7a103eb0f5e544ec06e451.v1.cac.node-is.green
+成功: 75acf8d3ed7a103eb0f5e544ec06e451.v1.cac.node-is.green -> 43.198.245.7
+解析: k-r01.loveroise.com
+失败: k-r01.loveroise.com
+解析: bz.linghang.buzz
+成功: bz.linghang.buzz -> 91.195.240.12
+解析: us004.421421.xyz
+成功: us004.421421.xyz -> 44.243.248.1
+解析: ns4.esfahansiman.com
+成功: ns4.esfahansiman.com -> 213.176.65.25
+解析: 49bbfe16aafcf1efee495e36ce20e632.v1.cac.node-is.green
+成功: 49bbfe16aafcf1efee495e36ce20e632.v1.cac.node-is.green -> 54.46.46.224
+解析: c1.bujidao.org
+成功: c1.bujidao.org -> 104.21.18.37
+解析: ip.sb
+成功: ip.sb -> 104.26.12.31
+解析: pq.aws50.yydjc.top
+成功: pq.aws50.yydjc.top -> 13.231.107.201
+解析: connectwithemployers.online
+成功: connectwithemployers.online -> 139.59.119.143
+解析: cris.ns.cloudflare.com
+成功: cris.ns.cloudflare.com -> 172.64.35.202
+解析: cf1.992688.xyz
+失败: cf1.992688.xyz
+解析: 923c8b5d861c2490838ca28c1d7763b1.v1.cac.node-is.green
+成功: 923c8b5d861c2490838ca28c1d7763b1.v1.cac.node-is.green -> 18.166.70.110
+解析: pq.aws48.yydjc.top
+成功: pq.aws48.yydjc.top -> 54.249.56.94
+解析: gdgs.tarioblink.me
+成功: gdgs.tarioblink.me -> 120.241.226.41
+解析: cash.ns.cloudflare.com
+成功: cash.ns.cloudflare.com -> 173.245.59.81
+解析: 58113424de40e3495f2c0ccbd4859850.lh.gtm.node-is.green
+成功: 58113424de40e3495f2c0ccbd4859850.lh.gtm.node-is.green -> 18.166.70.110
+解析: id3tr.jagoan.vip
+成功: id3tr.jagoan.vip -> 75.2.18.233
+解析: pqawssg1.aiopen.cfd
+成功: pqawssg1.aiopen.cfd -> 172.233.219.78
+解析: ap.stablize.top
+成功: ap.stablize.top -> 13.248.169.48
+解析: l0-cdn-02.dpp.pp.ua
+成功: l0-cdn-02.dpp.pp.ua -> 172.67.184.138
+解析: 41bbf00905ba14e2052bb909bbf265c6.v1.cac.node-is.green
+成功: 41bbf00905ba14e2052bb909bbf265c6.v1.cac.node-is.green -> 18.163.194.91
+解析: 1253d3ed23ba4f4650c43b26a63b9c37.v1.cac.node-is.green
+成功: 1253d3ed23ba4f4650c43b26a63b9c37.v1.cac.node-is.green -> 18.163.105.19
+解析: tw07.352343.cc
+成功: tw07.352343.cc -> 36.231.109.154
+解析: jp.iamnotagoodman.com
+成功: jp.iamnotagoodman.com -> 172.192.14.195
+解析: mpkrykuslqfijsw-hk.fliggynode.com
+成功: mpkrykuslqfijsw-hk.fliggynode.com -> 38.150.12.188
 解析: series-a2.samanehha.co
 成功: series-a2.samanehha.co -> 172.187.104.55
-解析: kr.aeccssssss.xyz
-成功: kr.aeccssssss.xyz -> 43.202.60.134
-解析: 638723765344752898.amsterdam-blk-dra.info
-成功: 638723765344752898.amsterdam-blk-dra.info -> 84.32.131.176
-解析: gertu.topvmmarket.shop
-成功: gertu.topvmmarket.shop -> 178.239.149.79
-解析: mx1ccfa.matrix-shop8.ir
-失败: mx1ccfa.matrix-shop8.ir
-解析: warden.microsof.click
-成功: warden.microsof.click -> 188.75.78.35
-解析: chrom3.infospeedtest.com
-成功: chrom3.infospeedtest.com -> 178.239.144.46
-解析: eagle.hafezdivan.online.
-失败: eagle.hafezdivan.online.
-解析: ennod.spsvps.com
-成功: ennod.spsvps.com -> 172.236.23.240
-解析: admin.c3.webramz.co
-成功: admin.c3.webramz.co -> 131.145.94.49
-解析: l75.magicnetwork.info
-成功: l75.magicnetwork.info -> 85.133.250.92
-解析: cloud.configforvpn.fun
-失败: cloud.configforvpn.fun
-解析: pq.chile1.09vpn.com
-成功: pq.chile1.09vpn.com -> 45.82.249.42
-解析: 271651cd-sydb40-th3q8a-1iyov.cm5.cnkuaishou.com
-成功: 271651cd-sydb40-th3q8a-1iyov.cm5.cnkuaishou.com -> 183.240.180.16
-解析: turkey5.turboo-server.com
-成功: turkey5.turboo-server.com -> 85.133.206.39
-解析: frad.webshecan.cloud
-失败: frad.webshecan.cloud
-解析: it3zq4.smrfy.online
-成功: it3zq4.smrfy.online -> 185.49.105.237
-解析: nim.therevenant.shop
-成功: nim.therevenant.shop -> 151.234.162.164
-解析: d2.vixsm.ir
-成功: d2.vixsm.ir -> 10.10.34.36
-解析: tabrizm138.lll.l0l.lll.workers.dev
-成功: tabrizm138.lll.l0l.lll.workers.dev -> 172.67.202.234
-解析: cdn.melodyshopone2.ir
-失败: cdn.melodyshopone2.ir
-解析: vipFastSpeed.fastly80.hosting-ip.com
-成功: vipFastSpeed.fastly80.hosting-ip.com -> 151.101.0.155
-解析: ae.aparat-movies-download.ir
-成功: ae.aparat-movies-download.ir -> 5.159.49.238
-解析: monardas.aurorainiceland.com
-失败: monardas.aurorainiceland.com
-解析: WWw.Speedtest.net
-成功: WWw.Speedtest.net -> 104.17.147.22
-解析: sourceforge.net
-成功: sourceforge.net -> 104.18.13.149
-解析: a2.aliranjbar.top
-成功: a2.aliranjbar.top -> 217.60.38.54
-解析: Channel-VPNCUSTOMIZE.V2ray.motorcycles
-失败: Channel-VPNCUSTOMIZE.V2ray.motorcycles
+解析: 75ad488e596137efa8239fd4c632c85f.v1.cac.node-is.green
+成功: 75ad488e596137efa8239fd4c632c85f.v1.cac.node-is.green -> 18.166.70.110
+解析: yourjobnavigator.online
+成功: yourjobnavigator.online -> 161.35.34.48
+解析: singapore.com
+成功: singapore.com -> 104.26.12.140
+解析: 00ead45ebc9cc3655941002d41357f41.v1.cac.node-is.green
+成功: 00ead45ebc9cc3655941002d41357f41.v1.cac.node-is.green -> 18.162.116.7
+解析: hk1.sanfen001.pics
+成功: hk1.sanfen001.pics -> 103.224.182.210
+解析: cf97e96fafba174441920c606176c7e9.v1.cac.node-is.green
+成功: cf97e96fafba174441920c606176c7e9.v1.cac.node-is.green -> 18.162.116.7
+解析: 19239tj.matrixxx888.com
+成功: 19239tj.matrixxx888.com -> 103.135.102.151
+解析: zz6.91js.pw
+成功: zz6.91js.pw -> 117.149.198.190
+解析: b02f7837cdc7ec0bbbed636291d7f53d.v1.cac.node-is.green
+成功: b02f7837cdc7ec0bbbed636291d7f53d.v1.cac.node-is.green -> 18.166.65.133
+解析: elena.fastly80-3.hosting-ip.com
+成功: elena.fastly80-3.hosting-ip.com -> 151.101.64.155
+解析: ru.mjt000.com
+成功: ru.mjt000.com -> 172.192.14.195
+解析: 38b9de15d786efbdaf57249cb5e909cf.v1.cac.node-is.green
+成功: 38b9de15d786efbdaf57249cb5e909cf.v1.cac.node-is.green -> 18.163.194.91
+解析: d-all.uwieo.com
+成功: d-all.uwieo.com -> 88.99.15.85
+解析: c1c29e5b52f137e3d78ab75f79ad2bdf.v1.cac.node-is.green
+成功: c1c29e5b52f137e3d78ab75f79ad2bdf.v1.cac.node-is.green -> 18.163.194.91
+解析: ae3a7d3457522ced390c88b5f3f2de46.lh.gtm.node-is.green
+成功: ae3a7d3457522ced390c88b5f3f2de46.lh.gtm.node-is.green -> 18.163.105.19
+解析: IEPL01.tube-cat.com
+成功: IEPL01.tube-cat.com -> 157.254.38.210
+解析: asdasd.dpdns.org
+成功: asdasd.dpdns.org -> 104.21.75.195
+解析: discord.cloudflare.com
+成功: discord.cloudflare.com -> 104.18.30.60
+解析: pq.hinet.tw1.yydjc.top
+成功: pq.hinet.tw1.yydjc.top -> 1.161.47.214
+解析: 04cbdd26d5f66820ae72d623a3d9cd28.v1.cac.node-is.green
+成功: 04cbdd26d5f66820ae72d623a3d9cd28.v1.cac.node-is.green -> 18.163.105.19
+解析: csgo.com
+成功: csgo.com -> 195.85.59.95
+解析: f02d87754a36aa6c9a6b1c54f2a8f6b6.v1.cac.node-is.green
+成功: f02d87754a36aa6c9a6b1c54f2a8f6b6.v1.cac.node-is.green -> 18.163.194.91
+解析: v39.heduian.link
+成功: v39.heduian.link -> 111.26.109.79
+解析: cc.rk1.node-is.green
+成功: cc.rk1.node-is.green -> 183.236.51.24
+解析: hk04.trojanyyds.xyz
+成功: hk04.trojanyyds.xyz -> 48.210.245.1
+解析: uk-london.oraclenat.cc
+成功: uk-london.oraclenat.cc -> 193.123.179.73
+解析: t18.qifei.app
+成功: t18.qifei.app -> 107.173.148.58
+解析: official.taipeicitygovernment.kiev.ua
+成功: official.taipeicitygovernment.kiev.ua -> 120.241.226.93
+解析: tw1.344233.cc
+成功: tw1.344233.cc -> 111.250.110.1
+解析: pq.aws57.yydjc.top
+成功: pq.aws57.yydjc.top -> 52.196.240.209
+解析: sg02.trojanyyds.xyz
+成功: sg02.trojanyyds.xyz -> 48.210.245.1
 解析: speedtest.net
-成功: speedtest.net -> 151.101.194.219
-解析: VPNCUSTOMIZE.Elmahstyle.ir
-失败: VPNCUSTOMIZE.Elmahstyle.ir
-解析: www.visa.com.hk
-成功: www.visa.com.hk -> 104.18.21.69
-解析: a58f2723f7f4fe62.apollo99.click
-成功: a58f2723f7f4fe62.apollo99.click -> 46.38.150.214
-解析: all.vipxali.cfd
-失败: all.vipxali.cfd
-解析: www.gov.ua
-成功: www.gov.ua -> 104.21.23.72
-解析: turkycf.configforvpn.fun
-失败: turkycf.configforvpn.fun
-解析: en.jpgformat.ir
-成功: en.jpgformat.ir -> 134.122.100.178
-解析: german.vp22ray.site
-失败: german.vp22ray.site
-解析: antipingfree.antimelinet.click
-失败: antipingfree.antimelinet.click
-解析: fn.turbooserver.ir
-成功: fn.turbooserver.ir -> 104.166.166.138
-解析: biography.com
-成功: biography.com -> 151.101.128.155
-解析: tunelvs9.myprofilegodbot.site
-成功: tunelvs9.myprofilegodbot.site -> 91.240.95.118
-解析: iranm.nimhub.ir
-成功: iranm.nimhub.ir -> 102.177.189.29
-解析: funnelytics.io
-成功: funnelytics.io -> 75.2.70.75
-解析: diwu18.di5ji.lat
-成功: diwu18.di5ji.lat -> 103.115.18.172
-解析: lol.ps
-成功: lol.ps -> 104.18.24.92
-解析: 9029eb56-sydb40-t2wu4o-1qct1.cm5.cnkuaishou.com
-成功: 9029eb56-sydb40-t2wu4o-1qct1.cm5.cnkuaishou.com -> 183.240.180.16
-解析: one-theme.ir
-成功: one-theme.ir -> 104.21.95.156
-解析: ghost.pixeltbz.fun
-成功: ghost.pixeltbz.fun -> 85.198.15.132
-解析: Zmaoz.Faculty.Ucdavis.Edu
-成功: Zmaoz.Faculty.Ucdavis.Edu -> 146.75.30.228
-解析: ASER.digimajaz-social.ir
-成功: ASER.digimajaz-social.ir -> 78.157.49.213
-解析: blue99shop.ir
-失败: blue99shop.ir
-解析: domain2025.dpdns.org
-失败: domain2025.dpdns.org
-解析: sg3.6n6.net
-成功: sg3.6n6.net -> 103.253.24.216
-解析: tw4.ddns-link-b5.uk
-成功: tw4.ddns-link-b5.uk -> 1.160.5.70
-解析: panel1.svgspeedtest.net
-成功: panel1.svgspeedtest.net -> 135.181.64.31
-解析: serverpars.com
-成功: serverpars.com -> 172.67.147.79
-解析: alfa.subscrib.sbs
-成功: alfa.subscrib.sbs -> 89.44.241.188
-解析: netorg.nightwolf.shop
-成功: netorg.nightwolf.shop -> 79.175.129.213
+成功: speedtest.net -> 151.101.66.219
+解析: sp.bujidao302.com
+成功: sp.bujidao302.com -> 172.67.188.9
+解析: b5379c985c5300daff4a9813a38bb0f1.v1.cac.node-is.green
+成功: b5379c985c5300daff4a9813a38bb0f1.v1.cac.node-is.green -> 18.166.70.110
+解析: malaysia.com
+成功: malaysia.com -> 104.26.8.156
+解析: e4f6a815c678b2a557d5af539084a7c6.v1.cac.node-is.green
+成功: e4f6a815c678b2a557d5af539084a7c6.v1.cac.node-is.green -> 18.166.70.110
+解析: 73f2ac0af6a5afcdc25cd18424346ed1.v1.cac.node-is.green
+成功: 73f2ac0af6a5afcdc25cd18424346ed1.v1.cac.node-is.green -> 43.198.245.7
+解析: usajs.stablize.top
+成功: usajs.stablize.top -> 76.223.54.146
+解析: v01.gutingting.com
+成功: v01.gutingting.com -> 5.83.221.31
+解析: 4cceedd1485ec5da3a490d8550e67f4f.v1.cac.node-is.green
+成功: 4cceedd1485ec5da3a490d8550e67f4f.v1.cac.node-is.green -> 18.166.70.110
+解析: sk01.trojanyyds.xyz
+成功: sk01.trojanyyds.xyz -> 48.210.245.1
+解析: 9af83060b2f06cac55a0f040f61a4d01.v1.cac.node-is.green
+成功: 9af83060b2f06cac55a0f040f61a4d01.v1.cac.node-is.green -> 54.46.46.224
+解析: 147135004002.sec20org.com
+成功: 147135004002.sec20org.com -> 51.81.37.29
+解析: v81.emovpn.buzz
+成功: v81.emovpn.buzz -> 45.196.222.183
+解析: seoul-1ddns.aboutanime.eu.org
+成功: seoul-1ddns.aboutanime.eu.org -> 193.122.127.162
+解析: 19249tj.matrixxx888.com
+成功: 19249tj.matrixxx888.com -> 103.135.102.151
+解析: b2602141070e1e702a2a053da0502eae.v1.cac.node-is.green
+成功: b2602141070e1e702a2a053da0502eae.v1.cac.node-is.green -> 43.198.245.7
+解析: mumbai-01.oraclenat.cc
+成功: mumbai-01.oraclenat.cc -> 80.225.232.187
+解析: kbgs.hinet.tw1.yydjc.top
+成功: kbgs.hinet.tw1.yydjc.top -> 111.243.105.173
+解析: iepl01.tube-cat.com
+成功: iepl01.tube-cat.com -> 157.254.38.210
+解析: otto.ns.cloudflare.com
+成功: otto.ns.cloudflare.com -> 162.159.44.135
+解析: jp01.trojanyyds.xyz
+成功: jp01.trojanyyds.xyz -> 48.210.245.1
+解析: aws-us-nyc-1.f1rocketnode.com
+成功: aws-us-nyc-1.f1rocketnode.com -> 161.178.138.33
+解析: official.taipeicitygovernment.com.ua
+成功: official.taipeicitygovernment.com.ua -> 14.215.39.157
+解析: 01ae3a6ae09542f2e559797359f09080.lh.gtm.node-is.green
+成功: 01ae3a6ae09542f2e559797359f09080.lh.gtm.node-is.green -> 18.163.105.19
+解析: 147135011033.sec21org.com
+成功: 147135011033.sec21org.com -> 15.204.135.181
+解析: official.tokyometropolis.kharkov.ua
+成功: official.tokyometropolis.kharkov.ua -> 120.241.226.94
+解析: ca.stablize.top
+成功: ca.stablize.top -> 13.248.169.48
+解析: aa9b8ff105ef9e8e8a9fe398fef50ce9.v1.cac.node-is.green
+成功: aa9b8ff105ef9e8e8a9fe398fef50ce9.v1.cac.node-is.green -> 54.46.46.224
+解析: 9f6de11ce245fc0b24d3e8c9029bb801.v1.cac.node-is.green
+成功: 9f6de11ce245fc0b24d3e8c9029bb801.v1.cac.node-is.green -> 18.163.105.19
+解析: ako.pagate.top
+成功: ako.pagate.top -> 130.162.147.187
+解析: 89d.com
+成功: 89d.com -> 104.18.26.39
+解析: xijinping.19890604.day
+失败: xijinping.19890604.day
+解析: pq.aws65.yydjc.top
+成功: pq.aws65.yydjc.top -> 54.251.188.53
+解析: xdtw.cokecloud.top
+成功: xdtw.cokecloud.top -> 120.236.197.102
+解析: au.mjt000.com
+成功: au.mjt000.com -> 172.192.14.195
+解析: xn--b6gac.eu.org
+成功: xn--b6gac.eu.org -> 104.21.90.78
+解析: bit-hk.03ezhg0qsa.download
+成功: bit-hk.03ezhg0qsa.download -> 120.232.153.79
 解析: hajlab.ucdavis.edu
-成功: hajlab.ucdavis.edu -> 151.101.130.228
-解析: haditunnel.hadiv2.shop
-成功: haditunnel.hadiv2.shop -> 89.44.242.109
-解析: re2.opetacloud.ir
-成功: re2.opetacloud.ir -> 5.159.49.212
-解析: vip-iran.interservervip.xyz
-成功: vip-iran.interservervip.xyz -> 79.127.69.118
-解析: wolf538.api-tel.xyz
-成功: wolf538.api-tel.xyz -> 85.198.23.228
-解析: kr6v1.dashengjs.net
-成功: kr6v1.dashengjs.net -> 43.226.17.11
-解析: panel28.sharpwp2.shop
-成功: panel28.sharpwp2.shop -> 78.39.9.149
-解析: join3.sevenoseven.tech
-失败: join3.sevenoseven.tech
-解析: turbo9.thegameuhb.ir
-成功: turbo9.thegameuhb.ir -> 85.133.204.199
-解析: best.configforvpn.fun
-失败: best.configforvpn.fun
-解析: am3.estarlink1.us
-成功: am3.estarlink1.us -> 93.126.50.231
-解析: askjdasd.fast.hosting-ip.com
-成功: askjdasd.fast.hosting-ip.com -> 151.101.64.155
-解析: nodneth.spsvps.com
-成功: nodneth.spsvps.com -> 139.59.206.139
-解析: server-farna1.anush.top
-成功: server-farna1.anush.top -> 95.38.104.99
-解析: paris.get.raskolnikov.ir
-成功: paris.get.raskolnikov.ir -> 62.60.247.117
-解析: ztcloudnl.ztcloud.xyz
-成功: ztcloudnl.ztcloud.xyz -> 195.133.79.116
-解析: cloud.updatte.tech
-成功: cloud.updatte.tech -> 141.11.202.251
-解析: office1001.avaoffice.cloud
-成功: office1001.avaoffice.cloud -> 185.191.77.6
-解析: free.2apzhfa.xyz
-成功: free.2apzhfa.xyz -> 120.232.218.106
-解析: jp1asdfghjtyhj.aeccssssss.xyz
-成功: jp1asdfghjtyhj.aeccssssss.xyz -> 36.150.27.96
-解析: h2.tikmarket1.site
-成功: h2.tikmarket1.site -> 37.32.41.247
-解析: irlast.adkoino.com
-成功: irlast.adkoino.com -> 94.182.134.121
-解析: upload.ir
-成功: upload.ir -> 104.21.16.1
+成功: hajlab.ucdavis.edu -> 151.101.2.228
+解析: mamadtatardo442.my442vpn442.workers.dev
+成功: mamadtatardo442.my442vpn442.workers.dev -> 172.67.209.158
+解析: damien.ns.cloudflare.com
+成功: damien.ns.cloudflare.com -> 172.64.35.168
+解析: c8217-b2a.h2.49d2.jse11.2.b297.djjsvip.cfd
+成功: c8217-b2a.h2.49d2.jse11.2.b297.djjsvip.cfd -> 52.69.182.8
+解析: f597e5c06f6e8b189e30b36bd72ce533.v1.cac.node-is.green
+成功: f597e5c06f6e8b189e30b36bd72ce533.v1.cac.node-is.green -> 43.198.245.7
+解析: kr2.sanfen001.pics
+成功: kr2.sanfen001.pics -> 103.224.182.210
+解析: pq.aws56.yydjc.top
+成功: pq.aws56.yydjc.top -> 54.65.206.120
+解析: ak1847.www.outline.network.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou
+失败: ak1847.www.outline.network.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou
+解析: cnamemc.cdncisco.org
+成功: cnamemc.cdncisco.org -> 199.59.243.228
+解析: pq.aws55.yydjc.top
+成功: pq.aws55.yydjc.top -> 3.112.214.42
+解析: aws-ch-zurich-1.f1cflineb.com
+成功: aws-ch-zurich-1.f1cflineb.com -> 172.67.188.24
+解析: 26f3291963100c26349cfadb043a0859.v1.cac.node-is.green
+成功: 26f3291963100c26349cfadb043a0859.v1.cac.node-is.green -> 18.163.194.91
+解析: pq.aws62.yydjc.top
+成功: pq.aws62.yydjc.top -> 122.248.219.62
+解析: chloe.ns.cloudflare.com
+成功: chloe.ns.cloudflare.com -> 108.162.192.85
+解析: dm-us03-direct14.dm-us03.lc-node.com
+失败: dm-us03-direct14.dm-us03.lc-node.com
+解析: us002.421421.xyz
+成功: us002.421421.xyz -> 35.88.70.32
+解析: 053db591959156aafe7e65913df71a8a.v1.cac.node-is.green
+成功: 053db591959156aafe7e65913df71a8a.v1.cac.node-is.green -> 43.198.245.7
+解析: pqawsjp4.aiopen.cfd
+成功: pqawsjp4.aiopen.cfd -> 172.233.219.123
+解析: f5f33dd36c27cc68b4c7a0d5b79da7e7.v1.cac.node-is.green
+成功: f5f33dd36c27cc68b4c7a0d5b79da7e7.v1.cac.node-is.green -> 18.163.102.188
+解析: 1c3656255cd6d22b3687221ae94446b5.lh.gtm.node-is.green
+成功: 1c3656255cd6d22b3687221ae94446b5.lh.gtm.node-is.green -> 18.163.194.91
+解析: sg1-trojan.bonds.id
+成功: sg1-trojan.bonds.id -> 103.253.24.212
+解析: 345bbcde1d10df760f836db21c7e6180.v1.cac.node-is.green
+成功: 345bbcde1d10df760f836db21c7e6180.v1.cac.node-is.green -> 18.166.65.133
+解析: 7644a463d17445e6b40923dcce3f72fa.lh.gtm.node-is.green
+成功: 7644a463d17445e6b40923dcce3f72fa.lh.gtm.node-is.green -> 18.162.116.7
+解析: gz.pddwdf.store
+成功: gz.pddwdf.store -> 183.237.91.122
+解析: jp004.421421.xyz
+成功: jp004.421421.xyz -> 52.195.184.26
+解析: craig.ns.cloudflare.com
+成功: craig.ns.cloudflare.com -> 162.159.44.192
+解析: cd81852313dff55f054047b5f8d95b76.v1.cac.node-is.green
+成功: cd81852313dff55f054047b5f8d95b76.v1.cac.node-is.green -> 18.163.194.91
+解析: pq.aws52.yydjc.top
+成功: pq.aws52.yydjc.top -> 57.182.23.113
+解析: kp.mjt000.com
+成功: kp.mjt000.com -> 172.192.14.195
+解析: aws-in-mumbai-1.f1cflinea.com
+成功: aws-in-mumbai-1.f1cflinea.com -> 172.67.165.204
+解析: trevor.ns.cloudflare.com
+成功: trevor.ns.cloudflare.com -> 162.159.44.154
+解析: zzzqb1.593920.xyz
+成功: zzzqb1.593920.xyz -> 104.22.69.200
+解析: il.mjt000.com
+成功: il.mjt000.com -> 172.192.14.195
 解析: zf2.10101251.xyz
-成功: zf2.10101251.xyz -> 120.198.71.135
-解析: jp2.e4b593af-e26c-4ff1-9b02-d699594d7bbb.02444020.the-best-airport.com
-成功: jp2.e4b593af-e26c-4ff1-9b02-d699594d7bbb.02444020.the-best-airport.com -> 23.143.136.73
-解析: 38557654738726634736956357123082.international-ixp.com
-成功: 38557654738726634736956357123082.international-ixp.com -> 94.101.177.223
-解析: turkey.jewelll.ir
-成功: turkey.jewelll.ir -> 217.114.40.220
-解析: 92.reality99.shop
-成功: 92.reality99.shop -> 91.99.96.42
-解析: mrvip.wineston.site
-成功: mrvip.wineston.site -> 185.215.228.109
-解析: sv1.se7en.sbs
-成功: sv1.se7en.sbs -> 193.151.142.29
-解析: v03.vxlimir.com
-成功: v03.vxlimir.com -> 54.36.118.82
-解析: sg01.freeflyingcloud.xyz
-成功: sg01.freeflyingcloud.xyz -> 13.248.169.48
-解析: azure-sto.edgeservers.org
-成功: azure-sto.edgeservers.org -> 20.91.252.21
-解析: gb1.vip.edu.kg
-成功: gb1.vip.edu.kg -> 68.183.40.125
-解析: de1.vpn.haus
-成功: de1.vpn.haus -> 157.90.124.116
-解析: us02.ssr.ee
-成功: us02.ssr.ee -> 159.54.160.222
-解析: us1.vip.edu.kg
-成功: us1.vip.edu.kg -> 137.184.81.142
-解析: ipt.ai-app-list.buzz
-失败: ipt.ai-app-list.buzz
-解析: vpnbigbang.ddns.net
-失败: vpnbigbang.ddns.net
-解析: all.playtheclub.info
-成功: all.playtheclub.info -> 84.32.84.33
-解析: ip-static-address.wizardxray.shop
-成功: ip-static-address.wizardxray.shop -> 5.198.168.10
-解析: f1.arshiashop.org
-成功: f1.arshiashop.org -> 37.152.182.126
-解析: kryos.cloudupdate.ir
-成功: kryos.cloudupdate.ir -> 188.245.109.124
-解析: parsdata.france-learns.ir
-成功: parsdata.france-learns.ir -> 217.60.255.133
-解析: ver2.tcod008.info
-成功: ver2.tcod008.info -> 84.47.233.110
-解析: night.dl.darinips.com
-成功: night.dl.darinips.com -> 146.185.132.100
-解析: 271218c55d4e1626.99vps.org
-成功: 271218c55d4e1626.99vps.org -> 79.175.188.158
-解析: bam.erfann.shop
-成功: bam.erfann.shop -> 185.124.175.36
-解析: i.sfast.site
-成功: i.sfast.site -> 46.38.148.75
-解析: n2vpn-helper.projectis.ir
-成功: n2vpn-helper.projectis.ir -> 23.227.39.179
-解析: d165ac7b-swexs0-swsmkh-1s0a7.hy2.gotochinatown.net
-成功: d165ac7b-swexs0-swsmkh-1s0a7.hy2.gotochinatown.net -> 107.167.18.102
-解析: fastly.vipfast7.top
-成功: fastly.vipfast7.top -> 151.101.64.155
-解析: pish1.testspeedge.ir
-失败: pish1.testspeedge.ir
-解析: join.FilTerK0sH.fastly80-3.hosting-ip.com
-成功: join.FilTerK0sH.fastly80-3.hosting-ip.com -> 151.101.0.155
-解析: TELEGRAM-NUFiLTER-JOIN.motorphrotan.ir
-成功: TELEGRAM-NUFiLTER-JOIN.motorphrotan.ir -> 85.210.221.139
-解析: ddcvvbhyu78.852224.dpdns.org
-成功: ddcvvbhyu78.852224.dpdns.org -> 172.67.219.196
-解析: mci.moel.cloud
-失败: mci.moel.cloud
-解析: ru2.asc-sam.ir
-成功: ru2.asc-sam.ir -> 195.133.52.153
-解析: fast.v2sub.online
-成功: fast.v2sub.online -> 151.101.194.165
+成功: zf2.10101251.xyz -> 36.151.194.51
+解析: node-a.dlg365.com
+成功: node-a.dlg365.com -> 120.241.29.81
+解析: ada70.fupaj.com
+成功: ada70.fupaj.com -> 5.161.243.141
+解析: usa.liangyuandian.top
+成功: usa.liangyuandian.top -> 172.192.28.185
+解析: cnv6.xxxxxxxx.tk
+成功: cnv6.xxxxxxxx.tk -> 104.21.80.224
+解析: sg.stablize.top
+成功: sg.stablize.top -> 13.248.169.48
+解析: sitespeedtest.uk.v2vless.site
+成功: sitespeedtest.uk.v2vless.site -> 194.147.35.22
+解析: eu1.abvpn.ru
+成功: eu1.abvpn.ru -> 185.128.104.12
+解析: pq.aws12.yydjc.top
+成功: pq.aws12.yydjc.top -> 219.76.131.41
+解析: sssxxcvfty.444752.xyz
+成功: sssxxcvfty.444752.xyz -> 172.67.157.254
+解析: it.mjt000.com
+成功: it.mjt000.com -> 172.192.14.195
+解析: 3502f3d8dec39658a81de255ccb2cb9a.v1.cac.node-is.green
+成功: 3502f3d8dec39658a81de255ccb2cb9a.v1.cac.node-is.green -> 18.166.65.133
+解析: sg002.421421.xyz
+成功: sg002.421421.xyz -> 18.143.76.123
+解析: cokecloudus.cokecloud.top
+成功: cokecloudus.cokecloud.top -> 42.4.52.152
+解析: c8217-b2a.h2.49d2.5e11.613.b297.djjsvip.cfd
+成功: c8217-b2a.h2.49d2.5e11.613.b297.djjsvip.cfd -> 112.120.48.4
+解析: tw11.352343.cc
+成功: tw11.352343.cc -> 36.231.118.133
+解析: sajs.stablize.top
+成功: sajs.stablize.top -> 76.223.54.146
+解析: kyle.ns.cloudflare.com
+成功: kyle.ns.cloudflare.com -> 172.64.35.111
+解析: 18b3e92b648d55211503157a60688272.v1.cac.node-is.green
+成功: 18b3e92b648d55211503157a60688272.v1.cac.node-is.green -> 18.163.102.188
+解析: 13.wyhkaa0.gq
+失败: 13.wyhkaa0.gq
+解析: 8a54bebc71b546765137818301a8aa2e.lh.gtm.node-is.green
+成功: 8a54bebc71b546765137818301a8aa2e.lh.gtm.node-is.green -> 18.166.57.250
+解析: tw06.352343.cc
+成功: tw06.352343.cc -> 36.231.118.62
+解析: itjs.stablize.top
+成功: itjs.stablize.top -> 13.248.169.48
+解析: dbb5c7e343641dcbd912559149861e47.v1.cac.node-is.green
+成功: dbb5c7e343641dcbd912559149861e47.v1.cac.node-is.green -> 18.163.105.19
+解析: 6e8c4dbe05df1020e818844c98246d44.v1.cac.node-is.green
+成功: 6e8c4dbe05df1020e818844c98246d44.v1.cac.node-is.green -> 18.166.65.133
+解析: official.tokyometropolis.chernigov.ua
+成功: official.tokyometropolis.chernigov.ua -> 14.215.39.157
+解析: 196afb2a86de387b39aec97cdd6bdc64.v1.cac.node-is.green
+成功: 196afb2a86de387b39aec97cdd6bdc64.v1.cac.node-is.green -> 18.166.65.133
+解析: de01.trojanyyds.xyz
+成功: de01.trojanyyds.xyz -> 48.210.245.1
+解析: spkr.1234567890spcloud.com
+成功: spkr.1234567890spcloud.com -> 91.195.240.12
+解析: R2.tube-cat.com
+成功: R2.tube-cat.com -> 154.64.226.149
+解析: bestcf.030101.xyz
+成功: bestcf.030101.xyz -> 172.64.145.251
+解析: xc115-1.meiziba5566.com
+成功: xc115-1.meiziba5566.com -> 198.23.184.89
+解析: yes.mojcn.com
+成功: yes.mojcn.com -> 119.36.154.69
+解析: hsdgbuys.pages.dev
+成功: hsdgbuys.pages.dev -> 172.66.47.170
+解析: jp2.sanfen001.pics
+成功: jp2.sanfen001.pics -> 103.224.182.210
+解析: cf-090227-xyz.pages.dev.
+成功: cf-090227-xyz.pages.dev. -> 172.66.44.77
+解析: aws-uae-1.f1cflineb.com
+成功: aws-uae-1.f1cflineb.com -> 104.21.7.241
+解析: hlwy-v-20250403.hlwy2025.me
+成功: hlwy-v-20250403.hlwy2025.me -> 45.192.243.53
+解析: join.mosiv2.fastly80-3.hosting-ip.com
+成功: join.mosiv2.fastly80-3.hosting-ip.com -> 151.101.64.155
+解析: pq.aws53.yydjc.top
+成功: pq.aws53.yydjc.top -> 35.78.248.243
+解析: hk03.trojanyyds.xyz
+成功: hk03.trojanyyds.xyz -> 48.210.245.1
+解析: zi.you.usdtvfk.top
+成功: zi.you.usdtvfk.top -> 13.248.169.48
 解析: zmaoz.faculty.ucdavis.edu
-成功: zmaoz.faculty.ucdavis.edu -> 146.75.30.228
-解析: join1.sevenoseven.tech
-失败: join1.sevenoseven.tech
-解析: www.speedtest-divar.ir
-成功: www.speedtest-divar.ir -> 94.131.110.192
-解析: WwW.SpeedTeSt.net
-成功: WwW.SpeedTeSt.net -> 104.17.147.22
-解析: wWw.sPEedTesT.NeT
-成功: wWw.sPEedTesT.NeT -> 104.17.148.22
-解析: x11-amsterdam-scaleway-v2-c88f0.devefun.org
-成功: x11-amsterdam-scaleway-v2-c88f0.devefun.org -> 51.15.68.121
-解析: ztcloudjp.ztcloud.xyz
-成功: ztcloudjp.ztcloud.xyz -> 103.115.18.172
-解析: fr2.magicvpn.shop
-成功: fr2.magicvpn.shop -> 199.59.243.228
-解析: NUFiLTER.fastly80.hosting-ip.com
-成功: NUFiLTER.fastly80.hosting-ip.com -> 151.101.64.155
-解析: trump.com
-成功: trump.com -> 104.18.212.110
-解析: Iq.MotOrpHrotAn.iR
-成功: Iq.MotOrpHrotAn.iR -> 89.34.230.249
-解析: hsfg.huasuan666.top
-成功: hsfg.huasuan666.top -> 213.108.198.123
-解析: www2.broadalx.cfd
-成功: www2.broadalx.cfd -> 94.156.79.244
-解析: d5.vixsm.ir
-成功: d5.vixsm.ir -> 77.239.124.150
-解析: sv10.mizbanland.ir
-成功: sv10.mizbanland.ir -> 37.152.186.163
-解析: iraan4.tehrandigital.org
-成功: iraan4.tehrandigital.org -> 109.122.253.135
-解析: wWw.SpeedTest.Net
-成功: wWw.SpeedTest.Net -> 104.17.147.22
-解析: dc23i0vg6m.the-scary-deep-forest-of-my-mind.top
-成功: dc23i0vg6m.the-scary-deep-forest-of-my-mind.top -> 5.160.35.73
-解析: lavin2.stevejobs-net.com
-成功: lavin2.stevejobs-net.com -> 95.38.104.98
-解析: V2RAXX-channel.cataba.ir
-成功: V2RAXX-channel.cataba.ir -> 10.10.34.36
-解析: vpnbigbang01.ddns.net
-失败: vpnbigbang01.ddns.net
-解析: log.centralstoree.eu
-成功: log.centralstoree.eu -> 91.212.232.215
-解析: all.vpncustomize.cam
-失败: all.vpncustomize.cam
-解析: 55cpezwl8e.the-dark-night.top
-成功: 55cpezwl8e.the-dark-night.top -> 5.160.35.249
-解析: ALL-CUSTOMVPNSERVER.IPSTOREIRAN.COM
-失败: ALL-CUSTOMVPNSERVER.IPSTOREIRAN.COM
-解析: owl.applegrafix.com
-失败: owl.applegrafix.com
-解析: free.tharuwa.cfd
-失败: free.tharuwa.cfd
-解析: fast.ultra-irancell.com
-成功: fast.ultra-irancell.com -> 178.239.148.216
-解析: 90427180822371121690946278334118.international-ixp.com
-成功: 90427180822371121690946278334118.international-ixp.com -> 94.101.177.223
-解析: joinmahdiserver-857.pages.dev
-失败: joinmahdiserver-857.pages.dev
-解析: Gang.FK4EVER-3.hosting-ip.com
-失败: Gang.FK4EVER-3.hosting-ip.com
-解析: top.cloudupdate.ir
-成功: top.cloudupdate.ir -> 91.107.158.90
-解析: bwdraper.faculty.ucdavis.edu
-成功: bwdraper.faculty.ucdavis.edu -> 151.101.46.228
-解析: discord.gg
-成功: discord.gg -> 162.159.136.234
-解析: jiangzhidg.54264944.xyz
-成功: jiangzhidg.54264944.xyz -> 213.108.198.123
-解析: CUSTOMIZEV2ray.V2ray.motorcycles
-失败: CUSTOMIZEV2ray.V2ray.motorcycles
-解析: UK.IPCLOUD.SHOP
-失败: UK.IPCLOUD.SHOP
-解析: usanod.spsvps.com
-成功: usanod.spsvps.com -> 157.230.79.100
-解析: media.sanaiegh.ir
-成功: media.sanaiegh.ir -> 91.107.140.243
-解析: dow.spslean.pw
-成功: dow.spslean.pw -> 193.151.137.175
-解析: jsyd.piaomiaoxu.net
-成功: jsyd.piaomiaoxu.net -> 218.204.188.10
-解析: mtn0.fedi.pw
-失败: mtn0.fedi.pw
+成功: zmaoz.faculty.ucdavis.edu -> 151.101.66.228
+解析: 767d2997d490ea976be4204ad28f6994.v1.cac.node-is.green
+成功: 767d2997d490ea976be4204ad28f6994.v1.cac.node-is.green -> 18.163.105.19
+解析: us01.trojanyyds.xyz
+成功: us01.trojanyyds.xyz -> 48.210.245.1
+解析: www.ipget.net
+成功: www.ipget.net -> 104.21.96.1
+解析: my02.trojanyyds.xyz
+成功: my02.trojanyyds.xyz -> 48.210.245.1
+解析: hkt-ty-line-1.sudatech.store
+成功: hkt-ty-line-1.sudatech.store -> 42.2.55.67
+解析: w11.udpgw.com
+成功: w11.udpgw.com -> 172.105.120.73
+解析: cdn.idouyin.tk
+成功: cdn.idouyin.tk -> 104.21.16.1
+解析: 9fab8a98f1ba22831b0709e6e53eef35.v1.cac.node-is.green
+成功: 9fab8a98f1ba22831b0709e6e53eef35.v1.cac.node-is.green -> 18.162.116.7
+解析: test123.zlqhdns.top
+成功: test123.zlqhdns.top -> 120.241.144.217
+解析: mpkrykuslqfijsw-tw.fliggynode.com
+成功: mpkrykuslqfijsw-tw.fliggynode.com -> 38.150.12.188
+解析: jp008.421421.xyz
+成功: jp008.421421.xyz -> 52.193.211.228
+解析: 19242tj.matrixxx888.com
+成功: 19242tj.matrixxx888.com -> 103.135.102.151
+解析: syd-ociee.oraclenat.cc
+成功: syd-ociee.oraclenat.cc -> 159.13.54.237
+解析: kfjdi.pages.dev
+成功: kfjdi.pages.dev -> 104.21.96.1
+解析: pranab.ns.cloudflare.com
+成功: pranab.ns.cloudflare.com -> 108.162.195.199
+解析: mpkrykuslqfijsw-sg.fliggynode.com
+成功: mpkrykuslqfijsw-sg.fliggynode.com -> 38.150.12.187
+解析: theo.ns.cloudflare.com
+成功: theo.ns.cloudflare.com -> 173.245.59.144
+解析: 2b1e5c717309d724f2d2222438bcaf9b.v1.cac.node-is.green
+成功: 2b1e5c717309d724f2d2222438bcaf9b.v1.cac.node-is.green -> 18.163.102.188
+解析: cmi.tw5.ty7.fun
+成功: cmi.tw5.ty7.fun -> 59.125.53.74
+解析: fastly.net
+成功: fastly.net -> 151.101.129.6
+解析: cme-challenge.vipaqy.xn--fiqs8s40dz2j.com
+成功: cme-challenge.vipaqy.xn--fiqs8s40dz2j.com -> 146.235.194.20
+解析: kz.mjt000.com
+成功: kz.mjt000.com -> 172.192.14.195
+解析: s1.db-link01.top
+成功: s1.db-link01.top -> 104.16.250.22
+解析: us02.trojanyyds.xyz
+成功: us02.trojanyyds.xyz -> 48.210.245.1
+解析: faculty.ucdavis.edu
+成功: faculty.ucdavis.edu -> 151.101.130.228
+解析: pq.hinet.tw2.yydjc.top
+成功: pq.hinet.tw2.yydjc.top -> 36.227.252.241
+解析: 615d5194cc03afab1b4e99d0895c37d8.v1.cac.node-is.green
+成功: 615d5194cc03afab1b4e99d0895c37d8.v1.cac.node-is.green -> 18.163.102.188
+解析: waphk.mjt000.com
+成功: waphk.mjt000.com -> 172.192.14.195
+解析: icook.tw
+成功: icook.tw -> 172.67.30.171
+解析: astram.abletodothingsorg.com
+成功: astram.abletodothingsorg.com -> 172.67.172.198
+解析: bingow.serv00.net
+成功: bingow.serv00.net -> 128.204.223.119
+解析: ca.liangyuandian.top
+成功: ca.liangyuandian.top -> 172.192.28.185
+解析: comicabc.com
+成功: comicabc.com -> 172.67.174.21
+解析: e0677033efbb98b66b4233b1fa03aded.v1.cac.node-is.green
+成功: e0677033efbb98b66b4233b1fa03aded.v1.cac.node-is.green -> 43.198.245.7
+解析: julio.ns.cloudflare.com
+成功: julio.ns.cloudflare.com -> 172.64.35.209
+解析: fishlab.ucdavis.edu
+成功: fishlab.ucdavis.edu -> 151.101.130.228
+解析: xlz767v2ray.pages.dev
+成功: xlz767v2ray.pages.dev -> 172.66.47.173
+解析: a3e4bf0221d286b3c001babbe9222909.v1.cac.node-is.green
+成功: a3e4bf0221d286b3c001babbe9222909.v1.cac.node-is.green -> 43.198.245.7
+解析: us003.421421.xyz
+成功: us003.421421.xyz -> 35.93.156.157
+解析: swejs.stablize.top
+成功: swejs.stablize.top -> 13.248.169.48
+解析: hk2.sanfen001.pics
+成功: hk2.sanfen001.pics -> 103.224.182.210
+解析: hinet.mjt000.com
+成功: hinet.mjt000.com -> 172.192.14.195
+解析: aws-uk-london-1.f1cflineb.com
+成功: aws-uk-london-1.f1cflineb.com -> 104.21.7.241
+解析: join.e-l-i-v-2-r-a-y.fastly80-3.hosting-ip.com
+成功: join.e-l-i-v-2-r-a-y.fastly80-3.hosting-ip.com -> 151.101.194.165
+解析: z5sa6is.cdn.node.a.tddns-ounk.com
+失败: z5sa6is.cdn.node.a.tddns-ounk.com
+解析: hk05.trojanyyds.xyz
+成功: hk05.trojanyyds.xyz -> 48.210.245.1
+解析: p1.bxy-edge.xyz
+成功: p1.bxy-edge.xyz -> 120.241.29.138
+解析: tel5.vpntype.dev
+成功: tel5.vpntype.dev -> 185.239.48.109
+解析: whqk26634.tsttt.top
+成功: whqk26634.tsttt.top -> 120.253.251.8
+解析: 257206d9182e29cabbef7b8324807925.v1.cac.node-is.green
+成功: 257206d9182e29cabbef7b8324807925.v1.cac.node-is.green -> 18.166.57.250
+解析: pq.aws15.yydjc.top
+成功: pq.aws15.yydjc.top -> 112.120.48.227
 解析: admin.c4.webramz.co
 成功: admin.c4.webramz.co -> 85.210.214.178
-解析: hs.radmannetwork.shop
-成功: hs.radmannetwork.shop -> 5.159.49.24
-解析: tamizokatamizveryclearifiedtamiz.ivy-net.ir
-成功: tamizokatamizveryclearifiedtamiz.ivy-net.ir -> 104.16.53.11
-解析: www.venzo.com.tr
-成功: www.venzo.com.tr -> 104.21.16.132
-解析: ipV2Ray-mci.ddns.net
-失败: ipV2Ray-mci.ddns.net
-解析: nc.cm.xiaomi-api.xyz
-成功: nc.cm.xiaomi-api.xyz -> 120.198.71.225
-解析: tenns3.bidaplay.ir
-失败: tenns3.bidaplay.ir
-解析: its.pishro1em.sbs
-成功: its.pishro1em.sbs -> 178.239.144.140
-解析: ir.Pitsvn.ir
-失败: ir.Pitsvn.ir
-解析: usa.test3.net
-成功: usa.test3.net -> 15.204.234.166
-解析: direct.gladservices.ir
-成功: direct.gladservices.ir -> 45.94.213.19
-解析: tgju.org.tr.systemgamingirani.ir
-成功: tgju.org.tr.systemgamingirani.ir -> 45.136.5.118
-解析: Dc1.zeroboostspeed.org
-成功: Dc1.zeroboostspeed.org -> 88.218.16.228
-解析: good.srvice.shop
-成功: good.srvice.shop -> 193.151.128.231
-解析: 222222r.11890604.xyz
-成功: 222222r.11890604.xyz -> 172.67.205.131
-解析: sg.aeccssssss.xyz
-成功: sg.aeccssssss.xyz -> 13.229.74.194
-解析: series-a2-mec.samanehha.co
-成功: series-a2-mec.samanehha.co -> 85.210.221.139
-解析: VPNBIGBANG11.ddns.net
-失败: VPNBIGBANG11.ddns.net
-解析: ztcloudgb.ztcloud.xyz
-成功: ztcloudgb.ztcloud.xyz -> 83.147.17.147
-解析: l32.magicnetwork.info
-成功: l32.magicnetwork.info -> 85.133.250.8
-解析: visa.com
-成功: visa.com -> 162.159.153.2
-解析: cl.parspack.com
-成功: cl.parspack.com -> 104.26.13.8
-解析: www.wappalyzer.com
-成功: www.wappalyzer.com -> 104.26.9.239
-解析: ea697354-sydb40-sztde0-f1v1.cm5.cnkuaishou.com
-成功: ea697354-sydb40-sztde0-f1v1.cm5.cnkuaishou.com -> 183.240.180.16
-解析: TOR.SODOGODPING.IR
-成功: TOR.SODOGODPING.IR -> 46.38.146.186
-解析: tehran1.fastly80.hosting-ip.com
-成功: tehran1.fastly80.hosting-ip.com -> 151.101.64.155
-解析: jp4asdfghjtyhj.aeccssssss.xyz
-成功: jp4asdfghjtyhj.aeccssssss.xyz -> 36.150.27.96
-解析: jojo.mysupport.monster
-成功: jojo.mysupport.monster -> 78.157.44.169
-解析: neht.zeparo-love.ir
-成功: neht.zeparo-love.ir -> 134.209.90.68
-解析: all.blackkwolff.com
-成功: all.blackkwolff.com -> 10.202.9.27
-解析: direct2.sogol98.com
-成功: direct2.sogol98.com -> 62.60.177.136
-解析: v07.vxlimir.com
-成功: v07.vxlimir.com -> 10.10.34.36
-解析: fr1.netprivate-server.ir
-成功: fr1.netprivate-server.ir -> 195.182.38.212
-解析: thr.npvnot.com
-成功: thr.npvnot.com -> 193.142.30.152
-解析: ajp.pagate.top
-成功: ajp.pagate.top -> 138.2.11.148
-解析: as5356.safer7644.com
-成功: as5356.safer7644.com -> 62.60.214.161
-解析: amirpanel1.ckoutddhlursfjojxjw.com
-成功: amirpanel1.ckoutddhlursfjojxjw.com -> 150.241.91.140
-解析: ad1.xiqpanelz.com
-成功: ad1.xiqpanelz.com -> 116.202.6.119
-解析: kopen1.kopen.cam
-成功: kopen1.kopen.cam -> 84.47.232.214
+解析: e1421e20ee14ff9f52abc2e963dc57c9.v1.cac.node-is.green
+成功: e1421e20ee14ff9f52abc2e963dc57c9.v1.cac.node-is.green -> 18.163.105.19
+解析: gghui.4444936.xyz
+成功: gghui.4444936.xyz -> 172.67.165.122
+解析: kaizen-tw-4.mielink-dns2.com
+成功: kaizen-tw-4.mielink-dns2.com -> 199.59.243.228
+解析: e6bfadbf2493078c6ed84a5d06c64f8b.lh.gtm.node-is.green
+成功: e6bfadbf2493078c6ed84a5d06c64f8b.lh.gtm.node-is.green -> 18.162.116.7
+解析: aws-us-dallas-1.f1rocketnode.com
+成功: aws-us-dallas-1.f1rocketnode.com -> 18.88.35.37
+解析: 5c84b1562eef38b08040ed8da3046c2f.v1.cac.node-is.green
+成功: 5c84b1562eef38b08040ed8da3046c2f.v1.cac.node-is.green -> 18.166.65.133
+解析: zfa05.333210.xyz
+成功: zfa05.333210.xyz -> 192.142.4.64
+解析: www.4chan.org
+成功: www.4chan.org -> 104.16.228.229
+解析: nikon.ns.cloudflare.com
+成功: nikon.ns.cloudflare.com -> 172.64.35.176
+解析: global-jp-1.node-ddns.netlib.net
+失败: global-jp-1.node-ddns.netlib.net
+解析: 2025-us4a.88888806.xyz
+成功: 2025-us4a.88888806.xyz -> 199.59.243.228
+解析: v5.tgfaka.com
+成功: v5.tgfaka.com -> 172.65.190.172
+解析: 33157d0fd46c69629c7c0a7126164711.v1.cac.node-is.green
+成功: 33157d0fd46c69629c7c0a7126164711.v1.cac.node-is.green -> 54.46.46.224
+解析: cf.090227.xyz.
+成功: cf.090227.xyz. -> 172.66.47.179
+解析: sullivan.ns.cloudflare.com
+成功: sullivan.ns.cloudflare.com -> 108.162.195.161
+解析: a52304a7c82c449d8a06e746dc33ad5e.v1.cac.node-is.green
+成功: a52304a7c82c449d8a06e746dc33ad5e.v1.cac.node-is.green -> 43.198.245.7
+解析: t.cnmjcn.cyou
+成功: t.cnmjcn.cyou -> 123.235.37.142
+解析: 459834f7e0b46671bf28d96f653dde4a.v1.cac.node-is.green
+成功: 459834f7e0b46671bf28d96f653dde4a.v1.cac.node-is.green -> 43.198.245.7
+解析: c02b8c90e2647bbd4b21659457a6562c.v1.cac.node-is.green
+成功: c02b8c90e2647bbd4b21659457a6562c.v1.cac.node-is.green -> 18.163.194.91
+解析: surina.ns.cloudflare.com
+成功: surina.ns.cloudflare.com -> 108.162.194.19
+解析: sg005.421421.xyz
+成功: sg005.421421.xyz -> 13.213.56.162
+解析: in01.trojanyyds.xyz
+成功: in01.trojanyyds.xyz -> 48.210.245.1
+解析: us001.421421.xyz
+成功: us001.421421.xyz -> 34.220.238.242
+解析: xctransfer1st.cokecloud.top
+成功: xctransfer1st.cokecloud.top -> 120.236.197.102
+解析: gsawsjp2.aiopen.cfd
+成功: gsawsjp2.aiopen.cfd -> 172.233.219.49
+解析: v2.tgfaka.com
+成功: v2.tgfaka.com -> 172.65.190.172
+解析: pt.mjt000.com
+成功: pt.mjt000.com -> 172.192.14.195
+解析: jp005.421421.xyz
+成功: jp005.421421.xyz -> 57.180.11.124
+解析: data-hk-v2.shwjfkw.cn
+成功: data-hk-v2.shwjfkw.cn -> 59.24.3.174
+解析: pqawssg2.aiopen.cfd
+成功: pqawssg2.aiopen.cfd -> 172.233.219.78
+解析: 0fb94760f86f7b2ff8a14df0a810f057.v1.cac.node-is.green
+成功: 0fb94760f86f7b2ff8a14df0a810f057.v1.cac.node-is.green -> 18.162.116.7
+解析: 2f43ccee8456434c8ab3126308a298e4.v1.cac.node-is.green
+成功: 2f43ccee8456434c8ab3126308a298e4.v1.cac.node-is.green -> 18.166.70.110
+解析: sg003.421421.xyz
+成功: sg003.421421.xyz -> 18.140.63.207
+解析: aws-ar-buenosaires-1.f1cflinea.com
+成功: aws-ar-buenosaires-1.f1cflinea.com -> 172.67.165.204
+解析: download2hkt.windowsupdate.lol
+成功: download2hkt.windowsupdate.lol -> 15.197.162.184
+解析: pic2.zarashop0.ir
+成功: pic2.zarashop0.ir -> 157.180.82.171
+解析: 614f84e265cd9d358f15e4a2076e7f5b.v1.cac.node-is.green
+成功: 614f84e265cd9d358f15e4a2076e7f5b.v1.cac.node-is.green -> 18.163.105.19
+解析: af161ff5fee2c14194b974c5cac98cdf.v1.cac.node-is.green
+成功: af161ff5fee2c14194b974c5cac98cdf.v1.cac.node-is.green -> 18.166.57.250
+解析: jg647hf446ghvw.fcbjw.com
+成功: jg647hf446ghvw.fcbjw.com -> 183.232.212.49
+解析: www.whatismyip.com
+成功: www.whatismyip.com -> 104.26.13.23
+解析: aws-es-madrid-1.f1rocketnode.com
+成功: aws-es-madrid-1.f1rocketnode.com -> 18.100.226.86
+解析: aws-uk-london-1.f1cflinea.com
+成功: aws-uk-london-1.f1cflinea.com -> 104.21.73.195
+解析: test.xlz767.ip-ddns.com.
+成功: test.xlz767.ip-ddns.com. -> 172.66.44.77
+解析: 1745423541.tencentapp.cn
+成功: 1745423541.tencentapp.cn -> 141.101.121.5
+解析: v25.emovpn.buzz
+成功: v25.emovpn.buzz -> 141.11.91.8
+解析: 7880c2852fe5eae1dd5201cb5df3c03d.lh.gtm.node-is.green
+成功: 7880c2852fe5eae1dd5201cb5df3c03d.lh.gtm.node-is.green -> 54.46.46.224
+解析: melina.ns.cloudflare.com
+成功: melina.ns.cloudflare.com -> 108.162.194.184
+解析: taifo03a.kbservice.club
+成功: taifo03a.kbservice.club -> 210.203.60.190
+解析: pq.aws14.yydjc.top
+成功: pq.aws14.yydjc.top -> 112.120.48.132
+解析: f10011.flyflylflyflysbs.sbs
+成功: f10011.flyflylflyflysbs.sbs -> 203.3.113.13
+解析: v78.emovpn.buzz
+成功: v78.emovpn.buzz -> 154.83.86.130
+解析: nl2-full.privateip.net
+成功: nl2-full.privateip.net -> 104.248.93.201
+解析: join.vpncustomize.fastly80-3.hosting-ip.com
+成功: join.vpncustomize.fastly80-3.hosting-ip.com -> 151.101.194.165
+解析: pq.aws60.yydjc.top
+成功: pq.aws60.yydjc.top -> 18.141.158.36
+解析: v02.gutingting.com
+成功: v02.gutingting.com -> 5.83.221.31
+解析: tw5.453521.xyz
+成功: tw5.453521.xyz -> 36.231.118.85
+解析: expressvpn_420.fastly80-3.hosting-ip.com
+成功: expressvpn_420.fastly80-3.hosting-ip.com -> 151.101.64.155
+解析: 68e5aad9152f15f6ff34b689fb258112.lh.gtm.node-is.green
+成功: 68e5aad9152f15f6ff34b689fb258112.lh.gtm.node-is.green -> 43.198.245.7
+解析: gsawssg2.aiopen.cfd
+成功: gsawssg2.aiopen.cfd -> 172.233.219.49
 解析: www.speedmeter.life
-成功: www.speedmeter.life -> 104.17.148.22
-解析: free.2weradf.xyz
-成功: free.2weradf.xyz -> 120.232.218.106
-解析: German.vp22ray.site
-失败: German.vp22ray.site
-解析: blackpool-dashbord-fast-provider-net.varzesh313.ir
-失败: blackpool-dashbord-fast-provider-net.varzesh313.ir
-解析: s9.nimhub.ir
-成功: s9.nimhub.ir -> 37.152.173.135
-解析: geme2.fhq0la447aac5504dspeedtestircomnetmeleosjanwjdifjsnjsx.cloud
-成功: geme2.fhq0la447aac5504dspeedtestircomnetmeleosjanwjdifjsnjsx.cloud -> 84.32.84.33
-解析: antipingfree.melin.shop
-失败: antipingfree.melin.shop
-解析: gigaportal.pl.gigaportal.pl
-成功: gigaportal.pl.gigaportal.pl -> 151.101.192.155
-解析: me.lqgap.ir
-成功: me.lqgap.ir -> 87.107.144.201
-解析: test.fast.hosting-ip.com
-成功: test.fast.hosting-ip.com -> 151.101.0.155
-解析: Join.ShhProxy.Site
-失败: Join.ShhProxy.Site
-解析: vip2.digitalldns.net
-成功: vip2.digitalldns.net -> 193.151.130.152
-解析: rrrfgt6.890604.filegear-sg.me
-成功: rrrfgt6.890604.filegear-sg.me -> 172.64.80.1
-解析: narcod-ping.numallaf.shop
-失败: narcod-ping.numallaf.shop
-解析: X3.snaapppfree.com
-成功: X3.snaapppfree.com -> 62.60.193.196
-解析: tn.komak-ar-online.online
-成功: tn.komak-ar-online.online -> 94.183.233.125
-解析: de04.abvpn.ru
-成功: de04.abvpn.ru -> 109.237.99.132
-解析: c1.ersalb.top
-成功: c1.ersalb.top -> 213.176.120.16
-解析: ygvbhutfcdcfcv.beingpopular.sbs
-失败: ygvbhutfcdcfcv.beingpopular.sbs
-解析: FASTSHOVPNTELEGRAM.fast.hosting-ip.com
-成功: FASTSHOVPNTELEGRAM.fast.hosting-ip.com -> 151.101.194.165
-解析: braelyn.ns.cloudflare.com
-成功: braelyn.ns.cloudflare.com -> 172.64.34.97
-解析: hajibazari.ultimateman.ir
-成功: hajibazari.ultimateman.ir -> 46.38.148.3
-解析: js.wnwwv.cn
-成功: js.wnwwv.cn -> 120.198.71.182
-解析: 2FreakConfig.usecharge.ir
-成功: 2FreakConfig.usecharge.ir -> 10.10.34.36
-解析: cloud.xmsvx.com
-成功: cloud.xmsvx.com -> 151.101.46.133
-解析: caretaker.com
-成功: caretaker.com -> 104.21.74.97
-解析: antipingchannel.antiping.click
-失败: antipingchannel.antiping.click
-解析: minnanoshare.net
-成功: minnanoshare.net -> 151.101.194.133
-解析: iran.edrispalanii.sbs
-成功: iran.edrispalanii.sbs -> 151.234.162.168
-解析: mainserver2.tarighi.info
-成功: mainserver2.tarighi.info -> 78.39.62.238
-解析: 638856975835382004.yasuj-drc-tusabb.info
-成功: 638856975835382004.yasuj-drc-tusabb.info -> 142.93.83.150
-解析: eeddcvfgt6.444682.xyz
-成功: eeddcvfgt6.444682.xyz -> 104.21.30.37
-解析: tfir.tehranify.shop
-成功: tfir.tehranify.shop -> 79.127.69.118
-解析: 1804.19.56.61
-失败: 1804.19.56.61
-解析: chi.Bekharim.me
-成功: chi.Bekharim.me -> 188.245.105.2
-解析: herfeh-honarmand.com
-成功: herfeh-honarmand.com -> 109.122.240.17
-解析: notice.2513142.xyz
-成功: notice.2513142.xyz -> 88.119.175.241
-解析: vpnbigbang12.ddns.net
-失败: vpnbigbang12.ddns.net
+成功: www.speedmeter.life -> 104.17.147.22
+解析: xxxxcdfrty6.444682.xyz
+成功: xxxxcdfrty6.444682.xyz -> 104.21.30.37
+解析: pq.aws64.yydjc.top
+成功: pq.aws64.yydjc.top -> 13.250.102.79
+解析: uk.mjt000.com
+成功: uk.mjt000.com -> 172.192.14.195
+解析: sg006.421421.xyz
+成功: sg006.421421.xyz -> 18.136.210.46
+解析: t9.qifei.app
+成功: t9.qifei.app -> 160.16.82.176
+解析: ipv4.ip.sb
+成功: ipv4.ip.sb -> 104.26.13.31
+解析: kbawsjp2.aiopen.cfd
+成功: kbawsjp2.aiopen.cfd -> 172.233.219.123
+解析: yh2.freeh1.xyz
+失败: yh2.freeh1.xyz
+解析: sg001.421421.xyz
+成功: sg001.421421.xyz -> 13.215.141.120
+解析: tw02.trojanyyds.xyz
+成功: tw02.trojanyyds.xyz -> 48.210.245.1
+解析: 921ce38b41311b5720ac01ce7410c28c.v1.cac.node-is.green
+成功: 921ce38b41311b5720ac01ce7410c28c.v1.cac.node-is.green -> 18.163.102.188
+解析: vn.mjt000.com
+成功: vn.mjt000.com -> 172.192.14.195
+解析: de.stablize.top
+成功: de.stablize.top -> 76.223.54.146
+解析: global-sg-1.node-ddns.netlib.net
+失败: global-sg-1.node-ddns.netlib.net
+解析: iepl.tube-cat.com
+成功: iepl.tube-cat.com -> 157.254.38.210
+解析: join.vmessorg.fastly80-3.hosting-ip.com
+成功: join.vmessorg.fastly80-3.hosting-ip.com -> 151.101.194.165
+解析: d30f90c3eaad4785737a16912cf997e4.v1.cac.node-is.green
+成功: d30f90c3eaad4785737a16912cf997e4.v1.cac.node-is.green -> 18.163.102.188
+解析: kaizen-ru-2.mielink-dns2.com
+成功: kaizen-ru-2.mielink-dns2.com -> 199.59.243.228
+解析: isvvpn.fastly80-2.hosting-ip.com
+成功: isvvpn.fastly80-2.hosting-ip.com -> 151.101.0.155
+解析: 96c87fc2cfed15a7b9eed4e3f108c1f6.v1.cac.node-is.green
+成功: 96c87fc2cfed15a7b9eed4e3f108c1f6.v1.cac.node-is.green -> 18.166.65.133
+解析: ashton.ns.cloudflare.com
+成功: ashton.ns.cloudflare.com -> 162.159.44.173
+解析: 2c0a00fc35b0ba0bda812834e2d356c7.v1.cac.node-is.green
+成功: 2c0a00fc35b0ba0bda812834e2d356c7.v1.cac.node-is.green -> 18.166.65.133
+解析: jermaine.ns.cloudflare.com
+成功: jermaine.ns.cloudflare.com -> 162.159.44.157
+解析: c8217-b2a.h1.49d2.5e11.613.b297.djjsvip.cfd
+成功: c8217-b2a.h1.49d2.5e11.613.b297.djjsvip.cfd -> 1.162.152.61
+解析: sage.ns.cloudflare.com
+成功: sage.ns.cloudflare.com -> 172.64.35.236
+解析: 08e8c4f8a963cb21c29272aeb4cfe037.v1.cac.node-is.green
+成功: 08e8c4f8a963cb21c29272aeb4cfe037.v1.cac.node-is.green -> 54.46.46.224
+解析: freea.glyphara.com
+成功: freea.glyphara.com -> 120.232.218.106
+解析: uk.stablize.top
+成功: uk.stablize.top -> 76.223.54.146
+解析: 085c204f657a4e5ece02a28624bdec8a.v1.cac.node-is.green
+成功: 085c204f657a4e5ece02a28624bdec8a.v1.cac.node-is.green -> 54.46.46.224
+解析: ade797782d9825b2e57b3620aa91ca67.v1.cac.node-is.green
+成功: ade797782d9825b2e57b3620aa91ca67.v1.cac.node-is.green -> 43.198.245.7
+解析: c664344ca701a361264f494dd60b11c7.v1.cac.node-is.green
+成功: c664344ca701a361264f494dd60b11c7.v1.cac.node-is.green -> 18.163.102.188
+解析: official.tokyometropolis.odessa.ua
+成功: official.tokyometropolis.odessa.ua -> 14.215.39.157
+解析: pq.aws51.yydjc.top
+成功: pq.aws51.yydjc.top -> 52.195.228.82
+解析: j-p02.loveroise.com
+失败: j-p02.loveroise.com
+解析: bsuqian01.dynu.net
+成功: bsuqian01.dynu.net -> 120.241.144.217
+解析: bog-co-01.fromblancwithlove.com
+成功: bog-co-01.fromblancwithlove.com -> 169.150.228.24
+解析: syrbp.cdn.node.a.tddns-ounk.com
+失败: syrbp.cdn.node.a.tddns-ounk.com
+解析: hn.xiaohouzi.club
+成功: hn.xiaohouzi.club -> 76.223.54.146
+解析: 01.liantongzf.one
+成功: 01.liantongzf.one -> 112.29.213.238
+解析: brjs.stablize.top
+成功: brjs.stablize.top -> 13.248.169.48
+解析: a832650e9308ef866616497a388d30d7.v1.cac.node-is.green
+成功: a832650e9308ef866616497a388d30d7.v1.cac.node-is.green -> 18.166.57.250
+解析: guy-trace-lyric.stark-industries.solutions
+成功: guy-trace-lyric.stark-industries.solutions -> 94.131.20.3
+解析: official.taipeicitygovernment.ivano-frankivsk.ua
+成功: official.taipeicitygovernment.ivano-frankivsk.ua -> 14.215.39.157
+解析: mpkrykuslqfijsw-us.fliggynode.com
+成功: mpkrykuslqfijsw-us.fliggynode.com -> 38.150.12.187
+解析: 2bd99c7f16e2d1b11ec588f361a2481a.lh.gtm.node-is.green
+成功: 2bd99c7f16e2d1b11ec588f361a2481a.lh.gtm.node-is.green -> 18.163.194.91
+解析: hk.bethebest.eu.org
+成功: hk.bethebest.eu.org -> 104.17.25.173
+解析: xj.cokecloud.top
+成功: xj.cokecloud.top -> 178.239.124.134
+解析: b390decf017a411078c6ae369e3bd4b6.v1.cac.node-is.green
+成功: b390decf017a411078c6ae369e3bd4b6.v1.cac.node-is.green -> 18.163.105.19
+解析: sg004.421421.xyz
+成功: sg004.421421.xyz -> 18.140.1.71
+解析: R1.tube-cat.com
+成功: R1.tube-cat.com -> 154.64.226.149
+解析: 83157169-sxr340-syuosn-1mffg.cu.plebai.net
+成功: 83157169-sxr340-syuosn-1mffg.cu.plebai.net -> 157.148.96.94
+解析: e93dc1460215a5e401fda535fcafe829.v1.cac.node-is.green
+成功: e93dc1460215a5e401fda535fcafe829.v1.cac.node-is.green -> 18.163.105.19
+解析: 526ad242a30af401804f2d88c8f026c3.lh.gtm.node-is.green
+成功: 526ad242a30af401804f2d88c8f026c3.lh.gtm.node-is.green -> 18.166.70.110
 解析: series-a2-me.varzesh360.co
 成功: series-a2-me.varzesh360.co -> 131.145.94.49
 解析: series-a2-me.samanehha.co
 成功: series-a2-me.samanehha.co -> 131.145.94.49
-解析: asg.pagate.top
-成功: asg.pagate.top -> 152.69.220.154
-解析: www.Speedtest.Net
-成功: www.Speedtest.Net -> 104.17.148.22
-解析: jp2.aeccssssss.xyz
-成功: jp2.aeccssssss.xyz -> 13.230.110.42
-解析: webshecan.webredirect.org
-失败: webshecan.webredirect.org
-解析: irNt.Nisvn.ir
-失败: irNt.Nisvn.ir
-解析: Speedtest.net
-成功: Speedtest.net -> 151.101.66.219
-解析: g.soskom.ir
-成功: g.soskom.ir -> 10.10.34.36
-解析: avpn6-ir.alborzvpn.xyz
-成功: avpn6-ir.alborzvpn.xyz -> 5.160.152.120
-解析: wivip.dtsazino.com
-成功: wivip.dtsazino.com -> 95.38.210.47
-解析: m1.persiangames.online
-成功: m1.persiangames.online -> 85.133.196.2
-解析: xcvbnnmklo.00890604.xyz
-成功: xcvbnnmklo.00890604.xyz -> 104.21.76.21
-解析: f42a52ebb5b61e17.reality99.shop
-成功: f42a52ebb5b61e17.reality99.shop -> 91.99.96.42
-解析: 638723765344751666.amsterdam-blk-dra.info
-成功: 638723765344751666.amsterdam-blk-dra.info -> 84.32.131.175
-解析: pop.air.1543.0tk8a3a1q4t94dler.com
-成功: pop.air.1543.0tk8a3a1q4t94dler.com -> 180.188.47.33
-解析: nextstepcareer.online
-成功: nextstepcareer.online -> 165.22.74.230
-解析: ttsubadminarsha.zone.id
-成功: ttsubadminarsha.zone.id -> 107.174.11.44
-解析: tci.ir.cloud.us.systemgamingirani.ir
-成功: tci.ir.cloud.us.systemgamingirani.ir -> 5.161.116.233
-解析: a1.gozarino.com
-成功: a1.gozarino.com -> 195.201.47.94
-解析: avalpardakht.com
-成功: avalpardakht.com -> 45.156.187.22
-解析: 92.9extra.site
-成功: 92.9extra.site -> 5.159.49.3
-解析: Parsonline.france-learns.ir
-成功: Parsonline.france-learns.ir -> 92.114.50.227
-解析: geshop.spsvps.com
-成功: geshop.spsvps.com -> 213.238.180.159
-解析: Anony.freaky.gg-moviz.com
-成功: Anony.freaky.gg-moviz.com -> 185.142.158.19
-解析: turkws.configforvpn.fun
-失败: turkws.configforvpn.fun
-解析: jiangzhifg.54264944.xyz
-成功: jiangzhifg.54264944.xyz -> 213.108.198.123
-解析: 96110.cf.09880227.xyz
-失败: 96110.cf.09880227.xyz
-解析: zel1.sareopx.ir
-成功: zel1.sareopx.ir -> 188.75.79.102
-解析: ht1.xservers.ir
-成功: ht1.xservers.ir -> 62.60.159.104
-解析: alfred.dnss-mobile.ir
-成功: alfred.dnss-mobile.ir -> 91.107.187.148
-解析: www.parsvds.ir
-成功: www.parsvds.ir -> 104.21.94.168
-解析: si2.parsafhg.dev
-成功: si2.parsafhg.dev -> 185.232.154.120
-解析: nt.franker.shop
-成功: nt.franker.shop -> 5.159.49.241
-解析: oland.hamrahconfig.ir
-成功: oland.hamrahconfig.ir -> 79.127.70.66
-解析: ger1-tu1.conectbash.info
-成功: ger1-tu1.conectbash.info -> 185.215.228.254
-解析: garnet.torch1.top
-失败: garnet.torch1.top
-解析: Ip-tamiz.barcelonaav.ir
-成功: Ip-tamiz.barcelonaav.ir -> 91.99.128.0
-解析: tel.vpncustomize.reziazaran.ir
-成功: tel.vpncustomize.reziazaran.ir -> 10.10.34.36
-解析: zarin7i.alireza031.pw
-成功: zarin7i.alireza031.pw -> 78.157.59.178
-解析: vpncustomize.cam
-失败: vpncustomize.cam
-解析: ips.configforvpn.fun
-失败: ips.configforvpn.fun
-解析: Www.iranserver.com
-成功: Www.iranserver.com -> 185.116.161.116
-解析: us3.dexlos.com
-成功: us3.dexlos.com -> 44.211.152.232
+解析: ajppp29741.tsttt.top
+成功: ajppp29741.tsttt.top -> 120.253.251.20
+解析: jp-01.legeth.tk
+失败: jp-01.legeth.tk
+解析: esjs.stablize.top
+成功: esjs.stablize.top -> 76.223.54.146
+解析: 5tghyu8.999820.xyz
+失败: 5tghyu8.999820.xyz
+解析: time.is
+成功: time.is -> 172.67.68.157
+解析: 034746559ec24f3a12d9aae83cb7739c.v1.cac.node-is.green
+成功: 034746559ec24f3a12d9aae83cb7739c.v1.cac.node-is.green -> 18.163.105.19
+解析: osl-no-01.fromblancwithlove.com
+成功: osl-no-01.fromblancwithlove.com -> 95.173.205.70
+解析: a5176d05c7b06f5e4931ddb0d0b89951.v1.cac.node-is.green
+成功: a5176d05c7b06f5e4931ddb0d0b89951.v1.cac.node-is.green -> 18.162.116.7
+解析: www.csgo.com
+成功: www.csgo.com -> 195.85.59.161
+解析: nncsg.codesofun.pp.ua
+成功: nncsg.codesofun.pp.ua -> 185.248.187.69
+解析: tw5.7896543.xyz
+成功: tw5.7896543.xyz -> 1.170.201.77
+解析: 4ff13ab95865d66ad650583febae4958.v1.cac.node-is.green
+成功: 4ff13ab95865d66ad650583febae4958.v1.cac.node-is.green -> 43.198.245.7
+解析: sz03.fq-number-001.co
+成功: sz03.fq-number-001.co -> 91.103.122.139
+解析: join.unlimiteddev.fastly80-3.hosting-ip.com
+成功: join.unlimiteddev.fastly80-3.hosting-ip.com -> 151.101.194.165
+解析: tw7.344233.cc
+成功: tw7.344233.cc -> 36.227.253.157
+解析: 1a233a491e69ef9c637da952c091f170.v1.cac.node-is.green
+成功: 1a233a491e69ef9c637da952c091f170.v1.cac.node-is.green -> 43.198.245.7
+解析: cokecloudjp.cokecloud.top
+成功: cokecloudjp.cokecloud.top -> 42.4.52.152
+解析: 805aeed04d24b2f03a3f19a21a65d624.v1.cac.node-is.green
+成功: 805aeed04d24b2f03a3f19a21a65d624.v1.cac.node-is.green -> 43.198.245.7
+解析: official.taipeicitygovernment.co.ua
+成功: official.taipeicitygovernment.co.ua -> 120.241.226.93
+解析: 27644c661ba0b8397ef7e0bd479b8abe.v1.cac.node-is.green
+成功: 27644c661ba0b8397ef7e0bd479b8abe.v1.cac.node-is.green -> 18.163.102.188
+解析: ade8519ef3c49335cc334d9c52bbc4f6.v1.cac.node-is.green
+成功: ade8519ef3c49335cc334d9c52bbc4f6.v1.cac.node-is.green -> 18.163.102.188
+解析: official.taipeicitygovernment.org.ua
+成功: official.taipeicitygovernment.org.ua -> 14.215.39.158
+解析: a794d127ad58f4302028de3d798b613f.v1.cac.node-is.green
+成功: a794d127ad58f4302028de3d798b613f.v1.cac.node-is.green -> 43.198.245.7
+解析: 239d03dd779f7a9d8a969936b619944b.v1.cac.node-is.green
+成功: 239d03dd779f7a9d8a969936b619944b.v1.cac.node-is.green -> 18.163.105.19
+解析: phx-plus-1ddns.faforex.eu.org
+成功: phx-plus-1ddns.faforex.eu.org -> 129.146.172.127
+解析: bpbv2ray.xlz767.ip-ddns.com
+成功: bpbv2ray.xlz767.ip-ddns.com -> 172.66.47.179
+解析: c8ed3f526970a67d59163631d449d87b.lh.gtm.node-is.green
+成功: c8ed3f526970a67d59163631d449d87b.lh.gtm.node-is.green -> 18.166.65.133
+解析: lh.node-is.green
+成功: lh.node-is.green -> 183.233.187.222
+解析: f07ca2cffd2ab18e193cf067858d3e9d.v1.cac.node-is.green
+成功: f07ca2cffd2ab18e193cf067858d3e9d.v1.cac.node-is.green -> 18.162.116.7
+解析: jp.mjt000.com
+成功: jp.mjt000.com -> 172.192.14.195
+解析: official.tokyometropolis.ivano-frankivsk.ua
+成功: official.tokyometropolis.ivano-frankivsk.ua -> 120.241.226.94
+解析: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd
+成功: c8217-b2a.h2.49d2.jse11.3.b297.djjsvip.cfd -> 18.139.175.36
+解析: kaizen-jp-11.mielink-dns2.com
+成功: kaizen-jp-11.mielink-dns2.com -> 199.59.243.228
+解析: flv4-vip.digitalldns.com
+成功: flv4-vip.digitalldns.com -> 109.61.17.181
+解析: 478c83fd7ed8d84a106df87fa34c0224.v1.cac.node-is.green
+成功: 478c83fd7ed8d84a106df87fa34c0224.v1.cac.node-is.green -> 18.163.105.19
+解析: 0f0fc9f27a4a433eb369bfcc1fd97a45.v1.cac.node-is.green
+成功: 0f0fc9f27a4a433eb369bfcc1fd97a45.v1.cac.node-is.green -> 18.163.105.19
+解析: sssxxxcft6.444752.xyz
+成功: sssxxxcft6.444752.xyz -> 104.21.66.86
+解析: ru01.trojanyyds.xyz
+成功: ru01.trojanyyds.xyz -> 48.210.245.1
+解析: gsawsjp1.aiopen.cfd
+成功: gsawsjp1.aiopen.cfd -> 172.233.219.78
+解析: b841feb16b918e7f91e87f6dbfd001f2.v1.cac.node-is.green
+成功: b841feb16b918e7f91e87f6dbfd001f2.v1.cac.node-is.green -> 18.166.70.110
+解析: pq.hinet.tw3.yydjc.top
+成功: pq.hinet.tw3.yydjc.top -> 1.162.155.85
+解析: 27f02655fd3743deb10bf75a9656d7ea.v1.cac.node-is.green
+成功: 27f02655fd3743deb10bf75a9656d7ea.v1.cac.node-is.green -> 18.166.70.110
+解析: elma.ns.cloudflare.com
+成功: elma.ns.cloudflare.com -> 108.162.192.154
+解析: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd
+成功: c8217-b2a.h2.49d2.jse11.4.b297.djjsvip.cfd -> 13.213.58.33
+解析: 3722a7fef515429e4896b9c6d3af2a34.v1.cac.node-is.green
+成功: 3722a7fef515429e4896b9c6d3af2a34.v1.cac.node-is.green -> 18.162.116.7
+解析: knowledgemap.ubntddns.com
+成功: knowledgemap.ubntddns.com -> 195.133.11.229
+解析: hk5.microsoft-orgwly.vip
+成功: hk5.microsoft-orgwly.vip -> 91.229.132.164
+解析: relaxed-jaybird.treefrog761.one
+成功: relaxed-jaybird.treefrog761.one -> 91.195.240.94
+解析: russia.com
+成功: russia.com -> 104.26.4.57
+解析: console.02.aliyun.aq.kunlunaqs.com
+成功: console.02.aliyun.aq.kunlunaqs.com -> 58.63.247.149
+解析: speedtest.org
+成功: speedtest.org -> 172.67.130.66
+解析: 1e5ffbc8c2664ce555de009b263965c4.v1.cac.node-is.green
+成功: 1e5ffbc8c2664ce555de009b263965c4.v1.cac.node-is.green -> 18.162.116.7
+解析: 8fbf85807403e9194c9f2d80dc2fcd21.v1.cac.node-is.green
+成功: 8fbf85807403e9194c9f2d80dc2fcd21.v1.cac.node-is.green -> 18.166.65.133
+解析: nufilter.fastly80-3.hosting-ip.com
+成功: nufilter.fastly80-3.hosting-ip.com -> 151.101.64.155
+解析: join.my.telegram.channel.cmliussss.to.unlock.more.premium.nodes.cf.090227.xyz
+成功: join.my.telegram.channel.cmliussss.to.unlock.more.premium.nodes.cf.090227.xyz -> 104.16.250.22
+解析: cshgz1.fuckcdn.top
+成功: cshgz1.fuckcdn.top -> 120.238.144.176
+解析: official.taipeicitygovernment.net.ua
+成功: official.taipeicitygovernment.net.ua -> 120.241.226.93
+解析: abbf028edd6027658865f64d1c873355.v1.cac.node-is.green
+成功: abbf028edd6027658865f64d1c873355.v1.cac.node-is.green -> 18.166.65.133
+解析: md.nsa.cc
+成功: md.nsa.cc -> 104.18.25.75
+解析: official.tokyometropolis.kherson.ua
+成功: official.tokyometropolis.kherson.ua -> 120.241.226.93
+解析: kh.mjt000.com
+成功: kh.mjt000.com -> 172.192.14.195
+解析: IEPL.tube-cat.com
+成功: IEPL.tube-cat.com -> 157.254.38.210
+解析: bca6efd4650af891b8657425a974e4d2.v1.cac.node-is.green
+成功: bca6efd4650af891b8657425a974e4d2.v1.cac.node-is.green -> 18.166.65.133
+解析: series-a1.samanehha.co
+成功: series-a1.samanehha.co -> 172.187.104.55
+解析: c8217-b2a.h3.49d2.5e11.613.b297.djjsvip.cfd
+成功: c8217-b2a.h3.49d2.5e11.613.b297.djjsvip.cfd -> 112.120.48.45
+解析: series-v1.samanehha.co
+成功: series-v1.samanehha.co -> 172.67.131.245
+解析: admin.c3.havij.co
+成功: admin.c3.havij.co -> 131.145.94.49
+解析: cf.dalazhi.eu.org
+成功: cf.dalazhi.eu.org -> 141.101.121.157
+解析: 2z4xeackauvjtt6o2czshcyn447sj5qz.08.06.jp.6l6.site
+成功: 2z4xeackauvjtt6o2czshcyn447sj5qz.08.06.jp.6l6.site -> 120.233.87.89
+解析: skk.moe
+成功: skk.moe -> 172.67.2.238
+解析: xjp-jd.huidu51.com
+成功: xjp-jd.huidu51.com -> 120.241.29.63
 解析: zula.ir
 成功: zula.ir -> 194.50.216.61
-解析: arvancloud.fn.ir.systemgamingirani.ir
-成功: arvancloud.fn.ir.systemgamingirani.ir -> 103.252.90.40
-解析: de.aeccssssss.xyz
-成功: de.aeccssssss.xyz -> 156.226.175.189
-解析: us.aeccssssss.xyz
-成功: us.aeccssssss.xyz -> 72.249.200.227
-解析: Www.Speedtest.net
-成功: Www.Speedtest.net -> 104.17.147.22
+解析: account-mec.emofid.co
+成功: account-mec.emofid.co -> 85.210.221.139
+解析: cajs.stablize.top
+成功: cajs.stablize.top -> 13.248.169.48
+解析: a045c436c8b2bae51cea22936dcec33e.v1.cac.node-is.green
+成功: a045c436c8b2bae51cea22936dcec33e.v1.cac.node-is.green -> 18.163.105.19
 解析: www.speedtest.net
-成功: www.speedtest.net -> 104.17.148.22
-解析: hgold.youirme.com
-成功: hgold.youirme.com -> 5.159.49.232
-解析: cdn.goferi.top
-成功: cdn.goferi.top -> 185.126.200.78
-解析: SVNTEAM.MiSVN.iR
-失败: SVNTEAM.MiSVN.iR
-解析: root.configforvpn.fun
-失败: root.configforvpn.fun
-解析: base.apkfa.com
-成功: base.apkfa.com -> 194.39.248.3
-解析: tw.xiao666666.site
-成功: tw.xiao666666.site -> 1.168.160.56
-解析: 2irmo.musicbama4.monster
-成功: 2irmo.musicbama4.monster -> 62.60.204.74
-解析: n1.cafedorehami.shop
-成功: n1.cafedorehami.shop -> 209.38.184.90
-解析: api.turkiye6.xyz
-失败: api.turkiye6.xyz
-解析: sn434.nikatel.uno
-成功: sn434.nikatel.uno -> 185.124.175.216
-解析: stjadgal.golden-ping.ir
-成功: stjadgal.golden-ping.ir -> 2.188.224.5
-解析: get-admin-upanel.poqpoq.cfd
-失败: get-admin-upanel.poqpoq.cfd
-解析: fr1.test3.net
-成功: fr1.test3.net -> 51.210.182.170
-解析: tw5.ddns-link-b5.uk
-成功: tw5.ddns-link-b5.uk -> 1.160.5.70
-解析: Wise.com
-成功: Wise.com -> 172.64.148.140
-解析: vip.zoohall.ir
-成功: vip.zoohall.ir -> 92.114.24.6
-解析: telegram.vpncustomize.vpncustomize.reziazaran.ir
-成功: telegram.vpncustomize.vpncustomize.reziazaran.ir -> 85.210.221.139
-解析: Arv2ry.fastly80.hosting-ip.com
-成功: Arv2ry.fastly80.hosting-ip.com -> 151.101.64.155
-解析: mzatu.lizardshop.org
-成功: mzatu.lizardshop.org -> 185.14.160.130
-解析: Networknim.cam
-成功: Networknim.cam -> 45.94.213.137
-解析: sv1.filmnetd.xyz
-成功: sv1.filmnetd.xyz -> 81.12.33.41
-解析: kinsta.sic.al
-成功: kinsta.sic.al -> 37.27.91.74
-解析: ns.cloudflare.com
-成功: ns.cloudflare.com -> 173.245.58.100
-解析: am.france-learns.ir
-成功: am.france-learns.ir -> 92.223.2.56
-解析: home.phpdeb.ir
-成功: home.phpdeb.ir -> 46.38.148.157
-预解析完成: 353 成功，64 失败
+成功: www.speedtest.net -> 104.17.147.22
+解析: www.ddwhm.com
+成功: www.ddwhm.com -> 172.67.173.165
+解析: gshinet1.aiopen.cfd
+成功: gshinet1.aiopen.cfd -> 172.233.219.78
+解析: cache-giver-wife.stark-industries.solutions
+成功: cache-giver-wife.stark-industries.solutions -> 94.131.20.3
+解析: kaizen-tw-3.mielink-dns2.com
+成功: kaizen-tw-3.mielink-dns2.com -> 199.59.243.228
+解析: ukt-2.opensvr.net
+成功: ukt-2.opensvr.net -> 208.91.197.132
+解析: 0ec6d1ab6552d7d1024619b72180c837.v1.cac.node-is.green
+成功: 0ec6d1ab6552d7d1024619b72180c837.v1.cac.node-is.green -> 18.166.70.110
+解析: tg.wxgqlfx.top
+成功: tg.wxgqlfx.top -> 58.72.194.86
+解析: 824020ac65531f8decfc937432351874.v1.cac.node-is.green
+成功: 824020ac65531f8decfc937432351874.v1.cac.node-is.green -> 54.46.46.224
+解析: pq.aws13.yydjc.top
+成功: pq.aws13.yydjc.top -> 219.76.131.136
+解析: d40d0a8ee16fdccc8ee3df267560360a.lh.gtm.node-is.green
+成功: d40d0a8ee16fdccc8ee3df267560360a.lh.gtm.node-is.green -> 18.163.194.91
+解析: d8dbdce9ae55066ab62786b8de775dda.v1.cac.node-is.green
+成功: d8dbdce9ae55066ab62786b8de775dda.v1.cac.node-is.green -> 54.46.46.224
+解析: 1a5ad85d9be51d7385a669cc6148fc42.lh.gtm.node-is.green
+成功: 1a5ad85d9be51d7385a669cc6148fc42.lh.gtm.node-is.green -> 18.166.65.133
+解析: tk.hzlt.tkddns.xyz
+成功: tk.hzlt.tkddns.xyz -> 134.175.197.167
+解析: 7.wyhkaa0.gq
+失败: 7.wyhkaa0.gq
+解析: spb1.fromblancwithlove.com
+成功: spb1.fromblancwithlove.com -> 188.124.37.132
+解析: 1750036341.tencentapp.cn
+成功: 1750036341.tencentapp.cn -> 141.101.120.245
+解析: 946b3b9aafcfe14e11134cd6b5970e48.lh.gtm.node-is.green
+成功: 946b3b9aafcfe14e11134cd6b5970e48.lh.gtm.node-is.green -> 18.166.65.133
+解析: sg.mjt000.com
+成功: sg.mjt000.com -> 172.192.14.195
+解析: 8bb66b54021687a1f96cf536a3d74f8a.v1.cac.node-is.green
+成功: 8bb66b54021687a1f96cf536a3d74f8a.v1.cac.node-is.green -> 18.163.102.188
+解析: 129d6ff3361bbd77729c01779c5e8cd9.lh.gtm.node-is.green
+成功: 129d6ff3361bbd77729c01779c5e8cd9.lh.gtm.node-is.green -> 54.46.46.224
+解析: jp002.421421.xyz
+成功: jp002.421421.xyz -> 18.183.132.53
+解析: ap.liangyuandian.top
+成功: ap.liangyuandian.top -> 172.192.28.185
+解析: pq.aws11.yydjc.top
+成功: pq.aws11.yydjc.top -> 112.120.48.162
+解析: 4db1f57d928631232588ef0dffc054fb.v1.cac.node-is.green
+成功: 4db1f57d928631232588ef0dffc054fb.v1.cac.node-is.green -> 54.46.46.224
+解析: a51572bdece33dccd3e9a61ae2f5ee79.v1.cac.node-is.green
+成功: a51572bdece33dccd3e9a61ae2f5ee79.v1.cac.node-is.green -> 43.198.245.7
+解析: cb8d384e1a20cfacbb9fb9c422c65bde.v1.cac.node-is.green
+成功: cb8d384e1a20cfacbb9fb9c422c65bde.v1.cac.node-is.green -> 43.198.245.7
+解析: thaddeus.ns.cloudflare.com
+成功: thaddeus.ns.cloudflare.com -> 172.64.35.127
+解析: jp06a.roc-taiwan.org.ua
+成功: jp06a.roc-taiwan.org.ua -> 153.120.4.221
+解析: pq.aws58.yydjc.top
+成功: pq.aws58.yydjc.top -> 13.213.64.212
+解析: kyree.ns.cloudflare.com
+成功: kyree.ns.cloudflare.com -> 162.159.44.207
+解析: m.cnmjcn.com
+成功: m.cnmjcn.com -> 36.156.184.40
+解析: de.liangyuandian.top
+成功: de.liangyuandian.top -> 172.192.28.185
+解析: expressvpn_420.fast.hosting-ip.com
+成功: expressvpn_420.fast.hosting-ip.com -> 151.101.64.155
+解析: kaizen-tw-2.mielink-dns2.com
+成功: kaizen-tw-2.mielink-dns2.com -> 199.59.243.228
+解析: 01a2e67ddcb56dbe8958524d438bafc9.v1.cac.node-is.green
+成功: 01a2e67ddcb56dbe8958524d438bafc9.v1.cac.node-is.green -> 18.163.102.188
+解析: jp003.421421.xyz
+成功: jp003.421421.xyz -> 43.206.218.216
+解析: kr1.sanfen001.pics
+成功: kr1.sanfen001.pics -> 103.224.182.210
+解析: www.glassdoor.com
+成功: www.glassdoor.com -> 104.17.64.70
+解析: 19211tj.matrixxx888.com
+成功: 19211tj.matrixxx888.com -> 103.135.102.151
+解析: chun-001.oci.ee
+成功: chun-001.oci.ee -> 134.185.113.83
+解析: aws-se-stockholm-1.f1cflinea.com
+成功: aws-se-stockholm-1.f1cflinea.com -> 104.21.73.195
+解析: mpkrykuslqfijsw-jp.fliggynode.com
+成功: mpkrykuslqfijsw-jp.fliggynode.com -> 38.150.12.188
+解析: 13c2c931-swin40-swy6li-tni2.cu.plebai.net
+成功: 13c2c931-swin40-swy6li-tni2.cu.plebai.net -> 157.148.96.92
+预解析完成: 608 成功，23 失败
 更新缓存...
 缓存更新完成
 开始分批测试...
-处理批次: node_batch_aa (3619 节点)
+处理批次: node_batch_aa (10000 节点)
+处理批次: node_batch_ab (10000 节点)
+处理批次: node_batch_ac (791 节点)
 测试完成。结果: data/node_connectivity_results.log
 成功节点: data/sub.txt
+解析错误日志: data/parse_errors.log
+解析失败节点数: 0
