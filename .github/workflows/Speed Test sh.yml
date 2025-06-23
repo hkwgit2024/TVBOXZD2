@@ -19,12 +19,12 @@ jobs:
         run: |
           echo "正在更新 apt 软件包列表并安装依赖项..."
           sudo apt-get update || { echo "错误：apt-get update 失败，无法继续安装依赖项。" >&2; exit 1; }
-          sudo apt-get install -y curl coreutils git netcat-traditional dnsutils || { echo "错误：安装核心依赖项失败。" >&2; exit 1; }
+          sudo apt-get install -y curl coreutils git netcat-traditional dnsutils jq || { echo "错误：安装核心依赖项失败。" >&2; exit 1; }
           echo "核心依赖项安装完成。"
 
       - name: 运行节点连通性测试脚本
         run: |
-          chmod +x speed_test.sh # 赋予脚本执行权限
+          chmod +x speed_test.sh # 赋予执行权限
           echo "正在执行 speed_test.sh 脚本..."
           ./speed_test.sh
           if [ $? -ne 0 ]; then
@@ -46,7 +46,7 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
 
-          # 确保本地分支是最新的，但不要删除新生成的文件
+          # 确保本地分支是最新的
           echo "正在同步本地分支到远程仓库..."
           git fetch origin
           git checkout main # 确保在 main 分支
