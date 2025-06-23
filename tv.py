@@ -17,7 +17,7 @@ import yaml
 import base64
 
 # Configure logging
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Get configuration from environment variables
 GITHUB_TOKEN = os.getenv('BOT')
