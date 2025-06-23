@@ -12,15 +12,15 @@ OUTPUT_FILE="$OUTPUT_DIR/sub.txt"
 MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt"
 
 # DNS 缓存文件路径
-DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.txt"  # 改为简单文本格式
+DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.txt"
 # DNS 缓存有效期（秒），72 小时
 CACHE_EXPIRATION_SECONDS=$((72 * 60 * 60))
 
 # 并发测试数量
-MAX_CONCURRENT_JOBS=2  # 降低并发数
+MAX_CONCURRENT_JOBS=2
 
 # 单节点连接测试超时时间（秒）
-NODE_CONNECT_TIMEOUT=1  # 降低超时时间
+NODE_CONNECT_TIMEOUT=1
 
 # 每批处理节点数
 BATCH_SIZE=10000
@@ -51,7 +51,9 @@ CURRENT_TIME=$(date +%s)
 # 检查是否为有效 IPv4 或 IPv6 地址
 is_ip_address() {
     local host="$1"
-    if echo "$host" | grep -Eq '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'; elif echo "$host" | grep -Eq '^\[?[0-9a-fA-F:]+\]?$'; then
+    if echo "$host" | grep -Eq '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'; then
+        return 0
+    elif echo "$host" | grep -Eq '^\[?[0-9a-fA-F:]+\]?$'; then
         return 0
     fi
     return 1
@@ -144,7 +146,7 @@ test_node_connectivity() {
     local PORT=""
     local HOSTNAME_OR_IP=""
     local PARSED_DETAILS=""
-    local MAX_RETRIES=1  # 减少重试次数
+    local MAX_RETRIES=1
 
     [ "$DEBUG" = "1" ] && echo "DEBUG [test_node_connectivity]: 处理链接: $NODE_LINK" >> "$TEMP_LOG_FILE"
 
