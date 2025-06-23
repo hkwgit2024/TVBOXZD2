@@ -1,175 +1,144 @@
 import requests
+import re
+import json # 尽管不再直接加载config.json，但json库可能仍用于其他调试或未来功能
 import os
-from datetime import datetime
-import yaml
-import urllib3
-from concurrent.futures import ThreadPoolExecutor
+import yaml # 导入 PyYAML 库
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+# 定义输入和输出文件
+RAW_IPTV_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/iptv_list.txt"
+CATEGORIES_FILE = "categories.yaml" # 修改为 YAML 文件名
+OUTPUT_FILE = "tv.list.txt"
 
-def load_config():
-    """加载分类配置文件"""
-    config_path = 'categories.yaml'
-    if not os.path.exists(config_path):
-        print("未找到 categories.yaml 文件，使用默认配置", flush=True)
-        return {
-            '新闻': ['ABCNews', 'CBNNews', 'CCTV1', '非凡新闻', '香港Now新闻CH332', '香港卫视'],
-            '电影': ['12.周星驰电影', '16.豆瓣高分', '19.宇哥电影', 'AXN电影', '湖南电影', '美亚电影', '龙华电影', '龙祥电影'],
-            '卡通': ['金鹰卡通', '靖天卡通', '龙华卡通'],
-            '综艺': ['澳视综艺', '澳视资讯', '澳门莲花'],
-            '其他': []
-        }
-    
-    with open(config_path, 'r', encoding='utf-8') as f:
-        return yaml.safe_load(f)
-
-def test_url(url, timeout=10):
-    """测试URL是否可连接"""
-    print(f"开始测试: {url}", flush=True)
+def check_link_connectivity(url: str) -> bool:
+    """
+    占位符：检查IPTV链接的连通性。
+    Args:
+        url: IPTV链接。
+    Returns:
+        如果链接可达且返回状态码小于400，则为True，否则为False。
+    """
+    if not url.startswith("http"):
+        return False
     try:
-        response = requests.head(url, timeout=timeout, verify=False, allow_redirects=True)
-        if response.status_code == 200:
-            print(f"成功: {url} (状态码: 200)", flush=True)
+        response = requests.get(url, timeout=5, stream=True) 
+        if 200 <= response.status_code < 400:
             return True
-        else:
-            print(f"失败: {url} (状态码: {response.status_code})", flush=True)
-            return False
-    except requests.RequestException as e:
-        print(f"失败: {url} (错误: {e})", flush=True)
+        return False
+    except requests.exceptions.RequestException:
         return False
 
-def test_urls(urls, timeout=10, max_workers=3):
-    """并行测试多个URL"""
-    if not urls:
-        print("警告: 没有URL需要测试", flush=True)
-        return []
-    print(f"测试URL列表: {urls}", flush=True)
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results = list(executor.map(lambda url: (url, test_url(url, timeout)), urls))
-    valid_urls = [url for url, is_valid in results if is_valid]
-    print(f"有效URL: {valid_urls}", flush=True)
-    return valid_urls
+def load_categories_config():
+    """加载分类配置文件 (YAML 格式)"""
+    if os.path.exists(CATEGORIES_FILE):
+        with open(CATEGORIES_FILE, 'r', encoding='utf-8') as f:
+            return yaml.safe_load(f)
+    print(f"警告: {CATEGORIES_FILE} 文件未找到，将使用默认空分类配置。")
+    # 提供一个默认的空配置，以确保脚本不会崩溃
+    return {"新闻": [], "电影": [], "卡通": [], "综艺": [], "其他": []}
 
-def parse_iptv_list(url):
-    """从远程URL解析IPTV列表"""
-    channels = {}
-    current_channel = None
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            print(f"错误: 无法访问 {url} (状态码: {response.status_code})", flush=True)
-            return channels
-        
-        lines = response.text.strip().splitlines()
-        if not lines:
-            print(f"错误: {url} 内容为空", flush=True)
-            return channels
-            
-        for line in lines:
-            line = line.strip()
-            print(f"解析行: '{line}'", flush=True)
-            if not line or line.startswith('更新时间') or line == '#genre#':
-                print(f"跳过无效行: '{line}'", flush=True)
-                continue
-                
-            # 处理制表符分隔的行
-            parts = line.split('\t')
-            if len(parts) >= 2 and parts[1].startswith('http'):
-                channel = parts[0].strip()
-                url = parts[1].strip()
-                channels[channel] = channels.get(channel, []) + [url]
-                print(f"发现频道: '{channel}', URL: '{url}'", flush=True)
-            elif len(parts) == 1 and parts[0].startswith('http'):
-                if current_channel:
-                    channels[current_channel].append(parts[0])
-                    print(f"添加URL: '{parts[0]}'", flush=True)
-                else:
-                    print(f"警告: 发现URL '{parts[0]}' 但没有关联的频道", flush=True)
-            elif len(parts) == 1 and not parts[0].startswith('http'):
-                current_channel = parts[0].strip()
-                channels[current_channel] = []
-                print(f"发现频道: '{current_channel}'", flush=True)
-    
-    except requests.RequestException as e:
-        print(f"错误: 无法访问 {url} (错误: {e})", flush=True)
-        return channels
-    
-    print(f"解析结果: {channels}", flush=True)
-    return channels
-
-def generate_category_template(channels, config_file='categories.yaml'):
-    """生成分类配置文件"""
-    if not os.path.exists(config_file):
-        default_config = {
-            '新闻': [],
-            '电影': [],
-            '卡通': [],
-            '综艺': [],
-            '其他': list(channels.keys())
-        }
-        with open(config_file, 'w', encoding='utf-8') as f:
-            yaml.safe_dump(default_config, f, allow_unicode=True, sort_keys=False)
-        print(f"生成分类模板: '{config_file}'", flush=True)
-
-def categorize_channels(channels, config):
-    """根据配置文件分类频道"""
-    categorized = {c: [] for c in config.keys()}
-    for channel, urls in channels.items():
-        assigned = False
-        for category, channel_list in config.items():
-            if channel in channel_list:
-                categorized[category].append((channel, urls))
-                assigned = True
-                break
-        if not assigned:
-            categorized['其他'].append((channel, urls))
-    print(f"分类结果: {categorized}", flush=True)
-    return categorized
-
-def save_valid_channels(categorized_channels, output_file):
-    """保存有效频道到输出文件，并记录错误日志"""
-    error_log = []
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(f'# IPTV List - Generated at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
-        f.write('#genre#\n')
-        
-        for category, channels in categorized_channels.items():
-            if channels:
-                f.write(f'\n{category},#genre#\n')
-                for channel, urls in channels:
-                    valid_urls = test_urls(urls)
-                    if valid_urls:
-                        f.write(f'{channel}\n')
-                        for url in valid_urls:
-                            f.write(f'{url}\n')
-                    for url in urls:
-                        if url not in valid_urls:
-                            error_log.append(f"{channel}: {url} - 失败")
-    
-    if error_log:
-        with open('test_errors.log', 'w', encoding='utf-8') as log:
-            log.write('\n'.join(error_log) + '\n')
-        print(f"错误日志已生成: test_errors.log", flush=True)
-    else:
-        print("没有测试失败的链接", flush=True)
+def save_tv_list(categorized_channel_names):
+    """将分类后的频道名称保存到tv.list.txt，按照指定格式"""
+    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+        for category, channel_names in categorized_channel_names.items():
+            f.write(f"{category}:\n")
+            if channel_names:
+                for name in sorted(channel_names): # 按名称排序输出
+                    f.write(f"  - {name}\n")
+            else:
+                f.write("  - []\n") # 如果该分类下没有频道，输出 - []
+            f.write("\n") # 每个分类后空一行
 
 def main():
-    input_file = 'https://raw.githubusercontent.com/qjlxg/vt/main/iptv_list.txt'
-    output_file = 'tv_list.txt'
+    print(f"开始处理 IPTV 列表...")
     
-    channels = parse_iptv_list(input_file)
-    if not channels:
-        print(f"错误: 没有解析到任何频道或URL，检查 {input_file}", flush=True)
-        return
-    
-    generate_category_template(channels)
-    config = load_config()
-    categorized_channels = categorize_channels(channels, config)
-    save_valid_channels(categorized_channels, output_file)
-    print(f"已生成有效频道列表: {output_file}", flush=True)
-    if os.path.exists('test_errors.log'):
-        print(f"测试错误日志已保存至: test_errors.log", flush=True)
+    # 1. 下载原始 IPTV 列表
+    try:
+        response = requests.get(RAW_IPTV_URL, timeout=10)
+        response.raise_for_status()  # 检查HTTP错误
+        raw_content = response.text
+        print(f"成功下载原始 IPTV 列表。")
+    except requests.exceptions.RequestException as e:
+        print(f"下载原始 IPTV 列表失败: {e}")
+        exit(1)
 
-if __name__ == '__main__':
+    # 2. 解析原始内容
+    parsed_channels = [] # List of {"name": ..., "url": ...}
+    lines = raw_content.splitlines()
+    for line in lines:
+        # 使用正则表达式匹配 "频道名称,链接" 的模式
+        match = re.match(r'([^,]+),(https?://.*)', line)
+        if match:
+            name = match.group(1).strip()
+            url = match.group(2).strip()
+            parsed_channels.append({"name": name, "url": url})
+
+    print(f"从原始列表中解析到 {len(parsed_channels)} 个频道条目 (名称,链接对)。")
+
+    # 3. 加载分类配置文件
+    defined_categories = load_categories_config()
+    # 假设 additional_channels 不再通过 categories.yaml 管理，如果需要，请告诉我如何处理
+
+    # 4. 合并所有待处理的频道 (目前只来自原始IPTV列表)，并建立一个 name -> [working_url1, working_url2, ...] 的映射
+    channel_name_to_working_urls = {}
+    all_channels_to_process = parsed_channels # 此时只包含从 RAW_IPTV_URL 解析出的频道
+
+    print("开始检查所有频道的连通性...")
+    total_checked_urls = 0
+    total_working_urls = 0
+
+    for channel_data in all_channels_to_process:
+        name = channel_data["name"]
+        url = channel_data["url"]
+        
+        total_checked_urls += 1
+        if check_link_connectivity(url):
+            if name not in channel_name_to_working_urls:
+                channel_name_to_working_urls[name] = []
+            channel_name_to_working_urls[name].append(url)
+            total_working_urls += 1
+            # print(f"  [可用] {name}: {url}") # 调试用
+        # else:
+            # print(f"  [不可用] {name}: {url}") # 调试用
+
+    print(f"总共检查了 {total_checked_urls} 个URL，其中 {total_working_urls} 个URL连通。")
+    print(f"发现 {len(channel_name_to_working_urls)} 个频道名称至少有一个可用URL。")
+
+    # 5. 根据配置文件中的分类列表生成最终输出结构
+    final_categorized_output_names = {}
+    
+    # 初始化所有自定义分类
+    for category_name in defined_categories.keys():
+        final_categorized_output_names[category_name] = []
+
+    # 填充明确指定分类的频道
+    for category_name, expected_channel_names in defined_categories.items():
+        for expected_name in expected_channel_names:
+            if expected_name in channel_name_to_working_urls and channel_name_to_working_urls[expected_name]:
+                # 只有当这个频道名称有可用的URL时才加入最终列表
+                final_categorized_output_names[category_name].append(expected_name)
+    
+    # 处理 "其他" 分类，将所有未明确分类且有可用URL的频道放入
+    # 找到所有在 categories.yaml 的 categories 中没有出现过的 channel_name，并且这些 channel_name 必须有可用的URL
+    all_explicitly_listed_names = set()
+    for names_list in defined_categories.values():
+        all_explicitly_listed_names.update(names_list)
+
+    other_channels_found = []
+    for name in channel_name_to_working_urls.keys():
+        if name not in all_explicitly_listed_names:
+            other_channels_found.append(name)
+    
+    # 确保 '其他' 分类存在 (从 categories.yaml 加载时已经初始化了，或在默认配置中)
+    if '其他' not in final_categorized_output_names:
+        final_categorized_output_names['其他'] = []
+    
+    # 将找到的 '其他' 频道添加到 '其他' 分类中
+    final_categorized_output_names['其他'].extend(other_channels_found)
+
+
+    # 6. 保存到文件
+    save_tv_list(final_categorized_output_names)
+    print(f"处理完成，连通并分类的频道已保存到 {OUTPUT_FILE}。")
+
+if __name__ == "__main__":
     main()
