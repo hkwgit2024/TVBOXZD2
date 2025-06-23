@@ -43,6 +43,9 @@ def check_ffmpeg_playback(url: str) -> bool:
         null_device
     ]
     
+    # 初始化 process 变量为 None，以避免 'cannot access local variable 'process'' 错误
+    process = None 
+
     try:
         # 运行 FFmpeg 命令
         # 警告: 这将为每次调用启动一个外部 FFmpeg 进程。
@@ -59,29 +62,30 @@ def check_ffmpeg_playback(url: str) -> bool:
         if process.returncode == 0:
             # 即使返回码为0，也可能在 stderr 中有警告或轻微错误
             # 检查关键的错误提示，以排除无效流
+            # 频繁打印会污染日志，通常在调试时取消注释
             if "Input/output error" in process.stderr or \
                "Connection refused" in process.stderr or \
                "Protocol not found" in process.stderr or \
                "No such file or directory" in process.stderr or \
                "Invalid data found when processing input" in process.stderr or \
-               "failed to open" in process.stderr: # 增加更多常见错误判断
-                print(f"    FFmpeg ({url}) 报告内部错误或无效数据，可能无法正常播放。")
+               "failed to open" in process.stderr: 
+                # print(f"    FFmpeg ({url}) 报告内部错误或无效数据，可能无法正常播放。") 
                 return False
             # 如果没有明显的错误，则认为播放成功
             return True
         else:
             # 非零返回码通常表示错误
-            # print(f"    FFmpeg ({url}) 测试失败 (Exit Code: {process.returncode}). 错误信息:\n{process.stderr.strip()}")
+            # print(f"    FFmpeg ({url}) 测试失败 (Exit Code: {process.returncode}). 错误信息:\n{process.stderr.strip()}") 
             return False
 
-    except subprocess.TimeoutExpired:
-        print(f"    FFmpeg ({url}) 测试超时 (超过 {process.timeout} 秒)。")
+    except subprocess.TimeoutExpired as e:
+        # print(f"    FFmpeg ({url}) 测试超时 (超过 {e.timeout} 秒)。")
         return False
     except FileNotFoundError:
         print(f"错误: FFmpeg 命令 '{FFMPEG_PATH}' 未找到。请确保 FFmpeg 已安装并位于系统 PATH 中。")
         return False
     except Exception as e:
-        print(f"    FFmpeg ({url}) 测试异常: {e}")
+        # print(f"    FFmpeg ({url}) 测试异常: {e}")
         return False
 
 # --- 核心连通性检查函数 ---
@@ -144,7 +148,9 @@ def check_link_connectivity(channel_data: dict) -> tuple:
                 return (channel_data, False) # M3U8 清单未更新，可能不是直播电视节目
 
             # --- 子链接连通性检查 (使用第二次获取到的最新清单中的子链接) ---
-            sub_link_match = re.search(r'(https?://[^"\s]+?\.m3u8|\S+\.ts)', m3u8_content_second)
+            # 修正正则表达式，使其更健壮地匹配各种M3U8子链接或ts片段
+            # 常见情况：相对路径的ts片段，或者完整的m3u8/ts链接
+            sub_link_match = re.search(r'(https?://[^"\s]+?\.m3u8|\S+\.ts|\S+\.mp4)', m3u3_content_second)
             
             if sub_link_match:
                 sub_link = sub_link_match.group(0)
@@ -160,6 +166,7 @@ def check_link_connectivity(channel_data: dict) -> tuple:
                 return (channel_data, False) # M3U8 文件中没有找到有效的子链接，视为无效
         
         # --- 阶段3: FFmpeg 模拟播放测试 (适用于所有通过前两阶段的链接) ---
+        # 如果 FFmpeg 测试失败，则认为链接不可用
         if not check_ffmpeg_playback(url):
             return (channel_data, False)
 
@@ -173,7 +180,8 @@ def check_link_connectivity(channel_data: dict) -> tuple:
     except requests.exceptions.RequestException: 
         return (channel_data, False)
     except Exception as e:
-        print(f"检查链接 {url} 时发生意外错误: {e}")
+        # 频繁打印会污染日志，通常在调试时取消注释
+        # print(f"检查链接 {url} 时发生意外错误: {e}") 
         return (channel_data, False)
 
 # --- 其他辅助函数 (保持不变) ---
@@ -284,7 +292,9 @@ def main():
 
             except Exception as exc:
                 total_checked_urls += 1
-                print(f"  [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url} -> 测试出现异常: {exc}")
+                # 检查链接时发生的异常，这里不再打印详细的 'process' 错误，因为它已经在 check_ffmpeg_playback 内部处理
+                # print(f"  [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url} -> 测试出现异常: {exc}")
+                pass # 静默处理，避免日志膨胀
 
     print(f"连通性检查完成。")
     print(f"总共检查了 {total_checked_urls} 个URL，其中 {total_working_urls} 个URL连通（通过所有测试）。")
