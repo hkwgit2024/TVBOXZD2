@@ -10,7 +10,6 @@ OUTPUT_DIR="data"
 LOG_FILE="$OUTPUT_DIR/node_connectivity_results.log"
 OUTPUT_FILE="$OUTPUT_DIR/sub.txt"
 MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt"
-PARSE_ERROR_LOG="$OUTPUT_DIR/parse_errors.log"
 
 # DNS 缓存文件路径
 DNS_CACHE_FILE="$OUTPUT_DIR/dns_cache.txt"
@@ -28,11 +27,11 @@ BATCH_SIZE=10000
 
 # 节点来源 URL 数组
 NODE_SOURCES=(
-   # "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
-   #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
 
 # 调试模式（0=关闭，1=开启）
@@ -63,22 +62,6 @@ is_ip_address() {
     return 1
 }
 
-# 检查链接是否有效（过滤模板和占位符）
-is_valid_link() {
-    local link="$1"
-    # 跳过包含占位符的链接（如 ${data.host}）
-    if echo "$link" | grep -qE '\${[^}]+}'; then
-        [ "$DEBUG" = "1" ] && echo "DEBUG: 跳过无效链接（包含占位符）: $link" >&2
-        return 1
-    fi
-    # 跳过空链接或非协议开头的链接
-    if [[ -z "$link" || ! "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2|ssr):\/\/ ]]; then
-        [ "$DEBUG" = "1" ] && echo "DEBUG: 跳过无效链接（无协议或空）: $link" >&2
-        return 1
-    fi
-    return 0
-}
-
 # 解析节点配置，提取协议、主机和端口
 parse_node_config() {
     local link="$1"
@@ -91,116 +74,51 @@ parse_node_config() {
     link=$(echo "$link" | tr -d '\r\n' | sed "s/'/\\'/g")
     [ "$DEBUG" = "1" ] && echo "$debug_log_prefix 清理后链接: $link" >&2
 
-    # 检查链接有效性
-    if ! is_valid_link "$link"; then
-        echo "警告：无效链接: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
-        echo ",,"
-        return
-    fi
-
     # 提取协议
-    if [[ "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2|ssr):\/\/ ]]; then
+    if [[ "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/ ]]; then
         type="${BASH_REMATCH[1]}"
         [ "$DEBUG" = "1" ] && echo "$debug_log_prefix 协议: $type" >&2
     else
-        echo "警告：无法识别协议: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
+        echo "警告：无法识别协议: $link" >&2
         echo ",,"
         return
     fi
 
     # 根据协议解析
     case "$type" in
-        vless|trojan|ss)
+        vless|vmess|trojan|ss)
             local temp_link="${link#*://}"
             local host_port_part=""
             if [[ "$temp_link" == *"@"* ]]; then
-                host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
+                host_port_part=$(echo "$temp_link" | cut -d'@' -f2 | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
             else
-                host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
+                host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
             fi
             [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
 
-            # 放宽正则表达式，允许下划线
-            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
-                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
-                parsed_port="${BASH_REMATCH[4]}"
-            else
-                echo "警告：正则匹配失败，host_port_part='$host_port_part', 链接='$link'" >&2 | tee -a "$PARSE_ERROR_LOG"
-            fi
-            ;;
-        vmess)
-            local temp_link="${link#*://}"
-            local host_port_part=""
-            # 检查是否为 Base64 编码
-            if echo "$temp_link" | grep -qE '^[a-zA-Z0-9+/=]+$'; then
-                # 尝试解码 Base64
-                local json_data
-                json_data=$(echo "$temp_link" | base64 -d 2>/dev/null)
-                if [ $? -eq 0 ]; then
-                    [ "$DEBUG" = "1" ] && echo "$debug_log_prefix Base64 解码 JSON: $json_data" >&2
-                    parsed_host=$(echo "$json_data" | jq -r '.add // ""')
-                    parsed_port=$(echo "$json_data" | jq -r '.port // ""')
-                    if [[ -z "$parsed_host" || -z "$parsed_port" ]]; then
-                        echo "警告：无法从 JSON 提取 host/port: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
-                    fi
-                else
-                    echo "警告：Base64 解码失败: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
-                fi
-            else
-                # 非 Base64 格式，按标准 vmess 格式解析
-                if [[ "$temp_link" == *"@"* ]]; then
-                    host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
-                else
-                    host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
-                fi
-                [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
-
-                if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
-                    parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
-                    parsed_port="${BASH_REMATCH[4]}"
-                else
-                    echo "警告：正则匹配失败，host_port_part='$host_port_part', 链接='$link'" >&2 | tee -a "$PARSE_ERROR_LOG"
-                fi
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
+                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[1]}}"
+                parsed_port="${BASH_REMATCH[3]}"
             fi
             ;;
         hy2|hysteria2)
             local temp_link="${link#*://}"
             local host_port_part=""
             if [[ "$temp_link" == *"@"* ]]; then
-                host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
-            else
-                host_port_part=$(echo "$temp_link" | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
+                temp_link="${temp_link#*@}"
             fi
+            host_port_part=$(echo "$temp_link" | cut -d'?' -f1 | cut -d'#' -f1)
             [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
 
-            # 放宽正则表达式，允许下划线
-            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
-                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
-                parsed_port="${BASH_REMATCH[4]}"
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+|[a-zA-Z0-9.-]+):([0-9]+)$ ]]; then
+                parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[1]}}"
+                parsed_port="${BASH_REMATCH[3]}"
             else
-                echo "警告：无法解析 hy2 host:port: $host_port_part, 链接='$link'" >&2 | tee -a "$PARSE_ERROR_LOG"
-            fi
-            ;;
-        ssr)
-            local temp_link="${link#*://}"
-            local decoded_link
-            decoded_link=$(echo "$temp_link" | base64 -d 2>/dev/null)
-            if [ -z "$decoded_link" ]; then
-                echo "警告：Base64 解码失败: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
-                echo "$type,,"
-                return
-            fi
-            [ "$DEBUG" = "1" ] && echo "$debug_log_prefix Base64 解码: $decoded_link" >&2
-            local host_port_part=$(echo "$decoded_link" | cut -d':' -f1-2)
-            if [[ "$host_port_part" =~ ^([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+):([0-9]+)$ ]]; then
-                parsed_host="${BASH_REMATCH[1]}"
-                parsed_port="${BASH_REMATCH[2]}"
-            else
-                echo "警告：无法解析 ssr host:port: $host_port_part, 链接='$link'" >&2 | tee -a "$PARSE_ERROR_LOG"
+                echo "警告：无法解析 hy2 host:port: $host_port_part" >&2
             fi
             ;;
         *)
-            echo "错误：未知协议: $type" >&2 | tee -a "$PARSE_ERROR_LOG"
+            echo "错误：未知协议: $type" >&2
             ;;
     esac
 
@@ -208,7 +126,7 @@ parse_node_config() {
     parsed_port=$(echo "$parsed_port" | tr -d '\r\n')
 
     if [[ -z "$parsed_host" || -z "$parsed_port" ]]; then
-        echo "警告：无法解析 host/port: $link (host='$parsed_host', port='$parsed_port')" >&2 | tee -a "$PARSE_ERROR_LOG"
+        echo "警告：无法解析 host/port: $link (host='$parsed_host', port='$parsed_port')" >&2
         echo "$type,,"
         return
     fi
@@ -269,7 +187,7 @@ test_node_connectivity() {
             [ "$DEBUG" = "1" ] && echo "DEBUG [PID $$]: 缓存 IP: $HOSTNAME_OR_IP -> $IP" >> "$TEMP_LOG_FILE"
         else
             [ "$DEBUG" = "1" ] && echo "DEBUG [PID $$]: 实时解析: $HOSTNAME_OR_IP" >> "$TEMP_LOG_FILE"
-            local RESOLVED_IP=$(dig @8.8.8.8 +short "$HOSTNAME_OR_IP" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1)
+            local RESOLVED_IP=$(dig +short "$HOSTNAME_OR_IP" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1)
             if [ -n "$RESOLVED_IP" ]; then
                 IP="$RESOLVED_IP"
                 [ "$DEBUG" = "1" ] && echo "DEBUG [PID $$]: 解析成功: $HOSTNAME_OR_IP -> $IP" >> "$TEMP_LOG_FILE"
@@ -340,8 +258,8 @@ load_and_clean_dns_cache() {
 }
 
 # 导出函数和变量
-export -f test_node_connectivity parse_node_config is_ip_address is_valid_link
-export LOG_FILE OUTPUT_FILE DNS_CACHE_FILE NODE_CONNECT_TIMEOUT DEBUG PARSE_ERROR_LOG
+export -f test_node_connectivity parse_node_config is_ip_address
+export LOG_FILE OUTPUT_FILE DNS_CACHE_FILE NODE_CONNECT_TIMEOUT DEBUG
 
 # ==============================================================================
 # 核心逻辑
@@ -359,9 +277,6 @@ mkdir -p "$OUTPUT_DIR" || { echo "错误：无法创建目录 $OUTPUT_DIR" | tee
 # 初始化输出文件
 echo "# Successful Nodes ($(date '+%Y-%m-%d %H:%M:%S JST'))" > "$OUTPUT_FILE"
 echo "-------------------------------------" >> "$OUTPUT_FILE"
-
-# 初始化解析错误日志
-> "$PARSE_ERROR_LOG"
 
 # 清空临时文件
 > "$MERGED_NODES_TEMP_FILE"
@@ -388,7 +303,7 @@ echo "下载完成，节点数: $(wc -l < "$MERGED_NODES_TEMP_FILE")" | tee -a "
 # 安装依赖
 echo "检查依赖..." | tee -a "$LOG_FILE"
 sudo apt-get update >/dev/null 2>>"$LOG_FILE" || { echo "错误：apt-get update 失败" | tee -a "$LOG_FILE"; exit 1; }
-sudo apt-get install -y dnsutils netcat-traditional jq >/dev/null 2>>"$LOG_FILE" || { echo "错误：依赖安装失败" | tee -a "$LOG_FILE"; exit 1; }
+sudo apt-get install -y dnsutils netcat-traditional >/dev/null 2>>"$LOG_FILE" || { echo "错误：依赖安装失败" | tee -a "$LOG_FILE"; exit 1; }
 echo "依赖安装完成" | tee -a "$LOG_FILE"
 
 # 增加文件描述符限制
@@ -406,9 +321,6 @@ while IFS= read -r node_link; do
         continue
     fi
     [ "$DEBUG" = "1" ] && echo "DEBUG: 处理节点链接: $node_link" >> "$LOG_FILE"
-    if ! is_valid_link "$node_link"; then
-        continue
-    fi
     PARSED_DETAILS=$(parse_node_config "$node_link")
     host=$(echo "$PARSED_DETAILS" | cut -d',' -f2)
 
@@ -428,7 +340,7 @@ if [ ${#ALL_DOMAINS_TO_RESOLVE[@]} -gt 0 ]; then
             continue
         fi
         echo "解析: $domain" | tee -a "$LOG_FILE"
-        resolved_ip=$(dig @8.8.8.8 +short "$domain" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1)
+        resolved_ip=$(dig +short "$domain" A | grep -E '^[0-9]{1,3}(\.[0-9]{1,3}){3}$' | head -n 1)
         if [[ -n "$resolved_ip" ]]; then
             DNS_CACHE["$domain"]="$resolved_ip,$CURRENT_TIME"
             ((PRE_RESOLVED_COUNT++))
@@ -465,7 +377,3 @@ rm -f "$MERGED_NODES_TEMP_FILE" || { echo "错误：无法删除临时文件" | 
 
 echo "测试完成。结果: $LOG_FILE" | tee -a "$LOG_FILE"
 echo "成功节点: $OUTPUT_FILE" | tee -a "$LOG_FILE"
-echo "解析错误日志: $PARSE_ERROR_LOG" | tee -a "$LOG_FILE"
-echo "解析失败节点数: $(grep -c "无法解析" "$PARSE_ERROR_LOG")" | tee -a "$LOG_FILE"
-
-exit 0
