@@ -4,23 +4,32 @@ import requests
 import re
 import os
 import yaml 
+import concurrent.futures # 导入并发库
 
 # 定义输入和输出文件
 LOCAL_IPTV_FILE = "iptv_list.txt" # 本地 IPTV 列表文件路径
 CATEGORIES_FILE = "categories.yaml" 
 OUTPUT_FILE = "tv.list.txt"
 
-def check_link_connectivity(url: str) -> bool:
+# 设置并发工作线程的数量
+# 请根据您的网络和目标服务器的承受能力调整，太高可能被认为是DDoS
+# 一般来说，20-50 个线程对大多数情况都适用
+MAX_WORKERS = 50 
+
+def check_link_connectivity(channel_data: dict) -> tuple:
     """
     检查IPTV链接的连通性。
     对于 .m3u8 链接，会尝试进一步检查其内部子链接的有效性。
     Args:
-        url: IPTV链接。
+        channel_data: 包含 'name' 和 'url' 的字典。
     Returns:
-        如果链接可达且返回状态码小于400，并且对于m3u8能进一步验证，则为True，否则为False。
+        一个元组 (channel_data, is_working)，指示链接是否可用。
     """
+    name = channel_data['name']
+    url = channel_data['url']
+
     if not url.startswith("http"):
-        return False
+        return (channel_data, False)
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -30,11 +39,10 @@ def check_link_connectivity(url: str) -> bool:
         # 首先检查主链接的连通性
         response = requests.get(url, timeout=10, stream=True, headers=headers) 
         if not (200 <= response.status_code < 400):
-            return False # 主链接不可用
+            return (channel_data, False) # 主链接不可用
         
         # 如果是 M3U8 链接，尝试进行更深层次的检查
         if '.m3u8' in url:
-            # 尝试下载部分M3U8内容，不下载完整文件以节省资源
             m3u8_content = ""
             for chunk in response.iter_content(chunk_size=1024): # 只下载前1KB
                 m3u8_content += chunk.decode('utf-8', errors='ignore')
@@ -42,42 +50,37 @@ def check_link_connectivity(url: str) -> bool:
                     break
             
             # 查找M3U8文件中的第一个 .ts 或 .m3u8 子链接
-            # 匹配相对路径或绝对路径的URL
             sub_link_match = re.search(r'(https?://[^"\s]+?\.m3u8|\S+\.ts)', m3u8_content)
             
             if sub_link_match:
                 sub_link = sub_link_match.group(0)
                 # 如果是相对路径，需要拼接完整URL
                 if not sub_link.startswith("http"):
-                    # 获取主URL的基路径
                     base_url_match = re.match(r'(https?://[^/]+(?:/[^/?#]*)*)/?', url)
                     if base_url_match:
                         base_url = base_url_match.group(0)
-                        sub_link = os.path.join(base_url, sub_link).replace("\\", "/") # 拼接并处理反斜杠
+                        sub_link = os.path.join(base_url, sub_link).replace("\\", "/") 
                     else:
-                        return False # 无法解析基路径
+                        return (channel_data, False) # 无法解析基路径
                 
                 # 尝试检查子链接的连通性，给更短的超时
                 try:
                     sub_response = requests.get(sub_link, timeout=5, stream=True, headers=headers)
                     if not (200 <= sub_response.status_code < 400):
-                        return False # 子链接不可用
+                        return (channel_data, False) # 子链接不可用
                 except requests.exceptions.RequestException:
-                    return False # 子链接请求失败
+                    return (channel_data, False) # 子链接请求失败
             else:
-                # 可能是空的M3U8或者只包含 EXTINF 而没有实际的流链接，也视为不可用
-                # 或者它是一个聚合M3U，需要更复杂的解析，这里简化处理
-                # print(f"  [M3U8无有效子链接] {url}") # 调试用
-                return False 
+                return (channel_data, False) # M3U8无有效子链接
         
-        return True # 主链接可用，且如果是M3U8，子链接也验证通过
+        return (channel_data, True) # 主链接可用，且如果是M3U8，子链接也验证通过
 
     except requests.exceptions.Timeout:
-        return False
+        return (channel_data, False)
     except requests.exceptions.ConnectionError:
-        return False
+        return (channel_data, False)
     except requests.exceptions.RequestException:
-        return False
+        return (channel_data, False)
 
 def load_categories_config():
     """加载分类配置文件 (YAML 格式)"""
@@ -122,7 +125,7 @@ def main():
     
     all_channels_to_process = []
 
-    # 1. 尝试读取本地 IPTV 列表文件 (现在这是唯一的输入来源)
+    # 1. 尝试读取本地 IPTV 列表文件 
     if os.path.exists(LOCAL_IPTV_FILE):
         try:
             with open(LOCAL_IPTV_FILE, 'r', encoding='utf-8') as f:
@@ -134,11 +137,9 @@ def main():
             print(f"读取本地 {LOCAL_IPTV_FILE} 失败: {e}")
             print("未能读取本地 IPTV 列表，脚本无法继续。退出。")
             exit(1)
-
     else:
         print(f"错误: 本地 {LOCAL_IPTV_FILE} 文件未找到。脚本无法继续。")
         exit(1)
-
 
     if not all_channels_to_process:
         print("未找到任何 IPTV 频道进行处理。脚本退出。")
@@ -152,24 +153,35 @@ def main():
     # 4. 建立一个 name -> [working_url1, working_url2, ...] 的映射
     channel_name_to_working_urls = {}
 
-    print("开始检查所有频道的连通性...")
+    print("开始检查所有频道的连通性 (并发模式)...")
     total_checked_urls = 0
     total_working_urls = 0
 
-    for channel_data in all_channels_to_process:
-        name = channel_data["name"]
-        url = channel_data["url"]
+    # 使用 ThreadPoolExecutor 进行并发测试
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        # 提交所有链接测试任务
+        future_to_channel_data = {executor.submit(check_link_connectivity, channel_data): channel_data for channel_data in all_channels_to_process}
         
-        total_checked_urls += 1
-        print(f"  正在测试 [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url}")
-        
-        if check_link_connectivity(url):
-            if name not in channel_name_to_working_urls:
-                channel_name_to_working_urls[name] = []
-            channel_name_to_working_urls[name].append(url)
-            print(f"    -> 可用。")
-        else:
-            print(f"    -> 不可用。")
+        # 实时获取结果并更新进度
+        for future in concurrent.futures.as_completed(future_to_channel_data):
+            channel_data_original = future_to_channel_data[future]
+            name = channel_data_original['name']
+            url = channel_data_original['url']
+
+            try:
+                channel_data_result, is_working = future.result() # 获取结果
+                total_checked_urls += 1
+                if is_working:
+                    if name not in channel_name_to_working_urls:
+                        channel_name_to_working_urls[name] = []
+                    channel_name_to_working_urls[name].append(url)
+                    total_working_urls += 1
+                    print(f"  [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url} -> 可用。")
+                else:
+                    print(f"  [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url} -> 不可用。")
+            except Exception as exc:
+                total_checked_urls += 1
+                print(f"  [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url} -> 测试出现异常: {exc}")
 
     print(f"连通性检查完成。")
     print(f"总共检查了 {total_checked_urls} 个URL，其中 {total_working_urls} 个URL连通。")
