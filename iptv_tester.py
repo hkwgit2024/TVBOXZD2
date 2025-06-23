@@ -1,5 +1,4 @@
 import requests
-import re
 import os
 from datetime import datetime
 import yaml
@@ -74,32 +73,23 @@ def parse_iptv_list(url):
                 print(f"跳过无效行: '{line}'", flush=True)
                 continue
                 
-            # 处理可能包含制表符的行
+            # 处理制表符分隔的行
             parts = line.split('\t')
-            if len(parts) > 1:
-                # 假设第一列是频道名或时间，第二列是URL
-                if parts[0].startswith('http'):
-                    if current_channel:
-                        channels[current_channel].append(parts[0])
-                        print(f"添加URL: '{parts[0]}'", flush=True)
-                    else:
-                        print(f"警告: 发现URL '{parts[0]}' 但没有关联的频道", flush=True)
-                elif parts[1].startswith('http'):
-                    current_channel = parts[0]
-                    channels[current_channel] = [parts[1]]
-                    print(f"发现频道: '{current_channel}', URL: '{parts[1]}'", flush=True)
-                continue
-                
-            if not line.startswith('http'):
-                current_channel = line
+            if len(parts) >= 2 and parts[1].startswith('http'):
+                channel = parts[0].strip()
+                url = parts[1].strip()
+                channels[channel] = channels.get(channel, []) + [url]
+                print(f"发现频道: '{channel}', URL: '{url}'", flush=True)
+            elif len(parts) == 1 and parts[0].startswith('http'):
+                if current_channel:
+                    channels[current_channel].append(parts[0])
+                    print(f"添加URL: '{parts[0]}'", flush=True)
+                else:
+                    print(f"警告: 发现URL '{parts[0]}' 但没有关联的频道", flush=True)
+            elif len(parts) == 1 and not parts[0].startswith('http'):
+                current_channel = parts[0].strip()
                 channels[current_channel] = []
                 print(f"发现频道: '{current_channel}'", flush=True)
-            else:
-                if current_channel:
-                    channels[current_channel].append(line)
-                    print(f"添加URL: '{line}'", flush=True)
-                else:
-                    print(f"警告: 发现URL '{line}' 但没有关联的频道", flush=True)
     
     except requests.RequestException as e:
         print(f"错误: 无法访问 {url} (错误: {e})", flush=True)
@@ -165,7 +155,7 @@ def save_valid_channels(categorized_channels, output_file):
         print("没有测试失败的链接", flush=True)
 
 def main():
-    input_file = 'https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/iptv_list.txt'
+    input_file = 'https://raw.githubusercontent.com/qjlxg/vt/main/iptv_list.txt'
     output_file = 'tv_list.txt'
     
     channels = parse_iptv_list(input_file)
