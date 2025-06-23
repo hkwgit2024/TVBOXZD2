@@ -28,11 +28,11 @@ BATCH_SIZE=10000
 
 # 节点来源 URL 数组
 NODE_SOURCES=(
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+   # "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
+   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt"
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
+   #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 )
 
 # 调试模式（0=关闭，1=开启）
@@ -63,6 +63,22 @@ is_ip_address() {
     return 1
 }
 
+# 检查链接是否有效（过滤模板和占位符）
+is_valid_link() {
+    local link="$1"
+    # 跳过包含占位符的链接（如 ${data.host}）
+    if echo "$link" | grep -qE '\${[^}]+}'; then
+        [ "$DEBUG" = "1" ] && echo "DEBUG: 跳过无效链接（包含占位符）: $link" >&2
+        return 1
+    fi
+    # 跳过空链接或非协议开头的链接
+    if [[ -z "$link" || ! "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2|ssr):\/\/ ]]; then
+        [ "$DEBUG" = "1" ] && echo "DEBUG: 跳过无效链接（无协议或空）: $link" >&2
+        return 1
+    fi
+    return 0
+}
+
 # 解析节点配置，提取协议、主机和端口
 parse_node_config() {
     local link="$1"
@@ -74,6 +90,13 @@ parse_node_config() {
     # 清理换行符和单引号
     link=$(echo "$link" | tr -d '\r\n' | sed "s/'/\\'/g")
     [ "$DEBUG" = "1" ] && echo "$debug_log_prefix 清理后链接: $link" >&2
+
+    # 检查链接有效性
+    if ! is_valid_link "$link"; then
+        echo "警告：无效链接: $link" >&2 | tee -a "$PARSE_ERROR_LOG"
+        echo ",,"
+        return
+    fi
 
     # 提取协议
     if [[ "$link" =~ ^(vless|vmess|trojan|ss|hy2|hysteria2|ssr):\/\/ ]]; then
@@ -91,13 +114,14 @@ parse_node_config() {
             local temp_link="${link#*://}"
             local host_port_part=""
             if [[ "$temp_link" == *"@"* ]]; then
-                host_port_part=$(echo "$temp_link" | cut -d'@' -f2 | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
+                host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
             else
-                host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
+                host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
             fi
             [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
 
-            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9.-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
+            # 放宽正则表达式，允许下划线
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
                 parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
                 parsed_port="${BASH_REMATCH[4]}"
             else
@@ -125,13 +149,13 @@ parse_node_config() {
             else
                 # 非 Base64 格式，按标准 vmess 格式解析
                 if [[ "$temp_link" == *"@"* ]]; then
-                    host_port_part=$(echo "$temp_link" | cut -d'@' -f2 | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
+                    host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
                 else
-                    host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1)
+                    host_port_part=$(echo "$temp_link" | cut -d'/' -f1 | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
                 fi
                 [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
 
-                if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9.-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
+                if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
                     parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
                     parsed_port="${BASH_REMATCH[4]}"
                 else
@@ -143,13 +167,14 @@ parse_node_config() {
             local temp_link="${link#*://}"
             local host_port_part=""
             if [[ "$temp_link" == *"@"* ]]; then
-                host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'?' -f1 | cut -d'#' -f1)
+                host_port_part=$(echo "$temp_link" | sed 's/^[^@]*@//' | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
             else
-                host_port_part=$(echo "$temp_link" | cut -d'?' -f1 | cut -d'#' -f1)
+                host_port_part=$(echo "$temp_link" | cut -d'?' -f1 | cut -d'#' -f1 | sed 's/\/$//')
             fi
             [ "$DEBUG" = "1" ] && echo "$debug_log_prefix host_port: $host_port_part" >&2
 
-            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9.-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
+            # 放宽正则表达式，允许下划线
+            if [[ "$host_port_part" =~ ^(\[([0-9a-fA-F:]+)\]|([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)):([0-9]+)$ ]]; then
                 parsed_host="${BASH_REMATCH[2]:-${BASH_REMATCH[3]}}"
                 parsed_port="${BASH_REMATCH[4]}"
             else
@@ -167,7 +192,7 @@ parse_node_config() {
             fi
             [ "$DEBUG" = "1" ] && echo "$debug_log_prefix Base64 解码: $decoded_link" >&2
             local host_port_part=$(echo "$decoded_link" | cut -d':' -f1-2)
-            if [[ "$host_port_part" =~ ^([a-zA-Z0-9.-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+):([0-9]+)$ ]]; then
+            if [[ "$host_port_part" =~ ^([a-zA-Z0-9._-]+|[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+):([0-9]+)$ ]]; then
                 parsed_host="${BASH_REMATCH[1]}"
                 parsed_port="${BASH_REMATCH[2]}"
             else
@@ -315,7 +340,7 @@ load_and_clean_dns_cache() {
 }
 
 # 导出函数和变量
-export -f test_node_connectivity parse_node_config is_ip_address
+export -f test_node_connectivity parse_node_config is_ip_address is_valid_link
 export LOG_FILE OUTPUT_FILE DNS_CACHE_FILE NODE_CONNECT_TIMEOUT DEBUG PARSE_ERROR_LOG
 
 # ==============================================================================
@@ -381,6 +406,9 @@ while IFS= read -r node_link; do
         continue
     fi
     [ "$DEBUG" = "1" ] && echo "DEBUG: 处理节点链接: $node_link" >> "$LOG_FILE"
+    if ! is_valid_link "$node_link"; then
+        continue
+    fi
     PARSED_DETAILS=$(parse_node_config "$node_link")
     host=$(echo "$PARSED_DETAILS" | cut -d',' -f2)
 
