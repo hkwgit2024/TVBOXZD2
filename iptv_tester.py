@@ -7,7 +7,7 @@ import os
 import yaml 
 
 # 定义输入和输出文件
-# RAW_IPTV_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/iptv_list.txt"
+# RAW_IPTV_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/iptv_list.txt" # 这行被注释掉或移除
 LOCAL_IPTV_FILE = "iptv_list.txt" # 本地 IPTV 列表文件路径
 CATEGORIES_FILE = "categories.yaml" 
 OUTPUT_FILE = "tv.list.txt"
@@ -21,25 +21,18 @@ def check_link_connectivity(url: str) -> bool:
         如果链接可达且返回状态码小于400，则为True，否则为False。
     """
     if not url.startswith("http"):
-        # print(f"  [跳过非HTTP/HTTPS] {url}") # 调试用
         return False
     try:
-        # 增加超时时间，以应对网络波动，但不要太长
-        response = requests.get(url, timeout=10, stream=True) # 将超时时间调整为10秒
+        response = requests.get(url, timeout=10, stream=True) 
         if 200 <= response.status_code < 400:
-            # print(f"  [可用] {url} (状态码: {response.status_code})") # 调试用
             return True
         else:
-            # print(f"  [不可用] {url} (状态码: {response.status_code})") # 调试用
             return False
     except requests.exceptions.Timeout:
-        # print(f"  [超时] {url}") # 调试用
         return False
     except requests.exceptions.ConnectionError:
-        # print(f"  [连接错误] {url}") # 调试用
         return False
     except requests.exceptions.RequestException as e:
-        # print(f"  [请求异常] {url}: {e}") # 调试用
         return False
 
 def load_categories_config():
@@ -85,7 +78,7 @@ def main():
     
     all_channels_to_process = []
 
-    # 1. 尝试读取本地 IPTV 列表文件
+    # 1. 尝试读取本地 IPTV 列表文件 (现在这是唯一的输入来源)
     if os.path.exists(LOCAL_IPTV_FILE):
         try:
             with open(LOCAL_IPTV_FILE, 'r', encoding='utf-8') as f:
@@ -95,29 +88,17 @@ def main():
                 print(f"成功从本地 {LOCAL_IPTV_FILE} 解析到 {len(local_parsed)} 个频道条目。")
         except Exception as e:
             print(f"读取本地 {LOCAL_IPTV_FILE} 失败: {e}")
+            print("未能读取本地 IPTV 列表，脚本无法继续。退出。")
+            exit(1) # 如果本地文件都无法读取，则退出
+
     else:
-        print(f"本地 {LOCAL_IPTV_FILE} 文件未找到，跳过本地文件读取。")
+        print(f"错误: 本地 {LOCAL_IPTV_FILE} 文件未找到。脚本无法继续。")
+        exit(1) # 如果本地文件不存在，则退出
 
-
-    # 2. 下载并解析远程 IPTV 列表
-    try:
-        print(f"尝试从远程 {RAW_IPTV_URL} 下载 IPTV 列表...")
-        response = requests.get(RAW_IPTV_URL, timeout=15) # 提高下载超时时间
-        response.raise_for_status() 
-        raw_content = response.text
-        remote_parsed = parse_iptv_content(raw_content)
-        all_channels_to_process.extend(remote_parsed)
-        print(f"成功从远程 {RAW_IPTV_URL} 解析到 {len(remote_parsed)} 个频道条目。")
-    except requests.exceptions.RequestException as e:
-        print(f"下载远程 IPTV 列表失败: {e}")
-        if not all_channels_to_process: # 如果本地和远程都失败，且没有频道，则退出
-            print("未获取到任何频道数据，无法继续。")
-            exit(1)
-        print("将继续处理已获取的频道（如果存在）。")
 
     if not all_channels_to_process:
         print("未找到任何 IPTV 频道进行处理。脚本退出。")
-        exit(0) # 没有频道可处理，正常退出
+        exit(0) # 如果文件存在但没有频道可处理，正常退出
 
     print(f"总共收集到 {len(all_channels_to_process)} 个频道条目待处理。")
 
@@ -136,17 +117,15 @@ def main():
         url = channel_data["url"]
         
         total_checked_urls += 1
-        # 打印当前正在测试的 URL，帮助调试
         print(f"  正在测试 [{total_checked_urls}/{len(all_channels_to_process)}] {name}: {url}")
         
         if check_link_connectivity(url):
             if name not in channel_name_to_working_urls:
                 channel_name_to_working_urls[name] = []
             channel_name_to_working_urls[name].append(url)
-            total_working_urls += 1
-            print(f"    -> 可用。") # 仅在可用时打印确认信息
+            print(f"    -> 可用。")
         else:
-            print(f"    -> 不可用。") # 仅在不可用时打印确认信息
+            print(f"    -> 不可用。")
 
     print(f"连通性检查完成。")
     print(f"总共检查了 {total_checked_urls} 个URL，其中 {total_working_urls} 个URL连通。")
