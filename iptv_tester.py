@@ -17,12 +17,12 @@ CATEGORIES_FILE = "categories.yaml"
 FIRST_OUTPUT = "temp1.list.txt"
 SECOND_OUTPUT = "temp2.list.txt"
 FINAL_OUTPUT = "tv.list.txt"
-MAX_WORKERS = 4  # 低并发，适合 GitHub Actions
-PRESCREEN_WORKERS = 20  # 预筛选并发
+MAX_WORKERS = 4
+PRESCREEN_WORKERS = 20
 FFMPEG_PATH = "ffmpeg"
 RETRY_INTERVAL = 2
 LOG_FILE = "test_errors.log"
-BATCH_SIZE = 1000  # 每批次处理 1000 个 URL
+BATCH_SIZE = 1000
 log_lock = threading.Lock()
 
 # --- 日志记录 ---
@@ -95,12 +95,16 @@ def parse_smil(content: str) -> str:
         return None
 
 # --- 单次连通性检查（无 FFmpeg） ---
-def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
+def check_link_connectivity_no_ffmpeg(channel_data: dict, recursion_depth: int = 0) -> tuple:
     name = channel_data['name']
     url = channel_data['url']
     log(f"检查: {name} - {url}", to_console=False)
     if not url.startswith("http"):
         log(f"{name}: {url} - 无效URL格式")
+        return (channel_data, False)
+    
+    if recursion_depth > 2:
+        log(f"{name}: {url} - 嵌套M3U8递归深度超过限制")
         return (channel_data, False)
     
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124'}
@@ -112,7 +116,7 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
     try:
         response = session.get(url, timeout=5, stream=True, headers=headers)
         if not (200 <= response.status_code < 400):
-            log(f"{name}: {url} - HTTP不可达")
+            log(f"{name}: {url} - HTTP不可达，状态码 {response.status_code}")
             return (channel_data, False)
 
         if '.m3u8' in url or '.smil' in url:
@@ -134,14 +138,32 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
                 log(f"{name}: {url} - 检测到SMIL，重定向到 {smil_url}")
                 url = urljoin(url, smil_url)
                 channel_data['url'] = url
-                return check_link_connectivity_no_ffmpeg(channel_data)
+                return check_link_connectivity_no_ffmpeg(channel_data, recursion_depth + 1)
             
             sub_m3u8_match = re.search(r'(https?://[^"\s]+?\.m3u8)', m3u8_content_first)
             if sub_m3u8_match:
                 sub_m3u8_url = sub_m3u8_match.group(0)
                 log(f"{name}: {url} - 检测到嵌套M3U8，检查 {sub_m3u8_url}")
-                channel_data['url'] = sub_m3u8_url
-                return check_link_connectivity_no_ffmpeg(channel_data)
+                try:
+                    sub_response = session.get(sub_m3u8_url, timeout=5, stream=True, headers=headers)
+                    if not (200 <= sub_response.status_code < 400):
+                        log(f"{name}: {sub_m3u8_url} - 嵌套M3U8不可达，状态码 {sub_response.status_code}")
+                        return (channel_data, False)
+                    sub_content = ""
+                    downloaded_size = 0
+                    for chunk in sub_response.iter_content(chunk_size=1024):
+                        sub_content += chunk.decode('utf-8', errors='ignore')
+                        downloaded_size += len(chunk)
+                        if downloaded_size >= content_limit:
+                            break
+                    if not sub_content:
+                        log(f"{name}: {sub_m3u8_url} - 嵌套M3U8内容为空")
+                        return (channel_data, False)
+                    channel_data['url'] = sub_m3u8_url
+                    return check_link_connectivity_no_ffmpeg(channel_data, recursion_depth + 1)
+                except requests.exceptions.RequestException as e:
+                    log(f"{name}: {sub_m3u8_url} - 嵌套M3U8请求失败: {type(e).__name__}: {e}")
+                    return (channel_data, False)
             
             if "#EXT-X-ENDLIST" in m3u8_content_first or "EXT-X-PLAYLIST-TYPE:VOD" in m3u8_content_first:
                 log(f"{name}: {url} - 非直播流")
@@ -154,7 +176,7 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
 
             response_second = session.get(url, timeout=5, stream=True, headers=headers)
             if not (200 <= response_second.status_code < 400):
-                log(f"{name}: {url} - 第二次获取失败")
+                log(f"{name}: {url} - 第二次获取失败，状态码 {response_second.status_code}")
                 return (channel_data, False)
             
             m3u8_content_second = ""
@@ -169,12 +191,11 @@ def check_link_connectivity_no_ffmpeg(channel_data: dict) -> tuple:
                 log(f"{name}: {url} - 第二次M3U8内容为空")
                 return (channel_data, False)
             
-            ts1 = re.findall(r'\S+\.ts', m3u8_content_first)
-            ts2 = re.findall(r'\S+\.ts', m3u8_content_second)
             seq1 = re.search(r'#EXT-X-MEDIA-SEQUENCE:(\d+)', m3u8_content_first)
-            if seq1 or ts1 != ts2:
+            target_duration_match = re.search(r'#EXT-X-TARGETDURATION:(\d+)', m3u8_content_first)
+            if seq1 or target_duration_match:
                 return (channel_data, True)
-            log(f"{name}: {url} - M3U8未更新")
+            log(f"{name}: {url} - M3U8未更新，缺少直播流标记")
             return (channel_data, False)
 
         return (channel_data, True)
