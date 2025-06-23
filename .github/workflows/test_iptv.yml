@@ -1,0 +1,58 @@
+# .github/workflows/main.yml
+name: IPTV Link Tester
+
+on:
+  push:
+    branches:
+      - main # 在 push 到 main 分支时触发
+  workflow_dispatch: # 允许手动触发工作流
+  schedule:
+    - cron: '0 */6 * * *' # 每 6 小时运行一次 (例如：UTC 时间 0点, 6点, 12点, 18点)
+
+jobs:
+  test-iptv-links:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行器
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # 使用最新的 Python 3 版本
+
+      - name: 安装 Python 依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pyyaml concurrent-futures
+
+      # 步骤5：安装 FFmpeg (用于模拟播放测试)
+      - name: 安装 FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      # 步骤6：验证 FFmpeg 是否可用
+      - name: 验证 FFmpeg
+        run: |
+          if command -v ffmpeg >/dev/null 2>&1; then
+            echo "FFmpeg 已找到并可用！版本信息如下："
+            ffmpeg -version # 打印版本信息，确认它能运行
+          else
+            echo "错误：FFmpeg 未找到或无法执行！请检查上一步的 FFmpeg 安装日志。"
+            exit 1 # 如果 FFmpeg 不可用，则中止工作流
+          fi
+
+      - name: 运行 IPTV 链接测试脚本
+        run: python iptv_tester.py
+
+      - name: 提交更新的 tv.list.txt (如果存在更改)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tv.list.txt
+          git commit -m "chore: Update tv.list.txt with latest test results" || echo "No changes to commit"
+          git push
