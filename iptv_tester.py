@@ -277,7 +277,7 @@ def run_test(channels: list, output_file: str, test_round: int, use_ffmpeg: bool
         log(f"处理第 {test_round} 次测试，第 {batch_start // BATCH_SIZE + 1} 批，{len(batch_channels)} 个URL")
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             future_to_channel_data = {executor.submit(check_func, channel_data): channel_data 
-                                      for channel_data in batch_channels}
+                                     for channel_data in batch_channels}
             for future in concurrent.futures.as_completed(future_to_channel_data):
                 channel_data_original = future_to_channel_data[future]
                 name = channel_data_original['name']
