@@ -277,7 +277,11 @@ async def save_outputs(nodes: List[NodeInfo]):
             await f.write(content)
         with open(nodes_file, "rb") as f:
             checksums[nodes_file] = hashlib.sha256(f.read()).hexdigest()
-        logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}")
+        # 验证文件存在
+        if os.path.exists(nodes_file):
+            logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}, 文件存在")
+        else:
+            logger.error(f"文件 {nodes_file} 未生成")
     except Exception as e:
         logger.error(f"保存 {nodes_file} 失败: {e}")
         print(content)  # 回退到控制台输出
@@ -287,7 +291,10 @@ async def save_outputs(nodes: List[NodeInfo]):
         async with aiofiles.open(checksum_file, "w", encoding="utf-8") as f:
             for filename, checksum in checksums.items():
                 await f.write(f"{checksum}  {os.path.basename(filename)}\n")
-        logger.info(f"已保存校验和到 {checksum_file}")
+        if os.path.exists(checksum_file):
+            logger.info(f"已保存校验和到 {checksum_file}, 文件存在")
+        else:
+            logger.error(f"文件 {checksum_file} 未生成")
     except Exception as e:
         logger.error(f"保存校验和失败: {e}")
 
@@ -307,6 +314,14 @@ async def main():
     logger.info(f"有效节点数: {len(nodes)}")
 
     await save_outputs(nodes)
+
+    # 调试：列出 data 目录内容
+    data_dir = CONFIG["output"]["dir"]
+    try:
+        files = os.listdir(data_dir)
+        logger.info(f"data 目录内容: {files}")
+    except Exception as e:
+        logger.error(f"无法列出 data 目录: {e}")
 
     logger.info(f"处理完成，总耗时: {time.time() - start_time:.2f} 秒")
 
