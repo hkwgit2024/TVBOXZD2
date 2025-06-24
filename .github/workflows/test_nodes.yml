@@ -31,8 +31,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Installing Python dependencies..."
           python -m pip install --upgrade pip
           pip install httpx aiodns aiofiles psutil
+          echo "Python dependencies installed."
 
       - name: Download Xray Core
         run: |
@@ -45,58 +47,64 @@ jobs:
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
           
           mkdir -p data # 创建数据目录
-          echo "Downloading Xray from ${XRAY_URL}"
-          curl -L -o xray.zip ${XRAY_URL}
+          echo "Attempting to download Xray from ${XRAY_URL}"
+          curl -L -o xray.zip ${XRAY_URL} --fail # --fail 会在 HTTP 错误时使 curl 退出非零状态
           
           # 检查下载的文件是否存在且非空
           if [ ! -s xray.zip ]; then
-            echo "Error: Xray zip file was not downloaded or is empty!"
+            echo "Error: Xray zip file was not downloaded or is empty. Please check the URL and version."
             exit 1 # 退出，因为没有下载到 Xray
           fi
 
-          echo "Unzipping Xray..."
+          echo "Xray zip downloaded. Unzipping..."
           # 解压出 xray 可执行文件到当前目录
           # 确保解压目标是当前目录，并且文件名是 "xray" (小写)
           unzip -o xray.zip xray -d . # -o 选项表示覆盖现有文件
           
           # 再次检查解压后的文件是否存在
           if [ ! -f ./xray ]; then
-            echo "Error: Xray executable not found after unzipping!"
+            echo "Error: Xray executable 'xray' not found after unzipping. Check the zip content."
             exit 1
           fi
 
-          echo "Setting permissions for Xray..."
+          echo "Setting execute permissions for ./xray..."
           chmod +x ./xray # 添加执行权限
 
           echo "Setting XRAY_PATH environment variable..."
           # 将 Xray 路径设置为环境变量，这样 Python 脚本才能找到它
           echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV 
-          echo "Xray setup complete."
+          echo "Xray setup complete. XRAY_PATH is now ${XRAY_PATH}"
 
       - name: Run Node Tester Script
         id: test_script # 为这一步添加 ID，以便后续引用其输出
         run: |
-          echo "Starting Python script..."
-          # 将所有输出重定向到日志文件
-          # 增加超时时间以应对复杂的网络环境或节点测试
-          TEST_TIMEOUT=15 # 将超时时间增加到 15 秒
-          LOG_LEVEL=INFO # 生产环境可以设置为 INFO，调试时可以改为 DEBUG
+          echo "Starting Python script execution..."
           
-          python test_nodes.py > test_output.log 2>&1
+          # 设置环境变量，传递给 Python 脚本
+          # 将日志级别设为 DEBUG，获取更详细的脚本内部日志，方便调试
+          # TEST_TIMEOUT 可以根据网络情况调整
+          export TEST_TIMEOUT=15 
+          export LOG_LEVEL=DEBUG 
           
-          echo "Python script finished. Output log:"
-          cat test_output.log # 打印日志到控制台
+          # 直接运行 Python 脚本，不再重定向到文件
+          # 这样，所有输出（包括 Python 错误回溯）都会直接显示在GitHub Actions控制台
+          # 如果 Python 脚本出现错误，整个 step 会以非零退出码失败，并显示错误信息
+          python test_nodes.py
           
-          # 从日志中提取最终成功节点数
-          SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}' || echo "0")
+          echo "Python script execution finished."
+          
+          # 从标准输出中提取最终成功节点数
+          # '/dev/stdout' 是 Linux 下标准输出的特殊文件，可以从这里读取
+          # '|| echo "0"' 确保即使 grep 找不到匹配项也输出 '0'
+          SUCCESS_COUNT=$(grep "最终成功节点数:" /dev/stdout | awk '{print $NF}' || echo "0")
           echo "Detected successful nodes count: ${SUCCESS_COUNT}"
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        env:
-          TEST_TIMEOUT: 15 # 通过环境变量覆盖脚本中的默认值
-          LOG_LEVEL: INFO # 通过环境变量覆盖脚本中的默认值
+        env: # 也可以在这里定义环境变量，效果相同
+          TEST_TIMEOUT: 15
+          LOG_LEVEL: DEBUG
 
       - name: Commit and Push if changed
-        # 仅当有成功节点 (大于0) 或 sub.txt 文件发生变化时才尝试提交
+        # 仅当有成功节点 (大于0) 或 test_script 步骤成功执行（即没有运行时错误）时才尝试提交
         # 即使 successful_nodes_count 为 0，如果 sub.txt 内容发生了变化 (例如从有节点到无节点)，也应该提交
         if: ${{ steps.test_script.outputs.successful_nodes_count != '0' || success() }} 
         run: |
@@ -107,9 +115,10 @@ jobs:
           echo "Adding data files to Git..."
           git add data/sub.txt data/history_results.json data/dns_cache.json
           
-          echo "Checking for changes and committing..."
+          echo "Checking for changes in data files..."
           # 检查是否有实际的文件更改，如果有，则创建提交
           if ! git diff --quiet --cached; then
+            echo "Changes detected. Committing..."
             git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
             echo "Pushing changes to main branch..."
             git push origin main
@@ -120,8 +129,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 自动提供的 token
 
-      - name: No successful nodes found (informational)
+      - name: Informational: No successful nodes found
         if: ${{ steps.test_script.outputs.successful_nodes_count == '0' }}
         run: |
           echo "No successful nodes were found in this run. The 'sub.txt' file might be empty or contain a fallback message."
-          echo "If 'sub.txt' was already empty, no commit will be made."
+          echo "If 'sub.txt' was already empty, no commit would have been made by the previous step."
