@@ -1,496 +1,403 @@
 import httpx
 import asyncio
-import re
-import os
-import base64
-from urllib.parse import urlparse, unquote, parse_qs
-from typing import Union, Dict, Any
-import logging
 import json
-import socket # 引入 socket 模块用于 DNS 预解析
+import os
+import logging
+import re
+import time
+from urllib.parse import urlparse, unquote, parse_qs
+import socket
+import ssl # 确保导入 ssl 模块
 
 # --- 配置 ---
 SS_TXT_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
-OUTPUT_FILE = "data/sub.txt"
-HISTORY_FILE = "data/history_results.json" # 保存历史测试结果的文件
-DNS_CACHE_FILE = "data/dns_cache.json" # DNS 缓存文件
-TIMEOUT_FETCH = 15 # 下载文件超时
-TIMEOUT_NODE_CONNECT = 8 # 单个节点连接超时
-CONCURRENCY_LIMIT = 100 # 并发测试的节点数量
+DATA_DIR = "data"
+HISTORY_FILE = os.path.join(DATA_DIR, "history_results.json")
+DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
+SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt") # 仅包含成功链接
+
+TEST_TIMEOUT_SECONDS = 5 # 单个节点测试超时时间
+MAX_CONCURRENT_TASKS = 200 # 最大并发测试数量
+DNS_CACHE_EXPIRATION = 24 * 60 * 60 # DNS 缓存有效期 24 小时 (秒)
 
 # --- 日志配置 ---
-logging.basicConfig(
-    level=logging.INFO, # 默认信息级别，可以改为 DEBUG 查看更详细信息
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler() # 输出到控制台
-    ]
-)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# 全局 DNS 缓存
-dns_cache: Dict[str, str] = {}
+# --- 数据结构 ---
+class NodeTestResult:
+    def __init__(self, node_info, status, delay_ms=-1, error_message=""):
+        self.node_info = node_info
+        self.status = status
+        self.delay_ms = delay_ms
+        self.error_message = error_message
+
+# --- 全局 DNS 缓存和历史结果 ---
+history_results = {}
+dns_cache = {}
 
 # --- 辅助函数 ---
-def safe_base64_decode(s: str) -> str:
-    """尝试解码 base64 字符串，处理 URL 安全和填充问题"""
-    s = s.replace('-', '+').replace('_', '/')
-    padding_needed = len(s) % 4
-    if padding_needed:
-        s += '=' * (4 - padding_needed)
-    try:
-        return base64.b64decode(s).decode('utf-8')
-    except Exception:
-        return ""
-
-async def fetch_ss_txt(url: str) -> str:
-    """从URL下载ss.txt文件内容"""
-    logger.info(f"正在从 {url} 下载节点列表...")
-    async with httpx.AsyncClient(timeout=TIMEOUT_FETCH) as client:
+async def load_history():
+    global history_results
+    if os.path.exists(HISTORY_FILE):
         try:
+            with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                history_results = json.load(f)
+            logger.info(f"历史结果加载成功: {len(history_results)} 条记录。")
+        except json.JSONDecodeError as e:
+            logger.warning(f"历史结果文件损坏或为空，重新创建: {e}")
+            history_results = {}
+    else:
+        logger.info("历史结果文件不存在，将创建新文件。")
+
+async def save_history():
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(history_results, f, indent=2, ensure_ascii=False)
+    logger.info("历史结果已保存。")
+
+async def load_dns_cache():
+    global dns_cache
+    if os.path.exists(DNS_CACHE_FILE):
+        try:
+            with open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
+                dns_cache = json.load(f)
+            logger.info(f"DNS 缓存加载成功: {len(dns_cache)} 条记录。")
+        except json.JSONDecodeError as e:
+            logger.warning(f"DNS 缓存文件损坏或为空，重新创建: {e}")
+            dns_cache = {}
+    else:
+        logger.info("DNS 缓存文件不存在，将创建新文件。")
+
+async def save_dns_cache():
+    current_time = int(time.time())
+    cleaned_cache = {
+        host: data for host, data in dns_cache.items()
+        if current_time - data.get("timestamp", 0) < DNS_CACHE_EXPIRATION
+    }
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(DNS_CACHE_FILE, "w", encoding="utf-8") as f:
+        json.dump(cleaned_cache, f, indent=2, ensure_ascii=False)
+    logger.info("DNS 缓存已保存并清理过期记录。")
+
+async def dns_lookup(hostname):
+    current_time = int(time.time())
+    if hostname in dns_cache:
+        cached_data = dns_cache[hostname]
+        if current_time - cached_data.get("timestamp", 0) < DNS_CACHE_EXPIRATION:
+            logger.debug(f"从缓存获取 DNS: {hostname} -> {cached_data['ip']}")
+            return cached_data["ip"]
+        else:
+            logger.info(f"DNS 缓存 {hostname} 已过期，重新查询。")
+            del dns_cache[hostname]
+
+    try:
+        addr_info = await asyncio.get_event_loop().run_in_executor(
+            None, socket.getaddrinfo, hostname, None, socket.AF_UNSPEC, socket.SOCK_STREAM
+        )
+        if addr_info:
+            ip_address = addr_info[0][4][0]
+            dns_cache[hostname] = {"ip": ip_address, "timestamp": current_time}
+            logger.info(f"DNS 解析成功: {hostname} -> {ip_address}")
+            return ip_address
+        else:
+            logger.warning(f"DNS 解析无结果: {hostname}")
+            return None
+    except socket.gaierror as e:
+        logger.error(f"DNS 解析失败 {hostname}: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"DNS 解析时发生未知错误 {hostname}: {e}")
+        return None
+
+async def fetch_ss_txt(url):
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=10) as client:
             response = await client.get(url)
             response.raise_for_status()
-            logger.info("节点列表下载成功。")
             return response.text
-        except httpx.HTTPStatusError as e:
-            logger.error(f"HTTP错误下载文件: {e.response.status_code} - {e.response.text}")
-            return ""
-        except httpx.RequestError as e:
-            logger.error(f"请求错误下载文件: {e}")
-            return ""
-
-def parse_node_info(line: str) -> Union[Dict[str, Any], None]:
-    """解析一行节点信息"""
-    line = line.strip()
-    if not line:
-        return None
-
-    try:
-        if line.startswith("ss://"):
-            parsed_url = urlparse(line)
-            if not parsed_url.hostname or not parsed_url.port:
-                logger.debug(f"解析行失败: {line[:50]}... 错误: SS 节点缺少主机或端口")
-                return None
-            return {
-                "protocol": "ss",
-                "server": parsed_url.hostname,
-                "port": parsed_url.port,
-                "remark": unquote(parsed_url.fragment) if parsed_url.fragment else f"Unnamed SS Node",
-                "original_link": line
-            }
-        elif line.startswith("ssr://"):
-            encoded_part = line[len("ssr://"):]
-            if '#' in encoded_part:
-                encoded_part, encoded_remark = encoded_part.split('#', 1)
-            else:
-                encoded_remark = ""
-
-            decoded_part = safe_base64_decode(encoded_part)
-            if not decoded_part:
-                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR base64 解码失败")
-                return None
-
-            parts = decoded_part.split(':')
-            if len(parts) < 6:
-                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR 格式不完整")
-                return None
-            
-            server = parts[0]
-            try:
-                port = int(parts[1])
-            except ValueError:
-                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR 端口无效")
-                return None
-            
-            remark = safe_base64_decode(encoded_remark) if encoded_remark else f"Unnamed SSR Node"
-
-            return {
-                "protocol": "ssr",
-                "server": server,
-                "port": port,
-                "remark": remark,
-                "original_link": line
-            }
-        elif line.startswith("vless://") or line.startswith("vmess://") or line.startswith("trojan://"):
-            parsed_url = urlparse(line)
-            
-            if not parsed_url.hostname or not parsed_url.port:
-                match = re.match(r"^(.*?)(?:\[([0-9a-fA-F.:]+)\]):?(\d+)?(.*)", line)
-                if match:
-                    protocol_prefix, ipv6_addr, port_str, remainder = match.groups()
-                    if ipv6_addr:
-                        server = f"[{ipv6_addr}]"
-                        try:
-                            port = int(port_str) if port_str else None
-                        except ValueError:
-                            logger.debug(f"解析行失败: {line[:50]}... 错误: {protocol_prefix} 端口无效")
-                            return None
-                        
-                        temp_url = f"{protocol_prefix}{server}:{port}{remainder}"
-                        parsed_url = urlparse(temp_url)
-                    else:
-                        logger.debug(f"解析行失败: {line[:50]}... 错误: Invalid IPv6 URL format (missing address)")
-                        return None
-                else:
-                    logger.debug(f"解析行失败: {line[:50]}... 错误: URL 格式不正确或缺少主机/端口")
-                    return None
-
-            protocol = parsed_url.scheme
-            server = parsed_url.hostname
-            port = parsed_url.port
-            remark = unquote(parsed_url.fragment) if parsed_url.fragment else f"Unnamed {protocol.upper()} Node"
-
-            query_params = parse_qs(parsed_url.query)
-            
-            return {
-                "protocol": protocol,
-                "server": server,
-                "port": port,
-                "remark": remark,
-                "security": query_params.get('security', [''])[0],
-                "type": query_params.get('type', [''])[0],
-                "sni": query_params.get('sni', [''])[0],
-                "path": query_params.get('path', [''])[0],
-                "original_link": line
-            }
-        elif line.startswith("hysteria2://"):
-            parsed_url = urlparse(line)
-            
-            if not parsed_url.hostname or not parsed_url.port:
-                 match = re.match(r"^(.*?)(?:\[([0-9a-fA-F.:]+)\]):?(\d+)?(.*)", line)
-                 if match:
-                     protocol_prefix, ipv6_addr, port_str, remainder = match.groups()
-                     if ipv6_addr:
-                         server = f"[{ipv6_addr}]"
-                         try:
-                             port = int(port_str) if port_str else None
-                         except ValueError:
-                            logger.debug(f"解析行失败: {line[:50]}... 错误: Hysteria2 端口无效")
-                            return None
-
-                         temp_url = f"{protocol_prefix}{server}:{port}{remainder}"
-                         parsed_url = urlparse(temp_url)
-                     else:
-                         logger.debug(f"解析行失败: {line[:50]}... 错误: Invalid IPv6 URL format (missing address)")
-                         return None
-                 else:
-                     logger.debug(f"解析行失败: {line[:50]}... 错误: Hysteria2 URL 格式不正确或缺少主机/端口")
-                     return None
-
-            protocol = parsed_url.scheme
-            server = parsed_url.hostname
-            port = parsed_url.port
-            remark = unquote(parsed_url.fragment) if parsed_url.fragment else "Unnamed Hysteria2 Node"
-            query_params = parse_qs(parsed_url.query)
-
-            return {
-                "protocol": protocol,
-                "server": server,
-                "port": port,
-                "remark": remark,
-                "auth": unquote(parsed_url.username) if parsed_url.username else '',
-                "fastopen": query_params.get('fastopen', [''])[0],
-                "obfs": query_params.get('obfs', [''])[0],
-                "obfsParam": query_params.get('obfsParam', [''])[0],
-                "peer": query_params.get('peer', [''])[0],
-                "up": query_params.get('up', [''])[0],
-                "down": query_params.get('down', [''])[0],
-                "original_link": line
-            }
-        else:
-            logger.debug(f"无法识别的协议或格式: {line.split('://')[0] if '://' in line else line[:20]}...")
-            return None
-    except Exception as e:
-        logger.debug(f"解析行失败: {line[:50]}... 错误: {e}")
-        return None
-
-async def dns_lookup(hostname: str) -> Union[str, None]:
-    """执行 DNS 预解析，并使用缓存"""
-    global dns_cache # 声明使用全局变量
-
-    if hostname.startswith('[') and hostname.endswith(']'): # IPv6 literal
-        return hostname.strip('[]')
-    if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", hostname): # IPv4 literal
-        return hostname
-    
-    # 检查缓存
-    if hostname in dns_cache:
-        logger.debug(f"从 DNS 缓存获取 {hostname}: {dns_cache[hostname]}")
-        return dns_cache[hostname]
-
-    try:
-        info = await asyncio.get_event_loop().getaddrinfo(hostname, None, family=0, type=socket.SOCK_STREAM, proto=socket.IPPROTO_TCP)
-        if info:
-            resolved_ip = info[0][4][0]
-            dns_cache[hostname] = resolved_ip # 存入缓存
-            logger.debug(f"DNS 解析成功并缓存 {hostname}: {resolved_ip}")
-            return resolved_ip
-        return None
-    except socket.gaierror as e:
-        logger.debug(f"DNS 解析失败 for {hostname}: {e}")
-        return None
-    except Exception as e:
-        logger.debug(f"DNS 解析时发生未知错误 for {hostname}: {e}")
-        return None
-
-async def test_node(node: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    尝试测试一个节点的可达性，并增加 DNS 预解析。
-    """
-    protocol = node.get("protocol")
-    server = node.get("server")
-    port = node.get("port")
-    remark = node.get("remark", "Unnamed Node")
-    original_link = node.get("original_link", "N/A")
-
-    result = {
-        "node": node,
-        "status": "Failed",
-        "latency_ms": -1,
-        "error": "Unknown Error",
-        "original_link": original_link
-    }
-
-    if not server or not port:
-        result["status"] = "Invalid Node Info"
-        result["error"] = "Server or Port Missing"
-        logger.debug(f"跳过无效节点 (缺少服务器或端口): {original_link}")
-        return result
-
-    # --- DNS 预解析 ---
-    connect_host = server
-    if not (server.startswith('[') and server.endswith(']') or re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", server)):
-        # 如果不是 IP 地址，则进行 DNS 解析
-        resolved_ip = await dns_lookup(server)
-        if not resolved_ip:
-            result["status"] = "DNS Resolution Failed"
-            result["error"] = f"DNS Resolution Failed for {server}"
-            logger.info(f"测试 {remark} ({server}:{port}) - 状态: {result['status']}, 错误: {result['error']}")
-            return result
-        connect_host = resolved_ip
-        node['resolved_ip'] = resolved_ip # 记录解析到的IP，可选
-
-    start_time = asyncio.get_event_loop().time()
-    try:
-        reader, writer = await asyncio.wait_for(
-            asyncio.open_connection(connect_host, port), timeout=TIMEOUT_NODE_CONNECT
-        )
-        
-        try:
-            if protocol in ["vless", "vmess", "trojan"] and node.get("security") == "tls":
-                await writer.write(b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-            elif protocol == "hysteria2":
-                await writer.write(b"H2CONNECT / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-            else:
-                await writer.write(b"Hello\r\n")
-
-            await writer.drain()
-            await asyncio.wait_for(reader.read(100), timeout=1) 
-        except asyncio.TimeoutError:
-            pass 
-        except Exception as read_error:
-            logger.debug(f"读取响应时发生错误: {read_error}")
-            pass
-
-        writer.close()
-        await reader.wait_closed()
-
-        end_time = asyncio.get_event_loop().time()
-        result["latency_ms"] = round((end_time - start_time) * 1000)
-        result["status"] = "Success"
-        result["error"] = ""
-
-    except asyncio.TimeoutError:
-        result["error"] = "Connection Timeout"
-    except ConnectionRefusedError:
-        result["error"] = "Connection Refused"
-    except OSError as e:
-        result["error"] = str(e)
     except httpx.RequestError as e:
-        result["error"] = str(e)
+        logger.error(f"获取节点列表失败: {url} - {e}")
+        return None
     except Exception as e:
-        result["error"] = f"Unexpected error: {e}"
+        logger.error(f"获取节点列表时发生未知错误: {url} - {e}")
+        return None
 
-    if result["status"] == "Failed" or logger.level <= logging.DEBUG:
-        logger.info(f"测试 {remark} ({server}:{port}) - 状态: {result['status']}, 延迟: {result['latency_ms']}ms, 错误: {result['error']}")
-    else:
-        logger.info(f"测试 {remark} ({server}:{port}) - 状态: {result['status']}, 延迟: {result['latency_ms']}ms")
-        
-    return result
+def parse_node_info(link):
+    node_info = {'original_link': link}
 
-def load_history_results(file_path: str) -> Dict[str, Dict[str, Any]]:
-    """从文件中加载历史测试结果"""
-    history_map = {}
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                for item in data:
-                    # 使用 original_link 作为唯一键
-                    history_map[item.get("original_link")] = item
-            logger.info(f"加载了 {len(history_map)} 条历史测试结果。")
-        except json.JSONDecodeError as e:
-            logger.warning(f"历史结果文件 {file_path} 解析失败: {e}，将忽略历史数据。")
-        except Exception as e:
-            logger.warning(f"加载历史结果文件 {file_path} 时发生未知错误: {e}，将忽略历史数据。")
-    return history_map
-
-def save_history_results(file_path: str, results: list):
-    """将当前测试结果保存到文件，用于下次运行"""
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
-        logger.info(f"已将 {len(results)} 条测试结果保存到 {file_path}")
+        link = link.strip()
+        if not link:
+            return None
+
+        match = re.match(r"^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/(.*)", link)
+        if not match:
+            logger.debug(f"无法识别协议: {link}")
+            return None
+
+        protocol = match.group(1)
+        remaining_part = match.group(2)
+        node_info['protocol'] = protocol
+
+        if '#' in remaining_part:
+            remaining_part, remarks = remaining_part.rsplit('#', 1)
+            node_info['remarks'] = unquote(remarks)
+        else:
+            node_info['remarks'] = f"{protocol.upper()} Node"
+
+        if protocol in ['vless', 'vmess', 'trojan', 'ss']:
+            if '@' in remaining_part:
+                user_info_part, host_port_part = remaining_part.split('@', 1)
+            else:
+                user_info_part = ""
+                host_port_part = remaining_part
+
+            if '?' in host_port_part:
+                host_port_str, query_str = host_port_part.split('?', 1)
+                query_params = parse_qs(query_str)
+            else:
+                host_port_str = host_port_part
+                query_params = {}
+
+            host_match = re.match(r"^(?:\[([0-9a-fA-F:]+)\]|([0-9]{1,3}(?:\.[0-9]{1,3}){3})|([a-zA-Z0-9.-]+)):([0-9]+)$", host_port_str)
+            if host_match:
+                node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
+                node_info['port'] = int(host_match.group(4))
+            else:
+                logger.debug(f"无法解析 host:port: {host_port_str} in {link}")
+                return None
+
+            for key, values in query_params.items():
+                node_info[key] = values[0]
+
+        elif protocol in ['hy2', 'hysteria2']:
+            parts = remaining_part.split('?', 1)
+            host_port_str = parts[0]
+            if '?' in remaining_part:
+                query_params = parse_qs(remaining_part.split('?', 1)[1])
+            else:
+                query_params = {}
+
+            host_match = re.match(r"^(?:\[([0-9a-fA-F:]+)\]|([0-9]{1,3}(?:\.[0-9]{1,3}){3})|([a-zA-Z0-9.-]+)):([0-9]+)$", host_port_str)
+            if host_match:
+                node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
+                node_info['port'] = int(host_match.group(4))
+            else:
+                logger.debug(f"无法解析 hy2 host:port: {host_port_str} in {link}")
+                return None
+            for key, values in query_params.items():
+                node_info[key] = values[0]
+
+        else:
+            logger.warning(f"不支持的协议类型: {protocol} for link {link}")
+            return None
+
+        if not re.match(r"^(?:\[[0-9a-fA-F:]+\]|[0-9]{1,3}(?:\.[0-9]{1,3}){3})$", node_info['server']):
+            node_info['is_domain'] = True
+        else:
+            node_info['is_domain'] = False
+            node_info['resolved_ip'] = node_info['server']
+
+        return node_info
+
     except Exception as e:
-        logger.error(f"保存历史结果到文件 {file_path} 失败: {e}")
+        logger.error(f"解析节点链接时发生错误: {link} - {e}")
+        return None
 
-def load_dns_cache(file_path: str) -> Dict[str, str]:
-    """从文件中加载 DNS 缓存"""
-    cache = {}
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                cache = json.load(f)
-            logger.info(f"加载了 {len(cache)} 条 DNS 缓存记录。")
-        except json.JSONDecodeError as e:
-            logger.warning(f"DNS 缓存文件 {file_path} 解析失败: {e}，将忽略缓存。")
-        except Exception as e:
-            logger.warning(f"加载 DNS 缓存文件 {file_path} 时发生未知错误: {e}，将忽略缓存。")
-    return cache
 
-def save_dns_cache(file_path: str, cache: Dict[str, str]):
-    """将 DNS 缓存保存到文件"""
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+async def check_node(node_info):
+    protocol = node_info.get('protocol')
+    remarks = node_info.get('remarks', 'N/A')
+    server = node_info.get('server')
+    port = node_info.get('port')
+    target_host = node_info.get('resolved_ip')
+
+    if not all([server, port, target_host]):
+        return NodeTestResult(node_info, "Failed", -1, "信息不完整或DNS解析失败")
+
+    test_start_time = time.monotonic()
+    error_message = ""
+
     try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(cache, f, ensure_ascii=False, indent=2)
-        logger.info(f"已将 {len(cache)} 条 DNS 缓存记录保存到 {file_path}")
+        if protocol in ['hy2', 'hysteria2']:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.settimeout(TEST_TIMEOUT_SECONDS)
+                sock.connect((target_host, port))
+                sock.sendall(b'ping')
+                logger.info(f"UDP 端口 {target_host}:{port} 可达。")
+                test_end_time = time.monotonic()
+                delay = (test_end_time - test_start_time) * 1000
+                return NodeTestResult(node_info, "Successful", delay)
+            except socket.timeout:
+                error_message = "UDP Connection Timeout"
+            except ConnectionRefusedError:
+                error_message = "UDP Connection Refused"
+            except Exception as e:
+                error_message = f"UDP Test Error: {e}"
+            finally:
+                if 'sock' in locals() and sock:
+                    sock.close()
+            return NodeTestResult(node_info, "Failed", -1, error_message)
+
+        # 对于其他协议 (VLESS, VMESS, Trojan, SS)
+        try:
+            # 建立 TCP 连接
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(TEST_TIMEOUT_SECONDS)
+            await asyncio.get_event_loop().run_in_executor(
+                None, sock.connect, (target_host, port)
+            )
+
+            # 对于 TLS 节点，尝试 SSL/TLS 握手
+            if node_info.get('security') == 'tls':
+                context = ssl.create_default_context()
+                context.check_hostname = False
+                context.verify_mode = ssl.CERT_NONE
+
+                sni_hostname = node_info.get('sni') or node_info.get('host') or node_info['server']
+                if sni_hostname:
+                    logger.debug(f"尝试 TLS 握手，SNI: {sni_hostname}")
+                    wrapped_socket = context.wrap_socket(sock, server_hostname=sni_hostname)
+                else:
+                    wrapped_socket = context.wrap_socket(sock)
+
+                await asyncio.get_event_loop().run_in_executor(
+                    None, wrapped_socket.do_handshake
+                )
+                wrapped_socket.close() # 握手成功后关闭
+            else:
+                # 对于非 TLS 协议，TCP 连接成功即认为是可达
+                pass # 保持 socket 打开，以便 finally 关闭
+
+            test_end_time = time.monotonic()
+            delay = (test_end_time - test_start_time) * 1000
+            logger.info(f"测试 {remarks} ({target_host}:{port}) - 状态: Successful, 延迟: {delay:.2f}ms")
+            return NodeTestResult(node_info, "Successful", delay)
+
+        except socket.timeout:
+            error_message = "TCP Connection Timeout"
+        except ConnectionRefusedError:
+            error_message = "TCP Connection Refused"
+        except ssl.SSLError as e:
+            error_message = f"TLS Handshake Error: {e}"
+        except Exception as e:
+            error_message = f"Unexpected error during TCP/TLS test: {e}"
+        finally:
+            if 'sock' in locals() and sock:
+                sock.close()
+
     except Exception as e:
-        logger.error(f"保存 DNS 缓存到文件 {file_path} 失败: {e}")
+        error_message = f"Critical error during node check: {e}"
+
+    logger.warning(f"测试 {remarks} ({target_host}:{port}) - 状态: Failed, 延迟: -1ms, 错误: {error_message}")
+    return NodeTestResult(node_info, "Failed", -1, error_message)
+
 
 async def main():
-    """主函数，负责下载、解析、对比历史数据、并发测试节点"""
-    global dns_cache # 声明使用全局变量
+    os.makedirs(DATA_DIR, exist_ok=True)
+    await load_history()
+    await load_dns_cache()
 
-    logger.info("程序开始运行。")
-    
-    # 确保 data 目录存在
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-
-    # 1. 加载历史测试结果和 DNS 缓存
-    history_results_map = load_history_results(HISTORY_FILE)
-    dns_cache = load_dns_cache(DNS_CACHE_FILE)
-
-    # 2. 下载新的节点列表
     ss_txt_content = await fetch_ss_txt(SS_TXT_URL)
     if not ss_txt_content:
-        logger.error("无法获取节点列表，退出。")
+        logger.error("无法获取节点列表或列表为空，退出。")
+        # 即使这里退出，也创建空的 sub.txt 文件
+        with open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write("# No valid nodes found or tested.\n")
         return
 
-    lines = ss_txt_content.splitlines()
-    total_lines = len(lines)
-    logger.info(f"成功下载 {total_lines} 行原始节点数据。")
+    links = ss_txt_content.strip().split('\n')
+    parsed_nodes = [parse_node_info(link) for link in links if parse_node_info(link)]
+    total_parsed_nodes = len(parsed_nodes)
+    logger.info(f"总计解析到 {total_parsed_nodes} 个节点。")
 
-    # 3. 解析所有节点，并准备测试列表
-    current_parsed_nodes = []
-    nodes_to_test_now = [] # 需要进行网络测试的节点
-    tested_results_from_history = [] # 直接使用历史结果的节点
-
-    for line_num, line in enumerate(lines):
-        node = parse_node_info(line)
-        if node:
-            current_parsed_nodes.append(node)
-            original_link = node.get("original_link")
-            
-            # 检查节点是否在历史记录中，并且上次是失败的
-            if original_link in history_results_map:
-                history_res = history_results_map[original_link]
-                # 如果上次测试是失败的，且链接完全相同，则跳过本次网络测试
-                # 可以根据需要调整跳过逻辑，例如只跳过特定错误类型的
-                if history_res.get("status") in ["Failed", "DNS Resolution Failed", "Invalid Node Info"]:
-                    # 重新封装历史结果，以符合当前结果格式
-                    reused_result = {
-                        "node": node, # 使用当前解析的节点信息
-                        "status": history_res.get("status", "Failed (Cached)"),
-                        "latency_ms": history_res.get("latency_ms", -1),
-                        "error": history_res.get("error", "Skipped (previously failed)"),
-                        "original_link": original_link
-                    }
-                    tested_results_from_history.append(reused_result)
-                    logger.debug(f"跳过已知的失败节点 (历史记录): {node.get('remark')}")
-                    continue # 跳过网络测试
-
-            nodes_to_test_now.append(node) # 需要测试的节点
-
-    logger.info(f"总计解析到 {len(current_parsed_nodes)} 个有效节点。")
-    logger.info(f"其中 {len(tested_results_from_history)} 个节点从历史记录中跳过，{len(nodes_to_test_now)} 个节点将进行网络测试。")
-
-    if not current_parsed_nodes:
+    if not parsed_nodes:
         logger.warning("未解析到任何有效节点，退出。")
-        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-            f.write("No valid nodes found or tested.\n")
+        with open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+            f.write("# No valid nodes found or tested.\n")
         return
 
-    semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+    logger.info("开始预解析域名...")
+    domains_to_resolve = set()
+    for node in parsed_nodes:
+        if node.get('is_domain') and node['server'] not in dns_cache:
+            domains_to_resolve.add(node['server'])
 
-    async def run_test(node_to_test):
+    if domains_to_resolve:
+        dns_tasks = [dns_lookup(domain) for domain in domains_to_resolve]
+        await asyncio.gather(*dns_tasks)
+    logger.info("域名预解析完成。")
+
+    # 更新节点的 resolved_ip，并过滤掉 DNS 解析失败的节点
+    nodes_to_test = []
+    # test_results 用于历史记录和最终统计，即使不生成报告也需要它
+    test_results = []
+    
+    for node in parsed_nodes:
+        if node.get('is_domain'):
+            if node['server'] in dns_cache:
+                node['resolved_ip'] = dns_cache[node['server']]['ip']
+                nodes_to_test.append(node)
+            else: # DNS 解析失败
+                node['resolved_ip'] = None
+                test_results.append(NodeTestResult(node, "Failed", -1, "DNS resolution failed"))
+                logger.debug(f"跳过 {node.get('remarks')}，因为DNS解析失败。")
+        else: # 本身就是IP
+            nodes_to_test.append(node)
+
+    logger.info(f"准备测试 {len(nodes_to_test)} 个节点。")
+
+    # 使用 asyncio.Semaphore 控制并发数量
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_TASKS)
+    
+    async def test_node_with_semaphore(node):
         async with semaphore:
-            return await test_node(node_to_test)
+            result = await check_node(node)
+            # 将结果添加到 test_results，无论是成功还是失败
+            test_results.append(result) 
+            return result
 
-    tasks = [run_test(node) for node in nodes_to_test_now]
-    tested_results_live = await asyncio.gather(*tasks)
+    # 创建并运行所有测试任务
+    tasks = [test_node_with_semaphore(node) for node in nodes_to_test]
+    await asyncio.gather(*tasks)
 
-    # 合并所有结果
-    all_results = tested_results_from_history + tested_results_live
+    # 统计结果并更新历史记录
+    successful_nodes = []
+    for result in test_results:
+        node_id = result.node_info['original_link']
+        if result.status == "Successful":
+            successful_nodes.append(result.node_info)
+            history_results[node_id] = {
+                "status": "Successful",
+                "delay_ms": result.delay_ms,
+                "timestamp": int(time.time())
+            }
+        else:
+            history_results[node_id] = {
+                "status": "Failed",
+                "error_message": result.error_message,
+                "timestamp": int(time.time())
+            }
+    
+    successful_nodes_count = len(successful_nodes)
+    failed_nodes_count = len(test_results) - successful_nodes_count
 
-    # 4. 排序和保存结果
-    # 排序：成功的节点优先，按延迟升序；失败的节点在后
-    all_results.sort(key=lambda x: (x["status"] != "Success", x["latency_ms"] if x["status"] == "Success" else float('inf')))
+    logger.info(f"测试完成。成功节点数: {successful_nodes_count}, 失败节点数: {failed_nodes_count}")
 
-    successful_nodes_count = sum(1 for r in all_results if r['status'] == 'Success')
-    failed_nodes_count = sum(1 for r in all_results if r['status'] != 'Success')
+    # 只将成功节点写入 sub.txt (原始链接)
+    with open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+        if successful_nodes:
+            for node in successful_nodes:
+                f.write(f"{node['original_link']}\n")
+        else:
+            f.write("# No valid nodes found.\n") # 如果没有成功节点，也写入一行注释
+    logger.info(f"可用节点链接已写入: {SUCCESSFUL_NODES_OUTPUT_FILE}")
 
-    logger.info(f"测试完成。成功连接节点数: {successful_nodes_count}, 失败连接节点数: {failed_nodes_count}")
-    logger.info(f"结果已保存到 {OUTPUT_FILE}")
-
-    # 将所有结果保存到历史文件
-    save_history_results(HISTORY_FILE, all_results)
-    # 保存 DNS 缓存
-    save_dns_cache(DNS_CACHE_FILE, dns_cache)
-
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("# 节点测试结果 (连通性测试)\n")
-        f.write(f"# 测试时间: {asyncio.get_event_loop().time()}\n\n")
-        f.write(f"总计解析节点数: {len(current_parsed_nodes)}\n")
-        f.write(f"实际进行网络测试节点数: {len(nodes_to_test_now)}\n")
-        f.write(f"成功连接节点数: {successful_nodes_count}\n")
-        f.write(f"失败连接节点数: {failed_nodes_count}\n\n")
-
-        f.write("| 协议 | 备注 | 服务器 | 端口 | 状态 | 延迟 (ms) | 错误信息 | 原始链接 |\n")
-        f.write("|---|---|---|---|---|---|---|---|\n")
-
-        for res in all_results:
-            node = res["node"]
-            status = res["status"]
-            latency = res["latency_ms"] if res["latency_ms"] != -1 else "N/A"
-            error = res["error"] if res["error"] else ""
-            original_link = res["original_link"]
-            
-            f.write(
-                f"| {node.get('protocol', 'N/A')} "
-                f"| {node.get('remark', 'N/A')} "
-                f"| {node.get('server', 'N/A')} "
-                f"| {node.get('port', 'N/A')} "
-                f"| {status} "
-                f"| {latency} "
-                f"| {error} "
-                f"| `{original_link}` |\n"
-            )
-        f.write("\n# 可用节点 (仅显示测试成功的节点)\n")
-        for res in all_results:
-            if res["status"] == "Success":
-                f.write(f"{res['original_link']}\n")
+    # 保存历史记录和 DNS 缓存
+    await save_history()
+    await save_dns_cache()
 
 if __name__ == "__main__":
     asyncio.run(main())
