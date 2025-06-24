@@ -59,7 +59,7 @@ def parse_node_info(link):
                 "address": json_data.get("add"),
                 "port": json_data.get("port"),
                 "id": json_data.get("id"),
-                "alterId": json_data.get("aid"),
+                "alterId": json_data.get("aid"), # aid 可能为 None
                 "security": json_data.get("scy", "auto"),
                 "network": json_data.get("net"),
                 "path": json_data.get("path"),
@@ -177,12 +177,14 @@ def generate_xray_config(node_info):
     stream_settings = config["outbounds"][0]["streamSettings"]
 
     if node_info["type"] == "vmess":
+        # 安全地获取 alterId，如果为 None 则默认为 0
+        alter_id = int(node_info["alterId"]) if node_info.get("alterId") is not None else 0
         outbound_settings["vnext"] = [{
             "address": node_info["address"],
             "port": node_info["port"],
             "users": [{
                 "id": node_info["id"],
-                "alterId": int(node_info["alterId"]),
+                "alterId": alter_id,
                 "security": node_info["security"]
             }]
         }]
