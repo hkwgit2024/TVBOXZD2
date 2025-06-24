@@ -80,10 +80,12 @@ def process_nodes_with_test(input_file_path, output_file_path):
         print(f"写入文件时发生错误 {output_file_path}: {e}")
 
 if __name__ == "__main__":
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.abspath(os.path.join(script_dir, os.pardir))
+    # 当脚本在根目录时，直接引用 'data/' 目录
+    # script_dir = os.path.dirname(os.path.abspath(__file__)) # 不再需要
+    # project_root = os.path.abspath(os.path.join(script_dir, os.pardir)) # 不再需要
 
-    input_file = os.path.join(project_root, 'data', 'sub.txt')
-    output_file = os.path.join(project_root, 'data', 'enhanced_nodes.txt')
+    # 脚本的当前工作目录就是仓库根目录，可以直接从此处引用 'data/'
+    input_file = os.path.join('data', 'sub.txt')
+    output_file = os.path.join('data', 'enhanced_nodes.txt')
 
     process_nodes_with_test(input_file, output_file)
