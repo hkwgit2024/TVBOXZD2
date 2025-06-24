@@ -57,8 +57,8 @@ jobs:
       run: python test_nodes.py
       env:
         # 可以通过环境变量设置脚本内部的配置，例如测试超时时间或日志级别
-        # TEST_TIMEOUT: "5" # 取消注释以将超时设置为 5 秒
-        LOG_LEVEL: INFO # 设置日志级别为 INFO (可选 DEBUG 以获取更详细日志)
+        # TEST_TIMEOUT: "2" # 取消注释以将超时设置为 2 秒
+        LOG_LEVEL: DEBUG # 设置日志级别为 INFO (可选 DEBUG 以获取更详细日志)
       shell: bash
 
     # 备注：原先的 '统计成功节点数' 步骤已被移除，因为该功能已整合到 test_nodes.py 中
