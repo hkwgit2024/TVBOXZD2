@@ -1,86 +1,77 @@
-name: Test and Publish Nodes
+name: 测试
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:  # 允许手动在 GitHub UI 中触发工作流
   schedule:
-    - cron: '0 */6 * * *' # Runs every 6 hours
-
-concurrency:
-  group: test-nodes
-  cancel-in-progress: true
-
-permissions:
-  contents: write # Grant write permissions for pushing changes
+    - cron: '0 * * * *' # 定义调度触发器：每小时的第 0 分钟运行一次
 
 jobs:
   test_nodes:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60 # Set a timeout for the job (e.g., 60 minutes) to prevent infinite runs
+    runs-on: ubuntu-latest # 指定工作流运行的环境：最新的 Ubuntu 操作系统
 
     steps:
-      - name: Checkout Code Repository
-        uses: actions/checkout@v4
+    - name: 检出代码仓库
+      uses: actions/checkout@v4 # 使用 actions/checkout@v4 来检出仓库代码
+      with:
+        fetch-depth: 0 # 获取完整的 Git 历史记录，这对于后续的 git commit 和 push 操作是必要的
 
-      - name: Set up Python Environment
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' # Ensure Python 3.10 or higher for f-strings and type hints
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 来设置 Python 环境
+      with:
+        python-version: '3.9' # 指定使用的 Python 版本为 3.9
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install httpx==0.27.2 aiodns==3.2.0 aiofiles==24.1.0 psutil==6.0.0
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip # 升级 pip
+        pip install httpx aiodns aiofiles psutil # 安装 Python 依赖库
+      shell: bash # 指定使用 bash shell 执行此步骤
 
-      - name: Initialize sub.txt (if not exists)
-        # This step ensures data/sub.txt exists even if previous run failed to create it
-        run: |
-          mkdir -p data
-          touch data/sub.txt
-          # Add initial comment if file is empty or just created
-          if ! grep -q "#" data/sub.txt; then
-            echo "# Initial sub.txt" > data/sub.txt
-          fi
+    - name: 初始化数据文件 (如果不存在)
+      # 确保 data 目录和必要的 JSON/txt 文件存在，以便脚本能正常读写
+      run: |
+        mkdir -p data # 创建 data 目录（如果不存在）
+        if [ ! -f data/sub.txt ]; then # 如果 sub.txt 不存在
+          echo "# 初始 sub.txt 文件" > data/sub.txt # 创建并写入初始内容
+        fi
+        if [ ! -f data/history_results.json ]; then # 如果 history_results.json 不存在
+          echo "{}" > data/history_results.json # 创建并写入空的 JSON 对象
+        fi
+        if [ ! -f data/dns_cache.json ]; then # 如果 dns_cache.json 不存在
+          echo "{}" > data/dns_cache.json # 创建并写入空的 JSON 对象
+        fi
+      shell: bash
 
+    - name: 缓存 ss.txt (此步骤不再关键，但可保留)
+      # 注意：由于 test_nodes.py 现在会从 SOURCE_URLS 列表获取多个来源，
+      # 此缓存步骤可能不再像以前那样直接关联和命中。但保留它不影响流程。
+      id: cache-ss-txt # 为此步骤设置 ID，以便后续引用
+      uses: actions/cache@v4 # 使用 actions/cache@v4 来管理缓存
+      with:
+        path: data/ss.txt # 指定要缓存的路径
+        key: ss-txt-${{ github.run_id }} # 缓存键，使用运行 ID 使其唯一
+        restore-keys: |
+          ss-txt- # 恢复键，用于尝试恢复最近的缓存
 
-      - name: Cache ss.txt # (Note: this cache is for the downloaded ss.txt content, not test results)
-        # This cache might not be strictly necessary if ss.txt is small and fetched quickly.
-        # It's more useful for build artifacts or large data.
-        # For data/ss.txt, usually this refers to the input list, not the output.
-        # You might consider caching history_results.json and dns_cache.json if they become very large
-        # to speed up loading, but remember to invalidate appropriately.
-        # For now, let's focus on the primary issue.
-        uses: actions/cache@v4
-        with:
-          path: data/ss.txt
-          key: ss-txt-${{ hashFiles('data/ss.txt') }} # Caches the raw ss.txt that's downloaded or exists.
+    - name: 运行节点测试脚本
+      # 执行 test_nodes.py 脚本，该脚本将处理节点获取、测试和结果保存
+      run: python test_nodes.py
+      env:
+        # 可以通过环境变量设置脚本内部的配置，例如测试超时时间或日志级别
+        # TEST_TIMEOUT: "5" # 取消注释以将超时设置为 5 秒
+        LOG_LEVEL: INFO # 设置日志级别为 INFO (可选 DEBUG 以获取更详细日志)
+      shell: bash
 
-      - name: Run Node Test Script
-        run: |
-          start_time=$(date +%s)
-          python test_nodes.py
-          end_time=$(date +%s)
-          echo "Test script took $((end_time - start_time)) seconds"
-        env:
-          # PYTHONUNBUFFERED: "1" # Ensures output is unbuffered
-          # DEBUG_LOG: "true" # Controls logging level in test_nodes.py. Use LOG_LEVEL instead.
-          LOG_LEVEL: "INFO" # Set to INFO for general runs, DEBUG for debugging
+    # 备注：原先的 '统计成功节点数' 步骤已被移除，因为该功能已整合到 test_nodes.py 中
+    # test_nodes.py 脚本会直接将最终成功节点数打印到标准输出，GitHub Actions 会自动捕获。
 
-      - name: Count Successful Nodes
-        # Running the separate script to count successful nodes
-        run: python count_successful_nodes.py
-
-      - name: Commit and Push Updated Data Files
-        if: success() # Only run if previous steps succeeded
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
-          # Ensure data files are present before adding
-          git add data/sub.txt data/history_results.json data/dns_cache.json || true # Use '|| true' to prevent failure if file doesn't exist (though they should)
-          git commit -m "Update test results and sub.txt [skip ci]" || echo "No changes to commit" # '|| echo' handles no changes
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} # If you have a separate BOT token
-         #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the default GITHUB_TOKEN provided by Actions, which has enough permissions for 'contents: write'
+    - name: 提交并推送更新的数据文件
+      # 将测试后更新的 sub.txt, history_results.json 和 dns_cache.json 提交回仓库
+      run: |
+        git config user.name "GitHub Actions" # 配置 Git 用户名
+        git config user.email "actions@github.com" # 配置 Git 用户邮箱
+        git add data/sub.txt data/history_results.json data/dns_cache.json # 添加更改的文件到暂存区
+        git commit -m "更新测试后的节点数据" || echo "没有文件更改需要提交" # 提交更改，如果没有任何更改则打印提示信息
+        git push # 推送更改到远程仓库
+      env:
+        GITHUB_TOKEN: ${{ secrets.BOT }} # 使用 GitHub 提供的内置 token 进行认证
+      shell: bash
