@@ -32,7 +32,7 @@ SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")  # 成功节点
 TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 2))
 BATCH_SIZE = 100  # 每次处理的节点数量，用于分批处理以优化性能
 DNS_CACHE_EXPIRATION = 2678400  # DNS 缓存有效期：31 天 (单位：秒)
-HISTORY_EXPIRATION = 604800  # 历史记录有效期：7 天 (单位：秒)
+HISTORY_EXPIRATION = 2678400  # 历史记录有效期：31 天 (单位：秒)
 
 # 动态计算最佳并发任务数
 def get_optimal_concurrency():
