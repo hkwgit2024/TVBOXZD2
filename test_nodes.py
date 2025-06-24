@@ -13,17 +13,16 @@ import ssl
 import subprocess
 from urllib.parse import urlparse, unquote, parse_qs
 from concurrent.futures import ThreadPoolExecutor
-import base64 # 导入 base64 模块用于处理 SS 链接
-
+import base64
 
 # --- 配置 ---
 # 将 SOURCE_URLS 定义为一个列表，支持从多个地址获取节点信息
 SOURCE_URLS = [
    # "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt",
    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+   "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
   #  "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
-   # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+  #  "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
    # "https://snippet.host/oouyda/raw",
 ]
 
@@ -450,7 +449,7 @@ async def generate_xray_config(node_info):
                 {"type": "field", "outboundTag": "blocked", "ip": ["geoip:private"]},
                 {"type": "field", "outboundTag": "direct", "domain": ["geosite:cn"]},
                 {"type": "field", "outboundTag": "direct", "ip": ["geoip:cn"]},
-                {"type": "field", "outboundTag": "proxy", "port": str(LOCAL_PROXY_PORT)} # 确保通过代理出口
+                {"type": "field", "outboundTag": "proxy"} # 确保通过代理出口
             ]
         }
     }
@@ -460,7 +459,7 @@ async def generate_xray_config(node_info):
 
     # 通用设置：服务器地址和端口
     outbound['settings']['vnext'] = [{
-        "address": node_info.get('server'),
+        "address": node_info.get('resolved_ip') or node_info.get('server'), # 使用解析后的IP
         "port": node_info.get('port'),
         "users": [] # 根据协议添加用户
     }]
@@ -491,11 +490,8 @@ async def generate_xray_config(node_info):
             stream_settings['grpcSettings'] = {"serviceName": node_info.get('serviceName', '')}
 
     elif node_info['protocol'] == 'vmess':
-        # VMess 链接是 base64 编码的 JSON，需要特殊处理
+        # VMess 链接的 user_info_part 是直接的 JSON 字符串（经过 base64 解码和 URL 解码）
         try:
-            # VMess 链接的 user_info_part 本身就是 base64 解码后的 JSON
-            # 但在 parse_node_info 中已经处理过了，所以这里直接用 user_info_part
-            # 实际上，VMess 的 `user_info_part` 应该是直接的 JSON 字符串（经过 base64 解码和 URL 解码）
             decoded_vmess = json.loads(node_info['user_info_part'])
 
             outbound['settings']['vnext'][0]['users'].append({
@@ -534,7 +530,7 @@ async def generate_xray_config(node_info):
     elif node_info['protocol'] == 'trojan':
         password = node_info['user_info_part'] # Trojan 的 user_info_part 是密码
         outbound['settings']['servers'] = [{
-            "address": node_info.get('server'),
+            "address": node_info.get('resolved_ip') or node_info.get('server'),
             "port": node_info.get('port'),
             "password": password
         }]
@@ -556,15 +552,12 @@ async def generate_xray_config(node_info):
             stream_settings['network'] = 'grpc'
             stream_settings['grpcSettings'] = {"serviceName": node_info.get('serviceName', '')}
 
-
     elif node_info['protocol'] == 'ss':
-        # SS 链接通常是 base64(method:password@server:port)
-        # Xray 的 SS 配置需要 method, password
         outbound['protocol'] = 'shadowsocks' # 修正协议名
         outbound['settings'] = {
             "servers": [
                 {
-                    "address": node_info.get('server'),
+                    "address": node_info.get('resolved_ip') or node_info.get('server'),
                     "port": node_info.get('port'),
                     "method": node_info.get('method'),
                     "password": node_info.get('password')
@@ -572,19 +565,50 @@ async def generate_xray_config(node_info):
             ]
         }
         # SS 通常没有 streamSettings，除非是 SS-OBFS/TLS，这里简化处理
-        del config['outbounds'][0]['streamSettings'] # SS 不使用 streamSettings
-        # SS 2022 / SS-Plugins 等复杂情况 Xray 配置可能需要更多参数
+        # 如果是 SS with TLS/obfs, 需要在 streamSettings 中添加相应配置
+        if node_info.get('plugin') == 'obfs' and node_info.get('plugin_opts'):
+            stream_settings['network'] = 'tcp'
+            stream_settings['security'] = 'none' # Obfs is not TLS
+            # Xray 的 obfs 配置方式复杂，这里只是一个示例。
+            # 可能需要更复杂的逻辑来解析 plugin_opts。
+            stream_settings['tcpSettings'] = {
+                "header": {
+                    "type": "http",
+                    "request": {
+                        "path": [node_info.get('path', '/')],
+                        "headers": {
+                            "Host": [node_info.get('host', node_info['server'])]
+                        }
+                    }
+                }
+            }
+        elif node_info.get('plugin') == 'v2ray-plugin' and node_info.get('plugin_opts'):
+            # v2ray-plugin 通常与 ws 和 tls 结合
+            stream_settings['network'] = 'ws'
+            if 'tls' in node_info.get('plugin_opts', ''):
+                stream_settings['security'] = 'tls'
+                tls_settings = {"allowInsecure": True}
+                if node_info.get('sni'):
+                    tls_settings['serverName'] = node_info['sni']
+                elif node_info.get('host'):
+                    tls_settings['serverName'] = node_info['host']
+                else:
+                    tls_settings['serverName'] = node_info['server']
+                stream_settings['tlsSettings'] = tls_settings
+            
+            # 解析 v2ray-plugin 的 path 和 host
+            plugin_opts_parsed = parse_qs(node_info.get('plugin_opts', ''))
+            ws_path = plugin_opts_parsed.get('path', ['/'])[0]
+            ws_host = plugin_opts_parsed.get('host', [node_info['server']])[0]
+            stream_settings['wsSettings'] = {"path": ws_path, "headers": {"Host": ws_host}}
+        else:
+             del config['outbounds'][0]['streamSettings'] # 默认 SS 不用 streamSettings
 
     elif node_info['protocol'] in ['hy2', 'hysteria2']:
-        # Hysteria2 配置在 Xray 还不直接支持，需要转换为 sing-box
-        # 考虑到当前问题是提高可用性，可以暂时忽略 Hysteria2 的实际代理测试，
-        # 或者使用 sing-box 作为辅助测试（如果 Xray 不支持）。
-        # 这里为了演示方便，假设 Xray 可以配置。如果 Xray 无法支持，则此类节点依然只能做 TCP/UDP 探测。
-        # 注意：Xray 核心并不直接支持 Hysteria2，你需要使用 sing-box 或其他支持的客户端。
+        # Xray 不支持 Hysteria2，返回 None
         logger.warning(f"Xray 无法直接测试 {node_info['protocol']} 协议，跳过实际代理测试。")
-        return None # 返回 None 表示无法生成 Xray 配置
+        return None 
 
-    # 其他默认路由设置
     config['outbounds'].append({"protocol": "freedom", "tag": "direct"})
     config['outbounds'].append({"protocol": "blackhole", "tag": "blocked"})
     config['outbounds'][0]['tag'] = "proxy" # 为主代理出口添加tag
@@ -704,13 +728,12 @@ async def check_node(node_info):
     remarks = node_info.get('remarks', 'N/A')
     server = node_info.get('server')
     port = node_info.get('port')
-    target_host = node_info.get('resolved_ip')
+    target_host = node_info.get('resolved_ip') # 优先使用解析后的 IP
 
     if not all([server, port, target_host]):
         return NodeTestResult(node_info, "Failed", -1, "信息不完整或 DNS 解析失败")
 
     # 对于 Hysteria2，Xray 核心通常不直接支持，所以我们暂时保留简单的 TCP/UDP 探测
-    # 如果你使用 sing-box，则可以为其生成配置并进行代理测试
     if node_info['protocol'] in ['hy2', 'hysteria2']:
         logger.warning(f"协议 {node_info['protocol']} 不受 Xray 直接支持，执行基本 TCP/UDP 探测。")
         test_start_time = time.monotonic()
@@ -718,24 +741,19 @@ async def check_node(node_info):
         sock = None
         wrapped_socket = None
         try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM if node_info['protocol'] == 'hy2' else socket.SOCK_STREAM)
+            # Hysteria2 是 UDP 协议，这里做 UDP 端口可达性测试
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(TEST_TIMEOUT_SECONDS)
-            if node_info['protocol'] == 'hy2':
-                # Hysteria2 是 UDP 协议，这里只做 UDP 端口可达性测试，不包含协议握手
-                # 通常 Hysteria2 节点会有一个 UDP 端口，但直接发送 ping 是一个非常简化的测试
-                # 更严谨的 Hysteria2 测试需要专门的客户端实现
-                sock.connect((target_host, port))
-                sock.sendall(b'ping') # 尝试发送数据
-            else: # TCP based (trojan, vless, vmess, ss) if we were not using Xray
-                 # 这种回退测试仅用于 Xray 不支持的协议，但它缺乏协议层面的验证
-                 await asyncio.get_event_loop().run_in_executor(None, sock.connect, (target_host, port))
-                 if node_info.get('security') == 'tls':
-                    context = ssl.create_default_context()
-                    context.check_hostname = False
-                    context.verify_mode = ssl.CERT_NONE
-                    sni_hostname = node_info.get('sni') or node_info.get('host') or node_info['server']
-                    wrapped_socket = context.wrap_socket(sock, server_hostname=sni_hostname)
-                    await asyncio.get_event_loop().run_in_executor(None, wrapped_socket.do_handshake)
+            sock.connect((target_host, port))
+            # 尝试发送一个小的 UDP 包，不保证协议层面的握手成功
+            sock.sendto(b'ping', (target_host, port))
+            
+            # 对于 UDP，recvfrom 会阻塞直到收到数据，或者超时
+            # 如果 Hysteria2 服务器有响应，这里会收到
+            try:
+                sock.recvfrom(1024) # 尝试接收响应
+            except socket.timeout:
+                pass # 即使没有收到响应，只要能发送数据也认为端口可达
 
             test_end_time = time.monotonic()
             delay = (test_end_time - test_start_time) * 1000
@@ -745,12 +763,9 @@ async def check_node(node_info):
             error_message = "连接超时 (基本探测)"
         except ConnectionRefusedError:
             error_message = "连接被拒绝 (基本探测)"
-        except ssl.SSLError as e:
-            error_message = f"TLS 握手错误 (基本探测): {e}"
         except Exception as e:
             error_message = f"基本探测中发生意外错误: {e}"
         finally:
-            if wrapped_socket: wrapped_socket.close()
             if sock: sock.close()
         logger.warning(f"测试节点 {remarks} ({target_host}:{port}) - 状态: 失败 (基本探测), 错误: {error_message}")
         return NodeTestResult(node_info, "Failed", -1, error_message)
@@ -762,9 +777,6 @@ async def check_node(node_info):
         return NodeTestResult(node_info, "Failed", -1, "无法生成 Xray 配置或协议不支持")
 
     # 在执行每个节点测试前，确保 Xray 进程启动并使用新的配置
-    # 注意：频繁启动/停止 Xray 进程会带来性能开销，但为了测试独立性，这里简化处理。
-    # 更好的做法是让 Xray 持续运行，动态加载配置（如果 Xray 支持热重载）。
-    # 或者在一个批次开始时启动一次，批次结束时停止。
     await stop_proxy_subprocess() # 停止旧的进程
     if not await start_proxy_subprocess(): # 启动新的进程
         return NodeTestResult(node_info, "Failed", -1, "Xray 客户端启动失败")
@@ -791,9 +803,7 @@ async def check_node(node_info):
     except Exception as e:
         error_message = f"代理测试中发生意外错误: {e}"
     finally:
-        # 每次测试完成后可以停止 Xray，避免端口占用或配置冲突，或者你也可以选择只在所有测试完成后停止一次
-        # await stop_proxy_subprocess() # 考虑到性能，可以在批量测试结束后再停止
-        pass # 这里为了性能，先不停止，在 `main` 函数中统一停止
+        pass # Xray 进程在 test_nodes_in_batches 中统一停止
 
     logger.warning(f"测试节点 {remarks} ({server}:{port}) - 状态: 失败 (代理测试), 错误: {error_message}")
     return NodeTestResult(node_info, "Failed", -1, error_message)
