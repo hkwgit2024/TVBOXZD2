@@ -1,77 +1,92 @@
 name: Test and Update Proxy Nodes
 
 on:
+  # 当 main 分支有代码推送时触发
   push:
     branches:
       - main
     paths:
-      - 'test_nodes.py'
-      - '.github/workflows/main.yml'
+      - 'test_nodes.py' # 仅当脚本文件有更改时运行
+      - '.github/workflows/main.yml' # 仅当工作流文件有更改时运行
 
+  # 每天固定时间运行 (UTC 20:00，对应北京时间次日 04:00)
   schedule:
     - cron: '0 20 * * *'
 
+  # 允许手动触发工作流
   workflow_dispatch:
 
 jobs:
   test_and_update_nodes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 环境上运行
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository # 检出你的代码库
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python # 设置 Python 3.9 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install dependencies # 安装 Python 依赖
         run: |
           python -m pip install --upgrade pip
           pip install httpx aiodns aiofiles psutil
 
-      - name: Download Xray Core
+      - name: Download Xray Core and Geo Data # 下载 Xray 核心和地理数据文件
         run: |
+          # 请根据 GitHub Actions runner 环境和 Xray 最新版本调整
+          # 确保 XRAY_VERSION 是最新的稳定版本
           XRAY_VERSION="1.8.8"
           XRAY_ZIP="Xray-linux-64.zip"
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
           
-          mkdir -p data
-          curl -L -o xray.zip "${XRAY_URL}" --fail
-          
-          if [ ! -s xray.zip ]; then
-            echo "Error: Xray zip file was not downloaded or is empty. Please check the URL and version."
-            exit 1
-          fi
+          # GeoData 下载链接，务必替换为最新的 geodata 版本号
+          # 您可以在 https://github.com/MetaCubeX/meta-rules-dat/releases 找到最新的版本号 (例如 202406230103)
+          GEODATA_VERSION="202406230103" 
+          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/v${GEODATA_VERSION}/geoip.dat"
+          GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/v${GEODATA_VERSION}/geosite.dat"
 
-          unzip -o xray.zip xray -d .
-          
-          if [ ! -f ./xray ]; then
-            echo "Error: Xray executable 'xray' not found after unzipping. Check the zip content."
-            exit 1
-          fi
+          mkdir -p data # 创建数据目录，geoip.dat 和 geosite.dat 将下载到此目录
 
-          chmod +x ./xray
-          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
+          # 下载 Xray 核心
+          curl -L -o xray.zip "${XRAY_URL}" --fail # --fail 会在 HTTP 错误时使 curl 退出非零状态
+          if [ ! -s xray.zip ]; then echo "Error: Xray zip not downloaded or is empty!"; exit 1; fi
+          unzip -o xray.zip xray -d . # 解压 xray 可执行文件到当前目录
+          if [ ! -f ./xray ]; then echo "Error: Xray executable not found after unzipping!"; exit 1; fi
+          chmod +x ./xray # 添加执行权限
+          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV # 设置 Xray 路径环境变量
 
-      - name: Run Node Tester Script
-        id: test_script
+          # 下载 geoip.dat
+          curl -L -o data/geoip.dat "${GEOIP_URL}" --fail
+          if [ ! -s data/geoip.dat ]; then echo "Error: geoip.dat not downloaded or is empty!"; exit 1; fi
+
+          # 下载 geosite.dat
+          curl -L -o data/geosite.dat "${GEOSITE_URL}" --fail
+          if [ ! -s data/geosite.dat ]; then echo "Error: geosite.dat not downloaded or is empty!"; exit 1; fi
+
+      - name: Run Node Tester Script # 运行节点测试脚本
+        id: test_script # 为该步骤添加 ID，以便后续引用其输出
         run: |
-          export TEST_TIMEOUT=15
-          export LOG_LEVEL=DEBUG
+          # 设置环境变量，传递给 Python 脚本
+          # LOG_LEVEL 设为 DEBUG，以便在 Actions 日志中看到更多详细信息
+          export TEST_TIMEOUT=15 
+          export LOG_LEVEL=DEBUG 
           
+          # 直接运行 Python 脚本，所有输出（包括错误回溯）都会直接显示在 Actions 控制台
           python test_nodes.py
           
+          # 从标准输出中提取成功节点数，如果未找到则默认为 0
           SUCCESS_COUNT=$(grep "最终成功节点数:" /dev/stdout | awk '{print $NF}' || echo "0")
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
         env:
-          # 这些环境变量仅在此处定义，不会在 run 块内使用 export
-          # 但为了调试，run 块内的 export 优先级更高
+          # 也可以在这里定义环境变量，但为了调试，run 块内的 export 优先级更高
           TEST_TIMEOUT: 15
           LOG_LEVEL: DEBUG
 
-      - name: Commit and Push if changed
+      - name: Commit and Push if changed # 如果有更改，提交并推送
+        # 仅当有成功节点 或 前一步骤（test_script）成功执行时才尝试提交
         if: ${{ steps.test_script.outputs.successful_nodes_count != '0' || success() }}
         run: |
           git config user.name "github-actions[bot]"
@@ -79,6 +94,7 @@ jobs:
           
           git add data/sub.txt data/history_results.json data/dns_cache.json
           
+          # 检查暂存区是否有实际更改，如果有，则创建提交并推送
           if ! git diff --quiet --cached; then
             git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
             git push origin main
@@ -86,7 +102,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
 
-      - name: Informational
+      - name: Informational:
         if: ${{ steps.test_script.outputs.successful_nodes_count == '0' }}
         run: |
           echo "No successful nodes found. Skipping commit."
