@@ -72,8 +72,8 @@ jobs:
 
           echo "Setting XRAY_PATH environment variable..."
           # 将 Xray 路径设置为环境变量，这样 Python 脚本才能找到它
-          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV 
-          echo "Xray setup complete. XRAY_PATH is now ${XRAY_PATH}"
+          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
+          echo "Xray setup complete. XRAY_PATH is now $(pwd)/xray" # 修正输出，直接引用已设置的路径
 
       - name: Run Node Tester Script
         id: test_script # 为这一步添加 ID，以便后续引用其输出
@@ -83,8 +83,8 @@ jobs:
           # 设置环境变量，传递给 Python 脚本
           # 将日志级别设为 DEBUG，获取更详细的脚本内部日志，方便调试
           # TEST_TIMEOUT 可以根据网络情况调整
-          export TEST_TIMEOUT=15 
-          export LOG_LEVEL=DEBUG 
+          export TEST_TIMEOUT=15
+          export LOG_LEVEL=DEBUG
           
           # 直接运行 Python 脚本，不再重定向到文件
           # 这样，所有输出（包括 Python 错误回溯）都会直接显示在GitHub Actions控制台
@@ -99,14 +99,15 @@ jobs:
           SUCCESS_COUNT=$(grep "最终成功节点数:" /dev/stdout | awk '{print $NF}' || echo "0")
           echo "Detected successful nodes count: ${SUCCESS_COUNT}"
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        env: # 也可以在这里定义环境变量，效果相同
-          TEST_TIMEOUT: 15
-          LOG_LEVEL: DEBUG
+        env: # 也可以在这里定义环境变量，效果相同，但为了避免混淆，在run中定义更直接
+          # 请注意，如果在这里定义，它们会是所有后续步骤的全局环境变量，但在当前run块中，run内的export优先
+          # TEST_TIMEOUT: 15 
+          # LOG_LEVEL: DEBUG
 
       - name: Commit and Push if changed
         # 仅当有成功节点 (大于0) 或 test_script 步骤成功执行（即没有运行时错误）时才尝试提交
         # 即使 successful_nodes_count 为 0，如果 sub.txt 内容发生了变化 (例如从有节点到无节点)，也应该提交
-        if: ${{ steps.test_script.outputs.successful_nodes_count != '0' || success() }} 
+        if: ${{ steps.test_script.outputs.successful_nodes_count != '0' || success() }}
         run: |
           echo "Configuring Git user..."
           git config user.name "github-actions[bot]"
