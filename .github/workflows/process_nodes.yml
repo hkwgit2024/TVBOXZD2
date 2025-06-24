@@ -1,79 +1,59 @@
-name: Enhance Proxy Nodes
+name: Enhance Proxy Nodes # 工作流名称
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # 每天 UTC 00:00
+    - cron: "0 0 * * *" # 每天 UTC 00:00 运行
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main # main 分支有推送时运行
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   enhance-nodes:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 运行
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository # 检出代码
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python # 设置 Python 环境
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
-          cache: "pip"
+          python-version: "3.10" # 指定 Python 版本
+          cache: "pip" # 缓存 pip 包，加速安装
 
-      - name: Install dependencies
+      - name: Install dependencies # 安装 Python 依赖
         run: |
           pip install -r requirements_enhance_nodes.txt
-          pip list  # 调试：显示已安装包
+          pip list # 调试：显示已安装包列表
 
-      - name: Ensure data directory exists
+      - name: Ensure data directory exists # 确保数据目录存在
         run: |
           mkdir -p data
           echo "data 目录已创建"
-          ls -la data/
+          ls -la data/ # 调试：列出 data 目录内容
 
-      - name: Verify input files
+      - name: Verify input files # 验证输入文件是否存在和内容
         run: |
           ls -la data/sub.txt || echo "sub.txt 未找到"
           ls -la data/history_results.json || echo "history_results.json 未找到"
           if [ -f data/sub.txt ]; then
-            wc -l data/sub.txt  # 显示行数
-            head -n 10 data/sub.txt  # 显示前10行
+            wc -l data/sub.txt # 显示 sub.txt 行数
+            head -n 10 data/sub.txt # 显示 sub.txt 前10行
           fi
 
-      - name: Run enhanced script
+      - name: Run enhanced script # 运行增强脚本
         env:
-          LOG_LEVEL: INFO
-          TEST_TIMEOUT: 2
+          LOG_LEVEL: INFO # 设置日志级别为 INFO
+          TEST_TIMEOUT: 2 # 设置测试超时时间为 2 秒
         run: python enhance_nodes.py
 
-      - name: List data directory contents
+      - name: List data directory contents # 列出 data 目录最终内容
         run: |
           ls -la data/
-          cat data/logfile.txt || echo "logfile.txt 未找到"
-          cat data/enhanced_nodes.txt || echo "enhanced_nodes.txt 未找到"
-          cat data/checksums.txt || echo "checksums.txt 未找到"
+          cat data/logfile.txt || echo "logfile.txt 未找到" # 调试：查看 logfile
+          cat data/enhanced_nodes.txt || echo "enhanced_nodes.txt 未找到" # 调试：查看结果文件
+          cat data/checksums.txt || echo "checksums.txt 未找到" # 调试：查看校验和文件
           if [ -f data/enhanced_nodes.txt ]; then
-            wc -l data/enhanced_nodes.txt  # 显示节点数
+            wc -l data/enhanced_nodes.txt # 显示增强节点文件行数
           fi
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-outputs
-          path: |
-            data/enhanced_nodes.txt
-            data/checksums.txt
-            data/logfile.txt
-            data/sub.txt
-            data/history_results.json
-          if-no-files-found: warn
-
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.BOT }}  # 切换到默认令牌
-          publish_dir: data
-          publish_branch: gh-pages
-          keep_files: false
