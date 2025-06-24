@@ -1,4 +1,4 @@
-name: Process Proxy Nodes
+name: Enhance Proxy Nodes
 
 on:
   schedule:
@@ -9,12 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  process-nodes:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-      fail-fast: false
+  enhance-nodes:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -29,65 +25,38 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install httpx aiodns psutil
 
-      - name: Run original script
-        env:
-          LOG_LEVEL: INFO
-          TEST_TIMEOUT: 2
-        run: python original_script.py
+      - name: Ensure data directory exists
+        run: |
+          mkdir -p data
+          echo "data 目录已创建"
 
       - name: Run enhanced script
         env:
           LOG_LEVEL: INFO
-          OUTPUT_FORMAT: all
+          TEST_TIMEOUT: 1
         run: python enhance_nodes.py
+
+      - name: List data directory contents
+        run: |
+          ls -la data/
+          cat data/logfile.txt || echo "logfile.txt 未找到"
+          cat data/enhanced_nodes.txt || echo "enhanced_nodes.txt 未找到"
+          cat data/checksums.txt || echo "checksums.txt 未找到"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node-outputs-${{ matrix.os }}
+          name: node-outputs
           path: |
-            data/enhanced_nodes.json
-            data/sub_clash.yaml
-            data/sub_v2ray.json
-            data/sub_quantumult.conf
-            data/sub_base64.txt
+            data/enhanced_nodes.txt
             data/checksums.txt
             data/logfile.txt
+          if-no-files-found: warn
 
       - name: Publish to GitHub Pages
-        if: matrix.os == 'ubuntu-latest'
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.BOT}}
           publish_dir: data
           publish_branch: gh-pages
-
-      - name: Create Release
-        if: matrix.os == 'ubuntu-latest'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: "nodes-${{ github.run_id }}"
-          files: |
-            data/enhanced_nodes.json
-            data/sub_clash.yaml
-            data/sub_v2ray.json
-            data/sub_quantumult.conf
-            data/sub_base64.txt
-            data/checksums.txt
-          body: |
-            Automated node processing results for run ${{ github.run_id }}.
-            Checksums available in checksums.txt.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Send Discord Notification
-        if: always() && matrix.os == 'ubuntu-latest'
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
-          title: "Node Processing ${{ github.run_id }}"
-          description: "Node processing completed on ${{ matrix.os }}. Check artifacts and release."
-          nodetail: false
