@@ -22,6 +22,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install requests
+        pip install shadowsocks
 
     - name: Create data directory if not exists
       run: mkdir -p data
