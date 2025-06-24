@@ -27,25 +27,25 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y unzip
+          sudo apt-get install -y unzip jq
         continue-on-error: false
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install httpx aiodns aiofiles psutil
-          # 验证依赖安装
           pip show httpx aiodns aiofiles psutil || { echo "::error::Failed to install Python dependencies"; exit 1; }
         continue-on-error: false
 
       - name: Download Xray Core and Geo Data
         run: |
-          XRAY_VERSION="1.8.23"  # 使用最新版本，确保有效
+          XRAY_VERSION="1.8.23"
           XRAY_ZIP="Xray-linux-64.zip"
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
-          GEODATA_VERSION="202506230103"  # 使用最新 Geo 数据版本
-          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/v${GEODATA_VERSION}/geoip.dat"
-          GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/v${GEODATA_VERSION}/geosite.dat"
+
+          # 使用 latest 标签下载 geoip-lite.dat 和 geosite.dat
+          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+          GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
 
           mkdir -p data
 
@@ -54,7 +54,7 @@ jobs:
             if curl -L -o xray.zip "${XRAY_URL}" --fail; then
               break
             fi
-            echo "Retry ${attempt}/3: Failed to download Xray"
+            echo "Retry ${attempt}/3: Failed to download Xray from ${XRAY_URL}"
             sleep 2
           done
           if [ ! -s xray.zip ]; then echo "::error::Failed to download Xray zip"; exit 1; fi
@@ -63,22 +63,22 @@ jobs:
           chmod +x ./xray
           echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
 
-          # 下载 geoip.dat
+          # 下载 geoip-lite.dat
           for attempt in {1..3}; do
-            if curl -L -o data/geoip.dat "${GEOIP_URL}" --fail; then
+            if curl -L -o data/geoip-lite.dat "${GEOIP_URL}" --fail; then
               break
             fi
-            echo "Retry ${attempt}/3: Failed to download geoip.dat"
+            echo "Retry ${attempt}/3: Failed to download geoip-lite.dat from ${GEOIP_URL}"
             sleep 2
           done
-          if [ ! -s data/geoip.dat ]; then echo "::error::Failed to download geoip.dat"; exit 1; fi
+          if [ ! -s data/geoip-lite.dat ]; then echo "::error::Failed to download geoip-lite.dat"; exit 1; fi
 
           # 下载 geosite.dat
           for attempt in {1..3}; do
             if curl -L -o data/geosite.dat "${GEOSITE_URL}" --fail; then
               break
             fi
-            echo "Retry ${attempt}/3: Failed to download geosite.dat"
+            echo "Retry ${attempt}/3: Failed to download geosite.dat from ${GEOSITE_URL}"
             sleep 2
           done
           if [ ! -s data/geosite.dat ]; then echo "::error::Failed to download geosite.dat"; exit 1; fi
@@ -87,19 +87,14 @@ jobs:
       - name: Run Node Tester Script
         id: test_script
         run: |
-          # 设置环境变量
           export TEST_TIMEOUT=15
           export LOG_LEVEL=DEBUG
-          export XRAY_GEOIP_PATH=$(pwd)/data/geoip.dat
+          export XRAY_GEOIP_PATH=$(pwd)/data/geoip-lite.dat
           export XRAY_GEOSITE_PATH=$(pwd)/data/geosite.dat
 
-          # 运行脚本并将成功节点数写入文件
           python test_nodes.py | tee test_output.log
           SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}' || echo "0")
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        env:
-          TEST_TIMEOUT: 15
-          LOG_LEVEL: DEBUG
         continue-on-error: false
 
       - name: Upload test logs
@@ -112,6 +107,8 @@ jobs:
             data/sub.txt
             data/history_results.json
             data/dns_cache.json
+            data/geoip-lite.dat
+            data/geosite.dat
           retention-days: 7
 
       - name: Commit and Push if changed
