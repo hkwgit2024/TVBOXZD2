@@ -27,7 +27,7 @@ DEFAULT_CONFIG = {
         "checksum_file": "checksums.txt",
     },
     "test": {
-        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 2)),  # Increased to 2s
+        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 2)),
         "max_concurrent": 50,
     },
     "log": {
@@ -37,7 +37,6 @@ DEFAULT_CONFIG = {
 }
 
 def load_config() -> Dict:
-    """加载配置文件，合并默认配置和自定义配置"""
     try:
         if os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
@@ -89,7 +88,6 @@ class NodeInfo:
         self.country = country
 
     def to_string(self) -> str:
-        """生成明文格式：链接 | 备注 | 延迟 | 状态 | 国家"""
         return (
             f"{self.original_link} | Remarks: {self.remarks} | Delay: {self.delay_ms:.2f}ms | "
             f"Status: {self.status} | Country: {self.country or 'Unknown'}"
@@ -97,7 +95,6 @@ class NodeInfo:
 
 # --- 辅助函数 ---
 def infer_country(remarks: str, server: str) -> Optional[str]:
-    """根据备注或服务器域名推断国家/地区"""
     try:
         country_keywords = {
             "US": "United States",
@@ -123,7 +120,6 @@ def infer_country(remarks: str, server: str) -> Optional[str]:
         return None
 
 def normalize_link(link: str) -> str:
-    """规范化链接，用于匹配历史记录"""
     try:
         parsed = urlparse(link)
         return f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip("/")
@@ -131,7 +127,6 @@ def normalize_link(link: str) -> str:
         return link
 
 def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
-    """解析节点链接，提取信息并结合历史数据"""
     try:
         link = link.strip()
         if not link or not PROTOCOL_RE.match(link):
@@ -186,7 +181,6 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
         return None
 
 async def verify_node(node: NodeInfo) -> bool:
-    """验证节点连接性"""
     start_time = time.time()
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -196,7 +190,7 @@ async def verify_node(node: NodeInfo) -> bool:
         )
         sock.close()
         node.status = "Successful"
-        node.delay_ms = (time.time() - start_time) * 1000  # Update delay
+        node.delay_ms = (time.time() - start_time) * 1000
         logger.debug(f"节点 {node.remarks} 验证成功，延迟: {node.delay_ms:.2f}ms")
         return True
     except Exception as e:
@@ -208,7 +202,6 @@ async def verify_node(node: NodeInfo) -> bool:
         sock.close()
 
 async def read_sub_txt() -> List[str]:
-    """读取 sub.txt 文件"""
     try:
         sub_file = CONFIG["input"]["sub_file"]
         if not os.path.exists(sub_file):
@@ -224,7 +217,6 @@ async def read_sub_txt() -> List[str]:
         return []
 
 async def read_history() -> Dict:
-    """读取历史测试结果"""
     try:
         history_file = CONFIG["input"]["history_file"]
         if not os.path.exists(history_file):
@@ -241,10 +233,10 @@ async def read_history() -> Dict:
         return {}
 
 async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
-    """处理节点，解析并验证"""
     semaphore = asyncio.Semaphore(CONFIG["test"]["max_concurrent"])
     parsed_nodes = 0
     valid_nodes = 0
+    seen_links = set()
 
     async def verify_with_semaphore(node: NodeInfo) -> NodeInfo:
         async with semaphore:
@@ -253,13 +245,14 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
 
     nodes = []
     for link in tqdm_asyncio(links, desc="解析节点", unit="节点"):
-        node_info = parse_node_info(link, history_data)
         parsed_nodes += 1
-        if node_info:
+        node_info = parse_node_info(link, history_data)
+        if node_info and node_info.original_link not in seen_links:
             nodes.append(node_info)
+            seen_links.add(node_info.original_link)
             valid_nodes += 1
         else:
-            logger.debug(f"跳过无效节点: {link}")
+            logger.debug(f"跳过无效或重复节点: {link}")
 
     logger.info(f"解析完成: 总计 {parsed_nodes} 条链接，有效节点 {valid_nodes} 个")
 
@@ -276,11 +269,9 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
 
     logger.info(f"验证完成: 成功节点 {len(verified_nodes)} 个")
 
-    # 按延迟排序（延迟未知的放在最后）
     return sorted(verified_nodes, key=lambda x: x.delay_ms if x.delay_ms > 0 else float("inf"))
 
 async def save_outputs(nodes: List[NodeInfo]):
-    """保存明文节点和校验和"""
     os.makedirs(CONFIG["output"]["dir"], exist_ok=True)
     checksums = {}
 
@@ -292,12 +283,12 @@ async def save_outputs(nodes: List[NodeInfo]):
         with open(nodes_file, "rb") as f:
             checksums[nodes_file] = hashlib.sha256(f.read()).hexdigest()
         if os.path.exists(nodes_file):
-            logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}, 文件存在")
+            logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}, 大小: {os.path.getsize(nodes_file)} 字节")
         else:
             logger.error(f"文件 {nodes_file} 未生成")
     except Exception as e:
         logger.error(f"保存 {nodes_file} 失败: {e}")
-        print(content)  # 回退到控制台输出
+        print(content)
 
     checksum_file = os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["checksum_file"])
     try:
@@ -305,21 +296,20 @@ async def save_outputs(nodes: List[NodeInfo]):
             for filename, checksum in checksums.items():
                 await f.write(f"{checksum}  {os.path.basename(filename)}\n")
         if os.path.exists(checksum_file):
-            logger.info(f"已保存校验和到 {checksum_file}, 文件存在")
+            logger.info(f"已保存校验和到 {checksum_file}, 大小: {os.path.getsize(checksum_file)} 字节")
         else:
             logger.error(f"文件 {checksum_file} 未生成")
     except Exception as e:
         logger.error(f"保存校验和失败: {e}")
 
 async def main():
-    """主函数"""
     start_time = time.time()
     logger.info("开始处理节点数据")
 
     links = await read_sub_txt()
     history_data = await read_history()
     if not links:
-        logger.warning("没有有效节点链接，退出")
+        logger.warning("没有有效节点链接，生成空文件并退出")
         await save_outputs([])
         return
 
@@ -328,7 +318,6 @@ async def main():
 
     await save_outputs(nodes)
 
-    # 调试：列出 data 目录内容
     data_dir = CONFIG["output"]["dir"]
     try:
         files = os.listdir(data_dir)
