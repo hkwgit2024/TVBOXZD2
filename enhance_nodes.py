@@ -4,8 +4,8 @@ import logging
 import os
 import re
 import socket
-import ssl
-import time  # Added to fix NameError
+import time
+import hashlib
 from pathlib import Path
 import aiofiles
 from tqdm.asyncio import tqdm_asyncio
@@ -27,7 +27,7 @@ DEFAULT_CONFIG = {
         "checksum_file": "checksums.txt",
     },
     "test": {
-        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 1)),
+        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 2)),  # Increased to 2s
         "max_concurrent": 50,
     },
     "log": {
@@ -187,6 +187,7 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
 
 async def verify_node(node: NodeInfo) -> bool:
     """验证节点连接性"""
+    start_time = time.time()
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(CONFIG["test"]["timeout_seconds"])
@@ -195,10 +196,13 @@ async def verify_node(node: NodeInfo) -> bool:
         )
         sock.close()
         node.status = "Successful"
+        node.delay_ms = (time.time() - start_time) * 1000  # Update delay
+        logger.debug(f"节点 {node.remarks} 验证成功，延迟: {node.delay_ms:.2f}ms")
         return True
     except Exception as e:
         logger.warning(f"验证节点 {node.remarks} 失败: {e}")
         node.status = "Failed"
+        node.delay_ms = -1
         return False
     finally:
         sock.close()
@@ -239,6 +243,9 @@ async def read_history() -> Dict:
 async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
     """处理节点，解析并验证"""
     semaphore = asyncio.Semaphore(CONFIG["test"]["max_concurrent"])
+    parsed_nodes = 0
+    valid_nodes = 0
+
     async def verify_with_semaphore(node: NodeInfo) -> NodeInfo:
         async with semaphore:
             await verify_node(node)
@@ -247,8 +254,14 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
     nodes = []
     for link in tqdm_asyncio(links, desc="解析节点", unit="节点"):
         node_info = parse_node_info(link, history_data)
+        parsed_nodes += 1
         if node_info:
             nodes.append(node_info)
+            valid_nodes += 1
+        else:
+            logger.debug(f"跳过无效节点: {link}")
+
+    logger.info(f"解析完成: 总计 {parsed_nodes} 条链接，有效节点 {valid_nodes} 个")
 
     if not nodes:
         logger.warning("没有有效节点")
@@ -260,6 +273,8 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
         node = await future
         if node.status == "Successful":
             verified_nodes.append(node)
+
+    logger.info(f"验证完成: 成功节点 {len(verified_nodes)} 个")
 
     # 按延迟排序（延迟未知的放在最后）
     return sorted(verified_nodes, key=lambda x: x.delay_ms if x.delay_ms > 0 else float("inf"))
@@ -276,7 +291,6 @@ async def save_outputs(nodes: List[NodeInfo]):
             await f.write(content)
         with open(nodes_file, "rb") as f:
             checksums[nodes_file] = hashlib.sha256(f.read()).hexdigest()
-        # 验证文件存在
         if os.path.exists(nodes_file):
             logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}, 文件存在")
         else:
@@ -319,6 +333,10 @@ async def main():
     try:
         files = os.listdir(data_dir)
         logger.info(f"data 目录内容: {files}")
+        for file in files:
+            file_path = os.path.join(data_dir, file)
+            if os.path.isfile(file_path):
+                logger.info(f"文件 {file} 大小: {os.path.getsize(file_path)} 字节")
     except Exception as e:
         logger.error(f"无法列出 data 目录: {e}")
 
