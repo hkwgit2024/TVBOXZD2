@@ -1,139 +1,92 @@
 name: Test and Update Proxy Nodes
 
 on:
-  # 在 main 分支有推送时触发
   push:
     branches:
       - main
     paths:
-      - 'test_nodes.py' # 仅当脚本文件本身有更改时运行
-      - '.github/workflows/main.yml' # 仅当工作流文件有更改时运行
+      - 'test_nodes.py'
+      - '.github/workflows/main.yml'
 
-  # 每天固定时间运行 (例如，北京时间早上 4 点，UTC 20:00)
   schedule:
-    - cron: '0 20 * * *' # UTC 20:00 对应北京时间次日 04:00
+    - cron: '0 20 * * *'
 
-  # 允许手动触发工作流
   workflow_dispatch:
 
 jobs:
   test_and_update_nodes:
-    runs-on: ubuntu-latest # 在最新的 Ubuntu 环境上运行
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # 检出你的代码库
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9' # 指定 Python 版本，建议 3.8+
+          python-version: '3.9'
 
       - name: Install dependencies
         run: |
-          echo "Installing Python dependencies..."
           python -m pip install --upgrade pip
           pip install httpx aiodns aiofiles psutil
-          echo "Python dependencies installed."
 
       - name: Download Xray Core
         run: |
-          # 根据 GitHub Actions runner 环境选择对应的 Xray 版本
-          # 这里以下载 Linux 64-bit 版本为例
-          # 检查最新的 release 页面获取准确的版本号和下载链接
-          # 推荐使用稳定版本，通常是最新版本，但可以手动指定
-          XRAY_VERSION="1.8.8" # 请替换为 Xray 的最新稳定版本号，例如 "1.8.8"
-          XRAY_ZIP="Xray-linux-64.zip" # 对应 Linux x64
+          XRAY_VERSION="1.8.8"
+          XRAY_ZIP="Xray-linux-64.zip"
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
           
-          mkdir -p data # 创建数据目录
-          echo "Attempting to download Xray from ${XRAY_URL}"
-          # --fail 会在 HTTP 错误时使 curl 退出非零状态
-          curl -L -o xray.zip "${XRAY_URL}" --fail 
+          mkdir -p data
+          curl -L -o xray.zip "${XRAY_URL}" --fail
           
-          # 检查下载的文件是否存在且非空
           if [ ! -s xray.zip ]; then
             echo "Error: Xray zip file was not downloaded or is empty. Please check the URL and version."
-            exit 1 # 退出，因为没有下载到 Xray
+            exit 1
           fi
 
-          echo "Xray zip downloaded. Unzipping..."
-          # 解压出 xray 可执行文件到当前目录
-          # 确保解压目标是当前目录，并且文件名是 "xray" (小写)
-          unzip -o xray.zip xray -d . # -o 选项表示覆盖现有文件
+          unzip -o xray.zip xray -d .
           
-          # 再次检查解压后的文件是否存在
           if [ ! -f ./xray ]; then
             echo "Error: Xray executable 'xray' not found after unzipping. Check the zip content."
             exit 1
           fi
 
-          echo "Setting execute permissions for ./xray..."
-          chmod +x ./xray # 添加执行权限
-
-          echo "Setting XRAY_PATH environment variable..."
-          # 将 Xray 路径设置为环境变量，这样 Python 脚本才能找到它
+          chmod +x ./xray
           echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
-          echo "Xray setup complete. XRAY_PATH is now $(pwd)/xray"
 
       - name: Run Node Tester Script
-        id: test_script # 为这一步添加 ID，以便后续引用其输出
+        id: test_script
         run: |
-          echo "Starting Python script execution..."
+          export TEST_TIMEOUT=15
+          export LOG_LEVEL=DEBUG
           
-          # 设置环境变量，传递给 Python 脚本
-          # 将日志级别设为 DEBUG，获取更详细的脚本内部日志，方便调试
-          # TEST_TIMEOUT 可以根据网络情况调整
-          export TEST_TIMEOUT=15 
-          export LOG_LEVEL=DEBUG 
-          
-          # 直接运行 Python 脚本，不再重定向到文件
-          # 这样，所有输出（包括 Python 错误回溯）都会直接显示在GitHub Actions控制台
-          # 如果 Python 脚本出现错误，整个 step 会以非零退出码失败，并显示错误信息
           python test_nodes.py
           
-          echo "Python script execution finished."
-          
-          # 从标准输出中提取最终成功节点数
-          # '/dev/stdout' 是 Linux 下标准输出的特殊文件，可以从这里读取
-          # '|| echo "0"' 确保即使 grep 找不到匹配项也输出 '0'
           SUCCESS_COUNT=$(grep "最终成功节点数:" /dev/stdout | awk '{print $NF}' || echo "0")
-          echo "Detected successful nodes count: ${SUCCESS_COUNT}"
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
         env:
-          # 此处的 env 是为了确保在 run 块之外也可见，但通常在 run 块内使用 export 即可
-          # 如果你在 run 块内使用 export，这里可以省略，以避免混淆
-          # TEST_TIMEOUT: 15 
-          # LOG_LEVEL: DEBUG
+          # 这些环境变量仅在此处定义，不会在 run 块内使用 export
+          # 但为了调试，run 块内的 export 优先级更高
+          TEST_TIMEOUT: 15
+          LOG_LEVEL: DEBUG
 
       - name: Commit and Push if changed
-        # 仅当有成功节点 (大于0) 或 test_script 步骤成功执行（即没有运行时错误）时才尝试提交
-        # 即使 successful_nodes_count 为 0，如果 sub.txt 内容发生了变化 (例如从有节点到无节点)，也应该提交
         if: ${{ steps.test_script.outputs.successful_nodes_count != '0' || success() }}
         run: |
-          echo "Configuring Git user..."
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          echo "Adding data files to Git..."
           git add data/sub.txt data/history_results.json data/dns_cache.json
           
-          echo "Checking for changes in data files..."
-          # 检查是否有实际的文件更改，如果有，则创建提交
           if ! git diff --quiet --cached; then
-            echo "Changes detected. Committing..."
             git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
-            echo "Pushing changes to main branch..."
             git push origin main
-            echo "Commit and push complete."
-          else
-            echo "No changes detected in data files. Skipping commit."
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 自动提供的 token
+          GITHUB_TOKEN: ${{ secrets.BOT }}
 
       - name: Informational
         if: ${{ steps.test_script.outputs.successful_nodes_count == '0' }}
         run: |
-          echo "No successful nodes were found in this run. The 'sub.txt' file might be empty or contain a fallback message."
-          echo "If 'sub.txt' was already empty, no commit would have been made by the previous step."
+          echo "No successful nodes found. Skipping commit."
