@@ -2,3 +2,4 @@ tqdm>=4.66.5
 aiofiles>=24.1.0
 pyyaml>=6.0.2
 pycountry>=24.6.1
+httpx>=0.27.2
