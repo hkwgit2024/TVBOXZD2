@@ -8,13 +8,13 @@ import time
 import aiodns
 import aiofiles
 import psutil
-import socket # 导入标准的 socket 模块
+import socket
 import ssl
 import subprocess
 from urllib.parse import urlparse, unquote, parse_qs
 from concurrent.futures import ThreadPoolExecutor
 import base64
-from functools import partial # 用于 partial 函数
+from functools import partial
 
 # --- 配置 ---
 SOURCE_URLS = [
@@ -25,7 +25,7 @@ DATA_DIR = "data"
 HISTORY_FILE = os.path.join(DATA_DIR, "history_results.json")
 DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
 SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")
-SUCCESS_COUNT_FILE = os.path.join(DATA_DIR, "success_count.txt")  # 新增：保存成功节点数
+SUCCESS_COUNT_FILE = os.path.join(DATA_DIR, "success_count.txt")
 
 TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 15))
 BATCH_SIZE = 100
@@ -33,708 +33,546 @@ DNS_CACHE_EXPIRATION = 2678400  # 31 天
 HISTORY_EXPIRATION = 2678400  # 31 天
 
 XRAY_PATH = os.getenv("XRAY_PATH", "./xray")
-XRAY_CONFIG_FILE = os.path.join(DATA_DIR, "xray_config.json")
-LOCAL_PROXY_PORT = 10800
-TEST_PROXY_URL = "http://www.gstatic.com/generate_204"
+XRAY_GEOIP_PATH = os.getenv("XRAY_GEOIP_PATH", os.path.join(DATA_DIR, "geoip-lite.dat"))
+XRAY_GEOSITE_PATH = os.getenv("XRAY_GEOSITE_PATH", os.path.join(DATA_DIR, "geosite.dat"))
 
 # --- 日志配置 ---
-LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO').upper()
-logging.basicConfig(level=getattr(logging, LOG_LEVEL, logging.INFO),
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(level=LOG_LEVEL,
                     format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[
-                        logging.FileHandler(os.path.join(DATA_DIR, "test_nodes.log")),  # 保存日志到文件
-                        logging.StreamHandler()
-                    ])
+                    handlers=[logging.StreamHandler()])
 logger = logging.getLogger(__name__)
 
-# --- 正则表达式 ---
-PROTOCOL_RE = re.compile(r"^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/[^\s]+$", re.IGNORECASE)
-HOST_PORT_RE = re.compile(r"(?:@|:)(\d{1,5})(?:\?|$|#)")
-NODE_LINK_RE = re.compile(r"^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/(.*)")
-HOST_PORT_FULL_RE = re.compile(r"^(?:\[([0-9a-fA-F:]+)\]|([0-9]{1,3}(?:\.[0-9]{1,3}){3})|([a-zA-Z0-9.-]+)):([0-9]+)$")
-IP_RE = re.compile(r"^(?:\[[0-9a-fA-F:]+\]|[0-9]{1,3}(?:\.[0-9]{1,3}){3})$")
-
-# --- 数据结构 ---
-class NodeTestResult:
-    def __init__(self, node_info, status, delay_ms=-1, error_message=""):
-        self.node_info = node_info
-        self.status = status
-        self.delay_ms = delay_ms
-        self.error_message = error_message
-
 # --- 全局变量 ---
-history_results = {}
 dns_cache = {}
-xray_process = None # 定义为全局变量
+history_results = {}
+executor = ThreadPoolExecutor(max_workers=10) # 限制并发 DNS 解析
 
 # --- 辅助函数 ---
-def normalize_link(link):
-    """规范化节点链接，用于历史记录和缓存的键"""
-    try:
-        parsed = urlparse(link)
-        base_link = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
-        return base_link.rstrip('/')
-    except Exception as e:
-        logger.warning(f"规范化链接 '{link}' 失败: {e}")
-        return link
-
-async def bulk_dns_lookup(hostnames):
-    """批量进行 DNS 查询，并利用缓存"""
-    resolver = aiodns.DNSResolver(nameservers=["223.5.5.5", "114.114.114.114", "8.8.8.8"])
-    results = {}
-    current_time = int(time.time())
-    cache_hits = 0
-
-    to_resolve = []
-    for hostname in hostnames:
-        if hostname in dns_cache and current_time - dns_cache[hostname]["timestamp"] < DNS_CACHE_EXPIRATION:
-            results[hostname] = dns_cache[hostname]["ip"]
-            cache_hits += 1
-        else:
-            to_resolve.append(hostname)
-
-    if to_resolve:
-        async def _resolve_single(h):
-            """解析单个主机名，尝试 A 记录，然后 AAAA 记录"""
-            try:
-                resp = await resolver.query(h, 'A')
-                return h, resp[0].host
-            except Exception:
-                try:
-                    resp = await resolver.query(h, 'AAAA')
-                    return h, resp[0].host
-                except Exception as e:
-                    logger.debug(f"DNS 解析 {h} 失败: {e}")
-                    return h, None
-
-        tasks = [_resolve_single(hostname) for hostname in to_resolve]
-        responses = await asyncio.gather(*tasks, return_exceptions=True)
-
-        for hostname, result in responses:
-            if result:
-                results[hostname] = result
-                dns_cache[hostname] = {"ip": result, "timestamp": current_time}
-                logger.debug(f"已将 {hostname} 解析到 IP: {result}")
-
-    logger.info(f"DNS 查询: 总共 {len(hostnames)} 个，缓存命中 {cache_hits} 个，成功解析 {len([k for k, v in results.items() if v])} 个")
-    return results
-
-async def load_history():
-    """加载历史测试结果"""
-    global history_results
-    os.makedirs(DATA_DIR, exist_ok=True)
-    if os.path.exists(HISTORY_FILE):
-        try:
-            async with aiofiles.open(HISTORY_FILE, "r", encoding="utf-8") as f:
-                content = await f.read()
-                history_results = json.loads(content) if content else {}
-            logger.info(f"历史结果已加载: {len(history_results)} 条记录")
-        except Exception as e:
-            logger.warning(f"加载历史文件失败: {e}")
-            history_results = {}
-    else:
-        logger.info("未找到历史结果文件，初始化为空")
-
-async def save_history():
-    """保存历史测试结果，并清理过期记录"""
-    current_time = int(time.time())
-    cleaned_history = {k: v for k, v in history_results.items() if current_time - v.get("timestamp", 0) < HISTORY_EXPIRATION}
-    os.makedirs(DATA_DIR, exist_ok=True)
-    async with aiofiles.open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        await f.write(json.dumps(cleaned_history, indent=2, ensure_ascii=False))
-    logger.info(f"历史结果已保存: {len(cleaned_history)} 条记录")
-
-async def load_dns_cache():
-    """加载 DNS 缓存"""
-    global dns_cache
-    os.makedirs(DATA_DIR, exist_ok=True)
-    if os.path.exists(DNS_CACHE_FILE):
-        try:
-            async with aiofiles.open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
-                content = await f.read()
-                dns_cache = json.loads(content) if content else {}
-            logger.info(f"DNS 缓存已加载: {len(dns_cache)} 条记录")
-        except Exception as e:
-            logger.warning(f"加载 DNS 缓存失败: {e}")
-            dns_cache = {}
-    else:
-        logger.info("未找到 DNS 缓存文件，初始化为空")
-
-async def save_dns_cache():
-    """保存 DNS 缓存，并清理过期记录"""
-    current_time = int(time.time())
-    cleaned_cache = {k: v for k, v in dns_cache.items() if current_time - v.get("timestamp", 0) < DNS_CACHE_EXPIRATION}
-    os.makedirs(DATA_DIR, exist_ok=True)
-    async with aiofiles.open(DNS_CACHE_FILE, "w", encoding="utf-8") as f:
-        await f.write(json.dumps(cleaned_cache, indent=2, ensure_ascii=False))
-    logger.info(f"DNS 缓存已保存: {len(cleaned_cache)} 条记录")
-
-async def fetch_ss_txt(url):
-    """从给定 URL 获取节点列表内容"""
-    try:
-        async with httpx.AsyncClient(follow_redirects=True, timeout=15) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            return response.text
-    except Exception as e:
-        logger.error(f"从 {url} 获取节点列表失败: {e}")
-        return None
-
-def prefilter_links(links):
-    """预过滤链接，只保留符合协议和基本格式的链接"""
-    valid_links = [link.strip() for link in links if link.strip() and PROTOCOL_RE.match(link) and HOST_PORT_RE.search(link)]
-    logger.info(f"预过滤: 原始 {len(links)} 条，保留 {len(valid_links)} 条")
-    return valid_links
-
 def parse_node_info(link):
-    """解析节点链接，提取节点信息"""
-    node_info = {'original_link': link}
     try:
-        match = NODE_LINK_RE.match(link.strip())
-        if not match:
-            logger.debug(f"无效协议: {link}")
+        if link.startswith("vmess://"):
+            decoded_link = base64.b64decode(link[8:]).decode('utf-8')
+            json_data = json.loads(decoded_link)
+            return {
+                "type": "vmess",
+                "address": json_data.get("add"),
+                "port": json_data.get("port"),
+                "id": json_data.get("id"),
+                "alterId": json_data.get("aid"),
+                "security": json_data.get("scy", "auto"),
+                "network": json_data.get("net"),
+                "path": json_data.get("path"),
+                "host": json_data.get("host"),
+                "tls": json_data.get("tls", ""),
+                "sni": json_data.get("sni", ""),
+                "remark": json_data.get("ps", "未知")
+            }
+        elif link.startswith("vless://"):
+            parsed_url = urlparse(link)
+            user_id = parsed_url.username
+            server_address = parsed_url.hostname
+            server_port = parsed_url.port
+            params = parse_qs(parsed_url.query)
+            remark = unquote(parsed_url.fragment) if parsed_url.fragment else "未知"
+
+            return {
+                "type": "vless",
+                "address": server_address,
+                "port": server_port,
+                "id": user_id,
+                "flow": params.get("flow", [""])[0],
+                "security": params.get("security", [""])[0],
+                "encryption": params.get("encryption", ["none"])[0],
+                "network": params.get("type", [""])[0],
+                "host": params.get("host", [""])[0],
+                "path": params.get("path", [""])[0],
+                "sni": params.get("sni", [""])[0],
+                "fp": params.get("fp", [""])[0],
+                "pbk": params.get("pbk", [""])[0],
+                "sid": params.get("sid", [""])[0],
+                "spx": params.get("spx", [""])[0],
+                "remark": remark,
+            }
+        elif link.startswith("trojan://"):
+            parsed_url = urlparse(link)
+            password = parsed_url.username
+            server_address = parsed_url.hostname
+            server_port = parsed_url.port
+            params = parse_qs(parsed_url.query)
+            remark = unquote(parsed_url.fragment) if parsed_url.fragment else "未知"
+
+            return {
+                "type": "trojan",
+                "address": server_address,
+                "port": server_port,
+                "password": password,
+                "sni": params.get("sni", [""])[0],
+                "flow": params.get("flow", [""])[0],
+                "security": params.get("security", ["tls"])[0], # Trojan 默认TLS
+                "alpn": params.get("alpn", [""])[0],
+                "remark": remark
+            }
+        elif link.startswith("ss://"):
+            # SS 格式通常是 base64(method:password)@server:port#remark
+            encoded_part = link[5:].split('@')[0]
+            server_part = link[5:].split('@')[1]
+            remark_match = re.search(r'#(.*)', link)
+            remark = unquote(remark_match.group(1)) if remark_match else "未知"
+
+            decoded_auth = base64.b64decode(encoded_part).decode('utf-8')
+            method, password = decoded_auth.split(':', 1)
+
+            server_address = server_part.split(':')[0]
+            server_port = server_part.split(':')[1].split('#')[0]
+
+            return {
+                "type": "shadowsocks",
+                "address": server_address,
+                "port": int(server_port),
+                "method": method,
+                "password": password,
+                "remark": remark
+            }
+        else:
             return None
-
-        protocol = match.group(1).lower()
-        remaining_part = match.group(2)
-        node_info['protocol'] = protocol
-        node_info['remarks'] = unquote(remaining_part.rsplit('#', 1)[1]) if '#' in remaining_part else f"{protocol.upper()} 节点"
-
-        if protocol in ['vless', 'trojan']:
-            user_info_part, host_port_part = remaining_part.split('@', 1) if '@' in remaining_part else ("", remaining_part)
-            node_info['user_info_part'] = user_info_part
-            host_port_str, query_params = (host_port_part.split('?', 1) if '?' in host_port_part else (host_port_part, {}))
-            query_params = parse_qs(query_params) if isinstance(query_params, str) else query_params
-
-            host_match = HOST_PORT_FULL_RE.match(host_port_str)
-            if host_match:
-                node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
-                node_info['port'] = int(host_match.group(4))
-                if not (1 <= node_info['port'] <= 65535):
-                    return None
-            else:
-                return None
-
-            for key, values in query_params.items():
-                node_info[key] = values[0]
-
-        elif protocol == 'vmess':
-            encoded_part = remaining_part.split('#')[0]
-            # 确保 Base64 字符串有正确的填充
-            decoded_str = base64.b64decode(encoded_part + '=' * (-len(encoded_part) % 4)).decode('utf-8', 'ignore')
-            node_info['user_info_part'] = decoded_str
-            vmess_data = json.loads(decoded_str)
-            node_info['server'] = vmess_data['add']
-            node_info['port'] = int(vmess_data['port'])
-            node_info.update(vmess_data)
-
-        elif protocol == 'ss':
-            try:
-                encoded_part = remaining_part.split('#')[0].split('/?')[0]
-                # 修复 Base64 填充
-                encoded_part += '=' * (-len(encoded_part) % 4)
-                decoded_str = base64.b64decode(encoded_part, validate=True).decode('utf-8', 'ignore')
-                parts = decoded_str.split('@', 1)
-                if len(parts) != 2:
-                    logger.debug(f"无效 Shadowsocks 格式: {link}")
-                    return None
-                auth_part, host_port_part = parts
-                method_password = auth_part.split(':', 1)
-                if len(method_password) != 2:
-                    logger.debug(f"无效 Shadowsocks 认证格式: {link}")
-                    return None
-                method, password = method_password
-                node_info['method'] = method
-                node_info['password'] = password
-                host_match = HOST_PORT_FULL_RE.match(host_port_part)
-                if host_match:
-                    node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
-                    node_info['port'] = int(host_match.group(4))
-                    if not (1 <= node_info['port'] <= 65535):
-                        return None
-                else:
-                    logger.debug(f"无效 Shadowsocks 主机端口格式: {link}")
-                    return None
-            except Exception as e:
-                logger.debug(f"解析 Shadowsocks 链接 '{link}' 失败: {e}")
-                return None
-
-        elif protocol in ['hy2', 'hysteria2']:
-            parts = remaining_part.split('?', 1)
-            host_port_str = parts[0]
-            query_params = parse_qs(parts[1]) if len(parts) > 1 else {}
-            host_match = HOST_PORT_FULL_RE.match(host_port_str)
-            if host_match:
-                node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
-                node_info['port'] = int(host_match.group(4))
-                if not (1 <= node_info['port'] <= 65535):
-                    return None
-            for key, values in query_params.items():
-                node_info[key] = values[0]
-
-        node_info['is_domain'] = not IP_RE.match(node_info['server'])
-        node_info['resolved_ip'] = node_info['server'] if not node_info['is_domain'] else None
-        return node_info
-
     except Exception as e:
-        logger.debug(f"解析节点链接 '{link}' 失败: {e}")
+        logger.warning(f"解析节点链接失败: {link} - {e}")
         return None
 
-async def generate_xray_config(node_info):
-    """根据节点信息生成 Xray 配置文件"""
+def generate_xray_config(node_info):
+    if not node_info:
+        return None
+
     config = {
         "log": {"loglevel": "warning"},
-        "inbounds": [{"port": LOCAL_PROXY_PORT, "listen": "127.0.0.1", "protocol": "socks", "settings": {"auth": "noauth", "udp": True}}],
-        "outbounds": [{"protocol": node_info['protocol'], "settings": {}, "streamSettings": {"network": "tcp", "security": "none"}, "tag": "proxy"}],
+        "inbounds": [
+            {
+                "port": 1080,
+                "protocol": "socks",
+                "settings": {"auth": "noauth", "udp": True},
+                "sniffing": {"enabled": True, "destOverride": ["http", "tls"]}
+            },
+            {
+                "port": 1081,
+                "protocol": "http",
+                "settings": {"accounts": [{"user": "user", "pass": "pass"}]},
+                "sniffing": {"enabled": True, "destOverride": ["http", "tls"]}
+            }
+        ],
+        "outbounds": [{
+            "protocol": node_info["type"],
+            "settings": {},
+            "streamSettings": {"network": node_info.get("network", "tcp")},
+            "tag": "proxy"
+        }],
         "routing": {
-            "domainStrategy": "AsIs",
             "rules": [
-                {"type": "field", "outboundTag": "blocked", "ip": ["geoip:private"]},
-                {"type": "field", "outboundTag": "direct", "domain": ["geosite:cn"]},
-                {"type": "field", "outboundTag": "direct", "ip": ["geoip:cn"]},
-                {"type": "field", "outboundTag": "proxy"}
+                {"type": "field", "outboundTag": "proxy", "port": "80,443", "network": "tcp,udp"}
             ]
         }
     }
 
-    # 添加 Geo 数据路径，并确保使用绝对路径
-    geoip_path_env = os.getenv("XRAY_GEOIP_PATH")
-    geosite_path_env = os.getenv("XRAY_GEOSITE_PATH")
+    outbound_settings = config["outbounds"][0]["settings"]
+    stream_settings = config["outbounds"][0]["streamSettings"]
 
-    if geoip_path_env and os.path.exists(geoip_path_env):
-        config["routing"]["geoip"] = {"path": os.path.abspath(geoip_path_env)} # 使用绝对路径
-    else:
-        logger.warning(f"GeoIP 数据文件未找到或 XRAY_GEOIP_PATH 未设置 ({geoip_path_env}), 可能影响路由规则")
-    if geosite_path_env and os.path.exists(geosite_path_env):
-        config["routing"]["geosite"] = {"path": os.path.abspath(geosite_path_env)} # 使用绝对路径
-    else:
-        logger.warning(f"GeoSite 数据文件未找到或 XRAY_GEOSITE_PATH 未设置 ({geosite_path_env}), 可能影响路由规则")
+    if node_info["type"] == "vmess":
+        outbound_settings["vnext"] = [{
+            "address": node_info["address"],
+            "port": node_info["port"],
+            "users": [{
+                "id": node_info["id"],
+                "alterId": int(node_info["alterId"]),
+                "security": node_info["security"]
+            }]
+        }]
+        if node_info.get("tls") == "tls":
+            stream_settings["security"] = "tls"
+            stream_settings["tlsSettings"] = {"serverName": node_info.get("sni", node_info.get("host", ""))}
+        if node_info.get("network") == "ws":
+            stream_settings["wsSettings"] = {"path": node_info.get("path", "/"), "headers": {"Host": node_info.get("host", "")}}
+        elif node_info.get("network") == "http":
+            stream_settings["httpSettings"] = {"path": node_info.get("path", "/"), "host": [node_info.get("host", "")]}
+        elif node_info.get("network") == "h2":
+            stream_settings["h2Settings"] = {"path": node_info.get("path", "/"), "host": [node_info.get("host", "")]}
+        elif node_info.get("network") == "grpc":
+            stream_settings["grpcSettings"] = {"serviceName": node_info.get("path", "")}
 
 
-    outbound = config['outbounds'][0]
-    stream_settings = outbound['streamSettings']
+    elif node_info["type"] == "vless":
+        outbound_settings["vnext"] = [{
+            "address": node_info["address"],
+            "port": node_info["port"],
+            "users": [{
+                "id": node_info["id"],
+                "encryption": node_info.get("encryption", "none"),
+                "flow": node_info.get("flow", "")
+            }]
+        }]
+        if node_info.get("security") == "tls":
+            stream_settings["security"] = "tls"
+            stream_settings["tlsSettings"] = {
+                "serverName": node_info.get("sni", node_info.get("address", "")),
+                "fingerprint": node_info.get("fp", ""),
+                "show": True
+            }
+        elif node_info.get("security") == "reality":
+            stream_settings["security"] = "reality"
+            stream_settings["realitySettings"] = {
+                "dest": f"{node_info.get('address')}:{node_info.get('port')}",
+                "xver": 0,
+                "serverNames": [node_info.get("sni", "")],
+                "privateKey": "", # REALITY 需要私钥，这里留空，因为测试不需要实际连接
+                "shortIds": [node_info.get("sid", "")]
+            }
+        
+        if node_info.get("network") == "ws":
+            stream_settings["wsSettings"] = {"path": node_info.get("path", "/"), "headers": {"Host": node_info.get("host", "")}}
+        elif node_info.get("network") == "grpc":
+            stream_settings["grpcSettings"] = {"serviceName": node_info.get("path", "")}
+            
+    elif node_info["type"] == "trojan":
+        outbound_settings["servers"] = [{
+            "address": node_info["address"],
+            "port": node_info["port"],
+            "password": node_info["password"]
+        }]
+        stream_settings["security"] = "tls"
+        stream_settings["tlsSettings"] = {
+            "serverName": node_info.get("sni", node_info.get("address", "")),
+            "alpn": node_info.get("alpn", ["http/1.1"]).split(',')
+        }
+        if node_info.get("flow"):
+            stream_settings["realitySettings"] = {"flow": node_info.get("flow")} # 假设trojan的flow也是reality的一部分
 
-    if node_info['protocol'] == 'vless':
-        outbound['settings']['vnext'] = [{"address": node_info.get('resolved_ip') or node_info['server'], "port": node_info['port'], "users": [{"id": node_info['user_info_part'].split('@')[0], "level": 8}]}]
-        if node_info.get('security') == 'tls' or node_info.get('type') == 'tls':
-            stream_settings['security'] = 'tls'
-            stream_settings['tlsSettings'] = {"allowInsecure": True, "serverName": node_info.get('sni') or node_info.get('host') or node_info['server']}
-        if node_info.get('type') == 'ws':
-            stream_settings['network'] = 'ws'
-            stream_settings['wsSettings'] = {"path": node_info.get('path', '/'), "headers": {"Host": node_info.get('host', node_info['server'])}}
-        elif node_info.get('type') == 'grpc':
-            stream_settings['network'] = 'grpc'
-            stream_settings['grpcSettings'] = {"serviceName": node_info.get('serviceName', '')}
+    elif node_info["type"] == "shadowsocks":
+        outbound_settings["servers"] = [{
+            "address": node_info["address"],
+            "port": node_info["port"],
+            "method": node_info["method"],
+            "password": node_info["password"]
+        }]
+        # SS通常不需要复杂的streamSettings，除非有插件
+    
+    # 添加直连和黑洞出站，以防规则匹配失败
+    config["outbounds"].append({"protocol": "freedom", "tag": "direct"})
+    config["outbounds"].append({"protocol": "blackhole", "tag": "block"})
 
-    elif node_info['protocol'] == 'vmess':
-        try:
-            vmess_data = json.loads(node_info['user_info_part'])
-            outbound['settings']['vnext'] = [{"address": node_info.get('resolved_ip') or node_info['server'], "port": node_info['port'], "users": [{"id": vmess_data['id'], "alterId": int(vmess_data.get('aid', 0)), "level": 8, "security": vmess_data.get('scy', 'auto')}]}]
-            if vmess_data.get('tls') == 'tls':
-                stream_settings['security'] = 'tls'
-                stream_settings['tlsSettings'] = {"allowInsecure": True, "serverName": vmess_data.get('sni') or vmess_data.get('host') or node_info['server']}
-            if vmess_data.get('net') == 'ws':
-                stream_settings['network'] = 'ws'
-                stream_settings['wsSettings'] = {"path": vmess_data.get('path', '/'), "headers": {"Host": vmess_data.get('host', node_info['server'])}}
-            elif vmess_data.get('net') == 'grpc':
-                stream_settings['network'] = 'grpc'
-                stream_settings['grpcSettings'] = {"serviceName": vmess_data.get('path', '')}
-        except Exception as e:
-            logger.warning(f"解析 VMess 配置失败: {e}")
-            return None
+    config["routing"]["rules"].append({"type": "field", "ip": ["geoip:private"], "outboundTag": "block"})
+    config["routing"]["rules"].append({"type": "field", "domain": ["geosite:private"], "outboundTag": "block"})
+    config["routing"]["rules"].append({"type": "field", "outboundTag": "direct", "network": "tcp,udp"})
 
-    elif node_info['protocol'] == 'trojan':
-        outbound['settings']['servers'] = [{"address": node_info.get('resolved_ip') or node_info['server'], "port": node_info['port'], "password": node_info['user_info_part']}]
-        stream_settings['security'] = 'tls'
-        stream_settings['tlsSettings'] = {"allowInsecure": True, "serverName": node_info.get('sni') or node_info.get('host') or node_info['server']}
-        if node_info.get('type') == 'ws':
-            stream_settings['network'] = 'ws'
-            stream_settings['wsSettings'] = {"path": node_info.get('path', '/'), "headers": {"Host": node_info.get('host', node_info['server'])}}
-        elif node_info.get('type') == 'grpc':
-            stream_settings['network'] = 'grpc'
-            stream_settings['grpcSettings'] = {"serviceName": node_info.get('serviceName', '')}
 
-    elif node_info['protocol'] == 'ss':
-        outbound['protocol'] = 'shadowsocks'
-        outbound['settings'] = {"servers": [{"address": node_info.get('resolved_ip') or node_info['server'], "port": node_info['port'], "method": node_info['method'], "password": node_info['password']}]}
-        if node_info.get('plugin') == 'obfs':
-            stream_settings['network'] = 'tcp'
-            stream_settings['tcpSettings'] = {"header": {"type": "http", "request": {"path": [node_info.get('path', '/')], "headers": {"Host": [node_info.get('host', node_info['server'])]}}}}
-        elif node_info.get('plugin') == 'v2ray-plugin':
-            stream_settings['network'] = 'ws'
-            plugin_opts = parse_qs(node_info.get('plugin_opts', ''))
-            stream_settings['wsSettings'] = {"path": plugin_opts.get('path', ['/'])[0], "headers": {"Host": plugin_opts.get('host', [node_info['server']])[0]}}
-            if 'tls' in node_info.get('plugin_opts', ''):
-                stream_settings['security'] = 'tls'
-                stream_settings['tlsSettings'] = {"allowInsecure": True, "serverName": node_info.get('sni') or node_info.get('host') or node_info['server']}
-        else:
-            # 如果没有插件，则移除 streamSettings，Xray Shadowsocks 通常不需要
-            del config['outbounds'][0]['streamSettings']
+    return json.dumps(config, indent=2)
 
-    elif node_info['protocol'] in ['hy2', 'hysteria2']:
-        logger.warning(f"Xray 不支持 {node_info['protocol']}，跳过配置生成")
-        return None # Xray 不支持，返回 None
+async def check_connectivity(proxy_url, test_url="https://www.google.com/generate_204"):
+    try:
+        async with httpx.AsyncClient(proxies={"http://": proxy_url, "https://": proxy_url}, timeout=TEST_TIMEOUT_SECONDS) as client:
+            start_time = time.time()
+            response = await client.get(test_url)
+            end_time = time.time()
+            if response.status_code == 204:
+                return True, round((end_time - start_time) * 1000)  # 返回毫秒
+            else:
+                return False, f"HTTP Status: {response.status_code}"
+    except httpx.ConnectError:
+        return False, "连接错误"
+    except httpx.TimeoutException:
+        return False, "连接超时"
+    except httpx.RequestError as e:
+        return False, f"请求错误: {e}"
+    except Exception as e:
+        return False, f"未知错误: {e}"
 
-    config['outbounds'].append({"protocol": "freedom", "tag": "direct"})
-    config['outbounds'].append({"protocol": "blackhole", "tag": "blocked"})
+async def resolve_dns(hostname):
+    current_time = time.time()
+    if hostname in dns_cache and (current_time - dns_cache[hostname]["timestamp"] < DNS_CACHE_EXPIRATION):
+        logger.debug(f"从缓存获取 DNS 解析结果: {hostname} -> {dns_cache[hostname]['ip']}")
+        return dns_cache[hostname]["ip"]
 
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        async with aiofiles.open(XRAY_CONFIG_FILE, "w", encoding="utf-8") as f:
-            await f.write(json.dumps(config, indent=2, ensure_ascii=False))
-        return XRAY_CONFIG_FILE
+        # 使用 aiodns 进行异步 DNS 解析
+        resolver = aiodns.resolver.Resolver()
+        result = await resolver.query(hostname, 'A')
+        ip_address = result[0].host
+        dns_cache[hostname] = {"ip": ip_address, "timestamp": current_time}
+        logger.debug(f"DNS 解析成功并缓存: {hostname} -> {ip_address}")
+        return ip_address
+    except aiodns.error.DNSError as e:
+        logger.warning(f"DNS 解析失败: {hostname} - {e}")
+        return None
     except Exception as e:
-        logger.error(f"写入 Xray 配置文件失败: {e}")
+        logger.warning(f"DNS 解析未知错误: {hostname} - {e}")
         return None
 
-async def start_proxy_subprocess():
-    """启动 Xray 子进程"""
-    global xray_process
-    if not os.path.isfile(XRAY_PATH) or not os.access(XRAY_PATH, os.X_OK):
-        logger.error(f"Xray 可执行文件 '{XRAY_PATH}' 不存在或无执行权限。请确保 '{XRAY_PATH}' 文件存在且可执行。")
-        return False
-    
-    geoip_path_env = os.getenv("XRAY_GEOIP_PATH")
-    geosite_path_env = os.getenv("XRAY_GEOSITE_PATH")
-
-    logger.debug(f"检查 XRAY_GEOIP_PATH: {geoip_path_env} (存在: {os.path.exists(str(geoip_path_env)) if geoip_path_env else False})")
-    logger.debug(f"检查 XRAY_GEOSITE_PATH: {geosite_path_env} (存在: {os.path.exists(str(geosite_path_env)) if geosite_path_env else False})")
-
-    # 修复：如果 GeoIP 或 GeoSite 数据文件缺失，立即返回 False
-    if not (geoip_path_env and os.path.exists(geoip_path_env) and
-            geosite_path_env and os.path.exists(geosite_path_env)):
-        logger.error("GeoIP 或 GeoSite 数据文件缺失。请确保已设置 XRAY_GEOIP_PATH 和 XRAY_GEOSITE_PATH 环境变量，并且文件存在。")
-        logger.error(f"Xray 在启动时可能还会在其工作目录 '{os.getcwd()}' 中寻找这些文件。请考虑将 'geoip.dat' 和 'geosite.dat' 放在此处，或确保环境变量指向正确的绝对路径。")
-        return False
-
-    # 检查 Xray 进程是否已在运行
-    if xray_process is not None and xray_process.returncode is None:
-        logger.debug("Xray 进程已在运行")
-        return True
-
+async def start_proxy_subprocess(config_content):
     try:
-        # 尝试启动 Xray 进程
+        # 确保XRAY_PATH是可执行的
+        if not os.path.exists(XRAY_PATH):
+            logger.error(f"Xray 可执行文件未找到: {XRAY_PATH}")
+            return None, None
+        os.chmod(XRAY_PATH, 0o755)
+
+        # 启动 Xray 进程
         xray_process = await asyncio.create_subprocess_exec(
-            XRAY_PATH, "-c", XRAY_CONFIG_FILE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            XRAY_PATH,
+            "-config", "stdin:",
+            env={
+                "XRAY_LOCATION_ASSET": DATA_DIR,
+                "XRAY_GEOIP_PATH": XRAY_GEOIP_PATH,
+                "XRAY_GEOSITE_PATH": XRAY_GEOSITE_PATH,
+            },
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
         )
+        xray_process.stdin.write(config_content.encode('utf-8'))
+        await xray_process.stdin.drain()
+        xray_process.stdin.close()
         
-        # 给予 Xray 少量时间启动，并检查它是否立即退出
-        await asyncio.sleep(0.5) 
-        
-        # 检查 Xray 进程是否已退出 (意味着启动失败或配置错误)
-        if xray_process.returncode is not None:
-            stdout, stderr = await xray_process.communicate() # 获取错误输出
-            logger.error(f"Xray 进程启动后立即退出，退出码: {xray_process.returncode}")
-            if stdout: logger.debug(f"Xray stdout: {stdout.decode().strip()}")
-            if stderr: logger.error(f"Xray stderr: {stderr.decode().strip()}")
-            xray_process = None # 重置全局变量
-            return False
+        # 捕获 stderr 输出，以便调试
+        # stderr_output = await xray_process.stderr.read()
+        # if stderr_output:
+        #     logger.debug(f"Xray stderr: {stderr_output.decode().strip()}")
 
-        # 如果进程仍在运行，则检查端口是否被监听
-        # is_port_in_use 返回 True 表示端口 IS IN USE (即 Xray 应该已监听)
-        if await is_port_in_use(LOCAL_PROXY_PORT): 
-            logger.info(f"Xray 已成功监听端口 {LOCAL_PROXY_PORT}")
-            return True
-        else: # 端口未被占用，说明 Xray 未能成功绑定或启动异常
-            logger.error(f"Xray 未能监听端口 {LOCAL_PROXY_PORT}。进程仍在运行但端口未打开。")
-            stdout, stderr = await xray_process.communicate() # 获取输出以进行调试
-            if stdout: logger.debug(f"Xray stdout: {stdout.decode().strip()}")
-            if stderr: logger.error(f"Xray stderr: {stderr.decode().strip()}")
-            await stop_proxy_subprocess() # 清理可能卡住的进程
-            return False
-            
+        # 稍微等待一下，确保Xray完全启动并监听端口
+        await asyncio.sleep(1) # 增加等待时间
+
+        return xray_process, f"socks5://127.0.0.1:1080"
     except Exception as e:
-        logger.error(f"启动 Xray 失败: {e}", exc_info=True) # 打印完整的异常信息
-        # 确保如果发生异常，Xray 进程被清理
-        if xray_process is not None:
-            await stop_proxy_subprocess()
-        return False
+        logger.error(f"启动 Xray 进程失败: {e}", exc_info=True)
+        return None, None
 
-async def stop_proxy_subprocess():
-    """停止 Xray 子进程"""
-    global xray_process
-    # 检查 xray_process 是否存在且仍在运行 (使用 returncode 检查)
-    if xray_process is not None and xray_process.returncode is None: # 修复：使用 returncode 代替 poll()
-        logger.debug("尝试终止 Xray 进程...")
+async def terminate_xray_process(xray_process):
+    if xray_process and xray_process.returncode is None:
         try:
+            # 尝试优雅终止
             xray_process.terminate()
-            await asyncio.wait_for(xray_process.wait(), timeout=2)
-            logger.info("Xray 进程已终止")
-        except asyncio.TimeoutError:
-            xray_process.kill()
-            await xray_process.wait()
-            logger.warning("Xray 进程强制终止")
-        except Exception as e:
-            logger.error(f"终止 Xray 进程失败: {e}")
-        finally:
-            xray_process = None
-    elif xray_process is not None:
-        logger.debug("Xray 进程已停止或未启动。")
-        xray_process = None
-
-
-async def _check_port_sync(port):
-    """
-    同步检查端口是否在使用。
-    此函数将在单独的线程中运行。
-    """
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        try:
-            # 设置 SO_REUSEADDR 允许重新绑定，避免 TIME_WAIT 状态问题
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind(("127.0.0.1", port))
-            # 如果绑定成功，说明此端口当前未被其他进程占用
-            return False # 端口未被占用
-        except OSError as e:
-            # 如果绑定失败（如 Address already in use），说明端口已被占用
-            logger.debug(f"端口 {port} 占用检测失败: {e}")
-            return True # 端口已被占用
-
-async def is_port_in_use(port):
-    """
-    异步检查端口是否在使用。
-    通过将同步的 socket.bind 操作放入线程池来避免阻塞 asyncio 事件循环。
-    """
-    loop = asyncio.get_running_loop()
-    # 使用 partial 来传递参数给 _check_port_sync
-    return await loop.run_in_executor(None, partial(_check_port_sync, port))
-
-
-async def check_node(node_info):
-    """测试单个节点的可达性"""
-    node_id = normalize_link(node_info['original_link'])
-    current_time = time.time()
-
-    # 优先使用历史结果 (5分钟内成功的节点直接返回成功，失败的节点在过期时间内跳过)
-    if node_id in history_results:
-        record = history_results[node_id]
-        if record['status'] == 'Successful' and current_time - record['timestamp'] < 300: # 5分钟内有效
-            logger.info(f"节点 {node_info.get('remarks', 'N/A')} (来自缓存) 成功, 延迟: {record['delay_ms']:.2f}ms")
-            return NodeTestResult(node_info, 'Successful', record['delay_ms'])
-        # 失败的节点在 HISTORY_EXPIRATION 内，则跳过再次测试
-        if record['status'] == 'Failed' and current_time - record['timestamp'] < HISTORY_EXPIRATION:
-            logger.debug(f"节点 {node_info.get('remarks', 'N/A')} (来自缓存) 失败, 错误: {record['error_message']}")
-            return NodeTestResult(node_info, 'Failed', -1, record['error_message'])
-
-
-    remarks = node_info.get('remarks', 'N/A')
-    server = node_info.get('server')
-    port = node_info.get('port')
-    target_host = node_info.get('resolved_ip') or server
-
-    if not all([server, port, target_host]):
-        logger.warning(f"节点 {remarks} 信息不完整或 DNS 解析失败")
-        return NodeTestResult(node_info, "Failed", -1, "信息不完整或 DNS 解析失败")
-
-    # 特殊处理 Hysteria2 节点（UDP 探测）
-    if node_info['protocol'] in ['hy2', 'hysteria2']:
-        test_start_time = time.monotonic()
-        try:
-            # 这里的 socket 操作是同步的，但通常不会阻塞太久，如果需要严格异步，同样可以放 executor
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.settimeout(TEST_TIMEOUT_SECONDS)
-            await asyncio.get_running_loop().sock_connect(sock, (target_host, port)) # 异步连接
-            sock.sendto(b'ping', (target_host, port))
             try:
-                await asyncio.get_running_loop().sock_recv(sock, 1024) # 异步接收
-            except socket.timeout:
-                pass # 超时也算成功（UDP探测通常不强制接收回复）
-            delay = (time.monotonic() - test_start_time) * 1000
-            logger.info(f"节点 {remarks} ({target_host}:{port}) 成功 (UDP 探测), 延迟: {delay:.2f}ms")
-            return NodeTestResult(node_info, "Successful", delay)
+                await asyncio.wait_for(xray_process.wait(), timeout=5)
+            except asyncio.TimeoutError:
+                logger.warning(f"Xray 进程 (PID: {xray_process.pid}) 优雅终止超时，尝试强制杀死。")
+                xray_process.kill()
+                await xray_process.wait()
+            logger.debug(f"Xray 进程 (PID: {xray_process.pid}) 已终止。")
+        except ProcessLookupError:
+            logger.debug(f"Xray 进程 (PID: {xray_process.pid}) 已经不存在。")
         except Exception as e:
-            logger.warning(f"节点 {remarks} ({target_host}:{port}) 失败 (UDP 探测): {e}")
-            return NodeTestResult(node_info, "Failed", -1, str(e))
-        finally:
-            sock.close() # 确保关闭套接字
+            logger.error(f"终止 Xray 进程 (PID: {xray_process.pid}) 时发生错误: {e}", exc_info=True)
 
-    # 对于 Xray 支持的协议，生成配置并启动 Xray 进行代理测试
-    proxy_config_path = await generate_xray_config(node_info)
-    if not proxy_config_path:
-        logger.warning(f"节点 {remarks} 无法生成 Xray 配置，跳过测试")
-        return NodeTestResult(node_info, "Failed", -1, "无法生成 Xray 配置")
+async def test_node(node_link, node_name):
+    node_info = parse_node_info(node_link)
+    if not node_info:
+        logger.warning(f"节点 {node_name} 链接格式不支持或解析失败，跳过测试。")
+        return {"node_info": {"remark": node_name, "original_link": node_link}, "status": "不支持的格式", "delay": -1}
 
-    # 停止旧的 Xray 进程，确保每次测试都是干净的环境
-    await stop_proxy_subprocess()
-    # 启动新的 Xray 进程
-    if not await start_proxy_subprocess():
-        logger.warning(f"节点 {remarks} Xray 启动失败，跳过测试")
-        return NodeTestResult(node_info, "Failed", -1, "Xray 启动失败")
+    # 优先使用备注作为节点名称
+    display_name = node_info.get("remark", node_name)
+    node_info["original_link"] = node_link # 将原始链接添加到node_info
 
-    proxy_url = f"socks5://127.0.0.1:{LOCAL_PROXY_PORT}"
-    test_start_time = time.monotonic()
+    # 如果地址是域名，进行 DNS 解析并替换为 IP
+    if not re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", node_info["address"]):
+        resolved_ip = await resolve_dns(node_info["address"])
+        if resolved_ip:
+            node_info["address"] = resolved_ip
+        else:
+            logger.warning(f"节点 {display_name} ({node_info['address']}) DNS 解析失败，跳过测试。")
+            return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "DNS解析失败", "delay": -1}
+
+    config_content = generate_xray_config(node_info)
+    if not config_content:
+        logger.warning(f"节点 {display_name} 无法生成 Xray 配置，跳过测试。")
+        return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "配置生成失败", "delay": -1}
+
+    xray_process = None
     try:
-        async with httpx.AsyncClient(proxies={"all://": proxy_url}, timeout=TEST_TIMEOUT_SECONDS) as client:
-            response = await client.get(TEST_PROXY_URL, follow_redirects=True)
-            response.raise_for_status() # 检查 HTTP 状态码
-            if response.status_code == 204:
-                delay = (time.monotonic() - test_start_time) * 1000
-                logger.info(f"节点 {remarks} ({server}:{port}) 成功 (代理测试), 延迟: {delay:.2f}ms")
-                return NodeTestResult(node_info, "Successful", delay)
-            else:
-                logger.warning(f"节点 {remarks} ({server}:{port}) 失败 (HTTP 状态码: {response.status_code})")
-                return NodeTestResult(node_info, "Failed", -1, f"HTTP 状态码: {response.status_code}")
-    except httpx.TimeoutException as e:
-        logger.warning(f"节点 {remarks} ({server}:{port}) 测试超时: {e}")
-        return NodeTestResult(node_info, "Failed", -1, f"连接超时: {e}")
-    except httpx.ConnectError as e:
-        logger.warning(f"节点 {remarks} ({server}:{port}) 连接失败: {e}")
-        return NodeTestResult(node_info, "Failed", -1, f"连接错误: {e}")
+        xray_process, proxy_url = await start_proxy_subprocess(config_content)
+        if xray_process is None or proxy_url is None: # 检查是否成功启动
+            logger.warning(f"节点 {display_name} Xray 启动失败，跳过测试。")
+            return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "Xray启动失败", "delay": -1}
+
+        is_connected, result_info = await check_connectivity(proxy_url)
+
+        if is_connected:
+            logger.info(f"节点 {display_name} 测试成功, 延迟: {result_info} ms")
+            return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "成功", "delay": result_info}
+        else:
+            logger.warning(f"节点 {display_name} 测试失败: {result_info}")
+            return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "失败", "delay": -1, "error": result_info}
     except Exception as e:
-        logger.warning(f"节点 {remarks} ({server}:{port}) 失败 (代理测试): {e}")
-        return NodeTestResult(node_info, "Failed", -1, str(e))
+        logger.error(f"测试节点 {display_name} 时发生异常: {e}", exc_info=True)
+        return {"node_info": {"remark": display_name, "original_link": node_link}, "status": "异常", "delay": -1, "error": str(e)}
     finally:
-        # 无论测试结果如何，都尝试停止 Xray 进程，确保不影响下一个节点
-        await stop_proxy_subprocess()
+        await terminate_xray_process(xray_process)
 
+async def load_history():
+    global history_results
+    if os.path.exists(HISTORY_FILE):
+        async with aiofiles.open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            try:
+                history_results = json.loads(await f.read())
+                # 过滤过期历史记录
+                current_time = time.time()
+                history_results = {
+                    link: data for link, data in history_results.items()
+                    if (current_time - data.get("timestamp", 0) < HISTORY_EXPIRATION)
+                }
+                logger.info(f"已加载 {len(history_results)} 条历史记录。")
+            except json.JSONDecodeError:
+                logger.warning("历史记录文件损坏，重新创建。")
+                history_results = {}
+    else:
+        history_results = {}
 
-async def test_nodes_in_batches(nodes, batch_size=BATCH_SIZE):
-    """分批次并发测试节点"""
-    semaphore = asyncio.Semaphore(get_optimal_concurrency())
-    async def test_node_with_semaphore(node):
-        async with semaphore:
-            return await check_node(node)
-
-    all_results = []
-    total_batches = (len(nodes) + batch_size - 1) // batch_size
-    for i in range(0, len(nodes), batch_size):
-        logger.info(f"开始测试批次 {i // batch_size + 1}/{total_batches}...")
-        batch_results = await asyncio.gather(*(test_node_with_semaphore(node) for node in nodes[i:i + batch_size]))
-        all_results.extend(batch_results)
-        logger.info(f"批次 {i // batch_size + 1}/{total_batches} 完成，已处理 {len(all_results)}/{len(nodes)} 节点")
-        # 批次之间停止 Xray 进程，确保每次测试都是独立干净的环境
-        await stop_proxy_subprocess()
-
-
-    return all_results
-
-def get_optimal_concurrency():
-    """根据 CPU 和内存计算最佳并发数"""
-    cpu_count = psutil.cpu_count(logical=False) or 1 # 获取物理 CPU 核心数
-    memory = psutil.virtual_memory()
-    available_memory = memory.available / (1024 ** 2) # MB
+async def save_history():
+    # 确保保存的节点包含原始链接
+    for link, data in history_results.items():
+        if "original_link" not in data.get("node_info", {}):
+            node_info = parse_node_info(link)
+            if node_info:
+                history_results[link]["node_info"]["original_link"] = link
     
-    # 基础并发数，考虑 CPU 核心数
-    base_concurrency = cpu_count * 5 
+    os.makedirs(DATA_DIR, exist_ok=True)
+    async with aiofiles.open(HISTORY_FILE, "w", encoding="utf-8") as f:
+        await f.write(json.dumps(history_results, indent=2, ensure_ascii=False))
+    logger.info(f"历史结果已保存: {len(history_results)} 条记录")
+
+async def load_dns_cache():
+    global dns_cache
+    if os.path.exists(DNS_CACHE_FILE):
+        async with aiofiles.open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
+            try:
+                dns_cache = json.loads(await f.read())
+                # 过滤过期缓存
+                current_time = time.time()
+                dns_cache = {
+                    hostname: data for hostname, data in dns_cache.items()
+                    if (current_time - data.get("timestamp", 0) < DNS_CACHE_EXPIRATION)
+                }
+                logger.info(f"已加载 {len(dns_cache)} 条 DNS 缓存。")
+            except json.JSONDecodeError:
+                logger.warning("DNS 缓存文件损坏，重新创建。")
+                dns_cache = {}
+    else:
+        dns_cache = {}
+
+async def save_dns_cache():
+    os.makedirs(DATA_DIR, exist_ok=True)
+    async with aiofiles.open(DNS_CACHE_FILE, "w", encoding="utf-8") as f:
+        await f.write(json.dumps(dns_cache, indent=2, ensure_ascii=False))
+    logger.info(f"DNS 缓存已保存: {len(dns_cache)} 条记录")
+
+async def fetch_subscription_links(url):
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+            content = response.text
+            # 尝试解码 base64
+            try:
+                decoded_content = base64.b64decode(content).decode('utf-8')
+                return decoded_content.splitlines()
+            except Exception:
+                # 如果不是 base64，直接按行分割
+                return content.splitlines()
+    except httpx.RequestError as e:
+        logger.error(f"获取订阅链接失败 {url}: {e}")
+        return []
+
+async def get_all_nodes():
+    all_links = []
+    for url in SOURCE_URLS:
+        links = await fetch_subscription_links(url)
+        all_links.extend(links)
     
-    # 根据可用内存调整并发数，避免内存溢出
-    if available_memory < 500: # 小于 500MB 可用内存
-        base_concurrency = max(1, cpu_count) # 至少 1
-    elif available_memory < 1000: # 小于 1GB 可用内存
-        base_concurrency = cpu_count * 2
-    elif available_memory < 2000: # 小于 2GB 可用内存
-        base_concurrency = cpu_count * 3
-    else: # 大于 2GB 可用内存
-        base_concurrency = cpu_count * 4 # 保持在一个合理的范围内
-        
-    # 限制最大并发数，避免对系统造成过大压力
-    return min(base_concurrency, 30) # 建议最大并发数不超过30-50，具体取决于服务器性能
+    unique_nodes = {}
+    for link in all_links:
+        parsed = parse_node_info(link)
+        if parsed and parsed.get("remark"):
+            # 使用 remark 和 type 作为唯一标识，避免重复添加
+            unique_key = f"{parsed['remark']}_{parsed['type']}"
+            if unique_key not in unique_nodes:
+                unique_nodes[unique_key] = link
+    return list(unique_nodes.values())
 
 def generate_summary(test_results):
-    """生成测试结果摘要"""
-    successful_nodes = [r for r in test_results if r.status == "Successful"]
-    success_count = len(successful_nodes)
-    total_count = len(test_results)
-    success_rate = (success_count / total_count * 100) if total_count else 0
-    avg_delay = sum(r.delay_ms for r in successful_nodes) / success_count if success_count else 0
-    failure_reasons = {}
+    total_nodes = len(test_results)
+    success_count = sum(1 for r in test_results if r["status"] == "成功")
+    fail_count = total_nodes - success_count
+    
+    status_distribution = {}
     for r in test_results:
-        if r.status == "Failed":
-            reason = r.error_message or "未知错误"
-            failure_reasons[reason] = failure_reasons.get(reason, 0) + 1
-
+        status_distribution[r["status"]] = status_distribution.get(r["status"], 0) + 1
+        
+    avg_delay = -1
+    successful_delays = [r["delay"] for r in test_results if r["status"] == "成功" and r["delay"] != -1]
+    if successful_delays:
+        avg_delay = sum(successful_delays) / len(successful_delays)
+        
     return {
-        "总测试节点数": total_count,
+        "总节点数": total_nodes,
         "成功节点数": success_count,
-        "成功率": f"{success_rate:.2f}%",
-        "平均延迟 (ms)": f"{avg_delay:.2f}",
-        "失败原因统计": failure_reasons
+        "失败节点数": fail_count,
+        "状态分布": status_distribution,
+        "平均延迟 (ms)": f"{avg_delay:.2f}" if avg_delay != -1 else "N/A"
     }
 
 async def main():
-    """主函数，协调节点获取、测试和结果保存"""
     start_time = time.time()
     os.makedirs(DATA_DIR, exist_ok=True)
-    await load_history()
+
     await load_dns_cache()
+    await load_history()
 
-    all_links = []
-    for url in SOURCE_URLS:
-        logger.info(f"获取节点列表: {url}")
-        content = await fetch_ss_txt(url)
-        if content:
-            all_links.extend(content.strip().split('\n'))
+    all_nodes_links = await get_all_nodes()
+    logger.info(f"共获取到 {len(all_nodes_links)} 个节点链接。")
 
-    if not all_links:
-        logger.error("未获取到有效节点链接")
-        async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-            await f.write("# 未找到有效节点\n")
-        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-            await f.write("0")
-        print("最终成功节点数: 0")
-        return
+    test_results = []
+    successful_nodes = []
 
-    filtered_links = prefilter_links(all_links)
-    if not filtered_links:
-        logger.info("预过滤后无有效链接")
-        async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-            await f.write("# 预过滤后无有效节点\n")
-        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-            await f.write("0")
-        print("最终成功节点数: 0")
-        return
-
-    parsed_nodes = []
-    for link in filtered_links:
-        node_info = parse_node_info(link)
-        if node_info:
-            parsed_nodes.append(node_info)
+    # 过滤掉近期已成功且仍在历史记录中的节点
+    nodes_to_test = []
+    for link in all_nodes_links:
+        if link in history_results and history_results[link].get("status") == "成功" and \
+           (time.time() - history_results[link].get("timestamp", 0) < HISTORY_EXPIRATION):
+            logger.info(f"节点 {history_results[link]['node_info']['remark']} 近期已成功，跳过测试。")
+            test_results.append(history_results[link])
+            successful_nodes.append(history_results[link])
         else:
-            logger.debug(f"跳过无效节点: {link}")
+            nodes_to_test.append(link)
 
-    hostnames_to_resolve = {node['server'] for node in parsed_nodes if node['is_domain']}
-    resolved_ips = await bulk_dns_lookup(hostnames_to_resolve)
+    logger.info(f"实际需要测试 {len(nodes_to_test)} 个节点。")
 
-    nodes_for_testing = []
-    for node in parsed_nodes:
-        if node['is_domain']:
-            if resolved_ip := resolved_ips.get(node['server']):
-                node['resolved_ip'] = resolved_ip
-                nodes_for_testing.append(node)
-            else:
-                logger.warning(f"节点 {node.get('remarks', node['server'])} DNS 解析失败，跳过测试")
-        else:
-            nodes_for_testing.append(node)
+    # 分批测试
+    for i in range(0, len(nodes_to_test), BATCH_SIZE):
+        batch = nodes_to_test[i:i + BATCH_SIZE]
+        logger.info(f"正在测试批次 {i // BATCH_SIZE + 1}/{len(nodes_to_test) // BATCH_SIZE + (1 if len(nodes_to_test) % BATCH_SIZE else 0)}，已处理 {i}/{len(nodes_to_test)} 节点")
+        tasks = [test_node(link, f"节点 {i+j+1}") for j, link in enumerate(batch)]
+        
+        batch_results = await asyncio.gather(*tasks)
+        test_results.extend(batch_results)
 
-    if not nodes_for_testing:
-        logger.info("无有效节点可测试")
-        async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-            await f.write("# 无有效节点\n")
-        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-            await f.write("0")
-        print("最终成功节点数: 0")
-        return
+        for result in batch_results:
+            if result["status"] == "成功":
+                successful_nodes.append(result)
+            # 更新历史记录
+            original_link = result["node_info"]["original_link"]
+            history_results[original_link] = {
+                "node_info": result["node_info"],
+                "status": result["status"],
+                "delay": result["delay"],
+                "timestamp": time.time(),
+                "error": result.get("error")
+            }
 
-    logger.info(f"开始测试 {len(nodes_for_testing)} 个节点")
-    test_results = await test_nodes_in_batches(nodes_for_testing)
-    await stop_proxy_subprocess() # 确保所有测试完成后停止Xray进程
+    # 按延迟排序成功的节点
+    successful_nodes.sort(key=lambda x: x["delay"])
 
-    current_timestamp = int(time.time())
-    for result in test_results:
-        history_results[normalize_link(result.node_info['original_link'])] = {
-            "status": result.status,
-            "delay_ms": result.delay_ms,
-            "error_message": result.error_message,
-            "timestamp": current_timestamp
-        }
-
-    successful_nodes = sorted([r for r in test_results if r.status == "Successful"], key=lambda x: x.delay_ms)
+    # 输出到文件
     async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
         if successful_nodes:
             for result in successful_nodes:
-                await f.write(f"{result.node_info['original_link']}\n")
+                await f.write(f"{result['node_info']['original_link']}\n")
         else:
             await f.write("# 无可用节点\n")
 
@@ -761,13 +599,11 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        logger.error(f"脚本执行失败: {e}", exc_info=True) # 打印完整的异常信息
+        logger.error(f"脚本执行失败: {e}", exc_info=True)
         async def write_error_files():
             os.makedirs(DATA_DIR, exist_ok=True)
             async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-                await f.write("# 脚本执行失败\n")
+                await f.write("# 脚本执行失败，无可用节点\n")
             async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
                 await f.write("0")
-        asyncio.run(write_error_files()) # 确保在异常发生时也能写入文件
-        print("最终成功节点数: 0")
-        # 不需要 re-raise e，因为我们已经处理了错误并记录了
+        asyncio.run(write_error_files())
