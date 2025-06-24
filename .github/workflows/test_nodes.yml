@@ -1,16 +1,19 @@
-name: Test and Publish Nodes
+name: test_nodes
 
 on:
   push:
     branches:
-      - main # 在 main 分支有推送时触发
-  workflow_dispatch: # 允许手动触发工作流
+      - main
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # 每 6 小时运行一次，例如在 UTC 时间 0点, 6点, 12点, 18点
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: write
 
 jobs:
   test_nodes:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu 运行器
+    runs-on: ubuntu-latest
 
     steps:
       - name: 检出代码仓库
@@ -19,39 +22,43 @@ jobs:
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # 推荐使用 3.10 或更高版本
+          python-version: '3.10'
 
       - name: 安装依赖
         run: |
           python -m pip install --upgrade pip
-          
-          pip install httpx==0.27.2 aiodns==3.2.0 aiofiles==24.1.0 psutil==6.0.0
+          pip install httpx==0.27.2 aiodns==3.2.0 aiofiles==24.1.0 psutil==7.0.0
+
+      - name: 初始化 sub.txt
+        run: echo "# Initial sub.txt" > data/sub.txt
 
       - name: 运行节点测试脚本
         run: python test_nodes.py
         env:
-          PYTHONUNBUFFERED: "1" # 禁用 Python 输出缓冲，实时显示日志
+          PYTHONUNBUFFERED: '1'
+          DEBUG_LOG: 'true'
 
-      - name: 上传结果文件
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-test-results # 产物名称
-          path: data/sub.txt # <--- **只上传 sub.txt**
-          retention-days: 7 # 产物保留 7 天
-
-      - name: 提交并推送更新的数据文件 (可选 - 谨慎使用)
-        # 只有在 history_results.json 或 dns_cache.json 文件有变化时才提交
-        # 这会修改你的仓库内容，如果不需要，可以注释掉此步骤
-        if: success() # 仅在前面的步骤成功时执行
+      - name: 验证 sub.txt
         run: |
-          git config user.name "GitHub Actions Bot" # 设置 Git 用户名
-          git config user.email "actions@github.com" # 设置 Git 用户邮箱
+          line_count=$(wc -l < data/sub.txt)
+          file_size=$(ls -l data/sub.txt | awk '{print $5}')
+          echo "sub.txt: $line_count lines, $file_size bytes"
+          if [ "$line_count" -gt 512 ] || [ "$file_size" -gt 524288 ]; then
+            echo "Error: sub.txt is too large or has too many lines"
+            exit 1
+          fi
+          head -n 10 data/sub.txt || echo "sub.txt is empty"
 
-          # 检查 data/history_results.json 或 data/dns_cache.json 是否有实际改动
-          # 使用 git diff --exit-code 可以判断是否有差异，如果没有则退出码为0
-          git add data/history_results.json data/dns_cache.json # 添加要提交的文件
-          
-          # 检查是否有实际的文件改动，如果没有改动则不提交，避免空提交
-          git diff --cached --exit-code || git commit -m "更新节点测试历史和 DNS 缓存 [skip ci]" && git push
+      - name: 统计成功节点
+        run: |
+          python -c "import json; with open('data/history_results.json', 'r') as f: results = json.load(f); successful = [k for k, v in results.items() if v['status'] == 'Successful']; print(f'Successful nodes in history_results.json: {len(successful)}')"
+
+      - name: 提交并推送更新的数据文件
+        if: success()
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/sub.txt data/history_results.json data/dns_cache.json
+          git diff --cached --exit-code || git commit -m "Update test results and sub.txt [skip ci]" && git push
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }} # 自动提供的 GITHUB_TOKEN
+          GITHUB_TOKEN: ${{ secrets.BOT }}
