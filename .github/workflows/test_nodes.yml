@@ -1,0 +1,78 @@
+name: Test and Update Proxy Nodes
+
+on:
+  # 在 main 分支有推送时触发
+  push:
+    branches:
+      - main
+    paths:
+      - 'test_nodes.py' # 仅当脚本文件本身有更改时运行
+      - '.github/workflows/main.yml' # 仅当工作流文件有更改时运行
+
+  # 每天固定时间运行 (例如，北京时间早上 4 点，UTC 20:00)
+  schedule:
+    - cron: '0 20 * * *' # UTC 20:00 对应北京时间次日 04:00
+
+  # 允许手动触发工作流
+  workflow_dispatch:
+
+jobs:
+  test_and_update_nodes:
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 环境上运行
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # 检出你的代码库
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9' # 指定 Python 版本，建议 3.8+
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install httpx aiodns aiofiles psutil
+
+      - name: Download Xray Core
+        run: |
+          # 根据 GitHub Actions runner 环境选择对应的 Xray 版本
+          # 这里以下载 Linux 64-bit 版本为例
+          # 检查最新的 release 页面获取准确的版本号和下载链接
+          XRAY_VERSION="1.8.8" # 请替换为 Xray 的最新稳定版本号
+          XRAY_ZIP="Xray-linux-64.zip" # 对应 Linux x64
+          XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
+          
+          mkdir -p data # 创建数据目录
+          curl -L -o xray.zip ${XRAY_URL}
+          unzip xray.zip xray -d . # 解压出 xray 可执行文件到当前目录
+          chmod +x ./xray # 添加执行权限
+          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV # 将 Xray 路径设置为环境变量
+
+      - name: Run Node Tester Script
+        id: test_script # 为这一步添加 ID，以便后续引用其输出
+        run: |
+          python test_nodes.py > test_output.log 2>&1 # 将所有输出重定向到日志文件
+          cat test_output.log # 打印日志到控制台
+          # 从日志中提取最终成功节点数
+          SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}')
+          echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
+        env:
+          TEST_TIMEOUT: 10 # 可以通过环境变量调整脚本的超时时间，例如增加到10秒
+          LOG_LEVEL: INFO # 设置日志级别
+
+      - name: Commit and Push if changed
+        if: ${{ steps.test_script.outputs.successful_nodes_count != '0' }} # 仅当有成功节点时才尝试提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/sub.txt data/history_results.json data/dns_cache.json
+          git diff --quiet --exit-code || git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 自动提供的 token
+
+      - name: No successful nodes found
+        if: ${{ steps.test_script.outputs.successful_nodes_count == '0' }}
+        run: |
+          echo "No successful nodes found. Skipping commit."
