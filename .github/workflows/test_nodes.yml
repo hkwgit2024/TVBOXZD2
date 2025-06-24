@@ -1,3 +1,12 @@
+-----
+
+## GitHub Actions 工作流 `main.yml` 完整内容
+
+好的，看来您需要完整的 `main.yml` 文件。以下是经过仔细检查和修订的版本，旨在解决您之前遇到的 YAML 语法错误。
+
+请将以下内容 **完整地复制并替换** 您仓库中的 `.github/workflows/main.yml` 文件。**请务必注意，复制粘贴时不要引入任何多余的空格或字符，特别是缩进，因为它对 YAML 至关重要。**
+
+```yaml
 name: Test and Update Proxy Nodes
 
 on:
@@ -48,7 +57,8 @@ jobs:
           
           mkdir -p data # 创建数据目录
           echo "Attempting to download Xray from ${XRAY_URL}"
-          curl -L -o xray.zip ${XRAY_URL} --fail # --fail 会在 HTTP 错误时使 curl 退出非零状态
+          # --fail 会在 HTTP 错误时使 curl 退出非零状态
+          curl -L -o xray.zip "${XRAY_URL}" --fail 
           
           # 检查下载的文件是否存在且非空
           if [ ! -s xray.zip ]; then
@@ -73,7 +83,7 @@ jobs:
           echo "Setting XRAY_PATH environment variable..."
           # 将 Xray 路径设置为环境变量，这样 Python 脚本才能找到它
           echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
-          echo "Xray setup complete. XRAY_PATH is now $(pwd)/xray" # 修正输出，直接引用已设置的路径
+          echo "Xray setup complete. XRAY_PATH is now $(pwd)/xray"
 
       - name: Run Node Tester Script
         id: test_script # 为这一步添加 ID，以便后续引用其输出
@@ -83,8 +93,8 @@ jobs:
           # 设置环境变量，传递给 Python 脚本
           # 将日志级别设为 DEBUG，获取更详细的脚本内部日志，方便调试
           # TEST_TIMEOUT 可以根据网络情况调整
-          export TEST_TIMEOUT=15
-          export LOG_LEVEL=DEBUG
+          export TEST_TIMEOUT=15 
+          export LOG_LEVEL=DEBUG 
           
           # 直接运行 Python 脚本，不再重定向到文件
           # 这样，所有输出（包括 Python 错误回溯）都会直接显示在GitHub Actions控制台
@@ -99,8 +109,9 @@ jobs:
           SUCCESS_COUNT=$(grep "最终成功节点数:" /dev/stdout | awk '{print $NF}' || echo "0")
           echo "Detected successful nodes count: ${SUCCESS_COUNT}"
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        env: # 也可以在这里定义环境变量，效果相同，但为了避免混淆，在run中定义更直接
-          # 请注意，如果在这里定义，它们会是所有后续步骤的全局环境变量，但在当前run块中，run内的export优先
+        env:
+          # 此处的 env 是为了确保在 run 块之外也可见，但通常在 run 块内使用 export 即可
+          # 如果你在 run 块内使用 export，这里可以省略，以避免混淆
           # TEST_TIMEOUT: 15 
           # LOG_LEVEL: DEBUG
 
@@ -135,3 +146,4 @@ jobs:
         run: |
           echo "No successful nodes were found in this run. The 'sub.txt' file might be empty or contain a fallback message."
           echo "If 'sub.txt' was already empty, no commit would have been made by the previous step."
+
