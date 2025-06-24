@@ -4,7 +4,7 @@ import re
 import os
 import base64
 from urllib.parse import urlparse, unquote, parse_qs
-from typing import Union # 导入 Union
+from typing import Union
 
 # 配置
 SS_TXT_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
@@ -24,6 +24,22 @@ def safe_base64_decode(s: str) -> str:
         return base64.b64decode(s).decode('utf-8')
     except Exception:
         return ""
+
+async def fetch_ss_txt(url: str) -> str:
+    """从URL下载ss.txt文件内容"""
+    print(f"正在从 {url} 下载节点列表...")
+    async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+        try:
+            response = await client.get(url)
+            response.raise_for_status()  # 检查HTTP错误
+            print("节点列表下载成功。")
+            return response.text
+        except httpx.HTTPStatusError as e:
+            print(f"HTTP错误下载文件: {e.response.status_code} - {e.response.text}")
+            return ""
+        except httpx.RequestError as e:
+            print(f"请求错误下载文件: {e}")
+            return ""
 
 def parse_node_info(line: str) -> Union[dict, None]:
     """
