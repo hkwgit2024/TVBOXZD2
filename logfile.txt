@@ -1,126 +1,126 @@
-2025-06-24 11:40:29,406 - INFO - 开始处理节点数据
-2025-06-24 11:40:29,410 - INFO - 从 data/sub.txt 读取到 1226 条节点链接
-2025-06-24 11:40:29,566 - INFO - 解析完成: 总计 1226 条链接，有效节点 1085 个
-2025-06-24 11:40:29,666 - WARNING - 验证节点 挪威 - 奥斯陆 - BrainStorm Network, Inc - 1 失败: [Errno 111] Connection refused
-2025-06-24 11:40:30,587 - WARNING - 验证节点 香港6|@ripaojiedian 失败: timed out
-2025-06-24 11:40:30,589 - WARNING - 验证节点 中国 - 香港 - Ucloud Information Technology (hk) Limited - 9 失败: timed out
-2025-06-24 11:40:30,596 - WARNING - 验证节点 日本 - Chiyoda - SAKURA Internet Inc. - 3 失败: timed out
-2025-06-24 11:40:30,663 - WARNING - 验证节点 日本3|@ripaojiedian 失败: timed out
-2025-06-24 11:40:30,668 - WARNING - 验证节点 西班牙 - Lubre - Jose Antonio Vazquez Quian - 1 失败: timed out
-2025-06-24 11:40:30,696 - WARNING - 验证节点 _中国| 【电报：@ccbaohe】定时更新节点订阅 2 失败: timed out
-2025-06-24 11:40:30,750 - WARNING - 验证节点 巴西 - 圣保罗 - Zenlayer Inc - 1 失败: timed out
-2025-06-24 11:40:30,756 - WARNING - 验证节点 韩国 - 首尔特别市 - PQ HOSTING PLUS S.R.L. - 2 失败: timed out
-2025-06-24 11:40:31,592 - WARNING - 验证节点 韩国 - 首尔特别市 - PQ HOSTING PLUS S.R.L. - 3 失败: timed out
-2025-06-24 11:40:31,596 - WARNING - 验证节点 CN中国->🇺🇸US美国2 失败: timed out
-2025-06-24 11:40:31,601 - WARNING - 验证节点 CN中国->🇺🇸US美国5 失败: timed out
-2025-06-24 11:40:31,714 - WARNING - 验证节点 日本 - 东京 - Akamai Technologies, Inc. - 7 失败: timed out
-2025-06-24 11:40:31,746 - WARNING - 验证节点 美国189 | ⬇️ 784KB/s 失败: timed out
-2025-06-24 11:40:31,746 - WARNING - 验证节点 ❓Other_9 | ⬇️ 2.1MB/s 失败: timed out
-2025-06-24 11:40:31,868 - WARNING - 验证节点 中国 - 香港 - Zenlayer Inc - 7 失败: timed out
-2025-06-24 11:40:31,937 - WARNING - 验证节点 中国 - 香港 - Zenlayer Inc - 8 失败: timed out
-2025-06-24 11:40:32,597 - WARNING - 验证节点 香港3 | ⬇️ 408KB/s 失败: timed out
-2025-06-24 11:40:32,602 - WARNING - 验证节点 _中国| 【电报：@ccbaohe】定时更新节点订阅 失败: timed out
-2025-06-24 11:40:32,607 - WARNING - 验证节点 CN| 【电报：@ccbaohe】定时更新节点订阅 失败: timed out
-2025-06-24 11:40:32,720 - WARNING - 验证节点 日本 - 东京 - ALVIDI TECHNOLOGY Inc - 2 失败: timed out
-2025-06-24 11:40:32,748 - WARNING - 验证节点 CN| 【电报：@ccbaohe】定时更新节点订阅 2 失败: timed out
-2025-06-24 11:40:32,838 - WARNING - 验证节点 新加坡 - 新加坡 - Eons Data Communications Limited - 4 失败: timed out
-2025-06-24 11:40:32,873 - WARNING - 验证节点 新加坡 - 新加坡 - DigitalOcean, LLC - 2 失败: timed out
-2025-06-24 11:40:32,942 - WARNING - 验证节点 美国25 | ⬇️ 482KB/s 失败: timed out
-2025-06-24 11:40:33,603 - WARNING - 验证节点 美国 - 北伯根 - DigitalOcean, LLC - 2 失败: timed out
-2025-06-24 11:40:33,608 - WARNING - 验证节点 JP_3 | ⬇️ 2.9MB/s 失败: timed out
-2025-06-24 11:40:33,869 - WARNING - 验证节点 新加坡 - 新加坡 - Eons Data Communications Limited - 3 失败: timed out
-2025-06-24 11:40:33,954 - WARNING - 验证节点 法国 - 巴黎 - Online S.A.S. - 13 失败: timed out
-2025-06-24 11:40:33,983 - WARNING - 验证节点 VN_1 | ⬇️ 514KB/s 失败: timed out
-2025-06-24 11:40:34,051 - WARNING - 验证节点 日本1 | ⬇️ 1.6MB/s 失败: timed out
-2025-06-24 11:40:34,052 - WARNING - 验证节点 日本 - Chiyoda - NEWALLESNET - 1 失败: timed out
-2025-06-24 11:40:34,052 - WARNING - 验证节点 TW_1 | ⬇️ 682KB/s 失败: timed out
-2025-06-24 11:40:34,118 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,195 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,265 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,302 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,329 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,399 - WARNING - 验证节点 美国 - 拉斯维加斯 - FranTech Solutions - 3 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,399 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,467 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,476 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,535 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,607 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,616 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 3 失败: timed out
-2025-06-24 11:40:34,624 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 1 失败: timed out
-2025-06-24 11:40:34,642 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,666 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,712 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,783 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,875 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 2 失败: timed out
-2025-06-24 11:40:34,905 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,963 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:34,964 - WARNING - 验证节点 |CN|【ccbaohe.com】免费资源导航|156 失败: timed out
-2025-06-24 11:40:35,018 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,057 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
-2025-06-24 11:40:35,071 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,087 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,163 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,193 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,213 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,330 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,331 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,331 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,348 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,366 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,367 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,426 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,465 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,513 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,555 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,593 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,594 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,653 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,682 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,703 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,704 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:35,781 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:36,217 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
-2025-06-24 11:40:36,397 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
-2025-06-24 11:40:36,604 - WARNING - 验证节点 |US|【ccbaohe.com】免费资源导航|22 失败: timed out
-2025-06-24 11:40:36,684 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:36,707 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:37,011 - WARNING - 验证节点 一元机场:ssrsub.de 新加坡 04 失败: timed out
-2025-06-24 11:40:37,027 - WARNING - 验证节点 🇯🇵日本 01 失败: timed out
-2025-06-24 11:40:37,075 - WARNING - 验证节点 🇯🇵日本 02 失败: timed out
-2025-06-24 11:40:37,408 - WARNING - 验证节点 🇯🇵日本 04_2 失败: timed out
-2025-06-24 11:40:37,492 - WARNING - 验证节点 🇯🇵日本 03 失败: timed out
-2025-06-24 11:40:37,805 - WARNING - 验证节点 中国 - 香港 - Akari Networks - 16 失败: timed out
-2025-06-24 11:40:37,955 - WARNING - 验证节点 🇯🇵日本 05_2 失败: timed out
-2025-06-24 11:40:38,019 - WARNING - 验证节点 其他6-GR | ⬇️ 7.2MB/s 失败: timed out
-2025-06-24 11:40:38,035 - WARNING - 验证节点 其他7-GR | ⬇️ 1.2MB/s 失败: timed out
-2025-06-24 11:40:38,111 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
-2025-06-24 11:40:38,113 - WARNING - 验证节点 其他9-LT | ⬇️ 304KB/s 失败: timed out
-2025-06-24 11:40:38,184 - WARNING - 验证节点 HK香港「TG：@ccbaohe〗免费机场分享 12 失败: timed out
-2025-06-24 11:40:38,410 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:38,499 - WARNING - 验证节点 HK香港「TG：@ccbaohe〗免费机场分享 11 失败: timed out
-2025-06-24 11:40:38,814 - WARNING - 验证节点 希腊 - 塞萨洛尼基 - Global Connectivity Solutions LLP - 1 失败: timed out
-2025-06-24 11:40:38,956 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:39,025 - WARNING - 验证节点 US美国「TG：@ccbaohe〗免费机场分享 19 失败: timed out
-2025-06-24 11:40:39,119 - WARNING - 验证节点 _中国_tg群:【TG：@ccbaohe】定时更新节点订阅_9 失败: timed out
-2025-06-24 11:40:39,143 - WARNING - 验证节点 GR GCSL 02 失败: timed out
-2025-06-24 11:40:39,185 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:39,500 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:39,717 - WARNING - 验证节点 VLESS 节点 失败: timed out
-2025-06-24 11:40:39,717 - INFO - 验证完成: 成功节点 980 个
-2025-06-24 11:40:39,718 - INFO - 有效节点数: 980
-2025-06-24 11:40:39,720 - INFO - 已保存 980 个节点到 data/enhanced_nodes.txt, 大小: 171834 字节
-2025-06-24 11:40:39,721 - INFO - 已保存校验和到 data/checksums.txt, 大小: 85 字节
-2025-06-24 11:40:39,721 - INFO - data 目录内容: ['history_results.json', 'checksums.txt', 'enhanced_nodes.txt', 'nodes.txt', 'sub.txt', 'connected_nodes.txt', 'parse_errors.log', 'dns_cache.txt', 'logfile.txt', 'node_connectivity_results.log', 'dns_cache.json', 'failed_proxies.json']
-2025-06-24 11:40:39,721 - INFO - 文件 history_results.json 大小: 9435310 字节
-2025-06-24 11:40:39,721 - INFO - 文件 checksums.txt 大小: 85 字节
-2025-06-24 11:40:39,721 - INFO - 文件 enhanced_nodes.txt 大小: 171834 字节
-2025-06-24 11:40:39,721 - INFO - 文件 nodes.txt 大小: 34317259 字节
-2025-06-24 11:40:39,721 - INFO - 文件 sub.txt 大小: 134013 字节
-2025-06-24 11:40:39,722 - INFO - 文件 connected_nodes.txt 大小: 5425362 字节
-2025-06-24 11:40:39,722 - INFO - 文件 parse_errors.log 大小: 0 字节
-2025-06-24 11:40:39,722 - INFO - 文件 dns_cache.txt 大小: 33406 字节
-2025-06-24 11:40:39,722 - INFO - 文件 logfile.txt 大小: 12327 字节
-2025-06-24 11:40:39,722 - INFO - 文件 node_connectivity_results.log 大小: 58844 字节
-2025-06-24 11:40:39,722 - INFO - 文件 dns_cache.json 大小: 70008 字节
-2025-06-24 11:40:39,722 - INFO - 文件 failed_proxies.json 大小: 138918 字节
-2025-06-24 11:40:39,722 - INFO - 处理完成，总耗时: 10.32 秒
+2025-06-24 11:41:13,469 - INFO - 开始处理节点数据
+2025-06-24 11:41:13,506 - INFO - 从 data/sub.txt 读取到 1226 条节点链接
+2025-06-24 11:41:13,757 - INFO - 解析完成: 总计 1226 条链接，有效节点 1085 个
+2025-06-24 11:41:13,964 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,160 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,198 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,199 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,256 - WARNING - 验证节点 美国 - 拉斯维加斯 - FranTech Solutions - 3 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,288 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,308 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,349 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,363 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,411 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,498 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,547 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,562 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,642 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,745 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,777 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:14,793 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,804 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:14,956 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
+2025-06-24 11:41:14,957 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,119 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,164 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,194 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,257 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,258 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,291 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,296 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,324 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,325 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,325 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,371 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,464 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,507 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,507 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,566 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,621 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,672 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,673 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,701 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,733 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:15,797 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:16,292 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
+2025-06-24 11:41:16,488 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
+2025-06-24 11:41:16,488 - WARNING - 验证节点 HYSTERIA2 节点 失败: timed out
+2025-06-24 11:41:16,677 - WARNING - 验证节点 |US|【ccbaohe.com】免费资源导航|22 失败: timed out
+2025-06-24 11:41:17,021 - WARNING - 验证节点 🇯🇵日本 01 失败: timed out
+2025-06-24 11:41:17,027 - WARNING - 验证节点 🇯🇵日本 02 失败: timed out
+2025-06-24 11:41:17,035 - WARNING - 验证节点 🇯🇵日本 03 失败: timed out
+2025-06-24 11:41:17,068 - WARNING - 验证节点 一元机场:ssrsub.de 新加坡 04 失败: timed out
+2025-06-24 11:41:17,507 - WARNING - 验证节点 🇯🇵日本 04_2 失败: timed out
+2025-06-24 11:41:17,624 - WARNING - 验证节点 中国 - 香港 - Akari Networks - 16 失败: timed out
+2025-06-24 11:41:17,689 - WARNING - 验证节点 🇯🇵日本 05_2 失败: timed out
+2025-06-24 11:41:17,753 - WARNING - 验证节点 HYSTERIA2 节点 失败: [Errno 111] Connection refused
+2025-06-24 11:41:18,029 - WARNING - 验证节点 其他6-GR | ⬇️ 7.2MB/s 失败: timed out
+2025-06-24 11:41:18,037 - WARNING - 验证节点 其他7-GR | ⬇️ 1.2MB/s 失败: timed out
+2025-06-24 11:41:18,180 - WARNING - 验证节点 其他9-LT | ⬇️ 304KB/s 失败: timed out
+2025-06-24 11:41:18,181 - WARNING - 验证节点 HK香港「TG：@ccbaohe〗免费机场分享 12 失败: timed out
+2025-06-24 11:41:18,242 - WARNING - 验证节点 HK香港「TG：@ccbaohe〗免费机场分享 11 失败: timed out
+2025-06-24 11:41:18,495 - WARNING - 验证节点 挪威 - 奥斯陆 - BrainStorm Network, Inc - 1 失败: [Errno 111] Connection refused
+2025-06-24 11:41:18,519 - WARNING - 验证节点 希腊 - 塞萨洛尼基 - Global Connectivity Solutions LLP - 1 失败: timed out
+2025-06-24 11:41:18,671 - WARNING - 验证节点 US美国「TG：@ccbaohe〗免费机场分享 19 失败: timed out
+2025-06-24 11:41:18,817 - WARNING - 验证节点 GR GCSL 02 失败: timed out
+2025-06-24 11:41:19,039 - WARNING - 验证节点 _中国_tg群:【TG：@ccbaohe】定时更新节点订阅_9 失败: timed out
+2025-06-24 11:41:19,442 - WARNING - 验证节点 香港6|@ripaojiedian 失败: timed out
+2025-06-24 11:41:19,504 - WARNING - 验证节点 中国 - 香港 - Ucloud Information Technology (hk) Limited - 9 失败: timed out
+2025-06-24 11:41:19,520 - WARNING - 验证节点 日本 - Chiyoda - SAKURA Internet Inc. - 3 失败: timed out
+2025-06-24 11:41:19,530 - WARNING - 验证节点 日本3|@ripaojiedian 失败: timed out
+2025-06-24 11:41:19,562 - WARNING - 验证节点 西班牙 - Lubre - Jose Antonio Vazquez Quian - 1 失败: timed out
+2025-06-24 11:41:19,680 - WARNING - 验证节点 _中国| 【电报：@ccbaohe】定时更新节点订阅 2 失败: timed out
+2025-06-24 11:41:19,910 - WARNING - 验证节点 巴西 - 圣保罗 - Zenlayer Inc - 1 失败: timed out
+2025-06-24 11:41:20,049 - WARNING - 验证节点 韩国 - 首尔特别市 - PQ HOSTING PLUS S.R.L. - 2 失败: timed out
+2025-06-24 11:41:20,452 - WARNING - 验证节点 韩国 - 首尔特别市 - PQ HOSTING PLUS S.R.L. - 3 失败: timed out
+2025-06-24 11:41:20,514 - WARNING - 验证节点 CN中国->🇺🇸US美国2 失败: timed out
+2025-06-24 11:41:20,528 - WARNING - 验证节点 CN中国->🇺🇸US美国5 失败: timed out
+2025-06-24 11:41:20,633 - WARNING - 验证节点 美国189 | ⬇️ 784KB/s 失败: timed out
+2025-06-24 11:41:20,633 - WARNING - 验证节点 ❓Other_9 | ⬇️ 2.1MB/s 失败: timed out
+2025-06-24 11:41:20,742 - WARNING - 验证节点 日本 - 东京 - Akamai Technologies, Inc. - 7 失败: timed out
+2025-06-24 11:41:21,101 - WARNING - 验证节点 中国 - 香港 - Zenlayer Inc - 7 失败: timed out
+2025-06-24 11:41:21,181 - WARNING - 验证节点 中国 - 香港 - Zenlayer Inc - 8 失败: timed out
+2025-06-24 11:41:21,461 - WARNING - 验证节点 香港3 | ⬇️ 408KB/s 失败: timed out
+2025-06-24 11:41:21,523 - WARNING - 验证节点 _中国| 【电报：@ccbaohe】定时更新节点订阅 失败: timed out
+2025-06-24 11:41:21,540 - WARNING - 验证节点 CN| 【电报：@ccbaohe】定时更新节点订阅 失败: timed out
+2025-06-24 11:41:21,637 - WARNING - 验证节点 日本 - 东京 - ALVIDI TECHNOLOGY Inc - 2 失败: timed out
+2025-06-24 11:41:21,648 - WARNING - 验证节点 CN| 【电报：@ccbaohe】定时更新节点订阅 2 失败: timed out
+2025-06-24 11:41:21,807 - WARNING - 验证节点 新加坡 - 新加坡 - Eons Data Communications Limited - 4 失败: timed out
+2025-06-24 11:41:22,111 - WARNING - 验证节点 新加坡 - 新加坡 - DigitalOcean, LLC - 2 失败: timed out
+2025-06-24 11:41:22,192 - WARNING - 验证节点 美国25 | ⬇️ 482KB/s 失败: timed out
+2025-06-24 11:41:22,470 - WARNING - 验证节点 美国 - 北伯根 - DigitalOcean, LLC - 2 失败: timed out
+2025-06-24 11:41:22,532 - WARNING - 验证节点 JP_3 | ⬇️ 2.9MB/s 失败: timed out
+2025-06-24 11:41:22,847 - WARNING - 验证节点 新加坡 - 新加坡 - Eons Data Communications Limited - 3 失败: timed out
+2025-06-24 11:41:23,129 - WARNING - 验证节点 法国 - 巴黎 - Online S.A.S. - 13 失败: timed out
+2025-06-24 11:41:23,233 - WARNING - 验证节点 VN_1 | ⬇️ 514KB/s 失败: timed out
+2025-06-24 11:41:23,456 - WARNING - 验证节点 日本1 | ⬇️ 1.6MB/s 失败: timed out
+2025-06-24 11:41:23,456 - WARNING - 验证节点 日本 - Chiyoda - NEWALLESNET - 1 失败: timed out
+2025-06-24 11:41:23,457 - WARNING - 验证节点 TW_1 | ⬇️ 682KB/s 失败: timed out
+2025-06-24 11:41:23,511 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 3 失败: timed out
+2025-06-24 11:41:23,540 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 1 失败: timed out
+2025-06-24 11:41:23,857 - WARNING - 验证节点 法国 - 巴黎 - Amazon Technologies Inc. - 2 失败: timed out
+2025-06-24 11:41:24,139 - WARNING - 验证节点 |CN|【ccbaohe.com】免费资源导航|156 失败: timed out
+2025-06-24 11:41:24,578 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,579 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,615 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,622 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,637 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,646 - WARNING - 验证节点 VLESS 节点 失败: timed out
+2025-06-24 11:41:24,646 - INFO - 验证完成: 成功节点 980 个
+2025-06-24 11:41:24,647 - INFO - 有效节点数: 980
+2025-06-24 11:41:24,649 - INFO - 已保存 980 个节点到 data/enhanced_nodes.txt, 大小: 171713 字节
+2025-06-24 11:41:24,649 - INFO - 已保存校验和到 data/checksums.txt, 大小: 85 字节
+2025-06-24 11:41:24,649 - INFO - data 目录内容: ['history_results.json', 'checksums.txt', 'enhanced_nodes.txt', 'nodes.txt', 'sub.txt', 'connected_nodes.txt', 'parse_errors.log', 'dns_cache.txt', 'logfile.txt', 'node_connectivity_results.log', 'dns_cache.json', 'failed_proxies.json']
+2025-06-24 11:41:24,650 - INFO - 文件 history_results.json 大小: 9435310 字节
+2025-06-24 11:41:24,650 - INFO - 文件 checksums.txt 大小: 85 字节
+2025-06-24 11:41:24,650 - INFO - 文件 enhanced_nodes.txt 大小: 171713 字节
+2025-06-24 11:41:24,650 - INFO - 文件 nodes.txt 大小: 34317259 字节
+2025-06-24 11:41:24,650 - INFO - 文件 sub.txt 大小: 134013 字节
+2025-06-24 11:41:24,650 - INFO - 文件 connected_nodes.txt 大小: 5425362 字节
+2025-06-24 11:41:24,650 - INFO - 文件 parse_errors.log 大小: 0 字节
+2025-06-24 11:41:24,650 - INFO - 文件 dns_cache.txt 大小: 33406 字节
+2025-06-24 11:41:24,650 - INFO - 文件 logfile.txt 大小: 12306 字节
+2025-06-24 11:41:24,650 - INFO - 文件 node_connectivity_results.log 大小: 58844 字节
+2025-06-24 11:41:24,650 - INFO - 文件 dns_cache.json 大小: 70008 字节
+2025-06-24 11:41:24,650 - INFO - 文件 failed_proxies.json 大小: 138918 字节
+2025-06-24 11:41:24,650 - INFO - 处理完成，总耗时: 11.18 秒
