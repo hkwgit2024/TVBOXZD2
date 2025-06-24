@@ -21,7 +21,7 @@ DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
 SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")
 TEST_TIMEOUT_SECONDS = 2  # 初始超时时间
 BATCH_SIZE = 50  # 每批处理节点数
-DNS_CACHE_EXPIRATION = 3600  # DNS 缓存有效期 1 小时
+DNS_CACHE_EXPIRATION = 2678400  # DNS 缓存有效期 31天
 
 # 动态设置最大并发数
 def get_optimal_concurrency():
