@@ -1,0 +1,47 @@
+name: Node Connectivity Tester
+
+on:
+  push:
+    branches:
+      - main # 当有新的提交推送到 main 分支时触发
+  schedule:
+    - cron: '0 1 * * *' # 每天 UTC 时间凌晨 1 点触发 (例如北京时间上午 9 点)
+  workflow_dispatch: # 允许手动在 GitHub Actions 界面中触发
+
+jobs:
+  test_and_publish_nodes:
+    runs-on: ubuntu-latest # 使用最新的 Ubuntu runner
+
+    steps:
+    - name: Checkout repository # 检出你的代码
+      uses: actions/checkout@v4
+
+    - name: Set up Python # 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' # 推荐使用一个稳定的Python版本，例如 3.9 或 3.10
+
+    - name: Install dependencies # 安装 Python 依赖
+      run: |
+        pip install httpx
+
+    - name: Run Node Test Script # 运行你的 Python 脚本
+      run: |
+        python test_nodes.py
+
+    - name: Upload Test Results # 上传测试结果文件作为 Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: node-test-results
+        path: data/sub.txt # 指定要上传的文件或目录
+
+    - name: Commit and Push Results (Optional) # 可选：如果希望将成功的节点列表自动提交回仓库
+      # 注意：此步骤会修改仓库，如果不需要请注释掉
+      # 需要配置 token 权限或使用专门的 GITHUB_TOKEN
+      if: success() # 仅在前面的步骤都成功时执行
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add data/sub.txt
+        git commit -m "Update node test results [skip ci]" || echo "No changes to commit"
+        git push || echo "No changes to push"
