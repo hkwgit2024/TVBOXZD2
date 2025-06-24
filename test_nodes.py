@@ -16,38 +16,37 @@ from concurrent.futures import ThreadPoolExecutor
 import base64
 
 # --- 配置 ---
-# 将 SOURCE_URLS 定义为一个列表，支持从多个地址获取节点信息
 SOURCE_URLS = [
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
 ]
 
-DATA_DIR = "data"  # 数据文件存放目录
-HISTORY_FILE = os.path.join(DATA_DIR, "history_results.json")  # 历史测试结果文件路径
-DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")  # DNS 缓存文件路径
-SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")  # 成功节点输出文件路径
+DATA_DIR = "data"
+HISTORY_FILE = os.path.join(DATA_DIR, "history_results.json")
+DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
+SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")
+SUCCESS_COUNT_FILE = os.path.join(DATA_DIR, "success_count.txt")  # 新增：保存成功节点数
 
-# 从环境变量获取测试超时时间，默认 5 秒
-TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 5))
-BATCH_SIZE = 100  # 每次处理的节点数量，用于分批处理以优化性能
-DNS_CACHE_EXPIRATION = 2678400  # DNS 缓存有效期：31 天 (单位：秒)
-HISTORY_EXPIRATION = 2678400  # 历史记录有效期：31 天 (单位：秒)
+TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 15))
+BATCH_SIZE = 100
+DNS_CACHE_EXPIRATION = 2678400  # 31 天
+HISTORY_EXPIRATION = 2678400  # 31 天
 
-# --- 代理客户端配置 ---
-# Xray 可执行文件路径，从环境变量获取，默认为当前目录下的 xray
 XRAY_PATH = os.getenv("XRAY_PATH", "./xray")
-XRAY_CONFIG_FILE = os.path.join(DATA_DIR, "xray_config.json")  # Xray 临时配置文件
-LOCAL_PROXY_PORT = 10800  # Xray 监听的本地 SOCKS5 端口
-
-# 测试代理是否成功的外部网址，使用无内容的快速响应地址
+XRAY_CONFIG_FILE = os.path.join(DATA_DIR, "xray_config.json")
+LOCAL_PROXY_PORT = 10800
 TEST_PROXY_URL = "http://www.gstatic.com/generate_204"
 
 # --- 日志配置 ---
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO').upper()
 logging.basicConfig(level=getattr(logging, LOG_LEVEL, logging.INFO),
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler(os.path.join(DATA_DIR, "test_nodes.log")),  # 保存日志到文件
+                        logging.StreamHandler()
+                    ])
 logger = logging.getLogger(__name__)
 
-# --- 预编译正则表达式 ---
+# --- 正则表达式 ---
 PROTOCOL_RE = re.compile(r"^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/[^\s]+$", re.IGNORECASE)
 HOST_PORT_RE = re.compile(r"(?:@|:)(\d{1,5})(?:\?|$|#)")
 NODE_LINK_RE = re.compile(r"^(vless|vmess|trojan|ss|hy2|hysteria2):\/\/(.*)")
@@ -56,7 +55,6 @@ IP_RE = re.compile(r"^(?:\[[0-9a-fA-F:]+\]|[0-9]{1,3}(?:\.[0-9]{1,3}){3})$")
 
 # --- 数据结构 ---
 class NodeTestResult:
-    """封装单个节点的测试结果"""
     def __init__(self, node_info, status, delay_ms=-1, error_message=""):
         self.node_info = node_info
         self.status = status
@@ -64,13 +62,12 @@ class NodeTestResult:
         self.error_message = error_message
 
 # --- 全局变量 ---
-history_results = {}  # 存储节点历史测试结果
-dns_cache = {}  # 存储 DNS 解析缓存
-xray_process = None  # Xray 子进程对象
+history_results = {}
+dns_cache = {}
+xray_process = None
 
 # --- 辅助函数 ---
 def normalize_link(link):
-    """规范化节点链接，移除查询参数和片段以生成稳定键"""
     try:
         parsed = urlparse(link)
         base_link = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
@@ -80,7 +77,6 @@ def normalize_link(link):
         return link
 
 async def bulk_dns_lookup(hostnames):
-    """执行批量 DNS 查询，支持缓存和 IPv6 回退"""
     resolver = aiodns.DNSResolver(nameservers=["223.5.5.5", "114.114.114.114", "8.8.8.8"])
     results = {}
     current_time = int(time.time())
@@ -120,8 +116,8 @@ async def bulk_dns_lookup(hostnames):
     return results
 
 async def load_history():
-    """异步加载历史测试结果"""
     global history_results
+    os.makedirs(DATA_DIR, exist_ok=True)
     if os.path.exists(HISTORY_FILE):
         try:
             async with aiofiles.open(HISTORY_FILE, "r", encoding="utf-8") as f:
@@ -135,7 +131,6 @@ async def load_history():
         logger.info("未找到历史结果文件，初始化为空")
 
 async def save_history():
-    """异步保存历史测试结果，清理过期记录"""
     current_time = int(time.time())
     cleaned_history = {k: v for k, v in history_results.items() if current_time - v.get("timestamp", 0) < HISTORY_EXPIRATION}
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -144,8 +139,8 @@ async def save_history():
     logger.info(f"历史结果已保存: {len(cleaned_history)} 条记录")
 
 async def load_dns_cache():
-    """异步加载 DNS 缓存"""
     global dns_cache
+    os.makedirs(DATA_DIR, exist_ok=True)
     if os.path.exists(DNS_CACHE_FILE):
         try:
             async with aiofiles.open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
@@ -159,7 +154,6 @@ async def load_dns_cache():
         logger.info("未找到 DNS 缓存文件，初始化为空")
 
 async def save_dns_cache():
-    """异步保存 DNS 缓存，清理过期记录"""
     current_time = int(time.time())
     cleaned_cache = {k: v for k, v in dns_cache.items() if current_time - v.get("timestamp", 0) < DNS_CACHE_EXPIRATION}
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -168,7 +162,6 @@ async def save_dns_cache():
     logger.info(f"DNS 缓存已保存: {len(cleaned_cache)} 条记录")
 
 async def fetch_ss_txt(url):
-    """从指定 URL 获取节点列表文本"""
     try:
         async with httpx.AsyncClient(follow_redirects=True, timeout=15) as client:
             response = await client.get(url)
@@ -179,13 +172,11 @@ async def fetch_ss_txt(url):
         return None
 
 def prefilter_links(links):
-    """预过滤无效节点链接"""
     valid_links = [link.strip() for link in links if link.strip() and PROTOCOL_RE.match(link) and HOST_PORT_RE.search(link)]
     logger.info(f"预过滤: 原始 {len(links)} 条，保留 {len(valid_links)} 条")
     return valid_links
 
 def parse_node_info(link):
-    """解析节点链接信息"""
     node_info = {'original_link': link}
     try:
         match = NODE_LINK_RE.match(link.strip())
@@ -226,20 +217,34 @@ def parse_node_info(link):
             node_info.update(vmess_data)
 
         elif protocol == 'ss':
-            encoded_part = remaining_part.split('#')[0].split('/?')[0]
-            decoded_str = base64.b64decode(encoded_part + '=' * (-len(encoded_part) % 4)).decode('utf-8', 'ignore')
-            parts = decoded_str.split('@', 1)
-            auth_part, host_port_part = parts[0], parts[1]
-            method, password = auth_part.split(':', 1)
-            node_info['method'] = method
-            node_info['password'] = password
-            host_match = HOST_PORT_FULL_RE.match(host_port_part)
-            if host_match:
-                node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
-                node_info['port'] = int(host_match.group(4))
-                if not (1 <= node_info['port'] <= 65535):
+            try:
+                encoded_part = remaining_part.split('#')[0].split('/?')[0]
+                # 修复 Base64 填充
+                encoded_part += '=' * (-len(encoded_part) % 4)
+                decoded_str = base64.b64decode(encoded_part, validate=True).decode('utf-8', 'ignore')
+                parts = decoded_str.split('@', 1)
+                if len(parts) != 2:
+                    logger.debug(f"无效 Shadowsocks 格式: {link}")
                     return None
-            else:
+                auth_part, host_port_part = parts
+                method_password = auth_part.split(':', 1)
+                if len(method_password) != 2:
+                    logger.debug(f"无效 Shadowsocks 认证格式: {link}")
+                    return None
+                method, password = method_password
+                node_info['method'] = method
+                node_info['password'] = password
+                host_match = HOST_PORT_FULL_RE.match(host_port_part)
+                if host_match:
+                    node_info['server'] = host_match.group(1) or host_match.group(2) or host_match.group(3)
+                    node_info['port'] = int(host_match.group(4))
+                    if not (1 <= node_info['port'] <= 65535):
+                        return None
+                else:
+                    logger.debug(f"无效 Shadowsocks 主机端口格式: {link}")
+                    return None
+            except Exception as e:
+                logger.debug(f"解析 Shadowsocks 链接 '{link}' 失败: {e}")
                 return None
 
         elif protocol in ['hy2', 'hysteria2']:
@@ -264,7 +269,6 @@ def parse_node_info(link):
         return None
 
 async def generate_xray_config(node_info):
-    """生成 Xray 配置文件"""
     config = {
         "log": {"loglevel": "warning"},
         "inbounds": [{"port": LOCAL_PROXY_PORT, "listen": "127.0.0.1", "protocol": "socks", "settings": {"auth": "noauth", "udp": True}}],
@@ -279,6 +283,16 @@ async def generate_xray_config(node_info):
             ]
         }
     }
+
+    # 添加 Geo 数据路径
+    if os.getenv("XRAY_GEOIP_PATH") and os.path.exists(os.getenv("XRAY_GEOIP_PATH")):
+        config["routing"]["geoip"] = {"path": os.getenv("XRAY_GEOIP_PATH")}
+    else:
+        logger.warning("GeoIP 数据文件未找到，可能影响路由规则")
+    if os.getenv("XRAY_GEOSITE_PATH") and os.path.exists(os.getenv("XRAY_GEOSITE_PATH")):
+        config["routing"]["geosite"] = {"path": os.getenv("XRAY_GEOSITE_PATH")}
+    else:
+        logger.warning("GeoSite 数据文件未找到，可能影响路由规则")
 
     outbound = config['outbounds'][0]
     stream_settings = outbound['streamSettings']
@@ -356,10 +370,12 @@ async def generate_xray_config(node_info):
         return None
 
 async def start_proxy_subprocess():
-    """启动 Xray 子进程"""
     global xray_process
     if not os.path.isfile(XRAY_PATH) or not os.access(XRAY_PATH, os.X_OK):
         logger.error(f"Xray 可执行文件 '{XRAY_PATH}' 不存在或无执行权限")
+        return False
+    if not os.path.exists(os.getenv("XRAY_GEOIP_PATH", "")) or not os.path.exists(os.getenv("XRAY_GEOSITE_PATH", "")):
+        logger.error("GeoIP 或 GeoSite 数据文件缺失")
         return False
 
     if xray_process and xray_process.poll() is None:
@@ -386,7 +402,6 @@ async def start_proxy_subprocess():
         return False
 
 async def stop_proxy_subprocess():
-    """停止 Xray 子进程"""
     global xray_process
     if xray_process and xray_process.poll() is None:
         try:
@@ -400,7 +415,6 @@ async def stop_proxy_subprocess():
         xray_process = None
 
 async def is_port_in_use(port):
-    """检查端口是否被占用"""
     try:
         async with aiofiles.socket.socket(aiofiles.socket.AF_INET, aiofiles.socket.SOCK_STREAM) as s:
             await s.bind(("127.0.0.1", port))
@@ -409,7 +423,6 @@ async def is_port_in_use(port):
         return True
 
 async def check_node(node_info):
-    """测试单个节点连接性"""
     node_id = normalize_link(node_info['original_link'])
     current_time = time.time()
 
@@ -470,7 +483,6 @@ async def check_node(node_info):
         return NodeTestResult(node_info, "Failed", -1, str(e))
 
 async def test_nodes_in_batches(nodes, batch_size=BATCH_SIZE):
-    """分批测试节点"""
     semaphore = asyncio.Semaphore(get_optimal_concurrency())
     async def test_node_with_semaphore(node):
         async with semaphore:
@@ -487,7 +499,6 @@ async def test_nodes_in_batches(nodes, batch_size=BATCH_SIZE):
     return all_results
 
 def get_optimal_concurrency():
-    """动态计算最佳并发任务数"""
     cpu_count = psutil.cpu_count()
     memory = psutil.virtual_memory()
     available_memory = memory.available / (1024 ** 2)
@@ -497,7 +508,6 @@ def get_optimal_concurrency():
     return min(base_concurrency, 50)
 
 def generate_summary(test_results):
-    """生成测试结果摘要"""
     successful_nodes = [r for r in test_results if r.status == "Successful"]
     success_count = len(successful_nodes)
     total_count = len(test_results)
@@ -518,7 +528,6 @@ def generate_summary(test_results):
     }
 
 async def main():
-    """主函数"""
     start_time = time.time()
     os.makedirs(DATA_DIR, exist_ok=True)
     await load_history()
@@ -535,6 +544,8 @@ async def main():
         logger.error("未获取到有效节点链接")
         async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
             await f.write("# 未找到有效节点\n")
+        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+            await f.write("0")
         print("最终成功节点数: 0")
         return
 
@@ -543,10 +554,19 @@ async def main():
         logger.info("预过滤后无有效链接")
         async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
             await f.write("# 预过滤后无有效节点\n")
+        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+            await f.write("0")
         print("最终成功节点数: 0")
         return
 
-    parsed_nodes = [node_info for link in filtered_links if (node_info := parse_node_info(link))]
+    parsed_nodes = []
+    for link in filtered_links:
+        node_info = parse_node_info(link)
+        if node_info:
+            parsed_nodes.append(node_info)
+        else:
+            logger.debug(f"跳过无效节点: {link}")
+
     hostnames_to_resolve = {node['server'] for node in parsed_nodes if node['is_domain']}
     resolved_ips = await bulk_dns_lookup(hostnames_to_resolve)
 
@@ -563,6 +583,8 @@ async def main():
         logger.info("无有效节点可测试")
         async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
             await f.write("# 无有效节点\n")
+        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+            await f.write("0")
         print("最终成功节点数: 0")
         return
 
@@ -587,6 +609,9 @@ async def main():
         else:
             await f.write("# 无可用节点\n")
 
+    async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+        await f.write(str(len(successful_nodes)))
+
     await save_history()
     await save_dns_cache()
 
@@ -604,4 +629,16 @@ async def main():
     logger.info(f"总耗时: {time.time() - start_time:.2f} 秒")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        logger.error(f"脚本执行失败: {e}")
+        async def write_error():
+            os.makedirs(DATA_DIR, exist_ok=True)
+            async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+                await f.write("# 脚本执行失败\n")
+            async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+                await f.write("0")
+        asyncio.run(write_error())
+        print("最终成功节点数: 0")
+        raise
