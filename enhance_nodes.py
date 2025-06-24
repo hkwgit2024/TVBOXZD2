@@ -1,22 +1,23 @@
-import asyncio
-import json
-import logging
 import os
 import re
+import json
+import yaml
+import base64
+import hashlib
+import asyncio
+import logging
 import socket
 import ssl
-import time
-import hashlib
-from pathlib import Path
-import aiofiles
-from tqdm.asyncio import tqdm_asyncio
+from urllib.parse import urlparse, unquote, parse_qs
 from typing import List, Dict, Optional
-from urllib.parse import urlparse, unquote
+from tqdm.asyncio import tqdm_asyncio
+import aiofiles
+from pathlib import Path
 import pycountry
-import yaml
+import httpx
 
 # --- 配置 ---
-CONFIG_FILE = "config.yaml"
+CONFIG_FILE = "config.yaml"  # 外部配置文件
 DEFAULT_CONFIG = {
     "input": {
         "sub_file": "data/sub.txt",
@@ -24,7 +25,11 @@ DEFAULT_CONFIG = {
     },
     "output": {
         "dir": "data/",
-        "nodes_file": "enhanced_nodes.txt",
+        "json_file": "enhanced_nodes.json",
+        "clash_file": "sub_clash.yaml",
+        "v2ray_file": "sub_v2ray.json",
+        "quantumult_file": "sub_quantumult.conf",
+        "base64_file": "sub_base64.txt",
         "checksum_file": "checksums.txt",
     },
     "test": {
@@ -35,10 +40,11 @@ DEFAULT_CONFIG = {
         "level": os.getenv("LOG_LEVEL", "INFO").upper(),
         "file": "data/logfile.txt",
     },
+    "output_format": os.getenv("OUTPUT_FORMAT", "all").lower(),  # json,clash,v2ray,quantumult,base64,all
 }
 
-def load_config() -> Dict:
-    """加载配置文件，合并默认配置和自定义配置"""
+# 加载外部配置
+def load_config():
     try:
         if os.path.exists(CONFIG_FILE):
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
@@ -79,6 +85,7 @@ class NodeInfo:
         delay_ms: float = -1,
         status: str = "Unknown",
         country: Optional[str] = None,
+        params: Dict = None,
     ):
         self.original_link = original_link
         self.protocol = protocol
@@ -88,17 +95,23 @@ class NodeInfo:
         self.delay_ms = delay_ms
         self.status = status
         self.country = country
+        self.params = params or {}
 
-    def to_string(self) -> str:
-        """生成明文格式：链接 | 备注 | 延迟 | 状态 | 国家"""
-        return (
-            f"{self.original_link} | Remarks: {self.remarks} | Delay: {self.delay_ms:.2f}ms | "
-            f"Status: {self.status} | Country: {self.country or 'Unknown'}"
-        )
+    def to_dict(self) -> Dict:
+        return {
+            "original_link": self.original_link,
+            "protocol": self.protocol,
+            "server": self.server,
+            "port": self.port,
+            "remarks": self.remarks,
+            "delay_ms": self.delay_ms,
+            "status": self.status,
+            "country": self.country,
+            "params": self.params,
+        }
 
 # --- 辅助函数 ---
 def infer_country(remarks: str, server: str) -> Optional[str]:
-    """根据备注或服务器域名推断国家/地区"""
     try:
         country_keywords = {
             "US": "United States",
@@ -124,7 +137,6 @@ def infer_country(remarks: str, server: str) -> Optional[str]:
         return None
 
 def normalize_link(link: str) -> str:
-    """规范化链接，用于匹配历史记录"""
     try:
         parsed = urlparse(link)
         return f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip("/")
@@ -132,7 +144,6 @@ def normalize_link(link: str) -> str:
         return link
 
 def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
-    """解析节点链接，提取信息并结合历史数据"""
     try:
         link = link.strip()
         if not link or not PROTOCOL_RE.match(link):
@@ -146,25 +157,78 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
 
         protocol = match.group(1).lower()
         remaining_part = match.group(2)
+        params = {}
         remarks = f"{protocol.upper()} 节点"
 
         if "#" in remaining_part:
             remaining_part, remark_part = remaining_part.rsplit("#", 1)
             remarks = unquote(remark_part)
 
-        host_port_str = remaining_part.split("?")[0] if "?" in remaining_part else remaining_part
-        if "@" in host_port_str:
-            _, host_port_str = host_port_str.split("@", 1)
+        if protocol in ["vless", "trojan"]:
+            if "@" in remaining_part:
+                user_info, host_port = remaining_part.split("@", 1)
+                params["uuid"] = user_info
+            else:
+                return None
+            if "?" in host_port:
+                host_port, query = host_port.split("?", 1)
+                params.update({k: v[0] for k, v in parse_qs(query).items()})
+            host_match = HOST_PORT_FULL_RE.match(host_port)
+            if not host_match:
+                return None
+            server = host_match.group(1) or host_match.group(2) or host_match.group(3)
+            port = int(host_match.group(4))
+            params["security"] = params.get("security", "none")
+            params["type"] = params.get("type", "tcp")
 
-        host_match = HOST_PORT_FULL_RE.match(host_port_str)
-        if not host_match:
-            logger.debug(f"无法解析主机:端口: {host_port_str}")
+        elif protocol == "vmess":
+            try:
+                decoded = base64.b64decode(remaining_part).decode("utf-8")
+                vmess_data = json.loads(decoded)
+                server = vmess_data.get("add")
+                port = int(vmess_data.get("port", 0))
+                params = {
+                    "uuid": vmess_data.get("id"),
+                    "security": vmess_data.get("scy", "auto"),
+                    "type": vmess_data.get("net", "tcp"),
+                    "host": vmess_data.get("host", ""),
+                    "path": vmess_data.get("path", ""),
+                    "tls": "tls" if vmess_data.get("tls") == "tls" else "none",
+                }
+            except Exception:
+                return None
+
+        elif protocol == "ss":
+            if "@" in remaining_part:
+                user_info, host_port = remaining_part.split("@", 1)
+                if ":" in user_info:
+                    method, password = user_info.split(":", 1)
+                    params["method"] = method
+                    params["password"] = password
+                host_match = HOST_PORT_FULL_RE.match(host_port)
+                if not host_match:
+                    return None
+                server = host_match.group(1) or host_match.group(2) or host_match.group(3)
+                port = int(host_match.group(4))
+            else:
+                return None
+
+        elif protocol in ["hy2", "hysteria2"]:
+            parts = remaining_part.split("?", 1)
+            host_port = parts[0]
+            if len(parts) > 1:
+                params.update({k: v[0] for k, v in parse_qs(parts[1]).items()})
+            host_match = HOST_PORT_FULL_RE.match(host_port)
+            if not host_match:
+                return None
+            server = host_match.group(1) or host_match.group(2) or host_match.group(3)
+            port = int(host_match.group(4))
+            params["password"] = params.get("auth", "")
+
+        else:
             return None
 
-        server = host_match.group(1) or host_match.group(2) or host_match.group(3)
-        port = int(host_match.group(4))
         if not (1 <= port <= 65535):
-            logger.debug(f"端口无效: {port}")
             return None
 
         node_id = normalize_link(link)
@@ -181,19 +245,29 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
             delay_ms=delay_ms,
             status=status,
             country=country,
+            params=params,
         )
     except Exception as e:
         logger.error(f"解析链接 {link} 失败: {e}")
         return None
 
 async def verify_node(node: NodeInfo) -> bool:
-    """验证节点连接性"""
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(CONFIG["test"]["timeout_seconds"])
         await asyncio.get_event_loop().run_in_executor(
             None, sock.connect, (node.server, node.port)
         )
+        if node.params.get("security") == "tls" or node.params.get("tls") == "tls":
+            context = ssl.create_default_context()
+            context.check_hostname = False
+            context.verify_mode = ssl.CERT_NONE
+            sni = node.params.get("sni") or node.params.get("host") or node.server
+            wrapped_socket = context.wrap_socket(sock, server_hostname=sni)
+            await asyncio.get_event_loop().run_in_executor(
+                None, wrapped_socket.do_handshake
+            )
+            wrapped_socket.close()
         sock.close()
         node.status = "Successful"
         return True
@@ -202,10 +276,11 @@ async def verify_node(node: NodeInfo) -> bool:
         node.status = "Failed"
         return False
     finally:
+        if "wrapped_socket" in locals():
+            wrapped_socket.close()
         sock.close()
 
 async def read_sub_txt() -> List[str]:
-    """读取 sub.txt 文件"""
     try:
         sub_file = CONFIG["input"]["sub_file"]
         if not os.path.exists(sub_file):
@@ -221,7 +296,6 @@ async def read_sub_txt() -> List[str]:
         return []
 
 async def read_history() -> Dict:
-    """读取历史测试结果"""
     try:
         history_file = CONFIG["input"]["history_file"]
         if not os.path.exists(history_file):
@@ -238,7 +312,6 @@ async def read_history() -> Dict:
         return {}
 
 async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
-    """处理节点，解析并验证"""
     semaphore = asyncio.Semaphore(CONFIG["test"]["max_concurrent"])
     async def verify_with_semaphore(node: NodeInfo) -> NodeInfo:
         async with semaphore:
@@ -262,44 +335,164 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
         if node.status == "Successful":
             verified_nodes.append(node)
 
-    # 按延迟排序（延迟未知的放在最后）
-    return sorted(verified_nodes, key=lambda x: x.delay_ms if x.delay_ms > 0 else float("inf"))
+    return verified_nodes
 
-async def save_outputs(nodes: List[NodeInfo]):
-    """保存明文节点和校验和"""
+def generate_clash_config(nodes: List[NodeInfo]) -> Dict:
+    proxies = []
+    for node in nodes:
+        proxy = {
+            "name": node.remarks,
+            "server": node.server,
+            "port": node.port,
+            "type": node.protocol,
+        }
+        if node.protocol == "vless":
+            proxy.update({
+                "uuid": node.params.get("uuid"),
+                "network": node.params.get("type", "tcp"),
+                "tls": node.params.get("security") == "tls",
+                "sni": node.params.get("sni", node.server),
+            })
+        elif node.protocol == "vmess":
+            proxy.update({
+                "uuid": node.params.get("uuid"),
+                "alterId": 0,
+                "cipher": node.params.get("security", "auto"),
+                "network": node.params.get("type", "tcp"),
+                "tls": node.params.get("tls") == "tls",
+                "sni": node.params.get("host", node.server),
+            })
+        elif node.protocol == "trojan":
+            proxy.update({
+                "password": node.params.get("uuid"),
+                "network": node.params.get("type", "tcp"),
+                "sni": node.params.get("sni", node.server),
+            })
+        elif node.protocol == "ss":
+            proxy.update({
+                "cipher": node.params.get("method"),
+                "password": node.params.get("password"),
+            })
+        elif node.protocol in ["hy2", "hysteria2"]:
+            proxy.update({
+                "password": node.params.get("password"),
+                "sni": node.params.get("sni", node.server),
+            })
+        proxies.append(proxy)
+
+    # 动态分组
+    countries = {node.country for node in nodes if node.country}
+    proxy_groups = [
+        {"name": "Auto", "type": "select", "proxies": [node.remarks for node in nodes]},
+        {"name": "LowLatency", "type": "select", "proxies": [node.remarks for node in nodes if node.delay_ms > 0 and node.delay_ms < 200]},
+    ]
+    for country in countries:
+        proxy_groups.append({
+            "name": country,
+            "type": "select",
+            "proxies": [node.remarks for node in nodes if node.country == country],
+        })
+
+    return {
+        "proxies": proxies,
+        "proxy-groups": proxy_groups,
+        "rules": ["MATCH,Auto"],
+    }
+
+def generate_v2ray_config(nodes: List[NodeInfo]) -> Dict:
+    outbounds = []
+    for node in nodes:
+        outbound = {
+            "tag": node.remarks,
+            "protocol": node.protocol,
+            "settings": {},
+        }
+        if node.protocol in ["vless", "vmess"]:
+            outbound["settings"] = {
+                "vnext": [{
+                    "address": node.server,
+                    "port": node.port,
+                    "users": [{"id": node.params.get("uuid"), "security": node.params.get("security", "auto")}],
+                }]
+            }
+        elif node.protocol == "trojan":
+            outbound["settings"] = {
+                "servers": [{"address": node.server, "port": node.port, "password": node.params.get("uuid")}]
+            }
+        elif node.protocol == "ss":
+            outbound["settings"] = {
+                "servers": [{"address": node.server, "port": node.port, "method": node.params.get("method"), "password": node.params.get("password")}]
+            }
+        outbounds.append(outbound)
+    return {"outbounds": outbounds}
+
+def generate_quantumult_config(nodes: List[NodeInfo]) -> str:
+    lines = []
+    for node in nodes:
+        if node.protocol == "ss":
+            line = f"shadowsocks={node.server}:{node.port},{node.params.get('method')},{node.params.get('password')},tag={node.remarks}"
+            lines.append(line)
+        elif node.protocol in ["vless", "trojan"]:
+            line = f"trojan={node.server}:{node.port},password={node.params.get('uuid')},sni={node.params.get('sni', node.server)},tag={node.remarks}"
+            lines.append(line)
+    return "\n".join(lines)
+
+async def save_outputs(nodes: List[NodeInfo], output_format: str):
     os.makedirs(CONFIG["output"]["dir"], exist_ok=True)
     checksums = {}
 
-    nodes_file = os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["nodes_file"])
-    try:
-        content = "\n".join(node.to_string() for node in nodes)
-        async with aiofiles.open(nodes_file, "w", encoding="utf-8") as f:
-            await f.write(content)
-        with open(nodes_file, "rb") as f:
-            checksums[nodes_file] = hashlib.sha256(f.read()).hexdigest()
-        # 验证文件存在
-        if os.path.exists(nodes_file):
-            logger.info(f"已保存 {len(nodes)} 个节点到 {nodes_file}, 文件存在")
-        else:
-            logger.error(f"文件 {nodes_file} 未生成")
-    except Exception as e:
-        logger.error(f"保存 {nodes_file} 失败: {e}")
-        print(content)  # 回退到控制台输出
+    async def save_file(content: str, filename: str):
+        try:
+            async with aiofiles.open(filename, "w", encoding="utf-8") as f:
+                await f.write(content)
+            with open(filename, "rb") as f:
+                checksums[filename] = hashlib.sha256(f.read()).hexdigest()
+            logger.info(f"已保存到 {filename}")
+        except Exception as e:
+            logger.error(f"保存 {filename} 失败: {e}")
 
+    tasks = []
+    if output_format in ["json", "all"]:
+        tasks.append(save_file(
+            json.dumps([node.to_dict() for node in nodes], indent=2, ensure_ascii=False),
+            os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["json_file"])
+        ))
+    if output_format in ["clash", "all"]:
+        tasks.append(save_file(
+            yaml.dump(generate_clash_config(nodes), allow_unicode=True, sort_keys=False),
+            os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["clash_file"])
+        ))
+    if output_format in ["v2ray", "all"]:
+        tasks.append(save_file(
+            json.dumps(generate_v2ray_config(nodes), indent=2, ensure_ascii=False),
+            os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["v2ray_file"])
+        ))
+    if output_format in ["quantumult", "all"]:
+        tasks.append(save_file(
+            generate_quantumult_config(nodes),
+            os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["quantumult_file"])
+        ))
+    if output_format in ["base64", "all"]:
+        links = [node.original_link for node in nodes]
+        base64_content = base64.b64encode("\n".join(links).encode("utf-8")).decode("utf-8")
+        tasks.append(save_file(
+            base64_content,
+            os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["base64_file"])
+        ))
+
+    await asyncio.gather(*tasks)
+
+    # 保存校验和
     checksum_file = os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["checksum_file"])
     try:
         async with aiofiles.open(checksum_file, "w", encoding="utf-8") as f:
             for filename, checksum in checksums.items():
                 await f.write(f"{checksum}  {os.path.basename(filename)}\n")
-        if os.path.exists(checksum_file):
-            logger.info(f"已保存校验和到 {checksum_file}, 文件存在")
-        else:
-            logger.error(f"文件 {checksum_file} 未生成")
+        logger.info(f"已保存校验和到 {checksum_file}")
     except Exception as e:
         logger.error(f"保存校验和失败: {e}")
 
 async def main():
-    """主函数"""
     start_time = time.time()
     logger.info("开始处理节点数据")
 
@@ -307,21 +500,13 @@ async def main():
     history_data = await read_history()
     if not links:
         logger.warning("没有有效节点链接，退出")
-        await save_outputs([])
+        await save_outputs([], CONFIG["output_format"])
         return
 
     nodes = await process_nodes(links, history_data)
     logger.info(f"有效节点数: {len(nodes)}")
 
-    await save_outputs(nodes)
-
-    # 调试：列出 data 目录内容
-    data_dir = CONFIG["output"]["dir"]
-    try:
-        files = os.listdir(data_dir)
-        logger.info(f"data 目录内容: {files}")
-    except Exception as e:
-        logger.error(f"无法列出 data 目录: {e}")
+    await save_outputs(nodes, CONFIG["output_format"])
 
     logger.info(f"处理完成，总耗时: {time.time() - start_time:.2f} 秒")
 
