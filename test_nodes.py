@@ -3,6 +3,7 @@ import asyncio
 import re
 import os
 from urllib.parse import urlparse, unquote, parse_qs
+from typing import Union # 导入 Union
 
 # 配置
 SS_TXT_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
@@ -30,7 +31,8 @@ async def fetch_ss_txt(url: str) -> str:
             print(f"请求错误下载文件: {e}")
             return ""
 
-def parse_node_info(line: str) -> dict | None:
+# 修改这一行，将 dict | None 改为 Union[dict, None]
+def parse_node_info(line: str) -> Union[dict, None]:
     """
     解析一行节点信息，支持 ss, vless, trojan 协议。
     仅提取关键信息，不进行完整协议解析。
