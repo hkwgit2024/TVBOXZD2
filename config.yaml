@@ -1,0 +1,18 @@
+input:
+  sub_file: data/sub.txt
+  history_file: data/history_results.json
+output:
+  dir: data/
+  json_file: enhanced_nodes.json
+  clash_file: sub_clash.yaml
+  v2ray_file: sub_v2ray.json
+  quantumult_file: sub_quantumult.conf
+  base64_file: sub_base64.txt
+  checksum_file: checksums.txt
+test:
+  timeout_seconds: 1
+  max_concurrent: 50
+log:
+  level: INFO
+  file: data/logfile.txt
+output_format: all
