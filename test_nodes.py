@@ -420,7 +420,7 @@ async def load_dns_cache():
         async with aiofiles.open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
             try:
                 dns_cache = json.loads(await f.read())
-                current_time = time.time())
+                current_time = time.time()
                 dns_cache = {
                     hostname_hostname: data for hostname, data in dns_cache.items()
                     if (current_time - data.get("timestamp", 0) < DNS_CACHE_EXPIRATION)
