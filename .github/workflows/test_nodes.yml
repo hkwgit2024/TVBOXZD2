@@ -1,47 +1,62 @@
-name: Node Connectivity Tester
+name: 节点测试与发布
 
 on:
   push:
     branches:
-      - main # 当有新的提交推送到 main 分支时触发
+      - main
+    paths: # 仅当 ss.txt 或脚本文件改变时运行
+      - 'ss.txt'
+      - 'test_nodes.py'
+  workflow_dispatch: # 允许从 GitHub UI 手动触发
   schedule:
-    - cron: '0 1 * * *' # 每天 UTC 时间凌晨 1 点触发 (例如北京时间上午 9 点)
-  workflow_dispatch: # 允许手动在 GitHub Actions 界面中触发
+    - cron: '0 */6 * * *' # 每 6 小时运行一次 (可根据需要调整，例如 '0 0 * * *' 表示每天午夜运行)
 
 jobs:
-  test_and_publish_nodes:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu runner
+  test-nodes:
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 环境上运行
 
     steps:
-    - name: Checkout repository # 检出你的代码
-      uses: actions/checkout@v4
+    - name: 检出代码仓库
+      uses: actions/checkout@v4 # 使用 actions/checkout@v4 来检出你的代码
 
-    - name: Set up Python # 设置 Python 环境
-      uses: actions/setup-python@v5
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 来设置 Python
       with:
-        python-version: '3.9' # 推荐使用一个稳定的Python版本，例如 3.9 或 3.10
+        python-version: '3.9' # 指定 Python 版本，建议使用与你的脚本兼容的稳定版本
 
-    - name: Install dependencies # 安装 Python 依赖
+    - name: 缓存数据目录
+      uses: actions/cache@v4 # 使用 actions/cache@v4 来缓存文件
+      with:
+        path: data # 要缓存的目录是 data/
+        key: ${{ runner.os }}-node-test-data-${{ hashFiles('ss.txt') }} # 缓存键，基于操作系统和 ss.txt 文件的哈希值
+        # restore-keys: | # 可选: 如果主键未命中时的备用键 (例如 ss.txt 改变但仍想恢复旧缓存)
+        #   ${{ runner.os }}-node-test-data-
+        # 这个 key 的设计很重要：如果 ss.txt 内容发生变化，哈希值会变，旧缓存将不会被命中，会创建新缓存，这通常是你期望的行为。
+
+    - name: 安装依赖
       run: |
+        python -m pip install --upgrade pip
         pip install httpx
 
-    - name: Run Node Test Script # 运行你的 Python 脚本
-      run: |
-        python test_nodes.py
+    - name: 运行节点测试脚本
+      run: python test_nodes.py # 执行你的 Python 脚本
 
-    - name: Upload Test Results # 上传测试结果文件作为 Artifact
-      uses: actions/upload-artifact@v4
+    - name: 上传结果文件
+      uses: actions/upload-artifact@v4 # 使用 actions/upload-artifact@v4 来上传文件作为工作流产物
       with:
-        name: node-test-results
-        path: data/sub.txt # 指定要上传的文件或目录
+        name: node-test-results # 产物的名称
+        path: data/sub.txt # 要上传的文件路径
+        retention-days: 7 # 产物保留天数 (例如保留 7 天)
 
-    - name: Commit and Push Results (Optional) # 可选：如果希望将成功的节点列表自动提交回仓库
-      # 注意：此步骤会修改仓库，如果不需要请注释掉
-      # 需要配置 token 权限或使用专门的 GITHUB_TOKEN
-      if: success() # 仅在前面的步骤都成功时执行
+    # 可选步骤：如果你希望将更新后的历史和缓存文件推送回仓库
+    # 请谨慎使用此步骤，因为它会创建新的提交。
+    - name: 提交并推送更新的数据文件 (可选 - 谨慎使用)
+      id: commit_push # 给这个步骤一个 ID，以便后续引用 (虽然这里没有直接引用)
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add data/sub.txt
-        git commit -m "Update node test results [skip ci]" || echo "No changes to commit"
-        git push || echo "No changes to push"
+        git config user.name "GitHub Actions Bot" # 设置 Git 用户名
+        git config user.email "actions@github.com" # 设置 Git 用户邮箱
+        git add data/history_results.json data/dns_cache.json # 添加要提交的文件
+        # 检查是否有实际的文件改动，如果没有改动则不提交，避免空提交
+        git diff --cached --exit-code || git commit -m "更新节点测试历史和 DNS 缓存" && git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.BOT }} # GitHub Actions 自动提供的权限令牌
