@@ -18,9 +18,10 @@ from concurrent.futures import ThreadPoolExecutor
 SOURCE_URLS = [
    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt",
    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-   # "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-  # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
-   # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+   "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+   "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
+   "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+   "https://snippet.host/oouyda/raw",
 ]
 
 DATA_DIR = "data"  # 数据文件存放目录
