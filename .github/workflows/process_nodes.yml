@@ -1,4 +1,4 @@
-name: Enhance Proxy Nodes
+name: Process Proxy Nodes
 
 on:
   schedule:
@@ -9,8 +9,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  enhance-nodes:
-    runs-on: ubuntu-latest
+  process-nodes:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
 
     steps:
       - name: Checkout repository
@@ -24,26 +28,66 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements_enhance_nodes.txt
+          pip install -r requirements.txt
+          pip install httpx aiodns psutil
+
+      - name: Run original script
+        env:
+          LOG_LEVEL: INFO
+          TEST_TIMEOUT: 2
+        run: python original_script.py
 
       - name: Run enhanced script
         env:
           LOG_LEVEL: INFO
-          TEST_TIMEOUT: 1
+          OUTPUT_FORMAT: all
         run: python enhance_nodes.py
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node-outputs
+          name: node-outputs-${{ matrix.os }}
           path: |
-            data/enhanced_nodes.txt
+            data/enhanced_nodes.json
+            data/sub_clash.yaml
+            data/sub_v2ray.json
+            data/sub_quantumult.conf
+            data/sub_base64.txt
             data/checksums.txt
             data/logfile.txt
 
       - name: Publish to GitHub Pages
+        if: matrix.os == 'ubuntu-latest'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: data
           publish_branch: gh-pages
+
+      - name: Create Release
+        if: matrix.os == 'ubuntu-latest'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "nodes-${{ github.run_id }}"
+          files: |
+            data/enhanced_nodes.json
+            data/sub_clash.yaml
+            data/sub_v2ray.json
+            data/sub_quantumult.conf
+            data/sub_base64.txt
+            data/checksums.txt
+          body: |
+            Automated node processing results for run ${{ github.run_id }}.
+            Checksums available in checksums.txt.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Send Discord Notification
+        if: always() && matrix.os == 'ubuntu-latest'
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          title: "Node Processing ${{ github.run_id }}"
+          description: "Node processing completed on ${{ matrix.os }}. Check artifacts and release."
+          nodetail: false
