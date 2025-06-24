@@ -35,6 +35,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install httpx aiodns aiofiles psutil
           pip install aiodns
+          pip install --upgrade httpx
           pip show httpx aiodns aiofiles psutil || { echo "::error::Failed to install Python dependencies"; exit 1; }
         continue-on-error: false
 
