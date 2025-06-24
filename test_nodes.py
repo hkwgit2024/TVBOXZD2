@@ -87,7 +87,7 @@ async def load_history():
         try:
             async with aiofiles.open(HISTORY_FILE, "r", encoding="utf-8") as f:
                 history_results = json.loads(await f.read())
-            logger.info(f"历史结果加载成功: {len(history10} 条记录")
+            logger.info(f"历史结果加载成功: {len(history_results)} 条记录")
         except json.JSONDecodeError as e:
             logger.warning(f"历史结果文件损坏或为空，重新创建: {e}")
             history_results = {}
