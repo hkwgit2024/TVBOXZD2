@@ -57,3 +57,11 @@ jobs:
           if [ -f data/enhanced_nodes.txt ]; then
             wc -l data/enhanced_nodes.txt # 显示增强节点文件行数
           fi
+
+      - name: Publish to GitHub Pages # 发布到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.BOT }} # ⭐ 关键：使用 GitHub 自动提供的令牌
+          publish_dir: data # ⭐ 关键：指定要发布到 GitHub Pages 的目录
+          publish_branch: gh-pages # ⭐ 关键：指定发布到的分支，通常是 gh-pages
+          keep_files: false # 清理 gh-pages 分支的现有文件，确保只保留本次生成的文件
