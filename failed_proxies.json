@@ -1,0 +1,2247 @@
+[
+  {
+    "link": "-------------------------------------",
+    "reason": "Parsing Error: Unsupported Protocol",
+    "timestamp": "2025-06-21T01:08:15.150786"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpnbVlEelNHNkszNXM4YjE5b1k0Zkd6@92.118.112.111:18622#US%F0%9F%87%BA%F0%9F%87%B8+%7C+92.118.112.111-18622+%7C+15.39ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458068"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlVT576O5Zu944CMVEfvvJpAY2NiYW9oZeOAl+WFjei0ueacuuWcuuWIhuS6qyA0OSIsDQogICJhZGQiOiAiMTgzLjIzNi41MS4zOCIsDQogICJwb3J0IjogIjM2NTE5IiwNCiAgImlkIjogIjQxODA0OGFmLWEyOTMtNGI5OS05YjBjLTk4Y2EzNTgwZGQyNCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogInY4LmhlZHVpYW4ubGluayIsDQogICJwYXRoIjogIi9vb29vIiwNCiAgInRscyI6ICIiLA0KICAic25pIjogIiINCn0=",
+    "reason": "Invalid Address/Port: 183.236.51.38:36519",
+    "timestamp": "2025-06-21T01:08:51.458082"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206NWJhNTExNzUtYjhkYy00YjQ1LWI2MDUtOWQ5ZmZhZmIxMGMx@127.0.0.1:443#%E2%9A%A0%E2%9A%A0%20%E6%82%A8%E7%9A%84%E8%AE%A2%E9%98%85%E5%B7%B2%E8%BF%87%E6%9C%9F%20%E2%9A%A0%E2%9A%A0",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458089"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHVEODNDXHVEREZBXHVEODNDXHVEREY4IFx1N0Y4RVx1NTZGRDQiLCJhZGQiOiIzZTU3ODIuYTZjY2UyYzkuc2hvcCIsInBvcnQiOiI4MCIsImlkIjoiMGJhNGEyNDAtMTU4Ni00YTU0LTkyOWMtMjYzODljOGE0MTExIiwiYWlkIjoiMCIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0IjoidXMwNHMuYTZjY2UyYzkuc2hvcCIsInBhdGgiOiIvIiwidGxzIjoiIn0",
+    "reason": "Invalid Address/Port: 3e5782.a6cce2c9.shop:80",
+    "timestamp": "2025-06-21T01:08:51.458095"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrODdVSkc3@38.64.138.145:2376#4Nika-2743",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458100"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHVEODNDXHVEREVEXHVEODNDXHVEREYwIFx1OTk5OVx1NkUyRjQiLCJhZGQiOiIzZTU3ODIuYTZjY2UyYzkuc2hvcCIsInBvcnQiOiI4MCIsImlkIjoiMGJhNGEyNDAtMTU4Ni00YTU0LTkyOWMtMjYzODljOGE0MTExIiwiYWlkIjoiMCIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiaGswNHMuYTZjY2UyYzkuc2hvcCIsInBhdGgiOiIvIiwidGxzIjoiIn0",
+    "reason": "Invalid Address/Port: 3e5782.a6cce2c9.shop:80",
+    "timestamp": "2025-06-21T01:08:51.458105"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiZWxtYS5ucy5jbG91ZGZsYXJlLmNvbSIsICJhaWQiOiAiMCIsICJhbHBuIjogImgyLGh0dHAvMS4xIiwgImZwIjogIiIsICJob3N0IjogIiIsICJpZCI6ICIyYTMyNjNlMi04OTFjLTQ0NDYtYjQ3NC1hOGM2M2FjYjZlMjUiLCAibmV0IjogImdycGMiLCAicGF0aCI6ICIiLCAicG9ydCI6ICIyMDg3IiwgInBzIjogIjROaWthLTIxMDM3IiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICIxZmRTTkExMTkyMjg5MjhPcFMyc21UYUIyMjhhQXNERHNkMWVhMTE0OTI4MjUxMTkyLjEtc2VuYXRvci5pbmZvIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJndW4iLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: elma.ns.cloudflare.com:2087",
+    "timestamp": "2025-06-21T01:08:51.458111"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlx1NmE1OFx1NWI1MFx1NTE2Y1x1NzZjYVx1MDAyZFx1NjcyYVx1NzdlNVx1MDAyZDQzIiwNCiAgImFkZCI6ICIxMjAuMTk4LjcxLjIxNiIsDQogICJwb3J0IjogIjQxMjU5IiwNCiAgImlkIjogIjQxODA0OGFmLWEyOTMtNGI5OS05YjBjLTk4Y2EzNTgwZGQyNCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogIiIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICIiLA0KICAiYWxwbiI6ICIiLA0KICAiZnAiOiAiIg0KfQ==",
+    "reason": "Invalid Address/Port: 120.198.71.216:41259",
+    "timestamp": "2025-06-21T01:08:51.458116"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNS4xODAuMzAuMTQ2IiwgImFpZCI6ICIwIiwgImFscG4iOiAiIiwgImZwIjogIiIsICJob3N0IjogIiIsICJpZCI6ICJiMjM0NzIzOS1kZDE1LTQwYjMtYjY4My01MGNjMmZmMTlhZTciLCAibmV0IjogInRjcCIsICJwYXRoIjogIiIsICJwb3J0IjogIjI3NzczIiwgInBzIjogIlx1ZDgzZFx1ZGQxMiBWTS1UQ1AtTkEgXHVkODNjXHVkZGVjXHVkODNjXHVkZGU3IEdCLTUuMTgwLjMwLjE0NjoyNzc3MyIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 5.180.30.146:27773",
+    "timestamp": "2025-06-21T01:08:51.458120"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHVEODNDXHVEREYwXHVEODNDXHVEREY3IFx1OTdFOVx1NTZGRDMiLCJhZGQiOiIzZTU3ODIuYTZjY2UyYzkuc2hvcCIsInBvcnQiOiI4MCIsImlkIjoiNTlhZWZhMmQtOTY4YS00NzJiLWJiZTAtOTA1YmIzYWU0OTJlIiwiYWlkIjoiMCIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0Ijoia3IwM3MuYTZjY2UyYzkuc2hvcCIsInBhdGgiOiIvIiwidGxzIjoiIn0",
+    "reason": "Invalid Address/Port: 3e5782.a6cce2c9.shop:80",
+    "timestamp": "2025-06-21T01:08:51.458124"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU2NWU1XHU2NzJjXHU5YWQ4XHU5MDFmeDEiLCJhZGQiOiJiZWl5b25nLS41OTY3NDM5NDQudG9wIiwicG9ydCI6IjQ2MTUwIiwiaWQiOiI3ZGJkYmExOS02YTNiLTQzNzAtOTNiMS1mYjVhODlhZGRlMGMiLCJhaWQiOiIwIiwibmV0IjoidGNwIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiIiwicGF0aCI6IiIsInRscyI6IiJ9",
+    "reason": "Invalid Address/Port: beiyong-.596743944.top:46150",
+    "timestamp": "2025-06-21T01:08:51.458129"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoi5YWN6LS5LeaXpeacrDItVmVyLjgiLCJhZGQiOiJ6MHFncC1nMDEuanAwMi1lMy12bTAuZW50cnkuZnIwNTI4LmFydCIsInBvcnQiOiIxMTc3MyIsInR5cGUiOiJub25lIiwiaWQiOiIwMmJmNzY2MC1jMzhmLTMwYjQtYjc0MC0yZjliNGQ3MTc3MDQiLCJhaWQiOiIxIiwibmV0IjoidGNwIiwicGF0aCI6Ii8iLCJob3N0IjoiejBxZ3AtZzAxLmpwMDItZTMtdm0wLmVudHJ5LmZyMDUyOC5hcnQiLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: z0qgp-g01.jp02-e3-vm0.entry.fr0528.art:11773",
+    "timestamp": "2025-06-21T01:08:51.458133"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNDUuMTIuMTM4LjgyIiwgImFpZCI6ICIwIiwgImFscG4iOiAiIiwgImZwIjogIiIsICJob3N0IjogIiIsICJpZCI6ICJjZGU5ZjA3NC1jOTMwLTRhYTMtYTU1OC00NmJiYzlkMGE1YTEiLCAibmV0IjogInRjcCIsICJwYXRoIjogIiIsICJwb3J0IjogIjU0NzU3IiwgInBzIjogIlx1ZDgzZFx1ZGQxMiBWTS1UQ1AtTkEgXHVkODNjXHVkZGU5XHVkODNjXHVkZGVhIERFLTQ1LjEyLjEzOC44Mjo1NDc1NyIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiVE1fQEFaQVJCQVlKQUIxIiwgInRscyI6ICIiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 45.12.138.82:54757",
+    "timestamp": "2025-06-21T01:08:51.458138"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoi8J+HuPCfh6zmlrDliqDlnaE0IHwg4qyH77iPIDEuMk1CL3N8NTIlfFlvdXR1YmV8T3BlbmFpfEdlbWluaSIsImFkZCI6IjUuMTAuMjQ1LjY5IiwicG9ydCI6IjQ0MyIsImlkIjoiNTA5NjA3M2QtNTM1YS00ODg1LTk2MGQtZTc4ZDVjYjBhODNiIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ3cyIsInR5cGUiOiIiLCJ0bHMiOiJ0bHMiLCJzbmkiOiJkY3MuYXRsZW4uZHBkbnMub3JnIiwicGF0aCI6Ii93eWsiLCJob3N0IjoiZGNzLmF0bGVuLmRwZG5zLm9yZyJ9",
+    "reason": "Invalid Address/Port: 5.10.245.69:443",
+    "timestamp": "2025-06-21T01:08:51.458142"
+  },
+  {
+    "link": "trojan://2fadf1dc-f401-4225-ac95-da030118eaef@xijinping.19890604.day:10813?type=tcp&sni=cloudflare.node-ssl.cdn-alibaba.com&allowInsecure=1#4Nika-3577",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458147"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNXRnaHl1OC45OTk4MjAueHl6IiwgInYiOiAiMiIsICJwcyI6ICJcdTdmOGVcdTU2ZmQgQ2xvdWRGbGFyZVx1ODI4Mlx1NzBiOSIsICJwb3J0IjogODAsICJpZCI6ICI5MGYzNTdkZC03OWFjLTQ3YzYtYjBiOC05NThlMmQxOWRlMDciLCAiYWlkIjogIjAiLCAibmV0IjogIndzIiwgInR5cGUiOiAiIiwgImhvc3QiOiAiNXRnaHl1OC45OTk4MjAueHl6IiwgInBhdGgiOiAiLzEwVzZTSmFLMEYwb1ZYZU5VNlMyUlZSUCIsICJ0bHMiOiAiIn0=",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458152"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTMud3loa2FhMC5ncSIsICJhaWQiOiAwLCAiaG9zdCI6ICIxMy53eWhrYWEwLmdxIiwgImlkIjogIjMyYWY0MDA2LTA2OTgtNDkxMC04MDZjLWI4MTMwNzRmMzZlYiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvVEc6QGhrYWEwIiwgInBvcnQiOiAyMDk1LCAicHMiOiAiNE5pa2EtMTg3MjMiLCAic2N5IjogImF1dG8iLCAidGxzIjogIiIsICJ2IjogIjIifQ==",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458156"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@172.99.190.39:3306#4Nika-2342",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458161"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YXNkS2thc2tKS2Zuc2E@162.19.59.162:443#4Nika-1404",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458165"
+  },
+  {
+    "link": "trojan://telegram-id-directvpn@13.40.3.71:22222?security=tls&sni=trj.rollingnext.co.uk#4Nika-6349",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458170"
+  },
+  {
+    "link": "vless://df0680ca-e43c-498d-ed86-8e196eedd012@5.199.173.202:8880?mode=gun&security=none&encryption=none&type=grpc#4Nika-15615",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458174"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YXNkS2thc2tKS2Zuc2E@162.19.18.235:443#4Nika-1394",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458179"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo0YTJyZml4b3BoZGpmZmE4S1ZBNEFh@45.87.175.192:8080#LT%F0%9F%87%B1%F0%9F%87%B9+%7C+45.87.175.192-8080+%7C+92.48ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458198"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f12345678%3a12345678%4047.83.216.34%3a1080#Hong+Kong-Central+and+Western+Hong+Kong%5b%e5%95%86%e4%bc%81IP%5d-159",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458204"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNDUuMTQ3LjIwMS4yMzEiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjNhZmJhN2QyLTQ1MzYtNGEzOC04MTgyLTcyNWZkMTFhZjMzMiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAyMzA5OCwgInBzIjogIjROaWthLTIwNDI3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458208"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f12345678%3a12345678%4047.83.196.99%3a1080#Hong+Kong-Central+and+Western+Hong+Kong%5b%e5%95%86%e4%bc%81IP%5d-224",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458214"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f123%3a123%40159.138.234.149%3a1080#Thailand-Khon+Kaen+Bangkok%5b%e5%95%86%e4%bc%81IP%5d-002",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458218"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpiQW5rWUVQNFlBQi9vcnVnQW5pQ1dScWRkMElaUEVIRVVxRzAvalZwbkRvPQ==@3.72.247.237:8080#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+3.72.247.237-8080+%7C+93.18ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458223"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTUyLjY3LjIxOC4zOCIsICJhaWQiOiAiMCIsICJob3N0IjogIiIsICJpZCI6ICJiNWU5NDgwYS1iN2FhLTQwYTQtZjlhNy01Mjk5YjVlMzYzYjQiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogIjQ0MyIsICJwcyI6ICI0TmlrYS0xOTA3MCIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 152.67.218.38:443",
+    "timestamp": "2025-06-21T01:08:51.458227"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNy53eWhrYWEwLmdxIiwgImFpZCI6IDAsICJob3N0IjogIjcud3loa2FhMC5ncSIsICJpZCI6ICIyZjMzNGZkOS05OGY2LTQ5OTUtYmE0NS1iYjlhOGEyOGVlYTIiLCAibmV0IjogIndzIiwgInBhdGgiOiAiL1RHOkBoa2FhMCIsICJwb3J0IjogMjA5NSwgInBzIjogIjROaWthLTIwNzA5IiwgInNjeSI6ICJhdXRvIiwgInRscyI6ICIiLCAidiI6ICIyIn0=",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458232"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU1ZmI3XHU1NmZkLVx1NGYxOFx1NTMxNjIiLCJhZGQiOiJtLmNubWpjbi5jb20iLCJwb3J0IjoiMTY2NDQiLCJpZCI6ImJhMDAxODYzLWRkZDAtNGJlYi04OTMzLThhNzVhODk4YzdlYyIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6ImJhMGY2Nzg4OTZlYTcwMzA4YTNlYTYxMWJiOTg1ZDdiLm1vYmdzbGIudGJjYWNoZS5jb20iLCJwYXRoIjoiXC8iLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: m.cnmjcn.com:16644",
+    "timestamp": "2025-06-21T01:08:51.458236"
+  },
+  {
+    "link": "vmess://eyJwcyI6IkVTX0BqdXppYmFpcGlhbyDmqZjlrZDlhaznm4pfODQiLCJhZGQiOiIyMTIuMTkyLjEyLjcwIiwiYWlkIjowLCJpZCI6ImYxMTZmYTY4LWZiZDYtNGNlMy1iZGY3LTBhZmRiYTI3NjAxMyIsIm5ldCI6IndzIiwic2N5IjoiYXV0byIsInBvcnQiOjIzNTMyLCJ0bHMiOiIiLCJwYXRoIjoiLyIsImhvc3QiOiIiLCJzbmkiOiIifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458240"
+  },
+  {
+    "link": "trojan://498e608a-7efa-4108-97f3-665c0f84f43b@other.binguo.link:10835?security=tls&headerType=none&fp=chrome&type=tcp&sni=alibaba-node.cn#4Nika-3675",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458245"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206a0RXdlhZWm9UQmNHa0M0@38.110.1.103:8882#US%F0%9F%87%BA%F0%9F%87%B8+%7C+38.110.1.103-8882+%7C+26.7ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458250"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlVTIENOU0VSVkVSUyAwOSIsDQogICJhZGQiOiAiMTIwLjE5OC43MS4yMTYiLA0KICAicG9ydCI6ICI1OTA4MiIsDQogICJpZCI6ICI0MTgwNDhhZi1hMjkzLTRiOTktOWIwYy05OGNhMzU4MGRkMjQiLA0KICAiYWlkIjogIjY0IiwNCiAgInNjeSI6ICJhdXRvIiwNCiAgIm5ldCI6ICJ0Y3AiLA0KICAidHlwZSI6ICJub25lIiwNCiAgImhvc3QiOiAiIiwNCiAgInBhdGgiOiAiIiwNCiAgInRscyI6ICIiLA0KICAic25pIjogIiINCn0=",
+    "reason": "Invalid Address/Port: 120.198.71.216:59082",
+    "timestamp": "2025-06-21T01:08:51.458255"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidjI0LmhlZHVpYW4ubGluayIsICJhaWQiOiAyLCAiaG9zdCI6ICJ2MjQuaGVkdWlhbi5saW5rIiwgImlkIjogImNiYjNmODc3LWQxZmItMzQ0Yy04N2E5LWQxNTNiZmZkNTQ4NCIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvb29vbyIsICJwb3J0IjogIjMwODI0IiwgInBzIjogIjROaWthLTIxNDQzIiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogIm5vbmUiLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: v24.heduian.link:30824",
+    "timestamp": "2025-06-21T01:08:51.458259"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiIxNS4yMzUuODMuMjI3IiwiYWlkIjoiMCIsImFscG4iOiJoMiIsImZwIjoiZmlyZWZveCIsImhvc3QiOiJtYW5rYWRtdS5jb20iLCJpZCI6IjAzZmNjNjE4LWI5M2QtNjc5Ni02YWVkLThhMzhjOTc1ZDU4MSIsIm5ldCI6IndzIiwicGF0aCI6Ii9saW5rdndzIiwicG9ydCI6IjQ0MyIsInBzIjoi2KjYsdin24wg2KfYqti12KfZhCDYr9in2KbZhduMINi52LbZiCDaqdin2YbYp9mEINi02YjbjNivOiBAVjJyYXlfSHViMSIsInNjeSI6ImF1dG8iLCJzbmkiOiJ3cm1lbG13eGxmLmdrdGV2bHJxem53cXFvenkuZmFicGZzNjZnaXptbm9qaGN2cXh3bC5reXRyY2Z6cWxhODdndmd2czZjN2tqbnJ1YnVoLmNjIiwidGxzIjoidGxzIiwidHlwZSI6IiIsInYiOiIyIn0=",
+    "reason": "Invalid Address/Port: 15.235.83.227:443",
+    "timestamp": "2025-06-21T01:08:51.458263"
+  },
+  {
+    "link": "vless://2d7c7aa5-364a-4dbb-937a-f8e4f5f73007@94.131.111.195:443?security=tls&type=ws&sni=de4.connecton.surf&encryption=none&type=ws&path=%2Fvless&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E7%BE%8E%E5%9B%BDUS-160%0D",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458268"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNTEuMTU5LjIuMTUyIiwgImFpZCI6IDAsICJob3N0IjogIiIsICJpZCI6ICJhMmVjY2U0My1jNmZiLTQ5NzgtOGIxZC04MDE4ZGRkOWZhZjQiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogODg4MCwgInBzIjogIjROaWthLTIwNTg1IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458272"
+  },
+  {
+    "link": "trojan://origin@188.40.251.19:443?security=tls#4Nika-6311",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458276"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrODdVSkc3@23.157.88.61:2376#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+23.157.88.61-2376+%7C+91.9ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458281"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU1MmEwXHU2MmZmXHU1OTI3LVx1NGYxOFx1NTMxNiIsImFkZCI6Inllcy5tb2pjbi5jb20iLCJwb3J0IjoiMTY2NDEiLCJpZCI6ImRhOTEyMTRlLWIwMjItNGY2MS1hNzI0LTAxYzUzODE3MGU2MiIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6ImFlOWMwZGU0NzRjNjRjMDNkYjllZGJmM2ZjNGQ4YzY4Lm1vYmdzbGIudGJjYWNoZS5jb20iLCJwYXRoIjoiXC8iLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: yes.mojcn.com:16641",
+    "timestamp": "2025-06-21T01:08:51.458285"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTU0LjkwLjM0LjIyNSIsICJhaWQiOiAiMCIsICJob3N0IjogIiIsICJpZCI6ICJmNWZiOGJhYi1kY2QyLTRmNjMtYmNkMy00MDVhYTRhZDUzMGYiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogIjIwODc1IiwgInBzIjogIjROaWthLTE4OTU5IiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8iLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: 154.90.34.225:20875",
+    "timestamp": "2025-06-21T01:08:51.458289"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowOTgzM2E2Zi00ZDQ2LTQyNmUtODdmZS03NzkzYTU0ODlmODQ=@j-p02.loveroise.com:54098#%E6%9C%AA%E7%9F%A5_juzi8186_29",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.458295"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTp1ZzRGdTc5U0VSRWRGR2x0MnNVeVQ0@95.164.9.144:2927#AT%F0%9F%87%A6%F0%9F%87%B9+%7C+95.164.9.144-2927+%7C+91.85ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458300"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiZGF0YS1oay12Mi5zaHdqZmt3LmNuIiwgImFpZCI6IDEsICJob3N0IjogImRhdGEtaGstdjIuc2h3amZrdy5jbiIsICJpZCI6ICJiMTQ3OGUyNC00OTE2LTNhYmUtOGYxNy0xNTkzMTAxMmVjYmUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiL2hscy9jY3R2NXBoZC5tM3U4IiwgInBvcnQiOiA1MDIwNiwgInBzIjogIjROaWthLTIxMDAwIiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.458304"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206MzhiZjIxMTctNjVmYS00MjY2LThhMmMtY2Q5ODlmMDQxYmE3@6ushrhml7ttpliy3.lovebaipiao.net:51751#%F0%9F%87%BA%F0%9F%87%B8%E7%BE%8E%E5%9B%BDipv6-5G-ss",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.458309"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZzVNZUQ2RnQzQ1dsSklk@167.88.62.68:5004#4Nika-2807",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458313"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M3@23.166.88.5:3389#CH%F0%9F%87%A8%F0%9F%87%AD+%7C+23.166.88.5-3389+%7C+104.54ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458318"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToxUld3WGh3ZkFCNWdBRW96VTRHMlBn@45.87.175.192:8080#LT%F0%9F%87%B1%F0%9F%87%B9+%7C+45.87.175.192-8080+%7C+92.27ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458322"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHVkODNjXHVkZGZhXHVkODNjXHVkZGY4XHU3ZjhlXHU1NmZkXHU1MTQ5XHU5MDFmNCIsImFkZCI6ImNzZ28uY29tIiwicG9ydCI6IjIwODYiLCJpZCI6IjM4YmYyMTE3LTY1ZmEtNDI2Ni04YTJjLWNkOTg5ZjA0MWJhNyIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6InZtdXMydHJuc2hmaWVrb20uampqaWVkaWFuNmo0dGJsYi5jb20iLCJwYXRoIjoiXC8iLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: csgo.com:2086",
+    "timestamp": "2025-06-21T01:08:51.458326"
+  },
+  {
+    "link": "vless://89b3cbba-e6ac-485a-9481-976a0415eab9@8.219.144.168:443?encryption=none&security=tls&type=ws&sni=av.ylks.xyz&host=av.ylks.xyz&path=%2f#TG%3A%40JUZIBAIPIAO%2B%2B%E6%96%B0%E5%8A%A0%E5%9D%A1_11",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458332"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YXNkS2thc2tKS2Zuc2E=@162.19.59.161:443#FR%F0%9F%87%AB%F0%9F%87%B7+%7C+162.19.59.161-443+%7C+90.17ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458336"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTk4LjIuMjA0LjQwIiwgImFpZCI6ICI2NCIsICJhbHBuIjogIiIsICJob3N0IjogInd3dy43NTU3NTcyOS54eXoiLCAiaWQiOiAiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9wYXRoLzE3MDM3NTU2MjU1NTgiLCAicG9ydCI6ICIzMDAwMCIsICJwcyI6ICI0TmlrYS0xOTgyMiIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 198.2.204.40:30000",
+    "timestamp": "2025-06-21T01:08:51.458341"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU1MzcwXHU1ZWE2LVx1NmQ3N1x1NWY5N1x1NjJjOVx1NWRmNDItQ0ROIHwgMXgiLCJhZGQiOiIxNzUwMDM2MzQxLnRlbmNlbnRhcHAuY24iLCJwb3J0IjoiMjA5NSIsImlkIjoiZmZhZDJlZjItN2I1NS00ZjcxLWJjODEtZGU1ZTBmNzY5YWRjIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6IjE3NTAwMzY3OTEuc3BlZWQuaW5sb3BrYi5jY2NwLnVydXUuY24iLCJwYXRoIjoiXC8iLCJ0bHMiOiIiLCJmcCI6ImNocm9tZSJ9",
+    "reason": "Invalid Address/Port: 1750036341.tencentapp.cn:2095",
+    "timestamp": "2025-06-21T01:08:51.458345"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f12345678%3a12345678%4047.83.216.89%3a1080#Hong+Kong-Central+and+Western+Hong+Kong%5b%e5%95%86%e4%bc%81IP%5d-110",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458350"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f12345678%3a12345678%408.219.135.106%3a1080#Singapore-Singapore%5b%e5%95%86%e4%bc%81IP%5d-232",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458354"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidjgxLmVtb3Zwbi5idXp6IiwgImFpZCI6IDAsICJob3N0IjogInY4MS5lbW92cG4uYnV6eiIsICJpZCI6ICJiNmZiMzgxNi1hZjAzLTRiMjEtYjFmYy1jYjJiNzBmYTI3MDUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogNjIzNiwgInBzIjogIjROaWthLTIxNDg5IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458359"
+  },
+  {
+    "link": "trojan://8c3ab188-6c59-40fa-8962-d153df2d1587@127.0.0.1:25024?allowInsecure=1&peer=m.ctrip.com&sni=m.ctrip.com&type=tcp#%E5%AE%98%E7%BD%91%EF%BC%9Ahttps%3A%2F%2Fyuntong888.one",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458363"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiaGszLmdycGMuc3RyZWFtIiwgImFpZCI6IDAsICJob3N0IjogImhrMy5ncnBjLnN0cmVhbSIsICJpZCI6ICI2MDMxYjVjMy1kOGJhLTU3NTYtYjcwOC1mNjEwODRhMmI2NzgiLCAibmV0IjogIndzIiwgInBhdGgiOiAiL2V2ZW50IiwgInBvcnQiOiA4MzAwLCAicHMiOiAiNE5pa2EtMjExMTciLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458367"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206Rm9PaUdsa0FBOXlQRUdQ@172.99.190.149:7306#4Nika-1692",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458372"
+  },
+  {
+    "link": "vmess://eyJwcyI6IlVTX0BqdXppYmFpcGlhbyDmqZjlrZDlhaznm4pfMTEiLCJhZGQiOiJzaHN1cy4yNTY3MDkzOTQueHl6IiwiYWlkIjowLCJpZCI6IjdhOGVjMDQ3LTY2MmItNGE5Zi1iODlmLWZkN2Q5N2VjYTkwZiIsIm5ldCI6IndzIiwic2N5IjoiYXV0byIsInBvcnQiOjQ0MywidGxzIjoidGxzIiwicGF0aCI6Ii9SVnI4QUxGQnNnVGZCQyIsImhvc3QiOiJzaHN1cy4yNTY3MDkzOTQueHl6Iiwic25pIjoic2hzdXMuMjU2NzA5Mzk0Lnh5eiJ9",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.458376"
+  },
+  {
+    "link": "trojan://26af88d0-fc72-43b3-8108-521a7b12aa45@sg1.421421.xyz:20230?type=tcp&sni=421421.xyz&allowInsecure=1#4Nika-3519",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458381"
+  },
+  {
+    "link": "trojan://4bacb8f1a089763b@5.44.249.52:3306?security=tls&allowInsecure=1&type=tcp#4Nika-3718",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458385"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidjc4LmVtb3Zwbi5idXp6IiwgImFpZCI6IDAsICJob3N0IjogInY3OC5lbW92cG4uYnV6eiIsICJpZCI6ICJiNmZiMzgxNi1hZjAzLTRiMjEtYjFmYy1jYjJiNzBmYTI3MDUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogNTIyNSwgInBzIjogIjROaWthLTIxNDgyIiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458389"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU4ZmM3XHU2ZWU0XHU2Mzg5MThcdTY3NjFcdTdlYmZcdThkZWYiLCJhZGQiOiJoay5iZXRoZWJlc3QuZXUub3JnIiwicG9ydCI6IjIwNTIiLCJpZCI6IjMyZDM3OTVjLTdlMzgtNDI1YS04YThjLTlkMTk1ZDFjYjM1MSIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6InVzNy4xMjM0MTcueHl6IiwicGF0aCI6IlwvIiwidGxzIjoiIn0=",
+    "reason": "Invalid Address/Port: hk.bethebest.eu.org:2052",
+    "timestamp": "2025-06-21T01:08:51.458394"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoi8J+HuvCfh7gg5LiA5YWD5py65Zy6OnNzcnN1Yi5kZSDnvo7lm70gMTIiLCJhZGQiOiJoYWEuZGFzaHVhaS5jeW91IiwicG9ydCI6NDUwNTIsImlkIjoiMDY2YjMyY2MtZWUzZC00NzE5LWIxZjAtMmYyMDIyOTg3MzdlIiwidHlwZSI6IiIsImFpZCI6MCwibmV0IjoidGNwIiwidGxzIjoiIn0=",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.458398"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UENubkg2U1FTbmZvUzI3@38.64.138.145:8091#4Nika-1977",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458402"
+  },
+  {
+    "link": "vless://2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5@132.145.91.171:8443?encryption=none&security=tls&sni=cfed.tgzdyz2.top&fp=random&type=ws&host=cfed.tgzdyz2.top&path=TG%40ZDYZ2#4Nika-7853",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458407"
+  },
+  {
+    "link": "vless://bdbfd26c-725b-4922-b970-e7dfb46afb7b@220.128.110.108:995?encryption=none&security=tls&sni=edge.ekt.me&type=ws&host=edge.ekt.me&path=%2fsocks5%3a%2f%2f12345678%3a12345678%4047.238.247.37%3a1080#Hong+Kong-Central+and+Western+Hong+Kong%5b%e5%95%86%e4%bc%81IP%5d-533",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458411"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@217.197.161.138:810#4Nika-506",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458416"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6eWlqaWFuMDUwMw==@43.203.219.33:443#11%7Ctg%E9%A2%91%E9%81%93%3A%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458420"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206Rm9PaUdsa0FBOXlQRUdQ@145.239.1.100:7307#4Nika-1665",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458425"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206Rm9PaUdsa0FBOXlQRUdQ@51.77.53.200:7307#PL%F0%9F%87%B5%F0%9F%87%B1+%7C+51.77.53.200-7307+%7C+107.24ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458429"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.222:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12301",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458434"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6UzdLd1V1N3lCeTU4UzNHYQ@80.92.204.106:9042#4Nika-1179",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458438"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8=@51.178.87.37:804#FR%F0%9F%87%AB%F0%9F%87%B7+%7C+51.178.87.37-804+%7C+92.72ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458442"
+  },
+  {
+    "link": "trojan://your_password@16.62.65.57:443?security=tls&sni=aws-ch-zurich-1.f1rocketnode.com&type=tcp#4Nika-6578",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458448"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6SFNadXlKUWNXZThkeE5kRg@103.172.116.6:9043#4Nika-1147",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458452"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU3ZjhlXHU1NmZkXHU4OTdmXHU5MGU4XHU1NzIzXHU0ZjU1XHU1ODVlNC1DRE4gfCAxeCIsImFkZCI6IjE3NTAwMzYzNDEudGVuY2VudGFwcC5jbiIsInBvcnQiOiIyMDUyIiwiaWQiOiJmZmFkMmVmMi03YjU1LTRmNzEtYmM4MS1kZTVlMGY3NjlhZGMiLCJhaWQiOiIwIiwic2N5IjoiYXV0byIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiMTc1MDAzNjc5MS5zcGVlZC5zamN1dXl0ZC5jY2NwLnVydXUuY24iLCJwYXRoIjoiXC8iLCJ0bHMiOiIiLCJmcCI6ImNocm9tZSJ9",
+    "reason": "Invalid Address/Port: 1750036341.tencentapp.cn:2052",
+    "timestamp": "2025-06-21T01:08:51.458456"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTcyLjY3LjIyOS4xNiIsICJhaWQiOiAiMCIsICJob3N0IjogImZyNC52Mi10ZWguZnVuIiwgImlkIjogIjYxN2M5YmM0LTQxMTYtNDFjNi05OWUwLWFjZTQ5YTM4ZmNkYiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvSm52OFZpWk9VVmdpampPaDBwNXVHakhuWElpWSIsICJwb3J0IjogIjIwOTUiLCAicHMiOiAiNE5pa2EtMTk1NjMiLCAic2N5IjogImF1dG8iLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 172.67.229.16:2095",
+    "timestamp": "2025-06-21T01:08:51.458461"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTk4LjQxLjIxMi4xMDAiLCAiYWlkIjogMCwgImhvc3QiOiAibGczMC5jZmNkbjMueHl6IiwgImlkIjogIjkxNjQ2ZjlhLWI0ZTktNGFjYS1iZmUzLTg4OTJiM2U1OGZlNyIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvcmF5IiwgInBvcnQiOiA0NDMsICJwcyI6ICI0TmlrYS0xOTg2MSIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAidGxzIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458465"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrODdVSkc3@167.88.61.14:2376#4Nika-2681",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458469"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTptenlZcmlQWVluQ1dEeG95@52.237.155.68:443#US%F0%9F%87%BA%F0%9F%87%B8+%7C+52.237.155.68-443+%7C+23.49ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458474"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YXNkS2thc2tKS2Zuc2E@212.102.38.88:443#4Nika-1419",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458478"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU@13.115.245.166:443#4Nika-1263",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458483"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ekROVmVkUkZQUWV4Rzl2@38.86.135.27:6379#4Nika-3144",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458487"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UmV4bkJnVTdFVjVBRHhH@67.220.95.125:7001#US%F0%9F%87%BA%F0%9F%87%B8+%7C+67.220.95.125-7001+%7C+5.67ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458491"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU=@46.137.227.253:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A115%20%7C%20%E2%AC%87%EF%B8%8F%201.8MB%2Fs%20%7C39%25%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458496"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyNjQ3MjczMTdlZjY@121.0.97.29:30203?plugin=v2ray-plugin%3Bmode%3Dwebsocket%3Bpath%3D%2Fylikhqxcjfeb%3Bhost%3Dkr9v1.3ci.xyz%3Btls#%E6%97%A5%E6%9C%AC2%7C%40ripaojiedian",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458501"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@91.219.237.102:990#HU%F0%9F%87%AD%F0%9F%87%BA+%7C+91.219.237.102-990+%7C+113.93ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458506"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206cEtFVzhKUEJ5VFZUTHRN@38.91.107.16:443#4Nika-3017",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458510"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UENubkg2U1FTbmZvUzI3@38.107.226.146:8091#4Nika-1957",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458514"
+  },
+  {
+    "link": "trojan://xSYy8KOpEyOjgaNFCeC3a72DS6wBAcz90pDZRRSXnxquIFZlT5433ClYD38aeA@45.64.22.55:443?security=tls&sni=yokoha.freetrade.link#4Nika-6547",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458519"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiOC4yMTguODYuMjUwIiwgImFpZCI6IDAsICJob3N0IjogIiIsICJpZCI6ICI3MjM1NmJmNy00ODdiLTQyYzAtYTdmMi04NDUxMzZiMzM1MDMiLCAibmV0IjogImh0dHAiLCAicGF0aCI6ICIiLCAicG9ydCI6IDIyMzYyLCAicHMiOiAiNE5pa2EtMjA3NDkiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogZmFsc2UsICJzbmkiOiAiOC4yMTguODYuMjUwIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458523"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTcyLjY3LjIwNi4xMjQiLCAiYWlkIjogIjAiLCAiaG9zdCI6ICJybGhyd3RxdXNkLnNpdGUiLCAiaWQiOiAiNGZhMzVlYTQtNjY4ZS00ZDdiLTliYmMtYjgzNjgxMDYwNjE3IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9rd2htdndzIiwgInBvcnQiOiAiNDQzIiwgInBzIjogIjROaWthLTE5NTI1IiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICJybGhyd3RxdXNkLnNpdGUiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8iLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: 172.67.206.124:443",
+    "timestamp": "2025-06-21T01:08:51.458527"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206OTA0ZDRjODEtYWViZi00ODgyLWJiMmEtYjRkY2I4Y2I1ZDA1@bit-hk.03ezhg0qsa.download:12055#%F0%9F%87%AD%F0%9F%87%B0%20%E9%A6%99%E6%B8%AF%2005%20%E8%A7%A3%E9%94%81%E7%BA%BF%E8%B7%AF",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458531"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTplYjc5YzRmYS1iYWY5LTQ1NmMtOTE2My02N2Q5ZDNjZjZhYjU@01.liantongzf.one:47519#%F0%9F%87%A7%F0%9F%87%BE%20%E4%BF%84%E7%BD%97%E6%96%AF",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458536"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAieGMxMTUtMS5tZWl6aWJhNTU2Ni5jb20iLCAiYWlkIjogMCwgImhvc3QiOiAieGMxMTUtMS5tZWl6aWJhNTU2Ni5jb20iLCAiaWQiOiAiZjQwYThkNjUtYTlhYy00MmNlLWViY2MtOWU2NDQ3YTk4NjZkIiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9mNDBhOGQ2NSIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMjE1MjEiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogZmFsc2UsICJzbmkiOiAieGMxMTUtMS5tZWl6aWJhNTU2Ni5jb20iLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458540"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6RVhOM1MzZVFwakU3RUp1OA@103.172.116.79:9027#4Nika-1123",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458544"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowODdhODc0ZS05ZGRhLTQ1ZTItOTEzYS1iZjQ1MDMyZmRmYTk=@freea.glyphara.com:36245#14%7C%F0%9F%87%B9%F0%9F%87%BC%20%E5%8F%B0%E6%B9%BE%20103%20%7C%201x%20TW",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458549"
+  },
+  {
+    "link": "vless://459b4a80-bd61-4ecd-a26b-e9c1809d9e45@shenzhou05.mysynology.net:17278?security=reality&type=tcp&sni=www.yahoo.com&fp=chrome&flow=xtls-rprx-vision&pbk=qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%AC13%20%7C%20%E2%AC%87%EF%B8%8F%208.5MB%2Fs%20%7C55%25%7CDisney%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458553"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHVkODNjXHVkZGZhXHVkODNjXHVkZGY4XHU3ZjhlXHU1NmZkXHU1MTQ5XHU5MDFmMSIsImFkZCI6IjE0MS4xOTMuMjEzLjEyMyIsInBvcnQiOiIyMDg2IiwiaWQiOiIzOGJmMjExNy02NWZhLTQyNjYtOGEyYy1jZDk4OWYwNDFiYTciLCJhaWQiOiIwIiwibmV0Ijoid3MiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiJ2bXVzMnRybnNoZmlla29tLmpqamllZGlhbjZqNHRibGIuY29tIiwicGF0aCI6IlwvIiwidGxzIjoiIn0=",
+    "reason": "Invalid Address/Port: 141.193.213.123:2086",
+    "timestamp": "2025-06-21T01:08:51.458558"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5MGEzMDkyMC1kODU3LTQ1NWItOTYzOS1hMGQ2ZmE5OWY1YTM@jg647hf446ghvw.fcbjw.com:57261#%F0%9F%87%B9%F0%9F%87%BC%20TW-2",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458562"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206Rm9PaUdsa0FBOXlQRUdQ@167.88.61.50:7307#4Nika-1672",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458567"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiSEsuXHU5OTk5XHU2ZTJmLkUiLCJhZGQiOiJ4Y3RyYW5zZmVyMXN0LmNva2VjbG91ZC50b3AiLCJwb3J0IjoiMTI2NzIiLCJpZCI6ImRlNmZhZWM2LTRiY2UtNDUzNy05ZjUzLTBiMzFkYmVlZjU1OCIsImFpZCI6IjAiLCJuZXQiOiJ0Y3AiLCJ0eXBlIjoibm9uZSIsImhvc3QiOiIiLCJwYXRoIjoiIiwidGxzIjoiIn0=",
+    "reason": "Invalid Address/Port: xctransfer1st.cokecloud.top:12672",
+    "timestamp": "2025-06-21T01:08:51.458571"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTA0LjIxLjIyNS4yMjEiLCAiYWlkIjogIjAiLCAiaG9zdCI6ICJhLnByYXB0NS5pciIsICJpZCI6ICI3MDIyOTgyZi1kYTRjLTQ4YzktYzY2MC1iMjMxNWFiZGNmN2UiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogIjgwIiwgInBzIjogIjROaWthLTE4MjE1IiwgInRscyI6ICIiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 104.21.225.221:80",
+    "timestamp": "2025-06-21T01:08:51.458576"
+  },
+  {
+    "link": "trojan://6aaaf4f4-be44-11ed-a8bf-f23c91cfbbc9@83157169-sxr340-syuosn-1mffg.cu.plebai.net:15229?allowInsecure=1&sni=83157169-sxr340-syuosn-1mffg.cu.plebai.net#%f0%9f%87%ba%f0%9f%87%b8+%e4%b8%80%e5%85%83%e6%9c%ba%e5%9c%ba%3assrsub.de+%e7%be%8e%e5%9b%bd+02",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458580"
+  },
+  {
+    "link": "vmess://eyJwcyI6IlJVX0BqdXppYmFpcGlhbyDmqZjlrZDlhaznm4pfMzAiLCJhZGQiOiIxOTUuNTguNDkuNDIiLCJhaWQiOjAsImlkIjoiMGE4YmRmZTAtYzY0Yy00MWZmLTg0NWItMmQxNDlmYzkzZjNhIiwibmV0Ijoid3MiLCJzY3kiOiJhdXRvIiwicG9ydCI6MjM1MzIsInRscyI6IiIsInBhdGgiOiIvIiwiaG9zdCI6IjE5NS41OC40OS40MiIsInNuaSI6IjE5NS41OC40OS40MiJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458585"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206VmRhSXRLWW1GZg==@ak1847.www.outline.network.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou:24576#US%F0%9F%87%BA%F0%9F%87%B8+%7C+ak1847.www.outline.network.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou-24576+%7C+168.57ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458590"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTM4LjIuOTAuMTQ3IiwgImFpZCI6IDAsICJob3N0IjogIiIsICJpZCI6ICI1ZWVhNTBkOC1hODE2LTQ4YzctYmMzNS0wZmRlMzllMjc3YjUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogMjMwMDYsICJwcyI6ICI0TmlrYS0xODY5MiIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458594"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YXNkS2thc2tKS2Zuc2E@84.17.34.108:80#4Nika-1438",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458598"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTA0LjIxLjIyOS40NiIsICJhaWQiOiAiMCIsICJob3N0IjogImEucHJhcHQ1LmlyIiwgImlkIjogIjcwMjI5ODJmLWRhNGMtNDhjOS1jNjYwLWIyMzE1YWJkY2Y3ZSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvP2VkPTIwNDgiLCAicG9ydCI6ICI4MCIsICJwcyI6ICI0TmlrYS0xODIzOCIsICJ0bHMiOiAiIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Invalid Address/Port: 104.21.229.46:80",
+    "timestamp": "2025-06-21T01:08:51.458602"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTgwLjIxNS4xMzAuMTIzIiwgImFpZCI6IDAsICJob3N0IjogIjE4MC4yMTUuMTMwLjEyMyIsICJpZCI6ICJjNTQxNGZlMC0wMThiLTQ3M2EtYWEzYi1mMjEwZjJiYTQyZjUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogNDY0NTIsICJwcyI6ICI0TmlrYS0xOTc2OCIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458606"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WEtGS2wyclVMaklwNzQ@167.88.61.60:8009#4Nika-2194",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458610"
+  },
+  {
+    "link": "vless://ddaa7727-6d96-43f3-9075-2edb20fdeea6@23.88.61.84:443?security=reality&sni=yahoo.com&type=xhttp&path=/&fp=chrome&pbk=QtjCio8gmuOZ1jCohKKPEibuk4evo76ZM4F45SbU8nA&sid=0b#4Nika-15557",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458615"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UENubkg2U1FTbmZvUzI3@38.86.135.239:8090#%F0%9F%87%BA%F0%9F%87%B8US-38.86.135.239-6387",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458619"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ekROVmVkUkZQUWV4Rzl2@38.75.136.21:6379#4Nika-3143",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458623"
+  },
+  {
+    "link": "vless://cfed0111-aba5-4a0e-ae81-406bda85d6ee@85.9.97.250:3478?security=tls&sni=dibadownload.store&alpn=http/1.1,h2,h3&allowInsecure=1&fp=chrome&type=grpc&encryption=none#4Nika-14972",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458628"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpNc0lCRnc2WFBtZmNwTFpYaFVOcEpkcjFnN0ZPYlpDVDVBZ0FFekYzT0VHZjFUNWQ3@95.128.71.141:41348#BY%F0%9F%87%A7%F0%9F%87%BE+%7C+95.128.71.141-41348+%7C+297.54ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458632"
+  },
+  {
+    "link": "trojan://85f133142f04dbf6547da33895cfabb3@113.99.140.184:39001?allowInsecure=1&sni=www.yrtok.com#CN%7c+%e3%80%90%e7%94%b5%e6%8a%a5%ef%bc%9a%40ccbaohe%e3%80%91%e5%ae%9a%e6%97%b6%e6%9b%b4%e6%96%b0%e8%8a%82%e7%82%b9%e8%ae%a2%e9%98%85",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458637"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowODdhODc0ZS05ZGRhLTQ1ZTItOTEzYS1iZjQ1MDMyZmRmYTk=@freea.glyphara.com:36671#14%7C%F0%9F%87%A7%F0%9F%87%B7%20%E5%B7%B4%E8%A5%BF%20101%20%7C%201x%20BR",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458641"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2YWM3N2E1Ny1jNzg3LTRmNjctYTQ5NS0xZDBhMjcxOWVmMWU@freea.glyphara.com:36511#4Nika-88",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458645"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAianAtMDEubGVnZXRoLnRrIiwgImFpZCI6ICIwIiwgImhvc3QiOiAiIiwgImlkIjogImVmNTFjZGIzLTIxNzAtNDc1Ny04MmQ3LTBjMmJmZDljOTdkYiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAiODAiLCAicHMiOiAiNE5pa2EtMjExNDkiLCAic2N5IjogImF1dG8iLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Invalid Address/Port: jp-01.legeth.tk:80",
+    "timestamp": "2025-06-21T01:08:51.458650"
+  },
+  {
+    "link": "vless://71ed6628-5870-4d19-8a52-f2a3ba3d4898@138.2.36.157:8443?security=tls&type=ws&sni=vbbb.ylks2024.us.kg&host=vbbb.ylks2024.us.kg&encryption=none&type=ws&path=%2Fvbba.ylks2024.us.kg&headerType=none#%E7%BE%8E%E5%9B%BD_juzi8186_101",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458655"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU2ZmIzXHU1OTI3XHU1MjI5XHU0ZTlhXHU1OGE4XHU1YzE0XHU2NzJjMi1DRE4gfCAxWCIsImFkZCI6IjE3NTAwMzYzNDEudGVuY2VudGFwcC5jbiIsInBvcnQiOiIyMDUyIiwiaWQiOiJmZmFkMmVmMi03YjU1LTRmNzEtYmM4MS1kZTVlMGY3NjlhZGMiLCJhaWQiOiIwIiwic2N5IjoiYXV0byIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiMTc1MDAzNjc5MS5zcGVlZC5tb2VyYmVuYi5jY2NwLnVydXUuY24iLCJwYXRoIjoiXC8iLCJ0bHMiOiIiLCJmcCI6ImNocm9tZSJ9",
+    "reason": "Invalid Address/Port: 1750036341.tencentapp.cn:2052",
+    "timestamp": "2025-06-21T01:08:51.458659"
+  },
+  {
+    "link": "trojan://d516b33d-86ee-49e8-9af7-4eb7405e5cfe@cshgz1.fuckcdn.top:10506?allowInsecure=1&type=tcp#%F0%9F%87%A8%F0%9F%87%B3%20%E5%80%8D%E7%8E%87%E6%98%AF%E6%B5%81%E9%87%8F%E6%B6%88%E8%80%97%E5%BF%AB%E6%85%A2%E4%B8%8D%E6%98%AF%E9%80%9F%E5%BA%A6%EF%BC%81%EF%BC%81%EF%BC%81",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458663"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogImh0dHBzOi8vdC5tZS94eWZxenkiLA0KICAiYWRkIjogIjM0LjE1MC45MS4xMzUiLA0KICAicG9ydCI6ICIxODEzMSIsDQogICJpZCI6ICJiM2RiODQzNC1lN2M5LTQ4MzgtYWViNS02OTdhNTMzODE5NGMiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogIi9iM2RiODQzNCIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICIiLA0KICAiYWxwbiI6ICIiLA0KICAiZnAiOiAiIg0KfQ==",
+    "reason": "Invalid Address/Port: 34.150.91.135:18131",
+    "timestamp": "2025-06-21T01:08:51.458668"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1jZmI6UWF6RWRjVGdiMTU5QCQq@14.29.124.168:25219#4Nika-964",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458672"
+  },
+  {
+    "link": "vmess://eyJwcyI6Iue+juWbvSAwMuOAkHZpcDMgfCBORVfjgJEiLCJhZGQiOiJmMTAwMjEuZmx5Zmx5bGZseWZseXNicy5zYnMiLCJhaWQiOjAsImlkIjoiOTQ0ZjJhODQtNTgxMi00NjBlLTg4ZjctN2UzZmY0NzY4MzRlIiwibmV0IjoiZ3JwYyIsInNjeSI6ImF1dG8iLCJwb3J0Ijo2MTM3OSwidGxzIjoidGxzIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458676"
+  },
+  {
+    "link": "trojan://944f2a84-5812-460e-88f7-7e3ff476834e@f10021.flyflylflyflysbs.sbs:14900?type=tcp&sni=my01.ckcloud.info&allowInsecure=1#%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A01%E3%80%90vip3%E3%80%91",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458681"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNDcuODkuMjExLjE3NSIsICJhaWQiOiAwLCAiaG9zdCI6ICIiLCAiaWQiOiAiNmNjNzIyZDAtZjZiNS00MTc5LWJlMTMtYzE1Y2I5ZTc1ZGQ5IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi84NEJ4RDJzaEZZRnBzaVJHWEFDVVBxV3QiLCAicG9ydCI6IDgwLCAicHMiOiAiNE5pa2EtMjA1MzgiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458685"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@190.120.230.9:989#4Nika-1518",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458689"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206a0RXdlhZWm9UQmNHa0M0@38.68.135.19:8881#4Nika-2931",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458694"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@217.138.193.6:809#4Nika-487",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458698"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@81.90.189.18:807#4Nika-604",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458703"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlx1NmE1OFx1NWI1MFx1NTE2Y1x1NzZjYVx1MDAyZFx1NjcyYVx1NzdlNVx1MDAyZDI5IiwNCiAgImFkZCI6ICIxMjAuMTk4LjcxLjIxNiIsDQogICJwb3J0IjogIjM1NjQxIiwNCiAgImlkIjogIjQxODA0OGFmLWEyOTMtNGI5OS05YjBjLTk4Y2EzNTgwZGQyNCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogIiIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICIiLA0KICAiYWxwbiI6ICIiLA0KICAiZnAiOiAiIg0KfQ==",
+    "reason": "Invalid Address/Port: 120.198.71.216:35641",
+    "timestamp": "2025-06-21T01:08:51.458707"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206MzkzOGJmYWU5OTc5NzQ4NjAyNTE@console.02.aliyun.aq.kunlunaqs.com:45938/?plugin=simple-obfs%3Bobfs%3Dhttp%3Bobfs-host%3D215996dd9f1c3db1e54b.microsoft.com#%F0%9F%87%BA%F0%9F%87%B8%20USA%20069",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458712"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU@18.183.166.124:443#4Nika-1292",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458716"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@81.90.189.18:805#4Nika-602",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458720"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5MTg3Nzc1ZC1lYzYxLTQwNTAtYmMzNC1jOTA1YjY4OGUxYmM@gz.pddwdf.store:11515#%f0%9f%87%ba%f0%9f%87%b8+%e7%be%8e%e5%9c%8b+4+%e5%8e%9f%e7%94%9f",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458724"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M3@23.157.40.95:3306#US%F0%9F%87%BA%F0%9F%87%B8+%7C+23.157.40.95-3306+%7C+73.37ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458729"
+  },
+  {
+    "link": "trojan://498e608a-7efa-4108-97f3-665c0f84f43b@us.binguo.link:10819?security=tls&headerType=none&fp=chrome&type=tcp&sni=alibaba-node.cn#4Nika-3699",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458733"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMzguMTEuOS4xNzMiLCAiYWlkIjogNjQsICJob3N0IjogInd3dy40MjA2NzQ1OS54eXoiLCAiaWQiOiAiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDM3MDA4LCAicHMiOiAiNE5pa2EtMjAyNzkiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458738"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogImh0dHBzOi8vdC5tZS94eWZxenkiLA0KICAiYWRkIjogIjExMS4yNi4xMDkuNzkiLA0KICAicG9ydCI6ICIzMDg0MCIsDQogICJpZCI6ICJjYmIzZjg3Ny1kMWZiLTM0NGMtODdhOS1kMTUzYmZmZDU0ODQiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogIiIsDQogICJwYXRoIjogIi9pbmRleCIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICIiLA0KICAiYWxwbiI6ICIiLA0KICAiZnAiOiAiIg0KfQ==",
+    "reason": "Invalid Address/Port: 111.26.109.79:30840",
+    "timestamp": "2025-06-21T01:08:51.458742"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@38.91.107.225:805#4Nika-554",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458746"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvMzh5dXZ6U2UzbTVhRE5wSHRVUEgxekd3YkdFWFhNRHNHd1ZhdWIyU1lFbUhVYTJXR1pVamllelgzVnZ2YTlDQ3pwanhZdHVKTGdLc1Nuc3lLQmY5Y2lQVmJhM3k0bzM=@95.164.249.61:54075#UA%F0%9F%87%BA%F0%9F%87%A6+%7C+95.164.249.61-54075+%7C+117.88ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458751"
+  },
+  {
+    "link": "trojan://0f098bb2-9fad-3cc3-8acf-2a3268c1eb27@hn.xiaohouzi.club:14185?security=tls&sni=hn.xiaohouzi.club#4Nika-3361",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458755"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphMDFiNWUyNy1lY2U1LTQ2NzUtODY2Zi0zNmIyM2E2NWQyYTg@cokecloudjp.cokecloud.top:43291#JP.%E6%97%A5%E6%9C%AC.B",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458760"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTplMDY1YmJmMC03ZTdmLTQ2N2EtOWFlNS0wNDM1ZWU3MDlkYmI@cokecloudjp.cokecloud.top:20437#JP.%E6%97%A5%E6%9C%AC.A",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458764"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNS4xODAuMzAuMTQ2IiwgImFpZCI6ICIwIiwgImFscG4iOiAiIiwgImZwIjogIiIsICJob3N0IjogIiIsICJpZCI6ICJiMjM0NzIzOS1kZDE1LTQwYjMtYjY4My01MGNjMmZmMTlhZTciLCAibmV0IjogInRjcCIsICJwYXRoIjogIiIsICJwb3J0IjogIjI3NzczIiwgInBzIjogIjROaWthLTIwNTcwIiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogIm5vbmUiLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: 5.180.30.146:27773",
+    "timestamp": "2025-06-21T01:08:51.458769"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMS4yMzguMTAyLjIxNCIsICJhaWQiOiAwLCAiaG9zdCI6ICIiLCAiaWQiOiAiZmZmZmZmZmYtZmZmZi1mZmZmLWZmZmYtZmZmZmZmZmZmZmZmIiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi92bWVzcyIsICJwb3J0IjogMzAwMDEsICJwcyI6ICI0TmlrYS0xNzc5MSIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiBmYWxzZSwgInNuaSI6ICJwMy5jaGlndWEudGsiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458773"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTk4LjQxLjIxMi4xMjMiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjQ2MTI2MThjLTI0Y2QtNDM3OS05OTI0LWNmZGYzZDYxZmE1YSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvSVlLTEQ1M00iLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTE5ODY3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLCAic25pIjogIm9wZnIxLnYycmF5ZnJlZTEueHl6IiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458777"
+  },
+  {
+    "link": "vless://7f93e196-1b2f-4a42-8051-5815554c05db@98.81.177.222:443?allowInsecure=0&sni=zula.ir&flow=xtls-rprx-vision-udp443&fp=chrome&security=tls#4Nika-11256",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458782"
+  },
+  {
+    "link": "trojan://telegram-id-directvpn@51.21.147.187:22222?security=tls&sni=trojan.burgerip.co.uk&allowInsecure=1&type=tcp&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E6%9C%AA%E7%9F%A5-32",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458786"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTA0LjIxLjIyOC4yMSIsICJhaWQiOiAiMCIsICJob3N0IjogImEucHJhcHQ1LmlyIiwgImlkIjogIjcwMjI5ODJmLWRhNGMtNDhjOS1jNjYwLWIyMzE1YWJkY2Y3ZSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvP2VkPTIwNDgiLCAicG9ydCI6ICI4MCIsICJwcyI6ICI0TmlrYS0xODIzNiIsICJ0bHMiOiAiIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Invalid Address/Port: 104.21.228.21:80",
+    "timestamp": "2025-06-21T01:08:51.458791"
+  },
+  {
+    "link": "trojan://944f2a84-5812-460e-88f7-7e3ff476834e@f10011.flyflylflyflysbs.sbs:49148?type=tcp&sni=tw02.ckcloud.info&allowInsecure=1#%E5%8F%B0%E6%B9%BE%2002%E3%80%90vip2%E3%80%91",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458795"
+  },
+  {
+    "link": "vless://71ed6628-5870-4d19-8a52-f2a3ba3d4898@23.94.255.55:3306?security=tls&type=ws&sni=vbbb.ylks2024.us.kg&host=vbbb.ylks2024.us.kg&encryption=none&type=ws&path=%2Fyoulingkaishi&headerType=none#%E7%BE%8E%E5%9B%BD_juzi8186_34",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458800"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiU0dQLlx1NjViMFx1NTJhMFx1NTc2MS5EIHwgXHU2M2E4XHU4MzUwIiwiYWRkIjoieGNzZ3AuY29rZWNsb3VkLnRvcCIsInBvcnQiOiIyNTg3OCIsImlkIjoiZGU2ZmFlYzYtNGJjZS00NTM3LTlmNTMtMGIzMWRiZWVmNTU4IiwiYWlkIjoiMCIsIm5ldCI6InRjcCIsInR5cGUiOiJub25lIiwiaG9zdCI6IiIsInBhdGgiOiIiLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: xcsgp.cokecloud.top:25878",
+    "timestamp": "2025-06-21T01:08:51.458804"
+  },
+  {
+    "link": "vmess://eyJwcyI6IkVTX0BqdXppYmFpcGlhbyDmqZjlrZDlhaznm4pfNzUiLCJhZGQiOiIyMTIuMTkyLjEyLjcwIiwiYWlkIjowLCJpZCI6IjU1NWM1YmNiLThmZDktNDI4MC05ZGE2LWM4N2FmYzFlZjNmMSIsIm5ldCI6IndzIiwic2N5IjoiYXV0byIsInBvcnQiOjIzNTMyLCJ0bHMiOiIiLCJwYXRoIjoiLyIsImhvc3QiOiIiLCJzbmkiOiIifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458808"
+  },
+  {
+    "link": "vless://459b4a80-bd61-4ecd-a26b-e9c1809d9e45@test123.zlqhdns.top:61178?security=reality&type=tcp&sni=www.nvidia.com&fp=chrome&flow=xtls-rprx-vision&pbk=qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY#%F0%9F%87%AD%F0%9F%87%B0%E9%A6%99%E6%B8%AF13%20%7C%20%E2%AC%87%EF%B8%8F%203.8MB%2Fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458813"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU2NWU1XHU2NzJjLVx1NGYxOFx1NTMxNjIiLCJhZGQiOiJtLmNubWppbi5uZXQiLCJwb3J0IjoiMTY2MTciLCJpZCI6IjgyMDUxN2MxLTFjZmItNDdmZi1iZmRkLTQ4ZmFmODM3NzNiNSIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6ImNkOGU4OGQ4YmRmNjM3OGYwMDM0NmMyOTczNjIwNTA2Lm1vYmdzbGIudGJjYWNoZS5jb20iLCJwYXRoIjoiXC8iLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: m.cnmjin.net:16617",
+    "timestamp": "2025-06-21T01:08:51.458817"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU3ZjhlXHU1NmZkXHU4OTdmXHU5MGU4XHU2ZDFiXHU2NzQ5XHU3N2Y2Mi1DRE4gfCAxeCIsImFkZCI6IjE3NTAwMzYzNDEudGVuY2VudGFwcC5jbiIsInBvcnQiOiI4ODgwIiwiaWQiOiJmZmFkMmVmMi03YjU1LTRmNzEtYmM4MS1kZTVlMGY3NjlhZGMiLCJhaWQiOiIwIiwic2N5IjoiYXV0byIsIm5ldCI6IndzIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiMTc1MDAzNjc5MS5zcGVlZC5sYXhuZmdiLmNjY3AudXJ1dS5jbiIsInBhdGgiOiJcLyIsInRscyI6IiIsImZwIjoiY2hyb21lIn0=",
+    "reason": "Invalid Address/Port: 1750036341.tencentapp.cn:8880",
+    "timestamp": "2025-06-21T01:08:51.458822"
+  },
+  {
+    "link": "trojan://6063748c-ca22-4407-8852-f077a90b39e9@7ds1uygxq9jd77dlg9xee7dhmmptyho2.08.02.kr.6l6.site:23465?allowInsecure=1&peer=lua8a02.sel.kr.sub-vip.site&sni=lua8a02.sel.kr.sub-vip.site#%E9%9F%A9%E5%9B%BD%7CSEL2%7CT",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458826"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6d2pUdWdYM1p0SE1COWMzWg@213.183.59.177:9057#4Nika-1604",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458830"
+  },
+  {
+    "link": "vless://7f93e196-1b2f-4a42-8051-5815554c05db@51.44.7.208:443?security=reality&type=tcp&sni=zula.ir&fp=chrome&flow=xtls-rprx-vision&sid=7a2b&pbk=GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg#%F0%9F%87%AB%F0%9F%87%B7%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E6%B3%95%E5%9B%BD%2011",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458835"
+  },
+  {
+    "link": "vless://e657e5fb-c417-4d3f-d84e-a3a8f010f9fa@31.59.111.49:33718?security=reality&type=tcp&sni=icloud.cdn-apple.com&fp=chrome&flow=xtls-rprx-vision&pbk=g1f1wLjim5gOVGnI5LGUV0dL4iFXPoiepOPZfSxJe14#%F0%9F%87%BA%F0%9F%87%B8%E7%BE%8E%E5%9B%BD1%20%7C%20%E2%AC%87%EF%B8%8F%202.2MB%2Fs%20%7C28%25%7CNetflix%7CDisney%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458840"
+  },
+  {
+    "link": "trojan://498e608a-7efa-4108-97f3-665c0f84f43b@hk.binguo.link:10804?security=tls&headerType=none&fp=chrome&type=tcp&sni=alibaba-node.cn#4Nika-3660",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458844"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTkyLjc0LjIzMC4xMzIiLCAiYWlkIjogNjQsICJob3N0IjogInd3dy4zNzMxOTc5Ni54eXoiLCAiaWQiOiAiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDMwMDAxLCAicHMiOiAiNE5pa2EtMTk5NjgiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458848"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZTRGQ1dyZ3BramkzUVk@38.86.135.27:9101#4Nika-2644",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458853"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTplMDY1YmJmMC03ZTdmLTQ2N2EtOWFlNS0wNDM1ZWU3MDlkYmI@xcsgp.cokecloud.top:29631#SGP.%E6%96%B0%E5%8A%A0%E5%9D%A1.C%20%7C%20%E9%AB%98%E9%80%9F.2x%E5%80%8D%E7%8E%87",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458857"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@134.195.196.149:3306#4Nika-2249",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458861"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6Yndoc2tyc2tyMDM@144.168.60.70:252#4Nika-1444",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458865"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpjMDMxYzU3ZS0yMWUyLTRhNjAtOWFmMC0yODljYTI3YzBjYjc@node-jp.dlg365.com:49941#%F0%9F%87%AF%F0%9F%87%B5%20JP%2006",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458870"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAieWgyLmZyZWVoMS54eXoiLCAiYWlkIjogIjAiLCAiaG9zdCI6ICJwY3MtcmVmZXJlbmNlZC1jYW1lcmEtY29uY2VybnMudHJ5Y2xvdWRmbGFyZS5jb20iLCAiaWQiOiAiZDljNWVjNmEtYThkOC00NzMyLTg0NDctNTZmYmQyZjkzZTk2IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogImQ5YzVlYzZhLWE4ZDgtNDczMi04NDQ3LTU2ZmJkMmY5M2U5Ni12bSIsICJwb3J0IjogIjgwODAiLCAicHMiOiAiNE5pa2EtMjE1NjUiLCAidGxzIjogIiIsICJ0eXBlIjogIm5vbmUiLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: yh2.freeh1.xyz:8080",
+    "timestamp": "2025-06-21T01:08:51.458874"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M3@23.157.40.95:5000#US%F0%9F%87%BA%F0%9F%87%B8+%7C+23.157.40.95-5000+%7C+77.19ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458879"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206S2l4THZLendqZWtHMDBybQ@167.88.61.14:8000#4Nika-1784",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458883"
+  },
+  {
+    "link": "vless://a13df940-020c-465f-bc89-ee5279b5cd6a@47.236.202.91:2096?encryption=none&security=tls&type=ws&sni=hz.ylks.xyz&host=hz.ylks.xyz&path=twitterfreecodescodes#TG%3A%40JUZIBAIPIAO_17",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458888"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@217.197.161.136:801#4Nika-489",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458893"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@172.99.188.99:3306#4Nika-2333",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458897"
+  },
+  {
+    "link": "trojan://Phz7bYrtWz@134.122.4.215:2096?security=none&type=grpc#4Nika-5606",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458901"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTgzLjIzNi41MS4zOCIsICJhaWQiOiAiMCIsICJob3N0IjogIiIsICJpZCI6ICI0MTgwNDhhZi1hMjkzLTRiOTktOWIwYy05OGNhMzU4MGRkMjQiLCAibmV0IjogInRjcCIsICJwYXRoIjogIi8iLCAicG9ydCI6ICI0MTMwMiIsICJwcyI6ICI0TmlrYS0xOTc4MiIsICJ0bHMiOiAiIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Invalid Address/Port: 183.236.51.38:41302",
+    "timestamp": "2025-06-21T01:08:51.458906"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTAzLjk4LjE1MS4xNDQiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjdmZDc3Y2VlLTI4MmYtNGY1OS04ZTc4LTI3MTQ2NzI1YmE4OSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiA4MCwgInBzIjogIjROaWthLTE4NTgzIiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458910"
+  },
+  {
+    "link": "vless://46a4f0cb-aeec-4566-a4a7-23e00d1796ab@91.99.128.0:5183?security=reality&sni=wwww.refersion.com&type=tcp&fp=chrome&pbk=hVFQpNhSU6uRXpnAIES-MIuye5PsS-jmiWMlgwTC4yA&sid=93ddf2d2c5d8c56b#4Nika-8680",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458914"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206a0RXdlhZWm9UQmNHa0M0@145.239.1.100:8881#4Nika-2891",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458919"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTA0LjIxLjIzNy42NSIsICJhaWQiOiAiMCIsICJob3N0IjogImEucHJhcHQ1LmlyIiwgImlkIjogIjcwMjI5ODJmLWRhNGMtNDhjOS1jNjYwLWIyMzE1YWJkY2Y3ZSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvP2VkPTIwNDgiLCAicG9ydCI6ICI4MCIsICJwcyI6ICI0TmlrYS0xODI3NyIsICJ0bHMiOiAiIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Invalid Address/Port: 104.21.237.65:80",
+    "timestamp": "2025-06-21T01:08:51.458923"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTp0MHNybWR4cm0zeHlqbnZxejlld2x4YjJteXE3cmp1dg@221.215.48.117:2377#4Nika-300",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458927"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.188:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12296",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458932"
+  },
+  {
+    "link": "vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlx1NmE1OFx1NWI1MFx1NTE2Y1x1NzZjYVx1MDAyZFx1N2Y4ZVx1NTZmZFx1MDA1NVx1MDA1M1x1MDAyZDczIiwNCiAgImFkZCI6ICJjbG91ZGZsYXJlLjE4MjY4Mi54eXoiLA0KICAicG9ydCI6ICI4MCIsDQogICJpZCI6ICJiOWEzMjA2ZC0yNzhjLTQ2MTQtYjM1Mi1lZWY2MzJkMWM4ZDUiLA0KICAiYWlkIjogIjAiLA0KICAic2N5IjogImF1dG8iLA0KICAibmV0IjogIndzIiwNCiAgInR5cGUiOiAibm9uZSIsDQogICJob3N0IjogImtyLmNmeXlkcy5maWxlZ2Vhci1zZy5tZSIsDQogICJwYXRoIjogIi9yb25nc2V2ZW4/ZWQ9MjA0OCIsDQogICJ0bHMiOiAiIiwNCiAgInNuaSI6ICJrci5jZnl5ZHMuZmlsZWdlYXItc2cubWUiLA0KICAiYWxwbiI6ICIiLA0KICAiZnAiOiAiIg0KfQ==",
+    "reason": "Invalid Address/Port: cloudflare.182682.xyz:80",
+    "timestamp": "2025-06-21T01:08:51.458936"
+  },
+  {
+    "link": "vless://f1c66385-dcb3-4e03-aa31-6adf6708b146@flv4-vip.digitalldns.com:6587?encryption=none&security=none&type=tcp&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E6%9C%AA%E7%9F%A5-19",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458941"
+  },
+  {
+    "link": "vless://3b9bc773-05eb-4d5f-8c1f-57342c0c4f40@135.148.195.93:443?security=tls&type=tcp&sni=147135010103.sec19org.com&encryption=none&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E7%BE%8E%E5%9B%BDUS-88",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458946"
+  },
+  {
+    "link": "trojan://498e608a-7efa-4108-97f3-665c0f84f43b@other.binguo.link:10850?security=tls&headerType=none&fp=chrome&type=tcp&sni=alibaba-node.cn#4Nika-3690",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458950"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiY2YxLjk5MjY4OC54eXoiLCAiYWlkIjogMCwgImhvc3QiOiAidmN1czIudnBuNjYuZXUub3JnIiwgImlkIjogImY0NjdmNGRhLTIyMjYtNDQ4ZC1hMzBkLTQ2M2VmMTA1NDhhYyIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiA4MDgwLCAicHMiOiAiNE5pa2EtMjA4OTEiLCAic2N5IjogImF1dG8iLCAidGxzIjogIiIsICJ2IjogIjIifQ==",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.458954"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiVVMuXHU3ZjhlXHU1NmZkLkUiLCJhZGQiOiJjb2tlY2xvdWR1cy5jb2tlY2xvdWQudG9wIiwicG9ydCI6IjIwMDY3IiwiaWQiOiJhMDFiNWUyNy1lY2U1LTQ2NzUtODY2Zi0zNmIyM2E2NWQyYTgiLCJhaWQiOiIwIiwibmV0IjoidGNwIiwidHlwZSI6Im5vbmUiLCJob3N0IjoiIiwicGF0aCI6IiIsInRscyI6IiJ9",
+    "reason": "Invalid Address/Port: cokecloudus.cokecloud.top:20067",
+    "timestamp": "2025-06-21T01:08:51.458958"
+  },
+  {
+    "link": "vmess://eyJwcyI6IkRFX3lvdXR1YmVA6LWE5rqQ5YiG5Lqr5biIXzMiLCJhZGQiOiI5MS4xMDcuMTcxLjczIiwiYWlkIjowLCJpZCI6IjVkOTA0ODg1LTc0YzUtNGMwNy05NWNmLWUwOTg5ZDI4N2MzNyIsIm5ldCI6InRjcCIsInNjeSI6ImF1dG8iLCJwb3J0Ijo4MCwidGxzIjoiIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458963"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206SlVYQjNaTlBXUEE4QVY0Vg==@ti3hyra4.slashdevslashnetslashtun.net:18006#%F0%9F%87%AF%F0%9F%87%B5%20JP-06",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458967"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTkyLjc0LjI0OS42IiwgImFpZCI6ICI2NCIsICJhbHBuIjogIiIsICJob3N0IjogInd3dy4zNzc5MDk1OC54eXoiLCAiaWQiOiAiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9wYXRoLzE3MDM3NTU2MjU1NTgiLCAicG9ydCI6ICIzMDAwMCIsICJwcyI6ICI0TmlrYS0xOTk2NSIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 192.74.249.6:30000",
+    "timestamp": "2025-06-21T01:08:51.458971"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@196.247.59.156:808#4Nika-484",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458976"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.244:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12306",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458981"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiZG0tdXMwMy1kaXJlY3QxNC5kbS11czAzLmxjLW5vZGUuY29tIiwgImFpZCI6ICIwIiwgImhvc3QiOiAiZG0tdXMwMy1kaXJlY3QxNC5kbS11czAzLmxjLW5vZGUuY29tIiwgImlkIjogIjhkNWM2ZjM4LWMwYmYtMzAwNi05ZjNmLWY4OWJhMTZhNmNlNCIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAiNDQzIiwgInBzIjogIjROaWthLTIwOTg5IiwgInNjeSI6ICJhdXRvIiwgInNuaSI6ICIiLCAidGxzIjogInRscyIsICJ0eXBlIjogIm5vbmUiLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: dm-us03-direct14.dm-us03.lc-node.com:443",
+    "timestamp": "2025-06-21T01:08:51.458985"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU1OTU3XHU5OTEwXHU1MjMwXHU2NzFmXHVmZjFhXHU5NTdmXHU2NzFmXHU2NzA5XHU2NTQ4IiwiYWRkIjoiNDUuMTQ3LjIwMS4yMzEiLCJwb3J0IjoiMjIwNjciLCJpZCI6ImZjZWZmMDI1LWI0ZWEtNGZkMi05MDkzLTE1MWIzYmQ1MDNjZCIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6IiIsInBhdGgiOiIiLCJ0bHMiOiIifQ==",
+    "reason": "Invalid Address/Port: 45.147.201.231:22067",
+    "timestamp": "2025-06-21T01:08:51.458989"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpkZW1sS1pMMjRnWmY5WDhleWtGZHly@195.16.74.107:35570#TR%F0%9F%87%B9%F0%9F%87%B7+%7C+195.16.74.107-35570+%7C+120.11ms",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.458994"
+  },
+  {
+    "link": "ss://cmM0LW1kNTpQYW9mdQ@120.195.181.82:5988#4Nika-3201",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.458998"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNDUuMTIuMTMzLjQzIiwgImFpZCI6ICIwIiwgImFscG4iOiAiIiwgImZwIjogIiIsICJob3N0IjogIiIsICJpZCI6ICIxYmU4ZWRkYi00ZjhjLTQ1ZDAtYjJhMS1lNTM4ZWIzYWJkMzkiLCAibmV0IjogInRjcCIsICJwYXRoIjogIiIsICJwb3J0IjogIjI4NDQ0IiwgInBzIjogIlx1ZDgzZFx1ZGQxMiBWTS1UQ1AtTkEgXHVkODNjXHVkZGViXHVkODNjXHVkZGY3IEZSLTQ1LjEyLjEzMy40MzoyODQ0NCIsICJzY3kiOiAiYXV0byIsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJub25lIiwgInYiOiAiMiJ9",
+    "reason": "Invalid Address/Port: 45.12.133.43:28444",
+    "timestamp": "2025-06-21T01:08:51.459003"
+  },
+  {
+    "link": "trojan://85f133142f04dbf6547da33895cfabb3@203.156.253.11:39001?allowInsecure=0&sni=www.yrtok.com#4Nika-4138",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459007"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoiXHU1MmEwXHU2MmZmXHU1OTI3LVx1NTkxYVx1NGYyNlx1NTkxYTEtQ0ROIHwgMXgiLCJhZGQiOiIxNzUwMDM2MzQxLnRlbmNlbnRhcHAuY24iLCJwb3J0IjoiMjA4MiIsImlkIjoiZmZhZDJlZjItN2I1NS00ZjcxLWJjODEtZGU1ZTBmNzY5YWRjIiwiYWlkIjoiMCIsInNjeSI6ImF1dG8iLCJuZXQiOiJ3cyIsInR5cGUiOiJub25lIiwiaG9zdCI6IjE3NTAwMzY2NzEuc3BlZWQuY2hhb29ubGEuY2NjcC51cnV1LmNuIiwicGF0aCI6IlwvIiwidGxzIjoiIiwiZnAiOiJjaHJvbWUifQ==",
+    "reason": "Invalid Address/Port: 1750036341.tencentapp.cn:2082",
+    "timestamp": "2025-06-21T01:08:51.459011"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTA0LjIxLjIzLjIzMSIsICJhaWQiOiAiMCIsICJob3N0IjogIm9uZWEuZmxoYS5ydSIsICJpZCI6ICI3YTczN2Y0MS1iNzkyLTQyNjAtOTRmZi0zZDg2NGRhNjdiODAiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogIjIwOTUiLCAicHMiOiAiNE5pa2EtMTgyNDYiLCAidGxzIjogIiIsICJ0eXBlIjogIm5vbmUiLCAidiI6ICIyIn0=",
+    "reason": "Invalid Address/Port: 104.21.23.231:2095",
+    "timestamp": "2025-06-21T01:08:51.459015"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UENubkg2U1FTbmZvUzI3@134.195.198.95:8091#4Nika-1911",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459020"
+  },
+  {
+    "link": "trojan://498e608a-7efa-4108-97f3-665c0f84f43b@hk.binguo.link:10810?security=tls&headerType=none&fp=chrome&type=tcp&sni=alibaba-node.cn#4Nika-3666",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.459024"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidjI1LmVtb3Zwbi5idXp6IiwgImFpZCI6IDAsICJob3N0IjogInB1bGwuZnJlZS52aWRlby4xMDAxMC5jb20iLCAiaWQiOiAiYjZmYjM4MTYtYWYwMy00YjIxLWIxZmMtY2IyYjcwZmEyNzA1IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDIyMTIsICJwcyI6ICI0TmlrYS0yMTQ0NSIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459028"
+  },
+  {
+    "link": "trojan://T@_WvT8Ho@LW%w_,@172.66.44.214:2053?sni=NOp-55q.pAgEs.dEv&type=ws&path=%2FtrGPZDfetEwuO25SAs%3Fed%3D2560&alpn=h2%2Chttp%2F1.1&fp=randomized#%F0%9F%87%BA%F0%9F%87%B8%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E7%BE%8E%E5%9B%BD%2056",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.459034"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTQ0LjEyNi4xNDUuMjE5IiwgImFpZCI6IDAsICJob3N0IjogImludGVybmV0LmxpZmUuY29tLmJ5IiwgImlkIjogIjJhOGExMGZiLTljYTMtMzY3ZS1hMjM0LWNmMDlmODQxYmU0ZiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvdjExOC1mY2N4bXhtMzUiLCAicG9ydCI6IDgwLCAicHMiOiAiNE5pa2EtMTg3MzIiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459038"
+  },
+  {
+    "link": "trojan://73658d71-be45-4495-bc3e-e69d36ce73b5@103.234.53.23:50014?security=tls&sni=telewebion.com#4Nika-4015",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459042"
+  },
+  {
+    "link": "vless://05519058-d2ac-4f28-9e4a-2b2a1386749e@54.92.188.106:22222?security=tls&type=ws&sni=telegram-channel-vlessconfig.sohala.uk&host=telegram-channel-vlessconfig.sohala.uk&encryption=none&type=ws&path=%2Ftelegram-channel-vlessconfig-ws&sni=telegram-channel-vlessconfig.sohala.uk&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E7%BE%8E%E5%9B%BDUS-104%0D",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459047"
+  },
+  {
+    "link": "trojan://70cf98ad-29b6-445c-9d36-7e91b45a2f53@sla.cn.964e995b760.gogodns.xin:27001?sni=q08m.vgraxiw73s.hasyaf.cn#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%AC5%20%7C%20%E2%AC%87%EF%B8%8F%20534KB%2Fs",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.459052"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidC5jbm1qY24uY3lvdSIsICJhaWQiOiAwLCAiaG9zdCI6ICJhNjhmZjZkMmYwNzM5ZWU3ZjgwOGVkM2ZkOWQyMWVhYi5tb2Jnc2xiLnRiY2FjaGUuY29tIiwgImlkIjogImM4NTc2MWJjLTVkNzQtNGFlNS1iNTI1LTBkMzI0NDMxODJmYSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAxNjYxNywgInBzIjogIjROaWthLTIxMzc3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459056"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@89.163.140.153:989#4Nika-1568",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459060"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206UENubkg2U1FTbmZvUzI3@38.91.107.66:8090#4Nika-2001",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459065"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@162.251.61.221:812#4Nika-428",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459069"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTkyLjUzLjE3Mi4xOTEiLCAiYWlkIjogMCwgImhvc3QiOiAiMTkyLjUzLjE3Mi4xOTEiLCAiaWQiOiAiN2FkOGRhMGMtZmRhNS00MTZiLTllNzItNDdjYzY4MzEzZmZlIiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTE5OTUxIiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLCAic25pIjogIjE5Mi41My4xNzIuMTkxIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459073"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAibjE3MjExMTg0NDgucnlqbWwuY24iLCAiYWlkIjogMCwgImhvc3QiOiAibjE3MjExMTg0NDgucnlqbWwuY24iLCAiaWQiOiAiNjkwZjBkN2EtNDA1MC00YjJiLTllNDQtYTEyZDY3OTA1Mjc0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi8iLCAicG9ydCI6IDQ0MywgInBzIjogIjROaWthLTIxMjE0IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLCAic25pIjogIm4xNzIxMTE4NDQ4LnJ5am1sLmNuIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459077"
+  },
+  {
+    "link": "vless://ee6774c0-9b19-4ff1-8b30-2da4b71977e2@103.214.174.24:443?security=tls&type=ws&path=%2F%3Fed%3D2560&host=edccw.aimercc.filegear-sg.me&allowInsecure=1&sni=edccw.aimercc.filegear-sg.me#%F0%9F%87%B9%F0%9F%87%BC%E5%8F%B0%E6%B9%BE21%20%7C%20%E2%AC%87%EF%B8%8F%201.1MB%2Fs%20%7C0%25%7CNetflix%7CDisney%7CYoutube%7COpenai",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459083"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowOTgzM2E2Zi00ZDQ2LTQyNmUtODdmZS03NzkzYTU0ODlmODQ=@k-r01.loveroise.com:54008#%E6%9C%AA%E7%9F%A5_juzi8186_222",
+    "reason": "DNS Resolution Failed: [Errno -5] No address associated with hostname",
+    "timestamp": "2025-06-21T01:08:51.459087"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1jZmI6UWF6RWRjVGdiMTU5QCQq@14.29.124.168:25256#4Nika-979",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459092"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1jZmI6UWF6RWRjVGdiMTU5QCQq@14.29.124.168:25271#4Nika-986",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459096"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMjA0MDFkOS1kNGJmLTQ0NGUtYTE0MC1kNmM2NTA5NDhlNzQ=@gdgs.tarioblink.me:30003#%E4%B8%AD%E5%9B%BD_juzi8186_35",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459100"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206Y2RCSURWNDJEQ3duZklO@51.77.53.200:8119#PL%F0%9F%87%B5%F0%9F%87%B1+%7C+51.77.53.200-8119+%7C+107.46ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459105"
+  },
+  {
+    "link": "trojan://96983eb4-c8f1-316e-ab00-500014ed3d8b@jp06a.roc-taiwan.org.ua:65016?security=tls#4Nika-4233",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459109"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpjMTA2Njc3Zi1kNzA2LTQyMWYtOTkwNC04MjVkYjJjYTk3ZDg@xdtw.cokecloud.top:21073#TW.%E5%8F%B0%E6%B9%BE.D",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459114"
+  },
+  {
+    "link": "vless://a13df940-020c-465f-bc89-ee5279b5cd6a@202.81.231.150:443?encryption=none&security=tls&type=ws&sni=ah.ylks.xyz&host=ah.ylks.xyz&path=%2f#TG%3A%40JUZIBAIPIAO%2B%2B%E6%96%B0%E5%8A%A0%E5%9D%A1_1",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459118"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo1MjMxZjU5Zi1jMTk2LTQwOTQtYWVhNS00ZWNhYTA2OWRkYzU@2z4xeackauvjtt6o2czshcyn447sj5qz.08.06.jp.6l6.site:13465#%E6%97%A5%E6%9C%AC%7CT06",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459123"
+  },
+  {
+    "link": "vless://30e49f46-8532-4b11-8308-f5f7e56f83f7@185.191.77.4:443?security=tls&sni=fan1001.irfanpage.ir&type=ws&path=%2Fwsloc1003&fp=randomized&alpn=h2%2Chttp%2F1.1#4Nika-7961",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459127"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiNDUuMzIuMTc1LjI0MCIsICJhaWQiOiAwLCAiaG9zdCI6ICI0NS4zMi4xNzUuMjQwIiwgImlkIjogIjFkODllNTVhLTgyZDAtNDA1MS1iYjI5LThhOTExZjk5YTRjMyIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAyMTAzNCwgInBzIjogIjROaWthLTIwNDQ2IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459131"
+  },
+  {
+    "link": "trojan://telegram-id-directvpn@34.247.43.253:22222?allowInsecure=0&sni=trojan.burgerip.co.uk#4Nika-6375",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459136"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M@167.88.61.175:5000#4Nika-2287",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459140"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTg4LjExNi4yMi4xNzEiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjNjNmM2MDhkLTY4YzAtNDc4Mi04NmFjLTk4ZWExYWRhM2EyNSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvdm1lc3MiLCAicG9ydCI6IDgwLCAicHMiOiAiNE5pa2EtMTk3NTIiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogIiIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459145"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206a0RXdlhZWm9UQmNHa0M0@38.114.114.104:8881#4Nika-2918",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459149"
+  },
+  {
+    "link": "trojan://2ec08e64-91dd-4799-8eb5-22d611bd3359@120.233.147.213:54769?allowInsecure=1&peer=cloudsync-prod.s3.amazonaws.com&tfo=1#频道%20t.me/LXi_Collection_hall",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459156"
+  },
+  {
+    "link": "vless://459b4a80-bd61-4ecd-a26b-e9c1809d9e45@bsuqian01.dynu.net:25768?security=reality&type=tcp&sni=www.nvidia.com&fp=chrome&flow=xtls-rprx-vision&pbk=qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%AC18%20%7C%20%E2%AC%87%EF%B8%8F%202.7MB%2Fs%20%7C70%25%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459161"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZzVNZUQ2RnQzQ1dsSklk@38.75.136.21:5003#4Nika-2866",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459165"
+  },
+  {
+    "link": "trojan://e0d44ae7-cb7d-4acc-a8c0-9861a6f5eaad@51.91.11.29:80?security=tls&sni=namayesh.com#4Nika-6129",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459170"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowODdhODc0ZS05ZGRhLTQ1ZTItOTEzYS1iZjQ1MDMyZmRmYTk=@freea.glyphara.com:36371#14%7C%F0%9F%87%AE%F0%9F%87%B3%20%E5%8D%B0%E5%BA%A6%20101%20%7C%201x%20IN",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459174"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpMSTRvYk9FSURMekRqZDd4WWxoaFRK@86.104.75.103:49264#MD%F0%9F%87%B2%F0%9F%87%A9+%7C+86.104.75.103-49264+%7C+103.07ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459179"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZTIyYjg5YWUtNjk5Ni00ODI0LWFjMzEtNjEwYWM3MzQ5ZTZh@zf2.10101251.xyz:30524#%F0%9F%8C%80%E5%85%B6%E4%BB%9631-MK%20%7C%20%E2%AC%87%EF%B8%8F%204.0MB%2Fs%7C46%25%7CDisney%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459193"
+  },
+  {
+    "link": "vless://bf814a3d-e1c7-4403-9a34-770f03541c1b@217.60.238.74:882?security=none&type=tcp&host=skyroom.online%2Cgharar.ir%2Cigap.net&path=%2F&headerType=http#4Nika-14471",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459199"
+  },
+  {
+    "link": "vless://5d19d8d8-d0c8-4ea0-b86e-082030397ebc@85.133.221.46:6022?security=reality&sni=traffic-tile.maps.snapp.ir&type=tcp&fp=safari&pbk=OCW4VToUh_2gtej7iO30chCKwUWDmmmpW01kHE4BDwU&sid=7fcf499c88f80777#4Nika-10440",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459203"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZUlXMERuazY5NDU0ZTZuU3d1c3B2OURtUzIwMXRRMEQ@139.162.5.19:8099#4Nika-1469",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459208"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ZmFCQW9ENTRrODdVSkc3@217.182.198.219:2376#4Nika-2715",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459212"
+  },
+  {
+    "link": "vless://2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5@216.116.134.145:443?encryption=none&security=tls&type=ws&sni=cfed.tgzdyz2.top&host=cfed.tgzdyz2.top&path=tg%40zdyz2#%E7%BE%8E%E5%9B%BDTG%3A%40JUZIBAIPIAO_29",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459217"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5MTg3Nzc1ZC1lYzYxLTQwNTAtYmMzNC1jOTA1YjY4OGUxYmM@gz.pddwdf.store:52461#%f0%9f%87%aa%f0%9f%87%ac+%e5%9f%83%e5%8f%8a+2",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459221"
+  },
+  {
+    "link": "vless://55520747-311e-4015-83ce-be46e2060ce3@103.44.255.81:443?encryption=none&security=tls&sni=s3.vs2024.us.kg&type=ws&host=s3.vs2024.us.kg&path=%2Fs3.vs2024.us.kg#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E9%A6%99%E6%B8%AFHK-5",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459225"
+  },
+  {
+    "link": "vless://66164464-813d-49c0-bbbc-6264e799473e@157.90.249.127:3306?security=none&type=tcp&encryption=none&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E5%BE%B7%E5%9B%BDDE-3",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459230"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphZWQ0MTYzZi01NDJkLTRjNWItOTI1Ny1iNzFiOWY5MmMxZTA@freea.glyphara.com:36541#4Nika-754",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459234"
+  },
+  {
+    "link": "vless://2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5@211.75.74.232:4443?encryption=none&security=tls&sni=cfed.tgzdyz2.top&type=ws&host=cfed.tgzdyz2.top&path=tg%40zdyz2#4Nika-7881",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459238"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206OGQ0ZmEwMzctMzMyNC00ODVlLWEzZmMtMjg2MjIxMGVlNGY3@lh2.node-is.green:50010#%E6%97%A5%E6%9C%AC2",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459243"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU@43.207.166.104:443#4Nika-1328",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459247"
+  },
+  {
+    "link": "trojan://ttfang@61.83.219.114:14491?security=tls&sni=ttfang.fange.me&type=ws&host=ttfang.fange.me&path=%2F&allowInsecure=1#4Nika-6471",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459251"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ekFkaERTYWJlaA@42.157.161.52:11212#4Nika-3110",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459255"
+  },
+  {
+    "link": "trojan://8d4fa037-3324-485e-a3fc-2862210ee4f7@cc.rk1.node-is.green:10116?allowInsecure=1&peer=tcjp1.bilibili.com&sni=tcjp1.bilibili.com#Trojan-%E6%97%A5%E6%9C%AC1%20%7C%20%E4%BD%8E%E5%80%8D%E7%8E%87",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459259"
+  },
+  {
+    "link": "vless://05519058-d2ac-4f28-9e4a-2b2a1386749e@13.36.72.7:22224?type=ws&security=tls&path=%2Ftelegram-channel-vlessconfig&sni=trojan.burgerip.co.uk#4Nika-6703",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459264"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ekROVmVkUkZQUWV4Rzl2@85.208.108.59:6379#4Nika-3151",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459268"
+  },
+  {
+    "link": "vmess://ewogICAgImFkZCI6ICIxOC4xOTkuMTU1LjIxOCIsCiAgICAiYWlkIjogMCwKICAgICJob3N0IjogIm5sLnpodWsudXMua2ciLAogICAgImlkIjogIjYwYzBiYmZhLWM1NGYtNDlhOS04MWJhLTc3OWIwMjA2YTlmZCIsCiAgICAibmV0IjogIndzIiwKICAgICJwYXRoIjogIi95bGtzIiwKICAgICJwb3J0IjogNDQzLAogICAgInBzIjogIvCfh6nwn4eqREUtMTguMTk5LjE1NS4yMTgtMTQyNCIsCiAgICAidGxzIjogInRscyIsCiAgICAidHlwZSI6ICJhdXRvIiwKICAgICJzZWN1cml0eSI6ICJhdXRvIiwKICAgICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwKICAgICJzbmkiOiAiIgp9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459272"
+  },
+  {
+    "link": "trojan://5e2f888c-68ef-11ef-96ca-f23c9164ca5d@13c2c931-swin40-swy6li-tni2.cu.plebai.net:15229?allowInsecure=0&sni=13c2c931-swin40-swy6li-tni2.cu.plebai.net#4Nika-3801",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459277"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpjMDMxYzU3ZS0yMWUyLTRhNjAtOWFmMC0yODljYTI3YzBjYjc@node-a.dlg365.com:49967#%F0%9F%87%AC%F0%9F%87%A7%20UK%2002%20%E8%8B%B1%E5%9B%BD",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459281"
+  },
+  {
+    "link": "vless://ee6774c0-9b19-4ff1-8b30-2da4b71977e2@112.160.54.82:21316?security=tls&type=ws&path=%2F%3Fed%3D2560&host=edccw.aimercc.filegear-sg.me&allowInsecure=1&sni=edccw.aimercc.filegear-sg.me#%F0%9F%87%B9%F0%9F%87%BC%E5%8F%B0%E6%B9%BE6%20%7C%20%E2%AC%87%EF%B8%8F%201.9MB%2Fs%20%7C0%25%7CNetflix%7CDisney%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459286"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2YWM3N2E1Ny1jNzg3LTRmNjctYTQ5NS0xZDBhMjcxOWVmMWU@freea.glyphara.com:36371#4Nika-84",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459290"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpkZTZmYWVjNi00YmNlLTQ1MzctOWY1My0wYjMxZGJlZWY1NTg@mltf.cokecloud.top:13128#ML.%E9%A9%AC%E6%9D%A5%E8%A5%BF%E4%BA%9A.A",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459295"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1jZmI6c2hhZG93c29ja3M=@184.170.241.194:443#US%F0%9F%87%BA%F0%9F%87%B8+%7C+184.170.241.194-443+%7C+60.14ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459299"
+  },
+  {
+    "link": "vless://fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf@25.129.197.213:8880?security=none&type=ws&path=%2F%3Fed%3D2560&host=jp.laoyoutiao.link&sni=jp.laoyoutiao.link&fp=chrome#%F0%9F%87%AC%F0%9F%87%A7%20%E4%B8%80%E5%85%83%E6%9C%BA%E5%9C%BA%3Assrsub.de%20%E8%8B%B1%E5%9B%BD%2001",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459303"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@46.183.217.232:990#LV%F0%9F%87%B1%F0%9F%87%BB+%7C+46.183.217.232-990+%7C+109.63ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459308"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206ZzEyc1FpI3NzIyYx@183.232.170.32:20013/?plugin=v2ray-plugin%3Bmode%3Dwebsocket%3Bmux%3Dundefined#4Nika-1047",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459312"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206WEtGS2wyclVMaklwNzQ@134.195.196.149:8009#4Nika-2180",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459317"
+  },
+  {
+    "link": "vless://d8dd94fd-540e-461d-b5d4-acebef02c22a@103.12.76.236:34045?allowInsecure=1&sni=visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me&fp=firefox&security=tls#13%7CVN_speednode_0277",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459321"
+  },
+  {
+    "link": "trojan://telegram-id-directvpn@52.209.132.91:22222?security=tls&sni=trojan.burgerip.co.uk&allowInsecure=1&type=tcp&headerType=none#%E6%A9%98%E5%AD%90%E5%85%AC%E7%9B%8A-%E6%9C%AA%E7%9F%A5-20",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459326"
+  },
+  {
+    "link": "vmess://eyJwcyI6IlVTX3lvdXR1YmVA6LWE5rqQ5YiG5Lqr5biIXzM3IiwiYWRkIjoiMTcyLjIwNC44LjEwIiwiYWlkIjowLCJpZCI6IjgxYmJjYTcwLWEzNWYtNDg3ZS04OGE0LThiZDU4NTZiMTBhNSIsIm5ldCI6InRjcCIsInNjeSI6Im5vbmUiLCJwb3J0Ijo1NTAsInRscyI6IiJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459330"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8@78.129.253.9:807#4Nika-589",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459334"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTcyLjk5LjE5MC4xMiIsICJhaWQiOiAiMCIsICJob3N0IjogImNlc2hpaS4xMjM0NTY3ODkwc3BjbG91ZC5jb20iLCAiaWQiOiAiMDQ2MjFiYWUtYWIzNi0xMWVjLWI5MDktMDI0MmFjMTIwMDAyIiwgIm5ldCI6ICJ0Y3AiLCAicGF0aCI6ICIvIiwgInBvcnQiOiAyMjMyNCwgInBzIjogIjROaWthLTE5NjIwIiwgInRscyI6ICIiLCAidHlwZSI6ICIiLCAidiI6ICIyIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459338"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206ekFkaERTYWJlaA@42.157.161.41:11152#4Nika-3091",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459343"
+  },
+  {
+    "link": "vless://df0680ca-e43c-498d-ed86-8e196eedd012@84.32.131.73:8880?mode=gun&security=none&encryption=none&type=grpc#4Nika-15624",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459347"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTYyLjE1OS4yMDAuNzUiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjE5NDI4YzQ0LTg1YjMtNGE3Yy04YmM0LWI1ODM5NjEzODMyMiIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvIiwgInBvcnQiOiA4MCwgInBzIjogIjROaWthLTE5MTU3IiwgInNlY3VyaXR5IjogImF1dG8iLCAic2tpcC1jZXJ0LXZlcmlmeSI6IHRydWUsICJzbmkiOiAiIiwgInRscyI6ICIiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459351"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206YTBkMTMxYjYtNDNlMi00YmFjLWI1ZmYtYjM5NzlhNTc0MDQ2@jp3.qsm1.xyz:43683#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%AC3%20%F0%9F%92%A7%201x",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459355"
+  },
+  {
+    "link": "vless://ba59e99f-a171-4a34-a019-aa08cc2ab22e@85.198.14.142:35896?security=none&type=tcp&host=ponisha.ir&headerType=http#4Nika-14326",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459360"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTplYjc5YzRmYS1iYWY5LTQ1NmMtOTE2My02N2Q5ZDNjZjZhYjU@01.liantongzf.one:45149#%F0%9F%87%B3%F0%9F%87%B4%20%E6%8C%AA%E5%A8%81",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459364"
+  },
+  {
+    "link": "trojan://your_password@15.236.64.14:443?security=tls&sni=aws-fr-paris-1.f1rocketnode.com&type=tcp#4Nika-6575",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459369"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@51.15.27.48:989#4Nika-1557",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459373"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206MldLNTBRVkI4VUxTMkJENg==@ti3hyra4.slashdevslashnetslashtun.net:21001#%F0%9F%87%A8%F0%9F%87%B3%20TW-01",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459377"
+  },
+  {
+    "link": "vless://71ed6628-5870-4d19-8a52-f2a3ba3d4898@172.64.111.221:443?security=tls&type=ws&sni=vbbb.ylks2024.us.kg&host=vbbb.ylks2024.us.kg&encryption=none&type=ws&path=%2FProxyIP%3DProxyIP.US.fxxk.dedyn.io&headerType=none#%E7%BE%8E%E5%9B%BD_juzi8186_23",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459382"
+  },
+  {
+    "link": "vless://28358fb1-5a96-4c8f-ae26-5afde5cc25b0@5.75.152.152:2053?security=reality&sni=www.tgju.org&fp=chrome&pbk=eR4J5FtMqaNxy-RvJb6JzcBoREYy7iDGC61J6xtQHkc&sid=48&type=tcp&flow=xtls-rprx-vision&packetEncoding=xudp&encryption=none#4Nika-7656",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459386"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206YjY0ZWMzODMtZTU5OC00NjVhLTllNTktNzBlOWIwZDg3ZjY2@lh.node-is.green:50003#%E9%A6%99%E6%B8%AF3",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459391"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTowODdhODc0ZS05ZGRhLTQ1ZTItOTEzYS1iZjQ1MDMyZmRmYTk=@freea.glyphara.com:36213#14%7C%F0%9F%87%BA%F0%9F%87%B8%20%E7%BE%8E%E5%9B%BD%E4%BD%8F%E5%AE%85IP%20102%20%7C%201x%20US%20Los%20Ange...",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459395"
+  },
+  {
+    "link": "vless://ee6774c0-9b19-4ff1-8b30-2da4b71977e2@211.196.12.95:12344?security=tls&type=ws&path=%2F%3Fed%3D2560&host=edccw.aimercc.filegear-sg.me&allowInsecure=1&sni=edccw.aimercc.filegear-sg.me#%F0%9F%87%B9%F0%9F%87%BC%E5%8F%B0%E6%B9%BE35%20%7C%20%E2%AC%87%EF%B8%8F%201.2MB%2Fs%20%7C0%25%7CNetflix%7CDisney%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459400"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTcyLjY0LjEwMy4xMjIiLCAiYWlkIjogMCwgImhvc3QiOiAiaGF4dXMzLnZwbjY2LmV1Lm9yZyIsICJpZCI6ICIwZWE2MGViYi02MzJkLTQyMjYtODkzYS1jY2NjMjA1M2RiZjUiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogODA4MCwgInBzIjogIjROaWthLTE5MjkxIiwgInNjeSI6ICJhdXRvIiwgInRscyI6ICIiLCAidiI6ICIyIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459404"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTcwLjE3OC4xNzkuMTg5IiwgImFpZCI6IDY0LCAiaG9zdCI6ICIiLCAiaWQiOiAiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9wYXRoLzAzMTczMDA5MTQyMCIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMTkyMTMiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogdHJ1ZSwgInNuaSI6ICIiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459408"
+  },
+  {
+    "link": "vmess://eyJ2IjoiMiIsInBzIjoi8J+HuPCfh6wg5LiA5YWD5py65Zy6OnNzcnN1Yi5kZSDmlrDliqDlnaEgMDMiLCJhZGQiOiJ2MzkuaGVkdWlhbi5saW5rIiwicG9ydCI6MzA4MzksImlkIjoiY2JiM2Y4NzctZDFmYi0zNDRjLTg3YTktZDE1M2JmZmQ1NDg0IiwidHlwZSI6IiIsImFpZCI6MiwibmV0Ijoid3MiLCJ0bHMiOiIiLCJwYXRoIjoiL29vb28iLCJob3N0IjoiYmFpZHUuY29tIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459412"
+  },
+  {
+    "link": "vless://5fa643a7-1ff2-417c-fcfa-fe9006b308c4@213.142.150.181:48917?security=none&type=tcp#%F0%9F%8C%80%E5%85%B6%E4%BB%962-TR%20%7C%20%E2%AC%87%EF%B8%8F%203.0MB%2Fs%20%7C0%25%7CNetflix%7CDisney%7CYoutube%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459417"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU@43.201.61.124:443#4Nika-1320",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459421"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU@p1.bxy-edge.xyz:30301#%F0%9F%87%B1%F0%9F%87%BA%20%E5%8D%A2%E6%A3%AE%E5%A0%A1%2001",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459426"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidGsuaHpsdC50a2RkbnMueHl6IiwgImFpZCI6IDIsICJob3N0IjogInRrLmh6bHQudGtkZG5zLnh5eiIsICJpZCI6ICI5OGU5NmM5Zi00YmIzLTM5ZDQtOWEyYy1mYWMwNDI1N2Y3YzciLCAibmV0IjogIndzIiwgInBhdGgiOiAiLyIsICJwb3J0IjogMjI2NDEsICJwcyI6ICI0TmlrYS0yMTM4NCIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiBmYWxzZSwgInNuaSI6ICJ0ay5oemx0LnRrZGRucy54eXoiLCAidGxzIjogInRscyIsICJ0eXBlIjogImF1dG8ifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459430"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206d1Z0eWlaMXhFdStsaWxYN2lmdlM4N3k4aXd5T3YxWE5FV0ovWGhjK1RxTT03@193.238.153.22:8443#UA%F0%9F%87%BA%F0%9F%87%A6+%7C+193.238.153.22-8443+%7C+125.42ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459435"
+  },
+  {
+    "link": "vless://c82f8880-bdd8-4a35-b8e7-ad5aa880f7d0@146.56.154.156:43453?encryption=none&security=tls&type=ws&sni=av.ylkszy.eu.org&host=av.ylkszy.eu.org&path=%2f#TG%3A%40JUZIBAIPIAO%2B%2B%E9%9F%A9%E5%9B%BD_14",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459439"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU=@52.68.44.53:443#%F0%9F%87%AF%F0%9F%87%B5JP-52.68.44.53-1454",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459443"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmRERtSDRRZWZtV3FNSjhVVVJackdo@86.104.74.243:14255#MD%F0%9F%87%B2%F0%9F%87%A9+%7C+86.104.74.243-14255+%7C+80.63ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459448"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.59:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.59:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459456"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpkYmJhNGRjYi1kYjBjLTQ0MTUtYTZkMy1kNzJhOTMyMDZmNWI@xjp-jd.huidu51.com:46614#%F0%9F%87%B8%F0%9F%87%AC%20%20Singapore%2014",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459460"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.54:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.54:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459466"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.1:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12344",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459472"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206YTBkMTMxYjYtNDNlMi00YmFjLWI1ZmYtYjM5NzlhNTc0MDQ2@ajppp29741.tsttt.top:43681#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%AC1%20%F0%9F%92%A7%201x",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459476"
+  },
+  {
+    "link": "trojan://b4e8771997c94732acbc9ec4d19c2589@198.41.220.8:443?security=tls&sni=jobscareerforstudent.com&type=ws&host=jobscareerforstudent.com&path=/6b777a91#4Nika-5776",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459481"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.99:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12329",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459486"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.252:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12352",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459491"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.201:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12297",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459496"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.229:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.229:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459502"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.174:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12294",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459507"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.58:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12358",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459512"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.245:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12307",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459516"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.157:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.157:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459522"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206YTBkMTMxYjYtNDNlMi00YmFjLWI1ZmYtYjM5NzlhNTc0MDQ2@whqk26634.tsttt.top:39784#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A14%20%F0%9F%92%A7%201x",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459527"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.84:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.84:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459533"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.227:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12348",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459537"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.80:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12324",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459542"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.36:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12313",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459547"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.127:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.127:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459552"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.156:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12290",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459558"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.164:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.164:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459563"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.85:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.85:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459569"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.183:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12339",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459574"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.67:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12323",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459579"
+  },
+  {
+    "link": "trojan://Aimer@198.41.220.79:443?sni=epcca.ambercc.filegear-sg.me#4Nika-5289",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459584"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAic3lyYnAuY2RuLm5vZGUuYS50ZGRucy1vdW5rLmNvbSIsICJhaWQiOiAwLCAiaG9zdCI6ICJzeXJicC5jZG4ubm9kZS5hLnRkZG5zLW91bmsuY29tIiwgImlkIjogImJiYmJjYWVlLTJmYjUtMzgwOS04NzIyLWQwYjVlZDBjZDJiYyIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvNmQyMi00MjMyLTllODctOTY3MGMxOGI0YTYwLnYxLi5saXZlMDQubTN1OCIsICJwb3J0IjogMTM3MzksICJwcyI6ICI0TmlrYS0yMTMwMCIsICJzY3kiOiAiYXV0byIsICJ0bHMiOiAiIiwgInYiOiAiMiJ9",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.459588"
+  },
+  {
+    "link": "trojan://Aimer@198.41.221.127:443?sni=epccg.ambercc.filegear-sg.me#4Nika-5293",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459593"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiejVzYTZpcy5jZG4ubm9kZS5hLnRkZG5zLW91bmsuY29tIiwgImFpZCI6IDAsICJob3N0IjogIno1c2E2aXMuY2RuLm5vZGUuYS50ZGRucy1vdW5rLmNvbSIsICJpZCI6ICJiYmJiY2FlZS0yZmI1LTM4MDktODcyMi1kMGI1ZWQwY2QyYmMiLCAibmV0IjogIndzIiwgInBhdGgiOiAiLzQ5MDAtNDk1YS1hYTIwLWRhMDYyNmUwZTg3ZC52Mi4ubGl2ZTAzLm0zdTgiLCAicG9ydCI6IDEzNjg0LCAicHMiOiAiNE5pa2EtMjE1NzIiLCAic2N5IjogImF1dG8iLCAidGxzIjogIiIsICJ2IjogIjIifQ==",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T01:08:51.459597"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.159:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.159:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459602"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.5:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.5:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459608"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.139:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.139:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459614"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.97:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12363",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459619"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.34:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12312",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459624"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.60:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.60:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459630"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.152:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.152:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459636"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.18:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.18:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459641"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.170:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.170:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459647"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.231:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12304",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459652"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.191:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12342",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459657"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.104:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12331",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459662"
+  },
+  {
+    "link": "trojan://Aimer@198.41.220.245:443?sni=epccg.ambercc.filegear-sg.me&allowInsecure=0#🔒 TR-TCP-NA 🏴‍☠️ NA-198.41.220.245:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459668"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.221:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.221:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459673"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.172:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12293",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459678"
+  },
+  {
+    "link": "trojan://242a3d8eee5e4ed1a6bfa4141d549a25@198.41.220.2:443?security=tls&sni=jobscareerfortoday.com&type=ws&host=jobscareerfortoday.com&path=/6b777a91#4Nika-3497",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459683"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.59:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12359",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459688"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.9:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.9:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459694"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.0:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.0:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459700"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.209:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.209:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459706"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.24:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.24:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459712"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.52:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.52:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459717"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.248:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12308",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459723"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.176:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12295",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459727"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.173:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12338",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459732"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.25:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.25:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459738"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.2:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12353",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459743"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.242:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12350",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459748"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.52:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.52:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459754"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.96:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.96:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459759"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.134:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.134:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459765"
+  },
+  {
+    "link": "vless://06e4425e-a8cb-4b63-929f-2105604ab0a9@198.41.221.186:443?security=tls&sni=in.youlingkais.filegear-sg.me&type=ws&host=in.youlingkais.filegear-sg.me&path=%2F%3Fed%3D2560#4Nika-6934",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459770"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.235:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12349",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459775"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.83:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12325",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459780"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.55:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12317",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459784"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.4:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.4:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459790"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.184:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12340",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459795"
+  },
+  {
+    "link": "trojan://Aimer@198.41.220.96:443?sni=epcca.ambercc.filegear-sg.me#4Nika-5292",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459800"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.63:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.63:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459806"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.9:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.9:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459811"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.141:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.141:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459818"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.237:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.237:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459824"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTk4LjQxLjIyMS4xNDMiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjQxN2QyN2ZiLWNiOTMtM2JkOC05YmY3LTcxY2Q5MTMxOTgyMSIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvaGdjZWZvbW4iLCAicG9ydCI6IDIwOTUsICJwcyI6ICI0TmlrYS0xOTg3NyIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459828"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.56:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.56:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459834"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.221:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12300",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459840"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.196:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12343",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459844"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.250:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.250:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459850"
+  },
+  {
+    "link": "trojan://i6Q2Mgkvwc@198.41.221.63:443?security=tls&sni=DieGo.DIEgoMAraDOnA.iR.&type=ws&host=DieGo.DIEgoMAraDOnA.iR.&path=/#4Nika-6251",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459855"
+  },
+  {
+    "link": "vless://8b90d0f5-8120-4aca-981d-d122ea272dfc@104.19.224.112:80?security=none&type=ws&path=%2F&host=nl.xyxy.dpdns.org#%F0%9F%87%B3%F0%9F%87%B1%E8%8D%B7%E5%85%B014%20%7C%20%E2%AC%87%EF%B8%8F%2027.5MB%2Fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459860"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.43:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.43:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459866"
+  },
+  {
+    "link": "trojan://Aimer@198.41.221.221:443?sni=epccg.ambercc.filegear-sg.me&allowInsecure=0#4Nika-5294",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459871"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.88:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12362",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459876"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.222:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.221.222:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459882"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.94:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12326",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459887"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.217:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.217:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459893"
+  },
+  {
+    "link": "trojan://Aimer@198.41.220.83:443?sni=epccf.ambercc.filegear-sg.me&allowInsecure=0#4Nika-5290",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459898"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.2:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.2:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459904"
+  },
+  {
+    "link": "vless://8b90d0f5-8120-4aca-981d-d122ea272dfc@104.19.224.112:80?security=none&type=ws&host=nl.xyxy.dpdns.org&path=%2F#🔒 VL-WS-NONE 🏴‍☠️ NA-104.19.224.112:80",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459910"
+  },
+  {
+    "link": "trojan://Aimer@198.41.220.88:443?sni=epcca.ambercc.filegear-sg.me#4Nika-5291",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459914"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.223:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12347",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459920"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.98:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.98:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459925"
+  },
+  {
+    "link": "trojan://242a3d8eee5e4ed1a6bfa4141d549a25@198.41.220.12:443?security=tls&sni=jobscareerforlawyers.com&type=ws&host=jobscareerforlawyers.com&path=/6b777a91#4Nika-3496",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459930"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.37:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.37:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459936"
+  },
+  {
+    "link": "trojan://7743e1b5-d301-4a66-b765-17094890fae2@198.41.220.125:443?sni=ssp2.100896.xyz#🔒 TR-TCP-NA 🏴‍☠️ NA-198.41.220.125:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459941"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.221.33:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#4Nika-12354",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459946"
+  },
+  {
+    "link": "vless://588f094b-431b-422c-b80b-007945037072@45.150.65.53:443?security=tls&sni=usa01.abvpn.ru&type=ws&host=usa01.abvpn.ru&path=%2Fwebsocket&fp=chrome#🔒 VL-WS-TLS 🇺🇸 US-45.150.65.53:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459952"
+  },
+  {
+    "link": "vless://897a4bec-26b8-11e8-94be-00505695472c@198.41.220.224:443?sni=xv6.jpmj.dpdns.org&type=ws&host=xv6.jpmj.dpdns.org&allowInsecure=1#🔒 VL-WS-NA 🏴‍☠️ NA-198.41.220.224:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459958"
+  },
+  {
+    "link": "vless://f184c89c-80a4-4a3a-bc67-97db43266c11@23.94.211.148:443?encryption=none&security=tls&sni=vdd.wxgqlfx.cn&type=ws&host=vdd.wxgqlfx.cn&path=%2fTG%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa%3fed%3d2560#US%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa+(31)",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459963"
+  },
+  {
+    "link": "trojan://Aimer@23.94.211.148:443?sni=ngepz.ambercc.filegear-sg.me#4Nika-5356",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459968"
+  },
+  {
+    "link": "vless://bc083408-220d-477c-8f43-21289df60def@tw5.7896543.xyz:23929?mode=multi&security=reality&encryption=none&type=tcp&flow=xtls-rprx-vision&pbk=q6BCNg-15X1VFYJubCAjXNYj8Wf8JvgexBh8toGnU3E&sid=24522e6b&sni=www.microsoft.com&servername=www.microsoft.com&spx=%2F&fp=firefox#%F0%9F%87%B9%F0%9F%87%BC%E5%8F%B0%E6%B9%BE+3",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T01:08:51.459974"
+  },
+  {
+    "link": "vless://280c19e6-e36d-4d30-af41-f1fd3274218c@172.236.214.80:443?security=reality&sni=docker.com&type=xhttp&path=ws%2F%3Fed%3D443&fp=randomized&pbk=M5SrZwg5W406_83KgJwydPvsLiquKpvmMsoqP9jnjk8&sid=998f7e770f66b5c6#🔒 VL-XHTTP-RLT 🇩🇪 DE-172.236.214.80:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459981"
+  },
+  {
+    "link": "vless://73063b0e-d730-470d-82de-f7653e0922b7@172.236.214.80:80?security=reality&sni=docker.com&type=xhttp&path=%2Fcdn-path-xyz&fp=randomized&pbk=DBYKG2tmNkxdjBlRHk8i0Uerw8Im9YLNF2z-mErSxxg&sid=29#4Nika-10938",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459986"
+  },
+  {
+    "link": "vless://6885ec0a-a89b-4a62-9847-b84cb1ad4995@172.236.214.80:8080?security=reality&sni=docker.com&type=grpc&fp=randomized&pbk=3AXP2FF21FUPDBzWiDJeRDPR9EuqBjkMoTRJCWpsMTs&sid=055f74cd05c3#🔒 VL-GRPC-RLT 🇩🇪 DE-172.236.214.80:8080",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459992"
+  },
+  {
+    "link": "vless://19b6fa27-c968-46be-b980-ca371ff5c0f6@188.245.109.124:50552?security=reality&sni=yahoo.com&type=grpc&fp=chrome&pbk=NKXHq-QeFgTQWspK15CDrkx3frdLdaXKSIsI-SUl_FY&sid=09#🔒 VL-GRPC-RLT 🇩🇪 DE-188.245.109.124:50552",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.459998"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTg4LjI0NS4xMDkuMTI0IiwgImlkIjogImQ4ZmRmMGI2LTlhMTMtNDI2ZC1iNDJiLTA4OWNhY2U2M2Q0ZSIsICJuZXQiOiAidGNwIiwgInBvcnQiOiAyMzg5MCwgInBzIjogIjROaWthLTE5NzU0IiwgInNjeSI6ICJhdXRvIiwgInRscyI6ICJub25lIiwgInR5cGUiOiAibm9uZSIsICJ2IjogIjIifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460004"
+  },
+  {
+    "link": "vless://6895928a-810f-4cfa-9506-68e34af9265a@77.110.110.157:27542?type=xhttp&host=analytics.google.com&path=/#🔒 VL-XHTTP-NA 🇦🇹 AT-77.110.110.157:27542",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460009"
+  },
+  {
+    "link": "vless://e5065d53-e95b-4dbd-cf7a-e3d323aa1093@168.119.167.255:443?security=reality&sni=refersion.com&type=tcp&fp=chrome&pbk=P_FOKz_hYDyi1FwtsHozm0P0wNXsBrLyjt5x6Ke_3jg#🔒 VL-TCP-RLT 🇩🇪 DE-168.119.167.255:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460015"
+  },
+  {
+    "link": "vmess://eyJ2IjogIjIiLCAicHMiOiAiXHVkODNkXHVkZDEyIFZNLVRDUC1OT05FIFx1ZDgzY1x1ZGRlOVx1ZDgzY1x1ZGRlYSBERS0xODguMjQ1LjEwOS4xMjQ6MjM4OTAiLCAiYWRkIjogIjE4OC4yNDUuMTA5LjEyNCIsICJwb3J0IjogMjM4OTAsICJpZCI6ICJkOGZkZjBiNi05YTEzLTQyNmQtYjQyYi0wODljYWNlNjNkNGUiLCAic2N5IjogImF1dG8iLCAibmV0IjogInRjcCIsICJ0eXBlIjogIm5vbmUiLCAidGxzIjogIm5vbmUifQ==",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460021"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6Y3A4cFJTVUF5TGhUZlZXSA==@217.30.10.18:9064#PL%F0%9F%87%B5%F0%9F%87%B1+%7C+217.30.10.18-9064+%7C+103.64ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460025"
+  },
+  {
+    "link": "vless://5eb40b31-6d9b-461d-81c2-53909a01df5b@64.190.63.222:443?security=reality&sni=iranbax.spacex.com&type=grpc&serviceName=@iranbaxvpn-@iranbaxvpn-@iranbaxvpn-@iranbaxvpn&fp=chrome&pbk=skowtu_zROaa0Y7h0Gss2-4mPXvEAngSPxQVukyWO1U&sid=9ff0c049e20b#🔒 VL-GRPC-RLT 🇩🇪 DE-64.190.63.222:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460032"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphYTQyOTc3ZC1hZWYyLTRmNDItYjM1MS0zZDM1YTE5M2ExYWU@85.133.238.67:1935#4Nika-730",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460037"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTphYTQyOTc3ZC1hZWYyLTRmNDItYjM1MS0zZDM1YTE5M2ExYWU=@85.133.238.67:1935#🔒 SS-TCP-NA 🇮🇷 IR-85.133.238.67:1935",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460043"
+  },
+  {
+    "link": "vless://0e70a07d-0968-4d7a-b268-4a927e830d99@14.46.110.161:30074?encryption=none&security=tls&sni=vbb.wxgqlfx.cn&type=ws&host=vbb.wxgqlfx.cn&path=%2fTG%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa%3fed%3d2560#KR%e3%80%90ccbaohe.com%e3%80%91%e5%85%8d%e8%b4%b9%e8%b5%84%e6%ba%90%e5%af%bc%e8%88%aa+(13)",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460048"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU=@54.169.188.214:443#%F0%9F%87%B8%F0%9F%87%AC%E6%96%B0%E5%8A%A0%E5%9D%A16%20%7C%20%E2%AC%87%EF%B8%8F%207.5MB%2Fs%20%7C39%25%7COpenai",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460053"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNToyMTc3YzQ5NC1jYzUwLTQzNzgtOGRmOS1mZDZhMjI2MDBkMGY@bbt.prprcheng.top:60087#%F0%9F%87%AF%F0%9F%87%B5%E6%97%A5%E6%9C%ACcc2",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460058"
+  },
+  {
+    "link": "vmess://ewogICAgImFkZCI6ICIxNTguMTgwLjIyOC4yMjYiLAogICAgImFpZCI6IDAsCiAgICAiaG9zdCI6ICJiZXlvbmRkc3ouY2ZkIiwKICAgICJpZCI6ICI5YjQ1NmMyYS1mMmMxLTQ1ZTEtODdhOS1iNzYyOGIwNGJiMjQiLAogICAgIm5ldCI6ICJ3cyIsCiAgICAicGF0aCI6ICIvbGlua3dzIiwKICAgICJwb3J0IjogNDQzLAogICAgInBzIjogIvCfh67wn4e5SVQtMTU4LjE4MC4yMjguMjI2LTE2MjYiLAogICAgInRscyI6ICJ0bHMiLAogICAgInR5cGUiOiAiYXV0byIsCiAgICAic2VjdXJpdHkiOiAiYXV0byIsCiAgICAic2tpcC1jZXJ0LXZlcmlmeSI6IGZhbHNlLAogICAgInNuaSI6ICJiZXlvbmRkc3ouY2ZkIgp9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T01:08:51.460063"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2OTloT05jcDRMbVd1OENrNmhFUE0zNHR0ODlFcUFKNTBrN0ZiUkJkckJieGpYMW4@195.123.213.12:31348#4Nika-58",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834454"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo2OTloT05jcDRMbVd1OENrNmhFUE0zNHR0ODlFcUFKNTBrN0ZiUkJkckJieGpYMW4=@195.123.213.12:31348#🔒 SS-TCP-NA 🇱🇻 LV-195.123.213.12:31348",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834488"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YWU2Mjc5MjAxNjhjMWNjZQ==@185.22.154.123:50120#6-14%F0%9F%99%88%40xkmfjd_%F0%9F%87%B7%F0%9F%87%BA",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834503"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YWU2Mjc5MjAxNjhjMWNjZUAxODUuMjIuMTU0LjEyMzo1MDEyMA==#NewYork PAC",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834514"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6R0E5S3plRWd2ZnhOcmdtTQ@80.92.204.106:9019#4Nika-1117",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834524"
+  },
+  {
+    "link": "vless://9c98ec59-231c-4091-ba05-a0c881021335@global-jp-1.node-ddns.netlib.net:26833?type=tcp&encryption=none&host=&path=&headerType=none&quicSecurity=none&serviceName=&security=reality&flow=xtls-rprx-vision&fp=chrome&sni=www.apple.com.cn&pbk=aKP8a6omJGKNiP9tmzgjeWrANyBgOCtzTB1R025qwHs&sid=84d7ec25#%F0%9F%87%AF%F0%9F%87%B5%20%E6%97%A5%E6%9C%AC%20Global",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834534"
+  },
+  {
+    "link": "vless://ee6774c0-9b19-4ff1-8b30-2da4b71977e2@8.210.92.24:80?security=tls&sni=edccr.aimercc.filegear-sg.me&type=ws&host=edccr.aimercc.filegear-sg.me&path=%2F%3Fed%3D2560%26proxyip%3Dts.hpc.tw#🔒 VL-WS-TLS 🇭🇰 HK-8.210.92.24:80",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T06:18:58.834544"
+  },
+  {
+    "link": "vless://9c98ec59-231c-4091-ba05-a0c881021335@global-sg-1.node-ddns.netlib.net:26831?type=tcp&encryption=none&host=&path=&headerType=none&quicSecurity=none&serviceName=&security=reality&flow=xtls-rprx-vision&fp=chrome&sni=www.lamer.com.sg&pbk=iuidXWMghSXVudNoMUzMle51egXYMfogE812yLfJDCQ&sid=ac1757ec#%F0%9F%87%B8%F0%9F%87%AC%20%E6%96%B0%E5%8A%A0%E5%9D%A1%20Global",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834557"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5Yzk4ZWM1OS0yMzFjLTQwOTEtYmEwNS1hMGM4ODEwMjEzMzU@global-sg-2.node-ddns.netlib.net:26832#%F0%9F%87%B8%F0%9F%87%AC%20%E6%96%B0%E5%8A%A0%E5%9D%A1%20Global%C2%B2",
+    "reason": "DNS Resolution Failed: [Errno -2] Name or service not known",
+    "timestamp": "2025-06-21T06:18:58.834568"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@79.127.233.170:990#🔒 SS-TCP-NA 🇨🇦 CA-79.127.233.170:990",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834579"
+  },
+  {
+    "link": "vless://a7b98c63-c5bf-4f8e-916d-11161e8f822a@78.111.84.71:8443?security=none&type=tcp&host=zula.ir&headerType=http#🔒 VL-TCP-NONE 🇳🇱 NL-78.111.84.71:8443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834592"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpvWklvQTY5UTh5aGNRVjhrYTNQYTNB@103.104.247.72:8080#🔒 SS-TCP-NA 🇳🇱 NL-103.104.247.72:8080",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834602"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpGdGMxN1ZIOVpYUU9ONXZzbEpDWW12@91.186.217.246:31764#4Nika-389",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834608"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206d0RadHhmSWszVWhhY0tIcmhvN2x4dw==@5.182.87.210:35961#DE%F0%9F%87%A9%F0%9F%87%AA+%7C+5.182.87.210-35961+%7C+97.75ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834614"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMTQ0LjI0LjIwMC4xNjQiLCAiYWlkIjogMCwgImhvc3QiOiAiIiwgImlkIjogIjliNDU2YzJhLWYyYzEtNDVlMS04N2E5LWI3NjI4YjA0YmIyNCIsICJuZXQiOiAid3MiLCAicGF0aCI6ICIvbGlua3dzIiwgInBvcnQiOiA0NDMsICJwcyI6ICI0TmlrYS0xODczMyIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiBmYWxzZSwgInNuaSI6ICJiZXlvbmRkc3ouY2ZkIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834620"
+  },
+  {
+    "link": "trojan://96983eb4-c8f1-316e-ab00-500014ed3d8b@official.taipeicitygovernment.co.ua:8443?security=tls#4Nika-4242",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834627"
+  },
+  {
+    "link": "vless://77f680d1-1881-4b16-9eac-b8882c05fe62@213.176.65.25:443?security=tls&sni=WWW.pegAh-Esfahan.De.&type=ws&host=WWW.pegAh-Esfahan.De.&fp=chrome&alpn=h2%2Chttp%2F1.1#🔒 VL-WS-TLS 🇫🇮 FI-213.176.65.25:443",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834634"
+  },
+  {
+    "link": "vless://07c846af-4106-4790-9f83-10994c9e03d4@ns4.esfahansiman.com:443?encryption=none&security=tls&sni=WWW.pegAh-Esfahan.De.&type=ws&host=WWW.pegAh-Esfahan.De.&path=%2fTELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config#%f0%9f%87%ae%f0%9f%87%b9%e6%84%8f%e5%a4%a7%e5%88%a91+%7c+%e2%ac%87%ef%b8%8f+3.5MB%2fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834641"
+  },
+  {
+    "link": "vless://c8a71f9b-692d-4916-ad73-f070ac00257f@ns4.esfahansiman.com:443?encryption=none&security=tls&sni=WWW.EsfahAnsimaN.infO.&type=ws&host=WWW.EsfahAnsimaN.infO.&path=%2fTELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config--CANALTELEGRAM--jet_config--TELEGRAM--jet_config#%f0%9f%87%a9%f0%9f%87%aa%e5%be%b7%e5%9b%bd39+%7c+%e2%ac%87%ef%b8%8f+1.3MB%2fs",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T06:18:58.834647"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAiMjMuMTU3Ljg4LjIwIiwgImFpZCI6IDEsICJob3N0IjogIjIzLjE1Ny44OC4yMCIsICJpZCI6ICIwM2ZjYzYxOC1iOTNkLTY3OTYtNmFlZC04YTM4Yzk3NWQ1ODEiLCAibmV0IjogIndzIiwgInBhdGgiOiAibGlua3Z3cyIsICJwb3J0IjogNDQzLCAicHMiOiAiNE5pa2EtMjAxNTYiLCAic2VjdXJpdHkiOiAiYXV0byIsICJza2lwLWNlcnQtdmVyaWZ5IjogZmFsc2UsICJzbmkiOiAiMjMuMTU3Ljg4LjIwIiwgInRscyI6ICJ0bHMiLCAidHlwZSI6ICJhdXRvIn0=",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614278"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTozY1RmRUFnQW5PZHFueTdGcDF2WXBm@77.83.246.74:443#🔒 SS-TCP-NA 🇵🇱 PL-77.83.246.74:443",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614300"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw==@121.127.46.147:989#%F0%9F%87%B8%F0%9F%87%AASE-121.127.46.147-0483",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614308"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206aVVCMDkyM1JCQQ==@154.3.8.151:30067#%F0%9F%87%BA%F0%9F%87%B8US-154.3.8.151-0395",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614313"
+  },
+  {
+    "link": "vmess://eyJhZGQiOiAidWljZG4uY2YiLCAiYWlkIjogMCwgImhvc3QiOiAidWljZG4uY2YiLCAiaWQiOiAiYzY3NDdkYTQtZmIyZS00YTJhLWJkYjctODYxNGJkZDZiMGIzIiwgIm5ldCI6ICJ3cyIsICJwYXRoIjogIi9zc2hraXQvMTczNjk2MDExMS82Mzg1OWJjMTc3YTMzLyIsICJwb3J0IjogODAsICJwcyI6ICI0TmlrYS0yMTQwNSIsICJzZWN1cml0eSI6ICJhdXRvIiwgInNraXAtY2VydC12ZXJpZnkiOiB0cnVlLCAic25pIjogIiIsICJ0bHMiOiAiIiwgInR5cGUiOiAiYXV0byJ9",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614319"
+  },
+  {
+    "link": "trojan://624c4a29-ca1a-44d4-9245-98f7b973ea3e@cmi.tw5.ty7.fun:1234?security=tls&allowInsecure=1&type=tcp&headerType=none#https%3A%2F%2Ft.me%2Fxyfqzy",
+    "reason": "Connection Refused",
+    "timestamp": "2025-06-21T07:44:36.614325"
+  },
+  {
+    "link": "ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpMTElubVVCcnhNZ0VuODVZNnZWamVI@185.172.129.91:56220#US%F0%9F%87%BA%F0%9F%87%B8+%7C+185.172.129.91-56220+%7C+11.58ms",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614331"
+  },
+  {
+    "link": "vless://a13df940-020c-465f-bc89-ee5279b5cd6a@129.146.46.164:443?encryption=none&security=tls&type=ws&sni=bj.ylks01.eu.org&host=bj.ylks01.eu.org&path=%2f#TG%3A%40JUZIBAIPIAO%2B%2B%E7%BE%8E%E5%9B%BD_37",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614339"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@121.127.46.147:989#4Nika-1480",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614349"
+  },
+  {
+    "link": "vless://800a78d8-7ee3-442e-8ec2-e3309953dec3@211.61.33.122:17262?security=tls&sni=mot.luyuju.dpdns.org&type=ws&host=mot.luyuju.dpdns.org&path=%2F%3Fed%3D2560&fp=random&alpn=h3#4Nika-11315",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614360"
+  },
+  {
+    "link": "ss://YWVzLTEyOC1nY206NWJhZmJmNGQtNTgzNC00NWI5LTkzZWYtMWZlYjQ5YTFiN2I2@zfhk.521222.xyz:52170#HK%e9%a6%99%e6%b8%af1",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614370"
+  },
+  {
+    "link": "ss://YWVzLTI1Ni1nY206YzcyYzg4ZGUtZGU3My00MzNmLTg3OGItNTFhYzRmMjkzYWY3@zfa01.333210.xyz:50101#%E5%A5%97%E9%A4%90%E5%B7%B2%E5%88%B0%E6%9C%9F%E6%88%96%E6%B5%81%E9%87%8F%E7%94%A8%E5%B0%BD",
+    "reason": "Connection Timeout",
+    "timestamp": "2025-06-21T07:44:36.614379"
+  }
+]
