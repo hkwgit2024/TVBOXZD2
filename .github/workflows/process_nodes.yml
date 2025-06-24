@@ -25,16 +25,27 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements_enhance_nodes.txt
+          pip list  # 调试：显示已安装包
 
       - name: Ensure data directory exists
         run: |
           mkdir -p data
           echo "data 目录已创建"
+          ls -la data/
+
+      - name: Verify input files
+        run: |
+          ls -la data/sub.txt || echo "sub.txt 未找到"
+          ls -la data/history_results.json || echo "history_results.json 未找到"
+          if [ -f data/sub.txt ]; then
+            wc -l data/sub.txt  # 显示行数
+            head -n 10 data/sub.txt  # 显示前10行
+          fi
 
       - name: Run enhanced script
         env:
           LOG_LEVEL: INFO
-          TEST_TIMEOUT: 1
+          TEST_TIMEOUT: 2
         run: python enhance_nodes.py
 
       - name: List data directory contents
@@ -43,6 +54,9 @@ jobs:
           cat data/logfile.txt || echo "logfile.txt 未找到"
           cat data/enhanced_nodes.txt || echo "enhanced_nodes.txt 未找到"
           cat data/checksums.txt || echo "checksums.txt 未找到"
+          if [ -f data/enhanced_nodes.txt ]; then
+            wc -l data/enhanced_nodes.txt  # 显示节点数
+          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -52,11 +66,14 @@ jobs:
             data/enhanced_nodes.txt
             data/checksums.txt
             data/logfile.txt
+            data/sub.txt
+            data/history_results.json
           if-no-files-found: warn
 
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.BOT}}
+          github_token: ${{ secrets.BOT }}  # 切换到默认令牌
           publish_dir: data
           publish_branch: gh-pages
+          keep_files: false
