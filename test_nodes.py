@@ -389,8 +389,10 @@ async def start_proxy_subprocess():
     if not os.path.isfile(XRAY_PATH) or not os.access(XRAY_PATH, os.X_OK):
         logger.error(f"Xray 可执行文件 '{XRAY_PATH}' 不存在或无执行权限")
         return False
-    if not os.path.exists(os.getenv("XRAY_GEOIP_PATH", "")) or not os.path.exists(os.getenv("XRAY_GEOSITE_PATH", "")):
-        logger.error("GeoIP 或 GeoSite 数据文件缺失")
+    # 修复：如果 GeoIP 或 GeoSite 数据文件缺失，立即返回 False
+    if not (os.getenv("XRAY_GEOIP_PATH") and os.path.exists(os.getenv("XRAY_GEOIP_PATH")) and
+            os.getenv("XRAY_GEOSITE_PATH") and os.path.exists(os.getenv("XRAY_GEOSITE_PATH"))):
+        logger.error("GeoIP 或 GeoSite 数据文件缺失。请确保已设置 XRAY_GEOIP_PATH 和 XRAY_GEOSITE_PATH 环境变量，并且文件存在。")
         return False
 
     # 检查 Xray 进程是否已在运行 (使用 returncode 检查)
@@ -405,7 +407,9 @@ async def start_proxy_subprocess():
             stderr=subprocess.PIPE
         )
         await asyncio.sleep(0.5) # 稍微等待 Xray 启动
-        if await is_port_in_use(LOCAL_PROXY_PORT): # is_port_in_use 判断的是“是否被占用”，所以这里应该是如果“未被占用”说明Xray未成功监听
+        # is_port_in_use 返回 True 表示端口被占用，也就是 Xray 成功监听了。
+        # 所以这里 if not await is_port_in_use(...) 表示 Xray 未能成功监听端口。
+        if not await is_port_in_use(LOCAL_PROXY_PORT): 
             logger.error(f"Xray 未监听端口 {LOCAL_PROXY_PORT} (端口可能被占用或Xray启动失败)")
             # 尝试获取 Xray 的输出，帮助调试
             stdout, stderr = await xray_process.communicate()
