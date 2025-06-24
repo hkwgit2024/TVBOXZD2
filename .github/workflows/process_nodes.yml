@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # 允许手动触发工作流
+  workflow_dispatch:
 
 jobs:
   test_and_deduplicate:
@@ -21,13 +21,23 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests # 安装requests库用于网络请求
+        pip install requests
 
     - name: Create data directory if not exists
       run: mkdir -p data
 
+    # 为了调试目的，可以保留这个步骤，验证文件结构
+    - name: List files in current directory and data directory
+      run: |
+        echo "Listing files in current directory ($(pwd)):"
+        ls -F
+        echo ""
+        echo "Listing files in data directory ($(pwd)/data):"
+        ls -F data/
+        echo ""
+
     - name: Run node testing and deduplication script
-      run: python enhance_nodes.py # 调用更新后的脚本名称
+      run: python enhance_nodes.py # 直接从根目录调用脚本
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
