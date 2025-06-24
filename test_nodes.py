@@ -38,6 +38,23 @@ def safe_base64_decode(s: str) -> str:
     except Exception:
         return ""
 
+# ---- 确保 fetch_ss_txt 函数定义在 main 函数调用之前 ----
+async def fetch_ss_txt(url: str) -> str:
+    """从URL下载ss.txt文件内容"""
+    logger.info(f"正在从 {url} 下载节点列表...")
+    async with httpx.AsyncClient(timeout=TIMEOUT_FETCH) as client:
+        try:
+            response = await client.get(url)
+            response.raise_for_status()  # 检查HTTP错误
+            logger.info("节点列表下载成功。")
+            return response.text
+        except httpx.HTTPStatusError as e:
+            logger.error(f"HTTP错误下载文件: {e.response.status_code} - {e.response.text}")
+            return ""
+        except httpx.RequestError as e:
+            logger.error(f"请求错误下载文件: {e}")
+            return ""
+
 def parse_node_info(line: str) -> Union[dict, None]:
     """
     解析一行节点信息，支持 ss, ssr, vless, vmess, trojan, hysteria2 协议。
@@ -354,7 +371,7 @@ async def main():
             node = res["node"]
             status = res["status"]
             latency = res["latency_ms"] if res["latency_ms"] != -1 else "N/A"
-            error = res["error"] if error else "" # 确保是空字符串
+            error = res["error"] if res["error"] else "" # 确保是空字符串
             original_link = res["original_link"]
             
             f.write(
