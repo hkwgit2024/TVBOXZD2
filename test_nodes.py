@@ -297,15 +297,19 @@ async def generate_xray_config(node_info):
         }
     }
 
-    # 添加 Geo 数据路径
-    if os.getenv("XRAY_GEOIP_PATH") and os.path.exists(os.getenv("XRAY_GEOIP_PATH")):
-        config["routing"]["geoip"] = {"path": os.getenv("XRAY_GEOIP_PATH")}
+    # 添加 Geo 数据路径，并确保使用绝对路径
+    geoip_path_env = os.getenv("XRAY_GEOIP_PATH")
+    geosite_path_env = os.getenv("XRAY_GEOSITE_PATH")
+
+    if geoip_path_env and os.path.exists(geoip_path_env):
+        config["routing"]["geoip"] = {"path": os.path.abspath(geoip_path_env)} # 使用绝对路径
     else:
-        logger.warning("GeoIP 数据文件未找到，可能影响路由规则")
-    if os.getenv("XRAY_GEOSITE_PATH") and os.path.exists(os.getenv("XRAY_GEOSITE_PATH")):
-        config["routing"]["geosite"] = {"path": os.getenv("XRAY_GEOSITE_PATH")}
+        logger.warning(f"GeoIP 数据文件未找到或 XRAY_GEOIP_PATH 未设置 ({geoip_path_env}), 可能影响路由规则")
+    if geosite_path_env and os.path.exists(geosite_path_env):
+        config["routing"]["geosite"] = {"path": os.path.abspath(geosite_path_env)} # 使用绝对路径
     else:
-        logger.warning("GeoSite 数据文件未找到，可能影响路由规则")
+        logger.warning(f"GeoSite 数据文件未找到或 XRAY_GEOSITE_PATH 未设置 ({geosite_path_env}), 可能影响路由规则")
+
 
     outbound = config['outbounds'][0]
     stream_settings = outbound['streamSettings']
@@ -387,39 +391,65 @@ async def start_proxy_subprocess():
     """启动 Xray 子进程"""
     global xray_process
     if not os.path.isfile(XRAY_PATH) or not os.access(XRAY_PATH, os.X_OK):
-        logger.error(f"Xray 可执行文件 '{XRAY_PATH}' 不存在或无执行权限")
+        logger.error(f"Xray 可执行文件 '{XRAY_PATH}' 不存在或无执行权限。请确保 '{XRAY_PATH}' 文件存在且可执行。")
         return False
+    
+    geoip_path_env = os.getenv("XRAY_GEOIP_PATH")
+    geosite_path_env = os.getenv("XRAY_GEOSITE_PATH")
+
+    logger.debug(f"检查 XRAY_GEOIP_PATH: {geoip_path_env} (存在: {os.path.exists(str(geoip_path_env)) if geoip_path_env else False})")
+    logger.debug(f"检查 XRAY_GEOSITE_PATH: {geosite_path_env} (存在: {os.path.exists(str(geosite_path_env)) if geosite_path_env else False})")
+
     # 修复：如果 GeoIP 或 GeoSite 数据文件缺失，立即返回 False
-    if not (os.getenv("XRAY_GEOIP_PATH") and os.path.exists(os.getenv("XRAY_GEOIP_PATH")) and
-            os.getenv("XRAY_GEOSITE_PATH") and os.path.exists(os.getenv("XRAY_GEOSITE_PATH"))):
+    if not (geoip_path_env and os.path.exists(geoip_path_env) and
+            geosite_path_env and os.path.exists(geosite_path_env)):
         logger.error("GeoIP 或 GeoSite 数据文件缺失。请确保已设置 XRAY_GEOIP_PATH 和 XRAY_GEOSITE_PATH 环境变量，并且文件存在。")
+        logger.error(f"Xray 在启动时可能还会在其工作目录 '{os.getcwd()}' 中寻找这些文件。请考虑将 'geoip.dat' 和 'geosite.dat' 放在此处，或确保环境变量指向正确的绝对路径。")
         return False
 
-    # 检查 Xray 进程是否已在运行 (使用 returncode 检查)
-    if xray_process is not None and xray_process.returncode is None: # 修复：使用 returncode 代替 poll()
+    # 检查 Xray 进程是否已在运行
+    if xray_process is not None and xray_process.returncode is None:
         logger.debug("Xray 进程已在运行")
         return True
 
     try:
+        # 尝试启动 Xray 进程
         xray_process = await asyncio.create_subprocess_exec(
             XRAY_PATH, "-c", XRAY_CONFIG_FILE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        await asyncio.sleep(0.5) # 稍微等待 Xray 启动
-        # is_port_in_use 返回 True 表示端口被占用，也就是 Xray 成功监听了。
-        # 所以这里 if not await is_port_in_use(...) 表示 Xray 未能成功监听端口。
-        if not await is_port_in_use(LOCAL_PROXY_PORT): 
-            logger.error(f"Xray 未监听端口 {LOCAL_PROXY_PORT} (端口可能被占用或Xray启动失败)")
-            # 尝试获取 Xray 的输出，帮助调试
-            stdout, stderr = await xray_process.communicate()
-            if stdout: logger.debug(f"Xray stdout: {stdout.decode()}")
-            if stderr: logger.error(f"Xray stderr: {stderr.decode()}")
+        
+        # 给予 Xray 少量时间启动，并检查它是否立即退出
+        await asyncio.sleep(0.5) 
+        
+        # 检查 Xray 进程是否已退出 (意味着启动失败或配置错误)
+        if xray_process.returncode is not None:
+            stdout, stderr = await xray_process.communicate() # 获取错误输出
+            logger.error(f"Xray 进程启动后立即退出，退出码: {xray_process.returncode}")
+            if stdout: logger.debug(f"Xray stdout: {stdout.decode().strip()}")
+            if stderr: logger.error(f"Xray stderr: {stderr.decode().strip()}")
+            xray_process = None # 重置全局变量
             return False
-        logger.info(f"Xray 已监听端口 {LOCAL_PROXY_PORT}")
-        return True
+
+        # 如果进程仍在运行，则检查端口是否被监听
+        # is_port_in_use 返回 True 表示端口 IS IN USE (即 Xray 应该已监听)
+        if await is_port_in_use(LOCAL_PROXY_PORT): 
+            logger.info(f"Xray 已成功监听端口 {LOCAL_PROXY_PORT}")
+            return True
+        else: # 端口未被占用，说明 Xray 未能成功绑定或启动异常
+            logger.error(f"Xray 未能监听端口 {LOCAL_PROXY_PORT}。进程仍在运行但端口未打开。")
+            stdout, stderr = await xray_process.communicate() # 获取输出以进行调试
+            if stdout: logger.debug(f"Xray stdout: {stdout.decode().strip()}")
+            if stderr: logger.error(f"Xray stderr: {stderr.decode().strip()}")
+            await stop_proxy_subprocess() # 清理可能卡住的进程
+            return False
+            
     except Exception as e:
-        logger.error(f"启动 Xray 失败: {e}")
+        logger.error(f"启动 Xray 失败: {e}", exc_info=True) # 打印完整的异常信息
+        # 确保如果发生异常，Xray 进程被清理
+        if xray_process is not None:
+            await stop_proxy_subprocess()
         return False
 
 async def stop_proxy_subprocess():
