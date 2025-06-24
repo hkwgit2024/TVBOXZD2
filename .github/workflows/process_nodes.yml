@@ -11,6 +11,9 @@ on:
 jobs:
   enhance-nodes:
     runs-on: ubuntu-latest # 在最新的 Ubuntu 运行
+    # ⭐ 关键：授予工作流写入仓库内容的权限，以便进行 Git 推送
+    permissions:
+      contents: write # 允许 GITHUB_TOKEN 写入仓库内容
 
     steps:
       - name: Checkout repository # 检出代码
@@ -58,10 +61,12 @@ jobs:
             wc -l data/enhanced_nodes.txt # 显示增强节点文件行数
           fi
 
-      - name: Publish to GitHub Pages # 发布到 GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      # ⭐ 关键新增步骤：自动提交并推送更改
+      - name: Commit and push generated files # 提交并推送生成的文件
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          github_token: ${{ secrets.BOT }} # ⭐ 关键：使用 GitHub 自动提供的令牌
-          publish_dir: data # ⭐ 关键：指定要发布到 GitHub Pages 的目录
-          publish_branch: gh-pages # ⭐ 关键：指定发布到的分支，通常是 gh-pages
-          keep_files: false # 清理 gh-pages 分支的现有文件，确保只保留本次生成的文件
+          commit_message: "chore: Auto-update enhanced nodes" # 提交信息
+          # files: "data/*" # 默认提交所有更改的文件，也可以指定 specific files
+          branch: main # 推送到 main 分支
+          # 默认情况下，此 Action 使用 GITHUB_TOKEN，并处理提交者信息
+          # 您也可以通过 commit_user_name 和 commit_user_email 自定义提交者
