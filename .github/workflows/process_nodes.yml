@@ -27,7 +27,7 @@ jobs:
       run: mkdir -p data
 
     - name: Run node testing and deduplication script
-      run: python scripts/enhance_nodes.py # 调用更新后的脚本名称
+      run: python enhance_nodes.py # 调用更新后的脚本名称
 
     - name: Commit changes
       uses: EndBug/add-and-commit@v9
