@@ -5,12 +5,25 @@ import os
 import base64
 from urllib.parse import urlparse, unquote, parse_qs
 from typing import Union
+import logging # 引入日志模块
 
 # 配置
 SS_TXT_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"
 OUTPUT_FILE = "data/sub.txt"
-TIMEOUT = 10  # 秒
-CONCURRENCY_LIMIT = 50  # 并发测试的节点数量
+TIMEOUT_FETCH = 15 # 下载文件超时
+TIMEOUT_NODE_CONNECT = 8 # 单个节点连接超时（降低）
+CONCURRENCY_LIMIT = 100 # 并发测试的节点数量（适当提高）
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO, # 默认信息级别，可以改为 DEBUG 查看更详细信息
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler() # 输出到控制台
+        # logging.FileHandler("test_log.log") # 如果需要保存到文件
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # 辅助函数：尝试解码 base64 并处理 URL 安全编码
 def safe_base64_decode(s: str) -> str:
@@ -25,22 +38,6 @@ def safe_base64_decode(s: str) -> str:
     except Exception:
         return ""
 
-async def fetch_ss_txt(url: str) -> str:
-    """从URL下载ss.txt文件内容"""
-    print(f"正在从 {url} 下载节点列表...")
-    async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-        try:
-            response = await client.get(url)
-            response.raise_for_status()  # 检查HTTP错误
-            print("节点列表下载成功。")
-            return response.text
-        except httpx.HTTPStatusError as e:
-            print(f"HTTP错误下载文件: {e.response.status_code} - {e.response.text}")
-            return ""
-        except httpx.RequestError as e:
-            print(f"请求错误下载文件: {e}")
-            return ""
-
 def parse_node_info(line: str) -> Union[dict, None]:
     """
     解析一行节点信息，支持 ss, ssr, vless, vmess, trojan, hysteria2 协议。
@@ -53,6 +50,9 @@ def parse_node_info(line: str) -> Union[dict, None]:
     try:
         if line.startswith("ss://"):
             parsed_url = urlparse(line)
+            if not parsed_url.hostname or not parsed_url.port:
+                logger.debug(f"解析行失败: {line[:50]}... 错误: SS 节点缺少主机或端口")
+                return None
             return {
                 "protocol": "ss",
                 "server": parsed_url.hostname,
@@ -71,20 +71,21 @@ def parse_node_info(line: str) -> Union[dict, None]:
 
             decoded_part = safe_base64_decode(encoded_part)
             if not decoded_part:
-                print(f"解析行失败: {line[:50]}... 错误: SSR base64 解码失败")
+                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR base64 解码失败")
                 return None
 
             parts = decoded_part.split(':')
             if len(parts) < 6: # server:port:protocol:method:obfs:password
-                print(f"解析行失败: {line[:50]}... 错误: SSR 格式不完整")
+                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR 格式不完整")
                 return None
             
             server = parts[0]
-            port = int(parts[1])
-            # protocol = parts[2]
-            # method = parts[3]
-            # obfs = parts[4]
-            # password = safe_base64_decode(parts[5].split('/')[0]) # password可能后面跟/
+            try:
+                port = int(parts[1])
+            except ValueError:
+                logger.debug(f"解析行失败: {line[:50]}... 错误: SSR 端口无效")
+                return None
+            
             remark = safe_base64_decode(encoded_remark) if encoded_remark else f"Unnamed SSR Node"
 
             return {
@@ -95,35 +96,35 @@ def parse_node_info(line: str) -> Union[dict, None]:
                 "original_link": line
             }
         elif line.startswith("vless://") or line.startswith("vmess://") or line.startswith("trojan://"):
-            # 对于 IPv6 地址，urllib.parse 应该能处理方括号，但可能出现不规范的连接方式
-            # 比如 trojan://user@[ipv6]:port?key=value，如果没有端口号或者格式不规范，urllib.parse可能会有问题
-            # 这里依赖urlparse的健壮性，如果报错，再考虑正则捕获
             parsed_url = urlparse(line)
             
-            # 检查 hostname 是否有效，特别是对于 IPv6
-            if not parsed_url.hostname:
-                # 尝试更宽松的IPv6匹配
-                match = re.match(r"^(.*?)(?:\[([0-9a-fA-F:]+)\]):?(\d+)?(.*)", line)
+            # 尝试处理 IPv6 地址和不规范 URL
+            if not parsed_url.hostname or not parsed_url.port:
+                match = re.match(r"^(.*?)(?:\[([0-9a-fA-F.:]+)\]):?(\d+)?(.*)", line)
                 if match:
                     protocol_prefix, ipv6_addr, port_str, remainder = match.groups()
                     if ipv6_addr:
                         server = f"[{ipv6_addr}]"
-                        port = int(port_str) if port_str else None
-                        # 重构一个有效的URL用于进一步解析查询参数和 fragment
+                        try:
+                            port = int(port_str) if port_str else None
+                        except ValueError:
+                            logger.debug(f"解析行失败: {line[:50]}... 错误: {protocol_prefix} 端口无效")
+                            return None
+                        
                         temp_url = f"{protocol_prefix}{server}:{port}{remainder}"
                         parsed_url = urlparse(temp_url)
                     else:
-                        raise ValueError("Invalid IPv6 URL format (missing address)")
+                        logger.debug(f"解析行失败: {line[:50]}... 错误: Invalid IPv6 URL format (missing address)")
+                        return None
                 else:
-                    raise ValueError(f"Invalid URL: {line}")
-
+                    logger.debug(f"解析行失败: {line[:50]}... 错误: URL 格式不正确或缺少主机/端口")
+                    return None
 
             protocol = parsed_url.scheme
             server = parsed_url.hostname # 如果是IPv6，这里会是带方括号的
             port = parsed_url.port
             remark = unquote(parsed_url.fragment) if parsed_url.fragment else f"Unnamed {protocol.upper()} Node"
 
-            # 提取查询参数（例如VLESS的security, type, sni, path）
             query_params = parse_qs(parsed_url.query)
             
             return {
@@ -138,22 +139,28 @@ def parse_node_info(line: str) -> Union[dict, None]:
                 "original_link": line
             }
         elif line.startswith("hysteria2://"):
-            # hysteria2://uuid@server:port?params#remark
             parsed_url = urlparse(line)
             
-            if not parsed_url.hostname:
-                 match = re.match(r"^(.*?)(?:\[([0-9a-fA-F:]+)\]):?(\d+)?(.*)", line)
+            if not parsed_url.hostname or not parsed_url.port:
+                 match = re.match(r"^(.*?)(?:\[([0-9a-fA-F.:]+)\]):?(\d+)?(.*)", line)
                  if match:
                      protocol_prefix, ipv6_addr, port_str, remainder = match.groups()
                      if ipv6_addr:
                          server = f"[{ipv6_addr}]"
-                         port = int(port_str) if port_str else None
+                         try:
+                             port = int(port_str) if port_str else None
+                         except ValueError:
+                            logger.debug(f"解析行失败: {line[:50]}... 错误: Hysteria2 端口无效")
+                            return None
+
                          temp_url = f"{protocol_prefix}{server}:{port}{remainder}"
                          parsed_url = urlparse(temp_url)
                      else:
-                         raise ValueError("Invalid IPv6 URL format (missing address)")
+                         logger.debug(f"解析行失败: {line[:50]}... 错误: Invalid IPv6 URL format (missing address)")
+                         return None
                  else:
-                     raise ValueError(f"Invalid URL: {line}")
+                     logger.debug(f"解析行失败: {line[:50]}... 错误: Hysteria2 URL 格式不正确或缺少主机/端口")
+                     return None
 
             protocol = parsed_url.scheme
             server = parsed_url.hostname
@@ -177,10 +184,10 @@ def parse_node_info(line: str) -> Union[dict, None]:
             }
         else:
             # 打印前缀而不是整个行，避免日志过长
-            print(f"无法识别的协议或格式: {line.split('://')[0] if '://' in line else line[:20]}...")
+            logger.debug(f"无法识别的协议或格式: {line.split('://')[0] if '://' in line else line[:20]}...")
             return None
     except Exception as e:
-        print(f"解析行失败: {line[:50]}... 错误: {e}")
+        logger.debug(f"解析行失败: {line[:50]}... 错误: {e}")
         return None
 
 async def test_node(node: dict) -> dict:
@@ -196,6 +203,7 @@ async def test_node(node: dict) -> dict:
     original_link = node.get("original_link", "N/A")
 
     if not server or not port:
+        logger.debug(f"跳过无效节点 (缺少服务器或端口): {original_link}")
         return {
             "node": node,
             "status": "Invalid Node Info",
@@ -213,32 +221,35 @@ async def test_node(node: dict) -> dict:
 
     start_time = asyncio.get_event_loop().time()
     try:
-        # 对于所有协议，我们首先尝试建立一个裸TCP连接
-        # 这可以检查端口是否开放，以及基本的网络可达性
         reader, writer = await asyncio.wait_for(
-            asyncio.open_connection(connect_host, port), timeout=TIMEOUT
+            asyncio.open_connection(connect_host, port), timeout=TIMEOUT_NODE_CONNECT
         )
-        # 发送一个小的 HTTP GET 请求以探测，并尽快关闭
+        
+        # 尝试发送一个小的 HTTP GET 请求以探测，并尽快关闭
         # 注意：这只是一个通用探测，代理服务器可能不会响应标准的HTTP请求
         # 但它有助于检查TLS握手是否至少开始。
-        if protocol in ["vless", "vmess", "trojan", "hysteria2"] and node.get("security") == "tls":
-            # 对于TLS连接，尝试发送ClientHello，不期待完整HTTP响应
-            # 这比裸TCP连接更进一步，但仍不是完整协议实现
-            # 更完善的TLS握手验证需要ssl模块或专业库
-            # 简单发送一些数据，如果TLS握手失败，ConnectionResetError等会捕获
-            await writer.write(b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        else:
-            # 对于非TLS的简单TCP连接
-            await writer.write(b"Hello\r\n") # 发送一些无害数据
-
-        await writer.drain() # 确保数据发送
-        
-        # 尝试读取一些响应，但不阻塞太久
         try:
-            # 100字节的简单读取，避免长时间等待
+            if protocol in ["vless", "vmess", "trojan"] and node.get("security") == "tls":
+                # 尝试发送 ClientHello 模拟 TLS 握手启动
+                # 这不是一个完整的 TLS 握手，只是探测连接是否能建立
+                await writer.write(b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
+            elif protocol == "hysteria2":
+                 # Hysteria2 是 UDP 协议，但这里我们用 TCP 端口连通性作为初步判断
+                 # 实际上，需要一个 Hysteria2 客户端才能真正测试
+                await writer.write(b"H2CONNECT / HTTP/1.1\r\nHost: example.com\r\n\r\n")
+            else:
+                await writer.write(b"Hello\r\n") # 发送一些无害数据
+
+            await writer.drain() # 确保数据发送
+            
+            # 尝试读取一些响应，但不阻塞太久
             await asyncio.wait_for(reader.read(100), timeout=1) 
         except asyncio.TimeoutError:
-            pass # 可能是代理服务器不响应或非HTTP服务，不是致命错误
+            # 可能是代理服务器不响应或非HTTP服务，不是致命错误，继续关闭连接
+            pass 
+        except Exception as read_error:
+            logger.debug(f"读取响应时发生错误: {read_error}")
+            pass # 记录但不作为主要失败原因
 
         writer.close()
         await reader.wait_closed() # 等待关闭，确保连接完成
@@ -248,14 +259,29 @@ async def test_node(node: dict) -> dict:
         status = "Success"
         error_msg = ""
 
-    except (asyncio.TimeoutError, ConnectionRefusedError, OSError, httpx.RequestError) as e:
+    except asyncio.TimeoutError:
+        error_msg = "Connection Timeout"
+        status = "Failed"
+    except ConnectionRefusedError:
+        error_msg = "Connection Refused"
+        status = "Failed"
+    except OSError as e:
+        # 捕捉 Name or service not known (Errno -2) 等 DNS 或路由问题
+        error_msg = str(e)
+        status = "Failed"
+    except httpx.RequestError as e: # httpx 如果在其他地方被用到的话
         error_msg = str(e)
         status = "Failed"
     except Exception as e:
         error_msg = f"Unexpected error: {e}"
         status = "Failed"
 
-    print(f"测试 {remark} ({server}:{port}) - 状态: {status}, 延迟: {latency_ms}ms, 错误: {error_msg}")
+    # 仅在失败或DEBUG模式下打印详细信息
+    if status == "Failed" or logger.level <= logging.DEBUG:
+        logger.info(f"测试 {remark} ({server}:{port}) - 状态: {status}, 延迟: {latency_ms}ms, 错误: {error_msg}")
+    else:
+        logger.info(f"测试 {remark} ({server}:{port}) - 状态: {status}, 延迟: {latency_ms}ms")
+        
     return {
         "node": node,
         "status": status,
@@ -266,16 +292,19 @@ async def test_node(node: dict) -> dict:
 
 async def main():
     """主函数，负责下载、解析和并发测试节点"""
+    logger.info("程序开始运行。")
     # 确保 data 目录存在
     os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
 
     ss_txt_content = await fetch_ss_txt(SS_TXT_URL)
     if not ss_txt_content:
-        print("无法获取节点列表，退出。")
+        logger.error("无法获取节点列表，退出。")
         return
 
     lines = ss_txt_content.splitlines()
-    
+    total_lines = len(lines)
+    logger.info(f"成功下载 {total_lines} 行原始节点数据。")
+
     # 解析所有节点
     parsed_nodes = []
     for line_num, line in enumerate(lines):
@@ -284,16 +313,15 @@ async def main():
             parsed_nodes.append(node)
     
     nodes_to_test = parsed_nodes # 所有成功解析的节点
-
-    print(f"成功解析到 {len(nodes_to_test)} 个有效节点，开始并发测试...")
+    
+    logger.info(f"总计解析到 {len(nodes_to_test)} 个有效节点，开始并发测试...")
 
     if not nodes_to_test:
-        print("未解析到任何有效节点，退出。")
+        logger.warning("未解析到任何有效节点，退出。")
         with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write("No valid nodes found or tested.\n")
         return
 
-    results = []
     semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
 
     async def run_test(node):
@@ -306,12 +334,18 @@ async def main():
     # 排序：成功的节点优先，按延迟升序；失败的节点在后
     tested_results.sort(key=lambda x: (x["status"] != "Success", x["latency_ms"] if x["status"] == "Success" else float('inf')))
 
+    successful_nodes_count = sum(1 for r in tested_results if r['status'] == 'Success')
+    failed_nodes_count = sum(1 for r in tested_results if r['status'] != 'Success')
+
+    logger.info(f"测试完成。成功连接节点数: {successful_nodes_count}, 失败连接节点数: {failed_nodes_count}")
+    logger.info(f"结果已保存到 {OUTPUT_FILE}")
+
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("# 节点测试结果 (连通性测试)\n")
         f.write(f"# 测试时间: {asyncio.get_event_loop().time()}\n\n")
         f.write(f"总计尝试测试节点数: {len(nodes_to_test)}\n")
-        f.write(f"成功连接节点数: {sum(1 for r in tested_results if r['status'] == 'Success')}\n")
-        f.write(f"失败连接节点数: {sum(1 for r in tested_results if r['status'] != 'Success')}\n\n")
+        f.write(f"成功连接节点数: {successful_nodes_count}\n")
+        f.write(f"失败连接节点数: {failed_nodes_count}\n\n")
 
         f.write("| 协议 | 备注 | 服务器 | 端口 | 状态 | 延迟 (ms) | 错误信息 | 原始链接 |\n")
         f.write("|---|---|---|---|---|---|---|---|\n")
@@ -320,7 +354,7 @@ async def main():
             node = res["node"]
             status = res["status"]
             latency = res["latency_ms"] if res["latency_ms"] != -1 else "N/A"
-            error = res["error"] if res["error"] else ""
+            error = res["error"] if error else "" # 确保是空字符串
             original_link = res["original_link"]
             
             f.write(
@@ -337,8 +371,6 @@ async def main():
         for res in tested_results:
             if res["status"] == "Success":
                 f.write(f"{res['original_link']}\n")
-
-    print(f"测试完成。结果已保存到 {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     asyncio.run(main())
