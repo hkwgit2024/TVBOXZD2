@@ -3,17 +3,16 @@ import json
 import logging
 import os
 import re
+import socket
 import time
 import hashlib
 from pathlib import Path
 import aiofiles
-import aiohttp
 from tqdm.asyncio import tqdm_asyncio
 from typing import List, Dict, Optional
 from urllib.parse import urlparse, unquote
 import pycountry
 import yaml
-import base64
 
 # --- 配置 ---
 CONFIG_FILE = "config.yaml"
@@ -28,9 +27,9 @@ DEFAULT_CONFIG = {
         "checksum_file": "checksums.txt",
     },
     "test": {
-        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 5)),  # 增加超时时间以适应 HTTP 测试
-        "max_concurrent": 20,  # 降低并发量以减少资源占用
-        "test_url": "http://www.google.com",  # 用于 HTTP 延迟测试的 URL
+        # 注意：此超时仅适用于TCP连接测试，不代表实际代理延迟
+        "timeout_seconds": float(os.getenv("TEST_TIMEOUT", 2)), 
+        "max_concurrent": 50,
     },
     "log": {
         "level": os.getenv("LOG_LEVEL", "INFO").upper(),
@@ -58,7 +57,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(CONFIG["log"]["file"], encoding="utf-8"),
-        logging.StreamHandler(),
+        logging.StreamHandler(), # 同时输出到控制台
     ],
 )
 logger = logging.getLogger(__name__)
@@ -78,7 +77,7 @@ class NodeInfo:
         server: str,
         port: int,
         remarks: str,
-        unique_identifier: str,
+        unique_identifier: str, # 新增：用于更严格去重的唯一标识
         delay_ms: float = -1,
         status: str = "Unknown",
         country: Optional[str] = None,
@@ -94,38 +93,21 @@ class NodeInfo:
         self.country = country
 
     def to_string(self) -> str:
-        """将节点信息格式化为字符串，便于客户端导入"""
+        """将节点信息格式化为字符串"""
+        # 注意：此处输出的original_link仍是完整链接，以便用户复制导入客户端
         return (
-            f"{self.original_link} # Remarks: {self.remarks}, Delay: {self.delay_ms:.2f}ms, "
-            f"Status: {self.status}, Country: {self.country or 'Unknown'}"
+            f"{self.original_link} | Remarks: {self.remarks} | Delay: {self.delay_ms:.2f}ms | "
+            f"Status: {self.status} | Country: {self.country or 'Unknown'}"
         )
 
 # --- 辅助函数 ---
-def get_node_identifier(link: str, protocol: str, server: str, port: int) -> str:
+def get_node_identifier(protocol: str, server: str, port: int) -> str:
     """
-    生成节点的唯一标识符，包含协议、服务器、端口及关键参数（如 UUID 或密钥）。
-    改进去重逻辑，避免同一服务器不同参数的重复。
+    生成节点的唯一标识符 (协议://服务器:端口)。
+    此标识符用于更严格的去重和历史记录查找，
+    忽略备注、UUID等其他链接参数。
     """
-    try:
-        if protocol in ["vless", "trojan"]:
-            # 提取 UUID
-            uuid_match = re.search(r"([0-9a-fA-F-]{36})", link)
-            uuid = uuid_match.group(1) if uuid_match else ""
-            return f"{protocol.lower()}://{server.lower()}:{port}:{uuid}"
-        elif protocol == "vmess":
-            # 提取 VMess 的 UUID
-            vmess_data = link.split("//")[1].split("#")[0]
-            vmess_json = json.loads(base64.urlsafe_b64decode(vmess_data + "=" * (-len(vmess_data) % 4)).decode())
-            return f"{protocol.lower()}://{server.lower()}:{port}:{vmess_json.get('id', '')}"
-        elif protocol in ["ss", "hy2", "hysteria2"]:
-            # 提取 Shadowsocks 或 Hysteria2 的加密密钥
-            key_match = re.search(r"([^@]+)@", link)
-            key = key_match.group(1) if key_match else ""
-            return f"{protocol.lower()}://{server.lower()}:{port}:{key}"
-        return f"{protocol.lower()}://{server.lower()}:{port}"
-    except Exception as e:
-        logger.debug(f"生成唯一标识符失败 ({protocol}, {server}:{port}): {e}")
-        return f"{protocol.lower()}://{server.lower()}:{port}"
+    return f"{protocol.lower()}://{server.lower()}:{port}"
 
 def infer_country(remarks: str, server: str) -> Optional[str]:
     """根据备注和服务器地址推断国家"""
@@ -141,17 +123,21 @@ def infer_country(remarks: str, server: str) -> Optional[str]:
         remarks_lower = remarks.lower()
         server_lower = server.lower()
 
+        # 优先从备注中匹配国家代码或名称
         for code, name in country_keywords.items():
             if code.lower() in remarks_lower or name.lower() in remarks_lower:
                 country = pycountry.countries.get(alpha_2=code)
                 return country.name if country else name
 
+        # 尝试从服务器地址的顶级域名 (TLD) 推断
+        # 注意：gTLD (如 .com, .org) 不会被识别为国家
         tld_match = re.search(r'\.([a-zA-Z]{2,})$', server_lower)
         if tld_match:
             tld = tld_match.group(1).upper()
             country = pycountry.countries.get(alpha_2=tld)
             if country:
                 return country.name
+
         return None
     except Exception as e:
         logger.debug(f"推断国家失败 ({remarks}, {server}): {e}")
@@ -172,14 +158,18 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
 
         protocol = match.group(1).lower()
         remaining_part = match.group(2)
-        remarks = f"{protocol.upper()} 节点"
+        remarks = f"{protocol.upper()} 节点" # 默认备注
 
+        # 提取备注
         if "#" in remaining_part:
             remaining_part, remark_part = remaining_part.rsplit("#", 1)
             remarks = unquote(remark_part)
 
+        # 提取 host:port
+        # 处理可能的查询参数
         host_port_str = remaining_part.split("?")[0] if "?" in remaining_part else remaining_part
-        if "@" in host_port_str:
+        # 移除用户信息部分 (如 Shadowsocks 的 base64 编码部分)
+        if "@" in host_port_str: 
             _, host_port_str = host_port_str.split("@", 1)
 
         host_match = HOST_PORT_FULL_RE.match(host_port_str)
@@ -193,8 +183,10 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
             logger.debug(f"端口无效: {port} for link: {link}")
             return None
 
-        unique_id = get_node_identifier(link, protocol, server, port)
+        # 使用新的唯一标识符进行去重和历史查找
+        unique_id = get_node_identifier(protocol, server, port)
         
+        # 从历史数据中获取延迟和状态
         delay_ms = history_data.get(unique_id, {}).get("delay_ms", -1)
         status = history_data.get(unique_id, {}).get("status", "Unknown")
         country = infer_country(remarks, server)
@@ -205,44 +197,45 @@ def parse_node_info(link: str, history_data: Dict) -> Optional[NodeInfo]:
             server=server,
             port=port,
             remarks=remarks,
-            unique_identifier=unique_id,
+            unique_identifier=unique_id, # 存储唯一标识符
             delay_ms=delay_ms,
             status=status,
             country=country,
         )
     except Exception as e:
-        logger.error(f"解析链接 {link} 失败: {e}", exc_info=True)
+        logger.error(f"解析链接 {link} 失败: {e}", exc_info=True) # 打印详细栈追踪
         return None
 
-async def verify_node(node: NodeInfo, session: aiohttp.ClientSession) -> bool:
+async def verify_node(node: NodeInfo) -> bool:
     """
-    异步验证节点的 HTTP 延迟，通过代理访问测试 URL。
-    使用 aiohttp 模拟 HTTP 请求，验证代理实际可用性。
+    异步验证节点的 TCP 可达性。
+    重要提示：此函数仅检查目标服务器的指定端口是否开放并可连接。
+    它不验证代理协议的正确性（如身份验证、TLS握手）或代理是否能实际转发流量。
+    要进行完整的功能性测试，需要更复杂的协议级探测或集成外部代理测试工具。
     """
     start_time = time.time()
+    sock = None 
     try:
-        # 假设节点支持 HTTP 代理（需根据实际协议调整）
-        proxy_url = f"{node.protocol}://{node.server}:{node.port}"
-        async with session.get(
-            CONFIG["test"]["test_url"],
-            proxy=proxy_url,
-            timeout=CONFIG["test"]["timeout_seconds"]
-        ) as response:
-            if response.status == 200:
-                node.status = "Successful"
-                node.delay_ms = (time.time() - start_time) * 1000
-                logger.debug(f"节点 {node.remarks} ({node.server}:{node.port}) HTTP 验证成功，延迟: {node.delay_ms:.2f}ms")
-                return True
-            else:
-                node.status = f"Failed (HTTP {response.status})"
-                node.delay_ms = -1
-                logger.warning(f"节点 {node.remarks} ({node.server}:{node.port}) HTTP 请求失败，状态码: {response.status}")
-                return False
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(CONFIG["test"]["timeout_seconds"]) # 设置连接超时
+
+        await asyncio.get_event_loop().run_in_executor(
+            None, sock.connect, (node.server, node.port)
+        )
+        # 连接成功，立即关闭socket
+        sock.close() 
+        node.status = "Successful"
+        node.delay_ms = (time.time() - start_time) * 1000
+        logger.debug(f"节点 {node.remarks} ({node.server}:{node.port}) TCP验证成功，延迟: {node.delay_ms:.2f}ms")
+        return True
     except Exception as e:
-        node.status = f"Failed ({str(e)})"
+        logger.warning(f"验证节点 {node.remarks} ({node.server}:{node.port}) TCP连接失败: {e}")
+        node.status = "Failed"
         node.delay_ms = -1
-        logger.warning(f"验证节点 {node.remarks} ({node.server}:{node.port}) HTTP 请求失败: {e}")
         return False
+    finally:
+        if sock:
+            sock.close()
 
 async def read_sub_txt() -> List[str]:
     """异步读取 sub.txt 文件中的订阅链接"""
@@ -282,12 +275,13 @@ async def read_history() -> Dict:
 
 async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
     """处理节点：解析、去重、验证并排序"""
-    semaphore = asyncio.Semaphore(CONFIG["test"]["max_concurrent"])
+    semaphore = asyncio.Semaphore(CONFIG["test"]["max_concurrent"]) # 控制并发量
     parsed_nodes_count = 0
     unique_nodes_count = 0
-    seen_identifiers = set()
+    seen_identifiers = set() # 存储 unique_identifier 用于更严格的去重
 
     nodes_to_verify = []
+    # 第一阶段：解析和更严格的去重
     for link in tqdm_asyncio(links, desc="解析节点", unit="节点"):
         parsed_nodes_count += 1
         node_info = parse_node_info(link, history_data)
@@ -299,7 +293,7 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
             if not node_info:
                 logger.debug(f"跳过无效链接: {link}")
             else:
-                logger.debug(f"跳过重复节点: {node_info.unique_identifier}")
+                logger.debug(f"跳过重复节点 (基于协议、服务器、端口): {link}")
 
     logger.info(f"解析完成: 总计 {parsed_nodes_count} 条链接，去重后有效节点 {unique_nodes_count} 个")
 
@@ -308,34 +302,43 @@ async def process_nodes(links: List[str], history_data: Dict) -> List[NodeInfo]:
         return []
 
     verified_nodes = []
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for node in nodes_to_verify:
-            async with semaphore:
-                tasks.append(verify_node(node, session))
+    tasks = [verify_node(node) for node in nodes_to_verify]
+    # 第二阶段：并发验证节点
+    for future in tqdm_asyncio.as_completed(tasks, desc="验证节点 (TCP连接)", unit="节点"):
+        node_processed = future.result() # future.result() 会返回verify_node的返回值 (True/False)
+        # 这里直接操作 NodeInfo 对象，因为它是通过引用传递给verify_node的
+        # 实际需要的是对每个 node 进行处理后，它的 status 和 delay_ms 属性会被更新
+        # 所以遍历 nodes_to_verify 再次检查其状态是更稳妥的方式
+        pass # tqdm_asyncio.as_completed 已经处理了并发，这里不需要额外操作
 
-        for future in tqdm_asyncio.as_completed(tasks, desc="验证节点 (HTTP 测试)", unit="节点"):
-            await future  # 等待任务完成，node 对象的状态已在 verify_node 中更新
+    # 过滤出成功的节点并排序
+    for node in nodes_to_verify:
+        if node.status == "Successful":
+            verified_nodes.append(node)
 
-    verified_nodes = [node for node in nodes_to_verify if node.status == "Successful"]
-    logger.info(f"验证完成: 成功通过 HTTP 测试的节点 {len(verified_nodes)} 个")
+    logger.info(f"验证完成: 成功通过TCP连接的节点 {len(verified_nodes)} 个")
+    logger.info("请注意：TCP连接测试仅是基础判断，不代表代理功能完全可用。")
 
+    # 根据延迟排序，-1 的延迟排在最后 (通常意味着失败或未测试)
     return sorted(verified_nodes, key=lambda x: x.delay_ms if x.delay_ms > 0 else float("inf"))
 
 async def save_outputs(nodes: List[NodeInfo]):
     """异步保存处理后的节点和校验和文件"""
-    Path(CONFIG["output"]["dir"]).mkdir(parents=True, exist_ok=True)
+    Path(CONFIG["output"]["dir"]).mkdir(parents=True, exist_ok=True) # 确保输出目录存在
 
     checksums = {}
+    
+    # 准备历史记录数据，键为 unique_identifier
     history_results_to_save = {}
     for node in nodes:
         history_results_to_save[node.unique_identifier] = {
             "delay_ms": node.delay_ms,
             "status": node.status,
-            "original_link": node.original_link
+            "original_link": node.original_link # 保存原始链接便于回溯
         }
-
-    history_file_path = CONFIG["input"]["history_file"]
+    
+    # 保存 history_results.json
+    history_file_path = os.path.join(CONFIG["input"]["history_file"]) # 使用配置中的路径
     try:
         async with aiofiles.open(history_file_path, "w", encoding="utf-8") as f:
             await f.write(json.dumps(history_results_to_save, indent=4, ensure_ascii=False))
@@ -343,12 +346,14 @@ async def save_outputs(nodes: List[NodeInfo]):
     except Exception as e:
         logger.error(f"保存历史结果到 {history_file_path} 失败: {e}")
 
+    # 保存 enhanced_nodes.txt
     nodes_file = os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["nodes_file"])
     try:
         content = "\n".join(node.to_string() for node in nodes)
         async with aiofiles.open(nodes_file, "w", encoding="utf-8") as f:
             await f.write(content)
         
+        # 计算校验和，需要同步读取文件
         with open(nodes_file, "rb") as f:
             checksums[nodes_file] = hashlib.sha256(f.read()).hexdigest()
         
@@ -358,12 +363,14 @@ async def save_outputs(nodes: List[NodeInfo]):
             logger.error(f"文件 {nodes_file} 未生成")
     except Exception as e:
         logger.error(f"保存 {nodes_file} 失败: {e}", exc_info=True)
+        logger.error(f"无法写入内容到 {nodes_file}: {content[:200]}...") 
 
+    # 保存 checksums.txt
     checksum_file = os.path.join(CONFIG["output"]["dir"], CONFIG["output"]["checksum_file"])
     try:
         async with aiofiles.open(checksum_file, "w", encoding="utf-8") as f:
             for filename, checksum in checksums.items():
-                await f.write(f"{checksum}  {os.path.basename(filename)}\n")
+                await f.write(f"{checksum}  {os.path.basename(filename)}\n") 
         
         if os.path.exists(checksum_file):
             logger.info(f"已保存校验和到 {checksum_file}, 大小: {os.path.getsize(checksum_file)} 字节")
@@ -382,11 +389,11 @@ async def main():
     
     if not links:
         logger.warning("没有有效节点链接，生成空文件并退出")
-        await save_outputs([])
+        await save_outputs([]) # 即使没有链接也生成空文件，保持输出一致性
         return
 
     nodes = await process_nodes(links, history_data)
-    logger.info(f"最终通过 HTTP 测试的节点数: {len(nodes)}")
+    logger.info(f"最终通过TCP连接测试的节点数: {len(nodes)}")
 
     await save_outputs(nodes)
 
@@ -405,3 +412,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
