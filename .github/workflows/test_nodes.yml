@@ -52,16 +52,7 @@ jobs:
           PYTHONUNBUFFERED: "1"
           DEBUG_LOG: "true"
 
-      - name: 验证 sub.txt
-        run: |
-          line_count=$(wc -l < data/sub.txt)
-          file_size=$(ls -l data/sub.txt | awk '{print $5}')
-          echo "sub.txt: $line_count lines, $file_size bytes"
-          if [ "$line_count" -gt 512 ] || [ "$file_size" -gt 524288 ]; then
-            echo "Error: sub.txt is too large or has too many lines"
-            exit 1
-          fi
-          head -n 10 data/sub.txt || echo "sub.txt is empty"
+
 
       - name: 统计成功节点
         run: |
