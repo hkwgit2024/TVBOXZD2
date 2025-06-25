@@ -8,7 +8,7 @@ OUTPUT_DIR="data"
 
 # 日志文件和输出文件路径
 LOG_FILE="$OUTPUT_DIR/node_connectivity_results.log"
-OUTPUT_FILE="$OUTPUT_DIR/sub.txt"
+OUTPUT_FILE="$OUTPUT_DIR/sub_2.txt"
 MERGED_NODES_TEMP_FILE="all_merged_nodes_temp.txt"
 
 # DNS 缓存文件路径
