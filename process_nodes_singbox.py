@@ -34,7 +34,7 @@ class NodeParser:
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse hysteria2 error: {e}")
+            logger.error(f"Parse hysteria2 error for {url}: {e}")
             return {}
 
     def parse_vmess(self, url: str) -> Dict:
@@ -52,7 +52,7 @@ class NodeParser:
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse vmess error: {e}")
+            logger.error(f"Parse vmess error for {url}: {e}")
             return {}
 
     def parse_trojan(self, url: str) -> Dict:
@@ -68,27 +68,38 @@ class NodeParser:
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse trojan error: {e}")
+            logger.error(f"Parse trojan error for {url}: {e}")
             return {}
 
     def parse_ss(self, url: str) -> Dict:
         try:
             if '@' not in url:
+                logger.warning(f"Invalid ss URL format (missing @): {url}")
                 return {}
             parts = url.split('://')[1].split('@')
+            if len(parts) != 2:
+                logger.warning(f"Invalid ss URL format (invalid parts): {url}")
+                return {}
             auth, server_info = parts[0], parts[1]
-            method, password = auth.split(':')
-            server, port = server_info.split(':')
+            if ':' not in auth:
+                logger.warning(f"Invalid ss auth format (missing : in auth): {url}")
+                return {}
+            method, password = auth.split(':', 1)  # Use maxsplit=1 to handle passwords with :
+            if not method or not password:
+                logger.warning(f"Empty method or password in ss URL: {url}")
+                return {}
+            server_port = server_info.split('#')[0]  # Remove tag if present
+            server, port = server_port.rsplit(':', 1)  # Use rsplit to handle IPv6
             return {
                 'protocol': 'ss',
                 'server': server,
-                'port': int(port.split('#')[0]),
+                'port': int(port),
                 'method': method,
                 'password': password,
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse ss error: {e}")
+            logger.error(f"Parse ss error for {url}: {e}")
             return {}
 
     def parse_ssr(self, url: str) -> Dict:
@@ -105,7 +116,7 @@ class NodeParser:
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse ssr error: {e}")
+            logger.error(f"Parse ssr error for {url}: {e}")
             return {}
 
     def parse_vless(self, url: str) -> Dict:
@@ -121,7 +132,7 @@ class NodeParser:
                 'raw': url
             }
         except Exception as e:
-            logger.error(f"Parse vless error: {e}")
+            logger.error(f"Parse vless error for {url}: {e}")
             return {}
 
     def parse_node(self, node_str: str, failed_nodes: Set[str]) -> None:
