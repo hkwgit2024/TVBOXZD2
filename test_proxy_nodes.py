@@ -9,7 +9,9 @@ import base64
 import urllib.parse
 from urllib.parse import urlparse, unquote, parse_qs
 import logging
+import socket
 from tqdm import tqdm
+import psutil
 
 # 常量配置
 SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件
@@ -19,12 +21,12 @@ DATA_DIR = "data"  # 数据目录
 SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
 SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")  # sing-box 日志路径
 SINGBOX_PATH = "./sing-box"  # sing-box 可执行文件路径
-SINGBOX_HTTP_PORT = 10809  # sing-box HTTP 代理端口
+PORT_RANGE = range(10809, 10910)  # 动态端口范围
 TEST_TIMEOUT = 8  # 测试超时时间（秒）
-CONCURRENCY_LIMIT = 2  # 最大并发数，降低以减少资源占用
-BATCH_SIZE = 10  # 每批次节点数，减少以避免超时
+CONCURRENCY_LIMIT = 1  # 最大并发数，降低到 1 避免端口冲突
+BATCH_SIZE = 5  # 每批次节点数，减少以避免卡住
 MAX_BATCH_TIME = 30  # 单批次最大耗时（秒）
-TARGET_URLS = ["https://www.cloudflare.com", "https://1.1.1.1"]  # 测试目标 URL
+TARGET_URLS = ["https://www.google.com", "https://1.1.1.1"]  # 测试目标 URL，替换 cloudflare.com
 RETRY_ATTEMPTS = 2  # 重试次数
 
 # 配置日志
@@ -55,6 +57,28 @@ if not os.path.exists(SINGBOX_PATH):
     log_message(f"错误：未找到 sing-box 可执行文件 {SINGBOX_PATH}。请确保已下载并放置在工作目录。", "error")
     exit(1)
 
+def get_free_port():
+    """获取可用端口"""
+    for port in PORT_RANGE:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind(("127.0.0.1", port))
+                return port
+            except socket.error:
+                continue
+    log_message("错误：无法找到可用端口", "error")
+    return None
+
+def cleanup_singbox_processes():
+    """清理所有 sing-box 残留进程"""
+    for proc in psutil.process_iter(['name']):
+        try:
+            if proc.name() == "sing-box" or proc.name() == SINGBOX_PATH.lstrip("./"):
+                proc.kill()
+                log_message(f"清理残留 sing-box 进程 PID: {proc.pid}", "info")
+        except psutil.NoSuchProcess:
+            pass
+
 def base64_decode_if_needed(data: str) -> str:
     """尝试解码 Base64 字符串，处理填充问题"""
     try:
@@ -71,14 +95,11 @@ def is_valid_node_url(node_url: str) -> bool:
         if not parsed.scheme or not parsed.netloc:
             return False
         host = parsed.netloc.split('@')[-1].split(':')[0]
-        # IPv6 地址处理
         if host.startswith('[') and host.endswith(']'):
             host = host[1:-1]
             return re.match(r'^[0-9a-fA-F:]+$', host) is not None
-        # IPv4 地址验证
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", host):
             return all(0 <= int(octet) <= 255 for octet in host.split('.'))
-        # 域名验证
         return re.match(r"^[a-zA-Z0-9][a-zA-Z0-9\-]*(\.[a-zA-Z0-9\-]+)*$", host) is not None
     except Exception:
         return False
@@ -94,6 +115,8 @@ def parse_tag_info(tag: str) -> dict:
         country = "日本"
     elif "香港" in tag:
         country = "香港"
+    elif "土耳其" in tag:
+        country = "土耳其"
     match = re.search(r"⬇️\s*([\d.]+)\s*MB/s", tag)
     if match:
         speed = float(match.group(1))
@@ -120,8 +143,8 @@ def extract_node_info(node_url: str) -> dict:
     node_info.update(parse_tag_info(tag))
     return node_info
 
-def generate_singbox_config(node_url: str) -> dict:
-    """生成 sing-box 配置文件"""
+def generate_singbox_config(node_url: str, port: int) -> dict:
+    """生成 sing-box 配置文件，使用指定端口"""
     try:
         parsed_url = urlparse(node_url)
         protocol = parsed_url.scheme.lower()
@@ -130,19 +153,17 @@ def generate_singbox_config(node_url: str) -> dict:
         user_info = netloc.split('@')[0] if '@' in netloc else ""
         host_port = netloc.split('@')[1] if '@' in netloc else netloc
         host = host_port.split(':')[0] if ':' in host_port else host_port
-        port = int(host_port.split(':')[1]) if ':' in host_port else 443
+        server_port = int(host_port.split(':')[1]) if ':' in host_port else 443
 
-        # 处理 IPv6 地址
         if host.startswith('[') and host.endswith(']'):
             host = host[1:-1]
 
         outbound_config = {
             "tag": safe_unquote(parsed_url.fragment) if parsed_url.fragment else "test-node",
             "server": host,
-            "server_port": port
+            "server_port": server_port
         }
 
-        # 默认 TLS 设置
         tls_settings = {
             "enabled": query_params.get('security', ['tls'])[0] == 'tls',
             "server_name": query_params.get('sni', [host])[0],
@@ -153,7 +174,7 @@ def generate_singbox_config(node_url: str) -> dict:
             outbound_config["type"] = "hysteria2"
             outbound_config["password"] = user_info
             outbound_config["tls"] = {
-                "enabled": True,  # Hysteria2 强制启用 TLS
+                "enabled": True,
                 "server_name": query_params.get('sni', [host])[0],
                 "insecure": query_params.get('insecure', ['0'])[0] == '1'
             }
@@ -198,10 +219,10 @@ def generate_singbox_config(node_url: str) -> dict:
                 try:
                     vmess_data = json.loads(decoded_json)
                     outbound_config["server"] = vmess_data.get('add', host)
-                    outbound_config["server_port"] = int(vmess_data.get('port', port))
+                    outbound_config["server_port"] = int(vmess_data.get('port', server_port))
                     outbound_config["uuid"] = vmess_data.get('id', '')
                     outbound_config["alter_id"] = int(vmess_data.get('aid', 0))
-                    outbound_config["security"] = vmess_data.get('scy', 'auto')
+                    outbound_config["security"] = vmess_data.get('scy', '0')
                 except Exception as e:
                     log_message(f"无法解析 VMESS 节点 {node_url}: {e}", "warning")
                     return None
@@ -221,26 +242,33 @@ def generate_singbox_config(node_url: str) -> dict:
                 outbound_config["tls"] = tls_settings
 
         elif protocol == "ss":
-            outbound_config["type"] = "shadowsocks"  # 修正为 sing-box 支持的类型
+            if 'security' in query_params and query_params['security'][0] == 'reality':
+                log_message(f"SS 节点 {node_url} 使用不支持的 Reality 配置，跳过", "warning")
+                return None
+            outbound_config["type"] = "shadowsocks"
             if ':' in user_info:
                 method, password = user_info.split(':', 1)
                 outbound_config["method"] = method
                 outbound_config["password"] = password
             else:
-                outbound_config["method"] = "chacha20-ietf-poly1305"  # 默认加密方法
+                outbound_config["method"] = "aes-256-gcm"  # 默认加密方法
                 outbound_config["password"] = user_info
             if 'plugin' in query_params:
-                log_message(f"SS 节点 {node_url} 包含插件，sing-box 可能不支持: {query_params['plugin']}", "warning")
+                log_message(f"SS 节点 {node_url} 包含插件，sing-box 不支持: {query_params['plugin']}", "warning")
                 return None
-            if 'type' in query_params and query_params['type'][0] not in ['ws', 'http', 'tcp']:
-                log_message(f"SS 节点 {node_url} 使用不支持的传输类型: {query_params['type'][0]}", "warning")
-                return None
-            if 'type' in query_params and query_params['type'][0] in ['ws', 'http']:
-                outbound_config["transport"] = {
-                    "type": query_params['type'][0],
-                    "host": query_params.get('host', [''])[0],
-                    "path": query_params.get('path', [''])[0]
-                }
+            if 'type' in query_params:
+                transport_type = query_params['type'][0]
+                if transport_type not in ['ws', 'http', 'tcp']:
+                    log_message(f"SS 节点 {node_url} 使用不支持的传输类型: {transport_type}", "warning")
+                    return None
+                if transport_type in ['ws', 'http']:
+                    outbound_config["transport"] = {
+                        "type": transport_type,
+                        "host": query_params.get('host', [''])[0],
+                        "path": query_params.get('path', [''])[0]
+                    }
+            if 'headerType' in query_params and query_params['headerType'][0] == 'http':
+                log_message(f"SS 节点 {node_url} 使用 headerType=http，可能不完全兼容"", "warning")
             if tls_settings['enabled']:
                 outbound_config["tls"] = tls_settings
 
@@ -282,7 +310,7 @@ def generate_singbox_config(node_url: str) -> dict:
                 {
                     "type": "http",
                     "listen": "127.0.0.1",
-                    "listen_port": SINGBOX_HTTP_PORT
+                    "listen_port": port
                 }
             ],
             "outbounds": [outbound_config]
@@ -292,23 +320,15 @@ def generate_singbox_config(node_url: str) -> dict:
         log_message(f"生成 sing-box 配置失败 {node_url}: {e}", "error")
         return None
 
-async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) -> tuple[bool, float]:
-    """运行 sing-box 测试，增强进程清理"""
-    config = generate_singbox_config(node_url)
+async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession, port: int) -> tuple[bool, float]:
+    """运行 sing-box 测试，使用指定端口"""
+    config = generate_singbox_config(node_url, port)
     if not config:
         return False, 0
 
     process = None
     start_time = time.time()
     try:
-        # 检查端口占用
-        try:
-            async with session.get(f"http://127.0.0.1:{SINGBOX_HTTP_PORT}", timeout=1):
-                log_message(f"端口 {SINGBOX_HTTP_PORT} 已被占用，跳过节点 {node_url}", "error")
-                return False, 0
-        except aiohttp.ClientError:
-            pass
-
         with open(SINGBOX_CONFIG_PATH, 'w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
 
@@ -318,32 +338,32 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
             stderr=asyncio.subprocess.PIPE
         )
 
-        await asyncio.sleep(1)  # 缩短等待时间
+        await asyncio.sleep(1)
         if process.returncode is not None:
             stderr_data = await process.stderr.read()
-            log_message(f"sing-box 启动失败: {node_url}, 错误: {stderr_data.decode('utf-8', errors='ignore')}", "error")
+            log_message(f"sing-box 启动失败: {node_url}, 端口: {port}, 错误: {stderr_data.decode('utf-8', errors='ignore')}", "error")
             return False, 0
 
         proxies = {
-            "http": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}",
-            "https": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}"
+            "http": f"http://127.0.0.1:{port}",
+            "https": f"http://127.0.0.1:{port}"
         }
         for target_url in TARGET_URLS:
             async with session.get(target_url, proxy=proxies["https"], timeout=TEST_TIMEOUT) as response:
                 if response.status == 200:
                     latency = (time.time() - start_time) * 1000
-                    log_message(f"HTTP 请求成功 {node_url}, 目标: {target_url}, 延迟: {latency:.2f}ms")
+                    log_message(f"HTTP 请求成功 {node_url}, 目标: {target_url}, 端口: {port}, 延迟: {latency:.2f}ms")
                     return True, latency
         return False, 0
 
     except asyncio.TimeoutError:
-        log_message(f"HTTP 请求超时: {node_url}", "warning")
+        log_message(f"HTTP 请求超时: {node_url}, 端口: {port}", "warning")
         return False, 0
     except aiohttp.ClientError as e:
-        log_message(f"HTTP 客户端错误 {node_url}: {e}", "warning")
+        log_message(f"HTTP 客户端错误 {node_url}, 端口: {port}: {e}", "warning")
         return False, 0
     except Exception as e:
-        log_message(f"测试节点 {node_url} 失败: {e}", "error")
+        log_message(f"测试节点 {node_url} 失败, 端口: {port}: {e}", "error")
         return False, 0
     finally:
         if process and process.returncode is None:
@@ -352,20 +372,25 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
                 await asyncio.wait_for(process.wait(), timeout=3)
             except asyncio.TimeoutError:
                 process.kill()
-                log_message(f"强制终止 sing-box 进程: {node_url}", "warning")
+                log_message(f"强制终止 sing-box 进程: {node_url}, 端口: {port}", "warning")
             except Exception as e:
-                log_message(f"终止 sing-box 进程失败: {e}", "error")
+                log_message(f"终止 sing-box 进程失败: {node_url}, 端口: {port}: {e}", "error")
         if os.path.exists(SINGBOX_CONFIG_PATH):
             try:
                 os.remove(SINGBOX_CONFIG_PATH)
             except Exception as e:
-                log_message(f"删除配置文件失败: {e}", "error")
+                log_message(f"删除配置文件失败: {node_url}, 端口: {port}: {e}", "error")
+        cleanup_singbox_processes()
 
 async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> tuple[bool, float]:
     """带重试的 sing-box 测试"""
     for attempt in range(1, RETRY_ATTEMPTS + 1):
-        log_message(f"尝试 {attempt}/{RETRY_ATTEMPTS} 测试节点: {node_url}")
-        success, latency = await run_singbox_test_inner(node_url, session)
+        port = get_free_port()
+        if not port:
+            log_message(f"尝试 {attempt}/{RETRY_ATTEMPTS} 测试节点 {node_url} 失败：无可用端口", "error")
+            return False, 0
+        log_message(f"尝试 {attempt}/{RETRY_ATTEMPTS} 测试节点: {node_url}, 端口: {port}")
+        success, latency = await run_singbox_test_inner(node_url, session, port)
         if success:
             return success, latency
         await asyncio.sleep(1)
@@ -403,7 +428,6 @@ async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> li
         except Exception as e:
             log_message(f"任务处理过程中发生错误: {e}", "error")
     
-    # 记录失败节点
     if failed_nodes:
         with open(FAILED_NODES_FILE, 'a', encoding='utf-8', errors='ignore') as f:
             for node_url in failed_nodes:
@@ -417,6 +441,7 @@ async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> li
 
 async def main():
     """主函数，跳过历史失败节点"""
+    cleanup_singbox_processes()  # 启动前清理残留进程
     if not os.path.exists(SUB_FILE):
         log_message(f"错误：未找到输入文件 {SUB_FILE}", "error")
         exit(1)
