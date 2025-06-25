@@ -157,6 +157,22 @@ jobs:
           # git add test_output.log
           # git add dependency_versions.txt
 
+          echo "--- Content of data/sub.txt (after git add) ---"
+          cat data/sub.txt || echo "data/sub.txt not found or empty."
+          echo "-------------------------------------------------"
+          
+          echo "--- Content of data/history_results.json (after git add) ---"
+          cat data/history_results.json || echo "data/history_results.json not found or empty."
+          echo "------------------------------------------------------------"
+          
+          echo "--- Content of data/dns_cache.json (after git add) ---"
+          cat data/dns_cache.json || echo "data/dns_cache.json not found or empty."
+          echo "------------------------------------------------------"
+
+          echo "--- Content of data/success_count.txt (after git add) ---"
+          cat data/success_count.txt || echo "data/success_count.txt not found or empty."
+          echo "---------------------------------------------------------"
+          
           if ! git diff --quiet --cached; then
             # 如果有文件被修改或添加，则进行提交
             git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
@@ -165,7 +181,6 @@ jobs:
             echo "No changes to commit. Files in data/ might not have changed or no successful nodes found."
           fi
         env:
-          # 修正为标准 GITHUB_TOKEN，通常具有推送权限
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Notify on no successful nodes
