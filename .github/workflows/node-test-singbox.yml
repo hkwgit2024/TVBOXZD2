@@ -1,4 +1,4 @@
-name:  Sing-box
+name: Node Connectivity Test with Sing-box
 
 on:
   schedule:
@@ -27,20 +27,21 @@ jobs:
         tar -xzf sing-box-linux-amd64.tar.gz
         mv sing-box-*/sing-box /usr/local/bin/
         chmod +x /usr/local/bin/sing-box
+        sing-box version || exit 1
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyyaml
+        pip install pyyaml || exit 1
 
     - name: Run node processing script
-      run: python process_nodes_singbox.py
+      run: python process_nodes_singbox.py || exit 1
 
     - name: Commit and push results
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
-        git add data/all.txt
+        git add data/all.txt data/failed.txt
         git commit -m 'Update test results' || echo "No changes to commit"
         git push
       env:
