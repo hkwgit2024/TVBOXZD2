@@ -1,7 +1,10 @@
 name: Test Proxy Nodes
-on: [push]
+on:
+  push:  # 保留原有的 push 触发器
+  workflow_dispatch:  # 添加手动触发支持
+
 jobs:
-  test-nodes:
+  test_proxy_nodes:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -28,7 +31,7 @@ jobs:
       - run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add all.txt data/failed.txt data/test.log data/singbox.log
+          git add all.txt data
           git commit -m "Update test results" || echo "No changes to commit"
           git push
         timeout-minutes: 5
