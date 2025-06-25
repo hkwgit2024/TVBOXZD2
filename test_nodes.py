@@ -38,7 +38,7 @@ XRAY_GEOIP_PATH = os.getenv("XRAY_GEOIP_PATH", os.path.join(DATA_DIR, "geoip-lit
 XRAY_GEOSITE_PATH = os.getenv("XRAY_GEOSITE_PATH", os.path.join(DATA_DIR, "geosite.dat"))
 
 # --- 日志配置 ---
-LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG").upper()  # DEBUG for troubleshooting
+LOG_LEVEL = os.getenv("LOG_LEVEL", "info").upper()  # DEBUG for troubleshooting
 logging.basicConfig(
     level=LOG_LEVEL,
     format='%(asctime)s - %(levelname)s - %(message)s',
