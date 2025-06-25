@@ -12,7 +12,7 @@ import logging
 from tqdm import tqdm
 
 # 常量配置
-SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件，位于 data/sub.txt
+SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件
 ALL_FILE = "all.txt"  # 输出可用节点文件
 DATA_DIR = "data"  # 数据目录
 SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
@@ -20,8 +20,8 @@ SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")  # sing-box 日志路�
 SINGBOX_PATH = "./sing-box"  # sing-box 可执行文件路径
 SINGBOX_HTTP_PORT = 10809  # sing-box HTTP 代理端口
 TEST_TIMEOUT = 8  # 测试超时时间（秒）
-CONCURRENCY_LIMIT = 5  # 最大并发数
-BATCH_SIZE = 50  # 每批次节点数
+CONCURRENCY_LIMIT = 3  # 最大并发数，降低以减少资源占用
+BATCH_SIZE = 20  # 每批次节点数，减少以避免超时
 TARGET_URLS = ["https://www.cloudflare.com", "https://1.1.1.1"]  # 测试目标 URL
 RETRY_ATTEMPTS = 2  # 重试次数
 
@@ -51,7 +51,6 @@ if not os.path.exists(DATA_DIR):
 # 检查 sing-box 可执行文件
 if not os.path.exists(SINGBOX_PATH):
     log_message(f"错误：未找到 sing-box 可执行文件 {SINGBOX_PATH}。请确保已下载并放置在工作目录。", "error")
-    log_message("建议：在 GitHub Actions 中使用 setup 步骤下载 sing-box。", "info")
     exit(1)
 
 def base64_decode_if_needed(data: str) -> str:
@@ -64,14 +63,20 @@ def base64_decode_if_needed(data: str) -> str:
         return data
 
 def is_valid_node_url(node_url: str) -> bool:
-    """验证节点 URL 的合法性"""
+    """验证节点 URL 的合法性，支持 IPv4 和 IPv6"""
     try:
         parsed = urlparse(node_url)
         if not parsed.scheme or not parsed.netloc:
             return False
         host = parsed.netloc.split('@')[-1].split(':')[0]
+        # IPv6 地址处理
+        if host.startswith('[') and host.endswith(']'):
+            host = host[1:-1]
+            return re.match(r'^[0-9a-fA-F:]+$', host) is not None
+        # IPv4 地址验证
         if re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", host):
             return all(0 <= int(octet) <= 255 for octet in host.split('.'))
+        # 域名验证
         return re.match(r"^[a-zA-Z0-9][a-zA-Z0-9\-]*(\.[a-zA-Z0-9\-]+)*$", host) is not None
     except Exception:
         return False
@@ -125,8 +130,11 @@ def generate_singbox_config(node_url: str) -> dict:
         host = host_port.split(':')[0] if ':' in host_port else host_port
         port = int(host_port.split(':')[1]) if ':' in host_port else 443
 
+        # 处理 IPv6 地址
+        if host.startswith('[') and host.endswith(']'):
+            host = host[1:-1]
+
         outbound_config = {
-            "type": protocol,
             "tag": safe_unquote(parsed_url.fragment) if parsed_url.fragment else "test-node",
             "server": host,
             "server_port": port
@@ -134,14 +142,19 @@ def generate_singbox_config(node_url: str) -> dict:
 
         # 默认 TLS 设置
         tls_settings = {
-            "enabled": True,  # 默认启用 TLS，修复 Hysteria2 的 TLS required 错误
+            "enabled": query_params.get('security', ['tls'])[0] == 'tls',
             "server_name": query_params.get('sni', [host])[0],
-            "insecure": query_params.get('insecure', ['0'])[0] == '1'
+            "insecure": query_params.get('allowInsecure', ['0'])[0] == '1' or query_params.get('insecure', ['0'])[0] == '1'
         }
 
         if protocol == "hysteria2":
+            outbound_config["type"] = "hysteria2"
             outbound_config["password"] = user_info
-            outbound_config["tls"] = tls_settings  # 强制启用 TLS
+            outbound_config["tls"] = {
+                "enabled": True,  # Hysteria2 强制启用 TLS
+                "server_name": query_params.get('sni', [host])[0],
+                "insecure": query_params.get('insecure', ['0'])[0] == '1'
+            }
             if 'obfs' in query_params:
                 obfs_type = query_params['obfs'][0]
                 obfs_password = query_params.get('obfsParam', [''])[0] or query_params.get('obfs-password', [''])[0]
@@ -158,16 +171,18 @@ def generate_singbox_config(node_url: str) -> dict:
                 outbound_config["down_mbps"] = int(query_params['down'][0])
 
         elif protocol == "vless":
+            outbound_config["type"] = "vless"
             outbound_config["uuid"] = user_info
             if 'flow' in query_params:
                 outbound_config["flow"] = query_params['flow'][0]
-            if 'type' in query_params:
+            if 'type' in query_params and query_params['type'][0] in ['ws', 'http', 'httpupgrade']:
                 outbound_config["transport"] = {
                     "type": query_params['type'][0],
                     "host": query_params.get('host', [''])[0],
                     "path": query_params.get('path', [''])[0]
                 }
-            outbound_config["tls"] = tls_settings
+            if tls_settings['enabled']:
+                outbound_config["tls"] = tls_settings
 
         elif protocol == "vmess":
             outbound_config["type"] = "vmess"
@@ -188,7 +203,7 @@ def generate_singbox_config(node_url: str) -> dict:
                 except Exception as e:
                     log_message(f"无法解析 VMESS 节点 {node_url}: {e}", "warning")
                     return None
-            if 'type' in query_params:
+            if 'type' in query_params and query_params['type'][0] in ['ws', 'http', 'httpupgrade']:
                 outbound_config["transport"] = {
                     "type": query_params['type'][0],
                     "host": query_params.get('host', [''])[0],
@@ -198,24 +213,41 @@ def generate_singbox_config(node_url: str) -> dict:
                 outbound_config["tls"] = tls_settings
 
         elif protocol == "trojan":
+            outbound_config["type"] = "trojan"
             outbound_config["password"] = user_info
-            outbound_config["tls"] = tls_settings
+            if tls_settings['enabled']:
+                outbound_config["tls"] = tls_settings
 
         elif protocol == "ss":
+            outbound_config["type"] = "shadowsocks"  # 修正为 sing-box 支持的类型
             if ':' in user_info:
                 method, password = user_info.split(':', 1)
                 outbound_config["method"] = method
                 outbound_config["password"] = password
+            else:
+                outbound_config["method"] = "chacha20-ietf-poly1305"  # 默认加密方法
+                outbound_config["password"] = user_info
             if 'plugin' in query_params:
-                outbound_config["plugin"] = query_params['plugin'][0]
-                outbound_config["plugin_opts"] = query_params.get('plugin-opts', [''])[0]
+                log_message(f"SS 节点 {node_url} 包含插件，sing-box 可能不支持: {query_params['plugin']}", "warning")
+                return None
+            if 'type' in query_params and query_params['type'][0] not in ['ws', 'http', 'tcp']:
+                log_message(f"SS 节点 {node_url} 使用不支持的传输类型: {query_params['type'][0]}", "warning")
+                return None
+            if 'type' in query_params and query_params['type'][0] in ['ws', 'http']:
+                outbound_config["transport"] = {
+                    "type": query_params['type'][0],
+                    "host": query_params.get('host', [''])[0],
+                    "path": query_params.get('path', [''])[0]
+                }
+            if tls_settings['enabled']:
+                outbound_config["tls"] = tls_settings
 
         elif protocol == "ssr":
             ssr_raw = node_url[len("ssr://"):]
             decoded = base64_decode_if_needed(ssr_raw)
             parts = decoded.split(':')
             if len(parts) >= 6:
-                outbound_config["type"] = "ssr"
+                outbound_config["type"] = "shadowsocksr"
                 outbound_config["server"] = parts[0]
                 outbound_config["server_port"] = int(parts[1])
                 outbound_config["protocol"] = parts[2]
@@ -225,6 +257,9 @@ def generate_singbox_config(node_url: str) -> dict:
                 params = parse_qs(parts[5].split('?')[1]) if '?' in parts[5] else {}
                 outbound_config["obfs_param"] = params.get('obfsparam', [''])[0]
                 outbound_config["protocol_param"] = params.get('protoparam', [''])[0]
+            else:
+                log_message(f"SSR 节点 {node_url} 格式无效", "warning")
+                return None
 
         elif protocol == "socks5":
             outbound_config["type"] = "socks"
@@ -397,7 +432,6 @@ async def main():
         for node in successful_nodes:
             url = node['url'].replace('\n', '')
             f.write(f"{url}\n")
-            # 记录元数据到日志
             log_message(
                 f"可用节点: {url} | 国家: {node['country']} | 延迟: {node['latency']:.2f}ms"
                 f"{' | 速度: ' + str(node['speed']) + 'MB/s' if node['speed'] else ''}"
