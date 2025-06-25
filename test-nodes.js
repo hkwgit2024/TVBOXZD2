@@ -1,9 +1,17 @@
 const axios = require('axios');
 const fs = require('fs').promises;
 const url = require('url');
-const PQueue = require('p-queue');
+let PQueue;
 
-const queue = new PQueue({ concurrency: 10 }); // 控制并发数
+try {
+  PQueue = require('p-queue').default || require('p-queue'); // Handle different export styles
+  console.log('p-queue loaded successfully, version:', require('p-queue/package.json').version);
+} catch (error) {
+  console.warn('Failed to load p-queue, falling back to sequential processing:', error.message);
+  PQueue = null;
+}
+
+const queue = PQueue ? new PQueue({ concurrency: 10 }) : { add: async (fn) => await fn() }; // Fallback to sequential
 const SOURCE_URL = 'https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt';
 const OUTPUT_PATH = 'data/sub.txt';
 const MAX_RETRIES = 2;
@@ -93,6 +101,7 @@ async function testNode(node) {
 }
 
 async function main() {
+  console.log(`Running with Node.js ${process.version} at ${new Date().toISOString()}`);
   const nodes = await fetchNodes();
   if (nodes.length === 0) {
     console.error('No nodes to process, exiting');
