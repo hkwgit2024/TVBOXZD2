@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 # --- 常量定义 ---
 # 所有要处理的节点源 URL 列表
 NODE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt",
+    
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt",
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
