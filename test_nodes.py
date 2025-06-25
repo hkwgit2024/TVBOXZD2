@@ -15,7 +15,7 @@ ALL_FILE = os.path.join(DATA_DIR, "all.txt")
 
 # 目标测试网站
 TARGET_URL = "https://www.google.com" # 请替换为你想测试的网站，例如 "https://www.baidu.com"
-TEST_TIMEOUT = 15 # 每个节点测试超时时间（秒）
+TEST_TIMEOUT = 2 # 每个节点测试超时时间（秒）
 SINGBOX_SOCKS5_PORT = 1080 # Singbox 本地 SOCKS5 代理端口
 SINGBOX_HTTP_PORT = 1081 # Singbox 本地 HTTP 代理端口
 SINGBOX_BIN_PATH = "/usr/local/bin/singbox" # Singbox 可执行文件路径，确保在 GitHub Actions 中正确安装
@@ -23,9 +23,15 @@ SINGBOX_BIN_PATH = "/usr/local/bin/singbox" # Singbox 可执行文件路径，�
 def base64_decode_if_needed(s):
     """尝试Base64解码字符串，如果失败则返回原字符串"""
     try:
-        return base64.b64decode(s).decode('utf-8')
+        # URL-safe base64 decode first
+        s_padded = s + '=' * (-len(s) % 4)
+        return base64.urlsafe_b64decode(s_padded).decode('utf-8')
     except Exception:
-        return s
+        # Fallback to standard base64 if urlsafe fails
+        try:
+            return base64.b64decode(s).decode('utf-8')
+        except Exception:
+            return s
 
 def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> dict:
     """
@@ -70,30 +76,44 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
         "type": protocol,
         "server": host,
         "server_port": port,
-        "uuid": user_info if user_info else "", # 用于 vmess, vless, hysteria2 (password)
-        "password": user_info if user_info else "", # 用于 trojan, ss, ssr, hysteria2 (password)
+        # Default UUID/Password, will be overridden by protocol-specific logic
+        "uuid": user_info if user_info else "", 
+        "password": user_info if user_info else "", 
     }
 
     # TLS 设置
-    tls_settings = {}
+    tls_settings = {"enabled": False} # Default to disabled
     if parsed_url.scheme in ['vless', 'vmess', 'trojan', 'hysteria2']:
-        tls_enabled = '0' not in query_params.get('tls', ['1']) and '1' in query_params.get('tls', ['1'])
+        if 'security' in query_params:
+            if query_params['security'][0].lower() == 'tls':
+                tls_settings['enabled'] = True
+            elif query_params['security'][0].lower() == 'none':
+                tls_settings['enabled'] = False
+        else: # Assume TLS if protocol typically uses it and not explicitly 'none'
+             tls_settings['enabled'] = True
+
+        # Common TLS parameters
         if 'insecure' in query_params:
-            tls_settings['reality_fingerprint'] = query_params.get('fp', [''])[0]
             tls_settings['insecure'] = query_params['insecure'][0] == '1'
         if 'sni' in query_params:
             tls_settings['server_name'] = query_params['sni'][0]
-        elif 'host' in query_params: # for ws host
+        elif 'host' in query_params and query_params['host'][0]: # For WebSocket host
              tls_settings['server_name'] = query_params['host'][0]
         else:
-             tls_settings['server_name'] = host # Default to server name if no sni
+             tls_settings['server_name'] = host # Fallback to server host if no SNI provided
         
-        if tls_settings.get('server_name') and tls_settings.get('server_name').lower().endswith(".cdn.cloudflare.net"):
-             # Cloudflare SNI issue, often needs specific config for Singbox
-             pass # For simplicity, we ignore it here
-        
-        if tls_settings:
+        # for vless/vmess reality/xudp
+        if 'fp' in query_params:
+            tls_settings['reality_fingerprint'] = query_params['fp'][0]
+        if 'pbk' in query_params:
+            tls_settings['reality_public_key'] = query_params['pbk'][0]
+        if 'sid' in query_params:
+            tls_settings['reality_short_id'] = query_params['sid'][0]
+
+        if tls_settings['enabled']:
             outbound_config['tls'] = tls_settings
+        else:
+            outbound_config.pop('tls', None) # Remove TLS if not enabled
 
     # 针对不同协议的特定解析
     if protocol == "hysteria2":
@@ -104,7 +124,6 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
             if 'obfs-password' in query_params:
                 outbound_config['obfs_password'] = query_params['obfs-password'][0]
         
-        # Hysteria2 流量控制
         if 'up_mbps' in query_params:
             outbound_config['up_mbps'] = int(query_params['up_mbps'][0])
         if 'down_mbps' in query_params:
@@ -113,8 +132,8 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
     elif protocol == "vless":
         outbound_config["type"] = "vless"
         outbound_config["uuid"] = user_info if user_info else ""
-        outbound_config.pop("password", None) # VLESS用UUID
-        
+        outbound_config.pop("password", None) # VLESS uses UUID
+
         # VLESS 传输协议
         transport = {}
         if 'type' in query_params:
@@ -128,21 +147,34 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
                     ws_settings['headers'] = {"Host": query_params['host'][0]}
                 if ws_settings:
                     transport['websocket'] = ws_settings
-            # 其他传输协议 (grpc, h2, tcp) 可以在这里扩展
+            elif transport_type == 'grpc':
+                grpc_settings = {}
+                if 'serviceName' in query_params: # Singbox uses service_name
+                    grpc_settings['service_name'] = query_params['serviceName'][0]
+                if grpc_settings:
+                    transport['grpc'] = grpc_settings
+            # Other transports (h2, quic, tcp) can be extended here
         if transport:
             outbound_config['transport'] = transport
 
     elif protocol == "vmess":
         # VMESS 节点通常是 base64 编码的 JSON
         try:
-            decoded_json = base64_decode_if_needed(host) # host 部分通常是 base64 编码
+            # Vmess url: vmess://base64(json)
+            # The netloc_parts[0] should be the base64 encoded json.
+            # However, the user's sub.txt example has uuid@host:port, so we need to be careful.
+            # Assuming the full part after vmess:// is base64 encoded.
+            vmess_raw = node_url[len("vmess://"):]
+            decoded_json = base64_decode_if_needed(vmess_raw)
             vmess_data = json.loads(decoded_json)
+
             outbound_config["type"] = "vmess"
             outbound_config["server"] = vmess_data.get('add', host)
             outbound_config["server_port"] = int(vmess_data.get('port', port))
             outbound_config["uuid"] = vmess_data.get('id', '')
             outbound_config["alter_id"] = int(vmess_data.get('aid', 0))
-            outbound_config["security"] = vmess_data.get('scy', 'auto') # auto, aes-128-gcm, chacha20-poly1305 etc.
+            outbound_config["security"] = vmess_data.get('scy', 'auto') 
+            outbound_config.pop("password", None) # VMess uses UUID
 
             # VMESS 传输协议
             transport = {}
@@ -153,23 +185,32 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
                 ws_settings = {}
                 if 'path' in vmess_data:
                     ws_settings['path'] = vmess_data['path']
-                if 'host' in vmess_data:
+                if 'host' in vmess_data: # host in vmess json is HTTP Host header
                     ws_settings['headers'] = {"Host": vmess_data['host']}
                 if ws_settings:
                     transport['websocket'] = ws_settings
-            # 其他传输协议 (grpc, h2, quic, tcp, kcp) 可以在这里扩展
+            elif transport_type == 'grpc':
+                grpc_settings = {}
+                if 'serviceName' in vmess_data:
+                    grpc_settings['service_name'] = vmess_data['serviceName']
+                if grpc_settings:
+                    transport['grpc'] = grpc_settings
+            # Other transports (h2, quic, tcp, kcp) can be extended here
 
             if transport:
                 outbound_config['transport'] = transport
 
             # VMESS TLS
             if vmess_data.get('tls') == 'tls':
-                tls_settings = {
+                tls_settings_vmess = {
                     "enabled": True,
-                    "server_name": vmess_data.get('host', host) or host,
+                    "server_name": vmess_data.get('host', host) or host, # SNI for vmess is 'host' in json
                     "insecure": vmess_data.get('skip-cert-verify', False)
                 }
-                outbound_config['tls'] = tls_settings
+                outbound_config['tls'] = tls_settings_vmess
+            else:
+                outbound_config.pop('tls', None)
+
 
         except Exception as e:
             print(f"Warning: Failed to parse VMESS node {node_url}: {e}")
@@ -178,8 +219,7 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
     elif protocol == "trojan":
         outbound_config["type"] = "trojan"
         outbound_config["password"] = user_info if user_info else ""
-        # Trojan 通常默认 TLS，所以在这里不额外设置 tls: true
-        # TLS 设置已在上方通用部分处理
+        outbound_config.pop("uuid", None) # Trojan uses password
 
     elif protocol == "ss":
         outbound_config["type"] = "shadowsocks"
@@ -189,20 +229,21 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
             method, password = ss_user_info.split(':', 1)
             outbound_config["method"] = method
             outbound_config["password"] = password
-        outbound_config.pop("uuid", None) # SS 用 password 和 method
+        outbound_config.pop("uuid", None) # SS uses password and method
+        outbound_config.pop("tls", None) # SS doesn't have native TLS
 
     elif protocol == "ssr":
         # SSR 格式复杂，通常是 base64 编码，这里只提供一个基本框架
+        # SSR URL: ssr://base64_encoded_params
+        # decoded_params format: server:port:protocol:method:obfs:password_base64/?params
         try:
-            # 尝试解码 SSR 链接，格式为 ssr://base64(server:port:protocol:method:obfs:password_base64/?params_base64)
-            # 这部分解析可能需要一个专门的 SSR 解析库
-            decoded_ssr_info = base64_decode_if_needed(host) # 通常是 host 字段被编码
-            if not decoded_ssr_info.startswith(host): # 简单的验证
-                 print(f"Warning: SSR node {node_url} is not a standard base64 encoded format. Attempting direct parse.")
-                 decoded_ssr_info = node_url.replace("ssr://", "")
-                 if "#" in decoded_ssr_info:
-                     decoded_ssr_info = decoded_ssr_info.split("#")[0] # remove fragment
-                     
+            ssr_raw = node_url[len("ssr://"):]
+            decoded_ssr_info = base64_decode_if_needed(ssr_raw)
+
+            # Remove fragment if present
+            if '#' in decoded_ssr_info:
+                decoded_ssr_info = decoded_ssr_info.split('#')[0]
+
             ssr_parts = decoded_ssr_info.split(':')
             if len(ssr_parts) >= 6:
                 outbound_config["type"] = "shadowsocksr"
@@ -213,7 +254,7 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
                 outbound_config["obfs"] = ssr_parts[4]
                 outbound_config["password"] = base64_decode_if_needed(ssr_parts[5])
 
-                # 解析 params
+                # Parse params (optional)
                 if '?' in decoded_ssr_info:
                     params_str = decoded_ssr_info.split('?', 1)[1]
                     ssr_query = parse_qs(params_str)
@@ -222,8 +263,8 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
                     if 'protoparam' in ssr_query:
                         outbound_config['protocol_param'] = base64_decode_if_needed(ssr_query['protoparam'][0])
                 
-                # SSR 没有原生 TLS 支持，一般通过 obfs 或额外代理层
-                outbound_config.pop("tls", None) # Remove TLS for SSR
+                outbound_config.pop("uuid", None) # SSR doesn't use UUID
+                outbound_config.pop("tls", None) # SSR doesn't have native TLS
             else:
                 print(f"Warning: Could not parse SSR node {node_url} due to incorrect format.")
                 return None
@@ -235,10 +276,11 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
         print(f"警告：不支持的协议类型 {protocol}，跳过此节点: {node_url}")
         return None
 
+    # Add direct outbound for routing
     outbounds.append(outbound_config)
-    outbounds.append({"tag": "direct", "type": "direct"}) # 添加 direct 出站
+    outbounds.append({"tag": "direct", "type": "direct"}) 
 
-    # 主配置结构
+    # Main config structure
     singbox_full_config = {
         "log": {
             "level": "info"
@@ -246,8 +288,8 @@ def generate_singbox_config(node_url: str, socks_port: int, http_port: int) -> d
         "inbounds": inbounds,
         "outbounds": outbounds,
         "route": {
-            "rule_set": [], # 可以添加更多规则
-            "default_outbound": "proxy" # 默认流量走 proxy
+            "rule_set": [], # Can add more rules if needed
+            "default_outbound": "proxy" # Default traffic to the 'proxy' outbound
         }
     }
     
@@ -257,38 +299,63 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> boo
     """
     通过 subprocess 调用 Singbox 进行节点测试。
     """
+    # 增加一个小的延迟，以缓解资源释放问题
+    await asyncio.sleep(0.1) # 100ms 延迟
+
     print(f"尝试通过 Singbox 测试节点: {node_url}")
     
-    # 1. 动态生成 Singbox 配置
     config_data = generate_singbox_config(node_url, SINGBOX_SOCKS5_PORT, SINGBOX_HTTP_PORT)
     if config_data is None:
         print(f"无法为节点 {node_url} 生成 Singbox 配置。")
         return False
 
     config_file_path = f"/tmp/singbox_config_{os.getpid()}.json"
+    singbox_process = None
     try:
         with open(config_file_path, "w", encoding="utf-8") as f:
             json.dump(config_data, f, indent=2)
         # print(f"临时 Singbox 配置已保存到: {config_file_path}")
 
-        # 2. 启动 Singbox 进程
         command = [SINGBOX_BIN_PATH, "run", "-c", config_file_path]
-        singbox_process = subprocess.Popen(
-            command, 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE,
-            text=True,
-            start_new_session=True # 创建新会话，避免子进程继承父进程的信号
-        )
-        print(f"Singbox 进程启动中 (PID: {singbox_process.pid})...")
-        await asyncio.sleep(2) # 等待 Singbox 启动
+        
+        # 使用 try-except 捕获 OSError (Errno 11)
+        try:
+            singbox_process = subprocess.Popen(
+                command, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE,
+                text=True,
+                start_new_session=True # 创建新会话，避免子进程继承父进程的信号
+            )
+            print(f"Singbox 进程启动中 (PID: {singbox_process.pid})...")
+            await asyncio.sleep(2) # 等待 Singbox 启动
 
-        # 检查 Singbox 是否成功启动 (简单检查，更健壮的方式是监听其日志或API)
-        poll_result = singbox_process.poll()
-        if poll_result is not None:
-            stdout, stderr = singbox_process.communicate()
-            print(f"Singbox 进程启动失败，退出码: {poll_result}")
-            print(f"Stdout:\n{stdout}\nStderr:\n{stderr}")
+            # 检查 Singbox 是否成功启动 (简单检查，更健壮的方式是监听其日志或API)
+            # 尝试读取一些输出，确保进程没有立即崩溃
+            stdout_peek = singbox_process.stdout.peek().decode('utf-8') if singbox_process.stdout else ""
+            stderr_peek = singbox_process.stderr.peek().decode('utf-8') if singbox_process.stderr else ""
+            if "error" in stdout_peek.lower() or "error" in stderr_peek.lower():
+                print(f"Singbox 启动时检测到错误日志。Stdout: {stdout_peek[:200]} Stderr: {stderr_peek[:200]}")
+                # Try to get full output before returning False
+                stdout, stderr = singbox_process.communicate(timeout=5)
+                print(f"Singbox Full Stdout:\n{stdout}\nFull Stderr:\n{stderr}")
+                return False
+
+            poll_result = singbox_process.poll()
+            if poll_result is not None:
+                stdout, stderr = singbox_process.communicate()
+                print(f"Singbox 进程启动失败，退出码: {poll_result}")
+                print(f"Stdout:\n{stdout}\nStderr:\n{stderr}")
+                return False
+
+        except OSError as e:
+            if e.errno == 11: # Resource temporarily unavailable
+                print(f"ERROR: 启动 Singbox 进程时资源暂时不可用: {e}. 请考虑降低并发或检查系统资源限制。")
+            else:
+                print(f"ERROR: 启动 Singbox 进程时发生操作系统错误: {e}")
+            return False
+        except Exception as e:
+            print(f"ERROR: 启动 Singbox 进程时发生未知错误: {e}")
             return False
 
         # 3. 通过 Singbox 代理访问目标网站
@@ -311,12 +378,15 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> boo
         except aiohttp.ClientError as e:
             print(f"通过 Singbox 访问 {TARGET_URL} 发生客户端错误: {e}")
             return False
+        except Exception as e:
+            print(f"通过 Singbox 代理访问时发生未知错误: {e}")
+            return False
 
     except FileNotFoundError:
         print(f"错误：'{SINGBOX_BIN_PATH}' 命令未找到。请确保 Singbox 已正确安装并添加到 PATH。")
         return False
     except Exception as e:
-        print(f"执行 Singbox 测试时发生未知错误: {e}")
+        print(f"执行 Singbox 测试时发生未知错误（配置或进程管理阶段）: {e}")
         return False
     finally:
         # 4. 停止 Singbox 进程并清理
@@ -329,6 +399,14 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> boo
             except subprocess.TimeoutExpired:
                 print(f"强制杀死 Singbox 进程 (PID: {singbox_process.pid})...")
                 singbox_process.kill()
+        
+        # 确保管道被关闭，避免僵尸进程或资源泄露
+        if singbox_process:
+            if singbox_process.stdout:
+                singbox_process.stdout.close()
+            if singbox_process.stderr:
+                singbox_process.stderr.close()
+
         if os.path.exists(config_file_path):
             os.remove(config_file_path)
             # print(f"已删除临时配置文件: {config_file_path}")
@@ -357,8 +435,7 @@ async def main():
             for line in f:
                 line = line.strip()
                 # 过滤掉注释行和空行，只保留节点链接
-                # 扩展匹配更多协议
-                if line and not line.startswith('#') and re.match(r"^(hysteria2|vless|vmess|ss|trojan|ssr)://", line):
+                if line and not line.startswith('#') and re.match(r"^(hysteria2|vless|vmess|ss|trojan|ssr)://", line, re.IGNORECASE):
                     nodes.append(line)
     except FileNotFoundError:
         print(f"错误：文件 {SUB_FILE} 未找到。请确保文件存在。")
@@ -375,8 +452,9 @@ async def main():
     # 异步并发执行，控制并发数。
     # 对于 10W+ 节点，一次性全部并发可能导致资源耗尽或被封禁。
     # 建议采取分批处理或分布式测试策略。
-    # GitHub Actions 免费层级可能限制并发连接数，谨慎调整此值。
-    concurrency_limit = 20 # 建议从一个较小的值开始测试，例如 10-50
+    # GitHub Actions 免费层级可能限制并发连接数，此值需要根据实际运行情况反复测试和调整。
+    # 从更保守的数字开始，例如 5 或 10，如果稳定再逐渐增加。
+    concurrency_limit = 10 
 
     # 使用 aiohttp.TCPConnector 限制并发连接数
     connector = aiohttp.TCPConnector(limit=concurrency_limit, force_close=True) 
