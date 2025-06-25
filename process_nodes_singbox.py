@@ -6,6 +6,7 @@ import urllib.parse
 import subprocess
 import logging
 from typing import Dict, List, Set
+from contextlib import contextmanager
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -18,6 +19,7 @@ class NodeParser:
     def __init__(self):
         self.parsed_nodes: List[Dict] = []
         self.unique_nodes: Set[str] = set()
+        self.protocol_counts: Dict[str, int] = {p: 0 for p in PROTOCOLS}
 
     def parse_hysteria2(self, url: str) -> Dict:
         try:
@@ -126,7 +128,10 @@ class NodeParser:
         if not node_str.strip() or node_str in self.unique_nodes or node_str in failed_nodes:
             return
         protocol = node_str.split('://')[0].lower()
+        if protocol not in PROTOCOLS:
+            return
         self.unique_nodes.add(node_str)
+        self.protocol_counts[protocol] += 1
 
         parser_map = {
             'hysteria2': self.parse_hysteria2,
@@ -137,10 +142,20 @@ class NodeParser:
             'vless': self.parse_vless
         }
 
-        if protocol in parser_map:
-            parsed = parser_map[protocol](node_str)
-            if parsed and parsed.get('server') and parsed.get('port'):
-                self.parsed_nodes.append(parsed)
+        parsed = parser_map[protocol](node_str)
+        if parsed and parsed.get('server') and parsed.get('port'):
+            self.parsed_nodes.append(parsed)
+
+@contextmanager
+def file_lock(filename: str):
+    try:
+        yield
+    finally:
+        if os.path.exists(filename):
+            try:
+                os.remove(filename)
+            except Exception as e:
+                logger.error(f"Failed to remove {filename}: {e}")
 
 async def test_connectivity(node: Dict) -> bool:
     try:
@@ -172,34 +187,29 @@ async def test_connectivity(node: Dict) -> bool:
         elif node['protocol'] == 'vless':
             config['outbounds'][0]['uuid'] = node.get('uuid', '')
 
-        with open('temp_config.json', 'w', encoding='utf-8') as f:
-            json.dump(config, f, indent=2)
+        with file_lock('temp_config.json'):
+            with open('temp_config.json', 'w', encoding='utf-8') as f:
+                json.dump(config, f, indent=2)
 
-        # 使用 sing-box 测试连通性（5秒超时）
-        process = await asyncio.create_subprocess_exec(
-            'sing-box', 'check', '-c', 'temp_config.json',
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-            limit=1024 * 1024  # 限制输出大小
-        )
-        try:
-            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=5.0)
-            if process.returncode != 0:
-                logger.warning(f"Test failed for node {node['raw']}: {stderr.decode('utf-8', errors='ignore')}")
+            # 使用 sing-box 测试连通性（3秒超时）
+            process = await asyncio.create_subprocess_exec(
+                'sing-box', 'check', '-c', 'temp_config.json',
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                limit=1024 * 1024
+            )
+            try:
+                stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=3.0)
+                if process.returncode != 0:
+                    logger.warning(f"Test failed for node {node['raw']}: {stderr.decode('utf-8', errors='ignore')}")
+                    return False
+                return True
+            except asyncio.TimeoutError:
+                logger.warning(f"Test timeout for node {node['raw']}")
                 return False
-            return True
-        except asyncio.TimeoutError:
-            logger.warning(f"Test timeout for node {node['raw']}")
-            return False
     except Exception as e:
         logger.error(f"Test connectivity error for node {node['raw']}: {e}")
         return False
-    finally:
-        if os.path.exists('temp_config.json'):
-            try:
-                os.remove('temp_config.json')
-            except Exception as e:
-                logger.error(f"Failed to remove temp_config.json: {e}")
 
 async def process_nodes():
     parser = NodeParser()
@@ -223,16 +233,21 @@ async def process_nodes():
             batch = nodes[i:i + batch_size]
             for node in batch:
                 parser.parse_node(node, failed_nodes)
+            logger.info(f"Processed {i + len(batch)}/{len(nodes)} nodes")
         logger.info(f"Parsed {len(parser.parsed_nodes)} unique nodes after filtering")
+        logger.info(f"Protocol counts: {parser.protocol_counts}")
 
         # 测试连通性
         valid_nodes = []
         new_failed_nodes = []
-        for node in parser.parsed_nodes:
+        total_nodes = len(parser.parsed_nodes)
+        for i, node in enumerate(parser.parsed_nodes, 1):
             if await test_connectivity(node):
                 valid_nodes.append(node)
             else:
                 new_failed_nodes.append(node)
+            if i % 100 == 0:
+                logger.info(f"Tested {i}/{total_nodes} nodes ({i/total_nodes*100:.1f}%)")
 
         # 保存成功节点（原始明文 URL）
         os.makedirs('data', exist_ok=True)
