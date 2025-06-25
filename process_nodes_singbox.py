@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import base64
 import urllib.request
 import urllib.parse
 import subprocess
