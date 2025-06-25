@@ -14,20 +14,20 @@ from tqdm import tqdm
 import psutil
 
 # 常量配置
-SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件
-ALL_FILE = "all.txt"  # 输出可用节点文件
-FAILED_NODES_FILE = os.path.join("data", "failed.txt")  # 失败节点记录文件
-DATA_DIR = "data"  # 数据目录
-SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
-SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")  # sing-box 日志路径
-SINGBOX_PATH = "./sing-box"  # sing-box 可执行文件路径
-PORT_RANGE = range(10809, 10910)  # 动态端口范围
-TEST_TIMEOUT = 8  # 测试超时时间（秒）
-CONCURRENCY_LIMIT = 1  # 最大并发数，降低到 1 避免端口冲突
-BATCH_SIZE = 5  # 每批次节点数，减少以避免卡住
-MAX_BATCH_TIME = 30  # 单批次最大耗时（秒）
-TARGET_URLS = ["https://www.google.com", "https://1.1.1.1"]  # 测试目标 URL
-RETRY_ATTEMPTS = 2  # 重试次数
+SUB_FILE = os.path.join("data", "sub.txt")
+ALL_FILE = "all.txt"
+FAILED_NODES_FILE = os.path.join("data", "failed.txt")
+DATA_DIR = "data"
+SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
+SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")
+SINGBOX_PATH = "./sing-box"
+PORT_RANGE = range(10809, 10910)
+TEST_TIMEOUT = 8
+CONCURRENCY_LIMIT = 1
+BATCH_SIZE = 5
+MAX_BATCH_TIME = 30
+TARGET_URLS = ["https://www.google.com", "https://1.1.1.1"]
+RETRY_ATTEMPTS = 2
 
 # 配置日志
 logging.basicConfig(
@@ -40,7 +40,6 @@ logging.basicConfig(
 )
 
 def log_message(message, level="info"):
-    """记录日志信息"""
     if level == "info":
         logging.info(message)
     elif level == "error":
@@ -58,7 +57,6 @@ if not os.path.exists(SINGBOX_PATH):
     exit(1)
 
 def get_free_port():
-    """获取可用端口"""
     for port in PORT_RANGE:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
@@ -70,7 +68,6 @@ def get_free_port():
     return None
 
 def cleanup_singbox_processes():
-    """清理所有 sing-box 残留进程"""
     for proc in psutil.process_iter(['name']):
         try:
             if proc.name() == "sing-box" or proc.name() == SINGBOX_PATH.lstrip("./"):
@@ -80,7 +77,6 @@ def cleanup_singbox_processes():
             pass
 
 def base64_decode_if_needed(data: str) -> str:
-    """尝试解码 Base64 字符串，处理填充问题"""
     try:
         data += '=' * (-len(data) % 4)
         return base64.b64decode(data).decode('utf-8', errors='ignore')
@@ -89,7 +85,6 @@ def base64_decode_if_needed(data: str) -> str:
         return data
 
 def is_valid_node_url(node_url: str) -> bool:
-    """验证节点 URL 的合法性，支持 IPv4 和 IPv6"""
     try:
         parsed = urlparse(node_url)
         if not parsed.scheme or not parsed.netloc:
@@ -105,7 +100,6 @@ def is_valid_node_url(node_url: str) -> bool:
         return False
 
 def parse_tag_info(tag: str) -> dict:
-    """解析节点标签中的信息（如国家、速度、成功率）"""
     country = "未知"
     speed = None
     success_rate = None
@@ -126,14 +120,12 @@ def parse_tag_info(tag: str) -> dict:
     return {"country": country, "speed": speed, "success_rate": success_rate}
 
 def safe_unquote(s: str) -> str:
-    """安全解码 URL 编码字符串"""
     try:
         return unquote(s, encoding='utf-8', errors='ignore')
     except Exception:
         return s
 
 def extract_node_info(node_url: str) -> dict:
-    """提取节点信息"""
     if not is_valid_node_url(node_url):
         log_message(f"节点 URL 格式非法，跳过: {node_url}", "warning")
         return None
@@ -144,7 +136,6 @@ def extract_node_info(node_url: str) -> dict:
     return node_info
 
 def generate_singbox_config(node_url: str, port: int) -> dict:
-    """生成 sing-box 配置文件，使用指定端口"""
     try:
         parsed_url = urlparse(node_url)
         protocol = parsed_url.scheme.lower()
@@ -169,6 +160,8 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
             "server_name": query_params.get('sni', [host])[0],
             "insecure": query_params.get('allowInsecure', ['0'])[0] == '1' or query_params.get('insecure', ['0'])[0] == '1'
         }
+        if 'alpn' in query_params:
+            tls_settings["alpn"] = query_params['alpn']
 
         if protocol == "hysteria2":
             outbound_config["type"] = "hysteria2"
@@ -258,15 +251,9 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
                 return None
             if 'type' in query_params:
                 transport_type = query_params['type'][0]
-                if transport_type not in ['ws', 'http', 'tcp']:
-                    log_message(f"SS 节点 {node_url} 使用不支持的传输类型: {transport_type}", "warning")
+                if transport_type != 'tcp':
+                    log_message(f"SS 节点 {node_url} 使用不支持的传输类型: {transport_type}，sing-box 仅支持 tcp", "warning")
                     return None
-                if transport_type in ['ws', 'http']:
-                    outbound_config["transport"] = {
-                        "type": transport_type,
-                        "host": query_params.get('host', [''])[0],
-                        "path": query_params.get('path', [''])[0]
-                    }
             if 'headerType' in query_params and query_params['headerType'][0] == 'http':
                 log_message(f"SS 节点 {node_url} 使用 headerType=http，可能不完全兼容", "warning")
             if tls_settings['enabled']:
@@ -321,7 +308,6 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
         return None
 
 async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession, port: int) -> tuple[bool, float]:
-    """运行 sing-box 测试，使用指定端口"""
     config = generate_singbox_config(node_url, port)
     if not config:
         return False, 0
@@ -383,7 +369,6 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession, 
         cleanup_singbox_processes()
 
 async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> tuple[bool, float]:
-    """带重试的 sing-box 测试"""
     for attempt in range(1, RETRY_ATTEMPTS + 1):
         port = get_free_port()
         if not port:
@@ -397,7 +382,6 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> tup
     return False, 0
 
 async def test_node_connectivity(session: aiohttp.ClientSession, node_info: dict) -> tuple[dict, float]:
-    """测试单个节点连通性"""
     node_url = node_info["url"]
     success, latency = await run_singbox_test(node_url, session)
     if success:
@@ -405,7 +389,6 @@ async def test_node_connectivity(session: aiohttp.ClientSession, node_info: dict
     return None, 0
 
 def load_failed_nodes():
-    """加载历史失败节点"""
     failed_nodes = set()
     if os.path.exists(FAILED_NODES_FILE):
         with open(FAILED_NODES_FILE, 'r', encoding='utf-8', errors='ignore') as f:
@@ -413,7 +396,6 @@ def load_failed_nodes():
     return failed_nodes
 
 async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> list:
-    """处理一批节点，添加时间监控"""
     batch_start_time = time.time()
     successful_nodes = []
     failed_nodes = []
@@ -440,7 +422,6 @@ async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> li
     return successful_nodes
 
 async def main():
-    """主函数，跳过历史失败节点"""
     cleanup_singbox_processes()
     if not os.path.exists(SUB_FILE):
         log_message(f"错误：未找到输入文件 {SUB_FILE}", "error")
@@ -468,7 +449,7 @@ async def main():
                     if key not in seen_nodes:
                         seen_nodes.add(key)
                         nodes_info.append(node_info)
-    log_message(f"读取到 {len(nodes_info)} 个唯一节点（跳过 {len(failed_nodes)} 个历史失败节点）")
+    log_message(f"读取到 {len(nodes_info)} 个节点（跳过 {len(failed_nodes)} 个历史失败节点）")
 
     successful_nodes = []
     connector = aiohttp.TCPConnector(limit=CONCURRENCY_LIMIT)
