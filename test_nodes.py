@@ -117,7 +117,7 @@ def parse_node_info(link):
             remark_match = re.search(r'#(.*)', link)
             remark = unquote(remark_match.group(1)) if remark_match else "未知"
             decoded_auth = base64.b64decode(encoded_part).decode('utf-8')
-            method, password = decoded_auth.split(':', 1)
+            method, password = decoded_auth.split(':', 1)  # 修复：使用 decoded_auth 而非 decoded_alt
             server_address = server_part.split(':')[0]
             server_port = server_part.split(':')[1].split('#')[0]
             return {
@@ -248,7 +248,6 @@ def generate_xray_config(node_info):
 
 async def check_connectivity(proxy_url, test_url="https://www.google.com/generate_204"):
     try:
-        # 简化 proxies 参数，兼容旧版本 httpx
         async with httpx.AsyncClient(proxy=proxy_url, timeout=TEST_TIMEOUT_SECONDS) as client:
             start_time = time.time()
             response = await client.get(test_url)
@@ -422,11 +421,12 @@ async def load_dns_cache():
                 dns_cache = json.loads(await f.read())
                 current_time = time.time()
                 dns_cache = {
-                    hostname_hostname: data for hostname, data in dns_cache.items()
+                    hostname: data for hostname, data in dns_cache.items()
                     if (current_time - data.get("timestamp", 0) < DNS_CACHE_EXPIRATION)
-                logger.info(f"Successfully loaded {len(dns_cache)} DNS cache entries.")
+                }
+                logger.info(f"已加载 {len(dns_cache)} 条 DNS 缓存。")
             except json.JSONDecodeError:
-                logger.warning("DNS cache file is corrupted, recreating it.")
+                logger.warning("DNS 缓存文件损坏，重新创建。")
                 dns_cache = {}
     else:
         dns_cache = {}
@@ -434,7 +434,7 @@ async def load_dns_cache():
 async def save_dns_cache():
     os.makedirs(DATA_DIR, exist_ok=True)
     async with aiofiles.open(DNS_CACHE_FILE, "w", encoding="utf-8") as f:
-        await f.write(json.dumps(dns_cache, indent=2))
+        await f.write(json.dumps(dns_cache, indent=2, ensure_ascii=False))
     logger.info(f"DNS 缓存已保存: {len(dns_cache)} 条记录")
 
 async def fetch_subscription(url):
@@ -448,11 +448,11 @@ async def fetch_subscription(url):
                 return decoded_content.splitlines()
             except Exception:
                 return content.splitlines()
-        except httpx.RequestError as e:
-            logger.error(f"Failed to fetch subscription URL {url}: {e}")
-            return []
+    except httpx.RequestError as e:
+        logger.error(f"获取订阅链接失败 {url}: {e}")
+        return []
     except Exception as e:
-        logger.error(f"Unexpected error fetching {url}: {e}", exc_info=True)
+        logger.error(f"获取订阅 {url} 时发生未知错误: {e}", exc_info=True)
         return []
 
 async def get_all_nodes():
@@ -479,7 +479,7 @@ def generate_summary(test_results):
     avg_delay = -1
     successful_delays = [r["delay"] for r in test_results if r["status"] == "成功" and r["delay"] != -1]
     if successful_delays:
-        avg_delay = sum(successful_delays)
+        avg_delay = sum(successful_delays) / len(successful_delays)
     return {
         "总节点数": total_nodes,
         "成功节点数": success_count,
