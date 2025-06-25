@@ -12,7 +12,7 @@ import logging
 from tqdm import tqdm
 
 # 常量配置
-SUB_FILE = "sub.txt"  # 输入节点文件
+SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件，位于 data/sub.txt
 ALL_FILE = "all.txt"  # 输出可用节点文件
 DATA_DIR = "data"  # 数据目录
 SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
@@ -200,7 +200,7 @@ def generate_singbox_config(node_url: str) -> dict:
                 outbound_config["method"] = method
                 outbound_config["password"] = password
             if 'plugin' in query_params:
-                outbound_config["plugin"] = query_params.get('plugin', [''])[0]
+                outbound_config["plugin"] = query_params['plugin'][0]
                 outbound_config["plugin_opts"] = query_params.get('plugin-opts', [''])[0]
 
         elif protocol == "ssr":
