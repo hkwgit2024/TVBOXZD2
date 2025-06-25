@@ -26,7 +26,7 @@ TEST_TIMEOUT = 8  # 测试超时时间（秒）
 CONCURRENCY_LIMIT = 1  # 最大并发数，降低到 1 避免端口冲突
 BATCH_SIZE = 5  # 每批次节点数，减少以避免卡住
 MAX_BATCH_TIME = 30  # 单批次最大耗时（秒）
-TARGET_URLS = ["https://www.google.com", "https://1.1.1.1"]  # 测试目标 URL，替换 cloudflare.com
+TARGET_URLS = ["https://www.google.com", "https://1.1.1.1"]  # 测试目标 URL
 RETRY_ATTEMPTS = 2  # 重试次数
 
 # 配置日志
@@ -222,7 +222,7 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
                     outbound_config["server_port"] = int(vmess_data.get('port', server_port))
                     outbound_config["uuid"] = vmess_data.get('id', '')
                     outbound_config["alter_id"] = int(vmess_data.get('aid', 0))
-                    outbound_config["security"] = vmess_data.get('scy', '0')
+                    outbound_config["security"] = vmess_data.get('scy', 'auto')
                 except Exception as e:
                     log_message(f"无法解析 VMESS 节点 {node_url}: {e}", "warning")
                     return None
@@ -251,7 +251,7 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
                 outbound_config["method"] = method
                 outbound_config["password"] = password
             else:
-                outbound_config["method"] = "aes-256-gcm"  # 默认加密方法
+                outbound_config["method"] = "aes-256-gcm"
                 outbound_config["password"] = user_info
             if 'plugin' in query_params:
                 log_message(f"SS 节点 {node_url} 包含插件，sing-box 不支持: {query_params['plugin']}", "warning")
@@ -268,7 +268,7 @@ def generate_singbox_config(node_url: str, port: int) -> dict:
                         "path": query_params.get('path', [''])[0]
                     }
             if 'headerType' in query_params and query_params['headerType'][0] == 'http':
-                log_message(f"SS 节点 {node_url} 使用 headerType=http，可能不完全兼容"", "warning")
+                log_message(f"SS 节点 {node_url} 使用 headerType=http，可能不完全兼容", "warning")
             if tls_settings['enabled']:
                 outbound_config["tls"] = tls_settings
 
@@ -441,7 +441,7 @@ async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> li
 
 async def main():
     """主函数，跳过历史失败节点"""
-    cleanup_singbox_processes()  # 启动前清理残留进程
+    cleanup_singbox_processes()
     if not os.path.exists(SUB_FILE):
         log_message(f"错误：未找到输入文件 {SUB_FILE}", "error")
         exit(1)
