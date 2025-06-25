@@ -14,14 +14,16 @@ from tqdm import tqdm
 # 常量配置
 SUB_FILE = os.path.join("data", "sub.txt")  # 输入节点文件
 ALL_FILE = "all.txt"  # 输出可用节点文件
+FAILED_NODES_FILE = os.path.join("data", "failed.txt")  # 失败节点记录文件
 DATA_DIR = "data"  # 数据目录
 SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
 SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")  # sing-box 日志路径
 SINGBOX_PATH = "./sing-box"  # sing-box 可执行文件路径
 SINGBOX_HTTP_PORT = 10809  # sing-box HTTP 代理端口
 TEST_TIMEOUT = 8  # 测试超时时间（秒）
-CONCURRENCY_LIMIT = 3  # 最大并发数，降低以减少资源占用
-BATCH_SIZE = 20  # 每批次节点数，减少以避免超时
+CONCURRENCY_LIMIT = 2  # 最大并发数，降低以减少资源占用
+BATCH_SIZE = 10  # 每批次节点数，减少以避免超时
+MAX_BATCH_TIME = 30  # 单批次最大耗时（秒）
 TARGET_URLS = ["https://www.cloudflare.com", "https://1.1.1.1"]  # 测试目标 URL
 RETRY_ATTEMPTS = 2  # 重试次数
 
@@ -291,7 +293,7 @@ def generate_singbox_config(node_url: str) -> dict:
         return None
 
 async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) -> tuple[bool, float]:
-    """运行 sing-box 测试，返回测试结果和延迟"""
+    """运行 sing-box 测试，增强进程清理"""
     config = generate_singbox_config(node_url)
     if not config:
         return False, 0
@@ -299,7 +301,7 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
     process = None
     start_time = time.time()
     try:
-        # 检查端口是否被占用
+        # 检查端口占用
         try:
             async with session.get(f"http://127.0.0.1:{SINGBOX_HTTP_PORT}", timeout=1):
                 log_message(f"端口 {SINGBOX_HTTP_PORT} 已被占用，跳过节点 {node_url}", "error")
@@ -316,7 +318,7 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
             stderr=asyncio.subprocess.PIPE
         )
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)  # 缩短等待时间
         if process.returncode is not None:
             stderr_data = await process.stderr.read()
             log_message(f"sing-box 启动失败: {node_url}, 错误: {stderr_data.decode('utf-8', errors='ignore')}", "error")
@@ -347,9 +349,10 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
         if process and process.returncode is None:
             try:
                 process.terminate()
-                await asyncio.wait_for(process.wait(), timeout=5)
+                await asyncio.wait_for(process.wait(), timeout=3)
             except asyncio.TimeoutError:
                 process.kill()
+                log_message(f"强制终止 sing-box 进程: {node_url}", "warning")
             except Exception as e:
                 log_message(f"终止 sing-box 进程失败: {e}", "error")
         if os.path.exists(SINGBOX_CONFIG_PATH):
@@ -376,26 +379,49 @@ async def test_node_connectivity(session: aiohttp.ClientSession, node_info: dict
         return node_info, latency
     return None, 0
 
+def load_failed_nodes():
+    """加载历史失败节点"""
+    failed_nodes = set()
+    if os.path.exists(FAILED_NODES_FILE):
+        with open(FAILED_NODES_FILE, 'r', encoding='utf-8', errors='ignore') as f:
+            failed_nodes.update(line.strip() for line in f if line.strip())
+    return failed_nodes
+
 async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> list:
-    """处理一批节点"""
-    tasks = [test_node_connectivity(session, node) for node in nodes_batch]
+    """处理一批节点，添加时间监控"""
+    batch_start_time = time.time()
     successful_nodes = []
-    for task_future in tqdm(asyncio.as_completed(tasks), total=len(nodes_batch), desc="测试节点"):
+    failed_nodes = []
+    for task_future in tqdm(asyncio.as_completed([test_node_connectivity(session, node) for node in nodes_batch]), total=len(nodes_batch), desc="测试节点"):
         try:
             result, latency = await task_future
             if result:
                 result["latency"] = latency
                 successful_nodes.append(result)
+            else:
+                failed_nodes.append(nodes_batch[len(successful_nodes) + len(failed_nodes)]["url"])
         except Exception as e:
             log_message(f"任务处理过程中发生错误: {e}", "error")
+    
+    # 记录失败节点
+    if failed_nodes:
+        with open(FAILED_NODES_FILE, 'a', encoding='utf-8', errors='ignore') as f:
+            for node_url in failed_nodes:
+                f.write(f"{node_url}\n")
+    
+    batch_time = time.time() - batch_start_time
+    if batch_time > MAX_BATCH_TIME:
+        log_message(f"批次处理耗时 {batch_time:.2f}秒，超过阈值 {MAX_BATCH_TIME}秒，可能存在卡住风险", "warning")
+    
     return successful_nodes
 
 async def main():
-    """主函数"""
+    """主函数，跳过历史失败节点"""
     if not os.path.exists(SUB_FILE):
         log_message(f"错误：未找到输入文件 {SUB_FILE}", "error")
         exit(1)
 
+    failed_nodes = load_failed_nodes()
     nodes_info = []
     seen_nodes = set()
     with open(SUB_FILE, 'r', encoding='utf-8', errors='ignore') as f:
@@ -406,6 +432,9 @@ async def main():
         for line in lines:
             line = line.strip()
             if line and not line.startswith('#') and re.match(r"^(hysteria2|vless|vmess|ss|trojan|ssr|socks5)://", line, re.IGNORECASE):
+                if line in failed_nodes:
+                    log_message(f"跳过历史失败节点: {line}", "info")
+                    continue
                 node_info = extract_node_info(line)
                 if node_info:
                     parsed = urlparse(node_info["url"])
@@ -414,7 +443,7 @@ async def main():
                     if key not in seen_nodes:
                         seen_nodes.add(key)
                         nodes_info.append(node_info)
-    log_message(f"读取到 {len(nodes_info)} 个唯一节点")
+    log_message(f"读取到 {len(nodes_info)} 个唯一节点（跳过 {len(failed_nodes)} 个历史失败节点）")
 
     successful_nodes = []
     connector = aiohttp.TCPConnector(limit=CONCURRENCY_LIMIT)
