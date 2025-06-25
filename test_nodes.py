@@ -15,7 +15,7 @@ ALL_FILE = os.path.join(DATA_DIR, "all.txt")
 
 # 目标测试网站
 TARGET_URL = "https://www.google.com" # 请替换为你想测试的网站，例如 "https://www.baidu.com"
-TEST_TIMEOUT = 2 # 每个节点测试超时时间（秒）
+TEST_TIMEOUT = 15 # 每个节点测试超时时间（秒）
 SINGBOX_SOCKS5_PORT = 1080 # Singbox 本地 SOCKS5 代理端口
 SINGBOX_HTTP_PORT = 1081 # Singbox 本地 HTTP 代理端口
 SINGBOX_BIN_PATH = "/usr/local/bin/singbox" # Singbox 可执行文件路径，确保在 GitHub Actions 中正确安装
@@ -312,93 +312,113 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> boo
     config_file_path = f"/tmp/singbox_config_{os.getpid()}.json"
     singbox_process = None
     try:
+        print(f"DEBUG: 正在生成并保存 Singbox 配置到 {config_file_path}") # <-- 新增
         with open(config_file_path, "w", encoding="utf-8") as f:
             json.dump(config_data, f, indent=2)
-        # print(f"临时 Singbox 配置已保存到: {config_file_path}")
+        print("DEBUG: Singbox 配置保存成功。") # <-- 新增
 
         command = [SINGBOX_BIN_PATH, "run", "-c", config_file_path]
+        print(f"DEBUG: 尝试执行命令: {' '.join(command)}") # <-- 新增
         
-        # 使用 try-except 捕获 OSError (Errno 11)
         try:
             singbox_process = subprocess.Popen(
                 command, 
                 stdout=subprocess.PIPE, 
                 stderr=subprocess.PIPE,
                 text=True,
-                start_new_session=True # 创建新会话，避免子进程继承父进程的信号
+                start_new_session=True 
             )
-            print(f"Singbox 进程启动中 (PID: {singbox_process.pid})...")
-            await asyncio.sleep(2) # 等待 Singbox 启动
+            print(f"DEBUG: Singbox 进程成功启动，PID: {singbox_process.pid}. 等待 2 秒...") # <-- 新增
+            await asyncio.sleep(2) 
 
             # 检查 Singbox 是否成功启动 (简单检查，更健壮的方式是监听其日志或API)
             # 尝试读取一些输出，确保进程没有立即崩溃
-            stdout_peek = singbox_process.stdout.peek().decode('utf-8') if singbox_process.stdout else ""
-            stderr_peek = singbox_process.stderr.peek().decode('utf-8') if singbox_process.stderr else ""
+            stdout_peek = ""
+            stderr_peek = ""
+            if singbox_process.stdout:
+                try:
+                    stdout_peek = singbox_process.stdout.peek(1024).decode('utf-8') # Peek up to 1KB
+                except ValueError: # handle empty buffer
+                    pass
+            if singbox_process.stderr:
+                try:
+                    stderr_peek = singbox_process.stderr.peek(1024).decode('utf-8')
+                except ValueError:
+                    pass
+
             if "error" in stdout_peek.lower() or "error" in stderr_peek.lower():
-                print(f"Singbox 启动时检测到错误日志。Stdout: {stdout_peek[:200]} Stderr: {stderr_peek[:200]}")
+                print(f"DEBUG: Singbox 启动时检测到错误日志。Stdout: {stdout_peek[:200]} Stderr: {stderr_peek[:200]}")
                 # Try to get full output before returning False
                 stdout, stderr = singbox_process.communicate(timeout=5)
-                print(f"Singbox Full Stdout:\n{stdout}\nFull Stderr:\n{stderr}")
+                print(f"DEBUG: Singbox Full Stdout:\n{stdout}\nDEBUG: Singbox Full Stderr:\n{stderr}")
                 return False
 
             poll_result = singbox_process.poll()
             if poll_result is not None:
                 stdout, stderr = singbox_process.communicate()
-                print(f"Singbox 进程启动失败，退出码: {poll_result}")
-                print(f"Stdout:\n{stdout}\nStderr:\n{stderr}")
+                print(f"DEBUG: Singbox 进程启动失败，退出码: {poll_result}")
+                print(f"DEBUG: Stdout:\n{stdout}\nDEBUG: Stderr:\n{stderr}")
                 return False
 
         except OSError as e:
+            print(f"DEBUG: 捕获到 OSError: {e}") # <-- 新增
             if e.errno == 11: # Resource temporarily unavailable
                 print(f"ERROR: 启动 Singbox 进程时资源暂时不可用: {e}. 请考虑降低并发或检查系统资源限制。")
             else:
                 print(f"ERROR: 启动 Singbox 进程时发生操作系统错误: {e}")
             return False
         except Exception as e:
+            print(f"DEBUG: 捕获到一般异常: {e}") # <-- 新增
             print(f"ERROR: 启动 Singbox 进程时发生未知错误: {e}")
             return False
 
-        # 3. 通过 Singbox 代理访问目标网站
-        proxies = {
-            "http": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}",
-            "https": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}"
-        }
-        
+        print(f"DEBUG: Singbox 进程已启动，尝试通过代理访问 {TARGET_URL}...") # <-- 新增
         try:
+            proxies = {
+                "http": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}",
+                "https": f"http://127.0.0.1:{SINGBOX_HTTP_PORT}"
+            }
             async with session.get(TARGET_URL, proxy=proxies["https"], timeout=TEST_TIMEOUT) as response:
                 if response.status == 200:
+                    print(f"DEBUG: HTTP 请求成功，状态码 200。") # <-- 新增
                     print(f"通过 Singbox 访问 {TARGET_URL} 成功。")
                     return True
                 else:
+                    print(f"DEBUG: HTTP 请求失败，状态码 {response.status}。") # <-- 新增
                     print(f"通过 Singbox 访问 {TARGET_URL} 失败，HTTP 状态码: {response.status}")
                     return False
         except asyncio.TimeoutError:
+            print(f"DEBUG: HTTP 请求超时。") # <-- 新增
             print(f"通过 Singbox 访问 {TARGET_URL} 超时。")
             return False
         except aiohttp.ClientError as e:
+            print(f"DEBUG: 发生客户端错误: {e}") # <-- 新增
             print(f"通过 Singbox 访问 {TARGET_URL} 发生客户端错误: {e}")
             return False
         except Exception as e:
+            print(f"DEBUG: 通过 Singbox 代理访问时发生未知错误: {e}") # <-- 新增
             print(f"通过 Singbox 代理访问时发生未知错误: {e}")
             return False
 
     except FileNotFoundError:
-        print(f"错误：'{SINGBOX_BIN_PATH}' 命令未找到。请确保 Singbox 已正确安装并添加到 PATH。")
+        print(f"ERROR: '{SINGBOX_BIN_PATH}' 命令未找到。请确保 Singbox 已正确安装并添加到 PATH。") # <-- 统一错误格式
         return False
     except Exception as e:
-        print(f"执行 Singbox 测试时发生未知错误（配置或进程管理阶段）: {e}")
+        print(f"ERROR: 执行 Singbox 测试时发生未知错误（配置或进程管理阶段）: {e}") # <-- 统一错误格式
         return False
     finally:
-        # 4. 停止 Singbox 进程并清理
+        print(f"DEBUG: 进入 finally 块，清理 Singbox 进程和配置文件。") # <-- 新增
         if singbox_process and singbox_process.poll() is None: # 确保进程还在运行
-            print(f"终止 Singbox 进程 (PID: {singbox_process.pid})...")
+            print(f"DEBUG: 正在终止 Singbox 进程 PID: {singbox_process.pid}...") # <-- 新增
             singbox_process.terminate()
             try:
                 # 给进程一点时间来清理资源
                 singbox_process.wait(timeout=5) 
             except subprocess.TimeoutExpired:
-                print(f"强制杀死 Singbox 进程 (PID: {singbox_process.pid})...")
+                print(f"DEBUG: 强制杀死 Singbox 进程 PID: {singbox_process.pid}...") # <-- 新增
                 singbox_process.kill()
+        else:
+            print("DEBUG: Singbox 进程未运行或已终止。") # <-- 新增
         
         # 确保管道被关闭，避免僵尸进程或资源泄露
         if singbox_process:
@@ -409,7 +429,7 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> boo
 
         if os.path.exists(config_file_path):
             os.remove(config_file_path)
-            # print(f"已删除临时配置文件: {config_file_path}")
+            print(f"DEBUG: 已删除临时配置文件: {config_file_path}") # <-- 新增
 
 async def test_node_connectivity(session, node_url):
     """
@@ -462,10 +482,13 @@ async def main():
         tasks = [test_node_connectivity(session, node) for node in nodes]
         
         # 使用 asyncio.as_completed 以便在任务完成时处理结果，而不是等待所有任务完成
-        for i, task in enumerate(asyncio.as_completed(tasks)):
-            result = await task
-            if result:
-                successful_nodes.append(result)
+        for i, task_future in enumerate(asyncio.as_completed(tasks)):
+            try:
+                result = await task_future
+                if result:
+                    successful_nodes.append(result)
+            except Exception as e:
+                print(f"WARNING: 任务处理过程中发生未捕获异常: {e}") # 捕获任务内部的未处理异常
             
             # 每处理一定数量的节点打印进度
             if (i + 1) % 50 == 0 or (i + 1) == len(nodes):
