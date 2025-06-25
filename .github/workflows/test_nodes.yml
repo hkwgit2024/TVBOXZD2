@@ -1,4 +1,4 @@
-name: Test Proxy Nodes
+name: 测试代理节点
 
 on:
   push:
@@ -13,20 +13,20 @@ jobs:
   test-nodes:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
+      - name: 安装 Python 依赖
         run: |
           python -m pip install --upgrade pip
           pip install aiohttp tqdm
 
-      - name: Download sing-box
+      - name: 下载 sing-box
         run: |
           SINGBOX_VERSION="1.10.1"
           wget -q https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz
@@ -34,13 +34,13 @@ jobs:
           mv sing-box-${SINGBOX_VERSION}-linux-amd64/sing-box .
           chmod +x sing-box
           rm -rf sing-box-${SINGBOX_VERSION}-linux-amd64*
-          ./sing-box version  # 验证安装
+          ./sing-box version
 
-      - name: Run proxy node test
+      - name: 运行节点测试
         run: python test_proxy_nodes.py
 
-      - name: Upload results
-        if: always()  # 即使失败也上传日志
+      - name: 上传结果
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
