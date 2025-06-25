@@ -1,182 +1,92 @@
-name: Test and Update Proxy Nodes
+name: Test Nodes and Update Results
 
 on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0:00 运行
   push:
     branches:
       - main
-    paths:
-      - 'test_nodes.py'
-      - '.github/workflows/main.yml'
-  schedule:
-    - cron: '0 20 * * *'  # UTC 20:00 daily
   workflow_dispatch:
 
 jobs:
-  test_and_update_nodes:
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 60  # 设置工作流超时时间，防止长时间挂起
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整历史以支持 git 提交
+          fetch-depth: 0  # 获取完整历史以便提交
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      - name: Verify Python version
-        run: |
-          python --version
-          if [[ $(python --version) != *"3.9"* ]]; then
-            echo "::error::Python version is not 3.9"
-            exit 1
-          fi
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip jq net-tools  # 添加 net-tools 用于端口检查
-        continue-on-error: false
-
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install httpx[socks]==0.27.2 aiodns==3.2.0 aiofiles==24.1.0 psutil==6.1.0
-          pip show httpx socksio aiodns aiofiles psutil > dependency_versions.txt
-          if [ $? -ne 0 ]; then
-            echo "::error::Failed to install Python dependencies"
-            exit 1
-          fi
-        continue-on-error: false
+          pip install httpx aiodns aiofiles psutil
+          pip freeze > dependency_versions.txt
 
-      - name: Configure DNS
+      - name: Download Xray
         run: |
-          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-          echo "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf
-          cat /etc/resolv.conf
-        continue-on-error: false
-
-      - name: Check port availability
-        run: |
-          if netstat -tuln | grep -q ":1080"; then
-            echo "::error::Port 1080 is already in use"
-            exit 1
-          fi
-          echo "Port 1080 is available"
-
-      - name: Download Xray Core and Geo Data
-        run: |
-          XRAY_VERSION="1.8.24"
-          XRAY_ZIP="Xray-linux-64.zip"
-          XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
-          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"  # 修正为 geoip.dat
-          GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-
+          wget -q https://github.com/XTLS/Xray-core/releases/download/v1.8.4/Xray-linux-64.zip
+          unzip -q Xray-linux-64.zip -d .
+          chmod +x xray
           mkdir -p data
+          wget -q -O data/geoip-lite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
+          wget -q -O data/geosite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
 
-          # Download and verify Xray
-          for attempt in {1..3}; do
-            if curl -L -o xray.zip "${XRAY_URL}" --fail; then
-              break
-            fi
-            echo "Retry ${attempt}/3: Failed to download Xray from ${XRAY_URL}"
-            sleep 2
-          done
-          if [ ! -s xray.zip ]; then
-            echo "::error::Failed to download Xray zip"
-            exit 1
-          fi
-          unzip -o xray.zip xray -d .
-          if [ ! -f ./xray ]; then
-            echo "::error::Xray executable not found"
-            exit 1
-          fi
-          chmod +x ./xray
-          echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
-          echo "XRAY_LOCATION_ASSET=$(pwd)/data" >> $GITHUB_ENV
-
-          # Download geoip.dat
-          for attempt in {1..3}; do
-            if curl -L -o data/geoip.dat "${GEOIP_URL}" --fail; then
-              break
-            fi
-            echo "Retry ${attempt}/3: Failed to download geoip.dat from ${GEOIP_URL}"
-            sleep 2
-          done
-          if [ ! -s data/geoip.dat ]; then
-            echo "::error::Failed to download geoip.dat"
-            exit 1
-          fi
-          chmod 644 data/geoip.dat
-
-          # Download geosite.dat
-          for attempt in {1..3}; do
-            if curl -L -o data/geosite.dat "${GEOSITE_URL}" --fail; then
-              break
-            fi
-            echo "Retry ${attempt}/3: Failed to download geosite.dat from ${GEOSITE_URL}"
-            sleep 2
-          done
-          if [ ! -s data/geosite.dat ]; then
-            echo "::error::Failed to download geosite.dat"
-            exit 1
-          fi
-          chmod 644 data/geosite.dat
-        continue-on-error: false
+      - name: Check disk space and permissions
+        run: |
+          df -h
+          ls -ld data/
+          touch data/test.txt && rm data/test.txt
 
       - name: Run Node Tester Script
-        id: test_script
         run: |
           export TEST_TIMEOUT=15
           export LOG_LEVEL=DEBUG
-          export XRAY_GEOIP_PATH=$(pwd)/data/geoip.dat
+          export XRAY_PATH=$(pwd)/xray
+          export XRAY_GEOIP_PATH=$(pwd)/data/geoip-lite.dat
           export XRAY_GEOSITE_PATH=$(pwd)/data/geosite.dat
-          export BATCH_SIZE=5  # 减少并发以降低资源占用
+          export BATCH_SIZE=10
           python test_nodes.py | tee test_output.log
           SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}' || echo "0")
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        continue-on-error: false
 
-      # 移除此步骤以取消工作流产物
-      # - name: Upload test logs and dependencies
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-logs
-      #     path: |
-      #       test_output.log
-      #       dependency_versions.txt
-      #       data/sub.txt
-      #       data/history_results.json
-      #       data/dns_cache.json
-      #       data/geoip.dat
-      #       data/geosite.dat
-      #       data/*.json
-      #     retention-days: 7
-
-      - name: Commit and Push if changed
-        if: steps.test_script.outcomes.success # 修改条件：仅在测试脚本成功执行时提交
+      - name: Check generated files
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/sub.txt data/history_results.json data/dns_cache.json
-          # 如果 test_output.log 或 dependency_versions.txt 也需要提交到仓库，请在此处添加 git add 命令
-          # 例如：git add test_output.log dependency_versions.txt
-          if ! git diff --quiet --cached; then
-            git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
-            git push origin main
-          else
-            echo "No changes to commit"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          echo "Listing files in data directory:"
+          ls -la data/
+          echo "Content of sub.txt:"
+          cat data/sub.txt || echo "sub.txt is empty or not found"
+          echo "Content of success_count.txt:"
+          cat data/success_count.txt || echo "success_count.txt is empty or not found"
 
-      - name: Notify on no successful nodes
-        # 如果你希望在没有成功节点时仍然收到通知，可以保留此步骤
-        # 如果你希望无论有无成功节点都提交，且不需要额外警告，可以删除此步骤
-        if: steps.test_script.outcomes.success && steps.test_script.outputs.successful_nodes_count == '0'
+      - name: Commit and Push results
         run: |
-          echo "::warning::No successful nodes found. Skipping commit." # 这里的跳过提交信息可能需要根据你的实际情况调整
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add data/sub.txt data/success_count.txt data/history_results.json data/dns_cache.json data/geoip-lite.dat data/geosite.dat
+          git commit -m "Update node test results" || echo "No changes to commit"
+          git push origin main
+        if: always()  # Always attempt to commit, even if no changes
+
+      - name: Upload test logs and dependencies
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: |
+            test_output.log
+            dependency_versions.txt
+            data/sub.txt
+            data/success_count.txt
+            data/history_results.json
+            data/dns_cache.json
+            data/geoip-lite.dat
+            data/geosite.dat
+            data/*.json
+          retention-days: 7
+          if-no-files-found: warn
