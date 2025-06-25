@@ -53,7 +53,7 @@ jobs:
           git merge --ff-only origin/main || echo "本地分支已是最新的或需要手动合并（在CI中通常不会发生，可以忽略）"
 
           echo "正在添加生成的文件到 Git 暂存区..."
-          [ -f "data/sub.txt" ] && git add data/sub.txt || echo "警告：未找到 data/sub.txt，跳过添加。"
+          [ -f "data/sub_2.txt" ] && git add data/sub_2.txt || echo "警告：未找到 data/sub_2.txt，跳过添加。"
           [ -f "data/dns_cache.txt" ] && git add data/dns_cache.txt || echo "警告：未找到 data/dns_cache.txt，跳过添加。"
           [ -f "data/node_connectivity_results.log" ] && git add data/node_connectivity_results.log || echo "警告：未找到 data/node_connectivity_results.log，跳过添加。"
           [ -f "data/parse_errors.log" ] && git add data/parse_errors.log || echo "警告：未找到 data/parse_errors.log，跳过添加。"
