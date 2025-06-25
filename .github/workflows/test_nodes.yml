@@ -1,73 +1,50 @@
-name: Singbox Node Connectivity Test
+name: Test Proxy Nodes
 
 on:
   push:
-    branches:
-      - main # 当推送到 main 分支时触发
-    paths:
-      - 'data/sub.txt' # 仅当 data/sub.txt 文件有变化时触发
+    branches: [main]
+  pull_request:
+    branches: [main]
   schedule:
-    - cron: '0 */6 * * *' # 每6小时运行一次，您可以根据需要调整
-  workflow_dispatch: # 允许手动触发工作流
+    - cron: '0 0 * * *'  # 每天 UTC 00:00 运行
+  workflow_dispatch:
 
 jobs:
   test-nodes:
-    runs-on: ubuntu-latest # 推荐使用 ubuntu-latest
-
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Create data directory
-      run: mkdir -p data # 确保 data 目录存在
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    # Step 1: 安装 Singbox 客户端
-    # 您需要在这里替换为 Singbox 官方发布的最新稳定版本的下载链接和正确的平台（linux-amd64, arm64等）
-    # 请访问 Singbox 的 GitHub Releases 页面获取最新信息：https://github.com/SagerNet/sing-box/releases
-    - name: Install Singbox
-      run: |
-        SINGBOX_VERSION="1.9.0" # 请根据实际情况更新到最新稳定版本
-        ARCH="amd64" # 根据运行环境选择 amd64, arm64 等
-        DOWNLOAD_URL="https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-${ARCH}.tar.gz"
-        
-        echo "下载 Singbox from: ${DOWNLOAD_URL}"
-        curl -L -o singbox.tar.gz "$DOWNLOAD_URL"
-        
-        echo "解压 Singbox..."
-        tar -xvf singbox.tar.gz
-        
-        echo "将 sing-box 可执行文件移动到 /usr/local/bin..."
-        sudo mv "sing-box-${SINGBOX_VERSION}-linux-${ARCH}/sing-box" /usr/local/bin/singbox
-        
-        echo "验证 Singbox 安装: "
-        singbox version
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp tqdm
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9' # 确保与脚本兼容的 Python 版本，推荐 3.9 或更高
+      - name: Download sing-box
+        run: |
+          SINGBOX_VERSION="1.10.1"
+          wget -q https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz
+          tar -xzf sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz
+          mv sing-box-${SINGBOX_VERSION}-linux-amd64/sing-box .
+          chmod +x sing-box
+          rm -rf sing-box-${SINGBOX_VERSION}-linux-amd64*
+          ./sing-box version  # 验证安装
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install aiohttp # 安装脚本中使用的库
+      - name: Run proxy node test
+        run: python test_proxy_nodes.py
 
-    - name: Run Node Connectivity Test Script
-      run: |
-        python test_nodes.py
-
-    - name: Commit and Push successful nodes
-      # 仅当 data/all.txt 有更新时才提交
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
-        # 检查 data/all.txt 是否有更改
-        if git diff --exit-code data/all.txt; then
-          echo "data/all.txt 没有变化，跳过提交。"
-        else
-          git add data/all.txt
-          git commit -m "Update successful nodes [skip ci]" # [skip ci] 避免本次提交再次触发 workflow
-          git push
-        fi
-      # 可以在手动触发 (workflow_dispatch) 时选择不推送，或者根据需要调整
-      # if: github.event_name != 'workflow_dispatch'
+      - name: Upload results
+        if: always()  # 即使失败也上传日志
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            all.txt
+            data/test.log
+            data/singbox.log
