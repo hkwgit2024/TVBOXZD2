@@ -27,23 +27,23 @@ DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
 SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")
 SUCCESS_COUNT_FILE = os.path.join(DATA_DIR, "success_count.txt")
 
-TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 30))  # 增加超时时间
-BATCH_SIZE = 10  # 减少并发量
-DNS_CACHE_EXPIRATION = 2678400  # 31 天
-HISTORY_EXPIRATION = 2678400  # 31 天
+TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 15))  # Respect TEST_TIMEOUT=15
+BATCH_SIZE = 10  # Reduced concurrency
+DNS_CACHE_EXPIRATION = 2678400  # 31 days
+HISTORY_EXPIRATION = 2678400  # 31 days
 
 XRAY_PATH = os.getenv("XRAY_PATH", "./xray")
 XRAY_GEOIP_PATH = os.getenv("XRAY_GEOIP_PATH", os.path.join(DATA_DIR, "geoip-lite.dat"))
 XRAY_GEOSITE_PATH = os.getenv("XRAY_GEOSITE_PATH", os.path.join(DATA_DIR, "geosite.dat"))
 
 # --- 日志配置 ---
-LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG").upper()  # 改为 DEBUG 便于排查
+LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG").upper()  # DEBUG for troubleshooting
 logging.basicConfig(
     level=LOG_LEVEL,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler(os.path.join(DATA_DIR, "test_output.log"))  # 保存日志到文件
+        logging.FileHandler(os.path.join(DATA_DIR, "test_output.log"))  # Save logs to file
     ]
 )
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ logger = logging.getLogger(__name__)
 # --- 全局变量 ---
 dns_cache = {}
 history_results = {}
-executor = ThreadPoolExecutor(max_workers=5)  # 减少线程池大小
+executor = ThreadPoolExecutor(max_workers=5)  # Reduced thread pool size
 
 # --- 辅助函数 ---
 def parse_node_info(link):
@@ -143,7 +143,7 @@ def generate_xray_config(node_info):
     if not node_info:
         return None
     config = {
-        "log": {"loglevel": "debug"},  # 增加 Xray 日志级别
+        "log": {"loglevel": "debug"},  # Increased Xray log level
         "inbounds": [
             {
                 "port": 1080,
@@ -277,7 +277,7 @@ async def resolve_dns(hostname):
         logger.debug(f"从缓存获取 DNS 解析结果: {hostname} -> {dns_cache[hostname]['ip']}")
         return dns_cache[hostname]["ip"]
     try:
-        resolver = aiodns.DNSResolver(nameservers=['8.8.8.8', '1.1.1.1'])  # 使用公共 DNS
+        resolver = aiodns.DNSResolver(nameservers=['8.8.8.8', '1.1.1.1'])  # Use public DNS
         result = await resolver.query(hostname, 'A')
         ip_address = result[0].host
         dns_cache[hostname] = {"ip": ip_address, "timestamp": current_time}
@@ -309,7 +309,7 @@ async def start_proxy_subprocess(config_content):
             logger.error(f"Xray 资产文件缺失: geoip={XRAY_GEOIP_PATH}, geosite={XRAY_GEOSITE_PATH}")
             return None, None
         os.chmod(XRAY_PATH, 0o755)
-        # 保存配置到临时文件以便调试
+        # Save config to temporary file for debugging
         config_path = os.path.join(DATA_DIR, f"xray_config_{int(time.time())}.json")
         async with aiofiles.open(config_path, "w", encoding="utf-8") as f:
             await f.write(config_content)
@@ -324,7 +324,7 @@ async def start_proxy_subprocess(config_content):
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
-        # 捕获 Xray 日志
+        # Capture Xray logs
         async def log_xray_output(pipe, log_level):
             while True:
                 line = await pipe.readline()
@@ -333,8 +333,8 @@ async def start_proxy_subprocess(config_content):
                 logger.log(log_level, f"Xray: {line.decode('utf-8').strip()}")
         asyncio.create_task(log_xray_output(xray_process.stdout, logging.DEBUG))
         asyncio.create_task(log_xray_output(xray_process.stderr, logging.ERROR))
-        # 等待 Xray 启动并检查端口
-        for _ in range(10):  # 最长等待 10 秒
+        # Wait for Xray to start and check port
+        for _ in range(10):  # Max wait 10 seconds
             if await check_port(1080):
                 logger.debug("Xray SOCKS 代理端口 1080 已就绪")
                 return xray_process, f"socks5://127.0.0.1:1080"
@@ -512,118 +512,91 @@ def generate_summary(test_results):
     if successful_delays:
         avg_delay = sum(successful_delays) / len(successful_delays)
     return {
-        "total_nodes": total_nodes,
-        "successful_nodes": success_count,
-        "failed_nodes": fail_count,
-        "status_distribution": status_distribution,
-        "average_delay_ms": f"{avg_delay:.2f}" if avg_delay != -1 else "N/A"
+        "总节点数": total_nodes,
+        "成功节点数": success_count,
+        "失败节点数": fail_count,
+        "状态分布": status_distribution,
+        "平均延迟 (ms)": f"{avg_delay:.2f}" if avg_delay != -1 else "N/A"
     }
 
 async def main():
     start_time = time.time()
     os.makedirs(DATA_DIR, exist_ok=True)
     await load_dns_cache()
-    await load_history():
+    await load_history()  # Fixed syntax error
     all_nodes_links = await get_all_nodes()
-    logger.info(f"Total node links obtained: {len(all_nodes_links)}")
+    logger.info(f"共获取到 {len(all_nodes_links)} 个节点链接")
     test_results = []
     successful_nodes = []
     nodes_to_test = []
-    
+
     for link in all_nodes_links:
         try:
-            if link in history_results and history_results[link]["status"] == "successful" and \
-               (time.time() - history_results[link]["timestamp"].get("timestamp", 0) < HISTORY_EXPIRATION):
-                logger.info(f"Node {history_results[link]["node_info"]["remark"]} recently passed, skipping test")
+            if link in history_results and history_results[link]["status"] == "成功" and \
+               (time.time() - history_results[link].get("timestamp", 0) < HISTORY_EXPIRATION):
+                logger.info(f"节点 {history_results[link]['node_info']['remark']} 近期成功，跳过测试")
                 test_results.append(history_results[link])
                 successful_nodes.append(history_results[link])
             else:
                 nodes_to_test.append(link)
         except Exception as e:
-            logger.warning(f"Error checking history for link {link} - {e}, adding to test")
+            logger.warning(f"检查历史记录 {link} 出错: {e}，加入测试列表")
             nodes_to_test.append(link)
-    
-    logger.info(f"Nodes to be tested: {len(nodes_to_test)})")
+
+    logger.info(f"实际需要测试 {len(nodes_to_test)} 个节点")
+    for i in range(0, len(nodes_to_test), BATCH_SIZE):
+        batch = nodes_to_test[i:i + BATCH_SIZE]
+        logger.info(f"正在测试批次 {i//BATCH_SIZE + 1}/{len(nodes_to_test)//BATCH_SIZE + (1 if len(nodes_to_test) % BATCH_SIZE else 0)}，已处理 {i}/{len(nodes_to_test)} 节点")
+        tasks = [test_node(link, f"节点 {i+j+1}") for j, link in enumerate(batch)]
+        batch_results = await asyncio.gather(*tasks)
+        test_results.extend(batch_results)
+        for result in batch_results:
+            if result["status"] == "成功":
+                successful_nodes.append(result)
+            original_link = result["node_info"].get("original_link", "")
+            if original_link:
+                history_results[original_link] = {
+                    "node_info": result["node_info"],
+                    "status": result["status"],
+                    "delay": result["delay"],
+                    "timestamp": time.time(),
+                    "error": result.get("error")
+                }
+
+    successful_nodes.sort(key=lambda x: x["delay"])
+    async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+        if successful_nodes:
+            for result in successful_nodes:
+                await f.write(f"{result['node_info']['original_link']}\n")
+        else:
+            await f.write("# 无可用节点\n")
+    async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+        await f.write(str(len(successful_nodes)))
+
+    await save_history()
+    await save_dns_cache()
+
+    summary = generate_summary(test_results)
+    logger.info("\n--- 测试结果摘要 ---")
+    for key, value in summary.items():
+        if isinstance(value, dict):
+            logger.info(f"{key}:")
+            for sub_key, sub_value in value.items():
+                logger.info(f"  - {sub_key}: {sub_value}")
+        else:
+            logger.info(f"{key}: {value}")
+    logger.info(f"最终成功节点数: {len(successful_nodes)}")
+    logger.info(f"总耗时: {time.time() - start_time:.2f} 秒")
+
+if __name__ == "__main__":
     try:
-        for i in range(0, len(nodes_to_test), BATCH_SIZE)):
-            batch = nodes_to_test[i:i + BATCH_SIZE]
-            logger.info(f"Testing batch {i//BATCH_SIZE + 1}/{len(nodes_to_test)//BATCH_SIZE + (1 if len(nodes_to_test) % BATCH_SIZE else 0)})")
-            tasks = [test_node(link, f"Node {i+j+1}" for j, link in enumerate(batch))]
-            batch_results = await asyncio.gather(*tasks)
-            test_results.extend(batch_results)
-            for result in batch_results:
-                if result["status"] == "successful":
-                    successful_nodes.append(result)
-                original_link = result["node_info"].get("original_link", "")"")
-                if original_link:
-                    history_results[original_link]["original_link"] = {
-                        "node_info": result["node_info"],
-                        "status": result["status"],
-                        "delay": result["delay"],
-                        "timestamp": time.time(),
-                        "error": result.get("error"")"
-                    }
-            if successful_nodes:
-                try:
-                    async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8-8") as f:
-                        for result in successful_nodes:
-                            await f.write(f"{result['node_info']['original_link']}}\n"")
-                        else:
-                                async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-                                await f.write("#No # No available nodes\n")
-                                return None
-                            async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-                                await f.write(str(len(successful_nodes)))
-                            await save_history()
-                            await save_dns_cache():
-                                try:
-                                    summary = generate_summary(test_results)
-                                    logger.info("\n"--- Test Results Summary ---")
-                                    for key, value in summary.items():
-                                        if isinstance(value, dict):
-                                            logger.info(f"{key}:")
-                                            for sub_key, sub_value in value.items():
-                                                logger.info(f"  - {sub_key}: {sub_value}")
-                                            else:
-                                                logger.info(f"{key}: {value}")
-                                        logger.info(f"Final successful node count: {len(successful_nodes)})")
-                                    print(f"Total time taken: {time.time() - start_time:.2f} seconds")
-                                    return None
-                                finally:
-                                    try:
-                                        await executor.shutdown(wait=True)
-                                    except Exception as e:
-                                        logger.error(f"Error shutting down executor: {e}")
-                                        return None
-                                    else:
-                                        try:
-                                            async def write_error_files():
-                                        try:
-                                            os.makedirs(DATA_DIR, exist_ok=True)
-                                        try:
-                                            async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, ""w", encoding="utf-8") as f:
-                                                await f.write("#Script execution failed" for no available nodes\n")
-                                            async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-                                                await f.write("0")
-                                            else:
-                                                try:
-                                                    async def write_error_files():
-                                                        os.makedirs(DATA_DIR, exist_ok=True)
-                                                        async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
-                                                            await f.write("# Script execution failed, no available nodes\n")
-                                                        async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
-                                                            await f.write("0")
-                                                        logger.info("Error files written due to to script failure")
-                                                    except Exception as e:
-                                                    logger.error(f"Error writing error files: {e}")
-                                                    try:
-                                                        if __name__ == "__main__":
-                                                            try:
-                                                                asyncio.run(main())
-                                                            except Exception as e:
-                                                                logger.error(f"Script execution failed: {e}", exc_info=True)
-                                                                asyncio.run(write_error_files())
-                                                                raise
-                                                    except Exception as e:
-                                                        print(f"Error: {e}")
-                                                        asyncio.run(write_error_files())
+        asyncio.run(main())
+    except Exception as e:
+        logger.error(f"脚本执行失败: {e}", exc_info=True)
+        async def write_error_files():
+            os.makedirs(DATA_DIR, exist_ok=True)
+            async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "w", encoding="utf-8") as f:
+                await f.write("# 脚本执行失败，无可用节点\n")
+            async with aiofiles.open(SUCCESS_COUNT_FILE, "w", encoding="utf-8") as f:
+                await f.write("0")
+        asyncio.run(write_error_files())
