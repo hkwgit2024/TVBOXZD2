@@ -72,7 +72,7 @@ jobs:
           XRAY_VERSION="1.8.24"
           XRAY_ZIP="Xray-linux-64.zip"
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
-          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"  # 修正为 geoip.dat
+          GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
           GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
 
           mkdir -p data
@@ -134,49 +134,43 @@ jobs:
           export LOG_LEVEL=DEBUG
           export XRAY_GEOIP_PATH=$(pwd)/data/geoip.dat
           export XRAY_GEOSITE_PATH=$(pwd)/data/geosite.dat
-          export BATCH_SIZE=5  # 减少并发以降低资源占用
+          export BATCH_SIZE=5
           python test_nodes.py | tee test_output.log
+          # 从 test_output.log 中提取最终成功节点数
           SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}' || echo "0")
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
-        continue-on-error: false
+        continue-on-error: false # 如果脚本自身崩溃，此步骤会失败
 
-      # 移除此步骤以取消工作流产物
-      # - name: Upload test logs and dependencies
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-logs
-      #     path: |
-      #       test_output.log
-      #       dependency_versions.txt
-      #       data/sub.txt
-      #       data/history_results.json
-      #       data/dns_cache.json
-      #       data/geoip.dat
-      #       data/geosite.dat
-      #       data/*.json
-      #     retention-days: 7
+      # 移除了 'Upload test logs and dependencies' 步骤以取消工作流产物
 
-      - name: Commit and Push if changed
-        if: steps.test_script.outcomes.success # 修改条件：仅在测试脚本成功执行时提交
+      - name: Commit and Push changes
+        # 只要 'Run Node Tester Script' 步骤成功完成（即脚本没有崩溃），就执行提交
+        if: steps.test_script.outcomes.success
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/sub.txt data/history_results.json data/dns_cache.json
-          # 如果 test_output.log 或 dependency_versions.txt 也需要提交到仓库，请在此处添加 git add 命令
-          # 例如：git add test_output.log dependency_versions.txt
+          
+          # 添加所有需要被更新到 Git 仓库的文件
+          # 确保这些文件确实会被 test_nodes.py 脚本生成或修改
+          git add data/sub.txt data/history_results.json data/dns_cache.json data/success_count.txt
+          # 如果你希望 test_output.log 和 dependency_versions.txt 也提交到 Git 仓库，请取消下面两行的注释
+          # git add test_output.log
+          # git add dependency_versions.txt
+
           if ! git diff --quiet --cached; then
+            # 如果有文件被修改或添加，则进行提交
             git commit -m "Update proxy nodes (Successful: ${{ steps.test_script.outputs.successful_nodes_count }})"
             git push origin main
           else
-            echo "No changes to commit"
+            echo "No changes to commit. Files in data/ might not have changed or no successful nodes found."
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          # 修正为标准 GITHUB_TOKEN，通常具有推送权限
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: Notify on no successful nodes
-        # 如果你希望在没有成功节点时仍然收到通知，可以保留此步骤
-        # 如果你希望无论有无成功节点都提交，且不需要额外警告，可以删除此步骤
+        # 此步骤仍然会在没有成功节点时发出警告，但不会阻止文件更新到目录
+        # 如果你不需要这个警告，可以删除此步骤
         if: steps.test_script.outcomes.success && steps.test_script.outputs.successful_nodes_count == '0'
         run: |
-          echo "::warning::No successful nodes found. Skipping commit." # 这里的跳过提交信息可能需要根据你的实际情况调整
+          echo "::warning::Node tester script ran successfully, but no successful nodes were found. Files in data/ directory have been updated and committed."
