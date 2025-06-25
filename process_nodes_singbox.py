@@ -8,8 +8,8 @@ import logging
 from typing import Dict, List, Set
 from contextlib import contextmanager
 
-# 配置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# 配置日志，调整为 WARNING 级别以减少输出
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # 支持的协议类型
@@ -21,6 +21,7 @@ class NodeParser:
         self.unique_nodes: Set[str] = set()
         self.protocol_counts: Dict[str, int] = {p: 0 for p in PROTOCOLS}
         self.invalid_nodes: int = 0
+        self.malformed_nodes: List[str] = []  # 暂存无效节点
 
     def parse_hysteria2(self, url: str) -> Dict:
         try:
@@ -40,6 +41,7 @@ class NodeParser:
         except Exception as e:
             logger.error(f"解析 hysteria2 错误: {url}: {e}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_vmess(self, url: str) -> Dict:
@@ -62,6 +64,7 @@ class NodeParser:
         except Exception as e:
             logger.error(f"解析 vmess 错误: {url}: {e}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_trojan(self, url: str) -> Dict:
@@ -82,36 +85,33 @@ class NodeParser:
         except Exception as e:
             logger.error(f"解析 trojan 错误: {url}: {e}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_ss(self, url: str) -> Dict:
         try:
             if '@' not in url:
                 logger.warning(f"无效的 ss URL 格式 (缺少 @): {url}")
-                with open('data/malformed.txt', 'a', encoding='utf-8') as f:
-                    f.write(url + '\n')
                 self.invalid_nodes += 1
+                self.malformed_nodes.append(url)
                 return {}
             parts = url.split('://')[1].split('@')
             if len(parts) != 2:
                 logger.warning(f"无效的 ss URL 格式 (部分数量错误): {url}")
-                with open('data/malformed.txt', 'a', encoding='utf-8') as f:
-                    f.write(url + '\n')
                 self.invalid_nodes += 1
+                self.malformed_nodes.append(url)
                 return {}
             auth, server_info = parts[0], parts[1]
             if ':' not in auth:
                 logger.warning(f"无效的 ss auth 格式 (缺少 :): {url}")
-                with open('data/malformed.txt', 'a', encoding='utf-8') as f:
-                    f.write(url + '\n')
                 self.invalid_nodes += 1
+                self.malformed_nodes.append(url)
                 return {}
             method, password = auth.split(':', 1)
             if not method or not password:
                 logger.warning(f"ss URL 中的 method 或 password 为空: {url}")
-                with open('data/malformed.txt', 'a', encoding='utf-8') as f:
-                    f.write(url + '\n')
                 self.invalid_nodes += 1
+                self.malformed_nodes.append(url)
                 return {}
             server_port = server_info.split('#')[0]
             server, port = server_port.rsplit(':', 1)
@@ -128,9 +128,8 @@ class NodeParser:
             return node
         except Exception as e:
             logger.error(f"解析 ss 错误: {url}: {e}")
-            with open('data/malformed.txt', 'a', encoding='utf-8') as f:
-                f.write(url + '\n')
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_ssr(self, url: str) -> Dict:
@@ -152,6 +151,7 @@ class NodeParser:
         except Exception as e:
             logger.error(f"解析 ssr 错误: {url}: {e}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_vless(self, url: str) -> Dict:
@@ -172,6 +172,7 @@ class NodeParser:
         except Exception as e:
             logger.error(f"解析 vless 错误: {url}: {e}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(url)
             return {}
 
     def parse_node(self, node_str: str, failed_nodes: Set[str]) -> None:
@@ -182,6 +183,7 @@ class NodeParser:
         if protocol not in PROTOCOLS:
             logger.warning(f"不支持的协议: {protocol} in {node_str}")
             self.invalid_nodes += 1
+            self.malformed_nodes.append(node_str)
             return
         self.unique_nodes.add(node_str)
         self.protocol_counts[protocol] += 1
@@ -199,6 +201,13 @@ class NodeParser:
         if parsed and parsed.get('server') and parsed.get('port'):
             self.parsed_nodes.append(parsed)
 
+    def save_malformed_nodes(self):
+        if self.malformed_nodes:
+            with open('data/malformed.txt', 'a', encoding='utf-8') as f:
+                f.write('\n'.join(self.malformed_nodes) + '\n')
+            logger.warning(f"保存了 {len(self.malformed_nodes)} 个无效节点到 data/malformed.txt")
+            self.malformed_nodes.clear()
+
 @contextmanager
 def file_lock(filename: str):
     try:
@@ -212,6 +221,7 @@ def file_lock(filename: str):
 
 async def test_connectivity(node: Dict) -> bool:
     try:
+ Ascending
         config = {
             'log': {'level': 'error'},
             'outbounds': [{
@@ -270,20 +280,22 @@ async def process_nodes():
         if os.path.exists('data/failed.txt'):
             with open('data/failed.txt', 'r', encoding='utf-8', errors='ignore') as f:
                 failed_nodes = set(line.strip() for line in f if line.strip())
-            logger.info(f"加载了 {len(failed_nodes)} 个历史失败节点")
+            logger.warning(f"加载了 {len(failed_nodes)} 个历史失败节点")
 
         with urllib.request.urlopen('https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt') as response:
             nodes = response.read().decode('utf-8', errors='ignore').split('\n')
-        logger.info(f"下载了 {len(nodes)} 个节点")
+        logger.warning(f"下载了 {len(nodes)} 个节点")
 
-        batch_size = 1000
+        batch_size = 5000
         for i in range(0, len(nodes), batch_size):
             batch = nodes[i:i + batch_size]
             for node in batch:
                 parser.parse_node(node, failed_nodes)
-            logger.info(f"处理了 {i + len(batch)}/{len(nodes)} 个节点")
-        logger.info(f"解析了 {len(parser.parsed_nodes)} 个唯一节点，跳过了 {parser.invalid_nodes} 个无效节点")
-        logger.info(f"协议统计: {parser.protocol_counts}")
+            logger.warning(f"处理了 {i + len(batch)}/{len(nodes)} 个节点")
+        logger.warning(f"解析了 {len(parser.parsed_nodes)} 个唯一节点，跳过了 {parser.invalid_nodes} 个无效节点")
+        logger.warning(f"协议统计: {parser.protocol_counts}")
+
+        parser.save_malformed_nodes()
 
         valid_nodes = []
         new_failed_nodes = []
@@ -293,20 +305,20 @@ async def process_nodes():
                 valid_nodes.append(node)
             else:
                 new_failed_nodes.append(node)
-            if i % 100 == 0:
-                logger.info(f"测试了 {i}/{total_nodes} 个节点 ({i/total_nodes*100:.1f}%)")
+            if i % 500 == 0:
+                logger.warning(f"测试了 {i}/{total_nodes} 个节点 ({i/total_nodes*100:.1f}%)")
 
         with open('data/all.txt', 'w', encoding='utf-8') as f:
             for node in valid_nodes:
                 safe_raw = urllib.parse.quote(node['raw'], safe=':/?=&%#')
                 f.write(safe_raw + '\n')
-        logger.info(f"保存了 {len(valid_nodes)} 个有效节点到 data/all.txt")
+        logger.warning(f"保存了 {len(valid_nodes)} 个有效节点到 data/all.txt")
 
         all_failed_nodes = failed_nodes.union(node['raw'] for node in new_failed_nodes)
         with open('data/failed.txt', 'w', encoding='utf-8') as f:
             for node in all_failed_nodes:
                 f.write(node + '\n')
-        logger.info(f"保存了 {len(all_failed_nodes)} 个失败节点到 data/failed.txt")
+        logger.warning(f"保存了 {len(all_failed_nodes)} 个失败节点到 data/failed.txt")
 
     except Exception as e:
         logger.error(f"处理节点错误: {e}")
