@@ -18,7 +18,8 @@ from functools import partial
 
 # --- 配置 ---
 SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+  #  "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+    https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt
 ]
 
 DATA_DIR = "data"
@@ -28,7 +29,7 @@ SUCCESSFUL_NODES_OUTPUT_FILE = os.path.join(DATA_DIR, "sub.txt")
 SUCCESS_COUNT_FILE = os.path.join(DATA_DIR, "success_count.txt")
 
 TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 15))  # Respect TEST_TIMEOUT=15
-BATCH_SIZE = 10  # Reduced concurrency
+BATCH_SIZE = 15  # Reduced concurrency
 DNS_CACHE_EXPIRATION = 2678400  # 31 days
 HISTORY_EXPIRATION = 2678400  # 31 days
 
