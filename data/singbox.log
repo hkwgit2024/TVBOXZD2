@@ -1,0 +1,280 @@
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [3724164926 0ms] inbound/http[0]: inbound connection from 127.0.0.1:34914
+INFO [3724164926 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3724164926 0ms] outbound/shadowsocks[4Sarina-14417]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10810
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10811
+INFO sing-box started (0.00s)
+INFO [3454876131 0ms] inbound/http[0]: inbound connection from 127.0.0.1:33126
+INFO [3454876131 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3454876131 0ms] outbound/shadowsocks[4Sarina-14424]: outbound connection to www.google.com:443
+INFO [3593228100 0ms] inbound/http[0]: inbound connection from 127.0.0.1:57910
+INFO [3593228100 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3593228100 0ms] outbound/shadowsocks[4Sarina-14423]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [2474172629 0ms] inbound/http[0]: inbound connection from 127.0.0.1:34064
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10810
+INFO sing-box started (0.00s)
+INFO [764357052 0ms] inbound/http[0]: inbound connection from 127.0.0.1:34084
+INFO [764357052 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [764357052 0ms] outbound/shadowsocks[4Sarina-14425]: outbound connection to www.google.com:443
+INFO [559254921 0ms] inbound/http[0]: inbound connection from 127.0.0.1:45358
+INFO [559254921 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [559254921 0ms] outbound/shadowsocks[4Sarina-14426]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO [3097239823 0ms] inbound/http[0]: inbound connection from 127.0.0.1:54178
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10810
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10811
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10810
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10811
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10812
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10813
+INFO sing-box started (0.00s)
+INFO [2611198735 0ms] inbound/http[0]: inbound connection from 127.0.0.1:41082
+INFO [2611198735 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [2611198735 0ms] outbound/trojan[4Sarina-4394]: outbound connection to www.google.com:443
+INFO [1526809081 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39568
+INFO [1526809081 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [1526809081 0ms] outbound/trojan[4Sarina-4392]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10811
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10811
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10812
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10813
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10814
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10815
+INFO sing-box started (0.00s)
+INFO [1786911784 0ms] inbound/http[0]: inbound connection from 127.0.0.1:40852
+INFO [1786911784 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [1786911784 0ms] outbound/trojan[4Sarina-4393]: outbound connection to www.google.com:443
+INFO [3104953991 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39900
+INFO [3104953991 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3104953991 0ms] outbound/trojan[4Sarina-4398]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10812
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10812
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10813
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10814
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10815
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10816
+INFO sing-box started (0.00s)
+INFO [190924723 0ms] inbound/http[0]: inbound connection from 127.0.0.1:50332
+INFO [190924723 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [190924723 0ms] outbound/trojan[4Sarina-4403]: outbound connection to www.google.com:443
+INFO [2648088831 0ms] inbound/http[0]: inbound connection from 127.0.0.1:37008
+INFO [2648088831 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [2648088831 0ms] outbound/trojan[4Sarina-4399]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10814
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO [4050384053 0ms] inbound/http[0]: inbound connection from 127.0.0.1:41822
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10814
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10815
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10816
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10817
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
+INFO [3447171081 0ms] inbound/http[0]: inbound connection from 127.0.0.1:41836
+INFO [3447171081 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3447171081 0ms] outbound/trojan[4Sarina-4410]: outbound connection to www.google.com:443
+INFO [883645204 0ms] inbound/http[0]: inbound connection from 127.0.0.1:41228
+INFO [883645204 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [883645204 0ms] outbound/trojan[4Sarina-4406]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10815
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10815
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10816
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10817
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10819
+INFO sing-box started (0.00s)
+INFO [508467920 0ms] inbound/http[0]: inbound connection from 127.0.0.1:37794
+INFO [508467920 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [508467920 0ms] outbound/trojan[4Sarina-4411]: outbound connection to www.google.com:443
+INFO [3164567125 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39324
+INFO [3164567125 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3164567125 0ms] outbound/trojan[4Sarina-4408]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10816
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO [3090149060 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39326
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10816
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10817
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10819
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10820
+INFO sing-box started (0.00s)
+INFO [3499104523 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39344
+INFO [3499104523 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3499104523 0ms] outbound/trojan[4Sarina-4413]: outbound connection to www.google.com:443
+INFO [2495821407 0ms] inbound/http[0]: inbound connection from 127.0.0.1:59252
+INFO [2495821407 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [2495821407 0ms] outbound/trojan[SG+Oracle+Corporation")'><i class="fa fa-clipboard]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10817
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10817
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10819
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10820
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10821
+INFO sing-box started (0.00s)
+INFO [4001112142 0ms] inbound/http[0]: inbound connection from 127.0.0.1:44542
+INFO [4001112142 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [4001112142 0ms] outbound/trojan[test-node]: outbound connection to www.google.com:443
+INFO [1647904313 0ms] inbound/http[0]: inbound connection from 127.0.0.1:54570
+INFO [1647904313 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [1647904313 0ms] outbound/trojan[(ID) PT Pusat Media Indonesia🇮🇩')]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO router: updated default interface eth0, index 2
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO router: updated default interface eth0, index 2
+INFO [1931999813 0ms] inbound/http[0]: inbound connection from 127.0.0.1:54586
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10819
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10820
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10821
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
+INFO sing-box started (0.00s)
