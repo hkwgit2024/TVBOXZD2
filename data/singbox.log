@@ -278,3 +278,44 @@ INFO sing-box started (0.00s)
 INFO router: updated default interface eth0, index 2
 INFO inbound/http[0]: tcp server started at 127.0.0.1:10818
 INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [4127801760 0ms] inbound/http[0]: inbound connection from 127.0.0.1:39654
+INFO [4127801760 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [4127801760 0ms] outbound/shadowsocks[TELEGRAM-FREAKCONFIG]: outbound connection to www.google.com:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10810
+INFO sing-box started (0.00s)
+INFO [124250377 0ms] inbound/http[0]: inbound connection from 127.0.0.1:52814
+INFO [124250377 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [124250377 0ms] outbound/vless[@azad_intrnet]: outbound connection to www.google.com:443
+ERROR [124250377 20ms] inbound/http[0]: process connection from 127.0.0.1:52814: v2ray-http-upgrade: unexpected status: 403 Forbidden
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [3307191600 0ms] inbound/http[0]: inbound connection from 127.0.0.1:44932
+INFO [3307191600 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [3307191600 1ms] outbound/vless[@azad_intrnet]: outbound connection to www.google.com:443
+ERROR [3307191600 21ms] inbound/http[0]: process connection from 127.0.0.1:44932: v2ray-http-upgrade: unexpected status: 403 Forbidden
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [9082855 0ms] inbound/http[0]: inbound connection from 127.0.0.1:44946
+INFO [9082855 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [9082855 0ms] outbound/vless[@azad_intrnet]: outbound connection to www.google.com:443
+INFO [2402681096 0ms] inbound/http[0]: inbound connection from 127.0.0.1:44958
+INFO [2402681096 0ms] inbound/http[0]: inbound connection to 1.1.1.1:443
+INFO [2402681096 0ms] outbound/vless[@azad_intrnet]: outbound connection to 1.1.1.1:443
+INFO router: updated default interface eth0, index 2
+INFO inbound/http[0]: tcp server started at 127.0.0.1:10809
+INFO sing-box started (0.00s)
+INFO [6411393 0ms] inbound/http[0]: inbound connection from 127.0.0.1:51928
+INFO [6411393 0ms] inbound/http[0]: inbound connection to www.google.com:443
+INFO [6411393 0ms] outbound/vless[@azad_intrnet]: outbound connection to www.google.com:443
+INFO [640429129 0ms] inbound/http[0]: inbound connection from 127.0.0.1:48640
+INFO [640429129 0ms] inbound/http[0]: inbound connection to 1.1.1.1:443
+INFO [640429129 0ms] outbound/vless[@azad_intrnet]: outbound connection to 1.1.1.1:443
