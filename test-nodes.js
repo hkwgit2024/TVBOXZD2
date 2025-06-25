@@ -12,7 +12,7 @@ try {
 }
 
 const queue = PQueue ? new PQueue({ concurrency: 10 }) : { add: async (fn) => await fn() }; // Fallback to sequential
-const SOURCE_URL = 'https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt';
+const SOURCE_URL = 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt';
 const OUTPUT_PATH = 'data/sub.txt';
 const MAX_RETRIES = 2;
 const TIMEOUT = 5000;
