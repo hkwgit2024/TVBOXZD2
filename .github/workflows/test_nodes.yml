@@ -8,7 +8,7 @@ on:
       - 'test_nodes.py'
       - '.github/workflows/main.yml'
   schedule:
-    - cron: '0 20 * * *'
+    - cron: '0 20 * * *'  # UTC 20:00 daily
   workflow_dispatch:
 
 jobs:
@@ -24,6 +24,14 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Verify Python version
+        run: |
+          python --version
+          if [[ $(python --version) != *"3.9"* ]]; then
+            echo "::error::Python version is not 3.9"
+            exit 1
+          fi
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -33,24 +41,22 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade httpx aiodns aiofiles psutil
-          pip show httpx aiodns aiofiles psutil || { echo "::error::Failed to install Python dependencies"; exit 1; }
-
+          pip install httpx[socks]==0.27.2 aiodns==3.2.0 aiofiles==24.1.0 psutil==6.1.0
+          pip show httpx socksio aiodns aiofiles psutil > dependency_versions.txt
+          if [ $? -ne 0 ]; then echo "::error::Failed to install Python dependencies"; exit 1; fi
         continue-on-error: false
 
       - name: Download Xray Core and Geo Data
         run: |
-          XRAY_VERSION="1.8.23"
+          XRAY_VERSION="1.8.24"
           XRAY_ZIP="Xray-linux-64.zip"
           XRAY_URL="https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/${XRAY_ZIP}"
-
-          # 使用 latest 标签下载 geoip-lite.dat 和 geosite.dat
           GEOIP_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
           GEOSITE_URL="https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
 
           mkdir -p data
 
-          # 下载并验证 Xray
+          # Download and verify Xray
           for attempt in {1..3}; do
             if curl -L -o xray.zip "${XRAY_URL}" --fail; then
               break
@@ -64,7 +70,7 @@ jobs:
           chmod +x ./xray
           echo "XRAY_PATH=$(pwd)/xray" >> $GITHUB_ENV
 
-          # 下载 geoip-lite.dat
+          # Download geoip-lite.dat
           for attempt in {1..3}; do
             if curl -L -o data/geoip-lite.dat "${GEOIP_URL}" --fail; then
               break
@@ -74,7 +80,7 @@ jobs:
           done
           if [ ! -s data/geoip-lite.dat ]; then echo "::error::Failed to download geoip-lite.dat"; exit 1; fi
 
-          # 下载 geosite.dat
+          # Download geosite.dat
           for attempt in {1..3}; do
             if curl -L -o data/geosite.dat "${GEOSITE_URL}" --fail; then
               break
@@ -92,19 +98,19 @@ jobs:
           export LOG_LEVEL=DEBUG
           export XRAY_GEOIP_PATH=$(pwd)/data/geoip-lite.dat
           export XRAY_GEOSITE_PATH=$(pwd)/data/geosite.dat
-
           python test_nodes.py | tee test_output.log
           SUCCESS_COUNT=$(grep "最终成功节点数:" test_output.log | awk '{print $NF}' || echo "0")
           echo "successful_nodes_count=${SUCCESS_COUNT}" >> $GITHUB_OUTPUT
         continue-on-error: false
 
-      - name: Upload test logs
+      - name: Upload test logs and dependencies
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-logs
           path: |
             test_output.log
+            dependency_versions.txt
             data/sub.txt
             data/history_results.json
             data/dns_cache.json
