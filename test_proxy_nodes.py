@@ -295,12 +295,12 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
             async with session.get(target_url, proxy=proxies["https"], timeout=TEST_TIMEOUT) as response:
                 if response.status == 200:
                     latency = (time.time() - start_time) * 1000
-                    log_message(f"HTTP 请求成功 {node_urlb}: {target_url}，延迟: {latency:.2f}ms")
+                    log_message(f"HTTP 请求成功 {node_url}, 目标: {target_url}, 延迟: {latency:.2f}ms")
                     return True, latency
         return False, 0
 
-    except asyncio.TimeoutError as e:
-        log_message(f"HTTP 请求超时: {e}", "warning")
+    except asyncio.TimeoutError:
+        log_message(f"HTTP 请求超时: {node_url}", "warning")
         return False, 0
     except aiohttp.ClientError as e:
         log_message(f"HTTP 客户端错误 {node_url}: {e}", "warning")
@@ -312,7 +312,7 @@ async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) 
         if process and process.returncode is None:
             try:
                 process.terminate()
-                await asyncio.wait_for(process, timeout=5)
+                await asyncio.wait_for(process.wait(), timeout=5)
             except asyncio.TimeoutError:
                 process.kill()
             except Exception as e:
@@ -335,7 +335,7 @@ async def run_singbox_test(node_url: str, session: aiohttp.ClientSession) -> tup
 
 async def test_node_connectivity(session: aiohttp.ClientSession, node_info: dict) -> tuple[dict, float]:
     """测试单个节点连通性"""
-    node_url = node_info["url']
+    node_url = node_info["url"]
     success, latency = await run_singbox_test(node_url, session)
     if success:
         return node_info, latency
@@ -353,11 +353,11 @@ async def process_batch(session: aiohttp.ClientSession, nodes_batch: list) -> li
                 successful_nodes.append(result)
         except Exception as e:
             log_message(f"任务处理过程中发生错误: {e}", "error")
-        return successful_nodes
+    return successful_nodes
 
 async def main():
     """主函数"""
-    if not os.path.join(SUB_FILE):
+    if not os.path.exists(SUB_FILE):
         log_message(f"错误：未找到输入文件 {SUB_FILE}", "error")
         exit(1)
 
@@ -386,10 +386,10 @@ async def main():
     async with aiohttp.ClientSession(connector=connector) as session:
         for i in range(0, len(nodes_info), BATCH_SIZE):
             batch = nodes_info[i:i + BATCH_SIZE]
-            log_message(f"处理批次 {i//BATCH_SIZE + 1}/{len(nodes_info)//BATCH_SIZE + 1}，节点数值为: {len(batch)}")
+            log_message(f"处理批次 {i//BATCH_SIZE + 1}/{len(nodes_info)//BATCH_SIZE + 1}，节点数: {len(batch)}")
             batch_successful = await process_batch(session, batch)
             successful_nodes.extend(batch_successful)
-            log_message(f"批次 {i//BATCH_SIZE + 1} 完成，当前成功节点数为: {len(successful_nodes)}")
+            log_message(f"批次 {i//BATCH_SIZE + 1} 完成，当前成功节点数: {len(successful_nodes)}")
             await asyncio.sleep(1)
 
     successful_nodes.sort(key=lambda x: x["latency"] if x["latency"] else float('inf'))
@@ -406,5 +406,5 @@ async def main():
 
     log_message(f"测试完成！共发现 {len(successful_nodes)} 个可用节点，保存到 {ALL_FILE}")
 
-if __name__ == "__main__':
+if __name__ == "__main__":
     asyncio.run(main())
