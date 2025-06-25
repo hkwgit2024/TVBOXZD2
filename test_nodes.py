@@ -18,7 +18,7 @@ from functools import partial
 
 # --- 配置 ---
 SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt",
 ]
 
 DATA_DIR = "data"
