@@ -11,16 +11,19 @@ import re
 from typing import Dict, List, Set
 from contextlib import asynccontextmanager
 
-# --- 配置日志 ---
+# --- Configure Logging ---
 logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# --- 常量定义 ---
+# --- Constants ---
 PROTOCOLS = ['hysteria2', 'vmess', 'trojan', 'ss', 'ssr', 'vless']
 UUID_PATTERN = re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.IGNORECASE)
+IP_DOMAIN_PATTERN = re.compile(
+    r'^(?:(?:[0-9]{1,3}\.){3}[0-9]{1,3}|(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}|\[[0-9a-fA-F:]+\])$'
+)
 TEST_URL = "http://www.google.com/generate_204"
 
-# --- NodeParser 类：负责解析节点链接 ---
+# --- NodeParser Class: Responsible for Parsing Node Links ---
 class NodeParser:
     def __init__(self):
         self.parsed_nodes: List[Dict] = []
@@ -41,8 +44,8 @@ class NodeParser:
                 'params': params,
                 'raw': url
             }
-            if not node['server']:
-                raise ValueError("服务器地址为空")
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']):
+                raise ValueError("无效的服务器地址")
             return node
         except Exception as e:
             logger.error(f"解析 hysteria2 错误: {url}: {e}")
@@ -96,8 +99,8 @@ class NodeParser:
                     'params': urllib.parse.parse_qs(parsed.query),
                     'raw': url
                 }
-            if not node['server'] or not node['uuid']:
-                raise ValueError("服务器地址或 UUID 为空")
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']) or not node['uuid']:
+                raise ValueError("服务器地址或 UUID 为空或无效")
             return node
         except Exception as e:
             logger.error(f"解析 vmess 错误: {url}: {e}")
@@ -117,8 +120,8 @@ class NodeParser:
                 'params': params,
                 'raw': url
             }
-            if not node['server'] or not node['password']:
-                raise ValueError("服务器地址或密码为空")
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']) or not node['password']:
+                raise ValueError("服务器地址或密码为空或无效")
             return node
         except Exception as e:
             logger.error(f"解析 trojan 错误: {url}: {e}")
@@ -149,13 +152,14 @@ class NodeParser:
                     method, password = decoded_auth_str.split(':', 1)
                 else:
                     logger.warning(f"SS Base64 解码后缺少 ':'，尝试直接解析 auth 部分: {decoded_auth_str}")
-                    method = "auto"
+                    method = "aes-256-gcm"
                     password = decoded_auth_str
             except (base64.binascii.Error, UnicodeDecodeError):
                 if ':' in auth_part_raw:
                     method, password = auth_part_raw.split(':', 1)
                 else:
-                    raise ValueError(f"SS auth 格式无效 (缺少 : 或 Base64 解码失败): {auth_part_raw}")
+                    method = "aes-256-gcm"
+                    password = auth_part_raw
             server_port_params = server_info_part.split('#')[0]
             if ']:' in server_port_params:
                 server = server_port_params.split(']:')[0] + ']'
@@ -170,12 +174,12 @@ class NodeParser:
             node = {
                 'protocol': 'ss',
                 'server': server.strip(),
-                'port': int(port),
+                'port': int(port.strip('/')),
                 'method': method.strip(),
                 'password': password.strip(),
                 'raw': url
             }
-            if not node['server'] or not node['port'] or not node['method'] or not node['password']:
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']) or not node['port'] or not node['method'] or not node['password']:
                 raise ValueError("SS 节点关键信息不完整")
             return node
         except Exception as e:
@@ -225,8 +229,8 @@ class NodeParser:
                 'remarks': urllib.parse.unquote(remarks),
                 'raw': url
             }
-            if not node['server'] or not node['password']:
-                raise ValueError("SSR 服务器地址或密码为空")
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']) or not node['password']:
+                raise ValueError("SSR 服务器地址或密码为空或无效")
             return node
         except Exception as e:
             logger.error(f"解析 ssr 错误: {url}: {e}")
@@ -246,8 +250,8 @@ class NodeParser:
                 'params': params,
                 'raw': url
             }
-            if not node['server'] or not node['uuid']:
-                raise ValueError("服务器地址或 UUID 为空")
+            if not node['server'] or not IP_DOMAIN_PATTERN.match(node['server']) or not node['uuid']:
+                raise ValueError("服务器地址或 UUID 为空或无效")
             node['transport_type'] = params.get('type', ['tcp'])[0]
             node['transport_path'] = params.get('path', [''])[0]
             node['transport_host'] = params.get('host', [''])[0]
@@ -294,9 +298,9 @@ class NodeParser:
                             potential_uuid = decoded_auth_part_url
                     if potential_uuid:
                         detected_protocol = 'vless'
-                        logger.debug(f"SS链接 '{node_str}' 疑似包含 UUID '{potential_uuid}'，尝试按 '{detected_protocol}' 解析。")
+                        logger.debug(f"SS 链接疑似包含 UUID '{potential_uuid}'，尝试按 VLESS 解析: {node_str}")
             except Exception as e:
-                logger.debug(f"尝试检查 SS 链接是否伪装失败: {e}")
+                logger.debug(f"SS 伪装检测失败: {node_str}: {e}")
         if detected_protocol not in PROTOCOLS:
             logger.warning(f"不支持的协议: {detected_protocol} (原始: {original_protocol_prefix}) in {node_str}")
             self.invalid_nodes += 1
@@ -304,8 +308,8 @@ class NodeParser:
             return
         self.unique_nodes.add(node_str)
         self.protocol_counts[detected_protocol] += 1
-        if detected_protocol != original_protocol_prefix:
-            if original_protocol_prefix in self.protocol_counts:
+        if detected_protocol != original_protocol_prefix and original_protocol_prefix in self.protocol_counts:
+            if self.protocol_counts[original_protocol_prefix] > 0:
                 self.protocol_counts[original_protocol_prefix] -= 1
         parser_map = {
             'hysteria2': self.parse_hysteria2,
@@ -319,7 +323,7 @@ class NodeParser:
         if detected_protocol in parser_map:
             parsed = parser_map[detected_protocol](node_str)
         else:
-            logger.warning(f"未知协议前缀 (应该被过滤): {node_str}")
+            logger.warning(f"未知协议前缀: {node_str}")
             self.invalid_nodes += 1
             self.malformed_nodes.append(node_str)
             return
@@ -438,17 +442,21 @@ async def singbox_proxy(node: Dict, config_path: str = 'temp_config.json', proxy
         )
         logger.debug(f"Sing-box 进程 {process.pid} 已启动，监听 127.0.0.1:{proxy_port}")
         await asyncio.sleep(1)
+        if process.returncode is not None:
+            raise RuntimeError("Sing-box 进程启动后立即退出")
         yield f"socks5://127.0.0.1:{proxy_port}"
     except Exception as e:
         logger.error(f"启动 Sing-box 代理失败，节点: {node['raw']}: {e}")
         yield None
     finally:
-        if process:
+        if process and process.returncode is None:
             try:
                 process.terminate()
                 await asyncio.wait_for(process.wait(), timeout=2.0)
             except asyncio.TimeoutError:
                 process.kill()
+            except ProcessLookupError:
+                logger.debug(f"Sing-box 进程 {process.pid} 已提前终止")
             logger.debug(f"Sing-box 进程 {process.pid} 已终止")
         if os.path.exists(config_path):
             try:
@@ -463,7 +471,7 @@ async def test_connectivity(node: Dict) -> bool:
             logger.warning(f"无法启动 Sing-box 代理进行测试: {node.get('raw', '未知节点')}")
             return False
         try:
-            async with httpx.AsyncClient(proxies={"http://": proxy_address, "https://": proxy_address}, timeout=7) as client:
+            async with httpx.AsyncClient(proxy=proxy_address, timeout=7) as client:
                 response = await client.get(TEST_URL)
                 if 200 <= response.status_code < 400:
                     logger.info(f"测试成功: {node.get('raw', '未知节点')}")
