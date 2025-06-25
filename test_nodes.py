@@ -576,6 +576,20 @@ async def main():
     await save_history()
     await save_dns_cache()
 
+    # --- 新增日志确认文件生成 ---
+    if os.path.exists(SUCCESSFUL_NODES_OUTPUT_FILE):
+        async with aiofiles.open(SUCCESSFUL_NODES_OUTPUT_FILE, "r", encoding="utf-8") as f:
+            content = await f.read()
+            logger.info(f"已生成 {SUCCESSFUL_NODES_OUTPUT_FILE}，内容长度: {len(content)} 字节")
+    else:
+        logger.error(f"未找到 {SUCCESSFUL_NODES_OUTPUT_FILE}")
+    if os.path.exists(SUCCESS_COUNT_FILE):
+        async with aiofiles.open(SUCCESS_COUNT_FILE, "r", encoding="utf-8") as f:
+            content = await f.read()
+            logger.info(f"已生成 {SUCCESS_COUNT_FILE}，内容: {content}")
+    else:
+        logger.error(f"未找到 {SUCCESS_COUNT_FILE}")
+
     summary = generate_summary(test_results)
     logger.info("\n--- 测试结果摘要 ---")
     for key, value in summary.items():
