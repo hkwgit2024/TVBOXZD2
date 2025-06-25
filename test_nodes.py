@@ -18,7 +18,7 @@ from functools import partial
 
 # --- 配置 ---
 SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt",
 ]
 
 DATA_DIR = "data"
