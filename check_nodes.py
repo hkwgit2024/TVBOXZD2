@@ -8,13 +8,10 @@ import logging
 from collections import namedtuple
 
 # --- 配置日志 ---
-# 默认设置为 INFO 级别，以减少 GitHub Actions 中的日志量，提高运行效率。
-# 如果需要详细调试，可以临时改为 logging.DEBUG。
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # --- 常量定义 ---
-# 所有的节点源 URL 列表
 NODE_URLS = [
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt",
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt"
@@ -39,7 +36,8 @@ def decode_base64_url(data: str) -> str | None:
         return None
 
     # 预过滤，快速排除明显不符合 Base64 字符集的字符串
-    if not re.fullmatch(r'^[a-zA-Z0-9+/=-]+$', data):
+    # 允许的字符包括大小写字母、数字、+、/、=、-、_
+    if not re.fullmatch(r'^[a-zA-Z0-9+/=\-_]+$', data):
         logger.debug(f"Quick filter: Data contains non-Base64 chars '{data[:50]}...'")
         return None
 
@@ -47,16 +45,7 @@ def decode_base64_url(data: str) -> str | None:
     data = data.replace(' ', '').replace('\n', '').replace('\r', '')
 
     try:
-        # 添加或移除填充
-        missing_padding = len(data) % 4
-        if missing_padding == 2:
-            data += '=='
-        elif missing_padding == 3:
-            data += '='
-        elif missing_padding == 1: # 这种情况通常是无效的Base64
-            logger.debug(f"Base64 padding issue (len % 4 == 1) for '{data[:50]}...'")
-            return None
-
+        # base64.urlsafe_b64decode 会自动处理一些不带填充的情况
         decoded_bytes = base64.urlsafe_b64decode(data)
         return decoded_bytes.decode('utf-8')
     except (base64.binascii.Error, UnicodeDecodeError) as e:
@@ -92,7 +81,7 @@ def parse_node(node_string: str) -> ParsedNode | None:
             return None
 
         path = parsed_url.path
-        query = urllib.parse.parse_qs(parsed_url.query) # 解析查询参数
+        query_params = urllib.parse.parse_qs(parsed_url.query) # 解析查询参数
         fragment = parsed_url.fragment # 解析 URL 片段 (通常是节点名称)
 
         # 优先使用 URL 片段作为名称
@@ -102,7 +91,6 @@ def parse_node(node_string: str) -> ParsedNode | None:
         # --- 各协议解析逻辑 ---
         if protocol == "vmess":
             # VMess: base64(json_config)
-            # parsed_url.netloc + path 是 Base64 编码的 JSON 字符串
             vmess_data_encoded = parsed_url.netloc + path.lstrip('/')
             decoded_json_str = decode_base64_url(vmess_data_encoded)
             if decoded_json_str:
@@ -118,56 +106,72 @@ def parse_node(node_string: str) -> ParsedNode | None:
                     name = name or vmess_config.get('ps')
                     remark = vmess_config.get('ps')
                 except json.JSONDecodeError:
-                    logger.debug(f"VMess JSON decode error: {decoded_json_str[:100]}... for link {original_link[:100]}...")
+                    logger.debug(f"VMess JSON decode error: '{decoded_json_str[:100]}...' for link {original_link[:100]}...")
             else:
                 logger.debug(f"VMess base64 decode failed for link: {original_link[:100]}...")
 
         elif protocol == "vless":
             # VLESS: uuid@address:port?params#name
-            # netloc 包含 uuid@address:port
+            # parsed_url.netloc 可能是 uuid@address:port 或 address:port (如果UUID在query中)
             auth_addr_port = parsed_url.netloc
             if '@' in auth_addr_port:
-                user_id, addr_port = auth_addr_port.split('@', 1)
+                user_id, addr_port_str = auth_addr_port.split('@', 1)
             else:
-                addr_port = auth_addr_port # VLESS可能没有直接的UUID在netloc
-                logger.debug(f"VLESS link missing UUID in netloc: {original_link[:100]}...")
+                addr_port_str = auth_addr_port
+                user_id = query_params.get('uuid', [None])[0] # 尝试从query中获取UUID
+                if not user_id:
+                    logger.debug(f"VLESS link missing UUID in netloc or query: {original_link[:100]}...")
 
-            if ':' in addr_port:
-                address, port_str = addr_port.rsplit(':', 1)
+            if ':' in addr_port_str:
+                address, port_str = addr_addr_port_str.rsplit(':', 1)
                 try:
                     port = int(port_str)
                 except ValueError:
                     logger.debug(f"VLESS invalid port: {port_str} in {original_link[:100]}...")
                     port = None
+            else: # 如果没有端口，则整个是地址
+                 address = addr_port_str
+                 logger.debug(f"VLESS link missing port: {original_link[:100]}...")
 
-            network = query.get('type', [None])[0]
-            tls = query.get('security', [None])[0]
-            sni = query.get('sni', [None])[0]
+            network = query_params.get('type', [None])[0]
+            tls = query_params.get('security', [None])[0]
+            sni = query_params.get('sni', [None])[0]
             
         elif protocol == "trojan":
             # Trojan: password@address:port?params#name
-            # netloc 包含 password@address:port
-            auth_addr_port = parsed_url.netloc
-            if '@' in auth_addr_port:
-                password, addr_port = auth_addr_port.split('@', 1)
-            else:
-                addr_port = auth_addr_port
-                logger.debug(f"Trojan link missing password in netloc: {original_link[:100]}...")
+            # 这里的关键优化：不再直接依赖 parsed_url.netloc，而是对原始的 data 部分进行更明确的解析
+            # parsed_url.netloc 是 password@address:port
+            # parsed_url.path 是 /
+            # parsed_url.query 是 params
+            # parsed_url.fragment 是 name
 
-            if ':' in addr_port:
-                address, port_str = addr_port.rsplit(':', 1)
+            # 组合 netloc 和 path 来获取完整的认证信息和地址端口部分
+            full_auth_addr_port_str = parsed_url.netloc + parsed_url.path # 例如 "password@address:port"
+
+            if '@' in full_auth_addr_port_str:
+                password, addr_port_str = full_auth_addr_addr_port_str.split('@', 1)
+            else:
+                addr_port_str = full_auth_addr_addr_port_str
+                # 如果没有密码，可能是某些特殊配置，或仅包含地址端口
+                logger.debug(f"Trojan link missing password: {original_link[:100]}...")
+            
+            if ':' in addr_port_str:
+                address, port_str = addr_port_str.rsplit(':', 1)
                 try:
                     port = int(port_str)
                 except ValueError:
                     logger.debug(f"Trojan invalid port: {port_str} in {original_link[:100]}...")
                     port = None
+            else: # 如果没有端口，则整个是地址
+                 address = addr_port_str
+                 logger.debug(f"Trojan link missing port: {original_link[:100]}...")
             
-            tls = query.get('security', [None])[0]
-            sni = query.get('sni', [None])[0]
+            tls = query_params.get('security', [None])[0]
+            sni = query_params.get('sni', [None])[0]
 
         elif protocol == "ss":
             # SS: base64(method:password)@address:port#name OR method:password@address:port#name
-            # urllib.parse.urlparse 把 'method:password@' 或 'method:password' 放在 netloc
+            # parsed_url.netloc 包含了 auth 信息 (base64或明文)
             auth_part_raw = parsed_url.netloc
 
             decoded_auth_part = decode_base64_url(auth_part_raw)
@@ -176,67 +180,81 @@ def parse_node(node_string: str) -> ParsedNode | None:
             if ':' in auth_info:
                 encryption, password = auth_info.split(':', 1)
             else:
-                logger.debug(f"SS auth info malformed: {auth_info} in {original_link[:100]}...")
+                logger.debug(f"SS auth info malformed: '{auth_info}' in {original_link[:100]}...")
 
-            # address:port 在 path 中，需要去除 /
-            addr_port_part = path.lstrip('/')
-            if ':' in addr_port_part:
-                address, port_str = addr_port_part.rsplit(':', 1)
-                try:
-                    port = int(port_str)
-                except ValueError:
-                    logger.debug(f"SS invalid port: {port_str} in {original_link[:100]}...")
-                    port = None
-            else:
-                address = addr_port_part # Fallback if no port specified (unlikely)
-                logger.debug(f"SS link missing port: {original_link[:100]}...")
+            # address:port 可能是 parsed_url.hostname 和 parsed_url.port
+            # 或者在某些不规范链接中，也可能在 path 部分
+            address = parsed_url.hostname
+            if parsed_url.port:
+                port = parsed_url.port
+            elif parsed_url.path and parsed_url.path.strip('/'): # 兼容 path 里有地址端口的情况
+                 addr_port_path = parsed_url.path.strip('/')
+                 if ':' in addr_port_path:
+                     try:
+                         path_address, path_port_str = addr_port_path.rsplit(':', 1)
+                         if not address: # 如果hostname没提取到，才用path的
+                            address = path_address
+                         if not port:
+                            port = int(path_port_str)
+                     except ValueError:
+                         logger.debug(f"SS invalid port in path: {addr_port_path} in {original_link[:100]}...")
+                 elif not address: # 如果path里只有地址
+                    address = addr_port_path
+                    logger.debug(f"SS link missing port in path: {original_link[:100]}...")
+
+            if not address:
+                logger.debug(f"SS link missing address: {original_link[:100]}...")
+
 
         elif protocol == "ssr":
             # SSR: base64(server:port:protocol:method:obfs:password_base64/?params)
-            # SSR 链接通常整个 "host/path" 部分都是 Base64 编码的
-            ssr_data_encoded = parsed_url.netloc + path.lstrip('/')
+            ssr_data_encoded = parsed_url.netloc + parsed_url.path.lstrip('/')
             decoded_ssr_params = decode_base64_url(ssr_data_encoded)
             if decoded_ssr_params:
                 try:
                     parts = decoded_ssr_params.split(':')
-                    if len(parts) >= 5: # 至少 server:port:protocol:method:obfs
+                    if len(parts) >= 5:
                         address = parts[0]
                         port = int(parts[1])
                         # ssr_protocol = parts[2]
                         encryption = parts[3]
                         obfs = parts[4]
                         if len(parts) >= 6:
-                            # 密码通常是最后一个参数，并且可能带有 URL 查询参数
                             password_and_params = parts[5]
-                            password = decode_base64_url(password_and_params.split('/')[0]) # 密码也可能Base64解码
+                            # 密码部分可能也进行了Base64编码，且后面可能跟有URL参数
+                            password_base64_part = password_and_params.split('/')[0]
+                            password = decode_base64_url(password_base64_part) if password_base64_part else None
                 except (ValueError, IndexError):
-                    logger.debug(f"SSR param parse error: {decoded_ssr_params[:100]} for {original_link[:100]}...")
+                    logger.debug(f"SSR numerical/index error: '{decoded_ssr_params[:100]}' for {original_link[:100]}...")
                 except Exception:
-                    logger.debug(f"SSR unexpected error parsing: {decoded_ssr_params[:100]} in {original_link[:100]}...")
+                    logger.debug(f"SSR unexpected error parsing: '{decoded_ssr_params[:100]}' in {original_link[:100]}...")
             else:
                 logger.debug(f"SSR base64 decode failed for link: {original_link[:100]}...")
 
         elif protocol == "hysteria2":
             # Hysteria2: password@address:port?params#name
-            # netloc 包含 password@address:port
-            auth_addr_port = parsed_url.netloc
-            if '@' in auth_addr_port:
-                password, addr_port = auth_addr_port.split('@', 1)
-            else:
-                addr_port = auth_addr_port
-                logger.debug(f"Hysteria2 link missing password in netloc: {original_link[:100]}...")
+            # 同样对 netloc 进行更明确的解析
+            full_auth_addr_port_str = parsed_url.netloc + parsed_url.path # "password@address:port"
 
-            if ':' in addr_port:
-                address, port_str = addr_port.rsplit(':', 1)
+            if '@' in full_auth_addr_port_str:
+                password, addr_port_str = full_auth_addr_port_str.split('@', 1)
+            else:
+                addr_port_str = full_auth_addr_port_str
+                logger.debug(f"Hysteria2 link missing password: {original_link[:100]}...")
+
+            if ':' in addr_port_str:
+                address, port_str = addr_port_str.rsplit(':', 1)
                 try:
                     port = int(port_str)
                 except ValueError:
                     logger.debug(f"Hysteria2 invalid port: {port_str} in {original_link[:100]}...")
                     port = None
+            else:
+                 address = addr_port_str
+                 logger.debug(f"Hysteria2 link missing port: {original_link[:100]}...")
             
-            # Hysteria2 的查询参数，如 obfs
-            obfs = query.get('obfs', [None])[0]
-        
+            obfs = query_params.get('obfs', [None])[0]
+
         # --- 如果至少解析出了协议、地址和端口，则认为初步解析成功 ---
         if protocol and address and port is not None:
             return ParsedNode(
@@ -259,6 +277,7 @@ def parse_node(node_string: str) -> ParsedNode | None:
             return None
 
     except Exception as e:
+        # 捕获更宽泛的异常，但这里通常是更深层次的逻辑错误
         logger.error(f"Critical error parsing node '{original_link[:100]}...': {e}", exc_info=False)
         return None
 
@@ -294,64 +313,67 @@ def main():
             logger.info(f"Successfully downloaded from {url} (streaming).")
 
             for line_bytes in response.iter_lines(chunk_size=8192):
-                if line_bytes:
-                    raw_lines_total += 1
-                    try:
-                        node_entry = line_bytes.decode('utf-8', errors='ignore').strip()
-                        if not node_entry:
-                            continue # 跳过空行
+                if not line_bytes:
+                    continue # 跳过空字节行
 
-                        final_processed_node_string = node_entry
+                raw_lines_total += 1
+                try:
+                    node_entry = line_bytes.decode('utf-8', errors='ignore').strip()
+                    if not node_entry:
+                        continue # 跳过解码后的空行
 
-                        # 优化：快速检查是否可能是 Base64 编码的完整节点行
-                        # 避免对所有行都尝试 Base64 解码，只对看起来像 Base64 的行进行。
-                        # 长度限制避免误判短字符串
-                        if len(node_entry) > 15 and re.fullmatch(r'^[a-zA-Z0-9+/=-]+$', node_entry):
-                            decoded_full_line = decode_base64_url(node_entry)
-                            if decoded_full_line:
-                                final_processed_node_string = decoded_full_line
-                            else:
-                                # 如果Base64解码失败，但原字符串可能也是一个URL，继续尝试处理原字符串
-                                logger.debug(f"Line looks like Base64 but decode failed, processing original: {node_entry[:50]}...")
-                                pass # 继续使用 original_link
+                    final_processed_node_string = node_entry
 
-                        # 调用 parse_node 进行初步解析和信息提取
-                        parsed_info = parse_node(final_processed_node_string)
-
-                        if parsed_info:
-                            # 生成唯一键进行去重。
-                            # 协议、地址、端口是核心标识。用户ID/密码/加密方式/混淆方式也应加入。
-                            node_key_elements = [
-                                parsed_info.protocol,
-                                parsed_info.address,
-                                str(parsed_info.port),
-                            ]
-                            if parsed_info.user_id: node_key_elements.append(parsed_info.user_id)
-                            if parsed_info.password: node_key_elements.append(parsed_info.password)
-                            if parsed_info.encryption: node_key_elements.append(parsed_info.encryption)
-                            if parsed_info.obfs: node_key_elements.append(parsed_info.obfs) # 增加obfs
-                            if parsed_info.network: node_key_elements.append(parsed_info.network) # 增加network
-                            if parsed_info.tls: node_key_elements.append(parsed_info.tls) # 增加tls
-                            if parsed_info.sni: node_key_elements.append(parsed_info.sni) # 增加sni
-
-                            node_unique_key = "|".join(filter(None, node_key_elements)) # 过滤掉None值
-
-                            if node_unique_key not in unique_nodes_keys:
-                                unique_nodes_keys.add(node_unique_key)
-                                processed_output_links.append(parsed_info.raw_link) # 保存原始完整的链接
-                                parsed_nodes_count += 1
-                                # logger.debug(f"Added node: {parsed_info.raw_link[:100]}...") # 调试时启用
-                            else:
-                                duplicates_skipped_count += 1
-                                logger.debug(f"Skipping duplicate node: {parsed_info.raw_link[:100]}...")
+                    # 优化：快速检查是否可能是 Base64 编码的完整节点行
+                    # 对看起来像 Base64 的行才尝试解码。长度限制可避免误判短字符串
+                    # 避免不必要的decode_base64_url调用
+                    if re.fullmatch(r'^[a-zA-Z0-9+/=\-_]+$', node_entry) and len(node_entry) > 15:
+                        decoded_full_line = decode_base64_url(node_entry)
+                        if decoded_full_line:
+                            final_processed_node_string = decoded_full_line
                         else:
-                            malformed_or_unrecognized_count += 1
-                            # logger.debug(f"Skipping malformed/unrecognized: {final_processed_node_string[:100]}...") # 调试时启用
+                            # 如果Base64解码失败，但原字符串可能也是一个URL，继续尝试处理原字符串
+                            logger.debug(f"Line looks like Base64 but decode failed, processing original: '{node_entry[:50]}...'")
+                            pass # 保持 final_processed_node_string 为原始 node_entry
 
-                    except Exception as e:
-                        logger.error(f"Error processing line '{node_entry[:100]}...': {e}")
+                    # 调用 parse_node 进行初步解析和信息提取
+                    parsed_info = parse_node(final_processed_node_string)
+
+                    if parsed_info:
+                        # 生成唯一键进行去重。
+                        # 包含核心标识和重要参数，确保精准去重。
+                        node_key_elements = [
+                            parsed_info.protocol,
+                            parsed_info.address,
+                            str(parsed_info.port),
+                        ]
+                        if parsed_info.user_id: node_key_elements.append(parsed_info.user_id)
+                        if parsed_info.password: node_key_elements.append(parsed_info.password)
+                        if parsed_info.encryption: node_key_elements.append(parsed_info.encryption)
+                        if parsed_info.obfs: node_key_elements.append(parsed_info.obfs)
+                        if parsed_info.network: node_key_elements.append(parsed_info.network)
+                        if parsed_info.tls: node_key_elements.append(parsed_info.tls)
+                        if parsed_info.sni: node_key_elements.append(parsed_info.sni)
+
+                        # 使用 set 进行去重，这是最高效的方式
+                        node_unique_key = "|".join(filter(None, node_key_elements))
+
+                        if node_unique_key not in unique_nodes_keys:
+                            unique_nodes_keys.add(node_unique_key)
+                            processed_output_links.append(parsed_info.raw_link)
+                            parsed_nodes_count += 1
+                            # logger.debug(f"Added node: {parsed_info.raw_link[:100]}...") # 调试时启用
+                        else:
+                            duplicates_skipped_count += 1
+                            logger.debug(f"Skipping duplicate node: {parsed_info.raw_link[:100]}...")
+                    else:
                         malformed_or_unrecognized_count += 1
-                        continue
+                        # logger.debug(f"Skipping malformed/unrecognized: {final_processed_node_string[:100]}...") # 调试时启用
+
+                except Exception as e:
+                    logger.error(f"Error processing raw line '{line_bytes.decode('utf-8', errors='ignore').strip()[:100]}...': {e}")
+                    malformed_or_unrecognized_count += 1
+                    continue
 
         except requests.exceptions.RequestException as e:
             logger.error(f"Network error downloading from {url}: {e}")
