@@ -12,20 +12,20 @@ import logging
 from tqdm import tqdm
 
 # 常量配置
-SUB_FILE = "sub.txt"
-ALL_FILE = "all.txt"
-DATA_DIR = "data"
-SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")
-SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")
-SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "sing-box")
-SINGBOX_HTTP_PORT = 10809
-TEST_TIMEOUT = 8  # 降低超时时间，适配更快测试
-    CONCURRENCY_LIMIT = 5
-BATCH_SIZE = 50  # 减小批次，降低资源占用
-    TARGET_URLS = ["https://www.cloudflare.com", "https://1.1.1.1/"]
-RETRY_ATTEMPTS = 2
+SUB_FILE = "sub.txt"  # 输入节点文件
+ALL_FILE = "all.txt"  # 输出可用节点文件
+DATA_DIR = "data"  # 数据目录
+SINGBOX_CONFIG_PATH = os.path.join(DATA_DIR, "config.json")  # sing-box 配置文件路径
+SINGBOX_LOG_PATH = os.path.join(DATA_DIR, "singbox.log")  # sing-box 日志路径
+SINGBOX_PATH = "./sing-box"  # sing-box 可执行文件路径
+SINGBOX_HTTP_PORT = 10809  # sing-box HTTP 代理端口
+TEST_TIMEOUT = 8  # 测试超时时间（秒）
+CONCURRENCY_LIMIT = 5  # 最大并发数
+BATCH_SIZE = 50  # 每批次节点数
+TARGET_URLS = ["https://www.cloudflare.com", "https://1.1.1.1"]  # 测试目标 URL
+RETRY_ATTEMPTS = 2  # 重试次数
 
-# 日志配置，确保日志文件可写
+# 配置日志
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -36,23 +36,22 @@ logging.basicConfig(
 )
 
 def log_message(message, level="info"):
+    """记录日志信息"""
     if level == "info":
         logging.info(message)
     elif level == "error":
         logging.error(message)
     elif level == "warning":
         logging.warning(message)
-        """
-)
 
-# 确保数据目录存在
+# 创建数据目录
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
 # 检查 sing-box 可执行文件
 if not os.path.exists(SINGBOX_PATH):
     log_message(f"错误：未找到 sing-box 可执行文件 {SINGBOX_PATH}。请确保已下载并放置在工作目录。", "error")
-    log_message("建议：在 GitHub Actions 中使用 setup 步骤下载 sing-box。", "error")
+    log_message("建议：在 GitHub Actions 中使用 setup 步骤下载 sing-box。", "info")
     exit(1)
 
 def base64_decode_if_needed(data: str) -> str:
@@ -78,16 +77,16 @@ def is_valid_node_url(node_url: str) -> bool:
         return False
 
 def parse_tag_info(tag: str) -> dict:
-    """解析节点标签中的信息"""
-    country = "Unknown"
+    """解析节点标签中的信息（如国家、速度、成功率）"""
+    country = "未知"
     speed = None
     success_rate = None
     if "美国" in tag:
-        country = "USA"
+        country = "美国"
     elif "日本" in tag:
-        country = "Japan"
+        country = "日本"
     elif "香港" in tag:
-        country = "HongKong"
+        country = "香港"
     match = re.search(r"⬇️\s*([\d.]+)\s*MB/s", tag)
     if match:
         speed = float(match.group(1))
@@ -109,7 +108,7 @@ def extract_node_info(node_url: str) -> dict:
         log_message(f"节点 URL 格式非法，跳过: {node_url}", "warning")
         return None
     parsed_url = urlparse(node_url)
-    tag = safe_unquote(parsed_url.fragment) if parsed_url.fragment else "Unknown"
+    tag = safe_unquote(parsed_url.fragment) if parsed_url.fragment else "未知"
     node_info = {"url": node_url.strip(), "tag": tag}
     node_info.update(parse_tag_info(tag))
     return node_info
@@ -201,7 +200,7 @@ def generate_singbox_config(node_url: str) -> dict:
                 outbound_config["method"] = method
                 outbound_config["password"] = password
             if 'plugin' in query_params:
-                outbound_config["plugin"] = query_params['plugin'][0]
+                outbound_config["plugin"] = query_params.get('plugin', [''])[0]
                 outbound_config["plugin_opts"] = query_params.get('plugin-opts', [''])[0]
 
         elif protocol == "ssr":
@@ -243,7 +242,7 @@ def generate_singbox_config(node_url: str) -> dict:
         return None
 
 async def run_singbox_test_inner(node_url: str, session: aiohttp.ClientSession) -> tuple[bool, float]:
-    """运行 sing-box 测试"""
+    """运行 sing-box 测试，返回测试结果和延迟"""
     config = generate_singbox_config(node_url)
     if not config:
         return False, 0
@@ -360,7 +359,6 @@ async def main():
             if line and not line.startswith('#') and re.match(r"^(hysteria2|vless|vmess|ss|trojan|ssr|socks5)://", line, re.IGNORECASE):
                 node_info = extract_node_info(line)
                 if node_info:
-                    # 规范化查询参数以避免顺序差异
                     parsed = urlparse(node_info["url"])
                     query = urllib.parse.urlencode(parse_qs(parsed.query), doseq=True)
                     key = (parsed.scheme, parsed.netloc, query, node_info["tag"])
@@ -382,17 +380,15 @@ async def main():
 
     successful_nodes.sort(key=lambda x: x["latency"] if x["latency"] else float('inf'))
     with open(ALL_FILE, 'w', encoding='utf-8', errors='ignore') as f:
-        current_time = time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime())
-        f.write(f"# Successful Nodes ({current_time})\n")
-        f.write("-------------------------------------\n")
         for node in successful_nodes:
-            url = node['url'].replace('\n', '')  # 去除换行符
-            f.write(f"{url} # Country: {node['country']} | Latency: {node['latency']:.2f}ms")
-            if node["speed"]:
-                f.write(f" | Speed: {node['speed']:.2f}MB/s")
-            if node["success_rate"]:
-                f.write(f" | Success Rate: {node['success_rate']}%")
-            f.write("\n")
+            url = node['url'].replace('\n', '')
+            f.write(f"{url}\n")
+            # 记录元数据到日志
+            log_message(
+                f"可用节点: {url} | 国家: {node['country']} | 延迟: {node['latency']:.2f}ms"
+                f"{' | 速度: ' + str(node['speed']) + 'MB/s' if node['speed'] else ''}"
+                f"{' | 成功率: ' + str(node['success_rate']) + '%' if node['success_rate'] else ''}"
+            )
 
     log_message(f"测试完成！共发现 {len(successful_nodes)} 个可用节点，保存到 {ALL_FILE}")
 
