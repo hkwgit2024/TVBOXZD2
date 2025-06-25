@@ -18,7 +18,7 @@ from functools import partial
 
 # --- 配置 ---
 SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub.txt",
+    "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/v2ray/all_sub.txt",
 ]
 
 DATA_DIR = "data"
