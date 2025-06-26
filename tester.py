@@ -25,7 +25,9 @@ TEST_URLS = [
     "http://cp.cloudflare.com/",
     "http://www.baidu.com"
 ]
+# 从环境变量获取 Singbox 核心路径，如果没有则使用默认值
 SINGBOX_CORE_PATH = "./sing-box"
+
 
 # 支持的 Shadowsocks 加密方法
 VALID_SS_METHODS = {
@@ -43,7 +45,7 @@ class NodeParser:
 
         original_link = node_link
         node_data = None # 初始化为 None
-
+        
         # 初步检查 Shadowsocks 和 SSR 链接：
         # 这里进行更宽松的检查，让具体的解析函数处理更复杂的逻辑
         # 移除之前的严格检查，因为它们可能导致有效链接被误判
@@ -325,7 +327,8 @@ class SingboxConfigGenerator:
                     "type": "socks",
                     "listen": "127.0.0.1",
                     "listen_port": local_port,
-                    "udp_relay_mode": "per-session",
+                    # 暂时移除 udp_relay_mode，因为在特定版本中可能导致未知字段错误
+                    # "udp_relay_mode": "per-session", 
                     "sniff": True,
                     "sniff_override_destination": True
                 }
@@ -482,8 +485,8 @@ class SingboxConfigGenerator:
             # Singbox 可能不支持 SSR 协议，这里需要进行协议转换或忽略。
             # 如果是不可识别的协议或混淆，直接返回 None
             if not transport_settings and node.get("obfs"):
-                 logging.warning(f"无法为 SSR 节点 {node['name']} 生成兼容的 Singbox 传输设置，跳过。")
-                 return None
+                    logging.warning(f"无法为 SSR 节点 {node['name']} 生成兼容的 Singbox 传输设置，跳过。")
+                    return None
 
         elif protocol_type == "hysteria2":
             outbound.update({
