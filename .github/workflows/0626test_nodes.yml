@@ -1,19 +1,16 @@
 name: Test Proxy Nodes with Singbox
 
 on:
-  # 每天凌晨 2 点运行一次 (UTC时间，请根据您的需求调整为北京时间，北京时间是 UTC+8)
   schedule:
-    - cron: '0 18 * * *' # UTC 18:00 等于北京时间次日 02:00
-  # 也可以在每次推送到 main 分支时运行
+    - cron: '0 18 * * *'  # UTC 18:00 = 北京时间 02:00
   push:
     branches:
       - main
-  # 允许手动触发
   workflow_dispatch:
 
 jobs:
   test-nodes:
-    runs-on: ubuntu-latest # 使用最新的 Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -22,37 +19,59 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # 使用最新的 Python 3 版本
+          python-version: '3.x'
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install aiohttp requests # 安装脚本所需的库
+          pip install aiohttp requests
 
       - name: Create data directory
         run: |
-          mkdir -p data # 确保 data 目录存在，以便节点文件和结果文件能存放
-
-      # 假设 data/sub_2.txt 已经存在于仓库中
-      # 如果需要每次运行前从某个远程订阅源获取节点，请在此处添加 curl 或 wget 步骤
+          mkdir -p data
 
       - name: Download Singbox core
         id: download_singbox
         run: |
-          # 根据 runner 的架构下载 Singbox 核心
-          # 请访问 Singbox release 页面获取最新版本和正确的下载链接
-          # 示例使用 x86_64 Linux 版本，请根据实际需要更改
-          SINGBOX_VERSION="1.8.10" # 请替换为最新的 Singbox 版本
-          ARCH="amd64" # 或者 "arm64" 如果使用 ARM 架构的 runner
+          # 动态检测架构
+          ARCH=$(uname -m)
+          case $ARCH in
+            x86_64)
+              ARCH="amd64"
+              ;;
+            aarch64)
+              ARCH="arm64"
+              ;;
+            *)
+              echo "::error::Unsupported architecture: $ARCH"
+              exit 1
+              ;;
+          esac
+          
+          SINGBOX_VERSION="1.8.10"  # 请替换为最新版本
           FILENAME="sing-box-${SINGBOX_VERSION}-linux-${ARCH}"
           DOWNLOAD_URL="https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/${FILENAME}.tar.gz"
 
           echo "Downloading Singbox from: ${DOWNLOAD_URL}"
-          curl -L "${DOWNLOAD_URL}" -o "${FILENAME}.tar.gz"
-          tar -xzf "${FILENAME}.tar.gz"
-          mv "${FILENAME}/sing-box" ./sing-box # 将可执行文件移动到当前目录
-          chmod +x ./sing-box # 赋予执行权限
-          echo "SINGBOX_CORE_PATH=./sing-box" >> $GITHUB_ENV # 将路径添加到环境变量，供 Python 脚本使用
+          curl -L -o "${FILENAME}.tar.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Singbox"; exit 1; }
+          
+          # 验证下载文件
+          if [ ! -s "${FILENAME}.tar.gz" ]; then
+            echo "::error::Downloaded file is empty or missing"
+            exit 1
+          fi
+          
+          tar -xzf "${FILENAME}.tar.gz" || { echo "::error::Failed to extract Singbox"; exit 1; }
+          mv "${FILENAME}/sing-box" ./sing-box || { echo "::error::Failed to move sing-box"; exit 1; }
+          chmod +x ./sing-box
+          
+          # 验证 sing-box 可执行
+          if [ ! -x ./sing-box ]; then
+            echo "::error::sing-box is not executable"
+            exit 1
+          fi
+          
+          echo "SINGBOX_CORE_PATH=$(pwd)/sing-box" >> $GITHUB_ENV
 
       - name: Run Python node tester
         run: |
@@ -60,17 +79,23 @@ jobs:
 
       - name: Commit test results
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 提供的默认 token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 检查是否有更改，避免空提交
-          if git diff --exit-code data/all.txt; then
+          # 检查 data/all.txt 是否存在且非空
+          if [ ! -s data/all.txt ]; then
+            echo "::warning::No valid test results in data/all.txt, skipping commit"
+            exit 0
+          fi
+          
+          # 检查是否有更改
+          git add data/all.txt
+          if git diff --cached --exit-code data/all.txt; then
             echo "::notice::No changes to commit in data/all.txt"
           else
-            git add data/all.txt
-            git commit -m "Update node test results [skip ci]" # [skip ci] 避免再次触发工作流
+            git commit -m "Update node test results [skip ci]"
             git push
-            echo "::notice::Successfully committed and pushed updated test results."
+            echo "::notice::Successfully committed and pushed updated test results"
           fi
