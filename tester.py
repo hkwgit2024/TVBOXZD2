@@ -13,7 +13,7 @@ import re
 import subprocess
 import urllib.parse
 import aiohttp
-import binascii # 引入 binascii 用于处理 base64 错误
+import binascii
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -27,9 +27,14 @@ TEST_URLS = [
     "http://cp.cloudflare.com/",
     "http://www.baidu.com"
 ]
-# 请根据实际情况设置 Singbox 核心的路径
-# 如果在 GitHub Actions 中，需要确保 Singbox 核心可执行文件被下载到此路径
 SINGBOX_CORE_PATH = "./sing-box"
+
+# 支持的 Shadowsocks 加密方法
+VALID_SS_METHODS = {
+    "aes-128-gcm", "aes-256-gcm", "chacha20-ietf-poly1305",
+    "aes-128-cfb", "aes-192-cfb", "aes-256-cfb",
+    "rc4-md5", "chacha20-ietf", "xchacha20"
+}
 
 class NodeParser:
     """负责解析不同协议的节点链接"""
@@ -38,29 +43,35 @@ class NodeParser:
         if not node_link:
             return None
 
-        # 记录原始链接以便后续输出或调试
-        original_link = node_link
+        # 初步检查 Shadowsocks 链接
+        if node_link.startswith("ss://"):
+            if "@" not in node_link or ":" not in node_link.split("@")[-1]:
+                logging.warning(f"无效的 Shadowsocks 链接格式: {node_link[:50]}...")
+                return None
 
+        original_link = node_link
         if node_link.startswith("vmess://"):
             node_data = self._parse_vmess(node_link)
         elif node_link.startswith("trojan://"):
             node_data = self._parse_trojan(node_link)
         elif node_link.startswith("ss://"):
             node_data = self._parse_shadowsocks(node_link)
+        elif node_link.startswith("ssr://"):
+            node_data = self._parse_ssr(node_link)
         elif node_link.startswith("vless://"):
             node_data = self._parse_vless(node_link)
-        # TODO: 添加对其他协议（如 hysteria2://, tuic:// 等）的解析
+        elif node_link.startswith("hysteria2://"):
+            node_data = self._parse_hysteria2(node_link)
         else:
-            logging.warning(f"警告: 不支持或无法识别的节点链接格式: {node_link[:50]}...")
+            logging.warning(f"不支持或无法识别的节点链接格式: {node_link[:50]}...")
             node_data = None
         
         if node_data:
-            node_data['original_link'] = original_link # 保存原始链接
+            node_data['original_link'] = original_link
         return node_data
 
     def _parse_vmess(self, link: str) -> Optional[Dict[str, Any]]:
         try:
-            # VMess 链接通常是 base64 编码的 JSON
             base64_str = link[len("vmess://"):]
             decoded_json = base64.b64decode(base64_str).decode('utf-8')
             data = json.loads(decoded_json)
@@ -82,7 +93,6 @@ class NodeParser:
             }
             if node["network"] == "ws":
                 node["wsSettings"] = {"path": node["path"], "headers": {"Host": node["host"]}}
-            # 更多 Vmess 网络设置可以根据需要添加
             return node
         except Exception as e:
             logging.error(f"解析 VMess 链接失败: {link[:50]}... 错误: {e}")
@@ -103,13 +113,12 @@ class NodeParser:
                 "port": port,
                 "password": password,
                 "network": params.get("type", ["tcp"])[0],
-                "tls": True, # Trojan 默认要求 TLS
+                "tls": True,
                 "sni": params.get("sni", [server])[0],
                 "host": params.get("host", [server])[0],
                 "path": params.get("path", ["/"])[0],
                 "allowInsecure": params.get("allowInsecure", ["0"])[0] == "1",
             }
-            # 更多 Trojan 网络设置可以根据需要添加
             return node
         except Exception as e:
             logging.error(f"解析 Trojan 链接失败: {link[:50]}... 错误: {e}")
@@ -117,62 +126,110 @@ class NodeParser:
 
     def _parse_shadowsocks(self, link: str) -> Optional[Dict[str, Any]]:
         try:
-            # ss://method:password@server:port#tag
             parts = link[len("ss://"):].split("#")
             tag = urllib.parse.unquote(parts[1]) if len(parts) > 1 else ""
             
             creds_and_addr = parts[0]
-            
+            params = {}
+            if "?" in creds_and_addr:
+                creds_and_addr, query = creds_and_addr.split("?", 1)
+                params = urllib.parse.parse_qs(query)
+
             if "@" in creds_and_addr:
-                creds_b64, addr = creds_and_addr.split("@", 1)
-                
-                # ----- 改进的 base64 解码部分 -----
-                # 尝试添加填充并使用 urlsafe_b64decode
-                missing_padding = len(creds_b64) % 4
-                if missing_padding != 0:
-                    creds_b64 += '=' * (4 - missing_padding)
+                creds, addr = creds_and_addr.split("@", 1)
                 
                 try:
-                    # 尝试 urlsafe_b64decode，然后是标准 b64decode
-                    creds_bytes = base64.urlsafe_b64decode(creds_b64)
-                    creds = creds_bytes.decode('utf-8')
-                except (binascii.Error, UnicodeDecodeError):
-                    # 如果 urlsafe 失败，尝试标准 b64decode
+                    missing_padding = len(creds) % 4
+                    if missing_padding != 0:
+                        creds += '=' * (4 - missing_padding)
+                    
                     try:
-                        creds_bytes = base64.b64decode(creds_b64)
-                        creds = creds_bytes.decode('utf-8')
-                    except (binascii.Error, UnicodeDecodeError) as e:
-                        logging.error(f"解析 Shadowsocks 链接 (凭据解码失败): {link[:50]}... 错误: {e}")
-                        return None
-                # ----- 改进的 base64 解码部分结束 -----
-
-                if ":" not in creds: # 有些SS链接可能只有密码没有方法，或者格式不标准
-                    logging.warning(f"SS凭据格式不标准 (无方法): {creds}")
+                        creds_bytes = base64.urlsafe_b64decode(creds)
+                        creds_decoded = creds_bytes.decode('utf-8')
+                    except (binascii.Error, UnicodeDecodeError):
+                        try:
+                            creds_bytes = base64.b64decode(creds)
+                            creds_decoded = creds_bytes.decode('utf-8')
+                        except (binascii.Error, UnicodeDecodeError):
+                            creds_decoded = creds
+                        
+                    if ":" in creds_decoded:
+                        method, password = creds_decoded.split(":", 1)
+                    else:
+                        method = "aes-256-gcm"
+                        password = creds_decoded
+                except Exception as e:
+                    logging.error(f"解析 Shadowsocks 凭据失败: {link[:50]}... 错误: {e}")
                     return None
+                
+                if method not in VALID_SS_METHODS:
+                    logging.warning(f"不支持的 Shadowsocks 加密方法: {method} 在链接: {link[:50]}...")
+                    return None
+                
+                server, port_str = addr.split(":", 1)
+                port = int(port_str)
 
-                method, password = creds.split(":", 1)
+                node = {
+                    "type": "shadowsocks",
+                    "name": tag or f"SS-{server}:{port}",
+                    "server": server,
+                    "port": port,
+                    "method": method,
+                    "password": password,
+                }
+                
+                if params.get("plugin"):
+                    plugin = params.get("plugin", [""])[0]
+                    plugin_opts = ";".join([f"{k}={v[0]}" for k, v in params.items() if k != "plugin"])
+                    node["plugin"] = plugin
+                    node["plugin_opts"] = plugin_opts
+                
+                return node
             else:
-                # SS Simple-Obfs or Plugin format (ss://[method:password@]server:port?plugin=...)
-                # 对于没有 @ 符号的 SS 链接，通常是带插件的，或者凭据部分没有 base64 编码。
-                # 这种格式需要更复杂的解析，目前脚本无法直接处理。
-                logging.warning(f"SS链接格式复杂（无@符号），可能带插件或凭据未编码，跳过: {link[:50]}...")
+                logging.warning(f"SS 链接格式不标准（无@符号）: {link[:50]}...")
                 return None
+        except Exception as e:
+            logging.error(f"解析 Shadowsocks 链接失败: {link[:50]}... 错误: {e}")
+            return None
 
-            server, port_str = addr.split(":", 1)
-            port = int(port_str)
-
+    def _parse_ssr(self, link: str) -> Optional[Dict[str, Any]]:
+        try:
+            base64_str = link[len("ssr://"):]
+            missing_padding = len(base64_str) % 4
+            if missing_padding != 0:
+                base64_str += '=' * (4 - missing_padding)
+            
+            decoded_str = base64.urlsafe_b64decode(base64_str).decode('utf-8')
+            parts = decoded_str.split(":")
+            if len(parts) < 6:
+                logging.warning(f"SSR 链接格式不完整: {link[:50]}...")
+                return None
+            
+            server, port, protocol, method, obfs, password_b64 = parts[:6]
+            password = base64.urlsafe_b64decode(password_b64).decode('utf-8')
+            params = {}
+            if "/" in decoded_str:
+                param_str = decoded_str.split("/?")[1]
+                param_pairs = param_str.split("&")
+                for pair in param_pairs:
+                    k, v = pair.split("=")
+                    params[k] = base64.urlsafe_b64decode(v).decode('utf-8')
+            
             node = {
-                "type": "shadowsocks",
-                "name": tag or f"SS-{server}:{port}",
+                "type": "ssr",
+                "name": params.get("remarks", f"SSR-{server}:{port}"),
                 "server": server,
-                "port": port,
+                "port": int(port),
                 "method": method,
                 "password": password,
+                "protocol": protocol,
+                "obfs": obfs,
+                "protocol_param": params.get("protoparam", ""),
+                "obfs_param": params.get("obfsparam", ""),
             }
             return node
         except Exception as e:
-            # 捕获其他未知错误，例如 split() 失败等
-            logging.error(f"解析 Shadowsocks 链接失败: {link[:50]}... 错误: {e}")
+            logging.error(f"解析 SSR 链接失败: {link[:50]}... 错误: {e}")
             return None
 
     def _parse_vless(self, link: str) -> Optional[Dict[str, Any]]:
@@ -189,14 +246,14 @@ class NodeParser:
                 "server": server,
                 "port": port,
                 "uuid": uuid,
-                "encryption": "none", # VLESS 默认 encryption 为 none
+                "encryption": "none",
                 "flow": params.get("flow", [""])[0],
                 "network": params.get("type", ["tcp"])[0],
                 "tls": params.get("security", [""]) == ["tls"],
-                "reality": params.get("security", [""]) == ["reality"], # VLESS + Reality
-                "sni": params.get("sni", [server])[0] if params.get("security", [""]) != ["reality"] else params.get("pbk", [""])[0], # for reality, sni is serviceName in some clients
-                "fp": params.get("fp", [""])[0], # fingerprint for reality
-                "dest": params.get("dest", [""])[0], # dest for reality
+                "reality": params.get("security", [""]) == ["reality"],
+                "sni": params.get("sni", [server])[0] if params.get("security", [""]) != ["reality"] else params.get("pbk", [""])[0],
+                "fp": params.get("fp", [""])[0],
+                "dest": params.get("dest", [""])[0],
             }
             if node["network"] == "ws":
                 node["path"] = params.get("path", ["/"])[0]
@@ -204,10 +261,33 @@ class NodeParser:
             elif node["network"] == "grpc":
                 node["serviceName"] = params.get("serviceName", [""])[0]
                 node["multiMode"] = params.get("multiMode", ["0"])[0] == "1"
-            # 更多 Vless 网络设置可以根据需要添加
             return node
         except Exception as e:
             logging.error(f"解析 VLESS 链接失败: {link[:50]}... 错误: {e}")
+            return None
+
+    def _parse_hysteria2(self, link: str) -> Optional[Dict[str, Any]]:
+        try:
+            parsed = urllib.parse.urlparse(link)
+            password = parsed.username
+            server = parsed.hostname
+            port = parsed.port
+            params = urllib.parse.parse_qs(parsed.query)
+            
+            node = {
+                "type": "hysteria2",
+                "name": urllib.parse.unquote(parsed.fragment or f"{server}:{port}"),
+                "server": server,
+                "port": port or 443,
+                "password": password,
+                "sni": params.get("sni", [server])[0],
+                "insecure": params.get("insecure", ["0"])[0] == "1",
+                "obfs": params.get("obfs", [""])[0],
+                "obfs_password": params.get("obfs-password", [""])[0],
+            }
+            return node
+        except Exception as e:
+            logging.error(f"解析 Hysteria2 链接失败: {link[:50]}... 错误: {e}")
             return None
 
 class SingboxConfigGenerator:
@@ -228,7 +308,7 @@ class SingboxConfigGenerator:
                 {"type": "direct", "tag": "direct"},
                 {"type": "block", "tag": "block"}
             ],
-            "log": {"level": "warn"}, # reduce log verbosity
+            "log": {"level": "warn"},
             "dns": {
                 "servers": [
                     {"address": "8.8.8.8", "strategy": "prefer_ipv4"},
@@ -241,17 +321,15 @@ class SingboxConfigGenerator:
         if not outbound:
             return None
         
-        # 将生成的出站添加到配置中，并确保其tag为proxy
         outbound["tag"] = "proxy"
-        base_config["outbounds"].insert(0, outbound) # 插入到direct之前
+        base_config["outbounds"].insert(0, outbound)
 
-        # 路由规则：所有流量走proxy
         base_config["route"] = {
             "rules": [
-                {"protocol": ["dns"], "outbound": "dns-out"}, # optional, if you want specific DNS handling
+                {"protocol": ["dns"], "outbound": "dns-out"},
                 {"outbound": "proxy"}
             ],
-            "final": "proxy" # 确保所有未匹配的流量走proxy
+            "final": "proxy"
         }
         
         return base_config
@@ -259,7 +337,6 @@ class SingboxConfigGenerator:
     def _build_outbound(self, node: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         protocol_type = node['type']
         
-        # 共同的传输层设置
         transport_settings = {}
         network = node.get("network", "tcp")
         tls = node.get("tls", False)
@@ -271,29 +348,25 @@ class SingboxConfigGenerator:
         elif network == "grpc":
             transport_settings["type"] = "grpc"
             transport_settings["service_name"] = node.get("serviceName", "")
-            transport_settings["idle_timeout"] = "15s" # 默认值
-            transport_settings["ping_timeout"] = "15s" # 默认值
-            # multi_mode in singbox is usually for inbound, for outbound it's simplified.
-        # 对于其他网络类型，如 tcp, h2, quic 等，Singbox 的配置方式略有不同
+            transport_settings["idle_timeout"] = "15s"
+            transport_settings["ping_timeout"] = "15s"
 
-        # TLS/Reality 设置
         tls_settings = {}
         if tls:
             tls_settings = {
                 "enabled": True,
                 "server_name": node.get("sni", node["server"]),
                 "insecure": node.get("allowInsecure", False),
-                "utls": {"enabled": True, "fingerprint": "chrome"} # 默认使用chrome指纹
+                "utls": {"enabled": True, "fingerprint": "chrome"}
             }
-            if node.get("reality", False): # VLESS + Reality
+            if node.get("reality", False):
                 tls_settings["reality"] = {
                     "enabled": True,
-                    "public_key": node.get("pbk", ""), # Assuming 'pbk' key for public_key
-                    "short_id": node.get("sid", ""), # Assuming 'sid' for short_id
+                    "public_key": node.get("pbk", ""),
+                    "short_id": node.get("sid", ""),
                 }
                 if node.get("fingerprint"):
                     tls_settings["utls"] = {"enabled": True, "fingerprint": node["fingerprint"]}
-
 
         outbound = {
             "type": protocol_type,
@@ -301,7 +374,6 @@ class SingboxConfigGenerator:
             "server_port": node["port"],
         }
         
-        # 根据协议类型填充特有设置
         if protocol_type == "vmess":
             outbound.update({
                 "uuid": node["uuid"],
@@ -310,44 +382,52 @@ class SingboxConfigGenerator:
             })
         elif protocol_type == "trojan":
             outbound["password"] = node["password"]
-            outbound["tls"] = tls_settings # Trojan 强制 TLS
+            outbound["tls"] = tls_settings
         elif protocol_type == "vless":
             outbound.update({
                 "uuid": node["uuid"],
                 "flow": node.get("flow", ""),
-                "tls": tls_settings, # VLESS TLS settings
+                "tls": tls_settings,
             })
         elif protocol_type == "shadowsocks":
             outbound.update({
                 "method": node["method"],
                 "password": node["password"],
             })
-            # SS可能也有插件或混淆，需要根据node信息填充
-        elif protocol_type == "http":
+            if node.get("plugin"):
+                outbound["plugin"] = node["plugin"]
+                outbound["plugin_opts"] = node["plugin_opts"]
+        elif protocol_type == "ssr":
             outbound.update({
-                "username": node.get("username"),
-                "password": node.get("password")
+                "method": node["method"],
+                "password": node["password"],
+                "protocol": node["protocol"],
+                "obfs": node["obfs"],
+                "protocol_param": node["protocol_param"],
+                "obfs_param": node["obfs_param"],
             })
-        elif protocol_type == "socks":
+        elif protocol_type == "hysteria2":
             outbound.update({
-                "username": node.get("username"),
-                "password": node.get("password")
+                "password": node["password"],
+                "tls": {
+                    "enabled": True,
+                    "server_name": node.get("sni", node["server"]),
+                    "insecure": node.get("insecure", False),
+                }
+                "obfs": node.get("obfs"", ""none"") if node.get("obfs") else None,
+                "obfs_password": node.get("obfs_password", ""),
             })
         else:
-            logging.debug(f"不支持生成 Singbox 配置的协议类型: {protocol_type}")
+            logging.error(f"不支持生成 Singbox 配置的协议类型: {protocol_type}")
             return None
 
-        # 添加传输层设置
         if transport_settings:
             outbound["transport"] = transport_settings
         
-        # 添加 TLS 设置（VLESS 和 VMESS 在 Singbox 中 TLS 是独立字段，Trojan 在协议内）
-        if tls and protocol_type not in ["trojan", "vless"]: # VLESS, Trojan have it nested
-             outbound["tls"] = tls_settings
-
+        if tls and protocol_type not in ["trojan", "vless", "hysteria2"]:
+            outbound["tls"] = tls_settings
 
         return outbound
-
 
 def find_available_port(start: int = 10000, end: int = 60000) -> int:
     """查找一个可用的本地端口"""
@@ -361,9 +441,9 @@ def find_available_port(start: int = 10000, end: int = 60000) -> int:
                 continue
 
 async def measure_latency(node: Dict[str, Any]) -> int:
-    """测量单个节点的延迟"""
+    """测度单个节点的延迟"""
     temp_dir = Path(tempfile.mkdtemp(prefix="singbox_test_"))
-    config_path = temp_dir / "config.json"
+    config_path = temp_dir / "config.json")
     
     proc = None
     try:
@@ -377,9 +457,7 @@ async def measure_latency(node: Dict[str, Any]) -> int:
         
         config_path.write_text(json.dumps(singbox_config, indent=2))
         
-        # 启动 Singbox 核心进程
-        # 注意: 在 GitHub Actions 中，需要确保 SINGBOX_CORE_PATH 是可执行的
-        command = [SINGBOX_CORE_PATH, "run", "-c", str(config_path)]
+        command = [SINGBOX_CORE_PATH, "run", "-c", str(config_path))]
         
         proc = await asyncio.create_subprocess_exec(
             *command,
@@ -387,12 +465,11 @@ async def measure_latency(node: Dict[str, Any]) -> int:
             stderr=asyncio.subprocess.PIPE
         )
         
-        # 稍微等待 Singbox 启动
-        await asyncio.sleep(1) 
+        await asyncio.sleep(1)
 
         if proc.returncode is not None:
             stdout, stderr = await proc.communicate()
-            logging.error(f"Singbox 核心进程启动失败，检查配置：{config_path}")
+            logging.error(f"Singbox 核心进程启动失败: {config_path}")
             logging.error(f"Stdout: {stdout.decode()}")
             logging.error(f"Stderr: {stderr.decode()}")
             return -1
@@ -407,39 +484,38 @@ async def measure_latency(node: Dict[str, Any]) -> int:
             for url in TEST_URLS:
                 try:
                     async with session.get(
-                            url,
-                            proxy=proxies['http'], # aiohttp只接受一个proxy参数，http/https通用
-                            timeout=CONNECTION_TIMEOUT,
-                            allow_redirects=True
+                        url,
+                        proxy=proxies['http'],
+                        timeout=CONNECTION_TIMEOUT,
+                        allow_redirects=True
                     ) as resp:
                         if resp.status in (200, 204):
                             latency = int((time.perf_counter() - start_time) * 1000)
-                            if 0 <= latency <= 10000: # 假设最大延迟10秒
+                            if 0 <= latency <= 10000:
                                 return latency
-                            else:
-                                logging.warning(f"节点 {node.get('name', node.get('server'))} 延迟过高或不合理：{latency}ms")
-                                return -1
+                            logging.warning(f"节点 {node.get('name', node.get('server'))} 延迟过高: {latency}ms")
+                            return -1
                         else:
-                            logging.debug(f"节点 {node.get('name', node.get('server'))} 测试 URL {url} 返回非 200/204 状态码: {resp.status}")
+                            logging.debug(f"Node {node.get("name", node.get("server"))} test URL {url} returned non-200/204 status: {resp.status}")
                             continue
-                except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError) as e:
-                    logging.debug(f"通过节点 {node.get('name', node.get('server'))} 测试 URL {url} 失败: {e}")
-                    continue
-            logging.info(f"节点 {node.get('name', node.get('server'))} 未能通过所有测试 URL。")
-            return -1 # 所有URL都失败
+                        except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError) as e:
+                            logging.debug(f"Testing {url} via node {node.get("name", node.get("server"))} failed: {e}")
+                            continue
+                logging.info(f"Node {node.get("name", node.get("server"))} failed all test URLs.")
+                return -1
 
     except Exception as e:
-        logging.error(f"测试节点 {node.get('name', node.get('server'))} 时发生异常: {e}")
+        logging.error(f"Error testing node {node.get('name', node.get('server'))}: {e}")
         return -1
     finally:
-        if proc and proc.returncode is None: # 如果进程仍在运行
+        if proc and proc.returncode is None:
             try:
                 proc.terminate()
                 await asyncio.wait_for(proc.wait(), timeout=5)
             except asyncio.TimeoutError:
                 proc.kill()
             except Exception as e:
-                logging.error(f"停止 Singbox 进程时发生错误: {e}")
+                logging.error(f"Error stopping Singbox process: {e}")
         if temp_dir.exists():
             shutil.rmtree(temp_dir)
 
@@ -447,64 +523,55 @@ async def measure_latency(node: Dict[str, Any]) -> int:
 async def main():
     parser = NodeParser()
     
-    # 1. 读取节点并去重
     unique_nodes_links = set()
     if Path(NODE_FILE_PATH).exists():
         with open(NODE_FILE_PATH, 'r', encoding='utf-8') as f:
             for line in f:
                 stripped_line = line.strip()
-                if stripped_line and not stripped_line.startswith("#"): # 忽略注释行
+                if stripped_line and not stripped_line.startswith("#"):
                     unique_nodes_links.add(stripped_line)
     
-    logging.info(f"读取到 {len(unique_nodes_links)} 个去重后的节点链接。")
-
+    logging.info(f"Read {len(unique_nodes_links)} unique node links.")
     parsed_nodes: List[Dict[str, Any]] = []
     for link in unique_nodes_links:
         node = parser.parse(link)
         if node:
             parsed_nodes.append(node)
             
-    logging.info(f"成功解析出 {len(parsed_nodes)} 个有效节点配置。")
+    logging.info(f"Successfully parsed {len(parsed_nodes)} valid nodes.")
 
-    # 2. 异步测试所有节点
-    total_nodes_to_test = len(parsed_nodes)
-    if total_nodes_to_test == 0:
-        logging.info("没有可测试的节点。")
+    total_nodes = len(parsed_nodes)
+    if total_nodes == 0:
+        logging.info("No valid nodes to test.")
         return
 
-    sem = asyncio.Semaphore(10)  # 控制并发数，可根据服务器性能调整
+    sem = asyncio.Semaphore(5)  # 降低并发数以提高稳定性
     results: List[Dict[str, Any]] = []
 
-    async def _test_node_task(idx: int, node: Dict[str, Any]):
+    async def test_node_task(idx: int, node: Dict[str, Any]):
         async with sem:
-            node_id = node.get('name', f"{node['server']}:{node['port']}")
+            node_id = node.get('name', f"{node['server'][-1]}:{node['port']}")
             latency = await measure_latency(node)
-            if 0 <= latency <= 10000: # 再次检查延迟范围
+            if 0 <= latency <= 10000:
                 node['latency'] = latency
-                # 原始链接已经保存在 node['original_link']
                 results.append(node)
-                logging.info(f"[{idx}/{total_nodes_to_test}] ✓ 节点 {node_id} 测试通过，延迟：{latency} ms")
+                logging.info(f"[{idx}/{total_nodes}] ✓ Node {node_id} passed, latency: {latency} ms")
             else:
-                logging.info(f"[{idx}/{total_nodes_to_test}] ✗ 节点 {node_id} 无效或延迟过高，已跳过")
+                logging.info(f"[{idx}/{total_nodes}] ✗ Node {node_id} invalid or high latency, skipped")
 
-    tasks = [
-        _test_node_task(i + 1, node)
-        for i, node in enumerate(parsed_nodes)
-    ]
+    tasks = [test_node_task(i + 1, node) for i, node in enumerate(parsed_nodes)]
     await asyncio.gather(*tasks)
 
-    # 3. 保存测试结果
-    results.sort(key=lambda x: x['latency']) # 按延迟排序
+    results.sort(key=lambda x: x['latency'])
 
     output_dir = Path(OUTPUT_FILE_PATH).parent
-    output_dir.mkdir(parents=True, exist_ok=True) # 确保输出目录存在
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as f:
         for node in results:
-            # 输出原始链接，并在后面附带节点名称和延迟信息
             f.write(f"{node['original_link']} # {node['name']} [{node['latency']}ms]\n")
 
-    logging.info(f"测试完成：共处理 {total_nodes_to_test} 个节点，其中 {len(results)} 个有效，结果已保存到 {OUTPUT_FILE_PATH}")
+    logging.info(f"Test completed: {len(results)} valid nodes out of {total_nodes}, saved to {OUTPUT_FILE_PATH}")
 
 
 if __name__ == "__main__":
