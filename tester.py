@@ -9,7 +9,7 @@ from pathlib import Path
 # 全局变量：存储 Clash 基础配置模板
 GLOBAL_CLASH_CONFIG_TEMPLATE: Dict[str, Any] | None = None
 
-async def fetch_clash_base_config(url: str = "https://raw.githubusercontent.com/Dreamacro/clash/master/docs/config.yaml") -> None:
+async def fetch_clash_base_config(url: str = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml") -> None:
     """
     从指定 URL 获取 Clash 基础配置模板并存储到全局变量。
     
@@ -64,18 +64,28 @@ def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> None:
     if proxy_entry["type"] == "ss":
         if "cipher" not in proxy_entry or "password" not in proxy_entry:
             raise ValueError("Shadowsocks 节点缺少 'cipher' 或 'password' 字段")
+        if proxy_entry["cipher"] not in ["chacha20-ietf-poly1305", "aes-128-gcm", "2022-blake3-aes-128-gcm"]:
+            raise ValueError(f"不支持的 Shadowsocks 加密方式: {proxy_entry['cipher']}")
     elif proxy_entry["type"] == "vmess":
         if "uuid" not in proxy_entry or "cipher" not in proxy_entry:
             raise ValueError("VMess 节点缺少 'uuid' 或 'cipher' 字段")
+        if proxy_entry.get("network") == "ws" and "ws-opts" not in proxy_entry:
+            raise ValueError("VMess WebSocket 节点缺少 'ws-opts' 字段")
     elif proxy_entry["type"] == "hysteria2":
         if "password" not in proxy_entry or "auth" not in proxy_entry:
             raise ValueError("Hysteria2 节点缺少 'password' 或 'auth' 字段")
+        if proxy_entry.get("obfs") and "obfs-password" not in proxy_entry:
+            raise ValueError("Hysteria2 节点启用了 obfs 但缺少 'obfs-password' 字段")
     elif proxy_entry["type"] == "vless":
         if "uuid" not in proxy_entry or "tls" not in proxy_entry:
             raise ValueError("VLESS 节点缺少 'uuid' 或 'tls' 字段")
+        if proxy_entry.get("flow") == "xtls-rprx-vision" and "reality-opts" not in proxy_entry:
+            raise ValueError("VLESS 节点使用 xtls-rprx-vision 流控但缺少 'reality-opts' 字段")
     elif proxy_entry["type"] == "trojan":
         if "password" not in proxy_entry:
             raise ValueError("Trojan 节点缺少 'password' 字段")
+        if proxy_entry.get("network") == "ws" and "ws-opts" not in proxy_entry:
+            raise ValueError("Trojan WebSocket 节点缺少 'ws-opts' 字段")
 
 async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) -> Dict[str, Any]:
     """
@@ -102,7 +112,7 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     config = json.loads(json.dumps(GLOBAL_CLASH_CONFIG_TEMPLATE))
 
     # 设置基本配置
-    config["port"] = random.randint(10000, 15000)  # HTTP 代理端口
+    config["port"] = random.randint(10000, 15000)
     config["socks-port"] = socks_port
     config["allow-lan"] = False
     config["mode"] = "rule"
@@ -112,7 +122,7 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     config.setdefault("proxies", []).clear()
     config["proxies"].append(proxy_entry)
 
-    # 构建 proxy-groups，仅包含一个主 Proxy 组
+    # 修复 proxy-groups 配置，避免 Reject 和 Direct 错误
     proxy_name = proxy_entry["name"]
     config["proxy-groups"] = [
         {
@@ -158,6 +168,7 @@ async def save_clash_config(config: Dict[str, Any], filename: str) -> None:
             raise ValueError("配置缺少有效的 'rules' 字段")
 
         # 保存为 YAML 文件
+        Path(filename).parent.mkdir(parents=True, exist_ok=True)  # 确保目录存在
         with open(filename, "w", encoding="utf-8") as f:
             yaml.safe_dump(config, f, allow_unicode=True, sort_keys=False)
     except yaml.YAMLError as e:
@@ -165,33 +176,55 @@ async def save_clash_config(config: Dict[str, Any], filename: str) -> None:
     except IOError as e:
         raise IOError(f"写入文件 {filename} 失败: {str(e)}")
 
+async def load_proxies_from_file(file_path: str) -> List[Dict[str, Any]]:
+    """
+    从文件中加载代理节点列表。
+
+    Args:
+        file_path: 包含 proxies 的 YAML 文件路径
+
+    Returns:
+        List[Dict[str, Any]]: 代理节点列表
+
+    Raises:
+        ValueError: 如果文件格式无效
+        IOError: 如果文件读取失败
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        if not isinstance(data, dict) or "proxies" not in data:
+            raise ValueError("文件格式无效，必须包含 'proxies' 字段")
+        proxies = data["proxies"]
+        if not isinstance(proxies, list):
+            raise ValueError("'proxies' 必须为列表")
+        for proxy in proxies:
+            validate_proxy_entry(proxy)
+        return proxies
+    except yaml.YAMLError as e:
+        raise ValueError(f"解析代理节点文件 {file_path} 失败: {str(e)}")
+    except IOError as e:
+        raise IOError(f"读取文件 {file_path} 失败: {str(e)}")
+
 async def main():
     """
-    主函数：示例用法，加载模板并为每个代理节点生成配置文件。
+    主函数：加载代理节点并为每个节点生成配置文件。
     """
-    # 示例代理节点（从您提供的文档中提取一个）
-    proxy_entry = {
-        "name": "yandex-01",
-        "server": "107.175.187.181",
-        "port": 22800,
-        "type": "ss",
-        "cipher": "chacha20-ietf-poly1305",
-        "password": "4f4f54b2-0a2e-42aa-a310-8429f72b4e72",
-        "udp": True
-    }
-
     try:
         # 加载基础模板
         await fetch_clash_base_config()
 
-        # 生成配置
-        socks_port = 1080
-        config = await generate_clash_config(proxy_entry, socks_port)
+        # 加载代理节点（假设文件为 'proxies.yaml'，替换为您实际的文件路径）
+        proxy_file = "proxies.yaml"
+        proxies = await load_proxies_from_file(proxy_file)
 
-        # 保存配置到文件
-        output_file = f"clash_config_{proxy_entry['name']}.yaml"
-        await save_clash_config(config, output_file)
-        print(f"配置文件已保存到: {output_file}")
+        # 为每个代理节点生成配置文件
+        for proxy_entry in proxies:
+            socks_port = random.randint(1080, 2000)  # 随机分配 SOCKS 端口
+            config = await generate_clash_config(proxy_entry, socks_port)
+            output_file = f"clash_configs/clash_config_{proxy_entry['name']}.yaml"
+            await save_clash_config(config, output_file)
+            print(f"配置文件已保存到: {output_file}")
 
     except Exception as e:
         print(f"错误: {str(e)}")
