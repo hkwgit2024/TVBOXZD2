@@ -263,10 +263,8 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
             }
             if ws_path: vmess_obj["path"] = ws_path
             if ws_headers: vmess_obj["host"] = ws_headers
-            # --- 修复 NameError: vmes_obj -> vmess_obj ---
             if tls: vmess_obj["tls"] = "tls"
             if servername: vmess_obj["sni"] = servername
-            # --- 修复结束 ---
 
             vmess_obj = {k: v for k, v in vmess_obj.items() if v}
             
@@ -306,7 +304,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
                 link += f"?{param_str}"
             link += f"#{safe_name}"
             return link
-    elif p_type == "hysteria2":
+    elif p_type == "hy2":
         server = proxy.get("server")
         port = proxy.get("port")
         password = proxy.get("password")
@@ -371,24 +369,39 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
     """
     clash_process = None
     tested_nodes_info = []
-    clash_stdout = ""
-    clash_stderr = ""
+    
+    # 异步函数：用于从StreamReader中实时读取并打印输出
+    async def read_stream_and_print(stream, name):
+        while True:
+            line = await stream.readline() # 异步读取一行
+            if not line: # EOF
+                break
+            print(f"[{name}] {line.decode('utf-8', errors='ignore').strip()}")
+        print(f"[{name}] Stream finished.")
 
     try:
         print(f"\n🚀 正在启动 Clash.Meta 核心进行测试...")
-        # 启动 Clash.Meta 进程，捕获其标准输出和标准错误
-        # 不再尝试异步实时读取，而是在进程结束后一次性获取
-        clash_process = subprocess.Popen(
-            [clash_core_path, "-f", config_path, "-d", "./data", "-ext-ctl", f"0.0.0.0:{api_port}", "-ext-ui", "ui"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+        # 使用 asyncio.create_subprocess_exec 来启动子进程，它会返回一个 Process 对象
+        # 这个 Process 对象的 stdout 和 stderr 是 asyncio.StreamReader，可以直接异步读取
+        clash_process = await asyncio.create_subprocess_exec(
+            clash_core_path,
+            "-f", config_path,
+            "-d", "./data",
+            "-ext-ctl", f"0.0.0.0:{api_port}",
+            "-ext-ui", "ui",
+            stdout=asyncio.PIPE,
+            stderr=asyncio.PIPE
         )
         print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
+
+        # 创建任务来实时读取 Clash.Meta 的输出
+        stdout_task = asyncio.create_task(read_stream_and_print(clash_process.stdout, "Clash_STDOUT"))
+        stderr_task = asyncio.create_task(read_stream_and_print(clash_process.stderr, "Clash_STDERR"))
 
         # --- 优化等待逻辑 ---
         api_url_base = f"http://127.0.0.1:{api_port}"
         proxies_api_url = f"{api_url_base}/proxies"
-        max_wait_time = 60 # 增加最大等待秒数到 60 秒
+        max_wait_time = 75 # 进一步增加最大等待秒数，给Clash.Meta更多启动时间
         wait_interval = 2 # 每次检查间隔秒数
         
         print(f"正在尝试连接 Clash.Meta API ({api_url_base})...")
@@ -401,10 +414,10 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                     print(f"✅ 成功连接到 Clash.Meta API (耗时约 {i * wait_interval} 秒)。")
                     connected = True
                     break # 连接成功，跳出循环
-                except httpx.RequestError as e:
+                except httpx.RequestError:
                     # 检查Clash进程是否已经退出，如果退出则无需继续等待
-                    if clash_process.poll() is not None:
-                        print(f"⚠️ Clash.Meta 进程已提前退出，无法连接API。原因可能是: {e}")
+                    if clash_process.returncode is not None: # returncode is not None means process has exited
+                        print(f"⚠️ Clash.Meta 进程已提前退出 (Exit Code: {clash_process.returncode})，无法连接API。")
                         break
                     print(f"⏳ 等待 Clash.Meta API ({i * wait_interval + wait_interval}s/{max_wait_time}s)...")
                     await asyncio.sleep(wait_interval)
@@ -418,7 +431,8 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
             all_proxies_data = response.json() # 使用上面已成功获取的响应
             proxy_names = []
             for proxy_name, details in all_proxies_data.get("proxies", {}).items():
-                if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance"]:
+                # 过滤掉Clash的内置代理组类型，只保留实际的代理节点
+                if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance", "Direct", "Reject"]:
                     proxy_names.append(proxy_name)
             print(f"成功获取到 {len(proxy_names)} 个可测试代理的名称。")
             
@@ -429,6 +443,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
             print("\n🔬 正在测试代理节点延迟...")
             tasks = []
             for name in proxy_names:
+                # 使用 http://www.google.com/generate_204 作为测试URL，因为它返回一个空响应，适合测延迟
                 test_url = f"{proxies_api_url}/{urllib.parse.quote(name)}/delay?timeout=5000&url=http://www.google.com/generate_204"
                 tasks.append(client.get(test_url, timeout=10))
 
@@ -440,10 +455,11 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                     try:
                         delay_data = result.json()
                         delay = delay_data.get("delay", -1)
-                        if delay > 0:
+                        if delay > 0: # 延迟大于0表示测试成功
                             print(f"✅ {node_name}: {delay}ms")
                             tested_nodes_info.append({"name": node_name, "delay": delay})
                         else:
+                            # 延迟为-1或其他非正值表示测试失败或超时
                             print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
                     except json.JSONDecodeError:
                         print(f"💔 {node_name}: 响应解析失败")
@@ -455,29 +471,28 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
     except Exception as e:
         print(f"❌ 节点测试过程中发生错误: {e}")
     finally:
-        if clash_process:
-            if clash_process.poll() is None: # 如果进程仍在运行
-                print("🛑 正在停止 Clash.Meta 进程...")
-                clash_process.terminate() # 发送终止信号
-                try:
-                    clash_process.wait(timeout=5) # 等待进程结束
-                except subprocess.TimeoutExpired:
-                    clash_process.kill() # 强制杀死进程
+        # 确保停止 Clash.Meta 进程，并等待其输出任务完成
+        if clash_process and clash_process.returncode is None: # 如果进程仍在运行
+            print("🛑 正在停止 Clash.Meta 进程...")
+            clash_process.terminate() # 发送终止信号
+            try:
+                await asyncio.wait_for(clash_process.wait(), timeout=5) # 异步等待进程结束
+            except asyncio.TimeoutError:
+                clash_process.kill() # 强制杀死进程
 
-            # 获取并打印Clash进程的全部输出
-            stdout_bytes, stderr_bytes = clash_process.communicate() # 一次性读取所有输出
-            clash_stdout = stdout_bytes.decode('utf-8', errors='ignore').strip()
-            clash_stderr = stderr_bytes.decode('utf-8', errors='ignore').strip()
-            
-            if clash_stdout:
-                print("\n--- Clash.Meta STDOUT Output ---")
-                print(clash_stdout)
-                print("--------------------------------")
-            if clash_stderr:
-                print("\n--- Clash.Meta STDERR Output ---")
-                print(clash_stderr)
-                print("--------------------------------")
-
+        # 确保日志读取任务被取消和清理
+        if stdout_task:
+            stdout_task.cancel()
+            try:
+                await stdout_task
+            except asyncio.CancelledError:
+                pass
+        if stderr_task:
+            stderr_task.cancel()
+            try:
+                await stderr_task
+            except asyncio.CancelledError:
+                pass
 
     tested_nodes_info.sort(key=lambda x: x["delay"])
     return tested_nodes_info
