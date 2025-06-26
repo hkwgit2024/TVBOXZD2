@@ -1,4 +1,4 @@
-name: Test Proxy Nodes with Singbox
+name: Test Proxy Nodes with Clash.Meta
 
 on:
   schedule:
@@ -24,14 +24,14 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install aiohttp requests
+          pip install aiohttp PyYAML
 
       - name: Create data directory
         run: |
           mkdir -p data
 
-      - name: Download Singbox core
-        id: download_singbox
+      - name: Download Clash.Meta core
+        id: download_clash_meta
         run: |
           # 动态检测架构
           ARCH=$(uname -m)
@@ -48,30 +48,31 @@ jobs:
               ;;
           esac
           
-          SINGBOX_VERSION="1.8.10"  # 请替换为最新版本
-          FILENAME="sing-box-${SINGBOX_VERSION}-linux-${ARCH}"
-          DOWNLOAD_URL="https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/${FILENAME}.tar.gz"
-
-          echo "Downloading Singbox from: ${DOWNLOAD_URL}"
-          curl -L -o "${FILENAME}.tar.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Singbox"; exit 1; }
+          CLASH_META_VERSION="1.18.3" # 请替换为最新稳定版本，这里以 mihomo 为例
+          # 从 MetaCubeX/mihomo 项目下载
+          FILENAME="mihomo-linux-${ARCH}-v${CLASH_META_VERSION}"
+          DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_META_VERSION}/${FILENAME}.gz" # 通常是 .gz 压缩
+          
+          echo "Downloading Clash.Meta from: ${DOWNLOAD_URL}"
+          curl -L -o "${FILENAME}.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Clash.Meta"; exit 1; }
           
           # 验证下载文件
-          if [ ! -s "${FILENAME}.tar.gz" ]; then
+          if [ ! -s "${FILENAME}.gz" ]; then
             echo "::error::Downloaded file is empty or missing"
             exit 1
           fi
           
-          tar -xzf "${FILENAME}.tar.gz" || { echo "::error::Failed to extract Singbox"; exit 1; }
-          mv "${FILENAME}/sing-box" ./sing-box || { echo "::error::Failed to move sing-box"; exit 1; }
-          chmod +x ./sing-box
+          gzip -d "${FILENAME}.gz" || { echo "::error::Failed to decompress Clash.Meta"; exit 1; } # 解压 .gz 文件
+          mv "${FILENAME}" ./clash || { echo "::error::Failed to move clash executable"; exit 1; } # 重命名为 clash
+          chmod +x ./clash
           
-          # 验证 sing-box 可执行
-          if [ ! -x ./sing-box ]; then
-            echo "::error::sing-box is not executable"
+          # 验证 clash 可执行
+          if [ ! -x ./clash ]; then
+            echo "::error::clash is not executable"
             exit 1
           fi
           
-          echo "SINGBOX_CORE_PATH=$(pwd)/sing-box" >> $GITHUB_ENV
+          echo "CLASH_CORE_PATH=$(pwd)/clash" >> $GITHUB_ENV # 设置环境变量
 
       - name: Run Python node tester
         run: |
