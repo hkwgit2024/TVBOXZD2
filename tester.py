@@ -11,7 +11,7 @@ import socket
 import re
 
 # 将你的来源链接设置为默认值。
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt"]
+CLASH_BASE_CONFIG_URLS = ["https://snippet.host/oouyda/raw"]
 
 # 支持的 Shadowsocks 加密方法
 VALID_SS_CIPHERS = [
