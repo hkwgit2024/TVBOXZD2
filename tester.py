@@ -745,7 +745,9 @@ async def main():
         "log-level": "info",
         "port": 7890, # HTTP代理端口
         "socks-port": 7891, # SOCKS代理端口
-        "mode": "rule", 
+        # --- 移除 'mode' 字段 ---
+        # "mode": "rule", 
+        # --- 移除结束 ---
         "allow-lan": True, # 允许局域网访问，方便API调用
         "external-controller": "0.0.0.0:9090", # 外部控制API端口
         "external-ui": "ui" # 如果有UI文件，可以指定
