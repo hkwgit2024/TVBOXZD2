@@ -162,7 +162,7 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                     if host:
                         proxy_config["plugin-opts"]["host"] = host.group(1)
             else:
-                logger.warning(f"SS 链接: 未知或不支持的插件类型: {plugin yourean: {plugin}, 跳过插件配置: {url}")
+                logger.warning(f"SS 链接: 未知或不支持的插件类型: {plugin}, 跳过插件配置: {url}")
 
         return proxy_config
     except Exception as e:
