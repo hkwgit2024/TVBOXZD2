@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
   test-nodes:
@@ -24,7 +24,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install aiohttp PyYAML httpx aiodns psutil
+          pip install aiohttp pyyaml httpx aiodns psutil aiofiles
 
       - name: Create data directory
         run: |
@@ -69,6 +69,12 @@ jobs:
           fi
           
           echo "CLASH_CORE_PATH=$(pwd)/clash" >> $GITHUB_ENV
+
+      - name: Download geoip and geosite databases
+        run: |
+          mkdir -p data
+          curl -L -o data/geoip-lite.dat "https://github.com/Loyalsoldier/geoip/releases/latest/download/geoip-only-cn-private.dat" || { echo "::error::Failed to download geoip-lite.dat"; exit 1; }
+          curl -L -o data/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" || { echo "::error::Failed to download geosite.dat"; exit 1; }
 
       - name: Run Python node tester
         run: |
