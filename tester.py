@@ -228,33 +228,44 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
         raise ValueError("Clash 基础配置模板未加载。请先调用 fetch_clash_base_config。")
 
-    config = GLOBAL_CLASH_CONFIG_TEMPLATE.copy()
+    # 对 GLOBAL_CLASH_CONFIG_TEMPLATE 进行深拷贝，以确保修改不会影响全局模板
+    # 这包括 proxy-groups, rules 等列表/字典的拷贝
+    config = json.loads(json.dumps(GLOBAL_CLASH_CONFIG_TEMPLATE))
+
+    # 显式设置端口在顶部
+    config["port"] = random.randint(10000, 15000)
     config["socks-port"] = socks_port
     
-    # 清空代理列表，只添加当前测试的代理
-    config["proxies"] = [proxy_entry] 
+    # 确保 proxies 键存在且是列表，并只添加当前测试的代理
+    config.setdefault("proxies", []).clear() 
+    config["proxies"].append(proxy_entry)
     
-    # 动态更新 proxy-groups 中的代理名称
-    # 确保 Proxy 组使用当前正在测试的代理
-    found_proxy_group = False
-    for group in config.get("proxy-groups", []):
-        if group.get("name") == "Proxy" and group.get("type") == "select":
-            group["proxies"] = [proxy_entry["name"], "Direct"]
-            found_proxy_group = True
-            break
-    
-    if not found_proxy_group:
-        logger.warning("在基础配置中未找到名为 'Proxy' 的 select 代理组。尝试添加一个默认代理组。")
-        config.setdefault("proxy-groups", []).append(
-            {
-                "name": "Proxy",
-                "type": "select",
-                "proxies": [proxy_entry["name"], "Direct"]
-            }
-        )
-        if "rules" not in config or not any("MATCH,Proxy" in rule for rule in config["rules"]):
-            config.setdefault("rules", []).append("MATCH,Proxy")
+    # 显式构建 proxy-groups 列表，确保 Direct, Reject 和 Proxy 组存在且顺序正确
+    # 这会覆盖从基础模板中读取的 proxy-groups，确保一致性
+    explicit_proxy_groups = []
 
+    # 始终添加 Direct 组
+    explicit_proxy_groups.append({"name": "Direct", "type": "direct"})
+    # 始终添加 Reject 组
+    explicit_proxy_groups.append({"name": "Reject", "type": "reject"})
+
+    # 添加 Proxy 组，并引用当前代理和 Direct
+    explicit_proxy_groups.append(
+        {
+            "name": "Proxy",
+            "type": "select",
+            "proxies": [proxy_entry["name"], "Direct", "Reject"] # 引用当前代理和 Direct/Reject
+        }
+    )
+    
+    # 将构建好的代理组列表赋值给 config
+    config["proxy-groups"] = explicit_proxy_groups
+
+    # 确保 rules 存在且包含 MATCH,Proxy
+    if "rules" not in config or not isinstance(config["rules"], list):
+        config["rules"] = []
+    if "MATCH,Proxy" not in config["rules"]:
+        config["rules"].append("MATCH,Proxy")
 
     return config
 
@@ -369,35 +380,6 @@ async def main():
         logger.error("无法获取 Clash 基础配置，程序退出。")
         return
 
-    # 确保基础配置中包含 Direct 和 Reject 代理组
-    # 检查 proxy-groups 是否存在
-    if "proxy-groups" not in GLOBAL_CLASH_CONFIG_TEMPLATE:
-        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"] = []
-
-    # 检查 Direct 组
-    direct_group_found = False
-    for group in GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"]:
-        if group.get("name") == "Direct" and group.get("type") == "direct":
-            direct_group_found = True
-            break
-    if not direct_group_found:
-        logger.warning("Clash 基础配置中未找到 'Direct' 代理组，正在添加。")
-        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"].append(
-            {"name": "Direct", "type": "direct"}
-        )
-
-    # 检查 Reject 组 (可选，但通常是一个好的实践)
-    reject_group_found = False
-    for group in GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"]:
-        if group.get("name") == "Reject" and group.get("type") == "reject":
-            reject_group_found = True
-            break
-    if not reject_group_found:
-        logger.warning("Clash 基础配置中未找到 'Reject' 代理组，正在添加。")
-        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"].append(
-            {"name": "Reject", "type": "reject"}
-        )
-
     # 从下载的 Clash 配置中提取节点
     nodes: List[Dict[str, Any]] = GLOBAL_CLASH_CONFIG_TEMPLATE.get("proxies", [])
     
@@ -444,8 +426,6 @@ async def main():
         valid_proxy_dicts.extend(valid_batch_proxy_dicts)
 
         # 保存中间结果 (可选，用于调试或查看批次进度)
-        # 注意：这里如果保存为完整YAML，每次都会覆盖
-        # 更好的做法是保存到临时文件，最后合并
         if valid_batch_proxy_dicts:
             with open(f"data/temp_valid_batch_{i//BATCH_SIZE + 1}.yaml", "w", encoding="utf-8") as f:
                 yaml.dump({"proxies": valid_batch_proxy_dicts}, f, indent=2, sort_keys=False)
