@@ -5,7 +5,7 @@ import base64
 import json
 import os
 import urllib.parse
-import subprocess
+import subprocess # Make sure subprocess is imported for PIPE
 import time
 
 # 将你的来源链接设置为默认值。
@@ -361,6 +361,182 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
 
     return None
 
+# --- fetch_all_configs 函数 ---
+async def fetch_all_configs(urls: list[str]) -> list:
+    """
+    从给定的 URL 列表中获取纯文本节点链接，并尝试解析成Clash代理字典。
+    """
+    all_proxies = []
+    async with httpx.AsyncClient() as client:
+        for url in urls:
+            try:
+                print(f"🔄 正在从 {url} 获取节点链接列表...")
+                response = await client.get(url, timeout=20)
+                response.raise_for_status()
+                node_links_content = response.text
+
+                lines = node_links_content.strip().split("\n")
+                
+                parsed_count = 0
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    
+                    proxy_obj = parse_node_link_to_clash_proxy(line)
+                    if proxy_obj:
+                        all_proxies.append(proxy_obj)
+                        parsed_count += 1
+                
+                print(f"✅ 成功从 {url} 解析到 {parsed_count} 个代理节点。")
+
+            except httpx.RequestError as e:
+                print(f"❌ 错误：从 {url} 获取节点链接失败：{e}")
+            except Exception as e:
+                print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
+    return all_proxies
+
+# --- generate_plaintext_node_link 函数 ---
+def generate_plaintext_node_link(proxy: dict) -> str | None:
+    """
+    根据Clash代理字典生成明文节点链接（例如 ss://, vmess://）。
+    """
+    p_type = proxy.get("type")
+    p_name = proxy.get("name", "Unnamed Node")
+
+    if p_type == "ss":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        cipher = proxy.get("cipher")
+        if all([server, port, password, cipher]):
+            userinfo = f"{cipher}:{password}@{server}:{port}"
+            encoded_userinfo = base64.urlsafe_b64encode(userinfo.encode()).decode().rstrip('=')
+            safe_name = urllib.parse.quote(p_name)
+            return f"ss://{encoded_userinfo}#{safe_name}"
+    elif p_type == "vmess":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        uuid = proxy.get("uuid")
+        alterId = proxy.get("alterId", 0)
+        cipher = proxy.get("cipher", "auto")
+        network = proxy.get("network", "tcp")
+        tls = proxy.get("tls", False)
+        servername = proxy.get("servername", "")
+        ws_path = proxy.get("ws-path", "")
+        ws_headers = proxy.get("ws-headers", {}).get("Host", "")
+
+        if all([server, port, uuid]):
+            vmess_obj = {
+                "v": "2",
+                "ps": p_name,
+                "add": server,
+                "port": str(port),
+                "id": uuid,
+                "aid": str(alterId),
+                "scy": cipher,
+                "net": network,
+            }
+            if ws_path: vmess_obj["path"] = ws_path
+            if ws_headers: vmess_obj["host"] = ws_headers
+            if tls: vmess_obj["tls"] = "tls"
+            if servername: vmess_obj["sni"] = servername
+
+            vmess_obj = {k: v for k, v in vmess_obj.items() if v}
+            
+            try:
+                vmess_json = json.dumps(vmess_obj, ensure_ascii=False)
+                encoded_vmess = base64.urlsafe_b64encode(vmess_json.encode('utf-8')).decode('utf-8').rstrip('=')
+                return f"vmess://{encoded_vmess}"
+            except Exception as e:
+                print(f"❌ 错误：生成 Vmess 链接失败，节点：{p_name}，错误：{e}")
+                return None
+    elif p_type == "trojan":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        tls = proxy.get("tls", False)
+        sni = proxy.get("servername", "")
+        skip_cert_verify = proxy.get("skip-cert-verify", False)
+        network = proxy.get("network", "tcp")
+
+        if all([server, port, password]):
+            params = []
+            if tls:
+                params.append("security=tls")
+            if sni:
+                params.append(f"sni={sni}")
+            if skip_cert_verify:
+                params.append("allowInsecure=1")
+            if network != "tcp":
+                params.append(f"type={network}")
+            
+            param_str = "&".join(params)
+            encoded_password = urllib.parse.quote(password)
+            safe_name = urllib.parse.quote(p_name)
+            
+            link = f"trojan://{encoded_password}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+    elif p_type == "hy2":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        skip_cert_verify = proxy.get("skip-cert-verify", False)
+        servername = proxy.get("servername", "")
+
+        if all([server, port, password]):
+            params = []
+            if skip_cert_verify:
+                params.append("insecure=1")
+            if servername:
+                params.append(f"sni={servername}")
+            
+            param_str = "&".join(params)
+            encoded_password = urllib.parse.quote(password)
+            safe_name = urllib.parse.quote(p_name)
+
+            link = f"hy2://{encoded_password}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+    elif p_type == "vless":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        uuid = proxy.get("uuid")
+        tls = proxy.get("tls", False)
+        servername = proxy.get("servername", "")
+        network = proxy.get("network", "tcp")
+        ws_path = proxy.get("ws-path", "")
+        ws_host = proxy.get("ws-headers", {}).get("Host", "")
+
+        if all([server, port, uuid]):
+            params = []
+            if tls:
+                params.append("security=tls")
+            if servername:
+                params.append(f"sni={servername}")
+            if network:
+                params.append(f"type={network}")
+            if ws_path:
+                params.append(f"path={urllib.parse.quote(ws_path)}")
+            if ws_host:
+                params.append(f"host={urllib.parse.quote(ws_host)}")
+
+            param_str = "&".join(params)
+            safe_name = urllib.parse.quote(p_name)
+
+            link = f"vless://{uuid}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+
+    return None
+
 # --- test_clash_meta_nodes 函数 ---
 async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port: int = 9090) -> list:
     """
@@ -369,6 +545,9 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
     """
     clash_process = None
     tested_nodes_info = []
+    # Initialize stdout_task and stderr_task to None
+    stdout_task = None
+    stderr_task = None
     
     # 异步函数：用于从StreamReader中实时读取并打印输出
     async def read_stream_and_print(stream, name):
@@ -381,16 +560,15 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
 
     try:
         print(f"\n🚀 正在启动 Clash.Meta 核心进行测试...")
-        # 使用 asyncio.create_subprocess_exec 来启动子进程，它会返回一个 Process 对象
-        # 这个 Process 对象的 stdout 和 stderr 是 asyncio.StreamReader，可以直接异步读取
+        # Use subprocess.PIPE instead of asyncio.PIPE
         clash_process = await asyncio.create_subprocess_exec(
             clash_core_path,
             "-f", config_path,
             "-d", "./data",
             "-ext-ctl", f"0.0.0.0:{api_port}",
             "-ext-ui", "ui",
-            stdout=asyncio.PIPE,
-            stderr=asyncio.PIPE
+            stdout=subprocess.PIPE, # Corrected: use subprocess.PIPE
+            stderr=subprocess.PIPE  # Corrected: use subprocess.PIPE
         )
         print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
 
@@ -481,19 +659,19 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                 except asyncio.TimeoutError:
                     clash_process.kill() # 强制杀死进程
 
-            # 确保日志读取任务被取消和清理
-            if stdout_task:
-                stdout_task.cancel()
-                try:
-                    await stdout_task
-                except asyncio.CancelledError:
-                    pass
-            if stderr_task:
-                stderr_task.cancel()
-                try:
-                    await stderr_task
-                except asyncio.CancelledError:
-                    pass
+        # 确保日志读取任务被取消和清理
+        if stdout_task: # Now safe to check if not None
+            stdout_task.cancel()
+            try:
+                await stdout_task
+            except asyncio.CancelledError:
+                pass
+        if stderr_task: # Now safe to check if not None
+            stderr_task.cancel()
+            try:
+                await stderr_task
+            except asyncio.CancelledError:
+                pass
 
     tested_nodes_info.sort(key=lambda x: x["delay"])
     return tested_nodes_info
@@ -567,9 +745,7 @@ async def main():
         "log-level": "info",
         "port": 7890, # HTTP代理端口
         "socks-port": 7891, # SOCKS代理端口
-        # >>> 修改这里：强制 mode 字段使用字符串引用
         "mode": "rule", 
-        # <<< 修改结束
         "allow-lan": True, # 允许局域网访问，方便API调用
         "external-controller": "0.0.0.0:9090", # 外部控制API端口
         "external-ui": "ui" # 如果有UI文件，可以指定
@@ -578,8 +754,6 @@ async def main():
     unified_config_path = "data/unified_clash_config.yaml"
     try:
         with open(unified_config_path, "w", encoding="utf-8") as f:
-            # 使用 default_flow_style=False 确保生成多行YAML，可读性更好
-            # 使用 sort_keys=False 保持字典的插入顺序
             yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
         print(f"📦 统一的 Clash 配置文件已生成：{unified_config_path}")
     except Exception as e:
@@ -635,6 +809,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    # 确保安装了 httpx 和 PyYAML
-    # Clash.Meta 核心路径由 GitHub Actions 环境变量提供
     asyncio.run(main())
