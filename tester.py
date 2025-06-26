@@ -340,21 +340,24 @@ async def main():
     nodes = []
     # 尝试从上传的文件中读取节点，如果文件不存在则从默认路径读取
     uploaded_nodes_file = Path("0_test-nodes.txt") # This is the file name the user provided
+    
+    # Initialize a local variable to hold the effective node file path
+    current_node_file_path = Path(NODE_FILE_PATH) 
+
     if uploaded_nodes_file.exists():
-        NODE_FILE_PATH = uploaded_nodes_file
-        logger.info(f"Using uploaded file as node source: {NODE_FILE_PATH}")
+        current_node_file_path = uploaded_nodes_file
+        logger.info(f"Using uploaded file as node source: {current_node_file_path}")
     else:
-        # Fallback to the default path if the uploaded file is not found
-        logger.warning(f"Uploaded file '{uploaded_nodes_file}' not found. Using default node file path: {NODE_FILE_PATH}")
+        logger.warning(f"Uploaded file '{uploaded_nodes_file}' not found. Using default node file path: {current_node_file_path}")
 
     try:
-        with open(NODE_FILE_PATH, "r", encoding="utf-8") as f:
+        with open(current_node_file_path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#") and not line.startswith("---"): # 忽略注释行和分隔线
                     nodes.append(line)
     except FileNotFoundError:
-        logger.error(f"节点文件 '{NODE_FILE_PATH}' 不存在。请确保文件路径正确。")
+        logger.error(f"节点文件 '{current_node_file_path}' 不存在。请确保文件路径正确。")
         return
     except Exception as e:
         logger.error(f"读取节点文件失败: {e}")
