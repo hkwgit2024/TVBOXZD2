@@ -7,7 +7,7 @@ import socket
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set # 导入 Set 类型
 import base64
 import urllib.parse
 import aiohttp
@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 # 常量
 OUTPUT_FILE_PATH = "data/all.txt"
+FAILED_NODES_FILE = "data/failed_nodes.txt" # 新增：用于存储无效节点的文件
 CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
 TEST_URLS = [
     "https://www.google.com",
@@ -37,8 +38,6 @@ TEST_URLS = [
 BATCH_SIZE = 500  # 减小批次大小以降低资源压力
 MAX_CONCURRENT = 10  # 减少并发数
 TIMEOUT = 2  # 增加超时时间
-# MAX_RETRIES 变量已移除，因为你不需要重试功能。
-# 如果未来需要重试，可以在这里添加 MAX_RETRIES = N 并修改 test_node 函数。
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
@@ -46,6 +45,26 @@ CLASH_BASE_CONFIG_URLS = [
 
 # 全局变量
 GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
+
+def load_failed_nodes(file_path: Path) -> Set[str]:
+    """从文件中加载已知的无效节点名称"""
+    if not file_path.exists():
+        return set()
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return {line.strip() for line in f if line.strip()}
+    except Exception as e:
+        logger.error(f"加载无效节点文件 {file_path} 失败: {e}")
+        return set()
+
+def save_failed_node(file_path: Path, node_name: str):
+    """将无效节点名称保存到文件"""
+    try:
+        with open(file_path, "a", encoding="utf-8") as f:
+            f.write(f"{node_name}\n")
+    except Exception as e:
+        logger.error(f"保存无效节点 {node_name} 到文件 {file_path} 失败: {e}")
+
 
 async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
     """从指定 URL 下载并解析 Clash 配置文件"""
@@ -460,7 +479,7 @@ async def main():
     Path("data").mkdir(parents=True, exist_ok=True)
 
     global GLOBAL_CLASH_CONFIG_TEMPLATE
-    for url in CLASH_BASE_CONFIG_URLS: # 确保 CLASH_BASE_CONFIG_URLS 在这里是可见的
+    for url in CLASH_BASE_CONFIG_URLS:
         GLOBAL_CLASH_CONFIG_TEMPLATE = await fetch_clash_base_config(url)
         if GLOBAL_CLASH_CONFIG_TEMPLATE is not None:
             logger.info(f"使用 {url} 作为 Clash 配置模板")
@@ -468,6 +487,10 @@ async def main():
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
         logger.error("无法从任何 URL 获取 Clash 基础配置，程序退出")
         return
+
+    # 加载已知的无效节点列表
+    known_failed_nodes = load_failed_nodes(Path(FAILED_NODES_FILE))
+    logger.info(f"已加载 {len(known_failed_nodes)} 个上次运行的无效节点。")
 
     nodes = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
 
@@ -489,22 +512,39 @@ async def main():
     failure_reasons: Dict[str, int] = {"server_disconnected": 0, "invalid_format": 0, "timeout": 0, "other": 0}
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
 
-    for i in range(0, len(nodes), BATCH_SIZE):
-        batch = nodes[i:i + BATCH_SIZE]
+    # 过滤掉已知的无效节点，并准备进行测试的节点列表
+    nodes_to_test = []
+    skipped_count = 0
+    for node in nodes:
+        node_name = node.get("name", "未知代理")
+        if node_name in known_failed_nodes:
+            logger.info(f"跳过已知无效节点: {node_name}")
+            skipped_count += 1
+            continue
+        nodes_to_test.append(node)
+
+    logger.info(f"将测试 {len(nodes_to_test)} 个新节点（跳过 {skipped_count} 个已知无效节点）。")
+
+    for i in range(0, len(nodes_to_test), BATCH_SIZE):
+        batch = nodes_to_test[i:i + BATCH_SIZE]
         tasks = []
         for j, proxy_entry in enumerate(batch):
             async def test_with_semaphore(idx: int, entry: Dict[str, Any]):
                 async with semaphore:
                     node_identifier = entry.get("name", "未知代理")
                     if not validate_proxy_entry(entry):
-                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 格式无效，已跳过")
+                        logger.info(f"[{i + idx + 1}/{len(nodes_to_test)}] ✗ 节点 {node_identifier} 格式无效，已跳过")
                         failure_reasons["invalid_format"] += 1
+                        # 如果格式无效，也标记为无效，下次不再测试
+                        save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         return None
                     try:
                         clash_config = await generate_clash_config(entry, 0)
-                        if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes)):
+                        if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes_to_test)):
                             return entry
-                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
+                        logger.info(f"[{i + idx + 1}/{len(nodes_to_test)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
+                        # 标记为无效，下次不再测试
+                        save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         if "server disconnected" in str(entry).lower():
                             failure_reasons["server_disconnected"] += 1
                         elif "timeout" in str(entry).lower():
@@ -513,8 +553,10 @@ async def main():
                             failure_reasons["other"] += 1
                         return None
                     except Exception as e:
-                        logger.error(f"[{i + idx + 1}/{len(nodes)}] 测试节点 {node_identifier} 失败: {e}")
+                        logger.error(f"[{i + idx + 1}/{len(nodes_to_test)}] 测试节点 {node_identifier} 失败: {e}")
                         failure_reasons["other"] += 1
+                        # 标记为无效，下次不再测试
+                        save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         return None
 
             tasks.append(test_with_semaphore(j, proxy_entry))
