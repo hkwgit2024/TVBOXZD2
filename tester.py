@@ -35,7 +35,7 @@ TEST_URLS = [
     "https://api.github.com",  # 添加 GitHub API 作为备选
 ]
 BATCH_SIZE = 500  # 减小批次大小以降低资源压力
-MAX_CONCURRENT = 3  # 减少并发数
+MAX_CONCURRENT = 10  # 减少并发数
 TIMEOUT = 2  # 增加超时时间
 # MAX_RETRIES = 2  # 定义 MAX_RETRIES
 CLASH_BASE_CONFIG_URLS = [
