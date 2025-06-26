@@ -472,27 +472,28 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
         print(f"❌ 节点测试过程中发生错误: {e}")
     finally:
         # 确保停止 Clash.Meta 进程，并等待其输出任务完成
-        if clash_process and clash_process.returncode is None: # 如果进程仍在运行
-            print("🛑 正在停止 Clash.Meta 进程...")
-            clash_process.terminate() # 发送终止信号
-            try:
-                await asyncio.wait_for(clash_process.wait(), timeout=5) # 异步等待进程结束
-            except asyncio.TimeoutError:
-                clash_process.kill() # 强制杀死进程
+        if clash_process:
+            if clash_process.returncode is None: # 如果进程仍在运行
+                print("🛑 正在停止 Clash.Meta 进程...")
+                clash_process.terminate() # 发送终止信号
+                try:
+                    await asyncio.wait_for(clash_process.wait(), timeout=5) # 异步等待进程结束
+                except asyncio.TimeoutError:
+                    clash_process.kill() # 强制杀死进程
 
-        # 确保日志读取任务被取消和清理
-        if stdout_task:
-            stdout_task.cancel()
-            try:
-                await stdout_task
-            except asyncio.CancelledError:
-                pass
-        if stderr_task:
-            stderr_task.cancel()
-            try:
-                await stderr_task
-            except asyncio.CancelledError:
-                pass
+            # 确保日志读取任务被取消和清理
+            if stdout_task:
+                stdout_task.cancel()
+                try:
+                    await stdout_task
+                except asyncio.CancelledError:
+                    pass
+            if stderr_task:
+                stderr_task.cancel()
+                try:
+                    await stderr_task
+                except asyncio.CancelledError:
+                    pass
 
     tested_nodes_info.sort(key=lambda x: x["delay"])
     return tested_nodes_info
@@ -566,7 +567,9 @@ async def main():
         "log-level": "info",
         "port": 7890, # HTTP代理端口
         "socks-port": 7891, # SOCKS代理端口
-        "mode": "rule",
+        # >>> 修改这里：强制 mode 字段使用字符串引用
+        "mode": "rule", 
+        # <<< 修改结束
         "allow-lan": True, # 允许局域网访问，方便API调用
         "external-controller": "0.0.0.0:9090", # 外部控制API端口
         "external-ui": "ui" # 如果有UI文件，可以指定
@@ -575,7 +578,9 @@ async def main():
     unified_config_path = "data/unified_clash_config.yaml"
     try:
         with open(unified_config_path, "w", encoding="utf-8") as f:
-            yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False)
+            # 使用 default_flow_style=False 确保生成多行YAML，可读性更好
+            # 使用 sort_keys=False 保持字典的插入顺序
+            yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
         print(f"📦 统一的 Clash 配置文件已生成：{unified_config_path}")
     except Exception as e:
         print(f"❌ 错误：生成统一 Clash 配置文件失败：{e}")
