@@ -568,9 +568,14 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                     clash_process.terminate()
                     try:
                         await asyncio.wait_for(clash_process.wait(), timeout=5)
+                        print(f"Clash.Meta 进程正常终止，退出码：{clash_process.returncode}")
                     except asyncio.TimeoutError:
                         print("强制终止 Clash.Meta 进程。")
                         clash_process.kill()
+                        await clash_process.wait()
+                        print(f"Clash.Meta 进程强制终止，退出码：{clash_process.returncode}")
+                else:
+                    print(f"Clash.Meta 进程已提前退出，退出码：{clash_process.returncode}")
             
             if stdout_task:
                 stdout_task.cancel()
@@ -592,7 +597,9 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
 async def main():
     print("🚀 开始从 URL 获取明文节点链接列表并处理...")
     
+    # 创建 data 和 data/ui 目录
     os.makedirs("data", exist_ok=True)
+    os.makedirs("data/ui", exist_ok=True)
     for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
         if os.path.exists(log_file):
             with open(log_file, "w", encoding="utf-8") as f:
@@ -630,8 +637,8 @@ async def main():
         else:
              print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')}, {proxy.get('server')}:{proxy.get('port')})")
     
-    unique_proxies = list(unique_proxies_map.values())
-    print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
+    unique_proxies = list(unique_proxies_map.values())[:1000]  # 限制为前1000个节点以优化性能
+    print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点（限制为前1000个）。")
 
     final_proxies = []
     seen_names = set()
@@ -689,7 +696,7 @@ async def main():
             {
                 "name": "Proxy All",
                 "type": "select",
-                "proxies": [p.get("name") for p in final_proxies if p.get("name")] + ["Direct", "Reject"]
+                "proxies": [p.get("name") for p in final_proxies if p.get("name")] + ["Direct"]
             },
             {
                 "name": "Auto Select (URLTest)",
@@ -701,10 +708,6 @@ async def main():
             {
                 "name": "Direct",
                 "type": "direct"
-            },
-            {
-                "name": "Reject",
-                "type": "reject"
             }
         ],
         "rules": [
@@ -742,8 +745,9 @@ async def main():
         print(f"总共生成 {len(final_proxies)} 条明文链接。")
         return
 
+    print(f"\nClash.Meta 核心路径：{clash_core_path}")
     print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
-    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
+    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path, api_port=9091)  # 使用不同端口以避免冲突
 
     final_output_links = []
     if tested_nodes:
