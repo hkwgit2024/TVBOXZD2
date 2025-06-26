@@ -121,11 +121,22 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                 decoded_json_str = base64.urlsafe_b64decode(vmess_base64).decode('utf-8')
                 vmess_config = json.loads(decoded_json_str)
 
+                uuid = vmess_config.get("id")
+                if not uuid:
+                    print(f"❌ 错误：Vmess 链接缺少 'id' (uuid) 字段：{link}")
+                    return None
+
+                server = vmess_config.get("add")
+                port = vmess_config.get("port")
+                if not server or not port:
+                    print(f"❌ 错误：Vmess 链接缺少 'add' 或 'port' 字段：{link}")
+                    return None
+
                 proxy.update({
                     "type": "vmess",
-                    "server": vmess_config.get("add"),
-                    "port": int(vmess_config.get("port")),
-                    "uuid": vmess_config.get("id"),
+                    "server": server,
+                    "port": int(port),
+                    "uuid": uuid,
                     "alterId": int(vmess_config.get("aid", 0)),
                     "cipher": vmess_config.get("scy", "auto"),
                     "network": vmess_config.get("net", "tcp"),
@@ -203,6 +214,10 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                     return None
                 uuid, server_port = uuid_server_port.split("@", 1)
                 server, port = server_port.split(":", 1)
+
+                if not uuid:
+                    print(f"❌ 错误：Vless 链接缺少 'uuid' 字段：{link}")
+                    return None
 
                 proxy.update({
                     "type": "vless",
