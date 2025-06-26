@@ -20,7 +20,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # 常量
-# NODE_FILE_PATH 不再用于读取节点，但保留作为 OUTPUT_FILE_PATH 的默认目录前缀，或可移除
 OUTPUT_FILE_PATH = "data/all.txt"
 CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash") # Clash 可执行文件路径
 TEST_URLS = [
@@ -232,9 +231,8 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     config = GLOBAL_CLASH_CONFIG_TEMPLATE.copy()
     config["socks-port"] = socks_port
     
-    # 确保 proxies 键存在且是列表
-    config.setdefault("proxies", []).clear() # 清空默认的代理列表，只添加当前测试的代理
-    config["proxies"].append(proxy_entry)
+    # 清空代理列表，只添加当前测试的代理
+    config["proxies"] = [proxy_entry] 
     
     # 动态更新 proxy-groups 中的代理名称
     # 确保 Proxy 组使用当前正在测试的代理
@@ -254,7 +252,6 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
                 "proxies": [proxy_entry["name"], "Direct"]
             }
         )
-        # 确保 rules 中有 MATCH,Proxy
         if "rules" not in config or not any("MATCH,Proxy" in rule for rule in config["rules"]):
             config.setdefault("rules", []).append("MATCH,Proxy")
 
@@ -372,17 +369,43 @@ async def main():
         logger.error("无法获取 Clash 基础配置，程序退出。")
         return
 
+    # 确保基础配置中包含 Direct 和 Reject 代理组
+    # 检查 proxy-groups 是否存在
+    if "proxy-groups" not in GLOBAL_CLASH_CONFIG_TEMPLATE:
+        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"] = []
+
+    # 检查 Direct 组
+    direct_group_found = False
+    for group in GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"]:
+        if group.get("name") == "Direct" and group.get("type") == "direct":
+            direct_group_found = True
+            break
+    if not direct_group_found:
+        logger.warning("Clash 基础配置中未找到 'Direct' 代理组，正在添加。")
+        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"].append(
+            {"name": "Direct", "type": "direct"}
+        )
+
+    # 检查 Reject 组 (可选，但通常是一个好的实践)
+    reject_group_found = False
+    for group in GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"]:
+        if group.get("name") == "Reject" and group.get("type") == "reject":
+            reject_group_found = True
+            break
+    if not reject_group_found:
+        logger.warning("Clash 基础配置中未找到 'Reject' 代理组，正在添加。")
+        GLOBAL_CLASH_CONFIG_TEMPLATE["proxy-groups"].append(
+            {"name": "Reject", "type": "reject"}
+        )
+
     # 从下载的 Clash 配置中提取节点
-    # nodes 现在是 Clash 代理配置字典的列表
     nodes: List[Dict[str, Any]] = GLOBAL_CLASH_CONFIG_TEMPLATE.get("proxies", [])
     
     # 确保每个代理都有一个 'name' 字段，Clash 要求
     for i, node_proxy_dict in enumerate(nodes):
         if "name" not in node_proxy_dict:
-            # 为没有名称的代理生成一个默认名称
             node_proxy_dict["name"] = f"unnamed-proxy-{i}"
             logger.warning(f"检测到一个没有 'name' 字段的代理，已为其生成名称: {node_proxy_dict['name']}")
-
 
     logger.info(f"从 Clash 基础配置中读取到 {len(nodes)} 个代理节点")
     if not nodes:
@@ -390,8 +413,7 @@ async def main():
         return
 
     # 分批测试
-    valid_nodes_raw_urls = [] # 用于保存原始 URL 字符串，如果原始 YAML 中有
-    valid_nodes_clash_config = [] # 用于保存有效的 Clash 代理配置字典
+    valid_proxy_dicts: List[Dict[str, Any]] = [] # 存储有效的代理字典
     
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
     
@@ -404,43 +426,39 @@ async def main():
     for i in range(0, len(nodes), BATCH_SIZE):
         batch = nodes[i:i + BATCH_SIZE]
         tasks = []
-        for j, proxy_entry in enumerate(batch): # proxy_entry 现在是代理配置字典
+        for j, proxy_entry in enumerate(batch):
             async def test_with_semaphore(idx: int, entry: Dict[str, Any]):
                 async with semaphore:
-                    # proxy_entry 已经是解析好的字典，无需再次解析
-                    # 使用代理的 'name' 作为日志标识符
                     node_identifier = entry.get("name", "未知代理") 
-
                     clash_config = await generate_clash_config(entry, 0)
                     
                     if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes)):
-                        # 这里我们保存原始的 proxy_entry，如果需要可以将其转换为 URL 格式
-                        # 考虑到用户最初提供的是 URL，最终输出也可能是 URL
-                        # 如果原始的 YAML 中不包含原始 URL，则保存 Clash 代理配置的 YAML 形式
-                        return yaml.dump([entry], sort_keys=False).strip() # 以YAML片段形式保存
+                        return entry # 返回完整的代理字典
                     logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
                     return None
 
             tasks.append(test_with_semaphore(j, proxy_entry))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        valid_batch_nodes_output = [r for r in results if isinstance(r, str) and r is not None]
-        valid_nodes_raw_urls.extend(valid_batch_nodes_output) # 假设我们最终保存的是YAML片段
+        valid_batch_proxy_dicts = [r for r in results if isinstance(r, dict) and r is not None]
+        valid_proxy_dicts.extend(valid_batch_proxy_dicts)
 
-        # 保存中间结果 (可选，但对于大型列表有用)
-        with open(f"data/temp_valid_{i}.txt", "w", encoding="utf-8") as f:
-            f.write("\n".join(valid_batch_nodes_output) + "\n")
-        logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，当前有效节点数: {len(valid_nodes_raw_urls)}")
+        # 保存中间结果 (可选，用于调试或查看批次进度)
+        # 注意：这里如果保存为完整YAML，每次都会覆盖
+        # 更好的做法是保存到临时文件，最后合并
+        if valid_batch_proxy_dicts:
+            with open(f"data/temp_valid_batch_{i//BATCH_SIZE + 1}.yaml", "w", encoding="utf-8") as f:
+                yaml.dump({"proxies": valid_batch_proxy_dicts}, f, indent=2, sort_keys=False)
+            logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，当前有效节点数: {len(valid_proxy_dicts)}")
+        else:
+            logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，此批次无有效节点。")
+
 
     # 保存最终结果
-    if valid_nodes_raw_urls:
+    if valid_proxy_dicts:
         with open(OUTPUT_FILE_PATH, "w", encoding="utf-8") as f:
-            f.write("proxies:\n") # 添加 proxies 键，使其成为一个有效的 YAML 列表
-            for node_yaml_str in valid_nodes_raw_urls:
-                # 重新缩进每个代理，因为 dump([entry]) 会在顶层
-                indented_node = "  " + node_yaml_str.replace("\n", "\n  ")
-                f.write(indented_node + "\n")
-        logger.info(f"测试完成，保存 {len(valid_nodes_raw_urls)} 个有效节点到 {OUTPUT_FILE_PATH}")
+            yaml.dump({"proxies": valid_proxy_dicts}, f, indent=2, sort_keys=False)
+        logger.info(f"测试完成，保存 {len(valid_proxy_dicts)} 个有效节点到 {OUTPUT_FILE_PATH}")
     else:
         logger.warning("没有找到有效节点")
 
