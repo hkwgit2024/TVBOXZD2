@@ -37,11 +37,7 @@ TEST_URLS = [
 BATCH_SIZE = 500  # 减小批次大小以降低资源压力
 MAX_CONCURRENT = 10  # 减少并发数
 TIMEOUT = 2  # 增加超时时间
-
-CLASH_BASE_CONFIG_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
-]
+# MAX_RETRIES 这一行将被删除，所以这里不再需要注释
 
 # 全局变量
 GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
@@ -405,43 +401,37 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
             timeout=aiohttp.ClientTimeout(total=TIMEOUT),
         ) as session:
             proxy = f"socks5://127.0.0.1:{socks_port}"
+            # 将 MAX_RETRIES 替换为 1
             for url in TEST_URLS:
-                for attempt in range(MAX_RETRIES):
+                for attempt in range(1): # 只尝试一次
                     try:
                         async with session.get(url, proxy=proxy) as response:
                             if response.status != 200:
                                 logger.info(
                                     f"节点 {node_identifier} 连接 {url} 失败 "
-                                    f"(状态码: {response.status}, 尝试 {attempt+1}/{MAX_RETRIES})"
+                                    f"(状态码: {response.status}, 尝试 {attempt+1}/1)" # 这里也改为 1
                                 )
-                                if attempt + 1 == MAX_RETRIES:
-                                    return False
-                                continue
+                                # 如果不再重试，则直接返回 False
+                                return False
                             break
                     except aiohttp.ClientConnectionError as e:
                         logger.info(
                             f"节点 {node_identifier} 连接 {url} 失败: {e} "
-                            f"(尝试 {attempt+1}/{MAX_RETRIES})"
+                            f"(尝试 {attempt+1}/1)" # 这里也改为 1
                         )
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)
+                        return False
                     except asyncio.TimeoutError:
                         logger.info(
                             f"节点 {node_identifier} 测试 {url} 超时 "
-                            f"(尝试 {attempt+1}/{MAX_RETRIES})"
+                            f"(尝试 {attempt+1}/1)" # 这里也改为 1
                         )
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)
+                        return False
                     except Exception as e:
                         logger.info(
                             f"节点 {node_identifier} 测试 {url} 失败: {e} "
-                            f"(尝试 {attempt+1}/{MAX_RETRIES})"
+                            f"(尝试 {attempt+1}/1)" # 这里也改为 1
                         )
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)
+                        return False
 
         logger.info(f"[{index}/{total}] ✓ 节点 {node_identifier} 通过所有测试")
         return True
