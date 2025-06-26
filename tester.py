@@ -9,8 +9,6 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import base64
-import re
-import subprocess
 import urllib.parse
 import aiohttp
 import binascii
@@ -43,10 +41,10 @@ class NodeParser:
         if not node_link:
             return None
 
-        # 初步检查 Shadowsocks 链接
-        if node_link.startswith("ss://"):
+        # 初步检查 Shadowsocks 和 SSR 链接
+        if node_link.startswith("ss://") or node_link.startswith("ssr://"):
             if "@" not in node_link or ":" not in node_link.split("@")[-1]:
-                logging.warning(f"无效的 Shadowsocks 链接格式: {node_link[:50]}...")
+                logging.warning(f"无效的 Shadowsocks/SSR 链接格式: {node_link[:50]}...")
                 return None
 
         original_link = node_link
@@ -73,6 +71,9 @@ class NodeParser:
     def _parse_vmess(self, link: str) -> Optional[Dict[str, Any]]:
         try:
             base64_str = link[len("vmess://"):]
+            missing_padding = len(base64_str) % 4
+            if missing_padding:
+                base64_str += '=' * (4 - missing_padding)
             decoded_json = base64.b64decode(base64_str).decode('utf-8')
             data = json.loads(decoded_json)
             
@@ -140,7 +141,7 @@ class NodeParser:
                 
                 try:
                     missing_padding = len(creds) % 4
-                    if missing_padding != 0:
+                    if missing_padding:
                         creds += '=' * (4 - missing_padding)
                     
                     try:
@@ -196,7 +197,7 @@ class NodeParser:
         try:
             base64_str = link[len("ssr://"):]
             missing_padding = len(base64_str) % 4
-            if missing_padding != 0:
+            if missing_padding:
                 base64_str += '=' * (4 - missing_padding)
             
             decoded_str = base64.urlsafe_b64decode(base64_str).decode('utf-8')
@@ -208,7 +209,7 @@ class NodeParser:
             server, port, protocol, method, obfs, password_b64 = parts[:6]
             password = base64.urlsafe_b64decode(password_b64).decode('utf-8')
             params = {}
-            if "/" in decoded_str:
+            if "/?" in decoded_str:
                 param_str = decoded_str.split("/?")[1]
                 param_pairs = param_str.split("&")
                 for pair in param_pairs:
@@ -271,14 +272,14 @@ class NodeParser:
             parsed = urllib.parse.urlparse(link)
             password = parsed.username
             server = parsed.hostname
-            port = parsed.port
+            port = parsed.port or 443
             params = urllib.parse.parse_qs(parsed.query)
             
             node = {
                 "type": "hysteria2",
                 "name": urllib.parse.unquote(parsed.fragment or f"{server}:{port}"),
                 "server": server,
-                "port": port or 443,
+                "port": port,
                 "password": password,
                 "sni": params.get("sni", [server])[0],
                 "insecure": params.get("insecure", ["0"])[0] == "1",
@@ -356,17 +357,27 @@ class SingboxConfigGenerator:
             tls_settings = {
                 "enabled": True,
                 "server_name": node.get("sni", node["server"]),
-                "insecure": node.get("allowInsecure", False),
+                "insecure": node.get("allowInsecure", node.get("insecure", False)),
                 "utls": {"enabled": True, "fingerprint": "chrome"}
             }
-            if node.get("reality", False):
+            if node.get protocol_type == "hysteria2":
+                # Hysteria2 特定的 TLS 设置
+                tls_settings.update({
+                    "insecure": node.get("insecure", False),
+                })
+                if node.get("obfs"):
+                    tls_settings["obfs"] = {
+                        "type": node.get("obfs"),
+                        "password": node.get("obfs_password", "")
+                    }
+            elif node.get("reality", False):
                 tls_settings["reality"] = {
                     "enabled": True,
                     "public_key": node.get("pbk", ""),
                     "short_id": node.get("sid", ""),
                 }
-                if node.get("fingerprint"):
-                    tls_settings["utls"] = {"enabled": True, "fingerprint": node["fingerprint"]}
+                if node.get("fp"):
+                    tls_settings["utls"] = {"enabled": True, "fingerprint": node["fp"]}
 
         outbound = {
             "type": protocol_type,
@@ -414,9 +425,12 @@ class SingboxConfigGenerator:
                     "server_name": node.get("sni", node["server"]),
                     "insecure": node.get("insecure", False),
                 }
-                "obfs": node.get("obfs"", ""none"") if node.get("obfs") else None,
-                "obfs_password": node.get("obfs_password", ""),
             })
+            if node.get("obfs"):
+                outbound["obfs"] = {
+                    "type": node.get("obfs"),
+                    "password": node.get("obfs_password", "")
+                }
         else:
             logging.error(f"不支持生成 Singbox 配置的协议类型: {protocol_type}")
             return None
@@ -441,9 +455,9 @@ def find_available_port(start: int = 10000, end: int = 60000) -> int:
                 continue
 
 async def measure_latency(node: Dict[str, Any]) -> int:
-    """测度单个节点的延迟"""
+    """测量单个节点的延迟"""
     temp_dir = Path(tempfile.mkdtemp(prefix="singbox_test_"))
-    config_path = temp_dir / "config.json")
+    config_path = temp_dir / "config.json"
     
     proc = None
     try:
@@ -452,12 +466,12 @@ async def measure_latency(node: Dict[str, Any]) -> int:
         singbox_config = config_generator.generate(node, port)
         
         if not singbox_config:
-            logging.error(f"无法为节点 {node.get('name', node.get('server'))} 生成 Singbox 配置。")
+            logging.error(f"无法为节点 {node.get('name', node.get('server'))} 生成 Singbox 配置")
             return -1
         
         config_path.write_text(json.dumps(singbox_config, indent=2))
         
-        command = [SINGBOX_CORE_PATH, "run", "-c", str(config_path))]
+        command = [SINGBOX_CORE_PATH, "run", "-c", str(config_path)]
         
         proc = await asyncio.create_subprocess_exec(
             *command,
@@ -496,16 +510,16 @@ async def measure_latency(node: Dict[str, Any]) -> int:
                             logging.warning(f"节点 {node.get('name', node.get('server'))} 延迟过高: {latency}ms")
                             return -1
                         else:
-                            logging.debug(f"Node {node.get("name", node.get("server"))} test URL {url} returned non-200/204 status: {resp.status}")
+                            logging.debug(f"节点 {node.get('name', node.get('server'))} 测试 URL {url} 返回非 200/204 状态码: {resp.status}")
                             continue
-                        except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError) as e:
-                            logging.debug(f"Testing {url} via node {node.get("name", node.get("server"))} failed: {e}")
-                            continue
-                logging.info(f"Node {node.get("name", node.get("server"))} failed all test URLs.")
-                return -1
+                except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError) as e:
+                    logging.debug(f"通过节点 {node.get('name', node.get('server'))} 测试 URL {url} 失败: {e}")
+                    continue
+            logging.info(f"节点 {node.get('name', node.get('server'))} 未能通过所有测试 URL")
+            return -1
 
     except Exception as e:
-        logging.error(f"Error testing node {node.get('name', node.get('server'))}: {e}")
+        logging.error(f"测试节点 {node.get('name', node.get('server'))} 时发生异常: {e}")
         return -1
     finally:
         if proc and proc.returncode is None:
@@ -515,10 +529,9 @@ async def measure_latency(node: Dict[str, Any]) -> int:
             except asyncio.TimeoutError:
                 proc.kill()
             except Exception as e:
-                logging.error(f"Error stopping Singbox process: {e}")
+                logging.error(f"停止 Singbox 进程时发生错误: {e}")
         if temp_dir.exists():
             shutil.rmtree(temp_dir)
-
 
 async def main():
     parser = NodeParser()
@@ -531,18 +544,18 @@ async def main():
                 if stripped_line and not stripped_line.startswith("#"):
                     unique_nodes_links.add(stripped_line)
     
-    logging.info(f"Read {len(unique_nodes_links)} unique node links.")
+    logging.info(f"读取到 {len(unique_nodes_links)} 个去重后的节点链接")
     parsed_nodes: List[Dict[str, Any]] = []
     for link in unique_nodes_links:
         node = parser.parse(link)
         if node:
             parsed_nodes.append(node)
             
-    logging.info(f"Successfully parsed {len(parsed_nodes)} valid nodes.")
+    logging.info(f"成功解析出 {len(parsed_nodes)} 个有效节点配置")
 
     total_nodes = len(parsed_nodes)
     if total_nodes == 0:
-        logging.info("No valid nodes to test.")
+        logging.info("没有可测试的节点")
         return
 
     sem = asyncio.Semaphore(5)  # 降低并发数以提高稳定性
@@ -550,14 +563,14 @@ async def main():
 
     async def test_node_task(idx: int, node: Dict[str, Any]):
         async with sem:
-            node_id = node.get('name', f"{node['server'][-1]}:{node['port']}")
+            node_id = node.get('name', f"{node['server']}:{node['port']}")
             latency = await measure_latency(node)
             if 0 <= latency <= 10000:
                 node['latency'] = latency
                 results.append(node)
-                logging.info(f"[{idx}/{total_nodes}] ✓ Node {node_id} passed, latency: {latency} ms")
+                logging.info(f"[{idx}/{total_nodes}] ✓ 节点 {node_id} 测试通过，延迟: {latency} ms")
             else:
-                logging.info(f"[{idx}/{total_nodes}] ✗ Node {node_id} invalid or high latency, skipped")
+                logging.info(f"[{idx}/{total_nodes}] ✗ 节点 {node_id} 无效或延迟过高，已跳过")
 
     tasks = [test_node_task(i + 1, node) for i, node in enumerate(parsed_nodes)]
     await asyncio.gather(*tasks)
@@ -571,8 +584,7 @@ async def main():
         for node in results:
             f.write(f"{node['original_link']} # {node['name']} [{node['latency']}ms]\n")
 
-    logging.info(f"Test completed: {len(results)} valid nodes out of {total_nodes}, saved to {OUTPUT_FILE_PATH}")
-
+    logging.info(f"测试完成: 共处理 {total_nodes} 个节点，其中 {len(results)} 个有效，结果已保存到 {OUTPUT_FILE_PATH}")
 
 if __name__ == "__main__":
     asyncio.run(main())
