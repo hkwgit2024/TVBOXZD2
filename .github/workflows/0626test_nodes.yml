@@ -1,0 +1,99 @@
+name: Test Proxy Nodes with Clash.Meta
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # UTC 18:00 = 北京时间 02:00
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-nodes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp PyYAML httpx aiodns psutil
+
+      - name: Create data directory
+        run: |
+          mkdir -p data
+
+      - name: Download Clash.Meta core
+        id: download_clash_meta
+        run: |
+          ARCH=$(uname -m)
+          case $ARCH in
+            x86_64)
+              ARCH="amd64"
+              ;;
+            aarch64)
+              ARCH="arm64"
+              ;;
+            *)
+              echo "::error::Unsupported architecture: $ARCH"
+              exit 1
+              ;;
+          esac
+          
+          CLASH_META_VERSION="1.18.3"
+          FILENAME="mihomo-linux-${ARCH}-v${CLASH_META_VERSION}"
+          DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_META_VERSION}/${FILENAME}.gz"
+          
+          echo "Downloading Clash.Meta from: ${DOWNLOAD_URL}"
+          curl -L -o "${FILENAME}.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Clash.Meta"; exit 1; }
+          
+          if [ ! -s "${FILENAME}.gz" ]; then
+            echo "::error::Downloaded file is empty or missing"
+            exit 1
+          fi
+          
+          gzip -d "${FILENAME}.gz" || { echo "::error::Failed to decompress Clash.Meta"; exit 1; }
+          mv "${FILENAME}" ./clash
+          chmod +x ./clash
+          
+          if [ ! -x ./clash ]; then
+            echo "::error::clash is not executable"
+            exit 1
+          fi
+          
+          echo "CLASH_CORE_PATH=$(pwd)/clash" >> $GITHUB_ENV
+
+      - name: Run Python node tester
+        run: |
+          python tester.py
+        env:
+          CLASH_CORE_PATH: ${{ env.CLASH_CORE_PATH }}
+          LOG_LEVEL: DEBUG
+
+      - name: Commit test results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if [ ! -s data/all.txt ]; then
+            echo "::warning::No valid test results in data/all.txt, skipping commit"
+            exit 0
+          fi
+          
+          git add data/all.txt
+          if git diff --cached --exit-code data/all.txt; then
+            echo "::notice::No changes to commit in data/all.txt"
+          else
+            git commit -m "Update node test results [skip ci]"
+            git push
+            echo "::notice::Successfully committed and pushed updated test results"
+          fi
