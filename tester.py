@@ -13,6 +13,15 @@ import re
 # 将你的来源链接设置为默认值。
 CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"]
 
+# 支持的 Shadowsocks 加密方法
+VALID_SS_CIPHERS = [
+    "aes-128-gcm", "aes-192-gcm", "aes-256-gcm",
+    "chacha20-ietf-poly1305", "xchacha20-ietf-poly1305",
+    "aes-128-ctr", "aes-192-ctr", "aes-256-ctr",
+    "aes-128-cfb", "aes-192-cfb", "aes-256-cfb",
+    "rc4-md5", "chacha20", "salsa20"
+]
+
 # --- parse_node_link_to_clash_proxy 函数 ---
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
     """
@@ -37,20 +46,17 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                 name_part = urllib.parse.unquote(name_part)
             except Exception as e:
                 print(f"⚠️ 警告：节点名称解码失败：{name_part} - {e}. 使用原始名称部分。")
-                # 如果解码失败，回退到原始未解码的名称部分
                 name_part = remainder_parts[1] 
         
-        # 默认名称，如果name_part为空，则会使用这个
-        # 尝试从 remainder 中提取 server:port 作为名称的一部分，提高唯一性
         default_name_suffix = ""
         if "@" in remainder:
             server_info = remainder.split("@", 1)[1].split("?")[0]
             if ":" in server_info:
                 server, port = server_info.split(":", 1)
                 default_name_suffix = f"-{server.replace('.', '-')}-{port}"
-            else: # Fallback if only server is present
+            else:
                 default_name_suffix = f"-{server_info.replace('.', '-')}"
-        elif ":" in remainder: # For vless, hy2 where no @ before server
+        elif ":" in remainder:
              server_info = remainder.split("?")[0]
              if ":" in server_info:
                 server, port = server_info.split(":", 1)
@@ -69,25 +75,24 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
 
                 base64_part_raw, server_port_str = remainder.split("@", 1)
                 
-                # 清理 URL 编码字符
                 base64_part_raw = urllib.parse.unquote(base64_part_raw)
-
-                # 检查 Base64 字符是否有效，如果无效则尝试清理
                 valid_base64_chars_pattern = re.compile(r"^[A-Za-z0-9\-_=]*$")
                 if not valid_base64_chars_pattern.match(base64_part_raw):
                     print(f"⚠️ 警告：SS 链接包含非标准 Base64 字符，尝试清理：{base64_part_raw}")
-                    # 移除所有非 Base64 字符
                     base64_part_raw = ''.join(c for c in base64_part_raw if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=")
                     if not base64_part_raw:
                         print(f"❌ 错误：SS 链接清理后 Base64 部分为空：{link}")
                         return None
                 
-                # Base64 字符串的长度必须是 4 的倍数，不足时填充 '='
                 missing_padding = len(base64_part_raw) % 4
                 base64_part = base64_part_raw + '=' * (4 - missing_padding) if missing_padding else base64_part_raw
                 
                 decoded_userinfo = base64.urlsafe_b64decode(base64_part).decode('utf-8')
                 method, password = decoded_userinfo.split(":", 1)
+
+                if method not in VALID_SS_CIPHERS:
+                    print(f"❌ 错误：SS 链接使用了不支持的加密方法：{method} (链接: {link})")
+                    return None
 
                 if ":" not in server_port_str:
                     print(f"❌ 错误：SS 链接服务器端口格式错误：{link} (ServerPort: {server_port_str})")
@@ -110,7 +115,6 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                 return None
         elif scheme == "vmess":
             try:
-                # 尝试修复 Base64 填充问题
                 missing_padding = len(remainder) % 4
                 vmess_base64 = remainder + '=' * (4 - missing_padding) if missing_padding else remainder
                 
@@ -124,13 +128,12 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                     "uuid": vmess_config.get("id"),
                     "alterId": int(vmess_config.get("aid", 0)),
                     "cipher": vmess_config.get("scy", "auto"),
-                    "network": vmess_config.get("net", "tcp"), # Default to tcp if not specified
+                    "network": vmess_config.get("net", "tcp"),
                     "tls": vmess_config.get("tls") == "tls",
                     "servername": vmess_config.get("sni"),
                     "ws-path": vmess_config.get("path", "/"),
                     "ws-headers": {"Host": vmess_config.get("host")} if vmess_config.get("host") else {}
                 })
-                # 移除空值，但保留空字典（例如 ws-headers: {} 是有效的）
                 proxy = {k: v for k, v in proxy.items() if v is not None and (v != '' or k == 'ws-path' or k == 'servername')}
             except (base64.binascii.Error, ValueError, json.JSONDecodeError, IndexError) as e:
                 print(f"❌ 错误：解析Vmess链接失败（Base64解码或JSON格式问题）：{link} - {e}")
@@ -206,7 +209,7 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                     "server": server,
                     "port": int(port),
                     "uuid": uuid,
-                    "cipher": "auto" # Vless typically uses auto cipher
+                    "cipher": "auto"
                 })
 
                 if query_params_str:
@@ -222,21 +225,17 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                     if "host" in query_params:
                         proxy["ws-headers"] = {"Host": query_params["host"][0]}
                 
-                # 移除空值，但保留空字典
                 proxy = {k: v for k, v in proxy.items() if v is not None and (v != '' or k == 'ws-path' or k == 'servername')}
             except Exception as e:
                 print(f"❌ 错误：解析Vless链接失败：{link} - {e}")
                 return None
         elif scheme == "ssr":
-            # SSR 链接解析较为复杂，Clash.Meta 可能不直接支持 SSR 协议
-            # 为了避免干扰，我们暂时直接跳过
             print(f"⚠️ 警告：跳过 SSR 协议，Clash.Meta 可能不支持 SSR：{link}")
             return None
         else:
             print(f"⚠️ 警告：跳过不支持的协议类型：{scheme} (链接: {link})")
             return None
 
-        # 最终检查，确保 proxy 字典包含最低限度信息
         if not all(k in proxy for k in ["name", "type", "server", "port"]):
             print(f"❌ 错误：解析后的代理信息不完整，跳过：{proxy} (原始链接: {link})")
             return None
@@ -253,7 +252,7 @@ async def fetch_all_configs(urls: list[str]) -> list:
     从给定的 URL 列表中获取纯文本节点链接，并尝试解析成Clash代理字典。
     """
     all_proxies = []
-    async with httpx.AsyncClient(timeout=30.0) as client: # Increased timeout
+    async with httpx.AsyncClient(timeout=30.0) as client:
         for url in urls:
             try:
                 print(f"🔄 正在从 {url} 获取节点链接列表...")
@@ -264,7 +263,7 @@ async def fetch_all_configs(urls: list[str]) -> list:
                 lines = node_links_content.strip().split("\n")
                 
                 parsed_count = 0
-                for i, line in enumerate(lines): # Pass index to parse_node_link_to_clash_proxy
+                for i, line in enumerate(lines):
                     line = line.strip()
                     if not line:
                         continue
@@ -309,7 +308,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
         network = proxy.get("network", "tcp")
         tls = proxy.get("tls", False)
         servername = proxy.get("servername", "")
-        ws_path = proxy.get("ws-path", "/") # Default to /
+        ws_path = proxy.get("ws-path", "/")
         ws_headers_host = proxy.get("ws-headers", {}).get("Host", "")
 
         if all([server, port, uuid]):
@@ -323,10 +322,14 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
                 "scy": cipher,
                 "net": network,
             }
-            if ws_path != "/": vmess_obj["path"] = ws_path # Only add if not default /
-            if ws_headers_host: vmess_obj["host"] = ws_headers_host
-            if tls: vmess_obj["tls"] = "tls"
-            if servername: vmess_obj["sni"] = servername
+            if ws_path != "/":
+                vmess_obj["path"] = ws_path
+            if ws_headers_host:
+                vmess_obj["host"] = ws_headers_host
+            if tls:
+                vmess_obj["tls"] = "tls"
+            if servername:
+                vmess_obj["sni"] = servername
 
             vmess_obj = {k: v for k, v in vmess_obj.items() if v}
             
@@ -366,7 +369,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
                 link += f"?{param_str}"
             link += f"#{safe_name}"
             return link
-    elif p_type == "hysteria2": # Adjusted for 'hysteria2' type
+    elif p_type == "hysteria2":
         server = proxy.get("server")
         port = proxy.get("port")
         password = proxy.get("password")
@@ -396,7 +399,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
         tls = proxy.get("tls", False)
         servername = proxy.get("servername", "")
         network = proxy.get("network", "tcp")
-        ws_path = proxy.get("ws-path", "/") # Default to /
+        ws_path = proxy.get("ws-path", "/")
         ws_host = proxy.get("ws-headers", {}).get("Host", "")
 
         if all([server, port, uuid]):
@@ -407,7 +410,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
                 params.append(f"sni={servername}")
             if network:
                 params.append(f"type={network}")
-            if ws_path != "/": # Only add if not default /
+            if ws_path != "/":
                 params.append(f"path={urllib.parse.quote(ws_path)}")
             if ws_host:
                 params.append(f"host={urllib.parse.quote(ws_host)}")
@@ -443,7 +446,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
             print(f"[{name}] Stream finished.")
             f.write(f"[{name}] Stream finished.\n")
 
-    # Check if API port is already in use before attempting to start Clash.Meta
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind(("127.0.0.1", api_port))
@@ -472,7 +474,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
             )
             print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
 
-            # Start tasks to read stdout and stderr
             stdout_task = asyncio.create_task(read_stream_and_print(clash_process.stdout, "Clash_STDOUT", "data/clash_stdout.log"))
             stderr_task = asyncio.create_task(read_stream_and_print(clash_process.stderr, "Clash_STDERR", "data/clash_stderr.log"))
 
@@ -494,18 +495,17 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                     except httpx.RequestError as req_err:
                         if clash_process.returncode is not None:
                             print(f"⚠️ Clash.Meta 进程已提前退出 (Exit Code: {clash_process.returncode})，无法连接API。")
-                            break # Clash.Meta exited, no point in waiting
+                            break
                         print(f"⏳ 等待 Clash.Meta API ({i * wait_interval + wait_interval}s/{max_wait_time}s)... ({req_err})")
                         await asyncio.sleep(wait_interval)
                 
                 if not connected:
                     print(f"❌ 超过 {max_wait_time} 秒未连接到 Clash.Meta API，跳过测试。")
-                    continue # Try next attempt
+                    continue
                 
                 all_proxies_data = response.json()
                 proxy_names = []
                 for proxy_name, details in all_proxies_data.get("proxies", {}).items():
-                    # 过滤掉非实际代理节点（如 Selector, URLTest, Direct等）
                     if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance", "Direct", "Reject"]:
                         proxy_names.append(proxy_name)
                 
@@ -513,12 +513,11 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                 
                 if not proxy_names:
                     print("🤷 没有找到任何可测试的代理节点。")
-                    return [] # No proxies to test, return empty
+                    return []
 
                 print("\n🔬 正在测试代理节点延迟...")
                 tasks = []
                 for name in proxy_names:
-                    # 使用一个已知稳定的URL进行延迟测试
                     test_url = f"{proxies_api_url}/{urllib.parse.quote(name)}/delay?timeout=5000&url=http://www.google.com/generate_204"
                     tasks.append(client.get(test_url, timeout=10))
 
@@ -542,16 +541,14 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                     else:
                         print(f"💔 {node_name}: 未知测试错误 - {result}")
 
-                # If we successfully connected and tested, we are done
                 tested_nodes_info.sort(key=lambda x: x["delay"])
                 return tested_nodes_info
 
         except Exception as e:
             print(f"❌ 节点测试过程中发生错误: {e}")
         finally:
-            # Ensure Clash process is terminated
             if clash_process:
-                if clash_process.returncode is None: # If still running
+                if clash_process.returncode is None:
                     print("🛑 正在停止 Clash.Meta 进程...")
                     clash_process.terminate()
                     try:
@@ -560,7 +557,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                         print("强制终止 Clash.Meta 进程。")
                         clash_process.kill()
             
-            # Cancel stream reading tasks
             if stdout_task:
                 stdout_task.cancel()
                 try:
@@ -581,9 +577,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
 async def main():
     print("🚀 开始从 URL 获取明文节点链接列表并处理...")
     
-    # 确保 data 目录存在
     os.makedirs("data", exist_ok=True)
-    # 清空之前的日志文件
     for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
         if os.path.exists(log_file):
             with open(log_file, "w", encoding="utf-8") as f:
@@ -599,26 +593,22 @@ async def main():
             f.write("")
         return
 
-    # 使用更严格的唯一性判断（基于所有关键字段），同时处理名称重复
     unique_proxies_map = {}
     for proxy in all_proxies:
-        # 创建一个元组作为唯一键，包含所有关键识别信息
-        # 排除 name 字段本身，因为它可能被修改以确保唯一性
         key_parts = (
             proxy.get("type"),
             proxy.get("server"),
             proxy.get("port"),
-            proxy.get("cipher"), # For SS
-            proxy.get("password"), # For SS, Trojan, Hy2
-            proxy.get("uuid"), # For Vmess, Vless
+            proxy.get("cipher"),
+            proxy.get("password"),
+            proxy.get("uuid"),
             proxy.get("network"),
             proxy.get("tls"),
             proxy.get("servername"),
             proxy.get("ws-path"),
-            json.dumps(proxy.get("ws-headers", {}), sort_keys=True) # Ensure consistent dict representation
+            json.dumps(proxy.get("ws-headers", {}), sort_keys=True)
         )
-        # 用 hash() 而不是直接用元组作为键，防止某些不可哈希类型的问题
-        key = hash(key_parts) 
+        key = hash(key_parts)
 
         if key not in unique_proxies_map:
              unique_proxies_map[key] = proxy
@@ -628,8 +618,6 @@ async def main():
     unique_proxies = list(unique_proxies_map.values())
     print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
 
-    # 确保代理名称在Clash配置中是唯一的
-    # Clash要求代理名称唯一，否则会报错
     final_proxies = []
     seen_names = set()
     for i, proxy in enumerate(unique_proxies):
@@ -643,23 +631,20 @@ async def main():
         seen_names.add(current_name)
         final_proxies.append(proxy)
 
-
-    # --- Clash 配置文件结构 ---
-    # 尽可能地提供完整的Clash配置，让其自动处理mode
     unified_clash_config = {
         "port": 7890,
         "socks-port": 7891,
-        "redir-port": 7892, # Often useful, adding it here
-        "tproxy-port": 7893, # Often useful, adding it here
-        "mixed-port": 7890, # Often used as a single port for HTTP/SOCKS
-        "authentication": [], # Can be empty
+        "redir-port": 7892,
+        "tproxy-port": 7893,
+        "mixed-port": 7890,
+        "authentication": [],
         "allow-lan": True,
         "bind-address": "*",
-        "mode": "rule", # Explicitly set to rule mode
+        "mode": "rule",
         "log-level": "info",
         "external-controller": "0.0.0.0:9090",
-        "external-ui": "ui", # Assuming 'ui' folder exists with Clash dashboard
-        "secret": "", # Optional: set a secret for external controller if needed
+        "external-ui": "ui",
+        "secret": "",
         "dns": {
             "enable": True,
             "ipv6": False,
@@ -708,9 +693,9 @@ async def main():
             }
         ],
         "rules": [
-            "GEOSITE,CN,Direct", # Direct Chinese websites
-            "GEOIP,CN,Direct",    # Direct Chinese IPs
-            "MATCH,Proxy All"     # All other traffic goes through "Proxy All"
+            "GEOSITE,CN,Direct",
+            "GEOIP,CN,Direct",
+            "MATCH,Proxy All"
         ]
     }
 
@@ -719,7 +704,6 @@ async def main():
         with open(unified_config_path, "w", encoding="utf-8") as f:
             yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
         
-        # 再次验证是否包含 'mode' 字段
         with open(unified_config_path, "r", encoding="utf-8") as f:
             config_content = yaml.safe_load(f)
             if "mode" in config_content:
@@ -770,7 +754,6 @@ async def main():
             f.write(link + "\n")
     print(f"\n✅ 最终的测试结果和明文链接已写入：{output_file_path}")
     print(f"总共输出 {len(final_output_links)} 条结果。")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
