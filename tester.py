@@ -3,8 +3,7 @@ import yaml
 import asyncio
 import base64
 import json
-import osევ
-import os
+import os  # Corrected import
 import urllib.parse
 import subprocess
 import time
