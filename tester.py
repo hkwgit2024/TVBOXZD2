@@ -11,7 +11,7 @@ import time
 import socket
 import re
 
-CLASH_BASE_CONFIG_URLS = ["https://snippet.host/oouyda/raw"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"]
 
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
     """尝试将节点链接（ss, vmess, trojan, hy2, vless）解析为 Clash 代理字典格式。"""
