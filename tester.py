@@ -11,7 +11,7 @@ import socket
 import re
 
 # 将你的来源链接设置为默认值。
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"]
 
 # --- parse_node_link_to_clash_proxy 函数 ---
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
