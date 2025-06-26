@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # 常量
-NODE_FILE_PATH = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+NODE_FILE_PATH = "data/sub2.txt"
 OUTPUT_FILE_PATH = "data/all.txt"
 CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash") # Clash 可执行文件路径
 TEST_URLS = [
@@ -32,44 +32,38 @@ BATCH_SIZE = 1000  # 每批测试的节点数
 MAX_CONCURRENT = 5  # 最大并发 Clash 实例
 TIMEOUT = 10  # 每个节点测试的超时时间（秒）
 
-# Clash 配置模板
-# 注意：Clash 的配置是 YAML 格式
-CLASH_CONFIG_TEMPLATE = {
-    "port": 7890,          # HTTP 代理端口
-    "socks-port": 7891,    # SOCKS5 代理端口 (我们将使用这个端口进行测试)
-    "allow-lan": False,
-    "mode": "rule",        # rule 模式，便于我们控制流量
-    "log-level": "warning",
-    "external-controller": "127.0.0.1:9090", # 控制器端口，方便调试，测试时可以不用
-    "dns": {
-        "enable": True,
-        "listen": "0.0.0.0:53",
-        "enhanced-mode": True,
-        "fallback": [
-            "tls://8.8.8.8:853",
-            "tls://1.1.1.1:853"
-        ],
-        "default-nameserver": [
-            "8.8.8.8",
-            "1.1.1.1"
-        ]
-    },
-    "proxies": [],
-    "proxy-groups": [
-        {
-            "name": "Proxy",
-            "type": "select",
-            "proxies": ["Direct"] # 初始为空，测试时会添加代理
-        },
-        {
-            "name": "Direct",
-            "type": "direct"
-        }
-    ],
-    "rules": [
-        "MATCH,Proxy" # 所有流量通过 Proxy 组
-    ]
-}
+# 新增：Clash 基础配置的下载 URL
+CLASH_BASE_CONFIG_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+
+# 全局变量用于存储下载和解析后的 Clash 基础配置模板
+GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
+
+
+async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
+    """
+    从指定 URL 下载并解析 Clash 基础配置文件。
+    """
+    async with aiohttp.ClientSession() as session:
+        try:
+            logger.info(f"正在从 {url} 下载 Clash 基础配置...")
+            async with session.get(url, timeout=10) as response:
+                response.raise_for_status() # 检查 HTTP 响应状态码
+                content = await response.text()
+                logger.info("Clash 基础配置下载成功。")
+                return yaml.safe_load(content)
+        except aiohttp.ClientError as e:
+            logger.error(f"下载 Clash 基础配置失败: {e}")
+            return None
+        except yaml.YAMLError as e:
+            logger.error(f"解析 Clash 基础配置 YAML 失败: {e}")
+            return None
+        except asyncio.TimeoutError:
+            logger.error(f"下载 Clash 基础配置超时: {url}")
+            return None
+        except Exception as e:
+            logger.error(f"下载或解析 Clash 基础配置时发生未知错误: {e}")
+            return None
+
 
 async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
     """
@@ -246,13 +240,35 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
 
 async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) -> Dict[str, Any]:
     """生成 Clash 配置文件。"""
-    config = CLASH_CONFIG_TEMPLATE.copy()
+    # 使用全局的下载模板
+    if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
+        raise ValueError("Clash 基础配置模板未加载。请先调用 fetch_clash_base_config。")
+
+    config = GLOBAL_CLASH_CONFIG_TEMPLATE.copy()
     config["socks-port"] = socks_port
     config["proxies"] = [proxy_entry] # 将单个代理添加到 proxies 列表中
     
     # 动态更新 proxy-groups 中的代理名称
     # 确保 Proxy 组使用当前正在测试的代理
-    config["proxy-groups"][0]["proxies"] = [proxy_entry["name"], "Direct"] 
+    # 需要先找到名为 "Proxy" 的代理组
+    for group in config.get("proxy-groups", []):
+        if group.get("name") == "Proxy" and group.get("type") == "select":
+            group["proxies"] = [proxy_entry["name"], "Direct"]
+            break
+    else:
+        logger.warning("在基础配置中未找到名为 'Proxy' 的 select 代理组。请检查 Clash 基础配置。")
+        # 如果未找到，我们尝试添加一个默认的，以防万一
+        config.setdefault("proxy-groups", []).append(
+            {
+                "name": "Proxy",
+                "type": "select",
+                "proxies": [proxy_entry["name"], "Direct"]
+            }
+        )
+        # 确保 rules 中有 MATCH,Proxy
+        if "rules" not in config or "MATCH,Proxy" not in config["rules"]:
+            config.setdefault("rules", []).append("MATCH,Proxy")
+
 
     return config
 
@@ -369,6 +385,13 @@ async def main():
     # 确保 data 目录存在
     Path("data").mkdir(parents=True, exist_ok=True)
 
+    # 从 GitHub URL 下载 Clash 基础配置
+    global GLOBAL_CLASH_CONFIG_TEMPLATE
+    GLOBAL_CLASH_CONFIG_TEMPLATE = await fetch_clash_base_config(CLASH_BASE_CONFIG_URL)
+    if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
+        logger.error("无法获取 Clash 基础配置，程序退出。")
+        return
+
     # 读取节点
     nodes = []
     # 尝试从上传的文件中读取节点，如果文件不存在则从默认路径读取
@@ -435,7 +458,7 @@ async def main():
                         logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {url} 解析失败，已跳过")
                         return None
                     
-                    # 生成 Clash 配置，这里不需要传递 port，它会在 test_node 内部生成
+                    # 生成 Clash 配置，这里不需要传递 port，它会在 test_node 内部分配
                     clash_config = await generate_clash_config(proxy_entry, 0) # 0 作为占位符，test_node 会分配实际端口
                     
                     if await test_node(clash_config, url, i + idx + 1, len(nodes)):
