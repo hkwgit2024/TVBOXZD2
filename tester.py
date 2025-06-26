@@ -27,7 +27,7 @@ TEST_URLS = [
     "http://cp.cloudflare.com/",
     "http://www.baidu.com"
 ]
-SINGBOX_CORE_PATH = "./sing-box"
+SINGBOX_CORE_PATH = os.getenv("SINGBOX_CORE_PATH", "./sing-box")  # 从环境变量获取
 
 # 支持的 Shadowsocks 加密方法
 VALID_SS_METHODS = {
@@ -156,17 +156,17 @@ class NodeParser:
                 try:
                     creds_decoded = creds_bytes.decode('utf-8')
                 except UnicodeDecodeError:
-                    # 如果不是 UTF-8，假设凭据是原始密码
-                    creds_decoded = creds_bytes.hex()  # 转为十六进制表示
-                    logging.warning(f"SS 链接凭据非 UTF-8，转换为十六进制: {link[:50]}...")
-                    method = "chacha20-ietf-poly1305"  # 默认加密方法
+                    # UUID 或二进制密码，可能是 Shadowsocks 2022 协议
+                    creds_decoded = creds_bytes.hex()
+                    logging.warning(f"SS 链接凭据非 UTF-8，转换为十六进制: {link[:50]}... 凭据: {creds_decoded[:16]}...")
+                    method = "2022-blake3-aes-256-gcm"  # 优先尝试 2022 协议
                     password = creds_decoded
                 else:
                     # 检查是否为 method:password 格式
                     if ":" in creds_decoded:
                         method, password = creds_decoded.split(":", 1)
                     else:
-                        method = "chacha20-ietf-poly1305"
+                        method = "2022-blake3-aes-256-gcm"  # 默认 2022 协议
                         password = creds_decoded
                         logging.warning(f"SS 链接缺少加密方法，使用默认值: {method} for {link[:50]}...")
             except (binascii.Error, UnicodeDecodeError) as e:
@@ -352,7 +352,7 @@ class SingboxConfigGenerator:
         base_config["route"] = {
             "rules": [
                 {"protocol": "dns", "outbound": "dns-out"},
-                {"network": "tcp,udp", "outbound": "proxy"}  # 明确指定匹配条件
+                {"network": "tcp,udp", "outbound": "proxy"}
             ],
             "final": "proxy"
         }
@@ -592,14 +592,18 @@ async def measure_latency(node: Dict[str, Any]) -> int:
 async def main():
     parser = NodeParser()
     
+    # 验证节点文件
+    if not Path(NODE_FILE_PATH).exists():
+        logging.error(f"节点文件 {NODE_FILE_PATH} 不存在")
+        return
+    
     # 读取节点并去重
     unique_nodes_links = set()
-    if Path(NODE_FILE_PATH).exists():
-        with open(NODE_FILE_PATH, 'r', encoding='utf-8') as f:
-            for line in f:
-                stripped_line = line.strip()
-                if stripped_line and not stripped_line.startswith("#"):
-                    unique_nodes_links.add(stripped_line)
+    with open(NODE_FILE_PATH, 'r', encoding='utf-8') as f:
+        for line in f:
+            stripped_line = line.strip()
+            if stripped_line and not stripped_line.startswith("#"):
+                unique_nodes_links.add(stripped_line)
     
     logging.info(f"读取到 {len(unique_nodes_links)} 个去重后的节点链接")
 
@@ -611,12 +615,13 @@ async def main():
             
     logging.info(f"成功解析出 {len(parsed_nodes)} 个有效节点配置")
 
-    # 异步测试所有节点
+    # 异步测试所有节点（分批处理）
     total_nodes_to_test = len(parsed_nodes)
     if total_nodes_to_test == 0:
         logging.info("没有可测试的节点")
         return
 
+    batch_size = 1000  # 每批测试 1000 个节点
     sem = asyncio.Semaphore(5)
     results: List[Dict[str, Any]] = []
 
@@ -631,11 +636,10 @@ async def main():
             else:
                 logging.info(f"[{idx}/{total_nodes_to_test}] ✗ 节点 {node_id} 无效或延迟过高，已跳过")
 
-    tasks = [
-        _test_node_task(i + 1, node)
-        for i, node in enumerate(parsed_nodes)
-    ]
-    await asyncio.gather(*tasks)
+    for i in range(0, len(parsed_nodes), batch_size):
+        batch = parsed_nodes[i:i + batch_size]
+        tasks = [_test_node_task(i + j + 1, node) for j, node in enumerate(batch)]
+        await asyncio.gather(*tasks)
 
     # 保存测试结果
     results.sort(key=lambda x: x['latency'])
