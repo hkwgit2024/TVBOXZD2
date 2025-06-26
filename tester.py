@@ -1,606 +1,586 @@
 import httpx
-import asyncio
 import yaml
-import json
-import os
-import logging
-import re
-import time
-import aiodns
-import aiofiles
-import psutil
-import socket
+import asyncio
 import base64
-from urllib.parse import urlparse, unquote, parse_qs
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+import json
+import os  # Corrected import
+import urllib.parse
+import subprocess
+import time
+import socket
+import re
 
-# --- 配置 ---
-SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
-]
-DATA_DIR = "data"
-HISTORY_FILE = os.path.join(DATA_DIR, "history_results.json")
-DNS_CACHE_FILE = os.path.join(DATA_DIR, "dns_cache.json")
-OUTPUT_FILE = os.path.join(DATA_DIR, "all.txt")
-CLASH_CONFIG_FILE = os.path.join(DATA_DIR, "unified_clash_config.yaml")
-CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
-TEST_TIMEOUT_SECONDS = float(os.getenv("TEST_TIMEOUT", 15))
-BATCH_SIZE = 100  # 分批测试节点，防止内存超载
-DNS_CACHE_EXPIRATION = 2678400  # 31 天
-HISTORY_EXPIRATION = 2678400  # 31 天
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt"]
 
-# --- 日志配置 ---
-logging.basicConfig(
-    level=os.getenv("LOG_LEVEL", "DEBUG"),
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(os.path.join(DATA_DIR, "test_output.log"))
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# --- 全局变量 ---
-dns_cache = {}
-history_results = {}
-executor = ThreadPoolExecutor(max_workers=5)
-duplicate_warning_count = 0
-MAX_DUPLICATE_WARNINGS = 10
-
-# --- PyYAML 配置，防止时间戳解析为 time.Time ---
-def safe_yaml_representer(dumper, data):
-    if isinstance(data, datetime):
-        return dumper.represent_scalar('tag:yaml.org,2002:str', str(data))
-    return dumper.represent(data)
-
-yaml.add_representer(datetime, safe_yaml_representer)
-
-# --- 辅助函数 ---
-def parse_node_info(link):
+def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
+    """尝试将节点链接（ss, vmess, trojan, hy2, vless）解析为 Clash 代理字典格式。"""
+    if not link or "://" not in link:
+        print(f"❌ 错误：无效链接，无协议分隔符：{link}")
+        return None
     try:
-        if link.startswith("vmess://"):
-            encoded_part = link[8:].strip()
-            if not encoded_part:
-                logger.warning(f"Vmess 链接为空: {link}")
-                return None
+        scheme, remainder = link.split("://", 1)
+        name_part = None
+        if "#" in remainder:
+            remainder, name_part = remainder.split("#", 1)
             try:
-                decoded_link = base64.b64decode(encoded_part).decode('utf-8')
-            except base64.binascii.Error as e:
-                logger.warning(f"Base64 解码失败: {link} - {e}")
-                return None
-            try:
-                json_data = json.loads(decoded_link)
-            except json.JSONDecodeError as e:
-                logger.warning(f"JSON 解析失败: {link} - {e}")
-                return None
-            required_fields = ["add", "port", "id", "ps"]
-            for field in required_fields:
-                if field not in json_data:
-                    logger.warning(f"缺少字段 {field}: {link}")
-                    return None
-            try:
-                return {
-                    "type": "vmess",
-                    "address": json_data["add"],
-                    "port": int(json_data["port"]),
-                    "id": json_data["id"],
-                    "alterId": int(json_data.get("aid", 0)),
-                    "security": json_data.get("scy", "auto"),
-                    "network": json_data.get("net", "tcp"),
-                    "path": json_data.get("path", ""),
-                    "host": json_data.get("host", ""),
-                    "tls": json_data.get("tls", ""),
-                    "sni": json_data.get("sni", ""),
-                    "remark": str(json_data["ps"])  # 强制字符串
-                }
-            except (ValueError, TypeError) as e:
-                logger.warning(f"字段格式错误: {link} - {e}")
-                return None
-        elif link.startswith("vless://"):
-            parsed_url = urlparse(link)
-            user_id = parsed_url.username
-            server_address = parsed_url.hostname
-            server_port = parsed_url.port
-            params = parse_qs(parsed_url.query)
-            remark = unquote(parsed_url.fragment) if parsed_url.fragment else "未知"
-            return {
-                "type": "vless",
-                "address": server_address,
-                "port": server_port,
-                "id": user_id,
-                "flow": params.get("flow", [""])[0],
-                "security": params.get("security", [""])[0],
-                "encryption": params.get("encryption", ["none"])[0],
-                "network": params.get("type", [""])[0],
-                "host": params.get("host", [""])[0],
-                "path": params.get("path", [""])[0],
-                "sni": params.get("sni", [""])[0],
-                "fp": params.get("fp", [""])[0],
-                "pbk": params.get("pbk", [""])[0],
-                "sid": params.get("sid", [""])[0],
-                "spx": params.get("spx", [""])[0],
-                "remark": str(remark)  # 强制字符串
-            }
-        elif link.startswith("trojan://"):
-            parsed_url = urlparse(link)
-            password = parsed_url.username
-            server_address = parsed_url.hostname
-            server_port = parsed_url.port
-            params = parse_qs(parsed_url.query)
-            remark = unquote(parsed_url.fragment) if parsed_url.fragment else "未知"
-            return {
-                "type": "trojan",
-                "address": server_address,
-                "port": server_port,
-                "password": password,
-                "sni": params.get("sni", [""])[0],
-                "flow": params.get("flow", [""])[0],
-                "security": params.get("security", ["tls"])[0],
-                "alpn": params.get("alpn", [""])[0],
-                "remark": str(remark)  # 强制字符串
-            }
-        elif link.startswith("ss://"):
-            encoded_part = link[5:].split('@')[0]
-            server_part = link[5:].split('@')[1]
-            remark_match = re.search(r'#(.*)', link)
-            remark = unquote(remark_match.group(1)) if remark_match else "未知"
-            try:
-                decoded_auth = base64.b64decode(encoded_part).decode('utf-8')
-                method, password = decoded_auth.split(':', 1)
-                server_address = server_part.split(':')[0]
-                server_port = server_part.split(':')[1].split('#')[0]
-                return {
-                    "type": "shadowsocks",
-                    "address": server_address,
-                    "port": int(server_port),
-                    "method": method,
-                    "password": password,
-                    "remark": str(remark)  # 强制字符串
-                }
+                name_part = urllib.parse.unquote(name_part)
             except Exception as e:
-                logger.warning(f"Shadowsocks 解析失败: {link} - {e}")
+                print(f"⚠️ 警告：节点名称解码失败：{name_part} - {e}")
+                name_part = None
+        # 生成唯一名称，避免重复
+        proxy = {
+            "name": name_part if name_part else f"{scheme.upper()}-{index}-{remainder.split('@')[1].split('?')[0].replace(':', '-')}",
+            "type": scheme.lower()
+        }
+        if scheme == "ss":
+            try:
+                if "@" not in remainder:
+                    print(f"❌ 错误：SS 链接格式不正确，缺少 @ 分隔符：{link}")
+                    return None
+                base64_part_raw, server_port = remainder.split("@", 1)
+                print(f"调试：原始 Base64 部分 = {base64_part_raw}")
+                # 清理 URL 编码字符
+                base64_part_raw = urllib.parse.unquote(base64_part_raw)
+                # 验证 Base64 字符
+                valid_base64_chars = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
+                if not all(c in valid_base64_chars for c in base64_part_raw):
+                    print(f"❌ 错误：SS 链接包含无效 Base64 字符：{link}")
+                    return None
+                if len(base64_part_raw) < 4:
+                    print(f"❌ 错误：SS 链接 Base64 部分过短：{link}")
+                    return None
+                missing_padding = len(base64_part_raw) % 4
+                base64_part = base64_part_raw + '=' * (4 - missing_padding) if missing_padding else base64_part_raw
+                decoded_userinfo = base64.urlsafe_b64decode(base64_part).decode('utf-8')
+                method, password = decoded_userinfo.split(":", 1)
+                if ":" not in server_port:
+                    print(f"❌ 错误：SS 链接服务器端口格式错误：{link}")
+                    return None
+                server, port = server_port.split(":", 1)
+                proxy.update({
+                    "type": "ss",
+                    "server": server,
+                    "port": int(port),
+                    "cipher": method,
+                    "password": password
+                })
+            except base64.binascii.Error as e:
+                print(f"❌ 错误：SS 链接 Base64 解码失败：{link} - {e}")
+                return None
+            except ValueError as e:
+                print(f"❌ 错误：SS 链接格式错误：{link} - {e}")
+                return None
+            except Exception as e:
+                print(f"❌ 错误：解析 SS 链接未知错误：{link} - {e}")
+                return None
+        elif scheme == "vmess":
+            try:
+                missing_padding = len(remainder) % 4
+                vmess_base64 = remainder + '=' * (4 - missing_padding) if missing_padding else remainder
+                decoded_json_str = base64.urlsafe_b64decode(vmess_base64).decode('utf-8')
+                vmess_config = json.loads(decoded_json_str)
+                proxy.update({
+                    "type": "vmess",
+                    "server": vmess_config.get("add"),
+                    "port": int(vmess_config.get("port")),
+                    "uuid": vmess_config.get("id"),
+                    "alterId": int(vmess_config.get("aid", 0)),
+                    "cipher": vmess_config.get("scy", "auto"),
+                    "network": vmess_config.get("net", "tcp"),
+                    "tls": vmess_config.get("tls") == "tls",
+                    "servername": vmess_config.get("sni"),
+                    "ws-path": vmess_config.get("path", "/"),
+                    "ws-headers": {"Host": vmess_config.get("host")} if vmess_config.get("host") else {}
+                })
+                proxy = {k: v for k, v in proxy.items() if v not in [None, '', {}]}
+            except Exception as e:
+                print(f"❌ 错误：解析 Vmess 链接失败：{link} - {e}")
+                return None
+        elif scheme == "trojan":
+            try:
+                password_server_port, query_params_str = remainder.split("?", 1) if "?" in remainder else (remainder, "")
+                password, server_port = password_server_port.split("@", 1)
+                server, port = server_port.split(":", 1)
+                proxy.update({
+                    "type": "trojan",
+                    "server": server,
+                    "port": int(port),
+                    "password": urllib.parse.unquote(password)
+                })
+                if query_params_str:
+                    query_params = urllib.parse.parse_qs(query_params_str)
+                    if "security" in query_params and query_params["security"][0] == "tls":
+                        proxy["tls"] = True
+                    if "sni" in query_params:
+                        proxy["servername"] = query_params["sni"][0]
+                    if "allowInsecure" in query_params and query_params["allowInsecure"][0] == "1":
+                        proxy["skip-cert-verify"] = True
+                    if "type" in query_params:
+                        proxy["network"] = query_params["type"][0]
+            except Exception as e:
+                print(f"❌ 错误：解析 Trojan 链接失败：{link} - {e}")
+                return None
+        elif scheme == "hy2":
+            try:
+                password_server_port, query_params_str = remainder.split("?", 1) if "?" in remainder else (remainder, "")
+                password_encoded, server_port = password_server_port.split("@", 1)
+                server, port = server_port.split(":", 1)
+                proxy.update({
+                    "type": "hysteria2",
+                    "server": server,
+                    "port": int(port),
+                    "password": password_encoded,
+                })
+                if query_params_str:
+                    query_params = urllib.parse.parse_qs(query_params_str)
+                    if "insecure" in query_params and query_params["insecure"][0] == "1":
+                        proxy["skip-cert-verify"] = True
+                    if "sni" in query_params:
+                        proxy["servername"] = query_params["sni"][0]
+                if not proxy.get("name"):
+                    proxy["name"] = f"HY2-{server}-{port}"
+            except Exception as e:
+                print(f"❌ 错误：解析 Hysteria2 链接失败：{link} - {e}")
+                return None
+        elif scheme == "vless":
+            try:
+                uuid_server_port, query_params_str = remainder.split("?", 1) if "?" in remainder else (remainder, "")
+                uuid, server_port = uuid_server_port.split("@", 1)
+                server, port = server_port.split(":", 1)
+                proxy.update({
+                    "type": "vless",
+                    "server": server,
+                    "port": int(port),
+                    "uuid": uuid,
+                    "cipher": "auto"
+                })
+                if query_params_str:
+                    query_params = urllib.parse.parse_qs(query_params_str)
+                    if "security" in query_params and query_params["security"][0] == "tls":
+                        proxy["tls"] = True
+                    if "sni" in query_params:
+                        proxy["servername"] = query_params["sni"][0]
+                    if "type" in query_params:
+                        proxy["network"] = query_params["type"][0]
+                    if "path" in query_params:
+                        proxy["ws-path"] = query_params["path"][0]
+                    if "host" in query_params:
+                        proxy["ws-headers"] = {"Host": query_params["host"][0]}
+                if not proxy.get("name"):
+                    proxy["name"] = f"VLESS-{server}-{port}"
+            except Exception as e:
+                print(f"❌ 错误：解析 Vless 链接失败：{link} - {e}")
                 return None
         else:
-            logger.warning(f"不支持的链接格式: {link}")
+            print(f"⚠️ 警告：跳过不支持的协议类型：{scheme} (链接: {link})")
             return None
+        return proxy
     except Exception as e:
-        logger.warning(f"解析节点链接失败: {link} - {e}")
+        print(f"❌ 错误：解析未知链接格式失败：{link} - {e}")
         return None
 
-def ensure_unique_name(name, existing_names):
-    global duplicate_warning_count
-    if name in existing_names and duplicate_warning_count < MAX_DUPLICATE_WARNINGS:
-        logger.warning(f"发现重复代理名称: {name}")
-        duplicate_warning_count += 1
-        if duplicate_warning_count == MAX_DUPLICATE_WARNINGS:
-            logger.warning("后续重复名称警告将被忽略")
-    base_name = name
-    count = 1
-    while name in existing_names:
-        name = f"{base_name}_{count:03d}"
-        count += 1
-    existing_names.add(name)
-    return name
+def generate_plaintext_node_link(proxy: dict) -> str | None:
+    """根据 Clash 代理字典生成明文节点链接（例如 ss://, vmess://）。"""
+    p_type = proxy.get("type")
+    p_name = proxy.get("name", "Unnamed Node")
+    if p_type == "ss":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        cipher = proxy.get("cipher")
+        if all([server, port, password, cipher]):
+            userinfo = f"{cipher}:{password}@{server}:{port}"
+            encoded_userinfo = base64.urlsafe_b64encode(userinfo.encode()).decode().rstrip('=')
+            safe_name = urllib.parse.quote(p_name)
+            return f"ss://{encoded_userinfo}#{safe_name}"
+    elif p_type == "vmess":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        uuid = proxy.get("uuid")
+        alterId = proxy.get("alterId", 0)
+        cipher = proxy.get("cipher", "auto")
+        network = proxy.get("network", "tcp")
+        tls = proxy.get("tls", False)
+        servername = proxy.get("servername", "")
+        ws_path = proxy.get("ws-path", "")
+        ws_headers = proxy.get("ws-headers", {}).get("Host", "")
+        if all([server, port, uuid]):
+            vmess_obj = {
+                "v": "2",
+                "ps": p_name,
+                "add": server,
+                "port": str(port),
+                "id": uuid,
+                "aid": str(alterId),
+                "scy": cipher,
+                "net": network,
+            }
+            if ws_path:
+                vmess_obj["path"] = ws_path
+            if ws_headers:
+                vmess_obj["host"] = ws_headers
+            if tls:
+                vmess_obj["tls"] = "tls"
+            if servername:
+                vmess_obj["sni"] = servername
+            vmess_obj = {k: v for k, v in vmess_obj.items() if v}
+            try:
+                vmess_json = json.dumps(vmess_obj, ensure_ascii=False)
+                encoded_vmess = base64.urlsafe_b64encode(vmess_json.encode('utf-8')).decode('utf-8').rstrip('=')
+                return f"vmess://{encoded_vmess}"
+            except Exception as e:
+                print(f"❌ 错误：生成 Vmess 链接失败，节点：{p_name}，错误：{e}")
+                return None
+    elif p_type == "trojan":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        tls = proxy.get("tls", False)
+        sni = proxy.get("servername", "")
+        skip_cert_verify = proxy.get("skip-cert-verify", False)
+        network = proxy.get("network", "tcp")
+        if all([server, port, password]):
+            params = []
+            if tls:
+                params.append("security=tls")
+            if sni:
+                params.append(f"sni={sni}")
+            if skip_cert_verify:
+                params.append("allowInsecure=1")
+            if network != "tcp":
+                params.append(f"type={network}")
+            param_str = "&".join(params)
+            encoded_password = urllib.parse.quote(password)
+            safe_name = urllib.parse.quote(p_name)
+            link = f"trojan://{encoded_password}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+    elif p_type == "hysteria2":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        password = proxy.get("password")
+        skip_cert_verify = proxy.get("skip-cert-verify", False)
+        servername = proxy.get("servername", "")
+        if all([server, port, password]):
+            params = []
+            if skip_cert_verify:
+                params.append("insecure=1")
+            if servername:
+                params.append(f"sni={servername}")
+            param_str = "&".join(params)
+            encoded_password = urllib.parse.quote(password)
+            safe_name = urllib.parse.quote(p_name)
+            link = f"hy2://{encoded_password}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+    elif p_type == "vless":
+        server = proxy.get("server")
+        port = proxy.get("port")
+        uuid = proxy.get("uuid")
+        tls = proxy.get("tls", False)
+        servername = proxy.get("servername", "")
+        network = proxy.get("network", "tcp")
+        ws_path = proxy.get("ws-path", "")
+        ws_host = proxy.get("ws-headers", {}).get("Host", "")
+        if all([server, port, uuid]):
+            params = []
+            if tls:
+                params.append("security=tls")
+            if servername:
+                params.append(f"sni={servername}")
+            if network:
+                params.append(f"type={network}")
+            if ws_path:
+                params.append(f"path={urllib.parse.quote(ws_path)}")
+            if ws_host:
+                params.append(f"host={urllib.parse.quote(ws_host)}")
+            param_str = "&".join(params)
+            safe_name = urllib.parse.quote(p_name)
+            link = f"vless://{uuid}@{server}:{port}"
+            if param_str:
+                link += f"?{param_str}"
+            link += f"#{safe_name}"
+            return link
+    return None
 
-def generate_clash_config(nodes):
-    existing_names = set()
-    proxies = []
-    for index, node in enumerate(nodes):
-        raw_name = node.get("remark", f"node_{index}")
-        if not isinstance(raw_name, str):
-            logger.warning(f"非字符串名称: {raw_name}，转换为字符串")
-            raw_name = str(raw_name)
-        unique_name = ensure_unique_name(raw_name, existing_names)
-        proxy = {
-            "name": unique_name,
-            "type": node["type"],
-            "server": node["address"],
-            "port": int(node["port"])
-        }
-        if node["type"] == "vmess":
-            proxy.update({
-                "uuid": node["id"],
-                "alterId": node.get("alterId", 0),
-                "cipher": node.get("security", "auto"),
-                "network": node.get("network", "tcp"),
-                "ws-path": node.get("path", ""),
-                "ws-headers": {"Host": node.get("host", "")} if node.get("host") else {},
-                "tls": node.get("tls") == "tls",
-                "servername": node.get("sni", node.get("host", node["address"]))
-            })
-        elif node["type"] == "vless":
-            proxy.update({
-                "uuid": node["id"],
-                "flow": node.get("flow", ""),
-                "encryption": node.get("encryption", "none"),
-                "network": node.get("network", "tcp"),
-                "ws-path": node.get("path", ""),
-                "ws-headers": {"Host": node.get("host", "")} if node.get("host") else {},
-                "tls": node.get("security") == "tls",
-                "servername": node.get("sni", node["address"]),
-                "fingerprint": node.get("fp", "")
-            })
-        elif node["type"] == "trojan":
-            proxy.update({
-                "password": node["password"],
-                "sni": node.get("sni", node["address"]),
-                "alpn": node.get("alpn", ["http/1.1"]).split(','),
-                "tls": node.get("security") == "tls"
-            })
-        elif node["type"] == "shadowsocks":
-            proxy.update({
-                "cipher": node["method"],
-                "password": node["password"]
-            })
-        proxies.append(proxy)
-    config = {
-        "port": 7890,
-        "socks-port": 7891,
-        "allow-lan": False,
-        "mode": "global",
-        "log-level": "debug",
-        "external-controller": "127.0.0.1:9090",
-        "proxies": proxies,
-        "proxy-groups": [
-            {"name": "auto", "type": "select", "proxies": [p["name"] for p in proxies]},
-            {"name": "direct", "type": "select", "proxies": ["DIRECT"]}
-        ],
-        "rules": ["MATCH,auto"]
-    }
-    os.makedirs(DATA_DIR, exist_ok=True)
-    with open(CLASH_CONFIG_FILE, "w", encoding="utf-8") as f:
-        yaml.safe_dump(config, f, allow_unicode=True)
-    return config
+async def fetch_all_configs(urls: list[str]) -> list:
+    """从 URL 列表获取纯文本节点链接，并解析为 Clash 代理字典。"""
+    all_proxies = []
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        for url in urls:
+            try:
+                print(f"🔄 正在从 {url} 获取节点链接列表...")
+                response = await client.get(url)
+                response.raise_for_status()
+                node_links_content = response.text
+                lines = node_links_content.strip().split("\n")
+                parsed_count = 0
+                for i, line in enumerate(lines):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    proxy_obj = parse_node_link_to_clash_proxy(line, index=i)
+                    if proxy_obj:
+                        all_proxies.append(proxy_obj)
+                        parsed_count += 1
+                print(f"✅ 成功从 {url} 解析到 {parsed_count} 个代理节点。")
+            except httpx.RequestError as e:
+                print(f"❌ 错误：从 {url} 获取节点链接失败：{e}")
+            except Exception as e:
+                print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
+    return all_proxies
 
-async def validate_clash_config(file_path):
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            config = yaml.safe_load(f)
-        for i, proxy in enumerate(config.get("proxies", [])):
-            if not isinstance(proxy.get("name"), str):
-                logger.error(f"代理 {i} 的 name 字段不是字符串: {type(proxy['name'])}")
-                return False
-            if not proxy.get("server") or not proxy.get("port"):
-                logger.error(f"代理 {i} 缺少 server 或 port 字段")
-                return False
-        logger.info("Clash 配置文件验证通过")
-        return True
-    except Exception as e:
-        logger.error(f"验证 Clash 配置文件失败: {e}")
-        return False
-
-async def check_port(port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        sock.settimeout(1)
-        result = sock.connect_ex(('127.0.0.1', port))
-        return result == 0
-    finally:
-        sock.close()
-
-async def start_clash_process(config_path):
-    try:
-        if not os.path.exists(CLASH_PATH):
-            logger.error(f"Clash 可执行文件未找到: {CLASH_PATH}")
-            return None, None
-        if not await validate_clash_config(config_path):
-            logger.error("Clash 配置文件无效，终止启动")
-            return None, None
-        os.chmod(CLASH_PATH, 0o755)
-        clash_process = await asyncio.create_subprocess_exec(
-            CLASH_PATH,
-            "-f", config_path,
-            "-d", ".",
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE
-        )
-        async def log_clash_output(pipe, log_level):
+async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port: int = 9090, retries: int = 3) -> list:
+    """启动 Clash.Meta 核心，加载配置文件，测试代理节点延迟。"""
+    tested_nodes_info = []
+    async def read_stream_and_print(stream, name, log_file):
+        with open(log_file, "a", encoding="utf-8") as f:
             while True:
-                line = await pipe.readline()
+                line = await stream.readline()
                 if not line:
                     break
-                logger.log(log_level, f"Clash: {line.decode('utf-8').strip()}")
-        asyncio.create_task(log_clash_output(clash_process.stdout, logging.DEBUG))
-        asyncio.create_task(log_clash_output(clash_process.stderr, logging.ERROR))
-        for _ in range(15):
-            if await check_port(9090):
-                logger.info("Clash API 端口 9090 已就绪")
-                return clash_process, "http://127.0.0.1:9090"
-            await asyncio.sleep(1)
-        logger.error("Clash 启动失败：端口 9090 未监听")
-        await terminate_clash_process(clash_process)
-        return None, None
-    except Exception as e:
-        logger.error(f"启动 Clash 进程失败: {e}", exc_info=True)
-        return None, None
-
-async def terminate_clash_process(clash_process):
-    if clash_process and clash_process.returncode is None:
+                line_str = line.decode('utf-8', errors='ignore').strip()
+                print(f"[{name}] {line_str}")
+                f.write(f"[{name}] {line_str}\n")
+            print(f"[{name}] Stream finished.")
+            f.write(f"[{name}] Stream finished.\n")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        if s.connect_ex(('127.0.0.1', api_port)) == 0:
+            print(f"❌ 错误：端口 {api_port} 已被占用，请更换端口或释放端口")
+            return []
+    for attempt in range(retries):
+        clash_process = None
+        stdout_task = None
+        stderr_task = None
+        print(f"\n🚀 尝试启动 Clash.Meta 核心 (第 {attempt + 1}/{retries})...")
         try:
-            clash_process.terminate()
-            await asyncio.wait_for(clash_process.wait(), timeout=5)
-            logger.debug(f"Clash 进程 (PID: {clash_process.pid}) 已终止")
-        except asyncio.TimeoutError:
-            logger.warning(f"Clash 进程 (PID: {clash_process.pid}) 优雅终止超时，强制杀死")
-            clash_process.kill()
-            await clash_process.wait()
+            if not os.path.isfile(clash_core_path) or not os.access(clash_core_path, os.X_OK):
+                print(f"❌ 错误：Clash.Meta 可执行文件不可用或无执行权限：{clash_core_path}")
+                return []
+            clash_process = await asyncio.create_subprocess_exec(
+                clash_core_path,
+                "-f", config_path,
+                "-d", "./data",
+                "-ext-ctl", f"0.0.0.0:{api_port}",
+                "-ext-ui", "ui",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
+            stdout_task = asyncio.create_task(read_stream_and_print(clash_process.stdout, "Clash_STDOUT", "data/clash_stdout.log"))
+            stderr_task = asyncio.create_task(read_stream_and_print(clash_process.stderr, "Clash_STDERR", "data/clash_stderr.log"))
+            api_url_base = f"http://127.0.0.1:{api_port}"
+            proxies_api_url = f"{api_url_base}/proxies"
+            max_wait_time = 75
+            wait_interval = 2
+            print(f"正在尝试连接 Clash.Meta API ({api_url_base})...")
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                connected = False
+                for i in range(int(max_wait_time / wait_interval)):
+                    try:
+                        response = await client.get(proxies_api_url, timeout=wait_interval)
+                        response.raise_for_status()
+                        print(f"✅ 成功连接到 Clash.Meta API (耗时约 {i * wait_interval} 秒)。")
+                        connected = True
+                        break
+                    except httpx.RequestError:
+                        if clash_process.returncode is not None:
+                            print(f"⚠️ Clash.Meta 进程已提前退出 (Exit Code: {clash_process.returncode})")
+                            break
+                        print(f"⏳ 等待 Clash.Meta API ({i * wait_interval + wait_interval}s/{max_wait_time}s)...")
+                        await asyncio.sleep(wait_interval)
+                if not connected:
+                    print(f"❌ 超过 {max_wait_time} 秒未连接到 Clash.Meta API")
+                    continue
+                all_proxies_data = response.json()
+                proxy_names = []
+                for proxy_name, details in all_proxies_data.get("proxies", {}).items():
+                    if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance", "Direct", "Reject"]:
+                        proxy_names.append(proxy_name)
+                print(f"成功获取到 {len(proxy_names)} 个可测试代理的名称。")
+                if not proxy_names:
+                    print("🤷 没有找到任何可测试的代理节点。")
+                    return []
+                print("\n🔬 正在测试代理节点延迟...")
+                tasks = []
+                for name in proxy_names:
+                    test_url = f"{proxies_api_url}/{urllib.parse.quote(name)}/delay?timeout=5000&url=http://www.google.com/generate_204"
+                    tasks.append(client.get(test_url, timeout=10))
+                results = await asyncio.gather(*tasks, return_exceptions=True)
+                for i, result in enumerate(results):
+                    node_name = proxy_names[i]
+                    if isinstance(result, httpx.Response):
+                        try:
+                            delay_data = result.json()
+                            delay = delay_data.get("delay", -1)
+                            if delay > 0:
+                                print(f"✅ {node_name}: {delay}ms")
+                                tested_nodes_info.append({"name": node_name, "delay": delay})
+                            else:
+                                print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
+                        except json.JSONDecodeError:
+                            print(f"💔 {node_name}: 响应解析失败")
+                    else:
+                        print(f"💔 {node_name}: 请求错误 - {result}")
+                tested_nodes_info.sort(key=lambda x: x["delay"])
+                return tested_nodes_info
         except Exception as e:
-            logger.error(f"终止 Clash 进程失败: {e}")
-
-async def test_clash_api(proxy_name, api_url="http://127.0.0.1:9090"):
-    async with httpx.AsyncClient(timeout=TEST_TIMEOUT_SECONDS) as client:
-        for attempt in range(3):
-            try:
-                response = await client.get(f"{api_url}/traffic")
-                if response.status_code == 200:
-                    logger.info(f"Clash API 连接成功: {proxy_name}")
-                    start_time = time.time()
-                    response = await client.get("https://www.google.com/generate_204")
-                    if response.status_code in [200, 204]:
-                        delay = round((time.time() - start_time) * 1000)
-                        logger.info(f"节点 {proxy_name} 测试成功，延迟: {delay}ms")
-                        return True, delay
-                    else:
-                        logger.warning(f"节点 {proxy_name} 测试失败: HTTP {response.status_code}")
-                        return False, f"HTTP Status: {response.status_code}"
-                logger.warning(f"Clash API 请求失败: {response.status_code}")
-            except httpx.RequestError as e:
-                logger.warning(f"Clash API 第 {attempt + 1} 次尝试失败: {e}")
-            await asyncio.sleep(2)
-        logger.error(f"节点 {proxy_name} API 连接失败，超时")
-        return False, "API 超时"
-
-async def resolve_dns(hostname):
-    current_time = time.time()
-    if hostname in dns_cache and (current_time - dns_cache[hostname]["timestamp"] < DNS_CACHE_EXPIRATION):
-        logger.debug(f"从缓存获取 DNS 解析结果: {hostname} -> {dns_cache[hostname]['ip']}")
-        return dns_cache[hostname]["ip"]
-    try:
-        resolver = aiodns.DNSResolver(nameservers=['8.8.8.8', '1.1.1.1'])
-        result = await resolver.query(hostname, 'A')
-        ip_address = result[0].host
-        dns_cache[hostname] = {"ip": ip_address, "timestamp": current_time}
-        logger.debug(f"DNS 解析成功并缓存: {hostname} -> {ip_address}")
-        return ip_address
-    except aiodns.error.DNSError as e:
-        logger.warning(f"DNS 解析失败: {hostname} - {e}")
-        return None
-    except Exception as e:
-        logger.warning(f"DNS 解析未知错误: {hostname} - {e}")
-        return None
-
-async def load_history():
-    global history_results
-    if os.path.exists(HISTORY_FILE):
-        async with aiofiles.open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            try:
-                history_results = json.loads(await f.read())
-                for link, data in list(history_results.items()):
-                    if "node_info" not in data or not isinstance(data["node_info"].get("remark"), str):
-                        logger.warning(f"修复历史记录 {link} 的 remark 字段")
-                        node_info = parse_node_info(link)
-                        if node_info:
-                            data["node_info"] = {"remark": str(node_info.get("remark", "未知")), "original_link": link}
-                        else:
-                            logger.warning(f"无法修复历史记录 {link}，移除")
-                            del history_results[link]
-                current_time = time.time()
-                history_results = {
-                    link: data for link, data in history_results.items()
-                    if (current_time - data.get("timestamp", 0) < HISTORY_EXPIRATION)
-                }
-                logger.info(f"已加载 {len(history_results)} 条历史记录")
-            except json.JSONDecodeError:
-                logger.warning("历史记录文件损坏，重新创建")
-                history_results = {}
-    else:
-        history_results = {}
-
-async def save_history():
-    for link, data in list(history_results.items()):
-        if "node_info" not in data:
-            logger.warning(f"历史记录 {link} 缺少 node_info，尝试修复")
-            node_info = parse_node_info(link)
-            if node_info:
-                data["node_info"] = {"remark": str(node_info.get("remark", "未知")), "original_link": link}
-            else:
-                logger.warning(f"无法修复历史记录 {link}，移除")
-                del history_results[link]
-                continue
-        if "original_link" not in data["node_info"]:
-            data["node_info"]["original_link"] = link
-    os.makedirs(DATA_DIR, exist_ok=True)
-    async with aiofiles.open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        await f.write(json.dumps(history_results, indent=2, ensure_ascii=False))
-    logger.info(f"历史结果已保存: {len(history_results)} 条记录")
-
-async def load_dns_cache():
-    global dns_cache
-    if os.path.exists(DNS_CACHE_FILE):
-        async with aiofiles.open(DNS_CACHE_FILE, "r", encoding="utf-8") as f:
-            try:
-                dns_cache = json.loads(await f.read())
-                current_time = time.time()
-                dns_cache = {
-                    hostname: data for hostname, data in dns_cache.items()
-                    if (current_time - data.get("timestamp", 0) < DNS_CACHE_EXPIRATION)
-                }
-                logger.info(f"已加载 {len(dns_cache)} 条 DNS 缓存")
-            except json.JSONDecodeError:
-                logger.warning("DNS 缓存文件损坏，重新创建")
-                dns_cache = {}
-    else:
-        dns_cache = {}
-
-async def save_dns_cache():
-    os.makedirs(DATA_DIR, exist_ok=True)
-    async with aiofiles.open(DNS_CACHE_FILE, "w", encoding="utf-8") as f:
-        await f.write(json.dumps(dns_cache, indent=2, ensure_ascii=False))
-    logger.info(f"DNS 缓存已保存: {len(dns_cache)} 条记录")
-
-async def fetch_subscription(url):
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            content = response.text
-            try:
-                decoded_content = base64.b64decode(content).decode('utf-8')
-                return decoded_content.splitlines()
-            except Exception:
-                return content.splitlines()
-    except httpx.RequestError as e:
-        logger.error(f"获取订阅链接失败 {url}: {e}")
-        return []
-    except Exception as e:
-        logger.error(f"获取订阅 {url} 时发生未知错误: {e}", exc_info=True)
-        return []
-
-async def get_all_nodes():
-    all_links = []
-    for url in SOURCE_URLS:
-        links = await fetch_subscription(url)
-        all_links.extend(links)
-    unique_nodes = {}
-    for link in all_links:
-        parsed = parse_node_info(link)
-        if parsed and parsed.get("remark"):
-            unique_key = f"{parsed['type']}_{parsed['address']}_{parsed['port']}_{parsed['id']}"
-            if unique_key not in unique_nodes:
-                unique_nodes[unique_key] = link
-            else:
-                logger.info(f"忽略重复节点: {parsed['remark']}")
-    return list(unique_nodes.values())
-
-async def test_nodes(nodes):
-    test_results = []
-    successful_nodes = []
-    for i in range(0, len(nodes), BATCH_SIZE):
-        batch = nodes[i:i + BATCH_SIZE]
-        logger.info(f"测试批次 {i//BATCH_SIZE + 1}/{len(nodes)//BATCH_SIZE + 1}")
-        parsed_nodes = []
-        for j, link in enumerate(batch):
-            node_info = parse_node_info(link)
-            if node_info:
-                if not re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$", node_info["address"]):
-                    resolved_ip = await resolve_dns(node_info["address"])
-                    if resolved_ip:
-                        node_info["address"] = resolved_ip
-                    else:
-                        logger.warning(f"节点 {node_info['remark']} DNS 解析失败")
-                        test_results.append({"node_info": {"remark": node_info["remark"], "original_link": link}, "status": "DNS解析失败", "delay": -1})
-                        continue
-                parsed_nodes.append(node_info)
-            else:
-                test_results.append({"node_info": {"remark": f"node_{i+j+1}", "original_link": link}, "status": "解析失败", "delay": -1})
-        if not parsed_nodes:
-            continue
-        config = generate_clash_config(parsed_nodes)
-        clash_process, api_url = await start_clash_process(CLASH_CONFIG_FILE)
-        if not clash_process:
-            for node in parsed_nodes:
-                test_results.append({"node_info": node, "status": "Clash启动失败", "delay": -1})
-            continue
-        for node in parsed_nodes:
-            is_connected, result_info = await test_clash_api(node["remark"])
-            result = {
-                "node_info": node,
-                "status": "成功" if is_connected else "失败",
-                "delay": result_info if is_connected else -1,
-                "error": result_info if not is_connected else None
-            }
-            test_results.append(result)
-            if is_connected:
-                successful_nodes.append(result)
-            history_results[node["original_link"]] = {
-                "node_info": node,
-                "status": result["status"],
-                "delay": result["delay"],
-                "timestamp": time.time(),
-                "error": result.get("error")
-            }
-        await terminate_clash_process(clash_process)
-    return test_results, successful_nodes
-
-def generate_summary(test_results):
-    total_nodes = len(test_results)
-    success_count = sum(1 for r in test_results if r["status"] == "成功")
-    fail_count = total_nodes - success_count
-    status_distribution = {}
-    for r in test_results:
-        status_distribution[r["status"]] = status_distribution.get(r["status"], 0) + 1
-    avg_delay = -1
-    successful_delays = [r["delay"] for r in test_results if r["status"] == "成功" and r["delay"] != -1]
-    if successful_delays:
-        avg_delay = sum(successful_delays) / len(successful_delays)
-    return {
-        "总节点数": total_nodes,
-        "成功节点数": success_count,
-        "失败节点数": fail_count,
-        "状态分布": status_distribution,
-        "平均延迟 (ms)": f"{avg_delay:.2f}" if avg_delay != -1 else "N/A"
-    }
+            print(f"❌ 节点测试过程中发生错误: {e}")
+        finally:
+            if clash_process and clash_process.returncode is None:
+                print("🛑 正在停止 Clash.Meta 进程...")
+                clash_process.terminate()
+                try:
+                    await asyncio.wait_for(clash_process.wait(), timeout=5)
+                except asyncio.TimeoutError:
+                    clash_process.kill()
+            if stdout_task:
+                stdout_task.cancel()
+                try:
+                    await stdout_task
+                except asyncio.CancelledError:
+                    pass
+            if stderr_task:
+                stderr_task.cancel()
+                try:
+                    await stderr_task
+                except asyncio.CancelledError:
+                    pass
+    print(f"❌ 经过 {retries} 次尝试，Clash.Meta 测试失败")
+    return tested_nodes_info
 
 async def main():
-    start_time = time.time()
-    os.makedirs(DATA_DIR, exist_ok=True)
-    await load_dns_cache()
-    await load_history()
-    all_nodes_links = await get_all_nodes()
-    logger.info(f"共获取到 {len(all_nodes_links)} 个节点链接")
-    
-    nodes_to_test = []
-    test_results = []
-    successful_nodes = []
-    
-    for link in all_nodes_links:
-        if link in history_results and history_results[link]["status"] == "成功" and \
-           (time.time() - history_results[link].get("timestamp", 0) < HISTORY_EXPIRATION):
-            logger.info(f"节点 {history_results[link]['node_info']['remark']} 近期成功，跳过测试")
-            test_results.append(history_results[link])
-            successful_nodes.append(history_results[link])
+    print("🚀 开始从 URL 获取明文节点链接列表并处理...")
+    os.makedirs("data", exist_ok=True)
+    for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
+        if os.path.exists(log_file):
+            with open(log_file, "w", encoding="utf-8") as f:
+                f.write("")
+    all_proxies = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
+    print(f"\n✅ 总共从链接解析到 {len(all_proxies)} 个代理节点。")
+    if not all_proxies:
+        print("🤷 没有找到任何节点，无法进行测试和生成链接。")
+        with open("data/all.txt", "w", encoding="utf-8") as f:
+            f.write("")
+        return
+    unique_proxies_map = {}
+    for proxy in all_proxies:
+        key = (
+            proxy.get("type"),
+            proxy.get("server"),
+            proxy.get("port"),
+            proxy.get("password", ""),
+            proxy.get("cipher", ""),
+            proxy.get("uuid", ""),
+            proxy.get("tls", False)
+        )
+        if key not in unique_proxies_map:
+            unique_proxies_map[key] = proxy
         else:
-            nodes_to_test.append(link)
-    
-    logger.info(f"实际需要测试 {len(nodes_to_test)} 个节点")
-    batch_results, batch_successful = await test_nodes(nodes_to_test)
-    test_results.extend(batch_results)
-    successful_nodes.extend(batch_successful)
-    
-    successful_nodes.sort(key=lambda x: x["delay"])
-    async with aiofiles.open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        if successful_nodes:
-            for result in successful_nodes:
-                await f.write(f"{result['node_info']['original_link']}\n")
-        else:
-            await f.write("# 无可用节点\n")
-            logger.info("😔 没有节点通过延迟测试，输出所有原始节点链接")
-            for link in all_nodes_links:
-                await f.write(f"{link}\n")
-    
-    await save_history()
-    await save_dns_cache()
-    
-    summary = generate_summary(test_results)
-    logger.info("\n--- 测试结果摘要 ---")
-    for key, value in summary.items():
-        if isinstance(value, dict):
-            logger.info(f"{key}:")
-            for sub_key, sub_value in value.items():
-                logger.info(f"  - {sub_key}: {sub_value}")
-        else:
-            logger.info(f"{key}: {value}")
-    logger.info(f"最终成功节点数: {len(successful_nodes)}")
-    logger.info(f"总耗时: {time.time() - start_time:.2f} 秒")
+            print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')}, {proxy.get('server')}:{proxy.get('port')})")
+    unique_proxies = list(unique_proxies_map.values())
+    print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
+    # 检查代理名称唯一性
+    proxy_names = set()
+    for proxy in unique_proxies:
+        name = proxy.get("name")
+        if name in proxy_names:
+            print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
+            proxy["name"] = f"{name}-{len(proxy_names)}"
+        proxy_names.add(proxy["name"])
+    unified_clash_config = {
+        "proxies": unique_proxies,
+        "proxy-groups": [
+            {
+                "name": "Proxy All",
+                "type": "select",
+                "proxies": [p.get("name") for p in unique_proxies if p.get("name")]
+            },
+            {
+                "name": "Auto Select (URLTest)",
+                "type": "url-test",
+                "proxies": [p.get("name") for p in unique_proxies if p.get("name")],
+                "url": "http://www.google.com/generate_204",
+                "interval": 300
+            }
+        ],
+        "rules": [
+            "MATCH,Proxy All"
+        ],
+        "dns": {
+            "enable": True,
+            "ipv6": False,
+            "listen": "0.0.0.0:53",
+            "enhanced-mode": "fake-ip",
+            "default-nameserver": [
+                "114.114.114.114",
+                "8.8.8.8"
+            ],
+            "nameserver": [
+                "tls://dns.google/dns-query",
+                "https://dns.alidns.com/dns-query"
+            ]
+        },
+        "log-level": "info",
+        "port": 7890,
+        "socks-port": 7891,
+        "allow-lan": True,
+        "external-controller": "0.0.0.0:9090",
+        "external-ui": "ui"
+    }
+    unified_config_path = "data/unified_clash_config.yaml"
+    try:
+        with open(unified_config_path, "w", encoding="utf-8") as f:
+            yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        with open(unified_config_path, "r", encoding="utf-8") as f:
+            config_content = yaml.safe_load(f)
+            if "mode" in config_content:
+                print(f"⚠️ 警告：配置文件中包含 mode 字段：{config_content['mode']}")
+            else:
+                print(f"✅ 配置文件验证通过，无 mode 字段")
+        print(f"📦 统一的 Clash 配置文件已生成：{unified_config_path}")
+    except Exception as e:
+        print(f"❌ 错误：生成统一 Clash 配置文件失败：{e}")
+        return
+    clash_core_path = os.environ.get("CLASH_CORE_PATH")
+    if not clash_core_path:
+        print("❌ 错误：环境变量 CLASH_CORE_PATH 未设置，无法执行 Clash.Meta 测试。")
+        output_file_path = "data/all.txt"
+        with open(output_file_path, "w", encoding="utf-8") as f:
+            for link in [generate_plaintext_node_link(node) for node in unique_proxies if generate_plaintext_node_link(node)]:
+                f.write(link + "\n")
+        print(f"➡️ 仅生成明文链接到：{output_file_path}")
+        print(f"总共生成 {len(unique_proxies)} 条明文链接。")
+        return
+    print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
+    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
+    final_output_links = []
+    if tested_nodes:
+        print("\n--- 延迟测试结果 (按延迟升序) ---")
+        for node_info in tested_nodes:
+            original_node = next((p for p in unique_proxies if p.get("name") == node_info["name"]), None)
+            if original_node:
+                link = generate_plaintext_node_link(original_node)
+                if link:
+                    final_output_links.append(f"{link} # {node_info['delay']}ms")
+                    print(f"{node_info['name']}: {node_info['delay']}ms -> {link}")
+                else:
+                    print(f"{node_info['name']}: {node_info['delay']}ms -> 无法生成明文链接")
+            else:
+                print(f"⚠️ 警告：找不到原始节点信息 '{node_info['name']}'")
+    else:
+        print("\n😔 没有节点通过延迟测试，输出所有原始节点链接。")
+        final_output_links = [generate_plaintext_node_link(node) for node in unique_proxies if generate_plaintext_node_link(node)]
+    output_file_path = "data/all.txt"
+    with open(output_file_path, "w", encoding="utf-8") as f:
+        for link in final_output_links:
+            f.write(link + "\n")
+    print(f"\n✅ 最终的测试结果和明文链接已写入：{output_file_path}")
+    print(f"总共输出 {len(final_output_links)} 条结果。")
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except Exception as e:
-        logger.error(f"脚本执行失败: {e}", exc_info=True)
-        async def write_error_files():
-            os.makedirs(DATA_DIR, exist_ok=True)
-            async with aiofiles.open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-                await f.write("# 脚本执行失败，无可用节点\n")
-        asyncio.run(write_error_files())
+    asyncio.run(main())
