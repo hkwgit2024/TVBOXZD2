@@ -13,7 +13,8 @@ import urllib.parse
 import aiohttp
 import binascii
 import os
-import yaml # 需要安装 PyYAML: pip install PyYAML
+import yaml  # 需要安装 PyYAML: pip install PyYAML
+import re
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 # 常量
 OUTPUT_FILE_PATH = "data/all.txt"
-CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash") # Clash 可执行文件路径
+CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")  # Clash 可执行文件路径
 TEST_URLS = [
     "https://www.google.com",
     "https://www.youtube.com",
@@ -31,7 +32,7 @@ BATCH_SIZE = 1000  # 每批测试的节点数
 MAX_CONCURRENT = 5  # 最大并发 Clash 实例
 TIMEOUT = 10  # 每个节点测试的超时时间（秒）
 
-# 新增：Clash 基础配置的下载 URL
+# Clash 基础配置的下载 URL
 CLASH_BASE_CONFIG_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
 
 # 全局变量用于存储下载和解析后的 Clash 基础配置模板
@@ -46,7 +47,7 @@ async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
         try:
             logger.info(f"正在从 {url} 下载 Clash 基础配置...")
             async with session.get(url, timeout=10) as response:
-                response.raise_for_status() # 检查 HTTP 响应状态码
+                response.raise_for_status()  # 检查 HTTP 响应状态码
                 content = await response.text()
                 logger.info("Clash 基础配置下载成功。")
                 return yaml.safe_load(content)
@@ -64,8 +65,6 @@ async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
             return None
 
 
-# parse_shadowsocks 和 parse_hysteria2 函数保留，以防未来需要从链接解析
-# 但在当前“从完整的Clash YAML读取”的场景下，这些函数将不会被直接调用
 async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
     """
     解析 Shadowsocks 链接，返回 Clash 代理配置。
@@ -87,7 +86,7 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
 
         method = ""
         password = ""
-        
+
         try:
             decoded_credentials = base64.b64decode(credentials_b64).decode("utf-8")
             if ":" in decoded_credentials:
@@ -119,7 +118,7 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                 return None
 
         query_params = urllib.parse.parse_qs(parsed.query)
-        
+
         proxy_config = {
             "name": f"ss-{server}-{port}",
             "type": "ss",
@@ -166,6 +165,7 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
         logger.warning(f"解析 SS 链接失败: {url}, 错误: {e}")
         return None
 
+
 async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
     """
     解析 Hysteria2 链接，返回 Clash 代理配置。
@@ -195,7 +195,7 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
         sni = query_params.get("sni", [server])[0]
         alpn_str = query_params.get("alpn", ["h3"])[0]
         alpn = [alpn_str] if isinstance(alpn_str, str) else alpn_str
-        
+
         obfs = query_params.get("obfs", [None])[0]
         obfs_password = query_params.get("obfs-password", [None])[0]
 
@@ -210,7 +210,7 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
             "sni": sni,
             "alpn": alpn,
         }
-        
+
         if obfs == "salamander" and obfs_password:
             proxy_config["obfs"] = "salamander"
             proxy_config["obfs-password"] = obfs_password
@@ -222,44 +222,32 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
         logger.warning(f"解析 Hysteria2 链接失败: {url}, 错误: {e}")
         return None
 
+
 async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) -> Dict[str, Any]:
     """生成 Clash 配置文件。"""
-    # 使用全局的下载模板
+    # 使用全局的下载模板确保包含必要的配置（如 rules、dns 等）
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
         raise ValueError("Clash 基础配置模板未加载。请先调用 fetch_clash_base_config。")
 
-    # 对 GLOBAL_CLASH_CONFIG_TEMPLATE 进行深拷贝，以确保修改不会影响全局模板
-    # 这包括 proxy-groups, rules 等列表/字典的拷贝
+    # 对 GLOBAL_CLASH_CONFIG_TEMPLATE 进行深拷贝
     config = json.loads(json.dumps(GLOBAL_CLASH_CONFIG_TEMPLATE))
 
-    # 显式设置端口在顶部
+    # 设置端口
     config["port"] = random.randint(10000, 15000)
     config["socks-port"] = socks_port
-    
+
     # 确保 proxies 键存在且是列表，并只添加当前测试的代理
-    config.setdefault("proxies", []).clear() 
+    config.setdefault("proxies", []).clear()
     config["proxies"].append(proxy_entry)
-    
-    # 显式构建 proxy-groups 列表，确保 Direct, Reject 和 Proxy 组存在且顺序正确
-    # 这会覆盖从基础模板中读取的 proxy-groups，确保一致性
-    explicit_proxy_groups = []
 
-    # 始终添加 Direct 组
-    explicit_proxy_groups.append({"name": "Direct", "type": "direct"})
-    # 始终添加 Reject 组
-    explicit_proxy_groups.append({"name": "Reject", "type": "reject"})
-
-    # 添加 Proxy 组，并引用当前代理和 Direct
-    explicit_proxy_groups.append(
+    # 构建 proxy-groups，仅包含一个主 Proxy 组，引用当前代理、DIRECT 和 REJECT
+    config["proxy-groups"] = [
         {
             "name": "Proxy",
             "type": "select",
-            "proxies": [proxy_entry["name"], "Direct", "Reject"] # 引用当前代理和 Direct/Reject
+            "proxies": [proxy_entry["name"], "DIRECT", "REJECT"]
         }
-    )
-    
-    # 将构建好的代理组列表赋值给 config
-    config["proxy-groups"] = explicit_proxy_groups
+    ]
 
     # 确保 rules 存在且包含 MATCH,Proxy
     if "rules" not in config or not isinstance(config["rules"], list):
@@ -268,6 +256,7 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
         config["rules"].append("MATCH,Proxy")
 
     return config
+
 
 async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: int, total: int) -> bool:
     """测试单个节点。
@@ -278,14 +267,14 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
     # 每次测试分配一个唯一的 SOCKS5 端口
     socks_port = random.randint(20000, 25000)
     clash_config["socks-port"] = socks_port
-    clash_config["port"] = random.randint(10000, 15000) # HTTP 端口，随意设置
+    clash_config["port"] = random.randint(10000, 15000)  # HTTP 端口，随意设置
 
     config_path = temp_dir / f"clash_config_{os.getpid()}_{socks_port}.yaml"
 
     process = None
     try:
-        with open(config_path, "w") as f:
-            yaml.dump(clash_config, f, indent=2, sort_keys=False)
+        with open(config_path, "w", encoding="utf-8") as f:
+            yaml.dump(clash_config, f, indent=2, sort_keys=False, allow_unicode=True)
 
         process = await asyncio.create_subprocess_exec(
             CLASH_PATH,
@@ -300,7 +289,7 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
         if process.returncode is not None:
             stdout, stderr = await process.communicate()
             logger.error(f"Clash 启动失败 (节点: {node_identifier})")
-            logger.error(f"配置文件内容:\n{yaml.dump(clash_config, indent=2, sort_keys=False)}")
+            logger.error(f"配置文件内容:\n{yaml.dump(clash_config, indent=2, sort_keys=False, allow_unicode=True)}")
             logger.error(f"Stdout: {stdout.decode(errors='ignore')}")
             logger.error(f"Stderr: {stderr.decode(errors='ignore')}")
             return False
@@ -308,7 +297,7 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
         try:
             reader, writer = await asyncio.open_connection('127.0.0.1', socks_port)
             writer.close()
-            await reader.wait_closed()
+            await writer.wait_closed()
         except ConnectionRefusedError:
             logger.warning(f"Clash SOCKS5 端口 {socks_port} 未开放 (节点: {node_identifier})")
             process.terminate()
@@ -368,6 +357,7 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
             except OSError as e:
                 logger.warning(f"无法删除配置文件 {config_path}: {e}")
 
+
 async def main():
     """主函数：读取节点，测试并保存有效节点。"""
     # 确保 data 目录存在
@@ -395,7 +385,7 @@ async def main():
         return
 
     # 分批测试
-    valid_proxy_dicts: List[Dict[str, Any]] = [] # 存储有效的代理字典
+    valid_proxy_dicts: List[Dict[str, Any]] = []  # 存储有效的代理字典
     
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
     
@@ -411,11 +401,11 @@ async def main():
         for j, proxy_entry in enumerate(batch):
             async def test_with_semaphore(idx: int, entry: Dict[str, Any]):
                 async with semaphore:
-                    node_identifier = entry.get("name", "未知代理") 
+                    node_identifier = entry.get("name", "未知代理")
                     clash_config = await generate_clash_config(entry, 0)
                     
                     if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes)):
-                        return entry # 返回完整的代理字典
+                        return entry  # 返回完整的代理字典
                     logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
                     return None
 
@@ -425,22 +415,22 @@ async def main():
         valid_batch_proxy_dicts = [r for r in results if isinstance(r, dict) and r is not None]
         valid_proxy_dicts.extend(valid_batch_proxy_dicts)
 
-        # 保存中间结果 (可选，用于调试或查看批次进度)
+        # 保存中间结果 (用于调试或查看批次进度)
         if valid_batch_proxy_dicts:
             with open(f"data/temp_valid_batch_{i//BATCH_SIZE + 1}.yaml", "w", encoding="utf-8") as f:
-                yaml.dump({"proxies": valid_batch_proxy_dicts}, f, indent=2, sort_keys=False)
+                yaml.dump({"proxies": valid_batch_proxy_dicts}, f, indent=2, sort_keys=False, allow_unicode=True)
             logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，当前有效节点数: {len(valid_proxy_dicts)}")
         else:
             logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，此批次无有效节点。")
 
-
     # 保存最终结果
     if valid_proxy_dicts:
         with open(OUTPUT_FILE_PATH, "w", encoding="utf-8") as f:
-            yaml.dump({"proxies": valid_proxy_dicts}, f, indent=2, sort_keys=False)
+            yaml.dump({"proxies": valid_proxy_dicts}, f, indent=2, sort_keys=False, allow_unicode=True)
         logger.info(f"测试完成，保存 {len(valid_proxy_dicts)} 个有效节点到 {OUTPUT_FILE_PATH}")
     else:
         logger.warning("没有找到有效节点")
+
 
 if __name__ == "__main__":
     asyncio.run(main())
