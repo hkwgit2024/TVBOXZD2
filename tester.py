@@ -13,6 +13,7 @@ import re
 import subprocess
 import urllib.parse
 import aiohttp
+import binascii # 引入 binascii 用于处理 base64 错误
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -37,18 +38,25 @@ class NodeParser:
         if not node_link:
             return None
 
+        # 记录原始链接以便后续输出或调试
+        original_link = node_link
+
         if node_link.startswith("vmess://"):
-            return self._parse_vmess(node_link)
+            node_data = self._parse_vmess(node_link)
         elif node_link.startswith("trojan://"):
-            return self._parse_trojan(node_link)
+            node_data = self._parse_trojan(node_link)
         elif node_link.startswith("ss://"):
-            return self._parse_shadowsocks(node_link)
+            node_data = self._parse_shadowsocks(node_link)
         elif node_link.startswith("vless://"):
-            return self._parse_vless(node_link)
+            node_data = self._parse_vless(node_link)
         # TODO: 添加对其他协议（如 hysteria2://, tuic:// 等）的解析
         else:
             logging.warning(f"警告: 不支持或无法识别的节点链接格式: {node_link[:50]}...")
-            return None
+            node_data = None
+        
+        if node_data:
+            node_data['original_link'] = original_link # 保存原始链接
+        return node_data
 
     def _parse_vmess(self, link: str) -> Optional[Dict[str, Any]]:
         try:
@@ -114,16 +122,41 @@ class NodeParser:
             tag = urllib.parse.unquote(parts[1]) if len(parts) > 1 else ""
             
             creds_and_addr = parts[0]
+            
             if "@" in creds_and_addr:
                 creds_b64, addr = creds_and_addr.split("@", 1)
-                creds = base64.b64decode(creds_b64).decode('utf-8')
+                
+                # ----- 改进的 base64 解码部分 -----
+                # 尝试添加填充并使用 urlsafe_b64decode
+                missing_padding = len(creds_b64) % 4
+                if missing_padding != 0:
+                    creds_b64 += '=' * (4 - missing_padding)
+                
+                try:
+                    # 尝试 urlsafe_b64decode，然后是标准 b64decode
+                    creds_bytes = base64.urlsafe_b64decode(creds_b64)
+                    creds = creds_bytes.decode('utf-8')
+                except (binascii.Error, UnicodeDecodeError):
+                    # 如果 urlsafe 失败，尝试标准 b64decode
+                    try:
+                        creds_bytes = base64.b64decode(creds_b64)
+                        creds = creds_bytes.decode('utf-8')
+                    except (binascii.Error, UnicodeDecodeError) as e:
+                        logging.error(f"解析 Shadowsocks 链接 (凭据解码失败): {link[:50]}... 错误: {e}")
+                        return None
+                # ----- 改进的 base64 解码部分结束 -----
+
+                if ":" not in creds: # 有些SS链接可能只有密码没有方法，或者格式不标准
+                    logging.warning(f"SS凭据格式不标准 (无方法): {creds}")
+                    return None
+
                 method, password = creds.split(":", 1)
             else:
                 # SS Simple-Obfs or Plugin format (ss://[method:password@]server:port?plugin=...)
-                # For simplicity, assume base64 credentials for now.
-                # Complex SS links with plugins might require more advanced parsing.
-                logging.warning(f"SS链接格式复杂，尝试基础解析: {link}")
-                return None # 需要更复杂的正则或库来解析带插件的SS链接
+                # 对于没有 @ 符号的 SS 链接，通常是带插件的，或者凭据部分没有 base64 编码。
+                # 这种格式需要更复杂的解析，目前脚本无法直接处理。
+                logging.warning(f"SS链接格式复杂（无@符号），可能带插件或凭据未编码，跳过: {link[:50]}...")
+                return None
 
             server, port_str = addr.split(":", 1)
             port = int(port_str)
@@ -138,6 +171,7 @@ class NodeParser:
             }
             return node
         except Exception as e:
+            # 捕获其他未知错误，例如 split() 失败等
             logging.error(f"解析 Shadowsocks 链接失败: {link[:50]}... 错误: {e}")
             return None
 
@@ -385,6 +419,9 @@ async def measure_latency(node: Dict[str, Any]) -> int:
                             else:
                                 logging.warning(f"节点 {node.get('name', node.get('server'))} 延迟过高或不合理：{latency}ms")
                                 return -1
+                        else:
+                            logging.debug(f"节点 {node.get('name', node.get('server'))} 测试 URL {url} 返回非 200/204 状态码: {resp.status}")
+                            continue
                 except (aiohttp.ClientError, asyncio.TimeoutError, ConnectionRefusedError) as e:
                     logging.debug(f"通过节点 {node.get('name', node.get('server'))} 测试 URL {url} 失败: {e}")
                     continue
@@ -444,7 +481,7 @@ async def main():
             latency = await measure_latency(node)
             if 0 <= latency <= 10000: # 再次检查延迟范围
                 node['latency'] = latency
-                node['name'] = f"{node['name']} [{latency}ms]"
+                # 原始链接已经保存在 node['original_link']
                 results.append(node)
                 logging.info(f"[{idx}/{total_nodes_to_test}] ✓ 节点 {node_id} 测试通过，延迟：{latency} ms")
             else:
@@ -464,12 +501,8 @@ async def main():
 
     with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as f:
         for node in results:
-            # 您可以选择输出原始链接或带有延迟信息的名称
-            # 这里以原始链接为例，如果需要，也可以输出其他格式
-            if 'original_link' in node: # 如果解析时保存了原始链接
-                 f.write(f"{node['original_link']} #{node['name']}\n")
-            else:
-                f.write(f"{node['name']}\n") # 如果没有原始链接，就只输出名称
+            # 输出原始链接，并在后面附带节点名称和延迟信息
+            f.write(f"{node['original_link']} # {node['name']} [{node['latency']}ms]\n")
 
     logging.info(f"测试完成：共处理 {total_nodes_to_test} 个节点，其中 {len(results)} 个有效，结果已保存到 {OUTPUT_FILE_PATH}")
 
