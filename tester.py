@@ -15,12 +15,17 @@ import binascii
 import os
 import yaml
 import re
+import sys
 
-# 配置日志
+# Ensure Python version is 3.7 or higher
+if sys.version_info < (3, 7):
+    raise RuntimeError("This script requires Python 3.7 or higher")
+
+# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# 常量
+# Constants
 OUTPUT_FILE_PATH = "data/all.txt"
 CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
 TEST_URLS = [
@@ -31,60 +36,55 @@ TEST_URLS = [
 BATCH_SIZE = 1000
 MAX_CONCURRENT = 10
 TIMEOUT = 3
-MAX_RETRIES = 1
+# MAX_RETRIES = 2
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",  
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
 ]
 
-# 全局变量
+# Global variable
 GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
 
 async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
-    """
-    从指定 URL 下载并解析 Clash 配置文件。
-    """
+    """Fetch and parse Clash configuration from a URL."""
     async with aiohttp.ClientSession() as session:
         try:
-            logger.info(f"正在从 {url} 下载 Clash 配置...")
+            logger.info(f"Fetching Clash config from {url}...")
             async with session.get(url, timeout=10) as response:
                 response.raise_for_status()
                 content = await response.text()
-                logger.info(f"从 {url} 下载配置成功。")
+                logger.info(f"Successfully fetched config from {url}")
                 return yaml.safe_load(content)
         except aiohttp.ClientError as e:
-            logger.error(f"下载 Clash 配置失败 ({url}): {e}")
+            logger.error(f"Failed to fetch Clash config from {url}: {e}")
             return None
         except yaml.YAMLError as e:
-            logger.error(f"解析 Clash 配置 YAML 失败 ({url}): {e}")
+            logger.error(f"Failed to parse YAML from {url}: {e}")
             return None
         except asyncio.TimeoutError:
-            logger.error(f"下载 Clash 配置超时 ({url})")
+            logger.error(f"Timeout fetching Clash config from {url}")
             return None
         except Exception as e:
-            logger.error(f"下载或解析 Clash 配置时发生未知错误 ({url}): {e}")
+            logger.error(f"Unknown error fetching/parsing Clash config from {url}: {e}")
             return None
 
 async def fetch_all_configs(urls: List[str]) -> List[Dict[str, Any]]:
-    """
-    从多个 URL 获取代理节点，合并并去重。
-    """
+    """Fetch proxy nodes from multiple URLs, deduplicate, and return combined list."""
     nodes: List[Dict[str, Any]] = []
-    seen_nodes = set()  # 用于去重
+    seen_nodes = set()
 
     for url in urls:
         config = await fetch_clash_base_config(url)
         if config is None:
-            logger.warning(f"无法从 {url} 获取节点，跳过此来源")
+            logger.warning(f"Skipping {url} due to fetch failure")
             continue
 
         proxies = config.get("proxies", [])
         if not proxies:
-            logger.warning(f"从 {url} 获取的配置中没有 proxies 列表")
+            logger.warning(f"No proxies found in {url}")
             continue
 
         for proxy in proxies:
-            # 生成唯一标识：基于 server, port, cipher, password
             unique_key = (
                 proxy.get("server", ""),
                 proxy.get("port", 0),
@@ -93,26 +93,24 @@ async def fetch_all_configs(urls: List[str]) -> List[Dict[str, Any]]:
                 proxy.get("type", "")
             )
             if unique_key in seen_nodes:
-                logger.debug(f"跳过重复节点: {proxy.get('name', '未知')}")
+                logger.debug(f"Skipping duplicate node: {proxy.get('name', 'unknown')}")
                 continue
             seen_nodes.add(unique_key)
             nodes.append(proxy)
 
-        logger.info(f"从 {url} 获取到 {len(proxies)} 个节点，合并后总计 {len(nodes)} 个唯一节点")
+        logger.info(f"Fetched {len(proxies)} nodes from {url}, total unique nodes: {len(nodes)}")
 
     return nodes
 
 async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
-    """
-    解析 Shadowsocks 链接，返回 Clash 代理配置。
-    """
+    """Parse Shadowsocks URL and return Clash proxy config."""
     try:
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme != "ss":
             return None
 
         if "@" not in parsed.netloc:
-            logger.warning(f"SS 链接格式无效（缺少@）: {url}")
+            logger.warning(f"Invalid SS URL format (missing @): {url}")
             return None
 
         credentials_b64, server_info = parsed.netloc.split("@", 1)
@@ -121,23 +119,23 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
 
         method = ""
         password = ""
-        
+
         try:
             decoded_credentials = base64.b64decode(credentials_b64).decode("utf-8")
             if ":" in decoded_credentials:
                 method, password = decoded_credentials.split(":", 1)
             else:
-                logger.warning(f"SS 链接凭据格式异常 (无冒号), 尝试作为 SS 2022 处理: {url}")
+                logger.warning(f"SS URL credentials format invalid (no colon), trying SS 2022: {url}")
                 key_bytes = base64.b64decode(credentials_b64)
                 if len(key_bytes) == 16:
                     method = "2022-blake3-aes-128-gcm"
                 elif len(key_bytes) == 32:
                     method = "2022-blake3-aes-256-gcm"
                 else:
-                    logger.warning(f"SS 链接凭据长度无效 ({len(key_bytes)} 字节)，跳过: {url}")
+                    logger.warning(f"Invalid SS credentials length ({len(key_bytes)} bytes), skipping: {url}")
                     return None
                 password = base64.b64encode(key_bytes).decode("utf-8")
-        except (binascii.Error, UnicodeDecodeError) as e:
+        except (binascii.Error, UnicodeDecodeError):
             try:
                 key_bytes = base64.b64decode(credentials_b64)
                 if len(key_bytes) == 16:
@@ -145,15 +143,15 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                 elif len(key_bytes) == 32:
                     method = "2022-blake3-aes-256-gcm"
                 else:
-                    logger.warning(f"SS 链接凭据长度无效 ({len(key_bytes)} 字节)，跳过: {url}")
+                    logger.warning(f"Invalid SS credentials length ({len(key_bytes)} bytes), skipping: {url}")
                     return None
                 password = base64.b64encode(key_bytes).decode("utf-8")
-            except binascii.Error as inner_e:
-                logger.warning(f"解析 SS 链接凭据失败: {url}, 错误: {inner_e}")
+            except binascii.Error as e:
+                logger.warning(f"Failed to parse SS credentials: {url}, error: {e}")
                 return None
 
         query_params = urllib.parse.parse_qs(parsed.query)
-        
+
         proxy_config = {
             "name": f"ss-{server}-{port}",
             "type": "ss",
@@ -167,7 +165,7 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
         plugin_opts = query_params.get("plugin_opts", [None])[0]
 
         if plugin:
-            if plugin == "obfs-local" or plugin == "simple-obfs":
+            if plugin in ("obfs-local", "simple-obfs"):
                 if "obfs=http" in plugin_opts:
                     proxy_config["plugin"] = "obfs"
                     proxy_config["plugin-opts"] = {"mode": "http"}
@@ -181,9 +179,9 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                     if host:
                         proxy_config["plugin-opts"]["host"] = host.group(1)
                 else:
-                    logger.warning(f"SS 链接: 未知或不支持的 obfs 插件模式: {plugin_opts}, 跳过插件配置: {url}")
+                    logger.warning(f"Unknown or unsupported obfs plugin mode: {plugin_opts}, skipping plugin: {url}")
             elif plugin == "v2ray-plugin":
-                logger.warning(f"SS 链接: v2ray-plugin 插件支持不完整，请手动检查: {url}")
+                logger.warning(f"v2ray-plugin support is incomplete, please verify: {url}")
                 proxy_config["plugin"] = "v2ray-plugin"
                 proxy_config["plugin-opts"] = {"mode": "websocket"}
                 if "tls" in plugin_opts:
@@ -193,17 +191,15 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                     if host:
                         proxy_config["plugin-opts"]["host"] = host.group(1)
             else:
-                logger.warning(f"SS 链接: 未知或不支持的插件类型: {plugin}, 跳过插件配置: {url}")
+                logger.warning(f"Unknown or unsupported plugin type: {plugin}, skipping plugin: {url}")
 
         return proxy_config
     except Exception as e:
-        logger.warning(f"解析 SS 链接失败: {url}, 错误: {e}")
+        logger.warning(f"Failed to parse SS URL: {url}, error: {e}")
         return None
 
 async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
-    """
-    解析 Hysteria2 链接，返回 Clash 代理配置。
-    """
+    """Parse Hysteria2 URL and return Clash proxy config."""
     try:
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme != "hysteria2":
@@ -211,7 +207,7 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
 
         uuid_and_server_info = parsed.netloc
         if "@" not in uuid_and_server_info:
-            logger.warning(f"Hysteria2 链接格式无效（缺少@）: {url}")
+            logger.warning(f"Invalid Hysteria2 URL format (missing @): {url}")
             return None
 
         uuid_str, server_port_info = uuid_and_server_info.split("@", 1)
@@ -228,7 +224,7 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
         sni = query_params.get("sni", [server])[0]
         alpn_str = query_params.get("alpn", ["h3"])[0]
         alpn = [alpn_str] if isinstance(alpn_str, str) else alpn_str
-        
+
         obfs = query_params.get("obfs", [None])[0]
         obfs_password = query_params.get("obfs-password", [None])[0]
 
@@ -243,88 +239,84 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
             "sni": sni,
             "alpn": alpn,
         }
-        
+
         if obfs == "salamander" and obfs_password:
             proxy_config["obfs"] = "salamander"
             proxy_config["obfs-password"] = obfs_password
         elif obfs and obfs != "none":
-            logger.warning(f"Hysteria2 链接中不支持的混淆类型: {obfs}, 跳过混淆配置: {url}")
+            logger.warning(f"Unsupported obfs type in Hysteria2: {obfs}, skipping obfs: {url}")
 
         return proxy_config
     except Exception as e:
-        logger.warning(f"解析 Hysteria2 链接失败: {url}, 错误: {e}")
+        logger.warning(f"Failed to parse Hysteria2 URL: {url}, error: {e}")
         return None
 
 def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
-    """
-    验证代理节点的格式是否符合 Clash 要求。
-    """
+    """Validate proxy node format for Clash compatibility."""
     supported_protocols = ["ss", "vmess", "hysteria2", "vless", "trojan"]
     supported_ciphers = ["chacha20-ietf-poly1305", "aes-128-gcm", "2022-blake3-aes-128-gcm", "aes-256-gcm"]
     try:
         if not isinstance(proxy_entry, dict):
-            raise ValueError("代理节点必须为字典格式")
-        
+            raise ValueError("Proxy node must be a dictionary")
+
         if "type" not in proxy_entry:
-            raise ValueError("代理节点缺少 'type' 字段")
-        
+            raise ValueError("Proxy node missing 'type' field")
+
         if proxy_entry["type"] not in supported_protocols:
-            raise ValueError(f"不支持的代理协议类型: {proxy_entry['type']}. 支持的协议: {supported_protocols}")
-        
+            raise ValueError(f"Unsupported proxy protocol: {proxy_entry['type']}. Supported: {supported_protocols}")
+
         if "name" not in proxy_entry:
             proxy_entry["name"] = f"{proxy_entry['type']}-{proxy_entry.get('server', 'unknown')}-{proxy_entry.get('port', '0')}"
-            logger.warning(f"代理节点缺少 'name' 字段，已生成: {proxy_entry['name']}")
-        
+            logger.warning(f"Proxy node missing 'name' field, generated: {proxy_entry['name']}")
+
         if "server" not in proxy_entry:
-            raise ValueError("代理节点缺少 'server' 字段")
-        
+            raise ValueError("Proxy node missing 'server' field")
+
         if "port" not in proxy_entry:
-            raise ValueError("代理节点缺少 'port' 字段")
-        
+            raise ValueError("Proxy node missing 'port' field")
+
         if proxy_entry["server"] == "1.1.1.1" and proxy_entry["port"] == 1:
-            logger.warning(f"跳过无效节点: {proxy_entry['name']}")
+            logger.warning(f"Skipping invalid node: {proxy_entry['name']}")
             return False
 
         if proxy_entry["type"] == "ss":
             if "cipher" not in proxy_entry or "password" not in proxy_entry:
-                raise ValueError("Shadowsocks 节点缺少 'cipher' 或 'password' 字段")
+                raise ValueError("Shadowsocks node missing 'cipher' or 'password' field")
             if proxy_entry["cipher"] not in supported_ciphers:
-                raise ValueError(f"不支持的 Shadowsocks 加密方式: {proxy_entry['cipher']}. 支持的加密方式: {supported_ciphers}")
+                raise ValueError(f"Unsupported Shadowsocks cipher: {proxy_entry['cipher']}. Supported: {supported_ciphers}")
         elif proxy_entry["type"] == "vmess":
             if "uuid" not in proxy_entry or "cipher" not in proxy_entry:
-                raise ValueError("VMess 节点缺少 'uuid' 或 'cipher' 字段")
+                raise ValueError("VMess node missing 'uuid' or 'cipher' field")
             if proxy_entry.get("network") == "ws" and "ws-opts" not in proxy_entry:
-                raise ValueError("VMess WebSocket 节点缺少 'ws-opts' 字段")
+                raise ValueError("VMess WebSocket node missing 'ws-opts' field")
         elif proxy_entry["type"] == "hysteria2":
             if "password" not in proxy_entry and "auth" not in proxy_entry:
-                raise ValueError("Hysteria2 节点缺少 'password' 或 'auth' 字段")
+                raise ValueError("Hysteria2 node missing 'password' or 'auth' field")
             if proxy_entry.get("obfs") and "obfs-password" not in proxy_entry:
-                raise ValueError("Hysteria2 节点启用了 obfs 但缺少 'obfs-password' 字段")
+                raise ValueError("Hysteria2 node with obfs missing 'obfs-password' field")
         elif proxy_entry["type"] == "vless":
             if "uuid" not in proxy_entry or "tls" not in proxy_entry:
-                raise ValueError("VLESS 节点缺少 'uuid' 或 'tls' 字段")
+                raise ValueError("VLESS node missing 'uuid' or 'tls' field")
             if proxy_entry.get("flow") == "xtls-rprx-vision" and "reality-opts" not in proxy_entry:
-                raise ValueError("VLESS 节点使用 xtls-rprx-vision 流控但缺少 'reality-opts' 字段")
+                raise ValueError("VLESS node with xtls-rprx-vision missing 'reality-opts' field")
         elif proxy_entry["type"] == "trojan":
             if "password" not in proxy_entry:
-                raise ValueError("Trojan 节点缺少 'password' 字段")
+                raise ValueError("Trojan node missing 'password' field")
             if proxy_entry.get("network") == "ws" and "ws-opts" not in proxy_entry:
-                raise ValueError("Trojan WebSocket 节点缺少 'ws-opts' 字段")
-        
+                raise ValueError("Trojan WebSocket node missing 'ws-opts' field")
+
         return True
     except ValueError as e:
-        logger.warning(f"节点 {proxy_entry.get('name', '未知')} 验证失败: {str(e)}")
+        logger.warning(f"Node {proxy_entry.get('name', 'unknown')} validation failed: {str(e)}")
         return False
 
 async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) -> Dict[str, Any]:
-    """
-    生成 Clash 配置文件，支持多种代理协议。
-    """
+    """Generate Clash configuration for a single proxy node."""
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
-        raise ValueError("Clash 基础配置模板未加载。请先调用 fetch_clash_base_config。")
+        raise ValueError("Clash base config template not loaded. Call fetch_clash_base_config first.")
 
     if not validate_proxy_entry(proxy_entry):
-        raise ValueError(f"代理节点 {proxy_entry.get('name', '未知')} 无效，跳过生成")
+        raise ValueError(f"Invalid proxy node {proxy_entry.get('name', 'unknown')}, skipping generation")
 
     config = json.loads(json.dumps(GLOBAL_CLASH_CONFIG_TEMPLATE))
 
@@ -359,9 +351,7 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     return config
 
 async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: int, total: int) -> bool:
-    """
-    测试单个节点。
-    """
+    """Test a single proxy node."""
     temp_dir = Path(tempfile.gettempdir())
     socks_port = random.randint(20000, 25000)
     clash_config["socks-port"] = socks_port
@@ -385,8 +375,8 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
 
         if process.returncode is not None:
             stdout, stderr = await process.communicate()
-            logger.error(f"Clash 启动失败 (节点: {node_identifier})")
-            logger.error(f"配置文件内容:\n{yaml.dump(clash_config, indent=2, sort_keys=False)}")
+            logger.error(f"Clash failed to start for node {node_identifier}")
+            logger.error(f"Config content:\n{yaml.dump(clash_config, indent=2, sort_keys=False)}")
             logger.error(f"Stdout: {stdout.decode(errors='ignore')}")
             logger.error(f"Stderr: {stderr.decode(errors='ignore')}")
             return False
@@ -396,10 +386,10 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
             writer.close()
             await writer.wait_closed()
         except ConnectionRefusedError:
-            logger.warning(f"Clash SOCKS5 端口 {socks_port} 未开放 (节点: {node_identifier})")
+            logger.warning(f"Clash SOCKS5 port {socks_port} not open for node {node_identifier}")
             return False
         except Exception as e:
-            logger.warning(f"连接 SOCKS5 端口 {socks_port} 失败 (节点: {node_identifier}): {e}")
+            logger.warning(f"Failed to connect to SOCKS5 port {socks_port} for node {node_identifier}: {e}")
             return False
 
         async with aiohttp.ClientSession(
@@ -412,31 +402,43 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
                     try:
                         async with session.get(url, proxy=proxy) as response:
                             if response.status != 200:
-                                logger.info(f"节点 {node_identifier} 测试 {url} 失败 (状态码: {response.status}, 尝试 {attempt+1}/{MAX_RETRIES})")
+                                logger.info(
+                                    f"Node {node_identifier} failed to connect to {url} "
+                                    f"(status: {response.status}, attempt {attempt+1}/{MAX_RETRIES})"
+                                )
                                 if attempt + 1 == MAX_RETRIES:
                                     return False
                                 continue
                             break
-                        except aiohttp.ClientConnectorError as e:
-                            logger.info(f"节点 {node_identifier} 连接 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
-                            if attempt + 1 == MAX_RETRIES:
-                                return False
-                            await asyncio.sleep(1)
-                        except asyncio.TimeoutError:
-                            logger.info(f"节点 {node_identifier} 测试 {url} 超时 (尝试 {attempt+1}/{MAX_RETRIES})")
-                            if attempt + 1 == MAX_RETRIES:
-                                return False
-                            await asyncio.sleep(1)
-                        except Exception as e:
-                            logger.info(f"节点 {node_identifier} 测试 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
-                            if attempt + 1 == MAX_RETRIES:
-                                return False
-                            await asyncio.sleep(1)
+                    except aiohttp.ClientConnectionError as e:  # Changed to ClientConnectionError
+                        logger.info(
+                            f"Node {node_identifier} connection to {url} failed: {e} "
+                            f"(attempt {attempt+1}/{MAX_RETRIES})"
+                        )
+                        if attempt + 1 == MAX_RETRIES:
+                            return False
+                        await asyncio.sleep(1)
+                    except asyncio.TimeoutError:
+                        logger.info(
+                            f"Node {node_identifier} timed out on {url} "
+                            f"(attempt {attempt+1}/{MAX_RETRIES})"
+                        )
+                        if attempt + 1 == MAX_RETRIES:
+                            return False
+                        await asyncio.sleep(1)
+                    except Exception as e:
+                        logger.info(
+                            f"Node {node_identifier} failed to test {url}: {e} "
+                            f"(attempt {attempt+1}/{MAX_RETRIES})"
+                        )
+                        if attempt + 1 == MAX_RETRIES:
+                            return False
+                        await asyncio.sleep(1)
 
-        logger.info(f"[{index}/{total}] ✓ 节点 {node_identifier} 通过所有测试")
+        logger.info(f"[{index}/{total}] ✓ Node {node_identifier} passed all tests")
         return True
     except Exception as e:
-        logger.error(f"测试节点 {node_identifier} 出错: {e}")
+        logger.error(f"Testing node {node_identifier} failed: {e}")
         return False
     finally:
         if process and process.returncode is None:
@@ -444,46 +446,42 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
             try:
                 await asyncio.wait_for(process.wait(), timeout=2)
             except asyncio.TimeoutError:
-                logger.warning(f"未能正常终止 Clash 进程，强制杀死 (节点: {node_identifier})")
+                logger.warning(f"Failed to terminate Clash process for node {node_identifier}, killing")
                 process.kill()
         if config_path.exists():
             try:
                 config_path.unlink()
             except OSError as e:
-                logger.warning(f"无法删除配置文件 {config_path}: {e}")
+                logger.warning(f"Failed to delete config file {config_path}: {e}")
 
 async def main():
-    """
-    主函数：从多个 URL 加载代理节点，测试并保存有效节点。
-    """
+    """Main function: Load, test, and save valid proxy nodes from multiple URLs."""
     Path("data").mkdir(parents=True, exist_ok=True)
 
     global GLOBAL_CLASH_CONFIG_TEMPLATE
-    # 使用第一个成功的配置作为模板
     for url in CLASH_BASE_CONFIG_URLS:
         GLOBAL_CLASH_CONFIG_TEMPLATE = await fetch_clash_base_config(url)
         if GLOBAL_CLASH_CONFIG_TEMPLATE is not None:
-            logger.info(f"使用 {url} 作为 Clash 配置模板")
+            logger.info(f"Using {url} as Clash config template")
             break
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
-        logger.error("无法从任何 URL 获取 Clash 基础配置，程序退出。")
+        logger.error("Failed to fetch Clash base config from any URL, exiting")
         return
 
-    # 获取所有节点的去重列表
     nodes = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
-    
+
     for i, node_proxy_dict in enumerate(nodes):
         if "name" not in node_proxy_dict:
             node_proxy_dict["name"] = f"proxy-{i}"
-            logger.warning(f"检测到一个没有 'name' 字段的代理，已为其生成名称: {node_proxy_dict['name']}")
+            logger.warning(f"Detected proxy without 'name' field, generated: {node_proxy_dict['name']}")
 
-    logger.info(f"合并后总计 {len(nodes)} 个唯一代理节点")
+    logger.info(f"Total unique proxy nodes after deduplication: {len(nodes)}")
     if not nodes:
-        logger.error("节点列表为空，可能是所有配置中没有 'proxies' 列表或列表为空。")
+        logger.error("No proxies found, possibly due to empty or invalid configs")
         return
 
     if not Path(CLASH_PATH).is_file() or not os.access(CLASH_PATH, os.X_OK):
-        logger.error(f"Clash 可执行文件 '{CLASH_PATH}' 不存在或不可执行。请检查 CLASH_CORE_PATH。")
+        logger.error(f"Clash executable '{CLASH_PATH}' not found or not executable. Check CLASH_CORE_PATH")
         return
 
     valid_proxy_dicts: List[Dict[str, Any]] = []
@@ -496,17 +494,17 @@ async def main():
         for j, proxy_entry in enumerate(batch):
             async def test_with_semaphore(idx: int, entry: Dict[str, Any]):
                 async with semaphore:
-                    node_identifier = entry.get("name", "未知代理")
+                    node_identifier = entry.get("name", "unknown proxy")
                     if not validate_proxy_entry(entry):
-                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 格式无效，已跳过")
+                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ Node {node_identifier} invalid format, skipped")
                         failure_reasons["invalid_format"] += 1
                         return None
                     try:
                         clash_config = await generate_clash_config(entry, 0)
                         if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes)):
                             return entry
-                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
-                        if "Server disconnected" in str(entry):
+                        logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ Node {node_identifier} invalid or high latency, skipped")
+                        if "server disconnected" in str(entry).lower():
                             failure_reasons["server_disconnected"] += 1
                         elif "timeout" in str(entry).lower():
                             failure_reasons["timeout"] += 1
@@ -514,7 +512,7 @@ async def main():
                             failure_reasons["other"] += 1
                         return None
                     except Exception as e:
-                        logger.error(f"[{i + idx + 1}/{len(nodes)}] 测试节点 {node_identifier} 失败: {e}")
+                        logger.error(f"[{i + idx + 1}/{len(nodes)}] Testing node {node_identifier} failed: {e}")
                         failure_reasons["other"] += 1
                         return None
 
@@ -527,19 +525,19 @@ async def main():
         if valid_batch_proxy_dicts:
             with open(f"data/temp_valid_batch_{i//BATCH_SIZE + 1}.yaml", "w", encoding="utf-8") as f:
                 yaml.safe_dump({"proxies": valid_batch_proxy_dicts}, f, allow_unicode=True, sort_keys=False)
-            logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，当前有效节点数: {len(valid_proxy_dicts)}")
+            logger.info(f"Batch {i//BATCH_SIZE + 1} completed, current valid nodes: {len(valid_proxy_dicts)}")
         else:
-            logger.info(f"批次 {i//BATCH_SIZE + 1} 完成，此批次无有效节点。")
+            logger.info(f"Batch {i//BATCH_SIZE + 1} completed, no valid nodes in this batch")
 
     if valid_proxy_dicts:
         with open(OUTPUT_FILE_PATH, "w", encoding="utf-8") as f:
             yaml.safe_dump({"proxies": valid_proxy_dicts}, f, allow_unicode=True, sort_keys=False)
-        logger.info(f"测试完成，保存 {len(valid_proxy_dicts)} 个有效节点到 {OUTPUT_FILE_PATH}")
+        logger.info(f"Testing complete, saved {len(valid_proxy_dicts)} valid nodes to {OUTPUT_FILE_PATH}")
     else:
-        logger.warning("没有找到有效节点")
+        logger.warning("No valid nodes found")
 
-    logger.info(f"测试总结：总节点数: {len(nodes)}, 有效节点: {len(valid_proxy_dicts)}")
-    logger.info(f"失败原因统计: {failure_reasons}")
+    logger.info(f"Test summary: Total nodes: {len(nodes)}, Valid nodes: {len(valid_proxy_dicts)}")
+    logger.info(f"Failure reasons: {failure_reasons}")
 
 if __name__ == "__main__":
     asyncio.run(main())
