@@ -7,7 +7,7 @@ import socket
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set # 导入 Set 类型
+from typing import Any, Dict, List, Optional, Set
 import base64
 import urllib.parse
 import aiohttp
@@ -27,21 +27,19 @@ logger = logging.getLogger(__name__)
 
 # 常量
 OUTPUT_FILE_PATH = "data/all.txt"
-FAILED_NODES_FILE = "data/failed_nodes.txt" # 新增：用于存储无效节点的文件
+FAILED_NODES_FILE = "data/failed_nodes.txt"
 CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
 TEST_URLS = [
     "https://www.google.com",
     "https://www.youtube.com",
     "https://www.cloudflare.com",
-    "https://api.github.com",  # 添加 GitHub API 作为备选
+    "https://api.github.com",
 ]
-BATCH_SIZE = 500  # 减小批次大小以降低资源压力
-MAX_CONCURRENT = 10  # 减少并发数
-TIMEOUT = 2  # 增加超时时间
+BATCH_SIZE = 500
+MAX_CONCURRENT = 10
+TIMEOUT = 2
 CLASH_BASE_CONFIG_URLS = [
-   # "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
     "https://snippet.host/oouyda/raw",
-    #"https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
 ]
 
 # 全局变量
@@ -107,6 +105,11 @@ async def fetch_all_configs(urls: List[str]) -> List[Dict[str, Any]]:
             continue
 
         for proxy in proxies:
+            # 确保 proxy 是字典类型
+            if not isinstance(proxy, dict):
+                logger.warning(f"跳过非字典类型的代理条目: {proxy}")
+                continue
+
             unique_key = (
                 proxy.get("server", ""),
                 proxy.get("port", 0),
@@ -173,9 +176,11 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
                 return None
 
         query_params = urllib.parse.parse_qs(parsed.query)
+        # 获取节点名称，如果 # 后有内容则作为名称，否则生成默认名称
+        node_name_from_hash = urllib.parse.unquote(parsed.fragment) if parsed.fragment else None
 
         proxy_config = {
-            "name": f"ss-{server}-{port}",
+            "name": node_name_from_hash if node_name_from_hash else f"ss-{server}-{port}",
             "type": "ss",
             "server": server,
             "port": port,
@@ -224,7 +229,7 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
     """解析 Hysteria2 链接，返回 Clash 代理配置"""
     try:
         parsed = urllib.parse.urlparse(url)
-        if parsed.scheme != "hysteria2":
+        if parsed.scheme != "hy2" and parsed.scheme != "hysteria2": # 支持 hy2 和 hysteria2
             return None
 
         uuid_and_server_info = parsed.netloc
@@ -250,8 +255,11 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
         obfs = query_params.get("obfs", [None])[0]
         obfs_password = query_params.get("obfs-password", [None])[0]
 
+        # 获取节点名称，如果 # 后有内容则作为名称，否则生成默认名称
+        node_name_from_hash = urllib.parse.unquote(parsed.fragment) if parsed.fragment else None
+
         proxy_config = {
-            "name": f"hysteria2-{server}-{port}",
+            "name": node_name_from_hash if node_name_from_hash else f"hysteria2-{server}-{port}",
             "type": "hysteria2",
             "server": server,
             "port": port,
@@ -273,10 +281,238 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
         logger.warning(f"解析 Hysteria2 链接失败: {url}, 错误: {e}")
         return None
 
+async def parse_trojan(url: str) -> Optional[Dict[str, Any]]:
+    """解析 Trojan 链接，返回 Clash 代理配置"""
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != "trojan":
+            return None
+
+        password_and_server_info = parsed.netloc
+        if "@" not in password_and_server_info:
+            logger.warning(f"Trojan 链接格式无效（缺少@）: {url}")
+            return None
+
+        password, server_port_info = password_and_server_info.split("@", 1)
+        server, port_str = server_port_info.split(":", 1)
+        port = int(port_str)
+
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        sni = query_params.get("sni", [server])[0]
+        alpn = query_params.get("alpn", [])
+        if alpn:
+            alpn = alpn[0].split(',') # alpn 可能有多个值，用逗号分隔
+        else:
+            alpn = None
+        
+        # 允许不安全的TLS
+        allow_insecure = query_params.get("allowInsecure", ["0"])[0].lower() == "1"
+
+        # 获取节点名称，如果 # 后有内容则作为名称，否则生成默认名称
+        node_name_from_hash = urllib.parse.unquote(parsed.fragment) if parsed.fragment else None
+
+        proxy_config = {
+            "name": node_name_from_hash if node_name_from_hash else f"trojan-{server}-{port}",
+            "type": "trojan",
+            "server": server,
+            "port": port,
+            "password": urllib.parse.unquote(password), # 解码密码中的特殊字符
+            "tls": True,
+            "skip-cert-verify": allow_insecure,
+            "sni": sni,
+        }
+        if alpn:
+            proxy_config["alpn"] = alpn
+
+        # 处理 WebSocket
+        if query_params.get("type", ["tcp"])[0] == "ws":
+            proxy_config["network"] = "ws"
+            ws_opts = {}
+            if "path" in query_params:
+                ws_opts["path"] = query_params["path"][0]
+            if "host" in query_params:
+                ws_opts["headers"] = {"Host": query_params["host"][0]}
+            if ws_opts:
+                proxy_config["ws-opts"] = ws_opts
+
+        # Clash 的 Trojan 不直接支持 flow
+        if "flow" in query_params:
+            logger.warning(f"Trojan 链接: Clash 不直接支持 flow 参数，跳过: {url}")
+
+        return proxy_config
+    except Exception as e:
+        logger.warning(f"解析 Trojan 链接失败: {url}, 错误: {e}")
+        return None
+
+async def parse_vmess(url: str) -> Optional[Dict[str, Any]]:
+    """解析 Vmess 链接，返回 Clash 代理配置"""
+    try:
+        if not url.startswith("vmess://"):
+            return None
+        
+        encoded_json = url[len("vmess://"):]
+        decoded_json_bytes = base64.b64decode(encoded_json)
+        decoded_json = decoded_json_bytes.decode("utf-8")
+        vmess_data = json.loads(decoded_json)
+
+        server = vmess_data.get("add")
+        port = int(vmess_data.get("port"))
+        uuid = vmess_data.get("id")
+        alterId = int(vmess_data.get("aid", 0))
+        cipher = vmess_data.get("scy", "auto") # 尝试获取加密方式
+        
+        # 获取节点名称，优先使用 ps 字段
+        node_name = vmess_data.get("ps", f"vmess-{server}-{port}")
+
+        proxy_config = {
+            "name": node_name,
+            "type": "vmess",
+            "server": server,
+            "port": port,
+            "uuid": uuid,
+            "alterId": alterId,
+            "cipher": cipher,
+        }
+
+        # 处理 TLS
+        if vmess_data.get("tls") == "tls":
+            proxy_config["tls"] = True
+            if vmess_data.get("sni"):
+                proxy_config["servername"] = vmess_data["sni"]
+            if vmess_data.get("allowInsecure", "0") == "1":
+                proxy_config["skip-cert-verify"] = True
+
+        # 处理网络类型 (network)
+        network = vmess_data.get("net")
+        if network:
+            proxy_config["network"] = network
+            if network == "ws":
+                ws_opts = {}
+                if "path" in vmess_data:
+                    ws_opts["path"] = vmess_data["path"]
+                if "host" in vmess_data:
+                    ws_opts["headers"] = {"Host": vmess_data["host"]}
+                if ws_opts:
+                    proxy_config["ws-opts"] = ws_opts
+            elif network == "grpc":
+                grpc_opts = {}
+                if "serviceName" in vmess_data:
+                    grpc_opts["serviceName"] = vmess_data["serviceName"]
+                if grpc_opts:
+                    proxy_config["grpc-opts"] = grpc_opts
+            else:
+                logger.warning(f"VMess 链接: 不支持的网络类型: {network}, 继续测试: {url}")
+
+        return proxy_config
+    except (json.JSONDecodeError, binascii.Error, UnicodeDecodeError) as e:
+        logger.warning(f"解析 VMess 链接 JSON/Base64 失败: {url}, 错误: {e}")
+        return None
+    except Exception as e:
+        logger.warning(f"解析 VMess 链接失败: {url}, 错误: {e}")
+        return None
+
+async def parse_vless(url: str) -> Optional[Dict[str, Any]]:
+    """解析 VLESS 链接，返回 Clash 代理配置"""
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if parsed.scheme != "vless":
+            return None
+
+        # VLESS 链接通常是 uuid@server:port
+        uuid_and_server_info = parsed.netloc
+        if "@" not in uuid_and_server_info:
+            logger.warning(f"VLESS 链接格式无效（缺少@）: {url}")
+            return None
+
+        uuid_str, server_port_info = uuid_and_server_info.split("@", 1)
+        server, port_str = server_port_info.split(":", 1)
+        port = int(port_str)
+
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        # 获取节点名称，如果 # 后有内容则作为名称，否则生成默认名称
+        node_name_from_hash = urllib.parse.unquote(parsed.fragment) if parsed.fragment else None
+
+        proxy_config = {
+            "name": node_name_from_hash if node_name_from_hash else f"vless-{server}-{port}",
+            "type": "vless",
+            "server": server,
+            "port": port,
+            "uuid": uuid_str,
+            "tls": query_params.get("security", [""])[0] == "tls",
+        }
+
+        if proxy_config["tls"]:
+            if "sni" in query_params:
+                proxy_config["servername"] = query_params["sni"][0]
+            if query_params.get("allowInsecure", ["0"])[0].lower() == "1":
+                proxy_config["skip-cert-verify"] = True
+            
+            # Reality (XTLS-rprx-vision)
+            if query_params.get("flow") == "xtls-rprx-vision":
+                proxy_config["flow"] = "xtls-rprx-vision"
+                if "reality-opts" in query_params: # Clash 不直接支持 reality-opts 字段，但可以尝试解析其中的 sni 和 fp
+                    reality_opts_str = query_params["reality-opts"][0]
+                    # 这里需要更复杂的解析，因为 reality-opts 是一个URL编码的JSON字符串或者类似的格式
+                    # 考虑到通用性，Clash 对 Reality 的支持主要依赖于 flow 和 sni
+                    # 如果有新的Clash版本支持更详细的reality-opts，再补充
+                    logger.warning(f"VLESS 链接: reality-opts 字段可能不支持或需要手动配置: {reality_opts_str}")
+
+
+        # 处理网络类型 (network)
+        network = query_params.get("type", ["tcp"])[0]
+        if network:
+            proxy_config["network"] = network
+            if network == "ws":
+                ws_opts = {}
+                if "path" in query_params:
+                    ws_opts["path"] = query_params["path"][0]
+                if "host" in query_params:
+                    ws_opts["headers"] = {"Host": query_params["host"][0]}
+                if ws_opts:
+                    proxy_config["ws-opts"] = ws_opts
+            elif network == "grpc":
+                grpc_opts = {}
+                if "serviceName" in query_params:
+                    grpc_opts["serviceName"] = query_params["serviceName"][0]
+                if grpc_opts:
+                    proxy_config["grpc-opts"] = grpc_opts
+            else:
+                logger.warning(f"VLESS 链接: 不支持的网络类型: {network}, 继续测试: {url}")
+
+        return proxy_config
+    except Exception as e:
+        logger.warning(f"解析 VLESS 链接失败: {url}, 错误: {e}")
+        return None
+
+async def parse_plain_text_node(link: str) -> Optional[Dict[str, Any]]:
+    """根据链接前缀，调用相应的解析函数"""
+    link = link.strip()
+    if link.startswith("ss://"):
+        return await parse_shadowsocks(link)
+    elif link.startswith("hysteria2://") or link.startswith("hy2://"):
+        return await parse_hysteria2(link)
+    elif link.startswith("trojan://"):
+        return await parse_trojan(link)
+    elif link.startswith("vmess://"):
+        return await parse_vmess(link)
+    elif link.startswith("vless://"):
+        return await parse_vless(link)
+    else:
+        logger.warning(f"不支持的明文链接类型: {link}")
+        return None
+
+
 def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
     """验证代理节点格式是否符合 Clash 要求"""
     supported_protocols = ["ss", "vmess", "hysteria2", "vless", "trojan"]
-    supported_ciphers = ["chacha20-ietf-poly1305", "aes-128-gcm", "2022-blake3-aes-128-gcm", "aes-256-gcm"]
+    # 扩大支持的加密方式列表，以包含 SS 2022
+    supported_ciphers = [
+        "chacha20-ietf-poly1305", "aes-128-gcm", "aes-192-gcm", "aes-256-gcm",
+        "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm",
+        "none" # 某些协议可能加密方式为none
+    ]
     try:
         if not isinstance(proxy_entry, dict):
             raise ValueError("代理节点必须为字典格式")
@@ -286,7 +522,7 @@ def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
 
         if proxy_entry["type"] not in supported_protocols:
             logger.warning(f"不支持的代理协议类型: {proxy_entry['type']}. 支持的协议: {supported_protocols}, 继续测试")
-            return True  # 放宽限制，允许测试
+            return True
 
         if "name" not in proxy_entry:
             proxy_entry["name"] = f"{proxy_entry['type']}-{proxy_entry.get('server', 'unknown')}-{proxy_entry.get('port', '0')}"
@@ -346,35 +582,53 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     if not validate_proxy_entry(proxy_entry):
         raise ValueError(f"无效代理节点 {proxy_entry.get('name', '未知')}，跳过生成")
 
+    # 深拷贝模板，防止修改原始模板
     config = json.loads(json.dumps(GLOBAL_CLASH_CONFIG_TEMPLATE))
 
     config["port"] = random.randint(10000, 15000)
     config["socks-port"] = socks_port
     config["allow-lan"] = False
     config["mode"] = "rule"
-    config["log-level"] = "debug"  # 增加调试日志
+    config["log-level"] = "debug"
 
+    # 清空并添加当前代理
     config.setdefault("proxies", []).clear()
     config["proxies"].append(proxy_entry)
 
     proxy_name = proxy_entry["name"]
-    config["proxy-groups"] = [
-        {
-            "name": "Proxy",
-            "type": "select",
-            "proxies": [proxy_name, "DIRECT", "REJECT"]
-        }
-    ]
-
-    if "rules" not in config or not isinstance(config["rules"], list):
-        config["rules"] = [
-            "DOMAIN-SUFFIX,google.com,Proxy",
-            "DOMAIN-SUFFIX,youtube.com,Proxy",
-            "DOMAIN-SUFFIX,cloudflare.com,Proxy",
-            "DOMAIN-SUFFIX,github.com,Proxy",
-            "MATCH,Proxy"
+    # 检查是否存在名为 "Proxy" 的代理组，如果不存在则创建
+    proxy_group_exists = False
+    if "proxy-groups" in config and isinstance(config["proxy-groups"], list):
+        for group in config["proxy-groups"]:
+            if group.get("name") == "Proxy":
+                group["proxies"] = [proxy_name, "DIRECT", "REJECT"]
+                proxy_group_exists = True
+                break
+    if not proxy_group_exists:
+        config["proxy-groups"] = [
+            {
+                "name": "Proxy",
+                "type": "select",
+                "proxies": [proxy_name, "DIRECT", "REJECT"]
+            }
         ]
-    elif "MATCH,Proxy" not in config["rules"]:
+
+    # 确保规则包含测试所需的规则和 MATCH 规则
+    if "rules" not in config or not isinstance(config["rules"], list):
+        config["rules"] = []
+    
+    # 确保测试规则存在
+    test_rules = [
+        "DOMAIN-SUFFIX,google.com,Proxy",
+        "DOMAIN-SUFFIX,googleusercontent.com,Proxy", # 修正此处的域名
+        "DOMAIN-SUFFIX,cloudflare.com,Proxy",
+        "DOMAIN-SUFFIX,github.com,Proxy",
+    ]
+    for rule in test_rules:
+        if rule not in config["rules"]:
+            config["rules"].insert(0, rule) # 将测试规则放在前面
+
+    if "MATCH,Proxy" not in config["rules"]:
         config["rules"].append("MATCH,Proxy")
 
     return config
@@ -425,9 +679,8 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
             connector=aiohttp.TCPConnector(ssl=False),
             timeout=aiohttp.ClientTimeout(total=TIMEOUT),
         ) as session:
-            proxy = f"socks5://127.0.0.1:{socks_port}"
+            proxy = f"http://127.0.0.1:{socks_port}" # Clash 的 SOCKS5 端口也支持 HTTP 代理
             for url in TEST_URLS:
-                # 只尝试一次，不进行重试
                 try:
                     async with session.get(url, proxy=proxy) as response:
                         if response.status != 200:
@@ -435,7 +688,7 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
                                 f"节点 {node_identifier} 连接 {url} 失败 "
                                 f"(状态码: {response.status}, 尝试 1/1)"
                             )
-                            return False # 失败则立即返回 False
+                            return False
                         break # 成功则跳出内层循环
                 except aiohttp.ClientConnectionError as e:
                     logger.info(
@@ -476,7 +729,7 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
                 logger.warning(f"无法删除配置文件 {config_path}: {e}")
 
 async def main():
-    """主函数：从多个 URL 加载代理节点，测试并保存有效节点"""
+    """主函数：从多个 URL 和明文链接加载代理节点，测试并保存有效节点"""
     Path("data").mkdir(parents=True, exist_ok=True)
 
     global GLOBAL_CLASH_CONFIG_TEMPLATE
@@ -493,16 +746,73 @@ async def main():
     known_failed_nodes = load_failed_nodes(Path(FAILED_NODES_FILE))
     logger.info(f"已加载 {len(known_failed_nodes)} 个上次运行的无效节点。")
 
-    nodes = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
+    # 从 URL 获取节点
+    nodes_from_urls = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
+    
+    # 手动添加明文节点链接
+    plain_text_node_links = [
+        "trojan://fuck@42.236.73.72:443?security=tls&sni=www.zitian.cn&alpn=http/1.1&type=tcp#0,54%7CChina_None_trojan_1129",
+        "trojan://9bb27128-e6d2-4cac-bbd3-beb46c4417f8@hk01.trojanyyds.xyz:443?security=tls&type=tcp#14,16,498,1007,1058,1422%7C%F0%9F%87%AF%F0%9F%87%B5JP-74.22...%20%231",
+        "vmess://eyJhZGQiOiIxMjAuMjEwLjIwNS41OSIsImFpZCI6IjY0IiwiaG9zdCI6IiIsImlkIjoiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiI1MDAwMiIsInBzIjoiMTQxLDE0MiwxNDQsMTQ1LDE0NiwxNDcsMTQ4LDE0OSwxNTAsMjQwfEdpdGh1YuaQnOe0olRyb2phbkxpbmtzICMzNSIsInNjeSI6ImF1dG8iLCJzbmkiOiIiLCJ0bHMiOiIiLCJ0eXBlIjoiIiwidiI6IjIifQ==",
+        "hy2://nfsn666@ld-arm.nfsn666.gq:8888?insecure=1&sni=ld-arm.nfsn666.gq#2C%207C%20E%209A%20A%20EF%20B%208F%2040vpnserverrr%2028Hysteria%20233-25635",
+        "hy2://nfsn666@130.162.182.250:8888?insecure=1&sni=ld-arm.nfsn666.gq#2C%207CChannel%2020id%203A%2040Shadow%20xy%20F%209F%20AC%20F%209F%20A7-25634",
+        "ss://Y2hhY2hhMjAtaWV0Zjphc2QxMjM0NTY=@103.149.182.191:8388#3-14%F0%9F%A6%97_19",
+        "trojan://0ac1a0a8-2a02-4ec8-acbe-704a13a471ab@18.140.18.90:443?security=tls&sni=fscca.fscloud123456789.com&allowInsecure=1&type=tcp#458%7C%E6%96%B0%E5%8A%A0%E5%9D%A1Singapore+-+Singapore+%F0%9F%8C%8F+TR-TCP-TLS+...+%2357",
+        "vless://60bdbed7-228b-466b-bd8c-32e779a5aea9@ipe.alighan.ir:2083?security=tls&sni=germany.alighan.ir&type=ws&path=/?ed%3D2048&host=germany.alighan.ir&encryption=none#4Jadi-10206-36058",
+        "vmess://eyJhZGQiOiIxMTEuMjYuMTA5Ljc5IiwiYWlkIjoiMiIsImhvc3QiOiJvY2JjLmNvbSIsImlkIjoiY2JiM2Y4NzctZDFmYi0zNDRjLTg3YTktZDE1M2JmZmQ1NDg0IiwibmV0Ijoid3MiLCJwYXRoIjoiL29vb28iLCJwb3J0IjoiMzA4MjgiLCJwcyI6IjRKYWRpLTE2NjA5LTE5MTg4Iiwic2N5IjoiYXV0byIsInNuaSI6Im9jYmkuY29tIiwidGxzIjoiIiwidHlwZSI6IiIsInY6IjIifQ==",
+        "vmess://eyJhZGQiOiIxMjAuMjMyLjE1My40MCIsImFpZCI6IjY0IiwiaG9zdCI6IiIsImlkIjoiNDE4MDQ4YWYtYTI5My00Yjk5LTliMGMtOThjYTM1ODBkZDI0IiwibmV0IjoidGNwIiwicGF0aCI6IiIsInBvcnQiOiIzMTIwOSIsInBzIjoiNEphZGktMTY2NDAtMTkyMTkiLCJzY3kiOiJhdXRvIiwic25pIjoiIiwidGxzIjoiIiwidHlwZSI6IiIsInYiOiIyIn0=",
+        "vmess://eyJhZGQiOiIxODMuMjM2LjUxLjM4IiwiYWlkIjoiNjQiLCJob3N0IjoiIiwiaWQiOiI0MTgwNDhhZi1hMjkzLTRiOTktOWIwYy05OGNhMzU4MGRkMjQiLCJuZXQiOiJ0Y3AiLCJwYXRoIjoiIiwicG9ydCI6IjQ5MzAyIiwicHMiOiI0SmFkaS0xNzc4OC0yMDM2NyIsInNjeSI6ImF1dG8iLCJzbmkiOiJudWxsIiwidGxzIjoiIiwidHlwZSI6IiIsInYiOiIyIn0=",
+        "vmess://eyJhZGQiOiIxODMuMjM2LjUxLjM4IiwiYWlkIjoiMCIsImhvc3QiOiIiLCJpZCI6IjQxODA0OGFmLWEyOTMtNGI5OS05YjBjLTk4Y2EzNTgwZGQyNCIsIm5ldCI6InRjcCIsInBhdGgiOiIiLCJwb3J0IjoiMzM5MTkiLCJwcyI6IjRKYWRpLTE3Nzk1LTIwMzc0Iiwic2N5IjoiYXV0byIsInNuaSI6Im51bGwiLCJ0bHMiOiIiLCJ0eXBlIjoiIiwidiI6IjIifQ==",
+        "vmess://eyJhZGQiOiJ2MTIuaGVkdWlhbi5saW5rIiwiYWlkIjoiMiIsImhvc3QiOiJvY2JjLmNvbSIsImlkIjoiY2JiM2Y4NzctZDFmYi0zNDRjLTg3YTktZDE1M2JmZmQ1NDg0IiwibmV0Ijoid3MiLCJwYXRoIjoiL29vb28iLCJwb3J0IjoiMzA4MTIiLCJwcyI6IjRKYWRpLTE5NzA2LTIyMjg1Iiwic2N5IjoiYXV0byIsInNuaSI6Im9jYmkuY29tIiwidGxzIjoiIiwidHlwZSI6IiIsInYiOiIyIn0=",
+        "vmess://eyJhZGQiOiJ2OS5oZWR1aWFuLmxpbmsiLCJhaWQiOiIyIiwiaG9zdCI6ImJhaWR1LmNvbSIsImlkIjoiY2JiM2Y4NzctZDFmYi0zNDRjLTg3YTktZDE1M2JmZmQ1NDg0IiwibmV0Ijoid3MiLCJwYXRoIjoiL29vb28iLCJwb3J0IjoiMzA4MDkiLCJwcyI6IjRKYWRpLTE5NzI4LTIyMzA3Iiwic2N5IjoiYXV0byIsInNuaSI6ImJhaWR1LmNvbSIsInRscyI6IiIsInR5cGUiOiIiLCJ2IjoiMiJ9",
+        "trojan://0b971bb0-f0af-11ee-8f57-1239d0255272@172.67.159.13:443?security=tls&sni=uk1.test3.net&type=tcp#4Jadi-3251-29103",
+        "trojan://0bc8c688-e142-4a64-8885-f8c7498f8a90@172.67.68.8:443?security=tls&sni=tro4replit.bunnylblbblbl.eu.org&allowInsecure=1&type=tcp#4Jadi-3252-29104",
+        "trojan://123456@104.18.11.39:443?security=tls&sni=trojan-amp-id01.globalssh.xyz&allowInsecure=1&type=tcp#4Jadi-3310-29162",
+        "trojan://18844%2540zxcvbn@49.212.204.123:443?security=tls&sni=49.212.204.123&allowInsecure=1&type=tcp#4Jadi-3339-29191",
+        "trojan://20210200-49c6-11ed-a9ef-1239d0255272@172.67.24.177:443?security=tls&sni=kipi.covid19.go.id&allowInsecure=1&type=tcp#4Jadi-3368-29220",
+    ]
 
-    for i, node_proxy_dict in enumerate(nodes):
-        if "name" not in node_proxy_dict:
-            node_proxy_dict["name"] = f"proxy-{i}"
-            logger.warning(f"检测到无 'name' 字段的代理，已生成: {node_proxy_dict['name']}")
+    nodes_from_plain_text: List[Dict[str, Any]] = []
+    logger.info(f"开始解析 {len(plain_text_node_links)} 个明文链接...")
+    for link in plain_text_node_links:
+        node = await parse_plain_text_node(link)
+        if node:
+            nodes_from_plain_text.append(node)
+    logger.info(f"成功解析 {len(nodes_from_plain_text)} 个明文链接。")
 
-    logger.info(f"去重后总计 {len(nodes)} 个唯一代理节点")
-    if not nodes:
-        logger.error("节点列表为空，可能是所有配置中没有 proxies 列表或列表为空")
+    # 合并所有节点并去重
+    all_nodes: List[Dict[str, Any]] = []
+    seen_nodes_keys = set() # 用于去重的集合
+
+    def get_unique_key(proxy: Dict[str, Any]) -> tuple:
+        # 创建一个可哈希的唯一标识符
+        if proxy["type"] == "ss":
+            return (proxy.get("server", ""), proxy.get("port", 0), proxy.get("cipher", ""), proxy.get("password", ""), proxy.get("type", ""))
+        elif proxy["type"] == "vmess":
+            return (proxy.get("server", ""), proxy.get("port", 0), proxy.get("uuid", ""), proxy.get("alterId", 0), proxy.get("network", ""), proxy.get("tls", False), proxy.get("ws-opts", {}).get("path", ""))
+        elif proxy["type"] == "hysteria2":
+            return (proxy.get("server", ""), proxy.get("port", 0), proxy.get("password", ""), proxy.get("sni", ""), proxy.get("obfs", ""), proxy.get("obfs-password", ""))
+        elif proxy["type"] == "vless":
+            return (proxy.get("server", ""), proxy.get("port", 0), proxy.get("uuid", ""), proxy.get("tls", False), proxy.get("network", ""), proxy.get("flow", ""), proxy.get("ws-opts", {}).get("path", ""))
+        elif proxy["type"] == "trojan":
+            return (proxy.get("server", ""), proxy.get("port", 0), proxy.get("password", ""), proxy.get("sni", ""), proxy.get("network", ""), proxy.get("ws-opts", {}).get("path", ""))
+        else:
+            # 对于其他未知类型，简单拼接所有键值对作为唯一标识
+            return tuple(sorted(proxy.items()))
+
+
+    for node in nodes_from_urls + nodes_from_plain_text:
+        unique_key = get_unique_key(node)
+        if unique_key not in seen_nodes_keys:
+            all_nodes.append(node)
+            seen_nodes_keys.add(unique_key)
+        else:
+            logger.debug(f"跳过合并后的重复节点: {node.get('name', '未知')}")
+            
+    logger.info(f"所有来源合并后总计 {len(all_nodes)} 个唯一代理节点。")
+
+    if not all_nodes:
+        logger.error("节点列表为空，无法进行测试。")
         return
 
     if not Path(CLASH_PATH).is_file() or not os.access(CLASH_PATH, os.X_OK):
@@ -516,7 +826,7 @@ async def main():
     # 过滤掉已知的无效节点，并准备进行测试的节点列表
     nodes_to_test = []
     skipped_count = 0
-    for node in nodes:
+    for node in all_nodes:
         node_name = node.get("name", "未知代理")
         if node_name in known_failed_nodes:
             logger.info(f"跳过已知无效节点: {node_name}")
@@ -536,7 +846,6 @@ async def main():
                     if not validate_proxy_entry(entry):
                         logger.info(f"[{i + idx + 1}/{len(nodes_to_test)}] ✗ 节点 {node_identifier} 格式无效，已跳过")
                         failure_reasons["invalid_format"] += 1
-                        # 如果格式无效，也标记为无效，下次不再测试
                         save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         return None
                     try:
@@ -544,19 +853,22 @@ async def main():
                         if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes_to_test)):
                             return entry
                         logger.info(f"[{i + idx + 1}/{len(nodes_to_test)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
-                        # 标记为无效，下次不再测试
                         save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
-                        if "server disconnected" in str(entry).lower():
-                            failure_reasons["server_disconnected"] += 1
+                        if "server disconnected" in str(entry).lower(): # 这部分判断可能需要更精细，直接从测试结果判断
+                             failure_reasons["server_disconnected"] += 1
                         elif "timeout" in str(entry).lower():
-                            failure_reasons["timeout"] += 1
+                             failure_reasons["timeout"] += 1
                         else:
-                            failure_reasons["other"] += 1
+                             failure_reasons["other"] += 1
+                        return None
+                    except ValueError as ve: # 捕获 generate_clash_config 抛出的无效节点错误
+                        logger.info(f"[{i + idx + 1}/{len(nodes_to_test)}] ✗ 节点 {node_identifier} 生成配置失败: {ve}，已跳过")
+                        failure_reasons["invalid_format"] += 1
+                        save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         return None
                     except Exception as e:
                         logger.error(f"[{i + idx + 1}/{len(nodes_to_test)}] 测试节点 {node_identifier} 失败: {e}")
                         failure_reasons["other"] += 1
-                        # 标记为无效，下次不再测试
                         save_failed_node(Path(FAILED_NODES_FILE), node_identifier)
                         return None
 
@@ -580,7 +892,7 @@ async def main():
     else:
         logger.warning("没有找到有效节点")
 
-    logger.info(f"测试总结：总节点数: {len(nodes)}, 有效节点: {len(valid_proxy_dicts)}")
+    logger.info(f"测试总结：总节点数: {len(all_nodes)}, 有效节点: {len(valid_proxy_dicts)}")
     logger.info(f"失败原因统计: {failure_reasons}")
 
 if __name__ == "__main__":
