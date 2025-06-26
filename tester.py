@@ -37,7 +37,7 @@ TEST_URLS = [
 BATCH_SIZE = 500  # 减小批次大小以降低资源压力
 MAX_CONCURRENT = 10  # 减少并发数
 TIMEOUT = 2  # 增加超时时间
-MAX_RETRIES = 2  # **取消注释这行**
+
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
