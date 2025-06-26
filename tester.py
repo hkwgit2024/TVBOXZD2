@@ -33,8 +33,16 @@ def parse_node_link_to_clash_proxy(link: str) -> dict | None:
 
         if scheme == "ss":
             try:
-                base64_part = remainder.split("@", 1)[0]
-                decoded_userinfo = base64.urlsafe_b64decode(base64_part + '=' * (-len(base64_part) % 4)).decode()
+                # 尝试修复 Base64 填充问题，并捕获解码错误
+                base64_part_raw = remainder.split("@", 1)[0]
+                # Base64 字符串的长度必须是 4 的倍数，不足时填充 '='
+                missing_padding = len(base64_part_raw) % 4
+                if missing_padding != 0:
+                    base64_part = base64_part_raw + '=' * (4 - missing_padding)
+                else:
+                    base64_part = base64_part_raw
+
+                decoded_userinfo = base64.urlsafe_b64decode(base64_part).decode()
                 method, password = decoded_userinfo.split(":", 1)
                 server_port = remainder.split("@", 1)[1]
                 server, port = server_port.split(":", 1)
@@ -46,12 +54,23 @@ def parse_node_link_to_clash_proxy(link: str) -> dict | None:
                     "cipher": method,
                     "password": password
                 })
+            except (base64.binascii.Error, ValueError, IndexError) as e:
+                print(f"❌ 错误：解析SS链接失败（Base64解码或格式问题）：{link} - {e}")
+                return None
             except Exception as e:
                 print(f"❌ 错误：解析SS链接失败：{link} - {e}")
                 return None
         elif scheme == "vmess":
             try:
-                decoded_json_str = base64.urlsafe_b64decode(remainder + '=' * (-len(remainder) % 4)).decode('utf-8')
+                # 尝试修复 Base64 填充问题，并捕获解码错误
+                vmess_base64_raw = remainder
+                missing_padding = len(vmess_base64_raw) % 4
+                if missing_padding != 0:
+                    vmess_base64 = vmess_base64_raw + '=' * (4 - missing_padding)
+                else:
+                    vmess_base64 = vmess_base64_raw
+
+                decoded_json_str = base64.urlsafe_b64decode(vmess_base64).decode('utf-8')
                 vmess_config = json.loads(decoded_json_str)
 
                 proxy.update({
@@ -68,6 +87,9 @@ def parse_node_link_to_clash_proxy(link: str) -> dict | None:
                     "ws-headers": {"Host": vmess_config.get("host")} if vmess_config.get("host") else {}
                 })
                 proxy = {k: v for k, v in proxy.items() if v not in [None, '', {}]}
+            except (base64.binascii.Error, ValueError, json.JSONDecodeError, IndexError) as e:
+                print(f"❌ 错误：解析Vmess链接失败（Base64解码或JSON格式问题）：{link} - {e}")
+                return None
             except Exception as e:
                 print(f"❌ 错误：解析Vmess链接失败：{link} - {e}")
                 return None
@@ -164,7 +186,6 @@ def parse_node_link_to_clash_proxy(link: str) -> dict | None:
         return None
 
 # --- fetch_all_configs 函数 ---
-# 确保这个函数定义在 main 函数之前
 async def fetch_all_configs(urls: list[str]) -> list:
     """
     从给定的 URL 列表中获取纯文本节点链接，并尝试解析成Clash代理字典。
@@ -242,8 +263,10 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
             }
             if ws_path: vmess_obj["path"] = ws_path
             if ws_headers: vmess_obj["host"] = ws_headers
-            if tls: vmes_obj["tls"] = "tls"
-            if servername: vmes_obj["sni"] = servername
+            # --- 修复 NameError: vmes_obj -> vmess_obj ---
+            if tls: vmess_obj["tls"] = "tls"
+            if servername: vmess_obj["sni"] = servername
+            # --- 修复结束 ---
 
             vmess_obj = {k: v for k, v in vmess_obj.items() if v}
             
@@ -341,10 +364,10 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
     return None
 
 # --- test_clash_meta_nodes 函数 ---
-# 确保这个函数定义在 main 函数之前
 async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port: int = 9090) -> list:
     """
     启动 Clash.Meta 核心，加载配置文件，并通过其 API 测试所有代理节点的延迟。
+    返回一个包含测试结果（节点名和延迟）的列表。
     """
     clash_process = None
     tested_nodes_info = []
@@ -358,32 +381,35 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
         )
         print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
 
-        print(f"等待 Clash.Meta 启动并监听 {api_port} 端口...")
-        await asyncio.sleep(5)
-
+        # --- 优化等待逻辑 ---
         api_url_base = f"http://127.0.0.1:{api_port}"
         proxies_api_url = f"{api_url_base}/proxies"
-
+        max_wait_time = 30 # 最大等待秒数
+        wait_interval = 1 # 每次检查间隔秒数
+        
+        print(f"正在尝试连接 Clash.Meta API ({api_url_base})...")
         async with httpx.AsyncClient() as client:
-            retries = 3
-            proxy_names = []
-            for attempt in range(retries):
+            for i in range(int(max_wait_time / wait_interval)):
                 try:
-                    response = await client.get(proxies_api_url, timeout=5)
+                    response = await client.get(proxies_api_url, timeout=wait_interval)
                     response.raise_for_status()
-                    all_proxies_data = response.json()
-                    
-                    for proxy_name, details in all_proxies_data.get("proxies", {}).items():
-                        if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance"]:
-                            proxy_names.append(proxy_name)
-                    print(f"成功获取到 {len(proxy_names)} 个可测试代理的名称。")
-                    break
-                except (httpx.RequestError, json.JSONDecodeError) as e:
-                    print(f"❌ 尝试 {attempt+1}/{retries} 访问 Clash API 失败: {e}")
-                    await asyncio.sleep(2)
-            else:
-                print("❌ 无法从 Clash.Meta API 获取代理列表，跳过测试。")
+                    print(f"✅ 成功连接到 Clash.Meta API (耗时约 {i * wait_interval} 秒)。")
+                    break # 连接成功，跳出循环
+                except httpx.RequestError:
+                    print(f"⏳ 等待 Clash.Meta API ({i * wait_interval + wait_interval}s/{max_wait_time}s)...")
+                    await asyncio.sleep(wait_interval)
+            else: # 如果循环结束仍未连接成功
+                print(f"❌ 超过 {max_wait_time} 秒未连接到 Clash.Meta API，跳过测试。")
                 return []
+        # --- 优化等待逻辑结束 ---
+
+            # 获取所有代理名称
+            all_proxies_data = response.json() # 使用上面已成功获取的响应
+            proxy_names = []
+            for proxy_name, details in all_proxies_data.get("proxies", {}).items():
+                if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance"]:
+                    proxy_names.append(proxy_name)
+            print(f"成功获取到 {len(proxy_names)} 个可测试代理的名称。")
             
             if not proxy_names:
                 print("🤷 没有找到任何可测试的代理节点。")
@@ -433,7 +459,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
 async def main():
     print("🚀 开始从 URL 获取明文节点链接列表并处理...")
     all_proxies = []
-    # 这里就是调用 fetch_all_configs 的地方，确保它已经定义在前面
     all_proxies = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
 
     print(f"\n✅ 总共从链接解析到 {len(all_proxies)} 个代理节点。")
@@ -455,7 +480,8 @@ async def main():
         if key not in unique_proxies_map:
              unique_proxies_map[key] = proxy
         else:
-             print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')})")
+             # 如果名称、类型、服务器、端口都相同，则视为重复
+             print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')}, {proxy.get('server')}:{proxy.get('port')})")
     
     unique_proxies = list(unique_proxies_map.values())
     print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
@@ -513,12 +539,13 @@ async def main():
     clash_core_path = os.environ.get("CLASH_CORE_PATH")
     if not clash_core_path:
         print("❌ 错误：环境变量 CLASH_CORE_PATH 未设置，无法执行 Clash.Meta 测试。")
+        # 即使无法测试，也要尝试生成原始明文链接，以防万一
         output_file_path = "data/all.txt"
         with open(output_file_path, "w", encoding="utf-8") as f:
             for link in [generate_plaintext_node_link(node) for node in unique_proxies if generate_plaintext_node_link(node)]:
                 f.write(link + "\n")
         print(f"➡️ 仅生成明文链接到：{output_file_path}")
-        print(f"总共生成 {len(unique_proxies)} 条明文链接。") # 修正这里，应该是unique_proxies的长度
+        print(f"总共生成 {len(unique_proxies)} 条明文链接。")
         return
 
     print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
@@ -540,6 +567,7 @@ async def main():
                 print(f"⚠️ 警告：找不到原始节点信息 '{node_info['name']}'")
     else:
         print("\n😔 没有节点通过延迟测试。")
+        # 如果没有节点通过测试，仍然输出原始的明文链接（不带延迟信息）
         final_output_links = [generate_plaintext_node_link(node) for node in unique_proxies if generate_plaintext_node_link(node)]
 
 
