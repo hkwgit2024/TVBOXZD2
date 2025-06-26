@@ -26,41 +26,81 @@ CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
 TEST_URLS = [
     "https://www.google.com",
     "https://www.youtube.com",
-    "https://www.cloudflare.com",  # 添加备选 URL
+    "https://www.cloudflare.com",
 ]
 BATCH_SIZE = 1000
-MAX_CONCURRENT = 5
-TIMEOUT = 15  # 增加超时时间
-MAX_RETRIES = 2  # 添加重试次数
-CLASH_BASE_CONFIG_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+MAX_CONCURRENT = 10
+TIMEOUT = 3
+MAX_RETRIES = 1
+CLASH_BASE_CONFIG_URLS = [
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml",
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",  
+]
 
 # 全局变量
 GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
 
-async def fetch_clash_base_config(url: str = CLASH_BASE_CONFIG_URL) -> Optional[Dict[str, Any]]:
+async def fetch_clash_base_config(url: str) -> Optional[Dict[str, Any]]:
     """
-    从指定 URL 下载并解析 Clash 基础配置文件。
+    从指定 URL 下载并解析 Clash 配置文件。
     """
     async with aiohttp.ClientSession() as session:
         try:
-            logger.info(f"正在从 {url} 下载 Clash 基础配置...")
+            logger.info(f"正在从 {url} 下载 Clash 配置...")
             async with session.get(url, timeout=10) as response:
                 response.raise_for_status()
                 content = await response.text()
-                logger.info("Clash 基础配置下载成功。")
+                logger.info(f"从 {url} 下载配置成功。")
                 return yaml.safe_load(content)
         except aiohttp.ClientError as e:
-            logger.error(f"下载 Clash 基础配置失败: {e}")
+            logger.error(f"下载 Clash 配置失败 ({url}): {e}")
             return None
         except yaml.YAMLError as e:
-            logger.error(f"解析 Clash 基础配置 YAML 失败: {e}")
+            logger.error(f"解析 Clash 配置 YAML 失败 ({url}): {e}")
             return None
         except asyncio.TimeoutError:
-            logger.error(f"下载 Clash 基础配置超时: {url}")
+            logger.error(f"下载 Clash 配置超时 ({url})")
             return None
         except Exception as e:
-            logger.error(f"下载或解析 Clash 基础配置时发生未知错误: {e}")
+            logger.error(f"下载或解析 Clash 配置时发生未知错误 ({url}): {e}")
             return None
+
+async def fetch_all_configs(urls: List[str]) -> List[Dict[str, Any]]:
+    """
+    从多个 URL 获取代理节点，合并并去重。
+    """
+    nodes: List[Dict[str, Any]] = []
+    seen_nodes = set()  # 用于去重
+
+    for url in urls:
+        config = await fetch_clash_base_config(url)
+        if config is None:
+            logger.warning(f"无法从 {url} 获取节点，跳过此来源")
+            continue
+
+        proxies = config.get("proxies", [])
+        if not proxies:
+            logger.warning(f"从 {url} 获取的配置中没有 proxies 列表")
+            continue
+
+        for proxy in proxies:
+            # 生成唯一标识：基于 server, port, cipher, password
+            unique_key = (
+                proxy.get("server", ""),
+                proxy.get("port", 0),
+                proxy.get("cipher", ""),
+                proxy.get("password", ""),
+                proxy.get("type", "")
+            )
+            if unique_key in seen_nodes:
+                logger.debug(f"跳过重复节点: {proxy.get('name', '未知')}")
+                continue
+            seen_nodes.add(unique_key)
+            nodes.append(proxy)
+
+        logger.info(f"从 {url} 获取到 {len(proxies)} 个节点，合并后总计 {len(nodes)} 个唯一节点")
+
+    return nodes
 
 async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
     """
@@ -376,22 +416,22 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
                                 if attempt + 1 == MAX_RETRIES:
                                     return False
                                 continue
-                            break  # 成功则退出重试
-                    except aiohttp.ClientConnectorError as e:
-                        logger.info(f"节点 {node_identifier} 连接 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)  # 等待 1 秒后重试
-                    except asyncio.TimeoutError:
-                        logger.info(f"节点 {node_identifier} 测试 {url} 超时 (尝试 {attempt+1}/{MAX_RETRIES})")
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)
-                    except Exception as e:
-                        logger.info(f"节点 {node_identifier} 测试 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
-                        if attempt + 1 == MAX_RETRIES:
-                            return False
-                        await asyncio.sleep(1)
+                            break
+                        except aiohttp.ClientConnectorError as e:
+                            logger.info(f"节点 {node_identifier} 连接 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
+                            if attempt + 1 == MAX_RETRIES:
+                                return False
+                            await asyncio.sleep(1)
+                        except asyncio.TimeoutError:
+                            logger.info(f"节点 {node_identifier} 测试 {url} 超时 (尝试 {attempt+1}/{MAX_RETRIES})")
+                            if attempt + 1 == MAX_RETRIES:
+                                return False
+                            await asyncio.sleep(1)
+                        except Exception as e:
+                            logger.info(f"节点 {node_identifier} 测试 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
+                            if attempt + 1 == MAX_RETRIES:
+                                return False
+                            await asyncio.sleep(1)
 
         logger.info(f"[{index}/{total}] ✓ 节点 {node_identifier} 通过所有测试")
         return True
@@ -414,26 +454,32 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
 
 async def main():
     """
-    主函数：从 URL 加载代理节点，测试并保存有效节点。
+    主函数：从多个 URL 加载代理节点，测试并保存有效节点。
     """
     Path("data").mkdir(parents=True, exist_ok=True)
 
     global GLOBAL_CLASH_CONFIG_TEMPLATE
-    GLOBAL_CLASH_CONFIG_TEMPLATE = await fetch_clash_base_config(CLASH_BASE_CONFIG_URL)
+    # 使用第一个成功的配置作为模板
+    for url in CLASH_BASE_CONFIG_URLS:
+        GLOBAL_CLASH_CONFIG_TEMPLATE = await fetch_clash_base_config(url)
+        if GLOBAL_CLASH_CONFIG_TEMPLATE is not None:
+            logger.info(f"使用 {url} 作为 Clash 配置模板")
+            break
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
-        logger.error("无法获取 Clash 基础配置，程序退出。")
+        logger.error("无法从任何 URL 获取 Clash 基础配置，程序退出。")
         return
 
-    nodes: List[Dict[str, Any]] = GLOBAL_CLASH_CONFIG_TEMPLATE.get("proxies", [])
+    # 获取所有节点的去重列表
+    nodes = await fetch_all_configs(CLASH_BASE_CONFIG_URLS)
     
     for i, node_proxy_dict in enumerate(nodes):
         if "name" not in node_proxy_dict:
             node_proxy_dict["name"] = f"proxy-{i}"
             logger.warning(f"检测到一个没有 'name' 字段的代理，已为其生成名称: {node_proxy_dict['name']}")
 
-    logger.info(f"从 Clash 配置中读取到 {len(nodes)} 个代理节点")
+    logger.info(f"合并后总计 {len(nodes)} 个唯一代理节点")
     if not nodes:
-        logger.error("节点列表为空，可能是 Clash 配置中没有 'proxies' 列表或列表为空。")
+        logger.error("节点列表为空，可能是所有配置中没有 'proxies' 列表或列表为空。")
         return
 
     if not Path(CLASH_PATH).is_file() or not os.access(CLASH_PATH, os.X_OK):
