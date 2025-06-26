@@ -249,7 +249,10 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     config = CLASH_CONFIG_TEMPLATE.copy()
     config["socks-port"] = socks_port
     config["proxies"] = [proxy_entry] # 将单个代理添加到 proxies 列表中
-    config["proxy-groups"][0]["proxies"] = [proxy_entry["name"], "Direct"] # 让 Proxy 组使用这个代理
+    
+    # 动态更新 proxy-groups 中的代理名称
+    # 确保 Proxy 组使用当前正在测试的代理
+    config["proxy-groups"][0]["proxies"] = [proxy_entry["name"], "Direct"] 
 
     return config
 
