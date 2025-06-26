@@ -21,32 +21,25 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # 常量
-OUTPUT_FILE_PATH = "data/all.txt"  # 输出有效节点的文件（实际为 YAML）
-CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")  # Clash 可执行文件路径
+OUTPUT_FILE_PATH = "data/all.txt"
+CLASH_PATH = os.getenv("CLASH_CORE_PATH", "./clash")
 TEST_URLS = [
     "https://www.google.com",
     "https://www.youtube.com",
-    "https://1.1.1.1",
+    "https://www.cloudflare.com",  # 添加备选 URL
 ]
-BATCH_SIZE = 1000  # 每批测试的节点数
-MAX_CONCURRENT = 5  # 最大并发 Clash 实例
-TIMEOUT = 10  # 每个节点测试的超时时间（秒）
-
-# Clash 基础配置和节点来源的 URL
+BATCH_SIZE = 1000
+MAX_CONCURRENT = 5
+TIMEOUT = 15  # 增加超时时间
+MAX_RETRIES = 2  # 添加重试次数
 CLASH_BASE_CONFIG_URL = "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
 
-# 全局变量：存储 Clash 基础配置模板
+# 全局变量
 GLOBAL_CLASH_CONFIG_TEMPLATE: Optional[Dict[str, Any]] = None
 
 async def fetch_clash_base_config(url: str = CLASH_BASE_CONFIG_URL) -> Optional[Dict[str, Any]]:
     """
     从指定 URL 下载并解析 Clash 基础配置文件。
-    
-    Args:
-        url: Clash 基础配置的 URL
-    
-    Returns:
-        Dict[str, Any]: 解析后的配置字典，或 None 如果失败
     """
     async with aiohttp.ClientSession() as session:
         try:
@@ -72,8 +65,6 @@ async def fetch_clash_base_config(url: str = CLASH_BASE_CONFIG_URL) -> Optional[
 async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
     """
     解析 Shadowsocks 链接，返回 Clash 代理配置。
-    支持标准 Shadowsocks 和 Shadowsocks 2022。
-    注意：当前从 YAML 获取节点，此函数为备用解析逻辑。
     """
     try:
         parsed = urllib.parse.urlparse(url)
@@ -172,7 +163,6 @@ async def parse_shadowsocks(url: str) -> Optional[Dict[str, Any]]:
 async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
     """
     解析 Hysteria2 链接，返回 Clash 代理配置。
-    注意：当前从 YAML 获取节点，此函数为备用解析逻辑。
     """
     try:
         parsed = urllib.parse.urlparse(url)
@@ -227,15 +217,10 @@ async def parse_hysteria2(url: str) -> Optional[Dict[str, Any]]:
 
 def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
     """
-    验证代理节点的格式是否符合 Clash 要求。返回 True 表示有效，False 表示无效。
-    
-    Args:
-        proxy_entry: 代理节点配置字典
-    
-    Returns:
-        bool: 节点是否有效
+    验证代理节点的格式是否符合 Clash 要求。
     """
     supported_protocols = ["ss", "vmess", "hysteria2", "vless", "trojan"]
+    supported_ciphers = ["chacha20-ietf-poly1305", "aes-128-gcm", "2022-blake3-aes-128-gcm", "aes-256-gcm"]
     try:
         if not isinstance(proxy_entry, dict):
             raise ValueError("代理节点必须为字典格式")
@@ -256,24 +241,22 @@ def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
         if "port" not in proxy_entry:
             raise ValueError("代理节点缺少 'port' 字段")
         
-        # 过滤无效节点（如 server: 1.1.1.1, port: 1）
         if proxy_entry["server"] == "1.1.1.1" and proxy_entry["port"] == 1:
             logger.warning(f"跳过无效节点: {proxy_entry['name']}")
             return False
 
-        # 协议特定验证
         if proxy_entry["type"] == "ss":
             if "cipher" not in proxy_entry or "password" not in proxy_entry:
                 raise ValueError("Shadowsocks 节点缺少 'cipher' 或 'password' 字段")
-            if proxy_entry["cipher"] not in ["chacha20-ietf-poly1305", "aes-128-gcm", "2022-blake3-aes-128-gcm"]:
-                raise ValueError(f"不支持的 Shadowsocks 加密方式: {proxy_entry['cipher']}")
-        elif proxy_entry["type.virtualenvwrapper.sh:16: command not found: virtualenvwrapper.sh"] == "vmess":
+            if proxy_entry["cipher"] not in supported_ciphers:
+                raise ValueError(f"不支持的 Shadowsocks 加密方式: {proxy_entry['cipher']}. 支持的加密方式: {supported_ciphers}")
+        elif proxy_entry["type"] == "vmess":
             if "uuid" not in proxy_entry or "cipher" not in proxy_entry:
                 raise ValueError("VMess 节点缺少 'uuid' 或 'cipher' 字段")
             if proxy_entry.get("network") == "ws" and "ws-opts" not in proxy_entry:
                 raise ValueError("VMess WebSocket 节点缺少 'ws-opts' 字段")
         elif proxy_entry["type"] == "hysteria2":
-            if "password" not in proxy_entry or "auth" not in proxy_entry:
+            if "password" not in proxy_entry and "auth" not in proxy_entry:
                 raise ValueError("Hysteria2 节点缺少 'password' 或 'auth' 字段")
             if proxy_entry.get("obfs") and "obfs-password" not in proxy_entry:
                 raise ValueError("Hysteria2 节点启用了 obfs 但缺少 'obfs-password' 字段")
@@ -296,16 +279,6 @@ def validate_proxy_entry(proxy_entry: Dict[str, Any]) -> bool:
 async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) -> Dict[str, Any]:
     """
     生成 Clash 配置文件，支持多种代理协议。
-    
-    Args:
-        proxy_entry: 单个代理节点配置
-        socks_port: SOCKS5 代理端口
-    
-    Returns:
-        Dict[str, Any]: 生成的 Clash 配置字典
-    
-    Raises:
-        ValueError: 如果基础模板未加载或代理节点无效
     """
     if GLOBAL_CLASH_CONFIG_TEMPLATE is None:
         raise ValueError("Clash 基础配置模板未加载。请先调用 fetch_clash_base_config。")
@@ -324,7 +297,6 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
     config.setdefault("proxies", []).clear()
     config["proxies"].append(proxy_entry)
 
-    # 修复 proxy-groups 配置，避免 Reject 和 Direct 错误
     proxy_name = proxy_entry["name"]
     config["proxy-groups"] = [
         {
@@ -338,6 +310,7 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
         config["rules"] = [
             "DOMAIN-SUFFIX,google.com,Proxy",
             "DOMAIN-SUFFIX,youtube.com,Proxy",
+            "DOMAIN-SUFFIX,cloudflare.com,Proxy",
             "MATCH,Proxy"
         ]
     elif "MATCH,Proxy" not in config["rules"]:
@@ -348,15 +321,6 @@ async def generate_clash_config(proxy_entry: Dict[str, Any], socks_port: int) ->
 async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: int, total: int) -> bool:
     """
     测试单个节点。
-    
-    Args:
-        clash_config: Clash 配置文件
-        node_identifier: 节点标识（名称）
-        index: 当前节点索引
-        total: 总节点数
-    
-    Returns:
-        bool: 节点是否有效
     """
     temp_dir = Path(tempfile.gettempdir())
     socks_port = random.randint(20000, 25000)
@@ -404,20 +368,30 @@ async def test_node(clash_config: Dict[str, Any], node_identifier: str, index: i
         ) as session:
             proxy = f"socks5://127.0.0.1:{socks_port}"
             for url in TEST_URLS:
-                try:
-                    async with session.get(url, proxy=proxy) as response:
-                        if response.status != 200:
-                            logger.info(f"节点 {node_identifier} 测试 {url} 失败 (状态码: {response.status})")
+                for attempt in range(MAX_RETRIES):
+                    try:
+                        async with session.get(url, proxy=proxy) as response:
+                            if response.status != 200:
+                                logger.info(f"节点 {node_identifier} 测试 {url} 失败 (状态码: {response.status}, 尝试 {attempt+1}/{MAX_RETRIES})")
+                                if attempt + 1 == MAX_RETRIES:
+                                    return False
+                                continue
+                            break  # 成功则退出重试
+                    except aiohttp.ClientConnectorError as e:
+                        logger.info(f"节点 {node_identifier} 连接 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
+                        if attempt + 1 == MAX_RETRIES:
                             return False
-                except aiohttp.ClientConnectorError as e:
-                    logger.info(f"节点 {node_identifier} 连接 {url} 失败: {e}")
-                    return False
-                except asyncio.TimeoutError:
-                    logger.info(f"节点 {node_identifier} 测试 {url} 超时")
-                    return False
-                except Exception as e:
-                    logger.info(f"节点 {node_identifier} 测试 {url} 失败: {e}")
-                    return False
+                        await asyncio.sleep(1)  # 等待 1 秒后重试
+                    except asyncio.TimeoutError:
+                        logger.info(f"节点 {node_identifier} 测试 {url} 超时 (尝试 {attempt+1}/{MAX_RETRIES})")
+                        if attempt + 1 == MAX_RETRIES:
+                            return False
+                        await asyncio.sleep(1)
+                    except Exception as e:
+                        logger.info(f"节点 {node_identifier} 测试 {url} 失败: {e} (尝试 {attempt+1}/{MAX_RETRIES})")
+                        if attempt + 1 == MAX_RETRIES:
+                            return False
+                        await asyncio.sleep(1)
 
         logger.info(f"[{index}/{total}] ✓ 节点 {node_identifier} 通过所有测试")
         return True
@@ -467,6 +441,7 @@ async def main():
         return
 
     valid_proxy_dicts: List[Dict[str, Any]] = []
+    failure_reasons: Dict[str, int] = {"server_disconnected": 0, "invalid_format": 0, "timeout": 0, "other": 0}
     semaphore = asyncio.Semaphore(MAX_CONCURRENT)
 
     for i in range(0, len(nodes), BATCH_SIZE):
@@ -478,15 +453,23 @@ async def main():
                     node_identifier = entry.get("name", "未知代理")
                     if not validate_proxy_entry(entry):
                         logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 格式无效，已跳过")
+                        failure_reasons["invalid_format"] += 1
                         return None
                     try:
                         clash_config = await generate_clash_config(entry, 0)
                         if await test_node(clash_config, node_identifier, i + idx + 1, len(nodes)):
                             return entry
                         logger.info(f"[{i + idx + 1}/{len(nodes)}] ✗ 节点 {node_identifier} 无效或延迟过高，已跳过")
+                        if "Server disconnected" in str(entry):
+                            failure_reasons["server_disconnected"] += 1
+                        elif "timeout" in str(entry).lower():
+                            failure_reasons["timeout"] += 1
+                        else:
+                            failure_reasons["other"] += 1
                         return None
                     except Exception as e:
                         logger.error(f"[{i + idx + 1}/{len(nodes)}] 测试节点 {node_identifier} 失败: {e}")
+                        failure_reasons["other"] += 1
                         return None
 
             tasks.append(test_with_semaphore(j, proxy_entry))
@@ -508,6 +491,9 @@ async def main():
         logger.info(f"测试完成，保存 {len(valid_proxy_dicts)} 个有效节点到 {OUTPUT_FILE_PATH}")
     else:
         logger.warning("没有找到有效节点")
+
+    logger.info(f"测试总结：总节点数: {len(nodes)}, 有效节点: {len(valid_proxy_dicts)}")
+    logger.info(f"失败原因统计: {failure_reasons}")
 
 if __name__ == "__main__":
     asyncio.run(main())
