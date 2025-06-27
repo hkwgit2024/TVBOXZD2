@@ -1,320 +1,297 @@
-# -*- coding: utf-8 -*-
-
-import asyncio
 import httpx
 import yaml
+import asyncio
 import os
 import subprocess
+import time
 import socket
 import re
 import json
-import urllib.parse
 
-# --- 配置区 ---
-# 请将您的 Clash 节点源 URL 列表放在这里
-CLASH_SOURCE_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml",
-    # 在这里可以添加更多的 URL
-]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
 
-# Clash.Meta 核心可执行文件的路径
-# 在 Windows 上可能是 "Clash.Meta-windows-amd64-compatible.exe"
-# 在 Linux/macOS 上可能是 "./Clash.Meta-linux-amd64-compatible"
-# 推荐使用环境变量进行配置，如果未设置，请在此处直接指定路径
-CLASH_CORE_PATH = os.environ.get("CLASH_CORE_PATH", "clash-meta") # 修改为你的实际文件名
-
-# Clash.Meta API 端口
-API_PORT = 9090
-
-# --- 核心逻辑 ---
-
-def is_valid_reality_short_id(short_id) -> bool:
-    """
-    验证 REALITY 协议的 short-id 是否有效。
-    一个有效的 short_id 是1到8个十六进制字符。
-    这里为了兼容性，放宽到1-16位。
-    """
-    if not isinstance(short_id, str) or not short_id:
+def is_valid_reality_short_id(short_id: str | None) -> bool:
+    """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
+    if not short_id or not isinstance(short_id, str):
         return False
-    return bool(re.match(r"^[0-9a-fA-F]{1,16}(,[0-9a-fA-F]{1,16})*$", short_id))
+    return bool(re.match(r"^[0-9a-fA-F]{8}$", short_id))
 
 def validate_proxy(proxy: dict, index: int) -> bool:
-    """
-    验证单个代理节点配置的有效性，特别是针对 REALITY 协议。
-    """
-    if not all(k in proxy for k in ["name", "server", "port", "type"]):
-        print(f"⚠️ 跳过无效节点 (索引 {index})：缺少 name, server, port 或 type 字段 - {proxy.get('name', '未知节点')}")
+    """验证代理节点是否有效，特别是 REALITY 协议的配置。"""
+    if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
+        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少 name, server 或 port - {proxy.get('name', '未知节点')}")
         return False
-
-    # 重点检查 VLESS REALITY 节点的配置
-    if proxy.get("type") == "vless" and "reality-opts" in proxy:
-        reality_opts = proxy.get("reality-opts", {})
-        if not isinstance(reality_opts, dict):
-            print(f"⚠️ 跳过无效 REALITY 节点 (索引 {index})：'reality-opts' 不是一个有效的字典 - {proxy.get('name')}")
-            return False
-
-        public_key = reality_opts.get("public-key")
-        if not public_key or not isinstance(public_key, str) or len(public_key) < 40:
-             print(f"⚠️ 跳过无效 REALITY 节点 (索引 {index})：缺少或 public-key 无效 - {proxy.get('name')}")
-             return False
-
-        short_ids = reality_opts.get("short-id") # Clash.Meta 使用 short-id
-        if not short_ids:
-            short_ids = reality_opts.get("shortId") # 兼容旧格式
-
-        if not is_valid_reality_short_id(short_ids):
-            print(f"❌ 过滤掉致命错误的 REALITY 节点 (索引 {index})：无效的 short-id: '{short_ids}' - {proxy.get('name')}")
-            return False # 这是导致您问题的关键检查
-
+    if proxy.get("type") == "vless":
+        reality_opts = proxy.get("reality-opts")
+        if reality_opts:  # 检查是否存在 reality-opts
+            if not isinstance(reality_opts, dict):
+                print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：reality-opts 不是字典 - {proxy.get('name')} - reality-opts: {reality_opts}")
+                return False
+            short_id = reality_opts.get("shortId")
+            if short_id is not None and not is_valid_reality_short_id(short_id):
+                print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
+                return False
     return True
 
-async def fetch_and_parse_proxies(urls: list[str]) -> list:
-    """
-    从 URL 列表异步获取并解析 Clash 代理节点。
-    """
+async def fetch_yaml_configs(urls: list[str]) -> list:
+    """从 URL 列表获取 YAML 格式的 Clash 配置文件，并提取代理节点。"""
     all_proxies = []
-    async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
-        tasks = [client.get(url) for url in urls]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        for i, res in enumerate(results):
-            url = urls[i]
-            if isinstance(res, httpx.Response):
-                try:
-                    res.raise_for_status()
-                    yaml_content = yaml.safe_load(res.text)
-                    proxies = yaml_content.get("proxies", [])
-                    if not proxies:
-                        print(f"⚠️ 警告：在 {url} 中没有找到 'proxies' 列表。")
-                        continue
-
-                    valid_proxies_count = 0
-                    for index, proxy in enumerate(proxies):
-                        if validate_proxy(proxy, index):
-                            all_proxies.append(proxy)
-                            valid_proxies_count += 1
-
-                    print(f"✅ 成功从 {url} 解析并验证了 {valid_proxies_count} / {len(proxies)} 个代理节点。")
-
-                except httpx.HTTPStatusError as e:
-                    print(f"❌ HTTP 错误：从 {url} 获取配置失败，状态码：{e.response.status_code}")
-                except yaml.YAMLError as e:
-                    print(f"❌ YAML 解析错误：文件 {url} 格式不正确 - {e}")
-                except Exception as e:
-                    print(f"❌ 处理 {url} 时发生未知错误: {e}")
-            else:
-                print(f"❌ 网络请求错误：无法访问 {url} - {res}")
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        for url in urls:
+            try:
+                print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
+                response = await client.get(url)
+                response.raise_for_status()
+                yaml_content = yaml.safe_load(response.text)
+                proxies = yaml_content.get("proxies", [])
+                if not proxies:
+                    print(f"⚠️ 警告：{url} 中未找到代理节点")
+                    continue
+                parsed_count = 0
+                for index, proxy in enumerate(proxies):
+                    if index == 1878:  # 调试第 1879 个节点（索引 1878）
+                        print(f"🔍 调试：第 1879 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
+                    if validate_proxy(proxy, index):
+                        all_proxies.append(proxy)
+                        parsed_count += 1
+                    else:
+                        print(f"⚠️ 警告：跳过无效代理节点（索引 {index}）：{proxy.get('name', '未知节点')}")
+                print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
+            except httpx.RequestError as e:
+                print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
+            except yaml.YAMLError as e:
+                print(f"❌ 错误：解析 YAML 格式失败：{url} - {e}")
+            except Exception as e:
+                print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
     return all_proxies
 
-async def test_clash_meta_latency(clash_path: str, config_path: str, api_port: int, retries: int = 3) -> list:
-    """
-    启动 Clash.Meta 核心，通过 API 测试所有节点的延迟。
-    """
-    # 确保端口未被占用
+async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port: int = 9090, retries: int = 3) -> list:
+    """启动 Clash.Meta 核心，加载配置文件，测试代理节点延迟。"""
+    tested_nodes_info = []
+    async def read_stream_and_print(stream, name, log_file):
+        with open(log_file, "a", encoding="utf-8") as f:
+            while True:
+                line = await stream.readline()
+                if not line:
+                    break
+                line_str = line.decode('utf-8', errors='ignore').strip()
+                print(f"[{name}] {line_str}")
+                f.write(f"[{name}] {line_str}\n")
+            print(f"[{name}] Stream finished.")
+            f.write(f"[{name}] Stream finished.\n")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         if s.connect_ex(('127.0.0.1', api_port)) == 0:
-            print(f"❌ 错误：端口 {api_port} 已被占用。请关闭占用该端口的程序或在脚本中更换 API_PORT。")
+            print(f"❌ 错误：端口 {api_port} 已被占用，请更换端口或释放端口")
             return []
-
     for attempt in range(retries):
+        clash_process = None
+        stdout_task = None
+        stderr_task = None
         print(f"\n🚀 尝试启动 Clash.Meta 核心 (第 {attempt + 1}/{retries})...")
-        process = None
         try:
-            # 启动 Clash.Meta 子进程
-            process = await asyncio.create_subprocess_exec(
-                clash_path,
-                "-d", ".",   # -d 指定配置目录
-                "-f", config_path, # -f 指定主配置文件
-                "--ext-ctl", f"127.0.0.1:{api_port}", # 外部控制器地址
+            if not os.path.isfile(clash_core_path) or not os.access(clash_core_path, os.X_OK):
+                print(f"❌ 错误：Clash.Meta 可执行文件不可用或无执行权限：{clash_core_path}")
+                return []
+            clash_process = await asyncio.create_subprocess_exec(
+                clash_core_path,
+                "-f", config_path,
+                "-d", "./data",
+                "-ext-ctl", f"0.0.0.0:{api_port}",
+                "-ext-ui", "ui",
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            print(f"✅ Clash.Meta 进程已启动，PID: {process.pid}")
-
-            # 等待 API 准备就绪
-            api_base_url = f"http://127.0.0.1:{api_port}"
-            proxies_url = f"{api_base_url}/proxies"
-            max_wait = 75
-            interval = 2
-            connected = False
-            for _ in range(max_wait // interval):
-                if process.returncode is not None:
-                    print(f"⚠️ Clash.Meta 进程已提前退出，退出码: {process.returncode}")
-                    break
-                try:
-                    async with httpx.AsyncClient() as client:
-                        await client.get(api_base_url, timeout=interval)
-                    print(f"✅ 成功连接到 Clash.Meta API。")
-                    connected = True
-                    break
-                except httpx.RequestError:
-                    print(f"⏳ 等待 Clash.Meta API 响应...")
-                    await asyncio.sleep(interval)
-
-            if not connected:
-                print(f"❌ 在 {max_wait} 秒内未能连接到 Clash.Meta API。")
-                # 读取并打印标准输出和错误流以帮助诊断
-                stdout, stderr = await process.communicate()
-                print("--- Clash.Meta STDOUT ---")
-                print(stdout.decode('utf-8', errors='ignore'))
-                print("--- Clash.Meta STDERR ---")
-                print(stderr.decode('utf-8', errors='ignore'))
-                continue
-
-            # 获取所有可测试的代理名称
-            async with httpx.AsyncClient(timeout=20.0) as client:
-                resp = await client.get(proxies_url)
-                proxies_data = resp.json()['proxies']
-                testable_proxies = [
-                    name for name, details in proxies_data.items()
-                    if details['type'] not in ["Selector", "URLTest", "Direct", "Reject", "Fallback"]
-                ]
-                print(f"🔬 发现 {len(testable_proxies)} 个可测试的代理节点，开始延迟测试...")
-
-                # 并发测试延迟
+            print(f"Clash.Meta 进程已启动，PID: {clash_process.pid}")
+            stdout_task = asyncio.create_task(read_stream_and_print(clash_process.stdout, "Clash_STDOUT", "data/clash_stdout.log"))
+            stderr_task = asyncio.create_task(read_stream_and_print(clash_process.stderr, "Clash_STDERR", "data/clash_stderr.log"))
+            api_url_base = f"http://127.0.0.1:{api_port}"
+            proxies_api_url = f"{api_url_base}/proxies"
+            max_wait_time = 75
+            wait_interval = 2
+            print(f"正在尝试连接 Clash.Meta API ({api_url_base})...")
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                connected = False
+                for i in range(int(max_wait_time / wait_interval)):
+                    try:
+                        response = await client.get(proxies_api_url, timeout=wait_interval)
+                        response.raise_for_status()
+                        print(f"✅ 成功连接到 Clash.Meta API (耗时约 {i * wait_interval} 秒)。")
+                        connected = True
+                        break
+                    except httpx.RequestError:
+                        if clash_process.returncode is not None:
+                            print(f"⚠️ Clash.Meta 进程已提前退出 (Exit Code: {clash_process.returncode})")
+                            break
+                        print(f"⏳ 等待 Clash.Meta API ({i * wait_interval + wait_interval}s/{max_wait_time}s)...")
+                        await asyncio.sleep(wait_interval)
+                if not connected:
+                    print(f"❌ 超过 {max_wait_time} 秒未连接到 Clash.Meta API")
+                    continue
+                all_proxies_data = response.json()
+                proxy_names = []
+                for proxy_name, details in all_proxies_data.get("proxies", {}).items():
+                    if details.get("type") not in ["Fallback", "Selector", "URLTest", "LoadBalance", "Direct", "Reject"]:
+                        proxy_names.append(proxy_name)
+                print(f"成功获取到 {len(proxy_names)} 个可测试代理的名称。")
+                if not proxy_names:
+                    print("🤷 没有找到任何可测试的代理节点。")
+                    return []
+                print("\n🔬 正在测试代理节点延迟...")
                 tasks = []
-                for name in testable_proxies:
-                    test_url = f"{proxies_url}/{urllib.parse.quote(name)}/delay?timeout=5000&url=http://www.google.com/generate_204"
-                    tasks.append(client.get(test_url))
-
+                for name in proxy_names:
+                    test_url = f"{proxies_api_url}/{urllib.parse.quote(name)}/delay?timeout=5000&url=http://www.google.com/generate_204"
+                    tasks.append(client.get(test_url, timeout=10))
                 results = await asyncio.gather(*tasks, return_exceptions=True)
-                
-                tested_nodes = []
-                for i, res in enumerate(results):
-                    name = testable_proxies[i]
-                    if isinstance(res, httpx.Response) and res.status_code == 200:
+                for i, result in enumerate(results):
+                    node_name = proxy_names[i]
+                    if isinstance(result, httpx.Response):
                         try:
-                            delay_info = res.json()
-                            delay = delay_info.get("delay", -1)
+                            delay_data = result.json()
+                            delay = delay_data.get("delay", -1)
                             if delay > 0:
-                                print(f"  - ✅ {name}: {delay}ms")
-                                tested_nodes.append({"name": name, "delay": delay})
+                                print(f"✅ {node_name}: {delay}ms")
+                                tested_nodes_info.append({"name": node_name, "delay": delay})
                             else:
-                                print(f"  - ❌ {name}: 超时或测试失败")
+                                print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
                         except json.JSONDecodeError:
-                            print(f"  - ❌ {name}: 响应解析失败")
+                            print(f"💔 {node_name}: 响应解析失败")
                     else:
-                        print(f"  - ❌ {name}: 请求错误 ({res})")
-
-                tested_nodes.sort(key=lambda x: x["delay"])
-                return tested_nodes
-
-        except FileNotFoundError:
-            print(f"❌ 致命错误：找不到 Clash.Meta 核心文件 '{clash_path}'。请确保 CLASH_CORE_PATH 设置正确且文件存在。")
-            return []
+                        print(f"💔 {node_name}: 请求错误 - {result}")
+                tested_nodes_info.sort(key=lambda x: x["delay"])
+                return tested_nodes_info
         except Exception as e:
-            print(f"❌ 在测试过程中发生意外错误: {e}")
+            print(f"❌ 节点测试过程中发生错误: {e}")
         finally:
-            if process and process.returncode is None:
+            if clash_process and clash_process.returncode is None:
                 print("🛑 正在停止 Clash.Meta 进程...")
-                process.terminate()
-                await process.wait()
+                clash_process.terminate()
+                try:
+                    await asyncio.wait_for(clash_process.wait(), timeout=5)
+                except asyncio.TimeoutError:
+                    clash_process.kill()
+            if stdout_task:
+                stdout_task.cancel()
+                try:
+                    await stdout_task
+                except asyncio.CancelledError:
+                    pass
+            if stderr_task:
+                stderr_task.cancel()
+                try:
+                    await stderr_task
+                except asyncio.CancelledError:
+                    pass
+    print(f"❌ 经过 {retries} 次尝试，Clash.Meta 测试失败")
+    return tested_nodes_info
 
-    print(f"❌ 经过 {retries} 次尝试后，Clash.Meta 测试失败。")
-    return []
-
-def generate_final_config(proxies: list, output_path: str):
-    """
-    生成最终的 Clash 配置文件。
-    """
-    # 简单的去重逻辑
+async def main():
+    print("🚀 开始从 URL 获取 YAML 格式的 Clash 配置文件...")
+    os.makedirs("data", exist_ok=True)
+    for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
+        if os.path.exists(log_file):
+            with open(log_file, "w", encoding="utf-8") as f:
+                f.write("")
+    all_proxies = await fetch_yaml_configs(CLASH_BASE_CONFIG_URLS)
+    print(f"\n✅ 总共从 YAML 配置解析到 {len(all_proxies)} 个代理节点。")
+    if not all_proxies:
+        print("🤷 没有找到任何节点，无法进行测试。")
+        with open("data/all.txt", "w", encoding="utf-8") as f:
+            f.write("")
+        return
     unique_proxies_map = {}
-    for proxy in proxies:
-        # 使用服务器、端口和类型作为唯一标识符
-        key = (proxy.get("server"), proxy.get("port"), proxy.get("type"))
+    for proxy in all_proxies:
+        key = (
+            proxy.get("type"),
+            proxy.get("server"),
+            proxy.get("port"),
+            proxy.get("password", ""),
+            proxy.get("cipher", ""),
+            proxy.get("uuid", ""),
+            proxy.get("tls", False)
+        )
         if key not in unique_proxies_map:
             unique_proxies_map[key] = proxy
-    
+        else:
+            print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')}, {proxy.get('server')}:{proxy.get('port')})")
     unique_proxies = list(unique_proxies_map.values())
-    print(f"🔍 过滤重复节点后，剩余 {len(unique_proxies)} 个唯一节点。")
-
-    proxy_names = [p["name"] for p in unique_proxies]
-    
-    # 基础配置模板
-    config_template = {
-        "port": 7890,
-        "socks-port": 7891,
-        "allow-lan": False,
-        "mode": "rule",
-        "log-level": "info",
-        "external-controller": f"127.0.0.1:{API_PORT}",
-        "dns": {
-            "enable": True,
-            "listen": "0.0.0.0:53",
-            "enhanced-mode": "fake-ip",
-            "nameserver": ["8.8.8.8", "1.1.1.1"],
-        },
+    print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
+    proxy_names = set()
+    for proxy in unique_proxies:
+        name = proxy.get("name")
+        if name in proxy_names:
+            print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
+            proxy["name"] = f"{name}-{len(proxy_names)}"
+        proxy_names.add(proxy["name"])
+    unified_clash_config = {
         "proxies": unique_proxies,
         "proxy-groups": [
             {
-                "name": "PROXY",
+                "name": "Proxy All",
                 "type": "select",
-                "proxies": ["自动选择", "手动选择"] + proxy_names
+                "proxies": [p.get("name") for p in unique_proxies if p.get("name")]
             },
             {
-                "name": "手动选择",
-                "type": "select",
-                "proxies": proxy_names
-            },
-            {
-                "name": "自动选择",
+                "name": "Auto Select (URLTest)",
                 "type": "url-test",
-                "proxies": proxy_names,
+                "proxies": [p.get("name") for p in unique_proxies if p.get("name")],
                 "url": "http://www.google.com/generate_204",
                 "interval": 300
             }
         ],
         "rules": [
-            "MATCH,PROXY"
-        ]
+            "MATCH,Proxy All"
+        ],
+        "dns": {
+            "enable": True,
+            "ipv6": False,
+            "listen": "0.0.0.0:53",
+            "enhanced-mode": "fake-ip",
+            "default-nameserver": [
+                "114.114.114.114",
+                "8.8.8.8"
+            ],
+            "nameserver": [
+                "tls://dns.google/dns-query",
+                "https://dns.alidns.com/dns-query"
+            ]
+        },
+        "log-level": "info",
+        "port": 7890,
+        "socks-port": 7891,
+        "allow-lan": True,
+        "external-controller": "0.0.0.0:9090",
+        "external-ui": "ui"
     }
-    
+    unified_config_path = "data/unified_clash_config.yaml"
     try:
-        with open(output_path, 'w', encoding='utf-8') as f:
-            yaml.dump(config_template, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
-        print(f"✅ 最终的 YAML 配置文件已成功写入：{output_path}")
-        print(f"📄 总共输出 {len(unique_proxies)} 个代理节点。")
+        with open(unified_config_path, "w", encoding="utf-8") as f:
+            yaml.dump(unified_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        with open(unified_config_path, "r", encoding="utf-8") as f:
+            config_content = yaml.safe_load(f)
+            if "mode" in config_content:
+                print(f"⚠️ 警告：配置文件中包含 mode 字段：{config_content['mode']}")
+            else:
+                print(f"✅ 配置文件验证通过，无 mode 字段")
+        print(f"📦 统一的 Clash 配置文件已生成：{unified_config_path}")
     except Exception as e:
-        print(f"❌ 错误：写入最终配置文件失败：{e}")
-
-
-async def main():
-    """
-    主执行函数
-    """
-    # 确保工作目录存在
-    os.makedirs("data", exist_ok=True)
-    output_config_path = "data/unified_clash_config.yaml"
-
-    print("--- 第 1 步：获取和解析代理节点 ---")
-    all_proxies = await fetch_and_parse_proxies(CLASH_SOURCE_URLS)
-    
-    if not all_proxies:
-        print("🤷 没有获取到任何有效的代理节点，程序退出。")
+        print(f"❌ 错误：生成统一 Clash 配置文件失败：{e}")
         return
-
-    print(f"\n--- 第 2 步：生成统一配置文件 ---")
-    generate_final_config(all_proxies, output_config_path)
-
-    print("\n--- 第 3 步：使用 Clash.Meta 测试节点延迟 ---")
-    if not os.path.isfile(CLASH_CORE_PATH):
-        print(f"⚠️ 警告：找不到 Clash Core '{CLASH_CORE_PATH}'，跳过延迟测试。")
-        print("➡️ 您可以手动使用 Clash 客户端加载生成的配置文件: " + output_config_path)
+    clash_core_path = os.environ.get("CLASH_CORE_PATH")
+    if not clash_core_path:
+        print(f"❌ 错误：环境变量 CLASH_CORE_PATH 未设置，无法执行 Clash.Meta 测试。")
+        print(f"➡️ 已生成 YAML 配置文件：{unified_config_path}")
         return
-
-    tested_nodes = await test_clash_meta_latency(CLASH_CORE_PATH, output_config_path, API_PORT)
-
+    print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
+    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
     if tested_nodes:
-        print("\n--- ✅ 延迟测试完成 ---")
-        print("延迟最低的节点如下 (ms):")
-        for node in tested_nodes[:20]: # 最多显示前20个
-            print(f"  - {node['delay']}ms: {node['name']}")
+        print("\n--- 延迟测试结果 (按延迟升序) ---")
+        for node_info in tested_nodes:
+            print(f"{node_info['name']}: {node_info['delay']}ms")
     else:
-        print("\n--- 😔 没有节点通过延迟测试 ---")
-        print("这可能是由于：")
-        print("1. 所有节点均已失效或超时。")
-        print("2. 您的网络环境无法访问测试网址 (http://www.google.com/generate_204)。")
-        print("3. Clash.Meta 核心启动失败，请检查上面的日志输出。")
+        print("\n😔 没有节点通过延迟测试。")
+    output_file_path = "data/unified_clash_config.yaml"
+    print(f"\n✅ 最终的 YAML 配置文件已写入：{output_file_path}")
+    print(f"总共输出 {len(unique_proxies)} 个代理节点。")
 
 if __name__ == "__main__":
     asyncio.run(main())
