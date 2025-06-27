@@ -244,7 +244,7 @@ async def main():
     for proxy in unique_proxies:
         name = proxy.get("name")
         if name in proxy_names:
-            print(f"⚠️ 警告：发现“
+            
     print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
             proxy["name"] = f"{name}-{len(proxy_names)}"
         proxy_names.add(proxy["name"])
