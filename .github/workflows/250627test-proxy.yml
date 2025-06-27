@@ -4,120 +4,117 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *' # Run daily at 00:00 UTC
-  workflow_dispatch: # Allow manual trigger
+    - cron: '0 0 * * *' # 每天 UTC 00:00 运行
+  workflow_dispatch: # 允许手动触发
 
 permissions:
-  contents: write # Allow writing to repository
+  contents: write # 允许写入仓库
 
 jobs:
   test-proxies:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
+      # 检出仓库
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Set up Node.js
+      # 设置 Node.js（用于节点解析）
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Download proxy list
+      # 下载代理节点
       - name: Download Proxy List
         run: |
           curl -o sub_2.txt https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt
 
-      # Decode proxy nodes
-      - name: Decode Proxy Nodes
+      # 解析节点并转换为 Clash 配置文件
+      - name: Parse Proxy Nodes
         run: |
-          node -e '
-            const fs = require("fs");
-            const nodes = fs.readFileSync("sub_2.txt", "utf8").split("\n").filter(line => line.trim());
-            const decodedNodes = nodes.map(node => {
-              try {
-                if (node.match(/^(vmess|ss|trojan|vless|ssr|hysteria2):\/\//)) {
-                  const base64 = node.split("://")[1];
-                  return Buffer.from(base64, "base64").toString("utf8");
-                }
-                return node; // Keep non-Base64 nodes
-              } catch (e) {
-                console.error(`Error decoding node: ${node}, Error: ${e.message}`);
-                return null; // Skip invalid nodes
-              }
-            }).filter(Boolean);
-            fs.writeFileSync("nodes.txt", decodedNodes.join("\n"));
-          '
-
-      # Clone and test with 256cats/check-proxy
-      - name: Test with check-proxy
-        run: |
-          git clone https://github.com/256cats/check-proxy.git
-          cd check-proxy
-          npm install
-          # Debug: List directory to verify index.js
-          ls -la
-          node index.js --file ../nodes.txt --timeout 5000 --url https://api.github.com --threads 5 > ../check-proxy-results.txt || echo "Check-proxy test failed" >> ../check-proxy-results.txt
-
-      # Clone and test with yahoo/proxy-verifier
-      - name: Test with proxy-verifier
-        run: |
-          git clone https://github.com/yahoo/proxy-verifier.git
-          cd proxy-verifier
-          npm install
-          # Filter HTTP proxies
-          grep -E '^http://' ../nodes.txt > ../http_proxies.txt || echo "No HTTP proxies found" > ../http_proxies.txt
-          if [ -s ../http_proxies.txt ]; then
-            node verifier-client.js --proxy $(head -n 1 ../http_proxies.txt) > ../proxy-verifier-results.txt || echo "Proxy-verifier test failed" >> ../proxy-verifier-results.txt
-          else
-            echo "No HTTP proxies to test" > ../proxy-verifier-results.txt
-          fi
-
-      # Test non-HTTP protocols with Clash
-      - name: Test with Clash
-        run: |
-          docker run -d --name clash dreamacro/clash
-          # Convert nodes to Clash YAML
           node -e '
             const fs = require("fs");
             const nodes = fs.readFileSync("sub_2.txt", "utf8").split("\n").filter(line => line.trim());
             const proxies = nodes.map((node, index) => {
-              if (node.match(/^hysteria2:\/\/([^@]+)@([^:]+):(\d+)/)) {
-                const [, password, server, port] = node.match(/^hysteria2:\/\/([^@]+)@([^:]+):(\d+)/);
-                return { name: `hysteria2-${index}`, type: "hysteria2", server, port: parseInt(port), password };
-              } else if (node.match(/^trojan:\/\/([^@]+)@([^:]+):(\d+)/)) {
-                const [, password, server, port] = node.match(/^trojan:\/\/([^@]+)@([^:]+):(\d+)/);
-                return { name: `trojan-${index}`, type: "trojan", server, port: parseInt(port), password };
-              } else if (node.match(/^vmess:\/\/(.+)/)) {
-                const base64 = node.split("://")[1];
-                try {
+              try {
+                if (node.match(/^hysteria2:\/\/([^@]+)@([^:]+):(\d+)/)) {
+                  const [, password, server, port] = node.match(/^hysteria2:\/\/([^@]+)@([^:]+):(\d+)/);
+                  return { name: `hysteria2-${index}`, type: "hysteria2", server, port: parseInt(port), password };
+                } else if (node.match(/^trojan:\/\/([^@]+)@([^:]+):(\d+)/)) {
+                  const [, password, server, port] = node.match(/^trojan:\/\/([^@]+)@([^:]+):(\d+)/);
+                  return { name: `trojan-${index}`, type: "trojan", server, port: parseInt(port), password };
+                } else if (node.match(/^vmess:\/\/(.+)/)) {
+                  const base64 = node.split("://")[1];
                   const decoded = JSON.parse(Buffer.from(base64, "base64").toString("utf8"));
-                  return { name: `vmess-${index}`, type: "vmess", server: decoded.add, port: parseInt(decoded.port), uuid: decoded.id };
-                } catch (e) {
-                  return null;
+                  return { name: `vmess-${index}`, type: "vmess", server: decoded.add, port: parseInt(decoded.port), uuid: decoded.id, alterId: decoded.aid || 0, cipher: decoded.scy || "auto" };
+                } else if (node.match(/^ss:\/\/(.+)/)) {
+                  const base64 = node.split("://")[1].split("#")[0];
+                  const decoded = Buffer.from(base64, "base exterminator64").toString("utf8");
+                  const [method, password, rest] = decoded.split(/[@:]/);
+                  const [server, port] = rest.split(":");
+                  return { name: `ss-${index}`, type: "ss", server, port: parseInt(port), password, cipher: method };
+                } else if (node.match(/^ssr:\/\/(.+)/)) {
+                  const base64 = node.split("://")[1];
+                  const decoded = Buffer.from(base64, "base64").toString("utf8");
+                  const params = new URLSearchParams(decoded.split("/?")[1]);
+                  const [server, port, protocol, cipher, obfs, password] = decoded.split(":");
+                  return { name: `ssr-${index}`, type: "ssr", server, port: parseInt(port), password: Buffer.from(password, "base64").toString("utf8"), cipher, obfs, protocol };
+                } else if (node.match(/^vless:\/\/([^@]+)@([^:]+):(\d+)/)) {
+                  const [, uuid, server, port] = node.match(/^vless:\/\/([^@]+)@([^:]+):(\d+)/);
+                  return { name: `vless-${index}`, type: "vless", server, port: parseInt(port), uuid };
                 }
+                return null;
+              } catch (e) {
+                console.error(`Error parsing node: ${node}, Error: ${e.message}`);
+                return null;
               }
-              return null;
             }).filter(Boolean);
-            fs.writeFileSync("clash.yaml", `proxies:\n${proxies.map(p => ` - ${JSON.stringify(p)}`).join("\n")}`);
+            const clashConfig = {
+              proxies,
+              "proxy-groups": [{ name: "auto", type: "select", proxies: proxies.map(p => p.name) }],
+              rules: ["MATCH,auto"]
+            };
+            fs.writeFileSync("clash.yaml", JSON.stringify(clashConfig, null, 2));
           '
-          docker cp clash.yaml clash:/etc/clash/config.yaml
-          docker exec clash clash -f /etc/clash/config.yaml -t > clash-results.txt || echo "Clash test failed" >> clash-results.txt
 
-      # Combine and save results to data/all.txt
+      # 测试节点（使用 Clash）
+      - name: Test with Clash
+        run: |
+          docker run -d --name clash dreamacro/clash
+          docker cp clash.yaml clash:/etc/clash/config.yaml
+          # 测试节点连通性
+          docker exec clash sh -c "clash -f /etc/clash/config.yaml -t > /etc/clash/test-results.txt || echo 'Clash test failed' > /etc/clash/test-results.txt"
+          docker cp clash:/etc/clash/test-results.txt clash-results.txt
+          # 模拟延迟测试（简化的 curl 测试）
+          node -e '
+            const fs = require("fs");
+            const { execSync } = require("child_process");
+            const nodes = JSON.parse(fs.readFileSync("clash.yaml", "utf8")).proxies;
+            const results = [];
+            for (const proxy of nodes) {
+              try {
+                const start = Date.now();
+                execSync(`curl -s -o /dev/null --max-time 5 -x ${proxy.type}://${proxy.server}:${proxy.port} https://api.github.com`, { stdio: "ignore" });
+                const latency = Date.now() - start;
+                results.push(`${proxy.name}: Working, Latency: ${latency}ms`);
+              } catch (e) {
+                results.push(`${proxy.name}: Failed, Error: ${e.message}`);
+              }
+            }
+            fs.writeFileSync("latency-results.txt", results.join("\n"));
+          '
+
+      # 保存结果到 data/all.txt
       - name: Save Results to data/all.txt
         run: |
           mkdir -p data
-          echo "Check-Proxy Results:" > data/all.txt
-          cat check-proxy-results.txt >> data/all.txt
-          echo -e "\nProxy-Verifier Results:" >> data/all.txt
-          cat proxy-verifier-results.txt >> data/all.txt
-          echo -e "\nClash Results:" >> data/all.txt
+          echo "Clash Test Results:" > data/all.txt
           cat clash-results.txt >> data/all.txt
+          echo -e "\nLatency Test Results:" >> data/all.txt
+          cat latency-results.txt >> data/all.txt
 
-      # Commit and push results to repository
+      # 提交结果到仓库
       - name: Commit Results
         run: |
           git config --local user.email "action@github.com"
@@ -128,12 +125,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload artifacts (optional, for debugging)
+      # 上传 artifact（可选，调试用）
       - name: Upload Results
         uses: actions/upload-artifact@v4
         with:
           name: proxy-test-results
           path: |
-            check-proxy-results.txt
-            proxy-verifier-results.txt
             clash-results.txt
+            latency-results.txt
