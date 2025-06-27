@@ -9,7 +9,7 @@ import re
 import json
 import urllib.parse
 import traceback
-import base64  # 添加 base64 支持
+import base64
 
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml",
@@ -28,9 +28,18 @@ def is_valid_reality_short_id(short_id: str | None) -> bool:
 
 def validate_proxy(proxy: dict, index: int) -> bool:
     """验证代理节点是否有效，特别是 REALITY 协议的配置。"""
-    if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
-        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少 name, server 或 port - {proxy.get('name', '未知节点')}")
+    missing_fields = []
+    if not proxy.get("name"):
+        missing_fields.append("name")
+    if not proxy.get("server"):
+        missing_fields.append("server")
+    if not proxy.get("port"):
+        missing_fields.append("port")
+    
+    if missing_fields:
+        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少字段 {', '.join(missing_fields)} - {proxy.get('name', '未知节点')}")
         return False
+    
     if proxy.get("type") == "vless":
         reality_opts = proxy.get("reality-opts")
         if reality_opts:
@@ -43,8 +52,67 @@ def validate_proxy(proxy: dict, index: int) -> bool:
                 return False
     return True
 
+def parse_v2ray_subscription(content: str) -> list:
+    """解析 V2Ray 订阅链接（如 vmess:// 或 ss://），转换为 Clash 格式的代理节点。"""
+    proxies = []
+    lines = content.splitlines()
+    for index, line in enumerate(lines):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            if line.startswith("vmess://"):
+                decoded = base64.b64decode(line[8:]).decode('utf-8')
+                vmess = json.loads(decoded)
+                proxy = {
+                    "name": vmess.get("ps", f"vmess-{index}"),
+                    "type": "vmess",
+                    "server": vmess.get("add"),
+                    "port": int(vmess.get("port")),
+                    "uuid": vmess.get("id"),
+                    "alterId": int(vmess.get("aid", 0)),
+                    "cipher": vmess.get("type", "auto"),
+                    "tls": vmess.get("tls") == "tls",
+                    "network": vmess.get("net", "tcp")
+                }
+                proxies.append(proxy)
+            elif line.startswith("ss://"):
+                # 解析 ss:// 链接（格式：ss://<base64-encoded>@<server>:<port>#<name>）
+                decoded = base64.b64decode(line[5:].split('#')[0]).decode('utf-8')
+                userinfo, server_port = decoded.split('@')
+                method_password, _ = userinfo.split(':')
+                server, port = server_port.split(':')
+                name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
+                proxy = {
+                    "name": name,
+                    "type": "ss",
+                    "server": server,
+                    "port": int(port),
+                    "cipher": method_password.split('-')[0],
+                    "password": method_password.split('-')[-1]
+                }
+                proxies.append(proxy)
+            elif line.startswith("hysteria2://"):
+                # 解析 hysteria2:// 链接（简单示例，需根据实际格式调整）
+                decoded = urllib.parse.urlparse(line)
+                name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
+                query = urllib.parse.parse_qs(decoded.query)
+                proxy = {
+                    "name": name,
+                    "type": "hysteria2",
+                    "server": decoded.hostname,
+                    "port": int(decoded.port or 443),
+                    "password": decoded.username or query.get("password", [""])[0],
+                    "sni": query.get("sni", [""])[0] or decoded.hostname,
+                    "skip-cert-verify": query.get("insecure", ["0"])[0] == "1"
+                }
+                proxies.append(proxy)
+        except Exception as e:
+            print(f"⚠️ 跳过无效订阅节点（索引 {index}）：{line[:30]}... - 错误: {e}")
+    return proxies
+
 async def fetch_yaml_configs(urls: list[str]) -> list:
-    """从 URL 列表获取 YAML 格式的 Clash 配置文件，并提取代理节点。"""
+    """从 URL 列表获取 YAML 格式的 Clash 配置文件或订阅链接，并提取代理节点。"""
     all_proxies = []
     async with httpx.AsyncClient(timeout=30.0) as client:
         for url in urls:
@@ -52,18 +120,33 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
                 response = await client.get(url)
                 response.raise_for_status()
-                # 尝试解析响应内容，处理可能的 base64 编码
                 response_text = response.text
                 try:
-                    if not response_text.strip().startswith("proxies:"):
-                        response_text = base64.b64decode(response_text).decode('utf-8', errors='ignore')
-                    yaml_content = yaml.safe_load(response_text)
-                except (base64.binascii.Error, UnicodeDecodeError):
-                    yaml_content = yaml.safe_load(response_text)
-                proxies = yaml_content.get("proxies", [])
+                    # 尝试解析为 YAML
+                    if response_text.strip().startswith(("proxies:", "---")):
+                        yaml_content = yaml.safe_load(response_text)
+                        proxies = yaml_content.get("proxies", [])
+                    else:
+                        # 尝试 base64 解码
+                        try:
+                            decoded_text = base64.b64decode(response_text).decode('utf-8', errors='ignore')
+                            if decoded_text.strip().startswith(("proxies:", "---")):
+                                yaml_content = yaml.safe_load(decoded_text)
+                                proxies = yaml_content.get("proxies", [])
+                            else:
+                                # 假设为 V2Ray 订阅格式
+                                proxies = parse_v2ray_subscription(decoded_text)
+                        except base64.binascii.Error:
+                            # 直接解析为订阅格式
+                            proxies = parse_v2ray_subscription(response_text)
+                except yaml.YAMLError:
+                    # 如果 YAML 解析失败，尝试作为订阅链接处理
+                    proxies = parse_v2ray_subscription(response_text)
+                
                 if not proxies:
                     print(f"⚠️ 警告：{url} 中未找到代理节点")
                     continue
+                
                 parsed_count = 0
                 for index, proxy in enumerate(proxies):
                     if index == 1878:
@@ -71,13 +154,9 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
-                    else:
-                        print(f"⚠️ 警告：跳过无效代理节点（索引 {index}）：{proxy.get('name', '未知节点')}")
                 print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
             except httpx.RequestError as e:
                 print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
-            except yaml.YAMLError as e:
-                print(f"❌ 错误：解析 YAML 格式失败：{url} - {e}")
             except Exception as e:
                 print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
     return all_proxies
@@ -180,7 +259,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
                                 else:
                                     print(f"⚠️ 警告：节点 {node_name} 不在原始代理列表中")
                             else:
-                                print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
+                                print(f"💔 {node_name}: 测试失败/超時 ({delay_data.get('message', '未知错误')})")
                         except json.JSONDecodeError:
                             print(f"💔 {node_name}: 响应解析失败")
                     else:
@@ -379,8 +458,10 @@ async def main():
         except Exception as e:
             print(f"❌ 错误：生成测试通过的 Clash 配置文件失败：{e}")
     
+ Honkai: Star Rail
     print(f"\n✅ 最终的 YAML 配置文件已写入：{unified_config_path}")
     if tested_nodes:
+        print somebody love you
         print(f"✅ 测试通过的 YAML 配置文件已写入：{tested_config_path}")
         print(f"总共输出 {len(tested_proxies)} 个测试通过的代理节点。")
     print(f"总共输出 {len(unique_proxies)} 个代理节点（全部）。")
