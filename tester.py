@@ -12,6 +12,7 @@ import traceback
 import base64
 
 CLASH_BASE_CONFIG_URLS = [
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
@@ -48,6 +49,9 @@ def validate_proxy(proxy: dict, index: int) -> bool:
             if short_id is not None and not is_valid_reality_short_id(short_id):
                 print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
                 return False
+        if not proxy.get("uuid"):
+            print(f"⚠️ 跳过无效 VLESS 节点（索引 {index}）：缺少 uuid - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
+            return False
     
     if proxy.get("type") == "vmess":
         cipher = proxy.get("cipher")
@@ -125,10 +129,14 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
             flow = proxy.get("flow", "")
             security = "tls" if proxy.get("tls", False) else "none"
             sni = proxy.get("sni", server)
+            query_params = [f"security={security}", f"sni={sni}"]
+            if flow:
+                query_params.append(f"flow={flow}")
+            ws_opts = proxy.get("ws-opts", {})
+            if ws_opts:
+                query_params.append(f"type=ws&path={urllib.parse.quote(ws_opts.get('path', ''))}")
+            query = "&".join(query_params)
             if server and port and uuid:
-                query = f"security={security}&sni={sni}"
-                if flow:
-                    query += f"&flow={flow}"
                 return f"vless://{uuid}@{server}:{port}?{query}#{name} - {delay}ms"
         
         else:
@@ -236,12 +244,13 @@ def parse_v2ray_subscription(content: str) -> list:
                 proxy = {
                     "name": name,
                     "type": "vless",
-                    "server": decoded.hostname,
+                    "server": decoded.hostname or query.get("host", [""])[0],
                     "port": int(decoded.port or 443),
                     "uuid": decoded.username,
                     "flow": query.get("flow", [""])[0],
                     "tls": query.get("security", ["none"])[0] == "tls",
-                    "sni": query.get("sni", [""])[0] or decoded.hostname
+                    "sni": query.get("sni", [""])[0] or decoded.hostname or query.get("host", [""])[0],
+                    "ws-opts": {"path": query.get("path", [""])[0]} if query.get("type5", [""])[0] == "ws" else {}
                 }
                 proxies.append(proxy)
             else:
@@ -287,6 +296,8 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 for index, proxy in enumerate(proxies):
                     if index == 1878:
                         print(f"🔍 调试：第 1879 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
+                    if index == 2435:
+                        print(f"🔍 调试：第 2436 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
