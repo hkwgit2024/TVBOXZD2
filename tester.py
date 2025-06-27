@@ -6,6 +6,7 @@ import subprocess
 import time
 import socket
 import re
+import json
 
 CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
 
@@ -20,15 +21,16 @@ def validate_proxy(proxy: dict, index: int) -> bool:
     if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
         print(f"⚠️ 跳过无效节点（索引 {index}）：缺少 name, server 或 port - {proxy.get('name', '未知节点')}")
         return False
-    if proxy.get("type") == "vless" and proxy.get("flow") == "xtls-rprx-vision":
-        reality_opts = proxy.get("reality-opts", {})
-        if not isinstance(reality_opts, dict):
-            print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：reality-opts 不是字典 - {proxy.get('name')}")
-            return False
-        short_id = reality_opts.get("shortId")
-        if not is_valid_reality_short_id(short_id):
-            print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')}")
-            return False
+    if proxy.get("type") == "vless":
+        reality_opts = proxy.get("reality-opts")
+        if reality_opts:  # 检查是否存在 reality-opts
+            if not isinstance(reality_opts, dict):
+                print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：reality-opts 不是字典 - {proxy.get('name')} - reality-opts: {reality_opts}")
+                return False
+            short_id = reality_opts.get("shortId")
+            if short_id is not None and not is_valid_reality_short_id(short_id):
+                print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
+                return False
     return True
 
 async def fetch_yaml_configs(urls: list[str]) -> list:
@@ -47,6 +49,8 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     continue
                 parsed_count = 0
                 for index, proxy in enumerate(proxies):
+                    if index == 1878:  # 调试第 1879 个节点（索引 1878）
+                        print(f"🔍 调试：第 1879 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
