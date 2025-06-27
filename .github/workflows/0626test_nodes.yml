@@ -11,7 +11,7 @@ on:
 jobs:
   test-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # 设置 30 分钟超时，适配大量节点测试
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -92,18 +92,18 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 检查 data/unified_clash_config.yaml 和 data/all.txt 是否存在且非空
-          if [ ! -s data/unified_clash_config.yaml ] || [ ! -s data/all.txt ]; then
-            echo "::warning::Missing or empty data/unified_clash_config.yaml or data/all.txt, skipping commit"
+          # 检查文件是否都存在且非空
+          if [ ! -s data/unified_clash_config.yaml ] || [ ! -s data/all.txt ] || [ ! -s data/tested_clash_config.yaml ]; then
+            echo "::warning::Missing or empty data/unified_clash_config.yaml, data/all.txt, or data/tested_clash_config.yaml, skipping commit"
             exit 0
           fi
           
-          # 添加两个文件
-          git add data/unified_clash_config.yaml data/all.txt
-          if git diff --cached --exit-code data/unified_clash_config.yaml data/all.txt; then
-            echo "::notice::No changes to commit in data/unified_clash_config.yaml or data/all.txt"
+          # 添加三个文件
+          git add data/unified_clash_config.yaml data/tested_clash_config.yaml data/all.txt
+          if git diff --cached --exit-code data/unified_clash_config.yaml data/tested_clash_config.yaml data/all.txt; then
+            echo "::notice::No changes to commit in data/unified_clash_config.yaml, data/tested_clash_config.yaml, or data/all.txt"
           else
-            git commit -m "Update Clash configuration and test results [skip ci]"
+            git commit -m "Update Clash configurations and test results [skip ci]"
             git push
-            echo "::notice::Successfully committed and pushed updated configuration and test results"
+            echo "::notice::Successfully committed and pushed updated configurations and test results"
           fi
