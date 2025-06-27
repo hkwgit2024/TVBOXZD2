@@ -14,7 +14,7 @@ import re
 CLASH_BASE_CONFIG_URLS = [
    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
    # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
+    "https://raw.githubusercontent.com/dimzon/scaling-sniffle/refs/heads/main/all-ip-resolve-sort.txt",
                          ]
 
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
