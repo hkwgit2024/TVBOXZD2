@@ -11,7 +11,7 @@ import socket
 import re
 
 CLASH_BASE_CONFIG_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/Sub/refs/heads/main/sub/share/a11",
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
 ]
 
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
