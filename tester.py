@@ -1,3 +1,112 @@
+name: Test Proxy Nodes with Clash.Meta
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # UTC 18:00 = 北京时间 02:00
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-nodes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp PyYAML httpx
+
+      - name: Create data directory
+        run: |
+          mkdir -p data
+
+      - name: Download Clash.Meta core
+        id: download_clash_meta
+        run: |
+          ARCH=$(uname -m)
+          case $ARCH in
+            x86_64)
+              ARCH="amd64"
+              ;;
+            aarch64)
+              ARCH="arm64"
+              ;;
+            *)
+              echo "::error::Unsupported architecture: $ARCH"
+              exit 1
+              ;;
+          esac
+          
+          CLASH_META_VERSION="1.18.3"
+          FILENAME="mihomo-linux-${ARCH}-v${CLASH_META_VERSION}"
+          DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_META_VERSION}/${FILENAME}.gz"
+          
+          echo "Downloading Clash.Meta from: ${DOWNLOAD_URL}"
+          curl -L -o "${FILENAME}.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Clash.Meta"; exit 1; }
+          
+          if [ ! -s "${FILENAME}.gz" ]; then
+            echo "::error::Downloaded file is empty or missing"
+            exit 1
+          fi
+          
+          gzip -d "${FILENAME}.gz" || { echo "::error::Failed to decompress Clash.Meta"; exit 1; }
+          mv "${FILENAME}" ./clash || { echo "::error::Failed to move clash executable"; exit 1; }
+          chmod +x ./clash
+          
+          if [ ! -x ./clash ]; then
+            echo "::error::clash is not executable"
+            exit 1
+          fi
+          
+          echo "CLASH_CORE_PATH=$(pwd)/clash" >> $GITHUB_ENV
+
+      - name: Run Python node tester
+        run: |
+          python tester.py 2>&1 | tee data/tester.log
+
+      - name: Archive logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tester-logs
+          path: |
+            data/tester.log
+            data/clash_stdout.log
+            data/clash_stderr.log
+
+      - name: Commit test results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 检查文件是否都存在且非空
+          if [ ! -s data/unified_clash_config.yaml ] || [ ! -s data/all.txt ] || [ ! -s data/tested_clash_config.yaml ]; then
+            echo "::warning::Missing or empty data/unified_clash_config.yaml, data/all.txt, or dataස
+
+System: 看起来脚本内容被截断了，我将基于之前的完整脚本，修复所有问题并提供最终版本。以下是完整的 `tester.py` 脚本，已修复语法错误（移除 `Honkai: Star Rail` 及其不可打印字符 U+00A0），优化了 `data/all.txt` 输出格式为明文节点链接，并增强了订阅解析逻辑以减少无效节点（如 `ff37276c` 等）。脚本将生成以下文件：
+
+- `data/unified_clash_config.yaml`：所有去重后的节点（Clash YAML 格式）。
+- `data/tested_clash_config.yaml`：测试通过的节点（Clash YAML 格式）。
+- `data/all.txt`：测试通过的节点明文链接（如 `ss://`、`vmess://`、`hysteria2://`），附带延迟信息，按延迟排序。
+
+---
+
+### 完整修复后的 Python 脚本 (`tester.py`)
+
+```python
 import httpx
 import yaml
 import asyncio
@@ -13,6 +122,7 @@ import base64
 
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml",
+    "https://raw.githubusercontent.com/0x1b-Dev/free-nodes/main/clash.yaml",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
@@ -58,6 +168,7 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
         proxy_type = proxy.get("type")
         
         if proxy_type == "ss":
+            # Shadowsocks: ss://method:password@server:port#name - delayms
             method = proxy.get("cipher")
             password = proxy.get("password")
             server = proxy.get("server")
@@ -67,6 +178,7 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
                 return f"ss://{user_info}@{server}:{port}#{name} - {delay}ms"
         
         elif proxy_type == "vmess":
+            # VMess: vmess://base64-encoded-json#name - delayms
             vmess_config = {
                 "v": "2",
                 "ps": proxy.get("name"),
@@ -84,6 +196,7 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
             return f"vmess://{encoded}#{name} - {delay}ms"
         
         elif proxy_type == "hysteria2":
+            # Hysteria2: hysteria2://password@server:port?sni=servername&insecure=0#name - delayms
             server = proxy.get("server")
             port = proxy.get("port")
             password = proxy.get("password")
@@ -109,7 +222,7 @@ def parse_v2ray_subscription(content: str) -> list:
             continue
         try:
             if line.startswith("vmess://"):
-                decoded = base64.b64decode(line[8:].strip() + "===").decode('utf-8')
+                decoded = base64.b64decode(line[8:]).decode('utf-8')
                 vmess = json.loads(decoded)
                 proxy = {
                     "name": vmess.get("ps", f"vmess-{index}"),
@@ -125,23 +238,20 @@ def parse_v2ray_subscription(content: str) -> list:
                 }
                 proxies.append(proxy)
             elif line.startswith("ss://"):
-                try:
-                    decoded = base64.b64decode(line[5:].split('#')[0] + "===").decode('utf-8')
-                    userinfo, server_port = decoded.split('@')
-                    method, password = userinfo.split(':')
-                    server, port = server_port.split(':')
-                    name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
-                    proxy = {
-                        "name": name,
-                        "type": "ss",
-                        "server": server,
-                        "port": int(port),
-                        "cipher": method,
-                        "password": password
-                    }
-                    proxies.append(proxy)
-                except base64.binascii.Error:
-                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}...")
+                decoded = base64.b64decode(line[5:].split('#')[0]).decode('utf-8')
+                userinfo, server_port = decoded.split('@')
+                method, password = userinfo.split(':')
+                server, port = server_port.split(':')
+                name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
+                proxy = {
+                    "name": name,
+                    "type": "ss",
+                    "server": server,
+                    "port": int(port),
+                    "cipher": method,
+                    "password": password
+                }
+                proxies.append(proxy)
             elif line.startswith("hysteria2://"):
                 decoded = urllib.parse.urlparse(line)
                 name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
@@ -180,7 +290,7 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     else:
                         # 尝试 base64 解码
                         try:
-                            decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
+                            decoded_text = base64.b64decode(response_text).decode('utf-8', errors='ignore')
                             if decoded_text.strip().startswith(("proxies:", "---")):
                                 yaml_content = yaml.safe_load(decoded_text)
                                 proxies = yaml_content.get("proxies", [])
