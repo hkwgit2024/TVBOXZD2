@@ -13,7 +13,6 @@ import base64
 
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml",
-    "https://raw.githubusercontent.com/0x1b-Dev/free-nodes/main/clash.yaml",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
@@ -59,7 +58,6 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
         proxy_type = proxy.get("type")
         
         if proxy_type == "ss":
-            # Shadowsocks: ss://method:password@server:port#name - delayms
             method = proxy.get("cipher")
             password = proxy.get("password")
             server = proxy.get("server")
@@ -69,7 +67,6 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
                 return f"ss://{user_info}@{server}:{port}#{name} - {delay}ms"
         
         elif proxy_type == "vmess":
-            # VMess: vmess://base64-encoded-json#name - delayms
             vmess_config = {
                 "v": "2",
                 "ps": proxy.get("name"),
@@ -87,7 +84,6 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
             return f"vmess://{encoded}#{name} - {delay}ms"
         
         elif proxy_type == "hysteria2":
-            # Hysteria2: hysteria2://password@server:port?sni=servername&insecure=0#name - delayms
             server = proxy.get("server")
             port = proxy.get("port")
             password = proxy.get("password")
@@ -113,7 +109,7 @@ def parse_v2ray_subscription(content: str) -> list:
             continue
         try:
             if line.startswith("vmess://"):
-                decoded = base64.b64decode(line[8:]).decode('utf-8')
+                decoded = base64.b64decode(line[8:].strip() + "===").decode('utf-8')
                 vmess = json.loads(decoded)
                 proxy = {
                     "name": vmess.get("ps", f"vmess-{index}"),
@@ -129,20 +125,23 @@ def parse_v2ray_subscription(content: str) -> list:
                 }
                 proxies.append(proxy)
             elif line.startswith("ss://"):
-                decoded = base64.b64decode(line[5:].split('#')[0]).decode('utf-8')
-                userinfo, server_port = decoded.split('@')
-                method, password = userinfo.split(':')
-                server, port = server_port.split(':')
-                name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
-                proxy = {
-                    "name": name,
-                    "type": "ss",
-                    "server": server,
-                    "port": int(port),
-                    "cipher": method,
-                    "password": password
-                }
-                proxies.append(proxy)
+                try:
+                    decoded = base64.b64decode(line[5:].split('#')[0] + "===").decode('utf-8')
+                    userinfo, server_port = decoded.split('@')
+                    method, password = userinfo.split(':')
+                    server, port = server_port.split(':')
+                    name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
+                    proxy = {
+                        "name": name,
+                        "type": "ss",
+                        "server": server,
+                        "port": int(port),
+                        "cipher": method,
+                        "password": password
+                    }
+                    proxies.append(proxy)
+                except base64.binascii.Error:
+                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}...")
             elif line.startswith("hysteria2://"):
                 decoded = urllib.parse.urlparse(line)
                 name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
@@ -181,7 +180,7 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     else:
                         # 尝试 base64 解码
                         try:
-                            decoded_text = base64.b64decode(response_text).decode('utf-8', errors='ignore')
+                            decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
                             if decoded_text.strip().startswith(("proxies:", "---")):
                                 yaml_content = yaml.safe_load(decoded_text)
                                 proxies = yaml_content.get("proxies", [])
