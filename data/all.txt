@@ -1,1 +1,8 @@
-No nodes passed the delay test.
+Node Test Results (sorted by delay):
+COMPATIBLE: 138ms
+yandex-314: 305ms
+yandex-315: 305ms
+yandex-312: 801ms
+yandex-319: 873ms
+yandex-305: 928ms
+yandex-318: 1153ms
