@@ -7,6 +7,8 @@ import time
 import socket
 import re
 import json
+import urllib.parse  # 修复 urllib 未定义问题
+import traceback
 
 CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml"]
 
@@ -79,10 +81,12 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                 f.write(f"[{name}] {line_str}\n")
             print(f"[{name}] Stream finished.")
             f.write(f"[{name}] Stream finished.\n")
+    
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         if s.connect_ex(('127.0.0.1', api_port)) == 0:
             print(f"❌ 错误：端口 {api_port} 已被占用，请更换端口或释放端口")
             return []
+    
     for attempt in range(retries):
         clash_process = None
         stdout_task = None
@@ -161,6 +165,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
                 return tested_nodes_info
         except Exception as e:
             print(f"❌ 节点测试过程中发生错误: {e}")
+            print(traceback.format_exc())
         finally:
             if clash_process and clash_process.returncode is None:
                 print("🛑 正在停止 Clash.Meta 进程...")
@@ -187,17 +192,19 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
 async def main():
     print("🚀 开始从 URL 获取 YAML 格式的 Clash 配置文件...")
     os.makedirs("data", exist_ok=True)
-    for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
+    for log_file in ["data/clash_stdout.log", "data/clash_stderr.log", "data/all.txt"]:
         if os.path.exists(log_file):
             with open(log_file, "w", encoding="utf-8") as f:
                 f.write("")
+    
     all_proxies = await fetch_yaml_configs(CLASH_BASE_CONFIG_URLS)
     print(f"\n✅ 总共从 YAML 配置解析到 {len(all_proxies)} 个代理节点。")
     if not all_proxies:
         print("🤷 没有找到任何节点，无法进行测试。")
         with open("data/all.txt", "w", encoding="utf-8") as f:
-            f.write("")
+            f.write("No proxies found.\n")
         return
+    
     unique_proxies_map = {}
     for proxy in all_proxies:
         key = (
@@ -215,6 +222,7 @@ async def main():
             print(f"  ➡️ 跳过重复节点: {proxy.get('name')} ({proxy.get('type')}, {proxy.get('server')}:{proxy.get('port')})")
     unique_proxies = list(unique_proxies_map.values())
     print(f"✨ 过滤重复后剩余 {len(unique_proxies)} 个唯一节点。")
+    
     proxy_names = set()
     for proxy in unique_proxies:
         name = proxy.get("name")
@@ -222,6 +230,7 @@ async def main():
             print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
             proxy["name"] = f"{name}-{len(proxy_names)}"
         proxy_names.add(proxy["name"])
+    
     unified_clash_config = {
         "proxies": unique_proxies,
         "proxy-groups": [
@@ -244,7 +253,7 @@ async def main():
         "dns": {
             "enable": True,
             "ipv6": False,
-            "listen": "0.0.0.0:53",
+            "listen": "0.0.0.0:1053",  # 使用非特权端口，避免 permission denied
             "enhanced-mode": "fake-ip",
             "default-nameserver": [
                 "114.114.114.114",
@@ -262,6 +271,7 @@ async def main():
         "external-controller": "0.0.0.0:9090",
         "external-ui": "ui"
     }
+    
     unified_config_path = "data/unified_clash_config.yaml"
     try:
         with open(unified_config_path, "w", encoding="utf-8") as f:
@@ -276,21 +286,26 @@ async def main():
     except Exception as e:
         print(f"❌ 错误：生成统一 Clash 配置文件失败：{e}")
         return
+    
     clash_core_path = os.environ.get("CLASH_CORE_PATH")
     if not clash_core_path:
-        print(f"❌ 错误：环境变量 CLASH_CORE_PATH 未设置，无法执行 Clash.Meta 测试。")
-        print(f"➡️ 已生成 YAML 配置文件：{unified_config_path}")
+        print(f"❌ 错误：环境变量 CLASH_CORE_PATH 未设置，请设置指向 Clash.Meta 可执行文件的路径。")
+        print("例如：export CLASH_CORE_PATH=/path/to/clash-meta")
         return
+    
     print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
     tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
-    if tested_nodes:
-        print("\n--- 延迟测试结果 (按延迟升序) ---")
-        for node_info in tested_nodes:
-            print(f"{node_info['name']}: {node_info['delay']}ms")
-    else:
-        print("\n😔 没有节点通过延迟测试。")
-    output_file_path = "data/unified_clash_config.yaml"
-    print(f"\n✅ 最终的 YAML 配置文件已写入：{output_file_path}")
+    
+    with open("data/all.txt", "w", encoding="utf-8") as f:
+        if tested_nodes:
+            f.write("Node Test Results (sorted by delay):\n")
+            for node_info in tested_nodes:
+                f.write(f"{node_info['name']}: {node_info['delay']}ms\n")
+        else:
+            f.write("No nodes passed the delay test.\n")
+    print(f"📝 已将测试结果写入 data/all.txt")
+    
+    print(f"\n✅ 最终的 YAML 配置文件已写入：{unified_config_path}")
     print(f"总共输出 {len(unique_proxies)} 个代理节点。")
 
 if __name__ == "__main__":
