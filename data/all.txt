@@ -1,3 +1,1 @@
-Node Test Results (sorted by delay):
-Trojan VPN Server UKO 2 #2: 272ms
-COMPATIBLE: 324ms
+No nodes passed the delay test.
