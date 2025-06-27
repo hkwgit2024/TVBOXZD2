@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 设置 Node.js（用于节点解析）
+      # 设置 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -30,7 +30,7 @@ jobs:
         run: |
           curl -o sub_2.txt https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt
 
-      # 解析节点并转换为 Clash 配置文件
+      # 解析节点并生成 Clash 配置文件
       - name: Parse Proxy Nodes
         run: |
           node -e '
@@ -50,14 +50,14 @@ jobs:
                   return { name: `vmess-${index}`, type: "vmess", server: decoded.add, port: parseInt(decoded.port), uuid: decoded.id, alterId: decoded.aid || 0, cipher: decoded.scy || "auto" };
                 } else if (node.match(/^ss:\/\/(.+)/)) {
                   const base64 = node.split("://")[1].split("#")[0];
-                  const decoded = Buffer.from(base64, "base exterminator64").toString("utf8");
+                  const decoded = Buffer.from(base64, "base64").toString("utf8");
                   const [method, password, rest] = decoded.split(/[@:]/);
                   const [server, port] = rest.split(":");
                   return { name: `ss-${index}`, type: "ss", server, port: parseInt(port), password, cipher: method };
                 } else if (node.match(/^ssr:\/\/(.+)/)) {
                   const base64 = node.split("://")[1];
                   const decoded = Buffer.from(base64, "base64").toString("utf8");
-                  const params = new URLSearchParams(decoded.split("/?")[1]);
+                  const params = new URLSearchParams(decoded.split("/?")[1] || "");
                   const [server, port, protocol, cipher, obfs, password] = decoded.split(":");
                   return { name: `ssr-${index}`, type: "ssr", server, port: parseInt(port), password: Buffer.from(password, "base64").toString("utf8"), cipher, obfs, protocol };
                 } else if (node.match(/^vless:\/\/([^@]+)@([^:]+):(\d+)/)) {
@@ -81,12 +81,16 @@ jobs:
       # 测试节点（使用 Clash）
       - name: Test with Clash
         run: |
+          # 启动 Clash 容器
           docker run -d --name clash dreamacro/clash
-          docker cp clash.yaml clash:/etc/clash/config.yaml
-          # 测试节点连通性
-          docker exec clash sh -c "clash -f /etc/clash/config.yaml -t > /etc/clash/test-results.txt || echo 'Clash test failed' > /etc/clash/test-results.txt"
-          docker cp clash:/etc/clash/test-results.txt clash-results.txt
-          # 模拟延迟测试（简化的 curl 测试）
+          # 创建配置目录
+          docker exec clash mkdir -p /root/.config/clash
+          # 复制配置文件到正确路径
+          docker cp clash.yaml clash:/root/.config/clash/config.yaml
+          # 测试配置有效性
+          docker exec clash sh -c "clash -f /root/.config/clash/config.yaml -t > /root/.config/clash/test-results.txt || echo 'Clash configuration test failed' > /root/.config/clash/test-results.txt"
+          docker cp clash:/root/.config/clash/test-results.txt clash-results.txt
+          # 延迟测试
           node -e '
             const fs = require("fs");
             const { execSync } = require("child_process");
@@ -95,7 +99,17 @@ jobs:
             for (const proxy of nodes) {
               try {
                 const start = Date.now();
-                execSync(`curl -s -o /dev/null --max-time 5 -x ${proxy.type}://${proxy.server}:${proxy.port} https://api.github.com`, { stdio: "ignore" });
+                // 使用 HTTP 代理测试（避免 UDP 限制）
+                let proxyUrl = "";
+                if (proxy.type === "http" || proxy.type === "https") {
+                  proxyUrl = `${proxy.type}://${proxy.server}:${proxy.port}`;
+                } else if (proxy.type === "ss" || proxy.type === "trojan") {
+                  proxyUrl = `http://${proxy.server}:${proxy.port}`; // 简化为 HTTP 测试
+                } else {
+                  results.push(`${proxy.name}: Skipped, Unsupported protocol (${proxy.type}) in GitHub Actions`);
+                  continue;
+                }
+                execSync(`curl -s -o /dev/null --max-time 5 -x ${proxyUrl} https://api.github.com`, { stdio: "ignore" });
                 const latency = Date.now() - start;
                 results.push(`${proxy.name}: Working, Latency: ${latency}ms`);
               } catch (e) {
@@ -125,7 +139,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 上传 artifact（可选，调试用）
+      # 上传 artifact（调试用）
       - name: Upload Results
         uses: actions/upload-artifact@v4
         with:
