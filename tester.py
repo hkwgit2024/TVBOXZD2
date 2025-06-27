@@ -8,7 +8,7 @@ import socket
 import re
 import json
 
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml"]
 
 def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
