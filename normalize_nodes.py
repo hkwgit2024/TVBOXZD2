@@ -3,60 +3,43 @@ import os
 import base64
 import json
 import urllib.parse
-import yaml
 
 def parse_vmess(url, index):
-    """解析 vmess:// 协议，符合 Clash.Meta 要求"""
+    """解析 vmess:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         data = base64.b64decode(url.replace('vmess://', '')).decode('utf-8')
         config = json.loads(data)
-        node = {
-            'type': 'vmess',
-            'name': f"vmess-{index}-{config.get('ps', 'node')}",
-            'server': config.get('add'),
-            'port': int(config.get('port')),
-            'uuid': config.get('id'),
-            'alterId': int(config.get('aid', 0)),
-            'cipher': config.get('scy', 'auto'),
-            'network': config.get('net', 'tcp'),
-            'tls': config.get('tls') == 'tls'
-        }
-        # 验证必填字段
-        if not all([node['server'], node['port'], node['uuid']]):
+        server = config.get('add')
+        port = config.get('port')
+        uuid = config.get('id')
+        alterId = config.get('aid', '0')
+        cipher = config.get('scy', 'auto')
+        if not all([server, port, uuid]):  # 验证必填字段
             print(f"Skipping vmess node {url}: missing required fields")
             return None
-        return node
+        return f"vmess {server} {port} uuid={uuid} alterId={alterId} cipher={cipher} name={config.get('ps', f'node-{index}')}"
     except Exception as e:
         print(f"Error parsing vmess {url}: {e}")
         return None
 
 def parse_trojan(url, index):
-    """解析 trojan:// 协议，符合 Clash.Meta 要求"""
+    """解析 trojan:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         parsed = urllib.parse.urlparse(url)
         password = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        node = {
-            'type': 'trojan',
-            'name': f"trojan-{index}-{server}",
-            'server': server,
-            'port': int(port),
-            'password': password,
-            'sni': params.get('sni', [''])[0],
-            'skip-cert-verify': params.get('allowInsecure', ['0'])[0] == '1'
-        }
-        if not all([node['server'], node['port'], node['password']]):
+        if not all([server, port, password]):  # 验证必填字段
             print(f"Skipping trojan node {url}: missing required fields")
             return None
-        return node
+        return f"trojan {server} {port} password={password} sni={params.get('sni', [''])[0]} name=trojan-{index}-{server}"
     except Exception as e:
         print(f"Error parsing trojan {url}: {e}")
         return None
 
 def parse_ss(url, index):
-    """解析 ss:// 协议，符合 Clash.Meta 要求"""
+    """解析 ss:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         parsed = urllib.parse.urlparse(url)
         method_password = parsed.netloc.split('@')[0]
@@ -64,100 +47,60 @@ def parse_ss(url, index):
             method_password = base64.b64decode(method_password).decode('utf-8')
         method, password = method_password.split(':')
         server, port = parsed.netloc.split('@')[1].split(':')
-        node = {
-            'type': 'ss',
-            'name': f"ss-{index}-{server}",
-            'server': server,
-            'port': int(port),
-            'cipher': method,
-            'password': password
-        }
-        if not all([node['server'], node['port'], node['cipher'], node['password']]):
+        if not all([server, port, method, password]):  # 验证必填字段
             print(f"Skipping ss node {url}: missing required fields")
             return None
-        return node
+        return f"ss {server} {port} cipher={method} password={password} name=ss-{index}-{server}"
     except Exception as e:
         print(f"Error parsing ss {url}: {e}")
         return None
 
 def parse_ssr(url, index):
-    """解析 ssr:// 协议，符合 Clash.Meta 要求"""
+    """解析 ssr:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         data = base64.b64decode(url.replace('ssr://', '')).decode('utf-8')
         parts = data.split(':')
         if len(parts) < 6:
+            print(f"Skipping ssr node {url}: incomplete format")
             return None
         server, port, protocol, method, obfs, password = parts[:6]
         password = base64.b64decode(password).decode('utf-8')
-        params = urllib.parse.parse_qs(data.split('?')[1]) if '?' in data else {}
-        node = {
-            'type': 'ssr',
-            'name': f"ssr-{index}-{server}",
-            'server': server,
-            'port': int(port),
-            'protocol': protocol,
-            'cipher': method,
-            'obfs': obfs,
-            'password': password,
-            'obfs-param': params.get('obfsparam', [''])[0],
-            'protocol-param': params.get('protoparam', [''])[0]
-        }
-        if not all([node['server'], node['port'], node['protocol'], node['cipher'], node['obfs'], node['password']]):
+        if not all([server, port, protocol, method, obfs, password]):  # 验证必填字段
             print(f"Skipping ssr node {url}: missing required fields")
             return None
-        return node
+        return f"ssr {server} {port} protocol={protocol} cipher={method} obfs={obfs} password={password} name=ssr-{index}-{server}"
     except Exception as e:
         print(f"Error parsing ssr {url}: {e}")
         return None
 
 def parse_vless(url, index):
-    """解析 vless:// 协议，符合 Clash.Meta 要求"""
+    """解析 vless:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         parsed = urllib.parse.urlparse(url)
         uuid = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        node = {
-            'type': 'vless',
-            'name': f"vless-{index}-{server}",
-            'server': server,
-            'port': int(port),
-            'uuid': uuid,
-            'encryption': params.get('encryption', ['none'])[0],
-            'flow': params.get('flow', [''])[0],
-            'tls': params.get('security', [''])[0] == 'tls',
-            'servername': params.get('sni', [''])[0]
-        }
-        if not all([node['server'], node['port'], node['uuid']]):
+        if not all([server, port, uuid]):  # 验证必填字段
             print(f"Skipping vless node {url}: missing required fields")
             return None
-        return node
+        return f"vless {server} {port} uuid={uuid} encryption={params.get('encryption', ['none'])[0]} name=vless-{index}-{server}"
     except Exception as e:
         print(f"Error parsing vless {url}: {e}")
         return None
 
 def parse_hysteria2(url, index):
-    """解析 hysteria2:// 协议，符合 Clash.Meta 要求"""
+    """解析 hysteria2:// 协议，符合 Clash.Meta 要求，输出明文"""
     try:
         parsed = urllib.parse.urlparse(url)
         password = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        node = {
-            'type': 'hysteria2',
-            'name': f"hysteria2-{index}-{server}",
-            'server': server,
-            'port': int(port),
-            'password': password,
-            'sni': params.get('sni', [''])[0],
-            'skip-cert-verify': params.get('insecure', ['0'])[0] == '1'
-        }
-        if not all([node['server'], node['port'], node['password']]):
+        if not all([server, port, password]):  # 验证必填字段
             print(f"Skipping hysteria2 node {url}: missing required fields")
             return None
-        return node
+        return f"hysteria2 {server} {port} password={password} sni={params.get('sni', [''])[0]} name=hysteria2-{index}-{server}"
     except Exception as e:
         print(f"Error parsing hysteria2 {url}: {e}")
         return None
@@ -183,7 +126,7 @@ def normalize_nodes(url, output_path):
         return
     
     # 规范化处理
-    proxies = []
+    normalized = []
     for index, line in enumerate(lines, 1):
         line = line.strip()
         if not line or line.startswith('#'):  # 忽略空行和注释
@@ -191,33 +134,31 @@ def normalize_nodes(url, output_path):
         # 检查协议并解析
         for protocol, parser in supported_protocols.items():
             if line.startswith(protocol):
-                node = parser(line, index)
-                if node:
-                    proxies.append(node)
+                parsed = parser(line, index)
+                if parsed:
+                    normalized.append(parsed)
                 break
         else:
             print(f"Skipping unsupported protocol: {line}")
     
-    # 去重（基于 name 字段）
+    # 去重（基于 name 参数）
     seen_names = set()
-    unique_proxies = []
-    for proxy in proxies:
-        if proxy['name'] not in seen_names:
-            seen_names.add(proxy['name'])
-            unique_proxies.append(proxy)
+    unique_nodes = []
+    for node in normalized:
+        name = node.split('name=')[-1]
+        if name not in seen_names:
+            seen_names.add(name)
+            unique_nodes.append(node)
     
     # 按协议排序
-    unique_proxies.sort(key=lambda x: x['type'])
-    
-    # 输出 YAML 格式
-    output = {'proxies': unique_proxies}
+    unique_nodes.sort(key=lambda x: x.split()[0])
     
     # 确保输出目录存在
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
     # 写入输出文件
     with open(output_path, 'w', encoding='utf-8') as f:
-        yaml.safe_dump(output, f, allow_unicode=True, sort_keys=False)
+        f.write('\n'.join(unique_nodes) + '\n')
 
 if __name__ == '__main__':
     input_url = 'https://raw.githubusercontent.com/qjlxg/vt/main/data/sub_2.txt'
