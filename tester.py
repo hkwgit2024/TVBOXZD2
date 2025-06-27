@@ -243,4 +243,28 @@ async def main():
             config_content = yaml.safe_load(f)
             if "mode" in config_content:
                 print(f"⚠️ 警告：配置文件中包含 mode 字段：{config_content['mode']}")
-            else
+            else:
+                print(f"✅ 配置文件验证通过，无 mode 字段")
+        print(f"📦 统一的 Clash 配置文件已生成：{unified_config_path}")
+    except Exception as e:
+        print(f"❌ 错误：生成统一 Clash 配置文件失败：{e}")
+        return
+    clash_core_path = os.environ.get("CLASH_CORE_PATH")
+    if not clash_core_path:
+        print(f"❌ 错误：环境变量 CLASH_CORE_PATH 未设置，无法执行 Clash.Meta 测试。")
+        print(f"➡️ 已生成 YAML 配置文件：{unified_config_path}")
+        return
+    print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
+    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
+    if tested_nodes:
+        print("\n--- 延迟测试结果 (按延迟升序) ---")
+        for node_info in tested_nodes:
+            print(f"{node_info['name']}: {node_info['delay']}ms")
+    else:
+        print("\n😔 没有节点通过延迟测试。")
+    output_file_path = "data/unified_clash_config.yaml"
+    print(f"\n✅ 最终的 YAML 配置文件已写入：{output_file_path}")
+    print(f"总共输出 {len(unique_proxies)} 个代理节点。")
+
+if __name__ == "__main__":
+    asyncio.run(main())
