@@ -1,10 +1,9 @@
-
 import httpx
 import yaml
 import asyncio
 import base64
 import json
-import os  # Corrected import
+import os
 import urllib.parse
 import subprocess
 import time
@@ -12,12 +11,8 @@ import socket
 import re
 
 CLASH_BASE_CONFIG_URLS = [
-   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-   # "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/all_nodes.txt",
-   # "https://raw.githubusercontent.com/dimzon/scaling-sniffle/refs/heads/main/all-ip-resolve-sort.txt",
-  # "https://raw.githubusercontent.com/qjlxg/TV/refs/heads/main/20232.txt",
-   "https://raw.githubusercontent.com/qjlxg/Sub/refs/heads/main/sub/share/a11",
-                         ]
+    "https://raw.githubusercontent.com/qjlxg/Sub/refs/heads/main/sub/share/a11",
+]
 
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
     """尝试将节点链接（ss, vmess, trojan, hy2, vless）解析为 Clash 代理字典格式。"""
@@ -36,7 +31,7 @@ def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
                 name_part = None
         # 生成唯一名称，避免重复
         proxy = {
-            "name": name_part if name_part else f"{scheme.upper()}-{index}-{remainder.split('@')[1].split('?')[0].replace(':', '-')}",
+            "name": name_part if name_part else f"{scheme.upper()}-{index}-{remainder.split('@')[1].split('?')[0].replace(':', '-')}" if '@' in remainder else f"{scheme.upper()}-{index}",
             "type": scheme.lower()
         }
         if scheme == "ss":
@@ -315,7 +310,7 @@ def generate_plaintext_node_link(proxy: dict) -> str | None:
     return None
 
 async def fetch_all_configs(urls: list[str]) -> list:
-    """从 URL 列表获取纯文本节点链接，并解析为 Clash 代理字典。"""
+    """从 URL 列表获取节点链接（支持纯文本和Base64编码），并解析为 Clash 代理字典。"""
     all_proxies = []
     async with httpx.AsyncClient(timeout=30.0) as client:
         for url in urls:
@@ -323,8 +318,22 @@ async def fetch_all_configs(urls: list[str]) -> list:
                 print(f"🔄 正在从 {url} 获取节点链接列表...")
                 response = await client.get(url)
                 response.raise_for_status()
-                node_links_content = response.text
-                lines = node_links_content.strip().split("\n")
+                content = response.text.strip()
+                
+                # 尝试检测是否为Base64编码
+                try:
+                    # 验证Base64字符集
+                    valid_base64_chars = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")
+                    if all(c in valid_base64_chars for c in content) and len(content) % 4 == 0:
+                        print(f"🔍 检测到Base64编码内容，尝试解码...")
+                        decoded_content = base64.urlsafe_b64decode(content).decode('utf-8')
+                        lines = decoded_content.strip().split("\n")
+                    else:
+                        lines = content.split("\n")
+                except Exception as e:
+                    print(f"⚠️ 警告：Base64解码失败，假设为纯文本处理：{e}")
+                    lines = content.split("\n")
+                
                 parsed_count = 0
                 for i, line in enumerate(lines):
                     line = line.strip()
@@ -461,7 +470,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
     return tested_nodes_info
 
 async def main():
-    print("🚀 开始从 URL 获取明文节点链接列表并处理...")
+    print("🚀 开始从 URL 获取节点链接列表并处理...")
     os.makedirs("data", exist_ok=True)
     for log_file in ["data/clash_stdout.log", "data/clash_stderr.log"]:
         if os.path.exists(log_file):
