@@ -9,23 +9,25 @@ import re
 
 CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
 
-def is_valid_reality_short_id(short_id: str) -> bool:
+def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
-    if not short_id:
+    if not short_id or not isinstance(short_id, str):
         return False
-    # shortId 通常是 8 字符的十六进制字符串
     return bool(re.match(r"^[0-9a-fA-F]{8}$", short_id))
 
-def validate_proxy(proxy: dict) -> bool:
+def validate_proxy(proxy: dict, index: int) -> bool:
     """验证代理节点是否有效，特别是 REALITY 协议的配置。"""
     if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
+        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少 name, server 或 port - {proxy.get('name', '未知节点')}")
         return False
     if proxy.get("type") == "vless" and proxy.get("flow") == "xtls-rprx-vision":
-        # 检查 REALITY 协议的 shortId
         reality_opts = proxy.get("reality-opts", {})
-        short_id = reality_opts.get("shortId", "")
+        if not isinstance(reality_opts, dict):
+            print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：reality-opts 不是字典 - {proxy.get('name')}")
+            return False
+        short_id = reality_opts.get("shortId")
         if not is_valid_reality_short_id(short_id):
-            print(f"⚠️ 跳过无效 REALITY 节点：{proxy.get('name')} - 无效 shortId: {short_id}")
+            print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')}")
             return False
     return True
 
@@ -44,12 +46,12 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     print(f"⚠️ 警告：{url} 中未找到代理节点")
                     continue
                 parsed_count = 0
-                for proxy in proxies:
-                    if validate_proxy(proxy):
+                for index, proxy in enumerate(proxies):
+                    if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
                     else:
-                        print(f"⚠️ 警告：跳过无效代理节点：{proxy.get('name', '未知节点')}")
+                        print(f"⚠️ 警告：跳过无效代理节点（索引 {index}）：{proxy.get('name', '未知节点')}")
                 print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
             except httpx.RequestError as e:
                 print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
@@ -83,7 +85,8 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
         stderr_task = None
         print(f"\n🚀 尝试启动 Clash.Meta 核心 (第 {attempt + 1}/{retries})...")
         try:
-            if not os.path.isfile(clash_core_path) or not os.access(clash_core_path, os.X_OK):
+            if not os.path.isfile(clash reciente
+_core_path) or not os.access(clash_core_path, os.X_OK):
                 print(f"❌ 错误：Clash.Meta 可执行文件不可用或无执行权限：{clash_core_path}")
                 return []
             clash_process = await asyncio.create_subprocess_exec(
