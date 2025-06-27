@@ -1,22 +1,20 @@
 proxies:
-- name: 🇧🇷BR-38.54.57.90-0375
-  server: 38.54.57.90
-  port: 989
-  type: ss
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-- name: yandex-314
-  server: 23.227.38.18
-  port: 80
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: false
+- name: yandex-188
+  server: us01.sh-cloudflare.sbs
+  port: 8443
+  type: vmess
+  uuid: 2703867d-dd8f-4f7f-93f4-ac6e4f56c7e8
+  alterId: 0
+  cipher: auto
+  tls: true
+  servername: us01.sh-cloudflare.sbs
   network: ws
   ws-opts:
     path: /
     headers:
-      Host: dg.xiaoqi555.xyz
-- name: yandex-315
+      Host: us01.sh-cloudflare.sbs
+  udp: true
+- name: yandex-266
   server: 104.17.186.73
   port: 80
   type: vless
@@ -27,13 +25,18 @@ proxies:
     path: /
     headers:
       Host: dg.xiaoqi555.xyz
-- name: 🇧🇴BO-185.93.173.218-4853
-  server: 185.93.173.218
-  port: 990
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: yandex-312
+- name: yandex-265
+  server: 23.227.38.18
+  port: 80
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: dg.xiaoqi555.xyz
+- name: yandex-142
   server: jpcn286.s2fjeyeeyafe.bond
   port: 35789
   type: hysteria2
@@ -42,33 +45,7 @@ proxies:
   sni: jpcn286.s2fjeyeeyafe.bond
   skip-cert-verify: false
   udp: true
-- name: yandex-319
-  server: xjp2vl.xiao666666.site
-  port: 55650
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: sECJIqBXlQf4NRj6TvgohkfAIPKayRlHGhELj7Pdd2w
-    short-id: 9e13dd9f
-  servername: main.m.taobao.com
-  client-fingerprint: chrome
-  network: tcp
-- name: yandex-884
-  server: 154.201.90.203
-  port: 13588
-  type: vless
-  uuid: 88c66586-1777-4b55-bab2-247f3a699133
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: 8IaUrSjd9TvIWYIlU2JVFR7seuAkD99732B95scDvyQ
-    short-id: a5e00036
-  servername: www.python.org
-  client-fingerprint: chrome
-  network: tcp
-- name: yandex-318
+- name: yandex-269
   server: xjp3vl.xiao666666.site
   port: 46350
   type: vless
@@ -81,37 +58,38 @@ proxies:
   servername: www.bing.com
   client-fingerprint: chrome
   network: tcp
-- name: 'Trojan VPN Server UKO 2 #2'
+- name: yandex-270
+  server: xjp2vl.xiao666666.site
+  port: 55650
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: sECJIqBXlQf4NRj6TvgohkfAIPKayRlHGhELj7Pdd2w
+    short-id: 9e13dd9f
+  servername: main.m.taobao.com
+  client-fingerprint: chrome
   network: tcp
-  password: opentunnel.net-rw8uuv207taq
-  port: 443
-  server: ukt-2.opensvr.net
-  type: trojan
 proxy-groups:
 - name: Tested Proxies
   type: select
   proxies:
-  - 🇧🇷BR-38.54.57.90-0375
-  - yandex-314
-  - yandex-315
-  - 🇧🇴BO-185.93.173.218-4853
-  - yandex-312
-  - yandex-319
-  - yandex-884
-  - yandex-318
-  - 'Trojan VPN Server UKO 2 #2'
+  - yandex-188
+  - yandex-266
+  - yandex-265
+  - yandex-142
+  - yandex-269
+  - yandex-270
 - name: Auto Select (URLTest)
   type: url-test
   proxies:
-  - 🇧🇷BR-38.54.57.90-0375
-  - yandex-314
-  - yandex-315
-  - 🇧🇴BO-185.93.173.218-4853
-  - yandex-312
-  - yandex-319
-  - yandex-884
-  - yandex-318
-  - 'Trojan VPN Server UKO 2 #2'
+  - yandex-188
+  - yandex-266
+  - yandex-265
+  - yandex-142
+  - yandex-269
+  - yandex-270
   url: http://www.google.com/generate_204
   interval: 300
 rules:
