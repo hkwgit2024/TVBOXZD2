@@ -1,3 +1,112 @@
+name: Test Proxy Nodes with Clash.Meta
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # UTC 18:00 = 北京时间 02:00
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-nodes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp PyYAML httpx
+
+      - name: Create data directory
+        run: |
+          mkdir -p data
+
+      - name: Download Clash.Meta core
+        id: download_clash_meta
+        run: |
+          ARCH=$(uname -m)
+          case $ARCH in
+            x86_64)
+              ARCH="amd64"
+              ;;
+            aarch64)
+              ARCH="arm64"
+              ;;
+            *)
+              echo "::error::Unsupported architecture: $ARCH"
+              exit 1
+              ;;
+          esac
+          
+          CLASH_META_VERSION="1.18.3"
+          FILENAME="mihomo-linux-${ARCH}-v${CLASH_META_VERSION}"
+          DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/v${CLASH_META_VERSION}/${FILENAME}.gz"
+          
+          echo "Downloading Clash.Meta from: ${DOWNLOAD_URL}"
+          curl -L -o "${FILENAME}.gz" "${DOWNLOAD_URL}" || { echo "::error::Failed to download Clash.Meta"; exit 1; }
+          
+          if [ ! -s "${FILENAME}.gz" ]; then
+            echo "::error::Downloaded file is empty or missing"
+            exit 1
+          fi
+          
+          gzip -d "${FILENAME}.gz" || { echo "::error::Failed to decompress Clash.Meta"; exit 1; }
+          mv "${FILENAME}" ./clash || { echo "::error::Failed to move clash executable"; exit 1; }
+          chmod +x ./clash
+          
+          if [ ! -x ./clash ]; then
+            echo "::error::clash is not executable"
+            exit 1
+          fi
+          
+          echo "CLASH_CORE_PATH=$(pwd)/clash" >> $GITHUB_ENV
+
+      - name: Run Python node tester
+        run: |
+          python tester.py 2>&1 | tee data/tester.log
+
+      - name: Archive logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tester-logs
+          path: |
+            data/tester.log
+            data/clash_stdout.log
+            data/clash_stderr.log
+
+      - name: Commit test results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # 检查文件是否都存在且非空
+          if [ ! -s data/unified_clash_config.yaml ] || [ ! -s data/all.txt ] || [ ! -s data/tested_clash_config.yaml ]; then
+            echo "::warning::Missing or empty data/unified_clash_config.yaml, data/all.txt, or dataස
+
+System: 看起来脚本内容被截断了，我将基于之前的完整脚本，修复所有问题并提供最终版本。以下是完整的 `tester.py` 脚本，已修复语法错误（移除 `Honkai: Star Rail` 及其不可打印字符 U+00A0），优化了 `data/all.txt` 输出格式为明文节点链接，并增强了订阅解析逻辑以减少无效节点（如 `ff37276c` 等）。脚本将生成以下文件：
+
+- `data/unified_clash_config.yaml`：所有去重后的节点（Clash YAML 格式）。
+- `data/tested_clash_config.yaml`：测试通过的节点（Clash YAML 格式）。
+- `data/all.txt`：测试通过的节点明文链接（如 `ss://`、`vmess://`、`hysteria2://`），附带延迟信息，按延迟排序。
+
+---
+
+### 完整修复后的 Python 脚本 (`tester.py`)
+
+```python
 import httpx
 import yaml
 import asyncio
@@ -52,6 +161,57 @@ def validate_proxy(proxy: dict, index: int) -> bool:
                 return False
     return True
 
+def to_plaintext_node(proxy: dict, delay: int) -> str:
+    """将 Clash 代理配置转换为明文节点链接，附带延迟信息。"""
+    try:
+        name = urllib.parse.quote(proxy.get("name", "unknown"))
+        proxy_type = proxy.get("type")
+        
+        if proxy_type == "ss":
+            # Shadowsocks: ss://method:password@server:port#name - delayms
+            method = proxy.get("cipher")
+            password = proxy.get("password")
+            server = proxy.get("server")
+            port = proxy.get("port")
+            if method and password and server and port:
+                user_info = base64.b64encode(f"{method}:{password}".encode()).decode().rstrip("=")
+                return f"ss://{user_info}@{server}:{port}#{name} - {delay}ms"
+        
+        elif proxy_type == "vmess":
+            # VMess: vmess://base64-encoded-json#name - delayms
+            vmess_config = {
+                "v": "2",
+                "ps": proxy.get("name"),
+                "add": proxy.get("server"),
+                "port": proxy.get("port"),
+                "id": proxy.get("uuid"),
+                "aid": proxy.get("alterId", 0),
+                "net": proxy.get("network", "tcp"),
+                "type": proxy.get("cipher", "auto"),
+                "tls": "tls" if proxy.get("tls", False) else "",
+                "host": proxy.get("servername", ""),
+                "path": proxy.get("ws-opts", {}).get("path", "")
+            }
+            encoded = base64.b64encode(json.dumps(vmess_config).encode()).decode().rstrip("=")
+            return f"vmess://{encoded}#{name} - {delay}ms"
+        
+        elif proxy_type == "hysteria2":
+            # Hysteria2: hysteria2://password@server:port?sni=servername&insecure=0#name - delayms
+            server = proxy.get("server")
+            port = proxy.get("port")
+            password = proxy.get("password")
+            sni = proxy.get("sni", server)
+            insecure = "1" if proxy.get("skip-cert-verify", False) else "0"
+            if server and port and password:
+                return f"hysteria2://{password}@{server}:{port}?sni={sni}&insecure={insecure}#{name} - {delay}ms"
+        
+        else:
+            print(f"⚠️ 跳过不支持的节点类型: {proxy_type} - {name}")
+            return ""
+    except Exception as e:
+        print(f"⚠️ 转换明文节点失败: {proxy.get('name', '未知节点')} - 错误: {e}")
+        return ""
+
 def parse_v2ray_subscription(content: str) -> list:
     """解析 V2Ray 订阅链接（如 vmess:// 或 ss://），转换为 Clash 格式的代理节点。"""
     proxies = []
@@ -73,14 +233,14 @@ def parse_v2ray_subscription(content: str) -> list:
                     "alterId": int(vmess.get("aid", 0)),
                     "cipher": vmess.get("type", "auto"),
                     "tls": vmess.get("tls") == "tls",
-                    "network": vmess.get("net", "tcp")
+                    "network": vmess.get("net", "tcp"),
+                    "ws-opts": {"path": vmess.get("path", "")} if vmess.get("net") == "ws" else {}
                 }
                 proxies.append(proxy)
             elif line.startswith("ss://"):
-                # 解析 ss:// 链接（格式：ss://<base64-encoded>@<server>:<port>#<name>）
                 decoded = base64.b64decode(line[5:].split('#')[0]).decode('utf-8')
                 userinfo, server_port = decoded.split('@')
-                method_password, _ = userinfo.split(':')
+                method, password = userinfo.split(':')
                 server, port = server_port.split(':')
                 name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
                 proxy = {
@@ -88,12 +248,11 @@ def parse_v2ray_subscription(content: str) -> list:
                     "type": "ss",
                     "server": server,
                     "port": int(port),
-                    "cipher": method_password.split('-')[0],
-                    "password": method_password.split('-')[-1]
+                    "cipher": method,
+                    "password": password
                 }
                 proxies.append(proxy)
             elif line.startswith("hysteria2://"):
-                # 解析 hysteria2:// 链接（简单示例，需根据实际格式调整）
                 decoded = urllib.parse.urlparse(line)
                 name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
                 query = urllib.parse.parse_qs(decoded.query)
@@ -107,6 +266,8 @@ def parse_v2ray_subscription(content: str) -> list:
                     "skip-cert-verify": query.get("insecure", ["0"])[0] == "1"
                 }
                 proxies.append(proxy)
+            else:
+                print(f"⚠️ 跳过未知协议节点（索引 {index}）：{line[:30]}...")
         except Exception as e:
             print(f"⚠️ 跳过无效订阅节点（索引 {index}）：{line[:30]}... - 错误: {e}")
     return proxies
@@ -134,13 +295,10 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                                 yaml_content = yaml.safe_load(decoded_text)
                                 proxies = yaml_content.get("proxies", [])
                             else:
-                                # 假设为 V2Ray 订阅格式
                                 proxies = parse_v2ray_subscription(decoded_text)
                         except base64.binascii.Error:
-                            # 直接解析为订阅格式
                             proxies = parse_v2ray_subscription(response_text)
                 except yaml.YAMLError:
-                    # 如果 YAML 解析失败，尝试作为订阅链接处理
                     proxies = parse_v2ray_subscription(response_text)
                 
                 if not proxies:
@@ -259,7 +417,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
                                 else:
                                     print(f"⚠️ 警告：节点 {node_name} 不在原始代理列表中")
                             else:
-                                print(f"💔 {node_name}: 测试失败/超時 ({delay_data.get('message', '未知错误')})")
+                                print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
                         except json.JSONDecodeError:
                             print(f"💔 {node_name}: 响应解析失败")
                     else:
@@ -401,12 +559,14 @@ async def main():
     
     with open("data/all.txt", "w", encoding="utf-8") as f:
         if tested_nodes:
-            f.write("Node Test Results (sorted by delay):\n")
+            f.write("Tested Proxy Nodes (plaintext format, sorted by delay):\n")
             for node_info in tested_nodes:
-                f.write(f"{node_info['name']}: {node_info['delay']}ms\n")
+                plaintext_node = to_plaintext_node(node_info["config"], node_info["delay"])
+                if plaintext_node:
+                    f.write(f"{plaintext_node}\n")
         else:
             f.write("No nodes passed the delay test.\n")
-    print(f"📝 已将测试结果写入 data/all.txt")
+    print(f"📝 已将测试结果（明文节点格式）写入 data/all.txt")
     
     tested_config_path = "data/tested_clash_config.yaml"
     if tested_nodes:
@@ -458,10 +618,8 @@ async def main():
         except Exception as e:
             print(f"❌ 错误：生成测试通过的 Clash 配置文件失败：{e}")
     
- Honkai: Star Rail
     print(f"\n✅ 最终的 YAML 配置文件已写入：{unified_config_path}")
     if tested_nodes:
-        print somebody love you
         print(f"✅ 测试通过的 YAML 配置文件已写入：{tested_config_path}")
         print(f"总共输出 {len(tested_proxies)} 个测试通过的代理节点。")
     print(f"总共输出 {len(unique_proxies)} 个代理节点（全部）。")
