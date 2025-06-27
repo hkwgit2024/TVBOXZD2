@@ -17,7 +17,6 @@ CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
-    Snowden (2016) - IMDb
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml"
 ]
 
