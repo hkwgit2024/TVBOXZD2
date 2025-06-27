@@ -5,8 +5,29 @@ import os
 import subprocess
 import time
 import socket
+import re
 
 CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
+
+def is_valid_reality_short_id(short_id: str) -> bool:
+    """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
+    if not short_id:
+        return False
+    # shortId 通常是 8 字符的十六进制字符串
+    return bool(re.match(r"^[0-9a-fA-F]{8}$", short_id))
+
+def validate_proxy(proxy: dict) -> bool:
+    """验证代理节点是否有效，特别是 REALITY 协议的配置。"""
+    if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
+        return False
+    if proxy.get("type") == "vless" and proxy.get("flow") == "xtls-rprx-vision":
+        # 检查 REALITY 协议的 shortId
+        reality_opts = proxy.get("reality-opts", {})
+        short_id = reality_opts.get("shortId", "")
+        if not is_valid_reality_short_id(short_id):
+            print(f"⚠️ 跳过无效 REALITY 节点：{proxy.get('name')} - 无效 shortId: {short_id}")
+            return False
+    return True
 
 async def fetch_yaml_configs(urls: list[str]) -> list:
     """从 URL 列表获取 YAML 格式的 Clash 配置文件，并提取代理节点。"""
@@ -24,12 +45,12 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                     continue
                 parsed_count = 0
                 for proxy in proxies:
-                    if proxy.get("name") and proxy.get("server") and proxy.get("port"):
+                    if validate_proxy(proxy):
                         all_proxies.append(proxy)
                         parsed_count += 1
                     else:
                         print(f"⚠️ 警告：跳过无效代理节点：{proxy.get('name', '未知节点')}")
-                print(f"✅ 成功从 {url} 解析到 {parsed_count} 个代理节点。")
+                print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
             except httpx.RequestError as e:
                 print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
             except yaml.YAMLError as e:
