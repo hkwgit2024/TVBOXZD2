@@ -1,16 +1,12 @@
 Tested Proxy Nodes (plaintext format, sorted by delay):
-ss://YWVzLTEyOC1nY206c2hhZG93c29ja3M@149.22.95.183:443#%F0%9F%87%A8%F0%9F%87%A6CA-149.22.95.183-0226 - 66ms
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@79.127.233.170:990#%F0%9F%87%A8%F0%9F%87%A6CA-79.127.233.170-4913 - 70ms
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpKSWhONnJCS2thRWJvTE5YVlN2NXJx@142.4.216.225:80#%F0%9F%87%A8%F0%9F%87%A6CA-142.4.216.225-0316 - 141ms
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpKSWhONnJCS2thRWJvTE5YVlN2NXJx@ca225.vpnbook.com:80#%F0%9F%87%A8%F0%9F%87%A6CA-142.4.216.225-0298 - 166ms
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpOMkU0TQ@ca.opensocks.site:8388#%F0%9F%87%A8%F0%9F%87%A6CA-209.200.246.174-5044 - 170ms
-trojan://acfef609-b3c7-4e52-b292-8921d5fca90d@ca-full.privateip.net:443?sni=ca-full.privateip.net#%F0%9F%87%A8%F0%9F%87%A6CA-148.113.207.224-4890 - 221ms
-vmess://eyJ2IjogIjIiLCAicHMiOiAieWFuZGV4LTE4OCIsICJhZGQiOiAidXMwMS5zaC1jbG91ZGZsYXJlLnNicyIsICJwb3J0IjogODQ0MywgImlkIjogIjI3MDM4NjdkLWRkOGYtNGY3Zi05M2Y0LWFjNmU0ZjU2YzdlOCIsICJhaWQiOiAwLCAibmV0IjogIndzIiwgInR5cGUiOiAiYXV0byIsICJ0bHMiOiAidGxzIiwgImhvc3QiOiAidXMwMS5zaC1jbG91ZGZsYXJlLnNicyIsICJwYXRoIjogIi8ifQ#yandex-188 - 308ms
-ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@38.54.57.90:989#%F0%9F%87%A7%F0%9F%87%B7BR-38.54.57.90-0375 - 366ms
-hysteria2://96eee01d-74be-440a-94f8-7cc52450395e@jpcn286.s2fjeyeeyafe.bond:35789?sni=jpcn286.s2fjeyeeyafe.bond&insecure=0#yandex-142 - 416ms
-vless://66ddd790-10ed-4a16-b334-0b7e3577b5b7@104.17.186.73:80?security=none&sni=104.17.186.73&type=ws&path=/#yandex-266 - 521ms
-vless://66ddd790-10ed-4a16-b334-0b7e3577b5b7@xjp3vl.xiao666666.site:46350?security=tls&sni=xjp3vl.xiao666666.site&flow=xtls-rprx-vision#yandex-269 - 526ms
-vless://66ddd790-10ed-4a16-b334-0b7e3577b5b7@xjp2vl.xiao666666.site:55650?security=tls&sni=xjp2vl.xiao666666.site&flow=xtls-rprx-vision#yandex-270 - 562ms
-vless://66ddd790-10ed-4a16-b334-0b7e3577b5b7@23.227.38.18:80?security=none&sni=23.227.38.18&type=ws&path=/#yandex-265 - 609ms
-ss://YWVzLTI1Ni1jZmI6ZjhmN2FDemNQS2JzRjhwMw@192.71.249.78:989#%F0%9F%87%A7%F0%9F%87%AABE-192.71.249.78-0358 - 641ms
-ss://Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpmOGY3YUN6Y1BLYnNGOHAz@185.93.173.218:990#%F0%9F%87%A7%F0%9F%87%B4BO-185.93.173.218-4853 - 710ms
+trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@awsus1.zymnode.cc:443?sni=awsus1.zymnode.cc#yandex-130 - 95ms
+vless://88c66586-1777-4b55-bab2-247f3a699133@154.201.90.203:13588?security=tls&sni=154.201.90.203&flow=xtls-rprx-vision#yandex-216 - 351ms
+vmess://eyJ2IjogIjIiLCAicHMiOiAieWFuZGV4LTU3OSIsICJhZGQiOiAidXMwMS5zaC1jbG91ZGZsYXJlLnNicyIsICJwb3J0IjogODQ0MywgImlkIjogIjI3MDM4NjdkLWRkOGYtNGY3Zi05M2Y0LWFjNmU0ZjU2YzdlOCIsICJhaWQiOiAwLCAibmV0IjogIndzIiwgInR5cGUiOiAiYXV0byIsICJ0bHMiOiAidGxzIiwgImhvc3QiOiAidXMwMS5zaC1jbG91ZGZsYXJlLnNicyIsICJwYXRoIjogIi8ifQ#yandex-579 - 486ms
+hysteria2://ee05fbb0-632a-48c8-8d17-630ef9ba1678@ztcloudnl.ztcloud.xyz:18570?sni=ztcloudnl.ztcloud.xyz&insecure=1#yandex-06 - 511ms
+trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applejp1.zymnode.cc:443?sni=applejp1.zymnode.cc#yandex-127 - 516ms
+hysteria2://ee05fbb0-632a-48c8-8d17-630ef9ba1678@ztcloudde.ztcloud.xyz:18550?sni=ztcloudde.ztcloud.xyz&insecure=1#yandex-04 - 660ms
+trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applesg1.zymnode.cc:443?sni=applesg1.zymnode.cc#yandex-128 - 744ms
+trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applesg2.zymnode.cc:443?sni=applesg2.zymnode.cc#yandex-129 - 784ms
+hysteria2://ee05fbb0-632a-48c8-8d17-630ef9ba1678@ztcloudgb.ztcloud.xyz:18580?sni=ztcloudgb.ztcloud.xyz&insecure=1#yandex-07 - 963ms
+hysteria2://ee05fbb0-632a-48c8-8d17-630ef9ba1678@ztcloudjp.ztcloud.xyz:18530?sni=ztcloudjp.ztcloud.xyz&insecure=1#yandex-02 - 1278ms
+hysteria2://ee05fbb0-632a-48c8-8d17-630ef9ba1678@ztcloudus.ztcloud.xyz:18560?sni=ztcloudus.ztcloud.xyz&insecure=1#yandex-05 - 2694ms

@@ -1,41 +1,26 @@
 proxies:
-- name: 🇨🇦CA-149.22.95.183-0226
-  server: 149.22.95.183
-  port: 443
-  type: ss
-  cipher: aes-128-gcm
-  password: shadowsocks
-- name: 🇨🇦CA-79.127.233.170-4913
-  server: 79.127.233.170
-  port: 990
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: 🇨🇦CA-142.4.216.225-0316
-  server: 142.4.216.225
-  port: 80
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: JIhN6rBKkaEboLNXVSv5rq
-- name: 🇨🇦CA-142.4.216.225-0298
-  server: ca225.vpnbook.com
-  port: 80
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: JIhN6rBKkaEboLNXVSv5rq
-- name: 🇨🇦CA-209.200.246.174-5044
-  server: ca.opensocks.site
-  port: 8388
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: N2E4M
-- name: 🇨🇦CA-148.113.207.224-4890
-  server: ca-full.privateip.net
+- name: yandex-130
+  server: awsus1.zymnode.cc
   port: 443
   type: trojan
-  password: acfef609-b3c7-4e52-b292-8921d5fca90d
+  password: 07a0e875-9b9a-4e11-a81f-8af85f82e74d
+  sni: awsus1.zymnode.cc
   skip-cert-verify: false
-- name: yandex-188
+  udp: true
+- name: yandex-216
+  server: 154.201.90.203
+  port: 13588
+  type: vless
+  uuid: 88c66586-1777-4b55-bab2-247f3a699133
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: 8IaUrSjd9TvIWYIlU2JVFR7seuAkD99732B95scDvyQ
+    short-id: a5e00036
+  servername: www.python.org
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-579
   server: us01.sh-cloudflare.sbs
   port: 8443
   type: vmess
@@ -50,118 +35,104 @@ proxies:
     headers:
       Host: us01.sh-cloudflare.sbs
   udp: true
-- name: 🇧🇷BR-38.54.57.90-0375
-  server: 38.54.57.90
-  port: 989
-  type: ss
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-- name: yandex-142
-  server: jpcn286.s2fjeyeeyafe.bond
-  port: 35789
+- name: yandex-06
+  server: ztcloudnl.ztcloud.xyz
+  port: 18570
   type: hysteria2
-  password: 96eee01d-74be-440a-94f8-7cc52450395e
-  auth: 96eee01d-74be-440a-94f8-7cc52450395e
-  sni: jpcn286.s2fjeyeeyafe.bond
+  password: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  auth: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  sni: ztcloudnl.ztcloud.xyz
+  skip-cert-verify: true
+  udp: true
+- name: yandex-127
+  server: applejp1.zymnode.cc
+  port: 443
+  type: trojan
+  password: 07a0e875-9b9a-4e11-a81f-8af85f82e74d
+  sni: applejp1.zymnode.cc
   skip-cert-verify: false
   udp: true
-- name: yandex-266
-  server: 104.17.186.73
-  port: 80
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: dg.xiaoqi555.xyz
-- name: yandex-269
-  server: xjp3vl.xiao666666.site
-  port: 46350
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: 1Chz-KxnZ6wuUwc-FdkxJkzSn7Qt_7hFO2_JDCfRpX8
-    short-id: 547f4d0f
-  servername: www.bing.com
-  client-fingerprint: chrome
-  network: tcp
-- name: yandex-270
-  server: xjp2vl.xiao666666.site
-  port: 55650
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: true
-  flow: xtls-rprx-vision
-  reality-opts:
-    public-key: sECJIqBXlQf4NRj6TvgohkfAIPKayRlHGhELj7Pdd2w
-    short-id: 9e13dd9f
-  servername: main.m.taobao.com
-  client-fingerprint: chrome
-  network: tcp
-- name: yandex-265
-  server: 23.227.38.18
-  port: 80
-  type: vless
-  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
-  tls: false
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      Host: dg.xiaoqi555.xyz
-- name: 🇧🇪BE-192.71.249.78-0358
-  server: 192.71.249.78
-  port: 989
-  type: ss
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-- name: 🇧🇴BO-185.93.173.218-4853
-  server: 185.93.173.218
-  port: 990
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
+- name: yandex-04
+  server: ztcloudde.ztcloud.xyz
+  port: 18550
+  type: hysteria2
+  password: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  auth: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  sni: ztcloudde.ztcloud.xyz
+  skip-cert-verify: true
+  udp: true
+- name: yandex-128
+  server: applesg1.zymnode.cc
+  port: 443
+  type: trojan
+  password: 07a0e875-9b9a-4e11-a81f-8af85f82e74d
+  sni: applesg1.zymnode.cc
+  skip-cert-verify: false
+  udp: true
+- name: yandex-129
+  server: applesg2.zymnode.cc
+  port: 443
+  type: trojan
+  password: 07a0e875-9b9a-4e11-a81f-8af85f82e74d
+  sni: applesg2.zymnode.cc
+  skip-cert-verify: false
+  udp: true
+- name: yandex-07
+  server: ztcloudgb.ztcloud.xyz
+  port: 18580
+  type: hysteria2
+  password: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  auth: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  sni: ztcloudgb.ztcloud.xyz
+  skip-cert-verify: true
+  udp: true
+- name: yandex-02
+  server: ztcloudjp.ztcloud.xyz
+  port: 18530
+  type: hysteria2
+  password: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  auth: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  sni: ztcloudjp.ztcloud.xyz
+  skip-cert-verify: true
+  udp: true
+- name: yandex-05
+  server: ztcloudus.ztcloud.xyz
+  port: 18560
+  type: hysteria2
+  password: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  auth: ee05fbb0-632a-48c8-8d17-630ef9ba1678
+  sni: ztcloudus.ztcloud.xyz
+  skip-cert-verify: true
+  udp: true
 proxy-groups:
 - name: Tested Proxies
   type: select
   proxies:
-  - 🇨🇦CA-149.22.95.183-0226
-  - 🇨🇦CA-79.127.233.170-4913
-  - 🇨🇦CA-142.4.216.225-0316
-  - 🇨🇦CA-142.4.216.225-0298
-  - 🇨🇦CA-209.200.246.174-5044
-  - 🇨🇦CA-148.113.207.224-4890
-  - yandex-188
-  - 🇧🇷BR-38.54.57.90-0375
-  - yandex-142
-  - yandex-266
-  - yandex-269
-  - yandex-270
-  - yandex-265
-  - 🇧🇪BE-192.71.249.78-0358
-  - 🇧🇴BO-185.93.173.218-4853
+  - yandex-130
+  - yandex-216
+  - yandex-579
+  - yandex-06
+  - yandex-127
+  - yandex-04
+  - yandex-128
+  - yandex-129
+  - yandex-07
+  - yandex-02
+  - yandex-05
 - name: Auto Select (URLTest)
   type: url-test
   proxies:
-  - 🇨🇦CA-149.22.95.183-0226
-  - 🇨🇦CA-79.127.233.170-4913
-  - 🇨🇦CA-142.4.216.225-0316
-  - 🇨🇦CA-142.4.216.225-0298
-  - 🇨🇦CA-209.200.246.174-5044
-  - 🇨🇦CA-148.113.207.224-4890
-  - yandex-188
-  - 🇧🇷BR-38.54.57.90-0375
-  - yandex-142
-  - yandex-266
-  - yandex-269
-  - yandex-270
-  - yandex-265
-  - 🇧🇪BE-192.71.249.78-0358
-  - 🇧🇴BO-185.93.173.218-4853
+  - yandex-130
+  - yandex-216
+  - yandex-579
+  - yandex-06
+  - yandex-127
+  - yandex-04
+  - yandex-128
+  - yandex-129
+  - yandex-07
+  - yandex-02
+  - yandex-05
   url: http://www.google.com/generate_204
   interval: 300
 rules:
