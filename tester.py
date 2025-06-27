@@ -10,7 +10,7 @@ import json
 import urllib.parse  # 修复 urllib 未定义问题
 import traceback
 
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes.yml"]
 
 def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
