@@ -1,0 +1,52 @@
+name: Test Proxy Nodes
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *' # 每天运行一次
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  test-proxies:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 检出仓库代码
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # 设置 Node.js 环境
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20' # 使用最新 Node.js 版本
+
+    # 安装依赖
+    - name: Install Dependencies
+      run: |
+        npm install axios socks-proxy-agent
+
+    # 下载代理节点
+    - name: Download Proxy List
+      run: |
+        curl -o sub_2.txt https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt
+
+    # 解码 Base64 节点（若需要）
+    - name: Decode Proxy Nodes
+      run: |
+        node -e "
+          const fs = require('fs');
+          const nodes = fs.readFileSync('sub_2.txt', 'utf8').split('\n').filter(line => line.trim());
+          const decodedNodes = nodes.map(node => {
+            if (node.match(/^(vmess|ss|trojan):\/\//)) {
+              const base64 = node.split('://')[1];
+              try {
+                return Buffer.from(base64, 'base64').toString('utf8');
+              } catch (e) {
+                return node;
+              }
+            }
+            return node;
+          });
+          fs.writeFileSync('nodes.txt', decodedNodes.join('\n
