@@ -1,0 +1,135 @@
+proxies:
+- name: 🇧🇷BR-38.54.57.90-0375
+  server: 38.54.57.90
+  port: 989
+  type: ss
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+- name: yandex-314
+  server: 23.227.38.18
+  port: 80
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: dg.xiaoqi555.xyz
+- name: yandex-315
+  server: 104.17.186.73
+  port: 80
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: dg.xiaoqi555.xyz
+- name: 🇧🇴BO-185.93.173.218-4853
+  server: 185.93.173.218
+  port: 990
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+- name: yandex-312
+  server: jpcn286.s2fjeyeeyafe.bond
+  port: 35789
+  type: hysteria2
+  password: 96eee01d-74be-440a-94f8-7cc52450395e
+  auth: 96eee01d-74be-440a-94f8-7cc52450395e
+  sni: jpcn286.s2fjeyeeyafe.bond
+  skip-cert-verify: false
+  udp: true
+- name: yandex-319
+  server: xjp2vl.xiao666666.site
+  port: 55650
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: sECJIqBXlQf4NRj6TvgohkfAIPKayRlHGhELj7Pdd2w
+    short-id: 9e13dd9f
+  servername: main.m.taobao.com
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-884
+  server: 154.201.90.203
+  port: 13588
+  type: vless
+  uuid: 88c66586-1777-4b55-bab2-247f3a699133
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: 8IaUrSjd9TvIWYIlU2JVFR7seuAkD99732B95scDvyQ
+    short-id: a5e00036
+  servername: www.python.org
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-318
+  server: xjp3vl.xiao666666.site
+  port: 46350
+  type: vless
+  uuid: 66ddd790-10ed-4a16-b334-0b7e3577b5b7
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: 1Chz-KxnZ6wuUwc-FdkxJkzSn7Qt_7hFO2_JDCfRpX8
+    short-id: 547f4d0f
+  servername: www.bing.com
+  client-fingerprint: chrome
+  network: tcp
+- name: 'Trojan VPN Server UKO 2 #2'
+  network: tcp
+  password: opentunnel.net-rw8uuv207taq
+  port: 443
+  server: ukt-2.opensvr.net
+  type: trojan
+proxy-groups:
+- name: Tested Proxies
+  type: select
+  proxies:
+  - 🇧🇷BR-38.54.57.90-0375
+  - yandex-314
+  - yandex-315
+  - 🇧🇴BO-185.93.173.218-4853
+  - yandex-312
+  - yandex-319
+  - yandex-884
+  - yandex-318
+  - 'Trojan VPN Server UKO 2 #2'
+- name: Auto Select (URLTest)
+  type: url-test
+  proxies:
+  - 🇧🇷BR-38.54.57.90-0375
+  - yandex-314
+  - yandex-315
+  - 🇧🇴BO-185.93.173.218-4853
+  - yandex-312
+  - yandex-319
+  - yandex-884
+  - yandex-318
+  - 'Trojan VPN Server UKO 2 #2'
+  url: http://www.google.com/generate_204
+  interval: 300
+rules:
+- MATCH,Tested Proxies
+dns:
+  enable: true
+  ipv6: false
+  listen: 0.0.0.0:1053
+  enhanced-mode: fake-ip
+  default-nameserver:
+  - 114.114.114.114
+  - 8.8.8.8
+  nameserver:
+  - tls://dns.google/dns-query
+  - https://dns.alidns.com/dns-query
+log-level: info
+port: 7890
+socks-port: 7891
+allow-lan: true
+external-controller: 0.0.0.0:9090
+external-ui: ui
