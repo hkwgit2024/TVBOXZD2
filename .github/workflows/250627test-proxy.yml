@@ -4,49 +4,82 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '0 0 * * *' # 每天运行一次
-  workflow_dispatch: # 允许手动触发
+    - cron: '0 0 * * *' # Run daily at 00:00 UTC
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
   test-proxies:
     runs-on: ubuntu-latest
 
     steps:
-    # 检出仓库代码
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      # Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    # 设置 Node.js 环境
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20' # 使用最新 Node.js 版本
+      # Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    # 安装依赖
-    - name: Install Dependencies
-      run: |
-        npm install axios socks-proxy-agent
+      # Install dependencies
+      - name: Install Dependencies
+        run: |
+          npm install axios socks-proxy-agent
 
-    # 下载代理节点
-    - name: Download Proxy List
-      run: |
-        curl -o sub_2.txt https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt
+      # Download proxy list
+      - name: Download Proxy List
+        run: |
+          curl -o sub_2.txt https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt
 
-    # 解码 Base64 节点（若需要）
-    - name: Decode Proxy Nodes
-      run: |
-        node -e "
-          const fs = require('fs');
-          const nodes = fs.readFileSync('sub_2.txt', 'utf8').split('\n').filter(line => line.trim());
-          const decodedNodes = nodes.map(node => {
-            if (node.match(/^(vmess|ss|trojan):\/\//)) {
-              const base64 = node.split('://')[1];
+      # Decode proxy nodes
+      - name: Decode Proxy Nodes
+        run: |
+          node -e '
+            const fs = require("fs");
+            const nodes = fs.readFileSync("sub_2.txt", "utf8").split("\n").filter(line => line.trim());
+            const decodedNodes = nodes.map(node => {
               try {
-                return Buffer.from(base64, 'base64').toString('utf8');
+                if (node.match(/^(vmess|ss|trojan|vless|ssr|hysteria2):\/\//)) {
+                  const base64 = node.split("://")[1];
+                  return Buffer.from(base64, "base64").toString("utf8");
+                }
+                return node; // Keep non-Base64 nodes as-is
               } catch (e) {
-                return node;
+                console.error(`Error decoding node: ${node}, Error: ${e.message}`);
+                return null; // Skip invalid nodes
               }
-            }
-            return node;
-          });
-          fs.writeFileSync('nodes.txt', decodedNodes.join('\n
+            }).filter(Boolean);
+            fs.writeFileSync("nodes.txt", decodedNodes.join("\n"));
+          '
+
+      # Clone and test with 256cats/check-proxy
+      - name: Test with check-proxy
+        run: |
+          git clone https://github.com/256cats/check-proxy.git
+          cd check-proxy
+          npm install
+          node index.js --file ../nodes.txt --timeout 5000 --url https://api.github.com --threads 5 > ../check-proxy-results.txt || echo "Check-proxy test failed"
+
+      # Clone and test with yahoo/proxy-verifier (HTTP proxies only)
+      - name: Test with proxy-verifier
+        run: |
+          git clone https://github.com/yahoo/proxy-verifier.git
+          cd proxy-verifier
+          npm install
+          # Filter HTTP proxies from nodes.txt
+          grep -E '^http://' ../nodes.txt > ../http_proxies.txt || echo "No HTTP proxies found"
+          if [ -s ../http_proxies.txt ]; then
+            node verifier-client.js --proxy $(head -n 1 ../http_proxies.txt) > ../proxy-verifier-results.txt || echo "Proxy-verifier test failed"
+          else
+            echo "No HTTP proxies to test" > ../proxy-verifier-results.txt
+          fi
+
+      # Upload test results
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: proxy-test-results
+          path: |
+            check-proxy-results.txt
+            proxy-verifier-results.txt
