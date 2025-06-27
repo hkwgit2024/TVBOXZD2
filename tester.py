@@ -13,7 +13,7 @@ import traceback
 import base64
 
 CLASH_BASE_CONFIG_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml",
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
     "https://raw.githubusercontent.com/0x1b-Dev/free-nodes/main/clash.yaml",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
