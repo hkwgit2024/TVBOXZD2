@@ -10,7 +10,7 @@ import time
 import socket
 import re
 
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/list.txt"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/list_raw.txt"]
 
 def parse_node_link_to_clash_proxy(link: str, index: int = 0) -> dict | None:
     """尝试将节点链接（ss, vmess, trojan, hy2, vless）解析为 Clash 代理字典格式。"""
