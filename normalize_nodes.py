@@ -5,8 +5,11 @@ import json
 import urllib.parse
 
 def parse_vmess(url, index):
-    """解析 vmess:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 vmess:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping vmess node {url}: missing protocol separator")
+            return None
         data = base64.b64decode(url.replace('vmess://', '')).decode('utf-8')
         config = json.loads(data)
         server = config.get('add')
@@ -14,23 +17,26 @@ def parse_vmess(url, index):
         uuid = config.get('id')
         alterId = config.get('aid', '0')
         cipher = config.get('scy', 'auto')
-        if not all([server, port, uuid]):  # 验证必填字段
+        if not all([server, port, uuid]):
             print(f"Skipping vmess node {url}: missing required fields")
             return None
-        return f"vmess {server} {port} uuid={uuid} alterId={alterId} cipher={cipher} name={config.get('ps', f'node-{index}')}"
+        return f"vmess {server} {port} uuid={uuid} alterId={alterId} cipher={cipher} name=vmess-{index}-{server}"
     except Exception as e:
         print(f"Error parsing vmess {url}: {e}")
         return None
 
 def parse_trojan(url, index):
-    """解析 trojan:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 trojan:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping trojan node {url}: missing protocol separator")
+            return None
         parsed = urllib.parse.urlparse(url)
         password = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        if not all([server, port, password]):  # 验证必填字段
+        if not all([server, port, password]):
             print(f"Skipping trojan node {url}: missing required fields")
             return None
         return f"trojan {server} {port} password={password} sni={params.get('sni', [''])[0]} name=trojan-{index}-{server}"
@@ -39,15 +45,18 @@ def parse_trojan(url, index):
         return None
 
 def parse_ss(url, index):
-    """解析 ss:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 ss:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping ss node {url}: missing protocol separator")
+            return None
         parsed = urllib.parse.urlparse(url)
         method_password = parsed.netloc.split('@')[0]
         if method_password.startswith('Y2'):  # Base64 编码
             method_password = base64.b64decode(method_password).decode('utf-8')
         method, password = method_password.split(':')
         server, port = parsed.netloc.split('@')[1].split(':')
-        if not all([server, port, method, password]):  # 验证必填字段
+        if not all([server, port, method, password]):
             print(f"Skipping ss node {url}: missing required fields")
             return None
         return f"ss {server} {port} cipher={method} password={password} name=ss-{index}-{server}"
@@ -56,8 +65,11 @@ def parse_ss(url, index):
         return None
 
 def parse_ssr(url, index):
-    """解析 ssr:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 ssr:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping ssr node {url}: missing protocol separator")
+            return None
         data = base64.b64decode(url.replace('ssr://', '')).decode('utf-8')
         parts = data.split(':')
         if len(parts) < 6:
@@ -65,7 +77,7 @@ def parse_ssr(url, index):
             return None
         server, port, protocol, method, obfs, password = parts[:6]
         password = base64.b64decode(password).decode('utf-8')
-        if not all([server, port, protocol, method, obfs, password]):  # 验证必填字段
+        if not all([server, port, protocol, method, obfs, password]):
             print(f"Skipping ssr node {url}: missing required fields")
             return None
         return f"ssr {server} {port} protocol={protocol} cipher={method} obfs={obfs} password={password} name=ssr-{index}-{server}"
@@ -74,14 +86,17 @@ def parse_ssr(url, index):
         return None
 
 def parse_vless(url, index):
-    """解析 vless:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 vless:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping vless node {url}: missing protocol separator")
+            return None
         parsed = urllib.parse.urlparse(url)
         uuid = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        if not all([server, port, uuid]):  # 验证必填字段
+        if not all([server, port, uuid]):
             print(f"Skipping vless node {url}: missing required fields")
             return None
         return f"vless {server} {port} uuid={uuid} encryption={params.get('encryption', ['none'])[0]} name=vless-{index}-{server}"
@@ -90,14 +105,17 @@ def parse_vless(url, index):
         return None
 
 def parse_hysteria2(url, index):
-    """解析 hysteria2:// 协议，符合 Clash.Meta 要求，输出明文"""
+    """解析 hysteria2:// 协议，验证必填字段，输出明文"""
     try:
+        if '://' not in url:
+            print(f"Skipping hysteria2 node {url}: missing protocol separator")
+            return None
         parsed = urllib.parse.urlparse(url)
         password = parsed.netloc.split('@')[0]
         server_port = parsed.netloc.split('@')[1]
         server, port = server_port.split(':')
         params = urllib.parse.parse_qs(parsed.query)
-        if not all([server, port, password]):  # 验证必填字段
+        if not all([server, port, password]):
             print(f"Skipping hysteria2 node {url}: missing required fields")
             return None
         return f"hysteria2 {server} {port} password={password} sni={params.get('sni', [''])[0]} name=hysteria2-{index}-{server}"
@@ -130,6 +148,10 @@ def normalize_nodes(url, output_path):
     for index, line in enumerate(lines, 1):
         line = line.strip()
         if not line or line.startswith('#'):  # 忽略空行和注释
+            continue
+        # 检查协议分隔符
+        if '://' not in line:
+            print(f"Skipping invalid link {line}: missing protocol separator")
             continue
         # 检查协议并解析
         for protocol, parser in supported_protocols.items():
