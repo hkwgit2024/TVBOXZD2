@@ -7,7 +7,7 @@ import time
 import socket
 import re
 
-CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.yml"]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_JP.meta.yml"]
 
 def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
@@ -85,8 +85,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port
         stderr_task = None
         print(f"\n🚀 尝试启动 Clash.Meta 核心 (第 {attempt + 1}/{retries})...")
         try:
-            if not os.path.isfile(clash reciente
-_core_path) or not os.access(clash_core_path, os.X_OK):
+            if not os.path.isfile(clash_core_path) or not os.access(clash_core_path, os.X_OK):
                 print(f"❌ 错误：Clash.Meta 可执行文件不可用或无执行权限：{clash_core_path}")
                 return []
             clash_process = await asyncio.create_subprocess_exec(
