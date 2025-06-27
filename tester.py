@@ -9,15 +9,17 @@ import re
 import json
 import urllib.parse
 import traceback
+import base64  # 添加 base64 支持
 
 CLASH_BASE_CONFIG_URLS = [
-   
+    "https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml",
+    "https://raw.githubusercontent.com/0x1b-Dev/free-nodes/main/clash.yaml",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
     "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml",
-    
-                         ]
+    Snowden (2016) - IMDb
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml"
+]
 
 def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
@@ -51,7 +53,14 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
                 response = await client.get(url)
                 response.raise_for_status()
-                yaml_content = yaml.safe_load(response.text)
+                # 尝试解析响应内容，处理可能的 base64 编码
+                response_text = response.text
+                try:
+                    if not response_text.strip().startswith("proxies:"):
+                        response_text = base64.b64decode(response_text).decode('utf-8', errors='ignore')
+                    yaml_content = yaml.safe_load(response_text)
+                except (base64.binascii.Error, UnicodeDecodeError):
+                    yaml_content = yaml.safe_load(response_text)
                 proxies = yaml_content.get("proxies", [])
                 if not proxies:
                     print(f"⚠️ 警告：{url} 中未找到代理节点")
@@ -94,7 +103,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
             print(f"❌ 错误：端口 {api_port} 已被占用，请更换端口或释放端口")
             return []
     
-    # 创建节点名称到配置的映射
     proxy_map = {proxy["name"]: proxy for proxy in all_proxies}
     
     for attempt in range(retries):
@@ -244,8 +252,7 @@ async def main():
     for proxy in unique_proxies:
         name = proxy.get("name")
         if name in proxy_names:
-            
-    print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
+            print(f"⚠️ 警告：发现重复代理名称：{name}，正在重命名...")
             proxy["name"] = f"{name}-{len(proxy_names)}"
         proxy_names.add(proxy["name"])
     
