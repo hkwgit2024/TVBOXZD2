@@ -50,7 +50,7 @@ def download_file(url, destination):
             response.raise_for_status()
             total_size = int(response.headers.get('content-length', 0))
             downloaded_size = 0
-            with destination.open('wb') as f:
+            with destination.open('wb') as f: # destination is now a Path object
                 for chunk in response.iter_content(chunk_size=8192):
                     if chunk:
                         f.write(chunk)
@@ -77,7 +77,8 @@ def setup_mihomo():
         logger.info(f"{MIHOMO_BIN_NAME} already exists and is executable")
         return True
 
-    archive_path = Path(MIHOMO_DOWNLOAD_URL).name
+    # FIX: Ensure archive_path is a Path object
+    archive_path = Path(Path(MIHOMO_DOWNLOAD_URL).name) 
     if not download_file(MIHOMO_DOWNLOAD_URL, archive_path):
         logger.error("Mihomo binary download failed")
         return False
