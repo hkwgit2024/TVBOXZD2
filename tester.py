@@ -6,6 +6,7 @@ import yaml
 import time
 import requests
 import sys
+from urllib.parse import urlparse, parse_qs, unquote # 导入 unquote
 
 # 节点下载 URL
 NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
@@ -31,8 +32,11 @@ def parse_vmess(link):
         
         config = json.loads(decoded_bytes.decode('utf-8'))
         
+        # 解码节点名称中的URL编码
+        name = unquote(config.get("ps", f"vmess_{config.get('add', 'unknown')}"))
+        
         return {
-            "name": config.get("ps", f"vmess_{config.get('add', 'unknown')}"),
+            "name": name,
             "type": "vmess",
             "server": config.get("add"),
             "port": int(config.get("port")),
@@ -51,42 +55,58 @@ def parse_vmess(link):
 
 def parse_trojan(link):
     """解析 trojan 链接"""
+    # trojan://password@server:port?params#name
     match = re.match(r"trojan://([^@]+)@([^:]+):(\d+)(.*)", link)
     if match:
         password = match.group(1)
         server = match.group(2)
         port = int(match.group(3))
-        # 简单解析，name 等其他参数可能需要从 query string 中获取
+        
+        # 解析 # 后面的名称
         name_match = re.search(r"#([^#&]+)", link)
-        name = name_match.group(1) if name_match else f"trojan_{server}"
-        return {
+        name = unquote(name_match.group(1)) if name_match else f"trojan_{server}"
+
+        # 进一步解析查询参数，例如 sni
+        parsed_url = urlparse(link)
+        query_params = parse_qs(parsed_url.query)
+        sni = query_params.get('sni', [None])[0]
+
+        trojan_config = {
             "name": name,
             "type": "trojan",
             "server": server,
             "port": port,
             "password": password
         }
+        if sni:
+            trojan_config["sni"] = sni
+            trojan_config["tls"] = True # trojan 默认带 tls
+
+        return trojan_config
     return None
 
 def parse_ss(link):
-    """解析 ss 链接 (简化版，仅支持 aes-256-gcm)"""
+    """解析 ss 链接"""
     try:
-        encoded_part = link.replace("ss://", "").split('#')[0] # 移除 # 后面的备注
+        # ss://base64(method:password@server:port)#name
+        # 移除非编码部分的名称
+        link_parts = link.replace("ss://", "").split('#', 1)
+        encoded_part = link_parts[0]
+        
+        # 尝试鲁棒的 Base64 解码，处理非标准填充
         decoded_bytes = base64.urlsafe_b64decode(encoded_part + "=" * ((4 - len(encoded_part) % 4) % 4))
         decoded_str = decoded_bytes.decode('utf-8')
         
-        # 格式通常是 method:password@server:port
         parts = decoded_str.split('@')
         if len(parts) == 2:
             auth_part = parts[0]
             server_port_part = parts[1]
 
-            method, password = auth_part.split(':', 1) # 只分割第一个冒号
-            server, port = server_port_part.rsplit(':', 1) # 从右边分割最后一个冒号
+            method, password = auth_part.split(':', 1)
+            server, port = server_port_part.rsplit(':', 1)
 
-            # 提取名称
-            name_match = re.search(r"#([^#&]+)", link)
-            name = name_match.group(1) if name_match else f"ss_{server}"
+            # 提取名称，并进行URL解码
+            name = unquote(link_parts[1]) if len(link_parts) > 1 else f"ss_{server}"
 
             return {
                 "name": name,
@@ -102,20 +122,26 @@ def parse_ss(link):
 
 def parse_hysteria2(link):
     """解析 hysteria2 链接"""
-    # 示例: hysteria2://password@server:port?obfs=obfs_name&obfs-password=obfs_pass#name
+    # 允许 hy2:// 或 hysteria2://
+    link = link.replace("hy2://", "hysteria2://") 
+    
+    # hysteria2://password@server:port?obfs=obfs_name&obfs-password=obfs_pass#name
     match = re.match(r"hysteria2://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
         password = match.group(1)
         server = match.group(2)
         port = int(match.group(3))
         query_string = match.group(4) if match.group(4) else ""
-        name = match.group(6) if match.group(6) else f"hysteria2_{server}"
+        
+        # 解码名称
+        name = unquote(match.group(6)) if match.group(6) else f"hysteria2_{server}"
 
         params = {}
         if query_string:
             for param in query_string[1:].split('&'):
-                key, value = param.split('=', 1)
-                params[key] = value
+                if '=' in param: # 确保参数是键值对
+                    key, value = param.split('=', 1)
+                    params[key] = value
         
         return {
             "name": name,
@@ -125,9 +151,11 @@ def parse_hysteria2(link):
             "password": password,
             "obfs": params.get("obfs"),
             "obfs-password": params.get("obfs-password"),
-            "up": int(params.get("up", 0)), # 上行带宽，默认为0
-            "down": int(params.get("down", 0)), # 下行带宽，默认为0
-            "alpn": params.get("alpn")
+            "up": int(params.get("up", 0)),
+            "down": int(params.get("down", 0)),
+            "alpn": params.get("alpn"),
+            "tls": params.get("insecure") != "1", # insecure=1 表示不安全
+            "sni": params.get("sni")
         }
     return None
 
@@ -140,32 +168,44 @@ def parse_vless(link):
         server = match.group(2)
         port = int(match.group(3))
         query_string = match.group(4) if match.group(4) else ""
-        name = match.group(6) if match.group(6) else f"vless_{server}"
+        
+        # 解码名称
+        name = unquote(match.group(6)) if match.group(6) else f"vless_{server}"
 
         params = {}
         if query_string:
             for param in query_string[1:].split('&'):
-                key, value = param.split('=', 1)
-                params[key] = value
+                if '=' in param:
+                    key, value = param.split('=', 1)
+                    params[key] = value
 
-        return {
+        vless_config = {
             "name": name,
             "type": "vless",
             "server": server,
             "port": port,
             "uuid": uuid,
-            "network": params.get("type", "tcp"), # tcp, ws, grpc
+            "network": params.get("type", "tcp"),
             "tls": params.get("security", "") == "tls",
-            "flow": params.get("flow", ""), # xr/reality
-            "reality-opts": {
-                "dest": params.get("fp", ""),
+            "flow": params.get("flow", ""),
+            "udp": True # VLESS通常支持UDP
+        }
+
+        if params.get("security") == "reality":
+            vless_config["reality-opts"] = {
+                "dest": params.get("dest", ""), # dest = host:port
                 "xver": int(params.get("xver", 0)),
                 "sni": params.get("sni", ""),
-                "fingerprint": params.get("pbk", "")
-            } if params.get("security", "") == "reality" else None,
-            "ws-path": params.get("path", ""),
-            "ws-headers": {"Host": params.get("host", "")}
-        }
+                "fingerprint": params.get("fp", ""), # reality fingerprint
+                "publicKey": params.get("pbk", "") # reality public key
+            }
+        
+        # WebSocket settings
+        if vless_config["network"] == "ws":
+            vless_config["ws-path"] = params.get("path", "")
+            vless_config["ws-headers"] = {"Host": params.get("host", "")}
+        
+        return vless_config
     return None
 
 
@@ -177,7 +217,7 @@ def parse_node_link(link):
         return parse_trojan(link)
     elif link.startswith("ss://"):
         return parse_ss(link)
-    elif link.startswith("hysteria2://"):
+    elif link.startswith("hysteria2://") or link.startswith("hy2://"): # 兼容 hy2://
         return parse_hysteria2(link)
     elif link.startswith("vless://"):
         return parse_vless(link)
@@ -256,12 +296,22 @@ def test_nodes(original_links_map):
         print(f"Testing node: {proxy_name}...")
         try:
             # 切换 Mihomo 代理
-            response = requests.put(
-                f"{MIHOMO_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9",
-                json={"name": proxy_name},
-                timeout=5
-            )
-            response.raise_for_status()
+            # 确保 Mihomo 控制器是可达的，增加重试机制
+            for _ in range(3): # 尝试3次连接 Mihomo API
+                try:
+                    response = requests.put(
+                        f"{MIHOMO_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9",
+                        json={"name": proxy_name},
+                        timeout=5
+                    )
+                    response.raise_for_status()
+                    break # 成功连接并切换，跳出重试循环
+                except requests.exceptions.ConnectionError:
+                    print(f"Connection to Mihomo controller refused, retrying...")
+                    time.sleep(2) # 等待一段时间再重试
+            else:
+                raise ConnectionError("Failed to connect to Mihomo controller after multiple retries.")
+            
             time.sleep(1) # 等待代理切换
 
             # 使用 Mihomo 代理测试 Google
@@ -277,8 +327,7 @@ def test_nodes(original_links_map):
             if proxy_name in original_links_map:
                 successful_nodes.append(original_links_map[proxy_name])
             else:
-                # 这种情况下，代理名称可能被截断或修改，需要更复杂的映射
-                print(f"Warning: Could not find original link for proxy name '{proxy_name}'")
+                print(f"Warning: Could not find original link for proxy name '{proxy_name}' in map. Skipping.")
                 
         except requests.exceptions.RequestException as e:
             print(f"❌ Node '{proxy_name}' is NOT working. Error: {e}")
@@ -310,17 +359,19 @@ def main():
     for i, link in enumerate(node_links):
         parsed = parse_node_link(link)
         if parsed:
-            # 确保名称唯一，尤其当节点链接中没有提供明确名称时
-            original_name = parsed["name"]
-            unique_name = original_name
+            # 确保名称唯一
+            original_name_for_map = parsed["name"] # 用原始解析的名称作为key
+            unique_name_for_mihomo_config = original_name_for_map
             count = 1
-            while unique_name in [p["name"] for p in parsed_nodes]:
-                unique_name = f"{original_name}_{count}"
+            while unique_name_for_mihomo_config in [p["name"] for p in parsed_nodes]:
+                unique_name_for_mihomo_config = f"{original_name_for_map}_{count}"
                 count += 1
-            parsed["name"] = unique_name
+            
+            parsed["name"] = unique_name_for_mihomo_config
             
             parsed_nodes.append(parsed)
-            original_links_map[unique_name] = link
+            # 这里的 original_links_map 应该存储的是 Mihomo 配置中的唯一名称到原始链接的映射
+            original_links_map[unique_name_for_mihomo_config] = link
     
     if not parsed_nodes:
         print("No valid nodes parsed. Exiting.")
@@ -333,8 +384,6 @@ def main():
     # 此脚本仅负责生成配置和测试，Mihomo 的启动和停止由 GH Actions 工作流处理
 
     # 5. 测试节点
-    # 需要等待 Mihomo 启动后才能测试，此脚本会在 Mihomo 启动后被调用
-    # 所以直接调用测试函数
     successful_nodes = test_nodes(original_links_map)
 
     # 6. 保存成功节点
