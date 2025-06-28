@@ -3,7 +3,7 @@ name: Test Nodes with Mihomo (Python)
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *' # Every 6 hours
 
 jobs:
   test:
@@ -25,45 +25,108 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Get latest Mihomo release
+        id: get_mihomo_release # Add an ID to easily access outputs
         run: |
           LATEST_RELEASE=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r .tag_name)
           echo "Latest Mihomo version: $LATEST_RELEASE"
           echo "CLASH_VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
-          ASSET_NAME=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.assets[] | select(.name | contains("linux-amd64") and endswith(".gz")) | .name' | head -n 1)
+
+          # Select the correct asset, prioritizing .gz and then .xz if .gz not found
+          # Ensure it's for linux-amd64 and is a tarball or similar
+          ASSET_NAME=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | \
+            jq -r '.assets[] | select(.name | contains("linux-amd64") and (endswith(".gz") or endswith(".xz"))) | .name' | head -n 1)
+
           if [ -z "$ASSET_NAME" ]; then
-            echo "Error: No Linux AMD64 .gz file found in release $LATEST_RELEASE"
+            echo "Error: No suitable Linux AMD64 .gz or .xz file found in release $LATEST_RELEASE"
+            echo "Attempting to find any linux-amd64 asset for debug:"
+            curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r '.assets[] | select(.name | contains("linux-amd64")) | .name'
             exit 1
           fi
           echo "CLASH_FILENAME=$ASSET_NAME" >> $GITHUB_ENV
+          echo "CLASH_DOWNLOAD_URL=https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_RELEASE}/${ASSET_NAME}" >> $GITHUB_ENV
+
 
       - name: Install Mihomo Core
         run: |
-          CLASH_DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/${{ env.CLASH_VERSION }}/${{ env.CLASH_FILENAME }}"
-          echo "Downloading Mihomo Core from ${CLASH_DOWNLOAD_URL}..."
+          echo "Downloading Mihomo Core from ${{ env.CLASH_DOWNLOAD_URL }}..."
           for attempt in {1..3}; do
-            wget -qO- "${CLASH_DOWNLOAD_URL}" | gzip -d > clash && break || true
+            if [[ "${{ env.CLASH_FILENAME }}" == *.gz ]]; then
+              wget -qO- "${{ env.CLASH_DOWNLOAD_URL }}" | gzip -d > clash && break
+            elif [[ "${{ env.CLASH_FILENAME }}" == *.xz ]]; then
+              wget -qO- "${{ env.CLASH_DOWNLOAD_URL }}" | xz -d > clash && break
+            else
+              echo "Unsupported archive format: ${{ env.CLASH_FILENAME }}"
+              exit 1
+            fi
             echo "Download attempt $attempt failed, retrying..."
             sleep 5
           done
-          if [ ! -f clash ] || [ ! -s clash ]; then 
+          if [ ! -f clash ] || [ ! -s clash ]; then
             echo "Error: Mihomo Core file 'clash' not found or is empty after download and extraction."
             echo "Please double-check the latest release on https://github.com/MetaCubeX/mihomo/releases."
-            echo "Attempted URL: ${CLASH_DOWNLOAD_URL}"
+            echo "Attempted URL: ${{ env.CLASH_DOWNLOAD_URL }}"
             exit 1
           fi
           chmod +x clash
+          # Move clash to a location in PATH that doesn't require sudo if possible, or use sudo for /usr/local/bin
+          # For GitHub Actions, /usr/local/bin is fine with sudo
           sudo mv clash /usr/local/bin/clash
           echo "Mihomo Core installed successfully at /usr/local/bin/clash."
 
       - name: Create data directory
         run: mkdir -p data
 
-      - name: Run Python node tester
-        run: python tester.py
+      # New step: Generate initial config (without nodes) so Clash can start
+      - name: Generate Initial Clash Config (Placeholder)
+        run: |
+          cat <<EOF > config.yaml
+          port: 7890
+          socks-port: 7891
+          redir-port: 7892
+          tproxy-port: 7893
+          mixed-port: 7890
+          mode: rule
+          log-level: info
+          allow-lan: false
+          bind-address: 127.0.0.1
+          external-controller: 127.0.0.1:9090
+          dns:
+            enable: true
+            listen: 0.0.0.0:53
+            default-nameserver: ["114.114.114.114", "8.8.8.8"]
+            enhanced-mode: fake-ip
+            fake-ip-range: "198.18.0.1/16"
+            use-hosts: true
+            fallback: ["tls://1.1.1.1:853", "tls://8.8.8.8:853"]
+            fallback-filter:
+              geoip: true
+              ipcidr: ["240.0.0.0/4"]
+          proxies: [] # Empty for initial start
+          proxy-groups:
+            - name: "Node Select"
+              type: select
+              proxies: ["DIRECT"]
+            - name: "Auto Select"
+              type: url-test
+              url: "http://www.gstatic.com/generate_204"
+              interval: 300
+              proxies: []
+          rules:
+            - PROCESS-NAME,clash,DIRECT
+            - PROCESS-NAME,Clash,DIRECT
+            - PROCESS-NAME,clash-core,DIRECT
+            - DOMAIN-SUFFIX,googlevideo.com,Node Select
+            - DOMAIN-SUFFIX,googleusercontent.com,Node Select
+            - DOMAIN-SUFFIX,google.com,Node Select
+            - DOMAIN-SUFFIX,github.com,DIRECT
+            - MATCH,Node Select
+          EOF
+          echo "Generated initial config.yaml for Mihomo startup."
 
       - name: Start Mihomo Core and wait for it to be ready
         run: |
           echo "Starting Mihomo Core in background..."
+          # Start Clash Core with the initial config.yaml
           nohup clash -d . -f config.yaml &> clash_startup.log &
           CLASH_PID=$!
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
@@ -83,8 +146,9 @@ jobs:
               fi
               exit 1
             fi
+            # Use curl to check the controller API
             if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090/proxies; then
-              echo "Mihomo Core controller port 9110 is accessible. Proceeding."
+              echo "Mihomo Core controller port 9090 is accessible. Proceeding." # Corrected port in log message
               break
             fi
             echo "Waiting for Mihomo Core controller to start (elapsed: ${elapsed}s)..."
@@ -93,21 +157,42 @@ jobs:
             echo "-------------------------------------"
             sleep 5
           done
+          echo "Mihomo Core is ready. Now running tester.py."
+
+      - name: Run Python node tester
+        # This step should run AFTER Mihomo Core is started and ready
+        run: python tester.py
 
       - name: Stop Mihomo Core
         if: always()
         run: |
           if [ -n "${{ env.CLASH_PID }}" ]; then
             echo "Stopping Mihomo Core with PID ${{ env.CLASH_PID }}..."
+            # Use kill -TERM for graceful shutdown, or kill -9 if it doesn't respond
             kill ${{ env.CLASH_PID }} || true
             echo "Mihomo Core stopped."
           fi
+          # Clean up any leftover files by Mihomo
           rm -f config.yaml clash_startup.log cache.db
+          echo "Cleaned up Mihomo related files."
 
       - name: Commit and push if changes
+        # Only commit if data/all.txt exists and has content.
+        # This prevents empty commits if no nodes are successful.
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add data/all.txt
-          git diff --cached --quiet --exit-code || git commit -m "Update successful nodes"
-          git push
+          
+          # Check if data/all.txt exists and is not empty
+          if [ -s data/all.txt ]; then
+            git add data/all.txt
+            if ! git diff --cached --quiet; then
+              git commit -m "Update successful nodes"
+              git push
+              echo "Changes committed and pushed."
+            else
+              echo "No changes to data/all.txt. Skipping commit."
+            fi
+          else
+            echo "data/all.txt is empty or does not exist. Skipping commit."
+          fi
