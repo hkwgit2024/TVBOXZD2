@@ -24,7 +24,7 @@ jobs:
         pip install PyYAML requests
 
     - name: Run node processing script
-      run: python process_nodes.py
+      run: python tester.py
 
     - name: Commit and push changes
       run: |
