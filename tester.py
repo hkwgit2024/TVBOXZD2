@@ -11,6 +11,7 @@ import yaml
 from pathlib import Path
 import ssl
 import certifi
+import contextlib # 导入 contextlib 模块
 
 # 设置日志
 logging.basicConfig(
@@ -302,7 +303,7 @@ def create_clash_config(node_url, port):
         return None
 
 # 将 mihomo_process 定义为异步上下文管理器
-@asyncio.asynccontextmanager
+@contextlib.asynccontextmanager # 更正：从 contextlib 导入
 async def mihomo_process(config_file, port):
     """启动 mihomo 进程并确保清理"""
     process = None
