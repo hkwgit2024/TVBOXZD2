@@ -1,393 +1,382 @@
-import requests
-import re
-import yaml
-import subprocess
-import os
-import time
-import sys
-import json
+import asyncio
 import base64
-from urllib.parse import urlparse, unquote, parse_qs
+import json
+import logging
+import subprocess
+import sys
+import time
+from contextlib import contextmanager
+from pathlib import Path
+from urllib.parse import urlparse, parse_qs
+import requests
+import yaml
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
 
-# URL to download the raw node list
-NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-# URL for Mihomo (Clash.Meta) binary (Linux AMD64 latest stable version)
-# It's recommended to periodically check the MetaCubeX/mihomo releases page for the latest stable version:
-# https://github.com/MetaCubeX/mihomo/releases
-MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
+# Constants
+NODE_LIST_URL = "https)
+MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.20.0/mihomo-linux-amd64-v1.20.0.gz"
 MIHOMO_BIN_NAME = "mihomo"
-CONFIG_FILE = "config.yaml"
-OUTPUT_DIR = "data"
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "all.txt")
-CLASH_PORT = 7890 # Port for Clash.Meta local proxy
-TEST_URL = "http://www.google.com" # URL to test connectivity
+CONFIG_FILE = Path("config.yaml")
+OUTPUT_DIR = Path("data")
+OUTPUT_FILE = OUTPUT_DIR / "all.txt"
+CLASH_PORT = 7890
+TEST_URL = "http://www.google.com"
+
+def validate_url(url):
+    """Validates if the URL is well-formed."""
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
 
 def download_file(url, destination):
     """Downloads a file from a URL to a specified destination with progress."""
-    print(f"Downloading {url} to {destination}...")
-    try:
-        response = requests.get(url, stream=True)
-        response.raise_for_status()
-        total_size = int(response.headers.get('content-length', 0))
-        downloaded_size = 0
+    if not validate_url(url):
+        logger.error(f"Invalid URL: {url}")
+        return False
 
-        with open(destination, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-                downloaded_size += len(chunk)
-                if total_size > 0:
-                    progress = (downloaded_size / total_size) * 100
-                    # Print progress on the same line
-                    print(f"\rDownloading: {downloaded_size / (1024*1024):.2f}MB / {total_size / (1024*1024):.2f}MB ({progress:.1f}%)", end='')
-                else:
-                    print(f"\rDownloading: {downloaded_size / (1024*1024):.2f}MB", end='')
-        print("\nDownload complete.") # New line after progress
+    logger.info(f"Downloading {url} to {destination}")
+    try:
+        with requests.get(url, stream=True, timeout=30) as response:
+            response.raise_for_status()
+            total_size = int(response.headers.get('content-length', 0))
+            downloaded_size = 0
+
+            with destination.open('wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    downloaded_size += len(chunk)
+                    if total_size > 0:
+                        progress = (downloaded_size / total_size) * 100
+                        logger.info(
+                            f"Downloading: {downloaded_size / (1024*1024):.2f}MB / "
+                            f"{total_size / (1024*1024):.2f}MB ({progress:.1f}%)"
+                        )
+                    else:
+                        logger.info(f"Downloading: {downloaded_size / (1024*1024):.2f}MB")
+        logger.info("Download complete.")
         return True
-    except requests.exceptions.RequestException as e:
-        print(f"\nError downloading {url}: {e}") # New line before error
+    except requests.RequestException as e:
+        logger.error(f"Error downloading {url}: {e}")
         return False
 
 def setup_mihomo():
     """Downloads, extracts, and sets up the Mihomo binary."""
-    print("Checking Mihomo binary setup...")
-    if not os.path.exists(MIHOMO_BIN_NAME):
-        archive_name = os.path.basename(MIHOMO_DOWNLOAD_URL)
-        if not download_file(MIHOMO_DOWNLOAD_URL, archive_name):
-            sys.exit("Failed to download Mihomo binary.")
+    logger.info("Checking Mihomo binary setup...")
+    bin_path = Path(MIHOMO_BIN_NAME)
+    if bin_path.exists():
+        logger.info(f"{MIHOMO_BIN_NAME} already exists.")
+        bin_path.chmod(0o755)
+        return
 
-        print(f"Extracting {archive_name}...")
-        try:
-            if archive_name.endswith('.gz'):
-                # Redirect gunzip output to sys.stdout for visibility
-                subprocess.run(["gunzip", "-f", archive_name], check=True, stdout=sys.stdout, stderr=sys.stderr)
-                extracted_name = archive_name.replace(".gz", "")
+    archive_name = Path(MIHOMO_DOWNLOAD_URL).name
+    if not download_file(MIHOMO_DOWNLOAD_URL, archive_name):
+        logger.error("Failed to download Mihomo binary.")
+        sys.exit(1)
 
-                # Try to find the extracted file and rename it
-                found_extracted = False
-                for p_name in [extracted_name, "mihomo", "clash", "clash-linux-amd64"]:
-                    if os.path.exists(p_name) and not os.path.isdir(p_name):
-                        os.rename(p_name, MIHOMO_BIN_NAME)
-                        found_extracted = True
-                        break
-                if not found_extracted:
-                    print(f"Error: Could not find the extracted Mihomo binary in common names after gunzip. Please verify the archive content.")
-                    sys.exit("Failed to find extracted Mihomo binary.")
-            else:
-                print(f"Error: Unsupported archive format: {archive_name}. Expected .gz")
-                sys.exit("Unsupported Mihomo archive format.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error during extraction: {e}")
-            sys.exit("Mihomo extraction failed.")
-        except Exception as e:
-            print(f"An unexpected error occurred during Mihomo setup: {e}")
-            sys.exit("Mihomo setup failed.")
+    logger.info(f"Extracting {archive_name}...")
+    try:
+        subprocess.run(["gunzip", "-f", archive_name], check=True, stdout=sys.stdout, stderr=sys.stderr)
+        extracted_name = archive_name.with_suffix('')
 
-    os.chmod(MIHOMO_BIN_NAME, 0o755)
-    print(f"{MIHOMO_BIN_NAME} is set up and executable.")
+        for p_name in [extracted_name, "mihomo", "clash", "clash-linux-amd64"]:
+            p_path = Path(p_name)
+            if p_path.exists() and not p_path.is_dir():
+                p_path.rename(MIHOMO_BIN_NAME)
+                logger.info(f"Renamed {p_name} to {MIHOMO_BIN_NAME}")
+                break
+        else:
+            logger.error("Could not find extracted Mihomo binary.")
+            sys.exit(1)
+
+        bin_path.chmod(0o755)
+        logger.info(f"{MIHOMO_BIN_NAME} is set up and executable.")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Error during extraction: {e}")
+        sys.exit(1)
 
 def download_and_parse_nodes(url):
-    """Downloads node configurations and parses them."""
-    print(f"Downloading node list from {url}...")
+    """Downloads and parses node configurations."""
+    if not validate_url(url):
+        logger.error(f"Invalid node list URL: {url}")
+        return []
+
+    logger.info(f"Downloading node list from {url}")
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=30)
         response.raise_for_status()
         content = response.text
-    except requests.exceptions.RequestException as e:
-        print(f"Error downloading node list: {e}")
+    except requests.RequestException as e:
+        logger.error(f"Error downloading node list: {e}")
         return []
 
     protocols = ["hysteria2://", "vmess://", "trojan://", "ss://", "ssr://", "vless://"]
     nodes = set()
     for line in content.splitlines():
         line = line.strip()
-        for protocol in protocols:
-            if line.startswith(protocol):
-                nodes.add(line)
-                break
-    print(f"Found {len(nodes)} unique nodes.")
+        if any(line.startswith(p) for p in protocols):
+            nodes.add(line)
+    logger.info(f"Found {len(nodes)} unique nodes.")
     return list(nodes)
 
-def create_clash_config(node_url):
+def parse_vmess(node_url):
+    """Parses vmess node configuration."""
+    try:
+        vmess_b64 = node_url[len("vmess://"):]
+        decoded_vmess = json.loads(base64.b64decode(vmess_b64).decode('utf-8'))
+        return {
+            "type": "vmess",
+            "server": decoded_vmess.get("add"),
+            "port": int(decoded_vmess.get("port")),
+            "uuid": decoded_vmess.get("id"),
+            "alterId": int(decoded_vmess.get("aid", 0)),
+            "cipher": decoded_vmess.get("scy", "auto"),
+            "network": decoded_vmess.get("net", "tcp"),
+            "tls": decoded_vmess.get("tls", "") == "tls",
+            "skip-cert-verify": decoded_vmess.get("v", "") == "1" or decoded_vmess.get("allowInsecure", False),
+            "ws-opts": {
+                "path": decoded_vmess.get("path", "/"),
+                "headers": {"Host": decoded_vmess.get("host", decoded_vmess.get("add"))}
+            } if decoded_vmess.get("net") == "ws" else {}
+        }
+    except (json.JSONDecodeError, base64.binascii.Error, ValueError) as e:
+        logger.error(f"Error parsing vmess node {node_url}: {e}")
+        return None
+
+def parse_ss(node_url):
+    """Parses shadowsocks node configuration."""
+    try:
+        parsed_url = urlparse(node_url)
+        method_password = parsed_url.username
+        if not method_password:
+            logger.error(f"Invalid shadowsocks node format: {node_url}")
+            return None
+
+        try:
+            method_password = base64.b64decode(method_password + '=' * (-len(method_password) % 4)).decode('utf-8')
+        except (base64.binascii.Error, UnicodeDecodeError):
+            pass  # Use raw method_password if not base64
+
+        method, password = method_password.split(':', 1) if ':' in method_password else ("auto", method_password)
+        return {
+            "type": "ss",
+            "server": parsed_url.hostname,
+            "port": parsed_url.port,
+            "cipher": method,
+            "password": password
+        }
+    except (ValueError, AttributeError) as e:
+        logger.error(f"Error parsing ss node {node_url}: {e}")
+        return None
+
+def parse_trojan(node_url):
+    """Parses trojan node configuration."""
+    try:
+        parsed_url = urlparse(node_url)
+        return {
+            "type": "trojan",
+            "server": parsed_url.hostname,
+            "port": parsed_url.port,
+            "password": parsed_url.username,
+            "tls": True,
+            "skip-cert-verify": True
+        }
+    except (ValueError, AttributeError) as e:
+        logger.error(f"Error parsing trojan node {node_url}: {e}")
+        return None
+
+def parse_vless(node_url):
+    """Parses vless node configuration."""
+    try:
+        parsed_url = urlparse(node_url)
+        params = parse_qs(parsed_url.query)
+        network = params.get('type', ['tcp'])[0]
+        tls_enabled = params.get('security', [''])[0] == 'tls'
+        ws_path = params.get('path', ['/'])[0]
+        ws_headers_host = params.get('host', [parsed_url.hostname])[0]
+        flow = params.get('flow', [None])[0]
+
+        vless_proxy = {
+            "type": "vless",
+            "server": parsed_url.hostname,
+            "port": parsed_url.port,
+            "uuid": parsed_url.username,
+            "network": network,
+            "tls": tls_enabled,
+            "udp": True
+        }
+        if flow:
+            vless_proxy["flow"] = flow
+        if network == "ws":
+            vless_proxy["ws-opts"] = {
+                "path": ws_path,
+                "headers": {"Host": ws_headers_host}
+            }
+        return vless_proxy
+    except (ValueError, AttributeError) as e:
+        logger.error(f"Error parsing vless node {node_url}: {e}")
+        return None
+
+def parse_hysteria2(node_url):
+    """Parses hysteria2 node configuration."""
+    try:
+        parsed_url = urlparse(node_url)
+        params = parse_qs(parsed_url.query)
+        return {
+            "type": "hysteria2",
+            "server": parsed_url.hostname,
+            "port": parsed_url.port,
+            "password": parsed_url.username,
+            "tls": True,
+            "skip-cert-verify": params.get('insecure', ['0'])[0] == '1',
+            "obfs": params.get('obfs', [None])[0],
+            "obfs-password": params.get('obfs-password', [None])[0],
+            "alpn": params.get('alpn', [None])[0],
+            "sni": params.get('sni', [parsed_url.hostname])[0]
+        }
+    except (ValueError, AttributeError) as e:
+        logger.error(f"Error parsing hysteria2 node {node_url}: {e}")
+        return None
+
+def create Hawkins
     """Creates a basic Clash.Meta config for a single node."""
-    proxy_name = f"proxy-{hash(node_url) % 100000}" # Simple unique name for the proxy
+    proxy_name = f"proxy-{hash(node_url) % 100000}"
     config = {
         "port": CLASH_PORT,
         "mode": "direct",
-        "log-level": "debug", # Changed from 'silent' to 'info' for more debugging logs
+        "log-level": "info",
         "allow-lan": False,
         "bind-address": "127.0.0.1",
         "proxies": [],
-        "proxy-groups": [
-            {
-                "name": "select",
-                "type": "select",
-                "proxies": [proxy_name]
-            }
-        ],
-        "rules": [
-            "MATCH,select"
-        ]
+        "proxy-groups": [{"name": "select", "type": "select", "proxies": [proxy_name]}],
+        "rules": ["MATCH,select"]
     }
 
-    # Simplified parsing for various protocols into Clash.Meta YAML format
-    if node_url.startswith("vmess://"):
-        try:
-            vmess_b64 = node_url[len("vmess://"):]
-            decoded_vmess = json.loads(base64.b64decode(vmess_b64).decode('utf-8'))
-            config["proxies"].append({
-                "name": proxy_name,
-                "type": "vmess",
-                "server": decoded_vmess.get("add"),
-                "port": int(decoded_vmess.get("port")),
-                "uuid": decoded_vmess.get("id"),
-                "alterId": int(decoded_vmess.get("aid", 0)),
-                "cipher": decoded_vmess.get("scy", "auto"),
-                "network": decoded_vmess.get("net", "tcp"),
-                "tls": decoded_vmess.get("tls", "") == "tls",
-                "skip-cert-verify": decoded_vmess.get("v", "") == "1" or decoded_vmess.get("allowInsecure", False), # 'v' for v2rayN and 'allowInsecure' for Clash
-                "ws-opts": {
-                    "path": decoded_vmess.get("path", "/"),
-                    "headers": {"Host": decoded_vmess.get("host", decoded_vmess.get("add"))}
-                } if decoded_vmess.get("net") == "ws" else {}
-            })
-        except Exception as e:
-            print(f"Error parsing vmess node {node_url}: {e}")
-            return None
-    elif node_url.startswith("ss://"):
-        try:
-            # SS links are complex. This is a very basic attempt.
-            # Real-world SS parsing needs a dedicated library (e.g., handling plugin, method, password encoding)
-            parsed_url = urlparse(node_url)
-            method_password = parsed_url.username
-            server = parsed_url.hostname
-            port = parsed_url.port
-            # Decode method_password if it's base64 encoded
-            if method_password:
-                try:
-                    method_password = base64.b64decode(method_password + '=' * (-len(method_password) % 4)).decode('utf-8')
-                except:
-                    pass # Not base64, use directly
+    parsers = {
+        "vmess://": parse_vmess,
+        "ss://": parse_ss,
+        "trojan://": parse_trojan,
+        "vless://": parse_vlessハヒステリア2://": parse_hysteria2
+    }
 
-            if ':' in method_password:
-                method, password = method_password.split(':', 1)
-            else:
-                method = "auto" # Fallback, might not be correct
-                password = method_password
-
-            config["proxies"].append({
-                "name": proxy_name,
-                "type": "ss",
-                "server": server,
-                "port": port,
-                "cipher": method,
-                "password": password,
-                # Add plugin, udp-over-tcp, etc. if needed after parsing
-            })
-        except Exception as e:
-            print(f"Error parsing ss node {node_url}: {e}")
-            return None
-    elif node_url.startswith("trojan://"):
-        try:
-            parsed_url = urlparse(node_url)
-            password = parsed_url.username
-            server = parsed_url.hostname
-            port = parsed_url.port
-            config["proxies"].append({
-                "name": proxy_name,
-                "type": "trojan",
-                "server": server,
-                "port": port,
-                "password": password,
-                "tls": True,
-                "skip-cert-verify": True # Often needed for self-signed or custom certs
-            })
-        except Exception as e:
-            print(f"Error parsing trojan node {node_url}: {e}")
-            return None
-    elif node_url.startswith("vless://"):
-        try:
-            parsed_url = urlparse(node_url)
-            uuid = parsed_url.username
-            server = parsed_url.hostname
-            port = parsed_url.port
-            params = parse_qs(parsed_url.query)
-
-            network = params.get('type', ['tcp'])[0]
-            tls_enabled = params.get('security', [''])[0] == 'tls'
-            ws_path = params.get('path', ['/'])[0]
-            ws_headers_host = params.get('host', [server])[0]
-            flow = params.get('flow', [None])[0]
-
-            vless_proxy = {
-                "name": proxy_name,
-                "type": "vless",
-                "server": server,
-                "port": port,
-                "uuid": uuid,
-                "network": network,
-                "tls": tls_enabled,
-                "udp": True # Common for VLESS
-            }
-            if flow:
-                vless_proxy["flow"] = flow
-
-            if network == "ws":
-                vless_proxy["ws-opts"] = {
-                    "path": ws_path,
-                    "headers": {"Host": ws_headers_host}
-                }
-            config["proxies"].append(vless_proxy)
-        except Exception as e:
-            print(f"Error parsing vless node {node_url}: {e}")
-            return None
-    elif node_url.startswith("hysteria2://"):
-        try:
-            parsed_url = urlparse(node_url)
-            server = parsed_url.hostname
-            port = parsed_url.port
-            password = parsed_url.username
-            params = parse_qs(parsed_url.query)
-
-            obfs = params.get('obfs', [None])[0]
-            obfs_password = params.get('obfs-password', [None])[0]
-            alpn = params.get('alpn', [None])[0]
-
-            hysteria2_proxy = {
-                "name": proxy_name,
-                "type": "hysteria2",
-                "server": server,
-                "port": port,
-                "password": password,
-                "tls": True,
-                "skip-cert-verify": params.get('insecure', ['0'])[0] == '1' # 'insecure' parameter for skip-cert-verify
-            }
-            if obfs:
-                hysteria2_proxy["obfs"] = obfs
-            if obfs_password:
-                hysteria2_proxy["obfs-password"] = obfs_password
-            if alpn:
-                hysteria2_proxy["alpn"] = alpn # Clash.Meta supports ALPN in Hysteria2
-
-            config["proxies"].append(hysteria2_proxy)
-        except Exception as e:
-            print(f"Error parsing hysteria2 node {node_url}: {e}")
-            return None
-    elif node_url.startswith("ssr://"):
-        print(f"Warning: SSR node parsing is complex and not fully implemented in this script: {node_url}")
-        return None
+    for protocol, parser in parsers.items():
+        if node_url.startswith(protocol):
+            proxy = parser(node_url)
+            if proxy:
+                proxy["name"] = proxy_name
+                config["proxies"].append(proxy)
+            break
     else:
-        print(f"Warning: Unsupported or unparsed protocol for Clash.Meta: {node_url}")
-        return None
+        logger.warning(f"Unsupported protocol for node: {node_url}")
+        return False
 
     if not config["proxies"]:
-        print(f"No proxy configured for {node_url} after parsing attempt.")
-        return None
-
-    try:
-        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-            yaml.dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-        print(f"Generated Clash.Meta config for {node_url} at {CONFIG_FILE}")
-        return True
-    except Exception as e:
-        print(f"Error writing Clash.Meta config for {node_url}: {e}")
-        return None
-
-
-def test_node_connectivity(node_url):
-    """
-    Tests the connectivity of a single node using Clash.Meta.
-    Returns True if connected, False otherwise.
-    """
-    print(f"\n--- Testing node: {node_url} ---")
-    if not create_clash_config(node_url):
-        print(f"Skipping {node_url} due to parsing error or unsupported protocol.")
+        logger.error(f"No proxy configured for {node_url}")
         return False
 
-    mihomo_process = None
     try:
-        # Start Mihomo in the background, redirecting output for visibility
-        print(f"Starting {MIHOMO_BIN_NAME} with config {CONFIG_FILE} on port {CLASH_PORT}...")
-        mihomo_process = subprocess.Popen(
-            [f"./{MIHOMO_BIN_NAME}", "-f", CONFIG_FILE],
-            stdout=sys.stdout, # Redirect stdout to console for live logs
-            stderr=sys.stderr, # Redirect stderr to console for live errors
+        with CONFIG_FILE.open('w', encoding='utf-8') as f:
+            yaml.dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
+        logger.info(f"Generated Clash.Meta config for {node_url} at {CONFIG_FILE}")
+        return True
+    except (OSError, yaml.YAMLError) as e:
+        logger.error(f"Error writing Clash.Meta config for {node_url}: {e}")
+        return False
+
+@contextmanager
+def mihomo_process(config_file):
+    """Context manager for running and cleaning up Mihomo process."""
+    process = None
+    try:
+        logger.info(f"Starting {MIHOMO_BIN_NAME} with config {config_file} on port {CLASH_PORT}")
+        process = subprocess.Popen(
+            [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
+            stdout=sys.stdout,
+            stderr=sys.stderr,
             text=True,
-            bufsize=1 # Line-buffered output
+            bufsize=1
         )
-        print(f"{MIHOMO_BIN_NAME} process started (PID: {mihomo_process.pid}). Giving it time to initialize...")
-        time.sleep(3) # Give Mihomo a bit more time to start up
+        logger.info(f"{MIHOMO_BIN_NAME} process started (PID: {process.pid})")
+        time.sleep(3)  # Wait for initialization
+        yield process
+    finally:
+        if process and process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=5)
+                logger.info(f"{MIHOMO_BIN_NAME} process terminated (PID: {process.pid})")
+            except subprocess.TimeoutExpired:
+                process.kill()
+                logger.warning(f"Force killed {MIHOMO_BIN_NAME} process (PID: {process.pid})")
+        if config_file.exists():
+            config_file.unlink()
+            logger.info(f"Cleaned up {config_file}")
 
-        # Test connectivity using curl through the local proxy
-        curl_command = [
-            "curl",
-            "--socks5-hostname", f"127.0.0.1:{CLASH_PORT}",
-            TEST_URL,
-            "--max-time", "15", # Increased timeout for potentially slow proxies
-            "--silent", "--output", "/dev/null",
-            "--fail"
-        ]
-        print(f"Running curl command: {' '.join(curl_command)}")
-        curl_result = subprocess.run(curl_command, capture_output=True, text=True) # Capture curl output for debugging
+async def test_node_connectivity(node_url):
+    """Tests the connectivity of a single node using Clash.Meta."""
+    logger.info(f"Testing node: {node_url}")
+    if not create_clash_config(node_url):
+        logger.warning(f"Skipping {node_url} due to parsing error")
+        return False
 
-        if curl_result.returncode == 0:
-            print(f"Node {node_url} is CONNECTED.")
-            return True
-        else:
-            print(f"Node {node_url} FAILED to connect (curl exit code: {curl_result.returncode}).")
-            print(f"Curl stdout:\n{curl_result.stdout}")
-            print(f"Curl stderr:\n{curl_result.stderr}")
+    try:
+        with mihomo_process(CONFIG_FILE):
+            curl_command = [
+                "curl",
+                "--socks5-hostname", f"127.0.0.1:{CLASH_PORT}",
+                TEST_URL,
+                "--max-time", "15",
+                "--silent", "--output", "/dev/null",
+                "--fail"
+            ]
+            logger.info(f"Running curl command: {' '.join(curl_command)}")
+            result = subprocess.run(curl_command, capture_output=True, text=True)
+            if result.returncode == 0:
+                logger.info(f"Node {node_url} is CONNECTED")
+                return True
+            logger.warning(f"Node {node_url} FAILED to connect (curl exit code: {result.returncode})")
+            logger.debug(f"Curl stdout: {result.stdout}")
+            logger.debug(f"Curl stderr: {result.stderr}")
             return False
     except FileNotFoundError:
-        print(f"Error: {MIHOMO_BIN_NAME} not found. Ensure it's in the current directory and executable.")
-        return False
-    except subprocess.CalledProcessError as e:
-        print(f"Subprocess error during testing {node_url}: {e}")
+        logger.error(f"{MIHOMO_BIN_NAME} not found")
+        sys.exit(1)
+    except subprocess.SubprocessError as e:
+        logger.error(f"Subprocess error during testing {node_url}: {e}")
         return False
     except Exception as e:
-        print(f"An unexpected error occurred during testing {node_url}: {e}")
+        logger.error(f"Unexpected error during testing {node_url}: {e}")
         return False
-    finally:
-        if mihomo_process and mihomo_process.poll() is None:
-            print(f"Terminating {MIHOMO_BIN_NAME} process (PID: {mihomo_process.pid})...")
-            mihomo_process.terminate()
-            try:
-                mihomo_process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                mihomo_process.kill()
-                print(f"Force killed {MIHOMO_BIN_NAME} process for {node_url}.")
-        else:
-            print(f"{MIHOMO_BIN_NAME} process was not running or already terminated.")
-        
-        # Clean up config file
-        if os.path.exists(CONFIG_FILE):
-            os.remove(CONFIG_FILE)
-            print(f"Cleaned up {CONFIG_FILE}.")
 
-if __name__ == "__main__":
-    print("Starting proxy node processing script.")
-
-    # Setup Mihomo binary
+async def main():
+    """Main function to process proxy nodes."""
+    logger.info("Starting proxy node processing script")
     setup_mihomo()
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    logger.info(f"Output directory '{OUTPUT_DIR}' ensured")
 
-    # Create output directory if it doesn't exist
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print(f"Output directory '{OUTPUT_DIR}' ensured to exist.")
-
-    all_nodes = download_and_parse_nodes(NODE_LIST_URL)
+    nodes = download_and_parse_nodes(NODE_LIST_URL)
     working_nodes = []
 
-    for i, node in enumerate(all_nodes):
-        print(f"\n--- Processing node {i+1}/{len(all_nodes)} ---")
-        if test_node_connectivity(node):
+    for i, node in enumerate(nodes, 1):
+        logger.info(f"Processing node {i}/{len(nodes)}")
+        if await test_node_connectivity(node):
             working_nodes.append(node)
-        print("-" * 40) # Separator for readability
+        logger.info("-" * 40)
 
-    print(f"\n--- Script execution complete ---")
-    print(f"Total nodes processed: {len(all_nodes)}")
-    print(f"Total working nodes found: {len(working_nodes)}")
-
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    logger.info(f"Script execution complete. Total nodes: {len(nodes)}, Working nodes: {len(working_nodes)}")
+    with OUTPUT_FILE.open('w', encoding='utf-8') as f:
         for node in working_nodes:
-            f.write(node + "\n")
-    print(f"Working nodes saved to {OUTPUT_FILE}")
+            f.write(f"{node}\n")
+    logger.info(f"Working nodes saved to {OUTPUT_FILE}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
