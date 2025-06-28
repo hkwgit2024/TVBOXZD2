@@ -1,477 +1,348 @@
-import aiofiles
-import asyncio
-import base64
-import logging
 import os
-import subprocess
-import sys
-import urllib.parse
-import urllib.request
+import re
+import base64
+import json
 import yaml
-from pathlib import Path
-import ssl
-import certifi
-import contextlib # 导入 contextlib 模块
+import time
+import requests
+import sys
 
-# 设置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("test_nodes.log")
-    ]
-)
-logger = logging.getLogger(__name__)
+# 节点下载 URL
+NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
+# Mihomo 控制器地址
+MIHOMO_CONTROLLER_URL = "http://127.0.0.1:9090"
+# Mihomo Socks5 代理地址
+MIHOMO_SOCKS5_PROXY = "socks5h://127.0.0.1:7891"
+# Mihomo 配置文件路径
+MIHOMO_CONFIG_PATH = "config.yaml"
+# 成功节点保存路径
+SUCCESS_NODES_PATH = "data/all.txt"
 
-# 常量
-MIHOMO_BIN_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz"
-MIHOMO_BIN_NAME = "mihomo"
-NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
-TEST_URL = "http://1.1.1.1" # 建议使用更稳定的测试地址，如 "http://www.gstatic.com/generate_204"
-CONCURRENT_TESTS = 5
-BASE_PORT = 7890
-DATA_DIR = Path("data")
-ALL_NODES_FILE = DATA_DIR / "all.txt"
-
-# 确保数据目录存在
-DATA_DIR.mkdir(exist_ok=True)
-
-async def download_mihomo():
-    """下载并解压 mihomo 二进制文件"""
-    if not os.path.exists(MIHOMO_BIN_NAME):
-        logger.info(f"下载 {MIHOMO_BIN_NAME}...")
+def parse_vmess(link):
+    """解析 vmess 链接"""
+    try:
+        encoded_str = link.replace("vmess://", "")
+        # vmess 链接是 base64(json) 格式，但有时不是标准 base64
+        # 尝试标准 base64 解码，如果失败则尝试 urlsafe 解码
         try:
-            await asyncio.to_thread(urllib.request.urlretrieve, MIHOMO_BIN_URL, f"{MIHOMO_BIN_NAME}.gz")
-            await asyncio.to_thread(subprocess.run, ["gunzip", "-f", f"{MIHOMO_BIN_NAME}.gz"], check=True) # 添加 -f 强制解压
-            await asyncio.to_thread(os.chmod, MIHOMO_BIN_NAME, 0o755)
-            logger.info(f"{MIHOMO_BIN_NAME} 下载并设置完成。")
-        except Exception as e:
-            logger.exception(f"下载或解压 {MIHOMO_BIN_NAME} 时出错: {e}")
-            sys.exit(1) # 如果下载失败，脚本应退出
-    else:
-        logger.info(f"{MIHOMO_BIN_NAME} 已存在，跳过下载。")
-        await asyncio.to_thread(os.chmod, MIHOMO_BIN_NAME, 0o755) # 确保权限正确
-
-def parse_node_url(node_url):
-    """解析节点 URL，支持多种协议"""
-    try:
-        parsed_url = urllib.parse.urlparse(node_url)
-        scheme = parsed_url.scheme.lower()
-        if scheme not in ["vmess", "ss", "trojan", "vless", "hysteria2", "hy2"]:
-            logger.warning(f"不支持的协议: {scheme}")
-            return None
-        if scheme == "hy2":
-            scheme = "hysteria2" # 将 hy2 映射到 hysteria2
-        if scheme == "trojan":
-            return parse_trojan(node_url)
-        elif scheme == "vmess":
-            return parse_vmess(node_url)
-        elif scheme == "ss":
-            return parse_ss(node_url)
-        elif scheme == "vless":
-            return parse_vless(node_url)
-        elif scheme == "hysteria2":
-            return parse_hysteria2(node_url)
-        return None
-    except Exception as e:
-        logger.error(f"解析 {node_url} 时出错: {e}")
-        return None
-
-def parse_trojan(node_url):
-    """解析 Trojan 节点"""
-    parsed = urllib.parse.urlparse(node_url)
-    user_info = parsed.username
-    hostname = parsed.hostname
-    port = parsed.port
-    query = urllib.parse.parse_qs(parsed.query)
-    config = {
-        "name": f"trojan-{hostname}:{port}",
-        "type": "trojan",
-        "server": hostname,
-        "port": port,
-        "password": user_info,
-        "udp": True,
-        "skip-cert-verify": query.get("allowInsecure", ["0"])[0] == "1", # 修复 allowInsecure 参数
-        "sni": query.get("sni", [hostname])[0]
-    }
-    return config
-
-def parse_vmess(node_url):
-    """解析 VMess 节点"""
-    try:
-        encoded_data = node_url.split("://")[1]
-        # 添加填充，确保 Base64 解码正确
-        encoded_data = encoded_data + '=' * (-len(encoded_data) % 4)
-        decoded_data = base64.b64decode(encoded_data).decode()
-        vmess_data = yaml.safe_load(decoded_data) # VMess 配置通常是 JSON，这里使用 yaml.safe_load 可能会有问题，但如果内容是兼容的 YAML 格式则无妨
-        config = {
-            "name": vmess_data.get("ps", "vmess-node"),
+            decoded_bytes = base64.b64decode(encoded_str)
+        except Exception:
+            decoded_bytes = base64.urlsafe_b64decode(encoded_str + "=" * ((4 - len(encoded_str) % 4) % 4))
+        
+        config = json.loads(decoded_bytes.decode('utf-8'))
+        
+        return {
+            "name": config.get("ps", f"vmess_{config.get('add', 'unknown')}"),
             "type": "vmess",
-            "server": vmess_data["add"],
-            "port": int(vmess_data["port"]),
-            "uuid": vmess_data["id"],
-            "alterId": int(vmess_data.get("aid", 0)),
-            "cipher": vmess_data.get("scy", "auto"),
-            "udp": True,
-            "tls": vmess_data.get("tls", "") == "tls",
-            "skip-cert-verify": vmess_data.get("v", "") == "1" or vmess_data.get("allowInsecure", False), # 兼容 VLESS 的 skip-cert-verify
-            "network": vmess_data.get("net", "tcp")
+            "server": config.get("add"),
+            "port": int(config.get("port")),
+            "uuid": config.get("id"),
+            "alterId": int(config.get("aid", 0)),
+            "security": config.get("scy", "auto"),
+            "network": config.get("net", "tcp"),
+            "tls": config.get("tls", "") == "tls",
+            "sni": config.get("sni", ""),
+            "ws-path": config.get("path", ""),
+            "ws-headers": {"Host": config.get("host", "")}
         }
-        # 处理 ws-opts 和 grpc-opts
-        if config["network"] == "ws":
-            config["ws-opts"] = {
-                "path": vmess_data.get("path", "/"),
-                "headers": {"Host": vmess_data.get("host", vmess_data.get("add"))}
-            }
-        elif config["network"] == "grpc":
-            config["grpc-opts"] = {
-                "serviceName": vmess_data.get("path", ""),
-                "grpcMode": vmess_data.get("grpcMode", "gun") # 默认 gun
-            }
-        return config
     except Exception as e:
-        logger.error(f"解析 VMess 节点 {node_url} 时出错: {e}")
+        print(f"Error parsing vmess link '{link}': {e}")
         return None
 
-def parse_ss(node_url):
-    """解析 Shadowsocks 节点"""
-    try:
-        parsed = urllib.parse.urlparse(node_url)
-        user_info_encoded = parsed.username
-        hostname = parsed.hostname
-        port = parsed.port
-
-        # Shadowsocks 的 user_info 可能是 base64 编码的 "cipher:password"
-        decoded_user_info = ""
-        try:
-            decoded_user_info = base64.b64decode(user_info_encoded + "==").decode()
-        except (base64.binascii.Error, UnicodeDecodeError):
-            # 如果解码失败，可能是未编码的，直接使用
-            decoded_user_info = user_info_encoded
-        
-        cipher, password = "auto", decoded_user_info
-        if ":" in decoded_user_info:
-            cipher, password = decoded_user_info.split(":", 1) # 只分割一次
-
-        config = {
-            "name": f"ss-{hostname}:{port}",
-            "type": "ss",
-            "server": hostname,
+def parse_trojan(link):
+    """解析 trojan 链接"""
+    match = re.match(r"trojan://([^@]+)@([^:]+):(\d+)(.*)", link)
+    if match:
+        password = match.group(1)
+        server = match.group(2)
+        port = int(match.group(3))
+        # 简单解析，name 等其他参数可能需要从 query string 中获取
+        name_match = re.search(r"#([^#&]+)", link)
+        name = name_match.group(1) if name_match else f"trojan_{server}"
+        return {
+            "name": name,
+            "type": "trojan",
+            "server": server,
             "port": port,
-            "cipher": cipher,
-            "password": password,
-            "udp": True
+            "password": password
         }
-        # 处理插件
-        query = urllib.parse.parse_qs(parsed.query)
-        plugin = query.get('plugin', [''])[0]
-        plugin_opts = query.get('plugin_opts', [''])[0]
-        if plugin:
-            config["plugin"] = plugin
-            if plugin_opts:
-                config["plugin-opts"] = plugin_opts
-        return config
-    except Exception as e:
-        logger.error(f"解析 Shadowsocks 节点 {node_url} 时出错: {e}")
-        return None
+    return None
 
-def parse_vless(node_url):
-    """解析 VLESS 节点"""
+def parse_ss(link):
+    """解析 ss 链接 (简化版，仅支持 aes-256-gcm)"""
     try:
-        parsed = urllib.parse.urlparse(node_url)
-        user_info = parsed.username
-        hostname = parsed.hostname
-        port = parsed.port
-        query = urllib.parse.parse_qs(parsed.query)
+        encoded_part = link.replace("ss://", "").split('#')[0] # 移除 # 后面的备注
+        decoded_bytes = base64.urlsafe_b64decode(encoded_part + "=" * ((4 - len(encoded_part) % 4) % 4))
+        decoded_str = decoded_bytes.decode('utf-8')
         
-        security = query.get("security", [""])[0]
-        tls_enabled = security in ["tls", "reality"]
+        # 格式通常是 method:password@server:port
+        parts = decoded_str.split('@')
+        if len(parts) == 2:
+            auth_part = parts[0]
+            server_port_part = parts[1]
 
-        config = {
-            "name": f"vless-{hostname}:{port}",
-            "type": "vless",
-            "server": hostname,
-            "port": port,
-            "uuid": user_info,
-            "udp": True,
-            "tls": tls_enabled,
-            "skip-cert-verify": query.get("allowInsecure", ["0"])[0] == "1",
-            "network": query.get("type", ["tcp"])[0],
-            "servername": query.get("sni", [hostname])[0] # Clash.Meta 使用 servername 而非 sni
-        }
-        
-        # 处理可选参数
-        flow = query.get("flow", [""])[0]
-        if flow:
-            config["flow"] = flow
-        
-        if security == "reality":
-            config["reality-opts"] = {
-                "public-key": query.get("pbk", [""])[0],
-                "short-id": query.get("sid", [""])[0] or None,
-                "fingerprint": query.get("fp", [""])[0] or None
-            }
-        
-        if config["network"] == "ws":
-            config["ws-opts"] = {
-                "path": query.get("path", ["/"])[0],
-                "headers": {"Host": query.get("host", [hostname])[0]}
-            }
-        elif config["network"] == "grpc":
-            config["grpc-opts"] = {
-                "serviceName": query.get("serviceName", [""])[0],
-                "grpcMode": query.get("grpcMode", ["gun"])[0]
-            }
+            method, password = auth_part.split(':', 1) # 只分割第一个冒号
+            server, port = server_port_part.rsplit(':', 1) # 从右边分割最后一个冒号
 
-        # 清理空值
-        config = {k: v for k, v in config.items() if v is not None}
-        return config
+            # 提取名称
+            name_match = re.search(r"#([^#&]+)", link)
+            name = name_match.group(1) if name_match else f"ss_{server}"
+
+            return {
+                "name": name,
+                "type": "ss",
+                "server": server,
+                "port": int(port),
+                "cipher": method,
+                "password": password
+            }
     except Exception as e:
-        logger.error(f"解析 VLESS 节点 {node_url} 时出错: {e}")
-        return None
+        print(f"Error parsing ss link '{link}': {e}")
+    return None
 
-def parse_hysteria2(node_url):
-    """解析 Hysteria2 节点"""
-    try:
-        parsed = urllib.parse.urlparse(node_url)
-        user_info = parsed.username
-        hostname = parsed.hostname
-        port = parsed.port
-        query = urllib.parse.parse_qs(parsed.query)
-        config = {
-            "name": f"hysteria2-{hostname}:{port}",
+def parse_hysteria2(link):
+    """解析 hysteria2 链接"""
+    # 示例: hysteria2://password@server:port?obfs=obfs_name&obfs-password=obfs_pass#name
+    match = re.match(r"hysteria2://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
+    if match:
+        password = match.group(1)
+        server = match.group(2)
+        port = int(match.group(3))
+        query_string = match.group(4) if match.group(4) else ""
+        name = match.group(6) if match.group(6) else f"hysteria2_{server}"
+
+        params = {}
+        if query_string:
+            for param in query_string[1:].split('&'):
+                key, value = param.split('=', 1)
+                params[key] = value
+        
+        return {
+            "name": name,
             "type": "hysteria2",
-            "server": hostname,
+            "server": server,
             "port": port,
-            "password": user_info,
-            "udp": True,
-            "tls": True, # Hysteria2 总是使用 TLS
-            "skip-cert-verify": query.get("insecure", ["0"])[0] == "1",
-            "sni": query.get("sni", [hostname])[0]
+            "password": password,
+            "obfs": params.get("obfs"),
+            "obfs-password": params.get("obfs-password"),
+            "up": int(params.get("up", 0)), # 上行带宽，默认为0
+            "down": int(params.get("down", 0)), # 下行带宽，默认为0
+            "alpn": params.get("alpn")
         }
-        # 处理可选参数
-        obfs = query.get('obfs', [None])[0]
-        if obfs:
-            config['obfs'] = obfs
-            config['obfs-password'] = query.get('obfs-password', [None])[0]
+    return None
 
-        alpn = query.get('alpn', [None])[0]
-        if alpn:
-            config['alpn'] = alpn.split(',') # ALPN 可以是逗号分隔的列表
+def parse_vless(link):
+    """解析 vless 链接"""
+    # vless://UUID@SERVER:PORT?params#NAME
+    match = re.match(r"vless://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
+    if match:
+        uuid = match.group(1)
+        server = match.group(2)
+        port = int(match.group(3))
+        query_string = match.group(4) if match.group(4) else ""
+        name = match.group(6) if match.group(6) else f"vless_{server}"
 
-        return config
-    except Exception as e:
-        logger.error(f"解析 Hysteria2 节点 {node_url} 时出错: {e}")
+        params = {}
+        if query_string:
+            for param in query_string[1:].split('&'):
+                key, value = param.split('=', 1)
+                params[key] = value
+
+        return {
+            "name": name,
+            "type": "vless",
+            "server": server,
+            "port": port,
+            "uuid": uuid,
+            "network": params.get("type", "tcp"), # tcp, ws, grpc
+            "tls": params.get("security", "") == "tls",
+            "flow": params.get("flow", ""), # xr/reality
+            "reality-opts": {
+                "dest": params.get("fp", ""),
+                "xver": int(params.get("xver", 0)),
+                "sni": params.get("sni", ""),
+                "fingerprint": params.get("pbk", "")
+            } if params.get("security", "") == "reality" else None,
+            "ws-path": params.get("path", ""),
+            "ws-headers": {"Host": params.get("host", "")}
+        }
+    return None
+
+
+def parse_node_link(link):
+    """根据协议类型解析节点链接"""
+    if link.startswith("vmess://"):
+        return parse_vmess(link)
+    elif link.startswith("trojan://"):
+        return parse_trojan(link)
+    elif link.startswith("ss://"):
+        return parse_ss(link)
+    elif link.startswith("hysteria2://"):
+        return parse_hysteria2(link)
+    elif link.startswith("vless://"):
+        return parse_vless(link)
+    # TODO: 添加 SSR 解析逻辑，SSR 通常需要更复杂的解析库
+    elif link.startswith("ssr://"):
+        print(f"Skipping SSR link (complex parsing not implemented): {link}")
+        return None
+    else:
+        print(f"Unknown protocol or invalid link: {link}")
         return None
 
-def create_clash_config(node_url, port):
-    """为单个节点生成 Clash 配置文件"""
-    node_config = parse_node_url(node_url)
-    if not node_config:
-        return None
-
-    # 给代理一个唯一的名称，防止冲突
-    proxy_name = node_config.get("name", f"proxy_{port}_{hash(node_url) % 10000}")
-    node_config["name"] = proxy_name
-
+def generate_mihomo_config(parsed_nodes):
+    """生成 Mihomo 配置文件"""
     config = {
-        "port": port,
-        "socks-port": port,
-        "allow-lan": False,
-        "mode": "global",
+        "port": 7890,
+        "socks-port": 7891,
+        "redir-port": 7892,
+        "tproxy-port": 7893,
+        "mixed-port": 7890,
+        "mode": "rule",
         "log-level": "info",
-        "external-controller": f"127.0.0.1:{port + 1000}",
-        "proxies": [node_config],
+        "allow-lan": False,
+        "bind-address": "127.0.0.1",
+        "external-controller": "127.0.0.1:9090",
+        "dns": {
+            "enable": True,
+            "listen": "0.0.0.0:53",
+            "default-nameserver": ["114.114.114.114", "8.8.8.8"],
+            "enhanced-mode": "fake-ip",
+            "fake-ip-range": "198.18.0.1/16",
+            "use-hosts": True,
+            "fallback": ["tls://1.1.1.1:853", "tls://8.8.8.8:853"],
+            "fallback-filter": {
+                "geoip": True,
+                "ipcidr": ["240.0.0.0/4"]
+            }
+        },
+        "proxies": [],
         "proxy-groups": [
             {
-                "name": "Proxy",
+                "name": "🔰 节点选择",
                 "type": "select",
-                "proxies": [proxy_name]
+                "proxies": ["DIRECT"]
             }
         ],
-        "rules": ["MATCH,Proxy"]
+        "rules": ["MATCH,🔰 节点选择"]
     }
 
-    config_file = Path(f"config_{port}.yaml")
-    try:
-        with open(config_file, "w", encoding="utf-8") as f:
-            yaml.safe_dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-        return config_file
-    except Exception as e:
-        logger.error(f"生成配置文件 {config_file} 时出错: {e}")
-        return None
+    proxy_names = []
+    for node in parsed_nodes:
+        if node: # 确保节点解析成功
+            config["proxies"].append(node)
+            proxy_names.append(node["name"])
+    
+    # 将所有解析出的代理添加到节点选择组中
+    config["proxy-groups"][0]["proxies"].extend(proxy_names)
 
-# 将 mihomo_process 定义为异步上下文管理器
-@contextlib.asynccontextmanager # 更正：从 contextlib 导入
-async def mihomo_process(config_file, port):
-    """启动 mihomo 进程并确保清理"""
-    process = None
-    try:
-        logger.info(f"正在启动 {MIHOMO_BIN_NAME}，配置文件 {config_file}，端口 {port}...")
-        # 包装 Popen 以在单独线程中运行，防止其内部同步异常阻塞事件循环
-        process = await asyncio.to_thread(subprocess.Popen,
-            [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            bufsize=1
-        )
-        logger.info(f"{MIHOMO_BIN_NAME} 进程已启动 (PID: {process.pid})。给它一些时间进行初始化...")
+    with open(MIHOMO_CONFIG_PATH, "w", encoding="utf-8") as f:
+        yaml.dump(config, f, allow_unicode=True, sort_keys=False)
+    print(f"Generated Mihomo config: {MIHOMO_CONFIG_PATH}")
+
+def test_nodes(original_links_map):
+    """测试节点连接"""
+    successful_nodes = []
+    
+    # 从生成的配置中读取代理名称
+    with open(MIHOMO_CONFIG_PATH, "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+    
+    proxies = config.get("proxies", [])
+    
+    print("Starting node testing...")
+    for proxy in proxies:
+        proxy_name = proxy["name"]
         
-        # 捕获 mihomo 输出
-        async def log_mihomo_output():
-            while process.poll() is None:
-                try:
-                    stdout_line = await asyncio.to_thread(process.stdout.readline)
-                    if stdout_line:
-                        logger.debug(f"mihomo stdout: {stdout_line.strip()}")
-                    stderr_line = await asyncio.to_thread(process.stderr.readline)
-                    if stderr_line:
-                        logger.debug(f"mihomo stderr: {stderr_line.strip()}")
-                except ValueError: # Stream might close
-                    break
-                await asyncio.sleep(0.01) # 短暂休眠以避免CPU占用过高
-            logger.debug(f"Mihomo output logging for PID {process.pid} stopped. Return code: {process.returncode}")
+        print(f"Testing node: {proxy_name}...")
+        try:
+            # 切换 Mihomo 代理
+            response = requests.put(
+                f"{MIHOMO_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9",
+                json={"name": proxy_name},
+                timeout=5
+            )
+            response.raise_for_status()
+            time.sleep(1) # 等待代理切换
 
-        asyncio.create_task(log_mihomo_output())
-        await asyncio.sleep(10) # 增加初始化时间，确保服务完全启动
-        yield process
-    except Exception as e:
-        # 使用 logger.exception 打印完整堆栈信息
-        logger.exception(f"启动 mihomo 进程失败: {e}")
-        raise # 重新抛出异常，让外部调用者知道启动失败
-    finally:
-        if process and process.poll() is None:
-            logger.info(f"终止 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})...")
-            process.terminate()
-            try:
-                # 包装 blocking wait with asyncio.to_thread
-                await asyncio.to_thread(process.wait, timeout=5)
-                logger.info(f"{MIHOMO_BIN_NAME} 进程已终止 (PID: {process.pid})")
-            except subprocess.TimeoutExpired:
-                logger.warning(f"进程 (PID: {process.pid}) 未正常终止，正在强制杀死...")
-                process.kill()
-        elif process:
-             logger.info(f"{MIHOMO_BIN_NAME} 进程 (PID: {process.pid}) 已退出，返回码: {process.returncode}")
-
-        if config_file.exists():
-            logger.info(f"删除配置文件 {config_file}...")
-            config_file.unlink()
-
-async def test_node_connectivity(node_url, current_port):
-    """测试节点连接性"""
-    logger.info(f"\n--- 正在测试节点: {node_url}，端口 {current_port} ---")
-    
-    temp_config_file = create_clash_config(node_url, current_port)
-    if not temp_config_file:
-        logger.warning(f"由于解析错误或不支持的协议，跳过节点: {node_url}。")
-        return None
-
-    try:
-        # async with 语句会调用 mihomo_process 的 __aenter__ 和 __aexit__
-        async with mihomo_process(temp_config_file, current_port) as process:
-            # 检查 mihomo 进程是否仍在运行
-            if process.poll() is not None:
-                logger.warning(f"Mihomo 进程 (PID: {process.pid}) 意外退出，返回码: {process.returncode}。跳过测试 {node_url}。")
-                # 可以尝试读取 stderr 进一步诊断
-                stderr_output = await asyncio.to_thread(process.stderr.read)
-                if stderr_output:
-                    logger.warning(f"Mihomo stderr for {node_url}:\n{stderr_output}")
-                return None
-
-            curl_command = [
-                "curl",
-                "--socks5-hostname", f"127.0.0.1:{current_port}",
-                TEST_URL,
-                "--max-time", "30",
-                "--silent", "--output", "/dev/null",
-                "--fail"
-            ]
-            logger.debug(f"Curl 命令: {' '.join(curl_command)}")
-            result = await asyncio.to_thread(subprocess.run, curl_command, capture_output=True, text=True)
+            # 使用 Mihomo 代理测试 Google
+            test_response = requests.get(
+                "https://www.google.com",
+                proxies={"http": MIHOMO_SOCKS5_PROXY, "https": MIHOMO_SOCKS5_PROXY},
+                timeout=10
+            )
+            test_response.raise_for_status()
+            print(f"✅ Node '{proxy_name}' is working.")
             
-            logger.debug(f"Curl stdout: {result.stdout}")
-            logger.debug(f"Curl stderr: {result.stderr}")
+            # 找到原始链接并保存
+            if proxy_name in original_links_map:
+                successful_nodes.append(original_links_map[proxy_name])
+            else:
+                # 这种情况下，代理名称可能被截断或修改，需要更复杂的映射
+                print(f"Warning: Could not find original link for proxy name '{proxy_name}'")
+                
+        except requests.exceptions.RequestException as e:
+            print(f"❌ Node '{proxy_name}' is NOT working. Error: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred during testing node '{proxy_name}': {e}")
+            
+    return successful_nodes
 
-            if result.returncode == 0:
-                logger.info(f"节点 {node_url} 已连接。")
-                return node_url
-            logger.warning(f"节点 {node_url} 连接失败 (curl退出码: {result.returncode})。")
-            return None
-    except Exception as e:
-        logger.exception(f"测试 {node_url} 时发生错误: {e}") # 记录完整异常
-        return None
-
-async def test_nodes(nodes):
-    """并发测试节点"""
-    working_nodes = []
-    semaphore = asyncio.Semaphore(CONCURRENT_TESTS)
-    
-    # 使用队列分配端口，确保每个并发任务都有独立的端口
-    port_queue = asyncio.Queue()
-    for i in range(CONCURRENT_TESTS):
-        await port_queue.put(BASE_PORT + i)
-
-    async def test_with_semaphore(node_url):
-        async with semaphore:
-            current_port = await port_queue.get() # 获取一个可用端口
-            try:
-                result = await test_node_connectivity(node_url, current_port)
-                return result
-            finally:
-                await port_queue.put(current_port) # 确保端口被释放回队列
-
-    tasks = [test_with_semaphore(node) for node in nodes]
-    
-    # 打印进度
-    for i, future in enumerate(asyncio.as_completed(tasks)):
-        result = await future
-        if result:
-            working_nodes.append(result)
-        logger.info(f"已处理 {i+1}/{len(nodes)} 个节点。")
-    
-    return working_nodes
-
-async def save_working_nodes(working_nodes):
-    """保存可用节点到文件"""
-    if not working_nodes:
-        logger.warning("没有找到可用节点，跳过写入空文件。")
-        # 移除可能存在的旧文件，确保文件不存在如果没可用节点
-        if ALL_NODES_FILE.exists():
-            await asyncio.to_thread(ALL_NODES_FILE.unlink)
-        return
-
-    async with aiofiles.open(ALL_NODES_FILE, "w", encoding="utf-8") as f:
-        for node in working_nodes:
-            await f.write(f"{node}\n")
-    logger.info(f"可用节点已保存到 {ALL_NODES_FILE}")
-
-async def main():
-    """主函数"""
-    logger.info("开始运行节点测试脚本...")
-    
-    await download_mihomo()
-    
-    logger.info(f"从 {NODE_LIST_URL} 获取节点列表...")
-    context = ssl.create_default_context(cafile=certifi.where())
+def main():
+    # 1. 下载节点
+    print(f"Downloading nodes from {NODE_URL}...")
     try:
-        # 包装 urlopen 和 read 以在单独线程中运行
-        with await asyncio.to_thread(urllib.request.urlopen, NODE_LIST_URL, context=context) as response:
-            nodes_raw = await asyncio.to_thread(response.read)
-            nodes = nodes_raw.decode('utf-8').splitlines()
-    except Exception as e:
-        logger.exception(f"下载节点列表时出错: {e}")
-        sys.exit(1) # 如果无法下载节点列表，则退出
+        response = requests.get(NODE_URL, timeout=10)
+        response.raise_for_status() # 检查 HTTP 错误
+        node_links = response.text.strip().split('\n')
+        node_links = [link.strip() for link in node_links if link.strip()] # 过滤空行
+        print(f"Downloaded {len(node_links)} nodes.")
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading nodes: {e}")
+        sys.exit(1)
 
-    logger.info(f"共找到 {len(nodes)} 个节点。")
+    if not node_links:
+        print("No nodes found in the downloaded file. Exiting.")
+        sys.exit(0)
+
+    # 2. 解析节点
+    parsed_nodes = []
+    original_links_map = {} # 用于存储代理名称到原始链接的映射
+    for i, link in enumerate(node_links):
+        parsed = parse_node_link(link)
+        if parsed:
+            # 确保名称唯一，尤其当节点链接中没有提供明确名称时
+            original_name = parsed["name"]
+            unique_name = original_name
+            count = 1
+            while unique_name in [p["name"] for p in parsed_nodes]:
+                unique_name = f"{original_name}_{count}"
+                count += 1
+            parsed["name"] = unique_name
+            
+            parsed_nodes.append(parsed)
+            original_links_map[unique_name] = link
     
-    working_nodes = await test_nodes(nodes)
-    logger.info(f"\n--- 脚本执行完成 ---")
-    logger.info(f"总共处理的节点数: {len(nodes)}")
-    logger.info(f"找到的可用节点数: {len(working_nodes)}")
-    
-    await save_working_nodes(working_nodes)
+    if not parsed_nodes:
+        print("No valid nodes parsed. Exiting.")
+        sys.exit(0)
+
+    # 3. 生成 Mihomo 配置
+    generate_mihomo_config(parsed_nodes)
+
+    # 4. 启动 Mihomo (在 GitHub Actions 中由外部脚本启动)
+    # 此脚本仅负责生成配置和测试，Mihomo 的启动和停止由 GH Actions 工作流处理
+
+    # 5. 测试节点
+    # 需要等待 Mihomo 启动后才能测试，此脚本会在 Mihomo 启动后被调用
+    # 所以直接调用测试函数
+    successful_nodes = test_nodes(original_links_map)
+
+    # 6. 保存成功节点
+    os.makedirs(os.path.dirname(SUCCESS_NODES_PATH), exist_ok=True)
+    with open(SUCCESS_NODES_PATH, "w", encoding="utf-8") as f:
+        for node_link in successful_nodes:
+            f.write(f"{node_link}\n")
+    print(f"Successfully saved {len(successful_nodes)} working nodes to {SUCCESS_NODES_PATH}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
