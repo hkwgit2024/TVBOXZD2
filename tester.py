@@ -13,9 +13,7 @@ import base64
 
 # 订阅链接列表
 CLASH_BASE_CONFIG_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
-    "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
+
     "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml"
 ]
