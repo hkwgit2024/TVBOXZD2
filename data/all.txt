@@ -1,6 +1,1 @@
-Tested Proxy Nodes (plaintext format, sorted by delay):
-trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@awsus1.zymnode.cc:443?sni=awsus1.zymnode.cc#yandex-142 - 317ms
-hysteria2://96eee01d-74be-440a-94f8-7cc52450395e@jpcn286.s2fjeyeeyafe.bond:35789?sni=jpcn286.s2fjeyeeyafe.bond&insecure=0#yandex-260 - 703ms
-trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applejp1.zymnode.cc:443?sni=applejp1.zymnode.cc#yandex-139 - 728ms
-trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applesg2.zymnode.cc:443?sni=applesg2.zymnode.cc#yandex-141 - 903ms
-trojan://07a0e875-9b9a-4e11-a81f-8af85f82e74d@applesg1.zymnode.cc:443?sni=applesg1.zymnode.cc#yandex-140 - 951ms
+No nodes passed the delay test.
