@@ -1,51 +1,37 @@
-
-name: Test and Parse Nodes
+name: Test and Save Proxy Nodes
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: # Allows manual trigger
   schedule:
-    - cron: '0 0 * * *'  # 每天运行一次
-  workflow_dispatch:
+    - cron: '0 */6 * * *' # Runs every 6 hours
 
 jobs:
-  test-nodes:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
-
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget gzip
-
-    - name: Install Clash.Meta
-      run: |
-        wget https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz
-        gzip -d mihomo-linux-amd64-v1.18.9.gz
-        sudo mv mihomo-linux-amd64-v1.18.9 /usr/local/bin/clash
-        chmod +x /usr/local/bin/clash
-        clash -v
+        python-version: '3.x' # Use a recent Python version
 
     - name: Install Python dependencies
       run: |
-        pip install requests pyyaml
+        python -m pip install --upgrade pip
+        pip install PyYAML requests
 
-    - name: Run node parser and tester
+    - name: Run node processing script
+      run: python process_nodes.py
+
+    - name: Commit and push changes
       run: |
-        python parse_and_test_nodes.py || echo "Script failed, check logs for details"
-
-    - name: Upload results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: node-results
-        path: data/all.txt
-        if-no-files-found: warn
-
+        git config user.name "GitHub Actions"
+        git config user.email "github-actions@github.com"
+        git add data/all.txt
+        git commit -m "Update working proxy nodes" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
