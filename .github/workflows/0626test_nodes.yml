@@ -16,12 +16,24 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # Use a recent Python version
+        python-version: '3.9' # Specify Python 3.9 for consistency
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gzip curl
 
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install PyYAML requests
+        pip install PyYAML requests aiofiles certifi
+
+    - name: Test network connectivity
+      run: |
+        echo "Testing network connectivity..."
+        curl -v http://1.1.1.1
+        ping -c 4 1.1.1.1
+      continue-on-error: true # Continue even if network test fails
 
     - name: Run node processing script
       run: python tester.py
