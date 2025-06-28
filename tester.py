@@ -27,8 +27,8 @@ logger = logging.getLogger(__name__)
 MIHOMO_BIN_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz"
 MIHOMO_BIN_NAME = "mihomo"
 NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
-TEST_URL = "http://1.1.1.1"  # 更换为更中立的测试 URL
-CONCURRENT_TESTS = 5  # 减少并发测试数量
+TEST_URL = "http://1.1.1.1"
+CONCURRENT_TESTS = 5
 BASE_PORT = 7890
 DATA_DIR = Path("data")
 ALL_NODES_FILE = DATA_DIR / "all.txt"
@@ -51,11 +51,12 @@ def parse_node_url(node_url):
     """解析节点 URL，支持多种协议"""
     try:
         parsed_url = urllib.parse.urlparse(node_url)
-        scheme = parsed_url.scheme
-        if scheme not in ["vmess", "ss", "trojan", "vless", "hysteria2"]:
+        scheme = parsed_url.scheme.lower()
+        if scheme not in ["vmess", "ss", "trojan", "vless", "hysteria2", "hy2"]:
             logger.warning(f"不支持的协议: {scheme}")
             return None
-
+        if scheme == "hy2":
+            scheme = "hysteria2"  # 将 hy2 映射到 hysteria2
         if scheme == "trojan":
             return parse_trojan(node_url)
         elif scheme == "vmess":
@@ -78,7 +79,6 @@ def parse_trojan(node_url):
     hostname = parsed.hostname
     port = parsed.port
     query = urllib.parse.parse_qs(parsed.query)
-
     config = {
         "name": f"trojan-{hostname}:{port}",
         "type": "trojan",
@@ -86,7 +86,7 @@ def parse_trojan(node_url):
         "port": port,
         "password": user_info,
         "udp": True,
-        "skip-cert-verify": False,  # 禁用 allowInsecure，强制验证证书
+        "skip-cert-verify": False,
         "sni": query.get("sni", [hostname])[0]
     }
     return config
@@ -122,13 +122,20 @@ def parse_ss(node_url):
         user_info = parsed.username
         hostname = parsed.hostname
         port = parsed.port
+        # 解码 user_info（base64 编码的 cipher:password）
+        try:
+            decoded_user_info = base64.b64decode(user_info + "==").decode()
+            cipher, password = decoded_user_info.split(":")
+        except ValueError:
+            # 如果解码失败，尝试直接解析
+            cipher, password = user_info.split(":")
         config = {
             "name": f"ss-{hostname}:{port}",
             "type": "ss",
             "server": hostname,
             "port": port,
-            "cipher": user_info.split(":")[0],
-            "password": user_info.split(":")[1],
+            "cipher": cipher,
+            "password": password,
             "udp": True
         }
         return config
@@ -150,11 +157,18 @@ def parse_vless(node_url):
             "server": hostname,
             "port": port,
             "uuid": user_info,
-            "udp": True,
-            "tls": query.get("security", [""])[0] == "tls",
+            "udp": True,  
+            "tls": query.get("security", [""])[0] in ["tls", "reality"],
             "skip-cert-verify": False,
-            "network": query.get("type", ["tcp"])[0]
-        }
+            "network": query.get("type", ["tcp"])[0],
+            "flow": query.get("flow", [""])[0] or None,  # 支持 flow 参数
+            "public-key": query.get("pbk", [""])[0] or None,
+            "fingerprint": query.get("fp", [""])[0] or None,
+            "short-id": query.get("sid", [""])[0] or None,
+            "servername": query.get("sni", [hostname])[0]
+            }
+        # 清理空值
+        config = {k: v for k, v in config.items() if v is not None}
         return config
     except Exception as e:
         logger.error(f"解析 VLESS 节点 {node_url} 时出错: {e}")
@@ -175,7 +189,7 @@ def parse_hysteria2(node_url):
             "port": port,
             "password": user_info,
             "udp": True,
-            "skip-cert-verify": False,
+            "skip-cert-verify": query.get("insecure", ["0"])[0] == "1",
             "sni": query.get("sni", [hostname])[0]
         }
         return config
@@ -208,9 +222,13 @@ def create_clash_config(node_url, port):
     }
 
     config_file = Path(f"config_{port}.yaml")
-    with open(config_file, "w") as f:
-        yaml.safe_dump(config, f)
-    return config_file
+    try:
+        with open(config_file, "w") as f:
+            yaml.safe_dump(config, f, allow_unicode=True)
+        return config_file
+    except Exception as e:
+        logger.error(f"生成配置文件 {config_file} 时出错: {e}")
+        return None
 
 async def mihomo_process(config_file, port):
     """启动 mihomo 进程并确保清理"""
@@ -219,14 +237,29 @@ async def mihomo_process(config_file, port):
         logger.info(f"正在启动 {MIHOMO_BIN_NAME}，配置文件 {config_file}，端口 {port}...")
         process = subprocess.Popen(
             [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
-            stdout=sys.stdout,
-            stderr=sys.stderr,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             bufsize=1
         )
         logger.info(f"{MIHOMO_BIN_NAME} 进程已启动 (PID: {process.pid})。给它一些时间进行初始化...")
-        await asyncio.sleep(10)  # 增加初始化时间到 10 秒
+        
+        # 捕获 mihomo 输出
+        async def log_mihomo_output():
+            while process.poll() is None:
+                line = await asyncio.to_thread(process.stdout.readline)
+                if line:
+                    logger.debug(f"mihomo stdout: {line.strip()}")
+                line = await asyncio.to_thread(process.stderr.readline)
+                if line:
+                    logger.debug(f"mihomo stderr: {line.strip()}")
+        
+        asyncio.create_task(log_mihomo_output())
+        await asyncio.sleep(10)  # 增加初始化时间
         yield process
+    except Exception as e:
+        logger.error(f"启动 mihomo 进程失败: {e}")
+        raise
     finally:
         if process and process.poll() is None:
             logger.info(f"终止 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})...")
@@ -250,12 +283,12 @@ async def test_node_connectivity(node_url, current_port):
         return None
 
     try:
-        async with mihomo_process(temp_config_file, current_port):
+        async with mihomo_process(temp_config_file, current_port) as process:
             curl_command = [
                 "curl",
                 "--socks5-hostname", f"127.0.0.1:{current_port}",
                 TEST_URL,
-                "--max-time", "30",  # 增加超时时间到 30 秒
+                "--max-time", "30",
                 "--silent", "--output", "/dev/null",
                 "--fail"
             ]
@@ -270,14 +303,8 @@ async def test_node_connectivity(node_url, current_port):
                 return node_url
             logger.warning(f"节点 {node_url} 连接失败 (curl退出码: {result.returncode})。")
             return None
-    except FileNotFoundError:
-        logger.error(f"错误: 找不到 {MIHOMO_BIN_NAME}。请确保它在当前目录且可执行。")
-        return None
-    except subprocess.SubprocessError as e:
-        logger.error(f"测试 {node_url} 时发生子进程错误: {e}")
-        return None
     except Exception as e:
-        logger.error(f"测试 {node_url} 时发生意外错误: {e}")
+        logger.error(f"测试 {node_url} 时发生错误: {e}")
         return None
 
 async def test_nodes(nodes):
@@ -287,8 +314,7 @@ async def test_nodes(nodes):
     
     async def test_with_semaphore(node_url, port):
         async with semaphore:
-            result = await test_node_connectivity(node_url, port)
-            return result
+            return await test_node_connectivity(node_url, port)
 
     tasks = []
     for i, node_url in enumerate(nodes):
@@ -315,10 +341,8 @@ async def main():
     """主函数"""
     logger.info("开始运行节点测试脚本...")
     
-    # 下载 mihomo
     await download_mihomo()
-
-    # 获取节点列表
+    
     logger.info(f"从 {NODE_LIST_URL} 获取节点列表...")
     context = ssl.create_default_context(cafile=certifi.where())
     with urllib.request.urlopen(NODE_LIST_URL, context=context) as response:
@@ -326,11 +350,9 @@ async def main():
     
     logger.info(f"共找到 {len(nodes)} 个节点。")
     
-    # 测试节点
     working_nodes = await test_nodes(nodes)
     logger.info(f"找到的可用节点数: {len(working_nodes)}")
     
-    # 保存可用节点
     await save_working_nodes(working_nodes)
 
 if __name__ == "__main__":
