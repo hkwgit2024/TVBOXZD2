@@ -1,4 +1,4 @@
-
+```yaml
 name: Test and Parse Nodes
 
 on:
@@ -23,15 +23,15 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget tar
+        sudo apt-get install -y wget gzip
 
     - name: Install Clash.Meta
       run: |
         wget https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz
-        gunzip mihomo-linux-amd64-v1.18.9.gz
+        gzip -d mihomo-linux-amd64-v1.18.9.gz
         sudo mv mihomo-linux-amd64-v1.18.9 /usr/local/bin/clash
         chmod +x /usr/local/bin/clash
-        clash --version
+        clash -v
 
     - name: Install Python dependencies
       run: |
@@ -48,3 +48,4 @@ jobs:
         name: node-results
         path: data/all.txt
         if-no-files-found: warn
+```
