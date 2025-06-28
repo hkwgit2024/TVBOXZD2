@@ -23,7 +23,6 @@ jobs:
 
       - name: Install Mihomo
         run: |
-          # 下载并安装 Mihomo
           MIHOMO_VERSION="v1.18.9" # 您可以根据需要调整Mihomo版本
           wget -qO- https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz | gzip -d > mihomo
           chmod +x mihomo
@@ -32,22 +31,26 @@ jobs:
       - name: Create data directory
         run: mkdir -p data
 
+      - name: Generate initial Mihomo config (placeholder)
+        run: echo "{}" > config.yaml # 创建一个空的config.yaml，避免Mihomo启动时找不到文件
+
       - name: Run Mihomo in background
         run: |
-          # 启动 Mihomo，但这里 Mihomo 的 config.yaml 会由 Python 脚本生成
-          # 先创建一个空的 config.yaml 避免 Mihomo 启动失败
-          touch config.yaml
           nohup mihomo -d . -f config.yaml &> mihomo.log &
           MIHOMO_PID=$!
           echo "MIHOMO_PID=$MIHOMO_PID" >> $GITHUB_ENV
           echo "Mihomo started with PID: $MIHOMO_PID"
-          sleep 5 # 等待 Mihomo 启动
+          # 增加等待时间，确保Mihomo完全启动并监听端口
+          sleep 10 # 增加到10秒，甚至可以尝试15-20秒如果仍然有问题
+          # 检查Mihomo是否真的在运行并监听端口
+          netstat -tulnp | grep 9090 && echo "Mihomo controller port 9090 is open." || echo "Mihomo controller port 9090 is NOT open."
+
 
       - name: Run Python node tester
         run: python tester.py
 
       - name: Stop Mihomo
-        if: success() || failure() # 确保在工作流成功或失败时都停止 Mihomo
+        if: always() # 无论上一步成功失败，都尝试停止Mihomo
         run: |
           if [ -n "${{ env.MIHOMO_PID }}" ]; then
             kill ${{ env.MIHOMO_PID }} || true
