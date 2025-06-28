@@ -10,21 +10,19 @@ from urllib.parse import urlparse, parse_qs, unquote
 
 # 节点下载 URL
 NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
-# Mihomo 控制器地址
-MIHOMO_CONTROLLER_URL = "http://127.0.0.1:9090"
-# Mihomo Socks5 代理地址
-MIHOMO_SOCKS5_PROXY = "socks5h://127.0.0.1:7891"
-# Mihomo 配置文件路径 (这个文件会在运行时被覆盖)
-MIHOMO_CONFIG_PATH = "config.yaml"
+# Clash Core 控制器地址
+CLASH_CONTROLLER_URL = "http://127.0.0.1:9090"
+# Clash Core Socks5 代理地址
+CLASH_SOCKS5_PROXY = "socks5h://127.0.0.1:7891"
+# Clash Core 配置文件路径 (这个文件会在运行时被覆盖)
+CLASH_CONFIG_PATH = "config.yaml"
 # 成功节点保存路径
 SUCCESS_NODES_PATH = "data/all.txt"
 
 def parse_vmess(link):
-    """解析 vmess 链接"""
+    """解析 vmess 链接为 Clash 格式"""
     try:
         encoded_str = link.replace("vmess://", "")
-        # vmess 链接是 base64(json) 格式，但有时不是标准 base64
-        # 尝试标准 base64 解码，如果失败则尝试 urlsafe 解码
         try:
             decoded_bytes = base64.b64decode(encoded_str)
         except Exception:
@@ -32,44 +30,50 @@ def parse_vmess(link):
         
         config = json.loads(decoded_bytes.decode('utf-8'))
         
-        # 解码节点名称中的URL编码
         name = unquote(config.get("ps", f"vmess_{config.get('add', 'unknown')}"))
         
-        return {
+        proxy = {
             "name": name,
             "type": "vmess",
             "server": config.get("add"),
             "port": int(config.get("port")),
             "uuid": config.get("id"),
             "alterId": int(config.get("aid", 0)),
-            "security": config.get("scy", "auto"),
+            "cipher": config.get("scy", "auto"),
             "network": config.get("net", "tcp"),
-            "tls": config.get("tls", "") == "tls",
-            "sni": config.get("sni", ""),
-            "ws-path": config.get("path", ""),
-            "ws-headers": {"Host": config.get("host", "")}
         }
+
+        if config.get("tls", "") == "tls":
+            proxy["tls"] = True
+            proxy["skip-cert-verify"] = config.get("allowInsecure", False) # allowInsecure 参数
+            proxy["servername"] = config.get("sni", config.get("host", "")) # host 或 sni 都作为 servername
+
+        if proxy["network"] == "ws":
+            proxy["ws-opts"] = {
+                "path": config.get("path", "/"),
+                "headers": {"Host": config.get("host", "")}
+            }
+        
+        return proxy
     except Exception as e:
         print(f"Error parsing vmess link '{link}': {e}")
         return None
 
 def parse_trojan(link):
-    """解析 trojan 链接"""
-    # trojan://password@server:port?params#name
+    """解析 trojan 链接为 Clash 格式"""
     match = re.match(r"trojan://([^@]+)@([^:]+):(\d+)(.*)", link)
     if match:
         password = match.group(1)
         server = match.group(2)
         port = int(match.group(3))
         
-        # 解析 # 后面的名称
         name_match = re.search(r"#([^#&]+)", link)
         name = unquote(name_match.group(1)) if name_match else f"trojan_{server}"
 
-        # 进一步解析查询参数，例如 sni
         parsed_url = urlparse(link)
         query_params = parse_qs(parsed_url.query)
         sni = query_params.get('sni', [None])[0]
+        alpn = query_params.get('alpn', [None])[0]
 
         trojan_config = {
             "name": name,
@@ -80,20 +84,18 @@ def parse_trojan(link):
         }
         if sni:
             trojan_config["sni"] = sni
-            trojan_config["tls"] = True # trojan 默认带 tls
-
+        if alpn:
+            trojan_config["alpn"] = [alpn] # Clash alpn 是列表
+        
         return trojan_config
     return None
 
 def parse_ss(link):
-    """解析 ss 链接"""
+    """解析 ss 链接为 Clash 格式"""
     try:
-        # ss://base64(method:password@server:port)#name
-        # 移除非编码部分的名称
         link_parts = link.replace("ss://", "").split('#', 1)
         encoded_part = link_parts[0]
         
-        # 尝试鲁棒的 Base64 解码，处理非标准填充
         decoded_bytes = base64.urlsafe_b64decode(encoded_part + "=" * ((4 - len(encoded_part) % 4) % 4))
         decoded_str = decoded_bytes.decode('utf-8')
         
@@ -105,7 +107,6 @@ def parse_ss(link):
             method, password = auth_part.split(':', 1)
             server, port = server_port_part.rsplit(':', 1)
 
-            # 提取名称，并进行URL解码
             name = unquote(link_parts[1]) if len(link_parts) > 1 else f"ss_{server}"
 
             return {
@@ -121,11 +122,9 @@ def parse_ss(link):
     return None
 
 def parse_hysteria2(link):
-    """解析 hysteria2 链接"""
-    # 允许 hy2:// 或 hysteria2://
+    """解析 hysteria2 链接为 Clash 格式"""
     link = link.replace("hy2://", "hysteria2://") 
     
-    # hysteria2://password@server:port?obfs=obfs_name&obfs-password=obfs_pass#name
     match = re.match(r"hysteria2://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
         password = match.group(1)
@@ -133,13 +132,12 @@ def parse_hysteria2(link):
         port = int(match.group(3))
         query_string = match.group(4) if match.group(4) else ""
         
-        # 解码名称
         name = unquote(match.group(6)) if match.group(6) else f"hysteria2_{server}"
 
         params = {}
         if query_string:
             for param in query_string[1:].split('&'):
-                if '=' in param: # 确保参数是键值对
+                if '=' in param:
                     key, value = param.split('=', 1)
                     params[key] = value
         
@@ -151,17 +149,17 @@ def parse_hysteria2(link):
             "password": password,
             "obfs": params.get("obfs"),
             "obfs-password": params.get("obfs-password"),
-            "up": int(params.get("up", 0)), # 上行带宽，默认为0
-            "down": int(params.get("down", 0)), # 下行带宽，默认为0
-            "alpn": params.get("alpn"),
-            "tls": params.get("insecure") != "1", # insecure=1 表示不安全
+            "down": int(params.get("down", 0)), # Clash Hysteria2 使用 down 和 up
+            "up": int(params.get("up", 0)),
+            "alpn": [params.get("alpn")] if params.get("alpn") else None, # Clash alpn 是列表
+            "tls": True, # Hysteria2 默认带 tls
+            "skip-cert-verify": params.get("insecure") == "1", # insecure=1 表示跳过证书验证
             "sni": params.get("sni")
         }
     return None
 
 def parse_vless(link):
-    """解析 vless 链接"""
-    # vless://UUID@SERVER:PORT?params#NAME
+    """解析 vless 链接为 Clash 格式"""
     match = re.match(r"vless://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
         uuid = match.group(1)
@@ -169,7 +167,6 @@ def parse_vless(link):
         port = int(match.group(3))
         query_string = match.group(4) if match.group(4) else ""
         
-        # 解码名称
         name = unquote(match.group(6)) if match.group(6) else f"vless_{server}"
 
         params = {}
@@ -187,29 +184,41 @@ def parse_vless(link):
             "uuid": uuid,
             "network": params.get("type", "tcp"),
             "tls": params.get("security", "") == "tls",
-            "flow": params.get("flow", ""),
-            "udp": True # VLESS通常支持UDP
+            "udp": True,
         }
 
+        if vless_config["tls"]:
+            vless_config["servername"] = params.get("sni", "")
+            vless_config["skip-cert-verify"] = params.get("allowInsecure") == "1" # allowInsecure 参数
+
+        # Reality settings for VLESS
         if params.get("security") == "reality":
             vless_config["reality-opts"] = {
-                # dest 参数在 VLESS REALITY 中通常是 host:port 格式
-                # Mihomo 的 reality-opts.dest 字段通常是 "hostname:port"
-                "dest": params.get("dest", ""), 
-                "xver": int(params.get("xver", 0)),
-                "sni": params.get("sni", ""),
-                "fingerprint": params.get("fp", ""), # reality fingerprint
-                "publicKey": params.get("pbk", "") # reality public key
+                "public-key": params.get("pbk", ""),
+                "short-id": params.get("sid", ""), # Clash 使用 short-id
+                "fingerprint": params.get("fp", ""),
+                "dest": params.get("dest", "")
             }
-        
+            # Clash 中的 Reality 通常也需要 servername 和 tls
+            vless_config["servername"] = params.get("sni", "") # 通常 Reality 的 SNI 与 dest Host 相关
+            vless_config["tls"] = True # Reality 强制 TLS
+
         # WebSocket settings
         if vless_config["network"] == "ws":
-            vless_config["ws-path"] = params.get("path", "")
-            vless_config["ws-headers"] = {"Host": params.get("host", "")}
-            # 如果是 tls 的 ws，并且 sni 没有明确给出，尝试使用 host 作为 sni
-            if vless_config["tls"] and not vless_config.get("sni") and vless_config["ws-headers"].get("Host"):
-                vless_config["sni"] = vless_config["ws-headers"]["Host"]
+            vless_config["ws-opts"] = {
+                "path": params.get("path", "/"),
+                "headers": {"Host": params.get("host", "")}
+            }
+            # 如果是 tls 的 ws，并且 servername 没有明确给出，尝试使用 host 作为 servername
+            if vless_config["tls"] and not vless_config.get("servername") and vless_config["ws-opts"]["headers"].get("Host"):
+                vless_config["servername"] = vless_config["ws-opts"]["headers"]["Host"]
         
+        # gRPC settings
+        if vless_config["network"] == "grpc":
+            vless_config["grpc-opts"] = {
+                "service-name": params.get("serviceName", "")
+            }
+            
         return vless_config
     return None
 
@@ -222,20 +231,19 @@ def parse_node_link(link):
         return parse_trojan(link)
     elif link.startswith("ss://"):
         return parse_ss(link)
-    elif link.startswith("hysteria2://") or link.startswith("hy2://"): # 兼容 hy2://
+    elif link.startswith("hysteria2://") or link.startswith("hy2://"):
         return parse_hysteria2(link)
     elif link.startswith("vless://"):
         return parse_vless(link)
-    # TODO: 添加 SSR 解析逻辑，SSR 通常需要更复杂的解析库
     elif link.startswith("ssr://"):
-        print(f"Skipping SSR link (complex parsing not implemented): {link}")
+        print(f"Skipping SSR link (complex parsing not implemented in Clash Core format yet): {link}")
         return None
     else:
         print(f"Unknown protocol or invalid link: {link}")
         return None
 
-def generate_mihomo_config(parsed_nodes):
-    """生成 Mihomo 配置文件"""
+def generate_clash_config(parsed_nodes):
+    """生成 Clash Core 配置文件"""
     config = {
         "port": 7890,
         "socks-port": 7891,
@@ -266,9 +274,25 @@ def generate_mihomo_config(parsed_nodes):
                 "name": "🔰 节点选择",
                 "type": "select",
                 "proxies": ["DIRECT"]
+            },
+            {
+                "name": "🚀 自动选择", # 增加一个自动选择组，用于测试延迟
+                "type": "url-test",
+                "url": "http://www.gstatic.com/generate_204", # Google 204 无内容测试地址
+                "interval": 300, # 每 5 分钟测试一次
+                "proxies": []
             }
         ],
-        "rules": ["MATCH,🔰 节点选择"]
+        "rules": [
+            "PROCESS-NAME,clash,DIRECT", # 避免clash自身回环
+            "PROCESS-NAME,Clash,DIRECT",
+            "PROCESS-NAME,clash-core,DIRECT",
+            "DOMAIN-SUFFIX,googlevideo.com,🔰 节点选择",
+            "DOMAIN-SUFFIX,youtube.com,🔰 节点选择",
+            "DOMAIN-SUFFIX,google.com,🔰 节点选择",
+            "DOMAIN-SUFFIX,github.com,DIRECT", # GitHub 直接连接，避免代理影响
+            "MATCH,🔰 节点选择"
+        ]
     }
 
     proxy_names = []
@@ -277,19 +301,21 @@ def generate_mihomo_config(parsed_nodes):
             config["proxies"].append(node)
             proxy_names.append(node["name"])
     
-    # 将所有解析出的代理添加到节点选择组中
+    # 将所有解析出的代理添加到节点选择组和自动选择组中
     config["proxy-groups"][0]["proxies"].extend(proxy_names)
+    config["proxy-groups"][1]["proxies"].extend(proxy_names)
 
-    with open(MIHOMO_CONFIG_PATH, "w", encoding="utf-8") as f:
+
+    with open(CLASH_CONFIG_PATH, "w", encoding="utf-8") as f:
         yaml.dump(config, f, allow_unicode=True, sort_keys=False)
-    print(f"Generated Mihomo config: {MIHOMO_CONFIG_PATH}")
+    print(f"Generated Clash config: {CLASH_CONFIG_PATH}")
 
 def test_nodes(original_links_map):
     """测试节点连接"""
     successful_nodes = []
     
     # 从生成的配置中读取代理名称
-    with open(MIHOMO_CONFIG_PATH, "r", encoding="utf-8") as f:
+    with open(CLASH_CONFIG_PATH, "r", encoding="utf-8") as f:
         config = yaml.safe_load(f)
     
     proxies = config.get("proxies", [])
@@ -300,30 +326,30 @@ def test_nodes(original_links_map):
         
         print(f"Testing node: {proxy_name}...")
         try:
-            # 切换 Mihomo 代理
-            # 确保 Mihomo 控制器是可达的，增加重试机制
-            for _ in range(5): # 尝试5次连接 Mihomo API
+            # 切换 Clash 代理到当前节点进行测试
+            # 确保 Clash 控制器是可达的，增加重试机制
+            for _ in range(5): # 尝试5次连接 Clash API
                 try:
                     response = requests.put(
-                        f"{MIHOMO_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9",
+                        f"{CLASH_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9", # 切换节点选择组
                         json={"name": proxy_name},
                         timeout=5
                     )
                     response.raise_for_status()
                     break # 成功连接并切换，跳出重试循环
                 except requests.exceptions.ConnectionError:
-                    print(f"Connection to Mihomo controller refused, retrying...")
+                    print(f"Connection to Clash controller refused, retrying...")
                     time.sleep(2) # 等待一段时间再重试
             else:
-                raise ConnectionError("Failed to connect to Mihomo controller after multiple retries.")
+                raise ConnectionError("Failed to connect to Clash controller after multiple retries.")
             
-            time.sleep(1) # 等待代理切换
+            time.sleep(1) # 等待代理切换生效
 
-            # 使用 Mihomo 代理测试 Google
+            # 使用 Clash 代理测试 Google
             test_response = requests.get(
                 "https://www.google.com",
-                proxies={"http": MIHOMO_SOCKS5_PROXY, "https": MIHOMO_SOCKS5_PROXY},
-                timeout=10
+                proxies={"http": CLASH_SOCKS5_PROXY, "https": CLASH_SOCKS5_PROXY},
+                timeout=15 # 增加测试超时时间
             )
             test_response.raise_for_status()
             print(f"✅ Node '{proxy_name}' is working.")
@@ -366,27 +392,28 @@ def main():
         if parsed:
             # 确保名称唯一，尤其当节点链接中没有提供明确名称时
             original_name_for_map = parsed["name"] # 用原始解析的名称作为key
-            unique_name_for_mihomo_config = original_name_for_map
+            unique_name_for_clash_config = original_name_for_map
             count = 1
-            while unique_name_for_mihomo_config in [p["name"] for p in parsed_nodes]:
-                unique_name_for_mihomo_config = f"{original_name_for_map}_{count}"
+            # Clash proxy names must be unique
+            while unique_name_for_clash_config in [p["name"] for p in parsed_nodes]:
+                unique_name_for_clash_config = f"{original_name_for_map}_{count}"
                 count += 1
             
-            parsed["name"] = unique_name_for_mihomo_config
+            parsed["name"] = unique_name_for_clash_config
             
             parsed_nodes.append(parsed)
-            # 这里的 original_links_map 应该存储的是 Mihomo 配置中的唯一名称到原始链接的映射
-            original_links_map[unique_name_for_mihomo_config] = link
+            # 这里的 original_links_map 应该存储的是 Clash 配置中的唯一名称到原始链接的映射
+            original_links_map[unique_name_for_clash_config] = link
     
     if not parsed_nodes:
         print("No valid nodes parsed. Exiting.")
         sys.exit(0)
 
-    # 3. 生成 Mihomo 配置
-    generate_mihomo_config(parsed_nodes)
+    # 3. 生成 Clash 配置
+    generate_clash_config(parsed_nodes)
 
-    # 4. 启动 Mihomo (在 GitHub Actions 中由外部脚本启动)
-    # 此脚本仅负责生成配置和测试，Mihomo 的启动和停止由 GH Actions 工作流处理
+    # 4. 启动 Clash Core (在 GitHub Actions 中由外部脚本启动)
+    # 此脚本仅负责生成配置和测试，Clash Core 的启动和停止由 GH Actions 工作流处理
 
     # 5. 测试节点
     successful_nodes = test_nodes(original_links_map)
