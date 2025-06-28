@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 常量
-NODE_LIST_URL = "https://snippet.host/oouyda/raw"
+NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
 MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
 CONFIG_FILE = Path("config.yaml") # 这将在每次测试时被覆盖。
