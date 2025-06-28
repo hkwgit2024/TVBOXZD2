@@ -114,7 +114,7 @@ def create_clash_config(node_url):
     config = {
         "port": CLASH_PORT,
         "mode": "direct",
-        "log-level": "info", # Changed from 'silent' to 'info' for more debugging logs
+        "log-level": "debug", # Changed from 'silent' to 'info' for more debugging logs
         "allow-lan": False,
         "bind-address": "127.0.0.1",
         "proxies": [],
