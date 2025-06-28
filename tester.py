@@ -21,11 +21,17 @@ SUCCESS_NODES_PATH = "data/all.txt"
 
 def clean_proxy_name(name):
     """清理代理名称，移除或替换特殊字符，确保其适合作为YAML键和API参数"""
-    # 将所有非字母数字、非点、非横线的字符替换为下划线
-    cleaned_name = re.sub(r'[^\w.-]', '_', name)
-    # 确保名称不会以非字母数字开头（虽然Mihomo通常可以处理，但避免潜在问题）
-    if cleaned_name and not cleaned_name[0].isalnum():
+    # 替换所有非字母、数字、点、横线的字符为单个下划线
+    cleaned_name = re.sub(r'[^\w.-]+', '_', name)
+    # 移除连续的下划线，替换为单个下划线
+    cleaned_name = re.sub(r'_+', '_', cleaned_name)
+    # 移除开头和结尾的下划线
+    cleaned_name = cleaned_name.strip('_')
+    # 确保名称以字母或数字开头
+    if not cleaned_name or not cleaned_name[0].isalnum():
         cleaned_name = 'proxy_' + cleaned_name
+    # 限制名称长度
+    cleaned_name = cleaned_name[:64]
     return cleaned_name
 
 def parse_vmess(link):
@@ -40,7 +46,7 @@ def parse_vmess(link):
         config = json.loads(decoded_bytes.decode('utf-8'))
         
         name = unquote(config.get("ps", f"vmess_{config.get('add', 'unknown')}"))
-        name = clean_proxy_name(name) # <-- 添加名称清理
+        name = clean_proxy_name(name)
         
         proxy = {
             "name": name,
@@ -79,7 +85,7 @@ def parse_trojan(link):
         
         name_match = re.search(r"#([^#&]+)", link)
         name = unquote(name_match.group(1)) if name_match else f"trojan_{server}"
-        name = clean_proxy_name(name) # <-- 添加名称清理
+        name = clean_proxy_name(name)
 
         parsed_url = urlparse(link)
         query_params = parse_qs(parsed_url.query)
@@ -132,7 +138,7 @@ def parse_ss(link):
             return None
 
         name = unquote(link_parts[1]) if len(link_parts) > 1 else f"ss_{server}"
-        name = clean_proxy_name(name) # <-- 添加名称清理
+        name = clean_proxy_name(name)
 
         return {
             "name": name,
@@ -148,7 +154,7 @@ def parse_ss(link):
 
 def parse_hysteria2(link):
     """解析 hysteria2 链接为 Clash 格式"""
-    link = link.replace("hy2://", "hysteria2://")  # 统一 hy2 为 hysteria2
+    link = link.replace("hy2://", "hysteria2://")
     
     match = re.match(r"hysteria2://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
@@ -158,7 +164,7 @@ def parse_hysteria2(link):
         query_string = match.group(4) if match.group(4) else ""
         
         name = unquote(match.group(6)) if match.group(6) else f"hysteria2_{server}"
-        name = clean_proxy_name(name) # <-- 添加名称清理
+        name = clean_proxy_name(name)
 
         params = {}
         if query_string:
@@ -194,7 +200,7 @@ def parse_vless(link):
         query_string = match.group(4) if match.group(4) else ""
         
         name = unquote(match.group(6)) if match.group(6) else f"vless_{server}"
-        name = clean_proxy_name(name) # <-- 添加名称清理
+        name = clean_proxy_name(name)
 
         params = {}
         if query_string:
@@ -272,7 +278,7 @@ def generate_clash_config(parsed_nodes):
         "tproxy-port": 7893,
         "mixed-port": 7890,
         "mode": "rule",
-        "log-level": "info", # 可以在此改为 'debug' 或 'trace' 以获取更多Mihomo日志
+        "log-level": "info",
         "allow-lan": False,
         "bind-address": "127.0.0.1",
         "external-controller": "127.0.0.1:9090",
@@ -292,32 +298,32 @@ def generate_clash_config(parsed_nodes):
         "proxies": [],
         "proxy-groups": [
             {
-                "name": "GLOBAL", # 添加 GLOBAL 组，作为主切换组
+                "name": "GLOBAL",
                 "type": "select",
                 "proxies": ["DIRECT"]
             },
             {
                 "name": "Node Select",
                 "type": "select",
-                "proxies": ["DIRECT"] # 初始至少有一个代理，确保 Clash 正常启动
+                "proxies": ["DIRECT"]
             },
             {
                 "name": "Auto Select",
                 "type": "url-test",
                 "url": "http://www.gstatic.com/generate_204",
                 "interval": 300,
-                "proxies": ["DIRECT"] # 初始至少有一个代理，确保 Clash 正常启动
+                "proxies": ["DIRECT"]
             }
         ],
         "rules": [
-            "PROCESS-NAME,clash,GLOBAL", # 规则指向 GLOBAL 组
+            "PROCESS-NAME,clash,GLOBAL",
             "PROCESS-NAME,Clash,GLOBAL",
             "PROCESS-NAME,clash-core,GLOBAL",
             "DOMAIN-SUFFIX,googlevideo.com,GLOBAL",
             "DOMAIN-SUFFIX,googleusercontent.com,GLOBAL",
             "DOMAIN-SUFFIX,google.com,GLOBAL",
             "DOMAIN-SUFFIX,github.com,DIRECT",
-            "MATCH,GLOBAL" # 默认规则指向 GLOBAL 组
+            "MATCH,GLOBAL"
         ]
     }
 
@@ -327,10 +333,9 @@ def generate_clash_config(parsed_nodes):
             config["proxies"].append(node)
             proxy_names.append(node["name"])
     
-    # 将所有解析到的代理名称添加到 GLOBAL, Node Select 和 Auto Select 组
-    config["proxy-groups"][0]["proxies"].extend(proxy_names) # GLOBAL 组
-    config["proxy-groups"][1]["proxies"].extend(proxy_names) # Node Select 组
-    config["proxy-groups"][2]["proxies"].extend(proxy_names) # Auto Select 组
+    config["proxy-groups"][0]["proxies"].extend(proxy_names)
+    config["proxy-groups"][1]["proxies"].extend(proxy_names)
+    config["proxy-groups"][2]["proxies"].extend(proxy_names)
 
     with open(CLASH_CONFIG_PATH, "w", encoding="utf-8") as f:
         yaml.dump(config, f, allow_unicode=True, sort_keys=False)
@@ -355,9 +360,8 @@ def test_nodes(original_links_map):
         print("No proxies found in the generated Clash config. Skipping node testing.")
         return []
 
-    main_proxy_group_to_switch = "GLOBAL" 
+    main_proxy_group_to_switch = "GLOBAL"
 
-    # 验证 main_proxy_group_to_switch 是否存在并获取其详细信息
     try:
         response = requests.get(f"{CLASH_CONTROLLER_URL}/proxies", timeout=5)
         response.raise_for_status()
@@ -367,33 +371,18 @@ def test_nodes(original_links_map):
             print(f"Available proxy groups: {list(available_proxies_info.keys())}")
             sys.exit(1)
         print(f"Using main proxy group for switching: '{main_proxy_group_to_switch}'.")
-
-        # 额外一步：获取 GLOBAL 组的详细内容，确认其包含所有代理
-        response = requests.get(f"{CLASH_CONTROLLER_URL}/proxies/{quote(main_proxy_group_to_switch)}", timeout=5)
-        response.raise_for_status()
-        global_group_details = response.json()
-        print(f"从 Mihomo API 获取的 '{main_proxy_group_to_switch}' 组详情:")
-        print(json.dumps(global_group_details, indent=2)) # 以易读的JSON格式打印
-
-        if 'all' in global_group_details and isinstance(global_group_details['all'], list):
-            print(f"'{main_proxy_group_to_switch}' 组中包含 {len(global_group_details['all'])} 个子代理。")
-        else:
-            print(f"警告: Mihomo API 响应中 '{main_proxy_group_to_switch}' 组没有 'all' 列表，或其类型不正确。")
-            print(f"API 响应: {global_group_details}")
-
     except requests.exceptions.RequestException as e:
-        print(f"错误: 无法连接 Mihomo API 获取代理组信息或'{main_proxy_group_to_switch}' 组的详情。错误: {e}")
+        print(f"Error: Failed to connect to Mihomo API to get proxy groups. Please check Mihomo status. Error: {e}")
         sys.exit(1)
     
-    print(f"开始测试 {len(proxies)} 个节点的连通性...")
+    print(f"Starting connectivity test for {len(proxies)} nodes...")
 
     for i, proxy in enumerate(proxies):
         proxy_name = proxy["name"]
         print(f"[{i+1}/{len(proxies)}] Testing node: '{proxy_name}'...")
         try:
-            # 切换主代理组 (例如 GLOBAL) 到当前节点
             switched_successfully = False
-            for attempt in range(1, 6): # 尝试 5 次切换
+            for attempt in range(1, 6):
                 try:
                     response = requests.put(
                         f"{CLASH_CONTROLLER_URL}/proxies/{quote(main_proxy_group_to_switch)}",
@@ -412,9 +401,8 @@ def test_nodes(original_links_map):
                 print(f"❌ Failed to switch to node '{proxy_name}' after multiple retries. Skipping test for this node.")
                 continue
 
-            time.sleep(1) # 给 Mihomo 一些时间来应用切换
+            time.sleep(1)
 
-            # 通过 Mihomo 的 SOCKS5 代理测试连通性 (重试 3 次)
             test_success = False
             for test_attempt in range(1, 4):
                 try:
@@ -467,7 +455,7 @@ def main():
     for i, link in enumerate(node_links):
         parsed = parse_node_link(link)
         if parsed:
-            original_name = parsed.get("name", f"unknown_node_{i}") 
+            original_name = parsed.get("name", f"unknown_node_{i}")
             unique_name = original_name
             count = 1
             while unique_name in [p["name"] for p in parsed_nodes]:
