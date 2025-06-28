@@ -1,38 +1,36 @@
 name: Test Nodes with Mihomo (Python)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '0 */6 * * *' # Every 6 hours
+    - cron: '0 */6 * * *' # 每6小时运行一次
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # 在 Ubuntu 最新版本上运行
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository # 步骤1: 克隆仓库代码
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python # 步骤2: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies # 步骤3: 安装 Python 依赖
         run: pip install pyyaml requests
 
-      - name: Install jq
+      - name: Install jq # 步骤4: 安装 jq (用于解析 JSON)
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Get latest Mihomo release
-        id: get_mihomo_release # Add an ID to easily access outputs
+      - name: Get latest Mihomo release # 步骤5: 获取最新 Mihomo 发布版本
         run: |
           LATEST_RELEASE=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r .tag_name)
           echo "Latest Mihomo version: $LATEST_RELEASE"
           echo "CLASH_VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
 
-          # Select the correct asset, prioritizing .gz and then .xz if .gz not found
-          # Ensure it's for linux-amd64 and is a tarball or similar
+          # 查找适合 linux-amd64 的 .gz 或 .xz 文件
           ASSET_NAME=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | \
             jq -r '.assets[] | select(.name | contains("linux-amd64") and (endswith(".gz") or endswith(".xz"))) | .name' | head -n 1)
 
@@ -45,8 +43,7 @@ jobs:
           echo "CLASH_FILENAME=$ASSET_NAME" >> $GITHUB_ENV
           echo "CLASH_DOWNLOAD_URL=https://github.com/MetaCubeX/mihomo/releases/download/${LATEST_RELEASE}/${ASSET_NAME}" >> $GITHUB_ENV
 
-
-      - name: Install Mihomo Core
+      - name: Install Mihomo Core # 步骤6: 安装 Mihomo Core
         run: |
           echo "Downloading Mihomo Core from ${{ env.CLASH_DOWNLOAD_URL }}..."
           for attempt in {1..3}; do
@@ -68,16 +65,13 @@ jobs:
             exit 1
           fi
           chmod +x clash
-          # Move clash to a location in PATH that doesn't require sudo if possible, or use sudo for /usr/local/bin
-          # For GitHub Actions, /usr/local/bin is fine with sudo
           sudo mv clash /usr/local/bin/clash
           echo "Mihomo Core installed successfully at /usr/local/bin/clash."
 
-      - name: Create data directory
+      - name: Create data directory # 步骤7: 创建数据目录
         run: mkdir -p data
 
-      # New step: Generate initial config (without nodes) so Clash can start
-      - name: Generate Initial Clash Config (Placeholder)
+      - name: Generate Initial Clash Config (Placeholder) # 步骤8: 生成初始 Clash 配置 (非常关键，解决启动问题)
         run: |
           cat <<EOF > config.yaml
           port: 7890
@@ -101,16 +95,20 @@ jobs:
             fallback-filter:
               geoip: true
               ipcidr: ["240.0.0.0/4"]
-          proxies: [] # Empty for initial start
+          proxies: [] # 初始启动时可以为空，后续由 Python 脚本填充
+
           proxy-groups:
             - name: "Node Select"
               type: select
-              proxies: ["DIRECT"]
+              proxies:
+                - DIRECT # 初始至少有一个代理，确保 Clash 正常启动
             - name: "Auto Select"
               type: url-test
               url: "http://www.gstatic.com/generate_204"
               interval: 300
-              proxies: []
+              proxies:
+                - DIRECT # 初始至少有一个代理，确保 Clash 正常启动
+
           rules:
             - PROCESS-NAME,clash,DIRECT
             - PROCESS-NAME,Clash,DIRECT
@@ -123,15 +121,15 @@ jobs:
           EOF
           echo "Generated initial config.yaml for Mihomo startup."
 
-      - name: Start Mihomo Core and wait for it to be ready
+      - name: Start Mihomo Core and wait for it to be ready # 步骤9: 启动 Mihomo Core 并等待其就绪
         run: |
           echo "Starting Mihomo Core in background..."
-          # Start Clash Core with the initial config.yaml
+          # 以后台方式启动 Clash Core，并将日志重定向到 clash_startup.log
           nohup clash -d . -f config.yaml &> clash_startup.log &
           CLASH_PID=$!
-          echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
+          echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV # 保存 PID 到环境变量，以便后续停止
           echo "Mihomo Core started with PID: $CLASH_PID. Checking status..."
-          timeout=90
+          timeout=90 # 设置等待超时时间
           start_time=$(date +%s)
           while true; do
             current_time=$(date +%s)
@@ -139,54 +137,50 @@ jobs:
             if [ $elapsed -ge $timeout ]; then
               echo "Error: Mihomo Core did not start listening on port 9090 within $timeout seconds."
               echo "--- Mihomo Core Startup Log (Final) ---"
-              cat clash_startup.log
+              cat clash_startup.log # 打印完整日志以供调试
               echo "--------------------------"
               if ! ps -p $CLASH_PID > /dev/null; then
                 echo "Error: Mihomo Core process (PID: $CLASH_PID) is not running."
               fi
-              exit 1
+              exit 1 # 超时则退出
             fi
-            # Use curl to check the controller API
+            # 尝试通过 curl 访问 Mihomo 的控制器 API
             if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090/proxies; then
-              echo "Mihomo Core controller port 9090 is accessible. Proceeding." # Corrected port in log message
-              break
+              echo "Mihomo Core controller port 9090 is accessible. Proceeding."
+              break # 成功连接则跳出循环
             fi
             echo "Waiting for Mihomo Core controller to start (elapsed: ${elapsed}s)..."
             echo "--- Latest Mihomo Log (elapsed: ${elapsed}s) ---"
-            tail -n 10 clash_startup.log
+            tail -n 10 clash_startup.log # 实时显示最新日志
             echo "-------------------------------------"
-            sleep 5
+            sleep 5 # 等待5秒后重试
           done
           echo "Mihomo Core is ready. Now running tester.py."
 
-      - name: Run Python node tester
-        # This step should run AFTER Mihomo Core is started and ready
+      - name: Run Python node tester # 步骤10: 运行 Python 节点测试脚本 (Mihomo 启动后运行)
         run: python tester.py
 
-      - name: Stop Mihomo Core
-        if: always()
+      - name: Stop Mihomo Core # 步骤11: 停止 Mihomo Core (无论成功失败都执行)
+        if: always() # 确保即使前面的步骤失败，也会执行此清理步骤
         run: |
-          if [ -n "${{ env.CLASH_PID }}" ]; then
+          if [ -n "${{ env.CLASH_PID }}" ]; then # 检查 PID 是否存在
             echo "Stopping Mihomo Core with PID ${{ env.CLASH_PID }}..."
-            # Use kill -TERM for graceful shutdown, or kill -9 if it doesn't respond
-            kill ${{ env.CLASH_PID }} || true
+            kill ${{ env.CLASH_PID }} || true # 终止进程
             echo "Mihomo Core stopped."
           fi
-          # Clean up any leftover files by Mihomo
+          # 清理 Mihomo 生成的文件
           rm -f config.yaml clash_startup.log cache.db
           echo "Cleaned up Mihomo related files."
 
-      - name: Commit and push if changes
-        # Only commit if data/all.txt exists and has content.
-        # This prevents empty commits if no nodes are successful.
+      - name: Commit and push if changes # 步骤12: 如果有更改则提交并推送
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          
-          # Check if data/all.txt exists and is not empty
+
+          # 检查 data/all.txt 是否存在且不为空，避免空提交
           if [ -s data/all.txt ]; then
             git add data/all.txt
-            if ! git diff --cached --quiet; then
+            if ! git diff --cached --quiet; then # 检查是否有实际更改
               git commit -m "Update successful nodes"
               git push
               echo "Changes committed and pushed."
