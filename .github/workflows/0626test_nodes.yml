@@ -1,9 +1,9 @@
 name: Test Nodes with Clash (Python)
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allows manual triggering
   schedule:
-    - cron: '0 */6 * * *' # 每6小时运行一次
+    - cron: '0 */6 * * *' # Runs every 6 hours
 
 jobs:
   test:
@@ -23,42 +23,52 @@ jobs:
 
       - name: Install Clash Core
         run: |
-          # 下载最新的 Clash Core Linux AMD64 版本
-          CLASH_VERSION="v1.18.0" # 你可以根据需要调整 Clash 版本
-          # 查找最新版本，Clash Meta 的命名通常是 clash.meta-linux-amd64-{version}.gz
-          # 或者直接使用 Clash Premium 的命名 clash-linux-amd64-{version}.gz
-          # 这里以 Clash Meta 为例，请根据实际使用的 Clash Core 版本调整下载链接
-          # 目前流行的可能是 Clash.Meta 或 Clash Premium
-          # 假设使用 Clash.Meta
-          CLASH_DOWNLOAD_URL="https://github.com/MetaCubeX/Clash.Meta/releases/download/${CLASH_VERSION}/clash.meta-linux-amd64-${CLASH_VERSION}.gz"
+          # Download the latest Clash Core Linux AMD64 version from Clash.Meta
+          # ALWAYS check the official Clash.Meta GitHub Releases page for the latest stable version and exact filename:
+          # https://github.com/MetaCubeX/Clash.Meta/releases
           
-          # Fallback to Clash Premium if Meta not found or preferred
-          # CLASH_DOWNLOAD_URL="https://github.com/Dreamacro/clash/releases/download/${CLASH_VERSION}/clash-linux-amd64-${CLASH_VERSION}.gz"
-
+          # As of June 28, 2025, v1.19.1 is a common stable version.
+          CLASH_VERSION="v1.19.1" # <--- IMPORTANT: Verify and update this version
+          CLASH_FILENAME="clash.meta-linux-amd64-${CLASH_VERSION}.gz" # <--- IMPORTANT: Verify this filename
+          CLASH_DOWNLOAD_URL="https://github.com/MetaCubeX/Clash.Meta/releases/download/${CLASH_VERSION}/${CLASH_FILENAME}"
+          
           echo "Downloading Clash Core from ${CLASH_DOWNLOAD_URL}..."
-          wget -qO- ${CLASH_DOWNLOAD_URL} | gzip -d > clash
+          
+          # Attempt download and extraction
+          wget -qO- "${CLASH_DOWNLOAD_URL}" | gzip -d > clash || true 
+          
+          # Verify if the 'clash' executable was successfully created and is not empty
+          if [ ! -f clash ] || [ ! -s clash ]; then 
+            echo "Error: Clash Core file 'clash' not found or is empty after download and extraction."
+            echo "This most likely means the CLASH_VERSION or CLASH_FILENAME is incorrect, or the file does not exist at the URL."
+            echo "Please double-check the latest release on https://github.com/MetaCubeX/Clash.Meta/releases."
+            echo "Attempted URL: ${CLASH_DOWNLOAD_URL}"
+            exit 1 # Fail the workflow if download/extraction failed
+          fi
+
           chmod +x clash
           sudo mv clash /usr/local/bin/clash
+          echo "Clash Core installed successfully at /usr/local/bin/clash."
 
       - name: Create data directory
         run: mkdir -p data
 
       - name: Generate initial Clash config (placeholder)
-        # Clash 启动时需要一个配置文件，这里创建一个空的作为占位符
-        # 实际的配置会在Python脚本中生成并覆盖这个文件
+        # Clash needs a config file to start. This creates an empty one as a placeholder.
+        # The actual config will be generated and overwritten by the Python script later.
         run: echo "{}" > config.yaml
 
       - name: Run Clash Core in background and wait for it to be ready
         run: |
           echo "Starting Clash Core in background..."
-          # 启动 Clash Core，将所有输出重定向到 clash_startup.log
+          # Start Clash Core, redirecting all output to clash_startup.log
           nohup clash -d . -f config.yaml &> clash_startup.log &
           CLASH_PID=$!
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
           echo "Clash Core started with PID: $CLASH_PID. Checking status..."
           
-          # 等待 Clash Core 启动并监听端口
-          timeout=90 # 最长等待90秒
+          # Wait for Clash Core to start and listen on its port
+          timeout=90 # Max wait time of 90 seconds
           start_time=$(date +%s)
           
           while true; do
@@ -67,49 +77,47 @@ jobs:
             if [ $elapsed -ge $timeout ]; then
               echo "Error: Clash Core did not start listening on port 9090 within $timeout seconds."
               echo "--- Clash Core Startup Log (Final) ---"
-              cat clash_startup.log # 打印 Clash 启动日志以便调试
+              cat clash_startup.log # Print Clash startup log for debugging
               echo "--------------------------"
-              exit 1 # 启动失败，退出工作流
+              exit 1 # Fail the workflow if startup failed
             fi
 
-            # 尝试连接 Clash Core 的外部控制器端口 (9090)
-            # -s 静默模式
-            # -o /dev/null 不保存输出
-            # --connect-timeout 1 设置连接超时1秒
-            # 如果 curl 成功（退出码为 0），则认为端口已开放
+            # Attempt to connect to Clash Core's external controller port (9090)
+            # -s: Silent mode, -o /dev/null: Don't save output, --connect-timeout 1: Set connection timeout to 1 second
             if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090; then
               echo "Clash Core controller port 9090 is accessible. Proceeding."
               break
             fi
 
             echo "Waiting for Clash Core controller to start (elapsed: ${elapsed}s)..."
-            # 每次等待后，打印 clash_startup.log 的最新内容，帮助诊断
+            # After each wait, print the latest content of clash_startup.log for debugging
             echo "--- Latest Clash Log (elapsed: ${elapsed}s) ---"
-            tail -n 10 clash_startup.log # 打印最新10行日志
+            tail -n 10 clash_startup.log # Print the last 10 lines of the log
             echo "-------------------------------------"
-            sleep 5 # 每5秒检查一次
+            sleep 5 # Check every 5 seconds
           done
 
       - name: Run Python node tester
-        # Python 脚本会下载节点，解析，生成新的 config.yaml，并进行测试
+        # The Python script will download nodes, parse them, generate a new config.yaml, and perform tests.
         run: python tester.py
 
       - name: Stop Clash Core
-        if: always() # 无论上一步成功失败，都尝试停止Clash Core
+        if: always() # Always try to stop Clash Core, regardless of previous step's success/failure
         run: |
           if [ -n "${{ env.CLASH_PID }}" ]; then
+            echo "Stopping Clash Core with PID ${{ env.CLASH_PID }}..."
             kill ${{ env.CLASH_PID }} || true
             echo "Clash Core stopped."
           fi
-          # 清理 Clash Core 生成的临时文件
-          rm -f config.yaml clash_startup.log cache.db # Clash 通常也会生成 cache.db
+          # Clean up temporary files generated by Clash Core
+          rm -f config.yaml clash_startup.log cache.db # Clash usually generates cache.db
 
       - name: Commit and push if changes
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          # 只添加 data/all.txt，因为其他临时文件已添加到 .gitignore
+          # Only add data/all.txt, as other temporary files are in .gitignore
           git add data/all.txt
-          # 检查 data/all.txt 是否有实际变化，如果有，则提交更改
+          # Check if data/all.txt has actual changes; if so, commit them
           git diff --quiet --exit-code || git commit -m "Update successful nodes"
           git push
