@@ -1,1 +1,3 @@
-No nodes passed the delay test.
+Node Test Results (sorted by delay):
+COMPATIBLE: 27ms
+英国_0626029 #2: 307ms
