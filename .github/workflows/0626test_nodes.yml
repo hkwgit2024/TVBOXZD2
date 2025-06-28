@@ -1,4 +1,4 @@
-name: Test Nodes with Clash (Python)
+name: Test Nodes with Clash  (Python)
 
 on:
   workflow_dispatch: # Allows manual triggering
