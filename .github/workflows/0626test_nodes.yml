@@ -1,49 +1,63 @@
-name: Test and Save Proxy Nodes
+name: Test Nodes with Mihomo (Python)
 
 on:
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '0 */6 * * *' # Runs every 6 hours
+    - cron: '0 */6 * * *' # 每6小时运行一次，您可以根据需要调整
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9' # Specify Python 3.9 for consistency
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # 使用最新的 Python 3 版本
 
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gzip curl
+      - name: Install Python dependencies
+        run: pip install pyyaml requests # 安装所需的库
 
-    - name: Install Python dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install PyYAML requests aiofiles certifi
+      - name: Install Mihomo
+        run: |
+          # 下载并安装 Mihomo
+          MIHOMO_VERSION="v1.18.9" # 您可以根据需要调整Mihomo版本
+          wget -qO- https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz | gzip -d > mihomo
+          chmod +x mihomo
+          sudo mv mihomo /usr/local/bin/mihomo
 
-    - name: Test network connectivity
-      run: |
-        echo "Testing network connectivity..."
-        curl -v http://1.1.1.1
-        ping -c 4 1.1.1.1
-      continue-on-error: true # Continue even if network test fails
+      - name: Create data directory
+        run: mkdir -p data
 
-    - name: Run node processing script
-      run: python tester.py
+      - name: Run Mihomo in background
+        run: |
+          # 启动 Mihomo，但这里 Mihomo 的 config.yaml 会由 Python 脚本生成
+          # 先创建一个空的 config.yaml 避免 Mihomo 启动失败
+          touch config.yaml
+          nohup mihomo -d . -f config.yaml &> mihomo.log &
+          MIHOMO_PID=$!
+          echo "MIHOMO_PID=$MIHOMO_PID" >> $GITHUB_ENV
+          echo "Mihomo started with PID: $MIHOMO_PID"
+          sleep 5 # 等待 Mihomo 启动
 
-    - name: Commit and push changes
-      run: |
-        git config user.name "GitHub Actions"
-        git config user.email "github-actions@github.com"
-        git add data/all.txt
-        git commit -m "Update working proxy nodes" || echo "No changes to commit"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Python node tester
+        run: python tester.py
+
+      - name: Stop Mihomo
+        if: success() || failure() # 确保在工作流成功或失败时都停止 Mihomo
+        run: |
+          if [ -n "${{ env.MIHOMO_PID }}" ]; then
+            kill ${{ env.MIHOMO_PID }} || true
+            echo "Mihomo stopped."
+          fi
+
+      - name: Commit and push if changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/all.txt
+          git diff --quiet --exit-code || git commit -m "Update successful nodes"
+          git push
