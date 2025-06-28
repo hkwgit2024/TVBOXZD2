@@ -7,18 +7,10 @@ import time
 import socket
 import re
 import json
-import urllib.parse
+import urllib.parse  # 修复 urllib 未定义问题
 import traceback
-import base64
 
-# 订阅链接列表
-CLASH_BASE_CONFIG_URLS = [
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
-    "https://raw.githubusercontent.com/freefq/free/master/v2",
-    "https://raw.githubusercontent.com/mahdibland/SSAggregator/master/sub/sub_merge_yaml.yml",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/main/data/clash.yaml",
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml"
-]
+CLASH_BASE_CONFIG_URLS = ["https://raw.githubusercontent.com/qjlxg/NoMoreWalls/refs/heads/master/snippets/nodes_GB.yml"]
 
 def is_valid_reality_short_id(short_id: str | None) -> bool:
     """验证 REALITY 协议的 shortId 是否有效（8 字符十六进制字符串）。"""
@@ -27,22 +19,13 @@ def is_valid_reality_short_id(short_id: str | None) -> bool:
     return bool(re.match(r"^[0-9a-fA-F]{8}$", short_id))
 
 def validate_proxy(proxy: dict, index: int) -> bool:
-    """验证代理节点是否有效，特别是 REALITY、VMess 和 VLESS 协议的配置。"""
-    missing_fields = []
-    if not proxy.get("name"):
-        missing_fields.append("name")
-    if not proxy.get("server"):
-        missing_fields.append("server")
-    if not proxy.get("port"):
-        missing_fields.append("port")
-    
-    if missing_fields:
-        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少字段 {', '.join(missing_fields)} - {proxy.get('name', '未知节点')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
+    """验证代理节点是否有效，特别是 REALITY 协议的配置。"""
+    if not proxy.get("name") or not proxy.get("server") or not proxy.get("port"):
+        print(f"⚠️ 跳过无效节点（索引 {index}）：缺少 name, server 或 port - {proxy.get('name', '未知节点')}")
         return False
-    
     if proxy.get("type") == "vless":
         reality_opts = proxy.get("reality-opts")
-        if reality_opts:
+        if reality_opts:  # 检查是否存在 reality-opts
             if not isinstance(reality_opts, dict):
                 print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：reality-opts 不是字典 - {proxy.get('name')} - reality-opts: {reality_opts}")
                 return False
@@ -50,228 +33,10 @@ def validate_proxy(proxy: dict, index: int) -> bool:
             if short_id is not None and not is_valid_reality_short_id(short_id):
                 print(f"⚠️ 跳过无效 REALITY 节点（索引 {index}）：无效 shortId: {short_id} - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
                 return False
-        if not proxy.get("uuid"):
-            print(f"⚠️ 跳过无效 VLESS 节点（索引 {index}）：缺少 uuid - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
-            return False
-    
-    if proxy.get("type") == "vmess":
-        cipher = proxy.get("cipher")
-        valid_ciphers = ["auto", "aes-128-gcm", "chacha20-poly1305", "none"]
-        if not cipher or cipher not in valid_ciphers:
-            print(f"⚠️ 跳过无效 VMess 节点（索引 {index}）：无效 cipher: {cipher} - {proxy.get('name')} - 完整配置: {json.dumps(proxy, ensure_ascii=False)}")
-            return False
-    
     return True
 
-def to_plaintext_node(proxy: dict, delay: int) -> str:
-    """将 Clash 代理配置转换为明文节点链接，附带延迟信息。"""
-    try:
-        name = urllib.parse.quote(proxy.get("name", "unknown"))
-        proxy_type = proxy.get("type")
-        
-        if proxy_type == "ss":
-            method = proxy.get("cipher")
-            password = proxy.get("password")
-            server = proxy.get("server")
-            port = proxy.get("port")
-            if method and password and server and port:
-                user_info = base64.b64encode(f"{method}:{password}".encode()).decode().rstrip("=")
-                return f"ss://{user_info}@{server}:{port}#{name} - {delay}ms"
-        
-        elif proxy_type == "vmess":
-            vmess_config = {
-                "v": "2",
-                "ps": proxy.get("name"),
-                "add": proxy.get("server"),
-                "port": proxy.get("port"),
-                "id": proxy.get("uuid"),
-                "aid": proxy.get("alterId", 0),
-                "net": proxy.get("network", "tcp"),
-                "type": proxy.get("cipher", "auto"),
-                "tls": "tls" if proxy.get("tls", False) else "",
-                "host": proxy.get("servername", ""),
-                "path": proxy.get("ws-opts", {}).get("path", "")
-            }
-            encoded = base64.b64encode(json.dumps(vmess_config).encode()).decode().rstrip("=")
-            return f"vmess://{encoded}#{name} - {delay}ms"
-        
-        elif proxy_type == "hysteria2":
-            server = proxy.get("server")
-            port = proxy.get("port")
-            password = proxy.get("password")
-            sni = proxy.get("sni", server)
-            insecure = "1" if proxy.get("skip-cert-verify", False) else "0"
-            if server and port and password:
-                return f"hysteria2://{password}@{server}:{port}?sni={sni}&insecure={insecure}#{name} - {delay}ms"
-        
-        elif proxy_type == "trojan":
-            server = proxy.get("server")
-            port = proxy.get("port")
-            password = proxy.get("password")
-            sni = proxy.get("sni", server)
-            if server and port and password:
-                return f"trojan://{password}@{server}:{port}?sni={sni}#{name} - {delay}ms"
-        
-        elif proxy_type == "ssr":
-            server = proxy.get("server")
-            port = proxy.get("port")
-            password = proxy.get("password")
-            method = proxy.get("cipher")
-            protocol = proxy.get("protocol", "origin")
-            obfs = proxy.get("obfs", "plain")
-            if server and port and password and method:
-                params = base64.b64encode(f"{server}:{port}:{protocol}:{method}:{obfs}:{base64.b64encode(password.encode()).decode().rstrip('=')}").decode().rstrip("=")
-                return f"ssr://{params}#{name} - {delay}ms"
-        
-        elif proxy_type == "vless":
-            server = proxy.get("server")
-            port = proxy.get("port")
-            uuid = proxy.get("uuid")
-            flow = proxy.get("flow", "")
-            security = "tls" if proxy.get("tls", False) else "none"
-            sni = proxy.get("sni", server)
-            query_params = [f"security={security}", f"sni={sni}"]
-            if flow:
-                query_params.append(f"flow={flow}")
-            ws_opts = proxy.get("ws-opts", {})
-            if ws_opts:
-                path = urllib.parse.quote(ws_opts.get("path", ""))
-                query_params.append(f"type=ws&path={path}")
-            query = "&".join(query_params)
-            if server and port and uuid:
-                return f"vless://{uuid}@{server}:{port}?{query}#{name} - {delay}ms"
-        
-        else:
-            print(f"⚠️ 跳过不支持的节点类型: {proxy_type} - {name}")
-            return ""
-    except Exception as e:
-        print(f"⚠️ 转换明文节点失败: {proxy.get('name', '未知节点')} - 错误: {e}")
-        return ""
-
-def parse_v2ray_subscription(content: str) -> list:
-    """解析 V2Ray 订阅链接（vmess://, ss://, hysteria2://, trojan://, ssr://, vless://），转换为 Clash 格式。"""
-    proxies = []
-    lines = content.splitlines()
-    for index, line in enumerate(lines):
-        line = line.strip()
-        if not line:
-            continue
-        try:
-            if line.startswith("vmess://"):
-                decoded = base64.b64decode(line[8:].strip() + "===").decode('utf-8', errors='ignore')
-                vmess = json.loads(decoded)
-                proxy = {
-                    "name": vmess.get("ps", f"vmess-{index}"),
-                    "type": "vmess",
-                    "server": vmess.get("add"),
-                    "port": int(vmess.get("port")),
-                    "uuid": vmess.get("id"),
-                    "alterId": int(vmess.get("aid", 0)),
-                    "cipher": vmess.get("type", "auto"),
-                    "tls": vmess.get("tls") == "tls",
-                    "network": vmess.get("net", "tcp"),
-                    "ws-opts": {"path": vmess.get("path", "")} if vmess.get("net") == "ws" else {}
-                }
-                proxies.append(proxy)
-            elif line.startswith("ss://"):
-                decoded = line[5:].split('#')[0].strip()
-                # 清理 base64 字符串
-                decoded = re.sub(r'[\s\n\r]+', '', decoded)
-                try:
-                    decoded_str = base64.b64decode(decoded + "===").decode('utf-8', errors='ignore')
-                    if '@' not in decoded_str:
-                        print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：缺少 @ - {line[:30]}... - 完整行: {line}")
-                        continue
-                    userinfo, server_port = decoded_str.split('@')
-                    method, password = userinfo.split(':')
-                    server, port = server_port.split(':')
-                    name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
-                    proxy = {
-                        "name": name,
-                        "type": "ss",
-                        "server": server,
-                        "port": int(port),
-                        "cipher": method,
-                        "password": password
-                    }
-                    proxies.append(proxy)
-                except (base64.binascii.Error, ValueError) as e:
-                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}... - 错误: {e} - 完整行: {line}")
-            elif line.startswith("hysteria2://"):
-                decoded = urllib.parse.urlparse(line)
-                name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
-                query = urllib.parse.parse_qs(decoded.query)
-                proxy = {
-                    "name": name,
-                    "type": "hysteria2",
-                    "server": decoded.hostname,
-                    "port": int(decoded.port or 443),
-                    "password": decoded.username or query.get("password", [""])[0],
-                    "sni": query.get("sni", [""])[0] or decoded.hostname,
-                    "skip-cert-verify": query.get("insecure", ["0"])[0] == "1"
-                }
-                proxies.append(proxy)
-            elif line.startswith("trojan://"):
-                decoded = urllib.parse.urlparse(line)
-                name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"trojan-{index}"
-                query = urllib.parse.parse_qs(decoded.query)
-                proxy = {
-                    "name": name,
-                    "type": "trojan",
-                    "server": decoded.hostname,
-                    "port": int(decoded.port or 443),
-                    "password": decoded.username,
-                    "sni": query.get("sni", [""])[0] or decoded.hostname,
-                    "skip-cert-verify": query.get("allowInsecure", ["0"])[0] == "1"
-                }
-                proxies.append(proxy)
-            elif line.startswith("ssr://"):
-                decoded = base64.b64decode(line[6:].strip() + "===").decode('utf-8', errors='ignore')
-                parts = decoded.split(':')
-                if len(parts) >= 6:
-                    server, port, protocol, method, obfs, password = parts[:6]
-                    password = base64.b64decode(password + "===").decode('utf-8', errors='ignore')
-                    name = f"ssr-{index}"
-                    if '#' in line:
-                        name = urllib.parse.unquote(line.split('#')[-1])
-                    proxy = {
-                        "name": name,
-                        "type": "ssr",
-                        "server": server,
-                        "port": int(port),
-                        "password": password,
-                        "cipher": method,
-                        "protocol": protocol,
-                        "obfs": obfs
-                    }
-                    proxies.append(proxy)
-            elif line.startswith("vless://"):
-                decoded = urllib.parse.urlparse(line)
-                name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"vless-{index}"
-                query = urllib.parse.parse_qs(decoded.query)
-                proxy = {
-                    "name": name,
-                    "type": "vless",
-                    "server": decoded.hostname or query.get("host", [""])[0],
-                    "port": int(decoded.port or 443),
-                    "uuid": decoded.username,
-                    "flow": query.get("flow", [""])[0],
-                    "tls": query.get("security", ["none"])[0] == "tls",
-                    "sni": query.get("sni", [""])[0] or decoded.hostname or query.get("host", [""])[0],
-                    "ws-opts": {"path": query.get("path", [""])[0]} if query.get("type5", [""])[0] == "ws" or query.get("type", [""])[0] == "ws" else {}
-                }
-                if not proxy["server"]:
-                    print(f"⚠️ 跳过无效 VLESS 节点（索引 {index}）：缺少 server - {line[:30]}... - 完整配置: {json.dumps(proxy, ensure_ascii=False)} - 完整行: {line}")
-                    continue
-                proxies.append(proxy)
-            else:
-                print(f"⚠️ 跳过未知协议节点（索引 {index}）：{line[:30]}... - 完整行: {line}")
-        except Exception as e:
-            print(f"⚠️ 跳过无效订阅节点（索引 {index}）：{line[:30]}... - 错误: {e} - 完整行: {line}")
-    return proxies
-
 async def fetch_yaml_configs(urls: list[str]) -> list:
-    """从 URL 列表获取 YAML 格式的 Clash 配置文件或订阅链接，并提取代理节点。"""
+    """从 URL 列表获取 YAML 格式的 Clash 配置文件，并提取代理节点。"""
     all_proxies = []
     async with httpx.AsyncClient(timeout=30.0) as client:
         for url in urls:
@@ -279,58 +44,31 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
                 response = await client.get(url)
                 response.raise_for_status()
-                response_text = response.text.strip()
-                # 先尝试明文解析
-                try:
-                    proxies = parse_v2ray_subscription(response_text)
-                except Exception as e:
-                    print(f"⚠️ 明文解析失败，尝试 base64 解码: {e}")
-                    # 尝试 base64 解码
-                    try:
-                        decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
-                        try:
-                            proxies = parse_v2ray_subscription(decoded_text)
-                        except Exception as e2:
-                            print(f"⚠️ base64 解码后仍无法解析为订阅链接，尝试 YAML 解析: {e2}")
-                            # 尝试 YAML 解析
-                            try:
-                                yaml_content = yaml.safe_load(decoded_text)
-                                proxies = yaml_content.get("proxies", [])
-                            except yaml.YAMLError as e3:
-                                print(f"⚠️ base64 解码后 YAML 解析失败: {e3}")
-                                proxies = []
-                    except base64.binascii.Error as e4:
-                        print(f"⚠️ base64 解码失败，尝试直接 YAML 解析: {e4}")
-                        # 直接尝试 YAML 解析
-                        try:
-                            yaml_content = yaml.safe_load(response_text)
-                            proxies = yaml_content.get("proxies", [])
-                        except yaml.YAMLError as e5:
-                            print(f"⚠️ 直接 YAML 解析失败: {e5}")
-                            proxies = []
-                
+                yaml_content = yaml.safe_load(response.text)
+                proxies = yaml_content.get("proxies", [])
                 if not proxies:
                     print(f"⚠️ 警告：{url} 中未找到代理节点")
                     continue
-                
                 parsed_count = 0
                 for index, proxy in enumerate(proxies):
-                    if index in [1878, 2435]:
-                        print(f"🔍 调试：第 {index + 1} 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
+                    if index == 1878:  # 调试第 1879 个节点（索引 1878）
+                        print(f"🔍 调试：第 1879 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
                     else:
-                        print(f"⚠️ 无效节点详情（索引 {index}）：{json.dumps(proxy, ensure_ascii=False)}")
+                        print(f"⚠️ 警告：跳过无效代理节点（索引 {index}）：{proxy.get('name', '未知节点')}")
                 print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
             except httpx.RequestError as e:
                 print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
+            except yaml.YAMLError as e:
+                print(f"❌ 错误：解析 YAML 格式失败：{url} - {e}")
             except Exception as e:
                 print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
     return all_proxies
 
-async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_proxies: list, api_port: int = 9090, retries: int = 3) -> list:
-    """启动 Clash.Meta 核心，加载配置文件，测试代理节点延迟，返回测试通过的节点配置。"""
+async def test_clash_meta_nodes(clash_core_path: str, config_path: str, api_port: int = 9090, retries: int = 3) -> list:
+    """启动 Clash.Meta 核心，加载配置文件，测试代理节点延迟。"""
     tested_nodes_info = []
     async def read_stream_and_print(stream, name, log_file):
         with open(log_file, "a", encoding="utf-8") as f:
@@ -348,8 +86,6 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
         if s.connect_ex(('127.0.0.1', api_port)) == 0:
             print(f"❌ 错误：端口 {api_port} 已被占用，请更换端口或释放端口")
             return []
-    
-    proxy_map = {proxy["name"]: proxy for proxy in all_proxies}
     
     for attempt in range(retries):
         clash_process = None
@@ -418,14 +154,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
                             delay = delay_data.get("delay", -1)
                             if delay > 0:
                                 print(f"✅ {node_name}: {delay}ms")
-                                if node_name in proxy_map:
-                                    tested_nodes_info.append({
-                                        "name": node_name,
-                                        "delay": delay,
-                                        "config": proxy_map[node_name]
-                                    })
-                                else:
-                                    print(f"⚠️ 警告：节点 {node_name} 不在原始代理列表中")
+                                tested_nodes_info.append({"name": node_name, "delay": delay})
                             else:
                                 print(f"💔 {node_name}: 测试失败/超时 ({delay_data.get('message', '未知错误')})")
                         except json.JSONDecodeError:
@@ -524,7 +253,7 @@ async def main():
         "dns": {
             "enable": True,
             "ipv6": False,
-            "listen": "0.0.0.0:1053",
+            "listen": "0.0.0.0:1053",  # 使用非特权端口，避免 permission denied
             "enhanced-mode": "fake-ip",
             "default-nameserver": [
                 "114.114.114.114",
@@ -565,74 +294,19 @@ async def main():
         return
     
     print("\n--- 开始使用 Clash.Meta 进行节点延迟测试 ---")
-    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path, unique_proxies)
+    tested_nodes = await test_clash_meta_nodes(clash_core_path, unified_config_path)
     
     with open("data/all.txt", "w", encoding="utf-8") as f:
         if tested_nodes:
-            f.write("Tested Proxy Nodes (plaintext format, sorted by delay):\n")
+            f.write("Node Test Results (sorted by delay):\n")
             for node_info in tested_nodes:
-                plaintext_node = to_plaintext_node(node_info["config"], node_info["delay"])
-                if plaintext_node:
-                    f.write(f"{plaintext_node}\n")
+                f.write(f"{node_info['name']}: {node_info['delay']}ms\n")
         else:
             f.write("No nodes passed the delay test.\n")
-    print(f"📝 已将测试结果（明文节点格式）写入 data/all.txt")
-    
-    tested_config_path = "data/tested_clash_config.yaml"
-    if tested_nodes:
-        tested_proxies = [node_info["config"] for node_info in tested_nodes]
-        tested_clash_config = {
-            "proxies": tested_proxies,
-            "proxy-groups": [
-                {
-                    "name": "Tested Proxies",
-                    "type": "select",
-                    "proxies": [p["name"] for p in tested_proxies]
-                },
-                {
-                    "name": "Auto Select (URLTest)",
-                    "type": "url-test",
-                    "proxies": [p["name"] for p in tested_proxies],
-                    "url": "http://www.google.com/generate_204",
-                    "interval": 300
-                }
-            ],
-            "rules": [
-                "MATCH,Tested Proxies"
-            ],
-            "dns": {
-                "enable": True,
-                "ipv6": False,
-                "listen": "0.0.0.0:1053",
-                "enhanced-mode": "fake-ip",
-                "default-nameserver": [
-                    "114.114.114.114",
-                    "8.8.8.8"
-                ],
-                "nameserver": [
-                    "tls://dns.google/dns-query",
-                    "https://dns.alidns.com/dns-query"
-                ]
-            },
-            "log-level": "info",
-            "port": 7890,
-            "socks-port": 7891,
-            "allow-lan": True,
-            "external-controller": "0.0.0.0:9090",
-            "external-ui": "ui"
-        }
-        try:
-            with open(tested_config_path, "w", encoding="utf-8") as f:
-                yaml.dump(tested_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
-            print(f"📦 测试通过的 Clash 配置文件已生成：{tested_config_path}")
-        except Exception as e:
-            print(f"❌ 错误：生成测试通过的 Clash 配置文件失败：{e}")
+    print(f"📝 已将测试结果写入 data/all.txt")
     
     print(f"\n✅ 最终的 YAML 配置文件已写入：{unified_config_path}")
-    if tested_nodes:
-        print(f"✅ 测试通过的 YAML 配置文件已写入：{tested_config_path}")
-        print(f"总共输出 {len(tested_proxies)} 个测试通过的代理节点。")
-    print(f"总共输出 {len(unique_proxies)} 个代理节点（全部）。")
+    print(f"总共输出 {len(unique_proxies)} 个代理节点。")
 
 if __name__ == "__main__":
     asyncio.run(main())
