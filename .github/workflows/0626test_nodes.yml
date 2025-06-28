@@ -1,4 +1,4 @@
-```yaml
+
 name: Test and Parse Nodes
 
 on:
@@ -48,4 +48,4 @@ jobs:
         name: node-results
         path: data/all.txt
         if-no-files-found: warn
-```
+
