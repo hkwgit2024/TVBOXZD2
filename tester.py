@@ -21,10 +21,12 @@ except ImportError as e:
 # 检查 Clash.Meta 可执行文件
 def check_clash():
     try:
-        subprocess.run(["clash", "--version"], capture_output=True, text=True, timeout=5)
-        return True
-    except (subprocess.SubprocessError, FileNotFoundError):
-        print("Clash.Meta 未安装或不可用")
+        # 尝试 mihomo 的版本检查命令 (-v)
+        result = subprocess.run(["clash", "-v"], capture_output=True, text=True, timeout=5)
+        print(f"Clash.Meta 版本: {result.stdout.strip()}")
+        return result.returncode == 0
+    except (subprocess.SubprocessError, FileNotFoundError) as e:
+        print(f"Clash.Meta 未安装或不可用: {e}")
         return False
 
 # 获取节点配置文件
@@ -177,7 +179,7 @@ def test_node(node: Dict, timeout: int = 10) -> bool:
             "proxy-groups": [{"name": "auto", "type": "select", "proxies": [node["name"]]}],
             "rules": ["MATCH,auto"]
         }
-        with open("config.yaml", "w") as f:
+        with open("config.yaml", "w", encoding="utf-8") as f:
             yaml.dump(config, f, allow_unicode=True)
 
         # 测试连通性
@@ -187,7 +189,11 @@ def test_node(node: Dict, timeout: int = 10) -> bool:
             text=True,
             timeout=timeout
         )
-        return result.returncode == 0
+        if result.returncode == 0:
+            return True
+        else:
+            print(f"测试节点 {node['name']} 失败: {result.stderr}")
+            return False
     except subprocess.TimeoutExpired:
         print(f"测试节点 {node['name']} 超时")
         return False
