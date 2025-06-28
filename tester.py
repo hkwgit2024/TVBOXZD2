@@ -11,6 +11,7 @@ import urllib.parse
 import traceback
 import base64
 
+# 订阅链接列表
 CLASH_BASE_CONFIG_URLS = [
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/sub_2.txt",
     "https://raw.githubusercontent.com/freefq/free/master/v2",
@@ -26,7 +27,7 @@ def is_valid_reality_short_id(short_id: str | None) -> bool:
     return bool(re.match(r"^[0-9a-fA-F]{8}$", short_id))
 
 def validate_proxy(proxy: dict, index: int) -> bool:
-    """验证代理节点是否有效，特别是 REALITY 和 VMess 协议的配置。"""
+    """验证代理节点是否有效，特别是 REALITY、VMess 和 VLESS 协议的配置。"""
     missing_fields = []
     if not proxy.get("name"):
         missing_fields.append("name")
@@ -134,7 +135,8 @@ def to_plaintext_node(proxy: dict, delay: int) -> str:
                 query_params.append(f"flow={flow}")
             ws_opts = proxy.get("ws-opts", {})
             if ws_opts:
-                query_params.append(f"type=ws&path={urllib.parse.quote(ws_opts.get('path', ''))}")
+                path = urllib.parse.quote(ws_opts.get("path", ""))
+                query_params.append(f"type=ws&path={path}")
             query = "&".join(query_params)
             if server and port and uuid:
                 return f"vless://{uuid}@{server}:{port}?{query}#{name} - {delay}ms"
@@ -156,7 +158,7 @@ def parse_v2ray_subscription(content: str) -> list:
             continue
         try:
             if line.startswith("vmess://"):
-                decoded = base64.b64decode(line[8:].strip() + "===").decode('utf-8')
+                decoded = base64.b64decode(line[8:].strip() + "===").decode('utf-8', errors='ignore')
                 vmess = json.loads(decoded)
                 proxy = {
                     "name": vmess.get("ps", f"vmess-{index}"),
@@ -173,7 +175,7 @@ def parse_v2ray_subscription(content: str) -> list:
                 proxies.append(proxy)
             elif line.startswith("ss://"):
                 try:
-                    decoded = base64.b64decode(line[5:].split('#')[0] + "===").decode('utf-8')
+                    decoded = base64.b64decode(line[5:].split('#')[0] + "===").decode('utf-8', errors='ignore')
                     userinfo, server_port = decoded.split('@')
                     method, password = userinfo.split(':')
                     server, port = server_port.split(':')
@@ -188,7 +190,7 @@ def parse_v2ray_subscription(content: str) -> list:
                     }
                     proxies.append(proxy)
                 except base64.binascii.Error:
-                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}...")
+                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}... - 完整行: {line}")
             elif line.startswith("hysteria2://"):
                 decoded = urllib.parse.urlparse(line)
                 name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
@@ -218,11 +220,11 @@ def parse_v2ray_subscription(content: str) -> list:
                 }
                 proxies.append(proxy)
             elif line.startswith("ssr://"):
-                decoded = base64.b64decode(line[6:].strip() + "===").decode('utf-8')
+                decoded = base64.b64decode(line[6:].strip() + "===").decode('utf-8', errors='ignore')
                 parts = decoded.split(':')
                 if len(parts) >= 6:
                     server, port, protocol, method, obfs, password = parts[:6]
-                    password = base64.b64decode(password).decode('utf-8')
+                    password = base64.b64decode(password).decode('utf-8', errors='ignore')
                     name = f"ssr-{index}"
                     if '#' in line:
                         name = urllib.parse.unquote(line.split('#')[-1])
@@ -250,13 +252,16 @@ def parse_v2ray_subscription(content: str) -> list:
                     "flow": query.get("flow", [""])[0],
                     "tls": query.get("security", ["none"])[0] == "tls",
                     "sni": query.get("sni", [""])[0] or decoded.hostname or query.get("host", [""])[0],
-                    "ws-opts": {"path": query.get("path", [""])[0]} if query.get("type5", [""])[0] == "ws" else {}
+                    "ws-opts": {"path": query.get("path", [""])[0]} if query.get("type5", [""])[0] == "ws" or query.get("type", [""])[0] == "ws" else {}
                 }
+                if not proxy["server"]:
+                    print(f"⚠️ 跳过无效 VLESS 节点（索引 {index}）：缺少 server - {line[:30]}... - 完整配置: {json.dumps(proxy, ensure_ascii=False)} - 完整行: {line}")
+                    continue
                 proxies.append(proxy)
             else:
-                print(f"⚠️ 跳过未知协议节点（索引 {index}）：{line[:30]}...")
+                print(f"⚠️ 跳过未知协议节点（索引 {index}）：{line[:30]}... - 完整行: {line}")
         except Exception as e:
-            print(f"⚠️ 跳过无效订阅节点（索引 {index}）：{line[:30]}... - 错误: {e}")
+            print(f"⚠️ 跳过无效订阅节点（索引 {index}）：{line[:30]}... - 错误: {e} - 完整行: {line}")
     return proxies
 
 async def fetch_yaml_configs(urls: list[str]) -> list:
@@ -283,9 +288,11 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                                 proxies = yaml_content.get("proxies", [])
                             else:
                                 proxies = parse_v2ray_subscription(decoded_text)
-                        except base64.binascii.Error:
+                        except base64.binascii.Error as e:
+                            print(f"⚠️ base64 解码失败，尝试直接解析为订阅链接: {e}")
                             proxies = parse_v2ray_subscription(response_text)
-                except yaml.YAMLError:
+                except yaml.YAMLError as e:
+                    print(f"⚠️ YAML 解析失败，尝试解析为订阅链接: {e}")
                     proxies = parse_v2ray_subscription(response_text)
                 
                 if not proxies:
@@ -294,10 +301,8 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 
                 parsed_count = 0
                 for index, proxy in enumerate(proxies):
-                    if index == 1878:
-                        print(f"🔍 调试：第 1879 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
-                    if index == 2435:
-                        print(f"🔍 调试：第 2436 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
+                    if index in [1878, 2435]:
+                        print(f"🔍 调试：第 {index + 1} 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
