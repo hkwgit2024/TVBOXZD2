@@ -8,21 +8,22 @@ import requests
 import sys
 from urllib.parse import urlparse, parse_qs, unquote, quote
 
-# Node download URL
+# 节点下载 URL
 NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
-# Clash Core controller address
+# Mihomo Core 控制器地址
 CLASH_CONTROLLER_URL = "http://127.0.0.1:9090"
-# Clash Core Socks5 proxy address
+# Mihomo Core SOCKS5 代理地址
 CLASH_SOCKS5_PROXY = "socks5://127.0.0.1:7891"
-# Clash Core config file path
+# Mihomo Core 配置文件路径
 CLASH_CONFIG_PATH = "config.yaml"
-# Path to save successful nodes
+# 保存成功节点的路径
 SUCCESS_NODES_PATH = "data/all.txt"
 
 def parse_vmess(link):
-    """Parse vmess link for Clash format"""
+    """解析 vmess 链接为 Clash 格式"""
     try:
         encoded_str = link.replace("vmess://", "")
+        # 尝试标准 Base64 解码，如果失败则尝试 URL 安全 Base64 解码并补齐
         try:
             decoded_bytes = base64.b64decode(encoded_str)
         except Exception:
@@ -60,7 +61,7 @@ def parse_vmess(link):
         return None
 
 def parse_trojan(link):
-    """Parse trojan link for Clash format"""
+    """解析 trojan 链接为 Clash 格式"""
     match = re.match(r"trojan://([^@]+)@([^:]+):(\d+)(.*)", link)
     if match:
         password = match.group(1)
@@ -91,12 +92,12 @@ def parse_trojan(link):
     return None
 
 def parse_ss(link):
-    """Parse ss link for Clash format"""
+    """解析 ss 链接为 Clash 格式"""
     try:
         link_parts = link.replace("ss://", "").split('#', 1)
         encoded_part = link_parts[0]
         
-        # Ensure proper padding for Base64 decoding
+        # 确保 Base64 解码有正确的填充
         encoded_part += "=" * ((4 - len(encoded_part) % 4) % 4)
         try:
             decoded_bytes = base64.urlsafe_b64decode(encoded_part)
@@ -136,8 +137,8 @@ def parse_ss(link):
         return None
 
 def parse_hysteria2(link):
-    """Parse hysteria2 link for Clash format"""
-    link = link.replace("hy2://", "hysteria2://") 
+    """解析 hysteria2 链接为 Clash 格式"""
+    link = link.replace("hy2://", "hysteria2://")  # 统一 hy2 为 hysteria2
     
     match = re.match(r"hysteria2://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
@@ -173,7 +174,7 @@ def parse_hysteria2(link):
     return None
 
 def parse_vless(link):
-    """Parse vless link for Clash format"""
+    """解析 vless 链接为 Clash 格式"""
     match = re.match(r"vless://([^@]+)@([^:]+):(\d+)(\?.*)?(#(.*))?", link)
     if match:
         uuid = match.group(1)
@@ -232,7 +233,7 @@ def parse_vless(link):
     return None
 
 def parse_node_link(link):
-    """Parse node link based on protocol type"""
+    """根据协议类型解析节点链接"""
     if link.startswith("vmess://"):
         return parse_vmess(link)
     elif link.startswith("trojan://"):
@@ -251,7 +252,7 @@ def parse_node_link(link):
         return None
 
 def generate_clash_config(parsed_nodes):
-    """Generate Clash Core configuration file"""
+    """生成 Mihomo Core 配置文件"""
     config = {
         "port": 7890,
         "socks-port": 7891,
@@ -279,27 +280,32 @@ def generate_clash_config(parsed_nodes):
         "proxies": [],
         "proxy-groups": [
             {
-                "name": "Node Select",
+                "name": "GLOBAL", # 添加 GLOBAL 组，作为主切换组
                 "type": "select",
                 "proxies": ["DIRECT"]
+            },
+            {
+                "name": "Node Select",
+                "type": "select",
+                "proxies": ["DIRECT"] # 初始至少有一个代理，确保 Clash 正常启动
             },
             {
                 "name": "Auto Select",
                 "type": "url-test",
                 "url": "http://www.gstatic.com/generate_204",
                 "interval": 300,
-                "proxies": []
+                "proxies": ["DIRECT"] # 初始至少有一个代理，确保 Clash 正常启动
             }
         ],
         "rules": [
-            "PROCESS-NAME,clash,DIRECT",
-            "PROCESS-NAME,Clash,DIRECT",
-            "PROCESS-NAME,clash-core,DIRECT",
-            "DOMAIN-SUFFIX,googlevideo.com,Node Select",
-            "DOMAIN-SUFFIX,googleusercontent.com,Node Select",
-            "DOMAIN-SUFFIX,google.com,Node Select",
+            "PROCESS-NAME,clash,GLOBAL", # 规则指向 GLOBAL 组
+            "PROCESS-NAME,Clash,GLOBAL",
+            "PROCESS-NAME,clash-core,GLOBAL",
+            "DOMAIN-SUFFIX,googlevideo.com,GLOBAL",
+            "DOMAIN-SUFFIX,googleusercontent.com,GLOBAL",
+            "DOMAIN-SUFFIX,google.com,GLOBAL",
             "DOMAIN-SUFFIX,github.com,DIRECT",
-            "MATCH,Node Select"
+            "MATCH,GLOBAL" # 默认规则指向 GLOBAL 组
         ]
     }
 
@@ -309,80 +315,113 @@ def generate_clash_config(parsed_nodes):
             config["proxies"].append(node)
             proxy_names.append(node["name"])
     
-    config["proxy-groups"][0]["proxies"].extend(proxy_names)
-    config["proxy-groups"][1]["proxies"].extend(proxy_names)
+    # 将所有解析到的代理名称添加到 GLOBAL, Node Select 和 Auto Select 组
+    # 注意：这里添加到 GLOBAL 组是为了直接通过 API 切换 GLOBAL 组到特定节点
+    config["proxy-groups"][0]["proxies"].extend(proxy_names) # GLOBAL 组
+    config["proxy-groups"][1]["proxies"].extend(proxy_names) # Node Select 组
+    config["proxy-groups"][2]["proxies"].extend(proxy_names) # Auto Select 组
 
     with open(CLASH_CONFIG_PATH, "w", encoding="utf-8") as f:
         yaml.dump(config, f, allow_unicode=True, sort_keys=False)
-    print(f"Generated Clash config: {CLASH_CONFIG_PATH}")
+    print(f"Generated Clash config: {CLASH_CONFIG_PATH} with {len(parsed_nodes)} nodes.")
 
 def test_nodes(original_links_map):
-    """Test node connectivity"""
+    """测试节点连通性"""
     successful_nodes = []
     
-    with open(CLASH_CONFIG_PATH, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    
+    # 确保配置已被主函数生成并加载
+    try:
+        with open(CLASH_CONFIG_PATH, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+    except FileNotFoundError:
+        print(f"Error: {CLASH_CONFIG_PATH} not found. Ensure generate_clash_config ran successfully.")
+        return []
+    except yaml.YAMLError as e:
+        print(f"Error parsing {CLASH_CONFIG_PATH}: {e}")
+        return []
+
     proxies = config.get("proxies", [])
-    proxy_group = next((group for group in config.get("proxy-groups", []) if group["type"] == "select"), None)
-    if not proxy_group:
-        print("Error: No select-type proxy group found in config.")
-        sys.exit(1)
-    proxy_group_name = proxy_group["name"]
-    
-    # Debug: List available proxy groups
+    if not proxies:
+        print("No proxies found in the generated Clash config. Skipping node testing.")
+        return []
+
+    # 确定要切换的主代理组，通常是 "GLOBAL" 或 "Proxy"
+    # 根据 GitHub Actions 日志，我们知道 "GLOBAL" 是一个可用的组
+    main_proxy_group_to_switch = "GLOBAL" 
+
+    # 验证 main_proxy_group_to_switch 是否存在
     try:
         response = requests.get(f"{CLASH_CONTROLLER_URL}/proxies", timeout=5)
         response.raise_for_status()
-        available_groups = response.json().get("proxies", {})
-        print(f"Available proxy groups: {list(available_groups.keys())}")
+        available_proxies_info = response.json().get("proxies", {})
+        if main_proxy_group_to_switch not in available_proxies_info:
+            print(f"Error: Main proxy group '{main_proxy_group_to_switch}' not found in Mihomo API response.")
+            print(f"Available proxy groups: {list(available_proxies_info.keys())}")
+            sys.exit(1)
+        print(f"Using main proxy group for switching: '{main_proxy_group_to_switch}'.")
     except requests.exceptions.RequestException as e:
-        print(f"Error: Failed to connect to Mihomo API: {e}")
+        print(f"Error: Failed to connect to Mihomo API to get proxy groups. Please check Mihomo status. Error: {e}")
         sys.exit(1)
+    
+    print(f"Starting connectivity test for {len(proxies)} nodes...")
 
-    print(f"Using proxy group: {proxy_group_name}")
-    print("Starting node testing...")
-    for proxy in proxies:
+    for i, proxy in enumerate(proxies):
         proxy_name = proxy["name"]
-        
-        print(f"Testing node: {proxy_name}...")
+        print(f"[{i+1}/{len(proxies)}] Testing node: '{proxy_name}'...")
         try:
-            # Switch to the current node
-            for _ in range(5):
+            # 切换主代理组 (例如 GLOBAL) 到当前节点
+            switched_successfully = False
+            for attempt in range(1, 6): # 尝试 5 次切换
                 try:
                     response = requests.put(
-                        f"{CLASH_CONTROLLER_URL}/proxies/{quote(proxy_group_name)}",
+                        f"{CLASH_CONTROLLER_URL}/proxies/{quote(main_proxy_group_to_switch)}",
                         json={"name": proxy_name},
-                        timeout=5
+                        timeout=5 # 切换请求的超时
                     )
-                    response.raise_for_status()
-                    print(f"Switched to node: {proxy_name}")
-                    break
+                    response.raise_for_status() # 检查 HTTP 状态码
+                    print(f"  Switched main group '{main_proxy_group_to_switch}' to node '{proxy_name}' (Attempt {attempt}).")
+                    switched_successfully = True
+                    break # 切换成功，跳出重试循环
                 except requests.exceptions.RequestException as e:
-                    print(f"Connection to Mihomo controller failed for {proxy_name}, retrying... Error: {e}")
-                    time.sleep(2)
-            else:
-                raise ConnectionError(f"Failed to switch to node {proxy_name} after multiple retries.")
-            
-            time.sleep(1)
+                    print(f"  Failed to switch main group to node '{proxy_name}' (Attempt {attempt}/5). Error: {e}")
+                    time.sleep(2) # 等待一小段时间后重试切换
 
-            # Test connectivity
-            test_response = requests.get(
-                "http://www.gstatic.com/generate_204",
-                proxies={"http": CLASH_SOCKS5_PROXY, "https": CLASH_SOCKS5_PROXY},
-                timeout=15
-            )
-            test_response.raise_for_status()
-            print(f"✅ Node '{proxy_name}' is working.")
-            
-            if proxy_name in original_links_map:
-                successful_nodes.append(original_links_map[proxy_name])
+            if not switched_successfully:
+                print(f"❌ Failed to switch to node '{proxy_name}' after multiple retries. Skipping test for this node.")
+                continue # 切换失败，跳过当前节点，测试下一个
+
+            time.sleep(1) # 给 Mihomo 一些时间来应用切换
+
+            # 通过 Mihomo 的 SOCKS5 代理测试连通性 (重试 3 次)
+            test_success = False
+            for test_attempt in range(1, 4):
+                try:
+                    test_response = requests.get(
+                        "http://www.gstatic.com/generate_204", # Google 的 204 无内容页面，常用于连通性测试
+                        proxies={"http": CLASH_SOCKS5_PROXY, "https": CLASH_SOCKS5_PROXY},
+                        timeout=20 # 实际连接测试的超时时间，适当延长
+                    )
+                    test_response.raise_for_status() # 检查 HTTP 状态码
+                    print(f"✅ Node '{proxy_name}' is working (Test Attempt {test_attempt}).")
+                    test_success = True
+                    break # 测试成功，跳出重试循环
+                except requests.exceptions.Timeout:
+                    print(f"  Node '{proxy_name}' timed out (Test Attempt {test_attempt}/3).")
+                except requests.exceptions.RequestException as e:
+                    print(f"  Node '{proxy_name}' failed (Test Attempt {test_attempt}/3). Error: {e}")
+                time.sleep(3) # 等待一小段时间后重试测试
+
+            if test_success:
+                # 找到原始链接并添加到成功节点列表
+                if proxy_name in original_links_map:
+                    successful_nodes.append(original_links_map[proxy_name])
+                else:
+                    print(f"Warning: Could not find original link for proxy name '{proxy_name}'. Skipping.")
             else:
-                print(f"Warning: Could not find original link for proxy name '{proxy_name}'. Skipping.")
+                print(f"❌ Node '{proxy_name}' is NOT working after all attempts.")
                 
-        except requests.exceptions.RequestException as e:
-            print(f"❌ Node '{proxy_name}' is NOT working. Error: {e}")
         except Exception as e:
+            # 捕获其他意外错误
             print(f"An unexpected error occurred during testing node '{proxy_name}': {e}")
             
     return successful_nodes
@@ -397,20 +436,22 @@ def main():
         print(f"Downloaded {len(node_links)} nodes.")
     except requests.exceptions.RequestException as e:
         print(f"Error downloading nodes: {e}")
-        sys.exit(1)
+        sys.exit(1) # 下载失败则退出
 
     if not node_links:
         print("No nodes found in the downloaded file. Exiting.")
-        sys.exit(0)
+        sys.exit(0) # 没有节点则正常退出
 
     parsed_nodes = []
-    original_links_map = {}
+    original_links_map = {} # 用于存储代理名称到原始链接的映射
     for i, link in enumerate(node_links):
         parsed = parse_node_link(link)
         if parsed:
-            original_name = parsed["name"]
+            original_name = parsed.get("name", f"unknown_node_{i}") 
+            # 处理重复名称，确保代理名称唯一
             unique_name = original_name
             count = 1
+            # 检查当前生成的名称是否已存在于已解析的节点列表中
             while unique_name in [p["name"] for p in parsed_nodes]:
                 unique_name = f"{original_name}_{count}"
                 count += 1
@@ -421,12 +462,17 @@ def main():
     
     if not parsed_nodes:
         print("No valid nodes parsed. Exiting.")
-        sys.exit(0)
+        sys.exit(0) # 没有有效节点则正常退出
 
+    # 第一步：生成包含所有节点的 Clash 配置
     generate_clash_config(parsed_nodes)
+
+    # 第二步：测试节点连通性
     successful_nodes = test_nodes(original_links_map)
 
+    # 确保 data 目录存在
     os.makedirs(os.path.dirname(SUCCESS_NODES_PATH), exist_ok=True)
+    # 将成功的节点保存到文件
     with open(SUCCESS_NODES_PATH, "w", encoding="utf-8") as f:
         for node_link in successful_nodes:
             f.write(f"{node_link}\n")
