@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Constants
-NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+NODE_LIST_URL = "snippet.host/oouyda/raw"
 MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
 OUTPUT_DIR = Path("data")
@@ -58,7 +58,7 @@ def download_file(url, destination):
                         if total_size > 0:
                             progress = (downloaded_size / total_size) * 100
                             sys.stdout.write(f"\rProgress: {downloaded_size / (1024*1024):.2f}MB / "
-                                           f"{total_size / (1024*1024):.2f}MB ({progress:.1f}%)")
+                                             f"{total_size / (1024*1024):.2f}MB ({progress:.1f}%)")
                         else:
                             sys.stdout.write(f"\rDownloaded: {downloaded_size / (1024*1024):.2f}MB")
                         sys.stdout.flush()
@@ -121,7 +121,7 @@ def parse_node(node_url):
     parsers = {
         "vmess://": lambda url: {
             "type": "vmess",
-            "server": (decoded := json.loads(base64.b64decode(add_base64_padding(url[len("vmess://"):])).decode('utf-8')).get("add"),
+            "server": (decoded := json.loads(base64.b64decode(add_base64_padding(url[len("vmess://"):])).decode('utf-8'))).get("add"),
             "port": int(decoded.get("port")),
             "uuid": decoded.get("id"),
             "alterId": int(decoded.get("aid", 0)),
