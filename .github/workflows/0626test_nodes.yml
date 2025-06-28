@@ -31,45 +31,51 @@ jobs:
       - name: Create data directory
         run: mkdir -p data
 
-      # Mihomo 不会再用固定的 config.yaml 启动
-      # Python 脚本将负责生成临时的配置文件，并将其路径传递给 Mihomo
+      - name: Generate initial Mihomo config (placeholder)
+        # Mihomo 启动时需要一个配置文件，这里创建一个空的作为占位符
+        # 实际的配置会在Python脚本中生成并覆盖这个文件
+        run: echo "{}" > config.yaml
+
       - name: Run Mihomo in background and wait for it to be ready
         run: |
-          # 启动 Mihomo，初始可以不指定配置文件，或者指定一个最小配置
-          # nohup mihomo -d . &> mihomo_startup.log & # Mihomo 默认会寻找 config.yaml
-          # 更安全的做法是先确保 config.yaml 存在，即使是空的，让 Mihomo 启动起来
-          touch mihomo_empty_config.yaml
-          nohup mihomo -d . -f mihomo_empty_config.yaml &> mihomo_startup.log &
+          # 启动 Mihomo，将所有输出重定向到 mihomo_startup.log
+          nohup mihomo -d . -f config.yaml &> mihomo_startup.log &
           MIHOMO_PID=$!
           echo "MIHOMO_PID=$MIHOMO_PID" >> $GITHUB_ENV
           echo "Mihomo started with PID: $MIHOMO_PID. Checking status..."
           
           # 等待 Mihomo 启动并监听端口
-          timeout=60 # 最长等待60秒
+          timeout=90 # 最长等待90秒
           start_time=$(date +%s)
+          
+          # 使用 curl 尝试连接 Mihomo 控制器端口来判断是否就绪
           while true; do
             current_time=$(date +%s)
             elapsed=$((current_time - start_time))
             if [ $elapsed -ge $timeout ]; then
-              echo "Mihomo did not start listening on port 9090 within $timeout seconds."
+              echo "Error: Mihomo did not start listening on port 9090 within $timeout seconds."
+              echo "--- Mihomo Startup Log ---"
               cat mihomo_startup.log # 打印 Mihomo 启动日志以便调试
+              echo "--------------------------"
               exit 1 # 启动失败，退出工作流
             fi
 
-            # 检查 9090 端口是否在监听
-            if netstat -tulnp | grep 9090; then
-              echo "Mihomo controller port 9090 is open. Proceeding."
+            # 尝试连接 Mihomo 的外部控制器端口 (9090)
+            # -s 静默模式
+            # -o /dev/null 不保存输出
+            # --connect-timeout 1 设置连接超时1秒
+            # 如果 curl 成功（退出码为 0），则认为端口已开放
+            if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090; then
+              echo "Mihomo controller port 9090 is accessible. Proceeding."
               break
             fi
+
             echo "Waiting for Mihomo controller to start (elapsed: ${elapsed}s)..."
             sleep 5 # 每5秒检查一次
           done
 
       - name: Run Python node tester
-        # 将 mihomo_config.yaml 的路径作为参数传递给 Python 脚本
-        # 这里我们假定 python 脚本仍然使用 MIHOMO_CONFIG_PATH = "config.yaml"
-        # 那么确保 Mihomo 启动时没有锁定 config.yaml
-        # 更好的方法是让 python 脚本生成一个随机的临时文件作为配置文件
+        # Python 脚本会下载节点，解析，生成新的 config.yaml，并进行测试
         run: python tester.py
 
       - name: Stop Mihomo
@@ -79,13 +85,15 @@ jobs:
             kill ${{ env.MIHOMO_PID }} || true
             echo "Mihomo stopped."
           fi
-          rm -f mihomo_startup.log mihomo_empty_config.yaml cache.db # 清理临时文件
+          # 清理 Mihomo 生成的临时文件
+          rm -f config.yaml mihomo_startup.log cache.db
 
       - name: Commit and push if changes
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          # 只添加 data/all.txt，因为 config.yaml 等临时文件已添加到 .gitignore
+          # 只添加 data/all.txt，因为其他临时文件已添加到 .gitignore
           git add data/all.txt
+          # 检查 data/all.txt 是否有实际变化，如果有，则提交更改
           git diff --quiet --exit-code || git commit -m "Update successful nodes"
           git push
