@@ -23,10 +23,10 @@ logger = logging.getLogger(__name__)
 NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
-CONFIG_FILE = Path("config.yaml")
+CONFIG_FILE = Path("config.yaml") # This will be overwritten for each test.
 OUTPUT_DIR = Path("data")
 OUTPUT_FILE = OUTPUT_DIR / "all.txt"
-CLASH_PORT = 7890 # Port for Clash.Meta local proxy
+CLASH_BASE_PORT = 7890 # Starting port for Clash.Meta local proxy
 TEST_URL = "http://www.google.com" # URL to test connectivity
 CONCURRENT_TESTS = 10 # Number of concurrent nodes to test
 
@@ -55,7 +55,7 @@ def download_file(url, destination):
             total_size = int(response.headers.get('content-length', 0))
             downloaded_size = 0
 
-            with destination.open('wb') as f: # Now destination is a Path object
+            with destination.open('wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
                     downloaded_size += len(chunk)
@@ -84,16 +84,16 @@ def setup_mihomo():
         bin_path.chmod(0o755)
         return
 
-    archive_filename = Path(MIHOMO_DOWNLOAD_URL).name # This gets the filename string, e.g., "mihomo-linux-amd64-v1.19.11.gz"
-    archive_path = Path(archive_filename) # Convert the filename string to a Path object
+    archive_filename = Path(MIHOMO_DOWNLOAD_URL).name
+    archive_path = Path(archive_filename)
     
-    if not download_file(MIHOMO_DOWNLOAD_URL, archive_path): # Pass the Path object
+    if not download_file(MIHOMO_DOWNLOAD_URL, archive_path):
         logger.error("Failed to download Mihomo binary.")
         sys.exit(1)
 
-    logger.info(f"Extracting {archive_filename}...") # Use archive_filename for logging
+    logger.info(f"Extracting {archive_filename}...")
     try:
-        subprocess.run(["gunzip", "-f", str(archive_path)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) # Use str(archive_path) for subprocess
+        subprocess.run(["gunzip", "-f", str(archive_path)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         extracted_name = archive_path.with_suffix('')
 
         found_extracted = False
@@ -165,7 +165,7 @@ def parse_vmess(node_url):
             } if decoded_vmess.get("net") == "ws" else {},
             "grpc-opts": {
                 "serviceName": decoded_vmess.get("path", ""),
-                "grpcMode": "gun" # Assuming gun mode for vmess grpc
+                "grpcMode": "gun"
             } if decoded_vmess.get("net") == "grpc" else {}
         }
     except (json.JSONDecodeError, base64.binascii.Error, ValueError) as e:
@@ -183,18 +183,16 @@ def parse_ss(node_url):
 
         method_password = ""
         try:
-            # SS links can be base64 encoded or plain. Try decoding first.
             method_password = base64.b64decode(method_password_encoded + '=' * (-len(method_password_encoded) % 4)).decode('utf-8')
         except (base64.binascii.Error, UnicodeDecodeError):
-            method_password = method_password_encoded # Not base64, use raw
+            method_password = method_password_encoded
 
-        method, password = "auto", method_password # Default if no ':'
+        method, password = "auto", method_password
         if ':' in method_password:
             method, password = method_password.split(':', 1)
 
-        # Handle params from fragment or query part if present (like plugin)
         params = parse_qs(parsed_url.query)
-        if not params and parsed_url.fragment: # Some SS put plugin info in fragment
+        if not params and parsed_url.fragment:
             params = parse_qs(parsed_url.fragment)
 
         plugin = params.get('plugin', [''])[0]
@@ -229,7 +227,7 @@ def parse_trojan(node_url):
             "password": parsed_url.username,
             "tls": True,
             "sni": params.get('sni', [parsed_url.hostname])[0],
-            "skip-cert-verify": params.get('allowInsecure', ['0'])[0] == '1' # Clash Meta uses allowInsecure for skip-cert-verify
+            "skip-cert-verify": params.get('allowInsecure', ['0'])[0] == '1'
         }
     except (ValueError, AttributeError) as e:
         logger.error(f"Error parsing trojan node {node_url}: {e}")
@@ -257,7 +255,7 @@ def parse_vless(node_url):
             "tls": tls_enabled,
             "sni": sni,
             "skip-cert-verify": skip_cert_verify,
-            "udp": True # VLESS usually supports UDP
+            "udp": True
         }
         if flow:
             vless_proxy["flow"] = flow
@@ -268,7 +266,7 @@ def parse_vless(node_url):
                 "headers": {"Host": ws_headers_host}
             }
         elif network == "grpc":
-            grpc_mode = params.get('grpcMode', ['gun'])[0] # Default to gun
+            grpc_mode = params.get('grpcMode', ['gun'])[0]
             service_name = params.get('serviceName', [''])[0]
             vless_proxy["grpc-opts"] = {
                 "grpcMode": grpc_mode,
@@ -290,7 +288,7 @@ def parse_hysteria2(node_url):
             "port": parsed_url.port,
             "password": parsed_url.username,
             "tls": True,
-            "skip-cert-verify": params.get('insecure', ['0'])[0] == '1', # 'insecure' parameter for skip-cert-verify
+            "skip-cert-verify": params.get('insecure', ['0'])[0] == '1',
             "obfs": params.get('obfs', [None])[0],
             "obfs-password": params.get('obfs-password', [None])[0],
             "alpn": params.get('alpn', [None])[0],
@@ -300,13 +298,13 @@ def parse_hysteria2(node_url):
         logger.error(f"Error parsing hysteria2 node {node_url}: {e}")
         return None
 
-def create_clash_config(node_url):
+def create_clash_config(node_url, port):
     """Creates a basic Clash.Meta config for a single node."""
     proxy_name = f"proxy-{hash(node_url) % 100000}"
     config = {
-        "port": CLASH_PORT,
+        "port": port, # Use the dynamically assigned port
         "mode": "direct",
-        "log-level": "debug", # Changed to "debug" for more detailed logs
+        "log-level": "debug",
         "allow-lan": False,
         "bind-address": "127.0.0.1",
         "proxies": [],
@@ -338,20 +336,22 @@ def create_clash_config(node_url):
         return False
 
     try:
-        with CONFIG_FILE.open('w', encoding='utf-8') as f:
+        # Use a temporary config file name to avoid clashes between concurrent tests
+        temp_config_file = Path(f"config_{port}.yaml")
+        with temp_config_file.open('w', encoding='utf-8') as f:
             yaml.dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-        logger.info(f"Generated Clash.Meta config for {node_url} at {CONFIG_FILE}")
-        return True
+        logger.info(f"Generated Clash.Meta config for {node_url} at {temp_config_file}")
+        return temp_config_file
     except (OSError, yaml.YAMLError) as e:
         logger.error(f"Error writing Clash.Meta config for {node_url}: {e}")
         return False
 
 @asynccontextmanager
-async def mihomo_process(config_file):
+async def mihomo_process(config_file, port):
     """Context manager for running and cleaning up Mihomo process."""
     process = None
     try:
-        logger.info(f"Starting {MIHOMO_BIN_NAME} with config {config_file} on port {CLASH_PORT}...")
+        logger.info(f"Starting {MIHOMO_BIN_NAME} with config {config_file} on port {port}...")
         process = subprocess.Popen(
             [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
             stdout=sys.stdout,
@@ -379,18 +379,20 @@ async def mihomo_process(config_file):
             config_file.unlink()
             logger.info(f"Cleaned up {config_file}.")
 
-async def test_node_connectivity(node_url):
+async def test_node_connectivity(node_url, current_port):
     """Tests the connectivity of a single node using Clash.Meta."""
-    logger.info(f"\n--- Testing node: {node_url} ---")
-    if not create_clash_config(node_url):
+    logger.info(f"\n--- Testing node: {node_url} on port {current_port} ---")
+    
+    temp_config_file = create_clash_config(node_url, current_port)
+    if not temp_config_file:
         logger.warning(f"Skipping {node_url} due to parsing error or unsupported protocol.")
-        return None # Return None on failure to parse/create config
+        return None
 
     try:
-        async with mihomo_process(CONFIG_FILE):
+        async with mihomo_process(temp_config_file, current_port): # Pass current_port
             curl_command = [
                 "curl",
-                "--socks5-hostname", f"127.0.0.1:{CLASH_PORT}",
+                "--socks5-hostname", f"127.0.0.1:{current_port}", # Use current_port
                 TEST_URL,
                 "--max-time", "15",
                 "--silent", "--output", "/dev/null",
@@ -401,11 +403,11 @@ async def test_node_connectivity(node_url):
 
             if result.returncode == 0:
                 logger.info(f"Node {node_url} is CONNECTED.")
-                return node_url # Return node_url on successful connection
+                return node_url
             logger.warning(f"Node {node_url} FAILED to connect (curl exit code: {result.returncode}).")
             logger.debug(f"Curl stdout:\n{result.stdout}")
             logger.debug(f"Curl stderr:\n{result.stderr}")
-            return None # Return None on failed connection
+            return None
     except FileNotFoundError:
         logger.error(f"Error: {MIHOMO_BIN_NAME} not found. Ensure it's in the current directory and executable.")
         return None 
@@ -428,9 +430,21 @@ async def main():
     # Use a semaphore to limit concurrent tasks
     semaphore = asyncio.Semaphore(CONCURRENT_TESTS)
 
+    # Create a queue to manage the available ports for concurrent tests
+    port_queue = asyncio.Queue()
+    for i in range(CONCURRENT_TESTS):
+        await port_queue.put(CLASH_BASE_PORT + i)
+
     async def bounded_test_with_node_return(node_url_to_test):
         async with semaphore:
-            return await test_node_connectivity(node_url_to_test)
+            # Acquire a port from the pool
+            current_port = await port_queue.get()
+            try:
+                result_node_url = await test_node_connectivity(node_url_to_test, current_port)
+                return result_node_url
+            finally:
+                # Release the port back to the pool
+                await port_queue.put(current_port) # Ensure the port is returned
 
     tasks = [bounded_test_with_node_return(node) for node in all_nodes]
     
