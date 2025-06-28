@@ -1,4 +1,4 @@
-name: Test Nodes with Clash  (Python)
+name: Test Nodes with Mihomo (Python)
 
 on:
   workflow_dispatch: # Allows manual triggering
@@ -21,53 +21,60 @@ jobs:
       - name: Install Python dependencies
         run: pip install pyyaml requests
 
-      - name: Install Clash Core
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Get latest Mihomo release
         run: |
-          # Download the latest Clash Core Linux AMD64 version from Clash.Meta
-          # ALWAYS check the official Clash.Meta GitHub Releases page for the latest stable version and exact filename:
-          # https://github.com/MetaCubeX/Clash.Meta/releases
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | jq -r .tag_name)
+          echo "Latest Mihomo version: $LATEST_RELEASE"
+          echo "CLASH_VERSION=$LATEST_RELEASE" >> $GITHUB_ENV
+          echo "CLASH_FILENAME=mihomo-linux-amd64-${LATEST_RELEASE}.gz" >> $GITHUB_ENV
+
+      - name: Install Mihomo Core
+        run: |
+          # Download the latest Mihomo Core Linux AMD64 version from MetaCubeX/mihomo
+          # ALWAYS check the official Mihomo GitHub Releases page for the latest stable version and exact filename:
+          # https://github.com/MetaCubeX/mihomo/releases
           
-          # As of June 28, 2025, v1.19.1 is a common stable version.
-          CLASH_VERSION="v1.19.1" # <--- IMPORTANT: Verify and update this version
-          CLASH_FILENAME="clash.meta-linux-amd64-${CLASH_VERSION}.gz" # <--- IMPORTANT: Verify this filename
-          CLASH_DOWNLOAD_URL="https://github.com/MetaCubeX/Clash.Meta/releases/download/${CLASH_VERSION}/${CLASH_FILENAME}"
+          CLASH_DOWNLOAD_URL="https://github.com/MetaCubeX/mihomo/releases/download/${{ env.CLASH_VERSION }}/${{ env.CLASH_FILENAME }}"
           
-          echo "Downloading Clash Core from ${CLASH_DOWNLOAD_URL}..."
+          echo "Downloading Mihomo Core from ${CLASH_DOWNLOAD_URL}..."
           
           # Attempt download and extraction
           wget -qO- "${CLASH_DOWNLOAD_URL}" | gzip -d > clash || true 
           
           # Verify if the 'clash' executable was successfully created and is not empty
           if [ ! -f clash ] || [ ! -s clash ]; then 
-            echo "Error: Clash Core file 'clash' not found or is empty after download and extraction."
+            echo "Error: Mihomo Core file 'clash' not found or is empty after download and extraction."
             echo "This most likely means the CLASH_VERSION or CLASH_FILENAME is incorrect, or the file does not exist at the URL."
-            echo "Please double-check the latest release on https://github.com/MetaCubeX/Clash.Meta/releases."
+            echo "Please double-check the latest release on https://github.com/MetaCubeX/mihomo/releases."
             echo "Attempted URL: ${CLASH_DOWNLOAD_URL}"
             exit 1 # Fail the workflow if download/extraction failed
           fi
 
           chmod +x clash
           sudo mv clash /usr/local/bin/clash
-          echo "Clash Core installed successfully at /usr/local/bin/clash."
+          echo "Mihomo Core installed successfully at /usr/local/bin/clash."
 
       - name: Create data directory
         run: mkdir -p data
 
-      - name: Generate initial Clash config (placeholder)
-        # Clash needs a config file to start. This creates an empty one as a placeholder.
+      - name: Generate initial Mihomo config (placeholder)
+        # Mihomo needs a config file to start. This creates an empty one as a placeholder.
         # The actual config will be generated and overwritten by the Python script later.
         run: echo "{}" > config.yaml
 
-      - name: Run Clash Core in background and wait for it to be ready
+      - name: Run Mihomo Core in background and wait for it to be ready
         run: |
-          echo "Starting Clash Core in background..."
-          # Start Clash Core, redirecting all output to clash_startup.log
+          echo "Starting Mihomo Core in background..."
+          # Start Mihomo Core, redirecting all output to clash_startup.log
           nohup clash -d . -f config.yaml &> clash_startup.log &
           CLASH_PID=$!
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
-          echo "Clash Core started with PID: $CLASH_PID. Checking status..."
+          echo "Mihomo Core started with PID: $CLASH_PID. Checking status..."
           
-          # Wait for Clash Core to start and listen on its port
+          # Wait for Mihomo Core to start and listen on its port
           timeout=90 # Max wait time of 90 seconds
           start_time=$(date +%s)
           
@@ -75,23 +82,21 @@ jobs:
             current_time=$(date +%s)
             elapsed=$((current_time - start_time))
             if [ $elapsed -ge $timeout ]; then
-              echo "Error: Clash Core did not start listening on port 9090 within $timeout seconds."
-              echo "--- Clash Core Startup Log (Final) ---"
-              cat clash_startup.log # Print Clash startup log for debugging
+              echo "Error: Mihomo Core did not start listening on port 9090 within $timeout seconds."
+              echo "--- Mihomo Core Startup Log (Final) ---"
+              cat clash_startup.log # Print Mihomo startup log for debugging
               echo "--------------------------"
               exit 1 # Fail the workflow if startup failed
             fi
 
-            # Attempt to connect to Clash Core's external controller port (9090)
-            # -s: Silent mode, -o /dev/null: Don't save output, --connect-timeout 1: Set connection timeout to 1 second
+            # Attempt to connect to Mihomo Core's external controller port (9090)
             if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090; then
-              echo "Clash Core controller port 9090 is accessible. Proceeding."
+              echo "Mihomo Core controller port 9090 is accessible. Proceeding."
               break
             fi
 
-            echo "Waiting for Clash Core controller to start (elapsed: ${elapsed}s)..."
-            # After each wait, print the latest content of clash_startup.log for debugging
-            echo "--- Latest Clash Log (elapsed: ${elapsed}s) ---"
+            echo "Waiting for Mihomo Core controller to start (elapsed: ${elapsed}s)..."
+            echo "--- Latest Mihomo Log (elapsed: ${elapsed}s) ---"
             tail -n 10 clash_startup.log # Print the last 10 lines of the log
             echo "-------------------------------------"
             sleep 5 # Check every 5 seconds
@@ -101,23 +106,15 @@ jobs:
         # The Python script will download nodes, parse them, generate a new config.yaml, and perform tests.
         run: python tester.py
 
-      - name: Stop Clash Core
-        if: always() # Always try to stop Clash Core, regardless of previous step's success/failure
+      - name: Stop Mihomo Core
+        if: always() # Always try to stop Mihomo Core, regardless of previous step's success/failure
         run: |
           if [ -n "${{ env.CLASH_PID }}" ]; then
-            echo "Stopping Clash Core with PID ${{ env.CLASH_PID }}..."
+            echo "Stopping Mihomo Core with PID ${{ env.CLASH_PID }}..."
             kill ${{ env.CLASH_PID }} || true
-            echo "Clash Core stopped."
+            echo "Mihomo Core stopped."
           fi
-          # Clean up temporary files generated by Clash Core
-          rm -f config.yaml clash_startup.log cache.db # Clash usually generates cache.db
+          # Clean up temporary files generated by Mihomo Core
+          rm -f config.yaml clashავ
 
-      - name: Commit and push if changes
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          # Only add data/all.txt, as other temporary files are in .gitignore
-          git add data/all.txt
-          # Check if data/all.txt has actual changes; if so, commit them
-          git diff --quiet --exit-code || git commit -m "Update successful nodes"
-          git push
+
