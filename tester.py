@@ -19,6 +19,16 @@ CLASH_CONFIG_PATH = "config.yaml"
 # 保存成功节点的路径
 SUCCESS_NODES_PATH = "data/all.txt"
 
+def clean_proxy_name(name):
+    """清理代理名称，移除或替换特殊字符，确保其适合作为YAML键和API参数"""
+    # 移除或替换不友好的字符，例如空格、#、@ 等
+    # 只保留字母、数字、下划线、点和横线
+    cleaned_name = re.sub(r'[^\w.-]', '_', name)
+    # 确保名称不会以非字母数字开头，虽然Clash通常能处理
+    if not cleaned_name[0].isalnum():
+        cleaned_name = 'proxy_' + cleaned_name
+    return cleaned_name
+
 def parse_vmess(link):
     """解析 vmess 链接为 Clash 格式"""
     try:
@@ -32,6 +42,7 @@ def parse_vmess(link):
         config = json.loads(decoded_bytes.decode('utf-8'))
         
         name = unquote(config.get("ps", f"vmess_{config.get('add', 'unknown')}"))
+        name = clean_proxy_name(name) # <-- 添加名称清理
         
         proxy = {
             "name": name,
@@ -70,6 +81,7 @@ def parse_trojan(link):
         
         name_match = re.search(r"#([^#&]+)", link)
         name = unquote(name_match.group(1)) if name_match else f"trojan_{server}"
+        name = clean_proxy_name(name) # <-- 添加名称清理
 
         parsed_url = urlparse(link)
         query_params = parse_qs(parsed_url.query)
@@ -123,6 +135,7 @@ def parse_ss(link):
             return None
 
         name = unquote(link_parts[1]) if len(link_parts) > 1 else f"ss_{server}"
+        name = clean_proxy_name(name) # <-- 添加名称清理
 
         return {
             "name": name,
@@ -148,6 +161,7 @@ def parse_hysteria2(link):
         query_string = match.group(4) if match.group(4) else ""
         
         name = unquote(match.group(6)) if match.group(6) else f"hysteria2_{server}"
+        name = clean_proxy_name(name) # <-- 添加名称清理
 
         params = {}
         if query_string:
@@ -183,6 +197,7 @@ def parse_vless(link):
         query_string = match.group(4) if match.group(4) else ""
         
         name = unquote(match.group(6)) if match.group(6) else f"vless_{server}"
+        name = clean_proxy_name(name) # <-- 添加名称清理
 
         params = {}
         if query_string:
@@ -375,7 +390,7 @@ def test_nodes(original_links_map):
                 try:
                     response = requests.put(
                         f"{CLASH_CONTROLLER_URL}/proxies/{quote(main_proxy_group_to_switch)}",
-                        json={"name": proxy_name},
+                        json={"name": proxy_name}, # 注意：这里 proxy_name 是清理后的名称
                         timeout=5 # 切换请求的超时
                     )
                     response.raise_for_status() # 检查 HTTP 状态码
