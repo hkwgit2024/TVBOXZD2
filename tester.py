@@ -5,7 +5,7 @@ import logging
 import subprocess
 import sys
 import time
-from contextlib import asynccontextmanager # Changed to asynccontextmanager
+from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 import requests
@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 
 # Constants
 NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.20.0/mihomo-linux-amd64-v1.20.0.gz"
+# Corrected MIHOMO_DOWNLOAD_URL to v1.19.11
+MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
 CONFIG_FILE = Path("config.yaml")
 OUTPUT_DIR = Path("data")
@@ -436,11 +437,61 @@ async def main():
     
     # Process tasks as they complete
     for i, future in enumerate(asyncio.as_completed(tasks)):
-        node = all_nodes[tasks.index(future)] # Find original node from future
-        logger.info(f"\n--- Result for node {i+1}/{len(all_nodes)} ---")
-        if await future:
-            working_nodes.append(node)
-        logger.info("-" * 40)
+        # Since we're using asyncio.as_completed, the order of completion is not the same as `tasks` list.
+        # So we cannot simply use all_nodes[tasks.index(future)] to get the original node.
+        # Instead, the test_node_connectivity function itself should return the node if it's working.
+        # For simplicity for now, let's just indicate the progress based on completed tasks.
+        # If we need the original node for working_nodes, we'll need to modify test_node_connectivity to return it.
+        # For now, working_nodes will just append the node if the test passes.
+        
+        # A more robust way to track which node finished is to pass the node into the bounded_test and
+        # return it along with the result, or create a list of (node, task) tuples.
+        # For now, let's keep it simple and just append to working_nodes if the test returns True.
+        
+        node_result = await future # This will be True or False
+        if node_result: # test_node_connectivity returns True on success
+            # This is a simplification; ideally, test_node_connectivity should return the node URL on success.
+            # However, for now, if it returns True, it implies the node that was tested was working.
+            # We don't have the node_url directly here from the `future` object.
+            # To fix this properly, test_node_connectivity needs to return the node_url on success.
+            # Let's adjust `test_node_connectivity` to return `node_url` instead of `True` on success.
+            # And return `None` on failure.
+            pass # We will re-evaluate this part if needed after the next run.
+        
+        logger.info(f"Completed {i+1}/{len(all_nodes)} nodes.") # Update progress message
+
+    # Re-running the loop with the proper handling of `working_nodes` based on `node_url` returned from `test_node_connectivity`
+    working_nodes = []
+    # Modify test_node_connectivity to return node_url on success, None on failure
+    # (This implicit change needs to be reflected in the user's script for it to work)
+    # For now, I'll assume the current structure and that node_result is True/False.
+    # If the user wants the exact node URL in `working_nodes`, then `test_node_connectivity` would need to return it.
+    
+    # Let's adjust test_node_connectivity to return the node_url itself on success
+    # and None on failure, so we can directly add it to working_nodes.
+    # The current definition of `test_node_connectivity` returns True/False.
+    # To properly fill `working_nodes`, we need to change it.
+
+    # Re-thinking: The loop with `enumerate(asyncio.as_completed(tasks))` and `node = all_nodes[tasks.index(future)]`
+    # is problematic because `tasks.index(future)` is not guaranteed to work correctly with `as_completed`.
+    # The simplest fix for populating `working_nodes` correctly is to pass the node URL *into* the `bounded_test`
+    # function and have `test_node_connectivity` *return* the node URL if it's successful, or `None` if not.
+
+    working_nodes = []
+    async def bounded_test_with_node_return(node_url_to_test):
+        result = await test_node_connectivity(node_url_to_test)
+        if result: # If test_node_connectivity returned True (success)
+            return node_url_to_test # Return the node URL itself
+        return None # Return None on failure
+
+    tasks = [bounded_test_with_node_return(node) for node in all_nodes]
+    
+    # Process tasks as they complete
+    for i, future in enumerate(asyncio.as_completed(tasks)):
+        completed_node_url = await future
+        if completed_node_url:
+            working_nodes.append(completed_node_url)
+        logger.info(f"Processed {i+1}/{len(all_nodes)} nodes.") # Update progress message
 
     logger.info(f"\n--- Script execution complete ---")
     logger.info(f"Total nodes processed: {len(all_nodes)}")
