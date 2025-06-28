@@ -6,7 +6,7 @@ import yaml
 import time
 import requests
 import sys
-from urllib.parse import urlparse, parse_qs, unquote # 导入 unquote
+from urllib.parse import urlparse, parse_qs, unquote
 
 # 节点下载 URL
 NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/success_count.txt"
@@ -14,7 +14,7 @@ NODE_URL = "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/succ
 MIHOMO_CONTROLLER_URL = "http://127.0.0.1:9090"
 # Mihomo Socks5 代理地址
 MIHOMO_SOCKS5_PROXY = "socks5h://127.0.0.1:7891"
-# Mihomo 配置文件路径
+# Mihomo 配置文件路径 (这个文件会在运行时被覆盖)
 MIHOMO_CONFIG_PATH = "config.yaml"
 # 成功节点保存路径
 SUCCESS_NODES_PATH = "data/all.txt"
@@ -151,8 +151,8 @@ def parse_hysteria2(link):
             "password": password,
             "obfs": params.get("obfs"),
             "obfs-password": params.get("obfs-password"),
-            "up": int(params.get("up", 0)),
-            "down": int(params.get("down", 0)),
+            "up": int(params.get("up", 0)), # 上行带宽，默认为0
+            "down": int(params.get("down", 0)), # 下行带宽，默认为0
             "alpn": params.get("alpn"),
             "tls": params.get("insecure") != "1", # insecure=1 表示不安全
             "sni": params.get("sni")
@@ -193,7 +193,9 @@ def parse_vless(link):
 
         if params.get("security") == "reality":
             vless_config["reality-opts"] = {
-                "dest": params.get("dest", ""), # dest = host:port
+                # dest 参数在 VLESS REALITY 中通常是 host:port 格式
+                # Mihomo 的 reality-opts.dest 字段通常是 "hostname:port"
+                "dest": params.get("dest", ""), 
                 "xver": int(params.get("xver", 0)),
                 "sni": params.get("sni", ""),
                 "fingerprint": params.get("fp", ""), # reality fingerprint
@@ -204,6 +206,9 @@ def parse_vless(link):
         if vless_config["network"] == "ws":
             vless_config["ws-path"] = params.get("path", "")
             vless_config["ws-headers"] = {"Host": params.get("host", "")}
+            # 如果是 tls 的 ws，并且 sni 没有明确给出，尝试使用 host 作为 sni
+            if vless_config["tls"] and not vless_config.get("sni") and vless_config["ws-headers"].get("Host"):
+                vless_config["sni"] = vless_config["ws-headers"]["Host"]
         
         return vless_config
     return None
@@ -297,7 +302,7 @@ def test_nodes(original_links_map):
         try:
             # 切换 Mihomo 代理
             # 确保 Mihomo 控制器是可达的，增加重试机制
-            for _ in range(3): # 尝试3次连接 Mihomo API
+            for _ in range(5): # 尝试5次连接 Mihomo API
                 try:
                     response = requests.put(
                         f"{MIHOMO_CONTROLLER_URL}/proxies/%E2%9C%A8%20%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9",
@@ -327,7 +332,7 @@ def test_nodes(original_links_map):
             if proxy_name in original_links_map:
                 successful_nodes.append(original_links_map[proxy_name])
             else:
-                print(f"Warning: Could not find original link for proxy name '{proxy_name}' in map. Skipping.")
+                print(f"Warning: Could not find original link for proxy name '{proxy_name}' in map. This should not happen if parsing is correct. Skipping.")
                 
         except requests.exceptions.RequestException as e:
             print(f"❌ Node '{proxy_name}' is NOT working. Error: {e}")
@@ -359,7 +364,7 @@ def main():
     for i, link in enumerate(node_links):
         parsed = parse_node_link(link)
         if parsed:
-            # 确保名称唯一
+            # 确保名称唯一，尤其当节点链接中没有提供明确名称时
             original_name_for_map = parsed["name"] # 用原始解析的名称作为key
             unique_name_for_mihomo_config = original_name_for_map
             count = 1
