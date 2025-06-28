@@ -165,7 +165,7 @@ def parse_v2ray_subscription(content: str) -> list:
                     "type": "vmess",
                     "server": vmess.get("add"),
                     "port": int(vmess.get("port")),
-                    "id": vmess.get("id"),
+                    "uuid": vmess.get("id"),
                     "alterId": int(vmess.get("aid", 0)),
                     "cipher": vmess.get("type", "auto"),
                     "tls": vmess.get("tls") == "tls",
@@ -276,57 +276,47 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
     async with httpx.AsyncClient(timeout=30.0) as client:
         for url in urls:
             try:
-                print(f"🔄 正在从 {url} 获取内容...")
+                print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
                 response = await client.get(url)
                 response.raise_for_status()
                 response_text = response.text.strip()
-
-                proxies = []
-
-                # 1. 尝试明文解析为订阅链接
+                # 先尝试明文解析
                 try:
                     proxies = parse_v2ray_subscription(response_text)
-                    if proxies:
-                        print(f"✅ 成功将 {url} 解析为 V2Ray 订阅链接。")
                 except Exception as e:
-                    print(f"⚠️ 明文解析为订阅链接失败，尝试 Base64 解码: {e}")
-
-                # 2. 如果明文解析失败，尝试 Base64 解码后解析
-                if not proxies:
+                    print(f"⚠️ 明文解析失败，尝试 base64 解码: {e}")
+                    # 尝试 base64 解码
                     try:
                         decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
-                        proxies = parse_v2ray_subscription(decoded_text)
-                        if proxies:
-                            print(f"✅ 成功将 {url} Base64 解码并解析为 V2Ray 订阅链接。")
-                        else:
-                            print(f"⚠️ Base64 解码后仍无法解析为 V2Ray 订阅链接，尝试 YAML 解析。")
-                            # 如果 Base64 解码后仍不是订阅链接，尝试 YAML
+                        try:
+                            proxies = parse_v2ray_subscription(decoded_text)
+                        except Exception as e2:
+                            print(f"⚠️ base64 解码后仍无法解析为订阅链接，尝试 YAML 解析: {e2}")
+                            # 尝试 YAML 解析
                             try:
                                 yaml_content = yaml.safe_load(decoded_text)
                                 proxies = yaml_content.get("proxies", [])
-                                if proxies:
-                                    print(f"✅ 成功将 {url} Base64 解码后解析为 YAML 配置。")
-                            except yaml.YAMLError as e2:
-                                print(f"⚠️ Base64 解码后 YAML 解析失败: {e2}")
-                                proxies = [] # 确保重置代理列表
-                    except base64.binascii.Error as e3:
-                        print(f"⚠️ Base64 解码失败，尝试直接 YAML 解析: {e3}")
-                        # 如果 Base64 解码失败，直接尝试 YAML
+                            except yaml.YAMLError as e3:
+                                print(f"⚠️ base64 解码后 YAML 解析失败: {e3}")
+                                proxies = []
+                    except base64.binascii.Error as e4:
+                        print(f"⚠️ base64 解码失败，尝试直接 YAML 解析: {e4}")
+                        # 直接尝试 YAML 解析
                         try:
                             yaml_content = yaml.safe_load(response_text)
                             proxies = yaml_content.get("proxies", [])
-                            if proxies:
-                                print(f"✅ 成功将 {url} 直接解析为 YAML 配置。")
-                        except yaml.YAMLError as e4:
-                            print(f"⚠️ 直接 YAML 解析失败: {e4}")
-                            proxies = [] # 确保重置代理列表
+                        except yaml.YAMLError as e5:
+                            print(f"⚠️ 直接 YAML 解析失败: {e5}")
+                            proxies = []
                 
                 if not proxies:
-                    print(f"⚠️ 警告：{url} 中未找到任何可用的代理节点。")
+                    print(f"⚠️ 警告：{url} 中未找到代理节点")
                     continue
                 
                 parsed_count = 0
                 for index, proxy in enumerate(proxies):
+                    if index in [1878, 2435]:
+                        print(f"🔍 调试：第 {index + 1} 个节点配置: {json.dumps(proxy, ensure_ascii=False)}")
                     if validate_proxy(proxy, index):
                         all_proxies.append(proxy)
                         parsed_count += 1
@@ -334,7 +324,7 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                         print(f"⚠️ 无效节点详情（索引 {index}）：{json.dumps(proxy, ensure_ascii=False)}")
                 print(f"✅ 成功从 {url} 解析到 {parsed_count} 个有效代理节点。")
             except httpx.RequestError as e:
-                print(f"❌ 错误：从 {url} 获取内容失败：{e}")
+                print(f"❌ 错误：从 {url} 获取 YAML 配置失败：{e}")
             except Exception as e:
                 print(f"❌ 发生未知错误，处理 {url} 时出现：{e}")
     return all_proxies
@@ -471,7 +461,7 @@ async def test_clash_meta_nodes(clash_core_path: str, config_path: str, all_prox
     return tested_nodes_info
 
 async def main():
-    print("🚀 开始从 URL 获取 Clash 配置或订阅链接并解析...")
+    print("🚀 开始从 URL 获取 YAML 格式的 Clash 配置文件...")
     os.makedirs("data", exist_ok=True)
     for log_file in ["data/clash_stdout.log", "data/clash_stderr.log", "data/all.txt"]:
         if os.path.exists(log_file):
@@ -479,11 +469,11 @@ async def main():
                 f.write("")
     
     all_proxies = await fetch_yaml_configs(CLASH_BASE_CONFIG_URLS)
-    print(f"\n✅ 总共解析到 {len(all_proxies)} 个代理节点。")
+    print(f"\n✅ 总共从 YAML 配置解析到 {len(all_proxies)} 个代理节点。")
     if not all_proxies:
         print("🤷 没有找到任何节点，无法进行测试。")
         with open("data/all.txt", "w", encoding="utf-8") as f:
-            f.write("未找到任何代理节点。\n")
+            f.write("No proxies found.\n")
         return
     
     unique_proxies_map = {}
@@ -579,13 +569,13 @@ async def main():
     
     with open("data/all.txt", "w", encoding="utf-8") as f:
         if tested_nodes:
-            f.write("测试通过的代理节点（明文格式，按延迟排序）：\n")
+            f.write("Tested Proxy Nodes (plaintext format, sorted by delay):\n")
             for node_info in tested_nodes:
                 plaintext_node = to_plaintext_node(node_info["config"], node_info["delay"])
                 if plaintext_node:
                     f.write(f"{plaintext_node}\n")
         else:
-            f.write("没有节点通过延迟测试。\n")
+            f.write("No nodes passed the delay test.\n")
     print(f"📝 已将测试结果（明文节点格式）写入 data/all.txt")
     
     tested_config_path = "data/tested_clash_config.yaml"
