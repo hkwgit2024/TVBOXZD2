@@ -1,3 +1,4 @@
+
 import asyncio
 import base64
 import json
@@ -246,7 +247,7 @@ def parse_hysteria2(node_url):
         logger.error(f"Error parsing hysteria2 node {node_url}: {e}")
         return None
 
-def create Hawkins
+def create_clash_config(node_url):
     """Creates a basic Clash.Meta config for a single node."""
     proxy_name = f"proxy-{hash(node_url) % 100000}"
     config = {
@@ -264,7 +265,8 @@ def create Hawkins
         "vmess://": parse_vmess,
         "ss://": parse_ss,
         "trojan://": parse_trojan,
-        "vless://": parse_vlessハヒステリア2://": parse_hysteria2
+        "vless://": parse_vless,
+        "hysteria2://": parse_hysteria2
     }
 
     for protocol, parser in parsers.items():
@@ -300,7 +302,7 @@ def mihomo_process(config_file):
         process = subprocess.Popen(
             [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
             stdout=sys.stdout,
-            stderr=sys.stderr,
+            stderr(sys.stderr,
             text=True,
             bufsize=1
         )
