@@ -360,7 +360,8 @@ async def mihomo_process(config_file, port):
             bufsize=1
         )
         logger.info(f"{MIHOMO_BIN_NAME} process started (PID: {process.pid}). Giving it time to initialize...")
-        await asyncio.sleep(5)
+        # OPTIMIZATION: Reduced sleep time from 5 seconds to 2 seconds
+        await asyncio.sleep(2) 
         yield process
     finally:
         if process and process.poll() is None:
@@ -389,10 +390,10 @@ async def test_node_connectivity(node_url, current_port):
         return None
 
     try:
-        async with mihomo_process(temp_config_file, current_port): # Pass current_port
+        async with mihomo_process(temp_config_file, current_port):
             curl_command = [
                 "curl",
-                "--socks5-hostname", f"127.0.0.1:{current_port}", # Use current_port
+                "--socks5-hostname", f"127.0.0.1:{current_port}",
                 TEST_URL,
                 "--max-time", "15",
                 "--silent", "--output", "/dev/null",
