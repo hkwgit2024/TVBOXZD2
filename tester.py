@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 # Constants
 NODE_LIST_URL = "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
-# Corrected MIHOMO_DOWNLOAD_URL to v1.19.11
 MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
 CONFIG_FILE = Path("config.yaml")
@@ -40,7 +39,11 @@ def validate_url(url):
         return False
 
 def download_file(url, destination):
-    """Downloads a file from a URL to a specified destination with progress."""
+    """Downloads a file from a URL to a specified destination with progress.
+    Args:
+        url (str): The URL to download from.
+        destination (pathlib.Path): The Path object where the file should be saved.
+    """
     if not validate_url(url):
         logger.error(f"Invalid URL: {url}")
         return False
@@ -52,12 +55,10 @@ def download_file(url, destination):
             total_size = int(response.headers.get('content-length', 0))
             downloaded_size = 0
 
-            with destination.open('wb') as f:
+            with destination.open('wb') as f: # Now destination is a Path object
                 for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
                     downloaded_size += len(chunk)
-                    # Update progress on the same line.
-                    # Using sys.stdout.write for in-place update as logger.info adds newline.
                     if total_size > 0:
                         progress = (downloaded_size / total_size) * 100
                         sys.stdout.write(
@@ -66,8 +67,8 @@ def download_file(url, destination):
                         )
                     else:
                         sys.stdout.write(f"\rDownloading: {downloaded_size / (1024*1024):.2f}MB")
-                    sys.stdout.flush() # Ensure output is written immediately
-            sys.stdout.write("\n") # New line after progress
+                    sys.stdout.flush()
+            sys.stdout.write("\n")
             logger.info("Download complete.")
             return True
     except requests.RequestException as e:
@@ -83,16 +84,17 @@ def setup_mihomo():
         bin_path.chmod(0o755)
         return
 
-    archive_name = Path(MIHOMO_DOWNLOAD_URL).name
-    if not download_file(MIHOMO_DOWNLOAD_URL, archive_name):
+    archive_filename = Path(MIHOMO_DOWNLOAD_URL).name # This gets the filename string, e.g., "mihomo-linux-amd64-v1.19.11.gz"
+    archive_path = Path(archive_filename) # Convert the filename string to a Path object
+    
+    if not download_file(MIHOMO_DOWNLOAD_URL, archive_path): # Pass the Path object
         logger.error("Failed to download Mihomo binary.")
         sys.exit(1)
 
-    logger.info(f"Extracting {archive_name}...")
+    logger.info(f"Extracting {archive_filename}...") # Use archive_filename for logging
     try:
-        # gunzip writes to stdout by default if no output file specified, which is fine for logging.
-        subprocess.run(["gunzip", "-f", archive_name], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        extracted_name = archive_name.with_suffix('') # Remove .gz suffix
+        subprocess.run(["gunzip", "-f", str(archive_path)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) # Use str(archive_path) for subprocess
+        extracted_name = archive_path.with_suffix('')
 
         found_extracted = False
         for p_name in [extracted_name.name, MIHOMO_BIN_NAME, "clash", "clash-linux-amd64"]:
@@ -353,19 +355,19 @@ async def mihomo_process(config_file):
         process = subprocess.Popen(
             [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
             stdout=sys.stdout,
-            stderr=sys.stderr, # Fixed syntax error here
+            stderr=sys.stderr,
             text=True,
             bufsize=1
         )
         logger.info(f"{MIHOMO_BIN_NAME} process started (PID: {process.pid}). Giving it time to initialize...")
-        await asyncio.sleep(5) # Increased sleep time for initialization
+        await asyncio.sleep(5)
         yield process
     finally:
         if process and process.poll() is None:
             logger.info(f"Terminating {MIHOMO_BIN_NAME} process (PID: {process.pid})...")
             process.terminate()
             try:
-                await asyncio.wait_for(asyncio.to_thread(process.wait), timeout=5) # Use to_thread for blocking call
+                await asyncio.wait_for(asyncio.to_thread(process.wait), timeout=5)
                 logger.info(f"{MIHOMO_BIN_NAME} process terminated (PID: {process.pid})")
             except asyncio.TimeoutError:
                 process.kill()
@@ -382,7 +384,7 @@ async def test_node_connectivity(node_url):
     logger.info(f"\n--- Testing node: {node_url} ---")
     if not create_clash_config(node_url):
         logger.warning(f"Skipping {node_url} due to parsing error or unsupported protocol.")
-        return False
+        return None # Return None on failure to parse/create config
 
     try:
         async with mihomo_process(CONFIG_FILE):
@@ -395,26 +397,24 @@ async def test_node_connectivity(node_url):
                 "--fail"
             ]
             logger.info(f"Running curl command: {' '.join(curl_command)}")
-            # Run curl in a separate thread to avoid blocking the event loop
             result = await asyncio.to_thread(subprocess.run, curl_command, capture_output=True, text=True)
 
             if result.returncode == 0:
                 logger.info(f"Node {node_url} is CONNECTED.")
-                return True
+                return node_url # Return node_url on successful connection
             logger.warning(f"Node {node_url} FAILED to connect (curl exit code: {result.returncode}).")
             logger.debug(f"Curl stdout:\n{result.stdout}")
             logger.debug(f"Curl stderr:\n{result.stderr}")
-            return False
+            return None # Return None on failed connection
     except FileNotFoundError:
         logger.error(f"Error: {MIHOMO_BIN_NAME} not found. Ensure it's in the current directory and executable.")
-        # Do not sys.exit here, allow other tests to run
-        return False 
+        return None 
     except subprocess.SubprocessError as e:
         logger.error(f"Subprocess error during testing {node_url}: {e}")
-        return False
+        return None
     except Exception as e:
         logger.error(f"An unexpected error occurred during testing {node_url}: {e}")
-        return False
+        return None
 
 async def main():
     """Main function to process proxy nodes."""
@@ -424,74 +424,23 @@ async def main():
     logger.info(f"Output directory '{OUTPUT_DIR}' ensured to exist.")
 
     all_nodes = download_and_parse_nodes(NODE_LIST_URL)
-    working_nodes = []
-
+    
     # Use a semaphore to limit concurrent tasks
     semaphore = asyncio.Semaphore(CONCURRENT_TESTS)
 
-    async def bounded_test(node_url):
-        async with semaphore:
-            return await test_node_connectivity(node_url)
-
-    tasks = [bounded_test(node) for node in all_nodes]
-    
-    # Process tasks as they complete
-    for i, future in enumerate(asyncio.as_completed(tasks)):
-        # Since we're using asyncio.as_completed, the order of completion is not the same as `tasks` list.
-        # So we cannot simply use all_nodes[tasks.index(future)] to get the original node.
-        # Instead, the test_node_connectivity function itself should return the node if it's working.
-        # For simplicity for now, let's just indicate the progress based on completed tasks.
-        # If we need the original node for working_nodes, we'll need to modify test_node_connectivity to return it.
-        # For now, working_nodes will just append the node if the test passes.
-        
-        # A more robust way to track which node finished is to pass the node into the bounded_test and
-        # return it along with the result, or create a list of (node, task) tuples.
-        # For now, let's keep it simple and just append to working_nodes if the test returns True.
-        
-        node_result = await future # This will be True or False
-        if node_result: # test_node_connectivity returns True on success
-            # This is a simplification; ideally, test_node_connectivity should return the node URL on success.
-            # However, for now, if it returns True, it implies the node that was tested was working.
-            # We don't have the node_url directly here from the `future` object.
-            # To fix this properly, test_node_connectivity needs to return the node_url on success.
-            # Let's adjust `test_node_connectivity` to return `node_url` instead of `True` on success.
-            # And return `None` on failure.
-            pass # We will re-evaluate this part if needed after the next run.
-        
-        logger.info(f"Completed {i+1}/{len(all_nodes)} nodes.") # Update progress message
-
-    # Re-running the loop with the proper handling of `working_nodes` based on `node_url` returned from `test_node_connectivity`
-    working_nodes = []
-    # Modify test_node_connectivity to return node_url on success, None on failure
-    # (This implicit change needs to be reflected in the user's script for it to work)
-    # For now, I'll assume the current structure and that node_result is True/False.
-    # If the user wants the exact node URL in `working_nodes`, then `test_node_connectivity` would need to return it.
-    
-    # Let's adjust test_node_connectivity to return the node_url itself on success
-    # and None on failure, so we can directly add it to working_nodes.
-    # The current definition of `test_node_connectivity` returns True/False.
-    # To properly fill `working_nodes`, we need to change it.
-
-    # Re-thinking: The loop with `enumerate(asyncio.as_completed(tasks))` and `node = all_nodes[tasks.index(future)]`
-    # is problematic because `tasks.index(future)` is not guaranteed to work correctly with `as_completed`.
-    # The simplest fix for populating `working_nodes` correctly is to pass the node URL *into* the `bounded_test`
-    # function and have `test_node_connectivity` *return* the node URL if it's successful, or `None` if not.
-
-    working_nodes = []
     async def bounded_test_with_node_return(node_url_to_test):
-        result = await test_node_connectivity(node_url_to_test)
-        if result: # If test_node_connectivity returned True (success)
-            return node_url_to_test # Return the node URL itself
-        return None # Return None on failure
+        async with semaphore:
+            return await test_node_connectivity(node_url_to_test)
 
     tasks = [bounded_test_with_node_return(node) for node in all_nodes]
     
+    working_nodes = []
     # Process tasks as they complete
     for i, future in enumerate(asyncio.as_completed(tasks)):
         completed_node_url = await future
         if completed_node_url:
             working_nodes.append(completed_node_url)
-        logger.info(f"Processed {i+1}/{len(all_nodes)} nodes.") # Update progress message
+        logger.info(f"Processed {i+1}/{len(all_nodes)} nodes.")
 
     logger.info(f"\n--- Script execution complete ---")
     logger.info(f"Total nodes processed: {len(all_nodes)}")
