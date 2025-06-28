@@ -58,18 +58,10 @@ jobs:
       - name: Create data directory
         run: mkdir -p data
 
-      - name: Generate initial Mihomo config
-        run: |
-          cat << EOF > config.yaml
-          mixed-port: 7890
-          socks-port: 7891
-          external-controller: 127.0.0.1:9090
-          allow-lan: false
-          mode: global
-          log-level: info
-          EOF
+      - name: Run Python node tester
+        run: python tester.py
 
-      - name: Run Mihomo Core in background and wait for it to be ready
+      - name: Start Mihomo Core and wait for it to be ready
         run: |
           echo "Starting Mihomo Core in background..."
           nohup clash -d . -f config.yaml &> clash_startup.log &
@@ -91,8 +83,8 @@ jobs:
               fi
               exit 1
             fi
-            if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090; then
-              echo "Mihomo Core controller port 9090 is accessible. Proceeding."
+            if curl -s -o /dev/null --connect-timeout 1 http://127.0.0.1:9090/proxies; then
+              echo "Mihomo Core controller port 9110 is accessible. Proceeding."
               break
             fi
             echo "Waiting for Mihomo Core controller to start (elapsed: ${elapsed}s)..."
@@ -101,9 +93,6 @@ jobs:
             echo "-------------------------------------"
             sleep 5
           done
-
-      - name: Run Python node tester
-        run: python tester.py
 
       - name: Stop Mihomo Core
         if: always()
