@@ -330,15 +330,17 @@ def test_nodes(original_links_map):
         sys.exit(1)
     proxy_group_name = proxy_group["name"]
     
-    # Verify API is accessible
+    # Debug: List available proxy groups
     try:
         response = requests.get(f"{CLASH_CONTROLLER_URL}/proxies", timeout=5)
         response.raise_for_status()
-        print("Mihomo API is accessible.")
+        available_groups = response.json().get("proxies", {})
+        print(f"Available proxy groups: {list(available_groups.keys())}")
     except requests.exceptions.RequestException as e:
         print(f"Error: Failed to connect to Mihomo API: {e}")
         sys.exit(1)
 
+    print(f"Using proxy group: {proxy_group_name}")
     print("Starting node testing...")
     for proxy in proxies:
         proxy_name = proxy["name"]
@@ -354,18 +356,19 @@ def test_nodes(original_links_map):
                         timeout=5
                     )
                     response.raise_for_status()
+                    print(f"Switched to node: {proxy_name}")
                     break
-                except requests.exceptions.ConnectionError:
-                    print(f"Connection to Mihomo controller refused, retrying...")
+                except requests.exceptions.RequestException as e:
+                    print(f"Connection to Mihomo controller failed for {proxy_name}, retrying... Error: {e}")
                     time.sleep(2)
             else:
-                raise ConnectionError(f"Failed to connect to Mihomo controller for proxy {proxy_name} after multiple retries.")
+                raise ConnectionError(f"Failed to switch to node {proxy_name} after multiple retries.")
             
             time.sleep(1)
 
             # Test connectivity
             test_response = requests.get(
-                "https://www.google.com",
+                "http://www.gstatic.com/generate_204",
                 proxies={"http": CLASH_SOCKS5_PROXY, "https": CLASH_SOCKS5_PROXY},
                 timeout=15
             )
