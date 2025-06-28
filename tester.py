@@ -174,9 +174,15 @@ def parse_v2ray_subscription(content: str) -> list:
                 }
                 proxies.append(proxy)
             elif line.startswith("ss://"):
+                decoded = line[5:].split('#')[0].strip()
+                # 清理 base64 字符串
+                decoded = re.sub(r'[\s\n\r]+', '', decoded)
                 try:
-                    decoded = base64.b64decode(line[5:].split('#')[0] + "===").decode('utf-8', errors='ignore')
-                    userinfo, server_port = decoded.split('@')
+                    decoded_str = base64.b64decode(decoded + "===").decode('utf-8', errors='ignore')
+                    if '@' not in decoded_str:
+                        print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：缺少 @ - {line[:30]}... - 完整行: {line}")
+                        continue
+                    userinfo, server_port = decoded_str.split('@')
                     method, password = userinfo.split(':')
                     server, port = server_port.split(':')
                     name = urllib.parse.unquote(line.split('#')[-1]) if '#' in line else f"ss-{index}"
@@ -189,8 +195,8 @@ def parse_v2ray_subscription(content: str) -> list:
                         "password": password
                     }
                     proxies.append(proxy)
-                except base64.binascii.Error:
-                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}... - 完整行: {line}")
+                except (base64.binascii.Error, ValueError) as e:
+                    print(f"⚠️ 跳过无效 Shadowsocks 节点（索引 {index}）：base64 解码失败 - {line[:30]}... - 错误: {e} - 完整行: {line}")
             elif line.startswith("hysteria2://"):
                 decoded = urllib.parse.urlparse(line)
                 name = urllib.parse.unquote(decoded.fragment) if decoded.fragment else f"hysteria2-{index}"
@@ -224,7 +230,7 @@ def parse_v2ray_subscription(content: str) -> list:
                 parts = decoded.split(':')
                 if len(parts) >= 6:
                     server, port, protocol, method, obfs, password = parts[:6]
-                    password = base64.b64decode(password).decode('utf-8', errors='ignore')
+                    password = base64.b64decode(password + "===").decode('utf-8', errors='ignore')
                     name = f"ssr-{index}"
                     if '#' in line:
                         name = urllib.parse.unquote(line.split('#')[-1])
@@ -273,27 +279,35 @@ async def fetch_yaml_configs(urls: list[str]) -> list:
                 print(f"🔄 正在从 {url} 获取 YAML 配置文件...")
                 response = await client.get(url)
                 response.raise_for_status()
-                response_text = response.text
+                response_text = response.text.strip()
+                # 先尝试明文解析
                 try:
-                    # 尝试解析为 YAML
-                    if response_text.strip().startswith(("proxies:", "---")):
-                        yaml_content = yaml.safe_load(response_text)
-                        proxies = yaml_content.get("proxies", [])
-                    else:
-                        # 尝试 base64 解码
+                    proxies = parse_v2ray_subscription(response_text)
+                except Exception as e:
+                    print(f"⚠️ 明文解析失败，尝试 base64 解码: {e}")
+                    # 尝试 base64 解码
+                    try:
+                        decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
                         try:
-                            decoded_text = base64.b64decode(response_text + "===").decode('utf-8', errors='ignore')
-                            if decoded_text.strip().startswith(("proxies:", "---")):
+                            proxies = parse_v2ray_subscription(decoded_text)
+                        except Exception as e2:
+                            print(f"⚠️ base64 解码后仍无法解析为订阅链接，尝试 YAML 解析: {e2}")
+                            # 尝试 YAML 解析
+                            try:
                                 yaml_content = yaml.safe_load(decoded_text)
                                 proxies = yaml_content.get("proxies", [])
-                            else:
-                                proxies = parse_v2ray_subscription(decoded_text)
-                        except base64.binascii.Error as e:
-                            print(f"⚠️ base64 解码失败，尝试直接解析为订阅链接: {e}")
-                            proxies = parse_v2ray_subscription(response_text)
-                except yaml.YAMLError as e:
-                    print(f"⚠️ YAML 解析失败，尝试解析为订阅链接: {e}")
-                    proxies = parse_v2ray_subscription(response_text)
+                            except yaml.YAMLError as e3:
+                                print(f"⚠️ base64 解码后 YAML 解析失败: {e3}")
+                                proxies = []
+                    except base64.binascii.Error as e4:
+                        print(f"⚠️ base64 解码失败，尝试直接 YAML 解析: {e4}")
+                        # 直接尝试 YAML 解析
+                        try:
+                            yaml_content = yaml.safe_load(response_text)
+                            proxies = yaml_content.get("proxies", [])
+                        except yaml.YAMLError as e5:
+                            print(f"⚠️ 直接 YAML 解析失败: {e5}")
+                            proxies = []
                 
                 if not proxies:
                     print(f"⚠️ 警告：{url} 中未找到代理节点")
