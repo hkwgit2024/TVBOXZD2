@@ -5,9 +5,9 @@ import subprocess
 import os
 import time
 import sys
-import json # Ensure json is imported for vmess parsing
-import base64 # Ensure base64 is imported for vmess and ss parsing
-from urllib.parse import urlparse, unquote, parse_qs # Ensure these are imported for URL parsing
+import json
+import base64
+from urllib.parse import urlparse, unquote, parse_qs
 
 
 # URL to download the raw node list
@@ -114,7 +114,7 @@ def create_clash_config(node_url):
     config = {
         "port": CLASH_PORT,
         "mode": "direct",
-        "log-level": "silent", # Keep silent for less noise, or change to 'info' for more logs
+        "log-level": "info", # Changed from 'silent' to 'info' for more debugging logs
         "allow-lan": False,
         "bind-address": "127.0.0.1",
         "proxies": [],
