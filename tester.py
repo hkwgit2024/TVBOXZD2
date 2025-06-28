@@ -12,7 +12,6 @@ import requests
 import yaml
 
 # 配置日志
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -21,20 +20,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 常量
-# Constants
 NODE_LIST_URL = "https://snippet.host/oouyda/raw"
 MIHOMO_DOWNLOAD_URL = "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.11/mihomo-linux-amd64-v1.19.11.gz"
 MIHOMO_BIN_NAME = "mihomo"
-CONFIG_FILE = Path("config.yaml") # Each test will overwrite this. / 这将在每次测试时被覆盖。
+CONFIG_FILE = Path("config.yaml") # 这将在每次测试时被覆盖。
 OUTPUT_DIR = Path("data")
 OUTPUT_FILE = OUTPUT_DIR / "all.txt"
-CLASH_BASE_PORT = 7890 # Starting port for Clash.Meta local proxy / Clash.Meta 本地代理的起始端口
-TEST_URL = "http://www.gstatic.com/generate_204" # URL to test connectivity, changed from google.com to a more reliable one. / 用于测试连接的URL，从google.com更改为更可靠的地址。
-CONCURRENT_TESTS = 10 # Number of concurrent nodes to test / 并发测试的节点数量
+CLASH_BASE_PORT = 7890 # Clash.Meta 本地代理的起始端口
+TEST_URL = "http://www.gstatic.com/generate_204" # 用于测试连接的URL，从google.com更改为更可靠的地址。
+CONCURRENT_TESTS = 10 # 并发测试的节点数量
 
 def validate_url(url):
     """验证URL格式是否正确。"""
-    """Validates if the URL is well-formed."""
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
@@ -43,16 +40,15 @@ def validate_url(url):
 
 def download_file(url, destination):
     """从URL下载文件到指定位置并显示进度。
-    Downloads a file from a URL to a specified destination with progress.
     Args:
-        url (str): 要下载的URL。The URL to download from.
-        destination (pathlib.Path): 文件应保存的Path对象。The Path object where the file should be saved.
+        url (str): 要下载的URL。
+        destination (pathlib.Path): 文件应保存的Path对象。
     """
     if not validate_url(url):
-        logger.error(f"无效URL: {url}") # Invalid URL
+        logger.error(f"无效URL: {url}")
         return False
 
-    logger.info(f"正在从 {url} 下载到 {destination}...") # Downloading from X to Y
+    logger.info(f"正在从 {url} 下载到 {destination}...")
     try:
         with requests.get(url, stream=True, timeout=30) as response:
             response.raise_for_status()
@@ -66,26 +62,25 @@ def download_file(url, destination):
                     if total_size > 0:
                         progress = (downloaded_size / total_size) * 100
                         sys.stdout.write(
-                            f"\r下载中: {downloaded_size / (1024*1024):.2f}MB / " # Downloading
+                            f"\r下载中: {downloaded_size / (1024*1024):.2f}MB / "
                             f"{total_size / (1024*1024):.2f}MB ({progress:.1f}%)"
                         )
                     else:
-                        sys.stdout.write(f"\r下载中: {downloaded_size / (1024*1024):.2f}MB") # Downloading
+                        sys.stdout.write(f"\r下载中: {downloaded_size / (1024*1024):.2f}MB")
                     sys.stdout.flush()
                 sys.stdout.write("\n")
-                logger.info("下载完成。") # Download complete.
+                logger.info("下载完成。")
                 return True
     except requests.RequestException as e:
-        logger.error(f"下载 {url} 时出错: {e}") # Error downloading X
+        logger.error(f"下载 {url} 时出错: {e}")
         return False
 
 def setup_mihomo():
     """下载、解压并设置Mihomo二进制文件。"""
-    """Downloads, extracts, and sets up the Mihomo binary."""
-    logger.info("正在检查Mihomo二进制文件设置...") # Checking Mihomo binary setup
+    logger.info("正在检查Mihomo二进制文件设置...")
     bin_path = Path(MIHOMO_BIN_NAME)
     if bin_path.exists():
-        logger.info(f"{MIHOMO_BIN_NAME} 已存在。") # already exists.
+        logger.info(f"{MIHOMO_BIN_NAME} 已存在。")
         bin_path.chmod(0o755)
         return
 
@@ -93,10 +88,10 @@ def setup_mihomo():
     archive_path = Path(archive_filename)
     
     if not download_file(MIHOMO_DOWNLOAD_URL, archive_path):
-        logger.error("下载Mihomo二进制文件失败。") # Failed to download Mihomo binary.
+        logger.error("下载Mihomo二进制文件失败。")
         sys.exit(1)
 
-    logger.info(f"正在解压 {archive_filename}...") # Extracting X
+    logger.info(f"正在解压 {archive_filename}...")
     try:
         subprocess.run(["gunzip", "-f", str(archive_path)], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         extracted_name = archive_path.with_suffix('')
@@ -106,37 +101,36 @@ def setup_mihomo():
             p_path = Path(p_name)
             if p_path.exists() and not p_path.is_dir():
                 p_path.rename(MIHOMO_BIN_NAME)
-                logger.info(f"已将 {p_name} 重命名为 {MIHOMO_BIN_NAME}") # Renamed X to Y
+                logger.info(f"已将 {p_name} 重命名为 {MIHOMO_BIN_NAME}")
                 found_extracted = True
                 break
         
         if not found_extracted:
-            logger.error("在常见名称中找不到解压后的Mihomo二进制文件。请检查归档内容。") # Could not find extracted Mihomo binary in common names. Please check archive content.
+            logger.error("在常见名称中找不到解压后的Mihomo二进制文件。请检查归档内容。")
             sys.exit(1)
 
         bin_path.chmod(0o755)
-        logger.info(f"{MIHOMO_BIN_NAME} 已设置并可执行。") # is set up and executable.
+        logger.info(f"{MIHOMO_BIN_NAME} 已设置并可执行。")
     except subprocess.CalledProcessError as e:
-        logger.error(f"解压时出错: {e.output.decode()}") # Error during extraction
+        logger.error(f"解压时出错: {e.output.decode()}")
         sys.exit(1)
     except Exception as e:
-        logger.error(f"设置Mihomo时发生意外错误: {e}") # An unexpected error occurred during Mihomo setup
+        logger.error(f"设置Mihomo时发生意外错误: {e}")
         sys.exit(1)
 
 def download_and_parse_nodes(url):
     """下载并解析节点配置。"""
-    """Downloads and parses node configurations."""
     if not validate_url(url):
-        logger.error(f"无效的节点列表URL: {url}") # Invalid node list URL
+        logger.error(f"无效的节点列表URL: {url}")
         return []
 
-    logger.info(f"正在从 {url} 下载节点列表") # Downloading node list from X
+    logger.info(f"正在从 {url} 下载节点列表")
     try:
         response = requests.get(url, timeout=30)
         response.raise_for_status()
         content = response.text
     except requests.RequestException as e:
-        logger.error(f"下载节点列表时出错: {e}") # Error downloading node list
+        logger.error(f"下载节点列表时出错: {e}")
         return []
 
     protocols = ["hysteria2://", "vmess://", "trojan://", "ss://", "ssr://", "vless://"]
@@ -145,15 +139,14 @@ def download_and_parse_nodes(url):
         line = line.strip()
         if any(line.startswith(p) for p in protocols):
             nodes.add(line)
-    logger.info(f"找到 {len(nodes)} 个唯一节点。") # Found X unique nodes.
+    logger.info(f"找到 {len(nodes)} 个唯一节点。")
     return list(nodes)
 
 def parse_vmess(node_url):
     """解析vmess节点配置。"""
-    """Parses vmess node configuration."""
     try:
         vmess_b64 = node_url[len("vmess://"):]
-        # Add padding if necessary / 如果需要，添加填充
+        # 如果需要，添加填充
         vmess_b64 = vmess_b64 + '=' * (-len(vmess_b64) % 4)
         decoded_vmess = json.loads(base64.b64decode(vmess_b64).decode('utf-8'))
         return {
@@ -176,17 +169,16 @@ def parse_vmess(node_url):
             } if decoded_vmess.get("net") == "grpc" else {}
         }
     except (json.JSONDecodeError, base64.binascii.Error, ValueError) as e:
-        logger.error(f"解析vmess节点 {node_url} 时出错: {e}") # Error parsing vmess node X
+        logger.error(f"解析vmess节点 {node_url} 时出错: {e}")
         return None
 
 def parse_ss(node_url):
     """解析shadowsocks节点配置。"""
-    """Parses shadowsocks node configuration."""
     try:
         parsed_url = urlparse(node_url)
         method_password_encoded = parsed_url.username
         if not method_password_encoded:
-            logger.error(f"无效的shadowsocks节点格式 (缺少方法/密码): {node_url}") # Invalid shadowsocks node format (missing method/password)
+            logger.error(f"无效的shadowsocks节点格式 (缺少方法/密码): {node_url}")
             return None
 
         method_password = ""
@@ -220,12 +212,11 @@ def parse_ss(node_url):
 
         return ss_proxy
     except (ValueError, AttributeError) as e:
-        logger.error(f"解析ss节点 {node_url} 时出错: {e}") # Error parsing ss node X
+        logger.error(f"解析ss节点 {node_url} 时出错: {e}")
         return None
 
 def parse_trojan(node_url):
     """解析trojan节点配置。"""
-    """Parses trojan node configuration."""
     try:
         parsed_url = urlparse(node_url)
         params = parse_qs(parsed_url.query)
@@ -239,12 +230,11 @@ def parse_trojan(node_url):
             "skip-cert-verify": params.get('allowInsecure', ['0'])[0] == '1'
         }
     except (ValueError, AttributeError) as e:
-        logger.error(f"解析trojan节点 {node_url} 时出错: {e}") # Error parsing trojan node X
+        logger.error(f"解析trojan节点 {node_url} 时出错: {e}")
         return None
 
 def parse_vless(node_url):
     """解析vless节点配置。"""
-    """Parses vless node configuration."""
     try:
         parsed_url = urlparse(node_url)
         params = parse_qs(parsed_url.query)
@@ -284,12 +274,11 @@ def parse_vless(node_url):
             }
         return vless_proxy
     except (ValueError, AttributeError) as e:
-        logger.error(f"解析vless节点 {node_url} 时出错: {e}") # Error parsing vless node X
+        logger.error(f"解析vless节点 {node_url} 时出错: {e}")
         return None
 
 def parse_hysteria2(node_url):
     """解析hysteria2节点配置。"""
-    """Parses hysteria2 node configuration."""
     try:
         parsed_url = urlparse(node_url)
         params = parse_qs(parsed_url.query)
@@ -306,15 +295,14 @@ def parse_hysteria2(node_url):
             "sni": params.get('sni', [parsed_url.hostname])[0]
         }
     except (ValueError, AttributeError) as e:
-        logger.error(f"解析hysteria2节点 {node_url} 时出错: {e}") # Error parsing hysteria2 node X
+        logger.error(f"解析hysteria2节点 {node_url} 时出错: {e}")
         return None
 
 def create_clash_config(node_url, port):
     """为单个节点创建基本的Clash.Meta配置。"""
-    """Creates a basic Clash.Meta config for a single node."""
     proxy_name = f"proxy-{hash(node_url) % 100000}"
     config = {
-        "port": port, # Use the dynamically assigned port / 使用动态分配的端口
+        "port": port, # 使用动态分配的端口
         "mode": "direct",
         "log-level": "debug",
         "allow-lan": False,
@@ -340,31 +328,30 @@ def create_clash_config(node_url, port):
                 config["proxies"].append(proxy)
             break
     else:
-        logger.warning(f"不支持的节点协议: {node_url}") # Unsupported protocol for node
+        logger.warning(f"不支持的节点协议: {node_url}")
         return False
 
     if not config["proxies"]:
-        logger.error(f"未为 {node_url} 配置代理。") # No proxy configured for X
+        logger.error(f"未为 {node_url} 配置代理。")
         return False
 
     try:
-        # Use a temporary config file name to avoid clashes between concurrent tests / 使用临时配置文件名以避免并发测试之间的冲突
+        # 使用临时配置文件名以避免并发测试之间的冲突
         temp_config_file = Path(f"config_{port}.yaml")
         with temp_config_file.open('w', encoding='utf-8') as f:
             yaml.dump(config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
-        logger.info(f"已为 {node_url} 在 {temp_config_file} 生成Clash.Meta配置。") # Generated Clash.Meta config for X at Y
+        logger.info(f"已为 {node_url} 在 {temp_config_file} 生成Clash.Meta配置。")
         return temp_config_file
     except (OSError, yaml.YAMLError) as e:
-        logger.error(f"写入 {node_url} 的Clash.Meta配置时出错: {e}") # Error writing Clash.Meta config for X
+        logger.error(f"写入 {node_url} 的Clash.Meta配置时出错: {e}")
         return False
 
 @asynccontextmanager
 async def mihomo_process(config_file, port):
     """用于运行和清理Mihomo进程的上下文管理器。"""
-    """Context manager for running and cleaning up Mihomo process."""
     process = None
     try:
-        logger.info(f"正在启动 {MIHOMO_BIN_NAME}，配置文件 {config_file}，端口 {port}...") # Starting X with config Y on port Z
+        logger.info(f"正在启动 {MIHOMO_BIN_NAME}，配置文件 {config_file}，端口 {port}...")
         process = subprocess.Popen(
             [f"./{MIHOMO_BIN_NAME}", "-f", str(config_file)],
             stdout=sys.stdout,
@@ -372,36 +359,34 @@ async def mihomo_process(config_file, port):
             text=True,
             bufsize=1
         )
-        logger.info(f"{MIHOMO_BIN_NAME} 进程已启动 (PID: {process.pid})。给它一些时间进行初始化...") # Mihomo process started (PID: X). Giving it time to initialize...
+        logger.info(f"{MIHOMO_BIN_NAME} 进程已启动 (PID: {process.pid})。给它一些时间进行初始化...")
         # 优化: 增加睡眠时间，确保Mihomo有足够时间初始化。
-        # OPTIMIZATION: Increased sleep time to ensure Mihomo has enough time to initialize.
-        await asyncio.sleep(5) # Increased from 2 seconds to 5 seconds
+        await asyncio.sleep(5) # 从2秒增加到5秒
         yield process
     finally:
         if process and process.poll() is None:
-            logger.info(f"正在终止 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})...") # Terminating X process (PID: Y)...
+            logger.info(f"正在终止 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})...")
             process.terminate()
             try:
                 await asyncio.wait_for(asyncio.to_thread(process.wait), timeout=5)
-                logger.info(f"{MIHOMO_BIN_NAME} 进程已终止 (PID: {process.pid})") # X process terminated (PID: Y)
+                logger.info(f"{MIHOMO_BIN_NAME} 进程已终止 (PID: {process.pid})")
             except asyncio.TimeoutError:
                 process.kill()
-                logger.warning(f"已强制杀死 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})") # Force killed X process (PID: Y)
+                logger.warning(f"已强制杀死 {MIHOMO_BIN_NAME} 进程 (PID: {process.pid})")
         else:
-            logger.info(f"{MIHOMO_BIN_NAME} 进程未运行或已终止。") # X process was not running or already terminated.
+            logger.info(f"{MIHOMO_BIN_NAME} 进程未运行或已终止。")
         
         if config_file.exists():
             config_file.unlink()
-            logger.info(f"已清理配置文件 {config_file}。") # Cleaned up config file X.
+            logger.info(f"已清理配置文件 {config_file}。")
 
 async def test_node_connectivity(node_url, current_port):
     """使用Clash.Meta测试单个节点的连接性。"""
-    """Tests the connectivity of a single node using Clash.Meta."""
-    logger.info(f"\n--- 正在测试节点: {node_url}，端口 {current_port} ---") # Testing node: X on port Y
+    logger.info(f"\n--- 正在测试节点: {node_url}，端口 {current_port} ---")
     
     temp_config_file = create_clash_config(node_url, current_port)
     if not temp_config_file:
-        logger.warning(f"由于解析错误或不支持的协议，跳过节点: {node_url}。") # Skipping X due to parsing error or unsupported protocol.
+        logger.warning(f"由于解析错误或不支持的协议，跳过节点: {node_url}。")
         return None
 
     try:
@@ -414,42 +399,39 @@ async def test_node_connectivity(node_url, current_port):
                 "--silent", "--output", "/dev/null",
                 "--fail"
             ]
-            logger.info(f"正在运行curl命令: {' '.join(curl_command)}") # Running curl command
+            logger.info(f"正在运行curl命令: {' '.join(curl_command)}")
             result = await asyncio.to_thread(subprocess.run, curl_command, capture_output=True, text=True)
 
             if result.returncode == 0:
-                logger.info(f"节点 {node_url} 已连接。") # Node X is CONNECTED.
+                logger.info(f"节点 {node_url} 已连接。")
                 return node_url
-            logger.warning(f"节点 {node_url} 连接失败 (curl退出码: {result.returncode})。") # Node X FAILED to connect (curl exit code: Y).
+            logger.warning(f"节点 {node_url} 连接失败 (curl退出码: {result.returncode})。")
             logger.debug(f"Curl stdout:\n{result.stdout}")
             logger.debug(f"Curl stderr:\n{result.stderr}")
             return None
     except FileNotFoundError:
-        logger.error(f"错误: 找不到 {MIHOMO_BIN_NAME}。请确保它在当前目录且可执行。") # Error: X not found. Ensure it's in the current directory and executable.
+        logger.error(f"错误: 找不到 {MIHOMO_BIN_NAME}。请确保它在当前目录且可执行。")
         return None
     except subprocess.SubprocessError as e:
-        logger.error(f"测试 {node_url} 时发生子进程错误: {e}") # Subprocess error during testing X
+        logger.error(f"测试 {node_url} 时发生子进程错误: {e}")
         return None
     except Exception as e:
-        logger.error(f"测试 {node_url} 时发生意外错误: {e}") # An unexpected error occurred during testing X
+        logger.error(f"测试 {node_url} 时发生意外错误: {e}")
         return None
 
 async def main():
     """主函数，用于处理代理节点。"""
-    """Main function to process proxy nodes."""
-    logger.info("开始代理节点处理脚本。") # Starting proxy node processing script.
+    logger.info("开始代理节点处理脚本。")
     setup_mihomo()
     OUTPUT_DIR.mkdir(exist_ok=True)
-    logger.info(f"确保输出目录 '{OUTPUT_DIR}' 存在。") # Output directory 'X' ensured to exist.
+    logger.info(f"确保输出目录 '{OUTPUT_DIR}' 存在。")
 
     all_nodes = download_and_parse_nodes(NODE_LIST_URL)
     
     # 使用信号量限制并发任务
-    # Use a semaphore to limit concurrent tasks
     semaphore = asyncio.Semaphore(CONCURRENT_TESTS)
 
     # 创建一个队列来管理并发测试的可用端口
-    # Create a queue to manage the available ports for concurrent tests
     port_queue = asyncio.Queue()
     for i in range(CONCURRENT_TESTS):
         await port_queue.put(CLASH_BASE_PORT + i)
@@ -457,35 +439,32 @@ async def main():
     async def bounded_test_with_node_return(node_url_to_test):
         async with semaphore:
             # 从端口池中获取一个端口
-            # Acquire a port from the pool
             current_port = await port_queue.get()
             try:
                 result_node_url = await test_node_connectivity(node_url_to_test, current_port)
                 return result_node_url
             finally:
                 # 将端口释放回池中
-                # Release the port back to the pool
-                await port_queue.put(current_port) # Ensure the port is returned
+                await port_queue.put(current_port) # 确保端口被返回
 
     tasks = [bounded_test_with_node_return(node) for node in all_nodes]
     
     working_nodes = []
     # 按照任务完成的顺序处理
-    # Process tasks as they complete
     for i, future in enumerate(asyncio.as_completed(tasks)):
         completed_node_url = await future
         if completed_node_url:
             working_nodes.append(completed_node_url)
-        logger.info(f"已处理 {i+1}/{len(all_nodes)} 个节点。") # Processed X/Y nodes.
+        logger.info(f"已处理 {i+1}/{len(all_nodes)} 个节点。")
 
-    logger.info(f"\n--- 脚本执行完成 ---") # Script execution complete
-    logger.info(f"总共处理的节点数: {len(all_nodes)}") # Total nodes processed
-    logger.info(f"找到的可用节点数: {len(working_nodes)}") # Total working nodes found
+    logger.info(f"\n--- 脚本执行完成 ---")
+    logger.info(f"总共处理的节点数: {len(all_nodes)}")
+    logger.info(f"找到的可用节点数: {len(working_nodes)}")
 
     with OUTPUT_FILE.open('w', encoding='utf-8') as f:
         for node in working_nodes:
             f.write(node + "\n")
-    logger.info(f"可用节点已保存到 {OUTPUT_FILE}") # Working nodes saved to X
+    logger.info(f"可用节点已保存到 {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     asyncio.run(main())
