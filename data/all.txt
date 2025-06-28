@@ -1,3 +1,1 @@
-Node Test Results (sorted by delay):
-COMPATIBLE: 27ms
-英国_0626029 #2: 307ms
+没有节点通过延迟测试。
