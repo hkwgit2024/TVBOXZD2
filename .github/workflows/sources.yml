@@ -42,7 +42,7 @@ jobs:
         pip install aiohttp pyyaml requests
 
     - name: 运行代理转换脚本
-      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --clash-output data/clash.yaml --max-concurrency 50 --timeout 20
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --max-concurrency 50 --timeout 20
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
