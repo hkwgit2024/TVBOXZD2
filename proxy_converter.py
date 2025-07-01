@@ -39,7 +39,6 @@ def setup_argparse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='代理节点提取和去重工具')
     parser.add_argument('--sources', default='sources.list', help='包含源 URL 的输入文件路径')
     parser.add_argument('--output', default='data/nodes.txt', help='提取到的节点输出文件路径')
-    parser.add_argument('--clash-output', default='data/clash.yaml', help='Clash 配置文件输出路径')
     parser.add_argument('--max-concurrency', type=int, default=50, help='最大并发请求数')
     parser.add_argument('--timeout', type=int, default=20, help='请求超时时间（秒）')
     return parser.parse_args()
@@ -418,30 +417,6 @@ async def fetch_with_retry(session: aiohttp.ClientSession, url: str, retries: in
     logger.error(f"在 {retries} 次尝试后未能成功获取 URL: {url}")
     return ""
 
-async def fetch_url_nodes_task(session: aiohttp.ClientSession, url: str, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set) -> Set[str]:
-    """从单个 URL 获取并提取节点的异步任务，返回去重后的节点集合。"""
-    async with semaphore:
-        logger.info(f"正在处理 URL: {url}")
-        try:
-            content = await fetch_with_retry(session, url)
-            if not content:
-                failed_urls.add(url)
-                url_node_counts[url] = 0
-                logger.warning(f"未能获取内容或内容为空，URL: {url}")
-                return set()
-            
-            nodes = extract_nodes(content)
-            url_node_counts[url] = len(nodes)
-            if nodes:
-                logger.info(f"从 {url} 中提取到 {len(nodes)} 个有效节点。")
-            else:
-                logger.info(f"从 {url} 中未提取到有效节点。")
-            return set(nodes)
-        except Exception as e:
-            logger.error(f"处理 URL {url} 时发生未知错误: {e}")
-            failed_urls.add(url)
-            return set()
-
 async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: int, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set) -> Set[str]:
     """处理单个域名，先尝试 http，再尝试 https"""
     nodes = set()
@@ -489,141 +464,6 @@ async def process_urls(domains: Set[str], max_concurrency: int, timeout: int) ->
                 all_nodes.update(nodes_or_exception)
     
     return sorted(list(all_nodes)), url_node_counts, failed_urls
-
-def convert_to_clash(nodes: List[str], clash_file: str):
-    """将节点转换为 Clash 配置文件格式"""
-    clash_config = {'proxies': []}
-    for node in nodes:
-        proxy_type = node.split('://')[0]
-        if proxy_type not in NODE_PATTERNS:
-            continue
-        proxy_dict = {'name': f"{proxy_type}_node_{len(clash_config['proxies'])+1}"}
-        if proxy_type == 'ss':
-            match = re.match(rf'ss://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
-            if match:
-                auth, server, port, query, name = match.groups()
-                auth_decoded = decode_base64(auth)
-                cipher, password = auth_decoded.split(':', 1)
-                proxy_dict.update({
-                    'type': 'ss',
-                    'server': server,
-                    'port': int(port),
-                    'cipher': cipher,
-                    'password': password
-                })
-                if name:
-                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
-                if query:
-                    params = urllib.parse.parse_qs(query[1:])
-                    if 'plugin' in params:
-                        proxy_dict['plugin'] = params['plugin'][0]
-                        plugin_opts = {}
-                        if 'obfs-host' in params:
-                            plugin_opts['host'] = params['obfs-host'][0]
-                        if 'obfs-mode' in params:
-                            plugin_opts['mode'] = params['obfs-mode'][0]
-                        if plugin_opts:
-                            proxy_dict['plugin-opts'] = plugin_opts
-        elif proxy_type == 'vmess':
-            config_json = decode_base64(node[8:])
-            if config_json:
-                config = json.loads(config_json)
-                proxy_dict.update({
-                    'type': 'vmess',
-                    'server': config.get('add'),
-                    'port': int(config.get('port')),
-                    'uuid': config.get('id'),
-                    'alterId': config.get('aid', 0),
-                    'cipher': config.get('type', 'auto'),
-                    'network': config.get('net', 'tcp'),
-                    'name': config.get('ps', proxy_dict['name'])
-                })
-                if config.get('tls') == 'tls':
-                    proxy_dict['tls'] = True
-                    if config.get('sni'):
-                        proxy_dict['servername'] = config.get('sni')
-                    if config.get('allowInsecure'):
-                        proxy_dict['skip-cert-verify'] = True
-                if config.get('net') == 'ws':
-                    proxy_dict['ws-opts'] = {'path': config.get('path', '/')}
-                    if config.get('host'):
-                        proxy_dict['ws-opts']['headers'] = {'Host': config.get('host')}
-                elif config.get('net') == 'grpc':
-                    proxy_dict['grpc-opts'] = {'grpc-service-name': config.get('serviceName', '')}
-        elif proxy_type == 'trojan':
-            match = re.match(rf'trojan://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
-            if match:
-                password, server, port, query, name = match.groups()
-                proxy_dict.update({
-                    'type': 'trojan',
-                    'server': server,
-                    'port': int(port),
-                    'password': password,
-                    'tls': True
-                })
-                if name:
-                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
-                if query:
-                    params = urllib.parse.parse_qs(query[1:])
-                    if 'sni' in params:
-                        proxy_dict['servername'] = params['sni'][0]
-                    if 'allowInsecure' in params:
-                        proxy_dict['skip-cert-verify'] = params['allowInsecure'][0] == '1'
-        elif proxy_type == 'vless':
-            match = re.match(rf'vless://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
-            if match:
-                uuid, server, port, query, name = match.groups()
-                proxy_dict.update({
-                    'type': 'vless',
-                    'server': server,
-                    'port': int(port),
-                    'uuid': uuid
-                })
-                if name:
-                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
-                if query:
-                    params = urllib.parse.parse_qs(query[1:])
-                    proxy_dict['network'] = params.get('type', ['tcp'])[0]
-                    if params.get('security') == ['tls']:
-                        proxy_dict['tls'] = True
-                        if 'sni' in params:
-                            proxy_dict['servername'] = params['sni'][0]
-                        if 'allowInsecure' in params:
-                            proxy_dict['skip-cert-verify'] = params['allowInsecure'][0] == '1'
-                    if proxy_dict['network'] == 'ws':
-                        proxy_dict['ws-opts'] = {'path': params.get('path', ['/'])[0]}
-                        if 'host' in params:
-                            proxy_dict['ws-opts']['headers'] = {'Host': params['host'][0]}
-                    elif proxy_dict['network'] == 'grpc':
-                        proxy_dict['grpc-opts'] = {'grpc-service-name': params.get('serviceName', [''])[0]}
-        elif proxy_type == 'hysteria2':
-            match = re.match(rf'hysteria2://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
-            if match:
-                password, server, port, query, name = match.groups()
-                proxy_dict.update({
-                    'type': 'hysteria2',
-                    'server': server,
-                    'port': int(port),
-                    'password': password
-                })
-                if name:
-                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
-                if query:
-                    params = urllib.parse.parse_qs(query[1:])
-                    if 'sni' in params:
-                        proxy_dict['sni'] = params['sni'][0]
-                    if 'insecure' in params:
-                        proxy_dict['skip-cert-verify'] = params['insecure'][0] == '1'
-                    if 'up_mbps' in params:
-                        proxy_dict['up'] = int(params['up_mbps'][0])
-                    if 'down_mbps' in params:
-                        proxy_dict['down'] = int(params['down_mbps'][0])
-        clash_config['proxies'].append(proxy_dict)
-    
-    os.makedirs(os.path.dirname(clash_file), exist_ok=True)
-    with open(clash_file, 'w', encoding='utf-8') as f:
-        yaml.safe_dump(clash_config, f, allow_unicode=True)
-    logger.info(f"已将 {len(clash_config['proxies'])} 个节点保存到 Clash 配置文件 {clash_file}")
 
 def main():
     """主函数，负责程序的整体流程。"""
@@ -681,12 +521,6 @@ def main():
         logger.info(f"已将 {total_nodes_extracted} 个节点保存到 {args.output}")
     except Exception as e:
         logger.error(f"保存节点到 {args.output} 时发生错误: {e}")
-    
-    # 保存 Clash 配置文件
-    try:
-        convert_to_clash(unique_nodes, args.clash_output)
-    except Exception as e:
-        logger.error(f"保存 Clash 配置文件到 {args.clash_output} 时发生错误: {e}")
 
 if __name__ == '__main__':
     main()
