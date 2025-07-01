@@ -877,7 +877,7 @@ async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: i
     """处理单个域名，先尝试 http，再尝试 https，并更新结果字典。"""
     nodes_from_domain = set()
     http_url = f"http://{domain}"
-    https_url = f"https://domain}" # Adjusted for f-string literal curly braces
+    https_url = f"https://{domain}" # Adjusted for f-string literal curly braces
     
     async with semaphore:
         logger.info(f"正在获取: {http_url}")
