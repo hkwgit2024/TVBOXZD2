@@ -1,3 +1,4 @@
+
 import asyncio
 import aiohttp
 import base64
@@ -38,6 +39,7 @@ def setup_argparse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='代理节点提取和去重工具')
     parser.add_argument('--sources', default='sources.list', help='包含源 URL 的输入文件路径')
     parser.add_argument('--output', default='data/nodes.txt', help='提取到的节点输出文件路径')
+    parser.add_argument('--clash-output', default='data/clash.yaml', help='Clash 配置文件输出路径')
     parser.add_argument('--max-concurrency', type=int, default=50, help='最大并发请求数')
     parser.add_argument('--timeout', type=int, default=20, help='请求超时时间（秒）')
     return parser.parse_args()
@@ -62,19 +64,16 @@ def encode_base64(data: str) -> str:
 def normalize_node_url(url: str) -> str:
     """规范化节点 URL 以提高去重效率。"""
     try:
-        # 分解 URL
         protocol = url.split('://', 1)[0]
         if protocol not in NODE_PATTERNS:
-            return url  # 不支持的协议，直接返回原 URL
+            return url
 
         if protocol == 'vmess':
-            # VMess 特殊处理：解码 Base64，规范化 JSON
             config_b64 = url[8:]
             config_json = decode_base64(config_b64)
             if not config_json:
                 return url
             config = json.loads(config_json)
-            # 规范化字段：移除无关字段，只保留关键字段，并排序
             clean_config = {
                 'v': config.get('v', '2'),
                 'ps': config.get('ps', ''),
@@ -93,7 +92,6 @@ def normalize_node_url(url: str) -> str:
             return f"vmess://{encode_base64(json.dumps(clean_config, ensure_ascii=False, sort_keys=True))}"
         
         else:
-            # 其他协议：分解 URL，规范化参数
             match = re.match(rf'{protocol}://([^@]+@)?([^?]+)(\?[^#]*)?(#.*)?', url)
             if not match:
                 return url
@@ -101,14 +99,10 @@ def normalize_node_url(url: str) -> str:
             auth = auth or ''
             query = query or ''
             name = urllib.parse.unquote(name[1:]) if name else ''
-            
-            # 规范化查询参数：排序并重新编码
             if query:
                 params = urllib.parse.parse_qs(query[1:])
                 sorted_params = {k: params[k][0] for k in sorted(params.keys())}
                 query = '?' + urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
-            
-            # 规范化主机名和端口
             host_port = host_port.lower()
             return f"{protocol}://{auth}{host_port}{query}{'#' + urllib.parse.quote(name) if name else ''}"
     except Exception as e:
@@ -116,12 +110,8 @@ def normalize_node_url(url: str) -> str:
         return url
 
 def extract_nodes(content: str) -> List[str]:
-    """
-    从内容中提取代理节点，并进行去重优化。
-    """
-    nodes_found = set()  # 使用 set 去重
-
-    # 预处理内容，统一换行符
+    """从内容中提取代理节点，并进行去重优化。"""
+    nodes_found = set()
     content = content.replace('\r\n', '\n').replace('\r', '\n')
 
     # 策略 1: 直接匹配标准订阅链接
@@ -209,7 +199,7 @@ def extract_nodes(content: str) -> List[str]:
             json_content_decoded = json.loads(decoded_content)
             if isinstance(json_content_decoded, list):
                 for config_dict in json_content_decoded:
-                    if isinstance(config_dict, dict) and config get('v') == '2' and config_dict.get('id'):
+                    if isinstance(config_dict, dict) and config_dict.get('v') == '2' and config_dict.get('id'):
                         url_node = convert_clash_proxy_to_url({'type': 'vmess', **config_dict})
                         if url_node:
                             normalized_node = normalize_node_url(url_node)
@@ -223,14 +213,12 @@ def extract_nodes(content: str) -> List[str]:
         except json.JSONDecodeError:
             pass
 
-    # 过滤无效或过短的节点
+    # 修复 SyntaxError
     final_filtered_nodes = [node for node in nodes_found if any(re.match(pattern, node) for pattern in NODE_PATTERNS.values()) and len(node) > 20]
-    return sorted final_filtered_nodes)
+    return sorted(final_filtered_nodes)
 
 def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
-    """
-    将 Clash 代理配置字典转换为标准 URL 格式。
-    """
+    """将 Clash 代理配置字典转换为标准 URL 格式。"""
     proxy_type = proxy.get('type', '').lower()
     name = urllib.parse.quote(proxy.get('name', f"{proxy_type}_node").strip(), safe='')
     server = proxy.get('server')
@@ -448,21 +436,52 @@ async def fetch_url_nodes_task(session: aiohttp.ClientSession, url: str, semapho
                 logger.info(f"从 {url} 中提取到 {len(nodes)} 个有效节点。")
             else:
                 logger.info(f"从 {url} 中未提取到有效节点。")
-            return set(nodes)  # 返回集合以便在 process_urls 中去重
+            return set(nodes)
         except Exception as e:
             logger.error(f"处理 URL {url} 时发生未知错误: {e}")
             failed_urls.add(url)
             return set()
 
-async def process_urls(urls: List[str], max_concurrency: int) -> tuple[List[str], Dict, Set]:
-    """并发处理多个 URL，提前去重以优化内存使用。"""
+async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: int, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set) -> Set[str]:
+    """处理单个域名，先尝试 http，再尝试 https"""
+    nodes = set()
+    http_url = f"http://{domain}"
+    https_url = f"https://{domain}"
+
+    # 优先尝试 http
+    logger.info(f"尝试访问 HTTP: {http_url}")
+    content = await fetch_with_retry(session, http_url)
+    if content:
+        nodes.update(extract_nodes(content))
+        url_node_counts[http_url] = len(nodes)
+        logger.info(f"从 {http_url} 提取到 {len(nodes)} 个节点")
+        return nodes
+
+    # http 失败，尝试 https
+    logger.info(f"HTTP 失败，尝试 HTTPS: {https_url}")
+    content = await fetch_with_retry(session, https_url)
+    if content:
+        nodes.update(extract_nodes(content))
+        url_node_counts[https_url] = len(nodes)
+        logger.info(f"从 {https_url} 提取到 {len(nodes)} 个节点")
+    else:
+        failed_urls.add(http_url)
+        failed_urls.add(https_url)
+        url_node_counts[http_url] = 0
+        url_node_counts[https_url] = 0
+        logger.warning(f"HTTP 和 HTTPS 均失败: {domain}")
+    
+    return nodes
+
+async def process_urls(domains: Set[str], max_concurrency: int, timeout: int) -> tuple[List[str], Dict, Set]:
+    """并发处理去重后的域名，优先尝试 http，失败后尝试 https"""
     semaphore = asyncio.Semaphore(max_concurrency)
     url_node_counts = defaultdict(int)
     failed_urls = set()
-    all_nodes = set()  # 使用集合提前去重
+    all_nodes = set()
     
     async with aiohttp.ClientSession() as session:
-        tasks = [fetch_url_nodes_task(session, url, semaphore, url_node_counts, failed_urls) for url in urls]
+        tasks = [process_domain(session, domain, timeout, semaphore, url_node_counts, failed_urls) for domain in domains]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
         for nodes_or_exception in results:
@@ -470,6 +489,141 @@ async def process_urls(urls: List[str], max_concurrency: int) -> tuple[List[str]
                 all_nodes.update(nodes_or_exception)
     
     return sorted(list(all_nodes)), url_node_counts, failed_urls
+
+def convert_to_clash(nodes: List[str], clash_file: str):
+    """将节点转换为 Clash 配置文件格式"""
+    clash_config = {'proxies': []}
+    for node in nodes:
+        proxy_type = node.split('://')[0]
+        if proxy_type not in NODE_PATTERNS:
+            continue
+        proxy_dict = {'name': f"{proxy_type}_node_{len(clash_config['proxies'])+1}"}
+        if proxy_type == 'ss':
+            match = re.match(rf'ss://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
+            if match:
+                auth, server, port, query, name = match.groups()
+                auth_decoded = decode_base64(auth)
+                cipher, password = auth_decoded.split(':', 1)
+                proxy_dict.update({
+                    'type': 'ss',
+                    'server': server,
+                    'port': int(port),
+                    'cipher': cipher,
+                    'password': password
+                })
+                if name:
+                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
+                if query:
+                    params = urllib.parse.parse_qs(query[1:])
+                    if 'plugin' in params:
+                        proxy_dict['plugin'] = params['plugin'][0]
+                        plugin_opts = {}
+                        if 'obfs-host' in params:
+                            plugin_opts['host'] = params['obfs-host'][0]
+                        if 'obfs-mode' in params:
+                            plugin_opts['mode'] = params['obfs-mode'][0]
+                        if plugin_opts:
+                            proxy_dict['plugin-opts'] = plugin_opts
+        elif proxy_type == 'vmess':
+            config_json = decode_base64(node[8:])
+            if config_json:
+                config = json.loads(config_json)
+                proxy_dict.update({
+                    'type': 'vmess',
+                    'server': config.get('add'),
+                    'port': int(config.get('port')),
+                    'uuid': config.get('id'),
+                    'alterId': config.get('aid', 0),
+                    'cipher': config.get('type', 'auto'),
+                    'network': config.get('net', 'tcp'),
+                    'name': config.get('ps', proxy_dict['name'])
+                })
+                if config.get('tls') == 'tls':
+                    proxy_dict['tls'] = True
+                    if config.get('sni'):
+                        proxy_dict['servername'] = config.get('sni')
+                    if config.get('allowInsecure'):
+                        proxy_dict['skip-cert-verify'] = True
+                if config.get('net') == 'ws':
+                    proxy_dict['ws-opts'] = {'path': config.get('path', '/')}
+                    if config.get('host'):
+                        proxy_dict['ws-opts']['headers'] = {'Host': config.get('host')}
+                elif config.get('net') == 'grpc':
+                    proxy_dict['grpc-opts'] = {'grpc-service-name': config.get('serviceName', '')}
+        elif proxy_type == 'trojan':
+            match = re.match(rf'trojan://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
+            if match:
+                password, server, port, query, name = match.groups()
+                proxy_dict.update({
+                    'type': 'trojan',
+                    'server': server,
+                    'port': int(port),
+                    'password': password,
+                    'tls': True
+                })
+                if name:
+                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
+                if query:
+                    params = urllib.parse.parse_qs(query[1:])
+                    if 'sni' in params:
+                        proxy_dict['servername'] = params['sni'][0]
+                    if 'allowInsecure' in params:
+                        proxy_dict['skip-cert-verify'] = params['allowInsecure'][0] == '1'
+        elif proxy_type == 'vless':
+            match = re.match(rf'vless://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
+            if match:
+                uuid, server, port, query, name = match.groups()
+                proxy_dict.update({
+                    'type': 'vless',
+                    'server': server,
+                    'port': int(port),
+                    'uuid': uuid
+                })
+                if name:
+                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
+                if query:
+                    params = urllib.parse.parse_qs(query[1:])
+                    proxy_dict['network'] = params.get('type', ['tcp'])[0]
+                    if params.get('security') == ['tls']:
+                        proxy_dict['tls'] = True
+                        if 'sni' in params:
+                            proxy_dict['servername'] = params['sni'][0]
+                        if 'allowInsecure' in params:
+                            proxy_dict['skip-cert-verify'] = params['allowInsecure'][0] == '1'
+                    if proxy_dict['network'] == 'ws':
+                        proxy_dict['ws-opts'] = {'path': params.get('path', ['/'])[0]}
+                        if 'host' in params:
+                            proxy_dict['ws-opts']['headers'] = {'Host': params['host'][0]}
+                    elif proxy_dict['network'] == 'grpc':
+                        proxy_dict['grpc-opts'] = {'grpc-service-name': params.get('serviceName', [''])[0]}
+        elif proxy_type == 'hysteria2':
+            match = re.match(rf'hysteria2://([^@]+)@([^:]+):(\d+)(\?[^#]*)?(#.*)?', node)
+            if match:
+                password, server, port, query, name = match.groups()
+                proxy_dict.update({
+                    'type': 'hysteria2',
+                    'server': server,
+                    'port': int(port),
+                    'password': password
+                })
+                if name:
+                    proxy_dict['name'] = urllib.parse.unquote(name[1:])
+                if query:
+                    params = urllib.parse.parse_qs(query[1:])
+                    if 'sni' in params:
+                        proxy_dict['sni'] = params['sni'][0]
+                    if 'insecure' in params:
+                        proxy_dict['skip-cert-verify'] = params['insecure'][0] == '1'
+                    if 'up_mbps' in params:
+                        proxy_dict['up'] = int(params['up_mbps'][0])
+                    if 'down_mbps' in params:
+                        proxy_dict['down'] = int(params['down_mbps'][0])
+        clash_config['proxies'].append(proxy_dict)
+    
+    os.makedirs(os.path.dirname(clash_file), exist_ok=True)
+    with open(clash_file, 'w', encoding='utf-8') as f:
+        yaml.safe_dump(clash_config, f, allow_unicode=True)
+    logger.info(f"已将 {len(clash_config['proxies'])} 个节点保存到 Clash 配置文件 {clash_file}")
 
 def main():
     """主函数，负责程序的整体流程。"""
@@ -484,11 +638,18 @@ def main():
         logger.error(f"源文件 {args.sources} 未找到。请确保文件存在。")
         return
     
+    # 去重域名
+    unique_domains = set()
+    for url in urls:
+        parsed = urllib.parse.urlparse(url)
+        domain = parsed.netloc or parsed.path  # 提取域名（包括端口）
+        unique_domains.add(domain)
+    
     # 处理 URL 并提取节点
     start_time = datetime.now()
-    logger.info(f"开始处理 {len(urls)} 个 URL...")
+    logger.info(f"开始处理 {len(unique_domains)} 个唯一域名...")
     
-    unique_nodes, url_node_counts, failed_urls = asyncio.run(process_urls(urls, args.max_concurrency))
+    unique_nodes, url_node_counts, failed_urls = asyncio.run(process_urls(unique_domains, args.max_concurrency, args.timeout))
     
     # 生成报告
     total_nodes_extracted = len(unique_nodes)
@@ -520,6 +681,12 @@ def main():
         logger.info(f"已将 {total_nodes_extracted} 个节点保存到 {args.output}")
     except Exception as e:
         logger.error(f"保存节点到 {args.output} 时发生错误: {e}")
+    
+    # 保存 Clash 配置文件
+    try:
+        convert_to_clash(unique_nodes, args.clash_output)
+    except Exception as e:
+        logger.error(f"保存 Clash 配置文件到 {args.clash_output} 时发生错误: {e}")
 
 if __name__ == '__main__':
     main()
