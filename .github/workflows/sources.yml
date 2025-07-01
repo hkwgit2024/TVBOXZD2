@@ -38,9 +38,8 @@ jobs:
 
     - name: 安装依赖库
       run: |
-        python -m pip install --upgrade pip
-        pip install aiohttp pyyaml requests
-        pip install beautifulsoup4
+        pip install aiohttp beautifulsoup4 pyyaml fake-useragent playwright
+        playwright install
 
     - name: 运行代理转换脚本
       run: python proxy_converter.py --sources sources.list --output data/nodes.txt --max-concurrency 50 --timeout 20
