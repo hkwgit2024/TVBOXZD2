@@ -13,13 +13,15 @@ from typing import List, Dict, Set, Optional, Any
 from datetime import datetime
 from bs4 import BeautifulSoup, Comment
 from fake_useragent import UserAgent
-from playwright.async_api import async_playwright, Page, BrowserContext # 引入 Playwright
+from playwright.async_api import async_playwright, Page, BrowserContext
+import csv # 引入 csv 模块
 
 # --- 配置 ---
 LOG_FILE = 'proxy_converter.log'
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 DEFAULT_SOURCES_FILE = 'sources.list'
 DEFAULT_OUTPUT_FILE = 'data/nodes.txt' # 基础输出文件名，分片时会加上后缀
+DEFAULT_STATS_FILE = 'data/node_counts.csv' # 统计数据输出文件
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
 MAX_BASE64_DECODE_DEPTH = 3 # 限制Base64递归解码的深度
@@ -75,6 +77,7 @@ def setup_argparse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='代理节点提取和去重工具')
     parser.add_argument('--sources', default=DEFAULT_SOURCES_FILE, help=f'包含源 URL 的输入文件路径 (默认为: {DEFAULT_SOURCES_FILE})')
     parser.add_argument('--output', default=DEFAULT_OUTPUT_FILE, help=f'提取到的节点输出文件路径 (默认为: {DEFAULT_OUTPUT_FILE})')
+    parser.add_argument('--stats-output', default=DEFAULT_STATS_FILE, help=f'节点统计数据输出文件路径 (默认为: {DEFAULT_STATS_FILE})')
     parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY, help=f'最大并发请求数 (默认为: {DEFAULT_MAX_CONCURRENCY})')
     parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT, help=f'请求超时时间（秒） (默认为: {DEFAULT_TIMEOUT})')
     parser.add_argument('--use-browser', action='store_true', help='当HTTP请求失败时，尝试使用无头浏览器（Playwright）')
@@ -890,18 +893,23 @@ async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: i
             logger.info(f"从 {http_url} 提取到 {len(http_nodes)} 个节点。")
         else:
             url_node_counts[http_url] = 0
-            logger.info(f"HTTP 失败或无节点，尝试获取: {https_url}")
-            https_nodes = await process_single_url_strategy(session, https_url, timeout, use_browser, browser_context)
-            
-            if https_nodes:
-                nodes_from_domain.update(https_nodes)
-                url_node_counts[https_url] = len(https_nodes)
-                logger.info(f"从 {https_url} 提取到 {len(https_nodes)} 个节点。")
-            else:
-                url_node_counts[https_url] = 0
-                failed_urls.add(http_url) # 如果https也失败，则记录原始http url为失败
-                failed_urls.add(https_url) # 也记录https url为失败
-                logger.warning(f"HTTP 和 HTTPS 均未能从 {domain} 提取到节点。")
+            # 如果 HTTP 失败，并且 HTTPS 是可能的，则尝试 HTTPS
+            if not http_url.startswith("https://"): # 避免重复尝试 HTTPS 如果原始就是 HTTPS
+                logger.info(f"HTTP 失败或无节点，尝试获取: {https_url}")
+                https_nodes = await process_single_url_strategy(session, https_url, timeout, use_browser, browser_context)
+                
+                if https_nodes:
+                    nodes_from_domain.update(https_nodes)
+                    url_node_counts[https_url] = len(https_nodes)
+                    logger.info(f"从 {https_url} 提取到 {len(https_nodes)} 个节点。")
+                else:
+                    url_node_counts[https_url] = 0
+                    failed_urls.add(http_url) # 如果https也失败，则记录原始http url为失败
+                    failed_urls.add(https_url) # 也记录https url为失败
+                    logger.warning(f"HTTP 和 HTTPS 均未能从 {domain} 提取到节点。")
+            else: # 如果原始就是 HTTPS 并且失败了
+                failed_urls.add(https_url)
+                logger.warning(f"未能从 {domain} (HTTPS) 提取到节点。")
     
     return nodes_from_domain
 
@@ -1033,90 +1041,85 @@ def main():
     for line in report_lines:
         logger.info(line)
     
-    # --- 新增的分片保存逻辑 ---
+    # --- 节点分片保存逻辑 ---
     output_dir = os.path.dirname(args.output)
     output_filename_base = os.path.splitext(os.path.basename(args.output))[0]
     os.makedirs(output_dir, exist_ok=True)
 
-    # 估算每个节点链接的平均长度，从而估算每文件可以容纳的节点数量
-    # 假设平均每个节点链接大约 80 字节（这是一个保守的估计，实际可能更长或更短）
-    # GitHub 文件限制 100 MB = 100 * 1024 * 1024 字节
-    # 为了安全起见，每个文件目标大小设置为 90 MB
     target_file_size_mb = 90
     target_file_size_bytes = target_file_size_mb * 1024 * 1024
-    
-    # 一个粗略的估计：假设平均每个节点占用 80 字节
     avg_node_length_bytes = 80 
-    # 计算每个文件理论上应该包含的最大节点数量
     max_nodes_per_file = target_file_size_bytes // avg_node_length_bytes
 
     if total_nodes_extracted == 0:
-        logger.info("没有提取到任何节点，跳过保存。")
-        return
-        
-    if total_nodes_extracted <= max_nodes_per_file:
-        # 如果总节点数未超过单个文件限制，则保存为单个文件
-        output_path = os.path.join(output_dir, f"{output_filename_base}.txt")
-        try:
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(unique_nodes))
-            logger.info(f"已将 {total_nodes_extracted} 个节点保存到 {output_path}")
-        except Exception as e:
-            logger.error(f"保存节点到 '{output_path}' 时发生错误: {e}")
+        logger.info("没有提取到任何节点，跳过保存节点文件。")
     else:
-        # 进行分片保存
-        logger.info(f"节点总数 {total_nodes_extracted} 超过单文件限制，将进行分片保存。")
-        
-        # 第一次尝试：计算一个粗略的每文件行数
-        estimated_lines_per_file = max_nodes_per_file # 初始估计
-        
-        # 如果节点数量非常庞大，我们最好设定一个最低行数，避免文件碎片化太严重
-        min_lines_per_file = 10000 # 至少每个文件包含 1 万行节点
-
-        # 确保 estimated_lines_per_file 不会太小
-        if estimated_lines_per_file < min_lines_per_file:
-            estimated_lines_per_file = min_lines_per_file
-        
-        # 计算需要多少个文件
-        num_files = (total_nodes_extracted + estimated_lines_per_file - 1) // estimated_lines_per_file
-        logger.info(f"预计将分为 {num_files} 个文件，每个文件大约 {estimated_lines_per_file} 行。")
-
-        current_file_idx = 0
-        current_node_idx = 0
-
-        while current_node_idx < total_nodes_extracted:
-            current_file_idx += 1
-            # 确定当前文件的结束索引
-            end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
-            
-            # 获取当前文件的节点列表
-            nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
-            
-            # 构建输出文件名，例如 data/nodes_part_001.txt
-            output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
-            
+        if total_nodes_extracted <= max_nodes_per_file:
+            output_path = os.path.join(output_dir, f"{output_filename_base}.txt")
             try:
-                content_to_write = '\n'.join(nodes_for_current_file)
-                # 检查写入内容的大小，如果超过目标大小，则动态减少当前文件的节点数
-                while len(content_to_write.encode('utf-8')) > target_file_size_bytes and len(nodes_for_current_file) > 1:
-                    logger.warning(f"文件 '{output_path}' 内容过大 ({len(content_to_write.encode('utf-8')) / (1024*1024):.2f} MB)，尝试减少行数。")
-                    # 每次减少 10% 的行数，直到满足条件或只剩一行
-                    nodes_for_current_file = nodes_for_current_file[:int(len(nodes_for_current_file) * 0.9)]
-                    content_to_write = '\n'.join(nodes_for_current_file)
-                    end_node_idx = current_node_idx + len(nodes_for_current_file)
-                
                 with open(output_path, 'w', encoding='utf-8') as f:
-                    f.write(content_to_write)
-                
-                logger.info(f"已将 {len(nodes_for_current_file)} 个节点保存到 {output_path} ({len(content_to_write.encode('utf-8')) / (1024*1024):.2f} MB)。")
-                
-                current_node_idx = end_node_idx # 更新索引到下一个文件的起始位置
-
+                    f.write('\n'.join(unique_nodes))
+                logger.info(f"已将 {total_nodes_extracted} 个节点保存到 {output_path}")
             except Exception as e:
                 logger.error(f"保存节点到 '{output_path}' 时发生错误: {e}")
-                # 如果单个文件写入失败，尝试跳过这部分节点，继续处理剩余的
-                current_node_idx = end_node_idx 
-                break # 或者根据需要选择是跳过还是中断
+        else:
+            logger.info(f"节点总数 {total_nodes_extracted} 超过单文件限制，将进行分片保存。")
+            
+            estimated_lines_per_file = max_nodes_per_file
+            min_lines_per_file = 10000 
+            if estimated_lines_per_file < min_lines_per_file:
+                estimated_lines_per_file = min_lines_per_file
+            
+            num_files = (total_nodes_extracted + estimated_lines_per_file - 1) // estimated_lines_per_file
+            logger.info(f"预计将分为 {num_files} 个文件，每个文件大约 {estimated_lines_per_file} 行。")
+
+            current_file_idx = 0
+            current_node_idx = 0
+
+            while current_node_idx < total_nodes_extracted:
+                current_file_idx += 1
+                end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
+                nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
+                
+                output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
+                
+                try:
+                    content_to_write = '\n'.join(nodes_for_current_file)
+                    while len(content_to_write.encode('utf-8')) > target_file_size_bytes and len(nodes_for_current_file) > 1:
+                        logger.warning(f"文件 '{output_path}' 内容过大 ({len(content_to_write.encode('utf-8')) / (1024*1024):.2f} MB)，尝试减少行数。")
+                        nodes_for_current_file = nodes_for_current_file[:int(len(nodes_for_current_file) * 0.9)]
+                        content_to_write = '\n'.join(nodes_for_current_file)
+                        end_node_idx = current_node_idx + len(nodes_for_current_file)
+                    
+                    with open(output_path, 'w', encoding='utf-8') as f:
+                        f.write(content_to_write)
+                    
+                    logger.info(f"已将 {len(nodes_for_current_file)} 个节点保存到 {output_path} ({len(content_to_write.encode('utf-8')) / (1024*1024):.2f} MB)。")
+                    
+                    current_node_idx = end_node_idx
+
+                except Exception as e:
+                    logger.error(f"保存节点到 '{output_path}' 时发生错误: {e}")
+                    current_node_idx = end_node_idx 
+                    break 
+
+    # --- 统计数据保存为 CSV ---
+    stats_output_path = args.stats_output
+    stats_output_dir = os.path.dirname(stats_output_path)
+    os.makedirs(stats_output_dir, exist_ok=True) # 确保目录存在
+
+    try:
+        with open(stats_output_path, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ['Source_URL', 'Nodes_Found', 'Status']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for url, count in sorted_url_counts:
+                status = "成功" if count > 0 else ("失败" if url in failed_urls else "无节点")
+                writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': status})
+        logger.info(f"节点统计数据已保存到 {stats_output_path}")
+    except Exception as e:
+        logger.error(f"保存节点统计数据到 '{stats_output_path}' 时发生错误: {e}")
 
 if __name__ == '__main__':
     main()
