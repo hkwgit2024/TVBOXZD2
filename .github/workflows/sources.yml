@@ -50,6 +50,8 @@ jobs:
         commit_message: "自动更新代理节点及生成 Clash 配置"
         file_pattern: |
           data/nodes.txt
+          data/nodes_*.txt # 如果有分片文件，也包含进来
+          data/node_counts.csv # 确保添加了这一行
         branch: main
         # 移除不受支持的 pull_options 参数
         # pull_options: '--rebase --autostash' # <-- 移除这一行
