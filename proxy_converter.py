@@ -371,7 +371,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             if proxy.get('skip-cert-verify'): params['allowInsecure'] = '1'
             if proxy.get('flow'): params['flow'] = proxy['flow']
             if proxy.get('reality-opts'):
-                reality_opts = proxy['reality-opts']
+                reality_opts = proxy.get('reality-opts')
                 if reality_opts.get('publicKey'): params['pbk'] = reality_opts['publicKey']
                 if reality_opts.get('shortId'): params['sid'] = reality_opts['shortId']
                 if reality_opts.get('spiderX'): params['spx'] = reality_opts['spiderX']
@@ -953,6 +953,8 @@ def main():
     max_nodes_per_file = target_file_size_bytes // avg_node_length_bytes
     min_nodes_per_file = 10000  # 最小节点数，避免生成过多小文件
 
+    logger.info(f"分片参数: target_file_size_mb={target_file_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
+
     if total_nodes_extracted == 0:
         logger.info("没有提取到任何节点，跳过保存节点文件。")
     else:
@@ -973,6 +975,7 @@ def main():
                 logger.info("尝试分片保存...")
                 num_files = (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file
                 estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
+                logger.info(f"预计将分为 {num_files} 个文件，每个文件大约 {estimated_lines_per_file} 行。")
                 current_file_idx = 0
                 current_node_idx = 0
                 while current_node_idx < total_nodes_extracted:
