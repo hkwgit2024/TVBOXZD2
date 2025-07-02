@@ -1,0 +1,58 @@
+name: 更新和转换
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    # 每天凌晨2点（UTC时间）运行，转换为日本时间是上午11点
+    - cron: '0 2 * * *'
+
+jobs:
+  update-and-convert-nodes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 检出仓库代码
+      uses: actions/checkout@v4
+      # 获取所有历史，这对于后续的 pull/rebase 操作至关重要
+      with:
+        fetch-depth: 0
+
+    - name: 拉取远程最新更改
+      # 在这里执行 git pull，确保本地分支与远程分支同步
+      # 配置 Git 用户信息，以防 pull 产生合并提交时需要
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # 使用 --rebase --autostash 尝试将本地更改重放到远程最新提交之上
+        # 这通常能保持更干净的提交历史
+        git pull --rebase --autostash origin main || true
+        # `|| true` 的作用是：如果 pull 失败（例如，没有远程更改或发生复杂冲突），
+        # 不会中断整个工作流，而是允许后续步骤继续。
+        # 对于自动化更新，通常希望即使 pull 失败也尝试提交和推送。
+        # 如果你希望 pull 失败就停止，可以移除 `|| true`。
+
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: 安装依赖库
+      run: |
+        pip install aiohttp beautifulsoup4 pyyaml fake-useragent playwright
+        playwright install --with-deps chromium # 安装 chromium 及其依赖
+
+    - name: 运行代理转换脚本
+      # 使用 --output data/nodes.txt 作为基础输出路径，脚本会自动处理分片
+      # 同时指定 --stats-output 输出统计 CSV 文件
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --stats-output data/node_counts.csv --max-concurrency 50 --timeout 20 --use-browser
+
+    - name: 提交并推送更改
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "自动更新代理节点及生成节点统计"
+        # 匹配所有 data/ 目录下的 .txt 和 .csv 文件
+        # 这将包括 nodes.txt (如果未分片), nodes_part_XXX.txt (如果分片), 和 node_counts.csv
+        file_pattern: |
+          data/*.txt
+          data/*.csv
+        branch: main
