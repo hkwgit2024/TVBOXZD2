@@ -13,23 +13,14 @@ jobs:
     steps:
     - name: 检出仓库代码
       uses: actions/checkout@v4
-      # 获取所有历史，这对于后续的 pull/rebase 操作至关重要
       with:
         fetch-depth: 0
 
     - name: 拉取远程最新更改
-      # 在这里执行 git pull，确保本地分支与远程分支同步
-      # 配置 Git 用户信息，以防 pull 产生合并提交时需要
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        # 使用 --rebase --autostash 尝试将本地更改重放到远程最新提交之上
-        # 这通常能保持更干净的提交历史
         git pull --rebase --autostash origin main || true
-        # `|| true` 的作用是：如果 pull 失败（例如，没有远程更改或发生复杂冲突），
-        # 不会中断整个工作流，而是允许后续步骤继续。
-        # 对于自动化更新，通常希望即使 pull 失败也尝试提交和推送。
-        # 如果你希望 pull 失败就停止，可以移除 `|| true`。
 
     - name: 设置 Python 环境
       uses: actions/setup-python@v5
@@ -42,7 +33,14 @@ jobs:
         playwright install
 
     - name: 运行代理转换脚本
-      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --output data/node_counts.csv --max-concurrency 50 --timeout 20
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --stats-output data/node_counts.csv --max-concurrency 50 --timeout 20
+
+    - name: 检查生成的文件
+      run: |
+        ls -la data/
+        cat data/nodes.txt || echo "data/nodes.txt 不存在或为空"
+        cat data/node_counts.csv || echo "data/node_counts.csv 不存在或为空"
+        find data/ -name "nodes_*.txt" -exec echo "找到分片文件: {}" \; -exec cat {} \;
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -50,8 +48,6 @@ jobs:
         commit_message: "自动更新代理节点及生成 Clash 配置"
         file_pattern: |
           data/nodes.txt
-          data/nodes_*.txt # 如果有分片文件，也包含进来
-          data/node_counts.csv # 确保添加了这一行
+          data/nodes_*.txt
+          data/node_counts.csv
         branch: main
-        # 移除不受支持的 pull_options 参数
-        # pull_options: '--rebase --autostash' # <-- 移除这一行
