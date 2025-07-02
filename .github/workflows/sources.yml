@@ -1,199 +1,56 @@
-name: 更新和转换代理节点
+name: 更新和转换
 
 on:
-  workflow_dispatch: # 手动触发
-    inputs:
-      max_concurrency:
-        description: '最大并发请求数'
-        default: '50'
-        required: false
-      timeout:
-        description: '请求超时时间（秒）'
-        default: '20'
-        required: false
-      validate_nodes:
-        description: '是否验证节点有效性'
-        default: 'true'
-        type: boolean
-      protocol_split:
-        description: '是否按协议分割输出'
-        default: 'true'
-        type: boolean
-      output_formats:
-        description: '输出格式（txt,json,yaml，用逗号分隔）'
-        default: 'txt,json'
-        required: false
+  workflow_dispatch: # 允许手动触发
   schedule:
-    # 每天凌晨2点（UTC），日本时间上午11点
+    # 每天凌晨2点（UTC时间）运行，转换为日本时间是上午11点
     - cron: '0 2 * * *'
-  push:
-    branches:
-      - main
-    paths:
-      - 'sources.list'
-      - 'proxy_converter.py'
-      - 'config.yaml'
-
-# 环境变量
-env:
-  PYTHON_VERSION: '3.11'
-  SOURCES_FILE: 'sources.list'
-  OUTPUT_DIR: 'data'
-  OUTPUT_BASE: 'nodes'
-  STATS_OUTPUT: 'data/node_counts.csv'
-  CONFIG_FILE: 'config.yaml'
-  CACHE_DIR: '.cache'
-  MAX_CONCURRENCY: ${{ github.event.inputs.max_concurrency || '50' }}
-  TIMEOUT: ${{ github.event.inputs.timeout || '20' }}
-  VALIDATE_NODES: ${{ github.event.inputs.validate_nodes || 'true' }}
-  PROTOCOL_SPLIT: ${{ github.event.inputs.protocol_split || 'true' }}
-  OUTPUT_FORMATS: ${{ github.event.inputs.output_formats || 'txt,json' }}
 
 jobs:
   update-and-convert-nodes:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # 作业超时时间
 
     steps:
-    # 1. 检出仓库代码
     - name: 检出仓库代码
       uses: actions/checkout@v4
+      # 获取所有历史，这对于后续的 pull/rebase 操作至关重要
       with:
-        fetch-depth: 0 # 获取完整历史
-        ref: main
+        fetch-depth: 0
 
-    # 2. 拉取远程最新更改
     - name: 拉取远程最新更改
+      # 在这里执行 git pull，确保本地分支与远程分支同步
+      # 配置 Git 用户信息，以防 pull 产生合并提交时需要
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git pull --rebase --autostash origin main || {
-          echo "拉取远程更改失败，重置到远程状态"
-          git fetch origin
-          git reset --hard origin/main
-        }
+        # 使用 --rebase --autostash 尝试将本地更改重放到远程最新提交之上
+        # 这通常能保持更干净的提交历史
+        git pull --rebase --autostash origin main || true
+        # `|| true` 的作用是：如果 pull 失败（例如，没有远程更改或发生复杂冲突），
+        # 不会中断整个工作流，而是允许后续步骤继续。
+        # 对于自动化更新，通常希望即使 pull 失败也尝试提交和推送。
+        # 如果你希望 pull 失败就停止，可以移除 `|| true`。
 
-    # 3. 缓存 Python 依赖
-    - name: 缓存 Python 依赖
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-
-    # 4. 缓存 Playwright 浏览器
-    - name: 缓存 Playwright 浏览器
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/playwright
-        key: ${{ runner.os }}-playwright-${{ hashFiles('proxy_converter.py') }}
-        restore-keys: |
-          ${{ runner.os }}-playwright-
-
-    # 5. 设置 Python 环境
     - name: 设置 Python 环境
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
+        python-version: '3.x'
 
-    # 6. 安装依赖库
     - name: 安装依赖库
       run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        else
-          pip install aiohttp beautifulsoup4 pyyaml fake-useragent playwright aiofiles tqdm
-        fi
-        playwright install --with-deps chromium
+        pip install aiohttp beautifulsoup4 pyyaml fake-useragent playwright
+        playwright install
 
-    # 7. 清理旧输出文件
-    - name: 清理旧输出文件
-      run: |
-        mkdir -p ${{ env.OUTPUT_DIR }}
-        find ${{ env.OUTPUT_DIR }} -type f \( -name "${{ env.OUTPUT_BASE }}*.txt" -o -name "${{ env.OUTPUT_BASE }}*.json" -o -name "${{ env.OUTPUT_BASE }}*.yaml" -o -name "${{ env.STATS_OUTPUT }}" \) -delete
-        echo "已清理旧的输出文件"
-
-    # 8. 运行代理转换脚本
     - name: 运行代理转换脚本
-      id: run-script
-      run: |
-        python proxy_converter.py \
-          --sources ${{ env.SOURCES_FILE }} \
-          --output-dir ${{ env.OUTPUT_DIR }} \
-          --output-base ${{ env.OUTPUT_BASE }} \
-          --stats-output ${{ env.STATS_OUTPUT }} \
-          --config-file ${{ env.CONFIG_FILE }} \
-          --max-concurrency ${{ env.MAX_CONCURRENCY }} \
-          --timeout ${{ env.TIMEOUT }} \
-          --use-browser \
-          --validate-nodes=${{ env.VALIDATE_NODES }} \
-          --protocol-split=${{ env.PROTOCOL_SPLIT }} \
-          --output-formats ${{ env.OUTPUT_FORMATS }} \
-          --cache-dir ${{ env.CACHE_DIR }}
-      continue-on-error: true
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --output data/node_counts.csv --max-concurrency 50 --timeout 20
 
-    # 9. 检查脚本执行结果
-    - name: 检查脚本执行结果
-      run: |
-        if [ ${{ steps.run-script.outcome }} == "success" ]; then
-          echo "代理转换脚本执行成功"
-        else
-          echo "代理转换脚本执行失败，请检查日志"
-          exit 1
-        fi
-
-    # 10. 提交并推送更改
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "自动更新代理节点及生成节点统计 (#${{ github.run_number }})"
+        commit_message: "自动更新代理节点及生成 Clash 配置"
         file_pattern: |
-          ${{ env.OUTPUT_DIR }}/*.txt
-          ${{ env.OUTPUT_DIR }}/*.json
-          ${{ env.OUTPUT_DIR }}/*.yaml
-          ${{ env.STATS_OUTPUT }}
+          data/nodes.txt
+          
         branch: main
-        push_options: --force
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # 11. 保存日志文件
-    - name: 保存日志文件
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: proxy-converter-logs
-        path: ${{ env.LOG_FILE }}
-        retention-days: 7
-
-    # 12. 发送通知到 Discord
-    - name: 发送通知到 Discord
-      if: always()
-      uses: Ilshidur/action-discord@0.3.2
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      with:
-        args: |
-          **代理节点更新 #${{ github.run_number }}**  
-          状态: ${{ job.status }}  
-          仓库: ${{ github.repository }}  
-          提交: ${{ github.sha }}  
-          日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}  
-          ${{ job.status == 'success' && '🎉 更新完成！' || '❌ 更新失败，请检查日志！' }}
-
-    # 13. 发送通知到 Telegram（可选）
-    - name: 发送通知到 Telegram
-      if: always()
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_CHAT_ID }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          代理节点更新 #${{ github.run_number }}
-          状态: ${{ job.status }}
-          仓库: ${{ github.repository }}
-          提交: ${{ github.sha }}
-          日志: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          ${{ job.status == 'success' && '🎉 更新完成！' || '❌ 更新失败，请检查日志！' }}
+        # 移除不受支持的 pull_options 参数
+        # pull_options: '--rebase --autostash' # <-- 移除这一行
