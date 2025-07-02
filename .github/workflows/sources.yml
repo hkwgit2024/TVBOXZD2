@@ -33,7 +33,7 @@ jobs:
         playwright install
 
     - name: 运行代理转换脚本
-      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --stats-output data/node_counts.csv --max-concurrency 50 --timeout 20
+      run: python proxy_converter.py --sources sources.list --output data/nodes.txt --stats-output data/node_counts.csv --max-concurrency 50 --timeout 20 --chunk-size-mb 95
 
     - name: 检查生成的文件
       run: |
