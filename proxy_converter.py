@@ -24,6 +24,7 @@ DEFAULT_OUTPUT_FILE = 'data/nodes.txt'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
+DEFAULT_CHUNK_SIZE_MB = 50  # 默认分片大小 50 MB，低于 GitHub 100 MB 限制
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
@@ -66,6 +67,7 @@ def setup_argparse() -> argparse.Namespace:
     parser.add_argument('--stats-output', default=DEFAULT_STATS_FILE, help=f'节点统计数据输出文件路径 (默认为: {DEFAULT_STATS_FILE})')
     parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY, help=f'最大并发请求数 (默认为: {DEFAULT_MAX_CONCURRENCY})')
     parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT, help=f'请求超时时间（秒） (默认为: {DEFAULT_TIMEOUT})')
+    parser.add_argument('--chunk-size-mb', type=int, default=DEFAULT_CHUNK_SIZE_MB, help=f'每个分片文件的最大大小（MB） (默认为: {DEFAULT_CHUNK_SIZE_MB})')
     parser.add_argument('--use-browser', action='store_true', help='当HTTP请求失败时，尝试使用无头浏览器（Playwright）')
     return parser.parse_args()
 
@@ -552,8 +554,7 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
             for proxy_dict in yaml_content['proxies']:
                 url_node = convert_clash_proxy_to_url(proxy_dict)
                 if url_node:
-                    if any(re.match(pattern, url_node,.Union: 2025-07-02T13:15:27.951Z
- re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                    if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
                         nodes_found.add(normalize_node_url(url_node))
         elif isinstance(yaml_content, list):
             for item in yaml_content:
@@ -782,7 +783,7 @@ async def process_single_url_strategy(session: aiohttp.ClientSession, url: str, 
         return set(extract_nodes(content))
     return set()
 
-async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: int, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set, use_browser: bool, browser_context: Optional[BrowserContext] = None) -> None:
+async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: int, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set, use_browser: bool, browser_context: Optional[BrowserContext] = None) -> Set[str]:
     """处理单个域名，先尝试 http，再尝试 https，并更新结果字典。"""
     nodes_from_domain = set()
     http_url = f"http://{domain}"
@@ -883,7 +884,7 @@ def main():
     global args
     args = setup_argparse()
     
-    logger.info(f"命令行参数: sources={args.sources}, output={args.output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, use_browser={args.use_browser}")
+    logger.info(f"命令行参数: sources={args.sources}, output={args.output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, chunk_size_mb={args.chunk_size_mb}, use_browser={args.use_browser}")
     
     try:
         with open(args.sources, 'r', encoding='utf-8') as f:
@@ -946,7 +947,7 @@ def main():
     output_filename_base = os.path.splitext(os.path.basename(args.output))[0]
     os.makedirs(output_dir, exist_ok=True)
 
-    target_file_size_mb = 50  # 降低目标文件大小到 50 MB，确保低于 GitHub 100 MB 限制
+    target_file_size_mb = min(args.chunk_size_mb, 95)  # 确保不超过 95 MB，留出安全余量
     target_file_size_bytes = target_file_size_mb * 1024 * 1024
     avg_node_length_bytes = 150  # 增加平均节点长度估计，考虑更长的 VMess 配置
     max_nodes_per_file = target_file_size_bytes // avg_node_length_bytes
@@ -980,8 +981,7 @@ def main():
                     nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
                     output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
                     try:
-                        content_to_wri
-te = '\n'.join(nodes_for_current_file)
+                        content_to_write = '\n'.join(nodes_for_current_file)
                         file_size_bytes = len(content_to_write.encode('utf-8'))
                         if file_size_bytes > target_file_size_bytes:
                             logger.warning(f"分片文件 '{output_path}' 仍过大 ({file_size_bytes / (1024*1024):.2f} MB)，调整行数。")
