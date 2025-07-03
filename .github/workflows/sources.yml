@@ -39,13 +39,18 @@ jobs:
     - name: 运行代理转换脚本
       run: python proxy_converter.py --sources sources.list --output data/nodes.txt --stats-output data/node_counts.csv --max-concurrency 50 --timeout 20 --chunk-size-mb 95
 
-    - name: 检查生成的文件
+    - name: 检查生成的文件和 Git 状态
       run: |
         ls -la data/
         cat data/node_counts.csv || echo "data/node_counts.csv 不存在或为空"
         find data/ -name "nodes_*.txt" -exec echo "找到分片文件: {}" \; -exec head -n 5 {} \;
         git status
         git ls-files data/
+        git check-ignore -v data/nodes_*.txt data/node_counts.csv || echo "没有文件被 .gitignore 忽略"
+
+    - name: 确保文件被 Git 跟踪
+      run: |
+        git add data/nodes_*.txt data/node_counts.csv || echo "没有文件需要添加"
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
