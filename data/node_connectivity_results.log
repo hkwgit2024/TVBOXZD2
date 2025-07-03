@@ -1,7 +1,7 @@
 开始测试...
-时间: 2025-07-02 00:54:01 JST
+时间: 2025-07-03 00:53:19 JST
 系统资源:                total        used        free      shared  buff/cache   available
-Mem:            15Gi       887Mi        13Gi        42Mi       1.5Gi        14Gi
+Mem:            15Gi       849Mi        13Gi        42Mi       1.6Gi        14Gi
 Swap:          4.0Gi          0B       4.0Gi
 文件描述符限制: 65536
 -------------------------------------
@@ -30,8 +30,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: ak1686.www.outline.network.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou
 解析: footlo.argha-v2pedia.monster
 失败: footlo.argha-v2pedia.monster
-解析: crm.sant.ir
-成功: crm.sant.ir -> 10.10.34.36
 解析: id09tk.ifengsoutu233.tk
 失败: id09tk.ifengsoutu233.tk
 解析: sla.cn.964e995b760.gogodns.xin
@@ -144,14 +142,10 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: jp-03.licom.ml
 解析: cnamemc1.cdncisco4.co
 失败: cnamemc1.cdncisco4.co
-解析: fr10.sulink.one
-成功: fr10.sulink.one -> 104.21.48.1
 解析: shzz.ikuncloud.com
 失败: shzz.ikuncloud.com
 解析: tw4.mhw7e2.online
 失败: tw4.mhw7e2.online
-解析: hkt2.sulink.one
-成功: hkt2.sulink.one -> 104.21.32.1
 解析: jpc-zf.clm10086.xyz
 失败: jpc-zf.clm10086.xyz
 解析: hel-zf.clm10086.xyz
@@ -305,7 +299,7 @@ Swap:          4.0Gi          0B       4.0Gi
 解析: dl-jp5.efyunpan.com
 失败: dl-jp5.efyunpan.com
 解析: osav101.jd0001.top
-失败: osav101.jd0001.top
+成功: osav101.jd0001.top -> 47.76.127.217
 解析: hke-zf.clm10086.xyz
 失败: hke-zf.clm10086.xyz
 解析: kr3.microsoftjs.top
@@ -324,8 +318,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: sg8.421421.xyz
 解析: h649960.waihuizhibiaowang.com
 失败: h649960.waihuizhibiaowang.com
-解析: sg07v6.sulink.one
-成功: sg07v6.sulink.one -> 104.21.80.1
 解析: yd.epclub.xyz
 失败: yd.epclub.xyz
 解析: scloud59.jafiyun.world
@@ -364,8 +356,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: mahdiserver-903.pages.dev
 解析: Join--VPNCUSTOMIZE.V2ray.re
 失败: Join--VPNCUSTOMIZE.V2ray.re
-解析: zzcm06.cacbce.com
-成功: zzcm06.cacbce.com -> 47.76.127.217
 解析: hk-server-01.selfupay.com
 失败: hk-server-01.selfupay.com
 解析: nl1.nodegz.top
@@ -378,8 +368,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: vluk3.g2ray.com
 解析: udhk2-tg-data.amazonwebservicess.com
 失败: udhk2-tg-data.amazonwebservicess.com
-解析: sg6.sulink.one
-成功: sg6.sulink.one -> 104.21.32.1
 解析: awsin3-data.amazon-azure.com
 失败: awsin3-data.amazon-azure.com
 解析: bphk3.mybestjj.com
@@ -430,8 +418,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: p5.punchline.ir
 解析: iran.mbahmaee.xyz
 失败: iran.mbahmaee.xyz
-解析: vip.mosen1server.ir
-成功: vip.mosen1server.ir -> 217.114.40.12
 解析: pp1.zhengzhongfeizhu.xyz
 失败: pp1.zhengzhongfeizhu.xyz
 解析: dnssdall.agentlink.cc
@@ -794,8 +780,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: vlse.g2ray.com
 解析: hk18.microsoftjs.top
 失败: hk18.microsoftjs.top
-解析: ahkt.sulink.one
-成功: ahkt.sulink.one -> 104.21.64.1
 解析: tj-sg02.yiyodns.xyz
 失败: tj-sg02.yiyodns.xyz
 解析: us.kunlun-ppg.com
@@ -860,8 +844,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: image.gengsang.me
 解析: frad.webshecan.cloud
 失败: frad.webshecan.cloud
-解析: surfboard-se.jingfan.cyou
-成功: surfboard-se.jingfan.cyou -> 109.122.201.47
 解析: awskr2-data.amazon-azure.com
 失败: awskr2-data.amazon-azure.com
 解析: svip2.365ip.cloud
@@ -914,8 +896,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: sg2ws.hotfun.buzz
 解析: edge-earth.themars.top
 失败: edge-earth.themars.top
-解析: hkzl2.sulink.one
-成功: hkzl2.sulink.one -> 104.21.32.1
 解析: su.balink.buzz
 失败: su.balink.buzz
 解析: ccy.colacloud.free.hr
@@ -954,16 +934,12 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: xg107.npv4.com
 解析: java.ct.arvancode.eu.org
 失败: java.ct.arvancode.eu.org
-解析: dnshkt.zzcnpro.com
-成功: dnshkt.zzcnpro.com -> 8.218.208.240
 解析: tj-us02.yiyodns.xyz
 失败: tj-us02.yiyodns.xyz
 解析: xmssmf01.xmss.vip
 失败: xmssmf01.xmss.vip
 解析: dl-sg4.steamdownload.top
 失败: dl-sg4.steamdownload.top
-解析: us02.sulink.one
-成功: us02.sulink.one -> 104.21.96.1
 解析: c186608d-6bef-4eb3-ac43-331a3e5333ea.wnbo.top
 失败: c186608d-6bef-4eb3-ac43-331a3e5333ea.wnbo.top
 解析: frontend.yijianlian.app
@@ -1361,7 +1337,7 @@ Swap:          4.0Gi          0B       4.0Gi
 解析: jp.ss200m.pinssr.ml
 失败: jp.ss200m.pinssr.ml
 解析: gy.51vv.top
-失败: gy.51vv.top
+成功: gy.51vv.top -> 59.24.3.174
 解析: zyrk.w6w.live
 失败: zyrk.w6w.live
 解析: sg.421421.xyz
@@ -1396,8 +1372,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: awshk18-data.amazon-azure.com
 解析: scloud41.jafiyun.world
 失败: scloud41.jafiyun.world
-解析: s2.sulink.one
-成功: s2.sulink.one -> 104.21.96.1
 解析: elsxxx.youxuan.wiki
 失败: elsxxx.youxuan.wiki
 解析: tw01.henet.top
@@ -1488,8 +1462,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: ukt1.sshocean.net
 解析: hk9.microsoftjs.top
 失败: hk9.microsoftjs.top
-解析: us04.sulink.one
-成功: us04.sulink.one -> 104.21.32.1
 解析: hk19.microsoftjs.top
 失败: hk19.microsoftjs.top
 解析: aafrtpfxr.twl01i9zjfegelp.5xfsur8v62.gosdk.xyz
@@ -1554,16 +1526,12 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: hkf-zf.clm10086.xyz
 解析: bx-zf.clm10086.xyz
 失败: bx-zf.clm10086.xyz
-解析: zzcm10.cacbce.com
-成功: zzcm10.cacbce.com -> 47.76.127.217
 解析: cdnssr.ssrsub.com
 失败: cdnssr.ssrsub.com
 解析: n00005.bzdqsmzngpyyng.sbs
 失败: n00005.bzdqsmzngpyyng.sbs
 解析: vpnbigbang01.ddns.net
 失败: vpnbigbang01.ddns.net
-解析: us05.sulink.one
-成功: us05.sulink.one -> 104.21.96.1
 解析: id02tk.ifengsoutu233.tk
 失败: id02tk.ifengsoutu233.tk
 解析: sinash02.dghjkjhertyuihgfddfghjasdertyuudfghjaxcvbj.com
@@ -1674,8 +1642,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: 1j8p03.abzoones.xyz
 解析: piniasg01.abbblog.xyz
 失败: piniasg01.abbblog.xyz
-解析: sg03v6.sulink.one
-成功: sg03v6.sulink.one -> 104.21.64.1
 解析: hk10.microsoftjs.top
 失败: hk10.microsoftjs.top
 解析: hkg-zf.clm10086.xyz
@@ -2058,8 +2024,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: svvip101.qlgq1.pw
 解析: global-sg-1.node-ddns.netlib.net
 失败: global-sg-1.node-ddns.netlib.net
-解析: pro.sulink.one
-成功: pro.sulink.one -> 104.21.96.1
 解析: awshk17-data.amazon-azure.com
 失败: awshk17-data.amazon-azure.com
 解析: join.vmessorg.fastly80-3.hosting-ip.com
@@ -2126,8 +2090,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: sgp-3.fuckjdieng.uk
 解析: jgwdj4.gaox.ml
 失败: jgwdj4.gaox.ml
-解析: zzcm09.zzcnpro.com
-成功: zzcm09.zzcnpro.com -> 8.218.208.240
 解析: trojan.wefuckgfw.gq
 失败: trojan.wefuckgfw.gq
 解析: rus.pelosi.ml
@@ -2168,8 +2130,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: arm.ptuu.gq
 解析: ak1468.free.www.outline.network
 失败: ak1468.free.www.outline.network
-解析: sp01.sulink.one
-成功: sp01.sulink.one -> 104.21.96.1
 解析: 3d1c4a01.mcfront.xyz
 失败: 3d1c4a01.mcfront.xyz
 解析: gdcm.lele233.top
@@ -2218,8 +2178,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: core1.efpan.one
 解析: onejp.888553.xyz
 失败: onejp.888553.xyz
-解析: surfboard-uk.jingfan.cyou
-成功: surfboard-uk.jingfan.cyou -> 91.231.186.148
 解析: download2tw.windowsupdate1.com
 失败: download2tw.windowsupdate1.com
 解析: xibaozi.19890604.day
@@ -2299,7 +2257,7 @@ Swap:          4.0Gi          0B       4.0Gi
 解析: aws.untilmu.com
 失败: aws.untilmu.com
 解析: phxv001.jd0001.top
-失败: phxv001.jd0001.top
+成功: phxv001.jd0001.top -> 47.76.127.217
 解析: gzyd.jcnode.top
 失败: gzyd.jcnode.top
 解析: t03.ssrsub.comjp-server-02.selfupay.com
@@ -2432,8 +2390,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: s-g04.beef1917.com
 解析: ten-hk-88fg7f.tianziyu.com
 失败: ten-hk-88fg7f.tianziyu.com
-解析: jp07.sulink.one
-成功: jp07.sulink.one -> 104.21.112.1
 解析: tw1111.tfzhc.top
 失败: tw1111.tfzhc.top
 解析: 1c7s2g03.mcfront.xyz
@@ -2556,8 +2512,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: ddns.olucloud.subapi.cc
 解析: us3.speed-mitce.top
 失败: us3.speed-mitce.top
-解析: s3.sulink.one
-成功: s3.sulink.one -> 104.21.112.1
 解析: uciran.wallerman-come.gq
 失败: uciran.wallerman-come.gq
 解析: WLF-V-P-N-ID.dnsfree.one
@@ -2726,8 +2680,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: hk7.speed-mitce.top
 解析: id01tk.ifengsoutu233.tk
 失败: id01tk.ifengsoutu233.tk
-解析: s.sulink.one
-成功: s.sulink.one -> 104.21.16.1
 解析: usa-sr-105.mitoption.com
 失败: usa-sr-105.mitoption.com
 解析: v2cross.com.02.v2ce.com
@@ -2736,8 +2688,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: sg01.shenzhouplus.cf
 解析: www.outline.network.ak1907.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou
 失败: www.outline.network.ak1907.fr8678825324247b8176d59f83c30bd94d23d2e3ac5cd4a743bkwqeikvdyufr.cyou
-解析: SVNTEAM.MiSVN.iR
-成功: SVNTEAM.MiSVN.iR -> 104.16.53.11
 解析: 5c1a01.abzoones.xyz
 失败: 5c1a01.abzoones.xyz
 解析: sg01.awcloud.top
@@ -2852,8 +2802,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: t03.ssrsub.comp-server-02.selfupay.com
 解析: kr1.api-aws.com
 失败: kr1.api-aws.com
-解析: sl.sulink.one
-成功: sl.sulink.one -> 104.21.32.1
 解析: awshk7-tg-data.amazonwebservicess.com
 失败: awshk7-tg-data.amazonwebservicess.com
 解析: jgwdb1.gaox.ml
@@ -2866,8 +2814,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: t7.ssrsub.com
 解析: hk-sjfx-95s-xjfa-xmasf.jumaonet.com
 失败: hk-sjfx-95s-xjfa-xmasf.jumaonet.com
-解析: surfboard-ca.cloudlion.online
-成功: surfboard-ca.cloudlion.online -> 3.96.191.64
 解析: g2.hy2.one
 失败: g2.hy2.one
 解析: awssg17-data.amazon-azure.com
@@ -2880,8 +2826,6 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: hk2.balink.buzz
 解析: lt.ktmwan.top
 失败: lt.ktmwan.top
-解析: bl01.sulink.one
-成功: bl01.sulink.one -> 104.21.96.1
 解析: Networknim.cam
 失败: Networknim.cam
 解析: 3d6e01.abzoones.xyz
@@ -2928,7 +2872,7 @@ Swap:          4.0Gi          0B       4.0Gi
 失败: edgetunnel.anycast.eu.org
 解析: tw-hy2-1.speed-mitce.top
 失败: tw-hy2-1.speed-mitce.top
-预解析完成: 28 成功，1430 失败
+预解析完成: 3 成功，1427 失败
 更新缓存...
 缓存更新完成
 开始分批测试...
