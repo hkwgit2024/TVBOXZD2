@@ -46,18 +46,18 @@ jobs:
         find data/ -name "nodes_*.txt" -exec echo "找到分片文件: {}" \; -exec head -n 5 {} \;
         git status
         git ls-files data/
-        git check-ignore -v data/nodes_*.txt data/node_counts.csv data/nodes.txt|| echo "没有文件被 .gitignore 忽略"
+        git check-ignore -v data/nodes_*.txt data/node_counts.csv || echo "没有文件被 .gitignore 忽略"
 
     - name: 确保文件被 Git 跟踪
       run: |
-        git add data/nodes_*.txt data/node_counts.csv data/nodes.txt|| echo "没有文件需要添加"
+        git add data/nodes_*.txt data/node_counts.csv || echo "没有文件需要添加"
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "自动更新代理节点及生成 Clash 配置"
         file_pattern: |
-          data/nodes.txt
+          
           data/nodes_*.txt
           data/node_counts.csv
         branch: main
