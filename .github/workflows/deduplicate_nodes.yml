@@ -1,9 +1,9 @@
 name: Deduplicate Nodes
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allows manual trigger
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行 (例如 北京时间早上8点)
+    - cron: '0 0 * * *' # Runs daily at midnight UTC (e.g., 8 AM Beijing time)
 
 jobs:
   deduplicate:
@@ -16,20 +16,49 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # 使用最新的Python 3版本
+          python-version: '3.x' # Use the latest Python 3 version
 
       - name: Install dependencies
         run: pip install requests tenacity
 
+      - name: Create data directory
+        run: mkdir -p data # Ensure the data directory exists before the script runs
+
       - name: Run deduplication script
-        run: python deduplicate_nodes.py
+        id: run_script # Add an ID to reference outputs from this step
+        run: python deduplicate_nodes.py # Your script now dynamically names the output file
+
+      - name: Get generated filename
+        id: get_filename # Add an ID to get the filename dynamically
+        run: |
+          # Find the most recently created file in the data directory
+          # and set it as a step output.
+          # This assumes your script outputs a single file in 'data/'
+          GENERATED_FILE=$(ls -t data/all_*.txt | head -1)
+          echo "Generated file: $GENERATED_FILE"
+          echo "output_file=$GENERATED_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 提供的默认 token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub's default token
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/all.txt
-          git diff --cached --exit-code || git commit -m "自动更新: 去重节点 [skip ci]"
-          git push
+          
+          # Use the dynamically obtained filename
+          GENERATED_FILE_PATH=${{ steps.get_filename.outputs.output_file }}
+
+          # Check if the file exists before attempting to add
+          if [ -f "$GENERATED_FILE_PATH" ]; then
+            git add "$GENERATED_FILE_PATH"
+            # Only commit if there are actual changes
+            if ! git diff --cached --exit-code; then
+              git commit -m "Auto-update: Deduplicated nodes for $(date +%Y-%m-%d) [skip ci]"
+              git push
+            else
+              echo "No changes to commit for $GENERATED_FILE_PATH."
+            fi
+          else
+            echo "Error: Generated file $GENERATED_FILE_PATH not found. Cannot commit."
+            exit 1
+          fi
