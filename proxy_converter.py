@@ -949,9 +949,9 @@ def main():
 
     target_file_size_mb = min(args.chunk_size_mb, 95)  # 确保不超过 95 MB，留出安全余量
     target_file_size_bytes = target_file_size_mb * 1024 * 1024
-    avg_node_length_bytes = 350  # 增加平均节点长度估计，考虑更长的 VMess 配置
+    avg_node_length_bytes = 250  # 增加平均节点长度估计，考虑更长的 VMess 配置
     max_nodes_per_file = target_file_size_bytes // avg_node_length_bytes
-    min_nodes_per_file = 100000  # 最小节点数，避免生成过多小文件
+    min_nodes_per_file = 50000  # 最小节点数，避免生成过多小文件
 
     logger.info(f"分片参数: target_file_size_mb={target_file_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
 
