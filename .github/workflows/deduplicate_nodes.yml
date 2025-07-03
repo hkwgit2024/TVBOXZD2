@@ -19,8 +19,7 @@ jobs:
           python-version: '3.x' # 使用最新的Python 3版本
 
       - name: Install dependencies
-        run: pip install requests
-            pip install tenacity
+        run: pip install requests tenacity
 
       - name: Run deduplication script
         run: python deduplicate_nodes.py
