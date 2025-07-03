@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_FILE = 'data/nodes.txt'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
-DEFAULT_CHUNK_SIZE_MB = 5  # 优化: 默认分片大小调整为 5 MB
+DEFAULT_CHUNK_SIZE_MB = 95
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
@@ -56,11 +56,11 @@ BASE64_RAW_PATTERN = r'(?:b64|base64|data:application\/octet-stream;base64,)?\s*
 BASE64_REGEX_LOOSE = re.compile(BASE64_RAW_PATTERN, re.MULTILINE | re.IGNORECASE)
 JS_VAR_REGEX = re.compile(r'(?:var|let|const)\s+[\w]+\s*=\s*["\'](' + COMBINED_REGEX_PATTERN + r'|' + BASE64_RAW_PATTERN + r')["\']', re.MULTILINE | re.IGNORECASE)
 JS_FUNC_CALL_REGEX = re.compile(r'(?:atob|decodeURIComponent)\s*\(\s*["\']?(' + BASE64_RAW_PATTERN + r')["\']?\s*\)', re.MULTILINE | re.IGNORECASE)
+HTML_TAG_REGEX = re.compile(r'<[^>]+>', re.MULTILINE)
 
 # --- 辅助函数 ---
 
 def setup_argparse() -> argparse.Namespace:
-    """解析命令行参数。"""
     parser = argparse.ArgumentParser(description='代理节点提取和去重工具')
     parser.add_argument('--sources', default=DEFAULT_SOURCES_FILE, help=f'包含源 URL 的输入文件路径 (默认为: {DEFAULT_SOURCES_FILE})')
     parser.add_argument('--output', default=DEFAULT_OUTPUT_FILE, help=f'提取到的节点输出文件路径 (默认为: {DEFAULT_OUTPUT_FILE})')
@@ -72,7 +72,6 @@ def setup_argparse() -> argparse.Namespace:
     return parser.parse_args()
 
 def decode_base64(data: str) -> str:
-    """解码 Base64 字符串，并修复可能存在的填充问题，清理非 Base64 字符。"""
     try:
         cleaned_data = re.sub(r'[^A-Za-z0-9+/=]', '', data)
         cleaned_data = cleaned_data.replace('-', '+').replace('_', '/')
@@ -85,7 +84,6 @@ def decode_base64(data: str) -> str:
         return ""
 
 def encode_base64(data: str) -> str:
-    """编码字符串为 URL 安全的 Base64 格式。"""
     try:
         encoded_bytes = base64.urlsafe_b64encode(data.encode('utf-8'))
         return encoded_bytes.decode('utf-8').rstrip('=')
@@ -93,36 +91,7 @@ def encode_base64(data: str) -> str:
         logger.warning(f"Base64 编码失败: {data[:50]}... 错误: {e}")
         return data
 
-def clean_html_tags(text: str) -> str:
-    """从字符串中移除所有 HTML/XML 标签及其内容，包括注释，并清理多余空格和特定 HTML 片段。"""
-    if not isinstance(text, str) or not text:
-        return ""
-    
-    soup = BeautifulSoup(text, 'html.parser')
-    
-    # 移除注释
-    for element in soup(text=lambda text: isinstance(text, Comment)):
-        element.extract()
-    
-    # 获取纯文本内容
-    clean_text = soup.get_text(separator=' ', strip=True)
-    
-    # 进一步清理常见的 HTML 实体或多余的空格
-    clean_text = re.sub(r'\s+', ' ', clean_text).strip()
-    
-    # 移除可能残留在 URL 或节点末尾的特定 HTML 标签片段 (即使 BeautifulSoup 已经处理过，以防万一)
-    # 这些标签通常不会有内部文本，它们直接附加在节点信息后
-    clean_text = re.sub(r'<\/?(?:pre|button|span|p|br)[^>]*>', '', clean_text, flags=re.IGNORECASE)
-    
-    # 移除任何剩余的、看起来像畸形标签的字符或 HTML 实体
-    clean_text = re.sub(r'&#\d+;', '', clean_text) # 数字 HTML 实体
-    clean_text = re.sub(r'&\w+;', '', clean_text) # 命名 HTML 实体
-    
-    return clean_text
-
-
 def normalize_node_url(url: str) -> str:
-    """规范化节点 URL 以提高去重效率，保持关键参数一致。"""
     try:
         protocol, _, rest = url.partition('://')
         if not protocol or protocol.lower() not in NODE_PATTERNS:
@@ -145,7 +114,7 @@ def normalize_node_url(url: str) -> str:
                 return url
 
             ordered_keys = [
-                'v', 'ps', 'add', 'port', 'id', 'aid', 'net', 'type', 'tls',
+                'ps', 'add', 'port', 'id', 'net', 'type', 'tls',
                 'sni', 'host', 'path', 'serviceName', 'alpn', 'fp', 'allowInsecure',
                 'maxEarlyData', 'earlyDataHeader', 'mode', 'method', 'scy'
             ]
@@ -153,19 +122,23 @@ def normalize_node_url(url: str) -> str:
             for k in ordered_keys:
                 if k in config and config[k] is not None:
                     if k == 'ps':
-                        clean_config[k] = urllib.parse.unquote(str(config[k]))
-                    elif k in ['port', 'aid']:
+                        clean_config[k] = urllib.parse.unquote(str(config[k]))[:30]
+                    elif k == 'port':
                         try:
                             clean_config[k] = int(config[k])
                         except (ValueError, TypeError):
-                            clean_config[k] = 0 if k == 'aid' else 0
+                            clean_config[k] = 0
+                            logger.debug(f"VMess 字段 'port' 类型转换失败: {config[k]}")
                     elif k == 'alpn' and isinstance(config[k], list):
                         clean_config[k] = ','.join(sorted(config[k]))
+                    elif k in ['host', 'sni', 'path', 'serviceName', 'earlyDataHeader']:
+                        clean_config[k] = str(config[k])[:30]
                     else:
                         clean_config[k] = config[k]
             
-            if 'ps' not in clean_config: clean_config['ps'] = ''
-            final_config_to_encode = {k: v for k, v in clean_config.items() if not (k == 'aid' and v == 0) and not (k == 'v' and v == '2')}
+            if 'ps' not in clean_config:
+                clean_config['ps'] = ''
+            final_config_to_encode = {k: v for k, v in clean_config.items() if v is not None and v != ''}
             return f"vmess://{encode_base64(json.dumps(final_config_to_encode, ensure_ascii=False, sort_keys=True))}"
         
         elif protocol_lower == 'ssr':
@@ -198,14 +171,14 @@ def normalize_node_url(url: str) -> str:
                     if k in ['protoparam', 'obfsparam', 'group']:
                         decoded_val = decode_base64(val)
                         if decoded_val:
-                            clean_params[k] = encode_base64(decoded_val)
+                            clean_params[k] = encode_base64(decoded_val[:30])
                         else:
-                            clean_params[k] = encode_base64(val)
+                            clean_params[k] = encode_base64(val[:30])
                     else:
-                        clean_params[k] = urllib.parse.quote(urllib.parse.unquote(val), safe='')
+                        clean_params[k] = urllib.parse.quote(urllib.parse.unquote(val), safe='')[:30]
                 
                 query_string = urllib.parse.urlencode(clean_params, quote_via=urllib.parse.quote)
-                remark_decoded = decode_base64(fragment_raw) if fragment_raw else ''
+                remark_decoded = decode_base64(fragment_raw)[:30] if fragment_raw else ''
                 remark_encoded = encode_base64(remark_decoded) if remark_decoded else ''
                 
                 normalized_core = f"{host}:{port}:{protocol_name}:{method}:{obfs_name}:{password_encoded_val}"
@@ -234,13 +207,13 @@ def normalize_node_url(url: str) -> str:
             sorted_query_params = {}
             for k in sorted(query_params.keys()):
                 val = query_params[k][0] if isinstance(query_params[k], list) else query_params[k]
-                sorted_query_params[k] = urllib.parse.quote(urllib.parse.unquote(val), safe='')
+                sorted_query_params[k] = urllib.parse.quote(urllib.parse.unquote(val), safe='')[:30]
             
             query_string = urllib.parse.urlencode(sorted_query_params, quote_via=urllib.parse.quote)
             if query_string:
                 query_string = '?' + query_string
             
-            fragment = urllib.parse.unquote(parsed_url.fragment)
+            fragment = urllib.parse.unquote(parsed_url.fragment)[:30]
             if fragment:
                 fragment = '#' + urllib.parse.quote(fragment, safe='')
             
@@ -250,9 +223,8 @@ def normalize_node_url(url: str) -> str:
         return url
 
 def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
-    """将 Clash 代理配置字典转换为标准 URL 格式。"""
     proxy_type = proxy.get('type', '').lower()
-    name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', f"{proxy_type}_node").strip()), safe='')
+    name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', f"{proxy_type}_node").strip())[:30], safe='')
     server = proxy.get('server')
     port = proxy.get('port')
     
@@ -273,13 +245,13 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         if plugin:
             if plugin == 'obfs' and 'mode' in plugin_opts:
                 params.append(f"plugin={plugin}")
-                params.append(f"obfs-host={urllib.parse.quote(plugin_opts.get('host', ''), safe='')}")
+                params.append(f"obfs-host={urllib.parse.quote(plugin_opts.get('host', '')[:30], safe='')}")
                 params.append(f"obfs-mode={plugin_opts['mode']}")
             elif plugin == 'v2ray-plugin':
                 params.append(f"plugin={plugin}")
                 params.append(f"v2ray-plugin-mode={plugin_opts.get('mode', 'websocket')}")
-                params.append(f"v2ray-plugin-host={urllib.parse.quote(plugin_opts.get('host', ''), safe='')}")
-                params.append(f"v2ray-plugin-path={urllib.parse.quote(plugin_opts.get('path', ''), safe='')}")
+                params.append(f"v2ray-plugin-host={urllib.parse.quote(plugin_opts.get('host', '')[:30], safe='')}")
+                params.append(f"v2ray-plugin-path={urllib.parse.quote(plugin_opts.get('path', '')[:30], safe='')}")
                 if plugin_opts.get('tls'): params.append("v2ray-plugin-tls=true")
                 if plugin_opts.get('skip-cert-verify'): params.append("v2ray-plugin-skip-cert-verify=true")
                 if plugin_opts.get('mux'): params.append("v2ray-plugin-mux=true")
@@ -295,12 +267,10 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             return None
         
         config: Dict[str, Any] = {
-            "v": "2",
             "ps": urllib.parse.unquote(name),
             "add": server,
             "port": int(port),
             "id": uuid_val,
-            "aid": proxy.get('alterId', 0),
             "net": network,
             "type": proxy.get('cipher', 'auto'),
         }
@@ -309,8 +279,8 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             config["tls"] = "tls"
             sni = proxy.get('servername') or proxy.get('host')
             if sni:
-                config["host"] = sni 
-                config["sni"] = sni
+                config["host"] = sni[:30]
+                config["sni"] = sni[:30]
             if proxy.get('skip-cert-verify'):
                 config["allowInsecure"] = 1
             if proxy.get('alpn'):
@@ -322,16 +292,16 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
 
         if network == 'ws':
             ws_opts = proxy.get('ws-opts', {})
-            config["path"] = ws_opts.get('path', '/')
+            config["path"] = ws_opts.get('path', '/')[:30]
             if 'headers' in ws_opts and 'Host' in ws_opts['headers']:
-                config['host'] = ws_opts['headers']['Host']
+                config['host'] = ws_opts['headers']['Host'][:30]
             elif ws_opts.get('host'):
-                config['host'] = ws_opts['host']
+                config['host'] = ws_opts['host'][:30]
             if ws_opts.get('max-early-data'): config['maxEarlyData'] = ws_opts['max-early-data']
-            if ws_opts.get('early-data-header'): config['earlyDataHeader'] = ws_opts['early-data-header']
+            if ws_opts.get('early-data-header'): config['earlyDataHeader'] = ws_opts['early-data-header'][:30]
         elif network == 'grpc':
             grpc_opts = proxy.get('grpc-opts', {})
-            config["serviceName"] = grpc_opts.get('grpc-service-name', '')
+            config["serviceName"] = grpc_opts.get('grpc-service-name', '')[:30]
             if grpc_opts.get('mode'): config["mode"] = grpc_opts['mode']
         elif network == 'http':
             http_opts = proxy.get('http-opts', {})
@@ -340,9 +310,9 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             if http_opts.get('headers'):
                 for header_key, header_value in http_opts['headers'].items():
                     if header_key.lower() == 'host':
-                        config['host'] = header_value[0] if isinstance(header_value, list) else header_value
+                        config['host'] = header_value[0][:30] if isinstance(header_value, list) else header_value[:30]
                         break
-        final_config = {k: v for k, v in config.items() if v is not None and v != '' and not (k == 'aid' and v == 0) and not (k == 'v' and v == '2')}
+        final_config = {k: v for k, v in config.items() if v is not None and v != ''}
         
         try:
             return f"vmess://{encode_base64(json.dumps(final_config, ensure_ascii=False, sort_keys=True))}"
@@ -358,9 +328,9 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             return None
         params = []
         sni = proxy.get('servername') or proxy.get('host') or server
-        if sni: params.append(f"sni={urllib.parse.quote(sni, safe='')}")
+        if sni: params.append(f"sni={urllib.parse.quote(sni[:30], safe='')}")
         if proxy.get('alpn'): params.append(f"alpn={urllib.parse.quote(','.join(proxy['alpn']) if isinstance(proxy['alpn'], list) else proxy['alpn'], safe='')}")
-        if proxy.get('client-fingerprint'): params.append(f"fp={urllib.parse.quote(proxy['client-fingerprint'], safe='')}")
+        if proxy.get('client-fingerprint'): params.append(f"fp={urllib.parse.quote(proxy['client-fingerprint'][:30], safe='')}")
         if proxy.get('skip-cert-verify'): params.append("allowInsecure=1")
         if not proxy.get('udp', True): params.append("udp=false")
         
@@ -368,15 +338,15 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         if network == 'ws':
             ws_opts = proxy.get('ws-opts', {})
             params.append(f"type=ws")
-            params.append(f"path={urllib.parse.quote(ws_opts.get('path', '/'), safe='')}")
+            params.append(f"path={urllib.parse.quote(ws_opts.get('path', '/')[:30], safe='')}")
             if 'headers' in ws_opts and 'host' in ws_opts['headers']:
-                params.append(f"host={urllib.parse.quote(ws_opts['headers']['host'], safe='')}")
+                params.append(f"host={urllib.parse.quote(ws_opts['headers']['host'][:30], safe='')}")
             elif ws_opts.get('host'):
-                params.append(f"host={urllib.parse.quote(ws_opts['host'], safe='')}")
+                params.append(f"host={urllib.parse.quote(ws_opts['host'][:30], safe='')}")
         elif network == 'grpc':
             grpc_opts = proxy.get('grpc-opts', {})
             params.append(f"type=grpc")
-            params.append(f"serviceName={urllib.parse.quote(grpc_opts.get('grpc-service-name', ''), safe='')}")
+            params.append(f"serviceName={urllib.parse.quote(grpc_opts.get('grpc-service-name', '')[:30], safe='')}")
             if grpc_opts.get('mode'): params.append(f"mode={urllib.parse.quote(grpc_opts['mode'], safe='')}")
         query_string = "?" + "&".join(params) if params else ""
         return f"trojan://{password}@{server}:{port}{query_string}#{name}"
@@ -392,7 +362,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         if tls_enabled:
             params['security'] = 'tls'
             sni = proxy.get('servername') or proxy.get('host') or server
-            if sni: params['sni'] = sni
+            if sni: params['sni'] = sni[:30]
             if proxy.get('alpn'): params['alpn'] = ",".join(proxy['alpn']) if isinstance(proxy['alpn'], list) else proxy['alpn']
             if proxy.get('client-fingerprint'): params['fp'] = proxy['client-fingerprint']
             if proxy.get('skip-cert-verify'): params['allowInsecure'] = '1'
@@ -403,20 +373,20 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
                 if reality_opts.get('shortId'): params['sid'] = reality_opts['shortId']
                 if reality_opts.get('spiderX'): params['spx'] = reality_opts['spiderX']
                 if reality_opts.get('dest'): params['dest'] = reality_opts['dest']
-                if reality_opts.get('serverName'): params['serverName'] = reality_opts['serverName']
+                if reality_opts.get('serverName'): params['serverName'] = reality_opts['serverName'][:30]
         
         if network == 'ws':
             ws_opts = proxy.get('ws-opts', {})
-            params['path'] = ws_opts.get('path', '/')
+            params['path'] = ws_opts.get('path', '/')[:30]
             if 'headers' in ws_opts and 'host' in ws_opts['headers']:
-                params['host'] = ws_opts['headers']['host']
+                params['host'] = ws_opts['headers']['host'][:30]
             elif ws_opts.get('host'):
-                params['host'] = ws_opts['host']
+                params['host'] = ws_opts['host'][:30]
             if ws_opts.get('max-early-data'): params['maxEarlyData'] = ws_opts['max-early-data']
-            if ws_opts.get('early-data-header'): params['earlyDataHeader'] = ws_opts['early-data-header']
+            if ws_opts.get('early-data-header'): params['earlyDataHeader'] = ws_opts['early-data-header'][:30]
         elif network == 'grpc':
             grpc_opts = proxy.get('grpc-opts', {})
-            params['serviceName'] = grpc_opts.get('grpc-service-name', '')
+            params['serviceName'] = grpc_opts.get('grpc-service-name', '')[:30]
             if grpc_opts.get('mode'): params['mode'] = grpc_opts['mode']
         
         final_params = {k: v for k, v in params.items() if v is not None and v != ''}
@@ -432,7 +402,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             return None
         params = []
         if proxy.get('sni'):
-            params.append(f"sni={urllib.parse.quote(proxy['sni'], safe='')}")
+            params.append(f"sni={urllib.parse.quote(proxy['sni'][:30], safe='')}")
         if proxy.get('skip-cert-verify', False):
             params.append("insecure=1")
         if proxy.get('fast-open', False):
@@ -446,7 +416,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         if proxy.get('obfs'):
             params.append(f"obfs={proxy['obfs']}")
             if proxy.get('obfs-password'):
-                params.append(f"obfsParam={urllib.parse.quote(proxy['obfs-password'], safe='')}")
+                params.append(f"obfsParam={urllib.parse.quote(proxy['obfs-password'][:30], safe='')}")
         params_str = '&'.join(params) if params else ''
         return f"hysteria2://{password}@{server}:{port}{'?' + params_str if params_str else ''}#{name}"
     
@@ -460,7 +430,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         if proxy.get('version'): params.append(f"version={proxy['version']}")
         if proxy.get('udp-relay-mode'): params.append(f"udp_relay_mode={proxy['udp-relay-mode']}")
         if proxy.get('enable-sni', True):
-            if proxy.get('sni'): params.append(f"sni={urllib.parse.quote(proxy['sni'], safe='')}")
+            if proxy.get('sni'): params.append(f"sni={urllib.parse.quote(proxy['sni'][:30], safe='')}")
             else: params.append(f"sni={server}")
         if proxy.get('skip-cert-verify', False): params.append("insecure=1")
         if proxy.get('alpn'): params.append(f"alpn={urllib.parse.quote(','.join(proxy['alpn']) if isinstance(proxy['alpn'], list) else proxy['alpn'], safe='')}")
@@ -475,9 +445,9 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         cipher = proxy.get('cipher', 'auto')
         protocol = proxy.get('protocol', 'origin')
         obfs = proxy.get('obfs', 'plain')
-        obfs_param = proxy.get('obfs-param', '')
-        protocol_param = proxy.get('protocol-param', '')
-        group = proxy.get('group', '')
+        obfs_param = proxy.get('obfs-param', '')[:30]
+        protocol_param = proxy.get('protocol-param', '')[:30]
+        group = proxy.get('group', '')[:30]
         
         password_b64 = encode_base64(password)
         remark_b64 = encode_base64(urllib.parse.unquote(name))
@@ -506,7 +476,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         params = []
         if proxy.get('version'): params.append(f"version={proxy['version']}")
         if proxy.get('obfs'): params.append(f"obfs={proxy['obfs']}")
-        if proxy.get('obfs-host'): params.append(f"obfs-host={urllib.parse.quote(proxy['obfs-host'], safe='')}")
+        if proxy.get('obfs-host'): params.append(f"obfs-host={urllib.parse.quote(proxy['obfs-host'][:30], safe='')}")
         
         params_str = '&'.join(params) if params else ''
         return f"snell://{urllib.parse.quote(psk, safe='')}@{server}:{port}{'?' + params_str if params_str else ''}#{name}"
@@ -515,163 +485,172 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
     return None
 
 def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
-    """从内容中提取代理节点，支持多种格式。"""
     nodes_found = set()
     
     if not content or decode_depth > MAX_BASE64_DECODE_DEPTH:
         return []
 
-    # 优化: 对原始内容进行初步清理，以防后续正则和BeautifulSoup处理更顺畅
-    cleaned_initial_content = clean_html_tags(content)
-    
-    # 优先处理直接的节点模式匹配
+    content = content.replace('\r\n', '\n').replace('\r', '\n')
+
+    def strip_html_tags(text: str) -> str:
+        """移除字符串中的 HTML 标签"""
+        try:
+            # 使用 BeautifulSoup 移除 HTML 标签
+            soup = BeautifulSoup(text, 'html.parser')
+            cleaned = soup.get_text(separator='', strip=True)
+            # 额外使用正则表达式清理残留标签
+            cleaned = HTML_TAG_REGEX.sub('', cleaned)
+            if cleaned != text:
+                logger.debug(f"从节点字符串中移除 HTML 标签: {text[:50]}... -> {cleaned[:50]}...")
+            return cleaned
+        except Exception as e:
+            logger.debug(f"HTML 标签清理失败: {text[:50]}... 错误: {e}")
+            # 回退到正则表达式清理
+            return HTML_TAG_REGEX.sub('', text)
+
+    # 直接通过正则表达式提取节点
     for pattern_key, pattern_val in NODE_PATTERNS.items():
-        # 对清理后的内容进行正则匹配
-        matches = re.findall(pattern_val, cleaned_initial_content, re.MULTILINE | re.IGNORECASE)
+        matches = re.findall(pattern_val, content, re.MULTILINE | re.IGNORECASE)
         for node in matches:
-            # 再次清理单个节点，以防万一
-            cleaned_node = clean_html_tags(node) 
+            cleaned_node = strip_html_tags(node)
             nodes_found.add(normalize_node_url(cleaned_node))
 
     try:
-        soup = BeautifulSoup(content, 'html.parser') # 使用原始内容进行HTML解析
+        soup = BeautifulSoup(content, 'html.parser')
         for tag in soup.find_all(True):
             for attr in ['href', 'src', 'data-url', 'data-node', 'data-config', 'data-link', 'data-href', 'content']:
                 if attr in tag.attrs and tag.attrs[attr]:
                     link_val = tag.attrs[attr].strip()
-                    b64_match = BASE64_REGEX_LOOSE.fullmatch(link_val)
+                    # 清理 HTML 标签
+                    cleaned_link = strip_html_tags(link_val)
+                    b64_match = BASE64_REGEX_LOOSE.fullmatch(cleaned_link)
                     if b64_match:
                         decoded_attr = decode_base64(b64_match.group(1))
                         if decoded_attr:
-                            # 优化: 对解码后的内容进行清理再递归
-                            nodes_found.update(extract_nodes(clean_html_tags(decoded_attr), decode_depth + 1))
-                    
-                    # 优化: 对直接匹配到的链接值进行清理
-                    if re.match(COMBINED_REGEX_PATTERN, link_val, re.IGNORECASE):
-                        nodes_found.add(normalize_node_url(clean_html_tags(link_val)))
+                            nodes_found.update(extract_nodes(decoded_attr, decode_depth + 1))
+                    if re.match(COMBINED_REGEX_PATTERN, cleaned_link, re.IGNORECASE):
+                        nodes_found.add(normalize_node_url(cleaned_link))
         
-        # 处理 HTML 注释中的内容
         for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
             comment_text = str(comment).strip()
-            # 优化: 对注释文本进行清理再进行正则匹配
-            cleaned_comment_text = clean_html_tags(comment_text)
-            
-            if re.search(COMBINED_REGEX_PATTERN, cleaned_comment_text, re.MULTILINE | re.IGNORECASE):
+            cleaned_comment = strip_html_tags(comment_text)
+            if re.search(COMBINED_REGEX_PATTERN, cleaned_comment, re.MULTILINE | re.IGNORECASE):
                 for pattern_val in NODE_PATTERNS.values():
-                    matches = re.findall(pattern_val, cleaned_comment_text, re.MULTILINE | re.IGNORECASE)
+                    matches = re.findall(pattern_val, cleaned_comment, re.MULTILINE | re.IGNORECASE)
                     for node in matches:
-                        nodes_found.add(normalize_node_url(clean_html_tags(node))) # 优化: 对匹配到的节点进行清理
-            
-            base64_matches = BASE64_REGEX_LOOSE.findall(cleaned_comment_text) # 优化: 在清理后的注释文本中查找Base64
+                        cleaned_node = strip_html_tags(node)
+                        nodes_found.add(normalize_node_url(cleaned_node))
+            base64_matches = BASE64_REGEX_LOOSE.findall(cleaned_comment)
             for b64_match_tuple in base64_matches:
                 b64_str = b64_match_tuple[0]
                 decoded_comment_content = decode_base64(b64_str)
                 if decoded_comment_content:
-                    nodes_found.update(extract_nodes(clean_html_tags(decoded_comment_content), decode_depth + 1)) # 优化: 对解码内容清理再递归
-
+                    nodes_found.update(extract_nodes(decoded_comment_content, decode_depth + 1))
     except Exception as e:
         logger.debug(f"HTML 解析失败: {e}", exc_info=True)
 
-    # 处理 JavaScript 变量
-    js_variable_matches = JS_VAR_REGEX.findall(cleaned_initial_content) # 优化: 在清理后的内容中查找JS变量
+    js_variable_matches = JS_VAR_REGEX.findall(content)
     for match_group in js_variable_matches:
         js_val = match_group if isinstance(match_group, str) else match_group[0]
-        if re.match(COMBINED_REGEX_PATTERN, js_val, re.IGNORECASE):
-            nodes_found.add(normalize_node_url(clean_html_tags(js_val))) # 优化: 对JS变量值进行清理
-        elif BASE64_REGEX_LOOSE.fullmatch(js_val):
-            decoded_js_var = decode_base64(js_val)
+        cleaned_js_val = strip_html_tags(js_val)
+        if re.match(COMBINED_REGEX_PATTERN, cleaned_js_val, re.IGNORECASE):
+            nodes_found.add(normalize_node_url(cleaned_js_val))
+        elif BASE64_REGEX_LOOSE.fullmatch(cleaned_js_val):
+            decoded_js_var = decode_base64(cleaned_js_val)
             if decoded_js_var:
-                nodes_found.update(extract_nodes(clean_html_tags(decoded_js_var), decode_depth + 1)) # 优化: 对解码内容清理再递归
+                nodes_found.update(extract_nodes(decoded_js_var, decode_depth + 1))
     
-    # 处理 JavaScript 函数调用
-    js_func_call_matches = JS_FUNC_CALL_REGEX.findall(cleaned_initial_content) # 优化: 在清理后的内容中查找JS函数调用
+    js_func_call_matches = JS_FUNC_CALL_REGEX.findall(content)
     for match_group in js_func_call_matches:
         b64_str_in_func = match_group if isinstance(match_group, str) else match_group[0]
-        decoded_func_param = decode_base64(b64_str_in_func)
+        cleaned_b64_str = strip_html_tags(b64_str_in_func)
+        decoded_func_param = decode_base64(cleaned_b64_str)
         if decoded_func_param:
-            nodes_found.update(extract_nodes(clean_html_tags(decoded_func_param), decode_depth + 1)) # 优化: 对解码内容清理再递归
+            nodes_found.update(extract_nodes(decoded_func_param, decode_depth + 1))
 
     try:
-        yaml_content = yaml.safe_load(content) # 使用原始内容进行YAML解析
+        yaml_content = yaml.safe_load(content)
         if isinstance(yaml_content, dict) and 'proxies' in yaml_content:
             for proxy_dict in yaml_content['proxies']:
                 url_node = convert_clash_proxy_to_url(proxy_dict)
                 if url_node:
-                    # 优化: 对转换后的节点URL进行清理
-                    cleaned_url_node = clean_html_tags(url_node)
-                    if any(re.match(pattern, cleaned_url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
-                        nodes_found.add(normalize_node_url(cleaned_url_node))
+                    if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                        nodes_found.add(normalize_node_url(url_node))
         elif isinstance(yaml_content, list):
             for item in yaml_content:
                 if isinstance(item, dict) and 'type' in item:
                     url_node = convert_clash_proxy_to_url(item)
                     if url_node:
-                        # 优化: 对转换后的节点URL进行清理
-                        cleaned_url_node = clean_html_tags(url_node)
-                        if any(re.match(pattern, cleaned_url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
-                            nodes_found.add(normalize_node_url(cleaned_url_node))
+                        if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                            nodes_found.add(normalize_node_url(url_node))
         if isinstance(yaml_content, (dict, list)):
             iterable_content = yaml_content.values() if isinstance(yaml_content, dict) else yaml_content
             for value in iterable_content:
                 if isinstance(value, str):
-                    b64_match = BASE64_REGEX_LOOSE.fullmatch(value)
+                    cleaned_value = strip_html_tags(value)
+                    b64_match = BASE64_REGEX_LOOSE.fullmatch(cleaned_value)
                     if b64_match:
                         decoded_sub_content = decode_base64(b64_match.group(1))
                         if decoded_sub_content:
-                            nodes_found.update(extract_nodes(clean_html_tags(decoded_sub_content), decode_depth + 1)) # 优化: 对解码内容清理再递归
+                            nodes_found.update(extract_nodes(decoded_sub_content, decode_depth + 1))
     except yaml.YAMLError as e:
         logger.debug(f"YAML 解析失败: {e}", exc_info=True)
     except Exception as e:
         logger.debug(f"YAML 内容处理中发生意外错误: {e}", exc_info=True)
 
     try:
-        json_content = json.loads(content) # 使用原始内容进行JSON解析
+        json_content = json.loads(content)
         if isinstance(json_content, list):
             for config_dict in json_content:
-                if isinstance(config_dict, dict) and config_dict.get('v') == '2' and config_dict.get('id'):
+                if isinstance(config_dict, dict) and 'id' in config_dict:
                     clash_vmess_proxy = {
                         "type": "vmess",
-                        "name": config_dict.get('ps', 'vmess_node'),
+                        "name": config_dict.get('ps', 'vmess_node')[:30],
                         "server": config_dict.get('add'),
                         "port": config_dict.get('port'),
                         "uuid": config_dict.get('id'),
-                        "alterId": config_dict.get('aid', 0),
                         "cipher": config_dict.get('type', 'auto'),
                         "network": config_dict.get('net', 'tcp'),
                         "tls": config_dict.get('tls') == 'tls',
-                        "servername": config_dict.get('sni') or config_dict.get('host'),
+                        "servername": (config_dict.get('sni') or config_dict.get('host'))[:30],
                         "alpn": config_dict.get('alpn').split(',') if isinstance(config_dict.get('alpn'), str) else config_dict.get('alpn'),
                         "skip-cert-verify": config_dict.get('allowInsecure') == 1,
                         "client-fingerprint": config_dict.get('fp'),
                         "security": config_dict.get('scy')
                     }
                     if config_dict.get('net') == 'ws':
-                        clash_vmess_proxy['ws-opts'] = {'path': config_dict.get('path', '/'), 'headers': {'Host': config_dict.get('host')} if config_dict.get('host') else {}}
+                        clash_vmess_proxy['ws-opts'] = {
+                            'path': config_dict.get('path', '/')[:30],
+                            'headers': {'Host': config_dict.get('host')[:30]} if config_dict.get('host') else {}
+                        }
                     elif config_dict.get('net') == 'grpc':
-                        clash_vmess_proxy['grpc-opts'] = {'grpc-service-name': config_dict.get('serviceName', ''), 'mode': config_dict.get('mode')}
+                        clash_vmess_proxy['grpc-opts'] = {
+                            'grpc-service-name': config_dict.get('serviceName', '')[:30],
+                            'mode': config_dict.get('mode')
+                        }
+                    
                     url_node = convert_clash_proxy_to_url(clash_vmess_proxy)
                     if url_node:
-                        # 优化: 对转换后的节点URL进行清理
-                        cleaned_url_node = clean_html_tags(url_node)
-                        if any(re.match(pattern, cleaned_url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
-                            nodes_found.add(normalize_node_url(cleaned_url_node))
+                        if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                            nodes_found.add(normalize_node_url(url_node))
                 elif isinstance(config_dict, dict) and 'protocol' in config_dict and 'settings' in config_dict:
                     protocol_type = config_dict['protocol'].lower()
                     if protocol_type in [p for p in NODE_PATTERNS.keys()]:
                         outbound_settings = config_dict['settings'].get('vnext', [{}])[0] if protocol_type in ['vmess', 'vless'] else config_dict['settings']
                         users = outbound_settings.get('users', [{}])
+                        
                         for user_config in users:
                             stream_settings = config_dict.get('streamSettings', {})
                             proxy_cfg: Dict[str, Any] = {
                                 "type": protocol_type,
-                                "name": user_config.get('id', user_config.get('email', f"{protocol_type}_node")),
+                                "name": user_config.get('id', user_config.get('email', f"{protocol_type}_node"))[:30],
                                 "server": outbound_settings.get('address') or user_config.get('address'),
                                 "port": outbound_settings.get('port') or user_config.get('port'),
                             }
+                            
                             if protocol_type == 'vmess':
                                 proxy_cfg.update({
                                     "uuid": user_config.get('id'),
-                                    "alterId": user_config.get('alterId', 0),
                                     "cipher": user_config.get('security', 'auto'),
                                 })
                             elif protocol_type == 'vless':
@@ -683,16 +662,19 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
                                 proxy_cfg.update({
                                     "password": user_config.get('password'),
                                 })
+                            
                             network = stream_settings.get('network', 'tcp')
                             proxy_cfg['network'] = network
                             security = stream_settings.get('security')
                             proxy_cfg['tls'] = (security == 'tls')
+                            
                             if security == 'tls':
                                 tls_settings = stream_settings.get('tlsSettings', {})
-                                proxy_cfg['servername'] = tls_settings.get('serverName')
+                                proxy_cfg['servername'] = tls_settings.get('serverName')[:30]
                                 proxy_cfg['alpn'] = tls_settings.get('alpn')
                                 proxy_cfg['skip-cert-verify'] = tls_settings.get('allowInsecure', False)
                                 proxy_cfg['client-fingerprint'] = tls_settings.get('fingerprint')
+                                
                                 if tls_settings.get('realitySettings'):
                                     reality_settings = tls_settings['realitySettings']
                                     proxy_cfg['reality-opts'] = {
@@ -700,18 +682,19 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
                                         "shortId": reality_settings.get('shortId'),
                                         "spiderX": reality_settings.get('spiderX'),
                                         "dest": reality_settings.get('dest'),
-                                        "serverName": reality_settings.get('serverName')
+                                        "serverName": reality_settings.get('serverName')[:30]
                                     }
+                            
                             if network == 'ws':
                                 ws_settings = stream_settings.get('wsSettings', {})
                                 proxy_cfg['ws-opts'] = {
-                                    'path': ws_settings.get('path', '/'),
+                                    'path': ws_settings.get('path', '/')[:30],
                                     'headers': ws_settings.get('headers', {})
                                 }
                             elif network == 'grpc':
                                 grpc_settings = stream_settings.get('grpcSettings', {})
                                 proxy_cfg['grpc-opts'] = {
-                                    'grpc-service-name': grpc_settings.get('serviceName', ''),
+                                    'grpc-service-name': grpc_settings.get('serviceName', '')[:30],
                                     'mode': grpc_settings.get('mode')
                                 }
                             elif network == 'kcp':
@@ -725,225 +708,363 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
                                     'readBufferSize': kcp_settings.get('readBufferSize', 2),
                                     'writeBufferSize': kcp_settings.get('writeBufferSize', 2),
                                     'header': kcp_settings.get('header', {}).get('type', 'none'),
-                                    'seed': kcp_settings.get('seed', '')
+                                    'seed': kcp_settings.get('seed', '')[:30]
                                 }
                             elif network == 'quic':
                                 quic_settings = stream_settings.get('quicSettings', {})
                                 proxy_cfg['quic-opts'] = {
                                     'security': quic_settings.get('security', 'none'),
-                                    'key': quic_settings.get('key', ''),
+                                    'key': quic_settings.get('key', '')[:30],
                                     'header': quic_settings.get('header', {}).get('type', 'none')
                                 }
+                            
                             url_node = convert_clash_proxy_to_url(proxy_cfg)
                             if url_node:
-                                # 优化: 对转换后的节点URL进行清理
-                                cleaned_url_node = clean_html_tags(url_node)
-                                if any(re.match(pattern, cleaned_url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
-                                    nodes_found.add(normalize_node_url(cleaned_url_node))
+                                if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                                    nodes_found.add(normalize_node_url(url_node))
+        
         elif isinstance(json_content, dict) and 'proxies' in json_content:
             for proxy_dict in json_content['proxies']:
                 url_node = convert_clash_proxy_to_url(proxy_dict)
                 if url_node:
-                    # 优化: 对转换后的节点URL进行清理
-                    cleaned_url_node = clean_html_tags(url_node)
-                    if any(re.match(pattern, cleaned_url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
-                        nodes_found.add(normalize_node_url(cleaned_url_node))
+                    if any(re.match(pattern, url_node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()):
+                        nodes_found.add(normalize_node_url(url_node))
+        
         if isinstance(json_content, (dict, list)):
             iterable_content = json_content.values() if isinstance(json_content, dict) else json_content
             for value in iterable_content:
                 if isinstance(value, str):
-                    b64_match = BASE64_REGEX_LOOSE.fullmatch(value)
+                    cleaned_value = strip_html_tags(value)
+                    b64_match = BASE64_REGEX_LOOSE.fullmatch(cleaned_value)
                     if b64_match:
                         decoded_sub_content = decode_base64(b64_match.group(1))
                         if decoded_sub_content:
-                            nodes_found.update(extract_nodes(clean_html_tags(decoded_sub_content), decode_depth + 1)) # 优化: 对解码内容清理再递归
+                            nodes_found.update(extract_nodes(decoded_sub_content, decode_depth + 1))
     except json.JSONDecodeError as e:
         logger.debug(f"JSON 解析失败: {e}", exc_info=True)
     except Exception as e:
         logger.debug(f"JSON 内容处理中发生意外错误: {e}", exc_info=True)
 
     if decode_depth < MAX_BASE64_DECODE_DEPTH:
-        base64_candidates = BASE64_REGEX_LOOSE.findall(cleaned_initial_content) # 优化: 在清理后的内容中查找Base64
+        base64_candidates = BASE64_REGEX_LOOSE.findall(content)
         for b64_candidate_tuple in base64_candidates:
             b64_str = b64_candidate_tuple[0]
             if len(b64_str) < 50:
                 continue
             decoded_content_full = decode_base64(b64_str)
             if decoded_content_full and len(decoded_content_full) > 20 and decoded_content_full != content:
-                nodes_found.update(extract_nodes(clean_html_tags(decoded_content_full), decode_depth + 1)) # 优化: 对解码内容清理再递归
+                nodes_found.update(extract_nodes(decoded_content_full, decode_depth + 1))
 
     final_filtered_nodes = [
-        node for node in nodes_found if any(re.match(pattern, node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()) and len(node) > 20
+        node for node in nodes_found 
+        if any(re.match(pattern, node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()) 
+        and len(node) > 20
     ]
     return sorted(list(final_filtered_nodes))
 
-async def fetch_with_retry(session: aiohttp.ClientSession, url: str, timeout: int, retries: int = 3, backoff_factor: float = 0.5):
-    """带重试机制的 HTTP GET 请求。"""
+async def fetch_with_retry(session: aiohttp.ClientSession, url: str, timeout: int, retries: int = 3, backoff_factor: float = 1.0) -> str:
+    headers = {
+        'User-Agent': UA.random,
+        'Referer': url
+    }
     for attempt in range(retries):
         try:
-            async with session.get(url, timeout=timeout, headers={'User-Agent': UA.random}) as response:
-                response.raise_for_status()  # 检查 HTTP 错误状态
-                content_type = response.headers.get('Content-Type', '').lower()
-                if 'charset=' in content_type:
-                    charset = content_type.split('charset=')[-1].strip()
-                    if charset:
-                        return await response.text(encoding=charset, errors='ignore')
-                return await response.text(errors='ignore')
+            logger.debug(f"尝试获取 URL ({attempt + 1}/{retries}): {url} (User-Agent: {headers['User-Agent']})")
+            async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
+                response.raise_for_status()
+                return await response.text()
         except aiohttp.ClientError as e:
-            logger.warning(f"获取 {url} 失败 (尝试 {attempt + 1}/{retries}): {e}")
+            logger.debug(f"尝试 {attempt + 1}/{retries} 失败，URL: {url}，HTTP/网络错误: {e}")
             if attempt < retries - 1:
                 await asyncio.sleep(backoff_factor * (2 ** attempt))
-    logger.error(f"多次尝试后获取 {url} 失败。")
-    return None
+        except asyncio.TimeoutError:
+            logger.debug(f"尝试 {attempt + 1}/{retries} 失败，URL: {url}，请求超时")
+            if attempt < retries - 1:
+                await asyncio.sleep(backoff_factor * (2 ** attempt))
+        except Exception as e:
+            logger.debug(f"尝试 {attempt + 1}/{retries} 失败，URL: {url}，未知错误: {e}", exc_info=True)
+            if attempt < retries - 1:
+                await asyncio.sleep(backoff_factor * (2 ** attempt))
+    logger.warning(f"在 {retries} 次尝试后未能成功获取 URL: {url}")
+    return ""
 
-async def fetch_with_browser(url: str, timeout: int) -> Optional[str]:
-    """使用无头浏览器获取网页内容。"""
-    logger.info(f"尝试使用浏览器获取 {url}")
+async def fetch_with_browser(browser_context: BrowserContext, url: str, timeout: int) -> str:
+    page: Page = await browser_context.new_page()
+    page.set_default_timeout(timeout * 1000)
     try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
-            await page.goto(url, timeout=timeout * 1000)  # Playwright timeout is in milliseconds
-            content = await page.content()
-            await browser.close()
-            logger.info(f"成功使用浏览器获取 {url}")
-            return content
+        logger.info(f"尝试使用浏览器获取 URL: {url}")
+        await page.goto(url, wait_until="networkidle")
+        content = await page.content()
+        logger.info(f"成功使用浏览器获取 URL: {url}")
+        return content
     except Exception as e:
-        logger.error(f"使用浏览器获取 {url} 失败: {e}")
-        return None
+        logger.warning(f"使用浏览器获取 URL {url} 失败: {e}", exc_info=True)
+        return ""
+    finally:
+        await page.close()
 
-async def process_source(
-    session: aiohttp.ClientSession,
-    url: str,
-    timeout: int,
-    use_browser: bool,
-    unique_nodes: Set[str],
-    url_counts: Dict[str, int],
-    failed_urls: Set[str],
-    semaphore: asyncio.Semaphore
-):
-    """处理单个源 URL，提取并去重节点。"""
+async def process_single_url_strategy(session: aiohttp.ClientSession, url: str, timeout: int, use_browser: bool, browser_context: Optional[BrowserContext] = None) -> Set[str]:
+    content = await fetch_with_retry(session, url, timeout)
+    
+    if not content and use_browser and browser_context:
+        content = await fetch_with_browser(browser_context, url, timeout)
+
+    if content:
+        return set(extract_nodes(content))
+    return set()
+
+async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: int, semaphore: asyncio.Semaphore, url_node_counts: Dict, failed_urls: Set, use_browser: bool, browser_context: Optional[BrowserContext] = None) -> Set[str]:
+    nodes_from_domain = set()
+    http_url = f"http://{domain}"
+    https_url = f"https://{domain}"
+    
     async with semaphore:
-        logger.info(f"正在处理来源: {url}")
-        content = await fetch_with_retry(session, url, timeout)
+        logger.info(f"正在获取: {http_url}")
+        http_nodes = await process_single_url_strategy(session, http_url, timeout, use_browser, browser_context)
         
-        if not content and use_browser:
-            content = await fetch_with_browser(url, timeout)
-
-        if content:
-            extracted = extract_nodes(content)
-            new_nodes_count = 0
-            for node in extracted:
-                if node not in unique_nodes:
-                    unique_nodes.add(node)
-                    new_nodes_count += 1
-            url_counts[url] = len(extracted)  # 记录该 URL 提取到的节点总数
-            logger.info(f"从 {url} 提取到 {len(extracted)} 个节点，其中 {new_nodes_count} 个是新节点。")
+        if http_nodes:
+            nodes_from_domain.update(http_nodes)
+            url_node_counts[http_url] = len(http_nodes)
+            logger.info(f"从 {http_url} 提取到 {len(http_nodes)} 个节点。")
         else:
-            failed_urls.add(url)
-            url_counts[url] = 0
-            logger.error(f"无法从 {url} 获取内容。")
+            url_node_counts[http_url] = 0
+            if not http_url.startswith("https://"):
+                logger.info(f"HTTP 失败或无节点，尝试获取: {https_url}")
+                https_nodes = await process_single_url_strategy(session, https_url, timeout, use_browser, browser_context)
+                
+                if https_nodes:
+                    nodes_from_domain.update(https_nodes)
+                    url_node_counts[https_url] = len(https_nodes)
+                    logger.info(f"从 {https_url} 提取到 {len(https_nodes)} 个节点。")
+                else:
+                    url_node_counts[https_url] = 0
+                    failed_urls.add(http_url)
+                    failed_urls.add(https_url)
+                    logger.warning(f"HTTP 和 HTTPS 均未能从 {domain} 提取到节点。")
+            else:
+                failed_urls.add(https_url)
+                logger.warning(f"未能从 {domain} (HTTPS) 提取到节点。")
+    
+    return nodes_from_domain
 
-async def main():
+async def process_urls(domains: Set[str], max_concurrency: int, timeout: int, use_browser: bool) -> tuple[List[str], Dict, Set]:
+    semaphore = asyncio.Semaphore(max_concurrency)
+    url_node_counts = defaultdict(int)
+    failed_urls = set()
+    all_nodes_collected = set()
+    
+    browser_context: Optional[BrowserContext] = None
+    playwright_instance = None
+
+    if use_browser:
+        logger.info("初始化无头浏览器 (Playwright)...")
+        try:
+            playwright_instance = await async_playwright().start()
+            browser = await playwright_instance.chromium.launch()
+            browser_context = await browser.new_context(
+                user_agent=UA.random,
+                ignore_https_errors=True,
+                viewport={'width': 1280, 'height': 720}
+            )
+        except Exception as e:
+            logger.error(f"初始化 Playwright 失败: {e}. 将不使用浏览器模式。", exc_info=True)
+            use_browser = False
+            if playwright_instance:
+                try:
+                    await playwright_instance.stop()
+                except Exception as stop_e:
+                    logger.error(f"停止 Playwright 实例时发生错误: {stop_e}")
+
+    async with aiohttp.ClientSession() as session:
+        tasks = []
+        for domain in domains:
+            tasks.append(process_domain(session, domain, timeout, semaphore, url_node_counts, failed_urls, use_browser, browser_context))
+        
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        for nodes_or_exception in results:
+            if isinstance(nodes_or_exception, set):
+                all_nodes_collected.update(nodes_or_exception)
+            elif isinstance(nodes_or_exception, Exception):
+                logger.error(f"处理域名时发生未捕获的异常: {nodes_or_exception}", exc_info=True)
+
+    if browser_context:
+        try:
+            await browser_context.close()
+            await browser.close()
+        except Exception as e:
+            logger.error(f"关闭浏览器上下文或实例时发生错误: {e}")
+        finally:
+            if playwright_instance:
+                try:
+                    await playwright_instance.stop()
+                except Exception as e:
+                    logger.error(f"停止 Playwright 实例时发生错误: {e}")
+
+    final_unique_nodes = set()
+    for node in all_nodes_collected:
+        final_unique_nodes.add(normalize_node_url(node))
+            
+    logger.info(f"去重前节点数: {len(all_nodes_collected)}, 去重后节点数: {len(final_unique_nodes)}")
+    return sorted(list(final_unique_nodes)), url_node_counts, failed_urls
+
+def main():
+    global args
     args = setup_argparse()
+    
+    logger.info(f"命令行参数: sources={args.sources}, output={args.output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, chunk_size_mb={args.chunk_size_mb}, use_browser={args.use_browser}")
+    
+    try:
+        with open(args.sources, 'r', encoding='utf-8') as f:
+            urls_raw = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+    except FileNotFoundError:
+        logger.error(f"源文件 '{args.sources}' 未找到。请确保文件存在。")
+        return
+    
+    unique_domains = set()
+    for url in urls_raw:
+        parsed = urllib.parse.urlparse(url)
+        domain = parsed.netloc
+        if not domain and parsed.path:
+            domain_match = re.match(r'^(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}(?::\d{1,5})?)(?:/.*)?$', parsed.path)
+            if domain_match:
+                domain = domain_match.group(1).split('/')[0]
+            else:
+                logger.warning(f"无法从路径 '{parsed.path}' 中识别有效域名。跳过此条目。")
+                continue
+        
+        if domain:
+            unique_domains.add(domain)
+        else:
+            logger.warning(f"无法从 URL '{url}' 中识别有效域名。跳过此条目。")
 
-    sources_file_path = args.sources
-    output_file_path = args.output
-    stats_output_path = args.stats_output
-    max_concurrency = args.max_concurrency
-    timeout = args.timeout
-    chunk_size_mb = args.chunk_size_mb
-    use_browser = args.use_browser
+    if not unique_domains:
+        logger.info("未找到任何有效域名进行处理。程序退出。")
+        return
 
-    # 确保输出目录存在
-    output_dir = os.path.dirname(output_file_path)
+    start_time = datetime.now()
+    logger.info(f"开始处理 {len(unique_domains)} 个唯一域名...")
+    
+    unique_nodes, url_node_counts, failed_urls = asyncio.run(process_urls(unique_domains, args.max_concurrency, args.timeout, args.use_browser))
+    
+    # 记录前10个节点样本以便调试
+    logger.info(f"前10个节点样本: {unique_nodes[:10]}")
+    
+    total_nodes_extracted = len(unique_nodes)
+    report_lines = [
+        f"--- 报告 ---",
+        f"处理完成，耗时 {(datetime.now() - start_time).total_seconds():.2f} 秒",
+        f"总共提取到 {total_nodes_extracted} 个唯一节点。",
+        "\n每个源 URL 的节点提取数量:"
+    ]
+    report_lines.append("{:<70} {:<15} {:<10}".format("源URL", "找到的节点数", "状态"))
+    report_lines.append("-" * 95)
+    
+    sorted_url_counts = sorted(url_node_counts.items(), key=lambda x: x[1], reverse=True)
+    for url, count in sorted_url_counts:
+        status = "成功" if count > 0 else ("失败" if url in failed_urls else "无节点")
+        report_lines.append(f"{url:<70} {count:<15} {status:<10}")
+    
+    if failed_urls:
+        report_lines.append("\n未能成功获取或处理的源 URL:")
+        report_lines.extend(sorted(list(failed_urls)))
+    
+    report_lines.append("\n--- 报告结束 ---")
+    for line in report_lines:
+        logger.info(line)
+    
+    # --- 节点分片保存逻辑 ---
+    output_dir = os.path.dirname(args.output)
+    output_filename_base = os.path.splitext(os.path.basename(args.output))[0]
     os.makedirs(output_dir, exist_ok=True)
 
-    sources = []
-    try:
-        with open(sources_file_path, 'r', encoding='utf-8') as f:
-            sources = [line.strip() for line in f if line.strip() and not line.strip().startswith('#')]
-    except FileNotFoundError:
-        logger.error(f"源文件未找到: {sources_file_path}")
-        return
-    except Exception as e:
-        logger.error(f"读取源文件时发生错误: {e}")
-        return
+    target_file_size_mb = min(args.chunk_size_mb, 95)
+    target_file_size_bytes = target_file_size_mb * 1024 * 1024
+    avg_node_length_bytes = 50
+    if unique_nodes:
+        avg_node_length_bytes = sum(len(node.encode('utf-8')) for node in unique_nodes) // len(unique_nodes)
+        logger.info(f"动态计算的平均节点大小: {avg_node_length_bytes} 字节")
+    max_nodes_per_file = target_file_size_bytes // max(avg_node_length_bytes, 50)
+    min_nodes_per_file = 5000
 
-    unique_nodes: Set[str] = set()
-    url_counts: Dict[str, int] = defaultdict(int)
-    failed_urls: Set[str] = set()
-    semaphore = asyncio.Semaphore(max_concurrency)
+    logger.info(f"分片参数: target_file_size_mb={target_file_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
 
-    connector = aiohttp.TCPConnector(limit=max_concurrency)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = [
-            process_source(session, url, timeout, use_browser, unique_nodes, url_counts, failed_urls, semaphore)
-            for url in sources
-        ]
-        await asyncio.gather(*tasks)
-
-    # --- 节点去重和保存 ---
-    sorted_unique_nodes = sorted(list(unique_nodes))
-    total_nodes_found = len(sorted_unique_nodes)
-    logger.info(f"共找到 {total_nodes_found} 个唯一节点。")
-
-    if not sorted_unique_nodes:
-        logger.info("没有找到任何节点，跳过文件保存。")
-        # --- 统计数据保存为 CSV ---
-        stats_output_dir = os.path.dirname(stats_output_path)
-        os.makedirs(stats_output_dir, exist_ok=True)
-        try:
-            with open(stats_output_path, 'w', newline='', encoding='utf-8') as csvfile:
-                fieldnames = ['Source_URL', 'Nodes_Found', 'Status']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                writer.writeheader()
-                sorted_url_counts = sorted(url_counts.items())
-                for url, count in sorted_url_counts:
-                    status = "成功" if count > 0 else ("失败" if url in failed_urls else "无节点")
-                    writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': status})
-            logger.info(f"节点统计数据已保存到 {stats_output_path}")
-        except Exception as e:
-            logger.error(f"保存节点统计数据时发生错误: {e}")
-        return
-
-    # 分片保存逻辑
-    chunk_size_bytes = chunk_size_mb * 1024 * 1024
-    current_node_idx = 0
-    file_count = 0
-
-    while current_node_idx < total_nodes_found:
-        file_count += 1
-        output_path = os.path.join(output_dir, f"nodes_part_{file_count:03d}.txt")
-        
-        nodes_for_current_file = []
-        current_file_size = 0
-        
-        for i in range(current_node_idx, total_nodes_found):
-            node_line = sorted_unique_nodes[i] + '\n'
-            node_size = len(node_line.encode('utf-8'))
-            
-            if current_file_size + node_size > chunk_size_bytes and nodes_for_current_file:
-                # 如果添加当前节点会超出最大文件大小，并且当前文件已有内容，则停止添加
-                break
-            
-            nodes_for_current_file.append(node_line)
-            current_file_size += node_size
-            
-        end_node_idx = current_node_idx + len(nodes_for_current_file)
-        
-        if nodes_for_current_file:
-            content_to_write = "".join(nodes_for_current_file)
+    if total_nodes_extracted == 0:
+        logger.info("没有提取到任何节点，跳过保存节点文件。")
+    else:
+        if total_nodes_extracted <= max_nodes_per_file:
+            output_path = os.path.join(output_dir, f"{output_filename_base}.txt")
             try:
                 with open(output_path, 'w', encoding='utf-8') as f:
-                    f.write(content_to_write)
+                    content = '\n'.join(unique_nodes)
+                    file_size_bytes = len(content.encode('utf-8'))
+                    if file_size_bytes > target_file_size_bytes:
+                        logger.warning(f"文件 '{output_path}' 过大 ({file_size_bytes / (1024*1024):.2f} MB)，将强制分片。")
+                        raise ValueError("文件过大，需分片")
+                    f.write(content)
                 file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                logger.info(f"已将 {len(nodes_for_current_file)} 个节点保存到 {output_path} ({file_size_mb:.2f} MB)")
-                current_node_idx = end_node_idx
+                logger.info(f"已将 {total_nodes_extracted} 个节点保存到 {output_path} ({file_size_mb:.2f} MB)")
             except Exception as e:
-                logger.error(f"保存分片文件 '{output_path}' 时发生错误: {e}")
-                current_node_idx = end_node_idx
-                continue
+                logger.error(f"保存节点到 '{output_path}' 时发生错误: {e}")
+                logger.info("尝试分片保存...")
+                num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
+                estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
+                logger.info(f"预计将分为 {num_files} 个文件，每个文件大约 {estimated_lines_per_file} 行。")
+                current_file_idx = 0
+                current_node_idx = 0
+                while current_node_idx < total_nodes_extracted:
+                    current_file_idx += 1
+                    end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
+                    nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
+                    output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
+                    try:
+                        content_to_write = '\n'.join(nodes_for_current_file)
+                        file_size_bytes = len(content_to_write.encode('utf-8'))
+                        while file_size_bytes > target_file_size_bytes and len(nodes_for_current_file) > 1:
+                            logger.warning(f"分片文件 '{output_path}' 仍过大 ({file_size_bytes / (1024*1024):.2f} MB)，调整行数。")
+                            nodes_for_current_file = nodes_for_current_file[:len(nodes_for_current_file) // 2]
+                            content_to_write = '\n'.join(nodes_for_current_file)
+                            file_size_bytes = len(content_to_write.encode('utf-8'))
+                            end_node_idx = current_node_idx + len(nodes_for_current_file)
+                        with open(output_path, 'w', encoding='utf-8') as f:
+                            f.write(content_to_write)
+                        file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+                        logger.info(f"已将 {len(nodes_for_current_file)} 个节点保存到 {output_path} ({file_size_mb:.2f} MB)")
+                        current_node_idx = end_node_idx
+                    except Exception as e:
+                        logger.error(f"保存分片文件 '{output_path}' 时发生错误: {e}")
+                        current_node_idx = end_node_idx
+                        continue
+        else:
+            logger.info(f"节点总数 {total_nodes_extracted} 超过单文件限制，将进行分片保存。")
+            num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
+            estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
+            logger.info(f"预计将分为 {num_files} 个文件，每个文件大约 {estimated_lines_per_file} 行。")
+            current_file_idx = 0
+            current_node_idx = 0
+            while current_node_idx < total_nodes_extracted:
+                current_file_idx += 1
+                end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
+                nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
+                output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
+                try:
+                    content_to_write = '\n'.join(nodes_for_current_file)
+                    file_size_bytes = len(content_to_write.encode('utf-8'))
+                    while file_size_bytes > target_file_size_bytes and len(nodes_for_current_file) > 1:
+                        logger.warning(f"分片文件 '{output_path}' 仍过大 ({file_size_bytes / (1024*1024):.2f} MB)，调整行数。")
+                        nodes_for_current_file = nodes_for_current_file[:len(nodes_for_current_file) // 2]
+                        content_to_write = '\n'.join(nodes_for_current_file)
+                        file_size_bytes = len(content_to_write.encode('utf-8'))
+                        end_node_idx = current_node_idx + len(nodes_for_current_file)
+                    with open(output_path, 'w', encoding='utf-8') as f:
+                        f.write(content_to_write)
+                    file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+                    logger.info(f"已将 {len(nodes_for_current_file)} 个节点保存到 {output_path} ({file_size_mb:.2f} MB)")
+                    current_node_idx = end_node_idx
+                except Exception as e:
+                    logger.error(f"保存分片文件 '{output_path}' 时发生错误: {e}")
+                    current_node_idx = end_node_idx
+                    continue
 
     # --- 统计数据保存为 CSV ---
     stats_output_path = args.stats_output
@@ -955,13 +1076,13 @@ async def main():
             fieldnames = ['Source_URL', 'Nodes_Found', 'Status']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            sorted_url_counts = sorted(url_counts.items())
             for url, count in sorted_url_counts:
                 status = "成功" if count > 0 else ("失败" if url in failed_urls else "无节点")
                 writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': status})
-        logger.info(f"节点统计数据已保存到 {stats_output_path}")
+        file_size_mb = os.path.getsize(stats_output_path) / (1024 * 1024)
+        logger.info(f"节点统计数据已保存到 {stats_output_path} ({file_size_mb:.2f} MB)")
     except Exception as e:
-        logger.error(f"保存节点统计数据时发生错误: {e}")
+        logger.error(f"保存节点统计数据到 '{stats_output_path}' 时发生错误: {e}")
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
