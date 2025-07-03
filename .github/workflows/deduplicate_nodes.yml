@@ -1,9 +1,9 @@
 name: Deduplicate Nodes
 
 on:
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch: # 允许手动触发
   schedule:
-    - cron: '0 0 * * *' # Runs daily at midnight UTC (e.g., 8 AM Beijing time)
+    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行 (北京时间早上8点)
 
 jobs:
   deduplicate:
@@ -16,49 +16,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # Use the latest Python 3 version
+          python-version: '3.13' # 与你的环境一致
 
       - name: Install dependencies
-        run: pip install requests tenacity
-
-      - name: Create data directory
-        run: mkdir -p data # Ensure the data directory exists before the script runs
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests tenacity
 
       - name: Run deduplication script
-        id: run_script # Add an ID to reference outputs from this step
-        run: python deduplicate_nodes.py # Your script now dynamically names the output file
+        run: python deduplicate_nodes.py
+        continue-on-error: false # 脚本失败时停止工作流
 
-      - name: Get generated filename
-        id: get_filename # Add an ID to get the filename dynamically
+      - name: Check output files
         run: |
-          # Find the most recently created file in the data directory
-          # and set it as a step output.
-          # This assumes your script outputs a single file in 'data/'
-          GENERATED_FILE=$(ls -t data/all_*.txt | head -1)
-          echo "Generated file: $GENERATED_FILE"
-          echo "output_file=$GENERATED_FILE" >> "$GITHUB_OUTPUT"
+          if [ -z "$(ls data/part_*.txt 2>/dev/null)" ]; then
+            echo "错误：未找到去重后的分片文件"
+            exit 1
+          fi
+          echo "OUTPUT_FILES=$(ls data/part_*.txt)" >> $GITHUB_ENV
 
       - name: Commit and push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub's default token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Use the dynamically obtained filename
-          GENERATED_FILE_PATH=${{ steps.get_filename.outputs.output_file }}
-
-          # Check if the file exists before attempting to add
-          if [ -f "$GENERATED_FILE_PATH" ]; then
-            git add "$GENERATED_FILE_PATH"
-            # Only commit if there are actual changes
-            if ! git diff --cached --exit-code; then
-              git commit -m "Auto-update: Deduplicated nodes for $(date +%Y-%m-%d) [skip ci]"
-              git push
-            else
-              echo "No changes to commit for $GENERATED_FILE_PATH."
-            fi
-          else
-            echo "Error: Generated file $GENERATED_FILE_PATH not found. Cannot commit."
-            exit 1
-          fi
+          git add data/part_*.txt
+          git diff --cached --exit-code || git commit -m "自动更新: 去重节点分片 [skip ci]"
+          git push || echo "无变更需要推送或推送失败"
