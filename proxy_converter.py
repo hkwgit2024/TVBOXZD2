@@ -985,7 +985,7 @@ def main():
         avg_node_length_bytes = sum(len(node.encode('utf-8')) for node in unique_nodes) // len(unique_nodes)
         logger.info(f"动态计算的平均节点大小: {avg_node_length_bytes} 字节")
     max_nodes_per_file = target_file_size_bytes // max(avg_node_length_bytes, 50)
-    min_nodes_per_file = 5000
+    min_nodes_per_file = 8000
 
     logger.info(f"分片参数: target_file_size_mb={target_file_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
 
