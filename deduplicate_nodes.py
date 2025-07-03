@@ -12,7 +12,7 @@ import argparse
 
 # 配置日志
 logging.basicConfig(
-    level=logging.DEBUG,  # 提高日志级别以捕获去重键
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('node_deduplication.log', encoding='utf-8'),
@@ -28,13 +28,18 @@ class NodeStandardizer:
         """清理节点URL，移除不可见字符、多余空格和编码问题"""
         if not node_url:
             return ""
-        # 移除不可见字符、空格、制表符、换行符等
-        node_url = re.sub(r'[\x00-\x1F\x7F\s]+', '', node_url).strip().rstrip('/')
-        # 解码可能的双重URL编码
-        try:
-            return urllib.parse.unquote(node_url, errors='ignore')
-        except Exception:
-            return node_url
+        # 移除控制字符、空格、制表符、换行符等
+        node_url = re.sub(r'[\x00-\x1F\x7F\x80-\x9F\s]+', '', node_url).strip().rstrip('/')
+        # 多次解码可能的双重URL编码
+        for _ in range(3):
+            try:
+                decoded = urllib.parse.unquote(node_url, errors='ignore')
+                if decoded == node_url:
+                    break
+                node_url = decoded
+            except Exception:
+                break
+        return node_url
 
     @staticmethod
     def standardize_node_minimal(node_url: str) -> tuple[str | None, str]:
@@ -93,16 +98,19 @@ class NodeStandardizer:
                 uuid = decoded.get('id', '').lower()
                 address = f"{decoded.get('add', '').lower()}:{decoded.get('port', '')}"
             except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError):
-                # 后备方案：直接使用uuid和address
-                pass
+                # 后备方案：尝试直接解析
+                address_parts = address.rsplit(':', 1)
+                if len(address_parts) != 2 or not NodeStandardizer.is_valid_port(address_parts[1]):
+                    return None
         elif protocol == "vless":
             query = full_data.split('?', 1)[1].split('#', 1)[0] if '?' in full_data else ''
             params = parse_qs(query)
             encryption = params.get('encryption', ['none'])[0].lower()
             transport = params.get('type', ['tcp'])[0].lower()
+            security = params.get('security', ['none'])[0].lower()
             address_parts = address.rsplit(':', 1)
             if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
-                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}"
+                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}&security={security}"
             return None
         address_parts = address.rsplit(':', 1)
         if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
@@ -170,14 +178,28 @@ def fetch_url(url: str) -> requests.Response:
         response.raise_for_status()
         return response
 
+def write_sharded_output(nodes: set, output_dir: str, shard_size: int) -> dict:
+    """将去重后的节点分片写入文件，返回每个分片的节点数"""
+    os.makedirs(output_dir, exist_ok=True)
+    sorted_nodes = sorted(nodes)
+    shard_counts = {}
+    for i in range(0, len(sorted_nodes), shard_size):
+        shard_index = i // shard_size + 1
+        shard_file = os.path.join(output_dir, f'part_{shard_index:03d}.txt')
+        shard_nodes = sorted_nodes[i:i + shard_size]
+        with open(shard_file, 'w', encoding='utf-8') as f:
+            f.write('\n'.join(shard_nodes) + '\n')
+        shard_counts[shard_file] = len(shard_nodes)
+        logging.info(f"写入分片文件: {shard_file} ({len(shard_nodes)} 个节点)")
+    return shard_counts
+
 def download_and_deduplicate_nodes(args):
-    """从GitHub Raw链接下载节点数据，标准化并去重后保存"""
+    """从GitHub Raw链接下载节点数据，标准化并去重后分片保存"""
     base_url = args.base_url
     start_index = args.start_index
     end_index = args.end_index
     output_dir = args.output_dir
-    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_file = os.path.join(output_dir, f'all_{timestamp}.txt')
+    shard_size = args.shard_size
     
     unique_nodes = set()
     stats = {
@@ -186,56 +208,50 @@ def download_and_deduplicate_nodes(args):
         'failed_to_standardize_count': 0,
         'invalid_format_count': 0,
         'duplicate_count': 0,
-        'protocol_counts': {}
+        'protocol_counts': {},
+        'shard_counts': {}
     }
     
     logging.info("--- 开始下载和去重节点 ---")
     start_time = datetime.datetime.now()
-    batch_size = 10000
 
-    os.makedirs(output_dir, exist_ok=True)
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for i in range(start_index, end_index + 1):
-            file_index = str(i).zfill(3)
-            url = f"{base_url}{file_index}.txt"
+    for i in range(start_index, end_index + 1):
+        file_index = str(i).zfill(3)
+        url = f"{base_url}{file_index}.txt"
+        
+        try:
+            logging.info(f"正在下载: {url}")
+            response = fetch_url(url)
+            stats['download_count'] += 1
             
-            try:
-                logging.info(f"正在下载: {url}")
-                response = fetch_url(url)
-                stats['download_count'] += 1
+            for line in response.iter_lines(decode_unicode=True):
+                node = line.strip()
+                if not node:
+                    continue
                 
-                for line in response.iter_lines(decode_unicode=True):
-                    node = line.strip()
-                    if not node:
-                        continue
-                    
-                    stats['total_nodes_processed'] += 1
-                    minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node)
-                    
-                    if minimal_node:
-                        if minimal_node in unique_nodes:
-                            stats['duplicate_count'] += 1
-                            logging.debug(f"发现重复节点: {minimal_node}")
-                        else:
-                            unique_nodes.add(minimal_node)
-                            stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
+                stats['total_nodes_processed'] += 1
+                minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node)
+                
+                if minimal_node:
+                    if minimal_node in unique_nodes:
+                        stats['duplicate_count'] += 1
+                        logging.debug(f"发现重复节点: {minimal_node}")
                     else:
-                        stats['failed_to_standardize_count'] += 1
-                        logging.warning(f"无法标准化节点: {node}")
+                        unique_nodes.add(minimal_node)
+                        stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
+                else:
+                    stats['failed_to_standardize_count'] += 1
+                    logging.warning(f"无法标准化节点: {node}")
 
-                    if len(unique_nodes) >= batch_size:
-                        f.write('\n'.join(sorted(unique_nodes)) + '\n')
-                        unique_nodes.clear()
+        except requests.exceptions.RequestException as e:
+            logging.error(f"下载失败 {url}: {e}")
+            stats['invalid_format_count'] += 1
+        except Exception as e:
+            logging.error(f"处理 {url} 时发生未知错误: {e}")
+            stats['invalid_format_count'] += 1
 
-            except requests.exceptions.RequestException as e:
-                logging.error(f"下载失败 {url}: {e}")
-                stats['invalid_format_count'] += 1
-            except Exception as e:
-                logging.error(f"处理 {url} 时发生未知错误: {e}")
-                stats['invalid_format_count'] += 1
-
-        if unique_nodes:
-            f.write('\n'.join(sorted(unique_nodes)) + '\n')
+    # 分片写入
+    stats['shard_counts'] = write_sharded_output(unique_nodes, output_dir, shard_size)
 
     end_time = datetime.datetime.now()
     duration = end_time - start_time
@@ -247,11 +263,14 @@ def download_and_deduplicate_nodes(args):
     logging.info(f"重复节点数: {stats['duplicate_count']}")
     logging.info(f"无法标准化的节点数: {stats['failed_to_standardize_count']}")
     logging.info(f"格式无效的节点数: {stats['invalid_format_count']}")
-    logging.info(f"去重后的有效节点总数: {sum(stats['protocol_counts'].values())}")
+    logging.info(f"去重后的有效节点总数: {len(unique_nodes)}")
     logging.info("协议分布:")
     for protocol, count in stats['protocol_counts'].items():
         logging.info(f"  {protocol}: {count}")
-    logging.info(f"节点已保存到: {output_file}")
+    logging.info("分片文件:")
+    for shard_file, count in stats['shard_counts'].items():
+        logging.info(f"  {shard_file}: {count} 个节点")
+    logging.info(f"总分片数: {len(stats['shard_counts'])}")
     logging.info(f"总耗时: {duration.total_seconds():.2f} 秒")
     logging.info("==============================================")
 
@@ -264,6 +283,7 @@ def parse_args():
     parser.add_argument('--start-index', type=int, default=1, help='Start index for files')
     parser.add_argument('--end-index', type=int, default=199, help='End index for files')
     parser.add_argument('--output-dir', default='data', help='Output directory')
+    parser.add_argument('--shard-size', type=int, default=10000, help='Number of nodes per shard')
     return parser.parse_args()
 
 if __name__ == "__main__":
