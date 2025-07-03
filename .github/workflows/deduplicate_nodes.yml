@@ -1,0 +1,35 @@
+name: Deduplicate Nodes
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行 (例如 北京时间早上8点)
+
+jobs:
+  deduplicate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # 使用最新的Python 3版本
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run deduplication script
+        run: python deduplicate_nodes.py
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 提供的默认 token
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/all.txt
+          git diff --cached --exit-code || git commit -m "自动更新: 去重节点 [skip ci]"
+          git push
