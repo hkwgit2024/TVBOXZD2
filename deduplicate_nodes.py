@@ -23,6 +23,7 @@ logging.basicConfig(
 class NodeStandardizer:
     """节点标准化器，负责解析和标准化不同协议的节点URL"""
 
+    # 定义支持的协议集合，便于维护和检查
     SUPPORTED_PROTOCOLS = {"hysteria2", "vmess", "trojan", "ss", "ssr", "vless"}
 
     @staticmethod
@@ -43,8 +44,9 @@ class NodeStandardizer:
 
         node_url = NodeStandardizer.clean_node_url(node_url)
         
-        # 匹配支持的协议
-        match = re.match(r"^(?P<protocol>" + "|".join(NodeStandardizer.SUPPORTED_PROTOCOLS) + r")://(?P<data>.*)",
+        # 使用 SUPPORTED_PROTOCOLS 构建正则表达式，匹配支持的协议
+        protocol_pattern = "|".join(NodeStandardizer.SUPPORTED_PROTOCOLS)
+        match = re.match(rf"^(?P<protocol>{protocol_pattern})://(?P<data>.*)",
                          node_url, re.IGNORECASE)
         if not match:
             logging.debug(f"不支持的协议或格式错误: {node_url}")
@@ -56,14 +58,14 @@ class NodeStandardizer:
         try:
             # 分离核心数据、查询参数和片段
             core_data_raw, _, query_fragment = data_part.partition('?')
-            core_data_raw, _, fragment = core_data_raw.partition('#')
+            core_data_raw, _, fragment = core_data_raw.partition('#') # 实际上 fragment 在去重时通常不重要
             
             # 对核心数据部分进行URL解码，并去除末尾可能存在的 /
             core_data_standardized = urllib.parse.unquote_plus(core_data_raw).strip().rstrip('/')
             
             query_string = None
             if query_fragment:
-                # 重新组合查询字符串，确保正确解析
+                # 重新组合查询字符串，确保正确解析，忽略 # 后面的内容
                 if '#' in query_fragment:
                     query_string = query_fragment.split('#', 1)[0]
                 else:
@@ -90,7 +92,7 @@ class NodeStandardizer:
             return None, "unknown"
 
         except Exception as e:
-            # 打印详细错误信息，包括堆栈跟踪
+            # 打印详细错误信息，包括堆栈跟踪，便于调试
             logging.error(f"标准化节点 {node_url} 时发生错误: {e}", exc_info=True)
             return None, "unknown"
 
@@ -118,6 +120,7 @@ class NodeStandardizer:
         """处理vmess协议，提取UUID、地址、端口及其他关键参数。"""
         try:
             # VMess 的 core_data 是 base64 编码的 JSON
+            # 补齐 base64 编码可能缺少的 padding '='
             decoded_json_str = base64.b64decode(core_data + '=' * (-len(core_data) % 4)).decode('utf-8')
             decoded_data = json.loads(decoded_json_str)
             
@@ -129,29 +132,31 @@ class NodeStandardizer:
                 logging.debug(f"VMess 核心信息缺失或端口无效: id={_id}, add={add}, port={port}")
                 return None
             
-            # 提取并标准化其他重要参数
+            # 提取并标准化其他重要参数，赋予默认值
             net = decoded_data.get('net', 'tcp').lower()
-            _type = decoded_data.get('type', 'none').lower()
+            _type = decoded_data.get('type', 'none').lower() # 'type' 在 vmess 协议中通常指 transport type
             tls = decoded_data.get('tls', '').lower()
             host = decoded_data.get('host', '').lower()
             path = decoded_data.get('path', '').lower()
             sni = decoded_data.get('sni', '').lower()
-            fp = decoded_data.get('fp', '').lower()
+            fp = decoded_data.get('fp', '').lower() # fingerprint
             
-            # 构建标准化字符串，确保参数顺序一致
+            # 构建标准化字符串，确保参数顺序一致，便于去重
+            # 先构建基本部分
             standardized_parts = [
-                f"vmess://{_id}@{add}:{port}",
-                f"net={net}",
-                f"type={_type}",
-                f"tls={tls}"
+                f"vmess://{_id}@{add}:{port}"
             ]
-            if host: standardized_parts.append(f"host={host}")
-            if path: standardized_parts.append(f"path={path}")
-            if sni: standardized_parts.append(f"sni={sni}")
-            if fp: standardized_parts.append(f"fp={fp}")
+            # 再添加关键参数，并按照字母顺序排序，确保相同的参数组合生成相同的字符串
+            params_to_sort = []
+            params_to_sort.append(f"net={net}")
+            params_to_sort.append(f"type={_type}")
+            params_to_sort.append(f"tls={tls}")
+            if host: params_to_sort.append(f"host={host}")
+            if path: params_to_sort.append(f"path={path}")
+            if sni: params_to_sort.append(f"sni={sni}")
+            if fp: params_to_sort.append(f"fp={fp}")
 
-            # 对标准化后的参数进行排序，以确保相同的节点生成相同的字符串
-            sorted_params = sorted(standardized_parts[1:])
+            sorted_params = sorted(params_to_sort)
             return standardized_parts[0] + '?' + '&'.join(sorted_params)
 
         except (base64.binascii.Error, json.JSONDecodeError, ValueError) as e:
@@ -175,33 +180,35 @@ class NodeStandardizer:
             return None
             
         address = address_parts[0].lower()
-        port = address_parts[1].lower()
+        port = address_parts[1].lower() # 端口通常保持字符串形式
 
         # 提取VLESS特有参数，并赋予默认值，使用标准化后的参数字典
-        security = NodeStandardizer._get_param_value(query_params, 'security', 'none').lower()
+        security = NodeStandardizer._get_param_value(query_params, 'security', 'none').lower() # tls, reality, none
         flow = NodeStandardizer._get_param_value(query_params, 'flow', '').lower()
-        transport_type = NodeStandardizer._get_param_value(query_params, 'type', 'tcp').lower()
+        transport_type = NodeStandardizer._get_param_value(query_params, 'type', 'tcp').lower() # tcp, ws, grpc, http
         host = NodeStandardizer._get_param_value(query_params, 'host', '').lower()
         path = NodeStandardizer._get_param_value(query_params, 'path', '').lower()
         sni = NodeStandardizer._get_param_value(query_params, 'sni', '').lower()
-        fp = NodeStandardizer._get_param_value(query_params, 'fp', '').lower()
-        pbk = NodeStandardizer._get_param_value(query_params, 'pbk', '').lower()
-        sid = NodeStandardizer._get_param_value(query_params, 'sid', '').lower()
+        fp = NodeStandardizer._get_param_value(query_params, 'fp', '').lower() # fingerprint
+        pbk = NodeStandardizer._get_param_value(query_params, 'pbk', '').lower() # reality public key
+        sid = NodeStandardizer._get_param_value(query_params, 'sid', '').lower() # reality short id
         
+        # 构建标准化字符串
         standardized_parts = [
-            f"vless://{uuid}@{address}:{port}",
-            f"security={security}",
-            f"type={transport_type}"
+            f"vless://{uuid}@{address}:{port}"
         ]
-        if flow: standardized_parts.append(f"flow={flow}")
-        if host: standardized_parts.append(f"host={host}")
-        if path: standardized_parts.append(f"path={path}")
-        if sni: standardized_parts.append(f"sni={sni}")
-        if fp: standardized_parts.append(f"fp={fp}")
-        if pbk: standardized_parts.append(f"pbk={pbk}")
-        if sid: standardized_parts.append(f"sid={sid}")
+        params_to_sort = []
+        params_to_sort.append(f"security={security}")
+        params_to_sort.append(f"type={transport_type}")
+        if flow: params_to_sort.append(f"flow={flow}")
+        if host: params_to_sort.append(f"host={host}")
+        if path: params_to_sort.append(f"path={path}")
+        if sni: params_to_sort.append(f"sni={sni}")
+        if fp: params_to_sort.append(f"fp={fp}")
+        if pbk: params_to_sort.append(f"pbk={pbk}")
+        if sid: params_to_sort.append(f"sid={sid}")
 
-        sorted_params = sorted(standardized_parts[1:])
+        sorted_params = sorted(params_to_sort)
         return standardized_parts[0] + '?' + '&'.join(sorted_params)
 
 
@@ -223,6 +230,7 @@ class NodeStandardizer:
         address_lower = address_parts[0].lower()
         port = address_parts[1] # 端口通常保持字符串形式
 
+        # 提取关键参数
         sni = NodeStandardizer._get_param_value(query_params, 'sni', '').lower()
         alpn = NodeStandardizer._get_param_value(query_params, 'alpn', '').lower()
         
@@ -230,15 +238,17 @@ class NodeStandardizer:
         obfs = NodeStandardizer._get_param_value(query_params, 'obfs', '').lower()
         obfs_password = NodeStandardizer._get_param_value(query_params, 'obfs-password', '').lower()
         
+        # 构建标准化字符串
         standardized_parts = [
             f"{protocol}://{password}@{address_lower}:{port}"
         ]
-        if sni: standardized_parts.append(f"sni={sni}")
-        if alpn: standardized_parts.append(f"alpn={alpn}")
-        if obfs: standardized_parts.append(f"obfs={obfs}")
-        if obfs_password: standardized_parts.append(f"obfs-password={obfs_password}")
+        params_to_sort = []
+        if sni: params_to_sort.append(f"sni={sni}")
+        if alpn: params_to_sort.append(f"alpn={alpn}")
+        if obfs: params_to_sort.append(f"obfs={obfs}")
+        if obfs_password: params_to_sort.append(f"obfs-password={obfs_password}")
 
-        sorted_params = sorted(standardized_parts[1:])
+        sorted_params = sorted(params_to_sort)
         return standardized_parts[0] + ('?' + '&'.join(sorted_params) if sorted_params else '')
 
     @staticmethod
@@ -280,10 +290,11 @@ class NodeStandardizer:
                 standardized_parts = [
                     f"ss://{method.lower()}:{password}@{host.lower()}:{port}"
                 ]
-                if plugin: standardized_parts.append(f"plugin={plugin}")
-                if plugin_opts: standardized_parts.append(f"plugin-opts={plugin_opts}")
+                params_to_sort = []
+                if plugin: params_to_sort.append(f"plugin={plugin}")
+                if plugin_opts: params_to_sort.append(f"plugin-opts={plugin_opts}")
 
-                sorted_params = sorted(standardized_parts[1:])
+                sorted_params = sorted(params_to_sort)
                 return standardized_parts[0] + ('?' + '&'.join(sorted_params) if sorted_params else '')
             
             logging.debug(f"SS 端口无效: {port}")
@@ -320,18 +331,24 @@ class NodeStandardizer:
                 protoparam = NodeStandardizer._get_param_value(query_params, 'protoparam', '').lower()
                 
                 # 如果 query_params 中没有，则从路径的剩余部分中解析
+                # 注意：SSR 路径参数通常是 URL 编码的
                 if not obfsparam and len(parts) >= 7:
-                    obfsparam = urllib.parse.unquote_plus(parts[6]).lower()
+                    obfsparam_from_path = urllib.parse.unquote_plus(parts[6])
+                    # 检查是否包含 ? 或 #，因为这些是 query/fragment 的分隔符
+                    obfsparam = obfsparam_from_path.split('?', 1)[0].split('#', 1)[0].lower()
                 if not protoparam and len(parts) >= 8:
-                    protoparam = urllib.parse.unquote_plus(parts[7]).lower()
+                    protoparam_from_path = urllib.parse.unquote_plus(parts[7])
+                    protoparam = protoparam_from_path.split('?', 1)[0].split('#', 1)[0].lower()
+
 
                 standardized_parts = [
                     f"ssr://{host.lower()}:{port}:{proto.lower()}:{method.lower()}:{obfs.lower()}:{password}"
                 ]
-                if obfsparam: standardized_parts.append(f"obfsparam={obfsparam}")
-                if protoparam: standardized_parts.append(f"protoparam={protoparam}")
+                params_to_sort = []
+                if obfsparam: params_to_sort.append(f"obfsparam={obfsparam}")
+                if protoparam: params_to_sort.append(f"protoparam={protoparam}")
 
-                sorted_params = sorted(standardized_parts[1:])
+                sorted_params = sorted(params_to_sort)
                 return standardized_parts[0] + ('?' + '&'.join(sorted_params) if sorted_params else '')
             
             logging.debug(f"SSR 端口无效: {port}")
@@ -349,9 +366,7 @@ class NodeStandardizer:
         except ValueError:
             return False
 
----
-
-## 节点下载与去重流程
+# --- 节点下载与去重流程 ---
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2),
         retry=retry_if_exception_type(requests.exceptions.RequestException))
@@ -368,6 +383,7 @@ def download_and_deduplicate_nodes(args):
     start_index = args.start_index
     end_index = args.end_index
     output_dir = args.output_dir
+    # 使用当前日期时间生成唯一的文件名
     timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     output_file = os.path.join(output_dir, f'all_{timestamp}.txt')
     
@@ -385,9 +401,10 @@ def download_and_deduplicate_nodes(args):
     
     logging.info("--- 开始下载和去重节点 ---")
     start_time = datetime.datetime.now()
-    batch_size = 10000 # 每处理一定数量的节点就写入文件，防止内存过载
+    # 每处理一定数量的节点就写入文件，防止内存过载，并可以减少对内存的需求
+    batch_size = 10000 
 
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True) # 确保输出目录存在
     
     with open(output_file, 'w', encoding='utf-8') as f:
         for i in range(start_index, end_index + 1):
@@ -405,6 +422,7 @@ def download_and_deduplicate_nodes(args):
                         continue
                     
                     stats['total_nodes_processed'] += 1
+                    # 标准化节点，获取去重用的最小信息和协议类型
                     minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node)
                     
                     if minimal_node:
@@ -413,13 +431,14 @@ def download_and_deduplicate_nodes(args):
                             logging.debug(f"发现重复节点 (标准化): {minimal_node}, 原始: {node}")
                         else:
                             unique_nodes.add(minimal_node)
+                            # 统计去重后每种协议的数量
                             stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
                     else:
                         stats['failed_to_standardize_count'] += 1
                         # 对于无法标准化的节点，发出警告，帮助调试
                         logging.warning(f"无法标准化节点，可能格式不正确或不受支持: {node}")
 
-                    # 达到批处理大小，写入文件并清空集合
+                    # 达到批处理大小，写入文件并清空集合，释放内存
                     if len(unique_nodes) >= batch_size:
                         logging.debug(f"达到批处理大小 {batch_size}，写入文件并清空缓存。")
                         # 写入时排序，保持输出稳定
@@ -430,10 +449,10 @@ def download_and_deduplicate_nodes(args):
                 logging.error(f"下载文件失败 {url}: {e}")
                 stats['invalid_format_count'] += 1 # 这里计入下载失败，后续不会处理这些URL
             except Exception as e:
-                logging.error(f"处理 {url} 时发生未知错误: {e}", exc_info=True)
+                logging.error(f"处理 {url} 时发生未知错误: {e}", exc_info=True) # 打印详细错误栈
                 stats['invalid_format_count'] += 1
 
-        # 循环结束后，写入剩余的唯一节点
+        # 循环结束后，写入所有剩余的唯一节点
         if unique_nodes:
             logging.info(f"写入剩余的 {len(unique_nodes)} 个节点。")
             f.write('\n'.join(sorted(unique_nodes)) + '\n')
@@ -456,9 +475,7 @@ def download_and_deduplicate_nodes(args):
     logging.info(f"总耗时: {duration.total_seconds():.2f} 秒")
     logging.info("==============================================")
 
----
-
-## 命令行参数解析
+# --- 命令行参数解析 ---
 
 def parse_args():
     """解析命令行参数"""
