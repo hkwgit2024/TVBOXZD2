@@ -24,7 +24,7 @@ DEFAULT_OUTPUT_FILE = 'data/nodes.txt'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
-DEFAULT_CHUNK_SIZE_MB = 50  # 默认分片大小 50 MB，低于 GitHub 100 MB 限制
+DEFAULT_CHUNK_SIZE_MB = 95  # 默认分片大小 95 MB，低于 GitHub 100 MB 限制
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
