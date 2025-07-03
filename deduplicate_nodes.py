@@ -7,8 +7,8 @@ import logging
 import base64
 import json
 from urllib.parse import parse_qs
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import argparse
+import time
 
 # 配置日志
 logging.basicConfig(
@@ -150,14 +150,22 @@ class NodeStandardizer:
         except ValueError:
             return False
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(2), 
-       retry=retry_if_exception_type(requests.exceptions.RequestException))
-def fetch_url(url: str) -> requests.Response:
-    """带重试机制的URL请求"""
-    with requests.Session() as session:
-        response = session.get(url, timeout=20, stream=True)
-        response.raise_for_status()
-        return response
+def fetch_url(url: str, max_attempts: int = 3, wait_seconds: int = 2) -> requests.Response | None:
+    """带简单重试机制的URL请求"""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            with requests.Session() as session:
+                response = session.get(url, timeout=20, stream=True)
+                response.raise_for_status()
+                return response
+        except requests.exceptions.RequestException as e:
+            if attempt < max_attempts:
+                logging.warning(f"下载 {url} 失败 (尝试 {attempt}/{max_attempts}): {e}，将在 {wait_seconds} 秒后重试")
+                time.sleep(wait_seconds)
+            else:
+                logging.error(f"下载 {url} 失败 (已尝试 {max_attempts} 次): {e}")
+                return None
+    return None
 
 def download_and_deduplicate_nodes(args):
     """从GitHub Raw链接下载节点数据，标准化并去重后保存"""
@@ -191,6 +199,9 @@ def download_and_deduplicate_nodes(args):
             try:
                 logging.info(f"正在下载: {url}")
                 response = fetch_url(url)
+                if response is None:
+                    stats['invalid_format_count'] += 1
+                    continue
                 stats['download_count'] += 1
                 
                 for line in response.iter_lines(decode_unicode=True):
@@ -216,9 +227,6 @@ def download_and_deduplicate_nodes(args):
                         f.write('\n'.join(sorted(unique_nodes)) + '\n')
                         unique_nodes.clear()
 
-            except requests.exceptions.RequestException as e:
-                logging.error(f"下载失败 {url}: {e}")
-                stats['invalid_format_count'] += 1
             except Exception as e:
                 logging.error(f"处理 {url} 时发生未知错误: {e}")
                 stats['invalid_format_count'] += 1
