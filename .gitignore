@@ -8,5 +8,7 @@ debug.log
 mihomo_startup.log
 cache.db
 clash_startup.log
-!data/nodes_*.txt
-!data/node_counts.csv
+*.log
+!data/
+!data/*.txt
+!data/*.csv
