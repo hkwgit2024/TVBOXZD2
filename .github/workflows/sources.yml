@@ -13,12 +13,13 @@ jobs:
     - name: 检出仓库代码
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # 获取所有历史，这对于 rebase 很重要
 
-    - name: 拉取远程最新更改
+    - name: 配置 Git 用户信息并拉取远程最新更改 (第一次拉取)
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # 使用 --no-edit 防止 rebase 过程中需要手动编辑
         git pull --rebase --autostash origin main || true
 
     - name: 清理并创建 data 目录
@@ -42,23 +43,35 @@ jobs:
     - name: 检查生成的文件和 Git 状态
       run: |
         ls -la data/
+        # 使用 || true 避免因为文件不存在而导致步骤失败
         cat data/node_counts.csv || echo "data/node_counts.csv 不存在或为空"
         find data/ -name "nodes_*.txt" -exec echo "找到分片文件: {}" \; -exec head -n 5 {} \;
         git status
         git ls-files data/
         git check-ignore -v data/nodes_*.txt data/node_counts.csv || echo "没有文件被 .gitignore 忽略"
 
-    - name: 确保文件被 Git 跟踪
+    - name: 确保文件被 Git 跟踪 (如果已修改或新建)
       run: |
-        git add data/nodes_*.txt data/node_counts.csv || echo "没有文件需要添加"
+        # 使用 --force 强制添加所有修改过的文件，即使它们曾被 .gitignore 忽略 (但这里不需要，因为上面已检查)
+        # || true 避免在没有文件需要添加时失败
+        git add data/nodes_*.txt data/node_counts.csv || true
+
+    - name: 在提交前拉取最新更改并rebase (第二次拉取，关键步骤)
+      run: |
+        echo "尝试在提交前拉取最新更改..."
+        # 再次执行 rebase，确保本地分支在提交时是最新的
+        # 使用 --autostash 自动暂存本地修改，rebase 后再恢复
+        git pull --rebase --autostash origin main
+        echo "拉取完成。"
 
     - name: 提交并推送更改
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "自动更新代理节点及生成 Clash 配置"
         file_pattern: |
-          
           data/nodes_*.txt
           data/node_counts.csv
         branch: main
-        skip_dirty_check: true
+        # 移除 skip_dirty_check: true，让 action 自己检查工作区状态
+        # 如果 rebase 成功，通常不需要 force-with-lease。
+        # 但如果确实需要，可以加上：push_options: "--force-with-lease"
