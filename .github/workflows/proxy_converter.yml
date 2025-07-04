@@ -1,4 +1,4 @@
-```yaml
+
 name: Proxy Node Converter Workflow
 
 on:
@@ -64,4 +64,3 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
