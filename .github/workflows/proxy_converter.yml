@@ -1,10 +1,11 @@
+
 name: Proxy Node Converter Workflow
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   convert-proxies:
@@ -27,7 +28,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
             libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
-            libxrandr2 libgbm1 libasound2t64
+            libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2
 
       # 安装 Python 依赖
       - name: Install Python dependencies
@@ -36,29 +37,53 @@ jobs:
           pip install aiohttp pyyaml beautifulsoup4 fake-useragent playwright
           python -m playwright install chromium
 
+      # 创建 sources.list
+      - name: Create sources.list
+        run: |
+          mkdir -p data
+          cat > sources.list << EOL
+          http://vidio.com.isidomain.web.id
+          http://nontontv.vidio.com.isidomain.web.id
+          http://a.isidomain.web.id
+          http://isidomain.web.id
+          http://com.isidomain.web.id
+          http://b.isidomain.web.id
+          http://proxy.alibadiee.ir
+          http://httpupgrade.hellboy.eu.org
+          http://zoomgov.vipren.biz.id
+          EOL
+
       # 创建输出目录
       - name: Create output directories
         run: |
-          mkdir -p data/nodes # 此处保持不变，因为脚本会将文件输出到此目录
+          mkdir -p data/nodes data/snapshots
 
       # 运行代理节点转换脚本
       - name: Run proxy converter script
         run: |
           python cc6_modified.py \
             --sources sources.list \
-            --nodes-output-dir data/nodes \ # 此处保持不变，符合新脚本逻辑
+            --nodes-output-dir data/nodes \
             --stats-output data/node_counts.csv \
-            --max-concurrency 50 \
-            --timeout 20 \
-            --use-browser # 移除 --chunk-size-mb 参数
+            --max-concurrency 10 \
+            --timeout 30 \
+            --use-browser
+
+      # 保存网页快照以便调试
+      - name: Save page snapshots
+        run: |
+          for url in $(cat sources.list); do
+            safe_name=$(echo "$url" | sed 's/[^a-zA-Z0-9.-]/_/g' | sed 's/_+/_/g' | sed 's/^_//;s/_$//').html
+            curl -s -m 30 -A "$(python -c 'from fake_useragent import UserAgent; print(UserAgent().random)')" "$url" > "data/snapshots/$safe_name" || echo "Failed to save snapshot for $url" >> data/proxy_converter.log
+          done
 
       # 提交输出文件到仓库
       - name: Commit and push results
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update proxy nodes and stats"
+          git add data/ sources.list
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update proxy nodes, stats, and snapshots"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
