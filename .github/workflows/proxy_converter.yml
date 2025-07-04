@@ -39,14 +39,14 @@ jobs:
       # 创建输出目录
       - name: Create output directories
         run: |
-          mkdir -p data # 更改：现在只需创建data目录
+          mkdir -p data/nodes # 此处保持不变，因为脚本会将文件输出到此目录
 
       # 运行代理节点转换脚本
       - name: Run proxy converter script
         run: |
           python cc6_modified.py \
             --sources sources.list \
-            --nodes-output-file data/all_nodes.txt \
+            --nodes-output-dir data/nodes \ # 此处保持不变，符合新脚本逻辑
             --stats-output data/node_counts.csv \
             --max-concurrency 50 \
             --timeout 20 \
