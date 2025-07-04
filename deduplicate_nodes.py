@@ -11,14 +11,17 @@ from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_t
 import argparse
 
 # 配置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('node_deduplication.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
+def setup_logging(debug: bool):
+    """根据调试模式配置日志级别"""
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('node_deduplication.log', encoding='utf-8'),
+            logging.StreamHandler()
+        ]
+    )
 
 class NodeStandardizer:
     """节点标准化器，负责解析和标准化不同协议的节点URL"""
@@ -42,7 +45,7 @@ class NodeStandardizer:
         return node_url
 
     @staticmethod
-    def standardize_node_minimal(node_url: str) -> tuple[str | None, str]:
+    def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str]:
         """
         标准化节点URL，提取核心信息用于去重。
         返回 (标准化后的节点字符串, 协议类型)。
@@ -54,7 +57,8 @@ class NodeStandardizer:
         match = re.match(r"^(?P<protocol>hysteria2|vmess|trojan|ss|ssr|vless)://(?P<data>.*)", 
                         node_url, re.IGNORECASE)
         if not match:
-            logging.debug(f"不支持的协议或格式错误: {node_url}")
+            if debug:
+                logging.debug(f"不支持的协议或格式错误: {node_url}")
             return None, "unknown"
 
         protocol = match.group("protocol").lower()
@@ -75,10 +79,9 @@ class NodeStandardizer:
             else:
                 result = None
 
-            if result:
+            if result and debug:
                 logging.debug(f"去重键: {result} (原始: {node_url})")
-                return result, protocol
-            return None, "unknown"
+            return result, protocol
 
         except Exception as e:
             logging.error(f"标准化节点 {node_url} 时发生错误: {e}")
@@ -108,9 +111,11 @@ class NodeStandardizer:
             encryption = params.get('encryption', ['none'])[0].lower()
             transport = params.get('type', ['tcp'])[0].lower()
             security = params.get('security', ['none'])[0].lower()
+            flow = params.get('flow', [''])[0].lower()
+            sni = params.get('sni', [''])[0].lower()
             address_parts = address.rsplit(':', 1)
             if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
-                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}&security={security}"
+                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}&security={security}&flow={flow}&sni={sni}"
             return None
         address_parts = address.rsplit(':', 1)
         if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
@@ -195,6 +200,7 @@ def write_sharded_output(nodes: set, output_dir: str, shard_size: int) -> dict:
 
 def download_and_deduplicate_nodes(args):
     """从GitHub Raw链接下载节点数据，标准化并去重后分片保存"""
+    setup_logging(args.debug)
     base_url = args.base_url
     start_index = args.start_index
     end_index = args.end_index
@@ -230,18 +236,20 @@ def download_and_deduplicate_nodes(args):
                     continue
                 
                 stats['total_nodes_processed'] += 1
-                minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node)
+                minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node, args.debug)
                 
                 if minimal_node:
                     if minimal_node in unique_nodes:
                         stats['duplicate_count'] += 1
-                        logging.debug(f"发现重复节点: {minimal_node}")
+                        if args.debug:
+                            logging.debug(f"发现重复节点: {minimal_node}")
                     else:
                         unique_nodes.add(minimal_node)
                         stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
                 else:
                     stats['failed_to_standardize_count'] += 1
-                    logging.warning(f"无法标准化节点: {node}")
+                    if args.debug:
+                        logging.warning(f"无法标准化节点: {node}")
 
         except requests.exceptions.RequestException as e:
             logging.error(f"下载失败 {url}: {e}")
@@ -265,10 +273,10 @@ def download_and_deduplicate_nodes(args):
     logging.info(f"格式无效的节点数: {stats['invalid_format_count']}")
     logging.info(f"去重后的有效节点总数: {len(unique_nodes)}")
     logging.info("协议分布:")
-    for protocol, count in stats['protocol_counts'].items():
+    for protocol, count in sorted(stats['protocol_counts'].items()):
         logging.info(f"  {protocol}: {count}")
     logging.info("分片文件:")
-    for shard_file, count in stats['shard_counts'].items():
+    for shard_file, count in sorted(stats['shard_counts'].items()):
         logging.info(f"  {shard_file}: {count} 个节点")
     logging.info(f"总分片数: {len(stats['shard_counts'])}")
     logging.info(f"总耗时: {duration.total_seconds():.2f} 秒")
@@ -284,6 +292,7 @@ def parse_args():
     parser.add_argument('--end-index', type=int, default=199, help='End index for files')
     parser.add_argument('--output-dir', default='data', help='Output directory')
     parser.add_argument('--shard-size', type=int, default=10000, help='Number of nodes per shard')
+    parser.add_argument('--debug', action='store_true', help='Enable debug logging')
     return parser.parse_args()
 
 if __name__ == "__main__":
