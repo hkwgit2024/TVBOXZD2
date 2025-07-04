@@ -24,7 +24,7 @@ jobs:
           pip install requests tenacity
 
       - name: Run deduplication script
-        run: python deduplicate_nodes.py
+        run: python deduplicate_nodes.py --debug  # 启用调试模式，便于分析去重问题
         continue-on-error: false # 脚本失败时停止工作流
 
       - name: Check output files
@@ -33,7 +33,14 @@ jobs:
             echo "错误：未找到去重后的分片文件"
             exit 1
           fi
-          echo "OUTPUT_FILES=$(ls data/part_*.txt)" >> $GITHUB_ENV
+
+      - name: Upload log file as artifact
+        if: always() # 即使脚本失败也上传日志
+        uses: actions/upload-artifact@v4
+        with:
+          name: deduplication-log
+          path: node_deduplication.log
+          retention-days: 7
 
       - name: Commit and push changes
         env:
@@ -42,5 +49,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/part_*.txt
-          git diff --cached --exit-code || git commit -m "自动更新: 去重节点分片 [skip ci]"
-          git push || echo "无变更需要推送或推送失败"
+          if git diff --cached --exit-code; then
+            echo "无变更需要提交"
+          else
+            git commit -m "自动更新: 去重节点分片 [skip ci]"
+            git push || echo "推送失败，可能是无变更或权限问题"
+          fi
