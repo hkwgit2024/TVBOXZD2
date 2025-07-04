@@ -111,7 +111,7 @@ def score_node(url: str) -> int:
                     score -= len(config['ps']) // 10  # 备注越短越好
             except json.JSONDecodeError:
                 return 0
-        elif protocol_lower in ['ss', 'trojan', 'vless', 'hysteria2', 'hy2', 'tuic', 'snell']:
+        elif protocol_lower in ['ss', 'trojan', 'vless', 'useria2', 'hy2', 'tuic', 'snell']:
             parsed = urllib.parse.urlparse(url)
             query_params = urllib.parse.parse_qs(parsed.query)
             if 'security' in query_params and query_params['security'][0] == 'tls':
@@ -208,8 +208,7 @@ def normalize_node_url(url: str) -> str:
         if protocol_lower == 'vmess':
             config_json = decode_base64(rest)
             if not config_json:
-                logger.debug(f"VMess 配置BaseVERE
-System: 64解码失败: {url}")
+                logger.debug(f"VMess 配置Base64解码失败: {url}")
                 return url
             try:
                 config = json.loads(config_json)
