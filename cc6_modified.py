@@ -5,34 +5,38 @@ import json
 import logging
 import re
 import urllib.parse
-import yaml
+import yaml # Not explicitly used, but kept for compatibility if you use it elsewhere
 import os
 import argparse
 import csv
+import hashlib # For calculating content hash
 from collections import defaultdict
 from typing import List, Dict, Set, Optional, Any, Tuple
-from datetime import datetime
+from datetime import datetime, timedelta # For managing cache expiry
 from bs4 import BeautifulSoup, Comment
 from fake_useragent import UserAgent
 from playwright.async_api import async_playwright, Page, BrowserContext
 
-# --- 配置常量 ---
+# --- 配置 ---
 LOG_FILE = 'data/proxy_converter.log'
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 DEFAULT_SOURCES_FILE = 'sources.list'
 DEFAULT_NODES_OUTPUT_DIR = 'data/nodes'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
-DEFAULT_MAX_CONCURRENCY = 10
-DEFAULT_TIMEOUT = 30 # 通用超时时间（秒）
-PLAYWRIGHT_GOTO_TIMEOUT = 45000 # Playwright 页面加载超时时间（毫秒），略高于通用超时
-
+DEFAULT_MAX_CONCURRENCY = 50
+DEFAULT_TIMEOUT = 30
+PLAYWRIGHT_GOTO_TIMEOUT = 45000 # Playwright 页面加载超时，单位毫秒 (45秒)
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
+
+# 新增：缓存配置
+CACHE_FILE = 'data/fetch_cache.json'
+CACHE_EXPIRY_HOURS = 24 # 缓存有效期（小时），例如 24 小时内不重复获取和解析
 
 # 配置日志系统
 os.makedirs('data', exist_ok=True)
 logging.basicConfig(
-    level=logging.INFO,  # 默认设置为 INFO 级别，调试时可以设为 DEBUG
+    level=logging.INFO,
     format=LOG_FORMAT,
     handlers=[
         logging.FileHandler(LOG_FILE, encoding='utf-8'),
@@ -41,496 +45,253 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# 定义支持的节点协议及其正则表达式模式 (预编译正则表达式)
+# 定义支持的节点协议及其正则表达式模式
 NODE_PATTERNS = {
-    'ss': re.compile(r'ss://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'ssr': re.compile(r'ssr://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'vmess': re.compile(r'vmess://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'trojan': re.compile(r'trojan://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'vless': re.compile(r'vless://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'hy2': re.compile(r'hy2://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'warp': re.compile(r'warp://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'tuic': re.compile(r'tuic://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'h1': re.compile(r'h1://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'http': re.compile(r'(?:http|https)://(?:[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,6})(?::\d{1,5})?(?:/\S*)?', re.IGNORECASE),
-    'snell': re.compile(r'snell://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'socks5': re.compile(r'socks5://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'wireguard': re.compile(r'wireguard://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'naive': re.compile(r'naive://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE),
-    'juicity': re.compile(r'juicity://[a-zA-Z0-9\-_./\+%&=:@]+', re.IGNORECASE)
+    'ss': r'ss://[^\\s#]+(?:#[^\\n]*)?',
+    'ssr': r'ssr://[^\\s#]+(?:#[^\\n]*)?',
+    'vmess': r'vmess://[^\\s#]+(?:#[^\\n]*)?',
+    'vless': r'vless://[^\\s#]+(?:#[^\\n]*)?',
+    'trojan': r'trojan://[^\\s#]+(?:#[^\\n]*)?',
+    'hy2': r'hy2://[^\\s#]+(?:#[^\\n]*)?',
+    'tuic': r'tuic://[^\\s#]+(?:#[^\\n]*)?',
+    'warp': r'warp://[^\\s#]+(?:#[^\\n]*)?',
+    'hysteria': r'hysteria://[^\\s#]+(?:#[^\\n]*)?',
+    'snell': r'snell://[^\\s#]+(?:#[^\\n]*)?',
+    'socks5': r'socks5://[^\\s#]+(?:#[^\\n]*)?',
+    'http': r'http://[^\\s#]+(?:#[^\\n]*)?',
+    'https': r'https://[^\\s#]+(?:#[^\\n]*)?',
+    # 添加Clash和Sing-box的订阅链接模式
+    'clash_sub': r'http(?:s)?://[^\\s#]+\\.clash(?:\\?.*)?',
+    'singbox_sub': r'http(?:s)?://[^\\s#]+\\.s(?:b|b|b)?(?:\\?.*)?', # 简化的Sing-box订阅链接
 }
 
-COMBINED_REGEX_PATTERN = re.compile(
-    '|'.join([pattern.pattern for pattern in NODE_PATTERNS.values()]),
-    re.IGNORECASE
-)
+# 用于提取Base64编码内容的正则表达式
+BASE64_PATTERNS = [
+    re.compile(r'vmess://([a-zA-Z0-9+/=]+)'),
+    re.compile(r'vless://([a-zA-Z0-9+/=]+)'),
+    re.compile(r'trojan://([a-zA-Z0-9+/=]+)'),
+    re.compile(r'ss://([a-zA-Z0-9+/=]+)'),
+    re.compile(r'ssr://([a-zA-Z0-9+/=]+)'),
+    re.compile(r'(?:vmess|vless|trojan|ss|ssr)://([a-zA-Z0-9+/=]{100,})'), # 捕获较长的base64字符串
+    re.compile(r'(?<=['"\'])([a-zA-Z0-9+/=]{500,})(?=['"\'])'), # 捕获可能包含节点的大段base64字符串
+]
 
-# 宽松的 Base64 匹配，避免误判短字符串
-BASE64_REGEX_LOOSE = re.compile(r'(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?')
-# 更精确的 Base64 匹配，通常用于 URL Safe 或标准 Base64 编码的节点内容
-# 考虑 Base64 字符串的最小长度，避免匹配到普通文本
-BASE64_REGEX_STRICT = re.compile(r'(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?')
-# JavaScript 变量和函数调用中的 Base64 字符串
-JS_VAR_REGEX = re.compile(r'(?:var|const|let)\s+\w+\s*=\s*[\'"]((?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)[\'"]', re.IGNORECASE)
-JS_FUNC_CALL_REGEX = re.compile(r'\w+\s*\(\s*[\'"]((?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)[\'"]\s*\)', re.IGNORECASE)
+# 用于在JavaScript代码中查找vmess/vless/trojan配置的正则表达式
+JS_CONFIG_PATTERNS = [
+    re.compile(r'(vmess|vless|trojan) = [\'"]([^\'"]+)[\'"]'),
+    re.compile(r'(vmess|vless|trojan) = JSON\.parse\([\'"]([^\'"]+)[\'"]\)'),
+]
 
 # --- 辅助函数 ---
-
-def decode_base64(data: str) -> Optional[str]:
-    """尝试解码 Base64 字符串，支持 URL Safe 和标准 Base64。"""
-    try:
-        # 尝试 URL Safe Base64 解码
-        decoded_bytes = base64.urlsafe_b64decode(data + '=' * (4 - len(data) % 4))
-        return decoded_bytes.decode('utf-8', errors='ignore')
-    except (base64.binascii.Error, UnicodeDecodeError) as e:
-        logger.debug(f"URL Safe Base64 解码失败: {e}. 尝试标准 Base64 解码。")
-        try:
-            # 尝试标准 Base64 解码
-            decoded_bytes = base64.b64decode(data + '=' * (4 - len(data) % 4))
-            return decoded_bytes.decode('utf-8', errors='ignore')
-        except (base64.binascii.Error, UnicodeDecodeError) as e:
-            logger.debug(f"标准 Base64 解码失败: {e}")
-            return None
-
-def encode_base64(data: str) -> str:
-    """编码字符串为 URL Safe Base64。"""
-    encoded_bytes = base64.urlsafe_b64encode(data.encode('utf-8'))
-    return encoded_bytes.decode('utf-8').rstrip('=')
-
-def strip_html_tags(text: str) -> str:
-    """去除字符串中的 HTML 标签。"""
-    # 使用 BeautifulSoup 更健壮地去除 HTML 标签
-    soup = BeautifulSoup(text, 'html.parser')
-    return soup.get_text(separator=' ', strip=True)
-
 def sanitize_filename_from_url(url: str) -> str:
-    """从 URL 中生成一个安全的文件名。"""
-    parsed_url = urllib.parse.urlparse(url)
-    domain = parsed_url.netloc or parsed_url.path.split('/')[0]
-    sanitized = re.sub(r'[^\w\-_\.]', '_', domain)
-    return sanitized + ".txt"
+    """从URL生成一个安全的文件名，只保留字母数字和点号，替换其他为下划线"""
+    parsed = urllib.parse.urlparse(url)
+    # 取 hostname，如果 hostname 不存在（如纯路径），则取整个 path
+    domain = parsed.hostname if parsed.hostname else parsed.path.replace('/', '_')
+    domain = domain.replace('.', '_').replace('-', '_') # 进一步处理域名
+    # 移除或替换不安全的字符
+    sanitized = re.sub(r'[^a-zA-Z0-9_]', '', domain)
+    # 限制文件名长度，避免过长
+    return sanitized[:200] + ".txt"
 
-def normalize_node_url(node_url: str) -> str:
-    """规范化节点 URL，例如去除重复的斜杠。"""
-    # 进一步清理 URL 中的 HTML 实体和空白
-    node_url = urllib.parse.unquote(node_url).strip()
-    # 替换多个斜杠为单个斜杠，但保留协议头部的双斜杠
-    node_url = re.sub(r'(?<!:)/{2,}', '/', node_url)
-    return node_url
-
-def convert_clash_proxy_to_url(proxy_dict: Dict[str, Any]) -> Optional[str]:
-    """将 Clash 代理字典转换为 URL 格式。"""
-    p_type = proxy_dict.get('type')
-    name = urllib.parse.quote(proxy_dict.get('name', 'node'))
-    server = proxy_dict.get('server')
-    port = proxy_dict.get('port')
-    password = proxy_dict.get('password', '')
-    uuid = proxy_dict.get('uuid', '')
-    flow = proxy_dict.get('flow', '')
-    alterId = proxy_dict.get('alterId', 0)
-    cipher = proxy_dict.get('cipher', '')
-    network = proxy_dict.get('network', 'tcp')
-    tls = proxy_dict.get('tls', False)
-    udp = proxy_dict.get('udp', False)
-    sni = proxy_dict.get('sni', '')
-    skip_cert_verify = proxy_dict.get('skip-cert-verify', False)
-    ws_path = proxy_dict.get('ws-path', '/')
-    ws_headers = proxy_dict.get('ws-headers', {})
-    grpc_service_name = proxy_dict.get('grpc-service-name', '')
-    fingerprint = proxy_dict.get('fingerprint', '')
-    publicKey = proxy_dict.get('publicKey', '') # 对于 tuic v5
-
-    if not all([server, port]):
-        return None
-
+def decode_base64_recursively(encoded_string: str, depth: int = 0) -> str:
+    """递归解码Base64字符串，最多 MAX_BASE64_DECODE_DEPTH 层"""
+    if depth >= MAX_BASE64_DECODE_DEPTH:
+        return encoded_string # 达到最大深度，停止解码
     try:
-        if p_type == 'ss':
-            method = cipher
-            encoded_password = encode_base64(password)
-            return f"ss://{encoded_password}@{server}:{port}#{name}"
-        elif p_type == 'ssr':
-            # SSR 格式复杂，通常需要额外参数如协议、混淆等
-            # 这里仅提供基础框架，可能需要更多信息来构建完整 URL
-            obfs = proxy_dict.get('obfs', '')
-            protocol = proxy_dict.get('protocol', '')
-            obfsparam = proxy_dict.get('obfsparam', '')
-            protoparam = proxy_dict.get('protoparam', '')
-            encoded_password = encode_base64(password)
-            params = f":{protocol}:{cipher}:{obfs}:{encoded_password}/?obfsparam={encode_base64(obfsparam)}&protoparam={encode_base64(protoparam)}"
-            return f"ssr://{encode_base64(f'{server}:{port}{params}#{name}')}"
-        elif p_type == 'vmess':
-            vmess_config = {
-                "v": "2",
-                "ps": name,
-                "add": server,
-                "port": int(port),
-                "id": uuid,
-                "aid": int(alterId),
-                "net": network,
-                "type": "none",
-                "host": ws_headers.get('Host', ''),
-                "path": ws_path,
-                "tls": "tls" if tls else "",
-                "sni": sni,
-                "fp": fingerprint
-            }
-            return "vmess://" + encode_base64(json.dumps(vmess_config))
-        elif p_type == 'trojan':
-            params = []
-            if sni: params.append(f"sni={sni}")
-            if allow_insecure := skip_cert_verify: params.append(f"allowInsecure={str(allow_insecure).lower()}")
-            if flow: params.append(f"flow={flow}")
-            return f"trojan://{password}@{server}:{port}?{'&'.join(params)}#{name}"
-        elif p_type == 'vless':
-            params = [f"type={network}"]
-            if tls: params.append("security=tls")
-            if sni: params.append(f"sni={sni}")
-            if flow: params.append(f"flow={flow}")
-            if skip_cert_verify: params.append("allowInsecure=1")
-            if fingerprint: params.append(f"fp={fingerprint}")
+        decoded_bytes = base64.b64decode(encoded_string.encode('utf-8'))
+        decoded_str = decoded_bytes.decode('utf-8')
+        if re.search(r'(vmess|vless|trojan|ss|ssr)://', decoded_str): # 如果解码后包含节点关键字，可能还需要进一步解码
+            return decode_base64_recursively(decoded_str, depth + 1)
+        return decoded_str
+    except Exception:
+        return encoded_string # 解码失败或不包含节点关键字，返回原始字符串
 
-            if network == 'ws':
-                params.append(f"path={urllib.parse.quote(ws_path)}")
-                if 'Host' in ws_headers:
-                    params.append(f"host={ws_headers['Host']}")
-            elif network == 'grpc':
-                params.append(f"serviceName={urllib.parse.quote(grpc_service_name)}")
+def extract_nodes(content: str) -> List[str]:
+    """从文本内容中提取各种节点链接"""
+    all_nodes = set()
 
-            return f"vless://{uuid}@{server}:{port}?{'&'.join(params)}#{name}"
-        elif p_type == 'tuic': # 假设 tuic v5 格式
-            params = []
-            if password: params.append(f"password={urllib.parse.quote(password)}")
-            if network: params.append(f"type={network}")
-            if tls: params.append("security=tls")
-            if sni: params.append(f"sni={sni}")
-            if skip_cert_verify: params.append("allowInsecure=1")
-            if fingerprint: params.append(f"fp={fingerprint}")
-            if publicKey: params.append(f"publicKey={urllib.parse.quote(publicKey)}") # For TUIC v5
+    # 1. 直接匹配协议模式
+    for pattern_name, pattern in NODE_PATTERNS.items():
+        if 'sub' not in pattern_name: # 不直接匹配订阅链接本身作为节点
+            matches = re.findall(pattern, content)
+            for match in matches:
+                all_nodes.add(match)
 
-            return f"tuic://{server}:{port}?{'&'.join(params)}#{name}"
-        elif p_type == 'hysteria2':
-            params = []
-            if password: params.append(f"password={urllib.parse.quote(password)}")
-            if sni: params.append(f"sni={sni}")
-            if skip_cert_verify: params.append("insecure=1")
-            return f"hy2://{server}:{port}?{'&'.join(params)}#{name}"
-        elif p_type == 'naïve':
-            return f"naive+https://{username}:{password}@{server}:{port}#{name}" # 假设 naive 有 username/password
-        elif p_type == 'juicity':
-            params = []
-            if password: params.append(f"password={urllib.parse.quote(password)}")
-            if sni: params.append(f"sni={sni}")
-            if skip_cert_verify: params.append("insecure=1")
-            if publicKey: params.append(f"publicKey={urllib.parse.quote(publicKey)}")
-            return f"juicity://{server}:{port}?{'&'.join(params)}#{name}"
-        # 添加其他协议转换
-    except Exception as e:
-        logger.warning(f"转换 Clash 代理配置到 URL 失败 ({name}): {e}")
-    return None
+    # 2. 查找并解码Base64编码的节点
+    for pattern in BASE64_PATTERNS:
+        matches = pattern.findall(content)
+        for encoded in matches:
+            decoded = decode_base64_recursively(encoded)
+            for node_pattern in NODE_PATTERNS.values():
+                if 'sub' not in node_pattern:
+                    node_matches = re.findall(node_pattern, decoded)
+                    for node in node_matches:
+                        all_nodes.add(node)
+            # 检查是否解码出订阅链接
+            for sub_pattern in ['clash_sub', 'singbox_sub']:
+                sub_matches = re.findall(NODE_PATTERNS[sub_pattern], decoded)
+                for sub_link in sub_matches:
+                    all_nodes.add(sub_link) # 将订阅链接也作为一种节点添加，后续可能需要二次处理
 
-def score_node(node: str) -> int:
-    """根据节点 URL 的特性进行评分，用于排序。"""
-    score = 0
-    node_lower = node.lower()
-
-    # 匹配流行协议
-    for proto in ['vmess', 'trojan', 'vless', 'ss', 'ssr']:
-        if node_lower.startswith(f"{proto}://"):
-            score += 100
-
-    # 包含特定国家/地区或城市名称（示例）
-    for loc in ['hongkong', 'hk', 'singapore', 'sg', 'japan', 'jp', 'united states', 'us']:
-        if loc in node_lower:
-            score += 50
-
-    # 包含质量关键词
-    for keyword in ['fast', 'vip', 'premium', 'highspeed']:
-        if keyword in node_lower:
-            score += 30
-
-    # 包含日期或数字（可能表示新旧）
-    if re.search(r'\d{4}[-/]\d{2}[-/]\d{2}|\d{2,4}', node_lower):
-        score += 10
-
-    # 长度（太短或太长的可能是无效的）
-    if 50 < len(node) < 500:
-        score += 5
-
-    return score
-
-def generate_node_fingerprint(node_url: str) -> str:
-    """为节点 URL 生成一个标准化指纹，用于去重。
-    尝试去除 URL 中的动态部分，例如时间戳、计数器等。
-    """
-    parsed_url = urllib.parse.urlparse(node_url)
-    scheme = parsed_url.scheme
-    netloc = parsed_url.netloc
-
-    # 对于包含参数的 URL，尝试解析并去除可能的动态参数
-    query_params = urllib.parse.parse_qs(parsed_url.query)
-    fragment_params = urllib.parse.parse_qs(parsed_url.fragment)
-
-    # 常见的可能动态变化的参数
-    dynamic_params = ['t', 'time', 'date', 'ts', 'count', 'id', 'name', 'tag', 'remark', 'group']
-
-    cleaned_query_params = {k: v for k, v in query_params.items() if k.lower() not in dynamic_params}
-    cleaned_fragment_params = {k: v for k, v in fragment_params.items() if k.lower() not in dynamic_params}
-
-    # 重新构建查询和片段
-    cleaned_query = urllib.parse.urlencode(cleaned_query_params, doseq=True)
-    cleaned_fragment = urllib.parse.urlencode(cleaned_fragment_params, doseq=True)
-
-    # 尝试去除路径中的数字或随机字符串
-    path_cleaned = re.sub(r'/[0-9a-fA-F]{8,}/', '/', parsed_url.path) # 移除类似 UUID 的路径段
-
-    # 构建指纹，忽略端口（对于某些协议，端口可能是动态的或者不重要）
-    fingerprint_components = [scheme, netloc.split(':')[0], path_cleaned, cleaned_query, cleaned_fragment]
-    fingerprint = "://".join(filter(None, fingerprint_components)) # 过滤空字符串
-
-    # 对于 base64 编码的节点，解码后取内容指纹
-    if scheme in ['vmess', 'ss', 'ssr', 'trojan', 'vless', 'hy2', 'tuic', 'naive', 'juicity']:
-        try:
-            # 尝试解码并规范化
-            decoded_content = decode_base64(node_url.split('://', 1)[1].split('#', 1)[0])
-            if decoded_content:
-                # 简单哈希或去除变动部分后取前缀
-                return f"{scheme}::{hash(frozenset(decoded_content.splitlines()))}"
-        except Exception:
-            pass # 无法解码则回退到原始指纹
-
-    return fingerprint
-
-def _extract_from_html(html_content: str, decode_depth: int) -> Set[str]:
-    """从 HTML 内容中提取节点或 Base64 编码的潜在内容。"""
-    nodes_found = set()
+    # 3. 解析HTML以查找潜在节点和JS配置
     try:
-        soup = BeautifulSoup(html_content, 'html.parser')
+        # 使用 lxml 解析器进行优化
+        soup = BeautifulSoup(content, 'lxml')
 
-        # 提取 <pre> 和 <textarea> 标签内的文本
-        for tag_name in ['pre', 'textarea']:
-            for tag in soup.find_all(tag_name):
-                text_content = tag.get_text(separator='\n', strip=True)
-                nodes_found.update(extract_nodes(text_content, decode_depth + 1))
-
-        # 提取常见属性中的链接和 Base64 内容
-        attrs_to_check = ['href', 'src', 'data-url', 'data-node', 'data-config', 'data-link', 'data-href', 'content', 'data-clipboard-text', 'value']
-        for tag in soup.find_all(True):
-            for attr in attrs_to_check:
-                if attr in tag.attrs and tag.attrs[attr]:
-                    link_val = tag.attrs[attr].strip()
-                    cleaned_link = strip_html_tags(link_val)
-                    
-                    if re.match(COMBINED_REGEX_PATTERN, cleaned_link):
-                        nodes_found.add(normalize_node_url(cleaned_link))
-                    else:
-                        b64_match = BASE64_REGEX_LOOSE.fullmatch(cleaned_link)
-                        if b64_match:
-                            decoded_attr = decode_base64(b64_match.group(0)) # group(0) 获取完整匹配
-                            if decoded_attr:
-                                nodes_found.update(extract_nodes(decoded_attr, decode_depth + 1))
-
-        # 提取 HTML 注释中的内容
-        for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
-            comment_text = str(comment).strip()
-            cleaned_comment = strip_html_tags(comment_text)
-            
-            if re.search(COMBINED_REGEX_PATTERN, cleaned_comment, re.MULTILINE):
-                for pattern_val in NODE_PATTERNS.values():
-                    matches = pattern_val.findall(cleaned_comment)
-                    for node in matches:
-                        nodes_found.add(normalize_node_url(strip_html_tags(node)))
-            
-            base64_matches = BASE64_REGEX_LOOSE.findall(cleaned_comment)
-            for b64_str in base64_matches: # findall 返回的是字符串列表
-                decoded_comment_content = decode_base64(b64_str)
-                if decoded_comment_content:
-                    nodes_found.update(extract_nodes(decoded_comment_content, decode_depth + 1))
-
-    except Exception as e: # 更具体的异常捕获如 `html.parser.HTMLParseError`
-        logger.debug(f"HTML 解析失败: {e}")
-    return nodes_found
-
-def _extract_from_base64(encoded_content: str, decode_depth: int) -> Set[str]:
-    """解码 Base64 字符串并递归提取节点。"""
-    nodes_found = set()
-    if decode_depth < MAX_BASE64_DECODE_DEPTH:
-        b64_matches = BASE64_REGEX_LOOSE.findall(encoded_content)
-        for b64_str in b64_matches:
-            if len(b64_str) < 50: # 避免解码过短的非节点 Base64 字符串
-                continue
-            decoded_content_full = decode_base64(b64_str)
-            if decoded_content_full and len(decoded_content_full) > 20 and decoded_content_full != encoded_content:
-                nodes_found.update(extract_nodes(decoded_content_full, decode_depth + 1))
-    return nodes_found
-
-def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
-    """
-    从给定的内容中提取代理节点 URL。
-    会尝试解码 Base64、解析 HTML、JSON、YAML 和直接匹配模式。
-    """
-    nodes_found = set()
-    if not content or decode_depth > MAX_BASE64_DECODE_DEPTH:
-        return []
-
-    # 将所有回车符统一为换行符
-    content = content.replace('\r\n', '\n').replace('\r', '\n')
-
-    # 直接匹配节点模式
-    for pattern_key, pattern_val in NODE_PATTERNS.items():
-        matches = pattern_val.findall(content)
-        for node in matches:
-            nodes_found.add(normalize_node_url(strip_html_tags(node)))
-
-    # 尝试作为 HTML 解析
-    nodes_found.update(_extract_from_html(content, decode_depth))
-
-    # 尝试从 JavaScript 变量和函数调用中提取
-    js_variable_matches = JS_VAR_REGEX.findall(content)
-    for match_group in js_variable_matches:
-        js_val = match_group if isinstance(match_group, str) else match_group[0]
-        cleaned_js_val = strip_html_tags(js_val)
-        if re.match(COMBINED_REGEX_PATTERN, cleaned_js_val):
-            nodes_found.add(normalize_node_url(cleaned_js_val))
-        elif BASE64_REGEX_LOOSE.fullmatch(cleaned_js_val):
-            decoded_js_var = decode_base64(cleaned_js_val)
-            if decoded_js_var:
-                nodes_found.update(extract_nodes(decoded_js_var, decode_depth + 1))
-    
-    js_func_call_matches = JS_FUNC_CALL_REGEX.findall(content)
-    for match_group in js_func_call_matches:
-        b64_str_in_func = match_group if isinstance(match_group, str) else match_group[0]
-        cleaned_b64_str = strip_html_tags(b64_str_in_func)
-        decoded_func_param = decode_base64(cleaned_b64_str)
-        if decoded_func_param:
-            nodes_found.update(extract_nodes(decoded_func_param, decode_depth + 1))
-
-    # 尝试作为 YAML 解析
-    try:
-        yaml_content = yaml.safe_load(content)
-        if isinstance(yaml_content, dict) and 'proxies' in yaml_content:
-            for proxy_dict in yaml_content['proxies']:
-                url_node = convert_clash_proxy_to_url(proxy_dict)
-                if url_node and any(re.match(pattern, url_node) for pattern in NODE_PATTERNS.values()):
-                    nodes_found.add(normalize_node_url(url_node))
-        elif isinstance(yaml_content, list):
-            for item in yaml_content:
-                if isinstance(item, dict) and 'type' in item:
-                    url_node = convert_clash_proxy_to_url(item)
-                    if url_node and any(re.match(pattern, url_node) for pattern in NODE_PATTERNS.values()):
-                        nodes_found.add(normalize_node_url(url_node))
+        # 查找所有文本节点，包括可能隐藏在注释中的节点
+        for element in soup.find_all(string=True):
+            if isinstance(element, Comment):
+                # 检查注释内容
+                for node_pattern in NODE_PATTERNS.values():
+                    if 'sub' not in node_pattern:
+                        matches = re.findall(node_pattern, str(element))
+                        for match in matches:
+                            all_nodes.add(match)
+            else:
+                # 检查可见文本内容
+                for node_pattern in NODE_PATTERNS.values():
+                    if 'sub' not in node_pattern:
+                        matches = re.findall(node_pattern, element)
+                        for match in matches:
+                            all_nodes.add(match)
         
-        # 递归处理 YAML 中的 Base64
-        if isinstance(yaml_content, (dict, list)):
-            iterable_content = yaml_content.values() if isinstance(yaml_content, dict) else yaml_content
-            for value in iterable_content:
-                if isinstance(value, str):
-                    cleaned_value = strip_html_tags(value)
-                    b64_match = BASE64_REGEX_LOOSE.fullmatch(cleaned_value)
-                    if b64_match:
-                        decoded_sub_content = decode_base64(b64_match.group(0))
-                        if decoded_sub_content:
-                            nodes_found.update(extract_nodes(decoded_sub_content, decode_depth + 1))
-    except yaml.YAMLError as e:
-        logger.debug(f"YAML 解析失败: {e}")
-    except Exception as e:
-        logger.debug(f"处理 YAML 内容时发生错误: {e}")
+        # 查找 script 标签内容中的节点和 Base64
+        for script in soup.find_all('script'):
+            script_content = script.string
+            if script_content:
+                # 检查 JS 配置模式
+                for pattern in JS_CONFIG_PATTERNS:
+                    js_matches = pattern.findall(script_content)
+                    for _, encoded in js_matches:
+                        decoded = decode_base64_recursively(encoded)
+                        for node_pattern in NODE_PATTERNS.values():
+                            if 'sub' not in node_pattern:
+                                node_matches = re.findall(node_pattern, decoded)
+                                for node in node_matches:
+                                    all_nodes.add(node)
+                # 检查 script 标签中的其他 Base64 字符串
+                for pattern in BASE64_PATTERNS:
+                    matches = pattern.findall(script_content)
+                    for encoded in matches:
+                        decoded = decode_base64_recursively(encoded)
+                        for node_pattern in NODE_PATTERNS.values():
+                            if 'sub' not in node_pattern:
+                                node_matches = re.findall(node_pattern, decoded)
+                                for node in node_matches:
+                                    all_nodes.add(node)
+                        # 检查是否解码出订阅链接
+                        for sub_pattern in ['clash_sub', 'singbox_sub']:
+                            sub_matches = re.findall(NODE_PATTERNS[sub_pattern], decoded)
+                            for sub_link in sub_matches:
+                                all_nodes.add(sub_link)
 
-    # 尝试作为 JSON 解析
+        # 查找特定属性中的节点 (例如 data-url, href等)
+        for tag in soup.find_all(True): # 查找所有标签
+            for attr in ['href', 'src', 'data-url', 'data-link', 'data-node']: # 检查常见属性
+                if attr in tag.attrs:
+                    value = tag.attrs[attr]
+                    for node_pattern in NODE_PATTERNS.values():
+                        if 'sub' not in node_pattern:
+                            matches = re.findall(node_pattern, value)
+                            for match in matches:
+                                all_nodes.add(match)
+                    # 检查是否是订阅链接
+                    for sub_pattern in ['clash_sub', 'singbox_sub']:
+                        sub_matches = re.findall(NODE_PATTERNS[sub_pattern], value)
+                        for sub_link in sub_matches:
+                            all_nodes.add(sub_link)
+
+    except Exception as e:
+        logger.warning(f"BeautifulSoup 解析或节点提取出错: {e}")
+
+    return list(all_nodes)
+
+def calculate_content_hash(content: str) -> str:
+    """计算内容的 SHA256 哈希值"""
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
+def load_cache() -> Dict[str, Any]:
+    """从文件中加载缓存数据"""
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+                cache = json.load(f)
+                # 转换日期字符串为datetime对象
+                for url_data in cache.values():
+                    if 'last_fetched' in url_data:
+                        try:
+                            url_data['last_fetched'] = datetime.fromisoformat(url_data['last_fetched'])
+                        except ValueError:
+                            # 处理旧格式或无效日期，清除该条目以强制重新获取
+                            logger.warning(f"缓存中 '{url_data}' 的 last_fetched 日期格式无效，将强制重新获取。")
+                            url_data['last_fetched'] = None
+                logger.info(f"成功从 '{CACHE_FILE}' 加载缓存。")
+                return cache
+        except json.JSONDecodeError as e:
+            logger.warning(f"缓存文件 '{CACHE_FILE}' 格式错误: {e}。将创建新的空缓存。")
+        except Exception as e:
+            logger.warning(f"加载缓存文件 '{CACHE_FILE}' 失败: {e}。将创建新的空缓存。")
+    return {}
+
+def save_cache(cache: Dict[str, Any]):
+    """将缓存数据保存到文件"""
     try:
-        json_content = json.loads(content)
+        # 转换datetime对象为日期字符串
+        cache_to_save = {}
+        for url, url_data in cache.items():
+            data_copy = url_data.copy()
+            if 'last_fetched' in data_copy and isinstance(data_copy['last_fetched'], datetime):
+                data_copy['last_fetched'] = data_copy['last_fetched'].isoformat()
+            cache_to_save[url] = data_copy
 
-        def traverse_json(obj: Any):
-            if isinstance(obj, dict):
-                for k, v in obj.items():
-                    if isinstance(v, str):
-                        cleaned_v = strip_html_tags(v)
-                        if re.match(COMBINED_REGEX_PATTERN, cleaned_v):
-                            nodes_found.add(normalize_node_url(cleaned_v))
-                        elif BASE64_REGEX_LOOSE.fullmatch(cleaned_v):
-                            decoded_json_val = decode_base64(cleaned_v)
-                            if decoded_json_val:
-                                nodes_found.update(extract_nodes(decoded_json_val, decode_depth + 1))
-                    else:
-                        traverse_json(v)
-            elif isinstance(obj, list):
-                for item in obj:
-                    if isinstance(item, str):
-                        cleaned_item = strip_html_tags(item)
-                        if re.match(COMBINED_REGEX_PATTERN, cleaned_item):
-                            nodes_found.add(normalize_node_url(cleaned_item))
-                        elif BASE64_REGEX_LOOSE.fullmatch(cleaned_item):
-                            decoded_json_item = decode_base64(cleaned_item)
-                            if decoded_json_item:
-                                nodes_found.update(extract_nodes(decoded_json_item, decode_depth + 1))
-                    else:
-                        traverse_json(item)
-
-        traverse_json(json_content)
-
-    except json.JSONDecodeError as e:
-        logger.debug(f"JSON 解析失败: {e}")
+        with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(cache_to_save, f, ensure_ascii=False, indent=2)
+        logger.info(f"成功保存缓存到 '{CACHE_FILE}'。")
     except Exception as e:
-        logger.debug(f"处理 JSON 内容时发生错误: {e}")
+        logger.error(f"保存缓存文件 '{CACHE_FILE}' 失败: {e}")
 
-    # 递归处理 Base64 编码的内容
-    nodes_found.update(_extract_from_base64(content, decode_depth))
-    
-    # 最终过滤和排序，确保节点符合模式且长度合理
-    final_filtered_nodes = [
-        node for node in nodes_found 
-        if any(pattern.match(node) for pattern in NODE_PATTERNS.values()) 
-        and len(node) > 20 # 过滤掉过短的非节点字符串
-    ]
-    
-    # 根据评分进行排序
-    sorted_nodes = sorted(list(set(final_filtered_nodes)), key=score_node, reverse=True)
-    return sorted_nodes
 
+# --- Fetching Strategies ---
 async def fetch_with_aiohttp(session: aiohttp.ClientSession, url: str, timeout: int) -> Optional[str]:
-    """使用 aiohttp 异步获取 URL 内容。"""
-    headers = {'User-Agent': UA.random}
+    """使用 aiohttp 获取网页内容"""
     try:
-        async with session.get(url, headers=headers, timeout=timeout, ssl=False) as response:
-            response.raise_for_status()  # 检查 HTTP 状态码
+        user_agent = UA.random
+        headers = {'User-Agent': user_agent}
+        # 暂不实现ETag/Last-Modified，先专注于本地缓存
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=timeout), headers=headers, ssl=False) as response:
+            response.raise_for_status() # 抛出HTTP错误（4xx或5xx）
             content = await response.text()
             logger.info(f"成功获取 {url} (aiohttp)")
             return content
     except aiohttp.ClientError as e:
         logger.warning(f"aiohttp 请求 {url} 失败: {e}")
-        return None
     except asyncio.TimeoutError:
         logger.warning(f"aiohttp 请求 {url} 超时 ({timeout}s)")
-        return None
     except Exception as e:
-        logger.error(f"aiohttp 请求 {url} 发生未知错误: {e}")
-        return None
+        logger.error(f"aiohttp 获取 {url} 时发生未预期错误: {e}")
+    return None
 
-async def fetch_with_browser(
-    playwright_instance: Any, url: str, timeout: int, browser_context: BrowserContext
-) -> Optional[str]:
-    """使用 Playwright 异步获取 URL 内容 (渲染 JavaScript)。"""
+async def fetch_with_browser(playwright_instance: Any, url: str, timeout: int, browser_context: BrowserContext) -> Optional[str]:
+    """使用 Playwright 获取网页内容"""
+    page: Optional[Page] = None
     try:
         page = await browser_context.new_page()
-        user_agent_str = UA.random
-        await page.set_extra_http_headers({"User-Agent": user_agent_str})
+        # 设置页面超时，Page.goto 的 timeout 是毫秒
+        await page.goto(url, wait_until="load", timeout=PLAYWRIGHT_GOTO_TIMEOUT)
         
-        # 调整 Playwright 的等待策略和超时
-        # wait_until='load' 比 'networkidle' 宽松，等待主要资源加载完毕
-        # 使用 PLAYWRIGHT_GOTO_TIMEOUT 常量作为 goto 的超时时间
-        await page.goto(url, wait_until='load', timeout=PLAYWRIGHT_GOTO_TIMEOUT)
-        
-        # 这里不再使用 page.wait_for_load_state('networkidle')，以避免长时间等待
+        # 针对特定场景的额外等待，例如等待某些元素出现
+        # await page.wait_for_selector('body', timeout=timeout * 1000) # 等待body元素加载，防止页面为空
         
         content = await page.content()
         logger.info(f"成功获取 {url} (Playwright)")
         return content
     except Exception as e:
-        # Playwright 的异常通常已经包含详细信息
-        logger.warning(f"Playwright 请求 {url} 失败: {e}")
-        return None
+        logger.warning(f"Playwright 请求 {url} 失败: {e.__class__.__name__}: {e}")
     finally:
-        if 'page' in locals() and not page.is_closed():
+        if page:
             await page.close()
+    return None
 
 async def process_single_url_strategy(
     url: str,
@@ -538,36 +299,82 @@ async def process_single_url_strategy(
     use_browser: bool,
     session: Optional[aiohttp.ClientSession],
     playwright_instance: Optional[Any],
-    browser_context: Optional[BrowserContext
-]) -> Tuple[str, List[str], str]:
-    """处理单个 URL，根据策略选择获取方式并提取节点。"""
+    browser_context: Optional[BrowserContext],
+    cache: Dict[str, Any] # 缓存字典
+) -> Tuple[str, List[str], str]:
+    """处理单个 URL，根据策略选择获取方式并提取节点，并利用缓存。"""
     content = None
     status = "失败"
     extracted_nodes = []
 
+    current_time = datetime.now()
+    
+    # --- 1. 检查缓存 ---
+    if url in cache:
+        cached_data = cache[url]
+        last_fetched_time = cached_data.get('last_fetched')
+        cached_hash = cached_data.get('content_hash')
+        cached_nodes_count = cached_data.get('nodes_count', 0)
+
+        if last_fetched_time and isinstance(last_fetched_time, datetime):
+            # 缓存未过期
+            if current_time - last_fetched_time < timedelta(hours=CACHE_EXPIRY_HOURS):
+                logger.info(f"使用缓存获取 {url} (上次获取时间: {last_fetched_time.strftime('%Y-%m-%d %H:%M:%S')}) - 缓存未过期。")
+                # 不实际提取节点，仅返回缓存的节点数量
+                # 为了后续逻辑兼容，创建一个虚拟节点列表，其长度等于缓存的节点数量
+                extracted_nodes = ['_cached_node_'] * cached_nodes_count
+                status = "成功 (缓存未过期)"
+                return url, extracted_nodes, status
+            # 缓存已过期，但有哈希值，尝试获取并对比哈希
+            elif cached_hash:
+                logger.info(f"缓存 {url} 已过期，但有内容哈希，尝试重新获取并对比。")
+                # 继续尝试获取，如果内容相同则只更新时间戳
+
+    # --- 2. 获取内容 (如果缓存未命中或已过期) ---
     try:
+        fetch_method = ""
         if use_browser and playwright_instance and browser_context:
             content = await fetch_with_browser(playwright_instance, url, timeout, browser_context)
-            if content:
-                extracted_nodes = extract_nodes(content)
-                status = "成功 (Browser)"
-            else:
-                logger.warning(f"Playwright 未能获取内容，尝试回退到 aiohttp: {url}")
-                if session:
-                    content = await fetch_with_aiohttp(session, url, timeout)
-                    if content:
-                        extracted_nodes = extract_nodes(content)
-                        status = "成功 (HTTP 回退)"
-                else:
-                    logger.error("aiohttp session 未初始化，无法回退。")
-        elif session:
+            fetch_method = "Playwright"
+            if not content and session: # Playwright 失败，尝试回退
+                logger.warning(f"Playwright 未能获取 {url}，尝试回退到 aiohttp。")
+                content = await fetch_with_aiohttp(session, url, timeout)
+                fetch_method = "HTTP 回退"
+        elif session: # 不使用浏览器或浏览器不可用
             content = await fetch_with_aiohttp(session, url, timeout)
-            if content:
-                extracted_nodes = extract_nodes(content)
-                status = "成功 (HTTP)"
+            fetch_method = "HTTP"
         else:
             logger.error(f"没有可用的内容获取策略 (URL: {url})")
             status = "失败 (无策略)"
+            return url, extracted_nodes, status
+
+        if not content:
+            status = f"失败 ({fetch_method})"
+            return url, extracted_nodes, status
+
+        # --- 3. 处理内容并更新缓存 ---
+        new_content_hash = calculate_content_hash(content)
+        
+        # 检查内容是否真的发生了变化（如果之前有缓存且有哈希）
+        if url in cache and cache[url].get('content_hash') == new_content_hash:
+            # 内容未变，只更新缓存时间，不重新提取节点
+            cache[url]['last_fetched'] = current_time
+            # 使用上次缓存的节点数量
+            extracted_nodes = ['_cached_node_'] * cache[url].get('nodes_count', 0) 
+            status = f"成功 (内容未变，已更新缓存时间 via {fetch_method})"
+            logger.info(f"内容未变 {url} (哈希: {new_content_hash[:8]}...) - 已更新缓存时间。")
+        else:
+            # 内容发生变化或无缓存，重新提取节点
+            extracted_nodes = extract_nodes(content)
+            
+            # 更新缓存
+            cache[url] = {
+                'last_fetched': current_time,
+                'content_hash': new_content_hash,
+                'nodes_count': len(extracted_nodes)
+            }
+            status = f"成功 (内容已更新，已刷新缓存 via {fetch_method})"
+            logger.info(f"处理完成 {len(extracted_nodes)} 个节点来自 {url} (哈希: {new_content_hash[:8]}...) - 已刷新缓存。")
 
     except Exception as e:
         logger.error(f"处理 URL {url} 时发生未预期错误: {e}")
@@ -576,164 +383,150 @@ async def process_single_url_strategy(
     return url, extracted_nodes, status
 
 
-async def process_urls(
-    urls: List[str], max_concurrency: int, timeout: int, use_browser: bool
-) -> Dict[str, List[str]]:
-    """并发处理 URL 列表，提取代理节点。"""
+async def main():
+    parser = argparse.ArgumentParser(description="从 sources.list 获取代理节点并保存。")
+    parser.add_argument('--sources', type=str, default=DEFAULT_SOURCES_FILE,
+                        help='包含代理源URL的文件路径。')
+    parser.add_argument('--nodes-output-dir', type=str, default=DEFAULT_NODES_OUTPUT_DIR,
+                        help='保存提取到的节点的目录。每个链接的节点将保存为单独的文件。')
+    parser.add_argument('--stats-output', type=str, default=DEFAULT_STATS_FILE,
+                        help='保存统计数据（CSV格式）的文件路径。')
+    parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY,
+                        help='同时处理的最大URL数量。')
+    parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT,
+                        help='单个网络请求的超时时间（秒）。')
+    parser.add_argument('--use-browser', action='store_true',
+                        help='使用Playwright进行网页内容获取，以处理JavaScript渲染的页面。')
+    args = parser.parse_args()
+
+    os.makedirs(args.nodes_output_dir, exist_ok=True) # 确保节点输出目录存在
+
+    sources = []
+    try:
+        with open(args.sources, 'r', encoding='utf-8') as f:
+            sources = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+        logger.info(f"正在从 '{args.sources}' 加载代理源...")
+        logger.info(f"共找到 {len(sources)} 个代理源。")
+    except FileNotFoundError:
+        logger.error(f"错误: 源文件 '{args.sources}' 未找到。请创建该文件并添加代理URL。")
+        return
+
+    # 加载缓存
+    fetch_cache = load_cache()
+
     url_to_nodes: Dict[str, List[str]] = defaultdict(list)
-    url_statuses: Dict[str, str] = {} # 记录每个 URL 的处理状态
-    semaphore = asyncio.Semaphore(max_concurrency)
-    
+    url_node_counts: Dict[str, int] = {}
+    failed_urls: Set[str] = set()
+
+    logger.info(f"启动节点提取过程，最大并发数: {args.max_concurrency}, 超时: {args.timeout}s, 使用浏览器: {args.use_browser}。")
+    logger.info(f"缓存有效期设置为 {CACHE_EXPIRY_HOURS} 小时。")
+
+
     playwright_instance = None
     browser = None
     browser_context = None
-    session = None
 
-    try:
-        if use_browser:
+    if args.use_browser:
+        try:
             playwright_instance = await async_playwright().start()
-            browser = await playwright_instance.chromium.launch(headless=True) # 生产环境建议 headless=True
-            browser_context = await browser.new_context(user_agent=UA.random) # 创建上下文以复用
+            browser = await playwright_instance.chromium.launch() # headless=True by default
+            browser_context = await browser.new_context()
             logger.info("Playwright 浏览器已启动。")
-        
-        session = aiohttp.ClientSession() # 创建一个 session 以复用连接
+        except Exception as e:
+            logger.error(f"启动 Playwright 浏览器失败: {e}。将不使用浏览器获取内容。")
+            args.use_browser = False # 如果启动失败，禁用浏览器模式
+
+    async with aiohttp.ClientSession() as session:
         logger.info("aiohttp 客户端会话已启动。")
+        semaphore = asyncio.Semaphore(args.max_concurrency)
+        tasks = []
 
-        async def worker(url: str):
+        async def bounded_process(url: str):
             async with semaphore:
-                source_url_domain = urllib.parse.urlparse(url).netloc or url # 用于日志和分组
-                url, extracted_nodes, status = await process_single_url_strategy(
-                    url, timeout, use_browser, session, playwright_instance, browser_context
-                )
-                url_to_nodes[source_url_domain].extend(extracted_nodes)
-                url_statuses[source_url_domain] = status
-                logger.info(f"处理完成 {len(extracted_nodes)} 个节点来自 {url}")
+                return await process_single_url_strategy(url, args.timeout, args.use_browser, session, playwright_instance, browser_context, fetch_cache)
 
-        tasks = [worker(url) for url in urls]
-        await asyncio.gather(*tasks)
+        for url in sources:
+            tasks.append(bounded_process(url))
 
-    finally:
-        if session:
-            await session.close()
-            logger.info("aiohttp 客户端会话已关闭。")
-        if browser_context:
-            await browser_context.close()
-            logger.info("Playwright 浏览器上下文已关闭。")
-        if browser:
-            await browser.close()
-            logger.info("Playwright 浏览器已关闭。")
-        if playwright_instance:
-            await playwright_instance.stop()
-            logger.info("Playwright 实例已停止。")
-    
-    return url_to_nodes, url_statuses
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
-def save_nodes_to_files(url_to_nodes: Dict[str, List[str]], output_dir: str):
-    """将提取到的节点保存到以域名命名的文件中。"""
-    os.makedirs(output_dir, exist_ok=True)
-    for url_domain, nodes in url_to_nodes.items():
-        if nodes:
-            sanitized_filename = sanitize_filename_from_url(url_domain)
-            output_path = os.path.join(output_dir, sanitized_filename)
-            try:
-                content = '\n'.join(nodes)
-                with open(output_path, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                logger.info(f"保存 {len(nodes)} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
-            except Exception as e:
-                logger.error(f"保存节点到文件 '{output_path}' 失败: {e}")
-        else:
-            logger.info(f"源 {url_domain} 未提取到节点，跳过保存。")
+        for result in results:
+            if isinstance(result, Exception):
+                logger.error(f"处理任务时发生未预期异常: {result}")
+                continue
 
-def write_stats_csv(url_node_counts: Dict[str, int], url_statuses: Dict[str, str], stats_output_path: str):
-    """将统计信息写入 CSV 文件。"""
+            url_domain, extracted_nodes, status = result
+            # 注意：如果从缓存中读取，extracted_nodes 可能是虚拟列表，长度等于节点数量
+            actual_node_count = len(extracted_nodes)
+            
+            # 如果是从缓存中读取的，其 extracted_nodes 可能只是一个占位符，
+            # 需要从缓存数据中获取真实的节点列表以写入文件。
+            # 这里简化处理：如果从缓存中读取且状态是“缓存未过期”，
+            # 我们假设之前的节点文件依然有效，不重新写入文件。
+            # 否则，按照实际提取的节点进行写入。
+
+            if "缓存未过期" in status:
+                logger.info(f"源 {url_domain} 节点来自缓存，节点数量: {actual_node_count}。跳过文件写入。")
+            else:
+                # 只有当实际获取并处理了内容时才写入文件
+                if extracted_nodes: # 如果提取到了实际节点（非虚拟节点）
+                    sanitized_filename = sanitize_filename_from_url(url_domain)
+                    output_path = os.path.join(args.nodes_output_dir, sanitized_filename)
+                    try:
+                        content_to_write = '\n'.join(extracted_nodes)
+                        with open(output_path, 'w', encoding='utf-8') as f:
+                            f.write(content_to_write)
+                        file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+                        logger.info(f"保存 {actual_node_count} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
+                    except Exception as e:
+                        logger.error(f"保存节点到文件 '{output_path}' 失败: {e}")
+                else:
+                    logger.info(f"源 {url_domain} 未提取到节点，跳过保存。")
+
+            url_node_counts[url_domain] = actual_node_count
+            if "失败" in status:
+                failed_urls.add(url_domain)
+            
+            # 简化：只在 process_single_url_strategy 内部更新缓存，避免重复
+            # logger.info(f"处理完成 {actual_node_count} 个节点来自 {url_domain} (状态: {status})")
+
+
+    # --- 统计数据保存为 CSV ---
     try:
-        os.makedirs(os.path.dirname(stats_output_path), exist_ok=True)
-        with open(stats_output_path, 'w', newline='', encoding='utf-8') as csvfile:
+        os.makedirs(os.path.dirname(args.stats_output), exist_ok=True)
+        with open(args.stats_output, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['Source_URL', 'Nodes_Found', 'Status']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-            for url_domain, count in sorted(url_node_counts.items(), key=lambda x: x[1], reverse=True):
-                status = url_statuses.get(url_domain, "未知")
-                writer.writerow({
-                    'Source_URL': url_domain,
-                    'Nodes_Found': count,
-                    'Status': status
-                })
-        logger.info(f"统计信息已保存到 {stats_output_path}")
+            for url, count in sorted(url_node_counts.items(), key=lambda x: x[1], reverse=True):
+                # 重新计算状态，因为 cache logic 改变了内部状态传递
+                status_from_cache = fetch_cache.get(url, {}).get('status', '未知')
+                final_status = "成功"
+                if url in failed_urls:
+                    final_status = "失败"
+                elif count == 0 and "缓存未过期" not in status_from_cache:
+                    final_status = "无节点"
+                elif "缓存未过期" in status_from_cache:
+                    final_status = "成功 (缓存)"
+                elif "内容未变" in status_from_cache:
+                    final_status = "成功 (内容未变)"
+
+                writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': final_status})
+        logger.info(f"统计数据已保存到 '{args.stats_output}'")
     except Exception as e:
-        logger.error(f"写入统计 CSV 文件失败: {e}")
+        logger.error(f"保存统计数据失败: {e}")
 
-async def main():
-    parser = argparse.ArgumentParser(description="从 URL 列表中提取代理节点。")
-    parser.add_argument('--sources', type=str, default=DEFAULT_SOURCES_FILE,
-                        help=f"包含代理源 URL 的文件路径 (默认为 {DEFAULT_SOURCES_FILE})")
-    parser.add_argument('--nodes-output-dir', type=str, default=DEFAULT_NODES_OUTPUT_DIR,
-                        help=f"保存提取到的节点的目录 (默认为 {DEFAULT_NODES_OUTPUT_DIR})")
-    parser.add_argument('--stats-output', type=str, default=DEFAULT_STATS_FILE,
-                        help=f"保存统计信息的 CSV 文件路径 (默认为 {DEFAULT_STATS_FILE})")
-    parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY,
-                        help=f"最大并发请求数 (默认为 {DEFAULT_MAX_CONCURRENCY})")
-    parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT,
-                        help=f"请求超时时间 (秒) (默认为 {DEFAULT_TIMEOUT})")
-    parser.add_argument('--use-browser', action='store_true',
-                        help="使用 Playwright 浏览器渲染 JavaScript 内容")
+    finally:
+        # 保存缓存
+        save_cache(fetch_cache)
 
-    args = parser.parse_args()
-
-    # 验证输入参数
-    if not os.path.exists(args.sources):
-        logger.error(f"错误: 源文件 '{args.sources}' 不存在。")
-        return
-    if args.max_concurrency <= 0:
-        logger.error(f"错误: 最大并发数必须大于 0。")
-        return
-    if args.timeout <= 0:
-        logger.error(f"错误: 超时时间必须大于 0。")
-        return
-
-    logger.info(f"正在从 '{args.sources}' 加载代理源...")
-    urls_to_process: List[str] = []
-    try:
-        with open(args.sources, 'r', encoding='utf-8') as f:
-            for line in f:
-                stripped_line = line.strip()
-                if stripped_line and not stripped_line.startswith('#'):
-                    urls_to_process.append(stripped_line)
-    except Exception as e:
-        logger.error(f"加载源文件失败: {e}")
-        return
-
-    if not urls_to_process:
-        logger.warning("没有找到要处理的 URL。")
-        return
-
-    logger.info(f"共找到 {len(urls_to_process)} 个代理源。")
-    logger.info(f"启动节点提取过程，最大并发数: {args.max_concurrency}, 超时: {args.timeout}s, {'使用浏览器' if args.use_browser else '不使用浏览器'}。")
-
-    start_time = datetime.now()
-    url_to_nodes, url_statuses = await process_urls(urls_to_process, args.max_concurrency, args.timeout, args.use_browser)
-    end_time = datetime.now()
-    
-    total_extracted_nodes = sum(len(nodes) for nodes in url_to_nodes.values())
-    unique_extracted_nodes_set = set()
-    for nodes_list in url_to_nodes.values():
-        unique_extracted_nodes_set.update(nodes_list)
-    total_unique_extracted_nodes = len(unique_extracted_nodes_set)
-
-
-    logger.info(f"所有源处理完成。总耗时: {(end_time - start_time).total_seconds():.2f} 秒。")
-    logger.info(f"总共提取到 {total_extracted_nodes} 个节点 (其中 {total_unique_extracted_nodes} 个唯一节点)。")
-
-    logger.info(f"正在保存节点到 '{args.nodes_output_dir}'...")
-    save_nodes_to_files(url_to_nodes, args.nodes_output_dir)
-
-    logger.info(f"正在生成统计信息到 '{args.stats_output}'...")
-    url_node_counts = {url_domain: len(nodes) for url_domain, nodes in url_to_nodes.items()}
-    write_stats_csv(url_node_counts, url_statuses, args.stats_output)
-
-    logger.info("所有任务完成。")
+        if browser_context:
+            await browser_context.close()
+        if browser:
+            await browser.close()
+        if playwright_instance:
+            await playwright_instance.stop()
+        logger.info("脚本运行完成。")
 
 if __name__ == "__main__":
     asyncio.run(main())
