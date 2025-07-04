@@ -45,21 +45,21 @@ class NodeStandardizer:
         return node_url
 
     @staticmethod
-    def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str]:
+    def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str, str | None]:
         """
-        标准化节点URL，提取核心信息用于去重。
-        返回 (标准化后的节点字符串, 协议类型)。
+        标准化节点URL，提取核心信息用于去重，并保留原始节点。
+        返回 (标准化后的节点字符串, 协议类型, 原始节点)。
         """
         if not node_url:
-            return None, "unknown"
+            return None, "unknown", None
 
-        node_url = NodeStandardizer.clean_node_url(node_url)
+        node_url_cleaned = NodeStandardizer.clean_node_url(node_url)
         match = re.match(r"^(?P<protocol>hysteria2|vmess|trojan|ss|ssr|vless)://(?P<data>.*)", 
-                        node_url, re.IGNORECASE)
+                        node_url_cleaned, re.IGNORECASE)
         if not match:
             if debug:
                 logging.debug(f"不支持的协议或格式错误: {node_url}")
-            return None, "unknown"
+            return None, "unknown", None
 
         protocol = match.group("protocol").lower()
         data_part = match.group("data")
@@ -81,11 +81,11 @@ class NodeStandardizer:
 
             if result and debug:
                 logging.debug(f"去重键: {result} (原始: {node_url})")
-            return result, protocol
+            return result, protocol, node_url
 
         except Exception as e:
             logging.error(f"标准化节点 {node_url} 时发生错误: {e}")
-            return None, "unknown"
+            return None, "unknown", None
 
     @staticmethod
     def _standardize_vmess_vless(protocol: str, core_data: str, full_data: str) -> str | None:
@@ -113,9 +113,10 @@ class NodeStandardizer:
             security = params.get('security', ['none'])[0].lower()
             flow = params.get('flow', [''])[0].lower()
             sni = params.get('sni', [''])[0].lower()
+            fp = params.get('fp', [''])[0].lower()
             address_parts = address.rsplit(':', 1)
             if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
-                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}&security={security}&flow={flow}&sni={sni}"
+                return f"{protocol}://{uuid.lower()}@{address.lower()}?encryption={encryption}&type={transport}&security={security}&flow={flow}&sni={sni}&fp={fp}"
             return None
         address_parts = address.rsplit(':', 1)
         if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
@@ -183,31 +184,42 @@ def fetch_url(url: str) -> requests.Response:
         response.raise_for_status()
         return response
 
-def write_sharded_output(nodes: set, output_dir: str, shard_size: int) -> dict:
-    """将去重后的节点分片写入文件，返回每个分片的节点数"""
+def write_protocol_outputs(nodes: dict, output_dir: str) -> dict:
+    """将去重后的节点按协议写入文件，并写入单一文件，返回每个文件的节点数"""
     os.makedirs(output_dir, exist_ok=True)
-    sorted_nodes = sorted(nodes)
-    shard_counts = {}
-    for i in range(0, len(sorted_nodes), shard_size):
-        shard_index = i // shard_size + 1
-        shard_file = os.path.join(output_dir, f'part_{shard_index:03d}.txt')
-        shard_nodes = sorted_nodes[i:i + shard_size]
-        with open(shard_file, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(shard_nodes) + '\n')
-        shard_counts[shard_file] = len(shard_nodes)
-        logging.info(f"写入分片文件: {shard_file} ({len(shard_nodes)} 个节点)")
-    return shard_counts
+    protocol_counts = {}
+    all_nodes = []
+
+    # 按协议分组写入
+    for protocol, node_list in nodes.items():
+        if node_list:
+            output_file = os.path.join(output_dir, f"{protocol}.txt")
+            sorted_nodes = sorted(node_list)
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(sorted_nodes) + '\n')
+            protocol_counts[output_file] = len(sorted_nodes)
+            logging.info(f"写入协议文件: {output_file} ({len(sorted_nodes)} 个节点)")
+            all_nodes.extend(sorted_nodes)
+
+    # 写入单一文件
+    output_all_file = os.path.join(output_dir, 'all.txt')
+    with open(output_all_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sorted(all_nodes)) + '\n')
+    protocol_counts[output_all_file] = len(all_nodes)
+    logging.info(f"写入单一文件: {output_all_file} ({len(all_nodes)} 个节点)")
+
+    return protocol_counts
 
 def download_and_deduplicate_nodes(args):
-    """从GitHub Raw链接下载节点数据，标准化并去重后分片保存"""
+    """从GitHub Raw链接下载节点数据，标准化并去重后按协议保存"""
     setup_logging(args.debug)
     base_url = args.base_url
     start_index = args.start_index
     end_index = args.end_index
     output_dir = args.output_dir
-    shard_size = args.shard_size
     
-    unique_nodes = set()
+    unique_nodes = {}  # 按协议存储原始节点 {protocol: [node1, node2, ...]}
+    unique_keys = set()  # 去重键集合
     stats = {
         'download_count': 0,
         'total_nodes_processed': 0,
@@ -215,7 +227,7 @@ def download_and_deduplicate_nodes(args):
         'invalid_format_count': 0,
         'duplicate_count': 0,
         'protocol_counts': {},
-        'shard_counts': {}
+        'output_file_counts': {}
     }
     
     logging.info("--- 开始下载和去重节点 ---")
@@ -236,15 +248,16 @@ def download_and_deduplicate_nodes(args):
                     continue
                 
                 stats['total_nodes_processed'] += 1
-                minimal_node, protocol = NodeStandardizer.standardize_node_minimal(node, args.debug)
+                minimal_node, protocol, original_node = NodeStandardizer.standardize_node_minimal(node, args.debug)
                 
-                if minimal_node:
-                    if minimal_node in unique_nodes:
+                if minimal_node and original_node:
+                    if minimal_node in unique_keys:
                         stats['duplicate_count'] += 1
                         if args.debug:
                             logging.debug(f"发现重复节点: {minimal_node}")
                     else:
-                        unique_nodes.add(minimal_node)
+                        unique_keys.add(minimal_node)
+                        unique_nodes.setdefault(protocol, []).append(original_node)
                         stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
                 else:
                     stats['failed_to_standardize_count'] += 1
@@ -258,8 +271,8 @@ def download_and_deduplicate_nodes(args):
             logging.error(f"处理 {url} 时发生未知错误: {e}")
             stats['invalid_format_count'] += 1
 
-    # 分片写入
-    stats['shard_counts'] = write_sharded_output(unique_nodes, output_dir, shard_size)
+    # 按协议和单一文件写入
+    stats['output_file_counts'] = write_protocol_outputs(unique_nodes, output_dir)
 
     end_time = datetime.datetime.now()
     duration = end_time - start_time
@@ -271,14 +284,13 @@ def download_and_deduplicate_nodes(args):
     logging.info(f"重复节点数: {stats['duplicate_count']}")
     logging.info(f"无法标准化的节点数: {stats['failed_to_standardize_count']}")
     logging.info(f"格式无效的节点数: {stats['invalid_format_count']}")
-    logging.info(f"去重后的有效节点总数: {len(unique_nodes)}")
+    logging.info(f"去重后的有效节点总数: {sum(stats['protocol_counts'].values())}")
     logging.info("协议分布:")
     for protocol, count in sorted(stats['protocol_counts'].items()):
         logging.info(f"  {protocol}: {count}")
-    logging.info("分片文件:")
-    for shard_file, count in sorted(stats['shard_counts'].items()):
-        logging.info(f"  {shard_file}: {count} 个节点")
-    logging.info(f"总分片数: {len(stats['shard_counts'])}")
+    logging.info("输出文件:")
+    for output_file, count in sorted(stats['output_file_counts'].items()):
+        logging.info(f"  {output_file}: {count} 个节点")
     logging.info(f"总耗时: {duration.total_seconds():.2f} 秒")
     logging.info("==============================================")
 
@@ -291,7 +303,6 @@ def parse_args():
     parser.add_argument('--start-index', type=int, default=1, help='Start index for files')
     parser.add_argument('--end-index', type=int, default=199, help='End index for files')
     parser.add_argument('--output-dir', default='data', help='Output directory')
-    parser.add_argument('--shard-size', type=int, default=10000, help='Number of nodes per shard')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
     return parser.parse_args()
 
