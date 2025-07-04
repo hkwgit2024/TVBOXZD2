@@ -95,33 +95,22 @@ def encode_base64(data: str) -> str:
         return data
 
 def score_node(node_url: str, url_counts: Dict[str, int]) -> int:
-    """评估节点质量，返回得分（越高越好）"""
     try:
         protocol, _, rest = node_url.partition('://')
         protocol_lower = protocol.lower()
         score = 0
         source_url = node_url.get('source_url', '')
 
-        # 协议优先级
         protocol_scores = {
-            'trojan': 10,
-            'vless': 8,
-            'vmess': 6,
-            'hysteria2': 6,
-            'hy2': 6,
-            'tuic': 6,
-            'snell': 4,
-            'ss': 2,
-            'ssr': 1
+            'trojan': 10, 'vless': 8, 'vmess': 6, 'hysteria2': 6,
+            'hy2': 6, 'tuic': 6, 'snell': 4, 'ss': 2, 'ssr': 1
         }
         score += protocol_scores.get(protocol_lower, 0)
 
-        # 来源可靠性
         if source_url.startswith('https://'):
             score += 5
         score += min(url_counts.get(source_url, 0) // 10, 5)
 
-        # TLS 启用优先
         if protocol_lower == 'vmess':
             config_json = decode_base64(rest)
             if config_json:
@@ -134,7 +123,6 @@ def score_node(node_url: str, url_counts: Dict[str, int]) -> int:
             if 'security' in query_params and query_params['security'][0] == 'tls':
                 score += 5
 
-        # 备注长度惩罚
         if '#' in node_url:
             remark = urllib.parse.unquote(node_url.split('#')[-1])
             score -= len(remark) // 10
@@ -146,7 +134,6 @@ def score_node(node_url: str, url_counts: Dict[str, int]) -> int:
         return 0
 
 def generate_node_fingerprint(node_url: str) -> str:
-    """生成节点唯一指纹，仅基于核心字段，用于去重"""
     try:
         protocol, _, rest = node_url.partition('://')
         protocol_lower = protocol.lower()
@@ -213,7 +200,6 @@ def generate_node_fingerprint(node_url: str) -> str:
         return node_url
 
 def normalize_node_url(url: str) -> str:
-    """规范化节点 URL，移除非必要字段，限制备注长度"""
     try:
         protocol, _, rest = url.partition('://')
         if not protocol or protocol.lower() not in NODE_PATTERNS:
@@ -290,7 +276,6 @@ def normalize_node_url(url: str) -> str:
         return url
 
 def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
-    """将 Clash 配置转换为标准 URL，简化次要字段"""
     proxy_type = proxy.get('type', '').lower()
     name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', 'node')[:10]), safe='')
     server = proxy.get('server')
@@ -385,7 +370,6 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
     return None
 
 def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> List[Dict[str, str]]:
-    """增强节点提取逻辑，返回节点 URL 和来源 URL 的字典列表"""
     nodes_found = set()
     
     if not content or decode_depth > MAX_BASE64_DECODE_DEPTH:
@@ -405,7 +389,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
             logger.debug(f"HTML 标签清理失败: {text[:50]}... 错误: {e}")
             return HTML_TAG_REGEX.sub('', text)
 
-    # 直接匹配节点 URL
     for pattern_key, pattern_val in NODE_PATTERNS.items():
         matches = re.findall(pattern_val, content, re.MULTILINE | re.IGNORECASE)
         for node in matches:
@@ -414,7 +397,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
             logger.debug(f"匹配到节点: {cleaned_node[:50]}... -> 规范化: {normalized_node[:50]}...")
             nodes_found.add((normalized_node, source_url))
 
-    # 解析 HTML 标签中的节点
     try:
         soup = BeautifulSoup(content, 'html.parser')
         for tag in soup.find_all(True):
@@ -432,7 +414,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
                         normalized_node = normalize_node_url(cleaned_link)
                         nodes_found.add((normalized_node, source_url))
         
-        # 解析 HTML 注释
         for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
             comment_text = str(comment).strip()
             cleaned_comment = strip_html_tags(comment_text)
@@ -453,7 +434,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
     except Exception as e:
         logger.debug(f"HTML 解析失败: {e}")
 
-    # 解析 JavaScript 变量和函数调用
     js_variable_matches = JS_VAR_REGEX.findall(content)
     for match_group in js_variable_matches:
         js_val = match_group if isinstance(match_group, str) else match_group[0]
@@ -476,7 +456,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
         if decoded_func_param:
             nodes_found.update((node, source_url) for node in extract_nodes(decoded_func_param, decode_depth + 1, source_url))
 
-    # 解析 YAML 配置
     try:
         yaml_content = yaml.safe_load(content)
         if isinstance(yaml_content, dict) and 'proxies' in yaml_content:
@@ -507,7 +486,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
     except yaml.YAMLError as e:
         logger.debug(f"YAML 解析失败: {e}")
 
-    # 解析 JSON 配置
     try:
         json_content = json.loads(content)
         if isinstance(json_content, list):
@@ -561,7 +539,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
     except json.JSONDecodeError as e:
         logger.debug(f"JSON 解析失败: {e}")
 
-    # 处理 Base64 编码的内容
     if decode_depth < MAX_BASE64_DECODE_DEPTH:
         base64_candidates = BASE64_REGEX_LOOSE.findall(content)
         for b64_candidate_tuple in base64_candidates:
@@ -573,7 +550,6 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
                 logger.debug(f"处理 Base64 解码内容: {decoded_content_full[:50]}...")
                 nodes_found.update((node, source_url) for node in extract_nodes(decoded_content_full, decode_depth + 1, source_url))
 
-    # 过滤有效节点
     final_filtered_nodes = [
         {"url": node, "source_url": source} 
         for node, source in nodes_found 
@@ -683,7 +659,6 @@ async def process_urls(domains: Set[str], max_concurrency: int, timeout: int, us
         except Exception as e:
             logger.error(f"关闭 Playwright 时发生错误: {e}")
 
-    # 增强去重逻辑：基于指纹和来源优先级
     logger.info(f"去重前节点数: {len(all_nodes_collected)}")
     fingerprint_to_nodes = defaultdict(list)
     for node in all_nodes_collected:
@@ -691,7 +666,6 @@ async def process_urls(domains: Set[str], max_concurrency: int, timeout: int, us
         fingerprint = generate_node_fingerprint(normalized_node)
         fingerprint_to_nodes[fingerprint].append(node)
 
-    # 选择高质量节点（基于评分）
     final_unique_nodes = []
     protocol_counts = defaultdict(int)
     for fingerprint, nodes in fingerprint_to_nodes.items():
@@ -762,7 +736,6 @@ def main():
     for line in report_lines:
         logger.info(line)
 
-    # 保存 nodes.txt（去掉分片功能）
     output_dir = os.path.dirname(args.nodes_output)
     os.makedirs(output_dir, exist_ok=True)
     if total_nodes_extracted == 0:
@@ -777,7 +750,6 @@ def main():
         except Exception as e:
             logger.error(f"保存 nodes.txt 失败: {e}")
 
-    # 保存 node_counts.csv
     try:
         logger.info(f"开始保存统计数据到 {args.stats_output}")
         with open(args.stats_output, 'w', newline='', encoding='utf-8') as csvfile:
