@@ -24,9 +24,9 @@ jobs:
           pip install requests tenacity
 
       - name: Run deduplication script
-        # 移除了 --start-index 和 --end-index 参数，因为脚本现在处理单个文件
-        # 脚本默认会从 https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt 获取数据
-        run: python deduplicate_nodes.py # --debug # 启用调试模式，便于分析去重问题和Ping结果
+        # 脚本现在默认使用 100 个并发线程和 1 秒的 Ping 超时
+        # 您可以通过 --max-ping-workers 和 --ping-timeout 覆盖这些默认值
+        run: python deduplicate_nodes.py # 移除了 --debug 以减少日志量
         continue-on-error: false # 脚本失败时停止工作流
 
       - name: Check output files
