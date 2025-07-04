@@ -23,7 +23,9 @@ DEFAULT_SOURCES_FILE = 'sources.list'
 DEFAULT_NODES_OUTPUT_DIR = 'data/nodes'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 10
-DEFAULT_TIMEOUT = 30
+DEFAULT_TIMEOUT = 30 # 通用超时时间（秒）
+PLAYWRIGHT_GOTO_TIMEOUT = 45000 # Playwright 页面加载超时时间（毫秒），略高于通用超时
+
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
@@ -508,20 +510,22 @@ async def fetch_with_browser(
 ) -> Optional[str]:
     """使用 Playwright 异步获取 URL 内容 (渲染 JavaScript)。"""
     try:
-        # 在已有的浏览器上下文中创建新页面
         page = await browser_context.new_page()
         user_agent_str = UA.random
         await page.set_extra_http_headers({"User-Agent": user_agent_str})
         
-        await page.goto(url, wait_until='domcontentloaded', timeout=timeout * 1000) # Playwright timeout in ms
+        # 调整 Playwright 的等待策略和超时
+        # wait_until='load' 比 'networkidle' 宽松，等待主要资源加载完毕
+        # 使用 PLAYWRIGHT_GOTO_TIMEOUT 常量作为 goto 的超时时间
+        await page.goto(url, wait_until='load', timeout=PLAYWRIGHT_GOTO_TIMEOUT)
         
-        # 等待页面完全加载，可以根据需要调整等待时间或条件
-        await page.wait_for_load_state('networkidle')
+        # 这里不再使用 page.wait_for_load_state('networkidle')，以避免长时间等待
         
         content = await page.content()
         logger.info(f"成功获取 {url} (Playwright)")
         return content
     except Exception as e:
+        # Playwright 的异常通常已经包含详细信息
         logger.warning(f"Playwright 请求 {url} 失败: {e}")
         return None
     finally:
@@ -603,7 +607,6 @@ async def process_urls(
                 )
                 url_to_nodes[source_url_domain].extend(extracted_nodes)
                 url_statuses[source_url_domain] = status
-                # 修复 BlockingIOError: 只记录提取到的节点数量，不打印完整的节点列表
                 logger.info(f"处理完成 {len(extracted_nodes)} 个节点来自 {url}")
 
         tasks = [worker(url) for url in urls]
@@ -633,7 +636,6 @@ def save_nodes_to_files(url_to_nodes: Dict[str, List[str]], output_dir: str):
             sanitized_filename = sanitize_filename_from_url(url_domain)
             output_path = os.path.join(output_dir, sanitized_filename)
             try:
-                # 使用 '\n'.join 而不是每次循环都拼接字符串
                 content = '\n'.join(nodes)
                 with open(output_path, 'w', encoding='utf-8') as f:
                     f.write(content)
