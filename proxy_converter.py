@@ -15,7 +15,6 @@ from datetime import datetime
 from bs4 import BeautifulSoup, Comment
 from fake_useragent import UserAgent
 from playwright.async_api import async_playwright, Page, BrowserContext
-import time
 
 # --- 配置 ---
 LOG_FILE = 'proxy_converter.log'
@@ -26,7 +25,7 @@ DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
 DEFAULT_CHUNK_SIZE_MB = 190
-MAX_BASE64_DECODE_DEPTH = 3
+MAX_BASE64_DECODE_DEPTH = 3 # 保持不变，兼顾深度和性能
 UA = UserAgent()
 
 # 配置日志系统
@@ -57,7 +56,8 @@ BASE64_RAW_PATTERN = r'(?:b64|base64|data:application\/octet-stream;base64,)?\s*
 BASE64_REGEX_LOOSE = re.compile(BASE64_RAW_PATTERN, re.MULTILINE | re.IGNORECASE)
 JS_VAR_REGEX = re.compile(r'(?:var|let|const)\s+[\w]+\s*=\s*["\'](' + COMBINED_REGEX_PATTERN + r'|' + BASE64_RAW_PATTERN + r')["\']', re.MULTILINE | re.IGNORECASE)
 JS_FUNC_CALL_REGEX = re.compile(r'(?:atob|decodeURIComponent)\s*\(\s*["\']?(' + BASE64_RAW_PATTERN + r')["\']?\s*\)', re.MULTILINE | re.IGNORECASE)
-HTML_TAG_REGEX = re.compile(r'<[^>]+>', re.MULTILINE)
+# HTML_TAG_REGEX 不再用于内容清理，仅作为正则示例，实际由BeautifulSoup处理
+HTML_TAG_REGEX = re.compile(r'<[^>]+>', re.MULTILINE) 
 
 # --- 辅助函数 ---
 
@@ -92,155 +92,93 @@ def encode_base64(data: str) -> str:
         logger.warning(f"Base64 编码失败: {data[:50]}... 错误: {e}")
         return data
 
-async def test_node(node_url: str, timeout: int = 5) -> Tuple[bool, Optional[float]]:
-    """测试节点是否可用（简单 TCP 连接测试）"""
+def score_node(url: str) -> int:
+    """评估节点质量，返回得分（越高越好） - 此函数主要用于选择最优重复节点，与文件大小优化无关，保持不变。"""
     try:
-        protocol, _, rest = node_url.partition('://')
-        protocol_lower = protocol.lower()
-        server = port = None
-        if protocol_lower == 'vmess':
-            config_json = decode_base64(rest)
-            if config_json:
-                config = json.loads(config_json)
-                server = config.get('add')
-                port = config.get('port')
-        elif protocol_lower in ['ss', 'trojan', 'vless', 'hysteria2', 'hy2', 'tuic', 'snell']:
-            parsed = urllib.parse.urlparse(node_url)
-            server = parsed.hostname
-            port = parsed.port or 443
-        elif protocol_lower == 'ssr':
-            decoded_ssr = decode_base64(rest)
-            if decoded_ssr:
-                parts = decoded_ssr.split(':')
-                if len(parts) >= 2:
-                    server, port = parts[0], parts[1]
-        
-        if not server or not port:
-            logger.debug(f"无法解析节点 {node_url[:50]}... 的 server 或 port")
-            return False, None
-        
-        async with aiohttp.ClientSession() as session:
-            start_time = time.time()
-            async with session.get(f"http://{server}:{port}", timeout=timeout) as response:
-                if response.status == 200:
-                    latency = (time.time() - start_time) * 1000  # 毫秒
-                    logger.debug(f"节点 {server}:{port} 有效，延迟: {latency:.2f}ms")
-                    return True, latency
-                else:
-                    logger.debug(f"节点 {server}:{port} 返回状态码 {response.status}")
-                    return False, None
-    except Exception as e:
-        logger.debug(f"节点 {node_url[:50]}... 测试失败: {e}")
-        return False, None
-
-async def filter_valid_nodes(nodes: List[str], max_concurrency: int = 10) -> List[Dict[str, Any]]:
-    """异步测试节点有效性，返回有效节点及其延迟"""
-    valid_nodes = []
-    semaphore = asyncio.Semaphore(max_concurrency)
-    
-    async def test_with_semaphore(node: str):
-        async with semaphore:
-            is_valid, latency = await test_node(node)
-            return {"url": node, "latency": latency} if is_valid else None
-    
-    tasks = [test_with_semaphore(node) for node in nodes]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    valid_nodes = [r for r in results if r is not None]
-    
-    logger.info(f"有效节点: {len(valid_nodes)}/{len(nodes)}")
-    return valid_nodes
-
-def score_node(node_url: str, url_counts: Dict[str, int]) -> int:
-    """改进节点评分，综合延迟、协议、来源可靠性"""
-    try:
-        protocol, _, rest = node_url.partition('://')
+        protocol, _, rest = url.partition('://')
         protocol_lower = protocol.lower()
         score = 0
-        source_url = node_url.get('source_url', '')  # 假设节点包含来源 URL
-
-        # 协议优先级（更安全的协议得分更高）
-        protocol_scores = {
-            'trojan': 10,
-            'vless': 8,
-            'vmess': 6,
-            'hysteria2': 6,
-            'hy2': 6,
-            'tuic': 6,
-            'snell': 4,
-            'ss': 2,
-            'ssr': 1
-        }
-        score += protocol_scores.get(protocol_lower, 0)
-
-        # 来源可靠性（HTTPS 优先，节点数量多的 URL 优先）
-        if source_url.startswith('https://'):
-            score += 5
-        score += min(url_counts.get(source_url, 0) // 10, 5)  # 节点多的 URL 更可靠
-
-        # TLS 启用优先
-        if protocol_lower == 'vmess':
-            config_json = decode_base64(rest)
-            if config_json:
-                config = json.loads(config_json)
-                if config.get('tls') == 'tls':
-                    score += 5
-        elif protocol_lower in ['trojan', 'vless']:
-            parsed = urllib.parse.urlparse(node_url)
-            query_params = urllib.parse.parse_qs(parsed.query)
-            if 'security' in query_params and query_params['security'][0] == 'tls':
-                score += 5
-
-        # 备注长度惩罚（过长备注降低分数）
-        if '#' in node_url:
-            remark = urllib.parse.unquote(node_url.split('#')[-1])
-            score -= len(remark) // 10
-
-        return max(score, 0)
-    except Exception as e:
-        logger.debug(f"评分节点 {node_url[:50]}... 失败: {e}")
-        return 0
-
-def generate_node_fingerprint(node_url: str) -> str:
-    """生成节点唯一指纹，仅基于核心字段，用于去重"""
-    try:
-        protocol, _, rest = node_url.partition('://')
-        protocol_lower = protocol.lower()
-        if protocol_lower not in NODE_PATTERNS:
-            return node_url
 
         if protocol_lower == 'vmess':
             config_json = decode_base64(rest)
             if not config_json:
-                return node_url
+                return 0
             try:
                 config = json.loads(config_json)
+                if config.get('tls') == 'tls':
+                    score += 5  # 启用 TLS 优先
+                score += len(config)  # 更多字段得分更高
+                if config.get('ps'):
+                    score -= len(config['ps']) // 10  # 备注越短越好
+            except json.JSONDecodeError:
+                return 0
+        elif protocol_lower in ['ss', 'trojan', 'vless', 'hysteria2', 'hy2', 'tuic', 'snell']:
+            parsed = urllib.parse.urlparse(url)
+            query_params = urllib.parse.parse_qs(parsed.query)
+            if 'security' in query_params and query_params['security'][0] == 'tls':
+                score += 5  # 启用 TLS 优先
+            score += len(query_params)  # 更多参数得分更高
+            if parsed.fragment:
+                score -= len(parsed.fragment) // 10  # 备注越短越好
+        elif protocol_lower == 'ssr':
+            decoded_ssr = decode_base64(rest)
+            if not decoded_ssr:
+                return 0
+            if 'tls' in decoded_ssr.lower():
+                score += 5
+            score += decoded_ssr.count('&')  # 更多参数得分更高
+            if '#' in decoded_ssr:
+                remark = decoded_ssr.split('#')[-1]
+                score -= len(decode_base64(remark)) // 10
+        return max(score, 0)
+    except Exception:
+        return 0
+
+def generate_node_fingerprint(url: str) -> str:
+    """生成节点唯一指纹，仅基于核心字段，用于去重 - 优化指纹粒度。"""
+    try:
+        protocol, _, rest = url.partition('://')
+        protocol_lower = protocol.lower()
+        if protocol_lower not in NODE_PATTERNS:
+            return url
+
+        if protocol_lower == 'vmess':
+            config_json = decode_base64(rest)
+            if not config_json:
+                return url
+            try:
+                config = json.loads(config_json)
+                # 移除 'type' 字段，因为它可能因来源不同而有细微差异，但实质上是同一个节点
                 core_fields = (
-                    config.get('add', '').lower(),
+                    config.get('add', ''),
                     str(config.get('port', 0)),
-                    config.get('id', '').lower(),
-                    config.get('security', 'auto').lower()
+                    config.get('id', '')
                 )
                 return f"vmess://{':'.join(str(x) for x in core_fields)}"
             except json.JSONDecodeError:
-                return node_url
+                return url
 
         elif protocol_lower == 'ssr':
             decoded_ssr = decode_base64(rest)
             if not decoded_ssr:
-                return node_url
+                return url
+            # 核心部分：host:port:protocol:method:obfs:password
+            # 这里的password是base64编码的，需要解码后再用于指纹
             core_part_match = re.match(r'([^/?#]+)(.*)', decoded_ssr)
             if not core_part_match:
-                return node_url
+                return url
             core_part = core_part_match.group(1)
             parts = core_part.split(':')
             if len(parts) < 6:
-                return node_url
+                return url
             host, port, _, method, _, password_b64 = parts[:6]
-            password = decode_base64(password_b64.split('/')[0].split('?')[0].split('#')[0])
-            return f"ssr://{host.lower()}:{port}:{method.lower()}:{password.lower()}"
+            # 确保密码的解码一致性，用于指纹
+            password = decode_base64(password_b64.split('/')[0].split('?')[0].split('#')[0]) 
+            # 考虑到 protocol_name 和 obfs_name 可能不影响去重核心，可以移除
+            return f"ssr://{host}:{port}:{method}:{password}"
 
         elif protocol_lower in ['ss', 'trojan', 'vless', 'hysteria2', 'hy2', 'tuic', 'snell']:
-            parsed = urllib.parse.urlparse(node_url)
+            parsed = urllib.parse.urlparse(url)
             host_port = parsed.netloc.lower()
             auth = parsed.username or ''
             if protocol_lower in ['ss', 'trojan']:
@@ -249,20 +187,21 @@ def generate_node_fingerprint(node_url: str) -> str:
                 auth = parsed.username
                 query_params = urllib.parse.parse_qs(parsed.query)
                 flow = query_params.get('flow', [''])[0]
-                auth = f"{auth}:{flow}" if flow else auth
+                # flow对于VLESS是关键路由参数，应该保留在指纹中
+                auth = f"{auth}:{flow}" if flow else auth 
             elif protocol_lower == 'tuic':
                 auth = f"{parsed.username}:{parsed.password}" if parsed.password else parsed.username
             elif protocol_lower == 'snell':
                 auth = parsed.username or ''
-            return f"{protocol_lower}://{auth.lower()}@{host_port}"
+            return f"{protocol_lower}://{auth}@{host_port}"
         
-        return node_url
+        return url
     except Exception as e:
-        logger.debug(f"生成指纹失败: {node_url[:50]}... 错误: {e}")
-        return node_url
+        logger.debug(f"生成指纹失败: {url[:50]}... 错误: {e}")
+        return url
 
 def normalize_node_url(url: str) -> str:
-    """规范化节点 URL，移除非必要字段，限制备注长度"""
+    """规范化节点 URL，移除非必要字段，限制备注长度 - 优化备注长度和VMess字段。"""
     try:
         protocol, _, rest = url.partition('://')
         if not protocol or protocol.lower() not in NODE_PATTERNS:
@@ -283,10 +222,9 @@ def normalize_node_url(url: str) -> str:
                 logger.debug(f"VMess 配置 JSON 解析失败: {e} for {config_json[:50]}...")
                 return url
 
-            core_keys = ['add', 'port', 'id', 'security']
-            optional_keys = ['net', 'tls']
+            core_keys = ['add', 'port', 'id'] # 核心字段
             clean_config = {}
-            for k in core_keys + optional_keys:
+            for k in core_keys:
                 if k in config and config[k] is not None:
                     if k == 'port':
                         try:
@@ -296,7 +234,18 @@ def normalize_node_url(url: str) -> str:
                             logger.debug(f"VMess 字段 'port' 类型转换失败: {config[k]}")
                     else:
                         clean_config[k] = str(config[k])
-            clean_config['ps'] = urllib.parse.unquote(config.get('ps', ''))[:10] or 'node'
+            
+            # 有条件地添加可选字段，如果它们不是默认值
+            # 假设 'tcp' 是 network 的默认值，'auto' 是 type 的默认值
+            if config.get('net') and config['net'].lower() != 'tcp':
+                clean_config['net'] = str(config['net'])
+            if config.get('tls') == 'tls': # 只有当明确为 'tls' 时才添加
+                clean_config['tls'] = 'tls'
+            if config.get('type') and config['type'].lower() != 'auto': # 只有当明确不为 'auto' 时才添加
+                clean_config['type'] = str(config['type'])
+
+            # 激进缩短备注长度到 5 个字符
+            clean_config['ps'] = urllib.parse.unquote(config.get('ps', ''))[:5] or 'node' 
             return f"vmess://{encode_base64(json.dumps(clean_config, ensure_ascii=False, sort_keys=True))}"
         
         elif protocol_lower == 'ssr':
@@ -314,11 +263,12 @@ def normalize_node_url(url: str) -> str:
             host, port, protocol_name, method, obfs_name, password_b64 = parts[:6]
             password = decode_base64(password_b64.split('/')[0].split('?')[0].split('#')[0])
             normalized_core = f"{host}:{port}:{protocol_name}:{method}:{obfs_name}:{password_b64}"
-            fragment = decode_base64(core_part_match.group(2).split('#')[-1])[:10] if '#' in core_part_match.group(2) else 'node'
+            # 激进缩短备注长度到 5 个字符
+            fragment = decode_base64(core_part_match.group(2).split('#')[-1])[:5] if '#' in core_part_match.group(2) else 'node'
             normalized_core += f"#{encode_base64(fragment)}"
             return f"ssr://{encode_base64(normalized_core)}"
         
-        else:
+        else: # SS, Trojan, VLESS, Hysteria2, TUIC, Snell
             auth_part = ''
             if parsed_url.username or parsed_url.password:
                 auth_user = parsed_url.username if parsed_url.username else ''
@@ -330,18 +280,21 @@ def normalize_node_url(url: str) -> str:
             query_params = urllib.parse.parse_qs(parsed_url.query)
             essential_params = {}
             if protocol_lower == 'vless' and 'flow' in query_params:
-                essential_params['flow'] = query_params['flow'][0][:10]
+                # VLESS的flow参数是关键，保持不变
+                essential_params['flow'] = query_params['flow'][0] 
             query_string = urllib.parse.urlencode(essential_params, quote_via=urllib.parse.quote) if essential_params else ''
-            fragment = urllib.parse.unquote(parsed_url.fragment)[:10] or 'node'
+            # 激进缩短备注长度到 5 个字符
+            fragment = urllib.parse.unquote(parsed_url.fragment)[:5] or 'node' 
             return f"{protocol_lower}://{auth_part}{host_port}{'?' + query_string if query_string else ''}#{urllib.parse.quote(fragment)}"
     except Exception as e:
         logger.debug(f"规范化 URL '{url}' 失败: {e}")
         return url
 
 def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
-    """将 Clash 配置转换为标准 URL，简化次要字段"""
+    """将 Clash 配置转换为标准 URL，简化次要字段和备注长度 - 优化备注长度和VMess字段。"""
     proxy_type = proxy.get('type', '').lower()
-    name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', 'node')[:10]), safe='')
+    # 激进缩短备注长度到 5 个字符
+    name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', 'node')[:5]), safe='')
     server = proxy.get('server')
     port = proxy.get('port')
     
@@ -362,6 +315,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         uuid_val = proxy.get('uuid')
         network = proxy.get('network', 'tcp')
         tls_enabled = proxy.get('tls', False)
+        security_cipher = proxy.get('cipher', 'auto') # Vmess 'type' is 'security' in clash
         if not uuid_val:
             logger.debug(f"VMess 代理 {name} 缺少 UUID: {proxy}")
             return None
@@ -369,12 +323,16 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             "add": server,
             "port": int(port),
             "id": uuid_val,
-            "security": proxy.get('cipher', 'auto'),
-            "net": network,
-            "ps": urllib.parse.unquote(name)
+            "ps": urllib.parse.unquote(name) # 备注已在name处理时缩短
         }
+        # 有条件地添加可选字段
+        if network.lower() != 'tcp': # 假设tcp是默认
+            config["net"] = network
         if tls_enabled:
             config["tls"] = "tls"
+        if security_cipher.lower() != 'auto': # 假设auto是默认
+            config["type"] = security_cipher
+
         try:
             return f"vmess://{encode_base64(json.dumps(config, ensure_ascii=False, sort_keys=True))}"
         except Exception as e:
@@ -395,7 +353,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
             return None
         params = {}
         if proxy.get('flow'):
-            params['flow'] = proxy['flow'][:10]
+            params['flow'] = proxy['flow'] # VLESS flow是关键
         query_string = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
         return f"vless://{uuid_val}@{server}:{port}{'?' + query_string if query_string else ''}#{name}"
 
@@ -421,6 +379,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
         obfs = proxy.get('obfs', 'plain')
         password_b64 = encode_base64(password)
         ssr_core = f"{server}:{port}:{protocol}:{cipher}:{obfs}:{password_b64}"
+        # 备注已在name处理时缩短
         return f"ssr://{encode_base64(ssr_core)}#{encode_base64(urllib.parse.unquote(name))}"
 
     elif proxy_type == 'snell':
@@ -442,13 +401,15 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
     content = content.replace('\r\n', '\n').replace('\r', '\n')
 
     def strip_html_tags(text: str) -> str:
+        """使用BeautifulSoup更鲁棒地清理HTML标签 - 移除冗余的HTML_TAG_REGEX.sub。"""
         try:
             soup = BeautifulSoup(text, 'html.parser')
-            cleaned = soup.get_text(separator='', strip=True)
-            cleaned = HTML_TAG_REGEX.sub('', cleaned)
+            # get_text(strip=True) 已经可以去除空白符
+            cleaned = soup.get_text(separator='', strip=True) 
             return cleaned
         except Exception as e:
-            logger.debug(f"HTML 标签清理失败: {text[:50]}... 错误: {e}")
+            logger.debug(f"HTML 标签清理失败: {text[:min(50, len(text))]}... 错误: {e}")
+            # 如果BeautifulSoup失败，回退到正则清理，但通常BeautifulSoup更优
             return HTML_TAG_REGEX.sub('', text)
 
     for pattern_key, pattern_val in NODE_PATTERNS.items():
@@ -544,7 +505,7 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
                 if isinstance(config_dict, dict) and 'id' in config_dict:
                     clash_vmess_proxy = {
                         "type": "vmess",
-                        "name": config_dict.get('ps', 'node')[:10],
+                        "name": config_dict.get('ps', 'node')[:5], # 备注缩短
                         "server": config_dict.get('add'),
                         "port": config_dict.get('port'),
                         "uuid": config_dict.get('id'),
@@ -564,14 +525,14 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
                         for user_config in users:
                             proxy_cfg = {
                                 "type": protocol_type,
-                                "name": user_config.get('id', user_config.get('email', 'node'))[:10],
+                                "name": user_config.get('id', user_config.get('email', 'node'))[:5], # 备注缩短
                                 "server": outbound_settings.get('address') or user_config.get('address'),
                                 "port": outbound_settings.get('port') or user_config.get('port'),
                             }
                             if protocol_type == 'vmess':
                                 proxy_cfg.update({"uuid": user_config.get('id'), "cipher": user_config.get('security', 'auto')})
                             elif protocol_type == 'vless':
-                                proxy_cfg.update({"uuid": user_config.get('id'), "flow": user_config.get('flow')})
+                                proxy_cfg.update({"uuid": user_config.get('id'), "flow": user_config.get('flow')}) # VLESS flow是关键
                             elif protocol_type == 'trojan':
                                 proxy_cfg.update({"password": user_config.get('password')})
                             url_node = convert_clash_proxy_to_url(proxy_cfg)
@@ -591,7 +552,7 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
         base64_candidates = BASE64_REGEX_LOOSE.findall(content)
         for b64_candidate_tuple in base64_candidates:
             b64_str = b64_candidate_tuple[0]
-            if len(b64_str) < 50:
+            if len(b64_str) < 50: # 避免解码过短的非有效Base64字符串
                 continue
             decoded_content_full = decode_base64(b64_str)
             if decoded_content_full and len(decoded_content_full) > 20 and decoded_content_full != content:
@@ -600,7 +561,7 @@ def extract_nodes(content: str, decode_depth: int = 0) -> List[str]:
     final_filtered_nodes = [
         node for node in nodes_found 
         if any(re.match(pattern, node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()) 
-        and len(node) > 20
+        and len(node) > 20 # 确保过滤掉无效的过短节点
     ]
     return sorted(list(final_filtered_nodes))
 
@@ -697,32 +658,21 @@ async def process_urls(domains: Set[str], max_concurrency: int, timeout: int, us
         except Exception as e:
             logger.error(f"关闭 Playwright 时发生错误: {e}")
 
-    # 增强去重逻辑：基于指纹、来源优先级和节点有效性
-    logger.info(f"去重前节点数: {len(all_nodes_collected)}")
-    fingerprint_to_nodes = defaultdict(list)
+    # 增强去重逻辑：基于指纹和得分
+    fingerprint_to_node = {}
+    protocol_counts = defaultdict(int)
     for node in all_nodes_collected:
-        normalized_node = normalize_node_url(node)
+        normalized_node = normalize_node_url(node) # 再次确保所有节点都经过规范化
         fingerprint = generate_node_fingerprint(normalized_node)
-        fingerprint_to_nodes[fingerprint].append({"url": normalized_node, "source_url": node.get('source_url', '')})
+        protocol = normalized_node.split('://')[0].lower()
+        protocol_counts[protocol] += 1
+        current_score = score_node(normalized_node)
+        if fingerprint not in fingerprint_to_node or current_score > score_node(fingerprint_to_node[fingerprint]):
+            fingerprint_to_node[fingerprint] = normalized_node
 
-    # 验证节点有效性
-    valid_nodes = await filter_valid_nodes([node["url"] for nodes in fingerprint_to_nodes.values() for node in nodes], max_concurrency)
-
-    # 筛选高质量节点
-    max_nodes_per_url = 50  # 限制每个 URL 的节点数量
-    url_counts = defaultdict(int)
-    high_quality_nodes = []
-    for node in sorted(valid_nodes, key=lambda x: x.get("latency", float("inf"))):
-        source_url = next((n["source_url"] for n in fingerprint_to_nodes[generate_node_fingerprint(node["url"])] if n["url"] == node["url"]), '')
-        if url_counts[source_url] < max_nodes_per_url:
-            score = score_node(node["url"], url_node_counts)
-            if score > 0 and node.get("latency", float("inf")) < 200:  # 延迟低于 200ms
-                high_quality_nodes.append(node["url"])
-                url_counts[source_url] += 1
-
-    final_unique_nodes = sorted(high_quality_nodes)
-    logger.info(f"去重后节点数: {len(fingerprint_to_nodes)}, 有效且高质量节点数: {len(final_unique_nodes)}")
-    logger.info(f"协议统计: {dict(defaultdict(int, [(node.split('://')[0].lower(), 1) for node in final_unique_nodes]))}")
+    final_unique_nodes = sorted(list(fingerprint_to_node.values()))
+    logger.info(f"去重前节点数: {len(all_nodes_collected)}, 去重后节点数: {len(final_unique_nodes)}")
+    logger.info(f"协议统计: {dict(protocol_counts)}")
     
     return final_unique_nodes, url_node_counts, failed_urls
 
@@ -740,9 +690,15 @@ def main():
     unique_domains = set()
     for url in urls_raw:
         parsed = urllib.parse.urlparse(url)
-        domain = parsed.netloc or re.match(r'^(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}(?::\d{1,5})?)(?:/.*)?$', parsed.path)
+        # 修正域名提取逻辑：确保只提取域名部分
+        domain = parsed.netloc
+        if not domain and parsed.path: # 如果没有netloc，尝试从path中提取，例如 raw.githubusercontent.com/user/repo/file
+            match_domain_from_path = re.match(r'^(?:www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,63})(?::\d{1,5})?(?:/.*)?$', parsed.path)
+            if match_domain_from_path:
+                domain = match_domain_from_path.group(1)
+        
         if domain:
-            unique_domains.add(domain if isinstance(domain, str) else domain.group(1).split('/')[0])
+            unique_domains.add(domain)
         else:
             logger.warning(f"无法从 URL '{url}' 中识别有效域名。")
 
@@ -778,61 +734,55 @@ def main():
     for line in report_lines:
         logger.info(line)
 
-    # 保留原始文件保存逻辑
     output_dir = os.path.dirname(args.nodes_output)
     os.makedirs(output_dir, exist_ok=True)
     target_file_size_bytes = args.chunk_size_mb * 1024 * 1024
-    avg_node_length_bytes = 50 if not unique_nodes else sum(len(node.encode('utf-8')) for node in unique_nodes) // len(unique_nodes)
-    max_nodes_per_file = target_file_size_bytes // max(avg_node_length_bytes, 50)
-    min_nodes_per_file = 20000
+    
+    # 重新计算平均节点长度，以获得更精确的分片
+    avg_node_length_bytes = 50 
+    if unique_nodes:
+        # 实际计算平均长度，考虑UTF-8编码
+        total_length = sum(len(node.encode('utf-8')) for node in unique_nodes)
+        avg_node_length_bytes = max(1, total_length // len(unique_nodes)) # 确保不为0
 
-    logger.info(f"分片参数: target_file_size_mb={args.chunk_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
+    max_nodes_per_file = target_file_size_bytes // avg_node_length_bytes
+    min_nodes_per_file = 20000 # 保持不变，作为强制最小分片大小
 
-    # 限制 nodes.txt 的节点数量（例如前 1000 个高质量节点）
-    max_nodes_in_main_file = 1000
+    logger.info(f"分片参数: target_file_size_mb={args.chunk_size_mb}, avg_node_length_bytes={avg_node_length_bytes}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
+
     if total_nodes_extracted == 0:
         logger.info("没有提取到节点，跳过保存。")
-    elif total_nodes_extracted <= max_nodes_per_file:
+    # 如果总节点数小于等于最大每文件节点数，尝试保存到一个文件
+    elif total_nodes_extracted <= max_nodes_per_file or total_nodes_extracted <= min_nodes_per_file: 
+        output_path = args.nodes_output
         try:
-            with open(args.nodes_output, 'w', encoding='utf-8') as f:
-                content = '\n'.join(unique_nodes[:max_nodes_in_main_file])
-                if len(content.encode('utf-8')) > target_file_size_bytes:
-                    raise ValueError("文件过大，需分片")
+            content = '\n'.join(unique_nodes)
+            with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(content)
-            file_size_mb = os.path.getsize(args.nodes_output) / (1024 * 1024)
-            logger.info(f"保存 {min(total_nodes_extracted, max_nodes_in_main_file)} 个节点到 {args.nodes_output} ({file_size_mb:.2f} MB)")
+            file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+            logger.info(f"保存 {total_nodes_extracted} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
         except Exception as e:
-            logger.error(f"保存节点失败: {e}")
+            logger.error(f"保存节点失败: {e}。将尝试分片保存。")
+            # 如果保存单个文件失败（例如因为文件过大），则回退到分片
             num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
             estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
             current_node_idx = 0
             for i in range(num_files):
                 end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
                 nodes_for_file = unique_nodes[current_node_idx:end_node_idx]
-                output_path = os.path.join(output_dir, f"nodes_part_{i + 1:03d}.txt")
+                output_path_part = os.path.join(output_dir, f"nodes_part_{i + 1:03d}.txt")
                 try:
                     content = '\n'.join(nodes_for_file)
-                    with open(output_path, 'w', encoding='utf-8') as f:
+                    with open(output_path_part, 'w', encoding='utf-8') as f:
                         f.write(content)
-                    file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                    logger.info(f"保存 {len(nodes_for_file)} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
+                    file_size_mb = os.path.getsize(output_path_part) / (1024 * 1024)
+                    logger.info(f"保存 {len(nodes_for_file)} 个节点到 {output_path_part} ({file_size_mb:.2f} MB)")
                     current_node_idx = end_node_idx
-                except Exception as e:
-                    logger.error(f"保存分片文件 '{output_path}' 失败: {e}")
+                except Exception as e_part:
+                    logger.error(f"保存分片文件 '{output_path_part}' 失败: {e_part}")
                     current_node_idx = end_node_idx
-    else:
-        # 保存主文件 nodes.txt（限制节点数量）
-        try:
-            with open(args.nodes_output, 'w', encoding='utf-8') as f:
-                content = '\n'.join(unique_nodes[:max_nodes_in_main_file])
-                f.write(content)
-            file_size_mb = os.path.getsize(args.nodes_output) / (1024 * 1024)
-            logger.info(f"保存 {min(total_nodes_extracted, max_nodes_in_main_file)} 个节点到 {args.nodes_output} ({file_size_mb:.2f} MB)")
-        except Exception as e:
-            logger.error(f"保存主文件 {args.nodes_output} 失败: {e}")
-
-        # 保存分片文件
-        num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
+    else: # 节点数超过最大单文件限制，需要分片
+        num_files = max(1, (total_nodes_extracted + max_nodes_per_file - 1) // max_nodes_per_file) # 使用max_nodes_per_file计算分片数量
         estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
         current_node_idx = 0
         for i in range(num_files):
