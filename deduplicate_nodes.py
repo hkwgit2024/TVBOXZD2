@@ -190,7 +190,7 @@ class NodePinger:
     """节点Ping工具，用于检测节点的连通性"""
     
     @staticmethod
-    def ping_host(host: str, count: int = 1, timeout: int = 5) -> tuple[bool, str]:
+    def ping_host(host: str, count: int = 1, timeout: int = 1) -> tuple[bool, str]: # 默认超时时间改为1秒
         """
         Ping给定的主机名或IP地址。
         
@@ -210,7 +210,7 @@ class NodePinger:
             return False, host # 返回原始host，表示无法解析
 
         param = '-n' if platform.system().lower() == 'windows' else '-c'
-        timeout_param = '-w' if platform.system().lower() == 'windows' else '-W' # -w for windows in ms, -W for linux in seconds
+        timeout_param = '-w' if platform.system().lower() == 'windows' else '-W' 
 
         try:
             # 对于Windows，timeout参数单位是毫秒，所以需要乘以1000
@@ -254,7 +254,7 @@ def write_protocol_outputs(nodes: dict, output_dir: str) -> dict:
             output_file = os.path.join(output_dir, f"{protocol}.txt")
             sorted_nodes = sorted(node_list)
             with open(output_file, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(sorted_nodes) + '\n')
+                f.write('\n'.join(sorted(sorted_nodes)) + '\n') # Ensure nodes are sorted before writing
             protocol_counts[output_file] = len(sorted_nodes)
             logging.info(f"写入协议文件: {output_file} ({len(sorted_nodes)} 个节点)")
             all_nodes.extend(sorted_nodes)
@@ -339,14 +339,15 @@ def download_and_deduplicate_nodes(args):
     ping_successful_nodes = []
     ping_failed_nodes = []
     
-    # 设置最大并发线程数
+    # 设置最大并发线程数和Ping超时时间
     MAX_WORKERS = args.max_ping_workers 
+    PING_TIMEOUT = args.ping_timeout
     total_pings = len(nodes_for_ping_processing)
     
     # 使用ThreadPoolExecutor进行并行Ping
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # 提交所有Ping任务
-        future_to_node = {executor.submit(NodePinger.ping_host, host): original_node 
+        # 提交所有Ping任务，传入ping_timeout
+        future_to_node = {executor.submit(NodePinger.ping_host, host, timeout=PING_TIMEOUT): original_node 
                           for original_node, host in nodes_for_ping_processing}
         
         ping_count = 0
@@ -358,16 +359,20 @@ def download_and_deduplicate_nodes(args):
                 if is_success:
                     ping_successful_nodes.append(original_node)
                     stats['ping_success_count'] += 1
-                    logging.info(f"({ping_count}/{total_pings}) Ping成功: {pinged_host_or_ip}")
+                    # logging.info(f"({ping_count}/{total_pings}) Ping成功: {pinged_host_or_ip}") # 减少频繁日志，只在完成时汇总
                 else:
                     ping_failed_nodes.append(original_node)
                     stats['ping_fail_count'] += 1
-                    logging.info(f"({ping_count}/{total_pings}) Ping失败: {pinged_host_or_ip}")
+                    # logging.info(f"({ping_count}/{total_pings}) Ping失败: {pinged_host_or_ip}") # 减少频繁日志，只在完成时汇总
             except Exception as exc:
                 logging.error(f"节点 {original_node} Ping时发生异常: {exc}")
                 ping_failed_nodes.append(original_node) # 将异常的节点也视为失败
                 stats['ping_fail_count'] += 1
-    
+            
+            # 每处理一定数量的节点，输出一次进度
+            if ping_count % 1000 == 0 or ping_count == total_pings:
+                logging.info(f"已处理 {ping_count}/{total_pings} 个Ping任务。")
+
     # 写入Ping结果文件
     os.makedirs(output_dir, exist_ok=True)
     ping_success_file = os.path.join(output_dir, 'ping_successful_nodes.txt')
@@ -378,6 +383,7 @@ def download_and_deduplicate_nodes(args):
     ping_fail_file = os.path.join(output_dir, 'ping_failed_nodes.txt')
     with open(ping_fail_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(sorted(ping_failed_nodes)) + '\n')
+    protocol_counts[ping_fail_file] = len(ping_failed_nodes) # Add to output file counts
     logging.info(f"写入Ping失败节点文件: {ping_fail_file} ({len(ping_failed_nodes)} 个节点)")
 
 
@@ -396,6 +402,9 @@ def download_and_deduplicate_nodes(args):
     for protocol, count in sorted(stats['protocol_counts'].items()):
         logging.info(f"  {protocol}: {count}")
     logging.info("输出文件:")
+    # Update output_file_counts to include ping result files
+    stats['output_file_counts'][ping_success_file] = len(ping_successful_nodes)
+    stats['output_file_counts'][ping_fail_file] = len(ping_failed_nodes)
     for output_file, count in sorted(stats['output_file_counts'].items()):
         logging.info(f"  {output_file}: {count} 个节点")
     logging.info(f"Ping成功的节点数: {stats['ping_success_count']}")
@@ -411,8 +420,10 @@ def parse_args():
                         help='URL for the node file')
     parser.add_argument('--output-dir', default='data', help='Output directory')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
-    parser.add_argument('--max-ping-workers', type=int, default=50, 
+    parser.add_argument('--max-ping-workers', type=int, default=100, # 默认并发线程数改为100
                         help='Maximum number of concurrent workers for pinging nodes.')
+    parser.add_argument('--ping-timeout', type=int, default=1, # 新增Ping超时参数，默认1秒
+                        help='Timeout for each ping request in seconds.')
     return parser.parse_args()
 
 if __name__ == "__main__":
