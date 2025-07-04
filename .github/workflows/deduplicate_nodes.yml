@@ -1,9 +1,9 @@
 name: Deduplicate Nodes
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allows manual triggering
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行 (北京时间早上8点)
+    - cron: '0 0 * * *' # Runs daily at midnight UTC (8 AM Beijing time)
 
 jobs:
   deduplicate:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13' # 与你的环境一致
+          python-version: '3.13' # Ensure this matches your environment
 
       - name: Install dependencies
         run: |
@@ -24,29 +24,29 @@ jobs:
           pip install requests tenacity
 
       - name: Run deduplication script
-        # 脚本现在默认使用 100 个并发线程和 1 秒的 Ping 超时
-        # 您可以通过 --max-ping-workers 和 --ping-timeout 覆盖这些默认值
-        run: python deduplicate_nodes.py # 移除了 --debug 以减少日志量
-        continue-on-error: false # 脚本失败时停止工作流
+        # The script now defaults to 100 concurrent workers and a 1-second Ping timeout.
+        # You can override these defaults using --max-ping-workers and --ping-timeout.
+        run: python deduplicate_nodes.py # Removed --debug to reduce log volume
+        continue-on-error: false # Stop workflow if the script fails
 
       - name: Check output files
         run: |
           if [ ! -f data/all.txt ]; then
-            echo "错误：未找到去重后的输出文件 data/all.txt"
+            echo "Error: Deduplicated output file data/all.txt not found."
             exit 1
           fi
           if [ -z "$(ls data/*.txt 2>/dev/null)" ]; then
-            echo "警告：未找到按协议的输出文件"
+            echo "Warning: No protocol-specific output files found."
           fi
           if [ ! -f data/ping_successful_nodes.txt ]; then
-            echo "警告：未找到Ping成功节点文件 data/ping_successful_nodes.txt"
+            echo "Warning: Ping successful nodes file data/ping_successful_nodes.txt not found."
           fi
           if [ ! -f data/ping_failed_nodes.txt ]; then
-            echo "警告：未找到Ping失败节点文件 data/ping_failed_nodes.txt"
+            echo "Warning: Ping failed nodes file data/ping_failed_nodes.txt not found."
           fi
 
       - name: Upload log file as artifact
-        if: always() # 即使脚本失败也上传日志
+        if: always() # Upload log even if the script fails
         uses: actions/upload-artifact@v4
         with:
           name: deduplication-log
@@ -59,12 +59,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # 添加所有 data/ 目录下的 .txt 文件，包括新的Ping结果文件
+          # Add all .txt files in the data/ directory, including new Ping result files
           git add data/*.txt
           if git diff --cached --exit-code; then
-            echo "无变更需要提交"
+            echo "No changes to commit."
           else
-            # 更新提交信息以反映Ping功能
-            git commit -m "自动更新: 去重节点、按协议输出并执行节点Ping测试 [skip ci]"
-            git push || echo "推送失败，可能是无变更或权限问题"
+            # Update commit message to reflect Ping functionality
+            git commit -m "Auto-update: Deduplicated nodes, output by protocol, and performed node Ping test [skip ci]"
+            git push || echo "Push failed, possibly no changes or permission issues."
           fi
