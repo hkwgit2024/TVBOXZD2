@@ -24,13 +24,12 @@ DEFAULT_NODES_OUTPUT_FILE = 'data/nodes.txt'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
-DEFAULT_CHUNK_SIZE_MB = 190
-MAX_BASE64_DECODE_DEPTH = 5  # 增加解码深度以处理嵌套 Base64
+MAX_BASE64_DECODE_DEPTH = 5
 UA = UserAgent()
 
-# 配置日志系统
+# 配置日志系统（默认级别为 INFO）
 logging.basicConfig(
-    level=logging.DEBUG,  # 提高日志级别以捕获更多细节
+    level=logging.INFO,
     format=LOG_FORMAT,
     handlers=[
         logging.FileHandler(LOG_FILE, encoding='utf-8'),
@@ -67,8 +66,8 @@ def setup_argparse() -> argparse.Namespace:
     parser.add_argument('--stats-output', default=DEFAULT_STATS_FILE, help=f'节点统计数据输出文件路径 (默认为: {DEFAULT_STATS_FILE})')
     parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY, help=f'最大并发请求数 (默认为: {DEFAULT_MAX_CONCURRENCY})')
     parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT, help=f'请求超时时间（秒） (默认为: {DEFAULT_TIMEOUT})')
-    parser.add_argument('--chunk-size-mb', type=int, default=DEFAULT_CHUNK_SIZE_MB, help=f'每个分片文件的最大大小（MB） (默认为: {DEFAULT_CHUNK_SIZE_MB})')
     parser.add_argument('--use-browser', action='store_true', help='当HTTP请求失败时，尝试使用无头浏览器（Playwright）')
+    parser.add_argument('--debug', action='store_true', help='启用 DEBUG 日志级别')
     return parser.parse_args()
 
 def decode_base64(data: str) -> str:
@@ -394,7 +393,7 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
         return []
 
     content = content.replace('\r\n', '\n').replace('\r', '\n')
-    logger.debug(f"提取节点，内容长度: {len(content)}，来源: {source_url[:50]}...")
+    logger.info(f"提取节点，内容长度: {len(content)}, 来源: {source_url[:50]}...")
 
     def strip_html_tags(text: str) -> str:
         try:
@@ -412,8 +411,7 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
         for node in matches:
             cleaned_node = strip_html_tags(node)
             normalized_node = normalize_node_url(cleaned_node)
-            if normalized_node != cleaned_node:
-                logger.debug(f"规范化节点: {cleaned_node[:50]}... -> {normalized_node[:50]}...")
+            logger.debug(f"匹配到节点: {cleaned_node[:50]}... -> 规范化: {normalized_node[:50]}...")
             nodes_found.add((normalized_node, source_url))
 
     # 解析 HTML 标签中的节点
@@ -582,24 +580,24 @@ def extract_nodes(content: str, decode_depth: int = 0, source_url: str = '') -> 
         if any(re.match(pattern, node, re.IGNORECASE) for pattern in NODE_PATTERNS.values()) 
         and len(node) > 20
     ]
-    logger.debug(f"从内容提取到 {len(final_filtered_nodes)} 个节点")
+    logger.info(f"从内容提取到 {len(final_filtered_nodes)} 个节点")
     return sorted(final_filtered_nodes, key=lambda x: x["url"])
 
 async def fetch_with_retry(session: aiohttp.ClientSession, url: str, timeout: int, retries: int = 3) -> str:
     headers = {'User-Agent': UA.random, 'Referer': url}
     for attempt in range(retries):
         try:
-            logger.debug(f"尝试获取 URL ({attempt + 1}/{retries}): {url}")
+            logger.info(f"尝试获取 URL ({attempt + 1}/{retries}): {url}")
             async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
                 response.raise_for_status()
                 content = await response.text()
-                logger.debug(f"成功获取 URL: {url}, 内容长度: {len(content)}")
+                logger.info(f"成功获取 URL: {url}, 内容长度: {len(content)}")
                 return content
         except Exception as e:
-            logger.debug(f"尝试 {attempt + 1}/{retries} 失败，URL: {url}，错误: {e}")
+            logger.warning(f"尝试 {attempt + 1}/{retries} 失败，URL: {url}，错误: {e}")
             if attempt < retries - 1:
                 await asyncio.sleep(1.0 * (2 ** attempt))
-    logger.warning(f"在 {retries} 次尝试后未能成功获取 URL: {url}")
+    logger.error(f"在 {retries} 次尝试后未能成功获取 URL: {url}")
     return ""
 
 async def fetch_with_browser(browser_context: BrowserContext, url: str, timeout: int) -> str:
@@ -609,7 +607,7 @@ async def fetch_with_browser(browser_context: BrowserContext, url: str, timeout:
         logger.info(f"尝试使用浏览器获取 URL: {url}")
         await page.goto(url, wait_until="networkidle")
         content = await page.content()
-        logger.debug(f"浏览器获取 URL: {url}, 内容长度: {len(content)}")
+        logger.info(f"浏览器获取 URL: {url}, 内容长度: {len(content)}")
         return content
     except Exception as e:
         logger.warning(f"使用浏览器获取 URL {url} 失败: {e}")
@@ -633,20 +631,21 @@ async def process_domain(session: aiohttp.ClientSession, domain: str, timeout: i
     async with semaphore:
         logger.info(f"正在获取: {http_url}")
         http_nodes = await process_single_url_strategy(session, http_url, timeout, use_browser, browser_context)
+        url_node_counts[http_url] = len(http_nodes)
         if http_nodes:
             nodes_from_domain.extend(http_nodes)
-            url_node_counts[http_url] = len(http_nodes)
+            logger.info(f"HTTP URL {http_url} 提取到 {len(http_nodes)} 个节点")
         else:
-            url_node_counts[http_url] = 0
-            logger.info(f"HTTP 失败或无节点，尝试获取: {https_url}")
+            logger.info(f"HTTP URL {http_url} 无节点，尝试 HTTPS: {https_url}")
             https_nodes = await process_single_url_strategy(session, https_url, timeout, use_browser, browser_context)
+            url_node_counts[https_url] = len(https_nodes)
             if https_nodes:
                 nodes_from_domain.extend(https_nodes)
-                url_node_counts[https_url] = len(https_nodes)
+                logger.info(f"HTTPS URL {https_url} 提取到 {len(https_nodes)} 个节点")
             else:
-                url_node_counts[https_url] = 0
                 failed_urls.add(http_url)
                 failed_urls.add(https_url)
+                logger.warning(f"HTTP 和 HTTPS URL ({http_url}, {https_url}) 均无节点")
     
     return nodes_from_domain
 
@@ -709,7 +708,11 @@ async def process_urls(domains: Set[str], max_concurrency: int, timeout: int, us
 
 def main():
     args = setup_argparse()
-    logger.info(f"命令行参数: sources={args.sources}, nodes_output={args.nodes_output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, chunk_size_mb={args.chunk_size_mb}, use_browser={args.use_browser}")
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+        for handler in logger.handlers:
+            handler.setLevel(logging.DEBUG)
+    logger.info(f"命令行参数: sources={args.sources}, nodes_output={args.nodes_output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, use_browser={args.use_browser}, debug={args.debug}")
     
     try:
         with open(args.sources, 'r', encoding='utf-8') as f:
@@ -728,7 +731,7 @@ def main():
             logger.warning(f"无法从 URL '{url}' 中识别有效域名。")
 
     if not unique_domains:
-        logger.info("未找到有效域名。")
+        logger.error("未找到有效域名，退出。")
         return
 
     start_time = datetime.now()
@@ -759,66 +762,24 @@ def main():
     for line in report_lines:
         logger.info(line)
 
-    # 保留原始文件保存逻辑
+    # 保存 nodes.txt（去掉分片功能）
     output_dir = os.path.dirname(args.nodes_output)
     os.makedirs(output_dir, exist_ok=True)
-    target_file_size_bytes = args.chunk_size_mb * 1024 * 1024
-    avg_node_length_bytes = 50 if not unique_nodes else sum(len(node.encode('utf-8')) for node in unique_nodes) // len(unique_nodes)
-    max_nodes_per_file = target_file_size_bytes // max(avg_node_length_bytes, 50)
-    min_nodes_per_file = 20000
-
-    logger.info(f"分片参数: target_file_size_mb={args.chunk_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
-
     if total_nodes_extracted == 0:
-        logger.info("没有提取到节点，跳过保存。")
-    elif total_nodes_extracted <= max_nodes_per_file:
+        logger.error("没有提取到节点，跳过保存 nodes.txt。")
+    else:
         try:
             with open(args.nodes_output, 'w', encoding='utf-8') as f:
                 content = '\n'.join(unique_nodes)
-                if len(content.encode('utf-8')) > target_file_size_bytes:
-                    raise ValueError("文件过大，需分片")
                 f.write(content)
             file_size_mb = os.path.getsize(args.nodes_output) / (1024 * 1024)
             logger.info(f"保存 {total_nodes_extracted} 个节点到 {args.nodes_output} ({file_size_mb:.2f} MB)")
         except Exception as e:
-            logger.error(f"保存节点失败: {e}")
-            num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
-            estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
-            current_node_idx = 0
-            for i in range(num_files):
-                end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
-                nodes_for_file = unique_nodes[current_node_idx:end_node_idx]
-                output_path = os.path.join(output_dir, f"nodes_part_{i + 1:03d}.txt")
-                try:
-                    content = '\n'.join(nodes_for_file)
-                    with open(output_path, 'w', encoding='utf-8') as f:
-                        f.write(content)
-                    file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                    logger.info(f"保存 {len(nodes_for_file)} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
-                    current_node_idx = end_node_idx
-                except Exception as e:
-                    logger.error(f"保存分片文件 '{output_path}' 失败: {e}")
-                    current_node_idx = end_node_idx
-    else:
-        num_files = max(1, (total_nodes_extracted + min_nodes_per_file - 1) // min_nodes_per_file)
-        estimated_lines_per_file = (total_nodes_extracted + num_files - 1) // num_files
-        current_node_idx = 0
-        for i in range(num_files):
-            end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
-            nodes_for_file = unique_nodes[current_node_idx:end_node_idx]
-            output_path = os.path.join(output_dir, f"nodes_part_{i + 1:03d}.txt")
-            try:
-                content = '\n'.join(nodes_for_file)
-                with open(output_path, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                logger.info(f"保存 {len(nodes_for_file)} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
-                current_node_idx = end_node_idx
-            except Exception as e:
-                logger.error(f"保存分片文件 '{output_path}' 失败: {e}")
-                current_node_idx = end_node_idx
+            logger.error(f"保存 nodes.txt 失败: {e}")
 
+    # 保存 node_counts.csv
     try:
+        logger.info(f"开始保存统计数据到 {args.stats_output}")
         with open(args.stats_output, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['Source_URL', 'Nodes_Found', 'Status']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -826,9 +787,10 @@ def main():
             for url, count in sorted(url_node_counts.items(), key=lambda x: x[1], reverse=True):
                 status = "成功" if count > 0 else ("失败" if url in failed_urls else "无节点")
                 writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': status})
-        logger.info(f"统计数据保存到 {args.stats_output}")
+        file_size_mb = os.path.getsize(args.stats_output) / (1024 * 1024)
+        logger.info(f"统计数据保存到 {args.stats_output} ({file_size_mb:.2f} MB)")
     except Exception as e:
-        logger.error(f"保存统计数据失败: {e}")
+        logger.error(f"保存 node_counts.csv 失败: {e}")
 
 if __name__ == '__main__':
     main()
