@@ -20,11 +20,11 @@ from playwright.async_api import async_playwright, Page, BrowserContext
 LOG_FILE = 'proxy_converter.log'
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 DEFAULT_SOURCES_FILE = 'sources.list'
-DEFAULT_OUTPUT_FILE = 'data/nodes.txt'
+DEFAULT_NODES_OUTPUT_FILE = 'data/nodes.txt'
 DEFAULT_STATS_FILE = 'data/node_counts.csv'
 DEFAULT_MAX_CONCURRENCY = 50
 DEFAULT_TIMEOUT = 20
-DEFAULT_CHUNK_SIZE_MB = 95
+DEFAULT_CHUNK_SIZE_MB = 190  # 增加到 190 MB，减少分片
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
@@ -63,7 +63,7 @@ HTML_TAG_REGEX = re.compile(r'<[^>]+>', re.MULTILINE)
 def setup_argparse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='代理节点提取和去重工具')
     parser.add_argument('--sources', default=DEFAULT_SOURCES_FILE, help=f'包含源 URL 的输入文件路径 (默认为: {DEFAULT_SOURCES_FILE})')
-    parser.add_argument('--output', default=DEFAULT_OUTPUT_FILE, help=f'提取到的节点输出文件路径 (默认为: {DEFAULT_OUTPUT_FILE})')
+    parser.add_argument('--nodes-output', default=DEFAULT_NODES_OUTPUT_FILE, help=f'提取到的节点输出文件路径 (默认为: {DEFAULT_NODES_OUTPUT_FILE})')
     parser.add_argument('--stats-output', default=DEFAULT_STATS_FILE, help=f'节点统计数据输出文件路径 (默认为: {DEFAULT_STATS_FILE})')
     parser.add_argument('--max-concurrency', type=int, default=DEFAULT_MAX_CONCURRENCY, help=f'最大并发请求数 (默认为: {DEFAULT_MAX_CONCURRENCY})')
     parser.add_argument('--timeout', type=int, default=DEFAULT_TIMEOUT, help=f'请求超时时间（秒） (默认为: {DEFAULT_TIMEOUT})')
@@ -226,7 +226,7 @@ def convert_clash_proxy_to_url(proxy: Dict) -> Optional[str]:
     proxy_type = proxy.get('type', '').lower()
     name = urllib.parse.quote(urllib.parse.unquote(proxy.get('name', f"{proxy_type}_node").strip())[:30], safe='')
     server = proxy.get('server')
-    port = proxy.get('port')
+    port = proxy.get(' port')
     
     if not all([server, port, proxy_type]):
         logger.debug(f"Clash 代理 {proxy.get('name', '未知')} 缺少核心信息，跳过: {proxy}")
@@ -912,7 +912,7 @@ def main():
     global args
     args = setup_argparse()
     
-    logger.info(f"命令行参数: sources={args.sources}, output={args.output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, chunk_size_mb={args.chunk_size_mb}, use_browser={args.use_browser}")
+    logger.info(f"命令行参数: sources={args.sources}, nodes_output={args.nodes_output}, stats_output={args.stats_output}, max_concurrency={args.max_concurrency}, timeout={args.timeout}, chunk_size_mb={args.chunk_size_mb}, use_browser={args.use_browser}")
     
     try:
         with open(args.sources, 'r', encoding='utf-8') as f:
@@ -974,18 +974,17 @@ def main():
         logger.info(line)
     
     # --- 节点分片保存逻辑 ---
-    output_dir = os.path.dirname(args.output)
-    output_filename_base = os.path.splitext(os.path.basename(args.output))[0]
+    output_dir = os.path.dirname(args.nodes_output)
     os.makedirs(output_dir, exist_ok=True)
 
-    target_file_size_mb = min(args.chunk_size_mb, 95)
+    target_file_size_mb = min(args.chunk_size_mb, 190)  # 限制最大 190 MB
     target_file_size_bytes = target_file_size_mb * 1024 * 1024
     avg_node_length_bytes = 50
     if unique_nodes:
         avg_node_length_bytes = sum(len(node.encode('utf-8')) for node in unique_nodes) // len(unique_nodes)
         logger.info(f"动态计算的平均节点大小: {avg_node_length_bytes} 字节")
     max_nodes_per_file = target_file_size_bytes // max(avg_node_length_bytes, 50)
-    min_nodes_per_file = 8000
+    min_nodes_per_file = 20000  # 增加到 20000，减少分片
 
     logger.info(f"分片参数: target_file_size_mb={target_file_size_mb}, max_nodes_per_file={max_nodes_per_file}, min_nodes_per_file={min_nodes_per_file}")
 
@@ -993,7 +992,7 @@ def main():
         logger.info("没有提取到任何节点，跳过保存节点文件。")
     else:
         if total_nodes_extracted <= max_nodes_per_file:
-            output_path = os.path.join(output_dir, f"{output_filename_base}.txt")
+            output_path = args.nodes_output  # 直接使用 args.nodes_output（如 data/nodes.txt）
             try:
                 with open(output_path, 'w', encoding='utf-8') as f:
                     content = '\n'.join(unique_nodes)
@@ -1016,7 +1015,7 @@ def main():
                     current_file_idx += 1
                     end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
                     nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
-                    output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
+                    output_path = os.path.join(output_dir, f"nodes_part_{current_file_idx:03d}.txt")
                     try:
                         content_to_write = '\n'.join(nodes_for_current_file)
                         file_size_bytes = len(content_to_write.encode('utf-8'))
@@ -1046,7 +1045,7 @@ def main():
                 current_file_idx += 1
                 end_node_idx = min(current_node_idx + estimated_lines_per_file, total_nodes_extracted)
                 nodes_for_current_file = unique_nodes[current_node_idx:end_node_idx]
-                output_path = os.path.join(output_dir, f"{output_filename_base}_part_{current_file_idx:03d}.txt")
+                output_path = os.path.join(output_dir, f"nodes_part_{current_file_idx:03d}.txt")
                 try:
                     content_to_write = '\n'.join(nodes_for_current_file)
                     file_size_bytes = len(content_to_write.encode('utf-8'))
