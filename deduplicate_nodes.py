@@ -54,14 +54,14 @@ class NodeStandardizer:
         return node_url
 
     @staticmethod
-    def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str, str | None, str | None]:
+    def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str, str | None, str | None, int | None]:
         """
         Standardizes the node URL, extracting core information for deduplication,
-        and retaining the original node and hostname/IP.
-        Returns (standardized node string, protocol type, original node, hostname/IP).
+        and retaining the original node, hostname/IP, and port.
+        Returns (standardized node string, protocol type, original node, hostname/IP, port).
         """
         if not node_url:
-            return None, "unknown", None, None
+            return None, "unknown", None, None, None
 
         node_url_cleaned = NodeStandardizer.clean_node_url(node_url)
         match = re.match(r"^(?P<protocol>hysteria2|vmess|trojan|ss|ssr|vless)://(?P<data>.*)", 
@@ -69,61 +69,76 @@ class NodeStandardizer:
         if not match:
             if debug:
                 logging.debug(f"Unsupported protocol or malformed format: {node_url}")
-            return None, "unknown", None, None
+            return None, "unknown", None, None, None
 
         protocol = match.group("protocol").lower()
         data_part = match.group("data")
         host = None
+        port = None
 
         try:
             core_data = data_part.split('?', 1)[0].split('#', 1)[0]
             core_data_standardized = urllib.parse.unquote_plus(core_data).strip()
 
-            if protocol in ("vmess", "vless"):
-                result, host = NodeStandardizer._standardize_vmess_vless(protocol, core_data_standardized, data_part)
+            if protocol == "vmess":
+                result, host, port = NodeStandardizer._standardize_vmess(core_data_standardized, data_part)
+            elif protocol == "vless":
+                result, host, port = NodeStandardizer._standardize_vless(core_data_standardized, data_part)
             elif protocol in ("trojan", "hysteria2"):
-                result, host = NodeStandardizer._standardize_trojan_hysteria2(protocol, core_data_standardized)
+                result, host, port = NodeStandardizer._standardize_trojan_hysteria2(protocol, core_data_standardized)
             elif protocol == "ss":
-                result, host = NodeStandardizer._standardize_ss(core_data_standardized)
+                result, host, port = NodeStandardizer._standardize_ss(core_data_standardized)
             elif protocol == "ssr":
-                result, host = NodeStandardizer._standardize_ssr(core_data_standardized)
+                result, host, port = NodeStandardizer._standardize_ssr(core_data_standardized)
             else:
                 result = None
 
             if result and debug:
                 logging.debug(f"Deduplication key: {result} (Original: {node_url})")
-            return result, protocol, node_url, host
+            return result, protocol, node_url, host, port
 
         except Exception as e:
             logging.error(f"Error standardizing node {node_url}: {e}")
-            return None, "unknown", None, None
+            return None, "unknown", None, None, None
 
     @staticmethod
-    def _standardize_vmess_vless(protocol: str, core_data: str, full_data: str) -> tuple[str | None, str | None]:
-        """Handles vmess and vless protocols."""
+    def _standardize_vmess(core_data: str, full_data: str) -> tuple[str | None, str | None, int | None]:
+        """Handles vmess protocol."""
         parts = core_data.split('@', 1)
         if len(parts) != 2:
-            return None, None
+            return None, None, None
         uuid, address_port = parts
         address = None
-        if protocol == "vmess":
-            try:
-                # Attempt base64 decoding
-                decoded = json.loads(base64.b64decode(uuid + '=' * (-len(uuid) % 4)).decode('utf-8', errors='ignore'))
-                uuid = decoded.get('id', '').lower()
-                address = decoded.get('add', '').lower()
-                port = decoded.get('port', '')
-                if NodeStandardizer.is_valid_port(str(port)):
-                    return f"{protocol}://{uuid}@{address}:{port}", address
-                return None, None
-            except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError):
-                # Fallback: try direct parsing
-                address_parts = address_port.rsplit(':', 1)
-                if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
-                    address = address_parts[0].lower()
-                    return f"{protocol}://{uuid.lower()}@{address_port.lower()}", address
-                return None, None
-        elif protocol == "vless":
+        port = None
+        try:
+            # Attempt base64 decoding
+            decoded = json.loads(base64.b64decode(uuid + '=' * (-len(uuid) % 4)).decode('utf-8', errors='ignore'))
+            uuid = decoded.get('id', '').lower()
+            address = decoded.get('add', '').lower()
+            port = int(decoded.get('port', 0))
+            if NodeStandardizer.is_valid_port(str(port)):
+                return f"vmess://{uuid}@{address}:{port}", address, port
+            return None, None, None
+        except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError):
+            # Fallback: try direct parsing
+            address_parts = address_port.rsplit(':', 1)
+            if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
+                address = address_parts[0].lower()
+                port = int(address_parts[1])
+                return f"vmess://{uuid.lower()}@{address_port.lower()}", address, port
+            return None, None, None
+
+    @staticmethod
+    def _standardize_vless(core_data: str, full_data: str) -> tuple[str | None, str | None, int | None]:
+        """Handles vless protocol."""
+        parts = core_data.split('@', 1)
+        if len(parts) != 2:
+            return None, None, None
+        uuid, address_port = parts
+        address_parts = address_port.rsplit(':', 1)
+        if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
+            address = address_parts[0].lower()
+            port = int(address_parts[1])
             query = full_data.split('?', 1)[1].split('#', 1)[0] if '?' in full_data else ''
             params = parse_qs(query)
             encryption = params.get('encryption', ['none'])[0].lower()
@@ -132,57 +147,56 @@ class NodeStandardizer:
             flow = params.get('flow', [''])[0].lower()
             sni = params.get('sni', [''])[0].lower()
             fp = params.get('fp', [''])[0].lower()
-            address_parts = address_port.rsplit(':', 1)
-            if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
-                address = address_parts[0].lower()
-                return f"{protocol}://{uuid.lower()}@{address_port.lower()}?encryption={encryption}&type={transport}&security={security}&flow={flow}&sni={sni}&fp={fp}", address
-            return None, None
-        return None, None
+            return f"vless://{uuid.lower()}@{address_port.lower()}?encryption={encryption}&type={transport}&security={security}&flow={flow}&sni={sni}&fp={fp}", address, port
+        return None, None, None
 
     @staticmethod
-    def _standardize_trojan_hysteria2(protocol: str, core_data: str) -> tuple[str | None, str | None]:
+    def _standardize_trojan_hysteria2(protocol: str, core_data: str) -> tuple[str | None, str | None, int | None]:
         """Handles trojan and hysteria2 protocols."""
         parts = core_data.split('@', 1)
         if len(parts) != 2:
-            return None, None
+            return None, None, None
         password, address_port = parts
         address_parts = address_port.rsplit(':', 1)
         if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
             address = address_parts[0].lower()
-            return f"{protocol}://{urllib.parse.quote(password, safe='')}@{address_port.lower()}", address
-        return None, None
+            port = int(address_parts[1])
+            return f"{protocol}://{urllib.parse.quote(password, safe='')}@{address_port.lower()}", address, port
+        return None, None, None
 
     @staticmethod
-    def _standardize_ss(core_data: str) -> tuple[str | None, str | None]:
+    def _standardize_ss(core_data: str) -> tuple[str | None, str | None, int | None]:
         """Handles ss protocol."""
         if '@' not in core_data or ':' not in core_data.split('@')[0]:
-            return None, None
+            return None, None, None
         try:
             auth_info, server_info = core_data.split('@', 1)
             method, password = auth_info.split(':', 1)
-            host, port = server_info.rsplit(':', 1)
-            if NodeStandardizer.is_valid_port(port):
-                return f"ss://{method.lower()}:{urllib.parse.quote(password, safe='')}@{host.lower()}:{port}", host.lower()
-            return None, None
+            host, port_str = server_info.rsplit(':', 1)
+            if NodeStandardizer.is_valid_port(port_str):
+                port = int(port_str)
+                return f"ss://{method.lower()}:{urllib.parse.quote(password, safe='')}@{host.lower()}:{port}", host.lower(), port
+            return None, None, None
         except ValueError:
             logging.debug(f"Could not parse SS core format: {core_data}")
-            return None, None
+            return None, None, None
 
     @staticmethod
-    def _standardize_ssr(core_data: str) -> tuple[str | None, str | None]:
+    def _standardize_ssr(core_data: str) -> tuple[str | None, str | None, int | None]:
         """Handles ssr protocol."""
         parts = core_data.split(':')
         if len(parts) < 6:
-            return None, None
+            return None, None, None
         try:
-            host, port, proto, method, obfs, password = parts[:6]
+            host, port_str, proto, method, obfs, password = parts[:6]
             password = urllib.parse.unquote_plus(password)
-            if NodeStandardizer.is_valid_port(port):
-                return f"ssr://{host.lower()}:{port}:{proto.lower()}:{method.lower()}:{obfs.lower()}:{urllib.parse.quote(password, safe='')}", host.lower()
-            return None, None
+            if NodeStandardizer.is_valid_port(port_str):
+                port = int(port_str)
+                return f"ssr://{host.lower()}:{port}:{proto.lower()}:{method.lower()}:{obfs.lower()}:{urllib.parse.quote(password, safe='')}", host.lower(), port
+            return None, None, None
         except ValueError:
             logging.debug(f"Could not parse SSR core format: {core_data}")
-            return None, None
+            return None, None, None
 
     @staticmethod
     def is_valid_port(port: str) -> bool:
@@ -192,13 +206,13 @@ class NodeStandardizer:
         except ValueError:
             return False
 
-class NodePinger:
-    """Node Ping tool for checking node connectivity."""
+class NodeConnectivityChecker:
+    """Node connectivity checker, supporting both ICMP Ping and TCP port check."""
     
     @staticmethod
-    def ping_host(host: str, count: int = 1, timeout: int = 1) -> tuple[bool, str]: # Default timeout changed to 1 second
+    def check_icmp_ping(host: str, count: int = 1, timeout: int = 1) -> tuple[bool, str]:
         """
-        Pings the given hostname or IP address.
+        Pings the given hostname or IP address using ICMP.
         
         Args:
             host (str): The hostname or IP address to ping.
@@ -213,8 +227,7 @@ class NodePinger:
         try:
             ip_address = socket.gethostbyname(host)
         except socket.gaierror:
-            # Changed to INFO level to be visible without --debug
-            logging.info(f"Ping {host} - Hostname could not be resolved.") 
+            logging.info(f"ICMP Ping {host} - Hostname could not be resolved.") 
             return False, host # Return original host if resolution fails
 
         param = '-n' if platform.system().lower() == 'windows' else '-c'
@@ -225,23 +238,59 @@ class NodePinger:
             actual_timeout = timeout * 1000 if platform.system().lower() == 'windows' else timeout
             command = ['ping', param, str(count), timeout_param, str(actual_timeout), ip_address]
             
-            # Use subprocess.run with a slightly longer total timeout
             process = subprocess.run(command, capture_output=True, text=True, timeout=timeout * count + 2) 
             
             if process.returncode == 0:
-                # Changed to INFO level to be visible without --debug
-                logging.info(f"Ping {host} ({ip_address}) successful.") 
+                logging.info(f"ICMP Ping {host} ({ip_address}) successful.") 
                 return True, ip_address
             else:
-                # Changed to INFO level to be visible without --debug
-                logging.info(f"Ping {host} ({ip_address}) failed. Error code: {process.returncode}, Output: {process.stdout.strip()} {process.stderr.strip()}")
+                logging.info(f"ICMP Ping {host} ({ip_address}) failed. Error code: {process.returncode}, Output: {process.stdout.strip()} {process.stderr.strip()}")
                 return False, ip_address
         except subprocess.TimeoutExpired:
-            # Changed to INFO level to be visible without --debug
-            logging.info(f"Ping {host} ({ip_address}) timed out.")
+            logging.info(f"ICMP Ping {host} ({ip_address}) timed out.")
             return False, ip_address
         except Exception as e:
-            logging.error(f"Error during ping for {host} ({ip_address}): {e}")
+            logging.error(f"Error during ICMP Ping for {host} ({ip_address}): {e}")
+            return False, ip_address
+
+    @staticmethod
+    def check_tcp_port(host: str, port: int, timeout: int = 1) -> tuple[bool, str]:
+        """
+        Checks TCP port connectivity for the given host and port.
+        
+        Args:
+            host (str): The hostname or IP address to connect to.
+            port (int): The TCP port to check.
+            timeout (int): Timeout for the connection attempt in seconds.
+            
+        Returns:
+            tuple[bool, str]: Returns (True, IP address) if connection is successful,
+            otherwise returns (False, IP address or error message).
+        """
+        ip_address = None
+        try:
+            ip_address = socket.gethostbyname(host)
+        except socket.gaierror:
+            logging.info(f"TCP Check {host}:{port} - Hostname could not be resolved.")
+            return False, host # Return original host if resolution fails
+
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(timeout)
+            result = sock.connect_ex((ip_address, port)) # connect_ex returns 0 on success, error code otherwise
+            sock.close()
+            
+            if result == 0:
+                logging.info(f"TCP Check {host}:{port} ({ip_address}) successful.")
+                return True, ip_address
+            else:
+                logging.info(f"TCP Check {host}:{port} ({ip_address}) failed. Error code: {result}.")
+                return False, ip_address
+        except socket.timeout:
+            logging.info(f"TCP Check {host}:{port} ({ip_address}) timed out.")
+            return False, ip_address
+        except Exception as e:
+            logging.error(f"Error during TCP Check for {host}:{port} ({ip_address}): {e}")
             return False, ip_address
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), 
@@ -268,7 +317,7 @@ def write_protocol_outputs(nodes: dict, output_dir: str) -> dict:
             output_file = os.path.join(output_dir, f"{protocol}.txt")
             sorted_nodes = sorted(node_list)
             with open(output_file, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(sorted_nodes) + '\n') # Ensure nodes are sorted before writing
+                f.write('\n'.join(sorted_nodes) + '\n') 
             protocol_counts[output_file] = len(sorted_nodes)
             logging.info(f"Written protocol file: {output_file} ({len(sorted_nodes)} nodes)")
             all_nodes.extend(sorted_nodes)
@@ -285,7 +334,7 @@ def write_protocol_outputs(nodes: dict, output_dir: str) -> dict:
 def download_and_deduplicate_nodes(args):
     """
     Downloads node data from GitHub Raw link, standardizes and deduplicates,
-    saves by protocol, and performs Ping tests.
+    saves by protocol, and performs connectivity tests.
     """
     setup_logging(args.debug)
     node_url = args.node_url
@@ -294,8 +343,8 @@ def download_and_deduplicate_nodes(args):
     unique_nodes = {}  # Stores original nodes by protocol {protocol: [node1, node2, ...]}
     unique_keys = set()  # Set of deduplication keys
     
-    # Stores (original node, hostname/IP) tuples for Ping
-    nodes_for_ping_processing = [] 
+    # Stores (original node, hostname/IP, port) tuples for connectivity check
+    nodes_for_connectivity_check = [] 
     
     stats = {
         'download_count': 0,
@@ -305,8 +354,8 @@ def download_and_deduplicate_nodes(args):
         'duplicate_count': 0,
         'protocol_counts': {},
         'output_file_counts': {},
-        'ping_success_count': 0,
-        'ping_fail_count': 0,
+        'check_success_count': 0,
+        'check_fail_count': 0,
     }
     
     logging.info("--- Starting node download and deduplication ---")
@@ -323,7 +372,7 @@ def download_and_deduplicate_nodes(args):
                 continue
             
             stats['total_nodes_processed'] += 1
-            minimal_node, protocol, original_node, host = NodeStandardizer.standardize_node_minimal(node, args.debug)
+            minimal_node, protocol, original_node, host, port = NodeStandardizer.standardize_node_minimal(node, args.debug)
             
             if minimal_node and original_node:
                 if minimal_node in unique_keys:
@@ -334,8 +383,11 @@ def download_and_deduplicate_nodes(args):
                     unique_keys.add(minimal_node)
                     unique_nodes.setdefault(protocol, []).append(original_node)
                     stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
-                    if host: # If hostname/IP is successfully extracted, add to the ping list
-                        nodes_for_ping_processing.append((original_node, host))
+                    if host and port: # If hostname/IP and port are successfully extracted, add to the check list
+                        nodes_for_connectivity_check.append((original_node, host, port))
+                    else:
+                        if args.debug:
+                            logging.debug(f"Skipping connectivity check for node (missing host/port): {original_node}")
             else:
                 stats['failed_to_standardize_count'] += 1
                 if args.debug:
@@ -351,59 +403,71 @@ def download_and_deduplicate_nodes(args):
     # Write protocol-specific and single output files
     stats['output_file_counts'] = write_protocol_outputs(unique_nodes, output_dir)
 
-    # Perform node Ping tests (parallel processing)
-    logging.info("\n--- Starting node connectivity test (parallel) ---")
-    ping_successful_nodes = []
-    ping_failed_nodes = []
+    # Perform node connectivity tests (parallel processing)
+    logging.info(f"\n--- Starting node connectivity test (method: {args.check_method}, parallel) ---")
+    check_successful_nodes = []
+    check_failed_nodes = []
     
-    # Set maximum concurrent workers and Ping timeout
-    MAX_WORKERS = args.max_ping_workers 
-    PING_TIMEOUT = args.ping_timeout
-    total_pings = len(nodes_for_ping_processing)
+    # Set maximum concurrent workers and connection timeout
+    MAX_WORKERS = args.max_check_workers 
+    CONNECT_TIMEOUT = args.connect_timeout
+    total_checks = len(nodes_for_connectivity_check)
     
-    # Use ThreadPoolExecutor for parallel Ping
-    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # Submit all Ping tasks, passing ping_timeout
-        future_to_node = {executor.submit(NodePinger.ping_host, host, timeout=PING_TIMEOUT): original_node 
-                          for original_node, host in nodes_for_ping_processing}
-        
-        ping_count = 0
-        for future in concurrent.futures.as_completed(future_to_node):
-            original_node = future_to_node[future]
-            ping_count += 1
-            try:
-                is_success, pinged_host_or_ip = future.result()
-                if is_success:
-                    ping_successful_nodes.append(original_node)
-                    stats['ping_success_count'] += 1
-                    # Reduced frequent logging, aggregate only on completion
-                    # logging.info(f"({ping_count}/{total_pings}) Ping successful: {pinged_host_or_ip}") 
-                else:
-                    ping_failed_nodes.append(original_node)
-                    stats['ping_fail_count'] += 1
-                    # Reduced frequent logging, aggregate only on completion
-                    # logging.info(f"({ping_count}/{total_pings}) Ping failed: {pinged_host_or_ip}") 
-            except Exception as exc:
-                logging.error(f"Exception occurred during Ping for node {original_node}: {exc}")
-                ping_failed_nodes.append(original_node) # Treat nodes with exceptions as failed
-                stats['ping_fail_count'] += 1
+    # Choose the connectivity check method
+    check_function = None
+    if args.check_method == 'ping':
+        check_function = NodeConnectivityChecker.check_icmp_ping
+    elif args.check_method == 'tcp':
+        check_function = NodeConnectivityChecker.check_tcp_port
+    else:
+        logging.error(f"Invalid check method: {args.check_method}. Skipping connectivity tests.")
+        check_function = None # Ensure no function is called
+
+    if check_function:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            # Submit all connectivity check tasks
+            future_to_node = {}
+            for original_node, host, port in nodes_for_connectivity_check:
+                if args.check_method == 'ping':
+                    future_to_node[executor.submit(check_function, host, timeout=CONNECT_TIMEOUT)] = original_node
+                elif args.check_method == 'tcp':
+                    future_to_node[executor.submit(check_function, host, port, timeout=CONNECT_TIMEOUT)] = original_node
             
-            # Output progress every 1000 nodes or when all are processed
-            if ping_count % 1000 == 0 or ping_count == total_pings:
-                logging.info(f"Processed {ping_count}/{total_pings} Ping tasks.")
+            check_count = 0
+            for future in concurrent.futures.as_completed(future_to_node):
+                original_node = future_to_node[future]
+                check_count += 1
+                try:
+                    is_success, checked_target = future.result()
+                    if is_success:
+                        check_successful_nodes.append(original_node)
+                        stats['check_success_count'] += 1
+                    else:
+                        check_failed_nodes.append(original_node)
+                        stats['check_fail_count'] += 1
+                except Exception as exc:
+                    logging.error(f"Exception occurred during connectivity check for node {original_node}: {exc}")
+                    check_failed_nodes.append(original_node) # Treat nodes with exceptions as failed
+                    stats['check_fail_count'] += 1
+                
+                # Output progress every 1000 nodes or when all are processed
+                if check_count % 1000 == 0 or check_count == total_checks:
+                    logging.info(f"Processed {check_count}/{total_checks} connectivity check tasks.")
+    else:
+        logging.warning("No valid connectivity check method selected. Connectivity tests skipped.")
 
-    # Write Ping result files
+    # Write connectivity check result files
     os.makedirs(output_dir, exist_ok=True)
-    ping_success_file = os.path.join(output_dir, 'ping_successful_nodes.txt')
-    with open(ping_success_file, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(sorted(ping_successful_nodes)) + '\n')
-    logging.info(f"Written Ping successful nodes file: {ping_success_file} ({len(ping_successful_nodes)} nodes)")
+    check_success_file = os.path.join(output_dir, 'connectivity_successful_nodes.txt')
+    with open(check_success_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sorted(check_successful_nodes)) + '\n')
+    logging.info(f"Written successful nodes file: {check_success_file} ({len(check_successful_nodes)} nodes)")
 
-    ping_fail_file = os.path.join(output_dir, 'ping_failed_nodes.txt')
-    with open(ping_fail_file, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(sorted(ping_failed_nodes)) + '\n')
-    protocol_counts[ping_fail_file] = len(ping_failed_nodes) # Add to output file counts
-    logging.info(f"Written Ping failed nodes file: {ping_fail_file} ({len(ping_failed_nodes)} nodes)")
+    check_fail_file = os.path.join(output_dir, 'connectivity_failed_nodes.txt')
+    with open(check_fail_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(sorted(check_failed_nodes)) + '\n')
+    protocol_counts[check_fail_file] = len(check_failed_nodes) # Add to output file counts
+    logging.info(f"Written failed nodes file: {check_fail_file} ({len(check_failed_nodes)} nodes)")
 
 
     end_time = datetime.datetime.now()
@@ -421,29 +485,30 @@ def download_and_deduplicate_nodes(args):
     for protocol, count in sorted(stats['protocol_counts'].items()):
         logging.info(f"  {protocol}: {count}")
     logging.info("Output files:")
-    # Update output_file_counts to include ping result files
-    stats['output_file_counts'][ping_success_file] = len(ping_successful_nodes)
-    stats['output_file_counts'][ping_fail_file] = len(ping_failed_nodes)
+    # Update output_file_counts to include connectivity check result files
+    stats['output_file_counts'][check_success_file] = len(check_successful_nodes)
+    stats['output_file_counts'][check_fail_file] = len(check_failed_nodes)
     for output_file, count in sorted(stats['output_file_counts'].items()):
         logging.info(f"  {output_file}: {count} nodes")
-    logging.info(f"Number of successful pings: {stats['ping_success_count']}")
-    logging.info(f"Number of failed pings: {stats['ping_fail_count']}")
+    logging.info(f"Number of successful checks: {stats['check_success_count']}")
+    logging.info(f"Number of failed checks: {stats['check_fail_count']}")
     logging.info(f"Total duration: {duration.total_seconds():.2f} seconds")
     logging.info("==============================================")
 
 def parse_args():
     """Parses command-line arguments."""
-    parser = argparse.ArgumentParser(description='Download, deduplicate, and ping proxy nodes.')
+    parser = argparse.ArgumentParser(description='Download, deduplicate, and check proxy nodes connectivity.')
     parser.add_argument('--node-url', 
-                        default="https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list_raw.txt",
-                        #"https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt", 
+                        default="https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt", 
                         help='URL for the node file')
     parser.add_argument('--output-dir', default='data', help='Output directory')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
-    parser.add_argument('--max-ping-workers', type=int, default=100, # Default max concurrent workers changed to 100
-                        help='Maximum number of concurrent workers for pinging nodes.')
-    parser.add_argument('--ping-timeout', type=int, default=1, # New Ping timeout parameter, default 1 second
-                        help='Timeout for each ping request in seconds.')
+    parser.add_argument('--max-check-workers', type=int, default=100, # Default max concurrent workers changed to 100
+                        help='Maximum number of concurrent workers for connectivity checks.')
+    parser.add_argument('--connect-timeout', type=int, default=1, # Renamed to connect-timeout, default 1 second
+                        help='Timeout for each connectivity check attempt in seconds.')
+    parser.add_argument('--check-method', type=str, default='tcp', choices=['tcp', 'ping'], # New parameter for check method
+                        help='Method to use for connectivity checks: "tcp" (default) or "ping".')
     return parser.parse_args()
 
 if __name__ == "__main__":
