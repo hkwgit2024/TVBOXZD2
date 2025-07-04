@@ -12,11 +12,14 @@ import subprocess
 from urllib.parse import parse_qs
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import argparse
-import concurrent.futures # 导入并发模块
+import concurrent.futures # Import the concurrent module for parallel processing
 
-# 配置日志
+# Configure logging
 def setup_logging(debug: bool):
-    """根据调试模式配置日志级别"""
+    """
+    Configures the logging level based on debug mode.
+    If debug is True, logs at DEBUG level; otherwise, logs at INFO level.
+    """
     level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(
         level=level,
@@ -28,16 +31,18 @@ def setup_logging(debug: bool):
     )
 
 class NodeStandardizer:
-    """节点标准化器，负责解析和标准化不同协议的节点URL"""
+    """Node standardizer, responsible for parsing and standardizing node URLs of different protocols."""
     
     @staticmethod
     def clean_node_url(node_url: str) -> str:
-        """清理节点URL，移除不可见字符、多余空格和编码问题"""
+        """
+        Cleans the node URL, removing invisible characters, extra spaces, and handling encoding issues.
+        """
         if not node_url:
             return ""
-        # 移除控制字符、空格、制表符、换行符等
+        # Remove control characters, spaces, tabs, newlines, etc.
         node_url = re.sub(r'[\x00-\x1F\x7F\x80-\x9F\s]+', '', node_url).strip().rstrip('/')
-        # 多次解码可能的双重URL编码
+        # Attempt to decode possible double URL encoding multiple times
         for _ in range(3):
             try:
                 decoded = urllib.parse.unquote(node_url, errors='ignore')
@@ -51,8 +56,9 @@ class NodeStandardizer:
     @staticmethod
     def standardize_node_minimal(node_url: str, debug: bool = False) -> tuple[str | None, str, str | None, str | None]:
         """
-        标准化节点URL，提取核心信息用于去重，并保留原始节点和主机名/IP。
-        返回 (标准化后的节点字符串, 协议类型, 原始节点, 主机名/IP)。
+        Standardizes the node URL, extracting core information for deduplication,
+        and retaining the original node and hostname/IP.
+        Returns (standardized node string, protocol type, original node, hostname/IP).
         """
         if not node_url:
             return None, "unknown", None, None
@@ -62,7 +68,7 @@ class NodeStandardizer:
                          node_url_cleaned, re.IGNORECASE)
         if not match:
             if debug:
-                logging.debug(f"不支持的协议或格式错误: {node_url}")
+                logging.debug(f"Unsupported protocol or malformed format: {node_url}")
             return None, "unknown", None, None
 
         protocol = match.group("protocol").lower()
@@ -85,16 +91,16 @@ class NodeStandardizer:
                 result = None
 
             if result and debug:
-                logging.debug(f"去重键: {result} (原始: {node_url})")
+                logging.debug(f"Deduplication key: {result} (Original: {node_url})")
             return result, protocol, node_url, host
 
         except Exception as e:
-            logging.error(f"标准化节点 {node_url} 时发生错误: {e}")
+            logging.error(f"Error standardizing node {node_url}: {e}")
             return None, "unknown", None, None
 
     @staticmethod
     def _standardize_vmess_vless(protocol: str, core_data: str, full_data: str) -> tuple[str | None, str | None]:
-        """处理vmess和vless协议"""
+        """Handles vmess and vless protocols."""
         parts = core_data.split('@', 1)
         if len(parts) != 2:
             return None, None
@@ -102,7 +108,7 @@ class NodeStandardizer:
         address = None
         if protocol == "vmess":
             try:
-                # 尝试base64解码
+                # Attempt base64 decoding
                 decoded = json.loads(base64.b64decode(uuid + '=' * (-len(uuid) % 4)).decode('utf-8', errors='ignore'))
                 uuid = decoded.get('id', '').lower()
                 address = decoded.get('add', '').lower()
@@ -111,7 +117,7 @@ class NodeStandardizer:
                     return f"{protocol}://{uuid}@{address}:{port}", address
                 return None, None
             except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError):
-                # 后备方案：尝试直接解析
+                # Fallback: try direct parsing
                 address_parts = address_port.rsplit(':', 1)
                 if len(address_parts) == 2 and NodeStandardizer.is_valid_port(address_parts[1]):
                     address = address_parts[0].lower()
@@ -135,7 +141,7 @@ class NodeStandardizer:
 
     @staticmethod
     def _standardize_trojan_hysteria2(protocol: str, core_data: str) -> tuple[str | None, str | None]:
-        """处理trojan和hysteria2协议"""
+        """Handles trojan and hysteria2 protocols."""
         parts = core_data.split('@', 1)
         if len(parts) != 2:
             return None, None
@@ -148,7 +154,7 @@ class NodeStandardizer:
 
     @staticmethod
     def _standardize_ss(core_data: str) -> tuple[str | None, str | None]:
-        """处理ss协议"""
+        """Handles ss protocol."""
         if '@' not in core_data or ':' not in core_data.split('@')[0]:
             return None, None
         try:
@@ -159,12 +165,12 @@ class NodeStandardizer:
                 return f"ss://{method.lower()}:{urllib.parse.quote(password, safe='')}@{host.lower()}:{port}", host.lower()
             return None, None
         except ValueError:
-            logging.debug(f"无法解析SS核心格式: {core_data}")
+            logging.debug(f"Could not parse SS core format: {core_data}")
             return None, None
 
     @staticmethod
     def _standardize_ssr(core_data: str) -> tuple[str | None, str | None]:
-        """处理ssr协议"""
+        """Handles ssr protocol."""
         parts = core_data.split(':')
         if len(parts) < 6:
             return None, None
@@ -175,109 +181,120 @@ class NodeStandardizer:
                 return f"ssr://{host.lower()}:{port}:{proto.lower()}:{method.lower()}:{obfs.lower()}:{urllib.parse.quote(password, safe='')}", host.lower()
             return None, None
         except ValueError:
-            logging.debug(f"无法解析SSR核心格式: {core_data}")
+            logging.debug(f"Could not parse SSR core format: {core_data}")
             return None, None
 
     @staticmethod
     def is_valid_port(port: str) -> bool:
-        """验证端口号是否有效"""
+        """Validates if the port number is valid."""
         try:
             return 0 < int(port) <= 65535
         except ValueError:
             return False
 
 class NodePinger:
-    """节点Ping工具，用于检测节点的连通性"""
+    """Node Ping tool for checking node connectivity."""
     
     @staticmethod
-    def ping_host(host: str, count: int = 1, timeout: int = 1) -> tuple[bool, str]: # 默认超时时间改为1秒
+    def ping_host(host: str, count: int = 1, timeout: int = 1) -> tuple[bool, str]: # Default timeout changed to 1 second
         """
-        Ping给定的主机名或IP地址。
+        Pings the given hostname or IP address.
         
         Args:
-            host (str): 要ping的主机名或IP地址。
-            count (int): Ping的次数。
-            timeout (int): 每个Ping请求的超时时间（秒）。
+            host (str): The hostname or IP address to ping.
+            count (int): Number of pings to send.
+            timeout (int): Timeout for each ping request in seconds.
             
         Returns:
-            tuple[bool, str]: 如果至少一次Ping成功则返回(True, IP地址)，否则返回(False, IP地址或错误信息)。
+            tuple[bool, str]: Returns (True, IP address) if at least one ping is successful,
+            otherwise returns (False, IP address or error message).
         """
         ip_address = None
         try:
             ip_address = socket.gethostbyname(host)
         except socket.gaierror:
-            logging.info(f"Ping {host} - 无法解析主机名。")
-            return False, host # 返回原始host，表示无法解析
+            # Changed to INFO level to be visible without --debug
+            logging.info(f"Ping {host} - Hostname could not be resolved.") 
+            return False, host # Return original host if resolution fails
 
         param = '-n' if platform.system().lower() == 'windows' else '-c'
         timeout_param = '-w' if platform.system().lower() == 'windows' else '-W' 
 
         try:
-            # 对于Windows，timeout参数单位是毫秒，所以需要乘以1000
+            # For Windows, timeout parameter unit is milliseconds, so multiply by 1000
             actual_timeout = timeout * 1000 if platform.system().lower() == 'windows' else timeout
             command = ['ping', param, str(count), timeout_param, str(actual_timeout), ip_address]
             
-            # 使用subprocess.run，设置更长的总超时时间
+            # Use subprocess.run with a slightly longer total timeout
             process = subprocess.run(command, capture_output=True, text=True, timeout=timeout * count + 2) 
             
             if process.returncode == 0:
-                logging.info(f"Ping {host} ({ip_address}) 成功。")
+                # Changed to INFO level to be visible without --debug
+                logging.info(f"Ping {host} ({ip_address}) successful.") 
                 return True, ip_address
             else:
-                logging.info(f"Ping {host} ({ip_address}) 失败。错误码: {process.returncode}, 输出: {process.stdout.strip()} {process.stderr.strip()}")
+                # Changed to INFO level to be visible without --debug
+                logging.info(f"Ping {host} ({ip_address}) failed. Error code: {process.returncode}, Output: {process.stdout.strip()} {process.stderr.strip()}")
                 return False, ip_address
         except subprocess.TimeoutExpired:
-            logging.info(f"Ping {host} ({ip_address}) 超时。")
+            # Changed to INFO level to be visible without --debug
+            logging.info(f"Ping {host} ({ip_address}) timed out.")
             return False, ip_address
         except Exception as e:
-            logging.error(f"Ping {host} ({ip_address}) 时发生错误: {e}")
+            logging.error(f"Error during ping for {host} ({ip_address}): {e}")
             return False, ip_address
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), 
         retry=retry_if_exception_type(requests.exceptions.RequestException))
 def fetch_url(url: str) -> requests.Response:
-    """带重试机制的URL请求"""
+    """Fetches URL with retry mechanism."""
     with requests.Session() as session:
         response = session.get(url, timeout=20, stream=True)
         response.raise_for_status()
         return response
 
 def write_protocol_outputs(nodes: dict, output_dir: str) -> dict:
-    """将去重后的节点按协议写入文件，并写入单一文件，返回每个文件的节点数"""
+    """
+    Writes deduplicated nodes by protocol to separate files and to a single file.
+    Returns the count of nodes for each file.
+    """
     os.makedirs(output_dir, exist_ok=True)
     protocol_counts = {}
     all_nodes = []
 
-    # 按协议分组写入
+    # Write by protocol
     for protocol, node_list in nodes.items():
         if node_list:
             output_file = os.path.join(output_dir, f"{protocol}.txt")
             sorted_nodes = sorted(node_list)
             with open(output_file, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(sorted(sorted_nodes)) + '\n') # Ensure nodes are sorted before writing
+                f.write('\n'.join(sorted_nodes) + '\n') # Ensure nodes are sorted before writing
             protocol_counts[output_file] = len(sorted_nodes)
-            logging.info(f"写入协议文件: {output_file} ({len(sorted_nodes)} 个节点)")
+            logging.info(f"Written protocol file: {output_file} ({len(sorted_nodes)} nodes)")
             all_nodes.extend(sorted_nodes)
 
-    # 写入单一文件
+    # Write to a single file
     output_all_file = os.path.join(output_dir, 'all.txt')
     with open(output_all_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(sorted(all_nodes)) + '\n')
     protocol_counts[output_all_file] = len(all_nodes)
-    logging.info(f"写入单一文件: {output_all_file} ({len(all_nodes)} 个节点)")
+    logging.info(f"Written single file: {output_all_file} ({len(all_nodes)} nodes)")
 
     return protocol_counts
 
 def download_and_deduplicate_nodes(args):
-    """从GitHub Raw链接下载节点数据，标准化并去重后按协议保存，并进行Ping测试"""
+    """
+    Downloads node data from GitHub Raw link, standardizes and deduplicates,
+    saves by protocol, and performs Ping tests.
+    """
     setup_logging(args.debug)
     node_url = args.node_url
     output_dir = args.output_dir
     
-    unique_nodes = {}  # 按协议存储原始节点 {protocol: [node1, node2, ...]}
-    unique_keys = set()  # 去重键集合
+    unique_nodes = {}  # Stores original nodes by protocol {protocol: [node1, node2, ...]}
+    unique_keys = set()  # Set of deduplication keys
     
-    # 存储 (原始节点, 主机名/IP) 元组，用于Ping
+    # Stores (original node, hostname/IP) tuples for Ping
     nodes_for_ping_processing = [] 
     
     stats = {
@@ -292,11 +309,11 @@ def download_and_deduplicate_nodes(args):
         'ping_fail_count': 0,
     }
     
-    logging.info("--- 开始下载和去重节点 ---")
+    logging.info("--- Starting node download and deduplication ---")
     start_time = datetime.datetime.now()
 
     try:
-        logging.info(f"正在下载: {node_url}")
+        logging.info(f"Downloading: {node_url}")
         response = fetch_url(node_url)
         stats['download_count'] += 1
         
@@ -312,41 +329,41 @@ def download_and_deduplicate_nodes(args):
                 if minimal_node in unique_keys:
                     stats['duplicate_count'] += 1
                     if args.debug:
-                        logging.debug(f"发现重复节点: {minimal_node}")
+                        logging.debug(f"Duplicate node found: {minimal_node}")
                 else:
                     unique_keys.add(minimal_node)
                     unique_nodes.setdefault(protocol, []).append(original_node)
                     stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
-                    if host: # 如果成功提取到主机名/IP，则添加到待Ping列表
+                    if host: # If hostname/IP is successfully extracted, add to the ping list
                         nodes_for_ping_processing.append((original_node, host))
             else:
                 stats['failed_to_standardize_count'] += 1
                 if args.debug:
-                    logging.warning(f"无法标准化节点: {node}")
+                    logging.warning(f"Failed to standardize node: {node}")
 
     except requests.exceptions.RequestException as e:
-        logging.error(f"下载失败 {node_url}: {e}")
+        logging.error(f"Download failed {node_url}: {e}")
         stats['invalid_format_count'] += 1
     except Exception as e:
-        logging.error(f"处理 {node_url} 时发生未知错误: {e}")
+        logging.error(f"Unknown error processing {node_url}: {e}")
         stats['invalid_format_count'] += 1
 
-    # 按协议和单一文件写入
+    # Write protocol-specific and single output files
     stats['output_file_counts'] = write_protocol_outputs(unique_nodes, output_dir)
 
-    # 进行节点Ping测试 (并行处理)
-    logging.info("\n--- 开始节点连通性测试 (并行) ---")
+    # Perform node Ping tests (parallel processing)
+    logging.info("\n--- Starting node connectivity test (parallel) ---")
     ping_successful_nodes = []
     ping_failed_nodes = []
     
-    # 设置最大并发线程数和Ping超时时间
+    # Set maximum concurrent workers and Ping timeout
     MAX_WORKERS = args.max_ping_workers 
     PING_TIMEOUT = args.ping_timeout
     total_pings = len(nodes_for_ping_processing)
     
-    # 使用ThreadPoolExecutor进行并行Ping
+    # Use ThreadPoolExecutor for parallel Ping
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # 提交所有Ping任务，传入ping_timeout
+        # Submit all Ping tasks, passing ping_timeout
         future_to_node = {executor.submit(NodePinger.ping_host, host, timeout=PING_TIMEOUT): original_node 
                           for original_node, host in nodes_for_ping_processing}
         
@@ -359,70 +376,73 @@ def download_and_deduplicate_nodes(args):
                 if is_success:
                     ping_successful_nodes.append(original_node)
                     stats['ping_success_count'] += 1
-                    # logging.info(f"({ping_count}/{total_pings}) Ping成功: {pinged_host_or_ip}") # 减少频繁日志，只在完成时汇总
+                    # Reduced frequent logging, aggregate only on completion
+                    # logging.info(f"({ping_count}/{total_pings}) Ping successful: {pinged_host_or_ip}") 
                 else:
                     ping_failed_nodes.append(original_node)
                     stats['ping_fail_count'] += 1
-                    # logging.info(f"({ping_count}/{total_pings}) Ping失败: {pinged_host_or_ip}") # 减少频繁日志，只在完成时汇总
+                    # Reduced frequent logging, aggregate only on completion
+                    # logging.info(f"({ping_count}/{total_pings}) Ping failed: {pinged_host_or_ip}") 
             except Exception as exc:
-                logging.error(f"节点 {original_node} Ping时发生异常: {exc}")
-                ping_failed_nodes.append(original_node) # 将异常的节点也视为失败
+                logging.error(f"Exception occurred during Ping for node {original_node}: {exc}")
+                ping_failed_nodes.append(original_node) # Treat nodes with exceptions as failed
                 stats['ping_fail_count'] += 1
             
-            # 每处理一定数量的节点，输出一次进度
+            # Output progress every 1000 nodes or when all are processed
             if ping_count % 1000 == 0 or ping_count == total_pings:
-                logging.info(f"已处理 {ping_count}/{total_pings} 个Ping任务。")
+                logging.info(f"Processed {ping_count}/{total_pings} Ping tasks.")
 
-    # 写入Ping结果文件
+    # Write Ping result files
     os.makedirs(output_dir, exist_ok=True)
     ping_success_file = os.path.join(output_dir, 'ping_successful_nodes.txt')
     with open(ping_success_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(sorted(ping_successful_nodes)) + '\n')
-    logging.info(f"写入Ping成功节点文件: {ping_success_file} ({len(ping_successful_nodes)} 个节点)")
+    logging.info(f"Written Ping successful nodes file: {ping_success_file} ({len(ping_successful_nodes)} nodes)")
 
     ping_fail_file = os.path.join(output_dir, 'ping_failed_nodes.txt')
     with open(ping_fail_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(sorted(ping_failed_nodes)) + '\n')
     protocol_counts[ping_fail_file] = len(ping_failed_nodes) # Add to output file counts
-    logging.info(f"写入Ping失败节点文件: {ping_fail_file} ({len(ping_failed_nodes)} 个节点)")
+    logging.info(f"Written Ping failed nodes file: {ping_fail_file} ({len(ping_failed_nodes)} nodes)")
 
 
     end_time = datetime.datetime.now()
     duration = end_time - start_time
 
-    # 输出运行摘要
-    logging.info("\n==================== 运行摘要 ====================")
-    logging.info(f"成功下载的链接数: {stats['download_count']}")
-    logging.info(f"处理的节点总数: {stats['total_nodes_processed']}")
-    logging.info(f"重复节点数: {stats['duplicate_count']}")
-    logging.info(f"无法标准化的节点数: {stats['failed_to_standardize_count']}")
-    logging.info(f"格式无效的节点数: {stats['invalid_format_count']}")
-    logging.info(f"去重后的有效节点总数: {sum(stats['protocol_counts'].values())}")
-    logging.info("协议分布:")
+    # Output run summary
+    logging.info("\n==================== Run Summary ====================")
+    logging.info(f"Number of successfully downloaded links: {stats['download_count']}")
+    logging.info(f"Total nodes processed: {stats['total_nodes_processed']}")
+    logging.info(f"Duplicate nodes count: {stats['duplicate_count']}")
+    logging.info(f"Nodes failed to standardize: {stats['failed_to_standardize_count']}")
+    logging.info(f"Nodes with invalid format: {stats['invalid_format_count']}")
+    logging.info(f"Total valid deduplicated nodes: {sum(stats['protocol_counts'].values())}")
+    logging.info("Protocol distribution:")
     for protocol, count in sorted(stats['protocol_counts'].items()):
         logging.info(f"  {protocol}: {count}")
-    logging.info("输出文件:")
+    logging.info("Output files:")
     # Update output_file_counts to include ping result files
     stats['output_file_counts'][ping_success_file] = len(ping_successful_nodes)
     stats['output_file_counts'][ping_fail_file] = len(ping_failed_nodes)
     for output_file, count in sorted(stats['output_file_counts'].items()):
-        logging.info(f"  {output_file}: {count} 个节点")
-    logging.info(f"Ping成功的节点数: {stats['ping_success_count']}")
-    logging.info(f"Ping失败的节点数: {stats['ping_fail_count']}")
-    logging.info(f"总耗时: {duration.total_seconds():.2f} 秒")
+        logging.info(f"  {output_file}: {count} nodes")
+    logging.info(f"Number of successful pings: {stats['ping_success_count']}")
+    logging.info(f"Number of failed pings: {stats['ping_fail_count']}")
+    logging.info(f"Total duration: {duration.total_seconds():.2f} seconds")
     logging.info("==============================================")
 
 def parse_args():
-    """解析命令行参数"""
+    """Parses command-line arguments."""
     parser = argparse.ArgumentParser(description='Download, deduplicate, and ping proxy nodes.')
     parser.add_argument('--node-url', 
-                        default="https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt", 
+                        default="https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list_raw.txt",
+                        #"https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/data/nodes.txt", 
                         help='URL for the node file')
     parser.add_argument('--output-dir', default='data', help='Output directory')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
-    parser.add_argument('--max-ping-workers', type=int, default=100, # 默认并发线程数改为100
+    parser.add_argument('--max-ping-workers', type=int, default=100, # Default max concurrent workers changed to 100
                         help='Maximum number of concurrent workers for pinging nodes.')
-    parser.add_argument('--ping-timeout', type=int, default=1, # 新增Ping超时参数，默认1秒
+    parser.add_argument('--ping-timeout', type=int, default=1, # New Ping timeout parameter, default 1 second
                         help='Timeout for each ping request in seconds.')
     return parser.parse_args()
 
