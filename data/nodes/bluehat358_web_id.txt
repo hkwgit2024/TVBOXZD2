@@ -1,0 +1,16 @@
+https://raw.githubusercontent.com/BlueHat358/bluehat358-tunnel/refs/heads/main/proxy_list.txt"
+vless://${uuid}@${selectedService}:80?encryption=none&type=ws&host=${workerUrl}&path=%2F${ip}-${port}&security=none&sni=#(${selectedService}) ${country} ${isp}`;
+ss://${uuid}@${selectedService}:443?encryption=none&type=ws&host=${domain}&path=%2F${ip}-${port}&security=tls&sni=${domain}#(${selectedService}) ${country} ${isp}`;
+vless://${uuid}@${selectedService}:443?encryption=none&type=ws&host=${domain}&path=%2F${ip}-${port}&security=tls&sni=${domain}#(${selectedService}) ${country} ${isp}`;
+https://api-proxy.bluehat358.biz.id";
+https://cdn.tailwindcss.com"></script>
+trojan://${uuid}@${selectedService}:443?encryption=none&type=ws&host=${domain}&path=%2F${ip}-${port}&security=tls&sni=${domain}#(${selectedService}) ${country} ${isp}`;
+https://raw.githubusercontent.com/BlueHat358/bluehat358-tunnel/refs/heads/main/proxy_list_active.txt"
+https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
+https://cdn.jsdelivr.net/npm/sweetalert2@11
+ss://bm9uZTo1ZDJlYmQyYS05Y2I5LTRkMWItYWY1NS04NjE3ZDNlODFmMzk%3D@${selectedService}:443?encryption=none&type=ws&host=${domain}&path=%2F${ip}-${port}&security=tls&sni=${domain}#(${selectedService}) ${country} ${isp}`;
+https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css
+vmess://${base64}`;
+ss://${base64}`;
+ss://${uuid}@${selectedService}:80?encryption=none&type=ws&host=${workerUrl}&path=%2F${ip}-${port}&security=none&sni=#(${selectedService}) ${country} ${isp}`;
+https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

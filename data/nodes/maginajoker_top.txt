@@ -1,0 +1,12 @@
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:8080?encryption=none&security=none&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#NONE-8080
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:8080?encryption=none&security=none&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#NONE-8080
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:443?encryption=none&amp;security=tls&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#TLS-443
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:80?encryption=none&security=none&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#NONE-80
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:80?encryption=none&amp;security=none&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#NONE-80
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:80?encryption=none&amp;security=none&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#NONE-80
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:8080?encryption=none&amp;security=none&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#NONE-8080</pre></body></html>
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:443?encryption=none&amp;security=tls&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#TLS-443
+ss://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:443?encryption=none&security=tls&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#TLS-443
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:443?encryption=none&security=tls&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#TLS-443
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:80?encryption=none&security=none&sni=maginajoker.top&fp=randomized&type=ws&host=maginajoker.top&path=%2F%3Fed%3D2048#NONE-80
+vless://aab43d7b-55ae-4c08-8b5a-a3914321ec9a@maginajoker.top:8080?encryption=none&amp;security=none&amp;sni=maginajoker.top&amp;fp=randomized&amp;type=ws&amp;host=maginajoker.top&amp;path=%2F%3Fed%3D2048#NONE-8080</pre></body></html>
