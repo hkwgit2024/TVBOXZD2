@@ -12,6 +12,7 @@ import subprocess
 from urllib.parse import parse_qs
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import argparse
+import concurrent.futures # 导入并发模块
 
 # 配置日志
 def setup_logging(debug: bool):
@@ -189,7 +190,7 @@ class NodePinger:
     """节点Ping工具，用于检测节点的连通性"""
     
     @staticmethod
-    def ping_host(host: str, count: int = 1, timeout: int = 5) -> bool:
+    def ping_host(host: str, count: int = 1, timeout: int = 5) -> tuple[bool, str]:
         """
         Ping给定的主机名或IP地址。
         
@@ -199,34 +200,38 @@ class NodePinger:
             timeout (int): 每个Ping请求的超时时间（秒）。
             
         Returns:
-            bool: 如果至少一次Ping成功则返回True，否则返回False。
+            tuple[bool, str]: 如果至少一次Ping成功则返回(True, IP地址)，否则返回(False, IP地址或错误信息)。
         """
+        ip_address = None
         try:
-            # 尝试解析域名到IP地址
             ip_address = socket.gethostbyname(host)
         except socket.gaierror:
-            logging.info(f"Ping {host} - 无法解析主机名。") # 更改为INFO级别
-            return False
+            logging.info(f"Ping {host} - 无法解析主机名。")
+            return False, host # 返回原始host，表示无法解析
 
         param = '-n' if platform.system().lower() == 'windows' else '-c'
         timeout_param = '-w' if platform.system().lower() == 'windows' else '-W' # -w for windows in ms, -W for linux in seconds
 
         try:
-            command = ['ping', param, str(count), timeout_param, str(timeout), ip_address]
-            process = subprocess.run(command, capture_output=True, text=True, timeout=timeout * count + 2) # 增加一些缓冲时间
+            # 对于Windows，timeout参数单位是毫秒，所以需要乘以1000
+            actual_timeout = timeout * 1000 if platform.system().lower() == 'windows' else timeout
+            command = ['ping', param, str(count), timeout_param, str(actual_timeout), ip_address]
+            
+            # 使用subprocess.run，设置更长的总超时时间
+            process = subprocess.run(command, capture_output=True, text=True, timeout=timeout * count + 2) 
             
             if process.returncode == 0:
-                logging.info(f"Ping {host} ({ip_address}) 成功。") # 更改为INFO级别
-                return True
+                logging.info(f"Ping {host} ({ip_address}) 成功。")
+                return True, ip_address
             else:
-                logging.info(f"Ping {host} ({ip_address}) 失败。错误码: {process.returncode}, 输出: {process.stdout.strip()} {process.stderr.strip()}") # 更改为INFO级别
-                return False
+                logging.info(f"Ping {host} ({ip_address}) 失败。错误码: {process.returncode}, 输出: {process.stdout.strip()} {process.stderr.strip()}")
+                return False, ip_address
         except subprocess.TimeoutExpired:
-            logging.info(f"Ping {host} ({ip_address}) 超时。") # 更改为INFO级别
-            return False
+            logging.info(f"Ping {host} ({ip_address}) 超时。")
+            return False, ip_address
         except Exception as e:
             logging.error(f"Ping {host} ({ip_address}) 时发生错误: {e}")
-            return False
+            return False, ip_address
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), 
         retry=retry_if_exception_type(requests.exceptions.RequestException))
@@ -271,8 +276,9 @@ def download_and_deduplicate_nodes(args):
     
     unique_nodes = {}  # 按协议存储原始节点 {protocol: [node1, node2, ...]}
     unique_keys = set()  # 去重键集合
-    ping_successful_nodes = [] # Ping成功的节点
-    ping_failed_nodes = [] # Ping失败的节点
+    
+    # 存储 (原始节点, 主机名/IP) 元组，用于Ping
+    nodes_for_ping_processing = [] 
     
     stats = {
         'download_count': 0,
@@ -294,8 +300,6 @@ def download_and_deduplicate_nodes(args):
         response = fetch_url(node_url)
         stats['download_count'] += 1
         
-        nodes_to_ping = [] # 存储 (原始节点, 主机名/IP) 元组
-
         for line in response.iter_lines(decode_unicode=True):
             node = line.strip()
             if not node:
@@ -314,7 +318,7 @@ def download_and_deduplicate_nodes(args):
                     unique_nodes.setdefault(protocol, []).append(original_node)
                     stats['protocol_counts'][protocol] = stats['protocol_counts'].get(protocol, 0) + 1
                     if host: # 如果成功提取到主机名/IP，则添加到待Ping列表
-                        nodes_to_ping.append((original_node, host))
+                        nodes_for_ping_processing.append((original_node, host))
             else:
                 stats['failed_to_standardize_count'] += 1
                 if args.debug:
@@ -330,21 +334,39 @@ def download_and_deduplicate_nodes(args):
     # 按协议和单一文件写入
     stats['output_file_counts'] = write_protocol_outputs(unique_nodes, output_dir)
 
-    # 进行节点Ping测试
-    logging.info("\n--- 开始节点连通性测试 ---")
-    # 增加一个进度计数器
-    ping_count = 0
-    total_pings = len(nodes_to_ping)
-
-    for original_node, host in nodes_to_ping:
-        ping_count += 1
-        logging.info(f"正在Ping ({ping_count}/{total_pings}): {host} ...") # 新增的进度日志
-        if NodePinger.ping_host(host):
-            ping_successful_nodes.append(original_node)
-            stats['ping_success_count'] += 1
-        else:
-            ping_failed_nodes.append(original_node)
-            stats['ping_fail_count'] += 1
+    # 进行节点Ping测试 (并行处理)
+    logging.info("\n--- 开始节点连通性测试 (并行) ---")
+    ping_successful_nodes = []
+    ping_failed_nodes = []
+    
+    # 设置最大并发线程数
+    MAX_WORKERS = args.max_ping_workers 
+    total_pings = len(nodes_for_ping_processing)
+    
+    # 使用ThreadPoolExecutor进行并行Ping
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        # 提交所有Ping任务
+        future_to_node = {executor.submit(NodePinger.ping_host, host): original_node 
+                          for original_node, host in nodes_for_ping_processing}
+        
+        ping_count = 0
+        for future in concurrent.futures.as_completed(future_to_node):
+            original_node = future_to_node[future]
+            ping_count += 1
+            try:
+                is_success, pinged_host_or_ip = future.result()
+                if is_success:
+                    ping_successful_nodes.append(original_node)
+                    stats['ping_success_count'] += 1
+                    logging.info(f"({ping_count}/{total_pings}) Ping成功: {pinged_host_or_ip}")
+                else:
+                    ping_failed_nodes.append(original_node)
+                    stats['ping_fail_count'] += 1
+                    logging.info(f"({ping_count}/{total_pings}) Ping失败: {pinged_host_or_ip}")
+            except Exception as exc:
+                logging.error(f"节点 {original_node} Ping时发生异常: {exc}")
+                ping_failed_nodes.append(original_node) # 将异常的节点也视为失败
+                stats['ping_fail_count'] += 1
     
     # 写入Ping结果文件
     os.makedirs(output_dir, exist_ok=True)
@@ -389,6 +411,8 @@ def parse_args():
                         help='URL for the node file')
     parser.add_argument('--output-dir', default='data', help='Output directory')
     parser.add_argument('--debug', action='store_true', help='Enable debug logging')
+    parser.add_argument('--max-ping-workers', type=int, default=50, 
+                        help='Maximum number of concurrent workers for pinging nodes.')
     return parser.parse_args()
 
 if __name__ == "__main__":
