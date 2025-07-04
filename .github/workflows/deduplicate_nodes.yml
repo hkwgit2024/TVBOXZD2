@@ -26,7 +26,7 @@ jobs:
       - name: Run deduplication script
         # The script now defaults to 100 concurrent workers and a 1-second Ping timeout.
         # You can override these defaults using --max-ping-workers and --ping-timeout.
-        run: python deduplicate_nodes.py # Removed --debug to reduce log volume
+        run: python deduplicate_nodes.py --check-method tcp --max-check-workers 100 --connect-timeout 3
         continue-on-error: false # Stop workflow if the script fails
 
       - name: Check output files
