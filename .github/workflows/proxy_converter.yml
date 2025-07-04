@@ -1,4 +1,3 @@
-
 name: Proxy Node Converter Workflow
 
 on:
@@ -40,19 +39,18 @@ jobs:
       # 创建输出目录
       - name: Create output directories
         run: |
-          mkdir -p data/nodes
+          mkdir -p data # 更改：现在只需创建data目录
 
       # 运行代理节点转换脚本
       - name: Run proxy converter script
         run: |
           python cc6_modified.py \
             --sources sources.list \
-            --nodes-output-dir data/nodes \
+            --nodes-output-file data/all_nodes.txt \
             --stats-output data/node_counts.csv \
             --max-concurrency 50 \
             --timeout 20 \
-            --chunk-size-mb 190 \
-            --use-browser
+            --use-browser # 移除 --chunk-size-mb 参数
 
       # 提交输出文件到仓库
       - name: Commit and push results
@@ -64,4 +62,3 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
