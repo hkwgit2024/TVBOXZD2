@@ -205,7 +205,7 @@ class NodePinger:
             # 尝试解析域名到IP地址
             ip_address = socket.gethostbyname(host)
         except socket.gaierror:
-            logging.debug(f"无法解析主机名: {host}")
+            logging.info(f"Ping {host} - 无法解析主机名。") # 更改为INFO级别
             return False
 
         param = '-n' if platform.system().lower() == 'windows' else '-c'
@@ -216,13 +216,13 @@ class NodePinger:
             process = subprocess.run(command, capture_output=True, text=True, timeout=timeout * count + 2) # 增加一些缓冲时间
             
             if process.returncode == 0:
-                logging.debug(f"Ping {host} ({ip_address}) 成功。")
+                logging.info(f"Ping {host} ({ip_address}) 成功。") # 更改为INFO级别
                 return True
             else:
-                logging.debug(f"Ping {host} ({ip_address}) 失败。错误码: {process.returncode}, 输出: {process.stdout.strip()} {process.stderr.strip()}")
+                logging.info(f"Ping {host} ({ip_address}) 失败。错误码: {process.returncode}, 输出: {process.stdout.strip()} {process.stderr.strip()}") # 更改为INFO级别
                 return False
         except subprocess.TimeoutExpired:
-            logging.debug(f"Ping {host} ({ip_address}) 超时。")
+            logging.info(f"Ping {host} ({ip_address}) 超时。") # 更改为INFO级别
             return False
         except Exception as e:
             logging.error(f"Ping {host} ({ip_address}) 时发生错误: {e}")
@@ -332,7 +332,13 @@ def download_and_deduplicate_nodes(args):
 
     # 进行节点Ping测试
     logging.info("\n--- 开始节点连通性测试 ---")
+    # 增加一个进度计数器
+    ping_count = 0
+    total_pings = len(nodes_to_ping)
+
     for original_node, host in nodes_to_ping:
+        ping_count += 1
+        logging.info(f"正在Ping ({ping_count}/{total_pings}): {host} ...") # 新增的进度日志
         if NodePinger.ping_host(host):
             ping_successful_nodes.append(original_node)
             stats['ping_success_count'] += 1
