@@ -534,8 +534,8 @@ async def process_single_url_strategy(
     use_browser: bool,
     session: Optional[aiohttp.ClientSession],
     playwright_instance: Optional[Any],
-    browser_context: Optional[BrowserContext]
-) -> Tuple[str, List[str], str]:
+    browser_context: Optional[BrowserContext
+]) -> Tuple[str, List[str], str]:
     """处理单个 URL，根据策略选择获取方式并提取节点。"""
     content = None
     status = "失败"
@@ -603,7 +603,8 @@ async def process_urls(
                 )
                 url_to_nodes[source_url_domain].extend(extracted_nodes)
                 url_statuses[source_url_domain] = status
-                logger.info(f"处理完成 {url_to_nodes[source_url_domain]} 个节点来自 {url}")
+                # 修复 BlockingIOError: 只记录提取到的节点数量，不打印完整的节点列表
+                logger.info(f"处理完成 {len(extracted_nodes)} 个节点来自 {url}")
 
         tasks = [worker(url) for url in urls]
         await asyncio.gather(*tasks)
