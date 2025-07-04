@@ -29,9 +29,9 @@ PLAYWRIGHT_GOTO_TIMEOUT = 45000 # Playwright 页面加载超时，单位毫秒 (
 MAX_BASE64_DECODE_DEPTH = 3
 UA = UserAgent()
 
-# 新增：缓存配置
+# 缓存配置
 CACHE_FILE = 'data/fetch_cache.json'
-CACHE_EXPIRY_HOURS = 240 # 缓存有效期（小时），例如 240 小时内不重复获取和解析
+CACHE_EXPIRY_HOURS = 168 # 缓存有效期（小时）
 
 # 配置日志系统
 os.makedirs('data', exist_ok=True)
@@ -47,25 +47,25 @@ logger = logging.getLogger(__name__)
 
 # 定义支持的节点协议及其正则表达式模式
 NODE_PATTERNS = {
-    'ss': r'ss://[^\\s#]+(?:#[^\\n]*)?',
-    'ssr': r'ssr://[^\\s#]+(?:#[^\\n]*)?',
-    'vmess': r'vmess://[^\\s#]+(?:#[^\\n]*)?',
-    'vless': r'vless://[^\\s#]+(?:#[^\\n]*)?',
-    'trojan': r'trojan://[^\\s#]+(?:#[^\\n]*)?',
-    'hy2': r'hy2://[^\\s#]+(?:#[^\\n]*)?',
-    'tuic': r'tuic://[^\\s#]+(?:#[^\\n]*)?',
-    'warp': r'warp://[^\\s#]+(?:#[^\\n]*)?',
-    'hysteria': r'hysteria://[^\\s#]+(?:#[^\\n]*)?',
-    'snell': r'snell://[^\\s#]+(?:#[^\\n]*)?',
-    'socks5': r'socks5://[^\\s#]+(?:#[^\\n]*)?',
-    'http': r'http://[^\\s#]+(?:#[^\\n]*)?',
-    'https': r'https://[^\\s#]+(?:#[^\\n]*)?',
+    'ss': r'ss://[^\s#]+(?:#[^\n]*)?',
+    'ssr': r'ssr://[^\s#]+(?:#[^\n]*)?',
+    'vmess': r'vmess://[^\s#]+(?:#[^\n]*)?',
+    'vless': r'vless://[^\s#]+(?:#[^\n]*)?',
+    'trojan': r'trojan://[^\s#]+(?:#[^\n]*)?',
+    'hy2': r'hy2://[^\s#]+(?:#[^\n]*)?',
+    'tuic': r'tuic://[^\s#]+(?:#[^\n]*)?',
+    'warp': r'warp://[^\s#]+(?:#[^\n]*)?',
+    'hysteria': r'hysteria://[^\s#]+(?:#[^\n]*)?',
+    'snell': r'snell://[^\s#]+(?:#[^\n]*)?',
+    'socks5': r'socks5://[^\s#]+(?:#[^\n]*)?',
+    'http': r'http://[^\s#]+(?:#[^\n]*)?',
+    'https': r'https://[^\s#]+(?:#[^\n]*)?',
     # 添加Clash和Sing-box的订阅链接模式
-    'clash_sub': r'http(?:s)?://[^\\s#]+\\.clash(?:\\?.*)?',
-    'singbox_sub': r'http(?:s)?://[^\\s#]+\\.s(?:b|b|b)?(?:\\?.*)?', # 简化的Sing-box订阅链接
+    'clash_sub': r'http(?:s)?://[^\s#]+\.clash(?:[?].*)?',
+    'singbox_sub': r'http(?:s)?://[^\s#]+\.s(?:b|b|b)?(?:[?].*)?', # 简化的Sing-box订阅链接
 }
 
-# 用于提取Base64编码内容的正则表达式
+# 修正后的用于提取Base64编码内容的正则表达式
 BASE64_PATTERNS = [
     re.compile(r'vmess://([a-zA-Z0-9+/=]+)'),
     re.compile(r'vless://([a-zA-Z0-9+/=]+)'),
@@ -73,13 +73,14 @@ BASE64_PATTERNS = [
     re.compile(r'ss://([a-zA-Z0-9+/=]+)'),
     re.compile(r'ssr://([a-zA-Z0-9+/=]+)'),
     re.compile(r'(?:vmess|vless|trojan|ss|ssr)://([a-zA-Z0-9+/=]{100,})'), # 捕获较长的base64字符串
-    re.compile(r'(?<=['"\'])([a-zA-Z0-9+/=]{500,})(?=['"\'])'), # 捕获可能包含节点的大段base64字符串
+    # 修正这一行：使用原始字符串，并处理内部的单引号和双引号
+    re.compile(r'(?<=[ "\'])([a-zA-Z0-9+/=]{500,})(?=[ "\'])'), # 捕获可能包含节点的大段base64字符串
 ]
 
-# 用于在JavaScript代码中查找vmess/vless/trojan配置的正则表达式
+# 修正后的用于在JavaScript代码中查找vmess/vless/trojan配置的正则表达式
 JS_CONFIG_PATTERNS = [
-    re.compile(r'(vmess|vless|trojan) = [\'"]([^\'"]+)[\'"]'),
-    re.compile(r'(vmess|vless|trojan) = JSON\.parse\([\'"]([^\'"]+)[\'"]\)'),
+    re.compile(r"(vmess|vless|trojan) = ['\"]([^'\"]+)['\"]"),
+    re.compile(r"(vmess|vless|trojan) = JSON\.parse\(['\"]([^'\"]+)['\"]\)")
 ]
 
 # --- 辅助函数 ---
@@ -321,8 +322,7 @@ async def process_single_url_strategy(
             if current_time - last_fetched_time < timedelta(hours=CACHE_EXPIRY_HOURS):
                 logger.info(f"使用缓存获取 {url} (上次获取时间: {last_fetched_time.strftime('%Y-%m-%d %H:%M:%S')}) - 缓存未过期。")
                 # 不实际提取节点，仅返回缓存的节点数量
-                # 为了后续逻辑兼容，创建一个虚拟节点列表，其长度等于缓存的节点数量
-                extracted_nodes = ['_cached_node_'] * cached_nodes_count
+                extracted_nodes = ['_cached_node_'] * cached_nodes_count # 用虚拟节点占位
                 status = "成功 (缓存未过期)"
                 return url, extracted_nodes, status
             # 缓存已过期，但有哈希值，尝试获取并对比哈希
@@ -360,7 +360,7 @@ async def process_single_url_strategy(
             # 内容未变，只更新缓存时间，不重新提取节点
             cache[url]['last_fetched'] = current_time
             # 使用上次缓存的节点数量
-            extracted_nodes = ['_cached_node_'] * cache[url].get('nodes_count', 0) 
+            extracted_nodes = ['_cached_node_'] * cache[url].get('nodes_count', 0) # 仍用虚拟节点占位
             status = f"成功 (内容未变，已更新缓存时间 via {fetch_method})"
             logger.info(f"内容未变 {url} (哈希: {new_content_hash[:8]}...) - 已更新缓存时间。")
         else:
@@ -414,9 +414,8 @@ async def main():
     # 加载缓存
     fetch_cache = load_cache()
 
-    url_to_nodes: Dict[str, List[str]] = defaultdict(list)
     url_node_counts: Dict[str, int] = {}
-    failed_urls: Set[str] = set()
+    url_statuses: Dict[str, str] = {} # 存储每个URL的最终状态
 
     logger.info(f"启动节点提取过程，最大并发数: {args.max_concurrency}, 超时: {args.timeout}s, 使用浏览器: {args.use_browser}。")
     logger.info(f"缓存有效期设置为 {CACHE_EXPIRY_HOURS} 小时。")
@@ -456,40 +455,29 @@ async def main():
                 continue
 
             url_domain, extracted_nodes, status = result
-            # 注意：如果从缓存中读取，extracted_nodes 可能是虚拟列表，长度等于节点数量
+            
+            # 如果是从缓存中读取的，extracted_nodes 可能是虚拟列表，其长度表示节点数量
             actual_node_count = len(extracted_nodes)
             
-            # 如果是从缓存中读取的，其 extracted_nodes 可能只是一个占位符，
-            # 需要从缓存数据中获取真实的节点列表以写入文件。
-            # 这里简化处理：如果从缓存中读取且状态是“缓存未过期”，
-            # 我们假设之前的节点文件依然有效，不重新写入文件。
-            # 否则，按照实际提取的节点进行写入。
-
-            if "缓存未过期" in status:
-                logger.info(f"源 {url_domain} 节点来自缓存，节点数量: {actual_node_count}。跳过文件写入。")
-            else:
-                # 只有当实际获取并处理了内容时才写入文件
-                if extracted_nodes: # 如果提取到了实际节点（非虚拟节点）
-                    sanitized_filename = sanitize_filename_from_url(url_domain)
-                    output_path = os.path.join(args.nodes_output_dir, sanitized_filename)
-                    try:
-                        content_to_write = '\n'.join(extracted_nodes)
-                        with open(output_path, 'w', encoding='utf-8') as f:
-                            f.write(content_to_write)
-                        file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
-                        logger.info(f"保存 {actual_node_count} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
-                    except Exception as e:
-                        logger.error(f"保存节点到文件 '{output_path}' 失败: {e}")
-                else:
-                    logger.info(f"源 {url_domain} 未提取到节点，跳过保存。")
-
             url_node_counts[url_domain] = actual_node_count
-            if "失败" in status:
-                failed_urls.add(url_domain)
-            
-            # 简化：只在 process_single_url_strategy 内部更新缓存，避免重复
-            # logger.info(f"处理完成 {actual_node_count} 个节点来自 {url_domain} (状态: {status})")
+            url_statuses[url_domain] = status # 存储详细状态
 
+            # 只有当实际获取并处理了内容（非缓存命中）时才写入文件
+            if "缓存未过期" in status and fetch_cache.get(url_domain, {}).get('nodes_count', 0) > 0:
+                logger.info(f"源 {url_domain} 节点来自缓存，节点数量: {actual_node_count}。跳过文件写入。")
+            elif actual_node_count > 0 and "_cached_node_" not in extracted_nodes[0]: # 确保不是虚拟节点列表
+                sanitized_filename = sanitize_filename_from_url(url_domain)
+                output_path = os.path.join(args.nodes_output_dir, sanitized_filename)
+                try:
+                    content_to_write = '\n'.join(extracted_nodes)
+                    with open(output_path, 'w', encoding='utf-8') as f:
+                        f.write(content_to_write)
+                    file_size_mb = os.path.getsize(output_path) / (1024 * 1024)
+                    logger.info(f"保存 {actual_node_count} 个节点到 {output_path} ({file_size_mb:.2f} MB)")
+                except Exception as e:
+                    logger.error(f"保存节点到文件 '{output_path}' 失败: {e}")
+            else:
+                logger.info(f"源 {url_domain} 未提取到节点或节点来自缓存且无变化，跳过文件写入。")
 
     # --- 统计数据保存为 CSV ---
     try:
@@ -499,19 +487,8 @@ async def main():
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for url, count in sorted(url_node_counts.items(), key=lambda x: x[1], reverse=True):
-                # 重新计算状态，因为 cache logic 改变了内部状态传递
-                status_from_cache = fetch_cache.get(url, {}).get('status', '未知')
-                final_status = "成功"
-                if url in failed_urls:
-                    final_status = "失败"
-                elif count == 0 and "缓存未过期" not in status_from_cache:
-                    final_status = "无节点"
-                elif "缓存未过期" in status_from_cache:
-                    final_status = "成功 (缓存)"
-                elif "内容未变" in status_from_cache:
-                    final_status = "成功 (内容未变)"
-
-                writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': final_status})
+                status_for_csv = url_statuses.get(url, "未知")
+                writer.writerow({'Source_URL': url, 'Nodes_Found': count, 'Status': status_for_csv})
         logger.info(f"统计数据已保存到 '{args.stats_output}'")
     except Exception as e:
         logger.error(f"保存统计数据失败: {e}")
