@@ -3,7 +3,7 @@ name: Deduplicate Nodes
 on:
   workflow_dispatch: # Allows manual triggering
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: '0 */8 * * *'
 
 jobs:
   deduplicate:
