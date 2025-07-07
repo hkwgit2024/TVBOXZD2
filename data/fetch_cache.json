@@ -1,352 +1,352 @@
 {
   "http://jfu.hanatabata.xyz": {
-    "last_fetched": "2025-07-04T13:24:15.792122",
-    "content_hash": "c88a87c4daceefce2d61da422b753921d03c2f83c5380fc7309e1abea234525e",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:36.635689",
+    "content_hash": "b668d2e934d9a5c088c39ed8b253ccedeb81c669113d464323db021f9ec0d534",
+    "nodes_count": 696
   },
   "http://quiz.int.vidio.com.jfu.hanatabata.xyz": {
-    "last_fetched": "2025-07-04T13:24:15.792517",
-    "content_hash": "0fe2f5048ef1f626e4d0662ed049574a084488c70079170a5698102e7de6c1b0",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:36.636516",
+    "content_hash": "af76a5cc81aa95e27737b93e9aa7004b4c08f9e6f97451a42cbcbeefeb1ab549",
+    "nodes_count": 696
   },
   "http://df.game.naver.com.jfu.hanatabata.xyz": {
-    "last_fetched": "2025-07-04T13:24:15.791670",
-    "content_hash": "ff1ca03ddd70ffc7bc046a4da92acda3daabf5a9c7c697fae44235b1c339a0b5",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:36.634950",
+    "content_hash": "5b83d99a7a3633a06e04475d79d558c28f537f919f5abe528607dba709b9ec0c",
+    "nodes_count": 696
   },
   "http://vless.cillnet.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.794535",
-    "content_hash": "d345587d36ac62c584a36b5aa2966069881395cdd72a1f347d0e3cf1003bfa85",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.641635",
+    "content_hash": "47ea9d1418f91efdcfcf5cab41e8a5707e766d4586eea587a167f67455a2491c",
+    "nodes_count": 236
   },
   "http://cache.netflix.com.unlimited.spauu.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.788267",
-    "content_hash": "8ad988e996c8199c60a3e74e93083f1679365da26b558655fec607ad63add27f",
+    "last_fetched": "2025-07-07T01:59:36.627477",
+    "content_hash": "df3ea311b5ac5ec4a3c0fcf80fa2f17e0a0df08143ef6baeb066b07fdc74a412",
     "nodes_count": 1208
   },
   "http://cache.netflix.com.cillnet.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.795385",
-    "content_hash": "159fa0063e1acf8f45a422bb9ec1ff9c83b58b607f4bedff6e270dd56c3f456a",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.643474",
+    "content_hash": "1b683cfd7a462acf7568c31a1f4c648aad1b4b83904e53ff5206cfe815eb4d4d",
+    "nodes_count": 236
   },
   "http://f.behnamf.com": {
-    "last_fetched": "2025-07-04T13:24:15.800139",
+    "last_fetched": "2025-07-07T01:59:36.653911",
     "content_hash": "f55f24b13cce437e9fd7b5d2ba551aa3bc8ee3faed14efdf4029f9a5e96c0f6f",
     "nodes_count": 179
   },
   "http://quiz.int.vidio.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.795800",
-    "content_hash": "bd1a87c590f0b236777fad7b1eade074537672606394685cfc3fafc713cc1f43",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.644593",
+    "content_hash": "ead1a5dbb419db1fb79b2addb83a7bc4e4b1a30c6b1301d4fe8fff9f1de4e4b5",
+    "nodes_count": 236
   },
   "http://ava.game.naver.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.796243",
-    "content_hash": "e54b16aa33a229ac634fea2644c8a438dec1b893ff20284327255859a6553f67",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.645679",
+    "content_hash": "c8908224ba3e7dab3f45c4285bc035f033eb303ae103fff2c0246f7600c1766b",
+    "nodes_count": 236
   },
   "http://ava.game.naver.com.cillnet.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.798501",
-    "content_hash": "f33ea31e50c3ecdf62c49968af35ca1eda0a9e8308fba4cbb3efe3072e5b6158",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.648754",
+    "content_hash": "5cc6899cabe7a8d1c85d1529a7a09940ffbfaad3d60fd40b2bb194c61c2fa8d0",
+    "nodes_count": 236
   },
   "http://s.udemycdn.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.797064",
-    "content_hash": "75980a90d90c24d3735a71da7d7699335e3ee050e6c9809c32cbd1e1e6d0b3cb",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.646888",
+    "content_hash": "812919f47cf91cc2fa51852f175fd055e705817450577c2aae1ee21f9a8e72e5",
+    "nodes_count": 236
   },
   "http://zaintest.vuclip.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.796652",
-    "content_hash": "2581862173dd99a11a7ed30253708503a66b4cf3257f42b5f25c776450b8affc",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.646293",
+    "content_hash": "a2f5cf5b3e409118b1fa463652146c9e56fe9e17742959cf1ade590ea5347b61",
+    "nodes_count": 236
   },
   "http://unlimited.spauu.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.787481",
-    "content_hash": "655dd7512e4f486758283f5881564ee23f785b442798c0789acad1da133cc04d",
+    "last_fetched": "2025-07-07T01:59:36.626444",
+    "content_hash": "68bae5e6c4142e76c53ad888f1b54865eb622663016366ffb4ece6579efbccc4",
     "nodes_count": 1208
   },
   "http://zaintest.vuclip.com.unlimited.spauu.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.787858",
-    "content_hash": "03427150f7a618fa1d5b8ad53e98318757ff4ea297197af12a6203bc627aab6a",
+    "last_fetched": "2025-07-07T01:59:36.626974",
+    "content_hash": "ea092166be3daa036a34735dec82c9d374ee3d202fc0c586204c9c7ef54a02e0",
     "nodes_count": 1208
   },
   "http://blog.webex.com.cillnet.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.794949",
-    "content_hash": "74a818ffd4f29017c439246a83807d4c36fba7bd2c436f31a2bb1f850d81c325",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.642272",
+    "content_hash": "86a825f6d42600541d403ea50533faa56743ae36715aff496f83ab333fe65999",
+    "nodes_count": 236
   },
   "http://investor.fb.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.798914",
-    "content_hash": "5cc6e9b5f0823e7d8fe2248e02d41e402fb2d2bf1564afa8ec2b74795bafb777",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.649331",
+    "content_hash": "4cff8c4f655677c17899d88b4093134f07789af8de67275c93b27d0460619aed",
+    "nodes_count": 236
   },
   "http://mylife.spauu.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.799730",
-    "content_hash": "56c4cc240529e7d5df073c9bee73164c474150d2ed157be73e174a020d166e5c",
+    "last_fetched": "2025-07-07T01:59:36.653295",
+    "content_hash": "bdbdd7c9a347dc9eb2d9a7f1d640f6822721bb216bea105ef15f09b450c10003",
     "nodes_count": 202
   },
   "http://pvt.moonop.tech": {
-    "last_fetched": "2025-07-04T13:24:15.794107",
-    "content_hash": "b7749478456e886ae07051c75dfd886220ff15e9ae2c9d4f1303b98f349bd52a",
+    "last_fetched": "2025-07-07T01:59:36.641029",
+    "content_hash": "f2bb3793238284eec21bed7acff77ea08e2c457233c9fad79c3c0571d98c57f9",
     "nodes_count": 261
   },
   "http://bakrie.ac.id.wilcard.cyantiknya.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.787107",
-    "content_hash": "ac283be5b8a23e68f198a392aa4be98b5ae86cb5c13af274c80d778a07c45ebe",
+    "last_fetched": "2025-07-07T01:59:36.625919",
+    "content_hash": "2013a41a4210bb6613595893b905f1f03f5bba548fcf39aa0389e0939167d5b1",
     "nodes_count": 1707
   },
   "http://zaintest.vuclip.com.cillnet.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.798027",
-    "content_hash": "faa6e6d796596f4061698fe369247c49b80f6bd11fab508eb5b90786e8ee1340",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.648204",
+    "content_hash": "69ef6b111c0a6c20dc69f4e28f89a40005a8274dc192dd8d2621e8e5557a2289",
+    "nodes_count": 236
   },
   "http://vip.arivganteng.biz.id": {
-    "last_fetched": "2025-07-04T13:24:15.791289",
-    "content_hash": "64f64075e93f7881b1af4b553e3d313bd2b411ad5126f93768d4882deec37f25",
+    "last_fetched": "2025-07-07T01:59:36.634088",
+    "content_hash": "3d5591d698561a847aa372ad1635acc4b3fa84d5fd62ef21c75945fafef293d9",
     "nodes_count": 761
   },
   "http://proxy.sadragoli.ir": {
-    "last_fetched": "2025-07-04T13:24:15.793718",
+    "last_fetched": "2025-07-07T01:59:36.638205",
     "content_hash": "47d028eaa9d71c86e5a8ae3638b1b19280b379475bc0d3330f68370803cf847f",
     "nodes_count": 392
   },
   "http://cache.netflix.com.spauu.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.799339",
-    "content_hash": "83ce3e758f2aa171c561683120ef6add9cba9db1516208b4555caf7905adcdb5",
+    "last_fetched": "2025-07-07T01:59:36.649898",
+    "content_hash": "68cdffd7bcebd589935e5f10d9deb9e1f187913c742954936e8fd9d363287793",
     "nodes_count": 232
   },
   "http://zaintest.vuclip.comwilcard.cyantiknya.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.786335",
-    "content_hash": "25c27fa72adb55d02ec0c0236ae53d12221d523ac47cc52a1c1966c8af6338e6",
+    "last_fetched": "2025-07-07T01:59:36.624279",
+    "content_hash": "424dab985c744c8045cd0c9f0b9d83f30b47fc0eec23b982b26097f3bbf7d2b3",
     "nodes_count": 1707
   },
   "http://live.iflix.com.cillnet.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.797603",
-    "content_hash": "7facb8b70a3832eff8b1048908558b54f50df6d119fa80eb2e20133a5e966a97",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:36.647479",
+    "content_hash": "ad69b947d10eacbafc038973057533161e7b189ef324f3ff395db35fcc68d2ef",
+    "nodes_count": 236
   },
   "http://cf.vless.sandesh.fr": {
-    "last_fetched": "2025-07-04T13:24:15.793328",
-    "content_hash": "ca6d0239b66072b89ec5479fc6fbc32063f941d85ce37f2b4454ce60ccdd7151",
+    "last_fetched": "2025-07-07T01:59:36.637631",
+    "content_hash": "1aee556e70e971d991b008f146e566e4ee34b1ee4b64c80bcf60321fef7a9140",
     "nodes_count": 321
   },
   "http://support.zoom.us.wilcard.cyantiknya.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.786705",
-    "content_hash": "cc5bb8bf0ca4548d18958e6891855fd9b178620dcf3df12b451e1dfd5753ed4a",
+    "last_fetched": "2025-07-07T01:59:36.625045",
+    "content_hash": "33ffdfadb715fcff51445bce310ad665b1e5b2ab0a211233b3c11d383fa20e1b",
     "nodes_count": 1707
   },
   "http://vless.cyantiknya.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.785462",
-    "content_hash": "a4f8b1f885ae68d94a022a4fd6a1f5d86550809191db9cae0cbc16cb94cfc582",
+    "last_fetched": "2025-07-07T01:59:36.622067",
+    "content_hash": "3b1d03fa4a11f05cb0fdf220330010dc4f1c23131d57bd71b16c9e33c8646074",
     "nodes_count": 1707
   },
   "http://akun.komintod.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.788646",
-    "content_hash": "69e508d620ad54f7c66df912190c7e17d68dcd280a685271b0603f82f7a30788",
+    "last_fetched": "2025-07-07T01:59:36.629280",
+    "content_hash": "0b70799f03462530d7601c75bb390d6dbaa91f4dfb59506d4fd8ffa137fa340b",
     "nodes_count": 933
   },
   "http://nontontv.vidio.com.isidomain.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.781799",
-    "content_hash": "78418c5284d737a6840c292572ebb286dc0d66328175ff6f89972aaf669064c2",
+    "last_fetched": "2025-07-07T01:59:36.615359",
+    "content_hash": "dcc3606dc6962c1459e58caebadea6e17fdb5944a49fda4cde6acd88f3ac09c2",
     "nodes_count": 6
   },
   "http://ava.game.naver.com.servpn.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.789083",
-    "content_hash": "547331e201179f39664606deaea17b891187bec6a338e447029168d08f27eaae",
+    "last_fetched": "2025-07-07T01:59:36.629857",
+    "content_hash": "507d92523c88b9bd8796bdf6bb40da00b8b893a1be191f6f8b98c9fe792edec2",
     "nodes_count": 812
   },
   "http://servpn.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.790052",
-    "content_hash": "b2dc8ce84a3beed940d681850a9673b69336eef5b6069acf562fba25a1994dfd",
+    "last_fetched": "2025-07-07T01:59:36.630993",
+    "content_hash": "533131737d1819217f581069b67de759a6ba8ceb2736fd0b7bfbdd552be88749",
     "nodes_count": 812
   },
   "http://investors.fb.com.wilcard.cyantiknya.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.785841",
-    "content_hash": "f4f27ff414aa702e206a31f3d6b6d23c7d9d94a200d9cf5c87144ebf7b87d35f",
+    "last_fetched": "2025-07-07T01:59:36.623230",
+    "content_hash": "964fd72a6b7462b353588932232a9bc1110b4dbadeccb4b45e0d87e1b6dbc72c",
     "nodes_count": 1707
   },
   "http://ava.game.naver.com.sg1.hinamori.xyz": {
-    "last_fetched": "2025-07-04T13:24:15.792897",
-    "content_hash": "a3c9bd535332629eef37488a9a328c8a661cbb2b4ae19a2ab0e4ce84af659993",
+    "last_fetched": "2025-07-07T01:59:36.637067",
+    "content_hash": "02278182a7bbf8792267a59795288c71fb4ea301f6e0ab6f83dd3d2f705222e4",
     "nodes_count": 444
   },
   "http://bakrie.ac.id.servpn.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.789658",
-    "content_hash": "7ccb96a37a967ee55848bade13a1c6619239c258f6b70cb1cdc5475970752dd1",
+    "last_fetched": "2025-07-07T01:59:36.630451",
+    "content_hash": "16dff64e33d4a4b199bb93ed61cc266fa3502d69c17eecbe0ac0f2369ecf247e",
     "nodes_count": 812
   },
   "http://blog.ruangguru.com.servpn.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.790861",
-    "content_hash": "3f693a01effa480c1d5f93dc8c6d8212d105bced0e36754a1f8e4af6dda02e18",
+    "last_fetched": "2025-07-07T01:59:36.633202",
+    "content_hash": "ab01b640d0721ac424b329db360a6446713ff3c50d8c4efd89c836f1c775dbfb",
     "nodes_count": 812
   },
   "http://app-stg.gopay.co.id.servpn.my.id": {
-    "last_fetched": "2025-07-04T13:24:15.790480",
-    "content_hash": "c921698dbc7e1b795f9e37ca30e3254dc0bcaefb0a338171d558ccda701ef864",
+    "last_fetched": "2025-07-07T01:59:36.631513",
+    "content_hash": "ca7670412d2449ec15a9b0e81df548fff69866bb809d0c927b880b0ba445fb5f",
     "nodes_count": 812
   },
   "http://sezar.hossein.om.to": {
-    "last_fetched": "2025-07-04T13:24:15.785058",
-    "content_hash": "3d9f85778f4abd3e75aaa4a07a138dab9ef83229976952c695faf37e795ddc74",
-    "nodes_count": 1436
+    "last_fetched": "2025-07-07T01:59:36.621384",
+    "content_hash": "30a010b81e09e717afda335a9a64e315c49a3f4aac3d1e55e009369fe2fad334",
+    "nodes_count": 2158
   },
   "http://sub.xiniah.top": {
-    "last_fetched": "2025-07-04T13:24:15.800591",
+    "last_fetched": "2025-07-07T01:59:36.654480",
     "content_hash": "504e16cc7268c3767a5e7520b4dd6f7a53eeea6613b9372e4b7b25425bd19d3f",
     "nodes_count": 1
   },
   "http://support.zoom.us.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:24:18.188653",
-    "content_hash": "fa9a1ed28918a87e5b7d8f187fa33a800cd19c11319b2156258248dfc25bc0f1",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:41.543605",
+    "content_hash": "6572fd6927b94948d5996337d73ecbf813df11aac2705b617aa2c4f3afa1a319",
+    "nodes_count": 182
   },
   "http://tunnel.triadz.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.800977",
-    "content_hash": "a3e68c3778d4261d1d742b7ad2bffd5774d9f0dd9a7f29e3ed37d6c45509f94a",
+    "last_fetched": "2025-07-07T01:59:36.656168",
+    "content_hash": "82db772b6e6cc5d5cf28e6014917e634aa25b5be9836b6dd8ad7ac074d6ff71f",
     "nodes_count": 190
   },
   "http://zoomgov.vipren.biz.id": {
-    "last_fetched": "2025-07-04T13:24:15.784680",
-    "content_hash": "986a56fe95c9319800c261ca08c102d0584dd01e00c4c34863ee6353faaa6e06",
-    "nodes_count": 10810
+    "last_fetched": "2025-07-07T01:59:36.620652",
+    "content_hash": "668656d2c40c3f2cf3fa8dd954da5414c43909446f5cffc125f45a6ab48ae200",
+    "nodes_count": 10666
   },
   "http://io.ruangguru.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.802843",
-    "content_hash": "aee25b16ce9d255c9b77ecc33b2f07382453b95f6604075e73a20a18a954e717",
+    "last_fetched": "2025-07-07T01:59:36.657231",
+    "content_hash": "7d7ca80aff369413f753e630f6fcc8bfdcbdcd2a7f8e1251d073ae14d8282c45",
     "nodes_count": 201
   },
   "http://ava.game.naver.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:24:17.112227",
-    "content_hash": "38fca9a2636d39e9983c00ec3d02c042fb0f804747924d1291ead983423e7b1c",
+    "last_fetched": "2025-07-07T01:59:41.215321",
+    "content_hash": "aa1855b4c873b66bd515dfdadc8f136b5a7b53b72a4c40498d52db77cd9ca56f",
     "nodes_count": 215
   },
   "http://quiz.int.vidio.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:17.063656",
-    "content_hash": "cc9769897b505002dcc6585440f26412b342e7ab8271f0e0a2d31f14e2a91a63",
+    "last_fetched": "2025-07-07T01:59:39.996294",
+    "content_hash": "b8ff518a87117ac323eca90a1343c2fc6b1ae289ccee95e65efc0b8f80515a56",
     "nodes_count": 215
   },
   "http://httpupgrade.hellboy.eu.org": {
-    "last_fetched": "2025-07-04T13:24:15.784294",
-    "content_hash": "2807ef735eec99124a7d3a6852abab5ed924c333a519f4521f7ce4f64fc8085c",
-    "nodes_count": 17299
+    "last_fetched": "2025-07-07T01:59:36.619753",
+    "content_hash": "f02ba82031e0a772bf0e0d785d8584eb580cb9b16a6f4126f433057a18847331",
+    "nodes_count": 17613
   },
   "http://ava.game.naver.com.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:24:19.262264",
-    "content_hash": "c3e6370b4850f6d001ba3062ac689220d1ce6fb3c09107e91dde3ff407f2f6a6",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:42.470094",
+    "content_hash": "2596e0ac69a968895e653fc18d78bebf51a9166e495679d1968bbbfb48bd723e",
+    "nodes_count": 182
   },
   "http://blog.webex.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.802433",
-    "content_hash": "8606ec99450e1267b75e8833df07806d2796d5b77d061054d1a59875d5a0aad5",
+    "last_fetched": "2025-07-07T01:59:36.656696",
+    "content_hash": "c92533b30293d4e2f5976f7f178118e11f0bdb11dcb7bb85e6fabbc8675393c6",
     "nodes_count": 201
   },
   "http://support.zoom.us.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:21.178367",
-    "content_hash": "d1b69092ff6cbbf45f97932dafe1672cbb73dcca3866291aaf628dc78726d531",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:43.051942",
+    "content_hash": "337602a65646ab0873bb9ece198f9d797e602f0e92d44241b716823799e1ca34",
+    "nodes_count": 215
   },
   "http://cache.netflix.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:19.395839",
-    "content_hash": "689f6d10969a81458de04111bc297b71fdd07612024a8fe14445a9852d9d3493",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:42.888066",
+    "content_hash": "54e784ff4cf4928a94386b7c3e37b1089a66d0aeaf3d008489bb9711c95a77b8",
+    "nodes_count": 215
   },
   "http://zoomgov.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:24:16.981441",
-    "content_hash": "351b46e4751baa04da75f5bba7aaf9b5a56f51c4a030cb1b875f58a236a108a5",
+    "last_fetched": "2025-07-07T01:59:38.560198",
+    "content_hash": "01e0d00535c7df0efed2a1cea3cdd6e12aa48bcac3e3269349a5c31ca595c919",
     "nodes_count": 189
   },
   "http://investors.spotify.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:23.434622",
-    "content_hash": "68912a3f539e95cbfb33c626a586e98d237d6722c5ffedde5163c85b4357c764",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:44.308982",
+    "content_hash": "1c18ca074237c9aa30f8be49b351c531de620803c94388033c7d8180079e109c",
+    "nodes_count": 216
   },
   "http://data.mt.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:24:18.976737",
-    "content_hash": "ada5b02775bef41a7ccc49e1bb3f0743c041c4627877c80d4e540a57e1a31421",
+    "last_fetched": "2025-07-07T01:59:41.700319",
+    "content_hash": "3269e68400a2a588873fd44abbd2b9ad500bab647460d1f2336f15658f1befb7",
     "nodes_count": 201
   },
   "http://proxy.alibadiee.ir": {
-    "last_fetched": "2025-07-04T13:24:15.783871",
-    "content_hash": "73ff71816a95a6d0f07c74d531a781ef11141bffb2e672e7c35846f175348993",
+    "last_fetched": "2025-07-07T01:59:36.618943",
+    "content_hash": "c94637d16f8455edc41977e69fa3c2045390fcbec4afd151c73ead191f4fe48f",
     "nodes_count": 68224
   },
   "http://io.ruangguru.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:19.317061",
-    "content_hash": "05c53a4addfeb5aa389749c2f042dc51d33666871ce84dac4f3d286f423bddc4",
+    "last_fetched": "2025-07-07T01:59:42.640388",
+    "content_hash": "ccb5ebc17a95cd5f8058359ccc6aa3c8a6d9cde11e5182ac8c21c1b08b479693",
     "nodes_count": 215
   },
   "http://blog.webex.com.freexxx.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:24:18.988597",
-    "content_hash": "bc4e906a5477d214b02e5efa2538aad1042863b949c4a8f02b65954bf29463fd",
+    "last_fetched": "2025-07-07T01:59:41.882528",
+    "content_hash": "da8eda4bd550eb249e7f1ba7780bb8aeb6e560f6fdc366a7d2f206a2fa48b6d1",
     "nodes_count": 215
   },
   "http://support.zoom.us.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:19.048063",
-    "content_hash": "6d505425e738d61cb5eddbaa2496946270a803706e58f041f1380dc2f65bcb73",
+    "last_fetched": "2025-07-07T01:59:42.088932",
+    "content_hash": "68e3fd44e4d7ce2a17d06c01a91d943f3a445139a7be8402b11c06a8730c3824",
     "nodes_count": 215
   },
   "http://web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:19.007976",
-    "content_hash": "360f3fc961cc85450120ce321de9dea5da07b13e21286e93f8d70c1196c41603",
+    "last_fetched": "2025-07-07T01:59:42.037559",
+    "content_hash": "12e05ea5eff212c3e5fe27917cd1efb3f25ec0d02464446715445c59912366e9",
     "nodes_count": 215
   },
   "http://vpn.lucka.biz.id": {
-    "last_fetched": "2025-07-04T13:24:23.304765",
-    "content_hash": "18f830490247270a9ba7a77ee1be63404a4df572ba9925a2808d8f28c8b1ce63",
+    "last_fetched": "2025-07-07T01:59:43.169382",
+    "content_hash": "0df9afa63ca4ad6a122197211755458c2467c4541cf0313802c56486169cebad",
     "nodes_count": 174
   },
   "http://live.iflix.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:24:19.089832",
-    "content_hash": "a49726c08c0fae611d363119cff91c90d68730ccbb315a9bc3953d431349ee9c",
+    "last_fetched": "2025-07-07T01:59:42.182255",
+    "content_hash": "190bf20cd8fc1e18dc0c8dce69c56675119704a056747577d7067c8c90be2472",
     "nodes_count": 189
   },
   "http://api.midtrans.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:24:23.720534",
-    "content_hash": "5a0f4e48bc0270b6cf7528db1cd2e4afa83dc1f25e0c35e71a05510e0de2a5f6",
+    "last_fetched": "2025-07-07T01:59:44.365783",
+    "content_hash": "ec1cde8e141c177968edc80463c13b230ef28bc3cdc2f3f00674e3d418f4e356",
     "nodes_count": 215
   },
   "http://dedi.xl-unlimited.web.id": {
-    "last_fetched": "2025-07-04T13:24:23.352778",
-    "content_hash": "bc38ac53b972908d490c58536ad2a0b16a650d3eb46454673aa8c2b8298be049",
+    "last_fetched": "2025-07-07T01:59:43.881898",
+    "content_hash": "404abd36f8772eb69c5428bf7d24f7e55046be5a77aad34cef1e9cabd7bbc45b",
     "nodes_count": 174
   },
   "http://cache.netflix.com.freexxx.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:24:24.928246",
-    "content_hash": "06e73bc970e98470dd3e7d61bd2f7df217156e3df433990b9ce45cce9d9137fc",
+    "last_fetched": "2025-07-07T01:59:44.700693",
+    "content_hash": "96a920de4f46d4a5e12f01be79eaf22e697b6411fe83367d89c5f1556a8d7a50",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:26.440838",
-    "content_hash": "58fdc60dad219eee06b1ec9e0fe2efaec9d14217fac5d05785ceb9952fb21f9e",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:45.070288",
+    "content_hash": "2535cbf8479dfa4fa8a0de68b5477422cdf7ed13806f29c4551f6337ad783ed6",
+    "nodes_count": 215
   },
   "http://quiz.int.vidio.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:24:27.317045",
-    "content_hash": "fb4b53f3fe93199217163aef3b55f77703fcf5f8b545c137d0a7b41387d8ca13",
+    "last_fetched": "2025-07-07T01:59:45.297319",
+    "content_hash": "6775da73c053fb4848cc980b309f5c5b2f0e9653f516adcb1ef365d54b312e71",
     "nodes_count": 215
   },
   "http://investors.spotify.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:27.344481",
-    "content_hash": "22c6e5ea25802cdea73ca49f9b83785c4a081358daef8a042fe4b3bf92dd6452",
+    "last_fetched": "2025-07-07T01:59:46.428028",
+    "content_hash": "1ec66cd1502dcfc2e6db9970e65f97b81f2bb949fecf6005ec158b9cb9ecf7d1",
     "nodes_count": 216
   },
   "http://img.email2.vidio.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:24:26.497793",
-    "content_hash": "20daefec547d0beca3651e648ae32bc1996322d9c0d911d3c26b57ab8a056656",
+    "last_fetched": "2025-07-07T01:59:45.165123",
+    "content_hash": "9e10fd4a294c633ddee53b19e1eef95573819a702670373c629dded493fe9710",
     "nodes_count": 201
   },
   "http://quiz.int.vidio.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:31.719657",
-    "content_hash": "a0645510e9cfbb35eb711fd04ea47d4012f2c03996c56106cb56337dd66b1e71",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:53.442172",
+    "content_hash": "cff8995a7e6d8108ea2b342c320c5bfed66732ea5f22901ed59f2b19eb6a0e83",
+    "nodes_count": 215
   },
   "http://quiz.int.vidio.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:31.132780",
-    "content_hash": "04ad6b7d8e0dac650752cb3f1adefa770caccfb4d187d8302c0e8bc1d99166b4",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:52.066327",
+    "content_hash": "5caa5c2bffb732941d6c93bb4de1501c41db032efb8545678579d06e569e3fba",
+    "nodes_count": 215
   },
   "http://investor.fb.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:24:27.464996",
-    "content_hash": "d2526cf4d754f1ad0b0d6fd8963350a6f64e25db29ee2a1b5d7411b7bee095f2",
+    "last_fetched": "2025-07-07T01:59:48.723560",
+    "content_hash": "29816eb6467cb08f85be7978ea5221e95dd32d29275cdee4ab1de796faccd9f0",
     "nodes_count": 215
   },
   "http://com.isidomain.web.id": {
@@ -360,1307 +360,1307 @@
     "nodes_count": 266410
   },
   "http://support.zoom.us.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:24:28.818503",
-    "content_hash": "294a7498760a87a144059a45c6ecc0704a7228030d2b6d10475f46c2c2cf21c4",
+    "last_fetched": "2025-07-07T01:59:50.160195",
+    "content_hash": "4badf65e0fce48e20888ccad0a98d07923fd0a4a1132a147c723b70de77462c5",
     "nodes_count": 189
   },
   "http://ads.ruangguru.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:30.321739",
-    "content_hash": "509bb02d25e9b7f5a40ecc5090cb93523e1aba5985e221379a2992e6de94f9e7",
+    "last_fetched": "2025-07-07T01:59:51.216926",
+    "content_hash": "0b9d6057a3755e17016239584ae8f4990896c1473fcdeb959507c84542aff644",
     "nodes_count": 215
   },
   "http://blog.webex.com.freexxx.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:24:28.969510",
-    "content_hash": "b51df2e86d2fd30e658ddf4a67ad4b11822fb74c3163742a5b78e510659e896e",
+    "last_fetched": "2025-07-07T01:59:50.472291",
+    "content_hash": "21aa200219e2ccf202df94d6644cb750ea5c1f0719fdc158b1ef0070b2c7de49",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:24:34.706892",
-    "content_hash": "58aa72013a80fdcc8d9ca44315c9cb2b25b7d79e94f5f798abfd1f56864e6434",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T01:59:54.919783",
+    "content_hash": "f3b41942d58b8afce588177d747fa484eccda34f58e8ac41616f4216dbf6b5a2",
+    "nodes_count": 182
   },
   "http://io.ruangguru.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:32.487732",
-    "content_hash": "5e758cb4c5d4ca0f1d3302280198ba215129d1af113487a99df7c4ff529080b2",
+    "last_fetched": "2025-07-07T01:59:53.934260",
+    "content_hash": "7c18c4dea1171fc5d53b17f404d907442f17befc9042abada39d41a348ea4c8b",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:35.937588",
-    "content_hash": "f5c94af29648de2e4becfa994574f75fd504b228309a2abe629df8da8b11bfcd",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:56.421029",
+    "content_hash": "293fb760cc90c7aff47a2a27b98638de0a041c5323ae835692e605620f0eac4a",
+    "nodes_count": 215
   },
   "http://live.iflix.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:33.316051",
-    "content_hash": "72a2f6e5060312a5effef3dbfce380a1eedf5792703b530a8ab4712e26f436d8",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:54.254024",
+    "content_hash": "e33e425d4aa1867e89cb574422267b7cdb1ad0b1c57313cd09aa817e913ce54d",
+    "nodes_count": 215
   },
   "http://freexxx.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:35.349304",
-    "content_hash": "33dcd2c31d201afcfe60d0a27b4875ac029b22d6e0a8617c4e08380dc0c04d50",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:55.969505",
+    "content_hash": "98f5f3d51d8c43703ffa0e702f15225f01cad76b5baa3ba19a9423b5ddd8caf4",
+    "nodes_count": 215
   },
   "http://investors.spotify.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:34.339054",
-    "content_hash": "ddcd0125a2e25bae155ee007a3b4d1e554931237b7fa926d66f2605444bac9b7",
+    "last_fetched": "2025-07-07T01:59:54.918593",
+    "content_hash": "5b34364e89ac2d11a9b4c65061c375a81a90693a4c8876b6ab28e1b526f232e4",
     "nodes_count": 216
   },
   "http://freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:32.710398",
-    "content_hash": "5283d82c8345387db02bdb916acc78e07bfb895877dbbf12df3c0462fa497c42",
+    "last_fetched": "2025-07-07T01:59:54.092005",
+    "content_hash": "3b27e24544c9e8cc2a45fbcb16c0de27a4bbf9fc1d0911bac0bc2804ffda7460",
     "nodes_count": 215
   },
   "http://api.midtrans.com.aink.workerz.site": {
-    "last_fetched": "2025-07-04T13:24:36.758485",
-    "content_hash": "d443cf4241c890f43dbfdda37058556bbe1a2fc26c3020d74059573d86c9acb0",
+    "last_fetched": "2025-07-07T01:59:56.715808",
+    "content_hash": "491e12838fe054661db417b1dcf0d250e317edc5c7effbade651d2b881713ea9",
     "nodes_count": 183
   },
   "http://support.zoom.us.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:39.426600",
-    "content_hash": "b03f98267ec97ba462ae3618cb92223ba7610aad554239881a157a4d08a9ea33",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T01:59:57.169109",
+    "content_hash": "9609283fdbd24c268b3ff1847c8bb6aa8b480b426fc06205a273df3135ee062b",
+    "nodes_count": 215
   },
   "http://io.ruangguru.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:34.982282",
-    "content_hash": "2448683127e3e51a33cf89005117ec0d8d5fe1132fd09448565dc236d1bea874",
+    "last_fetched": "2025-07-07T01:59:55.433629",
+    "content_hash": "1741268c5c165c8aacbc88e746d163d2c1d15d99ec1244ea80b32409384f334c",
     "nodes_count": 215
   },
   "http://support.zoom.us.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:24:44.180840",
-    "content_hash": "4a43bc35737485e537a722e0dddf4e3d58416ce322b3266ff19f77a5242688ad",
+    "last_fetched": "2025-07-07T02:01:16.650668",
+    "content_hash": "0a0077befd68ac45076c3aa465f60598470637c793889941aef0ca8f68cf5514",
     "nodes_count": 215
   },
   "http://investor.fb.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:37.991083",
-    "content_hash": "0a96fd074633d66d52b6315cf20f69f48ac29e9c593287febfdf1fb72198391c",
+    "last_fetched": "2025-07-07T01:59:57.066740",
+    "content_hash": "326ca1c12df72641172ec06d807bd6d5565d080ae3ca60c1f5e6bb3356ba8e58",
     "nodes_count": 215
   },
   "http://freexxx.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:24:44.580809",
-    "content_hash": "2dea692db2fe574a7cb9947eda8200af658b1f2275dd15e528a41aeade2cf937",
+    "last_fetched": "2025-07-07T02:01:17.247638",
+    "content_hash": "cfd59d582d8d8846afc0d2928031fee57ec2b67dfff214a58adcf888d22cc60e",
     "nodes_count": 215
   },
   "http://investor.fb.com.freexxx.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:24:38.038931",
-    "content_hash": "7bca94bfb8cbeadc304dee3e87f8754e2bc1d7ee462b3ce67a8192ebdb52b821",
+    "last_fetched": "2025-07-07T01:59:57.068204",
+    "content_hash": "72d70af6db30056267731f828681c0a1d6719e028be0b409efa51984c8128a4c",
     "nodes_count": 215
   },
   "http://investor.fb.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:37.969963",
-    "content_hash": "82ac64cf30151f991d35f81140cf442c94c8db797c959133473aff2d8ba02396",
+    "last_fetched": "2025-07-07T01:59:57.058220",
+    "content_hash": "4ed2cf143d50759d3f02a42e1ecd325d09f16bf294e433dd10683dac73af6acb",
     "nodes_count": 215
   },
   "http://quiz.vidio.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:24:43.933544",
-    "content_hash": "adf1130d4d31c9221115d63e4cd04a61851802fc4cfdda27077850fb57226249",
+    "last_fetched": "2025-07-07T02:00:02.495033",
+    "content_hash": "ee6d17a44ee8e6475ddd748e2291fd331b9d832830c1a4958e94a7fc0e6ec02d",
     "nodes_count": 201
   },
   "http://blog.webex.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:24:43.551475",
-    "content_hash": "7233d40085e1c0eded0463d7c01f96dfcdbd136c3e193592c40608a1f5cd6e34",
+    "last_fetched": "2025-07-07T02:00:02.309483",
+    "content_hash": "bb1aa5e306f6f5a4813e3e1f42049f042a5841620d64940e33a9b8630c08d94a",
     "nodes_count": 215
   },
   "http://b.isidomain.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.783489",
-    "content_hash": "8a53abeba7377b645a72d20933fbbb7a8a6ac51ff8b19c6f9a1e378c8f0a18bc",
+    "last_fetched": "2025-07-07T01:59:36.617940",
+    "content_hash": "71932ab9d95368205fb734060aaf69348a9d6537923c8f7bee5c2310e792f651",
     "nodes_count": 266410
   },
   "http://a.isidomain.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.782230",
-    "content_hash": "15dab588c5ba9acde0ff21effb0224a6eec14817363ae104ab34d8166bd6b743",
+    "last_fetched": "2025-07-07T01:59:36.615987",
+    "content_hash": "42cd0dec1a8728054574c7faa7fc0b44a846cd85ac6252295e183b23a4b2f85d",
     "nodes_count": 266410
   },
   "http://isidomain.web.id": {
-    "last_fetched": "2025-07-04T13:24:15.782625",
-    "content_hash": "f51a5c275e5e732be510c80242671ca9c36f875d487d74deca85524317c54e02",
+    "last_fetched": "2025-07-07T01:59:36.616609",
+    "content_hash": "9a69deba9702bd01582f3a0f0b1132930d41298dad113ff56406d19474d5f104",
     "nodes_count": 266410
   },
   "http://chat.sociomile.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:24:47.421926",
-    "content_hash": "acdf8977e6e9ecaa5d943683cee9a56392781a8cfa0ad20527d70396e10f045c",
+    "last_fetched": "2025-07-07T02:01:20.082522",
+    "content_hash": "77bc3b11a257e2709d8d5e2a3ec19f53072614c5abf33f19e71f103c585965a9",
     "nodes_count": 190
   },
   "http://api.midtrans.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:47.753667",
-    "content_hash": "837670ce2b1041b53896e447d335ca00640491ceb054908ca0c72010526168c5",
+    "last_fetched": "2025-07-07T02:03:06.789152",
+    "content_hash": "5090f74a2d5ed4ad2e480a0388e70875a0801e578b4b6180e0eec4d9adfe6333",
     "nodes_count": 215
   },
   "http://blog.webex.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:24:55.871914",
-    "content_hash": "83678c372e6588d1ad903807a1cbf9843a0a7c46b40e0d3e9b18f7ec89d4a508",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:04:46.096409",
+    "content_hash": "f6974c03dbad33633a2499b86b5b893a0d7a4fb7e6436b54bc93a8b0b390ee9f",
+    "nodes_count": 215
   },
   "http://quiz.int.vidio.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:24:48.375682",
-    "content_hash": "3e12cd57c2c19a36eed308be8ce26be9d93f84ac1e46225f894c49ff53d1b5cb",
+    "last_fetched": "2025-07-07T02:04:41.008297",
+    "content_hash": "9cdcff66f3cd353361f51e29429a2bf55010c8c567e7a8321b7540e8e53deded",
     "nodes_count": 215
   },
   "http://blog.webex.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:24:56.566021",
-    "content_hash": "0db95b4b208c7107a0034d66fe46635c1f9aaf1bd3cdb0fce47a4945dce5a56c",
+    "last_fetched": "2025-07-07T02:04:49.647395",
+    "content_hash": "7cbcfdd4000e38870293e71dac0c6598271d67ce6906b278fcdc37cf96649f5e",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:24:48.182772",
-    "content_hash": "71a44d5bff4d0f16f2deee4608464b7c4b00c7eef4e59cab4fec1c5ac6f4cc38",
+    "last_fetched": "2025-07-07T02:04:40.794491",
+    "content_hash": "effd1ebe669d0e2eac554bff6b6ad8eb0ff163b03222d18359dcdbe431c28258",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:56.011964",
-    "content_hash": "c28b3f94b0e82fbfd1fa52b41232a779e2dcee7666f7a685a5f7443a571d58ae",
+    "last_fetched": "2025-07-07T02:04:48.882631",
+    "content_hash": "7ef2023891c55bcd134c64b183b66b128df2300011ad33a0b2babbf2648d9441",
     "nodes_count": 215
   },
   "http://blog.webex.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:48.573581",
-    "content_hash": "72da8ac5a991dfb6eae241c01a6a1dbb6a76ecc1d52a5168acdc9cb02624fdb2",
+    "last_fetched": "2025-07-07T02:04:41.263419",
+    "content_hash": "ea390b31ab096b612e4de66442a0a20956d7a6c08c2e5cc6b5cb5687e67e5e30",
     "nodes_count": 215
   },
   "http://aink.workerz.site": {
-    "last_fetched": "2025-07-04T13:24:56.133149",
-    "content_hash": "cfa4d539fdee27d352ef5b960be792329316decfa3cf16f87e2fdcf834b86d5f",
+    "last_fetched": "2025-07-07T02:04:49.049088",
+    "content_hash": "4fd18b35061a851725a6fa00c97225070e90d2030a07cb6ff703d8976454b7d8",
     "nodes_count": 183
   },
   "http://api.midtrans.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:48.753504",
-    "content_hash": "9bbfeb79df4cadb5570819a71e3cc14ecf3042794ffc92482a5b6995b5d6482c",
+    "last_fetched": "2025-07-07T02:04:45.427250",
+    "content_hash": "445a4c705f870e707cee63b372fd317943a6575840955f63afcd41b4ad2fa2ee",
     "nodes_count": 215
   },
   "http://quiz.int.vidio.com.tunnel.triadz.web.id": {
-    "last_fetched": "2025-07-04T13:24:49.071684",
-    "content_hash": "602145d5ce0614c9a0cf90c5f262c5cdc39b8817c0a7a429421b031a51ba6fae",
+    "last_fetched": "2025-07-07T02:04:45.783804",
+    "content_hash": "bdbd581b78ad99d000bb430fa92a47b503af5e84be359af4e838d3a0e70635ee",
     "nodes_count": 190
   },
   "http://quiz.vidio.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:25:45.167585",
-    "content_hash": "f2de8eef13dcf3553a113632e2d3bac39d37ba6d36a337e1ab3bc7130a15f1cb",
+    "last_fetched": "2025-07-07T02:04:50.050868",
+    "content_hash": "89d0878577c5ab641607438c173adbe6c79e3e980f225078d26164790b18240d",
     "nodes_count": 189
   },
   "http://investor.fb.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:24:48.421910",
-    "content_hash": "051620d4c9d1f6a659e8bab6266dabc30ca219148f502e2d35ec469b5181d0b3",
+    "last_fetched": "2025-07-07T02:04:41.157471",
+    "content_hash": "b53744eb91591343d54f59fc7cbee2b9260061a527389adaeca2d773fa4592e2",
     "nodes_count": 215
   },
   "http://live.iflix.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:24:55.750273",
-    "content_hash": "4a2fb589a2fed37abfc0616125de8ac11a40bdbbc1ba3d678d17a99c42a0a3aa",
+    "last_fetched": "2025-07-07T02:04:45.969597",
+    "content_hash": "4895a5c443e447c36ac532960f667708901249daf4199c6bf4e8b76fba2666ff",
     "nodes_count": 215
   },
   "http://api.midtrans.com.freevpn.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:24:56.276662",
-    "content_hash": "8584fcb5b6a4fb14a9e43dfec4c7e334ee12b43df21ef105eaea3639b650f119",
+    "last_fetched": "2025-07-07T02:04:49.258601",
+    "content_hash": "80da32562482bfd94e433e559e96e63ef7f177f0778218316f27cbf39ef9102e",
     "nodes_count": 215
   },
   "http://api.midtrans.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:24:56.410017",
-    "content_hash": "813a19587bd204be5dc23ceb5b4d78eeb2871af29335c619befab55fdf32a2c0",
+    "last_fetched": "2025-07-07T02:04:49.477657",
+    "content_hash": "8776754e937a218c4a621cb74166c84c697482f286c1022dbffd86207d1258ca",
     "nodes_count": 215
   },
   "http://investors.spotify.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:26:31.141576",
-    "content_hash": "b9ed210580800767f71b9196fd595be671c314074bd7af5fd66c8c5c1df20018",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:04:50.378338",
+    "content_hash": "91cfdf71c1592248a534d0c41e923016a77ad1b429658389a2b6f5f519c346c2",
+    "nodes_count": 216
   },
   "http://freexxx.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:24:56.892434",
-    "content_hash": "64e902184bc85385b5570045d8c91ff653382a22c3ef94df932a0352d0d956c4",
+    "last_fetched": "2025-07-07T02:04:49.898699",
+    "content_hash": "d215f80bae9240cc29f3f749fabe4e4b6423553e76716412dd26584e8ce2620f",
     "nodes_count": 215
   },
   "http://live.iflix.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:26:32.955816",
-    "content_hash": "2559d06d2ab8d6a1d3dccfbf4add539a2ce76f1e3af6c1e8fa41cf4ee31183e3",
+    "last_fetched": "2025-07-07T02:04:50.852946",
+    "content_hash": "b57632747fe9a3fd1196b529b9397d2d87a9ad26068b210a70dadebe29865723",
     "nodes_count": 215
   },
   "http://proxy.yudhy.net": {
-    "last_fetched": "2025-07-04T13:26:34.180750",
-    "content_hash": "56a9c9506d0accf3a0a31806585d1b14120861cf543515e3c8a7ecac60716b91",
+    "last_fetched": "2025-07-07T02:06:24.436397",
+    "content_hash": "2b9f44358053654c0546dc6d55ba6ca79d0c802954f1140ae62012c0772f790c",
     "nodes_count": 190
   },
   "http://cache.netflix.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:29:18.290162",
-    "content_hash": "8de5a4e03a0a5483ccfe08df1ee531a08a6c25038d2a0c56e85df1232ede6e04",
+    "last_fetched": "2025-07-07T02:06:26.645106",
+    "content_hash": "ae322611bbe8848986ec52104f2e4a07e68819ba43dc39323259884ca6800669",
     "nodes_count": 215
   },
   "http://freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:18.045218",
-    "content_hash": "ee8220d5fcdca861e76ea436c423f2414093e8ad7cb474b6e390fa0fea01f86b",
+    "last_fetched": "2025-07-07T02:06:25.766529",
+    "content_hash": "a42fbc03f6820ee0fb835dec6e625ec8bda813fe05a043014bc364d227cd9aa9",
     "nodes_count": 215
   },
   "http://img.email1.vidio.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:29:17.710222",
-    "content_hash": "3c70275e5fbb8f4dd65aed77c63fff87696aab84461258db4f86a7042f414acd",
+    "last_fetched": "2025-07-07T02:06:25.093979",
+    "content_hash": "4616b251991c45cfbaac98912afbe13af0de411be76506ceb5f62675b754da92",
     "nodes_count": 201
   },
   "http://cache.netflix.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:26:31.121759",
-    "content_hash": "bd9915771a30d9ff1cd2910944c46edee0fa444696c24cd2fb63d124d6b8514d",
+    "last_fetched": "2025-07-07T02:04:50.202632",
+    "content_hash": "c2f2fc91fd6837ab1588fc03c6e392cada5921e1af86d7aacd1309a2efae2313",
     "nodes_count": 189
   },
   "http://zaintest.vuclip.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:26:33.628361",
-    "content_hash": "2ad052c7b6a33c5e894727d6e32ecb07775155724dc8bfb2055e3dccd165a552",
+    "last_fetched": "2025-07-07T02:04:51.541923",
+    "content_hash": "43758a1e81620b7eabecf4d791337ccd88dcf17246105c8292198e6930728d4a",
     "nodes_count": 201
   },
   "http://investor.fb.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:26:33.592888",
-    "content_hash": "c0b40f492a6cd843ab9b2754d75c5b79192b61b572acbd4656df8b2f62e5567d",
+    "last_fetched": "2025-07-07T02:04:51.151022",
+    "content_hash": "ebb299ea54e5ba184f23f051a4a1ab5ed694ace50ae75ce6dac2128cc3b4172a",
     "nodes_count": 215
   },
   "http://ava.game.naver.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:29:18.063020",
-    "content_hash": "eacd55f9bb225fde323f4700c8ad7316d60710a1ce6fbedcb87d1f545a863351",
+    "last_fetched": "2025-07-07T02:06:26.181357",
+    "content_hash": "619d337b4d679b266238e71122903890616e2e8c5cec2d07510d93a98aea2cab",
     "nodes_count": 201
   },
   "http://investor.fb.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:29:18.348269",
-    "content_hash": "857cf6999dd9d75517037dbd53fc6634c19d8b755f680d7b16af1718afae6a36",
+    "last_fetched": "2025-07-07T02:06:27.902171",
+    "content_hash": "258c1d5e2225e78f71c875b1109a76dc94e4c86fa6db45833088325ffd4c5e82",
     "nodes_count": 189
   },
   "http://account-gopay.midtrans.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:27:55.888520",
-    "content_hash": "1805801af75666d8b07f632be294b3552d24f91e116ed9a8ce73e5a25fc9360d",
+    "last_fetched": "2025-07-07T02:06:24.464290",
+    "content_hash": "9e8452a03489a8413fdeada964ff8bda89c583cec75401512e74481c968d846e",
     "nodes_count": 189
   },
   "http://support.zoom.us.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:18.333721",
-    "content_hash": "593f6a7fbe6106eb10594b3b5dc1d1d0859acbab5bae62a0d27736a060299ee7",
+    "last_fetched": "2025-07-07T02:06:27.548073",
+    "content_hash": "418f9900b92c4b3e8cb8cd13bd83cee2828821c08214de9822d52f388857cd65",
     "nodes_count": 215
   },
   "http://investors.spotify.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:17.493574",
-    "content_hash": "6abdb51365bc3431bf4763002b79312b4fa8df3593557405cffe048c3e311090",
+    "last_fetched": "2025-07-07T02:06:24.776281",
+    "content_hash": "a27a0baa37ce1f6318b0779d45009c95f07f906523305c7ff89e98935f78ab2e",
     "nodes_count": 216
   },
   "http://freexxx.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:26:33.693448",
-    "content_hash": "d20836eae84afa0f47556e4543723ccea89fd32abb720f22dce3a816fcdceed4",
+    "last_fetched": "2025-07-07T02:06:24.400623",
+    "content_hash": "2beb733ffaac34101de1a6d9cedc8b14fe4a8346b672e5383fde9dcc82ac048a",
     "nodes_count": 215
   },
   "http://cache.netflix.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:29:18.305585",
-    "content_hash": "71ab0dd340675f0f573c33ce27b22f4e692e276fb603da7f32443d4e05be2894",
+    "last_fetched": "2025-07-07T02:06:27.280234",
+    "content_hash": "89a1941757383b404d861514a681b92c04d52c900207077c655677c894b99046",
     "nodes_count": 215
   },
   "http://cache.netflix.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:18.553735",
-    "content_hash": "3a393ea0b8821d42d72e577b1ee9afcedc554ddfe42b83137e58ed6777010e54",
+    "last_fetched": "2025-07-07T02:06:28.359009",
+    "content_hash": "1fa53394eff9b9a8f89a3c41bcc92e35c828199afdf7d131d4d2469f359fd1e2",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:17.887701",
-    "content_hash": "02711f7af2f658ad11cdd0eb9b2ef9b21b90fb4aa8e60dc808185b9be1eb445f",
+    "last_fetched": "2025-07-07T02:06:25.372947",
+    "content_hash": "07fc00fa2e4611f40ff4f3e80ff1cf452155bf858442bf115cd04d0e8c3e94e6",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:26:32.467473",
-    "content_hash": "98d68286906c8660eceaa0bc59233b020f211da7fcbbc0032c8f2ccaf8c68b97",
+    "last_fetched": "2025-07-07T02:04:50.585515",
+    "content_hash": "046536641e7e2ca09ca670cead6b2ccf204f994a7cecdbf78ce1081a28c11087",
     "nodes_count": 215
   },
   "http://cache.netflix.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:29:18.841479",
-    "content_hash": "3222c4bddf6458d75c5f1b6687ae6af92fbadb7ff8fb16b93e1f85b840be012a",
+    "last_fetched": "2025-07-07T02:06:29.213887",
+    "content_hash": "e9a83ead923b7c305acecb4c5405140fa02fd606a8df0ec553eb0793f63f882c",
     "nodes_count": 215
   },
   "http://web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:32.014166",
-    "content_hash": "6efbf70316fe0be8dd770a9b924fef758e1325ad54f32cf28e9b4959960e8029",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:37.151977",
+    "content_hash": "a1996eece553e0e844b7b2ecb8582f5a1be7c7409e773adc4e46a632835c300a",
+    "nodes_count": 215
   },
   "http://blog.webex.com.freexxx.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:31.656323",
-    "content_hash": "d1aaef63e20881296d477eefe79dba15e334f7cfc896ac27b701ab7ac0066af8",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:35.376171",
+    "content_hash": "b182807cad91b0ab2b2ae34d14b408823169c2f5ccf1933de3351adf13a48cbc",
+    "nodes_count": 215
   },
   "http://ads.ruangguru.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:29:25.784528",
-    "content_hash": "5cac44df1af72c575fb7644041ebb06c38747cc8699632b4f69896aab61eccbd",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:34.327997",
+    "content_hash": "d8bb4e11e812e23c2be9e20433162264b912000750bfbd04b47a569edf63c2c1",
+    "nodes_count": 215
   },
   "http://ads.ruangguru.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:29:19.474587",
-    "content_hash": "1415e88f348530280733677611770aeb23910832c04b79de18ee17093c587cc1",
+    "last_fetched": "2025-07-07T02:06:30.018051",
+    "content_hash": "00092442d50e28aeb5f058dc2bcdcef2a94ff37eabdea05b196bd1ebf793ed0d",
     "nodes_count": 215
   },
   "http://quiz.int.vidio.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:29:24.860925",
-    "content_hash": "7860cf5aeff213d1060c478ddf64fcdcb862444bfa286e798a1256b0b5a40be3",
+    "last_fetched": "2025-07-07T02:06:33.781872",
+    "content_hash": "9193cee6b0ad8964f0d81157e57e94bd9d92ce7b59397e629e082e7d9832ea5d",
     "nodes_count": 201
   },
   "http://ads.ruangguru.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:29:23.695081",
-    "content_hash": "67a68ecc69b42297f30a1489fef1a61c08b8fc54e6d465e32339a0ed040129b7",
+    "last_fetched": "2025-07-07T02:06:33.228468",
+    "content_hash": "176332f678dcd2716f8a10cb59b6df9fd37fa1bd97d2251bc6929fbc0b3454e8",
     "nodes_count": 215
   },
   "http://api.midtrans.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:22.623050",
-    "content_hash": "cb77d38b4985c5a46be88b32287c91cbd93e6a39028100fe2a4917d427408153",
+    "last_fetched": "2025-07-07T02:06:32.730175",
+    "content_hash": "607e9875f4b88e5bd448cfe182662f20410ba1dbe1a46bc5bc21a8f804fe56df",
     "nodes_count": 215
   },
   "http://live.iflix.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:29:19.497487",
-    "content_hash": "e2844af935126d4c0d018fb9920c914f541812d9837ad2752db082d3a8953684",
+    "last_fetched": "2025-07-07T02:06:30.666127",
+    "content_hash": "fe6e6a61feec2adf064abe7f1705b3543251b83b12beadba636b246e7bb57651",
     "nodes_count": 201
   },
   "http://investor.fb.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:29:22.178714",
-    "content_hash": "063d3f848e41bdfdd17a227a4bc62168dfe029880b5cb1dfa28443e7e20d0747",
+    "last_fetched": "2025-07-07T02:06:32.324340",
+    "content_hash": "0f45cb9538f78d7666c91309df9c7818c57652f00e25bfff21766e883e537e6e",
     "nodes_count": 215
   },
   "http://freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:29:19.914240",
-    "content_hash": "466ce039d1f67bce3bd635ccbc6d90dd57b30f235e882824a134c5b1313aa63f",
+    "last_fetched": "2025-07-07T02:06:31.103566",
+    "content_hash": "17f4875f73ac3c5e75d394e12f90f683b3b7a0a10ef014a9035aa371117c0736",
     "nodes_count": 215
   },
   "http://investors.spotify.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:29:20.584626",
-    "content_hash": "929d3cc70596acbeff35257635c1c1ef52a1e829d61f94baac85169a92f7cccd",
+    "last_fetched": "2025-07-07T02:06:31.426027",
+    "content_hash": "07849f0c9dfe167290a32722ce5a523e69bc4ed8266ac4c1ab6e9e7e44927e18",
     "nodes_count": 216
   },
   "http://img.email3.vidio.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:31.654361",
-    "content_hash": "56ff8703fe7478e8ff71813f109cf50c47c7514f34b93f9767a6dc425f774be4",
+    "last_fetched": "2025-07-07T02:06:34.723014",
+    "content_hash": "0510aac53feba8111991ddb0c97e5cac38fb22308a6c756faf406b95b1bfa856",
     "nodes_count": 201
   },
   "http://io.ruangguru.com.freexxx.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:29:21.316742",
-    "content_hash": "6578905f5f5f5b6c6020d760ea8ed5bb3ae768936e3d1ca2731b025d86fc0a0b",
+    "last_fetched": "2025-07-07T02:06:31.803957",
+    "content_hash": "cf39d03bfc8fb3e40c127d458c30e66d2bbf8472c8a2bc55394b38c2c4e2f3d4",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:31.883018",
-    "content_hash": "9bcdd8c11175a49f38b8efe68c85a7603f94e7ed8e3b366e39aafb5f832003ba",
+    "last_fetched": "2025-07-07T02:06:36.319230",
+    "content_hash": "9be01503b0040e789207c87110fd3b608c225e289ca3e92918340e043e71e2a5",
     "nodes_count": 215
   },
   "http://ava.game.naver.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:33.408992",
-    "content_hash": "0b1ce93bc155a413925bafc3edbdd32428b630eddd452ca19aaa9cb6c735d758",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:39.316254",
+    "content_hash": "7714cd748f21c2f713ecdd871fe3b4c2c302638501b92aa0f48d231dd469d2e0",
+    "nodes_count": 211
   },
   "http://investor.fb.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:32.553979",
-    "content_hash": "64d4657a64083caeafa7e89b1628b8b8837d1d67f494b8bdca3efadf806463b9",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:38.193912",
+    "content_hash": "896f6e7ce42acd9e403461e91e951377be880c16035775eebc21271163dde556",
+    "nodes_count": 215
   },
   "http://freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:36.897116",
-    "content_hash": "cf962129c14f65bf81dbf056d7ab1f4db92b17e00db11249d19bf475a62063b8",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:06:43.155857",
+    "content_hash": "5b75ea51c9b42ef09687226137f367cb1718e7a152ffd290a862e1c538da6feb",
+    "nodes_count": 211
   },
   "http://api.midtrans.com.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:33:38.782978",
-    "content_hash": "27676e005b8eb523ec0782ea863c62766b6a584cc982b006ded33a75d2e3bec7",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T02:06:50.525078",
+    "content_hash": "b348019be6792bd5e29c0307b9bfbaf6570295c8bd9b2eec1cf6b430a47c26f0",
+    "nodes_count": 182
   },
   "http://quiz.int.vidio.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:33:31.657009",
-    "content_hash": "687d0135a18c86c13fe965dfe3880c542f9210118b879f6b683e1f91f9de4858",
+    "last_fetched": "2025-07-07T02:06:35.784690",
+    "content_hash": "2c88720eceb483e0dcc6518549d2ac0e60b27e2c1ab6314e2a3633f0ff3e5535",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.freevpn.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:33:36.220442",
-    "content_hash": "7f01c96ba653e3add774d142b91a0c90c773d5e67e7b62d62e77ddbf7a3c0f2b",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:41.732328",
+    "content_hash": "2ca200288ff6c0b92e5c258d4188911bfd44af336144b37f08e0f55ca032e94f",
+    "nodes_count": 211
   },
   "http://api.midtrans.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:38.385266",
-    "content_hash": "f7c135b5a1ed3ba55dc1f9906e83d03f6a5b5b91da0c0f03e9d0826980185d0c",
+    "last_fetched": "2025-07-07T02:06:47.631240",
+    "content_hash": "2eeadf43f39f52057d9f25eebd8d973bec5a33fe9b39b4d2650b09525f7efbbf",
     "nodes_count": 201
   },
   "http://freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:34.557593",
-    "content_hash": "9b89800f8098f9fe7353c0898a6e19777c5c7bcce71203c0174193e93b4459a6",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:40.349711",
+    "content_hash": "df166d575063d1298f9b352533934901d77e381c3217fd71dad405a90d285b99",
+    "nodes_count": 211
   },
   "http://zaintest.vuclip.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:35.831375",
-    "content_hash": "7e2e7eae8b0b540c4453b323933131df4660db231248dd4a8b6998fb23608c29",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:41.126990",
+    "content_hash": "020b94f4aa7611d0d91d66bc2a2d3bf2fc9db99f4609cbf425a8f03086817da1",
+    "nodes_count": 211
   },
   "http://freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:33:37.596798",
-    "content_hash": "86d87c0adbea0c5900979fbe61b06dcf7cffd54725f2887a6970a1355ca5ea79",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:44.144862",
+    "content_hash": "c9e2fec64468fd8d0ff340f96b6a0066088d5b65e03f6e87dc84360a764749a9",
+    "nodes_count": 211
   },
   "http://investors.spotify.com.aink.workerz.site": {
-    "last_fetched": "2025-07-04T13:33:32.882356",
-    "content_hash": "ba56c8cc98515a27a7066fb008c4d77fea76746f9147b52a0e797e861d735da8",
+    "last_fetched": "2025-07-07T02:06:38.767183",
+    "content_hash": "c682e27b1de5f04cfea82ef59d7b7135dba37109273c9fadcb8a687630e480d3",
     "nodes_count": 183
   },
   "http://live.iflix.com.freevpn.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:33:38.429904",
-    "content_hash": "fd180af7ea741df5736f139165bab724f2b40f2eeca7236bc59463bc19fe0169",
+    "last_fetched": "2025-07-07T02:06:49.261313",
+    "content_hash": "57065a45af96fd62dec8c72fb714a723e6fa7a468e5240f5e08720ceed1765d5",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:35.186432",
-    "content_hash": "a32f9e84ce5197bb09c73816dc603d552960a77084fac7745a4a9177c48b06b1",
-    "nodes_count": 201
+    "last_fetched": "2025-07-07T02:06:40.732954",
+    "content_hash": "b222186f21f99b6768e56150035e66c0cc8cc34aa22ea57c348da3cc4cdb50db",
+    "nodes_count": 199
   },
   "http://serim.ari-andika2.site": {
-    "last_fetched": "2025-07-04T13:33:37.990811",
-    "content_hash": "6bee3a122baf0e99be3b8c11d3d5e12bf99a270dedc494cec03a7d43c3b28169",
+    "last_fetched": "2025-07-07T02:06:45.606632",
+    "content_hash": "28aff2cc3d92d26bbd8741be1ce0fe879dc74f241030652d77efed3b4982a48f",
     "nodes_count": 175
   },
   "http://io.ruangguru.com.web.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:32.173324",
-    "content_hash": "d08582eb2c122308081f78bbf76cb6b521fd08729910f5a2fc0ebc66756c7a4c",
+    "last_fetched": "2025-07-07T02:06:37.710936",
+    "content_hash": "7bb855888504e6b58c223236b3527c2eb3bf2a624bebd3aee92305b49212b875",
     "nodes_count": 215
   },
   "http://live.iflix.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:36.488783",
-    "content_hash": "5f0f1a480b791c112505b6d9dea361e97628ddd8b323a6314e3bcb084e0dba48",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:42.420531",
+    "content_hash": "4adb67d56a5e3593b169a7387797676895e63854aaa618590d09c02ebfaebe4b",
+    "nodes_count": 211
   },
   "http://ava.game.naver.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:33.839259",
-    "content_hash": "b0b86700e55b58a1d0bfc40a1399189104c8012f2a9c0563fef033a4067e6d06",
-    "nodes_count": 215
+    "last_fetched": "2025-07-07T02:06:39.786247",
+    "content_hash": "7bc9e6987c68157bbecbc43439728be1db04f83ccccf031ffe51190576c3acdd",
+    "nodes_count": 211
   },
   "http://investors.spotify.com.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:33:47.438144",
-    "content_hash": "c7b6de692651908ce338ce6e11db5186c626e6de13e556e0adce7b5fc0dcc0cb",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T02:07:34.201544",
+    "content_hash": "19c29a9c26f35ad2403e49709878071e88e9e7f08ab040ea4b10d300f7240b67",
+    "nodes_count": 183
   },
   "http://io.ruangguru.com.freexxx.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:47.010712",
-    "content_hash": "7c0eec685758cbc23b6ccdfa34cadb8b8b768834aa56dc9b191289121c917767",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:33.807125",
+    "content_hash": "73d8296d25deba24c4bd1921ac1a446b685ad88f0f9c2979da6dfa82dc619696",
+    "nodes_count": 215
   },
   "http://live.iflix.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:47.669136",
-    "content_hash": "9ef604c8b2fbb78a6ca4747b507f86e77af589c3c3a8d81cc778aa4b925367f0",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:34.543546",
+    "content_hash": "fbfda55472018ca91afe331011517c73863b7ac156997dadc056e138b4795d68",
+    "nodes_count": 215
   },
   "http://io.ruangguru.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:46.234323",
-    "content_hash": "d9eb2517d80dc432b14fc244a787fb900353d6d7579a39591aa292fbc4fca90e",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:31.398502",
+    "content_hash": "f84f69a519bffa2f2cd99be73699a7f1250e4ab82d3f13827818e3ef065e536d",
+    "nodes_count": 215
   },
   "http://cache.netflix.com.cf.novantunnel.life": {
-    "last_fetched": "2025-07-04T13:33:50.694728",
-    "content_hash": "c2286039eec8f77c85c39445fad5be0299c7b9ef4a65429cc8ba827b00059711",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T02:07:38.086866",
+    "content_hash": "73aaa52ed54b9037b5996d015ce594176e574b29a32669aa4d7565b7e0a046cc",
+    "nodes_count": 182
   },
   "http://api.midtrans.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:48.566313",
-    "content_hash": "6dc24b44e0764b3b93e52a885c2fd4bad486ccb75fb5965932aedcc4dcb6f538",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:36.563782",
+    "content_hash": "d9362b6d05921d12b5ebcb760e97a901bcbb580879976e26dcf05d59587cd4d9",
+    "nodes_count": 215
   },
   "http://quiz.int.vidio.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:39.745995",
-    "content_hash": "3a38fe71c6963fe3a0a262057b77fa0a9b6f8f56d35aa60dd3bb081c423cc5d3",
+    "last_fetched": "2025-07-07T02:06:51.766416",
+    "content_hash": "fa87a90d3881331c3bdfe64c78b6f0f8d8503821923152d336c7aabf79319fd8",
     "nodes_count": 215
   },
   "http://creativeservices.netflix.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:40.215900",
-    "content_hash": "47cde95d1be7755f3960debbdaee3fc711fef92a2e916d12a8e631a5ff529ed7",
+    "last_fetched": "2025-07-07T02:06:54.855310",
+    "content_hash": "bdc2ea935a116c497072805b36071c758046f60419082ebb06ecd762b763aa74",
     "nodes_count": 201
   },
   "http://mindir.ari-andika2.site": {
-    "last_fetched": "2025-07-04T13:33:46.617301",
-    "content_hash": "2edd460cf05f9ae5e3caa51d06325fdc5479846b8b6113c7770edff2190bdc88",
+    "last_fetched": "2025-07-07T02:07:33.462776",
+    "content_hash": "df5bc38d28a9be1bc748e9859f6a5e861ed45a2ed4f23acd8a6ec4b9ada153be",
     "nodes_count": 175
   },
   "http://investors.spotify.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:40.772491",
-    "content_hash": "7b0bf00268df3366b6fd114283ab6efdc55ce36b818ec86faa756a8b866d16d8",
+    "last_fetched": "2025-07-07T02:07:25.848953",
+    "content_hash": "0d51831e874de45c0020e313ab37b49bd486db1bb8351695728596ad0a18f678",
     "nodes_count": 216
   },
   "http://support.zoom.us.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:45.222873",
-    "content_hash": "d68612729e39b3b1415c4192b34526a5860b6ac485159af26987a02e768657b6",
+    "last_fetched": "2025-07-07T02:07:29.973287",
+    "content_hash": "a05b45badb4dbaf2416f6101e1f45d9c68e58679c6e88ffae3d7be4e3a7d32ff",
     "nodes_count": 201
   },
   "http://api.midtrans.com.freexxx.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:43.448513",
-    "content_hash": "4e8b24e937894c944a8efff0b165dbdb475e74f802d61892e361c32dbe34b0b1",
+    "last_fetched": "2025-07-07T02:07:28.213083",
+    "content_hash": "ac3afea943a8c9841c0dfabe1bd850fdecc9ce666c10477c4fb4ae904def4e04",
     "nodes_count": 215
   },
   "http://mssdk24-normal-useast2a.tiktokv.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:48.208469",
-    "content_hash": "b3aae077914772cc83a932b28a7f7dedab573614e274faed33d9ee82239c1296",
+    "last_fetched": "2025-07-07T02:07:35.934313",
+    "content_hash": "e493fff990e78c710b15d9fb8555fdc16c97bb6990addb1dc1d70aef30e4e15e",
     "nodes_count": 201
   },
   "http://investor.fb.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:41.643476",
-    "content_hash": "5b2f0018a7733b80a14868fb4e791633adc9c6777e0d2deba4281c816cd9d4cc",
+    "last_fetched": "2025-07-07T02:07:27.340208",
+    "content_hash": "671e0d2d02d1f3e788ac561dc6a73b58012e628d840a70ceab3226b16a4319c5",
     "nodes_count": 215
   },
   "http://cache.netflix.com.freevpn.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:33:42.453619",
-    "content_hash": "5879fd521b7d831b8472ae7449481e06c2ac520f529bbf0d13dc2a46b35426bc",
+    "last_fetched": "2025-07-07T02:07:27.770915",
+    "content_hash": "90361d59f2863542a87a947ed1c878365dab96ca98bdfa179d63969307b62a21",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:44.726962",
-    "content_hash": "cf14ac1136f12dd98717faca15fdc1efdfb934420aa0cb5e80ce2816c163c6f7",
+    "last_fetched": "2025-07-07T02:07:29.573711",
+    "content_hash": "d40186207127cea26a1b1f5593505accc0818007d4372724080575ea3bc97dbb",
     "nodes_count": 215
   },
   "http://investor.fb.com.freexxx.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:47.881972",
-    "content_hash": "89c155b8cb42bdb763361accce55d57706f912f3d59b26c1b1b4276183b03586",
+    "last_fetched": "2025-07-07T02:07:34.920871",
+    "content_hash": "93b3b3e2eb260218fb014d27e21880a14664e70fdee4e641805542e17d75c1e0",
     "nodes_count": 215
   },
   "http://live.iflix.com.freevpn.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:42.796792",
-    "content_hash": "61d17b9fd43cc305810f6d9023436e164b296647cdf544f83d9bf02c85619171",
+    "last_fetched": "2025-07-07T02:07:27.781139",
+    "content_hash": "e9ea4c68577e6d970b617bd06c557f9a28cecc027e425df39af5609049d9795e",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.aink.workerz.site": {
-    "last_fetched": "2025-07-04T13:33:48.930835",
-    "content_hash": "48f8544c6a49bee1ce6725270340055eba2c23ad6433bb4a88bc46e4e65b862f",
+    "last_fetched": "2025-07-07T02:07:37.055035",
+    "content_hash": "d73724c880ffae10d9c0db14f2b75f7db4ac38f5ae43340b402fac007ed0a4cf",
     "nodes_count": 183
   },
   "http://ads.ruangguru.com.freexxx.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:33:48.057276",
-    "content_hash": "13bce1d39692b91bacc061c7dae69c28fed8683b04bcad2a96285b79e4b5ee7a",
+    "last_fetched": "2025-07-07T02:07:35.659201",
+    "content_hash": "8d1d982f551946f68de1d535685493bf4256e6b6561353f906845e19ca4ee06d",
     "nodes_count": 215
   },
   "http://cache.netflix.com.freexxx.xhamster.biz.id": {
-    "last_fetched": "2025-07-04T13:33:51.745283",
-    "content_hash": "e3f76b14c11f48a037828441bfcca20113f7a8af537e1724dbd55d5410e1e59b",
+    "last_fetched": "2025-07-07T02:07:38.724690",
+    "content_hash": "3c9393eadbcddc8bfb7822be602ce182c7de96f7c2f87644b9036377b638fe77",
     "nodes_count": 215
   },
   "http://app.gopay.co.id.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:33:44.104485",
-    "content_hash": "c223bc160462bc0acdff3418ce90ed4463dc609c79ef0041bdc9da09f8e3573f",
+    "last_fetched": "2025-07-07T02:07:28.904137",
+    "content_hash": "c42c59911a5a6aa7887ddd5998fd7188c8ff4cc6647b8fb844d16a38897e7cc9",
     "nodes_count": 189
   },
   "http://io.ruangguru.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:45.706410",
-    "content_hash": "f33a006645c48b296fe608ab581ff3b1855648a5df1b5311c64e3efbb377ed04",
+    "last_fetched": "2025-07-07T02:07:30.842616",
+    "content_hash": "42f3efa7d35d9ec6c8089bc98bbefeee63a81ca26a128486dd9e2774d314476f",
     "nodes_count": 215
   },
   "http://joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:49.772822",
-    "content_hash": "75afc6c2f13ffbc330c1fa28d4294926c564770b38ae7ad19473cae26d80cdaa",
+    "last_fetched": "2025-07-07T02:07:37.727912",
+    "content_hash": "6030b3521a31b79231e7653334a84e612f1094bf717b498673ff8ac08d3add49",
     "nodes_count": 201
   },
   "http://freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:48.523079",
-    "content_hash": "33a87ddd414c2c19106f536e1406533d1b9842d07fd0ab57c8e6105e1fad6ace",
+    "last_fetched": "2025-07-07T02:07:36.117877",
+    "content_hash": "9fb56af67e4c1118f0c36013691d058b5058d579429005f88af4eec0aabe39cf",
     "nodes_count": 215
   },
   "http://ads.ruangguru.com.freexxx.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:53.330742",
-    "content_hash": "93d753b3d9898848e426c83680b0080a26eee319ac0ad94934f6a6760109428f",
+    "last_fetched": "2025-07-07T02:07:39.871252",
+    "content_hash": "e1a5a0f1b48c8dfb11539c32208bf0092a23e24f292fa7d30e2eb346a8864ed3",
     "nodes_count": 215
   },
   "http://io.ruangguru.com.web.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:55.034474",
-    "content_hash": "e7597a348983b6345b774574507d8360026fb42508d978ee789b65e4fa6531db",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:40.629869",
+    "content_hash": "ee889e3e535cb9e1b9be559a8b9bd5bd3259a6608c518e5e0c100e14c6ad6c5b",
+    "nodes_count": 215
   },
   "http://investors.spotify.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:49.196695",
-    "content_hash": "971aa9bdcbd784e25e6ccb745a3b05d66f958dadf00f27476fda6b5c4b896cd6",
+    "last_fetched": "2025-07-07T02:07:37.255591",
+    "content_hash": "4824a631539c08db312049ebf931cdabd74acc7c28b3219ec708e3a61b0f809f",
     "nodes_count": 216
   },
   "http://zaintest.vuclip.com.freevpn.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:33:52.649716",
-    "content_hash": "ecfad39d0ba9e3a54f93ebd633b513f9181f8615ecad683693707dfdb365b178",
+    "last_fetched": "2025-07-07T02:07:39.365979",
+    "content_hash": "e31a4f7f7b535fdbf3e8bf3eb72aa2446a248e87fa6bc0999c1e99c12e4d853b",
     "nodes_count": 215
   },
   "http://cache.netflix.com.freevpn.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:33:55.524521",
-    "content_hash": "da0728267d3278fa15c50425a2ea946f78f00a4808de12eb4709af2d0079b106",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:41.204017",
+    "content_hash": "f60e829c0ba8452e093319181678c6fef6bccc082fd321bb79f5c854c15b2590",
+    "nodes_count": 215
   },
   "http://cache.netflix.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:01.789395",
-    "content_hash": "90024c833bcecc62f0a22ead324d75549a783726cdc522cfd6f73e6a87dd953f",
+    "last_fetched": "2025-07-07T02:07:43.943387",
+    "content_hash": "cd127c2ea1163ffaa10a5139f464e06cadb97cca052f67e87660e62d20f71a7d",
     "nodes_count": 163
   },
   "http://api.midtrans.com.freexxx.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:34:01.354574",
-    "content_hash": "11b13c644bc163d750f4f85158c07299f74403da31982268cdae3bc994524fe9",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:07:43.820667",
+    "content_hash": "dfe9c4afd286e5326d722b6703aea4adc0c7addd8234c9b9456331079de93d5c",
+    "nodes_count": 215
   },
   "http://support.zoom.us.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:33:53.687742",
-    "content_hash": "8e5982c57a4fb057fc528bc1de5c7bc78508ac08990ce59310293f311d1ecdb1",
+    "last_fetched": "2025-07-07T02:07:40.192951",
+    "content_hash": "0ffeea285f1cdfe9f5e91b51835caf1740b2673559a689c5ff8ffb7b14912ffb",
     "nodes_count": 215
   },
   "http://quiz.int.vidio.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:02.376602",
-    "content_hash": "2c664b629c23370d2132726966725a595421b4498d078d54e0aa7b655222f4e8",
+    "last_fetched": "2025-07-07T02:07:44.205159",
+    "content_hash": "5c4c5760481a27359d1b424b16d86040c166b0ae6b8a8a064aba96c05432107b",
     "nodes_count": 163
   },
   "http://zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:03.028907",
-    "content_hash": "815b9655ab2080543d1ce60eb3cd5dedee9faaa04ae46d202a6fa46b34114f76",
+    "last_fetched": "2025-07-07T02:07:44.646578",
+    "content_hash": "05156da5b98f206c0dc96ff4b61b95a0f0951d64a6c89b5b52fe5d8350585404",
     "nodes_count": 163
   },
   "http://cache.netflix.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:33:54.318830",
-    "content_hash": "1e847bac64705c441705e40d51f6626f48019f36b2043d7f45dd0ac517ff217d",
+    "last_fetched": "2025-07-07T02:07:40.423939",
+    "content_hash": "9927d69d795dbd5e0aaadbc10cb9c8bbd674109a2f47f4d6b42b05d9d5271ea8",
     "nodes_count": 215
   },
   "http://support.zoom.us.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:03.466785",
-    "content_hash": "c5205011235d1612a58f64b97c3e6e34355309ae6b7a5b34c12bf5abec8f2cc6",
+    "last_fetched": "2025-07-07T02:07:45.106157",
+    "content_hash": "67009a822e002dc6698a2c8d2120188d56d9c69720a80d669aa50cf43d08d190",
     "nodes_count": 167
   },
   "http://support.zoom.us.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:03.789015",
-    "content_hash": "5461f7380e0b5acff563d0c19e5033827a706ddc8e441400261a1558f2a2267f",
+    "last_fetched": "2025-07-07T02:07:45.527087",
+    "content_hash": "8362c35a1106bdd4effd0996818e5da52e0c27902d0270b7a8f37f7465c0bdc6",
     "nodes_count": 163
   },
   "http://live.iflix.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:03.952060",
-    "content_hash": "182a86e0e997a5612a697eb5c4355ece623ad2363fd03253b3c9234079543a90",
+    "last_fetched": "2025-07-07T02:07:47.467771",
+    "content_hash": "140fb9facc9c3d260e54dd771083ff04a20cdc0989e23009fe5dfb85d0c036bb",
     "nodes_count": 163
   },
   "http://investors.spotify.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:03.863879",
-    "content_hash": "bd5e5dc5ba389bb53b218a54277c31188ec35156ff0dfc523ddf9cf25c6490e1",
+    "last_fetched": "2025-07-07T02:07:46.640346",
+    "content_hash": "ec2f3b0ffe8aaecd0f4d0272b8df5580531f850d86e014e19ac6e9a4549441eb",
     "nodes_count": 163
   },
   "http://zaintest.vuclip.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:33:48.609417",
-    "content_hash": "01284b8917b49d710793238f71012a5de0b7c6173a49d34fcd77dde0b5e5d727",
+    "last_fetched": "2025-07-07T02:07:36.729739",
+    "content_hash": "12db6700f5fc9257d43e9b1731f4570b64f2f805f83ad8d3dd17613bc72cea9d",
     "nodes_count": 189
   },
   "http://cache.netflix.com.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:03.904484",
-    "content_hash": "5a8e0c52ffca369a9456b1c316236f5d5a74e82c2be7f6c8fb82d319b5d89ffa",
+    "last_fetched": "2025-07-07T02:07:47.085619",
+    "content_hash": "eaa05da36d9f168d378504607cec7e5ee756af587823d0156ba51abdcc438148",
     "nodes_count": 167
   },
   "http://df.game.naver.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:57.460356",
-    "content_hash": "8017bd3888a9fcf4f81f6875a75418ad677468941136abf527cee59d6aad2339",
+    "last_fetched": "2025-07-07T02:07:42.633065",
+    "content_hash": "63a86b953268967bfc98f208978b777c0d309396a1b8e1ec52959d648752817c",
     "nodes_count": 201
   },
   "http://cache.netflix.com.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:56.137780",
-    "content_hash": "aaa9fa1d042960b491f8a186f3c4be2a50326f214fb8bd3941c44ef0b6bc529b",
+    "last_fetched": "2025-07-07T02:07:41.965789",
+    "content_hash": "a0f0d4313620cf5b0d659d60ed81df3a729c2170176c4ba4c2d7aab4925d69fc",
     "nodes_count": 201
   },
   "http://but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:33:58.125566",
-    "content_hash": "72a53cd39c6135276a76c58317c459497e3553a53d250494fd43913a8349335e",
+    "last_fetched": "2025-07-07T02:07:42.850287",
+    "content_hash": "2a52d0af541e0e4910567ded87bafd7c2dd55e2b8c908c3140e2ac52458d138d",
     "nodes_count": 189
   },
   "http://freevpn.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:33:59.770930",
-    "content_hash": "ec2eb3bc7f0b41789e6b4deb0fcb5aa639346b0cf3dfc6dbb0f5bd414920d5a2",
+    "last_fetched": "2025-07-07T02:07:43.227572",
+    "content_hash": "caced7b1ea326421b5933ec8c7fe329ccd73114e78325e3c10232b7053bc2285",
     "nodes_count": 215
   },
   "http://beta.zoom.us.joss.checker-ip.web.id": {
-    "last_fetched": "2025-07-04T13:33:55.483770",
-    "content_hash": "7bf5429bee2eaaf77141403ea9155ad43bd05e3761be5022677a9b78975d6c65",
+    "last_fetched": "2025-07-07T02:07:40.798610",
+    "content_hash": "4a8e0599dca6ac78139310b4a7bf4324bb1c8124dd248a9f175fa317e221f9e0",
     "nodes_count": 201
   },
   "http://app.midtrans.com.but.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:33:59.032922",
-    "content_hash": "4411807879beca75e13b595e9d2910def2b25ff5cf24f155f4aa54b2b8187d65",
+    "last_fetched": "2025-07-07T02:07:43.047816",
+    "content_hash": "e83cf7a4ba1bf7358f3a69d8be85750b6f089c8437c02a92526fb8344cd6367e",
     "nodes_count": 189
   },
   "http://investors.spotify.com.freexxx.turah.my.id": {
-    "last_fetched": "2025-07-04T13:34:00.899508",
-    "content_hash": "677895c470ba9fb38a6960b0c9b814804c6214e808372d611b6c6af5faba4ba7",
+    "last_fetched": "2025-07-07T02:07:43.645262",
+    "content_hash": "c3066b15df9f47485af78c9ee8baefd30b7f0a46674c63a252e07aaf62f05876",
     "nodes_count": 216
   },
   "http://ava.game.naver.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:33:55.567528",
-    "content_hash": "7cd96487ce3321fdf44f5b4d10183b52d42121152188dfbdf228d6de8806e882",
+    "last_fetched": "2025-07-07T02:07:41.709679",
+    "content_hash": "42d5f72ab7f7e15b38d1fe4bf85cab5fce47eaa55372bb63215cb77b4bd5b91a",
     "nodes_count": 215
   },
   "http://freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:34:00.326759",
-    "content_hash": "f5e4edbf44d718a315adcc1511b997b06299b8681b6227e067750c472e74f183",
+    "last_fetched": "2025-07-07T02:07:43.423850",
+    "content_hash": "40d84a98acdacb2878d0e16614896966564676b8186f858cdb7970799569fd85",
     "nodes_count": 215
   },
   "http://io.ruangguru.com.freevpn.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:33:56.719453",
-    "content_hash": "0fc50e23dea1126993e4985f3299296d309a53322ede3c5f569b718dc729f735",
+    "last_fetched": "2025-07-07T02:07:42.302991",
+    "content_hash": "7803c5a2ae18842fd4940278f942f4d9f91e4445d821167fe6760bfc5b8d5f8a",
     "nodes_count": 215
   },
   "http://live.iflix.com.freevpn.turah.my.id": {
-    "last_fetched": "2025-07-04T13:33:55.516059",
-    "content_hash": "67509e8e476b961d93ade618053b9c56752ea6e20bdc25847873888cac9a1551",
+    "last_fetched": "2025-07-07T02:07:41.001263",
+    "content_hash": "ea1585c97c6e909ac022c57e2dce294f864f0ca9ebf65873e4582e6180a5ee83",
     "nodes_count": 215
   },
   "http://ava.game.naver.com.freevpn.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:33:55.539469",
-    "content_hash": "9c0df7e1af1d987d97ddf0b303c1b0330cc1579267187462b9c64a64a3a33531",
+    "last_fetched": "2025-07-07T02:07:41.460597",
+    "content_hash": "dddd3dd8d999e4ac14c8621ad4885f56294e832d2a0f56f83b396124c02feddc",
     "nodes_count": 215
   },
   "http://zaintest.vuclip.com.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:05.066190",
-    "content_hash": "170e9bf6fc18d909136dd299a07503ebbc5c3c8fde106b60e8344b1778c8cc73",
+    "last_fetched": "2025-07-07T02:07:48.697583",
+    "content_hash": "6e4d98bdf939e13996145ac599c8f47c2f4b5e674385159b0adb4b4c55c7aeec",
     "nodes_count": 167
   },
   "http://investors.spotify.com.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:04.780017",
-    "content_hash": "e6da01f7c15cfb759b3bcbffcdbc6e3e873f83c902417a206fa1581a4cfe5dc7",
+    "last_fetched": "2025-07-07T02:07:47.755430",
+    "content_hash": "3b5156576efc463bc8a6a3d377b81f6c7ac3a7cb1ea527104d93f0c529e1f89a",
     "nodes_count": 167
   },
   "http://blog.webex.com.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:04.812662",
-    "content_hash": "13dbd3de649b7cff95a064edc88890d3b400aa8ec1f0514627cd2815a6e5c6c7",
+    "last_fetched": "2025-07-07T02:07:48.131985",
+    "content_hash": "b872f83cd33a33029b9d3f92dddbc492d9a8694b4a20cc94b8629b58cca95572",
     "nodes_count": 167
   },
   "http://svr.lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:05.586473",
-    "content_hash": "f6ae304e9d7f03d6411f383c5cf811be4f8bab578b97602453243bbccd79e7ec",
+    "last_fetched": "2025-07-07T02:07:49.336105",
+    "content_hash": "4b7d258c45cc480eb8cf9513501b826bc462424a8e730f7c1cc1ddc0b0b6c728",
     "nodes_count": 167
   },
   "http://v2ray-ym.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:08.330469",
+    "last_fetched": "2025-07-07T02:07:53.407135",
     "content_hash": "ce5e048d3ff85c9c15411607cf91d885972a965f6ee76c75531a2fad25d778ef",
     "nodes_count": 192
   },
   "http://mf.wlcf.lol": {
-    "last_fetched": "2025-07-04T13:34:07.734894",
+    "last_fetched": "2025-07-07T02:07:51.903049",
     "content_hash": "5950a4727e87dad18c07dd46c2ed009021518416cc8d69e9a70d2f68ef22393b",
     "nodes_count": 204
   },
   "http://lufeng.pw": {
-    "last_fetched": "2025-07-04T13:34:06.388661",
-    "content_hash": "aa7ada25f9e912183138bc634023abcd09e6a81f1903c34ebecaa53670234c2a",
+    "last_fetched": "2025-07-07T02:07:50.464006",
+    "content_hash": "1f86aabf3d0643183d24815edd0d3f408b13ace4fbc123a97c5d903ecc7a4a76",
     "nodes_count": 167
   },
   "http://edu.ruangguru.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:12.689372",
-    "content_hash": "762c5973026c2046839173827d7a22664a786560b78e8e43621b474c634e8ff0",
+    "last_fetched": "2025-07-07T02:07:57.973909",
+    "content_hash": "260d0018c316d99bb17849737003846f6ebf5b6d963741e0da31010bad4e0dc5",
     "nodes_count": 141
   },
   "http://blog.webex.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:13.107994",
-    "content_hash": "f9ea59f7b83f66c99d6c830cb06d2950a76c06353c0f1d627634ce9cb4a6181e",
+    "last_fetched": "2025-07-07T02:07:58.449103",
+    "content_hash": "c9d7da829c6560722dd97bc6054dc3c99878e9690df2f5d7e71876d2efc33727",
     "nodes_count": 141
   },
   "http://zaintest.vuclip.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:13.357058",
-    "content_hash": "22e89ea7465189d0a1a0d2fdb612bc710b41b9e8fa66740cc1ff6fdf3a6c0fd5",
+    "last_fetched": "2025-07-07T02:07:59.129886",
+    "content_hash": "7484667cdb307be565c2ee0db9803087e5ebd653a60970038f3991c3fa880c1e",
     "nodes_count": 141
   },
   "http://quiz.int.vidio.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:12.893416",
-    "content_hash": "63dbf2cead3088a88470b10932df22dce889e926da37e4ef0846055c6f9eecbd",
+    "last_fetched": "2025-07-07T02:07:58.205544",
+    "content_hash": "8a09a5667065b8ac8789a358024462141e2fd6d7d2b4cf43cae2a9c99e5e2fb1",
     "nodes_count": 141
   },
   "http://yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:13.117907",
-    "content_hash": "b23c43ea3c7ba2cdb12641df7b40f0359b3fcfbd623b08fabcd908831618cb4f",
+    "last_fetched": "2025-07-07T02:07:58.931616",
+    "content_hash": "e8910c44aefe6819cae3642fffa4c453e697d14f9b1d932f619fa26b996dae0b",
     "nodes_count": 141
   },
   "http://zaintest.vuclip.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:05.963571",
-    "content_hash": "73516988b556301970f39170a009cdf89b61503972b70f8240e53d38eb5965a6",
+    "last_fetched": "2025-07-07T02:07:49.937360",
+    "content_hash": "f5ac75772ee4cc449fec1799dfcdf3a3b4c1ea5fb9c7f8935bd306e164b26e1c",
     "nodes_count": 163
   },
   "http://ava.game.naver.com.zee.upigg.my.id": {
-    "last_fetched": "2025-07-04T13:34:06.794983",
-    "content_hash": "59e1313f5cdccb1ab39d3200bab5d79f3bce699164b563c1e90041338be47117",
+    "last_fetched": "2025-07-07T02:07:50.935976",
+    "content_hash": "0064f9925d8db84968f6dd9ed52b81648137a1e7710140508ac6c358e4a72ed3",
     "nodes_count": 163
   },
   "http://a5.dyxli21.ddns-ip.net": {
-    "last_fetched": "2025-07-04T13:34:07.254915",
-    "content_hash": "f34df0e727096364b3c791a01399c6a60d44db99dfdc5eb38c05a983787a9eaf",
-    "nodes_count": 886
+    "last_fetched": "2025-07-07T02:07:51.395089",
+    "content_hash": "0639764cd02d77028c1a474d9da1afe98c8f91362197f60d8028d7a4572237a1",
+    "nodes_count": 2087
   },
   "http://ava.game.naver.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:13.520257",
-    "content_hash": "95d1b55776e278dc9b77610fd932f8da33622fcb123cd622b5aa99ab92a6de3d",
+    "last_fetched": "2025-07-07T02:07:59.418327",
+    "content_hash": "7769a8196125660de354e49c82b5fa19f12025cdf8de4ef2387ba2b7ae5c6198",
     "nodes_count": 141
   },
   "http://investors.spotify.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:09.917793",
-    "content_hash": "528e5d728a26dc6112df0b438bfc76619e0edfea41f5bad09ccbde4c1cc1deaf",
-    "nodes_count": 6
+    "last_fetched": "2025-07-07T02:07:54.338572",
+    "content_hash": "f859167656313f1077a6f85935f221558a21ebbe5da8138489262d79370b8299",
+    "nodes_count": 103
   },
   "http://vpn.y7.hk": {
-    "last_fetched": "2025-07-04T13:34:08.071433",
-    "content_hash": "4103e8bea486862e04eccc28981406487cc12c34f37e829a1a1df91e05e2d331",
+    "last_fetched": "2025-07-07T02:07:52.380588",
+    "content_hash": "98c949ff41f1163466961043e6d7ce3bc64908a7d4f8d1316d1ed0a09300f82f",
     "nodes_count": 112
   },
   "http://cache.netflix.com.yaya.web.id": {
-    "last_fetched": "2025-07-04T13:34:13.925461",
-    "content_hash": "8c906d82bf116f62be8fb06183deb65522718c1e63961bd4c754e84daec2924d",
+    "last_fetched": "2025-07-07T02:07:59.753383",
+    "content_hash": "96e278705ae99e941a4b31892a2d78d2f65635dcbb6dd243d11ab6d06aaca71b",
     "nodes_count": 141
   },
   "http://tes.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.076032",
-    "content_hash": "8ec06824cc9ad8ab45d400728a3fe2fca7ef14033b7c4a5f10b801254475d9c2",
+    "last_fetched": "2025-07-07T02:08:00.966992",
+    "content_hash": "37398c0cfb716991398697293c4113aa24bdde27f110d033619620cf2e6edb99",
     "nodes_count": 87
   },
   "http://zoom.us.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.055995",
-    "content_hash": "0cb6563262c252365e322096240f5b878351596cf7a6f41c0f1c93b512e6dcfa",
+    "last_fetched": "2025-07-07T02:08:00.434951",
+    "content_hash": "9bc8e4f8b548c0a7a79bd02e1fe82fd6c5551e93684566705807e662066eafb1",
     "nodes_count": 87
   },
   "http://multi.swdstore.xyz": {
-    "last_fetched": "2025-07-04T13:34:15.377673",
-    "content_hash": "ee20fbcec74b0ba437c54581dc45d63065e97ad2d5e42a1f6f8de46bf7da9e4c",
+    "last_fetched": "2025-07-07T02:08:03.488517",
+    "content_hash": "75e3e0a8e7015bb2e19c00e5ea2476a73e8883a8618b75f066855813981b96f7",
     "nodes_count": 129
   },
   "http://1id.kinamori.xyz": {
-    "last_fetched": "2025-07-04T13:34:16.647760",
+    "last_fetched": "2025-07-07T02:08:06.038971",
     "content_hash": "a7ea3324e7f1cecfd8844625efbd49153fed8346536e6077e7eecc31f2b603ec",
     "nodes_count": 132
   },
   "http://ruangguru.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.965962",
-    "content_hash": "2e1b6182ede4da5c3d1e0adc5f4dce78d4fb9e387f950b04aafdddfe5fd4c395",
+    "last_fetched": "2025-07-07T02:08:02.506123",
+    "content_hash": "d48299a318ca4a882ac35e89bf396f99b55b73490dd2a489861da5d266b12a5e",
     "nodes_count": 87
   },
   "http://support.zoom.us.multi.swdstore.xyz": {
-    "last_fetched": "2025-07-04T13:34:15.574856",
-    "content_hash": "db21320c105bd6fe74dc99c68c3c72fbab1d2292d04d3b3b2a5bc732490deb74",
+    "last_fetched": "2025-07-07T02:08:03.960074",
+    "content_hash": "ab81c93bb671987de266cf9cdb9c6b5cec8caa7edbecc989204aa6e023ac6130",
     "nodes_count": 129
   },
   "http://id.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.265462",
-    "content_hash": "0bdf4d2d8c5c2f3c94d648773f1f9287e71fe6fcc5f56b06f2c1524f8af31664",
+    "last_fetched": "2025-07-07T02:08:03.258563",
+    "content_hash": "32172cdf00b76636b4286b5e45b126fefe0d04484fe7ab182ce835405317f5c9",
     "nodes_count": 87
   },
   "http://zoomgov.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.088182",
-    "content_hash": "c8a1e00552a7041a93c01a3da97240a9eadff6583768b2f433e7bf7c8780853c",
+    "last_fetched": "2025-07-07T02:08:04.663931",
+    "content_hash": "4f6096f9732d39c105967ad43f71091e2df113b5590db4f1de7b03d3f5fc2c9a",
     "nodes_count": 87
   },
   "http://vip.kholilah.xyz": {
-    "last_fetched": "2025-07-04T13:34:17.573702",
-    "content_hash": "61d5d47a786bc9eb7abe3f37f7c9d9dfbd22e17a086ce4e99e5bee94a8ae42e4",
-    "nodes_count": 7
+    "last_fetched": "2025-07-07T02:08:07.148239",
+    "content_hash": "eb7b5356b99e112e03ca9ea7803823f2293f648940fe0490911dd902bccfbfb9",
+    "nodes_count": 87
   },
   "http://quiz.staging.vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.477681",
-    "content_hash": "b6494574fdbd39db5abe0373e4e80e55fa609617f0b16138da74b64c03ffd2b1",
+    "last_fetched": "2025-07-07T02:08:03.877170",
+    "content_hash": "febf48bac8a8c47926458dea507aaf665721641d877adb3923d9e58cc52c6c71",
     "nodes_count": 87
   },
   "http://help.zoom.us.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.276669",
-    "content_hash": "c714be35574adb27f401a192f69d967eee7cf6a4bf48e54035fdc69991ff3bf1",
+    "last_fetched": "2025-07-07T02:08:05.047480",
+    "content_hash": "fc6517359daa612a3b38b1d7cf445b3d6cd8645e097d7b1371055452440ff1ed",
     "nodes_count": 87
   },
   "http://co.id.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.967879",
-    "content_hash": "371d431b6cd3ca68a2e35f4e460ff5307f863ac572aad3235f2b56c4c97d2865",
+    "last_fetched": "2025-07-07T02:08:06.364339",
+    "content_hash": "87cdac189018658a961aaa31dc1126bbf1e4b5eed95528cc372d15bcf23476e3",
     "nodes_count": 87
   },
   "http://bimbel.ruangguru.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.709900",
-    "content_hash": "175de13e3d762355f93337b587eaa48fe24f305e3088c9b6d594fd0ac57a888f",
+    "last_fetched": "2025-07-07T02:08:06.081813",
+    "content_hash": "45ca90cca3e587fe8c8858d6fae04453ecdd60f8a03721f4ec910f2e20095884",
     "nodes_count": 87
   },
   "http://io.ruangguru.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.465902",
-    "content_hash": "ff66b4e367f15b1df1dc50e29baf677ec2e78831cad4aef50278167c2306f6b3",
+    "last_fetched": "2025-07-07T02:08:05.424747",
+    "content_hash": "1b8e0aa422f920b13f67466e7947862176d3fa972809257b5723af9b3c7cb4ce",
     "nodes_count": 87
   },
   "http://cf.shopee.co.id.sea-sw.swiftserve.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.164081",
-    "content_hash": "9e72516ef3504a2234b89a8f82297adcdc8474747e6ff24fff8896501a6d01c9",
+    "last_fetched": "2025-07-07T02:08:06.512647",
+    "content_hash": "78f88f536e310cc0def3e76d446b9e8ead3d9c7c97ffde7b5027713672c79234",
     "nodes_count": 87
   },
   "http://quiz.int.vidio.com.multi.swdstore.xyz": {
-    "last_fetched": "2025-07-04T13:34:18.061267",
-    "content_hash": "2c2f9d05d1f50159a7c42a105179f781e92d3b337c7d8b4f22938437d4b470c3",
+    "last_fetched": "2025-07-07T02:08:07.729898",
+    "content_hash": "24c0597ff5ccff23695975d6d3b285b506a32a29f99c8568814f753a8599aa45",
     "nodes_count": 129
   },
   "http://app.gopay.co.id.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.097944",
-    "content_hash": "f62c23da9ba27f3597e0272715365f2c73232eaaa8fa51bd3529575e92bf99c9",
+    "last_fetched": "2025-07-07T02:08:06.408856",
+    "content_hash": "a2611c3d8a50f12e6f139ca8c7ef3697b0a46674af2df6698e4b10a51b432e34",
     "nodes_count": 87
   },
   "http://support.zoom.us.1id.kinamori.xyz": {
-    "last_fetched": "2025-07-04T13:34:17.034544",
+    "last_fetched": "2025-07-07T02:08:06.406878",
     "content_hash": "4e73beaaeb12023efb9493fe51295519a49bc942eda1ff10e1caa5e44ed71081",
     "nodes_count": 132
   },
   "http://io.ruangguru.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.391636",
-    "content_hash": "8aa76ab077c6ceb6d8f862b1278676bae64fadba77ca9788c604e51e7f0bff52",
+    "last_fetched": "2025-07-07T02:08:06.805307",
+    "content_hash": "babb6bd63ab458b20f2a1a508873769403eed15f89143502b1f065100a78b78f",
     "nodes_count": 87
   },
   "http://partner.zoom.us.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.634826",
-    "content_hash": "eb1d2dbe3911dda3240bf5c3531ee92e0ccf11204b78455738e1f21ea8890f23",
+    "last_fetched": "2025-07-07T02:08:02.029945",
+    "content_hash": "e154328d5899ef5abe3af13017eba1f2ce03b5c25434c4358025346947331729",
     "nodes_count": 87
   },
   "http://df.game.naver.com.multi.swdstore.xyz": {
-    "last_fetched": "2025-07-04T13:34:18.150337",
-    "content_hash": "a0ac25743257813e7c498ec9d36a8231e4577f73f1eeebe127989f37b8bf7a68",
+    "last_fetched": "2025-07-07T02:08:07.875062",
+    "content_hash": "142bb0e26c2a4315e6f907e2ac3fa90b969761388342c94867e5dcf0e13f194d",
     "nodes_count": 129
   },
   "http://zoomcares.zoom.us.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.359349",
-    "content_hash": "e752562d629c39c91abf445301b35189a388e10d51e273dd0f7308035ed0ae94",
+    "last_fetched": "2025-07-07T02:08:01.362317",
+    "content_hash": "98b4577483e3c76129e9e744b13cd284f5a259e6256bdd8daa840048667addef",
     "nodes_count": 87
   },
   "http://blog.webex.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.594301",
-    "content_hash": "b7112baa5ae06aa66938a80dd3e609ac22b9acf22f6d7e74dc575f846220b1ce",
+    "last_fetched": "2025-07-07T02:08:05.901119",
+    "content_hash": "1805a14f7f4220d634c96cb4ffc06a671d032f3d5f01735b1608b9b6114a3baa",
     "nodes_count": 87
   },
   "http://cache.netflix.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:11.051715",
+    "last_fetched": "2025-07-07T02:07:55.132814",
     "content_hash": "df27336a601b001d18b1021c50a5a0193095acdc68c9e0ad83af938aca4fb02f",
     "nodes_count": 103
   },
   "http://investor.fb.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.543344",
-    "content_hash": "87df1bcbe171b5ead0131ec701f9910a61c69347e3608388d7c3dff9fe12d712",
+    "last_fetched": "2025-07-07T02:08:05.681459",
+    "content_hash": "be5e7e98c453b7b6f5602243736673bc7b68aa2775087a820a84b320018d02d3",
     "nodes_count": 87
   },
   "http://vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:08.699719",
+    "last_fetched": "2025-07-07T02:07:53.725476",
     "content_hash": "6b81c6068f9c0c69f044961e8688a7d89ad3e72d716551734c07098d78c9fd4f",
     "nodes_count": 103
   },
   "http://quiz.int.vidio.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.990691",
-    "content_hash": "2a9db86f920f7a43f121a041b2ceacfef93d9332cf925d653daed3e2e24d5939",
+    "last_fetched": "2025-07-07T02:08:04.597577",
+    "content_hash": "c0bda5c16b7abf3915e93faa5b6a6090f3a580b21bdf05d3a951970a2804d6a4",
     "nodes_count": 87
   },
   "http://vip.boy-vpn.my.id": {
-    "last_fetched": "2025-07-04T13:34:15.100977",
-    "content_hash": "d08e828ce79d9859da7d01485aebadd9714a9d6b73a9dbf964e96ebfd1645cee",
+    "last_fetched": "2025-07-07T02:08:02.801910",
+    "content_hash": "f13886a5951aa9b3f7e88c1c02db38c693b0cbc4b5295d6e8224f48e6bac27dc",
     "nodes_count": 85
   },
   "http://zaintest.vuclip.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.449044",
-    "content_hash": "8c6181f96dd8e9adcf369f3e95d3e837b6e1f8ec829e4608751d780e718c46d4",
+    "last_fetched": "2025-07-07T02:08:06.875829",
+    "content_hash": "042a35337e3894f329fe23bc341bf80da86caa25106d8e8f987e2cebcd3eb6cc",
     "nodes_count": 87
   },
   "http://fb.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.894315",
-    "content_hash": "5d03b0cfa4ef41d4284e409c8faf0b44e5b02e220b562184b063ff81432d22ce",
+    "last_fetched": "2025-07-07T02:08:07.530640",
+    "content_hash": "7441b31a6cc29f653141934f0f8273726599cac8e672b9d45ba2538c7977f96c",
     "nodes_count": 87
   },
   "http://webex.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.768980",
-    "content_hash": "84ec37da6ef0800f4c201e911e05a10f95434cb63ec749aff9e66218e9ffae22",
+    "last_fetched": "2025-07-07T02:08:06.082883",
+    "content_hash": "71a5d9317eba2d75a995f262f57ca5c3a7407b9330889a9d8dc6919171cc8d43",
     "nodes_count": 87
   },
   "https://support.zoom.us.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:12.395615",
+    "last_fetched": "2025-07-07T02:07:57.361061",
     "content_hash": "35ef36100ebc3215b5ab8aa4e80c327cdd281307de3535968cada1c597a9139d",
     "nodes_count": 103
   },
   "http://partner.zoom.us.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.175735",
-    "content_hash": "00bd4aace16b70d23e7a069ad51e703dcbf18fb2874632ba8ace396e1a081de0",
+    "last_fetched": "2025-07-07T02:08:04.879509",
+    "content_hash": "d598528dabfef8324ceb6b5fa2e761ef1cf98059bbaa61432ca8533c8956f4e9",
     "nodes_count": 87
   },
   "http://quiz.staging.vidio.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.891432",
-    "content_hash": "7389ad6b4bb6725becd0ce6f160ca4ab0a560f9b8948659d2f090f472b717092",
+    "last_fetched": "2025-07-07T02:08:02.385159",
+    "content_hash": "987f0d7c5a19908669403bb731cbe898a41ea05831c95ac1c623fbf14d24669a",
     "nodes_count": 87
   },
   "http://quiz.vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.964008",
-    "content_hash": "04912815023b456da02ba5d418a8e891bfcd9024b333287f0cfeb0a20f3bb424",
+    "last_fetched": "2025-07-07T02:08:07.609978",
+    "content_hash": "332e910ae96a4e82e90bc11666716f918b1e6caf09086461090eca3f11f0056d",
     "nodes_count": 87
   },
   "https://zaintest.vuclip.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:11.589205",
+    "last_fetched": "2025-07-07T02:07:55.974990",
     "content_hash": "5abc94c8b94851705a74b84b05505f65f550727aa36667e5d0b35f3175c6225b",
     "nodes_count": 103
   },
   "http://df.ava.game.naver.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.790981",
-    "content_hash": "6fab9f78b3d8a1a0b890edf6146c86d3105b15c611f0320cbeb3d4a53c214dc0",
+    "last_fetched": "2025-07-07T02:08:02.383837",
+    "content_hash": "4a8c3748539a6b5cc7c31ab94fc78402f41dc0583e4679f196741300f1d7d25e",
     "nodes_count": 87
   },
   "http://ava.game.naver.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.234356",
-    "content_hash": "95d445a91acc889f039324094c8cd566b2687fc88283c0e030d9ef06e525efb9",
+    "last_fetched": "2025-07-07T02:08:06.590562",
+    "content_hash": "cd942fddd6c42ec79d48422318af5a563453f729538413d13418ee6c5c2cbc78",
     "nodes_count": 87
   },
   "http://vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.048827",
-    "content_hash": "42d5ce03aec3ce274899060504a553543b7458b3035be8311bf72e64a6b45066",
+    "last_fetched": "2025-07-07T02:08:02.643013",
+    "content_hash": "ea2306ff40ddb6b0b2eacd89213e8cb1bd1e380f6bbf93e121b1f609674286a9",
     "nodes_count": 87
   },
   "http://investors.spotify.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.684415",
-    "content_hash": "19a12924ebb5f48b8566a5f08e21006469e730532a6a4cddaa70337990521eca",
+    "last_fetched": "2025-07-07T02:08:07.282163",
+    "content_hash": "abc16f225c08d8d1e451f6c74bd1734ba4f2296800c82d038a80965d96caa62a",
     "nodes_count": 87
   },
   "http://investor.fb.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.826929",
-    "content_hash": "bde33089ea027ff0ecb46ea3f283c804c5752ad6c71a3a8c06d7d5aa3eb92a09",
+    "last_fetched": "2025-07-07T02:08:07.412071",
+    "content_hash": "b0a2d81111551aeaa6dd8c35bfd33cfc4520b1fd7e0bba94fcc4cbb68a772dd0",
     "nodes_count": 87
   },
   "http://quiz.vidio.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.541155",
-    "content_hash": "58626f4754ba898fc19c148a9d297ecb3e81d82f51bdd6f7005584af249ce202",
+    "last_fetched": "2025-07-07T02:08:07.009408",
+    "content_hash": "b04c91c3c8862cd5fad0d431abc48266b7b178fb63a40244630da0c7b6c5708e",
     "nodes_count": 87
   },
   "http://gomarketplacecontent-cf.zoom.us.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.003338",
-    "content_hash": "6eb47da3e5e555083366beaead8566ef94ad1b59ea5205324ad0a4a49e2a37f9",
+    "last_fetched": "2025-07-07T02:08:07.686228",
+    "content_hash": "afd6037fefea81522ec5ccf3adb452c313140869be79787b98de4e1d7222441d",
     "nodes_count": 87
   },
   "http://cache.netflix.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.528759",
-    "content_hash": "2c0bcfd7be7915704f1ace46d33d791310b917f7517e1fb3c4bba4b866af1003",
+    "last_fetched": "2025-07-07T02:08:07.006990",
+    "content_hash": "4490fa6b9bc8224b83d2a78c26a55d6dd143fc227744c1f75c0778b19be2bff1",
     "nodes_count": 87
   },
   "http://fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.894667",
-    "content_hash": "9cc1f8199bbc09256cf5c804f47daad396c11f2510cc3d9405bd8be05b5f9bf6",
+    "last_fetched": "2025-07-07T02:08:04.401025",
+    "content_hash": "93913765c7d4547907b7173266a9df80bc8bd41f0f9fe45d7e1dacc4efdad810",
     "nodes_count": 87
   },
   "http://int.vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.364790",
-    "content_hash": "cadde582f08fb0c789a5e1f0df7939903add1f78289b8c255e60091c890a5850",
+    "last_fetched": "2025-07-07T02:08:07.938897",
+    "content_hash": "cd1350870fe3fb5f7b22c0fead216a4f21043928caea327c390ec3520fba5ff2",
     "nodes_count": 87
   },
   "http://cdn.zoom.us.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.679692",
-    "content_hash": "6316ecef057f4a6ac7acf296018bb582955d7a070be904f24d3b7dabfd4a1da1",
+    "last_fetched": "2025-07-07T02:08:08.103468",
+    "content_hash": "8f1dd102a471a7c465fd262596ec80ac95c15443f7bd095593def98003607c4b",
     "nodes_count": 87
   },
   "http://gopay.co.id.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.883075",
-    "content_hash": "396790b461ee33aff7a6aa5ae73b874ff0331bd95e72b38b3413212521f54926",
+    "last_fetched": "2025-07-07T02:08:06.258271",
+    "content_hash": "0294d26ac9959d47138b6cdb6661ef9e806d92b4ea0811ccb13b7277a5cb6b78",
     "nodes_count": 87
   },
   "http://staging.vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.210160",
-    "content_hash": "ad476c03bbb875c4efdbb6b9e279835f8913f68169c29d27e987e2cf52893065",
+    "last_fetched": "2025-07-07T02:08:03.111531",
+    "content_hash": "2206be2a08ac26f6877846b457a7ab88edee92d9397304cb69f296855ca8c3a1",
     "nodes_count": 87
   },
   "http://quiz.int.vidio.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:14.548788",
-    "content_hash": "91e1f7b3e75cc1d219633da4c665ff915075e27ce7ec755babc8c79e892d0cb8",
+    "last_fetched": "2025-07-07T02:08:01.780134",
+    "content_hash": "81c624b3d48567aac721140383af9fedc236ca00e5483f1eb0bb7e55264d44ab",
     "nodes_count": 87
   },
   "http://support.zoom.us.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.308675",
-    "content_hash": "be7d5e466d0183e674833f185c82e349663d7d0d7165a5875deae486ebdd7c6c",
+    "last_fetched": "2025-07-07T02:08:07.913378",
+    "content_hash": "607b36be3dcc5a6ee5420391547d7d5fd707084c55ce8e595b37c4f0a33541d5",
     "nodes_count": 87
   },
   "http://df.ava.game.naver.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.401232",
-    "content_hash": "b4cf250bfad117310d26e502cda6ed65260ebd7cc8d241c781dd373f81889713",
+    "last_fetched": "2025-07-07T02:08:07.995534",
+    "content_hash": "ef1a8605699bacff32739db025a0a71f998d7dd62714e5c00aa5e2a5cb263db5",
     "nodes_count": 87
   },
   "http://zoomgov.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.460550",
-    "content_hash": "c3c24f1c91ffeac63ae6eb03ecd62aa2140b6cb079ffd9cee87e7e82a48010ef",
+    "last_fetched": "2025-07-07T02:08:07.997082",
+    "content_hash": "6a5832f2e946de1a5de60990c2bf632d9607f41424fd0e78b69120ffe51fb17d",
     "nodes_count": 87
   },
   "http://a.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.374457",
-    "content_hash": "25163548d56e18af029008b49729d18050105eaaf1b535c5ea12280b72e12e17",
+    "last_fetched": "2025-07-07T02:08:05.294442",
+    "content_hash": "bf128427103be4db38202ccb308cefc1f25a1f235f30f79cb2c2e813296b8bf1",
     "nodes_count": 87
   },
   "http://fey.fshop.web.id": {
-    "last_fetched": "2025-07-04T13:34:17.316568",
-    "content_hash": "e3c271415ec27506a54af8d971c137dc1c2d866de2c075a3b5d5a8e9de220c40",
+    "last_fetched": "2025-07-07T02:08:06.702440",
+    "content_hash": "0ae2bbd4e424860603d1a47ef8bdf0d1c9c48384a3a3d269e0f3c3819411982e",
     "nodes_count": 87
   },
   "http://naver.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.739008",
-    "content_hash": "7472ec10c3850984b32b9f58c73b8aa8492969d62f2de95592f0caa45dc640a7",
+    "last_fetched": "2025-07-07T02:08:08.142365",
+    "content_hash": "e6a811b55e6543c571f895a522e9d2c8651cc282f0b71b4d1f1b4570cb0f83a1",
     "nodes_count": 87
   },
   "http://api.blibli.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:16.786441",
-    "content_hash": "d3d98fd1197962c325e47f76c4d71f98d2e779d5c35acf13dbf7f735ec8bd440",
+    "last_fetched": "2025-07-07T02:08:06.136982",
+    "content_hash": "fe2c802562b2ef11ed4bde44348d2b76f58871fc3b660d2eee22197a916eb7a2",
     "nodes_count": 87
   },
   "http://us.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.015785",
-    "content_hash": "3c5c6ff4639f925cbcbc1cdf18411d51be42d1656975ecabbbd5febef63c689e",
+    "last_fetched": "2025-07-07T02:08:08.185248",
+    "content_hash": "ca30027c705fc5fa343451d01179f8cbae5b30785ba07ad6f110831d1f9b00d7",
     "nodes_count": 87
   },
   "http://ava.game.naver.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:12.109696",
+    "last_fetched": "2025-07-07T02:07:56.768154",
     "content_hash": "8593094c5fa8e76f9d8c2b2d6bc3af869ebbde23c426e5d46bf3e40052bdb575",
     "nodes_count": 103
   },
   "http://quiz.int.vidio.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:10.542918",
+    "last_fetched": "2025-07-07T02:07:54.726766",
     "content_hash": "6807c1109c8545a5332c5c72eba24f4218282fc541455bdd32e7e14fcc4aa48c",
     "nodes_count": 103
   },
   "http://fshop.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.800257",
-    "content_hash": "04610e533aa0a6c5b0cef474b90659263aebe21d792e374ee1b80ce5330bcc13",
+    "last_fetched": "2025-07-07T02:08:04.373198",
+    "content_hash": "5bfe01ad41e14cc052298e6ec34f86315d83635916094f38e91ebbb7761356bb",
     "nodes_count": 87
   },
   "http://edu.ruangguru.com.vless.mhmmddnl.my.id": {
-    "last_fetched": "2025-07-04T13:34:09.150250",
+    "last_fetched": "2025-07-07T02:07:54.055232",
     "content_hash": "dd960c4e1034db36e6eeda83d318f81b7a13b3b2b7e32c5ba3e5bd1238b422f9",
     "nodes_count": 103
   },
   "http://netflix.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.489784",
-    "content_hash": "43575f9e702a984f95af60b540ba3aeffe8cec51327ff3da63dfe2c3876833e5",
+    "last_fetched": "2025-07-07T02:08:08.322420",
+    "content_hash": "b63c4fdd0914b40da46ee18f6e28122c8a0c28436ca0045753e68f56bf05c013",
     "nodes_count": 87
   },
   "http://b.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.150395",
-    "content_hash": "551446357f14029708f4d8929a2cf003d0b8d03a041c197920e7f93c358eb9a4",
+    "last_fetched": "2025-07-07T02:08:08.230941",
+    "content_hash": "a7378a3903f8ef4722d139357eafb3fe373efcf9305fd7415cd18830f2001d64",
     "nodes_count": 87
   },
   "http://anu.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:18.577933",
-    "content_hash": "0bd6fb409ee7bfc8808a0a72a16e39e31139f42ca59fd149772ad61cbfbe14b5",
+    "last_fetched": "2025-07-07T02:08:08.061180",
+    "content_hash": "fefce5dca14a243bbc819012bce415fe7e014541a14804fce13ad6c5a07c126e",
     "nodes_count": 87
   },
   "http://fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:15.665447",
-    "content_hash": "cf7c22dbc32f2a2e6f3513e75033148af7045d182ce88aca79ce0310554485cd",
+    "last_fetched": "2025-07-07T02:08:04.292511",
+    "content_hash": "0a1bf19d3ec52a586cc83be3546148cc9b0870e86c052b766dbc7ecb79355a47",
     "nodes_count": 87
   },
   "http://game.naver.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.855448",
-    "content_hash": "a868f9c85adfa5e8888c6075cdb6664d3df762864715c32fce382839e345647a",
+    "last_fetched": "2025-07-07T02:08:08.488317",
+    "content_hash": "fdc815526482b1f7247b2ba68d4837639e5996385bbaffd58e95b37dc6844f83",
     "nodes_count": 87
   },
   "http://bimbel.ruangguru.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.719216",
-    "content_hash": "ffc9e151e920fd9ac6081a563716fdb7ded274040dd31b87048f852499a67478",
+    "last_fetched": "2025-07-07T02:08:08.428564",
+    "content_hash": "4ac96b2e9020788317b3dd66c519cd60c93ebb0b8dcf4d91eb68a589cfbe1cf6",
     "nodes_count": 87
   },
   "http://as.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:20.186828",
-    "content_hash": "9b85f40ab2ff42fdf898454bdda7b022556ebaec54068463b95a52e76d31b1c1",
+    "last_fetched": "2025-07-07T02:08:08.555944",
+    "content_hash": "07ada2750c9303fe38ab72a3afc84b97e21e0f9499afa292e90360ac25e00761",
     "nodes_count": 87
   },
   "http://ava.game.naver.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:19.284719",
-    "content_hash": "c0f85cc9cec183f6c1d91eab27d1274889df84ce95f0eff864080740622777c3",
+    "last_fetched": "2025-07-07T02:08:08.316969",
+    "content_hash": "62a3bca04ce50059122acbac5ccd69f68393980e3cf75cc7d46fa06017dfc8c2",
     "nodes_count": 87
   },
   "http://sub.fstore.live": {
-    "last_fetched": "2025-07-04T13:34:19.606047",
-    "content_hash": "607237465acb1ba147e7366fb095783e2c8da172db1c4fa0a3cc1bdf8a1ed6d2",
+    "last_fetched": "2025-07-07T02:08:08.323360",
+    "content_hash": "2968dd452ff6996194b06b9111170dc60d875ef8c90e88b2def2b938c8e1a188",
     "nodes_count": 87
   },
   "http://sgjp.asolole.biz.id": {
-    "last_fetched": "2025-07-04T13:34:22.401454",
-    "content_hash": "7336e2ac2f284094c11561c3f58acae2bd49bb79e3adbf9f791b9446b1e890cd",
+    "last_fetched": "2025-07-07T02:08:11.143631",
+    "content_hash": "f7c4619da4cc2ccc9bfbccc33a520884aaacfe34de31c30692c7c7a315d03009",
     "nodes_count": 78
   },
   "http://zaintest.vuclip.com.multi.swdstore.xyz": {
-    "last_fetched": "2025-07-04T13:34:21.332162",
-    "content_hash": "a70f97678caddb5a54c55a78f77d86c952f7659a37ece9b507bd83e29d4c4d90",
+    "last_fetched": "2025-07-07T02:08:09.289318",
+    "content_hash": "f12769795f04ab4f73be8147966f095b4e53d25f30f473f9983c0aeb6569571b",
     "nodes_count": 129
   },
   "http://clash-gpt.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:22.264482",
+    "last_fetched": "2025-07-07T02:08:10.834626",
     "content_hash": "4ea6e5d7225251da59d4f51825eeca2b79edf1b4cb2fa626c68ec847bc55e811",
     "nodes_count": 0
   },
   "http://support.zoom.us.sgjp.asolole.biz.id": {
-    "last_fetched": "2025-07-04T13:34:22.313821",
-    "content_hash": "ecc536f8177ed3ea89fad4266480a7c2a42f997614341934c028700b5051ed15",
+    "last_fetched": "2025-07-07T02:08:10.908165",
+    "content_hash": "e22c74ae8d0ffb7f5cdb51c3b7784bd6f77b1dec10c14c4e330a93d599545711",
     "nodes_count": 78
   },
   "http://clash-ym.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:22.358640",
+    "last_fetched": "2025-07-07T02:08:11.049345",
     "content_hash": "3aaaf916964122bb8639d5bea3f7b64c8c9c995f90f4dc06eebc8f4250c49bb3",
     "nodes_count": 0
   },
   "http://v2ray-yx.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:22.559508",
+    "last_fetched": "2025-07-07T02:08:11.373643",
     "content_hash": "3504c3b10e9da9647b696d320128d1376581e57041dfc7fb48fe43e2a84364a5",
     "nodes_count": 84
   },
   "http://zaintest.vuclip.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:20.815413",
-    "content_hash": "602ae5dc7668808d62a51bbcc22e03d50a14616d1baee776d7c732829d96da48",
+    "last_fetched": "2025-07-07T02:08:08.629968",
+    "content_hash": "bcc12b367d9c31fbc2c97e155b0f355ab6e8f50a324e827891e4bb0617096b39",
     "nodes_count": 87
   },
   "http://v2ray-fwq.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:22.442418",
+    "last_fetched": "2025-07-07T02:08:11.229202",
     "content_hash": "0075a60fb7756d5e89d6f7dc1c2ffea2b23398020b35264fc38911671ac3c7ed",
     "nodes_count": 92
   },
   "http://vless.kensoko.my.id": {
-    "last_fetched": "2025-07-04T13:34:22.199125",
-    "content_hash": "118817d782ccc028e92551b46bebebb15877c367839ece28f188730a69e4d268",
+    "last_fetched": "2025-07-07T02:08:10.760235",
+    "content_hash": "07c40186952af67a3b3319af87fbc0e736c35909b0c19904b57387675f4915e1",
     "nodes_count": 107
   },
   "http://investors.spotify.com.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:22.171105",
-    "content_hash": "1b509d4c4eeec01ec70c15279c5514996819a3777575ff404483bddd420a4361",
+    "last_fetched": "2025-07-07T02:08:10.681267",
+    "content_hash": "11f14b0f05e5d4761b36d6dce2d17ca252b9a551de6eac742fec68952551c674",
     "nodes_count": 273
   },
   "http://support.zoom.us.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:21.828490",
-    "content_hash": "8e5da287a3a41f929c6976baceaf116e0f0b926c68aa7f682f1e60e5adc76905",
+    "last_fetched": "2025-07-07T02:08:10.422044",
+    "content_hash": "74b0967ced34902f742a32a437a29749293222d6bc70bf04caf55f4c9cb26837",
     "nodes_count": 273
   },
   "http://npca.netflix.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:21.288578",
-    "content_hash": "2f17d0509eea79698a64d6bf716bbbf4653e99a363c01aefbbd686ba900f62a7",
+    "last_fetched": "2025-07-07T02:08:09.084262",
+    "content_hash": "6b19e866e341a37d32e4a7c36523fac5955dd190273aa19548f0f6a1ab1f96b8",
     "nodes_count": 87
   },
   "http://cache.netflix.com.fsid.web.id": {
-    "last_fetched": "2025-07-04T13:34:21.455923",
-    "content_hash": "d58b1f8a325c30600ea58496e10c9e6f002bf1f6be5647b5b77d9ec98531921f",
+    "last_fetched": "2025-07-07T02:08:10.055598",
+    "content_hash": "ee76e75f81f75d8c8be6970bda8dc9c60c8727ba24777ced6333781c12a160f6",
     "nodes_count": 87
   },
   "http://app.midtrans.com.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:22.123812",
-    "content_hash": "f47d059e610dc9c76935ba44c6f099c0339d479a6831dde78954174ba165d132",
+    "last_fetched": "2025-07-07T02:08:10.620591",
+    "content_hash": "e19f2d060d323a69b5eaac65ff51586a970d951980073e1037a800b341bf36b0",
     "nodes_count": 273
   },
   "http://ab.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:21.112339",
-    "content_hash": "07b6b3f00465d77c42c9579f7d8ba5d8d8bb26f5b9b6710b54231f8e462b1470",
+    "last_fetched": "2025-07-07T02:08:08.779819",
+    "content_hash": "1b68c8e36c3f63b8576b3c43f6eac66edb6e0006b976ab28ef690f36ca5316dd",
     "nodes_count": 87
   },
   "http://bakrie.ac.id.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:21.965540",
-    "content_hash": "4a17878dde240dde63613fb0a9f2e95a374f388251094552ec0e62405b797b01",
+    "last_fetched": "2025-07-07T02:08:10.472747",
+    "content_hash": "8c6f8d153e0f29e70a3163abce9e146b79d9424c65e982b86d5cab8b0a0507de",
     "nodes_count": 273
   },
   "http://vuclip.com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:21.212341",
-    "content_hash": "3f9c15c2cd12c7da0eb72719b2844f7e104e0d7d9ef09c2b8c350c729e603874",
+    "last_fetched": "2025-07-07T02:08:08.937998",
+    "content_hash": "357a4665b2a3cc584e127ace5966d0f1825be65f0d57360210ed5d90d8041b5e",
     "nodes_count": 87
   },
   "http://io.ruangguru.com.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:22.072674",
-    "content_hash": "8fcd8e73092ac40fa690b31c1e967396ce2aa8ae1da44fc4bdc2612d3a04a188",
+    "last_fetched": "2025-07-07T02:08:10.548156",
+    "content_hash": "aef0840916ffa73f8009caf815c3722f761f650b55893f22878a1fa73ba5b994",
     "nodes_count": 273
   },
   "http://com.fstores.web.id": {
-    "last_fetched": "2025-07-04T13:34:21.404553",
-    "content_hash": "ac6b908c4e6e6df49b47808a8e9669eea371fbfe8d992b56db9400f0821936de",
+    "last_fetched": "2025-07-07T02:08:09.620574",
+    "content_hash": "87b9d9d8b51c99b6195cd5286674db313be904430fafe4cba65201a73d42d801",
     "nodes_count": 87
   },
   "http://x4-germany-ionos-v2-k4ap5.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.895060",
+    "last_fetched": "2025-07-07T02:08:11.876904",
     "content_hash": "541b980d59621556eb1a86bad62e016d276fa87dc9c7077c2d8448725a309135",
     "nodes_count": 61
   },
   "http://x1-germany-linode-v2-jk001.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.721977",
+    "last_fetched": "2025-07-07T02:08:11.650694",
     "content_hash": "a67adc969179c9d23c521531a38b25b193f07c1a4b1b3bc1eec207a11a2f6583",
     "nodes_count": 61
   },
   "http://x6-england-amazon-v2-3s677.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.108362",
+    "last_fetched": "2025-07-07T02:08:12.047701",
     "content_hash": "f71f9017bf2b36b0096a7d17773c7a44105e05c4415dfca5b02d5ae25ab330ac",
     "nodes_count": 61
   },
   "http://x7-england-amazon-v2-j0t4m.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.683852",
+    "last_fetched": "2025-07-07T02:08:11.566406",
     "content_hash": "e960801dbf533465dba8bccad06effa0a05b6c2d77d33e237106bc24103de743",
     "nodes_count": 61
   },
   "http://x1-poland-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.008462",
+    "last_fetched": "2025-07-07T02:08:12.011255",
     "content_hash": "9794c3300e671d3d2358b51208529a36841ac898d0989cb75e20e5a8a3280a59",
     "nodes_count": 61
   },
   "http://x2-england-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.793736",
+    "last_fetched": "2025-07-07T02:08:11.735793",
     "content_hash": "045baa8195f2998a79bf39ac79cbb3e0f30029dd71077cb929a52a72dcbe0641",
     "nodes_count": 61
   },
   "http://x1-spian-linode-v2-7xk23.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.642245",
+    "last_fetched": "2025-07-07T02:08:11.512807",
     "content_hash": "9dae46fed57aadcad7b6ad3ea12d7c651347397968cc542d6863a8e92613a37d",
     "nodes_count": 61
   },
@@ -1670,37 +1670,37 @@
     "nodes_count": 61
   },
   "http://app.gopay.co.id.multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:21.551563",
-    "content_hash": "0b91b9bb8db6d37b62905ee9a61c9da834d6ae7e8ba3dd46dc64e12ef6531c53",
+    "last_fetched": "2025-07-07T02:08:10.063430",
+    "content_hash": "a11d31128e4ad9bf8fb8e2564d9a6641d5357ea9dcc330c73544206eadf2aaaf",
     "nodes_count": 273
   },
   "http://multi.xsmnet.buzz": {
-    "last_fetched": "2025-07-04T13:34:21.620654",
-    "content_hash": "249affe075623b10fc8e478aa436a3fc7a7f3b6165dd4f7a1b872790b3105682",
+    "last_fetched": "2025-07-07T02:08:10.375777",
+    "content_hash": "5ffbf9124d3a7b30fbf7c9a189be2dd0854b21b9969176c95f8df02148f688ad",
     "nodes_count": 273
   },
   "http://x5-france-scaleway-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.968636",
+    "last_fetched": "2025-07-07T02:08:11.929764",
     "content_hash": "70b64fe164c194b704e1b5848b8bae6d0a3ea01bb7d5fcab04c3eb1cef2d022a",
     "nodes_count": 61
   },
   "http://x1-japan-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:22.851512",
+    "last_fetched": "2025-07-07T02:08:11.826810",
     "content_hash": "d195b96b5beaaa32e7beccf18821dee3aa3c6e877a799cc76efc694c10051ded",
     "nodes_count": 61
   },
   "http://mamad.devefun.tech": {
-    "last_fetched": "2025-07-04T13:34:22.601398",
+    "last_fetched": "2025-07-07T02:08:11.455532",
     "content_hash": "9e9c2bc7461e7770758c6fba876dac995c47d665584047424a4f047295526a89",
     "nodes_count": 61
   },
   "http://id.server7.xyz": {
-    "last_fetched": "2025-07-04T13:34:22.502654",
-    "content_hash": "675e1da5a8a59c786df214a2e1d909aafd50fd4a0bdddc92fc3d527f7f230626",
+    "last_fetched": "2025-07-07T02:08:11.284516",
+    "content_hash": "5c0ec6176024b3067ee08d102d58a176146de37b8f1de62c51282d2697353862",
     "nodes_count": 80
   },
   "http://x2-england-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:23.615808",
+    "last_fetched": "2025-07-07T02:08:12.566068",
     "content_hash": "045baa8195f2998a79bf39ac79cbb3e0f30029dd71077cb929a52a72dcbe0641",
     "nodes_count": 61
   },
@@ -1710,122 +1710,122 @@
     "nodes_count": 61
   },
   "http://x1-ireland-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:23.429909",
+    "last_fetched": "2025-07-07T02:08:12.254000",
     "content_hash": "c36bd9aaba0fb91211a6d0a783e2b930060e4299d6ca81cb128f8c503c508af7",
     "nodes_count": 61
   },
   "http://x6-canada-amazon-v2-bzsn4.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.642278",
+    "last_fetched": "2025-07-07T02:08:14.264994",
     "content_hash": "eec6e054d5eef4fd96434ee5707afb96c96631f74732e3e7a1ffffd72f5a6fcc",
     "nodes_count": 61
   },
   "http://x4-france-scaleway-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.871135",
+    "last_fetched": "2025-07-07T02:08:14.420288",
     "content_hash": "fdcde0f25e72aa216ea523e1517d22484a7a9f8b69a0d155b46ba24a2a80bbde",
     "nodes_count": 61
   },
   "http://x1-france-linode-v2-m899o.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.572537",
+    "last_fetched": "2025-07-07T02:08:12.424788",
     "content_hash": "3f77f2e1a9c1c326c51a208022de4c8cbb4b646825ef1d86898d72f68ed081d6",
     "nodes_count": 61
   },
   "http://x4-france-scaleway-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:23.500530",
+    "last_fetched": "2025-07-07T02:08:12.295346",
     "content_hash": "fdcde0f25e72aa216ea523e1517d22484a7a9f8b69a0d155b46ba24a2a80bbde",
     "nodes_count": 61
   },
   "http://x1-ireland-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.396282",
+    "last_fetched": "2025-07-07T02:08:13.885782",
     "content_hash": "c36bd9aaba0fb91211a6d0a783e2b930060e4299d6ca81cb128f8c503c508af7",
     "nodes_count": 61
   },
   "http://x1-usa-linode-v2-99z1f.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.887289",
+    "last_fetched": "2025-07-07T02:08:12.932747",
     "content_hash": "5cf7455e1fbd4a55e91a1ef4a58d2d5cec77709ca3ca331645fc8bcff9879d8c",
     "nodes_count": 61
   },
   "http://x8-england-amazon-v2-uq8p8.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.499966",
+    "last_fetched": "2025-07-07T02:08:14.037673",
     "content_hash": "ce92135bb82bf85c776bbf5850feb3d10e8a3ea4a12c4b97629db5b4127e813a",
     "nodes_count": 61
   },
   "http://x1-france-scaleway-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:30.248147",
+    "last_fetched": "2025-07-07T02:08:13.127273",
     "content_hash": "5e6516dc69f771155ec08d53d3d3ae5654e992176b8cbd02bf59aab090c4aa87",
     "nodes_count": 61
   },
   "http://x2-italy-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.357931",
+    "last_fetched": "2025-07-07T02:08:12.167917",
     "content_hash": "8cb78c0a63009d4b08944867cc806a1b9bb46ea11ef0e542273b74cdbd15d7b2",
     "nodes_count": 61
   },
   "http://sajjad.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.291355",
+    "last_fetched": "2025-07-07T02:08:12.128196",
     "content_hash": "5d287f03866404744f1558159df09e35e05a3de43b46445ae1f6d9a66c9c2856",
     "nodes_count": 61
   },
   "http://x1-france-scaleway-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:23.737646",
+    "last_fetched": "2025-07-07T02:08:12.768846",
     "content_hash": "5e6516dc69f771155ec08d53d3d3ae5654e992176b8cbd02bf59aab090c4aa87",
     "nodes_count": 61
   },
   "http://x1-germany-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.348435",
+    "last_fetched": "2025-07-07T02:08:13.677501",
     "content_hash": "e6eaa66480eb1ee9e2e8d27e21c5257cce400fe597264cefbda7a4ac53190391",
     "nodes_count": 61
   },
   "http://x3-france-scaleway-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:30.444839",
+    "last_fetched": "2025-07-07T02:08:13.963507",
     "content_hash": "28eed2d2268a19b827cbdcef145117f3a8dd3185d622fc5454f5db01137b4eee",
     "nodes_count": 61
   },
   "http://x5-sweden-amazon-v2-34z0x.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.540344",
+    "last_fetched": "2025-07-07T02:08:14.159921",
     "content_hash": "fb899acd477e4e54683ef264e356a88b5cc96437f856ef081db2f0095bc98520",
     "nodes_count": 61
   },
   "http://afi.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.865773",
+    "last_fetched": "2025-07-07T02:08:14.377011",
     "content_hash": "dd910e446755d30663c945ede01df846c0eb022b91d0349074d0aa677fa1c4f9",
     "nodes_count": 61
   },
   "http://x1-germany-digitalocean-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:30.899079",
+    "last_fetched": "2025-07-07T02:08:14.474969",
     "content_hash": "a3c6b046193fed2bdcafcb8757e60390d5ac080fbfe61d1a522a6e9f481c3b6e",
     "nodes_count": 61
   },
   "http://x1-england-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.904073",
+    "last_fetched": "2025-07-07T02:08:14.587284",
     "content_hash": "21cbf828884f257dd5e71392930f080c4180beeb8bde6e74c46956860a375b0f",
     "nodes_count": 61
   },
   "http://x5-germany-amazon-v2-tw4od.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.756259",
+    "last_fetched": "2025-07-07T02:08:14.313837",
     "content_hash": "71038cd9e0702e879c15e077322c2b269edaa32d5fff18e55d48970e5dfb80ad",
     "nodes_count": 61
   },
   "http://x2-france-scaleway-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.909123",
+    "last_fetched": "2025-07-07T02:08:14.830532",
     "content_hash": "482f82e9be33e1f3193da7fd6a38a361e2e1c63a6e1ddc4e7317bef0aadbd753",
     "nodes_count": 61
   },
   "http://x1-canada-linode-v2-fl879.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:31.753788",
+    "last_fetched": "2025-07-07T02:08:15.473923",
     "content_hash": "04e72b4616825d186988f5eac946ff5330a43467f2bedb8a324a297db7e8b32c",
     "nodes_count": 61
   },
   "http://x5-france-scaleway-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:31.485764",
+    "last_fetched": "2025-07-07T02:08:15.389110",
     "content_hash": "70b64fe164c194b704e1b5848b8bae6d0a3ea01bb7d5fcab04c3eb1cef2d022a",
     "nodes_count": 61
   },
   "http://x2-france-scaleway-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:32.662176",
+    "last_fetched": "2025-07-07T02:08:18.025488",
     "content_hash": "482f82e9be33e1f3193da7fd6a38a361e2e1c63a6e1ddc4e7317bef0aadbd753",
     "nodes_count": 61
   },
   "http://x3-france-scaleway-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.046880",
+    "last_fetched": "2025-07-07T02:08:18.163405",
     "content_hash": "28eed2d2268a19b827cbdcef145117f3a8dd3185d622fc5454f5db01137b4eee",
     "nodes_count": 61
   },
@@ -1835,7 +1835,7 @@
     "nodes_count": 61
   },
   "http://x1-england-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:31.951187",
+    "last_fetched": "2025-07-07T02:08:15.728811",
     "content_hash": "21cbf828884f257dd5e71392930f080c4180beeb8bde6e74c46956860a375b0f",
     "nodes_count": 61
   },
@@ -1845,57 +1845,57 @@
     "nodes_count": 61
   },
   "http://services.truphone.com.requmen.com": {
-    "last_fetched": "2025-07-04T13:34:33.843621",
-    "content_hash": "bd6d99d34a60e19b81bee94ee62f690d7607c0fd26e82718a9d9ca8f94f27d84",
+    "last_fetched": "2025-07-07T02:08:18.539285",
+    "content_hash": "bd264a295940c3b433b3dbac7f87cd42bc54057192beb0c111bb1b715d4154c1",
     "nodes_count": 50
   },
   "http://x3-spain-clouding-v2-200dh.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:31.046486",
+    "last_fetched": "2025-07-07T02:08:15.339588",
     "content_hash": "43cd0d19b0b1063c748399229645aa3b4c5a5f0074580085dccb28d19b116547",
     "nodes_count": 61
   },
   "http://o.552298.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.093409",
-    "content_hash": "ee148f76b7359768037219c2ebab170fcf23691acc30938eccd1422ed56b8a71",
+    "last_fetched": "2025-07-07T02:08:19.037182",
+    "content_hash": "f32d877feeb8e280fa9918f429626805939a6180711031477b479823a8be6b9d",
     "nodes_count": 50
   },
   "http://c.552298.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.038235",
-    "content_hash": "ed02446200a12bb9b61ca0908e9477e35620771f9983db44d26408e234b65c21",
+    "last_fetched": "2025-07-07T02:08:18.927238",
+    "content_hash": "8749285a5887123d5feba5aee84ff5fb3f1f488e969ae5f42cfc99a7a9416eca",
     "nodes_count": 50
   },
   "http://t.13112221.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.074478",
-    "content_hash": "2722e0c0c3d088a12b81dfd0011e0e81a6fd16721c58521408b9b72a7268ae87",
+    "last_fetched": "2025-07-07T02:08:18.973440",
+    "content_hash": "7aae63f52ed41e78461ad7cb6ca15c3d9eb9aafa097a9f98a62e541e0c718e8f",
     "nodes_count": 50
   },
   "http://tims.turkcell.requmen.com": {
-    "last_fetched": "2025-07-04T13:34:34.010682",
-    "content_hash": "efe4a89d6a27ccc53c9403a8146ddc700fdd4913c16abef2f4c5687e9b71e3ab",
+    "last_fetched": "2025-07-07T02:08:18.560189",
+    "content_hash": "61f57e668d843e5751e1f3ab9ea4e23626c12d116c74a48ba705cddc069ff38c",
     "nodes_count": 50
   },
   "http://e.552298.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.127635",
-    "content_hash": "b13bff65a5286ab54e22e53fc1dc3ba1c3262561885f767f1e727c6e6063e1c4",
+    "last_fetched": "2025-07-07T02:08:19.121613",
+    "content_hash": "39553dd1043990419cdde0a43790f9d7706151d889fe84ac745c27cda43e402c",
     "nodes_count": 50
   },
   "http://x1-france-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:31.897229",
+    "last_fetched": "2025-07-07T02:08:15.610685",
     "content_hash": "b76732526d0267edccd545ade864ffa043461fbe6e0fde9a170a714678cfceff",
     "nodes_count": 61
   },
   "http://a.552298.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.156838",
-    "content_hash": "cf55d2ee9088e65d125766a835ca4b8a3b1536e8d7e6452a6cdf56649cf9ad94",
+    "last_fetched": "2025-07-07T02:08:19.154327",
+    "content_hash": "1d0dc27e2db69a25bccc34f05df8283342d18e1d5837d22892ad0903ae09c36e",
     "nodes_count": 50
   },
   "http://x4-spain-clouding-v2-9425l.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.675530",
+    "last_fetched": "2025-07-07T02:08:18.073828",
     "content_hash": "8e3143b780ed93cb9abf98f2af3a6f9a72ba5702b345112ea4749bf55e81b5ec",
     "nodes_count": 61
   },
   "http://x2-poland-scaleway-v2-bvvgo.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:30.979238",
+    "last_fetched": "2025-07-07T02:08:15.160226",
     "content_hash": "93f432df79f8882e4a6bbd0c4fcd3647da78fb92ec97199173a6c7ae9db05821",
     "nodes_count": 61
   },
@@ -1905,17 +1905,17 @@
     "nodes_count": 61
   },
   "http://x1-italy-linode-v2-au5kx.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:31.543984",
+    "last_fetched": "2025-07-07T02:08:15.452863",
     "content_hash": "f4967cbcef52a512ed358977af23cfaa59bc0d84cf2019158a9f21f95af6580f",
     "nodes_count": 61
   },
   "http://x2-ireland-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:33.060482",
+    "last_fetched": "2025-07-07T02:08:18.165644",
     "content_hash": "1a2b3ff1a245d26ef39595a3f31dde658ab688f5168949ef0f323b7e59050a51",
     "nodes_count": 61
   },
   "http://x3-poland-scaleway-v2-i589x.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.695059",
+    "last_fetched": "2025-07-07T02:08:18.076099",
     "content_hash": "8d570ce9db29bc2b91887c63b8f6f50836b812e9e74f26359aefc1d3bb9fc9c1",
     "nodes_count": 61
   },
@@ -1925,12 +1925,12 @@
     "nodes_count": 61
   },
   "http://x5-canada-amazon-v2-21qsg.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.269620",
+    "last_fetched": "2025-07-07T02:08:18.172249",
     "content_hash": "33a4fb1e3c6e1e2d1a7a63bc2a08b2682a30e6995842e81bd52a94f919910c78",
     "nodes_count": 61
   },
   "http://x2-ireland-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.376025",
+    "last_fetched": "2025-07-07T02:08:18.250891",
     "content_hash": "1a2b3ff1a245d26ef39595a3f31dde658ab688f5168949ef0f323b7e59050a51",
     "nodes_count": 61
   },
@@ -1950,12 +1950,12 @@
     "nodes_count": 61
   },
   "http://x1-france-scaleway-v2-399j2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.143824",
+    "last_fetched": "2025-07-07T02:08:17.940057",
     "content_hash": "10e60ca7113a04729be12a6bcc3bf5764cc0ecf6858ceb772c630966572421d8",
     "nodes_count": 61
   },
   "http://x1-england-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.741013",
+    "last_fetched": "2025-07-07T02:08:18.141926",
     "content_hash": "e0160e5016cc5bd550954ca89ce98380118629921b459e848e500b9e3da30d73",
     "nodes_count": 61
   },
@@ -1970,908 +1970,908 @@
     "nodes_count": 61
   },
   "http://x1-usa-digitalocean-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.147556",
+    "last_fetched": "2025-07-07T02:08:18.167701",
     "content_hash": "8ade6c271fead569c1d2bfa2396894740d981b526a47168828a102c2e814c69f",
     "nodes_count": 61
   },
   "http://cfvless.zerostore.web.id": {
-    "last_fetched": "2025-07-04T13:34:34.055660",
-    "content_hash": "c06b65bc4fa2fa9bac53aed500098d395d7817adf0252a3e6a402f00c46b098b",
+    "last_fetched": "2025-07-07T02:08:18.951672",
+    "content_hash": "fabe27063f4ecb9c279a3d258478ccb66352025856ae60be32be52a1152d7dd4",
     "nodes_count": 46
   },
   "http://x1-usa-digitalocean-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:33.562885",
+    "last_fetched": "2025-07-07T02:08:18.477676",
     "content_hash": "8ade6c271fead569c1d2bfa2396894740d981b526a47168828a102c2e814c69f",
     "nodes_count": 61
   },
   "http://d.552298.xyz": {
-    "last_fetched": "2025-07-04T13:34:34.416052",
-    "content_hash": "de1298ea6ba0857ea47f21a06384adcb970f78f8d0f3223898a9fa1898047bc8",
+    "last_fetched": "2025-07-07T02:08:19.206647",
+    "content_hash": "a2b7e01e939c5f62baea76a04565c70ed76c25be2671e5ac0c21dab7905c7f7a",
     "nodes_count": 50
   },
   "http://x1-japan-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:33.344591",
+    "last_fetched": "2025-07-07T02:08:18.208939",
     "content_hash": "d195b96b5beaaa32e7beccf18821dee3aa3c6e877a799cc76efc694c10051ded",
     "nodes_count": 61
   },
   "http://clash-fwq.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:34.670238",
+    "last_fetched": "2025-07-07T02:08:19.435104",
     "content_hash": "e5bb72fbacb597ab06711dab982d9aa4430bbf6b7832a00ed7328cb46a77a1e0",
     "nodes_count": 0
   },
   "http://x5-usa-amazon-v2-p1sqx.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.235014",
+    "last_fetched": "2025-07-07T02:08:18.168664",
     "content_hash": "a200a1e8ec7773716ab6257e25f3e305ac32d57c132d5464ae2e3596335113f7",
     "nodes_count": 61
   },
   "http://qq.imbmw.com": {
-    "last_fetched": "2025-07-04T13:34:34.743061",
+    "last_fetched": "2025-07-07T02:08:19.461803",
     "content_hash": "56247679504ee02d2afc405f803d3ce753a35d0a3f50f65fe61989d21f5e031e",
     "nodes_count": 44
   },
   "http://free.lalash.ir": {
-    "last_fetched": "2025-07-04T13:34:33.820298",
+    "last_fetched": "2025-07-07T02:08:18.529745",
     "content_hash": "e85a9b2950eb533a545d8f91a982215c082aaedac7dff259b35e898e3406d8d2",
     "nodes_count": 52
   },
   "http://x1-czech-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.773306",
+    "last_fetched": "2025-07-07T02:08:18.150003",
     "content_hash": "8e3e2dc2812231ac321bf361f45008a46736f4213543b6ab8100fc1a2281e1c7",
     "nodes_count": 61
   },
   "http://x12-amsterdam-scaleway-v2-30w5b.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.327627",
+    "last_fetched": "2025-07-07T02:08:18.204987",
     "content_hash": "3e0c1dc454675ae829888a4bfc3fcf393f78c5f09421c07de997bc11a2af8232",
     "nodes_count": 61
   },
   "http://x1-germany-digitalocean-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.755000",
+    "last_fetched": "2025-07-07T02:08:18.148994",
     "content_hash": "a3c6b046193fed2bdcafcb8757e60390d5ac080fbfe61d1a522a6e9f481c3b6e",
     "nodes_count": 61
   },
   "http://x8-germany-amazon-v2-rug6e.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.613350",
+    "last_fetched": "2025-07-07T02:08:18.485036",
     "content_hash": "a7ea8867b22bbb8c117bc3209694029be0ceefcf82fc0a5a3caaa37fb02bf90f",
     "nodes_count": 61
   },
   "http://x2-france-scaleway-v2-0q16l.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.477647",
+    "last_fetched": "2025-07-07T02:08:18.340563",
     "content_hash": "370839ab0b043a6018a895d7ea7875aa84cd400d25aff1da9cad78151bf9e6b7",
     "nodes_count": 61
   },
   "http://v2.lqiang.link": {
-    "last_fetched": "2025-07-04T13:34:34.785604",
+    "last_fetched": "2025-07-07T02:08:19.521282",
     "content_hash": "a65dcb759141f56053e872c08493d35525a9816c1994d0618d562b6df2eea666",
     "nodes_count": 28
   },
   "http://x3-france-scaleway-v2-ss3mk.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.703058",
+    "last_fetched": "2025-07-07T02:08:18.499301",
     "content_hash": "6b5f12ac66f02069b341d4ce046d2489bf3926f54004e8edbe703aadd6cf8098",
     "nodes_count": 61
   },
   "http://x1-england-linode-v2-56k2k.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.723710",
+    "last_fetched": "2025-07-07T02:08:18.524401",
     "content_hash": "735542a420f37e8039adca77f72b0cbb858afc77dc146ca2e843e9147412c3a6",
     "nodes_count": 61
   },
   "http://x1-sweden-linode-v2-71u92.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.654629",
+    "last_fetched": "2025-07-07T02:08:18.487478",
     "content_hash": "7f0ab23c8b4f55792a78140b5ce3e9d34c5fac27fa43edf6106a7a5e33fbf087",
     "nodes_count": 61
   },
   "http://v2ray-gd.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:35.225914",
+    "last_fetched": "2025-07-07T02:08:19.694877",
     "content_hash": "c605852358339807854e600fb249148b67ea8f6865ce92bf1f34dbfbe030891e",
     "nodes_count": 40
   },
   "http://clash-yx.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:34.759137",
+    "last_fetched": "2025-07-07T02:08:19.503990",
     "content_hash": "8cb704bceaa7eb56eab9d366923319067d0fdd8fee772dfe8564e6ced5e3aba3",
     "nodes_count": 0
   },
   "http://x1-italy-aruba-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.412545",
+    "last_fetched": "2025-07-07T02:08:18.285439",
     "content_hash": "b00767f214090a7f17553e297f9c33283064cdec55b591e65a3a72505607093e",
     "nodes_count": 61
   },
   "http://opennet-general.sub.tofak.com": {
-    "last_fetched": "2025-07-04T13:34:35.289508",
-    "content_hash": "1155cc4d2550d810bb3f01084c15b617f44109ef7b26289843c2146b0d84d93d",
+    "last_fetched": "2025-07-07T02:08:19.710343",
+    "content_hash": "c66fc74040b2e5d6cb7a56c73d2a8c0869ceeb13e9f8a2d3345f96e68300dbb8",
     "nodes_count": 36
   },
   "http://x2-japan-amazon-v2.devefun.tech": {
-    "last_fetched": "2025-07-04T13:34:31.693247",
+    "last_fetched": "2025-07-07T02:08:15.454946",
     "content_hash": "324d5b52c02d9a1c0158ff5080ea75c734c389f6fc021955610999d8a3be32f8",
     "nodes_count": 61
   },
   "http://x1-amsterdam-linode-v2-9oqj5.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:33.448023",
+    "last_fetched": "2025-07-07T02:08:18.286374",
     "content_hash": "524826c48ee3216d8fcecb7de5567fae75e96e4f542624fd03e4c98928594106",
     "nodes_count": 61
   },
   "http://x2-japan-amazon-v2.devefun.cloud": {
-    "last_fetched": "2025-07-04T13:34:33.466231",
+    "last_fetched": "2025-07-07T02:08:18.324645",
     "content_hash": "324d5b52c02d9a1c0158ff5080ea75c734c389f6fc021955610999d8a3be32f8",
     "nodes_count": 61
   },
   "http://x1-japan-linode-v2-pwlzp.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:31.606231",
+    "last_fetched": "2025-07-07T02:08:15.454019",
     "content_hash": "6af048cac9ff52b1f740a4fb6a99ace50db7415cff039590f51c782cdaa41f83",
     "nodes_count": 61
   },
   "http://x2-japan-amazon-v2.devefun.org": {
-    "last_fetched": "2025-07-04T13:34:32.725045",
+    "last_fetched": "2025-07-07T02:08:18.140818",
     "content_hash": "324d5b52c02d9a1c0158ff5080ea75c734c389f6fc021955610999d8a3be32f8",
     "nodes_count": 61
   },
   "http://yangshuo.xjp4.io": {
-    "last_fetched": "2025-07-04T13:34:35.641650",
+    "last_fetched": "2025-07-07T02:08:19.727597",
     "content_hash": "cf2fe14c88fb2c094165786d88356879f170d4aba80f6fdbcae3d9460eaced9b",
     "nodes_count": 30
   },
   "http://aling.yink.ddns-ip.net": {
-    "last_fetched": "2025-07-04T13:34:36.025715",
-    "content_hash": "4b88b22aa16caa77d26201509d86a957fd685aaede4d0db384fefc0ecc6c3b79",
+    "last_fetched": "2025-07-07T02:08:20.012792",
+    "content_hash": "fd2c1eed5376c3b8d39293f86230eb030c18a61e8fd45505434aa4a930b7eb3d",
     "nodes_count": 26
   },
   "http://qlkv.jzhou.filegear-sg.me": {
-    "last_fetched": "2025-07-04T13:34:35.848762",
-    "content_hash": "b56c99c9753de1b934527d5d8163eea4e536fe3d0e7933f17814a4d42066809b",
+    "last_fetched": "2025-07-07T02:08:19.750670",
+    "content_hash": "ee77a3f88c390ff29c82d28d9da21dd05f4cdee48e11121d7304b570ee98535c",
     "nodes_count": 26
   },
   "http://clash-gd.laoyoutiao.link": {
-    "last_fetched": "2025-07-04T13:34:36.191173",
+    "last_fetched": "2025-07-07T02:08:20.198139",
     "content_hash": "874925b6cddf2e41c125be9d00faf0c74b893b16080b07bd2d7a58cc4c929ede",
     "nodes_count": 0
   },
   "http://qlwk.vorry.filegear-sg.me": {
-    "last_fetched": "2025-07-04T13:34:35.914708",
-    "content_hash": "c2b5c1f4d12bfdaca8519b7cea1923dc784cd4a65e0ebd50748ca0f65fe4c622",
+    "last_fetched": "2025-07-07T02:08:19.958462",
+    "content_hash": "1c26d0140a22736e146b7d95ab36523d1207a1aaed2cc35913c5ade866c88abc",
     "nodes_count": 26
   },
   "http://warpym.irss.eu.org": {
-    "last_fetched": "2025-07-04T13:34:35.684246",
-    "content_hash": "b222fd246b4161e6b322ff33ec2b7d0ed474ec3005b4913d9c17fd724731bf44",
-    "nodes_count": 2
+    "last_fetched": "2025-07-07T02:08:19.736954",
+    "content_hash": "69afaf7abd085811a7e4efdaa25070237e62ce5f889b068bbaff8fcdf6d63b21",
+    "nodes_count": 1
   },
   "http://qvsl.vorry.filegear-sg.me": {
-    "last_fetched": "2025-07-04T13:34:35.965396",
-    "content_hash": "e3ae9a0bc0d0137805ff01c0aa58da7dd1058101615b088a77bc255c1431f84f",
+    "last_fetched": "2025-07-07T02:08:20.004321",
+    "content_hash": "8fc55b4b2b485f10d7b431324ec7f468e6948592813d84b25a23957c635d8762",
     "nodes_count": 26
   },
   "https://autodiscover.kiarant.ru": {
-    "last_fetched": "2025-07-04T13:34:36.083663",
-    "content_hash": "84b9181ef710bcd4cd668e383b69bf4d36e33af74c5b7ba3645e43479263b9cc",
+    "last_fetched": "2025-07-07T02:08:20.149685",
+    "content_hash": "bb828fe96ff829c9501ae1d3287c16e427396c73145baefe07a76f75393f932b",
     "nodes_count": 24
   },
   "http://cg.519530.xyz": {
-    "last_fetched": "2025-07-04T13:34:36.222345",
-    "content_hash": "58db288967a271fe15b6e1f2eb8f621629f1e87b685cf79e585496e908a12a89",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.264283",
+    "content_hash": "8d89122ccd61ae39739213d7db898ea6b8d80492dbf867ba87aebbc8fd56b480",
+    "nodes_count": 24
   },
   "https://mail.kiarant.ru": {
-    "last_fetched": "2025-07-04T13:34:36.102198",
-    "content_hash": "84b9181ef710bcd4cd668e383b69bf4d36e33af74c5b7ba3645e43479263b9cc",
+    "last_fetched": "2025-07-07T02:08:20.172154",
+    "content_hash": "bb828fe96ff829c9501ae1d3287c16e427396c73145baefe07a76f75393f932b",
     "nodes_count": 24
   },
   "https://kiarant.ru": {
-    "last_fetched": "2025-07-04T13:34:36.117450",
-    "content_hash": "84b9181ef710bcd4cd668e383b69bf4d36e33af74c5b7ba3645e43479263b9cc",
+    "last_fetched": "2025-07-07T02:08:20.181474",
+    "content_hash": "bb828fe96ff829c9501ae1d3287c16e427396c73145baefe07a76f75393f932b",
     "nodes_count": 24
   },
   "http://sub.pro-brain.com": {
-    "last_fetched": "2025-07-04T13:34:36.051579",
+    "last_fetched": "2025-07-07T02:08:20.116302",
     "content_hash": "f146362080d7e25d7fa39a8b7fc8219b74f260f36eb7734d6edd12b3a25e80bf",
     "nodes_count": 26
   },
   "http://lz.juanai.cc": {
-    "last_fetched": "2025-07-04T13:34:36.270690",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.291888",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://prod-test.jdevcloud.com": {
-    "last_fetched": "2025-07-04T13:34:35.749442",
-    "content_hash": "9b5c24f21f39cad5b55392aa85231152c0b59e93ca3700f7f9dc1b29f99b246e",
+    "last_fetched": "2025-07-07T02:08:19.742241",
+    "content_hash": "d0ec7c421c9502bad00cd40c02439289929eaa4c1c6ba3911701750f5d5ca938",
     "nodes_count": 48
   },
   "http://subs.cryptoyee.com": {
-    "last_fetched": "2025-07-04T13:34:37.183699",
+    "last_fetched": "2025-07-07T02:08:21.278599",
     "content_hash": "e5a6e9340a7699dcfa163932540fc36f18e19f570ead3c18eab55bf1839943e7",
     "nodes_count": 14
   },
   "http://go.kingking.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.293443",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.305276",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://quiz.int.vidio.com.id1.qerleng.my.id": {
-    "last_fetched": "2025-07-04T13:34:37.815832",
-    "content_hash": "4a969b8724253101382d2aae3547b035df2e7859bde34a1e413d650dca3ab5eb",
+    "last_fetched": "2025-07-07T02:08:21.976002",
+    "content_hash": "9520c1a79118c5340e2ea286f835a5dc1a2dd4fe15125ebabd355be995881ca8",
     "nodes_count": 20
   },
   "http://chromego.kingking.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.331154",
-    "content_hash": "1ea27d09d058145cf9720a04f378fc0e0daad949d87aa44dff14ae52820debf8",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.341189",
+    "content_hash": "87e7e516f93007f8a0719bdc160ae55076b0dea988ec5dfa780aadd0ea85f956",
+    "nodes_count": 24
   },
   "http://5.68859609.nyc.mn": {
-    "last_fetched": "2025-07-04T13:34:36.487233",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.594299",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://go.20121020.xyz": {
-    "last_fetched": "2025-07-04T13:34:36.934914",
-    "content_hash": "02cc903b572605ceed8d8832dee3e51a6e6305adc5af3cd4efc34d2592d82e05",
+    "last_fetched": "2025-07-07T02:08:20.672130",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
     "nodes_count": 24
   },
   "http://go1.z5151.cloudns.biz": {
-    "last_fetched": "2025-07-04T13:34:36.964769",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.721592",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://weiss2.jiekes.one": {
-    "last_fetched": "2025-07-04T13:34:36.517681",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.600628",
+    "content_hash": "d1026d0c974ec24b38ee17aae510a470c350332fae5779fc7953993d90aedaeb",
+    "nodes_count": 22
   },
   "http://chromego.ntbowen.pp.ua": {
-    "last_fetched": "2025-07-04T13:34:37.114398",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.978955",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://walawe-68f.pages.dev": {
-    "last_fetched": "2025-07-04T13:34:38.136314",
+    "last_fetched": "2025-07-07T02:08:22.205511",
     "content_hash": "4c121bec9cce8f3d9189b17a08196bc578113a848f847aa953cf0c0e7dc95e7c",
     "nodes_count": 18
   },
   "http://02.markhe.cloudns.biz": {
-    "last_fetched": "2025-07-04T13:34:36.435536",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.458947",
+    "content_hash": "87e7e516f93007f8a0719bdc160ae55076b0dea988ec5dfa780aadd0ea85f956",
+    "nodes_count": 24
   },
   "http://ava.game.naver.com.id1.qerleng.my.id": {
-    "last_fetched": "2025-07-04T13:34:38.095136",
-    "content_hash": "884913edb45339f5fde3d13a0cba44ff999e15579716ee8c85fc6afdfd454226",
+    "last_fetched": "2025-07-07T02:08:22.191056",
+    "content_hash": "cc24d782429a9f5999cdaee390cbfd6e79a1e05ea7bad3c34ef556f4926d12fc",
     "nodes_count": 20
   },
   "http://on.590.wiki": {
-    "last_fetched": "2025-07-04T13:34:37.259642",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.367666",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://clash.pikju.top": {
-    "last_fetched": "2025-07-04T13:34:36.923607",
-    "content_hash": "056f183a1d96eec35e33846241cb3ee68ae3445c244158602d19b263a4672f9e",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.653441",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://nfs.microeco.net": {
-    "last_fetched": "2025-07-04T13:34:36.336633",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.374048",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://novantunnel.life": {
-    "last_fetched": "2025-07-04T13:34:37.758834",
-    "content_hash": "2806aaa53b8b315d914c6709e937726fed75479a01448bc50ba971cf8f507244",
+    "last_fetched": "2025-07-07T02:08:21.843030",
+    "content_hash": "fff7b9443665239aafe8089aba46e9b3375364f35526a814ad37cb127777165f",
     "nodes_count": 30
   },
   "http://goclash.topmarco.tech": {
-    "last_fetched": "2025-07-04T13:34:36.129892",
-    "content_hash": "a8dc571c62dbde6d4e4a1ffbe44f289ad5209b49be6be290c9acdc9c75b4bb49",
+    "last_fetched": "2025-07-07T02:08:20.189338",
+    "content_hash": "c65c456561cca6e823f6050e12a57e4a0a11da682fa3eaa861cc3f6efd9e298d",
     "nodes_count": 4
   },
   "http://go.maovps.eu.org": {
-    "last_fetched": "2025-07-04T13:34:37.032575",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.814245",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://chromegohuoqu.jfgj775.workers.dev.cyl.cloudns.org": {
-    "last_fetched": "2025-07-04T13:34:36.471437",
-    "content_hash": "58db288967a271fe15b6e1f2eb8f621629f1e87b685cf79e585496e908a12a89",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.565211",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://chromego.2018k.top": {
-    "last_fetched": "2025-07-04T13:34:36.386218",
-    "content_hash": "1ea27d09d058145cf9720a04f378fc0e0daad949d87aa44dff14ae52820debf8",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.375890",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://chgo.131412.ren": {
-    "last_fetched": "2025-07-04T13:34:37.035645",
-    "content_hash": "056f183a1d96eec35e33846241cb3ee68ae3445c244158602d19b263a4672f9e",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.823856",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://chromego.19880411.xyz": {
-    "last_fetched": "2025-07-04T13:34:36.536412",
-    "content_hash": "4dc9550736bdc43d9eb9ecc777217857c6a8022b5ff88d5a4782fb5d4220c781",
+    "last_fetched": "2025-07-07T02:08:20.624091",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
     "nodes_count": 24
   },
   "http://chormego.cfvps.pp.ua": {
-    "last_fetched": "2025-07-04T13:34:37.086005",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
-  },
-  "http://chromego.858666.xyz": {
-    "last_fetched": "2025-07-04T13:34:37.545599",
-    "content_hash": "02cc903b572605ceed8d8832dee3e51a6e6305adc5af3cd4efc34d2592d82e05",
+    "last_fetched": "2025-07-07T02:08:20.961687",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
     "nodes_count": 24
   },
+  "http://chromego.858666.xyz": {
+    "last_fetched": "2025-07-07T02:08:21.575349",
+    "content_hash": "6310c9fcbc9f187d7ea64c64831b241b12aa3e1a1b97caffe04b9526966b74d3",
+    "nodes_count": 22
+  },
   "http://zzz.zywn.cloudns.org": {
-    "last_fetched": "2025-07-04T13:34:37.569649",
-    "content_hash": "5d7a54a20e00386c2063fa97738f3e0bcef5a4751a9a030aad5044b5ca7032a3",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.595783",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://go.minaminanami.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.883173",
-    "content_hash": "2c9dccc0fd66903b7619966182f73ba8f58355a3fd8dec8d32e816995f53b3e9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.638657",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://chromego.qiche.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.554033",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.635631",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://go.970097.xyz": {
-    "last_fetched": "2025-07-04T13:34:37.688394",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.825557",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://xiaobai.nsfwstl.cn": {
-    "last_fetched": "2025-07-04T13:34:37.653177",
-    "content_hash": "ee3d3c6ced29a111b0ebe84c4c73fd41818ae24513c74d52455bd5947a0dac3d",
+    "last_fetched": "2025-07-07T02:08:21.732527",
+    "content_hash": "87e7e516f93007f8a0719bdc160ae55076b0dea988ec5dfa780aadd0ea85f956",
     "nodes_count": 24
   },
   "http://chromego.tink.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.997885",
-    "content_hash": "58db288967a271fe15b6e1f2eb8f621629f1e87b685cf79e585496e908a12a89",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.786610",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://jd.isoho168.top": {
-    "last_fetched": "2025-07-04T13:34:37.224467",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.299925",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://0607.kevinbai.top": {
-    "last_fetched": "2025-07-04T13:34:37.538084",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.464561",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://id1.qerleng.my.id": {
-    "last_fetched": "2025-07-04T13:34:38.289741",
-    "content_hash": "5729c1220fc6c4e7097cf49ed0f24cb2a8939bc0e33c1991b3f9b4f22c1430ea",
+    "last_fetched": "2025-07-07T02:08:22.234934",
+    "content_hash": "080c5b22fe08cbfe54dcc5e2973b61b1ef4200f0cac23acb8db8bb6232035133",
     "nodes_count": 20
   },
   "http://ava.game.naver.com.xsm.web.id": {
-    "last_fetched": "2025-07-04T13:34:38.421268",
+    "last_fetched": "2025-07-07T02:08:22.267223",
     "content_hash": "563b10c97446485f621fb95377faddd3fd7939a40a7979289d14a0921208bb89",
     "nodes_count": 12
   },
   "http://vpnvvip.web.id": {
-    "last_fetched": "2025-07-04T13:34:38.085156",
-    "content_hash": "968f45a83a50ac814fb1252e2ecdc3a3205cc0e3c9608e72023a97543426856d",
+    "last_fetched": "2025-07-07T02:08:22.177254",
+    "content_hash": "a17c1e67e0edac45bcce977a2fd6aee19197210a7d8efbd49c2b18ed8967729c",
     "nodes_count": 30
   },
   "http://xsm.web.id": {
-    "last_fetched": "2025-07-04T13:34:38.830478",
+    "last_fetched": "2025-07-07T02:08:22.286848",
     "content_hash": "75eb06b0adf64410df237ea06dca413a6c4ee807d4baf0dcfb3289c9e00bdc92",
     "nodes_count": 12
   },
   "http://warp.axder.cn": {
-    "last_fetched": "2025-07-04T13:34:37.592400",
-    "content_hash": "1ea27d09d058145cf9720a04f378fc0e0daad949d87aa44dff14ae52820debf8",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.713170",
+    "content_hash": "87e7e516f93007f8a0719bdc160ae55076b0dea988ec5dfa780aadd0ea85f956",
+    "nodes_count": 24
   },
   "http://sub.custom-sir.eu.org": {
-    "last_fetched": "2025-07-04T13:34:37.795337",
+    "last_fetched": "2025-07-07T02:08:21.906693",
     "content_hash": "8c458f5d822ee2c5ca69ae486920c330d448101a35b001efae2195f1dc25c9da",
     "nodes_count": 16
   },
   "http://851203.cxtz-001.top": {
-    "last_fetched": "2025-07-04T13:34:37.028686",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.808238",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://mixdiy.com": {
-    "last_fetched": "2025-07-04T13:34:34.839460",
-    "content_hash": "964358b3d6798b36f5befd9d5bf357ff3dc452c7e99359c68f2f207dc498178a",
+    "last_fetched": "2025-07-07T02:08:19.529824",
+    "content_hash": "628339c77300a703f5d2d4133adf9c9095892493cfede9128a9ab9a46cfba95e",
     "nodes_count": 271
   },
   "http://sublink.biseda2.eu": {
-    "last_fetched": "2025-07-04T13:34:39.124616",
+    "last_fetched": "2025-07-07T02:08:22.355594",
     "content_hash": "999214f75cb5dc6fafca4b8dfaeb42c2cb84616a564ff91e7b1bea93ddb10ee4",
     "nodes_count": 12
   },
   "http://x.xjp4.io": {
-    "last_fetched": "2025-07-04T13:34:39.177930",
+    "last_fetched": "2025-07-07T02:08:22.751653",
     "content_hash": "2ff59810ed984d8e85bf456cd6e2638d0cfb4d0e6bd95214765869068a69c5fe",
     "nodes_count": 9
   },
   "http://sub.xjp4.io": {
-    "last_fetched": "2025-07-04T13:34:39.110248",
+    "last_fetched": "2025-07-07T02:08:22.350054",
     "content_hash": "b798eb9ea83497932c9a0ec329992f2172aac66834b87b4bada402ddd033d460",
     "nodes_count": 14
   },
   "http://maginajoker.top": {
-    "last_fetched": "2025-07-04T13:34:39.152937",
-    "content_hash": "5e1e984b6811c6861ad9d49cb4ffd6907cfd8a7e54e20337192d8ec7fbb2eae6",
+    "last_fetched": "2025-07-07T02:08:22.621614",
+    "content_hash": "44398233bf216c602b0b998126e596744026cae2ca5c1b3756e96514179645c4",
     "nodes_count": 12
   },
   "http://m.n4key.xyz": {
-    "last_fetched": "2025-07-04T13:34:39.214557",
+    "last_fetched": "2025-07-07T02:08:22.812613",
     "content_hash": "0ccc0fa6f887520e71d68ef6e85a4377a789738528829c1eb7912ca680873fc8",
     "nodes_count": 15
   },
   "http://sub.bmaker.cn": {
-    "last_fetched": "2025-07-04T13:34:39.097654",
+    "last_fetched": "2025-07-07T02:08:22.323630",
     "content_hash": "b798eb9ea83497932c9a0ec329992f2172aac66834b87b4bada402ddd033d460",
     "nodes_count": 14
   },
   "http://fq.lqiang.link": {
-    "last_fetched": "2025-07-04T13:34:36.064752",
+    "last_fetched": "2025-07-07T02:08:20.117131",
     "content_hash": "78d1982c2ede8b1a8488aac6f9b9cc24c50986b0f643690eb0e33c11bfcaabe2",
     "nodes_count": 6
   },
   "http://dd.uoidxj.eu.org": {
-    "last_fetched": "2025-07-04T13:34:37.070536",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.834931",
+    "content_hash": "6310c9fcbc9f187d7ea64c64831b241b12aa3e1a1b97caffe04b9526966b74d3",
+    "nodes_count": 22
   },
   "http://mgynode.com": {
-    "last_fetched": "2025-07-04T13:34:35.308428",
-    "content_hash": "42d15aa490780ee022165fd90497221dff5cbf41926ea4a9f2ecc4ed9fbae693",
-    "nodes_count": 114
+    "last_fetched": "2025-07-07T02:08:19.726500",
+    "content_hash": "5b746f0d5b73caecc830b76e4c61fb723df277dc9a67c1512b53ab0aadb0e509",
+    "nodes_count": 113
   },
   "http://p02--mysite--zvxy997wc5ql.code.run": {
-    "last_fetched": "2025-07-04T13:34:39.786545",
+    "last_fetched": "2025-07-07T02:08:23.601745",
     "content_hash": "21c9f7e2bd9af9b1340611233a0d814d1fc25323d1fd08dc54604ca8edc254f0",
     "nodes_count": 16
   },
   "http://jdzh.justn.nyc.mn": {
-    "last_fetched": "2025-07-04T13:34:39.990479",
-    "content_hash": "53926b60427608426bfdd8284ecfe464e1cb8928dbbdd869be521c5d80a0e622",
+    "last_fetched": "2025-07-07T02:08:23.984695",
+    "content_hash": "914256e27c4e2535a34a8cafec35ac8d52af74d7b9cdf7b4896cb52289c9539d",
     "nodes_count": 11
   },
   "http://robolapki.ru": {
-    "last_fetched": "2025-07-04T13:34:39.169457",
+    "last_fetched": "2025-07-07T02:08:22.633007",
     "content_hash": "69a1c0b2a6728aa7ffd879467e076cf9ddd4ab7c21b859741d6597d3ba2dc105",
     "nodes_count": 0
   },
   "http://bluehat358.web.id": {
-    "last_fetched": "2025-07-04T13:34:39.172988",
-    "content_hash": "390c487761bb6fb3c82386fd88d8c8bcb0e1039da368ed8d78d24ce7db072305",
+    "last_fetched": "2025-07-07T02:08:22.657351",
+    "content_hash": "a176a186e79a066fd97c4c3775bfbdb7ebf3cb51476f5bcda2253854e6a6cccd",
     "nodes_count": 16
   },
   "http://render.okkkk.tk": {
-    "last_fetched": "2025-07-04T13:34:39.073801",
+    "last_fetched": "2025-07-07T02:08:22.308903",
     "content_hash": "25a95406bb10d3b3f96344bec87eec1008e8a252843dd964a60637dff5222036",
     "nodes_count": 15
   },
   "http://chromego.cssg.eu.org": {
-    "last_fetched": "2025-07-04T13:34:36.459120",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:20.472246",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://p03.xiaohezi.it.eu.org": {
-    "last_fetched": "2025-07-04T13:34:39.980177",
+    "last_fetched": "2025-07-07T02:08:23.982934",
     "content_hash": "21c9f7e2bd9af9b1340611233a0d814d1fc25323d1fd08dc54604ca8edc254f0",
     "nodes_count": 16
   },
   "http://sirius.f2p.ms": {
-    "last_fetched": "2025-07-04T13:34:37.996434",
+    "last_fetched": "2025-07-07T02:08:22.066576",
     "content_hash": "6eff2f965d4d7e19e67252c2f934c1055e31acf9430611341a2c4f90cf26c503",
     "nodes_count": 36
   },
   "http://akun.alphawave.web.id": {
-    "last_fetched": "2025-07-04T13:34:39.882958",
+    "last_fetched": "2025-07-07T02:08:23.968682",
     "content_hash": "560407839d5d857a02d949781ca856f0a29deee730d03063770276523e9b3897",
     "nodes_count": 12
   },
   "http://list.988978.xyz": {
-    "last_fetched": "2025-07-04T13:34:40.357219",
+    "last_fetched": "2025-07-07T02:08:24.036927",
     "content_hash": "4bd69900bbc14587813e64a559410be1a5ea5e6948a897b0b8e794b2eb1de31e",
     "nodes_count": 6
   },
   "http://xbkj.akao.us.kg": {
-    "last_fetched": "2025-07-04T13:34:37.131919",
-    "content_hash": "58db288967a271fe15b6e1f2eb8f621629f1e87b685cf79e585496e908a12a89",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.211047",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://s1.ridzx08.me": {
-    "last_fetched": "2025-07-04T13:34:42.350399",
-    "content_hash": "c347c80edb3fd4be25623e7c91639a0632fceb39fcdbef81b761fc6505bc5bf3",
+    "last_fetched": "2025-07-07T02:08:25.172671",
+    "content_hash": "88f55fdf509235f246765ee4cb2f66f5acd71f197fc48263ec2de160fb5f77d8",
     "nodes_count": 3
   },
   "http://aioweb.nmira.biz.id": {
-    "last_fetched": "2025-07-04T13:34:42.335977",
-    "content_hash": "1e46386811278398d97cbb64102ac393f367a2a654fb6529b6711b4c3f881376",
+    "last_fetched": "2025-07-07T02:08:25.115190",
+    "content_hash": "e8620cd7614205c37641d3528f73a3b284a290ecb39fd44bcd06b1899ab3df7c",
     "nodes_count": 3
   },
   "http://privasi.bmkg.xyz": {
-    "last_fetched": "2025-07-04T13:34:40.698081",
-    "content_hash": "5a000ff9fa415feef9c6b7d6cf796b9a713ee37e137d2f360fe68dab69068a49",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:08:24.051963",
+    "content_hash": "d34354e254dfc57db32bd20d00ae48c759b7334399146193254741214ad1c6c7",
+    "nodes_count": 49
   },
   "http://tes.nextz.my.id": {
-    "last_fetched": "2025-07-04T13:34:41.488957",
+    "last_fetched": "2025-07-07T02:08:24.649623",
     "content_hash": "f3738f7a21bbbe9c9c5a4b6a364f5cc63bbaa4e35d00cbb42eea6e5af9314aaa",
     "nodes_count": 15
   },
   "http://vpn.chaprashid.com": {
-    "last_fetched": "2025-07-04T13:34:41.434181",
+    "last_fetched": "2025-07-07T02:08:24.600613",
     "content_hash": "20fcaa938332b7cd3ec5b7eba258a5d082ebe5fc2541fb8e3e431eb0cc9f634e",
     "nodes_count": 10
   },
   "http://support.zoom.us.vipren.biz.id": {
-    "last_fetched": "2025-07-04T13:34:39.695079",
-    "content_hash": "7e9de6b6dd5bc81106e10ad0465233b124cd1c48edfe804395681ab037b89928",
+    "last_fetched": "2025-07-07T02:08:23.323089",
+    "content_hash": "597610108955d7d092a8d3c9fce82d6c1b766ba8e91f3c67ff49e2732fa1532f",
     "nodes_count": 32
   },
   "http://gg.2fly.eu.org": {
-    "last_fetched": "2025-07-04T13:34:37.582590",
-    "content_hash": "10f68898ff1d25ddaa599882e1444f8991ffc30ec9bbe83f2ff17240b9098fd9",
-    "nodes_count": 26
+    "last_fetched": "2025-07-07T02:08:21.673988",
+    "content_hash": "b4df9ff66f01af7cb628df3e07c4955d1b9d5bdfd3db98ed0a50c5ff62058826",
+    "nodes_count": 24
   },
   "http://privasi.cloudproxyip.my.id": {
-    "last_fetched": "2025-07-04T13:34:39.711176",
-    "content_hash": "e9754d409b8392c10998f11a532f7c188087237bcd04ced0dafee6c11b8fc3ee",
-    "nodes_count": 49
+    "last_fetched": "2025-07-07T02:08:23.330974",
+    "content_hash": "d7faff151cae85801793cabcd249b4c8b3e44c7b8b00f00f68598dc0de05584f",
+    "nodes_count": 6
   },
   "http://privasi.najah.biz.id": {
-    "last_fetched": "2025-07-04T13:34:39.724545",
-    "content_hash": "a83882bcb4cc941047cc05ce6afcbf48d1f2ca7a95e7652472501acd9714335c",
-    "nodes_count": 49
+    "last_fetched": "2025-07-07T02:08:23.382127",
+    "content_hash": "1ae723f14ed9dfe4d7b65c999be2ca52120422241b8683bababeff0f0d49b670",
+    "nodes_count": 6
   },
   "http://subs.liaoxy.top": {
-    "last_fetched": "2025-07-04T13:34:42.368589",
+    "last_fetched": "2025-07-07T02:08:25.179245",
     "content_hash": "0f095158fa76d2f1ed883c77add74224961437fc63f439a2797f8c9433d28245",
     "nodes_count": 14
   },
   "http://privasi.ndeso.xyz": {
-    "last_fetched": "2025-07-04T13:34:39.930948",
-    "content_hash": "05e9db9bd82f56ddaffd5d1adc3b5fcd69713bcc4b304a79cfe984bbe2ee5f1a",
+    "last_fetched": "2025-07-07T02:08:23.973518",
+    "content_hash": "ca10d8617ebb0f92ec7daf871da645c64d863b6c17739818580af0dedbbd05cc",
     "nodes_count": 49
   },
   "http://quiz.int.vidio.com.agprtm.my.id": {
-    "last_fetched": "2025-07-04T13:34:42.543399",
-    "content_hash": "2fbe74aff45b44cf882039b31adac64d423f5997eea06d731a8f5b62d4022590",
+    "last_fetched": "2025-07-07T02:08:25.783956",
+    "content_hash": "04bf94a6dbfe9deb2c011a201ac38b4f66b3d6ade6c53f0ee5e3f422d917f18e",
     "nodes_count": 3
   },
   "http://privasi.ndeso.web.id": {
-    "last_fetched": "2025-07-04T13:34:39.738481",
-    "content_hash": "ee32eefced4b102de7002169d97dac6ca1dd5213043d94f4364e34f03f20798c",
+    "last_fetched": "2025-07-07T02:08:23.451525",
+    "content_hash": "6c3bb97fc42aee87e4a7687204d7005070bb538ea63d3dd9c9d64468589b3678",
     "nodes_count": 49
   },
   "http://sidepath.ir": {
-    "last_fetched": "2025-07-04T13:34:39.994565",
-    "content_hash": "d824a16f7b6ff0ab8a282d197fc64fc361d4ffd162cfa90e971f13f410d26a29",
+    "last_fetched": "2025-07-07T02:08:23.989749",
+    "content_hash": "b77a5b448dbea53534ed56f390bc574469919ac0f4889f105381e8b9e55282ca",
     "nodes_count": 82
   },
   "http://c-bnn.xyz": {
-    "last_fetched": "2025-07-04T13:34:39.957293",
-    "content_hash": "42db65a08f59e4448927563f608b98272308383f9b0caee89ff1fd30e2f40cc7",
+    "last_fetched": "2025-07-07T02:08:23.978006",
+    "content_hash": "978ddd6bf9885e68bb6d6d5d35c0572a4797833994ef6e44f3338781227f2449",
     "nodes_count": 47
   },
   "http://privasi.turah.my.id": {
-    "last_fetched": "2025-07-04T13:34:39.749979",
-    "content_hash": "f5715f6c51695d57227f26dc04d9e86c00c7562feed5e2716a4fbf02a907e292",
+    "last_fetched": "2025-07-07T02:08:23.473411",
+    "content_hash": "de09d71868859a924330c1f480527c6b83fb5fb3188c8c28e908ae22cead725e",
     "nodes_count": 49
   },
   "http://tikvpn.shop": {
-    "last_fetched": "2025-07-04T13:34:39.143864",
-    "content_hash": "4051647acc8389eb18e9124086f0771675e86abee6e77d4833b5c163ac72a3c7",
-    "nodes_count": 104
+    "last_fetched": "2025-07-07T02:08:22.608577",
+    "content_hash": "a597888547389f94f10ecf17504bcce43430e108b6ffe49d5aea05da753555c8",
+    "nodes_count": 99
   },
   "http://v2rayng.lk1337.top": {
-    "last_fetched": "2025-07-04T13:34:41.555775",
-    "content_hash": "339611098e18d2c8de33b9511bef358f7b223be6d74213180ade484ee90ed686",
+    "last_fetched": "2025-07-07T02:08:24.677009",
+    "content_hash": "9be0319668ba31b1cffba6f2d61515843b584daa2474501b229678e770d54e0d",
     "nodes_count": 6
   },
   "http://vipren.biz.id": {
-    "last_fetched": "2025-07-04T13:34:40.320742",
-    "content_hash": "308b7dd0797a60ed24822eeb65d9898831ac1214e6fddc51199c9df313dfb703",
+    "last_fetched": "2025-07-07T02:08:23.991466",
+    "content_hash": "05cbc84d47d2f3a6775c6431c0f0f2c9c72cd5d858e4a3756ae4fa5ceb875464",
     "nodes_count": 32
   },
   "http://sidepathteam.ir": {
-    "last_fetched": "2025-07-04T13:34:39.769969",
-    "content_hash": "72ca5d7196a1505ea8d9c2374d1929516e3aa8d628cd6c99b19830745b17e153",
+    "last_fetched": "2025-07-07T02:08:23.557582",
+    "content_hash": "e186882131541268740a87d9f5714fe16a6e47402a1a5af89f80e4193c355292",
     "nodes_count": 79
   },
   "http://vless.imamsuyad.me": {
-    "last_fetched": "2025-07-04T13:34:43.050748",
-    "content_hash": "a86c304e7bab62e476364fec4290d9e655929554443ce72c149f40c504bd97ac",
+    "last_fetched": "2025-07-07T02:08:26.375837",
+    "content_hash": "7a158400fe2f1d06616863bb942fa610049f8d604bc91a84414a08c376fbb4c9",
     "nodes_count": 3
   },
   "http://liedown.win": {
-    "last_fetched": "2025-07-04T13:34:39.687949",
+    "last_fetched": "2025-07-07T02:08:23.289014",
     "content_hash": "56f5945b57f13186d60292d8f75d0cccd69a97dafe033d8d9362df2b74696c66",
     "nodes_count": 265
   },
   "http://side.sidepath.ir": {
-    "last_fetched": "2025-07-04T13:34:39.861889",
-    "content_hash": "72ca5d7196a1505ea8d9c2374d1929516e3aa8d628cd6c99b19830745b17e153",
+    "last_fetched": "2025-07-07T02:08:23.959675",
+    "content_hash": "e186882131541268740a87d9f5714fe16a6e47402a1a5af89f80e4193c355292",
     "nodes_count": 79
   },
   "http://xvpn.raynet.my.id": {
-    "last_fetched": "2025-07-04T13:34:41.584814",
-    "content_hash": "5ae2ba086c7be90236105f9065bc17958609d6ab9a7d5e496ee9cce0bd7e0e9a",
+    "last_fetched": "2025-07-07T02:08:24.683585",
+    "content_hash": "5f8c6937a2e9f9c5e9c9108357184e7fc761c9c5fd6fd12f0337c04cf5257674",
     "nodes_count": 23
   },
   "http://akun.agprtm.my.id": {
-    "last_fetched": "2025-07-04T13:34:42.777417",
-    "content_hash": "de089dfe723af28eae47b06c8f8d620c80d18c6284a3f89a407ac1cb5a2b2e72",
+    "last_fetched": "2025-07-07T02:08:25.851091",
+    "content_hash": "85ba534e5c5515a020d429f12ee529ed4462f4d48dbc0ac82aa38f6d1d6d2fa9",
     "nodes_count": 3
   },
   "http://argo.juju.nyc.mn": {
-    "last_fetched": "2025-07-04T13:34:45.243132",
+    "last_fetched": "2025-07-07T02:08:27.373628",
     "content_hash": "2813f3ed9db9a819e5de6d578303b1a1b4c9a1caade79d0629854665e9a4aacd",
     "nodes_count": 2
   },
   "http://ivanbayan.com": {
-    "last_fetched": "2025-07-04T13:34:40.660400",
+    "last_fetched": "2025-07-07T02:08:24.045442",
     "content_hash": "6957d46828bc1abef71fdb875dce644d3dedb125743f1421651789e725810eee",
     "nodes_count": 429
   },
   "http://vts.selo.biz.id": {
-    "last_fetched": "2025-07-04T13:34:41.983277",
-    "content_hash": "06b0d892a63e56883165d970f9c0337e2fb0dc3d578a0d2e4b964eb7f00925d4",
+    "last_fetched": "2025-07-07T02:08:24.936130",
+    "content_hash": "d387ce4add9f8bd4052d7f40373a29b08c0c880df87174da7105b91c4be555b8",
     "nodes_count": 20
   },
   "http://1209960.xyz": {
-    "last_fetched": "2025-07-04T13:34:43.047389",
+    "last_fetched": "2025-07-07T02:08:26.357578",
     "content_hash": "e0dfcbf2281333c63e2c67803850c699a8a7e9621be0bc0c7cc1394b420d45cf",
     "nodes_count": 3
   },
   "http://ava.game.naver.com.vipren.biz.id": {
-    "last_fetched": "2025-07-04T13:34:41.520030",
-    "content_hash": "f43afb459688532c8e6b9f965c7bbe9eaca55beb6d968ca8644b2c5fb55f27b0",
+    "last_fetched": "2025-07-07T02:08:24.671177",
+    "content_hash": "0b8f7420130eb1ee31da8494db9950cf194abb8bc96862e83c1ac2a2993360aa",
     "nodes_count": 32
   },
   "http://nrcs.xyz": {
-    "last_fetched": "2025-07-04T13:34:33.766298",
-    "content_hash": "ce85482dad0afcc92f2d1852754a0605ff37d42fcfeb137b0f0234b4a95c3614",
-    "nodes_count": 547
+    "last_fetched": "2025-07-07T02:08:18.526391",
+    "content_hash": "80760edd220f01cf43d22b84db3c9b8af13f4b7d0b3669b8c4cea267e1ca9a36",
+    "nodes_count": 546
   },
   "http://17.kclx.eu.org": {
-    "last_fetched": "2025-07-04T13:34:42.436286",
-    "content_hash": "e8a29e3ae36f2a29d92aae148ce44c685a17a284bf9fbe1c512d0d8cd84244a2",
+    "last_fetched": "2025-07-07T02:08:25.380759",
+    "content_hash": "a3b563f52782e945d379f35109a4439c6fbce6aec739cfee15e840a89b119516",
     "nodes_count": 269
   },
   "http://clash.zyttbywy.xyz": {
-    "last_fetched": "2025-07-04T13:34:45.879989",
+    "last_fetched": "2025-07-07T02:08:27.880495",
     "content_hash": "2b1d4dba913a8da7af4f2b2ca3ee576c9c8f1e752fa00b7dc3dcf74db16df008",
     "nodes_count": 0
   },
   "http://ttt.kaychen.cn": {
-    "last_fetched": "2025-07-04T13:34:44.989717",
+    "last_fetched": "2025-07-07T02:08:26.763536",
     "content_hash": "4d3d53de6eaade02e67c3212a1a1a1a903f2cfc9df608fbabd6119c62a6ae04e",
     "nodes_count": 15
   },
   "http://kclx.eu.org": {
-    "last_fetched": "2025-07-04T13:34:43.034477",
-    "content_hash": "120aac389d8aa1c0eacdb443c59042b528edc8a3df15ce7652cce4d477c0c1dd",
+    "last_fetched": "2025-07-07T02:08:25.961902",
+    "content_hash": "8ea7939cda8b177ccdbd91c57f1eddd7aeada23947e2deee62f134148c45ab60",
     "nodes_count": 269
   },
   "http://net.032041.xyz": {
-    "last_fetched": "2025-07-04T13:34:42.518434",
-    "content_hash": "5113d500366d2efd23483fae999fd47cf44a264f5f9fa2d64b82f57e5eb68c79",
+    "last_fetched": "2025-07-07T02:08:25.505597",
+    "content_hash": "3f2a3ada25bcb65d12af14d432f36d9dc807a413a2e8de19ada04d5c4b0cb3d0",
     "nodes_count": 25
   },
   "http://767666.xyz": {
-    "last_fetched": "2025-07-04T13:34:46.003870",
+    "last_fetched": "2025-07-07T02:08:29.420325",
     "content_hash": "d790c3a968eacbc3c8588d6a917029de2bd6c081ba98be5ebb4f1ba68e5c5b85",
     "nodes_count": 18
   },
   "http://userdownload.pages.dev": {
-    "last_fetched": "2025-07-04T13:34:45.842004",
+    "last_fetched": "2025-07-07T02:08:27.522158",
     "content_hash": "6f76d132d7e253870a3ddee2466371014550fdaf860dc82677b59cafa2a16b4e",
     "nodes_count": 4
   },
   "http://gfw.jingpengkun.com": {
-    "last_fetched": "2025-07-04T13:34:45.954207",
+    "last_fetched": "2025-07-07T02:08:28.453942",
     "content_hash": "0ab31bcad55a6796716c645e7badf7cd1a0afb1038a569bdcfed0d5bad59c511",
     "nodes_count": 4
   },
   "http://vibeacon.onezapp.com.vts.selo.biz.id": {
-    "last_fetched": "2025-07-04T13:34:42.744048",
-    "content_hash": "28b05800a4e0eed42957bd9286f6813b892be980cee2f68c3ad3177dcd39f426",
+    "last_fetched": "2025-07-07T02:08:25.849877",
+    "content_hash": "37e237978bffcbbe1dcf4847fe6f3166b3d350ba6093175424e7bfe79db85089",
     "nodes_count": 20
   },
   "http://01h.mooo.com": {
-    "last_fetched": "2025-07-04T13:34:46.499260",
+    "last_fetched": "2025-07-07T02:08:29.869053",
     "content_hash": "e3bc079d6018d7bd327181c38ba3f1dcb58f3311a12227ee3ea9e9726a6f8281",
     "nodes_count": 4
   },
   "http://gaofumei.net": {
-    "last_fetched": "2025-07-04T13:34:33.793997",
-    "content_hash": "a3d67b0f1dbc2ab7fc26fde7a2d6b0e1fd23ef37efd44c7fad6dfa025b3c9eb4",
-    "nodes_count": 710
+    "last_fetched": "2025-07-07T02:08:18.527663",
+    "content_hash": "14277e814c74a45795a174f222854b71a3bff41b590ec6e9f4caafb69f8bdcce",
+    "nodes_count": 723
   },
   "http://zaintest.vuclip.com.xvpn.raynet.my.id": {
-    "last_fetched": "2025-07-04T13:34:44.972645",
-    "content_hash": "9266e7ea5bbe81d43b68752ad2787dc3d85a5ee8df5a42e9434fc7449ee61eb3",
+    "last_fetched": "2025-07-07T02:08:26.574679",
+    "content_hash": "99daad0d03a523e550157f67e9e72dfc1b4d7af9528658bd4d17be52a8a51da8",
     "nodes_count": 23
   },
   "http://support.zoom.us.xvpn.raynet.my.id": {
-    "last_fetched": "2025-07-04T13:34:44.960020",
-    "content_hash": "0569c75f3089b2162bb74e1af1f45eb792960d4a57e26dec9e91b9cbe01c900e",
+    "last_fetched": "2025-07-07T02:08:26.535127",
+    "content_hash": "5341c9ccace89dc087682d32acebea6e23a1ecc7d2ff7e2d163c931ba3e100a3",
     "nodes_count": 23
   },
   "http://hid.gexoty.com": {
-    "last_fetched": "2025-07-04T13:34:45.811266",
+    "last_fetched": "2025-07-07T02:08:27.479552",
     "content_hash": "5f6837d035e0a7a4eb417a7f55a409b3e616d8f581d7ed3d6ac03236be27e844",
     "nodes_count": 17
   },
   "http://site.panwd.cloudns.org": {
-    "last_fetched": "2025-07-04T13:34:46.535431",
+    "last_fetched": "2025-07-07T02:08:30.111124",
     "content_hash": "1636fca38582af8186fd9abcddb35fe8885a5d370dc0c3ce6907496eed9063d1",
     "nodes_count": 4
   },
   "http://u.789156.xyz": {
-    "last_fetched": "2025-07-04T13:34:47.162392",
+    "last_fetched": "2025-07-07T02:08:30.564691",
     "content_hash": "3b1057d6963425bcee4ae6edc048e9d9583fe0a4b8fa04f38fd7d8d4002fef19",
     "nodes_count": 0
   },
   "http://warpip.irss.eu.org": {
-    "last_fetched": "2025-07-04T13:34:35.793446",
+    "last_fetched": "2025-07-07T02:08:19.747916",
     "content_hash": "0a9efae9a283d78b0ca4abc0629f916591acc0af368af80df35d82a9b0ce5e7a",
     "nodes_count": 1
   },
   "http://blog.saofan.top": {
-    "last_fetched": "2025-07-04T13:34:45.070021",
+    "last_fetched": "2025-07-07T02:08:26.894131",
     "content_hash": "b917d95e888a47bae4afed8ab99efcb948c417546fc6c2b5caf2b7178aa2b7ec",
     "nodes_count": 67
   },
   "http://v2sub.msdos6dot9.top": {
-    "last_fetched": "2025-07-04T13:34:47.326403",
+    "last_fetched": "2025-07-07T02:08:31.138662",
     "content_hash": "70f32bbaf3decc9b1d699c0ad1dbd9c5780bf247f06fa13f0033503788891a9f",
     "nodes_count": 4
   },
   "http://vahid.ishijar.com": {
-    "last_fetched": "2025-07-04T13:34:46.779001",
+    "last_fetched": "2025-07-07T02:08:30.112311",
     "content_hash": "0bb7aac7f3f8e7540c438a65c38388ac1250a628aa537914381cf411e74bfb08",
     "nodes_count": 17
   },
   "http://daohang.guangyuego.top": {
-    "last_fetched": "2025-07-04T13:34:42.998991",
-    "content_hash": "f4dc7ccc14c62a298805babec86ce9cdd9f40cadbf7c49d4fa1332237257372d",
+    "last_fetched": "2025-07-07T02:08:25.915802",
+    "content_hash": "32f97d48d5c3bdf316f990bba83694dafef6436c409755106d62ba262b319ad0",
     "nodes_count": 193
   },
   "http://freenode.datasets.cc": {
-    "last_fetched": "2025-07-04T13:34:46.928239",
+    "last_fetched": "2025-07-07T02:08:30.204471",
     "content_hash": "aec67ea0f35a9387fd787df6f68c5fe6db24bc587d6f8ea7fd7a681cef17cfc9",
     "nodes_count": 31
   },
   "http://bk.saofan.top": {
-    "last_fetched": "2025-07-04T13:34:46.964893",
+    "last_fetched": "2025-07-07T02:08:30.222054",
     "content_hash": "b917d95e888a47bae4afed8ab99efcb948c417546fc6c2b5caf2b7178aa2b7ec",
     "nodes_count": 67
   },
   "http://app.symmetricnet.com": {
-    "last_fetched": "2025-07-04T13:34:45.919667",
+    "last_fetched": "2025-07-07T02:08:28.030083",
     "content_hash": "6a8962b069bdcf73c6467e19d3010bdb4896d31ded9b44a4b089806ebc459005",
     "nodes_count": 12
   },
   "http://drnajdi.com": {
-    "last_fetched": "2025-07-04T13:34:46.103865",
-    "content_hash": "f14dc781dc3444fdc507238190e7bb9c0124919cea727bb3c4398fa499b12ce2",
-    "nodes_count": 252
+    "last_fetched": "2025-07-07T02:08:29.773025",
+    "content_hash": "8e9aaac4a7f13de000b0cc26493446871e82c39d1f0ef3d021ac74fda6045b66",
+    "nodes_count": 245
   },
   "http://linkjadid.top": {
-    "last_fetched": "2025-07-04T13:34:47.179578",
-    "content_hash": "4ae806a2c8e4931b66b56442df5a0471ffbbdff934f035f3c5251d357b5f3d4c",
+    "last_fetched": "2025-07-07T02:08:31.034061",
+    "content_hash": "61f540112316c7406289a61d920ce81dae2ec4e539ce2c242377675edd78c086",
     "nodes_count": 10
   },
   "http://vpn.tunnelz.me": {
-    "last_fetched": "2025-07-04T13:34:37.778486",
+    "last_fetched": "2025-07-07T02:08:21.874357",
     "content_hash": "89473ab0c19e2a0aadd29e508d91b8beb029beadd804fc43d681c0381f4b52e6",
     "nodes_count": 30
   },
   "http://fdfsdf.ghavi8.ir": {
-    "last_fetched": "2025-07-04T13:34:48.948499",
-    "content_hash": "fe95de932bb2cb4a977b5e56acfade2e6c6cf66d25f73e27f993597e29f0813a",
+    "last_fetched": "2025-07-07T02:08:31.986936",
+    "content_hash": "575275305fdee0f6cb64c30919e9176acfc806cbcb3e9058ba357caeef188677",
     "nodes_count": 4
   },
   "http://myv2ray.hasifjalil.my": {
-    "last_fetched": "2025-07-04T13:34:49.175230",
-    "content_hash": "16a060babfb8a8115fa60db8cc41cd6c972c9b04a6a91e41c26ad3b3a707e0e1",
+    "last_fetched": "2025-07-07T02:08:32.260577",
+    "content_hash": "68451584c90ad52a3f88639693abe0de4b40a686af2d65f5a15e25f722a63b2f",
     "nodes_count": 4
   },
   "http://ezzit.baikeog.com": {
-    "last_fetched": "2025-07-04T13:34:48.620261",
-    "content_hash": "28e9b64e04103bf7fe570020adbc4f146aedad1b045bb311ac54df3c3ea09d64",
-    "nodes_count": 9
+    "last_fetched": "2025-07-07T02:08:31.854105",
+    "content_hash": "793952e238dc0dd84e23d7d6614190133bee421f65cab1cae80f00e85a903dd2",
+    "nodes_count": 2
   },
   "http://archlinux-desktop.sergionator.duckdns.org": {
-    "last_fetched": "2025-07-04T13:34:48.490871",
+    "last_fetched": "2025-07-07T02:08:31.636246",
     "content_hash": "e098cc37b0d4a549b8614a195dd40f999d1fa99c444161ae6f35c0b7c25932c8",
     "nodes_count": 51
   },
   "http://blog.internetacc.live": {
-    "last_fetched": "2025-07-04T13:34:48.146466",
-    "content_hash": "75ee9db2fd26b7eb247920b697e83c206a6428de4b72341ead15a6c81547085d",
+    "last_fetched": "2025-07-07T02:08:31.633454",
+    "content_hash": "d1dd4801ea8c6e6f294276ddd7ec451885ab3c3f1429bd67dc2c6c5b9052ca7d",
     "nodes_count": 114
   },
   "http://telebotking.ggff.net": {
-    "last_fetched": "2025-07-04T13:34:49.353799",
-    "content_hash": "09a98b353da7ef5b2850c88a83af39e8dece02a201d9bbf18fedbf148e7ae6fb",
+    "last_fetched": "2025-07-07T02:08:32.449747",
+    "content_hash": "44b23043097b5efa45fa0ac3c3cff31f6818b4162c3a625d593e6995eaefc5bf",
     "nodes_count": 18
   },
   "http://esi1.ghavi8.ir": {
-    "last_fetched": "2025-07-04T13:34:49.518794",
-    "content_hash": "fa7a97a7754f1c19938184dc66f796502595029a36252020d3fbe49317b9f789",
+    "last_fetched": "2025-07-07T02:08:32.675636",
+    "content_hash": "ec7cc7a1dc4193ced1f7b2c9dc78a3cd278fc857481da7138242225de3a80763",
     "nodes_count": 4
   },
   "http://sergionator.duckdns.org": {
-    "last_fetched": "2025-07-04T13:34:49.508772",
+    "last_fetched": "2025-07-07T02:08:32.452451",
     "content_hash": "e098cc37b0d4a549b8614a195dd40f999d1fa99c444161ae6f35c0b7c25932c8",
     "nodes_count": 51
   },
   "http://oneplus-10pro.sergionator.duckdns.org": {
-    "last_fetched": "2025-07-04T13:34:49.901906",
+    "last_fetched": "2025-07-07T02:08:32.747386",
     "content_hash": "e098cc37b0d4a549b8614a195dd40f999d1fa99c444161ae6f35c0b7c25932c8",
     "nodes_count": 51
   },
   "http://worker.sacreations.live": {
-    "last_fetched": "2025-07-04T13:34:51.317511",
+    "last_fetched": "2025-07-07T02:08:32.767304",
     "content_hash": "11a96a33cb474623800dc7f3370fefe66b83849a7cda229885ac339e2fe40e74",
     "nodes_count": 2
   },
   "http://ubtvpn.ru": {
-    "last_fetched": "2025-07-04T13:34:50.055831",
+    "last_fetched": "2025-07-07T02:08:32.758417",
     "content_hash": "8e92b9cc8ebecf3ab2941dbc04f818cc385a62c328f705d12cabe5550e391ba0",
     "nodes_count": 42
   },
   "http://ali.digipul.ir": {
-    "last_fetched": "2025-07-04T13:34:50.852171",
+    "last_fetched": "2025-07-07T02:08:32.760184",
     "content_hash": "ebc3d46ebc4ef995cffda17bbd5e251161e8d6baddad60870fc78a643433dff6",
     "nodes_count": 2
   },
   "http://rename.yomoh.ggff.net": {
-    "last_fetched": "2025-07-04T13:34:51.047295",
+    "last_fetched": "2025-07-07T02:08:32.762457",
     "content_hash": "ebc441daa454a05278159a9cdd356abba5c46e7ad8492b94bf5f4583bc2d9818",
     "nodes_count": 9
   },
   "http://tunnelz.me": {
-    "last_fetched": "2025-07-04T13:34:38.004007",
+    "last_fetched": "2025-07-07T02:08:22.075394",
     "content_hash": "89473ab0c19e2a0aadd29e508d91b8beb029beadd804fc43d681c0381f4b52e6",
     "nodes_count": 30
   },
   "http://nonni.cn": {
-    "last_fetched": "2025-07-04T13:34:48.511274",
-    "content_hash": "9e43d3ad1283e5cde9719c2e5decde1a8c631072bc5add25a1e00778e2d0588a",
+    "last_fetched": "2025-07-07T02:08:31.770665",
+    "content_hash": "e11f8727fc39a3862d8d76e47526f96bdebaca645ce4e6ea57fd786bf8dc1699",
     "nodes_count": 149
   },
   "http://itdog.info": {
-    "last_fetched": "2025-07-04T13:34:51.953777",
+    "last_fetched": "2025-07-07T02:08:32.768187",
     "content_hash": "e098cc37b0d4a549b8614a195dd40f999d1fa99c444161ae6f35c0b7c25932c8",
     "nodes_count": 51
   },
   "http://quicksafevpn.ru": {
-    "last_fetched": "2025-07-04T13:34:48.974591",
+    "last_fetched": "2025-07-07T02:08:32.114376",
     "content_hash": "ebae88ad1a7afb422664a6ab0a58150612cda25f14cd7b36e2fb79cf88fb9ac6",
     "nodes_count": 4
   },
   "https://maxvpn-reload.ru": {
-    "last_fetched": "2025-07-04T13:34:49.531824",
+    "last_fetched": "2025-07-07T02:08:32.679970",
     "content_hash": "f6576d664e49a57f0f4b22549aa94196fcc2b48dbfb53d87b4bfb20856c4a749",
     "nodes_count": 4
   },
   "http://v2testelm.lmhost.online": {
-    "last_fetched": "2025-07-04T13:34:33.859073",
-    "content_hash": "aab7ddafdd5c23485245c5c0013d4d33c6ae6a774e81f317a41a517bb22cd6ad",
+    "last_fetched": "2025-07-07T02:08:18.547541",
+    "content_hash": "7a257e5c2e65b0f22fbed811c41aeb931cf28d29dbf732941ba35565a8415519",
     "nodes_count": 49
   },
   "http://zwemschoolsia.nl": {
-    "last_fetched": "2025-07-04T13:34:47.764626",
-    "content_hash": "6a5f0dbde7812e0aa44a05a3a4ecf124033ddbc84e8429f2783873909e5d7ba5",
-    "nodes_count": 164450
+    "last_fetched": "2025-07-07T02:08:31.535412",
+    "content_hash": "7d67a784dd2d87d379c7ab09e56963f7776584681c5a1ef54e989fb75ac2fb46",
+    "nodes_count": 165504
   },
   "https://artatrend.mydigify.app": {
-    "last_fetched": "2025-07-04T13:34:46.123543",
-    "content_hash": "63302d725d2d891812b4e8ddc7f76d8865c6223d9fd14366a5a9300f76d26315",
+    "last_fetched": "2025-07-07T02:08:29.827831",
+    "content_hash": "0c45e9775b14a801cad705da74c3815ab9e22763e65dae483e187696880613a9",
     "nodes_count": 96
   },
   "http://artatrend.ir": {
-    "last_fetched": "2025-07-04T13:34:47.521740",
-    "content_hash": "3288784d7d90c07f24fc8574a9ddb4248bd15ed90b6dff72c36a13b3bb163c03",
+    "last_fetched": "2025-07-07T02:08:31.143811",
+    "content_hash": "319187651a9d29a7558e605d74332e341c70f8908d0e882b074f61532e301e44",
     "nodes_count": 96
   }
 }
