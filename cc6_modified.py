@@ -31,7 +31,7 @@ UA = UserAgent()
 
 # 缓存配置
 CACHE_FILE = 'data/fetch_cache.json'
-CACHE_EXPIRY_HOURS = 24 # 缓存有效期（小时）
+CACHE_EXPIRY_HOURS = 16 # 缓存有效期（小时）
 
 # 配置日志系统
 os.makedirs('data', exist_ok=True)
