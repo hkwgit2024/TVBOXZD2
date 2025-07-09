@@ -1,4 +1,4 @@
-name: Proxy Node Converter Workflow
+name:cc6_modified.py
 
 on:
   push:
