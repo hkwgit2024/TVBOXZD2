@@ -1,4 +1,4 @@
-name:cc6_modified.py
+name: cc6_modified.py
 
 on:
   push:
