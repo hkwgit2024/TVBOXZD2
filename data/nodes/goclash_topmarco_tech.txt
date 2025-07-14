@@ -1,4 +1,0 @@
-https://1.0.0.1/dns-query
-http://www.gstatic.com/generate_204
-https://dns.alidns.com/dns-query
-https://doh.pub/dns-query
