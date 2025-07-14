@@ -1,0 +1,3 @@
+trojan://Trojan-Masbodong@${host}:443?path=%2Ftr%3D${ipPort}&security=tls&host=${host}&type=ws&sni=${host}#Worker-Trojan`;
+vless://${uuidRandom}@${host}:443?path=%2Fvl%3D${ipPort}&security=tls&encryption=none&host=${host}&type=ws&sni=${host}#Worker-Vless`;
+ss://${uuidRandom}@${host}:443?path=%2Fvl%3D${ipPort}&security=tls&encryption=none&host=${host}&type=ws&sni=${host}#Worker-Vless`;

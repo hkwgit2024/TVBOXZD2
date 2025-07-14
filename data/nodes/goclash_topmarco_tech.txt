@@ -1,0 +1,4 @@
+http://www.gstatic.com/generate_204
+https://1.0.0.1/dns-query
+https://doh.pub/dns-query
+https://dns.alidns.com/dns-query
