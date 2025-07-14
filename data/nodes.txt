@@ -1,0 +1,2 @@
+ss://c07dfab6-61d9-4255-aad5-cab91acb05fd:@38.180.143.151:443#vpn
+vless://c07dfab6-61d9-4255-aad5-cab91acb05fd:@38.180.143.151:443?flow=xtls-rprx-#vpn
