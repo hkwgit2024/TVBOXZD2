@@ -1,0 +1,10 @@
+httpx[http2]
+beautifulsoup4
+PyYAML
+aiofiles
+aiodns
+tenacity
+geoip2
+maxminddb
+playwright
+dnspython
