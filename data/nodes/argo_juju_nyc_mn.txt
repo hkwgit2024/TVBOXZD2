@@ -1,2 +1,0 @@
-ss://${encodeBase64Json(vmessData)}`;
-vmess://${encodeBase64Json(vmessData)}`;
