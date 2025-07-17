@@ -1,4 +1,3 @@
-
 import requests
 from requests_file import FileAdapter
 import json
@@ -6,10 +5,22 @@ import yaml
 from typing import Union, List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
-from datetime import datetime
-from config import config
+from datetime import datetime, timedelta
+from settings import config
 
 logger = logging.getLogger(__name__)
+
+session = requests.Session()
+session.trust_env = False
+try:
+    with open("local_proxy.conf") as f:
+        proxy = f.read().strip()
+    if proxy:
+        session.proxies = {'http': proxy, 'https': proxy}
+except FileNotFoundError:
+    pass
+session.headers["User-Agent"] = 'Mozilla/5.0 (X11; Linux x86_64) Clash-verge/v2.0.3 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58'
+session.mount('file://', FileAdapter())
 
 class Source:
     """订阅源类，用于抓取和解析订阅内容"""
@@ -128,6 +139,62 @@ class Source:
                     logger.error(f"YAML 格式不包含有效节点列表 for '{self.url}'")
                 return
             except yaml.YAMLError:
-                # ... 其他解析逻辑
+                try:
+                    decoded = b64decodes(text)
+                    lines = decoded.strip().splitlines()
+                    valid_lines = [line.strip() for line in lines if '://' in line and line.strip()]
+                    if valid_lines:
+                        self.sub = valid_lines
+                        return
+                    try:
+                        data = json.loads(decoded)
+                        if isinstance(data, list):
+                            self.sub = data
+                        elif isinstance(data, dict) and 'proxies' in data:
+                            self.sub = data['proxies']
+                        else:
+                            self.sub = []
+                            logger.error(f"Base64 解码后 JSON 格式不包含有效节点列表 for '{self.url}'")
+                        return
+                    except json.JSONDecodeError:
+                        try:
+                            data = yaml.safe_load(decoded)
+                            if isinstance(data, dict) and 'proxies' in data:
+                                self.sub = data['proxies']
+                            elif isinstance(data, list):
+                                self.sub = data
+                            else:
+                                self.sub = []
+                                logger.error(f"Base64 解码后 YAML 格式不包含有效节点列表 for '{self.url}'")
+                            return
+                        except yaml.YAMLError:
+                            pass
+                except (binascii.Error, UnicodeDecodeError):
+                    pass
+                lines = text.splitlines()
+                valid_lines = [line.strip() for line in lines if '://' in line and line.strip()]
+                if valid_lines:
+                    self.sub = valid_lines
+                    return
+                potential_nodes = []
+                for delimiter in ('\n', '\r\n', ' ', '\t'):
+                    lines = text.split(delimiter)
+                    valid_lines = [line.strip() for line in lines if '://' in line and line.strip()]
+                    if valid_lines:
+                        potential_nodes.extend(valid_lines)
+                if potential_nodes:
+                    self.sub = list(set(potential_nodes))
+                    return
+                logger.error(f"无法解析 '{self.url}' 的内容，原始内容（前100字符）：{text[:100]}")
                 self.sub = []
-
+        finally:
+            if self.sub and 'max' in self.cfg and len(self.sub) > self.cfg['max']:
+                logger.error(f"此订阅有 {len(self.sub)} 个节点，最大限制为 {self.cfg['max']} 个，忽略此订阅。")
+                self.sub = []
+            elif self.sub and 'ignore' in self.cfg:
+                if isinstance(self.sub[0], str):
+                    self.sub = [_ for _ in self.sub if _.split('://', 1)[0] not in self.cfg['ignore']]
+                elif isinstance(self.sub[0], dict):
+                    self.sub = [_ for _ in self.sub if _.get('type', '') not in self.cfg['ignore']]
+                else:
+                    self.sub = []
