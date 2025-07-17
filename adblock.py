@@ -1,4 +1,4 @@
-```python
+
 import requests
 import logging
 from typing import Dict, List, Set
@@ -121,4 +121,4 @@ def merge_adblock(adblock_name: str, rules: Dict[str, str]) -> None:
             rules[f'DOMAIN-SUFFIX,{domain}'] = adblock_name
 
     logger.info(f"共有 {len(rules)} 条规则")
-```
+
