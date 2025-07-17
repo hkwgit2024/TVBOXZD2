@@ -1,4 +1,3 @@
-
 name: Fetch
 
 on:
@@ -10,7 +9,7 @@ on:
     paths:
       - 'sources.list'
       - 'config.yml'
-      - 'config.yaml'  # 添加新的配置文件
+      - 'config.yaml'
       - 'abpwhite.txt'
       - '.github/workflows/**'
       - '**.py'
@@ -35,16 +34,16 @@ jobs:
       run: pip install -r requirements2.txt
 
     - name: 执行任务
-      run: python ./main.py  # 更新为新的主脚本
+      run: python ./main.py
 
     - name: 提交更改
       run: |
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Actions"
         git pull origin master
-        git add list* snippets/ fetch.log  # 添加日志文件
+        git add list* snippets/ fetch.log
         git commit -m "$(date '+%Y-%m-%d %H:%M:%S') 抓取节点" || echo "无更改需要提交"
-      continue-on-error: true  # 避免无更改时失败
+      continue-on-error: true
 
     - name: 推送更改
       uses: ad-m/github-push-action@master
@@ -70,4 +69,3 @@ jobs:
       with:
         url: ${{ steps.purge_urls.outputs.urls }}
       continue-on-error: true
-
