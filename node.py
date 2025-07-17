@@ -1,4 +1,4 @@
-```python
+
 import json
 import base64
 import re
@@ -221,4 +221,4 @@ def b64decodes_safe(s: str) -> str:
     except (UnicodeDecodeError, binascii.Error) as e:
         logger.error(f"Base64 安全解码失败：{e}")
         raise
-```
+
