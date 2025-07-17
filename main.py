@@ -1,33 +1,27 @@
-
 import os
 import logging
 import datetime
 from typing import Set, Dict, List
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from node import Node, NotANode, UnsupportedType
-from source import Source
-from config import config
+from source import Source, session, raw2fastly
 from config import generate_configs
+from settings import config
 
 logger = logging.getLogger(__name__)
 
 def setup_logging():
+    """配置日志"""
     logging.basicConfig(
         filename='fetch.log',
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-def raw2fastly(url: str) -> str:
-    if not os.path.exists("local_proxy.conf"):
-        return url
-    if url.startswith("https://raw.githubusercontent.com/"):
-        return "https://ghfast.top/" + url
-    return url
-
 def extract(url: str) -> Union[Set[str], int]:
+    """提取订阅源中的链接"""
     try:
-        res = requests.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
+        res = session.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
         if res.status_code != 200:
             return res.status_code
         urls: Set[str] = set()
@@ -43,7 +37,8 @@ def extract(url: str) -> Union[Set[str], int]:
         logger.error(f"提取 '{url}' 失败：{e}")
         return -1
 
-def merge(source_obj: Source, sourceId: int, merged: Dict[int, Node], unknown: Set[str]) -> None:
+def merge(source_obj: Source, sourceId: int, merged: Dict[int, Node], unknown: Set[str], used: Dict[int, Dict[int, str]]) -> None:
+    """合并订阅源中的节点"""
     if not source_obj.sub:
         logger.info(f"空订阅 '{source_obj.url}'，跳过")
         return
@@ -59,7 +54,9 @@ def merge(source_obj: Source, sourceId: int, merged: Dict[int, Node], unknown: S
                 merged[hashn] = n
             else:
                 merged[hashn].data.update(n.data)
-            # ... 其他合并逻辑
+            if hashn not in used:
+                used[hashn] = {}
+            used[hashn][sourceId] = n.name
         except (UnsupportedType, NotANode) as e:
             unknown.add(str(p))
             logger.error(f"节点错误：{e}")
@@ -67,6 +64,7 @@ def merge(source_obj: Source, sourceId: int, merged: Dict[int, Node], unknown: S
             logger.error(f"解析节点失败：{e}")
 
 def main():
+    """主函数，协调抓取和生成配置"""
     setup_logging()
     logger.info("开始执行 Proxy Fetch")
 
@@ -132,6 +130,7 @@ def main():
     sources_obj = [Source(url) for url in sorted(sources_final) + AUTOFETCH]
     merged: Dict[int, Node] = {}
     unknown: Set[str] = set()
+    used: Dict[int, Dict[int, str]] = {}
 
     with ThreadPoolExecutor(max_workers=min(os.cpu_count() * 2, 10)) as executor:
         future_to_source = {executor.submit(source.get): source for source in sources_obj}
@@ -141,20 +140,20 @@ def main():
             try:
                 future.result()
                 source.parse()
-                merge(source, sources_obj.index(source), merged, unknown)
+                merge(source, sources_obj.index(source), merged, unknown, used)
                 logger.info("完成")
             except Exception as e:
                 logger.error(f"处理 '{source.url}' 失败：{e}")
 
     # 处理 STOP 模式
-    if os.path.exists("local_NO_NODES") or (datetime.now().month, datetime.now().day) in ((6, 4), (7, 1), (10, 1)):
+    d = datetime.datetime.now()
+    if os.path.exists("local_NO_NODES") or (d.month, d.day) in ((6, 4), (7, 1), (10, 1)):
         merged = {i: Node(nd) for i, nd in enumerate(config["stop_fake_nodes"].splitlines())}
 
     # 生成配置文件
-    generate_configs(merged, unknown, sources_obj)
+    generate_configs(merged, unknown, sources_obj, used)
 
     logger.info("任务完成")
 
 if __name__ == '__main__':
     main()
-
