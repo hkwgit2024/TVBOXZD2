@@ -1,7 +1,7 @@
 import os
 import logging
 import datetime
-from typing import Set, Dict, List
+from typing import Set, Dict, List, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from node import Node, NotANode, UnsupportedType, b64decodes
 from source import Source, session, raw2fastly
