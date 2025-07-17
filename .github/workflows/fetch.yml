@@ -1,4 +1,4 @@
-```yaml
+
 name: Fetch
 
 on:
@@ -70,4 +70,4 @@ jobs:
       with:
         url: ${{ steps.purge_urls.outputs.urls }}
       continue-on-error: true
-```
+
