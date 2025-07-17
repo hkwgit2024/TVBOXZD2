@@ -1,15 +1,14 @@
-
 import requests
 import logging
 from typing import Dict, List, Set
-from config import config
+from settings import config
 
 logger = logging.getLogger(__name__)
 
 class DomainTree:
     """域名树，用于存储和处理域名规则"""
     def __init__(self) -> None:
-        self.children: Dict[str, DomainTree] = {}
+        self.children: Dict[str, 'DomainTree'] = {}
         self.here: bool = False
 
     def insert(self, domain: str) -> None:
@@ -44,7 +43,7 @@ class DomainTree:
             if child.here:
                 ret.append(name)
             else:
-                ret.extend([_+'.' + name for _ in child.get()])
+                ret.extend([_ + '.' + name for _ in child.get()])
         return ret
 
 def merge_adblock(adblock_name: str, rules: Dict[str, str]) -> None:
@@ -54,8 +53,9 @@ def merge_adblock(adblock_name: str, rules: Dict[str, str]) -> None:
     unblock: Set[str] = set()
 
     for url in config["abf_urls"]:
+        url = raw2fastly(url)
         try:
-            res = requests.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
+            res = session.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
             if res.status_code != 200:
                 logger.error(f"{url} 下载失败：{res.status_code}")
                 continue
@@ -73,8 +73,9 @@ def merge_adblock(adblock_name: str, rules: Dict[str, str]) -> None:
             continue
 
     for url in config["abf_white"]:
+        url = raw2fastly(url)
         try:
-            res = requests.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
+            res = session.get(url, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"]))
             if res.status_code != 200:
                 logger.error(f"{url} 下载失败：{res.status_code}")
                 continue
@@ -121,4 +122,3 @@ def merge_adblock(adblock_name: str, rules: Dict[str, str]) -> None:
             rules[f'DOMAIN-SUFFIX,{domain}'] = adblock_name
 
     logger.info(f"共有 {len(rules)} 条规则")
-
