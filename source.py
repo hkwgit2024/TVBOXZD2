@@ -22,6 +22,14 @@ except FileNotFoundError:
 session.headers["User-Agent"] = 'Mozilla/5.0 (X11; Linux x86_64) Clash-verge/v2.0.3 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.58'
 session.mount('file://', FileAdapter())
 
+def raw2fastly(url: str) -> str:
+    """将 GitHub Raw URL 转换为加速 CDN URL"""
+    if not os.path.exists("local_proxy.conf"):
+        return url
+    if url.startswith("https://raw.githubusercontent.com/"):
+        return "https://ghfast.top/" + url
+    return url
+
 class Source:
     """订阅源类，用于抓取和解析订阅内容"""
     def __init__(self, url: Union[str, callable]) -> None:
@@ -174,7 +182,7 @@ class Source:
                 lines = text.splitlines()
                 valid_lines = [line.strip() for line in lines if '://' in line and line.strip()]
                 if valid_lines:
-                    self.sub = valid_lines
+                    self.sub = list(set(valid_lines))
                     return
                 potential_nodes = []
                 for delimiter in ('\n', '\r\n', ' ', '\t'):
