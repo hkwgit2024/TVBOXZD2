@@ -73,24 +73,6 @@ def main():
         logger.warning("已启用无节点调试模式")
         sources = []
 
-    # 处理动态链接
-    from dynamic import AUTOURLS, AUTOFETCH
-    if not os.path.exists("local_NO_DYNAMIC"):
-        for auto_fun in AUTOURLS:
-            logger.info(f"生成动态链接 '{auto_fun.__name__}'")
-            try:
-                url = auto_fun()
-                if url:
-                    if isinstance(url, str):
-                        sources.append(url)
-                    elif isinstance(url, (list, tuple, set)):
-                        sources.extend(url)
-                    logger.info("动态链接生成成功")
-                else:
-                    logger.info("跳过空动态链接")
-            except Exception as e:
-                logger.error(f"动态链接生成失败：{e}")
-
     # 整理链接
     sources_final: Set[str] = set()
     airports: Set[str] = set()
@@ -127,7 +109,7 @@ def main():
                     logger.error(f"合并失败：{e}")
 
     # 抓取和合并节点
-    sources_obj = [Source(url) for url in sorted(sources_final) + AUTOFETCH]
+    sources_obj = [Source(url) for url in sorted(sources_final)]
     merged: Dict[int, Node] = {}
     unknown: Set[str] = set()
     used: Dict[int, Dict[int, str]] = {}
