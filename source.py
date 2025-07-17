@@ -1,4 +1,4 @@
-```python
+
 import requests
 from requests_file import FileAdapter
 import json
@@ -130,4 +130,4 @@ class Source:
             except yaml.YAMLError:
                 # ... 其他解析逻辑
                 self.sub = []
-```
+
