@@ -1,4 +1,4 @@
-```yaml
+
 # Proxy Fetch 配置文件
 fetch_timeout:
   connect: 6
