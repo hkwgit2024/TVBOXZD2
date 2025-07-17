@@ -1,0 +1,77 @@
+```yaml
+# Proxy Fetch 配置文件
+fetch_timeout:
+  connect: 6
+  read: 5
+
+fake_ips:
+  - 8.8.8.8
+  - 8.8.4.4
+  - 4.2.2.2
+  - 4.2.2.1
+  - 114.114.114.114
+  - 127.0.0.1
+  - 0.0.0.0
+
+fake_domains:
+  - .google.com
+  - .github.com
+
+banned_words: 5rOV6L2uIOi9ruWtkCDova4g57uDIOawlCDlip8gb25ndGFpd2Fu
+
+default_uuid: 88888888-8888-8888-8888-888888888888
+
+clash_cipher_vmess:
+  - auto
+  - aes-128-gcm
+  - chacha20-poly1305
+  - none
+
+clash_cipher_ss:
+  - aes-128-gcm
+  - aes-192-gcm
+  - aes-256-gcm
+  - aes-128-cfb
+  - aes-192-cfb
+  - aes-256-cfb
+  - aes-128-ctr
+  - aes-192-ctr
+  - aes-256-ctr
+  - rc4-md5
+  - chacha20-ietf
+  - xchacha20
+  - chacha20-ietf-poly1305
+  - xchacha20-ietf-poly1305
+
+clash_ssr_obfs:
+  - plain
+  - http_simple
+  - http_post
+  - random_head
+  - tls1.2_ticket_auth
+  - tls1.2_ticket_fastauth
+
+clash_ssr_protocol:
+  - origin
+  - auth_sha1_v4
+  - auth_aes128_md5
+  - auth_aes128_sha1
+  - auth_chain_a
+  - auth_chain_b
+
+abf_urls:
+  - https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/ChineseFilter/sections/adservers.txt
+  - https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/ChineseFilter/sections/adservers_firstparty.txt
+  - https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_224_Chinese/filter.txt
+  - https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt
+  - https://raw.githubusercontent.com/d3ward/toolz/master/src/d3host.adblock
+  - https://raw.githubusercontent.com/afwfv/DD-AD/main/rule/DD-AD.txt
+
+abf_white:
+  - https://raw.githubusercontent.com/privacy-protection-tools/dead-horse/master/anti-ad-white-list.txt
+  - file:///abpwhite.txt
+
+stop_fake_nodes: |
+  vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlx1NUU4Nlx1Nzk1RFx1NEU5QVx1NTFBQ1x1NEYxQVx1ODBEQ1x1NTIyOVx1NTNFQ1x1NUYwMCIsDQogICJhZGQiOiAid2ViLjUxLmxhIiwNCiAgInBvcnQiOiAiNDQzIiwNCiAgImlkIjogIjg4ODg4ODg4LTg4ODgtODg4OC04ODg4LTg4ODg4ODg4ODg4OCIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAiaHR0cCIsDQogICJob3N0IjogIndlYi41MS5sYSIsDQogICJwYXRoIjogIi9pbWFnZXMvaW5kZXgvc2VydmljZS1waWMucG5nIiwNCiAgInRscyI6ICJ0bHMiLA0KICAic25pIjogIndlYi41MS5sYSIsDQogICJhbHBuIjogImh0dHAvMS4xIiwNCiAgImZwIjogImNocm9tZSINCn0=
+  vmess://ew0KICAidiI6 ICIyIiwNCiAgInBzIjogIlx1NjU0Rlx1NjExRlx1NjVGNlx1NjcxRlx1RkYwQ1x1NjZGNFx1NjVCMFx1NjY4Mlx1NTA1QyIsDQogICJhZGQiOiAid2ViLjUxLmxhIiwNCiAgInBvcnQiOiAiNDQzIiwNCiAgImlkIjogImM2ZTg0MDcyLTJlNjktNDkyOC05MGFmLTQzNmIzZmNkMDY2MyIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAiaHR0cCIsDQogICJob3N0IjogIndlYi41MS5sYSIsDQogICJwYXRoIjogIi9pbWFnZXMvaW5kZXgvc2VydmljZS1waWMucG5nIiwNCiAgInRscyI6ICJ0bHMiLA0KICAic25pIjogIndlYi41MS5sYSIsDQogICJhbHBuIjogImh0dHAvMS4xIiwNCiAgImZwIjogImNocm9tZSINCn0=
+  vmess://ew0KICAidiI6ICIyIiwNCiAgInBzIjogIlx1NTk4Mlx1NjcwOVx1OTcwMFx1ODk4MVx1RkYwQ1x1ODFFQVx1ODg0Q1x1NjQyRFx1NUVGQSIsDQogICJhZGQiOiAid2ViLjUxLmxhIiwNCiAgInBvcnQiOiAiNDQzIiwNCiAgImlkIjogImUwYzZiM2I3LTlmNWItNGJkNi05YWJmLTI2MDY2M2FhNGYxYiIsDQogICJhaWQiOiAiMCIsDQogICJzY3kiOiAiYXV0byIsDQogICJuZXQiOiAidGNwIiwNCiAgInR5cGUiOiAiaHR0cCIsDQogICJob3N0IjogIndlYi41MS5sYSIsDQogICJwYXRoIjogIi9pbWFnFLZXляд
