@@ -1,4 +1,3 @@
-
 import json
 import base64
 import re
@@ -7,8 +6,7 @@ from urllib.parse import quote, unquote, urlparse
 from typing import Dict, Any, Union, Set
 import logging
 import yaml
-
-from config import config
+from settings import config
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +85,29 @@ class Node:
                 path += '/' + opts.get('path', '')
             elif net == 'grpc':
                 path += data.get('grpc-opts', {}).get('grpc-service-name', '')
-        # ... 其他协议类型的路径处理
+        elif self.type == 'ss':
+            opts = data.get('plugin-opts', {})
+            path = opts.get('host', '') + '/' + opts.get('path', '')
+        elif self.type == 'ssr':
+            path = data.get('obfs-param', '')
+        elif self.type == 'trojan':
+            path = data.get('sni', '') + ':'
+            net = data.get('network', '')
+            if net == 'ws':
+                opts = data.get('ws-opts', {})
+                path += opts.get('headers', {}).get('Host', '') + '/' + opts.get('path', '')
+            elif net == 'grpc':
+                path += data.get('grpc-opts', {}).get('grpc-service-name', '')
+        elif self.type == 'vless':
+            path = data.get('sni', '') + ':'
+            net = data.get('network', '')
+            if net == 'ws':
+                opts = data.get('ws-opts', {})
+                path += opts.get('headers', {}).get('Host', '') + '/' + opts.get('path', '')
+            elif net == 'grpc':
+                path += data.get('grpc-opts', {}).get('grpc-service-name', '')
+        elif self.type == 'hysteria2':
+            path = data.get('sni', '') + ':' + data.get('obfs-password', '') + ':'
         path += '@' + ','.join(data.get('alpn', [])) + '@' + data.get('password', '') + data.get('uuid', '')
         return path
 
@@ -115,11 +135,218 @@ class Node:
             self.data = {self.VMESS2CLASH[key]: val for key, val in v.items() if key in self.VMESS2CLASH}
             self.data['tls'] = v['tls'] == 'tls'
             self.data['alterId'] = int(self.data['alterId'])
-            # ... 其他 vmess 处理逻辑
+            if v['net'] == 'ws':
+                opts = {}
+                if 'path' in v:
+                    opts['path'] = v['path']
+                if 'host' in v:
+                    opts['headers'] = {'Host': v['host']}
+                self.data['ws-opts'] = opts
+            elif v['net'] == 'h2':
+                opts = {}
+                if 'path' in v:
+                    opts['path'] = v['path']
+                if 'host' in v:
+                    opts['host'] = v['host'].split(',')
+                self.data['h2-opts'] = opts
+            elif v['net'] == 'grpc' and 'path' in v:
+                self.data['grpc-opts'] = {'grpc-service-name': v['path']}
         elif self.type == 'ss':
-            # ... Shadowsocks 解析逻辑
-            pass
-        # ... 其他协议类型处理
+            info = url.split('@')
+            srvname = info.pop()
+            if '#' in srvname:
+                srv, name = srvname.split('#', 1)
+            else:
+                srv, name = srvname, ''
+            if ':' not in srv:
+                logger.error(f"无效的 ss:// 格式，缺少端口：{url}")
+                raise NotANode(url)
+            server, port = srv.rsplit(':', 1)
+            try:
+                port = int(port)
+            except ValueError:
+                logger.error(f"无效的端口号：{port} in {url}")
+                raise NotANode(url)
+            info = '@'.join(info)
+            try:
+                info = b64decodes_safe(info)
+            except (binascii.Error, UnicodeDecodeError) as e:
+                logger.error(f"无法解码 ss:// 加密信息：{info}")
+                raise NotANode(url)
+            if ':' in info:
+                cipher, passwd = info.split(':', 1)
+            else:
+                cipher, passwd = info, ''
+            self.data = {
+                'name': unquote(name),
+                'server': server,
+                'port': port,
+                'type': 'ss',
+                'password': passwd,
+                'cipher': cipher
+            }
+        elif self.type == 'ssr':
+            if '?' in url:
+                parts = dt.split(':')
+            else:
+                try:
+                    parts = b64decodes_safe(dt).split(':')
+                except (binascii.Error, UnicodeDecodeError):
+                    raise NotANode(url)
+            try:
+                passwd, info = parts[-1].split('/?')
+                passwd = b64decodes_safe(passwd)
+            except:
+                raise NotANode(url)
+            self.data = {
+                'type': 'ssr',
+                'server': parts[0],
+                'port': parts[1],
+                'protocol': parts[2],
+                'cipher': parts[3],
+                'obfs': parts[4],
+                'password': passwd,
+                'name': ''
+            }
+            for kv in info.split('&'):
+                k_v = kv.split('=')
+                if len(k_v) != 2:
+                    k, v = k_v[0], ''
+                else:
+                    k, v = k_v
+                if k == 'remarks':
+                    self.data['name'] = v
+                elif k == 'group':
+                    self.data['group'] = v
+                elif k == 'obfsparam':
+                    self.data['obfs-param'] = v
+                elif k == 'protoparam':
+                    self.data['protocol-param'] = v
+        elif self.type == 'trojan':
+            parsed = urlparse(url)
+            self.data = {
+                'name': unquote(parsed.fragment),
+                'server': parsed.hostname,
+                'port': parsed.port,
+                'type': 'trojan',
+                'password': unquote(parsed.username)
+            }
+            if parsed.query:
+                for kv in parsed.query.split('&'):
+                    k, v = kv.split('=')
+                    if k in ('allowInsecure', 'insecure'):
+                        self.data['skip-cert-verify'] = (v != '0')
+                    elif k == 'sni':
+                        self.data['sni'] = v
+                    elif k == 'alpn':
+                        self.data['alpn'] = unquote(v).split(',')
+                    elif k == 'type':
+                        self.data['network'] = v
+                    elif k == 'serviceName':
+                        if 'grpc-opts' not in self.data:
+                            self.data['grpc-opts'] = {}
+                        self.data['grpc-opts']['grpc-service-name'] = v
+                    elif k == 'host':
+                        if 'ws-opts' not in self.data:
+                            self.data['ws-opts'] = {}
+                        if 'headers' not in self.data['ws-opts']:
+                            self.data['ws-opts']['headers'] = {}
+                        self.data['ws-opts']['headers']['Host'] = v
+                    elif k == 'path':
+                        if 'ws-opts' not in self.data:
+                            self.data['ws-opts'] = {}
+                        self.data['ws-opts']['path'] = v
+        elif self.type == 'vless':
+            parsed = urlparse(url)
+            self.data = {
+                'name': unquote(parsed.fragment),
+                'server': parsed.hostname,
+                'port': parsed.port,
+                'type': 'vless',
+                'uuid': unquote(parsed.username)
+            }
+            self.data['tls'] = False
+            if parsed.query:
+                for kv in parsed.query.split('&'):
+                    k, v = kv.split('=')
+                    if k in ('allowInsecure', 'insecure'):
+                        self.data['skip-cert-verify'] = (v != '0')
+                    elif k == 'sni':
+                        self.data['servername'] = v
+                    elif k == 'alpn':
+                        self.data['alpn'] = unquote(v).split(',')
+                    elif k == 'type':
+                        self.data['network'] = v
+                    elif k == 'serviceName':
+                        if 'grpc-opts' not in self.data:
+                            self.data['grpc-opts'] = {}
+                        self.data['grpc-opts']['grpc-service-name'] = v
+                    elif k == 'host':
+                        if 'ws-opts' not in self.data:
+                            self.data['ws-opts'] = {}
+                        if 'headers' not in self.data['ws-opts']:
+                            self.data['ws-opts']['headers'] = {}
+                        self.data['ws-opts']['headers']['Host'] = v
+                    elif k == 'path':
+                        if 'ws-opts' not in self.data:
+                            self.data['ws-opts'] = {}
+                        self.data['ws-opts']['path'] = v
+                    elif k == 'flow':
+                        if v.endswith('-udp443'):
+                            self.data['flow'] = v
+                        else:
+                            self.data['flow'] = v + '!'
+                    elif k == 'fp':
+                        self.data['client-fingerprint'] = v
+                    elif k == 'security' and v == 'tls':
+                        self.data['tls'] = True
+                    elif k == 'pbk':
+                        if 'reality-opts' not in self.data:
+                            self.data['reality-opts'] = {}
+                        self.data['reality-opts']['public-key'] = v
+                    elif k == 'sid':
+                        if 'reality-opts' not in self.data:
+                            self.data['reality-opts'] = {}
+                        self.data['reality-opts']['short-id'] = v
+        elif self.type == 'hysteria2':
+            parsed = urlparse(url)
+            self.data = {
+                'name': unquote(parsed.fragment),
+                'server': parsed.hostname,
+                'type': 'hysteria2',
+                'password': unquote(parsed.username)
+            }
+            if ':' in parsed.netloc:
+                ports = parsed.netloc.split(':')[1]
+                if ',' in ports:
+                    self.data['port'], self.data['ports'] = ports.split(',', 1)
+                else:
+                    self.data['port'] = ports
+                try:
+                    self.data['port'] = int(self.data['port'])
+                except ValueError:
+                    self.data['port'] = 443
+            else:
+                self.data['port'] = 443
+            self.data['tls'] = False
+            if parsed.query:
+                k = v = ''
+                for kv in parsed.query.split('&'):
+                    if '=' in kv:
+                        k, v = kv.split('=')
+                    else:
+                        v += '&' + kv
+                    if k == 'insecure':
+                        self.data['skip-cert-verify'] = (v != '0')
+                    elif k == 'alpn':
+                        self.data['alpn'] = unquote(v).split(',')
+                    elif k in ('sni', 'obfs', 'obfs-password'):
+                        self.data[k] = v
+                    elif k == 'fp':
+                        self.data['fingerprint'] = v
+        else:
+            logger.error(f"不支持的协议类型：{self.type}")
+            raise UnsupportedType(self.type)
 
     def format_name(self, max_len: int = 30) -> None:
         """格式化节点名称"""
@@ -166,27 +393,177 @@ class Node:
             for key, val in data.items():
                 if key in self.CLASH2VMESS:
                     v[self.CLASH2VMESS[key]] = val
-            # ... 其他 vmess URL 生成逻辑
+            if v['net'] == 'ws':
+                if 'ws-opts' in data:
+                    try:
+                        v['host'] = data['ws-opts']['headers']['Host']
+                    except KeyError:
+                        pass
+                    if 'path' in data['ws-opts']:
+                        v['path'] = data['ws-opts']['path']
+            elif v['net'] == 'h2':
+                if 'h2-opts' in data:
+                    if 'host' in data['h2-opts']:
+                        v['host'] = ','.join(data['h2-opts']['host'])
+                    if 'path' in data['h2-opts']:
+                        v['path'] = data['h2-opts']['path']
+            elif v['net'] == 'grpc':
+                if 'grpc-opts' in data:
+                    if 'grpc-service-name' in data['grpc-opts']:
+                        v['path'] = data['grpc-opts']['grpc-service-name']
+            if ('tls' in data) and data['tls']:
+                v['tls'] = 'tls'
             return 'vmess://' + b64encodes(json.dumps(v, ensure_ascii=False))
-        # ... 其他协议类型 URL 生成
+        elif self.type == 'ss':
+            passwd = b64encodes_safe(data['cipher'] + ':' + data['password'])
+            return f"ss://{passwd}@{data['server']}:{data['port']}#{quote(data['name'])}"
+        elif self.type == 'ssr':
+            ret = (':'.join([str(self.data[_]) for _ in ('server', 'port', 'protocol', 'cipher', 'obfs')]) +
+                   b64encodes_safe(self.data['password']) +
+                   f"remarks={b64encodes_safe(self.data['name'])}")
+            for k, urlk in (('obfs-param', 'obfsparam'), ('protocol-param', 'protoparam'), ('group', 'group')):
+                if k in self.data:
+                    ret += '&' + urlk + '=' + b64encodes_safe(self.data[k])
+            return "ssr://" + ret
+        elif self.type == 'trojan':
+            passwd = quote(data['password'])
+            name = quote(data['name'])
+            ret = f"trojan://{passwd}@{data['server']}:{data['port']}?"
+            if 'skip-cert-verify' in data:
+                ret += f"allowInsecure={int(data['skip-cert-verify'])}&"
+            if 'sni' in data:
+                ret += f"sni={data['sni']}&"
+            if 'alpn' in data:
+                ret += f"alpn={quote(','.join(data['alpn']))}&"
+            if 'network' in data:
+                if data['network'] == 'grpc':
+                    ret += f"type=grpc&serviceName={data['grpc-opts']['grpc-service-name']}"
+                elif data['network'] == 'ws':
+                    ret += f"type=ws&"
+                    if 'ws-opts' in data:
+                        try:
+                            ret += f"host={data['ws-opts']['headers']['Host']}&"
+                        except KeyError:
+                            pass
+                        if 'path' in data['ws-opts']:
+                            ret += f"path={data['ws-opts']['path']}"
+            ret = ret.rstrip('&') + '#' + name
+            return ret
+        elif self.type == 'vless':
+            passwd = quote(data['uuid'])
+            name = quote(data['name'])
+            ret = f"vless://{passwd}@{data['server']}:{data['port']}?"
+            if 'skip-cert-verify' in data:
+                ret += f"allowInsecure={int(data['skip-cert-verify'])}&"
+            if 'servername' in data:
+                ret += f"sni={data['servername']}&"
+            if 'alpn' in data:
+                ret += f"alpn={quote(','.join(data['alpn']))}&"
+            if 'network' in data:
+                if data['network'] == 'grpc':
+                    ret += f"type=grpc&serviceName={data['grpc-opts']['grpc-service-name']}"
+                elif data['network'] == 'ws':
+                    ret += f"type=ws&"
+                    if 'ws-opts' in data:
+                        try:
+                            ret += f"host={data['ws-opts']['headers']['Host']}&"
+                        except KeyError:
+                            pass
+                        if 'path' in data['ws-opts']:
+                            ret += f"path={data['ws-opts']['path']}"
+            if 'flow' in data:
+                flow = data['flow']
+                if flow.endswith('!'):
+                    ret += f"flow={flow[:-1]}&"
+                else:
+                    ret += f"flow={flow}-udp443&"
+            if 'client-fingerprint' in data:
+                ret += f"fp={data['client-fingerprint']}&"
+            if 'tls' in data and data['tls']:
+                ret += f"security=tls&"
+            elif 'reality-opts' in data:
+                opts = data['reality-opts']
+                ret += f"security=reality&pbk={opts.get('public-key', '')}&sid={opts.get('short-id', '')}&"
+            ret = ret.rstrip('&') + '#' + name
+            return ret
+        elif self.type == 'hysteria2':
+            passwd = quote(data['password'])
+            name = quote(data['name'])
+            ret = f"hysteria2://{passwd}@{data['server']}:{data['port']}"
+            if 'ports' in data:
+                ret += ',' + data['ports']
+            ret += '?'
+            if 'skip-cert-verify' in data:
+                ret += f"insecure={int(data['skip-cert-verify'])}&"
+            if 'alpn' in data:
+                ret += f"alpn={quote(','.join(data['alpn']))}&"
+            if 'fingerprint' in data:
+                ret += f"fp={data['fingerprint']}&"
+            for k in ('sni', 'obfs', 'obfs-password'):
+                if k in data:
+                    ret += f"{k}={data[k]}&"
+            ret = ret.rstrip('&') + '#' + name
+            return ret
         logger.error(f"不支持的协议类型：{self.type}")
         raise UnsupportedType(self.type)
+
+    @property
+    def clash_data(self) -> DATA_TYPE:
+        """生成 Clash 配置文件数据"""
+        ret = self.data.copy()
+        if 'password' in ret and ret['password'].isdigit():
+            ret['password'] = '!!str ' + ret['password']
+        if 'uuid' in ret and len(ret['uuid']) != len(config["default_uuid"]):
+            ret['uuid'] = config["default_uuid"]
+        if 'group' in ret:
+            del ret['group']
+        if 'cipher' in ret and not ret['cipher']:
+            ret['cipher'] = 'auto'
+        if self.type == 'vless' and 'flow' in ret:
+            if ret['flow'].endswith('-udp443'):
+                ret['flow'] = ret['flow'][:-7]
+            elif ret['flow'].endswith('!'):
+                ret['flow'] = ret['flow'][:-1]
+        if 'alpn' in ret and isinstance(ret['alpn'], str):
+            ret['alpn'] = ret['alpn'].replace(' ', '').split(',')
+        return ret
 
     def supports_meta(self, noMeta: bool = False) -> bool:
         """检查节点是否支持 Clash Meta"""
         if self.isfake:
             return False
-        supported = config["clash_cipher_vmess"] if self.type == 'vmess' else config["clash_cipher_ss"]
-        if self.type in ('trojan', 'vless', 'hysteria2') and not noMeta:
+        if self.type == 'vmess':
+            supported = config["clash_cipher_vmess"]
+        elif self.type in ('ss', 'ssr'):
+            supported = config["clash_cipher_ss"]
+        elif self.type in ('trojan', 'vless', 'hysteria2') and not noMeta:
             return True
-        # ... 其他支持性检查逻辑
+        else:
+            return False
+        if 'network' in self.data and self.data['network'] in ('h2', 'grpc'):
+            self.data['tls'] = True
+        if 'cipher' not in self.data or not self.data['cipher']:
+            return True
+        if self.data['cipher'] not in supported:
+            return False
+        try:
+            if self.type == 'ssr':
+                if 'obfs' in self.data and self.data['obfs'] not in config["clash_ssr_obfs"]:
+                    return False
+                if 'protocol' in self.data and self.data['protocol'] not in config["clash_ssr_protocol"]:
+                    return False
+            if 'plugin-opts' in self.data and 'mode' in self.data['plugin-opts'] and not self.data['plugin-opts']['mode']:
+                return False
+        except Exception as e:
+            logger.error(f"无法验证 Clash 节点：{e}")
+            return False
         return True
 
     def supports_clash(self, meta: bool = False) -> bool:
         """检查节点是否支持 Clash"""
         if meta:
             return self.supports_meta()
-        if self.type == 'vless':
+        if self.type == 'vless' or self.data['type'] == 'vless':
             return False
         return self.supports_meta(noMeta=True)
 
@@ -201,12 +578,15 @@ class NotANode(Exception):
     pass
 
 def b64encodes(s: str) -> str:
+    """Base64 编码"""
     return base64.b64encode(s.encode('utf-8')).decode('utf-8')
 
 def b64encodes_safe(s: str) -> str:
+    """Base64 URL 安全编码"""
     return base64.urlsafe_b64encode(s.encode('utf-8')).decode('utf-8')
 
 def b64decodes(s: str) -> str:
+    """Base64 解码"""
     ss = s + '=' * ((4 - len(s) % 4) % 4)
     try:
         return base64.b64decode(ss.encode('utf-8')).decode('utf-8')
@@ -215,10 +595,10 @@ def b64decodes(s: str) -> str:
         raise
 
 def b64decodes_safe(s: str) -> str:
+    """Base64 URL 安全解码"""
     ss = s + '=' * ((4 - len(s) % 4) % 4)
     try:
         return base64.urlsafe_b64decode(ss.encode('utf-8')).decode('utf-8')
     except (UnicodeDecodeError, binascii.Error) as e:
         logger.error(f"Base64 安全解码失败：{e}")
         raise
-
