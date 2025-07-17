@@ -1,3 +1,4 @@
+import os
 import requests
 from requests_file import FileAdapter
 import json
@@ -66,30 +67,31 @@ class Source:
             return
         try:
             if self.url.startswith("dynamic://"):
-                self.content = self.url_source()
-            else:
-                if '#' in self.url:
-                    segs = self.url.split('#')
-                    self.cfg = dict([_.split('=', 1) for _ in segs[-1].split('&')])
-                    if 'max' in self.cfg:
-                        try:
-                            self.cfg['max'] = int(self.cfg['max'])
-                        except ValueError:
-                            logger.error("最大节点数限制不是整数")
-                            del self.cfg['max']
-                    if 'ignore' in self.cfg:
-                        self.cfg['ignore'] = [_ for _ in self.cfg['ignore'].split(',') if _.strip()]
-                    self.url = '#'.join(segs[:-1])
-                with session.get(self.url, stream=True, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"])) as r:
-                    if r.status_code != 200:
-                        if depth > 0 and isinstance(self.url_source, str):
-                            logger.warning(f"'{self.url}' 抓取失败，状态码：{r.status_code}，重试...")
-                            self.gen_url()
-                            self.get(depth - 1)
-                        else:
-                            self.content = r.status_code
-                        return
-                    self.content = self._download(r)
+                logger.error(f"动态 URL '{self.url}' 不支持，因为动态生成已禁用")
+                self.content = -1
+                return
+            if '#' in self.url:
+                segs = self.url.split('#')
+                self.cfg = dict([_.split('=', 1) for _ in segs[-1].split('&')])
+                if 'max' in self.cfg:
+                    try:
+                        self.cfg['max'] = int(self.cfg['max'])
+                    except ValueError:
+                        logger.error("最大节点数限制不是整数")
+                        del self.cfg['max']
+                if 'ignore' in self.cfg:
+                    self.cfg['ignore'] = [_ for _ in self.cfg['ignore'].split(',') if _.strip()]
+                self.url = '#'.join(segs[:-1])
+            with session.get(self.url, stream=True, timeout=(config["fetch_timeout"]["connect"], config["fetch_timeout"]["read"])) as r:
+                if r.status_code != 200:
+                    if depth > 0 and isinstance(self.url_source, str):
+                        logger.warning(f"'{self.url}' 抓取失败，状态码：{r.status_code}，重试...")
+                        self.gen_url()
+                        self.get(depth - 1)
+                    else:
+                        self.content = r.status_code
+                    return
+                self.content = self._download(r)
         except requests.exceptions.RequestException as e:
             self.content = -1
             logger.error(f"抓取 '{self.url}' 失败：{e}")
