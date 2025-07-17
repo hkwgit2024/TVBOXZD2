@@ -1,4 +1,4 @@
-```python
+
 import yaml
 import copy
 from datetime import datetime
@@ -58,4 +58,4 @@ def generate_configs(merged: Dict[int, Node], unknown: Set[str], sources_obj: Li
         logger.warning("已关闭 Adblock 规则抓取")
 
     # ... 其他配置生成逻辑
-```
+
