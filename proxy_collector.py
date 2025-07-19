@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 # GitHub API 配置
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-SEARCH_KEYWORDS = ['proxy', 'vmess', 'vless', 'trojan', 'shadowsocks', 'hysteria2']
+SEARCH_KEYWORDS = [ 'vmess', 'vless', 'trojan',  'hysteria2']
 NODE_PATTERNS = [
     r'hysteria2://',
     r'vmess://',
