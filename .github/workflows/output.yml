@@ -22,6 +22,6 @@ jobs:
       run: |
         git config user.name "GitHub Action"
         git config user.email "action@github.com"
-        git add data/output.yml
+        git add input/output.yml
         git commit -m "Update merged YAML config"
         git push
