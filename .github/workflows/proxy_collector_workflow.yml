@@ -1,58 +1,40 @@
-name: Proxy Collector Workflow # 工作流名称
+
+name: ClashForge
 
 on:
-  # 定时触发：每周日 UTC 时间 00:00 运行
   schedule:
-    - cron: '0 0 * * 0' # '分 时 日 月 周' (0点0分，每周日)
-
-  # 手动触发：允许从 GitHub Actions 页面手动启动此工作流
+   - cron: '0 7-22/5 * * *'
+  push:
+    paths-ignore:
+      - '**'
   workflow_dispatch:
 
 jobs:
-  collect-proxies:
-    runs-on: ubuntu-latest # 在最新的 Ubuntu 虚拟机上运行
-
+  run_demo_actions:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository # 步骤1: 检出仓库代码
-        uses: actions/checkout@v4 # 使用 actions/checkout@v4，确保获取最新代码
-
-      - name: Set up Python # 步骤2: 设置 Python 环境
-        uses: actions/setup-python@v5 # 使用 actions/setup-python@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          python-version: '3.11' # 推荐使用 Python 3.11 或更高版本
+          # 转到 Settings > Secrets and variables > Actions
+          # 点击 New repository secret，添加 Secret，名称为 BOT，输入你的token
+          token: ${{ secrets.BOT }}
 
-      - name: Install dependencies # 步骤3: 安装 Python 依赖
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.10'
+
+      - name: Install requirements.txt
         run: |
-          python -m pip install --upgrade pip # 升级 pip
-          pip install requests pygithub pyyaml # 安装脚本所需的核心依赖
-          # 如果你的脚本还需要其他库，比如 "environs" 或 "marshmallow"，请在此处添加：
-          # pip install environs marshmallow<3.13 # 示例：如果你的proxypool依赖environs和特定版本的marshmallow
+          pip install -r ./requirements2.txt
+      - name: Run ClashForge.py
+        run: python ClashForge.py
 
-      - name: Run proxy collector script # 步骤4: 运行代理收集脚本
-        env:
-          # GITHUB_TOKEN 是访问 GitHub API 的必要凭证
-          # 优先使用 CUSTOM_GITHUB_TOKEN (如果你自定义了)，否则使用 GITHUB_TOKEN (GitHub 默认提供的)
-          # 对于生产环境，建议使用具有更少权限的 PAT (Personal Access Token) 并设置为 CUSTOM_GITHUB_TOKEN Secret
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: Commit and push file
         run: |
-          python proxy_collector.py
-        continue-on-error: true # 即使脚本运行失败，也尝试继续执行后续步骤 (例如提交日志)
-
-      - name: Commit and push changes # 步骤5: 提交并推送更改
-        run: |
-          git config --global user.name 'github-actions[bot]' # 配置 Git 用户名
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com' # 配置 Git 用户邮箱
-
-          # 添加生成的文件（data/, timestamps.json, repos.json）到 Git 暂存区
-          git add data/ timestamps.json repos.json
-
-          # 检查是否有实际的更改需要提交。
-          # 'git diff --quiet' 检查工作区与索引区的差异。
-          # 'git diff --staged --quiet' 检查索引区与 HEAD 的差异。
-          # 如果没有差异，说明没有文件变化，就不执行 commit 和 push。
-          # || 逻辑操作符表示如果前者失败（有差异），就执行后者。
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update proxy files [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]"
-          
-          # 推送更改到当前分支（通常是 master/main 分支）
-          git push
-        continue-on-error: true # 即使提交或推送失败，也继续执行后续步骤 (如果还有)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add clash_config.yaml
+          git commit -m "update" || echo "No changes to commit"
+          git push https://${{ secrets.BOT }}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}.git
