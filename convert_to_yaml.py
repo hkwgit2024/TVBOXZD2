@@ -110,8 +110,8 @@ def merge_configs(configs):
 
 # 主函数
 def main():
-    # 创建 data 目录
-    os.makedirs('data', exist_ok=True)
+    # 创建 input 目录
+    os.makedirs('input', exist_ok=True)
 
     # 获取并解析所有配置
     configs = fetch_and_parse_configs(urls)
@@ -122,11 +122,11 @@ def main():
     # 转换为 YAML
     yaml_output = yaml.dump(merged_config, allow_unicode=True, sort_keys=False)
 
-    # 保存到 data/output.yml
-    with open('data/output.yml', 'w', encoding='utf-8') as f:
+    # 保存到 input/output.yml
+    with open('input/output.yml', 'w', encoding='utf-8') as f:
         f.write(yaml_output)
 
-    print("配置已合并并保存到 data/output.yml")
+    print("配置已合并并保存到 input/output.yml")
     print("\n合并后的 YAML 内容：")
     print(yaml_output)
 
