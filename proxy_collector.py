@@ -6,17 +6,16 @@ import requests
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
-from urllib.parse import urlparse
+from github import Github, RateLimitExceededException
+import time
 import logging
-from github import Github
-from github import GithubException
 
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # GitHub API 配置
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')  # 需要在环境变量中设置 GitHub Token
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 SEARCH_KEYWORDS = ['proxy', 'vmess', 'vless', 'trojan', 'shadowsocks', 'hysteria2']
 NODE_PATTERNS = [
     r'hysteria2://',
@@ -28,7 +27,8 @@ NODE_PATTERNS = [
 ]
 DATA_DIR = 'data'
 TIMESTAMP_FILE = 'timestamps.json'
-MAX_WORKERS = 10  # 并行下载的最大线程数
+REPOS_CACHE = 'repos.json'
+MAX_WORKERS = 5  # 减少线程数
 
 # 初始化 GitHub 客户端
 g = Github(GITHUB_TOKEN)
@@ -48,20 +48,29 @@ def save_timestamps(timestamps):
     with open(TIMESTAMP_FILE, 'w') as f:
         json.dump(timestamps, f, indent=2)
 
+# 加载缓存的仓库列表
+def load_cached_repos():
+    if os.path.exists(REPOS_CACHE):
+        with open(REPOS_CACHE, 'r') as f:
+            return json.load(f)
+    return None
+
+# 保存缓存的仓库列表
+def save_cached_repos(repos):
+    with open(REPOS_CACHE, 'w') as f:
+        json.dump([repo.full_name for repo in repos], f)
+
 # 检查文件是否包含节点
 def contains_nodes(content, is_base64=False):
     try:
-        # 如果是 Base64 编码，尝试解码
         if is_base64:
             try:
                 content = base64.b64decode(content).decode('utf-8', errors='ignore')
             except Exception:
                 return False
-        # 检查明文节点
         for pattern in NODE_PATTERNS:
             if re.search(pattern, content, re.IGNORECASE):
                 return True
-        # 检查 YAML 文件
         if content.strip().startswith('---'):
             try:
                 data = yaml.safe_load(content)
@@ -73,7 +82,6 @@ def contains_nodes(content, is_base64=False):
                                     return True
             except yaml.YAMLError:
                 pass
-        # 检查 JSON 文件
         if content.strip().startswith('{'):
             try:
                 data = json.loads(content)
@@ -97,7 +105,6 @@ def download_file(repo, file_path, file_url, timestamps):
     os.makedirs(save_dir, exist_ok=True)
     local_path = os.path.join(save_dir, file_path.replace('/', '_'))
 
-    # 检查时间戳
     file_key = f"{repo.full_name}:{file_path}"
     last_modified = timestamps.get(file_key)
     headers = {'Authorization': f'token {GITHUB_TOKEN}'}
@@ -108,12 +115,11 @@ def download_file(repo, file_path, file_url, timestamps):
         logger.info(f"Skipping unchanged file: {file_path}")
         return
 
-    # 下载文件内容
+    time.sleep(0.5)  # 添加延迟
     response = requests.get(file_url, headers=headers)
     if response.status_code == 200:
         content = response.text
         is_base64 = False
-        # 检查是否是 Base64 编码
         try:
             base64.b64decode(content)
             is_base64 = True
@@ -142,27 +148,54 @@ def process_repo(repo, timestamps):
             else:
                 if any(file_content.path.endswith(ext) for ext in ['.txt', '.yml', '.yaml', '.json']):
                     files_to_download.append((file_content.path, file_content.download_url))
-                elif not '.' in file_content.path:  # 无扩展名文件，可能是 Base64 或纯文本节点
+                elif not '.' in file_content.path:
                     files_to_download.append((file_content.path, file_content.download_url))
 
         for file_path, file_url in files_to_download:
             download_file(repo, file_path, file_url, timestamps)
-    except GithubException as e:
+    except RateLimitExceededException:
+        logger.warning("Rate limit exceeded, waiting 60 seconds...")
+        time.sleep(60)
+        process_repo(repo, timestamps)
+    except Exception as e:
         logger.error(f"Error processing repo {repo.full_name}: {e}")
+
+# 检查速率限制
+def check_rate_limit():
+    rate_limit = g.get_rate_limit()
+    search_limit = rate_limit.search
+    logger.info(f"Search API remaining: {search_limit.remaining}/{search_limit.limit}")
+    return search_limit.remaining > 0
 
 # 主函数
 def main():
+    if not check_rate_limit():
+        logger.error("Search API limit reached, exiting...")
+        return
+
     timestamps = load_timestamps()
+    cached_repos = load_cached_repos()
     repos = []
-    for keyword in SEARCH_KEYWORDS:
-        logger.info(f"Searching for keyword: {keyword}")
-        query = f"{keyword} language:python language:go language:shell"
-        for repo in g.search_repositories(query=query, sort='stars', order='desc'):
-            repos.append(repo)
-            if len(repos) >= 50:  # 限制搜索结果数量
-                break
-        if len(repos) >= 50:
-            break
+
+    if cached_repos:
+        logger.info("Using cached repositories")
+        repos = [g.get_repo(name) for name in cached_repos]
+    else:
+        for keyword in SEARCH_KEYWORDS:
+            logger.info(f"Searching for keyword: {keyword}")
+            query = f"{keyword} language:python language:go language:shell"
+            try:
+                for repo in g.search_repositories(query=query, sort='stars', order='desc'):
+                    repos.append(repo)
+                    if len(repos) >= 20:  # 限制为 20 个仓库
+                        break
+                if len(repos) >= 20:
+                    break
+            except RateLimitExceededException:
+                logger.warning("Search API rate limit exceeded, waiting 60 seconds...")
+                time.sleep(60)
+                continue
+        save_cached_repos(repos)
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         executor.map(lambda repo: process_repo(repo, timestamps), repos)
