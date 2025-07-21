@@ -1,17 +1,16 @@
 name: IPTV 频道更新
 
-# 触发条件
 on:
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 */168 * * *'  # 每 7 天运行一次
+    - cron: '0 */168 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 360  # 6 小时超时
+    timeout-minutes: 360
     permissions:
-      contents: write  # 授予写入权限
+      contents: write
 
     steps:
       # 步骤1：检查 BOT secret
@@ -46,13 +45,19 @@ jobs:
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # 步骤6：安装 FFmpeg
+      # 步骤6：创建输出目录
+      - name: 创建输出目录
+        run: |
+          mkdir -p temp_channels output config
+        shell: bash
+
+      # 步骤7：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      # 步骤7：验证 ffprobe
+      # 步骤8：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
@@ -63,7 +68,7 @@ jobs:
             exit 1
           fi
 
-      # 步骤8：运行 IPTV 爬取脚本
+      # 步骤9：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
           BOT: ${{ secrets.BOT }}
@@ -73,26 +78,6 @@ jobs:
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
         run: python ${{ github.workspace }}/tv.py
-
-      # 步骤9：保存日志和生成文件
-      - name: 保存日志和生成文件
-        uses: actions/upload-artifact@v4
-        with:
-          name: iptv-results
-          path: |
-            iptv_list.txt
-            uncategorized_channels.txt
-            temp_channels/*.txt
-            output/*.m3u
-            config/*.txt
-            config/*.json
-            iptv_script.log  # 修正为与 tv.py 一致的日志文件名
-          retention-days: 7
-          if-no-files-found: warn
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: false
-        if: always()
 
       # 步骤10：检查文件更改
       - name: 检查文件更改
@@ -130,4 +115,4 @@ jobs:
       - name: 发送运行结果通知
         run: |
           echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
-          echo "请检查 artifact 中的 iptv_script.log 以获取详细信息"
+          echo "请检查仓库中的 iptv_script.log 以获取详细信息"
