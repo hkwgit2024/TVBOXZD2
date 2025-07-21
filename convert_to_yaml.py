@@ -12,8 +12,7 @@ from urllib3.util.retry import Retry
 urls = [
     "https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list.meta.yml",
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+
 ]
 
 # Clash/Mihomo 配置模板
