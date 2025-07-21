@@ -11,10 +11,11 @@ from urllib3.util.retry import Retry
 urls = [
 
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-        "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
+  
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 ]
 
-# Clash 配置模板
+# Clash/Mihomo 配置模板
 clash_config_template = {
     "port": 7890,
     "socks-port": 7891,
@@ -126,7 +127,7 @@ retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503,
 session.mount('https://', HTTPAdapter(max_retries=retries))
 
 # 解析 Shadowsocks (ss://) 链接
-def parse_ss_link(link, index):
+def parse_ss_link(link, index, url):
     try:
         if link.startswith('ss://'):
             # 解码 Base64 部分（去除 ss:// 前缀）
@@ -138,27 +139,28 @@ def parse_ss_link(link, index):
             server_port = link[5:].split('@')[1].split('#')[0]
             server, port = server_port.split(':')
             # 获取节点名称（从 # 后的备注或生成默认名称）
-            name = link.split('#')[-1] if '#' in link else f"ss-node-{server}-{port}-{index}"
+            name = link.split('#')[-1] if '#' in link else f"ss-{urlparse(url).path.split('/')[-1]}-{server}-{port}-{index}"
             return {
                 'name': name,
                 'type': 'ss',
                 'server': server,
                 'port': int(port),
                 'cipher': method,
-                'password': password
+                'password': password,
+                'udp': True  # mihomo 默认支持 UDP
             }
     except Exception as e:
-        print(f"解析 ss:// 链接失败: {e}")
+        print(f"解析 ss:// 链接失败 ({url}): {e}")
         return None
 
 # 解析 Vmess (vmess://) 链接
-def parse_vmess_link(link, index):
+def parse_vmess_link(link, index, url):
     try:
         if link.startswith('vmess://'):
             encoded = link[8:]
             decoded = base64.urlsafe_b64decode(encoded + '==' * (-len(encoded) % 4)).decode('utf-8', errors='ignore')
             config = json.loads(decoded)
-            name = config.get('ps', f"vmess-node-{index}")
+            name = config.get('ps', f"vmess-{urlparse(url).path.split('/')[-1]}-{index}")
             return {
                 'name': name,
                 'type': 'vmess',
@@ -170,10 +172,11 @@ def parse_vmess_link(link, index):
                 'network': config.get('net', 'tcp'),
                 'tls': config.get('tls') == 'tls',
                 'ws-path': config.get('path', ''),
-                'ws-headers': {'Host': config.get('host', '')}
+                'ws-headers': {'Host': config.get('host', '')},
+                'udp': True  # mihomo 默认支持 UDP
             }
     except Exception as e:
-        print(f"解析 vmess:// 链接失败: {e}")
+        print(f"解析 vmess:// 链接失败 ({url}): {e}")
         return None
 
 # 尝试解析文本为字典（支持键值对、ss:// 和 vmess:// 链接）
@@ -187,13 +190,13 @@ def parse_text_to_dict(text, url):
             continue
         # 处理 ss:// 链接
         if line.startswith('ss://'):
-            node = parse_ss_link(line, index)
+            node = parse_ss_link(line, index, url)
             if node:
                 config['proxies'].append(node)
             continue
         # 处理 vmess:// 链接
         if line.startswith('vmess://'):
-            node = parse_vmess_link(line, index)
+            node = parse_vmess_link(line, index, url)
             if node:
                 config['proxies'].append(node)
             continue
@@ -234,8 +237,10 @@ def parse_content(content, url):
                 for index, proxy in enumerate(config['proxies']):
                     if 'name' not in proxy:
                         proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
+                    proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
-    except yaml.YAMLError:
+    except yaml.YAMLError as e:
+        print(f"YAML 解析失败 ({url}): {e}")
         pass
 
     try:
@@ -248,9 +253,11 @@ def parse_content(content, url):
                 config = {'proxies': config}
                 for index, proxy in enumerate(config['proxies']):
                     if 'name' not in proxy:
-                        proxy['name'] = f"node-{index}"
+                        proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
+                    proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
-    except (base64.binascii.Error, json.JSONDecodeError):
+    except (base64.binascii.Error, json.JSONDecodeError) as e:
+        print(f"Base64/JSON 解析失败 ({url}): {e}")
         pass
 
     # 尝试作为纯文本解析
@@ -302,6 +309,7 @@ def merge_configs(configs):
         if proxy['name'] in seen_names:
             proxy['name'] = f"{proxy['name']}-{index}"
         seen_names.add(proxy['name'])
+        proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
     # 更新 proxy-groups 中的 proxies 列表
     proxy_names = [proxy['name'] for proxy in merged['proxies']]
     for group in merged['proxy-groups']:
@@ -317,11 +325,15 @@ def main():
     # 获取并解析所有配置
     configs = fetch_and_parse_configs(urls)
 
-    if not configs:
-        print("错误：无法解析任何配置，输出文件将为空")
-        yaml_output = "# 没有有效的配置数据"
+    if not configs or not any(config.get('proxies', []) for config in configs):
+        print("错误：无法解析任何有效节点，输出文件将包含基础配置")
+        merged_config = clash_config_template.copy()
+        yaml_output = yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
         with open('input/output.yml', 'w', encoding='utf-8') as f:
             f.write(yaml_output)
+        print("配置已保存到 input/output.yml（仅基础配置）")
+        print("\n合并后的 YAML 内容：")
+        print(yaml_output)
         return
 
     # 合并配置
