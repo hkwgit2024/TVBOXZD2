@@ -9,9 +9,9 @@ from urllib3.util.retry import Retry
 
 # GitHub raw 链接列表
 urls = [
-    "
+  
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
- 
+
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 ]
 
@@ -139,7 +139,8 @@ def parse_ss_link(link, index, url):
             server_port = link[5:].split('@')[1].split('#')[0]
             server, port = server_port.split(':')
             # 获取节点名称（从 # 后的备注或生成默认名称）
-            name = link.split('#')[-1] if '#' in link else f"ss-{urlparse(url).path.split('/')[-1]}-{server}-{port}-{index}"
+            filename = urlparse(url).path.split('/')[-1] or 'unknown'
+            name = link.split('#')[-1] if '#' in link else f"ss-{filename}-{server}-{port}-{index}"
             return {
                 'name': name,
                 'type': 'ss',
@@ -160,7 +161,8 @@ def parse_vmess_link(link, index, url):
             encoded = link[8:]
             decoded = base64.urlsafe_b64decode(encoded + '==' * (-len(encoded) % 4)).decode('utf-8', errors='ignore')
             config = json.loads(decoded)
-            name = config.get('ps', f"vmess-{urlparse(url).path.split('/')[-1]}-{index}")
+            filename = urlparse(url).path.split('/')[-1] or 'unknown'
+            name = config.get('ps', f"vmess-{filename}-{index}")
             return {
                 'name': name,
                 'type': 'vmess',
@@ -228,6 +230,10 @@ def parse_text_to_dict(text, url):
 
 # 尝试解析文件内容
 def parse_content(content, url):
+    # 记录内容片段以便调试（最多 100 字符）
+    content_preview = content[:100].replace('\n', ' ') + ('...' if len(content) > 100 else '')
+    print(f"解析内容 ({url}): {content_preview}")
+
     # 尝试作为 YAML 解析
     try:
         config = yaml.safe_load(content)
@@ -239,7 +245,8 @@ def parse_content(content, url):
                         print(f"无效代理配置 ({url}): {proxy}")
                         continue
                     if 'name' not in proxy:
-                        proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
+                        filename = urlparse(url).path.split('/')[-1] or 'unknown'
+                        proxy['name'] = f"node-{filename}-{index}"
                     proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
     except yaml.YAMLError as e:
@@ -259,7 +266,8 @@ def parse_content(content, url):
                         print(f"无效代理配置 ({url}): {proxy}")
                         continue
                     if 'name' not in proxy:
-                        proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
+                        filename = urlparse(url).path.split('/')[-1] or 'unknown'
+                        proxy['name'] = f"node-{filename}-{index}"
                     proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
     except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as e:
@@ -339,7 +347,7 @@ def main():
     if not configs or not any(config.get('proxies', []) for config in configs if isinstance(config, dict)):
         print("错误：无法解析任何有效节点，输出文件将包含基础配置")
         merged_config = clash_config_template.copy()
-        yaml_output = yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        yaml_output = "# 错误：无法解析任何有效节点，仅包含基础配置\n" + yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
         with open('input/output.yml', 'w', encoding='utf-8') as f:
             f.write(yaml_output)
         print("配置已保存到 input/output.yml（仅基础配置）")
