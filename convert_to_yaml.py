@@ -3,15 +3,16 @@ import base64
 import json
 import yaml
 import os
-from urllib.parse import urlparse
+import re
+from urllib.parse import urlparse, parse_qs
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 # GitHub raw 链接列表
 urls = [
-  
+    
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-
+ 
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 ]
 
@@ -181,7 +182,45 @@ def parse_vmess_link(link, index, url):
         print(f"解析 vmess:// 链接失败 ({url}): {e}")
         return None
 
-# 尝试解析文本为字典（支持键值对、ss:// 和 vmess:// 链接）
+# 解析 VLESS (vless://) 链接
+def parse_vless_link(link, index, url):
+    try:
+        if link.startswith('vless://'):
+            # 格式：vless://uuid@server:port?param1=value1&param2=value2#remark
+            parts = link.split('://', 1)[1]
+            uuid_server, rest = parts.split('?', 1) if '?' in parts else (parts, '')
+            uuid, server_port = uuid_server.split('@', 1)
+            server, port = server_port.split('#')[0].split(':')
+            # 解析查询参数
+            params = parse_qs(rest) if rest else {}
+            filename = urlparse(url).path.split('/')[-1] or 'unknown'
+            name = parts.split('#')[-1] if '#' in parts else f"vless-{filename}-{server}-{port}-{index}"
+            config = {
+                'name': name,
+                'type': 'vless',
+                'server': server,
+                'port': int(port),
+                'uuid': uuid,
+                'udp': True,  # mihomo 默认支持 UDP
+                'tls': params.get('security', ['none'])[0] == 'tls',
+                'network': params.get('type', ['tcp'])[0],
+            }
+            # 添加 WebSocket 或其他网络参数
+            if config['network'] == 'ws':
+                config['ws-opts'] = {
+                    'path': params.get('path', [''])[0],
+                    'headers': {'Host': params.get('host', [''])[0]}
+                }
+            return config
+    except Exception as e:
+        print(f"解析 vless:// 链接失败 ({url}): {e}")
+        return None
+
+# 检查是否为有效的 Base64 字符串
+def is_valid_base64(s):
+    return bool(re.match(r'^[A-Za-z0-9+/=]+$', s))
+
+# 尝试解析文本为字典（支持键值对、ss://、vmess:// 和 vless:// 链接）
 def parse_text_to_dict(text, url):
     config = {'proxies': []}
     lines = text.splitlines()
@@ -199,6 +238,12 @@ def parse_text_to_dict(text, url):
         # 处理 vmess:// 链接
         if line.startswith('vmess://'):
             node = parse_vmess_link(line, index, url)
+            if node:
+                config['proxies'].append(node)
+            continue
+        # 处理 vless:// 链接
+        if line.startswith('vless://'):
+            node = parse_vless_link(line, index, url)
             if node:
                 config['proxies'].append(node)
             continue
@@ -253,25 +298,26 @@ def parse_content(content, url):
         print(f"YAML 解析失败 ({url}): {e}")
 
     # 尝试作为 Base64 解码后解析为 JSON
-    try:
-        decoded = base64.urlsafe_b64decode(content + '==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
-        config = json.loads(decoded)
-        if config and isinstance(config, dict):
-            # 确保节点有 name 字段
-            if isinstance(config, list):
-                config = {'proxies': config}
-            if 'proxies' in config and isinstance(config['proxies'], list):
-                for index, proxy in enumerate(config['proxies']):
-                    if not isinstance(proxy, dict):
-                        print(f"无效代理配置 ({url}): {proxy}")
-                        continue
-                    if 'name' not in proxy:
-                        filename = urlparse(url).path.split('/')[-1] or 'unknown'
-                        proxy['name'] = f"node-{filename}-{index}"
-                    proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
-            return config
-    except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as e:
-        print(f"Base64/JSON 解析失败 ({url}): {e}")
+    if is_valid_base64(content.strip()):
+        try:
+            decoded = base64.urlsafe_b64decode(content + '==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
+            config = json.loads(decoded)
+            if config and isinstance(config, dict):
+                # 确保节点有 name 字段
+                if isinstance(config, list):
+                    config = {'proxies': config}
+                if 'proxies' in config and isinstance(config['proxies'], list):
+                    for index, proxy in enumerate(config['proxies']):
+                        if not isinstance(proxy, dict):
+                            print(f"无效代理配置 ({url}): {proxy}")
+                            continue
+                        if 'name' not in proxy:
+                            filename = urlparse(url).path.split('/')[-1] or 'unknown'
+                            proxy['name'] = f"node-{filename}-{index}"
+                        proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
+                return config
+        except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as e:
+            print(f"Base64/JSON 解析失败 ({url}): {e}")
 
     # 尝试作为纯文本解析
     try:
