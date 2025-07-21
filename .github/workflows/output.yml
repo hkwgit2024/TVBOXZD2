@@ -3,7 +3,7 @@ name: Convert to YAML
 on:
   push:
     branches:
-      - main
+      - convert_to_yaml.py
   schedule:
     - cron: '0 0 * * *' # 每天运行一次
 
