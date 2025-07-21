@@ -1,3 +1,4 @@
+#取消合并配置
 import requests
 import base64
 import json
@@ -12,7 +13,8 @@ from urllib3.util.retry import Retry
 urls = [
     "https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list.meta.yml",
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-
+    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
+    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 ]
 
 # Clash/Mihomo 配置模板
@@ -428,11 +430,10 @@ def save_config(config, url):
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(yaml_output)
     print(f"配置已保存到 {output_path}")
-    return merged_config
 
 # 获取并解析所有链接的配置
 def fetch_and_parse_configs(urls):
-    all_configs = []
+    os.makedirs('input', exist_ok=True)
     for url in urls:
         try:
             response = session.get(url, timeout=10)
@@ -440,67 +441,16 @@ def fetch_and_parse_configs(urls):
             content = response.text.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
             config = parse_content(content, url)
             if config and isinstance(config, dict) and config.get('proxies'):
-                all_configs.append((config, url))
-                print(f"成功解析 {url}")
                 save_config(config, url)
+                print(f"成功解析 {url}")
             else:
                 print(f"跳过无效配置 ({url})：无有效节点")
         except requests.RequestException as e:
             print(f"无法获取 {url}: {e}")
-    return all_configs
-
-# 合并配置
-def merge_configs(configs):
-    merged = clash_config_template.copy()
-    failed_links = []
-    for config, url in configs:
-        if not isinstance(config, dict):
-            failed_links.append(url)
-            continue
-        for key, value in config.items():
-            if key == 'proxies' and isinstance(value, list):
-                merged['proxies'].extend([proxy for proxy in value if isinstance(proxy, dict)])
-            elif key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
-                merged[key].update(value)
-            elif key in merged and isinstance(merged[key], list) and isinstance(value, list):
-                merged[key].extend(value)
-            else:
-                merged[key] = value
-    seen_names = set()
-    merged['proxies'] = [proxy for proxy in merged['proxies'] if isinstance(proxy, dict)]
-    for index, proxy in enumerate(merged['proxies']):
-        if 'name' not in proxy:
-            proxy['name'] = f"node-{index}"
-        if proxy['name'] in seen_names:
-            proxy['name'] = f"{proxy['name']}-{index}"
-        seen_names.add(proxy['name'])
-        proxy.setdefault('udp', True)
-    proxy_names = [proxy['name'] for proxy in merged['proxies']]
-    for group in merged['proxy-groups']:
-        if group['name'] in ['自动选择', '故障转移', '手动选择']:
-            group['proxies'].extend([name for name in proxy_names if not any(exclude in name.lower() for exclude in ['中国', 'china', 'cn', '电信', '移动', '联通'])])
-    return merged, failed_links
 
 # 主函数
 def main():
-    os.makedirs('input', exist_ok=True)
-    configs = fetch_and_parse_configs(urls)
-    if not configs or not any(config.get('proxies', []) for config, _ in configs if isinstance(config, dict)):
-        print("错误：无法解析任何有效节点，输出文件将包含基础配置")
-        merged_config = clash_config_template.copy()
-        yaml_output = "# 错误：无法解析任何有效节点，仅包含基础配置\n" + yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-        with open('input/output.yml', 'w', encoding='utf-8') as f:
-            f.write(yaml_output)
-        print("配置已保存到 input/output.yml（仅基础配置）")
-        return
-    merged_config, failed_links = merge_configs(configs)
-    yaml_output = "# 合并后的配置，部分链接可能解析失败\n"
-    if failed_links:
-        yaml_output += "# 解析失败的链接：\n" + '\n'.join([f"# {link}" for link in failed_links]) + "\n"
-    yaml_output += yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-    with open('input/output.yml', 'w', encoding='utf-8') as f:
-        f.write(yaml_output)
-    print("合并配置已保存到 input/output.yml")
+    fetch_and_parse_configs(urls)
 
 if __name__ == "__main__":
     main()
