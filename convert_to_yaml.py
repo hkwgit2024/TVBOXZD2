@@ -10,7 +10,8 @@ from urllib3.util.retry import Retry
 # GitHub raw 链接列表
 urls = [
 
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
+    https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt
   
 ]
 
