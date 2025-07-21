@@ -13,7 +13,7 @@ import traceback
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import logging.handlers
@@ -30,6 +30,8 @@ URL_CHECK_COOLDOWN_HOURS = 1
 MAX_WORKERS_DEFAULT = 50
 MIN_WORKERS = 10
 MAX_WORKERS = 200
+MIN_RETRY_WAIT = 5  # Minimum wait time for retries (seconds)
+MAX_RETRY_WAIT = 60  # Maximum wait time for retries (seconds)
 
 # Configure logging with file output
 logger = logging.getLogger()
@@ -157,10 +159,10 @@ CONFIG = load_config()
 
 # Get parameters from configuration
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
-PER_PAGE = CONFIG.get('per_page', 100)
-MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
+PER_PAGE = CONFIG.get('per_page', 30)  # Reduced to avoid rate limits
+MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 3)  # Reduced to avoid rate limits
 GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10)
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 30)
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
 CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
 MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
@@ -322,7 +324,12 @@ def save_url_states_remote(url_states):
     except Exception as e:
         logger.error(f"Error saving URL states to remote '{URL_STATES_PATH_IN_REPO}': {e}\n{traceback.format_exc()}")
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=MIN_RETRY_WAIT, max=MAX_RETRY_WAIT),
+    reraise=True,
+    retry=retry_if_exception_type(requests.exceptions.RequestException)
+)
 def fetch_url_content_with_retry(url, url_states):
     """Attempt to fetch URL content with retry mechanism, and use ETag/Last-Modified/Content-Hash to avoid re-download."""
     headers = {}
@@ -503,8 +510,8 @@ def check_rtmp_url(url, timeout):
         return False
     try:
         result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, timeout=timeout)
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
     except subprocess.TimeoutExpired:
         logger.debug(f"RTMP URL {url} check timed out")
@@ -661,6 +668,7 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
                     results.append((elapsed_time, result_line))
             except Exception as exc:
                 logger.warning(f"Exception occurred during channel line processing: {exc}\n{traceback.format_exc()}")
+    logger.info(f"Completed channel validity check. Valid channels: {len(results)}")
     return results
 
 # --- File merge and sort functions ---
@@ -770,6 +778,7 @@ def read_txt_to_array_remote(file_path_in_repo):
     if content:
         lines = content.split('\n')
         return [line.strip() for line in lines if line.strip()]
+    logger.warning(f"No content fetched from remote '{file_path_in_repo}'. Returning empty list.")
     return []
 
 def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
@@ -780,6 +789,23 @@ def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
         logger.error(f"Failed to write data to remote '{file_path_in_repo}'.")
 
 # --- GitHub URL auto-discovery function ---
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=MIN_RETRY_WAIT, max=MAX_RETRY_WAIT),
+    reraise=True,
+    retry=retry_if_exception_type(requests.exceptions.RequestException)
+)
+def github_api_search(params, headers):
+    """Perform GitHub API search with retry for rate limits."""
+    response = session.get(
+        f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
+        headers=headers,
+        params=params,
+        timeout=GITHUB_API_TIMEOUT
+    )
+    response.raise_for_status()
+    return response
+
 def auto_discover_github_urls(urls_file_path_remote, github_token):
     """Automatically discover new IPTV source URLs from GitHub."""
     if not github_token:
@@ -806,28 +832,22 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
         page = 1
         while page <= MAX_SEARCH_PAGES:
             params = {
-                "q": keyword,
+                "q": f"{keyword} from:{REPO_OWNER}/{REPO_NAME}",  # Restrict to specific repo
                 "sort": "indexed",
                 "order": "desc",
                 "per_page": PER_PAGE,
                 "page": page
             }
             try:
-                response = session.get(
-                    f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
-                    headers=headers,
-                    params=params,
-                    timeout=GITHUB_API_TIMEOUT
-                )
-                response.raise_for_status()
+                response = github_api_search(params, headers)
                 data = response.json()
 
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
 
-                if rate_limit_remaining == 0:
+                if rate_limit_remaining <= 5:  # Preemptive wait if close to limit
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logger.warning(f"GitHub API rate limit reached! Waiting {wait_seconds:.0f} seconds.")
+                    logger.warning(f"GitHub API rate limit low ({rate_limit_remaining} remaining). Waiting {wait_seconds:.0f} seconds.")
                     time.sleep(wait_seconds)
                     continue
 
@@ -871,8 +891,9 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
 
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 403:
-                    logger.warning(f"GitHub API rate limit or access forbidden for keyword '{keyword}': {e}\n{traceback.format_exc()}")
+                    rate_limit_reset = int(e.response.headers.get('X-RateLimit-Reset', 0))
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
+                    logger.warning(f"GitHub API rate limit or access forbidden for keyword '{keyword}': {e}\n{traceback.format_exc()}")
                     logger.info(f"Rate limit hit for keyword '{keyword}'. Waiting {wait_seconds:.0f} seconds.")
                     time.sleep(wait_seconds)
                     continue
@@ -884,6 +905,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
                 break
         
         keyword_url_counts[keyword] = len(keyword_found_urls)
+        logger.info(f"Completed search for keyword '{keyword}'. Found {len(keyword_found_urls)} new URLs.")
     
     if found_urls:
         updated_urls = sorted(list(existing_urls | found_urls))
@@ -894,6 +916,7 @@ def auto_discover_github_urls(urls_file_path_remote, github_token):
     
     for keyword, count in keyword_url_counts.items():
         logger.info(f"Keyword '{keyword}' discovered {count} new URLs.")
+    logger.info("Auto-discovery of GitHub URLs completed.")
 
 # --- URL cleanup function ---
 def cleanup_urls_remote(urls_file_path_remote, url_states):
@@ -942,12 +965,14 @@ def main():
     url_states = load_url_states_remote()
     
     auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
-    logger.info("Auto-discovery of GitHub URLs completed.")
-
+    
     cleanup_urls_remote(URLS_PATH_IN_REPO, url_states)
     logger.info("Remote URLs cleaned up based on failure thresholds.")
 
     all_urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
+    if not all_urls:
+        logger.warning(f"No URLs found in {URLS_PATH_IN_REPO}. Skipping channel extraction and merging.")
+        return
     logger.info(f"Total URLs to process: {len(all_urls)}")
 
     os.makedirs(TEMP_CHANNELS_DIR, exist_ok=True)
