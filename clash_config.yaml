@@ -32,537 +32,277 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 10|SG+Alibaba+us+Technology+Co+++...
-  network: ws
-  port: 443
-  server: cache.netflix.com.unlimited.spauu.web.id
-  servername: cache.netflix.com.unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: ad94d206-fe2d-4e0e-ab89-c1d40ec0cb33
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.unlimited.spauu.web.id
-    path: /vl%3D8.222.129.175%3D58808
-- client-fingerprint: randomized
-  name: 10|Melbikomas+UAB+(SG)
+- name: 0|DigitalOcean,+LLC+(SG)
   network: ws
   port: 80
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
+  server: blog.webex.com.yaya.web.id
+  servername: blog.webex.com.yaya.web.id
   tls: false
   type: vless
-  uuid: 39a9e8d0-dd68-4ecb-b3f6-335cc3ff30f6
+  uuid: 32eadaf3-8e93-4aa0-989d-fb80a629abc4
   ws-opts:
     headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fsg6'
-- name: 10|SG+The+Constant+Company++LLC
-  network: ws
-  port: 443
-  server: unlimited.spauu.web.id
-  servername: unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 0e030ed1-3ca2-4f47-be31-dec2a125e347
-  ws-opts:
-    headers:
-      Host: unlimited.spauu.web.id
-    path: /vl%3D45.77.36.40%3D443
-- name: 10|SG+Shenzhen+Tencent+Computer+S...
+      Host: blog.webex.com.yaya.web.id
+    path: /do
+- name: '0|DigitalOcean,+LLC+(SG) #1'
   network: ws
   port: 80
-  server: unlimited.spauu.web.id
+  server: vless.kensoko.my.id
+  servername: vless.kensoko.my.id
   tls: false
   type: vless
-  uuid: 556e8ef1-9fb6-4638-8df7-8a1c41332f1c
+  uuid: 07593e5a-ce6c-47b7-8233-0547d6b585a7
   ws-opts:
     headers:
-      Host: unlimited.spauu.web.id
-    path: /vl%3D43.156.16.213%3D31528
-- name: 10|SG+Oracle+Corporation
-  network: ws
-  port: 80
-  server: cache.netflix.com.unlimited.spauu.web.id
-  tls: false
-  type: vless
-  uuid: b53bbb7c-1791-4237-aad3-128be6c06cad
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.unlimited.spauu.web.id
-    path: /vl%3D129.150.58.86%3D57621
-- name: 10|SG+Amazon+com++Inc
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.unlimited.spauu.web.id
-  servername: zaintest.vuclip.com.unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 2c35fab8-aac3-4351-9752-e5e48f9a7f58
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.unlimited.spauu.web.id
-    path: /vl%3D54.169.229.188%3D443
-- name: 10|SG+Leaseweb+Asia+🇸🇬
-  network: ws
-  port: 80
-  server: vip.arivganteng.biz.id
-  tls: false
-  type: vless
-  uuid: 7529d29b-3566-49ae-b86c-ca99f2a5f62d
-  ws-opts:
-    headers:
-      Host: vip.arivganteng.biz.id
-    path: /ariv%3D69.161.221.117%3D63258
-- name: '10|SG+Alibaba+us+Technology+Co+++... #1'
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.unlimited.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 59bb0f7a-8a35-4a14-9423-e99e8be49161
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.unlimited.spauu.web.id
-    path: /vl%3D8.219.237.57%3D31523
+      Host: vless.kensoko.my.id
+    path: /do2
 - client-fingerprint: randomized
-  name: 10|(SG)Melbikomas Uab-[Tls]
-  network: ws
-  port: 443
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: true
-  type: vless
-  uuid: 3c2568d1-d97d-4026-b85a-137f6bf903a9
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F91.192.81.154%3D8443'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #1'
-  network: ws
-  port: 80
-  server: investors.spotify.com.zee.upigg.my.id
-  servername: investors.spotify.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 4396998b-f69c-47f8-861d-012e3810d9e7
-  ws-opts:
-    headers:
-      Host: investors.spotify.com.zee.upigg.my.id
-    path: '%2Fsgakm'
-- name: 10|SG+Cloudflare+Warp+2+🇸🇬
-  network: ws
-  port: 443
-  server: vip.arivganteng.biz.id
-  servername: vip.arivganteng.biz.id
-  tls: true
-  type: vless
-  uuid: 7963a740-7aa1-4a35-9248-61429297466d
-  ws-opts:
-    headers:
-      Host: vip.arivganteng.biz.id
-    path: /ariv%3D158.178.240.232%3D10258
-- client-fingerprint: randomized
-  name: 10|Amazon.com,+Inc.+(SG)
-  network: ws
-  port: 80
-  server: ava.game.naver.com.zee.upigg.my.id
-  servername: ava.game.naver.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 2d8992ed-7611-4849-a3bf-83edc3186fa4
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.zee.upigg.my.id
-    path: '%2Fsgamz'
-- client-fingerprint: randomized
-  name: 10|Microsoft+Corporation+(SG)
-  network: ws
-  port: 443
-  server: svr.lufeng.pw
-  servername: svr.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 0c9189be-64e4-4714-bb9b-11b78be6b7ef
-  ws-opts:
-    headers:
-      Host: svr.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: 10|Green+Floid+LLC+(SG)
-  network: ws
-  port: 443
-  server: cache.netflix.com.spauu.web.id
-  servername: cache.netflix.com.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 0d1acbba-75d0-4647-a0a3-7d31a0c2e340
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.spauu.web.id
-    path: '%2Fsggreen'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #2'
-  network: ws
-  port: 443
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: true
-  type: vless
-  uuid: d5192ba3-0ae7-4939-8eb3-9b4b7c3fa49c
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: '%2Fsg2'
-- client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #2'
-  network: ws
-  port: 443
-  server: support.zoom.us.zee.upigg.my.id
-  servername: support.zoom.us.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 195afe0d-8cfb-4311-85a2-31aaab4325f5
-  ws-opts:
-    headers:
-      Host: support.zoom.us.zee.upigg.my.id
-    path: '%2Fsgamz'
-- client-fingerprint: random
-  name: '10|老油条-新加坡-cfcdn1 #1'
-  network: ws
-  port: 443
-  server: cfcdn1.langmanshanxi.top
-  servername: sg.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #1'
-  network: ws
-  port: 443
-  server: cache.netflix.com.zee.upigg.my.id
-  servername: cache.netflix.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 7065b0cd-a032-4594-bfc2-82514e3b2002
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.zee.upigg.my.id
-    path: '%2Fsgorcl'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #3'
-  network: ws
-  port: 443
-  server: zee.upigg.my.id
-  servername: zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 3c7f0c81-a097-4434-8e10-d066cd1f5192
-  ws-opts:
-    headers:
-      Host: zee.upigg.my.id
-    path: '%2Fsgakm'
-- client-fingerprint: randomized
-  name: 10|(SG)Oracle Corporation-[NTls]
-  network: ws
-  port: 80
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: false
-  type: vless
-  uuid: 3314c202-2890-4c18-846b-fe6ae7b26b3d
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F138.2.95.61%3D1111'
-- client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #4'
-  network: ws
-  port: 80
-  server: support.zoom.us.zee.upigg.my.id
-  servername: support.zoom.us.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 5b6e1867-39f1-487c-a8d8-dfa1b80dd314
-  ws-opts:
-    headers:
-      Host: support.zoom.us.zee.upigg.my.id
-    path: '%2Fsgamz'
-- client-fingerprint: randomized
-  name: 10|Aryaka+Networks,+Inc.+(SG)
-  network: ws
-  port: 80
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: false
-  type: vless
-  uuid: e3fa3ed7-5b67-46a1-9b1e-7ac5555f0cec
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: 10|Datacamp+Limited+(SG)
-  network: ws
-  port: 80
-  server: cache.netflix.com.zee.upigg.my.id
-  servername: cache.netflix.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 72772acf-bf64-4d1e-a7a3-f3c546acf7ee
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.zee.upigg.my.id
-    path: '%2Fsgdata'
-- client-fingerprint: randomized
-  name: '10|Aryaka+Networks,+Inc.+(SG) #1'
-  network: ws
-  port: 80
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 48929e77-e218-4f4b-b239-ec31d39663cb
-  ws-opts:
-    headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: 10|Contabo+Asia+Private+Limited+(...
-  network: ws
-  port: 443
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 41fddd28-825c-4396-a053-f0ef52b61764
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: '%2Fsg5'
-- client-fingerprint: randomized
-  name: '10|Ipxo+LLC+(SG) #1'
-  network: ws
-  port: 80
-  server: cache.netflix.com.spauu.web.id
-  servername: cache.netflix.com.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 4500e84a-a6d2-4dd1-a2db-401338832336
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.spauu.web.id
-    path: '%2FsgLatitude'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #4'
-  network: ws
-  port: 80
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: false
-  type: vless
-  uuid: d2221ea3-f8c0-4370-9995-a2513ceed697
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: '%2Fsg2'
-- name: '10|DigitalOcean,+LLC+(SG) #3'
-  network: ws
-  port: 443
-  server: yaya.web.id
-  servername: yaya.web.id
-  tls: true
-  type: vless
-  uuid: fc93b459-ea3a-430a-a985-98ba2227cd82
-  ws-opts:
-    headers:
-      Host: yaya.web.id
-    path: '%2Fdo2'
-- client-fingerprint: randomized
-  name: 10|Bytevirt+LLC+(SG+80)
+  name: 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
   network: ws
   port: 80
   server: ava.game.naver.com.sg1.hinamori.xyz
   servername: ava.game.naver.com.sg1.hinamori.xyz
   tls: false
   type: vless
-  uuid: 429863fd-a60d-453b-a332-7d4d78443a1c
+  uuid: 16f3ffa2-75bd-4588-84aa-1c408ece415b
   ws-opts:
     headers:
       Host: ava.game.naver.com.sg1.hinamori.xyz
-    path: '%2F2'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #5'
+    path: /10
+- name: 0|SG+The+Constant+Company++LLC
   network: ws
-  port: 443
-  server: live.iflix.com.zee.upigg.my.id
-  servername: live.iflix.com.zee.upigg.my.id
-  tls: true
+  port: 80
+  server: unlimited.spauu.web.id
+  tls: false
   type: vless
-  uuid: 941071cd-49ea-45f1-a814-30318810ae5a
+  uuid: 0362339d-fc16-4fbd-8204-38f71047c7bf
   ws-opts:
     headers:
-      Host: live.iflix.com.zee.upigg.my.id
-    path: '%2Fsgakm'
+      Host: unlimited.spauu.web.id
+    path: /vl%3D139.180.215.77%3D57878
 - client-fingerprint: randomized
-  name: '10|Melbikomas+UAB+(SG) #1'
+  name: 0|Amazon.com,+Inc.+(SG)
   network: ws
-  port: 443
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: true
+  port: 80
+  server: servpn.my.id
+  servername: servpn.my.id
+  tls: false
   type: vless
-  uuid: 8281b8c6-fb53-4594-b26f-d4d618d0b807
+  uuid: 257ad114-9b58-4d27-af6e-855e8d55fb00
   ws-opts:
     headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: '%2Fsg6'
+      Host: servpn.my.id
+    path: /sg3
+- alpn:
+  - h3
+  client-fingerprint: random
+  name: '0,6,7|SG #10'
+  network: ws
+  port: 6443
+  server: 138.2.64.175
+  servername: warp.wlcf.lol
+  tls: true
+  type: vless
+  uuid: f41afc19-93cb-406d-af1c-04e75221708c
+  ws-opts:
+    headers:
+      Host: warp.wlcf.lol
+    path: /?ed%3D2560
+- name: 0|SG_speednode_0120
+  network: ws
+  port: 8880
+  server: 92.243.74.186
+  servername: Telegram-channel-WangCai2
+  skip-cert-verify: true
+  tls: false
+  type: vless
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
 - client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #9'
+  name: '0|Amazon.com,+Inc.+(SG) #1'
   network: ws
   port: 80
   server: quiz.int.vidio.com.zee.upigg.my.id
   servername: quiz.int.vidio.com.zee.upigg.my.id
   tls: false
   type: vless
-  uuid: 54127ea0-6485-4882-85a1-2f06f2bc5f82
+  uuid: 1365c73f-33bf-47f7-8570-370d3a99c53d
   ws-opts:
     headers:
       Host: quiz.int.vidio.com.zee.upigg.my.id
-    path: '%2Fsgamz'
-- name: '10|DigitalOcean,+LLC+(SG) #4'
+    path: /sgamz
+- name: 0|SG+Softlayer+Technologies+Inc
+  network: ws
+  port: 443
+  server: cache.netflix.com.unlimited.spauu.web.id
+  servername: cache.netflix.com.unlimited.spauu.web.id
+  tls: true
+  type: vless
+  uuid: 0785ff64-de67-4b00-9a35-56aa145024a5
+  ws-opts:
+    headers:
+      Host: cache.netflix.com.unlimited.spauu.web.id
+    path: /vl%3D119.81.201.154%3D9089
+- name: 0|SG+Digital+Ocean+2+🇸🇬
   network: ws
   port: 80
-  server: yaya.web.id
-  servername: yaya.web.id
+  server: vip.arivganteng.biz.id
   tls: false
   type: vless
-  uuid: 167d17c1-abe7-4f3a-b66a-75b33516f105
+  uuid: 0009e2cd-ab57-4ae4-929c-210852247419
   ws-opts:
     headers:
-      Host: yaya.web.id
-    path: '%2Fdo2'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #1'
+      Host: vip.arivganteng.biz.id
+    path: /ariv%3D146.190.111.165%3D443
+- name: '0|DigitalOcean,+LLC+(SG) #2'
   network: ws
   port: 80
-  server: support.zoom.us.lufeng.pw
+  server: quiz.int.vidio.com.yaya.web.id
+  servername: quiz.int.vidio.com.yaya.web.id
   tls: false
   type: vless
-  uuid: 8fc1fd68-caca-4711-9e26-80a74e2efae7
+  uuid: 1aef6aff-ea6d-4390-83a2-219713f001f4
   ws-opts:
     headers:
-      Host: support.zoom.us.lufeng.pw
-    path: '%2Fsg1'
+      Host: quiz.int.vidio.com.yaya.web.id
+    path: /do
 - client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #9'
+  name: 0|Aceville+Pte.ltd+(SG)
   network: ws
   port: 443
-  server: zaintest.vuclip.com.zee.upigg.my.id
-  servername: zaintest.vuclip.com.zee.upigg.my.id
+  server: cache.netflix.com.spauu.web.id
+  servername: cache.netflix.com.spauu.web.id
   tls: true
   type: vless
-  uuid: 173af791-d9a3-4eb1-b977-46f1640c8e55
+  uuid: 0659b15f-9910-4969-96aa-7b7b7b04bc8e
   ws-opts:
     headers:
-      Host: zaintest.vuclip.com.zee.upigg.my.id
-    path: '%2Fsgakm'
+      Host: cache.netflix.com.spauu.web.id
+    path: /sgtcc
 - client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #10'
+  name: 0|Microsoft+Corporation+(SG)
   network: ws
   port: 443
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
+  server: lufeng.pw
+  servername: lufeng.pw
   tls: true
   type: vless
-  uuid: 26ac2de0-412d-4938-bad2-2686b226311d
+  uuid: 111e18e2-3f36-4067-ba96-468f192f8b47
   ws-opts:
     headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fsg2'
-- name: '10|DigitalOcean,+LLC+(SG) #6'
+      Host: lufeng.pw
+    path: /sg1
+- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
   network: ws
-  port: 443
-  server: edu.ruangguru.com.yaya.web.id
-  servername: edu.ruangguru.com.yaya.web.id
-  tls: true
+  port: 8880
+  server: 27.50.49.213
+  tls: false
   type: vless
-  uuid: 6b8cfb98-4bdc-4f81-aa4a-dad944ef5a26
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
-      Host: edu.ruangguru.com.yaya.web.id
-    path: '%2Fdo'
+      Host: jp.laoyoutiao.link
 - client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #12'
+  name: '0|Aceville+Pte.ltd+(SG) #1'
   network: ws
   port: 80
-  server: zee.upigg.my.id
-  servername: zee.upigg.my.id
+  server: cache.netflix.com.spauu.web.id
+  servername: cache.netflix.com.spauu.web.id
   tls: false
   type: vless
-  uuid: 38c23763-e7c2-4879-9ad6-7f1885e7efe7
+  uuid: 07af06d6-0b2e-4149-81a7-4deb6b52e307
   ws-opts:
     headers:
-      Host: zee.upigg.my.id
-    path: '%2Fsgamz'
+      Host: cache.netflix.com.spauu.web.id
+    path: /sgtcc
 - client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #4'
-  network: ws
-  port: 443
-  server: quiz.int.vidio.com.zee.upigg.my.id
-  servername: quiz.int.vidio.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: b6066a43-2120-47a3-9d1e-1373c594a416
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.zee.upigg.my.id
-    path: '%2Fsgorcl'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #6'
-  network: ws
-  port: 443
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: a0eb85ad-4953-47f2-83b9-c4c5fefd2d58
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: '%2Fsg7'
-- client-fingerprint: randomized
-  name: '10|Digitalocean,+LLC+(SG) #2'
+  name: 0|Akamai+Technologies,+Inc.+(SG)
   network: ws
   port: 80
   server: zaintest.vuclip.com.zee.upigg.my.id
   servername: zaintest.vuclip.com.zee.upigg.my.id
   tls: false
   type: vless
-  uuid: 29b2350d-af1e-4157-ba11-d262e6990068
+  uuid: 0890ce35-6536-4506-8806-6925da92f9c5
   ws-opts:
     headers:
       Host: zaintest.vuclip.com.zee.upigg.my.id
-    path: '%2Fsgdo'
+    path: /sgakm
 - client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #10'
+  name: '0|Akamai+Technologies,+Inc.+(SG) #1'
   network: ws
-  port: 80
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: false
+  port: 443
+  server: investors.spotify.com.zee.upigg.my.id
+  servername: investors.spotify.com.zee.upigg.my.id
+  tls: true
   type: vless
-  uuid: 2c8f4dd5-a6c6-47c2-8f8a-0fdf0e8aaac0
+  uuid: 010b464d-20d0-40b4-bbf9-431b810037ec
   ws-opts:
     headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: '%2Fsg7'
+      Host: investors.spotify.com.zee.upigg.my.id
+    path: /sgakm
+- name: 0|SG_speednode_0118
+  network: ws
+  port: 8880
+  server: 92.243.74.177
+  servername: Telegram-channel-WangCai2
+  skip-cert-verify: true
+  tls: false
+  type: vless
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+    path: /TelegramU0001F1E8U0001F1F3%20@WangCai2%20/?ed%3D2560fp%3Dchrome
+- name: 0|SG新加坡(mibei77.com 米贝节点分享)
+  network: ws
+  port: 443
+  server: 51.79.158.126
+  servername: jp.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: jp.laoyoutiao.link
+    path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
+- client-fingerprint: random
+  name: '0,6,7|老油条-SG-新加坡 #3'
+  network: ws
+  port: 443
+  server: sg.laoyoutiao.link
+  servername: sg.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: /?ed%3D2560
+- name: 0|SG+Oracle+Corporation
+  network: ws
+  port: 80
+  server: cache.netflix.com.unlimited.spauu.web.id
+  tls: false
+  type: vless
+  uuid: 02b06e1b-9670-41b1-8fde-95256e5c9863
+  ws-opts:
+    headers:
+      Host: cache.netflix.com.unlimited.spauu.web.id
+    path: /vl%3D138.2.74.219%3D28616
+- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
+  network: ws
+  port: 8880
+  server: 154.194.12.213
+  tls: false
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: jp.laoyoutiao.link
 - name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
   network: ws
   port: 8880
@@ -573,18 +313,258 @@ proxies:
   ws-opts:
     headers:
       Host: jp.laoyoutiao.link
-- name: '10|DigitalOcean,+LLC+(SG) #9'
+- name: 0|SG+Amazon+com++Inc
+  network: ws
+  port: 443
+  server: zaintest.vuclip.com.unlimited.spauu.web.id
+  servername: zaintest.vuclip.com.unlimited.spauu.web.id
+  tls: true
+  type: vless
+  uuid: 00b89d57-a877-4552-97c8-027b4f331158
+  ws-opts:
+    headers:
+      Host: zaintest.vuclip.com.unlimited.spauu.web.id
+    path: /vl%3D54.169.229.188%3D443
+- name: 0|SG_speednode_0119
+  network: ws
+  port: 8880
+  server: 92.243.75.186
+  servername: Telegram-channel-WangCai2
+  skip-cert-verify: true
+  tls: false
+  type: vless
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
+- client-fingerprint: randomized
+  name: 0|VPLS,+Inc.+(SG)
+  network: ws
+  port: 80
+  server: app-stg.gopay.co.id.servpn.my.id
+  servername: app-stg.gopay.co.id.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 05577aaa-4081-496b-90c9-4a65a90c18ef
+  ws-opts:
+    headers:
+      Host: app-stg.gopay.co.id.servpn.my.id
+    path: /sg10
+- name: 0|SG+Hong+Kong+Megalayer+Technol...
+  network: ws
+  port: 443
+  server: unlimited.spauu.web.id
+  servername: unlimited.spauu.web.id
+  tls: true
+  type: vless
+  uuid: 038e7bdc-1cc4-415d-8bf2-3e25bbf5938e
+  ws-opts:
+    headers:
+      Host: unlimited.spauu.web.id
+    path: /vl%3D103.180.161.10%3D587
+- client-fingerprint: randomized
+  name: '0|Akamai+Technologies,+Inc.+(SG) #2'
+  network: ws
+  port: 80
+  server: zee.upigg.my.id
+  servername: zee.upigg.my.id
+  tls: false
+  type: vless
+  uuid: 15ca2c13-11d1-40c2-a61d-cca3457d7ff1
+  ws-opts:
+    headers:
+      Host: zee.upigg.my.id
+    path: /sgakm
+- client-fingerprint: randomized
+  name: '0|Akamai+Technologies,+Inc.+(SG) #3'
+  network: ws
+  port: 443
+  server: cache.netflix.com.zee.upigg.my.id
+  servername: cache.netflix.com.zee.upigg.my.id
+  tls: true
+  type: vless
+  uuid: 109d4b4d-6024-4c15-9a46-6957e697b172
+  ws-opts:
+    headers:
+      Host: cache.netflix.com.zee.upigg.my.id
+    path: /sgakm
+- client-fingerprint: randomized
+  name: 0|Oracle+Corporation+(SG)
+  network: ws
+  port: 80
+  server: live.iflix.com.zee.upigg.my.id
+  servername: live.iflix.com.zee.upigg.my.id
+  tls: false
+  type: vless
+  uuid: 047e5ed3-1228-4ea8-9c00-a079b84c1f11
+  ws-opts:
+    headers:
+      Host: live.iflix.com.zee.upigg.my.id
+    path: /sgorcl
+- client-fingerprint: randomized
+  name: '0|Amazon.com,+Inc.+(SG) #2'
+  network: ws
+  port: 443
+  server: live.iflix.com.zee.upigg.my.id
+  servername: live.iflix.com.zee.upigg.my.id
+  tls: true
+  type: vless
+  uuid: 0d7bcabc-8d2a-482d-b542-305e71d26df6
+  ws-opts:
+    headers:
+      Host: live.iflix.com.zee.upigg.my.id
+    path: /sgamz
+- name: 0|SG+SoftLayer+Technologies+🇸🇬
+  network: ws
+  port: 443
+  server: vip.arivganteng.biz.id
+  servername: vip.arivganteng.biz.id
+  tls: true
+  type: vless
+  uuid: 00abbe1a-4216-4cda-87cc-670ebde83d5b
+  ws-opts:
+    headers:
+      Host: vip.arivganteng.biz.id
+    path: /ariv%3D119.81.201.154%3D9089
+- client-fingerprint: randomized
+  name: '5|Akamai+Technologies,+Inc.+(SG) #4'
+  network: ws
+  port: 443
+  server: quiz.int.vidio.com.zee.upigg.my.id
+  servername: quiz.int.vidio.com.zee.upigg.my.id
+  tls: true
+  type: vless
+  uuid: 1191b8fd-cb69-4fa4-8967-9ead0d301936
+  ws-opts:
+    headers:
+      Host: quiz.int.vidio.com.zee.upigg.my.id
+    path: /sgakm
+- name: '5|DigitalOcean,+LLC+(SG) #3'
+  network: ws
+  port: 80
+  server: zaintest.vuclip.com.yaya.web.id
+  servername: zaintest.vuclip.com.yaya.web.id
+  tls: false
+  type: vless
+  uuid: 0d71b128-55f5-4ca7-9faa-b6e0baab4837
+  ws-opts:
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+    path: /do
+- name: '5|DigitalOcean,+LLC+(SG) #4'
   network: ws
   port: 443
   server: cache.netflix.com.yaya.web.id
   servername: cache.netflix.com.yaya.web.id
   tls: true
   type: vless
-  uuid: b28e28f6-80ee-4142-9361-7004077a72d7
+  uuid: 04bb3554-85e6-4cb6-90e7-3e9cd73dbd46
   ws-opts:
     headers:
       Host: cache.netflix.com.yaya.web.id
-    path: '%2Fdo2'
+    path: /do
+- client-fingerprint: random
+  name: '5,6|@NpvV2rayFilTer #1'
+  network: ws
+  port: 8880
+  server: 91.206.71.162
+  servername: barayeiran-mahsang.gerald81.dpdns.org
+  tls: false
+  type: vless
+  uuid: 26bc13af-e442-4956-afd4-b8f85744d26f
+  ws-opts:
+    headers:
+      Host: barayeiran-mahsang.gerald81.dpdns.org
+    path: /Barayeiranmahsang/----@-?ed%3D2560
+- name: 5|SG+Alibaba+us+Technology+Co+++...
+  network: ws
+  port: 80
+  server: zaintest.vuclip.com.unlimited.spauu.web.id
+  tls: false
+  type: vless
+  uuid: 35c00cfc-dd85-4809-b721-e601546b9dd2
+  ws-opts:
+    headers:
+      Host: zaintest.vuclip.com.unlimited.spauu.web.id
+    path: /vl%3D161.117.249.114%3D2025
+- name: '5|DigitalOcean,+LLC+(SG) #5'
+  network: ws
+  port: 80
+  server: yaya.web.id
+  servername: yaya.web.id
+  tls: false
+  type: vless
+  uuid: 0d902577-5822-468c-b3c9-d985747cb286
+  ws-opts:
+    headers:
+      Host: yaya.web.id
+    path: /do
+- client-fingerprint: randomized
+  name: 5|Digitalocean,+LLC+(SG)
+  network: ws
+  port: 80
+  server: support.zoom.us.zee.upigg.my.id
+  servername: support.zoom.us.zee.upigg.my.id
+  tls: false
+  type: vless
+  uuid: 03d90f9c-3075-4023-8a85-a697eaff4cbc
+  ws-opts:
+    headers:
+      Host: support.zoom.us.zee.upigg.my.id
+    path: /sgdo
+- client-fingerprint: randomized
+  name: 5|Contabo+Asia+Private+Limited+(...
+  network: ws
+  port: 80
+  server: blog.ruangguru.com.servpn.my.id
+  servername: blog.ruangguru.com.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 023ca124-31a4-40c3-b4a4-f7bd8b10b3b9
+  ws-opts:
+    headers:
+      Host: blog.ruangguru.com.servpn.my.id
+    path: /sg5
+- client-fingerprint: randomized
+  name: 5|Melbikomas+UAB+(SG)
+  network: ws
+  port: 80
+  server: ava.game.naver.com.servpn.my.id
+  servername: ava.game.naver.com.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 02da1563-79d4-4d32-9cce-d3a6dae17ecd
+  ws-opts:
+    headers:
+      Host: ava.game.naver.com.servpn.my.id
+    path: /sg6
+- client-fingerprint: randomized
+  name: '5|Digitalocean,+LLC+(SG) #1'
+  network: ws
+  port: 443
+  server: zaintest.vuclip.com.zee.upigg.my.id
+  servername: zaintest.vuclip.com.zee.upigg.my.id
+  tls: true
+  type: vless
+  uuid: 0d59f906-1482-43e0-ac30-064611987a0f
+  ws-opts:
+    headers:
+      Host: zaintest.vuclip.com.zee.upigg.my.id
+    path: /sgdo
+- client-fingerprint: randomized
+  name: '10|VPLS,+Inc.+(SG) #1'
+  network: ws
+  port: 443
+  server: blog.ruangguru.com.servpn.my.id
+  servername: blog.ruangguru.com.servpn.my.id
+  tls: true
+  type: vless
+  uuid: 8a59e290-6b35-4a1a-aa23-3bc0c5bd4986
+  ws-opts:
+    headers:
+      Host: blog.ruangguru.com.servpn.my.id
+    path: '%2Fsg10'
 - client-fingerprint: random
   name: '10|老油条-新加坡-cfcdns #1'
   network: ws
@@ -599,36 +579,62 @@ proxies:
     headers:
       Host: sg.laoyoutiao.link
     path: '%2F%3Fed%3D2560'
-- name: '10|DigitalOcean,+LLC+(SG) #10'
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.yaya.web.id
-  servername: zaintest.vuclip.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: a5a43ded-93b7-48e4-b2d3-b1cd3917567f
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-    path: '%2Fdo'
 - client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #13'
+  name: '10|Amazon.com,+Inc.+(SG) #3'
   network: ws
-  port: 443
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: true
+  port: 80
+  server: ava.game.naver.com.zee.upigg.my.id
+  servername: ava.game.naver.com.zee.upigg.my.id
+  tls: false
   type: vless
-  uuid: 47568126-9776-4330-a405-0e6fdc2164af
+  uuid: 2d8992ed-7611-4849-a3bf-83edc3186fa4
   ws-opts:
     headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: '%2Fsg3'
-- client-fingerprint: random
-  name: 10|老油条-SG-新加坡
+      Host: ava.game.naver.com.zee.upigg.my.id
+    path: '%2Fsgamz'
+- client-fingerprint: randomized
+  name: 10|(SG)Oracle Corporation-[NTls]
+  network: ws
+  port: 80
+  server: zoomgov.vipren.biz.id
+  servername: zoomgov.vipren.biz.id
+  tls: false
+  type: vless
+  uuid: 79cd5370-f9e9-4284-96c8-1f9e470ae947
+  ws-opts:
+    headers:
+      Host: zoomgov.vipren.biz.id
+    path: '%2F146.235.18.248%3D45137'
+- client-fingerprint: randomized
+  name: 10|(SG)Oracle Corporation-[Tls]
   network: ws
   port: 443
-  server: sg.laoyoutiao.link
+  server: zoomgov.vipren.biz.id
+  servername: zoomgov.vipren.biz.id
+  tls: true
+  type: vless
+  uuid: 7126ed30-6617-4d71-a460-88be4b697aa1
+  ws-opts:
+    headers:
+      Host: zoomgov.vipren.biz.id
+    path: '%2F158.178.243.152%3D61731'
+- name: '10|DigitalOcean,+LLC+(SG) #7'
+  network: ws
+  port: 443
+  server: quiz.int.vidio.com.yaya.web.id
+  servername: quiz.int.vidio.com.yaya.web.id
+  tls: true
+  type: vless
+  uuid: c0603534-0c28-4266-9d0b-9b1058d25f42
+  ws-opts:
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+    path: '%2Fdo2'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cdn1
+  network: ws
+  port: 443
+  server: cdn1.laoyoutiao.link
   servername: sg.laoyoutiao.link
   tls: true
   type: vless
@@ -638,20 +644,46 @@ proxies:
       Host: sg.laoyoutiao.link
     path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #15'
+  name: '10|Microsoft+Corporation+(SG) #1'
   network: ws
-  port: 80
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: false
+  port: 443
+  server: svr.lufeng.pw
+  servername: svr.lufeng.pw
+  tls: true
   type: vless
-  uuid: 2f841aa7-049c-499e-be03-01fe8b529c08
+  uuid: 0c9189be-64e4-4714-bb9b-11b78be6b7ef
   ws-opts:
     headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: '%2Fsg3'
+      Host: svr.lufeng.pw
+    path: '%2Fsg1'
 - client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #18'
+  name: '10|DigitalOcean,+LLC+(SG) #8'
+  network: ws
+  port: 80
+  server: bakrie.ac.id.servpn.my.id
+  servername: bakrie.ac.id.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 20d5c9b5-db5f-4843-af77-0f67586de625
+  ws-opts:
+    headers:
+      Host: bakrie.ac.id.servpn.my.id
+    path: '%2Fsg4'
+- client-fingerprint: randomized
+  name: '10|Datacamp+Limited+(SG) #1'
+  network: ws
+  port: 443
+  server: zee.upigg.my.id
+  servername: zee.upigg.my.id
+  tls: true
+  type: vless
+  uuid: f99556b4-c7b6-4105-87f6-507f69745a2c
+  ws-opts:
+    headers:
+      Host: zee.upigg.my.id
+    path: '%2Fsgdata'
+- client-fingerprint: randomized
+  name: '10|Amazon.com,+Inc.+(SG) #7'
   network: ws
   port: 443
   server: ava.game.naver.com.zee.upigg.my.id
@@ -667,129 +699,40 @@ proxies:
   name: '10|Microsoft+Corporation+(SG) #2'
   network: ws
   port: 80
-  server: investors.spotify.com.lufeng.pw
+  server: svr.lufeng.pw
   tls: false
   type: vless
-  uuid: 02333253-f058-4db4-b610-585172ee06f5
+  uuid: b0207968-3f65-4a61-87b1-8bbe2617aa22
   ws-opts:
     headers:
-      Host: investors.spotify.com.lufeng.pw
+      Host: svr.lufeng.pw
     path: '%2Fsg1'
-- name: '10|DigitalOcean,+LLC+(SG) #13'
-  network: ws
-  port: 80
-  server: edu.ruangguru.com.yaya.web.id
-  servername: edu.ruangguru.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 15bb87c7-48c5-4272-9e63-00ac0838da16
-  ws-opts:
-    headers:
-      Host: edu.ruangguru.com.yaya.web.id
-    path: '%2Fdo2'
-- name: '10|DigitalOcean,+LLC+(SG) #14'
-  network: ws
-  port: 443
-  server: ava.game.naver.com.yaya.web.id
-  servername: ava.game.naver.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: 8e72a02d-1b9a-4aa8-80a0-e056109054bd
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cfcdn2
-  network: ws
-  port: 443
-  server: cfcdn2.langmanshanxi.top
-  servername: sg.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
-  name: '10|Datacamp+Limited+(SG) #4'
+  name: '10|Amazon.com,+Inc.+(SG) #9'
   network: ws
   port: 443
-  server: investors.spotify.com.zee.upigg.my.id
-  servername: investors.spotify.com.zee.upigg.my.id
+  server: ava.game.naver.com.servpn.my.id
+  servername: ava.game.naver.com.servpn.my.id
   tls: true
   type: vless
-  uuid: 41486e3a-2356-4350-aa5d-6da7dfd36a23
+  uuid: 9ca913b0-15f5-4afa-bc76-46b5140b8f63
   ws-opts:
     headers:
-      Host: investors.spotify.com.zee.upigg.my.id
-    path: '%2Fsgdata'
-- name: 6,8,10|4FreeIran-9410
+      Host: ava.game.naver.com.servpn.my.id
+    path: '%2Fsg3'
+- client-fingerprint: randomized
+  name: '10|Akamai+Technologies,+Inc.+(SG) #16'
   network: ws
-  port: 8880
-  server: 92.243.74.177
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /TelegramU0001F1E8U0001F1F3
-- name: 10|15|SG_speednode_0116
-  network: ws
-  port: 8880
-  server: 92.243.75.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: 10|SG
-  network: ws
-  port: 6443
-  server: 138.2.64.175
-  servername: warp.wlcf.lol
+  port: 443
+  server: support.zoom.us.zee.upigg.my.id
+  servername: support.zoom.us.zee.upigg.my.id
   tls: true
   type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
+  uuid: 554fdce6-1629-43fd-9bd7-0113b727f5c6
   ws-opts:
     headers:
-      Host: warp.wlcf.lol
-    path: '%2F%3Fed%3D2560'
-- name: '10|DigitalOcean,+LLC+(SG) #19'
-  network: ws
-  port: 80
-  server: cache.netflix.com.yaya.web.id
-  servername: cache.netflix.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: cb937794-8aa5-413d-b066-2a2f316a0efc
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.yaya.web.id
-    path: '%2Fdo'
-- name: '10|DigitalOcean,+LLC+(SG) #23'
-  network: ws
-  port: 80
-  server: blog.webex.com.yaya.web.id
-  servername: blog.webex.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 7ce14044-fcd1-4af5-90cd-d312d89c2557
-  ws-opts:
-    headers:
-      Host: blog.webex.com.yaya.web.id
-    path: '%2Fdo'
+      Host: support.zoom.us.zee.upigg.my.id
+    path: '%2Fsgakm'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #3'
   network: ws
@@ -804,32 +747,69 @@ proxies:
       Host: investors.spotify.com.lufeng.pw
     path: '%2Fsg1'
 - client-fingerprint: randomized
-  name: 10|M247+Europe+SRL+(SG)
+  name: '10|Microsoft+Corporation+(SG) #4'
+  network: ws
+  port: 80
+  server: investors.spotify.com.lufeng.pw
+  tls: false
+  type: vless
+  uuid: 02333253-f058-4db4-b610-585172ee06f5
+  ws-opts:
+    headers:
+      Host: investors.spotify.com.lufeng.pw
+    path: '%2Fsg1'
+- client-fingerprint: randomized
+  name: '10|Akamai+Technologies,+Inc.+(SG) #17'
+  network: ws
+  port: 80
+  server: investors.spotify.com.zee.upigg.my.id
+  servername: investors.spotify.com.zee.upigg.my.id
+  tls: false
+  type: vless
+  uuid: 4396998b-f69c-47f8-861d-012e3810d9e7
+  ws-opts:
+    headers:
+      Host: investors.spotify.com.zee.upigg.my.id
+    path: '%2Fsgakm'
+- name: '10|DigitalOcean,+LLC+(SG) #14'
+  network: ws
+  port: 443
+  server: ava.game.naver.com.yaya.web.id
+  servername: ava.game.naver.com.yaya.web.id
+  tls: true
+  type: vless
+  uuid: 8e72a02d-1b9a-4aa8-80a0-e056109054bd
+  ws-opts:
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+    path: '%2Fdo'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(SG) #6'
   network: ws
   port: 443
   server: sgjp.asolole.biz.id
   servername: sgjp.asolole.biz.id
   tls: true
   type: vless
-  uuid: ab8873c7-dd80-4c6e-b467-afff2065a7bc
+  uuid: a48f8eda-e3b5-489d-bb09-175973863162
   ws-opts:
     headers:
       Host: sgjp.asolole.biz.id
-    path: '%2Fsg2'
-- name: '10|DigitalOcean,+LLC+(SG) #26'
+    path: '%2Fsg3'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #5'
   network: ws
   port: 80
-  server: quiz.int.vidio.com.yaya.web.id
-  servername: quiz.int.vidio.com.yaya.web.id
+  server: blog.webex.com.lufeng.pw
   tls: false
   type: vless
-  uuid: 213b46ff-4be1-44c5-a1cc-8d599a341da9
+  uuid: 5be0bfd6-c81b-4761-9833-edf79207cae5
   ws-opts:
     headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-    path: '%2Fdo'
+      Host: blog.webex.com.lufeng.pw
+    path: '%2Fsg1'
 - client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #26'
+  name: '10|Oracle+Corporation+(SG) #9'
   network: ws
   port: 80
   server: sgjp.asolole.biz.id
@@ -841,68 +821,19 @@ proxies:
     headers:
       Host: sgjp.asolole.biz.id
     path: '%2Fsg3'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #4'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cdn
   network: ws
   port: 443
-  server: lufeng.pw
-  servername: lufeng.pw
+  server: cdn.laoyoutiao.link
+  servername: sg.laoyoutiao.link
   tls: true
   type: vless
-  uuid: 2157c6ee-5bfd-40ee-ab42-66e6d1965eb5
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
-      Host: lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #5'
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: d535ec49-6e49-49b3-bc19-c825ab5cbc9e
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.lufeng.pw
-    path: '%2Fsg1'
-- name: '10|DigitalOcean,+LLC+(SG) #28'
-  network: ws
-  port: 80
-  server: ava.game.naver.com.yaya.web.id
-  servername: ava.game.naver.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: bbd6d712-a5a5-456d-90ea-115831c05233
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.yaya.web.id
-    path: '%2Fdo2'
-- name: '10|DigitalOcean,+LLC+(SG) #31'
-  network: ws
-  port: 443
-  server: blog.webex.com.yaya.web.id
-  servername: blog.webex.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: bd8237e3-956d-4e76-8757-e0e17e442a14
-  ws-opts:
-    headers:
-      Host: blog.webex.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #6'
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.lufeng.pw
-  servername: zaintest.vuclip.com.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 3b75e5bd-033f-4fdf-9e12-380bb616eafe
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.lufeng.pw
-    path: '%2Fsg1'
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: random
   name: 10|老油条-新加坡-cdn2
   network: ws
@@ -918,22 +849,49 @@ proxies:
       Host: sg.laoyoutiao.link
     path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #8'
-  network: ws
-  port: 80
-  server: blog.webex.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: 5be0bfd6-c81b-4761-9833-edf79207cae5
-  ws-opts:
-    headers:
-      Host: blog.webex.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cfcdn3
+  name: '10|Oracle+Corporation+(SG) #12'
   network: ws
   port: 443
-  server: cfcdn3.langmanshanxi.top
+  server: servpn.my.id
+  servername: servpn.my.id
+  tls: true
+  type: vless
+  uuid: 4bb12704-9bff-437e-a4a7-17700d6f1bd0
+  ws-opts:
+    headers:
+      Host: servpn.my.id
+    path: '%2Fsg7'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(SG) #14'
+  network: ws
+  port: 80
+  server: cache.netflix.com.zee.upigg.my.id
+  servername: cache.netflix.com.zee.upigg.my.id
+  tls: false
+  type: vless
+  uuid: 2e534f4e-36a5-465b-9951-2cf8659c83d3
+  ws-opts:
+    headers:
+      Host: cache.netflix.com.zee.upigg.my.id
+    path: '%2Fsgorcl'
+- client-fingerprint: randomized
+  name: '10|DigitalOcean,+LLC+(SG) #21'
+  network: ws
+  port: 443
+  server: bakrie.ac.id.servpn.my.id
+  servername: bakrie.ac.id.servpn.my.id
+  tls: true
+  type: vless
+  uuid: 95a24be9-9cbc-4c82-8155-92339298cfb1
+  ws-opts:
+    headers:
+      Host: bakrie.ac.id.servpn.my.id
+    path: '%2Fsg4'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cfcdn2
+  network: ws
+  port: 443
+  server: cfcdn2.langmanshanxi.top
   servername: sg.laoyoutiao.link
   tls: true
   type: vless
@@ -942,32 +900,32 @@ proxies:
     headers:
       Host: sg.laoyoutiao.link
     path: '%2F%3Fed%3D2560'
-- name: '10|DigitalOcean,+LLC+(SG) #35'
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.yaya.web.id
-  servername: zaintest.vuclip.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 4637badc-b2d8-4615-aa42-5b719844117d
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-    path: '%2Fdo2'
-- name: '10|DigitalOcean,+LLC+(SG) #36'
+- name: '10|DigitalOcean,+LLC+(SG) #23'
   network: ws
   port: 443
-  server: quiz.int.vidio.com.yaya.web.id
-  servername: quiz.int.vidio.com.yaya.web.id
+  server: blog.webex.com.yaya.web.id
+  servername: blog.webex.com.yaya.web.id
   tls: true
   type: vless
-  uuid: c0603534-0c28-4266-9d0b-9b1058d25f42
+  uuid: bd8237e3-956d-4e76-8757-e0e17e442a14
   ws-opts:
     headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-    path: '%2Fdo2'
+      Host: blog.webex.com.yaya.web.id
+    path: '%2Fdo'
+- name: '10|DigitalOcean,+LLC+(SG) #24'
+  network: ws
+  port: 80
+  server: ava.game.naver.com.yaya.web.id
+  servername: ava.game.naver.com.yaya.web.id
+  tls: false
+  type: vless
+  uuid: a51466cd-4d42-4696-832e-1bb9f73ca7c4
+  ws-opts:
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+    path: '%2Fdo'
 - client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #9'
+  name: '10|Microsoft+Corporation+(SG) #6'
   network: ws
   port: 443
   server: support.zoom.us.lufeng.pw
@@ -980,44 +938,44 @@ proxies:
       Host: support.zoom.us.lufeng.pw
     path: '%2Fsg1'
 - client-fingerprint: randomized
-  name: '10|Digitalocean,+LLC+(SG) #6'
-  network: ws
-  port: 80
-  server: live.iflix.com.zee.upigg.my.id
-  servername: live.iflix.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 945a0a65-3171-466d-9b3b-ccbe4fe89dc4
-  ws-opts:
-    headers:
-      Host: live.iflix.com.zee.upigg.my.id
-    path: '%2Fsgdo'
-- name: '10|DigitalOcean,+LLC+(SG) #43'
-  network: ws
-  port: 80
-  server: vless.kensoko.my.id
-  servername: vless.kensoko.my.id
-  tls: false
-  type: vless
-  uuid: a6f2f359-7aa8-481a-a71c-fbbac9d1ecfb
-  ws-opts:
-    headers:
-      Host: vless.kensoko.my.id
-    path: '%2Fdo2'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cdn
+  name: '10|Microsoft+Corporation+(SG) #7'
   network: ws
   port: 443
-  server: cdn.laoyoutiao.link
-  servername: sg.laoyoutiao.link
+  server: cache.netflix.com.lufeng.pw
+  servername: cache.netflix.com.lufeng.pw
   tls: true
   type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  uuid: 47955424-67e1-4b72-b387-3b187e92f383
   ws-opts:
     headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '10|DigitalOcean,+LLC+(SG) #44'
+      Host: cache.netflix.com.lufeng.pw
+    path: '%2Fsg1'
+- client-fingerprint: randomized
+  name: '10|Contabo+Asia+Private+Limited+(... #3'
+  network: ws
+  port: 443
+  server: app-stg.gopay.co.id.servpn.my.id
+  servername: app-stg.gopay.co.id.servpn.my.id
+  tls: true
+  type: vless
+  uuid: c1098613-4b45-44dd-8b4c-bf5415cf9b3f
+  ws-opts:
+    headers:
+      Host: app-stg.gopay.co.id.servpn.my.id
+    path: '%2Fsg5'
+- name: '10|DigitalOcean,+LLC+(SG) #28'
+  network: ws
+  port: 80
+  server: edu.ruangguru.com.yaya.web.id
+  servername: edu.ruangguru.com.yaya.web.id
+  tls: false
+  type: vless
+  uuid: 860f1b1e-dc1a-410c-885a-72f5cba9fb31
+  ws-opts:
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+    path: '%2Fdo'
+- name: '10|DigitalOcean,+LLC+(SG) #31'
   network: ws
   port: 443
   server: vless.kensoko.my.id
@@ -1029,40 +987,54 @@ proxies:
     headers:
       Host: vless.kensoko.my.id
     path: '%2Fdo2'
-- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  network: ws
-  port: 8880
-  server: 154.194.12.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cdn1
+- name: '10|DigitalOcean,+LLC+(SG) #33'
   network: ws
   port: 443
-  server: cdn1.laoyoutiao.link
-  servername: sg.laoyoutiao.link
+  server: zaintest.vuclip.com.yaya.web.id
+  servername: zaintest.vuclip.com.yaya.web.id
   tls: true
   type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  uuid: a5a43ded-93b7-48e4-b2d3-b1cd3917567f
   ws-opts:
     headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
+      Host: zaintest.vuclip.com.yaya.web.id
+    path: '%2Fdo'
 - client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #10'
+  name: 10|M247+Europe+SRL+(SG)
+  network: ws
+  port: 443
+  server: support.zoom.us.sgjp.asolole.biz.id
+  servername: support.zoom.us.sgjp.asolole.biz.id
+  tls: true
+  type: vless
+  uuid: 4ef657df-cdf0-496f-a3c9-a4fddc6f22ac
+  ws-opts:
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+    path: '%2Fsg2'
+- name: '10|DigitalOcean,+LLC+(SG) #42'
+  network: ws
+  port: 443
+  server: edu.ruangguru.com.yaya.web.id
+  servername: edu.ruangguru.com.yaya.web.id
+  tls: true
+  type: vless
+  uuid: 6b8cfb98-4bdc-4f81-aa4a-dad944ef5a26
+  ws-opts:
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+    path: '%2Fdo'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #8'
   network: ws
   port: 80
-  server: lufeng.pw
+  server: support.zoom.us.lufeng.pw
   tls: false
   type: vless
-  uuid: 61046183-7302-428d-b2d1-fa23a59ab53c
+  uuid: 8fc1fd68-caca-4711-9e26-80a74e2efae7
   ws-opts:
     headers:
-      Host: lufeng.pw
+      Host: support.zoom.us.lufeng.pw
     path: '%2Fsg1'
 - name: '10|SG新加坡(mibei77.com 米贝节点分享) #1'
   network: ws
@@ -1076,31 +1048,57 @@ proxies:
     headers:
       Host: c.82313369.xyz
     path: '%2FTelegram'
-- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #9'
   network: ws
-  port: 8880
-  server: 27.50.49.213
+  port: 80
+  server: zaintest.vuclip.com.lufeng.pw
   tls: false
   type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  uuid: d535ec49-6e49-49b3-bc19-c825ab5cbc9e
   ws-opts:
     headers:
-      Host: jp.laoyoutiao.link
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #11'
+      Host: zaintest.vuclip.com.lufeng.pw
+    path: '%2Fsg1'
+- name: '10|DigitalOcean,+LLC+(SG) #51'
   network: ws
   port: 443
-  server: cache.netflix.com.lufeng.pw
-  servername: cache.netflix.com.lufeng.pw
+  server: yaya.web.id
+  servername: yaya.web.id
   tls: true
   type: vless
-  uuid: 47955424-67e1-4b72-b387-3b187e92f383
+  uuid: fc93b459-ea3a-430a-a985-98ba2227cd82
   ws-opts:
     headers:
-      Host: cache.netflix.com.lufeng.pw
-    path: '%2Fsg1'
+      Host: yaya.web.id
+    path: '%2Fdo2'
+- name: '10|DigitalOcean,+LLC+(SG) #52'
+  network: ws
+  port: 80
+  server: cache.netflix.com.yaya.web.id
+  servername: cache.netflix.com.yaya.web.id
+  tls: false
+  type: vless
+  uuid: cb937794-8aa5-413d-b066-2a2f316a0efc
+  ws-opts:
+    headers:
+      Host: cache.netflix.com.yaya.web.id
+    path: '%2Fdo'
 - client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #12'
+  name: '10|Oracle+Corporation+(SG) #39'
+  network: ws
+  port: 80
+  server: support.zoom.us.sgjp.asolole.biz.id
+  servername: support.zoom.us.sgjp.asolole.biz.id
+  tls: false
+  type: vless
+  uuid: 2f841aa7-049c-499e-be03-01fe8b529c08
+  ws-opts:
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+    path: '%2Fsg3'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #10'
   network: ws
   port: 80
   server: cache.netflix.com.lufeng.pw
@@ -1112,30 +1110,43 @@ proxies:
       Host: cache.netflix.com.lufeng.pw
     path: '%2Fsg1'
 - client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #13'
-  network: ws
-  port: 80
-  server: svr.lufeng.pw
-  tls: false
-  type: vless
-  uuid: b0207968-3f65-4a61-87b1-8bbe2617aa22
-  ws-opts:
-    headers:
-      Host: svr.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: 4|(SG) Akamai Technologies 🇸🇬  🇸...
+  name: '10|Microsoft+Corporation+(SG) #11'
   network: ws
   port: 443
-  server: fshop.web.id
-  servername: fshop.web.id
+  server: zaintest.vuclip.com.lufeng.pw
+  servername: zaintest.vuclip.com.lufeng.pw
   tls: true
   type: vless
-  uuid: 01039a1b-49e7-4311-9c2a-03114a77d298
+  uuid: 3b75e5bd-033f-4fdf-9e12-380bb616eafe
   ws-opts:
     headers:
-      Host: fshop.web.id
-    path: /SG1
+      Host: zaintest.vuclip.com.lufeng.pw
+    path: '%2Fsg1'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #12'
+  network: ws
+  port: 443
+  server: blog.webex.com.lufeng.pw
+  servername: blog.webex.com.lufeng.pw
+  tls: true
+  type: vless
+  uuid: 64d91699-e0e2-451c-a9d3-c94e4f77d69e
+  ws-opts:
+    headers:
+      Host: blog.webex.com.lufeng.pw
+    path: '%2Fsg1'
+- client-fingerprint: randomized
+  name: '10|Microsoft+Corporation+(SG) #14'
+  network: ws
+  port: 80
+  server: lufeng.pw
+  tls: false
+  type: vless
+  uuid: 61046183-7302-428d-b2d1-fa23a59ab53c
+  ws-opts:
+    headers:
+      Host: lufeng.pw
+    path: '%2Fsg1'
 - name: 4|DigitalOcean,+LLC+(SG)")'><i c...
   network: ws
   password: 0939db82-12b1-4e86-adf1-5873a47e63aa
@@ -1147,6 +1158,17 @@ proxies:
     headers:
       Host: ava.game.naver.com.servpn.my.id
     path: /sg4
+- name: '4|Contabo+Asia+Private+Limited+(... #12'
+  network: ws
+  password: 00393cd7-9153-4ea8-ad1e-57780ce428da
+  port: 443
+  server: servpn.my.id
+  sni: servpn.my.id
+  type: trojan
+  ws-opts:
+    headers:
+      Host: servpn.my.id
+    path: /sg5
 - name: 4|Akamai+Technologies,+Inc.+(SG)...
   network: ws
   password: 0012e1d5-c493-45cd-a802-7461a614b1d2
@@ -1158,55 +1180,6 @@ proxies:
     headers:
       Host: blog.ruangguru.com.servpn.my.id
     path: /sg2
-- name: '4|Contabo+Asia+Private+Limited+(... #10'
-  network: ws
-  password: 00393cd7-9153-4ea8-ad1e-57780ce428da
-  port: 443
-  server: servpn.my.id
-  sni: servpn.my.id
-  type: trojan
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: /sg5
-- name: 0|SG_speednode_0120
-  network: ws
-  port: 8880
-  server: 92.243.74.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
-- name: '0|SG新加坡(mibei77.com 米贝节点分享) #2'
-  network: ws
-  port: 443
-  server: 51.79.158.126
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
-- client-fingerprint: random
-  name: '5,6|@NpvV2rayFilTer #1'
-  network: ws
-  port: 8880
-  server: 91.206.71.162
-  servername: barayeiran-mahsang.gerald81.dpdns.org
-  tls: false
-  type: vless
-  uuid: 26bc13af-e442-4956-afd4-b8f85744d26f
-  ws-opts:
-    headers:
-      Host: barayeiran-mahsang.gerald81.dpdns.org
-    path: /Barayeiranmahsang/----@-?ed%3D2560
 - alpn:
   - h3
   client-fingerprint: random
@@ -1222,16 +1195,31 @@ proxies:
     headers:
       Host: vless8-ekh.pages.dev
     path: /proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1?ed=2560
-- name: 8|🇸🇬 新加坡 19
-  password: fb83356a-2123-4d83-adcd-da5b5bb59287
-  port: 44111
-  server: 140.245.52.21
+- name: 8|4FreeIran-4241
+  network: tcp
+  password: ceaea123-1b4b-469b-8358-bcd5f5529305
+  port: 443
+  server: uk.liangyuandian.top
   skip-cert-verify: true
-  sni: www.bing.com
+  sni: ''
+  type: trojan
+- name: '8|🇸🇬 新加坡|@ripaojiedian #2'
+  password: d0d08cddacc3190ea81b1b792e1b5fde
+  port: 25618
+  server: 36.151.251.7
+  skip-cert-verify: true
+  sni: www.baidu.com
+  type: trojan
+- name: 8|🇸🇬 新加坡 06
+  password: lkz20040702
+  port: 443
+  server: kkk9.zabc.net
+  skip-cert-verify: false
+  sni: kkk9.zabc.net
   tls: true
   type: hysteria2
 - client-fingerprint: random
-  name: 10|老油条-台湾
+  name: '0,6,7|老油条-台湾 #3'
   network: ws
   port: 443
   server: tw.laoyoutiao.link
@@ -1242,8 +1230,8 @@ proxies:
   ws-opts:
     headers:
       Host: tw.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '8|未命名 #15897'
+    path: /?ed%3D2560
+- name: '8|✅@v2ray_configs_pools #96'
   network: tcp
   password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
   port: 8443
@@ -1251,15 +1239,14 @@ proxies:
   skip-cert-verify: true
   sni: ''
   type: trojan
-- name: '8|⚡ b2n.ir/v2ray-configs | 441 #1'
-  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-  port: 8443
-  server: official.taipeicitygovernment.kyiv.ua
-  skip-cert-verify: true
-  sni: ''
-  type: trojan
+- cipher: chacha20-ietf-poly1305
+  name: '1,5,8|>>@ShadowsocksM::VN #1'
+  password: Nk9asglDzHzjktVzTkvhaA
+  port: 443
+  server: 160.19.78.75
+  type: ss
 - client-fingerprint: firefox
-  name: 1,2,8|4FreeIran-14164
+  name: 1,2,8|4FreeIran-13942
   network: tcp
   port: 34045
   reality-opts:
@@ -1283,106 +1270,106 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 10|15|SG_speednode_0116
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #2'
-  - 10|SG+Cloudflare+Warp+2+🇸🇬
+  - 0|Oracle+Corporation+(SG)
   - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - 10|老油条-新加坡-cdn
-  - 10|Microsoft+Corporation+(SG)
-  - 10|Aryaka+Networks,+Inc.+(SG)
-  - '10|Oracle+Corporation+(SG) #15'
-  - '10|Amazon.com,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #35'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 10|Contabo+Asia+Private+Limited+(...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 11|@proNG1 🇸🇬 SG
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '10|Amazon.com,+Inc.+(SG) #12'
-  - 10|Datacamp+Limited+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #6'
-  - 10|Amazon.com,+Inc.+(SG)
-  - 10|SG+The+Constant+Company++LLC
-  - '10|Oracle+Corporation+(SG) #1'
-  - '10|DigitalOcean,+LLC+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #10'
-  - '10|Ipxo+LLC+(SG) #1'
-  - '10|Oracle+Corporation+(SG) #4'
-  - 10|老油条-新加坡-cdn1
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - '10|Oracle+Corporation+(SG) #10'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - 10|老油条-台湾
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #43'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|DigitalOcean,+LLC+(SG) #19'
-  - '10|DigitalOcean,+LLC+(SG) #9'
-  - '10|Oracle+Corporation+(SG) #26'
-  - '10|Melbikomas+UAB+(SG) #1'
-  - 10|Bytevirt+LLC+(SG+80)
-  - '10|Datacamp+Limited+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Aryaka+Networks,+Inc.+(SG) #1'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
+  - 0|SG_speednode_0119
   - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #36'
-  - '10|Digitalocean,+LLC+(SG) #6'
-  - '10|Microsoft+Corporation+(SG) #13'
+  - '10|DigitalOcean,+LLC+(SG) #42'
+  - '10|Amazon.com,+Inc.+(SG) #7'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
+  - 5|Digitalocean,+LLC+(SG)
+  - 5|SG+Alibaba+us+Technology+Co+++...
   - '10|Microsoft+Corporation+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - 10|SG+Amazon+com++Inc
-  - '10|Amazon.com,+Inc.+(SG) #18'
-  - '10|Oracle+Corporation+(SG) #13'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - 6,8,10|4FreeIran-9410
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - 10|M247+Europe+SRL+(SG)
+  - 0|SG+Oracle+Corporation
+  - '10|Microsoft+Corporation+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #14'
+  - 0|SG_speednode_0118
+  - 0|Akamai+Technologies,+Inc.+(SG)
+  - '5|DigitalOcean,+LLC+(SG) #5'
+  - '5|DigitalOcean,+LLC+(SG) #4'
+  - '10|Microsoft+Corporation+(SG) #7'
+  - '10|Oracle+Corporation+(SG) #39'
+  - 10|(SG)Oracle Corporation-[Tls]
+  - '10|DigitalOcean,+LLC+(SG) #7'
+  - '4|Contabo+Asia+Private+Limited+(... #12'
+  - '10|DigitalOcean,+LLC+(SG) #31'
+  - '10|Microsoft+Corporation+(SG) #8'
+  - '0|Akamai+Technologies,+Inc.+(SG) #2'
+  - '10|DigitalOcean,+LLC+(SG) #33'
+  - '10|Microsoft+Corporation+(SG) #14'
   - '10|Microsoft+Corporation+(SG) #1'
+  - 0|Amazon.com,+Inc.+(SG)
   - '10|Microsoft+Corporation+(SG) #10'
-  - 10|(SG)Melbikomas Uab-[Tls]
-  - 10|SG+Oracle+Corporation
-  - 10|老油条-SG-新加坡
-  - '10|老油条-新加坡-cfcdns #1'
-  - 4|(SG) Akamai Technologies 🇸🇬  🇸...
-  - '4|Contabo+Asia+Private+Limited+(... #10'
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|老油条-新加坡-cdn2
-  - 10|SG+Alibaba+us+Technology+Co+++...
-  - '10|Digitalocean,+LLC+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|老油条-新加坡-cfcdn1 #1'
-  - '10|SG+Alibaba+us+Technology+Co+++... #1'
-  - 10|Melbikomas+UAB+(SG)
-  - 10|老油条-新加坡-cfcdn3
-  - '10|DigitalOcean,+LLC+(SG) #13'
-  - 10|SG+Shenzhen+Tencent+Computer+S...
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|DigitalOcean,+LLC+(SG) #10'
-  - '10|Akamai+Technologies,+Inc.+(SG) #9'
-  - '10|DigitalOcean,+LLC+(SG) #26'
-  - '10|DigitalOcean,+LLC+(SG) #4'
-  - '10|Akamai+Technologies,+Inc.+(SG) #5'
+  - '10|DigitalOcean,+LLC+(SG) #14'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
+  - 5|Melbikomas+UAB+(SG)
+  - 0|SG+Hong+Kong+Megalayer+Technol...
   - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #44'
-  - 10|SG+Leaseweb+Asia+🇸🇬
+  - '10|DigitalOcean,+LLC+(SG) #21'
+  - '0|Akamai+Technologies,+Inc.+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #12'
+  - '5|Akamai+Technologies,+Inc.+(SG) #4'
+  - 0|SG+SoftLayer+Technologies+🇸🇬
+  - '0,6,7|老油条-SG-新加坡 #3'
+  - '10|DigitalOcean,+LLC+(SG) #51'
+  - '0|Amazon.com,+Inc.+(SG) #2'
+  - '10|Microsoft+Corporation+(SG) #12'
+  - '10|Microsoft+Corporation+(SG) #11'
+  - '5,6|@NpvV2rayFilTer #1'
+  - 0|Aceville+Pte.ltd+(SG)
+  - '10|DigitalOcean,+LLC+(SG) #52'
+  - '10|Amazon.com,+Inc.+(SG) #9'
+  - '10|VPLS,+Inc.+(SG) #1'
+  - 4|DigitalOcean,+LLC+(SG)")'><i c...
+  - 4|Akamai+Technologies,+Inc.+(SG)...
+  - 10|(SG)Oracle Corporation-[NTls]
+  - 10|M247+Europe+SRL+(SG)
+  - '10|Contabo+Asia+Private+Limited+(... #3'
+  - '10|Oracle+Corporation+(SG) #6'
+  - '0|DigitalOcean,+LLC+(SG) #1'
+  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
+  - 0|DigitalOcean,+LLC+(SG)
+  - '0|Akamai+Technologies,+Inc.+(SG) #1'
+  - '10|Akamai+Technologies,+Inc.+(SG) #17'
+  - '5|Digitalocean,+LLC+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #9'
+  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
+  - '10|DigitalOcean,+LLC+(SG) #28'
+  - '10|Microsoft+Corporation+(SG) #5'
+  - '0|Amazon.com,+Inc.+(SG) #1'
+  - '10|Amazon.com,+Inc.+(SG) #3'
+  - '10|DigitalOcean,+LLC+(SG) #8'
+  - '10|Akamai+Technologies,+Inc.+(SG) #16'
+  - '0,6,7|老油条-台湾 #3'
+  - 5|Contabo+Asia+Private+Limited+(...
+  - '0|Aceville+Pte.ltd+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #6'
+  - '10|DigitalOcean,+LLC+(SG) #24'
+  - '10|Datacamp+Limited+(SG) #1'
+  - '0|DigitalOcean,+LLC+(SG) #2'
+  - 11|@proNG1 🇸🇬 SG
+  - 0|Microsoft+Corporation+(SG)
+  - 0|SG+Digital+Ocean+2+🇸🇬
+  - 0|VPLS,+Inc.+(SG)
+  - '10|老油条-新加坡-cfcdns #1'
+  - 0|SG+The+Constant+Company++LLC
+  - 10|老油条-新加坡-cdn1
   - 10|老油条-新加坡-cfcdn2
-  - 10|Green+Floid+LLC+(SG)
-  - 8|🇸🇬 新加坡 19
-  - '8|⚡ b2n.ir/v2ray-configs | 441 #1'
-  - '8|未命名 #15897'
-  - 10|SG
-  - '0|SG新加坡(mibei77.com 米贝节点分享) #2'
-  - 1,2,8|4FreeIran-14164
+  - '5|DigitalOcean,+LLC+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #9'
+  - 10|老油条-新加坡-cdn
+  - 10|老油条-新加坡-cdn2
+  - 0|SG+Softlayer+Technologies+Inc
+  - 0|SG+Amazon+com++Inc
+  - '1,5,8|>>@ShadowsocksM::VN #1'
+  - '8|✅@v2ray_configs_pools #96'
+  - '0,6,7|SG #10'
+  - 0|SG新加坡(mibei77.com 米贝节点分享)
+  - 1,2,8|4FreeIran-13942
+  - '8|🇸🇬 新加坡|@ripaojiedian #2'
+  - 8|🇸🇬 新加坡 06
+  - 8|4FreeIran-4241
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1390,211 +1377,211 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 10|15|SG_speednode_0116
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #2'
-  - 10|SG+Cloudflare+Warp+2+🇸🇬
+  - 0|Oracle+Corporation+(SG)
   - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - 10|老油条-新加坡-cdn
-  - 10|Microsoft+Corporation+(SG)
-  - 10|Aryaka+Networks,+Inc.+(SG)
-  - '10|Oracle+Corporation+(SG) #15'
-  - '10|Amazon.com,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #35'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 10|Contabo+Asia+Private+Limited+(...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 11|@proNG1 🇸🇬 SG
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '10|Amazon.com,+Inc.+(SG) #12'
-  - 10|Datacamp+Limited+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #6'
-  - 10|Amazon.com,+Inc.+(SG)
-  - 10|SG+The+Constant+Company++LLC
-  - '10|Oracle+Corporation+(SG) #1'
-  - '10|DigitalOcean,+LLC+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #10'
-  - '10|Ipxo+LLC+(SG) #1'
-  - '10|Oracle+Corporation+(SG) #4'
-  - 10|老油条-新加坡-cdn1
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - '10|Oracle+Corporation+(SG) #10'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - 10|老油条-台湾
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #43'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|DigitalOcean,+LLC+(SG) #19'
-  - '10|DigitalOcean,+LLC+(SG) #9'
-  - '10|Oracle+Corporation+(SG) #26'
-  - '10|Melbikomas+UAB+(SG) #1'
-  - 10|Bytevirt+LLC+(SG+80)
-  - '10|Datacamp+Limited+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Aryaka+Networks,+Inc.+(SG) #1'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
+  - 0|SG_speednode_0119
   - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #36'
-  - '10|Digitalocean,+LLC+(SG) #6'
-  - '10|Microsoft+Corporation+(SG) #13'
+  - '10|DigitalOcean,+LLC+(SG) #42'
+  - '10|Amazon.com,+Inc.+(SG) #7'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
+  - 5|Digitalocean,+LLC+(SG)
+  - 5|SG+Alibaba+us+Technology+Co+++...
   - '10|Microsoft+Corporation+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - 10|SG+Amazon+com++Inc
-  - '10|Amazon.com,+Inc.+(SG) #18'
-  - '10|Oracle+Corporation+(SG) #13'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - 6,8,10|4FreeIran-9410
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - 10|M247+Europe+SRL+(SG)
+  - 0|SG+Oracle+Corporation
+  - '10|Microsoft+Corporation+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #14'
+  - 0|SG_speednode_0118
+  - 0|Akamai+Technologies,+Inc.+(SG)
+  - '5|DigitalOcean,+LLC+(SG) #5'
+  - '5|DigitalOcean,+LLC+(SG) #4'
+  - '10|Microsoft+Corporation+(SG) #7'
+  - '10|Oracle+Corporation+(SG) #39'
+  - 10|(SG)Oracle Corporation-[Tls]
+  - '10|DigitalOcean,+LLC+(SG) #7'
+  - '4|Contabo+Asia+Private+Limited+(... #12'
+  - '10|DigitalOcean,+LLC+(SG) #31'
+  - '10|Microsoft+Corporation+(SG) #8'
+  - '0|Akamai+Technologies,+Inc.+(SG) #2'
+  - '10|DigitalOcean,+LLC+(SG) #33'
+  - '10|Microsoft+Corporation+(SG) #14'
   - '10|Microsoft+Corporation+(SG) #1'
+  - 0|Amazon.com,+Inc.+(SG)
   - '10|Microsoft+Corporation+(SG) #10'
-  - 10|(SG)Melbikomas Uab-[Tls]
-  - 10|SG+Oracle+Corporation
-  - 10|老油条-SG-新加坡
-  - '10|老油条-新加坡-cfcdns #1'
-  - 4|(SG) Akamai Technologies 🇸🇬  🇸...
-  - '4|Contabo+Asia+Private+Limited+(... #10'
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|老油条-新加坡-cdn2
-  - 10|SG+Alibaba+us+Technology+Co+++...
-  - '10|Digitalocean,+LLC+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|老油条-新加坡-cfcdn1 #1'
-  - '10|SG+Alibaba+us+Technology+Co+++... #1'
-  - 10|Melbikomas+UAB+(SG)
-  - 10|老油条-新加坡-cfcdn3
-  - '10|DigitalOcean,+LLC+(SG) #13'
-  - 10|SG+Shenzhen+Tencent+Computer+S...
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|DigitalOcean,+LLC+(SG) #10'
-  - '10|Akamai+Technologies,+Inc.+(SG) #9'
-  - '10|DigitalOcean,+LLC+(SG) #26'
-  - '10|DigitalOcean,+LLC+(SG) #4'
-  - '10|Akamai+Technologies,+Inc.+(SG) #5'
+  - '10|DigitalOcean,+LLC+(SG) #14'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
+  - 5|Melbikomas+UAB+(SG)
+  - 0|SG+Hong+Kong+Megalayer+Technol...
   - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #44'
-  - 10|SG+Leaseweb+Asia+🇸🇬
+  - '10|DigitalOcean,+LLC+(SG) #21'
+  - '0|Akamai+Technologies,+Inc.+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #12'
+  - '5|Akamai+Technologies,+Inc.+(SG) #4'
+  - 0|SG+SoftLayer+Technologies+🇸🇬
+  - '0,6,7|老油条-SG-新加坡 #3'
+  - '10|DigitalOcean,+LLC+(SG) #51'
+  - '0|Amazon.com,+Inc.+(SG) #2'
+  - '10|Microsoft+Corporation+(SG) #12'
+  - '10|Microsoft+Corporation+(SG) #11'
+  - '5,6|@NpvV2rayFilTer #1'
+  - 0|Aceville+Pte.ltd+(SG)
+  - '10|DigitalOcean,+LLC+(SG) #52'
+  - '10|Amazon.com,+Inc.+(SG) #9'
+  - '10|VPLS,+Inc.+(SG) #1'
+  - 4|DigitalOcean,+LLC+(SG)")'><i c...
+  - 4|Akamai+Technologies,+Inc.+(SG)...
+  - 10|(SG)Oracle Corporation-[NTls]
+  - 10|M247+Europe+SRL+(SG)
+  - '10|Contabo+Asia+Private+Limited+(... #3'
+  - '10|Oracle+Corporation+(SG) #6'
+  - '0|DigitalOcean,+LLC+(SG) #1'
+  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
+  - 0|DigitalOcean,+LLC+(SG)
+  - '0|Akamai+Technologies,+Inc.+(SG) #1'
+  - '10|Akamai+Technologies,+Inc.+(SG) #17'
+  - '5|Digitalocean,+LLC+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #9'
+  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
+  - '10|DigitalOcean,+LLC+(SG) #28'
+  - '10|Microsoft+Corporation+(SG) #5'
+  - '0|Amazon.com,+Inc.+(SG) #1'
+  - '10|Amazon.com,+Inc.+(SG) #3'
+  - '10|DigitalOcean,+LLC+(SG) #8'
+  - '10|Akamai+Technologies,+Inc.+(SG) #16'
+  - '0,6,7|老油条-台湾 #3'
+  - 5|Contabo+Asia+Private+Limited+(...
+  - '0|Aceville+Pte.ltd+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #6'
+  - '10|DigitalOcean,+LLC+(SG) #24'
+  - '10|Datacamp+Limited+(SG) #1'
+  - '0|DigitalOcean,+LLC+(SG) #2'
+  - 11|@proNG1 🇸🇬 SG
+  - 0|Microsoft+Corporation+(SG)
+  - 0|SG+Digital+Ocean+2+🇸🇬
+  - 0|VPLS,+Inc.+(SG)
+  - '10|老油条-新加坡-cfcdns #1'
+  - 0|SG+The+Constant+Company++LLC
+  - 10|老油条-新加坡-cdn1
   - 10|老油条-新加坡-cfcdn2
-  - 10|Green+Floid+LLC+(SG)
-  - 8|🇸🇬 新加坡 19
-  - '8|⚡ b2n.ir/v2ray-configs | 441 #1'
-  - '8|未命名 #15897'
-  - 10|SG
-  - '0|SG新加坡(mibei77.com 米贝节点分享) #2'
-  - 1,2,8|4FreeIran-14164
+  - '5|DigitalOcean,+LLC+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #9'
+  - 10|老油条-新加坡-cdn
+  - 10|老油条-新加坡-cdn2
+  - 0|SG+Softlayer+Technologies+Inc
+  - 0|SG+Amazon+com++Inc
+  - '1,5,8|>>@ShadowsocksM::VN #1'
+  - '8|✅@v2ray_configs_pools #96'
+  - '0,6,7|SG #10'
+  - 0|SG新加坡(mibei77.com 米贝节点分享)
+  - 1,2,8|4FreeIran-13942
+  - '8|🇸🇬 新加坡|@ripaojiedian #2'
+  - 8|🇸🇬 新加坡 06
+  - 8|4FreeIran-4241
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 10|15|SG_speednode_0116
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #2'
-  - 10|SG+Cloudflare+Warp+2+🇸🇬
+  - 0|Oracle+Corporation+(SG)
   - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - 10|老油条-新加坡-cdn
-  - 10|Microsoft+Corporation+(SG)
-  - 10|Aryaka+Networks,+Inc.+(SG)
-  - '10|Oracle+Corporation+(SG) #15'
-  - '10|Amazon.com,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #35'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 10|Contabo+Asia+Private+Limited+(...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 11|@proNG1 🇸🇬 SG
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '10|Amazon.com,+Inc.+(SG) #12'
-  - 10|Datacamp+Limited+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #6'
-  - 10|Amazon.com,+Inc.+(SG)
-  - 10|SG+The+Constant+Company++LLC
-  - '10|Oracle+Corporation+(SG) #1'
-  - '10|DigitalOcean,+LLC+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #10'
-  - '10|Ipxo+LLC+(SG) #1'
-  - '10|Oracle+Corporation+(SG) #4'
-  - 10|老油条-新加坡-cdn1
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - '10|Oracle+Corporation+(SG) #10'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - 10|老油条-台湾
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #4'
-  - '10|DigitalOcean,+LLC+(SG) #43'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|DigitalOcean,+LLC+(SG) #19'
-  - '10|DigitalOcean,+LLC+(SG) #9'
-  - '10|Oracle+Corporation+(SG) #26'
-  - '10|Melbikomas+UAB+(SG) #1'
-  - 10|Bytevirt+LLC+(SG+80)
-  - '10|Datacamp+Limited+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Aryaka+Networks,+Inc.+(SG) #1'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
+  - 0|SG_speednode_0119
   - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #36'
-  - '10|Digitalocean,+LLC+(SG) #6'
-  - '10|Microsoft+Corporation+(SG) #13'
+  - '10|DigitalOcean,+LLC+(SG) #42'
+  - '10|Amazon.com,+Inc.+(SG) #7'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
+  - 5|Digitalocean,+LLC+(SG)
+  - 5|SG+Alibaba+us+Technology+Co+++...
   - '10|Microsoft+Corporation+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - 10|SG+Amazon+com++Inc
-  - '10|Amazon.com,+Inc.+(SG) #18'
-  - '10|Oracle+Corporation+(SG) #13'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - 6,8,10|4FreeIran-9410
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - 10|M247+Europe+SRL+(SG)
+  - 0|SG+Oracle+Corporation
+  - '10|Microsoft+Corporation+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #14'
+  - 0|SG_speednode_0118
+  - 0|Akamai+Technologies,+Inc.+(SG)
+  - '5|DigitalOcean,+LLC+(SG) #5'
+  - '5|DigitalOcean,+LLC+(SG) #4'
+  - '10|Microsoft+Corporation+(SG) #7'
+  - '10|Oracle+Corporation+(SG) #39'
+  - 10|(SG)Oracle Corporation-[Tls]
+  - '10|DigitalOcean,+LLC+(SG) #7'
+  - '4|Contabo+Asia+Private+Limited+(... #12'
+  - '10|DigitalOcean,+LLC+(SG) #31'
+  - '10|Microsoft+Corporation+(SG) #8'
+  - '0|Akamai+Technologies,+Inc.+(SG) #2'
+  - '10|DigitalOcean,+LLC+(SG) #33'
+  - '10|Microsoft+Corporation+(SG) #14'
   - '10|Microsoft+Corporation+(SG) #1'
+  - 0|Amazon.com,+Inc.+(SG)
   - '10|Microsoft+Corporation+(SG) #10'
-  - 10|(SG)Melbikomas Uab-[Tls]
-  - 10|SG+Oracle+Corporation
-  - 10|老油条-SG-新加坡
-  - '10|老油条-新加坡-cfcdns #1'
-  - 4|(SG) Akamai Technologies 🇸🇬  🇸...
-  - '4|Contabo+Asia+Private+Limited+(... #10'
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|老油条-新加坡-cdn2
-  - 10|SG+Alibaba+us+Technology+Co+++...
-  - '10|Digitalocean,+LLC+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #2'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|老油条-新加坡-cfcdn1 #1'
-  - '10|SG+Alibaba+us+Technology+Co+++... #1'
-  - 10|Melbikomas+UAB+(SG)
-  - 10|老油条-新加坡-cfcdn3
-  - '10|DigitalOcean,+LLC+(SG) #13'
-  - 10|SG+Shenzhen+Tencent+Computer+S...
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|DigitalOcean,+LLC+(SG) #10'
-  - '10|Akamai+Technologies,+Inc.+(SG) #9'
-  - '10|DigitalOcean,+LLC+(SG) #26'
-  - '10|DigitalOcean,+LLC+(SG) #4'
-  - '10|Akamai+Technologies,+Inc.+(SG) #5'
+  - '10|DigitalOcean,+LLC+(SG) #14'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
+  - 5|Melbikomas+UAB+(SG)
+  - 0|SG+Hong+Kong+Megalayer+Technol...
   - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #44'
-  - 10|SG+Leaseweb+Asia+🇸🇬
+  - '10|DigitalOcean,+LLC+(SG) #21'
+  - '0|Akamai+Technologies,+Inc.+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #12'
+  - '5|Akamai+Technologies,+Inc.+(SG) #4'
+  - 0|SG+SoftLayer+Technologies+🇸🇬
+  - '0,6,7|老油条-SG-新加坡 #3'
+  - '10|DigitalOcean,+LLC+(SG) #51'
+  - '0|Amazon.com,+Inc.+(SG) #2'
+  - '10|Microsoft+Corporation+(SG) #12'
+  - '10|Microsoft+Corporation+(SG) #11'
+  - '5,6|@NpvV2rayFilTer #1'
+  - 0|Aceville+Pte.ltd+(SG)
+  - '10|DigitalOcean,+LLC+(SG) #52'
+  - '10|Amazon.com,+Inc.+(SG) #9'
+  - '10|VPLS,+Inc.+(SG) #1'
+  - 4|DigitalOcean,+LLC+(SG)")'><i c...
+  - 4|Akamai+Technologies,+Inc.+(SG)...
+  - 10|(SG)Oracle Corporation-[NTls]
+  - 10|M247+Europe+SRL+(SG)
+  - '10|Contabo+Asia+Private+Limited+(... #3'
+  - '10|Oracle+Corporation+(SG) #6'
+  - '0|DigitalOcean,+LLC+(SG) #1'
+  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
+  - 0|DigitalOcean,+LLC+(SG)
+  - '0|Akamai+Technologies,+Inc.+(SG) #1'
+  - '10|Akamai+Technologies,+Inc.+(SG) #17'
+  - '5|Digitalocean,+LLC+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #9'
+  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
+  - '10|DigitalOcean,+LLC+(SG) #28'
+  - '10|Microsoft+Corporation+(SG) #5'
+  - '0|Amazon.com,+Inc.+(SG) #1'
+  - '10|Amazon.com,+Inc.+(SG) #3'
+  - '10|DigitalOcean,+LLC+(SG) #8'
+  - '10|Akamai+Technologies,+Inc.+(SG) #16'
+  - '0,6,7|老油条-台湾 #3'
+  - 5|Contabo+Asia+Private+Limited+(...
+  - '0|Aceville+Pte.ltd+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #6'
+  - '10|DigitalOcean,+LLC+(SG) #24'
+  - '10|Datacamp+Limited+(SG) #1'
+  - '0|DigitalOcean,+LLC+(SG) #2'
+  - 11|@proNG1 🇸🇬 SG
+  - 0|Microsoft+Corporation+(SG)
+  - 0|SG+Digital+Ocean+2+🇸🇬
+  - 0|VPLS,+Inc.+(SG)
+  - '10|老油条-新加坡-cfcdns #1'
+  - 0|SG+The+Constant+Company++LLC
+  - 10|老油条-新加坡-cdn1
   - 10|老油条-新加坡-cfcdn2
-  - 10|Green+Floid+LLC+(SG)
-  - 8|🇸🇬 新加坡 19
-  - '8|⚡ b2n.ir/v2ray-configs | 441 #1'
-  - '8|未命名 #15897'
-  - 10|SG
-  - '0|SG新加坡(mibei77.com 米贝节点分享) #2'
-  - 1,2,8|4FreeIran-14164
+  - '5|DigitalOcean,+LLC+(SG) #3'
+  - '10|Oracle+Corporation+(SG) #9'
+  - 10|老油条-新加坡-cdn
+  - 10|老油条-新加坡-cdn2
+  - 0|SG+Softlayer+Technologies+Inc
+  - 0|SG+Amazon+com++Inc
+  - '1,5,8|>>@ShadowsocksM::VN #1'
+  - '8|✅@v2ray_configs_pools #96'
+  - '0,6,7|SG #10'
+  - 0|SG新加坡(mibei77.com 米贝节点分享)
+  - 1,2,8|4FreeIran-13942
+  - '8|🇸🇬 新加坡|@ripaojiedian #2'
+  - 8|🇸🇬 新加坡 06
+  - 8|4FreeIran-4241
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
