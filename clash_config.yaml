@@ -30,4168 +30,6 @@ log-level: info
 mode: rule
 port: 7890
 proxies:
-- client-fingerprint: random
-  name: '0,6,7|老油条-HK-香港 #3'
-  network: ws
-  port: 443
-  server: hk.laoyoutiao.link
-  servername: hk.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: /?ed%3D2048
-- name: 0|HK香港(mibei77.com 米贝节点分享)
-  network: ws
-  port: 8880
-  server: 91.193.58.104
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7,10|🇭🇰|HK|@wxgqlfx|192 #3'
-  network: ws
-  port: 8880
-  server: 45.192.224.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- name: '0|HK香港(mibei77.com 米贝节点分享) #1'
-  network: ws
-  port: 8880
-  server: 91.193.58.96
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0|HK香港(mibei77.com 米贝节点分享) #2'
-  network: ws
-  port: 8880
-  server: 155.46.167.177
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram@WangCai2/?ed%3D2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: 0|HK
-  network: ws
-  port: 443
-  server: 47.57.13.107
-  servername: lp.ylks0033.dpdns.org
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: lp.ylks0033.dpdns.org
-    path: /?ed%3D2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0|HK #1'
-  network: ws
-  port: 9443
-  server: 62.60.229.240
-  servername: lc.ylks0033.dpdns.org
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: lc.ylks0033.dpdns.org
-    path: /?ed%3D2560
-- client-fingerprint: random
-  name: '0,4,5,6,7,10|香港 #6'
-  network: tcp
-  port: 443
-  reality-opts:
-    public-key: es_yC5RQlPJTsKhk9t6ulgGBT-e-H31_I9QUD4xGtyI
-    short-id: e48ba37203b0
-  server: 35.220.145.51
-  servername: tntowtuf.com
-  tls: false
-  type: vless
-  uuid: 0858bdd7-21b8-4b89-ad20-6da7e227d099
-- client-fingerprint: randomized
-  name: 0|🇭🇰 HK
-  network: ws
-  port: 443
-  server: 104.17.71.31
-  servername: lc.ylks0033.dpdns.org
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: lc.ylks0033.dpdns.org
-    path: /?ed%3D2560
-- name: '0|HK香港(mibei77.com 米贝节点分享) #3'
-  network: ws
-  port: 8880
-  server: 91.193.58.194
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0|HK香港(mibei77.com 米贝节点分享) #4'
-  network: ws
-  port: 8880
-  server: 91.124.127.177
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram@WangCai2/?ed%3D2560
-- alpn:
-  - h2
-  name: 0,6,7,8,10|4Jadi-8015
-  network: grpc
-  port: 443
-  server: 154.218.15.238
-  servername: pqh23v4.hiddendom.shop
-  tls: true
-  type: vless
-  uuid: 401374e6-df77-41fb-f638-dad8184f175b
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #20'
-  network: ws
-  port: 54321
-  server: 59.149.204.93
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #21'
-  network: ws
-  port: 443
-  server: 219.76.13.183
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: '0|HK香港(mibei77.com 米贝节点分享) #5'
-  network: ws
-  port: 443
-  server: all.4qwertyuiopasdfghjklzxcvbnmmnbvcxzlkjhgfdsapoiuytrewq1234567890.com
-  servername: de2radin.4qwertyuiopasdfghjklzxcvbnmmnbvcxzlkjhgfdsapoiuytrewq1234567890.com
-  tls: true
-  type: vless
-  uuid: c4cd9656-81a7-4342-9c0f-959ad333acae
-  ws-opts:
-    headers:
-      Host: de2radin.4qwertyuiopasdfghjklzxcvbnmmnbvcxzlkjhgfdsapoiuytrewq1234567890.com
-    path: /ws?ed%3D2560
-- name: '0|HK香港(mibei77.com 米贝节点分享) #6'
-  network: ws
-  port: 8880
-  server: 91.193.58.125
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|JP日本(mibei77.com 米贝节点分享) #143'
-  network: ws
-  port: 8880
-  server: 91.193.58.204
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #22'
-  network: ws
-  port: 443
-  server: 221.127.50.207
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: '0,8|香港(yudou123.top 玉豆免费节点) #27'
-  network: ws
-  port: 8880
-  server: 91.193.58.142
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- alpn:
-  - h2
-  flow: xtls-rprx-vision
-  name: '0,3,4|HK_ALIYUN_XTLS #3'
-  network: tcp
-  port: 32763
-  server: sops.moxiv.com
-  servername: sops.moxiv.com
-  tls: true
-  type: vless
-  uuid: FACEB00C-2023-0604-DADE-FEEDCAFEBEEF
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #23'
-  network: ws
-  port: 2053
-  server: 8.210.34.45
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- client-fingerprint: random
-  name: '0,6,7|老油条-香港-cdn2 #3'
-  network: ws
-  port: 443
-  server: cdn2.laoyoutiao.link
-  servername: hk.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: /?ed%3D2560
-- name: '0,6,7,10|🇭🇰|HK|@wxgqlfx|210 #3'
-  network: ws
-  port: 8880
-  server: 154.218.15.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #24'
-  network: ws
-  port: 443
-  server: 103.220.72.40
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|HK #25'
-  network: ws
-  port: 4434
-  server: 118.141.115.57
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: 0|HK_speednode_0070
-  network: ws
-  port: 443
-  server: 47.76.218.163
-  servername: steep.skyfigure.top
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 63601f9f-7c67-4952-919a-1ef802b5a7ec
-  ws-opts:
-    headers:
-      Host: steep.skyfigure.top
-    path: /Telegram%20@SRCVPN/?ed%3D2560security%3Dtls
-- cipher: chacha20-ietf-poly1305
-  name: '3,4|US_TX_VIA_HK_JUMP_XTLS_BACKUP #3'
-  password: "ӏ�\01>\x14A\x03\b\x01D\x04A\x05"
-  port: 443
-  server: sops.moxiv.com
-  type: ss
-- cipher: aes-256-cfb
-  name: '1,8|🇭🇰 HK | 🟢 | ss | @ip_cf_config... #1'
-  password: f8f7aCzcPKbsF8p3
-  port: 443
-  server: 154.223.21.221
-  type: ss
-- cipher: chacha20-ietf
-  name: 1,8|🇭🇰HK-103.149.183.61-5104
-  password: asd123456
-  port: 443
-  server: 103.149.183.61
-  type: ss
-- name: 1|🇭🇰 HK 2
-  network: tcp
-  port: 40830
-  server: 47.76.81.217
-  tls: false
-  type: vless
-  uuid: 4d5903dd-5d8a-4879-9e0d-cf12b8404b8e
-- cipher: aes-128-gcm
-  name: '1,2|🇭🇰 HK 1 #1'
-  password: facfc265-5ef2-3830-8fe9-eacb6b92cb0e
-  port: 443
-  server: api-wx-2.rancho.gay
-  type: ss
-- client-fingerprint: randomized
-  name: '5|🇭🇰 HK #2'
-  network: ws
-  port: 443
-  server: 104.17.68.85
-  servername: cc.ylka.dpdns.org
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: cc.ylka.dpdns.org
-    path: /?ed%3D2560
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong8
-  network: ws
-  port: 9988
-  server: 101.36.118.159
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: randomized
-  name: '5|🇭🇰 HK #3'
-  network: ws
-  port: 443
-  server: 103.160.204.59
-  servername: cc.ylka.dpdns.org
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: cc.ylka.dpdns.org
-    path: /?ed%3D2560
-- name: 5|🇭🇰+HK+香港+65
-  network: ws
-  port: 443
-  server: 129.227.139.137
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg@zdyz2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong2
-  network: ws
-  port: 26925
-  server: 38.207.164.31
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong14
-  network: ws
-  port: 50394
-  server: 218.204.179.53
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong5
-  network: ws
-  port: 443
-  server: 45.78.16.178
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong12
-  network: ws
-  port: 18888
-  server: 112.168.91.60
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -HK-Hong Kong10
-  network: ws
-  port: 443
-  server: 16.162.37.167
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 4|香港01','香港01')
-  network: tcp
-  port: 25511
-  reality-opts:
-    public-key: FH6_9znQZ8kTXbWFWV1xgYzOEaJI7orlfxDNPguYGHQ
-  server: 149.104.22.201
-  servername: aws.amazon.com
-  tls: false
-  type: vless
-  uuid: 9bea4d65-aa80-4c08-85ab-22c49724beab
-- cipher: chacha20-ietf-poly1305
-  name: 4|香港01','香港01')">
-  password: "����޹�����\x1C�ϼ����g8���m��"
-  port: 443
-  server: 149.104.22.201
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '4|香港 #3'
-  password: "��|m�{�m[��\e�ߚwm>�ֻ{m�wO}"
-  port: 443
-  server: 35.220.145.51
-  type: ss
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #13'
-  network: ws
-  port: 8880
-  server: 91.193.58.76
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '6,10|🇭🇰[openproxylist.com] vless-HK #1'
-  network: tcp
-  port: 443
-  reality-opts:
-    public-key: z3dsRlZdhVuCHIaU6d5nNePmRmNG_-KGdLpu-m0Jz0M
-    short-id: 35f29e450ad773a3
-  server: 8.218.114.184
-  servername: www.ebay.com
-  tls: false
-  type: vless
-  uuid: f2d09fb7-ac3d-4b62-b359-e2c35a5be126
-- flow: ''
-  name: '6,7,8,10,11|Telegram:@config_proxy 🔥 #182'
-  network: tcp
-  port: 21760
-  server: 185.243.51.67
-  tls: false
-  type: vless
-  uuid: 73e10f2a-bb9a-40c1-8e2c-ebfe0dac1dac
-  ws-opts:
-    headers:
-      Host: /?BIA_TELEGRAM@MARAMBASHI_MARAMBASHI_MARAMBASHI_MARAMBASHI
-- name: 10|香港(yudou123.top 玉豆免费节点)
-  network: ws
-  port: 80
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: false
-  type: vless
-  uuid: f341e22e-2192-4a1c-a848-7f42b719f4ca
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F163.47.9.27%3D8443'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #11'
-  network: ws
-  port: 8880
-  server: 91.193.58.130
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #12'
-  network: ws
-  port: 8880
-  server: 91.193.58.183
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
-- client-fingerprint: random
-  name: '10|老油条-香港-cdn1 #1'
-  network: ws
-  port: 443
-  server: cdn1.laoyoutiao.link
-  servername: hk.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: random
-  name: '10|老油条-香港-cfcdn1 #1'
-  network: ws
-  port: 443
-  server: cfcdn1.langmanshanxi.top
-  servername: hk.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: 8,10|4Jadi-7954
-  network: ws
-  port: 55131
-  server: 46.3.104.106
-  servername: sgsgsgsgsg.eessgrgrgrgr.cloudns.nz
-  skip-cert-verify: false
-  tls: true
-  type: vless
-  uuid: 3dad11ee-d5b6-4915-b3eb-9be0d7a3462a
-  ws-opts:
-    headers:
-      Host: sgsgsgsgsg.eessgrgrgrgr.cloudns.nz
-    path: /hiosedhfiosfiosdhiofhsdiofhisdofhsdfp=chrome
-- name: '10|HK香港(mibei77.com 米贝节点分享) #13'
-  network: ws
-  port: 8880
-  server: 91.193.58.111
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: random
-  name: 10|老油条-香港-cfcdn2
-  network: ws
-  port: 443
-  server: cfcdn2.langmanshanxi.top
-  servername: hk.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #14'
-  network: ws
-  port: 8880
-  server: 91.193.58.89
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #3'
-  network: ws
-  port: 8880
-  server: 91.193.58.25
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: random
-  name: '10|老油条-香港-cdn #1'
-  network: ws
-  port: 443
-  server: cdn.laoyoutiao.link
-  servername: hk.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #16'
-  network: ws
-  port: 8880
-  server: 91.193.58.254
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #9'
-  network: ws
-  port: 8880
-  server: 91.193.58.64
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #14'
-  network: ws
-  port: 8880
-  server: 91.193.58.250
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: random
-  name: 10|老油条-香港-cfcdns
-  network: ws
-  port: 443
-  server: cfcdns.langmanshanxi.top
-  servername: hk.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- cipher: aes-256-gcm
-  name: 8,10|🇭🇰 香港2|@stairnode
-  password: 9bfdde71b4c0
-  port: 443
-  server: 103.103.245.158
-  type: ss
-- name: '10|HK香港(mibei77.com 米贝节点分享) #19'
-  network: ws
-  port: 443
-  server: huxley.ns.cloudflare.com
-  servername: sub.divib.dynv6.net
-  tls: true
-  type: vless
-  uuid: b1a8ceea-6601-45b5-a674-7e5b64ab6f6f
-  ws-opts:
-    headers:
-      Host: sub.divib.dynv6.net
-    path: '%2F'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #20'
-  network: ws
-  port: 8880
-  server: 91.193.58.191
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: random
-  name: 10|老油条-香港-cfcdn3
-  network: ws
-  port: 443
-  server: cfcdn3.langmanshanxi.top
-  servername: hk.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #21'
-  network: ws
-  port: 8880
-  server: 91.193.58.246
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #29'
-  network: ws
-  port: 8880
-  server: 91.193.58.73
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|HK香港(mibei77.com 米贝节点分享) #23'
-  network: ws
-  port: 8880
-  server: 91.193.58.245
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
-- name: '10|HK香港(mibei77.com 米贝节点分享) #24'
-  network: ws
-  port: 8880
-  server: 91.193.58.210
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: '%2FTelegramU0001F1E8U0001F1F3%40WangCai2%2F%3Fed%3D2560'
-- name: 11|🇭🇰HK_52 @ipV2rayNG
-  network: ws
-  port: 8880
-  server: 104.18.44.52
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: tw.laoyoutiao.link
-    path: Telegram🇨🇳 @ipV2rayNG /?ed=2560
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 11|🇭🇰香港
-  network: tcp
-  port: 24758
-  reality-opts:
-    public-key: o59R2PjAsu1h4KcFjK-EDGP41N2PHZL_Pgk64UcFxh0
-    short-id: a6d87a12
-  server: aws-link3.liangxin1.xyz
-  servername: osxapps.itunes.apple.com
-  tls: false
-  type: vless
-  uuid: e10ea0d5-4244-4aec-9ba0-cafe77cc6d90
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '11|🇭🇰香港 #1'
-  network: tcp
-  port: 32725
-  reality-opts:
-    public-key: IdgzmrHX6nbZEVjox3WcxBE07DwXE9YIa8ZyYZuMWEw
-    short-id: 784cf058
-  server: aws-link2.liangxin1.xyz
-  servername: osxapps.itunes.apple.com
-  tls: false
-  type: vless
-  uuid: e10ea0d5-4244-4aec-9ba0-cafe77cc6d90
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-03_解锁
-  password: fb4f378f-a7f6-44f5-8e32-ec7f84b817fd
-  port: 443
-  server: hk03.ssyhi.xyz
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-09_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: hk09.ssyhi.xyz
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-15_解锁
-  password: fb4f378f-a7f6-44f5-8e32-ec7f84b817fd
-  port: 443
-  server: hk15.ssyhi.xyz
-  type: ss
-- name: 2|🇭🇰HK-CERA-0.1X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10012
-  server: xn--1ckye.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- cipher: aes-128-gcm
-  name: 2|🇭🇰 HK 3
-  password: facfc265-5ef2-3830-8fe9-eacb6b92cb0e
-  port: 443
-  server: api-wx-3.rancho.gay
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-06_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: hk06.ssyhi.xyz
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-13_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: hk13.ssyhi.xyz
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-16_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: hk16.ssyhi.xyz
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|SSRTOOL+HK+(Support+Netflix)
-  password: ssrtool.com
-  port: 443
-  server: free.cxxz.xyz
-  type: ss
-- name: 2|香港Hysteria2
-  password: df9de286
-  port: 64470
-  server: 156.254.114.144
-  skip-cert-verify: true
-  sni: www.bing.com
-  tls: true
-  type: hysteria2
-- cipher: chacha20-ietf
-  name: 2|🇭🇰HK-38.147.190.25-0595
-  password: asd123456
-  port: 443
-  server: 38.147.190.25
-  type: ss
-- name: 2|🇭🇰HK-Apernet-0.2X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10011
-  server: xn--xckxcan3e4a4d.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-04_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: hk04.ssyhi.xyz
-  type: ss
-- name: 2|香港紧急备用公益路线@ggboo_bot
-  password: 416a73a2-ca52-4cb7-bc15-40a4dbf90e53
-  port: 443
-  server: zzxg.tiktokcn.xyz
-  skip-cert-verify: true
-  tls: true
-  type: hysteria2
-- name: 2|🇭🇰HK-Netfront-0.1X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10011
-  server: xn--9dki.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- name: 2|Vless-HK-Microsoft_Azure
-  network: ws
-  port: 443
-  server: dee33.azurewebsites.net
-  servername: dee33.azurewebsites.net
-  tls: true
-  type: vless
-  uuid: 6f995056-7802-4a1d-bff7-61678e626c3f
-  ws-opts:
-    headers:
-      Host: dee33.azurewebsites.net
-    path: /
-- cipher: aes-256-gcm
-  name: 2|🇭🇰香港02
-  password: 9c3420ec-46e9-48e9-918e-bcb6ef4ed07c
-  port: 443
-  server: zhk2.capoonetwork.com
-  type: ss
-- name: 2|🇭🇰HK-Apernet-0.1X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10011
-  server: xn--5ck5a.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- name: 2|Relay_🇭🇰HK-🇮🇪IE_68
-  network: tcp
-  password: 4f2f34cc-d2e9-4ca8-a687-68efe5ad5959
-  port: 443
-  server: esjs.liangyuandiancloud.com
-  type: trojan
-- name: 2|🇭🇰HK-YXVM-0.2X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10012
-  server: xn--eckm1qpb.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- name: 2|HK🇭🇰01(不限流量)
-  password: 70676b9f-faff-4684-80f0-340465b2307a
-  port: 30000
-  server: 45.119.99.148
-  skip-cert-verify: true
-  tls: true
-  type: hysteria2
-- cipher: chacha20-ietf-poly1305
-  name: '2|香港 #7'
-  password: 6761cfc32f06
-  port: 443
-  server: 45.64.22.9
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇭🇰香港-02_解锁
-  password: fb4f378f-a7f6-44f5-8e32-ec7f84b817fd
-  port: 443
-  server: hk02.ssyhi.xyz
-  type: ss
-- name: 2|🇭🇰香港hy2①
-  password: 4984806b-f0f9-4749-bdd5-ea38bd690270
-  port: 17766
-  server: 141.11.125.225
-  skip-cert-verify: true
-  tls: true
-  type: hysteria2
-- cipher: chacha20-ietf
-  name: 2|🇭🇰HK-38.147.190.72-0593
-  password: asd123456
-  port: 443
-  server: 38.147.190.72
-  type: ss
-- cipher: aes-128-gcm
-  name: 8|新加坡8|0.1M/s
-  password: CreamData
-  port: 443
-  server: e78b1f.rydkud.xyz
-  type: ss
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-9615
-  network: tcp
-  port: 443
-  reality-opts:
-    public-key: geXtlGNYBAQKgRseZd_iesJeU92z7fY2koG-knCXoWU
-    short-id: e76b7d4e
-  server: 89.185.27.133
-  servername: www.apple.com.cn
-  tls: false
-  type: vless
-  uuid: 5d110f18-5a37-4db3-8cf6-f0bced38a1ae
-- cipher: aes-256-gcm
-  name: 8|4Jadi-2533
-  password: c69374da-2208-4cbd-b81e-cdf88b5e7f53
-  port: 443
-  server: ss.029.node-for-bigairport.win
-  type: ss
-- name: '8|🇭🇰HK香港2 #3'
-  password: d0d08cddacc3190ea81b1b792e1b5fde
-  port: 1122
-  server: 36.151.192.13
-  skip-cert-verify: true
-  sni: www.baidu.com
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 8|🄵🄺 🇭🇰 香港-04
-  password: //YWVzLTEyOC1nY206dG1kODQyNw
-  port: 443
-  server: 120.233.71.140
-  type: ss
-- cipher: aes-256-gcm
-  name: 8|🇭🇰 HK | 🟢 | ss | @outlinerelea...
-  password: 82888bb98615435b
-  port: 443
-  server: 212.192.15.124
-  type: ss
-- cipher: aes-128-gcm
-  name: 8|Hong Kong|Github搜索TrojanLinks
-  password: a-wym4ovY4Yw
-  port: 443
-  server: 47.243.45.101
-  type: ss
-- cipher: aes-256-gcm
-  name: 8|🇭🇰 香港跨境金融专线03
-  password: a801632d2e2e
-  port: 443
-  server: fn600mlines024.svcline.com
-  type: ss
-- name: 8|🇭🇰+HK+香港+60
-  network: ws
-  port: 2096
-  server: 8.210.21.65
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- name: 8|4Jadi-4085
-  password: SyOxpKxC8u5jgNa3DCZ34y3D9CRenFcaABpYATEeqI2RSaXD76zS8YF0Owl3lZ
-  port: 443
-  server: 219.76.13.181
-  skip-cert-verify: true
-  sni: arbettp.freetrade.link
-  type: trojan
-- name: 8|香港HKT | 解锁流媒体
-  network: tcp
-  password: 5ceb716a-9a0c-493a-9a0b-a05e08a1b1fc
-  port: 28443
-  server: download1hkt.windowsupdate1.com
-  type: trojan
-- name: 8|🇭🇰香港4
-  password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
-  port: 19365
-  server: 120.233.15.58
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-3151
-  password: //cmM0LW1kNTppRkRFMFo
-  port: 443
-  server: sg17.fjk.wtf
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 8|🇭🇰 HK | 🟢 | ss | @v2ray_free_c...
-  password: ljqdalu13..
-  port: 443
-  server: 43.199.75.50
-  type: ss
-- name: 8|🇭🇰+HK+香港+31
-  network: ws
-  port: 9004
-  server: 154.3.37.27
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-8248
-  network: tcp
-  port: 41279
-  reality-opts:
-    public-key: qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY
-    short-id: ''
-  server: csuzhou01.1cooldns.com
-  servername: www.nvidia.com
-  tls: false
-  type: vless
-  uuid: 459b4a80-bd61-4ecd-a26b-e9c1809d9e45
-- name: 8|🇬🇧英国1|11.01Mb
-  password: cf4295378e209e70d12c5bdd017144dfd1c772d3
-  port: 8443
-  server: 43-154-228-196.ipv4.rush.ml
-  type: trojan
-- name: 8|🇵🇭菲律宾1
-  password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
-  port: 17108
-  server: 120.233.15.58
-  skip-cert-verify: true
-  type: trojan
-- name: 8|香港_8
-  network: ws
-  port: 80
-  server: bestproxy.onecf.eu.org
-  servername: hk033.ylks.link
-  tls: false
-  type: vless
-  uuid: a13df940-020c-465f-bc89-ee5279b5cd6a
-  ws-opts:
-    path: /blue
-- name: '8|香港(yudou123.top 玉豆免费节点) #12'
-  network: ws
-  port: 8880
-  server: 91.193.58.140
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: 8|香港_7
-  network: ws
-  port: 443
-  server: 159.138.131.240
-  servername: xin033.ylks.link
-  tls: true
-  type: vless
-  uuid: 48198295-b7ba-4b5c-8d85-085d55a6c869
-  ws-opts:
-    path: /proxyip=proxyip.tw.fxxk.dedyn.io
-- name: 8|🇭🇰+HK+香港+58
-  network: ws
-  port: 65432
-  server: 43.154.196.20
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -HK-Hong Kong4
-  network: ws
-  port: 3443
-  server: 47.75.101.0
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- name: 8|香港(油管:破解资源君2.0)
-  network: tcp
-  port: 16031
-  server: 47.243.224.56
-  servername: 47.243.224.56
-  tls: false
-  type: vless
-  uuid: eda410a4-5f85-470e-d010-ff8f03a4a268
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-7055
-  network: tcp
-  port: 35248
-  reality-opts:
-    public-key: IGsSxC0wgn7wLy0NM0QN_yOREDKT_814Y_3_rbgDoTc
-    short-id: c8c0f951
-  server: aws-link1.liangxin1.xyz
-  servername: www.lamer.com.hk
-  tls: false
-  type: vless
-  uuid: 2a9b85bd-27cc-4e3b-b77d-54dbe5bc23af
-- name: 8|香港_5
-  network: ws
-  port: 2083
-  server: 47.243.90.180
-  servername: xin033.ylks.link
-  tls: true
-  type: vless
-  uuid: 48198295-b7ba-4b5c-8d85-085d55a6c869
-  ws-opts:
-    path: /blue
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -HK-Hong Kong15
-  network: ws
-  port: 2083
-  server: 47.242.17.250
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- name: 8|4Jadi-4079
-  password: SSorg
-  port: 2083
-  server: 27.50.49.47
-  skip-cert-verify: true
-  sni: ssjj.esslh.filegear-sg.me
-  type: trojan
-- cipher: chacha20-ietf
-  name: 8|🇭🇰HK-103.149.183.154-5219
-  password: asd123456
-  port: 443
-  server: 103.149.183.154
-  type: ss
-- name: 8|🇭🇰+HK+香港+45
-  network: ws
-  port: 58916
-  server: 38.55.99.62
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- name: 8|🇭🇰 香港 26
-  obfs: salamander
-  obfs-password: salamander
-  password: 73bde0e7-dd56-4fc0-81d2-e594977d649b
-  port: 20057
-  server: nexiaxg.688997.xyz
-  skip-cert-verify: true
-  sni: nexiaxg.688997.xyz
-  tls: true
-  type: hysteria2
-- flow: ''
-  name: 8|4Jadi-15343
-  network: ws
-  port: 26657
-  server: 101.32.15.176
-  servername: edccj.ambercc.filegear-sg.me
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: ee6774c0-9b19-4ff1-8b30-2da4b71977e2
-  ws-opts:
-    headers:
-      Host: edccj.ambercc.filegear-sg.me
-    path: /?ed=2560
-- cipher: aes-128-gcm
-  name: '8|Hong Kong|Github搜索TrojanLinks #1'
-  password: a-wym4ovY4Yw
-  port: 443
-  server: 104.16.186.61
-  type: ss
-- name: 8|[量子]香港 01 1x
-  network: tcp
-  password: 3e820eb0-3f06-4337-a4fc-0c3c7c0d3b4d
-  port: 18080
-  server: jp-45s-s65x-595adf.jumaonet.com
-  sni: jp-45s-s65x-595adf.jumaonet.com
-  type: trojan
-- name: '8|2 #2 #1'
-  password: b866d83a-d301-4270-b699-40f322bf52fb
-  port: 443
-  server: 89.185.27.133
-  skip-cert-verify: true
-  sni: www.bing.com
-  tls: true
-  type: hysteria2
-- name: '8|香港(yudou123.top 玉豆免费节点) #28'
-  network: ws
-  port: 8880
-  server: 91.193.58.82
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- cipher: aes-128-gcm
-  name: '8|Hong Kong|Github搜索TrojanLinks #2'
-  password: a-wym4ovY4Yw
-  port: 443
-  server: 172.67.124.123
-  type: ss
-- name: 8|4Jadi-4416
-  password: dda4f3bf-85fb-41bd-9d8e-77a8a02dbd59
-  port: 1066
-  server: 194.104.147.74
-  skip-cert-verify: false
-  sni: ''
-  type: trojan
-- name: 8|4Jadi-3653
-  network: tcp
-  password: 6685b4eb-aa84-454a-8049-5f5d39f0d9a0
-  port: 7004
-  server: dx.xxmd.online
-  skip-cert-verify: true
-  type: trojan
-- cipher: aes-256-gcm
-  name: 8|🇭🇰 香港IEPL内网专线02
-  password: b82344b3d531
-  port: 443
-  server: fn600mliness016.svcline.com
-  type: ss
-- name: 8|🇭🇰+HK+香港+62
-  network: ws
-  port: 13380
-  server: 47.242.149.43
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- name: 8|[量子]香港 02 1x
-  network: tcp
-  password: 3e820eb0-3f06-4337-a4fc-0c3c7c0d3b4d
-  port: 13622
-  server: hk-sjfx-95s-xjfa-xmasf.jumaonet.com
-  sni: hk-sjfx-95s-xjfa-xmasf.jumaonet.com
-  type: trojan
-- name: 8|🇭🇰_HK_香港_Cow Vagina_33
-  network: tcp
-  password: 6248895b-4255-4f07-9479-d198bc1eb8db
-  port: 30010
-  server: zf2.windowsupdate1.com
-  type: trojan
-- cipher: chacha20-ietf
-  name: 8|🇭🇰HK-103.149.182.191-5075
-  password: asd123456
-  port: 443
-  server: 103.149.182.191
-  type: ss
-- name: '8|未命名 #7 #1'
-  password: b57bbf70-8958-4ae5-b6fd-bcf39b81900c
-  port: 63518
-  server: ovo.5188666.xyz
-  skip-cert-verify: true
-  tls: true
-  type: hysteria2
-- name: 8|🇭🇰香港3
-  password: 0f098bb2-9fad-3cc3-8acf-2a3268c1eb27
-  port: 42541
-  server: 120.233.15.58
-  type: trojan
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -HK-Hong Kong3
-  network: ws
-  port: 2096
-  server: 45.80.111.38
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- name: 8|🇭🇰香港3|(youtube阿伟科技)
-  password: a3278882-3614-39cf-a3d6-faefa8c910ab
-  port: 49363
-  server: hnm.xiaohouzi.club
-  skip-cert-verify: true
-  type: trojan
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -HK-Hong Kong16
-  network: ws
-  port: 2083
-  server: 47.242.232.14
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- name: 8|🇭🇰 香港 16
-  obfs: salamander
-  obfs-password: salamander
-  password: f1be5278-9d77-472a-8d8e-324418370271
-  port: 35260
-  server: flyxghy.flylink.cyou
-  skip-cert-verify: true
-  sni: flyxghy.flylink.cyou
-  tls: true
-  type: hysteria2
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|33 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.207
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: 0|JP日本(mibei77.com 米贝节点分享)
-  network: ws
-  port: 21273
-  server: 8.209.220.50
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|20 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.199
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|49 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.104
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|80 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.222
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|31 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.70
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: 0,6,7|Japan Relay
-  network: ws
-  port: 8880
-  server: 156.238.18.166
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|38 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.125
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|42 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.84
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #1'
-  network: ws
-  port: 8880
-  server: 91.193.58.93
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0|JP日本(mibei77.com 米贝节点分享) #2'
-  network: ws
-  port: 8880
-  server: 91.193.58.23
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: 0|15|JP_speednode_0073
-  network: ws
-  port: 8880
-  server: 103.116.7.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|10 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.148
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|21 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.210
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|26 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.167
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|6 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.170
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|78 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.203
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|12 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.217
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|17 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.131
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- client-fingerprint: randomized
-  name: 0|NTT+Communications+Corporation...
-  network: ws
-  port: 443
-  server: sgjp.asolole.biz.id
-  servername: sgjp.asolole.biz.id
-  tls: true
-  type: vless
-  uuid: 1977de45-4ea5-4531-b935-ce470f9c75d2
-  ws-opts:
-    headers:
-      Host: sgjp.asolole.biz.id
-    path: /jp2
-- name: '0|JP日本(mibei77.com 米贝节点分享) #3'
-  network: ws
-  port: 8880
-  server: 91.193.58.249
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|55 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.142
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0|JP日本(mibei77.com 米贝节点分享) #4'
-  network: ws
-  port: 443
-  server: 139.162.83.77
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|47 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.20
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|51 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.132
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|40 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.190
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #5'
-  network: ws
-  port: 8880
-  server: 91.193.58.119
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|50 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.200
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #6'
-  network: ws
-  port: 8880
-  server: 91.193.58.32
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0|JP日本(mibei77.com 米贝节点分享) #7'
-  network: ws
-  port: 8880
-  server: 91.193.58.187
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- client-fingerprint: random
-  name: '0,6,7|老油条-JP-日本 #3'
-  network: ws
-  port: 443
-  server: jp.laoyoutiao.link
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: /?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|52 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.86
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|79 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.122
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|29 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.136
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|JP #9'
-  network: ws
-  port: 12109
-  server: 112.69.4.50
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: '0|JP日本(mibei77.com 米贝节点分享) #8'
-  network: ws
-  port: 8880
-  server: 91.193.58.180
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|48 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.58
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|53 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.54
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|46 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.94
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|5 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.123
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|37 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.119
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|11 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.179
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|JP #10'
-  network: ws
-  port: 10073
-  server: 112.69.4.50
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: '0|JP日本(mibei77.com 米贝节点分享) #9'
-  network: ws
-  port: 8880
-  server: 91.193.58.157
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0|JP日本(mibei77.com 米贝节点分享) #10'
-  network: ws
-  port: 8880
-  server: 91.193.58.174
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|54 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.78
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|19 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.212
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|7 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.177
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|76 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.93
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0|JP日本(mibei77.com 米贝节点分享) #11'
-  network: ws
-  port: 8880
-  server: 91.193.58.178
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|39 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.252
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #12'
-  network: tcp
-  port: 31039
-  server: free.fastshield.sbs
-  tls: false
-  type: vless
-  uuid: 841773c5-c377-49b2-878a-a4323b21c5fa
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|43 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.88
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|25 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.89
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #13'
-  network: ws
-  port: 8880
-  server: 91.193.58.132
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|24 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.254
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|9 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.172
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|32 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.184
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|81 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.66
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|30 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.7
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #14'
-  network: ws
-  port: 8880
-  server: 91.193.58.228
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0|JP日本(mibei77.com 米贝节点分享) #15'
-  network: ws
-  port: 8880
-  server: 91.193.58.154
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|41 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.206
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #16'
-  network: ws
-  port: 8880
-  server: 91.193.58.241
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: 0|JP_speednode_0074
-  network: ws
-  port: 8880
-  server: 103.116.7.177
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /TelegramU0001F1E8U0001F1F3%20@WangCai2%20/?ed%3D2560fp%3Dchrome
-- name: '0|JP日本(mibei77.com 米贝节点分享) #17'
-  network: ws
-  port: 8880
-  server: 91.193.58.238
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|27 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.168
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|15 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.100
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0,6,7,10|🇯🇵|JP|@wxgqlfx|113 #3'
-  network: ws
-  port: 8880
-  server: 156.238.19.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- cipher: chacha20-ietf-poly1305
-  name: 0,5,6,7,8,10|二爷翻墙_24
-  password: Nk9asglDzHzjktVzTkvhaA
-  port: 443
-  server: arxfw2b78fi2q9hzylhn.freesocks.work
-  type: ss
-- name: '0|JP日本(mibei77.com 米贝节点分享) #19'
-  network: ws
-  port: 8880
-  server: 91.193.58.171
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|23 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.218
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '0|JP日本(mibei77.com 米贝节点分享) #20'
-  network: ws
-  port: 8880
-  server: 91.193.58.63
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: freecodes%E8%98%87%E5%B0%8F%E6%AA%B8%7C%E8%8F%AF%E6%9D%B1%E9%9B%BB%E8%A8%8A%7C%E8%A7%A3%E9%8E%96Netflix
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|45 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.157
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2560
-- name: '0|JP日本(mibei77.com 米贝节点分享) #21'
-  network: ws
-  port: 8880
-  server: 91.193.58.35
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /
-- name: '0,6,7|🇯🇵|JP|@wxgqlfx|22 #3'
-  network: ws
-  port: 8880
-  server: 156.238.18.191
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: Telegram@WangCai2/?ed%3D2048
-- name: '3,4|JP #4'
-  network: ws
-  port: 443
-  server: vljp.zyttbywy.xyz
-  servername: vljp.zyttbywy.xyz
-  tls: true
-  type: vless
-  uuid: 39d164af-a672-4ef9-8764-09cbaf30cb96
-  ws-opts:
-    path: /vws
-- name: '3,4|日本2024年11月到期 #1'
-  network: tcp
-  password: uNQEjBXc9T
-  port: 33413
-  server: 167.88.182.101
-  type: trojan
-- cipher: aes-128-gcm
-  name: 1,5,6,8|🇯🇵JP-149.22.87.204-0267
-  password: shadowsocks
-  port: 443
-  server: 149.22.87.204
-  type: ss
-- cipher: aes-128-gcm
-  name: 1|🇯🇵 JP 3
-  password: shadowsocks
-  port: 443
-  server: 149.22.87.240
-  type: ss
-- name: '5,8|日本_12 #1'
-  network: ws
-  port: 80
-  server: 138.2.18.184
-  servername: hk033.ylks.link
-  tls: false
-  type: vless
-  uuid: a13df940-020c-465f-bc89-ee5279b5cd6a
-  ws-opts:
-    path: /blue
-- client-fingerprint: random
-  name: '5|JP #3'
-  network: ws
-  port: 12333
-  server: 121.80.244.179
-  servername: cc.ylka.dpdns.org
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: 06e4425e-a8cb-4b63-929f-2105604ab0a9
-  ws-opts:
-    headers:
-      Host: cc.ylka.dpdns.org
-    path: /?ed%3D2560
-- cipher: aes-256-cfb
-  name: '5,8|🇯🇵JP-18.183.174.138-0743 #1'
-  password: amazonskr05
-  port: 443
-  server: 18.183.174.138
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2,5,8|🇯🇵JP-185.172.113.182-0796
-  password: G!yBwPWH3Vao
-  port: 443
-  server: 185.172.113.182
-  type: ss
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -JP-Tokyo2
-  network: ws
-  port: 4443
-  server: 211.75.74.232
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- cipher: aes-256-cfb
-  name: '5,8|🇯🇵JP-13.231.154.132-0744 #1'
-  password: amazonskr05
-  port: 443
-  server: 13.231.154.132
-  type: ss
-- name: 5|🇯🇵+JP+日本+78
-  network: ws
-  port: 2053
-  server: 31.12.75.140
-  servername: juzibaipiao.5112233.xyz
-  tls: true
-  type: vless
-  uuid: f775978b-6e22-41a8-ae5e-5f9779e6745f
-  ws-opts:
-    headers:
-      Host: juzibaipiao.5112233.xyz
-    path: /?ed%3D2048
-- client-fingerprint: randomized
-  name: '5|NTT+Communications+Corporation... #1'
-  network: ws
-  port: 443
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: true
-  type: vless
-  uuid: 1733f2a1-37f1-48c6-95d9-a60edefd3e15
-  ws-opts:
-    headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: /jp2
-- client-fingerprint: random
-  name: 5|TG@ZDYZ2 -JP-Tokyo4
-  network: ws
-  port: 2083
-  server: 18.183.137.85
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG@ZDYZ2
-- client-fingerprint: randomized
-  name: 4|M247+Europe+SRL+(JP)")'><i cla...
-  network: ws
-  port: 443
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: true
-  type: vless
-  uuid: 00db326f-69a0-4769-83f1-3b1947dba8d3
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: /jp1
-- cipher: chacha20-ietf-poly1305
-  name: '4|M247+Europe+SRL+(JP)")''><i cla... #1'
-  password: �G[�n���Z��;�߼��~ݽ}��[k�w
-  port: 443
-  server: servpn.my.id
-  type: ss
-- client-fingerprint: randomized
-  name: 10|(JP)Gmo Internet Group-[Tls]
-  network: ws
-  port: 443
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: true
-  type: vless
-  uuid: 139a20b0-a3d3-4052-9552-23d270441e18
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F118.27.12.40%3D38443'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #21'
-  network: ws
-  port: 8880
-  server: 91.193.58.10
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: 10|M247+Europe+SRL+(JP)
-  network: ws
-  port: 80
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 2e5cb615-23c5-453d-bc4a-f2df9f2b7ec5
-  ws-opts:
-    headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fjp1'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #23'
-  network: ws
-  port: 8880
-  server: 91.193.58.66
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #24'
-  network: ws
-  port: 8880
-  server: 91.193.58.100
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #32'
-  network: ws
-  port: 8880
-  server: 91.193.58.52
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #36'
-  network: ws
-  port: 8880
-  server: 91.193.58.101
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: 10|The+Constant+Company+(JP)
-  network: ws
-  port: 80
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: false
-  type: vless
-  uuid: 2755da50-c793-44fc-bba0-ac2712b19bd0
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: '%2Fjp2'
-- client-fingerprint: randomized
-  name: 10|(JP) Nearoute🇯🇵
-  network: ws
-  port: 443
-  server: masukan.bug.ws
-  servername: support.zoom.us.wilcard.cyantiknya.my.id
-  tls: true
-  type: vless
-  uuid: ded9d05e-a2b1-461a-88f2-8eb2aa25ac52
-  ws-opts:
-    headers:
-      Host: support.zoom.us.wilcard.cyantiknya.my.id
-    path: '%2Fvl%3D103.20.199.118%3D12999'
-- client-fingerprint: randomized
-  name: '10|(JP) Nearoute🇯🇵 #1'
-  network: ws
-  port: 80
-  server: masukan.bug.ws
-  servername: bakrie.ac.id.wilcard.cyantiknya.my.id
-  tls: false
-  type: vless
-  uuid: 5fc1abd3-0287-4371-bf0f-effe9bfce102
-  ws-opts:
-    headers:
-      Host: bakrie.ac.id.wilcard.cyantiknya.my.id
-    path: '%2Fvl%3D103.20.199.118%3D12999'
-- client-fingerprint: randomized
-  name: '10|The+Constant+Company+(JP) #1'
-  network: ws
-  port: 80
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 416d3a45-a9f8-480a-b7a5-fd3024edeccd
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: '%2Fjp2'
-- name: '6,10|🇯🇵[openproxylist.com] vless-JP #3'
-  network: ws
-  port: 80
-  server: 5.253.41.223
-  tls: false
-  type: vless
-  uuid: a0a866bd-8c0c-464c-9b96-c6dafa154419
-  ws-opts:
-    path: /vless/
-- name: '10|JP日本(mibei77.com 米贝节点分享) #27'
-  network: ws
-  port: 8880
-  server: 91.193.58.251
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|M247+Europe+SRL+(JP) #1'
-  network: ws
-  port: 80
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 89d331fb-2a6a-4fba-af14-6ed7202b99de
-  ws-opts:
-    headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: '%2Fjp1'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #5'
-  network: ws
-  port: 8880
-  server: 91.193.58.255
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #30'
-  network: ws
-  port: 8880
-  server: 91.193.58.168
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #16'
-  network: ws
-  port: 8880
-  server: 91.193.58.70
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #32'
-  network: ws
-  port: 8880
-  server: 91.193.58.54
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- cipher: aes-256-gcm
-  name: '8,10|🇯🇵JP日本 #3'
-  password: 823e135ed103
-  port: 443
-  server: 137.220.191.40
-  type: ss
-- client-fingerprint: randomized
-  name: '10|M247+Europe+SRL+(JP) #2'
-  network: ws
-  port: 443
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 058cb78c-de0c-4c82-b02e-f4dd30b58cd5
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: '%2Fjp1'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #33'
-  network: ws
-  port: 8880
-  server: 91.193.58.102
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: 10|JP_speednode_0072
-  network: ws
-  port: 8880
-  server: 154.92.9.156
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #34'
-  network: ws
-  port: 8880
-  server: 91.193.58.57
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #35'
-  network: ws
-  port: 8880
-  server: 91.193.58.80
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #20'
-  network: ws
-  port: 8880
-  server: 91.193.58.167
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|NTT+Communications+Corporation... #2'
-  network: ws
-  port: 80
-  server: sgjp.asolole.biz.id
-  servername: sgjp.asolole.biz.id
-  tls: false
-  type: vless
-  uuid: 1bada535-10b1-4c57-9453-8575cce9e51e
-  ws-opts:
-    headers:
-      Host: sgjp.asolole.biz.id
-    path: '%2Fjp2'
-- client-fingerprint: chrome
-  name: 10|Rayan - SSM - WSDR - JP - II
-  network: ws
-  port: 443
-  server: 5.253.41.139
-  servername: zula.ir
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: 9ff807b0-c4e3-5f52-b560-0bb48c37cf3f
-  ws-opts:
-    headers:
-      Host: 5.253.41.139
-    path: '%2Fvless'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #31'
-  network: ws
-  port: 8880
-  server: 91.193.58.147
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #24'
-  network: ws
-  port: 8880
-  server: 91.193.58.4
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|The+Constant+Company+(JP) #2'
-  network: ws
-  port: 443
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: eb8ee679-db87-4fd0-a633-b4afdb7dc80c
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: '%2Fjp2'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #40'
-  network: ws
-  port: 8880
-  server: 91.193.58.193
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #25'
-  network: ws
-  port: 8880
-  server: 91.193.58.188
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #33'
-  network: ws
-  port: 8880
-  server: 91.193.58.24
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #44'
-  network: ws
-  port: 8880
-  server: 91.193.58.253
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #4'
-  network: ws
-  port: 8880
-  server: 91.193.58.230
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #46'
-  network: ws
-  port: 8880
-  server: 91.193.58.110
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #48'
-  network: ws
-  port: 8880
-  server: 91.193.58.146
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #49'
-  network: ws
-  port: 8880
-  server: 91.193.58.120
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #50'
-  network: ws
-  port: 8880
-  server: 91.193.58.205
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|日本(yudou123.top 玉豆免费节点) #1'
-  network: ws
-  port: 44243
-  server: 149.28.30.146
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: '%2Ftelegram%F0%9F%87%A8%F0%9F%87%B3%40wangcai2%2F%3Fed%3D2560'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #52'
-  network: ws
-  port: 8880
-  server: 91.193.58.19
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #53'
-  network: ws
-  port: 8880
-  server: 91.193.58.77
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|NTT+Communications+Corporation... #4'
-  network: ws
-  port: 80
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: false
-  type: vless
-  uuid: 91856ec9-33ef-47ee-9561-efe8faec570f
-  ws-opts:
-    headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: '%2Fjp2'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #54'
-  network: ws
-  port: 8880
-  server: 91.193.58.112
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #7'
-  network: ws
-  port: 8880
-  server: 91.193.58.201
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: 8,10|4Jadi-15220
-  network: ws
-  port: 8443
-  server: 5.253.41.237
-  servername: pq-japan3.09vpn.com
-  tls: true
-  type: vless
-  uuid: eb42c1ce-5ab3-41f0-95ad-80fa467607d9
-  ws-opts:
-    path: '%2Fvless%2F'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #58'
-  network: ws
-  port: 8880
-  server: 91.193.58.192
-  servername: us.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: us.laoyoutiao.link
-    path: '%2FTelegram%40MxlShare%40WangCai2%2F%3Fed%3D2560'
-- name: 6,8,10|4Jadi-12842
-  network: ws
-  port: 8880
-  server: 103.116.7.3
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
-  ws-opts:
-    headers:
-      Host: bitget1.asdasd.click
-    path: /TelegramU0001F1E8U0001F1F3
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #15'
-  network: ws
-  port: 8880
-  server: 91.193.58.0
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #8'
-  network: ws
-  port: 8880
-  server: 91.193.58.7
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|M247+Europe+SRL+(JP) #5'
-  network: ws
-  port: 443
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 5067d2cf-b525-4d8c-a5d0-758b804ebfa6
-  ws-opts:
-    headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: '%2Fjp1'
-- client-fingerprint: randomized
-  name: '10|The+Constant+Company+(JP) #6'
-  network: ws
-  port: 80
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 299c33e6-dfd3-4a6c-baaa-99d3eb572371
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: '%2Fjp2'
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #2'
-  network: ws
-  port: 8880
-  server: 91.193.58.105
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #17'
-  network: ws
-  port: 8880
-  server: 91.193.58.181
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: randomized
-  name: '10|The+Constant+Company+(JP) #7'
-  network: ws
-  port: 443
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
-  tls: true
-  type: vless
-  uuid: ca673947-bec4-40d6-9d31-f9454b1df83a
-  ws-opts:
-    headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fjp2'
-- name: '10|JP日本(mibei77.com 米贝节点分享) #66'
-  network: ws
-  port: 8880
-  server: 91.193.58.127
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #18'
-  network: ws
-  port: 8880
-  server: 91.193.58.41
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #68'
-  network: ws
-  port: 8880
-  server: 91.193.58.143
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #26'
-  network: ws
-  port: 8880
-  server: 91.193.58.202
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #22'
-  network: ws
-  port: 8880
-  server: 91.193.58.252
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #71'
-  network: ws
-  port: 8880
-  server: 91.193.58.14
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #72'
-  network: ws
-  port: 8880
-  server: 91.193.58.69
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #23'
-  network: ws
-  port: 8880
-  server: 91.193.58.195
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #10'
-  network: ws
-  port: 8880
-  server: 91.193.58.86
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- client-fingerprint: chrome
-  name: 8,10|4Jadi-11993
-  network: ws
-  port: 443
-  server: www.speedtest.net
-  servername: jp-2-ssm.medicaldream.ir
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: 9ff807b0-c4e3-5f52-b560-0bb48c37cf3f
-  ws-opts:
-    headers:
-      Host: jp-2-ssm.medicaldream.ir
-    path: /vless
-- name: '10|JP日本(mibei77.com 米贝节点分享) #75'
-  network: ws
-  port: 8880
-  server: 91.193.58.16
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,10|香港(yudou123.top 玉豆免费节点) #30'
-  network: ws
-  port: 8880
-  server: 91.193.58.123
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #77'
-  network: ws
-  port: 8880
-  server: 91.193.58.27
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #78'
-  network: ws
-  port: 8880
-  server: 91.193.58.21
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '10|JP日本(mibei77.com 米贝节点分享) #79'
-  network: ws
-  port: 8880
-  server: 91.193.58.94
-  servername: kjgx.laoyoutiao.link
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-    path: Telegram%40WangCai2%2F%3Fed%3D2560
-- name: '8,11|日本Hy2-3 #2'
-  password: 1c473b13-502d-47eb-8cf8-70a38d56c5bd
-  port: 443
-  server: jp1.interld123456789.com
-  skip-cert-verify: true
-  sni: 1231231.1234567890spcloud.com
-  tls: true
-  type: hysteria2
-- name: 11|🇯🇵@Mahdi2000_m vless-JP
-  network: ws
-  port: 80
-  server: 45.12.134.217
-  tls: false
-  type: vless
-  uuid: ed242313-b502-4a4a-97f4-336da621a837
-  ws-opts:
-    path: /vless/
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 11|🇯🇵日本
-  network: tcp
-  port: 35457
-  reality-opts:
-    public-key: 3gb-aG6qLCJpEOFrEPZ9qKqLvVPA_ovlu0X1PvjcE0k
-    short-id: 05288db3
-  server: aws-link15.liangxin1.xyz
-  servername: www.apple.com.cn
-  tls: false
-  type: vless
-  uuid: e10ea0d5-4244-4aec-9ba0-cafe77cc6d90
-- cipher: aes-128-gcm
-  name: 6,8|🇯🇵 JP | 🟢 | ss | @outlinerelea...
-  password: shadowsocks
-  port: 443
-  server: 149.22.87.241
-  type: ss
-- name: 2|Japan-East_Azure
-  network: ws
-  port: 443
-  server: vsdfee.azurewebsites.net
-  servername: vsdfee.azurewebsites.net
-  tls: true
-  type: vless
-  uuid: 6f995056-7802-4a1d-bff7-61678e626c3f
-  ws-opts:
-    headers:
-      Host: vsdfee.azurewebsites.net
-    path: /
-- cipher: chacha20-ietf-poly1305
-  name: 2|🇯🇵日本-01_解锁
-  password: ef72f9da-87ee-42d1-aced-3c1930dab000
-  port: 443
-  server: jp01.ssyhi.xyz
-  type: ss
-- name: 2|🇯🇵|JP|日本|@wxgqlfx|204
-  network: ws
-  port: 2053
-  server: 91.193.58.119
-  servername: juzibaipiao.5112233.xyz
-  tls: true
-  type: vless
-  uuid: f775978b-6e22-41a8-ae5e-5f9779e6745f
-  ws-opts:
-    path: /?ed
-- name: 2|🇯🇵|JP|日本|@wxgqlfx|218
-  network: ws
-  port: 2096
-  server: 91.193.58.98
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    path: TG@ZDYZ2
-- cipher: aes-128-gcm
-  name: 2|日本2_2
-  password: caa60051-a318-484f-80d9-39289a8df522
-  port: 443
-  server: 129.154.222.205
-  type: ss
-- cipher: aes-256-cfb
-  name: 2|🇯🇵_JP_日本_6
-  password: amazonskr05
-  port: 443
-  server: 54.199.15.70
-  type: ss
-- name: 2|🇯🇵JP_MCI
-  network: tcp
-  password: f5075d6e-c65b-4133-b4fa-301ce5ba1fa9
-  port: 443
-  server: hk1.gsjc.cfd
-  sni: 20-212-60-88.nhost.00cdn.com
-  type: trojan
-- cipher: aes-256-cfb
-  name: 2|🇯🇵JP-0749-t.me/NetFreedom0
-  password: amazonskr05
-  port: 443
-  server: 52.194.188.15
-  type: ss
-- name: 2|🇯🇵JP-NERO-0.1X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10013
-  server: xn--bck7aj2k3f.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 2|日本
-  password: ljqdalu13..
-  port: 443
-  server: 43.207.200.236
-  type: ss
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 2|RLY05JP
-  network: tcp
-  port: 7826
-  reality-opts:
-    public-key: h6gA4e9TDf55_R3CEGAmyLbVGNqLfERt5wea2DFw7Wc
-    short-id: bb44791d
-  server: 13.231.188.57
-  servername: broadcast.chat.bilibili.com
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 94495d3f-8f9f-3d89-859b-d35e2394c5e4
-- name: 2|🇯🇵JP_83
-  network: tcp
-  password: cdaacb3e-00c4-4d6f-a63c-298cfb36e113
-  port: 60006
-  server: ovozhaws.ovonice.com
-  type: trojan
-- cipher: aes-256-gcm
-  name: 2|AkamaiJapan_<
-  password: 52f6c7c1-85ef-4fcb-900d-35a4f8adb537
-  port: 443
-  server: svip.365ip.cloud
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 2|Japan+AWS
-  password: O79B48Zfo25H18OUVb3vv6
-  port: 443
-  server: 3.112.45.126
-  type: ss
-- cipher: aes-256-cfb
-  name: 2|🇯🇵JP-0750-t.me/NetFreedom0
-  password: amazonskr05
-  port: 443
-  server: 18.183.186.14
-  type: ss
-- name: 2|Vless-West-JP-Microsoft_Azure
-  network: ws
-  port: 443
-  server: gkkui8.azurewebsites.net
-  servername: gkkui8.azurewebsites.net
-  tls: true
-  type: vless
-  uuid: 6f995056-7802-4a1d-bff7-61678e626c3f
-  ws-opts:
-    headers:
-      Host: gkkui8.azurewebsites.net
-    path: /
-- name: 2|🇯🇵JP_86
-  network: tcp
-  password: cdaacb3e-00c4-4d6f-a63c-298cfb36e113
-  port: 60002
-  server: ovozhaws.ovonice.com
-  type: trojan
-- name: 2|GcoreJapan_<
-  network: tcp
-  password: 6f089c82-a8c3-4e13-b574-02f305c8f248
-  port: 12033
-  server: 120.24.66.192
-  skip-cert-verify: true
-  sni: cdn.alibaba.com
-  type: trojan
-- name: 2|CF日本移動聯通友好
-  network: ws
-  port: 2087
-  server: 47.74.42.111
-  servername: jp3.vlessx.us
-  tls: true
-  type: vless
-  uuid: a5634409-3a7c-4865-aea6-6e49b18904f7
-  ws-opts:
-    headers:
-      Host: jp3.vlessx.us
-    path: /?ed%3D2048
-- name: 2|🇯🇵JP_3c4e+@WangCai_8
-  network: ws
-  password: 3c4e10af98c30972
-  port: 3306
-  server: 139.162.111.25
-  sni: TG.WangCai2
-  type: trojan
-  ws-opts:
-    headers:
-      Host: TG.WangCai_1
-    path: /gateway/connect
-- name: 2|🇯🇵JP-XTOM-0.1X
-  network: tcp
-  password: 2af31107-e577-4995-8247-e8a57855e90b
-  port: 10014
-  server: xn--qdkj.xn--eck3aax7vbbk4l.xn--tckwe
-  sni: xn--vck0bp0g2a4h.xn--ick8a8i.xn--tckwe
-  type: trojan
-- name: 2|Japan-West_Azure
-  network: ws
-  port: 443
-  server: sebbb.azurewebsites.net
-  servername: sebbb.azurewebsites.net
-  tls: true
-  type: vless
-  uuid: 6f995056-7802-4a1d-bff7-61678e626c3f
-  ws-opts:
-    headers:
-      Host: sebbb.azurewebsites.net
-    path: /
-- cipher: aes-256-cfb
-  name: '2|日本1 #1'
-  password: amazonskr05
-  port: 443
-  server: 18.182.4.121
-  type: ss
-- cipher: aes-256-cfb
-  name: '2|日本1 #2'
-  password: amazonskr05
-  port: 443
-  server: 52.199.230.241
-  type: ss
-- name: 2|Vless-East-JP-Microsoft_Azure
-  network: ws
-  port: 443
-  server: zdfdf6.azurewebsites.net
-  servername: zdfdf6.azurewebsites.net
-  tls: true
-  type: vless
-  uuid: 6f995056-7802-4a1d-bff7-61678e626c3f
-  ws-opts:
-    headers:
-      Host: zdfdf6.azurewebsites.net
-    path: /
-- cipher: chacha20-ietf-poly1305
-  name: '2|Japan+AWS #1'
-  password: ryABFzC61LjYm9Jq47R1Au
-  port: 443
-  server: 18.182.65.136
-  type: ss
-- name: '8|🇯🇵_油管：全网最强白嫖 #165'
-  password: 52a98419-efab-4c34-b4cc-4e2a7bc37029
-  port: 28000
-  server: 203.138.98.199
-  skip-cert-verify: true
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-443
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8
-  port: 443
-  server: 45.66.134.176
-  type: ss
-- client-fingerprint: chrome
-  grpc-opts:
-    grpc-service-name: grpc
-  name: 8|日本东京|Github搜索TrojanLinks
-  network: grpc
-  port: 21896
-  reality-opts:
-    public-key: -_QH1k5i2WFYVqVGyLZ0kDeZpPF8YcXw_XxDWtSoaxs
-    short-id: 6ba85179e30d4fc2
-  server: 172.105.226.160
-  servername: m.media-amazon.com
-  tls: false
-  type: vless
-  uuid: a7cee267-e760-4621-a60f-f640e76aa3de
-  ws-opts:
-    path: grpc
-- cipher: aes-256-gcm
-  name: '8|TG:@hkaa0|日本 #6'
-  password: kDWvXYZoTBcGkC4
-  port: 443
-  server: 85.208.108.60
-  type: ss
-- name: 8|🇯🇵+JP+日本+27
-  network: ws
-  port: 443
-  server: 3.112.21.102
-  servername: juzibaipiao.5112233.xyz
-  tls: true
-  type: vless
-  uuid: f775978b-6e22-41a8-ae5e-5f9779e6745f
-  ws-opts:
-    headers:
-      Host: juzibaipiao.5112233.xyz
-    path: '%2f%3fed%3d2048'
-- cipher: chacha20-ietf-poly1305
-  name: '8|JP_@baipiao01 #6'
-  password: //YWVzLTI1Ni1nY206WTZSOXBBdHZ4eHptR0M
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-78
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo4NjFkZTdkYi01YWRhLTRiMzYtOTAzYy0wYWQ2YmEyNWQ3NWE
-  port: 443
-  server: 8980k6.ceova9qgbqsqmfdy-jp01.my777999.top
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-642
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpYczlPUlQ0ajY1YjhIcmVacmcwcA
-  port: 443
-  server: 185.160.26.91
-  type: ss
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #1'
-  network: tcp
-  port: 20667
-  reality-opts:
-    public-key: Qtz_cF0W0JXSoEJ_ZMgo7JCnavY0fPf5fkusM-p7r10
-    short-id: 6ba85179e30d4fc2
-  server: 172.104.98.150
-  servername: addons.mozilla.org
-  tls: false
-  type: vless
-  uuid: 204a5ea4-7447-4de4-81b1-fe40eb9f4a5b
-- cipher: chacha20-ietf-poly1305
-  name: 8|JP/1|Github搜索TrojanLinks
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo5OTMwMWQ1NS1hNDFmLTQ5MTktOTg2Yi0xNDM1OTk2NTMzYWE
-  port: 443
-  server: 120.238.122.207
-  type: ss
-- name: 8|日本_5
-  network: ws
-  port: 443
-  server: 43.153.181.217
-  servername: jp033.ylks01.eu.org
-  tls: true
-  type: vless
-  uuid: a13df940-020c-465f-bc89-ee5279b5cd6a
-  ws-opts:
-    path: /proxyip=proxyip.jp.fxxk.dedyn.io
-- cipher: aes-256-gcm
-  name: '8|TG:@hkaa0|日本 #8'
-  password: Y6R9pAtvxxzmGC
-  port: 443
-  server: 85.208.108.60
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '8|Japan Relay #1'
-  password: "}m\\[9\x7FkN>}5q"
-  port: 443
-  server: 156.238.18.166
-  type: ss
-- cipher: aes-256-gcm
-  name: '8|未命名 #9485'
-  password: pKEW8JPByTVTLtM
-  port: 443
-  server: 85.208.108.94
-  type: ss
-- cipher: aes-256-gcm
-  name: '8|JP_@baipiao01 #1'
-  password: zDNVedRFPQexG9v
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- name: 8|🇯🇵 日本 012
-  password: 5d651d8c-d5b3-418b-a3ea-55171af5b726
-  port: 53638
-  server: jp7.lianpi.xyz
-  skip-cert-verify: true
-  sni: jp7.lianpi.xyz
-  type: trojan
-- name: 8|🇯🇵 日本 36
-  obfs: salamander
-  obfs-password: salamander
-  password: 5132d29b-e76d-4c5b-97a2-25d9ed8bd2b6
-  port: 35300
-  server: flyrb.flylink.cyou
-  skip-cert-verify: true
-  sni: flyxg.flylink.cyou
-  tls: true
-  type: hysteria2
-- cipher: chacha20-ietf-poly1305
-  name: '8|>>@free4allVPN::JP #1'
-  password: //YWVzLTEyOC1nY206c2hhZG93c29ja3M%3D
-  port: 443
-  server: 149.22.87.241
-  type: ss
-- cipher: aes-256-gcm
-  name: 8|:日本-ss-85.208.108.21:443-可用-中转...
-  password: pKEW8JPByTVTLtM
-  port: 443
-  server: 85.208.108.21
-  type: ss
-- name: 8|翻墙会_日本3_自费：电报频道：https://t.me/c...
-  network: tcp
-  port: 443
-  server: milkgogo.ga
-  tls: true
-  type: vless
-  uuid: a0be9930-89f1-11eb-96a5-560003426a1d
-- name: '8|未命名 #18323'
-  password: d48629f1-ac71-45ef-b325-37d73da258e8
-  port: 443
-  server: gmegme.ml
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: '8|未命名 #10085'
-  password: //YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU
-  port: 443
-  server: 43.207.117.53
-  type: ss
-- cipher: aes-256-cfb
-  name: '8|未命名 #16514'
-  password: amazonskr05
-  port: 443
-  server: 43.207.66.114
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: '8|Japan Datacamp #3'
-  password: //YWVzLTEyOC1nY206c2hhZG93c29ja3M%3D
-  port: 443
-  server: 149.22.87.204
-  type: ss
-- cipher: aes-128-gcm
-  name: 8|🇯🇵JP-154.47.20.240-0742
-  password: shadowsocks
-  port: 443
-  server: 154.47.20.240
-  type: ss
-- name: 8|翻墙会_日本6_自费：电报频道：https://t.me/c...
-  network: tcp
-  port: 443
-  server: chinahumanr.ml
-  tls: true
-  type: vless
-  uuid: b9ff54be-8881-11eb-a0b1-5600034197c4
-- name: 8|Relay_🇯🇵JP-🇯🇵JP_53
-  password: ce433528-39fa-4711-bc0d-25a5b1579574
-  port: 8443
-  server: jp-03.licom.ml
-  type: trojan
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-7056
-  network: tcp
-  port: 36574
-  reality-opts:
-    public-key: sDG-KQk1BF7V83-xnmrWDouXxpPd_ZSxKcHrJJzbols
-    short-id: 32a3650d
-  server: aws-link13.liangxin1.xyz
-  servername: www.apple.com.cn
-  tls: false
-  type: vless
-  uuid: 2a9b85bd-27cc-4e3b-b77d-54dbe5bc23af
-- name: 8|4Jadi-3800
-  network: tcp
-  password: 7fec5d9d-4a06-377f-9fc3-6c1fef6a7f4b
-  port: 20139
-  server: 111.47.212.170
-  sni: z139.hongkongnode.top
-  type: trojan
-- name: 8|日本【机场推荐：https://a0a.xyz/】39
-  network: ws
-  password: trojan
-  port: 443
-  server: 91.193.58.0
-  sni: wahaha.yingyangkuaixian.dpdns.org
-  type: trojan
-  ws-opts:
-    headers:
-      Host: wahaha.yingyangkuaixian.dpdns.org
-    path: '%2F'
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-57
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTo3MDc0NzUxNC1mYjE0LTRmMzEtODM5MC1lMWYwNDUzZWZmNmQ
-  port: 443
-  server: jp2.mhw7e2.online
-  type: ss
-- name: 8|[直连]日本 01 1x
-  network: tcp
-  password: 3e820eb0-3f06-4337-a4fc-0c3c7c0d3b4d
-  port: 443
-  server: aeadjpaes01.xn--z4q48lcvp.com
-  sni: aeadjpaes01.xn--z4q48lcvp.com
-  type: trojan
-- cipher: aes-256-gcm
-  name: '8|TG:@hkaa0|日本 #3'
-  password: fuck_gfw
-  port: 443
-  server: moslb-x-aws-jptk.softether.net
-  type: ss
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #2'
-  network: tcp
-  port: 17301
-  reality-opts:
-    public-key: 1PRIrJISN7uWjIUn2vTIXSJ5JjojwCuESSEvbaUTOTg
-    short-id: 6ba85179e30d4fc2
-  server: 139.162.80.169
-  servername: itunes.apple.com
-  tls: false
-  type: vless
-  uuid: 9c1f844a-c4b4-44ad-8e00-b59f28d01e18
-- name: 8|翻墙会_日本11_自费，电报频道：https://t.me/...
-  network: tcp
-  port: 443
-  server: chinahr.cf
-  tls: true
-  type: vless
-  uuid: 125fbb2e-8889-11eb-bf09-560003419cfa
-- name: 8|🇯🇵 日本 17
-  obfs: salamander
-  obfs-password: salamander
-  password: f1be5278-9d77-472a-8d8e-324418370271
-  port: 35300
-  server: flyrb.flylink.cyou
-  skip-cert-verify: true
-  sni: flyxg.flylink.cyou
-  tls: true
-  type: hysteria2
-- cipher: chacha20-ietf-poly1305
-  name: 8|4Jadi-352
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8
-  port: 443
-  server: 193.38.139.204
-  type: ss
-- cipher: aes-256-gcm
-  name: 8|4Jadi-1773
-  password: FoOiGlkAA9yPEGP
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- name: 8|🇯🇵+JP+日本+66
-  network: ws
-  port: 443
-  server: 18.183.158.211
-  servername: juzibaipiao.5112233.xyz
-  tls: true
-  type: vless
-  uuid: f775978b-6e22-41a8-ae5e-5f9779e6745f
-  ws-opts:
-    headers:
-      Host: juzibaipiao.5112233.xyz
-    path: '%2f%3fed%3d2048'
-- name: '8|🇯🇵日本6|(youtube阿伟科技) #1'
-  password: a3278882-3614-39cf-a3d6-faefa8c910ab
-  port: 18432
-  server: hn.xiaohouzi.club
-  skip-cert-verify: true
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: '8|JP_@baipiao01 #3'
-  password: //YWVzLTI1Ni1nY206WEtGS2wyclVMaklwNzQ
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- cipher: aes-256-gcm
-  name: 8|Pool_NL_287
-  password: RexnBgU7EV5ADxG
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- name: '8|未命名 #8 #1'
-  password: b866d83a-d301-4270-b699-40f322bf52fb
-  port: 443
-  server: 154.85.19.63
-  skip-cert-verify: true
-  sni: www.bing.com
-  tls: true
-  type: hysteria2
-- name: 8|翻墙会_日本1_自费：电报频道：https://t.me/c...
-  network: tcp
-  port: 443
-  server: gmegme.tk
-  tls: true
-  type: vless
-  uuid: ad59ccb6-89f4-11eb-80e7-560003426b9a
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #3'
-  network: tcp
-  port: 443
-  server: 172.104.120.67
-  servername: jp-s51.n2-fatvpn.top
-  tls: true
-  type: vless
-  uuid: eccf9ab0-b49e-4929-bc6a-e0aa30707c84
-  ws-opts:
-    headers:
-      Host: jp-s51.n2-fatvpn.top
-- name: 8|日本_8
-  network: ws
-  port: 34307
-  server: 150.230.107.234
-  servername: v033.ylkszy.eu.org
-  tls: true
-  type: vless
-  uuid: c82f8880-bdd8-4a35-b8e7-ad5aa880f7d0
-  ws-opts:
-    path: /?ed=2560
-- name: 8|🇯🇵 日本 004
-  password: cfd8d443-a9de-4966-8d2f-7ad5b994f86a
-  port: 27528
-  server: gzdx1.170203.xyz
-  skip-cert-verify: true
-  sni: usmax040.170203.xyz
-  type: trojan
-- cipher: aes-128-gcm
-  name: 8|4Jadi-1006
-  password: 406e4ea6-8443-45e2-a397-494365ca1bf8
-  port: 443
-  server: bit-jp.03ezhg0qsa.download
-  type: ss
-- cipher: aes-256-gcm
-  name: '8|JP_@baipiao01 #5'
-  password: cdBIDV42DCwnfIN
-  port: 443
-  server: 85.208.108.93
-  type: ss
-- cipher: aes-256-gcm
-  name: '8|TG:@hkaa0|日本 #5'
-  password: KixLvKzwjekG00rm
-  port: 443
-  server: 85.208.108.60
-  type: ss
-- name: 8|🇸🇬 V0 JPN-000T | 0.05x比率 | 红了就...
-  password: 5baea97b-7a9d-39ba-bd0f-0b13025de750
-  port: 443
-  server: 43.206.140.200
-  skip-cert-verify: true
-  sni: d1--cn-gotcha05.bilivideo.com
-  type: trojan
-- name: 8|日本_1
-  network: ws
-  port: 80
-  server: 43.153.181.217
-  servername: hk033.ylks.link
-  tls: false
-  type: vless
-  uuid: a13df940-020c-465f-bc89-ee5279b5cd6a
-  ws-opts:
-    path: /blue
-- name: 8|🇯🇵 日本 011
-  password: 6fab5b8e-2b5a-4ecd-82cb-fa3d1afb9ca7
-  port: 8443
-  server: jp1.535eb521-9fe0-4478-b090-2a5cee4bb04a.191981000.nbvpn.org
-  skip-cert-verify: true
-  sni: 13-231-155-134.nhost.00cdn.com
-  type: trojan
-- name: 8|[量子]日本 02 1x
-  network: tcp
-  password: 3e820eb0-3f06-4337-a4fc-0c3c7c0d3b4d
-  port: 10443
-  server: jp-45s-s65x-595adf.jumaonet.com
-  sni: jp-45s-s65x-595adf.jumaonet.com
-  type: trojan
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -JP-Tokyo1
-  network: ws
-  port: 2000
-  server: 45.66.128.216
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- client-fingerprint: random
-  name: 8|TG@ZDYZ2 -JP-Tokyo5
-  network: ws
-  port: 20855
-  server: 140.238.26.92
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: TG%40ZDYZ2
-- cipher: chacha20-ietf-poly1305
-  name: 8|🇯🇵 日本-ss-193.38.139.203807-被墙-...
-  password: //Y2hhY2hhMjAtaWV0Zi1wb2x5MTMwNTpHIXlCd1BXSDNWYW8
-  port: 443
-  server: 193.38.139.203
-  type: ss
-- name: 8|🇯🇵日本6|(youtube阿伟科技)
-  password: 7812e7af-a2de-49a1-a034-8bc23f3f3b62
-  port: 443
-  server: jp1.v2pn.live
-  skip-cert-verify: true
-  type: trojan
-- name: 8|🇯🇵+JP+日本+56
-  network: ws
-  port: 9002
-  server: 18.181.252.44
-  servername: cfed.tgzdyz2.top
-  tls: true
-  type: vless
-  uuid: 2cd6ed0f-636e-4e6c-9449-5a263d7a0fa5
-  ws-opts:
-    headers:
-      Host: cfed.tgzdyz2.top
-    path: tg%40zdyz2
-- name: 8|🇯🇵日本7|(youtube阿伟科技)
-  password: a3278882-3614-39cf-a3d6-faefa8c910ab
-  port: 48431
-  server: hn.xiaohouzi.club
-  skip-cert-verify: true
-  type: trojan
-- name: '8|翻墙会_日本3_自费：电报频道：https://t.me/c... #1'
-  password: 82a95008-f390-4f2e-a6ae-68c9e039f244
-  port: 443
-  server: milkgogo.ga
-  type: trojan
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #4'
-  network: tcp
-  port: 443
-  server: 172.105.240.143
-  servername: jp-s42.fatvpn.pro
-  tls: true
-  type: vless
-  uuid: 1f7970db-d89c-438e-992f-8ce9378d23a2
-  ws-opts:
-    headers:
-      Host: jp-s42.fatvpn.pro
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #5'
-  network: tcp
-  port: 13156
-  reality-opts:
-    public-key: QwT_RYauStc4iP7Q30Ebv-rSmZHTsHNqUP_LdXMtekA
-    short-id: 6ba85179e30d4fc2
-  server: 172.105.226.69
-  servername: www.swift.com
-  tls: false
-  type: vless
-  uuid: 6b8ecf97-5cf6-46f5-8cbf-6d9fe447ddce
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-8249
-  network: tcp
-  port: 17278
-  reality-opts:
-    public-key: qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY
-    short-id: ''
-  server: shenzhou05.mysynology.net
-  servername: www.yahoo.com
-  tls: false
-  type: vless
-  uuid: 459b4a80-bd61-4ecd-a26b-e9c1809d9e45
-- cipher: chacha20-ietf-poly1305
-  name: '8|未命名 #17268'
-  password: //YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU
-  port: 443
-  server: 52.197.66.243
-  type: ss
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: 8|4Jadi-9614
-  network: tcp
-  port: 443
-  reality-opts:
-    public-key: 7yeqj7p-b9BqubE629PrgvcYf4MBV593Ssd7v7l8EBg
-    short-id: 83a5b6cd
-  server: 154.85.18.233
-  servername: www.apple.com.cn
-  tls: false
-  type: vless
-  uuid: 5d110f18-5a37-4db3-8cf6-f0bced38a1ae
-- name: '8|翻墙会_日本1_自费：电报频道：https://t.me/c... #1'
-  password: d73f5352-6cda-4cfb-8b7c-2dd8e44c4a84
-  port: 443
-  server: gmegme.tk
-  type: trojan
-- cipher: aes-256-cfb
-  name: 8|日本_1228007
-  obfs: plain
-  obfs-param: c306116952.jd.hk
-  password: vyunme
-  port: '443'
-  protocol: auth_aes128_sha1
-  protocol-param: 16952:9bik8I
-  server: hk5.vfun.icu
-  type: ssr
-- name: '8|翻墙会_日本6_自费：电报频道：https://t.me/c... #1'
-  password: d05ccfe1-577e-426b-89d2-2254b3965c03
-  port: 443
-  server: chinahumanr.ml
-  type: trojan
-- name: 8|日本_4
-  network: ws
-  port: 41381
-  server: 150.230.107.234
-  servername: v033.ylkszy.eu.org
-  tls: true
-  type: vless
-  uuid: c82f8880-bdd8-4a35-b8e7-ad5aa880f7d0
-  ws-opts:
-    path: /?proxyip=proxyip.jp.fxxk.dedyn.io
-- name: 8|🇯🇵日本8|(youtube阿伟科技)
-  password: a3278882-3614-39cf-a3d6-faefa8c910ab
-  port: 18433
-  server: hn.xiaohouzi.club
-  skip-cert-verify: true
-  type: trojan
-- name: '8|TG:@hkaa0|日本 #10'
-  network: tcp
-  password: 6ea0337d-ee2e-b495-0c0e-48db8524b39c
-  port: 443
-  server: awsjp.blowm1k.club
-  skip-cert-verify: true
-  sni: awsjp.blowm1k.club
-  type: trojan
-- client-fingerprint: chrome
-  flow: xtls-rprx-vision
-  name: '8|日本东京|Github搜索TrojanLinks #6'
-  network: tcp
-  port: 14344
-  reality-opts:
-    public-key: ngiarSGd3PLPAdunYyMyfKocSQ_xBT_GYPyFAH3YWSc
-    short-id: 6ba85179e30d4fc2
-  server: 139.162.122.247
-  servername: itunes.apple.com
-  tls: false
-  type: vless
-  uuid: c5a1e9de-3c5c-4709-a321-e60a69bb8ca3
-- name: 8|日本NTT-1号 | 解锁流媒体
-  network: tcp
-  password: 5ceb716a-9a0c-493a-9a0b-a05e08a1b1fc
-  port: 28443
-  server: 202.8.9.67
-  type: trojan
-- name: '8|翻墙会_日本5_自费：电报频道：https://t.me/c... #1'
-  password: 0d1ae67e-a512-4dfc-a914-4d8eeac81b7f
-  port: 443
-  server: gmegme.ml
-  type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: 8|Japan Akamai
-  password: //YWVzLTI1Ni1nY206dFZQVmxVZ1FoajlpN3ZIT0hpajNkYUNKRVVaeGN0RVE5eG9qMFdUNUE4dz0%3D
-  port: 443
-  server: 139.162.106.142
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 8|🇯🇵 日本 010
-  password: //YWVzLTI1Ni1nY206ZnVja19nZnc
-  port: 443
-  server: moslb-x-aws-jptk.softether.net
-  type: ss
 - alpn:
   - h3
   client-fingerprint: random
@@ -4249,6 +87,19 @@ proxies:
     headers:
       Host: jp.laoyoutiao.link
     path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
+- client-fingerprint: randomized
+  name: 0|(KR)Korea Telecom-[Tls]
+  network: ws
+  port: 443
+  server: zoomgov.vipren.biz.id
+  servername: zoomgov.vipren.biz.id
+  tls: true
+  type: vless
+  uuid: 0078f145-3aa5-4b4a-9774-166d4c378ee8
+  ws-opts:
+    headers:
+      Host: zoomgov.vipren.biz.id
+    path: /211.216.189.208%3D26538
 - client-fingerprint: random
   name: '0,6,7|老油条-KR-韩国 #3'
   network: ws
@@ -4298,6 +149,19 @@ proxies:
     headers:
       Host: jp.laoyoutiao.link
     path: Telegram@WangCai2/?ed%3D2560
+- client-fingerprint: randomized
+  name: 0|(KR)Oracle Corporation-[NTls]
+  network: ws
+  port: 80
+  server: zoomgov.vipren.biz.id
+  servername: zoomgov.vipren.biz.id
+  tls: false
+  type: vless
+  uuid: 00e708cb-b653-4363-a4e0-034016260320
+  ws-opts:
+    headers:
+      Host: zoomgov.vipren.biz.id
+    path: /129.154.223.89%3D15800
 - alpn:
   - h3
   client-fingerprint: random
@@ -4589,6 +453,45 @@ proxies:
     headers:
       Host: cache.netflix.com.yaya.web.id
     path: '%2Fkr'
+- client-fingerprint: randomized
+  name: 10|Oracle+Corporation+(KR)
+  network: ws
+  port: 80
+  server: app-stg.gopay.co.id.servpn.my.id
+  servername: app-stg.gopay.co.id.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 7b722b77-699e-401a-83b4-cab817cb403c
+  ws-opts:
+    headers:
+      Host: app-stg.gopay.co.id.servpn.my.id
+    path: '%2Fkr1'
+- client-fingerprint: randomized
+  name: 10|Korea+Telecom+(KR)
+  network: ws
+  port: 443
+  server: servpn.my.id
+  servername: servpn.my.id
+  tls: true
+  type: vless
+  uuid: 5bafa139-7940-42eb-b0b6-382125875bfc
+  ws-opts:
+    headers:
+      Host: servpn.my.id
+    path: '%2Fkr2'
+- client-fingerprint: randomized
+  name: 10|(KR) Oracle Cloud🇰🇷
+  network: ws
+  port: 80
+  server: masukan.bug.ws
+  servername: support.zoom.us.wilcard.cyantiknya.my.id
+  tls: false
+  type: vless
+  uuid: c28b1592-1d3b-4a11-8952-eaf259b7e477
+  ws-opts:
+    headers:
+      Host: support.zoom.us.wilcard.cyantiknya.my.id
+    path: '%2Fvl%3D38.207.172.235%3D8003'
 - name: '10|Microsoft+Corporation+(KR) #2'
   network: ws
   port: 443
@@ -4613,6 +516,19 @@ proxies:
     headers:
       Host: ava.game.naver.com.yaya.web.id
     path: '%2Fkr'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #1'
+  network: ws
+  port: 443
+  server: app-stg.gopay.co.id.servpn.my.id
+  servername: app-stg.gopay.co.id.servpn.my.id
+  tls: true
+  type: vless
+  uuid: 9d8deaa2-94db-4815-aa89-6912dae283a9
+  ws-opts:
+    headers:
+      Host: app-stg.gopay.co.id.servpn.my.id
+    path: '%2Fkr1'
 - name: '10|Microsoft+Corporation+(KR) #4'
   network: ws
   port: 80
@@ -4673,6 +589,84 @@ proxies:
     headers:
       Host: yaya.web.id
     path: '%2Fkr'
+- client-fingerprint: randomized
+  name: '10|(KR) Oracle Cloud🇰🇷 #1'
+  network: ws
+  port: 443
+  server: masukan.bug.ws
+  servername: support.zoom.us.wilcard.cyantiknya.my.id
+  tls: true
+  type: vless
+  uuid: 6fd8e258-772f-4eb4-b3f5-7fef4088c9de
+  ws-opts:
+    headers:
+      Host: support.zoom.us.wilcard.cyantiknya.my.id
+    path: '%2Fvl%3D38.207.172.235%3D8003'
+- client-fingerprint: randomized
+  name: '10|Korea+Telecom+(KR) #2'
+  network: ws
+  port: 80
+  server: bakrie.ac.id.servpn.my.id
+  servername: bakrie.ac.id.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 838b2457-f3da-404a-9529-bed61d9b34be
+  ws-opts:
+    headers:
+      Host: bakrie.ac.id.servpn.my.id
+    path: '%2Fkr2'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #2'
+  network: ws
+  port: 443
+  server: blog.ruangguru.com.servpn.my.id
+  servername: blog.ruangguru.com.servpn.my.id
+  tls: true
+  type: vless
+  uuid: 0ae0812f-5a4b-4fbc-9332-1b6c4cc911c8
+  ws-opts:
+    headers:
+      Host: blog.ruangguru.com.servpn.my.id
+    path: '%2Fkr1'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #3'
+  network: ws
+  port: 443
+  server: bakrie.ac.id.servpn.my.id
+  servername: bakrie.ac.id.servpn.my.id
+  tls: true
+  type: vless
+  uuid: 877ae593-db9b-4ddb-9e78-19bb835d1d07
+  ws-opts:
+    headers:
+      Host: bakrie.ac.id.servpn.my.id
+    path: '%2Fkr1'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #4'
+  network: ws
+  port: 80
+  server: blog.ruangguru.com.servpn.my.id
+  servername: blog.ruangguru.com.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 7a1d403c-b8d2-4010-bdbe-237ecee47476
+  ws-opts:
+    headers:
+      Host: blog.ruangguru.com.servpn.my.id
+    path: '%2Fkr1'
+- client-fingerprint: randomized
+  name: '10|Korea+Telecom+(KR) #4'
+  network: ws
+  port: 80
+  server: ava.game.naver.com.servpn.my.id
+  servername: ava.game.naver.com.servpn.my.id
+  tls: false
+  type: vless
+  uuid: 4d5a3447-c1a1-4a65-a3c0-b42f97b740f0
+  ws-opts:
+    headers:
+      Host: ava.game.naver.com.servpn.my.id
+    path: '%2Fkr2'
 - name: '10|Microsoft+Corporation+(KR) #10'
   network: ws
   port: 80
@@ -4709,6 +703,19 @@ proxies:
     headers:
       Host: blog.webex.com.yaya.web.id
     path: '%2Fkr'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #5'
+  network: ws
+  port: 80
+  server: servpn.my.id
+  servername: servpn.my.id
+  tls: false
+  type: vless
+  uuid: c7da92bb-23d3-42cb-a255-90de6fc09ab3
+  ws-opts:
+    headers:
+      Host: servpn.my.id
+    path: '%2Fkr1'
 - name: '10|Microsoft+Corporation+(KR) #13'
   network: ws
   port: 443
@@ -4746,6 +753,19 @@ proxies:
     headers:
       Host: v2-3h5.pages.dev
     path: /?ed=2560security=tls
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(KR) #7'
+  network: ws
+  port: 443
+  server: ava.game.naver.com.servpn.my.id
+  servername: ava.game.naver.com.servpn.my.id
+  tls: true
+  type: vless
+  uuid: d225ec8e-3a26-4149-a02e-8f4f76ac9568
+  ws-opts:
+    headers:
+      Host: ava.game.naver.com.servpn.my.id
+    path: '%2Fkr1'
 - name: '10|Microsoft+Corporation+(KR) #15'
   network: ws
   port: 443
@@ -5418,6 +1438,18 @@ proxies:
   uuid: bf151299-9952-44a8-a08b-b9d119782937
   ws-opts:
     path: grpc
+- name: 8|🇰🇷+KR+韩国+44
+  network: ws
+  port: 18888
+  server: 112.168.91.60
+  servername: juzibaipiao.5112233.xyz
+  tls: true
+  type: vless
+  uuid: f775978b-6e22-41a8-ae5e-5f9779e6745f
+  ws-opts:
+    headers:
+      Host: juzibaipiao.5112233.xyz
+    path: '%2f%3fed%3d2048'
 - alpn:
   - h2
   - http/1.1
@@ -6110,6 +2142,20 @@ proxies:
     headers:
       Host: ava.game.naver.com.cillnet.web.id
     path: '%2Fsgmegalayer'
+- client-fingerprint: random
+  name: '10|老油条-新加坡-cfcdn1 #1'
+  network: ws
+  port: 443
+  server: cfcdn1.langmanshanxi.top
+  servername: sg.laoyoutiao.link
+  skip-cert-verify: true
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|Ipxo+LLC+(SG) #1'
   network: ws
@@ -6240,6 +2286,19 @@ proxies:
     headers:
       Host: ava.game.naver.com.cillnet.web.id
     path: '%2Fsgamazon'
+- client-fingerprint: randomized
+  name: 10|M247+Europe+SRL+(SG)
+  network: ws
+  port: 443
+  server: support.zoom.us.sgjp.asolole.biz.id
+  servername: support.zoom.us.sgjp.asolole.biz.id
+  tls: true
+  type: vless
+  uuid: 4ef657df-cdf0-496f-a3c9-a4fddc6f22ac
+  ws-opts:
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+    path: '%2Fsg2'
 - client-fingerprint: randomized
   name: '10|Green+Floid+LLC+(SG) #2'
   network: ws
@@ -6488,6 +2547,20 @@ proxies:
     headers:
       Host: quiz.int.vidio.com.cillnet.web.id
     path: '%2Fsgoracle'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cdn2
+  network: ws
+  port: 443
+  server: cdn2.laoyoutiao.link
+  servername: sg.laoyoutiao.link
+  skip-cert-verify: true
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|HONG+KONG+Megalayer+Technology... #4'
   network: ws
@@ -6501,6 +2574,19 @@ proxies:
     headers:
       Host: cache.netflix.com.cillnet.my.id
     path: '%2Fsgmegalayer'
+- client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(SG) #18'
+  network: ws
+  port: 80
+  server: support.zoom.us.sgjp.asolole.biz.id
+  servername: support.zoom.us.sgjp.asolole.biz.id
+  tls: false
+  type: vless
+  uuid: 2f841aa7-049c-499e-be03-01fe8b529c08
+  ws-opts:
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+    path: '%2Fsg3'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #4'
   network: ws
@@ -6528,6 +2614,19 @@ proxies:
       Host: support.zoom.us.zee.upigg.my.id
     path: '%2Fsgdo'
 - client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(SG) #23'
+  network: ws
+  port: 443
+  server: sgjp.asolole.biz.id
+  servername: sgjp.asolole.biz.id
+  tls: true
+  type: vless
+  uuid: a48f8eda-e3b5-489d-bb09-175973863162
+  ws-opts:
+    headers:
+      Host: sgjp.asolole.biz.id
+    path: '%2Fsg3'
+- client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #5'
   network: ws
   port: 80
@@ -6540,6 +2639,32 @@ proxies:
       Host: support.zoom.us.lufeng.pw
     path: '%2Fsg1'
 - client-fingerprint: randomized
+  name: '10|Oracle+Corporation+(SG) #25'
+  network: ws
+  port: 80
+  server: sgjp.asolole.biz.id
+  servername: sgjp.asolole.biz.id
+  tls: false
+  type: vless
+  uuid: c35b950b-6ca8-4654-9941-cfd29e2ce6bf
+  ws-opts:
+    headers:
+      Host: sgjp.asolole.biz.id
+    path: '%2Fsg3'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cdn
+  network: ws
+  port: 443
+  server: cdn.laoyoutiao.link
+  servername: sg.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
+- client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #6'
   network: ws
   port: 80
@@ -6551,6 +2676,20 @@ proxies:
     headers:
       Host: investors.spotify.com.lufeng.pw
     path: '%2Fsg1'
+- client-fingerprint: random
+  name: '10|老油条-新加坡-cfcdns #1'
+  network: ws
+  port: 443
+  server: cfcdns.langmanshanxi.top
+  servername: sg.laoyoutiao.link
+  skip-cert-verify: true
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #7'
   network: ws
@@ -6569,6 +2708,19 @@ proxies:
   port: 443
   server: 188.166.220.70
   type: ss
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cdn1
+  network: ws
+  port: 443
+  server: cdn1.laoyoutiao.link
+  servername: sg.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #8'
   network: ws
@@ -6582,6 +2734,19 @@ proxies:
     headers:
       Host: svr.lufeng.pw
     path: '%2Fsg1'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cfcdn2
+  network: ws
+  port: 443
+  server: cfcdn2.langmanshanxi.top
+  servername: sg.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #9'
   network: ws
@@ -6620,6 +2785,19 @@ proxies:
     headers:
       Host: ip.langmanshanxi.top
     path: '%2FTelegram%40WangCai2%2F%3Fed%3D2560'
+- client-fingerprint: random
+  name: 10|老油条-新加坡-cfcdn3
+  network: ws
+  port: 443
+  server: cfcdn3.langmanshanxi.top
+  servername: sg.laoyoutiao.link
+  tls: true
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: sg.laoyoutiao.link
+    path: '%2F%3Fed%3D2560'
 - client-fingerprint: randomized
   name: '10|Microsoft+Corporation+(SG) #11'
   network: ws
@@ -10100,1162 +6278,773 @@ proxy-groups:
   interval: 300
   name: 自动选择
   proxies: &id001
-  - 1|🇻🇳 VN 156
-  - 1|🇻🇳 VN 227
-  - '8|TG:@hkaa0|日本 #10'
-  - '10|Aceville+Pte.ltd+(SG) #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|7 #3'
-  - '1,2|🇻🇳 VN 3 #1'
-  - 0|Aceville+Pte.ltd+(SG)
-  - 1|🇻🇳 VN 85
-  - '1,2|🇻🇳 VN 11 #1'
-  - 1|🇻🇳 VN 93
-  - 8|SG_13.250.107.81_03152023b7fd-...
-  - '2|Singapore+AWS #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|15 #3'
-  - 4|M247+Europe+SRL+(JP)")'><i cla...
-  - '0|KR韩国(mibei77.com 米贝节点分享) #4'
-  - 1|🇻🇳 VN 270
-  - 1|🇻🇳 VN 150
-  - 0|SG新加坡(mibei77.com 米贝节点分享)
-  - '10|Microsoft+Corporation+(KR) #4'
-  - '10|JP日本(mibei77.com 米贝节点分享) #48'
-  - 8|韩国_11
-  - 1|🇻🇳 VN 229
-  - 1|🇻🇳 VN 195
-  - '10|(JP) Nearoute🇯🇵 #1'
-  - 2,8|4Jadi-8083
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|29 #3'
-  - '8|未命名 #10940'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|19 #3'
-  - 8|日本_1
-  - '10|Akamai+Technologies,+Inc.+(SG) #10'
-  - '1,8|🇭🇰 HK | 🟢 | ss | @ip_cf_config... #1'
-  - '10|JP日本(mibei77.com 米贝节点分享) #44'
-  - '1,2|🇻🇳 VN 18 #1'
-  - '10|JP日本(mibei77.com 米贝节点分享) #24'
-  - 5|Digitalocean,+LLC+(SG)
-  - 8|🇯🇵 日本 010
-  - 2|🇯🇵JP-0750-t.me/NetFreedom0
-  - 8|TG@ZDYZ2 -SG-Singapore5
-  - 0|Oracle+Corporation+(SG)
-  - 8|新加坡_0720008
-  - '0|KR韩国(mibei77.com 米贝节点分享) #7'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #36'
-  - 1|🇻🇳 VN 212
-  - 8|SG|Github搜索TrojanLinks
-  - '0,6,7|老油条-HK-香港 #3'
-  - '0|HK #1'
-  - 2|Japan-East_Azure
-  - 8|🇰🇷 韩国 30
-  - '0|JP日本(mibei77.com 米贝节点分享) #8'
-  - 0|🇰🇷_KR_韩国
-  - 1|🇻🇳 VN 178
-  - '10|JP日本(mibei77.com 米贝节点分享) #78'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|9 #3'
-  - 10|(JP) Nearoute🇯🇵
-  - 2,5,8|🇯🇵JP-185.172.113.182-0796
-  - 5|TG@ZDYZ2 -TW1
-  - '10|Microsoft+Corporation+(KR) #2'
-  - 1|🇻🇳 VN 68
-  - 11|🇸🇬新加坡
-  - '1,2|🇻🇳 VN 6 #1'
-  - 1|🇻🇳 VN 55
-  - '6,8|Singapore Digital Ocean #2'
-  - 8|🇸🇬SG-103.172.116.79-0819
-  - 1|🇻🇳 VN 161
-  - 1|🇻🇳 VN 291
-  - 1|🇻🇳 VN 220
-  - '1,2|🇻🇳 VN 12 #1'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|78 #3'
-  - 8|TG@ZDYZ2 -JP-Tokyo1
-  - '8|Japan Datacamp #3'
-  - 5|TG@ZDYZ2 -JP-Tokyo2
-  - 1|🇻🇳 VN 29
-  - '0|JP日本(mibei77.com 米贝节点分享) #16'
-  - '10|JP日本(mibei77.com 米贝节点分享) #75'
-  - 8|日本_5
-  - 8|🇸🇬 Singapore 10 TG@nodpai
-  - 1|🇻🇳 VN 247
-  - '0|JP日本(mibei77.com 米贝节点分享) #6'
-  - 1|🇻🇳 VN 163
-  - '8|香港(yudou123.top 玉豆免费节点) #28'
-  - '1,8,9,10|🇻🇳 越南|@ripaojiedian #1'
-  - '10|HONG+KONG+Megalayer+Technology... #4'
-  - 1,8|4Jadi-1203
-  - 8|🇭🇰 香港 26
-  - 6|Singapore Relay
-  - "8|TG频道:@hkaa0▓韩国\r_2"
-  - 1|🇻🇳 VN 269
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|21 #3'
-  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #4'
-  - 8|🇭🇰+HK+香港+62
-  - '8|🇯🇵日本6|(youtube阿伟科技) #1'
-  - 8|VN|(胖虎TG频道@gitbig) 4
-  - 4|香港01','香港01')">
-  - '10|JP日本(mibei77.com 米贝节点分享) #23'
-  - 1|🇻🇳 VN 194
-  - '10|M247+Europe+SRL+(JP) #2'
-  - 1|🇻🇳 VN 25
-  - '8|Japan Relay #1'
-  - 1|🇻🇳 VN 216
-  - 8|UK/1|Github搜索TrojanLinks
-  - 1|🇻🇳 VN 232
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|46 #3'
-  - 1|🇻🇳 VN 75
-  - '8|SVNTEAN #2'
-  - '0|JP日本(mibei77.com 米贝节点分享) #12'
-  - '10|Aceville+Pte.ltd+(SG) #8'
-  - 8|4Jadi-4595
-  - '8|韩国|@ripaojiedian #4'
-  - 1|🇻🇳 VN 36
-  - 8|🇸🇬SG-103.172.116.79-0818
-  - '8,10|香港(yudou123.top 玉豆免费节点) #15'
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|307
-  - '0,6,7|HK #21'
-  - 1|🇻🇳 VN 312
-  - 1|🇻🇳 VN 145
-  - 1|🇻🇳 VN 302
-  - '8,10|香港(yudou123.top 玉豆免费节点) #5'
-  - '10|Microsoft+Corporation+(KR) #6'
-  - '0|Amazon.com,+Inc.+(SG) #2'
-  - 2|🇸🇬新加坡-04_解锁
-  - '8|日本东京|Github搜索TrojanLinks #1'
-  - 8|台湾 M1 | 流媒体 | 0x
-  - '1,2|🇻🇳 VN 33 #1'
-  - 8|SG_124
-  - 8|4Jadi-1773
-  - 1|🇻🇳 VN 91
-  - 1|🇻🇳 VN 149
-  - '10|Ipxo+LLC+(SG) #2'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|26 #3'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #13'
-  - 5|🇰🇷+KR+韩国+39
-  - '1,2|🇻🇳 VN 14 #1'
-  - 1|🇻🇳 VN 267
-  - 8|🇰🇷KR-218.237.185.230-0326
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - 1|🇻🇳 VN 82
-  - 11|🇭🇰HK_52 @ipV2rayNG
-  - '8|Hong Kong|Github搜索TrojanLinks #2'
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - 2|香港Hysteria2
-  - 2|AZ-KoreaCentral
-  - 1|🇻🇳 VN 202
-  - '0,6,7|KR #18'
-  - '0,6,7|HK #22'
-  - '0,6,7|KR #17'
-  - 8|SG_128
-  - 1,6|yandex-1234
-  - '1,2|🇻🇳 VN 28 #1'
-  - 1|🇻🇳 VN 134
-  - 8|4Jadi-4398
-  - '0|JP日本(mibei77.com 米贝节点分享) #2'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #17'
-  - 2|新加坡公益线路@GM888VⅠP(3Gbps)
-  - 8|🇸🇬SG-103.172.116.79-0823
-  - 1|🇻🇳 VN 179
-  - 1|🇻🇳 VN 96
-  - 5|SG+Alibaba+us+Technology+Co+++...
-  - 1,8|4Jadi-1210
-  - '0|Akamai+Technologies,+Inc.+(SG) #1'
-  - 8|4Jadi-3907
-  - 8|🇯🇵 日本 17
-  - 1|🇻🇳 VN 185
-  - '0,6,7|JP日本(mibei77.com 米贝节点分享) #143'
-  - 1|🇻🇳 VN 176
-  - 1|🇻🇳 VN 83
-  - 1|🇻🇳 VN 131
-  - 2|韩国公益线路2(4Gbps)@ggboo_bot
-  - 8,10|🇭🇰 香港2|@stairnode
-  - 1|🇻🇳 VN 58
-  - '1,2|🇻🇳 VN 25 #1'
-  - '2|香港 #7'
-  - '10|JP日本(mibei77.com 米贝节点分享) #50'
-  - '4|(SG) Akamai Technologies 🇸🇬  🇸... #1'
-  - 1,8,9|4Jadi-1200
-  - 1|🇻🇳 VN 211
-  - 1,2,6,7,8,10|4Jadi-159
-  - '8|SG|Github搜索TrojanLinks #2'
-  - 1,8|🇰🇷KR-154.90.63.177-0304
-  - 1,8|🇹🇼TW-1.162.9.89-5047
-  - 2|🇭🇰HK-38.147.190.72-0593
-  - 1|🇻🇳 VN 261
-  - 4|VPLS,+Inc.+(SG)")'><i class="f...
-  - 0|SG_speednode_0118
-  - 5|🇰🇷+KR+韩国+22
-  - 8|4Jadi-12077
-  - '8,11|🇸🇬新加坡 #2'
-  - 1|🇻🇳 VN 228
-  - '0,6,7|HK #23'
-  - '10|HK香港(mibei77.com 米贝节点分享) #20'
-  - 1|🇻🇳 VN 271
-  - 1|🇻🇳 VN 144
-  - '10|Green+Floid+LLC+(SG) #3'
-  - '2|Singapore+AWS #4'
-  - 2|日本
-  - '1,2|🇻🇳 VN 22 #1'
-  - '8|🇭🇰HK香港2 #3'
-  - 1,8|t.me/entryNET/config=183791990...
-  - '8|未命名 #17858'
-  - 5|TG@ZDYZ2 -HK-Hong Kong12
-  - 1|🇻🇳 VN 132
-  - 2|🇯🇵JP_3c4e+@WangCai_8
-  - '10|Microsoft+Corporation+(KR) #3'
-  - 1|🇻🇳 VN 127
-  - 1|🇻🇳 VN 100
-  - 1|🇻🇳 VN 263
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|6 #3'
-  - '1,2|🇻🇳 VN 26 #1'
-  - 1|🇻🇳 VN 327
-  - 1|🇻🇳 VN 17
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|45 #3'
-  - 1|🇻🇳 VN 317
-  - '10|The+Constant+Company+(JP) #6'
-  - '10|Amazon.com,+Inc.+(SG) #6'
-  - 1,8|🇭🇰HK-103.149.183.61-5104
-  - 1|🇻🇳 VN 21
-  - 1|🇻🇳 VN 125
-  - '0|HK香港(mibei77.com 米贝节点分享) #1'
-  - 8|🇭🇰_HK_香港_Cow Vagina_33
-  - 8|TG@ZDYZ2 -SG-Singapore3
-  - 2|AppleSingapore_<
-  - '10|JP日本(mibei77.com 米贝节点分享) #71'
-  - '10|JP日本(mibei77.com 米贝节点分享) #33'
-  - '8|JP_@baipiao01 #6'
-  - '8|未命名 #18323'
-  - 8|🇸🇬SG-103.172.116.79-0825
-  - 1|🇻🇳 VN 196
-  - 8|新加坡G-Core | 解锁流媒体
-  - 5|韩国_30
-  - 2|🇹🇼台湾2
-  - 1|🇻🇳 VN 50
-  - '10|Microsoft+Corporation+(SG) #11'
-  - 1|🇻🇳 VN 249
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|6
-  - 1|🇻🇳 VN 265
-  - '1,2|🇻🇳 VN 10 #1'
-  - 8|🇸🇬 新加坡-220.0KB/s(Youtube不良林)
-  - "8|TG频道:@hkaa0▓新加坡\r_2"
-  - 1,5,6,8|🇯🇵JP-149.22.87.204-0267
-  - 8|🄵🄺 🇭🇰 香港-04
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|20 #3'
-  - 0|Akamai+Technologies,+Inc.+(SG)
-  - '8|🇯🇵_油管：全网最强白嫖 #165'
-  - 8|4Jadi-3150
-  - '8|TG:@hkaa0|日本 #5'
-  - '0|JP日本(mibei77.com 米贝节点分享) #15'
-  - 1|🇻🇳 VN 334
-  - '0|SG #2'
-  - 1|🇻🇳 VN 147
-  - 2|OracleKorea_<
-  - 8|🇯🇵+JP+日本+56
-  - 1,8|4Jadi-1196
-  - 1|🇻🇳 VN 106
-  - '10|Akamai+Technologies,+Inc.+(SG) #5'
-  - 8|4Jadi-7056
-  - 1|🇻🇳 VN 242
-  - 8|日本_1228007
-  - 1|🇻🇳 VN 319
-  - 8|Japan Akamai
-  - 1|🇻🇳 VN 27
-  - '10|Oracle+Corporation+(SG) #13'
-  - 1|🇻🇳 VN 210
-  - 8|🇸🇬_SG_新加坡_7
-  - '1,2|🇭🇰 HK 1 #1'
-  - '0,6,7|老油条-香港-cdn2 #3'
-  - 5|TG@ZDYZ2 -KR1
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|42 #3'
-  - '8|>>@v2ray_configs_pool::SG #1'
-  - '1,2|🇻🇳 VN 19 #1'
-  - 1|🇻🇳 VN 62
-  - '10|Amazon.com,+Inc.+(SG) #14'
-  - '2|日本1 #1'
-  - 1|🇻🇳 VN 88
-  - 1|🇻🇳 VN 219
-  - 8|[直连]日本 01 1x
-  - '0|Akamai+Technologies,+Inc.+(SG) #2'
-  - 1|🇻🇳 VN 323
-  - 8|新加坡8|0.1M/s
-  - 2,8|4Jadi-3807
-  - 1,8|4Jadi-1216
-  - 8|🇯🇵+JP+日本+66
-  - 2|Japan-02
-  - '0,6,7,10|🇭🇰|HK|@wxgqlfx|192 #3'
-  - 2|AkamaiJapan_<
-  - 1|🇻🇳 VN 252
-  - '0,6,7,10|🇭🇰|HK|@wxgqlfx|210 #3'
-  - 8,10|4Jadi-10226
-  - '8|⚡ b2n.ir/v2ray-configs | 623 #2'
-  - 1|🇻🇳 VN 34
-  - 5|TG@ZDYZ2 -HK-Hong Kong14
-  - 8|🇯🇵日本8|(youtube阿伟科技)
-  - '8|翻墙会_日本6_自费：电报频道：https://t.me/c... #1'
-  - 1|🇯🇵 JP 3
-  - 1|🇻🇳 VN 276
-  - 1|🇻🇳 VN 42
-  - '8|翻墙会_日本5_自费：电报频道：https://t.me/c... #1'
-  - 5|TG@ZDYZ2 -HK-Hong Kong8
-  - '8|未命名 #7 #1'
-  - '2|Singapore+AWS #2'
-  - 1|🇻🇳 VN 281
-  - '8|未命名 #15484'
-  - 1|🇻🇳 VN 315
-  - 8|4Jadi-78
-  - 1|🇻🇳 VN 173
-  - '1,2|🇻🇳 VN 4 #1'
-  - 1|🇻🇳 VN 52
-  - '10|Green+Floid+LLC+(SG) #2'
-  - '5|JP #3'
-  - 1|🇻🇳 VN 97
-  - '8|未命名 #12757'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #11'
-  - 1|🇻🇳 VN 117
-  - 1|🇻🇳 VN 226
-  - 1|🇻🇳 VN 250
-  - '10|JP日本(mibei77.com 米贝节点分享) #79'
-  - 5|TG@ZDYZ2 -TW3
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|51 #3'
-  - '0|KR韩国(mibei77.com 米贝节点分享) #1'
-  - 1|🇻🇳 VN 128
-  - '8,10|香港(yudou123.top 玉豆免费节点) #2'
-  - 1|🇻🇳 VN 266
-  - 2|🇯🇵|JP|日本|@wxgqlfx|204
-  - '8|TG:@hkaa0|日本 #6'
-  - '8,10|新加坡3|@ripaojiedian #1'
-  - 8|翻墙会_日本6_自费：电报频道：https://t.me/c...
-  - '10|M247+Europe+SRL+(JP) #1'
-  - '10|Digitalocean,+LLC+(SG) #8'
-  - 1|🇻🇳 VN 48
-  - '0,6,7|🇸🇬|SG|@wxgqlfx|345 #3'
-  - '10|Microsoft+Corporation+(SG) #5'
-  - 8|4Jadi-9614
-  - 8|CSGO
-  - "8|\U0001F1F8\U0001F1EC _SG_新加坡\r_3"
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|43 #3'
-  - 1|🇻🇳 VN 143
-  - 1|🇻🇳 VN 199
-  - 8|4Jadi-4085
-  - '0|JP日本(mibei77.com 米贝节点分享) #21'
-  - 1|🇻🇳 VN 104
-  - 1|🇻🇳 VN 286
-  - '10|HK香港(mibei77.com 米贝节点分享) #14'
-  - '0,6,7|HK #20'
-  - 8|4Jadi-4416
-  - '0|KR韩国(mibei77.com 米贝节点分享) #2'
-  - 5|韩国_32
-  - 2,8|4Jadi-4405
-  - 1|🇻🇳 VN 16
-  - 2|🇯🇵日本-01_解锁
-  - 8|4Jadi-489
-  - '1,5,8|>>@ShadowsocksM::VN #1'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - 0|Microsoft+Corporation+(SG)
-  - 8|4Jadi-642
-  - 10|老油条-香港-cfcdn2
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - 1|🇻🇳 VN 304
-  - 8|SVNTEAM-TLS🇩🇪-22
-  - '0,6,7|SG #10'
-  - 1,8|4Jadi-1193
-  - 8|4Jadi-3800
-  - 1|🇻🇳 VN 180
-  - '0|HK香港(mibei77.com 米贝节点分享) #3'
-  - 8|韩国_15
-  - '0,6,7|老油条-SG-新加坡 #3'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #33'
-  - '0|KR #3'
-  - '0|KR韩国(mibei77.com 米贝节点分享) #3'
-  - 8|🇭🇰+HK+香港+60
-  - 8|4Jadi-7055
-  - '8|未命名 #10085'
-  - 1|🇻🇳 VN 11
-  - 1|🇻🇳 VN 296
-  - 1|🇻🇳 VN 187
-  - '10|Microsoft+Corporation+(KR) #5'
-  - 2|🇭🇰香港-02_解锁
-  - 8|⚡ b2n.ir/v2ray-configs | 551
-  - '0|JP日本(mibei77.com 米贝节点分享) #19'
-  - 1|🇻🇳 VN 81
-  - 8|🇸🇬+SG+新加坡+18
-  - '8|TG:@hkaa0|日本 #3'
-  - '8|日本东京|Github搜索TrojanLinks #4'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #20'
-  - 0|SG+Softlayer+Technologies+Inc
-  - '1,2|🇻🇳 VN 20 #1'
-  - 8|韩国_7
-  - 5|TG@ZDYZ2 -HK-Hong Kong10
-  - 1|🇻🇳 VN 310
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|2
-  - 2|GcoreSingapore_<
-  - '10|Microsoft+Corporation+(SG) #8'
-  - 8|👉 @Hddify || چنل هدیفای 🍄`
-  - 2|日本2_2
-  - 8|⚡ b2n.ir/v2ray-configs | 490
-  - 8|🇸🇬SG-217.197.161.166-0137
-  - 2|🇭🇰 HK 3
-  - 8|TG@ZDYZ2 -HK-Hong Kong4
-  - 1|🇻🇳 VN 184
-  - '10|KR #6'
-  - '8|香港(yudou123.top 玉豆免费节点) #12'
-  - 1|🇻🇳 VN 181
-  - '8,10|香港(yudou123.top 玉豆免费节点) #7'
-  - 0|SG_speednode_0119
-  - 1|🇻🇳 VN 99
-  - 2|韩国公益线路@ggboo_bot
-  - 1|🇻🇳 VN 207
-  - 10|老油条-香港-cfcdn3
-  - 8|[量子]新加坡 01 1x
-  - 2|香港紧急备用公益路线@ggboo_bot
-  - '2|kharid+server+(MOTFKRM) #1'
-  - 1|🇻🇳 VN 72
-  - 1|🇻🇳 VN 74
-  - 1|🇻🇳 VN 114
-  - 2|韩国公益节点@ggboo_bot(4Gps)
-  - 1|🇻🇳 VN 313
-  - 1|🇸🇬 SG 2
-  - 1|🇻🇳 VN 336
-  - 8|4Jadi-3664
-  - '8|未命名 #10369'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|22 #3'
-  - 2|Vless-HK-Microsoft_Azure
-  - 1|🇻🇳 VN 177
-  - 1|🇻🇳 VN 162
-  - 11|🇯🇵日本
-  - 2|🇭🇰香港hy2①
-  - 1|🇻🇳 VN 66
-  - 1|🇻🇳 VN 112
-  - 1|🇻🇳 VN 22
-  - '8|未命名 #17268'
-  - 1|🇻🇳 VN 65
-  - '8,9|🇻🇳 VN | 🟢 | ss | @ip_cf_config... #9'
-  - 0|SG+Oracle+Corporation
-  - '3,4|JP #4'
-  - '8,10|日本(yudou123.top 玉豆免费节点) #1'
-  - 8|🇯🇵日本7|(youtube阿伟科技)
-  - 2|🇯🇵JP-XTOM-0.1X
-  - 5|🇹🇼+TW+台湾+41
-  - 10|(JP)Gmo Internet Group-[Tls]
-  - '10|JP日本(mibei77.com 米贝节点分享) #66'
-  - 1|🇻🇳 VN 166
-  - '10|Microsoft+Corporation+(KR) #10'
-  - 5|🇰🇷+KR+韩国+46
-  - 2|Singapore+Relayed
-  - 1|🇻🇳 VN 258
-  - 0|15|SG_speednode_0121
-  - 1|🇻🇳 VN 71
-  - 6,8,10|4Jadi-12842
-  - 2|🇰🇷韩国
-  - 2|🇨🇳台湾03
-  - 1|🇻🇳 VN 116
-  - 10|M247+Europe+SRL+(JP)
-  - '10|NTT+Communications+Corporation... #4'
-  - '10|HK香港(mibei77.com 米贝节点分享) #12'
-  - 0|KR韩国(mibei77.com 米贝节点分享)
-  - 0|HK
-  - 8|4Jadi-9615
-  - 8|🇹🇼TW-154.223.20.79-0313
-  - '8|JP_@baipiao01 #1'
-  - 1|🇻🇳 VN 103
-  - '0|KR韩国(mibei77.com 米贝节点分享) #9'
-  - 1|🇻🇳 VN 167
-  - '8|日本东京|Github搜索TrojanLinks #3'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #10'
-  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #2'
-  - 1|🇻🇳 VN 320
-  - '0,6,7|SG #11'
-  - '0|HK香港(mibei77.com 米贝节点分享) #5'
-  - 2|韩国公益线路@ggboo_bot(500M)
-  - '2|Japan+AWS #1'
-  - 8|4Jadi-3906
-  - 8|Relay_🇸🇬SG-🇸🇬SG_108
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|5 #3'
-  - '8|KR|Github搜索TrojanLinks #2'
-  - '10|Green+Floid+LLC+(SG) #4'
-  - 8|🇬🇧英国1|11.01Mb
-  - 0|HK_speednode_0070
-  - '6,10|🇭🇰[openproxylist.com] vless-HK #1'
-  - '8|日本东京|Github搜索TrojanLinks #2'
-  - 8|日本_4
-  - 1|🇻🇳 VN 274
-  - 1,8|4Jadi-1208
-  - 8|🇸🇬 Singapore 07 TG@nodpai
-  - 8|🇸🇬新加坡4
-  - 8|🇭🇰 香港IEPL内网专线02
-  - 1|🇻🇳 VN 63
-  - '10|Microsoft+Corporation+(SG) #10'
-  - 2|🇭🇰香港-15_解锁
-  - '8|Singapore AWS #1'
-  - 8|4Jadi-352
-  - '4|台湾 #3'
-  - 8|🇰🇷+KR+韩国+17
-  - 2|新加坡1
-  - 1|🇻🇳 VN 12
-  - 1|🇻🇳 VN 77
-  - '8,10|香港(yudou123.top 玉豆免费节点) #22'
-  - 1|🇻🇳 VN 51
-  - 8|🇯🇵 日本 011
-  - '8,10|香港(yudou123.top 玉豆免费节点) #26'
-  - '0|KR韩国(mibei77.com 米贝节点分享) #6'
-  - 1|🇻🇳 VN 135
-  - 2|🇯🇵JP_MCI
-  - 8|🇸🇬SG-103.172.116.79-0820
-  - 8|🇭🇰 HK | 🟢 | ss | @v2ray_free_c...
-  - '8|韩国首尔特别市|Github搜索TrojanLinks #1'
-  - "8|TG频道:@hkaa0▓台湾\r"
-  - 1,8|4Jadi-1204
-  - 1|🇻🇳 VN 124
-  - '8|Hong Kong|Github搜索TrojanLinks #1'
-  - '10|老油条-香港-cdn #1'
-  - '8,11|日本Hy2-3 #2'
-  - 2|🇭🇰HK-YXVM-0.2X
-  - 1|🇻🇳 VN 205
-  - '0,6,7|老油条-台湾 #3'
-  - 1|🇻🇳 VN 230
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|80 #3'
-  - '1,2|🇻🇳 VN 30 #1'
-  - 5|🇰🇷+KR+韩国+53
-  - 2|🇯🇵_JP_日本_6
-  - 1|🇻🇳 VN 255
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|39 #3'
-  - 8|🇯🇵 日本 36
-  - '5,8|🇸🇬SG-103.172.116.103-0795 #1'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|25 #3'
-  - '5|Digitalocean,+LLC+(SG) #2'
-  - 8|🇭🇰 香港跨境金融专线03
-  - '10|Akamai+Technologies,+Inc.+(SG) #7'
-  - '1,8|🇻🇳 VN | 🟢 | ss | @ip_cf_config... #8'
-  - 1|🇻🇳 VN 237
-  - 8|🇸🇬SG-103.172.116.79-0824
-  - 1|🇻🇳 VN 94
-  - '5|🇭🇰 HK #2'
-  - 1|🇻🇳 VN 89
-  - '10|Microsoft+Corporation+(KR) #15'
-  - 1|🇻🇳 VN 15
-  - '0,6,7|JP #10'
-  - 1|🇻🇳 VN 130
-  - '10|老油条-香港-cdn1 #1'
-  - 1|🇻🇳 VN 98
-  - 8|🇸🇬SG-217.197.161.164-0145
-  - '2|Singapore+AWS #1'
-  - 8|🇸🇬_SG_新加坡_2
-  - 2|>🇰🇷+KR|Hs|0706|TG@FProxies|
-  - 2|🇭🇰香港-13_解锁
-  - 1|🇻🇳 VN 189
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|50 #3'
-  - 8|4Jadi-8249
-  - '8|韩国首尔特别市|Github搜索TrojanLinks #2'
-  - 8|韩国_6
-  - 8|SG_127
-  - 1|🇻🇳 VN 318
-  - '10|Microsoft+Corporation+(KR) #16'
-  - '4|Contabo+Asia+Private+Limited+(... #1'
-  - "8|TG频道:@hkaa0▓韩国\r_1"
-  - '2|台湾 #7'
-  - 8|Hong Kong|Github搜索TrojanLinks
-  - 1|🇻🇳 VN 174
-  - '0|JP日本(mibei77.com 米贝节点分享) #13'
-  - '10|The+Constant+Company+(JP) #1'
-  - 2|HK🇭🇰01(不限流量)
-  - '10|JP日本(mibei77.com 米贝节点分享) #32'
-  - 8|4Jadi-15343
-  - '1,2|🇻🇳 VN 24 #1'
-  - '10|JP日本(mibei77.com 米贝节点分享) #46'
-  - 2|🇭🇰香港02
-  - 8|Relay_🇯🇵JP-🇯🇵JP_53
-  - 1|🇻🇳 VN 316
-  - '0|JP日本(mibei77.com 米贝节点分享) #10'
-  - 1|🇻🇳 VN 115
-  - 1|🇻🇳 VN 314
-  - 8|[量子]日本 02 1x
-  - 8|🇭🇰+HK+香港+58
-  - 8|🇸🇬新加坡3
-  - '10|Aceville+Pte.ltd+(SG) #9'
-  - 1,2,8|4Jadi-1192
-  - '2|韩国2 #1'
-  - '0,6,7|HK #24'
-  - 1,2,8|4Jadi-14103
-  - '0|HK香港(mibei77.com 米贝节点分享) #2'
-  - 1|🇻🇳 VN 35
-  - 8|🇸🇬 Singapore 18 TG@nodpai
-  - 8|🇸🇬SG-103.172.116.79-0124
-  - 8|4Jadi-52
-  - '2|🇸🇬 SG 4 #1'
-  - 2|🇰🇷KR-2830-t.me/NetFreedom0
-  - 2|新加坡公益路线2@ggboo_bot(4GPS)
-  - 0|🇭🇰 HK
-  - 8|Taiwan|Github搜索TrojanLinks
-  - '1,2|🇻🇳 VN 15 #1'
-  - 2|Relay_🇭🇰HK-🇮🇪IE_68
-  - 8|翻墙会_日本1_自费：电报频道：https://t.me/c...
-  - 0|SG+Amazon+com++Inc
-  - '8|JP_@baipiao01 #3'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - 1|🇻🇳 VN 39
-  - '8|日本东京|Github搜索TrojanLinks #5'
-  - 8|4Jadi-3151
-  - 1,2,8|4Jadi-790
-  - 2|CF日本移動聯通友好
-  - 1|🇻🇳 VN 273
-  - 1|🇻🇳 VN 18
-  - 8|🇸🇬SG-217.197.161.138-0166
-  - 8|🇭🇰香港3
-  - 2|韩国2
-  - 10|香港(yudou123.top 玉豆免费节点)
-  - 1|🇻🇳 VN 260
-  - '3,4|日本2024年11月到期 #1'
-  - 8,9|🇻🇳VN-103.15.91.171-5039
-  - 8,10|4Jadi-11993
-  - 1|🇻🇳 VN 328
-  - '0|JP日本(mibei77.com 米贝节点分享) #4'
-  - 1|🇻🇳 VN 126
-  - 8|日本_8
-  - '11|🇭🇰香港 #1'
-  - 8|🇭🇰+HK+香港+31
-  - 1|🇻🇳 VN 221
-  - '10|Microsoft+Corporation+(KR) #7'
-  - 5|TG@ZDYZ2 -SG-Singapore1
-  - 8|🇭🇰+HK+香港+45
-  - 1,2|🇻🇳 VN 2
-  - '10|JP日本(mibei77.com 米贝节点分享) #30'
-  - '10|First+Server+Limited+(SG) #1'
-  - 2|Japan+AWS
-  - 1,8,9|4Jadi-1214
-  - 0|SG_speednode_0120
-  - '8,10|香港(yudou123.top 玉豆免费节点) #8'
-  - '8|翻墙会_日本3_自费：电报频道：https://t.me/c... #1'
-  - '10|HONG+KONG+Megalayer+Technology... #2'
-  - '10|Alibaba+Cloud+(Singapore)+Priv... #6'
-  - '5,8|🇯🇵JP-18.183.174.138-0743 #1'
-  - '10|JP日本(mibei77.com 米贝节点分享) #68'
-  - 8|🇰🇷 韩国 08
-  - '5,8|🇯🇵JP-13.231.154.132-0744 #1'
-  - 8|🇸🇬SG-103.172.116.103-0767
-  - 1|🇻🇳 VN 329
-  - '0,3,4|HK_ALIYUN_XTLS #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|37 #3'
-  - 1|🇻🇳 VN 102
-  - 1|🇻🇳 VN 73
-  - 8|🇰🇷+KR+韩国+43
-  - 2|Singapore+Digital+Ocean
-  - 1|🇻🇳 VN 233
-  - 0|Microsoft+Corporation+(KR)
-  - 1,8,9|4Jadi-1191
-  - '10|JP日本(mibei77.com 米贝节点分享) #54'
-  - 1|🇻🇳 VN 142
-  - '3,4|US_TX_VIA_HK_JUMP_XTLS_BACKUP #3'
-  - 1|🇻🇳 VN 183
-  - 1|🇻🇳 VN 231
-  - '1,2|🇻🇳 VN 5 #1'
-  - '0,6,7|JP #9'
-  - '0,6,7|🇹🇼|TW|@wxgqlfx|357 #3'
-  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
-  - '2,8,11|🇸🇬_SG_新加坡_5 #2'
-  - '1,2|🇻🇳 VN 31 #1'
-  - 5|日本 03
-  - 8|🇸🇬SG-103.172.116.103-0798
-  - 10|HONG+KONG+Megalayer+Technology...
-  - 8|4Jadi-4043
-  - 2|🇭🇰香港-03_解锁
-  - 8|韩国_3
-  - '10|Amazon.com,+Inc.+(SG) #11'
-  - '8|未命名 #10870'
-  - 8|翻墙会_韩国3_自费+电报频道：：https://t.me/...
-  - 8|🇸🇬 Singapore 06 TG@nodpai
-  - 1|🇻🇳 VN 246
-  - 8|TG@ZDYZ2 -HK-Hong Kong3
-  - 2|RLY05JP
-  - 8|Mahsa+:+🇸🇬+Singapore
-  - '8,10|香港(yudou123.top 玉豆免费节点) #9'
-  - 5|TG@ZDYZ2 -HK-Hong Kong2
-  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #1'
-  - '10|DigitalOcean,+LLC+(SG) #9'
-  - 8|Singapore M247
-  - 1|🇻🇳 VN 54
-  - 1|🇻🇳 VN 240
-  - 6|@ev2rayy vless://a08e37ad-e4ab...
-  - 1|🇻🇳 VN 111
-  - 5|TG@ZDYZ2 -HK-Hong Kong5
-  - '10|Aceville+Pte.ltd+(SG) #5'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #3'
-  - 11|🇯🇵@Mahdi2000_m vless-JP
-  - '10|The+Constant+Company+(JP) #7'
-  - '0|JP日本(mibei77.com 米贝节点分享) #1'
-  - 1|🇻🇳 VN 186
-  - 1|🇻🇳 VN 218
-  - '8|SVNTEAM-TCP #1'
-  - 8|🇰🇷 KR | 🟢 | ss | @free1ss | 14
-  - 8|4Jadi-3653
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|38 #3'
-  - '10|Amazon.com,+Inc.+(SG) #15'
-  - '8|SG|Github搜索TrojanLinks #1'
-  - 1|🇻🇳 VN 121
-  - 8|🇰🇷+KR+韩国+40
-  - '8,10|香港(yudou123.top 玉豆免费节点) #4'
-  - 8|新加坡_4
-  - 1|🇻🇳 VN 200
-  - 1|🇻🇳 VN 60
-  - '8|Taiwan|Github搜索TrojanLinks #1'
-  - 1|🇻🇳 VN 133
-  - 1|🇻🇳 VN 272
-  - 2|🇭🇰HK-Netfront-0.1X
-  - '10|JP日本(mibei77.com 米贝节点分享) #52'
-  - '0|JP日本(mibei77.com 米贝节点分享) #3'
-  - 2|Vless-KR-Microsoft_Azure
-  - 8|🇸🇬 V0 SGP-000T | 0.05x比率 | 红了就...
-  - '10|Microsoft+Corporation+(KR) #12'
-  - 2|台湾-Trojan②
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|53 #3'
-  - '1,2|🇻🇳 VN 32 #1'
-  - 1|🇻🇳 VN 279
-  - '10|Microsoft+Corporation+(KR) #8'
-  - 1|🇻🇳 VN 338
-  - 1|🇻🇳 VN 40
-  - 0,5,6,7,8,10|二爷翻墙_24
-  - '10|M247+Europe+SRL+(JP) #5'
-  - "8|TG频道:@hkaa0▓新加坡\r_1"
-  - 1|🇻🇳 VN 164
-  - 1|🇻🇳 VN 245
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|23 #3'
-  - 2|https://t.me/VTWORAY_WOLF
-  - '10|JP日本(mibei77.com 米贝节点分享) #27'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|49 #3'
-  - 8|SVNTEAN
-  - '0|KR韩国(mibei77.com 米贝节点分享) #8'
-  - 1|🇻🇳 VN 30
-  - 8|TG@ZDYZ2 -TW5
-  - 1|🇻🇳 VN 47
-  - 8|日本【机场推荐：https://a0a.xyz/】39
-  - '8|🇸🇬SG-217.197.161.136-0153 #1'
-  - 8|4Jadi-57
-  - 8|Pool_NL_287
-  - 8|香港HKT | 解锁流媒体
-  - '8,10|香港(yudou123.top 玉豆免费节点) #31'
-  - 8|🇸🇬SG-103.172.116.103-3721
-  - 5|韩国_27
-  - 2|🇩🇪VTWORAY_WOLF
-  - 1|🇻🇳 VN 321
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|54 #3'
-  - 1|🇻🇳 VN 95
-  - 1|🇻🇳 VN 43
-  - 8|🇹🇼TW-185.189.160.98-0262
-  - 1|🇻🇳 VN 119
-  - 8|4Jadi-8655
-  - 1|🇻🇳 VN 101
-  - 8|🇰🇷+KR+韩国+50
-  - 8|VN|(胖虎TG频道@gitbig) 8
-  - 1|🇻🇳 VN 158
-  - 8|🇸🇬_SG_新加坡_Cow Vagina_23
-  - 1|🇻🇳 VN 222
-  - 1|🇻🇳 VN 109
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|1
-  - 1|🇻🇳 VN 139
-  - 1|🇻🇳 VN 154
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|32 #3'
-  - 2|🇯🇵JP_83
-  - 1|🇻🇳 VN 311
-  - 1|🇻🇳 VN 148
-  - '4|(SG) Akamai Technologies 🇸🇬  🇸... #2'
-  - 0|SG+SoftLayer+Technologies+🇸🇬
-  - 1|🇻🇳 VN 248
-  - 1|🇻🇳 VN 333
-  - '8|台湾 #8'
-  - '5,8|韩国_29 #1'
-  - 8|香港_8
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|76 #3'
-  - 8|新加坡_3
-  - 1|🇻🇳 VN 113
-  - 2|🇯🇵JP-NERO-0.1X
-  - 0|TW
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|48 #3'
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|5
-  - '8|未命名 #8 #1'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|81 #3'
-  - 8|4Jadi-1006
-  - 0|JP_speednode_0074
-  - 8|VN|(胖虎TG频道@gitbig) 11
-  - '8|未命名 #9485'
-  - 8|4Jadi-4079
-  - 8|日本NTT-1号 | 解锁流媒体
-  - 8,10|4Jadi-7954
-  - '0,6,7,10|🇯🇵|JP|@wxgqlfx|113 #3'
-  - '1,2|🇻🇳 VN 34 #1'
-  - '1,2|🇻🇳 VN 16 #1'
-  - '5|Akamai+Technologies,+Inc.+(SG) #4'
-  - 1|🇻🇳 VN 201
-  - 2|GcoreJapan_<
-  - '10|JP日本(mibei77.com 米贝节点分享) #40'
-  - 1|🇻🇳 VN 64
-  - '10|JP日本(mibei77.com 米贝节点分享) #72'
-  - 2|OVHSingapore_<
-  - '10|The+Constant+Company+(JP) #2'
-  - '1,2|🇻🇳 VN 27 #1'
-  - '1,2|🇻🇳 VN 17 #1'
-  - 1|🇻🇳 VN 238
-  - '0|JP日本(mibei77.com 米贝节点分享) #9'
-  - 1|🇻🇳 VN 301
-  - '8|未命名 #11 #1'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|79 #3'
-  - 8|🇸🇬 V0 JPN-000T | 0.05x比率 | 红了就...
-  - 1|🇻🇳 VN 78
-  - '10|JP日本(mibei77.com 米贝节点分享) #53'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #21'
-  - 4|Oracle+Corporation+(KR)")'><i ...
-  - 1|🇻🇳 VN 49
-  - 1|🇻🇳 VN 188
-  - 11|🇭🇰香港
-  - '6,10|🇯🇵[openproxylist.com] vless-JP #3'
-  - 8|🇰🇷KR-154.90.62.168-0312
-  - '10|Microsoft+Corporation+(SG) #12'
-  - '0|Amazon.com,+Inc.+(SG) #1'
-  - 0|Digitalocean, LLC (SG)
-  - '0|JP日本(mibei77.com 米贝节点分享) #11'
-  - 1,8|4Jadi-1212
-  - 8|韩国_26
-  - 1|🇻🇳 VN 141
-  - 1|🇻🇳 VN 169
-  - 10|Rayan - SSM - WSDR - JP - II
-  - 1|🇻🇳 VN 107
-  - 8|Singapore AWS
-  - 8|:日本-ss-85.208.108.21:443-可用-中转...
-  - '0,6,7|HK #25'
-  - 8|🇯🇵 日本-ss-193.38.139.203807-被墙-...
-  - '6,7,8,10,11|Telegram:@config_proxy 🔥 #182'
-  - '1,2|🇰🇷 KR 1 #1'
-  - 8|TG@ZDYZ2 -KR8
-  - 1|🇻🇳 VN 160
-  - 1|🇻🇳 VN 208
-  - 8|越南-3号
-  - 2|🇭🇰HK-Apernet-0.1X
-  - 2|Relay_🇹🇼TW-🇹🇼TW_99
-  - 1|🇻🇳 VN 31
-  - 2|韩国1
-  - 1|🇻🇳 VN 253
-  - 1|🇻🇳 VN 193
-  - 1|🇻🇳 VN 8
-  - '8|JP_@baipiao01 #5'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|27 #3'
-  - 8|🇭🇰HK-103.149.182.191-5075
-  - 8|🇯🇵日本6|(youtube阿伟科技)
-  - '8|翻墙会_日本1_自费：电报频道：https://t.me/c... #1'
-  - 1|🇻🇳 VN 67
-  - '10|Microsoft+Corporation+(KR) #13'
-  - 5|韩国_1
-  - '8,10|🇯🇵JP日本 #3'
-  - 1|🇻🇳 VN 59
-  - 1,8|4Jadi-1199
-  - 8|[量子]新加坡 02 1x
-  - 1|🇻🇳 VN 157
-  - '0|HK香港(mibei77.com 米贝节点分享) #6'
-  - '2|🇸🇬 SG 2 #1'
-  - 1|🇻🇳 VN 325
-  - 1|🇻🇳 VN 84
-  - '10|HK香港(mibei77.com 米贝节点分享) #13'
-  - '10|JP日本(mibei77.com 米贝节点分享) #34'
-  - 4|香港01','香港01')
-  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #3'
-  - '10|Microsoft+Corporation+(SG) #1'
-  - 1|🇻🇳 VN 275
-  - 1|🇻🇳 VN 264
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|12
-  - 1|🇻🇳 VN 38
-  - 8|🇵🇭菲律宾1
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|4
-  - 2|韩国3
-  - 1|🇻🇳 VN 69
-  - 1|🇻🇳 VN 257
-  - 2|🇯🇵JP_86
-  - 1|🇻🇳 VN 297
-  - '8,10|香港(yudou123.top 玉豆免费节点) #32'
-  - 2|Vless-East-JP-Microsoft_Azure
-  - 2|🇭🇰香港-16_解锁
-  - 8|🇸🇬SG-103.172.116.103-0788
-  - 8|[量子]香港 02 1x
   - '10|Amazon.com,+Inc.+(SG) #3'
-  - 8|新加坡_1
-  - 1|🇻🇳 VN 217
-  - '0|KR韩国(mibei77.com 米贝节点分享) #5'
-  - '0|Akamai+Technologies,+Inc.+(SG) #3'
-  - 1|🇻🇳 VN 243
-  - 1|🇻🇳 VN 191
-  - 2|🇭🇰香港-09_解锁
-  - '8,10|香港(yudou123.top 玉豆免费节点) #14'
-  - 8|4Jadi-443
-  - 8|TG@ZDYZ2 -KR5
-  - 8|TG@ZDYZ2 -TW4
-  - 8|韩国_2
-  - '1,2|🇻🇳 VN 23 #1'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #29'
-  - 1|🇻🇳 VN 236
-  - 2|🇰🇷韩国KT家宽
-  - 1|🇻🇳 VN 46
-  - 1|🇻🇳 VN 241
-  - '10|Microsoft+Corporation+(SG) #14'
-  - 1|🇻🇳 VN 198
-  - 8|日本东京|Github搜索TrojanLinks
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|11 #3'
-  - 5|🇸🇬+SG+新加坡+51
-  - 8|4Jadi-3941
-  - 1|🇻🇳 VN 322
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|24 #3'
-  - 2|🇭🇰HK-38.147.190.25-0595
-  - 8|4Jadi-677
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|30 #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|17 #3'
-  - 4|(SG) Alibaba🇸🇬')">
-  - 1|🇻🇳 VN 122
-  - 1|🇻🇳 VN 129
-  - 8|4Jadi-1217
-  - 8|4Jadi-3908
-  - '10|NTT+Communications+Corporation... #2'
-  - '5|🇭🇰 HK #3'
-  - '1,2|🇻🇳 VN 21 #1'
-  - 1|🇻🇳 VN 110
-  - 1|🇻🇳 VN 80
-  - 1|🇻🇳 VN 70
-  - 10|ByteVirt+LLC+(SG)
-  - 8|🇯🇵 日本 012
-  - '10|JP日本(mibei77.com 米贝节点分享) #49'
-  - 2|🇯🇵|JP|日本|@wxgqlfx|218
-  - 0|SG+Digital+Ocean+2+🇸🇬
-  - 1|🇻🇳 VN 53
-  - 1|🇻🇳 VN 45
-  - 8|4Jadi-3455
-  - '8|SVNTEAN #1'
-  - 2|🇭🇰香港-04_解锁
-  - '7|🇸🇬[openproxylist.com] vless-SG #2'
-  - 8|新加坡_1211235
-  - 1|🇸🇬 SG 4
-  - '8|SG|Github搜索TrojanLinks #3'
-  - 8|🇸🇬SG-81.90.189.152-0160
-  - '2|日本1 #2'
-  - '10|Microsoft+Corporation+(SG) #4'
-  - 8|🇭🇰 香港 16
-  - 8|4Jadi-3915
-  - 1|🇻🇳 VN 56
-  - 1|🇻🇳 VN 138
-  - 1|🇻🇳 VN 223
-  - 8|香港_7
-  - '10|JP日本(mibei77.com 米贝节点分享) #35'
-  - 1|🇻🇳 VN 244
-  - 1|🇻🇳 VN 118
-  - 1|🇻🇳 VN 108
-  - 1,8|4Jadi-1209
-  - '8|未命名 #16499'
-  - 8|VN|(胖虎TG频道@gitbig) 13
-  - 2|🇯🇵JP-0749-t.me/NetFreedom0
-  - 1|🇻🇳 VN 90
-  - 5|TG@ZDYZ2 -JP-Tokyo4
-  - '0|JP日本(mibei77.com 米贝节点分享) #17'
-  - 2|Vless-West-JP-Microsoft_Azure
-  - '10|Microsoft+Corporation+(KR) #11'
-  - 8|4Jadi-8248
-  - '0,4,5,6,7,10|香港 #6'
-  - 8|🇸🇬SG-103.172.116.103-3716
-  - '8,10|香港(yudou123.top 玉豆免费节点) #18'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|10 #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|12 #3'
-  - 1|🇻🇳 VN 87
-  - 1,8|4Jadi-1202
-  - 1|🇻🇳 VN 268
-  - 1|🇻🇳 VN 20
-  - 2|https://t.me/VTWORAY_WOLF+🇷🇺
-  - '0,6,7|老油条-JP-日本 #3'
-  - 4|(SG) Akamai Technologies 🇸🇬  🇸...
-  - 1|🇻🇳 VN 57
-  - 1|🇻🇳 VN 215
-  - 1|🇻🇳 VN 6
-  - 1|🇻🇳 VN 28
-  - 8|🇸🇬 新加坡  01（二区）
-  - 8|4Jadi-4923
-  - 1,8|4Jadi-1194
-  - 2|🇭🇰香港-06_解锁
-  - 8|香港(油管:破解资源君2.0)
-  - '0|JP日本(mibei77.com 米贝节点分享) #14'
-  - "8|TG频道:@hkaa0▓新加坡\r_3"
-  - 1|🇻🇳 VN 175
-  - '8|未命名 #16514'
-  - 2|韩国1_2
-  - 10|Alibaba+Cloud+(Singapore)+Priv...
-  - 8|翻墙会_日本11_自费，电报频道：https://t.me/...
-  - 1|🇻🇳 VN 105
-  - '10|SG #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|41 #3'
-  - 0|NTT+Communications+Corporation...
-  - 8|TG@ZDYZ2 -HK-Hong Kong15
-  - '8,10|香港(yudou123.top 玉豆免费节点) #24'
-  - 8|🇯🇵JP-154.47.20.240-0742
-  - 1|🇻🇳 VN 340
-  - 0|JP日本(mibei77.com 米贝节点分享)
-  - '8|SVNTEAN #4'
-  - 0,6,7|Japan Relay
-  - '0|JP日本(mibei77.com 米贝节点分享) #20'
-  - 8|🇰🇷 韩国 14
-  - '0,8|香港(yudou123.top 玉豆免费节点) #27'
-  - '10|HK香港(mibei77.com 米贝节点分享) #24'
-  - 2|خرید+پایدار+ترین+کانفیگ+ها+از+...
-  - 1,8,11|4Jadi-8338
-  - 1|🇻🇳 VN 192
-  - 1|🇻🇳 VN 256
-  - 1|🇻🇳 VN 170
-  - 1|🇻🇳 VN 206
+  - 8|4Jadi-3664
+  - 1|🇻🇳 VN 112
+  - 1|🇻🇳 VN 104
+  - 8|🇸🇬SG-103.172.116.79-0824
+  - '2|Singapore+AWS #1'
   - 1|🇻🇳 VN 136
-  - 1|🇻🇳 VN 330
-  - '8|SVNTEAM-TLS #1'
-  - 2|🇰🇷KR-146.56.191.191-0605
-  - 4|Oracle+Corporation+(SG)")'><i ...
-  - 2|🇭🇰HK-CERA-0.1X
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - '8|2 #2 #1'
-  - 8|TG@ZDYZ2 -JP-Tokyo5
-  - 8|韩国首尔特别市|Github搜索TrojanLinks
-  - 8|🇯🇵+JP+日本+27
-  - '10|Microsoft+Corporation+(SG) #3'
-  - 8|SVNTEAM-TCP
-  - '8|KR|Github搜索TrojanLinks #1'
-  - 2|Relay_🇰🇷KR-🇰🇷KR_89
-  - '10|HK香港(mibei77.com 米贝节点分享) #16'
-  - '0|JP日本(mibei77.com 米贝节点分享) #5'
-  - 8|🇭🇰 HK | 🟢 | ss | @outlinerelea...
-  - '8,10|美国(yudou123.top 玉豆免费节点) #46'
-  - 8|🇸🇬SG-81.90.189.18-0163
-  - 1|🇻🇳 VN 32
-  - '10|Microsoft+Corporation+(SG) #7'
-  - 1|🇻🇳 VN 235
-  - 2|SSRTOOL+HK+(Support+Netflix)
-  - '4|香港 #3'
-  - '0|JP日本(mibei77.com 米贝节点分享) #7'
-  - 10|The+Constant+Company+(JP)
-  - '8|未命名 #12679'
-  - '10|HK香港(mibei77.com 米贝节点分享) #23'
-  - 1|🇻🇳 VN 182
-  - 1|🇻🇳 VN 37
-  - 1,2,8|4Jadi-1211
-  - '10|Microsoft+Corporation+(KR) #1'
-  - '1,2|🇻🇳 VN 9 #1'
-  - 0|15|JP_speednode_0073
-  - 10|JP_speednode_0072
-  - '5|NTT+Communications+Corporation... #1'
+  - 2|韩国1
   - 4|(SG) Alibaba🇸🇬')
-  - '8,10|香港(yudou123.top 玉豆免费节点) #16'
-  - 2|SG-https://t.me/azure_v2less
-  - 8|新加坡新加坡|Github搜索TrojanLinks
-  - 1|🇻🇳 VN 123
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|47 #3'
-  - 1|🇻🇳 VN 171
-  - 8|VN|(胖虎TG频道@gitbig) 2
-  - '0,5,6,7|🇸🇬|SG|@wxgqlfx|344 #4'
-  - 1|🇻🇳 VN 146
-  - 1,8|4Jadi-1197
-  - 0|HK香港(mibei77.com 米贝节点分享)
-  - '0,6,7|老油条-KR-韩国 #3'
-  - '10|HK香港(mibei77.com 米贝节点分享) #19'
-  - 6,8|🇯🇵 JP | 🟢 | ss | @outlinerelea...
-  - 1|🇻🇳 VN 151
-  - '8|TG:@hkaa0|日本 #8'
-  - 1|🇻🇳 VN 172
-  - '0,6,7|KR #16'
-  - 0,6,7,8,10|4Jadi-8015
-  - 8|🇸🇬新加坡6|(youtube阿伟科技)
-  - 1|🇻🇳 VN 155
-  - 1|🇻🇳 VN 165
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|31 #3'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 8|🇯🇵 日本 004
-  - '10|Ipxo+LLC+(SG) #1'
-  - 8|香港_5
-  - 1|🇻🇳 VN 10
-  - 2|kharid+server+(MOTFKRM)
-  - 8|韩国_5
-  - 8|4Jadi-2533
-  - 8|Relay_🇸🇬SG-🇸🇬SG_109
-  - 8|4Jadi-1269
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|33 #3'
-  - 5|🇭🇰+HK+香港+65
-  - 1|🇻🇳 VN 92
-  - '10|老油条-香港-cfcdn1 #1'
-  - 1|🇻🇳 VN 203
-  - '10|Microsoft+Corporation+(KR) #14'
+  - 8|🇸🇬 Singapore 06 TG@nodpai
+  - 8|🇸🇬SG-103.172.116.79-0823
+  - '0|KR韩国(mibei77.com 米贝节点分享) #2'
+  - '10|Oracle+Corporation+(KR) #3'
+  - 8|🇸🇬 Singapore 07 TG@nodpai
+  - 10|老油条-新加坡-cfcdn3
+  - 1|🇻🇳 VN 208
+  - 1|🇻🇳 VN 158
+  - 1|🇻🇳 VN 199
   - 8|KR|Github搜索TrojanLinks
-  - 1|🇻🇳 VN 140
-  - '1,2|🇻🇳 VN 13 #1'
-  - 8|🇭🇰香港3|(youtube阿伟科技)
-  - 1|🇻🇳 VN 213
-  - 1|🇭🇰 HK 2
-  - 1|🇻🇳 VN 44
-  - 1|🇻🇳 VN 254
-  - 8|JP/1|Github搜索TrojanLinks
-  - '0|HK香港(mibei77.com 米贝节点分享) #4'
-  - '8|>>@free4allVPN::JP #1'
-  - '8|SG|Github搜索TrojanLinks #4'
-  - '10|JP日本(mibei77.com 米贝节点分享) #77'
-  - '0|Aceville+Pte.ltd+(SG) #1'
-  - 1,8|4Jadi-1195
-  - '8|日本东京|Github搜索TrojanLinks #6'
-  - 8|4Jadi-8247
-  - 1|🇻🇳 VN 61
-  - 2|Japan-West_Azure
-  - 1|🇻🇳 VN 251
-  - '8,10|香港(yudou123.top 玉豆免费节点) #25'
-  - '0,6,7|KR #20'
-  - 1|🇻🇳 VN 33
-  - 1|🇻🇳 VN 343
-  - '10|Microsoft+Corporation+(SG) #13'
-  - '10|JP日本(mibei77.com 米贝节点分享) #58'
-  - 8|韩国_4
-  - '10|HK香港(mibei77.com 米贝节点分享) #21'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|40 #3'
-  - 8|🇭🇰香港4
-  - 6|Singapore+AWS
-  - 1|🇻🇳 VN 24
-  - '8,10|香港(yudou123.top 玉豆免费节点) #23'
-  - 1|🇻🇳 VN 209
-  - '4|(SG) Alibaba🇸🇬'') #1'
-  - '8,10|香港(yudou123.top 玉豆免费节点) #30'
-  - 1|🇻🇳 VN 288
-  - 1|🇻🇳 VN 234
-  - 1|🇻🇳 VN 120
-  - 8|TG@ZDYZ2 -HK-Hong Kong16
-  - 1|🇻🇳 VN 190
-  - 1|🇻🇳 VN 86
-  - 1|🇻🇳 VN 285
-  - 1|🇻🇳 VN 159
-  - 0|SG+Hong+Kong+Megalayer+Technol...
-  - 1|🇻🇳 VN 79
-  - '5,8|日本_12 #1'
-  - 5,6,7,8,10|🇰🇷KR-125.141.31.76-5020
-  - 11|@proNG1 🇸🇬 SG
-  - '8|SVNTEAN #3'
-  - 8,10|4Jadi-15220
-  - 8|VN|(胖虎TG频道@gitbig) 9
-  - 8|TG@ZDYZ2 -KR3
-  - '10|Amazon.com,+Inc.+(SG) #7'
-  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #5'
-  - 8|4Jadi-8245
-  - 1,8|🇸🇬SG-103.36.91.23-0311
-  - '8|Singapore Relay #1'
-  - 8|[量子]香港 01 1x
-  - 1|🇻🇳 VN 344
-  - '4|M247+Europe+SRL+(JP)")''><i cla... #1'
-  - 10|老油条-香港-cfcdns
-  - 8|翻墙会_日本3_自费：电报频道：https://t.me/c...
-  - 5|🇯🇵+JP+日本+78
-  - 2|🇰🇷|KR|韩国|@wxgqlfx|305
-  - 8|🇰🇷 韩国 07
+  - '10|Microsoft+Corporation+(SG) #1'
+  - '1,2|🇻🇳 VN 9 #1'
+  - 1|🇻🇳 VN 269
+  - 1|🇻🇳 VN 39
+  - 0|🇰🇷_KR_韩国
+  - '8|未命名 #15484'
+  - '8|台湾 #8'
+  - 8|🇰🇷+KR+韩国+44
+  - 1,2|🇻🇳 VN 2
+  - 1|🇻🇳 VN 304
+  - 1|🇻🇳 VN 217
+  - 1|🇻🇳 VN 115
+  - 8,9|🇻🇳VN-103.15.91.171-5039
+  - 1|🇻🇳 VN 156
+  - 8|TG@ZDYZ2 -KR8
+  - 1|🇻🇳 VN 253
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
+  - '0|Akamai+Technologies,+Inc.+(SG) #1'
+  - 1|🇻🇳 VN 166
+  - 1|🇻🇳 VN 255
+  - 1|🇻🇳 VN 175
+  - 1|🇻🇳 VN 25
+  - 1|🇻🇳 VN 143
+  - 1|🇻🇳 VN 145
   - '0,4,5,6,7|台湾 #6'
-  - '1,2|🇻🇳 VN 29 #1'
-  - 1,6,7,8,10|🇻🇳VN-103.163.218.2-0311
-  - 2|香港BPG
-  - 8|台湾Hinet2 | 解锁流媒体
-  - 8|🇭🇰HK-103.149.183.154-5219
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|55 #3'
-  - '0,6,7|🇯🇵|JP|@wxgqlfx|52 #3'
-  - 0|SG+The+Constant+Company++LLC
-  - 1|🇻🇳 VN 214
+  - 2|🇹🇼台湾2
+  - '6,8|Singapore Digital Ocean #2'
+  - 1|🇻🇳 VN 180
+  - 1|🇻🇳 VN 275
+  - 8|SVNTEAM-TLS🇩🇪-22
+  - 8|🇸🇬SG-217.197.161.138-0166
   - 1|🇻🇳 VN 303
-  - 2|🇭🇰HK-Apernet-0.2X
+  - 8|4Jadi-52
+  - 1|🇻🇳 VN 188
+  - '10|Microsoft+Corporation+(SG) #13'
+  - 1|🇻🇳 VN 302
+  - 1|🇻🇳 VN 323
+  - 1,8|🇰🇷KR-154.90.63.177-0304
+  - '10|Microsoft+Corporation+(SG) #3'
+  - 8|4Jadi-3908
+  - 1|🇻🇳 VN 178
+  - 1|🇻🇳 VN 116
+  - '8|SVNTEAN #3'
+  - 1|🇻🇳 VN 125
+  - 1|🇻🇳 VN 98
+  - 5|🇰🇷+KR+韩国+22
+  - '8|Taiwan|Github搜索TrojanLinks #1'
+  - 1|🇻🇳 VN 322
+  - 2|🇰🇷韩国
+  - 1,2,8|4Jadi-1211
+  - 1|🇻🇳 VN 94
+  - 1|🇻🇳 VN 55
+  - 1|🇻🇳 VN 245
+  - 1|🇻🇳 VN 183
+  - 1|🇻🇳 VN 18
+  - '0|Amazon.com,+Inc.+(SG) #1'
+  - 1|🇻🇳 VN 272
+  - '10|Microsoft+Corporation+(KR) #16'
+  - '10|Microsoft+Corporation+(KR) #11'
+  - 8|VN|(胖虎TG频道@gitbig) 8
+  - 1|🇻🇳 VN 325
+  - 1|🇻🇳 VN 60
+  - 8|4Jadi-4398
+  - 1|🇻🇳 VN 73
+  - 8|翻墙会_韩国3_自费+电报频道：：https://t.me/...
+  - '4|(SG) Akamai Technologies 🇸🇬  🇸... #2'
+  - 8|🇰🇷 韩国 08
+  - 0|SG_speednode_0119
+  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
+  - 2|台湾-Trojan②
+  - 1|🇻🇳 VN 241
+  - 1|🇻🇳 VN 28
+  - 1|🇻🇳 VN 8
+  - 2|>🇰🇷+KR|Hs|0706|TG@FProxies|
+  - 2|🇸🇬新加坡-04_解锁
+  - 4|(SG) Alibaba🇸🇬')">
+  - 8|🇸🇬SG-217.197.161.166-0137
+  - 1|🇻🇳 VN 108
+  - '1,8,9,10|🇻🇳 越南|@ripaojiedian #1'
+  - '8,9|🇻🇳 VN | 🟢 | ss | @ip_cf_config... #9'
+  - 1|🇻🇳 VN 147
+  - 1|🇻🇳 VN 61
+  - 1|🇻🇳 VN 268
+  - 2|SG-https://t.me/azure_v2less
+  - 1|🇻🇳 VN 119
+  - 8|VN|(胖虎TG频道@gitbig) 2
+  - 10|Oracle+Corporation+(KR)
+  - 8|韩国_26
+  - 1|🇻🇳 VN 139
+  - '10|Aceville+Pte.ltd+(SG) #5'
+  - 1|🇻🇳 VN 319
+  - 1|🇻🇳 VN 100
+  - 8|🇸🇬新加坡6|(youtube阿伟科技)
+  - '0,6,7|SG #10'
+  - 1|🇻🇳 VN 220
+  - 2|香港BPG
+  - 8|VN|(胖虎TG频道@gitbig) 13
+  - '10|Microsoft+Corporation+(SG) #4'
+  - "8|TG频道:@hkaa0▓新加坡\r_2"
+  - '1,2|🇻🇳 VN 29 #1'
+  - '0|SG #2'
+  - "8|\U0001F1F8\U0001F1EC _SG_新加坡\r_3"
+  - '8|未命名 #10940'
+  - '0,6,7|KR #16'
+  - 1|🇻🇳 VN 140
+  - 1|🇻🇳 VN 16
+  - 1|🇻🇳 VN 334
+  - 1|🇻🇳 VN 64
+  - 1|🇻🇳 VN 320
+  - '2|🇸🇬 SG 2 #1'
+  - 1|🇻🇳 VN 181
+  - '10|Microsoft+Corporation+(KR) #4'
+  - '10|Aceville+Pte.ltd+(SG) #9'
+  - 1|🇻🇳 VN 174
+  - '0,6,7|老油条-台湾 #3'
+  - '8|韩国首尔特别市|Github搜索TrojanLinks #1'
+  - 1|🇻🇳 VN 248
+  - 2|Singapore+Relayed
+  - '1,2|🇻🇳 VN 20 #1'
+  - 1|🇻🇳 VN 79
+  - 1|🇻🇳 VN 226
+  - '10|Oracle+Corporation+(KR) #4'
+  - 1,6|yandex-1234
+  - 8|🇸🇬 Singapore 10 TG@nodpai
+  - 10|M247+Europe+SRL+(SG)
+  - 8|新加坡_0720008
+  - 1,8|4Jadi-1208
+  - 1|🇻🇳 VN 251
+  - 1|🇻🇳 VN 74
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|5
+  - 1|🇻🇳 VN 301
+  - 1|🇻🇳 VN 87
+  - '10|Microsoft+Corporation+(SG) #8'
+  - 1|🇻🇳 VN 101
+  - 1|🇻🇳 VN 128
+  - '1,2|🇻🇳 VN 19 #1'
+  - 1,8|4Jadi-1204
+  - '10|Amazon.com,+Inc.+(SG) #11'
+  - 1|🇻🇳 VN 202
+  - 1|🇻🇳 VN 265
+  - 1|🇻🇳 VN 71
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|2
+  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #1'
+  - 0|SG_speednode_0118
+  - 1|🇻🇳 VN 118
+  - 1|🇻🇳 VN 171
+  - "8|TG频道:@hkaa0▓台湾\r"
+  - '10|Aceville+Pte.ltd+(SG) #8'
+  - '1,2|🇻🇳 VN 31 #1'
+  - 1|🇻🇳 VN 97
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|6
+  - 1|🇻🇳 VN 83
+  - 1,8,9|4Jadi-1200
+  - 1|🇻🇳 VN 110
+  - 1|🇻🇳 VN 205
+  - 1|🇻🇳 VN 207
+  - 1,8,9|4Jadi-1191
+  - '8|SVNTEAM-TLS #1'
+  - 5|韩国_1
+  - 1|🇻🇳 VN 21
+  - 1|🇻🇳 VN 42
+  - '10|First+Server+Limited+(SG) #1'
+  - '10|Microsoft+Corporation+(SG) #7'
+  - 1|🇻🇳 VN 157
+  - 10|Korea+Telecom+(KR)
+  - 1|🇻🇳 VN 271
+  - '8|Singapore Relay #1'
+  - 2|https://t.me/VTWORAY_WOLF
+  - 1,8,9|4Jadi-1214
+  - '10|Microsoft+Corporation+(KR) #10'
+  - 5|Digitalocean,+LLC+(SG)
+  - 8|🇸🇬_SG_新加坡_Cow Vagina_23
+  - 1|🇻🇳 VN 340
+  - 1|🇻🇳 VN 344
+  - 1|🇻🇳 VN 22
+  - 8|🇸🇬_SG_新加坡_2
+  - 1|🇻🇳 VN 246
+  - 8|4Jadi-3915
+  - 8|SVNTEAM-TCP
+  - 1|🇻🇳 VN 77
+  - 8|Mahsa+:+🇸🇬+Singapore
+  - 1|🇻🇳 VN 330
+  - 4|DigitalOcean,+LLC+(SG)")'><i c...
+  - '0,5,6,7|🇸🇬|SG|@wxgqlfx|344 #4'
+  - '0|Akamai+Technologies,+Inc.+(SG) #2'
+  - 8|🇸🇬 V0 SGP-000T | 0.05x比率 | 红了就...
+  - 10|(KR) Oracle Cloud🇰🇷
+  - '10|Oracle+Corporation+(SG) #13'
+  - '10|Oracle+Corporation+(SG) #18'
+  - 1|🇻🇳 VN 91
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|1
+  - 2|OracleKorea_<
+  - 5|韩国_27
+  - 1|🇻🇳 VN 35
+  - 1|🇻🇳 VN 148
+  - '10|Digitalocean,+LLC+(SG) #8'
+  - 1|🇻🇳 VN 193
+  - 8|🇸🇬SG-103.172.116.79-0124
+  - 8|台湾 M1 | 流媒体 | 0x
+  - 1|🇻🇳 VN 102
+  - '8|未命名 #12679'
+  - 8|TG@ZDYZ2 -TW5
+  - 1|🇻🇳 VN 276
+  - '1,2|🇻🇳 VN 33 #1'
+  - '1,2|🇻🇳 VN 15 #1'
+  - '10|Korea+Telecom+(KR) #4'
+  - 1|🇻🇳 VN 211
+  - 1|🇻🇳 VN 123
+  - 1|🇻🇳 VN 67
+  - 8|🇰🇷 KR | 🟢 | ss | @free1ss | 14
+  - 1|🇻🇳 VN 31
+  - 1|🇻🇳 VN 314
+  - '1,2|🇻🇳 VN 11 #1'
+  - 10|老油条-新加坡-cdn2
+  - 1|🇻🇳 VN 68
+  - 1,8|4Jadi-1209
+  - 8|4Jadi-4043
+  - '0|KR韩国(mibei77.com 米贝节点分享) #9'
+  - 1|🇻🇳 VN 247
+  - 1|🇻🇳 VN 130
+  - 8|4Jadi-3907
+  - 1|🇻🇳 VN 254
+  - '0,6,7|KR #20'
+  - 1|🇻🇳 VN 89
+  - 8|4Jadi-3455
+  - 1|🇻🇳 VN 117
+  - '0|KR韩国(mibei77.com 米贝节点分享) #1'
+  - 8|⚡ b2n.ir/v2ray-configs | 551
+  - 1|🇻🇳 VN 99
+  - 1|🇻🇳 VN 133
+  - 1,8|4Jadi-1195
+  - 8|Taiwan|Github搜索TrojanLinks
+  - 8|韩国_6
+  - 2|🇨🇳台湾03
+  - 1|🇻🇳 VN 63
+  - '10|HONG+KONG+Megalayer+Technology... #2'
+  - 2|🇰🇷韩国KT家宽
+  - '10|HONG+KONG+Megalayer+Technology... #4'
+  - '4|Contabo+Asia+Private+Limited+(... #1'
+  - '8,11|🇸🇬新加坡 #2'
+  - 2|https://t.me/VTWORAY_WOLF+🇷🇺
+  - 2|韩国公益线路2(4Gbps)@ggboo_bot
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|305
+  - '0|KR韩国(mibei77.com 米贝节点分享) #3'
+  - 1,8|🇸🇬SG-103.36.91.23-0311
+  - 1|🇻🇳 VN 236
+  - 1|🇻🇳 VN 328
+  - '10|老油条-新加坡-cfcdn1 #1'
+  - 2|OVHSingapore_<
+  - 1|🇻🇳 VN 191
+  - 1|🇻🇳 VN 122
+  - '0|KR韩国(mibei77.com 米贝节点分享) #5'
+  - 5|TG@ZDYZ2 -SG-Singapore1
+  - 2|🇰🇷KR-146.56.191.191-0605
+  - 1|🇻🇳 VN 146
+  - 1|🇻🇳 VN 195
+  - 1|🇻🇳 VN 141
+  - 1|🇻🇳 VN 242
+  - 2|韩国公益线路@ggboo_bot(500M)
+  - 1,8|4Jadi-1194
+  - 1|🇻🇳 VN 131
+  - 1|🇻🇳 VN 249
+  - 1,8|4Jadi-1216
+  - 2|خرید+پایدار+ترین+کانفیگ+ها+از+...
+  - 1|🇻🇳 VN 15
+  - 6|Singapore+AWS
+  - 1|🇻🇳 VN 33
+  - '0|KR韩国(mibei77.com 米贝节点分享) #6'
+  - 1|🇻🇳 VN 177
+  - '10|Aceville+Pte.ltd+(SG) #3'
+  - 1|🇻🇳 VN 182
+  - 5|SG+Alibaba+us+Technology+Co+++...
+  - "8|TG频道:@hkaa0▓新加坡\r_3"
+  - 1|🇻🇳 VN 66
+  - '1,2|🇻🇳 VN 28 #1'
+  - 1|🇻🇳 VN 10
+  - 1|🇻🇳 VN 240
+  - '10|Microsoft+Corporation+(KR) #13'
+  - 1|🇸🇬 SG 2
+  - 8|韩国_11
+  - 8|🇸🇬SG-217.197.161.164-0145
+  - '10|Oracle+Corporation+(KR) #1'
+  - 1|🇻🇳 VN 179
+  - 1|🇻🇳 VN 50
+  - '1,2|🇻🇳 VN 6 #1'
+  - 1|🇻🇳 VN 286
+  - 1|🇻🇳 VN 49
+  - 8,10|4Jadi-10226
+  - 1|🇻🇳 VN 261
+  - 1|🇻🇳 VN 235
+  - 1|🇻🇳 VN 190
+  - 1|🇻🇳 VN 155
+  - '0,6,7|KR #18'
+  - 8|新加坡_3
+  - '10|Microsoft+Corporation+(SG) #10'
+  - 1|🇻🇳 VN 138
+  - '10|Microsoft+Corporation+(SG) #5'
+  - 8|🇸🇬SG-81.90.189.152-0160
+  - 5|TG@ZDYZ2 -KR1
+  - '0|KR韩国(mibei77.com 米贝节点分享) #4'
+  - 1|🇻🇳 VN 256
+  - 8|韩国_2
+  - 8|🇰🇷 韩国 14
+  - 1|🇻🇳 VN 75
+  - '10|Microsoft+Corporation+(KR) #6'
+  - 5|TG@ZDYZ2 -TW1
+  - 1|🇻🇳 VN 129
+  - '10|Microsoft+Corporation+(KR) #3'
+  - 8|4Jadi-677
+  - 1|🇻🇳 VN 201
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
+  - 8|TG@ZDYZ2 -SG-Singapore3
+  - 1|🇻🇳 VN 48
+  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #5'
+  - 1|🇻🇳 VN 84
+  - 11|🇸🇬新加坡
+  - 1|🇻🇳 VN 46
+  - '1,2|🇻🇳 VN 27 #1'
+  - 1|🇻🇳 VN 114
+  - 8|👉 @Hddify || چنل هدیفای 🍄`
+  - 1|🇻🇳 VN 173
+  - 1|🇻🇳 VN 150
+  - 1|🇻🇳 VN 163
+  - 8|韩国_3
+  - 1|🇻🇳 VN 85
+  - '10|Oracle+Corporation+(KR) #5'
+  - 8|TG@ZDYZ2 -KR3
+  - '8|Singapore AWS #1'
+  - 1|🇻🇳 VN 257
+  - '8|KR|Github搜索TrojanLinks #2'
+  - 2|韩国1_2
+  - 0|Akamai+Technologies,+Inc.+(SG)
+  - 8|🇸🇬SG-103.172.116.103-3721
+  - 1|🇻🇳 VN 81
+  - '10|Microsoft+Corporation+(KR) #1'
+  - 2|AZ-KoreaCentral
+  - 1|🇻🇳 VN 121
+  - '8|SVNTEAM-TCP #1'
+  - 8|🇰🇷KR-154.90.62.168-0312
+  - 8|CSGO
+  - 1|🇻🇳 VN 52
+  - 0|15|SG_speednode_0121
+  - '8|>>@v2ray_configs_pool::SG #1'
+  - 0|Microsoft+Corporation+(SG)
+  - 8|韩国_5
+  - 1|🇻🇳 VN 78
+  - '10|Akamai+Technologies,+Inc.+(SG) #10'
+  - 1|🇻🇳 VN 69
+  - 1|🇻🇳 VN 172
+  - '10|Green+Floid+LLC+(SG) #3'
+  - '8|未命名 #10870'
+  - 0|SG_speednode_0120
+  - '10|SG #3'
+  - 2|新加坡公益线路@GM888VⅠP(3Gbps)
+  - 1|🇻🇳 VN 126
+  - 1|🇻🇳 VN 266
+  - 1|🇻🇳 VN 234
+  - '0|KR #3'
+  - "8|TG频道:@hkaa0▓新加坡\r_1"
+  - 1|🇻🇳 VN 316
+  - '7|🇸🇬[openproxylist.com] vless-SG #2'
+  - 1,2,8|4Jadi-790
+  - 8|新加坡_4
+  - '1,2|🇻🇳 VN 30 #1'
+  - 11|@proNG1 🇸🇬 SG
+  - 1|🇻🇳 VN 12
+  - '10|Microsoft+Corporation+(KR) #2'
+  - '8|未命名 #16499'
+  - 4|Akamai+Technologies,+Inc.+(SG)...
+  - '4|台湾 #3'
+  - 1|🇻🇳 VN 285
+  - 8|4Jadi-4595
+  - 1|🇻🇳 VN 264
+  - '0,6,7|KR #17'
+  - 1|🇻🇳 VN 252
+  - 8|🇰🇷+KR+韩国+40
+  - 0|SG+Softlayer+Technologies+Inc
+  - 8|韩国首尔特别市|Github搜索TrojanLinks
+  - '10|Microsoft+Corporation+(KR) #7'
+  - 1|🇻🇳 VN 321
+  - 1|🇻🇳 VN 244
+  - 8|🇸🇬SG-103.172.116.103-3716
+  - 1|🇻🇳 VN 250
+  - 8|UK/1|Github搜索TrojanLinks
+  - 1|🇻🇳 VN 167
+  - 1|🇻🇳 VN 329
+  - '8|未命名 #12757'
+  - 8|SG_128
+  - 1|🇻🇳 VN 96
+  - 1|🇻🇳 VN 43
+  - 1|🇻🇳 VN 124
+  - '2|Singapore+AWS #3'
+  - '10|Microsoft+Corporation+(SG) #11'
+  - 8|Relay_🇸🇬SG-🇸🇬SG_108
+  - 8|🇸🇬SG-103.172.116.79-0818
+  - '8|SVNTEAN #2'
+  - '10|Microsoft+Corporation+(KR) #12'
+  - 1,8|4Jadi-1203
+  - 8|🇸🇬SG-103.172.116.79-0820
+  - 5|🇰🇷+KR+韩国+53
+  - 1,8|4Jadi-1196
+  - 8|🇸🇬新加坡4
+  - 8|4Jadi-8247
+  - 1|🇻🇳 VN 51
+  - 2,8|4Jadi-3807
+  - 1|🇻🇳 VN 95
+  - '8|韩国首尔特别市|Github搜索TrojanLinks #2'
+  - 1|🇻🇳 VN 189
+  - '5|Digitalocean,+LLC+(SG) #2'
+  - '0,6,7|老油条-SG-新加坡 #3'
+  - 1|🇻🇳 VN 59
+  - 1|🇻🇳 VN 45
+  - 8|韩国_4
+  - 0|Oracle+Corporation+(SG)
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|4
+  - 1|🇻🇳 VN 40
+  - 1|🇻🇳 VN 169
+  - 1|🇻🇳 VN 30
+  - 8|🇰🇷KR-218.237.185.230-0326
+  - 1|🇻🇳 VN 310
+  - 1|🇻🇳 VN 34
+  - 1|🇻🇳 VN 221
+  - 1|🇻🇳 VN 223
+  - 8|新加坡G-Core | 解锁流媒体
+  - '8,10|美国(yudou123.top 玉豆免费节点) #46'
+  - 1|🇻🇳 VN 103
+  - '5,6|@NpvV2rayFilTer #1'
+  - '8,10|新加坡3|@ripaojiedian #1'
+  - 1,8|t.me/entryNET/config=183791990...
+  - '8|SG|Github搜索TrojanLinks #4'
+  - 2|Japan-02
+  - 0|SG+The+Constant+Company++LLC
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|12
+  - '1,2|🇻🇳 VN 5 #1'
+  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
+  - 1|🇻🇳 VN 313
+  - 1|🇻🇳 VN 17
+  - 8|🇸🇬SG-103.172.116.79-0819
+  - '2|Singapore+AWS #4'
+  - 8|SG_127
+  - '10|Microsoft+Corporation+(SG) #14'
+  - 1|🇻🇳 VN 222
+  - '10|老油条-新加坡-cfcdns #1'
+  - 8|Singapore M247
+  - 1|🇻🇳 VN 88
+  - 1|🇻🇳 VN 47
+  - 2|kharid+server+(MOTFKRM)
+  - 1|🇻🇳 VN 120
+  - 8|🇸🇬SG-103.172.116.79-0825
+  - 1|🇻🇳 VN 164
+  - 1|🇻🇳 VN 343
+  - 8|越南-3号
+  - '10|Amazon.com,+Inc.+(SG) #15'
+  - 1|🇻🇳 VN 86
+  - '10|Oracle+Corporation+(SG) #23'
+  - 8|4Jadi-1217
+  - 1|🇻🇳 VN 53
+  - 1|🇻🇳 VN 185
+  - '1,8|🇻🇳 VN | 🟢 | ss | @ip_cf_config... #8'
+  - 1|🇻🇳 VN 82
+  - 10|HONG+KONG+Megalayer+Technology...
+  - 8|VN|(胖虎TG频道@gitbig) 11
+  - '1,2|🇻🇳 VN 12 #1'
+  - '2|🇸🇬 SG 4 #1'
+  - 1|🇻🇳 VN 229
+  - 1|🇻🇳 VN 113
+  - 1|🇻🇳 VN 38
+  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #3'
+  - 1,8|4Jadi-1199
+  - 1|🇻🇳 VN 37
+  - 1|🇻🇳 VN 230
+  - 5|TG@ZDYZ2 -TW3
+  - 1|🇻🇳 VN 184
+  - 0|Microsoft+Corporation+(KR)
+  - 8|🇰🇷+KR+韩国+17
+  - 0|Aceville+Pte.ltd+(SG)
+  - 1|🇻🇳 VN 127
+  - 2|韩国3
+  - '10|Microsoft+Corporation+(KR) #5'
+  - 2|GcoreSingapore_<
+  - 0|SG新加坡(mibei77.com 米贝节点分享)
+  - '0,6,7|老油条-KR-韩国 #3'
+  - '8|🇸🇬SG-217.197.161.136-0153 #1'
+  - '1,2|🇻🇳 VN 17 #1'
+  - 8|🇸🇬SG-81.90.189.18-0163
+  - 8|[量子]新加坡 01 1x
+  - "8|TG频道:@hkaa0▓韩国\r_2"
+  - 1,2,6,7,8,10|4Jadi-159
+  - '10|Microsoft+Corporation+(SG) #9'
+  - 8|4Jadi-1269
+  - 2|新加坡公益路线2@ggboo_bot(4GPS)
+  - 1|🇻🇳 VN 338
+  - 1|🇻🇳 VN 159
+  - '10|Oracle+Corporation+(KR) #7'
+  - 1|🇻🇳 VN 36
+  - 1|🇻🇳 VN 192
+  - 1|🇻🇳 VN 317
+  - 1,8|4Jadi-1212
+  - 1|🇻🇳 VN 327
+  - 10|Alibaba+Cloud+(Singapore)+Priv...
+  - 1|🇻🇳 VN 288
+  - 8|韩国_15
+  - '1,2|🇻🇳 VN 24 #1'
+  - 1|🇻🇳 VN 151
+  - '10|Korea+Telecom+(KR) #2'
+  - '8|未命名 #17858'
+  - '0|KR韩国(mibei77.com 米贝节点分享) #7'
+  - 8|4Jadi-3906
+  - 8|🇹🇼TW-154.223.20.79-0313
+  - 8|⚡ b2n.ir/v2ray-configs | 490
+  - 1|🇻🇳 VN 186
+  - 8|🇰🇷+KR+韩国+50
+  - 10|老油条-新加坡-cdn
+  - "8|TG频道:@hkaa0▓韩国\r_1"
+  - 8|TG@ZDYZ2 -TW4
+  - 1|🇻🇳 VN 198
+  - 1|🇻🇳 VN 176
+  - 5|日本 03
+  - 1|🇻🇳 VN 315
+  - 1|🇻🇳 VN 161
+  - 8|台湾Hinet2 | 解锁流媒体
+  - '10|(KR) Oracle Cloud🇰🇷 #1'
+  - 1|🇻🇳 VN 107
+  - '10|Green+Floid+LLC+(SG) #4'
+  - '2|台湾 #7'
+  - 2|🇰🇷|KR|韩国|@wxgqlfx|307
+  - 1|🇻🇳 VN 54
+  - 0|TW
+  - 1|🇻🇳 VN 57
+  - 8|VN|(胖虎TG频道@gitbig) 9
+  - 1|🇻🇳 VN 274
+  - '10|Oracle+Corporation+(KR) #2'
+  - 1|🇻🇳 VN 44
+  - '1,2|🇻🇳 VN 16 #1'
+  - 1|🇻🇳 VN 218
+  - '4|(SG) Akamai Technologies 🇸🇬  🇸... #1'
+  - '8|SVNTEAN #4'
+  - '1,2|🇻🇳 VN 34 #1'
+  - '0|Amazon.com,+Inc.+(SG) #2'
+  - 1|🇻🇳 VN 209
+  - 1|🇻🇳 VN 206
+  - '8|SG|Github搜索TrojanLinks #2'
+  - 1|🇻🇳 VN 210
+  - 5|🇰🇷+KR+韩国+46
+  - 8|4Jadi-12077
+  - '8|SG|Github搜索TrojanLinks #1'
+  - 10|老油条-新加坡-cfcdn2
+  - 1|🇻🇳 VN 142
+  - '0,6,7|🇸🇬|SG|@wxgqlfx|345 #3'
+  - 1|🇻🇳 VN 105
+  - 8|🇸🇬 新加坡  01（二区）
+  - 0|Digitalocean, LLC (SG)
+  - 8|TG@ZDYZ2 -SG-Singapore5
+  - 1|🇻🇳 VN 231
+  - 1|🇻🇳 VN 20
+  - 1|🇻🇳 VN 149
+  - 8|🇰🇷 韩国 07
+  - 8|4Jadi-8655
+  - 1|🇻🇳 VN 24
+  - '10|Microsoft+Corporation+(KR) #8'
+  - 1|🇻🇳 VN 27
+  - 8|🇸🇬+SG+新加坡+18
+  - '8|SG|Github搜索TrojanLinks #3'
+  - 1,8|4Jadi-1202
+  - 1,8|🇹🇼TW-1.162.9.89-5047
+  - '10|Green+Floid+LLC+(SG) #2'
+  - 8|[量子]新加坡 02 1x
+  - 1|🇻🇳 VN 132
+  - '1,5,8|>>@ShadowsocksM::VN #1'
+  - '10|Alibaba+Cloud+(Singapore)+Priv... #6'
+  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #4'
+  - '10|Akamai+Technologies,+Inc.+(SG) #7'
+  - 0|SG+Oracle+Corporation
+  - '10|Akamai+Technologies,+Inc.+(SG) #5'
+  - 2|🇩🇪VTWORAY_WOLF
+  - 1|🇻🇳 VN 106
+  - 1|🇻🇳 VN 232
+  - 8|🇹🇼TW-185.189.160.98-0262
+  - 10|老油条-新加坡-cdn1
+  - 8|韩国_7
+  - 1,8|4Jadi-1197
+  - 1|🇻🇳 VN 165
+  - 1|🇻🇳 VN 281
+  - 1|🇻🇳 VN 80
+  - '8|韩国|@ripaojiedian #4'
+  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
+  - 4|VPLS,+Inc.+(SG)")'><i class="f...
+  - 1|🇻🇳 VN 92
+  - 1|🇻🇳 VN 162
+  - '8|SVNTEAN #1'
+  - 1|🇻🇳 VN 312
+  - 1|🇻🇳 VN 228
+  - 4|(SG) Akamai Technologies 🇸🇬  🇸...
+  - 2,8|4Jadi-8083
+  - 1|🇻🇳 VN 196
+  - '10|Microsoft+Corporation+(SG) #6'
+  - 2|Relay_🇰🇷KR-🇰🇷KR_89
+  - 1|🇻🇳 VN 273
+  - 1|🇻🇳 VN 297
+  - '4|(SG) Alibaba🇸🇬'') #1'
+  - 1|🇻🇳 VN 233
+  - 2|🇰🇷KR-2830-t.me/NetFreedom0
+  - '1,2|🇻🇳 VN 21 #1'
+  - 4|Oracle+Corporation+(KR)")'><i ...
+  - 6|@ev2rayy vless://a08e37ad-e4ab...
+  - 1,6,7,8,10|🇻🇳VN-103.163.218.2-0311
+  - 1|🇻🇳 VN 200
+  - 8|新加坡_1
+  - 8|4Jadi-3150
+  - 4|Oracle+Corporation+(SG)")'><i ...
+  - 0|(KR)Oracle Corporation-[NTls]
+  - 8|SG|Github搜索TrojanLinks
+  - '2|韩国2 #1'
+  - 8|🇸🇬SG-103.172.116.103-0798
+  - 1|🇻🇳 VN 263
+  - 1|🇻🇳 VN 258
+  - 1|🇻🇳 VN 216
+  - 5|韩国_30
+  - 1|🇻🇳 VN 109
+  - 1|🇻🇳 VN 215
+  - '8|未命名 #11 #1'
+  - '0|Aceville+Pte.ltd+(SG) #1'
+  - 8|🇸🇬SG-103.172.116.103-0767
+  - '1,2|🇻🇳 VN 13 #1'
+  - 1|🇻🇳 VN 270
+  - 1,8,11|4Jadi-8338
+  - 1|🇻🇳 VN 243
+  - 2|Vless-KR-Microsoft_Azure
+  - 1|🇻🇳 VN 333
+  - 8|新加坡_1211235
+  - 1|🇻🇳 VN 134
+  - 0|SG+Hong+Kong+Megalayer+Technol...
+  - 1|🇻🇳 VN 58
+  - 8|🇸🇬新加坡3
+  - '2,8,11|🇸🇬_SG_新加坡_5 #2'
+  - 1|🇻🇳 VN 160
+  - 1,8|4Jadi-1210
+  - '10|DigitalOcean,+LLC+(SG) #9'
+  - 0|SG+Digital+Ocean+2+🇸🇬
+  - 8|Singapore AWS
+  - '1,2|🇻🇳 VN 14 #1'
+  - 1|🇻🇳 VN 135
+  - 1|🇻🇳 VN 291
+  - '10|Amazon.com,+Inc.+(SG) #6'
+  - 8|Relay_🇸🇬SG-🇸🇬SG_109
+  - 1|🇻🇳 VN 318
+  - '2|Singapore+AWS #2'
+  - 1|🇻🇳 VN 194
+  - '2|kharid+server+(MOTFKRM) #1'
+  - '1,2|🇻🇳 VN 26 #1'
+  - '0,6,7|SG #11'
+  - 1|🇻🇳 VN 70
+  - 1|🇻🇳 VN 170
+  - 8|SVNTEAN
+  - 8|4Jadi-8245
+  - '5,8|韩国_29 #1'
+  - 8|🇰🇷+KR+韩国+43
+  - 1|🇻🇳 VN 336
+  - 2|AppleSingapore_<
+  - 1|🇻🇳 VN 111
+  - 1|🇻🇳 VN 62
+  - 2|Singapore+Digital+Ocean
+  - 8|🇸🇬 新加坡-220.0KB/s(Youtube不良林)
+  - 1|🇻🇳 VN 203
+  - 2|新加坡1
+  - 8|4Jadi-4923
+  - 5|🇰🇷+KR+韩国+39
+  - 1|🇻🇳 VN 65
+  - 1|🇻🇳 VN 90
+  - 8|TG@ZDYZ2 -KR5
+  - 1,2,8|4Jadi-1192
+  - 1|🇻🇳 VN 29
+  - '8|KR|Github搜索TrojanLinks #1'
+  - 1|🇻🇳 VN 56
+  - 8|SG_124
+  - 8|新加坡新加坡|Github搜索TrojanLinks
+  - '10|KR #6'
+  - '10|Amazon.com,+Inc.+(SG) #14'
+  - 8|🇸🇬SG-103.172.116.103-0788
+  - '10|Ipxo+LLC+(SG) #2'
+  - 0|(KR)Korea Telecom-[Tls]
+  - 1|🇻🇳 VN 144
+  - 1|🇻🇳 VN 93
+  - '1,2|🇻🇳 VN 32 #1'
+  - 1,2,8|4Jadi-14103
+  - 0|SG+SoftLayer+Technologies+🇸🇬
+  - 1|🇸🇬 SG 4
+  - '1,2|🇻🇳 VN 22 #1'
+  - '2|خرید+پایدار+ترین+کانفیگ+ها+از+... #2'
+  - '0|Akamai+Technologies,+Inc.+(SG) #3'
+  - 1,8|4Jadi-1193
+  - 6|Singapore Relay
+  - 1|🇻🇳 VN 296
+  - '10|Microsoft+Corporation+(SG) #12'
+  - 2|韩国2
+  - '1,2|🇻🇳 VN 18 #1'
+  - '10|Microsoft+Corporation+(KR) #14'
+  - 8|VN|(胖虎TG频道@gitbig) 4
+  - 8|4Jadi-3941
+  - '1,2|🇰🇷 KR 1 #1'
+  - 1|🇻🇳 VN 219
+  - 8|4Jadi-489
+  - '1,2|🇻🇳 VN 4 #1'
+  - '1,2|🇻🇳 VN 23 #1'
+  - '1,2|🇻🇳 VN 10 #1'
+  - '0|KR韩国(mibei77.com 米贝节点分享) #8'
+  - 8|🇸🇬 Singapore 18 TG@nodpai
+  - 1|🇻🇳 VN 72
+  - 0|KR韩国(mibei77.com 米贝节点分享)
+  - '0,6,7|🇹🇼|TW|@wxgqlfx|357 #3'
+  - 2|韩国公益线路@ggboo_bot
+  - 2|韩国公益节点@ggboo_bot(4Gps)
+  - 2|Relay_🇹🇼TW-🇹🇼TW_99
+  - 8|🇸🇬_SG_新加坡_7
+  - '10|Microsoft+Corporation+(KR) #15'
+  - '8|⚡ b2n.ir/v2ray-configs | 623 #2'
+  - 8|SG_13.250.107.81_03152023b7fd-...
+  - 10|ByteVirt+LLC+(SG)
+  - 8|🇰🇷 韩国 30
+  - '10|Oracle+Corporation+(SG) #25'
+  - 1|🇻🇳 VN 32
+  - 1|🇻🇳 VN 187
+  - 1|🇻🇳 VN 11
+  - 1|🇻🇳 VN 6
+  - 1|🇻🇳 VN 227
+  - 1|🇻🇳 VN 237
+  - 1|🇻🇳 VN 154
+  - 0|SG+Amazon+com++Inc
+  - '1,2|🇻🇳 VN 25 #1'
+  - 5|🇸🇬+SG+新加坡+51
+  - 1|🇻🇳 VN 279
+  - '5,8|🇸🇬SG-103.172.116.103-0795 #1'
+  - 1|🇻🇳 VN 212
+  - 5|韩国_32
+  - 1|🇻🇳 VN 260
+  - 5|🇹🇼+TW+台湾+41
+  - '10|Amazon.com,+Inc.+(SG) #7'
+  - '1,2|🇻🇳 VN 3 #1'
+  - '5|Akamai+Technologies,+Inc.+(SG) #4'
+  - 1|🇻🇳 VN 214
+  - 2,8|4Jadi-4405
+  - 5,6,7,8,10|🇰🇷KR-125.141.31.76-5020
+  - '8|未命名 #10369'
+  - '10|Ipxo+LLC+(SG) #1'
+  - 1|🇻🇳 VN 311
+  - 1|🇻🇳 VN 267
+  - 1|🇻🇳 VN 238
+  - 1|🇻🇳 VN 213
   tolerance: 50
   type: url-test
   url: http://www.pinterest.com
