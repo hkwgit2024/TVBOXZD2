@@ -131,28 +131,37 @@ session.mount('https://', HTTPAdapter(max_retries=retries))
 def parse_ss_link(link, index, url):
     try:
         if link.startswith('ss://'):
-            # 解码 Base64 部分（去除 ss:// 前缀）
-            encoded = link[5:].split('#')[0].split('@')[0]
+            parts = link.split('://', 1)[1]
+            encoded = parts.split('#')[0].split('@')[0] if '@' in parts else parts.split('?')[0]
             decoded = base64.urlsafe_b64decode(encoded + '==' * (-len(encoded) % 4)).decode('utf-8', errors='ignore')
-            # 提取加密方法和密码
-            method, password = decoded.split(':')
-            # 提取服务器和端口
-            server_port = link[5:].split('@')[1].split('#')[0]
+            method, password = decoded.rsplit(':', 1)  # 使用 rsplit 取最后冒号
+            server_port = parts.split('@')[1].split('#')[0].split('?')[0] if '@' in parts else parts.split('?')[1]
             server, port = server_port.split(':')
-            # 获取节点名称（从 # 后的备注或生成默认名称）
+            port = re.sub(r'[^0-9]', '', port)  # 清理端口中的非数字字符
             filename = urlparse(url).path.split('/')[-1] or 'unknown'
-            name = link.split('#')[-1] if '#' in link else f"ss-{filename}-{server}-{port}-{index}"
-            return {
+            name = parts.split('#')[-1] if '#' in parts else f"ss-{filename}-{server}-{port}-{index}"
+            config = {
                 'name': name,
                 'type': 'ss',
                 'server': server,
                 'port': int(port),
                 'cipher': method,
                 'password': password,
-                'udp': True  # mihomo 默认支持 UDP
+                'udp': True
             }
+            # 解析查询参数（如 ?type=ws）
+            if '?' in parts:
+                params = parse_qs(parts.split('?')[1].split('#')[0])
+                if params.get('type', [''])[0] == 'ws':
+                    config['network'] = 'ws'
+                    config['ws-opts'] = {
+                        'path': params.get('path', [''])[0],
+                        'headers': {'Host': params.get('sni', [''])[0] or params.get('host', [''])[0]}
+                    }
+                    config['tls'] = params.get('security', ['none'])[0] == 'tls'
+            return config
     except Exception as e:
-        print(f"解析 ss:// 链接失败 ({url}): {e}")
+        print(f"解析 ss:// 链接失败 ({url}): {e}, 链接: {link[:50]}...")
         return None
 
 # 解析 Vmess (vmess://) 链接
@@ -176,23 +185,22 @@ def parse_vmess_link(link, index, url):
                 'tls': config.get('tls') == 'tls',
                 'ws-path': config.get('path', ''),
                 'ws-headers': {'Host': config.get('host', '')},
-                'udp': True  # mihomo 默认支持 UDP
+                'udp': True
             }
     except Exception as e:
-        print(f"解析 vmess:// 链接失败 ({url}): {e}")
+        print(f"解析 vmess:// 链接失败 ({url}): {e}, 链接: {link[:50]}...")
         return None
 
 # 解析 VLESS (vless://) 链接
 def parse_vless_link(link, index, url):
     try:
         if link.startswith('vless://'):
-            # 格式：vless://uuid@server:port?param1=value1&param2=value2#remark
             parts = link.split('://', 1)[1]
             uuid_server, rest = parts.split('?', 1) if '?' in parts else (parts, '')
-            uuid, server_port = uuid_server.split('@', 1)
-            server, port = server_port.split('#')[0].split(':')
-            # 解析查询参数
-            params = parse_qs(rest) if rest else {}
+            uuid, server_port = uuid_server.split('@', 1) if '@' in uuid_server else ('', uuid_server)
+            server_port = server_port.split('#')[0]
+            server, port = server_port.split(':', 1)
+            port = re.sub(r'[^0-9]', '', port)  # 清理端口中的非数字字符
             filename = urlparse(url).path.split('/')[-1] or 'unknown'
             name = parts.split('#')[-1] if '#' in parts else f"vless-{filename}-{server}-{port}-{index}"
             config = {
@@ -201,24 +209,27 @@ def parse_vless_link(link, index, url):
                 'server': server,
                 'port': int(port),
                 'uuid': uuid,
-                'udp': True,  # mihomo 默认支持 UDP
-                'tls': params.get('security', ['none'])[0] == 'tls',
-                'network': params.get('type', ['tcp'])[0],
+                'udp': True,
+                'tls': False,
+                'network': 'tcp'
             }
-            # 添加 WebSocket 或其他网络参数
-            if config['network'] == 'ws':
-                config['ws-opts'] = {
-                    'path': params.get('path', [''])[0],
-                    'headers': {'Host': params.get('host', [''])[0]}
-                }
+            if rest:
+                params = parse_qs(rest.split('#')[0])
+                config['tls'] = params.get('security', ['none'])[0] == 'tls'
+                config['network'] = params.get('type', ['tcp'])[0]
+                if config['network'] == 'ws':
+                    config['ws-opts'] = {
+                        'path': params.get('path', [''])[0],
+                        'headers': {'Host': params.get('sni', [''])[0] or params.get('host', [''])[0]}
+                    }
             return config
     except Exception as e:
-        print(f"解析 vless:// 链接失败 ({url}): {e}")
+        print(f"解析 vless:// 链接失败 ({url}): {e}, 链接: {link[:50]}...")
         return None
 
 # 检查是否为有效的 Base64 字符串
 def is_valid_base64(s):
-    return bool(re.match(r'^[A-Za-z0-9+/=]+$', s))
+    return bool(re.match(r'^[A-Za-z0-9+/=]+$', s.strip()))
 
 # 尝试解析文本为字典（支持键值对、ss://、vmess:// 和 vless:// 链接）
 def parse_text_to_dict(text, url):
@@ -275,7 +286,6 @@ def parse_text_to_dict(text, url):
 
 # 尝试解析文件内容
 def parse_content(content, url):
-    # 记录内容片段以便调试（最多 100 字符）
     content_preview = content[:100].replace('\n', ' ') + ('...' if len(content) > 100 else '')
     print(f"解析内容 ({url}): {content_preview}")
 
@@ -283,7 +293,6 @@ def parse_content(content, url):
     try:
         config = yaml.safe_load(content)
         if config and isinstance(config, dict):
-            # 确保节点在 proxies 键下
             if 'proxies' in config and isinstance(config['proxies'], list):
                 for index, proxy in enumerate(config['proxies']):
                     if not isinstance(proxy, dict):
@@ -292,18 +301,17 @@ def parse_content(content, url):
                     if 'name' not in proxy:
                         filename = urlparse(url).path.split('/')[-1] or 'unknown'
                         proxy['name'] = f"node-{filename}-{index}"
-                    proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
+                    proxy.setdefault('udp', True)
             return config
     except yaml.YAMLError as e:
         print(f"YAML 解析失败 ({url}): {e}")
 
     # 尝试作为 Base64 解码后解析为 JSON
-    if is_valid_base64(content.strip()):
+    if is_valid_base64(content):
         try:
             decoded = base64.urlsafe_b64decode(content + '==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
             config = json.loads(decoded)
             if config and isinstance(config, dict):
-                # 确保节点有 name 字段
                 if isinstance(config, list):
                     config = {'proxies': config}
                 if 'proxies' in config and isinstance(config['proxies'], list):
@@ -314,7 +322,7 @@ def parse_content(content, url):
                         if 'name' not in proxy:
                             filename = urlparse(url).path.split('/')[-1] or 'unknown'
                             proxy['name'] = f"node-{filename}-{index}"
-                        proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
+                        proxy.setdefault('udp', True)
                 return config
         except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as e:
             print(f"Base64/JSON 解析失败 ({url}): {e}")
@@ -337,7 +345,6 @@ def fetch_and_parse_configs(urls):
         try:
             response = session.get(url, timeout=10)
             response.raise_for_status()
-            # 尝试解码为 UTF-8，忽略非 ASCII 错误
             content = response.text.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
             config = parse_content(content, url)
             if config and isinstance(config, dict):
@@ -352,6 +359,7 @@ def fetch_and_parse_configs(urls):
 # 合并配置
 def merge_configs(configs):
     merged = clash_config_template.copy()
+    failed_links = []
     for config in configs:
         if not isinstance(config, dict):
             print(f"跳过无效配置: {config}")
@@ -365,7 +373,6 @@ def merge_configs(configs):
                 merged[key].extend(value)
             else:
                 merged[key] = value
-    # 确保每个代理有唯一的 name
     seen_names = set()
     merged['proxies'] = [proxy for proxy in merged['proxies'] if isinstance(proxy, dict)]
     for index, proxy in enumerate(merged['proxies']):
@@ -374,22 +381,17 @@ def merge_configs(configs):
         if proxy['name'] in seen_names:
             proxy['name'] = f"{proxy['name']}-{index}"
         seen_names.add(proxy['name'])
-        proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
-    # 更新 proxy-groups 中的 proxies 列表
+        proxy.setdefault('udp', True)
     proxy_names = [proxy['name'] for proxy in merged['proxies']]
     for group in merged['proxy-groups']:
         if group['name'] in ['自动选择', '故障转移', '手动选择']:
             group['proxies'].extend([name for name in proxy_names if not any(exclude in name.lower() for exclude in ['中国', 'china', 'cn', '电信', '移动', '联通'])])
-    return merged
+    return merged, failed_links
 
 # 主函数
 def main():
-    # 创建 input 目录
     os.makedirs('input', exist_ok=True)
-
-    # 获取并解析所有配置
     configs = fetch_and_parse_configs(urls)
-
     if not configs or not any(config.get('proxies', []) for config in configs if isinstance(config, dict)):
         print("错误：无法解析任何有效节点，输出文件将包含基础配置")
         merged_config = clash_config_template.copy()
@@ -400,17 +402,13 @@ def main():
         print("\n合并后的 YAML 内容：")
         print(yaml_output)
         return
-
-    # 合并配置
-    merged_config = merge_configs(configs)
-
-    # 转换为 YAML
-    yaml_output = yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
-
-    # 保存到 input/output.yml
+    merged_config, failed_links = merge_configs(configs)
+    yaml_output = "# 合并后的配置，部分链接可能解析失败\n"
+    if failed_links:
+        yaml_output += "# 解析失败的链接：\n" + '\n'.join([f"# {link}" for link in failed_links]) + "\n"
+    yaml_output += yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
     with open('input/output.yml', 'w', encoding='utf-8') as f:
         f.write(yaml_output)
-
     print("配置已合并并保存到 input/output.yml")
     print("\n合并后的 YAML 内容：")
     print(yaml_output)
