@@ -9,9 +9,9 @@ from urllib3.util.retry import Retry
 
 # GitHub raw 链接列表
 urls = [
-
+    "
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-  
+ 
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt"
 ]
 
@@ -228,44 +228,53 @@ def parse_text_to_dict(text, url):
 
 # 尝试解析文件内容
 def parse_content(content, url):
+    # 尝试作为 YAML 解析
     try:
-        # 尝试作为 YAML 解析
         config = yaml.safe_load(content)
-        if config:
+        if config and isinstance(config, dict):
             # 确保节点在 proxies 键下
             if 'proxies' in config and isinstance(config['proxies'], list):
                 for index, proxy in enumerate(config['proxies']):
+                    if not isinstance(proxy, dict):
+                        print(f"无效代理配置 ({url}): {proxy}")
+                        continue
                     if 'name' not in proxy:
                         proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
                     proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
     except yaml.YAMLError as e:
         print(f"YAML 解析失败 ({url}): {e}")
-        pass
 
+    # 尝试作为 Base64 解码后解析为 JSON
     try:
-        # 尝试作为 Base64 解码后解析为 JSON
-        decoded = base64.b64decode(content + '==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
+        decoded = base64.urlsafe_b64decode(content + '==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
         config = json.loads(decoded)
-        if config:
+        if config and isinstance(config, dict):
             # 确保节点有 name 字段
             if isinstance(config, list):
                 config = {'proxies': config}
+            if 'proxies' in config and isinstance(config['proxies'], list):
                 for index, proxy in enumerate(config['proxies']):
+                    if not isinstance(proxy, dict):
+                        print(f"无效代理配置 ({url}): {proxy}")
+                        continue
                     if 'name' not in proxy:
                         proxy['name'] = f"node-{urlparse(url).path.split('/')[-1]}-{index}"
                     proxy.setdefault('udp', True)  # mihomo 默认支持 UDP
             return config
-    except (base64.binascii.Error, json.JSONDecodeError) as e:
+    except (base64.binascii.Error, json.JSONDecodeError, UnicodeDecodeError) as e:
         print(f"Base64/JSON 解析失败 ({url}): {e}")
-        pass
 
     # 尝试作为纯文本解析
-    config = parse_text_to_dict(content, url)
-    if config:
-        return config
+    try:
+        config = parse_text_to_dict(content, url)
+        if config and isinstance(config, dict):
+            return config
+    except Exception as e:
+        print(f"文本解析失败 ({url}): {e}")
 
-    raise ValueError(f"无法解析来自 {url} 的内容")
+    print(f"无法解析来自 {url} 的内容")
+    return None
 
 # 获取并解析所有链接的配置
 def fetch_and_parse_configs(urls):
@@ -277,32 +286,34 @@ def fetch_and_parse_configs(urls):
             # 尝试解码为 UTF-8，忽略非 ASCII 错误
             content = response.text.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
             config = parse_content(content, url)
-            all_configs.append(config)
-            print(f"成功解析 {url}")
+            if config and isinstance(config, dict):
+                all_configs.append(config)
+                print(f"成功解析 {url}")
+            else:
+                print(f"跳过无效配置 ({url})")
         except requests.RequestException as e:
             print(f"无法获取 {url}: {e}")
-        except ValueError as e:
-            print(e)
     return all_configs
 
 # 合并配置
 def merge_configs(configs):
     merged = clash_config_template.copy()
     for config in configs:
-        if isinstance(config, dict):
-            for key, value in config.items():
-                if key == 'proxies' and isinstance(value, list):
-                    merged['proxies'].extend(value)
-                elif key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
-                    merged[key].update(value)
-                elif key in merged and isinstance(merged[key], list) and isinstance(value, list):
-                    merged[key].extend(value)
-                else:
-                    merged[key] = value
-        elif isinstance(config, list):
-            merged['proxies'].extend(config)
+        if not isinstance(config, dict):
+            print(f"跳过无效配置: {config}")
+            continue
+        for key, value in config.items():
+            if key == 'proxies' and isinstance(value, list):
+                merged['proxies'].extend([proxy for proxy in value if isinstance(proxy, dict)])
+            elif key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+                merged[key].update(value)
+            elif key in merged and isinstance(merged[key], list) and isinstance(value, list):
+                merged[key].extend(value)
+            else:
+                merged[key] = value
     # 确保每个代理有唯一的 name
     seen_names = set()
+    merged['proxies'] = [proxy for proxy in merged['proxies'] if isinstance(proxy, dict)]
     for index, proxy in enumerate(merged['proxies']):
         if 'name' not in proxy:
             proxy['name'] = f"node-{index}"
@@ -325,7 +336,7 @@ def main():
     # 获取并解析所有配置
     configs = fetch_and_parse_configs(urls)
 
-    if not configs or not any(config.get('proxies', []) for config in configs):
+    if not configs or not any(config.get('proxies', []) for config in configs if isinstance(config, dict)):
         print("错误：无法解析任何有效节点，输出文件将包含基础配置")
         merged_config = clash_config_template.copy()
         yaml_output = yaml.dump(merged_config, allow_unicode=True, sort_keys=False, default_flow_style=False)
