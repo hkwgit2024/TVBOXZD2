@@ -1,0 +1,9 @@
+#EXTM3U
+#EXTINF:-1,金鹰卡通
+http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225731/10000100000000060000000000146069_0.smil/index.m3u8?fmt=ts2hls
+#EXTINF:-1,优漫卡通
+http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225763/10000100000000060000000000146067_0.smil/index.m3u8?fmt=ts2hls
+#EXTINF:-1,嘉佳卡通
+http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225690/10000100000000060000000000146066_0.smil/index.m3u8?fmt=ts2hls
+#EXTINF:-1,黔西南综合
+http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225995/371104431.smil/index.m3u8?fmt=ts2hls
