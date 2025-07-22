@@ -1,118 +1,37 @@
-name: IPTV 频道更新
+
+name: dfyuan
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '0 */168 * * *'
+    - cron: '0 ,06,18, * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
-    permissions:
-      contents: write
 
     steps:
-      # 步骤1：检查 BOT secret
-      - name: 检查 BOT secret
-        run: |
-          if [ -z "${{ secrets.BOT }}" ]; then
-            echo "错误：未设置 BOT secret，请在 GitHub Secrets 中配置"
-            exit 1
-          fi
-        shell: bash
-
-      # 步骤2：检出代码
-      - name: 检出代码
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+    
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          fetch-depth: 0
-          token: ${{ secrets.BOT }}
+          python-version: 3.12
 
-      # 步骤3：设置 Python 环境
-      - name: 设置 Python 环境
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip
+      
+      - name: Run main
+        run: python ${{ github.workspace }}/main.py
 
-      # 步骤4：安装 Python 依赖
-      - name: 安装 Python 依赖
-        run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython aiofiles tqdm
-
-      # 步骤5：设置时区
-      - name: 设置时区
-        run: sudo timedatectl set-timezone 'Asia/Shanghai'
-
-      # 步骤6：创建输出目录
-      - name: 创建输出目录
-        run: |
-          mkdir -p temp_channels output config
-        shell: bash
-
-      # 步骤7：安装 FFmpeg
-      - name: 安装 FFmpeg
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      # 步骤8：验证 ffprobe
-      - name: 验证 ffprobe
-        run: |
-          if command -v ffprobe >/dev/null 2>&1; then
-            echo "ffprobe 已找到并可用！版本信息如下："
-            ffprobe -version
-          else
-            echo "错误：ffprobe 未找到或无法执行！"
-            exit 1
-          fi
-
-      # 步骤9：运行 IPTV 爬取脚本
-      - name: 运行 IPTV 爬取脚本
-        env:
-          BOT: ${{ secrets.BOT }}
-          REPO_OWNER: ${{ vars.REPO_OWNER }}
-          REPO_NAME: ${{ vars.REPO_NAME }}
-          CONFIG_PATH: ${{ vars.CONFIG_PATH }}
-          URLS_PATH: ${{ vars.URLS_PATH }}
-          URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
-        run: python ${{ github.workspace }}/tv.py
-
-      # 步骤10：检查文件更改
-      - name: 检查文件更改
-        id: check_changes
-        run: |
-          git add .
-          if git diff --staged --quiet; then
-            echo "没有文件更改"
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "检测到文件更改"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
-      # 步骤11：提交更改
+                               
       - name: 提交更改
-        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
-
-      # 步骤12：推送更改
-      - name: 推送更改
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          git fetch origin
-          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-
-      # 步骤13：发送运行结果通知
-      - name: 发送运行结果通知
-        run: |
-          echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
-          echo "请检查仓库中的 iptv_script.log 以获取详细信息"
+          git config --local user.email "mlyuanlang@126.com"
+          git config --local user.name "mlvjfchen"
+          git add .
+          git commit *.txt -m "Add generated file"
+          git push -f
