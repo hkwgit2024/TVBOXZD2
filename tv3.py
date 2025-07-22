@@ -1,4 +1,3 @@
-```python
 import asyncio
 import logging
 import os
@@ -111,6 +110,10 @@ async def resolve_hls_variant(url, timeout=15):
 
 # 应用频道名称替换和过滤
 def process_channel_name(name, replacements, filter_words):
+    # 过滤无效名称
+    if not name or name in ['未知频道', 'Unknown']:  # 过滤“未知频道”
+        logger.warning(f"Channel name filtered out: {name} (invalid name)")
+        return None
     # 应用替换规则
     for old, new in replacements.items():
         name = name.replace(old, new)
@@ -219,17 +222,27 @@ def extract_channels_from_content(content, replacements, filter_words, invalid_p
 def save_channels_to_file(channels, filepath, format="m3u"):
     try:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        # 去重频道，保留第一次出现的记录
+        seen_names = set()
+        unique_channels = []
+        for name, url in channels:
+            if name.lower() not in seen_names:
+                seen_names.add(name.lower())
+                unique_channels.append((name, url))
+            else:
+                logger.warning(f"Duplicate channel skipped: {name}, {url}")
+        
         with open(filepath, 'w', encoding='utf-8') as f:
             if format == "m3u":
                 f.write("#EXTM3U\n")
-                for name, url in channels:
+                for name, url in unique_channels:
                     f.write(f"#EXTINF:-1,{name}\n{url}\n")
-            else:
-                if not channels:
+            else:  # 纯文本格式
+                if not unique_channels:
                     f.write("# No channels extracted\n")
-                for name, url in channels:
+                for name, url in unique_channels:
                     f.write(f"{name},{url}\n")
-        logger.info(f"Saved {len(channels)} channels to {filepath}")
+        logger.info(f"Saved {len(unique_channels)} channels to {filepath} in {format} format")
     except Exception as e:
         logger.error(f"Error saving channels to {filepath}: {e}")
 
@@ -248,9 +261,14 @@ def save_categorized_channels(channels, categories):
         if not matched:
             uncategorized.append((name, url))
     
+    # 保存分类频道（使用 M3U 格式）
     for cat in categories:
         if categorized[cat['name']]:
             save_channels_to_file(categorized[cat['name']], cat['file'], format="m3u")
+    
+    # 保存未分类频道（使用纯文本格式）
+    if uncategorized:
+        save_channels_to_file(uncategorized, UNCATEGORIZED_CHANNELS_PATH, format="text")
     
     return uncategorized
 
@@ -262,7 +280,7 @@ async def check_channel_validity(url, timeout=15):
         if not resolved_url:
             return False
         
-        cmd = ['ffprobe', '-v', 'error', '-timeout', '6000000', '-i', resolved_url]
+        cmd = ['ffprobe', '-v', 'error', '-timeout', '15000000', '-i', resolved_url]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         if result.returncode == 0:
             logger.debug(f"Validated channel: {resolved_url}")
@@ -357,9 +375,9 @@ async def main():
             logger.error(f"Failed to process URL {url}: {e}")
             new_url_states[url] = {'valid': False, 'last_checked': datetime.now().isoformat()}
     
-    # 保存未分类频道
+    # 保存未分类频道（纯文本格式）
     logger.info(f"Extracted {len(raw_channels)} raw channels")
-    save_channels_to_file(raw_channels, UNCATEGORIZED_CHANNELS_PATH, format=config['output_format'])
+    save_channels_to_file(raw_channels, UNCATEGORIZED_CHANNELS_PATH, format="text")
     
     # 按分类保存频道
     uncategorized = save_categorized_channels(raw_channels, config['categories'])
@@ -406,4 +424,3 @@ IPTV_LIST_PATH = 'iptv_list.txt'
 
 if __name__ == "__main__":
     asyncio.run(main())
-```
