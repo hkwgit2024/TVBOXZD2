@@ -1,3 +1,2 @@
-https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/snippets/nodes_SG.meta.yml
-https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/snippets/nodes_TW.meta.yml
-https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/snippets/nodes_VN.meta.yml
+https://raw.githubusercontent.com/qjlxg/ProxyCollector/refs/heads/master/sub/proxies.txt
+https://github.com/qjlxg/aggregator/blob/main/data/clash.yaml
