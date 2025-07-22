@@ -1,3 +1,5 @@
+
+
 import yaml
 import speedtest
 import asyncio
@@ -45,9 +47,12 @@ async def main():
 
     # 使用线程池进行并行测试
     max_workers = min(len(proxies), 5)  # 限制最大并行数以避免过载
-    async with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    executor = ThreadPoolExecutor(max_workers=max_workers)
+    try:
         tasks = [test_node_speed(proxy, executor) for proxy in proxies]
         results = await asyncio.gather(*tasks, return_exceptions=True)
+    finally:
+        executor.shutdown(wait=True)  # 确保线程池关闭
 
     # 过滤掉测试失败的节点并按速度排序
     valid_results = [r for r in results if isinstance(r, dict) and r['speed'] > 0]
