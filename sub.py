@@ -138,7 +138,7 @@ def main():
     
     # 加载节点源
     sources = [
-        "https://cdn.jsdelivr.net/gh/mfbpn/tg_mfbpn_subs@refs/heads/main/trials/2.flybar20.cc.yaml"
+        "https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list.meta.yml"
     ]
     
     all_nodes = []
