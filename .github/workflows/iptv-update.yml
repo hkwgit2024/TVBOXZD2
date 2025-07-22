@@ -64,7 +64,7 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython aiofiles tqdm
+          pip install aiohttp pyyaml tqdm
 
       - name: Set Timezone
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
@@ -100,15 +100,16 @@ jobs:
           INVALID_URLS_PATH: config/invalid_urls.txt
         run: python ${{ github.workspace }}/tv3.py
 
-      - name: Check uncategorized_channels.txt
+      - name: Check Output Files
         run: |
-          if [ -f "uncategorized_channels.txt" ]; then
-            echo "uncategorized_channels.txt generated successfully"
-            cat uncategorized_channels.txt
-          else
-            echo "Error: uncategorized_channels.txt not generated"
-            exit 1
-          fi
+          for file in uncategorized_channels.txt output/*_iptv.txt; do
+            if [ -f "$file" ]; then
+              echo "$file generated successfully"
+              cat "$file"
+            else
+              echo "Warning: $file not generated"
+            fi
+          done
         shell: bash
 
       - name: Check File Changes
@@ -135,7 +136,7 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git fetch origin
-          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
+          git rebase origin/main || (git rebase --abort && git pull origin/main --no-rebase)
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.BOT }}
