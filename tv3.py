@@ -1,20 +1,13 @@
+
 import asyncio
 import logging
 import os
 import re
-import time
-from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import aiohttp
 import aiofiles
 import yaml
-from bs4 import BeautifulSoup
-from tenacity import retry, stop_after_attempt, wait_exponential
-import requests
-import dns.resolver
-import psutil
 import subprocess
-import json
 from tqdm import tqdm
 
 # 配置日志
@@ -45,7 +38,7 @@ def load_urls(max_urls=50):
     try:
         with open(URLS_PATH, 'r', encoding='utf-8') as f:
             urls = [line.strip() for line in f if line.strip() and not line.startswith('#')]
-        urls = urls[:max_urls]  # 限制最大 URL 数量
+        urls = urls[:max_urls]
         logger.info(f"Loaded {len(urls)} URLs from {URLS_PATH} (limited to {max_urls})")
         return urls
     except Exception as e:
@@ -57,12 +50,10 @@ def load_invalid_urls():
     try:
         if os.path.exists(INVALID_URLS_PATH):
             with open(INVALID_URLS_PATH, 'r', encoding='utf-8') as f:
-                invalid_urls = {line.strip() for line in f if line.strip() and not line.startswith('#')}
+                invalid_urls = {line.strip().split('#')[0].strip() for line in f if line.strip() and not line.startswith('#')}
             logger.info(f"Loaded {len(invalid_urls)} invalid URLs from {INVALID_URLS_PATH}")
             return invalid_urls
-        else:
-            logger.info(f"No invalid URLs file found at {INVALID_URLS_PATH}")
-            return set()
+        return set()
     except Exception as e:
         logger.error(f"Error loading invalid URLs from {INVALID_URLS_PATH}: {e}")
         return set()
@@ -82,10 +73,10 @@ def is_valid_url(url, invalid_patterns, allowed_protocols, stream_extensions):
         if re.search(pattern, url, re.IGNORECASE):
             save_invalid_url(url, "Matches invalid pattern")
             return False
-    return (re.match(r'^(https?|rtmp|rtp|p3p|udp|rtsp)://[\S]+$', url, re.IGNORECASE) and
+    return (re.match(r'^(https?|rtmp|rtp|udp|rtsp)://[\S]+$', url, re.IGNORECASE) and
             any(url.lower().endswith(ext) for ext in stream_extensions))
 
-# 解析 HLS 变体播放列表
+# 解析 HLS 播放列表
 async def resolve_hls_variant(url, timeout=15):
     try:
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=timeout)) as session:
@@ -97,12 +88,11 @@ async def resolve_hls_variant(url, timeout=15):
                     for line in lines:
                         if line.startswith('#EXT-X-STREAM-INF'):
                             sub_url = lines[lines.index(line) + 1].strip()
-                            # 构造完整子播放列表 URL
                             if not sub_url.startswith('http'):
                                 base_url = url.rsplit('/', 1)[0]
                                 sub_url = f"{base_url}/{sub_url}"
                             return sub_url
-                return url  # 非变体播放列表，直接返回原 URL
+                return url
     except Exception as e:
         logger.warning(f"Error resolving HLS variant for {url}: {e}")
         save_invalid_url(url, "Failed to resolve HLS variant")
@@ -110,23 +100,19 @@ async def resolve_hls_variant(url, timeout=15):
 
 # 应用频道名称替换和过滤
 def process_channel_name(name, replacements, filter_words):
-    # 过滤无效名称
-    if not name or name in ['未知频道', 'Unknown']:  # 过滤“未知频道”
+    if not name or name in ['未知频道', 'Unknown']:
         logger.warning(f"Channel name filtered out: {name} (invalid name)")
         return None
-    # 应用替换规则
     for old, new in replacements.items():
         name = name.replace(old, new)
-    # 过滤无效名称
     for word in filter_words:
         if word.lower() in name.lower():
             logger.warning(f"Channel name filtered out: {name} (contains {word})")
             return None
     return name
 
-# 异步获取 URL 内容
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
-async def fetch_url_content_with_retry(url, timeout=15):
+# 获取 URL 内容
+async def fetch_url_content(url, timeout=15):
     try:
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=timeout)) as session:
             async with session.get(url, headers={'User-Agent': 'Mozilla/5.0'}) as response:
@@ -135,7 +121,7 @@ async def fetch_url_content_with_retry(url, timeout=15):
                 logger.debug(f"Fetched content from {url}")
                 return content
     except Exception as e:
-        logger.error(f"Request error fetching URL (after retries): {url} - {e}")
+        logger.error(f"Error fetching URL: {url} - {e}")
         save_invalid_url(url, "Fetch failed")
         return None
 
@@ -144,7 +130,6 @@ def extract_channels_from_content(content, replacements, filter_words, invalid_p
     logger.info("Starting channel extraction from content")
     channels = []
     try:
-        # 处理 M3U 格式
         if content.startswith('#EXTM3U'):
             lines = content.splitlines()
             i = 0
@@ -163,7 +148,6 @@ def extract_channels_from_content(content, replacements, filter_words, invalid_p
                             i += 1
                             continue
                     
-                    # 应用名称替换和过滤
                     processed_name = process_channel_name(name, replacements, filter_words)
                     if not processed_name:
                         i += 2
@@ -178,26 +162,9 @@ def extract_channels_from_content(content, replacements, filter_words, invalid_p
                             logger.warning(f"Invalid or non-stream URL skipped: {url}")
                             if url:
                                 save_invalid_url(url, "Invalid stream URL")
-                    else:
-                        logger.warning(f"No URL found for #EXTINF line: {line}")
                     i += 2
                 else:
                     i += 1
-        # 处理 JSON 格式
-        elif content.startswith('{'):
-            data = json.loads(content)
-            for item in data.get('channels', []):
-                name = item.get('name', '')
-                url = item.get('url', '')
-                processed_name = process_channel_name(name, replacements, filter_words)
-                if processed_name and url and is_valid_url(url, invalid_patterns, allowed_protocols, stream_extensions):
-                    channels.append((processed_name, url))
-                    logger.debug(f"Extracted JSON channel: {processed_name}, {url}")
-                else:
-                    logger.warning(f"Invalid JSON channel skipped: name={name}, url={url}")
-                    if url:
-                        save_invalid_url(url, "Invalid JSON stream URL")
-        # 处理纯文本格式
         else:
             for line in content.splitlines():
                 line = line.strip()
@@ -219,10 +186,9 @@ def extract_channels_from_content(content, replacements, filter_words, invalid_p
     return channels
 
 # 保存频道到文件
-def save_channels_to_file(channels, filepath, format="m3u"):
+def save_channels_to_file(channels, filepath, format="text"):
     try:
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        # 去重频道，保留第一次出现的记录
         seen_names = set()
         unique_channels = []
         for name, url in channels:
@@ -233,15 +199,10 @@ def save_channels_to_file(channels, filepath, format="m3u"):
                 logger.warning(f"Duplicate channel skipped: {name}, {url}")
         
         with open(filepath, 'w', encoding='utf-8') as f:
-            if format == "m3u":
-                f.write("#EXTM3U\n")
-                for name, url in unique_channels:
-                    f.write(f"#EXTINF:-1,{name}\n{url}\n")
-            else:  # 纯文本格式
-                if not unique_channels:
-                    f.write("# No channels extracted\n")
-                for name, url in unique_channels:
-                    f.write(f"{name},{url}\n")
+            if not unique_channels:
+                f.write("# No channels extracted\n")
+            for name, url in unique_channels:
+                f.write(f"{name},{url}\n")
         logger.info(f"Saved {len(unique_channels)} channels to {filepath} in {format} format")
     except Exception as e:
         logger.error(f"Error saving channels to {filepath}: {e}")
@@ -261,21 +222,15 @@ def save_categorized_channels(channels, categories):
         if not matched:
             uncategorized.append((name, url))
     
-    # 保存分类频道（使用 M3U 格式）
     for cat in categories:
         if categorized[cat['name']]:
-            save_channels_to_file(categorized[cat['name']], cat['file'], format="m3u")
-    
-    # 保存未分类频道（使用纯文本格式）
-    if uncategorized:
-        save_channels_to_file(uncategorized, UNCATEGORIZED_CHANNELS_PATH, format="text")
+            save_channels_to_file(categorized[cat['name']], cat['file'], format=cat.get('format', 'text'))
     
     return uncategorized
 
 # 验证频道有效性
 async def check_channel_validity(url, timeout=15):
     try:
-        # 解析 HLS 变体播放列表
         resolved_url = await resolve_hls_variant(url, timeout)
         if not resolved_url:
             return False
@@ -301,14 +256,12 @@ async def check_channel_validity(url, timeout=15):
 # 异步验证频道
 async def validate_channels(channels, workers=10, timeout=15):
     valid_channels = []
-    with ThreadPoolExecutor(max_workers=workers) as executor:
-        loop = asyncio.get_event_loop()
-        tasks = [loop.run_in_executor(executor, lambda u=url: asyncio.run(check_channel_validity(u, timeout)) for _, url in channels]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for (name, url), result in zip(channels, results):
-            if isinstance(result, bool) and result:
-                valid_channels.append((name, url))
-            logger.info(f"Checked channel {name}: {'Valid' if result else 'Invalid'}")
+    tasks = [check_channel_validity(url, timeout) for _, url in channels]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for (name, url), result in zip(channels, results):
+        if isinstance(result, bool) and result:
+            valid_channels.append((name, url))
+        logger.info(f"Checked channel {name}: {'Valid' if result else 'Invalid'}")
     return valid_channels
 
 # 保存 URL 状态
@@ -328,7 +281,7 @@ async def main():
     logger.info("Starting IPTV channel update script")
     
     # 加载 URL 列表
-    urls = load_urls(max_urls=50)  # 限制为 50 个 URL
+    urls = load_urls(max_urls=50)
     if not urls:
         logger.error("No URLs loaded, exiting")
         return
@@ -336,7 +289,7 @@ async def main():
     # 加载无效 URL 列表
     invalid_urls = load_invalid_urls()
     
-    # 加载现有 URL 状态
+    # 加载 URL 状态
     url_states = {}
     try:
         with open(URL_STATES_PATH, 'r', encoding='utf-8') as f:
@@ -356,43 +309,37 @@ async def main():
             logger.info(f"Skipping invalid URL: {url}")
             new_url_states[url] = {'valid': False, 'last_checked': datetime.now().isoformat()}
             continue
-        try:
-            content = await fetch_url_content_with_retry(url, timeout=config['request_timeout'])
-            if content:
-                channels = extract_channels_from_content(
-                    content,
-                    config['channel_name_replacements'],
-                    config['rules']['name_filter_words'],
-                    config['rules']['invalid_url_patterns'],
-                    config['rules']['url_pre_screening']['allowed_protocols'],
-                    config['rules']['url_pre_screening']['stream_extensions']
-                )
-                raw_channels.extend(channels)
-                new_url_states[url] = {'valid': True, 'last_checked': datetime.now().isoformat()}
-            else:
-                new_url_states[url] = {'valid': False, 'last_checked': datetime.now().isoformat()}
-        except Exception as e:
-            logger.error(f"Failed to process URL {url}: {e}")
+        content = await fetch_url_content(url, timeout=config['request_timeout'])
+        if content:
+            channels = extract_channels_from_content(
+                content,
+                config['channel_name_replacements'],
+                config['rules']['name_filter_words'],
+                config['rules']['invalid_url_patterns'],
+                config['rules']['url_pre_screening']['allowed_protocols'],
+                config['rules']['url_pre_screening']['stream_extensions']
+            )
+            raw_channels.extend(channels)
+            new_url_states[url] = {'valid': True, 'last_checked': datetime.now().isoformat()}
+        else:
             new_url_states[url] = {'valid': False, 'last_checked': datetime.now().isoformat()}
     
-    # 保存未分类频道（纯文本格式）
     logger.info(f"Extracted {len(raw_channels)} raw channels")
-    save_channels_to_file(raw_channels, UNCATEGORIZED_CHANNELS_PATH, format="text")
     
-    # 按分类保存频道
-    uncategorized = save_categorized_channels(raw_channels, config['categories'])
-    
-    # 合并频道（去重）
-    unique_channels = list(dict.fromkeys(uncategorized))  # 保留顺序去重
-    logger.info(f"Total unique channels to check: {len(unique_channels)}")
-    
-    # 验证频道有效性
+    # 验证所有频道
     valid_channels = await validate_channels(
-        unique_channels,
+        raw_channels,
         workers=config['channel_check_workers'],
         timeout=config['check_timeout']
     )
-    logger.info(f"Completed channel validity check. Valid channels: {len(valid_channels)}")
+    logger.info(f"Validated {len(valid_channels)} channels")
+    
+    # 按分类保存频道
+    uncategorized = save_categorized_channels(valid_channels, config['categories'])
+    
+    # 保存未分类频道
+    if uncategorized:
+        save_channels_to_file(uncategorized, UNCATEGORIZED_CHANNELS_PATH, format="text")
     
     # 保存最终 IPTV 列表
     save_channels_to_file(valid_channels, IPTV_LIST_PATH, format=config['output_format'])
@@ -403,12 +350,18 @@ async def main():
     
     # 清理临时文件
     try:
-        for folder in [config['paths']['channels_dir'], config['paths']['output_dir']]:
+        for folder in [config['paths']['channels_dir']]:
             if os.path.exists(folder):
                 for file in os.listdir(folder):
-                    if file not in [os.path.basename(cat['file']) for cat in config['categories']]:
-                        os.remove(os.path.join(folder, file))
-        logger.info("Temporary files cleanup completed")
+                    os.remove(os.path.join(folder, file))
+                logger.info(f"Cleared temporary files in {folder}")
+        output_dir = config['paths']['output_dir']
+        if os.path.exists(output_dir):
+            category_files = {os.path.basename(cat['file']) for cat in config['categories']}
+            for file in os.listdir(output_dir):
+                if file not in category_files:
+                    os.remove(os.path.join(output_dir, file))
+            logger.info(f"Cleared non-category files in {output_dir}")
     except Exception as e:
         logger.error(f"Error during cleanup: {e}")
     
