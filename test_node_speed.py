@@ -1,7 +1,7 @@
 import yaml
 import speedtest
 import asyncio
-from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 import logging
 from operator import itemgetter
 
@@ -9,8 +9,8 @@ from operator import itemgetter
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-async def test_node_speed(proxy):
-    """测试单个节点的下载速度"""
+def test_node_speed_sync(proxy):
+    """同步测试单个节点的下载速度"""
     try:
         s = speedtest.Speedtest()
         s.get_best_server()
@@ -20,6 +20,11 @@ async def test_node_speed(proxy):
     except Exception as e:
         logger.error(f"测试节点 {proxy['name']} 失败: {str(e)}")
         return {'name': proxy['name'], 'speed': 0, 'config': proxy}
+
+async def test_node_speed(proxy, executor):
+    """异步包装同步测试函数"""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(executor, test_node_speed_sync, proxy)
 
 async def main():
     # 读取 Clash 配置文件
@@ -38,9 +43,11 @@ async def main():
         logger.error("配置文件中没有找到 proxies 节点")
         return
 
-    # 测试所有节点的下载速度
-    tasks = [test_node_speed(proxy) for proxy in proxies]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
+    # 使用线程池进行并行测试
+    max_workers = min(len(proxies), 5)  # 限制最大并行数以避免过载
+    async with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        tasks = [test_node_speed(proxy, executor) for proxy in proxies]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
     # 过滤掉测试失败的节点并按速度排序
     valid_results = [r for r in results if isinstance(r, dict) and r['speed'] > 0]
