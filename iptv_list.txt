@@ -1,1 +1,10 @@
-#EXTM3U
+更新时间,#genre#
+2025-07-22,url
+10:36:33,url
+央视频道,#genre#
+卫视频道,#genre#
+港台频道,#genre#
+国外频道,#genre#
+少儿和动画频道,#genre#
+广东频道,#genre#
+电影频道,#genre#
