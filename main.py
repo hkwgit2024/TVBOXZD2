@@ -1,4 +1,3 @@
-
 import urllib.request
 from urllib.parse import urlparse
 import os
@@ -15,7 +14,7 @@ def read_txt_to_array(file_name):
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
             lines = file.readlines()
-            lines = [line.strip() for line in lines]
+            lines = [line.strip() for line in lines if line.strip()]  # 移除空行
             return lines
     except FileNotFoundError:
         print(f"File '{file_name}' not found.")
@@ -76,13 +75,19 @@ def process_url(url, timeout=10):
             # 将二进制数据解码为字符串
             text = data.decode('utf-8')
 
+            # **优化点1：初步判断内容是否与频道相关**
+            # 检查内容是否包含有效的频道信息格式 (例如 "名称,http")
+            if not re.search(r',.*://', text):
+                print(f"URL: {url} 的内容不符合频道列表格式，跳过处理。")
+                return []
+
             # 处理 m3u 和 m3u8，提取 channel_name 和 channel_address
             if get_url_file_extension(url) == ".m3u" or get_url_file_extension(url) == ".m3u8":
                 text = convert_m3u_to_txt(text)
 
             # 逐行处理内容
             lines = text.split('\n')
-            channel_count = 0  # 初始化频道计数器
+            channels_from_url = []
             for line in lines:
                 if "#genre#" not in line and "," in line and "://" in line:
                     # 拆分成频道名和 URL 部分
@@ -91,16 +96,16 @@ def process_url(url, timeout=10):
                     channel_address = parts[1]  # 获取频道地址
                     # 处理带 # 号源 = 予加速源
                     if "#" not in channel_address:
-                        yield channel_name, clean_url(channel_address)  # 如果没有井号，则照常按照每行规则进行分发
+                        channels_from_url.append((channel_name, clean_url(channel_address)))
                     else:
                         # 如果有 “#” 号，则根据 “#” 号分隔
                         url_list = channel_address.split('#')
                         for channel_url in url_list:
-                            yield channel_name, clean_url(channel_url)
-                    channel_count += 1  # 每处理一个频道，计数器加一
+                            channels_from_url.append((channel_name, clean_url(channel_url)))
 
             print(f"正在读取URL: {url}")
-            print(f"获取到频道列表: {channel_count} 条")  # 打印频道数量
+            print(f"获取到频道列表: {len(channels_from_url)} 条")
+            return channels_from_url
 
     except Exception as e:
         print(f"处理 URL 时发生错误：{e}")
@@ -144,9 +149,22 @@ def main():
 
     # 处理过滤和替换频道名称
     all_channels = []
+    successful_urls = set()  # 用于存储成功获取到20个及以上频道的URL
     for url in urls:
-        for channel_name, channel_url in process_url(url):
-            all_channels.append((channel_name, channel_url))
+        channels_from_current_url = process_url(url)
+        # **优化点2：过滤少于20个节点的URL**
+        if len(channels_from_current_url) >= 20:
+            all_channels.extend(channels_from_current_url)
+            successful_urls.add(url) # 将成功的URL添加到集合中
+        else:
+            print(f"URL: {url} 获取到的有效频道数量少于20个 ({len(channels_from_current_url)}条)，已排除。")
+
+    # **优化点3：更新 urls.txt 文件**
+    with open(urls_file_path, 'w', encoding='utf-8') as f:
+        for url in sorted(list(successful_urls)): # 排序以便文件内容稳定
+            f.write(url + '\n')
+    print(f"\n已更新 {urls_file_path} 文件，保留了 {len(successful_urls)} 个有效URL源。")
+
 
     # 过滤和修改频道名称
     filtered_channels = filter_and_modify_sources(all_channels)
@@ -189,7 +207,8 @@ def main():
 
             elapsed_time = (time.time() - start_time) * 1000  # 转换为毫秒
         except Exception as e:
-            print(f"检测错误 {channel_name}: {url}: {e}")
+            # print(f"检测错误 {channel_name}: {url}: {e}") # 减少过多错误打印
+            pass # 静默处理检测错误，避免过多输出
 
         return elapsed_time, success
 
@@ -201,9 +220,11 @@ def main():
                                     stderr=subprocess.PIPE, timeout=timeout)
             return result.returncode == 0
         except subprocess.TimeoutExpired:
-            print(f"检测超时 {url}")
+            # print(f"检测超时 {url}") # 减少过多错误打印
+            pass
         except Exception as e:
-            print(f"检测错误 {url}: {e}")
+            # print(f"检测错误 {url}: {e}") # 减少过多错误打印
+            pass
         return False
 
     def check_rtp_url(url, timeout):
@@ -234,7 +255,8 @@ def main():
                 response = s.recv(1024)
                 return b"P3P" in response
         except Exception as e:
-            print(f"检测错误 {url}: {e}")
+            # print(f"检测错误 {url}: {e}") # 减少过多错误打印
+            pass
         return False
 
     # 去掉文本'$'后面的内容
@@ -319,8 +341,10 @@ def main():
             else:
                 return float('inf')  # 返回一个无穷大的数字作为关键字
 
+        # 确保这里传入的是频道名称，而不是整个字符串
+        # matched_channels.sort(key=lambda x: channel_key(x.split(',')[0])) # 这一行与下一行重复，可以删除
         matched_channels.sort(key=lambda x: channel_key(x.split(',')[0]))
-        matched_channels.sort(key=lambda x: channel_key(x[0]))
+
 
         # 写入对应地区命名的 _iptv.txt 文件中，保存在地方频道文件夹中
         output_file_path = os.path.join(local_channels_directory, f"{template_name}_iptv.txt")
@@ -376,7 +400,7 @@ def main():
                         channels_grouped[channel_name] = []
                     channels_grouped[channel_name].append(line)
 
-            # 只保留每个分组的前20个频道
+            # 只保留每个分组的前200个频道
             for channel_name in channels_grouped:
                 channels_grouped[channel_name] = channels_grouped[channel_name][:200]
 
