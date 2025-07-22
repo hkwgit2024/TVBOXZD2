@@ -1,8 +1,7 @@
-
 # 频道抓取和检查配置
-check_timeout: 8
-request_timeout: 10
-channel_check_workers: 50
+check_timeout: 10  # 与 tv3.py 的 FFmpeg 超时同步
+request_timeout: 10  # 与 tv3.py 的 aiohttp 超时同步
+channel_check_workers: 10  # 与 tv3.py 的 ThreadPoolExecutor max_workers 同步
 url_fetch_workers: 10
 
 # 日志级别
@@ -18,7 +17,7 @@ channel_fail_threshold: 5
 url_fail_threshold: 5
 url_retention_hours: 72
 
-# GitHub API 配置
+# GitHub API 配置（未在当前脚本中使用，可保留以备扩展）
 per_page: 30
 max_search_pages: 3
 github_api_timeout: 20
@@ -28,7 +27,7 @@ search_updated_within_days: 30
 
 # Requests 配置
 requests_pool_size: 100
-requests_retry_total: 3
+requests_retry_total: 3  # 与 tv3.py 的 tenacity 重试次数同步
 requests_retry_backoff_factor: 1.5
 
 # 缓存配置
@@ -42,15 +41,15 @@ output_format: "m3u"
 paths:
   channels_dir: "temp_channels"
   output_dir: "output"
-  final_iptv_file: "iptv_list.txt"
-  uncategorized_channels_file: "uncategorized_channels.txt"
+  final_iptv_file: "iptv_list.txt"  # 修改为根目录，与 tv3.py 一致
+  uncategorized_channels_file: "uncategorized_channels.txt"  # 根目录，与 tv3.py 一致
+  invalid_urls_file: "config/invalid_urls.txt"  # 新增无效 URL 文件路径
   channel_cache_file: "config/channel_cache.json"
   keyword_stats_file: "config/keyword_stats.json"
 
-# 搜索关键词
+# 搜索关键词（未在当前脚本中使用，可保留）
 search_keywords:
   - "iptv"
- 
 
 # 核心过滤规则
 rules:
