@@ -32,1232 +32,1054 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 0|DigitalOcean,+LLC+(SG)
-  network: ws
-  port: 80
-  server: blog.webex.com.yaya.web.id
-  servername: blog.webex.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 32eadaf3-8e93-4aa0-989d-fb80a629abc4
-  ws-opts:
-    headers:
-      Host: blog.webex.com.yaya.web.id
-    path: /do
-- name: '0|DigitalOcean,+LLC+(SG) #1'
-  network: ws
-  port: 80
-  server: vless.kensoko.my.id
-  servername: vless.kensoko.my.id
-  tls: false
-  type: vless
-  uuid: 07593e5a-ce6c-47b7-8233-0547d6b585a7
-  ws-opts:
-    headers:
-      Host: vless.kensoko.my.id
-    path: /do2
-- client-fingerprint: randomized
-  name: 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
-  network: ws
-  port: 80
-  server: ava.game.naver.com.sg1.hinamori.xyz
-  servername: ava.game.naver.com.sg1.hinamori.xyz
-  tls: false
-  type: vless
-  uuid: 16f3ffa2-75bd-4588-84aa-1c408ece415b
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.sg1.hinamori.xyz
-    path: /10
-- name: 0|SG+The+Constant+Company++LLC
-  network: ws
-  port: 80
-  server: unlimited.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 0362339d-fc16-4fbd-8204-38f71047c7bf
-  ws-opts:
-    headers:
-      Host: unlimited.spauu.web.id
-    path: /vl%3D139.180.215.77%3D57878
-- client-fingerprint: randomized
-  name: 0|Amazon.com,+Inc.+(SG)
-  network: ws
-  port: 80
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: false
-  type: vless
-  uuid: 257ad114-9b58-4d27-af6e-855e8d55fb00
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: /sg3
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: '0,6,7|SG #10'
-  network: ws
-  port: 6443
-  server: 138.2.64.175
-  servername: warp.wlcf.lol
-  tls: true
-  type: vless
-  uuid: f41afc19-93cb-406d-af1c-04e75221708c
-  ws-opts:
-    headers:
-      Host: warp.wlcf.lol
-    path: /?ed%3D2560
-- name: 0|SG_speednode_0120
-  network: ws
-  port: 8880
-  server: 92.243.74.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
-- client-fingerprint: randomized
-  name: '0|Amazon.com,+Inc.+(SG) #1'
-  network: ws
-  port: 80
-  server: quiz.int.vidio.com.zee.upigg.my.id
-  servername: quiz.int.vidio.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 1365c73f-33bf-47f7-8570-370d3a99c53d
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.zee.upigg.my.id
-    path: /sgamz
-- name: 0|SG+Softlayer+Technologies+Inc
-  network: ws
+- name: yandex-491
+  server: au.mjt000.com
   port: 443
-  server: cache.netflix.com.unlimited.spauu.web.id
-  servername: cache.netflix.com.unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 0785ff64-de67-4b00-9a35-56aa145024a5
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.unlimited.spauu.web.id
-    path: /vl%3D119.81.201.154%3D9089
-- name: 0|SG+Digital+Ocean+2+🇸🇬
-  network: ws
-  port: 80
-  server: vip.arivganteng.biz.id
-  tls: false
-  type: vless
-  uuid: 0009e2cd-ab57-4ae4-929c-210852247419
-  ws-opts:
-    headers:
-      Host: vip.arivganteng.biz.id
-    path: /ariv%3D146.190.111.165%3D443
-- name: '0|DigitalOcean,+LLC+(SG) #2'
-  network: ws
-  port: 80
-  server: quiz.int.vidio.com.yaya.web.id
-  servername: quiz.int.vidio.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 1aef6aff-ea6d-4390-83a2-219713f001f4
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-    path: /do
-- client-fingerprint: randomized
-  name: 0|Aceville+Pte.ltd+(SG)
-  network: ws
-  port: 443
-  server: cache.netflix.com.spauu.web.id
-  servername: cache.netflix.com.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 0659b15f-9910-4969-96aa-7b7b7b04bc8e
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.spauu.web.id
-    path: /sgtcc
-- client-fingerprint: randomized
-  name: 0|Microsoft+Corporation+(SG)
-  network: ws
-  port: 443
-  server: lufeng.pw
-  servername: lufeng.pw
-  tls: true
-  type: vless
-  uuid: 111e18e2-3f36-4067-ba96-468f192f8b47
-  ws-opts:
-    headers:
-      Host: lufeng.pw
-    path: /sg1
-- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  network: ws
-  port: 8880
-  server: 27.50.49.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- client-fingerprint: randomized
-  name: '0|Aceville+Pte.ltd+(SG) #1'
-  network: ws
-  port: 80
-  server: cache.netflix.com.spauu.web.id
-  servername: cache.netflix.com.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 07af06d6-0b2e-4149-81a7-4deb6b52e307
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.spauu.web.id
-    path: /sgtcc
-- client-fingerprint: randomized
-  name: 0|Akamai+Technologies,+Inc.+(SG)
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.zee.upigg.my.id
-  servername: zaintest.vuclip.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 0890ce35-6536-4506-8806-6925da92f9c5
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.zee.upigg.my.id
-    path: /sgakm
-- client-fingerprint: randomized
-  name: '0|Akamai+Technologies,+Inc.+(SG) #1'
-  network: ws
-  port: 443
-  server: investors.spotify.com.zee.upigg.my.id
-  servername: investors.spotify.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 010b464d-20d0-40b4-bbf9-431b810037ec
-  ws-opts:
-    headers:
-      Host: investors.spotify.com.zee.upigg.my.id
-    path: /sgakm
-- name: 0|SG_speednode_0118
-  network: ws
-  port: 8880
-  server: 92.243.74.177
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /TelegramU0001F1E8U0001F1F3%20@WangCai2%20/?ed%3D2560fp%3Dchrome
-- name: 0|SG新加坡(mibei77.com 米贝节点分享)
-  network: ws
-  port: 443
-  server: 51.79.158.126
-  servername: jp.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-    path: telegram%F0%9F%87%A8%F0%9F%87%B3@wangcai2/?ed%3D2560
-- client-fingerprint: random
-  name: '0,6,7|老油条-SG-新加坡 #3'
-  network: ws
-  port: 443
-  server: sg.laoyoutiao.link
-  servername: sg.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: /?ed%3D2560
-- name: 0|SG+Oracle+Corporation
-  network: ws
-  port: 80
-  server: cache.netflix.com.unlimited.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 02b06e1b-9670-41b1-8fde-95256e5c9863
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.unlimited.spauu.web.id
-    path: /vl%3D138.2.74.219%3D28616
-- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  network: ws
-  port: 8880
-  server: 154.194.12.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- name: '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  network: ws
-  port: 8880
-  server: 27.50.48.213
-  tls: false
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-- name: 0|SG+Amazon+com++Inc
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.unlimited.spauu.web.id
-  servername: zaintest.vuclip.com.unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 00b89d57-a877-4552-97c8-027b4f331158
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.unlimited.spauu.web.id
-    path: /vl%3D54.169.229.188%3D443
-- name: 0|SG_speednode_0119
-  network: ws
-  port: 8880
-  server: 92.243.75.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: true
-  tls: false
-  type: vless
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram%F0%9F%87%A8%F0%9F%87%B3%20@WangCai2%20/?ed%3D2560
-- client-fingerprint: randomized
-  name: 0|VPLS,+Inc.+(SG)
-  network: ws
-  port: 80
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 05577aaa-4081-496b-90c9-4a65a90c18ef
-  ws-opts:
-    headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: /sg10
-- name: 0|SG+Hong+Kong+Megalayer+Technol...
-  network: ws
-  port: 443
-  server: unlimited.spauu.web.id
-  servername: unlimited.spauu.web.id
-  tls: true
-  type: vless
-  uuid: 038e7bdc-1cc4-415d-8bf2-3e25bbf5938e
-  ws-opts:
-    headers:
-      Host: unlimited.spauu.web.id
-    path: /vl%3D103.180.161.10%3D587
-- client-fingerprint: randomized
-  name: '0|Akamai+Technologies,+Inc.+(SG) #2'
-  network: ws
-  port: 80
-  server: zee.upigg.my.id
-  servername: zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 15ca2c13-11d1-40c2-a61d-cca3457d7ff1
-  ws-opts:
-    headers:
-      Host: zee.upigg.my.id
-    path: /sgakm
-- client-fingerprint: randomized
-  name: '0|Akamai+Technologies,+Inc.+(SG) #3'
-  network: ws
-  port: 443
-  server: cache.netflix.com.zee.upigg.my.id
-  servername: cache.netflix.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 109d4b4d-6024-4c15-9a46-6957e697b172
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.zee.upigg.my.id
-    path: /sgakm
-- client-fingerprint: randomized
-  name: 0|Oracle+Corporation+(SG)
-  network: ws
-  port: 80
-  server: live.iflix.com.zee.upigg.my.id
-  servername: live.iflix.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 047e5ed3-1228-4ea8-9c00-a079b84c1f11
-  ws-opts:
-    headers:
-      Host: live.iflix.com.zee.upigg.my.id
-    path: /sgorcl
-- client-fingerprint: randomized
-  name: '0|Amazon.com,+Inc.+(SG) #2'
-  network: ws
-  port: 443
-  server: live.iflix.com.zee.upigg.my.id
-  servername: live.iflix.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 0d7bcabc-8d2a-482d-b542-305e71d26df6
-  ws-opts:
-    headers:
-      Host: live.iflix.com.zee.upigg.my.id
-    path: /sgamz
-- name: 0|SG+SoftLayer+Technologies+🇸🇬
-  network: ws
-  port: 443
-  server: vip.arivganteng.biz.id
-  servername: vip.arivganteng.biz.id
-  tls: true
-  type: vless
-  uuid: 00abbe1a-4216-4cda-87cc-670ebde83d5b
-  ws-opts:
-    headers:
-      Host: vip.arivganteng.biz.id
-    path: /ariv%3D119.81.201.154%3D9089
-- client-fingerprint: randomized
-  name: '5|Akamai+Technologies,+Inc.+(SG) #4'
-  network: ws
-  port: 443
-  server: quiz.int.vidio.com.zee.upigg.my.id
-  servername: quiz.int.vidio.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 1191b8fd-cb69-4fa4-8967-9ead0d301936
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.zee.upigg.my.id
-    path: /sgakm
-- name: '5|DigitalOcean,+LLC+(SG) #3'
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.yaya.web.id
-  servername: zaintest.vuclip.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 0d71b128-55f5-4ca7-9faa-b6e0baab4837
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-    path: /do
-- name: '5|DigitalOcean,+LLC+(SG) #4'
-  network: ws
-  port: 443
-  server: cache.netflix.com.yaya.web.id
-  servername: cache.netflix.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: 04bb3554-85e6-4cb6-90e7-3e9cd73dbd46
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.yaya.web.id
-    path: /do
-- client-fingerprint: random
-  name: '5,6|@NpvV2rayFilTer #1'
-  network: ws
-  port: 8880
-  server: 91.206.71.162
-  servername: barayeiran-mahsang.gerald81.dpdns.org
-  tls: false
-  type: vless
-  uuid: 26bc13af-e442-4956-afd4-b8f85744d26f
-  ws-opts:
-    headers:
-      Host: barayeiran-mahsang.gerald81.dpdns.org
-    path: /Barayeiranmahsang/----@-?ed%3D2560
-- name: 5|SG+Alibaba+us+Technology+Co+++...
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.unlimited.spauu.web.id
-  tls: false
-  type: vless
-  uuid: 35c00cfc-dd85-4809-b721-e601546b9dd2
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.unlimited.spauu.web.id
-    path: /vl%3D161.117.249.114%3D2025
-- name: '5|DigitalOcean,+LLC+(SG) #5'
-  network: ws
-  port: 80
-  server: yaya.web.id
-  servername: yaya.web.id
-  tls: false
-  type: vless
-  uuid: 0d902577-5822-468c-b3c9-d985747cb286
-  ws-opts:
-    headers:
-      Host: yaya.web.id
-    path: /do
-- client-fingerprint: randomized
-  name: 5|Digitalocean,+LLC+(SG)
-  network: ws
-  port: 80
-  server: support.zoom.us.zee.upigg.my.id
-  servername: support.zoom.us.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 03d90f9c-3075-4023-8a85-a697eaff4cbc
-  ws-opts:
-    headers:
-      Host: support.zoom.us.zee.upigg.my.id
-    path: /sgdo
-- client-fingerprint: randomized
-  name: 5|Contabo+Asia+Private+Limited+(...
-  network: ws
-  port: 80
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 023ca124-31a4-40c3-b4a4-f7bd8b10b3b9
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: /sg5
-- client-fingerprint: randomized
-  name: 5|Melbikomas+UAB+(SG)
-  network: ws
-  port: 80
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 02da1563-79d4-4d32-9cce-d3a6dae17ecd
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: /sg6
-- client-fingerprint: randomized
-  name: '5|Digitalocean,+LLC+(SG) #1'
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.zee.upigg.my.id
-  servername: zaintest.vuclip.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 0d59f906-1482-43e0-ac30-064611987a0f
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.zee.upigg.my.id
-    path: /sgdo
-- client-fingerprint: randomized
-  name: '10|VPLS,+Inc.+(SG) #1'
-  network: ws
-  port: 443
-  server: blog.ruangguru.com.servpn.my.id
-  servername: blog.ruangguru.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 8a59e290-6b35-4a1a-aa23-3bc0c5bd4986
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: '%2Fsg10'
-- client-fingerprint: random
-  name: '10|老油条-新加坡-cfcdns #1'
-  network: ws
-  port: 443
-  server: cfcdns.langmanshanxi.top
-  servername: sg.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #3'
-  network: ws
-  port: 80
-  server: ava.game.naver.com.zee.upigg.my.id
-  servername: ava.game.naver.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 2d8992ed-7611-4849-a3bf-83edc3186fa4
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.zee.upigg.my.id
-    path: '%2Fsgamz'
-- client-fingerprint: randomized
-  name: 10|(SG)Oracle Corporation-[NTls]
-  network: ws
-  port: 80
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: false
-  type: vless
-  uuid: 79cd5370-f9e9-4284-96c8-1f9e470ae947
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F146.235.18.248%3D45137'
-- client-fingerprint: randomized
-  name: 10|(SG)Oracle Corporation-[Tls]
-  network: ws
-  port: 443
-  server: zoomgov.vipren.biz.id
-  servername: zoomgov.vipren.biz.id
-  tls: true
-  type: vless
-  uuid: 7126ed30-6617-4d71-a460-88be4b697aa1
-  ws-opts:
-    headers:
-      Host: zoomgov.vipren.biz.id
-    path: '%2F158.178.243.152%3D61731'
-- name: '10|DigitalOcean,+LLC+(SG) #7'
-  network: ws
-  port: 443
-  server: quiz.int.vidio.com.yaya.web.id
-  servername: quiz.int.vidio.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: c0603534-0c28-4266-9d0b-9b1058d25f42
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-    path: '%2Fdo2'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cdn1
-  network: ws
-  port: 443
-  server: cdn1.laoyoutiao.link
-  servername: sg.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #1'
-  network: ws
-  port: 443
-  server: svr.lufeng.pw
-  servername: svr.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 0c9189be-64e4-4714-bb9b-11b78be6b7ef
-  ws-opts:
-    headers:
-      Host: svr.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|DigitalOcean,+LLC+(SG) #8'
-  network: ws
-  port: 80
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
-  tls: false
-  type: vless
-  uuid: 20d5c9b5-db5f-4843-af77-0f67586de625
-  ws-opts:
-    headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fsg4'
-- client-fingerprint: randomized
-  name: '10|Datacamp+Limited+(SG) #1'
-  network: ws
-  port: 443
-  server: zee.upigg.my.id
-  servername: zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: f99556b4-c7b6-4105-87f6-507f69745a2c
-  ws-opts:
-    headers:
-      Host: zee.upigg.my.id
-    path: '%2Fsgdata'
-- client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #7'
-  network: ws
-  port: 443
-  server: ava.game.naver.com.zee.upigg.my.id
-  servername: ava.game.naver.com.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 72dcd6a3-7efd-4eb2-845e-ca81198eb4b2
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.zee.upigg.my.id
-    path: '%2Fsgamz'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #2'
-  network: ws
-  port: 80
-  server: svr.lufeng.pw
-  tls: false
-  type: vless
-  uuid: b0207968-3f65-4a61-87b1-8bbe2617aa22
-  ws-opts:
-    headers:
-      Host: svr.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Amazon.com,+Inc.+(SG) #9'
-  network: ws
-  port: 443
-  server: ava.game.naver.com.servpn.my.id
-  servername: ava.game.naver.com.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 9ca913b0-15f5-4afa-bc76-46b5140b8f63
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: '%2Fsg3'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #16'
-  network: ws
-  port: 443
-  server: support.zoom.us.zee.upigg.my.id
-  servername: support.zoom.us.zee.upigg.my.id
-  tls: true
-  type: vless
-  uuid: 554fdce6-1629-43fd-9bd7-0113b727f5c6
-  ws-opts:
-    headers:
-      Host: support.zoom.us.zee.upigg.my.id
-    path: '%2Fsgakm'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #3'
-  network: ws
-  port: 443
-  server: investors.spotify.com.lufeng.pw
-  servername: investors.spotify.com.lufeng.pw
-  tls: true
-  type: vless
-  uuid: ac77cf14-1a1d-4551-aa72-99149b2eb116
-  ws-opts:
-    headers:
-      Host: investors.spotify.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #4'
-  network: ws
-  port: 80
-  server: investors.spotify.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: 02333253-f058-4db4-b610-585172ee06f5
-  ws-opts:
-    headers:
-      Host: investors.spotify.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Akamai+Technologies,+Inc.+(SG) #17'
-  network: ws
-  port: 80
-  server: investors.spotify.com.zee.upigg.my.id
-  servername: investors.spotify.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 4396998b-f69c-47f8-861d-012e3810d9e7
-  ws-opts:
-    headers:
-      Host: investors.spotify.com.zee.upigg.my.id
-    path: '%2Fsgakm'
-- name: '10|DigitalOcean,+LLC+(SG) #14'
-  network: ws
-  port: 443
-  server: ava.game.naver.com.yaya.web.id
-  servername: ava.game.naver.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: 8e72a02d-1b9a-4aa8-80a0-e056109054bd
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #6'
-  network: ws
-  port: 443
-  server: sgjp.asolole.biz.id
-  servername: sgjp.asolole.biz.id
-  tls: true
-  type: vless
-  uuid: a48f8eda-e3b5-489d-bb09-175973863162
-  ws-opts:
-    headers:
-      Host: sgjp.asolole.biz.id
-    path: '%2Fsg3'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #5'
-  network: ws
-  port: 80
-  server: blog.webex.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: 5be0bfd6-c81b-4761-9833-edf79207cae5
-  ws-opts:
-    headers:
-      Host: blog.webex.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #9'
-  network: ws
-  port: 80
-  server: sgjp.asolole.biz.id
-  servername: sgjp.asolole.biz.id
-  tls: false
-  type: vless
-  uuid: c35b950b-6ca8-4654-9941-cfd29e2ce6bf
-  ws-opts:
-    headers:
-      Host: sgjp.asolole.biz.id
-    path: '%2Fsg3'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cdn
-  network: ws
-  port: 443
-  server: cdn.laoyoutiao.link
-  servername: sg.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cdn2
-  network: ws
-  port: 443
-  server: cdn2.laoyoutiao.link
-  servername: sg.laoyoutiao.link
-  skip-cert-verify: true
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #12'
-  network: ws
-  port: 443
-  server: servpn.my.id
-  servername: servpn.my.id
-  tls: true
-  type: vless
-  uuid: 4bb12704-9bff-437e-a4a7-17700d6f1bd0
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: '%2Fsg7'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #14'
-  network: ws
-  port: 80
-  server: cache.netflix.com.zee.upigg.my.id
-  servername: cache.netflix.com.zee.upigg.my.id
-  tls: false
-  type: vless
-  uuid: 2e534f4e-36a5-465b-9951-2cf8659c83d3
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.zee.upigg.my.id
-    path: '%2Fsgorcl'
-- client-fingerprint: randomized
-  name: '10|DigitalOcean,+LLC+(SG) #21'
-  network: ws
-  port: 443
-  server: bakrie.ac.id.servpn.my.id
-  servername: bakrie.ac.id.servpn.my.id
-  tls: true
-  type: vless
-  uuid: 95a24be9-9cbc-4c82-8155-92339298cfb1
-  ws-opts:
-    headers:
-      Host: bakrie.ac.id.servpn.my.id
-    path: '%2Fsg4'
-- client-fingerprint: random
-  name: 10|老油条-新加坡-cfcdn2
-  network: ws
-  port: 443
-  server: cfcdn2.langmanshanxi.top
-  servername: sg.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-    path: '%2F%3Fed%3D2560'
-- name: '10|DigitalOcean,+LLC+(SG) #23'
-  network: ws
-  port: 443
-  server: blog.webex.com.yaya.web.id
-  servername: blog.webex.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: bd8237e3-956d-4e76-8757-e0e17e442a14
-  ws-opts:
-    headers:
-      Host: blog.webex.com.yaya.web.id
-    path: '%2Fdo'
-- name: '10|DigitalOcean,+LLC+(SG) #24'
-  network: ws
-  port: 80
-  server: ava.game.naver.com.yaya.web.id
-  servername: ava.game.naver.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: a51466cd-4d42-4696-832e-1bb9f73ca7c4
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #6'
-  network: ws
-  port: 443
-  server: support.zoom.us.lufeng.pw
-  servername: support.zoom.us.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 1c8ed918-8f95-4509-97ec-276704eca61b
-  ws-opts:
-    headers:
-      Host: support.zoom.us.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #7'
-  network: ws
-  port: 443
-  server: cache.netflix.com.lufeng.pw
-  servername: cache.netflix.com.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 47955424-67e1-4b72-b387-3b187e92f383
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Contabo+Asia+Private+Limited+(... #3'
-  network: ws
-  port: 443
-  server: app-stg.gopay.co.id.servpn.my.id
-  servername: app-stg.gopay.co.id.servpn.my.id
-  tls: true
-  type: vless
-  uuid: c1098613-4b45-44dd-8b4c-bf5415cf9b3f
-  ws-opts:
-    headers:
-      Host: app-stg.gopay.co.id.servpn.my.id
-    path: '%2Fsg5'
-- name: '10|DigitalOcean,+LLC+(SG) #28'
-  network: ws
-  port: 80
-  server: edu.ruangguru.com.yaya.web.id
-  servername: edu.ruangguru.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: 860f1b1e-dc1a-410c-885a-72f5cba9fb31
-  ws-opts:
-    headers:
-      Host: edu.ruangguru.com.yaya.web.id
-    path: '%2Fdo'
-- name: '10|DigitalOcean,+LLC+(SG) #31'
-  network: ws
-  port: 443
-  server: vless.kensoko.my.id
-  servername: vless.kensoko.my.id
-  tls: true
-  type: vless
-  uuid: 33eb727b-2129-4ac8-8daf-a7b8169d9295
-  ws-opts:
-    headers:
-      Host: vless.kensoko.my.id
-    path: '%2Fdo2'
-- name: '10|DigitalOcean,+LLC+(SG) #33'
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.yaya.web.id
-  servername: zaintest.vuclip.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: a5a43ded-93b7-48e4-b2d3-b1cd3917567f
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: 10|M247+Europe+SRL+(SG)
-  network: ws
-  port: 443
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: true
-  type: vless
-  uuid: 4ef657df-cdf0-496f-a3c9-a4fddc6f22ac
-  ws-opts:
-    headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: '%2Fsg2'
-- name: '10|DigitalOcean,+LLC+(SG) #42'
-  network: ws
-  port: 443
-  server: edu.ruangguru.com.yaya.web.id
-  servername: edu.ruangguru.com.yaya.web.id
-  tls: true
-  type: vless
-  uuid: 6b8cfb98-4bdc-4f81-aa4a-dad944ef5a26
-  ws-opts:
-    headers:
-      Host: edu.ruangguru.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #8'
-  network: ws
-  port: 80
-  server: support.zoom.us.lufeng.pw
-  tls: false
-  type: vless
-  uuid: 8fc1fd68-caca-4711-9e26-80a74e2efae7
-  ws-opts:
-    headers:
-      Host: support.zoom.us.lufeng.pw
-    path: '%2Fsg1'
-- name: '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  network: ws
-  port: 8880
-  server: 160.79.105.13
-  servername: Telegram-channel-WangCai2
-  tls: false
-  type: vless
-  uuid: 9f3c4ab7-ea26-4d96-91a9-c85ff64ad9a0
-  ws-opts:
-    headers:
-      Host: c.82313369.xyz
-    path: '%2FTelegram'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #9'
-  network: ws
-  port: 80
-  server: zaintest.vuclip.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: d535ec49-6e49-49b3-bc19-c825ab5cbc9e
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.lufeng.pw
-    path: '%2Fsg1'
-- name: '10|DigitalOcean,+LLC+(SG) #51'
-  network: ws
-  port: 443
-  server: yaya.web.id
-  servername: yaya.web.id
-  tls: true
-  type: vless
-  uuid: fc93b459-ea3a-430a-a985-98ba2227cd82
-  ws-opts:
-    headers:
-      Host: yaya.web.id
-    path: '%2Fdo2'
-- name: '10|DigitalOcean,+LLC+(SG) #52'
-  network: ws
-  port: 80
-  server: cache.netflix.com.yaya.web.id
-  servername: cache.netflix.com.yaya.web.id
-  tls: false
-  type: vless
-  uuid: cb937794-8aa5-413d-b066-2a2f316a0efc
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.yaya.web.id
-    path: '%2Fdo'
-- client-fingerprint: randomized
-  name: '10|Oracle+Corporation+(SG) #39'
-  network: ws
-  port: 80
-  server: support.zoom.us.sgjp.asolole.biz.id
-  servername: support.zoom.us.sgjp.asolole.biz.id
-  tls: false
-  type: vless
-  uuid: 2f841aa7-049c-499e-be03-01fe8b529c08
-  ws-opts:
-    headers:
-      Host: support.zoom.us.sgjp.asolole.biz.id
-    path: '%2Fsg3'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #10'
-  network: ws
-  port: 80
-  server: cache.netflix.com.lufeng.pw
-  tls: false
-  type: vless
-  uuid: 4c113bb0-c798-4a94-ba06-acca28efadd1
-  ws-opts:
-    headers:
-      Host: cache.netflix.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #11'
-  network: ws
-  port: 443
-  server: zaintest.vuclip.com.lufeng.pw
-  servername: zaintest.vuclip.com.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 3b75e5bd-033f-4fdf-9e12-380bb616eafe
-  ws-opts:
-    headers:
-      Host: zaintest.vuclip.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #12'
-  network: ws
-  port: 443
-  server: blog.webex.com.lufeng.pw
-  servername: blog.webex.com.lufeng.pw
-  tls: true
-  type: vless
-  uuid: 64d91699-e0e2-451c-a9d3-c94e4f77d69e
-  ws-opts:
-    headers:
-      Host: blog.webex.com.lufeng.pw
-    path: '%2Fsg1'
-- client-fingerprint: randomized
-  name: '10|Microsoft+Corporation+(SG) #14'
-  network: ws
-  port: 80
-  server: lufeng.pw
-  tls: false
-  type: vless
-  uuid: 61046183-7302-428d-b2d1-fa23a59ab53c
-  ws-opts:
-    headers:
-      Host: lufeng.pw
-    path: '%2Fsg1'
-- name: 4|DigitalOcean,+LLC+(SG)")'><i c...
-  network: ws
-  password: 0939db82-12b1-4e86-adf1-5873a47e63aa
-  port: 443
-  server: ava.game.naver.com.servpn.my.id
-  sni: ava.game.naver.com.servpn.my.id
   type: trojan
-  ws-opts:
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
-    path: /sg4
-- name: '4|Contabo+Asia+Private+Limited+(... #12'
-  network: ws
-  password: 00393cd7-9153-4ea8-ad1e-57780ce428da
-  port: 443
-  server: servpn.my.id
-  sni: servpn.my.id
-  type: trojan
-  ws-opts:
-    headers:
-      Host: servpn.my.id
-    path: /sg5
-- name: 4|Akamai+Technologies,+Inc.+(SG)...
-  network: ws
-  password: 0012e1d5-c493-45cd-a802-7461a614b1d2
-  port: 443
-  server: blog.ruangguru.com.servpn.my.id
-  sni: blog.ruangguru.com.servpn.my.id
-  type: trojan
-  ws-opts:
-    headers:
-      Host: blog.ruangguru.com.servpn.my.id
-    path: /sg2
-- alpn:
-  - h3
-  client-fingerprint: random
-  name: 11|@proNG1 🇸🇬 SG
-  network: ws
-  port: 443
-  server: 103.160.204.50
-  servername: vless8-ekh.pages.dev
-  tls: true
-  type: vless
-  uuid: c98a16e4-0dc5-42f0-b3db-30f04525c123
-  ws-opts:
-    headers:
-      Host: vless8-ekh.pages.dev
-    path: /proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1?ed=2560
-- name: 8|4FreeIran-4241
-  network: tcp
-  password: ceaea123-1b4b-469b-8358-bcd5f5529305
-  port: 443
-  server: uk.liangyuandian.top
+  password: 92435aa8-f3b6-466a-ad58-c55cbb6d2acf
+  sni: au.mjt000.com
   skip-cert-verify: true
-  sni: ''
-  type: trojan
-- name: '8|🇸🇬 新加坡|@ripaojiedian #2'
-  password: d0d08cddacc3190ea81b1b792e1b5fde
-  port: 25618
-  server: 36.151.251.7
-  skip-cert-verify: true
-  sni: www.baidu.com
-  type: trojan
-- name: 8|🇸🇬 新加坡 06
-  password: lkz20040702
-  port: 443
-  server: kkk9.zabc.net
-  skip-cert-verify: false
-  sni: kkk9.zabc.net
-  tls: true
+  udp: true
+- name: yandex-492
+  server: 51.159.111.32
+  port: 31180
   type: hysteria2
-- client-fingerprint: random
-  name: '0,6,7|老油条-台湾 #3'
-  network: ws
-  port: 443
-  server: tw.laoyoutiao.link
-  servername: tw.laoyoutiao.link
-  tls: true
-  type: vless
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: tw.laoyoutiao.link
-    path: /?ed%3D2560
-- name: '8|✅@v2ray_configs_pools #96'
-  network: tcp
-  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-  port: 8443
-  server: official.taipeicitygovernment.ivano-frankivsk.ua
+  password: dongtaiwang.com
+  auth: dongtaiwang.com
+  sni: apple.com
   skip-cert-verify: true
-  sni: ''
+  udp: true
+- name: yandex-493
+  server: 150.230.30.237
+  port: 45979
+  type: hysteria2
+  password: cfe032e4-1bc3-454f-9d09-301b0aea08ff
+  auth: cfe032e4-1bc3-454f-9d09-301b0aea08ff
+  sni: www.bing.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-495
+  server: a05.taipeicitygovernment.co.ua
+  port: 3462
   type: trojan
-- cipher: chacha20-ietf-poly1305
-  name: '1,5,8|>>@ShadowsocksM::VN #1'
-  password: Nk9asglDzHzjktVzTkvhaA
+  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+  sni: 45.32.28.232
+  skip-cert-verify: true
+  udp: true
+- name: yandex-496
+  server: a07.taipeicitygovernment.if.ua
+  port: 3462
+  type: trojan
+  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+  sni: 45.32.28.232
+  skip-cert-verify: true
+  udp: true
+- name: yandex-497
+  server: taifo03a.kbservice.club
   port: 443
-  server: 160.19.78.75
+  type: trojan
+  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+  skip-cert-verify: true
+  udp: true
+- name: yandex-499
+  server: 60.249.14.38
+  port: 2377
   type: ss
-- client-fingerprint: firefox
-  name: 1,2,8|4FreeIran-13942
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-501
+  server: 118.163.198.42
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-502
+  server: 118.163.198.43
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-503
+  server: 118.163.198.44
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-504
+  server: 118.163.198.45
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-505
+  server: 118.163.198.46
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-508
+  server: 60.249.39.202
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-509
+  server: 60.249.39.203
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-510
+  server: 60.249.39.204
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-513
+  server: 211.75.210.22
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-514
+  server: 59.125.62.188
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-516
+  server: 59.125.62.190
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-520
+  server: 210.61.187.238
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-521
+  server: 210.61.187.240
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-527
+  server: 125.227.86.44
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-528
+  server: 125.227.86.45
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-529
+  server: 125.227.86.46
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-531
+  server: 125.227.86.48
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-532
+  server: 211.22.161.135
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-538
+  server: 60.249.28.59
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-539
+  server: 60.249.28.60
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-540
+  server: 60.249.28.136
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-544
+  server: 60.249.35.3
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-545
+  server: 60.249.35.37
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-547
+  server: 60.249.35.59
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-548
+  server: 60.249.35.60
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-549
+  server: 60.249.35.94
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-550
+  server: 60.249.35.96
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-551
+  server: 61.216.165.29
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-554
+  server: 211.72.214.20
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-555
+  server: 211.72.214.21
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-558
+  server: 211.72.214.66
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-559
+  server: 59.125.75.111
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-562
+  server: 59.125.75.117
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-563
+  server: 139.162.158.172
+  port: 443
+  type: trojan
+  password: 665c944d-047d-4659-80d5-3eaac70241a9
+  sni: de2-full.privateip.net
+  skip-cert-verify: true
+  udp: true
+- name: yandex-567
+  server: 185.142.53.63
+  port: 43585
+  type: vmess
+  uuid: 2babf34a-16f5-4e38-a885-738fdfc8eabf
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: yandex-570
+  server: 47.238.197.115
+  port: 443
+  type: vless
+  uuid: f895e621-5a92-4bb9-b3e1-c1c2952d621c
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: EfP6lwO4N5nG1tjU9K5XKQLaeS5Azax5EPVh9MFZn2s
+  servername: upos-hz-mirrorakam.akamaized.net
+  client-fingerprint: chrome
   network: tcp
+- name: yandex-576
+  server: 203.174.82.145
+  port: 43057
+  type: hysteria2
+  password: eb75320e-a6d0-4b34-a6b6-2bcfc96a9099
+  auth: eb75320e-a6d0-4b34-a6b6-2bcfc96a9099
+  sni: www.bing.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-578
+  server: 2.188.219.43
+  port: 8443
+  type: vmess
+  uuid: b2e38621-035b-43f8-84a5-e92160762fc3
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /
+  udp: true
+- name: yandex-579
+  server: 03.tokyometropolis.kharkov.ua
+  port: 2053
+  type: trojan
+  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+  sni: 45.32.28.232
+  skip-cert-verify: true
+  udp: true
+- name: yandex-582
+  server: 13.112.101.203
+  port: 35562
+  type: hysteria2
+  password: Y9vRstWcTHECGcKnayA2VYiUXs
+  auth: Y9vRstWcTHECGcKnayA2VYiUXs
+  sni: bing.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-585
+  server: 13.115.154.194
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-586
+  server: 172.237.11.141
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-587
+  server: 172.237.11.224
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-588
+  server: 139.162.119.212
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-590
+  server: 52.199.249.206
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-592
+  server: 54.249.220.208
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-594
+  server: 13.231.106.60
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-598
+  server: 54.64.148.82
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-602
+  server: 119.206.102.29
+  port: 45979
+  type: vmess
+  uuid: 23bdf6df-c482-46d0-c0f4-5a98d534ea11
+  alterId: 0
+  cipher: auto
+  tls: false
+  network: ws
+  ws-opts:
+    path: /test
+  udp: true
+- name: yandex-604
+  server: yapc-1.adamhayward.co.uk
+  port: 35000
+  type: hysteria2
+  password: Yet-Another-Public-Config-1
+  auth: Yet-Another-Public-Config-1
+  sni: YAPC-1.afshin.ir
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: Yet-Another-Public-Config-1
+  udp: true
+- name: yandex-605
+  server: 83.217.222.183
+  port: 443
+  type: vless
+  uuid: 38e45e75-cabb-4b98-8e2f-9d65843b7efa
+  tls: true
+  flow: xtls-rprx-vision
+  reality-opts:
+    public-key: gi8v7_r3NbWuPl9kjt8ZZLDavCMz1w0rVeNhcVnVxEM
+    short-id: 9d56b1e4
+  servername: microsoft.com
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-606
+  server: 185.219.81.33
+  port: 20675
+  type: hysteria2
+  password: 4VDmo53kWX
+  auth: 4VDmo53kWX
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: v2raybluecrystal
+  udp: true
+- name: yandex-607
+  server: 185.219.81.33
+  port: 18865
+  type: hysteria2
+  password: 4VDmo53kWX
+  auth: 4VDmo53kWX
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: v2raybluecrystal
+  udp: true
+- name: yandex-608
+  server: 193.29.139.206
+  port: 8080
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  udp: true
+- name: yandex-613
+  server: 192.229.85.46
+  port: 57238
+  type: hysteria2
+  password: c5cf6677-50f7-4fd2-abbc-c73f4cf7cfff
+  auth: c5cf6677-50f7-4fd2-abbc-c73f4cf7cfff
+  sni: www.bing.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-615
+  server: 47.129.14.196
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-617
+  server: 172.236.144.61
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-618
+  server: 13.229.249.124
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-621
+  server: 5.44.249.42
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-622
+  server: 5.44.249.43
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-627
+  server: cache-giver-wife.stark-industries.solutions
+  port: 443
+  type: trojan
+  password: e6a2e741-0fce-440b-910c-b81325e2263a
+  skip-cert-verify: true
+  udp: true
+- name: yandex-628
+  server: usla.mjt000.com
+  port: 443
+  type: trojan
+  password: e4af2638-bb12-4e4a-84f1-a032e23ca63f
+  skip-cert-verify: true
+  udp: true
+- name: yandex-640
+  server: kz.mjt000.com
+  port: 443
+  type: trojan
+  password: ea17601d-8ebf-4431-b815-4d644821ca7e
+  skip-cert-verify: true
+  udp: true
+- name: yandex-651
+  server: us10.s2fjeyeeyafe.bond
+  port: 35789
+  type: hysteria2
+  password: 196d331c-9a7d-4a8a-990e-f8babff27412
+  auth: 196d331c-9a7d-4a8a-990e-f8babff27412
+  sni: us10.s2fjeyeeyafe.bond
+  skip-cert-verify: true
+  udp: true
+- name: yandex-653
+  server: 104.21.26.17
+  port: 443
+  type: trojan
+  password: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
+  sni: rrrRrRRrT.459.pp.ua
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /znQImc22ijDwVOkZfoq
+    headers:
+      Host: rrrRrRRrT.459.pp.ua
+  udp: true
+- name: yandex-654
+  server: 172.67.220.32
+  port: 443
+  type: trojan
+  password: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
+  sni: eEEfGty6.999836.XYz
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /XmTzATQPJv9RO3xr1D40NK
+    headers:
+      Host: eEEfGty6.999836.XYz
+  udp: true
+- name: yandex-655
+  server: 104.21.44.248
+  port: 443
+  type: vless
+  uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
+  tls: true
+  servername: EDfrT.frEEvPNatm2025.DPdNS.oRG
+  network: ws
+  ws-opts:
+    path: /O9jlBCbIm3xr1D40NK
+    headers:
+      Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
+- name: yandex-656
+  server: 172.67.219.196
+  port: 443
+  type: trojan
+  password: f108e0e2-5f12-42b6-9e67-1b2f073ffb2b
+  sni: CCcvfgt6.852224.dpdns.org
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /CA5bMmr2JMum8sDKRwvFCJq
+    headers:
+      Host: CCcvfgt6.852224.dpdns.org
+  udp: true
+- name: yandex-657
+  server: 172.67.135.37
+  port: 443
+  type: trojan
+  password: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
+  sni: rrrRrRRrT.459.pp.ua
+  skip-cert-verify: true
+  network: ws
+  ws-opts:
+    path: /znQImc22ijDwVOkZfoq
+    headers:
+      Host: rrrRrRRrT.459.pp.ua
+  udp: true
+- name: yandex-658
+  server: 172.67.206.152
+  port: 443
+  type: vless
+  uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
+  tls: true
+  servername: EDfrT.frEEvPNatm2025.DPdNS.oRG
+  network: ws
+  ws-opts:
+    path: /O9jlBCbIm3xr1D40NK
+    headers:
+      Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
+- name: yandex-664
+  server: 146.190.51.60
+  port: 33763
+  type: hysteria2
+  password: J8Had1nwTgkNvWNN0WrucWq38
+  auth: J8Had1nwTgkNvWNN0WrucWq38
+  skip-cert-verify: true
+  udp: true
+- name: yandex-665
+  server: 134.195.101.80
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-666
+  server: 134.195.101.81
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-667
+  server: 134.195.101.83
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-673
+  server: 23.247.137.73
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-674
+  server: 23.247.137.74
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-675
+  server: 23.247.137.158
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-676
+  server: 23.247.137.159
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-678
+  server: 23.247.137.162
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-679
+  server: 23.247.137.165
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-681
+  server: 23.247.137.167
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-683
+  server: 88.210.36.107
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-687
+  server: 95.174.71.96
+  port: 2377
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
+  plugin: obfs
+  plugin-opts:
+    mode: tls
+    host: (TG @WangCai2)16a89ef:154955
+  udp: true
+- name: yandex-689
+  server: 103.12.77.78
   port: 34045
+  type: vless
+  uuid: d8dd94fd-540e-461d-b5d4-acebef02c22a
+  tls: true
   reality-opts:
     public-key: cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA
     short-id: e8ab71d0
-  server: 160.250.65.148
   servername: visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me
-  skip-cert-verify: false
-  tls: true
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-690
+  server: 160.250.65.148
+  port: 34045
   type: vless
   uuid: d8dd94fd-540e-461d-b5d4-acebef02c22a
+  tls: true
+  reality-opts:
+    public-key: cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA
+    short-id: e8ab71d0
+  servername: visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me
+  client-fingerprint: chrome
+  network: tcp
+- name: yandex-691
+  server: official.taipeicitygovernment.if.ua
+  port: 8443
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  sni: official.taipeicitygovernment.if.ua
+  skip-cert-verify: true
+  udp: true
+- name: yandex-692
+  server: 103.168.56.77
+  port: 443
+  type: trojan
+  password: 4f2c305b-9a03-4493-b3e4-2dff2f1af8c9
+  skip-cert-verify: true
+  udp: true
+- name: yandex-693
+  server: 132.145.51.172
+  port: 443
+  type: trojan
+  password: 02e653c9-7c93-46a9-999d-11834bd0c577
+  skip-cert-verify: true
+  udp: true
+- name: yandex-694
+  server: official.tokyometropolis.kiev.ua
+  port: 2053
+  type: trojan
+  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
+  sni: official.tokyometropolis.kiev.ua
+  skip-cert-verify: true
+  udp: true
+- name: yandex-696
+  server: 36.151.251.45
+  port: 22280
+  type: trojan
+  password: TYhGwMDo
+  sni: www.baidu.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-697
+  server: 36.150.215.141
+  port: 33681
+  type: trojan
+  password: wLivJeWi
+  sni: www.baidu.com
+  skip-cert-verify: true
+  udp: true
+- name: yandex-1041
+  server: 45.135.135.229
+  port: 80
+  type: hysteria2
+  password: f4eda575-7726-4d31-8969-225ac78ffaed
+  auth: f4eda575-7726-4d31-8969-225ac78ffaed
+  up: 100
+  down: 100
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+  udp: true
+- name: yandex-1178
+  server: us01.sh-cloudflare.sbs
+  port: 8443
+  type: vmess
+  uuid: 2703867d-dd8f-4f7f-93f4-ac6e4f56c7e8
+  alterId: 0
+  cipher: auto
+  tls: true
+  servername: us01.sh-cloudflare.sbs
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: us01.sh-cloudflare.sbs
+  udp: true
 proxy-groups:
 - name: 节点选择
   type: select
@@ -1270,106 +1092,106 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 0|Oracle+Corporation+(SG)
-  - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - 0|SG_speednode_0119
-  - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #42'
-  - '10|Amazon.com,+Inc.+(SG) #7'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - 5|Digitalocean,+LLC+(SG)
-  - 5|SG+Alibaba+us+Technology+Co+++...
-  - '10|Microsoft+Corporation+(SG) #4'
-  - 0|SG+Oracle+Corporation
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #14'
-  - 0|SG_speednode_0118
-  - 0|Akamai+Technologies,+Inc.+(SG)
-  - '5|DigitalOcean,+LLC+(SG) #5'
-  - '5|DigitalOcean,+LLC+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #7'
-  - '10|Oracle+Corporation+(SG) #39'
-  - 10|(SG)Oracle Corporation-[Tls]
-  - '10|DigitalOcean,+LLC+(SG) #7'
-  - '4|Contabo+Asia+Private+Limited+(... #12'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '0|Akamai+Technologies,+Inc.+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #33'
-  - '10|Microsoft+Corporation+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #1'
-  - 0|Amazon.com,+Inc.+(SG)
-  - '10|Microsoft+Corporation+(SG) #10'
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - 5|Melbikomas+UAB+(SG)
-  - 0|SG+Hong+Kong+Megalayer+Technol...
-  - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #21'
-  - '0|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #12'
-  - '5|Akamai+Technologies,+Inc.+(SG) #4'
-  - 0|SG+SoftLayer+Technologies+🇸🇬
-  - '0,6,7|老油条-SG-新加坡 #3'
-  - '10|DigitalOcean,+LLC+(SG) #51'
-  - '0|Amazon.com,+Inc.+(SG) #2'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 0|Aceville+Pte.ltd+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #52'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|VPLS,+Inc.+(SG) #1'
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 10|M247+Europe+SRL+(SG)
-  - '10|Contabo+Asia+Private+Limited+(... #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - '0|DigitalOcean,+LLC+(SG) #1'
-  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
-  - 0|DigitalOcean,+LLC+(SG)
-  - '0|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|Akamai+Technologies,+Inc.+(SG) #17'
-  - '5|Digitalocean,+LLC+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '0|Amazon.com,+Inc.+(SG) #1'
-  - '10|Amazon.com,+Inc.+(SG) #3'
-  - '10|DigitalOcean,+LLC+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #16'
-  - '0,6,7|老油条-台湾 #3'
-  - 5|Contabo+Asia+Private+Limited+(...
-  - '0|Aceville+Pte.ltd+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - '10|DigitalOcean,+LLC+(SG) #24'
-  - '10|Datacamp+Limited+(SG) #1'
-  - '0|DigitalOcean,+LLC+(SG) #2'
-  - 11|@proNG1 🇸🇬 SG
-  - 0|Microsoft+Corporation+(SG)
-  - 0|SG+Digital+Ocean+2+🇸🇬
-  - 0|VPLS,+Inc.+(SG)
-  - '10|老油条-新加坡-cfcdns #1'
-  - 0|SG+The+Constant+Company++LLC
-  - 10|老油条-新加坡-cdn1
-  - 10|老油条-新加坡-cfcdn2
-  - '5|DigitalOcean,+LLC+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #9'
-  - 10|老油条-新加坡-cdn
-  - 10|老油条-新加坡-cdn2
-  - 0|SG+Softlayer+Technologies+Inc
-  - 0|SG+Amazon+com++Inc
-  - '1,5,8|>>@ShadowsocksM::VN #1'
-  - '8|✅@v2ray_configs_pools #96'
-  - '0,6,7|SG #10'
-  - 0|SG新加坡(mibei77.com 米贝节点分享)
-  - 1,2,8|4FreeIran-13942
-  - '8|🇸🇬 新加坡|@ripaojiedian #2'
-  - 8|🇸🇬 新加坡 06
-  - 8|4FreeIran-4241
+  - yandex-656
+  - yandex-687
+  - yandex-679
+  - yandex-678
+  - yandex-673
+  - yandex-674
+  - yandex-676
+  - yandex-675
+  - yandex-567
+  - yandex-681
+  - yandex-608
+  - yandex-664
+  - yandex-693
+  - yandex-563
+  - yandex-607
+  - yandex-492
+  - yandex-587
+  - yandex-588
+  - yandex-586
+  - yandex-594
+  - yandex-598
+  - yandex-585
+  - yandex-590
+  - yandex-657
+  - yandex-520
+  - yandex-658
+  - yandex-605
+  - yandex-501
+  - yandex-503
+  - yandex-504
+  - yandex-509
+  - yandex-505
+  - yandex-548
+  - yandex-604
+  - yandex-550
+  - yandex-502
+  - yandex-508
+  - yandex-547
+  - yandex-549
+  - yandex-521
+  - yandex-545
+  - yandex-544
+  - yandex-516
+  - yandex-540
+  - yandex-615
+  - yandex-559
+  - yandex-529
+  - yandex-562
+  - yandex-531
+  - yandex-539
+  - yandex-621
+  - yandex-555
+  - yandex-514
+  - yandex-554
+  - yandex-527
+  - yandex-558
+  - yandex-622
+  - yandex-510
+  - yandex-538
+  - yandex-627
+  - yandex-528
+  - yandex-618
+  - yandex-654
+  - yandex-551
+  - yandex-532
+  - yandex-651
+  - yandex-602
+  - yandex-1178
+  - yandex-570
+  - yandex-691
+  - yandex-653
+  - yandex-576
+  - yandex-667
+  - yandex-493
+  - yandex-692
+  - yandex-697
+  - yandex-689
+  - yandex-495
+  - yandex-497
+  - yandex-578
+  - yandex-683
+  - yandex-496
+  - yandex-613
+  - yandex-655
+  - yandex-513
+  - yandex-491
+  - yandex-690
+  - yandex-1041
+  - yandex-606
+  - yandex-628
+  - yandex-499
+  - yandex-694
+  - yandex-579
+  - yandex-582
+  - yandex-617
+  - yandex-665
+  - yandex-592
+  - yandex-666
+  - yandex-640
+  - yandex-696
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1377,211 +1199,211 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 0|Oracle+Corporation+(SG)
-  - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - 0|SG_speednode_0119
-  - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #42'
-  - '10|Amazon.com,+Inc.+(SG) #7'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - 5|Digitalocean,+LLC+(SG)
-  - 5|SG+Alibaba+us+Technology+Co+++...
-  - '10|Microsoft+Corporation+(SG) #4'
-  - 0|SG+Oracle+Corporation
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #14'
-  - 0|SG_speednode_0118
-  - 0|Akamai+Technologies,+Inc.+(SG)
-  - '5|DigitalOcean,+LLC+(SG) #5'
-  - '5|DigitalOcean,+LLC+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #7'
-  - '10|Oracle+Corporation+(SG) #39'
-  - 10|(SG)Oracle Corporation-[Tls]
-  - '10|DigitalOcean,+LLC+(SG) #7'
-  - '4|Contabo+Asia+Private+Limited+(... #12'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '0|Akamai+Technologies,+Inc.+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #33'
-  - '10|Microsoft+Corporation+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #1'
-  - 0|Amazon.com,+Inc.+(SG)
-  - '10|Microsoft+Corporation+(SG) #10'
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - 5|Melbikomas+UAB+(SG)
-  - 0|SG+Hong+Kong+Megalayer+Technol...
-  - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #21'
-  - '0|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #12'
-  - '5|Akamai+Technologies,+Inc.+(SG) #4'
-  - 0|SG+SoftLayer+Technologies+🇸🇬
-  - '0,6,7|老油条-SG-新加坡 #3'
-  - '10|DigitalOcean,+LLC+(SG) #51'
-  - '0|Amazon.com,+Inc.+(SG) #2'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 0|Aceville+Pte.ltd+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #52'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|VPLS,+Inc.+(SG) #1'
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 10|M247+Europe+SRL+(SG)
-  - '10|Contabo+Asia+Private+Limited+(... #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - '0|DigitalOcean,+LLC+(SG) #1'
-  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
-  - 0|DigitalOcean,+LLC+(SG)
-  - '0|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|Akamai+Technologies,+Inc.+(SG) #17'
-  - '5|Digitalocean,+LLC+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '0|Amazon.com,+Inc.+(SG) #1'
-  - '10|Amazon.com,+Inc.+(SG) #3'
-  - '10|DigitalOcean,+LLC+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #16'
-  - '0,6,7|老油条-台湾 #3'
-  - 5|Contabo+Asia+Private+Limited+(...
-  - '0|Aceville+Pte.ltd+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - '10|DigitalOcean,+LLC+(SG) #24'
-  - '10|Datacamp+Limited+(SG) #1'
-  - '0|DigitalOcean,+LLC+(SG) #2'
-  - 11|@proNG1 🇸🇬 SG
-  - 0|Microsoft+Corporation+(SG)
-  - 0|SG+Digital+Ocean+2+🇸🇬
-  - 0|VPLS,+Inc.+(SG)
-  - '10|老油条-新加坡-cfcdns #1'
-  - 0|SG+The+Constant+Company++LLC
-  - 10|老油条-新加坡-cdn1
-  - 10|老油条-新加坡-cfcdn2
-  - '5|DigitalOcean,+LLC+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #9'
-  - 10|老油条-新加坡-cdn
-  - 10|老油条-新加坡-cdn2
-  - 0|SG+Softlayer+Technologies+Inc
-  - 0|SG+Amazon+com++Inc
-  - '1,5,8|>>@ShadowsocksM::VN #1'
-  - '8|✅@v2ray_configs_pools #96'
-  - '0,6,7|SG #10'
-  - 0|SG新加坡(mibei77.com 米贝节点分享)
-  - 1,2,8|4FreeIran-13942
-  - '8|🇸🇬 新加坡|@ripaojiedian #2'
-  - 8|🇸🇬 新加坡 06
-  - 8|4FreeIran-4241
+  - yandex-656
+  - yandex-687
+  - yandex-679
+  - yandex-678
+  - yandex-673
+  - yandex-674
+  - yandex-676
+  - yandex-675
+  - yandex-567
+  - yandex-681
+  - yandex-608
+  - yandex-664
+  - yandex-693
+  - yandex-563
+  - yandex-607
+  - yandex-492
+  - yandex-587
+  - yandex-588
+  - yandex-586
+  - yandex-594
+  - yandex-598
+  - yandex-585
+  - yandex-590
+  - yandex-657
+  - yandex-520
+  - yandex-658
+  - yandex-605
+  - yandex-501
+  - yandex-503
+  - yandex-504
+  - yandex-509
+  - yandex-505
+  - yandex-548
+  - yandex-604
+  - yandex-550
+  - yandex-502
+  - yandex-508
+  - yandex-547
+  - yandex-549
+  - yandex-521
+  - yandex-545
+  - yandex-544
+  - yandex-516
+  - yandex-540
+  - yandex-615
+  - yandex-559
+  - yandex-529
+  - yandex-562
+  - yandex-531
+  - yandex-539
+  - yandex-621
+  - yandex-555
+  - yandex-514
+  - yandex-554
+  - yandex-527
+  - yandex-558
+  - yandex-622
+  - yandex-510
+  - yandex-538
+  - yandex-627
+  - yandex-528
+  - yandex-618
+  - yandex-654
+  - yandex-551
+  - yandex-532
+  - yandex-651
+  - yandex-602
+  - yandex-1178
+  - yandex-570
+  - yandex-691
+  - yandex-653
+  - yandex-576
+  - yandex-667
+  - yandex-493
+  - yandex-692
+  - yandex-697
+  - yandex-689
+  - yandex-495
+  - yandex-497
+  - yandex-578
+  - yandex-683
+  - yandex-496
+  - yandex-613
+  - yandex-655
+  - yandex-513
+  - yandex-491
+  - yandex-690
+  - yandex-1041
+  - yandex-606
+  - yandex-628
+  - yandex-499
+  - yandex-694
+  - yandex-579
+  - yandex-582
+  - yandex-617
+  - yandex-665
+  - yandex-592
+  - yandex-666
+  - yandex-640
+  - yandex-696
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 0|Oracle+Corporation+(SG)
-  - 0|SG_speednode_0120
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|124 #3'
-  - 0|SG_speednode_0119
-  - '10|Microsoft+Corporation+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #42'
-  - '10|Amazon.com,+Inc.+(SG) #7'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|224 #3'
-  - 5|Digitalocean,+LLC+(SG)
-  - 5|SG+Alibaba+us+Technology+Co+++...
-  - '10|Microsoft+Corporation+(SG) #4'
-  - 0|SG+Oracle+Corporation
-  - '10|Microsoft+Corporation+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #14'
-  - 0|SG_speednode_0118
-  - 0|Akamai+Technologies,+Inc.+(SG)
-  - '5|DigitalOcean,+LLC+(SG) #5'
-  - '5|DigitalOcean,+LLC+(SG) #4'
-  - '10|Microsoft+Corporation+(SG) #7'
-  - '10|Oracle+Corporation+(SG) #39'
-  - 10|(SG)Oracle Corporation-[Tls]
-  - '10|DigitalOcean,+LLC+(SG) #7'
-  - '4|Contabo+Asia+Private+Limited+(... #12'
-  - '10|DigitalOcean,+LLC+(SG) #31'
-  - '10|Microsoft+Corporation+(SG) #8'
-  - '0|Akamai+Technologies,+Inc.+(SG) #2'
-  - '10|DigitalOcean,+LLC+(SG) #33'
-  - '10|Microsoft+Corporation+(SG) #14'
-  - '10|Microsoft+Corporation+(SG) #1'
-  - 0|Amazon.com,+Inc.+(SG)
-  - '10|Microsoft+Corporation+(SG) #10'
-  - '10|DigitalOcean,+LLC+(SG) #14'
-  - '0,6,7,10|🇸🇬|SG|@wxgqlfx|104 #3'
-  - 5|Melbikomas+UAB+(SG)
-  - 0|SG+Hong+Kong+Megalayer+Technol...
-  - '10|DigitalOcean,+LLC+(SG) #23'
-  - '10|DigitalOcean,+LLC+(SG) #21'
-  - '0|Akamai+Technologies,+Inc.+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #12'
-  - '5|Akamai+Technologies,+Inc.+(SG) #4'
-  - 0|SG+SoftLayer+Technologies+🇸🇬
-  - '0,6,7|老油条-SG-新加坡 #3'
-  - '10|DigitalOcean,+LLC+(SG) #51'
-  - '0|Amazon.com,+Inc.+(SG) #2'
-  - '10|Microsoft+Corporation+(SG) #12'
-  - '10|Microsoft+Corporation+(SG) #11'
-  - '5,6|@NpvV2rayFilTer #1'
-  - 0|Aceville+Pte.ltd+(SG)
-  - '10|DigitalOcean,+LLC+(SG) #52'
-  - '10|Amazon.com,+Inc.+(SG) #9'
-  - '10|VPLS,+Inc.+(SG) #1'
-  - 4|DigitalOcean,+LLC+(SG)")'><i c...
-  - 4|Akamai+Technologies,+Inc.+(SG)...
-  - 10|(SG)Oracle Corporation-[NTls]
-  - 10|M247+Europe+SRL+(SG)
-  - '10|Contabo+Asia+Private+Limited+(... #3'
-  - '10|Oracle+Corporation+(SG) #6'
-  - '0|DigitalOcean,+LLC+(SG) #1'
-  - 0|Cds+Global+Cloud+Co.,+LTD+(SG+...
-  - 0|DigitalOcean,+LLC+(SG)
-  - '0|Akamai+Technologies,+Inc.+(SG) #1'
-  - '10|Akamai+Technologies,+Inc.+(SG) #17'
-  - '5|Digitalocean,+LLC+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #9'
-  - '10|SG新加坡(mibei77.com 米贝节点分享) #1'
-  - '10|DigitalOcean,+LLC+(SG) #28'
-  - '10|Microsoft+Corporation+(SG) #5'
-  - '0|Amazon.com,+Inc.+(SG) #1'
-  - '10|Amazon.com,+Inc.+(SG) #3'
-  - '10|DigitalOcean,+LLC+(SG) #8'
-  - '10|Akamai+Technologies,+Inc.+(SG) #16'
-  - '0,6,7|老油条-台湾 #3'
-  - 5|Contabo+Asia+Private+Limited+(...
-  - '0|Aceville+Pte.ltd+(SG) #1'
-  - '10|Microsoft+Corporation+(SG) #6'
-  - '10|DigitalOcean,+LLC+(SG) #24'
-  - '10|Datacamp+Limited+(SG) #1'
-  - '0|DigitalOcean,+LLC+(SG) #2'
-  - 11|@proNG1 🇸🇬 SG
-  - 0|Microsoft+Corporation+(SG)
-  - 0|SG+Digital+Ocean+2+🇸🇬
-  - 0|VPLS,+Inc.+(SG)
-  - '10|老油条-新加坡-cfcdns #1'
-  - 0|SG+The+Constant+Company++LLC
-  - 10|老油条-新加坡-cdn1
-  - 10|老油条-新加坡-cfcdn2
-  - '5|DigitalOcean,+LLC+(SG) #3'
-  - '10|Oracle+Corporation+(SG) #9'
-  - 10|老油条-新加坡-cdn
-  - 10|老油条-新加坡-cdn2
-  - 0|SG+Softlayer+Technologies+Inc
-  - 0|SG+Amazon+com++Inc
-  - '1,5,8|>>@ShadowsocksM::VN #1'
-  - '8|✅@v2ray_configs_pools #96'
-  - '0,6,7|SG #10'
-  - 0|SG新加坡(mibei77.com 米贝节点分享)
-  - 1,2,8|4FreeIran-13942
-  - '8|🇸🇬 新加坡|@ripaojiedian #2'
-  - 8|🇸🇬 新加坡 06
-  - 8|4FreeIran-4241
+  - yandex-656
+  - yandex-687
+  - yandex-679
+  - yandex-678
+  - yandex-673
+  - yandex-674
+  - yandex-676
+  - yandex-675
+  - yandex-567
+  - yandex-681
+  - yandex-608
+  - yandex-664
+  - yandex-693
+  - yandex-563
+  - yandex-607
+  - yandex-492
+  - yandex-587
+  - yandex-588
+  - yandex-586
+  - yandex-594
+  - yandex-598
+  - yandex-585
+  - yandex-590
+  - yandex-657
+  - yandex-520
+  - yandex-658
+  - yandex-605
+  - yandex-501
+  - yandex-503
+  - yandex-504
+  - yandex-509
+  - yandex-505
+  - yandex-548
+  - yandex-604
+  - yandex-550
+  - yandex-502
+  - yandex-508
+  - yandex-547
+  - yandex-549
+  - yandex-521
+  - yandex-545
+  - yandex-544
+  - yandex-516
+  - yandex-540
+  - yandex-615
+  - yandex-559
+  - yandex-529
+  - yandex-562
+  - yandex-531
+  - yandex-539
+  - yandex-621
+  - yandex-555
+  - yandex-514
+  - yandex-554
+  - yandex-527
+  - yandex-558
+  - yandex-622
+  - yandex-510
+  - yandex-538
+  - yandex-627
+  - yandex-528
+  - yandex-618
+  - yandex-654
+  - yandex-551
+  - yandex-532
+  - yandex-651
+  - yandex-602
+  - yandex-1178
+  - yandex-570
+  - yandex-691
+  - yandex-653
+  - yandex-576
+  - yandex-667
+  - yandex-493
+  - yandex-692
+  - yandex-697
+  - yandex-689
+  - yandex-495
+  - yandex-497
+  - yandex-578
+  - yandex-683
+  - yandex-496
+  - yandex-613
+  - yandex-655
+  - yandex-513
+  - yandex-491
+  - yandex-690
+  - yandex-1041
+  - yandex-606
+  - yandex-628
+  - yandex-499
+  - yandex-694
+  - yandex-579
+  - yandex-582
+  - yandex-617
+  - yandex-665
+  - yandex-592
+  - yandex-666
+  - yandex-640
+  - yandex-696
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
