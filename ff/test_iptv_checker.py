@@ -25,12 +25,17 @@ class MockCompletedProcess:
 class TestIPTVChecker(unittest.TestCase):
 
     def setUp(self):
+        # 存储原始的 open 函数，以避免 mock 递归
+        self.original_open = open
+
         # 创建临时文件用于测试输入和输出
         self.temp_input_fd, self.temp_input_path = tempfile.mkstemp(suffix='.txt')
         self.temp_output_fd, self.temp_output_path = tempfile.mkstemp(suffix='.txt')
+        self.temp_failed_links_fd, self.temp_failed_links_path = tempfile.mkstemp(suffix='.txt') # 为 failed_links.txt 创建临时文件
         # 关闭文件描述符，以便后续使用文件名操作
         os.close(self.temp_input_fd)
         os.close(self.temp_output_fd)
+        os.close(self.temp_failed_links_fd) # 关闭失败链接文件的文件描述符
 
         # 备份原始的文件名，以便在测试中替换
         self.original_input_file_name = 'list.txt' # main_script.py 中使用的输入文件名
@@ -41,7 +46,7 @@ class TestIPTVChecker(unittest.TestCase):
         self.patch_exists = patch('os.path.exists', side_effect=lambda x: {
             self.original_input_file_name: True, # 假设输入文件存在
             'config.json': True, # 假设 config.json 存在
-            self.original_failed_links_file_name: False # 默认失败链接文件不存在，除非特定测试需要
+            self.original_failed_links_file_name: True # 假设 failed_links.txt 存在（或在测试中创建）
         }.get(x, False))
         self.mock_exists = self.patch_exists.start()
 
@@ -92,6 +97,8 @@ class TestIPTVChecker(unittest.TestCase):
             os.remove(self.temp_input_path)
         if os.path.exists(self.temp_output_path):
             os.remove(self.temp_output_path)
+        if os.path.exists(self.temp_failed_links_path): # 清理失败链接文件
+            os.remove(self.temp_failed_links_path)
         # 停止 mock
         self.patch_exists.stop()
         self.patch_open.stop()
@@ -107,13 +114,12 @@ class TestIPTVChecker(unittest.TestCase):
         模拟 open 函数，使其在测试时使用临时文件。
         """
         if file == self.original_input_file_name:
-            return open(self.temp_input_path, mode, encoding=encoding)
+            return self.original_open(self.temp_input_path, mode, encoding=encoding)
         elif file == self.original_output_file_name:
-            return open(self.temp_output_path, mode, encoding=encoding)
+            return self.original_open(self.temp_output_path, mode, encoding=encoding)
         elif file == self.original_failed_links_file_name:
-            return open(self.temp_failed_links_path, mode, encoding=encoding)
+            return self.original_open(self.temp_failed_links_path, mode, encoding=encoding)
         elif file == 'config.json':
-            # 模拟 config.json 的读写
             if 'w' in mode:
                 # 当写入 config.json 时，返回一个 mock_open 对象
                 return mock_open(read_data=json.dumps(self.mock_load_config.return_value)).return_value
@@ -122,7 +128,7 @@ class TestIPTVChecker(unittest.TestCase):
                 return mock_open(read_data=json.dumps(self.mock_load_config.return_value)).return_value
         else:
             # 对于其他文件，使用真实的 open
-            return open(file, mode, encoding=encoding)
+            return self.original_open(file, mode, encoding=encoding)
 
     def _mock_time_increment(self):
         """
@@ -165,10 +171,8 @@ class TestIPTVChecker(unittest.TestCase):
         self.assertTrue(reason.startswith("Connection failed"))
 
     def test_load_failed_links(self):
-        # 创建一个临时的 failed_links.txt 文件
-        self.temp_failed_links_fd, self.temp_failed_links_path = tempfile.mkstemp(suffix='.txt')
-        os.close(self.temp_failed_links_fd)
-        with open(self.temp_failed_links_path, 'w', encoding='utf-8') as f:
+        # 直接写入到 setUp 中创建的临时文件
+        with self.original_open(self.temp_failed_links_path, 'w', encoding='utf-8') as f:
             f.write("Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")
             f.write("Another Channel,http://another.com/stream.m3u8,Timeout\n")
 
@@ -176,8 +180,7 @@ class TestIPTVChecker(unittest.TestCase):
             failed_urls = load_failed_links()
             self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8", "http://another.com/stream.m3u8"})
         
-        # 清理临时文件
-        os.remove(self.temp_failed_links_path)
+        # 清理临时文件在 tearDown 中处理
 
     @patch('subprocess.run')
     def test_get_stream_info(self, mock_run):
@@ -326,30 +329,20 @@ class TestIPTVChecker(unittest.TestCase):
             stderr=""
         )
         
-        # 模拟 time.time 使得 response_time 超过 MAX_RESPONSE_TIME (1.5s)
-        # 确保有足够的递增值，以防 is_link_playable 内部多次调用 time.time
-        # 第一次 start_time, 第一次 end_time (导致慢响应)
-        # 如果有重试，还会有第二次 start_time, 第二次 end_time
-        # 这里我们只模拟一次成功但慢响应
-        original_time_counter = self._time_counter # 保存当前 time.time 计数器状态
-        self._time_counter = 0 # 重置计数器，以便此测试有独立的计时
-        
         url = "http://valid.com/stream.m3u8"
         channel_name = "Test Channel"
         
-        # 模拟 is_link_playable 内部的 time.time 调用
-        # 第一次 time.time() (start_time) -> 0.01
-        # 第二次 time.time() (response_time计算) -> 1.52 (确保大于 1.5)
-        self._time_counter = 0.01 # 第一次调用 time.time()
-        
-        is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
-        
-        self.assertFalse(is_playable)
-        self.assertGreaterEqual(response_time, 1.5) # 响应时间应该大于等于 1.5
-        self.assertTrue(reason.startswith("Slow response"))
-        self.mock_logger_warning.assert_called_with(f"Slow response ({response_time:.2f}s) for {channel_name}: {url}")
-
-        self._time_counter = original_time_counter # 恢复计数器状态
+        # Patch time.time specifically for this test
+        # Sequence: start_time, end_time (after subprocess.run)
+        # We want end_time - start_time > MAX_RESPONSE_TIME (1.5)
+        # Let's say start_time = 10.0, end_time = 11.6 (response_time = 1.6)
+        with patch('time.time', side_effect=[10.0, 11.6]):
+            is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
+            
+            self.assertFalse(is_playable)
+            self.assertGreaterEqual(response_time, 1.5)
+            self.assertTrue(reason.startswith("Slow response"))
+            self.mock_logger_warning.assert_called_with(f"Slow response ({response_time:.2f}s) for {channel_name}: {url}")
 
 
     @patch('main_script.is_valid_url', return_value=True)
@@ -412,9 +405,8 @@ class TestIPTVChecker(unittest.TestCase):
         failed_links = [("Test Channel", "http://invalid.com/stream.m3u8", "Invalid URL")]
         
         # 模拟文件路径，确保 open 函数能找到它们
-        self.temp_failed_links_fd, self.temp_failed_links_path = tempfile.mkstemp(suffix='.txt')
-        os.close(self.temp_failed_links_fd)
-
+        # 这些临时文件现在由 setUp 管理，这里不需要再次创建
+        
         with patch('builtins.open', side_effect=self._mock_open) as mocked_file:
             success_count = write_output_file('ff.txt', valid_links, failed_links)
             self.assertEqual(success_count, 1)
@@ -424,30 +416,12 @@ class TestIPTVChecker(unittest.TestCase):
             # 验证对 failed_links.txt 的写入
             mocked_file.assert_any_call('failed_links.txt', 'a', encoding='utf-8')
             
-            # 验证写入 failed_links.txt 的内容
-            # 注意：这里需要更精细的验证，因为 mock_open 捕获的是所有写入
-            # 我们可以检查写入到 'failed_links.txt' 的内容是否正确
-            # 由于 mock_open 记录了所有调用，我们可以检查特定文件的写入内容
-            # 这需要更复杂的 mock_open 配置，或者直接检查临时文件内容（如果允许）
-            # 对于简单的断言，我们只验证调用参数
-            
             # 验证写入到 failed_links.txt 的内容
-            # 获取写入到 failed_links.txt 的内容
-            written_content = ""
-            for call in mocked_file.mock_calls:
-                if call.args and call.args[0] == 'failed_links.txt' and 'write' in call.args[1]:
-                    written_content += call.args[1] # 捕获写入的内容
-            
-            # 确保写入的内容符合预期
-            # self.assertIn("Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n", written_content) # 这种方式可能不准确，因为 mock_open 记录的是 write() 方法的参数
-
-            # 更直接的验证方式是检查 write_output_file 内部对文件的操作
-            # 但在 mock_open 的情况下，通常是检查 open() 的调用和 write() 的调用
-            # 鉴于这是一个单元测试，我们相信 write_output_file 的逻辑是正确的，只要输入正确
-            pass
-        
-        # 清理临时文件
-        os.remove(self.temp_failed_links_path)
+            # 由于 mock_open 记录了所有调用，我们可以检查特定文件的写入内容
+            # 我们可以通过读取临时文件来验证内容
+            with self.original_open(self.temp_failed_links_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                self.assertIn("Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n", content)
 
 
     @patch('os.path.exists')
