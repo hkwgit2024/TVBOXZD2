@@ -83,16 +83,16 @@ class TestIPTVChecker(unittest.TestCase):
             stdout="",
             stderr=""
         )
-        
-        url = "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"
-        channel_name = "Test Channel"
-        is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
-        
-        self.assertTrue(is_playable)
-        self.assertGreater(response_time, 0)
-        self.assertEqual(width, 1920)
-        self.assertEqual(bitrate, 2000000)
-        self.assertEqual(reason, "Success")
+        with patch('time.time', side_effect=[0, 0.5, 0.5, 0.5]):  # 足够的值避免 StopIteration
+            url = "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"
+            channel_name = "Test Channel"
+            is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
+            
+            self.assertTrue(is_playable)
+            self.assertGreater(response_time, 0)
+            self.assertEqual(width, 1920)
+            self.assertEqual(bitrate, 2000000)
+            self.assertEqual(reason, "Success")
 
     @patch('main_script.is_valid_url', return_value=True)
     @patch('main_script.quick_check_url', return_value=(True, None))
@@ -120,7 +120,7 @@ class TestIPTVChecker(unittest.TestCase):
             stdout="",
             stderr=""
         )
-        with patch('time.time', side_effect=[0, 2]):  # 模拟2秒响应
+        with patch('time.time', side_effect=[0, 2, 2, 2]):  # 模拟2秒响应
             url = "http://valid.com/stream.m3u8"
             channel_name = "Test Channel"
             is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
@@ -141,14 +141,14 @@ class TestIPTVChecker(unittest.TestCase):
             stdout="",
             stderr="403 Forbidden"
         )
-        
-        url = "http://valid.com/unstable.m3u8"
-        channel_name = "Test Channel"
-        is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
-        
-        self.assertFalse(is_playable)
-        self.assertGreater(response_time, 0)
-        self.assertTrue(reason.startswith("Unstable connection"))
+        with patch('time.time', side_effect=[0, 0.5, 0.5, 0.5]):  # 足够的值
+            url = "http://valid.com/unstable.m3u8"
+            channel_name = "Test Channel"
+            is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
+            
+            self.assertFalse(is_playable)
+            self.assertGreater(response_time, 0)
+            self.assertTrue(reason.startswith("Unstable connection"))
 
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_success(self, mock_file):
@@ -166,7 +166,7 @@ class TestIPTVChecker(unittest.TestCase):
 
     def test_write_output_file(self):
         valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
-        failed_links = [("Test Channel,http://invalid.com/stream.m3u8", "Invalid URL")]
+        failed_links = [("Test Channel", "http://invalid.com/stream.m3u8", "Invalid URL")]
         with patch('builtins.open', mock_open()) as mocked_file:
             success_count = write_output_file('ff.txt', valid_links, failed_links)
             self.assertEqual(success_count, 1)
