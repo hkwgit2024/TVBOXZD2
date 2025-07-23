@@ -1,21 +1,71 @@
 {
+    // FFmpeg 工具路径，指定 ffprobe 的可执行文件路径或命令名
+    // 可修改：如果 FFmpeg 安装在非标准路径，可指定完整路径（如 "/usr/bin/ffprobe"）
+    // 注意：确保路径正确，否则脚本无法调用 ffprobe
     "ffmpeg_path": "ffprobe",
+
+    // FFmpeg 命令超时时间（秒），用于控制 ffprobe 获取流信息的最大等待时间
+    // 可修改：建议 5-15 秒。过短可能导致超时失败（如日志中的 3 秒超时），过长增加运行时间
     "timeout": 10,
-    "read_duration": 2,      
+
+    // 读取流数据的持续时间（秒），控制 ffprobe 分析流的时间
+    // 可修改：建议 1-5 秒。增加可提高流信息准确性，但会增加处理时间
+    "read_duration": 2,
+
+    // 每个链接的最大重试次数，用于处理网络不稳定或临时失败的链接
+    // 可修改：建议 1-5 次。增加可提高成功率，但会显著增加运行时间
     "max_retries": 2,
+
+    // 并发工作线程数，控制同时检查的链接数量
+    // 可修改：建议 50-200。过高（如 300）可能导致 GitHub Actions 资源不足，过低会降低效率
     "max_workers": 300,
-    "min_resolution_width": 1280,
-    "min_bitrate": 500000,  
+
+    // 最低分辨率宽度（像素），低于此值的链接被标记为低质量
+    // 可修改：建议 480-1280。降低（如 480）可增加通过率，适合低质量流；提高（如 1080）过滤低分辨率流
+    "min_resolution_width": 720,
+
+    // 最低比特率（bps），低于此值的链接被标记为低质量
+    // 可修改：建议 300000-1000000。降低（如 300000）可增加通过率，适合低带宽流；提高（如 1000000）确保高质量
+    "min_bitrate": 500000,
+
+    // 最大响应时间（秒），用于快速检查链接的初始响应
+    // 可修改：建议 1-3 秒。过短可能误判有效链接，过长增加检查时间
     "max_response_time": 1.5,
-    "quick_check_timeout": 1, 
+
+    // 快速检查的超时时间（秒），用于初步验证链接可访问性
+    // 可修改：建议 0.5-2 秒。过短可能导致误判，过长增加初步检查时间
+    "quick_check_timeout": 1,
+
+    // HTTP 请求头，用于模拟浏览器访问流媒体链接
+    // 可修改：可更新 User-Agent 或 Referer 以绕过某些服务器限制
+    // 注意：确保合法性，避免被目标服务器屏蔽
     "default_headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
         "Referer": "https://www.example.com"
     },
-    "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"], 
+
+    // 排除的域名列表，包含这些域名的链接将被跳过
+    // 可修改：可添加更多域名（如限制区域的 CDN 域名）以减少无效检查
+    // 示例：["epg.pw", "ali-m-l.cztv.com", "tencentplay.gztv.com"]
+    "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"],
+
+    // 输入文件路径，包含待检查的 IPTV 链接列表
+    // 可修改：确保路径指向正确的链接列表文件（如 "list.txt"）
     "input_file": "list.txt",
+
+    // 输出文件路径，存储通过验证的链接
+    // 可修改：可更改路径或文件名，确保目录存在（如 "ff/ff.txt"）
     "output_file": "ff/ff.txt",
+
+    // 失败链接文件路径，存储未通过验证的链接及其失败原因
+    // 可修改：可更改路径或文件名，确保目录存在
     "failed_links_file": "ff/failed_links.txt",
+
+    // 日志文件路径，记录脚本运行的详细日志
+    // 可修改：可更改路径或文件名，建议保留以便调试
     "log_file": "ff/iptv_checker.log",
+
+    // 检查点文件路径，记录检查进度以支持中断恢复
+    // 可修改：可更改路径或文件名，确保目录存在
     "checkpoint_file": "ff/checkpoint.json"
 }
