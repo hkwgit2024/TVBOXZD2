@@ -55,6 +55,7 @@ EXCLUDE_DOMAINS = CONFIG.get('exclude_domains', [])
 INPUT_FILE = CONFIG['input_file']
 OUTPUT_FILE = CONFIG['output_file']
 FAILED_LINKS_FILE = CONFIG['failed_links_file']
+CHECKPOINT_FILE = CONFIG.get('checkpoint_file', 'ff/checkpoint.json')
 
 def is_valid_url(url):
     """验证URL格式"""
@@ -90,6 +91,28 @@ def load_failed_links():
             logger.error(f"Failed to load {FAILED_LINKS_FILE}: {e}")
     return failed_urls
 
+def load_checkpoint():
+    """加载检查点"""
+    if os.path.exists(CHECKPOINT_FILE):
+        try:
+            with open(CHECKPOINT_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Failed to load checkpoint {CHECKPOINT_FILE}: {e}")
+    return {'processed_urls': [], 'valid_links': [], 'failed_links': []}
+
+def save_checkpoint(processed_urls, valid_links, failed_links):
+    """保存检查点"""
+    try:
+        with open(CHECKPOINT_FILE, 'w', encoding='utf-8') as f:
+            json.dump({
+                'processed_urls': processed_urls,
+                'valid_links': valid_links,
+                'failed_links': failed_links
+            }, f, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Failed to save checkpoint {CHECKPOINT_FILE}: {e}")
+
 def get_stream_info(url):
     """使用FFmpeg提取视频流信息"""
     cmd = [
@@ -121,7 +144,7 @@ def get_stream_info(url):
     except subprocess.SubprocessError as e:
         return [], f"Subprocess error: {str(e)}"
 
-def check_content_variation(url, duration=5):
+def check_content_variation(url, duration=2):
     """检查流内容是否有变化，排除重复广告"""
     cmd = [
         FFMPEG_PATH,
@@ -260,6 +283,8 @@ def is_link_playable(url, channel_name):
 
 def read_input_file():
     """读取输入文件并解析链接"""
+    checkpoint = load_checkpoint()
+    processed_urls = set(checkpoint['processed_urls'])
     links_to_check = []
     failed_urls = load_failed_links()
     
@@ -273,24 +298,24 @@ def read_input_file():
                 if match:
                     channel_name = match.group(1).strip()
                     url = match.group(2).strip()
-                    if url not in failed_urls and not is_excluded_url(url):
+                    if url not in failed_urls and url not in processed_urls and not is_excluded_url(url):
                         links_to_check.append((channel_name, url))
                     else:
-                        logger.info(f"Skipping previously failed or excluded URL: {url}")
+                        logger.info(f"Skipping previously failed, processed, or excluded URL: {url}")
                 else:
                     logger.warning(f"Skipping malformed line: {line}")
     except Exception as e:
         logger.error(f"Failed to read {INPUT_FILE}: {e}")
         return None
-    return links_to_check
+    return links_to_check, checkpoint
 
-def write_output_file(valid_links, failed_links):
+def write_output_file(valid_links, failed_links, checkpoint):
     """写入输出文件和失败链接文件"""
     success_count = 0
     
     try:
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-            for response_time, link_entry in sorted(valid_links, key=lambda x: x[0]):
+            for response_time, link_entry in sorted(valid_links + checkpoint['valid_links'], key=lambda x: x[0]):
                 f.write(link_entry + '\n')
                 success_count += 1
     except Exception as e:
@@ -299,7 +324,7 @@ def write_output_file(valid_links, failed_links):
 
     try:
         with open(FAILED_LINKS_FILE, 'a', encoding='utf-8') as f:
-            for channel_name, url, reason in failed_links:
+            for channel_name, url, reason in failed_links + checkpoint['failed_links']:
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
         logger.error(f"Failed to write {FAILED_LINKS_FILE}: {e}")
@@ -313,7 +338,7 @@ def main():
         logger.error(f"Input file {INPUT_FILE} not found.")
         return
 
-    links_to_check = read_input_file()
+    links_to_check, checkpoint = read_input_file()
     if links_to_check is None:
         return
 
@@ -326,12 +351,14 @@ def main():
     stats = {'checked': len(links_to_check), 'success': 0, 'invalid': 0, 'low_quality': 0, 'slow': 0, 'unstable': 0, 'excluded': 0}
     valid_links = []
     failed_links = []
+    processed_urls = set(checkpoint['processed_urls'])
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         future_to_link = {executor.submit(is_link_playable, url, channel): (channel, url) 
                          for channel, url in links_to_check}
         for future in tqdm(as_completed(future_to_link), total=len(links_to_check), desc="Checking links"):
             channel_name, url = future_to_link[future]
+            processed_urls.add(url)
             try:
                 is_playable, response_time, width, bitrate, reason = future.result()
                 if is_playable:
@@ -354,9 +381,16 @@ def main():
                 failed_links.append((channel_name, url, f"Exception ({str(exc)})"))
                 stats['unstable'] += 1
 
-    success_count = write_output_file(valid_links, failed_links)
+            # 每处理 100 个链接保存一次检查点
+            if len(processed_urls) % 100 == 0:
+                save_checkpoint(list(processed_urls), valid_links + checkpoint['valid_links'], failed_links + checkpoint['failed_links'])
+
+    # 最后保存检查点
+    save_checkpoint(list(processed_urls), valid_links + checkpoint['valid_links'], failed_links + checkpoint['failed_links'])
+
+    success_count = write_output_file(valid_links, failed_links, checkpoint)
     elapsed_time = time.time() - start_time
-    logger.info(f"Stats: {success_count}/{stats['checked']} links passed (invalid: {stats['invalid']}, low quality: {stats['low_quality']}, slow: {stats['slow']}, unstable: {stats['unstable']}, excluded: {stats['excluded']})")
+    logger.info(f"Stats: {success_count}/{stats['checked'] + len(checkpoint['valid_links'])} links passed (invalid: {stats['invalid']}, low quality: {stats['low_quality']}, slow: {stats['slow']}, unstable: {stats['unstable']}, excluded: {stats['excluded']})")
     logger.info(f"Total processing time: {elapsed_time:.2f} seconds")
 
 if __name__ == '__main__':
