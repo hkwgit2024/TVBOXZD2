@@ -76,3 +76,20 @@ jobs:
         python -m coverage report
         python ff/main_script.py --verbose
       shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+
+    - name: Verify generated files
+      run: |
+        echo "Listing files in ff/ directory after script execution:"
+        ls -la ff/
+      shell: bash
+
+    - name: Upload generated files
+      uses: actions/upload-artifact@v4
+      with:
+        name: generated-iptv-files
+        path: |
+          ff/ff.txt
+          ff/failed_links.txt
+          ff/iptv_checker.log
+          ff/checkpoint.json
+        retention-days: 7
