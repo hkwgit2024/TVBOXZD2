@@ -53,7 +53,7 @@ jobs:
         mkdir -p ff
         echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
         echo "CCTV1,https://cdn5.132.us.kg/live/cctv1/stream.m3u8" >> list.txt
-        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 1280, "min_bitrate": 500000, "max_response_time": 1.5, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw"], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
+        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 1280, "min_bitrate": 500000, "max_response_time": 1.5, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
       shell: bash
 
     - name: Verify setup files
