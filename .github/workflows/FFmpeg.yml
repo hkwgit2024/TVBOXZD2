@@ -42,15 +42,10 @@ jobs:
         echo "FFmpeg installation complete."
       shell: bash
 
-    - name: Verify FFmpeg installation
-      run: ffmpeg -version
-      shell: bash
-
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install tqdm validators requests coverage
-      shell: bash
+        pip install coverage tqdm requests validators
 
     - name: Setup test files
       working-directory: ${{ github.workspace }}
@@ -58,7 +53,7 @@ jobs:
         mkdir -p ff
         echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
         echo "CCTV1,https://cdn5.132.us.kg/live/cctv1/stream.m3u8" >> list.txt
-        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 640, "min_bitrate": 500000, "max_response_time": 3, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": [], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
+        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 1280, "min_bitrate": 500000, "max_response_time": 1.5, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw"], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
       shell: bash
 
     - name: Verify setup files
@@ -74,22 +69,9 @@ jobs:
         curl -I https://cdn5.132.us.kg/live/cctv1/stream.m3u8
       shell: bash
 
-    - name: Run tests and main script
+    - name: Run tests with coverage
       run: |
         python -m coverage run -m unittest ff/test_iptv_checker.py -v
         python -m coverage report
         python ff/main_script.py --verbose
-      shell: bash
-
-    - name: Upload artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: |
-          ff/.coverage
-          ff/ff.txt
-          ff/failed_links.txt
-          ff/iptv_checker.log
-          ff/checkpoint.json
-          *.log
+      shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
