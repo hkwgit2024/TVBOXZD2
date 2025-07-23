@@ -153,7 +153,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_success(self, mock_file):
         with patch('main_script.load_failed_links', return_value=set()):
-            links_to_check = read_input_file('list.txt')
+            links_to_check = read_input_file('../list.txt')
             self.assertEqual(len(links_to_check), 1)
             self.assertEqual(links_to_check[0][0], "Test Channel")
             self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
@@ -161,7 +161,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_skip_failed(self, mock_file):
         with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
-            links_to_check = read_input_file('list.txt')
+            links_to_check = read_input_file('../list.txt')
             self.assertEqual(len(links_to_check), 0)
 
     def test_write_output_file(self):
@@ -206,7 +206,7 @@ class TestIPTVChecker(unittest.TestCase):
         mock_exists.return_value = False
         with patch('logging.Logger.error') as mock_logger:
             main()
-            mock_logger.assert_called_with("Input file list.txt not found.")
+            mock_logger.assert_called_with("Input file ../list.txt not found.")
 
 if __name__ == '__main__':
     unittest.main()
