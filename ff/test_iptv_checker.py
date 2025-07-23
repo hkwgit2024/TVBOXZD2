@@ -12,7 +12,7 @@ import time # 导入 time 用于 mock
 # 确保 main_script.py 在同一个目录下
 from main_script import (
     is_link_playable, main, load_config, is_valid_url, quick_check_url,
-    load_failed_links, get_stream_info, write_output_file
+    load_failed_links, get_stream_info, write_output_file, read_input_file # 确保 read_input_file 已导入
 )
 
 # 模拟 subprocess.run 返回的 CompletedProcess 对象
@@ -386,7 +386,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_success(self, mock_file):
         with patch('main_script.load_failed_links', return_value=set()):
-            links_to_check = read_input_file('list.txt')
+            links_to_check = read_input_file('list.txt') # <-- Changed to main_script.read_input_file
             self.assertEqual(len(links_to_check), 1)
             self.assertEqual(links_to_check[0][0], "Test Channel")
             self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
@@ -394,7 +394,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_skip_failed(self, mock_file):
         with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
-            links_to_check = read_input_file('list.txt')
+            links_to_check = read_input_file('list.txt') # <-- Changed to main_script.read_input_file
             self.assertEqual(len(links_to_check), 0)
             self.mock_logger_info.assert_called_with("Skipping previously failed URL: http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
 
@@ -408,7 +408,7 @@ class TestIPTVChecker(unittest.TestCase):
         # 这些临时文件现在由 setUp 管理，这里不需要再次创建
         
         with patch('builtins.open', side_effect=self._mock_open) as mocked_file:
-            success_count = write_output_file('ff.txt', valid_links, failed_links)
+            success_count = write_output_file('ff.txt', valid_links, failed_links) # <-- Changed to main_script.write_output_file
             self.assertEqual(success_count, 1)
             
             # 验证对 ff.txt 的写入
