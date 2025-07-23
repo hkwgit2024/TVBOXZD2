@@ -75,8 +75,7 @@ class TestIPTVChecker(unittest.TestCase):
             "failed_links_file": "ff/failed_links.txt"
         }
         with patch('os.path.exists', return_value=True):
-            with patch('builtins.open', mock_open(read_data="Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")):
-                with patch('main_script.CONFIG', config):
+            with patch('builtins.open', mock_open(read_data="Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")):<br>                with patch('main_script.CONFIG', config):
                     failed_urls = load_failed_links()
                     self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8"})
 
@@ -212,19 +211,17 @@ class TestIPTVChecker(unittest.TestCase):
 
     def test_read_input_file_success(self):
         config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
-        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
-            with patch('main_script.load_failed_links', return_value=set()):
-            with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
-                with patch('main_script.CONFIG', config):
-                    links_to_check, checkpoint = read_input_file()
-                    self.assertEqual(len(links_to_check), 1)
-                    self.assertEqual(links_to_check[0][0], "Test Channel")
-                    self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
+        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):<br>            with patch('main_script.load_failed_links', return_value=set()):
+                with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}): # <-- 这一行需要额外缩进
+                    with patch('main_script.CONFIG', config):
+                        links_to_check, checkpoint = read_input_file()
+                        self.assertEqual(len(links_to_check), 1)
+                        self.assertEqual(links_to_check[0][0], "Test Channel")
+                        self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
 
     def test_read_input_file_skip_failed(self):
         config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
-        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
-            with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
+        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):<br>            with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
                 with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
                     with patch('main_script.CONFIG', config):
                         links_to_check, checkpoint = read_input_file()
@@ -232,8 +229,7 @@ class TestIPTVChecker(unittest.TestCase):
 
     def test_read_input_file_skip_excluded(self):
         config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
-        with patch('builtins.open', mock_open(read_data="Test Channel,https://epg.pw/stream.m3u8\n")):
-            with patch('main_script.load_failed_links', return_value=set()):
+        with patch('builtins.open', mock_open(read_data="Test Channel,https://epg.pw/stream.m3u8\n")):<br>            with patch('main_script.load_failed_links', return_value=set()):
                 with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
                     with patch('main_script.CONFIG', config):
                         links_to_check, checkpoint = read_input_file()
@@ -241,8 +237,7 @@ class TestIPTVChecker(unittest.TestCase):
 
     def test_write_output_file(self):
         config = {"output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
-        with patch('builtins.open', mock_open()):
-            with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+        with patch('builtins.open', mock_open()):<br>            with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
                 with patch('main_script.CONFIG', config):
                     valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
                     failed_links = [("Test Channel", "http://invalid.com/stream.m3u8", "Invalid URL")]
@@ -282,8 +277,7 @@ class TestIPTVChecker(unittest.TestCase):
         mock_read.return_value = ([("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")], {'processed_urls': [], 'valid_links': [], 'failed_links': []})
         mock_write.return_value = 1
         
-        with patch('main_script.is_link_playable', return_value=(True, 1.0, 1920, 2000000, "Success")):
-            main()
+        with patch('main_script.is_link_playable', return_value=(True, 1.0, 1920, 2000000, "Success")):<br>            main()
             mock_write.assert_called()
 
     @patch('os.path.exists')
@@ -297,8 +291,7 @@ class TestIPTVChecker(unittest.TestCase):
             "checkpoint_file": "ff/checkpoint.json"
         }
         mock_exists.return_value = False
-        with patch('logging.Logger.error') as mock_logger:
-            main()
+        with patch('logging.Logger.error') as mock_logger:<br>            main()
             mock_logger.assert_called_with("Input file list.txt not found.")
 
 if __name__ == '__main__':
