@@ -1,0 +1,11 @@
+{
+    "ffmpeg_path": "ffmpeg",
+    "timeout": 3,
+    "read_duration": 1,
+    "max_retries": 2,
+    "max_workers": 50,
+    "min_resolution_width": 1280,
+    "min_bitrate": 1000000,
+    "max_response_time": 1.5,
+    "quick_check_timeout": 2
+}
