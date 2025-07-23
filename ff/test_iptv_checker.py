@@ -18,15 +18,25 @@ class TestIPTVChecker(unittest.TestCase):
                 self.assertEqual(config['min_bitrate'], 1000000)
                 self.assertEqual(config['max_response_time'], 1.5)
                 self.assertEqual(config['quick_check_timeout'], 2)
+                self.assertIn("default_headers", config)
                 mocked_file.assert_called_with(os.path.join('ff', 'config.json'), 'w')
 
     @patch('requests.head')
     def test_quick_check_url(self, mock_head):
         mock_head.return_value = unittest.mock.Mock(status_code=200)
-        self.assertTrue(quick_check_url("http://valid.com/stream.m3u8"))
+        result, reason = quick_check_url("http://valid.com/stream.m3u8")
+        self.assertTrue(result)
+        self.assertIsNone(reason)
         
-        mock_head.side_effect = requests.RequestException
-        self.assertFalse(quick_check_url("http://invalid.com/stream.m3u8"))
+        mock_head.return_value = unittest.mock.Mock(status_code=404)
+        result, reason = quick_check_url("http://invalid.com/stream.m3u8")
+        self.assertFalse(result)
+        self.assertEqual(reason, "HTTP Error 404")
+        
+        mock_head.side_effect = requests.RequestException("Connection error")
+        result, reason = quick_check_url("http://invalid.com/stream.m3u8")
+        self.assertFalse(result)
+        self.assertTrue(reason.startswith("Connection failed"))
 
     def test_load_failed_links(self):
         with patch('os.path.exists', return_value=True):
@@ -35,7 +45,7 @@ class TestIPTVChecker(unittest.TestCase):
                 self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8"})
 
     @patch('main_script.is_valid_url', return_value=True)
-    @patch('main_script.quick_check_url', return_value=True)
+    @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('subprocess.run')
     def test_get_stream_info(self, mock_run, mock_quick_check, mock_valid_url):
         mock_run.return_value = subprocess.CompletedProcess(
@@ -46,17 +56,27 @@ class TestIPTVChecker(unittest.TestCase):
             }),
             stderr=""
         )
-        streams = get_stream_info("http://valid.com/stream.m3u8")
+        streams, error = get_stream_info("http://valid.com/stream.m3u8")
         self.assertEqual(len(streams), 1)
         self.assertEqual(streams[0]['width'], 1920)
-        self.assertEqual(streams[0]['bit_rate'], "2000000")
+        self.assertEqual(error, None)
+
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=[],
+            returncode=1,
+            stdout="",
+            stderr="Connection refused"
+        )
+        streams, error = get_stream_info("http://invalid.com/stream.m3u8")
+        self.assertEqual(streams, [])
+        self.assertTrue(error.startswith("FFmpeg error"))
 
     @patch('main_script.is_valid_url', return_value=True)
-    @patch('main_script.quick_check_url', return_value=True)
+    @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
     @patch('subprocess.run')
     def test_is_link_playable_success(self, mock_run, mock_stream_info, mock_quick_check, mock_valid_url):
-        mock_stream_info.return_value = [{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}]
+        mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
             returncode=0,
@@ -75,10 +95,10 @@ class TestIPTVChecker(unittest.TestCase):
         self.assertEqual(reason, "Success")
 
     @patch('main_script.is_valid_url', return_value=True)
-    @patch('main_script.quick_check_url', return_value=True)
+    @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
     def test_is_link_playable_low_resolution(self, mock_stream_info, mock_quick_check, mock_valid_url):
-        mock_stream_info.return_value = [{"codec_type": "video", "width": 640, "height": 480, "bit_rate": "2000000"}]
+        mock_stream_info.return_value = ([{"codec_type": "video", "width": 640, "height": 480, "bit_rate": "2000000"}], None)
         url = "http://valid.com/low.m3u8"
         channel_name = "Test Channel"
         is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
@@ -89,11 +109,11 @@ class TestIPTVChecker(unittest.TestCase):
         self.assertTrue(reason.startswith("Low resolution"))
 
     @patch('main_script.is_valid_url', return_value=True)
-    @patch('main_script.quick_check_url', return_value=True)
+    @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
     @patch('subprocess.run')
     def test_is_link_playable_slow_response(self, mock_run, mock_stream_info, mock_quick_check, mock_valid_url):
-        mock_stream_info.return_value = [{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}]
+        mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
             returncode=0,
@@ -110,16 +130,16 @@ class TestIPTVChecker(unittest.TestCase):
             self.assertTrue(reason.startswith("Slow response"))
 
     @patch('main_script.is_valid_url', return_value=True)
-    @patch('main_script.quick_check_url', return_value=True)
+    @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
     @patch('subprocess.run')
     def test_is_link_playable_unstable(self, mock_run, mock_stream_info, mock_quick_check, mock_valid_url):
-        mock_stream_info.return_value = [{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}]
+        mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
             returncode=1,
             stdout="",
-            stderr="Connection refused"
+            stderr="403 Forbidden"
         )
         
         url = "http://valid.com/unstable.m3u8"
@@ -169,7 +189,11 @@ class TestIPTVChecker(unittest.TestCase):
             "min_resolution_width": 1280,
             "min_bitrate": 1000000,
             "max_response_time": 1.5,
-            "quick_check_timeout": 2
+            "quick_check_timeout": 2,
+            "default_headers": {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+                "Referer": "https://www.example.com"
+            }
         }
         mock_exists.return_value = True
         mock_read.return_value = [("Test Channel", "http://valid.com/stream.m3u8")]
