@@ -51,9 +51,7 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: |
         mkdir -p ff
-        # 删除下面两行，让脚本使用仓库中原有的 list.txt
-        # echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
-        # echo "CCTV1,https://cdn5.132.us.kg/live/cctv1/stream.m3u8" >> list.txt
+        # 请确保这里没有 'echo ... > list.txt' 和 'echo ... >> list.txt' 的命令！
         echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 1280, "min_bitrate": 500000, "max_response_time": 1.5, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
       shell: bash
 
@@ -75,7 +73,7 @@ jobs:
         python -m coverage run -m unittest ff/test_iptv_checker.py -v
         python -m coverage report
         python ff/main_script.py --verbose
-      shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+      # 这里已移除 shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
 
     - name: Verify generated files
       run: |
