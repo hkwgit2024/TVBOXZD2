@@ -302,35 +302,18 @@ def write_output_file(valid_links, failed_links, checkpoint):
     """写入输出文件和失败链接文件"""
     success_count = 0
     
-    # 确保输出目录存在
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    os.makedirs(os.path.dirname(FAILED_LINKS_FILE), exist_ok=True)
-
-    final_valid_links = valid_links + checkpoint['valid_links']
-    final_failed_links = failed_links + checkpoint['failed_links']
-
     try:
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-            f.write("#EXTM3U\n") # M3U 头部
-            for response_time, link_entry in sorted(final_valid_links, key=lambda x: x[0]):
-                # link_entry 格式为 "channel_name,url"
-                parts = link_entry.split(',', 1)
-                if len(parts) == 2:
-                    channel_name = parts[0]
-                    url = parts[1]
-                    f.write(f'#EXTINF:-1 group-title="直播", {channel_name}\n')
-                    f.write(f'{url}\n')
-                    success_count += 1
-                else:
-                    logger.warning(f"Skipping malformed valid link entry: {link_entry}")
-
+            for response_time, link_entry in sorted(valid_links + checkpoint['valid_links'], key=lambda x: x[0]):
+                f.write(link_entry + '\n')
+                success_count += 1
     except Exception as e:
         logger.error(f"Failed to write {OUTPUT_FILE}: {e}")
         return 0
 
     try:
-        with open(FAILED_LINKS_FILE, 'w', encoding='utf-8') as f: # **这里从 'a' 改为 'w'**
-            for channel_name, url, reason in final_failed_links:
+        with open(FAILED_LINKS_FILE, 'a', encoding='utf-8') as f:
+            for channel_name, url, reason in failed_links + checkpoint['failed_links']:
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
         logger.error(f"Failed to write {FAILED_LINKS_FILE}: {e}")
@@ -350,12 +333,7 @@ def main():
 
     if not links_to_check:
         logger.warning(f"No links to check in {INPUT_FILE}. Clearing {OUTPUT_FILE}.")
-        # 确保在没有链接可检查时，output.txt也被清空
-        os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-            f.write("")
-        os.makedirs(os.path.dirname(FAILED_LINKS_FILE), exist_ok=True)
-        with open(FAILED_LINKS_FILE, 'w', encoding='utf-8') as f:
             f.write("")
         return
 
@@ -366,7 +344,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         future_to_link = {executor.submit(is_link_playable, url, channel): (channel, url) 
-                          for channel, url in links_to_check}
+                         for channel, url in links_to_check}
         for future in tqdm(as_completed(future_to_link), total=len(links_to_check), desc="Checking links"):
             channel_name, url = future_to_link[future]
             processed_urls.add(url)
