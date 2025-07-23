@@ -270,8 +270,14 @@ def write_output_file(output_file, valid_links, failed_links):
         return 0
 
     try:
-        with open(failed_path, 'a', encoding='utf-8') as f:  # 追加模式
-            for channel_name, url, reason in failed_links:
+        with open(failed_path, 'a', encoding='utf-8') as f:
+            for failed_entry in failed_links:
+                # 处理 failed_entry 为二元组或三元组
+                if len(failed_entry) == 3:
+                    channel_name, url, reason = failed_entry
+                else:
+                    channel_name_url, reason = failed_entry
+                    channel_name, url = channel_name_url.split(',', 1)
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
         logger.error(f"Failed to write {failed_path}: {e}")
@@ -279,8 +285,8 @@ def write_output_file(output_file, valid_links, failed_links):
     return success_count
 
 def main():
-    input_file = '../list.txt'  # 根目录
-    output_file = 'ff.txt'      # ff 目录
+    input_file = '../list.txt'
+    output_file = 'ff.txt'
     start_time = time.time()
     
     if not os.path.exists(input_file):
