@@ -15,7 +15,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.FileHandler(os.path.join('ff', 'iptv_checker.log')),  # 修复为 ff 目录
+        logging.FileHandler(os.path.join('ff', 'iptv_checker.log')),
         logging.StreamHandler()
     ]
 )
@@ -24,33 +24,15 @@ logger = logging.getLogger(__name__)
 # 加载配置文件
 def load_config():
     config_path = os.path.join('ff', 'config.json')
-    default_config = {
-        "ffmpeg_path": "ffmpeg",
-        "timeout": 3,  # 修复测试期望
-        "read_duration": 10,  # 增加到 10 秒检查无断流
-        "max_retries": 2,
-        "max_workers": min(max(4, os.cpu_count() or 8), 50),
-        "min_resolution_width": 1280,
-        "min_bitrate": 1000000,
-        "max_response_time": 1.5,
-        "quick_check_timeout": 2,
-        "default_headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
-            "Referer": "https://www.example.com"
-        },
-        "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"]  # 添加排除项
-    }
     try:
-        if os.path.exists(config_path):
-            with open(config_path, 'r') as f:
-                config = json.load(f)
-            default_config.update(config)
-        else:
-            with open(config_path, 'w') as f:
-                json.dump(default_config, f, indent=4)
+        if not os.path.exists(config_path):
+            logger.error(f"Config file {config_path} not found. Please create it.")
+            raise FileNotFoundError(f"Config file {config_path} not found.")
+        with open(config_path, 'r') as f:
+            return json.load(f)
     except Exception as e:
-        logger.error(f"Failed to load config: {e}. Using default settings.")
-    return default_config
+        logger.error(f"Failed to load config: {e}")
+        raise
 
 CONFIG = load_config()
 FFMPEG_PATH = CONFIG['ffmpeg_path']
@@ -138,7 +120,7 @@ def check_content_variation(url, duration=10):
         "-headers", f"User-Agent: {DEFAULT_HEADERS['User-Agent']}\r\nReferer: {DEFAULT_HEADERS['Referer']}\r\n",
         "-i", url,
         "-t", str(duration),
-        "-vf", "select='gt(scene,0.1)'",  # 检测场景变化
+        "-vf", "select='gt(scene,0.1)'",
         "-f", "null", "-",
         "-loglevel", "info"
     ]
@@ -151,9 +133,8 @@ def check_content_variation(url, duration=10):
             timeout=duration + 2
         )
         if result.returncode == 0:
-            # 检查是否有场景变化
             scene_changes = len(re.findall(r'\[select @ [^\]]+\] n: *[0-9]+', result.stderr))
-            return scene_changes > 1, None  # 至少有一次场景变化
+            return scene_changes > 1, None
         return False, f"FFmpeg error in content check: {result.stderr[:50]}"
     except subprocess.SubprocessError as e:
         return False, f"Subprocess error in content check: {str(e)}"
@@ -275,7 +256,7 @@ def is_link_playable(url, channel_name):
 
 def read_input_file(input_file):
     """读取输入文件并解析链接"""
-    input_path = os.path.join('ff', input_file)
+    input_path = input_file  # 根目录
     links_to_check = []
     failed_urls = load_failed_links()
     
@@ -316,7 +297,7 @@ def write_output_file(output_file, valid_links, failed_links):
         return 0
 
     try:
-        with open(failed_path, 'a', encoding='utf-8') as f:  # 追加模式
+        with open(failed_path, 'a', encoding='utf-8') as f:
             for channel_name, url, reason in failed_links:
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
@@ -329,7 +310,7 @@ def main():
     output_file = 'ff.txt'
     start_time = time.time()
     
-    input_path = os.path.join('ff', input_file)
+    input_path = input_file
     if not os.path.exists(input_path):
         logger.error(f"Input file {input_path} not found.")
         return
