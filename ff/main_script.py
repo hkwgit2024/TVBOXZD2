@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.FileHandler(os.path.join('ff', 'iptv_checker.log')),
+        logging.FileHandler('iptv_checker.log'),
         logging.StreamHandler()
     ]
 )
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 # 加载配置文件
 def load_config():
-    config_path = os.path.join('ff', 'config.json')
+    config_path = 'config.json'
     default_config = {
         "ffmpeg_path": "ffmpeg",
         "timeout": 3,
@@ -78,7 +78,7 @@ def quick_check_url(url):
 
 def load_failed_links():
     """加载已保存的失败链接"""
-    failed_path = os.path.join('ff', 'failed_links.txt')
+    failed_path = 'failed_links.txt'
     failed_urls = set()
     if os.path.exists(failed_path):
         try:
@@ -115,7 +115,7 @@ def get_stream_info(url):
         if result.returncode == 0:
             try:
                 info = json.loads(result.stdout)
-                return info.get('streams', [])
+                return info.get('streams', []), None
             except json.JSONDecodeError:
                 return [], "Invalid JSON response"
         return [], f"FFmpeg error: {result.stderr[:50]}"
@@ -135,7 +135,6 @@ def is_link_playable(url, channel_name):
 
     video_width = None
     bitrate = None
-    is_stable = True
 
     # 获取流信息
     streams, stream_error = get_stream_info(url)
@@ -195,7 +194,6 @@ def is_link_playable(url, channel_name):
             response_time = time.time() - start_time
             if process.returncode != 0:
                 if any(err in process.stderr for err in ["Connection refused", "Server returned", "Input/output error", "403 Forbidden", "401 Unauthorized"]):
-                    is_stable = False
                     reason = f"Unstable connection ({process.stderr[:50]})"
                     logger.warning(f"{reason} for {channel_name}: {url}")
                 else:
@@ -231,7 +229,7 @@ def is_link_playable(url, channel_name):
 
 def read_input_file(input_file):
     """读取输入文件并解析链接"""
-    input_path = os.path.join('ff', input_file)
+    input_path = input_file
     links_to_check = []
     failed_urls = load_failed_links()
     
@@ -258,8 +256,8 @@ def read_input_file(input_file):
 
 def write_output_file(output_file, valid_links, failed_links):
     """写入输出文件和失败链接文件"""
-    output_path = os.path.join('ff', output_file)
-    failed_path = os.path.join('ff', 'failed_links.txt')
+    output_path = output_file
+    failed_path = 'failed_links.txt'
     success_count = 0
     
     try:
@@ -285,9 +283,8 @@ def main():
     output_file = 'ff.txt'
     start_time = time.time()
     
-    input_path = os.path.join('ff', input_file)
-    if not os.path.exists(input_path):
-        logger.error(f"Input file {input_file} not found in ff directory.")
+    if not os.path.exists(input_file):
+        logger.error(f"Input file {input_file} not found.")
         return
 
     links_to_check = read_input_file(input_file)
@@ -296,7 +293,7 @@ def main():
 
     if not links_to_check:
         logger.warning(f"No links to check in {input_file}. Clearing {output_file}.")
-        with open(os.path.join('ff', output_file), 'w', encoding='utf-8') as f:
+        with open(output_file, 'w', encoding='utf-8') as f:
             f.write("")
         return
 
