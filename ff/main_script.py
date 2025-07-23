@@ -32,7 +32,11 @@ def load_config():
         "min_resolution_width": 1280,
         "min_bitrate": 1000000,
         "max_response_time": 1.5,
-        "quick_check_timeout": 2
+        "quick_check_timeout": 2,
+        "default_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+            "Referer": "https://www.example.com"
+        }
     }
     try:
         if os.path.exists(config_path):
@@ -56,6 +60,7 @@ MIN_RESOLUTION_WIDTH = CONFIG['min_resolution_width']
 MIN_BITRATE = CONFIG['min_bitrate']
 MAX_RESPONSE_TIME = CONFIG['max_response_time']
 QUICK_CHECK_TIMEOUT = CONFIG['quick_check_timeout']
+DEFAULT_HEADERS = CONFIG['default_headers']
 
 def is_valid_url(url):
     """验证URL格式"""
@@ -64,10 +69,12 @@ def is_valid_url(url):
 def quick_check_url(url):
     """快速检查URL的HTTP状态码"""
     try:
-        response = requests.head(url, timeout=QUICK_CHECK_TIMEOUT, allow_redirects=True)
-        return response.status_code == 200
-    except requests.RequestException:
-        return False
+        response = requests.head(url, timeout=QUICK_CHECK_TIMEOUT, allow_redirects=True, headers=DEFAULT_HEADERS)
+        if response.status_code == 200:
+            return True, None
+        return False, f"HTTP Error {response.status_code}"
+    except requests.RequestException as e:
+        return False, f"Connection failed: {str(e)}"
 
 def load_failed_links():
     """加载已保存的失败链接"""
@@ -88,6 +95,7 @@ def get_stream_info(url):
     """使用FFmpeg提取视频流信息"""
     cmd = [
         FFMPEG_PATH,
+        "-headers", f"User-Agent: {DEFAULT_HEADERS['User-Agent']}\r\nReferer: {DEFAULT_HEADERS['Referer']}\r\n",
         "-i", url,
         "-hide_banner",
         "-show_streams",
@@ -109,10 +117,10 @@ def get_stream_info(url):
                 info = json.loads(result.stdout)
                 return info.get('streams', [])
             except json.JSONDecodeError:
-                return []
-        return []
-    except subprocess.SubprocessError:
-        return []
+                return [], "Invalid JSON response"
+        return [], f"FFmpeg error: {result.stderr[:50]}"
+    except subprocess.SubprocessError as e:
+        return [], f"Subprocess error: {str(e)}"
 
 def is_link_playable(url, channel_name):
     """检查链接是否可播放并获取质量信息"""
@@ -120,16 +128,21 @@ def is_link_playable(url, channel_name):
         logger.warning(f"Invalid URL format for {channel_name}: {url}")
         return False, 0.0, None, None, "Invalid URL"
 
-    if not quick_check_url(url):
-        logger.warning(f"Quick check failed for {channel_name}: {url} (invalid HTTP response)")
-        return False, 0.0, None, None, "Invalid HTTP response"
+    is_accessible, reason = quick_check_url(url)
+    if not is_accessible:
+        logger.warning(f"Quick check failed for {channel_name}: {url} ({reason})")
+        return False, 0.0, None, None, reason
 
     video_width = None
     bitrate = None
     is_stable = True
 
     # 获取流信息
-    streams = get_stream_info(url)
+    streams, stream_error = get_stream_info(url)
+    if stream_error:
+        logger.warning(f"Stream info error for {channel_name}: {url} ({stream_error})")
+        return False, 0.0, None, None, stream_error
+
     for stream in streams:
         if stream.get('codec_type') == 'video':
             video_width = stream.get('width', 0)
@@ -160,6 +173,7 @@ def is_link_playable(url, channel_name):
             
             cmd = [
                 FFMPEG_PATH,
+                "-headers", f"User-Agent: {DEFAULT_HEADERS['User-Agent']}\r\nReferer: {DEFAULT_HEADERS['Referer']}\r\n",
                 "-i", url,
                 "-t", str(READ_DURATION),
                 "-c:v", "copy",
@@ -180,7 +194,7 @@ def is_link_playable(url, channel_name):
             
             response_time = time.time() - start_time
             if process.returncode != 0:
-                if any(err in process.stderr for err in ["Connection refused", "Server returned", "Input/output error"]):
+                if any(err in process.stderr for err in ["Connection refused", "Server returned", "Input/output error", "403 Forbidden", "401 Unauthorized"]):
                     is_stable = False
                     reason = f"Unstable connection ({process.stderr[:50]})"
                     logger.warning(f"{reason} for {channel_name}: {url}")
