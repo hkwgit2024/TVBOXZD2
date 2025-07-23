@@ -44,12 +44,14 @@ jobs:
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
       run: |
+        cd ff
         python -m coverage run -m unittest test_iptv_checker.py -v
         python -m coverage report
 
     # 运行主脚本测试
     - name: Run main script
       run: |
+        cd ff
         python main_script.py
 
     # 上传覆盖率报告和输出文件
