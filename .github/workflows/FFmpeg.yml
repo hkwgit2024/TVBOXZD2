@@ -36,10 +36,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install tqdm validators requests coverage
 
-    # 创建测试文件
-    - name: Setup test files
+    # 创建 ff 目录并移动测试文件
+    - name: Setup test directory
       run: |
-        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
+        mkdir -p ff
+        mv main_script.py test_iptv_checker.py ff/
+        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
 
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
@@ -60,12 +62,12 @@ jobs:
       with:
         name: test-results-${{ matrix.python-version }}
         path: |
-          .coverage
-          ff.txt
-          failed_links.txt
-          iptv_checker.log
+          ff/.coverage
+          ff/ff.txt
+          ff/failed_links.txt
+          ff/iptv_checker.log
 
     # 记录运行时间
     - name: Log test duration
       run: |
-        echo "Test duration: $(date -u -d "$(date -u) - $(date -u -r .coverage)" +%H:%M:%S)"
+        echo "Test duration: $(date -u -d "$(date -u) - $(date -u -r ff/.coverage)" +%H:%M:%S)"
