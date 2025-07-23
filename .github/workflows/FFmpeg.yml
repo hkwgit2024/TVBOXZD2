@@ -1,4 +1,3 @@
-
 name: IPTV Checker Workflow
 
 on:
@@ -55,11 +54,11 @@ jobs:
           FFMPEG_CACHE_DIR: /var/cache/apt/archives
 
       # 安装 Python 依赖
-      # 直接安装 validators 模块，不使用 requirements.txt
+      # 安装 validators, tqdm, requests, coverage 模块
       - name: Install Python dependencies
         run: |
           echo "Installing Python dependencies..."
-          pip install --user validators
+          pip install --user validators tqdm requests coverage
           echo "Python dependencies installation complete."
         env:
           pythonLocation: /opt/hostedtoolcache/Python/3.10.18/x64
