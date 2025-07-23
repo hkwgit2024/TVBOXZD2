@@ -9,17 +9,22 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from urllib.parse import urlparse
+import sys
+
+# 添加当前脚本目录到模块搜索路径
+sys.path.append(os.path.dirname(__file__))
 
 # 设置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join('ff', 'iptv_checker.log')),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+def setup_logging(log_file):
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
+    )
+    return logging.getLogger(__name__)
 
 # 加载配置文件
 def load_config():
@@ -35,6 +40,7 @@ def load_config():
         raise
 
 CONFIG = load_config()
+logger = setup_logging(CONFIG['log_file'])
 FFMPEG_PATH = CONFIG['ffmpeg_path']
 TIMEOUT = CONFIG['timeout']
 READ_DURATION = CONFIG['read_duration']
@@ -46,6 +52,9 @@ MAX_RESPONSE_TIME = CONFIG['max_response_time']
 QUICK_CHECK_TIMEOUT = CONFIG['quick_check_timeout']
 DEFAULT_HEADERS = CONFIG['default_headers']
 EXCLUDE_DOMAINS = CONFIG.get('exclude_domains', [])
+INPUT_FILE = CONFIG['input_file']
+OUTPUT_FILE = CONFIG['output_file']
+FAILED_LINKS_FILE = CONFIG['failed_links_file']
 
 def is_valid_url(url):
     """验证URL格式"""
@@ -69,17 +78,16 @@ def quick_check_url(url):
 
 def load_failed_links():
     """加载已保存的失败链接"""
-    failed_path = os.path.join('ff', 'failed_links.txt')
     failed_urls = set()
-    if os.path.exists(failed_path):
+    if os.path.exists(FAILED_LINKS_FILE):
         try:
-            with open(failed_path, 'r', encoding='utf-8') as f:
+            with open(FAILED_LINKS_FILE, 'r', encoding='utf-8') as f:
                 for line in f:
                     parts = line.strip().split(',', 2)
                     if len(parts) >= 2:
-                        failed_urls.add(parts[1])  # 提取 URL
+                        failed_urls.add(parts[1])
         except Exception as e:
-            logger.error(f"Failed to load {failed_path}: {e}")
+            logger.error(f"Failed to load {FAILED_LINKS_FILE}: {e}")
     return failed_urls
 
 def get_stream_info(url):
@@ -113,7 +121,7 @@ def get_stream_info(url):
     except subprocess.SubprocessError as e:
         return [], f"Subprocess error: {str(e)}"
 
-def check_content_variation(url, duration=10):
+def check_content_variation(url, duration=5):
     """检查流内容是否有变化，排除重复广告"""
     cmd = [
         FFMPEG_PATH,
@@ -130,7 +138,7 @@ def check_content_variation(url, duration=10):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True,
-            timeout=duration + 2
+            timeout=duration + 1
         )
         if result.returncode == 0:
             scene_changes = len(re.findall(r'\[select @ [^\]]+\] n: *[0-9]+', result.stderr))
@@ -157,7 +165,6 @@ def is_link_playable(url, channel_name):
     video_width = None
     bitrate = None
 
-    # 获取流信息
     streams, stream_error = get_stream_info(url)
     if stream_error:
         logger.warning(f"Stream info error for {channel_name}: {url} ({stream_error})")
@@ -175,7 +182,6 @@ def is_link_playable(url, channel_name):
                 bitrate = None
             break
 
-    # 检查分辨率和比特率
     if video_width and video_width < MIN_RESOLUTION_WIDTH:
         reason = f"Low resolution ({video_width}x{stream.get('height', 0)})"
         logger.warning(f"{reason} for {channel_name}: {url}")
@@ -185,13 +191,11 @@ def is_link_playable(url, channel_name):
         logger.warning(f"{reason} for {channel_name}: {url}")
         return False, 0.0, video_width, bitrate, reason
 
-    # 检查内容是否有变化
     has_variation, variation_error = check_content_variation(url, READ_DURATION)
     if not has_variation:
         logger.warning(f"No content variation for {channel_name}: {url} ({variation_error})")
         return False, 0.0, video_width, bitrate, variation_error or "No content variation"
 
-    # 检查可播放性和稳定性
     for attempt in range(MAX_RETRIES):
         try:
             start_time = time.time()
@@ -254,14 +258,13 @@ def is_link_playable(url, channel_name):
             logger.error(f"{reason} for {channel_name}: {url}")
             return False, response_time, video_width, bitrate, reason
 
-def read_input_file(input_file):
+def read_input_file():
     """读取输入文件并解析链接"""
-    input_path = input_file  # 根目录
     links_to_check = []
     failed_urls = load_failed_links()
     
     try:
-        with open(input_path, 'r', encoding='utf-8') as f:
+        with open(INPUT_FILE, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -277,51 +280,46 @@ def read_input_file(input_file):
                 else:
                     logger.warning(f"Skipping malformed line: {line}")
     except Exception as e:
-        logger.error(f"Failed to read {input_path}: {e}")
+        logger.error(f"Failed to read {INPUT_FILE}: {e}")
         return None
     return links_to_check
 
-def write_output_file(output_file, valid_links, failed_links):
+def write_output_file(valid_links, failed_links):
     """写入输出文件和失败链接文件"""
-    output_path = os.path.join('ff', output_file)
-    failed_path = os.path.join('ff', 'failed_links.txt')
     success_count = 0
     
     try:
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             for response_time, link_entry in sorted(valid_links, key=lambda x: x[0]):
                 f.write(link_entry + '\n')
                 success_count += 1
     except Exception as e:
-        logger.error(f"Failed to write {output_path}: {e}")
+        logger.error(f"Failed to write {OUTPUT_FILE}: {e}")
         return 0
 
     try:
-        with open(failed_path, 'a', encoding='utf-8') as f:
+        with open(FAILED_LINKS_FILE, 'a', encoding='utf-8') as f:
             for channel_name, url, reason in failed_links:
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
-        logger.error(f"Failed to write {failed_path}: {e}")
+        logger.error(f"Failed to write {FAILED_LINKS_FILE}: {e}")
 
     return success_count
 
 def main():
-    input_file = 'list.txt'
-    output_file = 'ff.txt'
     start_time = time.time()
     
-    input_path = input_file
-    if not os.path.exists(input_path):
-        logger.error(f"Input file {input_path} not found.")
+    if not os.path.exists(INPUT_FILE):
+        logger.error(f"Input file {INPUT_FILE} not found.")
         return
 
-    links_to_check = read_input_file(input_file)
+    links_to_check = read_input_file()
     if links_to_check is None:
         return
 
     if not links_to_check:
-        logger.warning(f"No links to check in {input_path}. Clearing {output_file}.")
-        with open(os.path.join('ff', output_file), 'w', encoding='utf-8') as f:
+        logger.warning(f"No links to check in {INPUT_FILE}. Clearing {OUTPUT_FILE}.")
+        with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
             f.write("")
         return
 
@@ -356,7 +354,7 @@ def main():
                 failed_links.append((channel_name, url, f"Exception ({str(exc)})"))
                 stats['unstable'] += 1
 
-    success_count = write_output_file(output_file, valid_links, failed_links)
+    success_count = write_output_file(valid_links, failed_links)
     elapsed_time = time.time() - start_time
     logger.info(f"Stats: {success_count}/{stats['checked']} links passed (invalid: {stats['invalid']}, low quality: {stats['low_quality']}, slow: {stats['slow']}, unstable: {stats['unstable']}, excluded: {stats['excluded']})")
     logger.info(f"Total processing time: {elapsed_time:.2f} seconds")
