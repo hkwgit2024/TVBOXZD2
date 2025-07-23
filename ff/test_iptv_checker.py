@@ -386,7 +386,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_success(self, mock_file):
         with patch('main_script.load_failed_links', return_value=set()):
-            links_to_check = read_input_file('list.txt') # <-- Changed to main_script.read_input_file
+            links_to_check = main_script.read_input_file('list.txt') # <-- Corrected to main_script.read_input_file
             self.assertEqual(len(links_to_check), 1)
             self.assertEqual(links_to_check[0][0], "Test Channel")
             self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
@@ -394,7 +394,7 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_skip_failed(self, mock_file):
         with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
-            links_to_check = read_input_file('list.txt') # <-- Changed to main_script.read_input_file
+            links_to_check = main_script.read_input_file('list.txt') # <-- Corrected to main_script.read_input_file
             self.assertEqual(len(links_to_check), 0)
             self.mock_logger_info.assert_called_with("Skipping previously failed URL: http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
 
@@ -408,7 +408,7 @@ class TestIPTVChecker(unittest.TestCase):
         # 这些临时文件现在由 setUp 管理，这里不需要再次创建
         
         with patch('builtins.open', side_effect=self._mock_open) as mocked_file:
-            success_count = write_output_file('ff.txt', valid_links, failed_links) # <-- Changed to main_script.write_output_file
+            success_count = main_script.write_output_file('ff.txt', valid_links, failed_links) # <-- Corrected to main_script.write_output_file
             self.assertEqual(success_count, 1)
             
             # 验证对 ff.txt 的写入
