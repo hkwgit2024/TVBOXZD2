@@ -30,8 +30,10 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git pull --rebase origin main # Pull and rebase to integrate remote changes
-        git add list.txt
+        git add list.txt # 暂存更改
+        git commit -m 'Stage changes before rebase' || echo "No changes to commit" # 提交更改
+        git pull --rebase origin main # 拉取并变基
+        git add list.txt # 再次暂存可能的手动更改
         git commit -m 'Update playable IPTV links' || echo "No changes to commit"
         git push
       env:
