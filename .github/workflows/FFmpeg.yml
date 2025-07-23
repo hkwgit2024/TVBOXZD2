@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
-    timeout-minutes: 60  # 60分钟超时
+    timeout-minutes: 30  # 30分钟超时
 
     steps:
     # 检出代码
@@ -36,12 +36,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install tqdm validators requests coverage
 
-    # 创建 ff 目录并移动测试文件
+    # 创建测试用的 list.txt
     - name: Setup test directory
       run: |
         mkdir -p ff
-        mv main_script.py test_iptv_checker.py ff/
-        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
+        echo "Test Channel,https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
 
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
