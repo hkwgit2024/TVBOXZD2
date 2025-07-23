@@ -1,4 +1,4 @@
-name: IPTV  FFmpeg
+name: IPTV Checker Tests with FFmpeg
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
-    timeout-minutes: 30  # 30分钟超时
+    timeout-minutes: 60  # 60分钟超时
 
     steps:
     # 检出代码
@@ -41,7 +41,7 @@ jobs:
       run: |
         mkdir -p ff
         mv main_script.py test_iptv_checker.py ff/
-        echo "Test Channel,http://valid.com/stream.m3u8" > ff/list.txt
+        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
 
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
@@ -50,12 +50,22 @@ jobs:
         python -m coverage run -m unittest test_iptv_checker.py -v
         python -m coverage report
 
-    # 上传覆盖率报告
-    - name: Upload coverage report
+    # 运行主脚本测试
+    - name: Run main script
+      run: |
+        cd ff
+        python main_script.py
+
+    # 上传覆盖率报告和输出文件
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-report-${{ matrix.python-version }}
-        path: ff/.coverage
+        name: test-results-${{ matrix.python-version }}
+        path: |
+          ff/.coverage
+          ff/ff.txt
+          ff/failed_links.txt
+          ff/iptv_checker.log
 
     # 记录运行时间
     - name: Log test duration
