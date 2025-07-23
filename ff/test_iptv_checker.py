@@ -1,13 +1,16 @@
 import unittest
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, MagicMock
 import os
 import subprocess
 import json
 import requests
 import sys
+import time # 导入 time 模块
+
 # 添加当前脚本目录到模块搜索路径
 sys.path.append(os.path.dirname(__file__))
-from main_script import is_link_playable, main, load_config, is_valid_url, quick_check_url, get_stream_info, read_input_file, write_output_file, load_failed_links, is_excluded_url
+# 确保从 main_script 导入 check_content_variation，因为它在一些测试中被 mock 了
+from main_script import is_link_playable, main, load_config, is_valid_url, quick_check_url, get_stream_info, read_input_file, write_output_file, load_failed_links, is_excluded_url, check_content_variation
 
 class TestIPTVChecker(unittest.TestCase):
     
@@ -112,12 +115,18 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
+    @patch('main_script.check_content_variation') # 确保这里也 mock 了 check_content_variation
     @patch('subprocess.run')
-    def test_is_link_playable_success(self, mock_run, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+    @patch('time.time') # 模拟时间
+    def test_is_link_playable_success(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+        # 模拟 time.time 的返回值，以计算响应时间
+        mock_time.side_effect = [0, 0.5] # 开始时间为0，结束时间为0.5，模拟0.5秒的响应时间
+
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
+        mock_content_variation.return_value = (True, None) # 模拟内容无变化
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
-            returncode=0,
+            returncode=0, # 模拟 FFmpeg 成功运行
             stdout="",
             stderr=""
         )
@@ -151,34 +160,46 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
+    @patch('main_script.check_content_variation') # 确保这里也 mock 了 check_content_variation
     @patch('subprocess.run')
-    def test_is_link_playable_slow_response(self, mock_run, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+    @patch('time.time') # 模拟时间
+    def test_is_link_playable_slow_response(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+        # 模拟 time.time 的返回值，以计算响应时间
+        mock_time.side_effect = [0, 2.5] # 开始时间为0，结束时间为2.5，模拟2.5秒的响应时间
+
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
+        mock_content_variation.return_value = (True, None) # 模拟内容无变化
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
-            returncode=0,
+            returncode=0, # 模拟 FFmpeg 成功运行 (但由于时间长，仍判断为慢响应)
             stdout="",
             stderr=""
         )
-        with patch('time.time', side_effect=[0, 2, 2, 2]):
-            url = "http://valid.com/stream.m3u8"
-            channel_name = "Test Channel"
-            is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
-            
-            self.assertFalse(is_playable)
-            self.assertGreaterEqual(response_time, 2)
-            self.assertTrue(reason.startswith("Slow response"))
+        
+        url = "http://valid.com/stream.m3u8"
+        channel_name = "Test Channel"
+        is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
+        
+        self.assertFalse(is_playable) # 期望是 False，因为响应时间过长
+        self.assertGreaterEqual(response_time, 2) # 应该大约是 2.5
+        self.assertTrue(reason.startswith("Slow response"))
 
     @patch('main_script.is_valid_url', return_value=True)
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
+    @patch('main_script.check_content_variation') # 确保这里也 mock 了 check_content_variation
     @patch('subprocess.run')
-    def test_is_link_playable_unstable(self, mock_run, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+    @patch('time.time') # 模拟时间
+    def test_is_link_playable_unstable(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
+        # 模拟 time.time 的返回值，以计算响应时间
+        mock_time.side_effect = [0, 0.5] # 模拟快速响应，但 FFmpeg 失败
+
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
+        mock_content_variation.return_value = (True, "FFmpeg error in content check: 403 Forbidden") # 模拟内容检查失败
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
-            returncode=1,
+            returncode=1, # 模拟 FFmpeg 失败
             stdout="",
             stderr="403 Forbidden"
         )
@@ -188,7 +209,7 @@ class TestIPTVChecker(unittest.TestCase):
         is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
         
         self.assertFalse(is_playable)
-        self.assertGreater(response_time, 0)
+        self.assertGreater(response_time, 0) # 应该大约是 0.5
         self.assertTrue(reason.startswith("Unstable connection"))
 
     @patch('main_script.is_valid_url', return_value=True)
@@ -239,7 +260,8 @@ class TestIPTVChecker(unittest.TestCase):
             "failed_links_file": "ff/failed_links.txt",
             "checkpoint_file": "ff/checkpoint.json"
         }
-        with patch('builtins.open', mock_open()):
+        # 使用 mock_builtin_open 变量捕获 mock 对象
+        with patch('builtins.open', new_callable=mock_open) as mock_builtin_open:
             with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
                 with patch('main_script.CONFIG', config):
                     valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
@@ -247,14 +269,17 @@ class TestIPTVChecker(unittest.TestCase):
                     checkpoint = {'processed_urls': [], 'valid_links': [], 'failed_links': []}
                     success_count = write_output_file(valid_links, failed_links, checkpoint)
                     self.assertEqual(success_count, 1)
-                    mock_open().assert_any_call(config['output_file'], 'w', encoding='utf-8')
-                    mock_open().assert_any_call(config['failed_links_file'], 'a', encoding='utf-8')
+                    # 现在对捕获的 mock_builtin_open 对象进行断言
+                    mock_builtin_open.assert_any_call(config['output_file'], 'w', encoding='utf-8')
+                    mock_builtin_open.assert_any_call(config['failed_links_file'], 'a', encoding='utf-8')
 
     @patch('os.path.exists')
     @patch('main_script.load_config')
     @patch('main_script.read_input_file')
     @patch('main_script.write_output_file')
-    def test_main_success(self, mock_write, mock_read, mock_config, mock_exists):
+    @patch('main_script.load_checkpoint') # 确保 mock load_checkpoint
+    @patch('main_script.save_checkpoint') # 确保 mock save_checkpoint
+    def test_main_success(self, mock_save_checkpoint, mock_load_checkpoint, mock_write, mock_read, mock_config, mock_exists):
         mock_config.return_value = {
             "ffmpeg_path": "ffmpeg",
             "timeout": 3,
@@ -277,12 +302,19 @@ class TestIPTVChecker(unittest.TestCase):
             "checkpoint_file": "ff/checkpoint.json"
         }
         mock_exists.return_value = True
-        mock_read.return_value = ([("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")], {'processed_urls': [], 'valid_links': [], 'failed_links': []})
+        
+        # 模拟 checkpoint 的初始值和 read_input_file 的返回值
+        initial_checkpoint = {'processed_urls': [], 'valid_links': [], 'failed_links': []}
+        mock_load_checkpoint.return_value = initial_checkpoint
+        mock_read.return_value = ([("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")], initial_checkpoint)
+        
         mock_write.return_value = 1
         
+        # 确保 is_link_playable 在这里也被正确 Mock，以返回成功结果
         with patch('main_script.is_link_playable', return_value=(True, 1.0, 1920, 2000000, "Success")):
             main()
-            mock_write.assert_called()
+            mock_write.assert_called_once() # 确认 write_output_file 被调用
+            mock_save_checkpoint.assert_called_once() # 确认 save_checkpoint 被调用
 
     @patch('os.path.exists')
     @patch('main_script.load_config')
