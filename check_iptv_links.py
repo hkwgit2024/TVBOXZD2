@@ -3,6 +3,7 @@ import re
 import requests
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.parse import urlparse # 导入 urlparse 用于提取域名
 
 # 设置超时时间（秒）
 TIMEOUT = 5
@@ -11,11 +12,33 @@ READ_DURATION = 2
 # 最大重试次数
 MAX_RETRIES = 2
 
+# 排除的域名列表，包含这些域名的链接将被直接跳过，不进行测试
+# 您可以根据需要添加更多要排除的域名
+EXCLUDE_DOMAINS = ["epg.pw"]
+
+def is_excluded_url(url):
+    """
+    检查URL的域名是否在排除列表中。
+    """
+    parsed_url = urlparse(url)
+    domain = parsed_url.hostname
+    if domain:
+        for exclude_domain in EXCLUDE_DOMAINS:
+            # 检查是否是完全匹配的域名或子域名
+            if exclude_domain == domain or domain.endswith('.' + exclude_domain):
+                print(f"URL {url} excluded due to domain: {exclude_domain}")
+                return True
+    return False
+
 def is_link_playable(url, channel_name):
     """
     检查链接是否可播放，并返回响应时间。
     通过尝试连接并读取数据来判断，检查 MIME 类型以确保是视频流。
     """
+    # 在进行任何网络请求之前，首先检查是否为排除链接
+    if is_excluded_url(url):
+        return False, 0.0 # 返回 False 和 0 响应时间，表示已排除
+
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
     valid_types = ['video/mp4', 'application/x-mpegurl', 'application/vnd.apple.mpegurl', 'video/']
     
@@ -84,6 +107,12 @@ def main():
             if match:
                 channel_name = match.group(1).strip()
                 url = match.group(2).strip()
+                
+                # 在将链接添加到检查列表之前，检查是否为排除链接
+                if is_excluded_url(url):
+                    print(f"Skipping excluded URL in input file: {url}")
+                    continue # 跳过此链接，不添加到 links_to_check
+                
                 links_to_check.append((current_genre, channel_name, url))
             else:
                 print(f"Skipping malformed line: {line}")
