@@ -65,7 +65,11 @@ def is_excluded_url(url):
     """检查URL是否在排除列表中"""
     parsed_url = urlparse(url)
     domain = parsed_url.hostname or ''
-    return any(exclude in domain for exclude in EXCLUDE_DOMAINS)
+    for exclude in EXCLUDE_DOMAINS:
+        if exclude in domain:
+            logger.info(f"URL {url} excluded due to domain: {exclude}")
+            return True
+    return False
 
 def quick_check_url(url):
     """快速检查URL的HTTP状态码"""
@@ -144,36 +148,14 @@ def get_stream_info(url):
     except subprocess.SubprocessError as e:
         return [], f"Subprocess error: {str(e)}"
 
-def check_content_variation(url, duration=2):
-    """检查流内容是否有变化，排除重复广告"""
-    cmd = [
-        FFMPEG_PATH,
-        "-headers", f"User-Agent: {DEFAULT_HEADERS['User-Agent']}\r\nReferer: {DEFAULT_HEADERS['Referer']}\r\n",
-        "-i", url,
-        "-t", str(duration),
-        "-vf", "select='gt(scene,0.1)'",
-        "-f", "null", "-",
-        "-loglevel", "info"
-    ]
-    try:
-        result = subprocess.run(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True,
-            timeout=duration + 1
-        )
-        if result.returncode == 0:
-            scene_changes = len(re.findall(r'\[select @ [^\]]+\] n: *[0-9]+', result.stderr))
-            return scene_changes > 1, None
-        return False, f"FFmpeg error in content check: {result.stderr[:50]}"
-    except subprocess.SubprocessError as e:
-        return False, f"Subprocess error in content check: {str(e)}"
+def check_content_variation(url, channel_name):
+    """检查内容变化（占位，待认证逻辑）"""
+    # TODO: 实现动态 token 认证逻辑，需用户提供 API 细节
+    return True, None
 
 def is_link_playable(url, channel_name):
     """检查链接是否可播放并获取质量信息"""
     if is_excluded_url(url):
-        logger.info(f"Skipping excluded URL: {url}")
         return False, 0.0, None, None, "Excluded domain"
 
     if not is_valid_url(url):
@@ -184,6 +166,11 @@ def is_link_playable(url, channel_name):
     if not is_accessible:
         logger.warning(f"Quick check failed for {channel_name}: {url} ({reason})")
         return False, 0.0, None, None, reason
+
+    is_varying, variation_error = check_content_variation(url, channel_name)
+    if not is_varying:
+        logger.warning(f"No content variation for {channel_name}: {url} ({variation_error})")
+        return False, 0.0, None, None, f"No content variation ({variation_error})"
 
     video_width = None
     bitrate = None
@@ -213,11 +200,6 @@ def is_link_playable(url, channel_name):
         reason = f"Low bitrate ({bitrate} bps)"
         logger.warning(f"{reason} for {channel_name}: {url}")
         return False, 0.0, video_width, bitrate, reason
-
-    has_variation, variation_error = check_content_variation(url, READ_DURATION)
-    if not has_variation:
-        logger.warning(f"No content variation for {channel_name}: {url} ({variation_error})")
-        return False, 0.0, video_width, bitrate, variation_error or "No content variation"
 
     for attempt in range(MAX_RETRIES):
         try:
@@ -292,21 +274,28 @@ def read_input_file():
         with open(INPUT_FILE, 'r', encoding='utf-8') as f:
             for line in f:
                 line = line.strip()
-                if not line:
+                if not line or line.startswith('#'):
+                    logger.info(f"Skipping line: {line}")
                     continue
                 match = re.match(r'^(.*?),(http[s]?://.*)$', line)
                 if match:
                     channel_name = match.group(1).strip()
                     url = match.group(2).strip()
-                    if url not in failed_urls and url not in processed_urls and not is_excluded_url(url):
-                        links_to_check.append((channel_name, url))
-                    else:
-                        logger.info(f"Skipping previously failed, processed, or excluded URL: {url}")
+                    if url in failed_urls:
+                        logger.info(f"Skipping previously failed URL: {url}")
+                        continue
+                    if url in processed_urls:
+                        logger.info(f"Skipping previously processed URL: {url}")
+                        continue
+                    if is_excluded_url(url):
+                        logger.info(f"Skipping excluded URL: {url}")
+                        continue
+                    links_to_check.append((channel_name, url))
                 else:
                     logger.warning(f"Skipping malformed line: {line}")
     except Exception as e:
         logger.error(f"Failed to read {INPUT_FILE}: {e}")
-        return None
+        return None, checkpoint
     return links_to_check, checkpoint
 
 def write_output_file(valid_links, failed_links, checkpoint):
@@ -381,8 +370,8 @@ def main():
                 failed_links.append((channel_name, url, f"Exception ({str(exc)})"))
                 stats['unstable'] += 1
 
-            # 每处理 100 个链接保存一次检查点
-            if len(processed_urls) % 100 == 0:
+            # 每处理 50 个链接保存一次检查点
+            if len(processed_urls) % 50 == 0:
                 save_checkpoint(list(processed_urls), valid_links + checkpoint['valid_links'], failed_links + checkpoint['failed_links'])
 
     # 最后保存检查点
