@@ -5,7 +5,7 @@ import subprocess
 import json
 import requests
 import sys
-# 添加 ff 目录到模块搜索路径
+# 添加当前脚本目录到模块搜索路径
 sys.path.append(os.path.dirname(__file__))
 from main_script import is_link_playable, main, load_config, is_valid_url, quick_check_url, get_stream_info, read_input_file, write_output_file, load_failed_links, is_excluded_url
 
@@ -16,28 +16,34 @@ class TestIPTVChecker(unittest.TestCase):
             with patch('builtins.open', mock_open(read_data=json.dumps({
                 "ffmpeg_path": "ffmpeg",
                 "timeout": 3,
-                "read_duration": 10,
+                "read_duration": 5,
                 "max_retries": 2,
-                "max_workers": 50,
+                "max_workers": 100,
                 "min_resolution_width": 1280,
                 "min_bitrate": 1000000,
                 "max_response_time": 1.5,
-                "quick_check_timeout": 2,
+                "quick_check_timeout": 1,
                 "default_headers": {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
                     "Referer": "https://www.example.com"
                 },
-                "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"]
+                "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"],
+                "input_file": "list.txt",
+                "output_file": "ff/ff.txt",
+                "failed_links_file": "ff/failed_links.txt",
+                "log_file": "ff/iptv_checker.log"
             }))) as mocked_file:
                 config = load_config()
                 self.assertEqual(config['timeout'], 3)
-                self.assertEqual(config['read_duration'], 10)
+                self.assertEqual(config['read_duration'], 5)
                 self.assertEqual(config['min_resolution_width'], 1280)
                 self.assertEqual(config['min_bitrate'], 1000000)
                 self.assertEqual(config['max_response_time'], 1.5)
-                self.assertEqual(config['quick_check_timeout'], 2)
-                self.assertIn("default_headers", config)
-                self.assertEqual(config['exclude_domains'], ["epg.pw", "ali-m-l.cztv.com"])
+                self.assertEqual(config['quick_check_timeout'], 1)
+                self.assertEqual(config['input_file'], "list.txt")
+                self.assertEqual(config['output_file'], "ff/ff.txt")
+                self.assertEqual(config['failed_links_file'], "ff/failed_links.txt")
+                self.assertEqual(config['log_file'], "ff/iptv_checker.log")
                 mocked_file.assert_called_with(os.path.join('ff', 'config.json'), 'r')
 
     def test_is_excluded_url(self):
@@ -65,8 +71,12 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('os.path.exists', return_value=True)
     @patch('builtins.open', mock_open(read_data="Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n"))
     def test_load_failed_links(self):
-        failed_urls = load_failed_links()
-        self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8"})
+        config = {
+            "failed_links_file": "ff/failed_links.txt"
+        }
+        with patch('main_script.CONFIG', config):
+            failed_urls = load_failed_links()
+            self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8"})
 
     @patch('main_script.is_valid_url', return_value=True)
     @patch('main_script.is_excluded_url', return_value=False)
@@ -200,32 +210,40 @@ class TestIPTVChecker(unittest.TestCase):
 
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_success(self, mock_file):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt"}
         with patch('main_script.load_failed_links', return_value=set()):
-            links_to_check = read_input_file('list.txt')
-            self.assertEqual(len(links_to_check), 1)
-            self.assertEqual(links_to_check[0][0], "Test Channel")
-            self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
+            with patch('main_script.CONFIG', config):
+                links_to_check = read_input_file()
+                self.assertEqual(len(links_to_check), 1)
+                self.assertEqual(links_to_check[0][0], "Test Channel")
+                self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
 
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
     def test_read_input_file_skip_failed(self, mock_file):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt"}
         with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
-            links_to_check = read_input_file('list.txt')
-            self.assertEqual(len(links_to_check), 0)
+            with patch('main_script.CONFIG', config):
+                links_to_check = read_input_file()
+                self.assertEqual(len(links_to_check), 0)
 
     @patch('builtins.open', new_callable=mock_open, read_data="Test Channel,https://epg.pw/stream.m3u8\n")
     def test_read_input_file_skip_excluded(self, mock_file):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt"}
         with patch('main_script.load_failed_links', return_value=set()):
-            links_to_check = read_input_file('list.txt')
-            self.assertEqual(len(links_to_check), 0)
+            with patch('main_script.CONFIG', config):
+                links_to_check = read_input_file()
+                self.assertEqual(len(links_to_check), 0)
 
     @patch('builtins.open', new_callable=mock_open)
     def test_write_output_file(self, mock_file):
-        valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
-        failed_links = [("Test Channel,http://invalid.com/stream.m3u8", "Invalid URL")]
-        success_count = write_output_file('ff.txt', valid_links, failed_links)
-        self.assertEqual(success_count, 1)
-        mock_file.assert_any_call(os.path.join('ff', 'ff.txt'), 'w', encoding='utf-8')
-        mock_file.assert_any_call(os.path.join('ff', 'failed_links.txt'), 'a', encoding='utf-8')
+        config = {"output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt"}
+        with patch('main_script.CONFIG', config):
+            valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
+            failed_links = [("Test Channel,http://invalid.com/stream.m3u8", "Invalid URL")]
+            success_count = write_output_file(valid_links, failed_links)
+            self.assertEqual(success_count, 1)
+            mock_file.assert_any_call(config['output_file'], 'w', encoding='utf-8')
+            mock_file.assert_any_call(config['failed_links_file'], 'a', encoding='utf-8')
 
     @patch('os.path.exists')
     @patch('main_script.load_config')
@@ -235,18 +253,22 @@ class TestIPTVChecker(unittest.TestCase):
         mock_config.return_value = {
             "ffmpeg_path": "ffmpeg",
             "timeout": 3,
-            "read_duration": 10,
+            "read_duration": 5,
             "max_retries": 2,
-            "max_workers": 50,
+            "max_workers": 100,
             "min_resolution_width": 1280,
             "min_bitrate": 1000000,
             "max_response_time": 1.5,
-            "quick_check_timeout": 2,
+            "quick_check_timeout": 1,
             "default_headers": {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
                 "Referer": "https://www.example.com"
             },
-            "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"]
+            "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"],
+            "input_file": "list.txt",
+            "output_file": "ff/ff.txt",
+            "failed_links_file": "ff/failed_links.txt",
+            "log_file": "ff/iptv_checker.log"
         }
         mock_exists.return_value = True
         mock_read.return_value = [("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
@@ -257,7 +279,9 @@ class TestIPTVChecker(unittest.TestCase):
             mock_write.assert_called()
 
     @patch('os.path.exists')
-    def test_main_file_not_found(self, mock_exists):
+    @patch('main_script.load_config')
+    def test_main_file_not_found(self, mock_config, mock_exists):
+        mock_config.return_value = {"input_file": "list.txt"}
         mock_exists.return_value = False
         with patch('logging.Logger.error') as mock_logger:
             main()
