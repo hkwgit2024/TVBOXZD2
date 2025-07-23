@@ -233,17 +233,6 @@ proxies:
   sni: 45.32.28.232
   skip-cert-verify: true
   udp: true
-- name: yandex-585
-  server: 13.115.154.194
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
 - name: yandex-586
   server: 172.237.11.141
   port: 2377
@@ -678,67 +667,66 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - yandex-664
-  - yandex-683
-  - yandex-687
-  - yandex-667
-  - yandex-678
-  - yandex-673
   - yandex-675
-  - yandex-666
+  - yandex-683
   - yandex-676
   - yandex-674
-  - yandex-665
+  - yandex-678
   - yandex-681
-  - yandex-604
+  - yandex-673
+  - yandex-664
+  - yandex-666
+  - yandex-667
+  - yandex-657
+  - yandex-656
+  - yandex-653
   - yandex-651
-  - yandex-576
+  - yandex-655
+  - yandex-658
   - yandex-587
   - yandex-586
-  - yandex-590
-  - yandex-585
-  - yandex-592
-  - yandex-598
   - yandex-594
-  - yandex-567
-  - yandex-653
-  - yandex-657
-  - yandex-693
-  - yandex-545
-  - yandex-548
-  - yandex-547
-  - yandex-550
-  - yandex-544
-  - yandex-549
-  - yandex-510
-  - yandex-509
-  - yandex-563
-  - yandex-508
-  - yandex-658
-  - yandex-655
-  - yandex-617
-  - yandex-615
   - yandex-654
+  - yandex-693
+  - yandex-598
+  - yandex-592
+  - yandex-590
+  - yandex-563
+  - yandex-567
+  - yandex-548
+  - yandex-544
+  - yandex-615
+  - yandex-559
+  - yandex-562
+  - yandex-549
+  - yandex-550
+  - yandex-547
+  - yandex-545
   - yandex-499
-  - yandex-627
-  - yandex-621
+  - yandex-576
+  - yandex-509
+  - yandex-604
   - yandex-622
-  - yandex-691
+  - yandex-621
   - yandex-602
-  - yandex-656
-  - yandex-495
-  - yandex-497
+  - yandex-627
+  - yandex-687
   - yandex-692
   - yandex-690
-  - yandex-578
+  - yandex-691
+  - yandex-495
   - yandex-689
+  - yandex-578
+  - yandex-508
+  - yandex-497
+  - yandex-665
   - yandex-491
+  - yandex-579
   - yandex-628
   - yandex-694
-  - yandex-579
-  - yandex-562
+  - yandex-510
   - yandex-640
-  - yandex-559
+  - yandex-617
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -746,133 +734,131 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - yandex-664
-  - yandex-683
-  - yandex-687
-  - yandex-667
-  - yandex-678
-  - yandex-673
   - yandex-675
-  - yandex-666
+  - yandex-683
   - yandex-676
   - yandex-674
-  - yandex-665
+  - yandex-678
   - yandex-681
-  - yandex-604
+  - yandex-673
+  - yandex-664
+  - yandex-666
+  - yandex-667
+  - yandex-657
+  - yandex-656
+  - yandex-653
   - yandex-651
-  - yandex-576
+  - yandex-655
+  - yandex-658
   - yandex-587
   - yandex-586
-  - yandex-590
-  - yandex-585
-  - yandex-592
-  - yandex-598
   - yandex-594
-  - yandex-567
-  - yandex-653
-  - yandex-657
-  - yandex-693
-  - yandex-545
-  - yandex-548
-  - yandex-547
-  - yandex-550
-  - yandex-544
-  - yandex-549
-  - yandex-510
-  - yandex-509
-  - yandex-563
-  - yandex-508
-  - yandex-658
-  - yandex-655
-  - yandex-617
-  - yandex-615
   - yandex-654
+  - yandex-693
+  - yandex-598
+  - yandex-592
+  - yandex-590
+  - yandex-563
+  - yandex-567
+  - yandex-548
+  - yandex-544
+  - yandex-615
+  - yandex-559
+  - yandex-562
+  - yandex-549
+  - yandex-550
+  - yandex-547
+  - yandex-545
   - yandex-499
-  - yandex-627
-  - yandex-621
+  - yandex-576
+  - yandex-509
+  - yandex-604
   - yandex-622
-  - yandex-691
+  - yandex-621
   - yandex-602
-  - yandex-656
-  - yandex-495
-  - yandex-497
+  - yandex-627
+  - yandex-687
   - yandex-692
   - yandex-690
-  - yandex-578
+  - yandex-691
+  - yandex-495
   - yandex-689
+  - yandex-578
+  - yandex-508
+  - yandex-497
+  - yandex-665
   - yandex-491
+  - yandex-579
   - yandex-628
   - yandex-694
-  - yandex-579
-  - yandex-562
+  - yandex-510
   - yandex-640
-  - yandex-559
+  - yandex-617
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - yandex-664
-  - yandex-683
-  - yandex-687
-  - yandex-667
-  - yandex-678
-  - yandex-673
   - yandex-675
-  - yandex-666
+  - yandex-683
   - yandex-676
   - yandex-674
-  - yandex-665
+  - yandex-678
   - yandex-681
-  - yandex-604
+  - yandex-673
+  - yandex-664
+  - yandex-666
+  - yandex-667
+  - yandex-657
+  - yandex-656
+  - yandex-653
   - yandex-651
-  - yandex-576
+  - yandex-655
+  - yandex-658
   - yandex-587
   - yandex-586
-  - yandex-590
-  - yandex-585
-  - yandex-592
-  - yandex-598
   - yandex-594
-  - yandex-567
-  - yandex-653
-  - yandex-657
-  - yandex-693
-  - yandex-545
-  - yandex-548
-  - yandex-547
-  - yandex-550
-  - yandex-544
-  - yandex-549
-  - yandex-510
-  - yandex-509
-  - yandex-563
-  - yandex-508
-  - yandex-658
-  - yandex-655
-  - yandex-617
-  - yandex-615
   - yandex-654
+  - yandex-693
+  - yandex-598
+  - yandex-592
+  - yandex-590
+  - yandex-563
+  - yandex-567
+  - yandex-548
+  - yandex-544
+  - yandex-615
+  - yandex-559
+  - yandex-562
+  - yandex-549
+  - yandex-550
+  - yandex-547
+  - yandex-545
   - yandex-499
-  - yandex-627
-  - yandex-621
+  - yandex-576
+  - yandex-509
+  - yandex-604
   - yandex-622
-  - yandex-691
+  - yandex-621
   - yandex-602
-  - yandex-656
-  - yandex-495
-  - yandex-497
+  - yandex-627
+  - yandex-687
   - yandex-692
   - yandex-690
-  - yandex-578
+  - yandex-691
+  - yandex-495
   - yandex-689
+  - yandex-578
+  - yandex-508
+  - yandex-497
+  - yandex-665
   - yandex-491
+  - yandex-579
   - yandex-628
   - yandex-694
-  - yandex-579
-  - yandex-562
+  - yandex-510
   - yandex-640
-  - yandex-559
+  - yandex-617
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
