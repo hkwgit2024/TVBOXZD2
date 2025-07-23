@@ -36,12 +36,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install tqdm validators requests coverage
 
-    # 创建 ff 目录并移动测试文件
-    - name: Setup test directory
+    # 创建测试文件
+    - name: Setup test files
       run: |
+        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
         mkdir -p ff
-        mv main_script.py test_iptv_checker.py ff/
-        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
+        touch ff/config.json
 
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
