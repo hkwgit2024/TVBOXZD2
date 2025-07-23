@@ -12,3 +12,5 @@ clash_startup.log
 !data/
 !data/*.txt
 !data/*.csv
+!ff/iptv_checker.log
+!ff/iptv_checker.log
