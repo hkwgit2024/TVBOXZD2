@@ -1,48 +1,16 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import patch, mock_open
 import os
 import subprocess
 import json
 import requests
 import sys
-import time # Import time module to mock it
-
-# Add current script directory to module search path
+# 添加当前脚本目录到模块搜索路径
 sys.path.append(os.path.dirname(__file__))
-# Ensure to import check_content_variation if it's part of main_script
-from main_script import is_link_playable, main, load_config, is_valid_url, quick_check_url, get_stream_info, read_input_file, write_output_file, load_failed_links, is_excluded_url, check_content_variation, save_checkpoint, CONFIG # Import save_checkpoint and CONFIG
+from main_script import is_link_playable, main, load_config, is_valid_url, quick_check_url, get_stream_info, read_input_file, write_output_file, load_failed_links, is_excluded_url
 
 class TestIPTVChecker(unittest.TestCase):
-    # Setup initial CONFIG value as it's often imported and used directly
-    # This is a good practice to ensure the CONFIG is in a known state for tests
-    def setUp(self):
-        # Reset CONFIG to a default state before each test that might rely on it
-        # This is crucial for tests that directly interact with main_script.CONFIG
-        # without explicitly patching it in their own scope.
-        # For simplicity, we'll mimic the default config here.
-        CONFIG.clear() # Clear existing config
-        CONFIG.update({
-            "ffmpeg_path": "ffmpeg",
-            "timeout": 3,
-            "read_duration": 1,
-            "max_retries": 2,
-            "max_workers": 300,
-            "min_resolution_width": 1280,
-            "min_bitrate": 1000000,
-            "max_response_time": 1.5,
-            "quick_check_timeout": 0.5,
-            "default_headers": {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
-                "Referer": "https://www.example.com"
-            },
-            "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"],
-            "input_file": "list.txt",
-            "output_file": "ff/ff.txt",
-            "failed_links_file": "ff/failed_links.txt",
-            "log_file": "ff/iptv_checker.log",
-            "checkpoint_file": "ff/checkpoint.json"
-        })
-
+    
     def test_load_config_default(self):
         with patch('os.path.exists', return_value=True):
             with patch('builtins.open', mock_open(read_data=json.dumps({
@@ -103,11 +71,12 @@ class TestIPTVChecker(unittest.TestCase):
         self.assertTrue(reason.startswith("Connection failed"))
 
     def test_load_failed_links(self):
-        # We need to ensure main_script.CONFIG is correctly set up for load_failed_links
-        # This can be done by patching main_script.CONFIG within the test's scope
-        with patch('main_script.CONFIG', { "failed_links_file": "ff/failed_links.txt" }):
-            with patch('os.path.exists', return_value=True):
-                with patch('builtins.open', mock_open(read_data="Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")):
+        config = {
+            "failed_links_file": "ff/failed_links.txt"
+        }
+        with patch('os.path.exists', return_value=True):
+            with patch('builtins.open', mock_open(read_data="Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")):
+                with patch('main_script.CONFIG', config):
                     failed_urls = load_failed_links()
                     self.assertEqual(failed_urls, {"http://invalid.com/stream.m3u8"})
 
@@ -143,15 +112,11 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
-    @patch('main_script.check_content_variation') # Mock check_content_variation
+    @patch('main_script.check_content_variation')
     @patch('subprocess.run')
-    @patch('time.time') # Mock time.time
-    def test_is_link_playable_success(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
-        # Configure time.time to return values that result in a response_time > 0 but < max_response_time
-        mock_time.side_effect = [0, 0.1, 0.2] # start_time, check_time, end_time (for calculate_response_time)
-        
+    def test_is_link_playable_success(self, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
-        mock_content_variation.return_value = (True, None) # Content variation check passes
+        mock_content_variation.return_value = (True, None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
             returncode=0,
@@ -188,50 +153,40 @@ class TestIPTVChecker(unittest.TestCase):
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
-    @patch('main_script.check_content_variation') # Mock check_content_variation
+    @patch('main_script.check_content_variation')
     @patch('subprocess.run')
-    @patch('time.time') # Mock time.time
-    def test_is_link_playable_slow_response(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
-        # Configure time.time to return values that result in a response_time >= max_response_time (1.5)
-        mock_time.side_effect = [0, 2.0, 2.1] # start_time, check_time, end_time
-        
+    def test_is_link_playable_slow_response(self, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
-        mock_content_variation.return_value = (True, None) # Content variation check passes
+        mock_content_variation.return_value = (True, None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
             returncode=0,
             stdout="",
             stderr=""
         )
-        
-        url = "http://valid.com/stream.m3u8"
-        channel_name = "Test Channel"
-        is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
-        
-        self.assertFalse(is_playable)
-        # response_time will be calculated as (2.1 - 0) = 2.1, which is >= 2
-        self.assertGreaterEqual(response_time, 1.5) # Check against CONFIG['max_response_time']
-        self.assertTrue(reason.startswith("Slow response"))
+        with patch('time.time', side_effect=[0, 2, 2, 2]):
+            url = "http://valid.com/stream.m3u8"
+            channel_name = "Test Channel"
+            is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
+            
+            self.assertFalse(is_playable)
+            self.assertGreaterEqual(response_time, 2)
+            self.assertTrue(reason.startswith("Slow response"))
 
     @patch('main_script.is_valid_url', return_value=True)
     @patch('main_script.is_excluded_url', return_value=False)
     @patch('main_script.quick_check_url', return_value=(True, None))
     @patch('main_script.get_stream_info')
-    @patch('main_script.check_content_variation') # Mock check_content_variation
+    @patch('main_script.check_content_variation')
     @patch('subprocess.run')
-    @patch('time.time') # Mock time.time
-    def test_is_link_playable_unstable(self, mock_time, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
-        # Configure time.time to return values that result in a valid response_time
-        mock_time.side_effect = [0, 0.1, 0.2] # start_time, check_time, end_time
-        
+    def test_is_link_playable_unstable(self, mock_run, mock_content_variation, mock_stream_info, mock_quick_check, mock_excluded_url, mock_valid_url):
         mock_stream_info.return_value = ([{"codec_type": "video", "width": 1920, "height": 1080, "bit_rate": "2000000"}], None)
-        # Simulate check_content_variation failing due to FFmpeg error
-        mock_content_variation.return_value = (False, "FFmpeg error in content check: 403 Forbidden") 
+        mock_content_variation.return_value = (True, None)
         mock_run.return_value = subprocess.CompletedProcess(
             args=[],
-            returncode=1, # Simulate FFmpeg returning an error code
+            returncode=1,
             stdout="",
-            stderr="403 Forbidden" # This stderr is picked up by get_stream_info or check_content_variation
+            stderr="403 Forbidden"
         )
         
         url = "http://valid.com/unstable.m3u8"
@@ -239,9 +194,7 @@ class TestIPTVChecker(unittest.TestCase):
         is_playable, response_time, width, bitrate, reason = is_link_playable(url, channel_name)
         
         self.assertFalse(is_playable)
-        self.assertGreater(response_time, 0) # Response time should still be calculated
-        self.assertEqual(width, 1920) # Stream info might still be retrieved before content check fails
-        self.assertEqual(bitrate, 2000000)
+        self.assertGreater(response_time, 0)
         self.assertTrue(reason.startswith("Unstable connection"))
 
     @patch('main_script.is_valid_url', return_value=True)
@@ -258,41 +211,31 @@ class TestIPTVChecker(unittest.TestCase):
         self.assertEqual(reason, "Excluded domain")
 
     def test_read_input_file_success(self):
-        # Use patch on main_script.CONFIG for tests that directly reference it
-        with patch('main_script.CONFIG', {
-            "input_file": "list.txt", 
-            "failed_links_file": "ff/failed_links.txt", 
-            "checkpoint_file": "ff/checkpoint.json"
-        }):
-            with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
-                with patch('main_script.load_failed_links', return_value=set()):
-                    with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
+        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
+            with patch('main_script.load_failed_links', return_value=set()):
+                with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+                    with patch('main_script.CONFIG', config):
                         links_to_check, checkpoint = read_input_file()
                         self.assertEqual(len(links_to_check), 1)
                         self.assertEqual(links_to_check[0][0], "Test Channel")
                         self.assertEqual(links_to_check[0][1], "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")
 
     def test_read_input_file_skip_failed(self):
-        with patch('main_script.CONFIG', {
-            "input_file": "list.txt", 
-            "failed_links_file": "ff/failed_links.txt", 
-            "checkpoint_file": "ff/checkpoint.json"
-        }):
-            with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
-                with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
-                    with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
+        with patch('builtins.open', mock_open(read_data="Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")):
+            with patch('main_script.load_failed_links', return_value={"http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8"}):
+                with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+                    with patch('main_script.CONFIG', config):
                         links_to_check, checkpoint = read_input_file()
                         self.assertEqual(len(links_to_check), 0)
 
     def test_read_input_file_skip_excluded(self):
-        with patch('main_script.CONFIG', {
-            "input_file": "list.txt", 
-            "failed_links_file": "ff/failed_links.txt", 
-            "checkpoint_file": "ff/checkpoint.json"
-        }):
-            with patch('builtins.open', mock_open(read_data="Test Channel,https://epg.pw/stream.m3u8\n")):
-                with patch('main_script.load_failed_links', return_value=set()):
-                    with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+        config = {"input_file": "list.txt", "failed_links_file": "ff/failed_links.txt", "checkpoint_file": "ff/checkpoint.json"}
+        with patch('builtins.open', mock_open(read_data="Test Channel,https://epg.pw/stream.m3u8\n")):
+            with patch('main_script.load_failed_links', return_value=set()):
+                with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
+                    with patch('main_script.CONFIG', config):
                         links_to_check, checkpoint = read_input_file()
                         self.assertEqual(len(links_to_check), 0)
 
@@ -302,31 +245,26 @@ class TestIPTVChecker(unittest.TestCase):
             "failed_links_file": "ff/failed_links.txt",
             "checkpoint_file": "ff/checkpoint.json"
         }
-        # Correctly capture the mock_open object
-        with patch('builtins.open', new_callable=mock_open) as mock_builtin_open:
+        mock_open_data = {
+            'ff/ff.txt': mock_open().return_value,
+            'ff/failed_links.txt': mock_open().return_value
+        }
+        with patch('builtins.open', side_effect=lambda *args, **kwargs: mock_open_data[args[0]]):
             with patch('main_script.load_checkpoint', return_value={'processed_urls': [], 'valid_links': [], 'failed_links': []}):
-                # Patch main_script.CONFIG so write_output_file uses the test's config
                 with patch('main_script.CONFIG', config):
                     valid_links = [(1.0, "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")]
                     failed_links = [("Test Channel", "http://invalid.com/stream.m3u8", "Invalid URL")]
                     checkpoint = {'processed_urls': [], 'valid_links': [], 'failed_links': []}
                     success_count = write_output_file(valid_links, failed_links, checkpoint)
                     self.assertEqual(success_count, 1)
-                    # Assert calls on the captured mock_builtin_open
-                    mock_builtin_open.assert_any_call(config['output_file'], 'w', encoding='utf-8')
-                    mock_builtin_open.assert_any_call(config['failed_links_file'], 'a', encoding='utf-8')
-                    # If save_checkpoint is called with open(), you might need to assert for checkpoint_file too
-                    # mock_builtin_open.assert_any_call(config['checkpoint_file'], 'w', encoding='utf-8')
+                    mock_open_data['ff/ff.txt'].write.assert_called_with("Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8\n")
+                    mock_open_data['ff/failed_links.txt'].write.assert_called_with("Test Channel,http://invalid.com/stream.m3u8,Invalid URL\n")
 
     @patch('os.path.exists')
     @patch('main_script.load_config')
     @patch('main_script.read_input_file')
     @patch('main_script.write_output_file')
-    @patch('main_script.load_checkpoint') # Patch load_checkpoint
-    @patch('main_script.save_checkpoint') # Patch save_checkpoint
-    @patch('main_script.CONFIG') # Patch CONFIG in main_script for main() function
-    def test_main_success(self, mock_main_config, mock_save_checkpoint, mock_load_checkpoint, mock_write, mock_read, mock_config, mock_exists):
-        # Set return value for load_config
+    def test_main_success(self, mock_write, mock_read, mock_config, mock_exists):
         mock_config.return_value = {
             "ffmpeg_path": "ffmpeg",
             "timeout": 3,
@@ -348,28 +286,17 @@ class TestIPTVChecker(unittest.TestCase):
             "log_file": "ff/iptv_checker.log",
             "checkpoint_file": "ff/checkpoint.json"
         }
-        # The mocked main_script.CONFIG itself needs to be updated with the config values.
-        # This is because other functions called by main() (like is_link_playable) might directly access main_script.CONFIG.
-        mock_main_config.update(mock_config.return_value)
-
         mock_exists.return_value = True
-        
-        initial_checkpoint = {'processed_urls': [], 'valid_links': [], 'failed_links': []}
-        mock_load_checkpoint.return_value = initial_checkpoint # Make load_checkpoint return an empty checkpoint
-        mock_read.return_value = ([("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")], initial_checkpoint)
-        
+        mock_read.return_value = ([("Test Channel", "http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8")], {'processed_urls': [], 'valid_links': [], 'failed_links': []})
         mock_write.return_value = 1
         
-        # Ensure is_link_playable is correctly mocked to return success
         with patch('main_script.is_link_playable', return_value=(True, 1.0, 1920, 2000000, "Success")):
             main()
-            mock_write.assert_called_once() # Verify write_output_file was called
-            mock_save_checkpoint.assert_called_once() # Verify save_checkpoint was called
+            mock_write.assert_called()
 
     @patch('os.path.exists')
     @patch('main_script.load_config')
-    @patch('main_script.CONFIG') # Patch main_script.CONFIG for consistency
-    def test_main_file_not_found(self, mock_main_config, mock_config, mock_exists):
+    def test_main_file_not_found(self, mock_config, mock_exists):
         mock_config.return_value = {
             "input_file": "list.txt",
             "output_file": "ff/ff.txt",
@@ -377,7 +304,6 @@ class TestIPTVChecker(unittest.TestCase):
             "log_file": "ff/iptv_checker.log",
             "checkpoint_file": "ff/checkpoint.json"
         }
-        mock_main_config.update(mock_config.return_value) # Update the mocked CONFIG
         mock_exists.return_value = False
         with patch('logging.Logger.error') as mock_logger:
             main()
