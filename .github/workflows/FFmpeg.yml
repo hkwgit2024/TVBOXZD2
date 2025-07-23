@@ -39,9 +39,8 @@ jobs:
     # 创建测试文件
     - name: Setup test files
       run: |
-        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
         mkdir -p ff
-        touch ff/config.json
+        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
 
     # 运行单元测试并生成覆盖率报告
     - name: Run tests
