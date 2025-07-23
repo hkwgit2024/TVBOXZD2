@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: qjlxg/vt
-          fetch-depth: 1
+          fetch-depth: 0 # 将 fetch-depth 设置为 0，以获取完整的历史记录，方便 git pull
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # 设置 Python 环境
@@ -101,6 +101,8 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          # 在推送之前，先拉取远程的最新更改并合并
+          git pull --rebase origin main # 使用 rebase 避免不必要的合并提交
           git add ff/ff.txt ff/failed_links.txt ff/iptv_checker.log ff/checkpoint.json
           git commit -m "Update generated IPTV files [skip ci]"
           git push
