@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
     - uses: actions/checkout@v4
@@ -19,13 +19,9 @@ jobs:
       with:
         python-version: '3.10'
 
-    # 定义 FFmpeg 的安装路径，用于缓存
-    # 对于 apt-get 安装，FFmpeg 会安装到系统路径，但为了缓存，我们可以缓存 apt 的缓存目录
-    # 或者更通用地，如果未来你通过下载二进制包安装，可以缓存解压后的目录
     - name: Define FFmpeg cache path
       id: ffmpeg_cache_path
       run: |
-        # 对于 apt-get 安装，我们缓存 apt 的包缓存，这样下次安装时就不用重新下载 deb 包了
         echo "FFMPEG_CACHE_DIR=/var/cache/apt/archives" >> $GITHUB_OUTPUT
       shell: bash
 
@@ -34,12 +30,11 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ${{ steps.ffmpeg_cache_path.outputs.FFMPEG_CACHE_DIR }}
-        key: ${{ runner.os }}-ffmpeg-apt-v1-${{ hashFiles('**/Dockerfile', '**/requirements.txt') }} # 添加文件哈希作为缓存键的一部分，确保依赖变化时缓存失效
+        key: ${{ runner.os }}-ffmpeg-apt-v1-${{ hashFiles('**/Dockerfile', '**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-ffmpeg-apt-v1-
 
     - name: Install FFmpeg
-      # 只有当缓存未命中时才执行安装，否则 apt-get update/install 也会很快，因为它会使用本地缓存的包
       run: |
         echo "Installing FFmpeg..."
         sudo apt-get update
@@ -58,21 +53,36 @@ jobs:
       shell: bash
 
     - name: Setup test files
+      working-directory: ${{ github.workspace }}
       run: |
         mkdir -p ff
         echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
-        # 注意：config.json 中的 "ffmpeg_path": "ffmpeg" 保持不变，因为 apt 安装后 ffmpeg 会在 PATH 中
-        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 1280, "min_bitrate": 1000000, "max_response_time": 1.5, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
+        echo "CCTV1,https://cdn5.132.us.kg/live/cctv1/stream.m3u8" >> list.txt
+        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 2, "max_retries": 2, "max_workers": 300, "min_resolution_width": 640, "min_bitrate": 500000, "max_response_time": 3, "quick_check_timeout": 1, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": [], "input_file": "list.txt", "output_file": "ff/ff.txt", "failed_links_file": "ff/failed_links.txt", "log_file": "ff/iptv_checker.log", "checkpoint_file": "ff/checkpoint.json"}' > ff/config.json
+      shell: bash
+
+    - name: Verify setup files
+      run: |
+        ls -la
+        ls -la ff/
+        cat ff/config.json
+      shell: bash
+
+    - name: Test sample links
+      run: |
+        curl -I http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8
+        curl -I https://cdn5.132.us.kg/live/cctv1/stream.m3u8
       shell: bash
 
     - name: Run tests and main script
       run: |
         python -m coverage run -m unittest ff/test_iptv_checker.py -v
         python -m coverage report
-        python ff/main_script.py
+        python ff/main_script.py --verbose
       shell: bash
 
     - name: Upload artifacts
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-results
@@ -82,3 +92,4 @@ jobs:
           ff/failed_links.txt
           ff/iptv_checker.log
           ff/checkpoint.json
+          *.log
