@@ -9,44 +9,38 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # 30分钟超时
+    timeout-minutes: 30
 
     steps:
-    # 检出代码
     - uses: actions/checkout@v4
 
-    # 设置 Python 环境
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
 
-    # 安装 FFmpeg
     - name: Install FFmpeg
       run: |
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    # 安装 Python 依赖
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install tqdm validators requests coverage
 
-    # 创建测试文件
     - name: Setup test files
       run: |
         mkdir -p ff
-        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > ff/list.txt
+        echo "Test Channel,http://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc/master.m3u8" > list.txt
+        echo '{"ffmpeg_path": "ffmpeg", "timeout": 3, "read_duration": 10, "max_retries": 2, "max_workers": 50, "min_resolution_width": 1280, "min_bitrate": 1000000, "max_response_time": 1.5, "quick_check_timeout": 2, "default_headers": {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36", "Referer": "https://www.example.com"}, "exclude_domains": ["epg.pw", "ali-m-l.cztv.com"]}' > ff/config.json
 
-    # 运行测试和主脚本
     - name: Run tests and main script
       run: |
         python -m coverage run -m unittest ff/test_iptv_checker.py -v
         python -m coverage report
         python ff/main_script.py
 
-    # 上传覆盖率报告和输出文件
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -57,7 +51,6 @@ jobs:
           ff/failed_links.txt
           ff/iptv_checker.log
 
-    # 记录运行时间
     - name: Log test duration
       run: |
         echo "Test duration: $(date -u -d "$(date -u) - $(date -u -r ff/.coverage)" +%H:%M:%S)"
