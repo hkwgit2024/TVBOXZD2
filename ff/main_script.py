@@ -279,8 +279,8 @@ def write_output_file(output_file, valid_links, failed_links):
     return success_count
 
 def main():
-    input_file = 'list.txt'
-    output_file = 'ff.txt'
+    input_file = '../list.txt'  # 根目录
+    output_file = 'ff.txt'      # ff 目录
     start_time = time.time()
     
     if not os.path.exists(input_file):
