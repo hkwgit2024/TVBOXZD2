@@ -5,38 +5,54 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 设置超时时间（秒）
-TIMEOUT = 10
+TIMEOUT = 5
 # 设置读取数据的时间（秒），用于模拟播放
-READ_DURATION = 5
+READ_DURATION = 2
+# 最大重试次数
+MAX_RETRIES = 2
 
 def is_link_playable(url, channel_name):
     """
-    检查链接是否可播放。
-    通过尝试连接并读取数据来判断。
+    检查链接是否可播放，并返回响应时间。
+    通过尝试连接并读取数据来判断，检查 MIME 类型以确保是视频流。
     """
-    try:
-        print(f"Checking {channel_name}: {url}")
-        with requests.get(url, stream=True, timeout=TIMEOUT) as r:
-            r.raise_for_status()  # 检查HTTP状态码
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+    valid_types = ['video/mp4', 'application/x-mpegurl', 'application/vnd.apple.mpegurl', 'video/']
+    
+    for attempt in range(MAX_RETRIES):
+        try:
             start_time = time.time()
-            bytes_read = 0
-            # 尝试读取数据，模拟播放
-            for chunk in r.iter_content(chunk_size=8192):
-                if time.time() - start_time > READ_DURATION:
-                    break
-                bytes_read += len(chunk)
-            if bytes_read > 0:
-                print(f"Successfully connected to {channel_name}: {url} (read {bytes_read} bytes)")
-                return True
-            else:
-                print(f"Failed to read data from {channel_name}: {url}")
-                return False
-    except requests.exceptions.RequestException as e:
-        print(f"Error checking {channel_name}: {url} - {e}")
-        return False
-    except Exception as e:
-        print(f"An unexpected error occurred for {channel_name}: {url} - {e}")
-        return False
+            print(f"Checking {channel_name}: {url} (Attempt {attempt + 1}/{MAX_RETRIES})")
+            with requests.get(url, stream=True, timeout=TIMEOUT, headers=headers) as r:
+                r.raise_for_status()  # 检查HTTP状态码
+                # 检查 Content-Type
+                content_type = r.headers.get('Content-Type', '').lower()
+                if not any(vt in content_type for vt in valid_types):
+                    print(f"Invalid content type for {channel_name}: {url} - {content_type}")
+                    return False, time.time() - start_time
+                bytes_read = 0
+                # 尝试读取数据，模拟播放
+                for chunk in r.iter_content(chunk_size=8192):
+                    if time.time() - start_time > READ_DURATION:
+                        break
+                    bytes_read += len(chunk)
+                response_time = time.time() - start_time
+                if bytes_read > 0:
+                    print(f"Successfully connected to {channel_name}: {url} (read {bytes_read} bytes, took {response_time:.2f}s)")
+                    return True, response_time
+                else:
+                    print(f"Failed to read data from {channel_name}: {url}")
+                    return False, response_time
+        except requests.exceptions.RequestException as e:
+            response_time = time.time() - start_time
+            print(f"Error checking {channel_name}: {url} - {e}")
+            if attempt == MAX_RETRIES - 1:
+                return False, response_time
+            time.sleep(1)  # 等待 1 秒后重试
+        except Exception as e:
+            response_time = time.time() - start_time
+            print(f"An unexpected error occurred for {channel_name}: {url} - {e}")
+            return False, response_time
 
 def main():
     input_file = 'iptv_list.txt'
@@ -46,51 +62,66 @@ def main():
         print(f"Error: {input_file} not found.")
         return
 
-    playable_links = set()
+    # 存储按 genre 分组的可用链接
+    genre_groups = {}
+    current_genre = None
     links_to_check = []
 
-    # 读取iptv_list.txt文件
+    # 读取 iptv_list.txt 文件
     with open(input_file, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip()
-            if not line or line.startswith('#'):  # 跳过空行和注释行
+            if not line:  # 跳过空行
                 continue
-            
+            if line.endswith(',#genre#'):
+                current_genre = line
+                genre_groups[current_genre] = []
+                continue
+            if current_genre is None:
+                continue  # 忽略没有 genre 的行
             # 使用正则表达式匹配频道名和链接
             match = re.match(r'^(.*?),(http[s]?://.*)$', line)
             if match:
                 channel_name = match.group(1).strip()
                 url = match.group(2).strip()
-                links_to_check.append((channel_name, url))
+                links_to_check.append((current_genre, channel_name, url))
             else:
                 print(f"Skipping malformed line: {line}")
 
     if not links_to_check:
         print("No links found in iptv_list.txt to check.")
         with open(output_file, 'w', encoding='utf-8') as f:
-            f.write("") # 清空list.txt
+            f.write("")  # 清空 list.txt
         return
 
     # 使用线程池并发检查链接
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_link = {executor.submit(is_link_playable, url, channel): (channel, url) for channel, url in links_to_check}
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        future_to_link = {executor.submit(is_link_playable, url, channel): (genre, channel, url) for genre, channel, url in links_to_check}
         for future in as_completed(future_to_link):
-            channel_name, url = future_to_link[future]
+            genre, channel_name, url = future_to_link[future]
             try:
-                if future.result():
-                    playable_links.add(f"{channel_name},{url}")
+                is_playable, response_time = future.result()
+                if is_playable:
+                    genre_groups.setdefault(genre, []).append((response_time, f"{channel_name},{url}"))
             except Exception as exc:
                 print(f'{channel_name}: {url} generated an exception: {exc}')
 
-    # 将去重后的可用链接写入list.txt
+    # 按响应时间排序并写入 list.txt
     with open(output_file, 'w', encoding='utf-8') as f:
-        if playable_links:
-            for link_entry in sorted(list(playable_links)):
-                f.write(link_entry + '\n')
-            print(f"Successfully wrote {len(playable_links)} playable links to {output_file}")
+        total_links = 0
+        for genre in genre_groups:
+            links = genre_groups[genre]
+            if links:  # 只有当该 genre 下有可用链接时才写入 genre 标记
+                f.write(genre + '\n')
+                # 按响应时间升序排序
+                for _, link_entry in sorted(links, key=lambda x: x[0]):
+                    f.write(link_entry + '\n')
+                    total_links += 1
+        if total_links > 0:
+            print(f"Successfully wrote {total_links} playable links to {output_file}, sorted by response time")
         else:
             print(f"No playable links found. {output_file} will be empty.")
-            f.write("") # 确保文件被清空
+            f.write("")  # 确保文件被清空
 
 if __name__ == '__main__':
     main()
