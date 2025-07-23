@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
-        logging.FileHandler('iptv_checker.log'),
+        logging.FileHandler(os.path.join('ff', 'iptv_checker.log')),
         logging.StreamHandler()
     ]
 )
@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 
 # 加载配置文件
 def load_config():
-    config_path = 'config.json'
+    config_path = os.path.join('ff', 'config.json')
     default_config = {
         "ffmpeg_path": "ffmpeg",
-        "timeout": 3,
+        "timeout": 5,  # 增加超时时间
         "read_duration": 1,
         "max_retries": 2,
         "max_workers": min(max(4, os.cpu_count() or 8), 50),
@@ -78,7 +78,7 @@ def quick_check_url(url):
 
 def load_failed_links():
     """加载已保存的失败链接"""
-    failed_path = 'failed_links.txt'
+    failed_path = os.path.join('ff', 'failed_links.txt')
     failed_urls = set()
     if os.path.exists(failed_path):
         try:
@@ -101,8 +101,8 @@ def get_stream_info(url):
         "-show_streams",
         "-print_format", "json",
         "-loglevel", "error",
-        "-probesize", "250000",
-        "-analyzeduration", "250000"
+        "-probesize", "500000",  # 增加探测大小
+        "-analyzeduration", "500000"
     ]
     try:
         result = subprocess.run(
@@ -177,8 +177,8 @@ def is_link_playable(url, channel_name):
                 "-t", str(READ_DURATION),
                 "-c:v", "copy",
                 "-c:a", "copy",
-                "-probesize", "250000",
-                "-analyzeduration", "250000",
+                "-probesize", "500000",  # 增加探测大小
+                "-analyzeduration", "500000",
                 "-f", "null", "-",
                 "-loglevel", "error"
             ]
@@ -229,7 +229,7 @@ def is_link_playable(url, channel_name):
 
 def read_input_file(input_file):
     """读取输入文件并解析链接"""
-    input_path = input_file
+    input_path = os.path.join('ff', input_file)
     links_to_check = []
     failed_urls = load_failed_links()
     
@@ -256,8 +256,8 @@ def read_input_file(input_file):
 
 def write_output_file(output_file, valid_links, failed_links):
     """写入输出文件和失败链接文件"""
-    output_path = output_file
-    failed_path = 'failed_links.txt'
+    output_path = os.path.join('ff', output_file)
+    failed_path = os.path.join('ff', 'failed_links.txt')
     success_count = 0
     
     try:
@@ -270,14 +270,8 @@ def write_output_file(output_file, valid_links, failed_links):
         return 0
 
     try:
-        with open(failed_path, 'a', encoding='utf-8') as f:
-            for failed_entry in failed_links:
-                # 处理 failed_entry 为二元组或三元组
-                if len(failed_entry) == 3:
-                    channel_name, url, reason = failed_entry
-                else:
-                    channel_name_url, reason = failed_entry
-                    channel_name, url = channel_name_url.split(',', 1)
+        with open(failed_path, 'a', encoding='utf-8') as f:  # 追加模式
+            for channel_name, url, reason in failed_links:
                 f.write(f"{channel_name},{url},{reason}\n")
     except Exception as e:
         logger.error(f"Failed to write {failed_path}: {e}")
@@ -285,12 +279,13 @@ def write_output_file(output_file, valid_links, failed_links):
     return success_count
 
 def main():
-    input_file = '../list.txt'
+    input_file = 'list.txt'
     output_file = 'ff.txt'
     start_time = time.time()
     
-    if not os.path.exists(input_file):
-        logger.error(f"Input file {input_file} not found.")
+    input_path = os.path.join('ff', input_file)
+    if not os.path.exists(input_path):
+        logger.error(f"Input file {input_path} not found.")
         return
 
     links_to_check = read_input_file(input_file)
@@ -298,8 +293,8 @@ def main():
         return
 
     if not links_to_check:
-        logger.warning(f"No links to check in {input_file}. Clearing {output_file}.")
-        with open(output_file, 'w', encoding='utf-8') as f:
+        logger.warning(f"No links to check in {input_path}. Clearing {output_file}.")
+        with open(os.path.join('ff', output_file), 'w', encoding='utf-8') as f:
             f.write("")
         return
 
