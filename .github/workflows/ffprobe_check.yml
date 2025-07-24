@@ -30,7 +30,7 @@ jobs:
         pip install tqdm aiohttp aiohttp-socks
         
     - name: Run FFprobe Checker
-      run: python ffprobe_checker.py
+      run: python ffprobe_checker.py --timeout 10 --http-timeout 3 --workers 100 --retries 2 --batch-size 1000 --verbose
 
     - name: Commit changes to ff.txt and failed_links.txt
       uses: stefanzweifel/git-auto-commit-action@v5
