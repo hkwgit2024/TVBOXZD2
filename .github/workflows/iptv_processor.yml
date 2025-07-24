@@ -27,7 +27,7 @@ jobs:
 
       - name: 安装 Python 依赖
         run: |
-          pip install requests
+          pip install requests tqdm
 
       - name: 确保 output 目录存在
         run: |
