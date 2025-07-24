@@ -1,12 +1,12 @@
 {
     "ffmpeg_path": "ffprobe",
-    "timeout": 10,
-    "read_duration": 2,
+    "timeout": 20,
+    "read_duration": 5,
     "max_retries": 2,
     "max_workers": 300,
     "min_resolution_width": 540,
-    "min_bitrate": 300000,
-    "max_response_time": 1.5,
+    "min_bitrate": 0,
+    "max_response_time": 10,
     "quick_check_timeout": 1,
     "default_headers": {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
