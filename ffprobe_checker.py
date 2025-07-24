@@ -6,7 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 可以根据你的GitHub Actions runner的CPU核心数和网络带宽调整
 # 对于I/O密集型任务，线程数可以适当调高
-MAX_WORKERS = 10 # 假设同时进行20个并发连接，可以根据实际情况调整
+MAX_WORKERS = 5 # 假设同时进行20个并发连接，可以根据实际情况调整
 
 def check_stream(url, timeout_seconds=3):
     """
