@@ -1,7 +1,7 @@
 {
     "ffmpeg_path": "ffprobe",
-    "timeout": 20,
-    "read_duration": 5,
+    "timeout": 30,
+    "read_duration": 10,
     "max_retries": 2,
     "max_workers": 300,
     "min_resolution_width": 540,
