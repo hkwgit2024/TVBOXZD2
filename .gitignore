@@ -12,5 +12,4 @@ clash_startup.log
 !data/
 !data/*.txt
 !data/*.csv
-!ff/iptv_checker.log
-!ff/iptv_checker.log
+output/invalid_iptv_sources.log
