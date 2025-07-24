@@ -79,7 +79,7 @@ jobs:
           git pull origin main --rebase
           git push origin main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT }}
 
       - name: 发送运行结果通知
         if: always()
