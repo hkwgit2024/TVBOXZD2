@@ -6,9 +6,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 可以根据你的GitHub Actions runner的CPU核心数和网络带宽调整
 # 对于I/O密集型任务，线程数可以适当调高
-MAX_WORKERS = 20 # 假设同时进行20个并发连接，可以根据实际情况调整
+MAX_WORKERS = 10 # 假设同时进行20个并发连接，可以根据实际情况调整
 
-def check_stream(url, timeout_seconds=5):
+def check_stream(url, timeout_seconds=3):
     """
     使用 ffprobe 检查流的有效性。
     timeout_seconds: ffprobe 超时时间，单位秒。
@@ -19,7 +19,7 @@ def check_stream(url, timeout_seconds=5):
     try:
         command = [
             'ffprobe',
-            '-v', 'quiet', # 保持安静模式，只在出错时输出
+            '-v', 'error', # 保持安静模式，只在出错时输出 quiet
             '-print_format', 'json',
             '-show_streams',
             '-show_format',
