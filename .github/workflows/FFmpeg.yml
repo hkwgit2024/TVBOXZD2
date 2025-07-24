@@ -101,10 +101,12 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          # 在推送之前，先拉取远程的最新更改并合并
-          git pull --rebase origin main # 使用 rebase 避免不必要的合并提交
+          # 先添加并提交生成的文件
           git add ff/ff.txt ff/failed_links.txt ff/iptv_checker.log ff/checkpoint.json
-          git commit -m "Update generated IPTV files [skip ci]"
+          git commit -m "Update generated IPTV files [skip ci]" || echo "No changes to commit, skipping commit step."
+          # 然后拉取远程的最新更改并合并，将新提交放在最上面
+          git pull --rebase origin main
+          # 最后推送更改
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
