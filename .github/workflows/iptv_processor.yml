@@ -38,7 +38,7 @@ jobs:
           # === 修改开始：现在从 secrets 中获取完整的 URL ===
           PRIVATE_REMOTE_URLS_TXT_BASE_URL: ${{ secrets.PRIVATE_REMOTE_URLS_TXT_URL }}
           # === 修改结束 ===
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 保持不变，这是内置的 Secret
+          GITHUB_TOKEN: ${{ secrets.BOT }} # 保持不变，这是内置的 Secret
         run: python output/iptv_processor.py
 
       - name: 保存生成的文件
