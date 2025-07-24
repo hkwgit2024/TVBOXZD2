@@ -1,131 +1,323 @@
-import requests
-import json
 import os
-import hashlib
-import logging
 import re
+import requests
+import logging
+import json
+import hashlib
 from datetime import datetime, timedelta
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib.parse import urlparse, urljoin
 from tqdm import tqdm
-import time
 
-# 配置日志
+# --- 配置 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# --- 配置项 ---
-# URL 列表文件的路径 (包含要处理的远程 M3U/M3U8 源文件的 URL)
-REMOTE_URLS_FILE = "output/urls.txt"
-# 处理状态文件，用于记录每个源 URL 的最新处理时间和内容哈希
-URL_PROCESSING_STATE_FILE = "url_processing_state.json"
-# 最大并发线程数
-MAX_WORKERS = 50 # 建议根据网络和服务器负载调整，过高可能导致被封或超时
-# 单个节目源文件最大允许下载大小 (10MB)
-MAX_SOURCE_FILE_SIZE_BYTES = 10 * 1024 * 1024
-# 检查节目源有效性的超时时间 (秒)
-STREAM_CHECK_TIMEOUT = 10
-# 强制重新检查源 URL 的天数 (即使内容未变)
+# 从环境变量获取敏感信息和关键路径
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+PRIVATE_REMOTE_URLS_TXT_BASE_URL = os.getenv('PRIVATE_REMOTE_URLS_TXT_BASE_URL')
+
+OUTPUT_DIR = "output"
+LOCAL_URLS_FILE = os.path.join(OUTPUT_DIR, "urls.txt") # 本地保存的urls.txt，会被工作流提交
+PROCESSING_STATE_FILE = os.path.join(OUTPUT_DIR, "url_processing_state.json") # 保存处理状态（哈希和时间戳）
+VALID_SOURCE_URLS_FILE = os.path.join(OUTPUT_DIR, "valid_source_urls.txt") # 可访问且可能是节目源的URL
+FINAL_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "final_iptv_sources.txt") # 最终去重后的节目源列表
+VALID_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "valid_iptv_sources.txt") # 通过测试的节目源
+INVALID_IPTV_SOURCES_LOG = os.path.join(OUTPUT_DIR, "invalid_iptv_sources.log") # 不可用节目源日志
+
+# 并发数配置
+MAX_WORKERS = 100 # 提高并发数以加快处理速度，可以根据实际效果调整
+
+# 如果某个源链接内容连续多少天没有变化，则重新检查（强制刷新机制）
 FORCE_RECHECK_DAYS = 7
-# 过滤掉提取节目源数量低于此阈值的源
-MIN_EXTRACTED_STREAMS_PER_SOURCE = 1
+
+# 单个源文件内容下载的最大大小（字节），防止下载超大文件导致内存溢出和时间过长
+MAX_SOURCE_FILE_SIZE_BYTES = 10 * 1024 * 1024 # 10 MB
+
+# 正则表达式：用于从文本中提取实际的节目源URL
+URL_EXTRACTION_REGEX = re.compile(
+    r'https?://[^\s"<>\'\\]+\.(?:m3u8|m3u|ts|mp4|flv|webm|avi|mkv|mov|wmv|mpg|mpeg|3gp|mov|vob|ogg|ogv|ogx|amv|rm|rmvb|asf|divx|xvid|f4v|vob|flac|aac|mp3|wav|ogg|wma|pls|asx|wax|wvx|ram|sdp|smi|smil)(?:[?#][^\s"<>\'\\]*)?'
+    r'|https?://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?(?:/[^\s"<>\'\\]*)?' # IP地址
+    r'|https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?::\d+)?(?:/[^\s"<>\'\\]*)?', # 域名
+    re.IGNORECASE
+)
+
+# 用于解析M3U8/M3U播放列表中的分片URL (改进：支持相对路径)
+M3U8_SEGMENT_REGEX = re.compile(
+    r'^(?!#).*?\.(?:ts|m3u8|m3u|mp4)(?:[?#][^\s"<>\'\\]*)?$', re.IGNORECASE
+)
 
 # --- 辅助函数 ---
 
-def get_remote_urls(file_path):
-    """从文件中读取远程 URL 列表。"""
-    if not os.path.exists(file_path):
+def read_file_lines(file_path):
+    """读取文件内容并按行返回列表，处理文件不存在的情况"""
+    try:
+        if not os.path.exists(file_path):
+            logging.warning(f"文件不存在: {file_path}，将创建空文件。")
+            return []
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = [line.strip() for line in f if line.strip()]
+            logging.info(f"成功从 {file_path} 读取 {len(lines)} 行。")
+            return lines
+    except Exception as e:
+        logging.error(f"读取文件失败 {file_path}: {e}")
         return []
-    with open(file_path, 'r', encoding='utf-8') as f:
-        urls = [line.strip() for line in f if line.strip() and not line.startswith('#')]
-    return urls
 
-def load_processing_state(file_path):
-    """加载之前保存的 URL 处理状态。"""
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            logging.warning(f"无法解析 {file_path}，将创建一个新的状态文件。")
-    return {}
+def write_file_lines(file_path, lines, chunk_size=100000):
+    """
+    将列表内容写入文件，每行一个元素，支持分块写入，添加时间和分组
+    """
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        unique_lines = list(set(lines))  # 先去重，转换为列表以便分块
+        total_lines = len(unique_lines)
+        logging.info(f"开始写入 {total_lines} 个唯一行到 {file_path}，使用分块大小 {chunk_size}。")
 
-def get_url_content_hash(url):
-    """获取 URL 内容的 MD5 哈希值，用于检测内容是否变化。"""
+        with open(file_path, 'w', encoding='utf-8') as f:
+            # 写入头部（仅对 valid_iptv_sources.txt 添加更新时间和 #genre#）
+            if file_path == VALID_IPTV_SOURCES_FILE:
+                update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                f.write(f"更新时间,#genre#\n{update_time},url\n")
+            for i in range(0, total_lines, chunk_size):
+                chunk = unique_lines[i:i + chunk_size]
+                if file_path == VALID_IPTV_SOURCES_FILE:
+                    # 格式：频道名,URL
+                    f.writelines(f"{name},{url}\n" for url, name, _ in chunk)
+                else:
+                    # 其他文件保持原格式
+                    f.writelines(f"{line}\n" for line in chunk)
+        logging.info(f"成功写入 {total_lines} 个唯一行到 {file_path}")
+    except Exception as e:
+        logging.error(f"写入文件失败 {file_path}: {e}")
+        raise
+
+def log_invalid_url(file_path, url, error_message):
+    """记录不可用的URL及其错误信息到日志文件"""
+    try:
+        with open(file_path, 'a', encoding='utf-8') as f:
+            f.write(f"{datetime.now().isoformat()} - {url}: {error_message}\n")
+    except Exception as e:
+        logging.error(f"写入不可用URL日志失败 {file_path}: {e}")
+
+def clear_log_file(file_path):
+    """清空日志文件"""
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w', encoding='utf-8'):
+            pass
+        logging.info(f"已清空日志文件 {file_path}")
+    except Exception as e:
+        logging.error(f"清空日志文件失败 {file_path}: {e}")
+
+def load_json_state(file_path):
+    """加载 JSON 状态文件"""
+    try:
+        if not os.path.exists(file_path):
+            logging.info(f"状态文件不存在: {file_path}，将创建空状态。")
+            return {}
+        with open(file_path, 'r', encoding='utf-8') as f:
+            state = json.load(f)
+            logging.info(f"成功加载状态文件 {file_path}。")
+            return state
+    except json.JSONDecodeError as e:
+        logging.error(f"解析 JSON 状态文件失败 {file_path}: {e}。文件可能损坏或为空，将返回空状态。")
+        return {}
+    except Exception as e:
+        logging.error(f"加载 JSON 状态文件失败 {file_path}: {e}")
+        return {}
+
+def save_json_state(file_path, state):
+    """保存 JSON 状态文件"""
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(state, f, indent=4)
+        logging.info(f"成功保存状态到 {file_path}")
+    except Exception as e:
+        logging.error(f"保存 JSON 状态文件失败 {file_path}: {e}")
+        raise
+
+def fetch_remote_urls_txt(url, token):
+    """从私有GitHub raw链接下载urls.txt内容"""
+    headers = {
+        'Authorization': f'token {token}',
+        'Accept': 'application/vnd.github.com.v3.raw',
+        'User-Agent': 'GitHubActions-IPTV-Processor'
+    }
+    try:
+        logging.info(f"正在下载远程 {url}")
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        lines = [line.strip() for line in response.text.splitlines() if line.strip()]
+        logging.info(f"成功下载 {len(lines)} 行远程 urls.txt。")
+        return lines
+    except requests.exceptions.RequestException as e:
+        logging.error(f"下载远程urls.txt失败 {url}: {e}")
+        return []
+
+def check_url_accessibility_and_format(url):
+    """
+    检查URL是否可访问且可能是节目源（基于扩展名或Content-Type）。
+    返回 (url, is_valid, error_message)：
+    - is_valid: True 表示可访问且可能是节目源，False 表示不可用或非节目源
+    - error_message: 如果不可用，返回错误原因
+    """
     try:
         response = requests.head(url, timeout=5, allow_redirects=True)
         response.raise_for_status()
-        # 尝试获取 ETag 或 Last-Modified 作为哈希的替代
-        etag = response.headers.get('ETag')
-        last_modified = response.headers.get('Last-Modified')
-        if etag:
-            return etag
-        elif last_modified:
-            return hashlib.md5(last_modified.encode('utf-8')).hexdigest()
-        else:
-            # 如果没有 ETag 或 Last-Modified，进行小部分内容下载哈希
-            # 注意：这可能会稍微增加请求时间
+        content_type = response.headers.get('Content-Type', '').lower()
+
+        valid_extensions = ['.m3u8', '.m3u', '.ts', '.mp4', '.flv', '.webm', '.avi', '.mkv', '.mov', '.wmv', '.mpg', '.mpeg', '.3gp', '.vob', '.ogg', '.ogv', '.ogx', '.amv', '.rm', '.rmvb', '.asf', '.divx', '.xvid', '.f4v', '.vob', '.flac', '.aac', '.mp3', '.wav', '.pls', '.asx', '.wax', '.wvx', '.ram', '.sdp', '.smi', '.smil']
+        valid_content_types = [
+            'application/vnd.apple.mpegurl', 'application/x-mpegurl',
+            'video/', 'audio/',
+            'application/octet-stream'
+        ]
+
+        url_lower = url.lower()
+        is_potential_stream = any(ext in url_lower for ext in valid_extensions) or \
+                             any(ct in content_type for ct in valid_content_types)
+
+        if not is_potential_stream:
+            return url, False, f"非节目源URL（Content-Type: {content_type} 或扩展名不匹配）"
+
+        return url, True, ""
+    except requests.exceptions.Timeout:
+        return url, False, "请求超时"
+    except requests.exceptions.HTTPError as e:
+        return url, False, f"HTTP错误: {e.response.status_code}"
+    except requests.exceptions.RequestException as e:
+        return url, False, f"请求错误: {str(e)}"
+    except Exception as e:
+        return url, False, f"未知错误: {str(e)}"
+
+def get_url_content_hash(url):
+    """获取URL内容的MD5哈希值，用于判断内容是否变化"""
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return hashlib.md5(response.content).hexdigest()
+    except requests.exceptions.RequestException as e:
+        logging.warning(f"获取URL内容哈希失败 {url}: {e}")
+        return None
+
+def extract_stream_urls_from_content(content):
+    """从文本内容中提取潜在的节目源URL，包含频道名和分组"""
+    urls_with_metadata = []
+    lines = content.splitlines()
+    current_channel_name = "Unknown"
+    current_group = "Uncategorized"
+
+    for i, line in enumerate(lines):
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith('#EXTINF'):
+            try:
+                tvg_name_match = re.search(r'tvg-name="([^"]*)"', line, re.IGNORECASE)
+                group_title_match = re.search(r'group-title="([^"]*)"', line, re.IGNORECASE)
+                display_name = line.split(',', 1)[1] if ',' in line else "Unknown"
+                current_channel_name = tvg_name_match.group(1) if tvg_name_match else display_name
+                current_group = group_title_match.group(1) if group_title_match else "Uncategorized"
+            except Exception as e:
+                logging.warning(f"解析 #EXTINF 失败: {line}, 错误: {e}")
+                current_channel_name = "Unknown"
+                current_group = "Uncategorized"
+        elif URL_EXTRACTION_REGEX.match(line):
+            urls_with_metadata.append((line, current_channel_name, current_group))
+
+    logging.info(f"提取到 {len(urls_with_metadata)} 个节目源，包含频道名和分组")
+    return urls_with_metadata
+
+def test_stream_url(url):
+    """
+    测试单个节目源URL是否可访问和可播放，包含复杂流验证。
+    返回 (url, is_valid, error_message)：
+    - is_valid: True 表示可播放，False 表示不可用
+    - error_message: 如果不可用，返回错误原因
+    """
+    try:
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        response.raise_for_status()
+        content_type = response.headers.get('Content-Type', '').lower()
+        content_length = int(response.headers.get('Content-Length', 0))
+
+        valid_stream_content_types = [
+            'application/vnd.apple.mpegurl', 'application/x-mpegurl',
+            'video/', 'audio/',
+            'application/octet-stream'
+        ]
+
+        is_m3u = 'm3u8' in url.lower() or 'm3u' in url.lower() or any(ct in content_type for ct in ['application/vnd.apple.mpegurl', 'application/x-mpegurl'])
+        
+        if is_m3u:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            segment_urls = [line.strip() for line in lines if M3U8_SEGMENT_REGEX.match(line)]
+            
+            if not segment_urls:
+                return url, False, "M3U8/M3U 播放列表为空或无有效分片"
+
+            from random import choice
+            segment_relative_url = choice(segment_urls)
+            segment_full_url = urljoin(url, segment_relative_url)
+
+            segment_response = requests.head(segment_full_url, timeout=5, allow_redirects=True)
+            segment_response.raise_for_status()
+            segment_content_type = segment_response.headers.get('Content-Type', '').lower()
+            
+            if not any(ct in segment_content_type for ct in valid_stream_content_types):
+                return url, False, f"M3U8/M3U 分片 Content-Type 无效: {segment_content_type}"
+            
+            return url, True, ""
+
+        if content_length < 100 and content_length != 0:
+             return url, False, f"Content-Length 过小: {content_length}字节"
+
+        is_direct_stream = any(ct in content_type for ct in valid_stream_content_types)
+        
+        if is_direct_stream:
             response = requests.get(url, stream=True, timeout=5)
             response.raise_for_status()
-            first_chunk = next(response.iter_content(chunk_size=1024), b'')
-            return hashlib.md5(first_chunk).hexdigest()
-    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
-        logging.debug(f"获取 {url} 的内容哈希失败: {e}")
+            
+            chunk = next(response.iter_content(chunk_size=2048), b'')
+            response.close()
+
+            if not chunk:
+                return url, False, "空响应内容或无法读取数据"
+
+            if 'video/mp2t' in content_type or url.lower().endswith('.ts'):
+                if not chunk.startswith(b'\x47'):
+                    return url, False, "TS 文件头无效（缺少同步字节）"
+            elif 'video/mp4' in content_type or url.lower().endswith('.mp4'):
+                if b'ftyp' not in chunk[:20]:
+                    return url, False, "MP4 文件头无效（缺少 'ftyp' 标识）"
+            elif 'audio/mpeg' in content_type or url.lower().endswith('.mp3'):
+                if not (chunk.startswith(b'ID3') or (chunk[0] == 0xFF and chunk[1] in [0xFB, 0xF3, 0xF2, 0xFA, 0xF2])):
+                    return url, False, "MP3 文件头无效"
+
+            return url, True, ""
+        
+        return url, False, f"Content-Type 不支持或无法识别为节目源: {content_type}"
+
+    except requests.exceptions.Timeout:
+        return url, False, "请求超时"
+    except requests.exceptions.HTTPError as e:
+        return url, False, f"HTTP错误: {e.response.status_code}"
+    except requests.exceptions.ConnectionError as e:
+        return url, False, f"连接错误: {str(e)}"
+    except requests.exceptions.RequestException as e:
+        return url, False, f"请求错误: {str(e)}"
     except Exception as e:
-        logging.error(f"获取 {url} 的内容哈希时发生未知错误: {e}")
-    return None
+        return url, False, f"未知错误: {str(e)}"
 
-# --- 修改：extract_stream_urls_from_content 函数 ---
-def extract_stream_urls_from_content(content):
-    """
-    从 M3U/M3U8 内容中提取节目源 URL、频道名称和分组。
-    返回一个 (url, channel_name, group) 元组的列表。
-    """
-    extracted_streams = []
-    lines = content.splitlines()
-    
-    current_channel_name = "未知频道"
-    current_group = "其他"
-
-    # 正则表达式来匹配 EXTINF 标签和属性
-    extinf_pattern = re.compile(r'#EXTINF:.*?(?:tvg-name="([^"]*)")?.*?(?:group-title="([^"]*)")?,(.*)')
-
-    for i in range(len(lines)):
-        line = lines[i].strip()
-        if line.startswith('#EXTINF:'):
-            match = extinf_pattern.match(line)
-            if match:
-                tvg_name = match.group(1) # tvg-name 属性
-                group_title = match.group(2) # group-title 属性
-                display_name = match.group(3) # 逗号后的显示名称
-
-                current_channel_name = tvg_name if tvg_name else display_name if display_name else "未知频道"
-                current_group = group_title if group_title else "其他"
-                
-                # 清理显示名称，去除可能的额外空格或回车
-                current_channel_name = current_channel_name.strip()
-                current_group = current_group.strip()
-
-            # 查找下一个非空且不是 EXTINF 的行作为 URL
-            next_line_index = i + 1
-            while next_line_index < len(lines):
-                stream_url_line = lines[next_line_index].strip()
-                if stream_url_line and not stream_url_line.startswith('#'):
-                    # 确保是有效的 URL 格式，以 http 或 https 开头
-                    if stream_url_line.startswith('http://') or stream_url_line.startswith('https://'):
-                        extracted_streams.append((stream_url_line, current_channel_name, current_group))
-                    else:
-                        logging.debug(f"跳过非HTTP(S)格式的URL: {stream_url_line}")
-                    break # 找到 URL 后跳出内层循环
-                next_line_index += 1
-    
-    return extracted_streams
-
-# --- 修改：process_single_source_url 函数 ---
 def process_single_source_url(source_url, processing_state):
     """
-    处理单个节目源 URL，提取其中的节目源信息。
-    返回一个 (url, name, group) 元组的列表。
+    处理单个源URL：检查内容是否变化，提取节目源。
+    返回提取到的节目源列表和更新后的状态信息。
     """
-    extracted_streams_with_info = [] # 存储 (url, name, group) 元组
+    extracted_urls = []
     current_time_str = datetime.now().isoformat()
     last_processed_info = processing_state.get(source_url, {})
     
@@ -136,7 +328,7 @@ def process_single_source_url(source_url, processing_state):
             force_reprocess_by_time = True
             logging.info(f"源URL {source_url} 超过 {FORCE_RECHECK_DAYS} 天未更新，强制重新处理")
 
-    current_content_hash = get_url_content_hash(source_url) 
+    current_content_hash = get_url_content_hash(source_url)
     
     if current_content_hash and \
        current_content_hash == last_processed_info.get("content_hash") and \
@@ -146,49 +338,26 @@ def process_single_source_url(source_url, processing_state):
             "last_processed": current_time_str,
             "content_hash": current_content_hash
         }
-        return extracted_streams_with_info, source_url # 返回空列表，因为没有新提取
+        return extracted_urls, source_url
     
-    # 提取节目源
     try:
         logging.info(f"正在提取 {source_url} 中的节目源...")
         content_bytes = b""
         total_downloaded = 0
-
-        # 在实际下载前，尝试通过HEAD请求检查Content-Length
-        try:
-            head_response = requests.head(source_url, timeout=5, allow_redirects=True)
-            head_response.raise_for_status()
-            content_length_header = head_response.headers.get('Content-Length')
-            if content_length_header:
-                estimated_size = int(content_length_header)
-                if estimated_size > MAX_SOURCE_FILE_SIZE_BYTES:
-                    logging.warning(f"源文件 {source_url} (估计大小: {estimated_size / (1024 * 1024):.2f}MB) 超过最大允许大小 {MAX_SOURCE_FILE_SIZE_BYTES / (1024 * 1024):.1f}MB，直接跳过。")
-                    raise ValueError("文件过大，已中止下载（预检）")
-        except (requests.exceptions.Timeout, requests.exceptions.HTTPError, requests.exceptions.RequestException, ValueError) as e:
-            logging.warning(f"预检源文件 {source_url} 失败或过大: {e}")
-            if isinstance(e, ValueError) and "文件过大" in str(e):
-                processing_state[source_url] = { 
-                    "last_processed": current_time_str,
-                    "content_hash": last_processed_info.get("content_hash")
-                }
-                return extracted_streams_with_info, source_url
-
-        # 使用 stream=True 和 iter_content 来处理大文件和超时
+        
         with requests.get(source_url, stream=True, timeout=15) as response:
-            response.raise_for_status() # 检查HTTP错误
-
-            for chunk in response.iter_content(chunk_size=8192): # 每次读取8KB
+            response.raise_for_status()
+            for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     content_bytes += chunk
                     total_downloaded += len(chunk)
                     if total_downloaded > MAX_SOURCE_FILE_SIZE_BYTES:
-                        logging.warning(f"源文件 {source_url} 实际下载大小超过最大允许大小 {MAX_SOURCE_FILE_SIZE_BYTES / (1024 * 1024):.1f}MB，中止下载。")
-                        break # 超过大小限制，停止下载
+                        logging.warning(f"源文件 {source_url} 超过最大允许大小 {MAX_SOURCE_FILE_SIZE_BYTES / (1024 * 1024):.1f}MB，中止下载。")
+                        break
 
         if total_downloaded > MAX_SOURCE_FILE_SIZE_BYTES:
             raise ValueError(f"文件过大，已中止下载 (> {MAX_SOURCE_FILE_SIZE_BYTES / (1024 * 1024):.1f}MB)")
 
-        # 尝试解码内容
         try:
             content = content_bytes.decode('utf-8')
         except UnicodeDecodeError:
@@ -198,20 +367,15 @@ def process_single_source_url(source_url, processing_state):
             except Exception:
                 raise ValueError("无法解码源文件内容为文本。")
 
-        extracted_streams_with_info = extract_stream_urls_from_content(content) # 调用更新后的函数
-        
-        if len(extracted_streams_with_info) < MIN_EXTRACTED_STREAMS_PER_SOURCE:
-            logging.info(f"从 {source_url} 提取到 {len(extracted_streams_with_info)} 个节目源，小于阈值 {MIN_EXTRACTED_STREAMS_PER_SOURCE}，将排除此源的所有节目源。")
-            extracted_streams_with_info = []
-        else:
-            logging.info(f"从 {source_url} 提取到 {len(extracted_streams_with_info)} 个节目源 (大小: {total_downloaded / (1024 * 1024):.2f}MB)。")
+        extracted_urls = extract_stream_urls_from_content(content)
+        logging.info(f"从 {source_url} 提取到 {len(extracted_urls)} 个节目源 (大小: {total_downloaded / (1024 * 1024):.2f}MB)。")
 
         final_content_hash = hashlib.md5(content_bytes).hexdigest() if content_bytes else None
         processing_state[source_url] = {
             "last_processed": current_time_str,
             "content_hash": final_content_hash if final_content_hash else last_processed_info.get("content_hash")
         }
-        return extracted_streams_with_info, source_url
+        return extracted_urls, source_url
     
     except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.HTTPError, ValueError) as e:
         logging.warning(f"提取源URL失败 {source_url}: {e}。将保留旧状态或更新为当前时间戳。")
@@ -225,143 +389,99 @@ def process_single_source_url(source_url, processing_state):
             "last_processed": current_time_str,
             "content_hash": last_processed_info.get("content_hash")
         }
-    return extracted_streams_with_info, source_url
+    return extracted_urls, source_url
 
-
-def check_stream_validity(stream_info_tuple, balance_requests=False):
-    """
-    检查单个节目源 (url, channel_name, group) 的有效性。
-    返回 (stream_info_tuple, is_valid)
-    """
-    url, channel_name, group = stream_info_tuple
-    try:
-        # 只检查头部，避免下载整个流
-        response = requests.head(url, timeout=STREAM_CHECK_TIMEOUT, allow_redirects=True)
-        response.raise_for_status() # 检查 HTTP 状态码
-        # 进一步检查内容类型，确保是视频流
-        content_type = response.headers.get('Content-Type', '').lower()
-        if 'video' in content_type or 'audio' in content_type or 'mpegurl' in content_type or 'vnd.apple.mpegurl' in content_type:
-            logging.debug(f"检查通过: {url} (类型: {content_type})")
-            return stream_info_tuple, True
-        else:
-            logging.debug(f"检查失败 (内容类型不符): {url} (类型: {content_type})")
-            return stream_info_tuple, False
-    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError, requests.exceptions.HTTPError) as e:
-        logging.debug(f"检查失败 (请求错误): {url} - {e}")
-        return stream_info_tuple, False
-    except Exception as e:
-        logging.error(f"检查 {url} 时发生未知错误: {e}")
-        return stream_info_tuple, False
-    finally:
-        if balance_requests:
-            time.sleep(0.1) # 短暂延迟，用于负载均衡
-
-# --- 修改：main 函数 ---
 def main():
-    logging.info("IPTV 节目源处理脚本开始运行...")
+    if not GITHUB_TOKEN:
+        logging.error("错误：环境变量 'GITHUB_TOKEN' 未设置。请确保已配置。")
+        exit(1)
+    if not PRIVATE_REMOTE_URLS_TXT_BASE_URL:
+        logging.error("错误：环境变量 'PRIVATE_REMOTE_URLS_TXT_BASE_URL' 未设置。请确保已配置。")
+        exit(1)
 
-    # 确保 output 目录存在
-    output_dir = "output"
-    os.makedirs(output_dir, exist_ok=True)
+    logging.info("--- IPTV 节目源处理脚本开始运行 ---")
 
-    # 从环境变量中获取远程 URL，如果没有则使用本地文件
-    remote_urls_txt_base_url = os.environ.get('PRIVATE_REMOTE_URLS_TXT_BASE_URL')
-    
-    if remote_urls_txt_base_url:
-        logging.info(f"正在从环境变量中的 URL 获取远程 URL 列表: {remote_urls_txt_base_url}")
-        try:
-            response = requests.get(remote_urls_txt_base_url, timeout=10)
-            response.raise_for_status()
-            remote_urls_content = response.text
-            url_list = [line.strip() for line in remote_urls_content.splitlines() if line.strip() and not line.startswith('#')]
-            logging.info(f"成功从远程 URL 获取到 {len(url_list)} 个源。")
-        except Exception as e:
-            logging.error(f"从远程 URL 获取 URL 列表失败: {e}。将尝试从本地文件加载。")
-            url_list = get_remote_urls(REMOTE_URLS_FILE) # 降级到本地文件
-    else:
-        logging.info("未配置 PRIVATE_REMOTE_URLS_TXT_BASE_URL，将从本地文件加载 URL 列表。")
-        url_list = get_remote_urls(REMOTE_URLS_FILE)
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    if not url_list:
-        logging.warning("没有找到任何节目源 URL，脚本终止。")
+    local_source_urls_set = set(read_file_lines(LOCAL_URLS_FILE))
+    processing_state = load_json_state(PROCESSING_STATE_FILE)
+    logging.info(f"本地 urls.txt 包含 {len(local_source_urls_set)} 个源URL。")
+
+    remote_source_urls = fetch_remote_urls_txt(PRIVATE_REMOTE_URLS_TXT_BASE_URL, GITHUB_TOKEN)
+    remote_source_urls_set = set(remote_source_urls)
+    all_source_urls_set = local_source_urls_set | remote_source_urls_set
+    logging.info(f"合并本地和远程源后，共有 {len(all_source_urls_set)} 个唯一源URL。")
+
+    write_file_lines(LOCAL_URLS_FILE, list(all_source_urls_set))
+
+    logging.info("--- 检查源URL可访问性和格式 ---")
+    valid_source_urls = []
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future_to_url = {executor.submit(check_url_accessibility_and_format, url): url for url in tqdm(all_source_urls_set, desc="检查源URL") if url}
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                _, is_valid, error_message = future.result()
+                if is_valid:
+                    valid_source_urls.append(url)
+                else:
+                    logging.debug(f"源URL不可用或非节目源: {url} ({error_message})")
+            except Exception as exc:
+                logging.error(f"检查源URL {url} 时发生异常: {exc}")
+
+    logging.info(f"筛选出 {len(valid_source_urls)} 个可访问且可能是节目源的URL。")
+    write_file_lines(VALID_SOURCE_URLS_FILE, valid_source_urls)
+
+    logging.info("--- 提取节目源 ---")
+    all_extracted_stream_urls = set()
+    updated_processing_state = {}
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        future_to_url = {executor.submit(process_single_source_url, url, processing_state): url for url in tqdm(valid_source_urls, desc="提取节目源") if url}
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                extracted_streams, updated_url_key = future.result()
+                all_extracted_stream_urls.update(extracted_streams)
+                updated_processing_state[updated_url_key] = processing_state.get(updated_url_key, {})
+            except Exception as exc:
+                logging.error(f"提取节目源 {url} 时发生异常: {exc}")
+                updated_processing_state[url] = processing_state.get(url, {})
+
+    for url, state_info in processing_state.items():
+        if url not in updated_processing_state and url in all_source_urls_set:
+            updated_processing_state[url] = state_info
+
+    logging.info(f"提取到 {len(all_extracted_stream_urls)} 个去重后的节目源。")
+    save_json_state(PROCESSING_STATE_FILE, updated_processing_state)
+    write_file_lines(FINAL_IPTV_SOURCES_FILE, [(url, name, group) for url, name, group in all_extracted_stream_urls])
+
+    logging.info("--- 测试节目源可播放性 ---")
+    stream_urls_with_metadata = all_extracted_stream_urls
+    if not stream_urls_with_metadata:
+        logging.warning("没有可供测试的节目源，跳过测试步骤。")
+        logging.info("--- 脚本运行完成 ---")
         return
 
-    # 加载现有状态
-    url_processing_state = load_processing_state(os.path.join(output_dir, URL_PROCESSING_STATE_FILE))
-
-    # 使用线程池处理每个源 URL
-    # results 现在包含 (extracted_streams_with_info_list, source_url)
-    all_extracted_stream_info = [] # 存储所有提取到的 (url, name, group) 元组
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        for extracted_streams_list, source_url in tqdm(executor.map(lambda url: process_single_source_url(url, url_processing_state), url_list), total=len(url_list), desc="处理节目源URL"):
-            all_extracted_stream_info.extend(extracted_streams_list)
-
-    # 对提取到的节目源进行去重 (根据 URL 去重，保留第一个出现的名称和分组)
-    unique_streams_map = {} # {url: (url, name, group)}
-    for stream_info in all_extracted_stream_info:
-        url = stream_info[0]
-        if url not in unique_streams_map:
-            unique_streams_map[url] = stream_info
+    valid_stream_urls = []
+    clear_log_file(INVALID_IPTV_SOURCES_LOG)
     
-    unique_extracted_stream_info = list(unique_streams_map.values())
-
-    logging.info(f"共从所有源中提取到 {len(unique_extracted_stream_info)} 个唯一的节目源。")
-
-    # 进行有效性检查
-    valid_streams = [] # 存储 (url, name, group) 元组
-    invalid_urls = set() # 仅存储无效的 URL
-    
-    balance_requests = True 
-
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        # map函数返回的顺序与输入顺序一致
-        check_results = list(tqdm(executor.map(lambda info: check_stream_validity(info, balance_requests), unique_extracted_stream_info), total=len(unique_extracted_stream_info), desc="检查节目源有效性"))
+        future_to_url = {executor.submit(test_stream_url, url): (url, name, group) for url, name, group in tqdm(stream_urls_with_metadata, desc="测试节目源") if url}
+        for future in as_completed(future_to_url):
+            url, name, group = future_to_url[future]
+            try:
+                _, is_valid, error_message = future.result()
+                if is_valid:
+                    valid_stream_urls.append((url, name, group))
+                else:
+                    log_invalid_url(INVALID_IPTV_SOURCES_LOG, url, error_message)
+            except Exception as exc:
+                log_invalid_url(INVALID_IPTV_SOURCES_LOG, url, f"测试异常: {str(exc)}")
 
-    for stream_info_tuple, is_valid in check_results:
-        if is_valid:
-            valid_streams.append(stream_info_tuple)
-        else:
-            invalid_urls.add(stream_info_tuple[0]) # 只记录 URL 到无效列表
+    logging.info(f"测试完成，{len(valid_stream_urls)}/{len(stream_urls_with_metadata)} 个节目源通过验证。")
+    write_file_lines(VALID_IPTV_SOURCES_FILE, valid_stream_urls)
 
-    logging.info(f"有效节目源数量: {len(valid_streams)}")
-    logging.info(f"无效节目源数量: {len(invalid_urls)}")
-
-    # 保存有效节目源列表为 M3U 格式
-    final_output_path = os.path.join(output_dir, "final_iptv_sources.m3u")
-    with open(final_output_path, 'w', encoding='utf-8') as f:
-        f.write("#EXTM3U\n") # M3U 文件头
-        
-        # 按照分组和频道名称排序，使得列表更整洁
-        # sorted_valid_streams = sorted(valid_streams, key=lambda x: (x[2], x[1])) # 按分组和频道名排序
-        # 更好的排序方式：先按分组，再按频道名，最后按URL（如果名称相同）
-        sorted_valid_streams = sorted(valid_streams, key=lambda x: (x[2] if x[2] else '', x[1] if x[1] else '', x[0]))
-
-        current_group_title = None
-        for url, channel_name, group_title in sorted_valid_streams:
-            # 添加分组标题行
-            if group_title and group_title != current_group_title:
-                f.write(f'#EXTGRP:{group_title}\n')
-                current_group_title = group_title
-
-            # 写入 EXTINF 行
-            f.write(f'#EXTINF:-1 tvg-name="{channel_name}" group-title="{group_title}",{channel_name}\n')
-            # 写入 URL 行
-            f.write(f'{url}\n')
-    logging.info(f"有效节目源已保存到: {final_output_path}")
-
-    # 保存无效节目源列表 (只包含 URL)
-    invalid_output_path = os.path.join(output_dir, "invalid_iptv_sources.log")
-    with open(invalid_output_path, 'w', encoding='utf-8') as f:
-        for url in sorted(list(invalid_urls)):
-            f.write(f"{url}\n")
-    logging.info(f"无效节目源已保存到: {invalid_output_path}")
-
-    # 保存 URL 处理状态
-    with open(os.path.join(output_dir, URL_PROCESSING_STATE_FILE), 'w', encoding='utf-8') as f:
-        json.dump(url_processing_state, f, ensure_ascii=False, indent=4)
-    logging.info(f"URL 处理状态已保存到: {URL_PROCESSING_STATE_FILE}")
-
-    logging.info("IPTV 节目源处理脚本运行完成。")
+    logging.info("--- 脚本运行完成 ---")
 
 if __name__ == "__main__":
     main()
