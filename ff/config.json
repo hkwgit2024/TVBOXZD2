@@ -4,8 +4,8 @@
     "read_duration": 2,
     "max_retries": 2,
     "max_workers": 300,
-    "min_resolution_width": 720,
-    "min_bitrate": 500000,
+    "min_resolution_width": 540,
+    "min_bitrate": 300000,
     "max_response_time": 1.5,
     "quick_check_timeout": 1,
     "default_headers": {
