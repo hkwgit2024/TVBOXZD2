@@ -188,10 +188,6 @@ def check_url_accessibility_and_format(url):
 
 def get_url_content_hash(url):
     """获取URL内容的MD5哈希值，用于判断内容是否变化"""
-    # Using stream=True to prevent full download for large files,
-    # though content hash implies full content.
-    # We still rely on requests.get which eventually reads all content for hashing.
-    # The MAX_SOURCE_FILE_SIZE_BYTES will effectively limit this.
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -203,6 +199,106 @@ def get_url_content_hash(url):
 def extract_stream_urls_from_content(content):
     """从文本内容中提取潜在的节目源URL"""
     return list(set(URL_EXTRACTION_REGEX.findall(content)))
+
+def test_stream_url(url):
+    """
+    测试单个节目源URL是否可访问和可播放，包含复杂流验证。
+    返回 (url, is_valid, error_message)：
+    - is_valid: True 表示可播放，False 表示不可用
+    - error_message: 如果不可用，返回错误原因
+    """
+    try:
+        # 1. 使用 HEAD 请求快速检查可访问性
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        response.raise_for_status()
+        content_type = response.headers.get('Content-Type', '').lower()
+        content_length = int(response.headers.get('Content-Length', 0))
+
+        # 支持的流媒体 Content-Type，更全面
+        valid_stream_content_types = [
+            'application/vnd.apple.mpegurl', 'application/x-mpegurl', # M3U8
+            'video/', 'audio/', # 广泛匹配所有视频和音频类型
+            'application/octet-stream' # 有些服务器对流文件会返回这个
+        ]
+
+        # 2. 检查是否为 M3U8/M3U 播放列表
+        is_m3u = 'm3u8' in url.lower() or 'm3u' in url.lower() or any(ct in content_type for ct in ['application/vnd.apple.mpegurl', 'application/x-mpegurl'])
+        
+        if is_m3u:
+            # 对于 M3U8/M3U，需要获取实际内容来解析分片
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            content = response.text
+            lines = content.splitlines()
+            segment_urls = [line.strip() for line in lines if M3U8_SEGMENT_REGEX.match(line)]
+            
+            if not segment_urls:
+                return url, False, "M3U8/M3U 播放列表为空或无有效分片"
+
+            from random import choice
+            segment_relative_url = choice(segment_urls)
+            # 构建完整的分片URL，处理相对路径
+            segment_full_url = urljoin(url, segment_relative_url)
+
+            # 再次使用 HEAD 请求测试一个分片
+            segment_response = requests.head(segment_full_url, timeout=5, allow_redirects=True)
+            segment_response.raise_for_status()
+            segment_content_type = segment_response.headers.get('Content-Type', '').lower()
+            
+            if not any(ct in segment_content_type for ct in valid_stream_content_types):
+                return url, False, f"M3U8/M3U 分片 Content-Type 无效: {segment_content_type}"
+            
+            return url, True, ""
+
+        # 3. 对于非 M3U8/M3U 的直接流（如 TS、MP4），进行初步内容校验
+        # 检查 Content-Length 是否过小，通常有效的流文件不会是0字节
+        if content_length < 100 and content_length != 0: # 允许Content-Length为0但后面可以获取到数据的情况
+             return url, False, f"Content-Length 过小: {content_length}字节"
+
+        # 检查 Content-Type 是否为已知的流媒体类型
+        is_direct_stream = any(ct in content_type for ct in valid_stream_content_types)
+        
+        if is_direct_stream:
+            # 对于直接流，尝试下载少量数据进行文件头校验
+            # 使用 stream=True 和 iter_content 避免下载整个文件
+            response = requests.get(url, stream=True, timeout=5)
+            response.raise_for_status()
+            
+            # 获取少量数据块 (例如 2KB)
+            chunk = next(response.iter_content(chunk_size=2048), b'')
+            response.close() # 及时关闭连接，释放资源
+
+            if not chunk:
+                return url, False, "空响应内容或无法读取数据"
+
+            # 简单的文件头校验，提高准确性
+            if 'video/mp2t' in content_type or url.lower().endswith('.ts'):
+                if not chunk.startswith(b'\x47'): # TS 文件的同步字节
+                    return url, False, "TS 文件头无效（缺少同步字节）"
+            elif 'video/mp4' in content_type or url.lower().endswith('.mp4'):
+                # MP4 文件的主要结构是 box，通常以 ftyp 开头
+                if b'ftyp' not in chunk[:20]: # 检查前20字节内是否有 'ftyp'
+                    return url, False, "MP4 文件头无效（缺少 'ftyp' 标识）"
+            elif 'audio/mpeg' in content_type or url.lower().endswith('.mp3'):
+                # 简单的MP3文件头校验 (ID3v2或MPEG帧头)
+                if not (chunk.startswith(b'ID3') or (chunk[0] == 0xFF and chunk[1] in [0xFB, 0xF3, 0xF2, 0xFA, 0xF2])):
+                    return url, False, "MP3 文件头无效"
+            # 可以添加更多文件类型的校验
+
+            return url, True, ""
+        
+        return url, False, f"Content-Type 不支持或无法识别为节目源: {content_type}"
+
+    except requests.exceptions.Timeout:
+        return url, False, "请求超时"
+    except requests.exceptions.HTTPError as e:
+        return url, False, f"HTTP错误: {e.response.status_code}"
+    except requests.exceptions.ConnectionError as e:
+        return url, False, f"连接错误: {str(e)}"
+    except requests.exceptions.RequestException as e:
+        return url, False, f"请求错误: {str(e)}"
+    except Exception as e:
+        return url, False, f"未知错误: {str(e)}"
 
 # --- 修改后的 process_single_source_url 函数 ---
 def process_single_source_url(source_url, processing_state):
@@ -303,7 +399,7 @@ def process_single_source_url(source_url, processing_state):
         }
     return extracted_urls, source_url
 
-# --- 主逻辑（保持不变） ---
+# --- 主逻辑 ---
 def main():
     if not GITHUB_TOKEN:
         logging.error("错误：环境变量 'GITHUB_TOKEN' 未设置。请确保已配置。")
