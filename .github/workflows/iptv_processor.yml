@@ -1,35 +1,33 @@
 name: IPTV Source Processor
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间 0:00 运行一次，您可以根据需要调整
+    - cron: '0 0 * * *'
 
 jobs:
   process_sources:
     runs-on: ubuntu-latest
-    timeout-minutes: 360 # 6小时超时，为大量URL处理留足时间
+    timeout-minutes: 360
     permissions:
-      contents: write # 授予写入权限，用于提交和推送更改
+      contents: write
 
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 获取完整提交历史，以便进行文件比较和提交
-          # 使用此工作流仓库的 GITHUB_TOKEN 进行检出，与访问私有源仓库无关
-          # 如果您的 secrets.BOT 也能用于检出，也可以改为 token: ${{ secrets.BOT }}
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }} 
 
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9' # 建议使用稳定版本，如3.9或3.10
-          cache: 'pip' # 缓存 pip 依赖
+          python-version: '3.9'
+          cache: 'pip'
 
       - name: 安装 Python 依赖
         run: |
-          pip install requests # requests 库是必须的
+          pip install requests
 
       - name: 确保 output 目录存在
         run: |
@@ -37,11 +35,7 @@ jobs:
 
       - name: 运行 IPTV 节目源处理脚本
         env:
-          # IMPORTANT: PRIVATE_REMOTE_URLS_TXT_URL Secret 应该只包含基础 URL，不带 ?token=
-          # 例如：https://raw.githubusercontent.com/qjlxg/362/main/config/urls.txt
           PRIVATE_REMOTE_URLS_TXT_BASE_URL: ${{ secrets.PRIVATE_REMOTE_URLS_TXT_URL }}
-          # 这个 GITHUB_TOKEN 环境变量将从您的 secrets.BOT 中获取值
-          # 确保您的 secrets.BOT 包含一个具有访问 qjlxg/362 仓库权限的 PAT
           GITHUB_TOKEN: ${{ secrets.BOT }} 
         run: python output/iptv_processor.py
 
@@ -52,16 +46,17 @@ jobs:
           path: |
             output/urls.txt
             output/url_processing_state.json
-            output/final_iptv_sources.txt
-            output/iptv_processor.py # 确保脚本本身也被视为输出文件之一，如果它在 output 目录中
+            output/final_iptv_sources.txt # 仍然作为 Artifact 上传
+            output/iptv_processor.py
           retention-days: 7
           if-no-files-found: warn
 
       - name: 检查文件更改
         id: check_changes
         run: |
-          # 检查 output 目录下的所有相关文件
-          git add output/urls.txt output/url_processing_state.json output/final_iptv_sources.txt output/iptv_processor.py
+          # === 关键修改：从 git add 命令中移除 output/final_iptv_sources.txt ===
+          git add output/urls.txt output/url_processing_state.json output/iptv_processor.py
+          # ====================================================================
           if git diff --staged --quiet; then
             echo "没有文件更改"
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -81,12 +76,10 @@ jobs:
       - name: 推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git pull origin main --rebase # 先拉取最新代码并rebase，避免冲突
+          git pull origin main --rebase
           git push origin main
         env:
-          # === 关键修改：推送时也使用 secrets.BOT ===
           GITHUB_TOKEN: ${{ secrets.BOT }} 
-          # === 修改结束 ===
 
       - name: 发送运行结果通知
         if: always()
