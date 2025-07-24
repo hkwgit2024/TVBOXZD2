@@ -29,35 +29,36 @@ jobs:
         run: |
           pip install requests # requests 库是必须的
 
-      - name: 创建输出目录
+      - name: 确保 output 目录存在并包含脚本 (如果尚未包含)
+        # 这个步骤是为了确保当您把 iptv_processor.py 移入 output/ 后，工作流能正常找到它
+        # 脚本内部已经会创建 output 目录
         run: |
-          mkdir -p output # 确保 output 目录存在，以便脚本保存文件
+          mkdir -p output 
 
       - name: 运行 IPTV 节目源处理脚本
         env:
           PRIVATE_REMOTE_URLS_TXT_BASE_URL: "https://raw.githubusercontent.com/qjlxg/362/main/config/urls.txt"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python iptv_processor.py # 运行您的新脚本
+        # === 修改开始：脚本路径指向 output 目录 ===
+        run: python output/iptv_processor.py # 脚本现在位于 output/ 目录下
+        # === 修改结束 ===
 
       - name: 保存生成的文件
         uses: actions/upload-artifact@v4
         with:
           name: iptv-processing-results
-          # === 修改开始：artifacts 的 path 指向 output 目录 ===
           path: |
             output/urls.txt
             output/url_processing_state.json
             output/final_iptv_sources.txt
-          # === 修改结束 ===
+            output/iptv_processor.py # 包含脚本自身，如果它在 output 目录中
           retention-days: 7
           if-no-files-found: warn
 
       - name: 检查文件更改
         id: check_changes
         run: |
-          # === 修改开始：git add 指向 output 目录下的文件 ===
-          git add output/urls.txt output/url_processing_state.json output/final_iptv_sources.txt
-          # === 修改结束 ===
+          git add output/urls.txt output/url_processing_state.json output/final_iptv_sources.txt output/iptv_processor.py
           if git diff --staged --quiet; then
             echo "没有文件更改"
             echo "has_changes=false" >> $GITHUB_OUTPUT
