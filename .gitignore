@@ -13,3 +13,4 @@ clash_startup.log
 !data/*.txt
 !data/*.csv
 output/invalid_iptv_sources.log
+git rm --cached output/final_iptv_sources.txt
