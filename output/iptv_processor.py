@@ -25,7 +25,7 @@ VALID_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "valid_iptv_sources.txt") # �
 INVALID_IPTV_SOURCES_LOG = os.path.join(OUTPUT_DIR, "invalid_iptv_sources.log") # 不可用节目源日志
 
 # 并发数配置
-MAX_WORKERS = 100 # 提高并发数以加快处理速度，可以根据实际效果调整
+MAX_WORKERS = 58 # 提高并发数以加快处理速度，可以根据实际效果调整
 
 # 如果某个源链接内容连续多少天没有变化，则重新检查（强制刷新机制）
 FORCE_RECHECK_DAYS = 7
