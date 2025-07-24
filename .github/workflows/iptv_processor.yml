@@ -1,0 +1,88 @@
+name: IPTV Source Processor
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间 0:00 运行一次，您可以根据需要调整
+
+jobs:
+  process_sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # 6小时超时，为大量URL处理留足时间
+    permissions:
+      contents: write # 授予写入权限，用于提交和推送更改
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取完整提交历史，以便进行文件比较和提交
+          token: ${{ secrets.GITHUB_TOKEN }} # 使用 GITHUB_TOKEN 进行认证
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9' # 建议使用稳定版本，如3.9或3.10
+          cache: 'pip' # 缓存 pip 依赖
+
+      - name: 安装 Python 依赖
+        run: |
+          pip install requests # requests 库是必须的
+
+      - name: 创建输出目录
+        run: |
+          mkdir -p output # 确保 output 目录存在，以便脚本保存文件
+
+      - name: 运行 IPTV 节目源处理脚本
+        env:
+          PRIVATE_REMOTE_URLS_TXT_BASE_URL: "https://raw.githubusercontent.com/qjlxg/362/main/config/urls.txt"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python iptv_processor.py # 运行您的新脚本
+
+      - name: 保存生成的文件
+        uses: actions/upload-artifact@v4
+        with:
+          name: iptv-processing-results
+          # === 修改开始：artifacts 的 path 指向 output 目录 ===
+          path: |
+            output/urls.txt
+            output/url_processing_state.json
+            output/final_iptv_sources.txt
+          # === 修改结束 ===
+          retention-days: 7
+          if-no-files-found: warn
+
+      - name: 检查文件更改
+        id: check_changes
+        run: |
+          # === 修改开始：git add 指向 output 目录下的文件 ===
+          git add output/urls.txt output/url_processing_state.json output/final_iptv_sources.txt
+          # === 修改结束 ===
+          if git diff --staged --quiet; then
+            echo "没有文件更改"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "检测到文件更改"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        shell: bash
+
+      - name: 提交更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit -m "更新 IPTV 源列表和处理状态 ($(date +'%Y-%m-%d %H:%M'))"
+
+      - name: 推送更改
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git pull origin main --rebase # 先拉取最新代码并rebase，避免冲突
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 发送运行结果通知
+        if: always()
+        run: |
+          echo "IPTV 节目源处理工作流完成，状态: ${{ job.status }}"
