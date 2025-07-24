@@ -76,7 +76,7 @@ jobs:
           CONFIG_PATH: ${{ vars.CONFIG_PATH }}
           URLS_PATH: ${{ vars.URLS_PATH }}
           URL_STATES_PATH: ${{ vars.URL_STATES_PATH }}
-        run: python ${{ github.workspace }}/tv250724.py
+        run: python ${{ github.workspace }}/tv.py
         
       # 步骤7：保存日志和生成文件
       - name: 保存日志和生成文件
