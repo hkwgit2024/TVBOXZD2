@@ -55,7 +55,7 @@ jobs:
         id: check_changes
         run: |
           # === 关键修改：从 git add 命令中移除 output/final_iptv_sources.txt ===
-          git add output/urls.txt output/url_processing_state.json output/iptv_processor.py
+          git add output/urls.txt output/url_processing_state.json output/iptv_processor.py output/valid_iptv_sources.txt output/invalid_iptv_sources.log 
           # ====================================================================
           if git diff --staged --quiet; then
             echo "没有文件更改"
