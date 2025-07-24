@@ -20,7 +20,6 @@ OUTPUT_DIR = "output"
 LOCAL_URLS_FILE = os.path.join(OUTPUT_DIR, "urls.txt") # 本地保存的urls.txt，会被工作流提交
 PROCESSING_STATE_FILE = os.path.join(OUTPUT_DIR, "url_processing_state.json") # 保存处理状态（哈希和时间戳）
 FINAL_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "final_iptv_sources.txt") # 最终去重后的节目源列表
-# === 新增：可用节目源和不可用日志文件 ===
 VALID_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "valid_iptv_sources.txt") # 通过测试的节目源
 INVALID_IPTV_SOURCES_LOG = os.path.join(OUTPUT_DIR, "invalid_iptv_sources.log") # 不可用节目源日志
 # === 修改结束 ===
@@ -37,6 +36,11 @@ URL_EXTRACTION_REGEX = re.compile(
     r'|https?://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?(?:/[^\s"<>\'\\]*)?' # IP地址
     r'|https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?::\d+)?(?:/[^\s"<>\'\\]*)?', # 域名
     re.IGNORECASE
+)
+
+# === 新增：用于解析M3U8/M3U播放列表中的分片URL ===
+M3U8_SEGMENT_REGEX = re.compile(
+    r'^[^#].*\.(ts|m3u8|m3u|mp4)(?:[?#][^\s"<>\'\\]*)?$', re.IGNORECASE
 )
 
 # --- 辅助函数 ---
@@ -142,21 +146,21 @@ def extract_stream_urls_from_content(content):
     """从文本内容中提取潜在的节目源URL"""
     return list(set(URL_EXTRACTION_REGEX.findall(content)))
 
-# === 新增：测试节目源URL是否可播放 ===
+# === 修改：增强测试节目源URL的验证逻辑 ===
 def test_stream_url(url):
     """
-    测试单个节目源URL是否可访问和可播放。
+    测试单个节目源URL是否可访问和可播放，包含更复杂的流验证。
     返回 (url, is_valid, error_message)：
     - is_valid: True 表示可播放，False 表示不可用
     - error_message: 如果不可用，返回错误原因
     """
     try:
-        # 使用 HEAD 请求快速检查可访问性
+        # 1. 使用 HEAD 请求快速检查可访问性
         response = requests.head(url, timeout=5, allow_redirects=True)
         response.raise_for_status()  # 检查状态码
         content_type = response.headers.get('Content-Type', '').lower()
 
-        # 检查 Content-Type 是否为流媒体相关类型
+        # 支持的流媒体 Content-Type
         valid_content_types = [
             'application/vnd.apple.mpegurl',  # M3U8
             'application/x-mpegurl',         # M3U
@@ -168,24 +172,64 @@ def test_stream_url(url):
             'audio/x-wav',                   # WAV
             'audio/ogg',                     # OGG
         ]
-        is_stream = any(ct in content_type for ct in valid_content_types)
 
-        if not is_stream:
-            # 如果 HEAD 请求的 Content-Type 不明确，尝试 GET 请求获取少量数据
+        # 2. 检查是否为 M3U8/M3U 播放列表
+        is_m3u = 'm3u8' in url.lower() or 'm3u' in url.lower() or any(ct in content_type for ct in ['application/vnd.apple.mpegurl', 'application/x-mpegurl'])
+        if is_m3u:
+            # 获取播放列表内容
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            content = response.text
+
+            # 解析 M3U8/M3U 播放列表，提取分片 URL
+            lines = content.splitlines()
+            segment_urls = [line.strip() for line in lines if M3U8_SEGMENT_REGEX.match(line)]
+            if not segment_urls:
+                return url, False, "M3U8/M3U 播放列表为空或无有效分片"
+
+            # 随机选择一个分片 URL 测试（避免测试所有分片导致性能问题）
+            from random import choice
+            segment_url = choice(segment_urls)
+            # 如果分片 URL 是相对路径，转换为绝对路径
+            if not segment_url.startswith('http'):
+                parsed_base = urlparse(url)
+                segment_url = f"{parsed_base.scheme}://{parsed_base.netloc}{segment_url if segment_url.startswith('/') else '/' + segment_url}"
+
+            # 测试分片可访问性
+            segment_response = requests.head(segment_url, timeout=5, allow_redirects=True)
+            segment_response.raise_for_status()
+            segment_content_type = segment_response.headers.get('Content-Type', '').lower()
+            if not any(ct in segment_content_type for ct in valid_content_types):
+                return url, False, f"分片 Content-Type 无效: {segment_content_type}"
+            
+            logging.debug(f"节目源URL可播放（M3U8/M3U 分片验证通过）: {url}")
+            return url, True, ""
+
+        # 3. 对于非 M3U8/M3U 的直接流（如 TS、MP4），检查文件头
+        is_direct_stream = any(ext in url.lower() for ext in ['.ts', '.mp4']) or any(ct in content_type for ct in valid_content_types)
+        if is_direct_stream:
+            # 获取前 10KB 数据检查
             response = requests.get(url, stream=True, timeout=5)
             response.raise_for_status()
-            content_type = response.headers.get('Content-Type', '').lower()
-            is_stream = any(ct in content_type for ct in valid_content_types)
-            # 获取前 1024 字节确认是否为有效流
-            chunk = next(response.iter_content(chunk_size=1024), b'')
+            chunk = next(response.iter_content(chunk_size=10240), b'')
             if not chunk:
                 return url, False, "空响应内容"
 
-        if is_stream:
-            logging.debug(f"节目源URL可播放: {url}")
+            # 检查文件头（简单验证）
+            if '.ts' in url.lower() or 'video/mp2t' in content_type:
+                # MPEG-TS 文件头以 0x47 开头
+                if not chunk.startswith(b'\x47'):
+                    return url, False, "TS 文件头无效"
+            elif '.mp4' in url.lower() or 'video/mp4' in content_type:
+                # MP4 文件包含 ftyp 盒子
+                if b'ftyp' not in chunk[:20]:
+                    return url, False, "MP4 文件头无效"
+
+            logging.debug(f"节目源URL可播放（直接流验证通过）: {url}")
             return url, True, ""
-        else:
-            return url, False, f"无效的 Content-Type: {content_type}"
+
+        # 4. 如果 Content-Type 无效，标记为不可用
+        return url, False, f"无效的 Content-Type: {content_type}"
 
     except requests.exceptions.Timeout:
         return url, False, "请求超时"
@@ -344,7 +388,7 @@ def main():
     # 5. 保存最终去重后的节目源到文件
     write_file_lines(FINAL_IPTV_SOURCES_FILE, list(all_extracted_stream_urls))
 
-    # === 新增：测试 final_iptv_sources.txt 中的节目源是否可播放 ===
+    # 6. 测试 final_iptv_sources.txt 中的节目源是否可播放
     logging.info("--- 开始测试 final_iptv_sources.txt 中的节目源 ---")
     stream_urls = read_file_lines(FINAL_IPTV_SOURCES_FILE)
     valid_stream_urls = []
