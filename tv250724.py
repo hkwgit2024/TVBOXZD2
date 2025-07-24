@@ -627,7 +627,7 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
     logging.warning(f"Starting multithreaded channel validity and speed detection for {total_channels} channels...")
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(process_single_channel_line, line, url_states): line for line in channel_lines}
-        for future in as_completed(futures):
+        for i, future in enumerate(as_completed(futures)):
             checked_count += 1
             if checked_count % 100 == 0:
                 logging.warning(f"Checked {checked_count}/{total_channels} channels...")
@@ -683,18 +683,35 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                         existing_channels_data.append((parts[0].strip(), parts[1].strip()))
 
     all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
+    
+    # MODIFICATION: Also include the uncategorized_iptv.txt from the root directory
+    uncategorized_file_in_root = "uncategorized_iptv.txt"
+    if os.path.exists(uncategorized_file_in_root):
+        all_iptv_files_in_dir.append(uncategorized_file_in_root)
+
     files_to_merge_paths = []
     processed_files = set()
 
     for category in ORDERED_CATEGORIES:
         file_name = f"{category}_iptv.txt"
-        if file_name in all_iptv_files_in_dir and file_name not in processed_files:
-            files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
-            processed_files.add(file_name)
+        # Check both in temp_channels and root (for 'uncategorized')
+        temp_path = os.path.join(local_channels_directory, file_name)
+        root_path = file_name # For 'uncategorized_iptv.txt'
+        
+        if os.path.basename(temp_path) in all_iptv_files_in_dir and temp_path not in processed_files:
+            files_to_merge_paths.append(temp_path)
+            processed_files.add(os.path.basename(temp_path))
+        elif category == 'uncategorized' and os.path.basename(root_path) in all_iptv_files_in_dir and root_path not in processed_files:
+             files_to_merge_paths.append(root_path)
+             processed_files.add(os.path.basename(root_path))
 
-    for file_name in sorted(all_iptv_files_in_dir):
+
+    for file_name in sorted(all_iptv_files_in_dir): # Now `all_iptv_files_in_dir` contains full paths or just filenames for root
         if file_name not in processed_files:
-            files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
+            if os.path.basename(file_name) == uncategorized_file_in_root:
+                files_to_merge_paths.append(uncategorized_file_in_root)
+            else:
+                files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
             processed_files.add(file_name)
 
     new_channels_from_merged_files = set()
@@ -970,7 +987,7 @@ def process_and_save_channels_by_category(all_channels, url_states):
     
     # Save uncategorized channels directly in the root directory
     uncategorized_dir = "" # Changed to empty string for root directory
-    output_uncategorized_file = os.path.join(uncategorized_dir, "uncategorized_iptv.txt")
+    output_uncategorized_file = os.path.join(uncategorized_dir, "uncategorized_iptv.txt") # Corrected file name
     logging.warning(f"Processing uncategorized channels: {len(uncategorized_channels)} channels.")
     # Sort uncategorized channels by name
     sorted_uncategorized = sorted(uncategorized_channels, key=lambda x: x[0])
@@ -1052,9 +1069,17 @@ def main():
             if not os.listdir(temp_dir):
                 os.rmdir(temp_dir)
                 logging.debug(f"Removed empty directory '{temp_dir}'.")
+        # --- Corrected MODIFICATION START ---
+        # Also clean up the 'uncategorized_iptv.txt' from the root if it was created
+        if os.path.exists('uncategorized_iptv.txt'): # Corrected file name
+            os.remove('uncategorized_iptv.txt')
+            logging.debug(f"Removed 'uncategorized_iptv.txt' from root directory.")
+        # --- Corrected MODIFICATION END ---
+
     except Exception as e:
         logging.error(f"Error during temporary file cleanup: {e}")
 
     logging.warning("IPTV processing script finished.")
 
-if __name__ == "__main
+if __name__ == "__main__":
+    main()
