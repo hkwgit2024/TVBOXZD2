@@ -30,11 +30,27 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add list.txt # 暂存更改
-        git commit -m 'Stage changes before rebase' || echo "No changes to commit" # 提交更改
-        git pull --rebase origin main # 拉取并变基
-        git add list.txt # 再次暂存可能的手动更改
-        git commit -m 'Update playable IPTV links' || echo "No changes to commit"
-        git push
+        
+        # 检查是否有更改
+        git status --porcelain
+        if git status --porcelain | grep -q .; then
+          # 暂存所有由脚本修改的文件
+          git add list.txt iptv_list.txt failed_list.txt
+          
+          # 提交更改
+          git commit -m 'Update playable IPTV links and failed list'
+          
+          # 拉取并变基，确保本地分支与远程同步
+          git pull --rebase origin main
+          
+          # 再次尝试提交 (如果 rebase 引入了新的冲突，这里可能需要手动解决，但在自动化流程中通常不会)
+          # 如果 rebase 成功，且没有新的更改，此提交将是空的
+          git commit -m 'Final commit after rebase' || echo "No new changes after rebase"
+          
+          # 推送更改
+          git push
+        else
+          echo "No changes detected, skipping commit and push."
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub 提供的默认令牌
