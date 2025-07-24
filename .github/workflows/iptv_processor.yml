@@ -39,6 +39,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT }} 
         run: python output/iptv_processor.py
 
+      # --- 新增步骤：临时清理 Git 缓存（一次性执行） ---
+      # 这个步骤用于解决 'unstaged changes' 错误，因为它会从 Git 缓存中移除那些
+      # 应该被 .gitignore 忽略但可能仍在追踪的文件。
+      # 在问题解决后，您可以将此步骤从工作流中删除或注释掉。
+      - name: 临时清理 Git 缓存
+        run: |
+          echo "正在尝试从Git缓存中移除指定文件..."
+          # || true 确保即使文件不在缓存中也不会导致步骤失败
+          git rm --cached output/invalid_iptv_sources.log || true
+          git rm --cached output/final_iptv_sources.txt || true
+          echo "清理完成。"
+      # --- 新增步骤结束 ---
+
       - name: 保存生成的文件
         uses: actions/upload-artifact@v4
         with:
@@ -56,11 +69,10 @@ jobs:
       - name: 检查文件更改
         id: check_changes
         run: |
-          # === 关键修改：从 git add 命令中移除 output/invalid_iptv_sources.log ===
+          # === 关键修改：从 git add 命令中移除 output/invalid_iptv_sources.log 和 output/final_iptv_sources.txt ===
+          # 确保这里只包含你希望提交到 Git 仓库的文件
           git add output/urls.txt output/url_processing_state.json output/iptv_processor.py output/valid_iptv_sources.txt 
           # ====================================================================
-          # git config user.name "github-actions[bot]" # 这两行可以放到 commit 步骤，更规范
-          # git config user.email "github-actions[bot]@users.noreply.github.com" # 因为它们只在提交时才需要
           if git diff --staged --quiet; then
             echo "没有文件更改"
             echo "has_changes=false" >> $GITHUB_OUTPUT
