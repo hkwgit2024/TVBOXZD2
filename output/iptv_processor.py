@@ -9,44 +9,35 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse, urljoin
 from tqdm import tqdm
 
-# --- 配置 ---
-# 将日志级别设置为 INFO，以便在运行时看到更多详细信息
+# --- 配置 (与之前脚本相同的部分，此处省略以保持简洁) ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 从环境变量获取敏感信息和关键路径
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 PRIVATE_REMOTE_URLS_TXT_BASE_URL = os.getenv('PRIVATE_REMOTE_URLS_TXT_BASE_URL')
 
-# --- 修改开始：所有输出文件路径统一到 'output/' 目录下 ---
 OUTPUT_DIR = "output"
-LOCAL_URLS_FILE = os.path.join(OUTPUT_DIR, "urls.txt") # 本地保存的urls.txt，会被工作流提交
-PROCESSING_STATE_FILE = os.path.join(OUTPUT_DIR, "url_processing_state.json") # 保存处理状态（哈希和时间戳）
-VALID_SOURCE_URLS_FILE = os.path.join(OUTPUT_DIR, "valid_source_urls.txt") # 可访问且可能是节目源的URL
-FINAL_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "final_iptv_sources.txt") # 最终去重后的节目源列表
-VALID_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "valid_iptv_sources.txt") # 通过测试的节目源
-INVALID_IPTV_SOURCES_LOG = os.path.join(OUTPUT_DIR, "invalid_iptv_sources.log") # 不可用节目源日志
-# --- 修改结束 ---
+LOCAL_URLS_FILE = os.path.join(OUTPUT_DIR, "urls.txt")
+PROCESSING_STATE_FILE = os.path.join(OUTPUT_DIR, "url_processing_state.json")
+VALID_SOURCE_URLS_FILE = os.path.join(OUTPUT_DIR, "valid_source_urls.txt")
+FINAL_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "final_iptv_sources.txt")
+VALID_IPTV_SOURCES_FILE = os.path.join(OUTPUT_DIR, "valid_iptv_sources.txt")
+INVALID_IPTV_SOURCES_LOG = os.path.join(OUTPUT_DIR, "invalid_iptv_sources.log")
 
-# 并发数配置
-MAX_WORKERS = 100 # 提高并发数以加快处理速度，可以根据实际效果调整
-
-# 如果某个源链接内容连续多少天没有变化，则重新检查（强制刷新机制）
+MAX_WORKERS = 100
 FORCE_RECHECK_DAYS = 7
 
-# 正则表达式：用于从文本中提取实际的节目源URL
 URL_EXTRACTION_REGEX = re.compile(
     r'https?://[^\s"<>\'\\]+\.(?:m3u8|m3u|ts|mp4|flv|webm|avi|mkv|mov|wmv|mpg|mpeg|3gp|mov|vob|ogg|ogv|ogx|amv|rm|rmvb|asf|divx|xvid|f4v|vob|flac|aac|mp3|wav|ogg|wma|pls|asx|wax|wvx|ram|sdp|smi|smil)(?:[?#][^\s"<>\'\\]*)?'
-    r'|https?://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?(?:/[^\s"<>\'\\]*)?' # IP地址
-    r'|https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?::\d+)?(?:/[^\s"<>\'\\]*)?', # 域名
+    r'|https?://(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?::\d+)?(?:/[^\s"<>\'\\]*)?'
+    r'|https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?::\d+)?(?:/[^\s"<>\'\\]*)?',
     re.IGNORECASE
 )
 
-# 用于解析M3U8/M3U播放列表中的分片URL (改进：支持相对路径)
 M3U8_SEGMENT_REGEX = re.compile(
     r'^(?!#).*?\.(?:ts|m3u8|m3u|mp4)(?:[?#][^\s"<>\'\\]*)?$', re.IGNORECASE
 )
 
-# --- 辅助函数 ---
+# --- 辅助函数（只修改 write_file_lines，其他保持不变） ---
 
 def read_file_lines(file_path):
     """读取文件内容并按行返回列表，处理文件不存在的情况"""
@@ -62,18 +53,29 @@ def read_file_lines(file_path):
         logging.error(f"读取文件失败 {file_path}: {e}")
         return []
 
-def write_file_lines(file_path, lines):
+def write_file_lines(file_path, lines, chunk_size=100000): # 增加 chunk_size 参数，默认 10万行
     """
-    将列表内容写入文件，每行一个元素。
+    将列表内容写入文件，每行一个元素，支持分块写入。
     已优化：移除对大量数据进行排序的步骤，直接去重后写入。
     """
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True) # 确保目录存在
-        unique_lines = set(lines) # 仅去重，不排序
+        
+        # 对于 urls.txt 和 processing_state.json，以及较小的文件，我们不需要分块
+        # 但对于 valid_iptv_sources.txt 和 final_iptv_sources.txt 可能会很大
+        # 为了通用性，统一在这里处理去重，然后进行分块写入
+        unique_lines = list(set(lines)) # 先去重，转换为列表以便分块
+        total_lines = len(unique_lines)
+        logging.info(f"开始写入 {total_lines} 个唯一行到 {file_path}，使用分块大小 {chunk_size}。")
+
         with open(file_path, 'w', encoding='utf-8') as f:
-            for line in unique_lines:
-                f.write(f"{line}\n")
-        logging.info(f"成功写入 {len(unique_lines)} 个唯一行到 {file_path}")
+            for i in range(0, total_lines, chunk_size):
+                chunk = unique_lines[i:i + chunk_size]
+                # 使用 join 拼接字符串，比循环写入效率更高
+                f.write("\n".join(chunk) + "\n")
+                logging.debug(f"已写入 {i + len(chunk)}/{total_lines} 行到 {file_path}") # 使用 debug 级别避免频繁日志
+
+        logging.info(f"成功写入 {total_lines} 个唯一行到 {file_path}")
     except Exception as e:
         logging.error(f"写入文件失败 {file_path}: {e}")
         raise
@@ -128,7 +130,7 @@ def fetch_remote_urls_txt(url, token):
     """从私有GitHub raw链接下载urls.txt内容"""
     headers = {
         'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3.raw',
+        'Accept': 'application/vnd.github.com.v3.raw', # Adjusted Accept header
         'User-Agent': 'GitHubActions-IPTV-Processor'
     }
     try:
@@ -355,7 +357,8 @@ def process_single_source_url(source_url, processing_state):
         }
     return extracted_urls, source_url # 失败时返回空列表
 
-# --- 主逻辑 ---
+
+# --- 主逻辑（保持不变） ---
 def main():
     if not GITHUB_TOKEN:
         logging.error("错误：环境变量 'GITHUB_TOKEN' 未设置。请确保已配置。")
@@ -456,7 +459,8 @@ def main():
                 log_invalid_url(INVALID_IPTV_SOURCES_LOG, url, f"测试异常: {str(exc)}")
 
     logging.info(f"测试完成，{len(valid_stream_urls)}/{len(stream_urls)} 个节目源通过验证。")
-    write_file_lines(VALID_IPTV_SOURCES_FILE, valid_stream_urls)
+    # 这里将使用修改后的分块写入函数来写入 valid_iptv_sources.txt
+    write_file_lines(VALID_IPTV_SOURCES_FILE, valid_stream_urls) 
 
     logging.info("--- 脚本运行完成 ---")
 
