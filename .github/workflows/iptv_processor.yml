@@ -46,17 +46,21 @@ jobs:
           path: |
             output/urls.txt
             output/url_processing_state.json
-            output/final_iptv_sources.txt # 仍然作为 Artifact 上传
+            output/final_iptv_sources.txt
             output/iptv_processor.py
+            output/valid_iptv_sources.txt
+            output/invalid_iptv_sources.log # 确保将日志文件也作为 artifact 上传，方便查看
           retention-days: 7
           if-no-files-found: warn
 
       - name: 检查文件更改
         id: check_changes
         run: |
-          # === 关键修改：从 git add 命令中移除 output/final_iptv_sources.txt ===
-          git add output/urls.txt output/url_processing_state.json output/iptv_processor.py output/valid_iptv_sources.txt output/invalid_iptv_sources.log 
+          # === 关键修改：从 git add 命令中移除 output/invalid_iptv_sources.log ===
+          git add output/urls.txt output/url_processing_state.json output/iptv_processor.py output/valid_iptv_sources.txt 
           # ====================================================================
+          # git config user.name "github-actions[bot]" # 这两行可以放到 commit 步骤，更规范
+          # git config user.email "github-actions[bot]@users.noreply.github.com" # 因为它们只在提交时才需要
           if git diff --staged --quiet; then
             echo "没有文件更改"
             echo "has_changes=false" >> $GITHUB_OUTPUT
