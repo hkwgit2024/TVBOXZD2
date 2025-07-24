@@ -75,7 +75,7 @@ def classify_iptv_sources(input_filepath, output_filepath):
     except Exception as e:
         print(f"An error occurred while writing the output file: {e}")
 
-if __name__ == "__main__':
+if __name__ == '__main__':
     input_file = 'output/valid_iptv_sources.txt'
     output_file = 'input/list.txt'
     classify_iptv_sources(input_file, output_file)
