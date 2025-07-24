@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from tqdm import tqdm  # === 新增：用于显示进度条 ===
 
 # --- 配置 ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 从环境变量获取敏感信息和关键路径
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
