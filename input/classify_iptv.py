@@ -1,13 +1,76 @@
 import re
+import requests
 from collections import defaultdict
 from datetime import datetime
+from urllib.parse import quote
+import time
+import json
+import os
+
+def search_channel_category(channel_name):
+    """通过在线搜索获取频道分类"""
+    try:
+        # 使用简单的搜索API（这里以示例API替代，实际使用时需替换为可靠的搜索服务）
+        search_url = f"https://api.duckduckgo.com/?q={quote(channel_name + ' 电视频道 类型')}&format=json"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124'}
+        response = requests.get(search_url, headers=headers, timeout=5)
+        
+        if response.status_code == 200:
+            data = response.json()
+            abstract = data.get('Abstract', '').lower()
+            related = ' '.join([topic.get('Text', '') for topic in data.get('RelatedTopics', [])]).lower()
+            content = abstract + ' ' + related
+
+            # 分类关键词匹配
+            if any(word in content for word in ['新闻', 'news']):
+                return '新闻'
+            elif any(word in content for word in ['电影', 'movie', 'film']):
+                return '电影'
+            elif any(word in content for word in ['香港', 'hk', '凤凰', 'tvb', '有线', '明珠']):
+                return '港澳台'
+            elif any(word in content for word in ['剧', '连续剧', 'series', 'drama']):
+                return '电视剧'
+            elif any(word in content for word in ['体育', 'sport']):
+                return '体育'
+            elif any(word in content for word in ['音乐', 'music']):
+                return '音乐'
+            elif any(word in content for word in ['综艺', 'variety']):
+                return '综艺'
+            elif any(word in content for word in ['少儿', '儿童', 'kids', 'cartoon']):
+                return '少儿'
+            else:
+                return '其他'
+    except Exception as e:
+        print(f"Search error for {channel_name}: {e}")
+        return None
+
+def load_cache(cache_file='category_cache.json'):
+    """加载分类缓存"""
+    if os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_cache(cache, cache_file='category_cache.json'):
+    """保存分类缓存"""
+    try:
+        with open(cache_file, 'w', encoding='utf-8') as f:
+            json.dump(cache, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving cache: {e}")
 
 def classify_iptv_sources(input_filepath, output_filepath):
     """
     读取 IPTV 节目源文件，进行分类，并输出到指定文件。
+    优先使用在线搜索分类，备用使用名称规则分类。
     """
     classified_sources = defaultdict(list)
     update_time = ""
+    cache = load_cache()
+    new_cache = cache.copy()
 
     try:
         with open(input_filepath, 'r', encoding='utf-8') as f:
@@ -26,27 +89,43 @@ def classify_iptv_sources(input_filepath, output_filepath):
                     continue
 
                 # 节目源行
-                parts = line.split(',', 1) # 只按第一个逗号分割，防止URL中包含逗号
+                parts = line.split(',', 1)
                 if len(parts) == 2:
                     name = parts[0].strip()
                     url = parts[1].strip()
 
-                    # 尝试从名称中提取分类。
-                    # 如果名称包含“_”，则取第一个下划线前的内容作为分类。
-                    # 否则，使用完整的名称作为分类。
-                    match = re.match(r'^(.*?)[_.,(（].*$', name) # 匹配第一个下划线、点、逗号、左右括号
-                    if match:
-                        category = match.group(1).strip()
-                    elif '新闻' in name:
-                        category = '新闻'
-                    elif '电影' in name:
-                        category = '电影'
-                    elif '香港' in name or '无线' in name or '有线' in name or '凤凰' in name or '明珠' in name:
-                        category = '港澳台'
-                    elif '剧' in name or '传' in name or '记' in name or '王' in name or '宫' in name or '部' in name or '士' in name or '侦' in name or '探' in name:
-                        category = '电视剧'
-                    else:
-                        category = '其他' # 默认分类
+                    # 首先检查缓存
+                    category = cache.get(name)
+                    if not category:
+                        # 在线搜索分类
+                        category = search_channel_category(name)
+                        time.sleep(0.5)  # 防止请求过快
+
+                        # 如果搜索失败，使用备用规则
+                        if not category:
+                            match = re.match(r'^(.*?)[_.,(（].*$', name)
+                            if match:
+                                category = match.group(1).strip()
+                            elif '新闻' in name:
+                                category = '新闻'
+                            elif '电影' in name:
+                                category = '电影'
+                            elif any(kw in name for kw in ['香港', '无线', '有线', '凤凰', '明珠']):
+                                category = '港澳台'
+                            elif any(kw in name for kw in ['剧', '传', '记', '王', '宫', '部', '士', '侦', '探']):
+                                category = '电视剧'
+                            elif '体育' in name:
+                                category = '体育'
+                            elif '音乐' in name:
+                                category = '音乐'
+                            elif '综艺' in name:
+                                category = '综艺'
+                            elif any(kw in name for kw in ['少儿', '儿童']):
+                                category = '少儿'
+                            else:
+                                category = '其他'
+
+                        new_cache[name] = category
 
                     classified_sources[category].append(f"{name},{url}")
                 else:
@@ -59,6 +138,9 @@ def classify_iptv_sources(input_filepath, output_filepath):
         print(f"An error occurred while reading the input file: {e}")
         return
 
+    # 保存缓存
+    save_cache(new_cache)
+
     # 获取当前日期作为更新时间，如果文件第一行没有提供
     if not update_time:
         update_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -68,7 +150,7 @@ def classify_iptv_sources(input_filepath, output_filepath):
         with open(output_filepath, 'w', encoding='utf-8') as f:
             f.write(f"{update_time},#genre#\n")
             for category in sorted(classified_sources.keys()):
-                f.write(f"\n{category},#genre#\n") # 写入分类标题
+                f.write(f"\n{category},#genre#\n")
                 for entry in classified_sources[category]:
                     f.write(f"{entry}\n")
         print(f"Successfully classified IPTV sources to '{output_filepath}'.")
