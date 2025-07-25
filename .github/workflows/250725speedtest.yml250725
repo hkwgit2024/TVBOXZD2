@@ -1,5 +1,5 @@
 # .github/workflows/speedtest.yml
-name: Clash 速度测试与排序 
+name: Clash 速度测试与排序 250725
 
 on:
   workflow_dispatch: # 允许手动触发
