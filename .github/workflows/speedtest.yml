@@ -52,7 +52,9 @@ jobs:
 
             if yq e '.proxies | length > 0' "$temp_file" &> /dev/null; then
               echo "合并 $temp_file 到 $ALL_PROXIES..."
-              yq e '.proxies' "$temp_file" | yq e -o yaml '. as $item ireduce ({}; .proxies += $item)' "$ALL_PROXIES" - > temp.yaml
+              # 将管道拆分为临时文件处理，避免 YAML 解析问题
+              yq e '.proxies' "$temp_file" > temp_proxies.yaml
+              yq e -o yaml '. as $item ireduce ({}; .proxies += $item)' "$ALL_PROXIES" temp_proxies.yaml > temp.yaml
               mv temp.yaml "$ALL_PROXIES"
             else
               echo "警告: $temp_file 无有效 proxies，跳过"
