@@ -32,20 +32,12 @@ jobs:
     - name: Run conversion script
       run: python convert_to_yaml.py || { echo "Script execution failed"; exit 1; }
 
-    - name: List generated files for debugging
-      run: |
-        echo "Listing files in sc directory:"
-        ls -l sc
-        echo "Attempting to cat sc/configtg.yaml:"
-        cat sc/configtg.yaml || echo "File sc/configtg.yaml not found (expected if only v.txt was processed)"
-        echo "Attempting to cat sc/v.yaml:"
-        cat sc/v.yaml || echo "File sc/v.yaml not found (this would indicate a script issue if script reported success)"
-
+ 
     - name: Commit YAML files
       run: |
         git config user.name "GitHub Action"
         git config user.email "action@github.com"
-        git add sc/*.yaml sc/*.yml || true
+        git add input/*.yaml input/*.yml || true
         if git diff --cached --quiet; then
           echo "No changes to commit."
         else
