@@ -18,8 +18,7 @@ jobs:
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Sort
-      # 执行速度测试并排序，然后保存到 clash.yaml
-      # 根据 v0.2.4 版本的用法调整参数
+      # 只按带宽（下载速度）排序
       run: |
         ./speedtest-clash \
           -c ./clash_config.yaml \
@@ -27,7 +26,5 @@ jobs:
           -sort b \
           -size 52428800 \
           -timeout 10s
-        # 注意：v0.2.4 版本可能不直接支持同时按下载速度和延迟排序。
-        # `-sort b` 是按带宽（下载速度）排序。
-        # 如果需要严格按延迟排序，可能需要单独运行一次，或者检查是否有其他隐式排序行为。
+        # -sort b 表示按带宽（下载速度）排序，通常默认是降序（从大到小）。
         # 50MB 转换为字节是 50 * 1024 * 1024 = 52428800 字节。
