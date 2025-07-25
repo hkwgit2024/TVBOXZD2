@@ -7,9 +7,7 @@ on:
 jobs:
   speed-test-and-sort:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_subset: [1, 2, 3, 4] # 分 4 组并行测试
+    # 移除了 strategy 和 matrix 配置，现在只有一个作业实例
 
     steps:
       - name: 检出仓库
@@ -33,10 +31,9 @@ jobs:
           fi
 
       - name: 下载完整的 Clash 配置
-        # 直接下载整个文件，而不是在下载时就过滤
         run: |
           echo "下载完整的 Clash 配置文件..."
-          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
+          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml
           if [ ! -s "clash_config.yaml" ]; then
             echo "错误: 未能下载到 clash_config.yaml 文件或文件为空。"
             exit 1
@@ -44,7 +41,6 @@ jobs:
 
       - name: 过滤节点 (使用 Python 脚本)
         run: python filter_clash_nodes.py
-        # 如果 Python 脚本执行失败，它会返回非零退出码，导致此步骤失败
 
       - name: 验证过滤后的文件
         run: |
@@ -59,31 +55,23 @@ jobs:
 
       - name: 运行速度测试
         run: |
-          echo "测试节点子集 ${{ matrix.node_subset }}"
+          echo "开始运行所有节点的测试..."
+          # 因为取消了分组，所以直接输出到 clash.yaml
           ./clash-speedtest \
             -c filtered_nodes.yaml \
-            -output ./clash_subset_${{ matrix.node_subset }}.yaml \
-            -download-size 1048576 \ # 修正：1MB = 1048576 字节
-            -upload-size 1048576 \   # 修正：1MB = 1048576 字节
+            -output ./clash.yaml \ # 直接输出到最终的 clash.yaml
+            -download-size 1048576 \ # 1MB = 1048576 字节
+            -upload-size 1048576 \   # 1MB = 1048576 字节
             -timeout 8s \
-            -concurrent 20 \
-            -f 'US|JP|SG|HK' \ # 注意：这里的 -f 参数是 clash-speedtest 自身的过滤，和 Python 脚本的过滤是互补的。
-                               # Python 脚本保证了 YAML 格式，这里再做一层工具层面的过滤
+            -concurrent 20 \ # 注意：现在所有节点的测试都在一个并发池中进行
+            -f 'US|JP|SG|HK' \
             -max-latency 800ms \
-            -min-download-speed 2 \ # 单位为 MB/s，2 意味着 2MB/s (约 16Mbps)
-            -min-upload-speed 1 \   # 单位为 MB/s，1 意味着 1MB/s (约 8Mbps)
+            -min-download-speed 2 \ # 单位为 MB/s (约 16Mbps)
+            -min-upload-speed 1 \   # 单位为 MB/s (约 8Mbps)
             -rename \
             -fast
 
-      - name: 合并测试结果
-        # 即使部分子作业失败，也尝试合并已生成的结果
-        if: always() 
-        run: |
-          echo "合并所有子集的测试结果..."
-          find . -name "clash_subset_*.yaml" -exec cat {} + > clash.yaml || true
-          if [ ! -s "clash.yaml" ]; then
-            echo "警告: 'clash.yaml' 文件为空，可能没有节点通过测试或测试文件未生成。"
-          fi
+      # 移除了合并测试结果步骤，因为现在直接输出到 clash.yaml
 
       - name: 验证生成的 clash.yaml 文件
         id: check_file
@@ -97,7 +85,6 @@ jobs:
           fi
 
       - name: 提交并推送排序后的配置文件
-        # 只有在合并和验证步骤都成功后才提交
         if: success() && steps.check_file.outcome == 'success'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
