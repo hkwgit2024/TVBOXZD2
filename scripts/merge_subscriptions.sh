@@ -79,19 +79,11 @@ for i in "${!URLS[@]}"; do
 
   # 修复 TLS 配置
   echo "修复 temp_proxies_for_yq_fix.yaml 中的 TLS 配置..."
-  yq eval '
-    .[] |= (
-      if has("tls") then
-        .tls = (
-          if .tls == "true" or .tls == "True" then true
-          elif .tls == "false" or .tls == "False" or .tls == "" then false
-          else false
-          end
-        )
-      else .tls = false
-      end
-    )
-  ' temp_proxies_for_yq_fix.yaml > temp_proxies_fixed.yaml
+  yq eval '.[].tls = (if .tls == "true" or .tls == "True" then true elif .tls == "false" or .tls == "False" or .tls == "" or .tls == null then false else false end)' temp_proxies_for_yq_fix.yaml > temp_proxies_fixed.yaml
+
+  # 调试：显示修复后的 proxies
+  echo "调试: 显示 temp_proxies_fixed.yaml 前10行内容..."
+  head -n 10 temp_proxies_fixed.yaml
 
   # 合并到 ALL_PROXIES_COLLECTED
   echo "合并修复后的代理到 $ALL_PROXIES_COLLECTED..."
@@ -103,6 +95,10 @@ if [ "$proxy_found" = false ]; then
   echo "错误: 所有订阅均无有效代理，无法生成配置文件"
   exit 1
 fi
+
+# 调试：显示合并后的代理列表
+echo "调试: 显示 $ALL_PROXIES_COLLECTED 前10行内容..."
+head -n 10 "$ALL_PROXIES_COLLECTED"
 
 echo "生成最终 Clash 配置文件: $FINAL_CONFIG..."
 cat << EOF > "$FINAL_CONFIG"
