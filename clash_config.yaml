@@ -32,596 +32,890 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: yandex-491
-  server: au.mjt000.com
-  port: 443
-  type: trojan
-  password: 92435aa8-f3b6-466a-ad58-c55cbb6d2acf
-  sni: au.mjt000.com
-  skip-cert-verify: true
-  udp: true
-- name: yandex-495
-  server: a05.taipeicitygovernment.co.ua
-  port: 3462
-  type: trojan
-  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
-  sni: 45.32.28.232
-  skip-cert-verify: true
-  udp: true
-- name: yandex-497
-  server: taifo03a.kbservice.club
-  port: 443
-  type: trojan
-  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
-  skip-cert-verify: true
-  udp: true
-- name: yandex-499
-  server: 60.249.14.38
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-508
-  server: 60.249.39.202
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-509
-  server: 60.249.39.203
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-510
-  server: 60.249.39.204
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-544
-  server: 60.249.35.3
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-545
-  server: 60.249.35.37
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-547
-  server: 60.249.35.59
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-548
-  server: 60.249.35.60
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-549
-  server: 60.249.35.94
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-550
-  server: 60.249.35.96
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-559
-  server: 59.125.75.111
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-562
-  server: 59.125.75.117
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-563
-  server: 139.162.158.172
-  port: 443
-  type: trojan
-  password: 665c944d-047d-4659-80d5-3eaac70241a9
-  sni: de2-full.privateip.net
-  skip-cert-verify: true
-  udp: true
-- name: yandex-567
-  server: 185.142.53.63
-  port: 43585
-  type: vmess
-  uuid: 2babf34a-16f5-4e38-a885-738fdfc8eabf
-  alterId: 0
-  cipher: auto
+- name: 🇺🇸 US 2
+  type: vless
+  server: zaintest.vuclip.com.unlimited.spauu.web.id
+  port: 80
+  uuid: 0ba3edff-3c61-466d-88b0-1e3da4b55372
+  security: none
   tls: false
-  udp: true
-- name: yandex-576
-  server: 203.174.82.145
-  port: 43057
-  type: hysteria2
-  password: eb75320e-a6d0-4b34-a6b6-2bcfc96a9099
-  auth: eb75320e-a6d0-4b34-a6b6-2bcfc96a9099
-  sni: www.bing.com
-  skip-cert-verify: true
-  udp: true
-- name: yandex-578
-  server: 2.188.219.43
-  port: 8443
-  type: vmess
-  uuid: b2e38621-035b-43f8-84a5-e92160762fc3
-  alterId: 0
-  cipher: auto
-  tls: false
+  sni: ''
+  skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /
-  udp: true
-- name: yandex-579
-  server: 03.tokyometropolis.kharkov.ua
+    path: /vl=158.178.225.124=37461
+    headers:
+      Host: zaintest.vuclip.com.unlimited.spauu.web.id
+- name: 🇺🇸 US 3
+  type: vless
+  server: zaintest.vuclip.com.unlimited.spauu.web.id
+  port: 443
+  uuid: 0697ed99-2e90-49d8-9739-2768437386ce
+  security: tls
+  tls: true
+  sni: zaintest.vuclip.com.unlimited.spauu.web.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /vl=172.232.239.151=587
+    headers:
+      Host: zaintest.vuclip.com.unlimited.spauu.web.id
+- name: 🇺🇸 US 7
+  type: vless
+  server: cache.netflix.com.unlimited.spauu.web.id
+  port: 443
+  uuid: 4f3a3b18-983f-4d75-8931-11190db151da
+  security: tls
+  tls: true
+  sni: cache.netflix.com.unlimited.spauu.web.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /vl=103.133.223.50=2096
+    headers:
+      Host: cache.netflix.com.unlimited.spauu.web.id
+- name: 🇺🇸 US 9
+  type: vless
+  server: servpn.my.id
+  port: 443
+  uuid: 5d1adccd-fbff-4c39-8a5c-cf6a23cda049
+  security: tls
+  tls: true
+  sni: servpn.my.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /sg2
+    headers:
+      Host: servpn.my.id
+- name: 🇺🇸 US 14
+  type: vless
+  server: cache.netflix.com.lufeng.pw
+  port: 80
+  uuid: 063df8cb-be74-46d9-9033-3f662ede0281
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id11
+    headers:
+      Host: cache.netflix.com.lufeng.pw
+- name: 🇺🇸 US 15
+  type: vless
+  server: support.zoom.us.lufeng.pw
+  port: 443
+  uuid: 576e9bde-5243-479f-9725-346617af0bec
+  security: tls
+  tls: true
+  sni: support.zoom.us.lufeng.pw
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id12
+    headers:
+      Host: support.zoom.us.lufeng.pw
+- name: 🇺🇸 US 18
+  type: vless
+  server: cache.netflix.com.lufeng.pw
+  port: 443
+  uuid: c656332d-f407-4c98-828c-04784dadc352
+  security: tls
+  tls: true
+  sni: cache.netflix.com.lufeng.pw
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id12
+    headers:
+      Host: cache.netflix.com.lufeng.pw
+- name: 🇺🇸 US 27
+  type: vless
+  server: bakrie.ac.id.servpn.my.id
+  port: 443
+  uuid: 057d7a93-4a78-4f7a-8157-44d53971a7c5
+  security: tls
+  tls: true
+  sni: bakrie.ac.id.servpn.my.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /my4
+    headers:
+      Host: bakrie.ac.id.servpn.my.id
+- name: 🇺🇸 US 55
+  type: vless
+  server: lufeng.pw
+  port: 443
+  uuid: 111e18e2-3f36-4067-ba96-468f192f8b47
+  security: tls
+  tls: true
+  sni: lufeng.pw
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /sg1
+    headers:
+      Host: lufeng.pw
+- name: 🇺🇸 US 70
+  type: vless
+  server: yd.laoyoutiao.link
+  port: 443
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  security: tls
+  tls: true
+  sni: yd.laoyoutiao.link
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: yd.laoyoutiao.link
+- name: 🇺🇸 US 98
+  type: vless
+  server: web.xhamster.biz.id
+  port: 443
+  uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
+  security: tls
+  tls: true
+  sni: web.xhamster.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /Free-CF-Proxy-AT4
+    headers:
+      Host: web.xhamster.biz.id
+- name: 🇺🇸 US 102
+  type: vless
+  server: sgjp.asolole.biz.id
+  port: 443
+  uuid: 1977de45-4ea5-4531-b935-ce470f9c75d2
+  security: tls
+  tls: true
+  sni: sgjp.asolole.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /jp2
+    headers:
+      Host: sgjp.asolole.biz.id
+- name: 🇺🇸 US 137
+  type: vless
+  server: support.zoom.us.sgjp.asolole.biz.id
+  port: 443
+  uuid: 1733f2a1-37f1-48c6-95d9-a60edefd3e15
+  security: tls
+  tls: true
+  sni: support.zoom.us.sgjp.asolole.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /jp2
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+- name: 🇺🇸 US 157
+  type: vless
+  server: proud-fire-1775.mahmmod2025.workers.dev
+  port: 2086
+  uuid: e0e345e3-e2ce-4778-81ff-67b4a8feddd8
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /yd1577qpTY2VFbtG?ed=2560
+    headers:
+      Host: proud-fire-1775.mahmmod2025.workers.dev
+- name: 🇺🇸 US 158
+  type: vless
+  server: zaintest.vuclip.com.lufeng.pw
+  port: 443
+  uuid: c3674ee3-31f8-41ba-849a-51f5f61259d7
+  security: tls
+  tls: true
+  sni: zaintest.vuclip.com.lufeng.pw
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id10
+    headers:
+      Host: zaintest.vuclip.com.lufeng.pw
+- name: 🇺🇸 US 162
+  type: vless
+  server: cache.netflix.com.spauu.web.id
+  port: 443
+  uuid: 2bc40013-44c2-4d92-90e9-617893f7f6ed
+  security: tls
+  tls: true
+  sni: cache.netflix.com.spauu.web.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /sggreen
+    headers:
+      Host: cache.netflix.com.spauu.web.id
+- name: 🇺🇸 US 164
+  type: vless
+  server: sk.laoyoutiao.link
+  port: 443
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  security: tls
+  tls: true
+  sni: sk.laoyoutiao.link
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: sk.laoyoutiao.link
+- name: 🇺🇸 US 217
+  type: vless
+  server: us.laoyoutiao.link
+  port: 443
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  security: tls
+  tls: true
+  sni: us.laoyoutiao.link
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      Host: us.laoyoutiao.link
+- name: 🇺🇸 US 303
+  type: vless
+  server: invincible.fafa20.shop
+  port: 2087
+  uuid: 376734bc-4db8-4317-b451-af0262cb01c7
+  security: tls
+  tls: true
+  sni: invINCIBLE.FAfa20.SHOp
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /fnxocitzwpgmrgmd/nzgundyuntyundi=?ed=2560
+    headers:
+      Host: invINCIBLE.FAfa20.SHOp
+- name: 🇺🇸 US 458
+  type: vless
+  server: proud-fire-1775.mahmmod2025.workers.dev
   port: 2053
+  uuid: e0e345e3-e2ce-4778-81ff-67b4a8feddd8
+  security: tls
+  tls: true
+  sni: PRoud-fire-1775.mAhmMoD2025.workErs.Dev
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /jJ1ojMy7TklFDtl3?ed=2560
+    headers:
+      Host: proud-fire-1775.mahmmod2025.workers.dev
+- name: 🇺🇸 US 469
+  type: vless
+  server: 789156.xyz
+  port: 443
+  uuid: 5f11c240-89df-494c-9c81-8b619023bb58
+  security: tls
+  tls: true
+  sni: 789156.xyz
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2048fp=randomized
+    headers:
+      Host: 789156.xyz
+- name: 🇺🇸 US 552
+  type: vless
+  server: dddfgt.859885.xyz
+  port: 443
+  uuid: f69b7304-9bea-4740-a555-797514012a53
+  security: tls
+  tls: true
+  sni: DddFgT.859885.XYZ
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ZR7EK3UEnC29auSeckWI9
+    headers:
+      Host: dddfgt.859885.xyz
+- name: 🇺🇸 US 553
+  type: vless
+  server: 172.234.31.209
+  port: 2321
+  uuid: a4fb0780-e6d5-4e5e-b22d-d431db4aa53b
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: tcp
+  ws-opts: {}
+- name: 🇺🇸 US 560
+  type: vless
+  server: dddgt.890601.xyz
+  port: 443
+  uuid: c891d9fe-c4eb-4526-94e0-d9bf841c572a
+  security: tls
+  tls: true
+  sni: DDdGt.890601.XYZ
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /YVOu6Dbaf1WT6O9LnD
+    headers:
+      Host: dddgt.890601.xyz
+- name: 🇺🇸 US 657
   type: trojan
-  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
-  sni: 45.32.28.232
-  skip-cert-verify: true
-  udp: true
-- name: yandex-586
-  server: 172.237.11.141
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-587
-  server: 172.237.11.224
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-590
-  server: 52.199.249.206
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-592
-  server: 54.249.220.208
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-598
-  server: 54.64.148.82
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-602
-  server: 119.206.102.29
-  port: 45979
+  server: x6-usa-amazon-v2-e287o.devefun.org
+  port: 1935
+  password: 4uIzUs5ji8
+  sni: ''
+  skip-cert-verify: false
+- name: 🇺🇸 US 874
   type: vmess
-  uuid: 23bdf6df-c482-46d0-c0f4-5a98d534ea11
+  server: rrrrrrrrrt.11890604.xyz
+  port: 443
+  uuid: f898ffcb-6417-4373-9640-0b66091e8206
   alterId: 0
   cipher: auto
+  network: ws
+  tls: true
+  sni: rrrrrrrrrt.11890604.xyz
+  ws-opts:
+    path: /GnJ3bBxV91uFkYtuzXyJ5XNeH1R1
+    headers:
+      Host: rrrrrrrrrt.11890604.xyz
+- name: 🇯🇵 JP 1
+  type: trojan
+  server: x1-japan-linode-v2-pwlzp.devefun.org
+  port: 1935
+  password: 7ZkPnMNGly
+  sni: ''
+  skip-cert-verify: false
+- name: 🇯🇵 JP 3
+  type: trojan
+  server: x1-japan-amazon-v2.devefun.org
+  port: 1935
+  password: 0IMsvkqhnm
+  sni: ''
+  skip-cert-verify: false
+- name: 🇬🇧 GB 17
+  type: ss
+  server: uk.vpnsparta.pro
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: c40641c1f89e7acb
+  udp: true
+- name: 🇨🇿 CZ 1
+  type: vless
+  server: 87.236.146.218
+  port: 20532
+  uuid: 6ff881a1-5b83-4a3b-a32a-84a2d1a9f9b9
+  security: none
   tls: false
-  network: ws
-  ws-opts:
-    path: /test
-  udp: true
-- name: yandex-604
-  server: yapc-1.adamhayward.co.uk
-  port: 35000
-  type: hysteria2
-  password: Yet-Another-Public-Config-1
-  auth: Yet-Another-Public-Config-1
-  sni: YAPC-1.afshin.ir
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: Yet-Another-Public-Config-1
-  udp: true
-- name: yandex-615
-  server: 47.129.14.196
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-621
-  server: 5.44.249.42
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-627
-  server: cache-giver-wife.stark-industries.solutions
-  port: 443
-  type: trojan
-  password: e6a2e741-0fce-440b-910c-b81325e2263a
-  skip-cert-verify: true
-  udp: true
-- name: yandex-628
-  server: usla.mjt000.com
-  port: 443
-  type: trojan
-  password: e4af2638-bb12-4e4a-84f1-a032e23ca63f
-  skip-cert-verify: true
-  udp: true
-- name: yandex-640
-  server: kz.mjt000.com
-  port: 443
-  type: trojan
-  password: ea17601d-8ebf-4431-b815-4d644821ca7e
-  skip-cert-verify: true
-  udp: true
-- name: yandex-651
-  server: us10.s2fjeyeeyafe.bond
-  port: 35789
-  type: hysteria2
-  password: 196d331c-9a7d-4a8a-990e-f8babff27412
-  auth: 196d331c-9a7d-4a8a-990e-f8babff27412
-  sni: us10.s2fjeyeeyafe.bond
-  skip-cert-verify: true
-  udp: true
-- name: yandex-653
-  server: 104.21.26.17
-  port: 443
-  type: trojan
-  password: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
-  sni: rrrRrRRrT.459.pp.ua
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /znQImc22ijDwVOkZfoq
-    headers:
-      Host: rrrRrRRrT.459.pp.ua
-  udp: true
-- name: yandex-654
-  server: 172.67.220.32
-  port: 443
-  type: trojan
-  password: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
-  sni: eEEfGty6.999836.XYz
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /XmTzATQPJv9RO3xr1D40NK
-    headers:
-      Host: eEEfGty6.999836.XYz
-  udp: true
-- name: yandex-655
-  server: 104.21.44.248
-  port: 443
-  type: vless
-  uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
-  tls: true
-  servername: EDfrT.frEEvPNatm2025.DPdNS.oRG
-  network: ws
-  ws-opts:
-    path: /O9jlBCbIm3xr1D40NK
-    headers:
-      Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
-- name: yandex-656
-  server: 172.67.219.196
-  port: 443
-  type: trojan
-  password: f108e0e2-5f12-42b6-9e67-1b2f073ffb2b
-  sni: CCcvfgt6.852224.dpdns.org
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /CA5bMmr2JMum8sDKRwvFCJq
-    headers:
-      Host: CCcvfgt6.852224.dpdns.org
-  udp: true
-- name: yandex-657
-  server: 172.67.135.37
-  port: 443
-  type: trojan
-  password: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
-  sni: rrrRrRRrT.459.pp.ua
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /znQImc22ijDwVOkZfoq
-    headers:
-      Host: rrrRrRRrT.459.pp.ua
-  udp: true
-- name: yandex-658
-  server: 172.67.206.152
-  port: 443
-  type: vless
-  uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
-  tls: true
-  servername: EDfrT.frEEvPNatm2025.DPdNS.oRG
-  network: ws
-  ws-opts:
-    path: /O9jlBCbIm3xr1D40NK
-    headers:
-      Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
-- name: yandex-664
-  server: 146.190.51.60
-  port: 33763
-  type: hysteria2
-  password: J8Had1nwTgkNvWNN0WrucWq38
-  auth: J8Had1nwTgkNvWNN0WrucWq38
-  skip-cert-verify: true
-  udp: true
-- name: yandex-665
-  server: 134.195.101.80
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-666
-  server: 134.195.101.81
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-667
-  server: 134.195.101.83
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-673
-  server: 23.247.137.73
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-674
-  server: 23.247.137.74
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-675
-  server: 23.247.137.158
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-676
-  server: 23.247.137.159
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-678
-  server: 23.247.137.162
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-681
-  server: 23.247.137.167
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-683
-  server: 88.210.36.107
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-687
-  server: 95.174.71.96
-  port: 2377
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: t0srmdxrm3xyjnvqz9ewlxb2myq7rjuv
-  plugin: obfs
-  plugin-opts:
-    mode: tls
-    host: (TG @WangCai2)16a89ef:154955
-  udp: true
-- name: yandex-689
-  server: 103.12.77.78
-  port: 34045
-  type: vless
-  uuid: d8dd94fd-540e-461d-b5d4-acebef02c22a
-  tls: true
-  reality-opts:
-    public-key: cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA
-    short-id: e8ab71d0
-  servername: visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me
-  client-fingerprint: chrome
+  sni: ''
+  skip-cert-verify: false
   network: tcp
-- name: yandex-690
-  server: 160.250.65.148
-  port: 34045
+  ws-opts: {}
+- name: 🇻🇳 VN 6
+  type: ss
+  server: 103.186.155.129
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 8
+  type: ss
+  server: 103.186.155.107
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 10
+  type: ss
+  server: 103.186.155.118
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 12
+  type: ss
+  server: 103.186.154.183
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 13
+  type: ss
+  server: 103.186.154.25
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 35
+  type: ss
+  server: 103.186.154.229
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 41
+  type: ss
+  server: 103.186.154.222
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 44
+  type: ss
+  server: 103.186.154.189
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 53
+  type: ss
+  server: 103.186.154.176
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 54
+  type: ss
+  server: 103.186.155.109
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 63
+  type: ss
+  server: 103.186.154.227
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 68
+  type: ss
+  server: 103.186.154.228
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 71
+  type: ss
+  server: 103.186.154.197
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 75
+  type: ss
+  server: 103.186.155.204
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 79
+  type: ss
+  server: 103.186.154.226
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 100
+  type: ss
+  server: 103.186.154.249
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 103
+  type: ss
+  server: 103.186.154.235
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 109
+  type: ss
+  server: 103.186.155.50
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 110
+  type: ss
+  server: 103.186.155.206
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 115
+  type: ss
+  server: 103.186.155.149
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 116
+  type: ss
+  server: 103.186.155.126
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 118
+  type: ss
+  server: 103.186.155.122
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 134
+  type: ss
+  server: 103.186.154.59
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 137
+  type: ss
+  server: 103.186.154.77
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 143
+  type: ss
+  server: 103.186.155.45
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 144
+  type: ss
+  server: 103.186.154.195
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 146
+  type: ss
+  server: 103.186.155.205
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 148
+  type: ss
+  server: 103.186.155.21
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 150
+  type: ss
+  server: 103.186.155.49
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 152
+  type: ss
+  server: 103.186.155.85
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 160
+  type: ss
+  server: 103.186.155.239
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 166
+  type: ss
+  server: 103.186.155.80
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 171
+  type: ss
+  server: 103.186.154.4
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 177
+  type: ss
+  server: 103.186.155.138
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 184
+  type: ss
+  server: 103.186.155.68
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 185
+  type: ss
+  server: 103.186.155.121
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 186
+  type: ss
+  server: 103.186.155.105
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 190
+  type: ss
+  server: 103.186.154.203
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 191
+  type: ss
+  server: 103.186.154.182
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 202
+  type: ss
+  server: 103.186.154.173
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 210
+  type: ss
+  server: 103.186.155.54
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 217
+  type: ss
+  server: 103.186.155.223
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 219
+  type: ss
+  server: 103.186.155.117
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 222
+  type: ss
+  server: 103.186.154.42
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 224
+  type: ss
+  server: 103.186.154.232
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 230
+  type: ss
+  server: 103.186.155.59
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 234
+  type: ss
+  server: 103.186.154.220
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 235
+  type: ss
+  server: 103.186.155.124
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 238
+  type: ss
+  server: 103.186.154.211
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 241
+  type: ss
+  server: 103.186.155.10
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 250
+  type: ss
+  server: 103.186.155.53
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 254
+  type: ss
+  server: 103.186.155.61
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 263
+  type: ss
+  server: 103.186.155.56
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 275
+  type: ss
+  server: 103.186.155.28
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 286
+  type: ss
+  server: 103.186.155.139
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 300
+  type: ss
+  server: 103.186.154.221
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 301
+  type: ss
+  server: 103.186.154.69
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 309
+  type: ss
+  server: 103.186.155.203
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇩🇪 DE 20
+  type: ss
+  server: 45.144.54.33
+  port: 34803
+  cipher: chacha20-ietf-poly1305
+  password: VSIQUn0dardKVld0Fja9PW
+  udp: true
+- name: 🇩🇪 DE 21
   type: vless
-  uuid: d8dd94fd-540e-461d-b5d4-acebef02c22a
-  tls: true
-  reality-opts:
-    public-key: cDaDzPr3PlS3NM8lreHZbdo-Mhqz8vMBzMSkHXhGIUA
-    short-id: e8ab71d0
-  servername: visit-this-invitation-link-to-join-tg-enkelte-notif.ekt.me
-  client-fingerprint: chrome
+  server: 171.22.173.206
+  port: 28931
+  uuid: c372b7b3-f0b9-4769-fef8-f2a1e3f293c3
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
   network: tcp
-- name: yandex-691
-  server: official.taipeicitygovernment.if.ua
-  port: 8443
-  type: trojan
-  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-  sni: official.taipeicitygovernment.if.ua
-  skip-cert-verify: true
+  ws-opts: {}
+- name: 🇩🇪 DE 24
+  type: ss
+  server: 45.144.54.33
+  port: 34803
+  cipher: chacha20-ietf-poly1305
+  password: rHZ6hQAhbsCv1JroMlxcmU
   udp: true
-- name: yandex-692
-  server: 103.168.56.77
+- name: 🇳🇱 NL 4
+  type: ss
+  server: 149.34.244.77
   port: 443
-  type: trojan
-  password: 4f2c305b-9a03-4493-b3e4-2dff2f1af8c9
-  skip-cert-verify: true
+  cipher: aes-128-gcm
+  password: shadowsocks
   udp: true
-- name: yandex-693
-  server: 132.145.51.172
-  port: 443
-  type: trojan
-  password: 02e653c9-7c93-46a9-999d-11834bd0c577
-  skip-cert-verify: true
+- name: 🇳🇱 NL 15
+  type: ss
+  server: 45.87.175.154
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: cvII85TrW6n0OGyfpHVS1u
   udp: true
-- name: yandex-694
-  server: official.tokyometropolis.kiev.ua
-  port: 2053
-  type: trojan
-  password: 96983eb4-c8f1-316e-ab00-500014ed3d8b
-  sni: official.tokyometropolis.kiev.ua
-  skip-cert-verify: true
+- name: 🇳🇱 NL 19
+  type: ss
+  server: 151.242.251.153
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
   udp: true
+- name: 🇳🇱 NL 22
+  type: ss
+  server: 193.29.139.157
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  udp: true
+- name: 🇳🇱 NL 33
+  type: ss
+  server: 151.242.251.147
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  udp: true
+- name: 🇸🇬 SG 2
+  type: ss
+  server: 192.53.172.74
+  port: 30013
+  cipher: chacha20-ietf-poly1305
+  password: 2df393ef-b5fa-4ffd-9af3-761034bf33e3
+  udp: true
+- name: 🇹🇭 TH 1
+  type: ss
+  server: 119.59.98.58
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇪🇪 EE 1
+  type: ss
+  server: 188.214.36.155
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇰🇭 KH 1
+  type: vmess
+  server: 143.92.41.155
+  port: 39632
+  uuid: 75404bed-ea79-4a03-ed28-cbbffa291286
+  alterId: 0
+  cipher: auto
+  network: tcp
+  tls: false
+  sni: null
+  ws-opts: {}
 proxy-groups:
 - name: 节点选择
   type: select
@@ -634,63 +928,106 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - yandex-664
-  - yandex-678
-  - yandex-687
-  - yandex-683
-  - yandex-676
-  - yandex-666
-  - yandex-674
-  - yandex-665
-  - yandex-673
-  - yandex-675
-  - yandex-667
-  - yandex-653
-  - yandex-654
-  - yandex-655
-  - yandex-658
-  - yandex-657
-  - yandex-656
-  - yandex-651
-  - yandex-586
-  - yandex-587
-  - yandex-590
-  - yandex-693
-  - yandex-592
-  - yandex-598
-  - yandex-563
-  - yandex-508
-  - yandex-510
-  - yandex-509
-  - yandex-562
-  - yandex-545
-  - yandex-559
-  - yandex-544
-  - yandex-621
-  - yandex-615
-  - yandex-604
-  - yandex-567
-  - yandex-602
-  - yandex-627
-  - yandex-497
-  - yandex-692
-  - yandex-689
-  - yandex-495
-  - yandex-690
-  - yandex-578
-  - yandex-691
-  - yandex-491
-  - yandex-576
-  - yandex-628
-  - yandex-579
-  - yandex-694
-  - yandex-550
-  - yandex-548
-  - yandex-681
-  - yandex-549
-  - yandex-547
-  - yandex-640
-  - yandex-499
+  - 🇺🇸 US 27
+  - 🇺🇸 US 458
+  - 🇺🇸 US 14
+  - 🇺🇸 US 157
+  - 🇺🇸 US 553
+  - 🇺🇸 US 657
+  - 🇺🇸 US 2
+  - 🇺🇸 US 7
+  - 🇺🇸 US 15
+  - 🇺🇸 US 164
+  - 🇺🇸 US 3
+  - 🇺🇸 US 18
+  - 🇺🇸 US 55
+  - 🇺🇸 US 98
+  - 🇺🇸 US 162
+  - 🇺🇸 US 217
+  - 🇺🇸 US 158
+  - 🇺🇸 US 70
+  - 🇺🇸 US 303
+  - 🇺🇸 US 9
+  - 🇺🇸 US 102
+  - 🇺🇸 US 469
+  - 🇺🇸 US 137
+  - 🇺🇸 US 874
+  - 🇳🇱 NL 4
+  - 🇩🇪 DE 21
+  - 🇳🇱 NL 33
+  - 🇳🇱 NL 19
+  - 🇸🇬 SG 2
+  - 🇩🇪 DE 20
+  - 🇩🇪 DE 24
+  - 🇳🇱 NL 22
+  - 🇳🇱 NL 15
+  - 🇬🇧 GB 17
+  - 🇺🇸 US 552
+  - 🇺🇸 US 560
+  - 🇪🇪 EE 1
+  - 🇨🇿 CZ 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 222
+  - 🇻🇳 VN 300
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 185
+  - 🇹🇭 TH 1
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 186
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 118
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 150
+  - 🇯🇵 JP 3
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 230
+  - 🇰🇭 KH 1
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 219
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 143
+  - 🇯🇵 JP 1
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -698,125 +1035,211 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - yandex-664
-  - yandex-678
-  - yandex-687
-  - yandex-683
-  - yandex-676
-  - yandex-666
-  - yandex-674
-  - yandex-665
-  - yandex-673
-  - yandex-675
-  - yandex-667
-  - yandex-653
-  - yandex-654
-  - yandex-655
-  - yandex-658
-  - yandex-657
-  - yandex-656
-  - yandex-651
-  - yandex-586
-  - yandex-587
-  - yandex-590
-  - yandex-693
-  - yandex-592
-  - yandex-598
-  - yandex-563
-  - yandex-508
-  - yandex-510
-  - yandex-509
-  - yandex-562
-  - yandex-545
-  - yandex-559
-  - yandex-544
-  - yandex-621
-  - yandex-615
-  - yandex-604
-  - yandex-567
-  - yandex-602
-  - yandex-627
-  - yandex-497
-  - yandex-692
-  - yandex-689
-  - yandex-495
-  - yandex-690
-  - yandex-578
-  - yandex-691
-  - yandex-491
-  - yandex-576
-  - yandex-628
-  - yandex-579
-  - yandex-694
-  - yandex-550
-  - yandex-548
-  - yandex-681
-  - yandex-549
-  - yandex-547
-  - yandex-640
-  - yandex-499
+  - 🇺🇸 US 27
+  - 🇺🇸 US 458
+  - 🇺🇸 US 14
+  - 🇺🇸 US 157
+  - 🇺🇸 US 553
+  - 🇺🇸 US 657
+  - 🇺🇸 US 2
+  - 🇺🇸 US 7
+  - 🇺🇸 US 15
+  - 🇺🇸 US 164
+  - 🇺🇸 US 3
+  - 🇺🇸 US 18
+  - 🇺🇸 US 55
+  - 🇺🇸 US 98
+  - 🇺🇸 US 162
+  - 🇺🇸 US 217
+  - 🇺🇸 US 158
+  - 🇺🇸 US 70
+  - 🇺🇸 US 303
+  - 🇺🇸 US 9
+  - 🇺🇸 US 102
+  - 🇺🇸 US 469
+  - 🇺🇸 US 137
+  - 🇺🇸 US 874
+  - 🇳🇱 NL 4
+  - 🇩🇪 DE 21
+  - 🇳🇱 NL 33
+  - 🇳🇱 NL 19
+  - 🇸🇬 SG 2
+  - 🇩🇪 DE 20
+  - 🇩🇪 DE 24
+  - 🇳🇱 NL 22
+  - 🇳🇱 NL 15
+  - 🇬🇧 GB 17
+  - 🇺🇸 US 552
+  - 🇺🇸 US 560
+  - 🇪🇪 EE 1
+  - 🇨🇿 CZ 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 222
+  - 🇻🇳 VN 300
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 185
+  - 🇹🇭 TH 1
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 186
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 118
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 150
+  - 🇯🇵 JP 3
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 230
+  - 🇰🇭 KH 1
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 219
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 143
+  - 🇯🇵 JP 1
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - yandex-664
-  - yandex-678
-  - yandex-687
-  - yandex-683
-  - yandex-676
-  - yandex-666
-  - yandex-674
-  - yandex-665
-  - yandex-673
-  - yandex-675
-  - yandex-667
-  - yandex-653
-  - yandex-654
-  - yandex-655
-  - yandex-658
-  - yandex-657
-  - yandex-656
-  - yandex-651
-  - yandex-586
-  - yandex-587
-  - yandex-590
-  - yandex-693
-  - yandex-592
-  - yandex-598
-  - yandex-563
-  - yandex-508
-  - yandex-510
-  - yandex-509
-  - yandex-562
-  - yandex-545
-  - yandex-559
-  - yandex-544
-  - yandex-621
-  - yandex-615
-  - yandex-604
-  - yandex-567
-  - yandex-602
-  - yandex-627
-  - yandex-497
-  - yandex-692
-  - yandex-689
-  - yandex-495
-  - yandex-690
-  - yandex-578
-  - yandex-691
-  - yandex-491
-  - yandex-576
-  - yandex-628
-  - yandex-579
-  - yandex-694
-  - yandex-550
-  - yandex-548
-  - yandex-681
-  - yandex-549
-  - yandex-547
-  - yandex-640
-  - yandex-499
+  - 🇺🇸 US 27
+  - 🇺🇸 US 458
+  - 🇺🇸 US 14
+  - 🇺🇸 US 157
+  - 🇺🇸 US 553
+  - 🇺🇸 US 657
+  - 🇺🇸 US 2
+  - 🇺🇸 US 7
+  - 🇺🇸 US 15
+  - 🇺🇸 US 164
+  - 🇺🇸 US 3
+  - 🇺🇸 US 18
+  - 🇺🇸 US 55
+  - 🇺🇸 US 98
+  - 🇺🇸 US 162
+  - 🇺🇸 US 217
+  - 🇺🇸 US 158
+  - 🇺🇸 US 70
+  - 🇺🇸 US 303
+  - 🇺🇸 US 9
+  - 🇺🇸 US 102
+  - 🇺🇸 US 469
+  - 🇺🇸 US 137
+  - 🇺🇸 US 874
+  - 🇳🇱 NL 4
+  - 🇩🇪 DE 21
+  - 🇳🇱 NL 33
+  - 🇳🇱 NL 19
+  - 🇸🇬 SG 2
+  - 🇩🇪 DE 20
+  - 🇩🇪 DE 24
+  - 🇳🇱 NL 22
+  - 🇳🇱 NL 15
+  - 🇬🇧 GB 17
+  - 🇺🇸 US 552
+  - 🇺🇸 US 560
+  - 🇪🇪 EE 1
+  - 🇨🇿 CZ 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 222
+  - 🇻🇳 VN 300
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 185
+  - 🇹🇭 TH 1
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 186
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 118
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 150
+  - 🇯🇵 JP 3
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 230
+  - 🇰🇭 KH 1
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 219
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 143
+  - 🇯🇵 JP 1
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
