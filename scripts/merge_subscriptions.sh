@@ -36,7 +36,8 @@ for i in "${!URLS[@]}"; do
   head -n 10 "$temp_file"
 
   echo "修复 $temp_file 中的 TLS 配置..."
-  sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g' "$temp_file"
+  # 处理 tls: "true"/"false" 和非布尔值（如 '' 或其他字符串）
+  sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g; s/tls: ""/tls: false/g; s/tls: "tls"/tls: true/g; s/tls: .*/tls: false/g' "$temp_file"
 
   # 检查 proxies 字段是否存在且非空
   if yq eval '.proxies | length > 0' "$temp_file" &> /dev/null; then
