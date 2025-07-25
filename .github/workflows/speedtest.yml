@@ -74,8 +74,6 @@ jobs:
 
         # 生成最终的 Clash 配置骨架
         echo "生成最终的 Clash 配置文件..."
-        # 在这里可以添加 Clash 配置的其他默认参数，如 port, mode 等
-        # 这是一个基础的 Clash 配置模板，只包含 proxies
         cat << EOF > "$FINAL_CLASH_CONFIG"
 # Clash 配置由 GitHub Actions 自动生成和排序
 port: 7890
@@ -88,7 +86,6 @@ external-controller: 127.0.0.1:9090
 proxies:
 EOF
         # 将合并后的代理列表追加到最终配置文件
-        # yq '.proxies' - 从 ALL_PROXIES_FILE 中提取 proxies 列表并输出为 YAML 格式
         cat "$ALL_PROXIES_FILE" | yq '.proxies' - >> "$FINAL_CLASH_CONFIG"
 
         # 检查最终合并的文件是否生成
@@ -105,14 +102,8 @@ EOF
       run: |
         echo "正在运行已上传的 'clash-speedtest'..."
         echo "将从修复后的本地文件 '${{ steps.download_fix_and_merge_subs.outputs.fixed_subs_path }}' 获取节点并进行测速。"
-        ./clash-speedtest \
-          -c "${{ steps.download_fix_and_merge_subs.outputs.fixed_subs_path }}" \
-          -output ./clash.yaml \
-          -download-size 5242880 \
-          -timeout 5s \
-          -concurrent 50 \
-          -upload-size 5242880
-        # ^^^^^ 再次确认：在每行的 '\' 字符后面，绝不能有任何空格 ^^^^^
+        # 将所有参数放在一行，避免多行反斜杠的语法问题
+        ./clash-speedtest -c "${{ steps.download_fix_and_merge_subs.outputs.fixed_subs_path }}" -output ./clash.yaml -download-size 5242880 -timeout 5s -concurrent 50 -upload-size 5242880
 
         EXIT_CODE=$?
         echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
