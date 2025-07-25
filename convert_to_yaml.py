@@ -5,6 +5,7 @@ import yaml
 import os
 import re
 import sys # 导入 sys 模块
+import traceback # 导入 traceback 模块
 from urllib.parse import urlparse, parse_qs
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -13,7 +14,8 @@ import hashlib
 # GitHub raw 链接列表
 urls = [
 
-  "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"]
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/input/v.txt" 
+]
 
 # Clash/Mihomo 配置模板 (基础结构，代理和代理组将动态填充)
 clash_config_template = {
@@ -174,7 +176,7 @@ def parse_vmess(vmess_link):
                 clash_proxy["servername"] = vmess_data.get('host', server) # sni
                 clash_proxy["skip-cert-verify"] = False # Default
 
-        # Add other network types if needed (e.g., http, grpc, h2)
+        # Add other network types if needed (e.g., grpc, h2)
         elif network == 'tcp' and tls:
             clash_proxy["tls"] = True
             clash_proxy["servername"] = vmess_data.get('host', server) # sni
@@ -246,10 +248,9 @@ def parse_vless(vless_link):
                 clash_proxy["fingerprint"] = fp
             if pbk:
                 clash_proxy["publicKey"] = pbk
+            if flow: # Add flow if present (e.g., for reality)
+                clash_proxy["flow"] = flow
         
-        if flow: # Add flow if present (e.g., for reality)
-            clash_proxy["flow"] = flow
-
         if network == 'ws':
             clash_proxy["network"] = "ws"
             clash_proxy["ws-path"] = params.get('path', '/')
@@ -513,7 +514,8 @@ def get_session():
 
 def generate_file_hash(content):
     """生成内容的MD5哈希值，用于判断内容是否改变。"""
-    return hashlib.md5(content.encode('utf-8')).hexdigest()
+    # Ensure content is a string, then encode to utf-8 bytes for hashing
+    return hashlib.md5(str(content).encode('utf-8')).hexdigest()
 
 def process_url(session, url, all_proxies, processed_filenames):
     try:
@@ -703,10 +705,11 @@ def process_url(session, url, all_proxies, processed_filenames):
 
     except requests.RequestException as e:
         print(f"无法获取或解析 {url}: {e}", file=sys.stderr)
+        sys.exit(1) # 请求失败也应该让工作流失败
     except Exception as e:
         print(f"处理 {url} 时发生意外错误: {e}", file=sys.stderr)
-        # 不在此处 sys.exit(1)，因为一个URL的失败不应停止整个工作流
-        # 但如果希望任何错误都导致失败，可以在这里加上 sys.exit(1)
+        traceback.print_exc(file=sys.stderr) # 打印完整的错误堆栈
+        sys.exit(1) # 任何未捕获的异常都应该让工作流失败
 
 def main():
     session = get_session()
