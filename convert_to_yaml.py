@@ -11,8 +11,9 @@ import hashlib
 
 # GitHub raw 链接列表
 urls = [
+  
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
-    
+
 ]
 
 # Clash/Mihomo 配置模板 (基础结构，代理和代理组将动态填充)
@@ -238,7 +239,7 @@ def parse_ss_link(link, index, url_filename):
                         elif config['network'] == 'grpc':
                             config['grpc-service-name'] = plugin_opts.get('serviceName', [''])[0]
                         
-                        if config.get('tls') and not config.get('sni'):
+                if config.get('tls') and not config.get('sni'):
                              config['sni'] = plugin_opts.get('host', [''])[0] or server
             
             if 'type' in params and not config.get('network'):
@@ -539,104 +540,77 @@ def parse_text_to_dict(text, url_filename):
                 break
     return config if config['proxies'] else None
 
-# 尝试解析文件内容
+# 尝试解析文件内容 - 修正语法错误和逻辑
 def parse_content(content, url_filename):
     content_preview = content[:100].replace('\n', ' ') + ('...' if len(content) > 100 else '')
     print(f"解析内容 ({url_filename}): {content_preview}")
 
-    # 尝试作为 YAML 解析
-    try:
-        config = yaml.safe_load(content)
-        if config and isinstance(config, dict) and 'proxies' in config and isinstance(config['proxies'], list):
-            for index, proxy in enumerate(config['proxies']):
-                if not isinstance(proxy, dict):
-                    print(f"警告: {url_filename} 中的代理列表包含非字典项，跳过: {proxy}")
-                    continue
-
-                if 'name' not in proxy:
-                    proxy['name'] = f"node-{url_filename}-{index}"
-                proxy.setdefault('udp', True)
-
-                if 'tls' in proxy:
-                    if isinstance(proxy['tls'], str):
-                        lower_tls = proxy['tls'].lower()
-                        if lower_tls == 'true':
-                            proxy['tls'] = True
-                        elif lower_tls == 'false':
-                            proxy['tls'] = False
-                        else:
-                            print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'tls' 字段是一个非布尔字符串 '{proxy['tls']}'。尝试转换为 False。")
-                            proxy['tls'] = False
-                    elif not isinstance(proxy['tls'], bool):
-                        print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'tls' 字段类型异常 '{type(proxy['tls'])}'。尝试转换为布尔值。")
-                        proxy['tls'] = bool(proxy['tls'])
-                
-                if 'port' in proxy and not isinstance(proxy['port'], int):
-                    try:
-                        proxy['port'] = int(str(proxy['port']))
-                    except ValueError:
-                        print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
-                        del proxy['port']
-
-            return config if config['proxies'] else None
-    except yaml.YAMLError as e:
-        print(f"YAML 解析失败 ({url_filename}): {e}")
-
-    # 尝试作为 Base64 解码后解析为 JSON (通常是机场订阅)
+    # 尝试作为 Base64 解码后的内容
+    content_to_parse = content
     if is_valid_base64(content):
+        print(f"检测到 {url_filename} 内容为 Base64 编码，尝试解码...")
         try:
-            decoded = base64.urlsafe_b64decode(content.encode('utf-8') + b'==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
+            decoded_content = base64.urlsafe_b64decode(content.encode('utf-8') + b'==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
+            # 检查是否需要再次解码（如双重Base64）
+            if is_valid_base64(decoded_content) and len(decoded_content) > 100:
+                print(f"检测到 {url_filename} 解码后仍为 Base64 编码，再次解码...")
+                decoded_content = base64.urlsafe_b64decode(decoded_content.encode('utf-8') + b'==' * (-len(decoded_content) % 4)).decode('utf-8', errors='ignore')
+            content_to_parse = decoded_content
+        except (base64.binascii.Error, UnicodeDecodeError) as e:
+            print(f"Base64 解码失败 ({url_filename}): {e}. 继续尝试原始内容解析。")
+            # 如果解码失败，使用原始内容尝试后续解析
+
+    # 首先尝试作为 YAML/JSON 解析
+    try:
+        config = yaml.safe_load(content_to_parse)
+        
+        if config and isinstance(config, dict):
+            if 'proxies' in config and isinstance(config['proxies'], list):
+                for index, proxy in enumerate(config['proxies']):
+                    if not isinstance(proxy, dict):
+                        print(f"警告: {url_filename} 中的代理列表包含非字典项，跳过: {proxy}")
+                        continue
+
+                    if 'name' not in proxy:
+                        proxy['name'] = f"node-{url_filename}-{index}"
+                    proxy.setdefault('udp', True)
+
+                    if 'tls' in proxy:
+                        if isinstance(proxy['tls'], str):
+                            lower_tls = proxy['tls'].lower()
+                            if lower_tls == 'true':
+                                proxy['tls'] = True
+                            elif lower_tls == 'false':
+                                proxy['tls'] = False
+                            else:
+                                print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'tls' 字段是一个非布尔字符串 '{proxy['tls']}'。尝试转换为 False。")
+                                proxy['tls'] = False
+                        elif not isinstance(proxy['tls'], bool):
+                            print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'tls' 字段类型异常 '{type(proxy['tls'])}'。尝试转换为布尔值。")
+                            proxy['tls'] = bool(proxy['tls'])
+                    
+                    if 'port' in proxy and not isinstance(proxy['port'], int):
+                        try:
+                            proxy['port'] = int(str(proxy['port']))
+                        except ValueError:
+                            print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
+                            del proxy['port']
+                return config if config['proxies'] else None # 返回解析成功的代理配置
+            elif isinstance(config, list) and all(isinstance(item, str) for item in config):
+                 # 如果是列表且所有元素都是字符串，尝试作为链接列表解析
+                return parse_text_to_dict(content_to_parse, url_filename)
+        elif isinstance(config, list) and all(isinstance(item, str) for item in config):
+            # 如果是列表且所有元素都是字符串，尝试作为链接列表解析
+            return parse_text_to_dict(content_to_parse, url_filename)
             
-            # 尝试用YAML加载，可以处理JSON
-            try:
-                config = yaml.safe_load(decoded)
-            except yaml.YAMLError:
-                config = json.loads(decoded)
-            
-            if config and isinstance(config, dict):
-                if 'proxies' in config and isinstance(config['proxies'], list):
-                    for index, proxy in enumerate(config['proxies']):
-                        if not isinstance(proxy, dict):
-                            print(f"警告: 解码后 {url_filename} 的代理列表包含非字典项，跳过: {proxy}")
-                            continue
+    except yaml.YAMLError as e:
+        print(f"YAML/JSON 解析失败 ({url_filename}): {e}. 尝试纯文本解析。")
+        pass # 继续尝试纯文本解析
 
-                        if 'name' not in proxy:
-                            proxy['name'] = f"node-{url_filename}-{index}"
-                        proxy.setdefault('udp', True)
-                        
-                        if 'tls' in proxy:
-                            if isinstance(proxy['tls'], str):
-                                lower_tls = proxy['tls'].lower()
-                                if lower_tls == 'true':
-                                    proxy['tls'] = True
-                                elif lower_tls == 'false':
-                                    proxy['tls'] = False
-                                else:
-                                    print(f"警告: 解码后代理 '{proxy.get('name', '未知')}' 的 'tls' 字段是一个非布尔字符串 '{proxy['tls']}'。尝试转换为 False。")
-                                    proxy['tls'] = False
-                            elif not isinstance(proxy['tls'], bool):
-                                print(f"警告: 解码后代理 '{proxy.get('name', '未知')}' 的 'tls' 字段类型异常 '{type(proxy['tls'])}'。尝试转换为布尔值。")
-                                proxy['tls'] = bool(proxy['tls'])
-                        
-                        if 'port' in proxy and not isinstance(proxy['port'], int):
-                            try:
-                                proxy['port'] = int(str(proxy['port']))
-                            except ValueError:
-                                print(f"警告: 解码后代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
-                                del proxy['port']
-                    return config if config['proxies'] else None
-                elif isinstance(config, list) and all(isinstance(item, str) for item in config):
-                    return parse_text_to_dict(decoded, url_filename)
+    # 如果 YAML/JSON 解析失败，或不是有效的代理配置，则尝试作为纯文本（链接列表）解析
+    config_from_text = parse_text_to_dict(content_to_parse, url_filename)
+    return config_from_text
 
-            elif isinstance(decoded, str):
-                return parse_text_to_dict(decoded, url_filename)
-
-        except (base64.binascii.Error, json.JSONDecodeError, yaml.YAMLError, UnicodeDecodeError) as e:
-            print(f"Base64 解码后解析失败 ({url_filename}): {e}")
-
-    # 尝试作为纯文本（通常是链接列表）解析
-    config = parse_text_to_dict(content, url_filename)
-    return config
 
 # 处理单个 URL，提取代理并去重后保存
 def process_url_and_save(url):
@@ -650,14 +624,18 @@ def process_url_and_save(url):
         if not (original_filename.endswith(('.yaml', '.yml'))): # 如果替换后也不是，就直接加
             original_filename += '.yaml'
 
+    output_directory = "sc"  # 定义输出目录为 "sc"
+    os.makedirs(output_directory, exist_ok=True) # 创建 'sc' 目录如果它不存在
+
     output_filename_base = original_filename.rsplit('.', 1)[0] # 文件名（不含扩展名）
     output_extension = original_filename.rsplit('.', 1)[1] if '.' in original_filename else 'yaml'
     
-    final_output_filename = os.path.join('sc', original_filename)
+    # 构建完整的文件路径，包括目录
+    final_output_filename = os.path.join(output_directory, original_filename)
     counter = 1
     # 检查文件名是否存在，如果存在则添加序号
     while os.path.exists(final_output_filename):
-        final_output_filename = os.path.join('sc', f"{output_filename_base}_{counter}.{output_extension}")
+        final_output_filename = os.path.join(output_directory, f"{output_filename_base}_{counter}.{output_extension}")
         counter += 1
 
     print(f"尝试获取 URL: {url}")
@@ -666,18 +644,6 @@ def process_url_and_save(url):
         response.raise_for_status()
         
         content = response.text
-        
-        # 检查是否是 Base64 编码，如果是，先解码
-        if is_valid_base64(content):
-            print(f"检测到 {original_filename} 内容为 Base64 编码，尝试解码...")
-            try:
-                decoded_content = base64.urlsafe_b64decode(content.encode('utf-8') + b'==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
-                if is_valid_base64(decoded_content) and len(decoded_content) > 100:
-                    print(f"检测到 {original_filename} 解码后仍为 Base64 编码，再次解码...")
-                    decoded_content = base64.urlsafe_b64decode(decoded_content.encode('utf-8') + b'==' * (-len(decoded_content) % 4)).decode('utf-8', errors='ignore')
-                content = decoded_content
-            except (base64.binascii.Error, UnicodeDecodeError) as e:
-                print(f"Base64 解码失败 ({original_filename}): {e}")
         
         # 解析内容，使用原始文件名作为标识
         config = parse_content(content, original_filename)
@@ -762,11 +728,12 @@ def process_url_and_save(url):
                     group['proxies'] = [p for p in group['proxies'] if p != 'DIRECT']
                     group['proxies'].insert(0, 'DIRECT')
 
-            # 保存到 sc 目录下的文件
+
+            # 保存到文件
             print(f"保存配置到 {final_output_filename}...")
             with open(final_output_filename, 'w', encoding='utf-8') as f:
                 yaml.dump(final_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False,
-                          indent=2, width=80)
+                           indent=2, width=80)
             print(f"文件 {final_output_filename} 已生成，包含 {len(unique_proxies)} 个去重后的节点。")
         else:
             print(f"从 {url} 未能提取到有效代理，不生成文件。")
@@ -778,9 +745,7 @@ def process_url_and_save(url):
 
 # 主函数
 def main():
-    # 创建 sc 目录（如果不存在）
-    os.makedirs('sc', exist_ok=True)
-    print("开始获取并按来源保存每个订阅链接的配置到 sc 目录...")
+    print("开始获取并按来源保存每个订阅链接的配置...")
     for url in urls:
         process_url_and_save(url)
     print("所有订阅链接处理完成。")
