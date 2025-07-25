@@ -238,7 +238,7 @@ def parse_ss_link(link, index, url_filename):
                         elif config['network'] == 'grpc':
                             config['grpc-service-name'] = plugin_opts.get('serviceName', [''])[0]
                         
-                if config.get('tls') and not config.get('sni'):
+                        if config.get('tls') and not config.get('sni'):
                              config['sni'] = plugin_opts.get('host', [''])[0] or server
             
             if 'type' in params and not config.get('network'):
@@ -603,7 +603,7 @@ def parse_content(content, url_filename):
                         if 'name' not in proxy:
                             proxy['name'] = f"node-{url_filename}-{index}"
                         proxy.setdefault('udp', True)
-                    
+                        
                         if 'tls' in proxy:
                             if isinstance(proxy['tls'], str):
                                 lower_tls = proxy['tls'].lower()
@@ -624,7 +624,7 @@ def parse_content(content, url_filename):
                             except ValueError:
                                 print(f"警告: 解码后代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
                                 del proxy['port']
-                return config if config['proxies'] else None
+                    return config if config['proxies'] else None
                 elif isinstance(config, list) and all(isinstance(item, str) for item in config):
                     return parse_text_to_dict(decoded, url_filename)
 
@@ -650,18 +650,14 @@ def process_url_and_save(url):
         if not (original_filename.endswith(('.yaml', '.yml'))): # 如果替换后也不是，就直接加
             original_filename += '.yaml'
 
-    output_directory = "sc"  # 定义输出目录为 "sc"
-    os.makedirs(output_directory, exist_ok=True) # 创建 'sc' 目录如果它不存在
-
     output_filename_base = original_filename.rsplit('.', 1)[0] # 文件名（不含扩展名）
     output_extension = original_filename.rsplit('.', 1)[1] if '.' in original_filename else 'yaml'
     
-    # 构建完整的文件路径，包括目录
-    final_output_filename = os.path.join(output_directory, original_filename)
+    final_output_filename = os.path.join('sc', original_filename)
     counter = 1
     # 检查文件名是否存在，如果存在则添加序号
     while os.path.exists(final_output_filename):
-        final_output_filename = os.path.join(output_directory, f"{output_filename_base}_{counter}.{output_extension}")
+        final_output_filename = os.path.join('sc', f"{output_filename_base}_{counter}.{output_extension}")
         counter += 1
 
     print(f"尝试获取 URL: {url}")
@@ -766,12 +762,11 @@ def process_url_and_save(url):
                     group['proxies'] = [p for p in group['proxies'] if p != 'DIRECT']
                     group['proxies'].insert(0, 'DIRECT')
 
-
-            # 保存到文件
+            # 保存到 sc 目录下的文件
             print(f"保存配置到 {final_output_filename}...")
             with open(final_output_filename, 'w', encoding='utf-8') as f:
                 yaml.dump(final_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False,
-                           indent=2, width=80)
+                          indent=2, width=80)
             print(f"文件 {final_output_filename} 已生成，包含 {len(unique_proxies)} 个去重后的节点。")
         else:
             print(f"从 {url} 未能提取到有效代理，不生成文件。")
@@ -783,7 +778,9 @@ def process_url_and_save(url):
 
 # 主函数
 def main():
-    print("开始获取并按来源保存每个订阅链接的配置...")
+    # 创建 sc 目录（如果不存在）
+    os.makedirs('sc', exist_ok=True)
+    print("开始获取并按来源保存每个订阅链接的配置到 sc 目录...")
     for url in urls:
         process_url_and_save(url)
     print("所有订阅链接处理完成。")
