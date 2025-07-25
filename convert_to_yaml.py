@@ -7,23 +7,20 @@ import re
 from urllib.parse import urlparse, parse_qs
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-import hashlib # 用于生成节点指纹
+import hashlib
 
 # GitHub raw 链接列表
-# 这里的链接应该包含所有您想要合并的订阅源
 urls = [
     "https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list.meta.yml",
     "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
     "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-
     "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml",
-
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
 ]
 
-# Clash/Mihomo 配置模板
+# Clash/Mihomo 配置模板 (基础结构，代理和代理组将动态填充)
 clash_config_template = {
     "port": 7890,
     "socks-port": 7891,
@@ -65,41 +62,6 @@ clash_config_template = {
             ]
         }
     },
-    "proxies": [],
-    "proxy-groups": [
-        {
-            "name": "节点选择",
-            "type": "select",
-            "proxies": [
-                "自动选择",
-                "故障转移",
-                "DIRECT",
-                "手动选择"
-            ]
-        },
-        {
-            "name": "自动选择",
-            "type": "url-test",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
-            "proxies": [],
-            "url": "http://www.pinterest.com",
-            "interval": 300,
-            "tolerance": 50
-        },
-        {
-            "name": "故障转移",
-            "type": "fallback",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
-            "proxies": [],
-            "url": "http://www.gstatic.com/generate_204",
-            "interval": 300
-        },
-        {
-            "name": "手动选择",
-            "type": "select",
-            "proxies": []
-        },
-    ],
     "rules": [
         "DOMAIN,app.adjust.com,DIRECT",
         "DOMAIN,bdtj.tagtic.cn,DIRECT",
@@ -139,13 +101,11 @@ def is_valid_base64(s):
     s_stripped = s.strip()
     if not s_stripped:
         return False
+    # Quick check for typical base64 chars, more robust check is in try-except
     if not re.match(r'^[A-Za-z0-9+/=]+$', s_stripped):
         return False
     try:
-        # Check if the length is suitable for base64 before decoding
-        # len % 4 == 0 or len % 4 == 2 or len % 4 == 3
-        # If len % 4 == 1, it's definitively invalid base64 padding
-        if len(s_stripped) % 4 == 1:
+        if len(s_stripped) % 4 == 1: # Invalid padding
             return False
         base64.urlsafe_b64decode(s_stripped + '==' * (-len(s_stripped) % 4))
         return True
@@ -154,10 +114,7 @@ def is_valid_base64(s):
 
 # 生成节点指纹
 def generate_node_fingerprint(node):
-    # 为不同类型的节点生成唯一的指纹
-    # 尽可能包含核心参数，排除不影响连接的参数（如名称、UDP等）
     fingerprint_data = []
-    
     node_type = node.get('type')
     fingerprint_data.append(node_type)
     fingerprint_data.append(node.get('server'))
@@ -166,14 +123,13 @@ def generate_node_fingerprint(node):
     if node_type == 'ss':
         fingerprint_data.append(node.get('cipher'))
         fingerprint_data.append(node.get('password'))
-        if node.get('plugin'): # SS插件也可能影响唯一性
+        if node.get('plugin'):
             fingerprint_data.append(node.get('plugin'))
             fingerprint_data.append(node.get('obfs-mode'))
             fingerprint_data.append(node.get('obfs-host'))
             fingerprint_data.append(node.get('network'))
             fingerprint_data.append(str(node.get('tls')))
             fingerprint_data.append(node.get('ws-path'))
-            # ws-headers['Host']
             if 'ws-headers' in node and 'Host' in node['ws-headers']:
                 fingerprint_data.append(node['ws-headers']['Host'])
 
@@ -199,7 +155,7 @@ def generate_node_fingerprint(node):
 
     elif node_type == 'vless':
         fingerprint_data.append(node.get('uuid'))
-        fingerprint_data.append(node.get('flow')) # for XTLS
+        fingerprint_data.append(node.get('flow'))
         fingerprint_data.append(node.get('network'))
         fingerprint_data.append(str(node.get('tls')))
         fingerprint_data.append(node.get('sni'))
@@ -210,9 +166,9 @@ def generate_node_fingerprint(node):
 
     elif node_type == 'trojan':
         fingerprint_data.append(node.get('password'))
-        fingerprint_data.append(str(node.get('tls'))) # Trojan通常都是TLS
+        fingerprint_data.append(str(node.get('tls')))
         fingerprint_data.append(node.get('sni'))
-        fingerprint_data.append(str(node.get('alpn'))) # ALPN
+        fingerprint_data.append(str(node.get('alpn')))
         fingerprint_data.append(node.get('network'))
         fingerprint_data.append(node.get('ws-path'))
         fingerprint_data.append(node.get('grpc-service-name'))
@@ -221,23 +177,21 @@ def generate_node_fingerprint(node):
             
     elif node_type == 'hysteria2':
         fingerprint_data.append(node.get('password'))
-        fingerprint_data.append(str(node.get('tls'))) # Hysteria2通常都是TLS
+        fingerprint_data.append(str(node.get('tls')))
         fingerprint_data.append(node.get('sni'))
-        fingerprint_data.append(str(node.get('alpn'))) # ALPN
+        fingerprint_data.append(str(node.get('alpn')))
         fingerprint_data.append(node.get('obfs'))
         fingerprint_data.append(node.get('obfs-password'))
 
-    # 将所有非None的数据连接起来生成哈希
     data_string = '_'.join([str(item) for item in fingerprint_data if item is not None and str(item).strip() != ''])
     return hashlib.sha256(data_string.encode('utf-8')).hexdigest()
 
 # 解析 Shadowsocks (ss://) 链接
-def parse_ss_link(link, index, url):
+def parse_ss_link(link, index, url_filename):
     try:
         if not link.startswith('ss://'):
             return None
         parts_raw = link.split('://', 1)[1]
-        
         name_part = ''
         if '#' in parts_raw:
             parts_raw, name_part = parts_raw.rsplit('#', 1)
@@ -245,7 +199,7 @@ def parse_ss_link(link, index, url):
         server_info_part = parts_raw
         encoded_part_and_maybe_host = parts_raw.split('@')[0]
         if '@' in parts_raw:
-            _encoded_part_unused, server_info_part = parts_raw.split('@', 1) # Redefine server_info_part
+            _encoded_part_unused, server_info_part = parts_raw.split('@', 1)
         
         decoded_b64 = base64.urlsafe_b64decode(encoded_part_and_maybe_host + '==' * (-len(encoded_part_and_maybe_host) % 4)).decode('utf-8', errors='ignore')
         method, password = decoded_b64.rsplit(':', 1)
@@ -257,8 +211,7 @@ def parse_ss_link(link, index, url):
         if not (method and password and server and port):
             return None
         
-        filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
-        name = name_part if name_part else f"ss-{filename}-{server}-{port}-{index}"
+        name = name_part if name_part else f"ss-{url_filename}-{server}-{port}-{index}"
         
         config = {
             'name': name,
@@ -297,18 +250,14 @@ def parse_ss_link(link, index, url):
                 config['network'] = params.get('type', ['tcp'])[0]
             if 'security' in params and params['security'][0].lower() == 'tls' and not config.get('tls'):
                 config['tls'] = True
-            if 'host' in params and config.get('network') == 'ws' and 'ws-opts' in config:
-                config['ws-opts']['headers']['Host'] = params.get('host', [''])[0]
-            if 'path' in params and config.get('network') == 'ws' and 'ws-opts' in config:
-                config['ws-opts']['path'] = params.get('path', [''])[0]
 
         return config
     except Exception as e:
-        print(f"解析 ss:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 ss:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
 # 解析 ShadowsocksR (ssr://) 链接
-def parse_ssr_link(link, index, url):
+def parse_ssr_link(link, index, url_filename):
     try:
         if not link.startswith('ssr://'):
             return None
@@ -325,8 +274,7 @@ def parse_ssr_link(link, index, url):
             pass
 
         params = parse_qs(parts[6].lstrip('/?')) if len(parts) > 6 else {}
-        filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
-        name = params.get('remarks', [f"ssr-{filename}-{server}-{port}-{index}"])[0]
+        name = params.get('remarks', [f"ssr-{url_filename}-{server}-{port}-{index}"])[0]
         try:
             name = base64.urlsafe_b64decode(name + '==' * (-len(name) % 4)).decode('utf-8', errors='ignore')
         except (base64.binascii.Error, UnicodeDecodeError):
@@ -355,11 +303,11 @@ def parse_ssr_link(link, index, url):
                 config['protocol-param'] = params.get('protoparam', [''])[0]
         return config
     except Exception as e:
-        print(f"解析 ssr:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 ssr:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
 # 解析 Vmess (vmess://) 链接
-def parse_vmess_link(link, index, url):
+def parse_vmess_link(link, index, url_filename):
     try:
         if not link.startswith('vmess://'):
             return None
@@ -368,8 +316,7 @@ def parse_vmess_link(link, index, url):
         config = json.loads(decoded)
         if not (config.get('add') and config.get('port') and config.get('id')):
             return None
-        filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
-        name = config.get('ps', f"vmess-{filename}-{index}")
+        name = config.get('ps', f"vmess-{url_filename}-{index}")
         
         tls_enabled = False
         if config.get('tls') == 'tls':
@@ -407,11 +354,11 @@ def parse_vmess_link(link, index, url):
 
         return parsed_config
     except Exception as e:
-        print(f"解析 vmess:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 vmess:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
 # 解析 VLESS (vless://) 链接
-def parse_vless_link(link, index, url):
+def parse_vless_link(link, index, url_filename):
     try:
         if not link.startswith('vless://'):
             return None
@@ -424,8 +371,7 @@ def parse_vless_link(link, index, url):
 
         if not (uuid and server and port):
             return None
-        filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
-        name = parts.split('#')[-1] if '#' in parts else f"vless-{filename}-{server}-{port}-{index}"
+        name = parts.split('#')[-1] if '#' in parts else f"vless-{url_filename}-{server}-{port}-{index}"
 
         config = {
             'name': name,
@@ -447,7 +393,7 @@ def parse_vless_link(link, index, url):
                 config['sni'] = params.get('sni', [''])[0] or server
                 if params.get('fp'):
                     config['fingerprint'] = params['fp'][0]
-                if params.get('allowinsecure', ['0'])[0] == '1': # Case-insensitive 'allowInsecure' in params
+                if params.get('allowinsecure', ['0'])[0] == '1':
                     config['skip-cert-verify'] = True
             elif security == 'xtls':
                 config['tls'] = True
@@ -464,23 +410,22 @@ def parse_vless_link(link, index, url):
             if network_type == 'ws':
                 config['ws-path'] = params.get('path', [''])[0]
                 config['ws-headers'] = {'Host': params.get('host', [''])[0]}
-                if params.get('maxearlydata', ['0'])[0] != '0': # Case-insensitive 'maxEarlyData'
+                if params.get('maxearlydata', ['0'])[0] != '0':
                     config['ws-max-early-data'] = int(params['maxearlydata'][0])
-                if params.get('earlydataheader', [''])[0]: # Case-insensitive 'earlyDataHeader'
+                if params.get('earlydataheader', [''])[0]:
                     config['ws-early-data-header'] = params['earlydataheader'][0]
             
             elif network_type == 'grpc':
-                config['grpc-service-name'] = params.get('servicename', [''])[0] # Case-insensitive 'serviceName'
+                config['grpc-service-name'] = params.get('servicename', [''])[0]
                 config['grpc-auto-tuning'] = (params.get('grpc-auto-tuning', ['0'])[0] == '1')
-
 
         return config
     except Exception as e:
-        print(f"解析 vless:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 vless:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
 # 解析 Trojan (trojan://) 链接
-def parse_trojan_link(link, index, url):
+def parse_trojan_link(link, index, url_filename):
     try:
         if not link.startswith('trojan://'):
             return None
@@ -495,7 +440,7 @@ def parse_trojan_link(link, index, url):
         server, port_str = server_port_part.split(':', 1)
         port = int(re.sub(r'[^0-9]', '', port_str))
         
-        name = parts.split('#')[-1] if '#' in parts else f"trojan-{urlparse(url).path.split('/')[-1].replace('.txt', '.yml')}-{server}-{port}-{index}"
+        name = parts.split('#')[-1] if '#' in parts else f"trojan-{url_filename}-{server}-{port}-{index}"
 
         if not (password and server and port):
             return None
@@ -533,11 +478,11 @@ def parse_trojan_link(link, index, url):
         
         return config
     except Exception as e:
-        print(f"解析 trojan:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 trojan:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
 # 解析 Hysteria2 (hysteria2://) 链接
-def parse_hysteria2_link(link, index, url):
+def parse_hysteria2_link(link, index, url_filename):
     try:
         if not link.startswith('hysteria2://'):
             return None
@@ -549,8 +494,7 @@ def parse_hysteria2_link(link, index, url):
         port = int(re.sub(r'[^0-9]', '', port_str))
         if not (password and server and port):
             return None
-        filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
-        name = parts.split('#')[-1] if '#' in parts else f"hysteria2-{filename}-{server}-{port}-{index}"
+        name = parts.split('#')[-1] if '#' in parts else f"hysteria2-{url_filename}-{server}-{port}-{index}"
         config = {
             'name': name,
             'type': 'hysteria2',
@@ -571,12 +515,11 @@ def parse_hysteria2_link(link, index, url):
             config['obfs-password'] = params.get('obfs-password', [''])[0]
         return config
     except Exception as e:
-        print(f"解析 hysteria2:// 链接失败 ({url}): {e}, 链接: {link[:len(link)//2]}...")
+        print(f"解析 hysteria2:// 链接失败 ({url_filename}): {e}, 链接: {link[:len(link)//2]}...")
         return None
 
-
 # 尝试解析文本为字典（支持指定节点格式）
-def parse_text_to_dict(text, url):
+def parse_text_to_dict(text, url_filename):
     config = {'proxies': []}
     lines = text.splitlines()
     parsers = {
@@ -593,32 +536,30 @@ def parse_text_to_dict(text, url):
             continue
         for prefix, parser in parsers.items():
             if line.startswith(prefix):
-                node = parser(line, index, url)
+                node = parser(line, index, url_filename)
                 if node:
-                    # 在这里统一处理tls的布尔值，防止后续报错
                     if 'tls' in node:
-                        node['tls'] = bool(node['tls']) # 强制转换为布尔值
+                        node['tls'] = bool(node['tls'])
                     config['proxies'].append(node)
                 break
     return config if config['proxies'] else None
 
 # 尝试解析文件内容
-def parse_content(content, url):
+def parse_content(content, url_filename):
     content_preview = content[:100].replace('\n', ' ') + ('...' if len(content) > 100 else '')
-    print(f"解析内容 ({url}): {content_preview}")
+    print(f"解析内容 ({url_filename}): {content_preview}")
 
     # 尝试作为 YAML 解析
     try:
         config = yaml.safe_load(content)
         if config and isinstance(config, dict) and 'proxies' in config and isinstance(config['proxies'], list):
-            filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
             for index, proxy in enumerate(config['proxies']):
                 if not isinstance(proxy, dict):
-                    print(f"警告: {url} 中的代理列表包含非字典项，跳过: {proxy}")
-                    continue # 跳过非字典项
+                    print(f"警告: {url_filename} 中的代理列表包含非字典项，跳过: {proxy}")
+                    continue
 
                 if 'name' not in proxy:
-                    proxy['name'] = f"node-{filename}-{index}"
+                    proxy['name'] = f"node-{url_filename}-{index}"
                 proxy.setdefault('udp', True)
 
                 if 'tls' in proxy:
@@ -635,17 +576,16 @@ def parse_content(content, url):
                         print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'tls' 字段类型异常 '{type(proxy['tls'])}'。尝试转换为布尔值。")
                         proxy['tls'] = bool(proxy['tls'])
                 
-                # 其他常见的类型修正，例如 port 确保是 int
                 if 'port' in proxy and not isinstance(proxy['port'], int):
                     try:
                         proxy['port'] = int(str(proxy['port']))
                     except ValueError:
                         print(f"警告: 代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
-                        del proxy['port'] # 移除错误端口，可能导致此节点无效
+                        del proxy['port']
 
             return config if config['proxies'] else None
     except yaml.YAMLError as e:
-        print(f"YAML 解析失败 ({url}): {e}")
+        print(f"YAML 解析失败 ({url_filename}): {e}")
 
     # 尝试作为 Base64 解码后解析为 JSON (通常是机场订阅)
     if is_valid_base64(content):
@@ -660,14 +600,13 @@ def parse_content(content, url):
             
             if config and isinstance(config, dict):
                 if 'proxies' in config and isinstance(config['proxies'], list):
-                    filename = urlparse(url).path.split('/')[-1].replace('.txt', '.yml')
                     for index, proxy in enumerate(config['proxies']):
                         if not isinstance(proxy, dict):
-                            print(f"警告: 解码后 {url} 的代理列表包含非字典项，跳过: {proxy}")
-                            continue # 跳过非字典项
+                            print(f"警告: 解码后 {url_filename} 的代理列表包含非字典项，跳过: {proxy}")
+                            continue
 
                         if 'name' not in proxy:
-                            proxy['name'] = f"node-{filename}-{index}"
+                            proxy['name'] = f"node-{url_filename}-{index}"
                         proxy.setdefault('udp', True)
                         
                         if 'tls' in proxy:
@@ -689,144 +628,166 @@ def parse_content(content, url):
                                 proxy['port'] = int(str(proxy['port']))
                             except ValueError:
                                 print(f"警告: 解码后代理 '{proxy.get('name', '未知')}' 的 'port' 字段无法转换为整数: {proxy['port']}。")
-                                del proxy['port'] # 移除错误端口
+                                del proxy['port']
                     return config if config['proxies'] else None
                 elif isinstance(config, list) and all(isinstance(item, str) for item in config):
-                    return parse_text_to_dict(decoded, url)
+                    return parse_text_to_dict(decoded, url_filename)
 
             elif isinstance(decoded, str):
-                return parse_text_to_dict(decoded, url)
+                return parse_text_to_dict(decoded, url_filename)
 
         except (base64.binascii.Error, json.JSONDecodeError, yaml.YAMLError, UnicodeDecodeError) as e:
-            print(f"Base64 解码后解析失败 ({url}): {e}")
+            print(f"Base64 解码后解析失败 ({url_filename}): {e}")
 
     # 尝试作为纯文本（通常是链接列表）解析
-    config = parse_text_to_dict(content, url)
+    config = parse_text_to_dict(content, url_filename)
     return config
 
-# 合并所有代理到一个总的proxies列表，并更新proxy-groups
-def merge_and_finalize_config(all_proxies_raw):
-    # --- 去重逻辑 ---
-    unique_proxies = []
-    seen_fingerprints = set()
-
-    for proxy in all_proxies_raw:
-        if not isinstance(proxy, dict):
-            print(f"跳过非字典代理项: {proxy}")
-            continue # 跳过不是字典的项
-
-        fingerprint = generate_node_fingerprint(proxy)
-        if fingerprint not in seen_fingerprints:
-            unique_proxies.append(proxy)
-            seen_fingerprints.add(fingerprint)
-        else:
-            print(f"发现重复代理，已跳过: {proxy.get('name', '未知名称')} ({proxy.get('server')}:{proxy.get('port')})")
+# 处理单个 URL，提取代理并去重后保存
+def process_url_and_save(url):
+    parsed_url = urlparse(url)
+    # 获取文件名，例如 'list.meta.yml' 或 'clash.yaml'
+    original_filename = parsed_url.path.split('/')[-1]
     
-    print(f"去重前代理总数: {len(all_proxies_raw)}, 去重后代理总数: {len(unique_proxies)}")
-    all_proxies = unique_proxies
-    # --- 去重逻辑结束 ---
+    # 确保文件名是 .yaml 结尾，如果不是，就添加 .yaml
+    if not original_filename.endswith(('.yaml', '.yml')):
+        original_filename = original_filename.replace('.txt', '.yaml') # 常见的txt转yaml
+        if not (original_filename.endswith(('.yaml', '.yml'))): # 如果替换后也不是，就直接加
+            original_filename += '.yaml'
 
-    final_config = clash_config_template.copy()
-    final_config['proxies'] = all_proxies
-
-    proxy_names = [proxy['name'] for proxy in all_proxies]
+    output_filename_base = original_filename.rsplit('.', 1)[0] # 文件名（不含扩展名）
+    output_extension = original_filename.rsplit('.', 1)[1] if '.' in original_filename else 'yaml'
     
-    for group in final_config['proxy-groups']:
-        if group['name'] in ['自动选择', '故障转移', '手动选择']:
-            # 过滤掉包含排除关键字的节点
-            filtered_names = [name for name in proxy_names if not re.search(r'(?i)中国|China|CN|电信|移动|联通', name)]
-            # 确保不重复添加
-            group['proxies'] = [] # 重置代理列表
-            group['proxies'].extend(filtered_names)
-            group['proxies'].insert(0, 'DIRECT') # 在列表开头添加DIRECT
+    final_output_filename = original_filename
+    counter = 1
+    # 检查文件名是否存在，如果存在则添加序号
+    while os.path.exists(final_output_filename):
+        final_output_filename = f"{output_filename_base}_{counter}.{output_extension}"
+        counter += 1
 
-        elif group['name'] == '节点选择':
-            default_proxies = ["自动选择", "故障转移", "DIRECT", "手动选择"]
-            group['proxies'] = [p for p in default_proxies if p in [g['name'] for g in final_config['proxy-groups']]]
-
-
-    # 确保每个代理组都有至少一个代理（例如DIRECT），防止空组导致Clash崩溃
-    for group in final_config['proxy-groups']:
-        if not group['proxies']: # 如果代理组为空
-            # 对于 'select' 类型，可以为空，或者只包含DIRECT
-            # 对于 'url-test' 和 'fallback'，必须有代理
-            if group['type'] == 'select' and group['name'] != '节点选择': # 只有子选择组可以只留DIRECT
-                 group['proxies'] = ['DIRECT']
-            elif group['type'] != 'select': # 非select类型必须有代理
-                group['proxies'].append('DIRECT') # 为空时添加DIRECT作为回退
+    print(f"尝试获取 URL: {url}")
+    try:
+        response = session.get(url, timeout=20)
+        response.raise_for_status()
         
-        # 移除重复的 DIRECT，如果意外添加了多次
-        if 'DIRECT' in group['proxies'] and group['proxies'].count('DIRECT') > 1:
-            group['proxies'] = [p for p in group['proxies'] if p != 'DIRECT']
-            group['proxies'].insert(0, 'DIRECT') # 确保DIRECT在最前面且只有一个
+        content = response.text
+        
+        # 检查是否是 Base64 编码，如果是，先解码
+        if is_valid_base64(content):
+            print(f"检测到 {original_filename} 内容为 Base64 编码，尝试解码...")
+            try:
+                decoded_content = base64.urlsafe_b64decode(content.encode('utf-8') + b'==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
+                if is_valid_base64(decoded_content) and len(decoded_content) > 100:
+                    print(f"检测到 {original_filename} 解码后仍为 Base64 编码，再次解码...")
+                    decoded_content = base64.urlsafe_b64decode(decoded_content.encode('utf-8') + b'==' * (-len(decoded_content) % 4)).decode('utf-8', errors='ignore')
+                content = decoded_content
+            except (base64.binascii.Error, UnicodeDecodeError) as e:
+                print(f"Base64 解码失败 ({original_filename}): {e}")
+        
+        # 解析内容，使用原始文件名作为标识
+        config = parse_content(content, original_filename)
+        
+        if config and isinstance(config, dict) and config.get('proxies'):
+            # 对当前文件内部的代理进行去重
+            unique_proxies = []
+            seen_fingerprints = set()
+            for proxy in config['proxies']:
+                if not isinstance(proxy, dict):
+                    print(f"跳过 {original_filename} 中非字典代理项: {proxy}")
+                    continue
+                fingerprint = generate_node_fingerprint(proxy)
+                if fingerprint not in seen_fingerprints:
+                    unique_proxies.append(proxy)
+                    seen_fingerprints.add(fingerprint)
+                else:
+                    print(f"发现 {original_filename} 中重复代理，已跳过: {proxy.get('name', '未知名称')} ({proxy.get('server')}:{proxy.get('port')})")
+            
+            print(f"从 {original_filename} 提取 {len(config['proxies'])} 个代理，去重后 {len(unique_proxies)} 个。")
+            
+            # 填充 Clash 配置模板
+            final_clash_config = clash_config_template.copy()
+            final_clash_config['proxies'] = unique_proxies
 
-    return final_config
+            # 更新代理组
+            proxy_names = [proxy['name'] for proxy in unique_proxies]
+            
+            final_clash_config['proxy-groups'] = [
+                {
+                    "name": "节点选择",
+                    "type": "select",
+                    "proxies": [
+                        "自动选择",
+                        "故障转移",
+                        "DIRECT",
+                        "手动选择"
+                    ]
+                },
+                {
+                    "name": "自动选择",
+                    "type": "url-test",
+                    "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+                    "proxies": [],
+                    "url": "http://www.pinterest.com",
+                    "interval": 300,
+                    "tolerance": 50
+                },
+                {
+                    "name": "故障转移",
+                    "type": "fallback",
+                    "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+                    "proxies": [],
+                    "url": "http://www.gstatic.com/generate_204",
+                    "interval": 300
+                },
+                {
+                    "name": "手动选择",
+                    "type": "select",
+                    "proxies": []
+                },
+            ]
 
-# 获取并解析所有链接的配置
-def fetch_and_parse_all_configs(urls):
-    all_proxies = []
-    for url in urls:
-        try:
-            print(f"尝试获取 URL: {url}")
-            response = session.get(url, timeout=20) # 增加超时时间到20秒
-            response.raise_for_status()
-            
-            content = response.text
-            
-            # 检查是否是 Base64 编码，如果是，先解码
-            if is_valid_base64(content):
-                print(f"检测到 {url} 内容为 Base64 编码，尝试解码...")
-                try:
-                    decoded_content = base64.urlsafe_b64decode(content.encode('utf-8') + b'==' * (-len(content) % 4)).decode('utf-8', errors='ignore')
-                    # 再次检查解码后的内容是否仍然是Base64（多重编码情况）
-                    # 增加长度判断，避免将短的、非Base64的字符串误判为多重编码
-                    if is_valid_base64(decoded_content) and len(decoded_content) > 100:
-                        print(f"检测到 {url} 解码后仍为 Base64 编码，再次解码...")
-                        decoded_content = base64.urlsafe_b64decode(decoded_content.encode('utf-8') + b'==' * (-len(decoded_content) % 4)).decode('utf-8', errors='ignore')
-                    content = decoded_content
-                except (base64.binascii.Error, UnicodeDecodeError) as e:
-                    print(f"Base64 解码失败 ({url}): {e}")
-            
-            config = parse_content(content, url)
-            if config and isinstance(config, dict) and config.get('proxies'):
-                all_proxies.extend(config['proxies'])
-                print(f"成功从 {url} 解析并添加 {len(config['proxies'])} 个代理。")
-            else:
-                print(f"跳过无效配置 ({url})：无有效节点或解析失败。")
-        except requests.RequestException as e:
-            print(f"无法获取或解析 {url}: {e}")
-        except Exception as e:
-            print(f"处理 {url} 时发生未知错误: {e}")
-    return all_proxies
+            for group in final_clash_config['proxy-groups']:
+                if group['name'] in ['自动选择', '故障转移', '手动选择']:
+                    filtered_names = [name for name in proxy_names if not re.search(r'(?i)中国|China|CN|电信|移动|联通', name)]
+                    group['proxies'] = []
+                    group['proxies'].extend(filtered_names)
+                    group['proxies'].insert(0, 'DIRECT')
+                elif group['name'] == '节点选择':
+                    default_proxies = ["自动选择", "故障转移", "DIRECT", "手动选择"]
+                    group['proxies'] = [p for p in default_proxies if p in [g['name'] for g in final_clash_config['proxy-groups']]]
+
+            for group in final_clash_config['proxy-groups']:
+                if not group['proxies']:
+                    if group['type'] == 'select' and group['name'] != '节点选择':
+                        group['proxies'] = ['DIRECT']
+                    elif group['type'] != 'select':
+                        group['proxies'].append('DIRECT')
+                
+                if 'DIRECT' in group['proxies'] and group['proxies'].count('DIRECT') > 1:
+                    group['proxies'] = [p for p in group['proxies'] if p != 'DIRECT']
+                    group['proxies'].insert(0, 'DIRECT')
+
+
+            # 保存到文件
+            print(f"保存配置到 {final_output_filename}...")
+            with open(final_output_filename, 'w', encoding='utf-8') as f:
+                yaml.dump(final_clash_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False,
+                          indent=2, width=80)
+            print(f"文件 {final_output_filename} 已生成，包含 {len(unique_proxies)} 个去重后的节点。")
+        else:
+            print(f"从 {url} 未能提取到有效代理，不生成文件。")
+
+    except requests.RequestException as e:
+        print(f"无法获取或解析 {url}: {e}")
+    except Exception as e:
+        print(f"处理 {url} 时发生未知错误: {e}")
 
 # 主函数
 def main():
-    print("开始获取和解析所有订阅链接...")
-    all_proxies_raw = fetch_and_parse_all_configs(urls)
-    
-    if not all_proxies_raw:
-        print("未从任何 URL 获取到有效代理，将生成仅包含 DIRECT 的配置文件。")
-        final_config = clash_config_template.copy()
-        final_config['proxies'] = [] # 清空代理列表
-        # 确保代理组只包含 DIRECT
-        for group in final_config['proxy-groups']:
-            group['proxies'] = ['DIRECT'] # 设置为只包含DIRECT
-        final_config['proxy-groups'][0]['proxies'] = ['DIRECT'] # 节点选择组也只留DIRECT
-    else:
-        print("开始合并和去重代理...")
-        final_config = merge_and_finalize_config(all_proxies_raw)
-
-    output_filename = "clash_merged_config.yaml"
-    print(f"保存最终合并配置文件到 {output_filename}...")
-    try:
-        with open(output_filename, 'w', encoding='utf-8') as f:
-            yaml.dump(final_config, f, allow_unicode=True, sort_keys=False, default_flow_style=False,
-                      indent=2, width=80)
-        print(f"所有配置已合并并保存到 {output_filename}。总节点数：{len(final_config.get('proxies', []))}")
-    except Exception as e:
-        print(f"保存配置文件失败: {e}")
-        # 如果保存失败，也可以选择将错误信息输出到日志文件或标准输出
-        # for debugging in GitHub Actions.
+    print("开始获取并按来源保存每个订阅链接的配置...")
+    for url in urls:
+        process_url_and_save(url)
+    print("所有订阅链接处理完成。")
 
 if __name__ == "__main__":
     main()
