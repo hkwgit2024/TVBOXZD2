@@ -1,0 +1,136 @@
+name: Clash 速度测试go
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # 每 6 小时运行一次
+
+env:
+  CONFIG_URL: "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+  OUTPUT_FILE: "clash_config.yaml"
+
+jobs:
+  speed-test-and-sort:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 缓存 pip 依赖
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: 安装 Python 依赖
+        run: python -m pip install PyYAML
+
+      - name: 赋予 clash-speedtest 执行权限
+        run: |
+          echo "赋予 'clash-speedtest' 执行权限..."
+          chmod +x ./clash-speedtest
+          if [ ! -f "./clash-speedtest" ]; then
+            echo "错误: 未找到 'clash-speedtest' 文件。请确保 'clash-speedtest' 文件已上传到仓库根目录。"
+            exit 1
+          fi
+
+      - name: 下载完整的 Clash 配置
+        id: download_config
+        run: |
+          echo "尝试从 ${{ env.CONFIG_URL }} 下载完整的 Clash 配置文件..."
+          curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "${{ env.OUTPUT_FILE }}" "${{ env.CONFIG_URL }}"
+          if [ $? -ne 0 ]; then
+            echo "错误: curl 命令执行失败，无法下载文件。可能是网络问题、URL错误或超时。"
+            exit 1
+          fi
+          if [ ! -f "${{ env.OUTPUT_FILE }}" ]; then
+            echo "错误: ${{ env.OUTPUT_FILE }} 文件不存在，即使 curl 成功也可能未能正确保存。"
+            exit 1
+          fi
+          if [ ! -s "${{ env.OUTPUT_FILE }}" ]; then
+            echo "错误: ${{ env.OUTPUT_FILE }} 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
+            echo "--- ${{ env.OUTPUT_FILE }} 文件内容 (如果存在) ---"
+            head -n 20 "${{ env.OUTPUT_FILE }}" || true
+            echo "----------------------------------------"
+            exit 1
+          fi
+          echo "${{ env.OUTPUT_FILE }} 文件下载成功，大小: $(du -h "${{ env.OUTPUT_FILE }}" | awk '{print $1}')"
+
+      - name: 过滤节点 (使用 Python 脚本)
+        run: |
+          if [ ! -f "filter_clash_nodes.py" ]; then
+            echo "错误: 未找到 'filter_clash_nodes.py' 文件。"
+            exit 1
+          fi
+          python filter_clash_nodes.py
+
+      - name: 验证过滤后的文件
+        run: |
+          if [ ! -s "filtered_nodes.yaml" ]; then
+            echo "错误: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
+            echo "--- filtered_nodes.yaml 内容 (前20行) ---"
+            head -n 20 filtered_nodes.yaml || true
+            echo "----------------------------------------"
+            exit 1
+          fi
+          echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
+          echo "filtered_nodes.yaml 节点数量: $(grep -c 'name:' filtered_nodes.yaml)"
+          echo "--- filtered_nodes.yaml 内容 (前50行) ---"
+          head -n 50 filtered_nodes.yaml || true
+          echo "----------------------------------------"
+
+      - name: 运行速度测试
+        run: |
+          echo "开始运行所有节点的测试..."
+          ./clash-speedtest \
+            -c filtered_nodes.yaml \
+            -output ./clash.yaml \
+            -download-size 1048576 \
+            -upload-size 1048576 \
+            -timeout 20s \
+            --concurrent 10 \
+            -f 'HK|TW|SG|JP|KR|RU' \
+            -max-latency 3000ms \
+            -min-download-speed 0.1 \
+            -min-upload-speed 0.05 \
+            -rename \
+            -fast
+          if [ $? -ne 0 ]; then
+            echo "错误: clash-speedtest 命令执行失败。"
+            exit 1
+          fi
+
+      - name: 验证生成的 clash.yaml 文件
+        id: check_file
+        run: |
+          if [ -f "clash.yaml" ]; then
+            echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
+            echo "--- clash.yaml 文件内容 (前50行) ---"
+            head -n 50 clash.yaml || true
+            echo "----------------------------------------"
+            if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then
+              echo "错误: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
+              exit 1
+            fi
+          else
+            echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
+            exit 1
+          fi
+
+      - name: 提交并推送排序后的配置文件
+        if: success() && steps.check_file.outcome == 'success'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）"
+          file_pattern: clash.yaml
+          branch: main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
