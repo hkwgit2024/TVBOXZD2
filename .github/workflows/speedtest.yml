@@ -44,6 +44,8 @@ jobs:
             echo "错误: 未生成有效的 'clash_subscriptions.yaml' 文件"
             exit 1
           fi
+          echo "clash_subscriptions.yaml 已生成，大小: $(du -h clash_subscriptions.yaml | awk '{print $1}')"
+          head -n 20 clash_subscriptions.yaml
           echo "fixed_subs_path=clash_subscriptions.yaml" >> $GITHUB_OUTPUT
 
       - name: 执行速度测试
