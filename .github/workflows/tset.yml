@@ -37,11 +37,6 @@ jobs:
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
           
-          # 增加 --connect-timeout (连接超时) 和 --max-time (总超时)
-          # 确保在长时间无响应时，curl 能主动退出而不是卡住
-          # -S (show-error), -L (follow redirects), -v (verbose)
-          # --retry 5 --retry-delay 5 (重试5次，每次间隔5秒)
-          # 注意：将整个 curl 命令放在一行，或者确保每行末尾都有正确的续行符 `\`
           curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
           
           if [ $? -ne 0 ]; then
@@ -57,7 +52,7 @@ jobs:
           if [ ! -s "$OUTPUT_FILE" ]; then
             echo "错误: $OUTPUT_FILE 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
             echo "--- $OUTPUT_FILE 文件内容 (如果存在) ---"
-            head -n 20 "$OUTPUT_FILE" || true # 打印文件前20行以供调试
+            head -n 20 "$OUTPUT_FILE" || true
             echo "----------------------------------------"
             exit 1
           fi
@@ -72,30 +67,27 @@ jobs:
         run: |
           if [ ! -s "filtered_nodes.yaml" ]; then
             echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
-            # 打印文件内容以帮助调试
             echo "--- filtered_nodes.yaml 内容 (前20行) ---"
             head -n 20 filtered_nodes.yaml || true
             echo "----------------------------------------"
-            # 如果您确定空文件是错误，可以在这里 exit 1
-            # exit 1 
+            exit 1 # 如果过滤后没有节点，后续测试没有意义，直接退出
           fi
           echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
 
       - name: 运行速度测试
         run: |
           echo "开始运行所有节点的测试..."
-          # 确保每个参数后面都有一个反斜杠 `\` 续行，除了最后一个参数
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
             -download-size 1048576 \
             -upload-size 1048576 \
-            -timeout 8s \
+            -timeout 15s \             # 放宽超时时间
             -concurrent 20 \
-            -f 'US|JP|SG|HK' \
-            -max-latency 800ms \
-            -min-download-speed 2 \
-            -min-upload-speed 1 \
+            # -f 'US|JP|SG|HK' \       # 移除此行，不再进行额外的地域过滤
+            -max-latency 1500ms \      # 放宽最大延迟
+            -min-download-speed 0.5 \  # 放宽最小下载速度 (0.5 MB/s 约等于 4 Mbps)
+            -min-upload-speed 0.2 \    # 放宽最小上传速度 (0.2 MB/s 约等于 1.6 Mbps)
             -rename \
             -fast
 
@@ -104,17 +96,24 @@ jobs:
         run: |
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
-            head -n 20 clash.yaml # 打印文件前 20 行以供检查
+            echo "--- clash.yaml 文件内容 (前50行) ---" # 打印更多行以便检查
+            head -n 50 clash.yaml || true
+            echo "----------------------------------------"
+            if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then # 检查是否有 'name:' 行来判断是否存在代理
+              echo "警告: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
+              # 这里不exit 1，让它继续提交空文件，但给出警告
+            fi
           else
             echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
             exit 1
           fi
 
       - name: 提交并推送排序后的配置文件
+        # 即使文件内容为空，只要文件生成了就尝试提交，但如果前面验证失败则不提交
         if: success() && steps.check_file.outcome == 'success'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "更新 Clash 配置：节点已按速度排序"
+          commit_message: "更新 Clash 配置：节点已按速度排序（放宽条件）"
           file_pattern: clash.yaml
           branch: main
         env:
