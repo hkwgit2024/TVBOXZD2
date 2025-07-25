@@ -32,7 +32,7 @@ jobs:
       - name: 下载完整的 Clash 配置
         id: download_config
         run: |
-          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml"
           OUTPUT_FILE="clash_config.yaml"
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
