@@ -15,6 +15,14 @@ jobs:
       - name: 检出仓库
         uses: actions/checkout@v4
 
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # 使用最新的 Python 3 版本
+
+      - name: 安装 Python 依赖
+        run: pip install PyYAML
+
       - name: 赋予 clash-speedtest 执行权限
         run: |
           echo "赋予 'clash-speedtest' 执行权限..."
@@ -24,18 +32,30 @@ jobs:
             exit 1
           fi
 
-      - name: 预过滤节点
+      - name: 下载完整的 Clash 配置
+        # 直接下载整个文件，而不是在下载时就过滤
         run: |
-          echo "过滤节点，只保留 US、JP、SG、HK..."
-          # 从指定 URL 下载 Clash 配置，并过滤只包含 US、Japan、Singapore、HK 的行
-          curl -s https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml | grep -E 'US|Japan|Singapore|HK' > filtered_nodes.yaml
-          # 检查过滤后的文件是否为空，如果为空则可能是上游文件有变动或过滤条件过严
-          if [ ! -s "filtered_nodes.yaml" ]; then
-            echo "警告: filtered_nodes.yaml 文件为空，请检查上游配置或过滤条件。"
-            # 可以选择在这里 exit 1 或继续，取决于是否允许空文件进行测试
-            # exit 1 
+          echo "下载完整的 Clash 配置文件..."
+          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
+          if [ ! -s "clash_config.yaml" ]; then
+            echo "错误: 未能下载到 clash_config.yaml 文件或文件为空。"
+            exit 1
           fi
 
+      - name: 过滤节点 (使用 Python 脚本)
+        run: python filter_clash_nodes.py
+        # 如果 Python 脚本执行失败，它会返回非零退出码，导致此步骤失败
+
+      - name: 验证过滤后的文件
+        run: |
+          if [ ! -s "filtered_nodes.yaml" ]; then
+            echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
+            # 如果没有节点进行测试，clash-speedtest 可能会报错，这里可以根据需要决定是否退出
+            # exit 1 
+          fi
+          echo "--- filtered_nodes.yaml 内容 (前20行) ---"
+          head -n 20 filtered_nodes.yaml
+          echo "----------------------------------------"
 
       - name: 运行速度测试
         run: |
@@ -43,11 +63,12 @@ jobs:
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash_subset_${{ matrix.node_subset }}.yaml \
-            -download-size 1048576 \ # 修正：1MB 等于 1048576 字节
-            -upload-size 1048576 \   # 修正：1MB 等于 1048576 字节
+            -download-size 1048576 \ # 修正：1MB = 1048576 字节
+            -upload-size 1048576 \   # 修正：1MB = 1048576 字节
             -timeout 8s \
             -concurrent 20 \
-            -f 'US|JP|SG|HK' \
+            -f 'US|JP|SG|HK' \ # 注意：这里的 -f 参数是 clash-speedtest 自身的过滤，和 Python 脚本的过滤是互补的。
+                               # Python 脚本保证了 YAML 格式，这里再做一层工具层面的过滤
             -max-latency 800ms \
             -min-download-speed 2 \ # 单位为 MB/s，2 意味着 2MB/s (约 16Mbps)
             -min-upload-speed 1 \   # 单位为 MB/s，1 意味着 1MB/s (约 8Mbps)
@@ -55,17 +76,13 @@ jobs:
             -fast
 
       - name: 合并测试结果
-        # 只有当所有子作业成功时才合并，这需要在 workflow_dispatch 触发时注意
-        # 对于 schedule 触发，如果一个子集失败，其他成功的也可能被取消
-        # 这里使用 always() 可以确保即使某个子集失败，也会尝试合并已生成的结果
-        if: always() # 修正：改为 always() 确保即使部分失败也尝试合并
+        # 即使部分子作业失败，也尝试合并已生成的结果
+        if: always() 
         run: |
           echo "合并所有子集的测试结果..."
-          # 确保只有文件存在时才 cat，避免因文件不存在而报错
           find . -name "clash_subset_*.yaml" -exec cat {} + > clash.yaml || true
-          # 如果 find 命令没有找到任何文件，clash.yaml 可能为空，所以添加一个检查
           if [ ! -s "clash.yaml" ]; then
-            echo "警告: clash.yaml 文件为空，可能没有节点通过测试或测试文件未生成。"
+            echo "警告: 'clash.yaml' 文件为空，可能没有节点通过测试或测试文件未生成。"
           fi
 
       - name: 验证生成的 clash.yaml 文件
