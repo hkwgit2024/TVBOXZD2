@@ -13,62 +13,110 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
-      id: checkout_repo # 给这个步骤一个ID，以便后续引用
 
     - name: Make Speedtest Tool Executable
       run: chmod +x ./speedtest-clash
 
-    - name: Run Speed Test and Sort
-      # 执行速度测试并排序，然后保存到 clash.yaml
+    - name: Run Speed Test and Capture Output
+      id: run_speedtest # 添加ID以便捕获输出
       run: |
-        echo "Starting speedtest-clash..."
+        echo "Starting speedtest-clash and capturing output..."
+        # 运行 speedtest-clash 并将完整的输出重定向到一个临时文件
+        # 同时也将输出打印到日志 (通过 tee)
         ./speedtest-clash \
           -c ./clash_config.yaml \
-          -output ./clash.yaml \
+          -output /dev/null \
           -sort b \
           -size 52428800 \
-          -timeout 10s
-        # 捕获 speedtest-clash 的退出码
+          -timeout 10s | tee speedtest_output.log
+        
         EXIT_CODE=$?
         echo "speedtest-clash exited with code: ${EXIT_CODE}"
         echo "--- End of speedtest-clash run ---"
 
+    - name: Extract Sorted Proxies and Generate clash.yaml
+      run: |
+        echo "Extracting sorted proxies from log and generating clash.yaml..."
+        # 使用 grep 查找包含 "json: " 的行
+        # 然后使用 sed 移除前缀 "json: "
+        # 接着使用 jq 格式化 JSON 并提取代理列表
+        # 最后，手动构建完整的 Clash YAML 配置
+        SORTED_PROXIES_JSON=$(grep -oP 'json: \[\{.*?\}\]' speedtest_output.log | sed 's/^json: //')
+        
+        if [ -z "$SORTED_PROXIES_JSON" ]; then
+          echo "Error: Could not extract sorted proxies JSON from the log. Please check 'speedtest_output.log'."
+          exit 1
+        fi
+
+        # 读取原始配置文件的其他部分（ports, rules, proxy-groups等）
+        # 这里假设 clash_config.yaml 包含了您希望保留的所有非代理部分
+        # 我们将代理部分替换掉。
+        # 注意：这需要您的 clash_config.yaml 是一个有效的 Clash YAML
+        # 且 proxy-groups 中引用的代理名称需要与排序后的代理名称匹配
+        # 这是一个简化的示例，如果您的原始配置复杂，可能需要更高级的YAML处理
+        
+        # 建议手动提取原始配置中除 'proxies:' 以外的所有内容
+        # 假设您的 clash_config.yaml 结构如下：
+        # port: 7890
+        # socks-port: 7891
+        # allow-lan: true
+        # mode: rule
+        # log-level: info
+        # external-controller: 0.0.0.0:9090
+        # proxies: [] # 这里是占位符，将被替换
+        # proxy-groups:
+        #   - name: "Proxy"
+        #     type: select
+        #     proxies: [...]
+        # rules:
+        #   - ...
+
+        # 一个更健壮的方法是使用yq工具，但为了简单，我们尝试用sed和grep
+        # 尝试从 clash_config.yaml 中提取除 proxies 之外的部分
+        # 警告：这个方法可能不适用于所有复杂的 YAML 结构
+        ORIGINAL_CONFIG_HEADER=$(awk '/^proxies:/ {exit} {print}' clash_config.yaml)
+        
+        # 确保代理列表被正确地缩进
+        FORMATTED_PROXIES=$(echo "$SORTED_PROXIES_JSON" | jq -c '.' | sed 's/},/},\n    /g' | sed 's/\[{\"_check\":null,/\[\n    {\"_check\":null,/g' | sed 's/}\]/}\n]/g' | sed 's/\]/\n  \]/' | sed 's/^/    /')
+
+        # 将头部和排序后的代理写入到 clash.yaml
+        echo "$ORIGINAL_CONFIG_HEADER" > clash.yaml
+        echo "proxies:" >> clash.yaml
+        echo "$FORMATTED_PROXIES" >> clash.yaml
+
+        echo "--- Generated clash.yaml ---"
+        cat clash.yaml # 打印生成的文件内容到日志中
+        echo "--------------------------"
+      env:
+        # 确保安装了 jq 工具，用于 JSON 处理
+        DEBIAN_FRONTEND: noninteractive # 避免交互式提示
+      run: |
+        sudo apt-get update && sudo apt-get install -y jq
+        # ... 上面的脚本内容 ...
+      
     - name: Verify Generated File and Directory
       # 检查 clash.yaml 是否存在，并列出工作目录内容
       run: |
-        echo "Verifying 'clash.yaml' and directory contents..."
-        # 打印当前工作目录路径
-        echo "Current working directory: $(pwd)"
-        # 列出所有文件和目录（包括隐藏文件）及其权限
+        echo "Verifying 'clash.yaml' file existence after generation..."
         ls -la
         
-        echo "---" # 分隔符
-        
-        # 再次检查 clash.yaml 文件是否存在
         if [ -f "clash.yaml" ]; then
-          echo "'clash.yaml' found! Its content should be committed."
+          echo "'clash.yaml' found! Content should be correct."
           echo "File size: $(du -h clash.yaml | awk '{print $1}')"
           echo "First 20 lines of 'clash.yaml':"
           head -n 20 clash.yaml
-          echo "--- End of 'clash.yaml' preview ---"
         else
-          echo "Error: 'clash.yaml' was NOT found in the current directory after speedtest-clash run."
-          # 如果文件不存在，我们可能需要强制失败此作业，以便更容易发现问题
-          # exit 1 
+          echo "Critical Error: 'clash.yaml' was NOT generated. Commit step will fail."
+          exit 1 # 如果文件未能生成，强制作业失败
         fi
-      id: check_file # 给予这个步骤一个ID
+      id: check_file_after_generation # 新的ID
 
     - name: Commit and Push Sorted Config
-      # 仅当前面的步骤成功时才执行此提交操作
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Update Clash config with sorted nodes by speed"
-        files: clash.yaml # 指定要提交的文件
-        branch: main # 确保您的主分支名称是 main (或 master)
-        # GITHUB_TOKEN 是由 GitHub Actions 自动提供的，通常不需要显式写出
+        files: clash.yaml
+        branch: main
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 显式设置token，有时有助于解决权限问题
-      # 确保仅在文件存在时尝试提交 (虽然 git-auto-commit-action 通常会自行处理)
-      # if: success() && steps.check_file.outcome == 'success' && -f 'clash.yaml' # 更严谨的条件，但先尝试简化
-      # 只要前面步骤没有致命错误，就尝试提交
-      if: success()
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: success() # 确保上一步成功（即 clash.yaml 已生成）
