@@ -40,8 +40,8 @@ jobs:
         git config user.email "action@github.com" # 设置 Git 用户邮箱
         
         # **确认的关键行：** 添加 'output/' 目录下的所有 .yaml 和 .yml 文件
-        git add output/*.yaml # <--- Changed from input/ to output/
-        git add output/*.yml  # <--- Changed from input/ to output/
+        git add intput/*.yaml # <--- Changed from input/ to output/
+        git add intput/*.yml  # <--- Changed from input/ to output/
         
         # 检查是否有实际改动需要提交，避免空提交
         git diff --cached --exit-code || \
