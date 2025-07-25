@@ -18,11 +18,10 @@ jobs:
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Capture Output
-      id: run_speedtest # 添加ID以便捕获输出
+      # 运行 speedtest-clash 并将完整的输出重定向到一个临时文件
+      # 同时也将输出打印到日志 (通过 tee)
       run: |
         echo "Starting speedtest-clash and capturing output..."
-        # 运行 speedtest-clash 并将完整的输出重定向到一个临时文件
-        # 同时也将输出打印到日志 (通过 tee)
         ./speedtest-clash \
           -c ./clash_config.yaml \
           -output /dev/null \
@@ -37,10 +36,14 @@ jobs:
     - name: Extract Sorted Proxies and Generate clash.yaml
       run: |
         echo "Extracting sorted proxies from log and generating clash.yaml..."
+        
+        # --- 安装 jq 工具 ---
+        sudo apt-get update && sudo apt-get install -y jq
+        echo "jq installed successfully."
+        # --- jq 安装结束 ---
+
         # 使用 grep 查找包含 "json: " 的行
         # 然后使用 sed 移除前缀 "json: "
-        # 接着使用 jq 格式化 JSON 并提取代理列表
-        # 最后，手动构建完整的 Clash YAML 配置
         SORTED_PROXIES_JSON=$(grep -oP 'json: \[\{.*?\}\]' speedtest_output.log | sed 's/^json: //')
         
         if [ -z "$SORTED_PROXIES_JSON" ]; then
@@ -48,36 +51,13 @@ jobs:
           exit 1
         fi
 
-        # 读取原始配置文件的其他部分（ports, rules, proxy-groups等）
-        # 这里假设 clash_config.yaml 包含了您希望保留的所有非代理部分
-        # 我们将代理部分替换掉。
-        # 注意：这需要您的 clash_config.yaml 是一个有效的 Clash YAML
-        # 且 proxy-groups 中引用的代理名称需要与排序后的代理名称匹配
-        # 这是一个简化的示例，如果您的原始配置复杂，可能需要更高级的YAML处理
-        
-        # 建议手动提取原始配置中除 'proxies:' 以外的所有内容
-        # 假设您的 clash_config.yaml 结构如下：
-        # port: 7890
-        # socks-port: 7891
-        # allow-lan: true
-        # mode: rule
-        # log-level: info
-        # external-controller: 0.0.0.0:9090
-        # proxies: [] # 这里是占位符，将被替换
-        # proxy-groups:
-        #   - name: "Proxy"
-        #     type: select
-        #     proxies: [...]
-        # rules:
-        #   - ...
-
-        # 一个更健壮的方法是使用yq工具，但为了简单，我们尝试用sed和grep
-        # 尝试从 clash_config.yaml 中提取除 proxies 之外的部分
-        # 警告：这个方法可能不适用于所有复杂的 YAML 结构
+        # 提取原始配置中 'proxies:' 之前的所有内容
+        # 注意：这依赖于 'proxies:' 这一行在原始配置中的位置
         ORIGINAL_CONFIG_HEADER=$(awk '/^proxies:/ {exit} {print}' clash_config.yaml)
         
-        # 确保代理列表被正确地缩进
-        FORMATTED_PROXIES=$(echo "$SORTED_PROXIES_JSON" | jq -c '.' | sed 's/},/},\n    /g' | sed 's/\[{\"_check\":null,/\[\n    {\"_check\":null,/g' | sed 's/}\]/}\n]/g' | sed 's/\]/\n  \]/' | sed 's/^/    /')
+        # 格式化代理 JSON，使其符合 Clash YAML 格式和缩进
+        # 使用 jq 确保 JSON 有效，并进行换行和缩进
+        FORMATTED_PROXIES=$(echo "$SORTED_PROXIES_JSON" | jq '.' | sed 's/^/    /')
 
         # 将头部和排序后的代理写入到 clash.yaml
         echo "$ORIGINAL_CONFIG_HEADER" > clash.yaml
@@ -87,13 +67,8 @@ jobs:
         echo "--- Generated clash.yaml ---"
         cat clash.yaml # 打印生成的文件内容到日志中
         echo "--------------------------"
-      env:
-        # 确保安装了 jq 工具，用于 JSON 处理
-        DEBIAN_FRONTEND: noninteractive # 避免交互式提示
-      run: |
-        sudo apt-get update && sudo apt-get install -y jq
-        # ... 上面的脚本内容 ...
-      
+      id: generate_clash_yaml # 给予此步骤一个ID
+
     - name: Verify Generated File and Directory
       # 检查 clash.yaml 是否存在，并列出工作目录内容
       run: |
@@ -109,7 +84,7 @@ jobs:
           echo "Critical Error: 'clash.yaml' was NOT generated. Commit step will fail."
           exit 1 # 如果文件未能生成，强制作业失败
         fi
-      id: check_file_after_generation # 新的ID
+      id: check_file_after_generation
 
     - name: Commit and Push Sorted Config
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -119,4 +94,5 @@ jobs:
         branch: main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      if: success() # 确保上一步成功（即 clash.yaml 已生成）
+      # 确保仅在文件存在且上一步成功时才尝试提交
+      if: success() && steps.check_file_after_generation.outcome == 'success' && -f 'clash.yaml'
