@@ -1,5 +1,5 @@
 # .github/workflows/speedtest.yml
-name: Clash Speed Test - Part 1 (Log Generation)
+name: Clash Speed Test and Sort
 
 on:
   workflow_dispatch: # Allows manual trigger
@@ -7,19 +7,26 @@ on:
     - cron: '0 */6 * * *' # Runs every 6 hours (adjust as needed)
 
 jobs:
-  speed-test-log:
+  speed-test-and-sort:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x' # Use the latest Python 3.x version
+
+    - name: Install Python Dependencies (PyYAML)
+      run: pip install PyYAML
+
     - name: Make Speedtest Tool Executable
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Capture All Output to Log File
       # Run speedtest-clash and redirect its full output (stdout + stderr) to speedtest_output.log
-      # This ensures all messages, including the JSON line, are captured.
       run: |
         echo "Starting speedtest-clash and capturing all output..."
         ./speedtest-clash \
@@ -33,25 +40,52 @@ jobs:
         echo "speedtest-clash exited with code: ${EXIT_CODE}"
         echo "--- End of speedtest-clash run ---"
         
-        # Verify the log file was created and show its content
-        echo "--- Content of speedtest_output.log ---"
+        # Print log file content for debugging in workflow logs
+        echo "--- Content of speedtest_output.log (for debugging) ---"
         if [ -f "speedtest_output.log" ]; then
           cat speedtest_output.log
         else
-          echo "Error: speedtest_output.log was not created!"
+          echo "Error: speedtest_output.log was not created! Exiting."
           exit 1
         fi
-        echo "---------------------------------------"
-      id: run_speedtest_and_log # Give this step an ID
+        echo "--------------------------------------------------------"
+      id: run_speedtest_and_log_capture # ID for this step
 
-    - name: Commit Generated Log File (for inspection)
-      # This step is temporary, just to easily inspect speedtest_output.log
+    - name: Generate Clash Config using Python Script
+      id: generate_clash_yaml # ID for this step
+      # Execute the external Python script
+      run: |
+        echo "Executing 'generate_clash_config.py' to generate clash.yaml..."
+        python generate_clash_config.py speedtest_output.log clash_config.yaml clash.yaml
+      # Ensure this step only runs if the log file was captured successfully
+      if: success() && steps.run_speedtest_and_log_capture.outcome == 'success'
+
+    - name: Verify Generated Clash.yaml File
+      # Check if clash.yaml exists and list directory contents
+      id: check_final_file # ID for this step
+      run: |
+        echo "Verifying 'clash.yaml' file existence after generation..."
+        ls -la
+        
+        if [ -f "clash.yaml" ]; then
+          echo "'clash.yaml' found! It should be ready for commit."
+          echo "File size: $(du -h clash.yaml | awk '{print $1}')"
+          echo "First 20 lines of 'clash.yaml':"
+          head -n 20 clash.yaml
+        else
+          echo "Critical Error: 'clash.yaml' was NOT generated. Commit step will fail."
+          exit 1 # Force job failure if file is not generated
+        fi
+      # Ensure this verification runs only if the generation step succeeded
+      if: success() && steps.generate_clash_yaml.outcome == 'success'
+
+    - name: Commit and Push Sorted Config
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Debug: Add speedtest_output.log for inspection"
-        files: speedtest_output.log # Commit the generated log file
-        branch: main
+        commit_message: "Update Clash config with sorted nodes by speed"
+        files: clash.yaml # Specify the file to commit
+        branch: main # Ensure your main branch name is 'main' (or 'master')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Only commit if the previous step succeeded and the log file exists
-      if: success() && steps.run_speedtest_and_log.outcome == 'success' && -f 'speedtest_output.log'
+      # Only attempt commit if previous steps succeeded and the file was verified to exist
+      if: success() && steps.check_final_file.outcome == 'success'
