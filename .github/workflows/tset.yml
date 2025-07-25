@@ -1,0 +1,72 @@
+name: Clash 速度测试与排序 250725
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  speed-test-and-sort:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_subset: [1, 2,  steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 赋予 clash_speedtest 执行权限
+        run: |
+          echo "赋予 'clash-speedtest' 执行权限..."
+          chmod +x ./clash-speedtest
+          if [ ! -f "./clash-speedtest" ]; then
+            echo "错误: 未找到 'clash-speedtest' 文件"
+            exit 1
+          fi
+
+      - name: 预过滤节点
+        run: |
+          echo "过滤节点，只保留 US、JP、SG..."
+          curl -s https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml | grep -E 'US|Japan|Singapore|HK' > filtered_nodes.yaml
+
+      - name: 运行速度测试
+        run: |
+          echo "测试节点子集 ${{ matrix.node_subset }}"
+          ./clash-speedtest \
+            -c filtered_nodes.yaml
+            -output ./clash_subset_${{ matrix.node_subset }}.yaml \
+            -download-size 1MB \
+            -upload-size 1MB \
+            -timeout 8s \
+            -concurrent 20 \
+            -f 'US|JP|SG|HK' \
+            -max-latency 800ms \
+            -min-download-speed 2 \
+            -min-upload-speed 1 \
+            -rename
+            - -fast # 可选：仅测试延迟
+        - name: 合并测试结果
+          if: success()
+          run: |
+            echo "合并所有子集的测试结果..."
+            cat clash_subset_*.yaml
+ > clash.yaml
+        - name: 验证生成的 clash.yaml 文件夹
+          id: check_file
+          run: |
+            if [ -f "clash.yaml" ]; then
+              echo "  'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
+              head -n
+ 20 clash.yaml
+            else
+              echo "错误: 未生成 'clash.yaml'"
+              exit 1
+            fi
+        - name: 提交并推送排序后的配置文件
+          if: success() && steps.check_file.outcome == 'success'
+          uses: stefanzweifel/git-auto-commit-action@v5
+          with:
+            commit_message: "更新 Clash 配置：节点已按速度排序"
+            files: clash.yaml
+            branch: main
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
