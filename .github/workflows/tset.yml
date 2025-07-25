@@ -32,6 +32,7 @@ jobs:
       - name: 下载完整的 Clash 配置
         id: download_config
         run: |
+          # --- 核心修改点：更新 CONFIG_URL 为用户提供的新地址 ---
           CONFIG_URL="https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml"
           OUTPUT_FILE="clash_config.yaml"
           
@@ -79,14 +80,13 @@ jobs:
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 524288 \   # 减小测试文件大小
-            -upload-size 524288 \     # 减小测试文件大小
-            -timeout 30s \            # 增加超时时间
+            -download-size 524288 \
+            -upload-size 524288 \
+            -timeout 30s \
             -concurrent 50 \
-            -f 'HK|TW|SG|JP|KR|RU' \
-            -max-latency 5000ms \     # 增加最大延迟
-            -min-download-speed 0 \   # 允许任何下载速度
-            -min-upload-speed 0 \     # 允许任何上传速度
+            -max-latency 5000ms \
+            -min-download-speed 0 \
+            -min-upload-speed 0 \
             -rename \
             -fast
 
