@@ -30,25 +30,25 @@ jobs:
           fi
 
       - name: 下载完整的 Clash 配置
-        id: download_config # 为此步骤添加 ID 以便后续引用其状态
+        id: download_config
         run: |
           CONFIG_URL="https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
           OUTPUT_FILE="clash_config.yaml"
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
           
-          # 使用 -S (show-error), -L (follow redirects), -v (verbose)
-          # --retry 5 --retry-delay 5 (重试5次，每次间隔5秒) 增强下载稳定性
-          # --output $OUTPUT_FILE 确保输出到文件
-          curl -S -L -v --retry 5 --retry-delay 5 --output "$OUTPUT_FILE" "$CONFIG_URL"
+          # 增加 --connect-timeout (连接超时) 和 --max-time (总超时)
+          # 确保在长时间无响应时，curl 能主动退出而不是卡住
+          # -S (show-error), -L (follow redirects), -v (verbose)
+          # --retry 5 --retry-delay 5 (重试5次，每次间隔5秒)
+          # 注意：将整个 curl 命令放在一行，或者确保每行末尾都有正确的续行符 `\`
+          curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
           
-          # 检查 curl 的退出状态码
           if [ $? -ne 0 ]; then
-            echo "错误: curl 命令执行失败，无法下载文件。请检查 URL 或网络连接。"
+            echo "错误: curl 命令执行失败，无法下载文件。可能是网络问题、URL错误或超时。"
             exit 1
           fi
 
-          # 检查文件是否下载成功且不为空
           if [ ! -f "$OUTPUT_FILE" ]; then
             echo "错误: $OUTPUT_FILE 文件不存在，即使 curl 成功也可能未能正确保存。"
             exit 1
@@ -56,9 +56,8 @@ jobs:
           
           if [ ! -s "$OUTPUT_FILE" ]; then
             echo "错误: $OUTPUT_FILE 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
-            # 打印文件内容以帮助调试空文件问题
             echo "--- $OUTPUT_FILE 文件内容 (如果存在) ---"
-            head -n 20 "$OUTPUT_FILE" || true # 打印前20行，|| true 避免文件不存在时报错
+            head -n 20 "$OUTPUT_FILE" || true # 打印文件前20行以供调试
             echo "----------------------------------------"
             exit 1
           fi
@@ -73,27 +72,30 @@ jobs:
         run: |
           if [ ! -s "filtered_nodes.yaml" ]; then
             echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
-            # 如果没有节点进行测试，clash-speedtest 可能会报错。根据您的需求，如果空文件是不允许的，可以在这里 exit 1。
+            # 打印文件内容以帮助调试
+            echo "--- filtered_nodes.yaml 内容 (前20行) ---"
+            head -n 20 filtered_nodes.yaml || true
+            echo "----------------------------------------"
+            # 如果您确定空文件是错误，可以在这里 exit 1
             # exit 1 
           fi
-          echo "--- filtered_nodes.yaml 内容 (前20行) ---"
-          head -n 20 filtered_nodes.yaml
-          echo "----------------------------------------"
+          echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
 
       - name: 运行速度测试
         run: |
           echo "开始运行所有节点的测试..."
+          # 确保每个参数后面都有一个反斜杠 `\` 续行，除了最后一个参数
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 1048576 \ # 1MB = 1048576 字节
-            -upload-size 1048576 \   # 1MB = 1048576 字节
+            -download-size 1048576 \
+            -upload-size 1048576 \
             -timeout 8s \
             -concurrent 20 \
-            -f 'US|JP|SG|HK' \ # 注意：这里的 -f 参数是 clash-speedtest 自身的过滤，和 Python 脚本的过滤是互补的。
+            -f 'US|JP|SG|HK' \
             -max-latency 800ms \
-            -min-download-speed 2 \ # 单位为 MB/s (约 16Mbps)
-            -min-upload-speed 1 \   # 单位为 MB/s (约 8Mbps)
+            -min-download-speed 2 \
+            -min-upload-speed 1 \
             -rename \
             -fast
 
