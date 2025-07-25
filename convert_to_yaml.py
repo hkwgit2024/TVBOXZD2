@@ -11,12 +11,7 @@ import hashlib
 
 # GitHub raw 链接列表
 urls = [
-    "https://raw.githubusercontent.com/qjlxg/ss/refs/heads/master/list.meta.yml",
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/ss.txt",
-    "https://raw.githubusercontent.com/qjlxg/collectSub/refs/heads/main/config_all_merged_nodes.txt",
-    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml",
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml",
+
     "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
 ]
 
