@@ -12,7 +12,7 @@ import hashlib
 # GitHub raw 链接列表
 urls = [
   
-    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/input/v.txt"
 
 ]
 
