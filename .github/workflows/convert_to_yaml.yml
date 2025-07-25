@@ -33,7 +33,9 @@ jobs:
       run: python convert_to_yaml.py || { echo "Script execution failed"; exit 1; }
 
     - name: List generated files for debugging
-      run: ls -l sc
+      run: |
+        ls -l sc
+        cat sc/clash.yaml || echo "File sc/clash.yaml not found"
 
     - name: Commit YAML files
       run: |
@@ -43,7 +45,7 @@ jobs:
         if git diff --cached --quiet; then
           echo "No changes to commit."
         else
-          git commit -m "Update individual YAML configs"
+          git commit -m "Update individual YAML configs from $(date -u)"
           git push
         fi
       env:
