@@ -1,5 +1,6 @@
 # .github/workflows/speedtest.yml
 name: Clash 速度测试与排序 
+
 on:
   workflow_dispatch: # 允许手动触发
   schedule:
@@ -25,17 +26,20 @@ jobs:
           exit 1
         fi
       
-    - name: 运行速度测试并生成排序后的配置文件
-      # 直接调用仓库中已有的 clash-speedtest 工具，并使用其 -output 标志
+    - name: 运行速度测试并生成排序后的配置文件 (从多个在线 URL 获取节点)
+      # 直接调用仓库中已有的 clash-speedtest 工具
+      # -c 参数现在指向 GitHub Actions 变量中存储的多个远程 URL (逗号分隔)
       run: |
         echo "正在运行已上传的 'clash-speedtest'..."
+        echo "将从以下远程 URL 列表获取节点并进行测速："
+        echo "  ${{ vars.NODE_LIST_URLs }}" # 打印变量，方便检查
         ./clash-speedtest \
-          -c ./clash_config.yaml \
+          -c ${{ vars.NODE_LIST_URLs }} \ 
           -output ./clash.yaml \
-          -download-size 5242880 \
+          -download-size 5MB \ # 调整为 5MB，兼顾速度和带宽测量
           -timeout 5s \
-          -concurrent 38 \
-          -upload-size 20971520 
+          -concurrent 50 \ # 保持高并发数
+          -upload-size 5MB # 保持 20MB 上传测试大小
 
         EXIT_CODE=$?
         echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
@@ -65,7 +69,7 @@ jobs:
     - name: 提交并推送排序后的配置文件
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "更新 Clash 配置：节点已按速度排序 (via 已上传的 clash-speedtest)"
+        commit_message: "更新 Clash 配置：节点已按速度排序 (通过多个在线 URL 获取)"
         files: clash.yaml # 指定要提交的文件
         branch: main # 确保您的主分支名称是 'main' (或 'master')
       env:
