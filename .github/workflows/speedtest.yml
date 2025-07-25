@@ -2,9 +2,9 @@
 name: Clash 速度测试与排序
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # 每6小时运行一次
+    - cron: '0 */6 * * *'
 
 jobs:
   speed-test-and-sort:
@@ -51,7 +51,8 @@ jobs:
             sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g' "$temp_file"
 
             if yq e '.proxies | length > 0' "$temp_file" &> /dev/null; then
-              yq e -o yaml '. as $item ireduce ({}; .proxies += $item.proxies)' "$ALL_PROXIES" "$temp_file" > temp.yaml
+              echo "合并 $temp_file 到 $ALL_PROXIES..."
+              yq e '.proxies' "$temp_file" | yq e -o yaml '. as $item ireduce ({}; .proxies += $item)' "$ALL_PROXIES" - > temp.yaml
               mv temp.yaml "$ALL_PROXIES"
             else
               echo "警告: $temp_file 无有效 proxies，跳过"
