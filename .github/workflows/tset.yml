@@ -37,7 +37,6 @@ jobs:
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
           
-          # --- 核心修改点：将 $CONFIG_FILE 改为 $CONFIG_URL ---
           curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
           
           if [ $? -ne 0 ]; then
@@ -80,14 +79,14 @@ jobs:
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 1048576 \
-            -upload-size 1048576 \
-            -timeout 20s \
+            -download-size 524288 \   # 减小测试文件大小
+            -upload-size 524288 \     # 减小测试文件大小
+            -timeout 30s \            # 增加超时时间
             -concurrent 50 \
             -f 'HK|TW|SG|JP|KR|RU' \
-            -max-latency 3000ms \
-            -min-download-speed 0.1 \
-            -min-upload-speed 0.05 \
+            -max-latency 5000ms \     # 增加最大延迟
+            -min-download-speed 0 \   # 允许任何下载速度
+            -min-upload-speed 0 \     # 允许任何上传速度
             -rename \
             -fast
 
