@@ -32,7 +32,7 @@ jobs:
       - name: 下载完整的 Clash 配置
         id: download_config
         run: |
-          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.yaml"
+          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
           OUTPUT_FILE="clash_config.yaml"
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
@@ -83,12 +83,12 @@ jobs:
             -upload-size 1048576 \
             -timeout 15s \
             -concurrent 50 \
-            -f 'HK|TW|SG|JP|KR|RU' \ # <-- 关键修改：只保留靠近中国的地区，与Python脚本的过滤一致
+            -f 'HK|TW|SG|JP|KR|RU' \
             -max-latency 1500ms \
             -min-download-speed 0.5 \
             -min-upload-speed 0.2 \
             -rename \
-            -fast
+            -fast # <-- 关键修改：移除了此行末尾的 '\' 符号
 
       - name: 验证生成的 clash.yaml 文件
         id: check_file
