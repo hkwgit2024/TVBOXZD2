@@ -1,7 +1,9 @@
 name: Convert to YAML
 
 on:
+  workflow_dispatch:
   push:
+  
     branches:
       - convert_to_yaml.py
       - input
