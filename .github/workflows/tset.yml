@@ -35,11 +35,11 @@ jobs:
           # --- 核心修改点：更新 CONFIG_URL 为用户提供的新地址 ---
           CONFIG_URL="https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml"
           OUTPUT_FILE="clash_config.yaml"
-          
+
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
-          
+
           curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
-          
+
           if [ $? -ne 0 ]; then
             echo "错误: curl 命令执行失败，无法下载文件。可能是网络问题、URL错误或超时。"
             exit 1
@@ -49,7 +49,7 @@ jobs:
             echo "错误: $OUTPUT_FILE 文件不存在，即使 curl 成功也可能未能正确保存。"
             exit 1
           fi
-          
+
           if [ ! -s "$OUTPUT_FILE" ]; then
             echo "错误: $OUTPUT_FILE 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
             echo "--- $OUTPUT_FILE 文件内容 (如果存在) ---"
@@ -57,7 +57,7 @@ jobs:
             echo "----------------------------------------"
             exit 1
           fi
-          
+
           echo "$OUTPUT_FILE 文件下载成功，大小: $(du -h "$OUTPUT_FILE" | awk '{print $1}')"
 
       - name: 过滤节点 (使用 Python 脚本)
@@ -73,6 +73,20 @@ jobs:
             exit 1
           fi
           echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
+
+      # --- 新增步骤：备份旧的 clash.yaml 文件 ---
+      - name: 备份旧的 Clash 配置
+        # 只有当 clash.yaml 文件存在时才执行此步骤
+        if: success() && -f 'clash.yaml'
+        run: |
+          # 创建 'sc' 目录，如果它不存在的话
+          mkdir -p sc
+          # 获取当前的日期和时间，格式为 YYYYMMDD_HHMMSS
+          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+          # 将当前的 clash.yaml 复制到 'sc' 目录，并以时间戳命名
+          echo "正在备份旧的 clash.yaml 到 sc/clash_${TIMESTAMP}.yaml..."
+          cp clash.yaml sc/clash_${TIMESTAMP}.yaml
+          echo "旧配置备份完成。"
 
       - name: 运行速度测试
         run: |
@@ -110,8 +124,10 @@ jobs:
         if: success() && steps.check_file.outcome == 'success'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）"
-          file_pattern: clash.yaml
+          # 除了 clash.yaml，我们还需要提交 sc 文件夹中的备份文件
+          commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）并备份旧配置"
+          # 注意：这里 file_pattern 需要改为 'clash.yaml sc/' 来同时包含新配置和备份文件夹
+          file_pattern: "clash.yaml sc/"
           branch: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
