@@ -37,7 +37,7 @@ jobs:
           
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
           
-          curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
+          curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_FILE"
           
           if [ $? -ne 0 ]; then
             echo "错误: curl 命令执行失败，无法下载文件。可能是网络问题、URL错误或超时。"
@@ -81,12 +81,12 @@ jobs:
             -output ./clash.yaml \
             -download-size 1048576 \
             -upload-size 1048576 \
-            -timeout 20s \              # 增加超时时间
+            -timeout 20s \
             -concurrent 50 \
             -f 'HK|TW|SG|JP|KR|RU' \
-            -max-latency 3000ms \       # 增加最大延迟
-            -min-download-speed 0.1 \   # 降低最小下载速度
-            -min-upload-speed 0.05 \    # 降低最小上传速度
+            -max-latency 3000ms \
+            -min-download-speed 0.1 \
+            -min-upload-speed 0.05 \
             -rename \
             -fast
 
