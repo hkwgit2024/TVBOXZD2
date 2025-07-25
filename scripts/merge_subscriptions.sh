@@ -21,22 +21,36 @@ proxy_found=false
 for i in "${!URLS[@]}"; do
   url="${URLS[$i]}"
   temp_file="temp_subscriptions/sub_${i}.yaml"
+  raw_file="temp_subscriptions/sub_${i}_raw.yaml"
   echo "下载: $url"
-  if ! curl -s --fail --connect-timeout 10 "$url" -o "$temp_file"; then
+  if ! curl -s --fail --connect-timeout 10 "$url" -o "$raw_file"; then
     echo "警告: 无法下载 $url，跳过"
     continue
   fi
 
-  if [ ! -s "$temp_file" ]; then
-    echo "警告: $temp_file 为空，跳过"
+  if [ ! -s "$raw_file" ]; then
+    echo "警告: $raw_file 为空，跳过"
     continue
   fi
+
+  # 清理文件：移除 BOM 和非法字符
+  echo "清理 $raw_file 中的非法字符..."
+  sed 's/\r$//' "$raw_file" | sed '1s/^\xEF\xBB\xBF//' > "$temp_file"
 
   echo "调试: 显示 $temp_file 前10行内容..."
   head -n 10 "$temp_file"
 
+  # 验证 YAML 格式
+  echo "验证 $temp_file 的 YAML 格式..."
+  if ! yq eval '.' "$temp_file" &> /dev/null; then
+    echo "错误: $temp_file 包含无效的 YAML 格式，跳过"
+    echo "调试: 显示 $temp_file 完整内容..."
+    cat "$temp_file"
+    continue
+  fi
+
   echo "修复 $temp_file 中的 TLS 配置..."
-  # 处理 tls: "true"/"false" 和非布尔值（如 '' 或其他字符串）
+  # 处理 tls: "true"/"false"/"" 和其他非布尔值
   sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g; s/tls: ""/tls: false/g; s/tls: "tls"/tls: true/g; s/tls: .*/tls: false/g' "$temp_file"
 
   # 检查 proxies 字段是否存在且非空
