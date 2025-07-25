@@ -14,12 +14,19 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x' # 使用最新的 Python 3.x 版本
+
+    - name: Install PyYAML
+      run: pip install PyYAML
+
     - name: Make Speedtest Tool Executable
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Capture Output
-      # Run speedtest-clash and redirect its full output to a temporary file
-      # Also print output to the log (using tee)
+      # Run speedtest-clash and redirect its full output to a temporary log file
       run: |
         echo "Starting speedtest-clash and capturing output..."
         ./speedtest-clash \
@@ -27,50 +34,82 @@ jobs:
           -output /dev/null \
           -sort b \
           -size 52428800 \
-          -timeout 10s | tee speedtest_output.log
+          -timeout 10s > speedtest_output.log 2>&1 # 重定向所有输出到文件
         
         EXIT_CODE=$?
         echo "speedtest-clash exited with code: ${EXIT_CODE}"
         echo "--- End of speedtest-clash run ---"
+        # 打印日志文件内容，方便调试
+        echo "--- Content of speedtest_output.log ---"
+        cat speedtest_output.log
+        echo "---------------------------------------"
 
     - name: Extract Sorted Proxies and Generate clash.yaml
-      id: generate_clash_yaml # ID for this step
+      id: generate_clash_yaml
       run: |
-        echo "Extracting sorted proxies from log and generating clash.yaml..."
-        
-        # --- Install jq tool ---
-        sudo apt-get update && sudo apt-get install -y jq
-        echo "jq installed successfully."
-        # --- End jq installation ---
+        # 创建一个 Python 脚本文件
+        cat << 'EOF' > generate_config.py
+import json
+import yaml
+import sys
 
-        # Use grep to find the line containing "json: "
-        # Then use sed to remove the "json: " prefix
-        SORTED_PROXIES_JSON=$(grep -oP 'json: \[\{.*?\}\]' speedtest_output.log | sed 's/^json: //')
-        
-        if [ -z "$SORTED_PROXIES_JSON" ]; then
-          echo "Error: Could not extract sorted proxies JSON from the log. Please check 'speedtest_output.log'."
-          exit 1
-        fi
+def parse_and_generate(log_file, original_config_file, output_file):
+    sorted_proxies_json_str = ""
+    # Search for the line containing the JSON proxy list in the log file
+    with open(log_file, 'r') as f:
+        for line in f:
+            if '{"time":' in line and '"message":"json: [' in line:
+                try:
+                    log_entry = json.loads(line)
+                    message_content = log_entry.get('message', '')
+                    if message_content.startswith('json: ['):
+                        sorted_proxies_json_str = message_content[len('json: '):]
+                        break # Found the JSON, no need to read further
+                except json.JSONDecodeError:
+                    # Not a valid JSON log entry, skip
+                    continue
+    
+    if not sorted_proxies_json_str:
+        print(f"Error: Could not extract sorted proxies JSON from '{log_file}'. Exiting.")
+        sys.exit(1)
 
-        # Extract all content from clash_config.yaml before the 'proxies:' line
-        ORIGINAL_CONFIG_HEADER=$(awk '/^proxies:/ {exit} {print}' clash_config.yaml)
-        
-        # Format the proxy JSON for Clash YAML and apply indentation
-        # Use jq for pretty printing, then sed to add 4 spaces indentation
-        FORMATTED_PROXIES=$(echo "$SORTED_PROXIES_JSON" | jq '.' | sed 's/^/    /')
+    try:
+        proxies_data = json.loads(sorted_proxies_json_str)
+    except json.JSONDecodeError:
+        print(f"Error: Extracted string is not valid JSON: {sorted_proxies_json_str}. Exiting.")
+        sys.exit(1)
 
-        # Write the header and the sorted proxies to clash.yaml
-        echo "$ORIGINAL_CONFIG_HEADER" > clash.yaml
-        echo "proxies:" >> clash.yaml
-        echo "$FORMATTED_PROXIES" >> clash.yaml
+    # Load original Clash config
+    try:
+        with open(original_config_file, 'r', encoding='utf-8') as f:
+            original_config = yaml.safe_load(f)
+    except Exception as e:
+        print(f"Error: Could not load original config '{original_config_file}': {e}. Exiting.")
+        sys.exit(1)
 
-        echo "--- Generated clash.yaml ---"
-        cat clash.yaml # Print the generated file content to the log
-        echo "--------------------------"
+    # Replace the 'proxies' section with the sorted data
+    original_config['proxies'] = proxies_data
 
+    # Dump the modified config to the output file
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            # Use default_flow_style=False to ensure each proxy is on a new line
+            # sort_keys=False to preserve original key order in other sections
+            yaml.dump(original_config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
+    except Exception as e:
+        print(f"Error: Could not write output config to '{output_file}': {e}. Exiting.")
+        sys.exit(1)
+
+    print(f"Successfully generated {output_file}")
+    with open(output_file, 'r', encoding='utf-8') as f:
+        print(f.read()) # Print content for debugging
+EOF
+        # 运行 Python 脚本
+        python generate_config.py speedtest_output.log clash_config.yaml clash.yaml
+      
     - name: Verify Generated File and Directory
       # Check if clash.yaml exists, and list directory contents
-      id: check_file_after_generation # ID for this step
+      id: check_file_after_generation
       run: |
         echo "Verifying 'clash.yaml' file existence after generation..."
         ls -la
