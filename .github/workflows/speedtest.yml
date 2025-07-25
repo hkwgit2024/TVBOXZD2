@@ -14,13 +14,9 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Download Speedtest-Clash Tool (v0.2.4)
-      # 固定下载 v0.2.4 版本的 speedtest-clash 工具
-      run: |
-        TOOL_VERSION="v0.2.4" # 明确指定版本号
-        wget https://github.com/xiecang/speedtest-clash/releases/download/${TOOL_VERSION}/speedtest-clash-linux-amd64
-        mv speedtest-clash-linux-amd64 speedtest-clash
-        chmod +x speedtest-clash
+    - name: Make Speedtest Tool Executable
+      # 因为 speedtest-clash 已经存在于仓库中，我们只需要赋予它执行权限
+      run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Sort
       # 执行速度测试并排序，然后保存到 clash.yaml
