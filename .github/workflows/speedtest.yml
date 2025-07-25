@@ -1,6 +1,5 @@
 # .github/workflows/speedtest.yml
-name: Clash 速度测试与排序 (使用已上传的 clash-speedtest)
-
+name: Clash 速度测试与排序 
 on:
   workflow_dispatch: # 允许手动触发
   schedule:
@@ -35,8 +34,7 @@ jobs:
           -output ./clash.yaml \
           -download-size 52428800 \
           -timeout 10s \
-          -concurrent 4 # 并发测试可以加快速度，根据需要调整
-        # 同时也将 upload-size 调整为字节数，默认是 20MB
+          -concurrent 38 \
           -upload-size 20971520 
 
         EXIT_CODE=$?
