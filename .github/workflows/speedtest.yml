@@ -1,5 +1,5 @@
 # .github/workflows/speedtest.yml
-name: Clash 速度测试与排序 (使用 faceair/clash-speedtest)
+name: Clash 速度测试与排序 (使用已上传的 clash-speedtest)
 
 on:
   workflow_dispatch: # 允许手动触发
@@ -14,34 +14,22 @@ jobs:
     - name: 检出仓库
       uses: actions/checkout@v4
 
-    - name: 下载 faceair/clash-speedtest 工具
-      id: download_tool
+    - name: 赋予 clash-speedtest 执行权限
+      # 直接使用仓库中已上传的 clash-speedtest 文件
       run: |
-        echo "正在安装必要的工具：wget 和 jq..."
-        sudo apt-get update && sudo apt-get install -y wget jq
-        
-        echo "正在获取 faceair/clash-speedtest 最新 Linux_x86_64 版本的下载链接..."
-        # 从 GitHub API 获取最新 Release 的信息，然后解析出对应架构的下载链接
-        LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/faceair/clash-speedtest/releases/latest | \
-                           jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')
-
-        if [ -z "$LATEST_RELEASE_URL" ]; then
-          echo "错误: 无法找到 faceair/clash-speedtest 的最新 linux_amd64 版本发布包。"
+        echo "赋予仓库中已上传的 'clash-speedtest' 执行权限..."
+        chmod +x ./clash-speedtest
+        echo "'clash-speedtest' 已设置为可执行文件。"
+        # 验证文件是否存在
+        if [ ! -f "./clash-speedtest" ]; then
+          echo "错误: 未在仓库根目录找到 'clash-speedtest' 文件。请确保您已将其上传。"
           exit 1
         fi
-
-        echo "正在从以下地址下载 clash-speedtest: $LATEST_RELEASE_URL"
-        wget -q -O clash-speedtest "$LATEST_RELEASE_URL"
-        
-        echo "赋予 clash-speedtest 执行权限..."
-        chmod +x ./clash-speedtest
-        echo "clash-speedtest 下载并已设置为可执行文件。"
       
     - name: 运行速度测试并生成排序后的配置文件
-      # faceair/clash-speedtest 的 -output 标志可以直接写入 YAML 文件
-      # 工具默认会按速度（带宽）自动排序
+      # 直接调用仓库中已有的 clash-speedtest 工具，并使用其 -output 标志
       run: |
-        echo "正在运行 faceair/clash-speedtest..."
+        echo "正在运行已上传的 'clash-speedtest'..."
         ./clash-speedtest \
           -c ./clash_config.yaml \
           -output ./clash.yaml \
@@ -50,9 +38,9 @@ jobs:
           -concurrent 4 # 并发测试可以加快速度，根据需要调整
 
         EXIT_CODE=$?
-        echo "faceair/clash-speedtest 退出代码: ${EXIT_CODE}"
+        echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
         if [ "$EXIT_CODE" -ne 0 ]; then
-          echo "错误: clash-speedtest 返回了非零退出代码。请检查其输出日志。"
+          echo "错误: 'clash-speedtest' 返回了非零退出代码。请检查其输出日志。"
           exit 1
         fi
         echo "--- 速度测试运行结束 ---"
@@ -68,7 +56,7 @@ jobs:
           echo "文件大小: $(du -h clash.yaml | awk '{print $1}')"
           head -n 20 clash.yaml # 打印文件前20行供检查
         else
-          echo "严重错误: 'clash.yaml' 文件未能由 clash-speedtest 生成。"
+          echo "严重错误: 'clash.yaml' 文件未能由 'clash-speedtest' 生成。"
           exit 1 # 如果文件未生成，强制作业失败
         fi
       # 此步骤仅在上一步成功时运行
@@ -77,7 +65,7 @@ jobs:
     - name: 提交并推送排序后的配置文件
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "更新 Clash 配置：节点已按速度排序 (via faceair/clash-speedtest)"
+        commit_message: "更新 Clash 配置：节点已按速度排序 (via 已上传的 clash-speedtest)"
         files: clash.yaml # 指定要提交的文件
         branch: main # 确保您的主分支名称是 'main' (或 'master')
       env:
