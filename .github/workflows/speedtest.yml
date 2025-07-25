@@ -33,7 +33,7 @@ jobs:
           -c ./clash_config.yaml \
           -output ./clash.yaml \
           -download-size 5242880 \
-          -timeout 10s \
+          -timeout 5s \
           -concurrent 38 \
           -upload-size 20971520 
 
