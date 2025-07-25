@@ -655,6 +655,13 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
+- name: 🇻🇳 VN 235
+  type: ss
+  server: 103.186.155.124
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
 - name: 🇻🇳 VN 238
   type: ss
   server: 103.186.154.211
@@ -788,19 +795,12 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: 🇳🇱 NL 4-FAMQ
+- name: 🇳🇱 NL 4-rUcN
   type: ss
   server: 193.29.139.235
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇳🇱 NL 5
-  type: ss
-  server: 45.87.175.157
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
   udp: true
 - name: 🇳🇱 NL 6
   type: ss
@@ -823,7 +823,7 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: cvII85TrW6n0OGyfpHVS1u
   udp: true
-- name: 🇺🇸 US 2-44FM
+- name: 🇺🇸 US 2-nYEa
   type: vless
   server: zaintest.vuclip.com.zee.upigg.my.id
   port: 443
@@ -858,7 +858,7 @@ proxies:
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
-- name: 🇺🇸 US 9-qV4a
+- name: 🇺🇸 US 9-6cWa
   type: ss
   server: 37.19.198.243
   port: 443
@@ -886,31 +886,6 @@ proxies:
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
-- name: 🇺🇸 US 13
-  type: vmess
-  server: JJJjjjjjmMMmM.4444926.XYZ
-  port: 443
-  uuid: dc50eb1d-244d-4711-b168-a101a5e6fb1b
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: ''
-  ws-opts:
-    path: /awmqq79B17rfnpXiNaWb
-    headers:
-      Host: jjjjjjjjmmmmm.4444926.xyz
-- name: 🇺🇸 US 14-ta3j
-  type: vmess
-  server: 15.204.234.200
-  port: 41100
-  uuid: c7f169a3-2e9a-4894-ba53-7b2fa6fd08b4
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
 - name: 🇺🇸 US 16
   type: vless
   server: vip.arivganteng.biz.id
@@ -925,7 +900,7 @@ proxies:
     path: /ariv=27.0.234.74=2911
     headers:
       Host: vip.arivganteng.biz.id
-- name: 🇺🇸 US 18-b3kC
+- name: 🇺🇸 US 18-JtlW
   type: vmess
   server: p03.xiaohezi.it.eu.org
   port: 443
@@ -1017,31 +992,6 @@ proxies:
   tls: false
   sni: ''
   ws-opts: {}
-- name: 🇺🇸 US 28
-  type: vmess
-  server: FffvvVbnhJui8.222560.XYz
-  port: 443
-  uuid: 7701ddf5-6a48-401b-a3ec-8af52b6deb48
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: ''
-  ws-opts:
-    path: /mlyR5tmcKx3hweBopuhWEbIX
-    headers:
-      Host: FffvvVbnhJui8.222560.XYz
-- name: 🇺🇸 US 29
-  type: vmess
-  server: 198.2.218.216
-  port: 44883
-  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
 - name: 🇺🇸 US 30
   type: vmess
   server: sSsdCVfBGNjkI.931.PP.Ua
@@ -1091,6 +1041,20 @@ proxies:
     path: /azumase.ren
     headers:
       Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+- name: 🇭🇰 HK 1
+  type: vmess
+  server: xc133.meiziba5566.com
+  port: 443
+  uuid: 268f7e36-625d-4fba-dc73-fb87cf90a104
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: ''
+  ws-opts:
+    path: /268f7e36
+    headers:
+      Host: xc133.meiziba5566.com
 - name: 🇨🇭 CH 1
   type: ss
   server: 156.146.62.161
@@ -1098,6 +1062,17 @@ proxies:
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
+- name: 🇨🇭 CH 2
+  type: vmess
+  server: 23.166.88.183
+  port: 22324
+  uuid: 04621bae-ab36-11ec-b909-0242ac120002
+  alterId: 0
+  cipher: auto
+  network: tcp
+  tls: false
+  sni: ''
+  ws-opts: {}
 - name: 🇨🇭 CH 3
   type: vmess
   server: 186.190.215.193
@@ -1192,13 +1167,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: mps3FwmDjLrWaOVg
   udp: true
-- name: 🇬🇧 GB 2
-  type: ss
-  server: admin.c3.webramz.co
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: Bog0ELmMM9DSxDdQ
-  udp: true
 - name: 🇬🇧 GB 3
   type: vmess
   server: 51.38.64.209
@@ -1229,17 +1197,6 @@ proxies:
   server: 148.113.6.81
   port: 49882
   uuid: 6663a422-875c-44ee-9a25-3f7b334dd9f5
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
-- name: 🇮🇳 IN 2
-  type: vmess
-  server: 94.136.185.230
-  port: 10534
-  uuid: b01c7ef9-33ec-41f6-bfbf-77ddc4d21649
   alterId: 0
   cipher: auto
   network: tcp
@@ -1292,14 +1249,14 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 6-13hW
+- name: 🇻🇳 VN 6-lLJD
   type: ss
   server: 103.186.154.32
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 8-hJ6t
+- name: 🇻🇳 VN 8-pfFd
   type: ss
   server: 103.186.154.30
   port: 38388
@@ -1313,7 +1270,7 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 10-dea4
+- name: 🇻🇳 VN 10-9yXI
   type: ss
   server: 103.186.155.18
   port: 38388
@@ -1327,14 +1284,14 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 12-kBYo
+- name: 🇻🇳 VN 12-WJhG
   type: ss
   server: 103.186.154.20
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 13-nXnK
+- name: 🇻🇳 VN 13-eTwC
   type: ss
   server: 103.186.155.133
   port: 38388
@@ -1425,7 +1382,7 @@ proxies:
   cipher: aes-256-cfb
   password: f8f7aCzcPKbsF8p3
   udp: true
-- name: 🇯🇵 JP 1-HjMt
+- name: 🇯🇵 JP 1-e4zv
   type: ss
   server: 149.22.87.241
   port: 443
@@ -1474,7 +1431,7 @@ proxies:
     path: /?ed=2560
     headers:
       Host: jp.laoyoutiao.link
-- name: 🇺🇸 US 4-zkwz
+- name: 🇺🇸 US 4-vd8E
   type: vless
   server: cache.netflix.com.unlimited.spauu.web.id
   port: 80
@@ -1488,7 +1445,7 @@ proxies:
     path: /vl=35.219.50.99=443
     headers:
       Host: cache.netflix.com.unlimited.spauu.web.id
-- name: 🇺🇸 US 8-aqqZ
+- name: 🇺🇸 US 8-bwr0
   type: vless
   server: quiz.int.vidio.com.zee.upigg.my.id
   port: 443
@@ -1502,7 +1459,7 @@ proxies:
     path: /sgapl
     headers:
       Host: quiz.int.vidio.com.zee.upigg.my.id
-- name: 🇺🇸 US 11-Ihu4
+- name: 🇺🇸 US 11-sk0r
   type: vless
   server: svr.lufeng.pw
   port: 80
@@ -1516,7 +1473,7 @@ proxies:
     path: /id7
     headers:
       Host: svr.lufeng.pw
-- name: 🇺🇸 US 19-kvSN
+- name: 🇺🇸 US 19-O5bD
   type: vless
   server: app-stg.gopay.co.id.servpn.my.id
   port: 443
@@ -1544,7 +1501,7 @@ proxies:
     path: /?ed=2048fp=random
     headers:
       Host: hk.laoyoutiao.link
-- name: 🇺🇸 US 31-61pZ
+- name: 🇺🇸 US 31-Pm3p
   type: vless
   server: zaintest.vuclip.com.yaya.web.id
   port: 443
@@ -1558,7 +1515,7 @@ proxies:
     path: /incapsula
     headers:
       Host: zaintest.vuclip.com.yaya.web.id
-- name: 🇺🇸 US 36-amIE
+- name: 🇺🇸 US 36-M79s
   type: vless
   server: investors.spotify.com.lufeng.pw
   port: 80
@@ -2129,20 +2086,20 @@ proxies:
     path: /id2
     headers:
       Host: cfvless.zerostore.web.id
-- name: 🇺🇸 US 555
+- name: 🇺🇸 US 548
   type: vless
-  server: eeeeeeeeed.999864.xyz
+  server: 66tghji.191262.xyz
   port: 443
-  uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
+  uuid: 509ed9b7-8d64-4204-8ec8-6b749020ac3f
   security: tls
   tls: true
-  sni: EEeeeEeEEd.999864.xyZ
+  sni: 66tGHjI.191262.XyZ
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /3zsSOohi9huFfjEPpIlRig3qizHXb
+    path: /VlJKGXt3aXBStn7
     headers:
-      Host: EEeeeEeEEd.999864.xyZ
+      Host: 66tghji.191262.xyz
 - name: 🇺🇸 US 561
   type: ss
   server: 138.199.42.68
@@ -2150,34 +2107,20 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: 🇺🇸 US 567
+- name: 🇺🇸 US 563
   type: vmess
-  server: klo.986986.shop
+  server: SSsXXXCvBnmjKi.931.Pp.uA
   port: 443
-  uuid: b75c9731-408d-4aa6-8ae9-3857205113a1
+  uuid: da128246-33b0-4c88-a44e-d91e9e0a1e05
   alterId: 0
   cipher: auto
   network: ws
   tls: true
-  sni: klo.986986.shop
+  sni: sssxxxcvbnmjki.931.pp.ua
   ws-opts:
-    path: /nvjx6j7kbDQIQMZvbeVA9
+    path: /0FhUkqQUdxOhMB9JsgTazwz9
     headers:
-      Host: klo.986986.shop
-- name: 🇺🇸 US 568
-  type: vless
-  server: vvvvvvvvvvvv.999864.xyz
-  port: 443
-  uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
-  security: tls
-  tls: true
-  sni: vVvVVVvVVVvV.999864.xYZ
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /3zsSOohi9huFfjEPpIlRig3qizHXb
-    headers:
-      Host: vvvvvvvvvvvv.999864.xyz
+      Host: SSsXXXCvBnmjKi.931.Pp.uA
 - name: 🇺🇸 US 569
   type: ss
   server: 149.28.255.6
@@ -2476,13 +2419,6 @@ proxies:
   password: 225vlZuFDm
   sni: ''
   skip-cert-verify: false
-- name: 🇺🇸 US 690
-  type: ss
-  server: 23.177.185.63
-  port: 49454
-  cipher: chacha20-ietf-poly1305
-  password: t9BUYjJqGcDHX52KH7NRzD
-  udp: true
 - name: 🇺🇸 US 725
   type: vmess
   server: 33DeFrty6.444652.xYz
@@ -2655,6 +2591,20 @@ proxies:
     path: /33CYL4twIwItuzXyJ5XNeH1R1
     headers:
       Host: ddddfr.11890604.xyz
+- name: 🇺🇸 US 882
+  type: vless
+  server: xxscdfr5.iran.pp.ua
+  port: 443
+  uuid: 7248e825-887c-48b9-83bc-c26bc6392bf8
+  security: tls
+  tls: true
+  sni: xxsCDfr5.IRAN.pP.UA
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /W02wBrOOqlSUywV3ibrzzKXJGy3S1
+    headers:
+      Host: xxscdfr5.iran.pp.ua
 - name: 🇺🇸 US 883
   type: vless
   server: ssssssssssssfffffffgh.2032.pp.ua
@@ -2711,21 +2661,14 @@ proxies:
   password: 1i7nNVFc2w
   sni: ''
   skip-cert-verify: false
-- name: 🇬🇧 GB 1-QV0U
-  type: trojan
-  server: x6-england-amazon-v2-3s677.devefun.org
-  port: 1935
-  password: Egj8FiMcZi
-  sni: ''
-  skip-cert-verify: false
-- name: 🇬🇧 GB 4-Wwzx
+- name: 🇬🇧 GB 4-FIk6
   type: trojan
   server: x1-england-amazon-v2.devefun.org
   port: 1935
   password: DBOiTjHvc2
   sni: ''
   skip-cert-verify: false
-- name: 🇬🇧 GB 5-E3Kr
+- name: 🇬🇧 GB 5-cILd
   type: trojan
   server: x2-england-amazon-v2.devefun.org
   port: 1935
@@ -2792,21 +2735,21 @@ proxies:
   skip-cert-verify: false
   network: tcp
   ws-opts: {}
-- name: 🇫🇷 FR 1-wWY0
+- name: 🇫🇷 FR 1-qxGW
   type: trojan
   server: x1-france-linode-v2-m899o.devefun.org
   port: 1935
   password: 3mWfiXYB3g
   sni: ''
   skip-cert-verify: false
-- name: 🇫🇷 FR 2-o5Ki
+- name: 🇫🇷 FR 2-sohp
   type: trojan
   server: x4-france-scaleway-v2.devefun.org
   port: 1935
   password: HxUePECPLe
   sni: ''
   skip-cert-verify: false
-- name: 🇫🇷 FR 4-HiC3
+- name: 🇫🇷 FR 4-JY1f
   type: trojan
   server: x1-france-scaleway-v2.devefun.org
   port: 1935
@@ -2834,7 +2777,7 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: jMsh0stsWBPyaZcEUZbNGJ
   udp: true
-- name: 🇨🇦 CA 1-7SEZ
+- name: 🇨🇦 CA 1-snZo
   type: trojan
   server: x1-canada-linode-v2-fl879.devefun.org
   port: 1935
@@ -2855,42 +2798,35 @@ proxies:
   password: 0hHw5Sa8Ui
   sni: ''
   skip-cert-verify: false
-- name: 🇮🇱 IL 1
-  type: ss
-  server: 169.150.202.174
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: 🇻🇳 VN 1-KYIV
+- name: 🇻🇳 VN 1-jBUp
   type: ss
   server: 103.186.155.29
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 4-oIsy
+- name: 🇻🇳 VN 4-rnBf
   type: ss
   server: 103.186.154.46
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 16-KLcB
+- name: 🇻🇳 VN 16-tP23
   type: ss
   server: 103.186.154.191
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 17-Gp8S
+- name: 🇻🇳 VN 17-vu7n
   type: ss
   server: 103.186.154.56
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 18-lMcK
+- name: 🇻🇳 VN 18-C3EQ
   type: ss
   server: 103.186.154.204
   port: 38388
@@ -2904,21 +2840,21 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 20-dwYY
+- name: 🇻🇳 VN 20-kpvr
   type: ss
   server: 103.186.154.254
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 21-8mMN
+- name: 🇻🇳 VN 21-0po0
   type: ss
   server: 103.186.154.188
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 22-CYXV
+- name: 🇻🇳 VN 22-rCXB
   type: ss
   server: 103.186.154.247
   port: 38388
@@ -3376,13 +3312,6 @@ proxies:
 - name: 🇻🇳 VN 101
   type: ss
   server: 103.186.155.8
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 102
-  type: ss
-  server: 103.186.155.76
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -4143,13 +4072,6 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 252
-  type: ss
-  server: 103.186.155.144
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 253
   type: ss
   server: 103.186.155.39
@@ -4388,13 +4310,6 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 292
-  type: ss
-  server: 103.186.155.131
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 294
   type: ss
   server: 103.186.154.198
@@ -4486,20 +4401,27 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇩🇪 DE 3-js6p
+- name: 🇩🇪 DE 3-3H1y
   type: trojan
   server: x1-germany-linode-v2-jk001.devefun.org
   port: 1935
   password: 3aIMXgxQ3F
   sni: ''
   skip-cert-verify: false
-- name: 🇩🇪 DE 5-RMHe
+- name: 🇩🇪 DE 5-0hf7
   type: trojan
   server: x5-germany-amazon-v2-tw4od.devefun.org
   port: 1935
   password: 14JVxaniVQ
   sni: ''
   skip-cert-verify: false
+- name: 🇩🇪 DE 6-25Gh
+  type: ss
+  server: 94.159.96.245
+  port: 11902
+  cipher: chacha20-ietf-poly1305
+  password: 4XWfT6cCfv8Gl0pKM1T2H0
+  udp: true
 - name: 🇩🇪 DE 7
   type: trojan
   server: x6-germany-amazon-v2-8xhhs.devefun.org
@@ -4507,31 +4429,6 @@ proxies:
   password: AJiaFGPGOJ
   sni: ''
   skip-cert-verify: false
-- name: 🇩🇪 DE 8
-  type: vless
-  server: zzyd6dhd5.pet0er23mh21qq.com
-  port: 8080
-  uuid: 598a6cea-dfd2-4e97-9415-4571f742bf18
-  security: none
-  tls: false
-  sni: ''
-  skip-cert-verify: false
-  network: tcp
-  ws-opts: {}
-- name: 🇩🇪 DE 17
-  type: vmess
-  server: ov-germany4.09vpn.com
-  port: 8443
-  uuid: cfc66d8d-48b5-434f-b92d-22de1907ced7
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: ''
-  ws-opts:
-    path: /vmess/
-    headers:
-      Host: ov-germany4.09vpn.com
 - name: 🇩🇪 DE 25
   type: ss
   server: 80.92.204.106
@@ -4586,14 +4483,21 @@ proxies:
   skip-cert-verify: false
   network: tcp
   ws-opts: {}
-- name: 🇸🇪 SE 1-M9PS
+- name: 🇬🇷 GR 1
+  type: ss
+  server: 192.71.166.102
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇸🇪 SE 1-Mxk3
   type: trojan
   server: x1-sweden-linode-v2-71u92.devefun.org
   port: 1935
   password: 1CvlKYj1aU
   sni: ''
   skip-cert-verify: false
-- name: 🇸🇪 SE 2-J5aB
+- name: 🇸🇪 SE 2-1e34
   type: trojan
   server: x6-sweden-amazon-v2-11n66.devefun.org
   port: 1935
@@ -4614,35 +4518,35 @@ proxies:
   password: 1QmMHZRAyW
   sni: ''
   skip-cert-verify: false
-- name: 🇳🇱 NL 2-V9pt
+- name: 🇳🇱 NL 2-BH46
   type: trojan
   server: x1-amsterdam-linode-v2-9oqj5.devefun.org
   port: 1935
   password: 55OXUHdGtp
   sni: ''
   skip-cert-verify: false
-- name: 🇳🇱 NL 3-qOrq
+- name: 🇳🇱 NL 3-hKSY
   type: ss
   server: 193.29.139.209
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: 🇳🇱 NL 5-8lO7
+- name: 🇳🇱 NL 5-t8WW
   type: ss
   server: 149.34.244.72
   port: 443
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
-- name: 🇳🇱 NL 6-z9zt
+- name: 🇳🇱 NL 6-px8J
   type: ss
   server: 193.29.139.160
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: 🇳🇱 NL 8-4tsC
+- name: 🇳🇱 NL 8-rt82
   type: vless
   server: 77.91.122.176
   port: 2052
@@ -4656,7 +4560,7 @@ proxies:
     path: /
     headers:
       Host: zpixdadk1.kortiz.info
-- name: 🇳🇱 NL 9-tqRP
+- name: 🇳🇱 NL 9-MMlZ
   type: ss
   server: 193.29.139.227
   port: 8080
@@ -4691,6 +4595,13 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
+- name: 🇳🇱 NL 26
+  type: ss
+  server: 193.29.139.132
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  udp: true
 - name: 🇳🇱 NL 27
   type: ss
   server: ltnl15.saint.ydns.eu
@@ -4708,13 +4619,6 @@ proxies:
 - name: 🇳🇱 NL 31
   type: ss
   server: 193.29.139.168
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇳🇱 NL 32
-  type: ss
-  server: ltnl12.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
@@ -4758,7 +4662,7 @@ proxies:
   cipher: aes-256-cfb
   password: f8f7aCzcPKbsF8p3
   udp: true
-- name: 🇮🇳 IN 2-yKVl
+- name: 🇮🇳 IN 2-r0qy
   type: trojan
   server: x1-india-amazon-v2-n67m9.devefun.org
   port: 1935
@@ -4778,6 +4682,13 @@ proxies:
   port: 50110
   cipher: aes-256-gcm
   password: 1928aa4d6e3c8df3
+  udp: true
+- name: 🇦🇺 AU 3
+  type: ss
+  server: frk.fastsoonlink.com
+  port: 40011
+  cipher: chacha20-ietf-poly1305
+  password: ae6e933b-8874-4bf4-a384-0de216ef2bf4
   udp: true
 - name: 🇰🇷 KR 2
   type: ss
@@ -4842,6 +4753,13 @@ proxies:
   cipher: aes-256-gcm
   password: h0LVr9pkvim6CUTH
   udp: true
+- name: 🇱🇻 LV 1-b76R
+  type: ss
+  server: lv.vpnsparta.pro
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: 360e21d21977dc11
+  udp: true
 - name: 🇧🇭 BH 1
   type: ss
   server: 38.54.2.182
@@ -4869,6 +4787,13 @@ proxies:
   port: 9064
   cipher: aes-256-cfb
   password: cp8pRSUAyLhTfVWH
+  udp: true
+- name: 🇵🇱 PL 3
+  type: ss
+  server: 217.30.10.18
+  port: 9026
+  cipher: aes-256-cfb
+  password: QWDDvVE9npNurQfA
   udp: true
 - name: 🇵🇱 PL 4
   type: ss
@@ -5059,13 +4984,6 @@ proxies:
   password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
   sni: waphk.mjt000.com
   skip-cert-verify: false
-- name: 🆔@LuxyNet💎❖英国❖GB❖950
-  type: ss
-  server: 212.102.53.78
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
 - name: GB_07
   type: ss
   server: 212.102.53.194
@@ -5182,6 +5100,13 @@ proxies:
 - name: 🆔⟪@LonUp_M⟫🟠ALL⌁1734
   type: ss
   server: 103.163.218.2
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🆔⟪@LonUp_M⟫🟠ALL⌁1480
+  type: ss
+  server: 192.71.244.150
   port: 989
   cipher: aes-256-cfb
   password: f8f7aCzcPKbsF8p3
@@ -5729,13 +5654,6 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: "[1113][68]r♡ya@vpnbaz\r\r"
-  type: ss
-  server: 185.192.124.188
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  udp: true
 - name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+95\r\r"
   type: ss
@@ -5932,12 +5850,13 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: 218,270|🇺🇸 US 741 → tg@nicevpn123
+- name: "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
   type: ss
-  server: series-a2-me.samanehha.co
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: Bog0ELmMM9DSxDdQ
+  server: 146.70.29.32
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
   udp: true
 - name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S6\r\r"
@@ -5992,7 +5911,7 @@ proxies:
   cipher: aes-256-cfb
   password: HSZuyJQcWe8dxNdF
   udp: true
-- name: "[1113][68]r♡ya@vpnbaz\r\r-qi7W"
+- name: "[1113][68]r♡ya@vpnbaz\r\r-QHJ7"
   type: ss
   server: 79.127.227.198
   port: 990
@@ -6006,14 +5925,6 @@ proxies:
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "\U0001F1E7\U0001F1ED BH 157.175.154.107 ◈ tcp:443 ◈ AWS EC2 (me-south-1)\
-    \ ◈ b5a85\r\r"
-  type: ss
-  server: account-me.emofid.co
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: Bog0ELmMM9DSxDdQ
   udp: true
 - name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +114\r\r"
@@ -6138,13 +6049,6 @@ proxies:
   cipher: aes-256-cfb
   password: BejrQvtu9sqUeNuZ
   udp: true
-- name: 1,2,3,186,193,218|🇱NL(AzadNet.t.me)_007
-  type: ss
-  server: 45.89.52.66
-  port: 9000
-  cipher: aes-256-cfb
-  password: a3GFYt36Sm82Vys9
-  udp: true
 - name: "[103]PE_727\r\r"
   type: ss
   server: 217.30.10.70
@@ -6166,6 +6070,13 @@ proxies:
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[100]波兰-92.118.205.228-35989\r\r"
+  type: ss
+  server: 92.118.205.228
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
   udp: true
 - name: "[103]_俄罗斯_hamraH_135\r\r"
   type: ss
@@ -6211,6 +6122,13 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
+- name: 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
+  type: ss
+  server: 217.30.10.18
+  port: 9019
+  cipher: aes-256-cfb
+  password: GA9KzeEgvfxNrgmM
+  udp: true
 - name: "[103]PE_751\r\r"
   type: ss
   server: 217.30.10.70
@@ -6238,13 +6156,6 @@ proxies:
   port: 9000
   cipher: aes-256-cfb
   password: a3GFYt36Sm82Vys9
-  udp: true
-- name: 0|_98
-  type: ss
-  server: 137.175.97.159
-  port: 8388
-  cipher: chacha20-ietf
-  password: asd123456
   udp: true
 - name: '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
@@ -6343,6 +6254,13 @@ proxies:
   port: 9042
   cipher: aes-256-cfb
   password: S7KwUu7yBy58S3Ga
+  udp: true
+- name: "18,51|\U0001F1F1_HAMRAH_465\r\r"
+  type: ss
+  server: 217.30.10.18
+  port: 9031
+  cipher: aes-256-cfb
+  password: BwcAUZk8hUFAkDGN
   udp: true
 - name: "[103]_RU_俄罗斯_123\r\r"
   type: ss
@@ -6610,7 +6528,7 @@ proxies:
   cipher: aes-256-cfb
   password: U6qnYRhfyDmn8sgn
   udp: true
-- name: 荷兰Amsterdam,+NH,+The+Netherlands-sLhe
+- name: 荷兰Amsterdam,+NH,+The+Netherlands-AKjh
   type: ss
   server: my.noisydeysy.monster
   port: 42029
@@ -6624,12 +6542,12 @@ proxies:
   cipher: aes-256-cfb
   password: TPqX8edgbAURcAMb
   udp: true
-- name: 1,2,3,193|🇺🇸US_855
+- name: "[103]_RU_俄罗斯_211\r\r"
   type: ss
-  server: exchange.gameaurela.click
-  port: 52952
-  cipher: chacha20-ietf-poly1305
-  password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj
+  server: 80.92.204.106
+  port: 9070
+  cipher: aes-256-cfb
+  password: bf7v334KKDV3YDhH
   udp: true
 - name: "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
   type: ss
@@ -6723,6 +6641,13 @@ proxies:
   port: 9045
   cipher: aes-256-cfb
   password: Lp27rqyJq72bZsqX
+  udp: true
+- name: "[1113][68]r♡ya@vpnbaz\r\r-UDMs"
+  type: ss
+  server: 147.78.3.93
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
   udp: true
 - name: "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
   type: ss
@@ -6838,6 +6763,13 @@ proxies:
   cipher: aes-256-cfb
   password: y9VURyNzJWNRYEGQ
   udp: true
+- name: 塞舌尔_1126001
+  type: ss
+  server: 154.205.159.100
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
 - name: "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
   type: ss
   server: 185.47.253.227
@@ -6929,7 +6861,7 @@ proxies:
   cipher: aes-256-cfb
   password: TPqX8edgbAURcAMb
   udp: true
-- name: "[1113][68]r♡ya@vpnbaz\r\r-Nqgu"
+- name: "[1113][68]r♡ya@vpnbaz\r\r-dT2g"
   type: ss
   server: 37.235.49.152
   port: 990
@@ -6978,7 +6910,7 @@ proxies:
   cipher: aes-256-cfb
   password: p9z5BVADH2YFs3MN
   udp: true
-- name: "[1113][68]r♡ya@vpnbaz\r\r-G8qY"
+- name: "[1113][68]r♡ya@vpnbaz\r\r-zI59"
   type: ss
   server: 192.71.244.150
   port: 990
@@ -6997,20 +6929,6 @@ proxies:
   server: 185.123.101.241
   port: 989
   cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: "[1113][76]土耳其_1009002\r\r"
-  type: ss
-  server: 185.123.101.241
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: "[113]undefined\r\r-frIk"
-  type: ss
-  server: 185.93.173.218
-  port: 990
-  cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   udp: true
 - name: "[100]德国-38.60.250.107-44639\r\r"
@@ -7059,6 +6977,14 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
+- name: "[1808.ga][pojiezhiyuanjun/freev2][freefq][pojiezhiyuanjun/freev2]\U0001F1FA\
+    \U0001F1F8 US-2.58.87.221:16899\r\r\r"
+  type: ss
+  server: 2.58.87.221
+  port: 16899
+  cipher: aes-128-gcm
+  password: Yc2CtrIz8L
+  udp: true
 - name: "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
   type: ss
@@ -7099,20 +7025,6 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: '[101]巴西-95.164.4.88-12472'
-  type: vmess
-  server: 95.164.4.88
-  port: 80
-  uuid: c04c3b34-70fd-4fec-963e-c12d09f36bef
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: false
-  sni: ''
-  ws-opts:
-    path: /vmess/
-    headers:
-      Host: ''
 - name: 0|_96
   type: ss
   server: 62.133.44.68
@@ -7120,6 +7032,251 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
+- name: 697|🇨🇦 加拿大_唯云专线_布洛妮娅的黑丝
+  type: trojan
+  server: ca1.aaaa.gay
+  port: 4586
+  password: 7a49ebc8-6235-36b1-b7b4-0864b95bd90a
+  sni: ca1.aaaa.gay
+  skip-cert-verify: false
+- name: '1431,1542,1846,1847|美国 063 #3'
+  type: vmess
+  server: wwwe3.11890604.xyz
+  port: 80
+  uuid: 512d9674-db12-44ca-a1b5-654244549b65
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: false
+  sni: ''
+  ws-opts:
+    path: /uiAxvH6OkVk0VCfa7dX3JIrYk7zm
+    headers:
+      Host: wwwe3.11890604.xyz
+- name: '1431,1542,1846|美国 071 #2'
+  type: vmess
+  server: EeEDCFVg.999824.xYZ
+  port: 80
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: false
+  sni: ''
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: eeedcfvg.999824.xyz
+- name: 1579|🇺🇸_US_美国_1
+  type: ss
+  server: 38.165.233.93
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 1579|🇬🇧_GB_英国
+  type: ss
+  server: 51.15.17.169
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 1579|🇮🇹_IT_意大利->🇲🇩_MD_摩尔多瓦
+  type: ss
+  server: 185.213.23.226
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 1828|二爷翻墙_24
+  type: ss
+  server: arxfw2b78fi2q9hzylhn.freesocks.work
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: Nk9asglDzHzjktVzTkvhaA
+  udp: true
+- name: 1828|二爷翻墙_35
+  type: trojan
+  server: pt.mjt000.com
+  port: 443
+  password: 84587c21-9938-42fc-a4b0-4f72dd72b7aa
+  sni: pt.mjt000.com
+  skip-cert-verify: false
+- name: 1828|二爷翻墙_74
+  type: trojan
+  server: it.mjt000.com
+  port: 443
+  password: 84587c21-9938-42fc-a4b0-4f72dd72b7aa
+  sni: it.mjt000.com
+  skip-cert-verify: false
+- name: 4871|@𝙢𝙛𝙗𝙥𝙣   02
+  type: ss
+  server: 61.255.174.173
+  port: 30838
+  cipher: aes-256-cfb
+  password: qwerREWQ@@
+  udp: true
+- name: 4871|@𝙢𝙛𝙗𝙥𝙣   04
+  type: ss
+  server: 168.126.234.247
+  port: 7323
+  cipher: aes-256-cfb
+  password: qwerREWQ@@
+  udp: true
+- name: 4871|@𝙢𝙛𝙗𝙥𝙣   07
+  type: ss
+  server: 121.170.203.147
+  port: 2520
+  cipher: aes-256-cfb
+  password: qwerREWQ@@
+  udp: true
+- name: 4871|🇭🇰 HK, Kowloon @mfbpn
+  type: ss
+  server: 52.221.203.67
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇨🇦 CA, Vancouver @mfbpn
+  type: ss
+  server: 34.208.88.116
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇯🇵 JP, Tokyo @mfbpn
+  type: ss
+  server: 52.78.79.188
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇰🇷 KR, Incheon @mfbpn
+  type: ss
+  server: 18.140.58.118
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇯🇵 JP, Osaka @mfbpn
+  type: ss
+  server: 18.143.64.62
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇺🇸 US, Dallas 2 @mfbpn
+  type: ss
+  server: 35.89.80.91
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 4871|🇭🇰 HK, Los Angeles @mfbpn
+  type: ss
+  server: 54.244.216.10
+  port: 443
+  cipher: aes-256-cfb
+  password: amazonskr05
+  udp: true
+- name: 5686|Cloudflare Support
+  type: vless
+  server: support.cloudflare.com
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|FBI 超时是因为请求次数用完
+  type: vless
+  server: www.fbi.gov
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|Cloudflare developers
+  type: vless
+  server: developers.cloudflare.com
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|WTO
+  type: vless
+  server: www.wto.org
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|Namemc
+  type: vless
+  server: namemc.com
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|Epicgames
+  type: vless
+  server: www.epicgames.com
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
+- name: 5686|IT Army
+  type: vless
+  server: itarmy.com.ua
+  port: 2095
+  uuid: d342d11e-d424-4583-b36e-524ab1f0afa4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /?ed=2560fp=randomized
+    headers:
+      Host: freenodes.pusytroller.cf
 proxy-groups:
 - name: 节点选择
   type: select
@@ -7132,938 +7289,957 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸 US 11
-  - 🇺🇸 US 8
   - 🇺🇸 US 828
-  - 🇺🇸 US 9-qV4a
+  - 🇺🇸 US 8
+  - 🇺🇸 US 9-6cWa
+  - 🇺🇸 US 11
   - Node-7745
   - 0|_143
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +113\r\r"
+  - '[112]🇨🇦CA-138.197.141.58-0175'
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +114\r\r"
-  - '[112]🇨🇦CA-138.197.141.58-0175'
+  - 🇺🇸 US 189
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+108\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +116\r\r"
   - '[112]🇨🇦CA-147.182.146.81-0160'
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
-  - 🇺🇸 US 14-ta3j
-  - 🇺🇸 US 561
-  - 🇺🇸 US 11-Ihu4
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸 US 4-zkwz
-  - 🇺🇸 US 89
-  - 🇺🇸 US 44
-  - 🇺🇸 US 569
-  - 🇺🇸 US 10
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 美国_1126491
-  - 🇺🇸 US 19
-  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
-  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 55
-  - 🇺🇸 US 3
-  - 🇺🇸 US 16
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+73\r\r"
-  - 🇺🇸 US 58
-  - 🇺🇸 US 63
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 4-vd8E
   - "[1113][68][68][68][68][68][68][68][82][68][82][82][68][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+72\r\r"
-  - Node-11011
-  - 🇺🇸 US 70
-  - 🇺🇸 US 45
-  - 🇺🇸 US 68
-  - 🇺🇸 US 69
-  - 🇺🇸 US 189
-  - 🇺🇸 US 117
-  - 🇺🇸 US 18
-  - 🇺🇸 US 158
-  - 🇺🇸 US 254
-  - 🇺🇸 US 134
-  - 🇺🇸 US 196
-  - 🇺🇸 US 103
+  - 🇺🇸 US 89
+  - 🇺🇸 US 561
+  - 🇺🇸 US 11-sk0r
+  - 5686|Namemc
+  - 🇺🇸 US 569
+  - 🇺🇸 US 19
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
+  - 🇺🇸 US 234
+  - 5686|Cloudflare developers
+  - 🇺🇸 US 87
+  - 🇺🇸 US 40
+  - 🇺🇸 US 3
+  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
+  - 美国_1126491
+  - 5686|IT Army
+  - 🇺🇸 US 181
+  - 5686|WTO
+  - 🇺🇸 US 145
+  - 🇺🇸 US 80
+  - 🇺🇸 US 36-M79s
+  - 🇺🇸 US 48
+  - 0,1,2,3,6,8| US_179 | 3.40Mb
+  - 🇺🇸 US 162
+  - 🇺🇸 US 8-bwr0
+  - 5686|Cloudflare Support
   - 🇺🇸 US 310
-  - 🇺🇸 US 337
-  - 🇺🇸 US 1
-  - 🇺🇸 US 9
-  - 🇺🇸 US 4
+  - 🇺🇸 US 70
+  - 🇺🇸 US 44
+  - '1,2,3,8,122,186,193|_08 #1'
+  - 🇺🇸 US 46
+  - 🇺🇸 US 43
+  - 🇺🇸 US 134
+  - Node-11011
   - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 31-61pZ
-  - '1,2,3,8,122,186,193|_08 #1'
-  - 🇺🇸 US 7
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 0|_96
+  - 🇺🇸 US 588
+  - 🇺🇸 US 58
+  - 5686|FBI 超时是因为请求次数用完
+  - 🇺🇸 US 328
+  - 🇺🇸 US 18
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +119\r\r"
-  - 🇺🇸 US 80
-  - 🇺🇸 US 391
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
+  - 🇺🇸 US 90
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S6\r\r"
-  - _275
-  - 🇺🇸 US 19-kvSN
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +121\r\r"
-  - 🇺🇸 US 87
-  - '[112]🇺🇸US-79.110.53.169-0241'
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
-  - Node-14329
-  - 🇺🇸 US 137
-  - 🇺🇸 US 118
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +120\r\r"
+  - 0|_96
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +121\r\r"
+  - '[112]🇺🇸US-79.110.53.169-0241'
+  - 🇺🇸 US 254
+  - 🇺🇸 US 31-Pm3p
+  - 🇺🇸 US 548
   - 🇺🇸 US 613
-  - 🇺🇸 US 328
+  - _275
+  - 🇺🇸 US 7
+  - 🇺🇸 US 299
   - 🇺🇸 US 217
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 145
-  - 🇺🇸 US 552
+  - 🇺🇸 US 117
+  - 🇺🇸 US 10
+  - 🇺🇸 US 469
   - '[112]🇨🇦CA-138.197.153.10-0137'
-  - 0|_98
+  - 🇺🇸 US 515
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][pojiezhiyuanjun/freev2]\U0001F1FA\U0001F1F8\
+    \ US-2.58.87.221:16899\r\r\r"
+  - '2,3,121,186|_87 #1'
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +41\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S4\r\r"
-  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
   - 66|SS-TCP-NA 🇺🇸 US-212.102.47.130...
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
   - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 68
+  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
+  - 🇺🇸 US 23
   - 🇺🇸 US 164
+  - 🇺🇸 US 1
+  - 🇺🇸 US 196
+  - 🇺🇸 US 158
   - 🇺🇸 US 22
   - 🇺🇸 US 26
-  - 🇺🇸 US 23
-  - 🇺🇸 US 46
-  - 🇺🇸 US 56
-  - 🇺🇸 US 67
+  - 🇺🇸 US 118
   - 🇨🇦 CA 1
-  - 🇺🇸 US 98
-  - '2,3,121,186|_87 #1'
-  - 🇺🇸 US 28
-  - 🇺🇸 US 2-44FM
-  - 🇺🇸 US 181
-  - 🇺🇸 US 36-amIE
+  - 🇺🇸 US 56
+  - Node-14329
+  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
+  - 🇺🇸 US 55
+  - 🇺🇸 US 15
+  - 0|_42
+  - 🇺🇸 US 138
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][68][68][68][68][82][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+67\r\r"
-  - 🇺🇸 US 690
-  - 🇺🇸 US 165
-  - 🇺🇸 US 234
-  - 🇺🇸 US 21
-  - 🆔@LuxyNet💎❖英国❖GB❖950
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
-  - 🇬🇧 GB 11
-  - 🇺🇸 US 568
-  - 🇬🇧 GB 4
-  - 🇺🇸 US 40
-  - 🇺🇸 US 162
-  - 🇺🇸 US 42
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - 🇬🇧 GB 5
-  - 🇺🇸 US 90
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+93\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 🇫🇷 FR 4
-  - 🇳🇱 NL 1
-  - 🇺🇸 US 299
+  - 🇺🇸 US 291
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+100\r\r"
+  - '[112]🇬🇧GB-104.166.161.196-0271'
+  - 🇺🇸 US 42
+  - 🇺🇸 US 195
+  - 🇺🇸 US 63
+  - 🇺🇸 US 137
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸 US 69
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - 4871|🇺🇸 US, Dallas 2 @mfbpn
+  - 🇬🇧 GB 4
+  - 🇺🇸 US 391
+  - 🇬🇧 GB 10
+  - 🇬🇧 GB 11
+  - 🇺🇸 US 27
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - 🇺🇸 US 103
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+86\r\r"
+  - 🇳🇱 NL 1
+  - 1579|🇬🇧_GB_英国
+  - 🇺🇸 US 197
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - '>德国|Ns|1115|TG@FProxies|'
+  - 🇺🇸 US 165
   - 🇳🇱 NL 4
-  - 🇳🇱 NL 2
-  - 🇺🇸 US 555
+  - 🇳🇱 NL 5-t8WW
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - "[103]_RU_俄罗斯_212\r\r"
-  - 🇳🇱 NL 5-8lO7
-  - 🇬🇧 GB 3
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +122\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇬🇧 GB 20
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - '>德国|Ns|1115|TG@FProxies|'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+86\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 291
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - '[112]🇬🇧GB-169.150.210.233-0276'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+85\r\r"
   - "[100]德国-38.60.250.107-44639\r\r"
-  - 🇺🇸 US 197
-  - 🇺🇸 US 43
-  - '[112]🇬🇧GB-104.166.161.196-0271'
-  - 🇺🇸 US 102
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
-  - 🇬🇧 GB 14
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - "[103]_俄罗斯_hamraH_417\r\r"
-  - '1,2,3,8,193|_04 #1'
-  - "[1113][68]r♡ya@vpnbaz\r\r-qi7W"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - "[103]_俄罗斯_hamraH_415\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 4-FAMQ
-  - "[103]_俄罗斯_hamraH_416\r\r"
-  - 🇳🇱 NL 3
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - 🇺🇸 US 27
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
-  - "[103]_RU_俄罗斯_213\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - "[103]_RU_俄罗斯_128\r\r"
-  - 🇻🇪 VE 1
-  - 🇺🇸 US 48
-  - 🇩🇪 DE 25
-  - 🇳🇱 NL 3-qOrq
-  - GB_07
-  - 🇩🇪 DE 28
-  - "[103]俄罗斯_RU_SSS_112\r\r"
-  - 🇨🇭 CH 1
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - 🇺🇸 US 622
-  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
-  - 🇺🇸 US 31
-  - 🇳🇱 NL 6-z9zt
-  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
-  - 🇳🇱 NL 6
-  - 🇬🇧 GB 10
-  - 美国_579
-  - 🇳🇱 NL 19
-  - 🇺🇸 US 8-aqqZ
-  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
-  - 🇺🇸 US 469
-  - 捷克_1126002
-  - 🇺🇸 US 195
-  - 瑞士Zurich,+ZH,+Switzerland
-  - "[103]俄罗斯_RU_SSS_107\r\r"
-  - 🇺🇸 US 138
-  - 🇺🇸 US 640
-  - 德国
-  - "[103]_RU_俄罗斯_127\r\r"
-  - 🇩🇪 DE 3
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - 🇺🇸 US 567
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 加拿大_1126006
-  - "[103]_RU_俄罗斯_123\r\r"
-  - 🇺🇸 US 745
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - 🇺🇸 US 612
-  - 立陶宛_445
-  - 🇳🇱 NL 9-tqRP
-  - 🇺🇸 US 759
+  - 🇳🇱 NL 2
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 美国_1126159
-  - "[103]_俄罗斯_hamraH_419\r\r"
-  - 🇺🇸 US 841
-  - 🇨🇭 CH 3
-  - 🇺🇸 US 725
-  - 🇺🇸 US 588
+    \U0001D64B\U0001D649+93\r\r"
+  - 🇬🇧 GB 20
+  - 🇺🇸 US 552
+  - "[103]_RU_俄罗斯_123\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 4871|🇭🇰 HK, Los Angeles @mfbpn
   - "[103]_俄罗斯_hamraH_316\r\r"
-  - 🇳🇱 NL 5
-  - "[103]_俄罗斯_hamraH_123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - 18|A_18069
-  - "[103]PE_715\r\r"
-  - "[103]PE_735\r\r"
-  - 🇺🇸 US 15
-  - "[103]_俄罗斯_hamraH_128\r\r"
-  - "[103]_俄罗斯_hamraH_415\r\r"
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🇬🇧 GB 14
+  - 🇺🇸 US 25
+  - 🇬🇧 GB 3
+  - 🇩🇪 DE 28
+  - GB_07
+  - 🇩🇪 DE 27
+  - 🇳🇱 NL 4-rUcN
+  - 🇺🇸 US 4
+  - "[103]_RU_俄罗斯_127\r\r"
   - "[103]_RU_俄罗斯_202\r\r"
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - "18|A_5377\r\r"
-  - 4FreeIran-783
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - "[103]PE_728\r\r"
-  - "[103]PE_726\r\r"
-  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 🇳🇱 NL 26
+  - 🇩🇪 DE 6-25Gh
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 4871|🇨🇦 CA, Vancouver @mfbpn
+  - "[103]俄罗斯_RU_SSS_112\r\r"
+  - '1,2,3,122,186,193|_18 #1'
+  - 🇳🇱 NL 3-hKSY
+  - "[103]_俄罗斯_hamraH_123\r\r"
+  - 🇳🇱 NL 25
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - "[1113][68]r♡ya@vpnbaz\r\r-QHJ7"
+  - 美国_579
+  - "[103]_RU_俄罗斯_213\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇱🇹 LT 1
-  - "[103]PE_747\r\r"
-  - "[103]_俄罗斯_hamraH_126\r\r"
-  - "[103]PE_740\r\r"
-  - 🇺🇸 US 515
-  - "18|A_18061\r\r"
-  - "[103]_RU_俄罗斯_210\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
-  - "18|A_18060\r\r"
-  - "[103]PE_730\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
-  - "[1113][68]r♡ya@vpnbaz\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
-  - 🇺🇸 US 618
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 18|A_18065
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🇳🇱 NL 31
+  - 捷克_1126002
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 瑞士Zurich,+ZH,+Switzerland
+  - 🇨🇭 CH 1
+  - 🇺🇸 US 745
+  - 🇳🇱 NL 3
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +104\r\r"
-  - 🇧🇬 BG 1
-  - "[103]PE_744\r\r"
-  - "[103]PE_736\r\r"
-  - "18|A_18066\r\r"
-  - "18,114|\U0001F1FA_RU_m_267\r\r"
-  - "[103]PE_729\r\r"
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "[103]PE_724\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
-  - "[103]PE_722\r\r"
-  - "[103]PE_721\r\r"
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
-  - "[103]PE_749\r\r"
+    +113\r\r"
+  - 🇬🇧 GB 5
+  - "[103]_RU_俄罗斯_211\r\r"
+  - 🇳🇱 NL 19
+  - 🇻🇪 VE 1
+  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
+  - 🇺🇸 US 337
+  - 🇳🇱 NL 9-MMlZ
+  - 🇳🇱 NL 6
   - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - "[103]PE_710\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+103\r\r"
-  - "[103]PE_709\r\r"
-  - "[103]PE_718\r\r"
-  - '1,2,3,122,186,193|_18 #1'
-  - "[103]PE_739\r\r"
-  - "[103]PE_738\r\r"
-  - "[103]PE_745\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_732\r\r"
-  - "[103]_RU_俄罗斯_206\r\r"
-  - "[103]PE_737\r\r"
-  - 18|A_18102
-  - "[103]PE_707\r\r"
-  - "[103]PE_708\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_742\r\r"
-  - "[103]PE_733\r\r"
-  - 🇺🇸 US 471
-  - 🇸🇪 SE 1
-  - "[103]PE_746\r\r"
-  - 🇵🇱 PL 2
-  - "[103]PE_713\r\r"
-  - "[103]PE_734\r\r"
-  - "[103]PE_748\r\r"
-  - "[100]瑞典-121.127.46.147-43320\r\r"
-  - "[103]PE_743\r\r"
-  - 🇨🇦 CA 1-7SEZ
-  - "18|A_18064\r\r"
-  - "18|A_18062\r\r"
-  - "[103]PE_723\r\r"
-  - 🇦🇷 AR 1
-  - "18|A_18055\r\r"
-  - 18|A_18067
-  - 🇺🇸 US 25
-  - 🇺🇸 US 642
-  - 🇳🇱 NL 8-4tsC
-  - 🇨🇦 CA 3
-  - "[103]PE_719\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - 🇺🇸 US 617
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+105\r\r"
-  - "[103]PE_717\r\r"
-  - "[103]PE_712\r\r"
-  - 🇺🇸 US 873
-  - "[103]PE_716\r\r"
-  - "[103]PE_725\r\r"
-  - 🇺🇸 US 626
-  - 🇺🇸 US 767
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "18|A_18063\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 303
-  - 🇺🇸 US 791
-  - 英国_1126006
-  - 🇺🇸 US 630
-  - 🇺🇸 US 883
-  - 🇩🇪 DE 8
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_711\r\r"
-  - "[103]PE_741\r\r"
-  - 🇺🇸 US 644
-  - 🇳🇱 NL 23
-  - 🇷🇸 RS 1
-  - 🇩🇪 DE 38
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - 🇺🇸 US 20
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
-    #3 #2'
-  - 🇯🇵 JP 2
-  - 🇯🇵 JP 1-HjMt
-  - 🇸🇪 SE 3
+  - 🇺🇸 US 813
+  - "[103]_俄罗斯_hamraH_128\r\r"
   - 🇺🇸 US 24
-  - 🇬🇧 GB 1
-  - 🇬🇧 GB 16
-  - "[103]PE_751\r\r"
-  - 🇩🇪 DE 42
-  - 🇺🇸 US 645
-  - 61,159|AE-40.172.77.38-0379 | 1.739MB
-  - 0|_207
-  - 🇳🇱 NL 11
-  - 🇺🇸 US 641
-  - 🇺🇸 US 594
-  - 🇺🇸 US 29
-  - 🇲🇹 MT 1
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - "[103]PE_731\r\r"
-  - 🇬🇧 GB 17
-  - 🇺🇦 UA 1
-  - 🇬🇧 GB 2
-  - 🇺🇸 US 638
-  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - '1431,1542,1846|美国 071 #2'
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 5686|Epicgames
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
+  - "[103]_RU_俄罗斯_128\r\r"
+  - 🇺🇸 US 303
+  - "[103]_RU_俄罗斯_212\r\r"
+  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
   - 🇺🇸 US 675
-  - Node-8685
-  - 🇺🇸 US 634
+  - 🇺🇸 US 645
+  - 加拿大_1126006
+  - 🇫🇷 FR 8
+  - 🇳🇱 NL 23
+  - 🇩🇪 DE 25
+  - 🇺🇸 US 471
+  - 1579|🇮🇹_IT_意大利->🇲🇩_MD_摩尔多瓦
+  - "[103]PE_746\r\r"
+  - 🇨🇭 CH 3
+  - 🇺🇸 US 2-nYEa
+  - "[103]PE_725\r\r"
+  - "[103]PE_716\r\r"
+  - "[103]PE_726\r\r"
+  - "[103]PE_720\r\r"
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - 🇺🇸 US 791
+  - "[103]PE_738\r\r"
+  - "18|A_18063\r\r"
+  - 🇺🇸 US 102
+  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
+  - "18|A_18056\r\r"
+  - 🇵🇱 PL 4
+  - "[103]PE_713\r\r"
+  - "18|A_18060\r\r"
+  - 18|A_18065
+  - "[103]_RU_俄罗斯_206\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
+  - 🇮🇸 IS 1
+  - "18|A_18062\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🇵🇱 PL 3
+  - "18|A_18064\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
+  - "[103]PE_729\r\r"
+  - 🇧🇬 BG 1
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - '1431,1542,1846,1847|美国 063 #3'
+  - "18|A_18061\r\r"
+  - 🇩🇪 DE 4
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - "[103]PE_750\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_712\r\r"
+  - "18,114|\U0001F1FA_RU_m_267\r\r"
+  - 🇸🇪 SE 1
+  - "[103]俄罗斯_RU_SSS_107\r\r"
+  - 🇺🇸 US 873
   - 🇨🇦 CA 9
-  - 218,270|🇺🇸 US 741 → tg@nicevpn123
-  - 🇱🇻 LV 1
-  - "\U0001F1E7\U0001F1ED BH 157.175.154.107 ◈ tcp:443 ◈ AWS EC2 (me-south-1) ◈ b5a85\r\
-    \r"
+  - 🇺🇸 US 841
+  - "[103]PE_744\r\r"
+  - "[103]PE_707\r\r"
+  - "[103]PE_711\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_714\r\r"
+  - "[103]PE_727\r\r"
+  - 英国_1126006
+  - "[103]PE_730\r\r"
+  - 🇺🇸 US 640
+  - "[103]PE_749\r\r"
+  - "[103]PE_736\r\r"
+  - 德国
+  - "[103]PE_718\r\r"
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
+  - "[103]PE_737\r\r"
+  - "[100]瑞典-121.127.46.147-43320\r\r"
+  - 🇺🇸 US 67
+  - "[103]PE_731\r\r"
+  - "[103]PE_740\r\r"
+  - 18|A_18102
+  - "[103]PE_747\r\r"
+  - "[103]PE_719\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_715\r\r"
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+105\r\r"
+  - "[103]_RU_俄罗斯_210\r\r"
+  - "18|A_5377\r\r"
+  - 18|A_18067
+  - "[103]PE_709\r\r"
+  - "[103]PE_742\r\r"
+  - "[103]PE_751\r\r"
+  - "[103]PE_743\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
+  - "[103]PE_728\r\r"
+  - 🇺🇸 US 618
+  - "[103]PE_710\r\r"
+  - 18|A_18068
+  - "[103]PE_732\r\r"
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 2,3,186| ZZ_1412
+  - "[103]PE_748\r\r"
+  - 🇺🇸 US 626
+  - "[103]PE_708\r\r"
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇳🇱 NL 8-rt82
+  - 🇳🇱 NL 8
+  - "[103]PE_745\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]PE_739\r\r"
+  - "[103]PE_735\r\r"
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 19-O5bD
+  - "[103]PE_724\r\r"
+  - 🇨🇦 CA 3
+  - "[103]PE_733\r\r"
+  - 🇺🇸 US 644
+  - 🇦🇷 AR 1
+  - "[103]PE_723\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 630
+  - 🇺🇸 US 21
+  - 🇺🇸 US 883
+  - "18|A_18057\r\r"
+  - 🇺🇦 UA 1
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
   - "\U0001F1EC\U0001F1E7 GB 13.40.181.177 ◈ tcp:443 ◈ AWS EC2 (eu-west-2) ◈ 2ef43\r\
     \r"
-  - 🇺🇸 US 620
-  - 🇪🇪 EE 1
-  - 414|qol_0758
-  - 🇺🇸 US 888
+  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
+  - "[103]PE_722\r\r"
+  - 🇺🇸 US 725
+  - 🇺🇸 US 617
+  - 🇩🇪 DE 38
+  - 🇺🇸 US 767
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 🇵🇱 PL 2
+  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
+    #3 #2'
+  - 0|_207
+  - 🇯🇵 JP 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇯🇵 JP 1-e4zv
+  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
+  - "[103]_俄罗斯_hamraH_126\r\r"
+  - '1,2,3,8,193|_04 #1'
   - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇳🇱 NL 31
+  - 🇷🇸 RS 1
+  - 🇪🇪 EE 1
+  - 🇬🇧 GB 15
+  - "[103]PE_734\r\r"
+  - 🇺🇸 US 642
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - "18|A_18059\r\r"
+  - 🇺🇸 US 622
+  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
+  - 🇺🇸 US 31
+  - "[103]PE_717\r\r"
+  - 🇩🇪 DE 42
+  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - 🇩🇪 DE 46
   - 🇺🇸 US 596
+  - 61,159|AE-40.172.77.38-0379 | 1.739MB
+  - 4FreeIran-107
+  - 🇬🇧 GB 1
+  - 🇺🇸 US 20
+  - 🇳🇱 NL 6-px8J
+  - 🇳🇱 NL 15
+  - 🇺🇸 US 16
+  - 🇺🇸 US 612
+  - 🇺🇸 US 563
+  - Node-8685
+  - 美国_1126159
+  - 🇺🇸 US 597
+  - 🇺🇸 US 98
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +104\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
+  - 🇬🇧 GB 16
+  - 4871|🇯🇵 JP, Tokyo @mfbpn
+  - 61,159|BH-15.184.155.145-0382 | 1.742...
+  - 0|_102
+  - 🇺🇸 US 634
+  - 🇺🇸 US 615
+  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
+  - 🇨🇾 CY 1
+  - 🇺🇸 US 620
+  - 4FreeIran-783
+  - 🇺🇸 US 877
+  - 🇬🇧 GB 17
+  - 414|qol_0810
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇱🇻 LV 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   02
+  - 0|HK_1233
+  - 🇮🇪 IE 4
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇺🇸 US 641
+  - 🇬🇧 GB 4-FIk6
+  - 🇺🇸 US 882
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 79|TR-45.89.52.66-5557 | 1.616MB
+  - 🇫🇷 FR 1-qxGW
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇱🇻 LV 1-b76R
+  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
+  - 🇸🇬 SG 2
+  - 🇬🇧 GB 5-cILd
+  - 🇭🇰 HK 1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+77\r\r"
+  - 4871|🇰🇷 KR, Incheon @mfbpn
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 4871|🇯🇵 JP, Osaka @mfbpn
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+78\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
+  - 4871|🇭🇰 HK, Kowloon @mfbpn
+  - 1579|🇺🇸_US_美国_1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+79\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+81\r\r"
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇩🇪 DE 7
+  - 🇲🇹 MT 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   07
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - 🇫🇷 FR 4-JY1f
+  - 🇺🇸 US 657
+  - 414|qol_0758
+  - 697|🇨🇦 加拿大_唯云专线_布洛妮娅的黑丝
+  - 🇫🇷 FR 2-sohp
+  - 🇩🇪 DE 3-3H1y
+  - 🇺🇸 US 874
+  - 🇺🇸 US 680
+  - 🇺🇸 US 18-JtlW
   - 🇦🇺 AU 1
+  - 🇯🇵 JP 4
+  - 🇬🇧 GB 6
+  - 🇪🇸 ES 1
+  - 🇳🇱 NL 2-BH46
+  - 🇫🇷 FR 5
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 0,79|TR-45.89.52.66-5555 | 1.251MB
+  - 🇨🇦 CA 1-snZo
+  - 🇫🇷 FR 6
+  - 🇺🇸 US 638
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   04
+  - "18,51|\U0001F1F1_HAMRAH_465\r\r"
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇬🇷 GR 1
+  - 🇰🇷 KR 2
+  - 🇹🇼 TW 1
+  - 🇺🇸 US 876
+  - 🇸🇪 SE 2-1e34
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇧🇭 BH 1
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
+  - 🇩🇪 DE 5-0hf7
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - 🇨🇭 CH 2
+  - 🇳🇱 NL 13
+  - "18|A_18055\r\r"
+  - 🇬🇹 GT 1
+  - 🇺🇸 US 36
+  - 🇻🇳 VN 73
+  - 🇻🇳 VN 18-C3EQ
+  - "[1113][68]荷兰_030\r\r"
+  - 🇸🇪 SE 3
+  - 🇭🇰 HK 4
+  - 🇻🇳 VN 68
+  - 荷兰Amsterdam,+NH,+The+Netherlands-AKjh
+  - 🇻🇳 VN 270
+  - "[1113][68]r♡ya@vpnbaz\r\r-UDMs"
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 281
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 304
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 141
+  - 🇮🇪 IE 1
+  - 🇻🇳 VN 303
+  - 🇻🇳 VN 302
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 285
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 299
+  - 🇻🇳 VN 297
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 296
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 77
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 175
+  - 🇻🇳 VN 61
+  - 🇻🇳 VN 182
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 278
+  - 🇻🇳 VN 300
+  - 🇹🇼 TW 3
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 269
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 19
+  - 🇩🇪 DE 3
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 280
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 291
+  - 🇻🇳 VN 12-WJhG
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 221
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 233
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 30
+  - 🇻🇳 VN 52
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 189
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 151
+  - 🇻🇳 VN 265
+  - 🇻🇳 VN 23
+  - 🇻🇳 VN 63
+  - 🇮🇳 IN 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 199
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 85
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 82
+  - 🇻🇳 VN 239
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 216
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 22-rCXB
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 88
+  - 🇻🇳 VN 192
+  - 🇻🇳 VN 306
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 257
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 4
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 13-eTwC
+  - 🇻🇳 VN 43
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 20-kpvr
+  - 🇻🇳 VN 172
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 268
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 180
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 279
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 181
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 259
+  - 🇻🇳 VN 193
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 294
+  - 🇻🇳 VN 214
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 21-0po0
+  - 🇻🇳 VN 112
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 25
+  - 🇻🇳 VN 33
+  - 🇻🇳 VN 150
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 243
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 50
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 178
+  - 🇦🇺 AU 3
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 174
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 16-tP23
+  - 🇻🇳 VN 17-vu7n
+  - 🇻🇳 VN 143
+  - 18|A_18069
+  - 🇻🇳 VN 119
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 90
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 91
+  - 🇻🇳 VN 213
+  - 🇻🇳 VN 117
+  - 🇻🇳 VN 138
+  - 🇻🇳 VN 133
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 60
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 24
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 201
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 10-9yXI
+  - 🇻🇳 VN 107
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 4-rnBf
+  - 🇻🇳 VN 104
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 140
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 255
+  - 🇻🇳 VN 120
+  - 🇻🇳 VN 208
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 93
+  - 🇻🇳 VN 203
+  - 🇻🇳 VN 108
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 230
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 46
+  - 🇻🇳 VN 76
+  - 🇻🇳 VN 231
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 65
+  - 🇻🇳 VN 80
+  - 🇻🇳 VN 96
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 128
+  - 🇻🇳 VN 105
+  - 🇺🇸 US 871
+  - 🇻🇳 VN 66
+  - 🇻🇳 VN 228
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 211
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 51
+  - 🇻🇳 VN 139
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 113
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 167
+  - 🇻🇳 VN 188
+  - 🇺🇸 US 30
+  - 🇻🇳 VN 118
+  - 🇺🇸 US 759
+  - 🇻🇳 VN 69
+  - 🇻🇳 VN 74
+  - 🇻🇳 VN 72
+  - 🇳🇱 NL 29
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 196
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 129
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 57
+  - 🇻🇳 VN 206
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 256
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 194
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 207
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 249
+  - 🇻🇳 VN 229
+  - 🇻🇳 VN 251
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 149
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 89
+  - 🇻🇳 VN 227
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 161
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 288
+  - 🇻🇳 VN 142
+  - 1828|二爷翻墙_24
+  - 🇻🇳 VN 8-pfFd
+  - 🇵🇱 PL 1
+  - 🇻🇳 VN 197
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 195
+  - 🇻🇳 VN 1-jBUp
+  - 🇻🇳 VN 260
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 37
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 136
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 114
+  - 🇻🇳 VN 219
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
+  - 🇻🇳 VN 6-lLJD
+  - 🇻🇳 VN 225
+  - 🇻🇳 VN 130
+  - 18,51|🇵🇱_HAMRAH_147
+  - 🇻🇳 VN 267
+  - 🇻🇳 VN 222
+  - 🇺🇸 US 33
+  - 🇯🇵 JP 1
+  - 🇻🇳 VN 186
+  - 🇲🇾 MY 1
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
+  - 🇯🇵 JP 3
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇦🇹 AT 1
-  - 🇺🇸 US 813
-  - 🇺🇸 US 30
-  - 🇺🇸 US 615
-  - 0|_102
-  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
-  - 61,159|BH-15.184.155.145-0382 | 1.742...
-  - 414|qol_0810
-  - "[103]PE_714\r\r"
-  - 0|HK_1233
-  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇮🇪 IE 4
-  - 🇺🇸 US 36
-  - 🇮🇱 IL 1
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
-  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
-  - 🇳🇱 NL 15
-  - 18,51|🇵🇱_HAMRAH_147
-  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
-  - 4FreeIran-107
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+79\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
-  - 🇬🇧 GB 4-Wwzx
-  - 🇬🇧 GB 6
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - 🇬🇧 GB 1-QV0U
-  - 🇫🇷 FR 8
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+77\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+81\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+78\r\r"
-  - 🇸🇬 SG 2
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - 2,3,186| ZZ_1412
-  - 🇫🇷 FR 2-o5Ki
-  - 🇫🇷 FR 1-wWY0
-  - 🇨🇾 CY 1
-  - _303
-  - 🇺🇸 US 657
-  - 🇪🇸 ES 1
-  - 🇫🇷 FR 6
-  - 🇩🇪 DE 5
-  - 🇩🇪 DE 5-RMHe
-  - "18|A_18059\r\r"
-  - 🇹🇼 TW 3
-  - 🇩🇪 DE 7
-  - 🇺🇸 US 871
-  - 🇬🇧 GB 5-E3Kr
-  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
-  - 🇯🇵 JP 4
-  - 🇮🇹 IT 1
-  - 🇸🇪 SE 1-M9PS
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
-  - 🇺🇸 US 18-b3kC
-  - 🇺🇸 US 876
-  - 0,79|TR-45.89.52.66-5555 | 1.251MB
-  - 🇩🇪 DE 3-js6p
-  - 🇦🇺 AU 2
-  - 🇳🇱 NL 32
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
-  - 🇳🇱 NL 29
-  - 🇸🇪 SE 2-J5aB
-  - 0|_42
-  - 18|A_18068
-  - 🇰🇷 KR 2
-  - 1,2,3,186,193,218|🇱NL(AzadNet.t.me)_007
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
-  - 🇷🇺 RU 1
-  - 🇫🇷 FR 5
-  - 🇳🇱 NL 34
-  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
-  - 🇻🇳 VN 274
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
-  - 🇭🇰 HK 4
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 285
-  - 🇹🇼 TW 1
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 300
-  - 🇻🇳 VN 302
-  - 🇻🇳 VN 287
-  - 🇻🇳 VN 19
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 42
-  - 🇻🇳 VN 299
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 306
-  - 🇻🇳 VN 35
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 12-kBYo
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 232
-  - 🇬🇧 GB 8
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 96
-  - 🇻🇳 VN 310
-  - 79|TR-45.89.52.66-5557 | 1.616MB
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 219
-  - 🇻🇳 VN 79
-  - 🇻🇳 VN 41
-  - 🇻🇳 VN 296
-  - 🇻🇳 VN 77
-  - 🇻🇳 VN 281
-  - 🇻🇳 VN 114
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 301
-  - 🇻🇳 VN 69
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 303
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 178
-  - "[1113][68]荷兰_030\r\r"
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 84
-  - 🇲🇾 MY 1
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 3
-  - 🇻🇳 VN 157
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 52
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 107
-  - 🇻🇳 VN 182
-  - 🇻🇳 VN 259
-  - 🇻🇳 VN 90
-  - 🇺🇸 US 877
-  - 🇻🇳 VN 145
-  - 🇻🇳 VN 224
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 133
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 195
-  - 🇻🇳 VN 126
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 201
-  - 🇻🇳 VN 97
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 256
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 194
-  - 🇻🇳 VN 22-CYXV
-  - 🇻🇳 VN 18-lMcK
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 134
-  - 🇩🇪 DE 17
+  - 🇳🇱 NL 11
   - 🇻🇳 VN 275
-  - 🇻🇳 VN 265
-  - 🇻🇳 VN 196
-  - 🇻🇳 VN 278
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 138
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 88
-  - 🇻🇳 VN 252
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 241
-  - 🇻🇳 VN 202
-  - 🇻🇳 VN 199
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 120
-  - 🇻🇳 VN 86
-  - 🇻🇳 VN 213
-  - 🇻🇳 VN 228
-  - 🇻🇳 VN 222
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 112
-  - 🇻🇳 VN 290
-  - 🇻🇳 VN 71
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 193
-  - 🇻🇳 VN 280
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 🇻🇳 VN 192
-  - 🇻🇳 VN 212
-  - 🇳🇱 NL 27
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 167
-  - 🇻🇳 VN 103
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 8
-  - 🇻🇳 VN 65
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 223
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 23
-  - 🇻🇳 VN 181
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 95
-  - 🇻🇳 VN 309
-  - 🇻🇳 VN 55
-  - 🇻🇳 VN 1
+  - 🇰🇿 KZ 2
+  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
   - 🇻🇳 VN 78
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 248
-  - 🇻🇳 VN 288
-  - 🇻🇳 VN 183
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 236
-  - 🇻🇳 VN 93
-  - 🇻🇳 VN 6
-  - 🇻🇳 VN 17-Gp8S
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 51
-  - 🇻🇳 VN 61
-  - 🇻🇳 VN 190
-  - 🇻🇳 VN 50
-  - 🇺🇸 US 33
-  - 🇻🇳 VN 239
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 160
-  - 🇻🇳 VN 91
-  - 🇻🇳 VN 234
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 168
-  - 🇻🇳 VN 267
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 10-dea4
-  - 🇻🇳 VN 110
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 249
-  - 🇻🇳 VN 1-KYIV
-  - 🇻🇳 VN 57
-  - 🇻🇳 VN 4-oIsy
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 268
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 48
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 206
-  - 🇻🇳 VN 294
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 243
-  - 🇻🇳 VN 263
-  - 🇻🇳 VN 104
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 115
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 56
-  - 🇻🇳 VN 76
-  - 🇻🇳 VN 44
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 292
-  - 🇵🇱 PL 1
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 20-dwYY
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 205
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 136
-  - 🇻🇳 VN 94
-  - 🇻🇳 VN 184
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 127
-  - 🇻🇳 VN 271
-  - 🇳🇱 NL 13
-  - 🇻🇳 VN 260
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 253
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 27
-  - 🇻🇳 VN 46
-  - 🇻🇳 VN 37
-  - 🇻🇳 VN 233
-  - 🇻🇳 VN 230
-  - 🇻🇳 VN 63
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 257
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 149
-  - 🇻🇳 VN 152
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 89
-  - 🇳🇱 NL 10
-  - 🇻🇳 VN 25
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 43
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 70
-  - 🇵🇱 PL 4
-  - 🇻🇳 VN 173
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 60
-  - 🇻🇳 VN 266
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 150
-  - 🇺🇸 US 680
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 203
-  - 🇻🇳 VN 225
-  - 🇻🇳 VN 238
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 191
-  - 🇻🇳 VN 291
-  - 🇻🇳 VN 197
-  - 🇻🇳 VN 189
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 251
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 172
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 143
-  - 🇻🇳 VN 109
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 16-KLcB
-  - 🇻🇳 VN 6-13hW
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 113
-  - 🇻🇳 VN 129
-  - 🇻🇳 VN 207
-  - 🇻🇳 VN 286
-  - 🇻🇳 VN 119
-  - 🇻🇳 VN 155
-  - 🇭🇰 HK 2
-  - "18|A_18057\r\r"
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - 🇻🇳 VN 39
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 214
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 135
-  - 🇻🇳 VN 21-8mMN
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 8-hJ6t
-  - 🇻🇳 VN 30
+  - 🇦🇺 AU 2
   - 🇻🇳 VN 177
+  - 🇳🇱 NL 10
   - 🇹🇭 TH 1
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - 🇻🇳 VN 140
-  - 🇻🇳 VN 67
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 62
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 229
-  - 🇻🇳 VN 237
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 166
-  - 🇺🇸 US 597
-  - 🇻🇳 VN 272
-  - 🇮🇪 IE 1
+  - 🇷🇺 RU 1
+  - 🇺🇸 US 888
+  - 🇻🇳 VN 14
+  - 🇻🇳 VN 11
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 塞舌尔_1126001
+  - 🇸🇪 SE 1-Mxk3
+  - 🇮🇩 ID 2
+  - 🇳🇱 NL 27
+  - 🇮🇳 IN 3
+  - 英国United+Kingdom
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 176
+  - '[112]🏁RELAY-104.17.213.241-0102'
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+80\r\r"
-  - 🇻🇳 VN 13-nXnK
-  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇰🇿 KZ 2
-  - 🇻🇳 VN 80
-  - 🇫🇷 FR 4-HiC3
-  - 🇻🇳 VN 180
-  - 🇹🇼 TW 2
-  - 🇯🇵 JP 1
-  - 🇮🇳 IN 2
-  - 1,2,3,193|🇺🇸US_855
-  - 🇻🇳 VN 255
-  - "[freefq]undefined\r\r"
-  - 🇻🇳 VN 22
-  - 🇮🇩 ID 2
-  - 英国United+Kingdom
-  - 🇻🇳 VN 231
-  - 🇻🇳 VN 73
-  - 🇮🇳 IN 1
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
-  - 🇻🇳 VN 187
-  - 🇮🇳 IN 2-yKVl
-  - 🇬🇧 GB 15
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - 🇮🇳 IN 3
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - 🇧🇭 BH 1
-  - '[101]巴西-95.164.4.88-12472'
-  - "[116][101]@Zede_filteri+台湾\r\r"
-  - 🇻🇳 VN 282
+  - "9,12,14|ChatGPT  N... #3\r\r"
   - TW2|@ripaojiedian-22750
-  - 🇳🇱 NL 2-V9pt
-  - 🇻🇳 VN 45
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
+  - 🇮🇳 IN 2-r0qy
+  - 🇮🇹 IT 1
+  - 🇳🇱 NL 34
   - 香港wap-T
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
-  - 🇯🇵 JP 3
-  - 🇻🇳 VN 216
-  - 🇳🇱 NL 8
-  - 🇺🇸 US 501
-  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
-  - 越南VN-T
-  - TW|@ripaojiedian-22749
-  - 🇩🇪 DE 4
-  - "18|A_18056\r\r"
-  - 🇹🇷 TR 6
-  - 🇰🇷 KR 3
+  - 🇻🇳 VN 22
   - 台湾WAP-T-GPT
+  - 🇺🇸 US 501
   - 🇰🇷 KR 5
-  - 荷兰Amsterdam,+NH,+The+Netherlands-sLhe
-  - 美国USLA-T-GPT
+  - 🇰🇷 KR 3
+  - 🇹🇷 TR 6
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
   - 朝鲜KP-T
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 澳大利亚AU-T
+  - 越南VN-T
   - 日本JP-T
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 俄罗斯联邦_1126007
-  - "[1113][68]r♡ya@vpnbaz\r\r-G8qY"
-  - "[1113][76]土耳其_1009002\r\r"
-  - 🇻🇳 VN 174
+  - "[1113][68]r♡ya@vpnbaz\r\r-dT2g"
+  - 🇻🇳 VN 56
+  - 🇹🇼 TW 2
   - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 美国USLA-T-GPT
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
   - "[116][101]马耳他_0928001\r\r"
-  - 🇺🇸 US 13
-  - 🇻🇳 VN 151
-  - 🇻🇳 VN 29
-  - 🇻🇳 VN 141
-  - 🇺🇸 US 874
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
-  - 葡萄牙PT-T
-  - 🇮🇸 IS 1
-  - 🇩🇪 DE 46
-  - 英国UK-T
-  - "[113]undefined\r\r-frIk"
+  - 1828|二爷翻墙_35
+  - 🇭🇰 HK 2
   - 意大利IT-T
+  - "[116][101]@Zede_filteri+台湾\r\r"
+  - 🇱🇹 LT 1
+  - 🇻🇳 VN 62
+  - 🇻🇳 VN 45
+  - 1828|二爷翻墙_74
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 168
+  - 葡萄牙PT-T
+  - 英国UK-T
   - 乌克兰UA-T
   - 哈萨克斯坦KZ-T
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +41\r\r"
-  - 🇬🇹 GT 1
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +40\r\r"
-  - 🇳🇱 NL 25
   - 以色列IL-T
+  - 俄罗斯联邦_1126007
+  - "[1113][68]r♡ya@vpnbaz\r\r-zI59"
+  - 立陶宛_445
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇩🇪 DE 5
+  - 🇺🇸 US 594
+  - TW|@ripaojiedian-22749
+  - "[freefq]undefined\r\r"
+  - _303
   - 🇺🇸 US 869
-  - 澳大利亚AU-T
-  - "[1113][68]r♡ya@vpnbaz\r\r-Nqgu"
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -8071,1875 +8247,1913 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸 US 11
-  - 🇺🇸 US 8
   - 🇺🇸 US 828
-  - 🇺🇸 US 9-qV4a
+  - 🇺🇸 US 8
+  - 🇺🇸 US 9-6cWa
+  - 🇺🇸 US 11
   - Node-7745
   - 0|_143
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +113\r\r"
+  - '[112]🇨🇦CA-138.197.141.58-0175'
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +114\r\r"
-  - '[112]🇨🇦CA-138.197.141.58-0175'
+  - 🇺🇸 US 189
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+108\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +116\r\r"
   - '[112]🇨🇦CA-147.182.146.81-0160'
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
-  - 🇺🇸 US 14-ta3j
-  - 🇺🇸 US 561
-  - 🇺🇸 US 11-Ihu4
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸 US 4-zkwz
-  - 🇺🇸 US 89
-  - 🇺🇸 US 44
-  - 🇺🇸 US 569
-  - 🇺🇸 US 10
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 美国_1126491
-  - 🇺🇸 US 19
-  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
-  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 55
-  - 🇺🇸 US 3
-  - 🇺🇸 US 16
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+73\r\r"
-  - 🇺🇸 US 58
-  - 🇺🇸 US 63
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 4-vd8E
   - "[1113][68][68][68][68][68][68][68][82][68][82][82][68][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+72\r\r"
-  - Node-11011
-  - 🇺🇸 US 70
-  - 🇺🇸 US 45
-  - 🇺🇸 US 68
-  - 🇺🇸 US 69
-  - 🇺🇸 US 189
-  - 🇺🇸 US 117
-  - 🇺🇸 US 18
-  - 🇺🇸 US 158
-  - 🇺🇸 US 254
-  - 🇺🇸 US 134
-  - 🇺🇸 US 196
-  - 🇺🇸 US 103
+  - 🇺🇸 US 89
+  - 🇺🇸 US 561
+  - 🇺🇸 US 11-sk0r
+  - 5686|Namemc
+  - 🇺🇸 US 569
+  - 🇺🇸 US 19
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
+  - 🇺🇸 US 234
+  - 5686|Cloudflare developers
+  - 🇺🇸 US 87
+  - 🇺🇸 US 40
+  - 🇺🇸 US 3
+  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
+  - 美国_1126491
+  - 5686|IT Army
+  - 🇺🇸 US 181
+  - 5686|WTO
+  - 🇺🇸 US 145
+  - 🇺🇸 US 80
+  - 🇺🇸 US 36-M79s
+  - 🇺🇸 US 48
+  - 0,1,2,3,6,8| US_179 | 3.40Mb
+  - 🇺🇸 US 162
+  - 🇺🇸 US 8-bwr0
+  - 5686|Cloudflare Support
   - 🇺🇸 US 310
-  - 🇺🇸 US 337
-  - 🇺🇸 US 1
-  - 🇺🇸 US 9
-  - 🇺🇸 US 4
+  - 🇺🇸 US 70
+  - 🇺🇸 US 44
+  - '1,2,3,8,122,186,193|_08 #1'
+  - 🇺🇸 US 46
+  - 🇺🇸 US 43
+  - 🇺🇸 US 134
+  - Node-11011
   - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 31-61pZ
-  - '1,2,3,8,122,186,193|_08 #1'
-  - 🇺🇸 US 7
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 0|_96
+  - 🇺🇸 US 588
+  - 🇺🇸 US 58
+  - 5686|FBI 超时是因为请求次数用完
+  - 🇺🇸 US 328
+  - 🇺🇸 US 18
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +119\r\r"
-  - 🇺🇸 US 80
-  - 🇺🇸 US 391
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
+  - 🇺🇸 US 90
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S6\r\r"
-  - _275
-  - 🇺🇸 US 19-kvSN
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +121\r\r"
-  - 🇺🇸 US 87
-  - '[112]🇺🇸US-79.110.53.169-0241'
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
-  - Node-14329
-  - 🇺🇸 US 137
-  - 🇺🇸 US 118
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +120\r\r"
+  - 0|_96
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +121\r\r"
+  - '[112]🇺🇸US-79.110.53.169-0241'
+  - 🇺🇸 US 254
+  - 🇺🇸 US 31-Pm3p
+  - 🇺🇸 US 548
   - 🇺🇸 US 613
-  - 🇺🇸 US 328
+  - _275
+  - 🇺🇸 US 7
+  - 🇺🇸 US 299
   - 🇺🇸 US 217
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 145
-  - 🇺🇸 US 552
+  - 🇺🇸 US 117
+  - 🇺🇸 US 10
+  - 🇺🇸 US 469
   - '[112]🇨🇦CA-138.197.153.10-0137'
-  - 0|_98
+  - 🇺🇸 US 515
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][pojiezhiyuanjun/freev2]\U0001F1FA\U0001F1F8\
+    \ US-2.58.87.221:16899\r\r\r"
+  - '2,3,121,186|_87 #1'
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +41\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S4\r\r"
-  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
   - 66|SS-TCP-NA 🇺🇸 US-212.102.47.130...
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
   - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 68
+  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
+  - 🇺🇸 US 23
   - 🇺🇸 US 164
+  - 🇺🇸 US 1
+  - 🇺🇸 US 196
+  - 🇺🇸 US 158
   - 🇺🇸 US 22
   - 🇺🇸 US 26
-  - 🇺🇸 US 23
-  - 🇺🇸 US 46
-  - 🇺🇸 US 56
-  - 🇺🇸 US 67
+  - 🇺🇸 US 118
   - 🇨🇦 CA 1
-  - 🇺🇸 US 98
-  - '2,3,121,186|_87 #1'
-  - 🇺🇸 US 28
-  - 🇺🇸 US 2-44FM
-  - 🇺🇸 US 181
-  - 🇺🇸 US 36-amIE
+  - 🇺🇸 US 56
+  - Node-14329
+  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
+  - 🇺🇸 US 55
+  - 🇺🇸 US 15
+  - 0|_42
+  - 🇺🇸 US 138
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][68][68][68][68][82][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+67\r\r"
-  - 🇺🇸 US 690
-  - 🇺🇸 US 165
-  - 🇺🇸 US 234
-  - 🇺🇸 US 21
-  - 🆔@LuxyNet💎❖英国❖GB❖950
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
-  - 🇬🇧 GB 11
-  - 🇺🇸 US 568
-  - 🇬🇧 GB 4
-  - 🇺🇸 US 40
-  - 🇺🇸 US 162
-  - 🇺🇸 US 42
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - 🇬🇧 GB 5
-  - 🇺🇸 US 90
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+93\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 🇫🇷 FR 4
-  - 🇳🇱 NL 1
-  - 🇺🇸 US 299
+  - 🇺🇸 US 291
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+100\r\r"
+  - '[112]🇬🇧GB-104.166.161.196-0271'
+  - 🇺🇸 US 42
+  - 🇺🇸 US 195
+  - 🇺🇸 US 63
+  - 🇺🇸 US 137
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸 US 69
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - 4871|🇺🇸 US, Dallas 2 @mfbpn
+  - 🇬🇧 GB 4
+  - 🇺🇸 US 391
+  - 🇬🇧 GB 10
+  - 🇬🇧 GB 11
+  - 🇺🇸 US 27
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - 🇺🇸 US 103
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+86\r\r"
+  - 🇳🇱 NL 1
+  - 1579|🇬🇧_GB_英国
+  - 🇺🇸 US 197
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - '>德国|Ns|1115|TG@FProxies|'
+  - 🇺🇸 US 165
   - 🇳🇱 NL 4
-  - 🇳🇱 NL 2
-  - 🇺🇸 US 555
+  - 🇳🇱 NL 5-t8WW
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - "[103]_RU_俄罗斯_212\r\r"
-  - 🇳🇱 NL 5-8lO7
-  - 🇬🇧 GB 3
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +122\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇬🇧 GB 20
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - '>德国|Ns|1115|TG@FProxies|'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+86\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 291
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - '[112]🇬🇧GB-169.150.210.233-0276'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+85\r\r"
   - "[100]德国-38.60.250.107-44639\r\r"
-  - 🇺🇸 US 197
-  - 🇺🇸 US 43
-  - '[112]🇬🇧GB-104.166.161.196-0271'
-  - 🇺🇸 US 102
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
-  - 🇬🇧 GB 14
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - "[103]_俄罗斯_hamraH_417\r\r"
-  - '1,2,3,8,193|_04 #1'
-  - "[1113][68]r♡ya@vpnbaz\r\r-qi7W"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - "[103]_俄罗斯_hamraH_415\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 4-FAMQ
-  - "[103]_俄罗斯_hamraH_416\r\r"
-  - 🇳🇱 NL 3
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - 🇺🇸 US 27
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
-  - "[103]_RU_俄罗斯_213\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - "[103]_RU_俄罗斯_128\r\r"
-  - 🇻🇪 VE 1
-  - 🇺🇸 US 48
-  - 🇩🇪 DE 25
-  - 🇳🇱 NL 3-qOrq
-  - GB_07
-  - 🇩🇪 DE 28
-  - "[103]俄罗斯_RU_SSS_112\r\r"
-  - 🇨🇭 CH 1
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - 🇺🇸 US 622
-  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
-  - 🇺🇸 US 31
-  - 🇳🇱 NL 6-z9zt
-  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
-  - 🇳🇱 NL 6
-  - 🇬🇧 GB 10
-  - 美国_579
-  - 🇳🇱 NL 19
-  - 🇺🇸 US 8-aqqZ
-  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
-  - 🇺🇸 US 469
-  - 捷克_1126002
-  - 🇺🇸 US 195
-  - 瑞士Zurich,+ZH,+Switzerland
-  - "[103]俄罗斯_RU_SSS_107\r\r"
-  - 🇺🇸 US 138
-  - 🇺🇸 US 640
-  - 德国
-  - "[103]_RU_俄罗斯_127\r\r"
-  - 🇩🇪 DE 3
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - 🇺🇸 US 567
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 加拿大_1126006
-  - "[103]_RU_俄罗斯_123\r\r"
-  - 🇺🇸 US 745
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - 🇺🇸 US 612
-  - 立陶宛_445
-  - 🇳🇱 NL 9-tqRP
-  - 🇺🇸 US 759
+  - 🇳🇱 NL 2
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 美国_1126159
-  - "[103]_俄罗斯_hamraH_419\r\r"
-  - 🇺🇸 US 841
-  - 🇨🇭 CH 3
-  - 🇺🇸 US 725
-  - 🇺🇸 US 588
+    \U0001D64B\U0001D649+93\r\r"
+  - 🇬🇧 GB 20
+  - 🇺🇸 US 552
+  - "[103]_RU_俄罗斯_123\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 4871|🇭🇰 HK, Los Angeles @mfbpn
   - "[103]_俄罗斯_hamraH_316\r\r"
-  - 🇳🇱 NL 5
-  - "[103]_俄罗斯_hamraH_123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - 18|A_18069
-  - "[103]PE_715\r\r"
-  - "[103]PE_735\r\r"
-  - 🇺🇸 US 15
-  - "[103]_俄罗斯_hamraH_128\r\r"
-  - "[103]_俄罗斯_hamraH_415\r\r"
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🇬🇧 GB 14
+  - 🇺🇸 US 25
+  - 🇬🇧 GB 3
+  - 🇩🇪 DE 28
+  - GB_07
+  - 🇩🇪 DE 27
+  - 🇳🇱 NL 4-rUcN
+  - 🇺🇸 US 4
+  - "[103]_RU_俄罗斯_127\r\r"
   - "[103]_RU_俄罗斯_202\r\r"
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - "18|A_5377\r\r"
-  - 4FreeIran-783
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - "[103]PE_728\r\r"
-  - "[103]PE_726\r\r"
-  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 🇳🇱 NL 26
+  - 🇩🇪 DE 6-25Gh
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 4871|🇨🇦 CA, Vancouver @mfbpn
+  - "[103]俄罗斯_RU_SSS_112\r\r"
+  - '1,2,3,122,186,193|_18 #1'
+  - 🇳🇱 NL 3-hKSY
+  - "[103]_俄罗斯_hamraH_123\r\r"
+  - 🇳🇱 NL 25
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - "[1113][68]r♡ya@vpnbaz\r\r-QHJ7"
+  - 美国_579
+  - "[103]_RU_俄罗斯_213\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇱🇹 LT 1
-  - "[103]PE_747\r\r"
-  - "[103]_俄罗斯_hamraH_126\r\r"
-  - "[103]PE_740\r\r"
-  - 🇺🇸 US 515
-  - "18|A_18061\r\r"
-  - "[103]_RU_俄罗斯_210\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
-  - "18|A_18060\r\r"
-  - "[103]PE_730\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
-  - "[1113][68]r♡ya@vpnbaz\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
-  - 🇺🇸 US 618
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 18|A_18065
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🇳🇱 NL 31
+  - 捷克_1126002
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 瑞士Zurich,+ZH,+Switzerland
+  - 🇨🇭 CH 1
+  - 🇺🇸 US 745
+  - 🇳🇱 NL 3
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +104\r\r"
-  - 🇧🇬 BG 1
-  - "[103]PE_744\r\r"
-  - "[103]PE_736\r\r"
-  - "18|A_18066\r\r"
-  - "18,114|\U0001F1FA_RU_m_267\r\r"
-  - "[103]PE_729\r\r"
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "[103]PE_724\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
-  - "[103]PE_722\r\r"
-  - "[103]PE_721\r\r"
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
-  - "[103]PE_749\r\r"
+    +113\r\r"
+  - 🇬🇧 GB 5
+  - "[103]_RU_俄罗斯_211\r\r"
+  - 🇳🇱 NL 19
+  - 🇻🇪 VE 1
+  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
+  - 🇺🇸 US 337
+  - 🇳🇱 NL 9-MMlZ
+  - 🇳🇱 NL 6
   - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - "[103]PE_710\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+103\r\r"
-  - "[103]PE_709\r\r"
-  - "[103]PE_718\r\r"
-  - '1,2,3,122,186,193|_18 #1'
-  - "[103]PE_739\r\r"
-  - "[103]PE_738\r\r"
-  - "[103]PE_745\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_732\r\r"
-  - "[103]_RU_俄罗斯_206\r\r"
-  - "[103]PE_737\r\r"
-  - 18|A_18102
-  - "[103]PE_707\r\r"
-  - "[103]PE_708\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_742\r\r"
-  - "[103]PE_733\r\r"
-  - 🇺🇸 US 471
-  - 🇸🇪 SE 1
-  - "[103]PE_746\r\r"
-  - 🇵🇱 PL 2
-  - "[103]PE_713\r\r"
-  - "[103]PE_734\r\r"
-  - "[103]PE_748\r\r"
-  - "[100]瑞典-121.127.46.147-43320\r\r"
-  - "[103]PE_743\r\r"
-  - 🇨🇦 CA 1-7SEZ
-  - "18|A_18064\r\r"
-  - "18|A_18062\r\r"
-  - "[103]PE_723\r\r"
-  - 🇦🇷 AR 1
-  - "18|A_18055\r\r"
-  - 18|A_18067
-  - 🇺🇸 US 25
-  - 🇺🇸 US 642
-  - 🇳🇱 NL 8-4tsC
-  - 🇨🇦 CA 3
-  - "[103]PE_719\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - 🇺🇸 US 617
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+105\r\r"
-  - "[103]PE_717\r\r"
-  - "[103]PE_712\r\r"
-  - 🇺🇸 US 873
-  - "[103]PE_716\r\r"
-  - "[103]PE_725\r\r"
-  - 🇺🇸 US 626
-  - 🇺🇸 US 767
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "18|A_18063\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 303
-  - 🇺🇸 US 791
-  - 英国_1126006
-  - 🇺🇸 US 630
-  - 🇺🇸 US 883
-  - 🇩🇪 DE 8
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_711\r\r"
-  - "[103]PE_741\r\r"
-  - 🇺🇸 US 644
-  - 🇳🇱 NL 23
-  - 🇷🇸 RS 1
-  - 🇩🇪 DE 38
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - 🇺🇸 US 20
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
-    #3 #2'
-  - 🇯🇵 JP 2
-  - 🇯🇵 JP 1-HjMt
-  - 🇸🇪 SE 3
+  - 🇺🇸 US 813
+  - "[103]_俄罗斯_hamraH_128\r\r"
   - 🇺🇸 US 24
-  - 🇬🇧 GB 1
-  - 🇬🇧 GB 16
-  - "[103]PE_751\r\r"
-  - 🇩🇪 DE 42
-  - 🇺🇸 US 645
-  - 61,159|AE-40.172.77.38-0379 | 1.739MB
-  - 0|_207
-  - 🇳🇱 NL 11
-  - 🇺🇸 US 641
-  - 🇺🇸 US 594
-  - 🇺🇸 US 29
-  - 🇲🇹 MT 1
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - "[103]PE_731\r\r"
-  - 🇬🇧 GB 17
-  - 🇺🇦 UA 1
-  - 🇬🇧 GB 2
-  - 🇺🇸 US 638
-  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - '1431,1542,1846|美国 071 #2'
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 5686|Epicgames
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
+  - "[103]_RU_俄罗斯_128\r\r"
+  - 🇺🇸 US 303
+  - "[103]_RU_俄罗斯_212\r\r"
+  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
   - 🇺🇸 US 675
-  - Node-8685
-  - 🇺🇸 US 634
+  - 🇺🇸 US 645
+  - 加拿大_1126006
+  - 🇫🇷 FR 8
+  - 🇳🇱 NL 23
+  - 🇩🇪 DE 25
+  - 🇺🇸 US 471
+  - 1579|🇮🇹_IT_意大利->🇲🇩_MD_摩尔多瓦
+  - "[103]PE_746\r\r"
+  - 🇨🇭 CH 3
+  - 🇺🇸 US 2-nYEa
+  - "[103]PE_725\r\r"
+  - "[103]PE_716\r\r"
+  - "[103]PE_726\r\r"
+  - "[103]PE_720\r\r"
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - 🇺🇸 US 791
+  - "[103]PE_738\r\r"
+  - "18|A_18063\r\r"
+  - 🇺🇸 US 102
+  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
+  - "18|A_18056\r\r"
+  - 🇵🇱 PL 4
+  - "[103]PE_713\r\r"
+  - "18|A_18060\r\r"
+  - 18|A_18065
+  - "[103]_RU_俄罗斯_206\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
+  - 🇮🇸 IS 1
+  - "18|A_18062\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🇵🇱 PL 3
+  - "18|A_18064\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
+  - "[103]PE_729\r\r"
+  - 🇧🇬 BG 1
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - '1431,1542,1846,1847|美国 063 #3'
+  - "18|A_18061\r\r"
+  - 🇩🇪 DE 4
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - "[103]PE_750\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_712\r\r"
+  - "18,114|\U0001F1FA_RU_m_267\r\r"
+  - 🇸🇪 SE 1
+  - "[103]俄罗斯_RU_SSS_107\r\r"
+  - 🇺🇸 US 873
   - 🇨🇦 CA 9
-  - 218,270|🇺🇸 US 741 → tg@nicevpn123
-  - 🇱🇻 LV 1
-  - "\U0001F1E7\U0001F1ED BH 157.175.154.107 ◈ tcp:443 ◈ AWS EC2 (me-south-1) ◈ b5a85\r\
-    \r"
+  - 🇺🇸 US 841
+  - "[103]PE_744\r\r"
+  - "[103]PE_707\r\r"
+  - "[103]PE_711\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_714\r\r"
+  - "[103]PE_727\r\r"
+  - 英国_1126006
+  - "[103]PE_730\r\r"
+  - 🇺🇸 US 640
+  - "[103]PE_749\r\r"
+  - "[103]PE_736\r\r"
+  - 德国
+  - "[103]PE_718\r\r"
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
+  - "[103]PE_737\r\r"
+  - "[100]瑞典-121.127.46.147-43320\r\r"
+  - 🇺🇸 US 67
+  - "[103]PE_731\r\r"
+  - "[103]PE_740\r\r"
+  - 18|A_18102
+  - "[103]PE_747\r\r"
+  - "[103]PE_719\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_715\r\r"
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+105\r\r"
+  - "[103]_RU_俄罗斯_210\r\r"
+  - "18|A_5377\r\r"
+  - 18|A_18067
+  - "[103]PE_709\r\r"
+  - "[103]PE_742\r\r"
+  - "[103]PE_751\r\r"
+  - "[103]PE_743\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
+  - "[103]PE_728\r\r"
+  - 🇺🇸 US 618
+  - "[103]PE_710\r\r"
+  - 18|A_18068
+  - "[103]PE_732\r\r"
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 2,3,186| ZZ_1412
+  - "[103]PE_748\r\r"
+  - 🇺🇸 US 626
+  - "[103]PE_708\r\r"
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇳🇱 NL 8-rt82
+  - 🇳🇱 NL 8
+  - "[103]PE_745\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]PE_739\r\r"
+  - "[103]PE_735\r\r"
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 19-O5bD
+  - "[103]PE_724\r\r"
+  - 🇨🇦 CA 3
+  - "[103]PE_733\r\r"
+  - 🇺🇸 US 644
+  - 🇦🇷 AR 1
+  - "[103]PE_723\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 630
+  - 🇺🇸 US 21
+  - 🇺🇸 US 883
+  - "18|A_18057\r\r"
+  - 🇺🇦 UA 1
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
   - "\U0001F1EC\U0001F1E7 GB 13.40.181.177 ◈ tcp:443 ◈ AWS EC2 (eu-west-2) ◈ 2ef43\r\
     \r"
-  - 🇺🇸 US 620
-  - 🇪🇪 EE 1
-  - 414|qol_0758
-  - 🇺🇸 US 888
+  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
+  - "[103]PE_722\r\r"
+  - 🇺🇸 US 725
+  - 🇺🇸 US 617
+  - 🇩🇪 DE 38
+  - 🇺🇸 US 767
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 🇵🇱 PL 2
+  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
+    #3 #2'
+  - 0|_207
+  - 🇯🇵 JP 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇯🇵 JP 1-e4zv
+  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
+  - "[103]_俄罗斯_hamraH_126\r\r"
+  - '1,2,3,8,193|_04 #1'
   - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇳🇱 NL 31
+  - 🇷🇸 RS 1
+  - 🇪🇪 EE 1
+  - 🇬🇧 GB 15
+  - "[103]PE_734\r\r"
+  - 🇺🇸 US 642
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - "18|A_18059\r\r"
+  - 🇺🇸 US 622
+  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
+  - 🇺🇸 US 31
+  - "[103]PE_717\r\r"
+  - 🇩🇪 DE 42
+  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - 🇩🇪 DE 46
   - 🇺🇸 US 596
+  - 61,159|AE-40.172.77.38-0379 | 1.739MB
+  - 4FreeIran-107
+  - 🇬🇧 GB 1
+  - 🇺🇸 US 20
+  - 🇳🇱 NL 6-px8J
+  - 🇳🇱 NL 15
+  - 🇺🇸 US 16
+  - 🇺🇸 US 612
+  - 🇺🇸 US 563
+  - Node-8685
+  - 美国_1126159
+  - 🇺🇸 US 597
+  - 🇺🇸 US 98
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +104\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
+  - 🇬🇧 GB 16
+  - 4871|🇯🇵 JP, Tokyo @mfbpn
+  - 61,159|BH-15.184.155.145-0382 | 1.742...
+  - 0|_102
+  - 🇺🇸 US 634
+  - 🇺🇸 US 615
+  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
+  - 🇨🇾 CY 1
+  - 🇺🇸 US 620
+  - 4FreeIran-783
+  - 🇺🇸 US 877
+  - 🇬🇧 GB 17
+  - 414|qol_0810
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇱🇻 LV 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   02
+  - 0|HK_1233
+  - 🇮🇪 IE 4
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇺🇸 US 641
+  - 🇬🇧 GB 4-FIk6
+  - 🇺🇸 US 882
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 79|TR-45.89.52.66-5557 | 1.616MB
+  - 🇫🇷 FR 1-qxGW
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇱🇻 LV 1-b76R
+  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
+  - 🇸🇬 SG 2
+  - 🇬🇧 GB 5-cILd
+  - 🇭🇰 HK 1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+77\r\r"
+  - 4871|🇰🇷 KR, Incheon @mfbpn
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 4871|🇯🇵 JP, Osaka @mfbpn
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+78\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
+  - 4871|🇭🇰 HK, Kowloon @mfbpn
+  - 1579|🇺🇸_US_美国_1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+79\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+81\r\r"
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇩🇪 DE 7
+  - 🇲🇹 MT 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   07
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - 🇫🇷 FR 4-JY1f
+  - 🇺🇸 US 657
+  - 414|qol_0758
+  - 697|🇨🇦 加拿大_唯云专线_布洛妮娅的黑丝
+  - 🇫🇷 FR 2-sohp
+  - 🇩🇪 DE 3-3H1y
+  - 🇺🇸 US 874
+  - 🇺🇸 US 680
+  - 🇺🇸 US 18-JtlW
   - 🇦🇺 AU 1
+  - 🇯🇵 JP 4
+  - 🇬🇧 GB 6
+  - 🇪🇸 ES 1
+  - 🇳🇱 NL 2-BH46
+  - 🇫🇷 FR 5
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 0,79|TR-45.89.52.66-5555 | 1.251MB
+  - 🇨🇦 CA 1-snZo
+  - 🇫🇷 FR 6
+  - 🇺🇸 US 638
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   04
+  - "18,51|\U0001F1F1_HAMRAH_465\r\r"
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇬🇷 GR 1
+  - 🇰🇷 KR 2
+  - 🇹🇼 TW 1
+  - 🇺🇸 US 876
+  - 🇸🇪 SE 2-1e34
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇧🇭 BH 1
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
+  - 🇩🇪 DE 5-0hf7
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - 🇨🇭 CH 2
+  - 🇳🇱 NL 13
+  - "18|A_18055\r\r"
+  - 🇬🇹 GT 1
+  - 🇺🇸 US 36
+  - 🇻🇳 VN 73
+  - 🇻🇳 VN 18-C3EQ
+  - "[1113][68]荷兰_030\r\r"
+  - 🇸🇪 SE 3
+  - 🇭🇰 HK 4
+  - 🇻🇳 VN 68
+  - 荷兰Amsterdam,+NH,+The+Netherlands-AKjh
+  - 🇻🇳 VN 270
+  - "[1113][68]r♡ya@vpnbaz\r\r-UDMs"
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 281
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 304
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 141
+  - 🇮🇪 IE 1
+  - 🇻🇳 VN 303
+  - 🇻🇳 VN 302
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 285
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 299
+  - 🇻🇳 VN 297
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 296
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 77
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 175
+  - 🇻🇳 VN 61
+  - 🇻🇳 VN 182
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 278
+  - 🇻🇳 VN 300
+  - 🇹🇼 TW 3
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 269
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 19
+  - 🇩🇪 DE 3
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 280
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 291
+  - 🇻🇳 VN 12-WJhG
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 221
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 233
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 30
+  - 🇻🇳 VN 52
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 189
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 151
+  - 🇻🇳 VN 265
+  - 🇻🇳 VN 23
+  - 🇻🇳 VN 63
+  - 🇮🇳 IN 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 199
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 85
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 82
+  - 🇻🇳 VN 239
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 216
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 22-rCXB
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 88
+  - 🇻🇳 VN 192
+  - 🇻🇳 VN 306
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 257
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 4
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 13-eTwC
+  - 🇻🇳 VN 43
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 20-kpvr
+  - 🇻🇳 VN 172
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 268
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 180
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 279
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 181
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 259
+  - 🇻🇳 VN 193
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 294
+  - 🇻🇳 VN 214
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 21-0po0
+  - 🇻🇳 VN 112
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 25
+  - 🇻🇳 VN 33
+  - 🇻🇳 VN 150
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 243
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 50
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 178
+  - 🇦🇺 AU 3
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 174
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 16-tP23
+  - 🇻🇳 VN 17-vu7n
+  - 🇻🇳 VN 143
+  - 18|A_18069
+  - 🇻🇳 VN 119
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 90
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 91
+  - 🇻🇳 VN 213
+  - 🇻🇳 VN 117
+  - 🇻🇳 VN 138
+  - 🇻🇳 VN 133
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 60
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 24
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 201
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 10-9yXI
+  - 🇻🇳 VN 107
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 4-rnBf
+  - 🇻🇳 VN 104
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 140
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 255
+  - 🇻🇳 VN 120
+  - 🇻🇳 VN 208
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 93
+  - 🇻🇳 VN 203
+  - 🇻🇳 VN 108
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 230
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 46
+  - 🇻🇳 VN 76
+  - 🇻🇳 VN 231
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 65
+  - 🇻🇳 VN 80
+  - 🇻🇳 VN 96
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 128
+  - 🇻🇳 VN 105
+  - 🇺🇸 US 871
+  - 🇻🇳 VN 66
+  - 🇻🇳 VN 228
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 211
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 51
+  - 🇻🇳 VN 139
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 113
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 167
+  - 🇻🇳 VN 188
+  - 🇺🇸 US 30
+  - 🇻🇳 VN 118
+  - 🇺🇸 US 759
+  - 🇻🇳 VN 69
+  - 🇻🇳 VN 74
+  - 🇻🇳 VN 72
+  - 🇳🇱 NL 29
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 196
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 129
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 57
+  - 🇻🇳 VN 206
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 256
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 194
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 207
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 249
+  - 🇻🇳 VN 229
+  - 🇻🇳 VN 251
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 149
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 89
+  - 🇻🇳 VN 227
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 161
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 288
+  - 🇻🇳 VN 142
+  - 1828|二爷翻墙_24
+  - 🇻🇳 VN 8-pfFd
+  - 🇵🇱 PL 1
+  - 🇻🇳 VN 197
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 195
+  - 🇻🇳 VN 1-jBUp
+  - 🇻🇳 VN 260
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 37
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 136
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 114
+  - 🇻🇳 VN 219
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
+  - 🇻🇳 VN 6-lLJD
+  - 🇻🇳 VN 225
+  - 🇻🇳 VN 130
+  - 18,51|🇵🇱_HAMRAH_147
+  - 🇻🇳 VN 267
+  - 🇻🇳 VN 222
+  - 🇺🇸 US 33
+  - 🇯🇵 JP 1
+  - 🇻🇳 VN 186
+  - 🇲🇾 MY 1
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
+  - 🇯🇵 JP 3
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇦🇹 AT 1
-  - 🇺🇸 US 813
-  - 🇺🇸 US 30
-  - 🇺🇸 US 615
-  - 0|_102
-  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
-  - 61,159|BH-15.184.155.145-0382 | 1.742...
-  - 414|qol_0810
-  - "[103]PE_714\r\r"
-  - 0|HK_1233
-  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇮🇪 IE 4
-  - 🇺🇸 US 36
-  - 🇮🇱 IL 1
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
-  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
-  - 🇳🇱 NL 15
-  - 18,51|🇵🇱_HAMRAH_147
-  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
-  - 4FreeIran-107
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+79\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
-  - 🇬🇧 GB 4-Wwzx
-  - 🇬🇧 GB 6
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - 🇬🇧 GB 1-QV0U
-  - 🇫🇷 FR 8
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+77\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+81\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+78\r\r"
-  - 🇸🇬 SG 2
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - 2,3,186| ZZ_1412
-  - 🇫🇷 FR 2-o5Ki
-  - 🇫🇷 FR 1-wWY0
-  - 🇨🇾 CY 1
-  - _303
-  - 🇺🇸 US 657
-  - 🇪🇸 ES 1
-  - 🇫🇷 FR 6
-  - 🇩🇪 DE 5
-  - 🇩🇪 DE 5-RMHe
-  - "18|A_18059\r\r"
-  - 🇹🇼 TW 3
-  - 🇩🇪 DE 7
-  - 🇺🇸 US 871
-  - 🇬🇧 GB 5-E3Kr
-  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
-  - 🇯🇵 JP 4
-  - 🇮🇹 IT 1
-  - 🇸🇪 SE 1-M9PS
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
-  - 🇺🇸 US 18-b3kC
-  - 🇺🇸 US 876
-  - 0,79|TR-45.89.52.66-5555 | 1.251MB
-  - 🇩🇪 DE 3-js6p
-  - 🇦🇺 AU 2
-  - 🇳🇱 NL 32
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
-  - 🇳🇱 NL 29
-  - 🇸🇪 SE 2-J5aB
-  - 0|_42
-  - 18|A_18068
-  - 🇰🇷 KR 2
-  - 1,2,3,186,193,218|🇱NL(AzadNet.t.me)_007
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
-  - 🇷🇺 RU 1
-  - 🇫🇷 FR 5
-  - 🇳🇱 NL 34
-  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
-  - 🇻🇳 VN 274
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
-  - 🇭🇰 HK 4
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 285
-  - 🇹🇼 TW 1
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 300
-  - 🇻🇳 VN 302
-  - 🇻🇳 VN 287
-  - 🇻🇳 VN 19
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 42
-  - 🇻🇳 VN 299
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 306
-  - 🇻🇳 VN 35
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 12-kBYo
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 232
-  - 🇬🇧 GB 8
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 96
-  - 🇻🇳 VN 310
-  - 79|TR-45.89.52.66-5557 | 1.616MB
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 219
-  - 🇻🇳 VN 79
-  - 🇻🇳 VN 41
-  - 🇻🇳 VN 296
-  - 🇻🇳 VN 77
-  - 🇻🇳 VN 281
-  - 🇻🇳 VN 114
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 301
-  - 🇻🇳 VN 69
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 303
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 178
-  - "[1113][68]荷兰_030\r\r"
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 84
-  - 🇲🇾 MY 1
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 3
-  - 🇻🇳 VN 157
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 52
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 107
-  - 🇻🇳 VN 182
-  - 🇻🇳 VN 259
-  - 🇻🇳 VN 90
-  - 🇺🇸 US 877
-  - 🇻🇳 VN 145
-  - 🇻🇳 VN 224
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 133
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 195
-  - 🇻🇳 VN 126
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 201
-  - 🇻🇳 VN 97
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 256
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 194
-  - 🇻🇳 VN 22-CYXV
-  - 🇻🇳 VN 18-lMcK
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 134
-  - 🇩🇪 DE 17
+  - 🇳🇱 NL 11
   - 🇻🇳 VN 275
-  - 🇻🇳 VN 265
-  - 🇻🇳 VN 196
-  - 🇻🇳 VN 278
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 138
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 88
-  - 🇻🇳 VN 252
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 241
-  - 🇻🇳 VN 202
-  - 🇻🇳 VN 199
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 120
-  - 🇻🇳 VN 86
-  - 🇻🇳 VN 213
-  - 🇻🇳 VN 228
-  - 🇻🇳 VN 222
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 112
-  - 🇻🇳 VN 290
-  - 🇻🇳 VN 71
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 193
-  - 🇻🇳 VN 280
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 🇻🇳 VN 192
-  - 🇻🇳 VN 212
-  - 🇳🇱 NL 27
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 167
-  - 🇻🇳 VN 103
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 8
-  - 🇻🇳 VN 65
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 223
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 23
-  - 🇻🇳 VN 181
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 95
-  - 🇻🇳 VN 309
-  - 🇻🇳 VN 55
-  - 🇻🇳 VN 1
+  - 🇰🇿 KZ 2
+  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
   - 🇻🇳 VN 78
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 248
-  - 🇻🇳 VN 288
-  - 🇻🇳 VN 183
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 236
-  - 🇻🇳 VN 93
-  - 🇻🇳 VN 6
-  - 🇻🇳 VN 17-Gp8S
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 51
-  - 🇻🇳 VN 61
-  - 🇻🇳 VN 190
-  - 🇻🇳 VN 50
-  - 🇺🇸 US 33
-  - 🇻🇳 VN 239
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 160
-  - 🇻🇳 VN 91
-  - 🇻🇳 VN 234
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 168
-  - 🇻🇳 VN 267
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 10-dea4
-  - 🇻🇳 VN 110
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 249
-  - 🇻🇳 VN 1-KYIV
-  - 🇻🇳 VN 57
-  - 🇻🇳 VN 4-oIsy
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 268
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 48
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 206
-  - 🇻🇳 VN 294
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 243
-  - 🇻🇳 VN 263
-  - 🇻🇳 VN 104
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 115
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 56
-  - 🇻🇳 VN 76
-  - 🇻🇳 VN 44
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 292
-  - 🇵🇱 PL 1
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 20-dwYY
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 205
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 136
-  - 🇻🇳 VN 94
-  - 🇻🇳 VN 184
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 127
-  - 🇻🇳 VN 271
-  - 🇳🇱 NL 13
-  - 🇻🇳 VN 260
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 253
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 27
-  - 🇻🇳 VN 46
-  - 🇻🇳 VN 37
-  - 🇻🇳 VN 233
-  - 🇻🇳 VN 230
-  - 🇻🇳 VN 63
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 257
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 149
-  - 🇻🇳 VN 152
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 89
-  - 🇳🇱 NL 10
-  - 🇻🇳 VN 25
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 43
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 70
-  - 🇵🇱 PL 4
-  - 🇻🇳 VN 173
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 60
-  - 🇻🇳 VN 266
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 150
-  - 🇺🇸 US 680
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 203
-  - 🇻🇳 VN 225
-  - 🇻🇳 VN 238
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 191
-  - 🇻🇳 VN 291
-  - 🇻🇳 VN 197
-  - 🇻🇳 VN 189
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 251
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 172
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 143
-  - 🇻🇳 VN 109
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 16-KLcB
-  - 🇻🇳 VN 6-13hW
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 113
-  - 🇻🇳 VN 129
-  - 🇻🇳 VN 207
-  - 🇻🇳 VN 286
-  - 🇻🇳 VN 119
-  - 🇻🇳 VN 155
-  - 🇭🇰 HK 2
-  - "18|A_18057\r\r"
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - 🇻🇳 VN 39
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 214
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 135
-  - 🇻🇳 VN 21-8mMN
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 8-hJ6t
-  - 🇻🇳 VN 30
+  - 🇦🇺 AU 2
   - 🇻🇳 VN 177
+  - 🇳🇱 NL 10
   - 🇹🇭 TH 1
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - 🇻🇳 VN 140
-  - 🇻🇳 VN 67
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 62
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 229
-  - 🇻🇳 VN 237
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 166
-  - 🇺🇸 US 597
-  - 🇻🇳 VN 272
-  - 🇮🇪 IE 1
+  - 🇷🇺 RU 1
+  - 🇺🇸 US 888
+  - 🇻🇳 VN 14
+  - 🇻🇳 VN 11
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 塞舌尔_1126001
+  - 🇸🇪 SE 1-Mxk3
+  - 🇮🇩 ID 2
+  - 🇳🇱 NL 27
+  - 🇮🇳 IN 3
+  - 英国United+Kingdom
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 176
+  - '[112]🏁RELAY-104.17.213.241-0102'
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+80\r\r"
-  - 🇻🇳 VN 13-nXnK
-  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇰🇿 KZ 2
-  - 🇻🇳 VN 80
-  - 🇫🇷 FR 4-HiC3
-  - 🇻🇳 VN 180
-  - 🇹🇼 TW 2
-  - 🇯🇵 JP 1
-  - 🇮🇳 IN 2
-  - 1,2,3,193|🇺🇸US_855
-  - 🇻🇳 VN 255
-  - "[freefq]undefined\r\r"
-  - 🇻🇳 VN 22
-  - 🇮🇩 ID 2
-  - 英国United+Kingdom
-  - 🇻🇳 VN 231
-  - 🇻🇳 VN 73
-  - 🇮🇳 IN 1
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
-  - 🇻🇳 VN 187
-  - 🇮🇳 IN 2-yKVl
-  - 🇬🇧 GB 15
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - 🇮🇳 IN 3
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - 🇧🇭 BH 1
-  - '[101]巴西-95.164.4.88-12472'
-  - "[116][101]@Zede_filteri+台湾\r\r"
-  - 🇻🇳 VN 282
+  - "9,12,14|ChatGPT  N... #3\r\r"
   - TW2|@ripaojiedian-22750
-  - 🇳🇱 NL 2-V9pt
-  - 🇻🇳 VN 45
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
+  - 🇮🇳 IN 2-r0qy
+  - 🇮🇹 IT 1
+  - 🇳🇱 NL 34
   - 香港wap-T
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
-  - 🇯🇵 JP 3
-  - 🇻🇳 VN 216
-  - 🇳🇱 NL 8
-  - 🇺🇸 US 501
-  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
-  - 越南VN-T
-  - TW|@ripaojiedian-22749
-  - 🇩🇪 DE 4
-  - "18|A_18056\r\r"
-  - 🇹🇷 TR 6
-  - 🇰🇷 KR 3
+  - 🇻🇳 VN 22
   - 台湾WAP-T-GPT
+  - 🇺🇸 US 501
   - 🇰🇷 KR 5
-  - 荷兰Amsterdam,+NH,+The+Netherlands-sLhe
-  - 美国USLA-T-GPT
+  - 🇰🇷 KR 3
+  - 🇹🇷 TR 6
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
   - 朝鲜KP-T
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 澳大利亚AU-T
+  - 越南VN-T
   - 日本JP-T
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 俄罗斯联邦_1126007
-  - "[1113][68]r♡ya@vpnbaz\r\r-G8qY"
-  - "[1113][76]土耳其_1009002\r\r"
-  - 🇻🇳 VN 174
+  - "[1113][68]r♡ya@vpnbaz\r\r-dT2g"
+  - 🇻🇳 VN 56
+  - 🇹🇼 TW 2
   - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 美国USLA-T-GPT
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
   - "[116][101]马耳他_0928001\r\r"
-  - 🇺🇸 US 13
-  - 🇻🇳 VN 151
-  - 🇻🇳 VN 29
-  - 🇻🇳 VN 141
-  - 🇺🇸 US 874
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
-  - 葡萄牙PT-T
-  - 🇮🇸 IS 1
-  - 🇩🇪 DE 46
-  - 英国UK-T
-  - "[113]undefined\r\r-frIk"
+  - 1828|二爷翻墙_35
+  - 🇭🇰 HK 2
   - 意大利IT-T
+  - "[116][101]@Zede_filteri+台湾\r\r"
+  - 🇱🇹 LT 1
+  - 🇻🇳 VN 62
+  - 🇻🇳 VN 45
+  - 1828|二爷翻墙_74
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 168
+  - 葡萄牙PT-T
+  - 英国UK-T
   - 乌克兰UA-T
   - 哈萨克斯坦KZ-T
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +41\r\r"
-  - 🇬🇹 GT 1
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +40\r\r"
-  - 🇳🇱 NL 25
   - 以色列IL-T
+  - 俄罗斯联邦_1126007
+  - "[1113][68]r♡ya@vpnbaz\r\r-zI59"
+  - 立陶宛_445
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇩🇪 DE 5
+  - 🇺🇸 US 594
+  - TW|@ripaojiedian-22749
+  - "[freefq]undefined\r\r"
+  - _303
   - 🇺🇸 US 869
-  - 澳大利亚AU-T
-  - "[1113][68]r♡ya@vpnbaz\r\r-Nqgu"
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 🇺🇸 US 11
-  - 🇺🇸 US 8
   - 🇺🇸 US 828
-  - 🇺🇸 US 9-qV4a
+  - 🇺🇸 US 8
+  - 🇺🇸 US 9-6cWa
+  - 🇺🇸 US 11
   - Node-7745
   - 0|_143
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +113\r\r"
+  - '[112]🇨🇦CA-138.197.141.58-0175'
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +114\r\r"
-  - '[112]🇨🇦CA-138.197.141.58-0175'
+  - 🇺🇸 US 189
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+108\r\r"
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +116\r\r"
   - '[112]🇨🇦CA-147.182.146.81-0160'
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
-  - 🇺🇸 US 14-ta3j
-  - 🇺🇸 US 561
-  - 🇺🇸 US 11-Ihu4
-  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸 US 4-zkwz
-  - 🇺🇸 US 89
-  - 🇺🇸 US 44
-  - 🇺🇸 US 569
-  - 🇺🇸 US 10
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 美国_1126491
-  - 🇺🇸 US 19
-  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
-  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 55
-  - 🇺🇸 US 3
-  - 🇺🇸 US 16
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+73\r\r"
-  - 🇺🇸 US 58
-  - 🇺🇸 US 63
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+74\r\r"
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - "[1113][68][68][68][68][68][68][68][82][68][68][68][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+75\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 4-vd8E
   - "[1113][68][68][68][68][68][68][68][82][68][82][82][68][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+72\r\r"
-  - Node-11011
-  - 🇺🇸 US 70
-  - 🇺🇸 US 45
-  - 🇺🇸 US 68
-  - 🇺🇸 US 69
-  - 🇺🇸 US 189
-  - 🇺🇸 US 117
-  - 🇺🇸 US 18
-  - 🇺🇸 US 158
-  - 🇺🇸 US 254
-  - 🇺🇸 US 134
-  - 🇺🇸 US 196
-  - 🇺🇸 US 103
+  - 🇺🇸 US 89
+  - 🇺🇸 US 561
+  - 🇺🇸 US 11-sk0r
+  - 5686|Namemc
+  - 🇺🇸 US 569
+  - 🇺🇸 US 19
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - '3,24,110,111,161,186,375|🇺🇸US-156.146.38.169-0284 #1'
+  - 🇺🇸 US 234
+  - 5686|Cloudflare developers
+  - 🇺🇸 US 87
+  - 🇺🇸 US 40
+  - 🇺🇸 US 3
+  - "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
+  - 美国_1126491
+  - 5686|IT Army
+  - 🇺🇸 US 181
+  - 5686|WTO
+  - 🇺🇸 US 145
+  - 🇺🇸 US 80
+  - 🇺🇸 US 36-M79s
+  - 🇺🇸 US 48
+  - 0,1,2,3,6,8| US_179 | 3.40Mb
+  - 🇺🇸 US 162
+  - 🇺🇸 US 8-bwr0
+  - 5686|Cloudflare Support
   - 🇺🇸 US 310
-  - 🇺🇸 US 337
-  - 🇺🇸 US 1
-  - 🇺🇸 US 9
-  - 🇺🇸 US 4
+  - 🇺🇸 US 70
+  - 🇺🇸 US 44
+  - '1,2,3,8,122,186,193|_08 #1'
+  - 🇺🇸 US 46
+  - 🇺🇸 US 43
+  - 🇺🇸 US 134
+  - Node-11011
   - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 31-61pZ
-  - '1,2,3,8,122,186,193|_08 #1'
-  - 🇺🇸 US 7
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 0|_96
+  - 🇺🇸 US 588
+  - 🇺🇸 US 58
+  - 5686|FBI 超时是因为请求次数用完
+  - 🇺🇸 US 328
+  - 🇺🇸 US 18
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +119\r\r"
-  - 🇺🇸 US 80
-  - 🇺🇸 US 391
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
+  - 🇺🇸 US 90
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S6\r\r"
-  - _275
-  - 🇺🇸 US 19-kvSN
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +121\r\r"
-  - 🇺🇸 US 87
-  - '[112]🇺🇸US-79.110.53.169-0241'
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
-  - Node-14329
-  - 🇺🇸 US 137
-  - 🇺🇸 US 118
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +120\r\r"
+  - 0|_96
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +121\r\r"
+  - '[112]🇺🇸US-79.110.53.169-0241'
+  - 🇺🇸 US 254
+  - 🇺🇸 US 31-Pm3p
+  - 🇺🇸 US 548
   - 🇺🇸 US 613
-  - 🇺🇸 US 328
+  - _275
+  - 🇺🇸 US 7
+  - 🇺🇸 US 299
   - 🇺🇸 US 217
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 145
-  - 🇺🇸 US 552
+  - 🇺🇸 US 117
+  - 🇺🇸 US 10
+  - 🇺🇸 US 469
   - '[112]🇨🇦CA-138.197.153.10-0137'
-  - 0|_98
+  - 🇺🇸 US 515
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][pojiezhiyuanjun/freev2]\U0001F1FA\U0001F1F8\
+    \ US-2.58.87.221:16899\r\r\r"
+  - '2,3,121,186|_87 #1'
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +41\r\r"
   - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +S4\r\r"
-  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
   - 66|SS-TCP-NA 🇺🇸 US-212.102.47.130...
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
   - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 68
+  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
+  - 🇺🇸 US 23
   - 🇺🇸 US 164
+  - 🇺🇸 US 1
+  - 🇺🇸 US 196
+  - 🇺🇸 US 158
   - 🇺🇸 US 22
   - 🇺🇸 US 26
-  - 🇺🇸 US 23
-  - 🇺🇸 US 46
-  - 🇺🇸 US 56
-  - 🇺🇸 US 67
+  - 🇺🇸 US 118
   - 🇨🇦 CA 1
-  - 🇺🇸 US 98
-  - '2,3,121,186|_87 #1'
-  - 🇺🇸 US 28
-  - 🇺🇸 US 2-44FM
-  - 🇺🇸 US 181
-  - 🇺🇸 US 36-amIE
+  - 🇺🇸 US 56
+  - Node-14329
+  - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
+  - 🇺🇸 US 55
+  - 🇺🇸 US 15
+  - 0|_42
+  - 🇺🇸 US 138
   - "[1113][68][68][68][68][68][68][68][68][68][82][82][82][68][68][68][68][82][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+67\r\r"
-  - 🇺🇸 US 690
-  - 🇺🇸 US 165
-  - 🇺🇸 US 234
-  - 🇺🇸 US 21
-  - 🆔@LuxyNet💎❖英国❖GB❖950
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
-  - 🇬🇧 GB 11
-  - 🇺🇸 US 568
-  - 🇬🇧 GB 4
-  - 🇺🇸 US 40
-  - 🇺🇸 US 162
-  - 🇺🇸 US 42
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - 🇬🇧 GB 5
-  - 🇺🇸 US 90
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+93\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 🇫🇷 FR 4
-  - 🇳🇱 NL 1
-  - 🇺🇸 US 299
+  - 🇺🇸 US 291
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+100\r\r"
+  - '[112]🇬🇧GB-104.166.161.196-0271'
+  - 🇺🇸 US 42
+  - 🇺🇸 US 195
+  - 🇺🇸 US 63
+  - 🇺🇸 US 137
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸 US 69
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - 4871|🇺🇸 US, Dallas 2 @mfbpn
+  - 🇬🇧 GB 4
+  - 🇺🇸 US 391
+  - 🇬🇧 GB 10
+  - 🇬🇧 GB 11
+  - 🇺🇸 US 27
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - 🇺🇸 US 103
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+86\r\r"
+  - 🇳🇱 NL 1
+  - 1579|🇬🇧_GB_英国
+  - 🇺🇸 US 197
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - '>德国|Ns|1115|TG@FProxies|'
+  - 🇺🇸 US 165
   - 🇳🇱 NL 4
-  - 🇳🇱 NL 2
-  - 🇺🇸 US 555
+  - 🇳🇱 NL 5-t8WW
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - "[103]_RU_俄罗斯_212\r\r"
-  - 🇳🇱 NL 5-8lO7
-  - 🇬🇧 GB 3
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +122\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇬🇧 GB 20
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - '>德国|Ns|1115|TG@FProxies|'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+86\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 291
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - '[112]🇬🇧GB-169.150.210.233-0276'
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+85\r\r"
   - "[100]德国-38.60.250.107-44639\r\r"
-  - 🇺🇸 US 197
-  - 🇺🇸 US 43
-  - '[112]🇬🇧GB-104.166.161.196-0271'
-  - 🇺🇸 US 102
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
-  - 🇬🇧 GB 14
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - "[103]_俄罗斯_hamraH_417\r\r"
-  - '1,2,3,8,193|_04 #1'
-  - "[1113][68]r♡ya@vpnbaz\r\r-qi7W"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - "[103]_俄罗斯_hamraH_415\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 4-FAMQ
-  - "[103]_俄罗斯_hamraH_416\r\r"
-  - 🇳🇱 NL 3
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - 🇺🇸 US 27
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
-  - "[103]_RU_俄罗斯_213\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - "[103]_RU_俄罗斯_128\r\r"
-  - 🇻🇪 VE 1
-  - 🇺🇸 US 48
-  - 🇩🇪 DE 25
-  - 🇳🇱 NL 3-qOrq
-  - GB_07
-  - 🇩🇪 DE 28
-  - "[103]俄罗斯_RU_SSS_112\r\r"
-  - 🇨🇭 CH 1
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - 🇺🇸 US 622
-  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
-  - 🇺🇸 US 31
-  - 🇳🇱 NL 6-z9zt
-  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
-  - 🇳🇱 NL 6
-  - 🇬🇧 GB 10
-  - 美国_579
-  - 🇳🇱 NL 19
-  - 🇺🇸 US 8-aqqZ
-  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
-  - 🇺🇸 US 469
-  - 捷克_1126002
-  - 🇺🇸 US 195
-  - 瑞士Zurich,+ZH,+Switzerland
-  - "[103]俄罗斯_RU_SSS_107\r\r"
-  - 🇺🇸 US 138
-  - 🇺🇸 US 640
-  - 德国
-  - "[103]_RU_俄罗斯_127\r\r"
-  - 🇩🇪 DE 3
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - 🇺🇸 US 567
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 加拿大_1126006
-  - "[103]_RU_俄罗斯_123\r\r"
-  - 🇺🇸 US 745
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - 🇺🇸 US 612
-  - 立陶宛_445
-  - 🇳🇱 NL 9-tqRP
-  - 🇺🇸 US 759
+  - 🇳🇱 NL 2
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 美国_1126159
-  - "[103]_俄罗斯_hamraH_419\r\r"
-  - 🇺🇸 US 841
-  - 🇨🇭 CH 3
-  - 🇺🇸 US 725
-  - 🇺🇸 US 588
+    \U0001D64B\U0001D649+93\r\r"
+  - 🇬🇧 GB 20
+  - 🇺🇸 US 552
+  - "[103]_RU_俄罗斯_123\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 4871|🇭🇰 HK, Los Angeles @mfbpn
   - "[103]_俄罗斯_hamraH_316\r\r"
-  - 🇳🇱 NL 5
-  - "[103]_俄罗斯_hamraH_123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - 18|A_18069
-  - "[103]PE_715\r\r"
-  - "[103]PE_735\r\r"
-  - 🇺🇸 US 15
-  - "[103]_俄罗斯_hamraH_128\r\r"
-  - "[103]_俄罗斯_hamraH_415\r\r"
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🇬🇧 GB 14
+  - 🇺🇸 US 25
+  - 🇬🇧 GB 3
+  - 🇩🇪 DE 28
+  - GB_07
+  - 🇩🇪 DE 27
+  - 🇳🇱 NL 4-rUcN
+  - 🇺🇸 US 4
+  - "[103]_RU_俄罗斯_127\r\r"
   - "[103]_RU_俄罗斯_202\r\r"
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - "18|A_5377\r\r"
-  - 4FreeIran-783
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - "[103]PE_728\r\r"
-  - "[103]PE_726\r\r"
-  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦77
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 🇳🇱 NL 26
+  - 🇩🇪 DE 6-25Gh
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 4871|🇨🇦 CA, Vancouver @mfbpn
+  - "[103]俄罗斯_RU_SSS_112\r\r"
+  - '1,2,3,122,186,193|_18 #1'
+  - 🇳🇱 NL 3-hKSY
+  - "[103]_俄罗斯_hamraH_123\r\r"
+  - 🇳🇱 NL 25
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - "[1113][68]r♡ya@vpnbaz\r\r-QHJ7"
+  - 美国_579
+  - "[103]_RU_俄罗斯_213\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇱🇹 LT 1
-  - "[103]PE_747\r\r"
-  - "[103]_俄罗斯_hamraH_126\r\r"
-  - "[103]PE_740\r\r"
-  - 🇺🇸 US 515
-  - "18|A_18061\r\r"
-  - "[103]_RU_俄罗斯_210\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
-  - "18|A_18060\r\r"
-  - "[103]PE_730\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
-  - "[1113][68]r♡ya@vpnbaz\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
-  - 🇺🇸 US 618
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 18|A_18065
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🇳🇱 NL 31
+  - 捷克_1126002
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 瑞士Zurich,+ZH,+Switzerland
+  - 🇨🇭 CH 1
+  - 🇺🇸 US 745
+  - 🇳🇱 NL 3
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +104\r\r"
-  - 🇧🇬 BG 1
-  - "[103]PE_744\r\r"
-  - "[103]PE_736\r\r"
-  - "18|A_18066\r\r"
-  - "18,114|\U0001F1FA_RU_m_267\r\r"
-  - "[103]PE_729\r\r"
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "[103]PE_724\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
-  - "[103]PE_722\r\r"
-  - "[103]PE_721\r\r"
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
-  - "[103]PE_749\r\r"
+    +113\r\r"
+  - 🇬🇧 GB 5
+  - "[103]_RU_俄罗斯_211\r\r"
+  - 🇳🇱 NL 19
+  - 🇻🇪 VE 1
+  - 132,133,134|🇺🇸 US 2.58.87.221 ◈ ws:12269 ◈...
+  - 🇺🇸 US 337
+  - 🇳🇱 NL 9-MMlZ
+  - 🇳🇱 NL 6
   - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - "[103]PE_710\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+103\r\r"
-  - "[103]PE_709\r\r"
-  - "[103]PE_718\r\r"
-  - '1,2,3,122,186,193|_18 #1'
-  - "[103]PE_739\r\r"
-  - "[103]PE_738\r\r"
-  - "[103]PE_745\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_732\r\r"
-  - "[103]_RU_俄罗斯_206\r\r"
-  - "[103]PE_737\r\r"
-  - 18|A_18102
-  - "[103]PE_707\r\r"
-  - "[103]PE_708\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_742\r\r"
-  - "[103]PE_733\r\r"
-  - 🇺🇸 US 471
-  - 🇸🇪 SE 1
-  - "[103]PE_746\r\r"
-  - 🇵🇱 PL 2
-  - "[103]PE_713\r\r"
-  - "[103]PE_734\r\r"
-  - "[103]PE_748\r\r"
-  - "[100]瑞典-121.127.46.147-43320\r\r"
-  - "[103]PE_743\r\r"
-  - 🇨🇦 CA 1-7SEZ
-  - "18|A_18064\r\r"
-  - "18|A_18062\r\r"
-  - "[103]PE_723\r\r"
-  - 🇦🇷 AR 1
-  - "18|A_18055\r\r"
-  - 18|A_18067
-  - 🇺🇸 US 25
-  - 🇺🇸 US 642
-  - 🇳🇱 NL 8-4tsC
-  - 🇨🇦 CA 3
-  - "[103]PE_719\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - 🇺🇸 US 617
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+105\r\r"
-  - "[103]PE_717\r\r"
-  - "[103]PE_712\r\r"
-  - 🇺🇸 US 873
-  - "[103]PE_716\r\r"
-  - "[103]PE_725\r\r"
-  - 🇺🇸 US 626
-  - 🇺🇸 US 767
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "18|A_18063\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 303
-  - 🇺🇸 US 791
-  - 英国_1126006
-  - 🇺🇸 US 630
-  - 🇺🇸 US 883
-  - 🇩🇪 DE 8
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_711\r\r"
-  - "[103]PE_741\r\r"
-  - 🇺🇸 US 644
-  - 🇳🇱 NL 23
-  - 🇷🇸 RS 1
-  - 🇩🇪 DE 38
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - 🇺🇸 US 20
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
-    #3 #2'
-  - 🇯🇵 JP 2
-  - 🇯🇵 JP 1-HjMt
-  - 🇸🇪 SE 3
+  - 🇺🇸 US 813
+  - "[103]_俄罗斯_hamraH_128\r\r"
   - 🇺🇸 US 24
-  - 🇬🇧 GB 1
-  - 🇬🇧 GB 16
-  - "[103]PE_751\r\r"
-  - 🇩🇪 DE 42
-  - 🇺🇸 US 645
-  - 61,159|AE-40.172.77.38-0379 | 1.739MB
-  - 0|_207
-  - 🇳🇱 NL 11
-  - 🇺🇸 US 641
-  - 🇺🇸 US 594
-  - 🇺🇸 US 29
-  - 🇲🇹 MT 1
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - "[103]PE_731\r\r"
-  - 🇬🇧 GB 17
-  - 🇺🇦 UA 1
-  - 🇬🇧 GB 2
-  - 🇺🇸 US 638
-  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - '1431,1542,1846|美国 071 #2'
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 5686|Epicgames
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1509
+  - "[103]_RU_俄罗斯_128\r\r"
+  - 🇺🇸 US 303
+  - "[103]_RU_俄罗斯_212\r\r"
+  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
   - 🇺🇸 US 675
-  - Node-8685
-  - 🇺🇸 US 634
+  - 🇺🇸 US 645
+  - 加拿大_1126006
+  - 🇫🇷 FR 8
+  - 🇳🇱 NL 23
+  - 🇩🇪 DE 25
+  - 🇺🇸 US 471
+  - 1579|🇮🇹_IT_意大利->🇲🇩_MD_摩尔多瓦
+  - "[103]PE_746\r\r"
+  - 🇨🇭 CH 3
+  - 🇺🇸 US 2-nYEa
+  - "[103]PE_725\r\r"
+  - "[103]PE_716\r\r"
+  - "[103]PE_726\r\r"
+  - "[103]PE_720\r\r"
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_268
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - 🇺🇸 US 791
+  - "[103]PE_738\r\r"
+  - "18|A_18063\r\r"
+  - 🇺🇸 US 102
+  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
+  - "18|A_18056\r\r"
+  - 🇵🇱 PL 4
+  - "[103]PE_713\r\r"
+  - "18|A_18060\r\r"
+  - 18|A_18065
+  - "[103]_RU_俄罗斯_206\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_267
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
+  - 🇮🇸 IS 1
+  - "18|A_18062\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🇵🇱 PL 3
+  - "18|A_18064\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
+  - "[103]PE_729\r\r"
+  - 🇧🇬 BG 1
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - '1431,1542,1846,1847|美国 063 #3'
+  - "18|A_18061\r\r"
+  - 🇩🇪 DE 4
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - "[103]PE_750\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_712\r\r"
+  - "18,114|\U0001F1FA_RU_m_267\r\r"
+  - 🇸🇪 SE 1
+  - "[103]俄罗斯_RU_SSS_107\r\r"
+  - 🇺🇸 US 873
   - 🇨🇦 CA 9
-  - 218,270|🇺🇸 US 741 → tg@nicevpn123
-  - 🇱🇻 LV 1
-  - "\U0001F1E7\U0001F1ED BH 157.175.154.107 ◈ tcp:443 ◈ AWS EC2 (me-south-1) ◈ b5a85\r\
-    \r"
+  - 🇺🇸 US 841
+  - "[103]PE_744\r\r"
+  - "[103]PE_707\r\r"
+  - "[103]PE_711\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_714\r\r"
+  - "[103]PE_727\r\r"
+  - 英国_1126006
+  - "[103]PE_730\r\r"
+  - 🇺🇸 US 640
+  - "[103]PE_749\r\r"
+  - "[103]PE_736\r\r"
+  - 德国
+  - "[103]PE_718\r\r"
+  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_953\r\r"
+  - "[103]PE_737\r\r"
+  - "[100]瑞典-121.127.46.147-43320\r\r"
+  - 🇺🇸 US 67
+  - "[103]PE_731\r\r"
+  - "[103]PE_740\r\r"
+  - 18|A_18102
+  - "[103]PE_747\r\r"
+  - "[103]PE_719\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_715\r\r"
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+105\r\r"
+  - "[103]_RU_俄罗斯_210\r\r"
+  - "18|A_5377\r\r"
+  - 18|A_18067
+  - "[103]PE_709\r\r"
+  - "[103]PE_742\r\r"
+  - "[103]PE_751\r\r"
+  - "[103]PE_743\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
+  - "[103]PE_728\r\r"
+  - 🇺🇸 US 618
+  - "[103]PE_710\r\r"
+  - 18|A_18068
+  - "[103]PE_732\r\r"
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 2,3,186| ZZ_1412
+  - "[103]PE_748\r\r"
+  - 🇺🇸 US 626
+  - "[103]PE_708\r\r"
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇳🇱 NL 8-rt82
+  - 🇳🇱 NL 8
+  - "[103]PE_745\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]PE_739\r\r"
+  - "[103]PE_735\r\r"
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 19-O5bD
+  - "[103]PE_724\r\r"
+  - 🇨🇦 CA 3
+  - "[103]PE_733\r\r"
+  - 🇺🇸 US 644
+  - 🇦🇷 AR 1
+  - "[103]PE_723\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 630
+  - 🇺🇸 US 21
+  - 🇺🇸 US 883
+  - "18|A_18057\r\r"
+  - 🇺🇦 UA 1
+  - 18,26,51,109,110,112,114,115|🇷🇺_RU_ham_24
   - "\U0001F1EC\U0001F1E7 GB 13.40.181.177 ◈ tcp:443 ◈ AWS EC2 (eu-west-2) ◈ 2ef43\r\
     \r"
-  - 🇺🇸 US 620
-  - 🇪🇪 EE 1
-  - 414|qol_0758
-  - 🇺🇸 US 888
+  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
+  - "[103]PE_722\r\r"
+  - 🇺🇸 US 725
+  - 🇺🇸 US 617
+  - 🇩🇪 DE 38
+  - 🇺🇸 US 767
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 🇵🇱 PL 2
+  - '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76...
+    #3 #2'
+  - 0|_207
+  - 🇯🇵 JP 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇯🇵 JP 1-e4zv
+  - '[97]HR🇭🇷+|+46.183.184.60-989+|+107.42ms'
+  - "[103]_俄罗斯_hamraH_126\r\r"
+  - '1,2,3,8,193|_04 #1'
   - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇳🇱 NL 31
+  - 🇷🇸 RS 1
+  - 🇪🇪 EE 1
+  - 🇬🇧 GB 15
+  - "[103]PE_734\r\r"
+  - 🇺🇸 US 642
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - "18|A_18059\r\r"
+  - 🇺🇸 US 622
+  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
+  - 🇺🇸 US 31
+  - "[103]PE_717\r\r"
+  - 🇩🇪 DE 42
+  - '24,110,111,121,161,163,218,270,375|🇬🇧GB-35.176.83.176-0356 #1'
+  - 🇩🇪 DE 46
   - 🇺🇸 US 596
+  - 61,159|AE-40.172.77.38-0379 | 1.739MB
+  - 4FreeIran-107
+  - 🇬🇧 GB 1
+  - 🇺🇸 US 20
+  - 🇳🇱 NL 6-px8J
+  - 🇳🇱 NL 15
+  - 🇺🇸 US 16
+  - 🇺🇸 US 612
+  - 🇺🇸 US 563
+  - Node-8685
+  - 美国_1126159
+  - 🇺🇸 US 597
+  - 🇺🇸 US 98
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +104\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
+  - 🇬🇧 GB 16
+  - 4871|🇯🇵 JP, Tokyo @mfbpn
+  - 61,159|BH-15.184.155.145-0382 | 1.742...
+  - 0|_102
+  - 🇺🇸 US 634
+  - 🇺🇸 US 615
+  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
+  - 🇨🇾 CY 1
+  - 🇺🇸 US 620
+  - 4FreeIran-783
+  - 🇺🇸 US 877
+  - 🇬🇧 GB 17
+  - 414|qol_0810
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇱🇻 LV 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   02
+  - 0|HK_1233
+  - 🇮🇪 IE 4
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇺🇸 US 641
+  - 🇬🇧 GB 4-FIk6
+  - 🇺🇸 US 882
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 79|TR-45.89.52.66-5557 | 1.616MB
+  - 🇫🇷 FR 1-qxGW
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇱🇻 LV 1-b76R
+  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
+  - 🇸🇬 SG 2
+  - 🇬🇧 GB 5-cILd
+  - 🇭🇰 HK 1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+77\r\r"
+  - 4871|🇰🇷 KR, Incheon @mfbpn
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 4871|🇯🇵 JP, Osaka @mfbpn
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+78\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
+  - 4871|🇭🇰 HK, Kowloon @mfbpn
+  - 1579|🇺🇸_US_美国_1
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+79\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+81\r\r"
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇩🇪 DE 7
+  - 🇲🇹 MT 1
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   07
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - 🇫🇷 FR 4-JY1f
+  - 🇺🇸 US 657
+  - 414|qol_0758
+  - 697|🇨🇦 加拿大_唯云专线_布洛妮娅的黑丝
+  - 🇫🇷 FR 2-sohp
+  - 🇩🇪 DE 3-3H1y
+  - 🇺🇸 US 874
+  - 🇺🇸 US 680
+  - 🇺🇸 US 18-JtlW
   - 🇦🇺 AU 1
+  - 🇯🇵 JP 4
+  - 🇬🇧 GB 6
+  - 🇪🇸 ES 1
+  - 🇳🇱 NL 2-BH46
+  - 🇫🇷 FR 5
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 0,79|TR-45.89.52.66-5555 | 1.251MB
+  - 🇨🇦 CA 1-snZo
+  - 🇫🇷 FR 6
+  - 🇺🇸 US 638
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
+  - 4871|@𝙢𝙛𝙗𝙥𝙣   04
+  - "18,51|\U0001F1F1_HAMRAH_465\r\r"
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇬🇷 GR 1
+  - 🇰🇷 KR 2
+  - 🇹🇼 TW 1
+  - 🇺🇸 US 876
+  - 🇸🇪 SE 2-1e34
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇧🇭 BH 1
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_199\r\r"
+  - 🇩🇪 DE 5-0hf7
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - 🇨🇭 CH 2
+  - 🇳🇱 NL 13
+  - "18|A_18055\r\r"
+  - 🇬🇹 GT 1
+  - 🇺🇸 US 36
+  - 🇻🇳 VN 73
+  - 🇻🇳 VN 18-C3EQ
+  - "[1113][68]荷兰_030\r\r"
+  - 🇸🇪 SE 3
+  - 🇭🇰 HK 4
+  - 🇻🇳 VN 68
+  - 荷兰Amsterdam,+NH,+The+Netherlands-AKjh
+  - 🇻🇳 VN 270
+  - "[1113][68]r♡ya@vpnbaz\r\r-UDMs"
+  - 🇻🇳 VN 234
+  - 🇻🇳 VN 281
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 304
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 141
+  - 🇮🇪 IE 1
+  - 🇻🇳 VN 303
+  - 🇻🇳 VN 302
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 285
+  - 🇻🇳 VN 301
+  - 🇻🇳 VN 299
+  - 🇻🇳 VN 297
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 41
+  - 🇻🇳 VN 296
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 77
+  - 🇻🇳 VN 79
+  - 🇻🇳 VN 35
+  - 🇻🇳 VN 175
+  - 🇻🇳 VN 61
+  - 🇻🇳 VN 182
+  - 🇻🇳 VN 286
+  - 🇻🇳 VN 278
+  - 🇻🇳 VN 300
+  - 🇹🇼 TW 3
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 13
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 269
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 19
+  - 🇩🇪 DE 3
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 280
+  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
+  - 🇻🇳 VN 224
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 291
+  - 🇻🇳 VN 12-WJhG
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 137
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 221
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 233
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 30
+  - 🇻🇳 VN 52
+  - 🇻🇳 VN 110
+  - 🇻🇳 VN 189
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 151
+  - 🇻🇳 VN 265
+  - 🇻🇳 VN 23
+  - 🇻🇳 VN 63
+  - 🇮🇳 IN 1
+  - 🇻🇳 VN 190
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 199
+  - 🇻🇳 VN 71
+  - 🇻🇳 VN 85
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 82
+  - 🇻🇳 VN 239
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 216
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 22-rCXB
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 88
+  - 🇻🇳 VN 192
+  - 🇻🇳 VN 306
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 257
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 4
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 13-eTwC
+  - 🇻🇳 VN 43
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 171
+  - 🇻🇳 VN 20-kpvr
+  - 🇻🇳 VN 172
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 268
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 180
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 279
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 181
+  - 🇻🇳 VN 152
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 259
+  - 🇻🇳 VN 193
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 294
+  - 🇻🇳 VN 214
+  - 🇻🇳 VN 191
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 21-0po0
+  - 🇻🇳 VN 112
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 25
+  - 🇻🇳 VN 33
+  - 🇻🇳 VN 150
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 250
+  - 🇻🇳 VN 243
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 50
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 178
+  - 🇦🇺 AU 3
+  - 🇻🇳 VN 309
+  - 🇻🇳 VN 174
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 16-tP23
+  - 🇻🇳 VN 17-vu7n
+  - 🇻🇳 VN 143
+  - 18|A_18069
+  - 🇻🇳 VN 119
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 90
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 91
+  - 🇻🇳 VN 213
+  - 🇻🇳 VN 117
+  - 🇻🇳 VN 138
+  - 🇻🇳 VN 133
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 60
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 24
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 201
+  - 🇻🇳 VN 8
+  - 🇻🇳 VN 10-9yXI
+  - 🇻🇳 VN 107
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 4-rnBf
+  - 🇻🇳 VN 104
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 6
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 140
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 255
+  - 🇻🇳 VN 120
+  - 🇻🇳 VN 208
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 93
+  - 🇻🇳 VN 203
+  - 🇻🇳 VN 108
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 230
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 46
+  - 🇻🇳 VN 76
+  - 🇻🇳 VN 231
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 65
+  - 🇻🇳 VN 80
+  - 🇻🇳 VN 96
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 109
+  - 🇻🇳 VN 128
+  - 🇻🇳 VN 105
+  - 🇺🇸 US 871
+  - 🇻🇳 VN 66
+  - 🇻🇳 VN 228
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 211
+  - 🇻🇳 VN 103
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 51
+  - 🇻🇳 VN 139
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 113
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 167
+  - 🇻🇳 VN 188
+  - 🇺🇸 US 30
+  - 🇻🇳 VN 118
+  - 🇺🇸 US 759
+  - 🇻🇳 VN 69
+  - 🇻🇳 VN 74
+  - 🇻🇳 VN 72
+  - 🇳🇱 NL 29
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 196
+  - 🇻🇳 VN 184
+  - 🇻🇳 VN 235
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 129
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 57
+  - 🇻🇳 VN 206
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 256
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 194
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 207
+  - 🇻🇳 VN 202
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 249
+  - 🇻🇳 VN 229
+  - 🇻🇳 VN 251
+  - 🇻🇳 VN 263
+  - 🇻🇳 VN 149
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 89
+  - 🇻🇳 VN 227
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 161
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 288
+  - 🇻🇳 VN 142
+  - 1828|二爷翻墙_24
+  - 🇻🇳 VN 8-pfFd
+  - 🇵🇱 PL 1
+  - 🇻🇳 VN 197
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 195
+  - 🇻🇳 VN 1-jBUp
+  - 🇻🇳 VN 260
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 37
+  - 🇻🇳 VN 10
+  - 🇻🇳 VN 136
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 114
+  - 🇻🇳 VN 219
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
+  - 🇻🇳 VN 6-lLJD
+  - 🇻🇳 VN 225
+  - 🇻🇳 VN 130
+  - 18,51|🇵🇱_HAMRAH_147
+  - 🇻🇳 VN 267
+  - 🇻🇳 VN 222
+  - 🇺🇸 US 33
+  - 🇯🇵 JP 1
+  - 🇻🇳 VN 186
+  - 🇲🇾 MY 1
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
+  - 🇯🇵 JP 3
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇦🇹 AT 1
-  - 🇺🇸 US 813
-  - 🇺🇸 US 30
-  - 🇺🇸 US 615
-  - 0|_102
-  - "[1113][68][68][68][68][68][68][68][68][82][68][68][68][68][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+68\r\r"
-  - 61,159|BH-15.184.155.145-0382 | 1.742...
-  - 414|qol_0810
-  - "[103]PE_714\r\r"
-  - 0|HK_1233
-  - '37,74,76,110,162,189,249,304,375|🏁RELAY-172.67.204.19-0927 #2'
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇮🇪 IE 4
-  - 🇺🇸 US 36
-  - 🇮🇱 IL 1
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_200
-  - '104,131,132,133,134|Telegram | @FNET00📱 #15'
-  - 🇳🇱 NL 15
-  - 18,51|🇵🇱_HAMRAH_147
-  - '1,2,3,8,24,26,110,111,161,193,195,375|🇧GB-141.98.101.178-0357 #1'
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+64\r\r"
-  - 4FreeIran-107
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+79\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][68][82][82][68][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+55\r\r"
-  - 🇬🇧 GB 4-Wwzx
-  - 🇬🇧 GB 6
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - 🇬🇧 GB 1-QV0U
-  - 🇫🇷 FR 8
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+77\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+81\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+78\r\r"
-  - 🇸🇬 SG 2
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - 2,3,186| ZZ_1412
-  - 🇫🇷 FR 2-o5Ki
-  - 🇫🇷 FR 1-wWY0
-  - 🇨🇾 CY 1
-  - _303
-  - 🇺🇸 US 657
-  - 🇪🇸 ES 1
-  - 🇫🇷 FR 6
-  - 🇩🇪 DE 5
-  - 🇩🇪 DE 5-RMHe
-  - "18|A_18059\r\r"
-  - 🇹🇼 TW 3
-  - 🇩🇪 DE 7
-  - 🇺🇸 US 871
-  - 🇬🇧 GB 5-E3Kr
-  - "18,26,51,109,110,112,114|\U0001F1FA_RU_SSS_80\r\r"
-  - 🇯🇵 JP 4
-  - 🇮🇹 IT 1
-  - 🇸🇪 SE 1-M9PS
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4421\r\r"
-  - 🇺🇸 US 18-b3kC
-  - 🇺🇸 US 876
-  - 0,79|TR-45.89.52.66-5555 | 1.251MB
-  - 🇩🇪 DE 3-js6p
-  - 🇦🇺 AU 2
-  - 🇳🇱 NL 32
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
-  - 🇳🇱 NL 29
-  - 🇸🇪 SE 2-J5aB
-  - 0|_42
-  - 18|A_18068
-  - 🇰🇷 KR 2
-  - 1,2,3,186,193,218|🇱NL(AzadNet.t.me)_007
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
-  - 🇷🇺 RU 1
-  - 🇫🇷 FR 5
-  - 🇳🇱 NL 34
-  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
-  - 🇻🇳 VN 274
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
-  - 🇭🇰 HK 4
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 285
-  - 🇹🇼 TW 1
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 300
-  - 🇻🇳 VN 302
-  - 🇻🇳 VN 287
-  - 🇻🇳 VN 19
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 42
-  - 🇻🇳 VN 299
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 306
-  - 🇻🇳 VN 35
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 12-kBYo
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 232
-  - 🇬🇧 GB 8
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 96
-  - 🇻🇳 VN 310
-  - 79|TR-45.89.52.66-5557 | 1.616MB
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 219
-  - 🇻🇳 VN 79
-  - 🇻🇳 VN 41
-  - 🇻🇳 VN 296
-  - 🇻🇳 VN 77
-  - 🇻🇳 VN 281
-  - 🇻🇳 VN 114
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 301
-  - 🇻🇳 VN 69
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 303
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 178
-  - "[1113][68]荷兰_030\r\r"
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 84
-  - 🇲🇾 MY 1
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 3
-  - 🇻🇳 VN 157
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 52
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 107
-  - 🇻🇳 VN 182
-  - 🇻🇳 VN 259
-  - 🇻🇳 VN 90
-  - 🇺🇸 US 877
-  - 🇻🇳 VN 145
-  - 🇻🇳 VN 224
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 133
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 195
-  - 🇻🇳 VN 126
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 201
-  - 🇻🇳 VN 97
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 256
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 194
-  - 🇻🇳 VN 22-CYXV
-  - 🇻🇳 VN 18-lMcK
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 134
-  - 🇩🇪 DE 17
+  - 🇳🇱 NL 11
   - 🇻🇳 VN 275
-  - 🇻🇳 VN 265
-  - 🇻🇳 VN 196
-  - 🇻🇳 VN 278
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 138
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 88
-  - 🇻🇳 VN 252
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 241
-  - 🇻🇳 VN 202
-  - 🇻🇳 VN 199
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 120
-  - 🇻🇳 VN 86
-  - 🇻🇳 VN 213
-  - 🇻🇳 VN 228
-  - 🇻🇳 VN 222
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 112
-  - 🇻🇳 VN 290
-  - 🇻🇳 VN 71
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 193
-  - 🇻🇳 VN 280
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 🇻🇳 VN 192
-  - 🇻🇳 VN 212
-  - 🇳🇱 NL 27
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 167
-  - 🇻🇳 VN 103
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 8
-  - 🇻🇳 VN 65
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 223
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 23
-  - 🇻🇳 VN 181
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 95
-  - 🇻🇳 VN 309
-  - 🇻🇳 VN 55
-  - 🇻🇳 VN 1
+  - 🇰🇿 KZ 2
+  - '1,2,3,8,24,110,111,161,193,195,375|🇱PL-45.144.48.63-0419 #1'
   - 🇻🇳 VN 78
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 248
-  - 🇻🇳 VN 288
-  - 🇻🇳 VN 183
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 236
-  - 🇻🇳 VN 93
-  - 🇻🇳 VN 6
-  - 🇻🇳 VN 17-Gp8S
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 51
-  - 🇻🇳 VN 61
-  - 🇻🇳 VN 190
-  - 🇻🇳 VN 50
-  - 🇺🇸 US 33
-  - 🇻🇳 VN 239
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 160
-  - 🇻🇳 VN 91
-  - 🇻🇳 VN 234
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 168
-  - 🇻🇳 VN 267
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 10-dea4
-  - 🇻🇳 VN 110
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 249
-  - 🇻🇳 VN 1-KYIV
-  - 🇻🇳 VN 57
-  - 🇻🇳 VN 4-oIsy
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 268
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 48
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 206
-  - 🇻🇳 VN 294
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 243
-  - 🇻🇳 VN 263
-  - 🇻🇳 VN 104
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 115
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 56
-  - 🇻🇳 VN 76
-  - 🇻🇳 VN 44
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 292
-  - 🇵🇱 PL 1
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 20-dwYY
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 205
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 136
-  - 🇻🇳 VN 94
-  - 🇻🇳 VN 184
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 127
-  - 🇻🇳 VN 271
-  - 🇳🇱 NL 13
-  - 🇻🇳 VN 260
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 253
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 27
-  - 🇻🇳 VN 46
-  - 🇻🇳 VN 37
-  - 🇻🇳 VN 233
-  - 🇻🇳 VN 230
-  - 🇻🇳 VN 63
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 257
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 149
-  - 🇻🇳 VN 152
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 89
-  - 🇳🇱 NL 10
-  - 🇻🇳 VN 25
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 43
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 70
-  - 🇵🇱 PL 4
-  - 🇻🇳 VN 173
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 60
-  - 🇻🇳 VN 266
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 150
-  - 🇺🇸 US 680
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 203
-  - 🇻🇳 VN 225
-  - 🇻🇳 VN 238
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 191
-  - 🇻🇳 VN 291
-  - 🇻🇳 VN 197
-  - 🇻🇳 VN 189
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 251
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 172
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 143
-  - 🇻🇳 VN 109
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 16-KLcB
-  - 🇻🇳 VN 6-13hW
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 113
-  - 🇻🇳 VN 129
-  - 🇻🇳 VN 207
-  - 🇻🇳 VN 286
-  - 🇻🇳 VN 119
-  - 🇻🇳 VN 155
-  - 🇭🇰 HK 2
-  - "18|A_18057\r\r"
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - 🇻🇳 VN 39
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 214
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 135
-  - 🇻🇳 VN 21-8mMN
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 8-hJ6t
-  - 🇻🇳 VN 30
+  - 🇦🇺 AU 2
   - 🇻🇳 VN 177
+  - 🇳🇱 NL 10
   - 🇹🇭 TH 1
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - 🇻🇳 VN 140
-  - 🇻🇳 VN 67
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 62
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 229
-  - 🇻🇳 VN 237
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 166
-  - 🇺🇸 US 597
-  - 🇻🇳 VN 272
-  - 🇮🇪 IE 1
+  - 🇷🇺 RU 1
+  - 🇺🇸 US 888
+  - 🇻🇳 VN 14
+  - 🇻🇳 VN 11
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 塞舌尔_1126001
+  - 🇸🇪 SE 1-Mxk3
+  - 🇮🇩 ID 2
+  - 🇳🇱 NL 27
+  - 🇮🇳 IN 3
+  - 英国United+Kingdom
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 176
+  - '[112]🏁RELAY-104.17.213.241-0102'
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+80\r\r"
-  - 🇻🇳 VN 13-nXnK
-  - "18,26,51,112,114,115|\U0001F1FA_RU_ham_931\r\r"
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇰🇿 KZ 2
-  - 🇻🇳 VN 80
-  - 🇫🇷 FR 4-HiC3
-  - 🇻🇳 VN 180
-  - 🇹🇼 TW 2
-  - 🇯🇵 JP 1
-  - 🇮🇳 IN 2
-  - 1,2,3,193|🇺🇸US_855
-  - 🇻🇳 VN 255
-  - "[freefq]undefined\r\r"
-  - 🇻🇳 VN 22
-  - 🇮🇩 ID 2
-  - 英国United+Kingdom
-  - 🇻🇳 VN 231
-  - 🇻🇳 VN 73
-  - 🇮🇳 IN 1
-  - "[1113][102]\U0001F1F9\U0001F1F7TR-45.89.52.66-4426\r\r"
-  - 🇻🇳 VN 187
-  - 🇮🇳 IN 2-yKVl
-  - 🇬🇧 GB 15
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - 🇮🇳 IN 3
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - 🇧🇭 BH 1
-  - '[101]巴西-95.164.4.88-12472'
-  - "[116][101]@Zede_filteri+台湾\r\r"
-  - 🇻🇳 VN 282
+  - "9,12,14|ChatGPT  N... #3\r\r"
   - TW2|@ripaojiedian-22750
-  - 🇳🇱 NL 2-V9pt
-  - 🇻🇳 VN 45
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
+  - 🇮🇳 IN 2-r0qy
+  - 🇮🇹 IT 1
+  - 🇳🇱 NL 34
   - 香港wap-T
-  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
-  - 🇯🇵 JP 3
-  - 🇻🇳 VN 216
-  - 🇳🇱 NL 8
-  - 🇺🇸 US 501
-  - ⟮t.me/LonUp_M⟯⩤ALL⌖550
-  - 越南VN-T
-  - TW|@ripaojiedian-22749
-  - 🇩🇪 DE 4
-  - "18|A_18056\r\r"
-  - 🇹🇷 TR 6
-  - 🇰🇷 KR 3
+  - 🇻🇳 VN 22
   - 台湾WAP-T-GPT
+  - 🇺🇸 US 501
   - 🇰🇷 KR 5
-  - 荷兰Amsterdam,+NH,+The+Netherlands-sLhe
-  - 美国USLA-T-GPT
+  - 🇰🇷 KR 3
+  - 🇹🇷 TR 6
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
   - 朝鲜KP-T
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1496
+  - 澳大利亚AU-T
+  - 越南VN-T
   - 日本JP-T
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 俄罗斯联邦_1126007
-  - "[1113][68]r♡ya@vpnbaz\r\r-G8qY"
-  - "[1113][76]土耳其_1009002\r\r"
-  - 🇻🇳 VN 174
+  - "[1113][68]r♡ya@vpnbaz\r\r-dT2g"
+  - 🇻🇳 VN 56
+  - 🇹🇼 TW 2
   - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 美国USLA-T-GPT
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
   - "[116][101]马耳他_0928001\r\r"
-  - 🇺🇸 US 13
-  - 🇻🇳 VN 151
-  - 🇻🇳 VN 29
-  - 🇻🇳 VN 141
-  - 🇺🇸 US 874
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][68][82][68][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+45\r\r"
-  - 葡萄牙PT-T
-  - 🇮🇸 IS 1
-  - 🇩🇪 DE 46
-  - 英国UK-T
-  - "[113]undefined\r\r-frIk"
+  - 1828|二爷翻墙_35
+  - 🇭🇰 HK 2
   - 意大利IT-T
+  - "[116][101]@Zede_filteri+台湾\r\r"
+  - 🇱🇹 LT 1
+  - 🇻🇳 VN 62
+  - 🇻🇳 VN 45
+  - 1828|二爷翻墙_74
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 168
+  - 葡萄牙PT-T
+  - 英国UK-T
   - 乌克兰UA-T
   - 哈萨克斯坦KZ-T
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +41\r\r"
-  - 🇬🇹 GT 1
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +40\r\r"
-  - 🇳🇱 NL 25
   - 以色列IL-T
+  - 俄罗斯联邦_1126007
+  - "[1113][68]r♡ya@vpnbaz\r\r-zI59"
+  - 立陶宛_445
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇩🇪 DE 5
+  - 🇺🇸 US 594
+  - TW|@ripaojiedian-22749
+  - "[freefq]undefined\r\r"
+  - _303
   - 🇺🇸 US 869
-  - 澳大利亚AU-T
-  - "[1113][68]r♡ya@vpnbaz\r\r-Nqgu"
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
