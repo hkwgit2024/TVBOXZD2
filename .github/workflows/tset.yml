@@ -61,7 +61,6 @@ jobs:
 
       - name: 过滤节点 (使用 Python 脚本)
         run: python filter_clash_nodes.py
-        # Python 脚本内部会处理错误并以非零退出码退出，导致此步骤失败
 
       - name: 验证过滤后的文件
         run: |
@@ -70,7 +69,7 @@ jobs:
             echo "--- filtered_nodes.yaml 内容 (前20行) ---"
             head -n 20 filtered_nodes.yaml || true
             echo "----------------------------------------"
-            exit 1 # 如果过滤后没有节点，后续测试没有意义，直接退出
+            exit 1
           fi
           echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
 
@@ -82,12 +81,12 @@ jobs:
             -output ./clash.yaml \
             -download-size 1048576 \
             -upload-size 1048576 \
-            -timeout 15s \             # 放宽超时时间
-            -concurrent 20 \
-            # -f 'US|JP|SG|HK' \       # 移除此行，不再进行额外的地域过滤
-            -max-latency 1500ms \      # 放宽最大延迟
-            -min-download-speed 0.5 \  # 放宽最小下载速度 (0.5 MB/s 约等于 4 Mbps)
-            -min-upload-speed 0.2 \    # 放宽最小上传速度 (0.2 MB/s 约等于 1.6 Mbps)
+            -timeout 15s \
+            -concurrent 50 \
+            -f 'HK|TW|SG|JP|KR|RU' \ # <-- 关键修改：只保留靠近中国的地区，与Python脚本的过滤一致
+            -max-latency 1500ms \
+            -min-download-speed 0.5 \
+            -min-upload-speed 0.2 \
             -rename \
             -fast
 
@@ -96,12 +95,11 @@ jobs:
         run: |
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
-            echo "--- clash.yaml 文件内容 (前50行) ---" # 打印更多行以便检查
+            echo "--- clash.yaml 文件内容 (前50行) ---"
             head -n 50 clash.yaml || true
             echo "----------------------------------------"
-            if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then # 检查是否有 'name:' 行来判断是否存在代理
+            if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then
               echo "警告: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
-              # 这里不exit 1，让它继续提交空文件，但给出警告
             fi
           else
             echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
@@ -109,11 +107,10 @@ jobs:
           fi
 
       - name: 提交并推送排序后的配置文件
-        # 即使文件内容为空，只要文件生成了就尝试提交，但如果前面验证失败则不提交
         if: success() && steps.check_file.outcome == 'success'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "更新 Clash 配置：节点已按速度排序（放宽条件）"
+          commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）"
           file_pattern: clash.yaml
           branch: main
         env:
