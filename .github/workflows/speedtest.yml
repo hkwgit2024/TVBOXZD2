@@ -33,9 +33,11 @@ jobs:
         ./clash-speedtest \
           -c ./clash_config.yaml \
           -output ./clash.yaml \
-          -download-size 50MB \
+          -download-size 52428800 \
           -timeout 10s \
           -concurrent 4 # 并发测试可以加快速度，根据需要调整
+        # 同时也将 upload-size 调整为字节数，默认是 20MB
+          -upload-size 20971520 
 
         EXIT_CODE=$?
         echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
