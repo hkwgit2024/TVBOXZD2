@@ -81,14 +81,14 @@ jobs:
             -output ./clash.yaml \
             -download-size 1048576 \
             -upload-size 1048576 \
-            -timeout 15s \
+            -timeout 20s \              # 增加超时时间
             -concurrent 50 \
             -f 'HK|TW|SG|JP|KR|RU' \
-            -max-latency 1500ms \
-            -min-download-speed 0.5 \
-            -min-upload-speed 0.2 \
+            -max-latency 3000ms \       # 增加最大延迟
+            -min-download-speed 0.1 \   # 降低最小下载速度
+            -min-upload-speed 0.05 \    # 降低最小上传速度
             -rename \
-            -fast # <-- 关键修改：移除了此行末尾的 '\' 符号
+            -fast
 
       - name: 验证生成的 clash.yaml 文件
         id: check_file
