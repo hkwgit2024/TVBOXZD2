@@ -1,0 +1,116 @@
+# .github/workflows/speedtest.yml
+name: Clash 速度测试与排序
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    - cron: '0 */6 * * *' # 每6小时运行一次，您可以根据需要调整
+
+jobs:
+  speed-test-and-sort:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 检出仓库
+      uses: actions/checkout@v4
+
+    - name: 赋予 clash-speedtest 执行权限
+      run: |
+        echo "赋予仓库中已上传的 'clash-speedtest' 执行权限..."
+        chmod +x ./clash-speedtest
+        echo "'clash-speedtest' 已设置为可执行文件。"
+        if [ ! -f "./clash-speedtest" ]; then
+          echo "错误: 未在仓库根目录找到 'clash-speedtest' 文件。请确保您已将其上传。"
+          exit 1
+        fi
+
+    - name: 下载并修复 Clash 订阅文件
+      id: download_and_fix_subs
+      run: |
+        echo "正在下载并修复订阅文件..."
+        TEMP_DIR="temp_subscriptions"
+        mkdir -p $TEMP_DIR
+        FIXED_SUBS_FILE="fixed_clash_subscriptions.yaml" # 所有修复后的订阅合并到这个文件
+        echo "" > $FIXED_SUBS_FILE # 清空或创建文件
+
+        IFS=',' read -ra URL_ARRAY <<< "${{ vars.NODE_LIST_URLs }}"
+        for i in "${!URL_ARRAY[@]}"; do
+          url="${URL_ARRAY[$i]}"
+          temp_file="$TEMP_DIR/sub_${i}.yaml"
+          echo "下载: $url 到 $temp_file"
+          curl -s "$url" -o "$temp_file"
+
+          if [ $? -ne 0 ]; then
+            echo "错误: 无法下载订阅 $url"
+            continue # 继续处理下一个URL
+          fi
+
+          echo "修复 $temp_file 中的 'tls' 布尔值类型错误..."
+          # 使用 sed 替换 tls: "true" 为 tls: true，和 tls: "false" 为 tls: false
+          # 注意：这个替换可能会影响到注释或其他字符串，但对于标准 Clash YAML 应该安全
+          sed -i 's/tls: "true"/tls: true/g' "$temp_file"
+          sed -i 's/tls: "false"/tls: false/g' "$temp_file"
+          
+          echo "将修复后的内容追加到 $FIXED_SUBS_FILE"
+          cat "$temp_file" >> "$FIXED_SUBS_FILE"
+          echo "" >> "$FIXED_SUBS_FILE" # 添加一个空行以防合并问题
+        done
+
+        # 检查最终合并的文件是否生成
+        if [ ! -f "$FIXED_SUBS_FILE" ] || [ ! -s "$FIXED_SUBS_FILE" ]; then
+          echo "错误: 未能成功生成修复后的合并订阅文件 '$FIXED_SUBS_FILE'。"
+          exit 1
+        else
+          echo "修复后的订阅文件 '$FIXED_SUBS_FILE' 已生成，大小: $(du -h $FIXED_SUBS_FILE | awk '{print $1}')"
+          # 传递修复后的文件路径给下一步
+          echo "fixed_subs_path=$FIXED_SUBS_FILE" >> $GITHUB_OUTPUT
+        fi
+
+    - name: 运行速度测试并生成排序后的配置文件 (从修复后的本地文件获取节点)
+      # 现在 -c 参数指向我们修复后的本地文件
+      # 注意：这里假设 clash-speedtest 支持从本地文件加载节点，且能够处理合并后的多节点文件
+      run: |
+        echo "正在运行已上传的 'clash-speedtest'..."
+        echo "将从修复后的本地文件 '${{ steps.download_and_fix_subs.outputs.fixed_subs_path }}' 获取节点并进行测速。"
+        ./clash-speedtest \
+          -c "${{ steps.download_and_fix_subs.outputs.fixed_subs_path }}" \
+          -output ./clash.yaml \
+          -download-size 5MB \
+          -timeout 5s \
+          -concurrent 50 \
+          -upload-size 5MB
+
+        EXIT_CODE=$?
+        echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
+        if [ "$EXIT_CODE" -ne 0 ]; then
+          echo "错误: 'clash-speedtest' 返回了非零退出代码。请检查其输出日志。"
+          exit 1
+        fi
+        echo "--- 速度测试运行结束 ---"
+
+    - name: 验证生成的 clash.yaml 文件
+      id: check_file
+      run: |
+        echo "正在验证 'clash.yaml' 文件是否存在..."
+        ls -la
+
+        if [ -f "clash.yaml" ]; then
+          echo "'clash.yaml' 文件已找到！内容预览:"
+          echo "文件大小: $(du -h clash.yaml | awk '{print $1}')"
+          head -n 20 clash.yaml # 打印文件前20行供检查
+        else
+          echo "严重错误: 'clash.yaml' 文件未能由 'clash-speedtest' 生成。"
+          exit 1 # 如果文件未生成，强制作业失败
+        fi
+      if: success() # 此步骤仅在上一步成功时运行
+
+    - name: 提交并推送排序后的配置文件
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "更新 Clash 配置：节点已按速度排序 (从修复后的在线 URL 获取)"
+        files: clash.yaml # 指定要提交的文件
+        branch: main # 确保您的主分支名称是 'main' (或 'master')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 仅当文件成功生成并验证后才尝试提交
+      if: success() && steps.check_file.outcome == 'success'
