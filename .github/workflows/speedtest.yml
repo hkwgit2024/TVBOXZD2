@@ -2,9 +2,9 @@
 name: Clash Speed Test and Sort
 
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allows manual trigger
   schedule:
-    - cron: '0 */6 * * *' # 每6小时运行一次，您可以根据需要调整
+    - cron: '0 */6 * * *' # Runs every 6 hours (adjust as needed)
 
 jobs:
   speed-test-and-sort:
@@ -18,8 +18,8 @@ jobs:
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Capture Output
-      # 运行 speedtest-clash 并将完整的输出重定向到一个临时文件
-      # 同时也将输出打印到日志 (通过 tee)
+      # Run speedtest-clash and redirect its full output to a temporary file
+      # Also print output to the log (using tee)
       run: |
         echo "Starting speedtest-clash and capturing output..."
         ./speedtest-clash \
@@ -34,16 +34,17 @@ jobs:
         echo "--- End of speedtest-clash run ---"
 
     - name: Extract Sorted Proxies and Generate clash.yaml
+      id: generate_clash_yaml # ID for this step
       run: |
         echo "Extracting sorted proxies from log and generating clash.yaml..."
         
-        # --- 安装 jq 工具 ---
+        # --- Install jq tool ---
         sudo apt-get update && sudo apt-get install -y jq
         echo "jq installed successfully."
-        # --- jq 安装结束 ---
+        # --- End jq installation ---
 
-        # 使用 grep 查找包含 "json: " 的行
-        # 然后使用 sed 移除前缀 "json: "
+        # Use grep to find the line containing "json: "
+        # Then use sed to remove the "json: " prefix
         SORTED_PROXIES_JSON=$(grep -oP 'json: \[\{.*?\}\]' speedtest_output.log | sed 's/^json: //')
         
         if [ -z "$SORTED_PROXIES_JSON" ]; then
@@ -51,26 +52,25 @@ jobs:
           exit 1
         fi
 
-        # 提取原始配置中 'proxies:' 之前的所有内容
-        # 注意：这依赖于 'proxies:' 这一行在原始配置中的位置
+        # Extract all content from clash_config.yaml before the 'proxies:' line
         ORIGINAL_CONFIG_HEADER=$(awk '/^proxies:/ {exit} {print}' clash_config.yaml)
         
-        # 格式化代理 JSON，使其符合 Clash YAML 格式和缩进
-        # 使用 jq 确保 JSON 有效，并进行换行和缩进
+        # Format the proxy JSON for Clash YAML and apply indentation
+        # Use jq for pretty printing, then sed to add 4 spaces indentation
         FORMATTED_PROXIES=$(echo "$SORTED_PROXIES_JSON" | jq '.' | sed 's/^/    /')
 
-        # 将头部和排序后的代理写入到 clash.yaml
+        # Write the header and the sorted proxies to clash.yaml
         echo "$ORIGINAL_CONFIG_HEADER" > clash.yaml
         echo "proxies:" >> clash.yaml
         echo "$FORMATTED_PROXIES" >> clash.yaml
 
         echo "--- Generated clash.yaml ---"
-        cat clash.yaml # 打印生成的文件内容到日志中
+        cat clash.yaml # Print the generated file content to the log
         echo "--------------------------"
-      id: generate_clash_yaml # 给予此步骤一个ID
 
     - name: Verify Generated File and Directory
-      # 检查 clash.yaml 是否存在，并列出工作目录内容
+      # Check if clash.yaml exists, and list directory contents
+      id: check_file_after_generation # ID for this step
       run: |
         echo "Verifying 'clash.yaml' file existence after generation..."
         ls -la
@@ -82,9 +82,8 @@ jobs:
           head -n 20 clash.yaml
         else
           echo "Critical Error: 'clash.yaml' was NOT generated. Commit step will fail."
-          exit 1 # 如果文件未能生成，强制作业失败
+          exit 1 # Force job failure if file is not generated
         fi
-      id: check_file_after_generation
 
     - name: Commit and Push Sorted Config
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -94,5 +93,5 @@ jobs:
         branch: main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 确保仅在文件存在且上一步成功时才尝试提交
-      if: success() && steps.check_file_after_generation.outcome == 'success' && -f 'clash.yaml'
+      # Only attempt commit if previous steps succeeded and the file was verified
+      if: success() && steps.check_file_after_generation.outcome == 'success'
