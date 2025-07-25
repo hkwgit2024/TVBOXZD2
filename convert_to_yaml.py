@@ -11,8 +11,8 @@ import hashlib
 
 # GitHub raw 链接列表
 urls = [
-
-    "https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+    "https://raw.githubusercontent.com/qjlxg/hy2/refs/heads/main/configtg.txt"
+    
 ]
 
 # Clash/Mihomo 配置模板 (基础结构，代理和代理组将动态填充)
