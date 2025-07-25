@@ -32,6 +32,9 @@ for i in "${!URLS[@]}"; do
     continue
   fi
 
+  echo "调试: 显示 $temp_file 前10行内容..."
+  head -n 10 "$temp_file"
+
   echo "修复 $temp_file 中的 TLS 配置..."
   sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g' "$temp_file"
 
@@ -43,6 +46,8 @@ for i in "${!URLS[@]}"; do
     proxy_found=true
   else
     echo "警告: $temp_file 无有效 proxies，跳过"
+    echo "调试: 检查 $temp_file 的 proxies 字段..."
+    yq e '.proxies' "$temp_file" || echo "调试: 无法解析 proxies 字段"
   fi
 done
 
