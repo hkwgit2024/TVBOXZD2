@@ -13,6 +13,7 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      id: checkout_repo # 给这个步骤一个ID，以便后续引用
 
     - name: Make Speedtest Tool Executable
       run: chmod +x ./speedtest-clash
@@ -32,30 +33,42 @@ jobs:
         echo "speedtest-clash exited with code: ${EXIT_CODE}"
         echo "--- End of speedtest-clash run ---"
 
-    - name: Check if clash.yaml exists and its content
+    - name: Verify Generated File and Directory
+      # 检查 clash.yaml 是否存在，并列出工作目录内容
       run: |
-        echo "Checking for clash.yaml file..."
-        if [ -f "clash.yaml" ]; then
-          echo "clash.yaml found!"
-          echo "File size: $(du -h clash.yaml | awk '{print $1}')"
-          echo "First 10 lines of clash.yaml:"
-          head -n 10 clash.yaml
-          echo "--- End of clash.yaml content ---"
-        else
-          echo "clash.yaml NOT found after speedtest-clash run."
-        fi
-        echo "Listing current directory contents:"
+        echo "Verifying 'clash.yaml' and directory contents..."
+        # 打印当前工作目录路径
+        echo "Current working directory: $(pwd)"
+        # 列出所有文件和目录（包括隐藏文件）及其权限
         ls -la
-      # 即使上一步失败，也强制运行此步骤，以便查看调试信息
-      if: always()
+        
+        echo "---" # 分隔符
+        
+        # 再次检查 clash.yaml 文件是否存在
+        if [ -f "clash.yaml" ]; then
+          echo "'clash.yaml' found! Its content should be committed."
+          echo "File size: $(du -h clash.yaml | awk '{print $1}')"
+          echo "First 20 lines of 'clash.yaml':"
+          head -n 20 clash.yaml
+          echo "--- End of 'clash.yaml' preview ---"
+        else
+          echo "Error: 'clash.yaml' was NOT found in the current directory after speedtest-clash run."
+          # 如果文件不存在，我们可能需要强制失败此作业，以便更容易发现问题
+          # exit 1 
+        fi
+      id: check_file # 给予这个步骤一个ID
 
     - name: Commit and Push Sorted Config
-      # 将排序后的 clash.yaml 文件提交回仓库
+      # 仅当前面的步骤成功时才执行此提交操作
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Update Clash config with sorted nodes by speed"
-        files: clash.yaml
-        branch: main
-      # 仅当 clash.yaml 文件存在时才尝试提交
-      if: success() && steps.check_file.outputs.file_exists == 'true'
-      id: commit_step # 为后续步骤添加 ID 以便引用
+        files: clash.yaml # 指定要提交的文件
+        branch: main # 确保您的主分支名称是 main (或 master)
+        # GITHUB_TOKEN 是由 GitHub Actions 自动提供的，通常不需要显式写出
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 显式设置token，有时有助于解决权限问题
+      # 确保仅在文件存在时尝试提交 (虽然 git-auto-commit-action 通常会自行处理)
+      # if: success() && steps.check_file.outcome == 'success' && -f 'clash.yaml' # 更严谨的条件，但先尝试简化
+      # 只要前面步骤没有致命错误，就尝试提交
+      if: success()
