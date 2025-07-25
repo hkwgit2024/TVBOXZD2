@@ -32,7 +32,7 @@ jobs:
         ./clash-speedtest \
           -c ./clash_config.yaml \
           -output ./clash.yaml \
-          -download-size 52428800 \
+          -download-size 5242880 \
           -timeout 10s \
           -concurrent 38 \
           -upload-size 20971520 
