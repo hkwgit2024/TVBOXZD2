@@ -15,10 +15,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Make Speedtest Tool Executable
+      # 确保 speedtest-clash 工具具有执行权限
       run: chmod +x ./speedtest-clash
 
     - name: Run Speed Test and Sort
-      # 只按带宽（下载速度）排序
+      # 执行速度测试并排序，然后保存到 clash.yaml
+      # 根据 speedtest-clash v0.2.4 版本的用法调整参数
+      # -c: 指定原始 Clash 配置文件
+      # -output: 指定排序后 Clash 配置的输出路径
+      # -sort b: 按带宽（下载速度）排序
+      # -size: 测试下载的文件大小（字节）
+      # -timeout: 每个节点的测试超时时间
       run: |
         ./speedtest-clash \
           -c ./clash_config.yaml \
@@ -26,5 +33,16 @@ jobs:
           -sort b \
           -size 52428800 \
           -timeout 10s
-        # -sort b 表示按带宽（下载速度）排序，通常默认是降序（从大到小）。
-        # 50MB 转换为字节是 50 * 1024 * 1024 = 52428800 字节。
+        # 备注：
+        # - 50MB 转换为字节是 50 * 1024 * 1024 = 52428800 字节。
+        # - speedtest-clash v0.2.4 的 -sort 参数，'b' 代表带宽，通常默认是降序排序。
+        # - 该工具会将处理后的完整 Clash 配置输出到 -output 指定的文件中。
+
+    - name: Commit and Push Sorted Config
+      # 将排序后的 clash.yaml 文件提交回仓库
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Update Clash config with sorted nodes by speed"
+        files: clash.yaml
+        branch: main # 确保您的主分支名称正确，可能是 master 或 main
+        # token: ${{ secrets.GITHUB_TOKEN }} # 默认即可，无需额外设置
