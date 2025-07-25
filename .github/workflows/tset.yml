@@ -1,4 +1,4 @@
-name: Clash 速度测试
+name: test
 on:
   workflow_dispatch:
   schedule:
@@ -33,7 +33,7 @@ jobs:
       - name: 下载完整的 Clash 配置
         run: |
           echo "下载完整的 Clash 配置文件..."
-          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml
+          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml
           if [ ! -s "clash_config.yaml" ]; then
             echo "错误: 未能下载到 clash_config.yaml 文件或文件为空。"
             exit 1
