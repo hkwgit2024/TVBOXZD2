@@ -1,14 +1,16 @@
 name: Convert to YAML
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # 允许手动从 GitHub 界面触发
   push:
-  
     branches:
-      - convert_to_yaml.py
-      - input
+      - main # **重要：** 当推送到 'main' 分支时触发 (请根据您的实际主分支名调整，如 master)
+    paths:
+      - 'convert_to_yaml.py' # 当您的转换脚本文件有改动时触发
+      - 'input/**' # 当 'input' 文件夹内的任何文件有改动时触发
+
   schedule:
-    - cron: '0 0 * * *' # 每天运行一次
+    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行一次
 
 jobs:
   convert:
@@ -16,20 +18,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0 # 获取完整的提交历史，方便后续自动提交
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
+
     - name: Install dependencies
       run: pip install requests pyyaml
-    - name: Run conversion script
-      run: python convert_to_yaml.py
 
-    - name: Commit YAML files
+    - name: Run conversion script
+      run: python convert_to_yaml.py # 运行您的 Python 脚本
+
+    - name: Commit YAML files # 提交生成的 YAML 文件
       run: |
-        git config user.name "GitHub Action"
-        git config user.email "action@github.com"
+        git config user.name "GitHub Action" # 设置 Git 用户名
+        git config user.email "action@github.com" # 设置 Git 用户邮箱
+        
+        # **确认的关键行：** 添加 'input/' 目录下的所有 .yaml 和 .yml 文件
+        git add input/*.yaml
         git add input/*.yml
-        git commit -m "Update individual YAML configs" || echo "No changes to commit"
-        git push
+        
+        # 检查是否有实际改动需要提交，避免空提交
+        git diff --cached --exit-code || \
+        (git commit -m "Update individual YAML configs" && git push)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 推送代码需要这个 token
