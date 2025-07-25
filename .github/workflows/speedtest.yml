@@ -1,5 +1,5 @@
 # .github/workflows/speedtest.yml
-name: Clash Speed Test and Sort
+name: Clash Speed Test and Sort (using faceair/clash-speedtest)
 
 on:
   workflow_dispatch: # Allows manual trigger
@@ -14,78 +14,86 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x' # Use the latest Python 3.x version
-
-    - name: Install Python Dependencies (PyYAML)
-      run: pip install PyYAML
-
-    - name: Make Speedtest Tool Executable
-      run: chmod +x ./speedtest-clash
-
-    - name: Run Speed Test and Capture All Output to Log File
-      # Run speedtest-clash and redirect its full output (stdout + stderr) to speedtest_output.log
+    - name: Download faceair/clash-speedtest
+      id: download_tool
       run: |
-        echo "Starting speedtest-clash and capturing all output..."
-        ./speedtest-clash \
-          -c ./clash_config.yaml \
-          -output /dev/null \
-          -sort b \
-          -size 52428800 \
-          -timeout 10s > speedtest_output.log 2>&1
-        
-        EXIT_CODE=$?
-        echo "speedtest-clash exited with code: ${EXIT_CODE}"
-        echo "--- End of speedtest-clash run ---"
-        
-        # Print log file content for debugging in workflow logs
-        echo "--- Content of speedtest_output.log (for debugging) ---"
-        if [ -f "speedtest_output.log" ]; then
-          cat speedtest_output.log
-        else
-          echo "Error: speedtest_output.log was not created! Exiting."
+        # 获取最新 Release 的下载 URL
+        # Github API 获取最新 Release 的信息，然后解析出对应架构的下载链接
+        LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/faceair/clash-speedtest/releases/latest | \
+                           jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')
+
+        if [ -z "$LATEST_RELEASE_URL" ]; then
+          echo "Error: Could not find latest linux_amd64 release for faceair/clash-speedtest."
           exit 1
         fi
-        echo "--------------------------------------------------------"
-      id: run_speedtest_and_log_capture # ID for this step
 
-    - name: Generate Clash Config using Python Script
-      id: generate_clash_yaml # ID for this step
-      # Execute the external Python script
+        echo "Downloading faceair/clash-speedtest from: $LATEST_RELEASE_URL"
+        wget -q -O clash-speedtest "$LATEST_RELEASE_URL"
+        chmod +x ./clash-speedtest
+        echo "clash-speedtest downloaded and made executable."
+      env:
+        # jq is needed for parsing JSON from GitHub API
+        DEBIAN_FRONTEND: noninteractive # Avoid interactive prompts during apt-get install
       run: |
-        echo "Executing 'generate_clash_config.py' to generate clash.yaml..."
-        python generate_clash_config.py speedtest_output.log clash_config.yaml clash.yaml
-      # Ensure this step only runs if the log file was captured successfully
-      if: success() && steps.run_speedtest_and_log_capture.outcome == 'success'
+        sudo apt-get update && sudo apt-get install -y wget jq
+        # Now run the original script content
+        LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/faceair/clash-speedtest/releases/latest | \
+                           jq -r '.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url')
+
+        if [ -z "$LATEST_RELEASE_URL" ]; then
+          echo "Error: Could not find latest linux_amd64 release for faceair/clash-speedtest."
+          exit 1
+        fi
+
+        echo "Downloading faceair/clash-speedtest from: $LATEST_RELEASE_URL"
+        wget -q -O clash-speedtest "$LATEST_RELEASE_URL"
+        chmod +x ./clash-speedtest
+        echo "clash-speedtest downloaded and made executable."
+      
+    - name: Run Speed Test and Generate Sorted Config
+      # faceair/clash-speedtest has a -output flag that can directly write YAML.
+      # The tool automatically sorts by speed (bandwidth) by default.
+      run: |
+        echo "Running faceair/clash-speedtest..."
+        ./clash-speedtest \
+          -c ./clash_config.yaml \
+          -output ./clash.yaml \
+          -download-size 50MB \
+          -timeout 10s \
+          -concurrent 4 # Concurrency can speed up testing, adjust as needed
+
+        EXIT_CODE=$?
+        echo "faceair/clash-speedtest exited with code: ${EXIT_CODE}"
+        if [ "$EXIT_CODE" -ne 0 ]; then
+          echo "Error: clash-speedtest returned a non-zero exit code. Please check its output."
+          exit 1
+        fi
+        echo "--- End of speed test run ---"
 
     - name: Verify Generated Clash.yaml File
-      # Check if clash.yaml exists and list directory contents
-      id: check_final_file # ID for this step
+      id: check_file
       run: |
-        echo "Verifying 'clash.yaml' file existence after generation..."
+        echo "Verifying 'clash.yaml' file existence..."
         ls -la
         
         if [ -f "clash.yaml" ]; then
-          echo "'clash.yaml' found! It should be ready for commit."
+          echo "'clash.yaml' found! Content preview:"
           echo "File size: $(du -h clash.yaml | awk '{print $1}')"
-          echo "First 20 lines of 'clash.yaml':"
-          head -n 20 clash.yaml
+          head -n 20 clash.yaml # Print first 20 lines for inspection
         else
-          echo "Critical Error: 'clash.yaml' was NOT generated. Commit step will fail."
+          echo "Critical Error: 'clash.yaml' was NOT generated by clash-speedtest."
           exit 1 # Force job failure if file is not generated
         fi
-      # Ensure this verification runs only if the generation step succeeded
-      if: success() && steps.generate_clash_yaml.outcome == 'success'
+      # This step should run only if the previous step succeeded.
+      if: success()
 
     - name: Commit and Push Sorted Config
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Update Clash config with sorted nodes by speed"
+        commit_message: "Update Clash config with sorted nodes by speed (via faceair/clash-speedtest)"
         files: clash.yaml # Specify the file to commit
         branch: main # Ensure your main branch name is 'main' (or 'master')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # Only attempt commit if previous steps succeeded and the file was verified to exist
-      if: success() && steps.check_final_file.outcome == 'success'
+      # Only attempt commit if the file was successfully generated and verified.
+      if: success() && steps.check_file.outcome == 'success'
