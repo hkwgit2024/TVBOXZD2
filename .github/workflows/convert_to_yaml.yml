@@ -31,6 +31,9 @@ jobs:
     - name: Run conversion script
       run: python convert_to_yaml.py # 运行您的 Python 脚本
 
+    - name: List generated files for debugging
+      run: ls -R
+
     - name: Commit YAML files # 提交生成的 YAML 文件
       run: |
         git config user.name "GitHub Action" # 设置 Git 用户名
