@@ -46,8 +46,6 @@ jobs:
           fi
 
           echo "修复 $temp_file 中的 'tls' 布尔值类型错误..."
-          # 使用 sed 替换 tls: "true" 为 tls: true，和 tls: "false" 为 tls: false
-          # 注意：这个替换可能会影响到注释或其他字符串，但对于标准 Clash YAML 应该安全
           sed -i 's/tls: "true"/tls: true/g' "$temp_file"
           sed -i 's/tls: "false"/tls: false/g' "$temp_file"
           
@@ -62,23 +60,20 @@ jobs:
           exit 1
         else
           echo "修复后的订阅文件 '$FIXED_SUBS_FILE' 已生成，大小: $(du -h $FIXED_SUBS_FILE | awk '{print $1}')"
-          # 传递修复后的文件路径给下一步
           echo "fixed_subs_path=$FIXED_SUBS_FILE" >> $GITHUB_OUTPUT
         fi
 
     - name: 运行速度测试并生成排序后的配置文件 (从修复后的本地文件获取节点)
-      # 现在 -c 参数指向我们修复后的本地文件
-      # 注意：这里假设 clash-speedtest 支持从本地文件加载节点，且能够处理合并后的多节点文件
       run: |
         echo "正在运行已上传的 'clash-speedtest'..."
         echo "将从修复后的本地文件 '${{ steps.download_and_fix_subs.outputs.fixed_subs_path }}' 获取节点并进行测速。"
         ./clash-speedtest \
           -c "${{ steps.download_and_fix_subs.outputs.fixed_subs_path }}" \
           -output ./clash.yaml \
-          -download-size 5MB \
+          -download-size 5242880 # 5MB in bytes
           -timeout 5s \
           -concurrent 50 \
-          -upload-size 5MB
+          -upload-size 5242880 # 5MB in bytes (adjust if you need 20MB)
 
         EXIT_CODE=$?
         echo "'clash-speedtest' 退出代码: ${EXIT_CODE}"
@@ -102,7 +97,7 @@ jobs:
           echo "严重错误: 'clash.yaml' 文件未能由 'clash-speedtest' 生成。"
           exit 1 # 如果文件未生成，强制作业失败
         fi
-      if: success() # 此步骤仅在上一步成功时运行
+      if: success()
 
     - name: 提交并推送排序后的配置文件
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -112,5 +107,4 @@ jobs:
         branch: main # 确保您的主分支名称是 'main' (或 'master')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # 仅当文件成功生成并验证后才尝试提交
       if: success() && steps.check_file.outcome == 'success'
