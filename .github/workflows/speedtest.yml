@@ -36,9 +36,12 @@ jobs:
         id: merge-subs
         run: |
           echo "运行合并订阅脚本..."
-          bash ./scripts/merge_subscriptions.sh "${{ vars.NODE_LIST_URLS }}"
-          if [ ! -f "clash_subscriptions.yaml" ]; then
-            echo "错误: 合并脚本未生成 'clash_subscriptions.yaml'"
+          bash ./scripts/merge_subscriptions.sh "${{ vars.NODE_LIST_URLS }}" || {
+            echo "错误: 合并订阅脚本执行失败"
+            exit 1
+          }
+          if [ ! -f "clash_subscriptions.yaml" ] || [ ! -s "clash_subscriptions.yaml" ]; then
+            echo "错误: 未生成有效的 'clash_subscriptions.yaml' 文件"
             exit 1
           fi
           echo "fixed_subs_path=clash_subscriptions.yaml" >> $GITHUB_OUTPUT
