@@ -38,16 +38,17 @@ for i in "${!URLS[@]}"; do
   echo "修复 $temp_file 中的 TLS 配置..."
   sed -i 's/tls: "true"/tls: true/g; s/tls: "false"/tls: false/g' "$temp_file"
 
-  if yq e '.proxies | length > 0' "$temp_file" &> /dev/null; then
+  # 检查 proxies 字段是否存在且非空
+  if yq eval '.proxies | length > 0' "$temp_file" &> /dev/null; then
     echo "合并 $temp_file 到 $ALL_PROXIES..."
-    yq e '.proxies' "$temp_file" > temp_proxies.yaml
-    yq e -o yaml '. as $item ireduce ({}; .proxies += $item)' "$ALL_PROXIES" temp_proxies.yaml > temp.yaml
+    yq eval '.proxies' "$temp_file" > temp_proxies.yaml
+    yq eval '. as $item ireduce ({}; .proxies += $item)' "$ALL_PROXIES" temp_proxies.yaml > temp.yaml
     mv temp.yaml "$ALL_PROXIES"
     proxy_found=true
   else
     echo "警告: $temp_file 无有效 proxies，跳过"
     echo "调试: 检查 $temp_file 的 proxies 字段..."
-    yq e '.proxies' "$temp_file" || echo "调试: 无法解析 proxies 字段"
+    yq eval '.proxies' "$temp_file" || echo "调试: 无法解析 proxies 字段，可能为空或格式错误"
   fi
 done
 
@@ -67,7 +68,7 @@ log-level: info
 external-controller: 127.0.0.1:9090
 proxies:
 EOF
-yq e -o yaml '.proxies' "$ALL_PROXIES" >> "$FINAL_CONFIG"
+yq eval '.proxies' "$ALL_PROXIES" >> "$FINAL_CONFIG"
 
 if [ ! -s "$FINAL_CONFIG" ]; then
   echo "错误: 生成的 $FINAL_CONFIG 为空"
