@@ -1,4 +1,4 @@
-name: test
+name: Clash 速度测试
 on:
   workflow_dispatch:
   schedule:
@@ -7,7 +7,6 @@ on:
 jobs:
   speed-test-and-sort:
     runs-on: ubuntu-latest
-    # 移除了 strategy 和 matrix 配置，现在只有一个作业实例
 
     steps:
       - name: 检出仓库
@@ -26,27 +25,55 @@ jobs:
           echo "赋予 'clash-speedtest' 执行权限..."
           chmod +x ./clash-speedtest
           if [ ! -f "./clash-speedtest" ]; then
-            echo "错误: 未找到 'clash-speedtest' 文件"
+            echo "错误: 未找到 'clash-speedtest' 文件。请确保 'clash-speedtest' 文件已上传到仓库根目录。"
             exit 1
           fi
 
       - name: 下载完整的 Clash 配置
+        id: download_config # 为此步骤添加 ID 以便后续引用其状态
         run: |
-          echo "下载完整的 Clash 配置文件..."
-          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml
-          if [ ! -s "clash_config.yaml" ]; then
-            echo "错误: 未能下载到 clash_config.yaml 文件或文件为空。"
+          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml"
+          OUTPUT_FILE="clash_config.yaml"
+          
+          echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
+          
+          # 使用 -S (show-error), -L (follow redirects), -v (verbose)
+          # --retry 5 --retry-delay 5 (重试5次，每次间隔5秒) 增强下载稳定性
+          # --output $OUTPUT_FILE 确保输出到文件
+          curl -S -L -v --retry 5 --retry-delay 5 --output "$OUTPUT_FILE" "$CONFIG_URL"
+          
+          # 检查 curl 的退出状态码
+          if [ $? -ne 0 ]; then
+            echo "错误: curl 命令执行失败，无法下载文件。请检查 URL 或网络连接。"
             exit 1
           fi
 
+          # 检查文件是否下载成功且不为空
+          if [ ! -f "$OUTPUT_FILE" ]; then
+            echo "错误: $OUTPUT_FILE 文件不存在，即使 curl 成功也可能未能正确保存。"
+            exit 1
+          fi
+          
+          if [ ! -s "$OUTPUT_FILE" ]; then
+            echo "错误: $OUTPUT_FILE 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
+            # 打印文件内容以帮助调试空文件问题
+            echo "--- $OUTPUT_FILE 文件内容 (如果存在) ---"
+            head -n 20 "$OUTPUT_FILE" || true # 打印前20行，|| true 避免文件不存在时报错
+            echo "----------------------------------------"
+            exit 1
+          fi
+          
+          echo "$OUTPUT_FILE 文件下载成功，大小: $(du -h "$OUTPUT_FILE" | awk '{print $1}')"
+
       - name: 过滤节点 (使用 Python 脚本)
         run: python filter_clash_nodes.py
+        # Python 脚本内部会处理错误并以非零退出码退出，导致此步骤失败
 
       - name: 验证过滤后的文件
         run: |
           if [ ! -s "filtered_nodes.yaml" ]; then
             echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
-            # 如果没有节点进行测试，clash-speedtest 可能会报错，这里可以根据需要决定是否退出
+            # 如果没有节点进行测试，clash-speedtest 可能会报错。根据您的需求，如果空文件是不允许的，可以在这里 exit 1。
             # exit 1 
           fi
           echo "--- filtered_nodes.yaml 内容 (前20行) ---"
@@ -56,22 +83,19 @@ jobs:
       - name: 运行速度测试
         run: |
           echo "开始运行所有节点的测试..."
-          # 因为取消了分组，所以直接输出到 clash.yaml
           ./clash-speedtest \
             -c filtered_nodes.yaml \
-            -output ./clash.yaml \ # 直接输出到最终的 clash.yaml
+            -output ./clash.yaml \
             -download-size 1048576 \ # 1MB = 1048576 字节
             -upload-size 1048576 \   # 1MB = 1048576 字节
             -timeout 8s \
-            -concurrent 20 \ # 注意：现在所有节点的测试都在一个并发池中进行
-            -f 'US|JP|SG|HK' \
+            -concurrent 20 \
+            -f 'US|JP|SG|HK' \ # 注意：这里的 -f 参数是 clash-speedtest 自身的过滤，和 Python 脚本的过滤是互补的。
             -max-latency 800ms \
             -min-download-speed 2 \ # 单位为 MB/s (约 16Mbps)
             -min-upload-speed 1 \   # 单位为 MB/s (约 8Mbps)
             -rename \
             -fast
-
-      # 移除了合并测试结果步骤，因为现在直接输出到 clash.yaml
 
       - name: 验证生成的 clash.yaml 文件
         id: check_file
@@ -80,7 +104,7 @@ jobs:
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
             head -n 20 clash.yaml # 打印文件前 20 行以供检查
           else
-            echo "错误: 未生成 'clash.yaml'"
+            echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
             exit 1
           fi
 
