@@ -34,8 +34,12 @@ jobs:
 
     - name: List generated files for debugging
       run: |
+        echo "Listing files in sc directory:"
         ls -l sc
-        cat sc/clash.yaml || echo "File sc/clash.yaml not found"
+        echo "Attempting to cat sc/configtg.yaml:"
+        cat sc/configtg.yaml || echo "File sc/configtg.yaml not found (expected if only v.txt was processed)"
+        echo "Attempting to cat sc/v.yaml:"
+        cat sc/v.yaml || echo "File sc/v.yaml not found (this would indicate a script issue if script reported success)"
 
     - name: Commit YAML files
       run: |
