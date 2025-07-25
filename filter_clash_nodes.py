@@ -3,7 +3,6 @@ import sys
 import os
 
 try:
-    # 检查输入文件是否存在
     input_file = 'clash_config.yaml'
     if not os.path.exists(input_file):
         print(f"Error: Input file '{input_file}' not found.", file=sys.stderr)
@@ -13,29 +12,28 @@ try:
         config = yaml.safe_load(f)
 
     filtered_proxies = []
-    # 确保 'proxies' 键存在且是列表
     if 'proxies' in config and isinstance(config['proxies'], list):
         for proxy in config['proxies']:
-            # 确保代理是一个字典，并且有 'name' 键
-            if isinstance(proxy, dict) and 'name' in proxy:
-                name = proxy['name']
-                # 过滤条件：匹配 US, Japan, Singapore, HK (不区分大小写)
-                if any(country.lower() in name.lower() for country in ['US', 'Japan', 'Singapore', 'HK']):
+            if isinstance(proxy, dict) and 'server' in proxy: # 检查 'server' 字段
+                server_address = proxy['server']
+                
+                # 定义国家/地区的关键词列表，匹配服务器地址中的标识符
+                # 例如：sg001 -> SG, jp001 -> JP, us001 -> US, hk001 -> HK
+                # 假设您的服务器地址命名规则是 sgXXX, jpXXX, usXXX, hkXXX
+                keywords_to_match = ['sg', 'jp', 'us', 'hk']
+                
+                # 检查服务器地址是否包含任何一个关键词
+                if any(keyword.lower() in server_address.lower() for keyword in keywords_to_match):
                     filtered_proxies.append(proxy)
             else:
-                print(f"Warning: Skipping malformed proxy entry: {proxy}", file=sys.stderr)
+                print(f"Warning: Skipping malformed proxy entry or entry without 'server' key: {proxy}", file=sys.stderr)
     else:
         print("Warning: No 'proxies' key found or it's not a list in the input config.", file=sys.stderr)
 
-
-    # 将过滤后的代理列表包装在 'proxies' 键下，以符合 Clash 配置文件格式
     output_config = {'proxies': filtered_proxies}
     
     output_file = 'filtered_nodes.yaml'
     with open(output_file, 'w', encoding='utf-8') as f:
-        # 使用 default_flow_style=False 保持块状风格，便于阅读
-        # allow_unicode=True 确保正确处理非ASCII字符
-        # sort_keys=False 保持原始顺序，不按字母排序
         yaml.dump(output_config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
         
     print(f"Successfully filtered {len(filtered_proxies)} nodes to '{output_file}'")
