@@ -12,10 +12,11 @@ jobs:
       - name: 检出仓库
         uses: actions/checkout@v4
 
-      - name: 安装 yq 工具
+      - name: 安装 yq 工具（mikefarah/yq v4）
         run: |
-          echo "安装 yq 工具..."
-          sudo apt-get update -y && sudo apt-get install -y yq
+          echo "安装 mikefarah/yq v4 工具..."
+          sudo wget -qO /usr/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/bin/yq
           yq --version
 
       - name: 赋予 clash-speedtest 和脚本执行权限
