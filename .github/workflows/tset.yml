@@ -146,7 +146,7 @@ jobs:
             -output ./clash.yaml \
             -download-size 5 \
             -upload-size 1 \
-            -timeout 30s \
+            -timeout 20s \
             -concurrent 50 \
             -max-latency 5000ms \
             -min-download-speed 1 \
