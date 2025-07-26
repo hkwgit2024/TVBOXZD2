@@ -147,7 +147,7 @@ jobs:
           commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）并备份旧配置"
           file_pattern: "clash.yaml sc/"
           branch: main
-          pull_options: '--rebase --autostash'
+          
           commit_user_name: github-actions[bot]
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
           commit_author: qjlxg <12179157+qjlxg@users.noreply.github.com>
