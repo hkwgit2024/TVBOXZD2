@@ -26,22 +26,37 @@ try:
             is_valid_node = True
             missing_fields = []
 
-            # --- 增强的 VMess 错误排除 ---
+            # --- 增强的 VMess 错误排除：针对 unsupported security type ---
             if proxy_type == 'vmess':
-                # 问题可能出在 TLS + WS/GRPC 且 cipher 缺失或为空
-                if proxy.get('tls') is True:
-                    network_type = proxy.get('network')
-                    # 只有当 network 是 ws 或 grpc 时，才严格检查 cipher
-                    if network_type in ['ws', 'grpc']:
-                        if not proxy.get('cipher') or proxy.get('cipher') == '':
-                            print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VMess proxy due to empty/missing 'cipher' field when TLS is enabled with '{network_type}' network type. This often causes 'unsupported security type' error.", file=sys.stderr)
-                            is_valid_node = False
+                # Clash Vmess 期望的有效 security (加密方式) 列表
+                # 注意：实际有效的加密方式可能更多，这里列出常见的或 Clash 明确支持的
+                # 'none' 和 'auto' 是常见的特殊值
+                valid_vmess_ciphers = [
+                    'auto', 'none', 'aes-128-gcm', 'chacha20-poly1305',
+                    'chacha20-ietf-poly1305', # 常见别名
+                    'aes-256-gcm' # 某些情况下可能支持
+                ]
                 
-                # 即使没有 TLS，如果 cipher 是一个空字符串也可能导致问题，尽管 less critical
-                # 这种情况下，如果 Clash 不支持空 cipher，也会报错。
-                if 'cipher' in proxy and proxy['cipher'] == '':
-                    print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VMess proxy due to empty 'cipher' field. This may also cause issues.", file=sys.stderr)
-                    is_valid_node = False
+                # 检查 cipher 字段（在 Clash YAML 配置中，Vmess 的加密方式通常映射到 cipher 字段，
+                # 而原始 vmess:// 链接中的 'type' 参数有时也会被解析为 cipher）
+                vmess_cipher = proxy.get('cipher')
+
+                if vmess_cipher is not None: # 如果 cipher 字段存在
+                    if not isinstance(vmess_cipher, str) or \
+                       (isinstance(vmess_cipher, str) and vmess_cipher.strip() == ''):
+                        # 如果 cipher 是非字符串类型，或者是空字符串（包括只有空格）
+                        print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VMess proxy due to invalid or empty 'cipher' field (received: '{vmess_cipher}'). This often causes 'unsupported security type' error.", file=sys.stderr)
+                        is_valid_node = False
+                    elif vmess_cipher.lower() not in valid_vmess_ciphers:
+                        # 如果 cipher 是字符串但不在有效列表内，且不是空字符串
+                        print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VMess proxy due to unsupported 'cipher' type ('{vmess_cipher}'). This often causes 'unsupported security type' error.", file=sys.stderr)
+                        is_valid_node = False
+                # 如果 cipher 字段完全不存在 (None)，且 tls 开启，也可能出问题
+                # 但这种情况在 process_links.py 中已经尽可能设置为 'auto' 了，这里先不强制排除
+                # 如果要强制排除，可以取消注释下面这段：
+                # elif proxy.get('tls') is True:
+                #     print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VMess proxy as 'cipher' field is missing when TLS is enabled. This may cause 'unsupported security type' error.", file=sys.stderr)
+                #     is_valid_node = False
 
 
             if proxy_type == 'vmess':
@@ -72,11 +87,17 @@ try:
                         missing_fields.append(field)
                 if missing_fields:
                     is_valid_node = False
-                # VLESS 协议的 security 字段通常在 URL 参数中，会被解析到 proxy 字典中
-                # 明确处理 security 参数，如果解析出来是空字符串，则 Clash 可能会报错。
-                if 'security' in proxy and proxy['security'] == '': # 确保是精确的空字符串
-                    print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VLESS proxy due to empty 'security' field.", file=sys.stderr)
-                    is_valid_node = False
+                # VLESS 协议的 security 字段通常在 URL 参数中，会被解析到 proxy 字典中。
+                # 如果 security 参数存在且不是 'tls' 或 'none'，或者为空，则排除。
+                vless_security = proxy.get('security')
+                if vless_security is not None: # 如果 security 字段存在
+                    # 如果是空字符串或非预期的值，则排除
+                    if not isinstance(vless_security, str) or \
+                       (isinstance(vless_security, str) and vless_security.strip() == '') or \
+                       (vless_security.lower() not in ['tls', 'none']):
+                        print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VLESS proxy due to unsupported or empty 'security' field ('{vless_security}').", file=sys.stderr)
+                        is_valid_node = False
+
             elif proxy_type == 'hysteria2':
                 required_fields = ['server', 'port', 'password']
                 for field in required_fields:
