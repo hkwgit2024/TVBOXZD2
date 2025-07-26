@@ -114,6 +114,13 @@ try:
                 if proxy.get('cipher') is None:
                     print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping SSR proxy due to missing 'cipher' field.", file=sys.stderr)
                     is_valid_node = False
+                # --- 新增：SSR obfs-param 校验 ---
+                # 如果 obfs 字段存在，则 obfs-param 不能为空或缺失
+                if 'obfs' in proxy and proxy['obfs'] is not None and proxy['obfs'].strip() != '':
+                    if 'obfs-param' not in proxy or proxy['obfs-param'] is None or proxy['obfs-param'].strip() == '':
+                        print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping SSR proxy because 'obfs' is specified but 'obfs-param' is missing or empty. This causes 'missing obfs password' or similar errors.", file=sys.stderr)
+                        is_valid_node = False
+                # --- SSR obfs-param 校验结束 ---
             else:
                 # 警告并跳过不支持的代理类型，但不会导致脚本退出
                 print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping unsupported proxy type '{proxy_type}'.", file=sys.stderr)
@@ -188,15 +195,18 @@ try:
             # --- 区域过滤逻辑结束 ---
 
             # --- 处理重复名称：确保最终输出的节点名称唯一 ---
-            if proxy_name in seen_proxy_names:
-                count = seen_proxy_names[proxy_name]
-                new_name = f"{proxy_name}_duplicate_{count}"
-                print(f"Warning: Proxy {i+1}: Node name '{proxy_name}' is a duplicate. Renaming to '{new_name}'.", file=sys.stderr)
+            # 这里使用原始名称来检查，然后更新字典中的实际名称
+            temp_name_check = original_proxy_name
+            if temp_name_check in seen_proxy_names:
+                count = seen_proxy_names[temp_name_check]
+                new_name = f"{temp_name_check}_duplicate_{count}"
+                print(f"Warning: Proxy {i+1}: Node name '{temp_name_check}' is a duplicate. Renaming to '{new_name}'.", file=sys.stderr)
                 proxy['name'] = new_name
-                seen_proxy_names[proxy_name] += 1 # 增加原始名称的计数
+                seen_proxy_names[temp_name_check] += 1 # 增加原始名称的计数
                 seen_proxy_names[new_name] = 1 # 将新名称也标记为已使用，以防万一
+                proxy_name = new_name # 更新当前处理的 proxy_name 变量
             else:
-                seen_proxy_names[proxy_name] = 1
+                seen_proxy_names[temp_name_check] = 1
             
             # --- 类型转换和最终添加（无论区域过滤是否开启，这些都执行） ---
             # 处理 'tls' 字段的类型转换 (字符串 "true" / "false" 到布尔值)
