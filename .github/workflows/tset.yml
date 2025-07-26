@@ -111,38 +111,41 @@ jobs:
           cp clash.yaml sc/clash_${TIMESTAMP}.yaml
           echo "旧配置备份完成。"
 
-      # 步骤 9: 运行速度测试 - 阶段一：快速延迟测试 (使用 -fast 模式)
-      - name: 运行速度测试 - 阶段一：快速延迟测试
-        id: latency_test_run # Add an ID to this step to capture its output
-        # 仅当 filtered_nodes.yaml 不为空时才执行
-        if: steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
-        run: |
-          echo "开始运行所有节点的快速延迟测试..."
-          ./clash-speedtest \
-            -c filtered_nodes.yaml \
-            -output ./latency_tested_nodes.yaml \
-            -timeout 10s \
-            -fast # 启用快速模式，只测延迟
-          echo "快速延迟测试完成，结果保存到 latency_tested_nodes.yaml"
+      # # 步骤 9: 运行速度测试 - 阶段一：快速延迟测试 (使用 -fast 模式)
+      # # 用户要求暂时禁用此步骤
+      # - name: 运行速度测试 - 阶段一：快速延迟测试
+      #   id: latency_test_run # Add an ID to this step to capture its output
+      #   # 仅当 filtered_nodes.yaml 不为空时才执行
+      #   if: steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
+      #   run: |
+      #     echo "开始运行所有节点的快速延迟测试..."
+      #     ./clash-speedtest \
+      #       -c filtered_nodes.yaml \
+      #       -output ./latency_tested_nodes.yaml \
+      #       -timeout 10s \
+      #       -fast # 启用快速模式，只测延迟
+      #     echo "快速延迟测试完成，结果保存到 latency_tested_nodes.yaml"
           
-          # 检查 latency_tested_nodes.yaml 是否为空，并设置输出变量
-          if [ ! -s "latency_tested_nodes.yaml" ]; then
-            echo "LATENCY_TESTED_NODES_EMPTY=true" >> $GITHUB_OUTPUT
-            echo "警告: 'latency_tested_nodes.yaml' 文件为空或无有效内容。可能所有节点延迟都过高。"
-            exit 1 # 如果延迟测试后没有节点，则中断，因为后续下载测试也无意义
-          else
-            echo "LATENCY_TESTED_NODES_EMPTY=false" >> $GITHUB_OUTPUT
-          fi
-          echo "latency_tested_nodes.yaml 文件大小: $(du -h latency_tested_nodes.yaml | awk '{print $1}')"
+      #     # 检查 latency_tested_nodes.yaml 是否为空，并设置输出变量
+      #     if [ ! -s "latency_tested_nodes.yaml" ]; then
+      #       echo "LATENCY_TESTED_NODES_EMPTY=true" >> $GITHUB_OUTPUT
+      #       echo "警告: 'latency_tested_nodes.yaml' 文件为空或无有效内容。可能所有节点延迟都过高。"
+      #       exit 1 # 如果延迟测试后没有节点，则中断，因为后续下载测试也无意义
+      #     else
+      #       echo "LATENCY_TESTED_NODES_EMPTY=false" >> $GITHUB_OUTPUT
+      #     fi
+      #     echo "latency_tested_nodes.yaml 文件大小: $(du -h latency_tested_nodes.yaml | awk '{print $1}')"
 
       # 步骤 10: 运行速度测试 - 阶段二：下载/上传速度测试 (对通过延迟测试的节点)
+      # 由于步骤9被禁用，我们需要调整此步骤的输入和条件
+      # 此时直接使用 filtered_nodes.yaml 作为输入
       - name: 运行速度测试 - 阶段二：下载/上传速度测试
-        # 仅当 filtered_nodes.yaml 不为空，且 latency_tested_nodes.yaml 存在且非空时才执行
-        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.latency_test_run.outputs.LATENCY_TESTED_NODES_EMPTY == 'false'
+        # 仅当 filtered_nodes.yaml 不为空时才执行
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
         run: |
-          echo "开始运行通过延迟测试的节点的全速测试..."
+          echo "开始运行所有节点的完整速度测试（跳过快速延迟测试阶段）..."
           ./clash-speedtest \
-            -c ./latency_tested_nodes.yaml \
+            -c ./filtered_nodes.yaml \ # 直接使用过滤后的节点作为输入
             -output ./clash.yaml \
             -download-size 5 \
             -upload-size 1 \
@@ -154,11 +157,11 @@ jobs:
             -rename
           echo "全速测试完成，结果保存到 clash.yaml"
 
-      # 步骤 11: 验证生成的 clash.yaml 文件 (更新为使用新的步骤号)
+      # 步骤 11: 验证生成的 clash.yaml 文件
       - name: 验证生成的 clash.yaml 文件
         id: check_final_file
-        # 仅当 filtered_nodes.yaml 不为空，且 latency_tested_nodes.yaml 存在且非空时才检查
-        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.latency_test_run.outputs.LATENCY_TESTED_NODES_EMPTY == 'false'
+        # 仅当 filtered_nodes.yaml 不为空时才检查
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
         run: |
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
@@ -174,7 +177,7 @@ jobs:
             exit 1
           fi
 
-      # 步骤 12: 提交并推送排序后的配置文件 (包含备份文件) (更新为使用新的步骤号)
+      # 步骤 12: 提交并推送排序后的配置文件 (包含备份文件)
       - name: 提交并推送排序后的配置文件
         # 仅当 check_final_file 步骤成功时才提交
         if: success() && steps.check_final_file.outcome == 'success'
