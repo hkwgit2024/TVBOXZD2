@@ -113,6 +113,7 @@ jobs:
 
       # 步骤 9: 运行速度测试 - 阶段一：快速延迟测试 (使用 -fast 模式)
       - name: 运行速度测试 - 阶段一：快速延迟测试
+        id: latency_test_run # Add an ID to this step to capture its output
         # 仅当 filtered_nodes.yaml 不为空时才执行
         if: steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
         run: |
@@ -124,18 +125,20 @@ jobs:
             -fast # 启用快速模式，只测延迟
           echo "快速延迟测试完成，结果保存到 latency_tested_nodes.yaml"
           
-          # 在这里检查 latency_tested_nodes.yaml 是否为空，如果为空，则中断工作流
+          # 检查 latency_tested_nodes.yaml 是否为空，并设置输出变量
           if [ ! -s "latency_tested_nodes.yaml" ]; then
+            echo "LATENCY_TESTED_NODES_EMPTY=true" >> $GITHUB_OUTPUT
             echo "警告: 'latency_tested_nodes.yaml' 文件为空或无有效内容。可能所有节点延迟都过高。"
             exit 1 # 如果延迟测试后没有节点，则中断，因为后续下载测试也无意义
+          else
+            echo "LATENCY_TESTED_NODES_EMPTY=false" >> $GITHUB_OUTPUT
           fi
           echo "latency_tested_nodes.yaml 文件大小: $(du -h latency_tested_nodes.yaml | awk '{print $1}')"
 
       # 步骤 10: 运行速度测试 - 阶段二：下载/上传速度测试 (对通过延迟测试的节点)
       - name: 运行速度测试 - 阶段二：下载/上传速度测试
         # 仅当 filtered_nodes.yaml 不为空，且 latency_tested_nodes.yaml 存在且非空时才执行
-        # 注意：这里需要再次检查 `filtered_nodes_empty`，因为 `if` 条件是独立评估的
-        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && -s 'latency_tested_nodes.yaml'
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.latency_test_run.outputs.LATENCY_TESTED_NODES_EMPTY == 'false'
         run: |
           echo "开始运行通过延迟测试的节点的全速测试..."
           ./clash-speedtest \
@@ -155,7 +158,7 @@ jobs:
       - name: 验证生成的 clash.yaml 文件
         id: check_final_file
         # 仅当 filtered_nodes.yaml 不为空，且 latency_tested_nodes.yaml 存在且非空时才检查
-        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && -s 'latency_tested_nodes.yaml'
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.latency_test_run.outputs.LATENCY_TESTED_NODES_EMPTY == 'false'
         run: |
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
