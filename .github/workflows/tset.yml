@@ -117,7 +117,7 @@ jobs:
             -timeout 30s \
             -concurrent 50 \
             -max-latency 5000ms \
-            -min-download-speed 2 \
+            -min-download-speed 1 \
             -min-upload-speed 0 \
             -rename \
            
