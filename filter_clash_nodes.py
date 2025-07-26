@@ -25,6 +25,26 @@ try:
             is_valid_node = True
             missing_fields = []
 
+            # --- 新增：排除 Vmess 不支持的 security type ---
+            if proxy_type == 'vmess':
+                # Clash 对于 vmess 节点，如果 `tls` 为 true，`network` 为 ws 或 grpc，
+                # 但 `cipher` (security) 字段为空，则会报错。
+                # 在 Clash 配置中，vmess 的 security 字段通常是其加密方式，
+                # 如果是空字符串或不被支持，就会出问题。
+                # 我们检查 `tls` 是否为真，以及 `cipher` 是否为空。
+                # 注意：这里假设 'cipher' 字段在订阅中可能对应 Clash 的 'security'。
+                if proxy.get('tls') is True:
+                    if not proxy.get('cipher'): # 如果开启了TLS但cipher字段为空或缺失
+                         print(f"Warning: Skipping VMess proxy '{proxy.get('name', 'Unnamed')}' due to empty or missing 'cipher' (security) field when TLS is enabled.", file=sys.stderr)
+                         is_valid_node = False
+                         # 理论上也可以检查 network 是否为 ws 或 grpc，但更直接的是检查 cipher
+                
+                # 即使没有 TLS，如果 cipher 是空字符串也可能引发问题，虽然通常不那么致命
+                # if not proxy.get('cipher'):
+                #     print(f"Warning: Skipping VMess proxy '{proxy.get('name', 'Unnamed')}' due to empty or missing 'cipher' field.", file=sys.stderr)
+                #     is_valid_node = False
+
+
             if proxy_type == 'vmess':
                 required_fields = ['server', 'port', 'uuid', 'alterId']
                 for field in required_fields:
@@ -53,6 +73,12 @@ try:
                         missing_fields.append(field)
                 if missing_fields:
                     is_valid_node = False
+                # VLESS 协议的 security 字段通常在 URL 参数中，会被解析到 proxy 字典中
+                # 明确处理 security 参数，如果解析出来是空字符串，则 Clash 可能会报错。
+                # 在 process_links.py 中已经尝试修复，这里是兜底检查。
+                if 'security' in proxy and not proxy['security']:
+                    print(f"Warning: Skipping VLESS proxy '{proxy.get('name', 'Unnamed')}' due to empty 'security' field.", file=sys.stderr)
+                    is_valid_node = False
             elif proxy_type == 'hysteria2':
                 required_fields = ['server', 'port', 'password']
                 for field in required_fields:
@@ -68,79 +94,68 @@ try:
                 if missing_fields:
                     is_valid_node = False
             else:
-                # 对于不支持的协议类型，也可以选择直接排除
+                # 对于不支持的协议类型，直接排除
                 print(f"Warning: Skipping unsupported proxy type '{proxy_type}': {proxy.get('name', 'Unnamed')}.", file=sys.stderr)
                 continue
 
 
             if not is_valid_node:
-                print(f"Warning: Skipping proxy '{proxy.get('name', 'Unnamed')}' (type: {proxy_type}) due to missing required fields: {', '.join(missing_fields)}.", file=sys.stderr)
+                # 已经有专门的警告在上面打印了，这里可以省略，或者打印一个更通用的信息
+                if missing_fields: # 仅当是缺失字段导致的无效才打印这个信息
+                    print(f"Warning: Skipping proxy '{proxy.get('name', 'Unnamed')}' (type: {proxy_type}) due to missing required fields: {', '.join(missing_fields)}.", file=sys.stderr)
                 continue # 跳过此代理
 
             # 确保 'server' 或 'host' 字段存在以获取服务器地址
-            # VLESS 类型通常使用 'host' 字段作为服务器地址，其他通常使用 'server'
-            server_address = proxy.get('server') # 优先尝试 'server'
-            if not server_address: # 如果没有 'server'，则尝试 'host'
+            server_address = proxy.get('server')
+            if not server_address:
                 server_address = proxy.get('host')
             
-            # 如果既没有 'server' 也没有 'host'，则跳过此代理（尽管上面已经做了类型相关的检查，这里做一次兜底）
             if not server_address:
                 print(f"Warning: Skipping proxy '{proxy.get('name', 'Unnamed')}' (type: {proxy.get('type')}) as it has no 'server' or 'host' key (secondary check).", file=sys.stderr)
                 continue
 
             # 定义靠近中国的地区关键词，用于匹配服务器地址或节点名称
-            # 您可以根据需要调整这些关键词
-            keywords_to_match = ['hk', 'tw', 'sg', 'jp', 'kr', 'ru'] # HK, Hong Kong, TW, Taiwan, SG, Singapore, JP, Japan, KR, Korea, RU, Russia
+            keywords_to_match = ['hk', 'tw', 'sg', 'jp', 'kr', 'ru']
             
             matched_region = False
-            # 检查服务器地址是否包含任何一个关键词 (不区分大小写)
             for keyword in keywords_to_match:
                 if keyword.lower() in server_address.lower():
                     matched_region = True
                     break
             
-            # 如果服务器地址未匹配，则尝试检查节点名称 (remark 或 name)
-            # 有些订阅可能在名称中标记地区信息
             proxy_name = proxy.get('remark') or proxy.get('name', '')
-            if not matched_region: # 只有当 server_address 未匹配时才检查 proxy_name
+            if not matched_region:
                 for keyword in keywords_to_match:
                     if keyword.lower() in proxy_name.lower():
                         matched_region = True
                         break
 
-            # 如果匹配到指定地区，则进一步处理此代理
             if matched_region:
                 # 处理 ShadowSocks 代理的 'unknown method: ss' 错误
-                # Clash 工具可能不支持这种特定的加密方法
-                if proxy_type == 'ss': # 此时 'type' 字段必然存在
+                if proxy_type == 'ss':
                     cipher_method = proxy.get('cipher')
                     if cipher_method and cipher_method.lower() == 'ss':
                         print(f"Warning: Skipping SS proxy '{proxy.get('name', 'Unnamed')}' due to unsupported cipher method 'ss'.", file=sys.stderr)
-                        continue # 跳过这个节点
+                        continue
 
                 # 处理 'tls' 字段的类型转换
-                # 确保 'tls' 字段是布尔值 (True/False)，而不是字符串
                 if 'tls' in proxy:
                     tls_value = proxy['tls']
                     if isinstance(tls_value, str):
                         proxy['tls'] = tls_value.lower() == 'true'
                     elif not isinstance(tls_value, bool):
-                        proxy['tls'] = False # 如果不是字符串也不是布尔值，则设为 False
+                        proxy['tls'] = False
                 
-                # 将通过所有检查和过滤的代理添加到列表中
                 filtered_proxies.append(proxy)
             else:
-                # 打印被过滤掉的节点信息，方便调试
                 print(f"Info: Skipping proxy '{proxy.get('name', 'Unnamed')}' (server/host: {server_address}) as it does not match close-to-China regions.", file=sys.stderr)
 
     else:
         print("Warning: No 'proxies' key found or it's not a list in the input config.", file=sys.stderr)
 
-    # 构建输出配置，只包含过滤后的代理
     output_config = {'proxies': filtered_proxies}
     
     output_file = 'filtered_nodes.yaml'
-    # 将过滤后的配置写入新文件
     with open(output_file, 'w', encoding='utf-8') as f:
         yaml.dump(output_config, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
         
