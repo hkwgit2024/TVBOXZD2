@@ -112,12 +112,12 @@ jobs:
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 524288 \
-            -upload-size 524288 \
+            -download-size 5 \
+            -upload-size 1 \
             -timeout 30s \
             -concurrent 50 \
             -max-latency 5000ms \
-            -min-download-speed 0 \
+            -min-download-speed 2 \
             -min-upload-speed 0 \
             -rename \
             -fast
