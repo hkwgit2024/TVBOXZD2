@@ -21,119 +21,96 @@ jobs:
     steps:
       # 步骤 1: 检出仓库代码
       - name: 检出仓库
-        uses: actions/checkout@v4 # 使用 actions/checkout@v4 action 来检出当前仓库代码
+        uses: actions/checkout@v4
 
       # 步骤 2: 设置 Python 环境
       - name: 设置 Python 环境
-        uses: actions/setup-python@v5 # 使用 actions/setup-python@v5 action 来设置 Python 环境
+        uses: actions/setup-python@v5
         with:
-          # 指定 Python 版本，这里使用最新的 Python 3 版本
+          # 使用最新的 Python 3 版本
           python-version: '3.x'
 
       # 步骤 3: 安装 Python 依赖
       - name: 安装 Python 依赖
-        # 运行 shell 命令来安装 PyYAML 库，用于处理 YAML 文件
+        # 运行 shell 命令来安装 PyYAML 库
         run: pip install PyYAML
 
       # 步骤 4: 赋予 clash-speedtest 执行权限
       - name: 赋予 clash-speedtest 执行权限
-        # 运行多行 shell 命令
         run: |
           echo "赋予 'clash-speedtest' 执行权限..."
-          # 赋予 clash-speedtest 文件执行权限
           chmod +x ./clash-speedtest
-          # 检查 clash-speedtest 文件是否存在。如果不存在，则输出错误信息并退出。
           if [ ! -f "./clash-speedtest" ]; then
-            echo "错误: 未找到 'clash-speedtest' 文件。请确保 'clash-speedtest' 文件已上传到仓库根目录。"
+            echo "错误: 未找到 'clash-speedtest' 文件。请确保已上传到仓库根目录。"
             exit 1
           fi
 
       # 步骤 5: 下载完整的 Clash 配置
       - name: 下载完整的 Clash 配置
-        id: download_config # 为此步骤设置一个 ID，以便其他步骤可以引用其输出（如果需要）
+        id: download_config
         run: |
-          # 定义 Clash 配置文件的下载 URL。这是核心修改点，请替换为您的实际配置地址。
+          # 定义 Clash 配置文件的下载 URL。请替换为您的实际地址。
           CONFIG_URL="https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml"
-          # 定义下载文件的保存路径和文件名
           OUTPUT_FILE="clash_config.yaml"
 
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
 
-          # 使用 curl 命令下载文件，包含重试、延迟、连接超时、最大时间限制等参数，并将输出保存到指定文件
           curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
 
-          # 检查 curl 命令的退出状态码，判断是否下载成功
           if [ $? -ne 0 ]; then
-            echo "错误: curl 命令执行失败，无法下载文件。可能是网络问题、URL错误或超时。"
+            echo "错误: curl 命令执行失败，无法下载文件。"
             exit 1
           fi
 
-          # 再次检查文件是否确实存在。即使 curl 成功，也可能未能正确保存。
           if [ ! -f "$OUTPUT_FILE" ]; then
-            echo "错误: $OUTPUT_FILE 文件不存在，即使 curl 成功也可能未能正确保存。"
+            echo "错误: $OUTPUT_FILE 文件不存在。"
             exit 1
           fi
 
-          # 检查下载的文件是否为空。这可能表示上游文件内容为空，或者下载过程中出现问题。
           if [ ! -s "$OUTPUT_FILE" ]; then
-            echo "错误: $OUTPUT_FILE 文件为空。这可能表示上游文件内容为空，或者下载过程中出现问题。"
-            echo "--- $OUTPUT_FILE 文件内容 (如果存在) ---"
-            head -n 20 "$OUTPUT_FILE" || true # 打印文件前20行，如果文件不存在则不报错
-            echo "----------------------------------------"
+            echo "错误: $OUTPUT_FILE 文件为空。"
+            head -n 20 "$OUTPUT_FILE" || true
             exit 1
           fi
 
-          # 打印成功信息，并显示下载文件的大小
           echo "$OUTPUT_FILE 文件下载成功，大小: $(du -h "$OUTPUT_FILE" | awk '{print $1}')"
 
       # 步骤 6: 过滤节点 (使用 Python 脚本)
       - name: 过滤节点 (使用 Python 脚本)
-        # 运行 Python 脚本来过滤 Clash 节点。请确保 'filter_clash_nodes.py' 文件存在于仓库根目录。
         run: python filter_clash_nodes.py
 
-      # 步骤 7: 验证过滤后的文件
+      # 7. 验证过滤后的文件
       - name: 验证过滤后的文件
         run: |
-          # 检查 filtered_nodes.yaml 文件是否为空或无有效内容。如果为空，则输出警告信息，并显示文件内容。
           if [ ! -s "filtered_nodes.yaml" ]; then
-            echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
-            echo "--- filtered_nodes.yaml 内容 (前20行) ---"
-            head -n 20 filtered_nodes.yaml || true # 打印文件前20行，如果文件不存在则不报错
-            echo "----------------------------------------"
-            exit 1 # 警告并退出，因为没有可用于测试的节点
+            echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。可能没有节点符合过滤条件。"
+            head -n 20 filtered_nodes.yaml || true
+            exit 1
           fi
-          # 打印成功信息，并显示过滤后文件的大小
           echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
 
       ---
       # 步骤 8: 备份旧的 Clash 配置
-      # 这个步骤会在运行速度测试并生成新配置之前，将旧的 clash.yaml 文件备份。
       - name: 备份旧的 Clash 配置
-        # 此步骤不再需要 'if' 条件来检查文件存在，因为检查逻辑已移至 'run' 脚本内部。
         run: |
-          # **重要：首先检查 'clash.yaml' 文件是否存在。如果不存在，打印警告并安全退出当前脚本。**
+          # 检查 'clash.yaml' 文件是否存在。如果不存在，打印警告并安全退出当前脚本。
           if [ ! -f "clash.yaml" ]; then
             echo "警告: 'clash.yaml' 文件不存在，跳过备份旧配置。"
-            exit 0 # 退出脚本并标记该步骤为成功，这样不会中断整个工作流。
+            exit 0 # 退出脚本并标记该步骤为成功，不会中断整个工作流。
           fi
 
-          # 如果 'clash.yaml' 存在，则继续执行备份操作：
-          # 创建 'sc' 目录，如果它不存在的话。'-p' 选项确保如果父目录也不存在，也会一并创建。
+          # 如果 'clash.yaml' 存在，则继续备份操作：
           mkdir -p sc
-          # 获取当前的日期和时间，格式为 YYYYMMDD_HHMMSS (例如：20250726_093142)
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          # 将当前的 clash.yaml 文件复制到 'sc' 目录，并以时间戳命名。
           echo "正在备份旧的 clash.yaml 到 sc/clash_${TIMESTAMP}.yaml..."
           cp clash.yaml sc/clash_${TIMESTAMP}.yaml
           echo "旧配置备份完成。"
 
       ---
       # 步骤 9: 运行速度测试
-      # 这是执行主要功能——Clash 节点速度测试的步骤。
       - name: 运行速度测试
         run: |
           echo "开始运行所有节点的测试..."
-          # 执行 clash-speedtest 工具，并传入各种参数进行速度测试和节点排序
           ./clash-speedtest \
             -c filtered_nodes.yaml \
             -output ./clash.yaml \
@@ -149,52 +126,36 @@ jobs:
 
       ---
       # 步骤 10: 验证生成的 clash.yaml 文件
-      # 检查速度测试是否成功生成了新的 clash.yaml 文件。
       - name: 验证生成的 clash.yaml 文件
-        id: check_file # 为此步骤设置一个 ID，以便后续的提交步骤可以检查其结果
+        id: check_file
         run: |
-          # 检查 'clash.yaml' 文件是否已生成
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
             echo "--- clash.yaml 文件内容 (前50行) ---"
-            head -n 50 clash.yaml || true # 打印文件前50行，如果文件不存在则不报错
+            head -n 50 clash.yaml || true
             echo "----------------------------------------"
-            # 检查生成的 clash.yaml 中是否包含代理节点 (通过查找 'name:' 关键字判断)
             if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then
               echo "警告: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
             fi
           else
-            # 如果文件未生成，则输出错误信息并退出。速度测试可能失败或没有通过过滤的节点。
             echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
             exit 1
           fi
 
       ---
       # 步骤 11: 提交并推送排序后的配置文件 (包含备份文件)
-      # 将新的 clash.yaml 和备份文件提交到 Git 仓库。
       - name: 提交并推送排序后的配置文件
-        # 只有当前面的所有步骤都成功，并且 'check_file' 步骤也成功（即 clash.yaml 生成成功）时才执行此步骤。
         if: success() && steps.check_file.outcome == 'success'
-        uses: stefanzweifel/git-auto-commit-action@v5 # 使用 stefanzweifel/git-auto-commit-action@v5 action 自动提交更改
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # 提交消息，清晰说明本次提交的内容
           commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）并备份旧配置"
-          # 要提交的文件模式。现在包括新的 'clash.yaml' 和 'sc/' 目录下的所有备份文件。
           file_pattern: "clash.yaml sc/"
-          # 推送到的分支
           branch: main
-          # *** 关键修复：添加 pull_options 以解决非快进式推送问题 ***
-          # 这会尝试在提交前先拉取远程分支的最新更改，并使用 rebase 策略合并，避免冲突。
-          # --rebase 将您的本地提交重新应用到远程分支的最新提交之上。
-          # --autostash 在 rebase 前自动暂存（stash）未提交的更改，rebase 后再恢复。
+          # 关键修复：添加 pull_options 以解决非快进式推送问题
           pull_options: '--rebase --autostash'
-          # 设置 Git 提交的用户名称，通常使用 GitHub Actions 机器人
           commit_user_name: github-actions[bot]
-          # 设置 Git 提交的用户邮箱
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-          # 设置 Git 提交的作者信息，可以保持您的 GitHub 用户名和邮箱
           commit_author: qjlxg <12179157+qjlxg@users.noreply.github.com>
-          # 以下参数通常保持默认值即可，不建议随意修改
           repository: .
           skip_dirty_check: false
           skip_fetch: false
@@ -204,5 +165,4 @@ jobs:
           create_git_tag_only: false
           internal_git_binary: git
         env:
-          # GitHub Token，用于授权 Git 操作。这个是由 GitHub 自动提供的。
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
