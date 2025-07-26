@@ -50,7 +50,7 @@ jobs:
         id: download_config
         run: |
           # 定义 Clash 配置文件的下载 URL。请替换为您的实际地址。
-          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/my/refs/heads/main/sc/nodes.yaml"
+          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/my/refs/heads/main/sc/qjlxg_collectSub_all_nodes.yaml"
           OUTPUT_FILE="clash_config.yaml"
 
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
