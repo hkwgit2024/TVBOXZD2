@@ -79,7 +79,7 @@ jobs:
       - name: 过滤节点 (使用 Python 脚本)
         run: python filter_clash_nodes.py
 
-      # 7. 验证过滤后的文件
+      # 步骤 7: 验证过滤后的文件
       - name: 验证过滤后的文件
         run: |
           if [ ! -s "filtered_nodes.yaml" ]; then
@@ -89,7 +89,6 @@ jobs:
           fi
           echo "filtered_nodes.yaml 文件大小: $(du -h filtered_nodes.yaml | awk '{print $1}')"
 
-      ---
       # 步骤 8: 备份旧的 Clash 配置
       - name: 备份旧的 Clash 配置
         run: |
@@ -106,7 +105,6 @@ jobs:
           cp clash.yaml sc/clash_${TIMESTAMP}.yaml
           echo "旧配置备份完成。"
 
-      ---
       # 步骤 9: 运行速度测试
       - name: 运行速度测试
         run: |
@@ -124,7 +122,6 @@ jobs:
             -rename \
             -fast
 
-      ---
       # 步骤 10: 验证生成的 clash.yaml 文件
       - name: 验证生成的 clash.yaml 文件
         id: check_file
@@ -142,7 +139,6 @@ jobs:
             exit 1
           fi
 
-      ---
       # 步骤 11: 提交并推送排序后的配置文件 (包含备份文件)
       - name: 提交并推送排序后的配置文件
         if: success() && steps.check_file.outcome == 'success'
