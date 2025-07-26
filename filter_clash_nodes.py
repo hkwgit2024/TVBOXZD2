@@ -19,6 +19,9 @@ try:
         config = yaml.safe_load(f)
 
     filtered_proxies = []
+    # 用于跟踪已处理的代理名称，以便处理重复名称
+    seen_proxy_names = {} 
+
     if 'proxies' in config and isinstance(config['proxies'], list):
         for i, proxy in enumerate(config['proxies']):
             # --- 确保代理是字典类型且包含 'type' 字段 ---
@@ -27,7 +30,8 @@ try:
                 continue
 
             proxy_type = proxy['type']
-            proxy_name = proxy.get('name', f"Unnamed Proxy {i+1}")
+            original_proxy_name = proxy.get('name', f"Unnamed Proxy {i+1}")
+            proxy_name = original_proxy_name # 初始化为原始名称
 
             is_valid_node = True
             missing_fields = []
@@ -183,6 +187,17 @@ try:
                     continue # 跳过此代理
             # --- 区域过滤逻辑结束 ---
 
+            # --- 处理重复名称：确保最终输出的节点名称唯一 ---
+            if proxy_name in seen_proxy_names:
+                count = seen_proxy_names[proxy_name]
+                new_name = f"{proxy_name}_duplicate_{count}"
+                print(f"Warning: Proxy {i+1}: Node name '{proxy_name}' is a duplicate. Renaming to '{new_name}'.", file=sys.stderr)
+                proxy['name'] = new_name
+                seen_proxy_names[proxy_name] += 1 # 增加原始名称的计数
+                seen_proxy_names[new_name] = 1 # 将新名称也标记为已使用，以防万一
+            else:
+                seen_proxy_names[proxy_name] = 1
+            
             # --- 类型转换和最终添加（无论区域过滤是否开启，这些都执行） ---
             # 处理 'tls' 字段的类型转换 (字符串 "true" / "false" 到布尔值)
             if 'tls' in proxy:
@@ -193,7 +208,7 @@ try:
                     # 如果不是字符串也不是布尔值，则设为 False，避免 YAML 导出问题
                     proxy['tls'] = False
             
-            filtered_proxies.append(proxy) # 如果通过所有检查（包括可选的区域过滤），则添加到过滤列表中
+            filtered_proxies.append(proxy) # 如果通过所有检查（包括可选的区域过滤和名称唯一性检查），则添加到过滤列表中
 
     else:
         print("Warning: No 'proxies' key found or it's not a list in the input config. Output will be an empty proxies list.", file=sys.stderr)
