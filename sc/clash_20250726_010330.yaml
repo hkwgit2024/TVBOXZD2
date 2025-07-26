@@ -1,0 +1,563 @@
+proxy-providers: {}
+proxies:
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: y9VURyNzJWNRYEGQ
+      port: 9008
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: hk.laoyoutiao.link
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /?ed=2048fp=random
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: blog.ruangguru.com.servpn.my.id
+      skip-cert-verify: false
+      sni: blog.ruangguru.com.servpn.my.id
+      tls: true
+      type: vless
+      uuid: 0aba9d10-99ac-4cde-806b-b314b09216c8
+      ws-opts:
+        headers:
+            Host: blog.ruangguru.com.servpn.my.id
+        path: /id2
+    - cipher: chacha20-ietf
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      password: asd123456
+      port: 8388
+      server: 103.149.183.10
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      password: Egj8FiMcZi
+      port: 1935
+      server: x6-england-amazon-v2-3s677.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: daFYagqDdBdA6VTX
+      port: 9073
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: sg.laoyoutiao.link
+      skip-cert-verify: false
+      sni: sg.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+        path: /?ed=2560fp=random
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: TPqX8edgbAURcAMb
+      port: 9079
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 18.140.58.118
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: ueLXVkvh4hckhErQ
+      port: 9060
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: 7ZkPnMNGly
+      port: 1935
+      server: x1-japan-linode-v2-pwlzp.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: 9XwYyZsK8SNzQDtY
+      port: 9059
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: bakrie.ac.id.servpn.my.id
+      skip-cert-verify: false
+      sni: bakrie.ac.id.servpn.my.id
+      tls: true
+      type: vless
+      uuid: 057d7a93-4a78-4f7a-8157-44d53971a7c5
+      ws-opts:
+        headers:
+            Host: bakrie.ac.id.servpn.my.id
+        path: /my4
+    - name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: 0IMsvkqhnm
+      port: 1935
+      server: x1-japan-amazon-v2.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      password: 360e21d21977dc11
+      port: 57456
+      server: 45.139.24.24
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: bf7v334KKDV3YDhH
+      port: 9070
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: 202.79.160.243
+      sni: www.32278117.xyz
+      tls: true
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+      ws-opts:
+        headers:
+            Host: www.32278117.xyz
+        path: /path/191019072927
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: NvS8N4Vf8qAGPSCL
+      port: 9046
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - alterId: 64
+      cipher: auto
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: 202.79.160.164
+      sni: www.20850772.xyz
+      tls: true
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+      ws-opts:
+        headers:
+            Host: www.20850772.xyz
+        path: /path/191019072927
+    - cipher: aes-256-cfb
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 52.221.203.67
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: GeregetR8cvQHzYr
+      port: 9030
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: KnJGad3FqTvjqbaX
+      port: 9014
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: p9z5BVADH2YFs3MN
+      port: 9040
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F9\U0001F1FC TW | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 53175
+      server: 34.80.157.198
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: f1a8c85b-86c8-43c8-e920-bcdbf391081e
+      ws-opts: {}
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: support.zoom.us.sgjp.asolole.biz.id
+      skip-cert-verify: false
+      sni: support.zoom.us.sgjp.asolole.biz.id
+      tls: true
+      type: vless
+      uuid: 1733f2a1-37f1-48c6-95d9-a60edefd3e15
+      ws-opts:
+        headers:
+            Host: support.zoom.us.sgjp.asolole.biz.id
+        path: /jp2
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: 14JVxaniVQ
+      port: 1935
+      server: x5-germany-amazon-v2-tw4od.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+      port: 443
+      server: jp.mjt000.com
+      skip-cert-verify: false
+      sni: jp.mjt000.com
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: daFYagqDdBdA6VTX
+      port: 9073
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: UWZQeLRWnkqgkseq
+      port: 9032
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: edu.ruangguru.com.yaya.web.id
+      skip-cert-verify: false
+      sni: edu.ruangguru.com.yaya.web.id
+      tls: true
+      type: vless
+      uuid: d0eb8c0a-76a9-4096-a378-3b6ebed2ffc9
+      ws-opts:
+        headers:
+            Host: edu.ruangguru.com.yaya.web.id
+        path: /ten
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: kSPmvwdFzGMMW5pY
+      port: 9007
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-gcm
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      password: h0LVr9pkvim6CUTH
+      port: 8388
+      server: free-hk.vpnkey.dev
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: ava.game.naver.com.sg1.hinamori.xyz
+      skip-cert-verify: false
+      sni: ava.game.naver.com.sg1.hinamori.xyz
+      tls: true
+      type: vless
+      uuid: 00347ce2-2c4e-4548-b640-6e30b9a6fd99
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.sg1.hinamori.xyz
+        path: /5
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: jp.laoyoutiao.link
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-128-gcm
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.240
+      type: ss
+      udp: true
+    - name: "\U0001F1F9\U0001F1FC TW | ⬇️ 0.00 MB/s"
+      password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+      port: 443
+      server: taifo01a.kbservice.club
+      skip-cert-verify: false
+      sni: 45.32.28.232
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: FG5ddLsMPbV5CutE
+      port: 9050
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.236
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: JdmRK9gMEqFgs8nP
+      port: 9003
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: gYCYXfkUQEs2TaJQ
+      port: 9038
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F9\U0001F1FC TW | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 223.165.4.173
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.241
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F9\U0001F1FC TW | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 55084
+      server: 34.80.156.254
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 5691fb8a-d890-4a33-9b0e-73017adae5b2
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: rNBfNuuANFCAk7KB
+      port: 9056
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 52.78.79.188
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: fG2artUmHfNT2cX7
+      port: 9018
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1F3 CN | ⬇️ 0.00 MB/s"
+      password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+      port: 3462
+      server: a10.taipeicitygovernment.kyiv.ua
+      skip-cert-verify: false
+      sni: 45.32.28.232
+      type: trojan
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: 2df393ef-b5fa-4ffd-9af3-761034bf33e3
+      port: 30013
+      server: 192.53.172.74
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: M3t2ZEQcMGRWBjRa
+      port: 9011
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: 0xC6Mws4Dg
+      port: 1935
+      server: x2-japan-amazon-v2.devefun.org
+      skip-cert-verify: false
+      sni: x2-japan-amazon-v2.devefun.org
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: wfLC2y7rzZyCmuyt
+      port: 9093
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: SBM7R883jBmnqe6C
+      port: 9053
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: p9z5BVADH2YFs3MN
+      port: 9040
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: kSPmvwdFzGMMW5pY
+      port: 9007
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: sgjp.asolole.biz.id
+      skip-cert-verify: false
+      sni: sgjp.asolole.biz.id
+      tls: true
+      type: vless
+      uuid: 1977de45-4ea5-4531-b935-ce470f9c75d2
+      ws-opts:
+        headers:
+            Host: sgjp.asolole.biz.id
+        path: /jp2
+    - name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+      port: 443
+      server: waphk.mjt000.com
+      skip-cert-verify: false
+      sni: waphk.mjt000.com
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: Sn5B7jTqr76aCJT8
+      port: 9097
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: EXN3S3eQpjE7EJu8
+      port: 9027
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      password: 360e21d21977dc11
+      port: 57456
+      server: ru.vmagnum.win
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: U6qnYRhfyDmn8sgn
+      port: 9041
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 18.143.64.62
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: bf7v334KKDV3YDhH
+      port: 9070
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: 4DtRDDWFTT
+      port: 1935
+      server: x5-canada-amazon-v2-21qsg.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: ZpNDDKRu9MagNvaf
+      port: 9015
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 54.244.216.10
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: tw.laoyoutiao.link
+      skip-cert-verify: false
+      sni: tw.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: tw.laoyoutiao.link
+        path: /?ed=2560
