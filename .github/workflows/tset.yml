@@ -120,7 +120,7 @@ jobs:
             -min-download-speed 2 \
             -min-upload-speed 0 \
             -rename \
-            -fast
+           
 
       # 步骤 10: 验证生成的 clash.yaml 文件
       - name: 验证生成的 clash.yaml 文件
