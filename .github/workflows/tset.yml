@@ -41,11 +41,19 @@ jobs:
       - name: 赋予 clash-speedtest 执行权限
         run: |
           echo "赋予 'clash-speedtest' 执行权限..."
-          chmod +x ./clash-speedtest
+          # 确保 clash-speedtest 文件存在且是可执行的二进制文件
           if [ ! -f "./clash-speedtest" ]; then
             echo "错误: 未找到 'clash-speedtest' 文件。请确保已上传到仓库根目录。"
             exit 1
           fi
+          # 增加文件类型检查，以防下载的是HTML或文本文件
+          FILE_TYPE_INFO=$(file "./clash-speedtest")
+          echo "clash-speedtest 文件类型信息: $FILE_TYPE_INFO"
+          if ! echo "$FILE_TYPE_INFO" | grep -q "ELF 64-bit LSB executable"; then
+              echo "错误: 'clash-speedtest' 文件不是预期的 Linux AMD64 可执行文件。请检查文件是否损坏或上传了错误版本。"
+              exit 1
+          fi
+          chmod +x ./clash-speedtest
 
       # 步骤 5: 下载完整的 Clash 配置
       - name: 下载完整的 Clash 配置
@@ -111,41 +119,16 @@ jobs:
           cp clash.yaml sc/clash_${TIMESTAMP}.yaml
           echo "旧配置备份完成。"
 
-      # # 步骤 9: 运行速度测试 - 阶段一：快速延迟测试 (使用 -fast 模式)
-      # # 用户要求暂时禁用此步骤
-      # - name: 运行速度测试 - 阶段一：快速延迟测试
-      #   id: latency_test_run # Add an ID to this step to capture its output
-      #   # 仅当 filtered_nodes.yaml 不为空时才执行
-      #   if: steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
-      #   run: |
-      #     echo "开始运行所有节点的快速延迟测试..."
-      #     ./clash-speedtest \
-      #       -c filtered_nodes.yaml \
-      #       -output ./latency_tested_nodes.yaml \
-      #       -timeout 10s \
-      #       -fast # 启用快速模式，只测延迟
-      #     echo "快速延迟测试完成，结果保存到 latency_tested_nodes.yaml"
-          
-      #     # 检查 latency_tested_nodes.yaml 是否为空，并设置输出变量
-      #     if [ ! -s "latency_tested_nodes.yaml" ]; then
-      #       echo "LATENCY_TESTED_NODES_EMPTY=true" >> $GITHUB_OUTPUT
-      #       echo "警告: 'latency_tested_nodes.yaml' 文件为空或无有效内容。可能所有节点延迟都过高。"
-      #       exit 1 # 如果延迟测试后没有节点，则中断，因为后续下载测试也无意义
-      #     else
-      #       echo "LATENCY_TESTED_NODES_EMPTY=false" >> $GITHUB_OUTPUT
-      #     fi
-      #     echo "latency_tested_nodes.yaml 文件大小: $(du -h latency_tested_nodes.yaml | awk '{print $1}')"
-
-      # 步骤 10: 运行速度测试 - 阶段二：下载/上传速度测试 (对通过延迟测试的节点)
-      # 由于步骤9被禁用，我们需要调整此步骤的输入和条件
+      # 步骤 9: 运行速度测试 - 阶段二：下载/上传速度测试 (对通过延迟测试的节点)
       # 此时直接使用 filtered_nodes.yaml 作为输入
       - name: 运行速度测试 - 阶段二：下载/上传速度测试
         # 仅当 filtered_nodes.yaml 不为空时才执行
         if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
         run: |
-          echo "开始运行所有节点的完整速度测试（跳过快速延迟测试阶段）..."
+          echo "开始运行所有节点的完整速度测试..."
+          # 关键修改：确保所有参数都紧随命令，使用正确的反斜杠进行换行，且反斜杠后无任何空格或注释
           ./clash-speedtest \
-            -c ./filtered_nodes.yaml \ # 直接使用过滤后的节点作为输入
+            -c ./filtered_nodes.yaml \
             -output ./clash.yaml \
             -download-size 5 \
             -upload-size 1 \
