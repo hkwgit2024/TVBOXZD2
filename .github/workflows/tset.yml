@@ -99,12 +99,13 @@ jobs:
             -output ./clash.yaml \
             -download-size 5 \
             -upload-size 1 \
-            -timeout 8s \
-            -concurrent 58 \
+            -timeout 30s \
+            -concurrent 38 \
             -max-latency 5000ms \
             -min-download-speed 0.5 \
             -min-upload-speed 0 \
             -rename
+            -debug
           echo "全速测试完成，结果保存到 clash.yaml"
 
       - name: 验证生成的 clash.yaml 文件
