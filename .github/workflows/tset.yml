@@ -42,7 +42,7 @@ jobs:
       - name: 下载完整的 Clash 配置
         id: download_config
         run: |
-          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/my/refs/heads/main/clash_aggregator/config.yaml"
+          CONFIG_URL="https://raw.githubusercontent.com/qjlxg/my/refs/heads/main/sc/all.yaml"
           OUTPUT_FILE="clash_config.yaml"
           echo "尝试从 $CONFIG_URL 下载完整的 Clash 配置文件..."
           curl -S -L -v --retry 5 --retry-delay 5 --connect-timeout 10 --max-time 60 --output "$OUTPUT_FILE" "$CONFIG_URL"
