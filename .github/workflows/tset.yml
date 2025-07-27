@@ -90,17 +90,18 @@ jobs:
           echo "旧配置备份完成。"
 
       - name: 运行速度测试 - 阶段二：下载/上传速度测试
+        id: run_speedtest # Added ID for this step
         if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
         run: |
           echo "开始运行所有节点的完整速度测试..."
-          # !!! 最关键的修改区域：确保以下每一行末尾的 '\' 后面都没有任何空格或注释 !!!
+          # !!! 请再次确保以下每一行末尾的 '\' 后面都没有任何空格或注释 !!!
           ./clash-speedtest \
             -c ./filtered_nodes.yaml \
             -output ./clash.yaml \
             -download-size 5 \
             -upload-size 1 \
             -timeout 30s \
-            -concurrent 15 \           # <-- 并发数已降低到 15
+            -concurrent 15 \
             -max-latency 5000ms \
             -min-download-speed 0 \
             -min-upload-speed 0 \
@@ -108,25 +109,30 @@ jobs:
             -debug
           echo "全速测试完成，结果保存到 clash.yaml"
 
-      - name: 验证生成的 clash.yaml 文件
-        id: check_final_file
-        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false'
+      - name: 验证生成的 clash.yaml 文件并计数节点
+        id: count_nodes # New step ID
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.run_speedtest.outcome == 'success'
         run: |
           if [ -f "clash.yaml" ]; then
             echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
             echo "--- clash.yaml 文件内容 (前50行) ---"
             head -n 50 clash.yaml || true
             echo "----------------------------------------"
-            if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then
+            NODE_COUNT=$(grep -c 'name:' clash.yaml)
+            echo "检测到 ${NODE_COUNT} 个代理节点。"
+            echo "NODE_COUNT=${NODE_COUNT}" >> $GITHUB_OUTPUT # Export node count as output
+            if [ "${NODE_COUNT}" -eq 0 ]; then
               echo "警告: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
             fi
           else
             echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
+            echo "NODE_COUNT=0" >> $GITHUB_OUTPUT # Set count to 0 if file not found
             exit 1
           fi
 
       - name: 提交并推送排序后的配置文件
-        if: steps.check_final_file.outcome == 'success' && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && $(grep -c 'name:' clash.yaml) -gt 0
+        # Updated 'if' condition to use output from 'count_nodes' step
+        if: success() && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && steps.count_nodes.outputs.NODE_COUNT > 0
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）并备份旧配置"
