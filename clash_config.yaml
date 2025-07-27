@@ -32,85 +32,679 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 🇸🇬SG_3 |1.1MB/s|GPT|NF|D+|23%
-  network: ws
-  port: '8880'
-  server: 156.238.18.148
+- name: 🇺🇸 US 15
   type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/54.0.2840.99 Safari/537.36
-    path: Telegram@WangCai2/?ed=2048
-  xudp: true
-- alpn:
-  - h2
-  - http/1.1
-  client-fingerprint: randomized
-  name: 🇺🇸US_3 |1.5MB/s|GPT|NF|D+|GM
-  network: ws
-  port: '443'
-  server: 172.66.44.233
-  servername: AMir-EBr.PagEs.dev
+  server: support.zoom.us.lufeng.pw
+  port: 443
+  uuid: 576e9bde-5243-479f-9725-346617af0bec
+  security: tls
   tls: true
-  type: vless
-  udp: true
-  uuid: 256b56b5-9079-4266-8777-c39fdcd87cd9
-  ws-opts:
-    headers:
-      Host: amir-ebr.pages.dev
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/31.0.1650.57 Safari/537.36
-    path: /FXOt8NK7Twh0lqEn?ed=2560
-  xudp: true
-- name: 🇸🇬SG_4 |1.3MB/s
+  sni: support.zoom.us.lufeng.pw
+  skip-cert-verify: false
   network: ws
-  port: '8880'
-  server: 185.18.250.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
+    path: /id12
     headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/62.0.3202.89 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_4 |1.2MB/s|NF|D+
+      Host: support.zoom.us.lufeng.pw
+- name: 🇺🇸 US 874
+  type: vmess
+  server: rrrrrrrrrt.11890604.xyz
+  port: 443
+  uuid: f898ffcb-6417-4373-9640-0b66091e8206
+  alterId: 0
+  cipher: auto
   network: ws
-  port: '8880'
-  server: 192.0.54.29
-  servername: hk.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  tls: true
+  sni: rrrrrrrrrt.11890604.xyz
   ws-opts:
+    path: /GnJ3bBxV91uFkYtuzXyJ5XNeH1R1
     headers:
-      Host: hk.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/54.0.2840.71 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇸🇬SG_5 |1.4MB/s|NF|D+
+      Host: rrrrrrrrrt.11890604.xyz
+- name: 🇯🇵 JP 3
+  type: trojan
+  server: x1-japan-amazon-v2.devefun.org
+  port: 1935
+  password: 0IMsvkqhnm
+  sni: ''
+  skip-cert-verify: false
+- name: 🇻🇳 VN 44
+  type: ss
+  server: 103.186.154.189
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 53
+  type: ss
+  server: 103.186.154.176
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 68
+  type: ss
+  server: 103.186.154.228
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇳🇱 NL 19
+  type: ss
+  server: 151.242.251.153
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  udp: true
+- name: 🇳🇱 NL 4-LEnB
+  type: ss
+  server: 193.29.139.235
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  udp: true
+- name: 🇺🇸 US 16
+  type: vless
+  server: vip.arivganteng.biz.id
+  port: 80
+  uuid: ff5de033-50ff-41a0-80dc-333af49c7dc4
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
   network: ws
-  port: '8880'
-  server: 77.37.33.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
+    path: /ariv=27.0.234.74=2911
     headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.30 (KHTML, like Gecko)
-        Chrome/12.0.742.100 Safari/534.30
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
+      Host: vip.arivganteng.biz.id
+- name: 🇺🇸 US 19
+  type: ss
+  server: 156.146.38.167
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 🇺🇸 US 23
+  type: ss
+  server: 212.102.47.132
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 🇺🇸 US 25
+  type: vmess
+  server: 15.204.11.190
+  port: 15361
+  uuid: 5d7bf9e3-415c-40f3-c66d-a54ea0fd860e
+  alterId: 0
+  cipher: auto
+  network: tcp
+  tls: false
+  sni: ''
+  ws-opts: {}
+- name: 🇺🇸 US 26
+  type: vmess
+  server: 38.12.83.217
+  port: 30002
+  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+  alterId: 0
+  cipher: auto
+  network: tcp
+  tls: false
+  sni: ''
+  ws-opts: {}
+- name: 🇺🇸 US 36
+  type: vmess
+  server: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+  port: 443
+  uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+  ws-opts:
+    path: /azumase.ren
+    headers:
+      Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+- name: 🇹🇼 TW 2
+  type: vmess
+  server: 34.80.156.254
+  port: 55084
+  uuid: 5691fb8a-d890-4a33-9b0e-73017adae5b2
+  alterId: 0
+  cipher: auto
+  network: tcp
+  tls: false
+  sni: ''
+  ws-opts: {}
+- name: 🇻🇳 VN 5
+  type: ss
+  server: 103.186.154.24
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 8-jJkO
+  type: ss
+  server: 103.186.154.30
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 16
+  type: ss
+  server: 103.186.154.38
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 17
+  type: ss
+  server: 103.186.154.33
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇺🇸 US 103
+  type: vless
+  server: pvt.moonop.tech
+  port: 443
+  uuid: 57b164dc-ca08-4057-8005-0ccae6c91b82
+  security: tls
+  tls: true
+  sni: pvt.moonop.tech
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /aws6
+    headers:
+      Host: pvt.moonop.tech
+- name: 🇺🇸 US 254
+  type: vless
+  server: zoomgov.vipren.biz.id
+  port: 443
+  uuid: 36a6a6f7-8f77-4b67-81b5-403a7613902e
+  security: tls
+  tls: true
+  sni: zoomgov.vipren.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /115.242.180.202=19000
+    headers:
+      Host: zoomgov.vipren.biz.id
+- name: 🇺🇸 US 561
+  type: ss
+  server: 138.199.42.68
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: 🇺🇸 US 569
+  type: ss
+  server: 149.28.255.6
+  port: 816
+  cipher: chacha20-ietf-poly1305
+  password: GyZ5Xo0ht41vYmW3H4
+  udp: true
+- name: 🇺🇸 US 640
+  type: vmess
+  server: wWWwwWWw2.444652.XYz
+  port: 443
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: wwwwwwww2.444652.xyz
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: wwwwwwww2.444652.xyz
+- name: 🇺🇸 US 642
+  type: vmess
+  server: wsXCdfr5.999824.xYz
+  port: 443
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: wSXCdFR5.999824.xYZ
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: wsxcdfr5.999824.xyz
+- name: 🇺🇸 US 871
+  type: vless
+  server: ssss3.11890604.xyz
+  port: 443
+  uuid: f898ffcb-6417-4373-9640-0b66091e8206
+  security: tls
+  tls: true
+  sni: ssss3.11890604.xyz
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /33CYL4twIwItuzXyJ5XNeH1R1
+    headers:
+      Host: ssss3.11890604.xyz
+- name: 🇺🇸 US 873
+  type: vmess
+  server: 3DDDF.444652.xYZ
+  port: 443
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: 3ddDf.444652.XYz
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: 3dddf.444652.xyz
+- name: 🇬🇧 GB 5-gr5w
+  type: trojan
+  server: x2-england-amazon-v2.devefun.org
+  port: 1935
+  password: 2mCIecoWKc
+  sni: x2-england-amazon-v2.devefun.org
+  skip-cert-verify: false
+- name: 🇫🇷 FR 8
+  type: ss
+  server: 77.105.166.12
+  port: 8594
+  cipher: chacha20-ietf-poly1305
+  password: jMsh0stsWBPyaZcEUZbNGJ
+  udp: true
+- name: 🇻🇳 VN 1-6jGG
+  type: ss
+  server: 103.186.155.29
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 21-R9Nq
+  type: ss
+  server: 103.186.154.188
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 47
+  type: ss
+  server: 103.186.154.250
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 49
+  type: ss
+  server: 103.186.155.17
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 59
+  type: ss
+  server: 103.186.155.103
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 147
+  type: ss
+  server: 103.186.155.9
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 153
+  type: ss
+  server: 103.186.155.136
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 170
+  type: ss
+  server: 103.186.155.233
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 188
+  type: ss
+  server: 103.186.155.65
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 237
+  type: ss
+  server: 103.186.154.63
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 242
+  type: ss
+  server: 103.186.155.62
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 262
+  type: ss
+  server: 103.186.155.40
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 270
+  type: ss
+  server: 103.186.154.168
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 274
+  type: ss
+  server: 103.186.154.165
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 276
+  type: ss
+  server: 103.186.155.220
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 295
+  type: ss
+  server: 103.186.154.73
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 305
+  type: ss
+  server: 103.186.155.137
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇩🇪 DE 27
+  type: vless
+  server: 162.19.250.162
+  port: 24209
+  uuid: decb4fce-bd8a-4d8b-a81f-2e393ee9ee02
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: tcp
+  ws-opts: {}
+- name: 🇳🇱 NL 2-3Rq9
+  type: trojan
+  server: x1-amsterdam-linode-v2-9oqj5.devefun.org
+  port: 1935
+  password: 55OXUHdGtp
+  sni: ''
+  skip-cert-verify: false
+- name: 🇳🇱 NL 25
+  type: ss
+  server: 193.29.139.141
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  udp: true
+- name: 🇻🇪 VE 2
+  type: ss
+  server: 45.158.171.146
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 1RWwXhwfAB5gAEozU4G2Pg
+  udp: true
+- name: 澳大利亚AU-T
+  type: trojan
+  server: au.mjt000.com
+  port: 443
+  password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+  sni: au.mjt000.com
+  skip-cert-verify: false
+- name: 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  type: ss
+  server: 192.71.166.100
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 美国_1126491
+  type: ss
+  server: 156.146.38.168
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 0|_42
+  type: ss
+  server: 98.98.79.197
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: 美国Seattle,+WA,+United+States
+  type: ss
+  server: 212.102.47.129
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102
+    | 10.977MB
+  type: ss
+  server: series-a2.samanehha.co
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: mps3FwmDjLrWaOVg
+  udp: true
+- name: 414|qol_0810
+  type: vmess
+  server: 188.114.97.1
+  port: 443
+  uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+  ws-opts:
+    path: /azumase.ren
+    headers:
+      Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+- name: "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  type: ss
+  server: 146.70.23.32
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "9,12,14|ChatGPT  N... #3\r\r"
+  type: ss
+  server: 193.29.139.202
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  type: ss
+  server: 169.150.210.243
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  type: ss
+  server: 146.70.52.150
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  type: ss
+  server: 98.98.142.161
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[103]PE_713\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9094
+  cipher: aes-256-cfb
+  password: rpgbNnU9rDDU4aWZ
+  udp: true
+- name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  type: ss
+  server: 128.1.205.124
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  type: ss
+  server: 128.199.172.224
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  type: ss
+  server: 104.248.159.99
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  type: ss
+  server: 68.183.235.240
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[103]PE_727\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9098
+  cipher: aes-256-cfb
+  password: aLpQtfEZe445QyHk
+  udp: true
+- name: "[103]PE_724\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9056
+  cipher: aes-256-cfb
+  password: rNBfNuuANFCAk7KB
+  udp: true
+- name: "[103]PE_716\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9032
+  cipher: aes-256-cfb
+  password: UWZQeLRWnkqgkseq
+  udp: true
+- name: "[103]PE_733\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9084
+  cipher: aes-256-cfb
+  password: c3NtHJ5ujV2tGDfj
+  udp: true
+- name: "[103]PE_720\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9046
+  cipher: aes-256-cfb
+  password: NvS8N4Vf8qAGPSCL
+  udp: true
+- name: "[103]PE_719\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9038
+  cipher: aes-256-cfb
+  password: gYCYXfkUQEs2TaJQ
+  udp: true
+- name: "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  type: ss
+  server: 203.23.128.33
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: "18|A_18066\r\r"
+  type: ss
+  server: 217.30.10.18
+  port: 9057
+  cipher: aes-256-cfb
+  password: wjTugX3ZtHMB9c3Z
+  udp: true
+- name: "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  type: ss
+  server: 45.89.52.66
+  port: 9093
+  cipher: aes-256-cfb
+  password: wfLC2y7rzZyCmuyt
+  udp: true
+- name: 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  type: ss
+  server: 217.30.10.18
+  port: 9073
+  cipher: aes-256-cfb
+  password: daFYagqDdBdA6VTX
+  udp: true
+- name: "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  type: ss
+  server: 217.30.10.18
+  port: 9011
+  cipher: aes-256-cfb
+  password: M3t2ZEQcMGRWBjRa
+  udp: true
+- name: "[100]德国-38.60.250.107-44639\r\r"
+  type: ss
+  server: 38.60.250.107
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  type: ss
+  server: 185.220.68.185
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  type: ss
+  server: 146.70.70.35
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
 - name: 🇺🇸US_6 |1.3MB/s|NF
   network: ws
   port: '8880'
@@ -126,204 +720,50 @@ proxies:
         like Gecko) Chrome/63.0.3239.84 Safari/537.36
     path: /Telegram🇨🇳
   xudp: true
-- name: 🇺🇸US_7 |1.8MB/s|NF
+- name: 🇸🇬SG_6 |1.1MB/s|NF
   network: ws
-  port: '8880'
-  server: 92.53.190.156
+  port: 8880
+  server: 185.176.26.156
   servername: Telegram-channel-WangCai2
+  skip-cert-verify: false
+  tls: false
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
       Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Linux; Android 7.0; Moto G (5) Build/NPPS25.137-93-14)
-        AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_8 |1.8MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 92.243.74.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/48.0.2564.109 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_9 |1.9MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 94.247.142.148
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/68.0.3440.75 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_13 |1.7MB/s|NF
-  network: ws
-  port: 8880
-  server: 195.13.44.188
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-- client-fingerprint: chrome
-  name: 🇺🇸US_16 |1.1MB/s|NF
-  network: ws
-  port: '443'
-  server: quiz.int.vidio.com
-  servername: quiz.int.vidio.com.my-vpnvip.my.id
-  tls: true
-  type: vless
-  udp: true
-  uuid: 9ed0f660-2fd6-4016-a6df-95df20598658
-  ws-opts:
-    headers:
-      Host: quiz.int.vidio.com.my-vpnvip.my.id
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: /8.222.243.73-26385
-  xudp: true
-- alpn:
-  - h3
-  auth_str: dongtaiwang.com
-  down: '100'
-  name: 🇺🇸US_17 |2.6MB/s|GPT|NF|46%
-  obfs: ''
-  port: '40528'
-  protocol: ''
-  server: 208.87.243.187
-  skip-cert-verify: true
-  sni: apple.com
-  type: hysteria
-  up: '100'
-- client-fingerprint: chrome
-  name: 🇬🇧GB_1 |2.4MB/s|GPT|24%
-  network: ws
-  port: '2096'
-  server: www.speedtest.net
-  servername: 638879176706545587.amsterdam-prx-dnraaal.info
-  tls: true
-  type: vless
-  udp: true
-  uuid: 6ff4852a-de6e-423e-8561-3131e63120c6
-  ws-opts:
-    headers:
-      Host: 638879176706545587.amsterdam-prx-dnraaal.info
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/64.0.3282.186 Safari/537.36
-    path: /wrvyqows
-  xudp: true
-- alterId: '0'
-  cipher: auto
-  name: 🇩🇪DE_1 |2.0MB/s|GPT|D+|0%
-  network: ws
-  port: '443'
-  server: 1753328541.tencentapp.cn
-  skip-cert-verify: false
-  tls: true
-  type: vmess
-  udp: true
-  uuid: 72b29434-b150-4b19-bd31-99bcfa8c20ad
-  ws-opts:
-    headers:
-      Host: de1.hoshinonetwork.pp.ua
-    path: /
-  xudp: true
-- alterId: '0'
-  cipher: auto
-  name: 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  network: ws
-  port: '443'
-  server: cloudgetservice.mcloudservice.site
-  skip-cert-verify: false
-  tls: true
-  type: vmess
-  udp: true
-  uuid: 37f464cb-b826-4278-9bf8-11bdf1ec892b
-  ws-opts:
-    headers:
-      Host: Fra-Vp-123.BLaZECLOUD.Site
-    path: /linvkws
-  xudp: true
-- name: 🇺🇸US_24 |3.3MB/s|GPT
-  network: ws
-  port: 8880
-  server: 212.183.88.188
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-- auth: J8Had1nwTgkNvWNN0WrucWq38
-  name: 🇺🇸US_25 |2.8MB/s|GPT|NF|GM|53%
-  password: J8Had1nwTgkNvWNN0WrucWq38
-  port: 33763
-  server: 146.190.51.60
-  skip-cert-verify: true
-  sni: bing.com
-  type: hysteria2
-  udp: true
-- name: 🇺🇸US_26 |4.3MB/s
-  network: ws
-  port: 8880
-  server: 66.81.247.186
-  servername: Telegram-channel-WangCai2
-  skip-cert-verify: false
-  tls: false
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
     path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
-- alterId: 0
-  cipher: auto
-  name: 🇩🇪DE_2 |3.0MB/s|GPT|D+|0%
+- name: ❓Other_1 |2.0MB/s
   network: ws
-  port: 443
-  server: 1753328541.tencentapp.cn
-  servername: de1.hoshinonetwork.pp.ua
-  skip-cert-verify: true
-  tls: true
-  type: vmess
+  port: '8880'
+  server: 168.100.6.186
+  servername: Telegram-channel-WangCai2
+  type: vless
   udp: true
-  uuid: 6e1602dc-19fb-451f-add4-233b8b793240
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
   ws-opts:
     headers:
-      Host: de1.hoshinonetwork.pp.ua
-    path: /
-- cipher: aes-256-cfb
-  name: 🇻🇳VN_1 |2.2MB/s|GPT|0%
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  port: '38388'
-  server: 103.186.154.18
-  type: ss
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/70.0.3538.102 Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇺🇸US_29 |1.1MB/s|NF
+  network: ws
+  port: '8880'
+  server: 92.53.189.177
+  servername: ip.langmanshanxi.top
+  type: vless
   udp: true
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.24 (KHTML, like
+        Gecko) Chrome/11.0.696.3 Safari/534.24
+    path: /Telegram @WangCai2 /?ed
+  xudp: true
 - name: 🇺🇸US_30 |2.4MB/s
   network: ws
   port: '8880'
@@ -339,74 +779,11 @@ proxies:
         Gecko) Chrome/45.0.2454.101 Safari/537.36
     path: Telegram @WangCai2 /?ed=2560
   xudp: true
-- name: 🇺🇸US_32 |3.6MB/s
-  network: ws
-  port: '8880'
-  server: 91.193.58.14
-  servername: kjgx.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/31.0.1650.57 Safari/537.36
-    path: Telegram @WangCai2 /?ed=2560
-  xudp: true
 - client-fingerprint: chrome
-  name: 🇩🇪DE_4 |1.6MB/s|GPT|NF|D+
+  name: 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
   network: ws
-  port: '2087'
-  server: 172.66.47.31
-  servername: nEwMTPROxI.PAGes.DEv
-  tls: true
-  type: vless
-  udp: true
-  uuid: 2cec2733-389a-46a7-9053-218594a6336d
-  ws-opts:
-    headers:
-      Host: nEwMTPROxI.PAGes.DEv
-      User-Agent: Mozilla/5.0 (Linux; Android 6.0; vivo 1606 Build/MMB29M) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/53.0.2785.124 Mobile Safari/537.36
-    path: /
-  xudp: true
-- client-fingerprint: chrome
-  name: 🇫🇮FI_1 |2.2MB/s|NF|D+|33%
-  network: ws
-  port: '443'
-  server: 104.18.26.90
-  servername: barayeiranmahsang.sabzipolobamahi.dpdns.org
-  tls: true
-  type: vless
-  udp: true
-  uuid: b55ec078-3b17-4ed1-a697-71f464cdcaaa
-  ws-opts:
-    headers:
-      Host: barayeiranmahsang.sabzipolobamahi.dpdns.org
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/55.0.2883.87 Safari/537.36
-    path: /Join---@MTMVPN---Join---@MTMVPN---Join---@MTMVPN---Join---@MTMVPN?ed=2560
-  xudp: true
-- client-fingerprint: chrome
-  name: 🇷🇺RU_2 |1.2MB/s|0%
-  network: raw
-  port: '26424'
-  reality-opts:
-    public-key: l8AubqcxQO-HRFJy4pZL1vbLOo-eXit69s-XulSELE0
-    short-id: 23103e1e
-  server: 45.12.75.242
-  servername: ya.ru
-  tls: true
-  type: vless
-  udp: true
-  uuid: 633f424e-2b11-48da-a6b3-a849dd71456f
-  xudp: true
-- client-fingerprint: chrome
-  name: 🇺🇸US_39 |1.5MB/s|YT-KR|NF|GM
-  network: ws
-  port: '11084'
-  server: 119.198.99.196
+  port: '18765'
+  server: 14.36.181.53
   servername: jp.laoyoutiao.link
   tls: true
   type: vless
@@ -415,145 +792,9 @@ proxies:
   ws-opts:
     headers:
       Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: Telegram@WangCai2/?ed=2560
-  xudp: true
-- name: 🇺🇸US_40 |3.6MB/s|NF
-  network: ws
-  port: '8880'
-  server: 184.174.80.168
-  servername: kjgx.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/50.0.2661.102 Safari/537.36
-    path: Telegram@WangCai2/?ed=2560
-  xudp: true
-- client-fingerprint: randomized
-  name: 🇺🇸US_41 |3.9MB/s|GPT|NF|D+|5%
-  network: ws
-  port: '8443'
-  server: 162.159.129.67
-  servername: azadnet1-706.pages.dev
-  tls: true
-  type: vless
-  udp: true
-  uuid: d0298536-d670-4045-bbb1-ddd5ea68683e
-  ws-opts:
-    headers:
-      Host: azadnet1-706.pages.dev
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/65.0.3325.181 Safari/537.36
-    path: /azadnet1-706.pages.dev/?ed=2560&PROT_TYPE=vless
-  xudp: true
-- name: 🇺🇸US_42 |4.1MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 104.254.140.254
-  type: vless
-  udp: true
-  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
-  ws-opts:
-    headers:
-      Host: yg.bantony199.top
-      User-Agent: Mozilla/5.0 (Linux; Android 5.1; A1601 Build/LMY47I) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇯🇵JP_2 |1.0MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 108.165.216.63
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/34.0.1847.131 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560fp=chrome
-  xudp: true
-- name: 🇸🇬SG_9 |4.2MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 139.64.235.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/68.0.3440.106 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_46 |3.6MB/s
-  network: ws
-  port: '8880'
-  server: 14.102.228.254
-  type: vless
-  udp: true
-  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
-  ws-opts:
-    headers:
-      Host: yg.bantony199.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/55.0.2883.87 Safari/537.36
-    path: /
-  xudp: true
-- name: ❓Other_3 |2.4MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 141.101.114.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/55.0.2883.87 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: ❓Other_5 |1.5MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 141.101.115.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.17
-        (KHTML, like Gecko) Chrome/10.0.649.0 Safari/534.17
-    path: /Telegram🇨🇳
-  xudp: true
-- client-fingerprint: randomized
-  name: 🇺🇸US_49 |1.6MB/s|NF
-  network: ws
-  port: '2087'
-  server: 154.83.2.125
-  servername: vle.amclubsdns.dpdns.org
-  tls: true
-  type: vless
-  udp: true
-  uuid: d6b8011a-c725-435a-9fec-bf6d3530392c
-  ws-opts:
-    headers:
-      Host: vle.amclubsdns.dpdns.org
-      User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: /?ed=2560&PROT_TYPE=vless
+      User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/46.0.2490.80 Safari/537.36
+    path: /telegram@wangcai2/?ed=2560
   xudp: true
 - name: 🇺🇸US_51 |3.8MB/s
   network: ws
@@ -570,50 +811,6 @@ proxies:
         Gecko) Chrome/45.0.2454.101 Safari/537.36
     path: /TelegramU0001F1E8U0001F1F3
   xudp: true
-- name: 🇺🇸US_54 |1.3MB/s|NF
-  network: ws
-  port: '8880'
-  server: 188.244.122.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Linux; Android 5.1.1; A37fw Build/LMY47V) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_57 |1.2MB/s|NF|5%
-  network: ws
-  port: '8880'
-  server: 188.42.145.177
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Unknown; Linux) AppleWebKit/538.1 (KHTML, like Gecko)
-        Chrome/v1.0.0 Safari/538.1
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560fp=chrome
-  xudp: true
-- name: 🇺🇸US_58 |2.1MB/s
-  network: ws
-  port: '8880'
-  server: 188.244.122.29
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: hk.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: /
-  xudp: true
 - name: 🇺🇸US_59 |1.3MB/s|NF|D+
   network: ws
   port: '8880'
@@ -628,65 +825,6 @@ proxies:
       User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
         like Gecko) Chrome/67.0.3396.99 Safari/537.36
     path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_64 |2.5MB/s|D+
-  network: ws
-  port: '8880'
-  server: 192.0.54.254
-  type: vless
-  udp: true
-  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
-  ws-opts:
-    headers:
-      Host: yg.bantony199.top
-      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
-    path: /
-  xudp: true
-- name: 🇺🇸US_65 |1.0MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 192.200.160.186
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/46.0.2490.80 Safari/537.36
-    path: /Telegram
-  xudp: true
-- name: 🇺🇸US_67 |3.0MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 193.9.49.168
-  servername: kjgx.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/65.0.3325.181 Safari/537.36
-    path: Telegram@WangCai2/?ed=2560
-  xudp: true
-- name: 🇯🇵JP_4 |2.2MB/s|NF
-  network: ws
-  port: '8880'
-  server: 193.9.49.186
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/63.0.3239.84 Safari/537.36
-    path: /Telegram @WangCai2 /?ed=2560
   xudp: true
 - name: 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
   network: ws
@@ -703,50 +841,6 @@ proxies:
         (KHTML, like Gecko) Chrome/5.0.375.99 Safari/533.4
     path: /Telegram🇨🇳
   xudp: true
-- name: 🇺🇸US_70 |1.1MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 194.152.44.213
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/65.0.3325.181 Safari/537.36
-    path: ''
-  xudp: true
-- name: 🇯🇵JP_5 |1.6MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 195.13.54.148
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/57.0.2987.133 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇸🇬SG_10 |2.5MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 195.13.44.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G610M Build/NRD90M) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
 - name: 🇺🇸US_73 |1.1MB/s|NF|D+|5%
   network: ws
   port: '8880'
@@ -762,68 +856,41 @@ proxies:
         Chrome/12.0.742.100 Safari/534.30
     path: /Telegram🇨🇳
   xudp: true
-- name: 🇺🇸US_74 |1.2MB/s|NF|D+|5%
+- client-fingerprint: chrome
+  name: 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
   network: ws
-  port: '8880'
-  server: 194.36.55.3
-  servername: Telegram-channel-WangCai2
+  port: '443'
+  server: 198.41.206.102
+  servername: rayan-10.parastoo.dpdns.org
+  tls: true
   type: vless
   udp: true
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+  uuid: 4e4768df-0fbb-4cc1-8fd3-7c6fea95742a
   ws-opts:
     headers:
-      Host: bitget1.asdasd.click
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/57.0.2987.133 Safari/537.36
-    path: /Telegram🇨🇳
+      Host: rayan-10.parastoo.dpdns.org
+      User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko)
+        Chrome/55.0.2883.87 Safari/537.36
+    path: /@Rayan_Config
   xudp: true
-- name: 🇺🇸US_75 |2.3MB/s|NF|D+
+- name: 🇭🇰HK_3 |1.1MB/s|NF
   network: ws
   port: '8880'
-  server: 195.13.44.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/39.0.2171.95 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_76 |1.6MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 195.13.44.213
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko)
-        Chrome/46.0.2490.71 Safari/537.36
-    path: ''
-  xudp: true
-- name: 🇺🇸US_77 |1.1MB/s|D+
-  network: ws
-  port: '8880'
-  server: 194.36.55.29
+  server: 216.205.52.29
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
       Host: hk.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko)
-        Chrome/68.0.3440.106 Safari/537.36
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/70.0.3538.102 Safari/537.36
     path: /
   xudp: true
-- name: 🇸🇬SG_11 |1.8MB/s|NF|D+
+- name: 🇺🇸US_96 |4.1MB/s|NF|D+
   network: ws
   port: '8880'
-  server: 195.26.229.156
+  server: 27.50.48.156
   servername: Telegram-channel-WangCai2
   type: vless
   udp: true
@@ -831,264 +898,8 @@ proxies:
   ws-opts:
     headers:
       Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/57.0.2987.133 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- client-fingerprint: randomized
-  name: 🇺🇸US_78 |1.4MB/s|NF|D+
-  network: ws
-  port: '2096'
-  server: 194.53.53.11
-  servername: vle.amclubsapp.dpdns.org
-  tls: true
-  type: vless
-  udp: true
-  uuid: d6b8011a-c725-435a-9fec-bf6d3530392c
-  ws-opts:
-    headers:
-      Host: vle.amclubsapp.dpdns.org
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/54.0.2840.99 Safari/537.36
-    path: /?ed=2560&PROT_TYPE=vless
-  xudp: true
-- name: 🇮🇹IT_1 |1.1MB/s|NF
-  network: ws
-  port: '8880'
-  server: 195.85.59.186
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Linux; Android 7.0; Redmi Note 4 Build/NRD90M) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/63.0.3239.111 Mobile Safari/537.36
-    path: /Telegram @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇸🇬SG_12 |2.1MB/s|GPT|NF|23%
-  network: ws
-  port: '8880'
-  server: 195.85.23.63
-  servername: sg.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sg.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Linux; Android 5.1.1; SM-J111M Build/LMY47V) AppleWebKit/537.36
-        (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_79 |1.3MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 199.34.228.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: /Telegram
-  xudp: true
-- name: 🇺🇸US_85 |1.4MB/s|GPT|D+
-  network: ws
-  port: '8880'
-  server: 205.233.181.251
-  type: vless
-  udp: true
-  uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
-  ws-opts:
-    headers:
-      Host: cf.d3z.net
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.77 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_87 |1.7MB/s|GPT|NF|D+
-  network: ws
-  port: '8880'
-  server: 209.46.30.63
-  servername: jp.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/68.0.3440.1805 Safari/537.36 MVisionPlayer/1.0.0.0
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560fp=chrome
-  xudp: true
-- name: 🇺🇸US_91 |1.1MB/s|NF
-  network: ws
-  port: '8880'
-  server: 213.241.198.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G570M) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.80 Mobile Safari/537.36
-    path: /TelegramU0001F1E8U0001F1F3
-  xudp: true
-- name: 🇺🇸US_92 |1.3MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 216.24.57.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/58.0.3029.81 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_93 |1.4MB/s|NF
-  network: ws
-  port: '8880'
-  server: 213.182.199.63
-  servername: jp.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/52.0.2743.116 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_94 |1.8MB/s|50%
-  network: ws
-  port: '8880'
-  server: 213.182.199.3
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
-  ws-opts:
-    headers:
-      Host: bitget1.asdasd.click
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/54.0.2840.99 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_95 |2.0MB/s|NF|D+|5%
-  network: ws
-  port: '8880'
-  server: 216.205.52.3
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
-  ws-opts:
-    headers:
-      Host: bitget1.asdasd.click
       User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/55.0.2883.87 Safari/537.36
-    path: /Telegram
-  xudp: true
-- name: 🇸🇬SG_13 |4.0MB/s|NF
-  network: ws
-  port: '8880'
-  server: 23.227.39.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/55.0.2883.87 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_97 |2.6MB/s
-  network: ws
-  port: '8880'
-  server: 23.227.60.156
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G610M) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.80 Mobile Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: ❓Other_7 |1.3MB/s
-  network: ws
-  port: '8880'
-  server: 23.227.38.148
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (X11; U; Linux i586; en-US) AppleWebKit/533.2 (KHTML,
-        like Gecko) Chrome/5.0.342.1 Safari/533.2
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_99 |1.1MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 31.43.179.247
-  servername: ex.sue.x10.mx
-  type: vless
-  udp: true
-  uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
-  ws-opts:
-    headers:
-      Host: ex.sue.x10.mx
-      User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; Redmi 4A Build/MMB29M; wv) AppleWebKit/537.36
-        (KHTML, like Gecko) Version/4.0 Chrome/60.0.3112.116 Mobile Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: ❓Other_8 |1.3MB/s
-  network: ws
-  port: '8880'
-  server: 45.12.30.168
-  servername: kjgx.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/34.0.1847.131 Safari/537.36
-    path: Telegram@WangCai2/?ed=2560
-  xudp: true
-- name: 🇯🇵JP_9 |4.6MB/s|NF
-  network: ws
-  port: '8880'
-  server: 5.182.34.177
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/49.0.2623.112 Safari/537.36
+        like Gecko) Chrome/61.0.3163.79 Safari/537.36
     path: /Telegram🇨🇳 @WangCai2 /?ed=2560
   xudp: true
 - name: 🇺🇸US_108 |3.8MB/s
@@ -1106,337 +917,63 @@ proxies:
         Chrome/70.0.3538.77 Safari/537.36
     path: /Telegram @WangCai2 /?ed=2560
   xudp: true
-- name: 🇺🇸US_110 |4.2MB/s|GPT
-  network: ws
-  port: '8880'
-  server: 89.116.161.254
-  type: vless
-  udp: true
-  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
-  ws-opts:
-    headers:
-      Host: yg.bantony199.top
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/51.0.2704.103 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_111 |2.8MB/s
-  network: ws
-  port: '8880'
-  server: 74.49.215.63
-  servername: jp.laoyoutiao.link
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/51.0.2704.106 Safari/537.36
-    path: /Telegram
-  xudp: true
-- name: 🇺🇸US_112 |4.2MB/s
-  network: ws
-  port: '8880'
-  server: 91.193.58.37
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: sk.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/45.0.2454.101 Safari/537.36
-    path: /TelegramU0001F1E8U0001F1F3
-  xudp: true
-- name: 🇺🇸US_114 |4.4MB/s|NF
-  network: ws
-  port: '8880'
-  server: 91.193.58.18
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/54.0.2840.99 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560fp=chrome
-  xudp: true
-- name: 🇺🇸US_115 |3.0MB/s|NF|0%
-  network: ws
-  port: '8880'
-  server: 92.53.188.3
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
-  ws-opts:
-    headers:
-      Host: bitget1.asdasd.click
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/57.0.2987.133 Safari/537.36
-    path: /Telegram🇨🇳
-  xudp: true
-- name: 🇺🇸US_122 |3.3MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 91.193.58.225
-  type: vless
-  udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  ws-opts:
-    headers:
-      Host: us.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (X11; U; Linux i586; en-US) AppleWebKit/533.2 (KHTML,
-        like Gecko) Chrome/5.0.342.1 Safari/533.2
-    path: /
-  xudp: true
-- name: 🇯🇵 日本-1A
-  server: flyrb.flylink.cyou
-  port: 35300
-  type: hysteria2
-  password: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  auth: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  sni: flyxg.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇬🇧 英国-1B
-  server: flyyg.flylink.cyou
-  port: 35240
+- name: 🇭🇰 香港-1B
+  server: flyxghy.flylink.cyou
+  port: 35260
   type: hysteria2
   password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
   auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
-  sni: flyyg.flylink.cyou
+  sni: flyxghy.flylink.cyou
   skip-cert-verify: true
   obfs: salamander
   obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
   udp: true
-- name: 🇳🇱 荷兰-1A
-  server: flyhl.flylink.cyou
-  port: 35250
-  type: hysteria2
-  password: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  auth: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  sni: flyhl.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇩🇪 德国-1A
-  server: flydg.flylink.cyou
-  port: 35230
-  type: hysteria2
-  password: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  auth: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  sni: flydg.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇷🇺 俄罗斯-1C
-  server: flyels.flylink.cyou
-  port: 35270
-  type: hysteria2
-  password: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
-  auth: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
-  sni: flyels.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1M
+- name: 🇺🇸 美国-拉斯维加斯-HY-002-1L
   server: 45.136.245.177
   port: 33079
   type: hysteria2
-  password: 21f93c7e-28bc-4787-bb6f-df284d3f3280
-  auth: 21f93c7e-28bc-4787-bb6f-df284d3f3280
+  password: 272707f9-bbc8-4c52-8779-35a7ff57a680
+  auth: 272707f9-bbc8-4c52-8779-35a7ff57a680
   up: 100
   down: 100
   skip-cert-verify: true
   obfs: salamander
   obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
   udp: true
-- name: 🇷🇺 俄罗斯-1A
-  server: flyels.flylink.cyou
-  port: 35270
-  type: hysteria2
-  password: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  auth: 78e953b1-099f-40b8-9cda-f8bab72b532c
-  sni: flyels.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1H
+- name: 🇺🇸 美国-拉斯维加斯-HY-002-1D
   server: 45.136.245.177
   port: 33079
   type: hysteria2
-  password: 09989b4b-bc71-4375-9a1c-5b863cd98dfc
-  auth: 09989b4b-bc71-4375-9a1c-5b863cd98dfc
+  password: 694eb481-7808-474a-b603-60e7aa7f0568
+  auth: 694eb481-7808-474a-b603-60e7aa7f0568
   up: 100
   down: 100
   skip-cert-verify: true
   obfs: salamander
   obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
   udp: true
-- name: 🇯🇵 日本-1B-YyQm
-  server: flyrb.flylink.cyou
-  port: 35300
+- name: 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
+  server: 45.136.245.177
+  port: 33079
+  type: hysteria2
+  password: 4fd4cd5c-1282-4df8-8ba0-84d5a318e8b2
+  auth: 4fd4cd5c-1282-4df8-8ba0-84d5a318e8b2
+  up: 100
+  down: 100
+  skip-cert-verify: true
+  obfs: salamander
+  obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+  udp: true
+- name: 🇨🇦 加拿大-1A-Lu7n
+  server: flyjnd.flylink.cyou
+  port: 35280
   type: hysteria2
   password: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
   auth: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  sni: flyxg.flylink.cyou
+  sni: flyjnd.flylink.cyou
   skip-cert-verify: true
   obfs: salamander
   obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇰🇷 韩国-1A-cWeh
-  server: nexiahg.688997.xyz
-  port: 20357
-  type: hysteria2
-  password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  sni: nexiahg.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
-  udp: true
-- name: 🇬🇧 英国-1C-3MZM
-  server: nexiayg.688997.xyz
-  port: 20657
-  type: hysteria2
-  password: 177af578-b9ac-4394-bf87-5b15179e9f9d
-  auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
-  sni: nexiayg.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
-  udp: true
-- name: 🇹🇷 土耳其-1A
-  server: nexiateq.688997.xyz
-  port: 20957
-  type: hysteria2
-  password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  sni: nexiateq.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
-  udp: true
-- name: 🇩🇪 德国-1B-0kKG
-  server: flydg.flylink.cyou
-  port: 35230
-  type: hysteria2
-  password: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  auth: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  sni: flydg.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇰🇷 韩国-1B-sne0
-  server: flyhg.flylink.cyou
-  port: 35310
-  type: hysteria2
-  password: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  auth: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  sni: flyhg.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇬🇧 英国-1A-zBtO
-  server: nexiayg.688997.xyz
-  port: 20657
-  type: hysteria2
-  password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  sni: nexiayg.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
-  udp: true
-- name: 🇳🇱 荷兰-1A-CihY
-  server: nexiahl.688997.xyz
-  port: 20457
-  type: hysteria2
-  password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  sni: nexiahl.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
-  udp: true
-- name: 🇷🇺 俄罗斯-1B-wkio
-  server: flyels.flylink.cyou
-  port: 35270
-  type: hysteria2
-  password: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  auth: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  sni: flyels.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
-  udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1O-GoCO
-  server: 45.136.245.177
-  port: 33079
-  type: hysteria2
-  password: e626748a-784f-4367-a62a-009ecf18e924
-  auth: e626748a-784f-4367-a62a-009ecf18e924
-  up: 100
-  down: 100
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
-  udp: true
-- name: 🇮🇸 冰岛
-  server: yjjdbd.yunjijd.xyz
-  port: 26623
-  type: hysteria2
-  password: aa86b88d-678b-48d3-8693-3ab422385265
-  auth: aa86b88d-678b-48d3-8693-3ab422385265
-  sni: yjjdbd.yunjijd.xyz
-  skip-cert-verify: true
-  udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1M-UIrS
-  server: 45.136.245.177
-  port: 33079
-  type: hysteria2
-  password: 6e123d85-e47c-4b55-9fc3-6fbf92c8f2ef
-  auth: 6e123d85-e47c-4b55-9fc3-6fbf92c8f2ef
-  up: 100
-  down: 100
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
-  udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1K-2Jnb
-  server: 45.136.245.177
-  port: 33079
-  type: hysteria2
-  password: 22395b12-eee5-47f8-99e9-b029de4645d7
-  auth: 22395b12-eee5-47f8-99e9-b029de4645d7
-  up: 100
-  down: 100
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
-  udp: true
-- name: 🇧🇷 巴西-1A
-  server: nexiabx.688997.xyz
-  port: 20857
-  type: hysteria2
-  password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
-  sni: nexiabx.688997.xyz
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
   udp: true
 proxy-groups:
 - name: 节点选择
@@ -1450,106 +987,119 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_97 |2.6MB/s
   - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸US_32 |3.6MB/s
-  - 🇺🇸US_122 |3.3MB/s|NF|D+
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_40 |3.6MB/s|NF
-  - 🇸🇬SG_4 |1.3MB/s
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇸🇬SG_13 |4.0MB/s|NF
   - 🇺🇸US_59 |1.3MB/s|NF|D+
-  - 🇺🇸US_13 |1.7MB/s|NF
-  - 🇸🇬SG_9 |4.2MB/s|NF|D+
-  - 🇺🇸US_7 |1.8MB/s|NF
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇸🇬SG_11 |1.8MB/s|NF|D+
-  - 🇺🇸US_4 |1.2MB/s|NF|D+
-  - ❓Other_3 |2.4MB/s|NF|D+
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 🇺🇸US_57 |1.2MB/s|NF|5%
-  - 🇯🇵JP_9 |4.6MB/s|NF
-  - 🇺🇸US_114 |4.4MB/s|NF
-  - ❓Other_8 |1.3MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸 US 561
+  - 🇸🇬SG_6 |1.1MB/s|NF
+  - 🇺🇸 US 569
+  - 🇺🇸US_96 |4.1MB/s|NF|D+
+  - 🇺🇸US_29 |1.1MB/s|NF
+  - 美国_1126491
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 US 19
   - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_67 |3.0MB/s|NF|D+
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇺🇸US_87 |1.7MB/s|GPT|NF|D+
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
-  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
-  - 🇺🇸US_112 |4.2MB/s
-  - 🇺🇸US_74 |1.2MB/s|NF|D+|5%
-  - 🇸🇬SG_3 |1.1MB/s|GPT|NF|D+|23%
-  - ❓Other_7 |1.3MB/s
-  - 🇺🇸US_9 |1.9MB/s|NF|D+
-  - 🇯🇵JP_4 |2.2MB/s|NF
   - 🇺🇸US_51 |3.8MB/s
-  - 🇸🇬SG_12 |2.1MB/s|GPT|NF|23%
-  - 🇸🇬SG_10 |2.5MB/s|NF|D+
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - 🇺🇸US_76 |1.6MB/s|NF|D+
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - 🇯🇵JP_2 |1.0MB/s|NF|D+
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - 🇺🇸US_93 |1.4MB/s|NF
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸US_111 |2.8MB/s
-  - 🇺🇸US_58 |2.1MB/s
-  - 🇯🇵JP_5 |1.6MB/s|NF|D+
-  - 🇫🇮FI_1 |2.2MB/s|NF|D+|33%
-  - 🇺🇸US_3 |1.5MB/s|GPT|NF|D+|GM
-  - 🇩🇪DE_4 |1.6MB/s|GPT|NF|D+
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸US_8 |1.8MB/s|NF|D+
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸US_99 |1.1MB/s|NF|D+
-  - 🇺🇸US_46 |3.6MB/s
-  - 🇺🇸US_91 |1.1MB/s|NF
-  - 🇺🇸US_16 |1.1MB/s|NF
-  - 🇺🇸US_78 |1.4MB/s|NF|D+
-  - 🇺🇸US_41 |3.9MB/s|GPT|NF|D+|5%
-  - 🇺🇸US_49 |1.6MB/s|NF
-  - 🇺🇸US_25 |2.8MB/s|GPT|NF|GM|53%
-  - 🇺🇸US_17 |2.6MB/s|GPT|NF|46%
-  - 🇩🇪DE_1 |2.0MB/s|GPT|D+|0%
-  - 🇩🇪DE_2 |3.0MB/s|GPT|D+|0%
-  - 🇳🇱 荷兰-1A
-  - 🇳🇱 荷兰-1A-CihY
-  - 🇮🇸 冰岛
-  - 🇬🇧 英国-1A-zBtO
-  - 🇬🇧GB_1 |2.4MB/s|GPT|24%
-  - 🇬🇧 英国-1C-3MZM
-  - 🇹🇷 土耳其-1A
-  - 🇰🇷 韩国-1B-sne0
-  - 🇻🇳VN_1 |2.2MB/s|GPT|0%
-  - 🇷🇺 俄罗斯-1C
-  - 🇩🇪 德国-1A
-  - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 🇺🇸US_39 |1.5MB/s|YT-KR|NF|GM
-  - 🇯🇵 日本-1B-YyQm
-  - 🇧🇷 巴西-1A
-  - 🇩🇪 德国-1B-0kKG
-  - 🇯🇵 日本-1A
-  - 🇬🇧 英国-1B
-  - 🇰🇷 韩国-1A-cWeh
-  - 🇷🇺RU_2 |1.2MB/s|0%
-  - 🇷🇺 俄罗斯-1A
-  - 🇷🇺 俄罗斯-1B-wkio
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1K-2Jnb
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1O-GoCO
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M-UIrS
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1H
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M
+  - 🇺🇸 US 254
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - ❓Other_1 |2.0MB/s
+  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
+  - 🇺🇸 US 15
+  - 🇺🇸 US 23
+  - 美国Seattle,+WA,+United+States
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 0|_42
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - 🇩🇪 DE 27
+  - 🇺🇸 US 16
+  - 🇺🇸 US 103
+  - 🇳🇱 NL 25
+  - 🇳🇱 NL 4-LEnB
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇳🇱 NL 19
+  - "[103]PE_727\r\r"
+  - 🇺🇸 US 25
+  - "[103]PE_719\r\r"
+  - 🇺🇸 US 640
+  - "[100]德国-38.60.250.107-44639\r\r"
+  - "[103]PE_713\r\r"
+  - 🇺🇸 US 873
+  - "18|A_18066\r\r"
+  - "[103]PE_720\r\r"
+  - "[103]PE_716\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "[103]PE_733\r\r"
+  - "[103]PE_724\r\r"
+  - 🇺🇸 US 642
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 🇨🇦 加拿大-1A-Lu7n
+  - 🇻🇪 VE 2
+  - 🇺🇸 US 26
+  - 🇺🇸 US 871
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 🇬🇧 GB 5-gr5w
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 414|qol_0810
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇳🇱 NL 2-3Rq9
+  - 🇺🇸 US 36
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇹🇼 TW 2
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 270
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 188
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 1-6jGG
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 8-jJkO
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 170
+  - 🇺🇸 US 874
+  - 🇯🇵 JP 3
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇭🇰 香港-1B
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 澳大利亚AU-T
+  - 🇫🇷 FR 8
+  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1557,211 +1107,237 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_97 |2.6MB/s
   - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸US_32 |3.6MB/s
-  - 🇺🇸US_122 |3.3MB/s|NF|D+
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_40 |3.6MB/s|NF
-  - 🇸🇬SG_4 |1.3MB/s
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇸🇬SG_13 |4.0MB/s|NF
   - 🇺🇸US_59 |1.3MB/s|NF|D+
-  - 🇺🇸US_13 |1.7MB/s|NF
-  - 🇸🇬SG_9 |4.2MB/s|NF|D+
-  - 🇺🇸US_7 |1.8MB/s|NF
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇸🇬SG_11 |1.8MB/s|NF|D+
-  - 🇺🇸US_4 |1.2MB/s|NF|D+
-  - ❓Other_3 |2.4MB/s|NF|D+
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 🇺🇸US_57 |1.2MB/s|NF|5%
-  - 🇯🇵JP_9 |4.6MB/s|NF
-  - 🇺🇸US_114 |4.4MB/s|NF
-  - ❓Other_8 |1.3MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸 US 561
+  - 🇸🇬SG_6 |1.1MB/s|NF
+  - 🇺🇸 US 569
+  - 🇺🇸US_96 |4.1MB/s|NF|D+
+  - 🇺🇸US_29 |1.1MB/s|NF
+  - 美国_1126491
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 US 19
   - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_67 |3.0MB/s|NF|D+
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇺🇸US_87 |1.7MB/s|GPT|NF|D+
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
-  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
-  - 🇺🇸US_112 |4.2MB/s
-  - 🇺🇸US_74 |1.2MB/s|NF|D+|5%
-  - 🇸🇬SG_3 |1.1MB/s|GPT|NF|D+|23%
-  - ❓Other_7 |1.3MB/s
-  - 🇺🇸US_9 |1.9MB/s|NF|D+
-  - 🇯🇵JP_4 |2.2MB/s|NF
   - 🇺🇸US_51 |3.8MB/s
-  - 🇸🇬SG_12 |2.1MB/s|GPT|NF|23%
-  - 🇸🇬SG_10 |2.5MB/s|NF|D+
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - 🇺🇸US_76 |1.6MB/s|NF|D+
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - 🇯🇵JP_2 |1.0MB/s|NF|D+
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - 🇺🇸US_93 |1.4MB/s|NF
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸US_111 |2.8MB/s
-  - 🇺🇸US_58 |2.1MB/s
-  - 🇯🇵JP_5 |1.6MB/s|NF|D+
-  - 🇫🇮FI_1 |2.2MB/s|NF|D+|33%
-  - 🇺🇸US_3 |1.5MB/s|GPT|NF|D+|GM
-  - 🇩🇪DE_4 |1.6MB/s|GPT|NF|D+
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸US_8 |1.8MB/s|NF|D+
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸US_99 |1.1MB/s|NF|D+
-  - 🇺🇸US_46 |3.6MB/s
-  - 🇺🇸US_91 |1.1MB/s|NF
-  - 🇺🇸US_16 |1.1MB/s|NF
-  - 🇺🇸US_78 |1.4MB/s|NF|D+
-  - 🇺🇸US_41 |3.9MB/s|GPT|NF|D+|5%
-  - 🇺🇸US_49 |1.6MB/s|NF
-  - 🇺🇸US_25 |2.8MB/s|GPT|NF|GM|53%
-  - 🇺🇸US_17 |2.6MB/s|GPT|NF|46%
-  - 🇩🇪DE_1 |2.0MB/s|GPT|D+|0%
-  - 🇩🇪DE_2 |3.0MB/s|GPT|D+|0%
-  - 🇳🇱 荷兰-1A
-  - 🇳🇱 荷兰-1A-CihY
-  - 🇮🇸 冰岛
-  - 🇬🇧 英国-1A-zBtO
-  - 🇬🇧GB_1 |2.4MB/s|GPT|24%
-  - 🇬🇧 英国-1C-3MZM
-  - 🇹🇷 土耳其-1A
-  - 🇰🇷 韩国-1B-sne0
-  - 🇻🇳VN_1 |2.2MB/s|GPT|0%
-  - 🇷🇺 俄罗斯-1C
-  - 🇩🇪 德国-1A
-  - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 🇺🇸US_39 |1.5MB/s|YT-KR|NF|GM
-  - 🇯🇵 日本-1B-YyQm
-  - 🇧🇷 巴西-1A
-  - 🇩🇪 德国-1B-0kKG
-  - 🇯🇵 日本-1A
-  - 🇬🇧 英国-1B
-  - 🇰🇷 韩国-1A-cWeh
-  - 🇷🇺RU_2 |1.2MB/s|0%
-  - 🇷🇺 俄罗斯-1A
-  - 🇷🇺 俄罗斯-1B-wkio
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1K-2Jnb
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1O-GoCO
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M-UIrS
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1H
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M
+  - 🇺🇸 US 254
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - ❓Other_1 |2.0MB/s
+  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
+  - 🇺🇸 US 15
+  - 🇺🇸 US 23
+  - 美国Seattle,+WA,+United+States
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 0|_42
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - 🇩🇪 DE 27
+  - 🇺🇸 US 16
+  - 🇺🇸 US 103
+  - 🇳🇱 NL 25
+  - 🇳🇱 NL 4-LEnB
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇳🇱 NL 19
+  - "[103]PE_727\r\r"
+  - 🇺🇸 US 25
+  - "[103]PE_719\r\r"
+  - 🇺🇸 US 640
+  - "[100]德国-38.60.250.107-44639\r\r"
+  - "[103]PE_713\r\r"
+  - 🇺🇸 US 873
+  - "18|A_18066\r\r"
+  - "[103]PE_720\r\r"
+  - "[103]PE_716\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "[103]PE_733\r\r"
+  - "[103]PE_724\r\r"
+  - 🇺🇸 US 642
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 🇨🇦 加拿大-1A-Lu7n
+  - 🇻🇪 VE 2
+  - 🇺🇸 US 26
+  - 🇺🇸 US 871
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 🇬🇧 GB 5-gr5w
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 414|qol_0810
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇳🇱 NL 2-3Rq9
+  - 🇺🇸 US 36
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇹🇼 TW 2
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 270
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 188
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 1-6jGG
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 8-jJkO
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 170
+  - 🇺🇸 US 874
+  - 🇯🇵 JP 3
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇭🇰 香港-1B
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 澳大利亚AU-T
+  - 🇫🇷 FR 8
+  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_97 |2.6MB/s
   - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸US_32 |3.6MB/s
-  - 🇺🇸US_122 |3.3MB/s|NF|D+
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_40 |3.6MB/s|NF
-  - 🇸🇬SG_4 |1.3MB/s
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇸🇬SG_13 |4.0MB/s|NF
   - 🇺🇸US_59 |1.3MB/s|NF|D+
-  - 🇺🇸US_13 |1.7MB/s|NF
-  - 🇸🇬SG_9 |4.2MB/s|NF|D+
-  - 🇺🇸US_7 |1.8MB/s|NF
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇸🇬SG_11 |1.8MB/s|NF|D+
-  - 🇺🇸US_4 |1.2MB/s|NF|D+
-  - ❓Other_3 |2.4MB/s|NF|D+
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 🇺🇸US_57 |1.2MB/s|NF|5%
-  - 🇯🇵JP_9 |4.6MB/s|NF
-  - 🇺🇸US_114 |4.4MB/s|NF
-  - ❓Other_8 |1.3MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸 US 561
+  - 🇸🇬SG_6 |1.1MB/s|NF
+  - 🇺🇸 US 569
+  - 🇺🇸US_96 |4.1MB/s|NF|D+
+  - 🇺🇸US_29 |1.1MB/s|NF
+  - 美国_1126491
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 US 19
   - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_67 |3.0MB/s|NF|D+
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇺🇸US_87 |1.7MB/s|GPT|NF|D+
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
-  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
-  - 🇺🇸US_112 |4.2MB/s
-  - 🇺🇸US_74 |1.2MB/s|NF|D+|5%
-  - 🇸🇬SG_3 |1.1MB/s|GPT|NF|D+|23%
-  - ❓Other_7 |1.3MB/s
-  - 🇺🇸US_9 |1.9MB/s|NF|D+
-  - 🇯🇵JP_4 |2.2MB/s|NF
   - 🇺🇸US_51 |3.8MB/s
-  - 🇸🇬SG_12 |2.1MB/s|GPT|NF|23%
-  - 🇸🇬SG_10 |2.5MB/s|NF|D+
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - 🇺🇸US_76 |1.6MB/s|NF|D+
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - 🇯🇵JP_2 |1.0MB/s|NF|D+
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - 🇺🇸US_93 |1.4MB/s|NF
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸US_111 |2.8MB/s
-  - 🇺🇸US_58 |2.1MB/s
-  - 🇯🇵JP_5 |1.6MB/s|NF|D+
-  - 🇫🇮FI_1 |2.2MB/s|NF|D+|33%
-  - 🇺🇸US_3 |1.5MB/s|GPT|NF|D+|GM
-  - 🇩🇪DE_4 |1.6MB/s|GPT|NF|D+
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸US_8 |1.8MB/s|NF|D+
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸US_99 |1.1MB/s|NF|D+
-  - 🇺🇸US_46 |3.6MB/s
-  - 🇺🇸US_91 |1.1MB/s|NF
-  - 🇺🇸US_16 |1.1MB/s|NF
-  - 🇺🇸US_78 |1.4MB/s|NF|D+
-  - 🇺🇸US_41 |3.9MB/s|GPT|NF|D+|5%
-  - 🇺🇸US_49 |1.6MB/s|NF
-  - 🇺🇸US_25 |2.8MB/s|GPT|NF|GM|53%
-  - 🇺🇸US_17 |2.6MB/s|GPT|NF|46%
-  - 🇩🇪DE_1 |2.0MB/s|GPT|D+|0%
-  - 🇩🇪DE_2 |3.0MB/s|GPT|D+|0%
-  - 🇳🇱 荷兰-1A
-  - 🇳🇱 荷兰-1A-CihY
-  - 🇮🇸 冰岛
-  - 🇬🇧 英国-1A-zBtO
-  - 🇬🇧GB_1 |2.4MB/s|GPT|24%
-  - 🇬🇧 英国-1C-3MZM
-  - 🇹🇷 土耳其-1A
-  - 🇰🇷 韩国-1B-sne0
-  - 🇻🇳VN_1 |2.2MB/s|GPT|0%
-  - 🇷🇺 俄罗斯-1C
-  - 🇩🇪 德国-1A
-  - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 🇺🇸US_39 |1.5MB/s|YT-KR|NF|GM
-  - 🇯🇵 日本-1B-YyQm
-  - 🇧🇷 巴西-1A
-  - 🇩🇪 德国-1B-0kKG
-  - 🇯🇵 日本-1A
-  - 🇬🇧 英国-1B
-  - 🇰🇷 韩国-1A-cWeh
-  - 🇷🇺RU_2 |1.2MB/s|0%
-  - 🇷🇺 俄罗斯-1A
-  - 🇷🇺 俄罗斯-1B-wkio
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1K-2Jnb
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1O-GoCO
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M-UIrS
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1H
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1M
+  - 🇺🇸 US 254
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - ❓Other_1 |2.0MB/s
+  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
+  - 🇺🇸 US 15
+  - 🇺🇸 US 23
+  - 美国Seattle,+WA,+United+States
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+102\r\r"
+  - 0|_42
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - 🇩🇪 DE 27
+  - 🇺🇸 US 16
+  - 🇺🇸 US 103
+  - 🇳🇱 NL 25
+  - 🇳🇱 NL 4-LEnB
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇳🇱 NL 19
+  - "[103]PE_727\r\r"
+  - 🇺🇸 US 25
+  - "[103]PE_719\r\r"
+  - 🇺🇸 US 640
+  - "[100]德国-38.60.250.107-44639\r\r"
+  - "[103]PE_713\r\r"
+  - 🇺🇸 US 873
+  - "18|A_18066\r\r"
+  - "[103]PE_720\r\r"
+  - "[103]PE_716\r\r"
+  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
+  - "[103]PE_733\r\r"
+  - "[103]PE_724\r\r"
+  - 🇺🇸 US 642
+  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
+    10.977MB
+  - 🇨🇦 加拿大-1A-Lu7n
+  - 🇻🇪 VE 2
+  - 🇺🇸 US 26
+  - 🇺🇸 US 871
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 🇬🇧 GB 5-gr5w
+  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
+  - 414|qol_0810
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+63\r\r"
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇳🇱 NL 2-3Rq9
+  - 🇺🇸 US 36
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+  - 🇹🇼 TW 2
+  - 🇻🇳 VN 295
+  - 🇻🇳 VN 68
+  - 🇻🇳 VN 5
+  - 🇻🇳 VN 274
+  - 🇻🇳 VN 270
+  - 🇻🇳 VN 276
+  - 🇻🇳 VN 188
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 242
+  - 🇻🇳 VN 1-6jGG
+  - 🇻🇳 VN 53
+  - 🇻🇳 VN 49
+  - 🇻🇳 VN 262
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 8-jJkO
+  - 🇻🇳 VN 153
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 59
+  - 🇻🇳 VN 44
+  - 🇻🇳 VN 237
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 170
+  - 🇺🇸 US 874
+  - 🇯🇵 JP 3
+  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
+    \r\r\r"
+  - 🇭🇰 香港-1B
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 澳大利亚AU-T
+  - 🇫🇷 FR 8
+  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
