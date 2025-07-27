@@ -5,7 +5,7 @@ name: Clash 速度测试
 on:
   workflow_dispatch:
   schedule:
-    - cron: 0 */3 * * *
+    - cron: '0 */3 * * *' # 每3小时运行一次
 
 jobs:
   speed-test-and-sort:
@@ -100,11 +100,11 @@ jobs:
             -download-size 5 \
             -upload-size 1 \
             -timeout 30s \
-            -concurrent 38 \
+            -concurrent 15 \           # <-- 并发数已降低到 15
             -max-latency 5000ms \
             -min-download-speed 0 \
             -min-upload-speed 0 \
-            -rename
+            -rename \
             -debug
           echo "全速测试完成，结果保存到 clash.yaml"
 
@@ -119,7 +119,6 @@ jobs:
             echo "----------------------------------------"
             if [ "$(grep -c 'name:' clash.yaml)" -eq 0 ]; then
               echo "警告: 'clash.yaml' 文件中没有检测到代理节点。可能所有节点都未通过速度测试后的过滤。"
-              exit 1
             fi
           else
             echo "错误: 未生成 'clash.yaml'。速度测试可能失败或没有通过过滤的节点。"
@@ -127,7 +126,7 @@ jobs:
           fi
 
       - name: 提交并推送排序后的配置文件
-        if: success() && steps.check_final_file.outcome == 'success'
+        if: steps.check_final_file.outcome == 'success' && steps.check_filtered_file.outputs.FILTERED_NODES_EMPTY == 'false' && $(grep -c 'name:' clash.yaml) -gt 0
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "更新 Clash 配置：节点已按速度排序（靠近中国地区）并备份旧配置"
