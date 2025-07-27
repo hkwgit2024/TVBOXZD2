@@ -32,263 +32,227 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 🇺🇸 US 15
-  type: vless
-  server: support.zoom.us.lufeng.pw
-  port: 443
-  uuid: 576e9bde-5243-479f-9725-346617af0bec
-  security: tls
-  tls: true
-  sni: support.zoom.us.lufeng.pw
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /id12
-    headers:
-      Host: support.zoom.us.lufeng.pw
-- name: 🇺🇸 US 874
+- name: 🇻🇳 VN 63
+  type: ss
+  server: 103.186.154.227
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 115
+  type: ss
+  server: 103.186.155.149
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 116
+  type: ss
+  server: 103.186.155.126
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 134
+  type: ss
+  server: 103.186.154.59
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 160
+  type: ss
+  server: 103.186.155.239
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 177
+  type: ss
+  server: 103.186.155.138
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 254
+  type: ss
+  server: 103.186.155.61
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇹🇼 TW 1
   type: vmess
-  server: rrrrrrrrrt.11890604.xyz
-  port: 443
-  uuid: f898ffcb-6417-4373-9640-0b66091e8206
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: rrrrrrrrrt.11890604.xyz
-  ws-opts:
-    path: /GnJ3bBxV91uFkYtuzXyJ5XNeH1R1
-    headers:
-      Host: rrrrrrrrrt.11890604.xyz
-- name: 🇯🇵 JP 3
-  type: trojan
-  server: x1-japan-amazon-v2.devefun.org
-  port: 1935
-  password: 0IMsvkqhnm
-  sni: ''
-  skip-cert-verify: false
-- name: 🇻🇳 VN 44
-  type: ss
-  server: 103.186.154.189
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 53
-  type: ss
-  server: 103.186.154.176
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 68
-  type: ss
-  server: 103.186.154.228
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇳🇱 NL 19
-  type: ss
-  server: 151.242.251.153
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  udp: true
-- name: 🇳🇱 NL 4-LEnB
-  type: ss
-  server: 193.29.139.235
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇺🇸 US 16
-  type: vless
-  server: vip.arivganteng.biz.id
-  port: 80
-  uuid: ff5de033-50ff-41a0-80dc-333af49c7dc4
-  security: none
-  tls: false
-  sni: ''
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ariv=27.0.234.74=2911
-    headers:
-      Host: vip.arivganteng.biz.id
-- name: 🇺🇸 US 19
-  type: ss
-  server: 156.146.38.167
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
-- name: 🇺🇸 US 23
-  type: ss
-  server: 212.102.47.132
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
-- name: 🇺🇸 US 25
-  type: vmess
-  server: 15.204.11.190
-  port: 15361
-  uuid: 5d7bf9e3-415c-40f3-c66d-a54ea0fd860e
+  server: 34.80.157.198
+  port: 53175
+  uuid: f1a8c85b-86c8-43c8-e920-bcdbf391081e
   alterId: 0
   cipher: auto
   network: tcp
   tls: false
   sni: ''
   ws-opts: {}
-- name: 🇺🇸 US 26
-  type: vmess
-  server: 38.12.83.217
-  port: 30002
-  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
-- name: 🇺🇸 US 36
-  type: vmess
-  server: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
-  port: 443
-  uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
-  ws-opts:
-    path: /azumase.ren
-    headers:
-      Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
-- name: 🇹🇼 TW 2
-  type: vmess
-  server: 34.80.156.254
-  port: 55084
-  uuid: 5691fb8a-d890-4a33-9b0e-73017adae5b2
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
-- name: 🇻🇳 VN 5
-  type: ss
-  server: 103.186.154.24
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 8-jJkO
+- name: 🇻🇳 VN 8-QC5S
   type: ss
   server: 103.186.154.30
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 16
-  type: ss
-  server: 103.186.154.38
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 17
-  type: ss
-  server: 103.186.154.33
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇺🇸 US 103
+- name: 🇺🇸 US 43
   type: vless
-  server: pvt.moonop.tech
+  server: yaya.web.id
   port: 443
-  uuid: 57b164dc-ca08-4057-8005-0ccae6c91b82
+  uuid: 10dc80e8-7ffb-49aa-83a5-044d2b323730
   security: tls
   tls: true
-  sni: pvt.moonop.tech
+  sni: yaya.web.id
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /aws6
+    path: /clo
     headers:
-      Host: pvt.moonop.tech
-- name: 🇺🇸 US 254
+      Host: yaya.web.id
+- name: 🇺🇸 US 45
   type: vless
-  server: zoomgov.vipren.biz.id
+  server: ava.game.naver.com.yaya.web.id
   port: 443
-  uuid: 36a6a6f7-8f77-4b67-81b5-403a7613902e
+  uuid: 090b9648-80f6-4fed-b43a-949c53ddb7df
   security: tls
   tls: true
-  sni: zoomgov.vipren.biz.id
+  sni: ava.game.naver.com.yaya.web.id
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /115.242.180.202=19000
+    path: /incapsula
     headers:
-      Host: zoomgov.vipren.biz.id
-- name: 🇺🇸 US 561
-  type: ss
-  server: 138.199.42.68
+      Host: ava.game.naver.com.yaya.web.id
+- name: 🇺🇸 US 46
+  type: vless
+  server: support.zoom.us.lufeng.pw
+  port: 80
+  uuid: 5ffc0b13-1d64-432b-8ea8-4e54fc954021
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id9
+    headers:
+      Host: support.zoom.us.lufeng.pw
+- name: 🇺🇸 US 68
+  type: vless
+  server: investors.spotify.com.lufeng.pw
+  port: 443
+  uuid: 028b51f4-b53b-485d-b78c-8531299bd086
+  security: tls
+  tls: true
+  sni: investors.spotify.com.lufeng.pw
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id12
+    headers:
+      Host: investors.spotify.com.lufeng.pw
+- name: 🇺🇸 US 118
+  type: vless
+  server: blog.webex.com.yaya.web.id
+  port: 443
+  uuid: d380c794-fbec-4a00-9bf2-45b34ed1ca56
+  security: tls
+  tls: true
+  sni: blog.webex.com.yaya.web.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /gcp
+    headers:
+      Host: blog.webex.com.yaya.web.id
+- name: 🇺🇸 US 181
+  type: vless
+  server: blog.webex.com.lufeng.pw
+  port: 80
+  uuid: 6052cba1-7e8d-4661-9525-3dc5da59ec24
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /id4
+    headers:
+      Host: blog.webex.com.lufeng.pw
+- name: 🇺🇸 US 279
+  type: vless
+  server: proud-fire-1775.mahmmod2025.workers.dev
   port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: 🇺🇸 US 569
-  type: ss
-  server: 149.28.255.6
-  port: 816
-  cipher: chacha20-ietf-poly1305
-  password: GyZ5Xo0ht41vYmW3H4
-  udp: true
-- name: 🇺🇸 US 640
-  type: vmess
-  server: wWWwwWWw2.444652.XYz
-  port: 443
-  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: wwwwwwww2.444652.xyz
-  ws-opts:
-    path: /9dZlJLjHHrL0VwSolbqFpg
-    headers:
-      Host: wwwwwwww2.444652.xyz
-- name: 🇺🇸 US 642
-  type: vmess
-  server: wsXCdfr5.999824.xYz
-  port: 443
-  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
-  sni: wSXCdFR5.999824.xYZ
-  ws-opts:
-    path: /9dZlJLjHHrL0VwSolbqFpg
-    headers:
-      Host: wsxcdfr5.999824.xyz
-- name: 🇺🇸 US 871
-  type: vless
-  server: ssss3.11890604.xyz
-  port: 443
-  uuid: f898ffcb-6417-4373-9640-0b66091e8206
-  security: tls
-  tls: true
-  sni: ssss3.11890604.xyz
+  uuid: e0e345e3-e2ce-4778-81ff-67b4a8feddd8
+  security: none
+  tls: false
+  sni: ''
   skip-cert-verify: false
   network: ws
   ws-opts:
-    path: /33CYL4twIwItuzXyJ5XNeH1R1
+    path: /cnBo3yZEif0B2jy4?ed=2560
     headers:
-      Host: ssss3.11890604.xyz
+      Host: proud-fire-1775.mahmmod2025.workers.dev
+- name: 🇺🇸 US 328
+  type: vless
+  server: xsm.web.id
+  port: 443
+  uuid: 26c637d9-fe0d-4fbf-b3ed-2fe26b7f3f8b
+  security: tls
+  tls: true
+  sni: xsm.web.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /xsmfp=randomized
+    headers:
+      Host: xsm.web.id
+- name: 🇺🇸 US 596
+  type: vless
+  server: 444444444444r.333756.xyz
+  port: 443
+  uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
+  security: tls
+  tls: true
+  sni: 444444444444R.333756.xyz
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /f7vKDX2UecxmlPhIJoo2wcE6Q
+    headers:
+      Host: 444444444444r.333756.xyz
+- name: 🇺🇸 US 626
+  type: vmess
+  server: EEdCVFGT.999824.XyZ
+  port: 443
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: eeDCvfGt.999824.XyZ
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: eedcvfgt.999824.xyz
+- name: 🇺🇸 US 791
+  type: vmess
+  server: dddvvbn.931.pp.ua
+  port: 443
+  uuid: 4174b95d-115e-4d39-add6-1f8db95bb860
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: dddvvbn.931.pp.ua
+  ws-opts:
+    path: /6We3U9Df1WGxgFnoFPw1
+    headers:
+      Host: dddvvbn.931.pp.ua
 - name: 🇺🇸 US 873
   type: vmess
   server: 3DDDF.444652.xYZ
@@ -303,65 +267,142 @@ proxies:
     path: /9dZlJLjHHrL0VwSolbqFpg
     headers:
       Host: 3dddf.444652.xyz
-- name: 🇬🇧 GB 5-gr5w
+- name: 🇺🇸 US 876
+  type: vless
+  server: 34r5.11890604.xyz
+  port: 443
+  uuid: f898ffcb-6417-4373-9640-0b66091e8206
+  security: tls
+  tls: true
+  sni: 34r5.11890604.xyz
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /33CYL4twIwItuzXyJ5XNeH1R1
+    headers:
+      Host: 34r5.11890604.xyz
+- name: 🇦🇷 AR 1
+  type: ss
+  server: 190.103.176.32
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇬🇧 GB 5-t3jV
   type: trojan
   server: x2-england-amazon-v2.devefun.org
   port: 1935
   password: 2mCIecoWKc
   sni: x2-england-amazon-v2.devefun.org
   skip-cert-verify: false
-- name: 🇫🇷 FR 8
+- name: 🇬🇧 GB 10
   type: ss
-  server: 77.105.166.12
-  port: 8594
-  cipher: chacha20-ietf-poly1305
-  password: jMsh0stsWBPyaZcEUZbNGJ
+  server: 212.102.53.81
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
   udp: true
-- name: 🇻🇳 VN 1-6jGG
+- name: 🇬🇧 GB 15
   type: ss
-  server: 103.186.155.29
+  server: 141.98.101.179
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 🇫🇷 FR 6
+  type: trojan
+  server: x2-france-scaleway-v2.devefun.org
+  port: 1935
+  password: 6MkCymdpAW
+  sni: ''
+  skip-cert-verify: false
+- name: 🇻🇳 VN 20-fUGh
+  type: ss
+  server: 103.186.154.254
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 21-R9Nq
+- name: 🇻🇳 VN 31
   type: ss
-  server: 103.186.154.188
+  server: 103.186.155.110
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 47
+- name: 🇻🇳 VN 39
   type: ss
-  server: 103.186.154.250
+  server: 103.186.154.190
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 49
+- name: 🇻🇳 VN 48
   type: ss
-  server: 103.186.155.17
+  server: 103.186.155.3
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 59
+- name: 🇻🇳 VN 67
   type: ss
-  server: 103.186.155.103
+  server: 103.186.155.47
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 147
+- name: 🇻🇳 VN 83
   type: ss
-  server: 103.186.155.9
+  server: 103.186.155.211
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 153
+- name: 🇻🇳 VN 86
   type: ss
-  server: 103.186.155.136
+  server: 103.186.154.253
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 95
+  type: ss
+  server: 103.186.154.210
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 99
+  type: ss
+  server: 103.186.155.130
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 106
+  type: ss
+  server: 103.186.155.26
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 126
+  type: ss
+  server: 103.186.154.58
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 127
+  type: ss
+  server: 103.186.155.240
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 169
+  type: ss
+  server: 103.186.155.32
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -373,9 +414,44 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 188
+- name: 🇻🇳 VN 173
   type: ss
-  server: 103.186.155.65
+  server: 103.186.154.207
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 187
+  type: ss
+  server: 103.186.155.101
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 205
+  type: ss
+  server: 103.186.155.142
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 231
+  type: ss
+  server: 103.186.155.44
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 232
+  type: ss
+  server: 103.186.154.200
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+  udp: true
+- name: 🇻🇳 VN 236
+  type: ss
+  server: 103.186.155.57
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -387,383 +463,224 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 242
+- name: 🇻🇳 VN 248
   type: ss
-  server: 103.186.155.62
+  server: 103.186.155.209
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 262
+- name: 🇻🇳 VN 264
   type: ss
-  server: 103.186.155.40
+  server: 103.186.155.214
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 270
+- name: 🇻🇳 VN 283
   type: ss
-  server: 103.186.154.168
+  server: 103.186.155.63
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 274
+- name: 🇻🇳 VN 310
   type: ss
-  server: 103.186.154.165
+  server: 103.186.154.224
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 276
+- name: 🇳🇱 NL 26
   type: ss
-  server: 103.186.155.220
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 295
-  type: ss
-  server: 103.186.154.73
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 305
-  type: ss
-  server: 103.186.155.137
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇩🇪 DE 27
-  type: vless
-  server: 162.19.250.162
-  port: 24209
-  uuid: decb4fce-bd8a-4d8b-a81f-2e393ee9ee02
-  security: none
-  tls: false
-  sni: ''
-  skip-cert-verify: false
-  network: tcp
-  ws-opts: {}
-- name: 🇳🇱 NL 2-3Rq9
-  type: trojan
-  server: x1-amsterdam-linode-v2-9oqj5.devefun.org
-  port: 1935
-  password: 55OXUHdGtp
-  sni: ''
-  skip-cert-verify: false
-- name: 🇳🇱 NL 25
-  type: ss
-  server: 193.29.139.141
+  server: 193.29.139.132
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: 🇻🇪 VE 2
+- name: 🇳🇱 NL 27
   type: ss
-  server: 45.158.171.146
+  server: ltnl15.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
-  password: 1RWwXhwfAB5gAEozU4G2Pg
+  password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: 澳大利亚AU-T
-  type: trojan
-  server: au.mjt000.com
-  port: 443
-  password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
-  sni: au.mjt000.com
-  skip-cert-verify: false
-- name: 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  type: ss
-  server: 192.71.166.100
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: 美国_1126491
-  type: ss
-  server: 156.146.38.168
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
-- name: 0|_42
-  type: ss
-  server: 98.98.79.197
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: 美国Seattle,+WA,+United+States
-  type: ss
-  server: 212.102.47.129
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
-- name: 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102
-    | 10.977MB
-  type: ss
-  server: series-a2.samanehha.co
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: mps3FwmDjLrWaOVg
-  udp: true
-- name: 414|qol_0810
+- name: 🇰🇷 KR 3
   type: vmess
-  server: 188.114.97.1
+  server: 202.79.160.243
   port: 443
-  uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
   alterId: 0
   cipher: auto
   network: ws
   tls: true
-  sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+  sni: www.32278117.xyz
   ws-opts:
-    path: /azumase.ren
+    path: /path/191019072927
     headers:
-      Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
-- name: "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+      Host: www.32278117.xyz
+- name: 🇻🇪 VE 1-wGe3
   type: ss
-  server: 146.70.23.32
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "9,12,14|ChatGPT  N... #3\r\r"
-  type: ss
-  server: 193.29.139.202
+  server: 45.158.171.150
   port: 8080
   cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
+  password: 4a2rfixophdjffa8KVA4Aa
   udp: true
-- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  type: ss
-  server: 169.150.210.243
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  type: ss
-  server: 146.70.52.150
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  type: ss
-  server: 98.98.142.161
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[103]PE_713\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9094
-  cipher: aes-256-cfb
-  password: rpgbNnU9rDDU4aWZ
-  udp: true
-- name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  type: ss
-  server: 128.1.205.124
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  type: ss
-  server: 128.199.172.224
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  type: ss
-  server: 104.248.159.99
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  type: ss
-  server: 68.183.235.240
-  port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
-  udp: true
-- name: "[103]PE_727\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9098
-  cipher: aes-256-cfb
-  password: aLpQtfEZe445QyHk
-  udp: true
-- name: "[103]PE_724\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9056
-  cipher: aes-256-cfb
-  password: rNBfNuuANFCAk7KB
-  udp: true
-- name: "[103]PE_716\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9032
-  cipher: aes-256-cfb
-  password: UWZQeLRWnkqgkseq
-  udp: true
-- name: "[103]PE_733\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9084
-  cipher: aes-256-cfb
-  password: c3NtHJ5ujV2tGDfj
-  udp: true
-- name: "[103]PE_720\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9046
-  cipher: aes-256-cfb
-  password: NvS8N4Vf8qAGPSCL
-  udp: true
-- name: "[103]PE_719\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9038
-  cipher: aes-256-cfb
-  password: gYCYXfkUQEs2TaJQ
-  udp: true
-- name: "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  type: ss
-  server: 203.23.128.33
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: "18|A_18066\r\r"
+- name: 🇵🇱 PL 3
   type: ss
   server: 217.30.10.18
-  port: 9057
+  port: 9026
   cipher: aes-256-cfb
-  password: wjTugX3ZtHMB9c3Z
+  password: QWDDvVE9npNurQfA
   udp: true
-- name: "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
+- name: 🇬🇹 GT 1
   type: ss
-  server: 45.89.52.66
-  port: 9093
-  cipher: aes-256-cfb
-  password: wfLC2y7rzZyCmuyt
-  udp: true
-- name: 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  type: ss
-  server: 217.30.10.18
-  port: 9073
-  cipher: aes-256-cfb
-  password: daFYagqDdBdA6VTX
-  udp: true
-- name: "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  type: ss
-  server: 217.30.10.18
-  port: 9011
-  cipher: aes-256-cfb
-  password: M3t2ZEQcMGRWBjRa
-  udp: true
-- name: "[100]德国-38.60.250.107-44639\r\r"
-  type: ss
-  server: 38.60.250.107
+  server: 185.47.254.87
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   udp: true
-- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+80\r\r"
+- name: 越南VN-T
+  type: trojan
+  server: vn.mjt000.com
+  port: 443
+  password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+  sni: vn.mjt000.com
+  skip-cert-verify: false
+- name: "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
   type: ss
-  server: 185.220.68.185
+  server: 192.71.249.71
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  type: ss
+  server: 192.36.27.94
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 瑞士Zurich,+ZH,+Switzerland
+  type: ss
+  server: 156.146.62.163
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  type: ss
+  server: 107.151.182.197
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
+- name: 0|_207
   type: ss
-  server: 146.70.70.35
+  server: 172.105.199.111
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: 🇺🇸US_6 |1.3MB/s|NF
+- name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  type: ss
+  server: 108.181.126.135
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  type: ss
+  server: 172.105.199.91
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[103]_RU_俄罗斯_210\r\r"
+  type: ss
+  server: 80.92.204.106
+  port: 9059
+  cipher: aes-256-cfb
+  password: 9XwYyZsK8SNzQDtY
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  type: ss
+  server: 188.166.249.31
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: 0,1,2,3|ChatGPT  DE_65
+  type: ss
+  server: 80.92.204.106
+  port: 9025
+  cipher: aes-256-cfb
+  password: XPtzA9sCug3SPR4c
+  udp: true
+- name: "[103]_俄罗斯_hamraH_417\r\r"
+  type: ss
+  server: 80.92.204.106
+  port: 9001
+  cipher: aes-256-cfb
+  password: UkXRsXvR6buDMG2Y
+  udp: true
+- name: "[103]PE_736\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9003
+  cipher: aes-256-cfb
+  password: JdmRK9gMEqFgs8nP
+  udp: true
+- name: 加拿大_1126006
+  type: ss
+  server: ca225.vpnbook.com
+  port: 80
+  cipher: chacha20-ietf-poly1305
+  password: JIhN6rBKkaEboLNXVSv5rq
+  udp: true
+- name: 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
   network: ws
   port: '8880'
-  server: 66.225.252.63
-  servername: jp.laoyoutiao.link
+  server: 156.238.18.89
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
-      Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/63.0.3239.84 Safari/537.36
-    path: /Telegram🇨🇳
+      Host: sg.laoyoutiao.link
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/45.0.2454.85 Safari/537.36
+    path: Telegram@WangCai2/?ed=2048
   xudp: true
-- name: 🇸🇬SG_6 |1.1MB/s|NF
+- name: 🇺🇸US_20 |1.7MB/s|NF|D+
   network: ws
   port: 8880
-  server: 185.176.26.156
+  server: 156.238.18.112
+  tls: false
+  type: vless
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: us.laoyoutiao.link
+    path: Telegram🇨🇳 @MxlShare @WangCai2 /?ed=2560
+- name: 🇺🇸US_26 |4.3MB/s
+  network: ws
+  port: 8880
+  server: 66.81.247.186
   servername: Telegram-channel-WangCai2
   skip-cert-verify: false
   tls: false
   type: vless
   udp: true
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
   ws-opts:
     headers:
-      Host: kjgx.laoyoutiao.link
+      Host: ip.langmanshanxi.top
     path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
-- name: ❓Other_1 |2.0MB/s
-  network: ws
-  port: '8880'
-  server: 168.100.6.186
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/70.0.3538.102 Safari/537.36
-    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
-  xudp: true
-- name: 🇺🇸US_29 |1.1MB/s|NF
-  network: ws
-  port: '8880'
-  server: 92.53.189.177
-  servername: ip.langmanshanxi.top
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.24 (KHTML, like
-        Gecko) Chrome/11.0.696.3 Safari/534.24
-    path: /Telegram @WangCai2 /?ed
-  xudp: true
 - name: 🇺🇸US_30 |2.4MB/s
   network: ws
   port: '8880'
@@ -779,57 +696,97 @@ proxies:
         Gecko) Chrome/45.0.2454.101 Safari/537.36
     path: Telegram @WangCai2 /?ed=2560
   xudp: true
-- client-fingerprint: chrome
-  name: 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
+- name: 🇺🇸US_44 |3.6MB/s|D+|5%
   network: ws
-  port: '18765'
-  server: 14.36.181.53
-  servername: jp.laoyoutiao.link
-  tls: true
+  port: '8880'
+  server: 130.250.137.148
+  servername: Telegram-channel-WangCai2
+  type: vless
+  udp: true
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (Linux; Android 5.1; A1601 Build/LMY47I) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: ❓Other_4 |3.3MB/s|GPT|NF|D+
+  network: ws
+  port: '8880'
+  server: 141.101.114.254
+  type: vless
+  udp: true
+  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
+  ws-opts:
+    headers:
+      Host: yg.bantony199.top
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/56.0.2924.87 Safari/537.36
+    path: /
+  xudp: true
+- name: 🇺🇸US_48 |4.2MB/s
+  network: ws
+  port: '8880'
+  server: 154.92.9.177
+  servername: Telegram-channel-WangCai2
+  type: vless
+  udp: true
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/51.0.2704.106 Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇯🇵JP_3 |3.2MB/s|NF|D+
+  network: ws
+  port: '8880'
+  server: 188.164.248.213
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
       Host: jp.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/46.0.2490.80 Safari/537.36
-    path: /telegram@wangcai2/?ed=2560
+      User-Agent: Mozilla/5.0 (Linux; Android 5.1; A37f Build/LMY47V) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/43.0.2357.93 Mobile Safari/537.36
+    path: /Telegram@V2ray_Alpha/?ed=2048
   xudp: true
-- name: 🇺🇸US_51 |3.8MB/s
+- name: 🇺🇸US_53 |2.7MB/s|NF|D+
   network: ws
   port: '8880'
-  server: 162.120.94.20
-  servername: us.laoyoutiao.link
+  server: 188.164.158.63
+  servername: jp.laoyoutiao.link
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
-      Host: us.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
-        Gecko) Chrome/45.0.2454.101 Safari/537.36
-    path: /TelegramU0001F1E8U0001F1F3
-  xudp: true
-- name: 🇺🇸US_59 |1.3MB/s|NF|D+
-  network: ws
-  port: '8880'
-  server: 188.42.89.148
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/67.0.3396.99 Safari/537.36
+      Host: jp.laoyoutiao.link
+      User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/51.0.2704.63 Safari/537.36
     path: /Telegram🇨🇳 @WangCai2 /?ed=2560
   xudp: true
-- name: 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+- name: 🇺🇸US_56 |1.6MB/s|NF|D+|0%
   network: ws
   port: '8880'
-  server: 194.152.44.177
+  server: 188.42.88.251
+  type: vless
+  udp: true
+  uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+  ws-opts:
+    headers:
+      Host: cf.d3z.net
+      User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.10
+        (KHTML, like Gecko) Chrome/8.0.552.237 Safari/534.10
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇺🇸US_57 |1.2MB/s|NF|5%
+  network: ws
+  port: '8880'
+  server: 188.42.145.177
   servername: Telegram-channel-WangCai2
   type: vless
   udp: true
@@ -837,60 +794,43 @@ proxies:
   ws-opts:
     headers:
       Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/533.4
-        (KHTML, like Gecko) Chrome/5.0.375.99 Safari/533.4
-    path: /Telegram🇨🇳
+      User-Agent: Mozilla/5.0 (Unknown; Linux) AppleWebKit/538.1 (KHTML, like Gecko)
+        Chrome/v1.0.0 Safari/538.1
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560fp=chrome
   xudp: true
-- name: 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+- name: 🇺🇸US_58 |2.1MB/s
   network: ws
   port: '8880'
-  server: 194.36.55.186
-  servername: Telegram-channel-WangCai2
-  type: vless
-  udp: true
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
-  ws-opts:
-    headers:
-      Host: ip.langmanshanxi.top
-      User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.30 (KHTML, like Gecko)
-        Chrome/12.0.742.100 Safari/534.30
-    path: /Telegram🇨🇳
-  xudp: true
-- client-fingerprint: chrome
-  name: 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
-  network: ws
-  port: '443'
-  server: 198.41.206.102
-  servername: rayan-10.parastoo.dpdns.org
-  tls: true
-  type: vless
-  udp: true
-  uuid: 4e4768df-0fbb-4cc1-8fd3-7c6fea95742a
-  ws-opts:
-    headers:
-      Host: rayan-10.parastoo.dpdns.org
-      User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko)
-        Chrome/55.0.2883.87 Safari/537.36
-    path: /@Rayan_Config
-  xudp: true
-- name: 🇭🇰HK_3 |1.1MB/s|NF
-  network: ws
-  port: '8880'
-  server: 216.205.52.29
+  server: 188.244.122.29
   type: vless
   udp: true
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   ws-opts:
     headers:
       Host: hk.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML,
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
         like Gecko) Chrome/70.0.3538.102 Safari/537.36
     path: /
   xudp: true
-- name: 🇺🇸US_96 |4.1MB/s|NF|D+
+- name: 🇺🇸US_71 |1.2MB/s|D+
   network: ws
   port: '8880'
-  server: 27.50.48.156
+  server: 194.53.53.63
+  servername: jp.laoyoutiao.link
+  type: vless
+  udp: true
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: jp.laoyoutiao.link
+      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/60.0.3112.113 Safari/537.36
+    path: /Telegram🇨🇳
+  xudp: true
+- name: 🇸🇬SG_10 |2.5MB/s|NF|D+
+  network: ws
+  port: '8880'
+  server: 195.13.44.156
   servername: Telegram-channel-WangCai2
   type: vless
   udp: true
@@ -898,14 +838,57 @@ proxies:
   ws-opts:
     headers:
       Host: kjgx.laoyoutiao.link
-      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
-        like Gecko) Chrome/61.0.3163.79 Safari/537.36
+      User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G610M Build/NRD90M) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
     path: /Telegram🇨🇳 @WangCai2 /?ed=2560
   xudp: true
-- name: 🇺🇸US_108 |3.8MB/s
+- name: 🇯🇵JP_7 |1.9MB/s|NF|D+
   network: ws
   port: '8880'
-  server: 86.38.214.186
+  server: 195.85.59.148
+  servername: Telegram-channel-WangCai2
+  type: vless
+  udp: true
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; SM-G532M Build/MMB29T; wv) AppleWebKit/537.36
+        (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇺🇸US_81 |2.2MB/s|GPT|D+
+  network: ws
+  port: '8880'
+  server: 199.34.230.254
+  type: vless
+  udp: true
+  uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
+  ws-opts:
+    headers:
+      Host: yg.bantony199.top
+      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/67.0.3396.99 Safari/537.36
+    path: /
+  xudp: true
+- name: 🇺🇸US_85 |1.4MB/s|GPT|D+
+  network: ws
+  port: '8880'
+  server: 205.233.181.251
+  type: vless
+  udp: true
+  uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+  ws-opts:
+    headers:
+      Host: cf.d3z.net
+      User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/70.0.3538.77 Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇺🇸US_86 |1.4MB/s|NF|D+
+  network: ws
+  port: '8880'
+  server: 209.94.90.148
   servername: Telegram-channel-WangCai2
   type: vless
   udp: true
@@ -914,66 +897,131 @@ proxies:
     headers:
       Host: ip.langmanshanxi.top
       User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko)
-        Chrome/70.0.3538.77 Safari/537.36
-    path: /Telegram @WangCai2 /?ed=2560
+        Chrome/55.0.2883.87 Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
   xudp: true
-- name: 🇭🇰 香港-1B
-  server: flyxghy.flylink.cyou
-  port: 35260
+- name: 🇺🇸US_89 |3.9MB/s|NF|D+
+  network: ws
+  port: '8880'
+  server: 209.46.30.148
+  servername: Telegram-channel-WangCai2
+  type: vless
+  udp: true
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  ws-opts:
+    headers:
+      Host: ip.langmanshanxi.top
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/46.0.2490.80 Safari/537.36
+    path: /Telegram🇨🇳 @WangCai2 /?ed=2560
+  xudp: true
+- name: 🇺🇸US_95 |2.0MB/s|NF|D+|5%
+  network: ws
+  port: '8880'
+  server: 216.205.52.3
+  servername: Telegram-channel-WangCai2
+  type: vless
+  udp: true
+  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+  ws-opts:
+    headers:
+      Host: bitget1.asdasd.click
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/55.0.2883.87 Safari/537.36
+    path: /Telegram
+  xudp: true
+- name: ❓Other_8 |1.3MB/s
+  network: ws
+  port: '8880'
+  server: 45.12.30.168
+  servername: kjgx.laoyoutiao.link
+  type: vless
+  udp: true
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: kjgx.laoyoutiao.link
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
+        Gecko) Chrome/34.0.1847.131 Safari/537.36
+    path: Telegram@WangCai2/?ed=2560
+  xudp: true
+- name: 🇺🇸US_113 |4.2MB/s
+  network: ws
+  port: '8880'
+  server: 91.193.58.59
+  servername: us.laoyoutiao.link
+  type: vless
+  udp: true
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: us.laoyoutiao.link
+      User-Agent: Mozilla/5.0 (Linux; Android 5.1; A1601 Build/LMY47I) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36
+    path: /TelegramU0001F1E8U0001F1F3
+  xudp: true
+- auth: uyzMwZOG2JFOEXhjBnMX7bkf3o
+  name: 🇺🇸US_117 |2.0MB/s|GPT|NF|GM|56%
+  password: uyzMwZOG2JFOEXhjBnMX7bkf3o
+  port: 24742
+  server: 64.23.194.249
+  skip-cert-verify: true
   type: hysteria2
-  password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
-  auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
-  sni: flyxghy.flylink.cyou
+  udp: true
+- name: 🇯🇵 日本-1A
+  server: flyrb.flylink.cyou
+  port: 35300
+  type: hysteria2
+  password: 78e953b1-099f-40b8-9cda-f8bab72b532c
+  auth: 78e953b1-099f-40b8-9cda-f8bab72b532c
+  sni: flyxg.flylink.cyou
   skip-cert-verify: true
   obfs: salamander
   obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
   udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1L
+- name: 🇺🇸 美国-拉斯维加斯-HY-002-1A-4o1s
   server: 45.136.245.177
   port: 33079
   type: hysteria2
-  password: 272707f9-bbc8-4c52-8779-35a7ff57a680
-  auth: 272707f9-bbc8-4c52-8779-35a7ff57a680
+  password: 63453db5-265e-4a55-9dcd-2be768d6fad7
+  auth: 63453db5-265e-4a55-9dcd-2be768d6fad7
   up: 100
   down: 100
   skip-cert-verify: true
   obfs: salamander
   obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
   udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1D
+- name: 🇯🇵 日本-1D
+  server: yjjdrb.yunjijd.xyz
+  port: 26423
+  type: hysteria2
+  password: aa86b88d-678b-48d3-8693-3ab422385265
+  auth: aa86b88d-678b-48d3-8693-3ab422385265
+  sni: yjjdrb.yunjijd.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇺🇸 美国-拉斯维加斯-HY-002-1G-Ywky
   server: 45.136.245.177
   port: 33079
   type: hysteria2
-  password: 694eb481-7808-474a-b603-60e7aa7f0568
-  auth: 694eb481-7808-474a-b603-60e7aa7f0568
+  password: 59ff4748-cb72-4186-a23f-127c16751ad1
+  auth: 59ff4748-cb72-4186-a23f-127c16751ad1
   up: 100
   down: 100
   skip-cert-verify: true
   obfs: salamander
   obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
   udp: true
-- name: 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
-  server: 45.136.245.177
-  port: 33079
+- name: 🇯🇵 日本-1C-sVZg
+  server: nexiarb.688997.xyz
+  port: 20257
   type: hysteria2
-  password: 4fd4cd5c-1282-4df8-8ba0-84d5a318e8b2
-  auth: 4fd4cd5c-1282-4df8-8ba0-84d5a318e8b2
-  up: 100
-  down: 100
+  password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+  auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+  sni: nexiarb.688997.xyz
   skip-cert-verify: true
   obfs: salamander
-  obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
-  udp: true
-- name: 🇨🇦 加拿大-1A-Lu7n
-  server: flyjnd.flylink.cyou
-  port: 35280
-  type: hysteria2
-  password: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  auth: 62cc48b0-2601-40b3-b1a3-76b45e44fae8
-  sni: flyjnd.flylink.cyou
-  skip-cert-verify: true
-  obfs: salamander
-  obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+  obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
   udp: true
 proxy-groups:
 - name: 节点选择
@@ -987,119 +1035,110 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_59 |1.3MB/s|NF|D+
+  - 🇸🇬SG_10 |2.5MB/s|NF|D+
+  - ❓Other_8 |1.3MB/s
   - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸 US 561
-  - 🇸🇬SG_6 |1.1MB/s|NF
-  - 🇺🇸 US 569
-  - 🇺🇸US_96 |4.1MB/s|NF|D+
-  - 🇺🇸US_29 |1.1MB/s|NF
-  - 美国_1126491
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 🇺🇸 US 19
-  - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_51 |3.8MB/s
-  - 🇺🇸 US 254
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - ❓Other_1 |2.0MB/s
-  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
-  - 🇺🇸 US 15
-  - 🇺🇸 US 23
-  - 美国Seattle,+WA,+United+States
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 0|_42
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 16
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 25
-  - 🇳🇱 NL 4-LEnB
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 19
-  - "[103]PE_727\r\r"
-  - 🇺🇸 US 25
-  - "[103]PE_719\r\r"
-  - 🇺🇸 US 640
-  - "[100]德国-38.60.250.107-44639\r\r"
-  - "[103]PE_713\r\r"
+  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
+  - 🇺🇸US_56 |1.6MB/s|NF|D+|0%
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 🇺🇸US_113 |4.2MB/s
+  - 🇺🇸US_44 |3.6MB/s|D+|5%
+  - 🇺🇸US_20 |1.7MB/s|NF|D+
+  - 🇺🇸US_48 |4.2MB/s
+  - 🇺🇸US_86 |1.4MB/s|NF|D+
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_58 |2.1MB/s
+  - 🇺🇸US_53 |2.7MB/s|NF|D+
+  - 🇺🇸US_57 |1.2MB/s|NF|5%
+  - 🇺🇸US_26 |4.3MB/s
+  - 🇺🇸US_71 |1.2MB/s|D+
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - ❓Other_4 |3.3MB/s|GPT|NF|D+
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸 US 279
+  - 🇺🇸 US 46
+  - 🇺🇸 US 181
+  - 🇺🇸 US 68
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 118
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 加拿大_1126006
+  - 🇬🇧 GB 10
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 瑞士Zurich,+ZH,+Switzerland
+  - "[103]_RU_俄罗斯_210\r\r"
+  - 🇬🇧 GB 15
+  - 🇺🇸US_117 |2.0MB/s|GPT|NF|GM|56%
+  - 🇺🇸 US 328
+  - 🇺🇸 US 596
+  - 🇦🇷 AR 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 626
   - 🇺🇸 US 873
-  - "18|A_18066\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - "[103]PE_733\r\r"
-  - "[103]PE_724\r\r"
-  - 🇺🇸 US 642
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - 🇨🇦 加拿大-1A-Lu7n
-  - 🇻🇪 VE 2
-  - 🇺🇸 US 26
-  - 🇺🇸 US 871
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 🇬🇧 GB 5-gr5w
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - 414|qol_0810
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+80\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - 🇳🇱 NL 2-3Rq9
-  - 🇺🇸 US 36
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - 🇹🇼 TW 2
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 1-6jGG
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 8-jJkO
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 44
+  - 0|_207
+  - 🇵🇱 PL 3
+  - "[103]PE_736\r\r"
+  - 🇺🇸 US 791
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 0,1,2,3|ChatGPT  DE_65
+  - 🇺🇸 US 43
+  - 🇺🇸 US 876
+  - 🇬🇧 GB 5-t3jV
+  - 🇬🇹 GT 1
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇫🇷 FR 6
+  - 🇻🇪 VE 1-wGe3
+  - 🇹🇼 TW 1
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 20-fUGh
   - 🇻🇳 VN 237
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 8-QC5S
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 48
   - 🇻🇳 VN 170
-  - 🇺🇸 US 874
-  - 🇯🇵 JP 3
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇭🇰 香港-1B
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 澳大利亚AU-T
-  - 🇫🇷 FR 8
-  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 231
+  - 🇯🇵 日本-1C-sVZg
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - 🇯🇵 日本-1D
+  - 🇯🇵 日本-1A
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1A-4o1s
+  - 🇳🇱 NL 27
+  - 🇰🇷 KR 3
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1G-Ywky
+  - 越南VN-T
+  - 🇳🇱 NL 26
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1107,237 +1146,219 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_59 |1.3MB/s|NF|D+
+  - 🇸🇬SG_10 |2.5MB/s|NF|D+
+  - ❓Other_8 |1.3MB/s
   - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸 US 561
-  - 🇸🇬SG_6 |1.1MB/s|NF
-  - 🇺🇸 US 569
-  - 🇺🇸US_96 |4.1MB/s|NF|D+
-  - 🇺🇸US_29 |1.1MB/s|NF
-  - 美国_1126491
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 🇺🇸 US 19
-  - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_51 |3.8MB/s
-  - 🇺🇸 US 254
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - ❓Other_1 |2.0MB/s
-  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
-  - 🇺🇸 US 15
-  - 🇺🇸 US 23
-  - 美国Seattle,+WA,+United+States
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 0|_42
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 16
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 25
-  - 🇳🇱 NL 4-LEnB
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 19
-  - "[103]PE_727\r\r"
-  - 🇺🇸 US 25
-  - "[103]PE_719\r\r"
-  - 🇺🇸 US 640
-  - "[100]德国-38.60.250.107-44639\r\r"
-  - "[103]PE_713\r\r"
+  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
+  - 🇺🇸US_56 |1.6MB/s|NF|D+|0%
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 🇺🇸US_113 |4.2MB/s
+  - 🇺🇸US_44 |3.6MB/s|D+|5%
+  - 🇺🇸US_20 |1.7MB/s|NF|D+
+  - 🇺🇸US_48 |4.2MB/s
+  - 🇺🇸US_86 |1.4MB/s|NF|D+
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_58 |2.1MB/s
+  - 🇺🇸US_53 |2.7MB/s|NF|D+
+  - 🇺🇸US_57 |1.2MB/s|NF|5%
+  - 🇺🇸US_26 |4.3MB/s
+  - 🇺🇸US_71 |1.2MB/s|D+
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - ❓Other_4 |3.3MB/s|GPT|NF|D+
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸 US 279
+  - 🇺🇸 US 46
+  - 🇺🇸 US 181
+  - 🇺🇸 US 68
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 118
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 加拿大_1126006
+  - 🇬🇧 GB 10
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 瑞士Zurich,+ZH,+Switzerland
+  - "[103]_RU_俄罗斯_210\r\r"
+  - 🇬🇧 GB 15
+  - 🇺🇸US_117 |2.0MB/s|GPT|NF|GM|56%
+  - 🇺🇸 US 328
+  - 🇺🇸 US 596
+  - 🇦🇷 AR 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 626
   - 🇺🇸 US 873
-  - "18|A_18066\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - "[103]PE_733\r\r"
-  - "[103]PE_724\r\r"
-  - 🇺🇸 US 642
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - 🇨🇦 加拿大-1A-Lu7n
-  - 🇻🇪 VE 2
-  - 🇺🇸 US 26
-  - 🇺🇸 US 871
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 🇬🇧 GB 5-gr5w
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - 414|qol_0810
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+80\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - 🇳🇱 NL 2-3Rq9
-  - 🇺🇸 US 36
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - 🇹🇼 TW 2
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 1-6jGG
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 8-jJkO
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 44
+  - 0|_207
+  - 🇵🇱 PL 3
+  - "[103]PE_736\r\r"
+  - 🇺🇸 US 791
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 0,1,2,3|ChatGPT  DE_65
+  - 🇺🇸 US 43
+  - 🇺🇸 US 876
+  - 🇬🇧 GB 5-t3jV
+  - 🇬🇹 GT 1
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇫🇷 FR 6
+  - 🇻🇪 VE 1-wGe3
+  - 🇹🇼 TW 1
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 20-fUGh
   - 🇻🇳 VN 237
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 8-QC5S
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 48
   - 🇻🇳 VN 170
-  - 🇺🇸 US 874
-  - 🇯🇵 JP 3
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇭🇰 香港-1B
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 澳大利亚AU-T
-  - 🇫🇷 FR 8
-  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 231
+  - 🇯🇵 日本-1C-sVZg
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - 🇯🇵 日本-1D
+  - 🇯🇵 日本-1A
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1A-4o1s
+  - 🇳🇱 NL 27
+  - 🇰🇷 KR 3
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1G-Ywky
+  - 越南VN-T
+  - 🇳🇱 NL 26
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 🇺🇸US_108 |3.8MB/s
-  - 🇺🇸US_59 |1.3MB/s|NF|D+
+  - 🇸🇬SG_10 |2.5MB/s|NF|D+
+  - ❓Other_8 |1.3MB/s
   - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - 🇺🇸 US 561
-  - 🇸🇬SG_6 |1.1MB/s|NF
-  - 🇺🇸 US 569
-  - 🇺🇸US_96 |4.1MB/s|NF|D+
-  - 🇺🇸US_29 |1.1MB/s|NF
-  - 美国_1126491
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 🇺🇸 US 19
-  - 🇺🇸US_6 |1.3MB/s|NF
-  - 🇺🇸US_51 |3.8MB/s
-  - 🇺🇸 US 254
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - ❓Other_1 |2.0MB/s
-  - 🇱🇻LV_1 |2.8MB/s|GPT|NF|D+|3%
-  - 🇺🇸 US 15
-  - 🇺🇸 US 23
-  - 美国Seattle,+WA,+United+States
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+102\r\r"
-  - 0|_42
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - 🇩🇪 DE 27
-  - 🇺🇸 US 16
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 25
-  - 🇳🇱 NL 4-LEnB
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 19
-  - "[103]PE_727\r\r"
-  - 🇺🇸 US 25
-  - "[103]PE_719\r\r"
-  - 🇺🇸 US 640
-  - "[100]德国-38.60.250.107-44639\r\r"
-  - "[103]PE_713\r\r"
+  - 🇺🇸US_95 |2.0MB/s|NF|D+|5%
+  - 🇺🇸US_56 |1.6MB/s|NF|D+|0%
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 🇺🇸US_113 |4.2MB/s
+  - 🇺🇸US_44 |3.6MB/s|D+|5%
+  - 🇺🇸US_20 |1.7MB/s|NF|D+
+  - 🇺🇸US_48 |4.2MB/s
+  - 🇺🇸US_86 |1.4MB/s|NF|D+
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_58 |2.1MB/s
+  - 🇺🇸US_53 |2.7MB/s|NF|D+
+  - 🇺🇸US_57 |1.2MB/s|NF|5%
+  - 🇺🇸US_26 |4.3MB/s
+  - 🇺🇸US_71 |1.2MB/s|D+
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - ❓Other_4 |3.3MB/s|GPT|NF|D+
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸 US 279
+  - 🇺🇸 US 46
+  - 🇺🇸 US 181
+  - 🇺🇸 US 68
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸 US 45
+  - 🇺🇸 US 118
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 加拿大_1126006
+  - 🇬🇧 GB 10
+  - 🆔@LuxyNet💎❖丹麦❖DK❖1049
+  - 瑞士Zurich,+ZH,+Switzerland
+  - "[103]_RU_俄罗斯_210\r\r"
+  - 🇬🇧 GB 15
+  - 🇺🇸US_117 |2.0MB/s|GPT|NF|GM|56%
+  - 🇺🇸 US 328
+  - 🇺🇸 US 596
+  - 🇦🇷 AR 1
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 626
   - 🇺🇸 US 873
-  - "18|A_18066\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_25\r\r"
-  - "[103]PE_733\r\r"
-  - "[103]PE_724\r\r"
-  - 🇺🇸 US 642
-  - 36,79,82,117,242,246,311,355,364,365,421,424,441,601|🇬🇧GB-18.133.91.84-0102 |
-    10.977MB
-  - 🇨🇦 加拿大-1A-Lu7n
-  - 🇻🇪 VE 2
-  - 🇺🇸 US 26
-  - 🇺🇸 US 871
-  - "9,12,14|ChatGPT  N... #3\r\r"
-  - 🇬🇧 GB 5-gr5w
-  - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+65\r\r"
-  - 414|qol_0810
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+80\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+63\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - 🇳🇱 NL 2-3Rq9
-  - 🇺🇸 US 36
-  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
-    \ TR 45.89.52.66 ◈ tcp:9093 ◈ Stark Industries ◈ 39eac\r\r\r"
-  - 🇹🇼 TW 2
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 5
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 276
-  - 🇻🇳 VN 188
-  - 🇻🇳 VN 305
-  - 🇻🇳 VN 242
-  - 🇻🇳 VN 1-6jGG
-  - 🇻🇳 VN 53
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 262
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 17
-  - 🇻🇳 VN 8-jJkO
-  - 🇻🇳 VN 153
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 44
+  - 0|_207
+  - 🇵🇱 PL 3
+  - "[103]PE_736\r\r"
+  - 🇺🇸 US 791
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - 0,1,2,3|ChatGPT  DE_65
+  - 🇺🇸 US 43
+  - 🇺🇸 US 876
+  - 🇬🇧 GB 5-t3jV
+  - 🇬🇹 GT 1
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - 🇫🇷 FR 6
+  - 🇻🇪 VE 1-wGe3
+  - 🇹🇼 TW 1
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 20-fUGh
   - 🇻🇳 VN 237
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 21-R9Nq
+  - 🇻🇳 VN 8-QC5S
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 115
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 48
   - 🇻🇳 VN 170
-  - 🇺🇸 US 874
-  - 🇯🇵 JP 3
-  - "[1808.ga][1808.ga][freefq][freefq]Channel id: @ShadowProxy66\U0001F1ED\U0001F1F0\
-    \r\r\r"
-  - 🇭🇰 香港-1B
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 澳大利亚AU-T
-  - 🇫🇷 FR 8
-  - 🇺🇸US_37 |1.0MB/s|YT-JP|D+|GM
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1D
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1B-HVjm
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1L
+  - 🇻🇳 VN 187
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 86
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 83
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 177
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 173
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 236
+  - 🇻🇳 VN 95
+  - 🇻🇳 VN 160
+  - 🇻🇳 VN 126
+  - 🇻🇳 VN 67
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 205
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 127
+  - 🇻🇳 VN 231
+  - 🇯🇵 日本-1C-sVZg
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
+  - 🇯🇵 日本-1D
+  - 🇯🇵 日本-1A
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1A-4o1s
+  - 🇳🇱 NL 27
+  - 🇰🇷 KR 3
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1G-Ywky
+  - 越南VN-T
+  - 🇳🇱 NL 26
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
