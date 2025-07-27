@@ -6,8 +6,8 @@ import re
 # --- 配置开关 ---
 # 将此设置为 True 启用区域过滤（排除国内节点和保留特定国际节点），
 # 设置为 False 关闭区域过滤，所有通过其他校验的节点都会被保留。
-ENABLE_REGION_FILTERING = False 
-# --- 
+ENABLE_REGION_FILTERING = False
+# ---
 
 try:
     input_file = 'clash_config.yaml'
@@ -20,7 +20,7 @@ try:
 
     filtered_proxies = []
     # 用于跟踪已处理的代理名称，以便处理重复名称
-    seen_proxy_names = {} 
+    seen_proxy_names = {}
 
     if 'proxies' in config and isinstance(config['proxies'], list):
         for i, proxy in enumerate(config['proxies']):
@@ -97,6 +97,21 @@ try:
                        (vless_security.lower() not in ['tls', 'none']):
                         print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VLESS proxy due to unsupported or empty 'security' field ('{vless_security}').", file=sys.stderr)
                         is_valid_node = False
+
+                # --- 新增：VLESS REALITY 短 ID 校验 ---
+                reality_opts = proxy.get('reality-opts')
+                if reality_opts and isinstance(reality_opts, dict):
+                    short_id = reality_opts.get('short-id')
+                    if short_id:
+                        # short-id 必须是 16 位的十六进制字符串
+                        if not isinstance(short_id, str) or not re.fullmatch(r'^[0-9a-fA-F]{16}$', short_id):
+                            print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VLESS REALITY proxy due to invalid 'short-id' ('{short_id}'). Expected a 16-character hexadecimal string. This causes 'invalid REALITY short ID' error.", file=sys.stderr)
+                            is_valid_node = False
+                    # else: # 如果 reality-opts 存在但 short-id 缺失，也可以选择跳过，但这里根据错误信息主要针对 invalid short ID
+                    #     print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping VLESS REALITY proxy as 'short-id' is missing from 'reality-opts'.", file=sys.stderr)
+                    #     is_valid_node = False
+                # --- VLESS REALITY 短 ID 校验结束 ---
+
             elif proxy_type == 'hysteria2':
                 required_fields = ['server', 'port', 'password']
                 for field in required_fields:
@@ -129,7 +144,7 @@ try:
 
             # 如果节点在上述校验中被标记为无效，则跳过
             if not is_valid_node:
-                if missing_fields:
+                if missing_fields: # 仅当因为缺少字段而无效时才打印此警告
                     print(f"Warning: Proxy {i+1} ('{proxy_name}'): Skipping proxy due to missing required fields: {', '.join(missing_fields)}.", file=sys.stderr)
                 continue
 
@@ -172,7 +187,7 @@ try:
 
 
                 # 定义靠近中国的地区关键词，用于匹配服务器地址或节点名称 (这些是您希望保留的国际节点)
-                keywords_to_keep_near_china = ['sg', 'jp', 'kr', 'ru'] 
+                keywords_to_keep_near_china = ['sg', 'jp', 'kr', 'ru']
 
                 matched_region_to_keep = False
                 # 检查服务器地址是否包含保留关键词
@@ -189,7 +204,7 @@ try:
                             break
 
                 # 如果开启了过滤，但节点不属于要保留的区域，则跳过
-                if not matched_region_to_keep: 
+                if not matched_region_to_keep:
                     print(f"Info: Proxy {i+1} ('{proxy_name}'): Skipping proxy as it does not match close-to-China international regions. Server/Host: {server_address}", file=sys.stderr)
                     continue # 跳过此代理
             # --- 区域过滤逻辑结束 ---
