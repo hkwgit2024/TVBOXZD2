@@ -102,10 +102,10 @@ jobs:
             -upload-size 1 \
             -timeout 30s \
             -concurrent 15 \
-            -max-latency 5000ms \
-            -min-download-speed 1 \
+            -max-latency 3000ms \
+            -min-download-speed 0.1 \
             -min-upload-speed 0 \
-            -rename \
+           # -rename \
            
           echo "全速测试完成，结果保存到 clash.yaml"
 
