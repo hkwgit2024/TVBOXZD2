@@ -32,167 +32,160 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 🇺🇸 US 70
+- name: 🇺🇸 US 9
   type: vless
-  server: yd.laoyoutiao.link
+  server: servpn.my.id
+  port: 443
+  uuid: 5d1adccd-fbff-4c39-8a5c-cf6a23cda049
+  security: tls
+  tls: true
+  sni: servpn.my.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /sg2
+    headers:
+      Host: servpn.my.id
+- name: 🇺🇸 US 137
+  type: vless
+  server: support.zoom.us.sgjp.asolole.biz.id
+  port: 443
+  uuid: 1733f2a1-37f1-48c6-95d9-a60edefd3e15
+  security: tls
+  tls: true
+  sni: support.zoom.us.sgjp.asolole.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /jp2
+    headers:
+      Host: support.zoom.us.sgjp.asolole.biz.id
+- name: 🇺🇸 US 217
+  type: vless
+  server: us.laoyoutiao.link
   port: 443
   uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   security: tls
   tls: true
-  sni: yd.laoyoutiao.link
+  sni: us.laoyoutiao.link
   skip-cert-verify: false
   network: ws
   ws-opts:
     path: /?ed=2560
     headers:
-      Host: yd.laoyoutiao.link
-- name: 🇺🇸 US 303
-  type: vless
-  server: invincible.fafa20.shop
-  port: 2087
-  uuid: 376734bc-4db8-4317-b451-af0262cb01c7
-  security: tls
-  tls: true
-  sni: invINCIBLE.FAfa20.SHOp
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /fnxocitzwpgmrgmd/nzgundyuntyundi=?ed=2560
-    headers:
-      Host: invINCIBLE.FAfa20.SHOp
-- name: 🇻🇳 VN 10
+      Host: us.laoyoutiao.link
+- name: 🇻🇳 VN 116
   type: ss
-  server: 103.186.155.118
+  server: 103.186.155.126
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 13
+- name: 🇻🇳 VN 143
   type: ss
-  server: 103.186.154.25
+  server: 103.186.155.45
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 118
+- name: 🇻🇳 VN 146
   type: ss
-  server: 103.186.155.122
+  server: 103.186.155.205
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 134
+- name: 🇻🇳 VN 238
   type: ss
-  server: 103.186.154.59
+  server: 103.186.154.211
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 186
+- name: 🇻🇳 VN 241
   type: ss
-  server: 103.186.155.105
+  server: 103.186.155.10
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇳🇱 NL 4
+- name: 🇸🇬 SG 2
   type: ss
-  server: 149.34.244.77
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
+  server: 192.53.172.74
+  port: 30013
+  cipher: chacha20-ietf-poly1305
+  password: 2df393ef-b5fa-4ffd-9af3-761034bf33e3
   udp: true
-- name: 🇳🇱 NL 33
+- name: 🇳🇱 NL 5
   type: ss
-  server: 151.242.251.147
+  server: 45.87.175.157
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
   udp: true
-- name: 🇪🇪 EE 1
+- name: 🇺🇸 US 8
   type: ss
-  server: 188.214.36.155
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: 🇺🇸 US 9-E9ff
-  type: ss
-  server: 37.19.198.243
+  server: 37.19.198.160
   port: 443
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
-- name: 🇺🇸 US 18-gGa5
-  type: vmess
-  server: p03.xiaohezi.it.eu.org
+- name: 🇺🇸 US 10
+  type: vless
+  server: unlimited.spauu.web.id
+  port: 80
+  uuid: ff131e80-cdbf-4a7d-a3fc-ed1a5b7317ea
+  security: none
+  tls: false
+  sni: ''
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /vl=43.156.16.213=31528
+    headers:
+      Host: unlimited.spauu.web.id
+- name: 🇺🇸 US 11
+  type: ss
+  server: 37.19.198.244
   port: 443
-  uuid: eeeb949c-5629-4bb6-b41f-64cd8643154f
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: true
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 🇺🇸 US 16
+  type: vless
+  server: vip.arivganteng.biz.id
+  port: 80
+  uuid: ff5de033-50ff-41a0-80dc-333af49c7dc4
+  security: none
+  tls: false
   sni: ''
-  ws-opts:
-    path: /vmess
-    headers:
-      Host: p03.xiaohezi.it.eu.org
-- name: 🇺🇸 US 21
-  type: vmess
-  server: cc2dash.89060004.xyz
-  port: 2096
-  uuid: 2fc37713-3017-497e-ff2d-965f826a19a3
-  alterId: 0
-  cipher: auto
+  skip-cert-verify: false
   network: ws
-  tls: true
-  sni: ''
   ws-opts:
-    path: /
+    path: /ariv=27.0.234.74=2911
     headers:
-      Host: cc2dash.89060004.xyz
-- name: 🇨🇭 CH 2
+      Host: vip.arivganteng.biz.id
+- name: 🇺🇸 US 19
+  type: ss
+  server: 156.146.38.167
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: 🇩🇪 DE 4
   type: vmess
-  server: 23.166.88.183
-  port: 22324
-  uuid: 04621bae-ab36-11ec-b909-0242ac120002
+  server: 135.125.182.74
+  port: 28213
+  uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
   alterId: 0
   cipher: auto
   network: tcp
   tls: false
   sni: ''
   ws-opts: {}
-- name: 🇻🇳 VN 2
+- name: 🇻🇳 VN 15
   type: ss
-  server: 103.186.155.19
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 4
-  type: ss
-  server: 103.186.154.28
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 11
-  type: ss
-  server: 103.186.154.37
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 13-2C9g
-  type: ss
-  server: 103.186.155.133
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 16
-  type: ss
-  server: 103.186.154.38
+  server: 103.186.154.27
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -204,192 +197,167 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇺🇸 US 56
-  type: vless
-  server: svr.lufeng.pw
-  port: 443
-  uuid: 0c64d14e-4ce3-4aef-9b5e-8d4e331da587
-  security: tls
-  tls: true
-  sni: svr.lufeng.pw
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /id4
-    headers:
-      Host: svr.lufeng.pw
-- name: 🇺🇸 US 103
-  type: vless
-  server: pvt.moonop.tech
-  port: 443
-  uuid: 57b164dc-ca08-4057-8005-0ccae6c91b82
-  security: tls
-  tls: true
-  sni: pvt.moonop.tech
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /aws6
-    headers:
-      Host: pvt.moonop.tech
-- name: 🇺🇸 US 118
-  type: vless
-  server: blog.webex.com.yaya.web.id
-  port: 443
-  uuid: d380c794-fbec-4a00-9bf2-45b34ed1ca56
-  security: tls
-  tls: true
-  sni: blog.webex.com.yaya.web.id
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /gcp
-    headers:
-      Host: blog.webex.com.yaya.web.id
-- name: 🇺🇸 US 134
-  type: vless
-  server: quiz.int.vidio.com.yaya.web.id
-  port: 443
-  uuid: 0100148b-e58d-4002-90fb-1ca65e3b5f7b
-  security: tls
-  tls: true
-  sni: quiz.int.vidio.com.yaya.web.id
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /kr
-    headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-- name: 🇺🇸 US 196
-  type: vless
-  server: kjgx.laoyoutiao.link
-  port: 443
-  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
-  security: tls
-  tls: true
-  sni: kjgx.laoyoutiao.link
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /?ed=2560fp=random
-    headers:
-      Host: kjgx.laoyoutiao.link
-- name: 🇺🇸 US 234
-  type: vless
-  server: lufeng.pw
-  port: 80
-  uuid: cd1d3ccc-3ee6-4675-a891-3361668a1c93
-  security: none
-  tls: false
-  sni: ''
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /id5
-    headers:
-      Host: lufeng.pw
-- name: 🇺🇸 US 391
-  type: vless
-  server: vless.kensoko.my.id
-  port: 443
-  uuid: 0989fde6-0c6d-4b2d-8dcc-75a72b980633
-  security: tls
-  tls: true
-  sni: vless.kensoko.my.id
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /ovh
-    headers:
-      Host: vless.kensoko.my.id
-- name: 🇺🇸 US 515
-  type: vless
-  server: cfvless.zerostore.web.id
-  port: 443
-  uuid: 0616f921-e00d-4248-baa3-3871f64b7807
-  security: tls
-  tls: true
-  sni: cfvless.zerostore.web.id
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /id2
-    headers:
-      Host: cfvless.zerostore.web.id
-- name: 🇺🇸 US 568
-  type: vless
-  server: vvvvvvvvvvvv.999864.xyz
-  port: 443
-  uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
-  security: tls
-  tls: true
-  sni: vVvVVVvVVVvV.999864.xYZ
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /3zsSOohi9huFfjEPpIlRig3qizHXb
-    headers:
-      Host: vvvvvvvvvvvv.999864.xyz
-- name: 🇺🇸 US 645
-  type: vless
-  server: lllllllllllkjh.222560.xyz
-  port: 443
-  uuid: ce921385-2b31-45fe-84c5-1843e8ae845b
-  security: tls
-  tls: true
-  sni: LlLLLlLLLLLkjh.222560.xyZ
-  skip-cert-verify: false
-  network: ws
-  ws-opts:
-    path: /1xrOld7e5RpK3I98dxLkez
-    headers:
-      Host: lllllllllllkjh.222560.xyz
-- name: 🇺🇸 US 680
-  type: trojan
-  server: x5-usa-amazon-v2-p1sqx.devefun.org
-  port: 1935
-  password: 225vlZuFDm
-  sni: ''
-  skip-cert-verify: false
-- name: 🇺🇸 US 869
+- name: 🇻🇳 VN 21
   type: ss
-  server: us.fastsoonlink.com
-  port: 40001
-  cipher: chacha20-ietf-poly1305
-  password: 78e36312-16d4-49c2-ad18-610bf6d05d63
+  server: 103.186.155.30
+  port: 38388
+  cipher: aes-256-cfb
+  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇮🇪 IE 1
-  type: trojan
-  server: x2-ireland-amazon-v2.devefun.org
-  port: 1935
-  password: 1l1QbyaDhc
-  sni: ''
-  skip-cert-verify: false
-- name: 🇬🇧 GB 5-axkW
-  type: trojan
-  server: x2-england-amazon-v2.devefun.org
-  port: 1935
-  password: 2mCIecoWKc
-  sni: x2-england-amazon-v2.devefun.org
-  skip-cert-verify: false
-- name: 🇬🇧 GB 11
+- name: 🇦🇹 AT 1
   type: ss
-  server: 212.102.53.80
+  server: 185.180.12.81
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇫🇷 FR 4
+  type: ss
+  server: 195.154.185.174
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🇯🇵 JP 1-DkPA
+  type: ss
+  server: 149.22.87.241
   port: 443
   cipher: aes-128-gcm
   password: shadowsocks
   udp: true
-- name: 🇬🇧 GB 20
+- name: 🇱🇻 LV 1
+  type: ss
+  server: 195.123.213.12
+  port: 31348
+  cipher: chacha20-ietf-poly1305
+  password: 699hONcp4LmWu8Ck6hEPM34tt89EqAJ50k7FbRBdrBbxjX1n
+  udp: true
+- name: 🇺🇸 US 80
   type: vless
-  server: 54.38.214.56
-  port: 37171
-  uuid: 19199927-fb46-4203-8872-672fd1daca14
+  server: vip.arivganteng.biz.id
+  port: 443
+  uuid: 4cb9b678-4164-4260-add0-104165006702
+  security: tls
+  tls: true
+  sni: vip.arivganteng.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /ariv=45.77.171.102=3128
+    headers:
+      Host: vip.arivganteng.biz.id
+- name: 🇺🇸 US 135
+  type: vless
+  server: proud-fire-1775.mahmmod2025.workers.dev
+  port: 2095
+  uuid: e0e345e3-e2ce-4778-81ff-67b4a8feddd8
   security: none
   tls: false
   sni: ''
   skip-cert-verify: false
-  network: tcp
-  ws-opts: {}
+  network: ws
+  ws-opts:
+    path: /JsN7sW8Ij29g9HJw?ed=2560
+    headers:
+      Host: proud-fire-1775.mahmmod2025.workers.dev
+- name: 🇺🇸 US 197
+  type: vless
+  server: vipren.biz.id
+  port: 443
+  uuid: bbbbbbbb-cccc-4ddd-eeee-ffffffffffff
+  security: tls
+  tls: true
+  sni: vipren.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /Neoxide-X/131.186.20.178-27194
+    headers:
+      Host: vipren.biz.id
+- name: 🇺🇸 US 254
+  type: vless
+  server: zoomgov.vipren.biz.id
+  port: 443
+  uuid: 36a6a6f7-8f77-4b67-81b5-403a7613902e
+  security: tls
+  tls: true
+  sni: zoomgov.vipren.biz.id
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /115.242.180.202=19000
+    headers:
+      Host: zoomgov.vipren.biz.id
+- name: 🇺🇸 US 310
+  type: vless
+  server: ava.game.naver.com.sg1.hinamori.xyz
+  port: 443
+  uuid: 00347ce2-2c4e-4548-b640-6e30b9a6fd99
+  security: tls
+  tls: true
+  sni: ava.game.naver.com.sg1.hinamori.xyz
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /5
+    headers:
+      Host: ava.game.naver.com.sg1.hinamori.xyz
+- name: 🇺🇸 US 548
+  type: vless
+  server: 66tghji.191262.xyz
+  port: 443
+  uuid: 509ed9b7-8d64-4204-8ec8-6b749020ac3f
+  security: tls
+  tls: true
+  sni: 66tGHjI.191262.XyZ
+  skip-cert-verify: false
+  network: ws
+  ws-opts:
+    path: /VlJKGXt3aXBStn7
+    headers:
+      Host: 66tghji.191262.xyz
+- name: 🇺🇸 US 569
+  type: ss
+  server: 149.28.255.6
+  port: 816
+  cipher: chacha20-ietf-poly1305
+  password: GyZ5Xo0ht41vYmW3H4
+  udp: true
+- name: 🇺🇸 US 642
+  type: vmess
+  server: wsXCdfr5.999824.xYz
+  port: 443
+  uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+  alterId: 0
+  cipher: auto
+  network: ws
+  tls: true
+  sni: wSXCdFR5.999824.xYZ
+  ws-opts:
+    path: /9dZlJLjHHrL0VwSolbqFpg
+    headers:
+      Host: wsxcdfr5.999824.xyz
+- name: 🇬🇧 GB 8
+  type: trojan
+  server: x1-england-linode-v2-56k2k.devefun.org
+  port: 1935
+  password: 7Yo44vLpQU
+  sni: ''
+  skip-cert-verify: false
+- name: 🇫🇷 FR 4-UpBJ
+  type: trojan
+  server: x1-france-scaleway-v2.devefun.org
+  port: 1935
+  password: 05Hka06trH
+  sni: ''
+  skip-cert-verify: false
+- name: 🇫🇷 FR 6
+  type: trojan
+  server: x2-france-scaleway-v2.devefun.org
+  port: 1935
+  password: 6MkCymdpAW
+  sni: ''
+  skip-cert-verify: false
 - name: 🇨🇦 CA 9
   type: trojan
   server: x6-canada-amazon-v2-bzsn4.devefun.org
@@ -397,44 +365,30 @@ proxies:
   password: 0hHw5Sa8Ui
   sni: ''
   skip-cert-verify: false
-- name: 🇻🇳 VN 1-XZ4J
+- name: 🇻🇳 VN 27
   type: ss
-  server: 103.186.155.29
+  server: 103.186.155.221
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 21-kSjS
+- name: 🇻🇳 VN 29
   type: ss
-  server: 103.186.154.188
+  server: 103.186.155.234
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 24
+- name: 🇻🇳 VN 48
   type: ss
-  server: 103.186.155.224
+  server: 103.186.155.3
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 33
+- name: 🇻🇳 VN 55
   type: ss
-  server: 103.186.154.212
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 49
-  type: ss
-  server: 103.186.155.17
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 59
-  type: ss
-  server: 103.186.155.103
+  server: 103.186.154.184
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -446,142 +400,114 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 66
+- name: 🇻🇳 VN 77
   type: ss
-  server: 103.186.155.146
+  server: 103.186.154.231
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 74
+- name: 🇻🇳 VN 81
   type: ss
-  server: 103.186.155.34
+  server: 103.186.154.233
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 82
+- name: 🇻🇳 VN 86
   type: ss
-  server: 103.186.155.156
+  server: 103.186.154.253
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 85
+- name: 🇻🇳 VN 105
   type: ss
-  server: 103.186.154.208
+  server: 103.186.155.112
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 97
+- name: 🇻🇳 VN 154
   type: ss
-  server: 103.186.154.213
+  server: 103.186.155.79
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 108
+- name: 🇻🇳 VN 157
   type: ss
-  server: 103.186.155.60
+  server: 103.186.154.206
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 121
+- name: 🇻🇳 VN 158
   type: ss
-  server: 103.186.155.42
+  server: 103.186.155.55
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 128
+- name: 🇻🇳 VN 159
   type: ss
-  server: 103.186.154.241
+  server: 103.186.154.57
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 141
+- name: 🇻🇳 VN 164
   type: ss
-  server: 103.186.154.230
+  server: 103.186.154.181
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 156
+- name: 🇻🇳 VN 169
   type: ss
-  server: 103.186.154.61
+  server: 103.186.155.32
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 163
+- name: 🇻🇳 VN 200
   type: ss
-  server: 103.186.154.218
+  server: 103.186.154.199
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 189
+- name: 🇻🇳 VN 244
   type: ss
-  server: 103.186.154.209
+  server: 103.186.154.223
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 195
+- name: 🇻🇳 VN 246
   type: ss
-  server: 103.186.154.239
+  server: 103.186.155.5
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 208
+- name: 🇻🇳 VN 253
   type: ss
-  server: 103.186.154.186
+  server: 103.186.155.39
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 211
+- name: 🇻🇳 VN 271
   type: ss
-  server: 103.186.154.9
+  server: 103.186.155.238
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 227
+- name: 🇻🇳 VN 290
   type: ss
-  server: 103.186.155.143
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 242
-  type: ss
-  server: 103.186.155.62
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 264
-  type: ss
-  server: 103.186.155.214
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 279
-  type: ss
-  server: 103.186.155.36
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 295
-  type: ss
-  server: 103.186.154.73
+  server: 103.186.155.148
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -600,146 +526,114 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 310
+- name: 🇩🇪 DE 38
   type: ss
-  server: 103.186.154.224
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇩🇪 DE 40
-  type: ss
-  server: 80.92.204.106
-  port: 9000
-  cipher: aes-256-cfb
-  password: a3GFYt36Sm82Vys9
-  udp: true
-- name: 🇩🇪 DE 42
-  type: ss
-  server: de.vpnsparta.pro
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: c40641c1f89e7acb
-  udp: true
-- name: 🇳🇱 NL 10
-  type: ss
-  server: ltnl16.saint.ydns.eu
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇳🇱 NL 26
-  type: ss
-  server: 193.29.139.132
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇳🇱 NL 31
-  type: ss
-  server: 193.29.139.168
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  udp: true
-- name: 🇰🇿 KZ 2
-  type: ss
-  server: kz.vmagnum.win
+  server: desrv.vmagnum.win
   port: 57456
   cipher: chacha20-ietf-poly1305
   password: a58fa62b4944ddbf
   udp: true
-- name: 🇸🇬 SG 3
+- name: 🇦🇺 AU 3
   type: ss
-  server: 68.183.227.236
+  server: frk.fastsoonlink.com
+  port: 40011
+  cipher: chacha20-ietf-poly1305
+  password: ae6e933b-8874-4bf4-a384-0de216ef2bf4
+  udp: true
+- name: 🇻🇪 VE 1-l8qx
+  type: ss
+  server: 45.158.171.150
   port: 8080
-  cipher: rc4-md5
-  password: 14fFPrbezE3HDZzsMOr6
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
   udp: true
-- name: 🇵🇱 PL 2
-  type: ss
-  server: 217.30.10.18
-  port: 9064
-  cipher: aes-256-cfb
-  password: cp8pRSUAyLhTfVWH
-  udp: true
-- name: 朝鲜KP-T
-  type: trojan
-  server: kp.mjt000.com
-  port: 443
-  password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
-  sni: kp.mjt000.com
-  skip-cert-verify: false
-- name: 澳大利亚AU-T
-  type: trojan
-  server: au.mjt000.com
-  port: 443
-  password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
-  sni: au.mjt000.com
-  skip-cert-verify: false
-- name: 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
+- name: 🇱🇹 LT 1
   type: ss
   server: 192.36.61.59
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  type: ss
-  server: 194.71.126.31
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
-  udp: true
-- name: 0,1,2,3,6,8| US_179 | 3.40Mb
-  type: ss
-  server: 156.146.38.170
-  port: 443
-  cipher: aes-128-gcm
-  password: shadowsocks
-  udp: true
-- name: '[112]🏁RELAY-104.17.213.241-0102'
-  type: vmess
-  server: yx1.niaoba.top
-  port: 2052
-  uuid: fc5e2c6a-5138-4746-baf2-d80ffb678604
-  alterId: 0
-  cipher: auto
-  network: ws
-  tls: false
-  sni: ''
-  ws-opts:
-    path: /
-    headers:
-      Host: 117653136.vmus4.taobao.yyds.niaoba.top
-- name: "[100]加拿大-79.127.200.162-37853\r\r"
-  type: ss
-  server: 79.127.200.162
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   udp: true
-- name: 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
+- name: ⟮t.me/LonUp_M⟯⁜مخابرات▦773
+  type: trojan
+  server: tk-tr-4.cats22.net
+  port: 443
+  password: 18844%40zxcvbn
+  sni: ''
+  skip-cert-verify: false
+- name: 🆔@LuxyNet💎❖阿富汗❖AF❖1626
   type: ss
-  server: 45.144.48.63
-  port: 57456
+  server: 121.127.46.147
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 🆔⟪@LonUp_M⟫🟠ALL⌁1480
+  type: ss
+  server: 192.71.244.150
+  port: 989
+  cipher: aes-256-cfb
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: 美国Seattle,+WA,+United+States
+  type: ss
+  server: 212.102.47.129
+  port: 443
+  cipher: aes-128-gcm
+  password: shadowsocks
+  udp: true
+- name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  type: ss
+  server: 79.110.54.250
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  type: ss
+  server: 193.29.139.251
+  port: 8080
   cipher: chacha20-ietf-poly1305
-  password: d3837224ed465f00
+  password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
-- name: "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+- name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
   type: ss
-  server: 107.151.182.197
+  server: 138.197.165.21
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: '[112]🇺🇸US-194.5.215.171-0135'
+- name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
   type: ss
-  server: 194.5.215.171
+  server: 45.84.123.247
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[103]PE_741\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9037
+  cipher: aes-256-cfb
+  password: TN2YqghxeFDKZfLU
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  type: ss
+  server: 146.70.61.37
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "9,12,14|ChatGPT  N... #3\r\r"
+  type: ss
+  server: 193.29.139.202
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
   udp: true
 - name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+86\r\r"
@@ -749,76 +643,130 @@ proxies:
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: "[103]PE_713\r\r"
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
   type: ss
-  server: 217.30.10.70
-  port: 9094
-  cipher: aes-256-cfb
-  password: rpgbNnU9rDDU4aWZ
-  udp: true
-- name: "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\
-    \r"
-  type: ss
-  server: 107.155.57.11
+  server: 98.98.142.161
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
   udp: true
-- name: "[103]PE_727\r\r"
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
+  type: ss
+  server: 146.70.20.147
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  type: ss
+  server: 146.70.29.32
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  type: ss
+  server: 128.1.205.124
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  type: ss
+  server: 146.70.46.237
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[100]波兰-92.118.205.228-35989\r\r"
+  type: ss
+  server: 92.118.205.228
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
+  type: ss
+  server: 138.199.43.167
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
+  type: ss
+  server: 217.30.10.18
+  port: 9019
+  cipher: aes-256-cfb
+  password: GA9KzeEgvfxNrgmM
+  udp: true
+- name: "[103]PE_751\r\r"
   type: ss
   server: 217.30.10.70
-  port: 9098
+  port: 9010
   cipher: aes-256-cfb
-  password: aLpQtfEZe445QyHk
+  password: f63gg8EruDnUrmz4
   udp: true
-- name: "[103]_俄罗斯_hamraH_135\r\r"
+- name: "[103]PE_707\r\r"
+  type: ss
+  server: 217.30.10.70
+  port: 9033
+  cipher: aes-256-cfb
+  password: UTJA57ypk2XKQpnm
+  udp: true
+- name: "[103]_俄罗斯_hamraH_416\r\r"
   type: ss
   server: 80.92.204.106
-  port: 9018
+  port: 9008
   cipher: aes-256-cfb
-  password: fG2artUmHfNT2cX7
+  password: y9VURyNzJWNRYEGQ
   udp: true
-- name: "[103]PE_731\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9031
-  cipher: aes-256-cfb
-  password: BwcAUZk8hUFAkDGN
-  udp: true
-- name: "[103]PE_715\r\r"
-  type: ss
-  server: 217.30.10.70
-  port: 9070
-  cipher: aes-256-cfb
-  password: bf7v334KKDV3YDhH
-  udp: true
-- name: "[103]_RU_俄罗斯_202\r\r"
+- name: "[103]_俄罗斯_hamraH_417\r\r"
   type: ss
   server: 80.92.204.106
-  port: 9007
+  port: 9001
   cipher: aes-256-cfb
-  password: kSPmvwdFzGMMW5pY
+  password: UkXRsXvR6buDMG2Y
   udp: true
-- name: "[103]PE_720\r\r"
+- name: "[103]PE_725\r\r"
   type: ss
   server: 217.30.10.70
-  port: 9046
+  port: 9014
   cipher: aes-256-cfb
-  password: NvS8N4Vf8qAGPSCL
+  password: KnJGad3FqTvjqbaX
   udp: true
-- name: "[103]PE_712\r\r"
+- name: "[103]PE_730\r\r"
   type: ss
   server: 217.30.10.70
-  port: 9041
+  port: 9020
   cipher: aes-256-cfb
-  password: U6qnYRhfyDmn8sgn
+  password: BNmAXXxAHYpTRdzu
   udp: true
-- name: "[103]PE_739\r\r"
+- name: "[103]_俄罗斯_hamraH_419\r\r"
   type: ss
-  server: 217.30.10.70
-  port: 9057
+  server: 80.92.204.106
+  port: 9088
   cipher: aes-256-cfb
-  password: wjTugX3ZtHMB9c3Z
+  password: f8npKgNzdkss2ytn
+  udp: true
+- name: "[103]_RU_俄罗斯_127\r\r"
+  type: ss
+  server: 80.92.204.106
+  port: 9030
+  cipher: aes-256-cfb
+  password: GeregetR8cvQHzYr
+  udp: true
+- name: "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  type: ss
+  server: 217.30.10.18
+  port: 9094
+  cipher: aes-256-cfb
+  password: rpgbNnU9rDDU4aWZ
   udp: true
 - name: 18,26,51,109,110,112,114,115|🇺_RU_ham_26
   type: ss
@@ -827,12 +775,34 @@ proxies:
   cipher: aes-256-cfb
   password: UWZQeLRWnkqgkseq
   udp: true
-- name: "18|A_18060\r\r"
+- name: "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  type: ss
+  server: 45.89.52.66
+  port: 9054
+  cipher: aes-256-cfb
+  password: VcFuyXvND2yQWSFY
+  udp: true
+- name: 18,26,51,109,110,112,114,115|🇺_RU_ham_37
   type: ss
   server: 217.30.10.18
-  port: 9079
+  port: 9073
   cipher: aes-256-cfb
-  password: TPqX8edgbAURcAMb
+  password: daFYagqDdBdA6VTX
+  udp: true
+- name: "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  type: ss
+  server: 217.30.10.18
+  port: 9008
+  cipher: aes-256-cfb
+  password: y9VURyNzJWNRYEGQ
+  udp: true
+- name: "[116][101]马耳他_0928001\r\r"
+  type: ss
+  server: 171.22.254.17
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
   udp: true
 - name: "18|A_18061\r\r"
   type: ss
@@ -841,10 +811,25 @@ proxies:
   cipher: aes-256-cfb
   password: aLpQtfEZe445QyHk
   udp: true
-- name: "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+- name: "[1113][76]土耳其_1009002\r\r"
   type: ss
-  server: 68.183.227.216
+  server: 185.123.101.241
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  udp: true
+- name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  type: ss
+  server: 185.220.68.185
+  port: 8080
+  cipher: rc4-md5
+  password: 14fFPrbezE3HDZzsMOr6
+  udp: true
+- name: "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  type: ss
+  server: 68.183.235.122
   port: 8080
   cipher: rc4-md5
   password: 14fFPrbezE3HDZzsMOr6
@@ -861,109 +846,120 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸 US 9-E9ff
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 391
-  - 🇺🇸 US 70
-  - 🇺🇸 US 118
-  - 🇺🇸 US 134
-  - 🇺🇸 US 234
-  - 🇺🇸 US 196
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 56
-  - 🇺🇸 US 515
-  - 🇺🇸 US 568
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 4
+  - 🇺🇸 US 8
+  - 🇺🇸 US 11
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 80
+  - 🇺🇸 US 569
+  - 🇺🇸 US 310
+  - 🇺🇸 US 19
+  - 🇺🇸 US 254
+  - 🇺🇸 US 16
+  - 🇺🇸 US 548
+  - 🇺🇸 US 217
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸 US 197
+  - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 135
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+86\r\r"
-  - 🇬🇧 GB 20
-  - 🇬🇧 GB 11
-  - 🇳🇱 NL 31
-  - 🇩🇪 DE 40
-  - "18|A_18060\r\r"
-  - 🇨🇭 CH 2
-  - "[103]PE_715\r\r"
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - 🇺🇸 US 645
-  - "[103]PE_739\r\r"
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]_RU_俄罗斯_202\r\r"
-  - "[103]PE_731\r\r"
+  - "[103]_RU_俄罗斯_127\r\r"
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇳🇱 NL 5
+  - 🇻🇪 VE 1-l8qx
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 642
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇺🇸 US 137
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
+  - "[103]PE_707\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[103]PE_751\r\r"
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇩🇪 DE 4
+  - "[103]PE_730\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "[103]PE_725\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - 🇨🇦 CA 9
-  - "[103]PE_712\r\r"
-  - 🇳🇱 NL 33
-  - 🇺🇸 US 303
-  - "[103]PE_720\r\r"
-  - "[103]PE_713\r\r"
-  - 🇵🇱 PL 2
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "18|A_18061\r\r"
-  - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇮🇪 IE 1
-  - 🇺🇸 US 18-gGa5
-  - 🇬🇧 GB 5-axkW
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
   - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 680
-  - 🇳🇱 NL 10
-  - 🇺🇸 US 21
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - "18|A_18061\r\r"
+  - 🇱🇹 LT 1
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][76]土耳其_1009002\r\r"
+  - 🇺🇸 US 10
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
+  - "[116][101]马耳他_0928001\r\r"
+  - 🇯🇵 JP 1-DkPA
+  - 🇩🇪 DE 38
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇫🇷 FR 4-UpBJ
+  - 🇫🇷 FR 6
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇸🇬 SG 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - 🇱🇻 LV 1
+  - 🇦🇺 AU 3
   - 🇻🇳 VN 296
+  - 🇻🇳 VN 77
   - 🇻🇳 VN 303
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 310
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 141
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 189
   - 🇻🇳 VN 20
-  - 🇻🇳 VN 195
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 143
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 86
   - 🇻🇳 VN 62
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 1-XZ4J
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 21-kSjS
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 13-2C9g
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 242
-  - 🇩🇪 DE 42
-  - 🇰🇿 KZ 2
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇳🇱 NL 26
-  - 澳大利亚AU-T
-  - 朝鲜KP-T
-  - 🇺🇸 US 869
-  - 🇪🇪 EE 1
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 169
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -971,217 +967,239 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 🇺🇸 US 9-E9ff
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 391
-  - 🇺🇸 US 70
-  - 🇺🇸 US 118
-  - 🇺🇸 US 134
-  - 🇺🇸 US 234
-  - 🇺🇸 US 196
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 56
-  - 🇺🇸 US 515
-  - 🇺🇸 US 568
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 4
+  - 🇺🇸 US 8
+  - 🇺🇸 US 11
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 80
+  - 🇺🇸 US 569
+  - 🇺🇸 US 310
+  - 🇺🇸 US 19
+  - 🇺🇸 US 254
+  - 🇺🇸 US 16
+  - 🇺🇸 US 548
+  - 🇺🇸 US 217
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸 US 197
+  - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 135
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+86\r\r"
-  - 🇬🇧 GB 20
-  - 🇬🇧 GB 11
-  - 🇳🇱 NL 31
-  - 🇩🇪 DE 40
-  - "18|A_18060\r\r"
-  - 🇨🇭 CH 2
-  - "[103]PE_715\r\r"
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - 🇺🇸 US 645
-  - "[103]PE_739\r\r"
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]_RU_俄罗斯_202\r\r"
-  - "[103]PE_731\r\r"
+  - "[103]_RU_俄罗斯_127\r\r"
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇳🇱 NL 5
+  - 🇻🇪 VE 1-l8qx
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 642
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇺🇸 US 137
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
+  - "[103]PE_707\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[103]PE_751\r\r"
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇩🇪 DE 4
+  - "[103]PE_730\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "[103]PE_725\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - 🇨🇦 CA 9
-  - "[103]PE_712\r\r"
-  - 🇳🇱 NL 33
-  - 🇺🇸 US 303
-  - "[103]PE_720\r\r"
-  - "[103]PE_713\r\r"
-  - 🇵🇱 PL 2
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "18|A_18061\r\r"
-  - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇮🇪 IE 1
-  - 🇺🇸 US 18-gGa5
-  - 🇬🇧 GB 5-axkW
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
   - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 680
-  - 🇳🇱 NL 10
-  - 🇺🇸 US 21
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - "18|A_18061\r\r"
+  - 🇱🇹 LT 1
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][76]土耳其_1009002\r\r"
+  - 🇺🇸 US 10
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
+  - "[116][101]马耳他_0928001\r\r"
+  - 🇯🇵 JP 1-DkPA
+  - 🇩🇪 DE 38
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇫🇷 FR 4-UpBJ
+  - 🇫🇷 FR 6
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇸🇬 SG 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - 🇱🇻 LV 1
+  - 🇦🇺 AU 3
   - 🇻🇳 VN 296
+  - 🇻🇳 VN 77
   - 🇻🇳 VN 303
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 310
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 141
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 189
   - 🇻🇳 VN 20
-  - 🇻🇳 VN 195
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 143
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 86
   - 🇻🇳 VN 62
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 1-XZ4J
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 21-kSjS
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 13-2C9g
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 242
-  - 🇩🇪 DE 42
-  - 🇰🇿 KZ 2
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇳🇱 NL 26
-  - 澳大利亚AU-T
-  - 朝鲜KP-T
-  - 🇺🇸 US 869
-  - 🇪🇪 EE 1
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 169
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 🇺🇸 US 9-E9ff
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 0,1,2,3,6,8| US_179 | 3.40Mb
-  - 🇺🇸 US 391
-  - 🇺🇸 US 70
-  - 🇺🇸 US 118
-  - 🇺🇸 US 134
-  - 🇺🇸 US 234
-  - 🇺🇸 US 196
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇺🇸 US 56
-  - 🇺🇸 US 515
-  - 🇺🇸 US 568
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - 🇺🇸 US 103
-  - 🇳🇱 NL 4
+  - 🇺🇸 US 8
+  - 🇺🇸 US 11
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +116\r\r"
+  - 🇺🇸 US 80
+  - 🇺🇸 US 569
+  - 🇺🇸 US 310
+  - 🇺🇸 US 19
+  - 🇺🇸 US 254
+  - 🇺🇸 US 16
+  - 🇺🇸 US 548
+  - 🇺🇸 US 217
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸 US 197
+  - 美国Seattle,+WA,+United+States
+  - 🇺🇸 US 135
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +40\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 9
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+99\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+103\r\r"
+  - 🇫🇷 FR 4
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+86\r\r"
-  - 🇬🇧 GB 20
-  - 🇬🇧 GB 11
-  - 🇳🇱 NL 31
-  - 🇩🇪 DE 40
-  - "18|A_18060\r\r"
-  - 🇨🇭 CH 2
-  - "[103]PE_715\r\r"
-  - 立陶宛⁕LT⁕⟨t.me/LonUp_M⟩⁕MCI⁕69
-  - 🇺🇸 US 645
-  - "[103]PE_739\r\r"
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]_RU_俄罗斯_202\r\r"
-  - "[103]PE_731\r\r"
+  - "[103]_RU_俄罗斯_127\r\r"
+  - "9,12,14|ChatGPT  N... #3\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇳🇱 NL 5
+  - 🇻🇪 VE 1-l8qx
+  - "[103]_俄罗斯_hamraH_417\r\r"
+  - 🇺🇸 US 642
+  - "[100]波兰-92.118.205.228-35989\r\r"
+  - 🇺🇸 US 137
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1480
+  - "[103]PE_707\r\r"
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +122\r\r"
+  - 🇦🇹 AT 1
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[103]PE_751\r\r"
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇩🇪 DE 4
+  - "[103]PE_730\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - "[103]PE_725\r\r"
+  - "[103]PE_741\r\r"
+  - "[103]_俄罗斯_hamraH_416\r\r"
   - 🇨🇦 CA 9
-  - "[103]PE_712\r\r"
-  - 🇳🇱 NL 33
-  - 🇺🇸 US 303
-  - "[103]PE_720\r\r"
-  - "[103]PE_713\r\r"
-  - 🇵🇱 PL 2
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "18|A_18061\r\r"
-  - 61,66,159|🇵🇱PL-45.144.48.63-0347 | 1.882...
-  - 🇮🇪 IE 1
-  - 🇺🇸 US 18-gGa5
-  - 🇬🇧 GB 5-axkW
-  - 🇸🇬 SG 3
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
   - 18,26,51,109,110,112,114,115|🇺_RU_ham_26
-  - 🇺🇸 US 680
-  - 🇳🇱 NL 10
-  - 🇺🇸 US 21
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - "18|A_18061\r\r"
+  - 🇱🇹 LT 1
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - "[1113][76]土耳其_1009002\r\r"
+  - 🇺🇸 US 10
+  - 1,2,122,186,193,195,270|🇷🇺 RU 51 → tg@nicevpn123
+  - "[116][101]马耳他_0928001\r\r"
+  - 🇯🇵 JP 1-DkPA
+  - 🇩🇪 DE 38
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇫🇷 FR 4-UpBJ
+  - 🇫🇷 FR 6
+  - 🇬🇧 GB 8
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][68][82][82][82][68][82][82][82][68][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+53\r\r"
+  - 🇸🇬 SG 2
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+80\r\r"
+  - 🇱🇻 LV 1
+  - 🇦🇺 AU 3
   - 🇻🇳 VN 296
+  - 🇻🇳 VN 77
   - 🇻🇳 VN 303
-  - 🇻🇳 VN 13
-  - 🇻🇳 VN 310
-  - 🇻🇳 VN 82
-  - 🇻🇳 VN 4
-  - 🇻🇳 VN 128
-  - 🇻🇳 VN 11
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 141
-  - 🇻🇳 VN 2
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 33
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 108
-  - 🇻🇳 VN 189
   - 🇻🇳 VN 20
-  - 🇻🇳 VN 195
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 244
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 143
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 55
+  - 🇻🇳 VN 29
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 48
+  - 🇻🇳 VN 290
+  - 🇻🇳 VN 86
   - 🇻🇳 VN 62
-  - 🇻🇳 VN 74
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 85
-  - 🇻🇳 VN 208
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 1-XZ4J
-  - 🇻🇳 VN 295
-  - 🇻🇳 VN 21-kSjS
-  - 🇻🇳 VN 49
-  - 🇻🇳 VN 13-2C9g
-  - 🇻🇳 VN 24
-  - 🇻🇳 VN 118
-  - 🇻🇳 VN 186
-  - 🇻🇳 VN 10
-  - 🇻🇳 VN 211
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 66
-  - 🇻🇳 VN 227
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 59
-  - 🇻🇳 VN 242
-  - 🇩🇪 DE 42
-  - 🇰🇿 KZ 2
-  - '[112]🏁RELAY-104.17.213.241-0102'
-  - 🇳🇱 NL 26
-  - 澳大利亚AU-T
-  - 朝鲜KP-T
-  - 🇺🇸 US 869
-  - 🇪🇪 EE 1
+  - 🇻🇳 VN 253
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 241
+  - 🇻🇳 VN 157
+  - 🇻🇳 VN 271
+  - 🇻🇳 VN 27
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 238
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 169
+  - "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7\
+    \ TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+  - ⟮t.me/LonUp_M⟯⁜مخابرات▦773
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
