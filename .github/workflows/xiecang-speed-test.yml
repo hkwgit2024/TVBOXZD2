@@ -103,7 +103,7 @@ jobs:
             -timeout 90s \
             -concurrent 58 \
             -max-latency 3000ms \
-            -min-download-speed 0 \
+            -min-download-speed 0.1 \
             -min-upload-speed 0 \
             -rename \
            
