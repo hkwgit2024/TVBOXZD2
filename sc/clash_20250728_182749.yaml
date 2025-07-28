@@ -1,0 +1,5194 @@
+proxy-providers: {}
+proxies:
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: ava.game.naver.com.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: ava.game.naver.com.zee.upigg.my.id
+      tls: true
+      type: vless
+      uuid: ccead076-1968-47d5-8545-2fb5031f0fe8
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.zee.upigg.my.id
+        path: /idcoud
+    - cipher: aes-256-cfb
+      name: "\U0001F1EE\U0001F1F8 IS | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 37.235.49.152
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: SBM7R883jBmnqe6C
+      port: 9053
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EE\U0001F1F1 IL | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 169.150.202.174
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: wwSXCdFRt.999824.XyZ
+      sni: wwsXcdFRT.999824.XYz
+      tls: true
+      type: vmess
+      uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+      ws-opts:
+        headers:
+            Host: wwsxcdfrt.999824.xyz
+        path: /9dZlJLjHHrL0VwSolbqFpg
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 104.16.210.28
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - auth: e626748a-784f-4367-a62a-009ecf18e924
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: e626748a-784f-4367-a62a-009ecf18e924
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.197.165.21
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: kjgx.laoyoutiao.link
+      skip-cert-verify: false
+      sni: kjgx.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+        path: /?ed=2560fp=random
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26723
+      server: yjjdhg.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjdhg.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.51
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.236
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 167.68.4.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.209
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 51.79.103.76
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 58fe1542-5290-40ad-815a-77707a81afe5
+      ws-opts:
+        headers:
+            Host: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc
+        path: /IOebhLMhl1CTbFHbL95myfRX2
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.59
+      type: ss
+      udp: true
+    - name: "\U0001F3F3️ KZ | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 194.76.18.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.140
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 31004
+      server: bgp1.bgp1.aktcjsq.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 86e56c62-ccd5-3c4f-9ef6-65c8431b9f41
+      ws-opts: {}
+    - auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      port: 35260
+      server: flyxghy.flylink.cyou
+      skip-cert-verify: true
+      sni: flyxghy.flylink.cyou
+      type: hysteria2
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 130b8183-sv0xs0-td5fm5-4dl0.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 56b05600-e140-11ec-a3de-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.121
+      type: ss
+      udp: true
+    - name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 27.50.49.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EA\U0001F1F8 ES | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 45.154.206.192
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 205.233.181.251
+      type: vless
+      udp: true
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+            User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 130.250.137.148
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Linux; Android 5.1; A1601 Build/LMY47I) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: blog.webex.com.yaya.web.id
+      skip-cert-verify: false
+      sni: blog.webex.com.yaya.web.id
+      tls: true
+      type: vless
+      uuid: d380c794-fbec-4a00-9bf2-45b34ed1ca56
+      ws-opts:
+        headers:
+            Host: blog.webex.com.yaya.web.id
+        path: /gcp
+    - auth: 59ff4748-cb72-4186-a23f-127c16751ad1
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 59ff4748-cb72-4186-a23f-127c16751ad1
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 20521
+      server: 121.154.187.44
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: efeca8c2-8f63-467b-8d28-d630a7a9dc8f
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 104.24.56.133
+      skip-cert-verify: false
+      sni: AdD-1cv.PageS.DEV
+      tls: true
+      type: vless
+      uuid: 2836c061-ea09-45e5-a98e-4ca478e744b0
+      ws-opts:
+        headers:
+            Host: add-1cv.pages.dev
+        path: /sWtps1PwUy3xht1c/Y2RuLWIxMDAueG4tLWI2Z2FjLmV1Lm9yZw==?ed=2560
+    - name: "\U0001F3F3️ CW | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 88.216.66.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2052
+      security: none
+      server: 104.16.184.232
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: b6a617b7-758e-4639-b2f4-d296c0f1b03e
+      ws-opts:
+        headers:
+            Host: register.tunnelbreaking.shop
+        path: /
+    - name: "\U0001F1E8\U0001F1FE CY | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 195.26.229.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1ED\U0001F1FA HU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 141.11.202.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.146.81
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: 7a49ebc8-6235-36b1-b7b4-0864b95bd90a
+      port: 4586
+      server: ca1.aaaa.gay
+      skip-cert-verify: false
+      sni: ca1.aaaa.gay
+      type: trojan
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 195.13.45.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.224
+      type: ss
+      udp: true
+    - auth: 56bbc10f-558c-412d-93a7-e2ef15837405
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 56bbc10f-558c-412d-93a7-e2ef15837405
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1E8\U0001F1F3 CN | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 77.105.163.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 69.84.182.31
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      password: 7Yo44vLpQU
+      port: 1935
+      server: x1-england-linode-v2-56k2k.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 141.193.213.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.173
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F9\U0001F1F7 TR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8443
+      server: 185.93.69.6
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: ec161019-8535-4307-b5e0-03389cac5a77
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 199.34.228.247
+      servername: ex.sue.x10.mx
+      type: vless
+      udp: true
+      uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
+      ws-opts:
+        headers:
+            Host: ex.sue.x10.mx
+            User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36
+        path: /Telegram
+      xudp: true
+    - name: "\U0001F1E8\U0001F1F7 CR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8443
+      security: tls
+      server: 190.93.246.246
+      skip-cert-verify: false
+      sni: bitget1.asdasd.click
+      tls: true
+      type: vless
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+        path: /?ed=2560fp=chrome
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F2\U0001F1FE MY | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 103.243.215.17
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F8\U0001F1EA SE | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 18000
+      server: 149.50.216.6
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: f8c8dc3d-0d37-46b0-8b34-a7232882fcfe
+      ws-opts: {}
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Nk9asglDzHzjktVzTkvhaA
+      port: 443
+      server: arxfw2b78fi2q9hzylhn.freesocks.work
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.187
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 141.193.27.247
+      skip-cert-verify: false
+      sni: ex.sue.x10.mx
+      tls: false
+      type: vless
+      uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
+      ws-opts:
+        headers:
+            Host: ex.sue.x10.mx
+        path: /Telegram
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.37
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: cdn2.laoyoutiao.link
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /?ed=2560
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 4a8c875a-sv2sg0-sxi4nd-1o6fm.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: e03df6fc-97e8-11ee-be7f-f23c9164ca5d
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 104.16.85.3
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: e9979910-79d1-4621-a93c-b2a579c44ba7
+      ws-opts:
+        headers:
+            Host: vngsupply.ip-ddns.com
+        path: /6TvG8D6HimXKgdp2?ed=#Join---v2ray_configs_pools?ed=2560
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.236
+      type: ss
+      udp: true
+    - auth: 22395b12-eee5-47f8-99e9-b029de4645d7
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 22395b12-eee5-47f8-99e9-b029de4645d7
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 170.114.46.29
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      server: 147.185.161.251
+      servername: Telegram-channel-WangCai2
+      skip-cert-verify: false
+      tls: false
+      type: vless
+      udp: true
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: p03.xiaohezi.it.eu.org
+      skip-cert-verify: false
+      sni: ""
+      tls: true
+      type: vless
+      uuid: eeeb949c-5629-4bb6-b41f-64cd8643154f
+      ws-opts:
+        headers:
+            Host: p03.xiaohezi.it.eu.org
+        path: /vless
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 141.98.101.178
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: SjdGCHwafjktt1rzpGxTKYTvVBWb8Xa6E5DTr6MzbdHQSwvpLiDczj3n6MBjy2uyFSzgqgvCWsDQmpM4VQzfPzyGYF58wdyD
+      port: 42029
+      server: 208.67.105.196
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.49
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 204.93.210.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: hataryXD
+      port: 443
+      server: ava.game.naver.com.servpn.my.id
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.133
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+      port: 443
+      server: 37.114.62.218
+      skip-cert-verify: false
+      sni: 45.32.28.232
+      type: trojan
+    - auth: d8aa78b9-d452-4e6b-a4cd-29c08ec0544b
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: d8aa78b9-d452-4e6b-a4cd-29c08ec0544b
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.140
+      skip-cert-verify: false
+      sni: sk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sk.laoyoutiao.link
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.143
+      type: ss
+      udp: true
+    - alterId: "0"
+      cipher: auto
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "443"
+      server: 1753328541.tencentapp.cn
+      skip-cert-verify: false
+      tls: true
+      type: vmess
+      udp: true
+      uuid: 72b29434-b150-4b19-bd31-99bcfa8c20ad
+      ws-opts:
+        headers:
+            Host: de1.hoshinonetwork.pp.ua
+        path: /
+      xudp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2053
+      security: tls
+      server: 172.67.69.216
+      skip-cert-verify: false
+      sni: iran.akcovufun.ir
+      tls: true
+      type: vless
+      uuid: 39a91eaf-a379-4fff-a9c8-1cb01442b76f
+      ws-opts:
+        headers:
+            Host: iran.akcovufun.ir
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.27
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.18
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: SjdGCHwafjktt1rzpGxTKYTvVBWb8Xa6E5DTr6MzbdHQSwvpLiDczj3n6MBjy2uyFSzgqgvCWsDQmpM4VQzfPzyGYF58wdyD
+      port: 42029
+      server: my.noisydeysy.monster
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1FF CZ | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 14.102.228.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1F1\U0001F1F9 LT | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 88.216.69.247
+      skip-cert-verify: false
+      sni: ex.sue.x10.mx
+      tls: false
+      type: vless
+      uuid: d60fc3c5-9f07-4cdb-b81f-70af27936bdc
+      ws-opts:
+        headers:
+            Host: ex.sue.x10.mx
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.186.185
+      type: ss
+      udp: true
+    - auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      port: 35310
+      server: flyhg.flylink.cyou
+      skip-cert-verify: true
+      sni: flyhg.flylink.cyou
+      type: hysteria2
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 0.00 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 45.158.171.110
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.53.89
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.136
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: FG5ddLsMPbV5CutE
+      port: 9050
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 444444444444r.333756.xyz
+      skip-cert-verify: false
+      sni: 444444444444R.333756.xyz
+      tls: true
+      type: vless
+      uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
+      ws-opts:
+        headers:
+            Host: 444444444444r.333756.xyz
+        path: /f7vKDX2UecxmlPhIJoo2wcE6Q
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 277"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.54
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: vless.kensoko.my.id
+      skip-cert-verify: false
+      sni: vless.kensoko.my.id
+      tls: false
+      type: vless
+      uuid: 18906639-ada2-4f91-b94f-332ce7efe9cd
+      ws-opts:
+        headers:
+            Host: vless.kensoko.my.id
+        path: /kr
+    - cipher: aes-256-cfb
+      name: "[103]_RU_俄罗斯_123\r\r"
+      password: ueLXVkvh4hckhErQ
+      port: 9060
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: dcf99c60-sv0xs0-tasors-1tdqt.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 167db97c-ee01-11ef-b737-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 154.206.12.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.17
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2087
+      security: tls
+      server: bestcf.030101.xyz
+      skip-cert-verify: false
+      sni: qvsl.vorry.filegear-sg.me
+      tls: true
+      type: vless
+      uuid: 1cc5433e-cfbf-40c6-a598-1c09e59a2886
+      ws-opts:
+        headers:
+            Host: qvsl.vorry.filegear-sg.me
+        path: /=2048
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 208"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.186
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7|GB|@wxgqlfx|199"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.170.166.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1EA\U0001F1EA|EE|@wxgqlfx|142"
+      network: ws
+      port: 8880
+      security: none
+      server: 45.80.110.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 142"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.51
+      type: ss
+      udp: true
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1E8\U0001F1E6 加拿大-1B-lmeq"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26523
+      server: yjjdjnd.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjdjnd.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 10"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: ltnl16.saint.ydns.eu
+      type: ss
+      udp: true
+    - name: HK香港(mibei77.com 米贝节点分享)-jes9
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.164
+      skip-cert-verify: false
+      sni: us.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: us.laoyoutiao.link
+        path: /Telegram
+    - name: "\U0001F1F8\U0001F1ECSG_3 |1.1MB/s|GPT|NF|D+|23%"
+      network: ws
+      port: "8880"
+      server: 156.238.18.148
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36
+        path: Telegram@WangCai2/?ed=2048
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 141"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.230
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_738\r\r"
+      password: y9VURyNzJWNRYEGQ
+      port: 9008
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_233"
+      network: ws
+      port: 80
+      server: 5730d1c0-sva740-te0v28-1mh67.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: e1c7fbbc-96b6-11ef-8563-f23c913c8d2b
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - cipher: aes-256-cfb
+      name: 79|TR-45.89.52.66-5557 | 1.616MB
+      password: ueLXVkvh4hckhErQ
+      port: 9060
+      server: 45.89.52.66
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 27"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: ltnl15.saint.ydns.eu
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 212"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.81
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 223"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.60
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 22"
+      network: ws
+      port: 443
+      security: tls
+      server: hk.laoyoutiao.link
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /?ed=2048fp=random
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_187"
+      network: ws
+      port: 80
+      server: 793f272d-sv0xs0-tb36ag-1jfq7.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: baa46fd6-63c1-11ed-8ea9-f23c913c8d2b
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1E9\U0001F1EA 德国-1D"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26823
+      server: yjjddg.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjddg.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 302"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.76
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_708\r\r"
+      password: GA9KzeEgvfxNrgmM
+      port: 9019
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: "@ShadowProxy66 \U0001F1FA\U0001F1F8```"
+      network: ws
+      port: 8880
+      security: none
+      server: 198.62.62.175
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: e9979910-79d1-4621-a93c-b2a579c44ba7
+      ws-opts:
+        headers:
+            Host: vngsupply.ip-ddns.com
+        path: /J5aLQOY1R9ONWYCM?ed=2560
+    - cipher: aes-128-gcm
+      name: 2,3,186| ZZ_1412
+      password: shadowsocks
+      port: 443
+      server: 141.98.101.182
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 140"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.40
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EE\U0001F1E9 ID 2"
+      password: ae6e933b-8874-4bf4-a384-0de216ef2bf4
+      port: 40033
+      server: idn.fastsoonlink.com
+      type: ss
+      udp: true
+    - name: "\U0001F1F1\U0001F1F9|LT|@wxgqlfx|216"
+      network: ws
+      port: 8880
+      security: none
+      server: 89.117.112.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - auth: 1ea1f7d7-e510-4661-b2fa-357ad3ab136f
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-002-1K"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 1ea1f7d7-e510-4661-b2fa-357ad3ab136f
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      name: "\U0001F1EF\U0001F1F5 日本-1B"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      port: 35300
+      server: flyrb.flylink.cyou
+      skip-cert-verify: true
+      sni: flyxg.flylink.cyou
+      type: hysteria2
+      udp: true
+    - name: OVH+SAS+(SG)
+      network: ws
+      port: 80
+      security: none
+      server: cache.netflix.com.yaya.web.id
+      skip-cert-verify: false
+      sni: cache.netflix.com.yaya.web.id
+      tls: false
+      type: vless
+      uuid: 008b9e08-95c0-4df5-a238-128810bb9d56
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.yaya.web.id
+        path: /ovh
+    - cipher: chacha20-ietf-poly1305
+      name: "0,1,2,3,8,372,606|21|\U0001F1F3\U0001F1F1NL_610"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.251
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8US_544"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 45.158.171.66
+      type: ss
+      udp: true
+    - name: "\U0001F1EE\U0001F1F3 IN 2-dUok"
+      password: 5fPC693gll
+      port: 1935
+      server: x1-india-amazon-v2-n67m9.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: "\U0001F1F8\U0001F1EE|SI|@wxgqlfx|135"
+      network: ws
+      port: 8880
+      security: none
+      server: 92.53.191.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "18,51|\U0001F1F5\U0001F1F1_HAMRAH_415\r\r"
+      password: ZET59LF6DvCC8KVt
+      port: 9005
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 167"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.240
+      type: ss
+      udp: true
+    - cipher: none
+      name: -Dys8
+      password: hataryXD
+      port: 80
+      server: blog.ruangguru.com.servpn.my.id
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F194@LuxyNet\U0001F48E❖英国❖GB❖952"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.196
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: 未知-ZHPo
+      network: ws
+      port: 8880
+      server: 103.169.142.241
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 248be52b-35d9-34cb-9b73-e12b78bc1301
+      ws-opts:
+        headers:
+            Host: TG.WangCai2.s2.db-link02.top
+        path: /dabai.in
+    - cipher: aes-256-cfb
+      name: "18,51|\U0001F1F5_HAMRAH_955\r\r"
+      password: f63gg8EruDnUrmz4
+      port: 9010
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1F8\U0001F1EA SE 1-rzBJ"
+      password: 1CvlKYj1aU
+      port: 1935
+      server: x1-sweden-linode-v2-71u92.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: 15|US_speednode_0321
+      network: ws
+      port: 8880
+      security: none
+      server: 63.141.128.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8US_55 |1.9MB/s|NF"
+      network: ws
+      port: "8880"
+      server: 188.164.248.186
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8US_53 |2.7MB/s|NF|D+"
+      network: ws
+      port: "8880"
+      server: 188.164.158.63
+      servername: jp.laoyoutiao.link
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.63 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F17C\U0001F174\U0001F177\U0001F173\U0001F178-OjqF"
+      network: tcp
+      port: 47682
+      server: 91.228.10.125
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 6b837ddd-7dfb-4520-dd9c-65d61d640896
+      ws-opts: {}
+    - name: "\U0001F1FA\U0001F1F8US_62 |1.4MB/s|GPT|NF|D+|0%"
+      network: ws
+      port: "8880"
+      server: 192.65.217.3
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - name: "\U0001F1EF\U0001F1F5JP_7 |1.9MB/s|NF|D+"
+      network: ws
+      port: "8880"
+      server: 195.85.59.148
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Linux; Android 6.0.1; SM-G532M Build/MMB29T; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: 1服务器-地址池-104.16.43.164
+      network: ws
+      port: 443
+      security: tls
+      server: 104.16.43.164
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 219"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.117
+      type: ss
+      udp: true
+    - name: GB_speednode_0153
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.102
+      skip-cert-verify: false
+      sni: sk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sk.laoyoutiao.link
+        path: /
+    - alterId: 0
+      cipher: auto
+      name: "\U0001D5DD\U0001D5FC\U0001D5F6\U0001D5FB ➠ @CDPROXY_VPN \U0001F1F0\U0001F1F7             ‌         کانفیگ های بیشتر در کانال تلگرام-rtuv"
+      network: ws
+      port: 32497
+      server: 216.151.168.250
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: c0f377e7-df63-459f-d10b-3b27e01c8cbc
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - auth: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      name: "\U0001F1F7\U0001F1FA 俄罗斯-1B"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: 318847a3-bfcb-4c0c-9c1b-365e69ba4ad1
+      port: 35270
+      server: flyels.flylink.cyou
+      skip-cert-verify: true
+      sni: flyels.flylink.cyou
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8|US|@wxgqlfx|229"
+      network: ws
+      port: 8880
+      security: none
+      server: 103.133.1.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 225"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.111
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_202"
+      network: ws
+      port: 80
+      server: aea6bdc3-sv6hs0-t61ki5-1smhu.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 62f2374c-891b-11ef-a3f6-f23c9164ca5d
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: 15|US_speednode_0398
+      network: ws
+      port: 8880
+      security: none
+      server: 69.84.182.63
+      skip-cert-verify: false
+      sni: sg.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+        path: /TelegramU0001F1E8U0001F1F3
+    - name: "\U0001F1FA\U0001F1F8 US 337"
+      network: ws
+      port: 443
+      security: tls
+      server: ava.game.naver.com.cf.novantunnel.life
+      skip-cert-verify: false
+      sni: ava.game.naver.com.cf.novantunnel.life
+      tls: true
+      type: vless
+      uuid: 01785ba0-a548-4357-91d7-6b6cdd24e88c
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.cf.novantunnel.life
+        path: /Novan-AE26
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 4"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.28
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 105"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.112
+      type: ss
+      udp: true
+    - name: Eons+Data+Communications+Limited+(SG+80)
+      network: ws
+      port: 80
+      security: none
+      server: ava.game.naver.com.sg1.hinamori.xyz
+      skip-cert-verify: false
+      sni: ava.game.naver.com.sg1.hinamori.xyz
+      tls: false
+      type: vless
+      uuid: 00741384-d522-4722-abf9-2c92010f12a6
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.sg1.hinamori.xyz
+        path: /6
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 21"
+      network: ws
+      port: 2096
+      server: cc2dash.89060004.xyz
+      sni: ""
+      tls: true
+      type: vmess
+      uuid: 2fc37713-3017-497e-ff2d-965f826a19a3
+      ws-opts:
+        headers:
+            Host: cc2dash.89060004.xyz
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 292"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.131
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 66"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.146
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1[openproxylist.com] ss-NL"
+      password: zI7kiNZ0UfV9cXB73a4nRD
+      port: 24206
+      server: 164.92.156.41
+      type: ss
+      udp: true
+    - name: "\U0001F17C\U0001F174\U0001F177\U0001F173\U0001F178-1wAI"
+      network: ws
+      port: 443
+      security: tls
+      server: 104.21.67.12
+      skip-cert-verify: false
+      sni: carlotta.shoorekeeper.cloudns.org
+      tls: true
+      type: vless
+      uuid: 30f2d443-af46-4dd6-83c9-b5e17299ebd2
+      ws-opts:
+        headers:
+            Host: carlotta.shoorekeeper.cloudns.org
+        path: /proxyip=zani.yaemiko.ggff.net
+    - name: "\U0001F1FA\U0001F1F8_US_美国-dDO0"
+      network: ws
+      port: 80
+      security: none
+      server: 104.18.26.90
+      skip-cert-verify: false
+      sni: blaze-can-118.blazecanada.site
+      tls: false
+      type: vless
+      uuid: 3ac2de34-47c5-4dd5-afc0-8fb4b05d4077
+      ws-opts:
+        headers:
+            Host: blaze-can-118.blazecanada.site
+        path: /?ed=2560
+    - name: FR
+      network: ws
+      port: 443
+      security: tls
+      server: 185.87.150.54
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+82\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 169.150.210.244
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "66|SS-TCP-NA \U0001F1E9\U0001F1EA DE-80.92.204.106:... #4"
+      password: f63gg8EruDnUrmz4
+      port: 9010
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EC\U0001F1E7[openproxylist.com] ss-GB"
+      password: c40641c1f89e7acb
+      port: 57456
+      server: 46.226.163.225
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 1"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.22
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 83"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.211
+      type: ss
+      udp: true
+    - name: "\U0001F1F3\U0001F1F1|NL|@wxgqlfx|123"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.207.199.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1F3 VN 22"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 103.163.218.2
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_363"
+      network: ws
+      port: 80
+      server: af4e4239-sv2sg0-svpmdc-nx3b.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 32315324-cf6b-11ed-979b-f23c9164ca5d
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8US_118 |1.2MB/s|NF|D+"
+      network: ws
+      port: 8880
+      server: 89.116.180.177
+      servername: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 144"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.195
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 471"
+      network: ws
+      port: 2053
+      security: tls
+      server: invincible.fafa20.shop
+      skip-cert-verify: false
+      sni: inViNCIBLe.FafA20.shOP
+      tls: true
+      type: vless
+      uuid: 376734bc-4db8-4317-b451-af0262cb01c7
+      ws-opts:
+        headers:
+            Host: inViNCIBLe.FafA20.shOP
+        path: /nvv4c8xwsfs1e4av/mtkzljeymy44ms4xmdu=?ed=2560
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US 561"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.199.42.68
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 17-57ge"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.56
+      type: ss
+      udp: true
+    - name: "@ShadowProxy66 \U0001F1E7\U0001F1FF"
+      network: ws
+      port: 8880
+      security: none
+      server: 45.131.209.36
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: e9979910-79d1-4621-a93c-b2a579c44ba7
+      ws-opts:
+        headers:
+            Host: vngsupply.ip-ddns.com
+        path: /J5aLQOY1R9ONWYCM
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 127"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.240
+      type: ss
+      udp: true
+    - name: "\U0001F1F8\U0001F1EE|SI|@wxgqlfx|138"
+      network: ws
+      port: 8880
+      security: none
+      server: 92.53.189.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0HK-1.65.202.14-5082"
+      network: ws
+      port: 80
+      server: bb9bfc22-svc1s0-szegoe-12hj8.hk3.p5pv.com
+      sni: broadcastlv.chat.bilibili.com
+      tls: false
+      type: vmess
+      uuid: 5acc7a7c-d7ea-11eb-8673-f23c9164ca5d
+      ws-opts:
+        headers:
+            Host: bb9bfc22-svc1s0-szegoe-12hj8.hk3.p5pv.com
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 283"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.63
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7|GB|@wxgqlfx|132"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.193.29.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - alterId: 0
+      cipher: auto
+      name: V2-PRO 香港A
+      network: tcp
+      port: 3284
+      server: pro.airport-wifi6.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: de40bf54-8e08-3b12-b3ff-7ef344a50c99
+      ws-opts: {}
+    - cipher: rc4-md5
+      name: 0|_96
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 62.133.44.68
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]_RU_俄罗斯_211\r\r"
+      password: bf7v334KKDV3YDhH
+      port: 9070
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.23.32
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 64"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.120
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8|US|@wxgqlfx|85"
+      network: ws
+      port: 8880
+      security: none
+      server: 141.193.27.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US 80"
+      network: ws
+      port: 443
+      security: tls
+      server: vip.arivganteng.biz.id
+      skip-cert-verify: false
+      sni: vip.arivganteng.biz.id
+      tls: true
+      type: vless
+      uuid: 4cb9b678-4164-4260-add0-104165006702
+      ws-opts:
+        headers:
+            Host: vip.arivganteng.biz.id
+        path: /ariv=45.77.171.102=3128
+    - client-fingerprint: chrome
+      name: "\U0001F1EC\U0001F1E7GB_3 |1.7MB/s|GPT|24%"
+      network: ws
+      port: "2096"
+      server: ipw.gfdv54cvghhgfhgj-njhgj64.info
+      servername: 638890562127857314.amsterdam-prx-dnraaal.info
+      tls: true
+      type: vless
+      udp: true
+      uuid: 49d6d5dd-bc9b-4ff9-ade9-3b9c25ca5f25
+      ws-opts:
+        headers:
+            Host: 638890562127857314.amsterdam-prx-dnraaal.info
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36
+        path: /citxcbws
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "66,69|SS-TCP-NA \U0001F1E9\U0001F1EA DE-80.92.204.106:... #2"
+      password: VP8ZPxQpJtZRCjfZ
+      port: 9080
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 48"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.3
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 63"
+      network: ws
+      port: 443
+      security: tls
+      server: blog.webex.com.lufeng.pw
+      skip-cert-verify: false
+      sni: blog.webex.com.lufeng.pw
+      tls: true
+      type: vless
+      uuid: 10b904aa-560b-49b8-8eb8-2528fa1901b0
+      ws-opts:
+        headers:
+            Host: blog.webex.com.lufeng.pw
+        path: /id2
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 115"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.149
+      type: ss
+      udp: true
+    - name: US_speednode_0406
+      network: ws
+      port: 8880
+      security: none
+      server: 216.205.52.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /
+    - name: "\U0001F1F8\U0001F1ECSG_12 |2.1MB/s|GPT|NF|23%"
+      network: ws
+      port: "8880"
+      server: 195.85.23.63
+      servername: sg.laoyoutiao.link
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Linux; Android 5.1.1; SM-J111M Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F5\U0001F1EA[openproxylist.com] ss-PE"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 185.47.252.251
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EA|DE|@wxgqlfx|165"
+      network: ws
+      port: 8880
+      security: none
+      server: 45.80.111.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE 3"
+      password: TN2YqghxeFDKZfLU
+      port: 9037
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - name: US_speednode_0388
+      network: ws
+      port: 8880
+      security: none
+      server: 104.129.165.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /
+    - name: 15|LU_speednode_0193
+      network: ws
+      port: 8880
+      security: none
+      server: 188.42.88.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - alterId: 2
+      cipher: auto
+      name: _101
+      network: ws
+      port: 80
+      server: 245b0bbb-sunz40-t5bgb3-l4nv.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 1469e09e-027c-11ec-a0fc-f23c913c8d2b
+      ws-opts:
+        headers:
+            Host: ""
+        path: ""
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EE\U0001F1F3"
+      network: ws
+      port: 80
+      server: 152.67.8.205
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 9db4c708-aef8-4359-821b-38e47990be0d
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - name: GB_speednode_0125
+      network: ws
+      port: 8880
+      security: none
+      server: 194.36.55.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - alterId: 0
+      cipher: auto
+      name: '26,39,62|151,153,154,155,156,198,199,245,262,263,264,265,311,320|661,662,663,664,665,666,753,76... #3 #2'
+      network: ws
+      port: 2082
+      server: 5.196.29.123
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 112ac36f-3f53-4e26-8371-d25c028e1b9a
+      ws-opts:
+        headers:
+            Host: wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc
+        path: /
+    - name: GB_speednode_0141
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.2
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+        path: /
+    - name: "@ShadowProxy66 \U0001F1E8\U0001F1E6-Evll"
+      network: ws
+      port: 80
+      security: none
+      server: 104.16.228.91
+      skip-cert-verify: false
+      sni: barayeiran.mahiozonboroon.qzz.io
+      tls: false
+      type: vless
+      uuid: f278037e-ce36-4634-9b4d-fca93e345a35
+      ws-opts:
+        headers:
+            Host: barayeiran.mahiozonboroon.qzz.io
+        path: /vpnowl-vpnowl-vpnowl-vpnowl?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL_438"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 103.104.247.49
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.162.229.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1E7\U0001F1F7 巴西-1B"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20857
+      server: nexiabx.688997.xyz
+      skip-cert-verify: true
+      sni: nexiabx.688997.xyz
+      type: hysteria2
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F3C1 ZZ_549"
+      password: VpKABcOpNNA0l5G2AVOmw8
+      port: 62685
+      server: 213.109.147.242
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.150
+      type: ss
+      udp: true
+    - name: AT_speednode_0011
+      network: ws
+      port: 8880
+      security: none
+      server: 212.183.88.177
+      skip-cert-verify: false
+      sni: ip.langmanshanxi.top
+      tls: false
+      type: vless
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+        path: /
+    - name: "\U0001F1F7\U0001F1FA|RU|@wxgqlfx|152"
+      network: ws
+      port: 8880
+      security: none
+      server: 5.182.85.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US 630"
+      network: ws
+      port: 443
+      security: tls
+      server: tttttttttttt.222769.xyz
+      skip-cert-verify: false
+      sni: ttTttttTTTTT.222769.xYz
+      tls: true
+      type: vless
+      uuid: 2e65577e-8fdb-4bb1-a495-96f3122099a7
+      ws-opts:
+        headers:
+            Host: tttttttttttt.222769.xyz
+        path: /sMrAaoCaOSZb9TPR
+    - name: GB_speednode_0134
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.104
+      skip-cert-verify: false
+      sni: us.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: us.laoyoutiao.link
+        path: /
+    - name: 15|US_speednode_0274
+      network: ws
+      port: 8880
+      security: none
+      server: 205.233.181.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: XPtzA9sCug3SPR4c
+      port: 9025
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: hataryXD
+      port: 80
+      server: ava.game.naver.com.servpn.my.id
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.247
+      type: ss
+      udp: true
+    - name: 15|ES_speednode_0073
+      network: ws
+      port: 8880
+      security: none
+      server: 185.251.80.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.80
+      type: ss
+      udp: true
+    - auth: 870149df-2540-4e9e-bae5-2e5cdd52fdab
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-002-1D-ODnW"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 870149df-2540-4e9e-bae5-2e5cdd52fdab
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1FA\U0001F1F8[openproxylist.com] vless-US-mmUG"
+      network: ws
+      port: 443
+      security: tls
+      server: 104.21.44.248
+      skip-cert-verify: false
+      sni: EDfrT.frEEvPNatm2025.DPdNS.oRG
+      tls: true
+      type: vless
+      uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
+      ws-opts:
+        headers:
+            Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
+        path: /O9jlBCbIm3xr1D40NK
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2083
+      server: www.meter.net
+      sni: blaze-ger-248.blazecloudmain.site
+      tls: true
+      type: vmess
+      uuid: c208e0ae-6f6d-4745-99da-44a44744c530
+      ws-opts:
+        headers:
+            Host: blaze-ger-248.blazecloudmain.site
+        path: /linkwsrt?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F9\U0001F1F7 TR | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 185.123.101.241
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 104.254.140.251
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /TelegramU0001F1E8U0001F1F3
+    - name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: 0xC6Mws4Dg
+      port: 1935
+      server: x2-japan-amazon-v2.devefun.org
+      skip-cert-verify: false
+      sni: x2-japan-amazon-v2.devefun.org
+      type: trojan
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: klo.986986.shop
+      sni: klo.986986.shop
+      tls: true
+      type: vmess
+      uuid: b75c9731-408d-4aa6-8ae9-3857205113a1
+      ws-opts:
+        headers:
+            Host: klo.986986.shop
+        path: /nvjx6j7kbDQIQMZvbeVA9
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 66.225.252.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20757
+      server: nexiaels.688997.xyz
+      skip-cert-verify: true
+      sni: nexiaels.688997.xyz
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 32391
+      security: none
+      server: 195.58.58.88
+      skip-cert-verify: false
+      sni: 45f4d22d.Mareza.pages.dev
+      tls: false
+      type: vless
+      uuid: c84ddb7c-7703-42a3-a22a-3ff9e5513f9a
+      ws-opts:
+        headers:
+            Host: 45f4d22d.Mareza.pages.dev
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: zoomgov.vipren.biz.id
+      skip-cert-verify: false
+      sni: zoomgov.vipren.biz.id
+      tls: true
+      type: vless
+      uuid: 36a6a6f7-8f77-4b67-81b5-403a7613902e
+      ws-opts:
+        headers:
+            Host: zoomgov.vipren.biz.id
+        path: /115.242.180.202=19000
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: 104.16.53.11
+      skip-cert-verify: false
+      sni: dETeRMiNeD-COuRT.oneEaT.CO
+      tls: false
+      type: vless
+      uuid: 9fc94683-42be-4c44-9525-096f675965db
+      ws-opts:
+        headers:
+            Host: dETeRMiNeD-COuRT.oneEaT.CO
+        path: /?ed
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: wjTugX3ZtHMB9c3Z
+      port: 9057
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1F3 CN | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 3304
+      server: pro.airport-wifi6.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: de40bf54-8e08-3b12-b3ff-7ef344a50c99
+      ws-opts: {}
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.141
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 151.242.251.144
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.166
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.235.165
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.209
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 195.13.44.156
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G610M Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: ava.game.naver.com.sg1.hinamori.xyz
+      skip-cert-verify: false
+      sni: ava.game.naver.com.sg1.hinamori.xyz
+      tls: true
+      type: vless
+      uuid: 00347ce2-2c4e-4548-b640-6e30b9a6fd99
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.sg1.hinamori.xyz
+        path: /5
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: zaintest.vuclip.com.unlimited.spauu.web.id
+      skip-cert-verify: false
+      sni: zaintest.vuclip.com.unlimited.spauu.web.id
+      tls: true
+      type: vless
+      uuid: 0697ed99-2e90-49d8-9739-2768437386ce
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.unlimited.spauu.web.id
+        path: /vl=172.232.239.151=587
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: a3GFYt36Sm82Vys9
+      port: 9000
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8080
+      server: 104.24.66.175
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 31209e40-be60-4d60-ad48-9765a0c5d087
+      ws-opts:
+        headers:
+            Host: cfphdde1.reachheadphones.com
+        path: /ws2/nextlife
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 172.66.46.174
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: zaintest.vuclip.com.yaya.web.id
+      skip-cert-verify: false
+      sni: zaintest.vuclip.com.yaya.web.id
+      tls: false
+      type: vless
+      uuid: 0af80245-ee2e-4ed4-95cc-a99c25329a99
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.yaya.web.id
+        path: /do
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.81
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F1\U0001F1F9 LT | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 192.36.61.59
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: p9z5BVADH2YFs3MN
+      port: 9040
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - auth: f2568a14-f112-44b9-803c-024f28ced3b2
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+      password: f2568a14-f112-44b9-803c-024f28ced3b2
+      port: 80
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 147.185.161.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.151.182.197
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.65
+      type: ss
+      udp: true
+    - name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 0.00 MB/s"
+      password: HxUePECPLe
+      port: 1935
+      server: x4-france-scaleway-v2.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: S7KwUu7yBy58S3Ga
+      port: 9042
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      server: 66.81.247.186
+      servername: Telegram-channel-WangCai2
+      skip-cert-verify: false
+      tls: false
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+        path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 3ef2a8e6-sv6hs0-swkmdk-1imi4.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 40fb1315-191a-11ed-b0ca-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: support.zoom.us.lufeng.pw
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 5ffc0b13-1d64-432b-8ea8-4e54fc954021
+      ws-opts:
+        headers:
+            Host: support.zoom.us.lufeng.pw
+        path: /id9
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.79.198
+      type: ss
+      udp: true
+    - cipher: aes-128-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 109.201.152.181
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.39
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: f8npKgNzdkss2ytn
+      port: 9088
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.207
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: zaintest.vuclip.com.lufeng.pw
+      skip-cert-verify: false
+      sni: zaintest.vuclip.com.lufeng.pw
+      tls: true
+      type: vless
+      uuid: c3674ee3-31f8-41ba-849a-51f5f61259d7
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.lufeng.pw
+        path: /id10
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: 104.21.96.1
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 2036e2c3-18a5-4eed-9db4-f91a7f02c7d5
+      ws-opts:
+        headers:
+            Host: zoomgov.vipren.biz.id
+        path: /193.123.81.105=443
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: quiz.int.vidio.com.yaya.web.id
+      skip-cert-verify: false
+      sni: quiz.int.vidio.com.yaya.web.id
+      tls: true
+      type: vless
+      uuid: 0100148b-e58d-4002-90fb-1ca65e3b5f7b
+      ws-opts:
+        headers:
+            Host: quiz.int.vidio.com.yaya.web.id
+        path: /kr
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.167
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 51952
+      security: none
+      server: 51.222.86.7
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
+      ws-opts: {}
+    - name: "\U0001F1E6\U0001F1FA AU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 192.65.217.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1EA\U0001F1F8 ES | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.18.250.29
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: rc4-md5
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 45.84.123.247
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 6aeab5da-sv0xs0-t09t13-z7a1.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 3bd247a8-993e-11ec-a8bf-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: 0IMsvkqhnm
+      port: 1935
+      server: x1-japan-amazon-v2.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: cache.netflix.com.spauu.web.id
+      skip-cert-verify: false
+      sni: cache.netflix.com.spauu.web.id
+      tls: true
+      type: vless
+      uuid: 2bc40013-44c2-4d92-90e9-617893f7f6ed
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.spauu.web.id
+        path: /sggreen
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 104.16.69.162
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: e9979910-79d1-4621-a93c-b2a579c44ba7
+      ws-opts:
+        headers:
+            Host: vngsupply.ip-ddns.com
+        path: /fgvtHUpS6R8Rv8s5?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: GeregetR8cvQHzYr
+      port: 9030
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: FG5ddLsMPbV5CutE
+      port: 9050
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.252
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 51.15.17.169
+      type: ss
+      udp: true
+    - auth: 21f93c7e-28bc-4787-bb6f-df284d3f3280
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 21f93c7e-28bc-4787-bb6f-df284d3f3280
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: cache.netflix.com.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: cache.netflix.com.zee.upigg.my.id
+      tls: true
+      type: vless
+      uuid: 109d4b4d-6024-4c15-9a46-6957e697b172
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.zee.upigg.my.id
+        path: /sgakm
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.64
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 108.181.126.135
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.251
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.77
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.185
+      type: ss
+      udp: true
+    - name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 188.42.145.177
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Unknown; Linux) AppleWebKit/538.1 (KHTML, like Gecko) Chrome/v1.0.0 Safari/538.1
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560fp=chrome"
+      xudp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 92.53.188.3
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 188.244.122.156
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Linux; Android 5.1.1; A37fw Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.19
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 69.84.182.58
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.238
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: 4DtRDDWFTT
+      port: 1935
+      server: x5-canada-amazon-v2-21qsg.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.2
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: cp8pRSUAyLhTfVWH
+      port: 9064
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 193.124.224.148
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: 188.114.97.1
+      sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+      tls: true
+      type: vmess
+      uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+      ws-opts:
+        headers:
+            Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+        path: /azumase.ren
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 192.200.160.148
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 167.68.5.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.148.104.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EE\U0001F1F3 IN 2"
+      network: tcp
+      port: 10534
+      server: 94.136.185.230
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: b01c7ef9-33ec-41f6-bfbf-77ddc4d21649
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 274"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.165
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 35.197.23.75
+      skip-cert-verify: false
+      sni: c.552298.xyz
+      tls: true
+      type: vless
+      uuid: 53bd2a5f-6315-4daf-98a3-5318a5cfadc8
+      ws-opts:
+        headers:
+            Host: c.552298.xyz
+        path: /=2048
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.50
+      type: ss
+      udp: true
+    - name: UCLOUD+INFORMATION+TECHNOLOGY+(HK)+LIMITED+(ID)
+      network: ws
+      port: 80
+      security: none
+      server: cfvless.zerostore.web.id
+      skip-cert-verify: false
+      sni: cfvless.zerostore.web.id
+      tls: false
+      type: vless
+      uuid: 06e2bcbb-9eae-4682-979e-7bbf17b0dfff
+      ws-opts:
+        headers:
+            Host: cfvless.zerostore.web.id
+        path: /id3
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2083
+      security: tls
+      server: add-1cv.pages.dev
+      skip-cert-verify: false
+      sni: AdD-1cV.paGes.deV
+      tls: true
+      type: vless
+      uuid: 2836c061-ea09-45e5-a98e-4ca478e744b0
+      ws-opts:
+        headers:
+            Host: add-1cv.pages.dev
+        path: /BNYZeDeE97jt7r1V/Y2RuLWIxMDAueG4tLWI2Z2FjLmV1Lm9yZw==?ed=2560
+    - name: LT_speednode_0191
+      network: ws
+      port: 8880
+      security: none
+      server: 89.116.180.3
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.134
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 14"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.23
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_739\r\r"
+      password: wjTugX3ZtHMB9c3Z
+      port: 9057
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 644"
+      network: ws
+      port: 443
+      server: eEr4567.999824.XYZ
+      sni: Eer4567.999824.XYz
+      tls: true
+      type: vmess
+      uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+      ws-opts:
+        headers:
+            Host: eer4567.999824.xyz
+        path: /9dZlJLjHHrL0VwSolbqFpg
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_277"
+      network: ws
+      port: 80
+      server: 9c12ce3d-sv2sg0-t65a3e-tqgz.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 88da0d21-b25d-11ec-b9f7-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 126"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.58
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US 31"
+      password: 741ddced-e6ee-4175-9c1a-e524009f9045
+      port: 30100
+      server: 144.126.146.38
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 29"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: ltnl04.saint.ydns.eu
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 91"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.64
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1F3\U0001F1F1 NL 5-q5R5"
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.72
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EAWS|TLS-khodam3"
+      network: ws
+      port: 8443
+      security: tls
+      server: 190.93.244.65
+      skip-cert-verify: false
+      sni: phdde1.reachheadphones.com
+      tls: true
+      type: vless
+      uuid: edb6b348-9f80-4edd-b842-0aba6e62cdfd
+      ws-opts:
+        headers:
+            Host: cfphdde1.reachheadphones.com
+        path: /WS/2678
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 76"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.45
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_712\r\r"
+      password: U6qnYRhfyDmn8sgn
+      port: 9041
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_736\r\r"
+      password: JdmRK9gMEqFgs8nP
+      port: 9003
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68][68][82][68][82][82][68][68][68][82][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+72\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.170
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+S1\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 172.105.199.91
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 267"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.141
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK_254"
+      network: ws
+      port: 80
+      server: cf703cfc-sv6hs0-sz578n-1pw2y.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 8815622e-7598-11ef-a01c-f23c913c8d2b
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - cipher: aes-256-cfb
+      name: "[103]PE_724\r\r"
+      password: rNBfNuuANFCAk7KB
+      port: 9056
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: DE_speednode_0049
+      network: ws
+      port: 8880
+      security: none
+      server: 5.10.214.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1F8\U0001F1ECSG_9 |4.2MB/s|NF|D+"
+      network: ws
+      port: "8880"
+      server: 139.64.235.156
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 285"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.170
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_749\r\r"
+      password: SBM7R883jBmnqe6C
+      port: 9053
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - auth: 399d8f4f-5b84-4646-b7b2-ed9071a397a8
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-002-1I"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 399d8f4f-5b84-4646-b7b2-ed9071a397a8
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 60"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 47"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.250
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_723\r\r"
+      password: Sn5B7jTqr76aCJT8
+      port: 9097
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: DigitalOcean,+LLC+(SG)
+      network: ws
+      port: 80
+      security: none
+      server: blog.webex.com.yaya.web.id
+      skip-cert-verify: false
+      sni: blog.webex.com.yaya.web.id
+      tls: false
+      type: vless
+      uuid: 0dbc5ad8-f43f-4fce-8a64-26853caecf87
+      ws-opts:
+        headers:
+            Host: blog.webex.com.yaya.web.id
+        path: /do
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 67"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.47
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[1808.ga][pojiezhiyuanjun/freev2][freefq][freefq]\U0001F6AB\U0001F1F9\U0001F1F7 TR 45.89.52.66 ◈ tcp:9054 ◈ Stark Industries ◈ 6790d\r\r\r"
+      password: VcFuyXvND2yQWSFY
+      port: 9054
+      server: 45.89.52.66
+      type: ss
+      udp: true
+    - name: "\U0001F1EF\U0001F1F4|JO|@wxgqlfx|122"
+      network: ws
+      port: 8880
+      security: none
+      server: 62.72.166.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - client-fingerprint: chrome
+      name: "\U0001F1F1\U0001F1FBLV_1 |2.8MB/s|GPT|NF|D+|3%"
+      network: ws
+      port: "443"
+      server: 198.41.206.102
+      servername: rayan-10.parastoo.dpdns.org
+      tls: true
+      type: vless
+      udp: true
+      uuid: 4e4768df-0fbb-4cc1-8fd3-7c6fea95742a
+      ws-opts:
+        headers:
+            Host: rayan-10.parastoo.dpdns.org
+            User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36
+        path: /@Rayan_Config
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "18,51|\U0001F1F1_HAMRAH_465\r\r"
+      password: BwcAUZk8hUFAkDGN
+      port: 9031
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F4A6 8 - VLESS - Domain : 8443"
+      network: ws
+      port: 8443
+      security: tls
+      server: add-1cv.pages.dev
+      skip-cert-verify: false
+      sni: ADd-1cv.pAgES.DEV
+      tls: true
+      type: vless
+      uuid: 2836c061-ea09-45e5-a98e-4ca478e744b0
+      ws-opts:
+        headers:
+            Host: add-1cv.pages.dev
+        path: /UNWx1AGsnewNWprV/Y2RuLWIxMDAueG4tLWI2Z2FjLmV1Lm9yZw==?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 130"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.243
+      type: ss
+      udp: true
+    - name: 服务器-优选-104.18.51.125
+      network: ws
+      port: 443
+      security: tls
+      server: 104.18.51.125
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - name: 15|US_speednode_0402
+      network: ws
+      port: 8880
+      security: none
+      server: 199.34.230.251
+      skip-cert-verify: false
+      sni: cf.d3z.net
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 179"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.248
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: ⟪@LonUp_M⟫◮比利时◮BE◮8
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 192.71.249.108
+      type: ss
+      udp: true
+    - name: 15|US_speednode_0379
+      network: ws
+      port: 8880
+      security: none
+      server: 159.246.55.251
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /Telegram
+    - name: JP日本(mibei77.com 米贝节点分享)-smSo
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.242
+      skip-cert-verify: false
+      sni: sk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sk.laoyoutiao.link
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F194⟪@LonUp_M⟫\U0001F7E0ALL⌁1734"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 103.163.218.2
+      type: ss
+      udp: true
+    - name: "\U0001F4A6 15 - VLESS - Domain : 2053"
+      network: ws
+      port: 2053
+      security: tls
+      server: add-1cv.pages.dev
+      skip-cert-verify: false
+      sni: add-1Cv.PAGes.dEv
+      tls: true
+      type: vless
+      uuid: 2836c061-ea09-45e5-a98e-4ca478e744b0
+      ws-opts:
+        headers:
+            Host: add-1cv.pages.dev
+        path: /u9YOTBrjOR6NHI2t/Y2RuLWIxMDAueG4tLWI2Z2FjLmV1Lm9yZw==?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "[100]德国-38.60.250.107-44639\r\r"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 38.60.250.107
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 3"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.240
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 828"
+      network: tcp
+      port: 43728
+      security: none
+      server: 15.204.235.13
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 1b18b439-5371-4f38-b8d0-71aad09a3a92
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "[103]PE_727\r\r"
+      password: aLpQtfEZe445QyHk
+      port: 9098
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - name: US-zFA4
+      network: ws
+      port: 443
+      security: tls
+      server: 198.62.62.161
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E7\U0001F1ED BH 1"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 38.54.2.182
+      type: ss
+      udp: true
+    - name: '@Rayan_Config - EU-3'
+      network: ws
+      port: 443
+      security: tls
+      server: www.visa.com.tw
+      skip-cert-verify: false
+      sni: rAyAn-10.LeIlA.DpDnS.OrG
+      tls: true
+      type: vless
+      uuid: 7a80a8d9-92f9-4f0a-8352-9005a8215ab8
+      ws-opts:
+        headers:
+            Host: rayan-10.leila.dpdns.org
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US 103"
+      network: ws
+      port: 443
+      security: tls
+      server: pvt.moonop.tech
+      skip-cert-verify: false
+      sni: pvt.moonop.tech
+      tls: true
+      type: vless
+      uuid: 57b164dc-ca08-4057-8005-0ccae6c91b82
+      ws-opts:
+        headers:
+            Host: pvt.moonop.tech
+        path: /aws6
+    - alterId: 0
+      cipher: auto
+      name: "0,355|\U0001F1F0\U0001F1FF www.85la.com 哈萨克斯坦 01_2"
+      network: ws
+      port: 80
+      server: 38.107.234.57
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 567f4be5-12ab-42e1-b8d9-db6fd1fdd31c
+      ws-opts:
+        headers:
+            Host: ""
+        path: /vmess/
+    - name: "\U0001F1FA\U0001F1F8 US 70"
+      network: ws
+      port: 443
+      security: tls
+      server: yd.laoyoutiao.link
+      skip-cert-verify: false
+      sni: yd.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: yd.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 59"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.103
+      type: ss
+      udp: true
+    - name: Akamai+Technologies,+Inc.+(SG)
+      network: ws
+      port: 80
+      security: none
+      server: support.zoom.us.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: support.zoom.us.zee.upigg.my.id
+      tls: false
+      type: vless
+      uuid: 1da7a767-40d0-4389-9b3e-b8a44c1b622a
+      ws-opts:
+        headers:
+            Host: support.zoom.us.zee.upigg.my.id
+        path: /sgakm
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F2\U0001F1F0[openproxylist.com] ss-MK"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 46.183.185.15
+      type: ss
+      udp: true
+    - name: "\U0001F1F8\U0001F1EE|SI|@wxgqlfx|117"
+      network: ws
+      port: 8880
+      security: none
+      server: 92.60.74.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 25"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.222
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 154"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.79
+      type: ss
+      udp: true
+    - name: 15|US_speednode_0310
+      network: ws
+      port: 8880
+      security: none
+      server: 185.148.104.141
+      skip-cert-verify: false
+      sni: VngSuPpLY.IP-DdnS.com
+      tls: false
+      type: vless
+      uuid: e9979910-79d1-4621-a93c-b2a579c44ba7
+      ws-opts:
+        headers:
+            Host: VngSuPpLY.IP-DdnS.com
+        path: /Etb1L6YUdZFZuTOr?ed=2560
+    - name: "telegram \U0001F308 DailyV2ry"
+      network: ws
+      port: 2052
+      security: none
+      server: 104.17.197.101
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: b6a617b7-758e-4639-b2f4-d296c0f1b03e
+      ws-opts:
+        headers:
+            Host: register.tunnelbreaking.shop
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE 1"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 45.158.171.60
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]_俄罗斯_hamraH_417\r\r"
+      password: UkXRsXvR6buDMG2Y
+      port: 9001
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 183"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.217
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.223
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.36
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.196
+      type: ss
+      udp: true
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26423
+      server: yjjdrb.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjdrb.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.32
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1F3 CN | ⬇️ 0.00 MB/s"
+      password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
+      port: 3462
+      server: a10.taipeicitygovernment.kyiv.ua
+      skip-cert-verify: false
+      sni: 45.32.28.232
+      type: trojan
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 154.197.75.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1ED\U0001F1FA HU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 74.49.215.63
+      servername: jp.laoyoutiao.link
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36
+        path: /Telegram
+      xudp: true
+    - name: "\U0001F3F3️ AM | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 5.10.215.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.52
+      type: ss
+      udp: true
+    - name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 31.12.75.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1E8\U0001F1F7 CR | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 190.93.246.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 103.116.7.3
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.203
+      type: ss
+      udp: true
+    - auth: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      port: 35250
+      server: flyhl.flylink.cyou
+      skip-cert-verify: true
+      sni: flyhl.flylink.cyou
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 168.100.6.177
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (X11; Datanyze; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2"
+      xudp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 3cb34bed-sucv40-swr62l-lj7z.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 331cae90-f7e9-11ed-b4e2-f23c913c8d2b
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: lufeng.pw
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: cd1d3ccc-3ee6-4675-a891-3361668a1c93
+      ws-opts:
+        headers:
+            Host: lufeng.pw
+        path: /id5
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 209.46.30.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.193
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 25.26.27.29
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-128-gcm
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.240
+      type: ss
+      udp: true
+    - name: "\U0001F3F3️ KZ | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 31.43.179.148
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: edf13267-a7ab-4ef8-a2ea-a567bfcc1a9f
+      port: 443
+      server: tuntro005.instconn.com
+      skip-cert-verify: false
+      sni: Phoenixrm2.686911.xyz
+      type: trojan
+    - name: "\U0001F1F8\U0001F1EC SG | ⬇️ 0.00 MB/s"
+      password: d4bdfc72-7f0c-4ff0-aa4d-3530736f4088
+      port: 443
+      server: sg-full.privateip.net
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.174
+      skip-cert-verify: false
+      sni: kjgx.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+        path: freecodes蘇小檸|華東電訊|解鎖Netflix
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.25
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: tcp
+      port: 45291
+      server: lt.fxlcn.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 469e0b31-30c3-4dab-800d-711232634ce1
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.34
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.203
+      type: ss
+      udp: true
+    - name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.174.138.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.40
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: d310aa86-sv0xs0-swskl4-1rh01.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 4c0ba4a2-1510-11ef-ba65-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: quiz.int.vidio.com.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: quiz.int.vidio.com.zee.upigg.my.id
+      tls: true
+      type: vless
+      uuid: cb726bef-c260-44c4-8e4f-6adb52f90fc4
+      ws-opts:
+        headers:
+            Host: quiz.int.vidio.com.zee.upigg.my.id
+        path: /sgapl
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 168.100.6.29
+      skip-cert-verify: false
+      sni: hk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+        path: /Telegram
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20357
+      server: nexiahg.688997.xyz
+      skip-cert-verify: true
+      sni: nexiahg.688997.xyz
+      type: hysteria2
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1FF CZ | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 195.181.160.6
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 160.153.137.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1EE\U0001F1F8 IS | ⬇️ 0.00 MB/s"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26623
+      server: yjjdbd.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjdbd.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1E8\U0001F1FE CY | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 154.92.9.174
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      security: none
+      server: cache.netflix.com.spauu.web.id
+      skip-cert-verify: false
+      sni: cache.netflix.com.spauu.web.id
+      tls: false
+      type: vless
+      uuid: 0a7e440a-ec7b-4bee-95c0-684ce1b167e4
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.spauu.web.id
+        path: /sg-byt
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      server: 3DdDf.444652.xYZ
+      sni: 3dddf.444652.xyz
+      tls: true
+      type: vmess
+      uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+      ws-opts:
+        headers:
+            Host: 3DdDf.444652.xYZ
+        path: /9dZlJLjHHrL0VwSolbqFpg
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.46
+      type: ss
+      udp: true
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 2052
+      security: none
+      server: 95.164.18.16
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      password: ae6e933b-8874-4bf4-a384-0de216ef2bf4
+      port: 40000
+      server: hk.fastsoonlink.com
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 0.00 MB/s"
+      password: amazonskr05
+      port: 443
+      server: 3.38.186.95
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.95.183
+      type: ss
+      udp: true
+    - cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: hataryXD
+      port: 443
+      server: blog.ruangguru.com.servpn.my.id
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.139
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.195
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F9\U0001F1ED TH | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 119.59.98.58
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: M3t2ZEQcMGRWBjRa
+      port: 9011
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1EE\U0001F1F8 IS | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 37.235.49.168
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.83
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: FG5ddLsMPbV5CutE
+      port: 9050
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 360e21d21977dc11
+      port: 57456
+      server: 104.167.197.25
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E6\U0001F1F7 AR | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 190.103.176.32
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 45.159.218.254
+      type: vless
+      udp: true
+      uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
+      ws-opts:
+        headers:
+            Host: yg.bantony199.top
+            User-Agent: Mozilla/5.0 (Linux; Android 7.1.2; Redmi 4X Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.111 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.171
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: EXN3S3eQpjE7EJu8
+      port: 9027
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - name: "\U0001F1EE\U0001F1F9 IT | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 5.182.34.177
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - auth: uyzMwZOG2JFOEXhjBnMX7bkf3o
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      password: uyzMwZOG2JFOEXhjBnMX7bkf3o
+      port: 24742
+      server: 64.23.194.249
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 103.245.229.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: 15.235.41.200
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 58fe1542-5290-40ad-815a-77707a81afe5
+      ws-opts:
+        headers:
+            Host: google.com
+        path: /IOebhLMhl1CTbFHbL95myfRX2
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 198.62.62.145
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.210
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 0.00 MB/s"
+      password: BejrQvtu9sqUeNuZ
+      port: 9024
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      password: wjTugX3ZtHMB9c3Z
+      port: 9057
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1FE CY | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 77.37.33.156
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: kjgx.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.30 (KHTML, like Gecko) Chrome/12.0.742.100 Safari/534.30
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - name: "\U0001F3F3️ KZ | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.176.26.3
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.214
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: d5542df0-sv0xs0-sw2c3o-1thts.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: cb96c846-fd6d-11ef-a910-f23c9164ca5d
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.232
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 172.67.164.5
+      skip-cert-verify: false
+      sni: verina.ccantarella.dns-dynamic.net
+      tls: true
+      type: vless
+      uuid: ec7de7e0-3f09-4ef4-8a34-e441917d65fa
+      ws-opts:
+        headers:
+            Host: verina.ccantarella.dns-dynamic.net
+        path: /
+    - auth: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      port: 35230
+      server: flydg.flylink.cyou
+      skip-cert-verify: true
+      sni: flydg.flylink.cyou
+      type: hysteria2
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1EE\U0001F1F3 IN | ⬇️ 0.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 134.209.147.198
+      type: ss
+      udp: true
+    - alterId: 2
+      cipher: auto
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 80
+      server: d6e3d96a-sv6hs0-sw5wi7-ufc0.hk.p5pv.com
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 22308988-8548-11ea-a22e-f23c91cfbbc9
+      ws-opts:
+        headers:
+            Host: broadcastlv.chat.bilibili.com
+        path: /
+    - auth: 21f93c7e-28bc-4787-bb6f-df284d3f3280
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-003-1M"
+      obfs: salamander
+      obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+      password: 21f93c7e-28bc-4787-bb6f-df284d3f3280
+      port: 80
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.33
+      type: ss
+      udp: true
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 45.159.216.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F1EA\U0001F1EA EE | ⬇️ 0.00 MB/s"
+      network: ws
+      port: 8880
+      security: none
+      server: 45.80.108.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 29"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.234
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj
+      port: 52952
+      server: exchange.gameaurela.click
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1E8\U0001F1ED CH | ⬇️ 0.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.161
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 0.00 MB/s"
+      network: ws
+      port: "8880"
+      server: 199.34.229.3
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+            User-Agent: Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - name: CT-cCwY
+      network: ws
+      port: 443
+      security: tls
+      server: 162.159.153.146
+      skip-cert-verify: false
+      sni: warp.wlcf.lol
+      tls: true
+      type: vless
+      uuid: f41afc19-93cb-406d-af1c-04e75221708c
+      ws-opts:
+        headers:
+            Host: warp.wlcf.lol
+        path: /?ed=2560
+    - cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 0.00 MB/s"
+      password: hataryXD
+      port: 80
+      server: bakrie.ac.id.servpn.my.id
+      type: ss
+      udp: true
+    - name: 服务器-优选-104.17.56.107
+      network: ws
+      port: 443
+      security: tls
+      server: 104.17.56.107
+      skip-cert-verify: false
+      sni: ld.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US 552"
+      network: ws
+      port: 443
+      security: tls
+      server: dddfgt.859885.xyz
+      skip-cert-verify: false
+      sni: DddFgT.859885.XYZ
+      tls: true
+      type: vless
+      uuid: f69b7304-9bea-4740-a555-797514012a53
+      ws-opts:
+        headers:
+            Host: dddfgt.859885.xyz
+        path: /ZR7EK3UEnC29auSeckWI9
+    - name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: c378f9c9-733c-4a28-af47-cfa8b063a7f6
+      port: 443
+      server: nl2-full.privateip.net
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: chacha20-ietf-poly1305
+      name: '@meli_proxyy-RDeH'
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 103.104.247.47
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: '2,3,121,186|_87 #1'
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.155.57.51
+      type: ss
+      udp: true
+    - name: GB_speednode_0147
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.132
+      skip-cert-verify: false
+      sni: sk.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sk.laoyoutiao.link
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.57
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 0.00 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.105
+      type: ss
+      udp: true
+    - name: "\U0001F17C\U0001F174\U0001F177\U0001F173\U0001F178-36lw"
+      network: ws
+      port: 2082
+      security: none
+      server: 92.118.233.41
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US 137"
+      network: ws
+      port: 443
+      security: tls
+      server: support.zoom.us.sgjp.asolole.biz.id
+      skip-cert-verify: false
+      sni: support.zoom.us.sgjp.asolole.biz.id
+      tls: true
+      type: vless
+      uuid: 1733f2a1-37f1-48c6-95d9-a60edefd3e15
+      ws-opts:
+        headers:
+            Host: support.zoom.us.sgjp.asolole.biz.id
+        path: /jp2
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 0.00 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.209
+      type: ss
+      udp: true
+    - name: 15|US_speednode_0280
+      network: ws
+      port: 8880
+      security: none
+      server: 66.81.247.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - auth: 8b52ede1-e507-4265-b863-79681795e797
+      down: 100
+      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 0.00 MB/s"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 8b52ede1-e507-4265-b863-79681795e797
+      port: 33079
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - name: GB_speednode_0146
+      network: ws
+      port: 8880
+      security: none
+      server: 91.193.58.69
+      skip-cert-verify: false
+      sni: cs.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: cs.laoyoutiao.link
+        path: /
+    - name: Linknet+fastnet+Asn+(ID)-3Re1
+      network: ws
+      port: 80
+      security: none
+      server: zaintest.vuclip.com.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: zaintest.vuclip.com.zee.upigg.my.id
+      tls: false
+      type: vless
+      uuid: 181c0b6f-20a2-4115-a94e-205818a52280
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.zee.upigg.my.id
+        path: /idlink
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG 3"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.236
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 242"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.62
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 38"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.116
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8美国11 | ⬇️ 1.3MB/s"
+      network: ws
+      port: 443
+      security: tls
+      server: 89d.com
+      skip-cert-verify: false
+      sni: 25707.lanpinguo.cloud-ip.biz
+      tls: true
+      type: vless
+      uuid: 19bf0ff0-0dc5-4e24-80fc-450afa43d9fb
+      ws-opts:
+        headers:
+            Host: 25707.lanpinguo.cloud-ip.biz
+        path: /?ed=2560
+    - name: JO_speednode_0165
+      network: ws
+      port: 8880
+      security: none
+      server: 62.72.166.3
+      skip-cert-verify: false
+      sni: bitget1.asdasd.click
+      tls: false
+      type: vless
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 90"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.48
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_58 |2.1MB/s"
+      network: ws
+      port: "8880"
+      server: 188.244.122.29
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36
+        path: /
+      xudp: true
+    - name: 4Jadi-3920-29772
+      password: 7778e684-f435-4166-bf9e-0256cb28bf10
+      port: 443
+      server: download2hkt.windowsupdate.lol
+      skip-cert-verify: false
+      sni: download2hkt.windowsupdate.lol
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 143"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.45
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+63\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.199.172.224
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "[103]\U0001F1E8\U0001F1E6 Montreal, QC, Canada\r"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+      udp: true
+    - name: 15|FR_speednode_0080
+      network: ws
+      port: 8880
+      security: none
+      server: 185.16.110.63
+      skip-cert-verify: false
+      sni: sg.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 147"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.9
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F0\U0001F1F7 KR 2"
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+79\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.186.139
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 197"
+      network: ws
+      port: 443
+      security: tls
+      server: vipren.biz.id
+      skip-cert-verify: false
+      sni: vipren.biz.id
+      tls: true
+      type: vless
+      uuid: bbbbbbbb-cccc-4ddd-eeee-ffffffffffff
+      ws-opts:
+        headers:
+            Host: vipren.biz.id
+        path: /Neoxide-X/131.186.20.178-27194
+    - name: DC 印度 068
+      password: edf13267-a7ab-4ef8-a2ea-a567bfcc1a9f
+      port: 443
+      server: tuntro013.instconn.com
+      skip-cert-verify: false
+      sni: Mumbairm1.686911.xyz
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "[103]PE_728\r\r"
+      password: HSZuyJQcWe8dxNdF
+      port: 9043
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: ⟮t.me/LonUp_M⟯⁜مخابرات▦77
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.79
+      type: ss
+      udp: true
+    - name: OVH+SAS+(SG)-iX6z
+      network: ws
+      port: 80
+      security: none
+      server: quiz.int.vidio.com.yaya.web.id
+      skip-cert-verify: false
+      sni: quiz.int.vidio.com.yaya.web.id
+      tls: false
+      type: vless
+      uuid: 001e04c8-e21f-4352-9ce2-f340d250156d
+      ws-opts:
+        headers:
+            Host: quiz.int.vidio.com.yaya.web.id
+        path: /ovh
+    - name: "\U0001F1EC\U0001F1E7|GB|@wxgqlfx|195"
+      network: ws
+      port: 8880
+      security: none
+      server: 185.193.30.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: US_speednode_0296
+      network: ws
+      port: 8880
+      security: none
+      server: 195.13.55.213
+      skip-cert-verify: false
+      sni: jp.laoyoutiao.link
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US 888"
+      password: 2ee85121-31de-4581-a492-eb00f606e392
+      port: 443
+      server: 198.46.152.83
+      skip-cert-verify: false
+      sni: sj3.freeguard.org
+      type: trojan
+    - name: "\U0001F1E6\U0001F1EA|AE|@wxgqlfx|206"
+      network: ws
+      port: 8880
+      security: none
+      server: 181.214.1.213
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+        path: ""
+    - name: "\U0001F4A6 32 - VLESS - IPv4 : 2087"
+      network: ws
+      port: 2087
+      security: tls
+      server: 172.66.47.63
+      skip-cert-verify: false
+      sni: Add-1CV.pAGes.DeV
+      tls: true
+      type: vless
+      uuid: 2836c061-ea09-45e5-a98e-4ca478e744b0
+      ws-opts:
+        headers:
+            Host: add-1cv.pages.dev
+        path: /zeflO4p2zVdzNSSX/Y2RuLWIxMDAueG4tLWI2Z2FjLmV1Lm9yZw==?ed=2560
+    - alterId: 0
+      cipher: auto
+      name: u7
+      network: ws
+      port: 443
+      server: 7u.huvicloud.com
+      sni: ""
+      tls: true
+      type: vmess
+      uuid: d4dbeb78-b3b3-4e9a-98dc-9bae152846c9
+      ws-opts:
+        headers:
+            Host: 7u.huvicloud.com
+        path: /7uspeedtest
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 201"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.177
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 165"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.194
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 9"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.23
+      type: ss
+      udp: true
+    - name: RU_speednode_0237
+      network: ws
+      port: 8880
+      security: none
+      server: 185.174.138.177
+      skip-cert-verify: false
+      sni: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+        path: /TelegramU0001F1E8U0001F1F3
