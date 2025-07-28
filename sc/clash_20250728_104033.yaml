@@ -1,0 +1,898 @@
+proxy-providers: {}
+proxies:
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 8"
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.87.175.166
+      type: ss
+      udp: true
+    - auth: aa86b88d-678b-48d3-8693-3ab422385265
+      name: "\U0001F1EF\U0001F1F5 日本-1D"
+      password: aa86b88d-678b-48d3-8693-3ab422385265
+      port: 26423
+      server: yjjdrb.yunjijd.xyz
+      skip-cert-verify: true
+      sni: yjjdrb.yunjijd.xyz
+      type: hysteria2
+      udp: true
+    - name: 意大利IT-T
+      password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+      port: 443
+      server: it.mjt000.com
+      skip-cert-verify: false
+      sni: it.mjt000.com
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 60"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.106
+      type: ss
+      udp: true
+    - name: 美国USLA-T-GPT
+      password: 0d8aa45e-754e-4911-8e5d-bd1d610bdfd0
+      port: 443
+      server: usla.mjt000.com
+      skip-cert-verify: false
+      sni: usla.mjt000.com
+      type: trojan
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 199"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.108
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_740\r\r"
+      password: ZpNDDKRu9MagNvaf
+      port: 9015
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 178"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.69
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "66|SS-TCP-NA \U0001F1E9\U0001F1EA DE-80.92.204.106:... #4"
+      password: f63gg8EruDnUrmz4
+      port: 9010
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 240"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.114
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 222"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.42
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_48 |4.2MB/s"
+      network: ws
+      port: "8880"
+      server: 154.92.9.177
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+            User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 116"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.126
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 299"
+      network: ws
+      port: 443
+      security: tls
+      server: vts.selo.biz.id
+      skip-cert-verify: false
+      sni: vts.selo.biz.id
+      tls: true
+      type: vless
+      uuid: 633ee6d9-a218-4563-b0bd-451181ab5e35
+      ws-opts:
+        headers:
+            Host: vts.selo.biz.id
+        path: /103.168.146.169-20132
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 298"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.237
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 162"
+      network: ws
+      port: 443
+      security: tls
+      server: cache.netflix.com.spauu.web.id
+      skip-cert-verify: false
+      sni: cache.netflix.com.spauu.web.id
+      tls: true
+      type: vless
+      uuid: 2bc40013-44c2-4d92-90e9-617893f7f6ed
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.spauu.web.id
+        path: /sggreen
+    - name: "\U0001F1FA\U0001F1F8 US 56"
+      network: ws
+      port: 443
+      security: tls
+      server: svr.lufeng.pw
+      skip-cert-verify: false
+      sni: svr.lufeng.pw
+      tls: true
+      type: vless
+      uuid: 0c64d14e-4ce3-4aef-9b5e-8d4e331da587
+      ws-opts:
+        headers:
+            Host: svr.lufeng.pw
+        path: /id4
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 9"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.23
+      type: ss
+      udp: true
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1F3\U0001F1F1 荷兰-1C-1UUU"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20457
+      server: nexiahl.688997.xyz
+      skip-cert-verify: true
+      sni: nexiahl.688997.xyz
+      type: hysteria2
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL 9-04xe"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 193.29.139.227
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "18|A_18061\r\r"
+      password: aLpQtfEZe445QyHk
+      port: 9098
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EE\U0001F1F3 IN 1"
+      network: tcp
+      port: 49882
+      server: 148.113.6.81
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 6663a422-875c-44ee-9a25-3f7b334dd9f5
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 237"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.63
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 256"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.135
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: 德国
+      password: wjTugX3ZtHMB9c3Z
+      port: 9057
+      server: 80.92.204.106
+      type: ss
+      udp: true
+    - auth: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      name: "\U0001F1ED\U0001F1F0 香港-1D"
+      obfs: salamander
+      obfs-password: ZWYxYjI3YjlmY2I0OGEwYw==
+      password: f2aec126-fc53-4fb1-9c15-b283a3ea56ac
+      port: 35260
+      server: flyxghy.flylink.cyou
+      skip-cert-verify: true
+      sni: flyxghy.flylink.cyou
+      type: hysteria2
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 563"
+      network: ws
+      port: 443
+      server: SSsXXXCvBnmjKi.931.Pp.uA
+      sni: sssxxxcvbnmjki.931.pp.ua
+      tls: true
+      type: vmess
+      uuid: da128246-33b0-4c88-a44e-d91e9e0a1e05
+      ws-opts:
+        headers:
+            Host: SSsXXXCvBnmjKi.931.Pp.uA
+        path: /0FhUkqQUdxOhMB9JsgTazwz9
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB 10"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.81
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 36"
+      network: ws
+      port: 443
+      server: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+      sni: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+      tls: true
+      type: vmess
+      uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+      ws-opts:
+        headers:
+            Host: 1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top
+        path: /azumase.ren
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 120"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.215
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 675"
+      network: ws
+      port: 443
+      server: dDDcvFBghy7.444682.XYz
+      sni: DdDcVfBGHy7.444682.xyz
+      tls: true
+      type: vmess
+      uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+      ws-opts:
+        headers:
+            Host: dddcvfbghy7.444682.xyz
+        path: /9dZlJLjHHrL0VwSolbqFpg
+    - name: "\U0001F1FA\U0001F1F8US_105 |4.7MB/s|NF|50%"
+      network: ws
+      port: "8880"
+      server: 45.8.211.254
+      type: vless
+      udp: true
+      uuid: 34c01e61-f4f3-4afb-a83b-406caf8caa33
+      ws-opts:
+        headers:
+            Host: yg.bantony199.top
+            User-Agent: Mozilla/5.0 (Linux; Android 4.4.2; SM-G7102 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 196"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.232
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_74 |1.2MB/s|NF|D+|5%"
+      network: ws
+      port: "8880"
+      server: 194.36.55.3
+      servername: Telegram-channel-WangCai2
+      type: vless
+      udp: true
+      uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+      ws-opts:
+        headers:
+            Host: bitget1.asdasd.click
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 33"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.212
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 195"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.239
+      type: ss
+      udp: true
+    - auth: 991f2e70-c118-40f6-ab19-4d556b3a420f
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-纽约-HY-001-1N-bBGJ"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 991f2e70-c118-40f6-ab19-4d556b3a420f
+      port: 31008
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 15"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.27
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_6 |1.3MB/s|NF"
+      network: ws
+      port: "8880"
+      server: 66.225.252.63
+      servername: jp.laoyoutiao.link
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US 27"
+      network: ws
+      port: 443
+      security: tls
+      server: bakrie.ac.id.servpn.my.id
+      skip-cert-verify: false
+      sni: bakrie.ac.id.servpn.my.id
+      tls: true
+      type: vless
+      uuid: 057d7a93-4a78-4f7a-8157-44d53971a7c5
+      ws-opts:
+        headers:
+            Host: bakrie.ac.id.servpn.my.id
+        path: /my4
+    - auth: J8Had1nwTgkNvWNN0WrucWq38
+      name: "\U0001F1FA\U0001F1F8US_25 |2.8MB/s|GPT|NF|GM|53%"
+      password: J8Had1nwTgkNvWNN0WrucWq38
+      port: 33763
+      server: 146.190.51.60
+      skip-cert-verify: true
+      sni: bing.com
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_68 |1.6MB/s|NF"
+      network: ws
+      port: "8880"
+      server: 193.9.49.213
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36
+        path: ""
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US 164"
+      network: ws
+      port: 443
+      security: tls
+      server: sk.laoyoutiao.link
+      skip-cert-verify: false
+      sni: sk.laoyoutiao.link
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sk.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1EF\U0001F1F5 JP 1"
+      password: 7ZkPnMNGly
+      port: 1935
+      server: x1-japan-linode-v2-pwlzp.devefun.org
+      skip-cert-verify: false
+      sni: ""
+      type: trojan
+    - cipher: rc4-md5
+      name: "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+112\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 178.128.231.214
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 69"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.244
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8US_71 |1.2MB/s|D+"
+      network: ws
+      port: "8880"
+      server: 194.53.53.63
+      servername: jp.laoyoutiao.link
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: jp.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3"
+      xudp: true
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1EC\U0001F1E7 英国-1C-Va9E"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20657
+      server: nexiayg.688997.xyz
+      skip-cert-verify: true
+      sni: nexiayg.688997.xyz
+      type: hysteria2
+      udp: true
+    - auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
+      name: "\U0001F1F3\U0001F1F1 荷兰-1A-m6K7"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
+      port: 20457
+      server: nexiahl.688997.xyz
+      skip-cert-verify: true
+      sni: nexiahl.688997.xyz
+      type: hysteria2
+      udp: true
+    - name: "\U0001F1ED\U0001F1F0HK_3 |1.1MB/s|NF"
+      network: ws
+      port: "8880"
+      server: 216.205.52.29
+      type: vless
+      udp: true
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: hk.laoyoutiao.link
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36
+        path: /
+      xudp: true
+    - cipher: aes-256-cfb
+      name: "18|A_18055\r\r"
+      password: wfLC2y7rzZyCmuyt
+      port: 9093
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 163"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.218
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_748\r\r"
+      password: UkXRsXvR6buDMG2Y
+      port: 9001
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 245"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.213
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US 561"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.199.42.68
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 279"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.36
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_712\r\r"
+      password: U6qnYRhfyDmn8sgn
+      port: 9041
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "18,26,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_210\r\r"
+      password: EXN3S3eQpjE7EJu8
+      port: 9027
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - auth: 870149df-2540-4e9e-bae5-2e5cdd52fdab
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-纽约-HY-001-1D-A4h7"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 870149df-2540-4e9e-bae5-2e5cdd52fdab
+      port: 31008
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68][68][68][68][82][82][82][68][68][68][68][82][82][82][82][82][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+67\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.79.198
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+87\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.82.211
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 137"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.77
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F194⟪@LonUp_M⟫\U0001F7E0ALL⌁1509"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 37.235.49.152
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 37"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.234
+      type: ss
+      udp: true
+    - auth: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      name: "\U0001F1FA\U0001F1F8 美国-1B"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 177af578-b9ac-4394-bf87-5b15179e9f9d
+      port: 20157
+      server: nexiamg.688997.xyz
+      skip-cert-verify: true
+      sni: nexiamg.688997.xyz
+      type: hysteria2
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E9\U0001F1EA DE 1"
+      network: tcp
+      port: 32017
+      server: 91.107.243.150
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: c0ccdeb9-784c-4d67-b904-20dcaac9902a
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "[103]PE_710\r\r"
+      password: ZET59LF6DvCC8KVt
+      port: 9005
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[112]\U0001F1E8\U0001F1E6CA-147.182.146.81-0160"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.146.81
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 165"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.194
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: ⟮t.me/LonUp_M⟯⩤ALL⌖550
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 46.183.185.37
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "18|A_18063\r\r"
+      password: a3GFYt36Sm82Vys9
+      port: 9000
+      server: 217.30.10.18
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 197"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.44
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 109"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.50
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 270"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.168
+      type: ss
+      udp: true
+    - auth: 65e6bb58-a11c-4b70-9749-ac75989c69e6
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-003-1B"
+      obfs: salamander
+      obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+      password: 65e6bb58-a11c-4b70-9749-ac75989c69e6
+      port: 80
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: rc4-md5
+      name: 0|_207
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 172.105.199.111
+      type: ss
+      udp: true
+    - auth: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
+      name: "\U0001F1E9\U0001F1EA 德国-1A-Xuks"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: f36e929f-da20-4ed7-81ca-20de6f0fbe2a
+      port: 20557
+      server: nexiadg.688997.xyz
+      skip-cert-verify: true
+      sni: nexiadg.688997.xyz
+      type: hysteria2
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F194⟪@LonUp_M⟫\U0001F7E0ALL⌁1734"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 103.163.218.2
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+S4\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 23.251.121.242
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 8-mDoc"
+      network: ws
+      port: 443
+      security: tls
+      server: quiz.int.vidio.com.zee.upigg.my.id
+      skip-cert-verify: false
+      sni: quiz.int.vidio.com.zee.upigg.my.id
+      tls: true
+      type: vless
+      uuid: cb726bef-c260-44c4-8e4f-6adb52f90fc4
+      ws-opts:
+        headers:
+            Host: quiz.int.vidio.com.zee.upigg.my.id
+        path: /sgapl
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E9\U0001F1EA DE 4"
+      network: tcp
+      port: 28213
+      server: 135.125.182.74
+      sni: ""
+      tls: false
+      type: vmess
+      uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
+      ws-opts: {}
+    - cipher: aes-256-cfb
+      name: "\U0001F1EA\U0001F1EA EE 1"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 188.214.36.155
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F194@LuxyNet\U0001F48E❖比利时❖BE❖1048"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 192.71.249.78
+      type: ss
+      udp: true
+    - auth: 0506064c-8ea2-49db-8142-fa6ec840c346
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-纽约-HY-001-1N"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 0506064c-8ea2-49db-8142-fa6ec840c346
+      port: 31008
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 82"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.156
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "[103]PE_734\r\r"
+      password: kSPmvwdFzGMMW5pY
+      port: 9007
+      server: 217.30.10.70
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S7\r\r"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.205.14
+      type: ss
+      udp: true
+    - auth: 30e6aa32-fd71-4619-8b72-e9b7dbea57f1
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-003-1J"
+      obfs: salamander
+      obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+      password: 30e6aa32-fd71-4619-8b72-e9b7dbea57f1
+      port: 80
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 2"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.19
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 18"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.21
+      type: ss
+      udp: true
+    - client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8US_118 |1.2MB/s|NF|D+"
+      network: ws
+      port: 8880
+      server: 89.116.180.177
+      servername: Telegram-channel-WangCai2
+      tls: false
+      type: vless
+      udp: true
+      uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+      ws-opts:
+        headers:
+            Host: ip.langmanshanxi.top
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 77"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.231
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US 617"
+      network: ws
+      port: 443
+      server: wwsXCDfrt.999824.xYZ
+      sni: WWsXcDfrt.999824.XYz
+      tls: true
+      type: vmess
+      uuid: cdec9d57-661d-456a-bbf2-b4c38e9c6711
+      ws-opts:
+        headers:
+            Host: wwsxcdfrt.999824.xyz
+        path: /9dZlJLjHHrL0VwSolbqFpg
+    - cipher: chacha20-ietf-poly1305
+      name: "218,270|\U0001F1FA\U0001F1F8 US 741 → tg@nicevpn123"
+      password: Bog0ELmMM9DSxDdQ
+      port: 443
+      server: series-a2-me.samanehha.co
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 208"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.186
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN 17"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.33
+      type: ss
+      udp: true
+    - auth: 25e8132e-4d5f-4012-8b09-c51e677050f5
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-纽约-HY-001-1B-XNsr"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 25e8132e-4d5f-4012-8b09-c51e677050f5
+      port: 31008
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - auth: 991f2e70-c118-40f6-ab19-4d556b3a420f
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-拉斯维加斯-HY-003-1N-Fwh0"
+      obfs: salamander
+      obfs-password: OGU1NTEyMGE2ZDhkODdhOQ==
+      password: 991f2e70-c118-40f6-ab19-4d556b3a420f
+      port: 80
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
+    - auth: 59ff4748-cb72-4186-a23f-127c16751ad1
+      down: 100
+      name: "\U0001F1FA\U0001F1F8 美国-纽约-HY-001-1G-kxT9"
+      obfs: salamander
+      obfs-password: NDhhNmY5YTY0MGYzOTgxYQ==
+      password: 59ff4748-cb72-4186-a23f-127c16751ad1
+      port: 31008
+      server: 45.136.245.177
+      skip-cert-verify: true
+      type: hysteria2
+      udp: true
+      up: 100
