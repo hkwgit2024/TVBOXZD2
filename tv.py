@@ -158,6 +158,19 @@ adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_re
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
+# --- Channel URL cleaning function ---
+def clean_url_params(url):
+    """Remove unnecessary parameters or fragments from URL."""
+    # Remove anything after '#' (e.g., track id or comments in M3U)
+    url = url.split('#')[0]
+    # Remove common tracking/session parameters, e.g., anything after '?' or '&' if not part of the stream URL
+    # This is a basic example; more complex regex might be needed for specific cases
+    # For now, let's just remove hash fragments.
+    # If there are query parameters that are NOT essential for the stream (e.g., ?timestamp=123),
+    # you might add logic here to remove them. However, for many streaming URLs, query params ARE essential.
+    # So, we'll keep it simple for now and only remove hash fragments.
+    return url.strip()
+
 # --- Local file operations functions (general) ---
 def read_txt_to_array_local(file_name):
     """Read content from a local TXT file into an array."""
@@ -627,55 +640,46 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
                     if len(parts) == 2:
                         existing_channels_data.append((parts[0].strip(), parts[1].strip()))
 
-    all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
-    # MODIFICATION: Also include the uncategorized_iptv.txt from the root directory
-    uncategorized_file_in_root = UNCATEGORIZED_IPTV_PATH # Use the constant
-    if os.path.exists(uncategorized_file_in_root):
-        all_iptv_files_in_dir.append(uncategorized_file_in_root)
-
     files_to_merge_paths = []
-    processed_files = set()
-    for category in ORDERED_CATEGORIES:
-        file_name = f"{category}_iptv.txt"
-        # Check both in temp_channels and root (for 'uncategorized')
-        temp_path = os.path.join(local_channels_directory, file_name)
-        root_path = file_name # For 'uncategorized_iptv.txt'
-        
-        if os.path.basename(temp_path) in all_iptv_files_in_dir and temp_path not in processed_files:
-            files_to_merge_paths.append(temp_path)
-            processed_files.add(os.path.basename(temp_path))
-        elif category == 'uncategorized' and os.path.basename(root_path) in all_iptv_files_in_dir and root_path not in processed_files:
-            files_to_merge_paths.append(root_path)
-            processed_files.add(os.path.basename(root_path))
+    
+    # Add files from temp_channels directory
+    for f_name in os.listdir(local_channels_directory):
+        if f_name.endswith('_iptv.txt'):
+            files_to_merge_paths.append(os.path.join(local_channels_directory, f_name))
+    
+    # Add uncategorized_iptv.txt from the root directory if it exists
+    if os.path.exists(UNCATEGORIZED_IPTV_PATH):
+        files_to_merge_paths.append(UNCATEGORIZED_IPTV_PATH)
 
-    for file_name in sorted(all_iptv_files_in_dir): # Now `all_iptv_files_in_dir` contains full paths or just filenames for root
-        if file_name not in processed_files:
-            if os.path.basename(file_name) == uncategorized_file_in_root:
-                files_to_merge_paths.append(uncategorized_file_in_root)
-            else:
-                files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
-            processed_files.add(file_name)
+    # Sort files to ensure consistent merging order (e.g., based on category order)
+    # A simple alphabetical sort might be sufficient here if precise ordering isn't critical
+    # For now, let's just sort alphabetically to avoid complex custom sort logic.
+    files_to_merge_paths.sort()
 
     new_channels_from_merged_files = set()
     for file_path in files_to_merge_paths:
-        with open(file_path, "r", encoding="utf-8") as file:
-            lines = file.readlines()
-            if not lines:
-                continue
-            for line in lines:
-                line = line.strip()
-                if line and ',' in line and '#genre#' not in line:
-                    name, url = line.split(',', 1)
-                    new_channels_from_merged_files.add((name.strip(), url.strip()))
+        logging.debug(f"Merging channels from file: {file_path}") # Debugging line
+        try:
+            with open(file_path, "r", encoding="utf-8") as file:
+                lines = file.readlines()
+                if not lines:
+                    continue
+                for line in lines:
+                    line = line.strip()
+                    if line and ',' in line and '#genre#' not in line:
+                        name, url = line.split(',', 1)
+                        new_channels_from_merged_files.add((name.strip(), url.strip()))
+        except FileNotFoundError:
+            logging.warning(f"File not found during merge: {file_path}. Skipping.")
+        except Exception as e:
+            logging.error(f"Error reading file {file_path} during merge: {e}")
 
     # Combine existing and new channels
     combined_channels = existing_channels_data + list(new_channels_from_merged_files)
 
     # Deduplicate and filter based on stream_fail_count
     final_channels_for_output = set()
-    channels_for_checking = [] # Channels that will be checked for validity
-
-    # First, add all channels (new and existing) to a list for checking
+    
     # We use a set to avoid processing duplicate (name, url) combinations multiple times for checking
     unique_channels_to_check = set()
     for name, url in combined_channels:
@@ -819,7 +823,7 @@ def cleanup_temp_files():
             logging.debug(f"Removed empty directory '{temp_dir}'.")
     
     # Also clean up the 'uncategorized_iptv.txt' from the root if it was created
-    if os.path.exists(UNCATEGORIZED_IPTV_PATH):
+    if os.path.exists(UNCATEGORIZED_IPTV_PATH): # Use the constant for path
         os.remove(UNCATEGORIZED_IPTV_PATH)
         logging.debug(f"Removed '{UNCATEGORIZED_IPTV_PATH}' from root directory.")
     logging.info("Temporary file cleanup finished.")
