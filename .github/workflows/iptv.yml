@@ -15,7 +15,7 @@ jobs:
       contents: write # 授予写入权限，用于提交和推送更改
 
     steps:
-      # 步骤1：检查 BOT secret
+      # 步骤1：检查 BOT secret (if still needed by git operations in workflow)
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
@@ -41,11 +41,7 @@ jobs:
       # 步骤4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil
-          pip install pyyaml requests tenacity
-          pip install dnspython
-          pip install requests pyyaml dnspython aiohttp tqdm
-          pip install aiofiles
+          pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython tqdm aiofiles
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'        
@@ -67,25 +63,38 @@ jobs:
             exit 1 # 如果 ffprobe 不可用，则中止工作流
           fi
 
-      # 步骤6：运行 IPTV 爬取脚本
+      # 步骤7: 创建 config 目录并添加初始配置和文件 (Optional, for initial setup if files don't exist)
+      # This step ensures the config directory and base files exist before the python script runs
+      # For first run, user needs to manually create config/config.yaml with at least 'github_token'
+      - name: 创建配置目录和空文件
+        run: |
+          mkdir -p config
+          touch config/urls.txt
+          touch config/url_states.json
+          # config/config.yaml needs to be created manually by user with initial content
+        shell: bash
+
+      # 步骤8：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          BOT: ${{ secrets.BOT }}
-          REPO_OWNER: ${{ vars.REPO_OWNER }}
-          REPO_NAME: ${{ vars.REPO_NAME }}
+          # Only BOT secret is potentially needed here if the script itself was pushing,
+          # but now all file operations are local and git is handled by workflow steps.
+          # The GITHUB_TOKEN for auto-discovery is read from config.yaml by the script.
+          BOT: ${{ secrets.BOT }} # Still might be implicitly used by some libraries if they rely on it, but the python code is updated not to use these as env vars.
         run: python ${{ github.workspace }}/tv.py
-
-      # 步骤7：保存日志和生成文件
+        
+      # 步骤9：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
           name: iptv-results
           path: |
             *.txt # 捕获 iptv_list.txt 和 uncategorized_iptv.txt
-            temp_channels/ # 捕获 temp_channels 目录下的所有文件
-            config/*.txt # 捕获 config 目录下的所有 .txt 文件
-            地方频道/*.txt # 捕获 地方频道 目录下的所有 .txt 文件
-            iptv_crawler.log # 捕获日志文件
+            temp_channels/
+            config/*.yaml # 捕获 config.yaml
+            config/*.json # 捕获 url_states.json
+            config/*.txt # 捕获 urls.txt
+            iptv_crawler.log
           retention-days: 7
           if-no-files-found: warn
           compression-level: 6
@@ -93,7 +102,7 @@ jobs:
           include-hidden-files: false
         if: always()
 
-      # 步骤8：检查文件更改
+      # 步骤10：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -107,7 +116,7 @@ jobs:
           fi
         shell: bash
 
-      # 步骤9：提交更改
+      # 步骤11：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -115,7 +124,7 @@ jobs:
           git config --global user.name "GitHub Actions"
           git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
 
-      # 步骤10：推送更改
+      # 步骤12：推送更改
       - name: 推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
