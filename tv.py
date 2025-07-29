@@ -14,16 +14,22 @@ import hashlib
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import yaml
+import base64 # Re-add for GitHub API interaction
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define local file paths
-CONFIG_PATH = "config.yml"
-URLS_PATH = "urls.txt"
-URL_STATES_PATH = "url_states.json"
+CONFIG_DIR = "config"
+CONFIG_PATH = os.path.join(CONFIG_DIR, "config.yml")
+URLS_PATH = os.path.join(CONFIG_DIR, "urls.txt")
+URL_STATES_PATH = os.path.join(CONFIG_DIR, "url_states.json")
 IPTV_LIST_PATH = "iptv_list.txt" # Define the path for iptv_list.txt
 LOCAL_CHANNELS_DIRECTORY = "temp_channels" # Directory to store temporary channel files
+UNCATEGORIZED_IPTV_ROOT_PATH = "uncategorized_iptv.txt" # Path for uncategorized_iptv.txt in the root
+
+# Ensure config directory exists
+os.makedirs(CONFIG_DIR, exist_ok=True)
 
 # --- Local file operations functions ---
 def read_local_file(file_path):
@@ -41,7 +47,7 @@ def read_local_file(file_path):
 def write_local_file(file_path, content, mode='w'):
     """Write content to a local file."""
     try:
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True) # Ensure directory exists
         with open(file_path, mode, encoding='utf-8') as file:
             file.write(content)
         return True
@@ -84,8 +90,8 @@ CONFIG = load_config_local()
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20) # Keep for now, but will not be used
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10) # Keep for now, but will not be used
+GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20) # Re-enabled
+GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10) # Re-enabled
 CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
 CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
 MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
@@ -100,6 +106,11 @@ URL_STATE_EXPIRATION_DAYS = CONFIG.get('url_state_expiration_days', 90)
 CHANNEL_FAIL_THRESHOLD = CONFIG.get('channel_fail_threshold', 5) # Threshold for channel cleanup in iptv_list.txt
 URL_FAIL_THRESHOLD = CONFIG.get('url_fail_threshold', 5) # Threshold for URL cleanup in urls.txt
 URL_RETENTION_HOURS = CONFIG.get('url_retention_hours', 72) # Hours to retain failed URLs in urls.txt
+
+# Get GitHub Token from environment (needed for auto-discovery)
+GITHUB_TOKEN = os.getenv('BOT')
+if not GITHUB_TOKEN and SEARCH_KEYWORDS:
+    logging.warning("Warning: 'BOT' environment variable (GitHub Token) not set. GitHub URL auto-discovery will be skipped.")
 
 # Configure requests session
 session = requests.Session()
@@ -622,9 +633,8 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
 
     all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
     # MODIFICATION: Also include the uncategorized_iptv.txt from the root directory
-    uncategorized_file_in_root = "uncategorized_iptv.txt"
-    if os.path.exists(uncategorized_file_in_root):
-        all_iptv_files_in_dir.append(uncategorized_file_in_root)
+    if os.path.exists(UNCATEGORIZED_IPTV_ROOT_PATH):
+        all_iptv_files_in_dir.append(UNCATEGORIZED_IPTV_ROOT_PATH)
 
     files_to_merge_paths = []
     processed_files = set()
@@ -633,22 +643,26 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
         file_name = f"{category}_iptv.txt"
         # Check both in temp_channels and root (for 'uncategorized')
         temp_path = os.path.join(local_channels_directory, file_name)
-        root_path = file_name # For 'uncategorized_iptv.txt'
+        root_path = UNCATEGORIZED_IPTV_ROOT_PATH # For 'uncategorized_iptv.txt'
         
         if os.path.basename(temp_path) in all_iptv_files_in_dir and temp_path not in processed_files:
             files_to_merge_paths.append(temp_path)
             processed_files.add(os.path.basename(temp_path))
-        elif category == 'uncategorized' and os.path.basename(root_path) in all_iptv_files_in_dir and root_path not in processed_files:
+        elif category.lower() == 'uncategorized' and os.path.basename(root_path) in all_iptv_files_in_dir and root_path not in processed_files:
             files_to_merge_paths.append(root_path)
             processed_files.add(os.path.basename(root_path))
 
     for file_name in sorted(all_iptv_files_in_dir): # Now `all_iptv_files_in_dir` contains full paths or just filenames for root
-        if file_name not in processed_files:
-            if os.path.basename(file_name) == uncategorized_file_in_root:
-                files_to_merge_paths.append(uncategorized_file_in_root)
-            else:
-                files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
-            processed_files.add(file_name)
+        # Reconstruct full path for files in LOCAL_CHANNELS_DIRECTORY
+        actual_file_path = os.path.join(local_channels_directory, file_name)
+        
+        if file_name == UNCATEGORIZED_IPTV_ROOT_PATH: # Check for the root uncategorized file
+             if UNCATEGORIZED_IPTV_ROOT_PATH not in processed_files:
+                files_to_merge_paths.append(UNCATEGORIZED_IPTV_ROOT_PATH)
+                processed_files.add(UNCATEGORIZED_IPTV_ROOT_PATH)
+        elif os.path.exists(actual_file_path) and actual_file_path not in processed_files: # For files in temp_channels
+            files_to_merge_paths.append(actual_file_path)
+            processed_files.add(actual_file_path)
 
     new_channels_from_merged_files = set()
     for file_path in files_to_merge_paths:
@@ -708,8 +722,92 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
     except Exception as e:
         logging.error(f"Error appending write to file '{output_file_name}': {e}")
 
-# Removed auto_discover_github_urls as it's not relevant for local operation.
-# The script will rely on a local urls.txt for input URLs.
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(GITHUB_API_RETRY_WAIT), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
+def fetch_from_github_api(url, token, timeout=GITHUB_API_TIMEOUT):
+    """Fetch content from GitHub API with authentication."""
+    headers = {
+        "Accept": "application/vnd.github.v3.raw",
+        "Authorization": f"token {token}",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers, timeout=timeout)
+    response.raise_for_status()  # Raise an exception for bad status codes
+    return response.json()
+
+def auto_discover_github_urls(search_keywords):
+    """Discover URLs from GitHub using search keywords and the GitHub API."""
+    if not GITHUB_TOKEN:
+        logging.warning("Skipping GitHub URL auto-discovery: GITHUB_TOKEN (BOT) environment variable is not set.")
+        return []
+
+    discovered_urls = set()
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
+    }
+    
+    for keyword in search_keywords:
+        logging.info(f"Searching GitHub for keyword: '{keyword}'...")
+        for page in range(1, MAX_SEARCH_PAGES + 1):
+            query = f"{keyword} filename:urls.txt" # Focus on urls.txt files
+            search_url = f"https://api.github.com/search/code?q={query}&page={page}&per_page={PER_PAGE}"
+            try:
+                response = requests.get(search_url, headers=headers, timeout=GITHUB_API_TIMEOUT)
+                response.raise_for_status()
+                search_results = response.json()
+
+                if not search_results.get('items'):
+                    logging.info(f"No more results for '{keyword}' on page {page}.")
+                    break
+
+                for item in search_results['items']:
+                    raw_url = item['url'] # This is the API URL for the content
+                    try:
+                        file_content = fetch_from_github_api(raw_url, GITHUB_TOKEN)
+                        # The content is usually in base64 if fetched from /contents endpoint
+                        # For /search/code, 'url' might directly point to the blob, but often needs 'download_url' or 'git_url' or 'html_url'
+                        # The 'content' key in search/code is base64 encoded
+                        if 'content' in file_content:
+                            decoded_content = base64.b64decode(file_content['content']).decode('utf-8')
+                            lines = decoded_content.splitlines()
+                            for line in lines:
+                                line = line.strip()
+                                if line.startswith("http") or line.startswith("https"):
+                                    if pre_screen_url(line): # Apply pre-screening
+                                        discovered_urls.add(line)
+                        elif 'download_url' in item: # Try to get download_url from search result item directly
+                            direct_content_url = item['download_url']
+                            direct_content_response = requests.get(direct_content_url, timeout=CHANNEL_FETCH_TIMEOUT)
+                            direct_content_response.raise_for_status()
+                            lines = direct_content_response.text.splitlines()
+                            for line in lines:
+                                line = line.strip()
+                                if line.startswith("http") or line.startswith("https"):
+                                    if pre_screen_url(line): # Apply pre-screening
+                                        discovered_urls.add(line)
+
+                    except requests.exceptions.RequestException as e:
+                        logging.error(f"Error fetching content for {raw_url}: {e}")
+                    except Exception as e:
+                        logging.error(f"Error processing GitHub item {raw_url}: {e}")
+
+                # Respect GitHub API rate limits
+                remaining_rate_limit = int(response.headers.get('X-RateLimit-Remaining', 0))
+                reset_time = int(response.headers.get('X-RateLimit-Reset', 0))
+                if remaining_rate_limit < 10: # Be conservative
+                    sleep_time = max(0, reset_time - time.time()) + 5 # Add a buffer
+                    logging.warning(f"GitHub API rate limit nearly exhausted. Sleeping for {sleep_time:.0f} seconds.")
+                    time.sleep(sleep_time)
+
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Error searching GitHub for '{keyword}' page {page}: {e}")
+                break # Stop searching this keyword if an error occurs
+
+            time.sleep(GITHUB_API_RETRY_WAIT) # Wait between pages
+    logging.info(f"Finished GitHub URL auto-discovery. Discovered {len(discovered_urls)} new URLs.")
+    return list(discovered_urls)
+
 
 def clean_up_old_urls(urls_file_path, url_states):
     """Clean up old URLs from urls.txt based on URL_FAIL_THRESHOLD and URL_RETENTION_HOURS."""
@@ -744,20 +842,36 @@ def clean_up_old_urls(urls_file_path, url_states):
 
 
 def main():
-    logging.warning("Starting IPTV processing (local mode)...")
+    logging.warning("Starting IPTV processing...")
 
     # Load URL states from local file
     url_states = load_url_states_local()
 
     # Read URLs from the local urls.txt
     urls_to_process = read_txt_to_array_local(URLS_PATH)
+    
+    # Perform GitHub URL auto-discovery and add new URLs to the list
+    if GITHUB_TOKEN and SEARCH_KEYWORDS:
+        logging.warning("Performing GitHub URL auto-discovery...")
+        discovered_urls = auto_discover_github_urls(SEARCH_KEYWORDS)
+        new_urls_count = 0
+        for url in discovered_urls:
+            if url not in urls_to_process:
+                urls_to_process.append(url)
+                new_urls_count += 1
+        if new_urls_count > 0:
+            logging.warning(f"Discovered and added {new_urls_count} new URLs from GitHub.")
+            write_array_to_txt_local(URLS_PATH, urls_to_process)
+        else:
+            logging.info("No new URLs discovered from GitHub.")
+
     if not urls_to_process:
-        logging.error(f"No URLs found in '{URLS_PATH}'. Please populate this file with IPTV source URLs.")
+        logging.error(f"No URLs found in '{URLS_PATH}' and no URLs discovered from GitHub. Please populate '{URLS_PATH}' with IPTV source URLs or ensure GitHub token and search keywords are configured for auto-discovery.")
         return
 
     all_extracted_channels = []
     total_urls = len(urls_to_process)
-    logging.warning(f"Processing {total_urls} URLs from '{URLS_PATH}'...")
+    logging.warning(f"Processing {total_urls} URLs from '{URLS_PATH}' and discovered sources...")
 
     for i, url in enumerate(urls_to_process):
         logging.warning(f"Processing URL {i+1}/{total_urls}: {url}")
@@ -774,14 +888,11 @@ def main():
     for name, url in all_extracted_channels:
         category_found = False
         for category in ORDERED_CATEGORIES:
-            # Assuming category detection logic, for now, just categorize as 'uncategorized'
-            # In a real scenario, you'd have more sophisticated category matching here.
-            if category not in grouped_by_category:
-                grouped_by_category[category] = []
-            
             # Simple example: if category name is in channel name, assign it
             # This part would need actual logic for categorization based on the config.
             if category.lower() in name.lower():
+                if category not in grouped_by_category:
+                    grouped_by_category[category] = []
                 grouped_by_category[category].append(f"{name},{url}")
                 category_found = True
                 break
@@ -793,8 +904,9 @@ def main():
 
     os.makedirs(LOCAL_CHANNELS_DIRECTORY, exist_ok=True)
     for category, lines in grouped_by_category.items():
-        if category == 'uncategorized':
-            output_path = "uncategorized_iptv.txt"
+        if category.lower() == 'uncategorized':
+            # Uncategorized goes to the root directory as per user request
+            output_path = UNCATEGORIZED_IPTV_ROOT_PATH
         else:
             output_path = os.path.join(LOCAL_CHANNELS_DIRECTORY, f"{category}_iptv.txt")
         write_local_file(output_path, '\n'.join(lines))
@@ -820,9 +932,9 @@ def main():
             logging.debug(f"Removed empty directory '{LOCAL_CHANNELS_DIRECTORY}'.")
     
     # Also clean up the 'uncategorized_iptv.txt' from the root if it was created
-    if os.path.exists('uncategorized_iptv.txt'):
-        os.remove('uncategorized_iptv.txt')
-        logging.debug(f"Removed 'uncategorized_iptv.txt' from root directory.")
+    if os.path.exists(UNCATEGORIZED_IPTV_ROOT_PATH):
+        os.remove(UNCATEGORIZED_IPTV_ROOT_PATH)
+        logging.debug(f"Removed '{UNCATEGORIZED_IPTV_ROOT_PATH}' from root directory.")
 
 if __name__ == "__main__":
     main()
