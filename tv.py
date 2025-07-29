@@ -1,1073 +1,442 @@
-import os
+import asyncio
+import aiohttp
+import aiofiles
 import re
-import subprocess
-import socket
-import time
-from datetime import datetime, timedelta
 import logging
-import requests
-from urllib.parse import urlparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
-import json
-import hashlib
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 import yaml
-import base64
+import dns.resolver
+import os
+import psutil
+import subprocess
+from datetime import datetime
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from urllib.parse import urlparse
+from tqdm import tqdm
+import sys
+import time
+import traceback
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Get configuration from environment variables
-GITHUB_TOKEN = os.getenv('BOT')
-REPO_OWNER = os.getenv('REPO_OWNER')
-REPO_NAME = os.getenv('REPO_NAME')
-CONFIG_PATH_IN_REPO = os.getenv('CONFIG_PATH')
-URLS_PATH_IN_REPO = os.getenv('URLS_PATH')
-URL_STATES_PATH_IN_REPO = os.getenv('URL_STATES_PATH')
-IPTV_LIST_PATH = "iptv_list.txt" # Define the path for iptv_list.txt
-
-# Check if environment variables are set
-if not GITHUB_TOKEN:
-    logging.error("Error: Environment variable 'BOT' not set.")
-    exit(1)
-if not REPO_OWNER:
-    logging.error("Error: Environment variable 'REPO_OWNER' not set.")
-    exit(1)
-if not REPO_NAME:
-    logging.error("Error: Environment variable 'REPO_NAME' not set.")
-    exit(1)
-if not CONFIG_PATH_IN_REPO:
-    logging.error("Error: Environment variable 'CONFIG_PATH' not set.")
-    exit(1)
-if not URLS_PATH_IN_REPO:
-    logging.error("Error: Environment variable 'URLS_PATH' not set.")
-    exit(1)
-if not URL_STATES_PATH_IN_REPO:
-    logging.error("Error: Environment variable 'URL_STATES_PATH' not set.")
-    exit(1)
-
-# GitHub repository base URLs
-GITHUB_RAW_CONTENT_BASE_URL = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
-GITHUB_API_CONTENTS_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents"
-GITHUB_API_BASE_URL = "https://api.github.com"
-SEARCH_CODE_ENDPOINT = "/search/code"
-
-# --- GitHub file operations functions ---
-def fetch_from_github(file_path_in_repo):
-    """Fetch file content from GitHub repository."""
-    raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    try:
-        response = requests.get(raw_url, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.text
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error fetching {file_path_in_repo} from GitHub: {e}")
-        return None
-
-def get_current_sha(file_path_in_repo):
-    """Get the current SHA of a file in the GitHub repository."""
-    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    try:
-        response = requests.get(api_url, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.json().get('sha')
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"Error getting SHA for {file_path_in_repo} (might not exist): {e}")
-        return None
-
-def save_to_github(file_path_in_repo, content, commit_message):
-    """Save (create or update) content to GitHub repository."""
-    api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
-    sha = get_current_sha(file_path_in_repo)
-    
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
-
-    payload = {
-        "message": commit_message,
-        "content": encoded_content,
-        "branch": "main"
-    }
-    
-    if sha:
-        payload["sha"] = sha
-    
-    try:
-        response = requests.put(api_url, headers=headers, json=payload)
-        response.raise_for_status()
-        return True
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error saving {file_path_in_repo} to GitHub: {e}")
-        logging.error(f"GitHub API response: {response.text if 'response' in locals() else 'N/A'}")
-        return False
-
-def load_config():
-    """Load and parse YAML configuration file from GitHub repository."""
-    content = fetch_from_github(CONFIG_PATH_IN_REPO)
-    if content:
-        try:
-            return yaml.safe_load(content)
-        except yaml.YAMLError as e:
-            logging.error(f"Error: Invalid YAML in remote config file '{CONFIG_PATH_IN_REPO}': {e}")
-            exit(1)
-        except Exception as e:
-            logging.error(f"Error loading remote config file '{CONFIG_PATH_IN_REPO}': {e}")
-            exit(1)
-    logging.error(f"Could not load config from '{CONFIG_PATH_IN_REPO}' on GitHub.")
-    exit(1)
-
-# Load configuration
-CONFIG = load_config()
-
-# Get parameters from configuration
-SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
-PER_PAGE = CONFIG.get('per_page', 100)
-MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
-GITHUB_API_TIMEOUT = CONFIG.get('github_api_timeout', 20)
-GITHUB_API_RETRY_WAIT = CONFIG.get('github_api_retry_wait', 10)
-CHANNEL_FETCH_TIMEOUT = CONFIG.get('channel_fetch_timeout', 15)
-CHANNEL_CHECK_TIMEOUT = CONFIG.get('channel_check_timeout', 6)
-MAX_CHANNEL_URLS_PER_GROUP = CONFIG.get('max_channel_urls_per_group', 200)
-NAME_FILTER_WORDS = CONFIG.get('name_filter_words', [])
-URL_FILTER_WORDS = CONFIG.get('url_filter_words', [])
-CHANNEL_NAME_REPLACEMENTS = CONFIG.get('channel_name_replacements', {})
-ORDERED_CATEGORIES = CONFIG.get('ordered_categories', [])
-STREAM_SKIP_FAILED_HOURS = CONFIG.get('stream_skip_failed_hours', 24)
-URL_STATE_EXPIRATION_DAYS = CONFIG.get('url_state_expiration_days', 90)
-
-# New configuration parameters for URL and channel cleanup
-CHANNEL_FAIL_THRESHOLD = CONFIG.get('channel_fail_threshold', 5) # Threshold for channel cleanup in iptv_list.txt
-URL_FAIL_THRESHOLD = CONFIG.get('url_fail_threshold', 5) # Threshold for URL cleanup in urls.txt
-URL_RETENTION_HOURS = CONFIG.get('url_retention_hours', 72) # Hours to retain failed URLs in urls.txt
-
-# Configure requests session
-session = requests.Session()
-session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"})
-pool_size = CONFIG.get('requests_pool_size', 200)
-retry_strategy = Retry(
-    total=CONFIG.get('requests_retry_total', 3),
-    backoff_factor=CONFIG.get('requests_retry_backoff_factor', 1),
-    status_forcelist=[429, 500, 502, 503, 504],
-    allowed_methods=["HEAD", "GET", "OPTIONS"]
-)
-adapter = HTTPAdapter(pool_connections=pool_size, pool_maxsize=pool_size, max_retries=retry_strategy)
-session.mount("http://", adapter)
-session.mount("https://", adapter)
-
-# --- Local file operations functions ---
-def read_txt_to_array_local(file_name):
-    """Read content from a local TXT file into an array."""
-    try:
-        with open(file_name, 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-        lines = [line.strip() for line in lines if line.strip()]
-        return lines
-    except FileNotFoundError:
-        logging.warning(f"File '{file_name}' not found.")
-        return []
-    except Exception as e:
-        logging.error(f"Error reading file '{file_name}': {e}")
-        return []
-
-def read_existing_channels(file_path):
-    """Read existing channel (name, URL) combinations from a file for deduplication."""
-    existing_channels = set()
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line and ',' in line and not line.startswith('#'):
-                    parts = line.split(',', 1)
-                    if len(parts) == 2:
-                        name, url = parts
-                        existing_channels.add((name.strip(), url.strip()))
-    except FileNotFoundError:
-        pass  # Return empty set if file not found
-    except Exception as e:
-        logging.error(f"Error reading file '{file_path}' for deduplication: {e}")
-    return existing_channels
-
-def write_sorted_channels_to_file(file_path, data_list):
-    """Append sorted channel data to a file, with deduplication."""
-    existing_channels = read_existing_channels(file_path)
-    new_channels = set()
-    
-    for _, line in data_list:
-        if ',' in line:
-            name, url = line.split(',', 1)
-            new_channels.add((name.strip(), url.strip()))
-    
-    all_channels = existing_channels | new_channels
-    
-    try:
-        with open(file_path, 'a', encoding='utf-8') as file:
-            for name, url in all_channels:
-                if (name, url) not in existing_channels:
-                    file.write(f"{name},{url}\n")
-        logging.debug(f"Appended {len(all_channels - existing_channels)} new channels to {file_path}")
-    except Exception as e:
-        logging.error(f"Error appending to file '{file_path}': {e}")
-
-# --- URL processing and channel extraction functions ---
-def get_url_file_extension(url):
-    """Get the file extension from a URL."""
-    try:
-        parsed_url = urlparse(url)
-        extension = os.path.splitext(parsed_url.path)[1].lower()
-        return extension
-    except ValueError as e:
-        logging.debug(f"Failed to get URL extension: {url} - {e}")
-        return ""
-
-def convert_m3u_to_txt(m3u_content):
-    """Convert M3U format content to TXT format (channel name,URL)."""
-    lines = m3u_content.split('\n')
-    txt_lines = []
-    channel_name = ""
-    for line in lines:
-        line = line.strip()
-        if line.startswith("#EXTM3U"):
-            continue
-        if line.startswith("#EXTINF"):
-            match = re.search(r'#EXTINF:.*?\,(.*)', line)
-            if match:
-                channel_name = match.group(1).strip()
-            else:
-                channel_name = "未知频道"
-        elif line and not line.startswith('#'):
-            if channel_name:
-                txt_lines.append(f"{channel_name},{line}")
-            channel_name = ""
-    return '\n'.join(txt_lines)
-
-def clean_url_params(url):
-    """Clean URL parameters, keeping only scheme, netloc, and path."""
-    try:
-        parsed_url = urlparse(url)
-        return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
-    except ValueError as e:
-        logging.debug(f"Failed to clean URL parameters: {url} - {e}")
-        return url
-
-# --- URL state management functions ---
-def load_url_states_remote():
-    """Load URL state JSON file from remote, and clean up expired states."""
-    content = fetch_from_github(URL_STATES_PATH_IN_REPO)
-    url_states = {}
-    if content:
-        try:
-            url_states = json.loads(content)
-        except json.JSONDecodeError as e:
-            logging.error(f"Error decoding JSON from remote '{URL_STATES_PATH_IN_REPO}': {e}. Starting with empty state.")
-            return {}
-    
-    # Clean up expired states
-    current_time = datetime.now()
-    updated_url_states = {}
-    for url, state in url_states.items():
-        if 'last_checked' in state:
-            try:
-                last_checked_datetime = datetime.fromisoformat(state['last_checked'])
-                if (current_time - last_checked_datetime).days < URL_STATE_EXPIRATION_DAYS:
-                    updated_url_states[url] = state
-                else:
-                    logging.debug(f"Removing expired URL state: {url} (last checked on {state['last_checked']})")
-            except ValueError:
-                logging.warning(f"Could not parse last_checked timestamp for URL {url}: {state['last_checked']}, keeping its state.")
-                updated_url_states[url] = state
-        else: # If no last_checked, keep it for now or decide based on other criteria
-            updated_url_states[url] = state
-            
-    return updated_url_states
-
-def save_url_states_remote(url_states):
-    """Save URL states to remote JSON file."""
-    try:
-        content = json.dumps(url_states, indent=4, ensure_ascii=False)
-        success = save_to_github(URL_STATES_PATH_IN_REPO, content, "Update URL states")
-        if not success:
-            logging.error(f"Error saving remote URL states to '{URL_STATES_PATH_IN_REPO}'.")
-    except Exception as e:
-        logging.error(f"Error saving URL states to remote '{URL_STATES_PATH_IN_REPO}': {e}")
-
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
-def fetch_url_content_with_retry(url, url_states):
-    """Attempt to fetch URL content with retry mechanism, and use ETag/Last-Modified/Content-Hash to avoid re-download."""
-    headers = {}
-    current_state = url_states.get(url, {})
-
-    if 'etag' in current_state:
-        headers['If-None-Match'] = current_state['etag']
-    if 'last_modified' in current_state:
-        headers['If-Modified-Since'] = current_state['last_modified']
-
-    try:
-        response = session.get(url, headers=headers, timeout=CHANNEL_FETCH_TIMEOUT)
-        response.raise_for_status()
-
-        if response.status_code == 304:
-            logging.debug(f"URL content {url} not modified (304). Skipping download.")
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['last_checked'] = datetime.now().isoformat()
-            return None
-
-        content = response.text
-        content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
-
-        if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
-            logging.debug(f"URL content {url} is same based on hash. Skipping download.")
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['last_checked'] = datetime.now().isoformat()
-            return None
-
-        url_states[url] = {
-            'etag': response.headers.get('ETag'),
-            'last_modified': response.headers.get('Last-Modified'),
-            'content_hash': content_hash,
-            'last_checked': datetime.now().isoformat()
-        }
-
-        logging.debug(f"Successfully fetched new content for URL: {url}. Content updated.")
-        return content
-
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Request error fetching URL (after retries): {url} - {e}")
-        return None
-    except Exception as e:
-        logging.error(f"Unknown error fetching URL: {url} - {e}")
-        return None
-
-def extract_channels_from_url(url, url_states):
-    """Extract channels from the given URL."""
-    extracted_channels = []
-    try:
-        text = fetch_url_content_with_retry(url, url_states)
-        if text is None:
-            return []
-
-        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
-            text = convert_m3u_to_txt(text)
-
-        lines = text.split('\n')
-        channel_count = 0
-        for line in lines:
-            line = line.strip()
-            if "#genre#" not in line and "," in line and "://" in line:
-                parts = line.split(',', 1)
-                if len(parts) != 2:
-                    logging.debug(f"Skipping invalid channel line (malformed): {line}")
-                    continue
-                channel_name, channel_address_raw = parts
-                channel_name = channel_name.strip()
-                channel_address_raw = channel_address_raw.strip()
-
-                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
-                    logging.debug(f"Skipping invalid channel URL (no valid protocol): {line}")
-                    continue
-
-                if '#' in channel_address_raw:
-                    url_list = channel_address_raw.split('#')
-                    for channel_url in url_list:
-                        channel_url = clean_url_params(channel_url.strip())
-                        if channel_url and pre_screen_url(channel_url):
-                            extracted_channels.append((channel_name, channel_url))
-                            channel_count += 1
-                        else:
-                            logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
-                else:
-                    channel_url = clean_url_params(channel_address_raw)
-                    if channel_url and pre_screen_url(channel_url):
-                        extracted_channels.append((channel_name, channel_url))
-                        channel_count += 1
-                    else:
-                        logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
-        logging.debug(f"Successfully extracted {channel_count} channels from URL: {url}.")
-    except Exception as e:
-        logging.error(f"Error extracting channels from {url}: {e}")
-    return extracted_channels
-
-def pre_screen_url(url):
-    """Pre-screen URLs based on configuration for protocol, length, and invalid patterns."""
-    if not isinstance(url, str) or not url:
-        logging.debug(f"Pre-screening filtered (invalid type or empty): {url}")
-        return False
-
-    if not re.match(r'^[a-zA-Z0-9+.-]+://', url):
-        logging.debug(f"Pre-screening filtered (no valid protocol): {url}")
-        return False
-
-    if re.search(r'[^\x00-\x7F]', url) or ' ' in url:
-        logging.debug(f"Pre-screening filtered (contains illegal characters or spaces): {url}")
-        return False
-
-    try:
-        parsed_url = urlparse(url)
-        if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
-            logging.debug(f"Pre-screening filtered (unsupported protocol): {url}")
-            return False
-
-        if not parsed_url.netloc:
-            logging.debug(f"Pre-screening filtered (no network location): {url}")
-            return False
-
-        invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
-        compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
-        for pattern in compiled_invalid_url_patterns:
-            if pattern.search(url):
-                logging.debug(f"Pre-screening filtered (invalid pattern): {url}")
-                return False
-
-        if len(url) < 15:
-            logging.debug(f"Pre-screening filtered (URL too short): {url}")
-            return False
-
-        return True
-    except ValueError as e:
-        logging.debug(f"Pre-screening filtered (URL parse error): {url} - {e}")
-        return False
-
-def filter_and_modify_channels(channels):
-    """Filter and modify channel names and URLs."""
-    filtered_channels = []
-    pre_screened_count = 0
-    for name, url in channels:
-        if not pre_screen_url(url):
-            logging.debug(f"Filtering channel (pre-screening failed): {name},{url}")
-            continue
-        pre_screened_count += 1
-
-        if any(word in url for word in CONFIG.get('url_filter_words', [])):
-            logging.debug(f"Filtering channel (URL matches blacklist): {name},{url}")
-            continue
-
-        if any(word.lower() in name.lower() for word in CONFIG.get('name_filter_words', [])):
-            logging.debug(f"Filtering channel (name matches blacklist): {name},{url}")
-            continue
-
-        for old_str, new_str in CONFIG.get('channel_name_replacements', {}).items():
-            name = name.replace(old_str, new_str)
-        filtered_channels.append((name, url))
-    logging.debug(f"After URL pre-screening, {pre_screened_count} channels remain for further filtering.")
-    return filtered_channels
-
-# --- Channel validity check functions ---
-def check_http_url(url, timeout):
-    """Check if HTTP/HTTPS URL is reachable."""
-    try:
-        response = session.head(url, timeout=timeout, allow_redirects=True)
-        return 200 <= response.status_code < 400
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"HTTP URL {url} check failed: {e}")
-        return False
-
-def check_rtmp_url(url, timeout):
-    """Check if RTMP URL is reachable (requires ffprobe)."""
-    try:
-        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
-    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        logging.warning("ffprobe not found or not working. RTMP stream check skipped.")
-        return False
-    try:
-        result = subprocess.run(['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, timeout=timeout)
-        return result.returncode == 0
-    except subprocess.TimeoutExpired:
-        logging.debug(f"RTMP URL {url} check timed out")
-        return False
-    except Exception as e:
-        logging.debug(f"RTMP URL {url} check error: {e}")
-        return False
-
-def check_rtp_url(url, timeout):
-    """Check if RTP URL is reachable (by attempting UDP connection)."""
-    try:
-        parsed_url = urlparse(url)
-        host = parsed_url.hostname
-        port = parsed_url.port
-        if not host or not port:
-            logging.debug(f"RTP URL {url} parse failed: missing host or port.")
-            return False
-
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.settimeout(timeout)
-            s.connect((host, port))
-            s.sendto(b'', (host, port))
-            s.recv(1)
-        return True
-    except (socket.timeout, socket.error) as e:
-        logging.debug(f"RTP URL {url} check failed: {e}")
-        return False
-    except Exception as e:
-        logging.debug(f"RTP URL {url} check error: {e}")
-        return False
-
-def check_p3p_url(url, timeout):
-    """Check if P3P URL is reachable (simple TCP connection and HTTP response header check)."""
-    try:
-        parsed_url = urlparse(url)
-        host = parsed_url.hostname
-        port = parsed_url.port if parsed_url.port else 80
-        path = parsed_url.path if parsed_url.path else '/'
-
-        if not host:
-            logging.debug(f"P3P URL {url} parse failed: missing host.")
-            return False
-
-        with socket.create_connection((host, port), timeout=timeout) as s:
-            request = f"GET {path} HTTP/1.0\r\nHost: {host}\r\nUser-Agent: Python\r\n\r\n"
-            s.sendall(request.encode())
-            response = s.recv(1024).decode('utf-8', errors='ignore')
-            return "P3P" in response or response.startswith("HTTP/1.")
-    except Exception as e:
-        logging.debug(f"P3P URL {url} check failed: {e}")
-        return False
-
-def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CHANNEL_CHECK_TIMEOUT):
-    """Check single channel's validity and speed, and record failure status for skipping."""
-    current_time = datetime.now()
-    current_url_state = url_states.get(url, {})
-
-    if 'stream_check_failed_at' in current_url_state:
-        last_failed_time_str = current_url_state['stream_check_failed_at']
-        try:
-            last_failed_datetime = datetime.fromisoformat(last_failed_time_str)
-            time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
-            if time_since_failed_hours < STREAM_SKIP_FAILED_HOURS:
-                logging.debug(f"Skipping channel {channel_name} ({url}) as it failed within cooldown period ({STREAM_SKIP_FAILED_HOURS}h). Last failed at {last_failed_time_str}, {time_since_failed_hours:.2f}h ago.")
-                return None, False
-        except ValueError:
-            logging.warning(f"Could not parse failed timestamp for URL {url}: {last_failed_time_str}")
-            pass
-
-    start_time = time.time()
-    is_valid = False
-    protocol_checked = False
-
-    try:
-        if url.startswith("http"):
-            is_valid = check_http_url(url, timeout)
-            protocol_checked = True
-        elif url.startswith("p3p"):
-            is_valid = check_p3p_url(url, timeout)
-            protocol_checked = True
-        elif url.startswith("rtmp"):
-            is_valid = check_rtmp_url(url, timeout)
-            protocol_checked = True
-        elif url.startswith("rtp"):
-            is_valid = check_rtp_url(url, timeout)
-            protocol_checked = True
-        else:
-            logging.debug(f"Channel {channel_name}'s protocol is not supported: {url}")
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['last_checked_protocol_unsupported'] = current_time.isoformat()
-            url_states[url].pop('stream_check_failed_at', None)
-            url_states[url].pop('stream_fail_count', None)
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            return None, False
-
-        elapsed_time = (time.time() - start_time) * 1000
-
-        if is_valid:
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url].pop('stream_check_failed_at', None)
-            url_states[url].pop('stream_fail_count', None)
-            url_states[url]['last_successful_stream_check'] = current_time.isoformat()
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            logging.debug(f"Channel {channel_name} ({url}) check successful, took {elapsed_time:.0f} ms.")
-            return elapsed_time, True
-        else:
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['stream_check_failed_at'] = current_time.isoformat()
-            url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            logging.debug(f"Channel {channel_name} ({url}) check failed.")
-            return None, False
-    except Exception as e:
-        if url not in url_states:
-            url_states[url] = {}
-        url_states[url]['stream_check_failed_at'] = current_time.isoformat()
-        url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
-        url_states[url]['last_stream_checked'] = current_time.isoformat()
-        logging.debug(f"Error checking channel {channel_name} ({url}): {e}")
-        return None, False
-
-def process_single_channel_line(channel_line, url_states):
-    """Process a single channel line for validity check."""
-    if "://" not in channel_line:
-        logging.debug(f"Skipping invalid channel line (no protocol): {channel_line}")
-        return None, None
-    parts = channel_line.split(',', 1)
-    if len(parts) == 2:
-        name, url = parts
-        url = url.strip()
-        elapsed_time, is_valid = check_channel_validity_and_speed(name, url, url_states)
-        if is_valid:
-            return elapsed_time, f"{name},{url}"
-    return None, None
-
-def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.get('channel_check_workers', 200)):
-    """Check channel validity using multithreading."""
-    results = []
-    checked_count = 0
-    total_channels = len(channel_lines)
-    logging.warning(f"Starting multithreaded channel validity and speed detection for {total_channels} channels...")
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(process_single_channel_line, line, url_states): line for line in channel_lines}
-        for i, future in enumerate(as_completed(futures)):
-            checked_count += 1
-            if checked_count % 100 == 0:
-                logging.warning(f"Checked {checked_count}/{total_channels} channels...")
-            try:
-                elapsed_time, result_line = future.result()
-                if elapsed_time is not None and result_line is not None:
-                    results.append((elapsed_time, result_line))
-            except Exception as exc:
-                logging.warning(f"Exception occurred during channel line processing: {exc}")
-    return results
-
-# --- File merge and sort functions ---
-def generate_update_time_header():
-    """Generate update time information for the top of the file."""
-    now = datetime.now()
-    return [
-        f"更新时间,#genre#\n",
-        f"{now.strftime('%Y-%m-%d')},url\n",
-        f"{now.strftime('%H:%M:%S')},url\n"
+# Configure logging with maximum verbosity for debugging and tracking every step
+logging.basicConfig(
+    level=logging.DEBUG,  # Use DEBUG level to capture all possible logs
+    format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
+    handlers=[
+        logging.FileHandler('iptv_crawler.log', encoding='utf-8', mode='a'),
+        logging.StreamHandler(sys.stdout)
     ]
+)
+logger = logging.getLogger(__name__)
 
-def group_and_limit_channels(lines):
-    """Group channels and limit the number of URLs under each channel name."""
-    grouped_channels = {}
-    for line_content in lines:
-        line_content = line_content.strip()
-        if line_content:
-            channel_name = line_content.split(',', 1)[0].strip()
-            if channel_name not in grouped_channels:
-                grouped_channels[channel_name] = []
-            grouped_channels[channel_name].append(line_content)
-    
-    final_grouped_lines = []
-    for channel_name in grouped_channels:
-        for ch_line in grouped_channels[channel_name][:MAX_CHANNEL_URLS_PER_GROUP]:
-            final_grouped_lines.append(ch_line + '\n')
-    return final_grouped_lines
-
-def merge_local_channel_files(local_channels_directory, output_file_name="iptv_list.txt", url_states=None):
-    """Merge locally generated channel list files, with deduplication and cleanup based on url_states."""
-    # Ensure the local_channels_directory exists
-    os.makedirs(local_channels_directory, exist_ok=True)
-
-    existing_channels_data = [] # To store (name, url) for channels from current iptv_list.txt
-    # Read existing iptv_list.txt channels
-    if os.path.exists(output_file_name):
-        with open(output_file_name, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if line and ',' in line and '#genre#' not in line:
-                    parts = line.split(',', 1)
-                    if len(parts) == 2:
-                        existing_channels_data.append((parts[0].strip(), parts[1].strip()))
-
-    all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
-    
-    # MODIFICATION: Also include the uncategorized_iptv.txt from the root directory
-    uncategorized_file_in_root = "uncategorized_iptv.txt"
-    if os.path.exists(uncategorized_file_in_root):
-        all_iptv_files_in_dir.append(uncategorized_file_in_root)
-
-    files_to_merge_paths = []
-    processed_files = set()
-
-    for category in ORDERED_CATEGORIES:
-        file_name = f"{category}_iptv.txt"
-        # Check both in temp_channels and root (for 'uncategorized')
-        temp_path = os.path.join(local_channels_directory, file_name)
-        root_path = file_name # For 'uncategorized_iptv.txt'
+class IPTVScraper:
+    def __init__(self, config_file='config/config.yaml'):
+        """
+        Initialize the IPTVScraper with configuration settings and setup necessary directories.
         
-        if os.path.basename(temp_path) in all_iptv_files_in_dir and temp_path not in processed_files:
-            files_to_merge_paths.append(temp_path)
-            processed_files.add(os.path.basename(temp_path))
-        elif category == 'uncategorized' and os.path.basename(root_path) in all_iptv_files_in_dir and root_path not in processed_files:
-             files_to_merge_paths.append(root_path)
-             processed_files.add(os.path.basename(root_path))
+        Args:
+            config_file (str): Path to the YAML configuration file containing URLs and settings.
+        """
+        logger.debug("Initializing IPTVScraper with config file: %s", config_file)
+        self.config_file = config_file
+        self.config = self.load_config()
+        self.urls = self.config.get('urls', [])
+        self.output_dir = self.config.get('output_dir', 'output')
+        self.temp_dir = self.config.get('temp_dir', 'temp_channels')
+        self.regional_dir = self.config.get('regional_dir', '地方频道')
+        self.max_concurrent_requests = self.config.get('max_concurrent_requests', 10)
+        self.channels = []  # Store all extracted channels
+        self.valid_channels = []  # Store validated channels
+        self.semaphore = asyncio.Semaphore(self.max_concurrent_requests)
+        self.start_time = datetime.now()
+        
+        # Log system information for debugging
+        logger.debug("System information: Python %s, Platform: %s", sys.version, sys.platform)
+        logger.debug("Initial CPU usage: %s%%", psutil.cpu_percent())
+        logger.debug("Initial memory usage: %s MB", psutil.virtual_memory().used / 1024 / 1024)
 
-    for file_name in sorted(all_iptv_files_in_dir):
-        if file_name not in processed_files:
-            if os.path.basename(file_name) == uncategorized_file_in_root:
-                files_to_merge_paths.append(uncategorized_file_in_root)
+        # Create necessary directories with error handling
+        for directory in [self.output_dir, self.temp_dir, self.regional_dir]:
+            try:
+                os.makedirs(directory, exist_ok=True)
+                logger.debug("Created or verified directory: %s", directory)
+            except Exception as e:
+                logger.error("Failed to create directory %s: %s", directory, str(e))
+                raise
+
+    def load_config(self):
+        """
+        Load the configuration from the specified YAML file.
+        
+        Returns:
+            dict: Configuration dictionary with URLs and settings.
+        """
+        logger.debug("Attempting to load configuration from %s", self.config_file)
+        try:
+            with open(self.config_file, 'r', encoding='utf-8') as file:
+                config = yaml.safe_load(file)
+                if not config:
+                    logger.error("Configuration file %s is empty or invalid", self.config_file)
+                    return {}
+                logger.info("Successfully loaded configuration with %d URLs", len(config.get('urls', [])))
+                return config
+        except FileNotFoundError:
+            logger.error("Configuration file %s not found", self.config_file)
+            return {}
+        except yaml.YAMLError as e:
+            logger.error("Failed to parse YAML file %s: %s", self.config_file, str(e))
+            return {}
+        except Exception as e:
+            logger.error("Unexpected error loading config file %s: %s", self.config_file, str(e))
+            return {}
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        retry=retry_if_exception_type(Exception),
+        before_sleep=lambda retry_state: logger.debug(
+            "Retrying fetch_url (attempt %d/%d) for URL: %s",
+            retry_state.attempt_number, 3, retry_state.args[1]
+        )
+    )
+    async def fetch_url(self, session, url):
+        """
+        Fetch content from a URL with retries and semaphore control for concurrency limiting.
+        
+        Args:
+            session (aiohttp.ClientSession): HTTP session for making requests.
+            url (str): URL to fetch content from.
+            
+        Returns:
+            str: Content of the URL if successful, None otherwise.
+        """
+        logger.debug("Fetching URL: %s", url)
+        try:
+            async with self.semaphore:
+                async with session.get(url, timeout=10) as response:
+                    logger.debug("Received response for %s: Status %d", url, response.status)
+                    if response.status == 200:
+                        content = await response.text()
+                        logger.info("Successfully fetched %d bytes from %s", len(content), url)
+                        return content
+                    else:
+                        logger.warning("Non-200 status code %d for URL: %s", response.status, url)
+                        return None
+        except aiohttp.ClientError as e:
+            logger.error("Client error fetching URL %s: %s", url, str(e))
+            raise
+        except asyncio.TimeoutError:
+            logger.error("Timeout fetching URL: %s", url)
+            raise
+        except Exception as e:
+            logger.error("Unexpected error fetching URL %s: %s", url, str(e))
+            raise
+
+    async def resolve_url(self, url):
+        """
+        Resolve the domain of a URL using DNS to ensure it's accessible.
+        
+        Args:
+            url (str): URL to resolve.
+            
+        Returns:
+            bool: True if domain resolves successfully, False otherwise.
+        """
+        logger.debug("Resolving URL: %s", url)
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        if not domain:
+            logger.error("Invalid URL format, no domain found: %s", url)
+            return False
+        
+        try:
+            answers = dns.resolver.resolve(domain, 'A')
+            logger.debug("DNS resolution successful for %s: %s", domain, [str(a) for a in answers])
+            return True
+        except dns.resolver.NXDOMAIN:
+            logger.warning("DNS resolution failed: Domain %s does not exist", domain)
+            return False
+        except dns.resolver.Timeout:
+            logger.warning("DNS resolution timeout for domain: %s", domain)
+            return False
+        except Exception as e:
+            logger.error("Unexpected error resolving domain %s: %s", domain, str(e))
+            return False
+
+    async def check_channel_validity(self, channel):
+        """
+        Validate a channel URL using ffmpeg to check if the stream is accessible.
+        
+        Args:
+            channel (dict): Channel dictionary containing 'url' and 'name' keys.
+            
+        Returns:
+            bool: True if the channel is valid, False otherwise.
+        """
+        url = channel.get('url')
+        name = channel.get('name', 'Unknown')
+        logger.debug("Validating channel: %s (%s)", name, url)
+        
+        if not url:
+            logger.warning("Channel has no URL: %s", name)
+            return False
+
+        if not await self.resolve_url(url):
+            logger.warning("Skipping validation for %s due to DNS resolution failure", url)
+            return False
+
+        try:
+            process = await asyncio.create_subprocess_exec(
+                'ffmpeg', '-i', url, '-t', '5', '-f', 'null', '-',
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=15)
+            if process.returncode == 0:
+                logger.info("Channel %s (%s) is valid", name, url)
+                return True
             else:
-                files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
-            processed_files.add(file_name)
+                logger.warning("Channel %s (%s) validation failed: %s", name, url, stderr.decode())
+                return False
+        except asyncio.TimeoutError:
+            logger.warning("Validation timeout for channel %s (%s)", name, url)
+            return False
+        except FileNotFoundError:
+            logger.error("FFmpeg not found on system. Please ensure FFmpeg is installed.")
+            return False
+        except Exception as e:
+            logger.error("Unexpected error validating channel %s (%s): %s", name, url, str(e))
+            return False
 
-    new_channels_from_merged_files = set()
-    for file_path in files_to_merge_paths:
-        with open(file_path, "r", encoding="utf-8") as file:
-            lines = file.readlines()
-            if not lines:
-                continue
+    async def extract_channels(self, session, url, index, total_urls):
+        """
+        Extract channels from the content of a URL (e.g., M3U playlist).
+        
+        Args:
+            session (aiohttp.ClientSession): HTTP session for fetching URLs.
+            url (str): URL to process.
+            index (int): Current URL index for progress tracking.
+            total_urls (int): Total number of URLs being processed.
+        """
+        logger.debug("Processing URL %d/%d: %s", index + 1, total_urls, url)
+        
+        if not await self.resolve_url(url):
+            logger.warning("Skipping URL %s due to DNS resolution failure", url)
+            return
+
+        try:
+            content = await self.fetch_url(session, url)
+            if not content:
+                logger.warning("No content retrieved from URL: %s", url)
+                return
+
+            lines = content.splitlines()
+            current_channel = {}
             for line in lines:
                 line = line.strip()
-                if line and ',' in line and '#genre#' not in line:
-                    name, url = line.split(',', 1)
-                    new_channels_from_merged_files.add((name.strip(), url.strip()))
-
-    # Combine existing and new channels
-    combined_channels = existing_channels_data + list(new_channels_from_merged_files)
-
-    # Deduplicate and filter based on stream_fail_count
-    final_channels_for_output = set()
-    channels_for_checking = [] # Channels that will be checked for validity
-
-    # First, add all channels (new and existing) to a list for checking
-    # We use a set to avoid processing duplicate (name, url) combinations multiple times for checking
-    unique_channels_to_check = set()
-    for name, url in combined_channels:
-        unique_channels_to_check.add((name, url))
-
-    # Convert to list of strings for multithreaded checking
-    channels_for_checking_lines = [f"{name},{url}" for name, url in unique_channels_to_check]
-    logging.warning(f"Total unique channels to check and filter for {output_file_name}: {len(channels_for_checking_lines)}")
-
-    # Perform validity check on all combined unique channels
-    # The check_channels_multithreaded function will update url_states for these URLs
-    # and return only the currently valid ones.
-    valid_channels_from_check = check_channels_multithreaded(channels_for_checking_lines, url_states)
-
-    # Now, filter based on updated url_states and CHANNEL_FAIL_THRESHOLD
-    for elapsed_time, channel_line in valid_channels_from_check:
-        name, url = channel_line.split(',', 1)
-        url = url.strip()
-        state = url_states.get(url, {})
-        fail_count = state.get('stream_fail_count', 0)
-        if fail_count <= CHANNEL_FAIL_THRESHOLD:
-            final_channels_for_output.add((name, url))
-        else:
-            logging.info(f"Removing channel '{name},{url}' from {output_file_name} due to excessive failures ({fail_count} > {CHANNEL_FAIL_THRESHOLD}).")
-
-    # Sort all_channels before writing to ensure consistent output
-    sorted_final_channels = sorted(list(final_channels_for_output), key=lambda x: x[0])
-
-    # Rewrite the entire file instead of appending, to ensure order and cleanliness
-    try:
-        with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
-            iptv_list_file.writelines(generate_update_time_header())
-            for name, url in sorted_final_channels:
-                iptv_list_file.write(f"{name},{url}\n")
-        logging.warning(f"\nAll regional channel list files merged, deduplicated, and cleaned. Output saved to: {output_file_name}")
-    except Exception as e:
-        logging.error(f"Error appending write to file '{output_file_name}': {e}")
-
-# --- Remote TXT file operations functions ---
-def read_txt_to_array_remote(file_path_in_repo):
-    """Read content from a remote GitHub repository TXT file into an array."""
-    content = fetch_from_github(file_path_in_repo)
-    if content:
-        lines = content.split('\n')
-        return [line.strip() for line in lines if line.strip()]
-    return []
-
-def write_array_to_txt_remote(file_path_in_repo, data_array, commit_message):
-    """Write array content to a remote GitHub repository TXT file."""
-    content = '\n'.join(data_array)
-    success = save_to_github(file_path_in_repo, content, commit_message)
-    if not success:
-        logging.error(f"Failed to write data to remote '{file_path_in_repo}'.")
-
-# --- GitHub URL auto-discovery function ---
-def auto_discover_github_urls(urls_file_path_remote, github_token):
-    """Automatically discover new IPTV source URLs from GitHub, and record URL counts per keyword."""
-    if not github_token:
-        logging.warning("Environment variable 'BOT' not set. Skipping GitHub URL auto-discovery.")
-        return
-
-    existing_urls = set(read_txt_to_array_remote(urls_file_path_remote))
-    found_urls = set()
-    headers = {
-        "Accept": "application/vnd.github.v3.text-match+json",
-        "Authorization": f"token {github_token}"
-    }
-
-    logging.warning("Starting automatic discovery of new IPTV source URLs from GitHub...")
-    keyword_url_counts = {keyword: 0 for keyword in SEARCH_KEYWORDS}
-
-    for i, keyword in enumerate(SEARCH_KEYWORDS):
-        keyword_found_urls = set()
-        if i > 0:
-            logging.warning(f"Switching to next keyword: '{keyword}'. Waiting {GITHUB_API_RETRY_WAIT} seconds to avoid rate limits...")
-            time.sleep(GITHUB_API_RETRY_WAIT)
-
-        page = 1
-        while page <= MAX_SEARCH_PAGES:
-            params = {
-                "q": keyword,
-                "sort": "indexed",
-                "order": "desc",
-                "per_page": PER_PAGE,
-                "page": page
-            }
-            try:
-                response = session.get(
-                    f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
-                    headers=headers,
-                    params=params,
-                    timeout=GITHUB_API_TIMEOUT
-                )
-                response.raise_for_status()
-                data = response.json()
-
-                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-
-                if rate_limit_remaining == 0:
-                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logging.warning(f"GitHub API rate limit reached! Remaining requests: 0. Waiting {wait_seconds:.0f} seconds before retrying.")
-                    time.sleep(wait_seconds)
+                if not line:
                     continue
-
-                if not data.get('items'):
-                    logging.debug(f"No more results found on page {page} for keyword '{keyword}'.")
-                    break
-
-                for item in data['items']:
-                    html_url = item.get('html_url', '')
-                    raw_url = None
-                    match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
+                if line.startswith('#EXTINF'):
+                    match = re.search(r'tvg-name="([^"]+)"', line)
                     if match:
-                        user = match.group(1)
-                        repo = match.group(2)
-                        branch = match.group(3)
-                        file_path = match.group(4)
-                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
+                        current_channel['name'] = match.group(1)
+                        logger.debug("Found channel name: %s", current_channel['name'])
                     else:
-                        logging.debug(f"Could not parse raw URL from html_url: {html_url}")
-                        continue
+                        logger.debug("No tvg-name found in EXTINF line: %s", line)
+                elif line.startswith('http'):
+                    current_channel['url'] = line
+                    if 'name' in current_channel:
+                        self.channels.append(current_channel.copy())
+                        logger.debug("Added channel: %s (%s)", current_channel['name'], current_channel['url'])
+                        current_channel = {}
+                    else:
+                        logger.debug("Found URL without name: %s", line)
+            logger.warning("Processed %d/%d URLs for channel extraction", index + 1, total_urls)
+        except Exception as e:
+            logger.error("Error processing content from %s: %s", url, str(e))
+            logger.debug("Traceback: %s", traceback.format_exc())
 
-                    if raw_url and raw_url not in existing_urls and raw_url not in found_urls:
-                        # Check content for .m3u or .m3u8 patterns
-                        content_check_success = False
-                        try:
-                            content_response = session.get(raw_url, timeout=5)
-                            content_response.raise_for_status()
-                            content = content_response.text
-                            if re.search(r'#EXTM3U', content, re.IGNORECASE) or re.search(r'\.(m3u8|m3u)$', raw_url, re.IGNORECASE):
-                                found_urls.add(raw_url)
-                                keyword_found_urls.add(raw_url)
-                                logging.debug(f"Found new IPTV source URL: {raw_url}")
-                                content_check_success = True
-                            else:
-                                logging.debug(f"URL {raw_url} does not contain M3U content and is not an M3U file extension. Skipping.")
-                        except requests.exceptions.RequestException as req_e:
-                            logging.debug(f"Error fetching raw content for {raw_url}: {req_e}")
-                        except Exception as exc:
-                            logging.debug(f"Unexpected error during content check for {raw_url}: {exc}")
+    async def process_channels(self):
+        """
+        Process all URLs to extract and validate channels.
+        """
+        logger.info("Starting channel extraction from %d URLs", len(self.urls))
+        async with aiohttp.ClientSession() as session:
+            tasks = []
+            for i, url in enumerate(self.urls):
+                tasks.append(self.extract_channels(session, url, i, len(self.urls)))
+            await asyncio.gather(*tasks, return_exceptions=True)
 
-                logging.debug(f"Finished page {page} for keyword '{keyword}'. Found {len(keyword_found_urls)} new URLs.")
-                page += 1
+        logger.warning("Finished channel extraction. Total channels extracted before filtering: %d", len(self.channels))
 
-            except requests.exceptions.RequestException as e:
-                if isinstance(e, requests.exceptions.HTTPError) and e.response.status_code == 403:
-                    logging.error(f"GitHub API rate limit exceeded or access forbidden for keyword '{keyword}'. Error: {e}")
-                    # Attempt to parse rate limit headers to wait if possible
-                    rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-                    rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-                    if rate_limit_remaining == 0:
-                        wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                        logging.warning(f"Rate limit hit for keyword '{keyword}'. Waiting {wait_seconds:.0f} seconds.")
-                        time.sleep(wait_seconds)
-                        continue # Retry current page after wait
-                else:
-                    logging.error(f"Error searching GitHub for keyword '{keyword}': {e}")
-                break # Exit loop for current keyword on other errors
-            except Exception as e:
-                logging.error(f"An unexpected error occurred during GitHub search for keyword '{keyword}': {e}")
-                break # Exit loop for current keyword on unexpected errors
-        keyword_url_counts[keyword] = len(keyword_found_urls) # Record count for current keyword
+        # Filter and deduplicate channels
+        seen_urls = set()
+        unique_channels = []
+        for channel in self.channels:
+            url = channel.get('url')
+            name = channel.get('name', 'Unknown')
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                unique_channels.append(channel)
+                logger.debug("Kept unique channel: %s (%s)", name, url)
+            else:
+                logger.debug("Discarded duplicate or invalid channel: %s (%s)", name, url)
 
-    # Save newly found URLs to the remote urls.txt file
-    if found_urls:
-        updated_urls = sorted(list(existing_urls | found_urls))
-        logging.warning(f"Discovered {len(found_urls)} new unique URLs. Total URLs to save: {len(updated_urls)}.")
-        write_array_to_txt_remote(urls_file_path_remote, updated_urls, "Add new discovered IPTV URLs")
-    else:
-        logging.warning("No new IPTV source URLs discovered.")
+        self.channels = unique_channels
+        logger.warning("Total channels after filtering and deduplication: %d", len(self.channels))
 
-    for keyword, count in keyword_url_counts.items():
-        logging.warning(f"Keyword '{keyword}' discovered {count} new URLs.")
+        # Validate channels with progress bar
+        logger.warning("Starting multithreaded channel validity and speed detection for %d channels...", len(self.channels))
+        valid_channels = []
+        for channel in tqdm(self.channels, desc="Validating channels", unit="channel"):
+            if await self.check_channel_validity(channel):
+                valid_channels.append(channel)
 
-# --- URL cleanup function ---
-def cleanup_urls_remote(urls_file_path_remote, url_states):
-    """Clean up invalid/failed URLs from the remote urls.txt based on URL_FAIL_THRESHOLD and URL_RETENTION_HOURS."""
-    all_urls = read_txt_to_array_remote(urls_file_path_remote)
-    current_time = datetime.now()
-    urls_to_keep = []
-    removed_count = 0
+        self.valid_channels = valid_channels
+        logger.warning("Total valid channels after validation: %d", len(self.valid_channels))
 
-    for url in all_urls:
-        state = url_states.get(url, {})
-        fail_count = state.get('stream_fail_count', 0)
-        last_failed_time_str = state.get('stream_check_failed_at')
-        remove_url = False
+    def categorize_channels(self):
+        """
+        Categorize channels into CCTV, regional, and uncategorized groups based on channel names.
+        
+        Returns:
+            dict: Dictionary with categorized channels.
+        """
+        logger.debug("Categorizing %d valid channels", len(self.valid_channels))
+        categorized = {
+            'CCTV': [],
+            '地方': [],
+            'uncategorized': []
+        }
+        regional_keywords = [
+            '北京', '上海', '广东', '浙江', '江苏', '山东', '四川', '湖南', '湖北', '河南',
+            '重庆', '安徽', '福建', '甘肃', '广西', '贵州', '海南', '河北', '黑龙江', '江西',
+            '吉林', '辽宁', '内蒙古', '宁夏', '青海', '山西', '陕西', '天津', '新疆', '云南'
+        ]
 
-        if fail_count > URL_FAIL_THRESHOLD:
-            if last_failed_time_str:
-                try:
-                    last_failed_datetime = datetime.fromisoformat(last_failed_time_str)
-                    if (current_time - last_failed_datetime).total_seconds() / 3600 > URL_RETENTION_HOURS:
-                        remove_url = True
-                        logging.info(f"Removing URL '{url}' due to excessive failures ({fail_count}) and retention period ({URL_RETENTION_HOURS}h) exceeded.")
-                except ValueError:
-                    logging.warning(f"Could not parse last_failed timestamp for URL {url}: {last_failed_time_str}, keeping it for now.")
-            else: # If fail_count is high but no last_failed_time, remove immediately
-                remove_url = True
-                logging.info(f"Removing URL '{url}' due to excessive failures ({fail_count}) with no last_failed_at timestamp.")
+        for channel in self.valid_channels:
+            name = channel.get('name', '').lower()
+            logger.debug("Categorizing channel: %s", name)
+            if 'cctv' in name:
+                categorized['CCTV'].append(channel)
+                logger.debug("Assigned to CCTV: %s", name)
+            elif any(keyword.lower() in name for keyword in regional_keywords):
+                categorized['地方'].append(channel)
+                logger.debug("Assigned to 地方: %s", name)
+            else:
+                categorized['uncategorized'].append(channel)
+                logger.debug("Assigned to uncategorized: %s", name)
 
-        if not remove_url:
-            urls_to_keep.append(url)
-        else:
-            removed_count += 1
-            url_states.pop(url, None) # Also remove from states if cleaned up from urls.txt
+        logger.debug("Categorization results: CCTV=%d, 地方=%d, uncategorized=%d",
+                     len(categorized['CCTV']), len(categorized['地方']), len(categorized['uncategorized']))
+        return categorized
 
-    if removed_count > 0:
-        logging.warning(f"Cleaned up {removed_count} URLs from {urls_file_path_remote}.")
-        write_array_to_txt_remote(urls_file_path_remote, urls_to_keep, f"Cleaned up {removed_count} failed URLs")
-    else:
-        logging.warning("No URLs needed cleanup from urls.txt.")
+    async def save_channels(self):
+        """
+        Save categorized channels to respective files and create a merged channel list.
+        """
+        logger.debug("Starting channel saving process")
+        categorized = self.categorize_channels()
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        logger.debug("Generated timestamp for output files: %s", timestamp)
 
-# --- Categorization and file saving functions ---
-def categorize_channels(channels):
-    """Categorize channels based on channel name keywords."""
-    categorized_data = {category: [] for category in ORDERED_CATEGORIES}
-    uncategorized_data = []
-
-    for name, url in channels:
-        found_category = False
-        for category in ORDERED_CATEGORIES:
-            category_keywords = CONFIG.get('category_keywords', {}).get(category, [])
-            if any(keyword.lower() in name.lower() for keyword in category_keywords):
-                categorized_data[category].append((name, url))
-                found_category = True
-                break
-        if not found_category:
-            uncategorized_data.append((name, url))
-    return categorized_data, uncategorized_data
-
-def process_and_save_channels_by_category(all_channels, url_states):
-    """Categorize and save channels to respective category files."""
-    categorized_channels, uncategorized_channels = categorize_channels(all_channels)
-    
-    # Define the directory for categorized channels
-    categorized_dir = "temp_channels"
-    os.makedirs(categorized_dir, exist_ok=True)
-
-    # Save categorized channels
-    for category, channels in categorized_channels.items():
-        output_file = os.path.join(categorized_dir, f"{category}_iptv.txt")
-        logging.warning(f"Processing category: {category} with {len(channels)} channels.")
-        # Sort channels within each category by name
-        sorted_channels = sorted(channels, key=lambda x: x[0])
-        # Convert to list of (elapsed_time, line) tuples for write_sorted_channels_to_file
-        channels_to_write = [(0, f"{name},{url}") for name, url in sorted_channels]
-        write_sorted_channels_to_file(output_file, channels_to_write)
-    
-    # Save uncategorized channels directly in the root directory
-    uncategorized_dir = ""
-    output_uncategorized_file = os.path.join(uncategorized_dir, "uncategorized_iptv.txt")
-    logging.warning(f"Processing uncategorized channels: {len(uncategorized_channels)} channels.")
-    # Sort uncategorized channels by name
-    sorted_uncategorized = sorted(uncategorized_channels, key=lambda x: x[0])
-    # Convert to list of (elapsed_time, line) tuples
-    uncategorized_to_write = [(0, f"{name},{url}") for name, url in sorted_uncategorized]
-    write_sorted_channels_to_file(output_uncategorized_file, uncategorized_to_write)
-    logging.warning(f"Uncategorized channels saved to: {output_uncategorized_file}")
-
-# --- Main logic ---
-def main():
-    logging.warning("Starting IPTV processing script...")
-
-    # Step 1: Load URL states (includes cleanup of expired states)
-    url_states = load_url_states_remote()
-    logging.warning(f"Loaded {len(url_states)} URL states.")
-
-    # Step 2: Auto-discover new URLs from GitHub
-    auto_discover_github_urls(URLS_PATH_IN_REPO, GITHUB_TOKEN)
-
-    # Step 3: Clean up urls.txt based on URL_FAIL_THRESHOLD and URL_RETENTION_HOURS
-    cleanup_urls_remote(URLS_PATH_IN_REPO, url_states)
-
-    # Step 4: Load URLs from remote urls.txt
-    urls = read_txt_to_array_remote(URLS_PATH_IN_REPO)
-    if not urls:
-        logging.error("No URLs found in urls.txt. Exiting.")
-        exit(1)
-    logging.warning(f"Loaded {len(urls)} URLs from '{URLS_PATH_IN_REPO}'.")
-
-    # Step 5: Fetch content and extract channels from all URLs using multithreading
-    all_extracted_channels = []
-    logging.warning(f"Starting channel extraction from {len(urls)} URLs...")
-    with ThreadPoolExecutor(max_workers=CONFIG.get('url_fetch_workers', 50)) as executor:
-        futures = {executor.submit(extract_channels_from_url, url, url_states): url for url in urls}
-        for i, future in enumerate(as_completed(futures)):
-            if (i + 1) % 10 == 0:
-                logging.warning(f"Processed {i + 1}/{len(urls)} URLs for channel extraction.")
+        # Save categorized channels to individual files
+        for category, channels in categorized.items():
+            logger.warning("Processing category: %s with %d channels", category, len(channels))
+            output_file = os.path.join(self.output_dir, f"{category}_iptv.txt")
             try:
-                channels = future.result()
-                if channels:
-                    all_extracted_channels.extend(channels)
-            except Exception as exc:
-                logging.error(f"URL extraction generated an exception: {exc}")
-    logging.warning(f"Finished channel extraction. Total channels extracted before filtering: {len(all_extracted_channels)}.")
+                async with aiofiles.open(output_file, 'w', encoding='utf-8') as file:
+                    await file.write(f"更新时间,{timestamp},#genre#\n")
+                    for channel in channels:
+                        name = channel.get('name', 'Unknown')
+                        url = channel.get('url', '')
+                        await file.write(f"{name},{url}\n")
+                        logger.debug("Wrote channel to %s: %s (%s)", output_file, name, url)
+                logger.info("Successfully saved %d channels to %s", len(channels), output_file)
+            except Exception as e:
+                logger.error("Failed to save channels to %s: %s", output_file, str(e))
 
-    # Step 6: Filter and modify extracted channels
-    filtered_and_modified_channels = filter_and_modify_channels(all_extracted_channels)
-    logging.warning(f"Total channels after filtering and modification: {len(filtered_and_modified_channels)}.")
-    
-    # Step 7: Categorize and save channels to temporary category files
-    process_and_save_channels_by_category(filtered_and_modified_channels, url_states)
+        # Save uncategorized channels separately
+        uncategorized_file = os.path.join(self.output_dir, 'uncategorized_iptv.txt')
+        logger.warning("Processing uncategorized channels: %d channels", len(categorized['uncategorized']))
+        try:
+            async with aiofiles.open(uncategorized_file, 'w', encoding='utf-8') as file:
+                await file.write(f"更新时间,{timestamp},#genre#\n")
+                for channel in categorized['uncategorized']:
+                    name = channel.get('name', 'Unknown')
+                    url = channel.get('url', '')
+                    await file.write(f"{name},{url}\n")
+                    logger.debug("Wrote uncategorized channel: %s (%s)", name, url)
+            logger.info("Uncategorized channels saved to: %s", uncategorized_file)
+        except Exception as e:
+            logger.error("Failed to save uncategorized channels to %s: %s", uncategorized_file, str(e))
 
-    # Step 8: Merge local channel files, perform final validation, and clean up based on url_states
-    merge_local_channel_files("temp_channels", IPTV_LIST_PATH, url_states)
+        # Merge all channels into a single iptv_list.txt
+        all_channels = []
+        for category, channels in categorized.items():
+            all_channels.extend(channels)
+            logger.debug("Merged %d channels from category %s", len(channels), category)
 
-    # Step 9: Save all channel check states again after iptv_list.txt processing
-    save_url_states_remote(url_states)
-    logging.warning("Final channel check states saved to remote.")
+        # Deduplicate merged channels
+        seen_urls = set()
+        unique_channels = []
+        for channel in all_channels:
+            url = channel.get('url')
+            name = channel.get('name', 'Unknown')
+            if url and url not in seen_urls:
+                seen_urls.add(url)
+                unique_channels.append(channel)
+                logger.debug("Kept unique channel for iptv_list.txt: %s (%s)", name, url)
+            else:
+                logger.debug("Discarded duplicate channel: %s (%s)", name, url)
 
-    # Step 10: Clean up temporary files
-    try:
-        if os.path.exists('iptv.txt'):
-            os.remove('iptv.txt')
-            logging.debug(f"Removed temporary file 'iptv.txt'.")
-        if os.path.exists('iptv_speed.txt'):
-            os.remove('iptv_speed.txt')
-            logging.debug(f"Removed temporary file 'iptv_speed.txt'.")
-        # Clean up _iptv.txt files in temp_channels directory
-        temp_dir = "temp_channels"
-        if os.path.exists(temp_dir):
-            for f_name in os.listdir(temp_dir):
-                if f_name.endswith('_iptv.txt'):
-                    os.remove(os.path.join(temp_dir, f_name))
-                    logging.debug(f"Removed temporary channel file '{f_name}'.")
-            # Optionally remove the directory if it's empty
-            if not os.listdir(temp_dir):
-                os.rmdir(temp_dir)
-                logging.debug(f"Removed empty directory '{temp_dir}'.")
-    except Exception as e:
-        logging.error(f"Error during temporary file cleanup: {e}")
+        output_file = os.path.join(self.output_dir, 'iptv_list.txt')
+        logger.warning("Total unique channels to check and filter for iptv_list.txt: %d", len(unique_channels))
+        try:
+            async with aiofiles.open(output_file, 'w', encoding='utf-8') as file:
+                await file.write(f"更新时间,{timestamp},#genre#\n")
+                for channel in unique_channels:
+                    name = channel.get('name', 'Unknown')
+                    url = channel.get('url', '')
+                    await file.write(f"{name},{url}\n")
+                    logger.debug("Wrote channel to iptv_list.txt: %s (%s)", name, url)
+            logger.warning("All regional channel list files merged, deduplicated, and cleaned. Output saved to: %s", output_file)
+        except Exception as e:
+            logger.error("Failed to save merged channels to %s: %s", output_file, str(e))
 
-    logging.warning("IPTV processing script finished.")
+    async def main(self):
+        """
+        Main execution method to run the entire scraping process.
+        """
+        logger.info("Starting IPTV scraper execution")
+        process = psutil.Process()
+        initial_memory = process.memory_info().rss / 1024 / 1024
+        initial_cpu = psutil.cpu_percent()
+        logger.info("Initial system resources - Memory: %.2f MB, CPU: %.2f%%", initial_memory, initial_cpu)
+
+        try:
+            await self.process_channels()
+            await self.save_channels()
+        except Exception as e:
+            logger.error("Critical error in main execution: %s", str(e))
+            logger.debug("Traceback: %s", traceback.format_exc())
+        finally:
+            final_memory = process.memory_info().rss / 1024 / 1024
+            final_cpu = psutil.cpu_percent()
+            execution_time = (datetime.now() - self.start_time).total_seconds()
+            logger.info("Final system resources - Memory: %.2f MB, CPU: %.2f%%", final_memory, final_cpu)
+            logger.info("Total execution time: %.2f seconds", execution_time)
+            logger.warning("IPTV processing script finished")
 
 if __name__ == "__main__":
-    main()
+    logger.debug("Script started")
+    try:
+        scraper = IPTVScraper()
+        asyncio.run(scraper.main())
+    except KeyboardInterrupt:
+        logger.warning("Script terminated by user interruption")
+        sys.exit(1)
+    except Exception as e:
+        logger.error("Fatal error in script execution: %s", str(e))
+        logger.debug("Traceback: %s", traceback.format_exc())
+        sys.exit(1)
+    finally:
+        logger.debug("Script execution completed")
