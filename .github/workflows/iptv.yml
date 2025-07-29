@@ -15,7 +15,7 @@ jobs:
       contents: write # 授予写入权限，用于提交和推送更改
 
     steps:
-      # 步骤1：检查 BOT secret (if still needed by git operations in workflow)
+      # 步骤1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
@@ -64,23 +64,20 @@ jobs:
           fi
 
       # 步骤7: 创建 config 目录并添加初始配置和文件 (Optional, for initial setup if files don't exist)
-      # This step ensures the config directory and base files exist before the python script runs
-      # For first run, user needs to manually create config/config.yaml with at least 'github_token'
+      # 这一步确保 config 目录和空的 urls.txt, url_states.json 存在
+      # config/config.yaml 需要用户手动创建并包含非敏感配置
       - name: 创建配置目录和空文件
         run: |
           mkdir -p config
           touch config/urls.txt
           touch config/url_states.json
-          # config/config.yaml needs to be created manually by user with initial content
         shell: bash
 
       # 步骤8：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          # Only BOT secret is potentially needed here if the script itself was pushing,
-          # but now all file operations are local and git is handled by workflow steps.
-          # The GITHUB_TOKEN for auto-discovery is read from config.yaml by the script.
-          BOT: ${{ secrets.BOT }} # Still might be implicitly used by some libraries if they rely on it, but the python code is updated not to use these as env vars.
+          # 将 GitHub Secret BOT 的值作为环境变量 BOT 传递给 Python 脚本
+          BOT: ${{ secrets.BOT }}
         run: python ${{ github.workspace }}/tv.py
         
       # 步骤9：保存日志和生成文件
