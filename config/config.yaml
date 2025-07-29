@@ -78,8 +78,10 @@ rules:
       - ".ts"
       - ".hls"
       - ".dash"
+      - ".txt"
+      - ".csv"
   invalid_url_patterns:
-    - "\\.(png|jpe?g|gif|bmp|webp|svg|ico|mov|avi|wmv|flv|webm|mp3|wav|ogg|aac|pdf|docx?|xlsx?|pptx?|epub|zip|rar|7z|tar|gz|tgz|bz2|xz|exe|dll|msi|apk|dmg|pkg|iso|img|css|js|xml|txt|md|json|ya?ml|csv|log|bak|ini|cfg|conf|woff2?|ttf|otf|eot)$"
+    - "\\.(png|jpe?g|gif|bmp|webp|svg|ico|mov|avi|wmv|webm|mp3|wav|ogg|aac|pdf|docx?|xlsx?|pptx?|epub|zip|rar|7z|tar|gz|tgz|bz2|xz|exe|dll|msi|apk|dmg|pkg|iso|img|css|js|xml|md|json|ya?ml|csv|log|bak|ini|cfg|conf|woff2?|ttf|otf|eot)$"
     - "youtube\\.com\\/(watch|embed|live)"
     - "bilibili\\.com"
     - "twitch\\.tv"
