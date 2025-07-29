@@ -117,16 +117,13 @@ def write_array_to_txt_local_urls(data_array):
         logging.error(f"Error writing data to local '{URLS_FILE_PATH}': {e}")
 
 
-# Load configuration
+# Load configuration from local config.yaml
 CONFIG = load_config()
 
-# Get parameters from configuration
-# GITHUB_TOKEN is now read from CONFIG, not os.getenv
-GITHUB_TOKEN = CONFIG.get('github_token')
-if not GITHUB_TOKEN:
-    logging.error("Error: 'github_token' not found in config.yaml. It's required for auto-discovery.")
-    exit(1)
+# Get GITHUB_TOKEN from environment variable (passed by GitHub Actions)
+GITHUB_TOKEN = os.getenv('BOT')
 
+# Get other parameters from configuration
 SEARCH_KEYWORDS = CONFIG.get('search_keywords', [])
 PER_PAGE = CONFIG.get('per_page', 100)
 MAX_SEARCH_PAGES = CONFIG.get('max_search_pages', 5)
@@ -246,15 +243,6 @@ def convert_m3u_to_txt(m3u_content):
                 txt_lines.append(f"{channel_name},{line}")
             channel_name = ""
     return '\n'.join(txt_lines)
-
-def clean_url_params(url):
-    """Clean URL parameters, keeping only scheme, netloc, and path."""
-    try:
-        parsed_url = urlparse(url)
-        return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
-    except ValueError as e:
-        logging.debug(f"Failed to clean URL parameters: {url} - {e}")
-        return url
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=retry_if_exception_type(requests.exceptions.RequestException))
 def fetch_url_content_with_retry(url, url_states):
@@ -731,7 +719,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name="iptv_l
 def auto_discover_github_urls(github_token):
     """Automatically discover new IPTV source URLs from GitHub, and record URL counts per keyword."""
     if not github_token:
-        logging.warning("GitHub token not set in config.yaml. Skipping GitHub URL auto-discovery.")
+        logging.warning("GitHub token not set in environment variable 'BOT'. Skipping GitHub URL auto-discovery.")
         return
 
     existing_urls = set(read_txt_to_array_local_urls())
@@ -922,4 +910,8 @@ def main():
     logging.info("IPTV channel processing finished.")
 
 if __name__ == "__main__":
+    # Ensure GITHUB_TOKEN is available as an environment variable
+    if not os.getenv('BOT'):
+        logging.error("Error: Environment variable 'BOT' (GitHub Token) not set. It's required for auto-discovery.")
+        exit(1)
     main()
