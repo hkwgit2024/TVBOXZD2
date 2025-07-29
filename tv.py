@@ -19,11 +19,9 @@ import base64 # Re-add for GitHub API interaction
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Define local file paths
-# CONFIG_DIR = "config"
-CONFIG_PATH = os.path.join(CONFIG_DIR, "config/config.yml")
-URLS_PATH = os.path.join(CONFIG_DIR, "config/urls.txt")
-URL_STATES_PATH = os.path.join(CONFIG_DIR, "config/url_states.json")
+CONFIG_PATH_IN_REPO = "config/config.yaml"
+URLS_PATH_IN_REPO = "config/urls.txt"
+URL_STATES_PATH_IN_REPO = "config/url_states.json"
 IPTV_LIST_PATH = "iptv_list.txt" # Define the path for iptv_list.txt
 LOCAL_CHANNELS_DIRECTORY = "temp_channels" # Directory to store temporary channel files
 UNCATEGORIZED_IPTV_ROOT_PATH = "uncategorized_iptv.txt" # Path for uncategorized_iptv.txt in the root
