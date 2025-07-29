@@ -49,8 +49,7 @@ paths:
 # 搜索关键词
 search_keywords:
   - "iptv"
-  - "港澳台" 
-  - "CAN"
+
 # 分类配置
 ordered_categories:
   - CCTV
