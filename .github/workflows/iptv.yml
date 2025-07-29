@@ -52,9 +52,7 @@ jobs:
           BOT: ${{ secrets.BOT }}              
           REPO_OWNER: qjlxg                  
           REPO_NAME: vt                    
-          CONFIG_PATH: config/config.yaml     
-          URLS_PATH: config/urls.txt         
-          URL_STATES_PATH: config/url_states.json 
+  
 
      
 
