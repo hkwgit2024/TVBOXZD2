@@ -44,12 +44,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests pyyaml tenacity
-
       # 步骤5：运行 IPTV 脚本
       - name: 运行 IPTV 脚本
         run: python tv.py
         env:
-          BOT: ${{ secrets.BOT }} # 将 GitHub Token 传递给脚本用于自动发现功能
+          # 这些环境变量会被传递给 tv.py 脚本
+          BOT: ${{ secrets.BOT }}              
+          REPO_OWNER: qjlxg                  
+          REPO_NAME: vt                    
+          CONFIG_PATH: config/config.yaml     
+          URLS_PATH: config/urls.txt         
+          URL_STATES_PATH: config/url_states.json 
+
+     
 
       # 步骤6：上传工件（可选）
       - name: 上传生成的 IPTV 列表
