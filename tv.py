@@ -16,9 +16,9 @@ import sys
 import time
 import traceback
 
-# Configure logging with maximum verbosity for debugging and tracking every step
+# 配置日志，记录所有细节到文件和控制台
 logging.basicConfig(
-    level=logging.DEBUG,  # Use DEBUG level to capture all possible logs
+    level=logging.DEBUG,  # 使用 DEBUG 级别，确保记录所有操作细节
     format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
     handlers=[
         logging.FileHandler('iptv_crawler.log', encoding='utf-8', mode='a'),
@@ -30,62 +30,62 @@ logger = logging.getLogger(__name__)
 class IPTVScraper:
     def __init__(self, config_file='config/config.yaml'):
         """
-        Initialize the IPTVScraper with configuration settings and setup necessary directories.
-        
-        Args:
-            config_file (str): Path to the YAML configuration file containing URLs and settings.
+        初始化 IPTVScraper，加载配置文件并创建必要的目录。
+
+        参数:
+            config_file (str): 配置文件路径，默认为 'config/config.yaml'
         """
-        logger.debug("Initializing IPTVScraper with config file: %s", config_file)
+        logger.debug("正在初始化 IPTVScraper，配置文件路径: %s", config_file)
         self.config_file = config_file
         self.config = self.load_config()
-        self.urls = self.config.get('urls', [])
-        self.output_dir = self.config.get('output_dir', 'output')
-        self.temp_dir = self.config.get('temp_dir', 'temp_channels')
-        self.regional_dir = self.config.get('regional_dir', '地方频道')
-        self.max_concurrent_requests = self.config.get('max_concurrent_requests', 10)
-        self.channels = []  # Store all extracted channels
-        self.valid_channels = []  # Store validated channels
-        self.semaphore = asyncio.Semaphore(self.max_concurrent_requests)
-        self.start_time = datetime.now()
-        
-        # Log system information for debugging
-        logger.debug("System information: Python %s, Platform: %s", sys.version, sys.platform)
-        logger.debug("Initial CPU usage: %s%%", psutil.cpu_percent())
-        logger.debug("Initial memory usage: %s MB", psutil.virtual_memory().used / 1024 / 1024)
+        self.urls = self.config.get('urls', [])  # 获取配置文件中的 URL 列表
+        self.output_dir = self.config.get('output_dir', 'output')  # 输出目录
+        self.temp_dir = self.config.get('temp_dir', 'temp_channels')  # 临时目录
+        self.regional_dir = self.config.get('regional_dir', '地方频道')  # 地方频道目录
+        self.max_concurrent_requests = self.config.get('max_concurrent_requests', 10)  # 最大并发请求数
+        self.channels = []  # 存储所有提取的频道
+        self.valid_channels = []  # 存储验证通过的频道
+        self.semaphore = asyncio.Semaphore(self.max_concurrent_requests)  # 限制并发请求
+        self.start_time = datetime.now()  # 记录脚本开始时间
 
-        # Create necessary directories with error handling
+        # 记录系统信息，便于调试
+        logger.debug("系统信息: Python 版本 %s, 平台: %s", sys.version, sys.platform)
+        logger.debug("初始 CPU 使用率: %s%%", psutil.cpu_percent())
+        logger.debug("初始内存使用量: %s MB", psutil.virtual_memory().used / 1024 / 1024)
+
+        # 创建必要的目录，确保目录存在
         for directory in [self.output_dir, self.temp_dir, self.regional_dir]:
             try:
                 os.makedirs(directory, exist_ok=True)
-                logger.debug("Created or verified directory: %s", directory)
+                logger.debug("已创建或验证目录: %s", directory)
             except Exception as e:
-                logger.error("Failed to create directory %s: %s", directory, str(e))
-                raise
+                logger.error("无法创建目录 %s: %s", directory, str(e))
+                raise RuntimeError(f"目录创建失败: {directory}") from e
 
     def load_config(self):
         """
-        Load the configuration from the specified YAML file.
-        
-        Returns:
-            dict: Configuration dictionary with URLs and settings.
+        加载 YAML 配置文件。
+
+        返回:
+            dict: 配置文件内容，如果失败则返回空字典
         """
-        logger.debug("Attempting to load configuration from %s", self.config_file)
+        logger.debug("尝试加载配置文件: %s", self.config_file)
         try:
             with open(self.config_file, 'r', encoding='utf-8') as file:
                 config = yaml.safe_load(file)
                 if not config:
-                    logger.error("Configuration file %s is empty or invalid", self.config_file)
+                    logger.error("配置文件 %s 为空或格式无效", self.config_file)
                     return {}
-                logger.info("Successfully loaded configuration with %d URLs", len(config.get('urls', [])))
+                logger.info("成功加载配置文件，包含 %d 个 URL", len(config.get('urls', [])))
                 return config
         except FileNotFoundError:
-            logger.error("Configuration file %s not found", self.config_file)
+            logger.error("配置文件 %s 未找到", self.config_file)
             return {}
         except yaml.YAMLError as e:
-            logger.error("Failed to parse YAML file %s: %s", self.config_file, str(e))
+            logger.error("解析 YAML 文件 %s 失败: %s", self.config_file, str(e))
             return {}
         except Exception as e:
-            logger.error("Unexpected error loading config file %s: %s", self.config_file, str(e))
+            logger.error("加载配置文件 %s 时发生未知错误: %s", self.config_file, str(e))
             return {}
 
     @retry(
@@ -93,94 +93,94 @@ class IPTVScraper:
         wait=wait_exponential(multiplier=1, min=1, max=10),
         retry=retry_if_exception_type(Exception),
         before_sleep=lambda retry_state: logger.debug(
-            "Retrying fetch_url (attempt %d/%d) for URL: %s",
+            "重试获取 URL (尝试 %d/%d): %s",
             retry_state.attempt_number, 3, retry_state.args[1]
         )
     )
     async def fetch_url(self, session, url):
         """
-        Fetch content from a URL with retries and semaphore control for concurrency limiting.
-        
-        Args:
-            session (aiohttp.ClientSession): HTTP session for making requests.
-            url (str): URL to fetch content from.
-            
-        Returns:
-            str: Content of the URL if successful, None otherwise.
+        从指定 URL 获取内容，支持重试和并发限制。
+
+        参数:
+            session (aiohttp.ClientSession): HTTP 会话
+            url (str): 要获取的 URL
+
+        返回:
+            str: URL 的内容，如果失败则返回 None
         """
-        logger.debug("Fetching URL: %s", url)
+        logger.debug("正在获取 URL: %s", url)
         try:
             async with self.semaphore:
                 async with session.get(url, timeout=10) as response:
-                    logger.debug("Received response for %s: Status %d", url, response.status)
+                    logger.debug("收到 %s 的响应，状态码: %d", url, response.status)
                     if response.status == 200:
                         content = await response.text()
-                        logger.info("Successfully fetched %d bytes from %s", len(content), url)
+                        logger.info("成功获取 %s，内容长度: %d 字节", url, len(content))
                         return content
                     else:
-                        logger.warning("Non-200 status code %d for URL: %s", response.status, url)
+                        logger.warning("URL %s 返回非 200 状态码: %d", url, response.status)
                         return None
         except aiohttp.ClientError as e:
-            logger.error("Client error fetching URL %s: %s", url, str(e))
+            logger.error("客户端错误，获取 URL %s 失败: %s", url, str(e))
             raise
         except asyncio.TimeoutError:
-            logger.error("Timeout fetching URL: %s", url)
+            logger.error("获取 URL %s 超时", url)
             raise
         except Exception as e:
-            logger.error("Unexpected error fetching URL %s: %s", url, str(e))
+            logger.error("获取 URL %s 时发生未知错误: %s", url, str(e))
             raise
 
     async def resolve_url(self, url):
         """
-        Resolve the domain of a URL using DNS to ensure it's accessible.
-        
-        Args:
-            url (str): URL to resolve.
-            
-        Returns:
-            bool: True if domain resolves successfully, False otherwise.
+        使用 DNS 解析 URL 的域名，检查其是否可访问。
+
+        参数:
+            url (str): 要解析的 URL
+
+        返回:
+            bool: 如果域名解析成功返回 True，否则返回 False
         """
-        logger.debug("Resolving URL: %s", url)
+        logger.debug("正在解析 URL: %s", url)
         parsed_url = urlparse(url)
         domain = parsed_url.netloc
         if not domain:
-            logger.error("Invalid URL format, no domain found: %s", url)
+            logger.error("URL 格式无效，无域名: %s", url)
             return False
-        
+
         try:
             answers = dns.resolver.resolve(domain, 'A')
-            logger.debug("DNS resolution successful for %s: %s", domain, [str(a) for a in answers])
+            logger.debug("域名 %s 解析成功: %s", domain, [str(a) for a in answers])
             return True
         except dns.resolver.NXDOMAIN:
-            logger.warning("DNS resolution failed: Domain %s does not exist", domain)
+            logger.warning("域名 %s 不存在", domain)
             return False
         except dns.resolver.Timeout:
-            logger.warning("DNS resolution timeout for domain: %s", domain)
+            logger.warning("域名 %s 解析超时", domain)
             return False
         except Exception as e:
-            logger.error("Unexpected error resolving domain %s: %s", domain, str(e))
+            logger.error("解析域名 %s 时发生未知错误: %s", domain, str(e))
             return False
 
     async def check_channel_validity(self, channel):
         """
-        Validate a channel URL using ffmpeg to check if the stream is accessible.
-        
-        Args:
-            channel (dict): Channel dictionary containing 'url' and 'name' keys.
-            
-        Returns:
-            bool: True if the channel is valid, False otherwise.
+        使用 FFmpeg 验证频道 URL 是否可播放。
+
+        参数:
+            channel (dict): 包含 'url' 和 'name' 键的频道字典
+
+        返回:
+            bool: 如果频道有效返回 True，否则返回 False
         """
         url = channel.get('url')
-        name = channel.get('name', 'Unknown')
-        logger.debug("Validating channel: %s (%s)", name, url)
-        
+        name = channel.get('name', '未知频道')
+        logger.debug("正在验证频道: %s (%s)", name, url)
+
         if not url:
-            logger.warning("Channel has no URL: %s", name)
+            logger.warning("频道 %s 无 URL", name)
             return False
 
         if not await self.resolve_url(url):
-            logger.warning("Skipping validation for %s due to DNS resolution failure", url)
+            logger.warning("由于 DNS 解析失败，跳过验证频道 %s (%s)", name, url)
             return False
 
         try:
@@ -191,41 +191,41 @@ class IPTVScraper:
             )
             stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=15)
             if process.returncode == 0:
-                logger.info("Channel %s (%s) is valid", name, url)
+                logger.info("频道 %s (%s) 验证通过", name, url)
                 return True
             else:
-                logger.warning("Channel %s (%s) validation failed: %s", name, url, stderr.decode())
+                logger.warning("频道 %s (%s) 验证失败: %s", name, url, stderr.decode())
                 return False
         except asyncio.TimeoutError:
-            logger.warning("Validation timeout for channel %s (%s)", name, url)
+            logger.warning("验证频道 %s (%s) 超时", name, url)
             return False
         except FileNotFoundError:
-            logger.error("FFmpeg not found on system. Please ensure FFmpeg is installed.")
+            logger.error("未找到 FFmpeg，请确保已安装 FFmpeg")
             return False
         except Exception as e:
-            logger.error("Unexpected error validating channel %s (%s): %s", name, url, str(e))
+            logger.error("验证频道 %s (%s) 时发生未知错误: %s", name, url, str(e))
             return False
 
     async def extract_channels(self, session, url, index, total_urls):
         """
-        Extract channels from the content of a URL (e.g., M3U playlist).
-        
-        Args:
-            session (aiohttp.ClientSession): HTTP session for fetching URLs.
-            url (str): URL to process.
-            index (int): Current URL index for progress tracking.
-            total_urls (int): Total number of URLs being processed.
+        从 URL 内容中提取频道信息（如 M3U 播放列表）。
+
+        参数:
+            session (aiohttp.ClientSession): HTTP 会话
+            url (str): 要处理的 URL
+            index (int): 当前 URL 的索引，用于进度跟踪
+            total_urls (int): 总 URL 数量
         """
-        logger.debug("Processing URL %d/%d: %s", index + 1, total_urls, url)
-        
+        logger.debug("处理 URL %d/%d: %s", index + 1, total_urls, url)
+
         if not await self.resolve_url(url):
-            logger.warning("Skipping URL %s due to DNS resolution failure", url)
+            logger.warning("由于 DNS 解析失败，跳过 URL: %s", url)
             return
 
         try:
             content = await self.fetch_url(session, url)
             if not content:
-                logger.warning("No content retrieved from URL: %s", url)
+                logger.warning("无法从 URL 获取内容: %s", url)
                 return
 
             lines = content.splitlines()
@@ -233,74 +233,75 @@ class IPTVScraper:
             for line in lines:
                 line = line.strip()
                 if not line:
+                    logger.debug("跳过空行")
                     continue
                 if line.startswith('#EXTINF'):
                     match = re.search(r'tvg-name="([^"]+)"', line)
                     if match:
                         current_channel['name'] = match.group(1)
-                        logger.debug("Found channel name: %s", current_channel['name'])
+                        logger.debug("找到频道名称: %s", current_channel['name'])
                     else:
-                        logger.debug("No tvg-name found in EXTINF line: %s", line)
+                        logger.debug("EXTINF 行无 tvg-name: %s", line)
                 elif line.startswith('http'):
                     current_channel['url'] = line
                     if 'name' in current_channel:
                         self.channels.append(current_channel.copy())
-                        logger.debug("Added channel: %s (%s)", current_channel['name'], current_channel['url'])
+                        logger.debug("添加频道: %s (%s)", current_channel['name'], current_channel['url'])
                         current_channel = {}
                     else:
-                        logger.debug("Found URL without name: %s", line)
-            logger.warning("Processed %d/%d URLs for channel extraction", index + 1, total_urls)
+                        logger.debug("找到无名称的 URL: %s", line)
+            logger.warning("完成处理 %d/%d 个 URL，用于频道提取", index + 1, total_urls)
         except Exception as e:
-            logger.error("Error processing content from %s: %s", url, str(e))
-            logger.debug("Traceback: %s", traceback.format_exc())
+            logger.error("处理 URL %s 的内容时出错: %s", url, str(e))
+            logger.debug("错误堆栈: %s", traceback.format_exc())
 
     async def process_channels(self):
         """
-        Process all URLs to extract and validate channels.
+        处理所有 URL，提取并验证频道。
         """
-        logger.info("Starting channel extraction from %d URLs", len(self.urls))
+        logger.info("开始从 %d 个 URL 提取频道", len(self.urls))
         async with aiohttp.ClientSession() as session:
             tasks = []
             for i, url in enumerate(self.urls):
                 tasks.append(self.extract_channels(session, url, i, len(self.urls)))
             await asyncio.gather(*tasks, return_exceptions=True)
 
-        logger.warning("Finished channel extraction. Total channels extracted before filtering: %d", len(self.channels))
+        logger.warning("频道提取完成，提取的频道总数（过滤前）: %d", len(self.channels))
 
-        # Filter and deduplicate channels
+        # 过滤和去重频道
         seen_urls = set()
         unique_channels = []
         for channel in self.channels:
             url = channel.get('url')
-            name = channel.get('name', 'Unknown')
+            name = channel.get('name', '未知频道')
             if url and url not in seen_urls:
                 seen_urls.add(url)
                 unique_channels.append(channel)
-                logger.debug("Kept unique channel: %s (%s)", name, url)
+                logger.debug("保留唯一频道: %s (%s)", name, url)
             else:
-                logger.debug("Discarded duplicate or invalid channel: %s (%s)", name, url)
+                logger.debug("丢弃重复或无效频道: %s (%s)", name, url)
 
         self.channels = unique_channels
-        logger.warning("Total channels after filtering and deduplication: %d", len(self.channels))
+        logger.warning("过滤和去重后的频道总数: %d", len(self.channels))
 
-        # Validate channels with progress bar
-        logger.warning("Starting multithreaded channel validity and speed detection for %d channels...", len(self.channels))
+        # 验证频道，使用进度条显示
+        logger.warning("开始多线程验证 %d 个频道的有效性...", len(self.channels))
         valid_channels = []
-        for channel in tqdm(self.channels, desc="Validating channels", unit="channel"):
+        for channel in tqdm(self.channels, desc="验证频道", unit="频道"):
             if await self.check_channel_validity(channel):
                 valid_channels.append(channel)
 
         self.valid_channels = valid_channels
-        logger.warning("Total valid channels after validation: %d", len(self.valid_channels))
+        logger.warning("验证后的有效频道总数: %d", len(self.valid_channels))
 
     def categorize_channels(self):
         """
-        Categorize channels into CCTV, regional, and uncategorized groups based on channel names.
-        
-        Returns:
-            dict: Dictionary with categorized channels.
+        将频道分类为 CCTV、地方频道和未分类频道。
+
+        返回:
+            dict: 分类后的频道字典
         """
-        logger.debug("Categorizing %d valid channels", len(self.valid_channels))
+        logger.debug("正在分类 %d 个有效频道", len(self.valid_channels))
         categorized = {
             'CCTV': [],
             '地方': [],
@@ -314,129 +315,129 @@ class IPTVScraper:
 
         for channel in self.valid_channels:
             name = channel.get('name', '').lower()
-            logger.debug("Categorizing channel: %s", name)
+            logger.debug("分类频道: %s", name)
             if 'cctv' in name:
                 categorized['CCTV'].append(channel)
-                logger.debug("Assigned to CCTV: %s", name)
+                logger.debug("分配至 CCTV 分类: %s", name)
             elif any(keyword.lower() in name for keyword in regional_keywords):
                 categorized['地方'].append(channel)
-                logger.debug("Assigned to 地方: %s", name)
+                logger.debug("分配至地方频道分类: %s", name)
             else:
                 categorized['uncategorized'].append(channel)
-                logger.debug("Assigned to uncategorized: %s", name)
+                logger.debug("分配至未分类频道: %s", name)
 
-        logger.debug("Categorization results: CCTV=%d, 地方=%d, uncategorized=%d",
+        logger.debug("分类结果: CCTV=%d, 地方=%d, 未分类=%d",
                      len(categorized['CCTV']), len(categorized['地方']), len(categorized['uncategorized']))
         return categorized
 
     async def save_channels(self):
         """
-        Save categorized channels to respective files and create a merged channel list.
+        将分类后的频道保存到对应的文件中，并合并生成最终的 iptv_list.txt。
         """
-        logger.debug("Starting channel saving process")
+        logger.debug("开始保存频道")
         categorized = self.categorize_channels()
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        logger.debug("Generated timestamp for output files: %s", timestamp)
+        logger.debug("生成输出文件时间戳: %s", timestamp)
 
-        # Save categorized channels to individual files
+        # 保存分类后的频道到各自文件
         for category, channels in categorized.items():
-            logger.warning("Processing category: %s with %d channels", category, len(channels))
+            logger.warning("处理分类: %s，包含 %d 个频道", category, len(channels))
             output_file = os.path.join(self.output_dir, f"{category}_iptv.txt")
             try:
                 async with aiofiles.open(output_file, 'w', encoding='utf-8') as file:
                     await file.write(f"更新时间,{timestamp},#genre#\n")
                     for channel in channels:
-                        name = channel.get('name', 'Unknown')
+                        name = channel.get('name', '未知频道')
                         url = channel.get('url', '')
                         await file.write(f"{name},{url}\n")
-                        logger.debug("Wrote channel to %s: %s (%s)", output_file, name, url)
-                logger.info("Successfully saved %d channels to %s", len(channels), output_file)
+                        logger.debug("写入频道到 %s: %s (%s)", output_file, name, url)
+                logger.info("成功保存 %d 个频道到 %s", len(channels), output_file)
             except Exception as e:
-                logger.error("Failed to save channels to %s: %s", output_file, str(e))
+                logger.error("无法保存频道到 %s: %s", output_file, str(e))
 
-        # Save uncategorized channels separately
+        # 单独保存未分类频道
         uncategorized_file = os.path.join(self.output_dir, 'uncategorized_iptv.txt')
-        logger.warning("Processing uncategorized channels: %d channels", len(categorized['uncategorized']))
+        logger.warning("处理未分类频道: %d 个频道", len(categorized['uncategorized']))
         try:
             async with aiofiles.open(uncategorized_file, 'w', encoding='utf-8') as file:
                 await file.write(f"更新时间,{timestamp},#genre#\n")
                 for channel in categorized['uncategorized']:
-                    name = channel.get('name', 'Unknown')
+                    name = channel.get('name', '未知频道')
                     url = channel.get('url', '')
                     await file.write(f"{name},{url}\n")
-                    logger.debug("Wrote uncategorized channel: %s (%s)", name, url)
-            logger.info("Uncategorized channels saved to: %s", uncategorized_file)
+                    logger.debug("写入未分类频道: %s (%s)", name, url)
+            logger.info("未分类频道保存至: %s", uncategorized_file)
         except Exception as e:
-            logger.error("Failed to save uncategorized channels to %s: %s", uncategorized_file, str(e))
+            logger.error("无法保存未分类频道到 %s: %s", uncategorized_file, str(e))
 
-        # Merge all channels into a single iptv_list.txt
+        # 合并所有频道到 iptv_list.txt
         all_channels = []
         for category, channels in categorized.items():
             all_channels.extend(channels)
-            logger.debug("Merged %d channels from category %s", len(channels), category)
+            logger.debug("从分类 %s 合并 %d 个频道", category, len(channels))
 
-        # Deduplicate merged channels
+        # 去重合并后的频道
         seen_urls = set()
         unique_channels = []
         for channel in all_channels:
             url = channel.get('url')
-            name = channel.get('name', 'Unknown')
+            name = channel.get('name', '未知频道')
             if url and url not in seen_urls:
                 seen_urls.add(url)
                 unique_channels.append(channel)
-                logger.debug("Kept unique channel for iptv_list.txt: %s (%s)", name, url)
+                logger.debug("保留 iptv_list.txt 的唯一频道: %s (%s)", name, url)
             else:
-                logger.debug("Discarded duplicate channel: %s (%s)", name, url)
+                logger.debug("丢弃重复频道: %s (%s)", name, url)
 
         output_file = os.path.join(self.output_dir, 'iptv_list.txt')
-        logger.warning("Total unique channels to check and filter for iptv_list.txt: %d", len(unique_channels))
+        logger.warning("为 iptv_list.txt 检查和过滤的唯一频道总数: %d", len(unique_channels))
         try:
             async with aiofiles.open(output_file, 'w', encoding='utf-8') as file:
                 await file.write(f"更新时间,{timestamp},#genre#\n")
                 for channel in unique_channels:
-                    name = channel.get('name', 'Unknown')
+                    name = channel.get('name', '未知频道')
                     url = channel.get('url', '')
                     await file.write(f"{name},{url}\n")
-                    logger.debug("Wrote channel to iptv_list.txt: %s (%s)", name, url)
-            logger.warning("All regional channel list files merged, deduplicated, and cleaned. Output saved to: %s", output_file)
+                    logger.debug("写入频道到 iptv_list.txt: %s (%s)", name, url)
+            logger.warning("所有地方频道列表已合并、去重并清理，输出保存至: %s", output_file)
         except Exception as e:
-            logger.error("Failed to save merged channels to %s: %s", output_file, str(e))
+            logger.error("无法保存合并频道到 %s: %s", output_file, str(e))
 
     async def main(self):
         """
-        Main execution method to run the entire scraping process.
+        主执行方法，运行整个爬取和处理流程。
         """
-        logger.info("Starting IPTV scraper execution")
+        logger.info("开始执行 IPTV 爬取脚本")
         process = psutil.Process()
         initial_memory = process.memory_info().rss / 1024 / 1024
         initial_cpu = psutil.cpu_percent()
-        logger.info("Initial system resources - Memory: %.2f MB, CPU: %.2f%%", initial_memory, initial_cpu)
+        logger.info("初始系统资源 - 内存: %.2f MB, CPU: %.2f%%", initial_memory, initial_cpu)
 
         try:
             await self.process_channels()
             await self.save_channels()
         except Exception as e:
-            logger.error("Critical error in main execution: %s", str(e))
-            logger.debug("Traceback: %s", traceback.format_exc())
+            logger.error("主执行过程中发生严重错误: %s", str(e))
+            logger.debug("错误堆栈: %s", traceback.format_exc())
         finally:
             final_memory = process.memory_info().rss / 1024 / 1024
             final_cpu = psutil.cpu_percent()
             execution_time = (datetime.now() - self.start_time).total_seconds()
-            logger.info("Final system resources - Memory: %.2f MB, CPU: %.2f%%", final_memory, final_cpu)
-            logger.info("Total execution time: %.2f seconds", execution_time)
-            logger.warning("IPTV processing script finished")
+            logger.info("最终系统资源 - 内存: %.2f MB, CPU: %.2f%%", final_memory, final_cpu)
+            logger.info("总执行时间: %.2f 秒", execution_time)
+            logger.warning("IPTV 处理脚本执行完成")
 
 if __name__ == "__main__":
-    logger.debug("Script started")
+    logger.debug("脚本启动")
     try:
         scraper = IPTVScraper()
         asyncio.run(scraper.main())
     except KeyboardInterrupt:
-        logger.warning("Script terminated by user interruption")
+        logger.warning("用户中断脚本执行")
         sys.exit(1)
     except Exception as e:
-        logger.error("Fatal error in script execution: %s", str(e))
-        logger.debug("Traceback: %s", traceback.format_exc())
+        logger.error("脚本执行发生致命错误: %s", str(e))
+        logger.debug("错误堆栈: %s", traceback.format_exc())
         sys.exit(1)
     finally:
-        logger.debug("Script execution completed")
+        logger.debug("脚本执行结束")
