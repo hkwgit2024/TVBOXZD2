@@ -1,0 +1,145 @@
+# 频道抓取和检查配置
+check_timeout: 8
+request_timeout: 10
+channel_check_workers: 50
+url_fetch_workers: 10
+
+# 日志级别
+log_level: "DEBUG"
+
+# URL 状态过期清理
+url_state_expiration_days: 1
+
+# 频道保留策略
+stream_fail_threshold: 5
+stream_retention_hours: 168
+channel_fail_threshold: 5
+url_fail_threshold: 5
+url_retention_hours: 72
+
+# GitHub API 配置
+per_page: 30
+max_search_pages: 3
+github_api_timeout: 20
+github_api_retry_wait: 60
+rate_limit_threshold: 3
+search_updated_within_days: 30
+
+# Requests 配置
+requests_pool_size: 100
+requests_retry_total: 3
+requests_retry_backoff_factor: 1.5
+
+# 缓存配置
+url_states_ttl: 604800
+channel_cache_ttl: 86400
+
+# 输出格式
+output_format: "txt"
+
+# 文件路径配置
+paths:
+  channels_dir: "temp_channels"
+  output_dir: "output"
+  final_iptv_file: "iptv_list.txt"
+  uncategorized_channels_file: "uncategorized_iptv.txt"
+  channel_cache_file: "config/channel_cache.json"
+  keyword_stats_file: "config/keyword_stats.json"
+
+# 搜索关键词
+search_keywords:
+  - "iptv"
+  - "港澳台" 
+  - "CAN"
+# 分类配置
+ordered_categories:
+  - CCTV
+  - 地方
+  - uncategorized
+category_keywords:
+  CCTV: ["CCTV", "中央", "央视"]
+  地方: ["卫视", "北京", "上海", "广东"]
+  uncategorized: []
+
+rules:
+  url_pre_screening:
+    allowed_protocols:
+      - "http"
+      - "https"
+      - "rtmp"
+      - "rtp"
+      - "p3p"
+      - "udp"
+      - "rtsp"
+    stream_extensions:
+      - ".m3u8"
+      - ".m3u"
+      - ".flv"
+      - ".mp4"
+      - ".ts"
+      - ".hls"
+      - ".dash"
+  invalid_url_patterns:
+    - "\\.(png|jpe?g|gif|bmp|webp|svg|ico|mov|avi|wmv|flv|webm|mp3|wav|ogg|aac|pdf|docx?|xlsx?|pptx?|epub|zip|rar|7z|tar|gz|tgz|bz2|xz|exe|dll|msi|apk|dmg|pkg|iso|img|css|js|xml|txt|md|json|ya?ml|csv|log|bak|ini|cfg|conf|woff2?|ttf|otf|eot)$"
+    - "youtube\\.com\\/(watch|embed|live)"
+    - "bilibili\\.com"
+    - "twitch\\.tv"
+    - "facebook\\.com\\/(watch|live)"
+    - "twitter\\.com"
+    - "instagram\\.com"
+    - "linkedin\\.com"
+    - "pinterest\\.com"
+    - "weibo\\.com"
+    - "douyin\\.com"
+    - "kuaishou\\.com"
+    - "example\\.com"
+    - "test\\.com"
+    - "localhost"
+    - "127\\.0\\.0\\.1"
+    - "0\\.0\\.0\\.0"
+    - "login"
+    - "signup"
+    - "register"
+    - "forbidden"
+    - "denied"
+    - "vip"
+    - "paywall"
+    - "subscribe"
+    - "ad(s)?|banner|affiliate|tracking"
+    - "doubleclick\\.net"
+    - "googlesyndication\\.com"
+    - "^mailto:"
+    - "^tel:"
+    - "^javascript:"
+    - "^ftp:"
+  name_filter_words:
+    - "测试"
+    - "demo"
+    - "backup"
+    - "失效"
+    - "已过期"
+    - "禁用"
+    - "无效"
+    - "过期"
+    - "不可用"
+    - "temp"
+    - "错误"
+    - "故障"
+    - "未授权"
+    - "维护"
+    - "离线"
+    - "黑屏"
+    - "无信号"
+    - "购物"
+    - "广告"
+    - "宣传"
+    - "推销"
+    - "低清"
+    - "标清"
+    - "(480p)"
+    - "(360p)"
+    - "(240p)"
+    - "会员"
+    - "加密"
+    - "付费"
+    - "vip"
