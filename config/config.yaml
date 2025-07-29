@@ -49,6 +49,10 @@ paths:
 # 搜索关键词
 search_keywords:
   - "iptv"
+  - "莲花"
+  - "中天"
+  - "电影"
+  - "阿"
 
 # 分类配置
 ordered_categories:
