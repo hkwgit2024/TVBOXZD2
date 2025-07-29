@@ -20,7 +20,7 @@ import base64 # Re-add for GitHub API interaction
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Define local file paths
-CONFIG_DIR = "config"
+# CONFIG_DIR = "config"
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config/config.yml")
 URLS_PATH = os.path.join(CONFIG_DIR, "config/urls.txt")
 URL_STATES_PATH = os.path.join(CONFIG_DIR, "config/url_states.json")
