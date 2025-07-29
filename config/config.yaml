@@ -46,13 +46,491 @@ paths:
   channel_cache_file: "config/channel_cache.json"
   keyword_stats_file: "config/keyword_stats.json"
 
-# 搜索关键词
+# GitHub 搜索配置 (中文合并优化版)
 search_keywords:
-  - "iptv"
-  - "莲花"
-  - "中天"
-  - "电影"
-  - "阿"
+  # 核心英文关键词 (精确匹配文件扩展名和路径)
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "iptv playlist extension:m3u,m3u8 in:file"
+  - "raw.bgithub.xyz path:.m3u8"
+  - "raw.bgithub.xyz path:.m3u"
+  - "tv channels extension:m3u,m3u8 in:file"
+  - "live tv extension:m3u,m3u8 in:file"
+  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+  - "index.m3u8 in:file"
+  - "channels.m3u in:file"
+  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
+
+  # 通用英文关键词
+  - "iptv links" # 稍微放宽，依赖后续过滤
+  - "m3u8 playlist"
+  - "iptv list"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "stream list"
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
+
+  # 特定平台和CDN关键词
+  - "raw.bgithub.xyz m3u" # GitHub raw 内容
+  - "gist.github.com m3u" # GitHub Gist
+  - "cdn.jsdelivr.net m3u" # jsDelivr CDN
+  - "fastly.net m3u8" # Fastly CDN (可能较宽泛)
+  - "gitee.com m3u" # Gitee 码云
+
+  # 新增平台扩展 (注意：部分平台搜索语法可能与GitHub不同，效果待验证)
+  - "site:gitlab.com inurl:.m3u" # GitLab, inurl 可能匹配路径中的 .m3u
+  - "site:gitlab.com m3u8" # GitLab, 搜索 m3u8 文件或内容
+  - "site:bitbucket.org filetype:m3u" # Bitbucket 搜索 m3u 文件
+  - "site:bitbucket.org filetype:m3u8" # Bitbucket 搜索 m3u8 文件
+  - "site:pastebin.com ext:m3u" # Pastebin (ext:m3u 可能指其内部标签或分类)
+  - "site:pastebin.com m3u8" # Pastebin 搜索 m3u8
+  - "site:sourcetech.cn iptv"  # 国内源码站 (搜索 "iptv")
+  - "site:52pojie.cn 直播源"    # 吾爱破解论坛 (搜索 "直播源")
+
+  # 技术和协议相关关键词
+  - "iptv source"
+  - "live stream source"
+  - "m3u8 source"
+  - "tv stream"
+  - "streaming list"
+  - "open source iptv"
+  - "iptv repository"
+  - "m3u playlist 2025" # 年份关键词 (提示: 需每年手动更新为当前或下一年份以获取最新资源)
+  - "iptv m3u8 2025"   # 年份关键词 (同上)
+  - "hls stream" # HLS 协议
+  - "dash stream" # MPEG-DASH 协议
+  - "iptv epg" # 电子节目指南
+  - "iptv github" # 明确在GitHub上搜索IPTV相关项目
+  # - "hls:// in:file" # 这种协议前缀直接在文件中较少见，但可尝试
+  # - "dash.mpd in:file" # 搜索DASH清单文件
+  # - "httpstream:// in:file" # 同hls://
+  - "m3u8?token=" # 搜索带token的m3u8链接，可能包含临时或私有链接
+
+  # 核心中文关键词
+  - "直播源"
+  - "电视直播"
+  - "IPTV直播"
+  - "M3U直播"
+  - "M3U8直播"
+  - "频道列表"
+  - "免费直播"
+  - "公共直播"
+  - "聚合直播"
+  - "直播源.txt" # 搜索包含直播源的文本文件
+  - "电视直播.m3u"
+  - "电视直播.m3u8"
+  - "iptv源"
+  - "直播地址"
+  - "网络电视"
+  - "节目单"
+  - "最新直播源"
+  - "稳定直播源"
+  - "组播源"
+  - "iptvbox" # TVBox 应用相关
+  - "TVBOX"
+  - "EPG" # 电子节目单
+
+  # 特定中文频道/内容关键词 (示例，可根据需求增删)
+  - "CCTV1"
+  - "CCTV5"
+  - "湖南卫视"
+  - "凤凰卫视"
+  - "港澳台直播"
+  - "海外直播"
+  - "体育直播"
+  - "电影频道"
+
+  # 新增中文技术关键词
+  - "电视源"
+  - "直播链接"
+  - "IPTV地址"
+  - "高清直播"
+  - "超高清直播"
+  - "4K直播"
+  - "直播聚合"
+  - "国内直播"
+  - "国际直播"
+  - "网络直播源"
+  - "IPTV2025" # 年份关键词 (提示: 需每年手动更新)
+  - "直播源合集"
+  - "M3U源"
+  - "M3U8源"
+  - "电视节目单"
+  - "直播流"
+  - "HLS直播" # 中文的HLS
+  - "DASH直播" # 中文的DASH
+  - "低延迟源"
+  - "DASH流"
+  - "HEVC源"
+  - "IPv6直播"
+  # - "CDN加速" # 这些词更适合描述频道特性，而非直接搜索
+  # - "负载均衡"
+
+# GitHub API 每页结果数量
+per_page: 100
+
+# GitHub API 最大搜索页数，限制搜索深度
+max_search_pages: 5 # 兼顾结果数量与API调用频率
+
+# GitHub API 请求超时时间（秒）
+github_api_timeout: 60
+
+# GitHub API 速率限制达到后等待时间（秒）
+github_api_retry_wait: 60
+
+# 抓取频道列表 URL 内容的超时时间（秒）
+channel_fetch_timeout: 30
+
+# 检查单个频道链接可用性的超时时间（秒）
+channel_check_timeout: 5 # 快速验证大量链接
+
+# 每个频道名称最多保留的 URL 数量，避免过多重复链接
+max_channel_urls_per_group: 100
+
+# Requests 库的连接池大小
+requests_pool_size: 50
+
+# Requests 库的重试总次数
+requests_retry_total: 3
+
+# Requests 库的重试间隔回退因子
+requests_retry_backoff_factor: 1.5
+
+# 频道名称过滤词列表 (建议实现时使用小写进行不区分大小写匹配)
+# 注意：部分词可能过滤掉有用频道，需根据实际需求调整
+name_filter_words:
+  - "购物"
+  - "理财"
+  - "导视"
+  - "指南"
+  # - "测试" # "测试"有时可能是新可用源的标记，谨慎过滤
+  - "芒果" # 可能过滤掉 "芒果TV" 等
+  - "cgtn" # CGTN是官方媒体
+  - "(480p)"
+  - "(360p)"
+  - "(240p)"
+  # 省略部分分辨率标记，因为好的频道也可能有这些标记，应通过URL参数判断
+  - "[not 24/7]" # 非全天候直播
+  - "dj"
+  # - "音乐" # 过于宽泛，CCTV15音乐等会被过滤
+  - "演唱会"
+  - "舞曲"
+  - "春晚" # 特定时期有用，平时可注释
+  - "格斗"
+  # - "粤" # 过于宽泛，过滤广东粤语频道
+  - "祝"
+  - "广播"
+  - "博斯" # 台湾体育频道系列，根据需求决定是否过滤
+  - "神话"
+  - "失效"
+  - "demo"
+  - "backup" # "backup"有时可能是有效备用源
+  - "内测"
+  - "测试频道"
+  - "广告"
+  - "已过期"
+  - "禁用"
+  - "无效"
+  - "勿扰"
+  - "仅供参考"
+  - "过期"
+  - "不可用"
+  - "样本"
+  - "temp" # "temp" 有时是临时可用源
+  - "radio"
+  - "fm"
+  - "低清"
+  - "标清" # 有些标清源仍有价值
+  - "无效源"
+  - "错误"
+  - "故障"
+  - "未授权"
+  - "付费"
+  - "vip"
+  - "订阅"
+  - "pcnlid"
+  - "sem moderação" # 葡萄牙语 "无审查"
+  - "eixo do mal"   # 葡萄牙语 "邪恶轴心"
+
+# 频道名称替换规则 (键:待替换内容, 值:替换后内容; 建议实现时使用小写进行不区分大小写匹配)
+# 目标：标准化频道名，去冗余，统一标识
+channel_name_replacements:
+  fhd: ""
+  hd: ""
+  sd: ""
+  频道: ""       # 例如: "XX频道" -> "XX"
+  高清: ""       # "XX高清" -> "XX"
+  超清: ""       # "XX超清" -> "XX"
+  标清: ""
+  低清: ""
+  "4k": ""
+  "4kr": ""
+  "8k": ""
+  "hevc": "H.265" # 技术标识标准化
+  "h265": "H.265"
+  "av1": "AV1"     # 保留AV1标识或置空""
+  "hdr10+": "HDR" # HDR 标准化
+  "hdr": "HDR"
+  "(直播)": ""    # 去除"(直播)"字样
+  "测试": ""       # 去除名称中的测试字样
+  "失效": ""
+  直播: ""       # "XX直播" -> "XX"
+  省台: ""
+  市台: ""
+  中央: "CCTV"
+  央视: "CCTV"
+  cctv1综合: "CCTV1"
+  cctv2财经: "CCTV2"
+  cctv3综艺: "CCTV3"
+  cctv4中文国际: "CCTV4"
+  cctv4亚洲: "CCTV4" # CCTV4 不同版本统一
+  cctv4欧洲: "CCTV4"
+  cctv4美洲: "CCTV4"
+  cctv5体育: "CCTV5"
+  "cctv5+体育赛事": "CCTV5+"
+  cctv6电影: "CCTV6"
+  cctv7国防军事: "CCTV7" # 新版CCTV7
+  cctv7军事农业: "CCTV7" # 旧版CCTV7统一
+  cctv8电视剧: "CCTV8"
+  cctv9纪录: "CCTV9"
+  cctv10科教: "CCTV10"
+  cctv11戏曲: "CCTV11"
+  cctv12社会与法: "CCTV12"
+  cctv13新闻: "CCTV13"
+  cctv14少儿: "CCTV14"
+  cctv15音乐: "CCTV15"
+  cctv16奥林匹克: "CCTV16"
+  cctv17农业农村: "CCTV17"
+  "cctv-1": "CCTV1" # 统一CCTV频道格式
+  "cctv-5": "CCTV5"
+  # 示例：更细致的卫视处理
+  湖南卫视高清: "湖南卫视"
+  北京卫视高清: "北京卫视"
+  "-": " " # 将破折号替换为空格，或直接移除""
+  备用: ""
+  backup: ""
+  临时: ""
+  temp: ""
+
+# 最终输出IPTV列表时，频道分类的优先顺序
+# 建议脚本根据频道名关键词动态匹配到这些分类
+ordered_categories:
+  - "CCTV频道"
+  - "卫视频道"
+  - "地方频道" # 可作为省级频道的总父类
+  - "北京频道"
+  - "上海频道"
+  - "广东频道" # 包含珠江、南方等
+  - "湖南频道"
+  - "浙江频道"
+  - "江苏频道"
+  - "山东频道"
+  - "四川频道"
+  # ... (其他省级频道)
+  - "港台频道" # 香港、澳门、台湾地区频道
+  - "国际频道" # 原“国外频道”，覆盖全球主要国际频道
+  - "新闻频道" # 专门的新闻资讯类
+  - "体育频道"
+  - "电影频道"
+  - "电视剧频道" # 若CCTV8等已归类CCTV，此处放其他剧集轮播
+  - "综艺频道"
+  - "纪录片频道"
+  - "少儿频道"
+  - "教育频道"
+  - "财经频道"
+  - "音乐频道"
+  - "生活频道"
+  # 新增技术特性分类 (这些分类可能需要从URL参数或文件名中提取特征来划分)
+  - "4K/8K超高清"
+  - "HDR频道"
+  - "H.265/HEVC频道" # H.265编码
+  - "AV1频道"        # AV1编码
+  - "IPv6专用"
+  - "低延迟专区"
+  # - "CDN加速区" # CDN加速是普遍特性，较难单独分类
+  - "其他频道" # 未能明确分类的频道
+
+# URL 预筛选配置 (关键的URL过滤部分)
+url_pre_screening:
+  allowed_protocols: # 允许的URL协议前缀
+    - "http"
+    - "https"
+    - "rtmp"  # Real Time Messaging Protocol
+    - "rtsp"  # Real Time Streaming Protocol
+    - "rtp"   # Real-time Transport Protocol (常用于组播)
+    - "udp"   # User Datagram Protocol (常用于组播)
+    - "p3p"   # PPLive Protocol (较少见)
+    - "hls"   # HTTP Live Streaming (逻辑协议，实际通过http/https)
+    - "dash"  # Dynamic Adaptive Streaming over HTTP (逻辑协议)
+    - "httpstream" # 一些特定应用的协议标记
+
+  stream_extensions: # 认为可能是流媒体或播放列表的文件扩展名
+    - ".m3u8"
+    - ".m3u"
+    - ".ts"   # MPEG Transport Stream segment
+    - ".flv"  # Flash Video
+    - ".mp4"  # MPEG-4 Part 14 (如果直接是流地址)
+    - ".aac"  # Advanced Audio Coding (纯音频流)
+    - ".mp3"  # MPEG-1 Audio Layer III (纯音频流)
+    - ".f4m"  # HDS manifest
+    - ".mpd"  # MPEG-DASH manifest
+    - ".ism"  # Smooth Streaming manifest
+    # - ".hls" # .hls 扩展名不标准，通常是 .m3u8
+    # - ".dash" # .dash 扩展名不标准，通常是 .mpd
+
+  invalid_url_patterns: # 正则表达式列表，用于过滤掉无效或不想要的URL
+    # 基础无效模式
+    - "example\\.com"
+    - "test\\.com"
+    - "localhost"
+    - "127\\.0\\.0\\.1"
+    - "0\\.0\\.0\\.0"
+    - "privateip" # 通用私有IP占位符
+    - "(^|[:/@])10\\." # 10.0.0.0/8
+    - "(^|[:/@])172\\.(1[6-9]|2[0-9]|3[01])\\." # 172.16.0.0/12
+    - "(^|[:/@])192\\.168\\." # 192.168.0.0/16
+    - "dummy"
+    - "demo"
+    - "null"
+    - "invalid"
+    - "error"
+    - "blank"
+    - "sample"
+    - "temp"
+    - "_hls_" # 可能是一些内部测试或非标准链接中的占位符
+    - "_dash_" # 同上
+
+    # 过滤常见文件类型 (非流媒体)
+    - "\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$" # 图片
+    - "\\.(css|js|html|htm|xml|txt|md|json|yml|yaml|csv|log|bak|ini|cfg|conf|map|woff|ttf|eot)$" # 网页资源/文本/配置
+    - "\\.(zip|rar|7z|tar|gz|tgz|bz2|xz)$" # 压缩包
+    - "\\.(pdf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp)$" # 文档
+    - "\\.(exe|dll|msi|apk|dmg|pkg|iso|img|bin|deb|rpm)$" # 可执行文件/安装包/镜像
+
+    # 过滤包含空格或常见编码问题的URL (通常无效)
+    - "(\\s|%20)" # URL中的原始空格或编码空格
+
+    # 过滤已知非原始流媒体内容的平台或路径
+    - "github\\.com/(?!.*raw\\.githubusercontent\\.com)" # GitHub非Raw链接
+    - "gist\\.github\\.com/(?!.*raw\\.githubusercontent\\.com)" # Gist非Raw链接
+    - "gitee\\.com/(?!.*raw)" # Gitee非Raw链接
+    - "(youtube\\.com/(watch|embed|live)|youtu\\.be/)" # YouTube
+    - "vimeo\\.com"
+    - "dailymotion\\.com"
+    - "youku\\.com"
+    - "iqiyi\\.com"
+    - "bilibili\\.com/(video|bangumi|live)" # B站视频/番剧/直播页面
+    - "douyu\\.com"
+    - "huya\\.com"
+    - "twitch\\.tv"
+    - "facebook\\.com/(watch|live|videos)"
+    - "twitter\\.com"
+    - "instagram\\.com"
+    - "tiktok\\.com"
+    - "douyin\\.com"
+    - "kuaishou\\.com"
+    - "music\\.163\\.com" # 网易云音乐
+    - "qq\\.com(?!.*live\\.qq\\.com)" # QQ域名，排除腾讯视频直播
+    - "mp\\.weixin\\.qq\\.com" # 微信公众号文章
+
+    # 过滤API、工具、特定服务类URL
+    - "api\\.글자" # 示例：过滤特定API调用
+    - "/api/"       # 通用API路径
+    - "google\\.com/search"
+    - "baidu\\.com/s\\?"
+    - "swagger"     # Swagger API文档
+    - "admin"       # 后台管理页面
+    - "login"
+    - "register"
+    - "signup"
+    - "auth"
+    - "token="      # 避免过于依赖临时token的链接 (部分保留在search_keywords中尝试)
+    - "key="
+    - "password="
+    - "payment"
+    - "subscribe"
+    - "vpn"
+    - "proxy"
+    - "shadowsocks"
+    - "v2ray"
+    - "trojan"
+    - "clash"
+    - "surge"
+    - "speedtest" # 网络测速
+    - "tracker"   # BT Tracker
+    - "torrent"
+    - "magnet:"   # 磁力链接协议
+
+    # 过滤已知无效或临时的流模式
+    - "teststream"
+    - "nullstream"
+    - "placeholder" # 占位符
+    - "example_stream"
+    - "your_stream_url_here"
+    - "stream_not_found"
+    - "live_streams_not_working"
+    - "fake_stream"
+    - "dead_stream"
+    - "empty\\.m3u8"
+    - "error\\.m3u8"
+    - "expired\\.m3u8" # 已过期的M3U8
+    - "failed\\.m3u8"
+    - "broken\\.m3u8"
+    - "notfound\\.m3u8"
+    - "invalid\\.m3u8"
+    - "blocked\\.m3u8"
+    - "private\\.m3u8" # 私有M3U8
+    - "auth\\.m3u8"    # 需要授权的M3U8
+    - "login\\.m3u8"
+    - "signup\\.m3u8"
+    - "forbidden\\.m3u8"
+    - "denied\\.m3u8"
+    - "vip\\.m3u8"
+    - "paywall\\.m3u8"
+    - "subscribe\\.m3u8"
+    - "playlist\\.m3u8\\?streamid=0" # 特定无效模式
+    - "/playlist\\.m3u8\\?(uid|userid|token|key)=[^&]+" # 带常见认证参数且通常已失效
+    - "/live/.*\\?(_sign|auth_key|playauth|st|wssecret|wstoken|txsecret|txtime|us|ct)=[^&]+" # 带有时效性签名/密钥的
+
+    # 过滤非流传输协议
+    - "(ftp|sftp|ftps|telnet|ssh|smb|nfs|rdp|vnc|git|svn|irc|mailto|skype|spotify):"
+
+    # 过于通用的CDN或云服务商域名 (如果发现它们引入过多噪音则启用)
+    # - "akamaized\\.net"
+    # - "cloudfront\\.net"
+    # - "llnwd\\.net" # Limelight
+    # - "edgecastcdn\\.net"
+    # - "fastly\\.net" # 已在关键词搜索，这里可用于过滤非直接流
+    # - "aliyuncs\\.com" # 阿里云CDN
+    # - "alicdn\\.com"
+    # - "qcloud\\.com" # 腾讯云
+    # - "myqcloud\\.com"
+    # - "hwcdn\\.net" # 华为云CDN
+    # - "chinanetcenter\\.com" # 网宿
+    # - "wscloudcdn\\.com"
+    # - "ccgslb\\.com"
+
+    # 过滤常见国内ISP的域名 (不太可能直接提供开放直播流)
+    - "chinaunicom\\.com"
+    - "chinatelecom\\.cn"
+    - "chinamobile\\.com"
+    - "vnet\\.com" # 世纪互联
+
+    # 过滤大型无关网站
+    - "taobao\\.com"
+    - "tmall\\.com"
+    - "jd\\.com"
+    - "amazon\\.com"
+    - "ebay\\.com"
+    - "wikipedia\\.org"
+    - "apple\\.com"
+    - "microsoft\\.com"
 
 # 分类配置
 ordered_categories:
