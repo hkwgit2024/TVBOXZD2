@@ -1,4 +1,3 @@
-
 import os
 import re
 import subprocess
@@ -211,21 +210,20 @@ def convert_m3u_to_txt(m3u_content):
     """将 M3U 格式内容转换为 TXT 格式（频道名称，URL）。"""
     lines = m3u_content.split('\n')
     txt_lines = []
-    channel_name = ""
+    channel_name = "未知频道"
     for line in lines:
         line = line.strip()
-        if line.startswith("#EXTM3U"):
+        if not line or line.startswith('#EXTM3U'):
             continue
-        if line.startswith("#EXTINF"):
-            match = re.search(r'#EXTINF:.*?\,(.*)', line)
+        if line.startswith('#EXTINF'):
+            match = re.search(r'#EXTINF:.*?\,(.*)', line, re.IGNORECASE)
             if match:
-                channel_name = match.group(1).strip()
+                channel_name = match.group(1).strip() or "未知频道"
             else:
                 channel_name = "未知频道"
-        elif line and not line.startswith('#'):
-            if channel_name:
-                txt_lines.append(f"{channel_name},{line}")
-            channel_name = ""
+        elif re.match(r'^[a-zA-Z0-9+.-]+://', line) and not line.startswith('#'):
+            txt_lines.append(f"{channel_name},{line}")
+            channel_name = "未知频道"
     return '\n'.join(txt_lines)
 
 def clean_url_params(url):
@@ -236,6 +234,77 @@ def clean_url_params(url):
     except ValueError as e:
         logging.debug(f"Failed to clean URL parameters: {url} - {e}")
         return url
+
+def extract_channels_from_url(url, url_states):
+    """从给定 URL 提取频道，支持多种文件格式。"""
+    extracted_channels = []
+    try:
+        text = fetch_url_content_with_retry(url, url_states)
+        if text is None:
+            return []
+
+        extension = get_url_file_extension(url).lower()
+        if extension in [".m3u", ".m3u8"]:
+            text = convert_m3u_to_txt(text)
+        elif extension in [".ts", ".flv", ".mp4", ".hls", ".dash"]:
+            # 假设单视频文件，生成默认名称
+            channel_name = f"Stream_{os.path.basename(urlparse(url).path)}"
+            if pre_screen_url(url):
+                extracted_channels.append((channel_name, url))
+                logging.debug(f"Extracted single stream: {channel_name},{url}")
+            return extracted_channels
+        elif extension not in [".txt", ".csv"]:
+            logging.debug(f"Unsupported file extension for URL: {url}")
+            return []
+
+        lines = text.split('\n')
+        channel_count = 0
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if "," in line and "://" in line:
+                parts = line.split(',', 1)
+                if len(parts) != 2:
+                    logging.debug(f"Skipping invalid channel line (malformed): {line}")
+                    continue
+                channel_name, channel_address_raw = parts
+                channel_name = channel_name.strip() or "未知频道"
+                channel_address_raw = channel_address_raw.strip()
+
+                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
+                    logging.debug(f"Skipping invalid channel URL (no valid protocol): {line}")
+                    continue
+
+                if '#' in channel_address_raw:
+                    url_list = channel_address_raw.split('#')
+                    for channel_url in url_list:
+                        channel_url = clean_url_params(channel_url.strip())
+                        if channel_url and pre_screen_url(channel_url):
+                            extracted_channels.append((channel_name, channel_url))
+                            channel_count += 1
+                        else:
+                            logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
+                else:
+                    channel_url = clean_url_params(channel_address_raw)
+                    if channel_url and pre_screen_url(channel_url):
+                        extracted_channels.append((channel_name, channel_url))
+                        channel_count += 1
+                    else:
+                        logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
+            elif re.match(r'^[a-zA-Z0-9+.-]+://', line):
+                # 处理无名称的单 URL 行
+                channel_name = f"Stream_{channel_count + 1}"
+                channel_url = clean_url_params(line)
+                if channel_url and pre_screen_url(channel_url):
+                    extracted_channels.append((channel_name, channel_url))
+                    channel_count += 1
+                else:
+                    logging.debug(f"Skipping invalid or pre-screened single URL: {line}")
+        logging.debug(f"Successfully extracted {channel_count} channels from URL: {url}.")
+    except Exception as e:
+        logging.error(f"Error extracting channels from {url}: {e}")
+    return extracted_channels
 
 # --- URL 状态管理函数 ---
 def load_url_states_local():
@@ -327,55 +396,6 @@ def fetch_url_content_with_retry(url, url_states):
         logging.error(f"Unknown error fetching URL: {url} - {e}")
         return None
 
-def extract_channels_from_url(url, url_states):
-    """从给定 URL 提取频道。"""
-    extracted_channels = []
-    try:
-        text = fetch_url_content_with_retry(url, url_states)
-        if text is None:
-            return []
-
-        if get_url_file_extension(url) in [".m3u", ".m3u8"]:
-            text = convert_m3u_to_txt(text)
-
-        lines = text.split('\n')
-        channel_count = 0
-        for line in lines:
-            line = line.strip()
-            if "#genre#" not in line and "," in line and "://" in line:
-                parts = line.split(',', 1)
-                if len(parts) != 2:
-                    logging.debug(f"Skipping invalid channel line (malformed): {line}")
-                    continue
-                channel_name, channel_address_raw = parts
-                channel_name = channel_name.strip()
-                channel_address_raw = channel_address_raw.strip()
-
-                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
-                    logging.debug(f"Skipping invalid channel URL (no valid protocol): {line}")
-                    continue
-
-                if '#' in channel_address_raw:
-                    url_list = channel_address_raw.split('#')
-                    for channel_url in url_list:
-                        channel_url = clean_url_params(channel_url.strip())
-                        if channel_url and pre_screen_url(channel_url):
-                            extracted_channels.append((channel_name, channel_url))
-                            channel_count += 1
-                        else:
-                            logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
-                else:
-                    channel_url = clean_url_params(channel_address_raw)
-                    if channel_url and pre_screen_url(channel_url):
-                        extracted_channels.append((channel_name, channel_url))
-                        channel_count += 1
-                    else:
-                        logging.debug(f"Skipping invalid or pre-screened channel URL: {channel_url}")
-        logging.debug(f"Successfully extracted {channel_count} channels from URL: {url}.")
-    except Exception as e:
-        logging.error(f"Error extracting channels from {url}: {e}")
-    return extracted_channels
-
 def pre_screen_url(url):
     """根据配置对 URL 进行预筛选（协议、长度、无效模式）。"""
     if not isinstance(url, str) or not url:
@@ -392,7 +412,7 @@ def pre_screen_url(url):
 
     try:
         parsed_url = urlparse(url)
-        if parsed_url.scheme not in CONFIG.get('url_pre_screening', {}).get('allowed_protocols', []):
+        if parsed_url.scheme not in CONFIG.get('rules', {}).get('url_pre_screening', {}).get('allowed_protocols', []):
             logging.debug(f"Pre-screening filtered (unsupported protocol): {url}")
             return False
 
@@ -400,7 +420,7 @@ def pre_screen_url(url):
             logging.debug(f"Pre-screening filtered (no network location): {url}")
             return False
 
-        invalid_url_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
+        invalid_url_patterns = CONFIG.get('rules', {}).get('url_pre_screening', {}).get('invalid_url_patterns', [])
         compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
         for pattern in compiled_invalid_url_patterns:
             if pattern.search(url):
@@ -824,12 +844,12 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                             content_response = session.get(raw_url, timeout=5)
                             content_response.raise_for_status()
                             content = content_response.text
-                            if re.search(r'#EXTM3U', content, re.IGNORECASE) or re.search(r'\.(m3u8|m3u)$', raw_url, re.IGNORECASE):
+                            if re.search(r'#EXTM3U', content, re.IGNORECASE) or re.search(r'\.(m3u8|m3u|txt|csv|ts|flv|mp4|hls|dash)$', raw_url, re.IGNORECASE):
                                 found_urls.add(raw_url)
                                 keyword_found_urls.add(raw_url)
                                 logging.debug(f"Found new IPTV source URL: {raw_url}")
                             else:
-                                logging.debug(f"URL {raw_url} does not contain M3U content and is not an M3U file extension. Skipping.")
+                                logging.debug(f"URL {raw_url} does not contain M3U content and is not a supported file extension. Skipping.")
                         except requests.exceptions.RequestException as req_e:
                             logging.debug(f"Error fetching raw content for {raw_url}: {req_e}")
                         except Exception as exc:
