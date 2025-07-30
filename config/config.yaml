@@ -1,305 +1,254 @@
+# IPTV 频道处理脚本的配置文件
+# 说明：此配置文件用于 tv.py 脚本，控制 IPTV 源抓取、分类、过滤和输出。
+# 格式：YAML，所有字段需遵循 YAML 语法，顶级字段顶格写，子字段缩进 2 个空格。
 
-
-# GitHub 搜索关键词
-search_keywords: # 请确保此行顶格写，无前导空格
-  # 通用英文关键词
-  - "iptv links" # 稍微放宽，依赖后续过滤
-
-  
 # 网络配置
 network:
-  check_timeout: 8                    # 检查单个频道链接可用性的超时时间（秒）
-  request_timeout: 10                 # HTTP 请求超时时间（秒）
-  channel_check_workers: 50           # 频道检查的最大线程数
-  url_fetch_workers: 10               # URL 内容抓取的最大线程数
-  requests_pool_size: 100             # Requests 连接池大小
-  requests_retry_total: 0             # Requests 重试总次数
-  requests_retry_backoff_factor: 1.5  # Requests 重试间隔回退因子
-  max_retries_per_url: 0              # 单个 URL 的最大重试次数
+  check_timeout: 20                  # 检查单个频道链接可用性的超时时间（秒，默认 20）
+  request_timeout: 10                # HTTP 请求超时时间（秒，默认 10）
+  channel_check_workers: 50          # 频道检查的最大线程数（默认 50，视机器性能调整）
+  url_fetch_workers: 10              # URL 内容抓取的最大线程数（默认 10）
+  requests_pool_size: 100            # Requests 连接池大小（默认 100）
+  requests_retry_total: 1            # Requests 重试总次数（默认 3）
+  requests_retry_backoff_factor: 1   # Requests 重试间隔回退因子（默认 1）
+  max_retries_per_url: 1            # 单个 URL 的最大重试次数（默认 3）
 
 # 日志配置
 logging:
-  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
-  log_file: "logs/iptv.log"          # 日志文件路径
+  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
+  log_file: "logs/iptv.log"         # 日志文件路径（默认 logs/iptv.log）
 
 # GitHub API 配置
-github: # 合并后的 GitHub 配置块，请确保此行顶格写，无前导空格
-  repo_owner: "qjlxg" # 您的GitHub用户名，请保持双引号
-  repo_name: "vt" # 您的仓库名称，请保持双引号
-  per_page: 100                      # 每页搜索结果数量
-  max_search_pages: 5                # 最大搜索页数
-  api_timeout: 60                    # GitHub API 请求超时时间（秒）
-  retry_wait: 60                     # 速率限制达到后的等待时间（秒）
-  rate_limit_threshold: 3            # 触发速率限制的剩余请求阈值
-  search_updated_within_days: 30     # 搜索最近更新的文件（天）
+github:
+  repo_owner: "qjlxg"               # GitHub 用户名
+  repo_name: "vt"                   # GitHub 仓库名称
+  per_page: 100                     # 每页搜索结果数量（默认 100）
+  max_search_pages: 10              # 最大搜索页数（默认 10）
+  api_timeout: 60                   # GitHub API 请求超时时间（秒，默认 60）
+  retry_wait: 30                    # 速率限制达到后的等待时间（秒，默认 30）
+  rate_limit_threshold: 3           # 触发速率限制的剩余请求阈值（默认 3）
+  search_updated_within_days: 30    # 搜索最近更新的文件（天，默认 30）
 
 # URL 状态管理
-url_state: # 请确保此行顶格写，无前导空格
-  expiration_days: 10                 # URL 状态过期时间（天）
-  cache_enabled: true                # 是否启用内容缓存
-  cache_dir: "cache"                 # 缓存目录
-  cache_ttl: 604800                  # 缓存有效期（秒，默认为7天）
-  
-url_filter:
-  # 是否忽略大小写（关键词和正则表达式匹配）
-  case_insensitive: true
-  # 允许的后缀，仅保留可能包含 IPTV 或视频流的格式
-  allowed_extensions:
-    - .m3u
-    - .m3u8
-    - .txt
-    - .w3u
-  # 排除的后缀，避免处理无关文件
-  excluded_extensions:
-    - .csv
-    - .py
-    - .js
-    - .ts
-    - .html
-    - .md
-    - .json
-    - .xml
-    - .log
-    - .ex
-    - .sql
-  # 必须包含的关键词，URL 路径或文件名需至少匹配一个（不区分大小写）
-  required_keywords:
-    - iptv
-    - tv
-    - live
-    - stream
-    - channel
-    - m3u
-    - m3u8
-    - playlist
-    - cctv
-    - zhibo
-    - dianshi
-    - broadcast
-    - tele
-    - television
-  # 排除的关键词，避免无关内容
-  excluded_keywords:
-    - log
-    - seo
-    - s3
-    - keywords
-    - report
-    - api
-    - data
-    - cache
-    - script
-    - news
-    - documentation
-    - vod
-    - changelog
-    - history
-    - test
-    - archive
-    - resources
-    - followers
-    - analytics
-    - dictionary
-    - vocab
-  # 正则表达式：只包含匹配以下模式的 URLs
-  include_patterns:
-    - ".*(iptv|tv|live|stream|channel|m3u|m3u8|playlist|cctv|zhibo|dianshi|broadcast|tele|television).*"
-    - ".*(streams/|iptv/|live/|tv/|channel/).*"
-  # 正则表达式：排除匹配以下模式的 URLs
-  exclude_patterns:
-    - ".*(log_|/log/|seo|s3|keywords|report|api|data|cache|script|news|documentation|vod|changelog|history|test|archive|resources|followers|analytics|dictionary|vocab).*"
-    - ".*(resources/|archive/|data/|logs/|scripts/|api/|jlt/|csv/|xml/|analytics/|report/|history/).*"
-  # 分类规则：根据关键词将 URLs 分组（解决分类未生效问题）
-  category_keywords:
-    regional:
-      - cn
-      - china
-      - tw
-      - taiwan
-      - hk
-      - japan
-      - jp
-      - korea
-      - kr
-      - us
-      - uk
-      - eu
-    content_type:
-      - sports
-      - movie
-      - news
-      - entertainment
-      - music
-    language:
-      - chinese
-      - english
-      - arabic
-      - korean
-      - japanese
-  # 过滤优先级：先应用白名单（allowed_extensions, required_keywords, include_patterns），再应用黑名单
-  filter_priority: ["whitelist", "blacklist"]
+url_state:
+  expiration_days: 7                # URL 状态过期时间（天，默认 7）
+  cache_enabled: true               # 是否启用内容缓存（默认 true）
+  cache_dir: "cache"                # 缓存目录（默认 cache）
+  cache_ttl: 604800                 # 缓存有效期（秒，默认 7 天）
 
 # 频道保留策略
-channel_retention: # 请确保此行顶格写，无前导空格
-  stream_fail_threshold: 5            # 流媒体失败次数阈值，超过后移除
-  stream_retention_hours: 168        # 流媒体保留时间（小时）
-  channel_fail_threshold: 0          # 频道失败次数阈值
-  url_fail_threshold: 2              # URL 失败次数阈值，已调整为2，避免过度清理
-  url_retention_hours: 72            # URL 保留时间（小时）
+channel_retention:
+  stream_fail_threshold: 5          # 流媒体失败次数阈值，超过后移除（默认 5）
+  stream_retention_hours: 168       # 流媒体保留时间（小时，默认 168）
+  channel_fail_threshold: 0         # 频道失败次数阈值（默认 0，禁用）
+  url_fail_threshold: 3             # URL 失败次数阈值（默认 3）
+  url_retention_hours: 72           # URL 保留时间（小时，默认 72）
 
 # 输出配置
-output: # 请确保此行顶格写，无前导空格
-  format: "txt"                      # 输出格式（目前支持 txt）
+output:
+  format: "txt"                     # 输出格式（目前支持 txt）
   paths:
-    channels_dir: "temp_channels"    # 临时频道文件目录
-    output_dir: "output"             # 最终输出目录
+    channels_dir: "temp_channels"   # 临时频道文件目录（默认 temp_channels）
+    output_dir: "output"            # 最终输出目录（默认 output）
     final_iptv_file: "output/iptv_list.txt" # 最终 IPTV 列表文件
-    uncategorized_channels_file: "output/uncategorized_iptv.txt" # 未分类频道文件
+    uncategorized_channels_file: "output/uncategorized_iptv.txt" # 未分类频道输出文件
     channel_cache_file: "config/channel_cache.json" # 频道缓存文件
     keyword_stats_file: "config/keyword_stats.json" # 关键词统计文件
 
 # 性能监控
-performance_monitor: # 请确保此行顶格写，无前导空格
-  enabled: true                      # 是否启用性能监控
-  log_interval: 100                  # 性能日志记录间隔（每处理 N 个频道/URL）
+performance_monitor:
+  enabled: true                     # 是否启用性能监控（默认 true）
+  log_interval: 100                # 性能日志记录间隔（每处理 N 个频道/URL，默认 100）
 
+# GitHub 搜索关键词
+search_keywords:
+  - "iptv playlist"                # 搜索 IPTV 播放列表
+  - "extension:m3u8 in:file"       # 搜索 M3U8 文件
+  - "extension:m3u in:file"        # 搜索 M3U 文件
+  - "iptv.m3u8 in:file"           # 搜索 IPTV M3U8 文件
+  - "iptv.m3u in:file"            # 搜索 IPTV M3U 文件
+  - "channels.m3u in:file"        # 搜索频道 M3U 文件
+  - "channels.m3u8 in:file"       # 搜索频道 M3U8 文件
+  - "live stream m3u8 in:file"    # 搜索直播 M3U8 文件
+  - "tv channels m3u in:file"     # 搜索电视 M3U 文件
+  - "live tv m3u in:file"         # 搜索直播电视 M3U 文件
 
 # 备用 URL 源
-backup_urls: # 请确保此行顶格写，无前导空格
+backup_urls:
   - "https://raw.githubusercontent.com/example/repo/main/iptv_urls.txt" # 示例备用 URL 1
   - "https://example.com/iptv_list.txt" # 示例备用 URL 2
 
-# 频道名称过滤词（小写匹配）
-name_filter_words: # 请确保此行顶格写，无前导空格
-  - "之声"
-  - "购物"                           # 过滤购物频道
-  - "理财"                           # 过滤理财频道
-  - "导视"                           # 过滤导视频道
-  - "指南"                           # 过滤指南频道
-  - "芒果"                           # 过滤芒果TV（视具体需求调整）
-  - "cgtn"                           # 保留 CGTN（官方媒体）
-  - "(480p)"                         # 过滤低分辨率标识
-  - "(360p)"                         # 过滤低分辨率标识
-  - "(240p)"                         # 过滤低分辨率标识
-  - "[not 24/7]"                     # 过滤非全天候直播
-  - "dj"                             # 过滤 DJ 相关频道
-  - "演唱会"                         # 过滤演唱会内容
-  - "舞曲"                           # 过滤舞曲内容
-  - "春晚"                           # 过滤春晚内容
-  - "格斗"                           # 过滤格斗内容
-  - "广播"                           # 过滤广播频道
-  - "博斯"                           # 过滤台湾博斯体育频道系列
-  - "神话"                           # 过滤神话相关频道
-  - "失效"                           # 过滤标有“失效”的频道
-  - "demo"                           # 过滤测试频道
-  - "backup"                         # 过滤备份频道
-  - "内测"                           # 过滤内测频道
-  - "测试频道"                       # 过滤测试频道
-  - "广告"                           # 过滤广告频道
-  - "已过期"                         # 过滤已过期频道
-  - "禁用"                           # 过滤禁用频道
-  - "无效"                           # 过滤无效频道
-  - "勿扰"                           # 过滤标有“勿扰”的频道
-  - "仅供参考"                       # 过滤仅供参考的频道
-  - "过期"                           # 过滤过期频道
-  - "不可用"                         # 过滤不可用频道
-  - "样本"                           # 过滤样本频道
-  - "temp"                           # 过滤临时频道
-  - "radio"                          # 过滤广播频道
-  - "fm"                             # 过滤 FM 广播
-  - "低清"                           # 过滤低清频道
-  - "标清"                           # 过滤标清频道
-  - "无效源"                         # 过滤无效源
-  - "错误"                           # 过滤错误频道
-  - "故障"                           # 过滤故障频道
-  - "未授权"                         # 过滤未授权频道
-  - "付费"                           # 过滤付费频道
-  - "vip"                            # 过滤 VIP 频道
-  - "订阅"                           # 过滤订阅频道
-  - "sem moderação"                  # 过滤葡萄牙语“无审查”频道
-  - "eixo do mal"                    # 过滤葡萄牙语“邪恶轴心”频道
+# 频道名称过滤词（小写匹配，过滤包含以下词的频道）
+name_filter_words:
+  - "之声"                         # 过滤广播类频道
+  - "购物"                         # 过滤购物频道
+  - "理财"                         # 过滤理财频道
+  - "导视"                         # 过滤导视频道
+  - "指南"                         # 过滤指南频道
+  - "芒果"                         # 过滤芒果TV（可根据需求调整）
+  - "(480p)"                       # 过滤低分辨率标识
+  - "(360p)"                       # 过滤低分辨率标识
+  - "(240p)"                       # 过滤低分辨率标识
+  - "[not 24/7]"                   # 过滤非全天候直播
+  - "dj"                           # 过滤 DJ 相关频道
+  - "演唱会"                       # 过滤演唱会内容
+  - "舞曲"                         # 过滤舞曲内容
+  - "春晚"                         # 过滤春晚内容
+  - "格斗"                         # 过滤格斗内容
+  - "广播"                         # 过滤广播频道
+  - "博斯"                         # 过滤台湾博斯体育频道
+  - "神话"                         # 过滤神话相关频道
+  - "失效"                         # 过滤标有“失效”的频道
+  - "demo"                         # 过滤测试频道
+  - "backup"                       # 过滤备份频道
+  - "内测"                         # 过滤内测频道
+  - "测试频道"                     # 过滤测试频道
+  - "广告"                         # 过滤广告频道
+  - "已过期"                       # 过滤已过期频道
+  - "禁用"                         # 过滤禁用频道
+  - "无效"                         # 过滤无效频道
+  - "勿扰"                         # 过滤标有“勿扰”的频道
+  - "仅供参考"                     # 过滤仅供参考的频道
+  - "过期"                         # 过滤过期频道
+  - "不可用"                       # 过滤不可用频道
+  - "样本"                         # 过滤样本频道
+  - "temp"                         # 过滤临时频道
+  - "radio"                        # 过滤广播频道
+  - "fm"                           # 过滤 FM 广播
+  - "低清"                         # 过滤低清频道
+  - "标清"                         # 过滤标清频道
+  - "无效源"                       # 过滤无效源
+  - "错误"                         # 过滤错误频道
+  - "故障"                         # 过滤故障频道
+  - "未授权"                       # 过滤未授权频道
+  - "付费"                         # 过滤付费频道
+  - "vip"                          # 过滤 VIP 频道
+  - "订阅"                         # 过滤订阅频道
+  - "预告片"                       # 过滤预告片频道
+  - "重播"                         # 过滤重播频道
+  - "试播"                         # 过滤试播频道
+  - "4g"                           # 过滤 4G 低速频道
+  - "低速"                         # 过滤低速频道
+  - "sem moderação"                # 过滤葡萄牙语“无审查”频道
+  - "eixo do mal"                  # 过滤葡萄牙语“邪恶轴心”频道
 
 # 频道名称替换规则（键: 待替换内容, 值: 替换后内容，小写匹配）
-channel_name_replacements: # 请确保此行顶格写，无前导空格
-  fhd: ""                            # 移除 FHD 标识
-  hd: ""                             # 移除 HD 标识
-  sd: ""                             # 移除 SD 标识
-  频道: ""                           # 移除“频道”字样
-  高清: ""                           # 移除“高清”字样
-  超清: ""                           # 移除“超清”字样
-  标清: ""                           # 移除“标清”字样
-  低清: ""                           # 移除“低清”字样
-  "4k": ""                           # 移除 4K 标识
-  "4kr": ""                          # 移除 4KR 标识
-  "8k": ""                           # 移除 8K 标识
-  "hevc": "H.265"                    # 替换 HEVC 为 H.265
-  "h265": "H.265"                    # 替换 H265 为 H.265
-  "av1": "AV1"                       # 替换 AV1
-  "hdr10+": "HDR"                    # 替换 HDR10+ 为 HDR
-  "hdr": "HDR"                       # 保留 HDR
-  "(直播)": ""                       # 移除“直播”标识
-  "测试": ""                         # 移除“测试”标识
-  "失效": ""                         # 移除“失效”标识
-  直播: ""                           # 移除“直播”字样
-  省台: ""                           # 移除“省台”字样
-  市台: ""                           # 移除“市台”字样
-  中央: "CCTV"                       # 替换“中央”为 CCTV
-  央视: "CCTV"                       # 替换“央视”为 CCTV
-  cctv1综合: "CCTV1"                # 替换 CCTV1 综合
-  cctv2财经: "CCTV2"                # 替换 CCTV2 财经
-  cctv3综艺: "CCTV3"                # 替换 CCTV3 综艺
-  cctv4中文国际: "CCTV4"            # 替换 CCTV4 中文国际
-  cctv4亚洲: "CCTV4"                # 替换 CCTV4 亚洲
-  cctv4欧洲: "CCTV4"                # 替换 CCTV4 欧洲
-  cctv4美洲: "CCTV4"                # 替换 CCTV4 美洲
-  cctv5体育: "CCTV5"                # 替换 CCTV5 体育
-  "cctv5+体育赛事": "CCTV5+"        # 替换 CCTV5+ 体育赛事
-  cctv6电影: "CCTV6"                # 替换 CCTV6 电影
-  cctv7国防军事: "CCTV7"            # 替换 CCTV7 国防军事
-  cctv7军事农业: "CCTV7"            # 替换 CCTV7 军事农业
-  cctv8电视剧: "CCTV8"              # 替换 CCTV8 电视剧
-  cctv9纪录: "CCTV9"                # 替换 CCTV9 纪录
-  cctv10科教: "CCTV10"              # 替换 CCTV10 科教
-  cctv11戏曲: "CCTV11"              # 替换 CCTV11 戏曲
-  cctv12社会与法: "CCTV12"          # 替换 CCTV12 社会与法
-  cctv13新闻: "CCTV13"              # 替换 CCTV13 新闻
-  cctv14少儿: "CCTV14"              # 替换 CCTV14 少儿
-  cctv15音乐: "CCTV15"              # 替换 CCTV15 音乐
-  cctv16奥林匹克: "CCTV16"          # 替换 CCTV16 奥林匹克
-  cctv17农业农村: "CCTV17"          # 替换 CCTV17 农业农村
-  "cctv-1": "CCTV1"                 # 替换 CCTV-1
-  "cctv-5": "CCTV5"                 # 替换 CCTV-5
-  湖南卫视高清: "湖南卫视"          # 替换湖南卫视高清
-  北京卫视高清: "北京卫视"          # 替换北京卫视高清
-  浙江卫视高清: "浙江卫视"          # 替换浙江卫视高清
-  江苏卫视高清: "江苏卫视"          # 替换江苏卫视高清
-  山东卫视高清: "山东卫视"          # 替换山东卫视高清
-  "-": " "                           # 替换连字符为空格
-  备用: ""                           # 移除“备用”字样
-  backup: ""                         # 移除“backup”字样
-  临时: ""                           # 移除“临时”字样
-  temp: ""                           # 移除“temp”字样
+channel_name_replacements:
+  fhd: ""                          # 移除 FHD 标识
+  hd: ""                           # 移除 HD 标识
+  sd: ""                           # 移除 SD 标识
+  频道: ""                         # 移除“频道”字样
+  高清: ""                         # 移除“高清”字样
+  超清: ""                         # 移除“超清”字样
+  标清: ""                         # 移除“标清”字样
+  低清: ""                         # 移除“低清”字样
+  "4k": ""                         # 移除 4K 标识
+  "4kr": ""                        # 移除 4KR 标识
+  "8k": ""                         # 移除 8K 标识
+  "hevc": "H.265"                  # 替换 HEVC 为 H.265
+  "h265": "H.265"                  # 替换 H265 为 H.265
+  "av1": "AV1"                     # 替换 AV1
+  "hdr10+": "HDR"                  # 替换 HDR10+ 为 HDR
+  "hdr": "HDR"                     # 保留 HDR
+  "(直播)": ""                     # 移除“直播”标识
+  "测试": ""                       # 移除“测试”标识
+  "失效": ""                       # 移除“失效”标识
+  直播: ""                         # 移除“直播”字样
+  省台: ""                         # 移除“省台”字样
+  市台: ""                         # 移除“市台”字样
+  备用: ""                         # 移除“备用”字样
+  backup: ""                       # 移除“backup”字样
+  临时: ""                         # 移除“临时”字样
+  temp: ""                         # 移除“temp”字样
+  测试源: ""                       # 移除“测试源”字样
+  备用源: ""                       # 移除“备用源”字样
+  中央: "CCTV"                     # 替换“中央”为 CCTV
+  央视: "CCTV"                     # 替换“央视”为 CCTV
+  中央电视台: "CCTV"               # 替换“中央电视台”为 CCTV
+  cctv1综合: "CCTV1"              # 替换 CCTV1 综合
+  cctv2财经: "CCTV2"              # 替换 CCTV2 财经
+  cctv3综艺: "CCTV3"              # 替换 CCTV3 综艺
+  cctv4中文国际: "CCTV4"          # 替换 CCTV4 中文国际
+  cctv4亚洲: "CCTV4"              # 替换 CCTV4 亚洲
+  cctv4欧洲: "CCTV4"              # 替换 CCTV4 欧洲
+  cctv4美洲: "CCTV4"              # 替换 CCTV4 美洲
+  cctv5体育: "CCTV5"              # 替换 CCTV5 体育
+  "cctv5+体育赛事": "CCTV5+"      # 替换 CCTV5+ 体育赛事
+  cctv6电影: "CCTV6"              # 替换 CCTV6 电影
+  cctv7国防军事: "CCTV7"          # 替换 CCTV7 国防军事
+  cctv7军事农业: "CCTV7"          # 替换 CCTV7 军事农业
+  cctv8电视剧: "CCTV8"            # 替换 CCTV8 电视剧
+  cctv9纪录: "CCTV9"              # 替换 CCTV9 纪录
+  cctv10科教: "CCTV10"            # 替换 CCTV10 科教
+  cctv11戏曲: "CCTV11"            # 替换 CCTV11 戏曲
+  cctv12社会与法: "CCTV12"        # 替换 CCTV12 社会与法
+  cctv13新闻: "CCTV13"            # 替换 CCTV13 新闻
+  cctv14少儿: "CCTV14"            # 替换 CCTV14 少儿
+  cctv15音乐: "CCTV15"            # 替换 CCTV15 音乐
+  cctv16奥林匹克: "CCTV16"        # 替换 CCTV16 奥林匹克
+  cctv17农业农村: "CCTV17"        # 替换 CCTV17 农业农村
+  "cctv-1": "CCTV1"               # 替换 CCTV-1
+  "cctv-2": "CCTV2"               # 替换 CCTV-2
+  "cctv-5": "CCTV5"               # 替换 CCTV-5
+  "cctv-5+": "CCTV5+"             # 替换 CCTV-5+
+  湖南卫视高清: "湖南卫视"        # 替换湖南卫视高清
+  北京卫视高清: "北京卫视"        # 替换北京卫视高清
+  浙江卫视高清: "浙江卫视"        # 替换浙江卫视高清
+  江苏卫视高清: "江苏卫视"        # 替换江苏卫视高清
+  山东卫视高清: "山东卫视"        # 替换山东卫视高清
+  安徽卫视高清: "安徽卫视"        # 替换安徽卫视高清
+  湖北卫视高清: "湖北卫视"        # 替换湖北卫视高清
+  河南卫视高清: "河南卫视"        # 替换河南卫视高清
+  河北卫视高清: "河北卫视"        # 替换河北卫视高清
+  辽宁卫视高清: "辽宁卫视"        # 替换辽宁卫视高清
+  吉林卫视高清: "吉林卫视"        # 替换吉林卫视高清
+  黑龙江卫视高清: "黑龙江卫视"    # 替换黑龙江卫视高清
+  四川卫视高清: "四川卫视"        # 替换四川卫视高清
+  重庆卫视高清: "重庆卫视"        # 替换重庆卫视高清
+  云南卫视高清: "云南卫视"        # 替换云南卫视高清
+  贵州卫视高清: "贵州卫视"        # 替换贵州卫视高清
+  陕西卫视高清: "陕西卫视"        # 替换陕西卫视高清
+  甘肃卫视高清: "甘肃卫视"        # 替换甘肃卫视高清
+  青海卫视高清: "青海卫视"        # 替换青海卫视高清
+  宁夏卫视高清: "宁夏卫视"        # 替换宁夏卫视高清
+  新疆卫视高清: "新疆卫视"        # 替换新疆卫视高清
+  福建卫视高清: "福建卫视"        # 替换福建卫视高清
+  江西卫视高清: "江西卫视"        # 替换江西卫视高清
+  广东卫视高清: "广东卫视"        # 替换广东卫视高清
+  广西卫视高清: "广西卫视"        # 替换广西卫视高清
+  海南卫视高清: "海南卫视"        # 替换海南卫视高清
+  天津卫视高清: "天津卫视"        # 替换天津卫视高清
+  上海卫视高清: "东方卫视"        # 替换上海卫视高清
+  西藏卫视高清: "西藏卫视"        # 替换西藏卫视高清
+  内蒙古卫视高清: "内蒙古卫视"    # 替换内蒙古卫视高清
+  兵团卫视高清: "兵团卫视"        # 替换兵团卫视高清
+  "-": " "                         # 替换连字符为空格
 
 # 分类配置
-ordered_categories: # 请确保此行顶格写，无前导空格
+ordered_categories:
   - CCTV频道
+  - 卫视频道
+  - 地方频道
   - 港台频道
   - 国际频道
   - 新闻频道
   - 体育频道
+  - 电影频道
+  - 综艺频道
   - 纪录片频道
   - 少儿频道
   - 教育频道
   - 财经频道
   - 音乐频道
   - 生活频道
-  - 卫视频道
-  - 地方频道
+  - 戏曲频道
 
-category_keywords: # 请确保此行顶格写，无前导空格
+category_keywords:
   CCTV频道:
     - CCTV
     - 央视
+    - 中央
+    - 中央电视台
   卫视频道:
     - 卫视
     - 凤凰
@@ -314,6 +263,7 @@ category_keywords: # 请确保此行顶格写，无前导空格
     - 河南
     - 河北
     - 山东
+    - 山西
     - 辽宁
     - 吉林
     - 黑龙江
@@ -388,6 +338,15 @@ category_keywords: # 请确保此行顶格写，无前导空格
     - 乌海
     - 东莞
     - 上虞
+    - 苏州
+    - 宁波
+    - 温州
+    - 杭州
+    - 南京
+    - 成都
+    - 广州
+    - 深圳
+    - 武汉
   港台频道:
     - 台湾
     - 香港
@@ -432,6 +391,17 @@ category_keywords: # 请确保此行顶格写，无前导空格
     - F1
     - NBA
     - CCTV5
+  电影频道:
+    - 电影
+    - 影视
+    - Movie
+    - Cinema
+    - Film
+  综艺频道:
+    - 综艺
+    - 娱乐
+    - Variety
+    - Show
   纪录片频道:
     - 纪录
     - Documentary
@@ -477,15 +447,21 @@ category_keywords: # 请确保此行顶格写，无前导空格
     - 幸福
     - Variety
     - Lifestyle
+  戏曲频道:
+    - 戏曲
+    - Opera
+    - 京剧
+    - 豫剧
+    - 黄梅戏
 
-category_aliases: # 请确保此行顶格写，无前导空格
+category_aliases:
   新闻综合: 新闻频道
   经济生活: 财经频道
   钱江都市: 卫视频道
   民生休闲: 生活频道
   科教影视: 教育频道
   娱乐: 生活频道
-  综艺: 生活频道
+  综艺: 综艺频道
   社会生活: 生活频道
   都市生活: 生活频道
   体育: 体育频道
@@ -493,12 +469,14 @@ category_aliases: # 请确保此行顶格写，无前导空格
   教育: 教育频道
   财经: 财经频道
   音乐: 音乐频道
+  影视: 电影频道
+  娱乐综艺: 综艺频道
   北京频道: 地方频道
   港台频道: 港台频道
   国际频道: 国际频道
 
 # URL 预筛选配置
-url_pre_screening: # 请确保此行顶格写，无前导空格
+url_pre_screening:
   allowed_protocols:
     - "http"
     - "https"
@@ -521,6 +499,8 @@ url_pre_screening: # 请确保此行顶格写，无前导空格
     - ".f4m"
     - ".mpd"
     - ".ism"
+    - ".m4s"
+    - ".m4a"
   invalid_url_patterns:
     - "example\\.com"
     - "test\\.com"
@@ -550,12 +530,14 @@ url_pre_screening: # 请确保此行顶格写，无前导空格
     - "github\\.com/(?!.*raw\\.githubusercontent\\.com)"
     - "gist\\.github\\.com/(?!.*raw\\.githubusercontent\\.com)"
     - "gitee\\.com/(?!.*raw)"
-    - "youtube\\.com/(watch|embed|live)|youtu\\.be/"
+    - "youtube\\.com/(watch|embed|live)"
+    - "youtu\\.be/"
     - "vimeo\\.com"
     - "dailymotion\\.com"
     - "youku\\.com"
     - "iqiyi\\.com"
     - "bilibili\\.com/(video|bangumi|live)"
+    - "live\\.bilibili\\.com"
     - "douyu\\.com"
     - "huya\\.com"
     - "twitch\\.tv"
@@ -636,3 +618,5 @@ url_pre_screening: # 请确保此行顶格写，无前导空格
     - "wikipedia\\.org"
     - "apple\\.com"
     - "microsoft\\.com"
+    - "test\\.m3u8"
+    - "demo\\.m3u8"
