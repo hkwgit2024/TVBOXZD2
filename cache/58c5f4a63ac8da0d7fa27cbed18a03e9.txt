@@ -1,0 +1,109 @@
+#EXTM3U
+
+#-StripChat favorites 
+#-poner logo: https://www.iptvsaga.com/create-your-m3u-playlist/ 
+#-url: https://pastebin.com/AasRgfWH 
+#-url: https://github.com/CuleoX/mecool/blob/main/tokens-xh 
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/NikaLegran.jpg", NikaLegran
+https://b-hls-18.strpst.com/hls/32891270/32891270.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Playwithus212.jpg", Playwithus212
+https://b-hls-10.strpst.com/hls/49815240/49815240.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/previews/0/b/5/0b56203677e7dc6392deb42cdf7a51ac-full", Canada78
+https://b-hls-21.strpst.com/hls/56203694/56203694.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/8/3/6/8362f696cf1b223030d95fe9f34adf15-full", kylie_01
+https://b-hls-01.strpst.com/hls/57517386/57517386.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/5/7/3/573843df9f830b3dcb126283a6863809-full", Allie-Smith
+https://b-hls-16.strpst.com/hls/56888613/56888613.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/9/b/1/9b116efedc6de82fbe4a2cc02df88cb3-full", sofi_1
+https://b-hls-16.strpst.com/hls/48012544/48012544.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/previews/a/5/c/a5c75b09842475ddf2412f14928e1c63-full", LornaDyer
+https://b-hls-25.strpst.com/hls/30657718/30657718.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/_melodywayne.jpg", _melodywayne
+https://b-hls-18.strpst.com/hls/44458917/44458917.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/GanseloMix.jpg", GanseloMix
+https://b-hls-17.strpst.com/hls/31275237/31275237.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/8/f/4/8f4057204233e0d6a39b995b10b76f4f-full", _Zoe_Brown_
+https://b-hls-10.strpst.com/hls/46211611/46211611.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/pinkie_princess.jpg", pinkie_princess
+https://b-hls-24.strpst.com/hls/7536780/7536780.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/9/0/3/903769161ff9c9e0317dbfe09be0697f-full", Vanessa_Samir
+https://b-hls-09.strpst.com/hls/45465845/45465845.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/naughty_girls2021.jpg", naughty_girls2021
+https://b-hls-16.strpst.com/hls/52004356/52004356.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Emma_Sweet.jpg", Emma_Sweet
+https://b-hls-24.strpst.com/hls/16006339/16006339.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/previews/8/4/7/84717df0f338179805770ca785a63711-full", daphne_
+https://b-hls-04.strpst.com/hls/34713781/34713781.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/9/c/2/9c2087d1ad590398d6d25e4b82258f1c-full", nathy_inocent
+https://b-hls-04.strpst.com/hls/62242357/62242357.m3u8?_s=vp-1.3.3
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/previews/2/6/1/2618512b229b8322389229be5eee2655-full", elisejays
+https://b-hls-05.strpst.com/hls/11106527/11106527.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Sucker__Punch.jpg", Sucker__Punch
+https://b-hls-19.strpst.com/hls/63671444/63671444.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/previews/f/7/0/f70e09dcf0f48d204057e8856592542e-full", janedaniells
+https://b-hls-10.strpst.com/hls/40730393/40730393.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Antonella-Mait.jpg", Antonella-Mait
+https://b-hls-20.strpst.com/hls/53206330/53206330.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/JadeeHall.jpg", JadeeHall
+https://b-hls-04.strpst.com/hls/65043504/65043504.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/iamsavagegirl7.jpg", iamsavagegirl7
+https://b-hls-16.strpst.com/hls/40324285/40324285.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Cherylloving_.jpg", Cherylloving_ [SD]
+https://b-hls-05.strpst.com/hls/48826532/48826532.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/miapinky_.jpg", miapinky_ [SD]
+https://b-hls-17.strpst.com/hls/66534338/66534338.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/avatars/2/a/c/2ac1af1e8fcb6e50f03f6eb68fe2a3db-full", susane_babyli [SD]
+https://b-hls-18.strpst.com/hls/64011369/64011369.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Kiara_Kitty.jpg", Kiara_Kitty
+https://b-hls-16.strpst.com/hls/57168429/57168429.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/seon_mi_.jpg", seon_mi_
+https://b-hls-16.strpst.com/hls/56672629/56672629.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/charmeddoll.jpg", charmeddoll
+https://b-hls-23.strpst.com/hls/54151543/54151543.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Sweetyangelll.jpg", Sweetyangelll
+https://b-hls-23.strpst.com/hls/35471183/35471183.m3u8
+
+#EXTINF:-1 tvg-logo="https://cdn.strpst.com/cdn/panelImages/d/2/3/d2380a903e211a38ce4edaa89d24dcf9-thumb", Ellza_
+https://b-hls-05.strpst.com/hls/42265295/42265295.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/miadowell.jpg", miadowell
+https://b-hls-24.strpst.com/hls/56808528/56808528.m3u8
+
+#EXTINF:-1 tvg-logo="https://github.com/CuleoX/mecool/raw/main/.previas/Marianagarcia2.jpg", Marianagarcia2
+https://b-hls-01.strpst.com/hls/70250253/70250253.m3u8
+
+#-ejemplo logo:
+#-extinf:-1 tvg-logo="LOGO-URL", nombre_live
+#-url_live.m3u8
+
+#-final de archivo
+#- - -
