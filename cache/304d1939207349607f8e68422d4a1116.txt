@@ -1,0 +1,229 @@
+央视频道,#genre#
+CCTV1,http://117.72.194.224:656/zb.php?id=cctv1
+CCTV2,http://117.72.194.224:656/zb.php?id=cctv2
+CCTV3,http://117.72.194.224:656/zb.php?id=cctv3
+CCTV4,http://117.72.194.224:656/zb.php?id=cctv4
+CCTV6,http://117.72.194.224:656/zb.php?id=cctv6
+CCTV7,http://117.72.194.224:656/zb.php?id=cctv7
+CCTV8,http://117.72.194.224:656/zb.php?id=cctv8
+CCTV9,http://117.72.194.224:656/zb.php?id=cctv9
+CCTV10,http://117.72.194.224:656/zb.php?id=cctv10
+CCTV11,http://117.72.194.224:656/zb.php?id=cctv11
+CCTV12,http://117.72.194.224:656/zb.php?id=cctv12
+CCTV13,http://117.72.194.224:656/zb.php?id=cctv13
+CCTV14,http://117.72.194.224:656/zb.php?id=cctv14
+CCTV15,http://117.72.194.224:656/zb.php?id=cctv15
+CCTV17,http://117.72.194.224:656/zb.php?id=cctv17
+
+CCTV1,https://smart.pendy.dpdns.org/Smart.php?id=cctv1
+CCTV2,https://smart.pendy.dpdns.org/Smart.php?id=cctv2
+CCTV3,https://smart.pendy.dpdns.org/Smart.php?id=cctv3
+CCTV4,https://smart.pendy.dpdns.org/Smart.php?id=cctv4
+CCTV5,https://smart.pendy.dpdns.org/Smart.php?id=cctv5
+CCTV5+,https://smart.pendy.dpdns.org/Smart.php?id=cctv5plus
+CCTV6,https://smart.pendy.dpdns.org/Smart.php?id=cctv6
+CCTV7,https://smart.pendy.dpdns.org/Smart.php?id=cctv7
+CCTV8,https://smart.pendy.dpdns.org/Smart.php?id=cctv8hd
+CCTV9,https://smart.pendy.dpdns.org/Smart.php?id=cctv9hd
+CCTV10,https://smart.pendy.dpdns.org/Smart.php?id=cctv10hd
+CCTV11,https://smart.pendy.dpdns.org/Smart.php?id=cctv11
+CCTV12,https://smart.pendy.dpdns.org/Smart.php?id=cctv12
+CCTV13,https://smart.pendy.dpdns.org/Smart.php?id=cctv13
+CCTV14,https://smart.pendy.dpdns.org/Smart.php?id=cctv14
+CCTV15,https://smart.pendy.dpdns.org/Smart.php?id=cctv15
+
+CCTV1,http://39.164.180.36:19901/tsfile/live/0001_2.m3u8?key=txiptv&playlive=0&authid=0
+CCTV2,http://39.164.180.36:19901/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV3,http://39.164.180.36:19901/tsfile/live/0001_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV4,http://39.164.180.36:19901/tsfile/live/0004_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV5,http://39.164.180.36:19901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV5+,http://39.164.180.36:19901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV6,http://39.164.180.36:19901/tsfile/live/0006_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV7,http://39.164.180.36:19901/tsfile/live/0007_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV8,http://39.164.180.36:19901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV9,http://39.164.180.36:19901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV10,http://39.164.180.36:19901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV11,http://39.164.180.36:19901/tsfile/live/0011_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV12,http://39.164.180.36:19901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV13,http://39.164.180.36:19901/tsfile/live/0013_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV14,http://39.164.180.36:19901/tsfile/live/0014_1.m3u8?key=txiptv&playlive=0&authid=0
+
+CCTV1,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV1
+CCTV2,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV2
+CCTV3,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV3
+CCTV4,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV4
+CCTV5,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV5
+CCTV6,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV6
+CCTV7,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV7
+CCTV8,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV8
+CCTV9,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV9
+CCTV10,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV10
+CCTV11,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV11
+CCTV12,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV12
+CCTV13,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV13
+CCTV14,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV14
+CCTV15,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV15
+CCTV16,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV16
+CCTV17,http://qwt.zhibotv.top:2016/全网通.php?id=CCTV17
+
+CCTV1,http://39.137.75.234/000000001000/1000000001000018602/index.m3u8?channel-id=ystenlive&Contentid=1000000001000018602&livemode=1&stbId=no
+CCTV4,http://39.137.75.234/000000001000/1000000005000265004/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265004&livemode=1&stbId=no
+CCTV5+,http://39.137.75.234/000000001000/reallive-cctv5plus/index.m3u8?channel-id=ystenlive&Contentid=reallive-cctv5plus&livemode=1&stbId=no
+CCTV7,http://39.137.75.234/000000001000/1000000005000265007/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265007&livemode=1&stbId=no
+CCTV9,http://39.137.75.234/000000001000/1000000005000265009/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265009&livemode=1&stbId=no
+CCTV12,http://39.137.75.234/000000001000/1000000005000265012/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265012&livemode=1&stbId=no
+CCTV14,http://39.137.75.234/000000001000/1000000001000021349/index.m3u8?channel-id=ystenlive&Contentid=1000000001000021349&livemode=1&stbId=no
+CCTV15,http://39.137.75.234/000000001000/1000000005000265014/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265014&livemode=1&stbId=no
+CCTV17,http://39.137.75.234/000000001000/1000000005000056836/index.m3u8?channel-id=ystenlive&Contentid=1000000005000056836&livemode=1&stbId=no
+
+卫视频道,#genre#
+北京卫视,http://qwt.zhibotv.top:2016/全网通.php?id=北京卫视
+东方卫视,http://qwt.zhibotv.top:2016/全网通.php?id=东方卫视
+浙江卫视,http://qwt.zhibotv.top:2016/全网通.php?id=浙江卫视
+江苏卫视,http://qwt.zhibotv.top:2016/全网通.php?id=江苏卫视
+湖南卫视,http://qwt.zhibotv.top:2016/全网通.php?id=湖南卫视
+广东卫视,http://qwt.zhibotv.top:2016/全网通.php?id=广东卫视
+深圳卫视,http://qwt.zhibotv.top:2016/全网通.php?id=深圳卫视
+天津卫视,http://qwt.zhibotv.top:2016/全网通.php?id=天津卫视
+安徽卫视,http://qwt.zhibotv.top:2016/全网通.php?id=安徽卫视
+山东卫视,http://qwt.zhibotv.top:2016/全网通.php?id=山东卫视
+辽宁卫视,http://qwt.zhibotv.top:2016/全网通.php?id=辽宁卫视
+河北卫视,http://qwt.zhibotv.top:2016/全网通.php?id=河北卫视
+河南卫视,http://qwt.zhibotv.top:2016/全网通.php?id=河南卫视
+江西卫视,http://qwt.zhibotv.top:2016/全网通.php?id=江西卫视
+四川卫视,http://qwt.zhibotv.top:2016/全网通.php?id=四川卫视
+重庆卫视,http://qwt.zhibotv.top:2016/全网通.php?id=重庆卫视
+贵州卫视,http://qwt.zhibotv.top:2016/全网通.php?id=贵州卫视
+湖北卫视,http://qwt.zhibotv.top:2016/全网通.php?id=湖北卫视
+广西卫视,http://qwt.zhibotv.top:2016/全网通.php?id=广西卫视
+东南卫视,http://qwt.zhibotv.top:2016/全网通.php?id=东南卫视
+海南卫视,http://qwt.zhibotv.top:2016/全网通.php?id=海南卫视
+青海卫视,http://qwt.zhibotv.top:2016/全网通.php?id=青海卫视
+吉林卫视,http://qwt.zhibotv.top:2016/全网通.php?id=吉林卫视
+黑龙江视,http://qwt.zhibotv.top:2016/全网通.php?id=黑龙江卫视
+
+
+
+湖南卫视,http://39.137.75.234/000000001000/1000000001000009115/index.m3u8?channel-id=ystenlive&Contentid=1000000001000009115&livemode=1&stbId=no
+安徽卫视,http://39.137.75.234/000000001000/1000000001000020780/index.m3u8?channel-id=ystenlive&Contentid=1000000001000020780&livemode=1&stbId=no
+甘肃卫视,http://39.137.75.234/000000001000/1000000002000017827/index.m3u8?channel-id=ystenlive&Contentid=1000000002000017827&livemode=1&stbId=no
+贵州卫视,http://39.137.75.234/000000001000/1000000002000003169/index.m3u8?channel-id=ystenlive&Contentid=1000000002000003169&livemode=1&stbId=no
+河北卫视,http://39.137.75.234/000000001000/1000000002000017118/index.m3u8?channel-id=ystenlive&Contentid=1000000002000017118&livemode=1&stbId=no
+内蒙古卫视,http://39.137.75.234/000000001000/1000000002000014080/index.m3u8?channel-id=ystenlive&Contentid=1000000002000014080&livemode=1&stbId=no
+山西卫视,http://39.137.75.234/000000001000/1000000002000021220/index.m3u8?channel-id=ystenlive&Contentid=1000000002000021220&livemode=1&stbId=no
+深圳卫视,http://39.137.75.234/000000001000/1000000005000265028/index.m3u8?channel-id=ystenlive&Contentid=1000000005000265028&livemode=1&stbId=no
+四川卫视,http://39.137.75.234/000000001000/1000000002000016825/index.m3u8?channel-id=ystenlive&Contentid=1000000002000016825&livemode=1&stbId=no
+厦门卫视,http://39.137.75.234/000000001000/1000000005000266006/index.m3u8?channel-id=ystenlive&Contentid=1000000005000266006&livemode=1&stbId=no
+重庆卫视,http://39.137.75.234/000000001000/1000000002000018937/index.m3u8?channel-id=ystenlive&Contentid=1000000002000018937&livemode=1&stbId=no
+宁夏卫视,http://39.137.75.234/000000001000/1000000002000031451/index.m3u8?channel-id=ystenlive&Contentid=1000000002000031451&livemode=1&stbId=no
+青海卫视,http://39.137.75.234/000000001000/1000000002000013359/index.m3u8?channel-id=ystenlive&Contentid=1000000002000013359&livemode=1&stbId=no
+
+💓港澳台,#genre#
+凤凰资讯,https://s1.m16tv.cfd/aktv/CH-4/AKTV.m3u8
+凤凰资讯,https://s2.m16tv.cfd/aktv/CH-4/AKTV.m3u8
+凤凰资讯,http://203.205.191.53/qctv.fengshows.cn/live/0701pin72.m3u8
+凤凰资讯,http://120.198.95.220:9901/tsfile/live/1037_1.m3u8?key=txiptv
+凤凰中文,https://s1.m16tv.cfd/aktv/CH-3/AKTV.m3u8
+凤凰中文,http://203.205.191.53/qctv.fengshows.cn/live/0701pcc72.m3u8
+凤凰中文,http://120.198.95.220:9901/tsfile/live/1036_1.m3u8?key=txiptv
+凤凰中文,http://183.237.95.108:9901/tsfile/live/1103_1.m3u8?key=txiptv&playlive=0&authid=0
+凤凰中文,http://qjrhc.jydjd.top:2911/udp/224.1.100.3:11111
+凤凰香港,https://s1.m16tv.cfd/aktv/CH-5/AKTV.m3u8
+凤凰香港,https://s2.m16tv.cfd/aktv/CH-5/AKTV.m3u8
+凤凰香港,https://cdn6.163189.xyz/live/fhhk/stream.m3u8
+凤凰香港,http://203.205.191.53/qctv.fengshows.cn/live/0701phk72.m3u8
+凤凰香港,http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8?wsSession=3c732f93c14e1bc0c07641df-156388849014752&wsIPSercert=8de23d0849e78e3b16ec92a2092354
+凤凰中文,https://s1.m16tv.cfd/aktv/CH-3/AKTV.m3u8
+凤凰卫视,http://119.32.12.17:2901/udp/224.1.100.3:11111
+凤凰卫视,http://120.198.101.106:9901/tsfile/live/1062_1.m3u8?key=txiptv
+TVBS新闻,https://s1.m16tv.cfd/tvbs/tvbs/AKTV.m3u8
+TVBS新闻,https://s2.m16tv.cfd/tvbs/tvbs/AKTV.m3u8
+8TV,https://s1.m16tv.cfd/astro/8tv/AKTV.m3u8
+Japan News 24H LIVE,https://s1.m16tv.cfd/aktvjp/japannews24hlive/AKTV.m3u8
+TVB Plus,https://s1.m16tv.cfd/aktv/tvbplus/AKTV.m3u8
+TVB Plus,https://s2.m16tv.cfd/aktv/tvbplus/AKTV.m3u8
+TVB 星河,https://s1.m16tv.cfd/taiwan2/tvb/AKTV.m3u8
+TVB 星河,https://s2.m16tv.cfd/taiwan2/tvb/AKTV.m3u8
+TVBS,https://s1.m16tv.cfd/taiwan/tvbs/AKTV.m3u8
+TVBS,https://s2.m16tv.cfd/taiwan/tvbs/AKTV.m3u8
+TVBS亚洲,http://38.64.72.148/hls/modn/list/4005/chunklist1.m3u8
+TVB明珠,http://qjrhc.jydjd.top:2911/udp/224.1.100.123:11111
+TVB明珠,http://qjrhc.jydjd.top:2911/udp/224.1.100.124:11111
+TVB明珠,http://qjrhc.jydjd.top:2911/udp/224.1.100.2:11111
+澳亚卫视,http://119.32.12.17:2901/udp/224.1.100.12:11111
+澳亚卫视,http://qjrhc.jydjd.top:2911/udp/224.1.100.12:11111
+八大第一,http://61.221.215.25:8800/hls/55/index.m3u8
+八大戏剧,http://61.221.215.25:8800/hls/39/index.m3u8
+八大综合,http://61.221.215.25:8800/hls/56/index.m3u8
+朝鲜恩情台,https://s1.m16tv.cfd/aktv3/CH-0/AKTV.m3u8
+朝鲜恩情台,https://s2.m16tv.cfd/aktv3/CH-0/AKTV.m3u8
+东森超视,http://38.64.72.148/hls/modn/list/2013/chunklist0.m3u8
+东森超视,http://38.64.72.148/hls/modn/list/2013/chunklist1.m3u8
+东森电影,https://s1.m16tv.cfd/aktv2/CH-1/AKTV.m3u8
+东森电影,https://s2.m16tv.cfd/aktv2/CH-1/AKTV.m3u8
+东森新闻,https://s1.m16tv.cfd/zhongtian/CH-1/AKTV.m3u8
+东森新闻,https://s2.m16tv.cfd/zhongtian/CH-1/AKTV.m3u8
+东森洋片,https://s1.m16tv.cfd/aktv2/CH-2/AKTV.m3u8
+东森洋片,https://s2.m16tv.cfd/aktv2/CH-2/AKTV.m3u8
+番薯台,http://61.216.67.119:1935/TWHG/E1/chunklist_w705811302.m3u8
+番薯台,http://61.216.67.119:1935/TWHG/E1/chunklistw70581102.m3u8
+非凡新闻,rtmp://f13h.mine.nu/sat/tv581
+翡翠剧集台(北美),https://s1.m16tv.cfd/aktv/CH-18/AKTV.m3u8
+翡翠剧集台(北美),https://s2.m16tv.cfd/aktv/CH-18/AKTV.m3u8
+翡翠台,http://120.198.95.220:9901/tsfile/live/1004_1.m3u8?key=txiptv
+翡翠台,http://qjrhc.jydjd.top:2911/udp/224.1.100.121:11111
+翡翠台,http://qjrhc.jydjd.top:2911/udp/224.1.100.122:11111
+翡翠台,https://s1.m16tv.cfd/aktv/CH-0/AKTV.m3u8
+翡翠台,https://s2.m16tv.cfd/aktv/CH-0/AKTV.m3u8
+翡翠综合台(北美),https://s1.m16tv.cfd/aktv/CH-17/AKTV.m3u8
+翡翠综合台(北美),https://s2.m16tv.cfd/aktv/CH-17/AKTV.m3u8
+好莱坞电影台,https://s1.m16tv.cfd/aktv2/CH-4/AKTV.m3u8
+好莱坞电影台,https://s2.m16tv.cfd/aktv2/CH-4/AKTV.m3u8
+华视新闻,rtmp://f13h.mine.nu/sat/tv111
+华语新闻,http://38.64.72.148/hls/modn/list/4002/chunklist0.m3u8
+环宇新闻,http://222.128.55.152:9080/live/hy.m3u8
+龙华日韩台,https://s1.m16tv.cfd/taiwan/CH-5/AKTV.m3u8
+龙华日韩台,https://s2.m16tv.cfd/taiwan/CH-5/AKTV.m3u8
+美亚电影,http://php.jdshipin.com:8880/TVOD/iptv.php?id=meiya
+美亚电影台(HK),https://s1.m16tv.cfd/aktv/hk/AKTV.m3u8
+美亚电影台(HK),https://s2.m16tv.cfd/aktv/hk/AKTV.m3u8
+民视,https://s1.m16tv.cfd/taiwan/CH-1/AKTV.m3u8
+民视,https://s2.m16tv.cfd/taiwan/CH-1/AKTV.m3u8
+民视第一台,https://s1.m16tv.cfd/taiwan/CH-0/AKTV.m3u8
+民视第一台,https://s2.m16tv.cfd/taiwan/CH-0/AKTV.m3u8
+民视新闻,http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
+民视新闻,http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
+民视新闻,rtmp://f13h.mine.nu/sat/tv051
+明珠剧集台(北美),https://s1.m16tv.cfd/aktv/CH-19/AKTV.m3u8
+明珠剧集台(北美),https://s2.m16tv.cfd/aktv/CH-19/AKTV.m3u8
+明珠台,https://s1.m16tv.cfd/aktv/CH-2/AKTV.m3u8
+明珠台,https://s2.m16tv.cfd/aktv/CH-2/AKTV.m3u8
+人间卫视,http://61.216.67.119:1935/bltvhd/bltv1/chunklist_w1266569526.m3u8
+日テレNEWS LIVE,https://s1.m16tv.cfd/aktvjp/ntv/AKTV.m3u8
+日テレNEWS LIVE,https://s2.m16tv.cfd/aktvjp/ntv/AKTV.m3u8
+三立戏剧,http://61.221.215.25:8800/hls/41/index.m3u8
+生命电视,http://61.216.67.119:1935/lifetv/lifetv.stream/manifest.m3u8
+台视,https://s1.m16tv.cfd/taiwan/CH-4/AKTV.m3u8
+台视新闻,http://222.128.55.152:9080/live/ts.m3u8
+台视新闻,http://38.64.72.148/hls/modn/list/4013/chunklist1.m3u8
+台视新闻,rtmp://f13h.mine.nu/sat/tv071
+天映电影,https://s1.m16tv.cfd/aktv2/CH-3/AKTV.m3u8
+天映电影,https://s2.m16tv.cfd/aktv2/CH-3/AKTV.m3u8
+纬来精采,http://61.221.215.25:8800/hls/48/index.m3u8
+纬来体育台,https://s1.m16tv.cfd/aktv2/CH-0/AKTV.m3u8
+纬来体育台,https://s2.m16tv.cfd/aktv2/CH-0/AKTV.m3u8
+无线新闻台,https://s1.m16tv.cfd/aktv/CH-1/AKTV.m3u8
+无线新闻台,https://s2.m16tv.cfd/aktv/CH-1/AKTV.m3u8
+香港面包,https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+香港卫视,http://anren.live/HK/BSJDUFpB.m3u8
+香港卫视,http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8?wsSession=e5b4ef626c5980be2fbdf2e7-158332927312639&wsIPSercert=6f8d45434604e7d22f5b0abbc0231d01&wsMonitor=0
+香港卫视,rtmp://zhibo.hkstv.tv/livestream/mutfysrq
+星空卫视,http://119.32.12.17:2901/udp/224.1.100.13:11111
+星空卫视,http://qjrhc.jydjd.top:2911/udp/224.1.100.13:11111
+影迷数位纪实台,https://s1.m16tv.cfd/taiwan/CH-2/AKTV.m3u8
+影迷数位纪实台,https://s2.m16tv.cfd/taiwan/CH-2/AKTV.m3u8
+中视新闻,rtmp://f13h.mine.nu/sat/tv091
+中天新闻,http://222.128.55.152:9080/live/fc.m3u8
+中天新闻台,https://s1.m16tv.cfd/zhongtian/CH-0/AKTV.m3u8
+中天新闻台,https://s2.m16tv.cfd/zhongtian/CH-0/AKTV.m3u8
+
