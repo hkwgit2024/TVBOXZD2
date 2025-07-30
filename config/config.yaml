@@ -15,7 +15,9 @@ network:
 logging:
   log_level: "DEBUG"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
   log_file: "logs/iptv.log"          # 日志文件路径
-
+github:
+  repo_owner:"qjlxg"
+  repo_name:"vt"
 # URL 状态管理
 url_state:
   expiration_days: 10                 # URL 状态过期时间（天）
