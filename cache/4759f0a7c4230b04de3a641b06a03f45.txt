@@ -1,0 +1,17 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:6
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-KEY:METHOD=AES-128,URI="http://127.0.0.1:8080/enc.key",IV=0x00000000000000000000000000000000
+#EXTINF:5.752500,
+https://github.com/bigcashwe2/GenVe_cR/releases/download/cR1019/v1017_0.ve
+#EXTINF:3.932233,
+https://github.com/bigcashwe2/GenVe_cR/releases/download/cR1019/v1017_1.ve
+#EXTINF:5.831722,
+https://github.com/bigcashwe2/GenVe_cR/releases/download/cR1019/v1017_2.ve
+#EXTINF:3.932300,
+https://github.com/bigcashwe2/GenVe_cR/releases/download/cR1019/v1017_3.ve
+#EXTINF:1.323067,
+https://github.com/bigcashwe2/GenVe_cR/releases/download/cR1019/v1017_4.ve
+#EXT-X-ENDLIST
+

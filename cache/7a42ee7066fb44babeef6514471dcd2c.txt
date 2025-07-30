@@ -1,0 +1,6 @@
+#EXTM3U
+#EXT-X-VERSION:4
+#EXT-X-INDEPENDENT-SEGMENTS
+#EXT-X-STREAM-INF:BANDWIDTH=1525700,AVERAGE-BANDWIDTH=1555400,CODECS="avc1.4d4029,mp4a.40.2",RESOLUTION=1024x576,FRAME-RATE=25.000,AUDIO="program_audio_0"
+https://z5ak-cmaflive.zee5.com/cmaf/live/2105176/BigMagicELE/master_576.m3u8?hdntl
+#EXT-X-MEDIA:TYPE=AUDIO,LANGUAGE="eng",NAME="Alternate Audio",AUTOSELECT=YES,DEFAULT=YES,GROUP-ID="program_audio_0",URI="https://z5ak-cmaflive.zee5.com/cmaf/live/2105176/BigMagicELE/master_AAC.m3u8?hdntl"

@@ -1,0 +1,10 @@
+#EXTM3U
+#EXTINF:0 tvg-id="" group-title="News",Kairali News (480p) [100]
+https://list.iptvcat.com/my_list/s/41c065ac98b110a8577d25775b4610d7.m3u8
+#EXTINF:-1 group-title="News",HIP.HIP.Horee(tvn_digital)
+http://tvn.x10.mx/live/master-4.m3u8
+#EXTINF:-1 group-title="News",HOREE(tvn_digital)
+http://tvn.x10.mx/live/master-6.m3u8
+#EXTINF:-1 group-title="News",Citra_bioskop(tvn_digital)
+http://tvn.x10.mx/live/master-2.m3u8
+

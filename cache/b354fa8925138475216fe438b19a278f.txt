@@ -1,0 +1,162 @@
+#EXTM3U
+
+#EXTINF:-1, T Sports potato
+http://23.255.0.10:100/hls/1.m3u8
+
+#EXTINF:-1, Gazi TV potato
+http://23.255.0.10:100/hls/netscope-1.m3u8
+
+#EXTINF:-1, Gaan Bangla potato
+http://23.255.0.10:100/hls/netscope-2.m3u8
+
+#EXTINF:-1, DBC potato
+http://23.255.0.10:100/hls/netscope-3.m3u8
+
+#EXTINF:-1, Somoy TV potato
+http://23.255.0.10:100/hls/netscope-4.m3u8
+
+#EXTINF:-1, Star Jalsha potato
+http://23.255.0.10:100/hls/3.m3u8
+
+#EXTINF:-1, Ten Sports HD potato
+http://23.255.0.10:100/hls/4.m3u8
+
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/en/4/41/Rtv_bangladesh.PNG", Rtv
+https://stream.cstfctg.com/rtvonline/rtv2021.stream/playlist.m3u8
+
+#EXTINF:-1, SomoyTV jago
+http://iptvbd.jagobd.com:1931/live-orgin/somoyt000011226615544544.stream/playlist.m3u8
+
+#EXTINF:-1, Channel 24(Jagobd)
+http://iptvbd.jagobd.com:1931/live-orgin/channel24-sg-e8e.stream/chunks.m3u8
+
+#EXTINF:-1, JamunaTV jago
+http://iptvbd.jagobd.com:1931/live-orgin/jamuna-test-sample-ok.stream/playlist.m3u8
+
+#EXTINF:-1, Banglavision jago
+http://iptvbd.jagobd.com:1931/live-orgin/banglav000.stream/playlist.m3u8
+
+#EXTINF:-1, DurantaTV
+http://89.187.185.89:3232/ban-duronto/tracks-v1a1/mono.m3u8
+
+#EXTINF:-1, Ekushey official link
+http://live.ekushey-tv.com/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8
+
+#EXTINF:-1, AsianTV Jaago
+http://iptvbd.jagobd.com:1931/live-orgin/asian-test-sample-ok-d.stream/chunks.m3u8
+
+#EXTINF:-1, AnandaTV Jaago
+http://iptvbd.jagobd.com:1931/live-orgin/anandatv.stream/chunks.m3u8
+
+#EXTINF:-1, BanglaTV Jaago
+http://iptvbd.jagobd.com:1931/live-orgin/banglatvhd.stream/chunks.m3u8
+
+#EXTINF:-1, NRB HD jago
+http://iptvbd.jagobd.com:1931/live-orgin/nrb-eu.stream/chunks.m3u8
+
+#EXTINF:-1, TBN dg21bd
+https://dog.dg21bd.com:443/TBN242/tracks-v1a1/mono.m3u8
+
+#EXTINF:-1 tvg-logo="https://i.ibb.co/ySHY0Qz/Atnmusic.jpg",ATN MUSIC
+http://iptvbd.jagobd.com:1931/live-orgin/atnmusic.stream/playlist.m3u8
+
+#EXTINF:-1, BTV World jago
+http://iptvbd.jagobd.com:1931/live-orgin/btvbd-office-sg.stream/chunks.m3u8
+
+#EXTINF:-1, Makkah Live
+http://m.live.net.sa:1935/live/quran/playlist.m3u8
+
+#EXTINF:-1, Star Sports 1 potato
+http://23.255.0.10:100/hls/2.m3u8
+
+#EXTINF:-1 ,Gazi TV efiberbd
+http://tv2.efiberbd.net:8080/live/mkaua/stream/4.m3u8
+#EXTINF:-1 ,A Sports World Cup efiber
+http://tv2.efiberbd.net:8080/live/mkaua/stream/3.m3u8
+#EXTINF:-1 ,Toffee 2 World Cup
+https://mprod-cdn.toffeelive.com/toffee/fifa-paid/match-1/master_1000.m3u8
+#EXTINF:-1 ,Toffee 1 World Cup ⚽️
+https://mprod-cdn.toffeelive.com/toffee/fifa-free/match-1/master_1000.m3u8
+#EXTINF:-1 ,Tyc Sports World Cup ⚽️
+https://d3awnlgqz0szay.cloudfront.net/out/v1/b841c366cbe540e6a106c3ba83e5c8d6/index.m3u8
+#EXTINF:-1 ,RTK 1 FIFA World Cup ⚽️
+http://146.59.19.1/5002/mpegts?
+#EXTINF:-1 ,FIFA World Cup Japan ⚽️
+http://redlabmcdn.s.llnwi.net/nv02/ryowa7hd/index.m3u8
+#EXTINF:-1 ,Redbull TV
+https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8
+#EXTINF:-1 ,SPORTS TV
+http://live.sportstv.com.tr/hls/low/sportstv_fhd/index.m3u8
+#EXTINF:-1 ,TURKMENISTAN SPORTS 🇹🇷
+http://217.174.225.146/hls/ch004_720/index.m3u8
+
+#EXTINF:-1, DW(Jagobd)
+http://iptvbd.jagobd.com:1931/live-orgin/dwnews.stream/chunks.m3u8
+
+#EXTINF:-1, BBC world
+http://ip2121.com:8081/live/bbc/playlist.m3u8
+
+#EXTINF:-1, CNN
+http://ip2121.com:8081/live/cnn/playlist.m3u8
+
+#EXTINF:-1, UTV Action
+http://144.217.70.181:9587/hin2/UTVACTION/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1, MTV
+http://144.217.70.181:9587/hin2/MTVINDIA/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1, Star Gold HD
+http://144.217.70.181:9587/hin2/STARGOLDUK/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1, Zee Cinema HD
+http://144.217.70.181:9587/hin2/ZEECINEMAHD/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1, Star Plus HD
+http://144.217.70.181:9587/hin2/STARPLUSHD/index.m3u8?token=test
+
+#EXTINF:-1, Color HD
+http://144.217.70.181:9587/hin2/COLORSHD/index.m3u8?token=test
+
+#EXTINF:-1, Zee Action
+http://144.217.70.181:9587/hin2/ZEEACTION/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1, B4U Music
+http://144.217.70.181:9587/hin2/B4UMOVIES/tracks-v1a1/mono.m3u8?token=test
+
+#EXTINF:-1 ,Discovery HD
+http://175.107.244.52:4455/play/a01v/index.m3u8
+
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/en/1/1d/Love_Nature_TV.png",Love nature(BD)
+http://bamus-eng-roku.amagi.tv/playlist1080p.m3u8
+
+#EXTINF:-1 group-title="Documentary" tvg-logo="https://i.imgur.com/5OzuEyR.png",History Channel
+https://bk7l2w4nlx53-hls-live.5centscdn.com/HISTORY/961ac1c875f5884f31bdd177365ef1e3.sdp/chunks.m3u8
+
+#EXTINF:-1 ,Food
+https://ft-ifood-roku.amagi.tv/playlist.m3u8
+
+#EXTINF:-1 tvg-logo="https://i.postimg.cc/HWvskVB4/Lotus-Macau.png",Lotus Macau
+http://15.1.5.10:8082/Lotus-Macau/tracks-v1a1/mono.m3u8
+
+#EXTINF:-1 tvg-logo="https://www.nasa.gov/sites/default/files/thumbnails/image/nasa-logo-web-rgb.png",Nasa TV(BD3)
+https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master_2000.m3u8
+
+#EXTINF:-1, VIASAT nature
+http://iptv.prosto.tv:7000/ch84/video.m3u8
+
+#EXTINF:-1, CN br
+https://playout.cdn.cartoonnetwork.com.br/playout_02/playlist-720p.m3u8
+
+#EXTINF:-1 ,WFC TV
+https://wfcint.mediacdn.ru/cdn/wfcintweb/playlist.m3u8
+
+#EXTINF:-1 group-title="KIDS",Cartoon Network
+https://playout.cdn.cartoonnetwork.com.br/playout_02/playlist-720p.m3u8
+#EXTINF:-1 group-title="KIDS",Disney JR
+http://190.83.119.67:8000/play/a0pb/index.m3u8
+#EXTINF:-1 group-title="KIDS",Nick Jr.
+http://190.83.119.67:8000/play/a0p9/index.m3u8
+#EXTINF:-1 group-title="KIDS",O Kids
+http://51.210.199.11/hls/stream.m3u8
+#EXTINF:-1 group-title="KIDS",O Kids Movies
+http://51.210.199.12/hls/stream.m3u8
