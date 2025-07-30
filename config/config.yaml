@@ -13,7 +13,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "DEBUG"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
+  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
   log_file: "logs/iptv.log"          # 日志文件路径
 
 # GitHub API 配置
@@ -62,6 +62,18 @@ performance_monitor: # 请确保此行顶格写，无前导空格
 search_keywords: # 请确保此行顶格写，无前导空格
   - "IPTV"                         # 搜索 IPTV 直播源
   - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "iptv playlist extension:m3u,m3u8 in:file"
+  - "raw.githubusercontent.com path:.m3u8"
+  - "raw.githubusercontent.com path:.m3u"
+  - "tv channels extension:m3u,m3u8 in:file"
+  - "live tv extension:m3u,m3u8 in:file"
+  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+  - "index.m3u8 in:file"
+  - "channels.m3u in:file"
+  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
+
 
 # 备用 URL 源
 backup_urls: # 请确保此行顶格写，无前导空格
@@ -70,6 +82,7 @@ backup_urls: # 请确保此行顶格写，无前导空格
 
 # 频道名称过滤词（小写匹配）
 name_filter_words: # 请确保此行顶格写，无前导空格
+  - "之声"
   - "购物"                           # 过滤购物频道
   - "理财"                           # 过滤理财频道
   - "导视"                           # 过滤导视频道
