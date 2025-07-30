@@ -1,0 +1,112 @@
+{
+  "urls": [
+                        {
+      "url": "https://mi.xxooo.shop/",
+      "name": "✨️mi.xxooo线路"
+    },
+    {
+      "url": "./svip.json",
+      "name": "✨️龙卷风自用tw✨️"
+    },
+    {
+      "url": "https://gitee.com/kensorl/tv/raw/master/wzb02.json",
+      "name": "✨️龙卷风自用nx✨️"
+    },
+    {
+      "url": "https://gitee.com/nianxinxz/miao/raw/master/tvbox.json",
+      "name": "✨️念心的线路✨️"
+    },
+ {
+      "url": "https://gitee.com/tvkj/tw/raw/main/svip.json",
+      "name": "✨️天微影视"
+    },
+   {
+      "url": "https://gitee.com/huanzi989/self-use---tv-box/raw/master/zy.json",
+      "name": "✨️ZY线路"
+    },
+           {
+      "url": "https://gitee.com/shengfuwang/yscjk/raw/master/T4.json",
+      "name": "✨️T4的线路"
+    },
+  {
+      "url": "https://gitee.com/cnchs/iptv/raw/main/svip.json",
+      "name": "✨️SVIP的线路"
+    },
+ {
+      "url": "https://gitee.com/iiwc/ii/raw/i/z",
+      "name": "✨️Z的线路"
+    },
+   {
+      "url": "https://gitee.com/shengfuwang/yscjk/raw/master/Ray.json",
+      "name": "✨️RAY的线路"
+    },
+   {
+      "url": "https://gitee.com/shengfuwang/yscjk/raw/master/wsf.json",
+      "name": "✨️嘉峪关老王线路"
+    },
+{
+      "url": "https://ghproxy.net/https://raw.githubusercontent.com/HeChengChaXiu/tvbox/main/hccx.json",
+      "name": "✨️荷城茶秀线路"
+    },
+            {
+            "name": "🌪南风线路",
+            "url": "https://gh.con.sh/https://raw.githubusercontent.com/yoursmile66/TVBox/main/XC.json"
+   },
+          {
+            "url": "http://www.mpanso.com/%E5%B0%8F%E7%B1%B3/DEMO.json",
+            "name": "🌟小米线路🌟"
+    },
+            {
+      "url": "http://www.饭太硬.com/tv",
+      "name": "✨️饭太硬线路"
+    },
+                    {
+      "url": "http://ttkx.live:55/天天开心",
+      "name": "✨️天天开心"
+    }, 
+            {
+      "url": "https://gitee.com/tvkj/fl/raw/main/svip.json",
+      "name": "✨️飞龙影视"
+    },
+    {
+      "url": "http://我不是.摸鱼儿.top",
+      "name": "✨️摸鱼线路"
+    },
+             {
+      "url": "https://download.kstore.space/download/2883/nzk/nzk0722.json",
+      "name": "✨️D佬魔改"
+    },
+                    {
+      "url": "https://cn.kstore.space/download/2863/01.txt",
+      "name": "✨️潇洒空间"
+    },
+        {
+            "url": "https://100km.top/0",
+            "name": "✨️Ray线路"
+        },	
+          {
+      "url": "http://120.24.204.74:1888/?explorer/share/file&hash=1277MMs1UITPwRkFSiUwxvFZU1UGQqfXHMnKQHeMcexYxjtYy9tydrVYUbsNkOItAw&name=/春盈天下新yy.css",
+      "name": "✨️春盈天下"
+    },
+        {
+      "url": "https://szyyds.cn/tv/x.json",
+      "name": "✨️小马线路"
+    },
+    {
+      "url": "http://肥猫.com",
+      "name": "✨️肥猫线路"
+    },
+        {
+      "url": "http://dp.sxtv.top:88/img",
+      "name": "✨️神仙线路"
+    },
+      {
+      "url": "http://home.jundie.top:81/top98.json",
+      "name": "✨️俊佬线路"
+    },
+        {
+      "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/yoursmile66/TVBox/main/XC.json",
+      "name": "✨️我的🍆"
+    }
+  ]
+}
