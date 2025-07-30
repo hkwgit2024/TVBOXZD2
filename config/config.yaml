@@ -1,4 +1,21 @@
-# IPTV 频道处理脚本的配置文件
+
+
+# GitHub 搜索关键词
+search_keywords: # 请确保此行顶格写，无前导空格
+  # 通用英文关键词
+  - "iptv links" # 稍微放宽，依赖后续过滤
+  - "m3u8 playlist"
+  - "iptv list"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "stream list"
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
 
 # 网络配置
 network:
@@ -156,22 +173,6 @@ output: # 请确保此行顶格写，无前导空格
 performance_monitor: # 请确保此行顶格写，无前导空格
   enabled: true                      # 是否启用性能监控
   log_interval: 100                  # 性能日志记录间隔（每处理 N 个频道/URL）
-
-# GitHub 搜索关键词
-search_keywords: # 请确保此行顶格写，无前导空格
-#  - "IPTV"                         # 搜索 IPTV 直播源
- # - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
-  - "extension:m3u8 in:file"
- # - "extension:m3u in:file"
-#  - "iptv playlist extension:m3u,m3u8 in:file"
-#  - "raw.githubusercontent.com path:.m3u8"
-#  - "raw.githubusercontent.com path:.m3u"
-#  - "tv channels extension:m3u,m3u8 in:file"
-#  - "live tv extension:m3u,m3u8 in:file"
- # - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
- # - "index.m3u8 in:file"
- # - "channels.m3u in:file"
- # - "iptv.m3u in:file" # 增加常见iptv文件名搜索
 
 
 # 备用 URL 源
