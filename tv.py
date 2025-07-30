@@ -769,12 +769,12 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
 
     # 处理未被上面明确分类的文件，如最初的 uncategorized_channels.txt
     for file_name in sorted(all_iptv_files_in_dir):
-        if file_name not in processed_files:
-            # 确保只添加未被处理过的文件，且是 uncategorized_channels.txt 或其他未分类文件
+        if file_name not in processed_files: # 确保只添加未被处理过的文件，且是 uncategorized_channels.txt 或其他未分类文件
             if os.path.basename(file_name) == os.path.basename(uncategorized_file_in_root) or \
                (file_name.endswith('_iptv.txt') and os.path.join(local_channels_directory, file_name) not in files_to_merge_paths):
                 files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
                 processed_files.add(file_name)
+
 
     new_channels_from_merged_files = set()
     for file_path in files_to_merge_paths:
@@ -847,6 +847,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
         return
 
     existing_urls = set(read_txt_to_array_local(urls_file_path_local))
+
     for backup_url in CONFIG.get('backup_urls', []):
         try:
             response = session.get(backup_url, timeout=15)
@@ -891,7 +892,6 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
 
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-
                 if rate_limit_remaining == 0:
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
                     logging.warning(f"GitHub API 速率限制达到，剩余请求: 0，等待 {wait_seconds:.0f} 秒")
@@ -928,7 +928,6 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                             logging.debug(f"获取 {raw_url} 内容失败: {req_e}")
                         except Exception as exc:
                             logging.debug(f"检查 {raw_url} 内容时发生意外错误: {exc}")
-
                 logging.debug(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
 
@@ -940,13 +939,14 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                         logging.warning(f"关键词 '{keyword}' 速率限制，等待 {wait_seconds:.0f} 秒")
                         time.sleep(wait_seconds)
                         continue
-                else:
-                    logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
+                    else:
+                        logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
+                        break
+                except Exception as e:
+                    logging.error(f"搜索 GitHub 关键词 '{keyword}' 时发生意外错误: {e}")
                 break
-            except Exception as e:
-                logging.error(f"搜索 GitHub 关键词 '{keyword}' 时发生意外错误: {e}")
-                break
-        keyword_url_counts[keyword] = len(keyword_found_urls)
+
+    keyword_url_counts[keyword] = len(keyword_found_urls)
 
     if found_urls:
         updated_urls = sorted(list(existing_urls | found_urls))
@@ -977,178 +977,182 @@ def cleanup_urls_local(urls_file_path_local, url_states):
             if last_failed_time_str:
                 try:
                     last_failed_datetime = datetime.fromisoformat(last_failed_time_str)
-                    if (current_time - last_failed_datetime).total_seconds() / 3600 > CONFIG['channel_retention']['url_retention_hours']:
+                    time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
+                    if time_since_failed_hours >= CONFIG['channel_retention']['url_retention_hours_after_fail']:
+                        logging.debug(f"移除 URL {url}，因其连续失败 {fail_count} 次且超过保留期")
                         remove_url = True
-                        logging.info(f"移除 URL '{url}'，因失败次数过多 ({fail_count}) 且超出保留时间 ({CONFIG['channel_retention']['url_retention_hours']}h)")
                 except ValueError:
-                    logging.warning(f"无法解析 URL {url} 的最后失败时间戳: {last_failed_time_str}")
+                    logging.warning(f"无法解析 URL {url} 的失败时间戳: {last_failed_time_str}")
+                    # 如果时间戳格式错误，我们保守地保留它
+                    pass
             else:
+                # 如果没有失败时间戳但失败次数超过阈值，也移除
+                logging.debug(f"移除 URL {url}，因其连续失败 {fail_count} 次（无失败时间戳）")
                 remove_url = True
-                logging.info(f"移除 URL '{url}'，因失败次数过多 ({fail_count}) 且无最后失败时间戳")
 
         if not remove_url:
             urls_to_keep.append(url)
         else:
             removed_count += 1
+            # 从 url_states 中移除该 URL 的状态
             url_states.pop(url, None)
 
     if removed_count > 0:
-        logging.warning(f"从 {urls_file_path_local} 清理 {removed_count} 个 URL")
+        logging.warning(f"已清理 {removed_count} 个无效或失败的 URL")
         write_array_to_txt_local(urls_file_path_local, urls_to_keep)
+        save_url_states_local(url_states)
     else:
-        logging.warning("无需清理 urls.txt 中的 URL")
+        logging.info("未发现需要清理的 URL")
 
-# --- 分类和文件保存函数 ---
+
+# --- 分类和过滤函数 ---
 @performance_monitor
 def categorize_channels(channels):
-    """根据频道名称关键字分类，并应用类别别名进行规范化"""
-    categorized_data = {category: [] for category in CONFIG.get('ordered_categories', [])}
-    uncategorized_data = []
-
+    """根据配置对频道进行分类，返回分类后的频道字典、未分类频道列表和有序分类列表"""
+    categorized = {}
+    uncategorized = []
+    
+    # 确保 ordered_categories 存在且是列表
+    ordered_categories = list(CONFIG.get('ordered_categories', []))
     category_aliases = CONFIG.get('category_aliases', {})
+    category_keywords = CONFIG.get('category_keywords', {})
+    
+    # 初始化有序分类
+    for category in ordered_categories:
+        categorized[category] = []
+    
+    # 反向查找别名，以处理原始关键词
+    reverse_category_aliases = {v: k for k, v in category_aliases.items()}
 
     for name, url in channels:
-        found_category = False
-        # 按照 ordered_categories 的顺序尝试匹配
-        for category in CONFIG.get('ordered_categories', []):
-            category_keywords = CONFIG['category_keywords'].get(category, [])
-            # 检查频道名称是否包含任何一个关键字
-            if any(keyword.lower() in name.lower() for keyword in category_keywords):
-                # 应用类别别名
-                final_category = category_aliases.get(category, category)
-                
-                # 如果别名后的类别是新类别，确保其在 categorized_data 中存在
-                if final_category not in categorized_data:
-                    categorized_data[final_category] = []
-
-                categorized_data[final_category].append((name, url))
-                found_category = True
-                break # 找到匹配的类别后就停止，因为 ordered_categories 保证了优先级
+        assigned = False
         
-        if not found_category:
-            uncategorized_data.append((name, url))
+        # 尝试通过精确分类匹配
+        for category_name_exact in ordered_categories:
+            if name.startswith(category_name_exact) or name.lower().startswith(category_name_exact.lower()):
+                categorized[category_name_exact].append((name, url))
+                assigned = True
+                break
+
+        if assigned:
+            continue
+
+        # 尝试通过关键词匹配
+        for category, keywords in category_keywords.items():
+            # 将别名映射回原始分类名，如果存在的话，确保添加到正确的有序分类中
+            final_category = category_aliases.get(category, category)
+            if final_category not in categorized:
+                categorized[final_category] = []
             
-    # 清理掉空的分类
-    categorized_data_cleaned = {
-        k: v for k, v in categorized_data.items() if v
-    }
+            if any(re.search(keyword, name, re.IGNORECASE) for keyword in keywords):
+                categorized[final_category].append((name, url))
+                assigned = True
+                break
+        
+        if not assigned:
+            uncategorized.append((name, url))
+
+    # 过滤掉空的分类
+    categorized = {k: v for k, v in categorized.items() if v}
     
-    # 将别名后的类别也添加到 ordered_categories 中，以便后续写入文件时按顺序
-    # 确保所有使用的类别都在 ordered_categories 中
-    all_final_categories = list(categorized_data_cleaned.keys())
-    for alias_target in set(category_aliases.values()):
-        if alias_target not in all_final_categories:
-            all_final_categories.append(alias_target)
-            
-    # 根据原始 ordered_categories 的顺序对最终的类别进行排序
-    final_ordered_categories = [cat for cat in CONFIG.get('ordered_categories', []) if cat in all_final_categories]
-    # 添加可能通过别名产生但不在原始 ordered_categories 中的新类别
-    for cat in sorted(all_final_categories):
+    # 构建最终的有序分类列表，只包含实际有内容的分类
+    final_ordered_categories = [cat for cat in ordered_categories if cat in categorized]
+    
+    # 将可能的新分类（通过关键词匹配但不在 ordered_categories 中的）添加到末尾
+    for cat in sorted(categorized.keys()):
         if cat not in final_ordered_categories:
             final_ordered_categories.append(cat)
 
-    return categorized_data_cleaned, uncategorized_data, final_ordered_categories
+    return categorized, uncategorized, final_ordered_categories
 
 @performance_monitor
-def process_and_save_channels_by_category(all_channels, url_states, source_tracker):
-    """将频道分类并保存到对应文件"""
-    categorized_channels, uncategorized_channels, final_ordered_categories = categorize_channels(all_channels)
-    categorized_dir = CONFIG['output']['paths']['channels_dir']
-    os.makedirs(categorized_dir, exist_ok=True)
-
-    for category in final_ordered_categories: # 使用新的排序后的类别列表
-        channels = categorized_channels.get(category)
-        if channels:
-            output_file = os.path.join(categorized_dir, f"{category}_iptv.txt")
-            logging.warning(f"处理分类: {category}，包含 {len(channels)} 个频道")
-            sorted_channels = sorted(channels, key=lambda x: x[0])
-            channels_to_write = [(0, f"{name},{url}") for name, url in sorted_channels]
-            write_sorted_channels_to_file(output_file, channels_to_write)
-    
-    output_uncategorized_file = CONFIG['output']['paths']['uncategorized_channels_file']
-    logging.warning(f"处理未分类频道: {len(uncategorized_channels)} 个频道")
-    sorted_uncategorized = sorted(uncategorized_channels, key=lambda x: x[0])
-    uncategorized_to_write = [(0, f"{name},{url}") for name, url in sorted_uncategorized]
-    write_sorted_channels_to_file(output_uncategorized_file, uncategorized_to_write)
-    logging.warning(f"未分类频道保存到: {output_uncategorized_file}")
-
-# --- 主逻辑 ---
-@performance_monitor
-def main():
-    """主函数，执行 IPTV 处理流程"""
-    logging.warning("开始执行 IPTV 处理脚本")
-    total_start_time = time.time()
-
-    # 步骤 1：加载 URL 状态
-    url_states = load_url_states_local()
-    logging.warning(f"加载 {len(url_states)} 个 URL 状态")
-
-    # 步骤 2：从 GitHub 自动发现新 URL
-    auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
-
-    # 步骤 3：清理无效 URL
-    cleanup_urls_local(URLS_PATH, url_states)
-
-    # 步骤 4：加载 URL 列表
-    urls = read_txt_to_array_local(URLS_PATH)
-    if not urls:
-        logging.error("未在 urls.txt 中找到 URL，退出")
-        exit(1)
-    logging.warning(f"从 '{URLS_PATH}' 加载 {len(urls)} 个 URL")
-
-    # 5. 多线程提取频道
+def clean_and_process_urls(urls_file_path_local, url_states):
+    """清理、处理并提取所有 URL 中的频道"""
+    all_urls = read_txt_to_array_local(urls_file_path_local)
     all_extracted_channels = []
-    source_tracker = {}
-    logging.warning(f"开始从 {len(urls)} 个 URL 提取频道")
+    source_tracker = {} # 用于追踪每个频道来自哪个原始URL
+
+    logging.warning(f"开始处理和提取 {len(all_urls)} 个 URL 中的频道...")
     with ThreadPoolExecutor(max_workers=CONFIG['network']['url_fetch_workers']) as executor:
-        futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in urls}
-        for i, future in enumerate(as_completed(futures)):
-            if (i + 1) % CONFIG['performance_monitor']['log_interval'] == 0:
-                logging.warning(f"已处理 {i + 1}/{len(urls)} 个 URL")
+        futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in all_urls}
+        
+        processed_count = 0
+        total_urls = len(futures)
+
+        for future in as_completed(futures):
+            processed_count += 1
+            if processed_count % CONFIG['performance_monitor']['log_interval'] == 0:
+                logging.warning(f"已处理 {processed_count}/{total_urls} 个 URL")
             try:
                 channels = future.result()
                 if channels:
                     all_extracted_channels.extend(channels)
             except Exception as exc:
-                logging.error(f"URL 提取异常: {exc}")
-    logging.warning(f"完成频道提取，过滤前总计提取 {len(all_extracted_channels)} 个频道")
+                url = futures[future]
+                logging.error(f"处理 URL '{url}' 时发生异常: {exc}")
+    
+    logging.warning(f"完成所有 URL 处理，总计提取 {len(all_extracted_channels)} 个频道（未去重）")
+    return all_extracted_channels, source_tracker
 
-    # 步骤 6：过滤和修改频道
+# --- 主执行函数 ---
+def main():
+    """主函数：执行所有流程"""
+    logging.info("脚本开始执行")
+    
+    url_states = load_url_states_local()
+    
+    # 自动发现并清理 URL
+    auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
+    cleanup_urls_local(URLS_PATH, url_states)
+
+    # 从 URL 提取频道
+    all_extracted_channels, source_tracker = clean_and_process_urls(URLS_PATH, url_states)
+
+    # 过滤和修改频道
     filtered_and_modified_channels = filter_and_modify_channels(all_extracted_channels)
     logging.warning(f"过滤和修改后剩余 {len(filtered_and_modified_channels)} 个频道")
+    
+    # 进一步去重
+    unique_channels = {}
+    for name, url in filtered_and_modified_channels:
+        if (name, url) not in unique_channels:
+            unique_channels[(name, url)] = (name, url)
+    final_channels_for_categorization = list(unique_channels.values())
+    logging.warning(f"去重后剩余 {len(final_channels_for_categorization)} 个唯一频道")
 
-    # 步骤 7：分类并保存频道
-    process_and_save_channels_by_category(filtered_and_modified_channels, url_states, source_tracker)
+    # 分类频道
+    categorized_channels, uncategorized_channels, ordered_categories = categorize_channels(final_channels_for_categorization)
 
-    # 步骤 8：合并频道文件
-    merge_local_channel_files(CONFIG['output']['paths']['channels_dir'], IPTV_LIST_PATH, url_states)
+    # 将分类后的频道写入各自的临时文件
+    temp_channels_dir = CONFIG['output']['paths']['channels_dir']
+    os.makedirs(temp_channels_dir, exist_ok=True)
+    
+    for category, channels_list in categorized_channels.items():
+        file_path = os.path.join(temp_channels_dir, f"{category}_iptv.txt")
+        lines_to_write = [f"{name},{url}" for name, url in channels_list]
+        write_array_to_txt_local(file_path, lines_to_write)
+        logging.info(f"写入 {len(lines_to_write)} 个频道到临时文件: {file_path}")
 
-    # 步骤 9：保存 URL 状态
+    # 将未分类频道写入单独的临时文件
+    if uncategorized_channels:
+        uncategorized_temp_file_path = os.path.join(temp_channels_dir, "uncategorized_iptv.txt")
+        uncategorized_lines = [f"{name},{url}" for name, url in uncategorized_channels]
+        write_array_to_txt_local(uncategorized_temp_file_path, uncategorized_lines)
+        logging.info(f"写入 {len(uncategorized_lines)} 个未分类频道到临时文件: {uncategorized_temp_file_path}")
+
+    # 合并临时文件并生成最终的 IPTV 列表
+    output_dir = CONFIG['output']['paths']['output_dir']
+    os.makedirs(output_dir, exist_ok=True) # 确保最终输出目录存在
+    merge_local_channel_files(temp_channels_dir, IPTV_LIST_PATH, url_states)
+
+    # 保存 URL 状态
     save_url_states_local(url_states)
-    logging.warning("最终频道检查状态已保存")
-
-    # 步骤 10：清理临时文件（保留未分类文件）
-    try:
-        temp_files = ['iptv.txt', 'iptv_speed.txt']
-        for temp_file in temp_files:
-            if os.path.exists(temp_file):
-                os.remove(temp_file)
-                logging.debug(f"移除临时文件 '{temp_file}'")
-        temp_dir = CONFIG['output']['paths']['channels_dir']
-        if os.path.exists(temp_dir):
-            for f_name in os.listdir(temp_dir):
-                if f_name.endswith('_iptv.txt'):
-                    os.remove(os.path.join(temp_dir, f_name))
-                    logging.debug(f"移除临时频道文件 '{f_name}'")
-            if not os.listdir(temp_dir):
-                os.rmdir(temp_dir)
-                logging.debug(f"移除空目录 '{temp_dir}'")
-        logging.warning(f"保留未分类文件 '{CONFIG['output']['paths']['uncategorized_channels_file']}'")
-    except Exception as e:
-        logging.error(f"清理临时文件失败: {e}")
-
-    total_elapsed_time = time.time() - total_start_time
-    logging.warning(f"IPTV 处理脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
+    logging.info("URL 状态已保存。")
+    logging.info("脚本执行完毕。")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        logging.critical(f"脚本运行中发生致命错误: {e}", exc_info=True)
+        exit(1)
