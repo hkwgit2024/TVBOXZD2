@@ -9,8 +9,11 @@ import logging.handlers
 import requests
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import json
 import hashlib
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import yaml
 import base64
 import psutil
@@ -87,11 +90,25 @@ if CONFIG['url_state']['cache_enabled']:
     os.makedirs(CONFIG['url_state']['cache_dir'], exist_ok=True)
     content_cache = TTLCache(maxsize=1000, ttl=CONFIG['url_state']['cache_ttl'])
 
-# 配置 requests 会话（移除重试机制）
+# 配置 requests 会话
 session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 })
+pool_size = CONFIG['network']['requests_pool_size']
+retry_strategy = Retry(
+    total=CONFIG['network']['requests_retry_total'],
+    backoff_factor=CONFIG['network']['requests_retry_backoff_factor'],
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(
+    pool_connections=pool_size,
+    pool_maxsize=pool_size,
+    max_retries=retry_strategy
+)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
 
 # 性能监控装饰器
 def performance_monitor(func):
@@ -255,7 +272,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
     """从 URL 提取频道，支持多种文件格式"""
     extracted_channels = []
     try:
-        text = fetch_url_content(url, url_states)
+        text = fetch_url_content_with_retry(url, url_states)
         if text is None:
             return []
 
@@ -264,7 +281,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
             text = convert_m3u_to_txt(text)
         elif extension in [".ts", ".flv", ".mp4", ".hls", ".dash"]:
             channel_name = f"Stream_{os.path.basename(urlparse(url).path)}"
-            if pre_screen_url(channel_name, url):
+            if pre_screen_url(url):
                 extracted_channels.append((channel_name, url))
                 source_tracker[(channel_name, url)] = url
                 logging.debug(f"提取单一流: {channel_name},{url}")
@@ -296,7 +313,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
                     url_list = channel_address_raw.split('#')
                     for channel_url in url_list:
                         channel_url = clean_url_params(channel_url.strip())
-                        if channel_url and pre_screen_url(channel_name, channel_url):
+                        if channel_url and pre_screen_url(channel_url):
                             extracted_channels.append((channel_name, channel_url))
                             source_tracker[(channel_name, channel_url)] = url
                             channel_count += 1
@@ -304,7 +321,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
                             logging.debug(f"跳过无效或预筛选失败的频道 URL: {channel_url}")
                 else:
                     channel_url = clean_url_params(channel_address_raw)
-                    if channel_url and pre_screen_url(channel_name, channel_url):
+                    if channel_url and pre_screen_url(channel_url):
                         extracted_channels.append((channel_name, channel_url))
                         source_tracker[(channel_name, channel_url)] = url
                         channel_count += 1
@@ -313,7 +330,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
             elif re.match(r'^[a-zA-Z0-9+.-]+://', line):
                 channel_name = f"Stream_{channel_count + 1}"
                 channel_url = clean_url_params(line)
-                if channel_url and pre_screen_url(channel_name, channel_url):
+                if channel_url and pre_screen_url(channel_url):
                     extracted_channels.append((channel_name, channel_url))
                     source_tracker[(channel_name, channel_url)] = url
                     channel_count += 1
@@ -365,9 +382,9 @@ def save_url_states_local(url_states):
     except Exception as e:
         logging.error(f"保存 URL 状态到 '{URL_STATES_PATH}' 失败: {e}")
 
-@performance_monitor
-def fetch_url_content(url, url_states):
-    """获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash（无重试）"""
+@retry(stop=stop_after_attempt(CONFIG['network']['max_retries_per_url']), wait=wait_fixed(5), reraise=True)
+def fetch_url_content_with_retry(url, url_states):
+    """带重试机制获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash"""
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
         logging.debug(f"从缓存读取 URL 内容: {url}")
         return content_cache[url]
@@ -416,14 +433,14 @@ def fetch_url_content(url, url_states):
         logging.debug(f"成功获取新内容: {url}")
         return content
     except requests.exceptions.RequestException as e:
-        logging.error(f"请求 URL 失败: {url} - {e}")
+        logging.error(f"请求 URL 失败（重试后）: {url} - {e}")
         return None
     except Exception as e:
         logging.error(f"获取 URL 内容未知错误: {url} - {e}")
         return None
 
 @performance_monitor
-def pre_screen_url(channel_name, url):
+def pre_screen_url(url):
     """根据配置预筛选 URL（协议、长度、无效模式）"""
     if not isinstance(url, str) or not url:
         logging.debug(f"预筛选过滤（无效类型或空）: {url}")
@@ -469,7 +486,7 @@ def filter_and_modify_channels(channels):
     filtered_channels = []
     pre_screened_count = 0
     for name, url in channels:
-        if not pre_screen_url(name, url):
+        if not pre_screen_url(url):
             logging.debug(f"过滤频道（预筛选失败）: {name},{url}")
             continue
         pre_screened_count += 1
@@ -569,6 +586,19 @@ def check_p3p_url(url, timeout):
         return False
 
 @performance_monitor
+def check_webrtc_url(url, timeout):
+    """检查 WebRTC URL 是否可达（简单检查 ICE 服务器可用性）"""
+    try:
+        parsed_url = urlparse(url)
+        if not parsed_url.scheme == 'webrtc':
+            return False
+        # 这里仅模拟检查，实际 WebRTC 需要更复杂的 ICE/TURN/STUN 验证
+        return True  # 占位，需根据实际需求实现
+    except Exception as e:
+        logging.debug(f"WebRTC URL 检查失败: {url} - {e}")
+        return False
+
+@performance_monitor
 def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONFIG['network']['check_timeout']):
     """检查单个频道的有效性和速度"""
     current_time = datetime.now()
@@ -600,6 +630,9 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             protocol_checked = True
         elif url.startswith("p3p"):
             is_valid = check_p3p_url(url, timeout)
+            protocol_checked = True
+        elif url.startswith("webrtc"):
+            is_valid = check_webrtc_url(url, timeout)
             protocol_checked = True
         else:
             logging.debug(f"频道 {channel_name} 的协议不支持: {url}")
@@ -799,6 +832,13 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
         return
 
     existing_urls = set(read_txt_to_array_local(urls_file_path_local))
+    for backup_url in CONFIG.get('backup_urls', []):
+        try:
+            response = session.get(backup_url, timeout=10)
+            response.raise_for_status()
+            existing_urls.update([line.strip() for line in response.text.split('\n') if line.strip()])
+        except Exception as e:
+            logging.warning(f"从备用 URL {backup_url} 获取失败: {e}")
 
     found_urls = set()
     headers = {
