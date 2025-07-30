@@ -63,15 +63,7 @@ performance_monitor:
 # GitHub 搜索关键词
 search_keywords:
   - "iptv playlist"                # 搜索 IPTV 播放列表
-  - "extension:m3u8 in:file"       # 搜索 M3U8 文件
-  - "extension:m3u in:file"        # 搜索 M3U 文件
-  - "iptv.m3u8 in:file"           # 搜索 IPTV M3U8 文件
-  - "iptv.m3u in:file"            # 搜索 IPTV M3U 文件
-  - "channels.m3u in:file"        # 搜索频道 M3U 文件
-  - "channels.m3u8 in:file"       # 搜索频道 M3U8 文件
-  - "live stream m3u8 in:file"    # 搜索直播 M3U8 文件
-  - "tv channels m3u in:file"     # 搜索电视 M3U 文件
-  - "live tv m3u in:file"         # 搜索直播电视 M3U 文件
+
 
 # 备用 URL 源
 backup_urls:
