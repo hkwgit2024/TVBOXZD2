@@ -156,7 +156,7 @@ def fetch_from_github(file_path_in_repo):
     raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = session.get(raw_url, headers=headers, timeout=15)
+        response = session.get(raw_url, headers=headers, timeout=10)
         response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
@@ -174,11 +174,11 @@ def get_current_sha(file_path_in_repo):
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = session.get(api_url, headers=headers, timeout=15)
+        response = session.get(api_url, headers=headers, timeout=10)
         response.raise_for_status()
         return response.json().get('sha')
     except requests.exceptions.RequestException as e:
-        logging.debug(f"获取 {file_path_in_repo} 的 SHA 值失败（可能不存在）: {e}")
+        logging.info(f"获取 {file_path_in_repo} 的 SHA 值失败（可能不存在）: {e}")
         return None
 
 @performance_monitor
@@ -275,7 +275,7 @@ def write_sorted_channels_to_file(file_path, data_list):
         with open(file_path, 'w', encoding='utf-8') as file:
             for name, url in sorted(all_channels, key=lambda x: x[0]):
                 file.write(f"{name},{url}\n")
-        logging.debug(f"写入 {len(all_channels)} 个频道到 {file_path}")
+        logging.info(f"写入 {len(all_channels)} 个频道到 {file_path}")
     except Exception as e:
         logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
@@ -292,7 +292,7 @@ def get_url_file_extension(url):
         parsed_url = urlparse(url)
         return os.path.splitext(parsed_url.path)[1].lower()
     except ValueError as e:
-        logging.debug(f"获取 URL 扩展名失败: {url} - {e}")
+        logging.info(f"获取 URL 扩展名失败: {url} - {e}")
         return ""
 
 @performance_monitor
@@ -330,7 +330,7 @@ def clean_url_params(url):
         parsed_url = urlparse(url)
         return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
     except ValueError as e:
-        logging.debug(f"清理 URL 参数失败: {url} - {e}")
+        logging.info(f"清理 URL 参数失败: {url} - {e}")
         return url
 
 @performance_monitor
@@ -345,8 +345,10 @@ def extract_channels_from_url(url, url_states, source_tracker):
     """
     extracted_channels = []
     try:
+        start_time = time.time()
         text = fetch_url_content_with_retry(url, url_states)
         if text is None:
+            logging.info(f"URL {url} 无新内容或获取失败，跳过")
             return []
 
         extension = get_url_file_extension(url).lower()
@@ -357,10 +359,10 @@ def extract_channels_from_url(url, url_states, source_tracker):
             if pre_screen_url(url):
                 extracted_channels.append((channel_name, url))
                 source_tracker[(channel_name, url)] = url
-                logging.debug(f"提取单一流: {channel_name},{url}")
+                logging.info(f"提取单一流: {channel_name},{url}")
             return extracted_channels
         elif extension not in [".txt", ".csv"]:
-            logging.debug(f"不支持的文件扩展名: {url}")
+            logging.info(f"不支持的文件扩展名: {url}")
             return []
 
         lines = text.split('\n')
@@ -372,14 +374,14 @@ def extract_channels_from_url(url, url_states, source_tracker):
             if "," in line and "://" in line:
                 parts = line.split(',', 1)
                 if len(parts) != 2:
-                    logging.debug(f"跳过无效频道行（格式错误）: {line}")
+                    logging.info(f"跳过无效频道行（格式错误）: {line}")
                     continue
                 channel_name, channel_address_raw = parts
                 channel_name = channel_name.strip() or "未知频道"
                 channel_address_raw = channel_address_raw.strip()
 
                 if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
-                    logging.debug(f"跳过无效频道 URL（无有效协议）: {line}")
+                    logging.info(f"跳过无效频道 URL（无有效协议）: {line}")
                     continue
 
                 if '#' in channel_address_raw:
@@ -391,7 +393,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
                             source_tracker[(channel_name, channel_url)] = url
                             channel_count += 1
                         else:
-                            logging.debug(f"跳过无效或预筛选失败的频道 URL: {channel_url}")
+                            logging.info(f"跳过无效或预筛选失败的频道 URL: {channel_url}")
                 else:
                     channel_url = clean_url_params(channel_address_raw)
                     if channel_url and pre_screen_url(channel_url):
@@ -399,7 +401,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
                         source_tracker[(channel_name, channel_url)] = url
                         channel_count += 1
                     else:
-                        logging.debug(f"跳过无效或预筛选失败的频道 URL: {channel_url}")
+                        logging.info(f"跳过无效或预筛选失败的频道 URL: {channel_url}")
             elif re.match(r'^[a-zA-Z0-9+.-]+://', line):
                 channel_name = f"Stream_{channel_count + 1}"
                 channel_url = clean_url_params(line)
@@ -408,11 +410,12 @@ def extract_channels_from_url(url, url_states, source_tracker):
                     source_tracker[(channel_name, channel_url)] = url
                     channel_count += 1
                 else:
-                    logging.debug(f"跳过无效或预筛选失败的单一 URL: {line}")
-        logging.debug(f"成功从 {url} 提取 {channel_count} 个频道")
+                    logging.info(f"跳过无效或预筛选失败的单一 URL: {line}")
+        logging.info(f"成功从 {url} 提取 {channel_count} 个频道，耗时 {time.time() - start_time:.2f} 秒")
+        return extracted_channels
     except Exception as e:
         logging.error(f"从 {url} 提取频道失败: {e}")
-    return extracted_channels
+        return []
 
 # --- URL 状态管理函数 ---
 @performance_monitor
@@ -440,7 +443,7 @@ def load_url_states_local():
                 if (current_time - last_checked_datetime).days < CONFIG['url_state']['expiration_days']:
                     updated_url_states[url] = state
                 else:
-                    logging.debug(f"移除过期 URL 状态: {url}（最后检查于 {state['last_checked']}）")
+                    logging.info(f"移除过期 URL 状态: {url}（最后检查于 {state['last_checked']}）")
             except ValueError:
                 logging.warning(f"无法解析 URL {url} 的 last_checked 时间戳: {state['last_checked']}")
                 updated_url_states[url] = state
@@ -471,7 +474,7 @@ def fetch_url_content_with_retry(url, url_states):
         URL 内容，或 None（如果失败或内容未变更）
     """
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
-        logging.debug(f"从缓存读取 URL 内容: {url}")
+        logging.info(f"从缓存读取 URL 内容: {url}")
         return content_cache[url]
 
     headers = {}
@@ -482,11 +485,12 @@ def fetch_url_content_with_retry(url, url_states):
         headers['If-Modified-Since'] = current_state['last_modified']
 
     try:
-        response = session.get(url, headers=headers, timeout=15)
+        # 降低超时时间到 10 秒
+        response = session.get(url, headers=headers, timeout=10)
         response.raise_for_status()
 
         if response.status_code == 304:
-            logging.debug(f"URL 内容未变更 (304): {url}")
+            logging.info(f"URL 内容未变更 (304): {url}")
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked'] = datetime.now().isoformat()
@@ -496,7 +500,7 @@ def fetch_url_content_with_retry(url, url_states):
         content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
         if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
-            logging.debug(f"URL 内容未变更（哈希相同）: {url}")
+            logging.info(f"URL 内容未变更（哈希相同）: {url}")
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked'] = datetime.now().isoformat()
@@ -515,8 +519,11 @@ def fetch_url_content_with_retry(url, url_states):
             with open(cache_file, 'w', encoding='utf-8') as f:
                 f.write(content)
 
-        logging.debug(f"成功获取新内容: {url}")
+        logging.info(f"成功获取新内容: {url}")
         return content
+    except requests.exceptions.Timeout:
+        logging.error(f"请求 URL 超时: {url}")
+        return None
     except requests.exceptions.RequestException as e:
         logging.error(f"请求 URL 失败（重试后）: {url} - {e}")
         return None
@@ -533,41 +540,41 @@ def pre_screen_url(url):
         布尔值，表示 URL 是否通过筛选
     """
     if not isinstance(url, str) or not url:
-        logging.debug(f"预筛选过滤（无效类型或空）: {url}")
+        logging.info(f"预筛选过滤（无效类型或空）: {url}")
         return False
 
     if not re.match(r'^[a-zA-Z0-9+.-]+://', url):
-        logging.debug(f"预筛选过滤（无有效协议）: {url}")
+        logging.info(f"预筛选过滤（无有效协议）: {url}")
         return False
 
     if re.search(r'[^\x00-\x7F]', url) or ' ' in url:
-        logging.debug(f"预筛选过滤（包含非法字符或空格）: {url}")
+        logging.info(f"预筛选过滤（包含非法字符或空格）: {url}")
         return False
 
     try:
         parsed_url = urlparse(url)
         if parsed_url.scheme not in CONFIG['url_pre_screening']['allowed_protocols']:
-            logging.debug(f"预筛选过滤（不支持的协议）: {url}")
+            logging.info(f"预筛选过滤（不支持的协议）: {url}")
             return False
 
         if not parsed_url.netloc:
-            logging.debug(f"预筛选过滤（无网络位置）: {url}")
+            logging.info(f"预筛选过滤（无网络位置）: {url}")
             return False
 
         invalid_url_patterns = CONFIG['url_pre_screening']['invalid_url_patterns']
         compiled_invalid_url_patterns = [re.compile(pattern, re.IGNORECASE) for pattern in invalid_url_patterns]
         for pattern in compiled_invalid_url_patterns:
             if pattern.search(url):
-                logging.debug(f"预筛选过滤（无效模式）: {url}")
+                logging.info(f"预筛选过滤（无效模式）: {url}")
                 return False
 
         if len(url) < 15:
-            logging.debug(f"预筛选过滤（URL 过短）: {url}")
+            logging.info(f"预筛选过滤（URL 过短）: {url}")
             return False
 
         return True
     except ValueError as e:
-        logging.debug(f"预筛选过滤（URL 解析错误）: {url} - {e}")
+        logging.info(f"预筛选过滤（URL 解析错误）: {url} - {e}")
         return False
 
 @performance_monitor
@@ -582,7 +589,7 @@ def filter_and_modify_channels(channels):
     pre_screened_count = 0
     for name, url in channels:
         if not pre_screen_url(url):
-            logging.debug(f"过滤频道（预筛选失败）: {name},{url}")
+            logging.info(f"过滤频道（预筛选失败）: {name},{url}")
             continue
         pre_screened_count += 1
 
@@ -594,11 +601,11 @@ def filter_and_modify_channels(channels):
 
         # 过滤关键字
         if any(word.lower() in new_name.lower() for word in CONFIG['name_filter_words']):
-            logging.debug(f"过滤频道（名称匹配黑名单）: {name},{url}")
+            logging.info(f"过滤频道（名称匹配黑名单）: {name},{url}")
             continue
 
         filtered_channels.append((new_name, url))
-    logging.debug(f"URL 预筛选后剩余 {pre_screened_count} 个频道进行进一步过滤")
+    logging.info(f"URL 预筛选后剩余 {pre_screened_count} 个频道进行进一步过滤")
     return filtered_channels
 
 # --- 频道有效性检查函数 ---
@@ -615,7 +622,7 @@ def check_http_url(url, timeout):
         response = session.head(url, timeout=timeout, allow_redirects=True)
         return 200 <= response.status_code < 400
     except requests.exceptions.RequestException as e:
-        logging.debug(f"HTTP URL 检查失败: {url} - {e}")
+        logging.info(f"HTTP URL 检查失败: {url} - {e}")
         return False
 
 @performance_monitor
@@ -641,10 +648,10 @@ def check_rtmp_url(url, timeout):
         )
         return result.returncode == 0
     except subprocess.TimeoutExpired:
-        logging.debug(f"RTMP URL 检查超时: {url}")
+        logging.info(f"RTMP URL 检查超时: {url}")
         return False
     except Exception as e:
-        logging.debug(f"RTMP URL 检查错误: {url} - {e}")
+        logging.info(f"RTMP URL 检查错误: {url} - {e}")
         return False
 
 @performance_monitor
@@ -661,7 +668,7 @@ def check_rtp_url(url, timeout):
         host = parsed_url.hostname
         port = parsed_url.port
         if not host or not port:
-            logging.debug(f"RTP URL 解析失败（缺少主机或端口）: {url}")
+            logging.info(f"RTP URL 解析失败（缺少主机或端口）: {url}")
             return False
 
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -671,10 +678,10 @@ def check_rtp_url(url, timeout):
             s.recv(1)
         return True
     except (socket.timeout, socket.error) as e:
-        logging.debug(f"RTP URL 检查失败: {url} - {e}")
+        logging.info(f"RTP URL 检查失败: {url} - {e}")
         return False
     except Exception as e:
-        logging.debug(f"RTP URL 检查错误: {url} - {e}")
+        logging.info(f"RTP URL 检查错误: {url} - {e}")
         return False
 
 @performance_monitor
@@ -693,7 +700,7 @@ def check_p3p_url(url, timeout):
         path = parsed_url.path if parsed_url.path else '/'
 
         if not host:
-            logging.debug(f"P3P URL 解析失败（缺少主机）: {url}")
+            logging.info(f"P3P URL 解析失败（缺少主机）: {url}")
             return False
 
         with socket.create_connection((host, port), timeout=timeout) as s:
@@ -702,7 +709,7 @@ def check_p3p_url(url, timeout):
             response = s.recv(1024).decode('utf-8', errors='ignore')
             return "P3P" in response or response.startswith("HTTP/1.")
     except Exception as e:
-        logging.debug(f"P3P URL 检查失败: {url} - {e}")
+        logging.info(f"P3P URL 检查失败: {url} - {e}")
         return False
 
 @performance_monitor
@@ -721,7 +728,7 @@ def check_webrtc_url(url, timeout):
         # 这里仅模拟检查，实际 WebRTC 需要更复杂的 ICE/TURN/STUN 验证
         return True  # 占位，需根据实际需求实现
     except Exception as e:
-        logging.debug(f"WebRTC URL 检查失败: {url} - {e}")
+        logging.info(f"WebRTC URL 检查失败: {url} - {e}")
         return False
 
 @performance_monitor
@@ -743,7 +750,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             last_failed_datetime = datetime.fromisoformat(current_url_state['stream_check_failed_at'])
             time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
             if time_since_failed_hours < CONFIG['channel_retention']['stream_retention_hours']:
-                logging.debug(f"跳过频道 {channel_name} ({url})，因其在冷却期内（{CONFIG['channel_retention']['stream_retention_hours']}h），上次失败于 {time_since_failed_hours:.2f}h 前")
+                logging.info(f"跳过频道 {channel_name} ({url})，因其在冷却期内（{CONFIG['channel_retention']['stream_retention_hours']}h），上次失败于 {time_since_failed_hours:.2f}h 前")
                 return None, False
         except ValueError:
             logging.warning(f"无法解析 URL {url} 的失败时间戳: {current_url_state['stream_check_failed_at']}")
@@ -769,7 +776,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             is_valid = check_webrtc_url(url, timeout)
             protocol_checked = True
         else:
-            logging.debug(f"频道 {channel_name} 的协议不支持: {url}")
+            logging.info(f"频道 {channel_name} 的协议不支持: {url}")
             if url not in url_states:
                 url_states[url] = {}
             url_states[url]['last_checked_protocol_unsupported'] = current_time.isoformat()
@@ -787,7 +794,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             url_states[url].pop('stream_fail_count', None)
             url_states[url]['last_successful_stream_check'] = current_time.isoformat()
             url_states[url]['last_stream_checked'] = current_time.isoformat()
-            logging.debug(f"频道 {channel_name} ({url}) 检查成功，耗时 {elapsed_time:.0f} ms")
+            logging.info(f"频道 {channel_name} ({url}) 检查成功，耗时 {elapsed_time:.0f} ms")
             return elapsed_time, True
         else:
             if url not in url_states:
@@ -795,7 +802,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             url_states[url]['stream_check_failed_at'] = current_time.isoformat()
             url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
             url_states[url]['last_stream_checked'] = current_time.isoformat()
-            logging.debug(f"频道 {channel_name} ({url}) 检查失败")
+            logging.info(f"频道 {channel_name} ({url}) 检查失败")
             return None, False
     except Exception as e:
         if url not in url_states:
@@ -803,7 +810,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
         url_states[url]['stream_check_failed_at'] = current_time.isoformat()
         url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
         url_states[url]['last_stream_checked'] = current_time.isoformat()
-        logging.debug(f"检查频道 {channel_name} ({url}) 错误: {e}")
+        logging.info(f"检查频道 {channel_name} ({url}) 错误: {e}")
         return None, False
 
 @performance_monitor
@@ -816,7 +823,7 @@ def process_single_channel_line(channel_line, url_states):
         元组 (响应时间, 频道行)，若无效则返回 (None, None)
     """
     if "://" not in channel_line:
-        logging.debug(f"跳过无效频道行（无协议）: {channel_line}")
+        logging.info(f"跳过无效频道行（无协议）: {channel_line}")
         return None, None
     parts = channel_line.split(',', 1)
     if len(parts) == 2:
@@ -908,7 +915,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
     if os.path.isfile(uncategorized_file_in_root):
         all_iptv_files_in_dir.append(os.path.basename(uncategorized_file_in_root))
     else:
-        logging.debug(f"未分类文件 '{uncategorized_file_in_root}' 不存在，跳过添加")
+        logging.info(f"未分类文件 '{uncategorized_file_in_root}' 不存在，跳过添加")
 
     files_to_merge_paths = []
     processed_files = set()
@@ -936,7 +943,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
                 files_to_merge_paths.append(full_path)
                 processed_files.add(file_name)
             else:
-                logging.debug(f"文件 '{full_path}' 不存在，跳过添加")
+                logging.info(f"文件 '{full_path}' 不存在，跳过添加")
 
     new_channels_from_merged_files = set()
     for file_path in files_to_merge_paths:
@@ -1008,7 +1015,7 @@ def write_array_to_txt_local(file_path, data_array, commit_message=None):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write('\n'.join(data_array))
-        logging.debug(f"写入 {len(data_array)} 行到 '{file_path}'")
+        logging.info(f"写入 {len(data_array)} 行到 '{file_path}'")
     except Exception as e:
         logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
@@ -1027,7 +1034,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
     existing_urls = set(read_txt_to_array_local(urls_file_path_local))
     for backup_url in CONFIG.get('backup_urls', []):
         try:
-            response = session.get(backup_url, timeout=15)
+            response = session.get(backup_url, timeout=10)
             response.raise_for_status()
             existing_urls.update([line.strip() for line in response.text.split('\n') if line.strip()])
         except Exception as e:
@@ -1077,7 +1084,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                     continue
 
                 if not data.get('items'):
-                    logging.debug(f"关键词 '{keyword}' 在第 {page} 页无结果")
+                    logging.info(f"关键词 '{keyword}' 在第 {page} 页无结果")
                     break
 
                 for item in data['items']:
@@ -1088,7 +1095,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                         user, repo, branch, file_path = match.groups()
                         raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
                     else:
-                        logging.debug(f"无法解析 raw URL: {html_url}")
+                        logging.info(f"无法解析 raw URL: {html_url}")
                         continue
 
                     if raw_url and raw_url not in existing_urls and raw_url not in found_urls:
@@ -1099,15 +1106,15 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                             if re.search(r'#EXTM3U', content, re.IGNORECASE) or re.search(r'\.(m3u8|m3u|txt|csv|ts|flv|mp4|hls|dash)$', raw_url, re.IGNORECASE):
                                 found_urls.add(raw_url)
                                 keyword_found_urls.add(raw_url)
-                                logging.debug(f"发现新的 IPTV 源 URL: {raw_url}")
+                                logging.info(f"发现新的 IPTV 源 URL: {raw_url}")
                             else:
-                                logging.debug(f"URL {raw_url} 不包含 M3U 内容或不支持的文件扩展名，跳过")
+                                logging.info(f"URL {raw_url} 不包含 M3U 内容或不支持的文件扩展名，跳过")
                         except requests.exceptions.RequestException as req_e:
-                            logging.debug(f"获取 {raw_url} 内容失败: {req_e}")
+                            logging.info(f"获取 {raw_url} 内容失败: {req_e}")
                         except Exception as exc:
-                            logging.debug(f"检查 {raw_url} 内容时发生意外错误: {exc}")
+                            logging.info(f"检查 {raw_url} 内容时发生意外错误: {exc}")
 
-                logging.debug(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
+                logging.info(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
 
             except requests.exceptions.RequestException as e:
@@ -1248,7 +1255,7 @@ def process_and_save_channels_by_category(all_channels, url_states, source_track
     categorized_dir = CONFIG['output']['paths']['channels_dir']
     os.makedirs(categorized_dir, exist_ok=True)
 
-    for category in final_ordered_categories: # 使用新的排序后的类别列表
+    for category in final_ordered_categories:
         channels = categorized_channels.get(category)
         if channels:
             output_file = os.path.join(categorized_dir, f"{category}_iptv.txt")
@@ -1300,21 +1307,26 @@ def main():
         exit(1)
     logging.warning(f"从 '{URLS_PATH}' 加载 {len(urls)} 个 URL")
 
-    # 步骤 5：多线程提取频道
+    # 步骤 5：多线程提取频道（限制最大 URL 数量以调试）
     all_extracted_channels = []
     source_tracker = {}
     logging.warning(f"开始从 {len(urls)} 个 URL 提取频道")
-    with ThreadPoolExecutor(max_workers=CONFIG['network']['url_fetch_workers']) as executor:
-        futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in urls}
+    max_urls = 100  # 临时限制为 100 个 URL 以调试
+    urls_to_process = urls[:max_urls]
+    logging.warning(f"调试模式：仅处理前 {len(urls_to_process)} 个 URL")
+    with ThreadPoolExecutor(max_workers=min(CONFIG['network']['url_fetch_workers'], 10)) as executor:
+        futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in urls_to_process}
         for i, future in enumerate(as_completed(futures)):
+            url = futures[future]
             if (i + 1) % CONFIG['performance_monitor']['log_interval'] == 0:
-                logging.warning(f"已处理 {i + 1}/{len(urls)} 个 URL")
+                logging.warning(f"已处理 {i + 1}/{len(urls_to_process)} 个 URL")
             try:
                 channels = future.result()
                 if channels:
                     all_extracted_channels.extend(channels)
+                logging.info(f"完成 URL {url} 的频道提取，获取 {len(channels)} 个频道")
             except Exception as exc:
-                logging.error(f"URL 提取异常: {exc}")
+                logging.error(f"URL {url} 提取异常: {exc}")
     logging.warning(f"完成频道提取，过滤前总计提取 {len(all_extracted_channels)} 个频道")
 
     # 步骤 6：过滤和修改频道
@@ -1337,16 +1349,16 @@ def main():
         for temp_file in temp_files:
             if os.path.exists(temp_file):
                 os.remove(temp_file)
-                logging.debug(f"移除临时文件 '{temp_file}'")
+                logging.info(f"移除临时文件 '{temp_file}'")
         temp_dir = CONFIG['output']['paths']['channels_dir']
         if os.path.exists(temp_dir):
             for f_name in os.listdir(temp_dir):
                 if f_name.endswith('_iptv.txt'):
                     os.remove(os.path.join(temp_dir, f_name))
-                    logging.debug(f"移除临时频道文件 '{f_name}'")
+                    logging.info(f"移除临时频道文件 '{f_name}'")
             if not os.listdir(temp_dir):
                 os.rmdir(temp_dir)
-                logging.debug(f"移除空目录 '{temp_dir}'")
+                logging.info(f"移除空目录 '{temp_dir}'")
         logging.warning(f"保留未分类文件 '{CONFIG['output']['paths']['uncategorized_channels_file']}'")
     except Exception as e:
         logging.error(f"清理临时文件失败: {e}")
