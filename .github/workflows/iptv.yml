@@ -42,11 +42,12 @@ jobs:
       # 步骤 4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp beautifulsoup4 psutil
-          pip install pyyaml
+          pip install requests aiohttp beautifulsoup4 tenacity psutil
+          pip install pyyaml requests tenacity
           pip install dnspython
+          pip install requests pyyaml dnspython aiohttp tqdm
           pip install aiofiles
-          pip install cachetools  # 缓存依赖
+          pip install cachetools  # 新增 cachetools 依赖
         shell: bash
 
       # 步骤 5：设置时区
@@ -91,7 +92,7 @@ jobs:
             temp_channels/    
             config/*.txt      
             config/*.json     
-            logs/iptv.log  # 日志文件路径
+            logs/iptv.log  # 更新日志文件路径
           retention-days: 7  # 工件保留 7 天
           if-no-files-found: warn  # 如果没有找到文件，发出警告
           compression-level: 6  # 压缩级别
