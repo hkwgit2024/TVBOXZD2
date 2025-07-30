@@ -1,8 +1,10 @@
 https://raw.githubusercontent.com/1a57danc3/gfvvlist/a9df5889786c4eb129d963e5f8289be601d67c67/pac.txt
 https://raw.githubusercontent.com/1amfine2333/img/1154ed97e3527e3c3276d74709d4bf23fb1bbc92/ha.txt
+https://raw.githubusercontent.com/250992941/iptv/1fe3de6ad61459c8d14d27622174bb74136ce4aa/a.txt
 https://raw.githubusercontent.com/250992941/iptv/1fe3de6ad61459c8d14d27622174bb74136ce4aa/p3.txt
 https://raw.githubusercontent.com/250992941/iptv/1fe3de6ad61459c8d14d27622174bb74136ce4aa/st3.txt
 https://raw.githubusercontent.com/80947108/jiekou/4b06fcabe0f84b32313edcda7a1df1f3c75288c9/1.txt
+https://raw.githubusercontent.com/80947108/jiekou/4b06fcabe0f84b32313edcda7a1df1f3c75288c9/2.txt
 https://raw.githubusercontent.com/80947108/jiekou/4b06fcabe0f84b32313edcda7a1df1f3c75288c9/5.txt
 https://raw.githubusercontent.com/956988172/628/ca2aaf4d59e2014fd86dfae4a113217fa5530ccd/628.txt
 https://raw.githubusercontent.com/Backlinko-LLC/2020-google-searches/3fc0b1a25e12720c7ffe951f378233b8469e3632/raw_data/keywords_100_to_500/36.txt
@@ -29,6 +31,7 @@ https://raw.githubusercontent.com/Samsungbd/new24/bedfc97b414f6c003155d71df731c8
 https://raw.githubusercontent.com/Server21/IPTV-Pro/8b16fb63fd1ace7c6fa96459e6888c7f1cb02593/Anime/SteinsGate.m3u
 https://raw.githubusercontent.com/SingerLan/live/28b8535d4b606f61eacc9c4290e4b3ca3df9175a/88.txt
 https://raw.githubusercontent.com/SingerLan/live/28b8535d4b606f61eacc9c4290e4b3ca3df9175a/99.txt
+https://raw.githubusercontent.com/Sune1337/IptvPlayer/6ecad0f0248888cd07d7ffdc3d36ec3a9b2bffa1/IptvPlayer/ClientApp/src/app/background-processing/sync-channel-list.ts
 https://raw.githubusercontent.com/SuperNinjap/tvbox/b2825fe1333c0981681d32889b77580857634f43/tv.txt
 https://raw.githubusercontent.com/TokiharaSay/lists/0efaf59dc9d16c1bfab015a7e7fc9ca822d6bd40/clash-gfw-list.txt
 https://raw.githubusercontent.com/YixingLuan/BabAlign/2085ab05751d6079f08caf0d1dc9506bd6c9b198/BabelNetQuery/BabelNet-API-4.0.1/resources/jlt/pointer.txt
@@ -37,6 +40,7 @@ https://raw.githubusercontent.com/abiazizi/source/adaa51eaa66488f8e01928d3e8d7b5
 https://raw.githubusercontent.com/abiazizi/source/adaa51eaa66488f8e01928d3e8d7b547860c382c/active_7298.txt
 https://raw.githubusercontent.com/adikom/SecLists/91f24ded4e4bb9094356015ae061b5dcb1b0d7ba/mine/s3-buckets.txt
 https://raw.githubusercontent.com/aliluya1977/yg/70b6e724861f5e6c716dc242c673e53d1d6fb571/gr.txt
+https://raw.githubusercontent.com/alivetv/v/ffb1a010122b116e321209ddf99413f2eacb475c/box.txt
 https://raw.githubusercontent.com/as0ng/open/bb2d00bfebfdb7c2edebe2b9ce32a65d5f737d42/cb.txt
 https://raw.githubusercontent.com/asiaboke/asiaboke/a94d0130b242b1cbf87a6fd81b977652bb4a5927/ZJ.txt
 https://raw.githubusercontent.com/atsushi444/iptv/b2b83361044ae4596a152de4ffa84e4d735d5c8a/channel/TW.txt
@@ -69,6 +73,7 @@ https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/BR_paid_2018-12-31.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/CA_new_free_2018-02-09.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/CH_new_free_2018-12-17.csv
+https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/DE_new_free_2018-01-31.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/DE_paid_2019-03-13.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/DE_paid_2019-05-08.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/FR_paid_2018-12-19.csv
@@ -101,6 +106,7 @@ https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/VN_new_paid_2019-01-24.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/VN_paid_2018-03-20.csv
 https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/VN_paid_2019-01-07.csv
+https://raw.githubusercontent.com/girtab/girtab.github.io/a4d1946a952b81153eec47ac0c2145572209b6e6/data/csv/ZA_new_paid_2018-08-21.csv
 https://raw.githubusercontent.com/gohhh1234/iptv/b8403fbb0d44051f61c7c2285988eb6b3934d5b1/tw.txt
 https://raw.githubusercontent.com/gom6/RR/d4c974ea1317b5a8233a694a76d20ed4d6373eae/live.txt
 https://raw.githubusercontent.com/guot55/YGBH/db2753de13d7e8a539c2815692bd09b3f0a2a84c/gr.txt
@@ -113,6 +119,7 @@ https://raw.githubusercontent.com/haustjp/tv_sources/f915686219e3e8dc0e050086ce4
 https://raw.githubusercontent.com/hero1898/hero1898.github.io/ebf6944e03a3d4f147ff778431ce8efe04f844fc/li.txt
 https://raw.githubusercontent.com/hetvb/11/9ad638c808b64fa2f413d51859d91f9cdeb6f41b/12.txt
 https://raw.githubusercontent.com/hfpiao/IPTV/7dc1c68d4ec8f4e3912e078346742a9e91888214/hfpiao.m3u
+https://raw.githubusercontent.com/hfpiao/IPTV/85d59bb0fde0aa4d0358f885ff34b3afb54d4e43/hfpiao.m3u
 https://raw.githubusercontent.com/hjcmcn/z/256c162538b8c4d709334a40587d4e287a251f8f/zb.txt
 https://raw.githubusercontent.com/hl2341685/tv/2099305dc03b29c2d742d8aa2f8aa45dbd0ff2ad/TV.txt
 https://raw.githubusercontent.com/hxng1006/tv/c279984162b02753cbc3c2ecf3f0c0cf58e75cd4/mh.txt
@@ -138,6 +145,7 @@ https://raw.githubusercontent.com/latin-ocr/lexiconhomericum01ebeluoft/9baf9532c
 https://raw.githubusercontent.com/leopard888/KOH-TV/e95405a9801c8d46433e828d48d6ad1df34b3f41/th1-1.m3u8
 https://raw.githubusercontent.com/lg-yyds/gytvapi/62843b4b0ef79d706082d32089e634818fe2ccd3/output/ipv6/result.txt
 https://raw.githubusercontent.com/lin598850842/m3u/11e4e83b1d63f6d1057b8eef895c8c2789f869f9/1.txt
+https://raw.githubusercontent.com/listamake/iptvbr/33e3819f5641a2713ea31eb3157dfbae1387aab4/ch.txt
 https://raw.githubusercontent.com/liu673cn/xbb/df208b25a21b9b3de67ebe6c81c550061b6bc3d5/bb.txt
 https://raw.githubusercontent.com/liuwei0704/3322/a0e76c9fdf940bc85c0fd9229ccce2a29850e492/gr.txt
 https://raw.githubusercontent.com/liuwei0704/66/990f6125beeee999363a049a999299d0f66527e3/gr.txt
@@ -152,14 +160,23 @@ https://raw.githubusercontent.com/mememe0142/iptv-2/e6f913142efa6ac1d0956dcaa56d
 https://raw.githubusercontent.com/msp128/livetv/ca851c8d9582502ffd248ca51adb7b2b9c98fb12/cn.txt
 https://raw.githubusercontent.com/my-tv1/gangaotai/dcf22a8617f2b8426cc1d8341f00952258c36f0f/1.txt
 https://raw.githubusercontent.com/mycalvo/antontv2/8f48fcf4e281fe723c488eda67053cdc2c5a759d/var.txt
+https://raw.githubusercontent.com/myhomeapk/EV/cd9fe1177ad7485847b32733e3f7679d3d23d99a/TW.txt
 https://raw.githubusercontent.com/ncirisaif/ncirisaif.github.io/764f25d892deea48e70243ce3a9f738a3cc6527b/streams/cn.m3u
 https://raw.githubusercontent.com/ne7359/tvurl/c519b639f5aad25360ae2f3ef9369dea32eecc89/zb.txt
 https://raw.githubusercontent.com/netoptimizer/IPTV-Analyzer/58c7bfffff06d790c6af8222360e97f8b3bee0ab/snmp/mibs/IPTV-ANALYZER-MIB.txt
 https://raw.githubusercontent.com/oeg-upm/easytv-resources/7cf5229739d9e781c005b75713ffcf52755e7841/babel/jlt/pointer.txt
+https://raw.githubusercontent.com/oeg-upm/easytv-semantic-annotator/96e15c23cdfdbcf684a6efbd308d7c54215795af/easytv-annotator/resources/jlt/pointer.txt
 https://raw.githubusercontent.com/ottnav/ottnav.github.io/274b5ff40fed24363119f9051d264221356958b3/faq.md
 https://raw.githubusercontent.com/practicezerg/Lesson/5edbfc148b5f8182859e54ffc936fdd26479e8a6/!Lesson/for%20log.txt
 https://raw.githubusercontent.com/profekadi/iptv/1ab96652a545ff3c4d5996bec59795a150b64843/iptv3.m3u
 https://raw.githubusercontent.com/qi700/datadel/6175ecae32cbc6115783f3e05efc9bae45b502da/%E7%94%B5%E5%AD%90%E6%94%BF%E5%8A%A1/%E5%9B%BD%E9%99%85%E7%94%B5%E4%BF%A1%E7%9B%91%E7%AE%A1%E5%AF%B9%E6%88%91%E5%9B%BD%E7%9A%84%E5%90%AF%E7%A4%BA.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/03d73a3c1bc791ef5644347b65b55ded.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/5fe8b198f8dc23641dffc863c1aafc56.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/735c40480748b89186bb0b4929de5643.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/8a7bd0a6c5cab3a50e77d8159efb9607.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/d8a324bd0634a61a5e159d6a8b9aad16.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/e8417bca3483fe4eb7bfaa8e5e026093.txt
+https://raw.githubusercontent.com/qjlxg/vt/00ae4f621628e7ba270f43b1eaa06e297509be40/cache/feb449e2a40745bcf7907a6dda93f372.txt
 https://raw.githubusercontent.com/qq859/cj/7ed4e90f57643b80b08a1a9230d7fd588dd47911/hy.txt
 https://raw.githubusercontent.com/s7ck-Team/exploit-db/d8beff1b244df756db7e2c1b2dccad9778328ea1/files/Friendly-Tech%20FriendlyTR69%20CPE%20Remote%20Management%202.8.9%20-%20SQL%20Injection.txt
 https://raw.githubusercontent.com/sbu-kalm/KALM/56a2e1b600de3b7f47d8ee9522e6336a19f47fd1/server/api/resources/jlt/pointer.txt
@@ -169,6 +186,8 @@ https://raw.githubusercontent.com/sefakozan/turkce-iptv/938af36a07aa0e3a9412e1ab
 https://raw.githubusercontent.com/sh377c0d3/Payloads/ddb895fdb660ca20b2fae0103625950dce4446af/Discovery/Web-Content/AWS/s3.txt
 https://raw.githubusercontent.com/shark8818/TVLive/b64c729e5712c1daa335f4832f993aea1db731ef/M3U/IPTV-IPV6.m3u
 https://raw.githubusercontent.com/shiran588/m3u/f2bfe7d8245d3dd83e8794e38330d760f146ed07/cr.txt
+https://raw.githubusercontent.com/sing-group/eSDRSexample/3efbe209aa1488efd17b28b48d46bd2e2a21f971/resources/jlt/pointer.txt
+https://raw.githubusercontent.com/sing-group/strep/db5e3d1af25fd5000ee1ffd40ecf338df9c9745b/strep-docker/resources/jlt/pointer.txt
 https://raw.githubusercontent.com/snhydjd123/iptv/b0279a3d1486e9a70979ab798858ea363b92f831/ip4.txt
 https://raw.githubusercontent.com/ssili126/ds/e1493f88531a7888e8b3bd4ed0b354db4d4d862c/ds.txt
 https://raw.githubusercontent.com/sugdove/github-trending/7f3bcac2b4a5786a50dc1a1b7134001015ba4c00/archive/daily/2020/07/05/JavaScript.csv
