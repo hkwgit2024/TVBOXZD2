@@ -4,19 +4,8 @@
 search_keywords: # 请确保此行顶格写，无前导空格
   # 通用英文关键词
   - "iptv links" # 稍微放宽，依赖后续过滤
-  - "m3u8 playlist"
-  - "iptv list"
-  - "m3u channels"
-  - "iptv channels"
-  - "live tv playlist"
-  - "free iptv"
-  - "public iptv"
-  - "tv channels list"
-  - "stream list"
-  - "live stream list"
-  - "m3u stream"
-  - "m3u8 stream"
 
+  
 # 网络配置
 network:
   check_timeout: 8                    # 检查单个频道链接可用性的超时时间（秒）
@@ -164,8 +153,8 @@ output: # 请确保此行顶格写，无前导空格
   paths:
     channels_dir: "temp_channels"    # 临时频道文件目录
     output_dir: "output"             # 最终输出目录
-    final_iptv_file: "iptv_list.txt" # 最终 IPTV 列表文件
-    uncategorized_channels_file: "uncategorized_iptv.txt" # 未分类频道文件
+    final_iptv_file: "output/iptv_list.txt" # 最终 IPTV 列表文件
+    uncategorized_channels_file: "output/uncategorized_iptv.txt" # 未分类频道文件
     channel_cache_file: "config/channel_cache.json" # 频道缓存文件
     keyword_stats_file: "config/keyword_stats.json" # 关键词统计文件
 
