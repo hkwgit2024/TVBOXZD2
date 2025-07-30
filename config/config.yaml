@@ -13,7 +13,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
+  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
   log_file: "logs/iptv.log"          # 日志文件路径
 
 # GitHub API 配置
