@@ -9,17 +9,13 @@ network:
   requests_pool_size: 100             # Requests 连接池大小
   requests_retry_total: 0             # Requests 重试总次数
   requests_retry_backoff_factor: 1.5  # Requests 重试间隔回退因子
-  max_retries_per_url: 0             # 单个 URL 的最大重试次数
+  max_retries_per_url: 0              # 单个 URL 的最大重试次数
 
 # 日志配置
 logging:
   log_level: "DEBUG"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
   log_file: "logs/iptv.log"          # 日志文件路径
-  
-github:
-  repo_owner: "qjlxg" # 您的GitHub用户名，请保持双引号
-  repo_name: "vt" # 您的仓库名称，请保持双引号
-  
+
 # URL 状态管理
 url_state:
   expiration_days: 10                 # URL 状态过期时间（天）
@@ -29,228 +25,387 @@ url_state:
 
 # 频道保留策略
 channel_retention:
-  stream_fail_threshold: 5           # 流媒体失败次数阈值，超过后移除
+  stream_fail_threshold: 5            # 流媒体失败次数阈值，超过后移除
   stream_retention_hours: 168        # 流媒体保留时间（小时）
   channel_fail_threshold: 0          # 频道失败次数阈值
-  url_fail_threshold: 0              # URL 失败次数阈值
+  [cite_start]url_fail_threshold: 2              # URL 失败次数阈值，已调整为2，避免过度清理 [cite: 1, 4]
   url_retention_hours: 72            # URL 保留时间（小时）
 
-# GitHub API 配置
-github:
-  per_page: 100                      # 每页搜索结果数量
-  max_search_pages: 5                # 最大搜索页数
-  api_timeout: 60                    # GitHub API 请求超时时间（秒）
-  retry_wait: 60                     # 速率限制达到后的等待时间（秒）
-  rate_limit_threshold: 3            # 触发速率限制的剩余请求阈值
-  search_updated_within_days: 30     # 搜索最近更新的文件（天）
+# [cite_start]GitHub API 配置 [cite: 2]
+[cite_start]github: # 合并后的 GitHub 配置块 [cite: 2, 4, 5]
+  repo_owner: "qjlxg" # 您的GitHub用户名，请保持双引号
+  repo_name: "vt" # 您的仓库名称，请保持双引号
+  [cite_start]per_page: 100                      # 每页搜索结果数量 [cite: 4]
+  [cite_start]max_search_pages: 5                # 最大搜索页数 [cite: 5]
+  [cite_start]api_timeout: 60                    # GitHub API 请求超时时间（秒） [cite: 5]
+  [cite_start]retry_wait: 60                     # 速率限制达到后的等待时间（秒） [cite: 5]
+  [cite_start]rate_limit_threshold: 3            # 触发速率限制的剩余请求阈值 [cite: 5]
+  [cite_start]search_updated_within_days: 30     # 搜索最近更新的文件（天） [cite: 5]
 
-# 输出配置
+# [cite_start]输出配置 [cite: 5, 6]
 output:
-  format: "txt"                      # 输出格式（目前支持 txt）
+  [cite_start]format: "txt"                      # 输出格式（目前支持 txt） [cite: 6]
   paths:
-    channels_dir: "temp_channels"    # 临时频道文件目录
-    output_dir: "output"             # 最终输出目录
-    final_iptv_file: "iptv_list.txt" # 最终 IPTV 列表文件
-    uncategorized_channels_file: "uncategorized_iptv.txt" # 未分类频道文件
-    channel_cache_file: "config/channel_cache.json"       # 频道缓存文件
-    keyword_stats_file: "config/keyword_stats.json"       # 关键词统计文件
+    [cite_start]channels_dir: "temp_channels"    # 临时频道文件目录 [cite: 6]
+    [cite_start]output_dir: "output"             # 最终输出目录 [cite: 6]
+    [cite_start]final_iptv_file: "iptv_list.txt" # 最终 IPTV 列表文件 [cite: 6]
+    [cite_start]uncategorized_channels_file: "uncategorized_iptv.txt" # 未分类频道文件 [cite: 6]
+    [cite_start]channel_cache_file: "config/channel_cache.json" # 频道缓存文件 [cite: 1, 6]
+    [cite_start]keyword_stats_file: "config/keyword_stats.json" # 关键词统计文件 [cite: 6]
 
-# 性能监控
+# [cite_start]性能监控 [cite: 6, 7]
 performance_monitor:
-  enabled: true                      # 是否启用性能监控
-  log_interval: 100                  # 性能日志记录间隔（每处理 N 个频道/URL）
+  [cite_start]enabled: true                      # 是否启用性能监控 [cite: 6, 7]
+  [cite_start]log_interval: 100                  # 性能日志记录间隔（每处理 N 个频道/URL） [cite: 7]
 
-# GitHub 搜索关键词
+# [cite_start]GitHub 搜索关键词 [cite: 7]
 search_keywords:
-  - "IPTV"                         # 搜索 IPTV 直播源
-  - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
+  - [cite_start]"IPTV"                         # 搜索 IPTV 直播源 [cite: 7]
+  - [cite_start]"playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名 [cite: 7]
 
-# 备用 URL 源
+# [cite_start]备用 URL 源 [cite: 7, 8]
 backup_urls:
-  - "https://raw.githubusercontent.com/example/repo/main/iptv_urls.txt" # 示例备用 URL 1
-  - "https://example.com/iptv_list.txt" # 示例备用 URL 2
+  - [cite_start]"https://raw.githubusercontent.com/example/repo/main/iptv_urls.txt" # 示例备用 URL 1 [cite: 7]
+  - [cite_start]"https://example.com/iptv_list.txt" # 示例备用 URL 2 [cite: 8]
 
-# 频道名称过滤词（小写匹配）
+# [cite_start]频道名称过滤词（小写匹配） [cite: 8]
 name_filter_words:
-  - "购物"                           # 过滤购物频道
-  - "理财"                           # 过滤理财频道
-  - "导视"                           # 过滤导视频道
-  - "指南"                           # 过滤指南频道
-  - "芒果"                           # 过滤芒果TV（视具体需求调整）
-  - "cgtn"                           # 保留 CGTN（官方媒体）
-  - "(480p)"                         # 过滤低分辨率标识
-  - "(360p)"                         # 过滤低分辨率标识
-  - "(240p)"                         # 过滤低分辨率标识
-  - "[not 24/7]"                    # 过滤非全天候直播
-  - "dj"                             # 过滤 DJ 相关频道
-  - "演唱会"                         # 过滤演唱会内容
-  - "舞曲"                           # 过滤舞曲内容
-  - "春晚"                           # 过滤春晚内容
-  - "格斗"                           # 过滤格斗内容
-  - "广播"                           # 过滤广播频道
-  - "博斯"                           # 过滤台湾博斯体育频道系列
-  - "神话"                           # 过滤神话相关频道
-  - "失效"                           # 过滤标有“失效”的频道
-  - "demo"                           # 过滤测试频道
-  - "backup"                         # 过滤备份频道
-  - "内测"                           # 过滤内测频道
-  - "测试频道"                       # 过滤测试频道
-  - "广告"                           # 过滤广告频道
-  - "已过期"                         # 过滤已过期频道
-  - "禁用"                           # 过滤禁用频道
-  - "无效"                           # 过滤无效频道
-  - "勿扰"                           # 过滤标有“勿扰”的频道
-  - "仅供参考"                       # 过滤仅供参考的频道
-  - "过期"                           # 过滤过期频道
-  - "不可用"                         # 过滤不可用频道
-  - "样本"                           # 过滤样本频道
-  - "temp"                           # 过滤临时频道
-  - "radio"                          # 过滤广播频道
-  - "fm"                             # 过滤 FM 广播
-  - "低清"                           # 过滤低清频道
-  - "标清"                           # 过滤标清频道
-  - "无效源"                         # 过滤无效源
-  - "错误"                           # 过滤错误频道
-  - "故障"                           # 过滤故障频道
-  - "未授权"                         # 过滤未授权频道
-  - "付费"                           # 过滤付费频道
-  - "vip"                            # 过滤 VIP 频道
-  - "订阅"                           # 过滤订阅频道
-  - "sem moderação"                  # 过滤葡萄牙语“无审查”频道
-  - "eixo do mal"                    # 过滤葡萄牙语“邪恶轴心”频道
+  - [cite_start]"购物"                           # 过滤购物频道 [cite: 8]
+  - [cite_start]"理财"                           # 过滤理财频道 [cite: 8]
+  - [cite_start]"导视"                           # 过滤导视频道 [cite: 8]
+  - [cite_start]"指南"                           # 过滤指南频道 [cite: 9]
+  - [cite_start]"芒果"                           # 过滤芒果TV（视具体需求调整） [cite: 9]
+  - [cite_start]"cgtn"                           # 保留 CGTN（官方媒体） [cite: 9]
+  - [cite_start]"(480p)"                         # 过滤低分辨率标识 [cite: 9]
+  - [cite_start]"(360p)"                         # 过滤低分辨率标识 [cite: 10]
+  - [cite_start]"(240p)"                         # 过滤低分辨率标识 [cite: 10]
+  - [cite_start]"[not 24/7]"                     # 过滤非全天候直播 [cite: 10, 11]
+  - [cite_start]"dj"                             # 过滤 DJ 相关频道 [cite: 11]
+  - [cite_start]"演唱会"                         # 过滤演唱会内容 [cite: 11]
+  - [cite_start]"舞曲"                           # 过滤舞曲内容 [cite: 11]
+  - [cite_start]"春晚"                           # 过滤春晚内容 [cite: 12]
+  - [cite_start]"格斗"                           # 过滤格斗内容 [cite: 12]
+  - [cite_start]"广播"                           # 过滤广播频道 [cite: 12]
+  - [cite_start]"博斯"                           # 过滤台湾博斯体育频道系列 [cite: 12, 13]
+  - [cite_start]"神话"                           # 过滤神话相关频道 [cite: 13]
+  - [cite_start]"失效"                           # 过滤标有“失效”的频道 [cite: 13]
+  - [cite_start]"demo"                           # 过滤测试频道 [cite: 13, 14]
+  - [cite_start]"backup"                         # 过滤备份频道 [cite: 14]
+  - [cite_start]"内测"                           # 过滤内测频道 [cite: 14]
+  - [cite_start]"测试频道"                       # 过滤测试频道 [cite: 14, 15]
+  - [cite_start]"广告"                           # 过滤广告频道 [cite: 15]
+  - [cite_start]"已过期"                         # 过滤已过期频道 [cite: 15]
+  - [cite_start]"禁用"                           # 过滤禁用频道 [cite: 15]
+  - [cite_start]"无效"                           # 过滤无效频道 [cite: 16]
+  - [cite_start]"勿扰"                           # 过滤标有“勿扰”的频道 [cite: 16]
+  - [cite_start]"仅供参考"                       # 过滤仅供参考的频道 [cite: 16]
+  - [cite_start]"过期"                           # 过滤过期频道 [cite: 16, 17]
+  - [cite_start]"不可用"                         # 过滤不可用频道 [cite: 17]
+  - [cite_start]"样本"                           # 过滤样本频道 [cite: 17]
+  - [cite_start]"temp"                           # 过滤临时频道 [cite: 17, 18]
+  - [cite_start]"radio"                          # 过滤广播频道 [cite: 18]
+  - [cite_start]"fm"                             # 过滤 FM 广播 [cite: 18]
+  - [cite_start]"低清"                           # 过滤低清频道 [cite: 18, 19]
+  - [cite_start]"标清"                           # 过滤标清频道 [cite: 19]
+  - [cite_start]"无效源"                         # 过滤无效源 [cite: 19]
+  - [cite_start]"错误"                           # 过滤错误频道 [cite: 19]
+  - [cite_start]"故障"                           # 过滤故障频道 [cite: 20]
+  - [cite_start]"未授权"                         # 过滤未授权频道 [cite: 20]
+  - [cite_start]"付费"                           # 过滤付费频道 [cite: 20]
+  - [cite_start]"vip"                            # 过滤 VIP 频道 [cite: 20, 21]
+  - [cite_start]"订阅"                           # 过滤订阅频道 [cite: 21]
+  - [cite_start]"sem moderação"                  # 过滤葡萄牙语“无审查”频道 [cite: 21]
+  - [cite_start]"eixo do mal"                    # 过滤葡萄牙语“邪恶轴心”频道 [cite: 21]
 
-# 频道名称替换规则（键: 待替换内容, 值: 替换后内容，小写匹配）
+# [cite_start]频道名称替换规则（键: 待替换内容, 值: 替换后内容，小写匹配） [cite: 21]
 channel_name_replacements:
-  fhd: ""                            # 移除 FHD 标识
-  hd: ""                             # 移除 HD 标识
-  sd: ""                             # 移除 SD 标识
-  频道: ""                           # 移除“频道”字样
-  高清: ""                           # 移除“高清”字样
-  超清: ""                           # 移除“超清”字样
-  标清: ""                           # 移除“标清”字样
-  低清: ""                           # 移除“低清”字样
-  "4k": ""                           # 移除 4K 标识
-  "4kr": ""                          # 移除 4KR 标识
-  "8k": ""                           # 移除 8K 标识
-  "hevc": "H.265"                    # 替换 HEVC 为 H.265
-  "h265": "H.265"                    # 替换 H265 为 H.265
-  "av1": "AV1"                       # 替换 AV1
-  "hdr10+": "HDR"                    # 替换 HDR10+ 为 HDR
-  "hdr": "HDR"                       # 保留 HDR
-  "(直播)": ""                       # 移除“直播”标识
-  "测试": ""                         # 移除“测试”标识
-  "失效": ""                         # 移除“失效”标识
-  直播: ""                           # 移除“直播”字样
-  省台: ""                           # 移除“省台”字样
-  市台: ""                           # 移除“市台”字样
-  中央: "CCTV"                       # 替换“中央”为 CCTV
-  央视: "CCTV"                       # 替换“央视”为 CCTV
-  cctv1综合: "CCTV1"                # 替换 CCTV1 综合
-  cctv2财经: "CCTV2"                # 替换 CCTV2 财经
-  cctv3综艺: "CCTV3"                # 替换 CCTV3 综艺
-  cctv4中文国际: "CCTV4"            # 替换 CCTV4 中文国际
-  cctv4亚洲: "CCTV4"                # 替换 CCTV4 亚洲
-  cctv4欧洲: "CCTV4"                # 替换 CCTV4 欧洲
-  cctv4美洲: "CCTV4"                # 替换 CCTV4 美洲
-  cctv5体育: "CCTV5"                # 替换 CCTV5 体育
-  "cctv5+体育赛事": "CCTV5+"        # 替换 CCTV5+ 体育赛事
-  cctv6电影: "CCTV6"                # 替换 CCTV6 电影
-  cctv7国防军事: "CCTV7"            # 替换 CCTV7 国防军事
-  cctv7军事农业: "CCTV7"            # 替换 CCTV7 军事农业
-  cctv8电视剧: "CCTV8"              # 替换 CCTV8 电视剧
-  cctv9纪录: "CCTV9"                # 替换 CCTV9 纪录
-  cctv10科教: "CCTV10"              # 替换 CCTV10 科教
-  cctv11戏曲: "CCTV11"              # 替换 CCTV11 戏曲
-  cctv12社会与法: "CCTV12"          # 替换 CCTV12 社会与法
-  cctv13新闻: "CCTV13"              # 替换 CCTV13 新闻
-  cctv14少儿: "CCTV14"              # 替换 CCTV14 少儿
-  cctv15音乐: "CCTV15"              # 替换 CCTV15 音乐
-  cctv16奥林匹克: "CCTV16"          # 替换 CCTV16 奥林匹克
-  cctv17农业农村: "CCTV17"          # 替换 CCTV17 农业农村
-  "cctv-1": "CCTV1"                 # 替换 CCTV-1
-  "cctv-5": "CCTV5"                 # 替换 CCTV-5
-  湖南卫视高清: "湖南卫视"          # 替换湖南卫视高清
-  北京卫视高清: "北京卫视"          # 替换北京卫视高清
-  浙江卫视高清: "浙江卫视"          # 替换浙江卫视高清
-  江苏卫视高清: "江苏卫视"          # 替换江苏卫视高清
-  山东卫视高清: "山东卫视"          # 替换山东卫视高清
-  "-": " "                           # 替换连字符为空格
-  备用: ""                           # 移除“备用”字样
-  backup: ""                         # 移除“backup”字样
-  临时: ""                           # 移除“临时”字样
-  temp: ""                           # 移除“temp”字样
+  [cite_start]fhd: ""                            # 移除 FHD 标识 [cite: 22]
+  [cite_start]hd: ""                             # 移除 HD 标识 [cite: 22]
+  [cite_start]sd: ""                             # 移除 SD 标识 [cite: 22, 23]
+  [cite_start]频道: ""                           # 移除“频道”字样 [cite: 23]
+  [cite_start]高清: ""                           # 移除“高清”字样 [cite: 23]
+  [cite_start]超清: ""                           # 移除“超清”字样 [cite: 23]
+  [cite_start]标清: ""                           # 移除“标清”字样 [cite: 24]
+  [cite_start]低清: ""                           # 移除“低清”字样 [cite: 24]
+  [cite_start]"4k": ""                           # 移除 4K 标识 [cite: 24]
+  [cite_start]"4kr": ""                          # 移除 4KR 标识 [cite: 24, 25]
+  [cite_start]"8k": ""                           # 移除 8K 标识 [cite: 25]
+  [cite_start]"hevc": "H.265"                    # 替换 HEVC 为 H.265 [cite: 25]
+  [cite_start]"h265": "H.265"                    # 替换 H265 为 H.265 [cite: 25, 26]
+  [cite_start]"av1": "AV1"                       # 替换 AV1 [cite: 26]
+  [cite_start]"hdr10+": "HDR"                    # 替换 HDR10+ 为 HDR [cite: 26]
+  [cite_start]"hdr": "HDR"                       # 保留 HDR [cite: 26]
+  [cite_start]"(直播)": ""                       # 移除“直播”标识 [cite: 27]
+  [cite_start]"测试": ""                         # 移除“测试”标识 [cite: 27]
+  [cite_start]"失效": ""                         # 移除“失效”标识 [cite: 27]
+  [cite_start]直播: ""                           # 移除“直播”字样 [cite: 27, 28]
+  [cite_start]省台: ""                           # 移除“省台”字样 [cite: 28]
+  [cite_start]市台: ""                           # 移除“市台”字样 [cite: 28]
+  [cite_start]中央: "CCTV"                       # 替换“中央”为 CCTV [cite: 28, 29]
+  [cite_start]央视: "CCTV"                       # 替换“央视”为 CCTV [cite: 29]
+  [cite_start]cctv1综合: "CCTV1"                # 替换 CCTV1 综合 [cite: 29]
+  [cite_start]cctv2财经: "CCTV2"                # 替换 CCTV2 财经 [cite: 29]
+  [cite_start]cctv3综艺: "CCTV3"                # 替换 CCTV3 综艺 [cite: 29]
+  [cite_start]cctv4中文国际: "CCTV4"            # 替换 CCTV4 中文国际 [cite: 29, 30]
+  [cite_start]cctv4亚洲: "CCTV4"                # 替换 CCTV4 亚洲 [cite: 30]
+  [cite_start]cctv4欧洲: "CCTV4"                # 替换 CCTV4 欧洲 [cite: 30]
+  [cite_start]cctv4美洲: "CCTV4"                # 替换 CCTV4 美洲 [cite: 30]
+  [cite_start]cctv5体育: "CCTV5"                # 替换 CCTV5 体育 [cite: 30, 31]
+  [cite_start]"cctv5+体育赛事": "CCTV5+"        # 替换 CCTV5+ 体育赛事 [cite: 31]
+  [cite_start]cctv6电影: "CCTV6"                # 替换 CCTV6 电影 [cite: 31]
+  [cite_start]cctv7国防军事: "CCTV7"            # 替换 CCTV7 国防军事 [cite: 31]
+  [cite_start]cctv7军事农业: "CCTV7"            # 替换 CCTV7 军事农业 [cite: 31]
+  [cite_start]cctv8电视剧: "CCTV8"              # 替换 CCTV8 电视剧 [cite: 31]
+  [cite_start]cctv9纪录: "CCTV9"                # 替换 CCTV9 纪录 [cite: 31, 32]
+  [cite_start]cctv10科教: "CCTV10"              # 替换 CCTV10 科教 [cite: 32]
+  [cite_start]cctv11戏曲: "CCTV11"              # 替换 CCTV11 戏曲 [cite: 32]
+  [cite_start]cctv12社会与法: "CCTV12"          # 替换 CCTV12 社会与法 [cite: 32]
+  [cite_start]cctv13新闻: "CCTV13"              # 替换 CCTV13 新闻 [cite: 32]
+  [cite_start]cctv14少儿: "CCTV14"              # 替换 CCTV14 少儿 [cite: 32, 33]
+  [cite_start]cctv15音乐: "CCTV15"              # 替换 CCTV15 音乐 [cite: 33]
+  [cite_start]cctv16奥林匹克: "CCTV16"          # 替换 CCTV16 奥林匹克 [cite: 33]
+  [cite_start]cctv17农业农村: "CCTV17"          # 替换 CCTV17 农业农村 [cite: 33]
+  [cite_start]"cctv-1": "CCTV1"                 # 替换 CCTV-1 [cite: 33]
+  [cite_start]"cctv-5": "CCTV5"                 # 替换 CCTV-5 [cite: 33, 34]
+  [cite_start]湖南卫视高清: "湖南卫视"          # 替换湖南卫视高清 [cite: 34]
+  [cite_start]北京卫视高清: "北京卫视"          # 替换北京卫视高清 [cite: 34]
+  [cite_start]浙江卫视高清: "浙江卫视"          # 替换浙江卫视高清 [cite: 34]
+  [cite_start]江苏卫视高清: "江苏卫视"          # 替换江苏卫视高清 [cite: 34]
+  [cite_start]山东卫视高清: "山东卫视"          # 替换山东卫视高清 [cite: 34]
+  [cite_start]"-": " "                           # 替换连字符为空格 [cite: 35]
+  [cite_start]备用: ""                           # 移除“备用”字样 [cite: 35]
+  [cite_start]backup: ""                         # 移除“backup”字样 [cite: 35]
+  [cite_start]临时: ""                           # 移除“临时”字样 [cite: 36]
+  [cite_start]temp: ""                           # 移除“temp”字样 [cite: 36]
 
-# 频道分类优先顺序
+performance_monitor:
+  [cite_start]enabled: True # 是否启用性能监控 [cite: 36]
+  [cite_start]log_interval: 10 # 每处理多少个任务打印一次进度日志 [cite: 36]
+
+# 定义分类的顺序，从上到下表示优先级。
+# 脚本将按此顺序尝试匹配频道，第一个匹配的类别将获胜。
 ordered_categories:
-  - "CCTV频道"                      # 央视频道
-  - "卫视频道"                      # 卫视频道
-  - "地方频道"                      # 地方台频道
-  - "北京频道"                      # 北京地方频道
-  - "上海频道"                      # 上海地方频道
-  - "广东频道"                      # 广东地方频道
-  - "湖南频道"                      # 湖南地方频道
-  - "浙江频道"                      # 浙江地方频道
-  - "江苏频道"                      # 江苏地方频道
-  - "山东频道"                      # 山东地方频道
-  - "四川频道"                      # 四川地方频道
-  - "港台频道"                      # 港澳台频道
-  - "国际频道"                      # 国际频道
-  - "新闻频道"                      # 新闻频道
-  - "体育频道"                      # 体育频道
-  - "电影频道"                      # 电影频道
-  - "电视剧频道"                    # 电视剧频道
-  - "综艺频道"                      # 综艺频道
-  - "纪录片频道"                    # 纪录片频道
-  - "少儿频道"                      # 少儿频道
-  - "教育频道"                      # 教育频道
-  - "财经频道"                      # 财经频道
-  - "音乐频道"                      # 音乐频道
-  - "生活频道"                      # 生活频道
-  - "4K/8K超高清"                   # 4K/8K 超高清频道
-  - "HDR频道"                       # HDR 频道
-  - "H.265/HEVC频道"                # H.265/HEVC 频道
-  - "AV1频道"                       # AV1 编码频道
-  - "IPv6专用"                      # IPv6 专用频道
-  - "低延迟专区"                    # 低延迟频道
-  - "其他频道"                      # 其他未分类频道
+  - CCTV频道
+  - 港台频道
+  - 国际频道
+  - 新闻频道
+  - 体育频道
+  - 纪录片频道
+  - 少儿频道
+  - 教育频道
+  - 财经频道
+  - 音乐频道
+  - 生活频道
+  - 卫视频道 # 卫视通常是省级，放在其他更具体频道之后
+  - 地方频道 # 放在最后，以捕获所有未被更具体分类捕获的地方频道
 
-# 分类关键词
+# [cite_start]各类别对应的关键字列表 [cite: 36]
 category_keywords:
-  CCTV频道: ["CCTV", "中央", "央视"] # 央视相关关键词
-  卫视频道: ["卫视", "湖南", "浙江", "江苏", "山东", "北京", "上海", "广东"] # 卫视相关关键词
-  地方频道: ["地方", "省台", "市台"] # 地方台关键词
-  北京频道: ["北京", "BTV"]         # 北京地方频道关键词
-  上海频道: ["上海", "东方"]         # 上海地方频道关键词
-  广东频道: ["广东", "珠江", "南方"] # 广东地方频道关键词
-  湖南频道: ["湖南", "芒果"]         # 湖南地方频道关键词
-  浙江频道: ["浙江"]                 # 浙江地方频道关键词
-  江苏频道: ["江苏"]                 # 江苏地方频道关键词
-  山东频道: ["山东"]                 # 山东地方频道关键词
-  四川频道: ["四川"]                 # 四川地方频道关键词
-  港台频道: ["香港", "澳门", "台湾", "TVB", "凤凰"] # 港澳台频道关键词
-  国际频道: ["国际", "CGTN", "NHK", "BBC", "CNN"] # 国际频道关键词
-  新闻频道: ["新闻", "资讯"]         # 新闻频道关键词
-  体育频道: ["体育", "CCTV5", "ESPN"] # 体育频道关键词
-  电影频道: ["电影", "CCTV6"]        # 电影频道关键词
-  电视剧频道: ["电视剧", "CCTV8"]    # 电视剧频道关键词
-  综艺频道: ["综艺", "CCTV3"]        # 综艺频道关键词
-  纪录片频道: ["纪录", "CCTV9"]      # 纪录片频道关键词
-  少儿频道: ["少儿", "CCTV14", "卡通"] # 少儿频道关键词
-  教育频道: ["教育", "科教", "CCTV10"] # 教育频道关键词
-  财经频道: ["财经", "CCTV2"]        # 财经频道关键词
-  音乐频道: ["音乐", "CCTV15"]       # 音乐频道关键词
-  生活频道: ["生活", "健康", "美食"] # 生活频道关键词
-  4K/8K超高清: ["4K", "8K"]          # 4K/8K 超高清关键词
-  HDR频道: ["HDR", "HDR10"]          # HDR 频道关键词
-  H.265/HEVC频道: ["H.265", "HEVC"]  # H.265/HEVC 频道关键词
-  AV1频道: ["AV1"]                   # AV1 编码频道关键词
-  IPv6专用: ["IPv6"]                 # IPv6 专用频道关键词
-  低延迟专区: ["低延迟"]             # 低延迟频道关键词
-  其他频道: []                       # 未分类频道（兜底）
+  CCTV频道:
+    - CCTV
+    - 央视
+  [cite_start]卫视频道: [cite: 37]
+    - 卫视
+    - 凤凰
+    - 东方
+    - 东南
+    - 深圳
+    - 湖南
+    - 浙江
+    - 江苏
+    - 安徽
+    - 湖北
+    - 河南
+    - 河北
+    - 山东
+    - 辽宁
+    - 吉林
+    - 黑龙江
+    - 四川
+    - 重庆
+    - 云南
+    - [cite_start]贵州 [cite: 38]
+    - 陕西
+    - 甘肃
+    - 青海
+    - 宁夏
+    - 新疆
+    - 福建
+    - 江西
+    - 广东
+    - 广西
+    - 海南
+    - 天津
+    - 上海
+    - 北京
+    - 西藏
+    - 内蒙古
+    - 兵团
+  [cite_start]地方频道: # 针对市级、区级、县级电视台或特定城市频道 [cite: 38]
+    - 城市
+    - 镇
+    - [cite_start]县 [cite: 39]
+    - 区
+    - 地方
+    - 北京卫视
+    - 东方卫视
+    - 天津卫视
+    - 重庆卫视
+    - 延边
+    - 德州
+    - 青州
+    - 河源
+    - 晋江
+    - 徐州
+    - 张家港
+    - 靖江
+    - 栖霞
+    - 武进
+    - 余姚
+    - 余杭
+    - 兰考
+    - [cite_start]农安 [cite: 40]
+    - 双滦
+    - 吉林市
+    - 松原
+    - 四平
+    - 尚志
+    - 嵊州
+    - 新昌
+    - 柯桥
+    - 江阴
+    - 清苑
+    - 白山
+    - 萧山
+    - 西安
+    - 辽源
+    - 通化
+    - 鹿邑
+    - 黄岛
+    - 宿州
+    - 邯郸
+    - [cite_start]镇平 [cite: 41]
+    - 龙游
+    - 定州
+    - 晋城
+    - 西宁
+    - 乌海
+    - 东莞
+    - 上虞
+  [cite_start]港台频道: [cite: 41]
+    - 台湾
+    - 香港
+    - 澳门
+    - TVB
+    - TVBS
+    - 三立
+    - 澳视
+    - 莲花
+    - 华视
+    - 中视
+    - 公视
+  [cite_start]国际频道: [cite: 41]
+    - CNN
+    - [cite_start]BBC [cite: 42]
+    - NHK
+    - RT
+    - DW
+    - Al Jazeera
+    - France 24
+    - EuroNews
+    - CGTN
+    - VOA
+    - 越南
+    - 乌克兰
+    - 意大利
+    - 卡塔尔
+    - 亚洲新闻
+    - Bloomberg # 彭博财经也可能在国际频道
+    - Discovery
+    - National Geographic
+    - Sky News
+    - [cite_start]Fox News [cite: 43]
+  新闻频道:
+    - 新闻
+    - 资讯
+    - News
+  体育频道:
+    - 体育
+    - Sport
+    - Sports
+    - F1
+    - NBA
+    - CCTV5 # 示例，如果希望CCTV5在体育频道而非CCTV频道
+  [cite_start]纪录片频道: [cite: 43]
+    - 纪录
+    - Documentary
+    - Geo
+    - History
+  少儿频道:
+    - 少儿
+    - 卡通
+    - 儿童
+    - Kids
+    - [cite_start]Manga [cite: 44]
+    - Ani
+  教育频道:
+    - 教育
+    - 科教
+    - Edu
+    - Learning
+  财经频道:
+    - 财经
+    - 经济
+    - Business
+    - Finance
+    - stock
+    - 证券
+    - 股票
+  音乐频道:
+    - 音乐
+    - Music
+    - M2
+    - V2
+    - GOODTV
+    - MTV
+  [cite_start]生活频道: [cite: 44, 45]
+    - 生活
+    - 都市
+    - 民生
+    - 休闲
+    - 社会
+    - 综合
+    - 娱乐
+    - 综艺
+    - 人间
+    - 幸福
+    - Variety
+    - Lifestyle
 
-# URL 预筛选配置
+# [cite_start]类别别名，用于合并相似或重复的分类名称（可选） [cite: 45]
+# 在分类完成后，会将左边的类别名映射到右边的类别名
+category_aliases:
+  新闻综合: 新闻频道
+  经济生活: 财经频道
+  钱江都市: 卫视频道 # 或者 浙江钱江，取决于你希望合并到哪个更具体的类别
+  民生休闲: 生活频道
+  科教影视: 教育频道
+  娱乐: 生活频道 # 将娱乐归类到生活频道
+  综艺: 生活频道 # 将综艺归类到生活频道
+  社会生活: 生活频道
+  都市生活: 生活频道
+  体育: 体育频道
+  [cite_start]卡通: 少儿频道 [cite: 46]
+  教育: 教育频道
+  财经: 财经频道
+  音乐: 音乐频道
+  北京频道: 地方频道 # 将更宽泛的地域频道合并到地方频道
+  港台频道: 港台频道 # 保持不变，但可以作为合并目标
+  国际频道: 国际频道 # 保持不变
+  # 根据您的实际分类结果和偏好，添加更多别名
+# [cite_start]URL 预筛选配置 [cite: 46]
 url_pre_screening:
-  allowed_protocols:                 # 允许的协议
+  [cite_start]allowed_protocols:                 # 允许的协议 [cite: 46]
     - "http"
     - "https"
     - "rtmp"
@@ -260,8 +415,8 @@ url_pre_screening:
     - "p3p"
     - "hls"
     - "dash"
-    - "webrtc"                      # 新增支持 WebRTC 协议
-  stream_extensions:                 # 支持的流媒体文件扩展名
+    - [cite_start]"webrtc"                      # 新增支持 WebRTC 协议 [cite: 46, 47]
+  [cite_start]stream_extensions:                 # 支持的流媒体文件扩展名 [cite: 47]
     - ".m3u8"
     - ".m3u"
     - ".ts"
@@ -272,116 +427,116 @@ url_pre_screening:
     - ".f4m"
     - ".mpd"
     - ".ism"
-  invalid_url_patterns:              # 无效 URL 模式（正则表达式，小写匹配）
-    - "example\\.com"                # 示例域名
-    - "test\\.com"                   # 测试域名
-    - "localhost"                    # 本地主机
-    - "127\\.0\\.0\\.1"              # 本地 IP
-    - "0\\.0\\.0\\.0"                # 无效 IP
-    - "privateip"                    # 私有 IP 标识
-    - "(^|[:/@])10\\."              # 10.x.x.x 私有 IP
-    - "(^|[:/@])172\\.(1[6-9]|2[0-9]|3[01])\\." # 172.16-31.x.x 私有 IP
-    - "(^|[:/@])192\\.168\\."       # 192.168.x.x 私有 IP
-    - "dummy"                        # 虚拟 URL
-    - "demo"                         # 测试 URL
-    - "null"                         # 空 URL
-    - "invalid"                      # 无效 URL
-    - "error"                        # 错误 URL
-    - "blank"                        # 空白 URL
-    - "sample"                       # 示例 URL
-    - "temp"                         # 临时 URL
-    - "\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$" # 图片文件
-    - "\\.(css|js|html|htm|xml|txt|md|json|yml|yaml|csv|log|bak|ini|cfg|conf|map|woff|ttf|eot)$" # 文本/配置文件
-    - "\\.(zip|rar|7z|tar|gz|tgz|bz2|xz)$" # 压缩文件
-    - "\\.(pdf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp)$" # 文档文件
-    - "\\.(exe|dll|msi|apk|dmg|pkg|iso|img|bin|deb|rpm)$" # 可执行文件
-    - "(\\s|%20)"                    # 包含空格
-    - "github\\.com/(?!.*raw\\.githubusercontent\\.com)" # 非 raw 的 GitHub URL
-    - "gist\\.github\\.com/(?!.*raw\\.githubusercontent\\.com)" # 非 raw 的 Gist URL
-    - "gitee\\.com/(?!.*raw)"       # 非 raw 的 Gitee URL
-    - "youtube\\.com/(watch|embed|live)|youtu\\.be/" # YouTube 视频/直播
-    - "vimeo\\.com"                  # Vimeo 视频
-    - "dailymotion\\.com"            # Dailymotion 视频
-    - "youku\\.com"                  # 优酷视频
-    - "iqiyi\\.com"                  # 爱奇艺视频
-    - "bilibili\\.com/(video|bangumi|live)" # Bilibili 视频/直播
-    - "douyu\\.com"                  # 斗鱼直播
-    - "huya\\.com"                   # 虎牙直播
-    - "twitch\\.tv"                  # Twitch 直播
-    - "facebook\\.com/(watch|live|videos)" # Facebook 视频/直播
-    - "twitter\\.com"                # Twitter/X 链接
-    - "instagram\\.com"              # Instagram 链接
-    - "tiktok\\.com"                 # TikTok 链接
-    - "douyin\\.com"                 # 抖音链接
-    - "kuaishou\\.com"               # 快手链接
-    - "music\\.163\\.com"            # 网易云音乐
-    - "qq\\.com(?!.*live\\.qq\\.com)" # 非直播的腾讯链接
-    - "mp\\.weixin\\.qq\\.com"       # 微信公众号链接
-    - "api\\."                       # API 端点
-    - "/api/"                        # API 路径
-    - "google\\.com/search"          # Google 搜索
-    - "baidu\\.com/s\\?"             # 百度搜索
-    - "swagger"                      # Swagger 文档
-    - "admin"                        # 管理页面
-    - "login"                        # 登录页面
-    - "register"                     # 注册页面
-    - "signup"                       # 注册页面
-    - "auth"                         # 认证页面
-    - "token="                       # 包含 token 参数
-    - "key="                         # 包含 key 参数
-    - "password="                    # 包含 password 参数
-    - "payment"                      # 支付相关
-    - "subscribe"                    # 订阅相关
-    - "vpn"                          # VPN 相关
-    - "proxy"                        # 代理相关
-    - "shadowsocks"                  # Shadowsocks 相关
-    - "v2ray"                        # V2Ray 相关
-    - "trojan"                       # Trojan 相关
-    - "clash"                        # Clash 相关
-    - "surge"                        # Surge 相关
-    - "speedtest"                    # 速度测试
-    - "tracker"                      # BT 追踪器
-    - "torrent"                      # 种子文件
-    - "magnet:"                      # Magnet 链接
-    - "teststream"                   # 测试流
-    - "nullstream"                   # 空流
-    - "placeholder"                  # 占位符
-    - "example_stream"               # 示例流
-    - "your_stream_url_here"         # 占位流 URL
-    - "stream_not_found"             # 未找到的流
-    - "live_streams_not_working"     # 无效直播流
-    - "fake_stream"                  # 虚假流
-    - "dead_stream"                  # 失效流
-    - "empty\\.m3u8"                # 空 M3U8 文件
-    - "error\\.m3u8"                # 错误 M3U8 文件
-    - "expired\\.m3u8"              # 过期 M3U8 文件
-    - "failed\\.m3u8"               # 失败 M3U8 文件
-    - "broken\\.m3u8"               # 损坏 M3U8 文件
-    - "notfound\\.m3u8"             # 未找到 M3U8 文件
-    - "invalid\\.m3u8"              # 无效 M3U8 文件
-    - "blocked\\.m3u8"              # 被阻止 M3U8 文件
-    - "private\\.m3u8"              # 私有 M3U8 文件
-    - "auth\\.m3u8"                 # 需要认证的 M3U8 文件
-    - "login\\.m3u8"                # 需要登录的 M3U8 文件
-    - "signup\\.m3u8"               # 需要注册的 M3U8 文件
-    - "forbidden\\.m3u8"            # 禁止访问的 M3U8 文件
-    - "denied\\.m3u8"               # 被拒绝的 M3U8 文件
-    - "vip\\.m3u8"                  # VIP 专属 M3U8 文件
-    - "paywall\\.m3u8"              # 付费墙 M3U8 文件
-    - "subscribe\\.m3u8"            # 订阅 M3U8 文件
-    - "playlist\\.m3u8\\?streamid=0" # 无效 M3U8 播放列表
-    - "/playlist\\.m3u8\\?(uid|userid|token|key)=[^&]+" # 带用户认证的 M3U8
-    - "/live/.*\\?(_sign|auth_key|playauth|st|wssecret|wstoken|txsecret|txtime|us|ct)=[^&]+" # 带复杂认证的直播
-    - "(ftp|sftp|ftps|telnet|ssh|smb|nfs|rdp|vnc|git|svn|irc|mailto|skype|spotify):" # 不支持的协议
-    - "chinaunicom\\.com"            # 中国联通
-    - "chinatelecom\\.cn"            # 中国电信
-    - "chinamobile\\.com"            # 中国移动
-    - "vnet\\.com"                   # Vnet 网络
-    - "taobao\\.com"                 # 淘宝
-    - "tmall\\.com"                  # 天猫
-    - "jd\\.com"                     # 京东
-    - "amazon\\.com"                 # 亚马逊
-    - "ebay\\.com"                   # eBay
-    - "wikipedia\\.org"              # 维基百科
-    - "apple\\.com"                  # 苹果
-    - "microsoft\\.com"              # 微软
+  [cite_start]invalid_url_patterns:              # 无效 URL 模式（正则表达式，小写匹配） [cite: 47, 48]
+    - [cite_start]"example\\.com"                # 示例域名 [cite: 48]
+    - [cite_start]"test\\.com"                   # 测试域名 [cite: 48]
+    - [cite_start]"localhost"                    # 本地主机 [cite: 48]
+    - [cite_start]"127\\.0\\.0\\.1"              # 本地 IP [cite: 48, 49]
+    - [cite_start]"0\\.0\\.0\\.0"                # 无效 IP [cite: 49]
+    - [cite_start]"privateip"                    # 私有 IP 标识 [cite: 49]
+    - "(^|[:/@])10\\."               # [cite_start]10.x.x.x 私有 IP [cite: 49, 50]
+    - "(^|[:/@])172\\.(1[6-9]|2[0-9]|3[01])\\." # [cite_start]172.16-31.x.x 私有 IP [cite: 50]
+    - "(^|[:/@])192\\.168\\."        # [cite_start]192.168.x.x 私有 IP [cite: 50, 51]
+    - [cite_start]"dummy"                        # 虚拟 URL [cite: 51]
+    - [cite_start]"demo"                         # 测试 URL [cite: 51]
+    - [cite_start]"null"                         # 空 URL [cite: 51]
+    - [cite_start]"invalid"                      # 无效 URL [cite: 52]
+    - [cite_start]"error"                        # 错误 URL [cite: 52]
+    - [cite_start]"blank"                        # 空白 URL [cite: 52]
+    - [cite_start]"sample"                       # 示例 URL [cite: 52, 53]
+    - [cite_start]"temp"                         # 临时 URL [cite: 53]
+    - [cite_start]"\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$" # 图片文件 [cite: 53]
+    - [cite_start]"\\.(css|js|html|htm|xml|txt|md|json|yml|yaml|csv|log|bak|ini|cfg|conf|map|woff|ttf|eot)$" # 文本/配置文件 [cite: 53]
+    - [cite_start]"\\.(zip|rar|7z|tar|gz|tgz|bz2|xz)$" # 压缩文件 [cite: 53]
+    - [cite_start]"\\.(pdf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp)$" # 文档文件 [cite: 53]
+    - [cite_start]"\\.(exe|dll|msi|apk|dmg|pkg|iso|img|bin|deb|rpm)$" # 可执行文件 [cite: 53]
+    - [cite_start]"(\\s|%20)"                    # 包含空格 [cite: 53, 54]
+    - [cite_start]"github\\.com/(?!.*raw\\.githubusercontent\\.com)" # 非 raw 的 GitHub URL [cite: 54]
+    - [cite_start]"gist\\.github\\.com/(?!.*raw\\.githubusercontent\\.com)" # 非 raw 的 Gist URL [cite: 54]
+    - [cite_start]"gitee\\.com/(?!.*raw)"       # 非 raw 的 Gitee URL [cite: 54]
+    - [cite_start]"youtube\\.com/(watch|embed|live)|youtu\\.be/" # YouTube 视频/直播 [cite: 54]
+    - [cite_start]"vimeo\\.com"                  # Vimeo 视频 [cite: 54]
+    - [cite_start]"dailymotion\\.com"            # Dailymotion 视频 [cite: 55]
+    - [cite_start]"youku\\.com"                  # 优酷视频 [cite: 55]
+    - [cite_start]"iqiyi\\.com"                  # 爱奇艺视频 [cite: 55]
+    - [cite_start]"bilibili\\.com/(video|bangumi|live)" # Bilibili 视频/直播 [cite: 55]
+    - [cite_start]"douyu\\.com"                  # 斗鱼直播 [cite: 55]
+    - [cite_start]"huya\\.com"                   # 虎牙直播 [cite: 56]
+    - [cite_start]"twitch\\.tv"                  # Twitch 直播 [cite: 56]
+    - [cite_start]"facebook\\.com/(watch|live|videos)" # Facebook 视频/直播 [cite: 56]
+    - [cite_start]"twitter\\.com"                # Twitter/X 链接 [cite: 56]
+    - [cite_start]"instagram\\.com"              # Instagram 链接 [cite: 56]
+    - [cite_start]"tiktok\\.com"                 # TikTok 链接 [cite: 57]
+    - [cite_start]"douyin\\.com"                 # 抖音链接 [cite: 57]
+    - [cite_start]"kuaishou\\.com"               # 快手链接 [cite: 57]
+    - [cite_start]"music\\.163\\.com"            # 网易云音乐 [cite: 57]
+    - [cite_start]"qq\\.com(?!.*live\\.qq\\.com)" # 非直播的腾讯链接 [cite: 57]
+    - [cite_start]"mp\\.weixin\\.qq\\.com"       # 微信公众号链接 [cite: 58]
+    - "api\\."                       # [cite_start]API 端点 [cite: 58]
+    - [cite_start]"/api/"                        # API 路径 [cite: 58]
+    - [cite_start]"google\\.com/search"          # Google 搜索 [cite: 58]
+    - "baidu\\.com/s\\?"             # [cite_start]百度搜索 [cite: 59]
+    - [cite_start]"swagger"                      # Swagger 文档 [cite: 59]
+    - [cite_start]"admin"                        # 管理页面 [cite: 59]
+    - [cite_start]"login"                        # 登录页面 [cite: 59]
+    - [cite_start]"register"                     # 注册页面 [cite: 60]
+    - [cite_start]"signup"                       # 注册页面 [cite: 60]
+    - [cite_start]"auth"                         # 认证页面 [cite: 60]
+    - [cite_start]"token="                       # 包含 token 参数 [cite: 60, 61]
+    - [cite_start]"key="                         # 包含 key 参数 [cite: 61]
+    - [cite_start]"password="                    # 包含 password 参数 [cite: 61]
+    - [cite_start]"payment"                      # 支付相关 [cite: 61]
+    - [cite_start]"subscribe"                    # 订阅相关 [cite: 62]
+    - [cite_start]"vpn"                          # VPN 相关 [cite: 62]
+    - [cite_start]"proxy"                        # 代理相关 [cite: 62]
+    - [cite_start]"shadowsocks"                  # Shadowsocks 相关 [cite: 62, 63]
+    - [cite_start]"v2ray"                        # V2Ray 相关 [cite: 63]
+    - [cite_start]"trojan"                       # Trojan 相关 [cite: 63]
+    - [cite_start]"clash"                        # Clash 相关 [cite: 63, 64]
+    - [cite_start]"surge"                        # Surge 相关 [cite: 64]
+    - [cite_start]"speedtest"                    # 速度测试 [cite: 64]
+    - [cite_start]"tracker"                      # BT 追踪器 [cite: 64]
+    - [cite_start]"torrent"                      # 种子文件 [cite: 64, 65]
+    - [cite_start]"magnet:"                      # Magnet 链接 [cite: 65]
+    - [cite_start]"teststream"                   # 测试流 [cite: 65]
+    - [cite_start]"nullstream"                   # 空流 [cite: 65]
+    - [cite_start]"placeholder"                  # 占位符 [cite: 66]
+    - [cite_start]"example_stream"               # 示例流 [cite: 66]
+    - [cite_start]"your_stream_url_here"         # 占位流 URL [cite: 66]
+    - [cite_start]"stream_not_found"             # 未找到的流 [cite: 66]
+    - [cite_start]"live_streams_not_working"     # 无效直播流 [cite: 66]
+    - [cite_start]"fake_stream"                  # 虚假流 [cite: 67]
+    - [cite_start]"dead_stream"                  # 失效流 [cite: 67]
+    - [cite_start]"empty\\.m3u8"                 # 空 M3U8 文件 [cite: 67]
+    - [cite_start]"error\\.m3u8"                 # 错误 M3U8 文件 [cite: 67]
+    - [cite_start]"expired\\.m3u8"               # 过期 M3U8 文件 [cite: 67, 68]
+    - [cite_start]"failed\\.m3u8"                # 失败 M3U8 文件 [cite: 68]
+    - [cite_start]"broken\\.m3u8"                # 损坏 M3U8 文件 [cite: 68]
+    - [cite_start]"notfound\\.m3u8"              # 未找到 M3U8 文件 [cite: 68]
+    - [cite_start]"invalid\\.m3u8"               # 无效 M3U8 文件 [cite: 68]
+    - [cite_start]"blocked\\.m3u8"               # 被阻止 M3U8 文件 [cite: 68, 69]
+    - [cite_start]"private\\.m3u8"               # 私有 M3U8 文件 [cite: 69]
+    - [cite_start]"auth\\.m3u8"                  # 需要认证的 M3U8 文件 [cite: 69]
+    - [cite_start]"login\\.m3u8"                 # 需要登录的 M3U8 文件 [cite: 69]
+    - [cite_start]"signup\\.m3u8"                # 需要注册的 M3U8 文件 [cite: 69, 70]
+    - [cite_start]"forbidden\\.m3u8"             # 禁止访问的 M3U8 文件 [cite: 70]
+    - [cite_start]"denied\\.m3u8"                # 被拒绝的 M3U8 文件 [cite: 70]
+    - [cite_start]"vip\\.m3u8"                   # VIP 专属 M3U8 文件 [cite: 70]
+    - [cite_start]"paywall\\.m3u8"               # 付费墙 M3U8 文件 [cite: 70, 71]
+    - [cite_start]"subscribe\\.m3u8"             # 订阅 M3U8 文件 [cite: 71]
+    - [cite_start]"playlist\\.m3u8\\?streamid=0" # 无效 M3U8 播放列表 [cite: 71]
+    - [cite_start]"/playlist\\.m3u8\\?(uid|userid|token|key)=[^&]+" # 带用户认证的 M3U8 [cite: 71]
+    - [cite_start]"/live/.*\\?(_sign|auth_key|playauth|st|wssecret|wstoken|txsecret|txtime|us|ct)=[^&]+" # 带复杂认证的直播 [cite: 71]
+    - [cite_start]"(ftp|sftp|ftps|telnet|ssh|smb|nfs|rdp|vnc|git|svn|irc|mailto|skype|spotify):" # 不支持的协议 [cite: 71]
+    - [cite_start]"chinaunicom\\.com"            # 中国联通 [cite: 71]
+    - [cite_start]"chinatelecom\\.cn"            # 中国电信 [cite: 71]
+    - [cite_start]"chinamobile\\.com"            # 中国移动 [cite: 72]
+    - [cite_start]"vnet\\.com"                   # Vnet 网络 [cite: 72]
+    - [cite_start]"taobao\\.com"                 # 淘宝 [cite: 72]
+    - [cite_start]"tmall\\.com"                  # 天猫 [cite: 72]
+    - [cite_start]"jd\\.com"                     # 京东 [cite: 73]
+    - [cite_start]"amazon\\.com"                 # 亚马逊 [cite: 73]
+    - [cite_start]"ebay\\.com"                   # eBay [cite: 73]
+    - [cite_start]"wikipedia\\.org"              # 维基百科 [cite: 73]
+    - [cite_start]"apple\\.com"                  # 苹果 [cite: 73, 74]
+    - [cite_start]"microsoft\\.com"              # 微软 [cite: 74]
