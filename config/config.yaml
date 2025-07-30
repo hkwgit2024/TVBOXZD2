@@ -60,19 +60,19 @@ performance_monitor: # 请确保此行顶格写，无前导空格
 
 # GitHub 搜索关键词
 search_keywords: # 请确保此行顶格写，无前导空格
-  - "IPTV"                         # 搜索 IPTV 直播源
-  - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
+#  - "IPTV"                         # 搜索 IPTV 直播源
+ # - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
   - "extension:m3u8 in:file"
-  - "extension:m3u in:file"
-  - "iptv playlist extension:m3u,m3u8 in:file"
-  - "raw.githubusercontent.com path:.m3u8"
-  - "raw.githubusercontent.com path:.m3u"
-  - "tv channels extension:m3u,m3u8 in:file"
-  - "live tv extension:m3u,m3u8 in:file"
-  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
-  - "index.m3u8 in:file"
-  - "channels.m3u in:file"
-  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
+ # - "extension:m3u in:file"
+#  - "iptv playlist extension:m3u,m3u8 in:file"
+#  - "raw.githubusercontent.com path:.m3u8"
+#  - "raw.githubusercontent.com path:.m3u"
+3  - "tv channels extension:m3u,m3u8 in:file"
+#  - "live tv extension:m3u,m3u8 in:file"
+ # - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+ # - "index.m3u8 in:file"
+ # - "channels.m3u in:file"
+ # - "iptv.m3u in:file" # 增加常见iptv文件名搜索
 
 
 # 备用 URL 源
