@@ -13,7 +13,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
+  log_level: "DEBUG"                 # 日志级别（DEBUG, INFO, WARNING, ERROR）
   log_file: "logs/iptv.log"          # 日志文件路径
 
 # URL 状态管理
