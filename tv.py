@@ -50,11 +50,10 @@ def setup_logging(config):
 # 加载配置文件
 def load_config(config_path="config/config.yaml"):
     """加载并解析 YAML 配置文件"""
-    logging.debug(f"尝试加载配置文件: {config_path}")
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file)
-            logging.debug(f"配置文件内容: {config}")
+            logging.info("配置文件 config.yaml 加载成功")
             return config
     except FileNotFoundError:
         logging.error(f"错误：未找到配置文件 '{config_path}'")
@@ -100,7 +99,7 @@ session.headers.update({
 })
 pool_size = CONFIG['network']['requests_pool_size']
 retry_strategy = Retry(
-    total=CONFIG['network']['requests_retry_total'],
+    total=3,  # 增加重试次数
     backoff_factor=CONFIG['network']['requests_retry_backoff_factor'],
     status_forcelist=[429, 500, 502, 503, 504],
     allowed_methods=["HEAD", "GET", "OPTIONS"]
@@ -133,7 +132,7 @@ def fetch_from_github(file_path_in_repo):
     raw_url = f"{GITHUB_RAW_CONTENT_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = session.get(raw_url, headers=headers, timeout=10)
+        response = session.get(raw_url, headers=headers, timeout=15)
         response.raise_for_status()
         return response.text
     except requests.exceptions.RequestException as e:
@@ -146,7 +145,7 @@ def get_current_sha(file_path_in_repo):
     api_url = f"{GITHUB_API_CONTENTS_BASE_URL}/{file_path_in_repo}"
     headers = {"Authorization": f"token {GITHUB_TOKEN}"}
     try:
-        response = session.get(api_url, headers=headers, timeout=10)
+        response = session.get(api_url, headers=headers, timeout=15)
         response.raise_for_status()
         return response.json().get('sha')
     except requests.exceptions.RequestException as e:
@@ -182,11 +181,9 @@ def save_to_github(file_path_in_repo, content, commit_message):
 @performance_monitor
 def read_txt_to_array_local(file_name):
     """从本地 TXT 文件读取内容到数组"""
-    logging.debug(f"读取文件: {file_name}")
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
             lines = [line.strip() for line in file if line.strip()]
-        logging.debug(f"从 {file_name} 读取 {len(lines)} 行")
         return lines
     except FileNotFoundError:
         logging.warning(f"文件 '{file_name}' 未找到")
@@ -198,7 +195,6 @@ def read_txt_to_array_local(file_name):
 @performance_monitor
 def read_existing_channels(file_path):
     """读取现有频道以进行去重"""
-    logging.debug(f"读取现有频道文件: {file_path}")
     existing_channels = set()
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -208,17 +204,15 @@ def read_existing_channels(file_path):
                     parts = line.split(',', 1)
                     if len(parts) == 2:
                         existing_channels.add((parts[0].strip(), parts[1].strip()))
-        logging.debug(f"从 {file_path} 读取 {len(existing_channels)} 个现有频道")
     except FileNotFoundError:
-        logging.debug(f"文件 {file_path} 不存在，跳过")
+        pass
     except Exception as e:
         logging.error(f"读取文件 '{file_path}' 进行去重失败: {e}")
     return existing_channels
 
 @performance_monitor
 def write_sorted_channels_to_file(file_path, data_list):
-    """将排序后的频道数据追加到文件，去重"""
-    logging.debug(f"写入频道到文件: {file_path}")
+    """将排序后的频道数据写入文件，去重"""
     existing_channels = read_existing_channels(file_path)
     new_channels = set()
     for _, line in data_list:
@@ -228,13 +222,12 @@ def write_sorted_channels_to_file(file_path, data_list):
     all_channels = existing_channels | new_channels
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'a', encoding='utf-8') as file:
+        with open(file_path, 'w', encoding='utf-8') as file:
             for name, url in sorted(all_channels, key=lambda x: x[0]):
-                if (name, url) not in existing_channels:
-                    file.write(f"{name},{url}\n")
-        logging.debug(f"追加 {len(all_channels - existing_channels)} 个新频道到 {file_path}")
+                file.write(f"{name},{url}\n")
+        logging.debug(f"写入 {len(all_channels)} 个频道到 {file_path}")
     except Exception as e:
-        logging.error(f"追加写入文件 '{file_path}' 失败: {e}")
+        logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
 # --- URL 处理和频道提取函数 ---
 @performance_monitor
@@ -278,7 +271,6 @@ def clean_url_params(url):
 @performance_monitor
 def extract_channels_from_url(url, url_states, source_tracker):
     """从 URL 提取频道，支持多种文件格式"""
-    logging.debug(f"提取频道从 URL: {url}")
     extracted_channels = []
     try:
         text = fetch_url_content_with_retry(url, url_states)
@@ -290,7 +282,7 @@ def extract_channels_from_url(url, url_states, source_tracker):
             text = convert_m3u_to_txt(text)
         elif extension in [".ts", ".flv", ".mp4", ".hls", ".dash"]:
             channel_name = f"Stream_{os.path.basename(urlparse(url).path)}"
-            if pre_screen_url(channel_url):
+            if pre_screen_url(url):
                 extracted_channels.append((channel_name, url))
                 source_tracker[(channel_name, url)] = url
                 logging.debug(f"提取单一流: {channel_name},{url}")
@@ -354,7 +346,6 @@ def extract_channels_from_url(url, url_states, source_tracker):
 @performance_monitor
 def load_url_states_local():
     """加载 URL 状态并清理过期状态"""
-    logging.debug(f"加载 URL 状态文件: {URL_STATES_PATH}")
     url_states = {}
     try:
         with open(URL_STATES_PATH, 'r', encoding='utf-8') as file:
@@ -380,22 +371,19 @@ def load_url_states_local():
                 updated_url_states[url] = state
         else:
             updated_url_states[url] = state
-    logging.debug(f"加载 {len(updated_url_states)} 个有效 URL 状态")
     return updated_url_states
 
 @performance_monitor
 def save_url_states_local(url_states):
     """保存 URL 状态到本地文件"""
-    logging.debug(f"保存 URL 状态到: {URL_STATES_PATH}")
     try:
         os.makedirs(os.path.dirname(URL_STATES_PATH), exist_ok=True)
         with open(URL_STATES_PATH, 'w', encoding='utf-8') as file:
             json.dump(url_states, file, indent=4, ensure_ascii=False)
-        logging.debug(f"成功保存 {len(url_states)} 个 URL 状态")
     except Exception as e:
         logging.error(f"保存 URL 状态到 '{URL_STATES_PATH}' 失败: {e}")
 
-@retry(stop=stop_after_attempt(CONFIG['network']['max_retries_per_url']), wait=wait_fixed(5), reraise=True)
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True)
 def fetch_url_content_with_retry(url, url_states):
     """带重试机制获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash"""
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
@@ -410,7 +398,7 @@ def fetch_url_content_with_retry(url, url_states):
         headers['If-Modified-Since'] = current_state['last_modified']
 
     try:
-        response = session.get(url, headers=headers, timeout=CONFIG['network']['request_timeout'])
+        response = session.get(url, headers=headers, timeout=15)
         response.raise_for_status()
 
         if response.status_code == 304:
@@ -455,7 +443,6 @@ def fetch_url_content_with_retry(url, url_states):
 @performance_monitor
 def pre_screen_url(url):
     """根据配置预筛选 URL（协议、长度、无效模式）"""
-    logging.debug(f"预筛选 URL: {url}")
     if not isinstance(url, str) or not url:
         logging.debug(f"预筛选过滤（无效类型或空）: {url}")
         return False
@@ -497,7 +484,6 @@ def pre_screen_url(url):
 @performance_monitor
 def filter_and_modify_channels(channels):
     """过滤和修改频道名称及 URL"""
-    logging.debug(f"开始过滤和修改 {len(channels)} 个频道")
     filtered_channels = []
     pre_screened_count = 0
     for name, url in channels:
@@ -506,21 +492,19 @@ def filter_and_modify_channels(channels):
             continue
         pre_screened_count += 1
 
-        if any(word.lower() in url.lower() for word in CONFIG.get('url_filter_words', [])):
-            logging.debug(f"过滤频道（URL 匹配黑名单）: {name},{url}")
-            continue
+        # 应用名称替换
+        new_name = name
+        for old_str, new_str in CONFIG['channel_name_replacements'].items():
+            new_name = re.sub(old_str, new_str, new_name, flags=re.IGNORECASE)
+        new_name = new_name.strip()
 
-        if any(word.lower() in name.lower() for word in CONFIG.get('name_filter_words', [])):
+        # 过滤关键字
+        if any(word.lower() in new_name.lower() for word in CONFIG['name_filter_words']):
             logging.debug(f"过滤频道（名称匹配黑名单）: {name},{url}")
             continue
 
-        original_name = name
-        for old_str, new_str in CONFIG.get('channel_name_replacements', {}).items():
-            name = re.sub(old_str, new_str, name, flags=re.IGNORECASE)
-            if name != original_name:
-                logging.debug(f"替换频道名称: {original_name} -> {name}")
-        filtered_channels.append((name, url))
-    logging.debug(f"URL 预筛选后剩余 {pre_screened_count} 个频道，最终过滤后剩余 {len(filtered_channels)} 个")
+        filtered_channels.append((new_name, url))
+    logging.debug(f"URL 预筛选后剩余 {pre_screened_count} 个频道进行进一步过滤")
     return filtered_channels
 
 # --- 频道有效性检查函数 ---
@@ -619,7 +603,6 @@ def check_webrtc_url(url, timeout):
 @performance_monitor
 def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONFIG['network']['check_timeout']):
     """检查单个频道的有效性和速度"""
-    logging.debug(f"检查频道有效性: {channel_name},{url}")
     current_time = datetime.now()
     current_url_state = url_states.get(url, {})
 
@@ -709,10 +692,10 @@ def process_single_channel_line(channel_line, url_states):
 @performance_monitor
 def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG['network']['channel_check_workers']):
     """多线程检查频道有效性"""
-    logging.warning(f"开始多线程检查 {len(channel_lines)} 个频道的有效性和速度")
     results = []
     checked_count = 0
     total_channels = len(channel_lines)
+    logging.warning(f"开始多线程检查 {total_channels} 个频道的有效性和速度")
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(process_single_channel_line, line, url_states): line for line in channel_lines}
         for i, future in enumerate(as_completed(futures)):
@@ -725,7 +708,6 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG['
                     results.append((elapsed_time, result_line))
             except Exception as exc:
                 logging.warning(f"处理频道行时发生异常: {exc}")
-    logging.debug(f"多线程检查完成，保留 {len(results)} 个有效频道")
     return results
 
 # --- 文件合并和排序函数 ---
@@ -735,8 +717,7 @@ def generate_update_time_header():
     now = datetime.now()
     return [
         f"更新时间,#genre#\n",
-        f"{now.strftime('%Y-%m-%d')},url\n",
-        f"{now.strftime('%H:%M:%S')},url\n"
+        f"{now.strftime('%Y-%m-%d %H:%M:%S')},url\n"
     ]
 
 @performance_monitor
@@ -759,8 +740,7 @@ def group_and_limit_channels(lines):
 
 @performance_monitor
 def merge_local_channel_files(local_channels_directory, output_file_name, url_states):
-    """合并本地频道列表文件，去重并清理"""
-    logging.debug(f"合并频道文件，目录: {local_channels_directory}, 输出: {output_file_name}")
+    """合并本地频道列表文件，去重并清理，按分类输出"""
     os.makedirs(local_channels_directory, exist_ok=True)
     existing_channels_data = read_existing_channels(output_file_name)
     all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
@@ -792,22 +772,17 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
                 files_to_merge_paths.append(os.path.join(local_channels_directory, file_name))
             processed_files.add(file_name)
 
-    logging.debug(f"合并文件列表: {files_to_merge_paths}")
     new_channels_from_merged_files = set()
     for file_path in files_to_merge_paths:
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                lines = file.readlines()
-                if not lines:
-                    logging.debug(f"文件 {file_path} 为空，跳过")
-                    continue
-                for line in lines:
-                    line = line.strip()
-                    if line and ',' in line and '#genre#' not in line:
-                        name, url = line.split(',', 1)
-                        new_channels_from_merged_files.add((name.strip(), url.strip()))
-        except Exception as e:
-            logging.error(f"读取合并文件 {file_path} 失败: {e}")
+        with open(file_path, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            if not lines:
+                continue
+            for line in lines:
+                line = line.strip()
+                if line and ',' in line and '#genre#' not in line:
+                    name, url = line.split(',', 1)
+                    new_channels_from_merged_files.add((name.strip(), url.strip()))
 
     combined_channels = existing_channels_data | new_channels_from_merged_files
     channels_for_checking_lines = [f"{name},{url}" for name, url in combined_channels]
@@ -815,38 +790,46 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
 
     valid_channels_from_check = check_channels_multithreaded(channels_for_checking_lines, url_states)
 
-    final_channels_for_output = set()
-    for elapsed_time, channel_line in valid_channels_from_check:
-        name, url = channel_line.split(',', 1)
-        url = url.strip()
-        state = url_states.get(url, {})
-        fail_count = state.get('stream_fail_count', 0)
-        if fail_count <= CONFIG['channel_retention']['channel_fail_threshold']:
-            final_channels_for_output.add((name, url))
-        else:
-            logging.info(f"移除频道 '{name},{url}'，因失败次数过多 ({fail_count} > {CONFIG['channel_retention']['channel_fail_threshold']})")
+    # 按分类重新组织有效频道
+    categorized_channels, uncategorized_channels = categorize_channels(
+        [(name, url) for _, line in valid_channels_from_check for name, url in [line.split(',', 1)])
+    )
 
-    sorted_final_channels = sorted(list(final_channels_for_output), key=lambda x: x[0])
-
+    # 保存合并后的主文件，按分类输出
     try:
         with open(output_file_name, "w", encoding='utf-8') as iptv_list_file:
             iptv_list_file.writelines(generate_update_time_header())
-            for name, url in sorted_final_channels:
-                iptv_list_file.write(f"{name},{url}\n")
-        logging.warning(f"所有频道列表文件合并、去重、清理完成，输出保存到: {output_file_name}")
+            for category in CONFIG.get('ordered_categories', []):
+                if category in categorized_channels and categorized_channels[category]:
+                    iptv_list_file.write(f"{category},#genre#\n")
+                    for name, url in sorted(categorized_channels[category], key=lambda x: x[0]):
+                        iptv_list_file.write(f"{name},{url}\n")
+            if uncategorized_channels:
+                iptv_list_file.write("其他频道,#genre#\n")
+                for name, url in sorted(uncategorized_channels, key=lambda x: x[0]):
+                    iptv_list_file.write(f"{name},{url}\n")
+        logging.warning(f"所有频道列表文件合并、去重、分类完成，输出保存到: {output_file_name}")
     except Exception as e:
         logging.error(f"写入文件 '{output_file_name}' 失败: {e}")
+
+    # 保存未分类频道
+    try:
+        with open(uncategorized_file_in_root, "w", encoding='utf-8') as uncat_file:
+            for name, url in sorted(uncategorized_channels, key=lambda x: x[0]):
+                uncat_file.write(f"{name},{url}\n")
+        logging.warning(f"未分类频道保存到: {uncategorized_file_in_root}")
+    except Exception as e:
+        logging.error(f"写入未分类文件 '{uncategorized_file_in_root}' 失败: {e}")
 
 # --- 远程 TXT 文件操作函数 ---
 @performance_monitor
 def write_array_to_txt_local(file_path, data_array, commit_message=None):
     """将数组内容写入本地 TXT 文件"""
-    logging.debug(f"写入文件: {file_path}, 行数: {len(data_array)}")
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write('\n'.join(data_array))
-        logging.debug(f"成功写入 {len(data_array)} 行到 '{file_path}'")
+        logging.debug(f"写入 {len(data_array)} 行到 '{file_path}'")
     except Exception as e:
         logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
@@ -854,7 +837,6 @@ def write_array_to_txt_local(file_path, data_array, commit_message=None):
 @performance_monitor
 def auto_discover_github_urls(urls_file_path_local, github_token):
     """从 GitHub 自动发现新的 IPTV 源 URL"""
-    logging.debug(f"开始 GitHub URL 自动发现，文件: {urls_file_path_local}")
     if not github_token:
         logging.warning("未提供 GitHub token，跳过 URL 自动发现")
         return
@@ -862,7 +844,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
     existing_urls = set(read_txt_to_array_local(urls_file_path_local))
     for backup_url in CONFIG.get('backup_urls', []):
         try:
-            response = session.get(backup_url, timeout=10)
+            response = session.get(backup_url, timeout=15)
             response.raise_for_status()
             existing_urls.update([line.strip() for line in response.text.split('\n') if line.strip()])
         except Exception as e:
@@ -975,7 +957,6 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
 @performance_monitor
 def cleanup_urls_local(urls_file_path_local, url_states):
     """清理无效或失败的 URL"""
-    logging.debug(f"清理 URL 文件: {urls_file_path_local}")
     all_urls = read_txt_to_array_local(urls_file_path_local)
     current_time = datetime.now()
     urls_to_keep = []
@@ -1016,34 +997,24 @@ def cleanup_urls_local(urls_file_path_local, url_states):
 @performance_monitor
 def categorize_channels(channels):
     """根据频道名称关键字分类"""
-    logging.debug(f"开始分类 {len(channels)} 个频道")
-    logging.debug(f"分类配置: ordered_categories={CONFIG.get('ordered_categories', [])}")
-    logging.debug(f"分类关键字: category_keywords={CONFIG.get('category_keywords', {})}")
     categorized_data = {category: [] for category in CONFIG.get('ordered_categories', [])}
     uncategorized_data = []
 
     for name, url in channels:
-        logging.debug(f"处理频道: {name},{url}")
         found_category = False
         for category in CONFIG.get('ordered_categories', []):
             category_keywords = CONFIG['category_keywords'].get(category, [])
             if any(keyword.lower() in name.lower() for keyword in category_keywords):
-                logging.debug(f"频道 {name} 匹配分类 {category}")
                 categorized_data[category].append((name, url))
                 found_category = True
                 break
         if not found_category:
-            logging.debug(f"频道 {name} 未分类")
             uncategorized_data.append((name, url))
-    
-    logging.debug(f"分类结果: { {k: len(v) for k, v in categorized_data.items()} }")
-    logging.debug(f"未分类频道: {len(uncategorized_data)}")
     return categorized_data, uncategorized_data
 
 @performance_monitor
 def process_and_save_channels_by_category(all_channels, url_states, source_tracker):
     """将频道分类并保存到对应文件"""
-    logging.debug(f"开始处理和保存分类频道，频道总数: {len(all_channels)}")
     categorized_channels, uncategorized_channels = categorize_channels(all_channels)
     categorized_dir = CONFIG['output']['paths']['channels_dir']
     os.makedirs(categorized_dir, exist_ok=True)
