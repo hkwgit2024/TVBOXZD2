@@ -33,6 +33,105 @@ url_state: # 请确保此行顶格写，无前导空格
   cache_enabled: true                # 是否启用内容缓存
   cache_dir: "cache"                 # 缓存目录
   cache_ttl: 604800                  # 缓存有效期（秒，默认为7天）
+  
+url_filter:
+  # 是否忽略大小写（关键词和正则表达式匹配）
+  case_insensitive: true
+  # 允许的后缀，仅保留可能包含 IPTV 或视频流的格式
+  allowed_extensions:
+    - .m3u
+    - .m3u8
+    - .txt
+    - .w3u
+  # 排除的后缀，避免处理无关文件
+  excluded_extensions:
+    - .csv
+    - .py
+    - .js
+    - .ts
+    - .html
+    - .md
+    - .json
+    - .xml
+    - .log
+    - .ex
+    - .sql
+  # 必须包含的关键词，URL 路径或文件名需至少匹配一个（不区分大小写）
+  required_keywords:
+    - iptv
+    - tv
+    - live
+    - stream
+    - channel
+    - m3u
+    - m3u8
+    - playlist
+    - cctv
+    - zhibo
+    - dianshi
+    - broadcast
+    - tele
+    - television
+  # 排除的关键词，避免无关内容
+  excluded_keywords:
+    - log
+    - seo
+    - s3
+    - keywords
+    - report
+    - api
+    - data
+    - cache
+    - script
+    - news
+    - documentation
+    - vod
+    - changelog
+    - history
+    - test
+    - archive
+    - resources
+    - followers
+    - analytics
+    - dictionary
+    - vocab
+  # 正则表达式：只包含匹配以下模式的 URLs
+  include_patterns:
+    - ".*(iptv|tv|live|stream|channel|m3u|m3u8|playlist|cctv|zhibo|dianshi|broadcast|tele|television).*"
+    - ".*(streams/|iptv/|live/|tv/|channel/).*"
+  # 正则表达式：排除匹配以下模式的 URLs
+  exclude_patterns:
+    - ".*(log_|/log/|seo|s3|keywords|report|api|data|cache|script|news|documentation|vod|changelog|history|test|archive|resources|followers|analytics|dictionary|vocab).*"
+    - ".*(resources/|archive/|data/|logs/|scripts/|api/|jlt/|csv/|xml/|analytics/|report/|history/).*"
+  # 分类规则：根据关键词将 URLs 分组（解决分类未生效问题）
+  category_keywords:
+    regional:
+      - cn
+      - china
+      - tw
+      - taiwan
+      - hk
+      - japan
+      - jp
+      - korea
+      - kr
+      - us
+      - uk
+      - eu
+    content_type:
+      - sports
+      - movie
+      - news
+      - entertainment
+      - music
+    language:
+      - chinese
+      - english
+      - arabic
+      - korean
+      - japanese
+  # 过滤优先级：先应用白名单（allowed_extensions, required_keywords, include_patterns），再应用黑名单
+  filter_priority: ["whitelist", "blacklist"]
 
 # 频道保留策略
 channel_retention: # 请确保此行顶格写，无前导空格
