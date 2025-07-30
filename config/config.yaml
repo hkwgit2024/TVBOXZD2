@@ -63,7 +63,7 @@ performance_monitor:
 # GitHub 搜索关键词
 search_keywords:
   - "IPTV"                         # 搜索 IPTV 直播源
-
+  - "playlist.m3u8 in:file"        # 直接搜索常见播放列表文件名
 
 # 备用 URL 源
 backup_urls:
