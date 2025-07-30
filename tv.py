@@ -26,10 +26,10 @@ def setup_logging(config):
     log_level = getattr(logging, config['logging']['log_level'], logging.INFO)
     log_file = config['logging']['log_file']
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    
+
     logger = logging.getLogger()
     logger.setLevel(log_level)
-    
+
     # 文件处理器，支持日志文件轮转，最大10MB，保留5个备份
     file_handler = logging.handlers.RotatingFileHandler(
         log_file, maxBytes=10*1024*1024, backupCount=5
@@ -37,13 +37,13 @@ def setup_logging(config):
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
-    
+
     # 控制台处理器
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
-    
+
     logger.handlers = [file_handler, console_handler]
     return logger
 
@@ -355,7 +355,7 @@ def load_url_states_local():
     except json.JSONDecodeError as e:
         logging.error(f"解析 '{URL_STATES_PATH}' 的 JSON 失败: {e}")
         return {}
-    
+
     current_time = datetime.now()
     updated_url_states = {}
     for url, state in url_states.items():
@@ -731,7 +731,7 @@ def group_and_limit_channels(lines):
             if channel_name not in grouped_channels:
                 grouped_channels[channel_name] = []
             grouped_channels[channel_name].append(line_content)
-    
+
     final_grouped_lines = []
     for channel_name in grouped_channels:
         for ch_line in grouped_channels[channel_name][:CONFIG.get('max_channel_urls_per_group', 100)]:
@@ -744,7 +744,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
     os.makedirs(local_channels_directory, exist_ok=True)
     existing_channels_data = read_existing_channels(output_file_name)
     all_iptv_files_in_dir = [f for f in os.listdir(local_channels_directory) if f.endswith('_iptv.txt')]
-    
+
     uncategorized_file_in_root = CONFIG['output']['paths']['uncategorized_channels_file']
     if os.path.exists(uncategorized_file_in_root):
         all_iptv_files_in_dir.append(uncategorized_file_in_root)
@@ -762,7 +762,7 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
     for category in all_possible_categories:
         file_name = f"{category}_iptv.txt"
         temp_path = os.path.join(local_channels_directory, file_name)
-        
+
         if os.path.basename(temp_path) in all_iptv_files_in_dir and temp_path not in processed_files:
             files_to_merge_paths.append(temp_path)
             processed_files.add(os.path.basename(temp_path))
@@ -1011,22 +1011,22 @@ def categorize_channels(channels):
     """根据配置对频道进行分类，返回分类后的频道字典、未分类频道列表和有序分类列表"""
     categorized = {}
     uncategorized = []
-    
+
     # 确保 ordered_categories 存在且是列表
     ordered_categories = list(CONFIG.get('ordered_categories', []))
     category_aliases = CONFIG.get('category_aliases', {})
     category_keywords = CONFIG.get('category_keywords', {})
-    
+
     # 初始化有序分类
     for category in ordered_categories:
         categorized[category] = []
-    
+
     # 反向查找别名，以处理原始关键词
     reverse_category_aliases = {v: k for k, v in category_aliases.items()}
 
     for name, url in channels:
         assigned = False
-        
+
         # 尝试通过精确分类匹配
         for category_name_exact in ordered_categories:
             if name.startswith(category_name_exact) or name.lower().startswith(category_name_exact.lower()):
@@ -1043,21 +1043,21 @@ def categorize_channels(channels):
             final_category = category_aliases.get(category, category)
             if final_category not in categorized:
                 categorized[final_category] = []
-            
+
             if any(re.search(keyword, name, re.IGNORECASE) for keyword in keywords):
                 categorized[final_category].append((name, url))
                 assigned = True
                 break
-        
+
         if not assigned:
             uncategorized.append((name, url))
 
     # 过滤掉空的分类
     categorized = {k: v for k, v in categorized.items() if v}
-    
+
     # 构建最终的有序分类列表，只包含实际有内容的分类
     final_ordered_categories = [cat for cat in ordered_categories if cat in categorized]
-    
+
     # 将可能的新分类（通过关键词匹配但不在 ordered_categories 中的）添加到末尾
     for cat in sorted(categorized.keys()):
         if cat not in final_ordered_categories:
@@ -1075,7 +1075,7 @@ def clean_and_process_urls(urls_file_path_local, url_states):
     logging.warning(f"开始处理和提取 {len(all_urls)} 个 URL 中的频道...")
     with ThreadPoolExecutor(max_workers=CONFIG['network']['url_fetch_workers']) as executor:
         futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in all_urls}
-        
+
         processed_count = 0
         total_urls = len(futures)
 
@@ -1090,7 +1090,7 @@ def clean_and_process_urls(urls_file_path_local, url_states):
             except Exception as exc:
                 url = futures[future]
                 logging.error(f"处理 URL '{url}' 时发生异常: {exc}")
-    
+
     logging.warning(f"完成所有 URL 处理，总计提取 {len(all_extracted_channels)} 个频道（未去重）")
     return all_extracted_channels, source_tracker
 
@@ -1098,9 +1098,9 @@ def clean_and_process_urls(urls_file_path_local, url_states):
 def main():
     """主函数：执行所有流程"""
     logging.info("脚本开始执行")
-    
+
     url_states = load_url_states_local()
-    
+
     # 自动发现并清理 URL
     auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
     cleanup_urls_local(URLS_PATH, url_states)
@@ -1111,7 +1111,7 @@ def main():
     # 过滤和修改频道
     filtered_and_modified_channels = filter_and_modify_channels(all_extracted_channels)
     logging.warning(f"过滤和修改后剩余 {len(filtered_and_modified_channels)} 个频道")
-    
+
     # 进一步去重
     unique_channels = {}
     for name, url in filtered_and_modified_channels:
@@ -1126,7 +1126,7 @@ def main():
     # 将分类后的频道写入各自的临时文件
     temp_channels_dir = CONFIG['output']['paths']['channels_dir']
     os.makedirs(temp_channels_dir, exist_ok=True)
-    
+
     for category, channels_list in categorized_channels.items():
         file_path = os.path.join(temp_channels_dir, f"{category}_iptv.txt")
         lines_to_write = [f"{name},{url}" for name, url in channels_list]
