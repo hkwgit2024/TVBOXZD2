@@ -63,6 +63,20 @@ performance_monitor:
 # GitHub 搜索关键词
 search_keywords:
   - "iptv playlist"                # 搜索 IPTV 播放列表
+  # 通用英文关键词
+  - "iptv links" # 稍微放宽，依赖后续过滤
+  - "m3u8 playlist"
+  - "iptv list"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "stream list"
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
 
 
 # 备用 URL 源
