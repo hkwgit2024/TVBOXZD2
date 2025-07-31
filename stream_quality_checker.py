@@ -11,15 +11,12 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
 from urllib.parse import urlparse
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # 加载配置文件
 def load_config(config_path="config/config.yaml"):
-    """加载并解析 YAML 配置文件
-    参数:
-        config_path: 配置文件路径，默认为 'config/config.yaml'
-    返回:
-        解析后的配置字典
-    """
+    """加载并解析 YAML 配置文件"""
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file)
@@ -37,12 +34,7 @@ def load_config(config_path="config/config.yaml"):
 
 # 配置日志系统
 def setup_logging(config):
-    """配置日志系统，支持文件和控制台输出，日志文件自动轮转以避免过大
-    参数:
-        config: 配置文件字典，包含日志级别和日志文件路径
-    返回:
-        配置好的日志记录器
-    """
+    """配置日志系统，支持文件和控制台输出，日志文件自动轮转"""
     log_level = getattr(logging, config['logging']['log_level'], logging.INFO)
     log_file = config['logging']['log_file']
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
@@ -71,12 +63,7 @@ setup_logging(CONFIG)
 
 # 性能监控装饰器
 def performance_monitor(func):
-    """记录函数执行时间的装饰器，用于性能分析
-    参数:
-        func: 被装饰的函数
-    返回:
-        包装后的函数，记录执行时间
-    """
+    """记录函数执行时间的装饰器"""
     if not CONFIG['performance_monitor']['enabled']:
         return func
     def wrapper(*args, **kwargs):
@@ -90,12 +77,7 @@ def performance_monitor(func):
 # 读取频道列表
 @performance_monitor
 def read_channels(file_path):
-    """从文件读取频道列表，跳过无效条目
-    参数:
-        file_path: 频道文件路径
-    返回:
-        包含 (频道名称, URL) 的列表
-    """
+    """从文件读取频道列表，跳过无效条目"""
     channels = []
     invalid_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
     try:
@@ -110,7 +92,6 @@ def read_channels(file_path):
                 name, url = line.split(',', 1)
                 name = name.strip()
                 url = url.strip()
-                # 初步过滤无效 URL
                 if any(re.search(pattern, url, re.IGNORECASE) for pattern in invalid_patterns):
                     logging.info(f"跳过无效 URL: {name} ({url})")
                     continue
@@ -130,17 +111,14 @@ def read_channels(file_path):
 # 检查视频流质量
 @performance_monitor
 def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['max_check_duration']):
-    """使用 ffprobe 检查视频流的播放效果
-    参数:
-        channel_name: 频道名称
-        url: 频道 URL
-        timeout: 检查超时时间（秒）
-    返回:
-        元组 (是否有效, 错误信息)，有效则返回 (True, None)，无效则返回 (False, 错误原因)
-    """
-    # 预检查 URL 是否为流媒体类型
+    """使用 ffprobe 检查视频流的播放效果"""
+    # 预检查 URL
     try:
-        response = requests.head(url, timeout=5, allow_redirects=True)
+        session = requests.Session()
+        retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
+        response = session.head(url, timeout=10, allow_redirects=True)
         content_type = response.headers.get('content-type', '').lower()
         valid_types = ('video/', 'application/vnd.apple.mpegurl', 'application/octet-stream')
         if not any(t in content_type for t in valid_types):
@@ -151,32 +129,41 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
         return False, f"无法访问 ({str(e)})"
 
     try:
-        # 检查 ffprobe 是否可用
+        # 检查 ffprobe
         subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
         logging.error("ffprobe 未找到或不可用，跳过流质量检查")
         return False, "ffprobe 不可用"
 
+    # ffprobe 检查流信息
+    max_retries = 2
+    for attempt in range(max_retries):
+        try:
+            cmd = [
+                'ffprobe',
+                '-v', 'error',
+                '-show_streams',
+                '-show_format',
+                '-print_format', 'json',
+                '-timeout', str(int(timeout * 1000000)),
+                url
+            ]
+            result = subprocess.run(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+                text=True
+            )
+            break
+        except subprocess.TimeoutExpired:
+            if attempt == max_retries - 1:
+                logging.info(f"频道 {channel_name} ({url}) 检查超时")
+                return False, "检查超时"
+            logging.info(f"频道 {channel_name} ({url}) 第 {attempt + 1} 次尝试超时，重试...")
+            time.sleep(1)
+
     try:
-        # 使用 ffprobe 获取流信息
-        cmd = [
-            'ffprobe',
-            '-v', 'error',
-            '-show_streams',
-            '-show_format',
-            '-print_format', 'json',
-            '-timeout', str(int(timeout * 1000000)),  # 转换为微秒
-            url
-        ]
-        result = subprocess.run(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-            text=True
-        )
-        
-        # 解析 ffprobe 输出
         stream_info = json.loads(result.stdout)
         video_stream = None
         for stream in stream_info.get('streams', []):
@@ -195,19 +182,22 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
             logging.info(f"频道 {channel_name} ({url}) 分辨率过低: {width}x{height}")
             return False, f"分辨率过低 ({width}x{height})"
 
-        # 检查比特率（允许比特率为 0 作为备用）
+        # 检查比特率
         bitrate = int(stream_info.get('format', {}).get('bit_rate', 0))
         if bitrate != 0 and bitrate < CONFIG['stream_quality']['min_bitrate']:
-            logging.info(f"频道 {channel_name} ({url}) 比特率过低: {bitrate} bps")
-            return False, f"比特率过低 ({bitrate} bps)"
+            if width >= 1280 and height >= 720:
+                logging.info(f"频道 {channel_name} ({url}) 比特率低但分辨率高，允许通过")
+            else:
+                logging.info(f"频道 {channel_name} ({url}) 比特率过低: {bitrate} bps")
+                return False, f"比特率过低 ({bitrate} bps)"
 
         # 检查初始缓冲时间
         start_time = float(stream_info.get('format', {}).get('start_time', 0))
-        if start_time > CONFIG['stream_quality']['max_buffer_time']:
+        if start_time > CONFIG['stream_quality']['max_buffer_time'] and start_time < 3600:
             logging.info(f"频道 {channel_name} ({url}) 初始缓冲时间过长: {start_time} 秒")
             return False, f"初始缓冲时间过长 ({start_time} 秒)"
 
-        # 检查关键帧间隔（简单检测重复内容或广告）
+        # 检查关键帧间隔
         frame_cmd = [
             'ffprobe',
             '-v', 'error',
@@ -234,7 +224,6 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
                     keyframe_intervals.append(interval)
                 last_keyframe_time = frame_time
 
-        # 检查关键帧间隔是否异常
         if keyframe_intervals:
             avg_keyframe_interval = sum(keyframe_intervals) / len(keyframe_intervals)
             if avg_keyframe_interval > CONFIG['stream_quality']['max_keyframe_interval']:
@@ -263,13 +252,7 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
 # 多线程检查频道
 @performance_monitor
 def check_channels_multithreaded(channels, max_workers=CONFIG['stream_quality']['stream_check_workers']):
-    """多线程检查频道播放效果
-    参数:
-        channels: 包含 (频道名称, URL) 的列表
-        max_workers: 最大线程数
-    返回:
-        通过检查的频道列表
-    """
+    """多线程检查频道播放效果"""
     valid_channels = []
     total_channels = len(channels)
     logging.warning(f"开始多线程检查 {total_channels} 个频道的播放效果")
@@ -295,11 +278,7 @@ def check_channels_multithreaded(channels, max_workers=CONFIG['stream_quality'][
 # 写入高质量频道列表
 @performance_monitor
 def write_high_quality_channels(file_path, channels):
-    """将高质量频道写入文件
-    参数:
-        file_path: 输出文件路径
-        channels: 包含 (频道名称, URL) 的列表
-    """
+    """将高质量频道写入文件"""
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w', encoding='utf-8') as file:
@@ -313,25 +292,17 @@ def write_high_quality_channels(file_path, channels):
 # 主函数
 @performance_monitor
 def main():
-    """主函数，执行频道播放效果检查流程
-    1. 读取频道列表
-    2. 检查播放效果
-    3. 保存高质量频道列表
-    """
+    """主函数，执行频道播放效果检查流程"""
     logging.warning("开始执行频道播放效果检查")
     total_start_time = time.time()
 
-    # 读取频道列表
     input_file = "output/iptv_list.txt"
     channels = read_channels(input_file)
     if not channels:
         logging.error(f"未从 '{input_file}' 读取到有效频道，退出")
         exit(1)
 
-    # 多线程检查播放效果
     valid_channels = check_channels_multithreaded(channels)
-
-    # 保存高质量频道列表
     output_file = CONFIG['output']['paths']['high_quality_iptv_file']
     write_high_quality_channels(output_file, valid_channels)
 
