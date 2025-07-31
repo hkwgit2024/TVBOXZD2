@@ -25,74 +25,98 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget ffmpeg tesseract-ocr libtesseract-dev tesseract-ocr-eng
+          sudo apt-get install -y ffmpeg
 
       # 安装 Python 依赖
       - name: Install Python dependencies
         run: |
           pip install requests ffmpeg-python
 
-      # 创建 Python 转换和验证脚本
-      - name: Create conversion and validation script
+      # 转换输入文件为 M3U 并运行验证
+      - name: Convert input to M3U and run IPTV_checker.py
         run: |
-          cat << 'EOF' > convert_and_check.py
-          import subprocess
+          # 创建临时 M3U 文件
+          python -c "
           import os
           import datetime
           import re
-
           INPUT_FILE = 'output/iptv_list.txt'
-          OUTPUT_FILE = 'output/high_quality_iptv.txt'
           TEMP_M3U_FILE = 'temp_iptv_list.m3u'
-          TEMP_OUTPUT_M3U = 'temp_high_quality_iptv.m3u'
-          LOG_FILE = 'output/iptv_validation.log'
           BLACKLIST_FILE = 'ad_blacklist.txt'
-          USER_AGENT = 'Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.2 Chrome/63.0.3239.84 TV Safari/537.36'
-
+          LOG_FILE = 'output/iptv_validation.log'
+          
           def write_log(message):
-              timestamp = f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}"
+              timestamp = f'[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}'
               print(timestamp)
               with open(LOG_FILE, 'a', encoding='utf-8') as f:
                   f.write(timestamp + '\n')
-
+          
           def load_blacklist():
               blacklist = set()
               try:
                   with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
                       blacklist.update(line.strip() for line in f if line.strip())
-                  write_log(f"从 {BLACKLIST_FILE} 加载了 {len(blacklist)} 个黑名单条目")
+                  write_log(f'从 {BLACKLIST_FILE} 加载了 {len(blacklist)} 个黑名单条目')
               except FileNotFoundError:
-                  write_log(f"黑名单文件 {BLACKLIST_FILE} 未找到，不使用黑名单过滤")
+                  write_log(f'黑名单文件 {BLACKLIST_FILE} 未找到，不使用黑名单过滤')
               return blacklist
+          
+          os.makedirs('output', exist_ok=True)
+          with open(LOG_FILE, 'w', encoding='utf-8'):
+              pass
+          blacklist = load_blacklist()
+          with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+              lines = f.readlines()
+          with open(TEMP_M3U_FILE, 'w', encoding='utf-8') as f:
+              f.write('#EXTM3U\n')
+              current_group = ''
+              for line in lines:
+                  line = line.strip()
+                  if not line or '更新时间' in line:
+                      continue
+                  if '#genre#' in line:
+                      current_group = line.split(',')[0]
+                      continue
+                  parts = line.split(',', 1)
+                  if len(parts) != 2:
+                      write_log(f'跳过格式错误行: {line}')
+                      continue
+                  name, url = parts
+                  if any(b in url.lower() for b in blacklist):
+                      write_log(f'黑名单命中: {url}')
+                      continue
+                  f.write(f'#EXTINF:-1 tvg-name=\"{name}\" group-title=\"{current_group}\",{name}\n{url}\n')
+          write_log(f'已将 {INPUT_FILE} 转换为 M3U 格式: {TEMP_M3U_FILE}')
+          "
+          
+          # 运行 IPTV_checker.py
+          python IPTV_checker.py -i temp_iptv_list.m3u -o temp_high_quality_iptv.m3u -u "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.2 Chrome/63.0.3239.84 TV Safari/537.36" -t 30 -e 10 -s >> output/iptv_validation.log 2>&1
+          
+          # 检查 IPTV_checker.py 是否成功运行
+          if [ ! -f "temp_high_quality_iptv.m3u" ]; then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] IPTV_checker.py 未生成输出文件，可能无有效频道" >> output/iptv_validation.log
+          fi
 
-          def convert_to_m3u():
-              os.makedirs('output', exist_ok=True)
-              blacklist = load_blacklist()
-              with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-                  lines = f.readlines()
-              with open(TEMP_M3U_FILE, 'w', encoding='utf-8') as f:
-                  f.write('#EXTM3U\n')
-                  current_group = ''
-                  for line in lines:
-                      line = line.strip()
-                      if not line or '更新时间' in line:
-                          continue
-                      if '#genre#' in line:
-                          current_group = line.split(',')[0]
-                          continue
-                      parts = line.split(',', 1)
-                      if len(parts) != 2:
-                          write_log(f"跳过格式错误行: {line}")
-                          continue
-                      name, url = parts
-                      if any(b in url.lower() for b in blacklist):
-                          write_log(f"黑名单命中: {url}")
-                          continue
-                      f.write(f'#EXTINF:-1 tvg-name="{name}" group-title="{current_group}",{name}\n{url}\n')
-              write_log(f"已将 {INPUT_FILE} 转换为 M3U 格式: {TEMP_M3U_FILE}")
-
-          def convert_from_m3u():
-              valid_urls = {}
+      # 转换输出 M3U 回原始格式
+      - name: Convert output M3U back to original format
+        run: |
+          python -c "
+          import os
+          import datetime
+          import re
+          INPUT_FILE = 'output/iptv_list.txt'
+          OUTPUT_FILE = 'output/high_quality_iptv.txt'
+          TEMP_OUTPUT_M3U = 'temp_high_quality_iptv.m3u'
+          LOG_FILE = 'output/iptv_validation.log'
+          
+          def write_log(message):
+              timestamp = f'[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}'
+              print(timestamp)
+              with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                  f.write(timestamp + '\n')
+          
+          valid_urls = {}
+          try:
               with open(TEMP_OUTPUT_M3U, 'r', encoding='utf-8') as f:
                   lines = f.readlines()
               for i, line in enumerate(lines):
@@ -100,77 +124,43 @@ jobs:
                   if '#EXTM3U' in line:
                       continue
                   if '#EXTINF' in line:
-                      name_match = re.search(r'tvg-name="([^"]+)"', line)
-                      group_match = re.search(r'group-title="([^"]+)"', line)
+                      name_match = re.search(r'tvg-name=\"([^\"]+)\"', line)
+                      group_match = re.search(r'group-title=\"([^\"]+)\"', line)
                       if name_match and group_match and i + 1 < len(lines):
                           name = name_match.group(1)
                           group = group_match.group(1)
                           url = lines[i + 1].strip()
                           valid_urls[url] = (name, group)
-              with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-                  lines = f.readlines()
-              with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                  f.write(f"更新时间,{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                  current_group = ''
-                  valid_count = 0
-                  for line in lines:
-                      line = line.strip()
-                      if not line:
-                          continue
-                      if '更新时间' in line:
-                          continue
-                      if '#genre#' in line:
-                          current_group = line
-                          f.write(f"{current_group}\n")
-                          continue
-                      parts = line.split(',', 1)
-                      if len(parts) != 2:
-                          continue
-                      name, url = parts
-                      if url in valid_urls and valid_urls[url][1] == current_group.split(',')[0]:
-                          f.write(f"{name},{url}\n")
-                          valid_count += 1
-                  write_log(f"共找到 {valid_count} 个有效频道，已保存到 {OUTPUT_FILE}")
-
-          def run_iptv_check():
-              write_log("开始运行 IPTV-CHECK")
-              result = subprocess.run([
-                  './iptv-check',
-                  TEMP_M3U_FILE,
-                  '-o', TEMP_OUTPUT_M3U,
-                  '-u', USER_AGENT
-              ], capture_output=True, text=True)
-              write_log(f"IPTV-CHECK 运行完成，退出码: {result.returncode}")
-              write_log(f"标准输出: {result.stdout}")
-              if result.stderr:
-                  write_log(f"错误输出: {result.stderr}")
-
-          if __name__ == '__main__':
-              os.makedirs('output', exist_ok=True)
-              with open(LOG_FILE, 'w', encoding='utf-8'):
-                  pass
-              convert_to_m3u()
-              run_iptv_check()
-              if os.path.exists(TEMP_OUTPUT_M3U):
-                  convert_from_m3u()
-              else:
-                  write_log("IPTV-CHECK 未生成输出文件，可能无有效频道")
-          EOF
-
-      # 确保 iptv-check 脚本存在并可执行
-      - name: Ensure iptv-check is executable
-        run: |
-          if [ -f "iptv-check" ]; then
-            chmod +x iptv-check
-          else
-            echo "Error: iptv-check script not found in repository"
-            exit 1
-          fi
-
-      # 运行验证
-      - name: Run IPTV validation
-        run: python IPTV_checker.py
-
+          except FileNotFoundError:
+              write_log('未找到 IPTV_checker.py 输出文件，可能无有效频道')
+              exit(0)
+          
+          with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+              lines = f.readlines()
+          with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+              f.write(f'更新时间,{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n')
+              current_group = ''
+              valid_count = 0
+              for line in lines:
+                  line = line.strip()
+                  if not line:
+                      continue
+                  if '更新时间' in line:
+                      continue
+                  if '#genre#' in line:
+                      current_group = line
+                      f.write(f'{current_group}\n')
+                      continue
+                  parts = line.split(',', 1)
+                  if len(parts) != 2:
+                      continue
+                  name, url = parts
+                  if url in valid_urls and valid_urls[url][1] == current_group.split(',')[0]:
+                      f.write(f'{name},{url}\n')
+                      valid_count += 1
+              write_log(f'共找到 {valid_count} 个有效频道，已保存到 {OUTPUT_FILE}')
+          "
+      
       # 提交结果
       - name: Commit results
         run: |
