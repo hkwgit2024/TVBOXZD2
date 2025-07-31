@@ -65,8 +65,12 @@ jobs:
           with open(LOG_FILE, 'w', encoding='utf-8'):
               pass
           blacklist = load_blacklist()
-          with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-              lines = f.readlines()
+          try:
+              with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+                  lines = f.readlines()
+          except FileNotFoundError:
+              write_log(f'输入文件 {INPUT_FILE} 未找到')
+              exit(1)
           with open(TEMP_M3U_FILE, 'w', encoding='utf-8') as f:
               f.write('#EXTM3U\n')
               current_group = ''
@@ -135,8 +139,13 @@ jobs:
               write_log('未找到 IPTV_checker.py 输出文件，可能无有效频道')
               exit(0)
           
-          with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-              lines = f.readlines()
+          try:
+              with open(INPUT_FILE, 'r', encoding='utf-8') as f:
+                  lines = f.readlines()
+          except FileNotFoundError:
+              write_log(f'输入文件 {INPUT_FILE} 未找到')
+              exit(1)
+          
           with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
               f.write(f'更新时间,{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n')
               current_group = ''
