@@ -1,4 +1,4 @@
-```yaml
+
 name: Stream Quality Check
 
 on:
@@ -51,4 +51,4 @@ jobs:
           name: stream-quality-check-logs
           path: logs/iptv.log
           if-no-files-found: warn
-```
+
