@@ -169,7 +169,7 @@ jobs:
 
       # 运行验证
       - name: Run IPTV validation
-        run: python convert_and_check.py
+        run: python IPTV_checker.py
 
       # 提交结果
       - name: Commit results
