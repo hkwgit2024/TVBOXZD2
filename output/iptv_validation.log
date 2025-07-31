@@ -1,0 +1,2599 @@
+[2025-07-31 07:31:40] --- IPTV 频道验证开始 - 2025-07-31 07:31:40.021019 ---
+[2025-07-31 07:31:40] 输入文件: output/iptv_list.txt
+[2025-07-31 07:31:40] 输出文件: output/high_quality_iptv.txt
+[2025-07-31 07:31:40] 并发线程数: 10
+[2025-07-31 07:31:40] ffprobe 超时: 15 秒
+[2025-07-31 07:31:40] 最小直播流时长: 30 秒
+[2025-07-31 07:31:40] --------------------------------------------------
+[2025-07-31 07:31:40] 成功读取 207 行自 output/iptv_list.txt
+[2025-07-31 07:31:40] 识别到 194 个频道待验证。
+[2025-07-31 07:31:40] --------------------------------------------------
+[2025-07-31 07:31:40]   -> 无效URL格式或为空: url
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/8/index.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/503/index.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://58.221.214.82:9901/tsfile/live/0016_1.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/503/index.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: https://ldncctvwbcdbyte.volcfcdn.com/ldncctvwbcd/cdrmldcctv1_1/index.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://tv.nknews.org/tvhls/stream.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://119.77.96.184:1935/chn05/chn05/chunklist_w644291506.m3u8
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:40]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:44]   -> ffprobe 错误 (Exit Code 1): http://tv.nknews.org/tvhls/stream.m3u8: Server returned 403 Forbidden (access denied)
+[2025-07-31 07:31:44]     正在运行 ffprobe for: https://vdm6-hw.nbgdsygs.com/live/h6-2.flv
+[2025-07-31 07:31:46]     ffprobe 完成 (6.36s) for: http://119.77.96.184:1935/chn05/chn05/chunklist_w644291506.m3u8
+[2025-07-31 07:31:46]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:31:46]     正在运行 ffprobe for: http://38.64.72.148/hls/modn/list/4005/chunklist1.m3u8
+[2025-07-31 07:31:47]     ffprobe 完成 (0.62s) for: http://38.64.72.148/hls/modn/list/4005/chunklist1.m3u8
+[2025-07-31 07:31:47]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[NULL @ 0x555f59eb2ac0] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] non-existing PPS 0 referenced
+[h264 @ 0x555f59eb3f00] decode_slice_header error
+[h264 @ 0x555f59eb3f00] no frame!
+[2025-07-31 07:31:47]     正在运行 ffprobe for: http://php.jdshipin.com/smt.php
+[2025-07-31 07:31:47]     ffprobe 完成 (0.80s) for: http://php.jdshipin.com/smt.php
+[2025-07-31 07:31:47]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x5615c267f380] non-existing SPS 0 referenced in buffering period
+[h264 @ 0x5615c232ce40] non-existing SPS 0 referenced in buffering period
+[2025-07-31 07:31:47]     正在运行 ffprobe for: http://php.jdshipin.com/smt.php
+[2025-07-31 07:31:54]   -> ffprobe 错误 (Exit Code 1): Not detecting m3u8/hls with non standard extension and non standard mime type
+    Last message repeated 1 times
+http://php.jdshipin.com/smt.php: Invalid data found when processing input
+[2025-07-31 07:31:54]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://58.221.214.82:9901/tsfile/live/0016_1.m3u8
+[2025-07-31 07:31:55]     ffprobe stderr (before timeout): b'[NULL @ 0x55ab06b5d6c0] non-existing PPS 0 referenced\n[h264 @ 0x55ab06b5eb00] non-existing PPS 0 referenced\n[h264 @ 0x55ab06b5eb00] decode_slice_header error\n[h264 @ 0x55ab06b5eb00] no frame!\n[NULL @ 0x55ab06b5d6c0] non-existing PPS 0 referenced\n[h264 @ 0x55ab06b5eb00] non-existing PPS 0 referenced\n[h264 @ 0x55ab06b5eb00] decode_slice_header error\n[h264 @ 0x55ab06b5eb00] no frame!\n'
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/8/index.m3u8
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/503/index.m3u8
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for https://ldncctvwbcdbyte.volcfcdn.com/ldncctvwbcd/cdrmldcctv1_1/index.m3u8
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/503/index.m3u8
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]     正在运行 ffprobe for: https://t.me/dianshizhibofenxiang001/22806
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:55]     正在运行 ffprobe for: https://rthktv32-live.akamaized.net/hls/live/2036819/RTHKTV32/stream2/streamPlaylist.m3u8
+[2025-07-31 07:31:55]     正在运行 ffprobe for: https://rthktv35-live.akamaized.net/hls/live/2101643/RTHKTV35/stream02/streamPlaylist.m3u8
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://anren.live/HK/BSJDUFpB.m3u8
+[2025-07-31 07:31:55]   -> ffprobe 错误 (Exit Code 1): https://t.me/dianshizhibofenxiang001/22806: Invalid data found when processing input
+[2025-07-31 07:31:55]     正在运行 ffprobe for: http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8
+[2025-07-31 07:31:56]     ffprobe 完成 (0.98s) for: https://rthktv32-live.akamaized.net/hls/live/2036819/RTHKTV32/stream2/streamPlaylist.m3u8
+[2025-07-31 07:31:56]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:31:56]     正在运行 ffprobe for: https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+[2025-07-31 07:31:56]   -> ffprobe 错误 (Exit Code 1): http://anren.live/HK/BSJDUFpB.m3u8: Invalid data found when processing input
+[2025-07-31 07:31:56]     正在运行 ffprobe for: https://liveprodeuwest.akamaized.net/eu1/Channel-EUTVqvs-AWS-ireland-1/Source-EUTVqvs-700-1_live.m3u8
+[2025-07-31 07:31:56]     ffprobe 完成 (0.70s) for: http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8
+[2025-07-31 07:31:56]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:31:56]     正在运行 ffprobe for: https://t.me/dianshizhibofenxiang001/22805
+[2025-07-31 07:31:57]   -> ffprobe 错误 (Exit Code 1): https://t.me/dianshizhibofenxiang001/22805: Invalid data found when processing input
+[2025-07-31 07:31:57]     正在运行 ffprobe for: http://static.france24.com/live/F24_AR_LO_HLS/live_web.m3u8
+[2025-07-31 07:31:57]   -> ffprobe 错误 (Exit Code 1): https://vdm6-hw.nbgdsygs.com/live/h6-2.flv: Server returned 404 Not Found
+[2025-07-31 07:31:57]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:57]     ffprobe 完成 (2.61s) for: https://rthktv35-live.akamaized.net/hls/live/2101643/RTHKTV35/stream02/streamPlaylist.m3u8
+[2025-07-31 07:31:57]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:31:57]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:31:58]     ffprobe 完成 (0.69s) for: http://static.france24.com/live/F24_AR_LO_HLS/live_web.m3u8
+[2025-07-31 07:31:58]   -> 结果: 流类型或时长不符。stdout: 
+
+stderr: 
+
+[2025-07-31 07:31:58]     正在运行 ffprobe for: https://rthktv32-live.akamaized.net/hls/live/2036819/RTHKTV32/stream2/streamPlaylist.m3u8
+[2025-07-31 07:31:58]     ffprobe 完成 (0.41s) for: https://rthktv32-live.akamaized.net/hls/live/2036819/RTHKTV32/stream2/streamPlaylist.m3u8
+[2025-07-31 07:31:58]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:31:58]     正在运行 ffprobe for: http://cdn.universmotri.ru/live/hq.sdp/chunklist_w1792531.m3u8
+[2025-07-31 07:32:00]     ffprobe 完成 (2.26s) for: http://cdn.universmotri.ru/live/hq.sdp/chunklist_w1792531.m3u8
+[2025-07-31 07:32:00]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:00]     正在运行 ffprobe for: http://live.m2.tv/hls3/stream.m3u8
+[2025-07-31 07:32:00]     ffprobe 完成 (4.89s) for: https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+[2025-07-31 07:32:00]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x556d161b8500] non-existing SPS 0 referenced in buffering period
+[h264 @ 0x556d15e05280] non-existing SPS 0 referenced in buffering period
+[2025-07-31 07:32:00]     正在运行 ffprobe for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:02]     ffprobe 完成 (1.09s) for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:02]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:02]     正在运行 ffprobe for: http://www.elahmad.com/tv/m3u8/alkass.m3u8
+[2025-07-31 07:32:03]     ffprobe 完成 (1.41s) for: http://www.elahmad.com/tv/m3u8/alkass.m3u8
+[2025-07-31 07:32:03]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:03]     正在运行 ffprobe for: http://liveproduseast.akamaized.net/us/Channel-USTV-AWS-virginia-1/Source-USTV-1000-1_live.m3u8
+[2025-07-31 07:32:09]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:09]     正在运行 ffprobe for: http://de1se01.v2beat.live/playlist.m3u8
+[2025-07-31 07:32:09]     ffprobe 完成 (8.70s) for: http://live.m2.tv/hls3/stream.m3u8
+[2025-07-31 07:32:09]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:09]     正在运行 ffprobe for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:10]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:10]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:10]     正在运行 ffprobe for: https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
+[2025-07-31 07:32:10]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:10]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://vietcago.net/vstv/thnd.m3u8
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://210.245.20.94/hls/ktv1.m3u8
+[2025-07-31 07:32:10]     ffprobe 完成 (0.92s) for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:10]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://hoabinhtvlive.746b3ddb.cdnviet.com/hoabinhtv/playlist.m3u8
+[2025-07-31 07:32:10]     ffprobe 完成 (0.22s) for: http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+[2025-07-31 07:32:10]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://antvlive.ab5c6921.cdnviet.com/antv/chunklist.m3u8
+[2025-07-31 07:32:10]   -> ffprobe 错误 (Exit Code 1): http://vietcago.net/vstv/thnd.m3u8: Invalid data found when processing input
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://tv.balkanweb.com:8081/news24/livestream/chunks.m3u8
+[2025-07-31 07:32:10]   -> ffprobe 错误 (Exit Code 1): http://210.245.20.94/hls/ktv1.m3u8: Server returned 403 Forbidden (access denied)
+[2025-07-31 07:32:10]     正在运行 ffprobe for: http://tv.balkanweb.com/news24/livestream/playlist.m3u8
+[2025-07-31 07:32:11]     ffprobe 完成 (0.94s) for: https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
+[2025-07-31 07:32:11]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:11]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
+[2025-07-31 07:32:11]     ffprobe 完成 (0.86s) for: http://tv.balkanweb.com:8081/news24/livestream/chunks.m3u8
+[2025-07-31 07:32:11]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:11]     正在运行 ffprobe for: http://php.jdshipin.com:8880/0769.php
+[2025-07-31 07:32:11]   -> ffprobe 超时 (15s) for https://liveprodeuwest.akamaized.net/eu1/Channel-EUTVqvs-AWS-ireland-1/Source-EUTVqvs-700-1_live.m3u8
+[2025-07-31 07:32:11]     正在运行 ffprobe for: http://php.jdshipin.com:8880/0769.php
+[2025-07-31 07:32:11]     ffprobe 完成 (2.36s) for: http://de1se01.v2beat.live/playlist.m3u8
+[2025-07-31 07:32:11]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:11]     正在运行 ffprobe for: https://t.me/dianshizhibofenxiang001/22832
+[2025-07-31 07:32:12]   -> ffprobe 错误 (Exit Code 1): https://t.me/dianshizhibofenxiang001/22832: Invalid data found when processing input
+[2025-07-31 07:32:12]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXyuyao1/720p.m3u8
+[2025-07-31 07:32:12]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:12]     正在运行 ffprobe for: http://stream2.jlntv.cn/naxw/sd/live.m3u8
+[2025-07-31 07:32:12]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:12]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:13]     ffprobe 完成 (2.43s) for: http://tv.balkanweb.com/news24/livestream/playlist.m3u8
+[2025-07-31 07:32:13]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:13]     正在运行 ffprobe for: http://live-hls-web-aja.getaj.net/AJA/02.m3u8
+[2025-07-31 07:32:13]     ffprobe 完成 (0.37s) for: http://live-hls-web-aja.getaj.net/AJA/02.m3u8
+[2025-07-31 07:32:13]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:13]     正在运行 ffprobe for: http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
+[2025-07-31 07:32:14]     ffprobe 完成 (0.71s) for: http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
+[2025-07-31 07:32:14]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[NULL @ 0x560924ec3ac0] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] non-existing PPS 0 referenced
+[h264 @ 0x560924ec4f00] decode_slice_header error
+[h264 @ 0x560924ec4f00] no frame!
+[2025-07-31 07:32:14]     正在运行 ffprobe for: http://stream2.jlntv.cn/jilin1/sd/live.m3u8
+[2025-07-31 07:32:14]     ffprobe 完成 (3.73s) for: http://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
+[2025-07-31 07:32:14]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:14]     正在运行 ffprobe for: http://stream2.jlntv.cn/sytv/sd/live.m3u8
+[2025-07-31 07:32:15]     ffprobe 完成 (2.90s) for: http://stream2.jlntv.cn/naxw/sd/live.m3u8
+[2025-07-31 07:32:15]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:15]     正在运行 ffprobe for: http://stream2.jlntv.cn/sptv/sd/live.m3u8
+[2025-07-31 07:32:15]     ffprobe 完成 (3.66s) for: http://l.cztvcloud.com/channels/lantian/SXyuyao1/720p.m3u8
+[2025-07-31 07:32:15]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:15]     正在运行 ffprobe for: http://hls.mlink.tv/mlink/cv27GLMZ.m3u8
+[2025-07-31 07:32:17]     ffprobe 完成 (2.41s) for: http://stream2.jlntv.cn/sytv/sd/live.m3u8
+[2025-07-31 07:32:17]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:17]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/xwzh_bq/playlist.m3u8
+[2025-07-31 07:32:18]     ffprobe 完成 (3.82s) for: http://stream2.jlntv.cn/jilin1/sd/live.m3u8
+[2025-07-31 07:32:18]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:18]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXshengzhou1/720p.m3u8
+[2025-07-31 07:32:18]     ffprobe 完成 (2.80s) for: http://stream2.jlntv.cn/sptv/sd/live.m3u8
+[2025-07-31 07:32:18]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:18]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/xwzh_gq/playlist.m3u8
+[2025-07-31 07:32:18]   -> ffprobe 超时 (15s) for http://liveproduseast.akamaized.net/us/Channel-USTV-AWS-virginia-1/Source-USTV-1000-1_live.m3u8
+[2025-07-31 07:32:18]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXxinchang1/720p.m3u8
+[2025-07-31 07:32:18]     ffprobe 完成 (8.20s) for: http://antvlive.ab5c6921.cdnviet.com/antv/chunklist.m3u8
+[2025-07-31 07:32:18]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:18]     正在运行 ffprobe for: http://php.jdshipin.com/smt.php
+[2025-07-31 07:32:19]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/xwzh_bq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:32:19]     正在运行 ffprobe for: http://61.10.2.141/live_freedirect/freehd209_h.live/playlist.m3u8
+[2025-07-31 07:32:19]   -> ffprobe 错误 (Exit Code 1): Not detecting m3u8/hls with non standard extension and non standard mime type
+    Last message repeated 1 times
+http://php.jdshipin.com/smt.php: Invalid data found when processing input
+[2025-07-31 07:32:19]     正在运行 ffprobe for: http://live.scbtv.cn/hls/news.m3u8
+[2025-07-31 07:32:20]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/xwzh_gq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:32:20]     正在运行 ffprobe for: http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
+[2025-07-31 07:32:20]     ffprobe 完成 (9.93s) for: http://hoabinhtvlive.746b3ddb.cdnviet.com/hoabinhtv/playlist.m3u8
+[2025-07-31 07:32:20]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:20]     正在运行 ffprobe for: http://3gvod.zjgonline.com.cn:1935/live/xinwenzonghe2/playlist.m3u8
+[2025-07-31 07:32:20]   -> ffprobe 错误 (Exit Code 1): http://live.scbtv.cn/hls/news.m3u8: Invalid data found when processing input
+[2025-07-31 07:32:20]     正在运行 ffprobe for: http://pili-live-hls.140.i2863.com/i2863-140/live_140_236499.m3u8
+[2025-07-31 07:32:21]     ffprobe 完成 (3.46s) for: http://l.cztvcloud.com/channels/lantian/SXshengzhou1/720p.m3u8
+[2025-07-31 07:32:21]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:21]     正在运行 ffprobe for: http://live.wjyanghu.com/live/CH1.m3u8
+[2025-07-31 07:32:21]     ffprobe 完成 (2.46s) for: http://61.10.2.141/live_freedirect/freehd209_h.live/playlist.m3u8
+[2025-07-31 07:32:21]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:21]     正在运行 ffprobe for: http://visit.jjbctv.com:1935/live/xwzhmb/playlist.m3u8
+[2025-07-31 07:32:21]     ffprobe 完成 (1.67s) for: http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
+[2025-07-31 07:32:21]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[NULL @ 0x557ec0084ac0] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] non-existing PPS 0 referenced
+[h264 @ 0x557ec0085f00] decode_slice_header error
+[h264 @ 0x557ec0085f00] no frame!
+[2025-07-31 07:32:21]     正在运行 ffprobe for: http://stream2.jlntv.cn/baishan1/sd/live.m3u8
+[2025-07-31 07:32:22]   -> ffprobe 错误 (Exit Code 1): http://3gvod.zjgonline.com.cn:1935/live/xinwenzonghe2/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:32:22]     正在运行 ffprobe for: http://liveplay-nanyue.rednet.cn/live/chaling-telev.m3u8
+[2025-07-31 07:32:22]     ffprobe 完成 (3.87s) for: http://l.cztvcloud.com/channels/lantian/SXxinchang1/720p.m3u8
+[2025-07-31 07:32:22]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:22]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXxiaoshan1/720p.m3u8
+[2025-07-31 07:32:24]     ffprobe 完成 (3.13s) for: http://stream2.jlntv.cn/baishan1/sd/live.m3u8
+[2025-07-31 07:32:24]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:24]     正在运行 ffprobe for: http://stream.guihet.com/tv/sxdft.php
+[2025-07-31 07:32:25]     ffprobe 完成 (4.64s) for: http://pili-live-hls.140.i2863.com/i2863-140/live_140_236499.m3u8
+[2025-07-31 07:32:25]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:25]     正在运行 ffprobe for: http://stream.guihet.com/tv/sxdft.php
+[2025-07-31 07:32:25]     ffprobe 完成 (2.95s) for: http://l.cztvcloud.com/channels/lantian/SXxiaoshan1/720p.m3u8
+[2025-07-31 07:32:25]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:25]     正在运行 ffprobe for: http://stream2.jlntv.cn/liaoyuan1/sd/live.m3u8
+[2025-07-31 07:32:25]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/sxdft.php: Invalid data found when processing input
+[2025-07-31 07:32:25]     正在运行 ffprobe for: http://stream2.jlntv.cn/tonghua1/sd/live.m3u8
+[2025-07-31 07:32:25]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/sxdft.php: Invalid data found when processing input
+[2025-07-31 07:32:25]     正在运行 ffprobe for: http://vss.cbnmtv.com/live/CQTV_xw_hd_1.m3u8
+[2025-07-31 07:32:26]   -> ffprobe 超时 (15s) for http://php.jdshipin.com:8880/0769.php
+[2025-07-31 07:32:26]     正在运行 ffprobe for: http://xhalive.qwmedia.cn/hdratv-live/xha-xwpd.flv
+[2025-07-31 07:32:26]   -> ffprobe 超时 (15s) for http://php.jdshipin.com:8880/0769.php
+[2025-07-31 07:32:26]     正在运行 ffprobe for: http://stream.guihet.com/tv/116.php
+[2025-07-31 07:32:26]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/116.php: Invalid data found when processing input
+[2025-07-31 07:32:26]     正在运行 ffprobe for: http://vss.cbnmtv.com/live/CQTV_shaoer_hd_1.m3u8
+[2025-07-31 07:32:27]     ffprobe 完成 (5.12s) for: http://liveplay-nanyue.rednet.cn/live/chaling-telev.m3u8
+[2025-07-31 07:32:27]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:27]     正在运行 ffprobe for: http://ebsonairios.ebs.co.kr/ebsutablet500k/_definst_/tablet500k/chunklist_w1965791004.m3u8
+[2025-07-31 07:32:27]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:27]     正在运行 ffprobe for: http://live.ahsz.tv/video/s10001-kxjy/index.m3u8
+[2025-07-31 07:32:27]     ffprobe 完成 (2.52s) for: http://stream2.jlntv.cn/tonghua1/sd/live.m3u8
+[2025-07-31 07:32:27]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:27]     正在运行 ffprobe for: http://ngcdn002.cnr.cn/live/jjzs/index.m3u8
+[2025-07-31 07:32:27]     ffprobe 完成 (6.39s) for: http://live.wjyanghu.com/live/CH1.m3u8
+[2025-07-31 07:32:27]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:27]     正在运行 ffprobe for: http://ngcdn002.cnr.cn/live/jjzs/index.m3u8
+[2025-07-31 07:32:28]     ffprobe 完成 (3.11s) for: http://stream2.jlntv.cn/liaoyuan1/sd/live.m3u8
+[2025-07-31 07:32:28]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:28]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXshangyu2/720p.m3u8
+[2025-07-31 07:32:29]     ffprobe 完成 (8.05s) for: http://visit.jjbctv.com:1935/live/xwzhmb/playlist.m3u8
+[2025-07-31 07:32:29]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:29]     正在运行 ffprobe for: https://dqhxk7sbp7xog.cloudfront.net/hls-live/goodtv/_definst_/liveevent/live-ch6-2.m3u8
+[2025-07-31 07:32:30]     ffprobe 完成 (3.25s) for: http://ebsonairios.ebs.co.kr/ebsutablet500k/_definst_/tablet500k/chunklist_w1965791004.m3u8
+[2025-07-31 07:32:30]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:30]     正在运行 ffprobe for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch2-2.m3u8
+[2025-07-31 07:32:30]     ffprobe 完成 (2.76s) for: http://ngcdn002.cnr.cn/live/jjzs/index.m3u8
+[2025-07-31 07:32:30]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:30]     正在运行 ffprobe for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch1-2.m3u8
+[2025-07-31 07:32:30]     ffprobe 完成 (3.12s) for: http://live.ahsz.tv/video/s10001-kxjy/index.m3u8
+[2025-07-31 07:32:30]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:32:30]     正在运行 ffprobe for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch3-2.m3u8
+[2025-07-31 07:32:30]   -> ffprobe 超时 (15s) for http://hls.mlink.tv/mlink/cv27GLMZ.m3u8
+[2025-07-31 07:32:30]     正在运行 ffprobe for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch6-2.m3u8
+[2025-07-31 07:32:31]     ffprobe 完成 (1.93s) for: https://dqhxk7sbp7xog.cloudfront.net/hls-live/goodtv/_definst_/liveevent/live-ch6-2.m3u8
+[2025-07-31 07:32:31]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:31]     正在运行 ffprobe for: http://live.xmcdn.com:80/live/1005/64.m3u8
+[2025-07-31 07:32:31]     ffprobe 完成 (3.43s) for: http://l.cztvcloud.com/channels/lantian/SXshangyu2/720p.m3u8
+[2025-07-31 07:32:31]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:31]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxscmjyyt/playlist.m3u8
+[2025-07-31 07:32:31]     ffprobe 完成 (4.04s) for: http://ngcdn002.cnr.cn/live/jjzs/index.m3u8
+[2025-07-31 07:32:31]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:31]     正在运行 ffprobe for: http://iot-mqqt.111yao.cn:8080/live/diyp_channelv.m3u8
+[2025-07-31 07:32:34]     ffprobe 完成 (3.93s) for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch3-2.m3u8
+[2025-07-31 07:32:34]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:34]     正在运行 ffprobe for: http://stream3.hndt.com/now/DTK5qc83/playlist.m3u8
+[2025-07-31 07:32:34]     ffprobe 完成 (3.33s) for: http://live.xmcdn.com:80/live/1005/64.m3u8
+[2025-07-31 07:32:34]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:34]     正在运行 ffprobe for: http://live.xmcdn.com:80/live/1011/64.m3u8
+[2025-07-31 07:32:34]     ffprobe 完成 (4.40s) for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch2-2.m3u8
+[2025-07-31 07:32:34]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[NULL @ 0x5630293806c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] non-existing PPS 0 referenced
+[h264 @ 0x5630297771c0] decode_slice_header error
+[h264 @ 0x5630297771c0] no frame!
+[2025-07-31 07:32:34]     正在运行 ffprobe for: http://61.216.67.119:1935/TWHG/E1/chunklist_w7058102.m3u8
+[2025-07-31 07:32:35]     ffprobe 完成 (4.17s) for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch6-2.m3u8
+[2025-07-31 07:32:35]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:35]     正在运行 ffprobe for: http://video11.qtv.com.cn/zhibo886/manifest.m3u8
+[2025-07-31 07:32:35]     ffprobe 完成 (4.51s) for: https://live-350k.streamingfast.net/hls-live/goodtv/_definst_/liveevent/live-ch1-2.m3u8
+[2025-07-31 07:32:35]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[NULL @ 0x555da246f6c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] non-existing PPS 0 referenced
+[h264 @ 0x555da20c39c0] decode_slice_header error
+[h264 @ 0x555da20c39c0] no frame!
+[2025-07-31 07:32:35]     正在运行 ffprobe for: http://61.221.215.25:8800/hls/47/index.m3u8
+[2025-07-31 07:32:36]     ffprobe 完成 (5.07s) for: https://satellitepull.cnr.cn/live/wxscmjyyt/playlist.m3u8
+[2025-07-31 07:32:36]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:36]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXyuyao2/720p.m3u8
+[2025-07-31 07:32:36]     ffprobe 完成 (1.83s) for: http://61.221.215.25:8800/hls/47/index.m3u8
+[2025-07-31 07:32:36]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[NULL @ 0x560c2839c6c0] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] non-existing PPS 0 referenced
+[h264 @ 0x560c2839da40] decode_slice_header error
+[h264 @ 0x560c2839da40] no frame!
+[2025-07-31 07:32:36]     正在运行 ffprobe for: http://61.221.215.25:8800/hls/56/index.m3u8
+[2025-07-31 07:32:37]     ffprobe 完成 (2.22s) for: http://live.xmcdn.com:80/live/1011/64.m3u8
+[2025-07-31 07:32:37]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:37]     正在运行 ffprobe for: https://dqhxk7sbp7xog.cloudfront.net/hls-live/goodtv/_definst_/liveevent/live-ch1-2.m3u8
+[2025-07-31 07:32:37]     ffprobe 完成 (2.52s) for: http://61.216.67.119:1935/TWHG/E1/chunklist_w7058102.m3u8
+[2025-07-31 07:32:37]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:37]     正在运行 ffprobe for: http://stream.guihet.com/tv/cibn.php
+[2025-07-31 07:32:37]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/cibn.php: Invalid data found when processing input
+[2025-07-31 07:32:37]     正在运行 ffprobe for: http://live.ahsz.tv/video/s10001-szzh/index.m3u8
+[2025-07-31 07:32:37]     ffprobe 完成 (3.09s) for: http://stream3.hndt.com/now/DTK5qc83/playlist.m3u8
+[2025-07-31 07:32:37]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:37]     正在运行 ffprobe for: http://sdqz.chinashadt.com:2036/live/stream:2.stream/playlist.m3u8
+[2025-07-31 07:32:38]     ffprobe 完成 (6.62s) for: http://iot-mqqt.111yao.cn:8080/live/diyp_channelv.m3u8
+[2025-07-31 07:32:38]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:32:38]     正在运行 ffprobe for: http://tmpstream.hyrtv.cn/xwzh/sd/live.m3u8
+[2025-07-31 07:32:39]     ffprobe 完成 (2.12s) for: https://dqhxk7sbp7xog.cloudfront.net/hls-live/goodtv/_definst_/liveevent/live-ch1-2.m3u8
+[2025-07-31 07:32:39]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[NULL @ 0x5588af0c4f80] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] non-existing PPS 0 referenced
+[h264 @ 0x5588af4c6640] decode_slice_header error
+[h264 @ 0x5588af4c6640] no frame!
+[2025-07-31 07:32:39]     正在运行 ffprobe for: http://www.iptvlist.cn/daili/gdhj.php
+[2025-07-31 07:32:39]     ffprobe 完成 (2.51s) for: http://l.cztvcloud.com/channels/lantian/SXyuyao2/720p.m3u8
+[2025-07-31 07:32:39]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:39]     正在运行 ffprobe for: http://tvdrs.wsrtv.com.cn:8100/channellive/ch1.flv
+[2025-07-31 07:32:39]   -> ffprobe 错误 (Exit Code 1): [hls @ 0x55db036cd280] Error when loading first segment 'http://61.221.215.25:8800/hls/56/00000012.ts'
+http://61.221.215.25:8800/hls/56/index.m3u8: Invalid data found when processing input
+[2025-07-31 07:32:39]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8
+[2025-07-31 07:32:40]   -> ffprobe 超时 (15s) for http://vss.cbnmtv.com/live/CQTV_xw_hd_1.m3u8
+[2025-07-31 07:32:40]     正在运行 ffprobe for: https://liveplay-srs.voc.com.cn/hls/tv/157_66df9e.m3u8
+[2025-07-31 07:32:41]   -> ffprobe 错误 (Exit Code 1): http://www.iptvlist.cn/daili/gdhj.php: Server returned 404 Not Found
+[2025-07-31 07:32:41]     正在运行 ffprobe for: http://liveplay-srs.voc.com.cn/hls/tv/31_226756.m3u8
+[2025-07-31 07:32:41]   -> ffprobe 超时 (15s) for http://xhalive.qwmedia.cn/hdratv-live/xha-xwpd.flv
+[2025-07-31 07:32:41]     正在运行 ffprobe for: http://3gvod.zjgonline.com.cn:1935/live/shehuishenghuo2/playlist.m3u8
+[2025-07-31 07:32:41]     ffprobe 完成 (3.00s) for: http://tmpstream.hyrtv.cn/xwzh/sd/live.m3u8
+[2025-07-31 07:32:41]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:41]     正在运行 ffprobe for: http://live.wjyanghu.com/live/CH2.m3u8
+[2025-07-31 07:32:41]   -> ffprobe 超时 (15s) for http://vss.cbnmtv.com/live/CQTV_shaoer_hd_1.m3u8
+[2025-07-31 07:32:41]     正在运行 ffprobe for: http://hbsz.chinashadt.com:2036/live/stream:sztv.stream/playlist.m3u8
+[2025-07-31 07:32:42]     ffprobe 完成 (4.20s) for: http://sdqz.chinashadt.com:2036/live/stream:2.stream/playlist.m3u8
+[2025-07-31 07:32:42]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:42]     正在运行 ffprobe for: http://pili-live-hls.hebitv.com/hebi/hebi.m3u8
+[2025-07-31 07:32:42]     ffprobe 完成 (2.67s) for: http://l.cztvcloud.com/channels/lantian/SXxinchang2/720p.m3u8
+[2025-07-31 07:32:42]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:42]     正在运行 ffprobe for: http://stream.guihet.com/tv/cibn.php
+[2025-07-31 07:32:42]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/cibn.php: Invalid data found when processing input
+[2025-07-31 07:32:42]     正在运行 ffprobe for: http://liveplay-nanyue.rednet.cn/live/hongjiang_tv_ced5a7.m3u8
+[2025-07-31 07:32:43]   -> ffprobe 错误 (Exit Code 1): http://3gvod.zjgonline.com.cn:1935/live/shehuishenghuo2/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:32:43]     正在运行 ffprobe for: http://live.scbtv.cn/hls/news/index.m3u8
+[2025-07-31 07:32:43]     ffprobe 完成 (5.59s) for: http://live.ahsz.tv/video/s10001-szzh/index.m3u8
+[2025-07-31 07:32:43]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:32:43]     正在运行 ffprobe for: http://live.826pc.com/mytv/live.php
+[2025-07-31 07:32:43]     ffprobe 完成 (4.15s) for: http://tvdrs.wsrtv.com.cn:8100/channellive/ch1.flv
+[2025-07-31 07:32:43]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:32:43]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXxiaoshan2/720p.m3u8
+[2025-07-31 07:32:43]   -> ffprobe 错误 (Exit Code 1): http://live.scbtv.cn/hls/news/index.m3u8: Invalid data found when processing input
+[2025-07-31 07:32:43]     正在运行 ffprobe for: http://183.64.181.25:40023/rongchang01.m3u8
+[2025-07-31 07:32:44]   -> ffprobe 错误 (Exit Code 1): http://hbsz.chinashadt.com:2036/live/stream:sztv.stream/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:32:44]     正在运行 ffprobe for: http://vss.cbnmtv.com/live/CQTV_dushi_hd_1.m3u8
+[2025-07-31 07:32:47]     ffprobe 完成 (4.44s) for: http://liveplay-nanyue.rednet.cn/live/hongjiang_tv_ced5a7.m3u8
+[2025-07-31 07:32:47]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:47]     正在运行 ffprobe for: http://stream2.jlntv.cn/jlcc/sd/live.m3u8
+[2025-07-31 07:32:47]     ffprobe 完成 (5.74s) for: http://live.wjyanghu.com/live/CH2.m3u8
+[2025-07-31 07:32:47]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:47]     正在运行 ffprobe for: http://stream2.jlntv.cn/ja/sd/live.m3u8
+[2025-07-31 07:32:47]     ffprobe 完成 (3.44s) for: http://183.64.181.25:40023/rongchang01.m3u8
+[2025-07-31 07:32:47]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:32:47]     正在运行 ffprobe for: http://sdqz.chinashadt.com:2036/live/stream:1.stream/playlist.m3u8
+[2025-07-31 07:32:47]     ffprobe 完成 (4.15s) for: http://l.cztvcloud.com/channels/lantian/SXxiaoshan2/720p.m3u8
+[2025-07-31 07:32:47]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:47]     正在运行 ffprobe for: http://liveplay-srs.voc.com.cn/hls/tv/34_5156ed.m3u8
+[2025-07-31 07:32:49]     ffprobe 完成 (2.53s) for: http://stream2.jlntv.cn/jlcc/sd/live.m3u8
+[2025-07-31 07:32:49]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:49]     正在运行 ffprobe for: http://liveplay-nanyue.rednet.cn/live/shaoshan-tv.m3u8
+[2025-07-31 07:32:49]     ffprobe 完成 (2.45s) for: http://stream2.jlntv.cn/ja/sd/live.m3u8
+[2025-07-31 07:32:49]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:49]     正在运行 ffprobe for: http://liveplay-srs.voc.com.cn/hls/tv/38_6f397d.m3u8
+[2025-07-31 07:32:50]   -> ffprobe 超时 (15s) for http://video11.qtv.com.cn/zhibo886/manifest.m3u8
+[2025-07-31 07:32:50]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wx32dfgbdt/playlist.m3u8
+[2025-07-31 07:32:52]     ffprobe 完成 (5.48s) for: http://sdqz.chinashadt.com:2036/live/stream:1.stream/playlist.m3u8
+[2025-07-31 07:32:52]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:52]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/42/index.m3u8
+[2025-07-31 07:32:53]     ffprobe 完成 (3.77s) for: http://liveplay-nanyue.rednet.cn/live/shaoshan-tv.m3u8
+[2025-07-31 07:32:53]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:53]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/31/index.m3u8
+[2025-07-31 07:32:53]     ffprobe 完成 (3.81s) for: https://satellitepull.cnr.cn/live/wx32dfgbdt/playlist.m3u8
+[2025-07-31 07:32:53]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:53]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxynjtgb/playlist.m3u8
+[2025-07-31 07:32:55]   -> ffprobe 超时 (15s) for https://liveplay-srs.voc.com.cn/hls/tv/157_66df9e.m3u8
+[2025-07-31 07:32:55]     正在运行 ffprobe for: https://liveout.btzx.com.cn/62ds9e/yil08g.m3u8
+[2025-07-31 07:32:56]   -> ffprobe 超时 (15s) for http://liveplay-srs.voc.com.cn/hls/tv/31_226756.m3u8
+[2025-07-31 07:32:56]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/48/index.m3u8
+[2025-07-31 07:32:57]   -> ffprobe 超时 (15s) for http://pili-live-hls.hebitv.com/hebi/hebi.m3u8
+[2025-07-31 07:32:57]     正在运行 ffprobe for: http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:32:58]   -> ffprobe 超时 (15s) for http://live.826pc.com/mytv/live.php
+[2025-07-31 07:32:58]     正在运行 ffprobe for: http://iot-mqqt.111yao.cn:8080/live/diyp_fhdy.m3u8
+[2025-07-31 07:32:58]     ffprobe 完成 (4.82s) for: https://satellitepull.cnr.cn/live/wxynjtgb/playlist.m3u8
+[2025-07-31 07:32:58]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:58]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/45/index.m3u8
+[2025-07-31 07:32:59]     ffprobe 完成 (3.32s) for: http://111.61.236.247:9081/hls/48/index.m3u8
+[2025-07-31 07:32:59]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:32:59]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/35/index.m3u8
+[2025-07-31 07:32:59]   -> ffprobe 超时 (15s) for http://vss.cbnmtv.com/live/CQTV_dushi_hd_1.m3u8
+[2025-07-31 07:32:59]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxsccszs/playlist.m3u8
+[2025-07-31 07:33:02]   -> ffprobe 超时 (15s) for http://liveplay-srs.voc.com.cn/hls/tv/34_5156ed.m3u8
+[2025-07-31 07:33:02]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/44/index.m3u8
+[2025-07-31 07:33:03]     ffprobe 完成 (7.72s) for: https://liveout.btzx.com.cn/62ds9e/yil08g.m3u8
+[2025-07-31 07:33:03]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:03]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/49/live.m3u8
+[2025-07-31 07:33:03]     ffprobe 完成 (13.73s) for: http://liveplay-srs.voc.com.cn/hls/tv/38_6f397d.m3u8
+[2025-07-31 07:33:03]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:33:03]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/51/index.m3u8
+[2025-07-31 07:33:03]     ffprobe 完成 (3.95s) for: https://satellitepull.cnr.cn/live/wxsccszs/playlist.m3u8
+[2025-07-31 07:33:03]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:03]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/dzgg_bq/playlist.m3u8
+[2025-07-31 07:33:05]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/dzgg_bq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:33:05]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/dztw_bq/playlist.m3u8
+[2025-07-31 07:33:05]     ffprobe 完成 (7.64s) for: http://iot-mqqt.111yao.cn:8080/live/diyp_fhdy.m3u8
+[2025-07-31 07:33:05]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+[NULL @ 0x5618624b5940] non-existing SPS 0 referenced in buffering period
+[h264 @ 0x5618624b6b40] non-existing SPS 0 referenced in buffering period
+[2025-07-31 07:33:05]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/43/live.m3u8
+[2025-07-31 07:33:07]     ffprobe 完成 (3.93s) for: http://36.32.174.67:60080/newlive/live/hls/49/live.m3u8
+[2025-07-31 07:33:07]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:07]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/47/index.m3u8
+[2025-07-31 07:33:07]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/dztw_bq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:33:07]     正在运行 ffprobe for: http://58.221.214.82:9901/tsfile/live/0017_1.m3u8
+[2025-07-31 07:33:07]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/42/index.m3u8
+[2025-07-31 07:33:07]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/43/index.m3u8
+[2025-07-31 07:33:08]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/31/index.m3u8
+[2025-07-31 07:33:08]     ffprobe 完成 (5.01s) for: http://111.61.236.247:9081/hls/51/index.m3u8
+[2025-07-31 07:33:08]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:08]     正在运行 ffprobe for: http://tmpstream.hyrtv.cn/hygg/sd/live.m3u8
+[2025-07-31 07:33:08]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/44/index.m3u8
+[2025-07-31 07:33:12]   -> ffprobe 超时 (15s) for http://php.jdshipin.com/TVOD/iptv.php
+[2025-07-31 07:33:12]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/38/live.m3u8
+[2025-07-31 07:33:12]     ffprobe 完成 (3.71s) for: http://tmpstream.hyrtv.cn/hygg/sd/live.m3u8
+[2025-07-31 07:33:12]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:12]     正在运行 ffprobe for: http://58.221.214.82:9901/tsfile/live/0113_1.m3u8
+[2025-07-31 07:33:12]     ffprobe 完成 (13.51s) for: http://111.61.236.247:9081/hls/35/index.m3u8
+[2025-07-31 07:33:12]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:12]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/47/live.m3u8
+[2025-07-31 07:33:12]     ffprobe 完成 (5.66s) for: http://111.61.236.247:9081/hls/47/index.m3u8
+[2025-07-31 07:33:12]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:12]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/53/index.m3u8
+[2025-07-31 07:33:13]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/45/index.m3u8
+[2025-07-31 07:33:13]     正在运行 ffprobe for: http://iot-mqqt.111yao.cn:8080/live/diyp_xingkong.m3u8
+[2025-07-31 07:33:15]     ffprobe 完成 (9.29s) for: http://36.32.174.67:60080/newlive/live/hls/43/live.m3u8
+[2025-07-31 07:33:15]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:15]     正在运行 ffprobe for: http://stream.jinjiang.tv/1/sd/live.m3u8
+[2025-07-31 07:33:15]     ffprobe 完成 (3.62s) for: http://36.32.174.67:60080/newlive/live/hls/38/live.m3u8
+[2025-07-31 07:33:15]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:15]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/22/live.m3u8
+[2025-07-31 07:33:15]     ffprobe 完成 (8.47s) for: http://58.221.214.82:9901/tsfile/live/0017_1.m3u8
+[2025-07-31 07:33:15]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x5636051116c0] non-existing PPS 0 referenced
+[h264 @ 0x563605112b00] non-existing PPS 0 referenced
+[h264 @ 0x563605112b00] decode_slice_header error
+[h264 @ 0x563605112b00] no frame!
+[NULL @ 0x5636051116c0] non-existing PPS 0 referenced
+[h264 @ 0x563605112b00] non-existing PPS 0 referenced
+[h264 @ 0x563605112b00] decode_slice_header error
+[h264 @ 0x563605112b00] no frame!
+[2025-07-31 07:33:15]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/31/live.m3u8
+[2025-07-31 07:33:16]     ffprobe 完成 (8.00s) for: http://111.61.236.247:9081/hls/44/index.m3u8
+[2025-07-31 07:33:16]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:16]     正在运行 ffprobe for: http://116.128.242.83:9901/tsfile/live/0142_1.m3u8
+[2025-07-31 07:33:16]     ffprobe 完成 (3.97s) for: http://36.32.174.67:60080/newlive/live/hls/47/live.m3u8
+[2025-07-31 07:33:16]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:16]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/36/live.m3u8
+[2025-07-31 07:33:17]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/44/index.m3u8
+[2025-07-31 07:33:17]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/17/index.m3u8
+[2025-07-31 07:33:18]     ffprobe 完成 (5.68s) for: http://111.61.236.247:9081/hls/53/index.m3u8
+[2025-07-31 07:33:18]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:18]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/33/index.m3u8
+[2025-07-31 07:33:19]     ffprobe 完成 (3.84s) for: http://stream.jinjiang.tv/1/sd/live.m3u8
+[2025-07-31 07:33:19]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:19]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxzjzs/playlist.m3u8
+[2025-07-31 07:33:19]     ffprobe 完成 (5.59s) for: http://iot-mqqt.111yao.cn:8080/live/diyp_xingkong.m3u8
+[2025-07-31 07:33:19]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:33:19]     正在运行 ffprobe for: http://112.46.85.60:8009/hls/34/index.m3u8
+[2025-07-31 07:33:19]     ffprobe 完成 (3.89s) for: http://36.32.174.67:60080/newlive/live/hls/22/live.m3u8
+[2025-07-31 07:33:19]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:19]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxzjcszs/playlist.m3u8
+[2025-07-31 07:33:19]     ffprobe 完成 (3.81s) for: http://36.32.174.67:60080/newlive/live/hls/31/live.m3u8
+[2025-07-31 07:33:19]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:19]     正在运行 ffprobe for: http://58.221.214.82:9901/tsfile/live/0016_2.m3u8
+[2025-07-31 07:33:20]     ffprobe 完成 (3.75s) for: http://36.32.174.67:60080/newlive/live/hls/36/live.m3u8
+[2025-07-31 07:33:20]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:20]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/46/live.m3u8
+[2025-07-31 07:33:22]     ffprobe 完成 (3.68s) for: http://111.61.236.247:9081/hls/33/index.m3u8
+[2025-07-31 07:33:22]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:22]     正在运行 ffprobe for: https://livepull-tcms.sztv.com.cn/live/sz4Kpgm.m3u8
+[2025-07-31 07:33:22]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/43/index.m3u8
+[2025-07-31 07:33:22]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/38/index.m3u8
+[2025-07-31 07:33:23]     ffprobe 完成 (3.92s) for: https://satellitepull.cnr.cn/live/wxzjcszs/playlist.m3u8
+[2025-07-31 07:33:23]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:23]     正在运行 ffprobe for: https://satellitepull.cnr.cn/live/wxszfy971/playlist.m3u8
+[2025-07-31 07:33:23]     ffprobe 完成 (3.32s) for: http://36.32.174.67:60080/newlive/live/hls/46/live.m3u8
+[2025-07-31 07:33:23]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:23]     正在运行 ffprobe for: http://live.appwuhan.com/8tzb/sd/live.m3u8
+[2025-07-31 07:33:24]     ffprobe 完成 (5.18s) for: https://satellitepull.cnr.cn/live/wxzjzs/playlist.m3u8
+[2025-07-31 07:33:24]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:24]     正在运行 ffprobe for: http://p2.vzan.com/527645544/149039617847513156/live.m3u8
+[2025-07-31 07:33:24]   -> ffprobe 错误 (Exit Code 1): http://live.appwuhan.com/8tzb/sd/live.m3u8: Server returned 404 Not Found
+[2025-07-31 07:33:24]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/54/index.m3u8
+[2025-07-31 07:33:27]   -> ffprobe 超时 (15s) for http://58.221.214.82:9901/tsfile/live/0113_1.m3u8
+[2025-07-31 07:33:27]     ffprobe stderr (before timeout): b'[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n[NULL @ 0x55a7faa7f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] non-existing PPS 0 referenced\n[h264 @ 0x55a7faa80b00] decode_slice_header error\n[h264 @ 0x55a7faa80b00] no frame!\n'
+[2025-07-31 07:33:27]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/37/index.m3u8
+[2025-07-31 07:33:27]     ffprobe 完成 (2.89s) for: http://p2.vzan.com/527645544/149039617847513156/live.m3u8
+[2025-07-31 07:33:27]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:33:27]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/34/live.m3u8
+[2025-07-31 07:33:27]     ffprobe 完成 (4.33s) for: https://satellitepull.cnr.cn/live/wxszfy971/playlist.m3u8
+[2025-07-31 07:33:27]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:27]     正在运行 ffprobe for: http://vss.cbnmtv.com/live/CQTV_yingshi_hd_1.m3u8
+[2025-07-31 07:33:28]     ffprobe 完成 (11.19s) for: http://111.61.236.247:9081/hls/17/index.m3u8
+[2025-07-31 07:33:28]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:28]     正在运行 ffprobe for: http://vss.cbnmtv.com/live/CQTV_shishang_hd_1.m3u8
+[2025-07-31 07:33:29]     ffprobe 完成 (7.62s) for: https://livepull-tcms.sztv.com.cn/live/sz4Kpgm.m3u8
+[2025-07-31 07:33:29]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:29]     正在运行 ffprobe for: http://36.32.174.67:60080/newlive/live/hls/44/live.m3u8
+[2025-07-31 07:33:31]     ffprobe 完成 (3.97s) for: http://36.32.174.67:60080/newlive/live/hls/34/live.m3u8
+[2025-07-31 07:33:31]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:31]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/49/index.m3u8
+[2025-07-31 07:33:31]   -> ffprobe 超时 (15s) for http://116.128.242.83:9901/tsfile/live/0142_1.m3u8
+[2025-07-31 07:33:31]     ffprobe stderr (before timeout): b'[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n[NULL @ 0x559354e6d6c0] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] non-existing PPS 0 referenced\n[h264 @ 0x559354e6eb00] decode_slice_header error\n[h264 @ 0x559354e6eb00] no frame!\n'
+[2025-07-31 07:33:31]     正在运行 ffprobe for: http://111.61.236.247:9081/hls/34/index.m3u8
+[2025-07-31 07:33:34]   -> ffprobe 超时 (15s) for http://112.46.85.60:8009/hls/34/index.m3u8
+[2025-07-31 07:33:34]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXshangyu3/720p.m3u8
+[2025-07-31 07:33:34]     ffprobe 完成 (3.35s) for: http://111.61.236.247:9081/hls/49/index.m3u8
+[2025-07-31 07:33:34]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:34]     正在运行 ffprobe for: http://l.cztvcloud.com/channels/lantian/SXyuyao3/720p.m3u8
+[2025-07-31 07:33:34]   -> ffprobe 超时 (15s) for http://58.221.214.82:9901/tsfile/live/0016_2.m3u8
+[2025-07-31 07:33:34]     ffprobe stderr (before timeout): b'[NULL @ 0x55818fa1f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] decode_slice_header error\n[h264 @ 0x55818fa20b00] no frame!\n[NULL @ 0x55818fa1f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] decode_slice_header error\n[h264 @ 0x55818fa20b00] no frame!\n[NULL @ 0x55818fa1f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] decode_slice_header error\n[h264 @ 0x55818fa20b00] no frame!\n[NULL @ 0x55818fa1f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] decode_slice_header error\n[h264 @ 0x55818fa20b00] no frame!\n[NULL @ 0x55818fa1f6c0] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] non-existing PPS 0 referenced\n[h264 @ 0x55818fa20b00] decode_slice_header error\n[h264 @ 0x55818fa20b00] no frame!\n'
+[2025-07-31 07:33:34]     正在运行 ffprobe for: http://live.ahsz.tv/video/s10001-ggpd/index.m3u8
+[2025-07-31 07:33:34]     ffprobe 完成 (4.92s) for: http://36.32.174.67:60080/newlive/live/hls/44/live.m3u8
+[2025-07-31 07:33:34]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:34]     正在运行 ffprobe for: http://hgwfkx5eb6j8bf3pd0c.exp.bcelive.com/lss-hipjx2r38fk0zcb4/live.m3u8
+[2025-07-31 07:33:36]     ffprobe 完成 (1.73s) for: http://live.ahsz.tv/video/s10001-ggpd/index.m3u8
+[2025-07-31 07:33:36]   -> 结果: 流类型或时长不符。stdout: 
+audio
+N/A
+video
+N/A
+audio
+N/A
+video
+N/A
+stderr: 
+
+[2025-07-31 07:33:36]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/dzgg_gq/playlist.m3u8
+[2025-07-31 07:33:36]     ffprobe 完成 (2.51s) for: http://l.cztvcloud.com/channels/lantian/SXyuyao3/720p.m3u8
+[2025-07-31 07:33:36]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+[NULL @ 0x55bb07572000] non-existing SPS 0 referenced in buffering period
+[h264 @ 0x55bb075744c0] non-existing SPS 0 referenced in buffering period
+[2025-07-31 07:33:36]     正在运行 ffprobe for: http://video.dztv.tv:1935/live/dztw_gq/playlist.m3u8
+[2025-07-31 07:33:37]     ffprobe 完成 (3.03s) for: http://l.cztvcloud.com/channels/lantian/SXshangyu3/720p.m3u8
+[2025-07-31 07:33:37]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:37]     正在运行 ffprobe for: http://liveplay-srs.voc.com.cn/hls/tv/158_423c80.m3u8
+[2025-07-31 07:33:37]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/38/index.m3u8
+[2025-07-31 07:33:37]     正在运行 ffprobe for: https://vdse.bdstatic.com//1d83dfc2411243e5b9f44462e1e55ab3.mp4
+[2025-07-31 07:33:38]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/dzgg_gq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:33:38]     正在运行 ffprobe for: http://liveplay-nanyue.rednet.cn/live/xiangtanxian_tv.m3u8
+[2025-07-31 07:33:38]   -> ffprobe 错误 (Exit Code 1): http://video.dztv.tv:1935/live/dztw_gq/playlist.m3u8: Server returned 404 Not Found
+[2025-07-31 07:33:38]     正在运行 ffprobe for: http://liveplay-srs.voc.com.cn/hls/tv/183_554704.m3u8
+[2025-07-31 07:33:39]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/54/index.m3u8
+[2025-07-31 07:33:39]     正在运行 ffprobe for: http://stream.guihet.com/tv/sxdft.php
+[2025-07-31 07:33:39]   -> ffprobe 错误 (Exit Code 1): http://stream.guihet.com/tv/sxdft.php: Invalid data found when processing input
+[2025-07-31 07:33:39]     正在运行 ffprobe for: http://sdqz.chinashadt.com:2036/live/stream:3.stream/playlist.m3u8
+[2025-07-31 07:33:40]     ffprobe 完成 (2.79s) for: https://vdse.bdstatic.com//1d83dfc2411243e5b9f44462e1e55ab3.mp4
+[2025-07-31 07:33:40]   -> 结果: 流类型或时长不符。stdout: 
+video
+248.480000
+audio
+248.592834
+stderr: 
+
+[2025-07-31 07:33:42]   -> ffprobe 超时 (15s) for http://111.61.236.247:9081/hls/37/index.m3u8
+[2025-07-31 07:33:42]     ffprobe 完成 (4.31s) for: http://liveplay-nanyue.rednet.cn/live/xiangtanxian_tv.m3u8
+[2025-07-31 07:33:42]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:42]   -> ffprobe 超时 (15s) for http://vss.cbnmtv.com/live/CQTV_yingshi_hd_1.m3u8
+[2025-07-31 07:33:43]     ffprobe 完成 (11.77s) for: http://111.61.236.247:9081/hls/34/index.m3u8
+[2025-07-31 07:33:43]   -> 结果: 流类型或时长不符。stdout: 
+video
+N/A
+audio
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:43]   -> ffprobe 超时 (15s) for http://vss.cbnmtv.com/live/CQTV_shishang_hd_1.m3u8
+[2025-07-31 07:33:44]   -> ffprobe 错误 (Exit Code 1): [hls @ 0x5616c713a280] Error when loading first segment 'http://hgwfkx5eb6j8bf3pd0c.exp.bcelive.com/lss-hipjx2r38fk0zcb4/live1532922833179.ts'
+http://hgwfkx5eb6j8bf3pd0c.exp.bcelive.com/lss-hipjx2r38fk0zcb4/live.m3u8: Invalid data found when processing input
+[2025-07-31 07:33:44]     ffprobe 完成 (5.04s) for: http://sdqz.chinashadt.com:2036/live/stream:3.stream/playlist.m3u8
+[2025-07-31 07:33:44]   -> 结果: 流类型或时长不符。stdout: 
+data
+N/A
+video
+N/A
+audio
+N/A
+data
+N/A
+video
+N/A
+audio
+N/A
+stderr: 
+
+[2025-07-31 07:33:52]   -> ffprobe 超时 (15s) for http://liveplay-srs.voc.com.cn/hls/tv/158_423c80.m3u8
+[2025-07-31 07:33:53]   -> ffprobe 超时 (15s) for http://liveplay-srs.voc.com.cn/hls/tv/183_554704.m3u8
+[2025-07-31 07:33:53] 
+验证完成。共找到 0 个有效频道。
+[2025-07-31 07:33:53] --------------------------------------------------
+[2025-07-31 07:33:53] 高质量 IPTV 列表已保存到 output/high_quality_iptv.txt
+[2025-07-31 07:33:53] --- IPTV 频道验证结束 - 2025-07-31 07:33:53.816408 ---
