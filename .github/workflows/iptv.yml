@@ -1,19 +1,23 @@
-# 工作流名称
 name: IPTV 250724
+
+# 并发控制，避免多个实例同时运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}
+  cancel-in-progress: true
 
 # 触发条件
 on:
-  workflow_dispatch:  # 允许手动触发工作流
+  workflow_dispatch:  # 允许手动触发
   schedule:
     - cron: '0 */168 * * *'  # 每周运行一次（每168小时）
 
 # 工作流任务
 jobs:
   build:
-    runs-on: ubuntu-latest  # 使用最新的 Ubuntu 环境
-    timeout-minutes: 360  # 设置 6 小时超时
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
     permissions:
-      contents: write  # 授予写入权限，用于提交和推送更改
+      contents: write  # 授予写入权限
 
     steps:
       # 步骤 1：检查 BOT secret
@@ -29,25 +33,20 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整提交历史，便于 rebase
-          token: ${{ secrets.BOT }}  # 使用 BOT secret 进行认证
+          fetch-depth: 0
+          token: ${{ secrets.BOT }}
 
       # 步骤 3：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'  # 使用 Python 3.12
-          cache: 'pip'  # 缓存 pip 依赖以加速安装
+          python-version: '3.12'
+          cache: 'pip'
 
       # 步骤 4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil
-          pip install pyyaml requests tenacity
-          pip install dnspython
-          pip install requests pyyaml dnspython aiohttp tqdm
-          pip install aiofiles
-          pip install cachetools  # 新增 cachetools 依赖
+          pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython tqdm aiofiles cachetools
         shell: bash
 
       # 步骤 5：设置时区
@@ -55,14 +54,14 @@ jobs:
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
         shell: bash
 
-      # 步骤 6：安装 FFmpeg（用于 ffprobe）
+      # 步骤 6：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
         shell: bash
 
-      # 步骤 7：验证 ffprobe 是否可用
+      # 步骤 7：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
@@ -77,7 +76,7 @@ jobs:
       # 步骤 8：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          BOT: ${{ secrets.BOT }}  # 设置环境变量 BOT
+          BOT: ${{ secrets.BOT }}
         run: python tv.py
         shell: bash
 
@@ -85,20 +84,20 @@ jobs:
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
-          name: iptv-results  # 工件名称
+          name: iptv-results
           path: |
-            iptv_list.txt    
-            uncategorized_iptv.txt  # 保留未分类文件
-            temp_channels/    
-            config/*.txt      
-            config/*.json     
-            logs/iptv.log  # 更新日志文件路径
-          retention-days: 7  # 工件保留 7 天
-          if-no-files-found: warn  # 如果没有找到文件，发出警告
-          compression-level: 6  # 压缩级别
-          overwrite: false  # 不覆盖现有工件
-          include-hidden-files: false  # 不包含隐藏文件
-        if: always()  # 无论成功或失败都执行
+            iptv_list.txt
+            uncategorized_iptv.txt
+            temp_channels/
+            config/*.txt
+            config/*.json
+            logs/iptv.log
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        if: always()
 
       # 步骤 10：检查文件更改
       - name: 检查文件更改
@@ -128,8 +127,6 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git fetch origin
-          git rebase origin/main || (git rebase --abort && git pull origin main --no-rebase)
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        shell: bash
+          git pull origin main || (
+            echo "检测到合并冲突，优先使用本地文件"
+            git checkout --ours output/iptv
