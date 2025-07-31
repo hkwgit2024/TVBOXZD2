@@ -1,5 +1,0 @@
-#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-TARGETDURATION:10
-#EXTINF:10,
-http://cord-cutter.net:8080/Browns.3630@gmail.com/Browns.3630@2022/56410
