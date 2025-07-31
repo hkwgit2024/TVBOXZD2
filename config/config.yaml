@@ -3,23 +3,26 @@
 # 格式：YAML，所有字段需遵循 YAML 语法，顶级字段顶格写，子字段缩进 2 个空格。
 
 # GitHub 搜索关键词
-  # 核心英文关键词 (精确匹配文件扩展名和路径)
-  - "extension:m3u8 in:file"
-  - "extension:m3u in:file"
-  - "iptv playlist extension:m3u,m3u8 in:file"
-  - "raw.githubusercontent.com path:.m3u8"
-  - "raw.githubusercontent.com path:.m3u"
-  - "tv channels extension:m3u,m3u8 in:file"
-  - "live tv extension:m3u,m3u8 in:file"
-  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
-  - "index.m3u8 in:file"
-  - "channels.m3u in:file"
-  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
+search_keywords:
+
+# 核心英文关键词 (精确匹配文件扩展名和路径)
+- "extension:m3u8 in:file"
+- "extension:m3u in:file"
+- "iptv playlist extension:m3u,m3u8 in:file"
+- "raw.githubusercontent.com path:.m3u8"
+- "raw.githubusercontent.com path:.m3u"
+- "tv channels extension:m3u,m3u8 in:file"
+- "live tv extension:m3u,m3u8 in:file"
+- "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+- "index.m3u8 in:file"
+- "channels.m3u in:file"
+- "iptv.m3u in:file" # 增加常见iptv文件名搜索
+
 
 
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
-  invalid_url_patterns:                              # 无效 URL 的正则模式
+  invalid_url_patterns: # 无效 URL 的正则模式
     - '\.jpg$'
     - '\.png$'
     - '\.gif$'
@@ -29,24 +32,10 @@ url_pre_screening:
     - 'signup'
     - 'private'
     - 'localhost'
-    - '^http://171\.8\.247\.154:808'          # 排除特定 URL: http://171.8.247.154:808
-    - '^https://vv\.jisuzyv\.com'            # 排除特定 URL: https://vv.jisuzyv.com
+    - '^http://171\.8\.247\.154:808' # 排除特定 URL: http://171.8.247.154:808
+    - '^https://vv\.jisuzyv\.com' # 排除特定 URL: https://vv.jisuzyv.com
     - '^https://t\.me/'
     - '\.php$'
-# 播放效果检查配置：用于 stream_quality_checker 模块
-stream_quality:
-  stream_check_workers: 10
-  max_check_duration: 90  # 增加超时时间
-  min_resolution_width: 640
-  min_resolution_height: 480
-  min_bitrate: 100000
-  max_buffer_time: 30  # 增加初始缓冲时间
-  max_keyframe_interval: 20  # 增加关键帧间隔
-  ad_keywords:
-    - advertisement
-    - ad
-    - commercial
-    - promo
 
 # 网络配置
 network:
