@@ -21,6 +21,8 @@ url_pre_screening:
     - 'localhost'
     - '^http://171\.8\.247\.154:808'          # 排除特定 URL: http://171.8.247.154:808
     - '^https://vv\.jisuzyv\.com'            # 排除特定 URL: https://vv.jisuzyv.com
+    - '^https://t\.me/'
+    - '\.php$'
 # 播放效果检查配置：用于 stream_quality_checker 模块
 stream_quality:
   min_resolution_width: 640                 # 最低分辨率宽度（像素）
