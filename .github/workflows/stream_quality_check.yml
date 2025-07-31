@@ -11,7 +11,7 @@ on:
     paths:
       - 'stream_quality_checker.py'
       - 'config/config.yaml'
-      - 'iptv_list.txt'
+      - 'output/iptv_list.txt'
 
 jobs:
   check-stream-quality:
@@ -38,17 +38,12 @@ jobs:
         run: |
           python stream_quality_checker.py
 
-      - name: Upload High Quality IPTV List
-        uses: actions/upload-artifact@v4
-        with:
-          name: high-quality-iptv
-          path: high_quality_iptv.txt
-          if-no-files-found: warn
-
-      - name: Upload Log File
-        uses: actions/upload-artifact@v4
-        with:
-          name: stream-quality-check-logs
-          path: logs/iptv.log
-          if-no-files-found: warn
-
+      - name: Commit High Quality IPTV List
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add output/high_quality_iptv.txt
+          git commit -m "Update high_quality_iptv.txt" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
