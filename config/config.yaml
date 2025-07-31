@@ -48,7 +48,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
+  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
   log_file: "logs/iptv.log"         # 日志文件路径（默认 logs/iptv.log）
 
 # GitHub API 配置
