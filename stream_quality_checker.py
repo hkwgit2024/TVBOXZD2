@@ -5,6 +5,7 @@ import logging
 import logging.handlers
 import subprocess
 import re
+import time  # Added import for time module
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
