@@ -37,7 +37,7 @@ def setup_logging(config):
     
     # 文件处理器，支持日志文件轮转，最大10MB，保留5个备份
     file_handler = logging.handlers.RotatingFileHandler(
-        log_file, maxBytes=10*1024*1024, backupCount=5
+        log_file, maxBytes=10*1024*1024, backupCount=1
     )
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
