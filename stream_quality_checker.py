@@ -10,6 +10,29 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
 from urllib.parse import urlparse
 
+# 加载配置文件
+def load_config(config_path="config/config.yaml"):
+    """加载并解析 YAML 配置文件
+    参数:
+        config_path: 配置文件路径，默认为 'config/config.yaml'
+    返回:
+        解析后的配置字典
+    """
+    try:
+        with open(config_path, 'r', encoding='utf-8') as file:
+            config = yaml.safe_load(file)
+            logging.info("配置文件 config.yaml 加载成功")
+            return config
+    except FileNotFoundError:
+        logging.error(f"错误：未找到配置文件 '{config_path}'")
+        exit(1)
+    except yaml.YAMLError as e:
+        logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
+        exit(1)
+    except Exception as e:
+        logging.error(f"错误：加载配置文件 '{config_path}' 失败: {e}")
+        exit(1)
+
 # 配置日志系统
 def setup_logging(config):
     """配置日志系统，支持文件和控制台输出，日志文件自动轮转以避免过大
@@ -40,28 +63,9 @@ def setup_logging(config):
     logger.handlers = [file_handler, console_handler]
     return logger
 
-# 加载配置文件
-def load_config(config_path="config/config.yaml"):
-    """加载并解析 YAML 配置文件
-    参数:
-        config_path: 配置文件路径，默认为 'config/config.yaml'
-    返回:
-        解析后的配置字典
-    """
-    try:
-        with open(config_path, 'r', encoding='utf-8') as file:
-            config = yaml.safe_load(file)
-            logging.info("配置文件 config.yaml 加载成功")
-            return config
-    except FileNotFoundError:
-        logging.error(f"错误：未找到配置文件 '{config_path}'")
-        exit(1)
-    except yaml.YAMLError as e:
-        logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
-        exit(1)
-    except Exception as e:
-        logging.error(f"错误：加载配置文件 '{config_path}' 失败: {e}")
-        exit(1)
+# 全局配置
+CONFIG = load_config()
+setup_logging(CONFIG)
 
 # 性能监控装饰器
 def performance_monitor(func):
@@ -282,30 +286,24 @@ def write_high_quality_channels(file_path, channels):
 @performance_monitor
 def main():
     """主函数，执行频道播放效果检查流程
-    1. 加载配置文件
-    2. 读取频道列表
-    3. 检查播放效果
-    4. 保存高质量频道列表
+    1. 读取频道列表
+    2. 检查播放效果
+    3. 保存高质量频道列表
     """
     logging.warning("开始执行频道播放效果检查")
     total_start_time = time.time()
 
-    # 步骤 1：加载配置文件
-    global CONFIG
-    CONFIG = load_config()
-    setup_logging(CONFIG)
-
-    # 步骤 2：读取频道列表
+    # 读取频道列表
     input_file = CONFIG['output']['paths']['final_iptv_file']  # 默认读取 iptv_list.txt
     channels = read_channels(input_file)
     if not channels:
         logging.error(f"未从 '{input_file}' 读取到频道，退出")
         exit(1)
 
-    # 步骤 3：多线程检查播放效果
+    # 多线程检查播放效果
     valid_channels = check_channels_multithreaded(channels)
 
-    # 步骤 4：保存高质量频道列表
+    # 保存高质量频道列表
     output_file = CONFIG['output']['paths']['high_quality_iptv_file']
     write_high_quality_channels(output_file, valid_channels)
 
