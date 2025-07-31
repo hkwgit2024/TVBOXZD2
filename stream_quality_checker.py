@@ -6,6 +6,7 @@ import logging.handlers
 import subprocess
 import re
 import time
+import requests
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
@@ -89,21 +90,35 @@ def performance_monitor(func):
 # 读取频道列表
 @performance_monitor
 def read_channels(file_path):
-    """从文件读取频道列表
+    """从文件读取频道列表，跳过无效条目
     参数:
         file_path: 频道文件路径
     返回:
         包含 (频道名称, URL) 的列表
     """
     channels = []
+    invalid_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip()
-                if line and ',' in line and not line.startswith('#'):
-                    name, url = line.split(',', 1)
-                    channels.append((name.strip(), url.strip()))
-        logging.info(f"从 '{file_path}' 读取 {len(channels)} 个频道")
+                if not line or line.startswith('#') or '#genre#' in line:
+                    continue
+                if ',' not in line:
+                    logging.info(f"跳过无效行: {line}")
+                    continue
+                name, url = line.split(',', 1)
+                name = name.strip()
+                url = url.strip()
+                # 初步过滤无效 URL
+                if any(re.search(pattern, url, re.IGNORECASE) for pattern in invalid_patterns):
+                    logging.info(f"跳过无效 URL: {name} ({url})")
+                    continue
+                if not url.startswith(('http://', 'https://', 'rtmp://', 'rtp://')):
+                    logging.info(f"跳过非流媒体协议: {name} ({url})")
+                    continue
+                channels.append((name, url))
+        logging.info(f"从 '{file_path}' 读取 {len(channels)} 个有效频道")
         return channels
     except FileNotFoundError:
         logging.error(f"文件 '{file_path}' 未找到")
@@ -123,6 +138,18 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
     返回:
         元组 (是否有效, 错误信息)，有效则返回 (True, None)，无效则返回 (False, 错误原因)
     """
+    # 预检查 URL 是否为流媒体类型
+    try:
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        content_type = response.headers.get('content-type', '').lower()
+        valid_types = ('video/', 'application/vnd.apple.mpegurl', 'application/octet-stream')
+        if not any(t in content_type for t in valid_types):
+            logging.info(f"频道 {channel_name} ({url}) 不是有效的流媒体类型: {content_type}")
+            return False, f"无效的流媒体类型 ({content_type})"
+    except requests.RequestException as e:
+        logging.info(f"频道 {channel_name} ({url}) 无法访问: {e}")
+        return False, f"无法访问 ({str(e)})")
+
     try:
         # 检查 ffprobe 是否可用
         subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
@@ -207,7 +234,7 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
                     keyframe_intervals.append(interval)
                 last_keyframe_time = frame_time
 
-        # 检查关键帧间隔是否异常（过于频繁可能表示广告或重复内容）
+        # 检查关键帧间隔是否异常
         if keyframe_intervals:
             avg_keyframe_interval = sum(keyframe_intervals) / len(keyframe_intervals)
             if avg_keyframe_interval > CONFIG['stream_quality']['max_keyframe_interval']:
@@ -295,10 +322,10 @@ def main():
     total_start_time = time.time()
 
     # 读取频道列表
-    input_file = "output/iptv_list.txt"  # 更新为 output/iptv_list.txt
+    input_file = "output/iptv_list.txt"
     channels = read_channels(input_file)
     if not channels:
-        logging.error(f"未从 '{input_file}' 读取到频道，退出")
+        logging.error(f"未从 '{input_file}' 读取到有效频道，退出")
         exit(1)
 
     # 多线程检查播放效果
