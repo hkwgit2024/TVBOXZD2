@@ -5,7 +5,7 @@ import logging
 import logging.handlers
 import subprocess
 import re
-import time  # Added import for time module
+import time
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import yaml
@@ -295,7 +295,7 @@ def main():
     total_start_time = time.time()
 
     # 读取频道列表
-    input_file = CONFIG['output']['paths']['final_iptv_file']  # 默认读取 iptv_list.txt
+    input_file = "output/iptv_list.txt"  # 更新为 output/iptv_list.txt
     channels = read_channels(input_file)
     if not channels:
         logging.error(f"未从 '{input_file}' 读取到频道，退出")
