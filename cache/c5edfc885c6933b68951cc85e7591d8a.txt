@@ -1,0 +1,2 @@
+#EXTM3U
+vod_library="https://raw.githubusercontent.com/A1in4/Al1n4.github.io/main/index.txt"
