@@ -36,21 +36,23 @@ jobs:
       - name: Convert input to M3U and run IPTV_checker.py
         run: |
           # 创建临时 M3U 文件
-          python -c "
+          python -c """
           import os
           import datetime
           import re
+
           INPUT_FILE = 'output/iptv_list.txt'
           TEMP_M3U_FILE = 'temp_iptv_list.m3u'
           BLACKLIST_FILE = 'ad_blacklist.txt'
           LOG_FILE = 'output/iptv_validation.log'
-          
+
           def write_log(message):
-              timestamp = f'[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}'
-              print(timestamp)
+              timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+              log_message = f'[{timestamp}] {message}'
+              print(log_message)
               with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                  f.write(timestamp + '\n')
-          
+                  f.write(log_message + '\n')
+
           def load_blacklist():
               blacklist = set()
               try:
@@ -60,7 +62,7 @@ jobs:
               except FileNotFoundError:
                   write_log(f'黑名单文件 {BLACKLIST_FILE} 未找到，不使用黑名单过滤')
               return blacklist
-          
+
           os.makedirs('output', exist_ok=True)
           with open(LOG_FILE, 'w', encoding='utf-8'):
               pass
@@ -91,11 +93,11 @@ jobs:
                       continue
                   f.write(f'#EXTINF:-1 tvg-name=\"{name}\" group-title=\"{current_group}\",{name}\n{url}\n')
           write_log(f'已将 {INPUT_FILE} 转换为 M3U 格式: {TEMP_M3U_FILE}')
-          "
-          
+          """
+
           # 运行 IPTV_checker.py
           python IPTV_checker.py -i temp_iptv_list.m3u -o temp_high_quality_iptv.m3u -u "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.2 Chrome/63.0.3239.84 TV Safari/537.36" -t 30 -e 10 -s >> output/iptv_validation.log 2>&1
-          
+
           # 检查 IPTV_checker.py 是否成功运行
           if [ ! -f "temp_high_quality_iptv.m3u" ]; then
             echo "[$(date '+%Y-%m-%d %H:%M:%S')] IPTV_checker.py 未生成输出文件，可能无有效频道" >> output/iptv_validation.log
@@ -104,21 +106,23 @@ jobs:
       # 转换输出 M3U 回原始格式
       - name: Convert output M3U back to original format
         run: |
-          python -c "
+          python -c """
           import os
           import datetime
           import re
+
           INPUT_FILE = 'output/iptv_list.txt'
           OUTPUT_FILE = 'output/high_quality_iptv.txt'
           TEMP_OUTPUT_M3U = 'temp_high_quality_iptv.m3u'
           LOG_FILE = 'output/iptv_validation.log'
-          
+
           def write_log(message):
-              timestamp = f'[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}'
-              print(timestamp)
+              timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+              log_message = f'[{timestamp}] {message}'
+              print(log_message)
               with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                  f.write(timestamp + '\n')
-          
+                  f.write(log_message + '\n')
+
           valid_urls = {}
           try:
               with open(TEMP_OUTPUT_M3U, 'r', encoding='utf-8') as f:
@@ -138,14 +142,14 @@ jobs:
           except FileNotFoundError:
               write_log('未找到 IPTV_checker.py 输出文件，可能无有效频道')
               exit(0)
-          
+
           try:
               with open(INPUT_FILE, 'r', encoding='utf-8') as f:
                   lines = f.readlines()
           except FileNotFoundError:
               write_log(f'输入文件 {INPUT_FILE} 未找到')
               exit(1)
-          
+
           with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
               f.write(f'更新时间,{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n')
               current_group = ''
@@ -168,8 +172,8 @@ jobs:
                       f.write(f'{name},{url}\n')
                       valid_count += 1
               write_log(f'共找到 {valid_count} 个有效频道，已保存到 {OUTPUT_FILE}')
-          "
-      
+          """
+
       # 提交结果
       - name: Commit results
         run: |
