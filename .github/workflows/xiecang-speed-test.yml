@@ -98,7 +98,7 @@ jobs:
           ./clash-speedtest \
             -c ./filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 3 \
+            -download-size 2 \
             -upload-size 1 \
             -timeout 90s \
             -concurrent 48 \
