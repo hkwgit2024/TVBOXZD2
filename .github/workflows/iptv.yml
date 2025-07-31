@@ -1,26 +1,22 @@
 name: IPTV 250724
 
-# 并发控制，避免多个实例同时运行
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}
   cancel-in-progress: true
 
-# 触发条件
 on:
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 */168 * * *'  # 每周运行一次（每168小时）
+    - cron: '0 */168 * * *'
 
-# 工作流任务
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     permissions:
-      contents: write  # 授予写入权限
+      contents: write
 
     steps:
-      # 步骤 1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.BOT }}" ]; then
@@ -29,39 +25,33 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 2：检出代码
       - name: 检出代码
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.BOT }}
 
-      # 步骤 3：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      # 步骤 4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
           pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython tqdm aiofiles cachetools
         shell: bash
 
-      # 步骤 5：设置时区
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
         shell: bash
 
-      # 步骤 6：安装 FFmpeg
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
         shell: bash
 
-      # 步骤 7：验证 ffprobe
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
@@ -73,21 +63,19 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 8：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
           BOT: ${{ secrets.BOT }}
         run: python tv.py
         shell: bash
 
-      # 步骤 9：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
           name: iptv-results
           path: |
-            iptv_list.txt
-            uncategorized_iptv.txt
+            output/iptv_list.txt
+            output/uncategorized_iptv.txt
             temp_channels/
             config/*.txt
             config/*.json
@@ -99,7 +87,6 @@ jobs:
           include-hidden-files: false
         if: always()
 
-      # 步骤 10：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -113,20 +100,34 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 11：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
+          git commit -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
         shell: bash
 
-      # 步骤 12：推送更改
       - name: 推送更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git fetch origin
           git pull origin main || (
             echo "检测到合并冲突，优先使用本地文件"
-            git checkout --ours output/iptv
+            git checkout --ours output/iptv_list.txt
+            git add output/iptv_list.txt
+            git commit -m "自动解决合并冲突并更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
+          )
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT }}
+        shell: bash
+
+      - name: 通知工作流失败
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel-id: 'your-channel-id'
+          text: 'IPTV 工作流失败：请检查日志，可能存在未解决的合并冲突或脚本错误！'
+        continue-on-error: true
