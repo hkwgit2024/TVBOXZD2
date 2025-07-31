@@ -45,6 +45,7 @@ jobs:
           pip install dnspython
           pip install requests pyyaml dnspython aiohttp tqdm
           pip install aiofiles
+          pip install cachetools
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
