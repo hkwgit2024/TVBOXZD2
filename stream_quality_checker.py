@@ -147,8 +147,8 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
             logging.info(f"频道 {channel_name} ({url}) 不是有效的流媒体类型: {content_type}")
             return False, f"无效的流媒体类型 ({content_type})"
     except requests.RequestException as e:
-        logging.info(f"频道 {channel_name} ({url}) 无法访问: {e}")
-        return False, f"无法访问 ({str(e)})")
+        logging.info(f"频道 {channel_name} ({url}) 无法访问: {str(e)}")
+        return False, f"无法访问 ({str(e)})"
 
     try:
         # 检查 ffprobe 是否可用
@@ -195,9 +195,9 @@ def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['ma
             logging.info(f"频道 {channel_name} ({url}) 分辨率过低: {width}x{height}")
             return False, f"分辨率过低 ({width}x{height})"
 
-        # 检查比特率
+        # 检查比特率（允许比特率为 0 作为备用）
         bitrate = int(stream_info.get('format', {}).get('bit_rate', 0))
-        if bitrate < CONFIG['stream_quality']['min_bitrate']:
+        if bitrate != 0 and bitrate < CONFIG['stream_quality']['min_bitrate']:
             logging.info(f"频道 {channel_name} ({url}) 比特率过低: {bitrate} bps")
             return False, f"比特率过低 ({bitrate} bps)"
 
