@@ -7,6 +7,20 @@ search_keywords:
    - "tvbox"
 
 
+# URL 预筛选配置：定义 URL 筛选规则
+url_pre_screening:
+  invalid_url_patterns:                              # 无效 URL 的正则模式
+    - '\.jpg$'
+    - '\.png$'
+    - '\.gif$'
+    - '\.pdf$'
+    - '\.exe$'
+    - 'login'
+    - 'signup'
+    - 'private'
+    - 'localhost'
+    - '^http://171\.8\.247\.154:808'          # 排除特定 URL: http://171.8.247.154:808
+    - '^https://vv\.jisuzyv\.com'            # 排除特定 URL: https://vv.jisuzyv.com
 
 # 网络配置
 network:
