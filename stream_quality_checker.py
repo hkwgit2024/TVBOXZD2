@@ -1,307 +1,427 @@
-import re
-import subprocess
-import os
-import datetime
-import concurrent.futures
-import time
+import requests
 import argparse
+import signal
+import os
+import sys
+import time
+import subprocess
+import logging
+import shutil
 
-# --- 配置 ---
-INPUT_FILE = 'output/iptv_list.txt'
-OUTPUT_FILE = 'output/high_quality_iptv.txt'
-LOG_FILE = 'output/iptv_validation.log'
-BLACKLIST_FILE = 'ad_blacklist.txt'
+def print_header():
+    header_text = """
+\033[96m██╗██████╗ ████████╗██╗   ██╗     ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗███████╗██████╗   
+██║██╔══██╗╚══██╔══╝██║   ██║    ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝██╔════╝██╔══██╗  
+██║██████╔╝   ██║   ██║   ██║    ██║     ███████║█████╗  ██║     █████╔╝ █████╗  ██████╔╝  
+██║██╔═══╝    ██║   ╚██╗ ██╔╝    ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ ██╔══╝  ██╔══██╗  
+██║██║        ██║    ╚████╔╝     ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗███████╗██║  ██║  
+╚═╝╚═╝        ╚═╝     ╚═══╝       ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝  
+\033[0m    
+""" 
+    print(header_text)
+    print("\033[93mWelcome to the IPTV Stream Checker!\n\033[0m")
+    print("\033[93mUse -h for help on how to use this tool.\033[0m")
 
-# 默认配置
-DEFAULT_FFPROBE_TIMEOUT_SECONDS = 30
-DEFAULT_MIN_STREAM_DURATION_SECONDS = 30
-DEFAULT_MAX_WORKERS = 10
-DEFAULT_MIN_BITRATE_KBPS = 500
-AD_BLACKLIST = {'php.jdshipin.com', 't.me'}
-WHITELIST = {
-    'chinashadt.com', 'cztvcloud.com', 'jlntv.cn', 'dztv.tv',
-    'rthktv32-live.akamaized.net', 'rthktv35-live.akamaized.net',
-    'cnr.cn', 'akamaized.net', 'cloudfront.net', 'voc.com.cn',
-    'rednet.cn', 'cbnmtv.com', 'guihet.com', 'qtv.com.cn'
-}
+def setup_logging(verbose_level):
+    if verbose_level == 1:
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    elif verbose_level >= 2:
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    else:
+        logging.basicConfig(level=logging.CRITICAL)  # Only critical errors will be logged by default.
 
-# --- 全局日志句柄 ---
-_global_log_file_handle = None
+def handle_sigint(signum, frame):
+    logging.info("Interrupt received, stopping...")
+    sys.exit(0)
 
-def write_log(message):
-    """同时打印到控制台和全局日志文件句柄"""
-    timestamp_message = f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {message}"
-    print(timestamp_message)
-    if _global_log_file_handle:
+signal.signal(signal.SIGINT, handle_sigint)
+
+def check_channel_status(url, timeout, retries=6, extended_timeout=None):
+    headers = {
+        'User-Agent': 'IPTVChecker 1.0'
+    }
+    min_data_threshold = 1024 * 500  # 500KB minimum threshold
+    initial_timeout = 5
+    max_timeout = timeout
+
+    def attempt_check(current_timeout):
+        accumulated_data = 0
+        stable_connection = True
+        for attempt in range(retries):
+            try:
+                with requests.get(url, stream=True, timeout=(initial_timeout, current_timeout), headers=headers) as resp:
+                    if resp.status_code == 429:
+                        logging.debug(f"Rate limit exceeded, retrying...")
+                        time.sleep(2)
+                        continue
+                    elif resp.status_code == 200:
+                        content_type = resp.headers.get('Content-Type', '')
+                        logging.debug(f"Content-Type: {content_type}")
+
+                        # ----- FIXED CONTENT-TYPE CHECK -----
+                        if ('video/mp2t' in content_type 
+                            or '.ts' in url 
+                            or 'application/vnd.apple.mpegurl' in content_type
+                            or 'application/x-mpegurl' in content_type.lower()):
+                            for chunk in resp.iter_content(1024 * 1024):  # 1MB chunks
+                                if not chunk:
+                                    stable_connection = False
+                                    break
+
+                                accumulated_data += len(chunk)
+                                if accumulated_data >= min_data_threshold:
+                                    logging.debug(f"Data received: {accumulated_data} bytes")
+                                    return 'Alive'
+
+                            logging.debug(f"Data received: {accumulated_data} bytes")
+                            if not stable_connection:
+                                logging.debug("Unstable connection detected")
+                                return 'Dead'
+                        else:
+                            logging.debug(f"Content-Type not recognized as stream: {content_type}")
+                            return 'Dead'
+                    else:
+                        logging.debug(f"HTTP status code not OK: {resp.status_code}")
+                        return 'Dead'
+            except requests.ConnectionError:
+                logging.error("Connection error occurred")
+                return 'Dead'
+            except requests.Timeout:
+                logging.error("Timeout occurred")
+                return 'Dead'
+            except requests.RequestException as e:
+                logging.error(f"Request failed: {str(e)}")
+                return 'Dead'
+
+        logging.error("Maximum retries exceeded for checking channel status")
+        return 'Dead'
+
+    # First attempt with the initial timeout
+    status = attempt_check(timeout)
+
+    # If the channel is detected as dead and extended_timeout is specified, retry with extended timeout
+    if status == 'Dead' and extended_timeout:
+        logging.info(f"Channel initially detected as dead. Retrying with an extended timeout of {extended_timeout} seconds.")
+        status = attempt_check(extended_timeout)
+
+    # Final Verification using ffmpeg/ffprobe for streams marked alive
+    if status == 'Alive':
         try:
-            _global_log_file_handle.write(timestamp_message + '\n')
-            _global_log_file_handle.flush()
-        except ValueError:
-            pass
+            command = [
+                'ffmpeg', '-i', url, '-t', '5', '-f', 'null', '-'
+            ]
+            ffmpeg_result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15)
+            if ffmpeg_result.returncode != 0:
+                logging.debug(f"ffmpeg failed to read stream; marking as dead")
+                status = 'Dead'
+        except subprocess.TimeoutExpired:
+            logging.error(f"Timeout when trying to verify stream with ffmpeg for {url}")
+            status = 'Dead'
 
-def load_blacklist():
-    """从 ad_blacklist.txt 加载黑名单"""
-    blacklist = set(AD_BLACKLIST)
-    try:
-        with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
-            blacklist.update(line.strip() for line in f if line.strip())
-        write_log(f"从 {BLACKLIST_FILE} 加载了 {len(blacklist)} 个黑名单条目")
-    except FileNotFoundError:
-        write_log(f"黑名单文件 {BLACKLIST_FILE} 未找到，使用默认黑名单")
-    return blacklist
+    return status
 
-# --- 频道验证函数 ---
-def is_likely_invalid(name, url):
-    """检查 URL 是否在黑名单中"""
-    blacklist = load_blacklist()
-    for whitelisted in WHITELIST:
-        if whitelisted in url.lower():
-            return False
-    for blacklisted in blacklist:
-        if blacklisted in url.lower():
-            write_log(f"  -> 黑名单命中: {url}")
-            return True
-    return False
-
-def validate_channel_with_ffprobe(url, name, timeout, min_bitrate):
-    """
-    使用 ffprobe 验证单个 IPTV 频道 URL 的有效性和内容类型。
-    返回 True 如果频道有效（有视频或音频，满足比特率要求），否则返回 False。
-    """
-    if not url or not url.startswith(('http://', 'https://')):
-        write_log(f"  -> 无效URL格式或为空: {url}")
-        return False
-
-    if is_likely_invalid(name, url):
-        return False
-
+def capture_frame(url, output_path, file_name):
     command = [
-        'ffprobe',
-        '-v', 'error',
-        '-show_entries', 'stream=codec_type,duration,bit_rate',
-        '-of', 'default=noprint_wrappers=1:nokey=1',
-        '-timeout', str(timeout * 1000000),
-        url
+        'ffmpeg', '-y', '-i', url, '-ss', '00:00:02', '-frames:v', '1',
+        os.path.join(output_path, f"{file_name}.png")
     ]
-
     try:
-        write_log(f"    正在运行 ffprobe for: {url}")
-        start_time = time.monotonic()
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        stdout, stderr = process.communicate(timeout=timeout)
-        connect_duration = time.monotonic() - start_time
-
-        if process.returncode != 0:
-            if any(err in stderr for err in [
-                "Not detecting m3u8/hls with non standard extension",
-                "Invalid data found",
-                "Server returned 404 Not Found",
-                "Input/output error"
-            ]):
-                write_log(f"  -> 无效流或格式错误: {stderr.strip()}")
-                return False
-            write_log(f"  -> ffprobe 错误 (Exit Code {process.returncode}): {stderr.strip()}")
-            return False
-
-        if connect_duration > 20:
-            write_log(f"  -> 连接时间过长 ({connect_duration:.2f}s) for {url}")
-            return False
-
-        write_log(f"    ffprobe 完成 ({connect_duration:.2f}s) for: {url}")
-
-        has_video = False
-        has_audio = False
-        duration_looks_valid = True
-        bit_rate_valid = True
-        max_bit_rate = 0
-
-        for line in stdout.splitlines():
-            if 'codec_type=video' in line:
-                has_video = True
-            if 'codec_type=audio' in line:
-                has_audio = True
-            if 'duration=' in line:
-                duration_str = line.split('duration=')[1].strip()
-                if duration_str != 'N/A':
-                    try:
-                        duration = float(duration_str)
-                        if duration < MIN_STREAM_DURATION_SECONDS:
-                            duration_looks_valid = False
-                    except ValueError:
-                        duration_looks_valid = True
-            if 'bit_rate=' in line:
-                try:
-                    bit_rate = float(line.split('bit_rate=')[1].strip()) / 1000  # 转换为 kbps
-                    max_bit_rate = max(max_bit_rate, bit_rate)
-                    if bit_rate < min_bitrate:
-                        bit_rate_valid = False
-                        write_log(f"  -> 比特率 {bit_rate:.2f}kbps 过低（要求 {min_bitrate}kbps） for {url}")
-                except ValueError:
-                    bit_rate_valid = True  # 忽略无法解析的比特率
-
-        if (has_video or has_audio) and duration_looks_valid and bit_rate_valid:
-            write_log(f"  -> 结果: 有效 (video={has_video}, audio={has_audio}, max_bit_rate={max_bit_rate:.2f}kbps)")
-            return True
-        else:
-            write_log(f"  -> 失败: has_video={has_video}, has_audio={has_audio}, duration_looks_valid={duration_looks_valid}, bit_rate_valid={bit_rate_valid}, stdout: \n{stdout.strip()}\nstderr: \n{stderr.strip()}")
-            return False
-
-    except subprocess.TimeoutExpired as e:
-        write_log(f"  -> ffprobe 超时 ({timeout}s) for {url}")
-        if e.stdout:
-            write_log(f"    ffprobe stdout (before timeout): {e.stdout.strip()}")
-        if e.stderr:
-            write_log(f"    ffprobe stderr (before timeout): {e.stderr.strip()}")
-        process.kill()
-        process.wait()
-        return False
-    except FileNotFoundError:
-        write_log("  -> 错误: ffprobe 未找到。请确保 FFmpeg 已安装且在系统 PATH 中。")
-        return False
-    except Exception as e:
-        write_log(f"  -> 未知错误 for {url}: {e}")
+        subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+        logging.debug(f"Screenshot saved for {file_name}")
+        return True
+    except subprocess.TimeoutExpired:
+        logging.error(f"Timeout when trying to capture frame for {file_name}")
         return False
 
-# --- 主处理逻辑 ---
-def process_iptv_list(args):
-    global _global_log_file_handle
-
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    _global_log_file_handle = open(LOG_FILE, 'w', encoding='utf-8')
-
+def get_stream_info(url):
+    command = [
+        'ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries', 
+        'stream=codec_name,width,height,r_frame_rate', '-of', 'default=noprint_wrappers=1', url
+    ]
     try:
-        write_log(f"--- IPTV 频道验证开始 - {datetime.datetime.now()} ---")
-        write_log(f"输入文件: {INPUT_FILE}")
-        write_log(f"输出文件: {OUTPUT_FILE}")
-        write_log(f"并发线程数: {args.max_workers}")
-        write_log(f"ffprobe 超时: {args.timeout} 秒")
-        write_log(f"最小直播流时长: {args.min_duration} 秒")
-        write_log(f"最小比特率: {args.min_bitrate} kbps")
-        write_log("-" * 50)
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
+        output = result.stdout.decode()
+        codec_name = None
+        width = height = None
+        fps = None
+        for line in output.splitlines():
+            if line.startswith("codec_name="):
+                codec_name = line.split('=')[1].upper()
+            elif line.startswith("width="):
+                width = int(line.split('=')[1])
+            elif line.startswith("height="):
+                height = int(line.split('=')[1])
+            elif line.startswith("r_frame_rate="):
+                fps_data = line.split('=')[1]
+                if fps_data and '/' in fps_data:
+                    numerator, denominator = map(int, fps_data.split('/'))
+                    fps = round(numerator / denominator)
 
-        try:
-            with open(INPUT_FILE, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            write_log(f"成功读取 {len(lines)} 行自 {INPUT_FILE}")
-        except FileNotFoundError:
-            write_log(f"错误: 输入文件 '{INPUT_FILE}' 未找到。请确认文件路径。")
-            return
-        except Exception as e:
-            write_log(f"错误: 读取文件 '{INPUT_FILE}' 时发生异常: {e}")
-            return
-
-        good_channels = []
-        good_channels.append(f"更新时间,{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
-        channels_to_validate = []
-        original_lines_map = {}
-
-        for i, line in enumerate(lines):
-            line_stripped = line.strip()
-            original_lines_map[i] = line_stripped
-
-            if not line_stripped:
-                continue
-
-            if i == 0 and "更新时间" in line_stripped and "#genre#" in line_stripped:
-                continue
-
-            if "#genre#" in line_stripped:
-                good_channels.append(line_stripped)
-                continue
-
-            parts = line_stripped.split(',', 1)
-            if len(parts) == 2:
-                channel_name = parts[0].strip()
-                channel_url = parts[1].strip()
-                channels_to_validate.append((channel_name, channel_url, i))
+        # Determine resolution string with FPS
+        resolution = "Unknown"
+        if width and height:
+            if width >= 3840 and height >= 2160:
+                resolution = "4K"
+            elif width >= 1920 and height >= 1080:
+                resolution = "1080p"
+            elif width >= 1280 and height >= 720:
+                resolution = "720p"
             else:
-                write_log(f"跳过格式错误行 (行号 {i+1}): {line_stripped}")
+                resolution = "SD"
 
-        write_log(f"识别到 {len(channels_to_validate)} 个频道待验证。")
-        write_log("-" * 50)
+        resolution_fps = f"{resolution}{fps}" if resolution != "Unknown" and fps else resolution
 
-        results = {}
-        with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-            future_to_channel = {
-                executor.submit(validate_channel_with_ffprobe, url, name, args.timeout, args.min_bitrate): 
-                (name, url, original_line_idx)
-                for name, url, original_line_idx in channels_to_validate
-            }
-            
-            for future in concurrent.futures.as_completed(future_to_channel):
-                name, url, original_line_idx = future_to_channel[future]
-                try:
-                    is_valid = future.result()
-                    results[original_line_idx] = (name, url, is_valid)
-                except Exception as exc:
-                    write_log(f"频道 {name} ({url}) 在验证时产生未知异常: {exc}")
-                    results[original_line_idx] = (name, url, False)
+        return f"{resolution_fps} {codec_name}" if codec_name and resolution_fps else "Unknown", resolution, fps
+    except subprocess.TimeoutExpired:
+        logging.error(f"Timeout when trying to get stream info for {url}")
+        return "Unknown", "Unknown", None
 
-        processed_channel_count = 0
-        for original_line_idx in sorted(original_lines_map.keys()):
-            original_line_content = original_lines_map[original_line_idx]
-            
-            if "#genre#" in original_line_content:
-                continue
-            
-            if original_line_idx in results and results[original_line_idx][2]:
-                good_channels.append(original_line_content)
-                processed_channel_count += 1
+def get_audio_bitrate(url):
+    command = [
+        'ffprobe', '-v', 'error', '-select_streams', 'a:0', '-show_entries',
+        'stream=codec_name,bit_rate', '-of', 'default=noprint_wrappers=1', url
+    ]
+    try:
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
+        output = result.stdout.decode()
+        audio_bitrate = None
+        codec_name = None
+        for line in output.splitlines():
+            if line.startswith("bit_rate="):
+                bitrate_value = line.split('=')[1]
+                if bitrate_value.isdigit():
+                    audio_bitrate = int(bitrate_value) // 1000  # Convert to kbps
+                else:
+                    audio_bitrate = 'N/A'
+            elif line.startswith("codec_name="):
+                codec_name = line.split('=')[1].upper()
 
-        write_log(f"\n验证完成。共找到 {processed_channel_count} 个有效频道。")
-        write_log("-" * 50)
+        return f"{audio_bitrate} kbps {codec_name}" if codec_name and audio_bitrate else "Unknown"
+    except subprocess.TimeoutExpired:
+        logging.error(f"Timeout when trying to get audio bitrate for {url}")
+        return "Unknown"
 
-        try:
-            with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-                for channel_line in good_channels:
-                    f.write(channel_line + '\n')
-            write_log(f"高质量 IPTV 列表已保存到 {OUTPUT_FILE}")
-        except Exception as e:
-            write_log(f"错误: 写入文件 '{OUTPUT_FILE}' 时发生异常: {e}")
+def check_label_mismatch(channel_name, resolution):
+    channel_name_lower = channel_name.lower()
 
-    finally:
-        if _global_log_file_handle:
-            write_log(f"--- IPTV 频道验证结束 - {datetime.datetime.now()} ---")
-            _global_log_file_handle.close()
-            _global_log_file_handle = None
-            print(f"日志文件 '{LOG_FILE}' 已关闭。")
+    mismatches = []
+
+    # Compare resolution ignoring the framerate part
+    if "4k" in channel_name_lower or "uhd" in channel_name_lower:
+        if resolution != "4K":
+            mismatches.append(f"\033[91mExpected 4K, got {resolution}\033[0m")
+    elif "1080p" in channel_name_lower or "fhd" in channel_name_lower:
+        if resolution != "1080p":
+            mismatches.append(f"\033[91mExpected 1080p, got {resolution}\033[0m")
+    elif "hd" in channel_name_lower:
+        if resolution not in ["1080p", "720p"]:
+            mismatches.append(f"\033[91mExpected 720p or 1080p, got {resolution}\033[0m")
+    elif resolution == "4K":
+        mismatches.append(f"\033[91m4K channel not labeled as such\033[0m")
+
+    return mismatches
+
+def load_processed_channels(log_file):
+    processed_channels = set()
+    last_index = 0
+    if os.path.exists(log_file):
+        with open(log_file, 'r') as f:
+            for line in f:
+                parts = line.strip().split(' - ')
+                if len(parts) > 1:
+                    index_part = parts[0].split()[0]
+                    if index_part.isdigit():
+                        last_index = max(last_index, int(index_part))
+                    processed_channels.add(parts[1])
+    return processed_channels, last_index
+
+def write_log_entry(log_file, entry):
+    with open(log_file, 'a') as f:
+        f.write(entry + "\n")
+
+def console_log_entry(current_channel, total_channels, channel_name, status, video_info, audio_info, max_name_length, use_padding):
+    color = "\033[92m" if status == 'Alive' else "\033[91m"
+    status_symbol = '✓' if status == 'Alive' else '✕'
+    if use_padding:
+        name_padding = ' ' * (max_name_length - len(channel_name) + 3)  # +3 for additional spaces
+    else:
+        name_padding = ''
+    if status == 'Alive':
+        print(f"{color}{current_channel}/{total_channels} {status_symbol} {channel_name}{name_padding} | Video: {video_info} - Audio: {audio_info}\033[0m")
+        logging.info(f"{current_channel}/{total_channels} {status_symbol} {channel_name}{name_padding} | Video: {video_info} - Audio: {audio_info}")
+    else:
+        if use_padding:
+            # Include the | for dead links only when padding is added
+            print(f"{color}{current_channel}/{total_channels} {status_symbol} {channel_name}{name_padding} |\033[0m")
+            logging.info(f"{current_channel}/{total_channels} {status_symbol} {channel_name}{name_padding} |")
+        else:
+            print(f"{color}{current_channel}/{total_channels} {status_symbol} {channel_name}\033[0m")
+            logging.info(f"{current_channel}/{total_channels} {status_symbol} {channel_name}")
+
+def parse_m3u8_file(file_path, group_title, timeout, log_file, extended_timeout, split=False, rename=False):
+    base_playlist_name = os.path.basename(file_path).split('.')[0]
+    group_name = group_title.replace('|', '').replace(' ', '') if group_title else 'AllGroups'
+    output_folder = f"{base_playlist_name}_{group_name}_screenshots"
+    os.makedirs(output_folder, exist_ok=True)
+
+    processed_channels, last_index = load_processed_channels(log_file)
+    current_channel = last_index
+    mislabeled_channels = []
+    low_framerate_channels = []
+    max_name_length = 0
+    use_padding = True
+
+    working_channels = []
+    dead_channels = []
+
+    # Get console width
+    console_width = shutil.get_terminal_size((80, 20)).columns
+
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            total_channels = sum(1 for line in lines if line.startswith('#EXTINF') and (group_title in line if group_title else True))
+
+            logging.info(f"Loading channels from {file_path} with group '{group_title}'...")
+            logging.info(f"Total channels matching group '{group_title}': {total_channels}\n")
+
+            # Calculate the maximum channel name length and check if the formatted line will fit in the console width
+            for i in range(len(lines)):
+                line = lines[i].strip()
+                if line.startswith('#EXTINF') and (group_title in line if group_title else True):
+                    if i + 1 < len(lines):
+                        channel_name = line.split(',', 1)[1].strip() if ',' in line else "Unknown Channel"
+                        max_name_length = max(max_name_length, len(channel_name))
+
+            # Estimate if the line will fit in the console width
+            max_line_length = max_name_length + len("1/5 ✓ | Video: 1080p50 H264 - Audio: 160 kbps AAC") + 3  # 3 for extra padding
+            if max_line_length > console_width:
+                use_padding = False
+
+            renamed_lines = []
+            i = 0
+            while i < len(lines):
+                line = lines[i].strip()
+                if line.startswith('#EXTINF') and (group_title in line if group_title else True):
+                    if i + 1 < len(lines):
+                        next_line = lines[i + 1].strip()
+                        channel_name = line.split(',', 1)[1].strip() if ',' in line else "Unknown Channel"
+                        identifier = f"{channel_name} {next_line}"
+                        if identifier not in processed_channels:
+                            current_channel += 1
+                            status = check_channel_status(next_line, timeout, extended_timeout=extended_timeout)
+                            video_info = "Unknown"
+                            audio_info = "Unknown"
+                            fps = None
+                            if status == 'Alive':
+                                video_info, resolution, fps = get_stream_info(next_line)
+                                audio_info = get_audio_bitrate(next_line)
+                                mismatches = check_label_mismatch(channel_name, resolution)
+                                if fps is not None and fps <= 30:
+                                    low_framerate_channels.append(f"{current_channel}/{total_channels} {channel_name} - \033[91m{fps}fps\033[0m")
+                                if mismatches:
+                                    mislabeled_channels.append(f"{current_channel}/{total_channels} {channel_name} - \033[91m{', '.join(mismatches)}\033[0m")
+                                file_name = f"{current_channel}-{channel_name.replace('/', '-')}"  # Replace '/' to avoid path issues
+                                capture_frame(next_line, output_folder, file_name)
+                                
+                                if rename:
+                                    # Create the new channel name in the desired format
+                                    renamed_channel_name = f"{channel_name} ({resolution} {video_info.split()[-1]} | {audio_info})"
+                                    extinf_parts = line.split(',', 1)
+                                    if len(extinf_parts) > 1:
+                                        extinf_parts[1] = renamed_channel_name
+                                        line = ','.join(extinf_parts)
+
+                                if split:
+                                    working_channels.append((line, next_line))
+                            else:
+                                if split:
+                                    dead_channels.append((line, next_line))
+                            console_log_entry(current_channel, total_channels, channel_name, status, video_info, audio_info, max_name_length, use_padding)
+                            processed_channels.add(identifier)
+
+                        # Add the processed (renamed) line and the corresponding URL to the list
+                        renamed_lines.append(line)
+                        renamed_lines.append(next_line)
+                        i += 1  # Skip the next line because it's already processed
+                    else:
+                        # If there's no URL following the EXTINF line, just add it
+                        renamed_lines.append(line)
+                else:
+                    # If it's not an EXTINF line, just keep it as is
+                    renamed_lines.append(line)
+                i += 1
+
+            if split:
+                working_playlist_path = f"{base_playlist_name}_working.m3u8"
+                dead_playlist_path = f"{base_playlist_name}_dead.m3u8"
+                with open(working_playlist_path, 'w', encoding='utf-8') as working_file:
+                    working_file.write("#EXTM3U\n")
+                    for entry in working_channels:
+                        working_file.write(entry[0] + "\n")
+                        working_file.write(entry[1] + "\n")
+                with open(dead_playlist_path, 'w', encoding='utf-8') as dead_file:
+                    dead_file.write("#EXTM3U\n")
+                    for entry in dead_channels:
+                        dead_file.write(entry[0] + "\n")
+                        dead_file.write(entry[1] + "\n")
+                logging.info(f"Working channels playlist saved to {working_playlist_path}")
+                logging.info(f"Dead channels playlist saved to {dead_playlist_path}")
+            elif rename:  # Save the renamed playlist directly if split is not enabled
+                renamed_playlist_path = f"{base_playlist_name}_renamed.m3u8"
+                with open(renamed_playlist_path, 'w', encoding='utf-8') as renamed_file:
+                    renamed_file.write("#EXTM3U\n")
+                    for line in renamed_lines:
+                        renamed_file.write(line + "\n")
+                logging.info(f"Renamed playlist saved to {renamed_playlist_path}")
+
+            if low_framerate_channels:
+                print("\n\033[93mLow Framerate Channels:\033[0m")
+                for entry in low_framerate_channels:
+                    print(f"{entry}")
+                logging.info("Low Framerate Channels Detected:")
+                for entry in low_framerate_channels:
+                    logging.info(entry)
+
+            if mislabeled_channels:
+                print("\n\033[93mMislabeled Channels:\033[0m")
+                for entry in mislabeled_channels:
+                    print(f"{entry}")
+                logging.info("Mislabeled Channels Detected:")
+                for entry in mislabeled_channels:
+                    logging.info(entry)
+
+    except FileNotFoundError:
+        logging.error(f"File not found: {file_path}. Please check the path and try again.")
+    except Exception as e:
+        logging.error(f"An unexpected error occurred while processing the file: {str(e)}")
+
+def main():
+    print_header()
+
+    parser = argparse.ArgumentParser(description="Check the status of channels in an IPTV M3U8 playlist and capture frames of live channels.")
+    parser.add_argument("playlist", type=str, help="Path to the M3U8 playlist file")
+    parser.add_argument("-group", "-g", type=str, default=None, help="Specific group title to check within the playlist")
+    parser.add_argument("-timeout", "-t", type=float, default=10.0, help="Timeout in seconds for checking channel status")
+    parser.add_argument("-v", action="count", default=0, help="Increase output verbosity (-v for info, -vv for debug)")
+    parser.add_argument("-extended", "-e", type=int, nargs='?', const=10, default=None, help="Enable extended timeout check for dead channels. Default is 10 seconds if used without specifying time.")
+    parser.add_argument("-split", "-s", action="store_true", help="Create separate playlists for working and dead channels")
+    parser.add_argument("-rename", "-r", action="store_true", help="Rename alive channels to include video and audio info")
+
+    args = parser.parse_args()
+
+    # Set up logging based on verbosity level
+    if args.v == 1:
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    elif args.v >= 2:
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+    else:
+        logging.basicConfig(level=logging.CRITICAL)  # Only critical errors will be logged by default.
+
+    group_name = args.group.replace('|', '').replace(' ', '') if args.group else 'AllGroups'
+    log_file_name = f"{os.path.basename(args.playlist).split('.')[0]}_{group_name}_checklog.txt"
+
+    parse_m3u8_file(args.playlist, args.group, args.timeout, log_file_name, extended_timeout=args.extended, split=args.split, rename=args.rename)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='IPTV Channel Validator')
-    parser.add_argument('--timeout', type=int, default=DEFAULT_FFPROBE_TIMEOUT_SECONDS, 
-                        help='ffprobe timeout in seconds')
-    parser.add_argument('--min-duration', type=int, default=DEFAULT_MIN_STREAM_DURATION_SECONDS, 
-                        help='Minimum stream duration in seconds')
-    parser.add_argument('--max-workers', type=int, default=DEFAULT_MAX_WORKERS, 
-                        help='Maximum number of concurrent workers')
-    parser.add_argument('--min-bitrate', type=int, default=DEFAULT_MIN_BITRATE_KBPS, 
-                        help='Minimum bitrate in kbps')
-    args = parser.parse_args()
-    process_iptv_list(args)
-
-# --- 可选：视频流广告检测（未启用） ---
-# def check_ad_content(url):
-#     test_file = f"temp_{time.time()}.ts"
-#     command = [
-#         'ffmpeg',
-#         '-i', url,
-#         '-t', '30',
-#         '-vf', 'select=eq(pict_type\\,I)',
-#         '-vsync', 'vfr',
-#         '-f', 'null', '-'
-#     ]
-#     try:
-#         process = subprocess.run(command, timeout=40, capture_output=True, text=True)
-#         stderr_lines = process.stderr.splitlines()
-#         frame_count = sum(1 for line in stderr_lines if 'frame=' in line)
-#         if frame_count < 5:
-#             write_log(f"  -> 疑似广告流（I 帧数量异常） for {url}")
-#             return False
-#         return True
-#     except Exception as e:
-#         write_log(f"  -> 广告检测错误 for {url}: {e}")
-#         return True
-#     finally:
-#         if os.path.exists(test_file):
-#             os.remove(test_file)
+    main()
