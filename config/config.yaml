@@ -2,6 +2,17 @@
 # 说明：此配置文件用于 tv.py 脚本，控制 IPTV 源抓取、分类、过滤和输出。
 # 格式：YAML，所有字段需遵循 YAML 语法，顶级字段顶格写，子字段缩进 2 个空格。
 
+# GitHub 搜索关键词
+search_keywords:
+  # 特定平台和CDN关键词
+  - "raw.githubusercontent.com m3u" # GitHub raw 内容
+  - "gist.github.com m3u" # GitHub Gist
+  - "cdn.jsdelivr.net m3u" # jsDelivr CDN
+  - "fastly.net m3u8" # Fastly CDN (可能较宽泛)
+  - "gitee.com m3u" # Gitee 码云
+
+
+
 # 网络配置
 network:
   check_timeout: 20                  # 检查单个频道链接可用性的超时时间（秒，默认 20）
@@ -60,23 +71,6 @@ performance_monitor:
   enabled: true                     # 是否启用性能监控（默认 true）
   log_interval: 100                # 性能日志记录间隔（每处理 N 个频道/URL，默认 100）
 
-# GitHub 搜索关键词
-search_keywords:
-  - "iptv playlist"                # 搜索 IPTV 播放列表
-  # 通用英文关键词
-  - "iptv links" # 稍微放宽，依赖后续过滤
-  - "m3u8 playlist"
-  - "iptv list"
-  - "m3u channels"
-  - "iptv channels"
-  - "live tv playlist"
-  - "free iptv"
-  - "public iptv"
-  - "tv channels list"
-  - "stream list"
-  - "live stream list"
-  - "m3u stream"
-  - "m3u8 stream"
 
 
 # 备用 URL 源
