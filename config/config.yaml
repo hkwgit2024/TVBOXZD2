@@ -4,12 +4,7 @@
 
 # GitHub 搜索关键词
 search_keywords:
-  # 特定平台和CDN关键词
-  - "raw.githubusercontent.com m3u" # GitHub raw 内容
-  - "gist.github.com m3u" # GitHub Gist
-  - "cdn.jsdelivr.net m3u" # jsDelivr CDN
-  - "fastly.net m3u8" # Fastly CDN (可能较宽泛)
-  - "gitee.com m3u" # Gitee 码云
+
 
 
 
