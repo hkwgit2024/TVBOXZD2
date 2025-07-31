@@ -28,22 +28,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ffmpeg # 安装 FFmpeg
 
-    - name: Create output directory
+    - name: Create output directory (if it doesn't exist)
+   
       run: mkdir -p output
 
-    - name: Copy iptv_list.txt to output directory (if it's not already there)
-     
-      run: |
-        if [ -f iptv_list.txt ]; then
-          cp iptv_list.txt output/iptv_list.txt
-        else
-          echo "Warning: iptv_list.txt not found in root. Please ensure it's in the output directory or adjust this step."
-          # Optionally create a dummy file if it doesn't exist to prevent script failure
-          echo "Placeholder,http://example.com/null.m3u8" > output/iptv_list.txt
-        fi
-
     - name: Run IPTV validation script
-     
       run: python stream_quality_checker.py
 
     - name: Commit and push updated list
@@ -51,8 +40,8 @@ jobs:
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        # 确保添加了 output/high_quality_iptv.txt 和 output/iptv_validation.log
-        git add output/high_quality_iptv.txt output/iptv_validation.log
+        # 强制添加 high_quality_iptv.txt 和 iptv_validation.log，以处理 .gitignore 的问题
+        git add -f output/high_quality_iptv.txt output/iptv_validation.log
         git diff --cached --exit-code || git commit -m "Auto-update: High-quality IPTV list"
         git push
       env:
