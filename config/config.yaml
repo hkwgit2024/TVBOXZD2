@@ -21,6 +21,16 @@ url_pre_screening:
     - 'localhost'
     - '^http://171\.8\.247\.154:808'          # 排除特定 URL: http://171.8.247.154:808
     - '^https://vv\.jisuzyv\.com'            # 排除特定 URL: https://vv.jisuzyv.com
+# 播放效果检查配置：用于 stream_quality_checker 模块
+stream_quality:
+  min_resolution_width: 640                 # 最低分辨率宽度（像素）
+  min_resolution_height: 480                # 最低分辨率高度（像素）
+  min_bitrate: 500000                      # 最低比特率（bps）
+  max_buffer_time: 10                      # 最大初始缓冲时间（秒）
+  max_keyframe_interval: 5                 # 最大关键帧间隔（秒）
+  max_check_duration: 30                   # 最大检查时长（秒）
+  ad_keywords: ["ad", "advert", "promo"]   # 广告相关关键字
+  stream_check_workers: 10                 # 播放效果检查的最大线程数
 
 # 网络配置
 network:
