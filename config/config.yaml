@@ -5,7 +5,7 @@
 # GitHub 搜索关键词
 search_keywords:
 
-  - "iptv links" # 稍微放宽，依赖后续过滤
+  - "tvbox" # 稍微放宽，依赖后续过滤
 
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
