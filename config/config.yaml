@@ -3,8 +3,18 @@
 # 格式：YAML，所有字段需遵循 YAML 语法，顶级字段顶格写，子字段缩进 2 个空格。
 
 # GitHub 搜索关键词
-search_keywords:
-   - "tvbox"
+  # 核心英文关键词 (精确匹配文件扩展名和路径)
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "iptv playlist extension:m3u,m3u8 in:file"
+  - "raw.githubusercontent.com path:.m3u8"
+  - "raw.githubusercontent.com path:.m3u"
+  - "tv channels extension:m3u,m3u8 in:file"
+  - "live tv extension:m3u,m3u8 in:file"
+  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+  - "index.m3u8 in:file"
+  - "channels.m3u in:file"
+  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
 
 
 # URL 预筛选配置：定义 URL 筛选规则
