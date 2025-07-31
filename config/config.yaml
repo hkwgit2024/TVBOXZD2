@@ -82,6 +82,7 @@ output:
     output_dir: "output"            # 最终输出目录（默认 output）
     final_iptv_file: "output/iptv_list.txt" # 最终 IPTV 列表文件
     uncategorized_channels_file: "output/uncategorized_iptv.txt" # 未分类频道输出文件
+    high_quality_iptv_file: "output/high_quality_iptv.txt" # 高质量频道列表文件
     channel_cache_file: "config/channel_cache.json" # 频道缓存文件
     keyword_stats_file: "config/keyword_stats.json" # 关键词统计文件
 
