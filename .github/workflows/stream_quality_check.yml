@@ -8,6 +8,10 @@ on:
       - main
   workflow_dispatch:  # 允许手动触发
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  # 防止并发运行冲突
+
 jobs:
   process-urls:
     runs-on: ubuntu-latest
@@ -32,16 +36,19 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y ffmpeg
 
-    - name: Run URL processing script
-      run: python scripts/process_urls.py --shard ${{ matrix.shard }} --total-shards 4
-
-    - name: Pull latest changes and commit shard results
+    - name: Run URL processing script and commit changes
       run: |
+        python scripts/process_urls.py --shard ${{ matrix.shard }} --total-shards 4
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull --rebase origin main  # 拉取远程更改并变基
         git add output/*.txt output/timestamps.json
         git commit -m "Update processed URLs for shard ${{ matrix.shard }}" || echo "No changes to commit"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull and push changes
+      run: |
+        git pull --rebase origin main
         git push
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,12 +78,12 @@ jobs:
     - name: Convert to M3U
       run: python scripts/convert_to_m3u.py
 
-    - name: Pull latest changes and commit final playlist
+    - name: Pull and commit final playlist
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull --rebase origin main  # 拉取远程更改并变基
-        git add output/final_playlist.txt output/final_playlist.m3u
+        git pull --rebase origin main
+        git add output/final_playlist.txt output/final_playlist.m3u output/*.m3u
         git commit -m "Update final merged playlist" || echo "No changes to commit"
         git push
       env:
