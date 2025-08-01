@@ -1,32 +1,32 @@
 ffmpeg:
   default:
-    timeout: 10000000  # 默认超时时间（微秒）
-    probesize: 5000000  # 默认探测数据大小
-    analyzeduration: 5000000  # 默认分析时长
-    loglevel: error  # 默认日志级别
+    timeout: 5000000  # 缩短为 5 秒（原 10 秒）
+    probesize: 1000000  # 减少探测数据大小（原 5000000 字节）
+    analyzeduration: 1000000  # 缩短分析时长（原 5000000 微秒）
+    loglevel: error  # 保持日志级别
   http:
-    timeout: 10000000  # HTTP 超时（微秒）
-    headers: "User-Agent: Mozilla/5.0"  # HTTP 请求头
-    reconnect: 1  # 自动重连
-    reconnect_delay_max: 30  # 最大重连延迟（秒）
+    timeout: 5000000  # HTTP 超时 5 秒
+    headers: "User-Agent: Mozilla/5.0"
+    reconnect: 1
+    reconnect_delay_max: 10  # 缩短重连延迟（原 30 秒）
   rtmp:
-    timeout: 15000000  # RTMP 超时（微秒）
-    rtmp_transport: tcp  # RTMP 传输协议
-    rtmp_buffer: 3000  # RTMP 缓冲区大小（毫秒）
+    timeout: 7000000  # RTMP 超时 7 秒（原 15 秒）
+    rtmp_transport: tcp
+    rtmp_buffer: 2000  # 缩短缓冲区大小（原 3000 毫秒）
   rtp:
-    timeout: 5000000  # RTP 超时（微秒）
-    buffer_size: 800000  # RTP 缓冲区大小（字节）
-    rtcpport: 5005  # RTCP 端口
+    timeout: 3000000  # RTP 超时 3 秒（原 5 秒）
+    buffer_size: 400000  # 减小缓冲区（原 800000 字节）
+    rtcpport: 5005
   video_quality:
-    resolution: "1280x720"  # 分辨率
-    bitrate: "2000k"  # 视频比特率
-    crf: 23  # H.264 CRF 值
-    preset: medium  # 编码预设
+    resolution: "1280x720"
+    bitrate: "2000k"
+    crf: 23
+    preset: medium
   ad_filter:
-    scene_threshold: 0.3  # 场景检测阈值，用于过滤广告
-    skip_segments:  # 跳过的时间段（秒）
+    scene_threshold: 0.3
+    skip_segments:
       - start: 0
         end: 30
   loop_handling:
-    stream_loop: -1  # 无限循环
-    discard_corrupt: true  # 丢弃损坏帧
+    stream_loop: -1
+    discard_corrupt: true
