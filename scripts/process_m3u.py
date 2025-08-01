@@ -1,0 +1,170 @@
+import os
+import re
+import requests
+from urllib.parse import urlparse
+from tqdm import tqdm
+import time
+import hashlib
+import json
+
+# 定义文件路径
+# 注意：这些路径都是相对于脚本运行时的当前工作目录（通常是仓库根目录）
+CONFIG_URLS_FILE = 'config/urls.txt'
+OUTPUT_LIST_FILE = 'output/list.txt'
+FAILED_URLS_FILE = 'output/failed_urls.txt'
+SUCCESS_URLS_FILE = 'output/successful_urls.txt' # 用于保存所有成功处理的URL
+URL_HASHES_FILE = 'output/url_hashes.json' # 用于存储URL及其内容的哈希值
+
+# 正则表达式用于匹配 M3U8 节目源链接
+M3U8_REGEX = re.compile(r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?\.m3u8$', re.IGNORECASE)
+
+def read_urls(filepath):
+    """从文件中读取URL列表"""
+    urls = set()
+    if os.path.exists(filepath):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                url = line.strip()
+                if url and not url.startswith('#'): # 忽略以 # 开头的注释行
+                    urls.add(url)
+    return urls
+
+def write_urls(filepath, urls):
+    """将URL列表写入文件"""
+    with open(filepath, 'w', encoding='utf-8') as f:
+        for url in sorted(list(urls)):
+            f.write(url + '\n')
+
+def read_url_hashes(filepath):
+    """从文件中读取URL哈希字典"""
+    if os.path.exists(filepath):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            try:
+                return json.load(f)
+            except json.JSONDecodeError:
+                return {}
+    return {}
+
+def write_url_hashes(filepath, url_hashes):
+    """将URL哈希字典写入文件"""
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(url_hashes, f, indent=4, ensure_ascii=False)
+
+def calculate_content_hash(content):
+    """计算内容的SHA256哈希值"""
+    return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
+def fetch_m3u_content(url):
+    """
+    从URL获取M3U内容。
+    增加超时和错误处理。
+    """
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # 检查HTTP请求是否成功
+        return response.text
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching {url}: {e}")
+        return None
+
+def extract_m3u8_links(content):
+    """从M3U内容中提取M3U8链接"""
+    m3u8_links = set()
+    lines = content.splitlines()
+    for line in lines:
+        line = line.strip()
+        if M3U8_REGEX.match(line):
+            m3u8_links.add(line)
+    return m3u8_links
+
+def get_domain(url):
+    """从URL中获取域名"""
+    return urlparse(url).netloc
+
+def main():
+    # 确保输出目录存在
+    os.makedirs('output', exist_ok=True)
+    os.makedirs('config', exist_ok=True) # 确保config目录也存在
+
+    initial_urls = read_urls(CONFIG_URLS_FILE)
+    failed_urls = read_urls(FAILED_URLS_FILE)
+    prev_url_hashes = read_url_hashes(URL_HASHES_FILE) # 读取之前保存的哈希值
+
+    # 过滤掉已知的失败URL
+    urls_to_process = list(initial_urls - failed_urls)
+
+    all_extracted_channels = {}
+    current_failed_urls = set()
+    current_successful_urls = set()
+    updated_url_hashes = prev_url_hashes.copy() # 更新哈希值字典
+
+    print(f"开始处理 {len(urls_to_process)} 个URL...")
+
+    start_time = time.time()
+    for i, url in enumerate(tqdm(urls_to_process, unit="url", ncols=100, desc="处理URL")):
+        domain = get_domain(url)
+        
+        content = fetch_m3u_content(url)
+        
+        if content:
+            current_hash = calculate_content_hash(content)
+            
+            # 检查内容是否更新
+            if url in prev_url_hashes and prev_url_hashes[url] == current_hash:
+                current_successful_urls.add(url)
+                updated_url_hashes[url] = current_hash 
+                continue 
+
+            extracted_links = extract_m3u8_links(content)
+            if extracted_links:
+                if domain not in all_extracted_channels:
+                    all_extracted_channels[domain] = set()
+                all_extracted_channels[domain].update(extracted_links)
+                current_successful_urls.add(url)
+                updated_url_hashes[url] = current_hash 
+            else:
+                current_failed_urls.add(url)
+                if url in updated_url_hashes:
+                    del updated_url_hashes[url]
+        else:
+            current_failed_urls.add(url)
+            if url in updated_url_hashes:
+                del updated_url_hashes[url]
+
+        if (i + 1) % 1000 == 0:
+            elapsed_time = time.time() - start_time
+            avg_time_per_url = elapsed_time / (i + 1)
+            remaining_urls = len(urls_to_process) - (i + 1)
+            estimated_remaining_time = avg_time_per_url * remaining_urls
+            print(f"\n已处理 {i + 1}/{len(urls_to_process)} 个URL。 预计剩余时间: {estimated_remaining_time:.2f} 秒 ({estimated_remaining_time / 60:.2f} 分钟)")
+
+    # 将所有提取到的节目源去重并保存
+    with open(OUTPUT_LIST_FILE, 'w', encoding='utf-8') as f_out:
+        for domain, links in all_extracted_channels.items():
+            f_out.write(f"# From {domain}\n")
+            for link in sorted(list(links)):
+                f_out.write(link + '\n')
+            f_out.write('\n') 
+
+    # 更新失败和成功的URL列表
+    write_urls(FAILED_URLS_FILE, failed_urls.union(current_failed_urls))
+    
+    # 更新 config/urls.txt，只保留成功的URL（包括本次处理和之前内容未变的）
+    final_successful_urls_for_next_run = (initial_urls - current_failed_urls).union(current_successful_urls)
+    write_urls(CONFIG_URLS_FILE, final_successful_urls_for_next_run)
+    
+    # 记录所有成功处理的URL（包括内容未变的）
+    write_urls(SUCCESS_URLS_FILE, current_successful_urls) 
+    
+    # 保存更新后的URL哈希值
+    write_url_hashes(URL_HASHES_FILE, updated_url_hashes)
+
+    print("\n处理完成！")
+    print(f"成功提取的节目源已保存到 {OUTPUT_LIST_FILE}")
+    print(f"失败的URL已保存到 {FAILED_URLS_FILE}")
+    print(f"更新后的 config/urls.txt 已保存。")
+    print(f"URL内容哈希已保存到 {URL_HASHES_FILE}。")
+
+if __name__ == "__main__":
+    main()
