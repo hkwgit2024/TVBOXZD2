@@ -1,95 +1,183 @@
-name: Clash 速度测试
+name: IPTV 250724
+
+# 触发条件
 on:
-  workflow_dispatch:
+  [cite_start]workflow_dispatch:  # 允许手动触发 [cite: 1]
   schedule:
-    - cron: '0 */6 * * *' # 每 6 小时运行一次
+    - [cite_start]cron: '0 */168 * * *'  # 每周运行一次 [cite: 1]
 
 jobs:
-  speed-test-and-sort:
+  build:
     runs-on: ubuntu-latest
-    # 移除了 strategy 和 matrix 配置，现在只有一个作业实例
+    [cite_start]timeout-minutes: 360  # 设置 6 小时超时 [cite: 1]
+    permissions:
+      [cite_start]contents: write  # 授予写入权限，用于提交和推送更改 [cite: 1]
 
     steps:
-      - name: 检出仓库
-        uses: actions/checkout@v4
+      # ================================================
+      # 模块一：环境准备与工具安装
+      # 此模块负责配置运行环境，包括检查密钥、检出代码、设置 Python 环境
+      # 以及安装所有必要的 Python 依赖和 FFmpeg 工具。
+      # ================================================
 
+      # [cite_start]步骤 1：检查 BOT secret [cite: 1]
+      - name: 检查 BOT secret
+        run: |
+          if [ -z "${{ secrets.TOKEN }}" ]; then
+            echo "错误：未设置 BOT secret，请在 GitHub Secrets 中配置"
+            exit 1
+          fi
+        [cite_start]shell: bash [cite: 2]
+
+      # [cite_start]步骤 2：检出代码 [cite: 1]
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          [cite_start]fetch-depth: 0  # 获取完整提交历史，便于 rebase [cite: 3]
+          [cite_start]token: ${{ secrets.TOKEN }}  # 使用 BOT secret 进行认证 [cite: 3]
+
+      # [cite_start]步骤 3：设置 Python 环境 [cite: 1]
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x' # 使用最新的 Python 3 版本
+          python-version: '3.12'
+          [cite_start]cache: 'pip'  # 缓存 pip 依赖 [cite: 3]
 
-      - name: 安装 Python 依赖
-        run: pip install PyYAML
-
-      - name: 赋予 clash-speedtest 执行权限
+      # [cite_start]步骤 4：安装 Python 依赖 [cite: 1]
+      - [cite_start]name: 安装 Python 依赖 [cite: 4]
         run: |
-          echo "赋予 'clash-speedtest' 执行权限..."
-          chmod +x ./clash-speedtest
-          if [ ! -f "./clash-speedtest" ]; then
-            echo "错误: 未找到 'clash-speedtest' 文件"
-            exit 1
-          fi
+          [cite_start]pip install requests aiohttp beautifulsoup4 tenacity psutil [cite: 5]
+          [cite_start]pip install pyyaml requests tenacity [cite: 5]
+          [cite_start]pip install dnspython [cite: 5]
+          [cite_start]pip install requests pyyaml dnspython aiohttp tqdm [cite: 5]
+          [cite_start]pip install aiofiles [cite: 5]
+          [cite_start]pip install cachetools [cite: 5]
 
-      - name: 下载完整的 Clash 配置
+      - [cite_start]name: 设置时区 [cite: 1]
+        [cite_start]run: sudo timedatectl set-timezone 'Asia/Shanghai' [cite: 1]
+
+      # [cite_start]步骤 5：安装 FFmpeg（用于 ffprobe） [cite: 6]
+      - [cite_start]name: 安装 FFmpeg [cite: 6]
         run: |
-          echo "下载完整的 Clash 配置文件..."
-          curl -s -o clash_config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
-          if [ ! -s "clash_config.yaml" ]; then
-            echo "错误: 未能下载到 clash_config.yaml 文件或文件为空。"
-            exit 1
-          fi
+          [cite_start]sudo apt-get update [cite: 7]
+          [cite_start]sudo apt-get install -y ffmpeg [cite: 7]
 
-      - name: 过滤节点 (使用 Python 脚本)
-        run: python filter_clash_nodes.py
-
-      - name: 验证过滤后的文件
+      # [cite_start]6：验证 ffprobe 是否可用 [cite: 1]
+      - [cite_start]name: 验证 ffprobe [cite: 1]
         run: |
-          if [ ! -s "filtered_nodes.yaml" ]; then
-            echo "警告: 'filtered_nodes.yaml' 文件为空或无有效内容。这可能意味着没有节点符合过滤条件。"
-            # 如果没有节点进行测试，clash-speedtest 可能会报错，这里可以根据需要决定是否退出
-            # exit 1 
-          fi
-          echo "--- filtered_nodes.yaml 内容 (前20行) ---"
-          head -n 20 filtered_nodes.yaml
-          echo "----------------------------------------"
+          [cite_start]if command -v ffprobe >/dev/null 2>&1; then [cite: 8]
+            [cite_start]echo "ffprobe 已找到并可用！版本信息如下：" [cite: 8]
+            [cite_start]ffprobe -version [cite: 8]
+          [cite_start]else [cite: 8]
+            [cite_start]echo "错误：ffprobe 未找到或无法执行！请检查上一步的 FFmpeg 安装日志。" [cite: 8]
+            [cite_start]exit 1 [cite: 8]
+          [cite_start]fi [cite: 8]
 
-      - name: 运行速度测试
-        run: |
-          echo "开始运行所有节点的测试..."
-          # 因为取消了分组，所以直接输出到 clash.yaml
-          ./clash-speedtest \
-            -c filtered_nodes.yaml \
-            -output ./clash.yaml \ # 直接输出到最终的 clash.yaml
-            -download-size 1048576 \ # 1MB = 1048576 字节
-            -upload-size 1048576 \   # 1MB = 1048576 字节
-            -timeout 8s \
-            -concurrent 20 \ # 注意：现在所有节点的测试都在一个并发池中进行
-            -f 'US|JP|SG|HK' \
-            -max-latency 800ms \
-            -min-download-speed 2 \ # 单位为 MB/s (约 16Mbps)
-            -min-upload-speed 1 \   # 单位为 MB/s (约 8Mbps)
-            -rename \
-            -fast
-
-      # 移除了合并测试结果步骤，因为现在直接输出到 clash.yaml
-
-      - name: 验证生成的 clash.yaml 文件
-        id: check_file
-        run: |
-          if [ -f "clash.yaml" ]; then
-            echo "'clash.yaml' 文件已生成，大小: $(du -h clash.yaml | awk '{print $1}')"
-            head -n 20 clash.yaml # 打印文件前 20 行以供检查
-          else
-            echo "错误: 未生成 'clash.yaml'"
-            exit 1
-          fi
-
-      - name: 提交并推送排序后的配置文件
-        if: success() && steps.check_file.outcome == 'success'
-        uses: stefanzweifel/git-auto-commit-action@v5
+      # 保存模块一的结果 (一个状态文件，指示环境准备完成)
+      - name: 保存模块一环境准备状态
+        run: echo "模块一：环境准备与工具安装已完成。" > module1_env_status.txt
+      - name: 上传模块一结果 (环境状态)
+        uses: actions/upload-artifact@v4
         with:
-          commit_message: "更新 Clash 配置：节点已按速度排序"
-          file_pattern: clash.yaml
-          branch: main
+          name: module1-environment-setup
+          path: module1_env_status.txt
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        if: always() # 确保即使后续步骤失败，此状态文件也尝试上传
+
+      # ================================================
+      # 模块二：IPTV 数据抓取与初步处理
+      # 此模块执行核心的 IPTV 频道爬取脚本，并生成相关的列表文件和日志。
+      # ================================================
+
+      # [cite_start]步骤 7：运行 IPTV 爬取脚本 [cite: 9]
+      - [cite_start]name: 运行 IPTV 爬取脚本 [cite: 9]
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          [cite_start]BOT: ${{ secrets.TOKEN }} [cite: 9]
+        [cite_start]run: python tv.py [cite: 9]
+
+      # [cite_start]步骤 8：保存日志和生成文件 [cite: 9]
+      - name: 保存模块二结果 (IPTV 抓取结果和日志)
+        uses: actions/upload-artifact@v4
+        with:
+          name: module2-iptv-crawler-outputs
+          path: |
+            [cite_start]*.txt              # 捕获 iptv_list.txt 和 uncategorized_iptv.txt [cite: 10]
+            [cite_start]temp_channels/     # 捕获 temp_channels 目录下的所有文件 [cite: 10]
+            [cite_start]config/*.txt       # 捕获 config 目录下的所有 .txt 文件 [cite: 10]
+            [cite_start]config/*.json      # 捕获 config 目录下的所有 .json 文件 [cite: 10]
+            [cite_start]iptv_crawler.log   # 捕获日志文件 [cite: 11]
+          [cite_start]retention-days: 7 [cite: 11]
+          [cite_start]if-no-files-found: warn [cite: 11]
+          [cite_start]compression-level: 6 [cite: 11]
+          [cite_start]overwrite: false [cite: 11]
+          [cite_start]include-hidden-files: false [cite: 11]
+        if: always() # 确保即使爬取脚本失败，也尝试上传日志和已生成的文件
+
+      # ================================================
+      # 模块三：文件变更管理与通知
+      # 此模块检查文件更改，提交并推送更新到 Git 仓库，并发送工作流完成通知。
+      # ================================================
+
+      # [cite_start]步骤 9：检查文件更改 [cite: 12]
+      - [cite_start]name: 检查文件更改 [cite: 12]
+        id: check_changes
+        run: |
+          [cite_start]git add . [cite: 12]
+          [cite_start]if git diff --staged --quiet; then [cite: 12]
+            [cite_start]echo "没有文件更改" [cite: 12]
+            [cite_start]echo "has_changes=false" >> $GITHUB_OUTPUT [cite: 12]
+          [cite_start]else [cite: 12]
+            [cite_start]echo "检测到文件更改" [cite: 12]
+            [cite_start]echo "has_changes=true" >> $GITHUB_OUTPUT [cite: 12]
+          [cite_start]fi [cite: 12]
+        [cite_start]shell: bash [cite: 12]
+
+      # [cite_start]步骤 10：提交更改 [cite: 13]
+      - [cite_start]name: 提交更改 [cite: 13]
+        [cite_start]if: steps.check_changes.outputs.has_changes == 'true' [cite: 13]
+        run: |
+          [cite_start]git config --global user.email "actions@github.com" [cite: 14]
+          [cite_start]git config --global user.name "GitHub Actions" [cite: 14]
+          [cite_start]git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))" [cite: 14]
+
+      # [cite_start]步骤 11：推送更改 (优先合并) [cite: 15]
+      - [cite_start]name: 推送更改 (优先合并) [cite: 15]
+        [cite_start]if: steps.check_changes.outputs.has_changes == 'true' [cite: 15]
+        run: |
+          [cite_start]git fetch origin main # 拉取远程 main 分支的最新状态 [cite: 15]
+          # [cite_start]尝试合并远程更改。如果合并失败（有冲突），则退出并报错。 [cite: 15]
+          git merge origin/main -m "Merge remote changes before pushing" || (echo "错误：检测到合并冲突，请手动解决或检查日志" && exit 1) [cite_start][cite: 16]
+          [cite_start]git push origin main # 推送合并后的更改 [cite: 16]
+        env:
+          [cite_start]GITHUB_TOKEN: ${{ secrets.TOKEN }} [cite: 16]
+
+      # 保存模块三的结果 (一个状态文件，指示 Git 操作是否完成及结果)
+      - name: 保存模块三Git操作状态
+        run: |
+          echo "模块三：文件变更管理与通知已完成。" > module3_git_status.txt
+          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+            echo "文件已更新并推送到仓库。" >> module3_git_status.txt
+          else
+            echo "没有文件更改，未进行推送。" >> module3_git_status.txt
+          fi
+      - name: 上传模块三结果 (Git 操作状态)
+        uses: actions/upload-artifact@v4
+        with:
+          name: module3-git-operations
+          path: module3_git_status.txt
+          retention-days: 7
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        if: always() # 确保即使 Git 推送失败，此状态文件也尝试上传
+
+      # [cite_start]步骤 12：发送运行结果通知 [cite: 17]
+      - [cite_start]name: 发送运行结果通知 [cite: 17]
+        run: |
+          [cite_start]echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}" [cite: 17]
+          [cite_start]echo "请检查 artifact 中的 iptv_crawler.log 以获取详细信息" [cite: 17]
