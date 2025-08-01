@@ -6,19 +6,8 @@
 search_keywords:
 
    # 通用英文关键词
-  - "iptv links" # 稍微放宽，依赖后续过滤
-  - "m3u8 playlist"
-  - "iptv list"
-  - "m3u channels"
-  - "iptv channels"
-  - "live tv playlist"
-  - "free iptv"
-  - "public iptv"
-  - "tv channels list"
-  - "stream list"
-  - "live stream list"
-  - "m3u stream"
-  - "m3u8 stream"
+  - "s" # 稍微放宽，依赖后续过滤
+
 
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
@@ -51,7 +40,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
+  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
   log_file: "logs/iptv.log"         # 日志文件路径（默认 logs/iptv.log）
 
 # GitHub API 配置
