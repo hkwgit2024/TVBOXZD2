@@ -104,7 +104,7 @@ jobs:
           BOT: ${{ secrets.TOKEN }}
         run: |
           mv ${{ matrix.split }} config/urls.txt
-          python tv3.py
+          python tv.py
           echo "处理完成: ${{ matrix.split }}"
 
       - name: 保存分片结果
