@@ -1,4 +1,3 @@
-
 import os
 import re
 import subprocess
@@ -38,7 +37,7 @@ def setup_logging(config):
     
     # 文件处理器，支持日志文件轮转，最大10MB，保留5个备份
     file_handler = logging.handlers.RotatingFileHandler(
-        log_file, maxBytes=10*1024*1024, backupCount=1
+        log_file, maxBytes=10*1024*1024, backupCount=5
     )
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
@@ -65,7 +64,7 @@ def load_config(config_path="config/config.yaml"):
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file)
             logging.info("配置文件 config.yaml 加载成功")
-            return config
+        return config
     except FileNotFoundError:
         logging.error(f"错误：未找到配置文件 '{config_path}'")
         exit(1)
@@ -712,24 +711,6 @@ def check_p3p_url(url, timeout):
         logging.info(f"P3P URL 检查失败: {url} - {e}")
         return False
 
-@performance_monitor
-def check_webrtc_url(url, timeout):
-    """检查 WebRTC URL 是否可达（简单检查 ICE 服务器可用性）
-    参数:
-        url: 要检查的 URL
-        timeout: 超时时间（秒）
-    返回:
-        布尔值，表示 URL 是否可达（占位实现）
-    """
-    try:
-        parsed_url = urlparse(url)
-        if not parsed_url.scheme == 'webrtc':
-            return False
-        # 这里仅模拟检查，实际 WebRTC 需要更复杂的 ICE/TURN/STUN 验证
-        return True  # 占位，需根据实际需求实现
-    except Exception as e:
-        logging.info(f"WebRTC URL 检查失败: {url} - {e}")
-        return False
 
 @performance_monitor
 def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONFIG['network']['check_timeout']):
@@ -753,7 +734,7 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
                 logging.info(f"跳过频道 {channel_name} ({url})，因其在冷却期内（{CONFIG['channel_retention']['stream_retention_hours']}h），上次失败于 {time_since_failed_hours:.2f}h 前")
                 return None, False
         except ValueError:
-            logging.warning(f"无法解析 URL {url} 的失败时间戳: {current_url_state['stream_check_failed_at']}")
+            logging.warning(f"无法解析 URL {url} 的 last_failed_at 时间戳: {current_url_state['stream_check_failed_at']}")
 
     start_time = time.time()
     is_valid = False
@@ -771,9 +752,6 @@ def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONF
             protocol_checked = True
         elif url.startswith("p3p"):
             is_valid = check_p3p_url(url, timeout)
-            protocol_checked = True
-        elif url.startswith("webrtc"):
-            is_valid = check_webrtc_url(url, timeout)
             protocol_checked = True
         else:
             logging.info(f"频道 {channel_name} 的协议不支持: {url}")
@@ -1049,6 +1027,19 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
     logging.warning("开始从 GitHub 自动发现新的 IPTV 源 URL")
     keyword_url_counts = {keyword: 0 for keyword in CONFIG.get('search_keywords', [])}
 
+    # 获取搜索更新天数并计算日期
+    search_updated_within_days = CONFIG['github'].get('search_updated_within_days', 7)
+    # 确保当前时间在 2025-08-01 21:40:58 CST 之后
+    if datetime.now() > datetime(2025, 8, 1, 21, 40, 58):
+        # 使用当前时间来计算过去的日期
+        date_cutoff = datetime.now() - timedelta(days=search_updated_within_days)
+    else:
+        # 使用给定日期来计算过去的日期，用于测试或特定场景
+        date_cutoff = datetime(2025, 8, 1) - timedelta(days=search_updated_within_days)
+
+    date_qualifier = f"pushed:>{date_cutoff.strftime('%Y-%m-%d')}"
+    logging.info(f"GitHub 搜索将过滤 '{search_updated_within_days}' 天内更新的文件，日期限定符: {date_qualifier}")
+
     for i, keyword in enumerate(CONFIG.get('search_keywords', [])):
         keyword_found_urls = set()
         if i > 0:
@@ -1058,7 +1049,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
         page = 1
         while page <= CONFIG['github']['max_search_pages']:
             params = {
-                "q": keyword,
+                "q": f"{keyword} {date_qualifier}",
                 "sort": "indexed",
                 "order": "desc",
                 "per_page": CONFIG['github']['per_page'],
@@ -1077,9 +1068,9 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
 
-                if rate_limit_remaining == 0:
+                if rate_limit_remaining <= CONFIG['github']['rate_limit_threshold']:
                     wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logging.warning(f"GitHub API 速率限制达到，剩余请求: 0，等待 {wait_seconds:.0f} 秒")
+                    logging.warning(f"GitHub API 速率限制达到，剩余请求: {rate_limit_remaining}，等待 {wait_seconds:.0f} 秒")
                     time.sleep(wait_seconds)
                     continue
 
@@ -1236,7 +1227,8 @@ def categorize_channels(channels):
             
     # 根据原始 ordered_categories 的顺序对最终的类别进行排序
     final_ordered_categories = [cat for cat in CONFIG.get('ordered_categories', []) if cat in all_final_categories]
-    # 添加可能通过别名产生但不在原始 ordered_categories 中的新类别
+    # 添加可能通过别名产生但不在原始 
+    # ordered_categories 中的新类别
     for cat in sorted(all_final_categories):
         if cat not in final_ordered_categories:
             final_ordered_categories.append(cat)
@@ -1311,11 +1303,9 @@ def main():
     all_extracted_channels = []
     source_tracker = {}
     logging.warning(f"开始从 {len(urls)} 个 URL 提取频道")
-   # max_urls = 100  # 临时限制为 100 个 URL 以调试
-   # urls_to_process = urls[:max_urls]
-   # logging.warning(f"调试模式：仅处理前 {len(urls_to_process)} 个 URL")
-    # ！！！在这里添加一行代码，确保 urls_to_process 被定义，且包含所有 URL ！！！即退出调试模式
-    urls_to_process = urls
+    max_urls = 100  # 临时限制为 100 个 URL 以调试
+    urls_to_process = urls[:max_urls]
+    logging.warning(f"调试模式：仅处理前 {len(urls_to_process)} 个 URL")
     with ThreadPoolExecutor(max_workers=min(CONFIG['network']['url_fetch_workers'], 10)) as executor:
         futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in urls_to_process}
         for i, future in enumerate(as_completed(futures)):
