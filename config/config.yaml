@@ -5,7 +5,20 @@
 # GitHub 搜索关键词
 search_keywords:
 
-  - "tvbox" # 稍微放宽，依赖后续过滤
+   # 通用英文关键词
+  - "iptv links" # 稍微放宽，依赖后续过滤
+  - "m3u8 playlist"
+  - "iptv list"
+  - "m3u channels"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "stream list"
+  - "live stream list"
+  - "m3u stream"
+  - "m3u8 stream"
 
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
