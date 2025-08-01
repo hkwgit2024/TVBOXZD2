@@ -5,10 +5,10 @@
 # GitHub 搜索关键词
 search_keywords:
 
-
+  - "m3u8 playlist"
+  - "iptv list"
   - "湖南卫视"
-  - "凤凰卫视"
-  - "港澳台直播"
+
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
   invalid_url_patterns: # 无效 URL 的正则模式
@@ -40,7 +40,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
+  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
   log_file: "logs/iptv.log"         # 日志文件路径（默认 logs/iptv.log）
 
 # GitHub API 配置
