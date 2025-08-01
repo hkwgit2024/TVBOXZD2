@@ -7,9 +7,10 @@ search_keywords:
  # 英文关键词
   
   # 中文关键词
-  - "直播源"
-
-  - "阿里郎"
+  - "TVBOX"
+  - "最新直播源"
+  - "稳定直播源"
+  - "iptvbox"
   
 
 # URL 预筛选配置：定义 URL 筛选规则
@@ -43,7 +44,7 @@ network:
 
 # 日志配置
 logging:
-  log_level: "INFO"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
+  log_level: "WARNING"                 # 日志级别（DEBUG, INFO, WARNING, ERROR，默认 INFO）
   log_file: "logs/iptv.log"         # 日志文件路径（默认 logs/iptv.log）
 
 # GitHub API 配置
@@ -55,7 +56,7 @@ github:
   api_timeout: 68                   # GitHub API 请求超时时间（秒，默认 60）
   retry_wait: 38                    # 速率限制达到后的等待时间（秒，默认 30）
   rate_limit_threshold: 3           # 触发速率限制的剩余请求阈值（默认 3）
-  search_updated_within_days: 180    # 搜索最近更新的文件（天，默认 7）
+#  search_updated_within_days: 180    # 搜索最近更新的文件（天，默认 7）
 
 # URL 状态管理
 url_state:
