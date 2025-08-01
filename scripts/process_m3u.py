@@ -9,7 +9,9 @@ import time
 import hashlib
 import json
 import datetime
-from typing import Dict, List, Tuple, Set
+# 修复 TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'
+# 将 Union 导入，以兼容 Python 3.9
+from typing import Dict, List, Tuple, Set, Union
 from concurrent.futures import ThreadPoolExecutor
 
 # --- 配置日志 ---
@@ -40,7 +42,6 @@ CONFIG = {
 
 # --- 正则表达式定义 ---
 # 扩展正则表达式支持更多视频格式
-# 增加了 .mkv, .rmvb
 VIDEO_URL_REGEX = re.compile(
     r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w./?%&=-]*?)((\.m3u8|\.mp4|\.flv|\.ctv|\.ts|\.mpd|\.webm|\.ogg|\.avi|\.mov|\.wmv|\.mkv|\.rmvb))$',
     re.IGNORECASE
@@ -135,7 +136,8 @@ async def calculate_content_hash_async(content: str) -> str:
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(_executor, lambda: hashlib.sha256(content.encode('utf-8')).hexdigest())
 
-async def fetch_content(url: str, session: aiohttp.ClientSession, max_retries: int) -> str | None:
+# 修复 Python 3.9 中 Union 类型提示的兼容性问题
+async def fetch_content(url: str, session: aiohttp.ClientSession, max_retries: int) -> Union[str, None]:
     """异步获取URL内容，包含重试机制"""
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -201,11 +203,11 @@ async def process_single_url(
         # 添加从内容中提取出的所有子链接，描述为空
         for link in extracted_links:
             # 避免重复添加原始URL如果它被自身内容提取出来
-            if link != url:
+            if link != url: # 避免重复添加原始URL
                 final_channels[category].append(("", link))
     else: # 内容获取失败
         current_failed_urls.add(url)
-        # 如果URL previously was successful, but now failed, remove its hash
+        # 如果URL 之前是成功的，但现在失败了，则从哈希中移除
         updated_hashes.pop(url, None) 
 
 # --- 主函数 ---
@@ -242,8 +244,8 @@ async def main():
     start_time = time.time()
     
     # 使用 aiohttp ClientSession 进行异步网络请求
-    # connector限制并发连接数
-    connector = aiohttp.TCPConnector(limit=CONFIG['max_concurrent_requests'], ssl=False) # ssl=False 避免某些证书问题，生产环境慎用
+    # connector限制并发连接数。ssl=False 避免某些证书问题，生产环境慎用！
+    connector = aiohttp.TCPConnector(limit=CONFIG['max_concurrent_requests'], ssl=False) 
     async with aiohttp.ClientSession(connector=connector) as session:
         tasks = [
             process_single_url(
