@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # 获取完整历史以便合并
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -33,10 +35,11 @@ jobs:
     - name: Run URL processing script
       run: python scripts/process_urls.py --shard ${{ matrix.shard }} --total-shards 4
 
-    - name: Commit and push shard results
+    - name: Pull latest changes and commit shard results
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git pull --rebase origin main  # 拉取远程更改并变基
         git add output/*.txt output/timestamps.json
         git commit -m "Update processed URLs for shard ${{ matrix.shard }}" || echo "No changes to commit"
         git push
@@ -49,6 +52,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -63,11 +68,15 @@ jobs:
     - name: Merge results
       run: python scripts/merge_results.py
 
-    - name: Commit and push final playlist
+    - name: Convert to M3U
+      run: python scripts/convert_to_m3u.py
+
+    - name: Pull latest changes and commit final playlist
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add output/final_playlist.txt
+        git pull --rebase origin main  # 拉取远程更改并变基
+        git add output/final_playlist.txt output/final_playlist.m3u
         git commit -m "Update final merged playlist" || echo "No changes to commit"
         git push
       env:
