@@ -1,22 +1,20 @@
 name: IPTV 250724
 
+# 触发条件
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:  # 允许手动触发
   schedule:
-    - cron: '0 */168 * * *' # 每周运行一次
+    - cron: '0 */168 * * *'  # 每周运行一次
 
 jobs:
-  split-urls:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      splits: ${{ steps.split.outputs.splits }}
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.TOKEN }}
+    timeout-minutes: 360  # 设置 6 小时超时
+    permissions:
+      contents: write  # 授予写入权限，用于提交和推送更改
 
+    steps:
+      # 步骤 1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
           if [ -z "${{ secrets.TOKEN }}" ]; then
@@ -25,70 +23,40 @@ jobs:
           fi
         shell: bash
 
-      - name: 分割 urls.txt
-        id: split
-        run: |
-          mkdir -p temp_urls
-          split -l 500 config/urls.txt temp_urls/urls_part_ -d --suffix-length=3 # 每500行一个分片，减少分片数量
-          # 生成干净的 JSON 数组
-          parts=($(ls temp_urls/urls_part_* | sort))
-          splits_json=$(printf '%s\n' "${parts[@]}" | jq -R . | jq -s .)
-          echo "splits=$splits_json" >> $GITHUB_OUTPUT
-          echo "Generated splits: $splits_json" # 调试输出
-          for file in temp_urls/urls_part_*; do
-            mv $file $file.txt
-          done
-        shell: bash
-
-      - name: 上传分割文件
-        uses: actions/upload-artifact@v4
-        with:
-          name: url-splits
-          path: temp_urls/urls_part_*.txt
-          retention-days: 7
-          if-no-files-found: warn
-
-  process-channels:
-    needs: split-urls
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    permissions:
-      contents: write
-    strategy:
-      matrix:
-        split: ${{ fromJson(needs.split-urls.outputs.splits) }}
-      max-parallel: 10 # 限制并行 job 数量
-    steps:
+      # 步骤 2：检出代码
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.TOKEN }}
+          fetch-depth: 0  # 获取完整提交历史，便于 rebase
+          token: ${{ secrets.TOKEN }}  # 使用 BOT secret 进行认证
 
-      - name: 下载分割的 URL 文件
-        uses: actions/download-artifact@v4
-        with:
-          name: url-splits
-          path: temp_urls
-
+      # 步骤 3：设置 Python 环境
       - name: 设置 Python 环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
+          cache: 'pip'  # 缓存 pip 依赖
 
+      # 步骤 4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests aiohttp beautifulsoup4 tenacity psutil pyyaml dnspython tqdm aiofiles cachetools
+          pip install requests aiohttp beautifulsoup4 tenacity psutil
+          pip install pyyaml requests tenacity
+          pip install dnspython
+          pip install requests pyyaml dnspython aiohttp tqdm
+          pip install aiofiles
+          pip install cachetools
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
+      # 步骤 5：安装 FFmpeg（用于 ffprobe）
       - name: 安装 FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      # 6：验证 ffprobe 是否可用
       - name: 验证 ffprobe
         run: |
           if command -v ffprobe >/dev/null 2>&1; then
@@ -99,101 +67,31 @@ jobs:
             exit 1
           fi
 
+      # 步骤 7：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
           BOT: ${{ secrets.TOKEN }}
-        run: |
-          mv ${{ matrix.split }} config/urls.txt
-          python tv.py
-          echo "处理完成: ${{ matrix.split }}"
+        run: python tv.py
 
-      - name: 保存分片结果
+      # 步骤 8：保存日志和生成文件
+      - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
-          name: iptv-results-${{ matrix.split }}
+          name: iptv-results
           path: |
-            *.txt
-            temp_channels/
-            config/*.txt
-            config/*.json
-            iptv_crawler.log
+            *.txt              # 捕获 iptv_list.txt 和 uncategorized_iptv.txt
+            temp_channels/     # 捕获 temp_channels 目录下的所有文件
+            config/*.txt       # 捕获 config 目录下的所有 .txt 文件
+            config/*.json      # 捕获 config 目录下的所有 .json 文件
+            iptv_crawler.log   # 捕获日志文件
           retention-days: 7
           if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        if: always()
 
-  merge-results:
-    needs: process-channels
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: 检出代码
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.TOKEN }}
-
-      - name: 下载所有分片结果
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: 合并分片结果
-        run: |
-          mkdir -p temp_channels config
-          # 合并 iptv_list.txt 和 uncategorized_iptv.txt
-          cat artifacts/iptv-results-*/iptv_list.txt > iptv_list.txt 2>/dev/null || true
-          cat artifacts/iptv-results-*/config/uncategorized_iptv.txt > config/uncategorized_iptv.txt 2>/dev/null || true
-          # 合并 temp_channels 下的分类文件
-          for file in artifacts/iptv-results-*/temp_channels/*_iptv.txt; do
-            if [ -f "$file" ]; then
-              cat "$file" >> temp_channels/$(basename "$file")
-            fi
-          done
-          # 合并 url_states.json
-          python -c "
-          import json, os
-          merged_states = {}
-          for file in os.listdir('artifacts'):
-              if 'iptv-results-' in file:
-                  state_file = os.path.join('artifacts', file, 'config', 'url_states.json')
-                  if os.path.exists(state_file):
-                      with open(state_file, 'r', encoding='utf-8') as f:
-                          states = json.load(f)
-                          merged_states.update(states)
-          with open('config/url_states.json', 'w', encoding='utf-8') as f:
-              json.dump(merged_states, f, indent=4)
-          "
-
-      - name: 再次运行脚本以合并和清理
-        env:
-          BOT: ${{ secrets.TOKEN }}
-        run: python tv3.py
-
-      - name: 转换为 M3U 格式（可选）
-        run: |
-          echo '#EXTM3U' > iptv_list.m3u
-          while IFS=, read -r name url; do
-            if [[ "$name" == *"genre"* ]]; then
-              echo "#EXTINF:-1 group-title=\"$name\",$name" >> iptv_list.m3u
-            else
-              echo "#EXTINF:-1,$name" >> iptv_list.m3u
-              echo "$url" >> iptv_list.m3u
-            fi
-          done < iptv_list.txt
-
-      - name: 保存最终结果
-        uses: actions/upload-artifact@v4
-        with:
-          name: final-iptv-results
-          path: |
-            *.txt
-            *.m3u
-            temp_channels/
-            config/*.txt
-            config/*.json
-            iptv_crawler.log
-          retention-days: 7
-
+      # 步骤 9：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -205,7 +103,9 @@ jobs:
             echo "检测到文件更改"
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+        shell: bash
 
+      # 步骤 10：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -213,15 +113,18 @@ jobs:
           git config --global user.name "GitHub Actions"
           git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
 
-      - name: 推送更改
+      # 步骤 11：推送更改 (优先合并)
+      - name: 推送更改 (优先合并)
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          git fetch origin main
+          git fetch origin main # 拉取远程 main 分支的最新状态
+          # 尝试合并远程更改。如果合并失败（有冲突），则退出并报错。
           git merge origin/main -m "Merge remote changes before pushing" || (echo "错误：检测到合并冲突，请手动解决或检查日志" && exit 1)
-          git push origin main
+          git push origin main # 推送合并后的更改
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+      # 步骤 12：发送运行结果通知
       - name: 发送运行结果通知
         run: |
           echo "IPTV 频道更新工作流完成，状态: ${{ job.status }}"
