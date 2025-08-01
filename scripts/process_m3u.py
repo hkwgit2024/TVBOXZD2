@@ -36,8 +36,8 @@ CONFIG = {
     'url_hashes': 'output/url_hashes.json',
     'max_concurrent_requests': 50, # 最大并发请求数
     'timeout_seconds': 15,         # 请求超时时间
-    'max_retries': 1,              # 最大重试次数
-    'retry_delay': 1               # 重试间隔时间（秒）
+    'max_retries': 3,              # 最大重试次数
+    'retry_delay': 2               # 重试间隔时间（秒）
 }
 
 # --- 正则表达式定义 ---
@@ -193,21 +193,21 @@ async def process_single_url(
             return # 跳过当前URL的后续处理，因为内容未变
         
         # 内容已更新或首次获取
-        extracted_links = extract_video_links(content)
-        
-        # 将原始URL本身添加为有效节目源 (即使它是M3U播放列表，也先将M3U链接本身作为一个条目)
+        # extracted_links = extract_video_links(content) # 这行可以保留，但不再使用
+
+        # 只添加原始URL本身作为有效节目源
         final_channels.setdefault(category, []).append((description, url))
         current_success_urls.add(url)
         updated_hashes[url] = current_hash # 更新或添加新哈希
         
-        # 添加从内容中提取出的所有子链接，描述为空
-        for link in extracted_links:
-            # 避免重复添加原始URL如果它被自身内容提取出来
-            if link != url: # 避免重复添加原始URL
-                final_channels[category].append(("", link))
+        # !!! 以下是您需要删除或注释掉的代码块，以停止提取子链接 !!!
+        # for link in extracted_links:
+        #     if link != url:
+        #         final_channels[category].append(("", link))
+        # !!! -------------------------------------------------- !!!
+
     else: # 内容获取失败
         current_failed_urls.add(url)
-        # 如果URL 之前是成功的，但现在失败了，则从哈希中移除
         updated_hashes.pop(url, None) 
 
 # --- 主函数 ---
