@@ -1,32 +1,45 @@
-ffmpeg:
-  default:
-    timeout: 3000000  # 3 秒
-    probesize: 500000  # 500KB
-    analyzeduration: 500000  # 0.5 秒
-    loglevel: error
-  http:
-    timeout: 3000000
-    headers: "User-Agent: Mozilla/5.0"
-    reconnect: 1
-    reconnect_delay_max: 5
-  rtmp:
-    timeout: 5000000
-    rtmp_transport: tcp
-    rtmp_buffer: 1000
-  rtp:
-    timeout: 2000000
-    buffer_size: 200000
-    rtcpport: 5005
-  video_quality:
-    resolution: "1280x720"
-    bitrate: "2000k"
-    crf: 23
-    preset: medium
-  ad_filter:
-    scene_threshold: 0.3
-    skip_segments:
-      - start: 0
-        end: 30
-  loop_handling:
-    stream_loop: -1
-    discard_corrupt: true
+
+logging:
+  log_level: INFO
+  log_file: logs/iptv.log
+
+performance_monitor:
+  enabled: true
+  log_interval: 10
+
+stream_quality:
+  stream_check_workers: 10
+  max_check_duration: 120
+  min_resolution_width: 640
+  min_resolution_height: 480
+  min_bitrate: 100000
+  max_buffer_time: 60
+  max_keyframe_interval: 20
+  ad_keywords:
+    - advertisement
+    - ad
+    - commercial
+    - promo
+
+url_pre_screening:
+  invalid_url_patterns:
+    - '\.jpg$'
+    - '\.png$'
+    - '\.gif$'
+    - '\.pdf$'
+    - '\.exe$'
+    - 'login'
+    - 'signup'
+    - 'private'
+    - 'localhost'
+    - '^http://171\.8\.247\.154:808'
+    - '^https://vv\.jisuzyv\.com'
+    - '^https://t\.me/'
+    - '\.php$'
+    - '\.mp4$'
+    - '^http://video\.dztv\.tv'
+    - '^http://live\.ahsz\.tv'
+
+output:
+  paths:
+    high_quality_iptv_file: output/high_quality_iptv.txt
