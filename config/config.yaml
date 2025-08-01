@@ -6,9 +6,9 @@
 search_keywords:
 
 
-  - "电视直播"
-  - "iptv.m3u in:file" # 增加常见iptv文件名搜索
-
+  - "湖南卫视"
+  - "凤凰卫视"
+  - "港澳台直播"
 # URL 预筛选配置：定义 URL 筛选规则
 url_pre_screening:
   invalid_url_patterns: # 无效 URL 的正则模式
