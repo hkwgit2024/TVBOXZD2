@@ -114,10 +114,11 @@ def main():
     unique_urls = set(urls)
     logging.info(f"读取到 {len(urls)} 个 URL，去重后 {len(unique_urls)} 个")
 
-    # 保存去重后的 URL 到 output/list.txt
+    # 立即保存去重后的 URL 到 output/list.txt
     with open('output/list.txt', 'w', encoding='utf-8') as f:
         for url in unique_urls:
             f.write(url + '\n')
+    logging.info("去重后的 URL 已保存到 output/list.txt")
 
     # 检查 URL 更新和有效性
     valid_urls = []
@@ -164,6 +165,7 @@ def main():
     with open('output/mpeg.txt', 'w', encoding='utf-8') as f:
         for url in valid_urls:
             f.write(url + '\n')
+    logging.info(f"有效 URL 已保存到 output/mpeg.txt，共 {len(valid_urls)} 个")
 
     # 保存分类结果
     for category, urls in categorized_urls.items():
@@ -171,14 +173,20 @@ def main():
         with open(category_filename, 'w', encoding='utf-8') as f:
             for url in urls:
                 f.write(url + '\n')
+    logging.info(f"分类 URL 已保存，共 {len(categorized_urls)} 个分类文件")
 
     # 保存失败 URL 到 output/failed.txt
     with open(FAILED_FILE, 'w', encoding='utf-8') as f:
         for url in failed_urls | new_failed_urls:
             f.write(url + '\n')
+    logging.info(f"失败 URL 已保存到 output/failed.txt，共 {len(new_failed_urls)} 个")
 
     # 保存时间戳
     with open(TIMESTAMPS_FILE, 'w', encoding='utf-8') as f:
         json.dump(timestamps, f, ensure_ascii=False, indent=2)
+    logging.info("时间戳已保存到 output/timestamps.json")
 
-    logging.info(f"处理完成：有效 URL {len(valid_urls)} 个，失败 URL {len(new_failed_urls)} 个，分类文件 {len(c
+    logging.info(f"处理完成：有效 URL {len(valid_urls)} 个，失败 URL {len(new_failed_urls)} 个，分类文件 {len(categorized_urls)} 个")
+
+if __name__ == "__main__":
+    main()
