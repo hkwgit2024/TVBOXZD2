@@ -16,7 +16,7 @@ SUCCESS_URLS_FILE = 'output/successful_urls.txt' # 用于保存所有成功处�
 URL_HASHES_FILE = 'output/url_hashes.json' # 用于存储URL及其内容的哈希值
 
 # 正则表达式用于匹配 M3U8 节目源链接
-M3U8_REGEX = re.compile(r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?\.m3u8$', re.IGNORECASE)
+M3U8_REGEX = re.compile(r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w. /?%&=-]*)?\.m3u8$', re.IGNORECASE)
 
 def read_urls(filepath):
     """从文件中读取URL列表"""
