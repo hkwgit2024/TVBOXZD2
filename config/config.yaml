@@ -4,8 +4,9 @@
 
 # GitHub 搜索关键词
 search_keywords:
-  # 核心英文关键词 (精确匹配文件扩展名和路径)
 
+
+  - "电视直播"
   - "iptv.m3u in:file" # 增加常见iptv文件名搜索
 
 # URL 预筛选配置：定义 URL 筛选规则
