@@ -1,353 +1,323 @@
 import os
-import subprocess
-import logging
 import json
-import requests
-import yaml
-from datetime import datetime, timedelta
-from urllib.parse import urlparse
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
+import logging.handlers
+import subprocess
+import re
 import time
-import multiprocessing
-import argparse
+import requests
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import yaml
+from urllib.parse import urlparse
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
-# 设置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# 确保输出目录存在
-os.makedirs('output', exist_ok=True)
-
-# 读取配置文件
-with open('scripts/config.yaml', 'r', encoding='utf-8') as f:
-    CONFIG = yaml.safe_load(f)
-
-# 读取时间戳文件
-TIMESTAMPS_FILE = 'output/timestamps.json'
-try:
-    with open(TIMESTAMPS_FILE, 'r', encoding='utf-8') as f:
-        timestamps = json.load(f)
-except FileNotFoundError:
-    timestamps = {}
-
-# 读取失败的链接及其时间和计数
-FAILED_FILE = 'output/failed.txt'
-failed_urls = {}
-try:
-    with open(FAILED_FILE, 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.strip():
-                parts = line.strip().split('|')
-                url = parts[0]
-                timestamp = parts[1] if len(parts) > 1 else None
-                count = int(parts[2]) if len(parts) > 2 else 1
-                failed_urls[url] = {'timestamp': timestamp, 'count': count}
-except FileNotFoundError:
-    pass
-
-# 读取黑名单
-BLACKLIST_FILE = 'config/blacklist.txt'
-blacklist_urls = set()
-try:
-    with open(BLACKLIST_FILE, 'r', encoding='utf-8') as f:
-        blacklist_urls = set(line.strip() for line in f if line.strip() and not line.startswith('#'))
-except FileNotFoundError:
-    pass
-
-def get_url_timestamp(url):
-    """获取 URL 的最后修改时间"""
+# 加载配置文件
+def load_config(config_path="config/config.yaml"):
+    """加载并解析 YAML 配置文件"""
     try:
-        response = requests.head(url, timeout=3)
-        if response.status_code == 200:
-            last_modified = response.headers.get('Last-Modified')
-            if last_modified:
-                return datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z').isoformat()
-        return None
+        with open(config_path, 'r', encoding='utf-8') as file:
+            config = yaml.safe_load(file)
+            logging.info("配置文件 config.yaml 加载成功")
+            return config
+    except FileNotFoundError:
+        logging.error(f"错误：未找到配置文件 '{config_path}'")
+        exit(1)
+    except yaml.YAMLError as e:
+        logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
+        exit(1)
     except Exception as e:
-        logging.warning(f"无法获取 {url} 的时间戳: {e}")
-        return None
+        logging.error(f"错误：加载配置文件 '{config_path}' 失败: {e}")
+        exit(1)
 
-def check_url_validity(url):
-    """使用 FFmpeg 检查 URL 是否有效"""
-    protocol = urlparse(url).scheme.lower()
-    ffmpeg_config = CONFIG.get('ffmpeg', {}).get(protocol, CONFIG.get('ffmpeg', {}).get('default', {}))
-    timeout = ffmpeg_config.get('timeout', 3000000) / 1000000
+# 配置日志系统
+def setup_logging(config):
+    """配置日志系统，支持文件和控制台输出，日志文件自动轮转"""
+    log_level = getattr(logging, config['logging']['log_level'], logging.INFO)
+    log_file = config['logging']['log_file']
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
     
-    cmd = [
-        'ffprobe', '-v', 'error',
-        '-timeout', str(int(timeout * 1000000)),
-        '-probesize', str(ffmpeg_config.get('probesize', 500000)),
-        '-analyzeduration', str(ffmpeg_config.get('analyzeduration', 500000)),
-        '-i', url
-    ]
+    logger = logging.getLogger()
+    logger.setLevel(log_level)
     
-    if protocol == 'rtmp':
-        cmd.extend(['-rtmp_transport', ffmpeg_config.get('rtmp_transport', 'tcp')])
-        cmd.extend(['-rtmp_buffer', str(ffmpeg_config.get('rtmp_buffer', 1000))])
-    elif protocol == 'rtp':
-        cmd.extend(['-buffer_size', str(ffmpeg_config.get('buffer_size', 200000))])
-        cmd.extend(['-rtcpport', str(ffmpeg_config.get('rtcpport', 5005))])
+    file_handler = logging.handlers.RotatingFileHandler(
+        log_file, maxBytes=10*1024*1024, backupCount=5
+    )
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
+    ))
     
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
+    ))
+    
+    logger.handlers = [file_handler, console_handler]
+    return logger
+
+# 全局配置
+CONFIG = load_config()
+setup_logging(CONFIG)
+
+# 性能监控装饰器
+def performance_monitor(func):
+    """记录函数执行时间的装饰器"""
+    if not CONFIG['performance_monitor']['enabled']:
+        return func
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        elapsed_time = time.time() - start_time
+        logging.info(f"性能监控：函数 '{func.__name__}' 耗时 {elapsed_time:.2f} 秒")
+        return result
+    return wrapper
+
+# 读取频道列表
+@performance_monitor
+def read_channels(file_path):
+    """从文件读取频道列表，跳过无效条目"""
+    channels = []
+    invalid_patterns = CONFIG.get('url_pre_screening', {}).get('invalid_url_patterns', [])
     try:
-        result = subprocess.run(
-            cmd,
+        with open(file_path, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith('#') or '#genre#' in line:
+                    continue
+                if ',' not in line:
+                    logging.info(f"跳过无效行: {line}")
+                    continue
+                name, url = line.split(',', 1)
+                name = name.strip()
+                url = url.strip()
+                if any(re.search(pattern, url, re.IGNORECASE) for pattern in invalid_patterns):
+                    logging.info(f"跳过无效 URL: {name} ({url})")
+                    continue
+                if not url.startswith(('http://', 'https://', 'rtmp://', 'rtp://')):
+                    logging.info(f"跳过非流媒体协议: {name} ({url})")
+                    continue
+                channels.append((name, url))
+        logging.info(f"从 '{file_path}' 读取 {len(channels)} 个有效频道")
+        return channels
+    except FileNotFoundError:
+        logging.error(f"文件 '{file_path}' 未找到")
+        return []
+    except Exception as e:
+        logging.error(f"读取文件 '{file_path}' 失败: {e}")
+        return []
+
+# 检查视频流质量
+@performance_monitor
+def check_stream_quality(channel_name, url, timeout=CONFIG['stream_quality']['max_check_duration']):
+    """使用 ffprobe 检查视频流的播放效果"""
+    # 预检查 URL
+    try:
+        session = requests.Session()
+        retries = Retry(total=3, backoff_factor=0.5, status_forcelist=[429, 500, 502, 503, 504])
+        session.mount('http://', HTTPAdapter(max_retries=retries))
+        session.mount('https://', HTTPAdapter(max_retries=retries))
+        response = session.head(url, timeout=10, allow_redirects=True)
+        content_type = response.headers.get('content-type', '').lower()
+        valid_types = ('video/', 'application/vnd.apple.mpegurl', 'application/octet-stream')
+        if not any(t in content_type for t in valid_types):
+            logging.info(f"频道 {channel_name} ({url}) 不是有效的流媒体类型: {content_type}")
+            return False, f"无效的流媒体类型 ({content_type})"
+    except requests.RequestException as e:
+        logging.info(f"频道 {channel_name} ({url}) 无法访问: {str(e)}")
+        return False, f"无法访问 ({str(e)})"
+
+    try:
+        # 检查 ffprobe
+        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
+    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+        logging.error("ffprobe 未找到或不可用，跳过流质量检查")
+        return False, "ffprobe 不可用"
+
+    # ffprobe 检查流信息
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            cmd = [
+                'ffprobe',
+                '-v', 'error',
+                '-show_streams',
+                '-show_format',
+                '-print_format', 'json',
+                '-timeout', str(int(timeout * 1000000)),
+                url
+            ]
+            result = subprocess.run(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+                text=True
+            )
+            break
+        except subprocess.TimeoutExpired:
+            if attempt == max_retries - 1:
+                logging.info(f"频道 {channel_name} ({url}) 检查超时")
+                return False, "检查超时"
+            logging.info(f"频道 {channel_name} ({url}) 第 {attempt + 1} 次尝试超时，重试...")
+            time.sleep(1)
+
+    try:
+        stream_info = json.loads(result.stdout)
+        video_stream = None
+        for stream in stream_info.get('streams', []):
+            if stream.get('codec_type') == 'video':
+                video_stream = stream
+                break
+        
+        if not video_stream:
+            logging.info(f"频道 {channel_name} ({url}) 无视频流")
+            return False, "无视频流"
+
+        # 检查分辨率
+        width = video_stream.get('width', 0)
+        height = video_stream.get('height', 0)
+        if width < CONFIG['stream_quality']['min_resolution_width'] or height < CONFIG['stream_quality']['min_resolution_height']:
+            logging.info(f"频道 {channel_name} ({url}) 分辨率过低: {width}x{height}")
+            return False, f"分辨率过低 ({width}x{height})"
+
+        # 检查比特率
+        bitrate = int(stream_info.get('format', {}).get('bit_rate', 0))
+        if bitrate != 0 and bitrate < CONFIG['stream_quality']['min_bitrate']:
+            if width >= 1280 and height >= 720:
+                logging.info(f"频道 {channel_name} ({url}) 比特率低但分辨率高，允许通过")
+            else:
+                logging.info(f"频道 {channel_name} ({url}) 比特率过低: {bitrate} bps")
+                return False, f"比特率过低 ({bitrate} bps)"
+
+        # 检查初始缓冲时间
+        start_time = float(stream_info.get('format', {}).get('start_time', 0))
+        if start_time > CONFIG['stream_quality']['max_buffer_time'] and start_time < 3600:
+            logging.info(f"频道 {channel_name} ({url}) 初始缓冲时间过长: {start_time} 秒")
+            return False, f"初始缓冲时间过长 ({start_time} 秒)"
+        if start_time >= 3600:
+            logging.info(f"频道 {channel_name} ({url}) 初始缓冲时间异常，忽略检查")
+
+        # 检查关键帧间隔
+        frame_cmd = [
+            'ffprobe',
+            '-v', 'error',
+            '-show_frames',
+            '-print_format', 'json',
+            '-read_intervals', f"%+{CONFIG['stream_quality']['max_check_duration']}",
+            url
+        ]
+        frame_result = subprocess.run(
+            frame_cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=timeout,
             text=True
         )
-        return result.returncode == 0
+        frame_info = json.loads(frame_result.stdout)
+        keyframe_intervals = []
+        last_keyframe_time = 0
+        for frame in frame_info.get('frames', []):
+            if frame.get('key_frame') == 1:
+                frame_time = float(frame.get('best_effort_timestamp_time', 0))
+                if last_keyframe_time:
+                    interval = frame_time - last_keyframe_time
+                    keyframe_intervals.append(interval)
+                last_keyframe_time = frame_time
+
+        if keyframe_intervals:
+            avg_keyframe_interval = sum(keyframe_intervals) / len(keyframe_intervals)
+            if avg_keyframe_interval > CONFIG['stream_quality']['max_keyframe_interval']:
+                logging.info(f"频道 {channel_name} ({url}) 关键帧间隔过大: {avg_keyframe_interval} 秒")
+                return False, f"关键帧间隔过大 ({avg_keyframe_interval} 秒)"
+
+        # 检查广告关键字
+        format_tags = stream_info.get('format', {}).get('tags', {})
+        for key, value in format_tags.items():
+            if any(ad_keyword.lower() in str(value).lower() for ad_keyword in CONFIG['stream_quality']['ad_keywords']):
+                logging.info(f"频道 {channel_name} ({url}) 检测到广告关键字: {key}={value}")
+                return False, f"检测到广告 ({key}={value})"
+
+        logging.info(f"频道 {channel_name} ({url}) 通过质量检查，分辨率: {width}x{height}, 比特率: {bitrate} bps")
+        return True, None
     except subprocess.TimeoutExpired:
-        logging.info(f"URL 检查超时: {url}")
-        return False
+        logging.info(f"频道 {channel_name} ({url}) 检查超时")
+        return False, "检查超时"
+    except json.JSONDecodeError:
+        logging.info(f"频道 {channel_name} ({url}) ffprobe 输出解析失败")
+        return False, "ffprobe 输出解析失败"
     except Exception as e:
-        logging.info(f"URL 检查错误: {url} - {e}")
-        return False
+        logging.info(f"频道 {channel_name} ({url}) 检查失败: {e}")
+        return False, f"检查失败 ({str(e)})"
 
-def parse_m3u(url):
-    """解析 M3U 文件并提取分类信息"""
-    try:
-        response = requests.get(url, timeout=3)
-        if response.status_code != 200:
-            return None, []
-        lines = response.text.splitlines()
-        category = None
-        channels = []
-        for line in lines:
-            if line.startswith('#EXTINF'):
-                parts = line.split(',')
-                if len(parts) > 1:
-                    channel_name = parts[1].strip()
-                if 'group-title="' in line:
-                    category = line.split('group-title="')[1].split('"')[0]
-            elif line.startswith('http'):
-                channels.append((category, line.strip()))
-        return category, channels
-    except Exception as e:
-        logging.warning(f"解析 M3U 文件失败: {url} - {e}")
-        return None, []
-
-def check_url_wrapper(url, total_urls, processed_urls, start_time, avg_times):
-    """并行检查 URL 的包装函数"""
-    processed_urls[0] += 1
-    url_start_time = time.time()
+# 多线程检查频道
+@performance_monitor
+def check_channels_multithreaded(channels, max_workers=CONFIG['stream_quality']['stream_check_workers']):
+    """多线程检查频道播放效果"""
+    valid_channels = []
+    failed_channels = []
+    total_channels = len(channels)
+    logging.warning(f"开始多线程检查 {total_channels} 个频道的播放效果")
     
-    if url in blacklist_urls:
-        logging.info(f"跳过黑名单 URL: {url}")
-        return url, False, None
-    
-    if url in failed_urls:
-        fail_info = failed_urls.get(url)
-        fail_time = fail_info['timestamp']
-        fail_count = fail_info['count']
-        if fail_time:
-            fail_datetime = datetime.fromisoformat(fail_time)
-            skip_duration = timedelta(hours=24) if fail_count < 3 else timedelta(days=7)
-            if datetime.now() - fail_datetime < skip_duration:
-                logging.info(f"跳过最近失败的 URL（失败 {fail_count} 次）: {url}")
-                return url, False, None
-    
-    current_timestamp = get_url_timestamp(url)
-    if url in timestamps and current_timestamp and timestamps[url] == current_timestamp:
-        logging.info(f"跳过未更新的 URL: {url}")
-        return url, None, current_timestamp
-    
-    is_valid = check_url_validity(url)
-    url_end_time = time.time()
-    avg_times.append(url_end_time - url_start_time)
-    
-    if not is_valid:
-        failed_urls[url] = failed_urls.get(url, {'timestamp': None, 'count': 0})
-        failed_urls[url]['timestamp'] = datetime.now().isoformat()
-        failed_urls[url]['count'] += 1
-    
-    return url, is_valid, current_timestamp
-
-def check_m3u_channel(channel_url, failed_urls, current_time, processed_urls, total_urls, avg_times, progress_interval):
-    """检查 M3U 频道 URL 的包装函数"""
-    processed_urls[0] += 1
-    channel_start_time = time.time()
-    if channel_url not in failed_urls:
-        if check_url_validity(channel_url):
-            avg_times.append(time.time() - channel_start_time)
-            if processed_urls[0] % progress_interval == 0 or processed_urls[0] == total_urls:
-                progress = (processed_urls[0] / total_urls) * 100
-                remaining = total_urls - processed_urls[0]
-                avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
-                eta_minutes = (remaining * avg_time) / 60
-                logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta_minutes:.1f}分钟")
-            return channel_url, True
-        else:
-            avg_times.append(time.time() - channel_start_time)
-            if processed_urls[0] % progress_interval == 0 or processed_urls[0] == total_urls:
-                progress = (processed_urls[0] / total_urls) * 100
-                remaining = total_urls - processed_urls[0]
-                avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
-                eta_minutes = (remaining * avg_time) / 60
-                logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta_minutes:.1f}分钟")
-            return channel_url, False
-    return channel_url, False
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--shard', type=int, default=0, help='Shard index')
-    parser.add_argument('--total-shards', type=int, default=1, help='Total number of shards')
-    args = parser.parse_args()
-    
-    # 优先尝试读取 output/list.txt，如果存在
-    urls_with_priority = []
-    list_txt_path = 'output/list.txt'
-    urls_txt_path = 'config/urls.txt'
-    
-    if os.path.exists(list_txt_path):
-        logging.info("检测到 output/list.txt，优先从中读取 URL")
-        with open(list_txt_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip() and not line.startswith('#'):
-                    parts = line.strip().split('|')
-                    url = parts[0]
-                    priority = parts[1] if len(parts) > 1 else 'normal'
-                    urls_with_priority.append((url, priority))
-    else:
-        logging.info("output/list.txt 不存在，从 config/urls.txt 读取")
-        with open(urls_txt_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                if line.strip() and not line.startswith('#'):
-                    parts = line.strip().split('|')
-                    url = parts[0]
-                    priority = parts[1] if len(parts) > 1 else 'normal'
-                    urls_with_priority.append((url, priority))
-        unique_urls = set(url for url, _ in urls_with_priority)
-        logging.info(f"从 config/urls.txt 读取到 {len(urls_with_priority)} 个 URL，去重后 {len(unique_urls)} 个")
-        with open(list_txt_path, 'w', encoding='utf-8') as f:
-            for url, priority in urls_with_priority:
-                if url in unique_urls:
-                    f.write(f"{url}|{priority}\n")
-                    unique_urls.remove(url)
-        logging.info("去重后的 URL 已保存到 output/list.txt")
-
-    # 按优先级排序
-    priority_order = {'high': 1, 'normal': 2, 'low': 3}
-    urls_with_priority.sort(key=lambda x: priority_order.get(x[1], 2))
-    unique_urls = [url for url, _ in urls_with_priority]
-    
-    # 分片处理
-    shard_size = len(unique_urls) // args.total_shards + 1
-    start_idx = args.shard * shard_size
-    shard_urls = unique_urls[start_idx:start_idx + shard_size]
-    logging.info(f"处理分片 {args.shard + 1}/{args.total_shards}，包含 {len(shard_urls)} 个 URL")
-    
-    # 初始化进度跟踪
-    total_urls = len(shard_urls)
-    processed_urls = [0]
-    avg_times = []
-    start_time = time.time()
-    progress_interval = 5000
-    temp_mpeg_file = f'output/mpeg_temp_shard_{args.shard}.txt'
-    temp_category_files = {}
-    
-    # 并行检查 URL
-    valid_urls = []
-    new_failed_urls = {}
-    categorized_urls = {}
-    current_time = datetime.now().isoformat()
-
-    cpu_count = multiprocessing.cpu_count()
-    max_workers = min(max(2, cpu_count), int(total_urls / 1000) + 2)
-    max_workers = min(max_workers, 10)
-    logging.info(f"使用 {max_workers} 个并发线程处理 {total_urls} 个 URL")
-
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_url = {executor.submit(check_url_wrapper, url, total_urls, processed_urls, start_time, avg_times): url for url in shard_urls}
-        for future in as_completed(future_to_url):
-            url = future_to_url[future]
+        futures = {executor.submit(check_stream_quality, name, url): (name, url) for name, url in channels}
+        for i, future in enumerate(as_completed(futures)):
+            name, url = futures[future]
+            if (i + 1) % CONFIG['performance_monitor']['log_interval'] == 0:
+                logging.warning(f"已检查 {i + 1}/{total_channels} 个频道")
             try:
-                url, is_valid, current_timestamp = future.result()
-                if current_timestamp:
-                    timestamps[url] = current_timestamp
-                if is_valid is None:
-                    continue
+                is_valid, error = future.result()
                 if is_valid:
-                    if url.endswith('.m3u') or url.endswith('.m3u8'):
-                        category, channels = parse_m3u(url)
-                        if category:
-                            if category not in categorized_urls:
-                                categorized_urls[category] = []
-                                temp_category_files[category] = f'output/{category.replace("/", "_").replace(" ", "_")}_temp_shard_{args.shard}.txt'
-                            channel_futures = {executor.submit(check_m3u_channel, channel_url, failed_urls, current_time, processed_urls, total_urls, avg_times, progress_interval): channel_url for _, channel_url in channels}
-                            for channel_future in as_completed(channel_futures):
-                                channel_url = channel_futures[channel_future]
-                                try:
-                                    channel_url, channel_valid = channel_future.result()
-                                    if channel_valid:
-                                        categorized_urls[category].append(channel_url)
-                                    else:
-                                        new_failed_urls[channel_url] = {'timestamp': current_time, 'count': new_failed_urls.get(channel_url, {'count': 0})['count'] + 1}
-                                except Exception as e:
-                                    logging.error(f"处理 M3U 频道 {channel_url} 时出错: {e}")
-                                    new_failed_urls[channel_url] = {'timestamp': current_time, 'count': new_failed_urls.get(channel_url, {'count': 0})['count'] + 1}
-                    else:
-                        valid_urls.append(url)
+                    valid_channels.append((name, url))
                 else:
-                    new_failed_urls[url] = {'timestamp': current_time, 'count': new_failed_urls.get(url, {'count': 0})['count'] + 1}
-                
-                # 中间保存
-                if processed_urls[0] % progress_interval == 0 or processed_urls[0] == total_urls:
-                    with open(temp_mpeg_file, 'w', encoding='utf-8') as f:
-                        for url in valid_urls:
-                            f.write(url + '\n')
-                    for category, urls in categorized_urls.items():
-                        with open(temp_category_files[category], 'w', encoding='utf-8') as f:
-                            for url in urls:
-                                f.write(url + '\n')
-                    progress = (processed_urls[0] / total_urls) * 100
-                    remaining = total_urls - processed_urls[0]
-                    avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
-                    eta_minutes = (remaining * avg_time) / 60
-                    logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta_minutes:.1f}分钟，中间结果已保存")
+                    failed_channels.append((name, url, error))
             except Exception as e:
-                logging.error(f"处理 URL {url} 时出错: {e}")
-                new_failed_urls[url] = {'timestamp': current_time, 'count': new_failed_urls.get(url, {'count': 0})['count'] + 1}
-                processed_urls[0] += 1
-                if processed_urls[0] % progress_interval == 0 or processed_urls[0] == total_urls:
-                    progress = (processed_urls[0] / total_urls) * 100
-                    remaining = total_urls - processed_urls[0]
-                    avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
-                    eta_minutes = (remaining * avg_time) / 60
-                    logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta_minutes:.1f}分钟，中间结果已保存")
+                logging.error(f"检查频道 {name} ({url}) 时发生异常: {e}")
+                failed_channels.append((name, url, str(e)))
+    
+    logging.warning(f"完成播放效果检查，{len(valid_channels)}/{total_channels} 个频道通过")
+    return valid_channels, failed_channels
 
-    # 保存最终结果
-    with open(f'output/mpeg_shard_{args.shard}.txt', 'w', encoding='utf-8') as f:
-        for url in valid_urls:
-            f.write(url + '\n')
-    logging.info(f"有效 URL 已保存到 output/mpeg_shard_{args.shard}.txt，共 {len(valid_urls)} 个")
+# 写入高质量频道列表
+@performance_monitor
+def write_high_quality_channels(file_path, channels, failed_channels):
+    """将高质量频道和失败频道写入文件"""
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write("高质量频道,#genre#\n")
+            for name, url in sorted(channels, key=lambda x: x[0]):
+                file.write(f"{name},{url}\n")
+        logging.info(f"写入 {len(channels)} 个高质量频道到 '{file_path}'")
+        
+        failed_file = "output/failed.txt"
+        with open(failed_file, 'w', encoding='utf-8') as file:
+            file.write("失败频道,#genre#\n")
+            for name, url, error in sorted(failed_channels, key=lambda x: x[0]):
+                file.write(f"{name},{url},{error}\n")
+        logging.info(f"写入 {len(failed_channels)} 个失败频道到 '{failed_file}'")
+    except Exception as e:
+        logging.error(f"写入文件 '{file_path}' 或 '{failed_file}' 失败: {e}")
 
-    for category, urls in categorized_urls.items():
-        category_filename = f'output/{category.replace("/", "_").replace(" ", "_")}_shard_{args.shard}.txt'
-        with open(category_filename, 'w', encoding='utf-8') as f:
-            for url in urls:
-                f.write(url + '\n')
-    logging.info(f"分类 URL 已保存，共 {len(categorized_urls)} 个分类文件")
+# 主函数
+@performance_monitor
+def main():
+    """主函数，执行频道播放效果检查流程"""
+    logging.warning("开始执行频道播放效果检查")
+    total_start_time = time.time()
 
-    # 保存失败 URL
-    with open(FAILED_FILE, 'w', encoding='utf-8') as f:
-        for url, info in {**failed_urls, **new_failed_urls}.items():
-            timestamp = info['timestamp'] or datetime.now().isoformat()
-            count = info['count']
-            f.write(f"{url}|{timestamp}|{count}\n")
-    logging.info(f"失败 URL 已保存到 output/failed.txt，共 {len(new_failed_urls)} 个")
+    input_file = "output/iptv_list.txt"
+    channels = read_channels(input_file)
+    if not channels:
+        logging.error(f"未从 '{input_file}' 读取到有效频道，退出")
+        exit(1)
 
-    # 保存时间戳
-    with open(TIMESTAMPS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(timestamps, f, ensure_ascii=False, indent=2)
-    logging.info("时间戳已保存到 output/timestamps.json")
+    valid_channels, failed_channels = check_channels_multithreaded(channels)
+    output_file = CONFIG['output']['paths']['high_quality_iptv_file']
+    write_high_quality_channels(output_file, valid_channels, failed_channels)
 
-    # 最终进度
-    progress = (processed_urls[0] / total_urls) * 100
-    remaining = total_urls - processed_urls[0]
-    avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
-    eta_minutes = (remaining * avg_time) / 60
-    logging.info(f"处理完成：有效 URL {len(valid_urls)} 个，失败 URL {len(new_failed_urls)} 个，分类文件 {len(categorized_urls)} 个")
-    logging.info(f"最终进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta_minutes:.1f}分钟")
+    total_elapsed_time = time.time() - total_start_time
+    logging.warning(f"频道播放效果检查完成，总耗时 {total_elapsed_time:.2f} 秒")
 
 if __name__ == "__main__":
     main()
