@@ -7,6 +7,7 @@ import yaml
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -41,7 +42,7 @@ except FileNotFoundError:
 def get_url_timestamp(url):
     """获取 URL 的最后修改时间"""
     try:
-        response = requests.head(url, timeout=3)  # 缩短 HEAD 请求超时
+        response = requests.head(url, timeout=3)
         if response.status_code == 200:
             last_modified = response.headers.get('Last-Modified')
             if last_modified:
@@ -55,7 +56,7 @@ def check_url_validity(url):
     """使用 FFmpeg 检查 URL 是否有效"""
     protocol = urlparse(url).scheme.lower()
     ffmpeg_config = CONFIG.get('ffmpeg', {}).get(protocol, CONFIG.get('ffmpeg', {}).get('default', {}))
-    timeout = ffmpeg_config.get('timeout', 5000000) / 1000000  # 转换为秒
+    timeout = ffmpeg_config.get('timeout', 5000000) / 1000000
     
     cmd = [
         'ffprobe', '-v', 'error',
@@ -91,7 +92,7 @@ def check_url_validity(url):
 def parse_m3u(url):
     """解析 M3U 文件并提取分类信息"""
     try:
-        response = requests.get(url, timeout=3)  # 缩短 M3U 请求超时
+        response = requests.get(url, timeout=3)
         if response.status_code != 200:
             return None, []
         lines = response.text.splitlines()
@@ -111,20 +112,44 @@ def parse_m3u(url):
         logging.warning(f"解析 M3U 文件失败: {url} - {e}")
         return None, []
 
-def check_url_wrapper(url):
-    """并行检查 URL 的包装函数"""
+def check_url_wrapper(url, total_urls, processed_urls, start_time, avg_times):
+    """并行检查 URL 的包装函数，并更新进度"""
+    processed_urls[0] += 1
+    url_start_time = time.time()
+    
     if url in failed_urls:
         fail_time = failed_urls.get(url)
         if fail_time:
             fail_datetime = datetime.fromisoformat(fail_time)
-            if datetime.now() - fail_datetime < timedelta(hours=24):  # 跳过 24 小时内失败的 URL
+            if datetime.now() - fail_datetime < timedelta(hours=24):
                 logging.info(f"跳过最近失败的 URL: {url}")
+                progress = (processed_urls[0] / total_urls) * 100
+                remaining = total_urls - processed_urls[0]
+                avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
+                eta = remaining * avg_time
+                logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta:.1f}秒")
                 return url, False, None
+    
     current_timestamp = get_url_timestamp(url)
     if url in timestamps and current_timestamp and timestamps[url] == current_timestamp:
         logging.info(f"跳过未更新的 URL: {url}")
+        progress = (processed_urls[0] / total_urls) * 100
+        remaining = total_urls - processed_urls[0]
+        avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
+        eta = remaining * avg_time
+        logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta:.1f}秒")
         return url, None, current_timestamp
+    
     is_valid = check_url_validity(url)
+    url_end_time = time.time()
+    avg_times.append(url_end_time - url_start_time)
+    
+    progress = (processed_urls[0] / total_urls) * 100
+    remaining = total_urls - processed_urls[0]
+    avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
+    eta = remaining * avg_time
+    logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta:.1f}秒")
+    
     return url, is_valid, current_timestamp
 
 def main():
@@ -142,14 +167,20 @@ def main():
             f.write(url + '\n')
     logging.info("去重后的 URL 已保存到 output/list.txt")
 
+    # 初始化进度跟踪
+    total_urls = len(unique_urls)
+    processed_urls = [0]  # 使用列表以便在线程中修改
+    avg_times = []  # 记录每个 URL 的检查时间
+    start_time = time.time()
+    
     # 并行检查 URL
     valid_urls = []
     new_failed_urls = {}
     categorized_urls = {}
     current_time = datetime.now().isoformat()
 
-    with ThreadPoolExecutor(max_workers=5) as executor:  # 限制并发数，避免过载
-        future_to_url = {executor.submit(check_url_wrapper, url): url for url in unique_urls}
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_url = {executor.submit(check_url_wrapper, url, total_urls, processed_urls, start_time, avg_times): url for url in unique_urls}
         for future in as_completed(future_to_url):
             url = future_to_url[future]
             try:
@@ -166,10 +197,18 @@ def main():
                                 categorized_urls[category] = []
                             for _, channel_url in channels:
                                 if channel_url not in failed_urls:
+                                    channel_start_time = time.time()
                                     if check_url_validity(channel_url):
                                         categorized_urls[category].append(channel_url)
                                     else:
                                         new_failed_urls[channel_url] = current_time
+                                    avg_times.append(time.time() - channel_start_time)
+                                    processed_urls[0] += 1
+                                    progress = (processed_urls[0] / total_urls) * 100
+                                    remaining = total_urls - processed_urls[0]
+                                    avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
+                                    eta = remaining * avg_time
+                                    logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta:.1f}秒")
                     else:
                         valid_urls.append(url)
                 else:
@@ -177,6 +216,12 @@ def main():
             except Exception as e:
                 logging.error(f"处理 URL {url} 时出错: {e}")
                 new_failed_urls[url] = current_time
+                processed_urls[0] += 1
+                progress = (processed_urls[0] / total_urls) * 100
+                remaining = total_urls - processed_urls[0]
+                avg_time = sum(avg_times) / len(avg_times) if avg_times else 0
+                eta = remaining * avg_time
+                logging.info(f"进度: {processed_urls[0]}/{total_urls} ({progress:.1f}%)，剩余: {remaining}，预计剩余时间: {eta:.1f}秒")
 
     # 保存有效 URL 到 output/mpeg.txt
     with open('output/mpeg.txt', 'w', encoding='utf-8') as f:
