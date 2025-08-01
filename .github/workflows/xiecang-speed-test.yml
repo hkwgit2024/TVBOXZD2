@@ -5,7 +5,7 @@ name: 速度测试
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */3 * * *' # 每3小时运行一次
+    - cron: '0 */12 * * *' # 每12小时运行一次
 
 jobs:
   speed-test-and-sort:
