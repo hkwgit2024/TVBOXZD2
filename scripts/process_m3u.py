@@ -1,294 +1,282 @@
 import os
 import re
-import requests
+import aiohttp
+import asyncio
+import logging
 from urllib.parse import urlparse
-from tqdm import tqdm
+from tqdm.asyncio import tqdm_asyncio
 import time
 import hashlib
 import json
-import datetime # 导入datetime模块用于获取当前时间
+import datetime
+from typing import Dict, List, Tuple, Set
+from concurrent.futures import ThreadPoolExecutor
+from aiohttp import ClientSession, TCPConnector
 
-# 定义文件路径
-CONFIG_URLS_FILE = 'config/urls.txt'
-OUTPUT_LIST_FILE = 'output/list.txt'
-FAILED_URLS_FILE = 'output/failed_urls.txt'
-SUCCESS_URLS_FILE = 'output/successful_urls.txt' # 用于保存所有成功处理的URL
-URL_HASHES_FILE = 'output/url_hashes.json' # 用于存储URL及其内容的哈希值
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('output/process.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
-# 扩展正则表达式以匹配更多视频链接格式，例如 .m3u8, .mp4, .flv, .ctv
-# 注意：这个正则只匹配URL的最后一部分，如果需要更复杂的匹配，可能需要调整
+# 配置文件路径
+CONFIG = {
+    'urls_file': 'config/urls.txt',
+    'output_list': 'output/list.txt',
+    'failed_urls': 'output/failed_urls.txt',
+    'success_urls': 'output/successful_urls.txt',
+    'url_hashes': 'output/url_hashes.json',
+    'max_concurrent_requests': 50,
+    'timeout_seconds': 15,
+    'max_retries': 3,
+    'retry_delay': 1
+}
+
+# 扩展正则表达式支持更多视频格式
 VIDEO_URL_REGEX = re.compile(
-    r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w. /?%&=-]*?)((\.m3u8|\.mp4|\.flv|\.ctv|\.ts|\.mpd|\.webm|\.ogg|\.avi|\.mov|\.wmv))$',
+    r'^(http(s)?://)?([\w-]+\.)+[\w-]+(/[\w./?%&=-]*?)((\.m3u8|\.mp4|\.flv|\.ctv|\.ts|\.mpd|\.webm|\.ogg|\.avi|\.mov|\.wmv|\.mkv|\.rmvb))$',
     re.IGNORECASE
 )
 
-# 新增的分类标识正则表达式
 GENRE_REGEX = re.compile(r'^(.*?),\#genre\#$')
 
-def read_urls_with_categories(filepath):
-    """
-    从文件中读取带有分类的URL列表。
-    返回一个字典，键是分类名，值是该分类下的 (描述, URL) 元组列表。
-    """
+def read_urls_with_categories(filepath: str) -> Dict[str, List[Tuple[str, str]]]:
+    """从文件中读取带有分类的URL列表"""
     categorized_urls = {}
-    current_category = "未分类" # 默认分类
+    current_category = "未分类"
     
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if not line or line.startswith('#'): # 忽略空行和注释
-                    continue
-
-                genre_match = GENRE_REGEX.match(line)
-                if genre_match:
-                    current_category = genre_match.group(1).strip()
-                    # 初始化该分类，如果它还不存在
-                    if current_category not in categorized_urls:
-                        categorized_urls[current_category] = []
-                else:
-                    # 尝试按逗号分割，提取描述和URL
-                    parts = line.rsplit(',', 1) 
-                    if len(parts) == 2:
-                        description = parts[0].strip()
-                        url = parts[1].strip()
-                    else:
-                        # 如果没有逗号，将整行作为URL，描述为空
-                        description = ""
-                        url = line.strip()
+    try:
+        if os.path.exists(filepath):
+            with open(filepath, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith('#'):
+                        continue
                     
-                    if url: # 确保URL不为空
-                        # 如果当前分类还没有列表，初始化它
-                        if current_category not in categorized_urls:
-                            categorized_urls[current_category] = []
-                        categorized_urls[current_category].append((description, url))
+                    genre_match = GENRE_REGEX.match(line)
+                    if genre_match:
+                        current_category = genre_match.group(1).strip()
+                        categorized_urls.setdefault(current_category, [])
+                    else:
+                        parts = line.rsplit(',', 1)
+                        description = parts[0].strip() if len(parts) == 2 else ""
+                        url = parts[1].strip() if len(parts) == 2 else line.strip()
+                        
+                        if url:
+                            categorized_urls.setdefault(current_category, []).append((description, url))
+    except Exception as e:
+        logger.error(f"读取URL文件 {filepath} 失败: {e}")
+    
     return categorized_urls
 
-
-def read_urls(filepath):
-    """
-    从文件中读取纯URL列表，用于 failed_urls 和 successful_urls
-    （因为这些文件只存储URL，不包含描述和分类）。
-    """
+def read_urls(filepath: str) -> Set[str]:
+    """读取纯URL列表"""
     urls = set()
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for line in f:
-                url = line.strip()
-                if url and not url.startswith('#'):
-                    urls.add(url)
+    try:
+        if os.path.exists(filepath):
+            with open(filepath, 'r', encoding='utf-8') as f:
+                for line in f:
+                    url = line.strip()
+                    if url and not url.startswith('#'):
+                        urls.add(url)
+    except Exception as e:
+        logger.error(f"读取文件 {filepath} 失败: {e}")
     return urls
 
-def write_urls(filepath, urls):
-    """将URL列表写入文件"""
-    with open(filepath, 'w', encoding='utf-8') as f:
-        for url in sorted(list(urls)):
-            f.write(url + '\n')
+async def write_urls(filepath: str, urls: Set[str]) -> None:
+    """异步写入URL列表"""
+    try:
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        with open(filepath, 'w', encoding='utf-8') as f:
+            for url in sorted(urls):
+                f.write(url + '\n')
+    except Exception as e:
+        logger.error(f"写入文件 {filepath} 失败: {e}")
 
-def read_url_hashes(filepath):
-    """从文件中读取URL哈希字典"""
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
-            try:
+def read_url_hashes(filepath: str) -> Dict[str, str]:
+    """读取URL哈希字典"""
+    try:
+        if os.path.exists(filepath):
+            with open(filepath, 'r', encoding='utf-8') as f:
                 return json.load(f)
-            except json.JSONDecodeError:
-                return {}
+    except Exception as e:
+        logger.error(f"读取哈希文件 {filepath} 失败: {e}")
     return {}
 
-def write_url_hashes(filepath, url_hashes):
-    """将URL哈希字典写入文件"""
-    with open(filepath, 'w', encoding='utf-8') as f:
-        json.dump(url_hashes, f, indent=4, ensure_ascii=False)
-
-def calculate_content_hash(content):
-    """计算内容的SHA256哈希值"""
-    return hashlib.sha256(content.encode('utf-8')).hexdigest()
-
-def fetch_m3u_content(url):
-    """
-    从URL获取M3U内容。
-    增加超时和错误处理。
-    """
+async def write_url_hashes(filepath: str, url_hashes: Dict[str, str]) -> None:
+    """异步写入URL哈希字典"""
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()  # 检查HTTP请求是否成功
-        return response.text
-    except requests.exceptions.RequestException as e:
-        # print(f"Error fetching {url}: {e}") # 过于频繁的错误日志可酌情注释
-        return None
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(url_hashes, f, indent=4, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"写入哈希文件 {filepath} 失败: {e}")
 
-def extract_video_links(content):
-    """
-    从内容中提取符合 VIDEO_URL_REGEX 的链接，包括 M3U8 和 MP4 等。
-    """
+def calculate_content_hash(content: str) -> str:
+    """计算内容的SHA256哈希值"""
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        return executor.submit(hashlib.sha256, content.encode('utf-8')).result().hexdigest()
+
+async def fetch_m3u_content(url: str, session: ClientSession, max_retries: int = 3) -> str | None:
+    """异步获取M3U内容"""
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    
+    for attempt in range(max_retries):
+        try:
+            async with session.get(url, headers=headers, timeout=CONFIG['timeout_seconds']) as response:
+                response.raise_for_status()
+                return await response.text()
+        except aiohttp.ClientError as e:
+            logger.warning(f"获取 {url} 失败 (尝试 {attempt + 1}/{max_retries}): {e}")
+            if attempt < max_retries - 1:
+                await asyncio.sleep(CONFIG['retry_delay'])
+    return None
+
+def extract_video_links(content: str) -> Set[str]:
+    """从内容中提取视频链接"""
     extracted_links = set()
-    lines = content.splitlines()
-    for line in lines:
+    for line in content.splitlines():
         line = line.strip()
         if VIDEO_URL_REGEX.match(line):
             extracted_links.add(line)
     return extracted_links
 
-def get_domain(url):
-    """从URL中获取域名"""
+def get_domain(url: str) -> str:
+    """获取URL域名"""
     return urlparse(url).netloc
 
-def main():
+async def process_url(
+    url_info: Tuple[str, str, str],
+    session: ClientSession,
+    prev_url_hashes: Dict[str, str],
+    final_channels: Dict[str, List[Tuple[str, str]]],
+    success_urls: Set[str],
+    failed_urls: Set[str],
+    updated_hashes: Dict[str, str]
+) -> None:
+    """处理单个URL"""
+    category, description, url = url_info
+    
+    content = await fetch_m3u_content(url, session)
+    
+    if content:
+        current_hash = calculate_content_hash(content)
+        
+        if url in prev_url_hashes and prev_url_hashes[url] == current_hash:
+            success_urls.add(url)
+            updated_hashes[url] = current_hash
+            final_channels.setdefault(category, []).append((description, url))
+            return
+        
+        extracted_links = extract_video_links(content)
+        
+        final_channels.setdefault(category, [])
+        final_channels[category].append((description, url))
+        
+        for link in extracted_links:
+            final_channels[category].append(("", link))
+            
+        success_urls.add(url)
+        updated_hashes[url] = current_hash
+        
+        if VIDEO_URL_REGEX.match(url) and not extracted_links:
+            success_urls.add(url)
+            updated_hashes[url] = current_hash
+    else:
+        failed_urls.add(url)
+        updated_hashes.pop(url, None)
+
+async def main():
     # 确保输出目录存在
     os.makedirs('output', exist_ok=True)
-    os.makedirs('config', exist_ok=True) 
-
-    # 读取带有分类的初始URL
-    initial_categorized_urls = read_urls_with_categories(CONFIG_URLS_FILE)
+    os.makedirs('config', exist_ok=True)
     
-    # 将所有URL（不含描述和分类）提取出来，用于过滤失败列表
-    all_initial_urls_flat = set()
-    for category, url_list in initial_categorized_urls.items():
-        for desc, url in url_list:
-            all_initial_urls_flat.add(url)
-
-    failed_urls = read_urls(FAILED_URLS_FILE)
-    prev_url_hashes = read_url_hashes(URL_HASHES_FILE) 
-
-    # 用于存储最终的分类结果 (分类: [(描述, URL), ...])
-    final_categorized_channels = {} 
+    # 读取初始URL和历史数据
+    initial_urls = read_urls_with_categories(CONFIG['urls_file'])
+    failed_urls = read_urls(CONFIG['failed_urls'])
+    prev_url_hashes = read_url_hashes(CONFIG['url_hashes'])
     
-    current_failed_urls = set()
-    current_successful_urls = set() # 记录本次运行中成功处理的URL（包括内容未变的）
-    updated_url_hashes = prev_url_hashes.copy() # 更新哈希值字典
-
-    # 准备一个扁平的待处理URL列表 for tqdm
-    urls_to_process_flat = []
-    # 使用一个集合来避免重复处理同一个URL，即使它出现在不同分类下
-    processed_urls_set = set() 
-
-    # 将所有待处理的URL（包括描述和分类）扁平化，并过滤掉已知的失败URL
-    for category, items in initial_categorized_urls.items():
+    all_initial_urls = {url for _, urls in initial_urls.items() for _, url in urls}
+    final_channels: Dict[str, List[Tuple[str, str]]] = {}
+    current_success_urls: Set[str] = set()
+    current_failed_urls: Set[str] = set()
+    updated_hashes = prev_url_hashes.copy()
+    
+    # 准备待处理URL
+    urls_to_process = []
+    processed_urls = set()
+    
+    for category, items in initial_urls.items():
         for description, url in items:
-            if url not in failed_urls and url not in processed_urls_set:
-                urls_to_process_flat.append((category, description, url))
-                processed_urls_set.add(url) # 标记为已添加到待处理列表
-
-    print(f"开始处理 {len(urls_to_process_flat)} 个URL...")
-
+            if url not in failed_urls and url not in processed_urls:
+                urls_to_process.append((category, description, url))
+                processed_urls.add(url)
+    
+    logger.info(f"开始处理 {len(urls_to_process)} 个URL...")
     start_time = time.time()
-    total_urls = len(urls_to_process_flat)
-
-    # 迭代扁平化的URL列表
-    for i, (original_category, original_description, url) in enumerate(tqdm(urls_to_process_flat, unit="url", ncols=100, desc="处理URL", disable=False)): # 保持tqdm实时显示
-        
-        content = fetch_m3u_content(url)
-        
-        if content:
-            current_hash = calculate_content_hash(content)
-            
-            # 检查内容是否更新
-            if url in prev_url_hashes and prev_url_hashes[url] == current_hash:
-                current_successful_urls.add(url)
-                updated_url_hashes[url] = current_hash 
-                # 如果内容未更新，直接将原始的描述和URL添加到最终列表
-                if original_category not in final_categorized_channels:
-                    final_categorized_channels[original_category] = []
-                final_categorized_channels[original_category].append((original_description, url))
-                continue # 跳过当前URL的后续处理
-
-            # 内容已更新或首次获取
-            extracted_links = extract_video_links(content) # 使用新的提取函数
-            
-            # 无论是否提取到新的子链接，只要原始内容成功且哈希更新，就将原始URL本身作为节目源
-            # 并且将提取到的子链接也加入到该分类下
-            if extracted_links:
-                if original_category not in final_categorized_channels:
-                    final_categorized_channels[original_category] = []
-                
-                # 先添加原始的URL (描述, URL)
-                final_categorized_channels[original_category].append((original_description, url))
-
-                # 再添加从内容中提取出的所有子链接，描述为空
-                for link in extracted_links:
-                    final_categorized_channels[original_category].append(("", link))
-                
-                current_successful_urls.add(url)
-                updated_url_hashes[url] = current_hash 
-            elif VIDEO_URL_REGEX.match(url): # 如果URL本身是视频链接，但内容中没有提取到其他链接，也认为是成功的
-                 if original_category not in final_categorized_channels:
-                    final_categorized_channels[original_category] = []
-                 final_categorized_channels[original_category].append((original_description, url))
-                 current_successful_urls.add(url)
-                 updated_url_hashes[url] = current_hash 
-            else: # 既不是视频链接，内容也无法提取链接
-                current_failed_urls.add(url)
-                if url in updated_url_hashes:
-                    del updated_url_hashes[url]
-        else: # 内容获取失败
-            current_failed_urls.add(url)
-            if url in updated_url_hashes:
-                del updated_url_hashes[url]
-
-        # 每处理 1000 个 URL 打印一次详细进度
-        if (i + 1) % 1000 == 0:
-            elapsed_time = time.time() - start_time
-            avg_time_per_url = elapsed_time / (i + 1)
-            remaining_urls = total_urls - (i + 1)
-            estimated_remaining_time = avg_time_per_url * remaining_urls
-            
-            percentage = ((i + 1) / total_urls) * 100
-            
-            print(f"\n进度: {percentage:.2f}% ({i + 1}/{total_urls} 个URL)。 预计剩余时间: {estimated_remaining_time:.2f} 秒 ({estimated_remaining_time / 60:.2f} 分钟)")
-
-    # 排序分类键，然后写入 output/list.txt
-    with open(OUTPUT_LIST_FILE, 'w', encoding='utf-8') as f_out:
-        # 添加更新时间
-        f_out.write(f"更新时间,#genre#\n")
-        f_out.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-
-        for category in sorted(final_categorized_channels.keys()):
-            f_out.write(f"{category},#genre#\n")
-            # 对每个分类下的 (描述, URL) 对进行排序（按描述，然后按URL）
-            sorted_items = sorted(list(set(final_categorized_channels[category])), key=lambda x: (x[0], x[1]))
-            for description, link in sorted_items:
-                if description:
-                    f_out.write(f"{description},{link}\n")
-                else: # 如果没有描述，只写入链接
-                    f_out.write(f"{link}\n")
-            f_out.write('\n') # 每个分类之间空一行
-
-    # 更新失败和成功的URL列表
-    # successful_urls.txt 和 failed_urls.txt 只保存纯URL
-    write_urls(FAILED_URLS_FILE, failed_urls.union(current_failed_urls))
     
-    # 重新生成 config/urls.txt，保持原始格式，只保留成功的URL
-    # 这里需要根据成功列表重新构建分类结构
-    rebuild_config_urls = {}
-    for original_category, original_items in initial_categorized_urls.items():
-        for original_description, original_url in original_items:
-            if original_url in current_successful_urls:
-                if original_category not in rebuild_config_urls:
-                    rebuild_config_urls[original_category] = []
-                rebuild_config_urls[original_category].append((original_description, original_url))
-
-    with open(CONFIG_URLS_FILE, 'w', encoding='utf-8') as f_config:
-        for category in sorted(rebuild_config_urls.keys()):
-            f_config.write(f"{category},#genre#\n")
-            for description, url in rebuild_config_urls[category]:
-                 f_config.write(f"{description},{url}\n")
-            f_config.write('\n')
-            
-    # successful_urls.txt 应该只包含本次运行中实际成功（获取到内容且未被标记为失败）的那些原始 URL，
-    # 避免它变得无限大。
-    # 这里我们只写入本次成功处理的URL集合，而不是累积所有历史成功的URL，
-    # 因为哈希文件已经处理了“跳过未更新”的逻辑。
-    write_urls(SUCCESS_URLS_FILE, current_successful_urls)
+    # 异步处理URL
+    connector = TCPConnector(limit=CONFIG['max_concurrent_requests'])
+    async with ClientSession(connector=connector) as session:
+        tasks = [
+            process_url(
+                url_info, session, prev_url_hashes, final_channels,
+                current_success_urls, current_failed_urls, updated_hashes
+            )
+            for url_info in urls_to_process
+        ]
+        
+        for i, _ in enumerate(await tqdm_asyncio.gather(*tasks, desc="处理URL")):
+            if (i + 1) % 1000 == 0:
+                elapsed = time.time() - start_time
+                percentage = ((i + 1) / len(urls_to_process)) * 100
+                logger.info(f"进度: {percentage:.2f}% ({i + 1}/{len(urls_to_process)} 个URL)")
     
-    # 保存更新后的URL哈希值
-    write_url_hashes(URL_HASHES_FILE, updated_url_hashes)
-
-    print("\n处理完成！")
-    print(f"成功提取并分类的节目源已保存到 {OUTPUT_LIST_FILE}")
-    print(f"失败的URL已保存到 {FAILED_URLS_FILE}")
-    print(f"更新后的 config/urls.txt 已保存。")
-    print(f"URL内容哈希已保存到 {URL_HASHES_FILE}。")
+    # 写入结果
+    async with asyncio.Lock():
+        # 写入输出列表
+        with open(CONFIG['output_list'], 'w', encoding='utf-8') as f:
+            f.write(f"更新时间,#genre#\n")
+            f.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            for category in sorted(final_channels.keys()):
+                f.write(f"{category},#genre#\n")
+                for desc, link in sorted(set(final_channels[category]), key=lambda x: (x[0], x[1])):
+                    f.write(f"{desc},{link}\n" if desc else f"{link}\n")
+                f.write('\n')
+        
+        # 更新配置文件
+        rebuild_config = {
+            cat: [(desc, url) for desc, url in items if url in current_success_urls]
+            for cat, items in initial_urls.items()
+        }
+        
+        with open(CONFIG['urls_file'], 'w', encoding='utf-8') as f:
+            for category in sorted(rebuild_config.keys()):
+                if rebuild_config[category]:
+                    f.write(f"{category},#genre#\n")
+                    for desc, url in rebuild_config[category]:
+                        f.write(f"{desc},{url}\n")
+                    f.write('\n')
+        
+        # 写入成功和失败URL
+        await asyncio.gather(
+            write_urls(CONFIG['failed_urls'], failed_urls.union(current_failed_urls)),
+            write_urls(CONFIG['success_urls'], current_success_urls),
+            write_url_hashes(CONFIG['url_hashes'], updated_hashes)
+        )
+    
+    elapsed = time.time() - start_time
+    logger.info(f"处理完成！耗时: {elapsed:.2f}秒")
+    logger.info(f"结果已保存到 {CONFIG['output_list']}")
+    logger.info(f"失败URL已保存到 {CONFIG['failed_urls']}")
+    logger.info(f"成功URL已保存到 {CONFIG['success_urls']}")
+    logger.info(f"URL哈希已保存到 {CONFIG['url_hashes']}")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
