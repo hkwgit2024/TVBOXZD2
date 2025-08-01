@@ -1,224 +1,42 @@
-name: Validate IPTV Channels
+name: Process IPTV URLs
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天运行一次 (UTC 时间 00:00)
+    - cron: '0 0 * * *'  # 每天 UTC 时间 00:00 运行
   push:
-    branches: [ main ] # 推送代码到 main 分支时触发
-  workflow_dispatch: # 支持手动触发
+    branches:
+      - main
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
-  validate-channels:
-    runs-on: ubuntu-latest # 在 Ubuntu 系统上运行
+  process-urls:
+    runs-on: ubuntu-latest
 
     steps:
-      # 检出代码库
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # 设置 Python 环境
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9' # 指定 Python 版本
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
 
-      # 安装系统依赖 (ffmpeg)
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml requests
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
 
-      # 安装 Python 依赖 (requests, ffmpeg-python)
-      - name: Install Python dependencies
-        run: |
-          pip install requests ffmpeg-python # IPTV_checker.py 依赖 requests，ffmpeg-python 可能是为了兼容性或未来功能
+    - name: Run URL processing script
+      run: python scripts/process_urls.py
 
-      # 转换输入文件为 M3U 并运行验证
-      - name: Convert input to M3U and run IPTV_checker.py
-        run: |
-          # 定义文件路径
-          INPUT_FILE='output/iptv_list.txt'
-          TEMP_M3U_FILE='temp_iptv_list.m3u'
-          LOG_FILE='output/iptv_validation.log'
-
-          # 确保输出目录存在
-          mkdir -p output
-
-          # 清空或创建日志文件
-          > "$LOG_FILE"
-
-          # 启动日志记录
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 开始将原始列表转换为 M3U 格式..." >> "$LOG_FILE"
-          
-          # 检查输入文件是否存在
-          if [ ! -f "$INPUT_FILE" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 错误：输入文件 $INPUT_FILE 未找到。" >> "$LOG_FILE"
-            exit 1
-          fi
-
-          # *** 重要的修改：直接解析您的原始格式并生成标准 M3U ***
-          echo "#EXTM3U" > "$TEMP_M3U_FILE"
-          current_group=""
-          skip_next_is_url=false
-          while IFS= read -r line; do
-            line=$(echo "$line" | xargs) # 去除首尾空白
-            
-            # 跳过空行和更新时间行
-            if [[ -z "$line" || "$line" =~ ^更新时间,.*$ ]]; then
-              continue
-            fi
-            
-            # 处理组信息行
-            if [[ "$line" =~ #genre# ]]; then
-              # 提取 #genre# 后面的组名，并去除可能的逗号后的内容（更新时间行也包含 #genre#，但已在上一步跳过）
-              current_group=$(echo "$line" | sed 's/,#genre#$//')
-              # 如果组名是数字开头的日期，表示是新的更新时间戳，跳过并清除当前组
-              if [[ "$current_group" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2} ]]; then
-                  current_group=""
-                  continue
-              fi
-              continue
-            fi
-
-            # 处理频道名称和URL行
-            if echo "$line" | grep -q ","; then
-              name=$(echo "$line" | cut -d',' -f1)
-              url=$(echo "$line" | cut -d',' -f2)
-              # 只有当 URL 不为空时才添加到 M3U
-              if [[ -n "$url" ]]; then
-                echo "#EXTINF:-1 tvg-name=\"$name\" group-title=\"$current_group\",$name" >> "$TEMP_M3U_FILE"
-                echo "$url" >> "$TEMP_M3U_FILE"
-              else
-                echo "[$(date '+%Y-%m-%d %H:%M:%S')] 跳过格式错误行 (URL 为空): $line" >> "$LOG_FILE"
-              fi
-            else
-              echo "[$(date '+%Y-%m-%d %H:%M:%S')] 跳过格式错误行 (缺少逗号): $line" >> "$LOG_FILE"
-            fi
-          done < "$INPUT_FILE"
-          # *** 重要的修改结束 ***
-
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 已将 $INPUT_FILE 转换为 M3U 格式: $TEMP_M3U_FILE" >> "$LOG_FILE"
-
-          # 运行 IPTV_checker.py 脚本进行验证
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 正在运行 IPTV_checker.py 验证频道..." >> "$LOG_FILE"
-          python IPTV_checker.py -i "$TEMP_M3U_FILE" -t 30 -e 10 -s -r -u "Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.2 Chrome/63.0.3239.84 TV Safari/537.36" >> "$LOG_FILE" 2>&1
-          # IPTV_checker.py 在使用 -s 参数时会生成两个文件：
-          # [原始文件名]_working.m3u8 和 [原始文件名]_dead.m3u8
-          # 这里原始文件是 temp_iptv_list.m3u，所以会生成 temp_iptv_list_working.m3u8
-          # 我们后续将使用 temp_iptv_list_working.m3u8 作为有效频道的输入。
-
-          # 检查 IPTV_checker.py 是否成功生成了输出文件
-          if [ ! -f "temp_iptv_list_working.m3u8" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] IPTV_checker.py 未生成 temp_iptv_list_working.m3u8，可能无有效频道。" >> "$LOG_FILE"
-            # 即使没有生成文件，也创建一个空文件，避免后续脚本出错
-            touch temp_iptv_list_working.m3u8
-          fi
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] IPTV_checker.py 运行完成。" >> "$LOG_FILE"
-
-      # 转换输出 M3U 回原始格式
-      - name: Convert output M3U back to original format
-        run: |
-          INPUT_ORIGINAL_FILE='output/iptv_list.txt' # 用于获取原始组顺序
-          OUTPUT_FINAL_FILE='output/high_quality_iptv.txt'
-          TEMP_WORKING_M3U='temp_iptv_list_working.m3u8' # IPTV_checker.py 生成的有效 M3U 文件
-          LOG_FILE='output/iptv_validation.log'
-
-          # 启动日志记录
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 开始将 M3U 输出转换回原始格式..." >> "$LOG_FILE"
-
-          # 确保临时有效频道文件存在
-          if [ ! -f "$TEMP_WORKING_M3U" ]; then
-            echo "[$(date '+%Y-%m-%d %H:%M:%S')] 警告: 未找到 IPTV_checker.py 的有效频道输出文件 $TEMP_WORKING_M3U，将生成空的高质量列表。" >> "$LOG_FILE"
-            echo "更新时间,$(date '+%Y-%m-%d %H:%M:%S')" > "$OUTPUT_FINAL_FILE"
-            exit 0 # 如果没有有效频道文件，则直接退出该步骤
-          fi
-
-          # 解析有效的 M3U 链接，构建 map
-          declare -A valid_channels_map # key: url, value: channel_name
-          current_group_in_m3u="" # 存储 M3U 中解析出的当前组
-          while IFS= read -r line; do
-            line=$(echo "$line" | xargs)
-            if [[ "$line" == "#EXTM3U"* ]]; then
-              continue
-            fi
-            if [[ "$line" =~ "#EXTINF" ]]; then
-              # 提取 group-title 和 tvg-name
-              group_match=$(echo "$line" | grep -oP 'group-title="\K[^"]+')
-              name_match=$(echo "$line" | grep -oP 'tvg-name="\K[^"]+')
-              
-              if [[ -n "$group_match" ]]; then
-                  current_group_in_m3u="$group_match"
-              fi
-              
-              # 读取下一行作为 URL
-              read -r url_line
-              url_line=$(echo "$url_line" | xargs)
-              if [[ -n "$url_line" ]]; then
-                # 如果 IPTV_checker.py 使用了 -r 参数，这里的 name_match 可能是重命名后的。
-                # 我们将存储重命名后的名称，因为最终输出希望是包含这些信息的。
-                valid_channels_map["$url_line"]="$name_match"
-              fi
-            fi
-          done < "$TEMP_WORKING_M3U"
-
-          # 重建原始格式的列表
-          echo "更新时间,$(date '+%Y-%m-%d %H:%M:%S')" > "$OUTPUT_FINAL_FILE"
-          current_original_group="" # 存储原始文件中解析出的当前组
-          valid_count=0
-
-          # 逐行读取原始输入文件，并根据有效频道 map 重新构建输出
-          while IFS= read -r line; do
-            line=$(echo "$line" | xargs)
-            
-            # 跳过空行和更新时间行 (除了第一个，它已经写入了)
-            if [[ -z "$line" || "$line" =~ ^更新时间,.*$ ]]; then
-              continue
-            fi
-            
-            # 处理组信息行
-            if [[ "$line" =~ #genre# ]]; then
-              current_original_group=$(echo "$line" | sed 's/,#genre#$//')
-              # 如果组名是数字开头的日期，表示是新的更新时间戳，跳过
-              if [[ "$current_original_group" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2} ]]; then
-                  continue
-              fi
-              echo "$line" >> "$OUTPUT_FINAL_FILE" # 将组行写入输出文件
-              continue
-            fi
-
-            # 处理频道名称和URL行
-            if echo "$line" | grep -q ","; then
-              original_name=$(echo "$line" | cut -d',' -f1)
-              original_url=$(echo "$line" | cut -d',' -f2)
-
-              # 检查此 URL 是否在有效列表中
-              if [[ -n "${valid_channels_map[$original_url]}" ]]; then
-                # 使用 IPTV_checker.py 重命名后的频道名称
-                renamed_name="${valid_channels_map[$original_url]}"
-                echo "$renamed_name,$original_url" >> "$OUTPUT_FINAL_FILE"
-                valid_count=$((valid_count + 1))
-              fi
-            fi
-          done < "$INPUT_ORIGINAL_FILE"
-
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 共找到 $valid_count 个有效频道，已保存到 $OUTPUT_FINAL_FILE" >> "$LOG_FILE"
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 列表转换完成。" >> "$LOG_FILE"
-
-      # 提交结果到 GitHub 仓库
-      - name: Commit results
-        run: |
-          git config --global user.name 'GitHub Action' # 配置 Git 用户名
-          git config --global user.email 'action@github.com' # 配置 Git 用户邮箱
-          git add output/high_quality_iptv.txt output/iptv_validation.log # 添加要提交的文件
-          # IPTV_checker.py 会在当前目录生成截图文件夹，我们也一并添加
-          git add validate-channels_AllGroups_screenshots || true # 如果文件夹不存在则忽略错误
-          git commit -m 'Update validated IPTV channels' || echo "No changes to commit" # 提交更改，如果没变化则忽略
-          git push # 推送到远程仓库
-
-      # 清理临时文件
-      - name: Clean up temporary files
-        if: always() # 确保此步骤总会运行，即使之前的步骤失败
-        run: |
-          rm -f temp_iptv_list.m3u temp_iptv_list_working.m3u8 temp_iptv_list_dead.m3u8 # 删除临时 M3U 文件
-          rm -rf "$(basename ${{ github.workflow }})_AllGroups_screenshots" # 删除截图文件夹
-          echo "[$(date '+%Y-%m-%d %H:%M:%S')] 临时文件已清理。" >> output/iptv_validation.log
+    - name: Commit and push results
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add output/list.txt output/mpeg.txt output/failed.txt output/timestamps.json output/*.txt
+        git commit -m "Update processed URLs and categorized results" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
