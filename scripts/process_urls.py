@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 os.makedirs('output', exist_ok=True)
 
 # 读取配置文件
-with open('config/config.yaml', 'r', encoding='utf-8') as f:
+with open('scripts/config.yaml', 'r', encoding='utf-8') as f:
     CONFIG = yaml.safe_load(f)
 
 # 读取时间戳文件
@@ -82,6 +82,29 @@ def check_url_validity(url):
         logging.info(f"URL 检查错误: {url} - {e}")
         return False
 
+def parse_m3u(url):
+    """解析 M3U 文件并提取分类信息"""
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code != 200:
+            return None, []
+        lines = response.text.splitlines()
+        category = None
+        channels = []
+        for line in lines:
+            if line.startswith('#EXTINF'):
+                parts = line.split(',')
+                if len(parts) > 1:
+                    channel_name = parts[1].strip()
+                if 'group-title="' in line:
+                    category = line.split('group-title="')[1].split('"')[0]
+            elif line.startswith('http'):
+                channels.append((category, line.strip()))
+        return category, channels
+    except Exception as e:
+        logging.warning(f"解析 M3U 文件失败: {url} - {e}")
+        return None, []
+
 def main():
     # 读取 urls.txt
     with open('config/urls.txt', 'r', encoding='utf-8') as f:
@@ -99,6 +122,7 @@ def main():
     # 检查 URL 更新和有效性
     valid_urls = []
     new_failed_urls = set()
+    categorized_urls = {}
     current_time = datetime.now().isoformat()
 
     for url in unique_urls:
@@ -118,16 +142,35 @@ def main():
         if current_timestamp:
             timestamps[url] = current_timestamp
 
-        # 检查有效性
-        if check_url_validity(url):
-            valid_urls.append(url)
+        # 检查有效性并分类
+        if url.endswith('.m3u') or url.endswith('.m3u8'):
+            category, channels = parse_m3u(url)
+            if category:
+                if category not in categorized_urls:
+                    categorized_urls[category] = []
+                for _, channel_url in channels:
+                    if channel_url not in failed_urls:
+                        if check_url_validity(channel_url):
+                            categorized_urls[category].append(channel_url)
+                        else:
+                            new_failed_urls.add(channel_url)
         else:
-            new_failed_urls.add(url)
+            if check_url_validity(url):
+                valid_urls.append(url)
+            else:
+                new_failed_urls.add(url)
 
     # 保存有效 URL 到 output/mpeg.txt
     with open('output/mpeg.txt', 'w', encoding='utf-8') as f:
         for url in valid_urls:
             f.write(url + '\n')
+
+    # 保存分类结果
+    for category, urls in categorized_urls.items():
+        category_filename = f'output/{category.replace("/", "_").replace(" ", "_")}.txt'
+        with open(category_filename, 'w', encoding='utf-8') as f:
+            for url in urls:
+                f.write(url + '\n')
 
     # 保存失败 URL 到 output/failed.txt
     with open(FAILED_FILE, 'w', encoding='utf-8') as f:
@@ -138,7 +181,4 @@ def main():
     with open(TIMESTAMPS_FILE, 'w', encoding='utf-8') as f:
         json.dump(timestamps, f, ensure_ascii=False, indent=2)
 
-    logging.info(f"处理完成：有效 URL {len(valid_urls)} 个，失败 URL {len(new_failed_urls)} 个")
-
-if __name__ == "__main__":
-    main()
+    logging.info(f"处理完成：有效 URL {len(valid_urls)} 个，失败 URL {len(new_failed_urls)} 个，分类文件 {len(c
