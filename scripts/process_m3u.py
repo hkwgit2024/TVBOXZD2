@@ -36,8 +36,8 @@ CONFIG = {
     'url_hashes': 'output/url_hashes.json',
     'max_concurrent_requests': 50, # 最大并发请求数
     'timeout_seconds': 15,         # 请求超时时间
-    'max_retries': 3,              # 最大重试次数
-    'retry_delay': 2               # 重试间隔时间（秒）
+    'max_retries': 1,              # 最大重试次数
+    'retry_delay': 1               # 重试间隔时间（秒）
 }
 
 # --- 正则表达式定义 ---
