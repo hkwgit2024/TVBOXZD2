@@ -1,45 +1,27 @@
+ffmpeg_global_params: -hide_banner -loglevel error
 
-logging:
-  log_level: INFO
-  log_file: logs/iptv.log
-
-performance_monitor:
-  enabled: true
-  log_interval: 10
-
-stream_quality:
-  stream_check_workers: 10
-  max_check_duration: 120
-  min_resolution_width: 640
-  min_resolution_height: 480
-  min_bitrate: 100000
-  max_buffer_time: 60
-  max_keyframe_interval: 20
-  ad_keywords:
-    - advertisement
-    - ad
-    - commercial
-    - promo
-
-url_pre_screening:
-  invalid_url_patterns:
-    - '\.jpg$'
-    - '\.png$'
-    - '\.gif$'
-    - '\.pdf$'
-    - '\.exe$'
-    - 'login'
-    - 'signup'
-    - 'private'
-    - 'localhost'
-    - '^http://171\.8\.247\.154:808'
-    - '^https://vv\.jisuzyv\.com'
-    - '^https://t\.me/'
-    - '\.php$'
-    - '\.mp4$'
-    - '^http://video\.dztv\.tv'
-    - '^http://live\.ahsz\.tv'
-
-output:
-  paths:
-    high_quality_iptv_file: output/high_quality_iptv.txt
+protocols:
+  default:
+    timeout: 10 # 连接超时时间，秒
+    retries: 3 # 重试次数
+    resolution_limit: null # 例如：1920x1080，超过此分辨率的跳过或降级
+    ignore_ads: false # 是否尝试过滤广告（需要更复杂的FFmpeg过滤链，此处仅为示例）
+    quality_preference: null # 例如：high, medium, low，基于视频码率或分辨率判断
+    max_duration_check: 60 # 检查的最大时长，秒，用于防止重复播放的流无限检测
+    extra_params: "" # 其他FFmpeg参数，例如 -vcodec copy -acodec copy
+  http:
+    timeout: 15
+    retries: 5
+    extra_params: "-user_agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'"
+  https:
+    timeout: 15
+    retries: 5
+    extra_params: ""
+  rtmp:
+    timeout: 20
+    retries: 3
+    extra_params: "-rtmp_live live"
+  hls:
+    timeout: 10
+    retries: 3
+    extra_params: "-protocol_whitelist file,http,https,tcp,tls,udp,rtp" # HLS可能需要特定协议白名单
