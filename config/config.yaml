@@ -726,7 +726,7 @@ url_pre_screening:
     - "fm"
     # 常见文件类型，通常不是流媒体或所需内容
     - "\\.(png|jpg|jpeg|gif|bmp|webp|svg|ico)$"     # 图片文件
-    - "\\.(css|js|html|htm|xml|txt|md|json|yml|yaml|csv|log|bak|ini|cfg|conf|map|woff|ttf|eot)$" # 网页资源、文本、配置文件、字体
+    - "\\.(css|js|html|py|htm|xml|txt|md|sh|yml|yaml|csv|log|bak|ini|cfg|conf|map|woff|ttf|eot)$" # 网页资源、文本、配置文件、字体
     - "\\.(zip|rar|7z|tar|gz|tgz|bz2|xz)$"          # 压缩文件
     - "\\.(pdf|doc|docx|xls|xlsx|ppt|pptx|odt|ods|odp)$" # 文档文件
     - "\\.(exe|dll|msi|apk|dmg|pkg|iso|img|bin|deb|rpm)$" # 可执行文件、安装包、磁盘镜像
