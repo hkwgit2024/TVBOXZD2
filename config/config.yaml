@@ -59,9 +59,9 @@ github:
   repo_owner: "qjlxg"               # GitHub 用户名
   repo_name: "vt"                   # GitHub 仓库名称
   per_page: 100                     # 每页搜索结果数量（默认 100）
-  max_search_pages: 10              # 最大搜索页数（默认 10）
-  api_timeout: 60                   # GitHub API 请求超时时间（秒，默认 60）
-  retry_wait: 30                    # 速率限制达到后的等待时间（秒，默认 30）
+  max_search_pages: 50              # 最大搜索页数（默认 10）
+  api_timeout: 98                   # GitHub API 请求超时时间（秒，默认 60）
+  retry_wait: 68                    # 速率限制达到后的等待时间（秒，默认 30）
   rate_limit_threshold: 3           # 触发速率限制的剩余请求阈值（默认 3）
   search_updated_within_days: 30    # 搜索最近更新的文件（天，默认 30）
 
@@ -76,9 +76,9 @@ url_state:
 channel_retention:
   stream_fail_threshold: 5          # 流媒体失败次数阈值，超过后移除（默认 5）
   stream_retention_hours: 168       # 流媒体保留时间（小时，默认 168）
-  channel_fail_threshold: 0         # 频道失败次数阈值（默认 0，禁用）
-  url_fail_threshold: 3             # URL 失败次数阈值（默认 3）
-  url_retention_hours: 72           # URL 保留时间（小时，默认 72）
+  channel_fail_threshold: 5         # 频道失败次数阈值（默认 0，禁用）
+  url_fail_threshold: 1             # URL 失败次数阈值（默认 3）
+  url_retention_hours: 720           # URL 保留时间（小时，默认 72）
 
 # 输出配置
 output:
