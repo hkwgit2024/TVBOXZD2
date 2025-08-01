@@ -29,9 +29,12 @@ jobs:
         id: split
         run: |
           mkdir -p temp_urls
-          split -l 100 config/urls.txt temp_urls/urls_part_ -d --suffix-length=3 # 使用数字后缀，限制353个分片
+          split -l 500 config/urls.txt temp_urls/urls_part_ -d --suffix-length=3 # 每500行一个分片，减少分片数量
+          # 生成干净的 JSON 数组
           parts=($(ls temp_urls/urls_part_* | sort))
-          echo "splits=$(printf '%s\n' "${parts[@]}" | jq -R . | jq -s .)" >> $GITHUB_OUTPUT
+          splits_json=$(printf '%s\n' "${parts[@]}" | jq -R . | jq -s .)
+          echo "splits=$splits_json" >> $GITHUB_OUTPUT
+          echo "Generated splits: $splits_json" # 调试输出
           for file in temp_urls/urls_part_*; do
             mv $file $file.txt
           done
@@ -48,13 +51,13 @@ jobs:
   process-channels:
     needs: split-urls
     runs-on: ubuntu-latest
-    timeout-minutes: 120 # 减少单 job 超时时间
+    timeout-minutes: 120
     permissions:
       contents: write
     strategy:
       matrix:
         split: ${{ fromJson(needs.split-urls.outputs.splits) }}
-      max-parallel: 10 # 限制并行 job 数量，防止资源超限
+      max-parallel: 10 # 限制并行 job 数量
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
@@ -101,7 +104,7 @@ jobs:
           BOT: ${{ secrets.TOKEN }}
         run: |
           mv ${{ matrix.split }} config/urls.txt
-          python tv.py
+          python tv3.py
           echo "处理完成: ${{ matrix.split }}"
 
       - name: 保存分片结果
@@ -164,7 +167,19 @@ jobs:
       - name: 再次运行脚本以合并和清理
         env:
           BOT: ${{ secrets.TOKEN }}
-        run: python tv.py
+        run: python tv3.py
+
+      - name: 转换为 M3U 格式（可选）
+        run: |
+          echo '#EXTM3U' > iptv_list.m3u
+          while IFS=, read -r name url; do
+            if [[ "$name" == *"genre"* ]]; then
+              echo "#EXTINF:-1 group-title=\"$name\",$name" >> iptv_list.m3u
+            else
+              echo "#EXTINF:-1,$name" >> iptv_list.m3u
+              echo "$url" >> iptv_list.m3u
+            fi
+          done < iptv_list.txt
 
       - name: 保存最终结果
         uses: actions/upload-artifact@v4
@@ -172,6 +187,7 @@ jobs:
           name: final-iptv-results
           path: |
             *.txt
+            *.m3u
             temp_channels/
             config/*.txt
             config/*.json
