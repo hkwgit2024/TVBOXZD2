@@ -17,7 +17,7 @@ jobs:
       # 步骤 1：检查 BOT secret
       - name: 检查 BOT secret
         run: |
-          if [ -z "${{ secrets.BOT }}" ]; then
+          if [ -z "${{ secrets.TOKEN }}" ]; then
             echo "错误：未设置 BOT secret，请在 GitHub Secrets 中配置"
             exit 1
           fi
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # 获取完整提交历史，便于 rebase
-          token: ${{ secrets.BOT }}  # 使用 BOT secret 进行认证
+          token: ${{ secrets.TOKEN }}  # 使用 BOT secret 进行认证
 
       # 步骤 3：设置 Python 环境
       - name: 设置 Python 环境
@@ -70,7 +70,7 @@ jobs:
       # 步骤 7：运行 IPTV 爬取脚本
       - name: 运行 IPTV 爬取脚本
         env:
-          BOT: ${{ secrets.BOT }}
+          BOT: ${{ secrets.TOKEN }}
         run: python tv.py
 
       # 步骤 8：保存日志和生成文件
@@ -122,7 +122,7 @@ jobs:
           git merge origin/main -m "Merge remote changes before pushing" || (echo "错误：检测到合并冲突，请手动解决或检查日志" && exit 1)
           git push origin main # 推送合并后的更改
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
       # 步骤 12：发送运行结果通知
       - name: 发送运行结果通知
