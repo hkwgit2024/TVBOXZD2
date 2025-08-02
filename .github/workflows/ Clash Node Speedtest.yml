@@ -31,8 +31,8 @@ jobs:
 
     - name: Commit and Push Results # 步骤 5: 将更新后的配置文件提交回仓库
       run: |
-        git config user.name "github-actions[bot]" # 设置 Git 用户名
-        git config user.email "github-actions[bot]@users.noreply.github.com" # 设置 Git 用户邮箱
+        # 移除了 git config user.name 和 user.email 的设置
+        # GitHub Actions 会自动使用默认的 bot 用户进行提交
 
         git add output/clash.yaml # 添加更新的文件到暂存区
         git commit -m "Update clash.yaml with latest speedtest results" || echo "No changes to commit" # 提交更改，如果文件内容没有变化则不报错
