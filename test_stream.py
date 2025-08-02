@@ -11,16 +11,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # 定义线程锁以保护打印输出，避免多线程打印混乱
 print_lock = threading.Lock()
 
-def test_stream(channel_name, url, output_dir="output", timeout_seconds=15):
+def test_stream(channel_name, url, output_dir="output", timeout_seconds=15, response_threshold=5):
     """
-    测试单个视频流，使用 ffprobe 并保存输出结果。
+    测试单个视频流，使用 ffprobe 并检查流可用性。
     参数:
         channel_name: 频道名称
         url: 视频流 URL
         output_dir: 输出目录
-        timeout_seconds: 测试超时时间（秒）
+        timeout_seconds: 测试总超时时间（秒）
+        response_threshold: 响应时间阈值（秒），用于判断缓冲速度
     返回:
-        包含测试结果的字典（名称、URL、状态、消息）
+        包含测试结果的字典（名称、URL、状态、可用性、消息）
     """
     # 使用 MD5 哈希生成短文件名，结合频道名称
     filename = f"{channel_name}_{hashlib.md5(url.encode()).hexdigest()[:16]}"
@@ -31,9 +32,11 @@ def test_stream(channel_name, url, output_dir="output", timeout_seconds=15):
         "name": channel_name,
         "url": url,
         "status": "failed",
+        "availability": "不可用",
         "message": "未知错误"
     }
 
+    start_time = time.time()
     try:
         # 构建 ffprobe 命令，超时时间与 subprocess 一致
         command = [
@@ -54,14 +57,32 @@ def test_stream(channel_name, url, output_dir="output", timeout_seconds=15):
             timeout=timeout_seconds
         )
         
+        # 计算响应时间
+        response_time = time.time() - start_time
+
+        # 检查是否有有效的视频流
+        if "streams" not in result.stdout or '"codec_type": "video"' not in result.stdout:
+            test_result["message"] = f"测试 {url} 成功但无有效视频流。JSON 输出已保存到 {output_json_path}"
+            test_result["availability"] = "不可用"
+            with print_lock:
+                print(f"测试 {url} 成功但无有效视频流。JSON 输出已保存到 {output_json_path}")
+        else:
+            # 检查响应时间是否过长
+            if response_time > response_threshold:
+                test_result["message"] = f"测试 {url} 成功但缓冲过慢（{response_time:.2f}秒）。JSON 输出已保存到 {output_json_path}"
+                test_result["availability"] = "缓冲过慢"
+                with print_lock:
+                    print(f"测试 {url} 成功但缓冲过慢（{response_time:.2f}秒）。JSON 输出已保存到 {output_json_path}")
+            else:
+                test_result["status"] = "success"
+                test_result["availability"] = "完全可用"
+                test_result["message"] = f"成功测试 {url}（响应时间 {response_time:.2f}秒）。JSON 输出已保存到 {output_json_path}"
+                with print_lock:
+                    print(f"成功测试 {url}（响应时间 {response_time:.2f}秒）。JSON 输出已保存到 {output_json_path}")
+
         # 保存 JSON 输出
         with open(output_json_path, "w", encoding="utf-8") as f:
             f.write(result.stdout)
-
-        test_result["status"] = "success"
-        test_result["message"] = f"成功测试 {url}。JSON 输出已保存到 {output_json_path}"
-        with print_lock:
-            print(f"成功测试 {url}. JSON 输出已保存到 {output_json_path}")
 
     except subprocess.CalledProcessError as e:
         with open(error_log_path, "w", encoding="utf-8") as f:
@@ -163,6 +184,7 @@ def main():
     # 统计结果和成功频道数据
     success_count = 0
     failed_channels = []
+    slow_channels = []
     successful_channels_data = []
 
     # 设置最大线程数
@@ -178,8 +200,11 @@ def main():
             test_result = future.result()
 
             if test_result["status"] == "success":
-                success_count += 1
-                successful_channels_data.append(test_result)
+                if test_result["availability"] == "完全可用":
+                    success_count += 1
+                    successful_channels_data.append(test_result)
+                elif test_result["availability"] == "缓冲过慢":
+                    slow_channels.append(test_result["name"])
             else:
                 failed_channels.append(test_result["name"])
             
@@ -195,26 +220,31 @@ def main():
                 print(f"\n--- 进度: {progress_percentage:.2f}% ({completed_tasks}/{total_channels} 完成) ---")
                 print(f"已运行: {format_time(elapsed_time_overall)} | 预计剩余: {format_time(estimated_remaining_time)}")
 
-    # 保存成功频道到 output/list.txt
+    # 保存完全可用的频道到 output/list.txt
     if successful_channels_data:
         try:
             with open(output_list_path, "w", encoding="utf-8") as f:
                 for channel in successful_channels_data:
                     f.write(f"{channel['name']},{channel['url']}\n")
-            print(f"\n成功测试的频道已保存到 {output_list_path}")
+            print(f"\n完全可用的频道已保存到 {output_list_path}")
         except Exception as e:
             print(f"\n写入 {output_list_path} 失败: {e}")
     else:
-        print(f"\n没有成功测试的频道，未生成 {output_list_path}。")
+        print(f"\n没有完全可用的频道，未生成 {output_list_path}。")
 
     # 打印测试总结
     print("\n--- 测试完成总结 ---")
     final_elapsed_time = time.time() - start_time_overall
     print(f"总耗时: {format_time(final_elapsed_time)}")
-    print(f"成功测试的频道数: {success_count}")
-    print(f"失败测试的频道数: {len(failed_channels)}")
+    print(f"完全可用的频道数: {success_count}")
+    print(f"缓冲过慢的频道数: {len(slow_channels)}")
+    print(f"不可用的频道数: {len(failed_channels)}")
+    if slow_channels:
+        print("以下频道缓冲过慢:")
+        for name in slow_channels:
+            print(f"- {name}")
     if failed_channels:
-        print("以下频道测试失败:")
+        print("以下频道不可用:")
         for name in failed_channels:
             print(f"- {name}")
     print("\n请检查 'output/' 目录中的 JSON 文件和错误日志以获取详细信息。")
