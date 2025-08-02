@@ -396,5 +396,5 @@ def main():
             print(f"- {name}")
     print(f"\n请检查 'output/' 目录中的 JSON 文件和 {all_errors_log_path} 以获取详细信息。")
 
-  if __name__ == "__main__":
+if __name__ == "__main__":
     main()
