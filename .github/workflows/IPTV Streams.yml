@@ -1,0 +1,115 @@
+name: Check IPTV Streams
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 午夜运行
+
+jobs:
+  check-iptv:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+        with:
+          path: main-repo
+          
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Clone m3u-checker-pro repository
+        run: |
+          git clone https://github.com/zibous/m3u-checker-pro.git
+          
+      - name: Install m3u-checker-pro Python dependencies
+        run: |
+          cd m3u-checker-pro
+          pip install -r requirements.txt
+          
+      - name: Convert custom IPTV list to M3U8 format
+        run: |
+          # 您的转换脚本
+          cat << 'EOF' > convert.py
+          import csv
+          import requests
+          import os
+          from io import StringIO
+          import sys
+
+          input_url = sys.argv[1]
+          output_file = sys.argv[2]
+
+          os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+          print(f"Downloading from: {input_url}")
+          response = requests.get(input_url)
+          response.raise_for_status()
+          content = response.text
+          print("Download successful. Starting conversion.")
+
+          with StringIO(content) as infile, open(output_file, "w", encoding="utf-8") as outfile:
+              outfile.write("#EXTM3U\n")
+              reader = csv.reader(infile)
+              for row in reader:
+                  if len(row) < 2 or row[0].startswith("更新时间") or row[0] == "#genre#":
+                      continue
+                  channel_name, url = row[0], row[1]
+                  outfile.write(f"#EXTINF:-1,{channel_name}\n{url}\n")
+          print(f"M3U8 file generated: {output_file}")
+          EOF
+
+          # 运行转换脚本
+          python3 convert.py \
+            "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/output/iptv_list.txt" \
+            "m3u-checker-pro/iptv_list.m3u8"
+        
+      - name: Run m3u-checker-pro script
+        id: check_script
+        run: |
+          # 运行 m3u-checker-pro 脚本，并将结果输出到文件
+          cd m3u-checker-pro
+          # 使用 `set -o pipefail` 确保管道中的任何命令失败都会导致整个命令失败
+          set -o pipefail
+          python3 cli.py -f m3u -i iptv_list.m3u8 --timeout 5 --workers 10 --output-file ../main-repo/output/list.txt 2>&1 | tee iptv_checker_output.log
+
+          # 将脚本的输出保存到环境变量中，以便后续步骤可以访问
+          echo "output_log=$(cat iptv_checker_output.log)" >> $GITHUB_ENV
+        
+      - name: Display check results
+        run: |
+          echo "--- M3U Checker Pro Script Output ---"
+          echo "${{ env.output_log }}"
+          echo "--- End of Output ---"
+
+      - name: List generated files
+        run: |
+          echo "=== Files in main-repo/output directory ==="
+          ls -lR main-repo/output/
+          echo "=== End of File List ==="
+
+      - name: Commit and push results
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          cd main-repo
+          
+          # 检查文件是否存在，如果存在则进行提交
+          if [ -f "output/list.txt" ]; then
+            git add output/list.txt
+            # 使用 `|| true` 忽略没有文件变动时的提交失败
+            git commit -m "Update IPTV stream check results" || true
+            git push
+          else
+            echo "output/list.txt not found, skipping commit."
+          fi
