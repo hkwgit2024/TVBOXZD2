@@ -18,6 +18,12 @@ jobs:
         with:
           path: main-repo
           
+      - name: Checkout m3u-checker-pro repository
+        uses: actions/checkout@v4
+        with:
+          repository: zibous/m3u-checker-pro
+          path: m3u-checker-pro
+          
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -28,10 +34,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: Clone m3u-checker-pro repository
-        run: |
-          git clone https://github.com/zibous/m3u-checker-pro.git
-          
       - name: Install m3u-checker-pro Python dependencies
         run: |
           cd m3u-checker-pro
