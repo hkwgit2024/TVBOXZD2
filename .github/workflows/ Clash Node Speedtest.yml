@@ -1,9 +1,9 @@
-name: Clash 节点测速（使用发布二进制文件）
+name: Clash 节点分步测速与更新
 
 on:
-  push: # 当代码被推送到仓库时自动触发（即你保存文件并提交更改时）
+  push: # 当代码被推送到仓库时自动触发
     branches:
-      - main # 监听 main 分支的推送（如果你的主分支名称不同，例如 master，请修改）
+      - main # 监听 main 分支的推送（如果你的主分支名称不同，请修改）
   workflow_dispatch: # 允许从 GitHub Actions 页面手动触发
   schedule:
     - cron: '0 */6 * * *' # 每 6 小时自动运行一次（可选，如果不需要可以删除此行）
@@ -18,41 +18,40 @@ jobs:
 
     - name: 下载 clash-speedtest 二进制文件 # 步骤 2: 从 GitHub Releases 下载预编译的二进制文件
       run: |
-        # 定义版本和目标文件名
         TOOL_VERSION="v1.7.0"
         TOOL_NAME="clash-speedtest"
-        OS_ARCH="Linux_x86_64" # 目标是 Linux x86_64 架构，因为 GitHub Actions 运行器通常是这个架构
-        
-        # 构造 .tar.gz 资产的下载 URL
+        OS_ARCH="Linux_x86_64"
         DOWNLOAD_URL="https://github.com/faceair/${TOOL_NAME}/releases/download/${TOOL_VERSION}/${TOOL_NAME}_${OS_ARCH}.tar.gz"
         
         echo "正在从以下地址下载 ${TOOL_NAME}: ${DOWNLOAD_URL}"
-        
-        # 下载压缩文件
         curl -L "${DOWNLOAD_URL}" -o "${TOOL_NAME}.tar.gz"
-        
-        # 解压二进制文件
         tar -xzf "${TOOL_NAME}.tar.gz"
-        
-        # 使二进制文件可执行
         chmod +x "${TOOL_NAME}"
-        
-        # 将二进制文件移动到 PATH 中，或者直接确保它在当前目录
-        # 为了简单起见，我们将在下一步中使用 ./clash-speedtest
-        echo "::set-output name=tool_path::./${TOOL_NAME}" # 设置一个输出变量以便轻松访问
-      id: download_tool # 给这一步一个 ID 以便引用其输出
+        echo "::set-output name=tool_path::./${TOOL_NAME}"
+      id: download_tool
 
-    - name: 运行 Clash 测速并生成配置 # 步骤 3: 执行测速并将结果保存
+    - name: 第一次测速：快速过滤节点 # 步骤 3: 使用快速模式进行初步过滤
+      run: |
+        # 将快速过滤后的节点保存到临时文件 temp_filtered_nodes.yaml
+        # 设定最大延迟为 800ms，过滤掉延迟过高的节点
+        ./clash-speedtest -c https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml \
+                          -output temp_filtered_nodes.yaml \
+                          -max-latency 800ms \
+                          -fast
+
+    - name: 第二次测速：对过滤后的节点进行完整下载测试 # 步骤 4: 对过滤后的节点进行完整测速
       run: |
         mkdir -p output # 确保 'output' 文件夹存在
-        
-        # 使用下载并解压的二进制文件
-        ./clash-speedtest -c https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml -output output/clash.yaml -rename
-      # 确保工具在当前工作目录可用，或者根据移动后的路径进行调整
+        # 使用第一次过滤后的文件作为输入，进行完整测速，并增加并发数
+        # 将并发数设置为 10，你可以根据需要调整
+        ./clash-speedtest -c temp_filtered_nodes.yaml \
+                          -output output/clash.yaml \
+                          -rename \
+                          -concurrent 10 \
+                          -min-download-speed 1 # 可选：再过滤一次，只保留下载速度大于 5MB/s 的节点
 
-    - name: 提交并推送结果 # 步骤 4: 提交更新后的配置文件到仓库
+    - name: 提交并推送结果 # 步骤 5: 提交更新后的配置文件到仓库
       run: |
-        # GitHub Actions 会自动使用其默认的机器人身份进行提交
         git add output/clash.yaml # 添加生成的文件到暂存区
         git commit -m "Update clash.yaml with latest speedtest results" || echo "没有需要提交的更改" # 提交更改，如果文件没有变化则不报错
         git push # 推送更改到 GitHub 仓库
