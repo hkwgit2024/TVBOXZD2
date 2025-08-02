@@ -6,7 +6,7 @@ import time
 import threading
 import hashlib
 import argparse
-import requests
+import requests # This is already imported
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 定义线程锁以保护打印输出，避免多线程打印混乱
@@ -14,7 +14,7 @@ print_lock = threading.Lock()
 
 def test_stream(channel_name, url, output_dir="output", timeout_seconds=15, response_threshold=5, retries=1):
     """
-    测试单个视频流，使用 ffprobe 并检查流可用性。
+    测试单个视频流，首先进行 HTTP HEAD 请求筛选，然后使用 ffprobe 并检查流可用性。
     参数:
         channel_name: 频道名称
         url: 视频流 URL
@@ -37,6 +37,87 @@ def test_stream(channel_name, url, output_dir="output", timeout_seconds=15, resp
         "full_error_details": ""
     }
 
+    # --- Step 1: Initial HTTP HEAD request pre-screening ---
+    for attempt_head in range(retries + 1): # 增加重试机制
+        try:
+            head_start_time = time.time()
+            # 使用 requests.head 进行快速检查。对 HEAD 请求设置较短的超时时间。
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            head_response = requests.head(url, timeout=5, allow_redirects=True, headers=headers)
+            head_response_time = time.time() - head_start_time
+
+            if head_response.status_code in [404, 403]:
+                test_result["message"] = f"URL 返回 HTTP 状态码 {head_response.status_code}，标记为不可用 (尝试 {attempt_head + 1}/{retries + 1})。"
+                test_result["full_error_details"] = (
+                    f"--- 频道: {channel_name} (URL: {url}) ---\n"
+                    f"状态: HTTP HEAD 检查失败\n"
+                    f"消息: {test_result['message']}\n"
+                    f"HTTP 状态码: {head_response.status_code}\n"
+                    f"响应时间: {head_response_time:.2f}秒\n"
+                    f"----------------------------------------\n\n"
+                )
+                with print_lock:
+                    print(f"URL: {url} 返回 HTTP 状态码 {head_response.status_code}，标记为不可用。")
+                return test_result # 直接返回失败
+
+            # 如果 HEAD 请求成功 (2xx) 或其他状态，则继续 ffprobe
+            if head_response.status_code >= 200 and head_response.status_code < 300:
+                with print_lock:
+                    print(f"URL: {url} HEAD 检查通过 (状态码: {head_response.status_code})。继续 ffprobe 测试...")
+                break # 退出 HEAD 重试循环，继续 ffprobe 测试
+            else:
+                test_result["message"] = f"URL 返回非 2xx 状态码 {head_response.status_code}，但不是 404/403 (尝试 {attempt_head + 1}/{retries + 1})。"
+                test_result["full_error_details"] = (
+                    f"--- 频道: {channel_name} (URL: {url}) ---\n"
+                    f"状态: HTTP HEAD 非 2xx 状态\n"
+                    f"消息: {test_result['message']}\n"
+                    f"HTTP 状态码: {head_response.status_code}\n"
+                    f"响应时间: {head_response_time:.2f}秒\n"
+                    f"----------------------------------------\n\n"
+                )
+                if attempt_head == retries:
+                    with print_lock:
+                        print(f"URL: {url} 返回非 2xx 状态码 {head_response.status_code}，标记为不可用。")
+                    return test_result # 在所有 HEAD 重试后返回失败
+                else:
+                    time.sleep(1) # 短暂延迟后重试 HEAD
+                    continue
+
+        except requests.exceptions.Timeout:
+            test_result["message"] = f"HEAD 请求超时 ({5} 秒，尝试 {attempt_head + 1}/{retries + 1})。"
+            test_result["full_error_details"] = (
+                f"--- 频道: {channel_name} (URL: {url}) ---\n"
+                f"状态: HEAD 请求超时\n"
+                f"消息: {test_result['message']}\n"
+                f"可能原因：网络连接慢、服务器无响应\n"
+                f"----------------------------------------\n\n"
+            )
+            with print_lock:
+                print(f"HEAD 请求 {url} 超时。")
+            if attempt_head == retries:
+                return test_result # 在所有 HEAD 重试后返回失败
+            else:
+                time.sleep(1) # 短暂延迟后重试 HEAD
+                continue
+        except requests.exceptions.RequestException as e:
+            test_result["message"] = f"HEAD 请求发生网络错误（尝试 {attempt_head + 1}/{retries + 1}）。"
+            test_result["full_error_details"] = (
+                f"--- 频道: {channel_name} (URL: {url}) ---\n"
+                f"状态: HEAD 请求网络错误\n"
+                f"消息: {test_result['message']}\n"
+                f"错误详情: {str(e)}\n"
+                f"----------------------------------------\n\n"
+            )
+            with print_lock:
+                print(f"HEAD 请求 {url} 发生网络错误。")
+            if attempt_head == retries:
+                return test_result # 在所有 HEAD 重试后返回失败
+            else:
+                time.sleep(1) # 短暂延迟后重试 HEAD
+                continue
+    
+    # --- Step 2: Proceed with ffprobe if HEAD request passed ---
+    # 现有的 ffprobe 逻辑从这里开始。
     for attempt in range(retries + 1):
         start_time = time.time()
         try:
@@ -70,7 +151,7 @@ def test_stream(channel_name, url, output_dir="output", timeout_seconds=15, resp
                     has_valid_video = True
                     break
 
-            # 如果没有有效视频流，尝试解析 .m3u8 文件
+            # 如果没有有效视频流，尝试解析 .m3u8 文件 (original logic)
             if not has_valid_video and url.endswith(".m3u8"):
                 try:
                     m3u8_response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5)
