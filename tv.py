@@ -1310,9 +1310,10 @@ def main():
     all_extracted_channels = []
     source_tracker = {}
     logging.warning(f"开始从 {len(urls)} 个 URL 提取频道")
-    max_urls = 100  # 临时限制为 100 个 URL 以调试
-    urls_to_process = urls[:max_urls]
-    logging.warning(f"调试模式：仅处理前 {len(urls_to_process)} 个 URL")
+   # max_urls = 100  # 临时限制为 100 个 URL 以调试
+   #  urls_to_process = urls[:max_urls]
+   #  logging.warning(f"调试模式：仅处理前 {len(urls_to_process)} 个 URL")
+    urls_to_process = urls
     with ThreadPoolExecutor(max_workers=min(CONFIG['network']['url_fetch_workers'], 10)) as executor:
         futures = {executor.submit(extract_channels_from_url, url, url_states, source_tracker): url for url in urls_to_process}
         for i, future in enumerate(as_completed(futures)):
