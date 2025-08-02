@@ -18,25 +18,20 @@ jobs:
         with:
           path: main-repo
           
-      - name: Checkout m3u-checker-pro repository
+      - name: Checkout m3u-validator repository
         uses: actions/checkout@v4
         with:
-          repository: zibous/m3u-checker-pro
-          path: m3u-checker-pro
+          repository: fanzila/m3u-validator
+          path: m3u-validator
           
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
-      - name: Install system dependencies
+      - name: Install m3u-validator Python dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
-      - name: Install m3u-checker-pro Python dependencies
-        run: |
-          cd m3u-checker-pro
+          cd m3u-validator
           pip install -r requirements.txt
           
       - name: Convert custom IPTV list to M3U8 format
@@ -74,26 +69,16 @@ jobs:
           # 运行转换脚本
           python3 convert.py \
             "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/output/iptv_list.txt" \
-            "m3u-checker-pro/iptv_list.m3u8"
+            "m3u-validator/iptv_list.m3u8"
         
-      - name: Run m3u-checker-pro script
+      - name: Run m3u-validator script
         id: check_script
         run: |
-          # 运行 m3u-checker-pro 脚本，并将结果输出到文件
-          cd m3u-checker-pro
-          # 使用 `set -o pipefail` 确保管道中的任何命令失败都会导致整个命令失败
-          set -o pipefail
-          python3 cli.py -f m3u -i iptv_list.m3u8 --timeout 5 --workers 10 --output-file ../main-repo/output/list.txt 2>&1 | tee iptv_checker_output.log
-
-          # 将脚本的输出保存到环境变量中，以便后续步骤可以访问
-          echo "output_log=$(cat iptv_checker_output.log)" >> $GITHUB_ENV
+          # 运行 m3u-validator 脚本，并将结果输出到文件
+          cd m3u-validator
+          # `-o` 参数指定输出文件名，`--format` 指定输出格式
+          python3 m3u-validator.py -o ../main-repo/output/list.txt --format m3u --timeout 5 --processes 10 iptv_list.m3u8
         
-      - name: Display check results
-        run: |
-          echo "--- M3U Checker Pro Script Output ---"
-          echo "${{ env.output_log }}"
-          echo "--- End of Output ---"
-
       - name: List generated files
         run: |
           echo "=== Files in main-repo/output directory ==="
@@ -106,10 +91,8 @@ jobs:
           git config --global user.email "actions@github.com"
           cd main-repo
           
-          # 检查文件是否存在，如果存在则进行提交
           if [ -f "output/list.txt" ]; then
             git add output/list.txt
-            # 使用 `|| true` 忽略没有文件变动时的提交失败
             git commit -m "Update IPTV stream check results" || true
             git push
           else
