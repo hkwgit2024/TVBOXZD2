@@ -23,7 +23,7 @@ jobs:
 
     - name: Clone Aggregator Repository # 步骤 3: 克隆 wzdnzd/aggregator 仓库
       # 将 wzdnzd/aggregator 克隆到一个单独的目录
-      run: git clone https://github.com/wzdnzd/aggregator.git aggregator_repo
+      run: git clone https://github.com/qjlxg/aggregator.git aggregator_repo
 
     - name: Install Python Dependencies # 步骤 4: 安装依赖
       # 进入 aggregator 目录并安装依赖
