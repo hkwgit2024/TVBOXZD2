@@ -4,13 +4,18 @@
 
 # GitHub 搜索关键词
 search_keywords:
- # 英文关键词
-  
-  # 中文关键词
-  - "TVBOX"
-  - "最新直播源"
-  - "稳定直播源"
-  - "iptvbox"
+  # 核心英文关键词 (精确匹配文件扩展名和路径)
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "iptv playlist extension:m3u,m3u8 in:file"
+  - "raw.githubusercontent.com path:.m3u8"
+  - "raw.githubusercontent.com path:.m3u"
+  - "tv channels extension:m3u,m3u8 in:file"
+  - "live tv extension:m3u,m3u8 in:file"
+  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
+  - "index.m3u8 in:file"
+  - "channels.m3u in:file"
+
   
 
 # URL 预筛选配置：定义 URL 筛选规则
