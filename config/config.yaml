@@ -29,6 +29,7 @@ url_pre_screening:
     - '^https://vv\.jisuzyv\.com' # 排除特定 URL: https://vv.jisuzyv.com
     - '^https://raw\.githubusercontent\.com/qjlxg/' # 排除自己
     - '^https://t\.me/'
+    - '^https://epg.pw/'
     - '\.php$'
     - '^https://raw\.githubusercontent\.com/4k5u/test/d96c2e1e511d31b8f6c53194499622d3fc68bec8/log/' 
 # 网络配置
