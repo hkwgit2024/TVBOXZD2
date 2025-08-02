@@ -983,10 +983,10 @@ def merge_local_channel_files(local_channels_directory, output_file_name, url_st
                     iptv_list_file.write(f"{category},#genre#\n")
                     for name, url in sorted(categorized_channels_checked[category], key=lambda x: x[0]):
                         iptv_list_file.write(f"{name},{url}\n")
-            if uncategorized_channels_checked:
-                iptv_list_file.write("其他频道,#genre#\n")
-                for name, url in sorted(uncategorized_channels_checked, key=lambda x: x[0]):
-                    iptv_list_file.write(f"{name},{url}\n")
+ #           if uncategorized_channels_checked:
+ #               iptv_list_file.write("其他频道,#genre#\n")
+ #               for name, url in sorted(uncategorized_channels_checked, key=lambda x: x[0]):
+ #                   iptv_list_file.write(f"{name},{url}\n")
         logging.warning(f"所有频道列表文件合并、去重、分类完成，输出保存到: {output_file_name}")
     except Exception as e:
         logging.error(f"写入文件 '{output_file_name}' 失败: {e}")
