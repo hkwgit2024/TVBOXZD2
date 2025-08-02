@@ -16,21 +16,24 @@ jobs:
     - name: Set up Go Environment # 步骤 2: 设置 Go 语言环境，用于编译 clash-speedtest
       uses: actions/setup-go@v5
       with:
-        # gyyst/clash-speedtest requires Go 1.23. The error message indicated it switched to go1.23.11.
-        # So, setting go-version to '1.23' or higher is appropriate.
+        # gyyst/clash-speedtest 的 v1.2.22 版本要求 Go >= 1.23。
+        # 因此，这里设置 Go 版本为 1.23 或更高是正确的。
         go-version: '1.23' 
 
     - name: Install clash-speedtest # 步骤 3: 通过 Go 命令安装 clash-speedtest 工具
       run: |
-        # CORRECTED LINE: Use the module path as declared in its go.mod, but specify the fork's URL
-        go install github.com/faceair/clash-speedtest@github.com/gyyst/clash-speedtest@latest
+        # **** 核心修改在这里 ****
+        # 按照 gyyst/clash-speedtest 仓库的 README 说明进行安装
+        # 使用 faceair 的模块路径来安装，Go 会自动处理实际从 gyyst 仓库下载的问题
+        go install github.com/faceair/clash-speedtest@latest 
+        
         # 将 Go 的 bin 路径添加到 PATH，这样下一步可以直接使用 clash-speedtest 命令
         echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
     - name: Run Speedtest and Generate Config # 步骤 4: 执行测速并将结果保存到文件
       run: |
         mkdir -p output # 创建 output 文件夹，如果不存在的话
-        # Use 'clash-speedtest' directly as it's now in PATH
+        # 使用 'clash-speedtest' 命令进行测速
         clash-speedtest -c https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml -output output/clash.yaml -rename -sort weighted
 
     - name: Commit and Push Results # 步骤 5: 将更新后的配置文件提交回仓库
