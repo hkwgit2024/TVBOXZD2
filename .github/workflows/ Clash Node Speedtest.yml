@@ -1,0 +1,39 @@
+name: Clash Node Speedtest
+
+on:
+  workflow_dispatch: # 允许你手动触发此工作流
+  schedule:
+    - cron: '0 */6 * * *' # 每 6 小时自动运行一次 (例如：0点、6点、12点、18点)
+
+jobs:
+  run_speedtest_and_update:
+    runs-on: ubuntu-latest # 在最新的 Ubuntu 虚拟机上运行此任务
+
+    steps:
+    - name: Checkout Repository # 步骤 1: 克隆你的 GitHub 仓库代码
+      uses: actions/checkout@v4
+
+    - name: Set up Go Environment # 步骤 2: 设置 Go 语言环境，用于编译 clash-speedtest
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22' # 确保使用 clash-speedtest 兼容的 Go 版本
+
+    - name: Install clash-speedtest # 步骤 3: 通过 Go 命令安装 clash-speedtest 工具
+      run: |
+        go install github.com/gyyst/clash-speedtest@latest
+        # 将 Go 的 bin 路径添加到 PATH，这样下一步可以直接使用 clash-speedtest 命令
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+    - name: Run Speedtest and Generate Config # 步骤 4: 执行测速并将结果保存到文件
+      run: |
+        mkdir -p output # 创建 output 文件夹，如果不存在的话
+        clash-speedtest -c https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml -output output/clash.yaml -rename -sort weighted
+
+    - name: Commit and Push Results # 步骤 5: 将更新后的配置文件提交回仓库
+      run: |
+        git config user.name "github-actions[bot]" # 设置 Git 用户名
+        git config user.email "github-actions[bot]@users.noreply.github.com" # 设置 Git 用户邮箱
+
+        git add output/clash.yaml # 添加更新的文件到暂存区
+        git commit -m "Update clash.yaml with latest speedtest results" || echo "No changes to commit" # 提交更改，如果文件内容没有变化则不报错
+        git push # 推送更改到 GitHub 仓库
