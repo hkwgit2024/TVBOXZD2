@@ -1,0 +1,51 @@
+name: Grab Free Proxies (from wzdnzd/aggregator)
+
+on:
+  workflow_dispatch: # 允许手动触发
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间午夜运行一次，你可以调整
+  push:
+    branches:
+      - main # 如果你希望每次 push 也触发，可以保留
+
+jobs:
+  grab_proxies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Your Repository # 步骤 1: 检出你自己的仓库
+      uses: actions/checkout@v4
+
+    - name: Set up Python # 步骤 2: 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9' # 选择一个合适的 Python 版本，例如 3.9 或 3.10
+
+    - name: Clone Aggregator Repository # 步骤 3: 克隆 wzdnzd/aggregator 仓库
+      # 将 wzdnzd/aggregator 克隆到一个单独的目录
+      run: git clone https://github.com/wzdnzd/aggregator.git aggregator_repo
+
+    - name: Install Python Dependencies # 步骤 4: 安装依赖
+      # 进入 aggregator 目录并安装依赖
+      run: |
+        cd aggregator_repo
+        pip install -r requirements.txt
+
+    - name: Run Proxy Collection Script # 步骤 5: 运行节点收集脚本
+      # 运行 collect.py 脚本
+      run: |
+        cd aggregator_repo
+        python -u subscribe/collect.py -s
+
+    - name: Copy Results to Your Repository # 步骤 6: 将生成的 clash.yaml 复制到你的仓库
+      run: |
+        mkdir -p output # 确保你的输出目录存在
+        cp aggregator_repo/data/clash.yaml output/free_proxies.yaml # 将抓取到的文件复制到你仓库的 output 目录并重命名
+
+    - name: Commit and Push Results # 步骤 7: 提交并推送结果
+      run: |
+        git add output/free_proxies.yaml
+        git config user.name "GitHub Actions"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git commit -m "Update free_proxies.yaml from aggregator script" || echo "No changes to commit"
+        git push
