@@ -98,12 +98,12 @@ jobs:
           ./clash-speedtest \
             -c ./filtered_nodes.yaml \
             -output ./clash.yaml \
-            -download-size 2 \
+            -download-size 10 \
             -upload-size 1 \
             -timeout 90s \
             -concurrent 48 \
             -max-latency 3000ms \
-            -min-download-speed 0 \
+            -min-download-speed 0.1 \
             -min-upload-speed 0 \
             -rename \
            
