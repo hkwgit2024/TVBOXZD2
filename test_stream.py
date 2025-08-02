@@ -31,7 +31,7 @@ def test_stream(channel_name, url, output_dir="output", timeout_seconds=5): # �
             "-print_format", "json",
             "-show_format",
             "-show_streams",
-            "-stimeout", "5000000",  # 设置流读取超时时间为5秒（5000000微秒）
+            "-stimeout", "15000000",  # 设置流读取超时时间为5秒（15000000微秒）
             url
         ]
         
