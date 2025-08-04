@@ -76,7 +76,7 @@ jobs:
 
       # 步骤 6：运行 IPTV 频道处理脚本
       - name: 运行 IPTV 频道处理脚本
-        run: python IPTV Channel Processor.py
+        run: python Channel Processor.py
         shell: bash
 
       # 步骤 7：保存日志和生成文件
