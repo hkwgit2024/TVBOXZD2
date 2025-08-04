@@ -1,15 +1,15 @@
-name: simple_iptv_discover
+name: IPTV URL Processor
 
 # 触发条件
 on:
   workflow_dispatch:  # 允许手动触发
   schedule:
-    - cron: '0 */168 * * *'  # 每周运行一次 (每周运行一次，保持不变)
+    - cron: '0 */168 * * *'  # 每周运行一次
 
 jobs:
-  discover_urls: # 将 Job 名称改为更具描述性的 discover_urls
+  process_iptv: # 更改 Job 名称以反映其功能
     runs-on: ubuntu-latest
-    timeout-minutes: 60  # 搜索和保存 URL 任务通常耗时较短，可将超时时间适当缩短，例如 60 分钟
+    timeout-minutes: 180  # 适当调整超时时间，例如 3 小时，因为它需要处理大量 URL 和频道
     permissions:
       contents: write  # 授予写入权限，用于提交和推送更改
 
@@ -37,36 +37,42 @@ jobs:
           python-version: '3.12'
           cache: 'pip'  # 缓存 pip 依赖
 
-      # 步骤 4：安装 Python 依赖 (只安装 simple_iptv_discover.py 所需的依赖)
+      # 步骤 4：安装 Python 依赖 (根据 iptv_processor.py 的实际需求精简)
       - name: 安装 Python 依赖
         run: |
-          pip install pyyaml requests cachetools
-        # simple_iptv_discover.py 只需要这三个库
+          pip install pyyaml requests cachetools tenacity
+          # 确保安装了 tenacity，因为 fetch_url_content_with_retry 函数使用了它
+          # 移除了 aiohttp, beautifulsoup4, psutil, dnspython, tqdm, aiofiles 等，因为 iptv_processor.py 不直接使用或简化了相关功能
 
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # 移除安装 FFmpeg 和验证 ffprobe 的步骤，因为 simple_iptv_discover.py 不需要它们。
-      # 步骤 5: 运行 IPTV URL 发现脚本
-      - name: 运行 IPTV URL 发现脚本
+      # 步骤 5：运行 IPTV 处理脚本
+      # 移除了安装和验证 FFmpeg (ffprobe) 的步骤，因为 iptv_processor.py 不再依赖它们
+      - name: 运行 IPTV 处理脚本
         env:
-          BOT: ${{ secrets.TOKEN }} # 确保脚本能获取到 GitHub token
-        run: python simple_iptv_discover.py # 运行提取出的脚本
+          BOT: ${{ secrets.TOKEN }} # 将 GitHub token 传递给脚本
+        run: python iptv_processor.py # 运行精简后的处理脚本
 
-      # 步骤 6：保存日志和生成文件 (调整为 simple_iptv_discover.py 的输出文件)
+      # 步骤 6：保存日志和生成文件 (根据 iptv_processor.py 的输出调整)
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
-          name: discovered-urls-results
+          name: iptv-processed-results
           path: |
-            logs/iptv_discover.log # 捕获日志文件
-            output/urls.txt        # 捕获生成的 urls.txt 文件
+            logs/iptv_processor.log       # 捕获日志文件 (根据新脚本的日志文件命名约定调整)
+            output/urls.txt               # 捕获更新后的 URL 列表
+            output/*.m3u                  # 捕获最终的 IPTV M3U 文件
+            output/uncategorized_channels.txt # 捕获未分类频道文件
+            output/channels/              # 捕获分类频道文件目录
+            # config/*.txt                  # 如果有其他想保存的config文件
+            # config/*.json
           retention-days: 7
           if-no-files-found: warn
           compression-level: 6
           overwrite: false
           include-hidden-files: false
-        if: always()
+        if: always() # 无论成功失败都上传，方便调试
 
       # 步骤 7：检查文件更改
       - name: 检查文件更改
@@ -88,7 +94,7 @@ jobs:
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git commit --allow-empty -m "更新 IPTV 发现的 URL 列表 ($(date +'%Y-%m-%d %H:%M'))"
+          git commit --allow-empty -m "更新 IPTV URL 及频道列表 ($(date +'%Y-%m-%d %H:%M'))"
 
       # 步骤 9：推送更改 (优先合并)
       - name: 推送更改 (优先合并)
@@ -104,5 +110,5 @@ jobs:
       # 步骤 10：发送运行结果通知
       - name: 发送运行结果通知
         run: |
-          echo "IPTV URL 发现工作流完成，状态: ${{ job.status }}"
-          echo "请检查 artifact 中的 iptv_discover.log 以获取详细信息"
+          echo "IPTV URL 发现和处理工作流完成，状态: ${{ job.status }}"
+          echo "请检查 artifact 中的日志文件以获取详细信息"
