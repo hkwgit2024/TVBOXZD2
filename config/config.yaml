@@ -1,15 +1,45 @@
+
 # IPTV 频道处理脚本的配置文件
 # 说明：此配置文件用于 tv.py 脚本，控制 IPTV 源抓取、分类、过滤和输出。
 # 格式：YAML，所有字段需遵循 YAML 语法，顶级字段顶格写，子字段缩进 2 个空格。
 
 # GitHub 搜索关键词
 search_keywords:
-  # 核心英文关键词 (精确匹配文件扩展名和路径)
-
-  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
- 
-
-  
+  - "EPG"
+  - "extension:m3u8 in:file"
+  - "extension:m3u in:file"
+  - "playlist.m3u8 in:file"
+  - "index.m3u8 in:file"
+  - "iptv links"
+  - "m3u8 playlist"
+  - "iptv list"
+  - "iptv channels"
+  - "live tv playlist"
+  - "free iptv"
+  - "public iptv"
+  - "tv channels list"
+  - "iptvbox"
+  - "TVBOX"
+  - "CCTV1"
+  - "CCTV5"
+  - "湖南卫视"
+  - "凤凰卫视"
+  - "港澳台直播"
+  - "海外直播"
+  - "体育直播"
+  - "电影频道"
+  - "电视源"
+  - "直播链接"
+  - "高清直播"
+  - "超高清直播"
+  - "4K直播"
+  - "国内直播"
+  - "国际直播"
+  - "网络直播源"
+  - "IPTV2025"
+  - "M3U源"
+  - "直播流"
+  - "HLS直播"
   
   
 
@@ -100,9 +130,6 @@ backup_urls:
 
 # 频道名称过滤词（小写匹配，过滤包含以下词的频道）
 name_filter_words:
-  - "视觉艺术"  
-  - "探花"  
-  - "黑人"  
   - "之声"                         # 过滤广播类频道
   - "购物"                         # 过滤购物频道
   - "理财"                         # 过滤理财频道
