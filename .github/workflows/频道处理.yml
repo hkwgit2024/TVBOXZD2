@@ -40,7 +40,7 @@ jobs:
       # 步骤 4：安装 Python 依赖
       - name: 安装 Python 依赖
         run: |
-          pip install requests pyyaml tenacity cachetools
+          pip install requests pyyaml tenacity cachetools psutil
         shell: bash
 
       - name: 设置时区
