@@ -51,7 +51,7 @@ jobs:
         run: python Viptv_processor.py
         shell: bash
 
-      # 步骤 6：保存日志和生成文件
+      # 6. 保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
