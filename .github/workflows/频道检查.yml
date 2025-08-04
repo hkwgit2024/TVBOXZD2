@@ -1,4 +1,4 @@
-name: IPTV 250724 (频道检查)
+name: iptv_checker (频道检查)
 
 # 触发条件
 on:
