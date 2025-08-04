@@ -9,7 +9,7 @@ on:
 jobs:
   process_iptv: # 更改 Job 名称以反映其功能
     runs-on: ubuntu-latest
-    timeout-minutes: 180  # 适当调整超时时间，例如 3 小时，因为它需要处理大量 URL 和频道
+  
     permissions:
       contents: write  # 授予写入权限，用于提交和推送更改
 
