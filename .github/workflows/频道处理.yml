@@ -46,47 +46,19 @@ jobs:
       - name: 设置时区
         run: sudo timedatectl set-timezone 'Asia/Shanghai'
 
-      # 步骤 5：创建 config.yaml 文件以确保脚本正常运行
-      - name: 创建 config.yaml 文件
-        run: |
-          mkdir -p config
-          cat << EOF > config/config.yaml
-          logging:
-            log_level: INFO
-            log_file: iptv_processor.log
-          network:
-            max_workers: 10
-            requests_pool_size: 10
-            requests_retry_backoff_factor: 0.1
-          performance_monitor:
-            enabled: true
-          url_state:
-            cache_enabled: false
-            cache_dir: .cache
-            cache_ttl: 3600
-          output:
-            paths:
-              channel_cache_file: 'config/channel_cache.json'
-              final_iptv_file: 'iptv_list_temp.txt'
-            filters:
-              url_blacklist:
-                - "localhost"
-          EOF
-        shell: bash
-
-      # 步骤 6：运行 IPTV 频道处理脚本
+      # 步骤 5：运行 IPTV 频道处理脚本
       - name: 运行 IPTV 频道处理脚本
         run: python Viptv_processor.py
         shell: bash
 
-      # 步骤 7：保存日志和生成文件
+      # 步骤 6：保存日志和生成文件
       - name: 保存日志和生成文件
         uses: actions/upload-artifact@v4
         with:
           name: iptv-results
           path: |
             iptv_list_temp.txt
-            iptv_processor.log
+            Viptv_processor.log
             config/
             urls.txt
           retention-days: 7
@@ -96,7 +68,7 @@ jobs:
           include-hidden-files: false
         if: always()
 
-      # 步骤 8：检查文件更改
+      # 步骤 7：检查文件更改
       - name: 检查文件更改
         id: check_changes
         run: |
@@ -110,7 +82,7 @@ jobs:
           fi
         shell: bash
 
-      # 步骤 9：提交更改
+      # 步骤 8：提交更改
       - name: 提交更改
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -119,7 +91,7 @@ jobs:
           git commit --allow-empty -m "更新 IPTV 频道列表 ($(date +'%Y-%m-%d %H:%M'))"
         shell: bash
 
-      # 步骤 10：推送更改 (优先合并)
+      # 步骤 9：推送更改 (优先合并)
       - name: 推送更改 (优先合并)
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -131,9 +103,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         shell: bash
 
-      # 步骤 11：发送运行结果通知
+      # 步骤 10：发送运行结果通知
       - name: 发送运行结果通知
         run: |
           echo "IPTV 频道处理工作流完成，状态: ${{ job.status }}"
-          echo "请检查 artifact 中的 iptv_processor.log 以获取详细信息"
+          echo "请检查 artifact 中的 Viptv_processor.log 以获取详细信息"
         shell: bash
