@@ -1,4 +1,4 @@
-name: IPTV URL Processor
+name: IPTV URL Processor(频道提取)
 
 # 触发条件
 on:
