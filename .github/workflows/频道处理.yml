@@ -1,4 +1,4 @@
-name: (频道处理)
+name: IPTV Channel Processor (频道处理)
 
 # 触发条件
 on:
@@ -76,7 +76,7 @@ jobs:
 
       # 步骤 6：运行 IPTV 频道处理脚本
       - name: 运行 IPTV 频道处理脚本
-        run: python Channel Processor.py
+        run: python Viptv_processor.py
         shell: bash
 
       # 步骤 7：保存日志和生成文件
