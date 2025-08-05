@@ -4,124 +4,32 @@
 
 # GitHub 搜索关键词
 search_keywords:
-  # 核心英文关键词 (精确匹配文件扩展名和路径)
-  - "extension:m3u8 in:file"
-  - "extension:m3u in:file"
-  - "iptv playlist extension:m3u,m3u8 in:file"
-  - "raw.githubusercontent.com path:.m3u8"
-  - "raw.githubusercontent.com path:.m3u"
-  - "tv channels extension:m3u,m3u8 in:file"
-  - "live tv extension:m3u,m3u8 in:file"
-  - "playlist.m3u8 in:file" # 直接搜索常见播放列表文件名
-  - "index.m3u8 in:file"
-  - "channels.m3u in:file"
- # 通用英文关键词
-  - "iptv links" # 稍微放宽，依赖后续过滤
-  - "m3u8 playlist"
-  - "iptv list"
-  - "m3u channels"
-  - "iptv channels"
-  - "live tv playlist"
-  - "free iptv"
-  - "public iptv"
-  - "tv channels list"
-  - "stream list"
-  - "live stream list"
-  - "m3u stream"
-  - "m3u8 stream"
-  # 特定平台和CDN关键词
-  - "raw.githubusercontent.com m3u" # GitHub raw 内容
-  - "gist.github.com m3u" # GitHub Gist
-  - "cdn.jsdelivr.net m3u" # jsDelivr CDN
-  - "fastly.net m3u8" # Fastly CDN (可能较宽泛)
-  - "gitee.com m3u" # Gitee 码云
- # 新增平台扩展 (注意：部分平台搜索语法可能与GitHub不同，效果待验证)
-  - "site:gitlab.com inurl:.m3u" # GitLab, inurl 可能匹配路径中的 .m3u
-  - "site:gitlab.com m3u8" # GitLab, 搜索 m3u8 文件或内容
-  - "site:bitbucket.org filetype:m3u" # Bitbucket 搜索 m3u 文件
-  - "site:bitbucket.org filetype:m3u8" # Bitbucket 搜索 m3u8 文件
-  - "site:pastebin.com ext:m3u" # Pastebin (ext:m3u 可能指其内部标签或分类)
-  - "site:pastebin.com m3u8" # Pastebin 搜索 m3u8
-  - "site:sourcetech.cn iptv"  # 国内源码站 (搜索 "iptv")
-  - "site:52pojie.cn 直播源"    # 吾爱破解论坛 (搜索 "直播源")
-
-  # 技术和协议相关关键词
-  - "iptv source"
-  - "live stream source"
-  - "m3u8 source"
-  - "tv stream"
-  - "streaming list"
-  - "open source iptv"
-  - "iptv repository"
-  - "m3u playlist 2025" # 年份关键词 (提示: 需每年手动更新为当前或下一年份以获取最新资源)
-  - "iptv m3u8 2025"   # 年份关键词 (同上)
-  - "hls stream" # HLS 协议
-  - "dash stream" # MPEG-DASH 协议
-  - "iptv epg" # 电子节目指南
-  - "iptv github" # 明确在GitHub上搜索IPTV相关项目
-  # - "hls:// in:file" # 这种协议前缀直接在文件中较少见，但可尝试
-  # - "dash.mpd in:file" # 搜索DASH清单文件
-  # - "httpstream:// in:file" # 同hls://
-  - "m3u8?token=" # 搜索带token的m3u8链接，可能包含临时或私有链接
-
-  # 核心中文关键词
-  - "直播源"
-  - "电视直播"
-  - "IPTV直播"
-  - "M3U直播"
-  - "M3U8直播"
-  - "频道列表"
-  - "免费直播"
-  - "公共直播"
-  - "聚合直播"
-  - "直播源.txt" # 搜索包含直播源的文本文件
-  - "电视直播.m3u"
-  - "电视直播.m3u8"
-  - "iptv源"
-  - "直播地址"
-  - "网络电视"
-  - "节目单"
-  - "最新直播源"
-  - "稳定直播源"
-  - "组播源"
-  - "iptvbox" # TVBox 应用相关
-  - "TVBOX"
-  - "EPG" # 电子节目单
-
-  # 特定中文频道/内容关键词 (示例，可根据需求增删)
-  - "CCTV1"
-  - "CCTV5"
-  - "湖南卫视"
-  - "凤凰卫视"
-  - "港澳台直播"
-  - "海外直播"
-  - "体育直播"
-  - "电影频道"
-
-  # 新增中文技术关键词
-  - "电视源"
-  - "直播链接"
-  - "IPTV地址"
-  - "高清直播"
-  - "超高清直播"
-  - "4K直播"
-  - "直播聚合"
-  - "国内直播"
-  - "国际直播"
-  - "网络直播源"
-  - "IPTV2025" # 年份关键词 (提示: 需每年手动更新)
-  - "直播源合集"
-  - "M3U源"
-  - "M3U8源"
-  - "电视节目单"
-  - "直播流"
-  - "HLS直播" # 中文的HLS
-  - "DASH直播" # 中文的DASH
-  - "低延迟源"
-  - "DASH流"
-  - "HEVC源"
-  - "IPv6直播"
-
+- "extension:m3u8 in:file"
+- "extension:m3u in:file"
+- "index.m3u8 in:file"
+- "channels.m3u in:file"
+- "TVBOX"
+- "iptv links"
+- "m3u8 playlist"
+- "iptv list"
+- "m3u channels"
+- "iptv channels"
+- "live tv playlist"
+- "直播流"
+- "HLS直播"
+- "电视源"
+- "直播链接"
+- "网络直播源"
+- "CCTV1"
+- "凤凰卫视"
+- "电影频道"
+- "湖南卫视"
+- "CCTV5"
+- "4K直播"
+- "EPG"
+- "组播源"
+- "海外直播"
+- "国际直播"
   
   
   
