@@ -29,7 +29,7 @@ def setup_logging(config):
     返回:
         配置好的日志记录器
     """
-    log_level = getattr(logging, config['logging']['log_level'], logging.INFO)
+    log_level = getattr(logging, config['logging']['log_level'], logging.ERROR)
     log_file = config['logging']['log_file']
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
     
