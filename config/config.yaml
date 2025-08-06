@@ -78,6 +78,7 @@ output:
     channels_dir: "temp_channels"   # 临时频道文件目录（默认 temp_channels）
     output_dir: "output"            # 最终输出目录（默认 output）
     INPUT_CHANNELS_PATH: "output/iptv.txt"
+    CATEGORY_CONFIG_PATH: "config/demo.txt"
     final_iptv_file: "output/iptv_list.txt" # 最终 IPTV 列表文件
     uncategorized_channels_file: "output/uncategorized_iptv.txt" # 未分类频道输出文件
     high_quality_iptv_file: "output/high_quality_iptv.txt" # 高质量频道列表文件
