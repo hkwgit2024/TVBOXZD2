@@ -8,12 +8,7 @@ on:
       - 'search_github_urls.py'
       - '.github/workflows/search.yml'
       - 'config/urls.txt'
-  # 添加 workflow_dispatch 事件以支持手动运行
   workflow_dispatch:
-
-  # 您也可以配置定时触发，例如每天运行一次
-  # schedule:
-  #   - cron: '0 0 * * *' # 每天 UTC 时间午夜运行
 
 jobs:
   search_and_update:
@@ -64,4 +59,6 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git commit -a -m "feat: auto discover new IPTV URLs"
+          # 在推送前先拉取远程更改，以避免非快进式更新错误
+          git pull --rebase
           git push
