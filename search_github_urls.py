@@ -1,47 +1,56 @@
-# github_search.py
-
 import os
 import re
-import time
+import subprocess
 import requests
-import yaml
+import time
 import logging
 import logging.handlers
-import hashlib
+import yaml
 from urllib.parse import urlparse
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from tqdm import tqdm
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 
-# 配置日志系统
+# 配置日志系统，支持文件和控制台输出
 def setup_logging(config):
-    """配置日志系统，支持文件和控制台输出，日志文件自动轮转以避免过大"""
+    """配置日志系统，支持文件和控制台输出，日志文件自动轮转以避免过大
+    参数:
+        config: 配置文件字典，包含日志级别和日志文件路径
+    返回:
+        配置好的日志记录器
+    """
     log_level = getattr(logging, config['logging']['log_level'], logging.INFO)
     log_file = config['logging']['log_file']
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
-    
+
     logger = logging.getLogger()
     logger.setLevel(log_level)
-    
+
+    # 文件处理器，支持日志文件轮转，最大10MB，保留1个备份
     file_handler = logging.handlers.RotatingFileHandler(
         log_file, maxBytes=10*1024*1024, backupCount=1
     )
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
-    
+
+    # 控制台处理器
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
-    
+
     logger.handlers = [file_handler, console_handler]
     return logger
 
 # 加载配置文件
 def load_config(config_path="config/config.yaml"):
-    """加载并解析 YAML 配置文件"""
+    """加载并解析 YAML 配置文件
+    参数:
+        config_path: 配置文件路径，默认为 'config/config.yaml'
+    返回:
+        解析后的配置字典
+    """
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file)
@@ -57,7 +66,41 @@ def load_config(config_path="config/config.yaml"):
         logging.error(f"错误：加载配置文件 '{config_path}' 失败: {e}")
         exit(1)
 
-# 配置文件路径
+# 读取本地 TXT 文件
+def read_txt_to_array_local(file_name):
+    """从本地 TXT 文件读取内容到数组
+    参数:
+        file_name: 文件路径
+    返回:
+        包含文件每行内容的列表
+    """
+    try:
+        with open(file_name, 'r', encoding='utf-8') as file:
+            lines = [line.strip() for line in file if line.strip()]
+        return lines
+    except FileNotFoundError:
+        logging.warning(f"文件 '{file_name}' 未找到")
+        return []
+    except Exception as e:
+        logging.error(f"读取文件 '{file_name}' 失败: {e}")
+        return []
+
+# 写入本地 TXT 文件
+def write_array_to_txt_local(file_path, data_array):
+    """将数组内容写入本地 TXT 文件
+    参数:
+        file_path: 输出文件路径
+        data_array: 要写入的数据数组
+    """
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write('\n'.join(data_array))
+        logging.info(f"写入 {len(data_array)} 行到 '{file_path}'")
+    except Exception as e:
+        logging.error(f"写入文件 '{file_path}' 失败: {e}")
+
+# 加载配置和设置日志
 CONFIG_PATH = "config/config.yaml"
 CONFIG = load_config(CONFIG_PATH)
 setup_logging(CONFIG)
@@ -68,11 +111,12 @@ if not GITHUB_TOKEN:
     logging.error("错误：未设置环境变量 'BOT'")
     exit(1)
 
-# GitHub API 配置
+# 从配置中获取文件路径
+URLS_PATH = CONFIG['output']['paths']['channel_cache_file'].replace('channel_cache.json', 'urls.txt')
+
+# GitHub API 基础 URL
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
-# URLS_PATH: 存储 IPTV 源 URL 的文件路径
-URLS_PATH = CONFIG['output']['paths']['channel_cache_file'].replace('channel_cache.json', 'urls.txt')
 
 # 配置 requests 会话
 session = requests.Session()
@@ -94,44 +138,12 @@ adapter = HTTPAdapter(
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
-def read_txt_to_array_local(file_name):
-    """从本地 TXT 文件读取内容到数组"""
-    try:
-        with open(file_name, 'r', encoding='utf-8') as file:
-            lines = [line.strip() for line in file if line.strip()]
-        return lines
-    except FileNotFoundError:
-        logging.warning(f"文件 '{file_name}' 未找到")
-        return []
-    except Exception as e:
-        logging.error(f"读取文件 '{file_name}' 失败: {e}")
-        return []
-
-def write_array_to_txt_local(file_path, data_array):
-    """将数组内容写入本地 TXT 文件"""
-    try:
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w', encoding='utf-8') as file:
-            file.write('\n'.join(data_array))
-        logging.info(f"写入 {len(data_array)} 行到 '{file_path}'")
-    except Exception as e:
-        logging.error(f"写入文件 '{file_path}' 失败: {e}")
-
-# 新增一个装饰器，用于在执行时显示进度条
-def progress_bar_monitor(func):
-    """显示函数执行进度条的装饰器"""
-    def wrapper(*args, **kwargs):
-        keywords = CONFIG.get('search_keywords', [])
-        total_pages = CONFIG['github']['max_search_pages']
-        
-        with tqdm(total=len(keywords) * total_pages, desc="GitHub 搜索进度") as pbar:
-            result = func(*args, pbar=pbar, **kwargs)
-        return result
-    return wrapper
-
-@progress_bar_monitor
-def auto_discover_github_urls(urls_file_path_local, github_token, pbar=None):
-    """从 GitHub 自动发现新的 IPTV 源 URL，并更新进度条"""
+def auto_discover_github_urls(urls_file_path_local, github_token):
+    """从 GitHub 自动发现新的 IPTV 源 URL
+    参数:
+        urls_file_path_local: 本地 URL 文件路径
+        github_token: GitHub API 令牌
+    """
     if not github_token:
         logging.warning("未提供 GitHub token，跳过 URL 自动发现")
         return
@@ -153,8 +165,11 @@ def auto_discover_github_urls(urls_file_path_local, github_token, pbar=None):
 
     logging.warning("开始从 GitHub 自动发现新的 IPTV 源 URL")
     keyword_url_counts = {keyword: 0 for keyword in CONFIG.get('search_keywords', [])}
+    
+    keywords_list = CONFIG.get('search_keywords', [])
+    total_keywords = len(keywords_list)
 
-    for i, keyword in enumerate(CONFIG.get('search_keywords', [])):
+    for i, keyword in enumerate(tqdm(keywords_list, desc="关键词搜索进度")):
         keyword_found_urls = set()
         if i > 0:
             logging.warning(f"切换到下一个关键词: '{keyword}'，等待 {CONFIG['github']['retry_wait']} 秒以避免速率限制")
@@ -178,9 +193,6 @@ def auto_discover_github_urls(urls_file_path_local, github_token, pbar=None):
                 )
                 response.raise_for_status()
                 data = response.json()
-                
-                # 更新进度条
-                pbar.update(1)
 
                 rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
                 rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
@@ -221,7 +233,7 @@ def auto_discover_github_urls(urls_file_path_local, github_token, pbar=None):
                             logging.info(f"获取 {raw_url} 内容失败: {req_e}")
                         except Exception as exc:
                             logging.info(f"检查 {raw_url} 内容时发生意外错误: {exc}")
-                
+
                 logging.info(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
 
@@ -251,5 +263,5 @@ def auto_discover_github_urls(urls_file_path_local, github_token, pbar=None):
     for keyword, count in keyword_url_counts.items():
         logging.warning(f"关键词 '{keyword}' 发现 {count} 个新 URL")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
