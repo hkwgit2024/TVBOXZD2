@@ -1,13 +1,15 @@
 import os
 import re
+import subprocess
+import requests
 import time
 import logging
 import logging.handlers
 import yaml
 from urllib.parse import urlparse
-from tqdm.asyncio import tqdm
-import aiohttp
-import asyncio
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+from tqdm import tqdm
 
 # 配置日志系统，支持文件和控制台输出
 def setup_logging(config):
@@ -19,7 +21,6 @@ def setup_logging(config):
     logger = logging.getLogger()
     logger.setLevel(log_level)
 
-    # 文件处理器，支持日志文件轮转，最大10MB，保留1个备份
     file_handler = logging.handlers.RotatingFileHandler(
         log_file, maxBytes=10*1024*1024, backupCount=1
     )
@@ -27,7 +28,6 @@ def setup_logging(config):
         '%(asctime)s - %(levelname)s - %(message)s'
     ))
 
-    # 控制台处理器
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(logging.Formatter(
         '%(asctime)s - %(levelname)s - %(message)s'
@@ -90,41 +90,80 @@ if not GITHUB_TOKEN:
     logging.error("错误：未设置环境变量 'BOT'")
     exit(1)
 
-# 将 URLS_PATH 修改为 'config/urls.txt'
+# URL 文件路径
 URLS_PATH = 'config/urls.txt'
 
 # GitHub API 基础 URL
 GITHUB_API_BASE_URL = "https://api.github.com"
 SEARCH_CODE_ENDPOINT = "/search/code"
 
-async def check_url_validity(session, url):
-    """异步检查 URL 是否有效，只通过响应头判断"""
-    try:
-        async with session.head(url, timeout=5) as response:
-            response.raise_for_status()
-            content_type = response.headers.get('Content-Type', '').lower()
-            if 'text' in content_type or 'json' in content_type:
-                return url
-            else:
-                logging.info(f"URL {url} 的 Content-Type '{content_type}' 不匹配，跳过")
-                return None
-    except Exception as e:
-        return None
+# 配置 requests 会话
+session = requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+})
+retry_strategy = Retry(
+    total=3,
+    backoff_factor=CONFIG['network']['requests_retry_backoff_factor'],
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
+session.mount("http://", adapter)
+session.mount("https://", adapter)
 
-async def search_github_by_keyword(session, keyword, existing_urls, found_urls, semaphore):
-    """异步按关键词搜索 GitHub"""
+def check_url_validity(url):
+    """同步检查 URL 是否有效，只通过响应头判断"""
+    try:
+        response = session.head(url, timeout=5)
+        response.raise_for_status()
+        content_type = response.headers.get('Content-Type', '').lower()
+        if 'text' in content_type or 'json' in content_type:
+            return True
+        else:
+            logging.info(f"URL {url} 的 Content-Type '{content_type}' 不匹配，跳过")
+            return False
+    except Exception as e:
+        # logging.info(f"检查 URL 有效性失败: {url} - {e}")
+        return False
+
+def auto_discover_github_urls(urls_file_path_local, github_token):
+    """从 GitHub 自动发现新的 IPTV 源 URL，使用同步方式"""
+    if not github_token:
+        logging.warning("未提供 GitHub token，跳过 URL 自动发现")
+        return
+
+    existing_urls = set(read_txt_to_array_local(urls_file_path_local))
+    found_urls = set()
+    
+    # 获取备用 URL
+    for backup_url in CONFIG.get('backup_urls', []):
+        try:
+            response = session.get(backup_url, timeout=10)
+            response.raise_for_status()
+            existing_urls.update([line.strip() for line in response.text.split('\n') if line.strip()])
+        except Exception as e:
+            logging.warning(f"从备用 URL {backup_url} 获取失败: {e}")
+
     headers = {
         "Accept": "application/vnd.github.v3.text-match+json",
-        "Authorization": f"token {GITHUB_TOKEN}"
+        "Authorization": f"token {github_token}"
     }
 
-    page = 1
-    urls_to_check = []
+    logging.warning("开始从 GitHub 自动发现新的 IPTV 源 URL")
     
-    while page <= CONFIG['github']['max_search_pages']:
-        # 在发送请求前，先获取信号量，控制并发
-        await semaphore.acquire()
-        try:
+    keywords_list = CONFIG.get('search_keywords', [])
+    for i, keyword in enumerate(tqdm(keywords_list, desc="关键词搜索进度")):
+        keyword_found_urls = set()
+        
+        # 在处理每个关键词之前，强制等待以避免短时间内触发速率限制
+        if i > 0:
+            wait_time = CONFIG['github'].get('retry_wait', 5)
+            logging.warning(f"切换到下一个关键词: '{keyword}'，等待 {wait_time} 秒以避免速率限制")
+            time.sleep(wait_time)
+
+        page = 1
+        while page <= CONFIG['github']['max_search_pages']:
             params = {
                 "q": keyword,
                 "sort": "indexed",
@@ -132,15 +171,25 @@ async def search_github_by_keyword(session, keyword, existing_urls, found_urls, 
                 "per_page": CONFIG['github']['per_page'],
                 "page": page
             }
-            async with session.get(
-                f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
-                headers=headers,
-                params=params,
-                timeout=CONFIG['github']['api_timeout']
-            ) as response:
+            try:
+                response = session.get(
+                    f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
+                    headers=headers,
+                    params=params,
+                    timeout=CONFIG['github']['api_timeout']
+                )
                 response.raise_for_status()
-                data = await response.json()
-                
+                data = response.json()
+
+                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
+                rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
+
+                if rate_limit_remaining == 0:
+                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
+                    logging.warning(f"GitHub API 速率限制达到，剩余请求: 0，等待 {wait_seconds:.0f} 秒")
+                    time.sleep(wait_seconds)
+                    continue
+
                 if not data.get('items'):
                     logging.info(f"关键词 '{keyword}' 在第 {page} 页无结果")
                     break
@@ -148,70 +197,31 @@ async def search_github_by_keyword(session, keyword, existing_urls, found_urls, 
                 for item in data['items']:
                     html_url = item.get('html_url', '')
                     match = re.search(r'https?://github\.com/([^/]+)/([^/]+)/blob/([^/]+)/(.*)', html_url)
-                    if match:
-                        user, repo, branch, file_path = match.groups()
-                        raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
-                        
-                        if re.search(r'\.(m3u8|m3u|txt|csv|json|pls|xspf)$', raw_url, re.IGNORECASE):
-                            if raw_url not in existing_urls and raw_url not in found_urls:
-                                urls_to_check.append(raw_url)
+                    if not match:
+                        continue
+                    
+                    user, repo, branch, file_path = match.groups()
+                    raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
+                    
+                    # 只有当 URL 扩展名符合要求且未曾发现时，才进行下一步检查
+                    if re.search(r'\.(m3u8|m3u|txt|csv|json|pls|xspf)$', raw_url, re.IGNORECASE) and raw_url not in existing_urls and raw_url not in found_urls:
+                        if check_url_validity(raw_url):
+                            found_urls.add(raw_url)
+                            keyword_found_urls.add(raw_url)
+                            logging.info(f"发现并校验通过的新URL: {raw_url}")
                         else:
-                            logging.debug(f"URL {raw_url} 扩展名不匹配，跳过")
+                            logging.info(f"URL {raw_url} 无效或不包含文本内容，跳过")
 
+                logging.info(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
 
-        except aiohttp.ClientResponseError as e:
-            if e.status == 403:
-                logging.error(f"GitHub API 速率限制或访问被拒绝，关键词 '{keyword}': {e}")
-                # 遇到403，不再继续此关键词，但可以继续其他关键词
-                return
-            logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
-            break
-        except Exception as e:
-            logging.error(f"搜索 GitHub 关键词 '{keyword}' 时发生意外错误: {e}")
-            break
-        finally:
-            semaphore.release()
-            
-    # 异步检查 URL 的有效性
-    if urls_to_check:
-        tasks = [check_url_validity(session, url) for url in urls_to_check]
-        valid_urls = await tqdm.gather(*tasks, desc=f"校验关键词 '{keyword}' 的URL", leave=False)
-        for url in valid_urls:
-            if url:
-                found_urls.add(url)
-                logging.info(f"发现并校验通过的新URL: {url}")
-
-async def auto_discover_github_urls_async(urls_file_path_local):
-    """从 GitHub 自动发现新的 IPTV 源 URL，使用异步方式"""
-    if not GITHUB_TOKEN:
-        logging.warning("未提供 GitHub token，跳过 URL 自动发现")
-        return
-
-    existing_urls = set(read_txt_to_array_local(urls_file_path_local))
-    found_urls = set()
-    
-    logging.warning("开始从 GitHub 自动发现新的 IPTV 源 URL")
-    
-    concurrent_searches = CONFIG['github'].get('concurrent_searches', 5)
-    semaphore = asyncio.Semaphore(concurrent_searches)
-    
-    async with aiohttp.ClientSession() as session:
-        # 处理备用 URL (同步处理即可，数量通常不多)
-        for backup_url in CONFIG.get('backup_urls', []):
-            try:
-                async with session.get(backup_url, timeout=10) as response:
-                    response.raise_for_status()
-                    content = await response.text()
-                    existing_urls.update([line.strip() for line in content.split('\n') if line.strip()])
+            except requests.exceptions.RequestException as e:
+                logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
+                break
             except Exception as e:
-                logging.warning(f"从备用 URL {backup_url} 获取失败: {e}")
-
-        keywords_list = CONFIG.get('search_keywords', [])
-        tasks = [search_github_by_keyword(session, keyword, existing_urls, found_urls, semaphore) for keyword in keywords_list]
-        
-        await asyncio.gather(*tasks)
-
+                logging.error(f"搜索 GitHub 关键词 '{keyword}' 时发生意外错误: {e}")
+                break
+    
     if found_urls:
         updated_urls = sorted(list(existing_urls | found_urls))
         logging.warning(f"发现 {len(found_urls)} 个新唯一 URL，总计保存 {len(updated_urls)} 个 URL")
@@ -219,5 +229,10 @@ async def auto_discover_github_urls_async(urls_file_path_local):
     else:
         logging.warning("未发现新的 IPTV 源 URL")
 
+    for keyword in keywords_list:
+        count = len([url for url in found_urls if keyword in url])
+        logging.info(f"关键词 '{keyword}' 最终发现 {count} 个新 URL")
+
+
 if __name__ == "__main__":
-    asyncio.run(auto_discover_github_urls_async(URLS_PATH))
+    auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
