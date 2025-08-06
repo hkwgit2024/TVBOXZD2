@@ -1,4 +1,4 @@
-name: Check and Categorize IPTV Channels
+name: ffmpeg
 
 on:
   push:
