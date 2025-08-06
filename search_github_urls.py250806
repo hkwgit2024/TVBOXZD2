@@ -123,21 +123,20 @@ def check_url_validity(url):
     except Exception as e:
         return False
 
-def handle_rate_limit(response, keyword):
-    """检查并处理 GitHub API 速率限制"""
-    rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-    rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-    
+def check_github_rate_limit(headers, keyword):
+    """检查并处理 GitHub API 速率限制，如果需要则暂停执行"""
+    rate_limit_remaining = int(headers.get('X-RateLimit-Remaining', 0))
+    rate_limit_reset = int(headers.get('X-RateLimit-Reset', 0))
     current_time = int(time.time())
-    wait_seconds = 0
-    
-    # 当剩余请求数不足时，主动等待
-    if rate_limit_remaining < 20: # 设一个保守的阈值
+
+    # 搜索 API 有更严格的限制，这里我们检查是否还有足够的请求数
+    if rate_limit_remaining <= 5: # 保守一点，留一些余量
         wait_seconds = max(0, rate_limit_reset - current_time) + 5
-        logging.warning(f"GitHub API 剩余请求数低 ({rate_limit_remaining})，关键词 '{keyword}'。等待 {wait_seconds:.0f} 秒直到重置。")
+        logging.warning(f"GitHub API 剩余请求数过低 ({rate_limit_remaining})，关键词 '{keyword}'。脚本将暂停 {wait_seconds:.0f} 秒直到速率限制重置。")
         time.sleep(wait_seconds)
-        
-    return wait_seconds
+        return True
+    
+    return False
 
 def auto_discover_github_urls(urls_file_path_local, github_token):
     """从 GitHub 自动发现新的 IPTV 源 URL，使用同步方式"""
@@ -189,6 +188,10 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                     params=params,
                     timeout=CONFIG['github']['api_timeout']
                 )
+                
+                # 每次请求后立即检查速率限制
+                check_github_rate_limit(response.headers, keyword)
+                
                 response.raise_for_status()
                 data = response.json()
 
@@ -215,14 +218,10 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
 
                 logging.info(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
-                
-                # 每处理完一页，检查并处理速率限制
-                handle_rate_limit(response, keyword)
 
             except requests.exceptions.HTTPError as e:
                 if e.response.status_code == 403:
                     logging.error(f"GitHub API 速率限制或访问被拒绝，关键词 '{keyword}': {e}")
-                    # 遇到 403 错误，直接跳过当前关键词
                     break
                 logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
                 break
