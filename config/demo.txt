@@ -1070,6 +1070,38 @@ HZTV-2|HZTV2|Huizhou TV 2|
 绍兴综合|绍兴综合高清|Shaoxing Comprehensive|
 金华综合|金华综合高清|Jinhua Comprehensive|
 台州综合|台州综合高清|Taizhou Comprehensive|
+新闻与资讯,#genre#
+Bloomberg News
+Bloomberg Quicktake (1080p)
+CBS News Miami (720p)
+Fox News Now (720p)
+Fox NewsNOW
+Sky News 天空电视台新闻
+RT News (1080p) [Geo blocked]
+Deutsche welle德国国家电视台英语新闻
+TVBS新闻
+TVBS新闻G
+TVBS新闻台
+TVBS新闻歡樂
+TVB新闻台
+Now新闻332台
+东森新闻
+东森新闻美洲卫视
+中天新闻娛樂
+中天新闻娱乐
+中天新闻新聞
+中天新闻新闻
+中天新闻綜合
+三立新闻台灣
+三立新闻新聞
+三立新闻都會
+民视新闻台
+中国蓝新闻
+中国蓝新闻台
+第一财经
+上海第一财经
+海南新闻
+福建新闻
 ☘️国际频道,#genre#
 BBC World News|BBC News|BBC World|BBC News HD|
 CNN International|CNN|CNN HD|CNN International Asia|
@@ -1105,6 +1137,77 @@ ABC News|ABC News Australia|ABC News HD|
 Al Arabiya|العربية|Al Arabiya HD|
 TV Tokyo|TV Tokyo HD|テレビ東京|
 Fuji TV|Fuji Television|Fuji TV HD|フジテレビ|
+娱乐与影视,#genre#
+1905电影网A
+CHC华诚影视
+CINEMAX
+DISCOVERY
+TVBTVB翡翠
+TVBTVB翡翠北美版(TVB J1)
+TVB娱乐新闻台
+TVB星河
+TVB星河3
+TVB Plus
+TVB plus备3
+美亚电影
+重温经典电影
+港剧慢品汇
+龙华电影
+龙华经典电影
+龙华戏剧
+龙华日韩
+龙华偶像
+龙华卡通
+王晶
+王晶电影
+电影_武侠
+电影_洪金宝
+电影狂人A
+陈翔六点半
+陈情令
+西游记
+鹿鼎记
+洗冤录
+地方频道,#genre#
+上海|新视觉
+上海|法治天地
+上虞新闻综合
+上虞文化影院
+上虞新商都
+东莞新闻综合
+东莞生活资讯
+东莞综合
+临沂公共
+临沂农科
+临沂新闻综合
+丽水云和综合
+丽水庆元综合
+丽水松阳综合
+丽水缙云综合
+丽水遂昌综合
+丽水青田综合
+丽水龙泉综合
+金华东阳综合
+金华兰溪综合
+绍兴公共
+绍兴嵊州综合
+绍兴文化影院
+绍兴新闻综合
+萧山新闻综合
+萧山生活
+萧山综合
+衢州开化综合
+衢州衢江综合
+衢州龙游生活
+衢州龙游综合
+温州永嘉综合
+海宁新闻综合
+苍南新闻综合
+诸暨新闻综合
+象山新闻综合
+龙泉新闻综合
+龙游新闻综合
+龙游生活娱乐
 ☘️教育频道,#genre#
 国家开放大学电视|国家开放大学|Open University of China|Open University HD|
 北京开放大学|北京开放大学高清|Beijing Open University|
@@ -1147,17 +1250,42 @@ Fox Movies|Fox Movies HD|Fox Movies Asia|
 Toonmax|Toonmax HD|
 Nickelodeon|Nickelodeon HD|Nick Asia|
 Cartoon Network|Cartoon Network HD|CN Asia|
-☘️体育频道,#genre#
-CCTV5体育|CCTV-5|CCTV5高清|CCTV5 4K|CCTV Sports|
-CCTV5+体育赛事|CCTV5+|CCTV-5+高清|CCTV5+ 4K|CCTV Sports Plus|
-广东体育|广东体育高清|Guangdong Sports HD|
-上海体育|上海体育高清|Shanghai Sports HD|
-北京体育|北京体育高清|Beijing Sports HD|
-ESPN|ESPN HD|ESPN Asia|
-Fox Sports|Fox Sports HD|
-Eurosport|Eurosport HD|
-beIN Sports|beIN Sports HD|
-
+国际与地区频道,#genre#
+Astro AEC
+Astro AOD
+Astro QJ
+Astro欢喜台
+HOY TV
+VIUTV
+RTHK31
+RTHK32
+Taiwan Plus
+香港32台
+香港面包
+香港喜剧大全
+澳视卫星
+澳视资讯
+無綫財經資訊台
+KBS 1
+KBS 2
+KBS WORLD
+韩国 Ajyal TV
+韩国 Arirang
+韩国 ArirangWORLD
+韩国 BBS
+韩国 EBS1
+韩国 EBS2
+韩国 EBSe
+韩国 KCTV_CH05
+韩国 KCTV_HV2
+韩国 MBC综合
+韩国 NBS Korea Agricultural Broadcasting
+韩国 SBS CJB
+韩国新闻
+伊朗 PBCTapeshTV
+伊拉克 SharqiyaNews
+泰国 公共三台
+越南 CTV
 俄罗斯频道,#genre#
 第一频道|第一信道|Channel One
 俄罗斯-1|Russia-1
@@ -1237,10 +1365,8 @@ National Geographic|国家地理|Nat Geo
 Comedy Central|喜剧中心
 MTV|Music Television
 HBO
-HBO
 Starz
 Showtime
-TNT
 AMC
 ESPN|ESPN US
 Eurosport
@@ -1248,3 +1374,451 @@ Fox Sports|FOX Sports
 Sky Sports|天空体育
 beIN Sports|beIN体育
 DAZN
+49号
+7even11leven02
+7喜先生
+88 Stereo
+AXN
+A皮皮
+CCTV 01东联
+CCTV 02东联
+CCTV 03东联
+CCTV 04东联
+CCTV 05东联
+CCTV 06东联
+CCTV 07东联
+CCTV 08东联
+CCTV 09东联
+CCTV 3
+CCTV 4
+CCTV 6
+CCTV 7
+CCTV 8
+CCTV 9
+CCTV 世界地理
+CCTV 女性时尚
+CCTV 怀旧剧场
+CCTV 风云足球
+CCTV1
+CCTV10
+CCTV10东联
+CCTV11
+CCTV11东联
+CCTV12
+CCTV12东联
+CCTV13
+CCTV13东联
+CCTV14
+CCTV14东联
+CCTV15
+CCTV15东联
+CCTV17
+CCTV1港澳版
+CCTV2
+CCTV4 CCTV衛視
+CCTV5
+CCTV5+
+CCTV新影 发现之旅
+CCTV新影 老故事
+CGTN
+CGTN俄罗斯语
+CGTN法语
+CGTN西班牙语
+CGTN记录
+CGTN阿拉伯语
+CR 动漫
+Candy
+Cc
+DD 解说
+Damn
+Desire
+Dorcel
+Eric次元宝贝
+Erox
+Eroxxx
+Extasy
+HagnaChannel
+Leo
+MOMO親子台
+MUCH TV
+Mr 傀儡
+NASA TV Media (720p)
+NASA TV Public (720p)
+NHK世界
+Now Sports Prime 630
+Now331台
+QM是我
+Red Bull TV
+TVB J1
+TVBS亚洲
+Trace Sport Stars
+Wang 我的女人
+YJ 无语凝烟
+YeShi小哥
+Ymg未来
+Yummy
+[BD]RTHK32
+[BD]TVB翡翠
+[BD]チャンネル銀河 (720p Willfon)
+[BD]东森新闻
+[BD]东森新闻美洲
+[BD]壹新闻
+momo綜合台
+【炊烟大壮】
+一只大懒虫
+一哥爱解说
+一起来笑吧
+七台河新闻综合
+七台河民生社教
+七星关电视台
+万州三峡移民
+万州影视
+万州综合
+万荣综合
+万载综合
+三明新闻综合
+三里红
+世界环游记
+东丰综合
+东南卫视
+东南卫视东联
+东方卫视
+东辽综合
+个人向
+中华小当家
+中华特产
+中国教育1
+中国教育2
+中视
+义马电视
+之江纪录
+乐至综合
+九台综合
+乡村剧场
+书画
+事当赤颈
+二次元baby
+云南卫视
+云和新闻综合
+云朵妈妈
+云霄综合
+五台综合
+五家渠综合
+五师双河
+五师综合
+井研综合
+亚洲武侠
+亞洲旅遊
+亳州农村
+人間衛視
+什邡新闻
+任丘综合
+伊犁哈萨克
+伊犁汉语综合
+伊犁经济法制
+伊犁维吾尔
+优优宝贝
+武进生活
+水晶awa
+永嘉新闻综合
+永夜星河
+汕头文旅
+江川综合
+江源综合
+江苏|财富天下
+江苏卫视
+江苏卫视东联
+江苏武进新闻
+江苏武进生活
+江苏江阴新闻综合
+江苏镇江新闻综合
+江苏靖江新闻综合
+江西卫视
+汪清综合
+汶川新闻综合
+汾西综合
+河北农民
+河北卫视
+河南|国学
+河南乡村
+河南卫视
+河南戏曲
+河南新闻
+河南法治
+河南电视剧
+河源公共
+河源综合
+泗洪新闻综合
+泸县新闻综合
+泸州新闻综合
+泸州科教生活
+洛阳文旅
+洛阳科教
+洛阳综合
+洞头综合
+津南一套
+洪金宝
+济南综合东联
+济源电视一套
+浙江休闲台
+浙江公共新闻
+浙江卫视
+浙江卫视东联
+浙江国际
+浙江少儿
+浙江教科
+浙江教科影视
+浙江教科影院
+浙江教育
+浙江数码
+浙江数码时代
+浙江新闻
+浙江民生
+浙江民生休闲
+浙江生活
+浙江留学
+浙江经济
+浙江经济生活
+浙江经视
+浙江遂昌
+浙江钱江
+浙江钱江都市
+浙江青田
+浮生没有若梦
+海南卫视
+海南卫视东联
+海绵宝宝宝
+涡阳新闻综合
+淅川电视
+淮阴综合
+深圳卫视
+深圳卫视东联
+清河新闻综合
+清河经济综艺
+清镇新闻综合
+湖北卫视
+湖北生活
+湖南|hnjykt
+湖南|先锋乒羽
+湖南|快乐垂钓
+湖南|茶
+湖南卫视
+湖南卫视东联
+湖南爱晚
+溧水新闻综合
+滦平新闻
+滨海新闻综合
+炎热夏阳柔和
+炙恋兽兽
+烟台公共
+烟台影视
+烟台新闻综合
+烟台经济科技
+熊大熊二
+熊妹撩电影
+熊猫功夫频视
+爆笑综艺
+爱奇艺
+狗哥探案
+狮子王国
+猫丸酱影视
+玛纳斯综合
+环球旅游
+瑞丽综合
+甘肃|INBM证券服务
+甘肃|纪录片
+甘肃|轮播
+甘肃卫视
+生态环境
+痞子帅叔叔
+白菘无人省
+百姓健康
+百里乐成
+盈江综合
+瞬间爆炸
+石屏综合
+石河子新闻综合
+磐石综合
+祁县新闻综合
+福州少儿
+福州新闻
+福州生活
+福建经济
+禹州综合
+种瓜得弟弟
+科幻梦工场
+笙歌
+精彩播剧不停
+红茶妹妹
+纬来精彩
+绍兴电视台公共
+综艺不打马
+缙云新闻综合
+缙云综合
+罗克火
+美少女咸儿
+羞涩的茄子
+老司机
+老王夸我帅
+而莫善者恶之
+脑壳不太好
+自贡文化生活
+自贡综合
+舒兰新闻综合
+舟山嵊泗综合
+芦苇微微的弟子
+范县新闻综合
+荆门新闻
+荆门新闻综合
+荆门科教文旅
+荒野求生影视
+荣昌综合
+荥经综合
+莲花卫视
+萌新司机
+蓶1淳爷
+虎牙八点档
+虎牙扛把仔
+虎牙观影团
+衡阳新闻综合
+衢江新闻综合
+袖中忽见洮河北
+西宁新闻综合
+西宁生活服务
+西安新闻
+西安都市
+西藏卫视
+西西姐姐
+西西就很乖呀
+語之不顾細谨
+警匪悬疑
+诡计腰柳中空
+象山综合
+贵州|天元围棋
+贵州卫视
+贷款小说家
+赣州公共
+赣州教育
+赣州新闻
+超能力是放pi
+车迷
+辉南新闻综合
+辉南综合
+辉辉影视
+辽宁|丹东新闻综合
+辽宁|大连新闻综合
+辽宁|抚顺新闻综合
+辽宁|朝阳新闻综合
+辽宁|本溪新闻
+辽宁|沈阳新闻
+辽宁|盘锦新闻综合
+辽宁|营口新闻
+辽宁|葫芦岛新闻综合
+辽宁|辽宁体育
+辽宁|辽宁公共
+辽宁|辽宁北方
+辽宁|辽宁影视剧
+辽宁|辽宁教育青少
+辽宁|辽宁生活
+辽宁|辽宁经济
+辽宁|辽宁都市
+辽宁|辽阳新闻综合
+辽宁|连山综合
+辽宁|铁岭综合
+辽宁|锦州新闻综合
+辽宁|阜新新闻综合
+辽宁|鞍山新闻综合
+辽宁|龙港综合
+辽宁公共
+辽宁北方
+辽宁卫视
+辽宁教育青少
+辽宁生活
+辽宁经济
+辽宁都市
+达州文化生活
+达州新闻综合
+达州通川
+迎宾桥米莱迪
+逗比宝宝
+通化县综合
+通海电视台
+遂昌综合
+邢台生活
+邢台综合
+邯郸公共
+邯郸新闻
+邯郸科技教育
+郸城新闻综合
+都市剧场
+都爱看
+鄉8佬
+里昂保护的玛蒂达
+重口味爱好者
+重庆|重庆汽摩
+重庆卫视
+重庆卫视东联
+野原的一家
+野行者
+金小媛儿
+金川乡村
+金川新闻综合
+銀河少女
+镇江二套社会民生
+镇江新闻综合
+长子综合
+长宁综合
+长影
+长治公共
+长白山电视台
+開電視
+闻喜综合
+阳曲综合
+阿光影视
+阿森木木木
+阿汤哥的梦中情人
+阿涛影视
+阿神电影
+陇川综合
+陕西体育休闲
+陕西卫视
+陕西新闻咨询
+陕西秦腔
+陕西都市青春
+陕西银龄
+难与鸣琴弹
+雅安新闻综合
+雨、浮沉
+雨落思乡人
+雪中故事49
+雪布林
+雪豹
+霜夜品书香
+青州文化旅游
+青州综合
+青海卫视
+青海综合
+青田电视台
+青神综合
+靖宇综合
+非凡武林
+音粤无国界
+领带哥
+马春夏秋冬梅
+鯎爺
+鹿泉一套
+鹿泉二套
+麥l小柒
+麻栗坡
+麻栗坡电视台
+麻花糖
+黄山公共生活
+黄山新闻综合
+黄山西海大峡谷
+黎城综合
+黑水新闻综合
+黑龙江卫视
+黑龙江新闻法治
+黑龙江视东联
+齐鲁东联
+龙井综合
