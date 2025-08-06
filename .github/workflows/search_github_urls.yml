@@ -7,7 +7,10 @@ on:
     paths:
       - 'search_github_urls.py'
       - '.github/workflows/search.yml'
-      - 'config/urls.txt'  # 添加正确的文件路径
+      - 'config/urls.txt'
+  # 添加 workflow_dispatch 事件以支持手动运行
+  workflow_dispatch:
+
   # 您也可以配置定时触发，例如每天运行一次
   # schedule:
   #   - cron: '0 0 * * *' # 每天 UTC 时间午夜运行
@@ -43,7 +46,7 @@ jobs:
       - name: Check for urls.txt and prepare for commit
         id: git_status
         run: |
-          if [ -f "config/urls.txt" ]; then # 使用正确的路径
+          if [ -f "config/urls.txt" ]; then
             git add config/urls.txt
             if git diff --cached --exit-code; then
               echo "::set-output name=changed::false"
