@@ -8,14 +8,13 @@ import logging.handlers
 import aiohttp
 import asyncio
 from urllib.parse import urlparse
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor
 from tenacity import retry, stop_after_attempt, wait_fixed
 import json
 import hashlib
 import yaml
 from cachetools import TTLCache
-from tqdm import tqdm
-from numba import jit
+from tqdm.asyncio import tqdm
 
 # 配置日志系统
 def setup_logging(config):
@@ -97,7 +96,6 @@ def get_url_file_extension(url):
         logging.info(f"获取 URL 扩展名失败: {url} - {e}")
         return ""
 
-@jit(nopython=True)
 def convert_m3u_to_txt(m3u_content):
     """将 M3U 格式转换为 TXT 格式（频道名称，URL）"""
     lines = m3u_content.split('\n')
@@ -150,6 +148,7 @@ def pre_screen_url(url):
         logging.info(f"预筛选过滤（URL 解析错误）: {url} - {e}")
         return False
 
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True)
 async def fetch_url_content_with_retry(url, url_states, session):
     """异步获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash"""
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
@@ -225,54 +224,51 @@ def save_url_states_local(url_states):
     except Exception as e:
         logging.error(f"保存 URL 状态到 '{URL_STATES_PATH}' 失败: {e}")
 
-def extract_channels_from_url(url, url_states, session):
+async def extract_channels_from_url(url, url_states, session):
     """从 URL 提取频道，支持多种文件格式"""
-    async def process():
-        extracted_channels = []
-        try:
-            text = await fetch_url_content_with_retry(url, url_states, session)
-            if text is None:
-                return []
+    extracted_channels = []
+    try:
+        text = await fetch_url_content_with_retry(url, url_states, session)
+        if text is None:
+            return []
 
-            extension = get_url_file_extension(url).lower()
-            if extension in [".m3u", ".m3u8"]:
-                text = convert_m3u_to_txt(text)
-            elif extension not in [".txt", ".csv", ""]:
-                logging.info(f"不支持的文件扩展名: {url}")
-                return []
+        extension = get_url_file_extension(url).lower()
+        if extension in [".m3u", ".m3u8"]:
+            text = convert_m3u_to_txt(text)
+        elif extension not in [".txt", ".csv", ""]:
+            logging.info(f"不支持的文件扩展名: {url}")
+            return []
 
-            lines = text.split('\n')
-            for line in lines:
-                line = line.strip()
-                if not line or line.startswith('#'):
+        lines = text.split('\n')
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if "," in line and "://" in line:
+                parts = line.split(',', 1)
+                if len(parts) != 2:
                     continue
-                if "," in line and "://" in line:
-                    parts = line.split(',', 1)
-                    if len(parts) != 2:
-                        continue
-                    channel_name, channel_address_raw = parts
-                    channel_name = channel_name.strip() or "未知频道"
-                    channel_address_raw = channel_address_raw.strip()
+                channel_name, channel_address_raw = parts
+                channel_name = channel_name.strip() or "未知频道"
+                channel_address_raw = channel_address_raw.strip()
 
-                    if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
-                        continue
+                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
+                    continue
 
-                    if '#' in channel_address_raw:
-                        url_list = channel_address_raw.split('#')
-                        for channel_url in url_list:
-                            channel_url = clean_url_params(channel_url.strip())
-                            if channel_url and pre_screen_url(channel_url):
-                                extracted_channels.append((channel_name, channel_url))
-                    else:
-                        channel_url = clean_url_params(channel_address_raw)
+                if '#' in channel_address_raw:
+                    url_list = channel_address_raw.split('#')
+                    for channel_url in url_list:
+                        channel_url = clean_url_params(channel_url.strip())
                         if channel_url and pre_screen_url(channel_url):
                             extracted_channels.append((channel_name, channel_url))
-        except Exception as e:
-            logging.error(f"从 {url} 提取频道失败: {e}")
-        return extracted_channels
-    return asyncio.run(process())
+                else:
+                    channel_url = clean_url_params(channel_address_raw)
+                    if channel_url and pre_screen_url(channel_url):
+                        extracted_channels.append((channel_name, channel_url))
+    except Exception as e:
+        logging.error(f"从 {url} 提取频道失败: {e}")
+    return extracted_channels
 
-@jit(nopython=True)
 def filter_and_modify_channels(channels):
     """过滤和修改频道名称及 URL"""
     filtered_channels = []
@@ -311,19 +307,17 @@ async def process_urls(urls, url_states):
     async with aiohttp.ClientSession() as session:
         tasks = [extract_channels_from_url(url, url_states, session) for url in urls]
         results = []
-        with tqdm(total=len(urls), desc="提取频道", unit="URL") as pbar:
-            for future in asyncio.as_completed(tasks):
-                try:
-                    channels = await future
-                    if channels:
-                        results.extend(channels)
-                except Exception as exc:
-                    logging.error(f"URL 提取异常: {exc}")
-                pbar.update(1)
+        for future in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="提取频道"):
+            try:
+                channels = await future
+                if channels:
+                    results.extend(channels)
+            except Exception as exc:
+                logging.error(f"URL 提取异常: {exc}")
         return results
 
-def main():
-    """主函数，执行频道提取、过滤和去重流程"""
+async def main():
+    """异步主函数，执行频道提取、过滤和去重流程"""
     logging.warning("开始执行频道提取和过滤脚本")
     total_start_time = time.time()
 
@@ -334,7 +328,7 @@ def main():
         exit(1)
     logging.warning(f"从 '{URLS_PATH}' 加载 {len(urls)} 个 URL")
 
-    all_extracted_channels = asyncio.run(process_urls(urls, url_states))
+    all_extracted_channels = await process_urls(urls, url_states)
     logging.warning(f"完成频道提取，过滤前总计提取 {len(all_extracted_channels)} 个频道")
 
     # 过滤和修改频道
@@ -352,4 +346,4 @@ def main():
     logging.warning(f"频道提取、过滤和去重脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
