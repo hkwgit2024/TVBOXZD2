@@ -3,7 +3,7 @@ name: Check and Categorize IPTV Channels
 on:
   push:
     branches:
-      - main
+      - '.github/workflows/ffmpeg.yml'
   workflow_dispatch:
 
 jobs:
