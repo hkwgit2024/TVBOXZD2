@@ -5,6 +5,10 @@ on:
     branches:
       - '.github/workflows/ffmpeg.yml'
   workflow_dispatch:
+  schedule:
+    # 每 6 小时运行一次
+    # cron 表达式的语法: (分 时 日 月 周)
+    - cron: '0 */6 * * *'
 
 jobs:
   check-and-categorize:
@@ -34,9 +38,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add output/iptv_list.txt output/uncategorized.txt
-          git commit -m "Update categorized IPTV lists" || echo "No changes to commit"
-          # 先拉取远程更改，再推送
+          git add .
+          git commit -m "Update categorized IPTV lists" --allow-empty || echo "No changes to commit"
           git pull --rebase origin main
           git push
         env:
