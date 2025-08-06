@@ -4,7 +4,12 @@
 
 # GitHub 搜索关键词
 search_keywords:
-- ""
+- "extension:m3u8 in:file"
+- "extension:m3u in:file"
+- "index.m3u8 in:file"
+- "channels.m3u in:file"
+- "TVBOX"
+- "iptv links"
 
   
   
