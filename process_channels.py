@@ -97,38 +97,20 @@ def get_url_file_extension(url):
         return ""
 
 def convert_m3u_to_txt(m3u_content):
-    """将 M3U 格式转换为 TXT 格式（频道名称，URL），支持多种 M3U 格式变体"""
+    """将 M3U 格式转换为 TXT 格式（频道名称，URL）"""
     lines = m3u_content.split('\n')
     txt_lines = []
     channel_name = "未知频道"
-    for i, line in enumerate(lines):
+    for line in lines:
         line = line.strip()
         if not line or line.startswith('#EXTM3U'):
             continue
         if line.startswith('#EXTINF'):
-            try:
-                # 匹配 #EXTINF 行，提取频道名称（支持多种分隔符和格式）
-                match = re.search(r'#EXTINF:[-0-9\s]*(?:.*?,)?\s*(.+)', line, re.IGNORECASE)
-                if match:
-                    channel_name = match.group(1).strip() or "未知频道"
-                else:
-                    channel_name = "未知频道"
-                    logging.debug(f"无法解析 #EXTINF 行: {line}")
-            except Exception as e:
-                logging.debug(f"解析 #EXTINF 行失败: {line} - {e}")
-                channel_name = "未知频道"
+            match = re.search(r'#EXTINF:.*?\,(.*)', line, re.IGNORECASE)
+            channel_name = match.group(1).strip() or "未知频道" if match else "未知频道"
         elif re.match(r'^[a-zA-Z0-9+.-]+://', line) and not line.startswith('#'):
-            # 确保是有效的 URL 行
-            channel_url = line.strip()
-            if channel_url:
-                txt_lines.append(f"{channel_name},{channel_url}")
-            else:
-                logging.debug(f"无效的 URL 行: {line}")
-            channel_name = "未知频道"  # 重置频道名称
-        else:
-            logging.debug(f"跳过非标准行: {line}")
-    if not txt_lines:
-        logging.warning("未从 M3U 内容中提取到任何有效频道")
+            txt_lines.append(f"{channel_name},{line}")
+        channel_name = "未知频道"
     return '\n'.join(txt_lines)
 
 def clean_url_params(url):
@@ -248,7 +230,6 @@ async def extract_channels_from_url(url, url_states, session):
     try:
         text = await fetch_url_content_with_retry(url, url_states, session)
         if text is None:
-            logging.warning(f"URL 内容为空或未变更: {url}")
             return []
 
         extension = get_url_file_extension(url).lower()
@@ -287,8 +268,6 @@ async def extract_channels_from_url(url, url_states, session):
                         extracted_channels.append((channel_name, channel_url))
     except Exception as e:
         logging.error(f"从 {url} 提取频道失败: {e}")
-    if not extracted_channels:
-        logging.warning(f"未从 {url} 提取到任何有效频道")
     return extracted_channels
 
 def filter_and_modify_channels(channels):
