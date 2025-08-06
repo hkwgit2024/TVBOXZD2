@@ -296,7 +296,7 @@ def write_channels_to_file(file_path, channels):
 
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w', encoding='utf-8') as file:
+        with open(file_path, 'a', encoding='utf-8') as file:
             for name, url in sorted(unique_channels, key=lambda x: x[0]):
                 file.write(f"{name},{url}\n")
         logging.warning(f"成功将 {len(unique_channels)} 个唯一频道写入 '{file_path}'")
