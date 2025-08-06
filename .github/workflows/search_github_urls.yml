@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+    paths:
+      - 'search_github_urls.py'
+      - '.github/workflows/search.yml'
+      - 'config/urls.txt'  # 添加正确的文件路径
   # 您也可以配置定时触发，例如每天运行一次
   # schedule:
   #   - cron: '0 0 * * *' # 每天 UTC 时间午夜运行
@@ -37,14 +40,19 @@ jobs:
         run: |
           python search_github_urls.py
 
-      - name: Check for changes
+      - name: Check for urls.txt and prepare for commit
         id: git_status
         run: |
-          git add urls.txt
-          if git diff --cached --exit-code; then
-            echo "::set-output name=changed::false"
+          if [ -f "config/urls.txt" ]; then # 使用正确的路径
+            git add config/urls.txt
+            if git diff --cached --exit-code; then
+              echo "::set-output name=changed::false"
+            else
+              echo "::set-output name=changed::true"
+            fi
           else
-            echo "::set-output name=changed::true"
+            echo "config/urls.txt does not exist, no new URLs found."
+            echo "::set-output name=changed::false"
           fi
           
       - name: Commit and push changes
