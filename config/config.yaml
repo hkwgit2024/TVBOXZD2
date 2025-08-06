@@ -42,7 +42,7 @@ search_keywords:
 
   
   
-  
+retry_wait: 30 # 每处理一个新关键词，强制等待30秒 
 #新增：控制并行搜索的关键词数量
 concurrent_searches: 3 # 调整这个值，例如，一次只搜索 3 个关键词
 # URL 预筛选配置：定义 URL 筛选规则
