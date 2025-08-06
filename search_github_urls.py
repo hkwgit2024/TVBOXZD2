@@ -111,8 +111,8 @@ if not GITHUB_TOKEN:
     logging.error("错误：未设置环境变量 'BOT'")
     exit(1)
 
-# 从配置中获取文件路径
-URLS_PATH = CONFIG['output']['paths']['channel_cache_file'].replace('channel_cache.json', 'urls.txt')
+# 将 URLS_PATH 修改为 'config/urls.txt'
+URLS_PATH = 'config/urls.txt'
 
 # GitHub API 基础 URL
 GITHUB_API_BASE_URL = "https://api.github.com"
