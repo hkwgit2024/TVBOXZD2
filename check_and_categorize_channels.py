@@ -481,7 +481,7 @@ def save_channels_to_final_files(valid_channels, output_file_path, uncategorized
 
     # 保存合并后的主文件，按分类输出
     try:
-        with open(output_file_path, "w", encoding='utf-8') as iptv_list_file:
+        with open(output_file_path, "a", encoding='utf-8') as iptv_list_file:
             iptv_list_file.writelines(generate_update_time_header())
             for category in final_ordered_categories_checked:
                 if category in categorized_channels_checked and categorized_channels_checked[category]:
