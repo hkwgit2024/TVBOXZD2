@@ -1,2 +1,48 @@
 更新时间,#genre#
-2025-08-06 03:49:54,url
+2025-08-06 04:32:43,url
+俄罗斯频道,#genre#
+ANTV,http://antvlive.ab5c6921.cdnviet.com/antv/playlist.m3u8
+FashionTV,http://lb.streaming.sk/fashiontv/stream/chunklist_w1402273512.m3u8
+FashionTV Czech&Slovak,http://lb.streaming.sk/fashiontv/stream/playlist.m3u8
+FashionTV Europe,https://fashiontv-fashiontv-1-eu.rakuten.wurl.tv/playlist.m3u8
+FashionTV Midnight Secrets,https://fash1043.cloudycdn.services/slive/ftv_ftv_midnite_k1y_27049_midnite_secr_108_hls.smil/playlist.m3u8
+FashionTV PG16,https://fash1043.cloudycdn.services/slive/ftv_pg16_adaptive.smil/media.m3u8
+FashionTV Paris,https://fash1043.cloudycdn.services/slive/ftv_paris_adaptive.smil/playlist.m3u8
+FashionTV U,https://fash2043.cloudycdn.services/slive/ftv_ftv_4k_hevc_73d_42080_default_466_hls.smil/playlist.m3u8
+Hermanas Mirabal TV,https://cnn.essastream.com:3091/live/hmtvlive.m3u8
+KempenTV,http://ms7.mx-cd.net/tv/Omroep_de_Kempen.smil/playlist.m3u8
+LNTV,https://helga.iptv2022.com/sh/LNTV/index.m3u8
+LifevisionTV,https://tgn.bozztv.com/lifevision/lifevision/index.m3u8
+MDIIentv,https://live.enhdtv.com:19360/nexthd/nexthd.m3u8
+MDIIintv,http://tv1.intv.mk:1935/live/intv/index.m3u8
+Mir,http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mirtv_2500/playlist.m3u8
+Mir 24,http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mir24_2500/playlist.m3u8
+Miracle Channel,https://miracle.stream.boxigy.com/hls/miracle1.m3u8
+NTV,https://strhlslb01.streamakaci.tv/str_ntv_ntv/str_ntv_ntv_multi/playlist.m3u8
+NTV,https://s-pl-01.mediatool.tv/playout/ntv-abr/index.m3u8
+NTV Series,https://cdn.ntv.ru/th_serial/playlist.m3u8
+NTV Style,https://cdn.ntv.ru/th_hit/playlist.m3u8
+Pamir TV,http://live.stream.cdn.pamirtv.com/ptv/d0dbe915091d400bd8ee7f27f0791303.sdp/index.m3u8
+Russkiy Bestseller,http://31.148.48.15/Russkiy_Bestseller/index.m3u8
+SNTV Daljir,https://ap02.iqplay.tv:8082/iqb8002/s2tve/playlist.m3u8
+STS Love,http://31.148.48.15/STS_Love/index.m3u8
+Samira TV,https://raw.githubusercontent.com/ipstreet312/freeiptv/master/ressources/dzflix/samira.m3u8
+专业人士接受Mirella的贞操,http://12156.vod.redtraffic.xyz/ph5865283e781df/play.m3u8
+韩语频道,#genre#
+Arirang TV,https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/chunklist_b3256000_sleng.m3u8
+Arirang TV,http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+Hope Channel Africa,https://videodelivery.net/3dab4197cbdc656fa4a498285a3a4d67/manifest/video.m3u8
+Hope Channel Australia,https://videodelivery.net/9fb3596948ddf463fde0ec4b85625b24/manifest/video.m3u8
+TVNBN,https://cdn.jmvstream.com/w/LVW-8410/LVW8410_uiZOVm6vz1/playlist.m3u8
+法语频道,#genre#
+FRANCE 24,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV38.m3u8
+英语频道,#genre#
+AMC,https://amchls.wns.live/hls/stream.m3u8
+AMC East,http://fl5.moveonjoy.com/AMC_NETWORK/index.m3u8
+AMC台,http://61.221.215.25:8800/hls/43/index.m3u8
+Adult Swim Channel 5,https://adultswim-vodlive.cdn.turner.com/live/channel-5/stream.m3u8
+Channel 44,https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8
+Channel 5,https://639bc5877c5fe.streamlock.net/tv5hdlive/tv5hdlive/playlist.m3u8
+Dreamcatcher,https://vd3.bdstatic.com/mda-mbiqgzsnfeyv74y6/v1-cae/1080p/mda-mbiqgzsnfeyv74y6.mp4
+NBC News,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV39.m3u8
+NBCLX,https://nbculocallive.akamaized.net/hls/live/2037096/lx/use1.m3u8
