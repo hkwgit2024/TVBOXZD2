@@ -33,7 +33,7 @@ jobs:
       
       - name: Run search script
         env:
-          BOT: ${{ secrets.BOT_TOKEN }}
+          BOT: ${{ secrets.BOT }}
         run: |
           python search_github_urls.py
 
