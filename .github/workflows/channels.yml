@@ -3,7 +3,7 @@ name:  Channels
 on:
   push:
     branches:
-      - main
+      - '.github/workflows/channels.yml'
   schedule:
     # 每天凌晨 3 点运行
     - cron: '0 3 * * *'
