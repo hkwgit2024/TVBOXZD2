@@ -1,14 +1,10 @@
 import os
 import re
-import subprocess
-import requests
 import time
 import logging
 import logging.handlers
 import yaml
 from urllib.parse import urlparse
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 from tqdm.asyncio import tqdm
 import aiohttp
 import asyncio
@@ -107,17 +103,15 @@ async def check_url_validity(session, url):
         async with session.head(url, timeout=5) as response:
             response.raise_for_status()
             content_type = response.headers.get('Content-Type', '').lower()
-            # 检查 Content-Type，避免下载大文件或无用文件
             if 'text' in content_type or 'json' in content_type:
                 return url
             else:
                 logging.info(f"URL {url} 的 Content-Type '{content_type}' 不匹配，跳过")
                 return None
     except Exception as e:
-        # logging.info(f"检查 URL 有效性失败: {url} - {e}")
         return None
 
-async def search_github_by_keyword(session, keyword, existing_urls, found_urls):
+async def search_github_by_keyword(session, keyword, existing_urls, found_urls, semaphore):
     """异步按关键词搜索 GitHub"""
     headers = {
         "Accept": "application/vnd.github.v3.text-match+json",
@@ -128,14 +122,16 @@ async def search_github_by_keyword(session, keyword, existing_urls, found_urls):
     urls_to_check = []
     
     while page <= CONFIG['github']['max_search_pages']:
-        params = {
-            "q": keyword,
-            "sort": "indexed",
-            "order": "desc",
-            "per_page": CONFIG['github']['per_page'],
-            "page": page
-        }
+        # 在发送请求前，先获取信号量，控制并发
+        await semaphore.acquire()
         try:
+            params = {
+                "q": keyword,
+                "sort": "indexed",
+                "order": "desc",
+                "per_page": CONFIG['github']['per_page'],
+                "page": page
+            }
             async with session.get(
                 f"{GITHUB_API_BASE_URL}{SEARCH_CODE_ENDPOINT}",
                 headers=headers,
@@ -156,20 +152,11 @@ async def search_github_by_keyword(session, keyword, existing_urls, found_urls):
                         user, repo, branch, file_path = match.groups()
                         raw_url = f"https://raw.githubusercontent.com/{user}/{repo}/{branch}/{file_path}"
                         
-                        # 在此处进行初步过滤，只接受特定扩展名的URL
                         if re.search(r'\.(m3u8|m3u|txt|csv|json|pls|xspf)$', raw_url, re.IGNORECASE):
                             if raw_url not in existing_urls and raw_url not in found_urls:
                                 urls_to_check.append(raw_url)
                         else:
                             logging.debug(f"URL {raw_url} 扩展名不匹配，跳过")
-                
-                # 检查速率限制
-                rate_limit_remaining = int(response.headers.get('X-RateLimit-Remaining', 0))
-                if rate_limit_remaining < 5:  # 提前等待，避免因一个请求失败而中断
-                    rate_limit_reset = int(response.headers.get('X-RateLimit-Reset', 0))
-                    wait_seconds = max(0, rate_limit_reset - time.time()) + 5
-                    logging.warning(f"GitHub API 速率限制即将达到，剩余请求: {rate_limit_remaining}，等待 {wait_seconds:.0f} 秒")
-                    await asyncio.sleep(wait_seconds)
 
                 page += 1
 
@@ -183,7 +170,9 @@ async def search_github_by_keyword(session, keyword, existing_urls, found_urls):
         except Exception as e:
             logging.error(f"搜索 GitHub 关键词 '{keyword}' 时发生意外错误: {e}")
             break
-    
+        finally:
+            semaphore.release()
+            
     # 异步检查 URL 的有效性
     if urls_to_check:
         tasks = [check_url_validity(session, url) for url in urls_to_check]
@@ -204,6 +193,9 @@ async def auto_discover_github_urls_async(urls_file_path_local):
     
     logging.warning("开始从 GitHub 自动发现新的 IPTV 源 URL")
     
+    concurrent_searches = CONFIG['github'].get('concurrent_searches', 5)
+    semaphore = asyncio.Semaphore(concurrent_searches)
+    
     async with aiohttp.ClientSession() as session:
         # 处理备用 URL (同步处理即可，数量通常不多)
         for backup_url in CONFIG.get('backup_urls', []):
@@ -216,7 +208,7 @@ async def auto_discover_github_urls_async(urls_file_path_local):
                 logging.warning(f"从备用 URL {backup_url} 获取失败: {e}")
 
         keywords_list = CONFIG.get('search_keywords', [])
-        tasks = [search_github_by_keyword(session, keyword, existing_urls, found_urls) for keyword in keywords_list]
+        tasks = [search_github_by_keyword(session, keyword, existing_urls, found_urls, semaphore) for keyword in keywords_list]
         
         await asyncio.gather(*tasks)
 
