@@ -7,7 +7,7 @@ import logging
 import logging.handlers
 import aiohttp
 import asyncio
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 from concurrent.futures import ProcessPoolExecutor
 from tenacity import retry, stop_after_attempt, wait_fixed
 import json
@@ -15,6 +15,7 @@ import hashlib
 import yaml
 from cachetools import TTLCache
 from tqdm.asyncio import tqdm
+from bs4 import BeautifulSoup
 
 # 配置日志系统
 def setup_logging(config):
@@ -96,28 +97,18 @@ def get_url_file_extension(url):
         logging.info(f"获取 URL 扩展名失败: {url} - {e}")
         return ""
 
-def convert_m3u_to_txt(m3u_content):
-    """将 M3U 格式转换为 TXT 格式（频道名称，URL）"""
-    lines = m3u_content.split('\n')
-    txt_lines = []
-    channel_name = "未知频道"
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith('#EXTM3U'):
-            continue
-        if line.startswith('#EXTINF'):
-            match = re.search(r'#EXTINF:.*?\,(.*)', line, re.IGNORECASE)
-            channel_name = match.group(1).strip() or "未知频道" if match else "未知频道"
-        elif re.match(r'^[a-zA-Z0-9+.-]+://', line) and not line.startswith('#'):
-            txt_lines.append(f"{channel_name},{line}")
-        channel_name = "未知频道"
-    return '\n'.join(txt_lines)
-
 def clean_url_params(url):
     """清理 URL 参数，仅保留方案、网络位置和路径"""
     try:
         parsed_url = urlparse(url)
-        return parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
+        # 优化: 某些URL参数是必需的，例如直播token，不应被清理
+        # 仅清理常见的跟踪参数
+        query_params = parsed_url.query
+        cleaned_query = re.sub(r'(?:&?utm_source=[^&]+|&?utm_medium=[^&]+|&?utm_campaign=[^&]+|&?utm_term=[^&]+|&?utm_content=[^&]+)', '', query_params)
+        
+        # 重新构建URL
+        cleaned_url = urlparse(url)._replace(query=cleaned_query).geturl()
+        return cleaned_url
     except ValueError as e:
         logging.info(f"清理 URL 参数失败: {url} - {e}")
         return url
@@ -150,7 +141,10 @@ def pre_screen_url(url):
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True)
 async def fetch_url_content_with_retry(url, url_states, session):
-    """异步获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash"""
+    """
+    异步获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash。
+    返回一个包含内容和 Content-Type 的字典。
+    """
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
         logging.debug(f"从缓存读取 URL 内容: {url}")
         return content_cache[url]
@@ -172,6 +166,7 @@ async def fetch_url_content_with_retry(url, url_states, session):
 
             content = await response.text()
             content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+            content_type = response.headers.get('Content-Type', '').lower()
 
             if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
                 logging.debug(f"URL 内容未变更（哈希相同）: {url}")
@@ -184,11 +179,12 @@ async def fetch_url_content_with_retry(url, url_states, session):
                 'last_checked': datetime.now().isoformat()
             }
 
+            result = {'content': content, 'content_type': content_type, 'url': url}
             if CONFIG['url_state']['cache_enabled']:
-                content_cache[url] = content
+                content_cache[url] = result
 
-            logging.info(f"成功获取新内容: {url}")
-            return content
+            logging.info(f"成功获取新内容: {url} (Content-Type: {content_type})")
+            return result
     except aiohttp.ClientResponseError as e:
         if e.status in [429, 500, 502, 503, 504]:
             logging.error(f"请求 URL 失败（状态码 {e.status}）: {url}")
@@ -224,50 +220,142 @@ def save_url_states_local(url_states):
     except Exception as e:
         logging.error(f"保存 URL 状态到 '{URL_STATES_PATH}' 失败: {e}")
 
+# --- 新增和优化的解析器函数 ---
+
+def _parse_m3u_or_txt(content):
+    """解析 M3U 或纯文本文件"""
+    extracted_channels = []
+    lines = content.split('\n')
+    channel_name = "未知频道"
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('#EXTM3U'):
+            continue
+        
+        if line.startswith('#EXTINF'):
+            match = re.search(r'#EXTINF:-1.*?\,(.*)', line, re.IGNORECASE)
+            channel_name = match.group(1).strip() if match else "未知频道"
+        elif re.match(r'^[a-zA-Z0-9+.-]+://', line) and not line.startswith('#'):
+            if channel_name == "未知频道":
+                path_segments = urlparse(line).path.split('/')
+                potential_name = path_segments[-1].split('.')[0] if path_segments else "未知频道"
+                if potential_name:
+                    channel_name = potential_name
+            
+            urls = [line]
+            if '#' in line:
+                urls = line.split('#')
+            
+            for url in urls:
+                url = clean_url_params(url.strip())
+                if url and pre_screen_url(url):
+                    extracted_channels.append((channel_name, url))
+            
+            channel_name = "未知频道"
+    return extracted_channels
+
+def _parse_html(content, base_url):
+    """解析 HTML 页面，提取视频链接"""
+    extracted_channels = []
+    soup = BeautifulSoup(content, 'html.parser')
+    
+    for link in soup.find_all('a', href=True):
+        href = link['href']
+        
+        if any(ext in href for ext in ['.m3u', '.m3u8', '.ts', '.mpd', '.flv', '.avi', '.mp4', '.rmvb']):
+            full_url = urljoin(base_url, href)
+            
+            channel_name = link.text.strip() or "未知频道"
+            
+            if pre_screen_url(full_url):
+                extracted_channels.append((channel_name, full_url))
+                
+    return extracted_channels
+
+def _parse_json(content, json_config):
+    """
+    解析 JSON 格式内容。
+    需要用户在配置文件中定义解析规则。
+    """
+    extracted_channels = []
+    try:
+        data = json.loads(content)
+        
+        items = data
+        path_keys = json_config.get('path', '').split('.')
+        for key in path_keys:
+            if isinstance(items, dict) and key in items:
+                items = items[key]
+            else:
+                logging.warning(f"JSON 路径 '{json_config.get('path')}' 不存在或无法解析。")
+                return []
+        
+        if not isinstance(items, list):
+            logging.warning(f"JSON 路径 '{json_config.get('path')}' 不是一个列表。")
+            return []
+            
+        for item in items:
+            name_key = json_config.get('name_key', 'name')
+            url_key = json_config.get('url_key', 'url')
+            
+            channel_name = item.get(name_key, "未知频道")
+            channel_url = item.get(url_key)
+            
+            if channel_url and pre_screen_url(channel_url):
+                extracted_channels.append((channel_name, channel_url))
+
+    except json.JSONDecodeError:
+        logging.error("JSON 解析失败。")
+    except Exception as e:
+        logging.error(f"解析 JSON 时发生错误: {e}")
+        
+    return extracted_channels
+
+
 async def extract_channels_from_url(url, url_states, session):
     """从 URL 提取频道，支持多种文件格式，包括 GitHub Raw M3U 文件"""
     extracted_channels = []
     try:
-        text = await fetch_url_content_with_retry(url, url_states, session)
-        if text is None:
+        response_data = await fetch_url_content_with_retry(url, url_states, session)
+        if response_data is None:
             return []
-
-        extension = get_url_file_extension(url).lower()
-        # 支持 .m3u 和 .m3u8 文件，包括 GitHub Raw 链接
-        if extension in [".m3u", ".m3u8"]:
-            text = convert_m3u_to_txt(text)
-        elif extension not in [".txt", ".csv", ""]:
-            logging.info(f"不支持的文件扩展名: {url}")
-            return []
-
-        lines = text.split('\n')
-        for line in lines:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            if "," in line and "://" in line:
-                parts = line.split(',', 1)
-                if len(parts) != 2:
-                    continue
-                channel_name, channel_address_raw = parts
-                channel_name = channel_name.strip() or "未知频道"
-                channel_address_raw = channel_address_raw.strip()
-
-                if not re.match(r'^[a-zA-Z0-9+.-]+://', channel_address_raw):
-                    continue
-
-                if '#' in channel_address_raw:
-                    url_list = channel_address_raw.split('#')
-                    for channel_url in url_list:
-                        channel_url = clean_url_params(channel_url.strip())
-                        if channel_url and pre_screen_url(channel_url):
-                            extracted_channels.append((channel_name, channel_url))
+        
+        content = response_data['content']
+        content_type = response_data['content_type']
+        
+        # 优化：优先处理 GitHub raw URL，因为它的内容类型通常准确
+        if 'raw.githubusercontent.com' in url.lower():
+            logging.info(f"正在处理 GitHub Raw URL，尝试根据内容解析: {url}")
+            # 对于GitHub Raw文件，我们不依赖Content-Type，因为有时候是text/plain
+            # 直接尝试用M3U/TXT解析器
+            if any(ext in content for ext in ['#EXTM3U', '#EXTINF']):
+                extracted_channels = _parse_m3u_or_txt(content)
+            elif json_config := CONFIG.get('json_configs', {}).get(url, {}):
+                extracted_channels = _parse_json(content, json_config)
+            else:
+                logging.warning(f"GitHub Raw URL 内容无法识别为M3U或JSON格式，跳过: {url}")
+        
+        # 处理非 GitHub raw URL
+        else:
+            if 'text/html' in content_type:
+                logging.info(f"解析 HTML 页面: {url}")
+                extracted_channels = _parse_html(content, url)
+            elif 'application/json' in content_type:
+                logging.info(f"解析 JSON 响应: {url}")
+                json_config = CONFIG.get('json_configs', {}).get(url, {})
+                extracted_channels = _parse_json(content, json_config)
+            else:
+                # 否则，退回使用文件扩展名或假设为 M3U/TXT 格式
+                extension = get_url_file_extension(url).lower()
+                if any(ext in content for ext in ['#EXTM3U', '#EXTINF']) or extension in [".m3u", ".m3u8", ".txt", ".csv", ""]:
+                    logging.info(f"解析 M3U/TXT 格式: {url}")
+                    extracted_channels = _parse_m3u_or_txt(content)
                 else:
-                    channel_url = clean_url_params(channel_address_raw)
-                    if channel_url and pre_screen_url(channel_url):
-                        extracted_channels.append((channel_name, channel_url))
+                    logging.warning(f"无法识别的内容类型和扩展名，跳过解析: {url} (Content-Type: {content_type}, Extension: {extension})")
+    
     except Exception as e:
         logging.error(f"从 {url} 提取频道失败: {e}")
+    
     return extracted_channels
 
 def filter_and_modify_channels(channels):
