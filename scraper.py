@@ -14,10 +14,10 @@ def search_and_save_tvbox_interfaces():
         print("GITHUB_TOKEN is not set. Exiting.")
         sys.exit(1)
 
-    # 精准搜索查询：
-    # 1. 搜索文件名包含 'tvbox'、'alist' 或 'drpy' 的 JSON 或 YAML 文件。
-    # 2. 搜索文件内容包含 'sites'、'spider' 或 '饭太硬.ga' 的文件。
-    query = "filename:tvbox.json OR filename:tvbox.yml OR filename:alist.yml OR filename:drpy.json OR \"sites\" in:file OR \"spider\" in:file OR \"饭太硬.ga\" in:file"
+    # 优化后的精准搜索查询：
+    # 移除了 '饭太硬.ga'，因为它可能包含不受支持的字符。
+    # 保留了文件名和文件内容中的关键英文字符。
+    query = "filename:tvbox.json OR filename:tvbox.yml OR filename:alist.yml OR filename:drpy.json OR \"sites\" in:file OR \"spider\" in:file"
     
     search_url = "https://api.github.com/search/code"
     
@@ -31,7 +31,6 @@ def search_and_save_tvbox_interfaces():
     
     try:
         print(f"Searching GitHub for files with query: \"{query}\"...")
-        # 限制搜索结果数量，以避免不必要的 API 请求
         response = requests.get(search_url, params={"q": query, "per_page": 50}, headers=headers)
         response.raise_for_status()
         
