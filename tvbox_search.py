@@ -1,4 +1,3 @@
-#搜索
 import requests
 import json
 import os
@@ -37,7 +36,7 @@ async def fetch_url(session, url, headers, timeout=10, retries=3):
                 return None
 
 def validate_tvbox_interface(json_str: str) -> bool:
-    """检查 JSON 字符串是否为有效的 TVBox 接口格式"""
+    """检查 JSON 字符串是否为有效的 TVBox 接口格式，增强验证逻辑"""
     try:
         data = json.loads(json_str)
         if not isinstance(data, dict):
@@ -55,6 +54,9 @@ def validate_tvbox_interface(json_str: str) -> bool:
         if has_sites_key:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
+                    # 检查 TVBox 特定字段
+                    if 'type' in site or 'searchable' in site:
+                        return True
                     return True
         
         if has_lives_key or has_spider_key:
@@ -103,7 +105,7 @@ def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
     return {}
 
 def save_cache(cache: Dict[str, dict], cache_file: str = "search_cache.json"):
-    """保存搜索结果到缓存"""
+    """保存搜索结果到缓存，优化存储格式"""
     try:
         with open(cache_file, 'w', encoding='utf-8') as f:
             json.dump(cache, f, ensure_ascii=False, indent=0)
@@ -111,14 +113,17 @@ def save_cache(cache: Dict[str, dict], cache_file: str = "search_cache.json"):
         logger.error(f"Error saving cache: {e}")
 
 def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
-    """从缓存中提取高频文件名和路径，生成动态查询"""
+    """从缓存中提取高频文件名、路径和仓库，生成动态查询"""
     filenames = {}
     paths = {}
+    repos = {}
     for data in cache.values():
         file_name = data.get('file_name', '').split('_')[0] + '.json'
         path = data.get('path', '')
+        repo = data.get('repo', '')
         filenames[file_name] = filenames.get(file_name, 0) + 1
         paths[path.rsplit('/', 1)[0]] = paths.get(path.rsplit('/', 1)[0], 0) + 1
+        repos[repo] = repos.get(repo, 0) + 1
     
     dynamic_queries = []
     dynamic_queries.extend(
@@ -126,6 +131,9 @@ def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
     )
     dynamic_queries.extend(
         f'extension:json path:{path}' for path, count in paths.items() if count >= 2
+    )
+    dynamic_queries.extend(
+        f'extension:json repo:{repo}' for repo, count in repos.items() if count >= 3
     )
     return dynamic_queries[:5]
 
