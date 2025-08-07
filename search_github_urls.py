@@ -73,9 +73,10 @@ def write_array_to_txt_local(file_path, data_array):
     """将数组内容写入本地 TXT 文件"""
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'a', encoding='utf-8') as file:
+        # 使用 'w' 模式而非 'a' 模式来覆盖旧文件
+        with open(file_path, 'w', encoding='utf-8') as file:
             file.write('\n'.join(data_array))
-        logging.info(f"写入 {len(data_array)} 行到 '{file_path}'")
+        logging.info(f"成功写入 {len(data_array)} 行到 '{file_path}'")
     except Exception as e:
         logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
@@ -215,6 +216,23 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
                 logging.info(f"完成关键词 '{keyword}' 第 {page} 页，发现 {len(keyword_found_urls)} 个新 URL")
                 page += 1
 
+            except requests.exceptions.HTTPError as e:
+                # 捕获 403 错误，并根据响应头进行智能等待
+                if e.response.status_code == 403:
+                    # 尝试从响应头获取速率限制重置时间
+                    try:
+                        rate_limit_reset = int(e.response.headers.get('X-RateLimit-Reset', 0))
+                        wait_seconds = max(0, rate_limit_reset - time.time()) + 5
+                        logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: 403 Client Error: Forbidden. 速率限制达到，等待 {wait_seconds:.0f} 秒后重试。")
+                        time.sleep(wait_seconds)
+                        continue  # 继续 while 循环，重试当前页面
+                    except (ValueError, TypeError):
+                        logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: 403 Client Error: Forbidden. 无法获取速率限制重置时间，等待 60 秒后重试。")
+                        time.sleep(60)
+                        continue
+                else:
+                    logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
+                    break
             except requests.exceptions.RequestException as e:
                 logging.error(f"搜索 GitHub 关键词 '{keyword}' 失败: {e}")
                 break
@@ -232,7 +250,6 @@ def auto_discover_github_urls(urls_file_path_local, github_token):
     for keyword in keywords_list:
         count = len([url for url in found_urls if keyword in url])
         logging.info(f"关键词 '{keyword}' 最终发现 {count} 个新 URL")
-
 
 if __name__ == "__main__":
     auto_discover_github_urls(URLS_PATH, GITHUB_TOKEN)
