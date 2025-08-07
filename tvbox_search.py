@@ -20,8 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# [其他函数保持不变，如 fetch_url, validate_tvbox_interface, load_existing_content_hashes 等]
-
+# [其他函数保持不变，如 fetch_url, validate_tvbox_interface, save_valid_file, load_cache, save_cache, generate_dynamic_queries, load_query_stats, save_query_stats, load_existing_content_hashes]
 async def fetch_url(session, url, headers, timeout=10, retries=3):
     """异步获取 URL 内容，带重试机制"""
     for attempt in range(retries):
@@ -162,7 +161,7 @@ def save_query_stats(stats: Dict[str, dict], stats_file: str = "query_stats.json
         logger.error(f"Error saving query stats: {e}")
 
 def search_github(query: str, github_token: str, page: int = 1) -> Tuple[List[dict], int]:
-    """执行 GitHub 搜索请求，带重试机制"""
+    """执行 GitHub 搜索请求，带重试机制，并对 403 错误进行处理"""
     search_url = "https://api.github.com/search/code"
     headers = {
         "Authorization": f"token {github_token}",
@@ -176,16 +175,19 @@ def search_github(query: str, github_token: str, page: int = 1) -> Tuple[List[di
                 params={"q": query, "per_page": 100, "page": page, "sort": "updated", "order": "desc"},
                 headers=headers
             )
+            # 明确处理 429 和 403 错误
             if response.status_code == 429:
                 retry_after = int(response.headers.get("Retry-After", 60))
                 logger.warning(f"Rate limit exceeded for query '{query}', page {page}. Waiting {retry_after} seconds...")
                 time.sleep(retry_after)
                 continue
-            if response.status_code in (403, 502):
-                logger.warning(f"Error {response.status_code} for query '{query}', page {page} (attempt {attempt + 1}/{retries})")
-                if attempt < retries - 1:
-                    time.sleep(2 ** attempt)
+            if response.status_code == 403:
+                # 当遇到 403 错误时，可能是权限或临时限制。等待更长时间再重试。
+                wait_time = 60 * (attempt + 1)
+                logger.warning(f"Error 403 for query '{query}', page {page} (attempt {attempt + 1}/{retries}). Waiting for {wait_time} seconds before retrying...")
+                time.sleep(wait_time)
                 continue
+            
             response.raise_for_status()
             search_results = response.json()
             return search_results.get('items', []), search_results.get('total_count', 0)
@@ -203,8 +205,6 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
     page = 1
     valid_files = stats.get(query, {}).get('valid', 0)
     total_files = stats.get(query, {}).get('total', 0)
-    
-    # 集合，用于追踪本次运行中已下载的内容哈希值，避免同一轮次内重复保存
     downloaded_content_hashes: Set[str] = set()
 
     while page <= max_pages:
@@ -222,7 +222,6 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
             for item in items:
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 
-                # 检查URL是否已经处理过
                 if raw_url in processed_urls:
                     logger.debug(f"Skipping duplicate URL: {raw_url}")
                     continue
@@ -231,7 +230,6 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
                 tasks.append(fetch_url(session, raw_url, headers={"Accept": "application/vnd.github.v3+json"}))
                 urls_to_process.append(raw_url)
 
-            # 并发执行所有下载任务
             downloaded_contents = await asyncio.gather(*tasks, return_exceptions=True)
 
             for i, content in enumerate(downloaded_contents):
@@ -241,12 +239,10 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
                 
                 content_hash = hashlib.sha256(content.encode('utf-8')).hexdigest()
                 
-                # 检查本地文件和本次下载内容是否重复
                 if content_hash in content_hashes:
                     logger.info(f"Skipping {urls_to_process[i]}: content already exists locally.")
                     continue
                 
-                # 检查本次运行中是否已处理过相同内容
                 if content_hash in downloaded_content_hashes:
                     logger.info(f"Skipping {urls_to_process[i]}: content is a duplicate within this run.")
                     continue
@@ -309,17 +305,20 @@ async def search_and_save_tvbox_interfaces():
     queries.sort(key=query_priority, reverse=True)
     logger.info(f"Sorted queries by hit rate: {queries}")
     
+    # 增加每次查询后的延时，以减少 API 压力
+    delay_between_queries = 2 # 秒
+    
     max_workers = min(len(queries), multiprocessing.cpu_count())
     max_pages_per_query = 5 if len(queries) > max_workers else 10
     logger.info(f"Using {max_workers} parallel threads for {len(queries)} queries, max {max_pages_per_query} pages per query.")
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [
-            executor.submit(asyncio.run, process_query(query, github_token, processed_urls, cache, stats, content_hashes, max_pages_per_query))
-            for query in queries
-        ]
-        for future in futures:
+        for query in queries:
+            future = executor.submit(asyncio.run, process_query(query, github_token, processed_urls, cache, stats, content_hashes, max_pages_per_query))
             future.result()
+            # 每次处理完一个查询，都暂停一下
+            logger.info(f"Finished processing query '{query}'. Waiting for {delay_between_queries} seconds.")
+            time.sleep(delay_between_queries)
     
     save_query_stats(stats)
 
