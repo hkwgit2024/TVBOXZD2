@@ -36,11 +36,25 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          # 配置Git用户
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # 提交本地更改
           git add .
           git commit -m "Update categorized IPTV lists" --allow-empty || echo "No changes to commit"
-          git pull --rebase origin main
+
+          # 尝试使用rebase方式拉取最新代码
+          if ! git pull --rebase origin main; then
+            echo "Rebase failed due to conflicts. Attempting to merge instead..."
+            # 如果rebase失败，则使用merge方式拉取最新代码
+            git pull origin main
+            # 在某些情况下，需要手动添加和提交，以确保合并成功
+            git add .
+            git commit -m "Merge remote changes"
+          fi
+          
+          # 推送最终更改
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
