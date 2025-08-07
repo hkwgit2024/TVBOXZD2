@@ -1,4 +1,4 @@
-name: Scrape and Merge TVbox Interfaces
+name: tvbox_merger
 
 on:
   workflow_dispatch:
