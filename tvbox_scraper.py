@@ -38,7 +38,7 @@ async def fetch_url(session, url, headers, timeout=10, retries=3):
 
 def validate_tvbox_interface(json_str: str) -> bool:
     """
-    检查 JSON 字符串是否为有效的 TVBox 接口格式，增强非空验证。
+    检查 JSON 字符串是否为有效的 TVBox 接口格式，增强验证逻辑。
     """
     try:
         data = json.loads(json_str)
@@ -57,6 +57,9 @@ def validate_tvbox_interface(json_str: str) -> bool:
         if has_sites_key:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
+                    # 检查 TVBox 特定字段
+                    if 'type' in site or 'searchable' in site:
+                        return True
                     return True
         
         if has_lives_key or has_spider_key:
@@ -97,7 +100,6 @@ def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
         try:
             with open(cache_file, 'r', encoding='utf-8') as f:
                 cache = json.load(f)
-            # 移除过期缓存（30 天前）
             expiry_date = datetime.now() - timedelta(days=30)
             return {
                 k: v for k, v in cache.items()
@@ -108,29 +110,61 @@ def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
     return {}
 
 def save_cache(cache: Dict[str, dict], cache_file: str = "search_cache.json"):
-    """保存搜索结果到缓存"""
+    """保存搜索结果到缓存，优化存储格式"""
     try:
         with open(cache_file, 'w', encoding='utf-8') as f:
-            json.dump(cache, f, ensure_ascii=False)
+            json.dump(cache, f, ensure_ascii=False, indent=0)  # 减少格式化开销
     except Exception as e:
         logger.error(f"Error saving cache: {e}")
 
 def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
-    """从缓存中提取高频文件名，生成动态查询"""
+    """从缓存中提取高频文件名和路径，生成动态查询"""
     filenames = {}
+    paths = {}
+    repos = {}
     for data in cache.values():
         file_name = data.get('file_name', '').split('_')[0] + '.json'
+        path = data.get('path', '')
+        repo = data.get('repo', '')
         filenames[file_name] = filenames.get(file_name, 0) + 1
+        paths[path.rsplit('/', 1)[0]] = paths.get(path.rsplit('/', 1)[0], 0) + 1
+        repos[repo] = repos.get(repo, 0) + 1
     
-    # 选择出现频率 >= 2 的文件名
-    dynamic_queries = [
-        f'filename:{name} tvbox in:file'
-        for name, count in filenames.items() if count >= 2
-    ]
+    dynamic_queries = []
+    # 高频文件名（出现 >= 2 次）
+    dynamic_queries.extend(
+        f'filename:{name} tvbox in:file' for name, count in filenames.items() if count >= 2
+    )
+    # 高频路径（出现 >= 2 次）
+    dynamic_queries.extend(
+        f'extension:json path:{path}' for path, count in paths.items() if count >= 2
+    )
+    # 高频仓库（出现 >= 3 次）
+    dynamic_queries.extend(
+        f'extension:json repo:{repo}' for repo, count in repos.items() if count >= 3
+    )
     return dynamic_queries[:5]  # 限制动态查询数量
 
-def search_github(query: str, github_token: str, page: int = 1) -> Tuple[List[dict], int]:
-    """执行 GitHub 搜索请求，带重试机制"""
+def load_query_stats(stats_file: str = "query_stats.json") -> Dict[str, dict]:
+    """加载查询统计"""
+    if os.path.exists(stats_file):
+        try:
+            with open(stats_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning(f"Error loading query stats: {e}")
+    return {}
+
+def save_query_stats(stats: Dict[str, dict], stats_file: str = "query_stats.json"):
+    """保存查询统计"""
+    try:
+        with open(stats_file, 'w', encoding='utf-8') as f:
+            json.dump(stats, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"Error saving query stats: {e}")
+
+def search_github(query: str, github_token: str, page: int = 1, max_pages: int = 10) -> Tuple[List[dict], int]:
+    """执行 GitHub 搜索请求，带重试机制和页面限制"""
     search_url = "https://api.github.com/search/code"
     headers = {
         "Authorization": f"token {github_token}",
@@ -166,14 +200,14 @@ def search_github(query: str, github_token: str, page: int = 1) -> Tuple[List[di
                 return [], 0
     return [], 0
 
-async def process_query(query: str, github_token: str, processed_urls: Set[str], cache: Dict[str, dict], stats: Dict[str, int]):
+async def process_query(query: str, github_token: str, processed_urls: Set[str], cache: Dict[str, dict], stats: Dict[str, dict], content_hashes: Set[str], max_pages: int = 10):
     """处理单个查询，搜索并保存 TVBox 配置文件"""
     page = 1
-    valid_files = 0
-    total_files = 0
+    valid_files = stats.get(query, {'valid': 0, 'total': 0})['valid']
+    total_files = stats.get(query, {'valid': 0, 'total': 0})['total']
     
-    while True:
-        items, total_count = search_github(query, github_token, page)
+    while page <= max_pages:
+        items, total_count = search_github(query, github_token, page, max_pages)
         total_files += len(items)
         logger.info(f"Query '{query}', page {page}: Found {len(items)} files, total: {total_count}")
         
@@ -181,7 +215,7 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
             logger.info(f"No more results for query '{query}'. Exiting pagination.")
             break
         
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as session:
             tasks = []
             for item in items:
                 file_name = item["path"].split("/")[-1]
@@ -207,13 +241,25 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
 
                 tasks.append((item, fetch_url(session, raw_url, headers={"Accept": "application/vnd.github.v3+json"})))
                 processed_urls.add(raw_url)
-                cache[cache_key] = {'file_name': file_name, 'last_modified': last_modified_str}
+                cache[cache_key] = {
+                    'file_name': file_name,
+                    'last_modified': last_modified_str,
+                    'path': item['path'],
+                    'repo': repo_full_name
+                }
             
             # 批量处理下载任务
             for item, content in [(item, await task) for item, task in tasks]:
                 if content is None:
                     logger.warning(f"Skipping {item['path']} due to fetch error.")
                     continue
+                
+                # 内容去重
+                content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+                if content_hash in content_hashes:
+                    logger.info(f"Skipping duplicate content for {item['path']}")
+                    continue
+                content_hashes.add(content_hash)
                 
                 file_name = item["path"].split("/")[-1]
                 if validate_tvbox_interface(content):
@@ -239,9 +285,9 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
             logger.info(f"Reached end of results for query '{query}'.")
             break
     
-    # 记录查询统计
-    stats[query] = valid_files
-    logger.info(f"Query '{query}' produced {valid_files}/{total_files} valid files.")
+    # 更新查询统计
+    stats[query] = {'valid': valid_files, 'total': total_files}
+    save_query_stats(stats)
 
 async def search_and_save_tvbox_interfaces():
     """
@@ -257,45 +303,50 @@ async def search_and_save_tvbox_interfaces():
         'filename:config.json tvbox in:file',
         'filename:tv.json tvbox in:file',
         'filename:interface.json tvbox in:file',
+        'extension:json path:tvbox',
+        'extension:json path:config',
         'extension:json sites in:file language:json',
         'extension:json lives in:file language:json',
-        'extension:json spider in:file language:json',
-        'extension:json api in:file language:json',
-        'extension:json channels in:file language:json'
+        'extension:json spider in:file language:json'
     ]
     
     os.makedirs("box", exist_ok=True)
     
-    # 加载缓存和已处理 URL
+    # 加载缓存和统计
     cache = load_cache()
+    stats = load_query_stats()
     processed_urls: Set[str] = set()
-    stats: Dict[str, int] = {}  # 统计每个查询的有效文件数
+    content_hashes: Set[str] = set()
     
     # 添加动态查询
     dynamic_queries = generate_dynamic_queries(cache)
     queries.extend(dynamic_queries)
     logger.info(f"Added {len(dynamic_queries)} dynamic queries: {dynamic_queries}")
     
-    # 动态调整并行线程数（最多 CPU 核心数）
+    # 根据历史命中率排序查询
+    def query_priority(query):
+        stats_data = stats.get(query, {'valid': 0, 'total': 1})
+        hit_rate = stats_data['valid'] / max(stats_data['total'], 1)
+        return hit_rate
+    queries.sort(key=query_priority, reverse=True)
+    logger.info(f"Sorted queries by hit rate: {queries}")
+    
+    # 动态调整并行线程数和页面限制
     max_workers = min(len(queries), multiprocessing.cpu_count())
-    logger.info(f"Using {max_workers} parallel threads for {len(queries)} queries.")
+    max_pages_per_query = 5 if len(queries) > max_workers else 10  # 低效查询限制页面
+    logger.info(f"Using {max_workers} parallel threads for {len(queries)} queries, max {max_pages_per_query} pages per query.")
     
     # 并行运行查询
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [
-            executor.submit(asyncio.run, process_query(query, github_token, processed_urls, cache, stats))
+            executor.submit(asyncio.run, process_query(query, github_token, processed_urls, cache, stats, content_hashes, max_pages_per_query))
             for query in queries
         ]
         for future in futures:
             future.result()  # 等待所有查询完成
     
     # 保存查询统计
-    try:
-        with open("query_stats.json", 'w', encoding='utf-8') as f:
-            json.dump(stats, f, ensure_ascii=False, indent=2)
-        logger.info("Query statistics saved to 'query_stats.json'.")
-    except Exception as e:
-        logger.error(f"Error saving query stats: {e}")
+    save_query_stats(stats)
 
 if __name__ == "__main__":
     asyncio.run(search_and_save_tvbox_interfaces())
