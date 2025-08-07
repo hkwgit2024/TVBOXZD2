@@ -1,0 +1,40 @@
+name: Scrape and Merge TVbox Interfaces
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  scrape-interfaces:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pyyaml
+
+      - name: Run interface scraper script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scraper.py
+
+      - name: Run config merger script
+        run: python merger.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add box/ merged_tvbox_config.json
+          git commit -m "feat: automatically scrape, merge and update TVbox interfaces" || echo "No changes to commit"
+          git pull --rebase origin main
+          git push
