@@ -31,15 +31,13 @@ async def fetch_url(session, url, headers, timeout=10, retries=3):
         except Exception as e:
             logger.warning(f"Error fetching {url} (attempt {attempt + 1}/{retries}): {e}")
             if attempt < retries - 1:
-                await asyncio.sleep(2 ** attempt)  # 指数退避
+                await asyncio.sleep(2 ** attempt)
             else:
                 logger.error(f"Failed to fetch {url} after {retries} attempts.")
                 return None
 
 def validate_tvbox_interface(json_str: str) -> bool:
-    """
-    检查 JSON 字符串是否为有效的 TVBox 接口格式，增强验证逻辑。
-    """
+    """检查 JSON 字符串是否为有效的 TVBox 接口格式"""
     try:
         data = json.loads(json_str)
         if not isinstance(data, dict):
@@ -57,9 +55,6 @@ def validate_tvbox_interface(json_str: str) -> bool:
         if has_sites_key:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
-                    # 检查 TVBox 特定字段
-                    if 'type' in site or 'searchable' in site:
-                        return True
                     return True
         
         if has_lives_key or has_spider_key:
@@ -72,9 +67,7 @@ def validate_tvbox_interface(json_str: str) -> bool:
         return False
 
 def check_for_updates(file_name: str, last_modified_str: str) -> bool:
-    """
-    检查本地目录中是否存在同名文件，并比较更新时间。
-    """
+    """检查本地目录中是否存在同名文件，并比较更新时间"""
     if not last_modified_str:
         return False
         
@@ -110,10 +103,10 @@ def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
     return {}
 
 def save_cache(cache: Dict[str, dict], cache_file: str = "search_cache.json"):
-    """保存搜索结果到缓存，优化存储格式"""
+    """保存搜索结果到缓存"""
     try:
         with open(cache_file, 'w', encoding='utf-8') as f:
-            json.dump(cache, f, ensure_ascii=False, indent=0)  # 减少格式化开销
+            json.dump(cache, f, ensure_ascii=False, indent=0)
     except Exception as e:
         logger.error(f"Error saving cache: {e}")
 
@@ -121,29 +114,20 @@ def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
     """从缓存中提取高频文件名和路径，生成动态查询"""
     filenames = {}
     paths = {}
-    repos = {}
     for data in cache.values():
         file_name = data.get('file_name', '').split('_')[0] + '.json'
         path = data.get('path', '')
-        repo = data.get('repo', '')
         filenames[file_name] = filenames.get(file_name, 0) + 1
         paths[path.rsplit('/', 1)[0]] = paths.get(path.rsplit('/', 1)[0], 0) + 1
-        repos[repo] = repos.get(repo, 0) + 1
     
     dynamic_queries = []
-    # 高频文件名（出现 >= 2 次）
     dynamic_queries.extend(
         f'filename:{name} tvbox in:file' for name, count in filenames.items() if count >= 2
     )
-    # 高频路径（出现 >= 2 次）
     dynamic_queries.extend(
         f'extension:json path:{path}' for path, count in paths.items() if count >= 2
     )
-    # 高频仓库（出现 >= 3 次）
-    dynamic_queries.extend(
-        f'extension:json repo:{repo}' for repo, count in repos.items() if count >= 3
-    )
-    return dynamic_queries[:5]  # 限制动态查询数量
+    return dynamic_queries[:5]
 
 def load_query_stats(stats_file: str = "query_stats.json") -> Dict[str, dict]:
     """加载查询统计"""
@@ -164,7 +148,7 @@ def save_query_stats(stats: Dict[str, dict], stats_file: str = "query_stats.json
         logger.error(f"Error saving query stats: {e}")
 
 def search_github(query: str, github_token: str, page: int = 1, max_pages: int = 10) -> Tuple[List[dict], int]:
-    """执行 GitHub 搜索请求，带重试机制和页面限制"""
+    """执行 GitHub 搜索请求，带重试机制"""
     search_url = "https://api.github.com/search/code"
     headers = {
         "Authorization": f"token {github_token}",
@@ -223,7 +207,6 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
                 last_modified_str = item['repository']['updated_at']
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 
-                # 使用文件内容的 SHA 或 URL 去重
                 file_sha = item.get('sha', '')
                 cache_key = file_sha or raw_url
                 if cache_key in cache and cache[cache_key]['last_modified'] == last_modified_str:
@@ -248,13 +231,11 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
                     'repo': repo_full_name
                 }
             
-            # 批量处理下载任务
             for item, content in [(item, await task) for item, task in tasks]:
                 if content is None:
                     logger.warning(f"Skipping {item['path']} due to fetch error.")
                     continue
                 
-                # 内容去重
                 content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
                 if content_hash in content_hashes:
                     logger.info(f"Skipping duplicate content for {item['path']}")
@@ -276,29 +257,23 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
                 else:
                     logger.warning("Validation failed: Not a TVBox interface. Skipping.")
         
-        # 更新缓存
         save_cache(cache)
         
-        # 检查是否有下一页
         page += 1
         if page * 100 >= total_count:
             logger.info(f"Reached end of results for query '{query}'.")
             break
     
-    # 更新查询统计
     stats[query] = {'valid': valid_files, 'total': total_files}
     save_query_stats(stats)
 
 async def search_and_save_tvbox_interfaces():
-    """
-    搜索、验证并保存 TVBox 接口文件，并检查更新。
-    """
+    """搜索、验证并保存 TVBox 接口文件"""
     github_token = os.environ.get("BOT")
     if not github_token:
         logger.error("BOT token is not set. Exiting.")
         sys.exit(1)
 
-    # 定义查询组合，优先高相关性查询
     queries = [
         'filename:config.json tvbox in:file',
         'filename:tv.json tvbox in:file',
@@ -312,40 +287,33 @@ async def search_and_save_tvbox_interfaces():
     
     os.makedirs("box", exist_ok=True)
     
-    # 加载缓存和统计
     cache = load_cache()
     stats = load_query_stats()
     processed_urls: Set[str] = set()
     content_hashes: Set[str] = set()
     
-    # 添加动态查询
     dynamic_queries = generate_dynamic_queries(cache)
     queries.extend(dynamic_queries)
     logger.info(f"Added {len(dynamic_queries)} dynamic queries: {dynamic_queries}")
     
-    # 根据历史命中率排序查询
     def query_priority(query):
         stats_data = stats.get(query, {'valid': 0, 'total': 1})
-        hit_rate = stats_data['valid'] / max(stats_data['total'], 1)
-        return hit_rate
+        return stats_data['valid'] / max(stats_data['total'], 1)
     queries.sort(key=query_priority, reverse=True)
     logger.info(f"Sorted queries by hit rate: {queries}")
     
-    # 动态调整并行线程数和页面限制
     max_workers = min(len(queries), multiprocessing.cpu_count())
-    max_pages_per_query = 5 if len(queries) > max_workers else 10  # 低效查询限制页面
+    max_pages_per_query = 5 if len(queries) > max_workers else 10
     logger.info(f"Using {max_workers} parallel threads for {len(queries)} queries, max {max_pages_per_query} pages per query.")
     
-    # 并行运行查询
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [
             executor.submit(asyncio.run, process_query(query, github_token, processed_urls, cache, stats, content_hashes, max_pages_per_query))
             for query in queries
         ]
         for future in futures:
-            future.result()  # 等待所有查询完成
+            future.result()
     
-    # 保存查询统计
     save_query_stats(stats)
 
 if __name__ == "__main__":
