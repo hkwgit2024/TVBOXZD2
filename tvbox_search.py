@@ -55,11 +55,16 @@ def validate_tvbox_interface(json_str: str) -> bool:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
                     # 检查 TVBox 特定字段
-                    if 'type' in site or 'searchable' in site:
+                    if 'type' in site or 'searchable' in site or 'key' in site or 'name' in site:
                         return True
                     return True
         
-        if has_lives_key or has_spider_key:
+        if has_lives_key:
+            for live in data['lives']:
+                if isinstance(live, dict) and 'channels' in live:
+                    return True
+        
+        if has_spider_key:
             return True
 
         logger.debug("Validation failed: No valid site, live, or spider content.")
@@ -126,12 +131,15 @@ def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
         repos[repo] = repos.get(repo, 0) + 1
     
     dynamic_queries = []
+    # 高频文件名（出现 >= 2 次）
     dynamic_queries.extend(
         f'filename:{name} tvbox in:file' for name, count in filenames.items() if count >= 2
     )
+    # 高频路径（出现 >= 2 次）
     dynamic_queries.extend(
         f'extension:json path:{path}' for path, count in paths.items() if count >= 2
     )
+    # 高频仓库（出现 >= 3 次）
     dynamic_queries.extend(
         f'extension:json repo:{repo}' for repo, count in repos.items() if count >= 3
     )
@@ -290,7 +298,9 @@ async def search_and_save_tvbox_interfaces():
         'extension:json path:config',
         'extension:json sites in:file language:json',
         'extension:json lives in:file language:json',
-        'extension:json spider in:file language:json'
+        'extension:json spider in:file language:json',
+        'extension:json api in:file language:json',
+        'extension:json channels in:file language:json'
     ]
     
     os.makedirs("box", exist_ok=True)
@@ -306,7 +316,8 @@ async def search_and_save_tvbox_interfaces():
     
     def query_priority(query):
         stats_data = stats.get(query, {'valid': 0, 'total': 1})
-        return stats_data['valid'] / max(stats_data['total'], 1)
+        hit_rate = stats_data['valid'] / max(stats_data['total'], 1)
+        return hit_rate
     queries.sort(key=query_priority, reverse=True)
     logger.info(f"Sorted queries by hit rate: {queries}")
     
