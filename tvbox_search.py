@@ -20,6 +20,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# [其他函数保持不变，如 fetch_url, validate_tvbox_interface, load_existing_content_hashes 等]
+
 async def fetch_url(session, url, headers, timeout=10, retries=3):
     """异步获取 URL 内容，带重试机制"""
     for attempt in range(retries):
@@ -40,34 +42,26 @@ def validate_tvbox_interface(json_str: str) -> bool:
     try:
         data = json.loads(json_str)
         if not isinstance(data, dict):
-            logger.debug("Validation failed: Not a dictionary.")
+            return False
+        
+        has_sites = 'sites' in data and isinstance(data['sites'], list)
+        has_lives = 'lives' in data and isinstance(data['lives'], list)
+        has_spider = 'spider' in data and isinstance(data['spider'], str) and data['spider'].strip()
+        
+        if not (has_sites or has_lives or has_spider):
             return False
 
-        has_sites_key = 'sites' in data and isinstance(data['sites'], list) and len(data['sites']) > 0
-        has_lives_key = 'lives' in data and isinstance(data['lives'], list) and len(data['lives']) > 0
-        has_spider_key = 'spider' in data and isinstance(data['spider'], str) and data['spider'].strip()
-
-        if not (has_sites_key or has_lives_key or has_spider_key):
-            logger.debug("Validation failed: Missing required keys or empty values.")
-            return False
-
-        if has_sites_key:
-            for site in data['sites']:
-                if isinstance(site, dict) and ('api' in site or 'url' in site):
-                    return True
-    
-        if has_lives_key:
-            for live in data['lives']:
-                if isinstance(live, dict) and 'channels' in live:
-                    return True
-    
-        if has_spider_key:
+        if has_sites and any(isinstance(site, dict) and ('api' in site or 'url' in site) for site in data['sites']):
             return True
-
-        logger.debug("Validation failed: No valid site, live, or spider content.")
+        
+        if has_lives and any(isinstance(live, dict) and 'channels' in live for live in data['lives']):
+            return True
+            
+        if has_spider:
+            return True
+        
         return False
     except json.JSONDecodeError:
-        logger.debug("Validation failed: Invalid JSON format.")
         return False
 
 def load_existing_content_hashes(directory: str) -> Set[str]:
@@ -95,7 +89,6 @@ def save_valid_file(file_name: str, content: str):
     with open(save_path, "w", encoding="utf-8") as f:
         f.write(content)
     logger.info(f"Successfully saved {new_file_name} to 'box/'")
-
 
 def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
     """加载缓存的搜索结果，移除过期条目（30 天前）"""
@@ -139,15 +132,12 @@ def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
             repos[repo] = repos.get(repo, 0) + 1
     
     dynamic_queries = []
-    # 高频文件名（出现 >= 2 次）
     dynamic_queries.extend(
         f'filename:{name} tvbox in:file' for name, count in filenames.items() if count >= 2
     )
-    # 高频路径（出现 >= 2 次）
     dynamic_queries.extend(
         f'extension:json path:{path}' for path, count in paths.items() if count >= 2
     )
-    # 高频仓库（出现 >= 3 次）
     dynamic_queries.extend(
         f'extension:json repo:{repo}' for repo, count in repos.items() if count >= 3
     )
@@ -214,6 +204,9 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
     valid_files = stats.get(query, {}).get('valid', 0)
     total_files = stats.get(query, {}).get('total', 0)
     
+    # 集合，用于追踪本次运行中已下载的内容哈希值，避免同一轮次内重复保存
+    downloaded_content_hashes: Set[str] = set()
+
     while page <= max_pages:
         items, total_count = search_github(query, github_token, page)
         total_files += len(items)
@@ -225,35 +218,48 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
         
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as session:
             tasks = []
+            urls_to_process = []
             for item in items:
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 
+                # 检查URL是否已经处理过
                 if raw_url in processed_urls:
-                    logger.info(f"Skipping duplicate URL: {raw_url}")
+                    logger.debug(f"Skipping duplicate URL: {raw_url}")
                     continue
                 processed_urls.add(raw_url)
                 
                 tasks.append(fetch_url(session, raw_url, headers={"Accept": "application/vnd.github.v3+json"}))
-            
-            for task in asyncio.as_completed(tasks):
-                content = await task
-                if content is None:
+                urls_to_process.append(raw_url)
+
+            # 并发执行所有下载任务
+            downloaded_contents = await asyncio.gather(*tasks, return_exceptions=True)
+
+            for i, content in enumerate(downloaded_contents):
+                if isinstance(content, Exception) or content is None:
+                    logger.warning(f"Skipping {urls_to_process[i]} due to fetch error.")
                     continue
                 
                 content_hash = hashlib.sha256(content.encode('utf-8')).hexdigest()
                 
+                # 检查本地文件和本次下载内容是否重复
                 if content_hash in content_hashes:
-                    logger.info(f"Skipping duplicate content: {raw_url} has already been saved.")
+                    logger.info(f"Skipping {urls_to_process[i]}: content already exists locally.")
+                    continue
+                
+                # 检查本次运行中是否已处理过相同内容
+                if content_hash in downloaded_content_hashes:
+                    logger.info(f"Skipping {urls_to_process[i]}: content is a duplicate within this run.")
                     continue
                 
                 if validate_tvbox_interface(content):
-                    logger.info(f"Validation successful for {raw_url}. Saving...")
-                    file_name = raw_url.split("/")[-1]
+                    logger.info(f"Validation successful for {urls_to_process[i]}. Saving...")
+                    file_name = urls_to_process[i].split("/")[-1]
                     save_valid_file(file_name, content)
                     content_hashes.add(content_hash)
+                    downloaded_content_hashes.add(content_hash)
                     valid_files += 1
                 else:
-                    logger.warning(f"Validation failed for {raw_url}. Skipping.")
+                    logger.warning(f"Validation failed for {urls_to_process[i]}. Skipping.")
         
         save_cache(cache)
         
@@ -290,7 +296,6 @@ async def search_and_save_tvbox_interfaces():
     cache = load_cache()
     stats = load_query_stats()
     processed_urls: Set[str] = set()
-    # 在程序启动时，加载所有已保存文件的内容哈希值
     content_hashes: Set[str] = load_existing_content_hashes("box")
     
     dynamic_queries = generate_dynamic_queries(cache)
