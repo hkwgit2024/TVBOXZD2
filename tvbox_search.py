@@ -306,7 +306,7 @@ async def search_and_save_tvbox_interfaces():
     logger.info(f"Sorted queries by hit rate: {queries}")
     
     # 增加每次查询后的延时，以减少 API 压力
-    delay_between_queries = 2 # 秒
+    delay_between_queries = 20 # 秒
     
     max_workers = min(len(queries), multiprocessing.cpu_count())
     max_pages_per_query = 5 if len(queries) > max_workers else 10
