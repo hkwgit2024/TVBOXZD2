@@ -24,8 +24,8 @@ jobs:
 
       - name: Run interface scraper script
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
-        run: python tvbox_scraper.py
+          BOT: ${{ secrets.BOT }}  
+        run: python tvbox_search.py  
 
       - name: Commit and push changes
         run: |
@@ -33,8 +33,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git add box/
           git commit -m "feat: automatically scrape and update TVbox interfaces" || echo "No changes to commit"
-          
-          # 在推送之前，先同步远程仓库的最新更改
           git pull --rebase origin main
-          
           git push
