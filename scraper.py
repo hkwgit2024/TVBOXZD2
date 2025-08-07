@@ -14,7 +14,10 @@ def search_and_save_tvbox_interfaces():
         print("GITHUB_TOKEN is not set. Exiting.")
         sys.exit(1)
 
-    query = "filename:tvbox.json OR filename:box.json OR filename:config.yml OR filename:alist.yml"
+    # 精准搜索查询：
+    # 1. 搜索文件名包含 'tvbox'、'alist' 或 'drpy' 的 JSON 或 YAML 文件。
+    # 2. 搜索文件内容包含 'sites'、'spider' 或 '饭太硬.ga' 的文件。
+    query = "filename:tvbox.json OR filename:tvbox.yml OR filename:alist.yml OR filename:drpy.json OR \"sites\" in:file OR \"spider\" in:file OR \"饭太硬.ga\" in:file"
     
     search_url = "https://api.github.com/search/code"
     
@@ -28,7 +31,8 @@ def search_and_save_tvbox_interfaces():
     
     try:
         print(f"Searching GitHub for files with query: \"{query}\"...")
-        response = requests.get(search_url, params={"q": query}, headers=headers)
+        # 限制搜索结果数量，以避免不必要的 API 请求
+        response = requests.get(search_url, params={"q": query, "per_page": 50}, headers=headers)
         response.raise_for_status()
         
         search_results = response.json()
@@ -36,8 +40,13 @@ def search_and_save_tvbox_interfaces():
         
         for item in search_results["items"]:
             file_name = item["path"].split("/")[-1]
+            repo_full_name = item['repository']['full_name']
             
-            print(f"\n--- Processing {file_name} from {item['repository']['full_name']} ---")
+            # 过滤掉一些已知的不相关文件
+            if 'config.yml' in file_name.lower() and ('-sdk' in repo_full_name or 'actions' in repo_full_name):
+                continue
+
+            print(f"\n--- Processing {file_name} from {repo_full_name} ---")
             
             raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
             print(f"Fetching raw content from: {raw_url}")
