@@ -1,4 +1,4 @@
-name: tvbox_scraper
+name: tvbox_search
 
 on:
   workflow_dispatch:
