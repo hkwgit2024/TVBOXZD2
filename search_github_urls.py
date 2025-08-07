@@ -73,7 +73,7 @@ def write_array_to_txt_local(file_path, data_array):
     """将数组内容写入本地 TXT 文件"""
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w', encoding='utf-8') as file:
+        with open(file_path, 'a', encoding='utf-8') as file:
             file.write('\n'.join(data_array))
         logging.info(f"写入 {len(data_array)} 行到 '{file_path}'")
     except Exception as e:
