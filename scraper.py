@@ -23,7 +23,8 @@ def search_and_save_tvbox_interfaces():
         logger.error("GITHUB_TOKEN is not set. Exiting.")
         sys.exit(1)
 
-    query = "filename:tvbox.json OR filename:box.json OR filename:drpy.json OR filename:hipy.json sites OR lives OR spider"
+    # query = "filename:tvbox.json OR filename:box.json OR filename:drpy.json OR filename:hipy.json sites OR lives OR spider"
+      query = "filename:.json sites OR lives OR spider"
     search_url = "https://api.github.com/search/code"
     
     headers = {
