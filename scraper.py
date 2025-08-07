@@ -1,12 +1,12 @@
-# 导入所需的库
 import requests
 import json
 import os
 import sys
 import logging
 from typing import Tuple
+from datetime import datetime
 
-# 配置日志记录，确保日志信息能清晰地在 GitHub Actions 中显示
+# 配置日志记录
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -16,70 +16,66 @@ logger = logging.getLogger(__name__)
 
 def search_and_save_tvbox_interfaces():
     """
-    使用简化的 GitHub API 查询来搜索和保存 TVbox 接口文件。
+    搜索、验证并保存 TVbox 接口文件，并检查更新。
     """
-    # 从环境变量中获取 GitHub 令牌
     github_token = os.environ.get("GITHUB_TOKEN")
     if not github_token:
         logger.error("GITHUB_TOKEN is not set. Exiting.")
         sys.exit(1)
 
-    # 这是一个精简且可靠的搜索查询。
-    # 搜索文件名包含 tvbox.json, box.json, drpy.json, hipy.json 中的任意一个，
-    # 并且文件内容中包含 sites, lives, 或 spider 这三个关键词中的任意一个。
-    # GitHub API 会自动将文件名和关键词的逻辑进行组合，实现 AND 关系。
-    query = "filename:tvbox.json OR filename:box.json OR filename:drpy.json OR filename:hipy.json sites OR lives OR spider"
-    
+    query = "filename:tvbox.json OR filename:box.json OR filename:drpy.json OR filename:hipy.json"
     search_url = "https://api.github.com/search/code"
     
-    # 设置请求头，包含授权令牌和接受原始文件内容
     headers = {
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3.raw"
     }
     
-    # 创建 'box' 目录，如果它不存在的话
     os.makedirs("box", exist_ok=True)
     
     try:
         logger.info(f"Searching GitHub with query: {query}")
-        # 发送搜索请求，每页最多获取 100 个结果
         response = requests.get(search_url, params={"q": query, "per_page": 100}, headers=headers)
-        # 检查响应状态，如果不是 200，则抛出异常
         response.raise_for_status()
         
         search_results = response.json()
         items = search_results.get('items', [])
         logger.info(f"Found {len(items)} potential interface files.")
         
-        # 遍历每个搜索结果
         for item in items:
             file_name = item["path"].split("/")[-1]
             repo_full_name = item['repository']['full_name']
             
             logger.info(f"\n--- Processing {file_name} from {repo_full_name} ---")
             
-            # 构造原始文件内容的 URL
             raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
             
+            # 获取 GitHub 文件的最后更新时间
+            last_modified_str = item.get('repository', {}).get('updated_at')
+            
             try:
-                # 下载原始文件内容
+                # 检查本地是否已存在同名文件，并比较更新时间
+                if check_for_updates(file_name, last_modified_str):
+                    logger.info(f"Local file is up-to-date. Skipping download.")
+                    continue
+                
                 file_content_response = requests.get(raw_url, timeout=10)
                 file_content_response.raise_for_status()
                 content = file_content_response.text
                 
-                # 验证文件内容是否符合 TVbox JSON 格式
-                is_valid, content_type = validate_interface_json(content)
-                if is_valid:
-                    logger.info(f"Validation successful! Content type: {content_type}. Saving interface...")
+                if validate_tvbox_interface(content):
+                    logger.info(f"Validation successful! It's a valid TVbox JSON. Saving...")
                     
-                    # 保存文件到 'box' 目录
-                    save_path = os.path.join("box", file_name)
+                    # 生成带时间戳的新文件名
+                    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                    new_file_name = f"{os.path.splitext(file_name)[0]}_{timestamp}.json"
+                    
+                    save_path = os.path.join("box", new_file_name)
                     with open(save_path, "w", encoding="utf-8") as f:
                         f.write(content)
-                    logger.info(f"Successfully saved {file_name} to 'box/'")
+                    logger.info(f"Successfully saved {new_file_name} to 'box/'")
                 else:
-                    logger.warning("Validation failed. Skipping this file.")
+                    logger.warning("Validation failed: Not a TVbox interface. Skipping.")
             
             except requests.exceptions.RequestException as e:
                 logger.error(f"Error fetching {raw_url}: {e}")
@@ -89,18 +85,59 @@ def search_and_save_tvbox_interfaces():
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON from search results: {e}")
 
-def validate_interface_json(json_str: str) -> Tuple[bool, str]:
+def validate_tvbox_interface(json_str: str) -> bool:
     """
-    验证 JSON 内容是否是 TVbox 接口。
+    检查 JSON 字符串是否为有效的 TVbox 接口格式。
+    验证标准：必须是有效的 JSON，且包含特定的 TVbox 接口键名。
     """
     try:
         data = json.loads(json_str)
-        # 检查是否为字典且包含 TVbox 专用键
-        if isinstance(data, dict) and any(key in data for key in ("sites", "lives", "spider")):
-            return True, "JSON"
+        if not isinstance(data, dict):
+            return False
+
+        has_sites_key = 'sites' in data and isinstance(data['sites'], list)
+        has_lives_key = 'lives' in data and isinstance(data['lives'], list)
+        has_spider_key = 'spider' in data and isinstance(data['spider'], str)
+
+        if not (has_sites_key or has_lives_key or has_spider_key):
+            return False
+
+        if has_sites_key:
+            for site in data['sites']:
+                if isinstance(site, dict) and ('api' in site or 'url' in site):
+                    return True
+        
+        if has_lives_key or has_spider_key:
+            return True
+
+        return False
     except json.JSONDecodeError:
-        pass
-    return False, "invalid"
+        return False
+
+def check_for_updates(file_name: str, last_modified_str: str) -> bool:
+    """
+    检查本地目录中是否存在同名文件，并比较更新时间。
+    """
+    if not last_modified_str:
+        return False
+        
+    try:
+        github_last_modified = datetime.fromisoformat(last_modified_str.replace('Z', '+00:00'))
+        
+        for local_file in os.listdir("box"):
+            if local_file.startswith(os.path.splitext(file_name)[0]):
+                # 从带时间戳的文件名中提取时间
+                local_timestamp_str = local_file.rsplit('_', 1)[-1].split('.')[0]
+                local_last_modified = datetime.strptime(local_timestamp_str, "%Y%m%d%H%M%S")
+                
+                # 如果本地文件的创建时间晚于或等于 GitHub 上的更新时间，则认为已是最新
+                if local_last_modified >= github_last_modified.replace(tzinfo=None):
+                    return True
+    except (ValueError, IndexError):
+        # 捕获解析时间或文件名格式的错误
+        return False
+        
+    return False
 
 if __name__ == "__main__":
     search_and_save_tvbox_interfaces()
