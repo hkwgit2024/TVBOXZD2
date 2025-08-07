@@ -1,63 +1,160 @@
 {
-"spider":"./jar/1013.jar",
-"wallpaper":"https://img.chenghua.icu/file/d64d209f7cc90812f7add.png",
-"warningText":"",
+"spider": "https://github.com/kimwang1978/tvbox/raw/refs/heads/main/%E7%8E%8B%E4%BA%8C%E5%B0%8F/spider.jar",
+"wallpaper": "https://牛逼.王二小放牛娃.xyz/",
+"logo": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1716818643045/wexfnw.gif",
+"lives":[
+	{
+		"name": "YanG•体育",
+		"type": 0,
+		"url": "https://tv.iill.top/m3u/Sport",
+		"ua": "okhttp/3.15",
+		"playerType": 2
+	},
+	{
+		"name": "tv",
+		"type": 0,
+		"url": "https://raw.githubusercontent.com/bizopps/tv/refs/heads/main/tv.m3u",
+		"playerType": 2,
+		"epg": "http://epg.112114.xyz/?ch={name}&date={date}"
+	},
+	{
+		"name":"a", 
+		"type":0, 
+		"url":"https://raw.githubusercontent.com/bizopps/tv/refs/heads/main/a.m3u", 
+		"playerType":2, 
+		"epg":"http://epg.112114.xyz/?ch={name}&date={date}"
+	},
+	{
+		"name":"Sports", 
+		"type":0, 
+		"url":"https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u", 
+		"playerType":2, 
+		"epg":"http://epg.112114.xyz/?ch={name}&date={date}"
+	},
+	{
+		"name":"综合", 
+		"type":0, 
+		"url":"https://raw.githubusercontent.com/Supprise0901/TVBox_live/main/live.txt", 
+		"playerType":1, 
+		"epg":"http://epg.112114.xyz/?ch={name}&date={date}"
+	}
+],
 
-"lives": [
-    {
-            "name": "live",
-            "type": 0,
-            "url": "https://raw.githubusercontent.com/chenghua-x/TVBox-Config/master/live/tvlive.txt",
-            "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
-    }
-    ],
+"sites":[
+	{
+		"key": "Wexerxiaoziyuan",
+		"name": "💓‍二小┃4K💓‍",
+		"type": 3,
+		"api": "csp_WexerxiaoziyuanGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "WexxzysGuard",
+		"name": "💓校长┃4K💓",
+		"type": 3,
+		"api": "csp_WexxzysGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "玩偶",
+		"name": "💓‍玩偶┃4K💓‍",
+		"type": 3,
+		"api": "csp_WoggGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "Wexzhizhen",
+		"name": "💓至臻┃4K💓",
+		"type": 3,
+		"api": "csp_WexzhizhenGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "WexxiaomiziyuanGuard",
+		"name": "💓小米┃4K💓",
+		"type": 3,
+		"api": "csp_WexxiaomiziyuanGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "Wexmuougg",
+		"name": "💓木偶┃4K💓",
+		"type": 3,
+		"api": "csp_WexmuouggGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "WexfeimaoziyuanGuard",
+		"name": "💓肥猫┃4K💓",
+		"type": 3,
+		"api": "csp_WexfeimaoziyuanGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
+	{
+		"key": "WextexiafanGuard",
+		"name": "💓下饭┃4K💓",
+		"type": 3,
+		"api": "csp_WextexiafanGuard",
+		"searchable": 1,
+		"changeable": 1
+	},
 
-"sites": [ 
-{"key":"荐片","name":"Copyright by Chenghua","type": 3,"api":"csp_Jianpian","searchable":1,"quickSearch":1,"filterable":1,"ext": {"danmu": true}}
+	{
+		"key": "看球",
+		"name": "🌐88┃体育🌐",
+		"type": 3,
+		"api": "csp_KanqiuGuard",
+		"searchable": 1,
+		"changeable": 0,
+		"style": {
+			"type": "list"
+		}
+	},
+	{
+		"key": "926看球",
+		"name": "🌐926┃体育🌐",
+		"type": 3,
+		"api": "csp_Wex926kanqiuGuard",
+		"searchable": 1,
+		"changeable": 0,
+		"style": {
+			"type": "list"
+		}
+	},
+	{
+		"key": "1直播",
+		"name": "🌐一直┃体育🌐",
+		"type": 3,
+		"api": "csp_Wexzhibo1Guard",
+		"searchable": 1,
+		"changeable": 0,
+		"style": {
+			"type": "list"
+		}
+	}
 ],
 
 "parses":[
-    {"name":"但行好事","type":0,"url":"https://jx.xmflv.com/?url=","ext":{"flag":["腾讯视频","优酷视频","奇艺视频","芒果视频"]}},
-    {"name":"莫问归期","type":1,"url":"http://jx.yangtu.top/?url="}
 ],
-"flags":
-["youku","qq","QQ","iqiyi","qiqi","qiyi","letv","sohu","tudou","pptv","PPTV","mgtv"],
 
-"ijk":[
-{"group":"软解码","options":[
-{"category":4,"name":"opensles","value":"0"},
-{"category":4,"name":"overlay-format","value":"842225234"},
-{"category":4,"name":"framedrop","value":"1"},
-{"category":4,"name":"soundtouch","value":"1"},
-{"category":4,"name":"start-on-prepared","value":"1"},
-{"category":1,"name":"http-detect-range-support","value":"0"},
-{"category":1,"name":"fflags","value":"fastseek"},
-{"category":2,"name":"skip_loop_filter","value":"48"},
-{"category":4,"name":"reconnect","value":"1"},
-{"category":4,"name":"enable-accurate-seek","value":"0"},
-{"category":4,"name":"mediacodec","value":"0"},
-{"category":4,"name":"mediacodec-auto-rotate","value":"0"},
-{"category":4,"name":"mediacodec-handle-resolution-change","value":"0"},
-{"category":4,"name":"mediacodec-hevc","value":"0"},
-{"category":1,"name":"dns_cache_timeout","value":"600000000"}
-]},
-{"group":"硬解码","options":[
-{"category":4,"name":"opensles","value":"0"},
-{"category":4,"name":"overlay-format","value":"842225234"},
-{"category":4,"name":"framedrop","value":"1"},
-{"category":4,"name":"soundtouch","value":"1"},
-{"category":4,"name":"start-on-prepared","value":"1"},
-{"category":1,"name":"http-detect-range-support","value":"0"},
-{"category":1,"name":"fflags","value":"fastseek"},
-{"category":2,"name":"skip_loop_filter","value":"48"},
-{"category":4,"name":"reconnect","value":"1"},
-{"category":4,"name":"enable-accurate-seek","value":"0"},
-{"category":4,"name":"mediacodec","value":"1"},
-{"category":4,"name":"mediacodec-auto-rotate","value":"1"},
-{"category":4,"name":"mediacodec-handle-resolution-change","value":"1"},
-{"category":4,"name":"mediacodec-hevc","value":"1"},
-{"category":1,"name":"dns_cache_timeout","value":"600000000"}
-]}],
-"ads":["mimg.0c1q0l.cn","www.googletagmanager.com","www.google-analytics.com","mc.usihnbcq.cn","mg.g1mm3d.cn","mscs.svaeuzh.cn","cnzz.hhttm.top","tp.vinuxhome.com","cnzz.mmstat.com","www.baihuillq.com","s23.cnzz.com","z3.cnzz.com","c.cnzz.com","stj.v1vo.top","z12.cnzz.com","img.mosflower.cn","tips.gamevvip.com","ehwe.yhdtns.com","xdn.cqqc3.com","www.jixunkyy.cn","sp.chemacid.cn","hm.baidu.com","s9.cnzz.com","z6.cnzz.com","um.cavuc.com","mav.mavuz.com","wofwk.aoidf3.com","z5.cnzz.com","xc.hubeijieshikj.cn","tj.tianwenhu.com","xg.gars57.cn","k.jinxiuzhilv.com","cdn.bootcss.com","ppl.xunzhuo123.com","xomk.jiangjunmh.top","img.xunzhuo123.com","z1.cnzz.com","s13.cnzz.com","xg.huataisangao.cn","z7.cnzz.com","xg.huataisangao.cn","z2.cnzz.com","s96.cnzz.com","q11.cnzz.com","thy.dacedsfa.cn","xg.whsbpw.cn","s19.cnzz.com","z8.cnzz.com","s4.cnzz.com","f5w.as12df.top","ae01.alicdn.com","www.92424.cn","k.wudejia.com","vivovip.mmszxc.top","qiu.xixiqiu.com","cdnjs.hnfenxun.com","cms.qdwght.com","https://lf1-cdn-tos.bytegoofy.com/obj/tos-cn-i-dy/455ccf9e8ae744378118e4bd289288dd"]
+"flags":[
+],
+
+"doh":[
+	{"name":"Google","url":"https://dns.google/dns-query","ips":["8.8.4.4","8.8.8.8"]},
+	{"name":"Cloudflare","url":"https://cloudflare-dns.com/dns-query","ips":["1.1.1.1","1.0.0.1","2606:4700:4700::1111","2606:4700:4700::1001"]},
+	{"name":"AdGuard","url":"https://dns.adguard.com/dns-query","ips":["94.140.14.140","94.140.14.141"]},
+	{"name":"DNSWatch","url":"https://resolver2.dns.watch/dns-query","ips":["84.200.69.80","84.200.70.40"]},
+	{"name":"Quad9","url":"https://dns.quad9.net/dns-quer","ips":["9.9.9.9","149.112.112.112"]}
+],
+
+"rules":[
+]
 }
-
