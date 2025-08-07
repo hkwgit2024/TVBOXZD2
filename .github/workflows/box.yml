@@ -25,7 +25,7 @@ jobs:
       - name: Run interface scraper script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scraper.py
+        run: python tvbox_scraper.py
 
       - name: Commit and push changes
         run: |
