@@ -54,9 +54,6 @@ def validate_tvbox_interface(json_str: str) -> bool:
         if has_sites_key:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
-                    # 检查 TVBox 特定字段
-                    if 'type' in site or 'searchable' in site or 'key' in site or 'name' in site:
-                        return True
                     return True
         
         if has_lives_key:
@@ -126,9 +123,14 @@ def generate_dynamic_queries(cache: Dict[str, dict]) -> List[str]:
         file_name = data.get('file_name', '').split('_')[0] + '.json'
         path = data.get('path', '')
         repo = data.get('repo', '')
-        filenames[file_name] = filenames.get(file_name, 0) + 1
-        paths[path.rsplit('/', 1)[0]] = paths.get(path.rsplit('/', 1)[0], 0) + 1
-        repos[repo] = repos.get(repo, 0) + 1
+        if file_name and file_name != '.json':
+            filenames[file_name] = filenames.get(file_name, 0) + 1
+        if path:
+            dir_path = path.rsplit('/', 1)[0] if '/' in path else ''
+            if dir_path:
+                paths[dir_path] = paths.get(dir_path, 0) + 1
+        if repo:
+            repos[repo] = repos.get(repo, 0) + 1
     
     dynamic_queries = []
     # 高频文件名（出现 >= 2 次）
@@ -163,7 +165,7 @@ def save_query_stats(stats: Dict[str, dict], stats_file: str = "query_stats.json
     except Exception as e:
         logger.error(f"Error saving query stats: {e}")
 
-def search_github(query: str, github_token: str, page: int = 1, max_pages: int = 10) -> Tuple[List[dict], int]:
+def search_github(query: str, github_token: str, page: int = 1) -> Tuple[List[dict], int]:
     """执行 GitHub 搜索请求，带重试机制"""
     search_url = "https://api.github.com/search/code"
     headers = {
@@ -203,11 +205,11 @@ def search_github(query: str, github_token: str, page: int = 1, max_pages: int =
 async def process_query(query: str, github_token: str, processed_urls: Set[str], cache: Dict[str, dict], stats: Dict[str, dict], content_hashes: Set[str], max_pages: int = 10):
     """处理单个查询，搜索并保存 TVBox 配置文件"""
     page = 1
-    valid_files = stats.get(query, {'valid': 0, 'total': 0})['valid']
-    total_files = stats.get(query, {'valid': 0, 'total': 0})['total']
+    valid_files = stats.get(query, {}).get('valid', 0)
+    total_files = stats.get(query, {}).get('total', 0)
     
     while page <= max_pages:
-        items, total_count = search_github(query, github_token, page, max_pages)
+        items, total_count = search_github(query, github_token, page)
         total_files += len(items)
         logger.info(f"Query '{query}', page {page}: Found {len(items)} files, total: {total_count}")
         
@@ -219,8 +221,10 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
             tasks = []
             for item in items:
                 file_name = item["path"].split("/")[-1]
-                repo_full_name = item['repository']['full_name']
-                last_modified_str = item['repository']['updated_at']
+                
+                # 使用 .get() 方法安全地获取数据，避免 KeyError
+                repo_full_name = item.get('repository', {}).get('full_name', '')
+                last_modified_str = item.get('repository', {}).get('updated_at', '')
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 
                 file_sha = item.get('sha', '')
