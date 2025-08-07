@@ -55,12 +55,12 @@ def validate_tvbox_interface(json_str: str) -> bool:
             for site in data['sites']:
                 if isinstance(site, dict) and ('api' in site or 'url' in site):
                     return True
-        
+    
         if has_lives_key:
             for live in data['lives']:
                 if isinstance(live, dict) and 'channels' in live:
                     return True
-        
+    
         if has_spider_key:
             return True
 
@@ -70,26 +70,32 @@ def validate_tvbox_interface(json_str: str) -> bool:
         logger.debug("Validation failed: Invalid JSON format.")
         return False
 
-def check_for_updates(file_name: str, last_modified_str: str) -> bool:
-    """检查本地目录中是否存在同名文件，并比较更新时间"""
-    if not last_modified_str:
-        return False
-        
-    try:
-        github_last_modified = datetime.fromisoformat(last_modified_str.replace('Z', '+00:00'))
-        
-        for local_file in os.listdir("box"):
-            base_name = os.path.splitext(file_name)[0]
-            if local_file.startswith(base_name) and local_file.endswith(".json"):
-                local_timestamp_str = local_file.rsplit('_', 1)[-1].split('.')[0]
-                local_last_modified = datetime.strptime(local_timestamp_str, "%Y%m%d%H%M%S")
-                
-                if local_last_modified.replace(tzinfo=None) >= github_last_modified.replace(tzinfo=None):
-                    return True
-    except (ValueError, IndexError):
-        return False
-        
-    return False
+def load_existing_content_hashes(directory: str) -> Set[str]:
+    """遍历本地目录，计算并返回所有文件的 SHA256 哈希值"""
+    hashes = set()
+    if not os.path.exists(directory):
+        return hashes
+    for filename in os.listdir(directory):
+        if filename.endswith(".json"):
+            filepath = os.path.join(directory, filename)
+            try:
+                with open(filepath, 'rb') as f:
+                    content = f.read()
+                    hashes.add(hashlib.sha256(content).hexdigest())
+            except Exception as e:
+                logger.warning(f"Could not read or hash file {filepath}: {e}")
+    return hashes
+
+def save_valid_file(file_name: str, content: str):
+    """保存有效文件到磁盘，添加时间戳"""
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    base_name = os.path.splitext(file_name)[0]
+    new_file_name = f"{base_name}_{timestamp}.json"
+    save_path = os.path.join("box", new_file_name)
+    with open(save_path, "w", encoding="utf-8") as f:
+        f.write(content)
+    logger.info(f"Successfully saved {new_file_name} to 'box/'")
+
 
 def load_cache(cache_file: str = "search_cache.json") -> Dict[str, dict]:
     """加载缓存的搜索结果，移除过期条目（30 天前）"""
@@ -220,62 +226,34 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
         async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=100)) as session:
             tasks = []
             for item in items:
-                file_name = item["path"].split("/")[-1]
-                
-                # 使用 .get() 方法安全地获取数据，避免 KeyError
-                repo_full_name = item.get('repository', {}).get('full_name', '')
-                last_modified_str = item.get('repository', {}).get('updated_at', '')
                 raw_url = item["html_url"].replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/")
                 
-                file_sha = item.get('sha', '')
-                cache_key = file_sha or raw_url
-                if cache_key in cache and cache[cache_key]['last_modified'] == last_modified_str:
-                    logger.info(f"Skipping cached file: {file_name} from {repo_full_name}")
-                    continue
                 if raw_url in processed_urls:
                     logger.info(f"Skipping duplicate URL: {raw_url}")
                     continue
-                
-                logger.info(f"\n--- Processing {file_name} from {repo_full_name} ---")
-                
-                if check_for_updates(file_name, last_modified_str):
-                    logger.info(f"Local file is up-to-date. Skipping download.")
-                    continue
-
-                tasks.append((item, fetch_url(session, raw_url, headers={"Accept": "application/vnd.github.v3+json"})))
                 processed_urls.add(raw_url)
-                cache[cache_key] = {
-                    'file_name': file_name,
-                    'last_modified': last_modified_str,
-                    'path': item['path'],
-                    'repo': repo_full_name
-                }
+                
+                tasks.append(fetch_url(session, raw_url, headers={"Accept": "application/vnd.github.v3+json"}))
             
-            for item, content in [(item, await task) for item, task in tasks]:
+            for task in asyncio.as_completed(tasks):
+                content = await task
                 if content is None:
-                    logger.warning(f"Skipping {item['path']} due to fetch error.")
                     continue
                 
-                content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+                content_hash = hashlib.sha256(content.encode('utf-8')).hexdigest()
+                
                 if content_hash in content_hashes:
-                    logger.info(f"Skipping duplicate content for {item['path']}")
+                    logger.info(f"Skipping duplicate content: {raw_url} has already been saved.")
                     continue
-                content_hashes.add(content_hash)
                 
-                file_name = item["path"].split("/")[-1]
                 if validate_tvbox_interface(content):
-                    logger.info(f"Validation successful! It's a valid TVBox JSON. Saving...")
-                    
-                    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                    new_file_name = f"{os.path.splitext(file_name)[0]}_{timestamp}.json"
-                    
-                    save_path = os.path.join("box", new_file_name)
-                    with open(save_path, "w", encoding="utf-8") as f:
-                        f.write(content)
-                    logger.info(f"Successfully saved {new_file_name} to 'box/'")
+                    logger.info(f"Validation successful for {raw_url}. Saving...")
+                    file_name = raw_url.split("/")[-1]
+                    save_valid_file(file_name, content)
+                    content_hashes.add(content_hash)
                     valid_files += 1
                 else:
-                    logger.warning("Validation failed: Not a TVBox interface. Skipping.")
+                    logger.warning(f"Validation failed for {raw_url}. Skipping.")
         
         save_cache(cache)
         
@@ -312,7 +290,8 @@ async def search_and_save_tvbox_interfaces():
     cache = load_cache()
     stats = load_query_stats()
     processed_urls: Set[str] = set()
-    content_hashes: Set[str] = set()
+    # 在程序启动时，加载所有已保存文件的内容哈希值
+    content_hashes: Set[str] = load_existing_content_hashes("box")
     
     dynamic_queries = generate_dynamic_queries(cache)
     queries.extend(dynamic_queries)
