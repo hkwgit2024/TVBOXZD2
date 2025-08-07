@@ -15,14 +15,15 @@ logger = logging.getLogger(__name__)
 
 def search_and_save_tvbox_interfaces():
     """
-    搜索并保存所有有效的 JSON 接口文件，不做在线验证。
+    搜索、验证并保存与 TVbox 强相关的 JSON 接口文件。
     """
     GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
     if not GITHUB_TOKEN:
         logger.error("GITHUB_TOKEN is not set. Exiting.")
         sys.exit(1)
 
-    # 恢复到之前成功的搜索查询，并且只搜索 JSON 文件
+    # 优化的精准搜索查询：
+    # 搜索文件名包含 tvbox、box、drpy 或 hipy 的 JSON 文件
     query = "filename:tvbox.json OR filename:box.json OR filename:drpy.json OR filename:hipy.json"
     
     search_url = "https://api.github.com/search/code"
@@ -56,16 +57,16 @@ def search_and_save_tvbox_interfaces():
                 file_content_response.raise_for_status()
                 content = file_content_response.text
                 
-                # 唯一的验证：确保是有效的 JSON 格式
-                if is_valid_json(content):
-                    logger.info(f"Validation successful! It's a valid JSON file. Saving...")
+                # 验证文件是否为有效的 TVbox JSON 接口
+                if validate_tvbox_interface(content):
+                    logger.info(f"Validation successful! It's a valid TVbox JSON. Saving...")
                     
                     save_path = os.path.join("box", file_name)
                     with open(save_path, "w", encoding="utf-8") as f:
                         f.write(content)
                     logger.info(f"Successfully saved {file_name} to 'box/'")
                 else:
-                    logger.warning("Validation failed: Not a valid JSON format. Skipping.")
+                    logger.warning("Validation failed: Not a TVbox interface. Skipping.")
             
             except requests.exceptions.RequestException as e:
                 logger.error(f"Error fetching {raw_url}: {e}")
@@ -75,13 +76,36 @@ def search_and_save_tvbox_interfaces():
     except json.JSONDecodeError as e:
         logger.error(f"Error decoding JSON from search results: {e}")
 
-def is_valid_json(json_str: str) -> bool:
+def validate_tvbox_interface(json_str: str) -> bool:
     """
-    检查字符串是否是有效的 JSON 格式。
+    检查 JSON 字符串是否为有效的 TVbox 接口格式。
+    验证标准：必须是有效的 JSON，且包含特定的 TVbox 接口键名。
     """
     try:
-        json.loads(json_str)
-        return True
+        data = json.loads(json_str)
+        if not isinstance(data, dict):
+            return False
+
+        # 检查是否包含核心键
+        has_sites_key = 'sites' in data and isinstance(data['sites'], list)
+        has_lives_key = 'lives' in data and isinstance(data['lives'], list)
+        has_spider_key = 'spider' in data and isinstance(data['spider'], str)
+
+        # 一个文件至少要包含sites、lives或spider中的一个
+        if not (has_sites_key or has_lives_key or has_spider_key):
+            return False
+
+        # 如果有 sites 键，我们进一步检查其子项是否包含 api 或 url 键
+        if has_sites_key:
+            for site in data['sites']:
+                if isinstance(site, dict) and ('api' in site or 'url' in site):
+                    return True
+        
+        # 如果没有 sites 键，但有 lives 或 spider，也认为是有效接口
+        if has_lives_key or has_spider_key:
+            return True
+
+        return False
     except json.JSONDecodeError:
         return False
 
