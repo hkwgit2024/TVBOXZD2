@@ -24,7 +24,8 @@ jobs:
 
       - name: Run interface scraper script
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT }}
+          
+          BOT: ${{ secrets.BOT }}  
         run: python tvbox_search.py
 
       - name: Run config merger script
