@@ -1,4 +1,4 @@
-name: Scrape TVbox Interfaces
+name: tvbox_scraper
 
 on:
   workflow_dispatch:
