@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
          python -m pip install --upgrade pip
-         python -m pip install requests pyyaml aiohttp
+         pip install requests pyyaml aiohttp
 
       - name: Run interface scraper script
         env:
