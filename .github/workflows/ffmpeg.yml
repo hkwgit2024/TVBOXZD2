@@ -6,8 +6,8 @@ on:
       - '.github/workflows/ffmpeg.yml'
   workflow_dispatch:
   schedule:
-    # Runs every 6 hours
-    # cron expression format: (minute hour day-of-month month day-of-week)
+    # 每 6 小时运行一次
+    # cron 表达式的语法: (分 时 日 月 周)
     - cron: '0 */6 * * *'
 
 jobs:
@@ -36,26 +36,27 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          # Configure Git user
+          # 配置Git用户
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # Add all changes
+          # 暂存所有更改
           git add .
           
-          # Check if there are changes to commit. If not, exit gracefully.
-          if git diff --staged --quiet; then
-            echo "No changes to commit. Exiting."
+          # 检查是否有实际更改。如果没有，则优雅地退出。
+          # git diff-index HEAD --quiet 命令可以检查暂存区和 HEAD 提交是否有差异
+          if git diff-index --quiet HEAD; then
+            echo "没有需要提交的更改。退出。"
             exit 0
           fi
-          
-          # Commit local changes
+
+          # 提交本地更改
           git commit -m "Update categorized IPTV lists"
           
-          # Rebase local commits on top of the remote branch
+          # 使用rebase方式拉取最新代码，避免合并提交
           git pull --rebase origin main
           
-          # Push the final changes
+          # 推送最终更改
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
