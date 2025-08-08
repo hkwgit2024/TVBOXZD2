@@ -2,10 +2,10 @@ name: ClashForge
 
 on:
   schedule:
-    - cron: 0 */3 * * *
+    - cron: 0 */6 * * *
   push:
-    paths-ignore:
-      - '**'
+    paths:
+      - '.github/workflows/ClashForge.yml'
   workflow_dispatch:
 env:
   TZ: Asia/Shanghai # 添加时区环境变量
@@ -16,8 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # 转到 Settings > Secrets and variables > Actions
-          # 点击 New repository secret，添加 Secret，名称为 BOT，输入你的token
+         
           token: ${{ secrets.BOT }}
 
       - name: Set up Python
