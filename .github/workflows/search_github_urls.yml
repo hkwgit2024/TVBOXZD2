@@ -9,7 +9,9 @@ on:
       - '.github/workflows/search.yml'
       - 'config/urls.txt'
   workflow_dispatch:
-
+env:
+  TZ: Asia/Shanghai # 添加时区环境变量
+  
 jobs:
   search_and_update:
     runs-on: ubuntu-latest
