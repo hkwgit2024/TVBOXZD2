@@ -43,18 +43,19 @@ jobs:
           # 提交本地更改
           git add .
           git commit -m "Update categorized IPTV lists" --allow-empty || echo "No changes to commit"
-
-          # 尝试使用rebase方式拉取最新代码
-          if ! git pull --rebase origin main; then
-            echo "Rebase failed due to conflicts. Attempting to merge instead..."
-            # 如果rebase失败，则使用merge方式拉取最新代码
-            git pull origin main
-            # 在某些情况下，需要手动添加和提交，以确保合并成功
-            git add .
-            git commit -m "Merge remote changes"
-          fi
+          
+          # 强制拉取远程最新代码并覆盖本地冲突
+          # 使用 'git fetch' 获取远程分支，然后 'git reset --hard' 强制重置本地分支
+          # 这会丢弃所有本地未提交的更改，但由于我们已经创建了提交，所以是安全的
+          git fetch origin main
+          git reset --hard origin/main
+          
+          # 再次添加并提交本地更改
+          # 由于上一步已经重置了本地分支，我们需要重新添加并提交
+          git add .
+          git commit -m "Update categorized IPTV lists"
           
           # 推送最终更改
-          git push
+          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
