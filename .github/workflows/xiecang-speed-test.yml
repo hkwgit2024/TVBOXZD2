@@ -45,8 +45,8 @@ jobs:
                           -output clash.yaml \
                           -server-url "https://mmatechnical.com/Download/Download-Test-File/(MMA)-100MB.zip" \
                           -download-size 52428800 \
-                          -max-latency 380ms \
-                          -min-download-speed 2.8 \
+                          -max-latency 486ms \
+                          -min-download-speed 1.8 \
                           -rename
       
       - name: 提交并推送更改
