@@ -6,8 +6,8 @@ on:
       - '.github/workflows/ffmpeg.yml'
   workflow_dispatch:
   schedule:
-    # 每 6 小时运行一次
-    # cron 表达式的语法: (分 时 日 月 周)
+    # Runs every 6 hours
+    # cron expression format: (minute hour day-of-month month day-of-week)
     - cron: '0 */6 * * *'
 
 jobs:
@@ -36,26 +36,26 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          # 配置Git用户
+          # Configure Git user
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # 提交本地更改
+          # Add all changes
           git add .
-          git commit -m "Update categorized IPTV lists" --allow-empty || echo "No changes to commit"
           
-          # 强制拉取远程最新代码并覆盖本地冲突
-          # 使用 'git fetch' 获取远程分支，然后 'git reset --hard' 强制重置本地分支
-          # 这会丢弃所有本地未提交的更改，但由于我们已经创建了提交，所以是安全的
-          git fetch origin main
-          git reset --hard origin/main
+          # Check if there are changes to commit. If not, exit gracefully.
+          if git diff --staged --quiet; then
+            echo "No changes to commit. Exiting."
+            exit 0
+          fi
           
-          # 再次添加并提交本地更改
-          # 由于上一步已经重置了本地分支，我们需要重新添加并提交
-          git add .
+          # Commit local changes
           git commit -m "Update categorized IPTV lists"
           
-          # 推送最终更改
+          # Rebase local commits on top of the remote branch
+          git pull --rebase origin main
+          
+          # Push the final changes
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
