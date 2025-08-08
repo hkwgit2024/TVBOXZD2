@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
-
+env:
+  TZ: Asia/Shanghai # 添加时区环境变量
+  
 jobs:
   scrape-interfaces:
     runs-on: ubuntu-latest
