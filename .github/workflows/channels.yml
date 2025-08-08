@@ -47,7 +47,8 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Update IPTV channels list"
             
-            # 在推送前先拉取并rebase远程更改，以解决冲突
+            # 在推送前，先拉取并rebase远程更改，以解决冲突
+            # 注意：这里需要确保工作目录是干净的，所以我们先执行了commit
             git pull --rebase
             
             # 推送更改
