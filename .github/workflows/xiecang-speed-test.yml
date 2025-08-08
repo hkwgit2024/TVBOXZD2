@@ -43,6 +43,8 @@ jobs:
         run: |
           clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml" \
                           -output clash.yaml \
+                          -server-url "https://mmatechnical.com/Download/Download-Test-File/(MMA)-100MB.zip" \
+                          -download-size 50MB \
                           -max-latency 500ms \
                           -min-download-speed 1 \
                           -rename
