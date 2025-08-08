@@ -1,62 +1,45 @@
-name: 测试
+name: ClashForge
 
 on:
-  push:
-    branches:
-      - '.github/workflows/ffmpeg.yml'
-  workflow_dispatch:
   schedule:
-    # 每 6 小时运行一次
-    # cron 表达式的语法: (分 时 日 月 周)
-    - cron: '0 */6 * * *'
-
+    - cron: 0 */3 * * *
+  push:
+    paths-ignore:
+      - '**'
+  workflow_dispatch:
+env:
+  TZ: Asia/Shanghai 
 jobs:
-  check-and-categorize:
+  run_demo_actions:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.10.10'
 
-      - name: Install dependencies
+      - name: Install requirements.txt
         run: |
-          python -m pip install --upgrade pip
-          pip install PyYAML requests tenacity cachetools tqdm psutil
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          pip install -r ./requirements2.txt
 
-      - name: Run channel check and categorization script
+      - name: Run ClashForge.py
+        run: python ClashForge.py
+
+      - name: Commit and push file
         run: |
-          python check_and_categorize_channels.py
-
-      - name: Commit and push changes
-        run: |
-          # 配置Git用户
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add clash_config.yaml
+          git commit -m "update" || echo "No changes to commit"
           
-          # 暂存所有更改
-          git add .
+          # 在推送前，先拉取远程最新更改
+          # --rebase 选项可以避免创建多余的合并提交
+          git pull --rebase
           
-          # 检查是否有实际更改。如果没有，则优雅地退出。
-          # git diff-index HEAD --quiet 命令可以检查暂存区和 HEAD 提交是否有差异
-          if git diff-index --quiet HEAD; then
-            echo "没有需要提交的更改。退出。"
-            exit 0
-          fi
-
-          # 提交本地更改
-          git commit -m "Update categorized IPTV lists"
-          
-          # 使用rebase方式拉取最新代码，避免合并提交
-          git pull --rebase origin main
-          
-          # 推送最终更改
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 推送更改
+          git push https://${{ secrets.BOT }}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}.git
