@@ -1,9 +1,9 @@
-name: 自动运行 Clash 节点测速
+name: 测速
 
 on:
   # 每天自动运行一次，例如在 UTC 时间 0 点
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */6 * * *'
   # 允许手动触发
   workflow_dispatch:
 
