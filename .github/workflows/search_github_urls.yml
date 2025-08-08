@@ -2,11 +2,9 @@ name: 搜索
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'search_github_urls.py'
-      - '.github/workflows/search.yml'
+      - '.github/workflows/search_github_urls.yml'
       - 'config/urls.txt'
   workflow_dispatch:
   schedule:
