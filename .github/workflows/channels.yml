@@ -2,7 +2,7 @@ name: 提取 IPTV 频道列表
 
 on:
   push:
-    branches:
+    paths:
       - '.github/workflows/channels.yml'
 
   schedule:
