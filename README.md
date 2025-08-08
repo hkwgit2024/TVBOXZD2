@@ -1,19 +1,21 @@
 
 ### 来源项目
 
-本项目的核心功能和部分灵感来自以下开源项目，感谢各位作者的贡献：
+本项目的核心功能和灵感来自以下开源项目，在此向各位作者表示诚挚的感谢：
 
-  * **ClashForge**: `https://github.com/fish2018/ClashForge`
-  * **clash-speedtest**: `https://github.com/faceair/clash-speedtest`
-  * **vless-py**: `https://github.com/awuaaaaa/vless-py`
-  * **aggregator**: `https://github.com/wzdnzd/aggregator`
-  * **x.sub**: `https://github.com/0xJins/x.sub`
-  * **Auto\_proxy**: `https://github.com/w1770946466/Auto_proxy`
-  * **base64**: `https://github.com/VPNforWindowsSub/base64`
-  * **GeoLite2-Database**: `https://github.com/mojolabs-id/GeoLite2-Database`
-  * **ClashForge**: `https://github.com/midpoint/ClashForge`
-  * **df**: `https://github.com/mlzlzj/df`
-
+* **[skywrt](https://github.com/skywrt)**
+* **[chengaopan/AutoMergePublicNodes](https://github.com/chengaopan/AutoMergePublicNodes)**
+* **[peasoft/NoMoreWalls](https://github.com/peasoft/NoMoreWalls)**
+* **[fish2018/ClashForge](https://github.com/fish2018/ClashForge)**
+* **[faceair/clash-speedtest](https://github.com/faceair/clash-speedtest)**
+* **[awuaaaaa/vless-py](https://github.com/awuaaaaa/vless-py)**
+* **[wzdnzd/aggregator](https://github.com/wzdnzd/aggregator)**
+* **[0xJins/x.sub](https://github.com/0xJins/x.sub)**
+* **[w1770946466/Auto_proxy](https://github.com/w1770946466/Auto_proxy)**
+* **[VPNforWindowsSub/base64](https://github.com/VPNforWindowsSub/base64)**
+* **[mojolabs-id/GeoLite2-Database](https://github.com/mojolabs-id/GeoLite2-Database)**
+* **[midpoint/ClashForge](https://github.com/midpoint/ClashForge)**
+* **[mlzlzj/df](https://github.com/mlzlzj/df)**
 -----
 
 ## faceair 节点测速工具（clash-speedtest）
