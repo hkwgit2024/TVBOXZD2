@@ -1,15 +1,17 @@
-name:  提取
+name: 提取
 
 on:
   push:
     branches:
       - '.github/workflows/channels.yml'
   schedule:
-    # 每天凌晨 3 点运行
-    - cron: '0 3 * * *'
+    # 每三小时运行一次
+    - cron: '0 */3 * * *'
   workflow_dispatch:
+
 env:
   TZ: Asia/Shanghai # 添加时区环境变量
+
 jobs:
   update-channels:
     runs-on: ubuntu-latest
@@ -44,6 +46,11 @@ jobs:
           # 检查是否有文件更改。如果 Git 状态是干净的，则不执行提交
           if ! git diff --cached --quiet; then
             git commit -m "Update IPTV channels list"
+            
+            # 在推送前先拉取并rebase远程更改，以解决冲突
+            git pull --rebase
+            
+            # 推送更改
             git push
           else
             echo "No changes to commit. Exiting."
