@@ -1,0 +1,55 @@
+name: 测速
+
+on:
+  # 每天自动运行一次，例如在 UTC 时间 0 点
+  schedule:
+    - cron: '0 */6 * * *'
+  # 允许手动触发
+  workflow_dispatch:
+
+env:
+  # 设置时区为上海，确保定时任务时间正确
+  TZ: Asia/Shanghai
+
+jobs:
+  run-speedtest:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 检出仓库代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Go 环境
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+      
+      - name: 安装 clash-speedtest 工具
+        run: go install github.com/faceair/clash-speedtest@latest
+      
+      - name: 运行测速并筛选节点
+        run: |
+          clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml" \
+                          -output clash.yaml \
+                          -max-latency 500ms \
+                          -min-download-speed 10 \
+                          -rename
+      
+      - name: 提交并推送更改
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          
+          git add clash.yaml
+          
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: Update and filter Clash nodes via speedtest"
+            
+            for i in {1..3}; do
+              git pull --rebase
+              git push && break
+              sleep 5
+            done
+          else
+            echo "没有节点更改，无需提交。"
+          fi

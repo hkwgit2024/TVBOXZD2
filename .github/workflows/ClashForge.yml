@@ -1,14 +1,14 @@
-
 name: ClashForge
 
 on:
   schedule:
-   - cron: 0 */3 * * *
+    - cron: 0 */6 * * *
   push:
-    paths-ignore:
-      - '**'
+    paths:
+      - '.github/workflows/ClashForge.yml'
   workflow_dispatch:
-
+env:
+  TZ: Asia/Shanghai # 添加时区环境变量
 jobs:
   run_demo_actions:
     runs-on: ubuntu-latest
@@ -16,8 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # 转到 Settings > Secrets and variables > Actions
-          # 点击 New repository secret，添加 Secret，名称为 BOT，输入你的token
+         
           token: ${{ secrets.BOT }}
 
       - name: Set up Python
@@ -28,6 +27,7 @@ jobs:
       - name: Install requirements.txt
         run: |
           pip install -r ./requirements2.txt
+
       - name: Run ClashForge.py
         run: python ClashForge.py
 
@@ -37,4 +37,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add clash_config.yaml
           git commit -m "update" || echo "No changes to commit"
+          
+          # 在推送前，先拉取远程最新更改
+          # --rebase 选项可以避免创建多余的合并提交
+          git pull --rebase
+          
+          # 推送更改
           git push https://${{ secrets.BOT }}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}.git

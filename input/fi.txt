@@ -1,10 +1,11 @@
+https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/merged_configs.txt
+https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/all_unique_nodes.txt
 https://gist.githubusercontent.com/liwoyuandiane/1790c326bb7a38977a552913b5aa9286/raw/4befbde50bbb13eaa192e3e0555a82d54dcc4a3d/all.yaml
 https://gist.githubusercontent.com/yinqf/9da6c7fe6c8b520c6a142d27bfecd2f6/raw/feb4f0b65e288bc6d31e73fb52bf5c279198165a/clash.yaml
 https://gist.githubusercontent.com/GeBron/a41c2616cff5ea0c4a96e0567d98dbf6/raw/78e36346b146e949c2b10b29b14c165c0a9ae194/clash.yaml
 https://gist.githubusercontent.com/liliangyin/bb5e7bb839c05fdde91ab9bfe0db2474/raw/795849da3724a8fe18233549ef4864a51c522bde/clash.yaml
 https://gist.githubusercontent.com/helloZOP/203e54eb62e452ac7d718a7c5d6fb00b/raw/83d983539567fb571de9bf66b54e105d7b21ed45/clash.yaml
-https://raw.githubusercontent.com/qjlxg/ProxyCollector/refs/heads/master/sub/proxies.txt
-https://raw.githubusercontent.com/qjlxg/Clash-Butler/refs/heads/master/clash.yaml
+
 https://gist.githubusercontent.com/lgl1996521/44aac049c8e1888e893a801d0deff0aa/raw/d3fee54e7a7b216ea001bd147b85fc2c87e53998/all.yaml
 https://gist.githubusercontent.com/Tdison/a3f96e0d5a48be14806a10cf59b6a224/raw/039f2d54cc17aa0ca66fc8bfc8d9e0b22c65bb78/all.yaml
 https://gist.githubusercontent.com/WLget/aeb222e378a8dcbd74e06413dbacf400/raw/1eb985890565826c28f8f05393a45fff42a088e2/all.yaml
