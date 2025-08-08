@@ -47,9 +47,21 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Update IPTV channels list"
             
-            # 在推送前，先拉取并rebase远程更改，以解决冲突
-            # 注意：这里需要确保工作目录是干净的，所以我们先执行了commit
+            # 检查是否有未暂存的更改，如果有则暂存它们
+            # 这可以解决 "cannot pull with rebase: You have unstaged changes" 的问题
+            if ! git diff-files --quiet; then
+              echo "Stashing unstaged changes before pull..."
+              git stash push -m "Stash changes before pull"
+            fi
+            
+            # 在推送前先拉取并rebase远程更改
             git pull --rebase
+            
+            # 如果之前有暂存，则恢复它们
+            if git stash list | grep -q "Stash changes before pull"; then
+              echo "Applying stashed changes..."
+              git stash pop
+            fi
             
             # 推送更改
             git push
