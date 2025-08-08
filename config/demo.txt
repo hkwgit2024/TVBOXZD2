@@ -2319,7 +2319,6 @@ CGTN Documentary
 CGTN Español
 CGTN Français
 CGTN Русский
-Arirang TV
 Channel NewsAsia
 Euronews
 Euronews Русский
@@ -2605,16 +2604,12 @@ ABC News 24
 ABCNews  
 ABC新闻  
 ABN KIDS  
-AEC  
-AFC 亚洲旅游台  
+AFC 亚洲旅游台|AEC   
 AFN  
-AMC台  
-AMC電影台  
+AMC電影台|AMC台 
 ANTV  
 AOA   Excuse Me  
 AOD  
-ARIRANG Arirang  
-ARIRANGArirang  
 AXN  
 AXN Taiwan  
 Adithya  
@@ -2636,9 +2631,7 @@ Arena
 Arena 2  
 Arena Bola  
 Arena Bola2  
-Arirang  
-Arirang TV  
-Arirang電視  
+Arirang|Arirang TV|Arirang電視|ARIRANG Arirang|ARIRANG Arirang|ARIRANGArirang|Arirang TV  
 Asian Food Network  
 Asianet  
 Asianet News  
@@ -2730,14 +2723,12 @@ BLX 0046儿子的性爱指导员 凌薇
 BPTV 2  
 BRICS台  
 BRT  
-BRTV卡酷少儿  
 BS TBS  
 BSジャパン 181  
 BSフジ BS Fuji  
 BTV冬奥纪实  
 BTV北京卫视  
-BTV卡酷  
-BTV卡酷少儿  
+BTV卡酷|BTV卡酷少儿|BRTV卡酷少儿 
 BTV影视  
 BTV文艺  
 BTV新闻  
@@ -2819,17 +2810,10 @@ Blue 美剧
 龙凤茶楼  
 龙华偶像  
 龙华卡通  
-龙华戏剧  
-龙华戏剧 Lunghua Drama  
-龙华戏剧台  
-龙华日韩  
-龙华日韩台  
-龙华洋片  
-龙华洋片 Lunghua Western  
-龙华电影  
-龙华电影台  
-龙华经典电影  
-龙华经典电影台  
+龙华戏剧|龙华戏剧 Lunghua Drama|龙华戏剧台 
+龙华日韩|龙华日韩台 
+龙华洋片|龙华洋片 Lunghua Western    
+龙华电影|龙华电影台|龙华经典电影|龙华经典电影台    
 龙口生活  
 龙口综合  
 龙在天涯  
@@ -2889,15 +2873,12 @@ Blue 美剧
 👩‍👩‍👧‍👦影视分享群
 更新时间,#genre#
 2025-08-08 02:50:30
-CNA
-CNA新闻
+CNA|CNA新闻|亚洲新闻|亚洲|亚洲新闻720P|亚洲新闻台(新加坡)
 CRI NEWS Plus AM846
 Channel News Asia
 Channel News Asia『蓝光』
 DW
-FASHION TV时装
-FASHIONTV
-FashionTV
+FASHION TV时装|FASHIONTV|FashionTV
 Fox News Now
 GCTN英语
 GOODTV共享觀點
@@ -2948,12 +2929,9 @@ Soda东南亚之旅
 TBS
 THAIPBS 3
 TV2
-TVB
+TVB|||||
 TVBS新闻 Asia
-TVBS新闻 NEWS
-TVBS新闻台
-TVB新闻
-TVB新闻台
+TVB新闻|TVBS新闻台|TVBS新闻 NEWS|TVB新闻台
 TW台视新闻
 Tennis Channel (UK) (720p)
 Thai PBS 3
@@ -3012,10 +2990,7 @@ k欧美版
 东光电视
 东方财经
 东森新闻美国卫视
-东森新闻美洲
-东森新闻美洲卫视
-东森新闻美洲台
-东森美洲
+东森新闻美洲|东森新闻美洲卫视|东森新闻美洲台|东森美洲
 东森超视
 东营综合
 两个人 蔡妍 BerryGood
@@ -3101,10 +3076,6 @@ k欧美版
 五虎屠龙
 井陉矿区电视台
 井陉综合
-亚洲
-亚洲新闻
-亚洲新闻720P
-亚洲新闻台(新加坡)
 亲亲20音乐
 亳州新闻
 人生几个秋
