@@ -1,4 +1,4 @@
-name: 自动运行 Clash 节点测速
+name: 测速
 
 on:
   push:
@@ -46,7 +46,7 @@ jobs:
                           -server-url "https://mmatechnical.com/Download/Download-Test-File/(MMA)-100MB.zip" \
                           -download-size 52428800 \
                           -max-latency 380ms \
-                          -min-download-speed 3.8 \
+                          -min-download-speed 2.8 \
                           -rename
       
       - name: 提交并推送更改
