@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 */12 * * *' # 每12小时运行一次
-
+env:
+  TZ: Asia/Shanghai # 添加时区环境变量
 jobs:
   speed-test-and-sort:
     runs-on: ubuntu-latest
