@@ -9,6 +9,8 @@ on:
       - '.github/workflows/search.yml'
       - 'config/urls.txt'
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
 env:
   TZ: Asia/Shanghai # 添加时区环境变量
   
