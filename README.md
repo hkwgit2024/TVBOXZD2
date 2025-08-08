@@ -1,80 +1,140 @@
-以下是您可以考虑调整的参数及其影响：
+# 查看帮助
+关键参数解读
+-c <文件路径或URL>: 这是最重要的参数，用来指定你的 Clash 配置文件或订阅链接。你可以传入本地文件的路径，也可以直接传入一个 HTTP(S) 订阅地址。
 
-提速的关键参数：
-filter_clash_nodes.py 中的过滤逻辑 (已在之前实现)
+-f <正则表达式>: 使用正则表达式来过滤节点。比如，-f 'HK|港' 会只测试节点名称中包含“HK”或“港”的节点。
 
-重要性：极高
+-output <文件路径>: 指定输出文件的路径。测速和筛选完成后，工具会生成一个只包含合格节点的新配置文件。
 
-调整：已经将国内节点和非靠近中国地区的节点过滤掉了。这是最有效的提速方法，因为它直接减少了需要测试的节点总数。这是保持准确率的前提下，提高效率的最好方法。
+-rename: 这个参数会自动根据节点的 IP 地理位置和测速结果来重命名节点。
 
-建议：继续保持并优化您的过滤关键词列表。
+-fast: 启用快速模式。此模式下，工具只测试节点延迟，跳过带宽测试，这对于快速检查节点是否可用非常有用。
 
--timeout (在两个阶段都可调整)
+性能筛选参数
+这些参数可以帮助你筛选出符合特定性能要求的节点：
 
-重要性：高
+-max-latency <时间>: 过滤掉延迟超过该值的节点。例如，-max-latency 800ms 会排除延迟高于 800 毫秒的节点。
 
-阶段一 (-timeout 10s)：目前的 10 秒是合理的。如果网络环境非常差，或者您只想保留延迟极低的节点，可以适当缩短，例如到 5s 或 7s。但这可能会导致大量节点因超时而被排除，从而降低最终的节点数量。
+-min-download-speed <速度>: 过滤掉下载速度低于该值的节点。这里的速度单位是 MB/s。例如，-min-download-speed 5 会排除下载速度低于 5 MB/s 的节点。
 
-阶段二 (-timeout 30s)：下载/上传测试需要更多时间。30 秒是比较标准的。如果您觉得太多节点因此超时，或者希望更快速地排除慢速节点，可以尝试缩短到 20s 或 15s。但请注意，过短的超时时间可能会导致一些本来不错的节点因下载文件时间稍长而被错误地排除。
+-min-upload-speed <速度>: 过滤掉上传速度低于该值的节点。这里的速度单位也是 MB/s。
 
--concurrent (主要在阶段二)
+测速原理
+clash-speedtest 的测速基于两个核心指标：
 
-重要性：高
+带宽：指下载指定文件（默认 50MB）的速度，反映节点的出口带宽。
 
-阶段二 (-concurrent 50)：这是决定并行测试数量的关键。50 个并发连接对于 GitHub Actions 的 Runner 来说可能有点高，但通常也能处理。
+延迟：指请求发出到收到第一个字节的响应时间（TTFB），反映你到节点的连接速度。
 
-加速：如果您希望进一步加速，可以尝试增加到 70 或 100。
+文档特别强调，带宽和延迟是两个独立的指标，高带宽不等于低延迟，反之亦然。
 
-注意事项：过高的并发数可能会导致：
 
-资源耗尽：Runner 内存或 CPU 不足，导致测试不稳定或崩溃。
 
-网络拥堵：对目标服务器或 GitHub Actions 自身网络造成压力，反而可能导致更多超时或错误。
+> clash-speedtest -h
+Usage of clash-speedtest:
+  -c string
+        configuration file path, also support http(s) url
+  -f string
+        filter proxies by name, use regexp (default ".*")
+  -b string
+        block proxies by keywords, use | to separate multiple keywords (example: -b 'rate|x1|1x')
+  -server-url string
+        server url for testing proxies (default "https://speed.cloudflare.com")
+  -download-size int
+        download size for testing proxies (default 50MB)
+  -upload-size int
+        upload size for testing proxies (default 20MB)
+  -timeout duration
+        timeout for testing proxies (default 5s)
+  -concurrent int
+        download concurrent size (default 4)
+  -output string
+        output config file path (default "")
+  -stash-compatible
+        enable stash compatible mode
+  -max-latency duration
+        filter latency greater than this value (default 800ms)
+  -min-download-speed float
+        filter speed less than this value(unit: MB/s) (default 5)
+  -min-upload-speed float
+        filter upload speed less than this value(unit: MB/s) (default 2)
+  -rename
+        rename nodes with IP location and speed
+  -fast
+        enable fast mode, only test latency
 
-IP 封禁：短时间内大量连接可能会被某些服务器或 CDN 识别为攻击，导致 IP 被暂时封禁。
+# 演示：
 
-建议：在 50 的基础上，可以尝试逐步增加到 75 或 100，然后观察 GitHub Actions 的运行日志，看是否有因资源不足或连接错误而导致的问题。如果稳定，就可以继续使用。
+# 1. 测试全部节点，使用 HTTP 订阅地址
+# 请在订阅地址后面带上 flag=meta 参数，否则无法识别出节点类型
+> clash-speedtest -c 'https://domain.com/api/v1/client/subscribe?token=secret&flag=meta'
 
--download-size 和 -upload-size (仅在阶段二)
+# 2. 测试香港节点，使用正则表达式过滤，使用本地文件
+> clash-speedtest -c ~/.config/clash/config.yaml -f 'HK|港'
+节点                                        	带宽          	延迟
+Premium|广港|IEPL|01                        	484.80KB/s  	815.00ms
+Premium|广港|IEPL|02                        	N/A         	N/A
+Premium|广港|IEPL|03                        	2.62MB/s    	333.00ms
+Premium|广港|IEPL|04                        	1.46MB/s    	272.00ms
+Premium|广港|IEPL|05                        	3.87MB/s    	249.00ms
 
-重要性：中
+# 3. 当然你也可以混合使用
+> clash-speedtest -c "https://domain.com/api/v1/client/subscribe?token=secret&flag=meta,/home/.config/clash/config.yaml"
 
-调整：
+# 4. 筛选出延迟低于 800ms 且下载速度大于 5MB/s 的节点，并输出到 filtered.yaml
+> clash-speedtest -c "https://domain.com/api/v1/client/subscribe?token=secret&flag=meta" -output filtered.yaml -max-latency 800ms -min-speed 5
+# 筛选后的配置文件可以直接粘贴到 Clash/Mihomo 中使用，或是贴到 Github\Gist 上通过 Proxy Provider 引用。
 
-下载 (-download-size 5)：5MB 是一个相对合理的测试量，能提供不错的准确性。要提速，可以将其降低到 3 或 2 MB。
+# 5. 使用 -rename 选项按照 IP 地区和下载速度重命名节点
+> clash-speedtest -c config.yaml -output result.yaml -rename
+# 重命名后的节点名称格式：🇺🇸 US | ⬇️ 15.67 MB/s
+# 包含国旗 emoji、国家代码和下载速度
 
-上传 (-upload-size 1)：1MB 已经很小。要提速，可以将其降低到 0.5 MB（如果 clash-speedtest 支持小数）或干脆移除上传测试（不推荐，因为上传速度对某些应用很重要）。
+# 6. 快速测试模式
+> clash-speedtest -f 'HK' -fast -c ~/.config/clash/config.yaml
+# 此命令将只测试节点延迟，跳过其他测试项目，适用于：
+# - 快速检查节点是否可用
+# - 只需要检查延迟的场景
+# - 需要快速得到测试结果的场景
+🇭🇰 香港 HK-10 100% |██████████████████| (20/20, 13 it/min)
+序号    节点名称                类型            延迟
+1.      🇭🇰 香港 HK-01           Trojan          657ms
+2.      🇭🇰 香港 HK-20           Trojan          649ms
+3.      🇭🇰 香港 HK-15           Trojan          674ms
+4.      🇭🇰 香港 HK-19           Trojan          649ms
+5.      🇭🇰 香港 HK-12           Trojan          667ms
 
-准确率权衡：减小测试文件大小会降低速度测量的准确性。特别是在高速连接下，短时间的测试可能无法反映真实世界的平均速度。这是加速和准确率之间最直接的权衡点。
 
-保持准确率的参数：
--max-latency 5000ms：
+测速文件列表
+ASH 测速文件
+http://ash.icmp.hetzner.com/100MB.bin
+http://ash.icmp.hetzner.com/1GB.bin
+http://ash.icmp.hetzner.com/10GB.bin
+http://ash.icmp.hetzner.com/
+HEL1 测速文件
+http://hel.icmp.hetzner.com/100MB.bin
+http://hel.icmp.hetzner.com/1GB.bin
+http://hel.icmp.hetzner.com/10GB.bin
+http://hel.icmp.hetzner.com/
+FSN1 测速文件
+http://fsn.icmp.hetzner.com/100MB.bin
+http://fsn.icmp.hetzner.com/1GB.bin
+http://fsn.icmp.hetzner.com/10GB.bin
+http://fsn.icmp.hetzner.com/
+NBG1 测速文件
+https://speed.hetzner.de/100MB.bin
+https://speed.hetzner.de/1GB.bin
+https://speed.hetzner.de/10GB.bin
+https://speed.hetzner.de/
 
-重要性：高
+100MB：https://speed.cloudflare.com/__down?bytes=104857600
+200MB：https://speed.cloudflare.com/__down?bytes=209715200
 
-调整：5000ms (5秒) 对于延迟测试来说已经非常宽松了。这意味着你允许节点有很高的延迟。
+-download-size 参数只接受整数作为输入，单位是字节（bytes）。50MB 这样的字符串格式是无效的。
 
-建议：如果您对节点质量有更高要求，或者要排除那些几乎不可用的节点，可以降低这个值，例如降到 1000ms 或 2000ms。这会筛选出更快的节点，但测试速度本身不会加快，反而是后续下载测试的节点数量会减少。
+从 clash-speedtest 的帮助信息中可以看到，-download-size 的默认值是 52428800，这正好是 50MB 的字节数。
 
--min-download-speed 1 / -min-upload-speed 0：
-
-重要性：中
-
-调整：1 Mbps 的下载速度是比较低的门槛。0 Mbps 的上传速度基本上不设限。
-
-建议：
-
-如果您对速度有要求，可以提高 -min-download-speed 到例如 5 Mbps 或 10 Mbps，甚至更高。
-
-如果您需要上传功能，可以提高 -min-upload-speed 到例如 0.5 或 1 Mbps。
-
-注意：这些参数不影响测试速度，它们只影响最终有多少节点会通过过滤并写入 clash.yaml。提高这些阈值会导致通过测试的节点数量减少，从而在下次进行全速测试时，目标节点数会更少。
-
-总结建议
-为了在加快测试速度的同时保持合理准确率，我建议您主要调整以下参数：
-
-保持并优化 filter_clash_nodes.py 的过滤规则：这是最有效的“减少工作量”的方式。
-
-适当增加 -concurrent 的值：可以尝试从 50 逐步增加到 75 或 100，并观察 GitHub Actions Runner 的稳定性。
-
-微调 -download-size 和 -upload-size：可以尝试将 -download-size 从 5 降低到 3，将 -upload-size 从 1 降低到 0.5。这是在速度和准确率之间做出的权衡。
+-server-url "https://mmatechnical.com/Download/Download-Test-File/(MMA)-100MB.zip" \
+-download-size 52428800 \
+https://1100mb.com/files
+https://mmatechnical.com/download-test-files/
