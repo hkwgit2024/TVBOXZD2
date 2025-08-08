@@ -1,45 +1,61 @@
-name: ClashForge
+name: 测试
 
 on:
-  schedule:
-    - cron: 0 */3 * * *
   push:
-    paths-ignore:
-      - '**'
+    branches:
+      - '.github/workflows/ffmpeg.yml'
   workflow_dispatch:
+  schedule:
+    # 每 6 小时运行一次
+    # cron 表达式的语法: (分 时 日 月 周)
+    - cron: '0 */6 * * *'
+
 env:
   TZ: Asia/Shanghai 
+
 jobs:
-  run_demo_actions:
+  check-and-categorize:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.BOT }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.10.10'
+          python-version: '3.8'
 
-      - name: Install requirements.txt
+      - name: Install dependencies
         run: |
-          pip install -r ./requirements2.txt
+          python -m pip install --upgrade pip
+          pip install PyYAML requests tenacity cachetools tqdm psutil
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
 
-      - name: Run ClashForge.py
-        run: python ClashForge.py
-
-      - name: Commit and push file
+      - name: Run channel check and categorization script
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add clash_config.yaml
-          git commit -m "update" || echo "No changes to commit"
+          python check_and_categorize_channels.py
+
+      - name: Commit and push changes
+        run: |
+          # 配置Git用户
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # 在推送前，先拉取远程最新更改
-          # --rebase 选项可以避免创建多余的合并提交
-          git pull --rebase
+          # 暂存所有更改
+          git add .
           
-          # 推送更改
-          git push https://${{ secrets.BOT }}:x-oauth-basic@github.com/${GITHUB_REPOSITORY}.git
+          # 检查是否有需要提交的更改
+          if ! git diff --cached --quiet; then
+            # 如果有更改，则提交
+            git commit -m "Update categorized IPTV lists"
+            # 拉取远程最新代码并rebase，解决冲突
+            git pull --rebase origin main
+            # 推送最终更改
+            git push origin main
+          else
+            echo "没有需要提交的更改，退出。"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
