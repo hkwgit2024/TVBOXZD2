@@ -10,7 +10,7 @@ on:
       - 'config/urls.txt'
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 */6 * * *'
 env:
   TZ: Asia/Shanghai # 添加时区环境变量
   
