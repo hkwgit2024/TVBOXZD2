@@ -1,0 +1,51 @@
+{
+  "spider": "./f.jar",
+"wallpaper": 
+  "./tu/7.jpg",
+        "lives": [
+{ "name":"lives","url":"./tv.txt","boot":false,"epg":"http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}" ,"logo":"https://epg.112114.xyz/logo/{name}.png"}],
+
+  "sites": [
+     {
+      "key": "push_agent",
+      "name": "推送",
+      "type": 3,
+      "api": "csp_Push",
+      "searchable": 1,
+      "changeable": 0
+    }, 
+      {
+      "key": "豆瓣",
+      "name": "豆瓣",
+      "type": 3,
+      "api": "csp_Douban",
+      "searchable": 0,
+      "changeable": 1,
+      "ext": "./js/douban.json"
+    },
+    
+      
+      {"key":"点播","name":"电视 | 直播[js]","type":3,"api":"./js/live2vod.js","ext":"./feimaolive.json"},
+    
+       
+       {
+                "key": "我的哔哩",
+                "name": "我的哔哩",
+                "type": 3,
+                "api": "./js/mybili_open.js"
+            },
+            {
+                "key": "哔哩",
+                "name": "哔哩",
+                "type": 3,
+                "api": "./js/bili_open.js",
+                "ext": {
+                    "categories": "音乐#小品相声#DJ舞曲#帕梅拉#综艺#国创#搞笑#单机游戏#动画#电影",
+                    "cookie": "DedeUserID=690781341;DedeUserID__ckMd5=cabc96906269c5b6;SESSDATA=2245ba24%2C1684212125%2C466fd%2Ab2;bili_jct=de6fdb60c10f8a83910aa55d79407b4e;"
+                }
+}
+   ]
+
+
+  
+}
