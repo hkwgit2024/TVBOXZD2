@@ -1,5 +1,5 @@
 https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash.yaml
-
+https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
 
 ### 来源项目
 
