@@ -1,0 +1,76 @@
+{
+    "wallpaper": "http://www.kf666888.cn/api/tvbox/img",
+    "sites": [        
+        {
+            "key": "lb",
+            "name": "乐播",
+            "api": "https://lbapi9.com/api.php/provide/vod/",
+            "type": 1,
+            "playUrl": "",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
+        }
+    ],
+    "lives": [
+        {
+            "name": "18+1",
+            "type": 0,
+            "url": "https://cyuan.netlify.app/tvbox/lives/18+/18+2023.txt"
+        },
+        {
+            "name": "18+2",
+            "type": 0,
+            "url": "https://cyuan.netlify.app/tvbox/lives/18+/18+千部独家传媒无水印来袭tvlist.txt"
+        },
+        {
+            "name": "18+3",
+            "type": 0,
+            "url": "https://cyuan.netlify.app/tvbox/lives/18+/18%F0%9F%88%B2%EF%B8%8F.txt"
+        },
+        {
+            "name": "18+4",
+            "type": 0,
+            "url": "https://gh-proxy.com/raw.githubusercontent.com/cyh92/boxFile/refs/heads/main/live/fl.txt"
+        }
+    ],
+    "parses": [
+        {
+            "name": "Web聚合",
+            "type": 0,
+            "url": "https://www.ckplayer.vip/jiexi/?url="
+        },
+        {
+            "name": "8090g",
+            "type": 0,
+            "url": "https://www.8090g.cn/jiexi/?url="
+        },
+        {
+            "name": "-ik9-",
+            "type": 0,
+            "url": "https://yparse.ik9.cc/index.php?url="
+        },
+        {
+            "name": "-冰豆-",
+            "type": 0,
+            "url": "https://bd.jx.cn/?url="
+        },
+        {
+            "name": "-云析-",
+            "type": 0,
+            "url": "https://yparse.ik9.cc/index.php?url="
+        }
+    ],
+    "flags": [
+        "youku",
+        "qq",
+        "iqiyi",
+        "qiyi",
+        "letv",
+        "sohu",
+        "tudou",
+        "pptv",
+        "mgtv",
+        "wasu"
+    ]
+}

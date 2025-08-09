@@ -1,0 +1,45 @@
+{
+  "spider": "https://example.com/spider.jar",
+  "logo": "https://example.com/logo.png",
+  "wallpaper": "https://example.com/wallpaper.jpg",
+  "sites": [
+    {
+      "name": "暴风资源",
+      "key": "bfzyapi",
+      "type": 1,
+      "api": "https://bfzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "filterable": 1,
+      "extType": "text",
+      "ext": ""
+    }
+  ],
+  "lives": {
+    "undefined": [
+      {
+        "name": "live",
+        "url": "http://xhztv.top/xhz/live.txt",
+        "logo": "https://epg.112114.xyz/logo/{name}.png",
+        "epg": "http://diyp.112114.xyz/?ch={name}&date={date}"
+      }
+    ]
+  },
+  "parses": [
+    {
+      "name": "暴风资源",
+      "type": 0,
+      "url": "https://vip.vipuuvip.com/?url=",
+      "headers": {}
+    }
+  ],
+  "flags": [
+    "youku",
+    "qq",
+    "QQ",
+    "iqiyi",
+    "qiyi",
+    "letv"
+  ]
+}

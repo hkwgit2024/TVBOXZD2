@@ -1,0 +1,32 @@
+{
+  "spider":"./jar/fty.jar",
+  "lives":[
+    {"name":"live","url":"./live/live.txt"},
+    {"name":"x","url":"./live/x.txt"}
+  ],
+  "sites":[
+    {"key":"csp_search","name":"搜索","type":3,"api":"csp_DouDou","searchable":0,"changeable":1},
+    {"key":"csp_ycyz","name":"原创┃影视","type":3,"api":"csp_YCyz","searchable":1,"changeable":1},
+    {"key":"csp_ddrk","name":"低端┃影视","type":3,"api":"csp_Ddrk","searchable":1,"changeable":1},
+    {"key":"csp_libvio","name":"立播┃影视","type":3,"api":"csp_Libvio","searchable":1,"changeable":1},
+    {"key":"csp_zxzj","name":"在线┃影视","type":3,"api":"csp_Zxzj","searchable":1,"changeable":1},
+    {"key":"csp_apple","name":"苹果┃影视","type":3,"api":"csp_LiteApple","searchable":1,"changeable":1},
+    {"key":"csp_jpys","name":"文采┃影视","type":3,"api":"csp_Jpys","searchable":1,"changeable":1},
+    {"key":"csp_newcz","name":"厂长┃影视","type":3,"api":"csp_NewCz","searchable":1,"changeable":1},
+    {"key":"csp_jpj","name":"荐片┃磁力","type":3,"api":"csp_JPJ","searchable":1,"changeable":0,"timeout":30},
+    {"key":"csp_sixv","name":"六维┃磁力","type":3,"api":"csp_SixV","searchable":1,"changeable":0,"timeout":30,"ext":"https://www.xb6v.com/"},
+    
+    {"key":"js_search","name":"JS┃搜索","type":3,"api":"./lib/drpy2.min.js","searchable":0,"changeable":1,"ext":"./js/search.js"},
+    {"key":"js_ddys","name":"JS┃低端┃影视","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":1,"ext":"./js/ddys.js"},
+    {"key":"js_libvio","name":"JS┃立播┃影视","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":1,"ext":"./js/libvio.js"},
+    {"key":"js_zxzj","name":"JS┃在线┃影视","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":1,"ext":"./js/zxzj.js"},
+    {"key":"js_sbys","name":"JS┃素白┃影视","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":1,"ext":"./js/sbys.js"},
+    {"key":"js_jianpian","name":"JS┃荐片┃P2P","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":0,"timeout":30,"ext":"./js/jianpian.js"},
+    {"key":"js_xb6v","name":"JS┃六维┃磁力","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":0,"timeout":30,"ext":"./js/xb6v.js"},
+    {"key":"js_dygang","name":"JS┃电影港┃磁力","type":3,"api":"./lib/drpy2.min.js","searchable":1,"changeable":0,"timeout":30,"ext":"./js/dygang.js"},
+    
+    {"key":"lf_search","name":"LF┃搜索","type":3,"api":"./lib/lf_search.min.js","searchable":0,"changeable":1},
+    {"key":"lf_p2p","name":"LF┃磁力","type":3,"api":"./lib/lf_p2p.min.js","searchable":1,"changeable":0,"timeout":30},
+    {"key":"lf_live","name":"LF┃直播","type":3,"api":"./lib/lf_live.min.js","searchable":0,"changeable":0}
+  ]
+}
