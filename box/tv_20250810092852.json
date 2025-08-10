@@ -1,0 +1,104 @@
+{
+"spider": "https://github.com/qist/tvbox/raw/refs/heads/master/jar/fan.txt;md5;8432d174d72d5b608ae1bcd16d966847",
+"lives":[
+	{
+		"name": "YanG•体育",
+		"type": 0,
+		"url": "https://tv.iill.top/m3u/Sport",
+		"ua": "okhttp/3.15",
+		"playerType": 2
+	},
+	{
+		"name": "tv",
+		"type": 0,
+		"url": "https://raw.githubusercontent.com/bizopps/tv/refs/heads/main/tv.m3u",
+		"playerType": 2,
+		"epg": "http://epg.112114.xyz/?ch={name}&date={date}"
+	},
+	{
+		"name":"Sports", 
+		"type":0, 
+		"url":"https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u", 
+		"playerType":2, 
+		"epg":"http://epg.112114.xyz/?ch={name}&date={date}"
+	},
+	{
+		"name":"综合", 
+		"type":0, 
+		"url":"https://raw.githubusercontent.com/Supprise0901/TVBox_live/main/live.txt", 
+		"playerType":1, 
+		"epg":"http://epg.112114.xyz/?ch={name}&date={date}"
+	}
+],
+
+"sites":[
+    {
+		"key": "厂长",
+		"name": "📔厂长┃不卡",
+		"type": 3,
+		"api": "csp_NewCzGuard",
+		"timeout": 10,
+		"searchable": 1,
+		"quickSearch": 1,
+		"changeable": 1
+	},
+    {
+		"key": "玩偶",
+		"name": "👽玩偶哥哥┃4K弹幕",
+		"type": 3,
+		"api": "csp_WoGGGuard",
+		"searchable": 1,
+		"quickSearch": 1,
+		"changeable": 0,
+		"ext": {
+			"Cloud-drive": "tvfan/Cloud-drive.txt",
+			"from": "4k|auto",
+			"siteUrl":"https://www.wogg.com/",
+			"danMu":"弹"}
+	},
+    {
+		"key": "YGP",
+		"name": "🚀叨观荐影┃预告片",
+		"type": 3,
+		"api": "csp_YGPGuard",
+		"searchable": 0,
+		"quickSearch": 0,
+		"changeable":0
+	},
+	{
+		"key": "drpy_js_奇珍异兽",
+		"name": "官源┃爱奇艺[js]",
+		"type": 3,
+		"api": "https://github.com/qist/tvbox/raw/refs/heads/master/lib/drpy2.min.js",
+		"ext": "https://github.com/qist/tvbox/raw/refs/heads/master/js/奇珍异兽.js"
+	},
+	
+    {
+		"key": "88",
+		"name": "⚽88┃看球",
+		"type": 3,
+		"api": "csp_Sir88Guard",
+		"timeout": 10,
+		"searchable": 0,
+		"changeable": 0,
+		"style": {"type":"list"}
+	}
+],
+
+"parses":[
+],
+
+"flags":[
+],
+
+"doh":[
+	{"name":"Google","url":"https://dns.google/dns-query","ips":["8.8.4.4","8.8.8.8"]},
+	{"name":"Cloudflare","url":"https://cloudflare-dns.com/dns-query","ips":["1.1.1.1","1.0.0.1","2606:4700:4700::1111","2606:4700:4700::1001"]},
+	{"name":"AdGuard","url":"https://dns.adguard.com/dns-query","ips":["94.140.14.140","94.140.14.141"]},
+	{"name":"DNSWatch","url":"https://resolver2.dns.watch/dns-query","ips":["84.200.69.80","84.200.70.40"]},
+	{"name":"Quad9","url":"https://dns.quad9.net/dns-quer","ips":["9.9.9.9","149.112.112.112"]}
+],
+
+"rules":[
+]
+}
