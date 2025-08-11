@@ -94,8 +94,18 @@ def is_valid_site(site: Dict[str, Any]) -> bool:
         logger.debug(f"Site excluded (missing api or url): {site.get('name', 'unknown')}")
         return False
 
-    ext = site.get('ext', '')
-    if isinstance(ext, str):
+    # Check api or url must be present and if it's a URL, it will be checked later
+    api = site.get('api', '')
+    url_field = site.get('url', '')
+    if not api and not url_field:
+        logger.debug(f"Site excluded (no api or url): {site.get('name', 'unknown')}")
+        return False
+
+    ext = site.get('ext', None)
+    if ext is not None and isinstance(ext, str):
+        if ext == '' or (ext and not ext.startswith(('http://', 'https://'))):
+            logger.debug(f"Site excluded (empty or non-URL ext): {site.get('name', 'unknown')}")
+            return False
         if ext.startswith(('./', 'file://')) or os.path.isabs(ext):
             logger.debug(f"Site excluded (local file path in ext): {site.get('name', 'unknown')}")
             return False
@@ -117,15 +127,18 @@ async def process_file(file_path: str, session: aiohttp.ClientSession, sem: asyn
         if 'sites' in data and isinstance(data['sites'], list):
             candidate_sites = [site for site in data['sites'] if is_valid_site(site)]
             
-            # Collect unique URLs from candidate sites
+            # Collect unique URLs from candidate sites for api, url, ext
             urls = set()
             for site in candidate_sites:
-                ext = site.get('ext', '')
                 api = site.get('api', '')
-                if isinstance(ext, str) and ext.startswith(('http://', 'https://')):
-                    urls.add(ext)
+                url_field = site.get('url', '')
+                ext = site.get('ext', '')
                 if isinstance(api, str) and api.startswith(('http://', 'https://')):
                     urls.add(api)
+                if isinstance(url_field, str) and url_field.startswith(('http://', 'https://')):
+                    urls.add(url_field)
+                if isinstance(ext, str) and ext.startswith(('http://', 'https://')):
+                    urls.add(ext)
             
             # Batch validate URLs
             url_results = await batch_validate_urls(urls, session, sem)
@@ -133,17 +146,23 @@ async def process_file(file_path: str, session: aiohttp.ClientSession, sem: asyn
             # Filter sites based on URL results
             valid_sites = []
             for site in candidate_sites:
-                ext = site.get('ext', '')
                 api = site.get('api', '')
-                ext_valid = not (isinstance(ext, str) and ext.startswith(('http://', 'https://'))) or url_results.get(ext, False)
+                url_field = site.get('url', '')
+                ext = site.get('ext', '')
+                
                 api_valid = not (isinstance(api, str) and api.startswith(('http://', 'https://'))) or url_results.get(api, False)
-                if ext_valid and api_valid:
+                url_valid = not (isinstance(url_field, str) and url_field.startswith(('http://', 'https://'))) or url_results.get(url_field, False)
+                ext_valid = not (isinstance(ext, str) and ext.startswith(('http://', 'https://'))) or url_results.get(ext, False)
+                
+                if api_valid and url_valid and ext_valid:
                     valid_sites.append(site)
                 else:
-                    if not ext_valid:
-                        logger.debug(f"Site excluded (invalid ext URL {ext}): {site.get('name', 'unknown')}")
                     if not api_valid:
                         logger.debug(f"Site excluded (invalid api URL {api}): {site.get('name', 'unknown')}")
+                    if not url_valid:
+                        logger.debug(f"Site excluded (invalid url field {url_field}): {site.get('name', 'unknown')}")
+                    if not ext_valid:
+                        logger.debug(f"Site excluded (invalid ext URL {ext}): {site.get('name', 'unknown')}")
 
             sites.extend(valid_sites)
             logger.info(f"Processed {len(valid_sites)} valid sites from {os.path.basename(file_path)} "
