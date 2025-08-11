@@ -40,6 +40,7 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add clash.yaml
           git commit -m "Update clash test results" || echo "No changes to commit"
+          git pull --rebase origin main  # 拉取远程更改并尝试合并
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
