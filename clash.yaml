@@ -1,27 +1,27 @@
 proxy-providers: {}
 proxies:
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 211.66 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 196.42 MB/s"
       password: shadowsocks
       port: 443
-      server: 37.19.198.243
+      server: 37.19.198.236
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 197.47 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 184.75 MB/s"
       password: shadowsocks
       port: 443
       server: 37.19.198.160
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 189.29 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 178.59 MB/s"
       password: shadowsocks
       port: 443
-      server: 37.19.198.236
+      server: 37.19.198.244
       type: ss
       udp: true
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 109.94 MB/s"
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 101.78 MB/s"
       network: tcp
       port: 43728
       security: none
@@ -33,498 +33,223 @@ proxies:
       uuid: 1b18b439-5371-4f38-b8d0-71aad09a3a92
       ws-opts: {}
     - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 109.15 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 95.95 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
-      server: 147.182.150.107
+      server: 138.197.153.10
       type: ss
       udp: true
     - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 106.06 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 95.75 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
-      server: 68.183.193.204
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 103.03 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 138.197.141.58
+      server: 137.184.174.93
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 87.80 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 90.25 MB/s"
       password: shadowsocks
       port: 443
-      server: 156.146.38.170
+      server: 156.146.38.169
       type: ss
       udp: true
     - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 82.00 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 88.55 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.164
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 84.65 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.171
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 78.10 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.175
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 64.05 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
       server: 138.197.165.21
       type: ss
       udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 75.10 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 138.199.42.68
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 70.64 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 194.5.215.59
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 61.96 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 64.46 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 49.81 MB/s"
       password: shadowsocks
       port: 443
-      server: 156.146.38.168
+      server: 212.102.47.131
       type: ss
       udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 49.67 MB/s"
+      network: ws
+      port: 443
+      server: 104.21.94.69
+      servername: FfFfffFFFf.000890604.Xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      udp: true
+      uuid: bce0c7cb-08d1-46a7-b77b-7bff8b46252f
+      ws-opts:
+        headers:
+            Host: FfFfffFFFf.000890604.Xyz
+        path: /Ryxyg63Pk7cFSnZBROjL3Q5vTymr
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 59.33 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 49.51 MB/s"
       password: shadowsocks
       port: 443
-      server: 156.146.38.167
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 51.05 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 79.110.53.169
+      server: 212.102.47.130
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 49.96 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 48.97 MB/s"
       password: shadowsocks
       port: 443
       server: 212.102.47.132
       type: ss
       udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 47.30 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 79.110.53.82
-      type: ss
-      udp: true
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 46.79 MB/s"
-      network: ws
-      port: 443
-      security: tls
-      server: 444444444444r.333756.xyz
-      skip-cert-verify: false
-      sni: 444444444444R.333756.xyz
-      tls: true
-      type: vless
-      uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
-      ws-opts:
-        headers:
-            Host: 444444444444r.333756.xyz
-        path: /f7vKDX2UecxmlPhIJoo2wcE6Q
     - cipher: aes-128-gcm
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 44.69 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 47.73 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.53.80
+      server: 173.244.56.6
       type: ss
       udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 44.10 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 45.158.171.66
-      type: ss
+    - alpn:
+        - http/1.1
+      client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 47.15 MB/s"
+      network: ws
+      password: bce0c7cb-08d1-46a7-b77b-7bff8b46252f
+      port: 443
+      server: 104.21.91.180
+      skip-cert-verify: false
+      sni: XXXXxxXxXc.666461.xyZ
+      type: trojan
       udp: true
+      ws-opts:
+        headers:
+            User-Agent: Mozilla/5.0 (Linux; Android 5.1; HUAWEI CUN-L22 Build/HUAWEICUN-L22; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/62.0.3202.84 Mobile Safari/537.36
+        path: /x9F83IcyjcEyBXZBROjL3Q5vTymr
+    - alpn:
+        - http/1.1
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 45.68 MB/s"
+      network: ws
+      password: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
+      port: 443
+      server: 172.67.135.37
+      skip-cert-verify: false
+      sni: rrrRrRRrT.459.pp.ua
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: rrrRrRRrT.459.pp.ua
+        path: /znQImc22ijDwVOkZfoq
     - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.87 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 138.199.43.159
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 43.85 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 193.29.139.202
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 43.83 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 45.158.171.60
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.78 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 45.51 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
       server: 79.110.54.250
       type: ss
       udp: true
     - cipher: aes-128-gcm
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 43.71 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 44.99 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.53.195
+      server: 149.22.95.183
       type: ss
       udp: true
+    - alterId: "0"
+      cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 44.60 MB/s"
+      network: ws
+      port: "80"
+      server: test.flha.ru
+      type: vmess
+      uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
+      ws-opts:
+        headers:
+            host: test.flha.ru
+        path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
     - cipher: rc4-md5
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 43.59 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 44.15 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
-      server: 146.70.61.51
+      server: 138.199.43.167
       type: ss
       udp: true
-    - alpn:
-        - http/1.1
-      client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 43.58 MB/s"
-      network: ws
-      port: "443"
-      server: 172.67.130.204
-      servername: HHhhhHhhhhH.777198.xYz
-      tls: true
-      type: vless
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 42.47 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.78
+      type: ss
       udp: true
-      uuid: c226ac5d-65e9-4379-95c3-fb542bc242d8
-      ws-opts:
-        headers:
-            Host: hhhhhhhhhhh.777198.xyz
-            User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36
-        path: /OjdW89Bpg4ykd4O
-      xudp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 41.66 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.196
+      type: ss
+      udp: true
     - alterId: 0
       cipher: auto
       client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.54 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.50 MB/s"
       network: ws
       port: 20086
-      server: 137.175.124.167
+      server: 050910.xyz
       skip-cert-verify: true
       tls: false
       type: vmess
-      uuid: b4bce500-11fe-4f8f-a344-01ac247af9bd
+      uuid: 7e992138-4bae-44d7-893e-c33605c40d5f
       ws-opts:
         headers:
-            host: ""
+            host: 050910.xyz
         path: /
     - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.30 MB/s"
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 41.40 MB/s"
       password: oZIoA69Q8yhcQV8ka3Pa3A
       port: 8080
-      server: 45.87.175.69
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 43.20 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 193.29.139.235
-      type: ss
-      udp: true
-    - cipher: aes-256-cfb
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 42.93 MB/s"
-      obfs: plain
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      protocol: origin
-      server: 79.127.233.170
-      type: ssr
-    - alterId: 0
-      cipher: auto
-      client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 42.70 MB/s"
-      network: ws
-      port: 20086
-      server: 142.171.224.111
-      skip-cert-verify: true
-      tls: false
-      type: vmess
-      uuid: 0908eadd-7337-49dd-8e9b-e325bca02910
-      ws-opts:
-        headers:
-            host: ""
-        path: /
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 42.69 MB/s"
-      password: 1RWwXhwfAB5gAEozU4G2Pg
-      port: 8080
-      server: 45.158.171.146
+      server: 45.158.171.110
       type: ss
       udp: true
     - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 42.62 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.29 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
       server: 23.251.121.242
       type: ss
       udp: true
-    - cipher: aes-128-gcm
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 42.59 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 212.102.53.193
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 42.52 MB/s"
-      password: QCXDxuDlTTMD7jtgHUjIoj
-      port: 8080
-      server: 45.158.171.146
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 42.22 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 149.34.244.68
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.29 MB/s"
-      password: cvII85TrW6n0OGyfpHVS1u
-      port: 8080
-      server: 45.87.175.192
-      type: ss
-      udp: true
-    - cipher: aes-128-gcm
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 41.06 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 149.34.244.72
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 39.32 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 98.98.142.161
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 38.61 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 104.166.161.196
-      type: ss
-      udp: true
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 38.50 MB/s"
-      network: ws
-      port: "443"
-      server: ipw.gfdv54cvghhgfhgj-njhgj64.info
-      servername: 638880231667527799.madrid-prx-dnraaao.info
-      tls: true
-      type: vless
-      udp: true
-      uuid: 80128acc-ff7f-41fe-af34-62f4108635ca
-      ws-opts:
-        headers:
-            Host: 638880231667527799.madrid-prx-dnraaao.info
-            User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36
-        path: /jzkedews
-      xudp: true
-    - cipher: aes-256-cfb
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 37.86 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      server: 51.15.17.169
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 37.74 MB/s"
-      password: 4a2rfixophdjffa8KVA4Aa
-      port: 8080
-      server: 193.29.139.227
-      type: ss
-      udp: true
-    - cipher: aes-128-gcm
-      name: "\U0001F1E8\U0001F1ED CH | ⬇️ 37.67 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 156.146.62.161
-      type: ss
-      udp: true
-    - alpn:
-        - http/1.1
-      client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 37.51 MB/s"
-      network: ws
-      port: "443"
-      server: 104.21.69.41
-      servername: DdDFRt5.890602.xyZ
-      tls: true
-      type: vless
-      udp: true
-      uuid: 07a3df8f-2a2c-42f8-ad92-65889d90f3bf
-      ws-opts:
-        headers:
-            Host: dddfrt5.890602.xyz
-            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36
-        path: /5UW2C42lpZ7Dj4VDwVOkZfoq
-      xudp: true
-    - cipher: aes-128-gcm
-      name: "1,2,3,8,24,110,111,161,186,193,375|\U0001F1E8\U0001F1EDCH-156.146.62.164-0398 #1"
-      password: shadowsocks
-      port: 443
-      server: 156.146.62.164
-      type: ss
-      udp: true
-    - cipher: rc4-md5
-      name: "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 107.155.57.11
-      type: ss
-      udp: true
-    - cipher: aes-128-gcm
-      name: 瑞士Zurich,+ZH,+Switzerland
-      password: shadowsocks
-      port: 443
-      server: 156.146.62.163
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: 捷克_1126002
-      password: f8f7aCzcPKbsF8p3
-      port: 990
-      server: 195.181.160.6
-      type: ss
-      udp: true
-    - name: "\U0001F1E9\U0001F1EA DE 28"
-      network: tcp
-      port: 25921
-      security: none
-      server: 162.19.250.117
-      skip-cert-verify: false
-      sni: ""
-      tls: false
-      type: vless
-      uuid: 598d2298-5e1f-4d07-bc4b-6d1949693852
-      ws-opts: {}
-    - cipher: aes-256-cfb
-      name: "\U0001F1EB\U0001F1F7 FR 4"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      server: 195.154.185.174
-      type: ss
-      udp: true
     - alterId: 0
       cipher: auto
-      name: "Config\U0001F1E8\U0001F1E6@Do_itforyou"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 40.83 MB/s"
       network: tcp
-      port: 42610
-      server: 51.79.86.182
+      port: 30002
+      server: 38.12.83.217
       sni: ""
       tls: false
       type: vmess
-      uuid: e0957ca6-f613-4017-ff3c-effd1da8871a
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
       ws-opts: {}
-    - cipher: aes-256-cfb
-      name: "\U0001F194@LuxyNet\U0001F48E❖阿富汗❖AF❖1626"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      server: 121.127.46.147
-      type: ss
-      udp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E9\U0001F1EADE-2.59.133.216-5114"
-      password: trErto8XzLALaQEslTp_jw
-      port: 2222
-      server: universal.opengate.wiki
-      type: ss
-    - alterId: 0
-      cipher: auto
-      name: '>>@ShadowsocksM::DE'
-      network: tcp
-      port: 32017
-      server: panel3.ipyar.org
-      sni: ""
-      tls: false
-      type: vmess
-      uuid: c0ccdeb9-784c-4d67-b904-20dcaac9902a
-      ws-opts: {}
-    - client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 美国_58"
-      network: ws
-      port: "8880"
-      server: 176.124.223.251
-      servername: cf.d3z.net
-      skip-cert-verify: false
-      tls: false
-      type: vless
-      udp: true
-      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
-      ws-opts:
-        headers:
-            Host: cf.d3z.net
-        path: /
-    - name: "\U0001F1E9\U0001F1EAWS|TLS-khodam3"
-      network: ws
-      port: 8443
-      security: tls
-      server: 190.93.244.65
-      skip-cert-verify: false
-      sni: phdde1.reachheadphones.com
-      tls: true
-      type: vless
-      uuid: edb6b348-9f80-4edd-b842-0aba6e62cdfd
-      ws-opts:
-        headers:
-            Host: cfphdde1.reachheadphones.com
-        path: /WS/2678
-    - alpn:
-        - http%2F1.1
-      name: "\U0001F1FA\U0001F1F8US_35 |6.4MB/s|GPT|NF|GM"
-      network: ws
-      password: a96cb093-b164-4bc6-bd27-deb0e385de07
-      port: 443
-      server: 172.67.160.119
-      skip-cert-verify: true
-      sni: UUuUUuUj.999864.XYZ
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: UUuUUuUj.999864.XYZ
-        path: /CNLtVWdiKPpIlRig3qizHXb
-    - alpn:
-        - http/1.1
-      client-fingerprint: chrome
-      name: ❓Other_5 |3.5MB/s|GPT
-      network: ws
-      port: "443"
-      server: 172.67.149.202
-      servername: LlLLLlLLLLLkjh.222560.xyZ
-      tls: true
-      type: vless
-      udp: true
-      uuid: ce921385-2b31-45fe-84c5-1843e8ae845b
-      ws-opts:
-        headers:
-            Host: lllllllllllkjh.222560.xyz
-            User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36
-        path: /1xrOld7e5RpK3I98dxLkez
-      xudp: true
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8[openproxylist.com] ss-US"
-      password: 360e21d21977dc11
-      port: 57456
-      server: 104.167.197.25
-      type: ss
-      udp: true
     - client-fingerprint: ios
-      name: "\U0001F1FA\U0001F1F8US_51 |2.9MB/s|GPT|D+|40%"
+      name: "\U0001F1E8\U0001F1F7 CR | ⬇️ 40.77 MB/s"
       network: ws
       port: "443"
       server: 190.93.246.92
@@ -539,175 +264,227 @@ proxies:
             User-Agent: Mozilla/5.0 (Linux; Android 7.0; SM-G570M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.80 Mobile Safari/537.36
         path: /pq/us5
       xudp: true
-    - alterId: "0"
-      cipher: auto
-      name: "\U0001F1EB\U0001F1F7FR_1 |1.0MB/s|GPT|0%"
-      network: ws
-      port: "443"
-      server: cloudgetservice.mcloudservice.site
-      skip-cert-verify: false
-      tls: true
-      type: vmess
-      udp: true
-      uuid: 37f464cb-b826-4278-9bf8-11bdf1ec892b
-      ws-opts:
-        headers:
-            Host: Fra-Vp-123.BLaZECLOUD.Site
-        path: /linvkws
-      xudp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 40.63 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 193.29.139.217
+      type: ss
     - cipher: aes-128-gcm
-      name: "2,3,24,110,111,161,186,375|\U0001F1FA\U0001F1F8US-212.102.47.131-0291 #1"
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 39.95 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.47.131
+      server: 149.34.244.71
       type: ss
       udp: true
-    - name: "\U0001F1FA\U0001F1F8 美国_1"
-      password: dongtaiwang.com
-      port: "63015"
-      server: 108.181.5.130
-      skip-cert-verify: true
-      sni: apple.com
-      tfo: false
-      type: hysteria2
-    - cipher: rc4-md5
-      name: "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+84\r\r"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 146.70.20.147
-      type: ss
-      udp: true
-    - name: US_Buffalo_HostPapa_Claude15
-      network: ws
-      port: 443
-      server: 104.21.66.157
-      servername: eeEEEeR.666470.xYZ
-      skip-cert-verify: false
-      tls: true
-      type: vless
-      udp: true
-      uuid: 662e38ba-8427-4955-94aa-76f5347a0ce8
-      ws-opts:
-        headers:
-            Host: eeEEEeR.666470.xYZ
-        path: /6DuxYMYmrGrnGKRtF5UvWyyVQu
-    - name: "\U0001F1EC\U0001F1E7 GB 20"
-      network: tcp
-      port: 37171
-      security: none
-      server: 54.38.214.56
-      skip-cert-verify: false
-      sni: ""
-      tls: false
-      type: vless
-      uuid: 19199927-fb46-4203-8872-672fd1daca14
-      ws-opts: {}
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E9\U0001F1EA DE 38"
-      password: a58fa62b4944ddbf
-      port: 57456
-      server: desrv.vmagnum.win
-      type: ss
-      udp: true
-    - delay: 1273
-      name: "\U0001F1FA\U0001F1F8美国2 | ⬇️ 1.1MB/s"
-      network: ws
-      port: 8880
-      server: 104.129.167.251
-      servername: Telegram-channel-WangCai2
-      type: vless
-      udp: true
-      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
-      ws-opts:
-        headers:
-            Host: cf.d3z.net
-            User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36
-        path: "/Telegram\U0001F1E8\U0001F1F3"
-      xudp: true
-    - cipher: aes-256-cfb
-      name: "\U0001F1F2\U0001F1E9MD-185.153.197.5-5106"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      server: 185.153.197.5
-      type: ss
-    - name: "\U0001F1FA\U0001F1F8 US 98"
-      network: ws
-      port: 443
-      security: tls
-      server: web.xhamster.biz.id
-      skip-cert-verify: false
-      sni: web.xhamster.biz.id
-      tls: true
-      type: vless
-      uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
-      ws-opts:
-        headers:
-            Host: web.xhamster.biz.id
-        path: /Free-CF-Proxy-AT4
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1EC\U0001F1E7[openproxylist.com] ss-GB"
-      password: c40641c1f89e7acb
-      port: 57456
-      server: 46.226.163.225
-      type: ss
-      udp: true
-    - client-fingerprint: chrome
-      name: "\U0001F1F5\U0001F1F1PL_1 |1.2MB/s"
-      network: ws
-      port: "443"
-      server: al-akhbar.com
-      servername: rAyAn-P11.PaRaStOo.dPdNs.oRg
-      tls: true
-      type: vless
-      udp: true
-      uuid: 4e4768df-0fbb-4cc1-8fd3-7c6fea95742a
-      ws-opts:
-        headers:
-            Host: rayan-p11.parastoo.dpdns.org
-            User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36
-        path: /@Rayan_Config
-      xudp: true
-    - name: "\U0001F1FA\U0001F1F8 US 594"
-      network: ws
-      port: 443
-      security: tls
-      server: 3ert.4444916.xyz
-      skip-cert-verify: false
-      sni: 3eRt.4444916.xyz
-      tls: true
-      type: vless
-      uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
-      ws-opts:
-        headers:
-            Host: 3ert.4444916.xyz
-        path: /f7vKDX2UecxmlPhIJoo2wcE6Q
-    - alterId: "0"
+    - alterId: 0
       cipher: auto
-      name: "\U0001F1E8\U0001F1E6CA_1 |3.5MB/s|GPT|NF|GM|51%"
+      client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 39.25 MB/s"
       network: ws
-      port: "80"
+      port: 80
       server: test.flha.ru
-      skip-cert-verify: false
+      skip-cert-verify: true
       tls: false
       type: vmess
-      udp: true
       uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
       ws-opts:
         headers:
-            Host: test.flha.ru
+            host: test.flha.ru
         path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
-      xudp: true
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US 30"
+    - cipher: rc4-md5
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 39.14 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.61.18
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 38.76 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.61.51
+      type: ss
+      udp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 38.72 MB/s"
       network: ws
       port: 443
-      server: sSsdCVfBGNjkI.931.PP.Ua
-      sni: ""
+      security: tls
+      server: eeeeeeeeed.999864.xyz
+      skip-cert-verify: false
+      sni: EEeeeEeEEd.999864.xyZ
       tls: true
-      type: vmess
-      uuid: a4e8ec0a-75d0-4fc5-837a-4973ed3a9d3e
+      type: vless
+      uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
       ws-opts:
         headers:
-            Host: sSsdCVfBGNjkI.931.PP.Ua
-        path: /14Fziqw1hYgCXNutkS5H
+            Host: EEeeeEeEEd.999864.xyZ
+        path: /3zsSOohi9huFfjEPpIlRig3qizHXb
+    - cipher: aes-128-gcm
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 38.68 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.68
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.67 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 45.87.175.171
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.32 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.155.57.51
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      country: "\U0001F1FA\U0001F1F8US"
+      delay: 1809
+      h2-opts: {}
+      http-opts: {}
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 38.27 MB/s"
+      network: ws
+      port: 8080
+      server: cf.090227.xyz
+      servername: gyde.aifjj.asia
+      skip-cert-verify: true
+      type: vmess
+      uuid: e9123cce-e4bd-46cf-8466-708b363a9807
+      ws-opts:
+        headers:
+            HOST: gyde.aifjj.asia
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1FF CZ | ⬇️ 38.22 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 195.181.160.6
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 38.13 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.207.163
+      type: ss
+      udp: true
+    - alpn:
+        - http/1.1
+      client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 37.93 MB/s"
+      network: ws
+      password: 03e92910-34b1-4245-ac63-04a865f43cd5
+      port: 443
+      server: 104.21.84.242
+      skip-cert-verify: false
+      sni: 3ERt.4444916.XyZ
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.1805 Safari/537.36 MVisionPlayer/1.0.0.0
+        path: /bi35bFWoRrnPhIJoo2wcE6Q
+    - cipher: aes-128-gcm
+      name: "\U0001F1E8\U0001F1ED CH | ⬇️ 36.84 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.161
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 35.92 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 169.150.210.244
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US 641"
+      network: ws
+      port: 443
+      security: tls
+      server: ddddddddddf.777198.xyz
+      skip-cert-verify: false
+      sni: ddDDdDDdDDF.777198.XyZ
+      tls: true
+      type: vless
+      uuid: c226ac5d-65e9-4379-95c3-fb542bc242d8
+      ws-opts:
+        headers:
+            Host: ddddddddddf.777198.xyz
+        path: /OjdW89Bpg4ykd4O
+    - cipher: aes-256-cfb
+      name: "\U0001F1E6\U0001F1F9 AT 1"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 185.180.12.81
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8_US_美国_2"
+      network: ws
+      port: 80
+      security: none
+      server: 104.16.53.11
+      skip-cert-verify: false
+      sni: dETeRMiNeD-COuRT.oneEaT.CO
+      tls: false
+      type: vless
+      uuid: 9fc94683-42be-4c44-9525-096f675965db
+      ws-opts:
+        headers:
+            Host: dETeRMiNeD-COuRT.oneEaT.CO
+        path: /?ed
+    - client-fingerprint: chrome
+      name: "\U0001F1EB\U0001F1F7法国2 | ⬇️ 1.2MB/s"
+      network: ws
+      port: "443"
+      server: ipw.gfdv54cvghhgfhgj-njhgj64.info
+      servername: 638880231667527799.madrid-prx-dnraaao.info
+      tls: true
+      type: vless
+      udp: true
+      uuid: 80128acc-ff7f-41fe-af34-62f4108635ca
+      ws-opts:
+        headers:
+            Host: 638880231667527799.madrid-prx-dnraaao.info
+            User-Agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36
+        path: /jzkedews
+      xudp: true
+    - alpn:
+        - h2
+        - http/1.1
+      alterId: "0"
+      cipher: auto
+      name: "\U0001F1E9\U0001F1EADE_18 |2.0MB/s|GPT|0%"
+      network: ws
+      port: "443"
+      server: npmjs.com
+      servername: Q4.19kAlA.co
+      skip-cert-verify: false
+      tls: true
+      type: vmess
+      udp: true
+      uuid: telegram-channel-freewireguard
+      ws-opts:
+        headers:
+            Host: Q4.19kAlA.co
+        path: /
+      xudp: true
+    - name: CFW_443
+      network: ws
+      port: 443
+      security: tls
+      server: proxyip.us.cmliussss.net
+      skip-cert-verify: false
+      sni: t.13112221.xyz
+      tls: true
+      type: vless
+      uuid: 08ca060e-9552-4598-a8fb-f1ccd7e277ba
+      ws-opts:
+        headers:
+            Host: t.13112221.xyz
+        path: /=2048
