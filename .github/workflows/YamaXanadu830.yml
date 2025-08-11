@@ -1,4 +1,4 @@
-name: YamaXanadu830
+name: Clash Speedtest Workflow
 
 on:
   workflow_dispatch:  # Manual trigger
@@ -32,7 +32,7 @@ jobs:
       - name: Run clash-speedtest and save results
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml --monitor --monitor-type websocket --monitor-duration 10m --output ../clash.yaml
+          ./clash-speedtest -c ../config.yaml --monitor --monitor-type websocket --monitor-duration 10m -max-latency 386ms -min-download-speed 20.8 -rename --output ../clash.yaml
 
       - name: Commit and push results
         run: |
