@@ -16,16 +16,22 @@ def main():
     results = load_yaml(result_file)
     original = load_yaml(original_file)
 
-    name_set = {node['name'] for node in results if 'name' in node}
-    filtered = [node for node in original.get('proxies', []) if node.get('name') in name_set]
+    name_map = {node['name']: node for node in original.get('proxies', [])}
+    output_proxies = []
+
+    for r in results:
+        original_node = name_map.get(r['name'])
+        if original_node:
+            original_node['name'] = r['name']  # 保留测速结果里的名字
+            output_proxies.append(original_node)
 
     output = {
-        'proxies': filtered,
+        'proxies': output_proxies,
         'proxy-groups': [
             {
                 'name': '自动选择',
                 'type': 'url-test',
-                'proxies': [n['name'] for n in filtered],
+                'proxies': [p['name'] for p in output_proxies],
                 'url': 'http://www.gstatic.com/generate_204',
                 'interval': 300
             }
@@ -38,7 +44,7 @@ def main():
     with open('clash-use.yaml', 'w', encoding='utf-8') as f:
         yaml.dump(output, f, allow_unicode=True, sort_keys=False)
 
-    print("✅ 已生成 clash-use.yaml，可直接导入 Clash 客户端")
+    print("✅ 已生成 clash-use.yaml，节点名已替换为测速结果中的格式")
 
 if __name__ == '__main__':
     main()
