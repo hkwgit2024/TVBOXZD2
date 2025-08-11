@@ -149,7 +149,7 @@ def pre_screen_url(url):
         logging.info(f"预筛选过滤（URL 解析错误）: {url} - {e}")
         return False
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True)
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(5), reraise=True, retry=tenacity.retry_if_exception_type(aiohttp.ClientError))
 async def fetch_url_content_with_retry(url, url_states, session):
     """异步获取 URL 内容，使用缓存和 ETag/Last-Modified/Content-Hash"""
     if CONFIG['url_state']['cache_enabled'] and url in content_cache:
