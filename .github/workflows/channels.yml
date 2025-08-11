@@ -6,7 +6,7 @@ on:
       - '.github/workflows/channels.yml'
 
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *' # 每 6 小时运行一次
   workflow_dispatch:
 
 env:
@@ -22,8 +22,9 @@ jobs:
       - name: 检出仓库代码
         uses: actions/checkout@v4
         with:
-          # 检出 main 分支而不是分离头指针
           ref: main
+          fetch-depth: 0               # 拉取完整历史，避免推送失败
+          persist-credentials: false   # 禁用默认凭证，手动配置 GITHUB_TOKEN
 
       - name: 设置 Python 环境
         uses: actions/setup-python@v4
@@ -39,16 +40,18 @@ jobs:
         run: |
           python process_channels.py
 
-      - name: 提交并推送更改
+      - name: 配置 Git
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add .
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
 
+      - name: 提交并推送更改
+        run: |
+          git add .
           if ! git diff --cached --quiet; then
             git commit -m "Update IPTV channels list"
-            # 强制推送，但仅在远程仓库没有更新时才执行，这是自动化场景中最可靠的方式。
-            git push origin HEAD:main --force-with-lease
+            git push origin main
           else
             echo "没有文件更改，无需提交。"
           fi
