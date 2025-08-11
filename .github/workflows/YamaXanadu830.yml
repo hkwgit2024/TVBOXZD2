@@ -31,23 +31,23 @@ jobs:
           go build -o clash-speedtest
 
       - name: Download Clash config
-        run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
+        run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml
 
-      - name: Run speed test
-        run: |
-          cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --output ../speedtest.yaml
+  #    - name: Run speed test
+  #      run: |
+  #        cd clash-speedtest
+  #        ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --output ../speedtest.yaml
 
       - name: Run stability monitor on filtered nodes
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../speedtest.yaml --monitor --monitor-type websocket --monitor-duration 10m --output ../clash.yaml
+          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --monitor --monitor-type websocket --monitor-duration 10m --output ../clash803.yaml
 
       - name: Commit and push results
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add clash803.yaml speedtest803.yaml  # 添加两个输出文件
+          git add clash803.yaml 
           git commit -m "Update clash test results" || echo "No changes to commit"
           git pull --rebase origin main  # 拉取并合并远程更改
           git push
