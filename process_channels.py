@@ -164,33 +164,32 @@ async def fetch_url_content_with_retry(url, url_states, session):
         headers['If-Modified-Since'] = current_state['last_modified']
 
     try:
-        async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=50, ssl=False)) as inner_session:
-            async with inner_session.get(url, headers=headers, timeout=10) as response:
-                response.raise_for_status()
+        async with session.get(url, headers=headers, timeout=10) as response:
+            response.raise_for_status()
 
-                if response.status == 304:
-                    logging.debug(f"URL 内容未变更 (304): {url}")
-                    return None
+            if response.status == 304:
+                logging.debug(f"URL 内容未变更 (304): {url}")
+                return None
 
-                content = await response.text()
-                content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+            content = await response.text()
+            content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
 
-                if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
-                    logging.debug(f"URL 内容未变更（哈希相同）: {url}")
-                    return None
+            if 'content_hash' in current_state and current_state['content_hash'] == content_hash:
+                logging.debug(f"URL 内容未变更（哈希相同）: {url}")
+                return None
 
-                url_states[url] = {
-                    'etag': response.headers.get('ETag'),
-                    'last_modified': response.headers.get('Last-Modified'),
-                    'content_hash': content_hash,
-                    'last_checked': datetime.now().isoformat()
-                }
+            url_states[url] = {
+                'etag': response.headers.get('ETag'),
+                'last_modified': response.headers.get('Last-Modified'),
+                'content_hash': content_hash,
+                'last_checked': datetime.now().isoformat()
+            }
 
-                if CONFIG['url_state']['cache_enabled']:
-                    content_cache[url] = content
+            if CONFIG['url_state']['cache_enabled']:
+                content_cache[url] = content
 
-                logging.info(f"成功获取新内容: {url}")
-                return content
+            logging.info(f"成功获取新内容: {url}")
+            return content
     except aiohttp.ClientResponseError as e:
         if e.status in [429, 500, 502, 503, 504]:
             logging.error(f"请求 URL 失败（状态码 {e.status}）: {url}")
@@ -306,8 +305,9 @@ def write_channels_to_file(file_path, channels):
         logging.error(f"写入文件 '{file_path}' 失败: {e}")
 
 async def process_urls(urls, url_states):
-    """异步处理 URL 列表"""
-    async with aiohttp.ClientSession() as session:
+    """异步处理 URL 列表，并共享单个会话"""
+    connector = aiohttp.TCPConnector(limit=200, ssl=False)
+    async with aiohttp.ClientSession(connector=connector) as session:
         tasks = [extract_channels_from_url(url, url_states, session) for url in urls]
         results = []
         for future in tqdm(asyncio.as_completed(tasks), total=len(tasks), desc="提取频道"):
