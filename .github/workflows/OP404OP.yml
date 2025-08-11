@@ -35,7 +35,7 @@ jobs:
       - name: Run speed test
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-speed 20.8 -rename -debug --output ../OP404OP.yaml
+          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-speed 20.8 -debug --output ../OP404OP.yaml
 
       - name: Commit and push results
         run: |
