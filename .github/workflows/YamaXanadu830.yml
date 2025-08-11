@@ -3,12 +3,14 @@ name: YamaXanadu830
 on:
   push:
     paths:
-    - '.github/workflows/YamaXanadu830.yml'
-  workflow_dispatch:  # Manual trigger
+      - '.github/workflows/YamaXanadu830.yml'
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # Run daily at UTC 0:00
+    - cron: '0 0 * * *'  # 每天 UTC 0 点运行
+
 env:
-   TZ: Asia/Shanghai
+  TZ: Asia/Shanghai
+
 jobs:
   run-speedtest:
     runs-on: ubuntu-latest
@@ -21,36 +23,46 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.24.6'
-          cache-dependency-path: clash-speedtest/go.sum  # 指定 go.sum 路径以启用缓存
+          cache-dependency-path: clash-speedtest/go.sum
 
       - name: Clone clash-speedtest repository
         run: |
           git clone https://github.com/YamaXanadu830/clash-speedtest.git
           cd clash-speedtest
           sed -i 's/module github.com\/faceair\/clash-speedtest/module github.com\/YamaXanadu830\/clash-speedtest/' go.mod
-          go mod tidy  # 生成 go.sum 以处理警告并启用缓存
+          go mod tidy
           go build -o clash-speedtest
 
       - name: Download Clash config
         run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash.yaml
 
-  #    - name: Run speed test
-  #      run: |
-  #        cd clash-speedtest
-  #        ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --output ../speedtest.yaml
-
       - name: Run stability monitor on filtered nodes
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --monitor --monitor-type websocket --monitor-duration 2m --output ../clash803.yaml --format clash
+          ./clash-speedtest -c ../config.yaml \
+            -max-latency 386ms \
+            -min-download-speed 20.8 \
+            -rename \
+            --monitor \
+            --monitor-type websocket \
+            --monitor-duration 2m \
+            --output ../clash803.yaml
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Convert to Clash format
+        run: python3 convert.py clash803.yaml config.yaml
 
       - name: Commit and push results
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add clash803.yaml 
+          git add clash-use.yaml
           git commit -m "Update clash test results" || echo "No changes to commit"
-          git pull --rebase origin main  # 拉取并合并远程更改
+          git pull --rebase origin main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
