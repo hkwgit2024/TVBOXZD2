@@ -1,4 +1,4 @@
-name: 提取 
+name: 提取 IPTV 频道列表
 
 on:
   push:
@@ -16,11 +16,14 @@ jobs:
   update-channels:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 👈 添加这一行，确保工作流有写入权限
+      contents: write
 
     steps:
       - name: 检出仓库代码
         uses: actions/checkout@v4
+        with:
+          # 使用 fetch-depth: 0 获取完整历史，以确保 rebase 正常工作
+          fetch-depth: 0
 
       - name: 设置 Python 环境
         uses: actions/setup-python@v4
@@ -40,13 +43,12 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-
-          # ⚠️ 确保这里包含了所有被脚本修改的文件！
-          git add output/iptv.txt config/url_states.json logs/iptv.log.1
+          git add .
 
           if ! git diff --cached --quiet; then
             git commit -m "Update IPTV channels list"
             
+            # 重新拉取并尝试rebase，如果失败则等待并重试
             for i in {1..3}; do
               echo "尝试第 $i 次拉取、rebase 和推送..."
               if git pull --rebase && git push; then
