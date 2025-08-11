@@ -200,6 +200,7 @@ async def fetch_url_content_with_retry(url, url_states, session):
         logging.error(f"请求 URL 超时: {url}")
         return None
     except Exception as e:
+        # 已修复: 确保只捕获 Exception，避免和非异常类冲突
         logging.error(f"获取 URL 内容未知错误: {url} - {e}")
         return None
 
