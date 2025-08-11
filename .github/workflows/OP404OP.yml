@@ -35,18 +35,18 @@ jobs:
       - name: Run speed test
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --output ../speedtest.yaml
+          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-speed 20.8 -rename --output ../speedtest.yaml
 
       - name: Run stability monitor on filtered nodes
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../speedtest.yaml --monitor --monitor-type websocket --monitor-duration 10m --output ../OP404OP.yaml
+          ./clash-speedtest -c ../speedtest.yaml --monitor --monitor-type websocket --monitor-duration 2m -debug --output ../OP404OP.yaml
 
       - name: Commit and push results
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add OP404OP.yaml speedtestOP404OP.yaml  # 添加两个输出文件
+          git add OP404OP.yaml speedtest.yaml
           git commit -m "Update clash test results" || echo "No changes to commit"
           git pull --rebase origin main  # 拉取并合并远程更改
           git push
