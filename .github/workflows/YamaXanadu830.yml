@@ -42,7 +42,7 @@ jobs:
       - name: Run stability monitor on filtered nodes
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --monitor --monitor-type websocket --monitor-duration 2m --output ../clash803.yaml
+          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --monitor --monitor-type websocket --monitor-duration 2m --output ../clash803.yaml --format clash
 
       - name: Commit and push results
         run: |
