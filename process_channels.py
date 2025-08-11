@@ -11,6 +11,7 @@ import asyncio
 from urllib.parse import urlparse
 from concurrent.futures import ProcessPoolExecutor
 from tenacity import retry, stop_after_attempt, wait_fixed
+import tenacity
 import json
 import hashlib
 import yaml
