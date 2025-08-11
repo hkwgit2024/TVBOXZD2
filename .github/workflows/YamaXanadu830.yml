@@ -1,33 +1,38 @@
 name: YamaXanadu830
+
 on:
-  workflow_dispatch:  # 手动触发
+  workflow_dispatch:  # Manual trigger
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 0:00 运行一次，可根据需要调整
+    - cron: '0 0 * * *'  # Run daily at UTC 0:00
 
 jobs:
   run-speedtest:
-    runs-on: ubuntu-latest  # 使用 Ubuntu 环境
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # 检出仓库代码
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'  # 使用最新 Go 版本，根据工具要求调整
+          go-version: '1.24.6'  # Use Go 1.24.6 as required by the tool
 
-      - name: Install clash-speedtest
-        run: go install github.com/YamaXanadu830/clash-speedtest@latest
+      - name: Clone clash-speedtest repository
+        run: |
+          git clone https://github.com/YamaXanadu830/clash-speedtest.git
+          cd clash-speedtest
+          # Update go.mod to match the repository path
+          sed -i 's/module github.com\/faceair\/clash-speedtest/module github.com\/YamaXanadu830\/clash-speedtest/' go.mod
+          go build -o clash-speedtest
 
       - name: Download Clash config
         run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
 
       - name: Run clash-speedtest and save results
         run: |
-          clash-speedtest -c config.yaml --monitor --monitor-type websocket --monitor-duration 10m --output clash.yaml
-        # 这里使用监控模式（WebSocket），持续 10 分钟（可调整为 1h 或 24h），输出到 clash.yaml
-        # 如果只需基本测速，可改为：clash-speedtest -c config.yaml > clash.yaml
+          cd clash-speedtest
+          ./clash-speedtest -c ../config.yaml --monitor --monitor-type websocket --monitor-duration 10m --output ../clash.yaml
 
       - name: Commit and push results
         run: |
@@ -37,4 +42,4 @@ jobs:
           git commit -m "Update clash test results" || echo "No changes to commit"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 推送
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
