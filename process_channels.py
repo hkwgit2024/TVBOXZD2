@@ -199,7 +199,7 @@ async def fetch_url_content_with_retry(url, url_states, session):
     except aiohttp.ClientTimeout:
         logging.error(f"请求 URL 超时: {url}")
         return None
-    except Exception as e:
+    except BaseException as e:
         logging.error(f"获取 URL 内容未知错误: {url} - {e}")
         return None
 
