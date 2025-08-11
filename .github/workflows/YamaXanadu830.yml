@@ -1,0 +1,40 @@
+name: YamaXanadu830
+on:
+  workflow_dispatch:  # 手动触发
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0:00 运行一次，可根据需要调整
+
+jobs:
+  run-speedtest:
+    runs-on: ubuntu-latest  # 使用 Ubuntu 环境
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # 检出仓库代码
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'  # 使用最新 Go 版本，根据工具要求调整
+
+      - name: Install clash-speedtest
+        run: go install github.com/YamaXanadu830/clash-speedtest@latest
+
+      - name: Download Clash config
+        run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
+
+      - name: Run clash-speedtest and save results
+        run: |
+          clash-speedtest -c config.yaml --monitor --monitor-type websocket --monitor-duration 10m --output clash.yaml
+        # 这里使用监控模式（WebSocket），持续 10 分钟（可调整为 1h 或 24h），输出到 clash.yaml
+        # 如果只需基本测速，可改为：clash-speedtest -c config.yaml > clash.yaml
+
+      - name: Commit and push results
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add clash.yaml
+          git commit -m "Update clash test results" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 推送
