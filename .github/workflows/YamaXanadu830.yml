@@ -52,7 +52,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      - name: Install PyYAML
+        run: pip install PyYAML
+        
       - name: Convert to Clash format
         run: python3 convert.py clash803.yaml config.yaml
 
