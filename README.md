@@ -1,5 +1,5 @@
-https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash.yaml
-https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
+https://raw.bgithub.xyz/qjlxg/VT/refs/heads/main/clash.yaml
+https://raw.bgithub.xyz/qjlxg/VT/refs/heads/main/output/iptv_list.txt
 
 
 
@@ -19,7 +19,7 @@ https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
 - [mojolabs-id/GeoLite2-Database](https://github.com/mojolabs-id/GeoLite2-Database)  
 - [midpoint/ClashForge](https://github.com/midpoint/ClashForge)  
 - [mlzlzj/df](https://github.com/mlzlzj/df)  
-- [YamaXanadu830/clash-speedtest](https://github.com/YamaXanadu830/clash-speedtest)
+
   
 ## faceair 节点测速工具（clash-speedtest）
 
