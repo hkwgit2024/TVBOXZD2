@@ -199,7 +199,7 @@ async def fetch_url_content_with_retry(url, url_states, session):
     except aiohttp.ClientTimeout:
         logging.error(f"请求 URL 超时: {url}")
         return None
-    except BaseException as e:
+    except Exception as e:
         logging.error(f"获取 URL 内容未知错误: {url} - {e}")
         return None
 
@@ -267,7 +267,7 @@ async def extract_channels_from_url(url, url_states, session):
                     channel_url = clean_url_params(channel_address_raw)
                     if channel_url and pre_screen_url(channel_url):
                         extracted_channels.append((channel_name, channel_url))
-    except BaseException as e:
+    except Exception as e:
         logging.error(f"从 {url} 提取频道失败: {e}")
     return extracted_channels
 
