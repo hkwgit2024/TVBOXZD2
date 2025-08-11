@@ -45,7 +45,7 @@ jobs:
             -rename \
             --monitor \
             --monitor-type websocket \
-            --monitor-duration 2m \
+            --monitor-duration 120m \
             --output ../clash803.yaml
 
       - name: Set up Python
