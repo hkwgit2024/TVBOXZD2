@@ -1,6 +1,9 @@
-name: Clash Speedtest Workflow
+name: YamaXanadu830
 
 on:
+  push:
+    paths:
+    - '.github/workflows/YamaXanadu830.yml'
   workflow_dispatch:  # Manual trigger
   schedule:
     - cron: '0 0 * * *'  # Run daily at UTC 0:00
@@ -16,31 +19,37 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.24.6'  # Use Go 1.24.6 as required by the tool
+          go-version: '1.24.6'
+          cache-dependency-path: clash-speedtest/go.sum  # 指定 go.sum 路径以启用缓存
 
       - name: Clone clash-speedtest repository
         run: |
           git clone https://github.com/YamaXanadu830/clash-speedtest.git
           cd clash-speedtest
-          # Update go.mod to match the repository path
           sed -i 's/module github.com\/faceair\/clash-speedtest/module github.com\/YamaXanadu830\/clash-speedtest/' go.mod
+          go mod tidy  # 生成 go.sum 以处理警告并启用缓存
           go build -o clash-speedtest
 
       - name: Download Clash config
         run: curl -o config.yaml https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml
 
-      - name: Run clash-speedtest and save results
+      - name: Run speed test
         run: |
           cd clash-speedtest
-          ./clash-speedtest -c ../config.yaml --monitor --monitor-type websocket --monitor-duration 10m -max-latency 386ms -min-download-speed 20.8 -rename --output ../clash.yaml
+          ./clash-speedtest -c ../config.yaml -max-latency 386ms -min-download-speed 20.8 -rename --output ../speedtest.yaml
+
+      - name: Run stability monitor on filtered nodes
+        run: |
+          cd clash-speedtest
+          ./clash-speedtest -c ../speedtest.yaml --monitor --monitor-type websocket --monitor-duration 10m --output ../clash.yaml
 
       - name: Commit and push results
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add clash.yaml
+          git add clash803.yaml speedtest803.yaml  # 添加两个输出文件
           git commit -m "Update clash test results" || echo "No changes to commit"
-          git pull --rebase origin main  # 拉取远程更改并尝试合并
+          git pull --rebase origin main  # 拉取并合并远程更改
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
