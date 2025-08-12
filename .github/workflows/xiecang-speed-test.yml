@@ -45,7 +45,8 @@ jobs:
                           -output clash.yaml \
                           -max-latency 386ms \
                           -min-download-speed 28.8 \
-                          -rename
+                          -rename \
+                          -f "日本|韩国|香港|Japan|Korea|Hong Kong|JP|KR|HK"
       
       - name: 提交并推送更改
         run: |
