@@ -20843,3 +20843,344 @@ Nickelodeon East (HD ready),http://fl1.moveonjoy.com/NICKELODEON/index.m3u8
 浙江绍兴公共台,http://live.shaoxing.com.cn/video/s10001-sxtv2/index.m3u8
 绍兴公共,http://live.shaoxing.com.cn/video/s10001-sxtv2/index.m3u8
 绍兴公共频道,http://live.shaoxing.com.cn/video/s10001-sxtv2/index.m3u8
+更新时间,#genre#
+2025-08-12 21:06:06,url
+综合频道,#genre#
+万州影视,http://123.146.162.24:8013/tslslive/vWlnEzU/hls/live_sd.m3u8
+万州影视文艺,http://123.146.162.24:8017/d4ceB1a/1000/live.m3u8
+东方卫视,http://satellitepull.cnr.cn/live/wx32dfws/playlist.m3u8
+什邡新闻,http://live.sfrmt.com:85/live/zhpd.m3u8
+八大第一,http://61.221.215.25:8800/hls/55/index.m3u8
+八大综合,http://61.221.215.25:8800/hls/56/index.m3u8
+八大综合,https://stream1.freetv.fun/ba-da-zong-he-2.m3u8
+八大综合,https://stream1.freetv.fun/ba-da-zong-he-1.m3u8
+内蒙古卫视,http://satellitepull.cnr.cn/live/wx32nmgws/playlist.m3u8
+华视新闻,https://stream1.freetv.fun/hua-shi-2.m3u8
+吉林卫视,http://satellitepull.cnr.cn/live/wxjlws/playlist.m3u8
+四川卫视,http://satellitepull.cnr.cn/live/wxscws/playlist.m3u8
+天津卫视,http://satellitepull.cnr.cn/live/wxtjws/playlist.m3u8
+宁夏卫视,http://satellitepull.cnr.cn/live/wxnxws/playlist.m3u8
+安徽卫视,http://satellitepull.cnr.cn/live/wxahws/playlist.m3u8
+山东卫视,http://satellitepull.cnr.cn/live/wxsdws/playlist.m3u8
+年代新聞,http://108.181.20.197/livehttpplay
+广东卫视,http://satellitepull.cnr.cn/live/wxgdws/playlist.m3u8
+延边卫视,http://satellitepull.cnr.cn/live/wxybws/playlist.m3u8
+新疆卫视,http://satellitepull.cnr.cn/live/wxxjws/playlist.m3u8
+星空卫视,http://iptv.tvfix.org/hls/startv.m3u8
+有線新聞台 HD,http://livetv.dnsfor.me:80/channel.5.m3u8
+有線財經資訊台 HD,http://livetv.dnsfor.me:80/channel.6.m3u8
+武进生活频道,https://live.wjyanghu.com/live/CH2.m3u8
+民视新闻,http://38.64.72.148:80/hls/modn/list/4012/chunklist1.m3u8
+民视新闻,http://38.64.72.148:80/hls/modn/list/4012/chunklist0.m3u8
+民视新闻,http://38.64.72.148/hls/modn/list/4012/chunklist1.m3u8
+民视新闻,http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8
+江西卫视,http://satellitepull.cnr.cn/live/wx32jiangxws/playlist.m3u8
+汶川新闻综合,http://live.iwcmt.cn:90/live/zhxw.m3u8
+河北卫视,http://satellitepull.cnr.cn/live/wxhebws/playlist.m3u8
+河南卫视,http://satellitepull.cnr.cn/live/wxhnws/playlist.m3u8
+河源公共 (540p),https://tmpstream.hyrtv.cn/hygg/sd/live.m3u8
+浙江公共新闻,https://ali-m-l.cztv.com/channels/lantian/channel007/1080p.m3u8
+浙江国际,https://ali-m-l.cztv.com/channels/lantian/channel010/1080p.m3u8
+浙江少儿,https://ali-m-l.cztv.com/channels/lantian/channel008/1080p.m3u8
+浙江教科,https://ali-m-l.cztv.com/channels/lantian/channel004/1080p.m3u8
+浙江教科影视,https://ali-m-l.cztv.com/channels/lantian/channel004/1080p.m3u8
+浙江数码时代,https://ali-m-l.cztv.com/channels/lantian/channel012/1080p.m3u8
+浙江民生,https://ali-m-l.cztv.com/channels/lantian/channel006/1080p.m3u8
+浙江民生休闲,https://ali-m-l.cztv.com/channels/lantian/channel006/1080p.m3u8
+浙江经济生活,https://ali-m-l.cztv.com/channels/lantian/channel003/1080p.m3u8
+浙江钱江,https://ali-m-l.cztv.com/channels/lantian/channel002/1080p.m3u8
+浙江钱江都市,https://ali-m-l.cztv.com/channels/lantian/channel002/1080p.m3u8
+浙江钱江频道,https://ali-m-l.cztv.com/channels/lantian/channel002/1080p.m3u8
+湖北卫视,http://satellitepull.cnr.cn/live/wx32hubws/playlist.m3u8
+甘肃卫视,http://satellitepull.cnr.cn/live/wxgsws/playlist.m3u8
+福州新闻,http://live.zohi.tv/video/s10001-fztv-1/index.m3u8
+西藏卫视,http://satellitepull.cnr.cn/live/wxxzws/playlist.m3u8
+贵州卫视,http://satellitepull.cnr.cn/live/wx32gzws/playlist.m3u8
+辽宁卫视,http://satellitepull.cnr.cn/live/wxlnws/playlist.m3u8
+长宁综合,http://cnpull.sccnfb.com/live/123456.m3u8
+青州文化旅游 (576p),http://sdqz.chinashadt.com:2036/live/stream:3.stream/playlist.m3u8
+青州综合 (576p),http://sdqz.chinashadt.com:2036/live/stream:1.stream/playlist.m3u8
+青海卫视,http://satellitepull.cnr.cn/live/wx32qhws/playlist.m3u8
+香港卫视,http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8
+央视频道,#genre#
+CCTV5+,http://fxgm.fxjf.work:19901/tsfile/live/0016_1.m3u8
+CCTV5+,http://iptv.tvfix.org/hls/cctv5phd.m3u8
+数字频道,#genre#
+CHC家庭影院,http://58.19.180.108:9981/stream/channelid/2141017443
+北京纪实科教,https://migu.188766.xyz/
+音乐与综艺,#genre#
+亲亲20音乐,http://61.221.215.25:8800/hls/49/index.m3u8
+纬来精彩,http://61.221.215.25:8800/hls/48/index.m3u8
+新闻与资讯,#genre#
+FOX NewsNOW,http://fox-foxnewsnow-samsungus.amagi.tv/playlist.m3u8
+Now新聞332台,http://livetv.dnsfor.me:80/channel.4.m3u8
+国际与地区频道,#genre#
+2+2 HD,http://bl2.provds.pw/~20144ee7dde9e0493f52c84a69603d888ca/27654/
+2+2 sd,http://bl2.provds.pw/~20144ee7dde9e0493f52c84a69603d888ca/18657/
+23 ABC Bakersfield CA (KERO) (720p),https://content.uplynk.com/channel/ff809e6d9ec34109abfb333f0d4444b5.m3u8
+2x2,https://zabava-htlive.cdn.ngenix.net/hls/CH_2X2/variant.m3u8
+360° Международный,http://live-vgtrksmotrim.cdnvideo.ru/vgtrksmotrim/smotrim-live-04-srt.smil/mono.m3u8
+360° Новости,http://live-vgtrksmotrim.cdnvideo.ru/vgtrksmotrim/smotrim-live-03-srt.smil/tracks-v5a1/mono.m3u8
+360° Подмосковье,https://live-vgtrksmotrim.cdnvideo.ru/vgtrksmotrim/smotrim-live-04-srt.smil/playlist.m3u8
+ABC 13 Las Vegas NV (KTNV) (720p),https://content.uplynk.com/channel/39919d3f7a074eefa8bf579214e952f9.m3u8
+ABC 15 Phoenix AZ (KNXV-TV) (720p),https://content.uplynk.com/channel/9deaf22aaa33461f9cac22e030ed00ec.m3u8
+ABC 16 Wilkes Barre PA (WNEP) (1080p),https://livevideo01.wnep.com/hls/live/2011655/newscasts/live.m3u8
+ABC 4 Seattle WA (KOMO-TV) (720p),https://content.uplynk.com/2c88dfe19e1447e6a6aa27e8e143a140.m3u8
+ABC 7 Denver CO (KMGH) (720p),https://content.uplynk.com/channel/64ca339f04964a5e961c3207a7771bf1.m3u8
+ABC 7 Los Angeles CA (KABC-TV) (720p),https://content.uplynk.com/channel/ext/2118d9222a87420ab69223af9cfa0a0f/kabc_24x7_news.m3u8
+ABC 7 Washington DC (WJLA) (720p),https://content.uplynk.com/40cec2bf074c40f08932da03ab4510be.m3u8
+ABC 8 Dallas TX (WFAA) (1080p),https://livevideo01.wfaa.com/hls/live/2014541/newscasts/live.m3u8
+ABC Cambodia,http://217.15.167.95:5080/live/streams/live_2.m3u8
+ABC EAST,http://143.244.60.30/ABC_EAST/index.m3u8
+ABC KIDS 🇦🇺,https://c.mjh.nz/abc-kids.m3u8
+ABC ME 🇦🇺,https://c.mjh.nz/abc-me.m3u8
+ABC NEWS,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
+ABC News,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
+ABC News New York NY (WABC-TV) (720p),https://content.uplynk.com/channel/ext/72750b711f704e4a94b5cfe6dc99f5e1/wabc_24x7_news.m3u8
+ABC News US HD,https://content.uplynk.com/channel/3324f2467c414329b3b0cc5cd987b6be.m3u8
+AMC Thrillers,https://raw.githubusercontent.com/mystery75/m3u8/main/AMCTRILL.m3u8
+ATR,https://ext.cdn.nashnet.tv/228.0.0.49/index.m3u8
+Amarin,https://lb1-live-mv.v2h-cdn.com/hls/ffad/amarin/amarin.m3u8
+AuroraTV (Aurora CO) (720p),https://reflect-aurora.cablecast.tv/live-8/live/live.m3u8
+BRTV,https://5bf7b725107e5.streamlock.net/brtv/brtv/playlist.m3u8
+CNBC INDONESIA (720p),https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/master.m3u8
+ChannelNewsAsia FHD,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+CreaTV Bay Voice TV Channel 27 (San Jose CA) (720p),https://reflect-creatv.cablecast.tv/live-19/live/live.m3u8
+CreaTV Classrooms Channel 28 (San Jose CA) (720p),https://reflect-creatv.cablecast.tv/live-14/live/live.m3u8
+CreaTV Community Channel 15 (San Jose CA) (720p),https://reflect-creatv.cablecast.tv/live-13/live/live.m3u8
+CreaTV The Outlet Channel 30 (San Jose CA) (720p),https://reflect-creatv.cablecast.tv/live-16/live/live.m3u8
+DE • DAZN 1 BAR HD,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/65654
+DE • DAZN 2 BAR HD,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/65655
+DE • DAZN EVENT 10,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143641
+DE • DAZN EVENT 11,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143642
+DE • DAZN EVENT 12,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143643
+DE • DAZN EVENT 13,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143644
+DE • DAZN EVENT 14,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143645
+DE • DAZN EVENT 15,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143646
+DE • DAZN EVENT 16,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143647
+DE • DAZN EVENT 17,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143648
+DE • DAZN EVENT 2,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143633
+DE • DAZN EVENT 3,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143634
+DE • DAZN EVENT 4,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143635
+DE • DAZN EVENT 5,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143636
+DE • DAZN EVENT 6,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143637
+DE • DAZN EVENT 7,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143638
+DE • DAZN EVENT 8,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143639
+DE • DAZN EVENT 9,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143640
+DE • DAZN Event 1,http://tp.nxdns6.com:8080/Lacroqueta23/nJy3VNTmMXeB/143632
+Dazn 1,http://tooontv.com:999/live/ere3444h/agape/188510.m3u
+ESPN,https://7pal.short.gy/espnus
+Eu a Patroa e as Crianças 24h,http://24hrs.homelinux.com:80/24H-euapatroaeascriancas7/video.m3u8
+Filamchi Bhojpuri (1080p),https://epiconvh.akamaized.net/live/filamchi/master.m3u8
+ITV (Рівне),http://cdn10.live-tv.od.ua:8081/itvrv/abr-lq/playlist.m3u8
+JITV Jogja,https://mam.jogjaprov.go.id:1937/tv/jitv_720p/chunklist_w850229424.m3u8
+KasiaGraziela18,https://edge-hls.doppiocdn.com/hls/152634276/master/152634276.m3u8
+LHCAZTV,https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/lakehavasucity/G0643_003/playlist.m3u8
+NBC 26 Green Bay WI (WGBA) (720p),https://content.uplynk.com/channel/1fbfb28ae5044f619f75ae0adb011989.m3u8
+NBC 36 Charlotte NC (WCNC-TV) (1080p),https://livevideo01.wcnc.com/hls/live/2015505/newscasts/live.m3u8
+NBC 5 Seattle WA (KING) (1080p),https://livevideo01.king5.com/hls/live/2006665/live/live.m3u8
+NBC Chicago,https://nbculocalfast.akamaized.net/hls/live/2096797/nbcchicago/master.m3u8
+NBC EAST,http://143.244.60.30/NBC_EAST/index.m3u8
+NBC Home,https://nbculocallive.akamaized.net/hls/live/2037096/lx/use1.m3u8
+RD AhoraTV,https://tv.livestreaminggroup.info:3513/live/canal35live.m3u8
+RD CanangaTV,https://cdn.streamingcpanel.com:3545/live/canangatlive.m3u8
+RD CibaeñaTV,https://streamunoapp.com:3958/live/cibaenatvlive.m3u8
+RD DajaTV,https://rdn.essastream.com:3388/live/dajatvlive.m3u8
+RD RomanaTV,https://videoserver.tmcreativos.com:19360/cvmhbyrcat/cvmhbyrcat.m3u8
+SBS 清州放送,http://1.222.207.80:1935/live/cjbtv/chunklist_w1357270949.m3u8
+SBS 韩国,http://61.82.49.4:1935/live/_definst_/tv.stream/chunklist_w432889607.m3u8
+SEATV,https://seatv.netlinkbroadcaster.com/hls/test.m3u8
+Sportsnet 360,https://7pal.short.gy/sptsnet360
+TVRI Sumatra Barat,https://ott-balancer.tvri.go.id/live/eds/Sumbar/hls/Sumbar.m3u8
+TVRI Sumatra Selatan,https://ott-balancer.tvri.go.id/live/eds/Sumsel/hls/Sumsel.m3u8
+TVRI Sumatra Utara,https://ott-balancer.tvri.go.id/live/eds/Sumut/hls/Sumut.m3u8
+ViuTV,http://r.jdshipin.com/vSJvl
+abc 7 美国,http://41.205.93.154/ABC/index.m3u8
+france24,http://static.france24.com/live/F24_EN_LO_HLS/live_web.m3u8
+france24 FHD,http://static.france24.com:80/live/F24_FR_HI_HLS/live_tv.m3u8
+tvN,http://iptv.tvfix.org/hls/tvn.m3u8
+娱乐与影视,#genre#
+Access Sacramento Channel 17,https://reflect-access-sacramento.cablecast.tv/live-7/live/live.m3u8
+Access Sacramento Channel 18,https://reflect-access-sacramento.cablecast.tv/live-8/live/live.m3u8
+Access Tuolumne (Tuolumne County CA) (720p),https://reflect-tuolumne.cablecast.tv/live-3/live/live.m3u8
+Action Hollywood Movies,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8
+Action TVOE Kino HD,http://193.27.209.122/tvoje_kino_action/index.m3u8
+Brevard County Government Access TV (Brevard FL) (720p),https://cdn3.wowza.com/5/cXdyRHF0Z3kxN0k2/brevardfl/G2111_002/playlist.m3u8
+CCTV+,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
+CCTV-16 音频,https://piccpndali.v.myalicdn.com/audio/cctv16_2.m3u8
+CCTV-5+ 音频,https://piccpndali.v.myalicdn.com/audio/cctv5plus_2.m3u8
+CCTV1,http://116.128.242.83:9901/tsfile/live/0001_1.m3u8
+CCTV13 音频,http://piccpndali.v.myalicdn.com/audio/cctv13_2.m3u8
+CCTV5,http://iptv.tvfix.org/hls/cctv5hd.m3u8
+CCTV5,http://fxgm.fxjf.work:19901/tsfile/live/0005_1.m3u8
+CCTV5 音频,https://piccpndali.v.myalicdn.com/audio/cctv5_2.m3u8
+CCTV台球,https://epg.pw/stream/25677ac2e8c1f7c3dd6359c43eb5f0f54efb3f5c11f9dda18d01b3e0308ed017.m3u8
+CCTV台球,https://epg.pw/stream/ca9c1cd4b97fb824cedd7fedfd0c7a950afdd7f00751cfbb7c2d89831d7746a5.m3u8
+Candy Land (2023),https://wxkrnw.bn.files.1drv.com/y4mrD8SmhFYCGWfa9dhm_KbSXiDH3bQTOuFtVIlQRH2wUR4v1-O5aDoBNZeqhWDKnK90flm1m0UL406TqjxYQOTfZKpRbXRcCSnGdl8hR3fE_QkgrafjAGKLsKte-YZ222_BpqXPZt4vf7BvCW45OGr6Q7yGksjoAu3dOx4lpz7t_f3JGYVvFpd86LaWviZz1PUvifQ2a96x0vGrKj8kPqNgw
+Costa Mesa's Municipal Access Channel CMTV 3 (720p),https://cdn3.wowza.com/5/UWpORHhLSEs5SkJs/costamesa/G0075_002/playlist.m3u8
+DORCEL TV,http://88.212.7.11/live/test_dorcel_hd_hevc/playlist.m3u8
+Desire,http://88.212.7.11/live/test_desire_hd_hevc/playlist.m3u8
+Dorcel,http://88.212.7.11/live/test_dorcel_hd_hevc/playlist.m3u8
+EROX,http://88.212.7.11/live/test_erox_hd_hevc/playlist.m3u8
+EROXXX,http://88.212.7.11/live/test_eroxxx_hd_hevc/playlist.m3u8
+EXTASY,http://88.212.7.11/live/test_extasy_hd_hevc/playlist.m3u8
+Erox HD,http://88.212.7.11/live/test_erox_hd_hevc/playlist.m3u8
+Eroxxx,http://88.212.7.11/live/test_eroxxx_hd_hevc/playlist.m3u8
+Extasy,http://88.212.7.11/live/test_extasy_hd_hevc/playlist.m3u8
+Fairfield Government Access Channel 26 (Fairfield CA) (720p) [Geo-blocked],https://reflect-fairfield-ca.cablecast.tv/live-8/live/live.m3u8
+GREAT action,http://185.19.191.2:8090/GreatAction/index.m3u8
+HBO,https://s8.sky4k.top/stream/astro/hbo/master.m3u8
+HBO FAMLIY,https://s8.sky4k.top/stream/astro/hbofamily/master.m3u8
+HBO HITS,https://s8.sky4k.top/stream/astro/hbohits/master.m3u8
+HBO Hits,http://iptv.tvfix.org/hls/hbohits.m3u8
+Leomax 24,https://tvshops.bonus-tv.ru/cdn/shop24/playlist.m3u8
+Rakuten Action ᴴᴰ,https://raw.githubusercontent.com/mystery75/m3u8/main/RACTION.m3u8
+Sky Sports Action-FHD,https://7pal.short.gy/ssportsat
+TVBPLUS,http://cdn.163189.xyz/live/tvbp/stream.m3u8
+TVBPLUS,http://cdn5.1678520.xyz/live/
+Thornton Government Access Channel 17 (Thornton CO) (1080p),https://reflect-thornton.cablecast.tv/live-4/live/live.m3u8
+UK Sky Sports Action,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/2195
+UK Sky Sports Action HD,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/2194
+USA Soccer01:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/38039
+USA Soccer02:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21812
+USA Soccer03:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21823
+USA Soccer04:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21824
+USA Soccer05:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21825
+USA Soccer06:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21826
+USA Soccer07:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21827
+USA Soccer08:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21828
+USA Soccer09:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21829
+USA Soccer10:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21830
+USA Soccer11:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21831
+USA Soccer12:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21832
+USA Soccer13:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21833
+USA Soccer14:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21834
+USA Soccer15:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21835
+USA Soccer16:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21836
+USA Soccer17:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21837
+USA Soccer18:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21838
+USA Soccer19:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21839
+USA Soccer20:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21840
+USA Soccer21:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21841
+USA Soccer22:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21842
+USA Soccer23:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21843
+USA Soccer24:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21844
+USA Soccer25:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21845
+USA Soccer26:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21846
+USA Soccer27:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21847
+USA Soccer28:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21848
+USA Soccer29:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21849
+USA Soccer30:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/21850
+USA Soccer31:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/332847
+USA Soccer32:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390504
+USA Soccer33:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390505
+USA Soccer34:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390506
+USA Soccer35:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390507
+USA Soccer36:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390508
+USA Soccer37:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390509
+USA Soccer38:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390510
+USA Soccer39:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390511
+USA Soccer40:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390512
+USA Soccer41:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390513
+USA Soccer42:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390514
+USA Soccer43:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390515
+USA Soccer44:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390516
+USA Soccer45:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390517
+USA Soccer46:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390518
+USA Soccer47:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390519
+USA Soccer48:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390520
+USA Soccer49:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390521
+USA Soccer50:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390522
+USA Soccer51:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390523
+USA Soccer52:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390524
+USA Soccer53:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390525
+USA Soccer54:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390526
+USA Soccer55:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390527
+USA Soccer56:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390528
+USA Soccer57:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390529
+USA Soccer58:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390530
+USA Soccer59:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390531
+USA Soccer60:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390532
+USA Soccer61:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390533
+USA Soccer62:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390534
+USA Soccer63:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390535
+USA Soccer64:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390536
+USA Soccer65:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390537
+USA Soccer66:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390538
+USA Soccer67:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390539
+USA Soccer68:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390540
+USA Soccer69:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390541
+USA Soccer70:,http://restream-live.realiptv.to:8080/hankstreamer/sYWcksogwN/390542
+Viasat Kino Action,http://cdnua05.hls.tv/524/hls/8743361621b245838bee193c9ec28322/308/stream.m3u8
+Viasat Kino Action HD,http://cdnua05.hls.tv/535/hls/8743361621b245838bee193c9ec28322/308/stream.m3u8
+wwcc123,https://edge-hls.doppiocdn.com/hls/104320759/master/104320759.m3u8
+中视,http://108.181.20.197/livehttpplay
+之江纪录,https://ali-m-l.cztv.com/channels/lantian/channel012/1080p.m3u8
+乌镇龙形田,https://gcalic.v.myalicdn.com/gc/zjwzlxt_1/index.m3u8
+乐至综合,http://175.155.106.72:89/live1/live1.m3u8
+安徽黟县西递牌坊,https://gcalic.v.myalicdn.com/gc/yxxdpf_1/index.m3u8
+美亚电影台(普通话),http://iptv.tvfix.org/hls/mydy2.m3u8
+采昌,http://108.181.20.197/livehttpplay
+风云足球,https://epg.pw/stream/ac8062ec9484078061d3bef507c15a423ac57ae4144e3fcc4b0a198dd420f911.m3u8
+风云足球,https://epg.pw/stream/6d7bf281e3d739806a73f5373acaa6e01988ec9739f5ac1355ce54b47a928472.m3u8
+鸣沙山,https://gcalic.v.myalicdn.com/gc/dhyyqst_1/index.m3u8
+黄山,https://gcalic.v.myalicdn.com/gc/ahhs01_1/index.m3u8
+黄山始信新道,https://gcalic.v.myalicdn.com/gc/hsyg_1/index.m3u8
+黄山排云亭,https://gcalic.v.myalicdn.com/gc/hspyt_1/index.m3u8
+黄山飞来石,https://gcalic.v.myalicdn.com/gc/hsptgy_1/index.m3u8
+黄果树六角亭瀑布,https://gcalic.v.myalicdn.com/gc/hgsspzxdpb_1/index.m3u8
+黄花城水长城01,https://gcalic.v.myalicdn.com/gc/wgw01_1/index.m3u8
+黄花城水长城02,https://gcalic.v.myalicdn.com/gc/wgw02_1/index.m3u8
+黄花城水长城03,https://gcalic.v.myalicdn.com/gc/wgw03_1/index.m3u8
+黄龙,https://gcalic.v.myalicdn.com/gc/hlzycc_1/index.m3u8
+龙华偶像,http://108.181.20.197/livehttpplay
+龙华偶像,https://cdn8.163189.xyz/live/lhox/stream.m3u8
+龙祥时代电影,http://108.181.20.197/livehttpplay
+动漫频道,#genre#
+NICKELODEON,http://143.244.60.30/NICKELODEON/index.m3u8
+北京市,#genre#
+北京体育休闲,https://migu.188766.xyz/
+上海市,#genre#
+余姚新闻综合 (576p),https://l.cztvcloud.com/channels/lantian/SXyuyao1/720p.m3u8
+凉山新闻综合,http://file.yizu.tv/nmip-media/channellive/channel106606/playlist.m3u8
+广安新闻综合,http://live1.gatv.com.cn:85/live/XWZH.m3u8
+张家港新闻综合,http://3gvod.zjgonline.com.cn:1935/live/xinwenzonghe2/playlist.m3u8
+德阳新闻综合,http://scdytv.cn:1935/live/m_xwpd_livevideo/playlist.m3u8
+松潘新闻综合,http://live.spccmc.com:90/live/spxwzh.m3u8
+泰州一套新闻综合频道,http://stream1.mytaizhou.net/xwzh/playlist.m3u8
+绍兴新闻综合,http://live.shaoxing.com.cn/video/s10001-sxhb/index.m3u8
+苏州新闻综合,https://stream1.freetv.fun/su-zhou-xin-wen-zong-he-4.m3u8
+金川新闻综合,http://live.jinchuanrmt.com:90/live/zhxw.m3u8
+镇江新闻综合频道,https://stream1.freetv.fun/zhen-jiang-xin-wen-zong-he-1.m3u8
+青田新闻综合,http://l.cztvcloud.com/channels/lantian/SXqingtian1/720p.m3u8
+靖江新闻综合,https://stream1.freetv.fun/jing-jiang-xin-wen-zong-he-1.m3u8
+重庆市,#genre#
+万州三峡移民,http://123.146.162.24:8017/c2F0hmi/1000/live.m3u8
+万州三峡移民,http://123.146.162.24:8013/tslslive/PU2vzMI/hls/live_sd.m3u8
+万州综合,http://123.146.162.24:8013/tslslive/noEX9SG/hls/live_sd.m3u8
+万州综合,http://123.146.162.24:8017/iTXwrGs/800/live.m3u8
+荣昌综合,http://183.64.181.25:40023/rongchang01.m3u8
+广东省,#genre#
+丰顺综合,http://1b6467f415.iok.la:9931/tsfile/live/1100_1.m3u8
+佛山公共,https://stream1.freetv.fun/fo-shan-gong-gong-4.m3u8
+广东体育,https://epg.pw/stream/7b470f9fc5c305db0c8622117b7b25ca00eb35ba3e93e865cf0ff9df5c736681.m3u8
+广州竞赛,https://stream1.freetv.fun/yan-zhou-jing-sai-7.m3u8
+河源综合,http://tmpstream.hyrtv.cn/xwzh/sd/live.m3u8
+河源综合 (540p),https://tmpstream.hyrtv.cn/xwzh/sd/live.m3u8
+江苏省,#genre#
+徐州公共频道,http://stream3.huaihai.tv/xz4t/sd/live.m3u8
+苏州文化生活,https://stream1.freetv.fun/su-zhou-wen-hua-sheng-huo-2.m3u8
+苏州生活资讯,https://stream1.freetv.fun/su-zhou-sheng-huo-zi-xun-1.m3u8
+苏州社会经济,https://stream1.freetv.fun/su-zhou-she-hui-jing-ji-1.m3u8
+山西省,#genre#
+晋中综合,http://jzlive.jztvnews.com:90/live/jzzh.m3u8
+晋中综合 (1080p),http://jzlive.jztvnews.com:90/live/jzzh.m3u8
+四川省,#genre#
+四川·甘孜综合HD,http://m3u8.channel.ganzitv.com/vms/videos/nmip-media/channellive/channel1/playlist.m3u8
+巴中综合,http://ocj2.kksmg.com/ocj1/ocj1.m3u8
+德阳公共,http://scdytv.cn:1935/live/m_ggpd_livevideo/playlist.m3u8
+浙江省,#genre#
+浙江影视娱乐,https://ali-m-l.cztv.com/channels/lantian/channel005/1080p.m3u8
+浙江新闻,https://ali-m-l.cztv.com/channels/lantian/channel007/1080p.m3u8
+浙江经济,https://ali-m-l.cztv.com/channels/lantian/channel003/1080p.m3u8
+绍兴公共,http://live.shaoxing.com.cn/video/s10001-sxtv2/index.m3u8
