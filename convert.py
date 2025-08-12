@@ -1,8 +1,7 @@
 import yaml
 import sys
 import base64
-import urllib.parse
-from urllib.parse import urlparse, unquote, parse_qs
+from urllib.parse import urlparse, unquote
 
 def decode_ss(link):
     """
@@ -30,76 +29,6 @@ def decode_ss(link):
         print(f"Failed to decode ss link: {link}, error: {e}")
         return None
 
-def decode_vmess(link):
-    """
-    Decodes a vmess subscription link.
-    """
-    try:
-        data = link.replace("vmess://", "")
-        decoded_data = base64.b64decode(data.encode('utf-8')).decode('utf-8')
-        vmess_config = yaml.safe_load(decoded_data)
-        
-        name = vmess_config.get('ps', 'Unnamed-Vmess')
-        server = vmess_config.get('add')
-        port = int(vmess_config.get('port'))
-        uuid = vmess_config.get('id')
-        alterId = int(vmess_config.get('aid', 0))
-        network = vmess_config.get('net', 'tcp')
-        tls = vmess_config.get('tls', '') == 'tls'
-        
-        config = {
-            'name': name,
-            'type': 'vmess',
-            'server': server,
-            'port': port,
-            'uuid': uuid,
-            'alterId': alterId,
-            'cipher': 'auto',
-            'network': network,
-            'tls': tls,
-            'skip-cert-verify': tls
-        }
-
-        if network == 'ws':
-            config['ws-opts'] = {
-                'path': vmess_config.get('path', '/'),
-                'headers': {
-                    'Host': vmess_config.get('host', server)
-                }
-            }
-        
-        return config
-    except Exception as e:
-        print(f"Failed to decode vmess link: {link}, error: {e}")
-        return None
-
-def decode_trojan(link):
-    """
-    Decodes a trojan subscription link.
-    """
-    try:
-        parts = urlparse(link)
-        name = unquote(parts.fragment) if parts.fragment else 'Unnamed-Trojan'
-        server = parts.hostname
-        port = parts.port
-        password = parts.username
-        
-        query_params = parse_qs(parts.query)
-        sni = query_params.get('sni', [server])[0]
-        
-        return {
-            'name': name,
-            'type': 'trojan',
-            'server': server,
-            'port': port,
-            'password': password,
-            'sni': sni,
-            'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1'
-        }
-    except Exception as e:
-        print(f"Failed to decode trojan link: {link}, error: {e}")
-        return None
-
 def main():
     # 接受两个参数：输入订阅文件和输出 YAML 文件
     if len(sys.argv) != 3:
@@ -118,19 +47,14 @@ def main():
                 if not line:
                     continue
                 
-                # 检查协议并解码链接
+                # 只处理 ss:// 链接
                 if line.startswith('ss://'):
                     node = decode_ss(line)
-                elif line.startswith('trojan://'):
-                    node = decode_trojan(line)
-                elif line.startswith('vmess://'):
-                    node = decode_vmess(line)
+                    if node:
+                        output_proxies.append(node)
                 else:
                     print(f"Skipping unrecognized line: {line}")
                     continue
-                
-                if node:
-                    output_proxies.append(node)
 
     except FileNotFoundError:
         print(f"Error: The file {sub_file} was not found.")
