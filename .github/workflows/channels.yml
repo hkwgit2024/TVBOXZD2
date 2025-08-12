@@ -27,17 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pyyaml tqdm aiohttp beautifulsoup4 lxml tenacity cachetools requests-toolbelt numba
 
-      - name: 删除不需要的子模块
-        # 这一步将在运行频道处理脚本前执行
-        run: |
-          if [ -d "clash-speedtest" ]; then
-            git submodule deinit -f clash-speedtest
-            git rm clash-speedtest
-            rm -rf .git/modules/clash-speedtest
-            echo "已成功删除 clash-speedtest 子模块。"
-          else
-            echo "子模块 clash-speedtest 不存在，无需删除。"
-          fi
+
 
       - name: 运行频道处理脚本
         run: |
