@@ -4,13 +4,38 @@ import base64
 import urllib.parse
 from urllib.parse import urlparse, unquote, parse_qs
 
+def decode_ss(link):
+    """
+    Decodes an ss subscription link.
+    """
+    try:
+        parts = urlparse(link)
+        name = unquote(parts.fragment) if parts.fragment else 'Unnamed-SS'
+        server = parts.hostname
+        port = parts.port
+        
+        user_info_encoded = parts.netloc.split('@')[0]
+        user_info_decoded = base64.b64decode(user_info_encoded.encode('utf-8')).decode('utf-8')
+        cipher, password = user_info_decoded.split(':', 1)
+        
+        return {
+            'name': name,
+            'type': 'ss',
+            'server': server,
+            'port': port,
+            'cipher': cipher,
+            'password': password
+        }
+    except Exception as e:
+        print(f"Failed to decode ss link: {link}, error: {e}")
+        return None
+
 def decode_vmess(link):
     """
     Decodes a vmess subscription link.
     """
     try:
         data = link.replace("vmess://", "")
-        # Vmess links are base64 encoded JSON
         decoded_data = base64.b64decode(data.encode('utf-8')).decode('utf-8')
         vmess_config = yaml.safe_load(decoded_data)
         
@@ -45,33 +70,7 @@ def decode_vmess(link):
         
         return config
     except Exception as e:
-        print(f"Failed to decode vmess link: {link} with error: {e}")
-        return None
-
-def decode_ss(link):
-    """
-    Decodes an ss subscription link.
-    """
-    try:
-        parts = urlparse(link)
-        name = unquote(parts.fragment) if parts.fragment else 'Unnamed-SS'
-        server = parts.hostname
-        port = parts.port
-        
-        user_info_encoded = parts.netloc.split('@')[0]
-        user_info_decoded = base64.b64decode(user_info_encoded.encode('utf-8')).decode('utf-8')
-        cipher, password = user_info_decoded.split(':', 1)
-        
-        return {
-            'name': name,
-            'type': 'ss',
-            'server': server,
-            'port': port,
-            'cipher': cipher,
-            'password': password
-        }
-    except Exception as e:
-        print(f"Failed to decode ss link: {e}")
+        print(f"Failed to decode vmess link: {link}, error: {e}")
         return None
 
 def decode_trojan(link):
@@ -98,17 +97,18 @@ def decode_trojan(link):
             'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1'
         }
     except Exception as e:
-        print(f"Failed to decode trojan link: {e}")
+        print(f"Failed to decode trojan link: {link}, error: {e}")
         return None
-        
+
 def main():
-    # The script now only expects one argument: the subscription file
-    if len(sys.argv) != 2:
-        print("Usage: python convert.py <subscription_file.txt>")
-        print("Example: python convert.py ss.txt")
+    # 接受两个参数：输入订阅文件和输出 YAML 文件
+    if len(sys.argv) != 3:
+        print("Usage: python convert.py <subscription_file.txt> <output_file.yaml>")
+        print("Example: python convert.py ss.txt config.yaml")
         sys.exit(1)
 
     sub_file = sys.argv[1]
+    output_file = sys.argv[2]
     output_proxies = []
 
     try:
@@ -118,7 +118,7 @@ def main():
                 if not line:
                     continue
                 
-                # Check for known protocols to decode the link
+                # 检查协议并解码链接
                 if line.startswith('ss://'):
                     node = decode_ss(line)
                 elif line.startswith('trojan://'):
@@ -126,7 +126,6 @@ def main():
                 elif line.startswith('vmess://'):
                     node = decode_vmess(line)
                 else:
-                    # Skip lines that are not valid subscription links
                     print(f"Skipping unrecognized line: {line}")
                     continue
                 
@@ -165,10 +164,10 @@ def main():
         ]
     }
 
-    with open('clash-use.yaml', 'w', encoding='utf-8') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         yaml.dump(output, f, allow_unicode=True, sort_keys=False)
 
-    print(f"✅ Successfully generated clash-use.yaml with {len(output_proxies)} proxies.")
+    print(f"✅ Successfully generated {output_file} with {len(output_proxies)} proxies.")
 
 if __name__ == '__main__':
     main()
