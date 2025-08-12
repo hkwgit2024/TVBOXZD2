@@ -33,8 +33,8 @@ def get_country_code(host):
         print(f"  - 发生未知错误: {e}")
         return None
     finally:
-        # 在每次API调用后增加1秒的延迟，以避免触发频率限制
-        time.sleep(1)
+        # 在每次API调用后增加5秒的延迟，以避免触发频率限制
+        time.sleep(5)
     
     return None
 
