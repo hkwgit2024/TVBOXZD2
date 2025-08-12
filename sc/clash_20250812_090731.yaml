@@ -1,0 +1,256 @@
+proxy-providers: {}
+proxies:
+    - cipher: rc4-md5
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 134.11 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.205.124
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 131.29 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.129
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 118.77 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.95.183
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 108.05 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 62.133.44.68
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 106.58 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 173.244.56.6
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 104.38 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 79.127.233.170
+      type: ss
+    - alterId: 0
+      cipher: auto
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 104.20 MB/s"
+      network: ws
+      port: 20086
+      server: 050910.xyz
+      skip-cert-verify: true
+      tls: false
+      type: vmess
+      uuid: 7e992138-4bae-44d7-893e-c33605c40d5f
+      ws-opts:
+        headers:
+            host: 050910.xyz
+        path: /
+    - cipher: aes-256-cfb
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 80.41 MB/s"
+      obfs: plain
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      protocol: origin
+      server: 79.127.233.170
+      type: ssr
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 74.77 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.168
+      type: ss
+      udp: true
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 74.24 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 104.192.226.106
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 73.55 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.167
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 58.71 MB/s"
+      network: ws
+      port: "8880"
+      server: 199.34.230.251
+      type: vless
+      udp: true
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+            User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36
+        path: /
+      xudp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 47.48 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.170
+      type: ss
+      udp: true
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 47.41 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.160
+      type: ss
+      udp: true
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 46.90 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.171
+      type: ss
+      udp: true
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 46.88 MB/s"
+      network: ws
+      port: 2083
+      server: 1747948341.tencentapp.cn
+      sni: 1747948371.speed.zjgza.cccp.freefly.pp.ua
+      tls: true
+      type: vmess
+      uuid: 85bf4641-e155-4e2f-bee9-4b404eaa3efb
+      ws-opts:
+        headers:
+            Host: 1747948371.speed.zjgza.cccp.freefly.pp.ua
+        path: /
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 46.30 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.175
+      type: ss
+      udp: true
+    - cipher: aes-256-cfb
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 45.39 MB/s"
+      password: 2170f8
+      port: 14293
+      server: 45.55.2.232
+      type: ss
+      udp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 42.86 MB/s"
+      network: tcp
+      port: 43728
+      security: none
+      server: 15.204.235.13
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 1b18b439-5371-4f38-b8d0-71aad09a3a92
+      ws-opts: {}
+    - delay: 1465
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 41.59 MB/s"
+      network: ws
+      port: 8880
+      server: 92.53.191.251
+      type: vless
+      udp: true
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+            User-Agent: Mozilla/5.0 (Linux; Android 5.1; A1601 Build/LMY47I) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560fp=chrome"
+      xudp: true
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 41.48 MB/s"
+      network: tcp
+      port: 51952
+      security: none
+      server: 51.222.86.7
+      skip-cert-verify: false
+      sni: ""
+      tls: false
+      type: vless
+      uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
+      ws-opts: {}
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 37.95 MB/s"
+      network: ws
+      port: 32391
+      security: none
+      server: 195.58.58.88
+      skip-cert-verify: false
+      sni: 45f4d22d.Mareza.pages.dev
+      tls: false
+      type: vless
+      uuid: c84ddb7c-7703-42a3-a22a-3ff9e5513f9a
+      ws-opts:
+        headers:
+            Host: 45f4d22d.Mareza.pages.dev
+        path: /
+    - alpn:
+        - http/1.1
+      client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 31.87 MB/s"
+      network: ws
+      password: 13e26f64-2e0c-4461-92cd-d83294cc18f0
+      port: 443
+      server: 104.21.76.21
+      skip-cert-verify: false
+      sni: WwwDe.00890604.XyZ
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36
+        path: /TDUxZUop9k44oPiit2OdWk0KwirdY
+    - alterId: 0
+      cipher: auto
+      country: "\U0001F1FA\U0001F1F8US"
+      delay: 1809
+      h2-opts: {}
+      http-opts: {}
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 31.45 MB/s"
+      network: ws
+      port: 8080
+      server: cf.090227.xyz
+      servername: gyde.aifjj.asia
+      skip-cert-verify: true
+      type: vmess
+      uuid: e9123cce-e4bd-46cf-8466-708b363a9807
+      ws-opts:
+        headers:
+            HOST: gyde.aifjj.asia
+        path: /
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 31.10 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.197.165.21
+      type: ss
+      udp: true
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.58 MB/s"
+      network: ws
+      port: "443"
+      server: 104.26.7.214
+      servername: rayan-fg-5.medicalhistory.filegear-sg.me
+      tls: true
+      type: vless
+      udp: true
+      uuid: 56497add-68ca-4500-b8e2-9f7003382bbe
+      ws-opts:
+        headers:
+            Host: rayan-fg-5.medicalhistory.filegear-sg.me
+            User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.17 (KHTML, like Gecko) Chrome/10.0.649.0 Safari/534.17
+        path: /?ed=2560
+      xudp: true
