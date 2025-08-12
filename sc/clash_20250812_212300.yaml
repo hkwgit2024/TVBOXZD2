@@ -1,0 +1,8 @@
+proxy-providers: {}
+proxies:
+    - cipher: aes-128-gcm
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 32.19 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.204
+      type: ss
