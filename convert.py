@@ -2,37 +2,51 @@ import yaml
 import sys
 import base64
 import urllib.parse
-
-def load_yaml(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        return yaml.safe_load(f)
+from urllib.parse import urlparse, unquote, parse_qs
 
 def decode_vmess(link):
     """
     解码 vmess 链接
     """
-    data = link.replace("vmess://", "")
     try:
-        decoded_data = base64.b64decode(data).decode('utf-8')
+        data = link.replace("vmess://", "")
+        # Vmess 链接的格式是 base64 编码的 JSON
+        decoded_data = base64.b64decode(data.encode('utf-8')).decode('utf-8')
         vmess_config = yaml.safe_load(decoded_data)
-        return {
-            'name': vmess_config.get('ps', 'Unnamed-Vmess'),
+        
+        # 提取所需的配置信息
+        name = vmess_config.get('ps', 'Unnamed-Vmess')
+        server = vmess_config.get('add')
+        port = int(vmess_config.get('port'))
+        uuid = vmess_config.get('id')
+        alterId = int(vmess_config.get('aid', 0))
+        network = vmess_config.get('net', 'tcp')
+        tls = vmess_config.get('tls', '') == 'tls'
+        
+        # 根据网络类型构建不同的配置
+        config = {
+            'name': name,
             'type': 'vmess',
-            'server': vmess_config.get('add'),
-            'port': int(vmess_config.get('port')),
-            'uuid': vmess_config.get('id'),
-            'alterId': int(vmess_config.get('aid')),
-            'cipher': vmess_config.get('scy', 'auto'),
-            'network': vmess_config.get('net'),
-            'ws-opts': {
+            'server': server,
+            'port': port,
+            'uuid': uuid,
+            'alterId': alterId,
+            'cipher': 'auto',
+            'network': network,
+            'tls': tls,
+            'skip-cert-verify': tls
+        }
+
+        # 处理 websocket 特殊选项
+        if network == 'ws':
+            config['ws-opts'] = {
                 'path': vmess_config.get('path', '/'),
                 'headers': {
-                    'Host': vmess_config.get('host')
+                    'Host': vmess_config.get('host', server)
                 }
-            },
-            'tls': vmess_config.get('tls', '') == 'tls',
-            'skip-cert-verify': vmess_config.get('tls', '') == 'tls'
-        }
+            }
+        
+        return config
     except Exception as e:
         print(f"Failed to decode vmess link: {link} with error: {e}")
         return None
@@ -41,32 +55,22 @@ def decode_ss(link):
     """
     解码 ss 链接
     """
-    link = link.replace("ss://", "")
-    if '#' in link:
-        encoded_part, name_encoded = link.split('#', 1)
-        name = urllib.parse.unquote(name_encoded)
-    else:
-        encoded_part = link
-        name = 'Unnamed-SS'
-
     try:
-        if '@' in encoded_part:
-            # 包含密码和加密信息的格式
-            creds_encoded, server_port = encoded_part.split('@', 1)
-            creds = base64.b64decode(creds_encoded).decode('utf-8')
-            cipher, password = creds.split(':', 1)
-            server, port = server_port.split(':', 1)
-        else:
-            # 不包含密码和加密信息的格式（较少见）
-            server_port = base64.b64decode(encoded_part).decode('utf-8')
-            server, port = server_port.split(':', 1)
-            cipher, password = 'auto', ''
-
+        parts = urlparse(link)
+        name = unquote(parts.fragment) if parts.fragment else 'Unnamed-SS'
+        server = parts.hostname
+        port = parts.port
+        
+        # Base64 解码用户信息
+        user_info_encoded = parts.netloc.split('@')[0]
+        user_info_decoded = base64.b64decode(user_info_encoded.encode('utf-8')).decode('utf-8')
+        cipher, password = user_info_decoded.split(':', 1)
+        
         return {
             'name': name,
             'type': 'ss',
             'server': server,
-            'port': int(port),
+            'port': port,
             'cipher': cipher,
             'password': password
         }
@@ -79,53 +83,70 @@ def decode_trojan(link):
     解码 trojan 链接
     """
     try:
-        parts = urllib.parse.urlparse(link)
-        password = parts.username
+        parts = urlparse(link)
+        name = unquote(parts.fragment) if parts.fragment else 'Unnamed-Trojan'
         server = parts.hostname
         port = parts.port
-        name = urllib.parse.unquote(parts.fragment)
-
+        password = parts.username
+        
+        query_params = parse_qs(parts.query)
+        sni = query_params.get('sni', [server])[0]
+        
         return {
             'name': name,
             'type': 'trojan',
             'server': server,
             'port': port,
             'password': password,
-            'sni': urllib.parse.parse_qs(parts.query).get('sni', [server])[0],
-            'skip-cert-verify': urllib.parse.parse_qs(parts.query).get('allowInsecure', ['0'])[0] == '1'
+            'sni': sni,
+            'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1'
         }
     except Exception as e:
         print(f"Failed to decode trojan link: {link} with error: {e}")
         return None
-
+        
 def main():
     if len(sys.argv) != 2:
         print("用法: python convert.py <订阅文件.txt>")
-        return
+        print("例如: python convert.py ss.txt")
+        sys.exit(1)
 
     sub_file = sys.argv[1]
-    
     output_proxies = []
 
-    with open(sub_file, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line.startswith('ss://'):
-                node = decode_ss(line)
-            elif line.startswith('trojan://'):
-                node = decode_trojan(line)
-            elif line.startswith('vmess://'):
-                node = decode_vmess(line)
-            else:
-                continue
+    try:
+        with open(sub_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                
+                # 跳过 YAML 格式的非链接行
+                if line.endswith(':'):
+                    print(f"Skipping YAML-like line: {line}")
+                    continue
+                
+                node = None
+                if line.startswith('ss://'):
+                    node = decode_ss(line)
+                elif line.startswith('trojan://'):
+                    node = decode_trojan(line)
+                elif line.startswith('vmess://'):
+                    node = decode_vmess(line)
+                
+                if node:
+                    output_proxies.append(node)
 
-            if node:
-                output_proxies.append(node)
+    except FileNotFoundError:
+        print(f"Error: The file {sub_file} was not found.")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
 
-    # 检查是否有节点被成功解析
     if not output_proxies:
-        print("⚠️ 未能从文件中解析出任何有效节点。")
-        return
+        print("⚠️ Failed to parse any proxies from the subscription file.")
+        sys.exit(1)
 
     output = {
         'proxies': output_proxies,
@@ -136,6 +157,11 @@ def main():
                 'proxies': [p['name'] for p in output_proxies],
                 'url': 'http://www.gstatic.com/generate_204',
                 'interval': 300
+            },
+            {
+                'name': '手动选择',
+                'type': 'select',
+                'proxies': [p['name'] for p in output_proxies]
             }
         ],
         'rules': [
@@ -146,7 +172,7 @@ def main():
     with open('clash-use.yaml', 'w', encoding='utf-8') as f:
         yaml.dump(output, f, allow_unicode=True, sort_keys=False)
 
-    print("✅ 已生成 clash-use.yaml，包含了来自订阅文件的节点")
+    print(f"✅ Successfully generated clash-use.yaml with {len(output_proxies)} proxies.")
 
 if __name__ == '__main__':
     main()
