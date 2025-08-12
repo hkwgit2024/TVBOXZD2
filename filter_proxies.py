@@ -42,7 +42,7 @@ def get_country_code(host, cache):
 
     # 查询IP的地理位置
     try:
-        response = requests.get(f'http://ip-api.com/json/{ip_address}', timeout=5)
+        response = requests.get(f'http://ip-api.com/json/{ip_address}', timeout=3)
         response.raise_for_status()
         data = response.json()
         if data['status'] == 'success':
