@@ -1,18 +1,32 @@
 import yaml
 import requests
+import socket
 
-def get_country_code(ip):
+def get_country_code(host):
     """
-    通过公共API获取IP地址的国家代码。
+    通过公共API获取IP地址的国家代码，支持域名解析。
     """
+    print(f"正在处理: {host}")
+    
+    # 尝试解析域名为IP
     try:
-        # 使用 ip-api.com 的免费公共API
-        response = requests.get(f'http://ip-api.com/json/{ip}', timeout=2)
+        ip_address = socket.gethostbyname(host)
+        print(f"  - 解析到 IP: {ip_address}")
+    except socket.gaierror:
+        print(f"  - 无法解析域名: {host}")
+        return None
+    
+    # 查询IP的地理位置
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip_address}', timeout=2)
         response.raise_for_status()
         data = response.json()
         if data['status'] == 'success':
-            return data['countryCode']
-    except Exception:
+            country_code = data['countryCode']
+            print(f"  - IP {ip_address} 的国家代码是: {country_code}")
+            return country_code
+    except Exception as e:
+        print(f"  - 查询IP地址 {ip_address} 失败: {e}")
         return None
     return None
 
@@ -20,17 +34,15 @@ def main():
     """
     主函数，用于下载、筛选和保存Clash配置。
     """
-    # 你想保留的国家或地区代码
     include_codes = {'JP', 'KR', 'HK', 'TW', 'SG', 'MY', 'PH', 'VN', 'TH', 'LA', 'MM', 'RU', 'MN'}
-    
-    # 原始Clash配置文件的订阅地址
     config_url = 'https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml'
     
+    print("开始下载配置文件...")
     try:
-        # 下载原始配置文件
         response = requests.get(config_url)
         response.raise_for_status()
         config = yaml.safe_load(response.text)
+        print("配置文件下载并解析成功。")
     except requests.exceptions.RequestException as e:
         print(f"下载配置文件失败: {e}")
         return
@@ -39,20 +51,20 @@ def main():
         return
     
     if 'proxies' not in config:
-        print('没有找到 proxies 列表。')
+        print('配置中没有找到 proxies 列表。')
         return
 
     filtered_proxies = []
+    print(f"配置文件中共有 {len(config['proxies'])} 个代理。")
     for proxy in config['proxies']:
-        ip_address = proxy.get('server')
-        if ip_address:
-            country_code = get_country_code(ip_address)
+        host = proxy.get('server')
+        if host:
+            country_code = get_country_code(host)
             if country_code and country_code in include_codes:
                 filtered_proxies.append(proxy)
     
     config['proxies'] = filtered_proxies
     
-    # 将筛选后的配置保存到新文件
     with open('filtered_by_ip.yaml', 'w') as f:
         yaml.dump(config, f, allow_unicode=True)
     
