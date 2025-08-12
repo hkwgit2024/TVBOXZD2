@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/channels.yml'
+      - 'process_channels.py'
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
