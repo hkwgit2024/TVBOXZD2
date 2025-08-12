@@ -1,8 +1,22 @@
 更新时间,#genre#
-2025-08-12 23:18:20,url
+2025-08-12 23:31:09,url
+009. AstroArena1,https://wahyu1ptv.pages.dev/AstroArena-HD.m3u8
+010. AstroArena2,https://wahyu1ptv.pages.dev/AstroArena2-HD.m3u8
+011. AstroArenaBola1,https://wahyu1ptv.pages.dev/AstroArenaBola1-HD.m3u8
+012. AstroArenaBola2,https://wahyu1ptv.pages.dev/AstroArenaBola2-HD.m3u8
+038. SkySportsLaliga,https://wahyu1ptv.pages.dev/SkySportLaliga-HD.m3u8
+039. SkySportsFootball,https://wahyu1ptv.pages.dev/SkySportFootball-HD.m3u8
+041. SkySportBundesliga1,https://wahyu1ptv.pages.dev/SkySportBundesliga1-HD.m3u8
+042. SkySportBundesliga2,https://wahyu1ptv.pages.dev/SkySportBundesliga2-HD.m3u8
 043. SkySportCalcio,https://wahyu1ptv.pages.dev/SkySportCalcio-HD.m3u8
+045. DaznSerieA,https://wahyu1ptv.pages.dev/DaznSerieA-HD.m3u8
+046. DaznLaliga1,https://wahyu1ptv.pages.dev/DaznLaliga1-HD.m3u8
+047. DaznLaliga2,https://wahyu1ptv.pages.dev/DaznLaliga2-HD.m3u8
 048. SkySportMotoGP,https://wahyu1ptv.pages.dev/SkySportMotoGP-HD.m3u8
+049. SkySportF1,https://wahyu1ptv.pages.dev/SkySportF1-HD.m3u8
 050. Premiere,https://wahyu1ptv.pages.dev/Premiere-HD.m3u8
+051. SetantaSports1,https://wahyu1ptv.pages.dev/Setanta1-HD.m3u8
+052. SetantaSports2,https://wahyu1ptv.pages.dev/Setanta2-HD.m3u8
 056. Go3SportOpen,https://wahyu1ptv.pages.dev/Go3SportOpen-HD.m3u8
 057. Go3Sport1,https://wahyu1ptv.pages.dev/Go3Sport1-HD.m3u8
 058. Go3Sport2,https://wahyu1ptv.pages.dev/Go3Sport2-HD.m3u8
@@ -31,6 +45,9 @@
 082. Sport.TV4,https://wahyu1ptv.pages.dev/Sport.TV4-HD.m3u8
 083. Sport.TV5,https://wahyu1ptv.pages.dev/Sport.TV5-HD.m3u8
 084. Sport.TV6,https://wahyu1ptv.pages.dev/Sport.TV6-HD.m3u8
+093. EspnDeportes,https://wahyu1ptv.pages.dev/EspnDeportes-HD.m3u8
+094. EspnPremium,https://wahyu1ptv.pages.dev/EspnPremium-HD.m3u8
+095. EspnEnVivo,https://wahyu1ptv.pages.dev/EspnEnVivo-HD.m3u8
 096. CBSSportsNetwork,https://wahyu1ptv.pages.dev/CBSSportsNetwork-HD.m3u8
 099. TenSports,https://wahyu1ptv.pages.dev/TenSports-HD.m3u8
 0Optus Sport4,https://wahyu1ptv.pages.dev/OptusSport4-HD.m3u8
@@ -58,6 +75,7 @@ APETITO,https://d1sq2slp9afh7o.cloudfront.net/smil:apetito/chunklist_b2596000_sl
 ASTRO Boo,https://wahyu1ptv.pages.dev/AstroBoo-HD.m3u8
 ASTV NEWS 1,http://news1.live14.com/stream/news1.m3u8
 ATLANTIDA,https://1852747t.ha.azioncdn.net/primary/atl_poa.sdp/chunklist_59246316-430b-4aef-a4a5-f358556c5861.m3u8
+ATR,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/atr_462ac710.m3u8
 AURA,https://d1sq2slp9afh7o.cloudfront.net/smil:aura/chunklist_b2596000_slENG.m3u8
 Acoustic Chill,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/acoustic_chill_e981bdd6.m3u8
 Ajyal TV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/ajyal_tv_32905eb2.m3u8
@@ -72,11 +90,12 @@ Al Jazeera,https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8
 Al Madina (720p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/al_madina_720p_15588004.m3u8
 Al Mayadeen (576p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/al_mayadeen_576p_58c38492.m3u8
 Al Najah News (720p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/al_najah_news_720p_76008539.m3u8
+AlHijrahTV,https://wahyu1ptv.pages.dev/AstroAlHijrahTV.m3u8
 Aneka (Brunei),https://d1211whpimeups.cloudfront.net/smil:rtb2/chunklist_b1120000_sleng.m3u8
 Aotearoa Hip Hop - The Soundtrack,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/aotearoa_hip_hop_the_soundtrack_801fb80d.m3u8
+Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_10ab0f72.m3u8
 Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_cef22728.m3u8
 Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_5c6a39a2.m3u8
-Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_10ab0f72.m3u8
 Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_200ae012.m3u8
 Asharq News Portrait (1280p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_portrait_1280p_b1d776b4.m3u8
 AshillTV,https://wahyu1ptv.pages.dev/AshiilTV-HD.m3u8
@@ -84,6 +103,14 @@ AsrtoPremierLeague1,https://wahyu1ptv.pages.dev/AstroPremierLeague1-HD.m3u8
 AsrtoPremierLeague2,https://wahyu1ptv.pages.dev/AstroPremierLeague2-HD.m3u8
 Astro Awani,https://d2idp3hzkhjpih.cloudfront.net/out/v1/4b85d9c2bf97413eb0c9fd875599b837/index.m3u8
 Astro Sensasi 1 ON (R),https://wahyu1ptv.pages.dev/AstroSensasi-HD.m3u8
+AstroArena1,https://wahyu1ptv.pages.dev/AstroArena-HD.m3u8
+AstroArena2,https://wahyu1ptv.pages.dev/AstroArena2-HD.m3u8
+AstroArenaBola1,https://wahyu1ptv.pages.dev/AstroArenaBola1-HD.m3u8
+AstroArenaBola2,https://wahyu1ptv.pages.dev/AstroArenaBola2-HD.m3u8
+AstroCitra,https://wahyu1ptv.pages.dev/AstroCitra-HD.m3u8
+AstroFootball,https://wahyu1ptv.pages.dev/AstroFootBall-HD.m3u8
+AstroGrandstand,https://wahyu1ptv.pages.dev/AstroGrandStand-HD.m3u8
+AstroRania,https://wahyu1ptv.pages.dev/AstroRania-HD.m3u8
 AstroSportPlus1,https://wahyu1ptv.pages.dev/AstroSportPlus1-HD.m3u8
 AstroSportPlus2,https://wahyu1ptv.pages.dev/AstroSportPlus2-HD.m3u8
 Astro_Supersport1_MY-FHD,https://7pal.short.gy/astross1
@@ -92,6 +119,7 @@ Astro_Supersport3_MY-FHD,https://7pal.short.gy/astross3
 Astro_Supersport4_MY-FHD,https://7pal.short.gy/astross4
 BAYROCK,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bayrock_54e035ad.m3u8
 BERITA RTM,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/berita_rtm_6dff8ae6.m3u8
+BRTV,https://5bf7b725107e5.streamlock.net/brtv/brtv/chunklist_w312881791.m3u8
 BTV 1 ON (RW),http://khano.nng.cloudns.us/live/m3u8/id/270f72deeb5843h.m3u8
 BTV News,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/btv_news_ac1206cd.m3u8
 Bandung TV,http://202.150.153.254:65500/bandungtvWEBSITE.m3u8
@@ -100,6 +128,9 @@ Bayern 1,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV
 Bayern 2,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bayern_2_5e23fda7.m3u8
 Bayern 3,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bayern_3_12cf25ce.m3u8
 Bayon TV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bayon_tv_61a6af9e.m3u8
+BeinSports1,https://wahyu1ptv.pages.dev/AstroBein1.m3u8
+BeinSports2,https://wahyu1ptv.pages.dev/AstroBein2.m3u8
+BeinSports3,https://wahyu1ptv.pages.dev/AstroBein3.m3u8
 Belarus 24,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/belarus_24_e760a0e8.m3u8
 Bloomberg Asia Luve Event,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bloomberg_asia_luve_event_f0ac1f32.m3u8
 Bloomberg EMEA Live Event,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bloomberg_emea_live_event_5762c227.m3u8
@@ -109,6 +140,14 @@ Bungo TV,https://5bf7b725107e5.streamlock.net/bungotv/bungotv/playlist.m3u8
 CABLE CHANNEL 37,http://www5.cabletv.co.th/StreamToCTV/cablechannel/playlist.m3u8
 CNA,https://d2e1asnsl7br7b.cloudfront.net/4e4e0baa3d7b4c129b4f5655219e083d/index.m3u8
 CNA 2 On (R),https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+CNBC INDONESIA 🇮🇩,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/master.m3u8
+CNBC INDONESIA 🇮🇩 ON,https://live.cnbcindonesia.com/livecnbc/smil:cnbctv.smil/master.m3u8
+CNBC-AWAAZ,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcawaaz_086e385e.m3u8
+CNBC-Africa,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcafrica_af0ee7a9.m3u8
+CNBC-Arabiya,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcarabiya_f6cc5ccd.m3u8
+CNBC-BAJAR,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcbajar_7f18b8cc.m3u8
+CNBC-Indonesia,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbcindonesia_43a816ce.m3u8
+CNBC-TV18,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/cnbctv18_24e7f33b.m3u8
 CNN INDONESIA 🇮🇩,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/master.m3u8
 CNN INDONESIA 🇮🇩 ON,https://live.cnnindonesia.com/livecnn/smil:cnntv.smil/master.m3u8
 COOL CHANNEL,https://live-iptv.cool-channel.com/cool/live-720P.m3u8
@@ -120,6 +159,7 @@ Channel Jowo,http://khano.nng.cloudns.us/live/m3u8/id/1de333734b1b7e0.m3u8
 Channel K,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_k_ccb0b307.m3u8
 Channel U HD,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_u_hd_5230d909.m3u8
 Chill Country,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/chill_country_b6a6d853.m3u8
+Cinemax (MJ ID),https://wahyu1ptv.pages.dev/Cinemax-HD.m3u8
 Combate,https://wahyu1ptv.pages.dev/Combate-HD.m3u8
 DD News,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/dd_news_1805c3b8.m3u8
 DLTV 1,https://cdn-live.dltv.ac.th/dltv01.m3u8
@@ -155,16 +195,18 @@ EBS Kids,https://ebsonair.ebs.co.kr/ebsufamilypc/familypc1m/playlist.m3u8
 EBS kids,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/ebs_kids_3d1c5746.m3u8
 EBS+ 1,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/ebs_1_1798136e.m3u8
 EBS+ 2,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/ebs_2_5ddfacfb.m3u8
+ElshintaTV,https://ams.juraganstreaming.com:5443/LiveApp/streams/elshintatv.m3u8
 FITRAH,https://d1sq2slp9afh7o.cloudfront.net/smil:fitrah/chunklist_b2596000_slENG.m3u8
 FLIK,https://wahyu1ptv.pages.dev/Flik-HD.m3u8
 FOX BUSINESS CHANNEL,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/fox_business_channel_de9e1331.m3u8
-FOX now ON,https://fox-foxnewsnow-samsungus.amagi.tv/playlist720p.m3u8
 FOX now ON,https://linear417-gb-hls1-prd-ak.cdn.skycdp.com/100e/Content/HLS_001_1080_30/Live/channel(skynews)/02_1080-30.m3u8
+FOX now ON,https://fox-foxnewsnow-samsungus.amagi.tv/playlist720p.m3u8
 FREEDOM,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/freedom_4d8d5626.m3u8
 FREEДОМ HD,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/free_hd_d01a4f5f.m3u8
 FREEдом,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/free_9cdae0e1.m3u8
 Fajer TV 2 (576p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/fajer_tv_2_576p_0265c193.m3u8
 Falastini TV (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/falastini_tv_1080p_c4aa3d25.m3u8
+First & Best,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/first_best_e2cd5c2c.m3u8
 GAUCHA,https://1132747t.ha.azioncdn.net/primary/gaucha_rbs.sdp/chunklist_878c0e75-9aba-4a69-a671-c82be47d869b.m3u8
 GAUCHA 2,https://1572747t.ha.azioncdn.net/primary/gaucha_rbs2.sdp/chunklist_0fbef9de-8379-42cd-b160-b9842a58f386.m3u8
 GO Live (Brunei),https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8
@@ -174,10 +216,15 @@ Galaxy,http://nonton.site:8080/XtreamFlixID/w9RLHbWJY4/29604
 Galaxy Premium,http://nonton.site:8080/XtreamFlixID/w9RLHbWJY4/29603
 Garuda TV,https://hgmtv.com:19360/garudatvlivestreaming/720p.m3u8
 Geo News (576p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/geo_news_576p_d7eac693.m3u8
+HBO (MJ ID),https://wahyu1ptv.pages.dev/Hbo-HD.m3u8
+HBO HITS (INDO),https://mantul.biz.id:443/inetwork/gayanet12/4
 HISTORY HIT 1 ON (R),https://ldsaaaaaa-timeline-samsung-uk-azlgu.amagi.tv/playlist/ldsAAAAAA-timeline-samsung-uk/playlist.m3u8
 HOY 77,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hoy_77_a73cb128.m3u8
 Hala Ramallah (720p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hala_ramallah_720p_13a21a92.m3u8
 Hang Meas HDTV (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hang_meas_hdtv_1080p_f4fcd2a7.m3u8
+HboFamily (MJ ID),https://wahyu1ptv.pages.dev/HboFamily-HD.m3u8
+HboHits (MJ ID),https://wahyu1ptv.pages.dev/HboHits-HD.m3u8
+HboSignature (MJ ID),https://wahyu1ptv.pages.dev/HboSignature-HD.m3u8
 Hebron TV (432p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hebron_tv_432p_77098887.m3u8
 I24 News Arabic,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/i24_news_arabic_de7c0a7b.m3u8
 I24 News English,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/i24_news_english_6c862697.m3u8
@@ -198,16 +245,18 @@ IRIB IRINN (Dự phòng),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeS
 IRIB5 - Amphoreus Regional Channel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/irib5_amphoreus_regional_channel_f74f6da9.m3u8
 IRINN2,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/irinn2_cdecf18a.m3u8
 IRINN2 (Dự phòng),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/irinn2_d_phng_5dcbfc2e.m3u8
+ITV (Рівне),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/itv_3da07f6d.m3u8
 IndiaTodayTV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/indiatodaytv_769d60c7.m3u8
 Indonesia Movie Channel 2 ON (JL),http://nonton.site:8080/XtreamFlixID/w9RLHbWJY4/35484
 Indonesiana TV,https://tvstreamcast.com/indonesiana.m3u8
 Inspira TV,https://inspiratv.siar.us/inspiratv/live/playlist.m3u8
+JITV Jogja,http://103.255.15.222:1935/tv/jitv/playlist.m3u8
 JR.,https://d1sq2slp9afh7o.cloudfront.net/smil:jr/chunklist_b2596000_slENG.m3u8
 JakTV,http://khano.nng.cloudns.us/live/m3u8/id/a6e7e966ea54cd3.m3u8
 Jawapos TV,https://jawapostv.siar.us/jawapostv/live/playlist.m3u8
 Jordan Lee In The Mix,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/jordan_lee_in_the_mix_10fc6924.m3u8
-KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_4b0fa008.m3u8
 KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_50e7f908.m3u8
+KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_4b0fa008.m3u8
 KBS LiveCam DokDo (540p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kbs_livecam_dokdo_540p_b2615b8f.m3u8
 Kan Kids,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_kids_5fa7bfcf.m3u8
 Kilisuci TV Kediri,https://5bf7b725107e5.streamlock.net:443/kstv/kstv/playlist.m3u8
@@ -220,6 +269,7 @@ MAHAR TV,https://tv.mahar.live/mahar/website.stream/playlist.m3u8
 MBC,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mbc_9a08b74f.m3u8
 MBC,http://211.33.246.4:32954/cj_live/myStream.sdp/playlist.m3u8
 MCOT,https://live-org-01-cdn.mcot.net/mcothd1080p_edge/smil:mcothd1080p.smil/master.m3u8
+MITV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mitv_60d02423.m3u8
 MNTV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mntv_9b6e7988.m3u8
 MQ TV,https://5bf7b725107e5.streamlock.net/mqtv/mqtv/playlist.m3u8
 MQTV,https://wahyu1ptv.pages.dev/MQTV-HD.m3u8
@@ -239,6 +289,7 @@ Makan 33,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV
 Makkah TV,http://khano.nng.cloudns.us/live/m3u8/ar/3058a2456b128c1.m3u8
 MakkahTV,https://wahyu1ptv.pages.dev/MakkahTV-HD.m3u8
 MedsTV,https://WahyuIPTV.short.gy/MedsTV-HD.m3u8
+MojiTV TES,https://wahyu1ptv.pages.dev/Moji-HD.m3u8
 Moonbug Kids,https://moonbug-rokuus.amagi.tv/playlist.m3u8
 My TV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/my_tv_ae4e029f.m3u8
 NBA TV (JN),https://wahyu1ptv.pages.dev/NBATV-HD.m3u8
@@ -299,6 +350,9 @@ Real Madrid TV Español,https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/
 Renome,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/renome_d0679dd6.m3u8
 Reshet 13,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/reshet_13_62c600bb.m3u8
 RmcSport1,https://wahyu1ptv.pages.dev/RmcSport1-HD.m3u8
+SBS,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/sbs_9a0cc3db.m3u8
+SBS,http://1.222.207.80:1935/live/cjbtv/playlist.m3u8
+SEATV (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/seatv_1080p_23ed3665.m3u8
 SKY Sport 1 NZ,https://a1xs.vip/700031
 SKY Sport 2 NZ,https://a1xs.vip/700032
 SKY Sport 3 NZ,https://a1xs.vip/700033
@@ -328,6 +382,7 @@ Sky Sports Premier League FHD,https://a1xs.vip/2000002
 Sky Sports Racing FHD,https://a1xs.vip/2000010
 Sky Sports Tennis FHD,https://a1xs.vip/2000013
 Sky Sports+ FHD,https://a1xs.vip/2000012
+SkySportF1 HD,https://wahyu1ptv.pages.dev/SkySportF1-HD.m3u8
 SkySportMotoGP,https://wahyu1ptv.pages.dev/SkySportMotoGP-HD.m3u8
 SportStars1,https://wahyu1ptv.pages.dev/SportStars1-HD.m3u8
 SportStars1 (RM),https://wahyu1ptv.pages.dev/SportStars1-HD.m3u8
@@ -370,9 +425,6 @@ TVM,http://203.81.84.130/hls/mwd_serie/index.m3u8
 TVRI Jawa Timur,https://ott-balancer.tvri.go.id/live/eds/Jatim/hls/Jatim.m3u8
 TVRI Nasional,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/tvri_nasional_066c4796.m3u8
 TVRI SPORT,https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD.m3u8
-TVRI SPORT HD,https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD-avc1_2500000=10004-mp4a_96000_eng=20003.m3u8
-TVRI SPORT HD 1,https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD-avc1_2500000=10004-mp4a_96000_eng=20003.m3u8
-TVRI SPORT HD 2,https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD-avc1_2500000=10004-mp4a_96000_eng=20003.m3u8
 TVRI Sport 3,https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD.m3u8
 TVRI World,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/tvri_world_ac1ad741.m3u8
 Telekanal RAI,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/telekanal_rai_844295c1.m3u8
@@ -380,10 +432,14 @@ The Indie Mixtape,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/
 The Rock Kiwi Rock,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/the_rock_kiwi_rock_d03f3168.m3u8
 Trans 7 HD 1 ON (R),https://video.detik.com/trans7/smil:trans7.smil/index.m3u8
 Trans TV 1 ON (R),https://video.detik.com/transtv/smil:transtv.smil/index.m3u8
+True Premier 1,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_PremierHD1_720p/chunklist.m3u8
+True Premier 2,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_PremierHD2_720p/chunklist.m3u8
 True Premier 3,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_PremierHD3_720p/chunklist.m3u8
 True Premier 4,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_PremierHD4_720p/chunklist.m3u8
+True Premier 5,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_PremierHD5_720p/chunklist.m3u8
 True Premiere Football 1 (R),http://ott.premium-tv.org:8789/wonton57/874893/235216
 True Premiere Football 2 (R),http://ott.premium-tv.org:8789/wonton57/874893/235215
+True Sports 1,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_2sporthd1_720p/chunklist.m3u8
 True Sports 2,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_2sporthd2_720p/chunklist.m3u8
 True Sports 3,http://geogersr.itilstrem.workers.dev/http://www.livedoomovies.com:4432/02_2sporthd3_720p/chunklist.m3u8
 UFCFightPass,https://wahyu1ptv.pages.dev/UFCFightPass-HD.m3u8
@@ -465,7 +521,11 @@ Zoo Moo,https://zoomoo-samsungau.amagi.tv/playlist.m3u8
 ТРК Надія - Новий Канал (Первомайский),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_8350cd24.m3u8
 ЧОРНОМОРСКЕ HD TV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hd_tv_ba508379.m3u8
 Чернівецький Промінь HD,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hd_b6b26b96.m3u8
+兵团卫视,https://liveout.btzx.com.cn/62ds9e/yil08g.m3u8
 凤凰中文,http://cdn.163189.xyz/live/fhzw/stream.m3u8
 凤凰资讯,http://cdn3.163189.xyz/live/fhzx/stream.m3u8
+广东体育,http://cdn2.163189.xyz/live/gdty/stream.m3u8
+广东珠江,http://cdn2.163189.xyz/live/gdzj/stream.m3u8
 浙江卫视,http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8
 面包台-Bread TV,https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+香港卫视,http://zhibo.hkstv.tv/livestream/mutfysrq/playlist.m3u8
