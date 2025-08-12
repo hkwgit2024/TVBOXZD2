@@ -1,0 +1,130 @@
+{
+    "wallpaper": "https://xhdwc.tk/api/img.php",
+    "spider": "https://files.zohopublic.com.cn/public/workdrive-public/download/gd5ic01b6d4922692401eac6018178d033d06",
+    "lives": [
+        {
+            "name": "tvlive",
+            "type": 0,
+            "url": "https://xhdwc.tk/tvlive.txt",
+            "playerType": 2
+        },
+        {
+            "name": "\u55c5\u63a2",
+            "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+            "type": 0,
+            "url": "https://xhdwc.tk/xiutan.m3u"
+        }
+    ],
+    "sites": [
+        {
+            "key": "\u5feb\u770b",
+            "name": "\u5feb\u770b",
+            "type": 3,
+            "api": "csp_Kkys",
+            "timeout": 15,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u8350\u7247",
+            "name": "\u8350\u7247",
+            "type": 3,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "playerType": "1",
+            "api": "https://gitlab.com/fantaiying/ext/-/raw/main/drpy2.min.js",
+            "ext": "https://gitlab.com/fantaiying/ext/-/raw/main/jp.js"
+        },
+        {
+            "key": "IK",
+            "name": "IK",
+            "type": 1,
+            "api": "https://ikunzyapi.com/api.php/provide/vod/from/ikm3u8/",
+            "searchable": 1,
+            "quickSearch": 1,
+            "categories": [
+                "\u52a8\u4f5c\u7247",
+                "\u559c\u5267\u7247",
+                "\u7231\u60c5\u7247",
+                "\u79d1\u5e7b\u7247",
+                "\u6050\u6016\u7247",
+                "\u5267\u60c5\u7247",
+                "\u6218\u4e89\u7247",
+                "\u707e\u96be\u7247",
+                "\u72af\u7f6a\u7247",
+                "\u60ac\u7591\u7247",
+                "\u60ca\u609a\u7247",
+                "\u5947\u5e7b\u7247",
+                "\u5192\u9669\u7247",
+                "\u6b66\u4fa0\u7247",
+                "\u5176\u5b83\u7247",
+                "\u56fd\u4ea7\u5267",
+                "\u6e2f\u53f0\u5267",
+                "\u65e5\u97e9\u5267",
+                "\u6b27\u7f8e\u5267",
+                "\u9999\u6e2f\u5267",
+                "\u53f0\u6e7e\u5267",
+                "\u7f8e\u56fd\u5267",
+                "\u97e9\u56fd\u5267",
+                "\u65e5\u672c\u5267",
+                "\u6cf0\u56fd\u5267",
+                "\u6e2f\u6fb3\u5267",
+                "\u65e5\u5267",
+                "\u97e9\u5267",
+                "\u6cf0\u5267",
+                "\u6d77\u5916\u5267",
+                "\u9a6c\u6cf0\u5267",
+                "\u4e2d\u6f2b",
+                "\u65e5\u6f2b",
+                "\u52a8\u6f2b",
+                "\u7eaa\u5f55\u7247",
+                "\u52a8\u753b\u7247",
+                "\u52a8\u6f2b\u7247",
+                "\u56fd\u4ea7\u52a8\u6f2b",
+                "\u6e2f\u53f0\u52a8\u6f2b",
+                "\u65e5\u672c\u52a8\u6f2b",
+                "\u6d77\u5916\u52a8\u6f2b",
+                "\u65e5\u97e9\u52a8\u6f2b",
+                "\u6b27\u7f8e\u52a8\u6f2b",
+                "\u52a8\u6f2b\u7535\u5f71",
+                "\u56fd\u5185\u7efc\u827a",
+                "\u6e2f\u53f0\u7efc\u827a",
+                "\u5927\u9646\u7efc\u827a",
+                "\u65e5\u97e9\u7efc\u827a",
+                "\u6b27\u7f8e\u7efc\u827a",
+                "\u6d77\u5916\u7efc\u827a",
+                "\u7535\u5f71\u89e3\u8bf4"
+            ]
+        }
+    ],
+    "doh": [
+        {
+            "name": "Google",
+            "url": "https://dns.google/dns-query",
+            "ips": [
+                "8.8.4.4",
+                "8.8.8.8"
+            ]
+        },
+        {
+            "name": "Cloudflare",
+            "url": "https://cloudflare-dns.com/dns-query",
+            "ips": [
+                "1.1.1.1",
+                "1.0.0.1",
+                "2606:4700:4700::1111",
+                "2606:4700:4700::1001"
+            ]
+        },
+        {
+            "name": "AdGuard",
+            "url": "https://dns.adguard.com/dns-query",
+            "ips": [
+                "94.140.14.140",
+                "94.140.14.141"
+            ]
+        }
+    ]
+}
