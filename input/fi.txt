@@ -1,8 +1,4 @@
-https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/merged_configs.txt
-https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/all_unique_nodes.txt
-https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/sc/clash_proxies.yaml
-
-https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/sc/clash_proxies_1783_20250808_142154.yaml
+https://raw.githubusercontent.com/qjlxg/ha/refs/heads/main/config.yaml
 https://gist.githubusercontent.com/liwoyuandiane/1790c326bb7a38977a552913b5aa9286/raw/4befbde50bbb13eaa192e3e0555a82d54dcc4a3d/all.yaml
 https://gist.githubusercontent.com/yinqf/9da6c7fe6c8b520c6a142d27bfecd2f6/raw/feb4f0b65e288bc6d31e73fb52bf5c279198165a/clash.yaml
 https://gist.githubusercontent.com/GeBron/a41c2616cff5ea0c4a96e0567d98dbf6/raw/78e36346b146e949c2b10b29b14c165c0a9ae194/clash.yaml
