@@ -1,4 +1,4 @@
-name: 提取 IPTV 频道列表
+name: 提取频道
 on:
   push:
     paths:
