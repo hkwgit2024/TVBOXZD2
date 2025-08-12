@@ -43,8 +43,8 @@ jobs:
         run: |
           clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml" \
                           -output clash.yaml \
-                          -max-latency 386ms \
-                          -min-download-speed 28.8 \
+                          -max-latency 1000ms \
+                          -min-download-speed 8.8 \
                           -rename \
                           -f "日本|韩国|香港|台湾|新加坡|马来西亚|菲律宾|越南|泰国|老挝|缅甸|俄罗斯|蒙古|Japan|Korea|Hong Kong|Taiwan|Singapore|Malaysia|Philippines|Vietnam|Thailand|Laos|Myanmar|Russia|Mongolia|JP|KR|HK|TW|SG|MY|PH|VN|TH|LA|MM|RU|MN"
       
