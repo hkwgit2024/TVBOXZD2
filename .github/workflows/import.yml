@@ -36,48 +36,6 @@ jobs:
       - name: 根据IP地址筛选节点
         run: |
           pip install pyyaml requests
-          cat > filter_proxies.py << 'EOF'
-import yaml
-import requests
-
-def get_country_code(ip):
-    try:
-        response = requests.get(f'http://ip-api.com/json/{ip}', timeout=2)
-        response.raise_for_status()
-        data = response.json()
-        if data['status'] == 'success':
-            return data['countryCode']
-    except Exception:
-        return None
-    return None
-
-def main():
-    include_codes = {'JP', 'KR', 'HK', 'TW', 'SG', 'MY', 'PH', 'VN', 'TH', 'LA', 'MM', 'RU', 'MN'}
-    
-    response = requests.get('https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml')
-    response.raise_for_status()
-    config = yaml.safe_load(response.text)
-    
-    if 'proxies' not in config:
-        print('没有找到 proxies 列表。')
-        return
-
-    filtered_proxies = []
-    for proxy in config['proxies']:
-        ip_address = proxy.get('server')
-        if ip_address:
-            country_code = get_country_code(ip_address)
-            if country_code and country_code in include_codes:
-                filtered_proxies.append(proxy)
-    
-    config['proxies'] = filtered_proxies
-    
-    with open('filtered_by_ip.yaml', 'w') as f:
-        yaml.dump(config, f, allow_unicode=True)
-    
-if __name__ == '__main__':
-    main()
-EOF
           python3 filter_proxies.py
 
       - name: 运行测速并筛选节点
