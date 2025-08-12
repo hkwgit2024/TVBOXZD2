@@ -1,6 +1,7 @@
 import yaml
 import requests
 import socket
+import time
 
 def get_country_code(host):
     """
@@ -25,9 +26,16 @@ def get_country_code(host):
             country_code = data['countryCode']
             print(f"  - IP {ip_address} 的国家代码是: {country_code}")
             return country_code
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         print(f"  - 查询IP地址 {ip_address} 失败: {e}")
         return None
+    except Exception as e:
+        print(f"  - 发生未知错误: {e}")
+        return None
+    finally:
+        # 在每次API调用后增加1秒的延迟，以避免触发频率限制
+        time.sleep(1)
+    
     return None
 
 def main():
