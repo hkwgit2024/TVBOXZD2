@@ -281,13 +281,6 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 44
-  type: ss
-  server: 103.186.154.189
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 54
   type: ss
   server: 103.186.155.109
@@ -344,13 +337,6 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 137
-  type: ss
-  server: 103.186.154.77
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 144
   type: ss
   server: 103.186.154.195
@@ -389,13 +375,6 @@ proxies:
 - name: 🇻🇳 VN 185
   type: ss
   server: 103.186.155.121
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 186
-  type: ss
-  server: 103.186.155.105
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -610,17 +589,6 @@ proxies:
   cipher: aes-256-cfb
   password: TN2YqghxeFDKZfLU
   udp: true
-- name: 🇦🇺 AU 1
-  type: vmess
-  server: 172.105.174.237
-  port: 43183
-  uuid: aa8b85cf-6153-457f-9eab-7ffe19caee47
-  alterId: 0
-  cipher: auto
-  network: tcp
-  tls: false
-  sni: ''
-  ws-opts: {}
 - name: 🇬🇧 GB 4
   type: ss
   server: 212.102.53.197
@@ -1627,13 +1595,6 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 244
-  type: ss
-  server: 103.186.154.223
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 245
   type: ss
   server: 103.186.155.213
@@ -1686,13 +1647,6 @@ proxies:
 - name: 🇻🇳 VN 266
   type: ss
   server: 103.186.155.225
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 269
-  type: ss
-  server: 103.186.154.66
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -1788,23 +1742,9 @@ proxies:
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
   udp: true
-- name: 🇻🇳 VN 297
-  type: ss
-  server: 103.186.154.80
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
 - name: 🇻🇳 VN 298
   type: ss
   server: 103.186.155.237
-  port: 38388
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  udp: true
-- name: 🇻🇳 VN 299
-  type: ss
-  server: 103.186.154.71
   port: 38388
   cipher: aes-256-cfb
   password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
@@ -3345,13 +3285,6 @@ proxies:
     path: ''
     headers:
       Host: jp.laoyoutiao.link
-- name: 🇲🇰[openproxylist.com] ss-MK
-  type: ss
-  server: 46.183.185.15
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  udp: true
 - name: 🇱🇻[openproxylist.com] ss-LV-14SW
   type: ss
   server: 216.173.70.187
@@ -5285,21 +5218,6 @@ proxies:
       Host: Q4.19kAlA.co
     path: /
   xudp: true
-- cipher: aes-256-gcm
-  name: 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_6139626263326265
-  password: 0b191076d18f
-  plugin: v2ray-plugin
-  plugin-opts:
-    host: hk6v1.dsjsapp.com
-    mode: websocket
-    mux: true
-    path: /ugiibpkbca
-    skip-cert-verify: false
-    tls: true
-  port: 636
-  server: 156.251.179.139
-  tfo: false
-  type: ss
 - alpn:
   - http/1.1
   client-fingerprint: chrome
@@ -5317,21 +5235,6 @@ proxies:
       User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML,
         like Gecko) Chrome/70.0.3538.67 Safari/537.36
     path: /dilyfCPEmLvYr5hYXD
-- cipher: aes-256-gcm
-  name: 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_3164386239623931
-  password: 0b191076d18f
-  plugin: v2ray-plugin
-  plugin-opts:
-    host: hk6v1.dsjsapp.com
-    mode: websocket
-    mux: true
-    path: /ugiibpkbca
-    skip-cert-verify: false
-    tls: true
-  port: 636
-  server: 156.251.179.136
-  tfo: false
-  type: ss
 - alpn:
   - http/1.1
   name: 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
@@ -5461,21 +5364,6 @@ proxies:
     path: /
     headers:
       host: ''
-  client-fingerprint: chrome
-- name: 🇺🇸US-23.184.200.69-0180
-  type: vmess
-  server: 23.184.200.69
-  port: 20086
-  cipher: auto
-  uuid: ed715e84-81a0-40c5-bb6a-4d8d341e5cfa
-  alterId: 0
-  tls: false
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: /
-    headers:
-      host: 23.184.200.69
   client-fingerprint: chrome
 - name: 🇳🇱NL-46.243.3.42-0278
   type: vmess
@@ -5687,19 +5575,6 @@ proxies:
   name: NRT_1
   server: 20.243.153.190
   port: 8443
-  password: Aimer
-  udp: true
-  skip-cert-verify: true
-  sni: epgb.aimercc.dpdns.org
-  network: ws
-  ws-opts:
-    path: /?ed=2560&proxyip=ts.hpc.tw
-    headers:
-      host: epgb.aimercc.dpdns.org
-- type: trojan
-  name: HKG_5
-  server: 202.85.53.160
-  port: 7000
   password: Aimer
   udp: true
   skip-cert-verify: true
@@ -6796,20 +6671,6 @@ proxies:
   cipher: auto
   uuid: 20e89a95-cedf-4fe3-9421-517ce66be170
   alterId: 0
-- name: https://t.me/xyfqzy ⚡_16
-  port: 443
-  server: 104.21.96.1
-  type: trojan
-  network: grpc
-  udp: true
-  sni: XxXcdvfgTyy67.222569.XYz
-  password: bce0c7cb-08d1-46a7-b77b-7bff8b46252f
-  skip-cert-verify: false
-  grpc-opts:
-    grpc-service-name: x9F83IcyjcEyBX5Ttq58yozYn
-  alpn:
-  - h2
-  client-fingerprint: chrome
 - alterId: 0
   cipher: auto
   name: 🇺🇸_US_美国_2-LWEY
@@ -11833,1086 +11694,1072 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - -Fmy9
+  - -6jfK
   - -yNEc
-  - 美国_1126491
+  - -Fmy9
   - -ToYF
   - Telegram:@config_proxy 🔥-qxm0
-  - 🇺🇸US_275 |3.2MB/s|NF|D+
-  - 🇺🇸US_89 |3.9MB/s|NF|D+
-  - 🇺🇸US_213 |1.0MB/s|NF|D+
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸 US 19
+  - US_Phoenix_Oracle Corporation_Claude2
+  - 15|GB_speednode_0157
+  - 🇰🇷KR_3 |2.6MB/s|NF
+  - 🇺🇸US_13 |1.0MB/s|NF|D+
+  - ❓Other_6 |2.0MB/s
+  - LU_speednode_0194
+  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
+  - ❓ 未知_113
+  - 🇳🇱|NL|@wxgqlfx|205
+  - ❓ 未知_124
+  - 🇺🇸US_10 |1.3MB/s|NF|D+
+  - 🇺🇸 美国_12
   - 15|CY_speednode_0032
-  - 🇺🇸 美国_1
-  - 🇸🇬 新加坡_4
-  - 🇺🇸 美国_8
-  - ❓Other_10 |1.3MB/s|NF
-  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|89
+  - 15|DE_speednode_0044
+  - ❓Other_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_275 |3.2MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇨🇦 加拿大_3
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇺🇸 美国_70
+  - 🇺🇸 美国_31
+  - ❓ 未知_71
+  - 🇺🇸US_137 |1.6MB/s|NF|D+
+  - ❓ 未知_59
+  - 🇺🇸US_54 |1.3MB/s|NF
+  - 🇺🇸US_111 |1.1MB/s|D+
+  - 🇺🇸US_39 |2.6MB/s
+  - 🇺🇸US_233 |1.6MB/s|NF|D+
+  - ❓ 未知_118
+  - 🇺🇸US_28 |2.0MB/s|NF
+  - 🇺🇸US_24 |1.1MB/s|NF|D+
+  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
+  - 🇸🇬 新加坡_2
+  - ❓Other_1 |2.0MB/s
+  - 🇯🇵|JP|@wxgqlfx|113
+  - 🇸🇬 新加坡_23
+  - 🇺🇸|US|@wxgqlfx|85
+  - KZ_speednode_0176
+  - 🇺🇸US_205 |1.4MB/s
+  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_6
+  - 🇺🇸US_44 |1.4MB/s
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸|US|@wxgqlfx|213
+  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
+  - DE_Frankfurt am Main_Oracle Corporation_Claude5
+  - 🇺🇸US_72 |1.1MB/s|GPT|NF
+  - 🇺🇸US_40 |1.6MB/s
+  - 🇺🇸 美国_20
+  - 🇺🇸US_42 |1.7MB/s|NF
+  - 🇬🇧|GB|@wxgqlfx|195
+  - 14|US_speednode_2
+  - 🇬🇧|GB|@wxgqlfx|199
+  - ❓ 未知_168
+  - 🇮🇳|IN|@wxgqlfx|234
   - 🇺🇸US_34 |2.5MB/s
-  - 🇸🇬 新加坡_5
+  - 14|CY_speednode_2
+  - SJC_20
+  - GB_speednode_0153
+  - 🇺🇸US_119 |2.7MB/s|NF|5%
+  - 🇺🇸US_48 |4.2MB/s
+  - KR_Seoul_Oracle Corporation_Claude22
+  - 🇺🇸US_77 |3.0MB/s|NF|D+
+  - ❓ 未知_106
+  - 14|US_speednode_20
+  - KZ_speednode_0173
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - 🇸🇬 新加坡_8
-  - 🇺🇸 美国_13
-  - 🇯🇵JP_5 |2.8MB/s|D+
-  - 🇺🇸US_24 |1.1MB/s|NF|D+
-  - 🇺🇸US_13 |1.0MB/s|NF|D+
-  - 🇺🇸US_85 |2.7MB/s|NF
-  - 🇺🇸US_46 |1.4MB/s
-  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_21 |1.4MB/s|NF
-  - ❓ 未知_86
-  - ❓ 未知_95
-  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_2 |1.2MB/s
-  - 15|ES_speednode_0070
-  - 🇺🇸 美国_12
-  - ❓ 未知_72
-  - 🇺🇸US_207 |1.9MB/s|NF|D+
-  - 🇺🇸US_1 |1.1MB/s
-  - 🇸🇬SG_2 |1.2MB/s|GPT
-  - LU_speednode_0194
-  - 🇮🇹IT_1 |1.1MB/s|NF
-  - 🇺🇸US_48 |4.2MB/s
-  - 🇺🇸US_233 |1.6MB/s|NF|D+
-  - 🇺🇸US_40 |1.6MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇺🇸US_12 |1.1MB/s|NF|D+
-  - 🇺🇸US_236 |4.6MB/s|NF
-  - 🇺🇸US_203 |1.3MB/s|NF|D+
-  - 🇺🇸US_10 |1.3MB/s|NF|D+
-  - 🇸🇬 新加坡_2
-  - 🇺🇸 美国_17
-  - 🇺🇸 美国_70
-  - 🇸🇬 新加坡_21
-  - 🇺🇸US_61 |2.5MB/s|NF|D+
-  - 🇺🇸 美国_49
-  - 🇺🇸 US 189
-  - 🇺🇸 美国_3
-  - 14|LT_speednode_2
-  - 🇺🇸US_42 |1.7MB/s|NF
-  - ❓ 未知_61
-  - RU_speednode_0215
-  - 14|US_speednode_11
-  - ❓Other_8 |1.3MB/s
-  - 🇸🇬SG_4 |1.3MB/s
-  - US_speednode_0304
-  - ❓ 未知_62
-  - ❓Other_7 |1.3MB/s
-  - 15|ES_speednode_0073
-  - KR_Seoul_Oracle Corporation_Claude17
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇺🇸US_98 |1.6MB/s|NF|D+
-  - 🇺🇸US_21 |1.2MB/s
-  - 🇺🇸US_43 |4.7MB/s|NF|D+
-  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
-  - ❓Other_6 |2.0MB/s
-  - KZ_speednode_0173
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
-  - US_Elk Grove Village_HostPapa_Claude3
-  - 🇬🇧|GB|@wxgqlfx|132
-  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
-  - 🇺🇸 美国_20
-  - 🇸🇬 新加坡_12
-  - ❓ 未知_59
-  - 🇸🇬 新加坡_20
-  - 🇸🇮|SI|@wxgqlfx|138
-  - 🇺🇸US_68 |1.6MB/s|NF
-  - ❓ 未知_128
-  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
-  - Channel :@vmessorg
-  - 🇺🇸 美国_32
-  - 🇧🇦|BA|@wxgqlfx|235
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - ❓ 未知_135
-  - 🇨🇦 加拿大_7
-  - 14|US_speednode_2
-  - 🇰🇷 韩国_2
-  - 🇯🇵|JP|@wxgqlfx|113
-  - 15|FR_speednode_0081
   - ES_speednode_0072
-  - ❓ 未知_179
-  - 🇺🇸US_133 |1.8MB/s|NF|D+
-  - 14|GB_speednode_2
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - ❓ 未知_56
-  - ❓ 未知_107
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇸🇬 新加坡_28
-  - 🇺🇸US_246 |2.6MB/s|NF|D+
-  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
-  - GB_speednode_0149
-  - KR_Seoul_Oracle Corporation_Claude21
-  - 🇩🇪|DE|@wxgqlfx|131
-  - 🇺🇸US_107 |1.5MB/s|NF|D+
-  - 🇯🇵JP_6 |1.4MB/s|NF
-  - 🇨🇦 加拿大_6
-  - 🇺🇸|US|@wxgqlfx|215
-  - ❓ 未知_113
-  - 🇱🇹|LT|@wxgqlfx|216
-  - 14|US_speednode_14
-  - ❓ 未知_75
+  - 🇺🇸 美国_56
+  - 🇯🇵JP_5 |2.8MB/s|D+
+  - 🇸🇬 新加坡_12
+  - 🇺🇸US_100 |4.3MB/s|NF
+  - ❓ 未知_57
   - 🇸🇬 新加坡_27
-  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
-  - 🇬🇧|GB|@wxgqlfx|92
-  - 15|DE_speednode_0054
-  - ❓ 未知_118
-  - 🇳🇱|NL|@wxgqlfx|123
-  - 15|US_speednode_0379
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸 美国_15
-  - GB_speednode_0153
-  - 🇺🇸 美国_6
-  - 🇸🇬 新加坡_3
-  - ❓ 未知_138
-  - 🇺🇸US_210 |1.7MB/s|NF|D+
-  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
-  - HK香港(mibei77.com 米贝节点分享)-VOUv
-  - 🇺🇸美国20 | ⬇️ 1.1MB/s
-  - 🇺🇸 美国_66
-  - CZ_speednode_0038
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
-  - 🇺🇸US_91 |2.6MB/s|NF|D+
-  - JP_speednode_0167
-  - 🇺🇸 美国_57
-  - KR_Seoul_Oracle Corporation_Claude4
-  - 🇺🇸US_279 |3.1MB/s|NF|0%
-  - 🇺🇸US_177 |2.6MB/s|NF|D+
-  - 🇺🇸 US 69
-  - 🇺🇸US_28 |2.0MB/s|NF
-  - ❓ 未知_129
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 🇺🇸US_119 |2.7MB/s|NF|5%
-  - 🇰🇷KR_3 |2.6MB/s|NF
-  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
-  - 🇮🇳|IN|@wxgqlfx|234
-  - ❓ 未知_150
-  - KR_Seoul_Oracle Corporation_Claude18
-  - 🇺🇸 美国_22
-  - US_Phoenix_Oracle Corporation_Claude3
-  - RU_speednode_0242
-  - 15|DE_speednode_0044
-  - 🇺🇸 美国_34
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +120\r\r"
-  - 14|DE_speednode_4
-  - 🇺🇸US_111 |2.8MB/s
-  - Linknet+fastnet+Asn+(ID)
-  - 🇺🇸US_97 |2.6MB/s
-  - ❓ 未知_168
-  - 🇺🇸 美国_65
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - ❓ 未知_117
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
-  - ❓ 未知_142
-  - RU_speednode_0237
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸|US|@wxgqlfx|197
-  - 🇬🇧|GB|@wxgqlfx|195
-  - US_Buffalo_HostPapa_Claude11
-  - 🇯🇵JP_3 |3.2MB/s|NF|D+
-  - ❓ 未知_177
-  - 15|US_speednode_0393
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 德国(yudou123.top 玉豆免费节点)
-  - US_Dallas_HostPapa_Claude2
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +119\r\r"
-  - 🇷🇺|RU|@wxgqlfx|109
-  - 🇺🇸US_24 |1.4MB/s
-  - 🇺🇸US_80 |1.3MB/s|GPT|NF
-  - 🇺🇸 美国_5
-  - 🇺🇸|US|@wxgqlfx|85
-  - 🇺🇸 美国_25
-  - 🇺🇸US_4 |1.5MB/s|NF|D+
-  - 🇺🇸美国24 | ⬇️ 5.1MB/s
-  - CH_speednode_0031
-  - 🇺🇸US_17 |1.4MB/s
-  - ❓ 未知_81
-  - ❓ 未知_88
-  - 129.146.46.164_Claude
-  - -6jfK
-  - 🇺🇸US_81 |2.2MB/s|GPT|D+
-  - ❓ 未知_109
-  - 14|CY_speednode_2
-  - 🇳🇱|NL|@wxgqlfx|205
-  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
-  - 15|NL_speednode_0209
-  - US_speednode_0407
-  - 🇺🇸US_219 |2.7MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - 🇺🇸US_66 |3.2MB/s|NF|D+
-  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
-  - 14|SI_speednode_
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸 美国_27
-  - 🇸🇬SG_11 |1.7MB/s|NF
-  - 🇺🇸US_237 |4.4MB/s
-  - 🇯🇵JP_7 |1.9MB/s|NF|D+
-  - 🇺🇸|US|@wxgqlfx|164
-  - 官方优选_11
-  - ❓ 未知_71
-  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
-  - 美国(yudou123.top 玉豆免费节点)-goHm
-  - 🇯🇴|JO|@wxgqlfx|122
   - 🇺🇸 美国_58
-  - 🇺🇸|US|@wxgqlfx|128
-  - 15|US_speednode_0372
-  - HK香港(mibei77.com 米贝节点分享)-ezUR
-  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
-  - HK香港(mibei77.com 米贝节点分享)-exnr
-  - 🇱🇹|LT|@wxgqlfx|141
-  - 14|US_speednode_19
-  - GB_speednode_0143
-  - 15|FR_speednode_0078
-  - 🇺🇸 US 46
-  - 🇺🇸 美国_51
-  - 14|RU_speednode_4
-  - JP_Tokyo_Oracle Corporation_Claude1
-  - 🇨🇾|CY|@wxgqlfx|217
-  - SC_speednode_0244
-  - 🇺🇸 美国_48
-  - GB_speednode_0146
-  - 15|US_speednode_0405
-  - 15|GB_speednode_0157
+  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
+  - 官方优选_11
   - 🇺🇸US_27 |2.8MB/s
-  - 🇺🇸US_100 |1.0MB/s|NF|D+
-  - 🇺🇸US_195 |1.1MB/s|GPT|NF
-  - SJC_49
-  - KR_Seoul_Oracle Corporation_Claude3
-  - 🇺🇸US_179 |2.4MB/s|NF
-  - SJC_69
-  - ❓ 未知_145
-  - 🇭🇰HK_20 |2.6MB/s|D+
-  - JO_speednode_0165
-  - SJC_48
-  - 14|US_speednode_8
-  - '💦 21 - VLESS - Clean IP : 2053'
-  - ❓ 未知_79
-  - SJC_80
-  - 🇺🇸 美国_72
-  - 🇺🇸US_141 |2.3MB/s|NF|D+
-  - 🇺🇸US_192 |1.6MB/s|NF|D+
-  - 🇺🇸US_44 |1.4MB/s
-  - 🇺🇸 美国_67
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - SJC_62
-  - JP_Tokyo_Oracle Corporation_Claude2
-  - US_Phoenix_Oracle Corporation_Claude2
-  - SJC_9
-  - 🇸🇬 新加坡_33
-  - 🌐|UN|@wxgqlfx|93
-  - 🇭🇰 香港_2
-  - ❓ 未知_123
-  - ❓ 未知_132
-  - 4Jadi-3920-29772
-  - 15|CY_speednode_0036
-  - 🇺🇸 US 70
-  - 🇺🇸US_187 |2.8MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|224
-  - ❓Other_8 |1.0MB/s|NF
-  - ❓Other_1 |2.0MB/s
-  - KR_Seoul_Oracle Corporation_Claude22
-  - 🇺🇸US_248 |2.3MB/s|NF|D+
-  - 14|ES_speednode_
-  - 🇳🇱|NL|@wxgqlfx|223
-  - 🇺🇦|UA|@wxgqlfx|99
-  - ❓ 未知_130
-  - 🇬🇧|GB|@wxgqlfx|199
-  - 🇺🇸US_51 |3.8MB/s
-  - 15|GB_speednode_0130
-  - 14|US_speednode_20
-  - 15|DE_speednode_0060
-  - KR_Seoul_Oracle Corporation_Claude1
-  - 🇺🇸US_205 |1.4MB/s
-  - ❓ 未知_169
-  - 15|FR_speednode_0079
-  - 🇺🇸 美国_69
-  - 美国-hPRG
-  - 🇺🇸US_106 |4.2MB/s|NF
-  - 🇺🇸US_131 |1.5MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S4\r\r"
-  - 🇺🇸 US 279
-  - SG_Singapore_Oracle Corporation_Claude1
-  - 🇺🇸|US|@wxgqlfx|89
-  - 🇫🇷FR_1 |2.7MB/s
-  - 15|US_speednode_0397
-  - 服务器-地址池-162.159.19.82
-  - 🇱🇹|LT|@wxgqlfx|91
-  - 🇺🇸US_145 |2.5MB/s|NF
-  - 15|NL_speednode_0212
-  - ❓ 未知_105
-  - 🇸🇬 新加坡_17
-  - RU_speednode_0240
-  - 15|US_speednode_0273
-  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
-  - yandex-476-Gzf7
-  - 🇦🇺|AU|@wxgqlfx|225
-  - SJC_31
-  - 🇺🇸US_199 |1.2MB/s|NF|D+
-  - ❓ 未知_76
-  - 🇺🇸US_72 |1.1MB/s|GPT|NF
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸US_10 |2.0MB/s
+  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇸🇬SG_5 |1.4MB/s|NF|D+
   - 🇺🇸 美国_14
-  - ❓ 未知_120
-  - 🇺🇸US_137 |1.6MB/s|NF|D+
-  - SJC_34
-  - 🇺🇸 US 164
-  - US_Elk Grove Village_HostPapa_Claude2
-  - ❓ 未知_106
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - US_Los Angeles_HostPapa_Claude1
-  - 🇺🇸美国2 | ⬇️ 1.1MB/s
-  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - ❓ 未知_72
+  - 14|SI_speednode_
+  - RU_speednode_0237
+  - 🇺🇸 美国_28
+  - 🇬🇧|GB|@wxgqlfx|92
+  - 🇺🇸US_115 |3.0MB/s|NF|0%
+  - 🇺🇸US_21 |1.4MB/s|NF
+  - 🇺🇸 美国_5
+  - ❓ 未知_177
+  - ❓ 未知_76
+  - RU_speednode_0215
+  - 🇸🇬 新加坡_6
+  - 15|US_speednode_0393
+  - ❓Other_8 |1.0MB/s|NF
+  - KR_Seoul_Oracle Corporation_Claude5
+  - 🇺🇸US_21 |1.2MB/s
+  - 🌐|UN|@wxgqlfx|110
+  - 15|NL_speednode_0209
+  - ❓ 未知_128
+  - US_speednode_0375
+  - 🇸🇬 新加坡_21
+  - 🇺🇸US_98 |1.6MB/s|NF|D+
+  - 🇯🇴|JO|@wxgqlfx|122
+  - 🇺🇸|US|@wxgqlfx|144
+  - 🇺🇸US_1 |1.1MB/s
+  - 🇱🇹|LT|@wxgqlfx|141
+  - 🇭🇰 香港_2
+  - ❓ 未知_135
+  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
+  - 🇸🇬 新加坡_28
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
   - 14|US_speednode_9
-  - GB_speednode_0136
-  - SJC_18
-  - US_speednode_0408
-  - 🇸🇨|SC|@wxgqlfx|163
-  - SJC_85
-  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
-  - 🇺🇸美国16 | ⬇️ 2.5MB/s
-  - 🇺🇸US_218 |1.6MB/s|NF|D+
-  - KZ_speednode_0176
-  - 🇺🇸 US 63
-  - 🇷🇺|RU|@wxgqlfx|133
-  - DE_Frankfurt am Main_Oracle Corporation_Claude5
-  - '💦 35 - VLESS - Clean IP : 2087'
-  - KR_Seoul_Oracle Corporation_Claude19
-  - 🇺🇸US_111 |1.1MB/s|D+
-  - SJC_13
+  - 🇸🇬SG_11 |1.7MB/s|NF
+  - ❓ 未知_95
+  - HK香港(mibei77.com 米贝节点分享)-ezUR
+  - 🇺🇸US_94 |1.8MB/s|50%
+  - 15|US_speednode_0273
+  - 🇺🇸US_104 |3.8MB/s
+  - 🇺🇸 美国_51
+  - 🇺🇸US_192 |1.6MB/s|NF|D+
+  - 14|ES_speednode_
+  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
   - 🇺🇸US_126 |1.9MB/s|NF|D+
+  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
+  - US_speednode_0414
+  - 🇺🇦|UA|@wxgqlfx|99
+  - 🇺🇸 美国_64
+  - 14|US_speednode_19
+  - 🇺🇸 美国_16
+  - 🇸🇬 新加坡_32
+  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
+  - 🇺🇸US_42 |4.1MB/s|NF|D+
+  - 15|NL_speednode_0212
+  - 🇸🇬|SG|@wxgqlfx|224
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
+  - 🇺🇸US_227 |3.1MB/s|NF
+  - US_Phoenix_Oracle Corporation_Claude3
+  - ❓Other_8 |1.3MB/s
+  - 14|GB_speednode_2
+  - 🇺🇸US_26 |4.3MB/s
+  - ❓Other_10 |1.3MB/s|NF
+  - 🇺🇸US_12 |1.1MB/s|NF|D+
+  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_236 |4.6MB/s|NF
+  - 🇺🇸US_60 |1.9MB/s|NF|D+
+  - US_speednode_0304
+  - 🇨🇦 加拿大_6
+  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
+  - 🇺🇸US_80 |1.3MB/s|GPT|NF
+  - SC_speednode_0244
+  - SJC_81
+  - 🇯🇵JP_11 |3.1MB/s|NF|D+
+  - 🇺🇸US_2 |1.2MB/s
+  - 🇺🇸US_97 |2.6MB/s
+  - 🇰🇷 韩国_2
+  - 🇺🇸US_66 |3.2MB/s|NF|D+
+  - 🇺🇸US_237 |4.4MB/s
+  - DE_Frankfurt am Main_Oracle Corporation_Claude1
+  - 🇺🇸 美国_68
+  - 🇺🇸US_195 |1.1MB/s|GPT|NF
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸US_207 |1.9MB/s|NF|D+
+  - ❓ 未知_56
+  - ❓ 未知_127
+  - HK香港(mibei77.com 米贝节点分享)-VOUv
+  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
+  - 🇺🇸US_107 |1.5MB/s|NF|D+
+  - SJC_59
+  - 🇺🇸US_246 |2.6MB/s|NF|D+
+  - 🇺🇸美国20 | ⬇️ 1.1MB/s
+  - US_Elk Grove Village_HostPapa_Claude3
+  - 🇷🇺|RU|@wxgqlfx|133
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - ❓ 未知_62
+  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
+  - 🇦🇺|AU|@wxgqlfx|225
+  - 🇺🇸US_187 |2.8MB/s|NF|D+
+  - GB_speednode_0149
+  - 🇺🇸US_68 |1.6MB/s|NF
+  - 🇺🇸 美国_61
+  - ❓ 未知_105
+  - 14|DE_speednode_4
   - SJC_68
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_60
+  - 🇸🇬 新加坡_5
+  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
+  - 🇺🇸US_107 |1.9MB/s|NF
+  - 🇸🇬 新加坡_3
+  - 🇺🇸 美国_17
+  - 🇬🇧|GB|@wxgqlfx|132
+  - US_speednode_0408
+  - ❓ 未知_138
+  - 🇩🇪|DE|@wxgqlfx|131
+  - RU_speednode_0240
+  - 14|FR_speednode_
+  - KR_Seoul_Oracle Corporation_Claude2
+  - 🇺🇸 美国_48
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - 15|FR_speednode_0078
+  - 🇺🇸美国16 | ⬇️ 2.5MB/s
+  - 🇺🇸US_203 |1.3MB/s|NF|D+
+  - 15|ES_speednode_0073
+  - SJC_80
+  - 15|US_speednode_0379
+  - 🇭🇰HK_30 |3.5MB/s|NF
+  - US_Los Angeles_HostPapa_Claude1
+  - US_speednode_0385
+  - 14|US_speednode_11
+  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸 美国_44
+  - 🇺🇸US_77 |1.1MB/s|D+
+  - KR_Seoul_Oracle Corporation_Claude4
+  - 14|US_speednode_8
+  - 🇺🇸 美国_46
+  - 🇺🇸US_91 |2.6MB/s|NF|D+
+  - 🇷🇺|RU|@wxgqlfx|109
+  - 🇺🇸US_6 |1.2MB/s
+  - ❓ 未知_167
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 美国_47
+  - 🇺🇸US_213 |1.0MB/s|NF|D+
+  - KR_Seoul_Oracle Corporation_Claude3
+  - 15|FR_speednode_0081
+  - 🇺🇸 美国_69
+  - 🇺🇸US_100 |1.0MB/s|NF|D+
+  - 🇺🇸 US 46
+  - 🇺🇸US_199 |1.2MB/s|NF|D+
+  - 🇨🇾|CY|@wxgqlfx|217
+  - 14|LT_speednode_2
+  - SJC_49
+  - US_speednode_0373
+  - 🇸🇬 新加坡_17
+  - ❓ 未知_151
+  - SJC_26
+  - 服务器-地址池-162.159.19.82
+  - 🇺🇸 美国_8
+  - 🇺🇸 US 279
+  - 🇺🇸 美国_27
+  - SJC_18
+  - KR_Seoul_Oracle Corporation_Claude18
+  - 🇺🇸 美国_74
+  - Channel :@vmessorg
+  - ❓ 未知_150
+  - CZ_speednode_0038
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - 🇭🇰 香港_9
+  - 🇺🇸US_133 |1.8MB/s|NF|D+
+  - 15|RU_speednode_0241
+  - 🇺🇸US_224 |2.9MB/s|NF|D+
+  - JP_Tokyo_Oracle Corporation_Claude2
+  - JP_speednode_0167
+  - 🇺🇸US_17 |1.4MB/s
+  - 129.146.46.164_Claude
+  - 15|BR_speednode_0023
+  - 🇺🇸 美国_53
+  - Linknet+fastnet+Asn+(ID)
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 美国(yudou123.top 玉豆免费节点)-goHm
+  - 15|US_speednode_0372
+  - '@ShadowProxy66 🇨🇦-dCqB'
+  - 🇺🇸US_75 |2.3MB/s|NF|D+
+  - 🇺🇸 美国_39
+  - 🇸🇮|SI|@wxgqlfx|138
+  - 🇺🇸US_24 |3.3MB/s|GPT
+  - ❓ 未知_75
+  - SJC_47
+  - 🇺🇸 US 69
+  - ❓ 未知_107
+  - 🇳🇱|NL|@wxgqlfx|121
+  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - ❓ 未知_61
+  - GB_speednode_0145
+  - 🇳🇱|NL|@wxgqlfx|123
+  - KR_Seoul_Oracle Corporation_Claude21
+  - ❓ 未知_126
+  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
+  - 🇸🇬SG_4 |1.3MB/s
+  - ❓Other_7 |1.3MB/s
+  - SJC_85
+  - 14|US_speednode_6
+  - 德国(yudou123.top 玉豆免费节点)
+  - SJC_30
+  - 14|CZ_speednode_
+  - 🇺🇸US_97 |2.8MB/s|NF
+  - SJC_31
+  - 🇺🇸US_131 |1.5MB/s|NF|D+
+  - SG_Singapore_Oracle Corporation_Claude2
+  - 🇨🇦 加拿大_5
+  - 🇺🇸|US|@wxgqlfx|140
+  - US_Elk Grove Village_HostPapa_Claude2
+  - '💦 18 - VLESS - IPv4 : 2053'
+  - 🇸🇬 新加坡_16
+  - 🇳🇱|NL|@wxgqlfx|223
+  - SJC_50
+  - 🇱🇹|LT|@wxgqlfx|91
+  - SJC_13
+  - 🇺🇸US_46 |1.4MB/s
+  - 🇭🇰 香港_12
+  - 🇭🇰HK_20 |2.6MB/s|D+
+  - 🇺🇸US_92 |1.3MB/s|NF|D+
+  - 🇺🇸 US 27
+  - PENTANET+LIMITED+(AU)
+  - 15|DE_speednode_0054
+  - 🇺🇸US_79 |1.3MB/s|NF|D+
+  - 🇺🇸US_111 |2.8MB/s
+  - 🇸🇬 新加坡_33
+  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
+  - 🇺🇸 美国_25
+  - 🇺🇸|US|@wxgqlfx|215
+  - 🇸🇬SG_2 |1.2MB/s|GPT
+  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
+  - 🇸🇮|SI|@wxgqlfx|135
+  - ❓ 未知_169
+  - 14|SC_speednode_2
+  - SJC_62
+  - RU_speednode_0242
+  - 🇯🇵JP_6 |1.4MB/s|NF
+  - 🇺🇸 美国_18
+  - 🇺🇸US_43 |4.7MB/s|NF|D+
+  - 🇺🇸 US 19
+  - 服务器-老旧-154.92.9.174
+  - 🇺🇸|US|@wxgqlfx|197
+  - 15|FR_speednode_0080
+  - 15|CY_speednode_0036
+  - 🇸🇬 新加坡_4
+  - 🇺🇸 美国_72
+  - '💦 28 - VLESS - Clean IP : 2083'
+  - 🇺🇸 US 19-zlJR
+  - KR_Seoul_Oracle Corporation_Claude17
+  - KR_Seoul_Oracle Corporation_Claude1
+  - ❓ 未知_81
+  - 15|GB_speednode_0130
+  - 🇺🇸US_218 |1.6MB/s|NF|D+
+  - 15|US_speednode_0397
+  - ❓ 未知_146
+  - 🇺🇸US_177 |2.6MB/s|NF|D+
+  - US_speednode_0407
+  - SJC_24
+  - SJC_17
+  - 15|NL_speednode_0210
+  - ❓ 未知_117
+  - US_Dallas_HostPapa_Claude2
+  - 🇺🇸 US 8
+  - SJC_9
+  - Akamai+Technologies,+Inc.+(SG)
+  - ❓ 未知_109
+  - GB_speednode_0146
+  - '💦 3 - VLESS - IPv4 : 443'
+  - GB_speednode_0136
+  - 🇺🇸US_4 |1.5MB/s|NF|D+
+  - 🇺🇸US_141 |2.3MB/s|NF|D+
+  - '💦 16 - VLESS - Domain : 2053'
+  - ❓ 未知_129
+  - 🇺🇸US_10 |2.0MB/s
+  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_64 |2.5MB/s|D+
+  - US_Buffalo_HostPapa_Claude10
+  - SJC_78
+  - 🇪🇪|EE|@wxgqlfx|130
   - 🇺🇸 美国_43
   - SJC_35
-  - SJC_24
-  - SJC_6
-  - SJC_81
-  - 🇺🇸|US|@wxgqlfx|213
-  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
-  - 🇸🇬 新加坡_32
-  - '💦 28 - VLESS - Clean IP : 2083'
-  - 🇺🇸|US|@wxgqlfx|144
-  - 🇭🇰 香港_9
-  - US_Buffalo_HostPapa_Claude10
-  - ❓ 未知_124
-  - 🇺🇸 美国_31
-  - 服务器-老旧-154.92.9.174
+  - 🇺🇸美国24 | ⬇️ 5.1MB/s
+  - 🇺🇸US_85 |2.7MB/s|NF
   - US_Elk Grove Village_HostPapa_Claude4
-  - SJC_50
-  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
-  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
-  - 🇺🇸 US 8
-  - 🇺🇸 美国_61
-  - 🇭🇰 香港_6
-  - ❓ 未知_126
-  - Evoxt+Enterprise+(MY)
-  - 🇺🇸 US 87
-  - SJC_43
-  - 15|RU_speednode_0241
-  - 🇸🇬 新加坡_23
-  - 🇺🇸|US|@wxgqlfx|140
-  - ❓ 未知_165
-  - 🇺🇸|US|@wxgqlfx|151
-  - 🇭🇰HK_30 |3.5MB/s|NF
-  - 15|NL_speednode_0210
-  - ❓ 未知_125
-  - US_speednode_0375
-  - 🇯🇵JP_11 |3.1MB/s|NF|D+
-  - GB_speednode_0145
-  - 🇺🇸US_227 |3.1MB/s|NF
-  - 🇺🇸美国22 | ⬇️ 1.1MB/s
-  - free公益代理1
-  - US_speednode_0403
-  - 🇺🇸US_224 |2.9MB/s|NF|D+
-  - 🇺🇸US_105 |4.7MB/s|NF|50%
-  - 🇭🇰HK_32 |1.3MB/s|NF|D+
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - DE_Frankfurt am Main_Oracle Corporation_Claude1
-  - 🇺🇸 US 67
-  - 🇺🇸 US 11
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸 美国_39
-  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
-  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
-  - SJC_26
-  - 🇺🇸US_88 |1.6MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|104
-  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - 🇨🇦 加拿大_7
+  - 美国_1126491
+  - 🇱🇹|LT|@wxgqlfx|216
+  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
+  - 🇺🇸 美国_34
+  - 0|_143
   - 🇺🇸US_239 |3.3MB/s|NF
-  - 🇳🇱|NL|@wxgqlfx|121
-  - SJC_78
-  - '💦 3 - VLESS - IPv4 : 443'
-  - 🇸🇮|SI|@wxgqlfx|117
-  - 🇨🇦 加拿大_5
-  - 14|FR_speednode_
-  - '💦 23 - VLESS - Domain : 2083'
-  - 🇭🇰 香港_12
-  - 🇸🇮|SI|@wxgqlfx|135
-  - 🇺🇸 美国_53
-  - SJC_47
-  - 服务器-优选-162.159.241.3
-  - 15|US_speednode_0398
-  - US_speednode_0385
-  - 🇸🇬 新加坡_30
-  - 🇺🇸US_6 |1.2MB/s
-  - 🇺🇸[openproxylist.com] ss-US-huKy
-  - 🇸🇬 新加坡_6
-  - 🇺🇸 美国_68
-  - SJC_33
-  - 🇺🇸 美国_46
-  - 🇺🇸 美国_47
-  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
-  - 🇺🇸 美国_18
-  - ❓ 未知_172
-  - 🇺🇸 US 23
-  - 15|FR_speednode_0080
-  - DE_Falkenstein_Hetzner Online GmbH_Claude1
-  - 官方优选_34
+  - ❓ 未知_142
+  - 🇺🇸 US 63
+  - 🇺🇸 US 11
+  - SG_Singapore_Oracle Corporation_Claude1
+  - 14|US_speednode_14
+  - HK香港(mibei77.com 米贝节点分享)-exnr
+  - GB_speednode_0143
+  - 🇺🇸|US|@wxgqlfx|128
+  - 🇺🇸 美国_67
+  - '💦 35 - VLESS - Clean IP : 2087'
+  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
+  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
+  - 🇺🇸US_210 |1.7MB/s|NF|D+
+  - 🇺🇸 美国_50
+  - 🇺🇸US_51 |3.8MB/s
+  - 🇸🇬 新加坡_8
+  - 🇺🇸US_105 |4.7MB/s|NF|50%
   - 🇺🇸|US|@wxgqlfx|106
-  - 🇺🇸[openproxylist.com] ss-US
-  - 🇺🇸|US|@wxgqlfx|114
-  - SJC_61
-  - 🇺🇸US_100 |4.3MB/s|NF
+  - 🇺🇸 美国_65
+  - 🇸🇮|SI|@wxgqlfx|117
+  - 🇭🇰HK_32 |1.3MB/s|NF|D+
+  - 🇺🇸 US 2-ScE8
+  - 🇺🇸 美国_66
+  - 🇺🇸US_65 |1.0MB/s|NF|D+
+  - SJC_33
+  - SJC_69
+  - 🇺🇸US_279 |3.1MB/s|NF|0%
+  - 🇺🇸 美国_49
+  - 🇺🇸 美国_15
+  - 🇺🇸US_110 |4.2MB/s|GPT
+  - 🇺🇸 美国_6
+  - 🇺🇸US_219 |2.7MB/s|NF|D+
+  - LT_speednode_0190
+  - 🇺🇸美国2 | ⬇️ 1.1MB/s
+  - '💦 21 - VLESS - Clean IP : 2053'
+  - 服务器-优选-104.19.31.147
+  - 🇺🇸 美国_32
+  - 🇸🇨|SC|@wxgqlfx|163
+  - 🇺🇸 美国_41
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - ❓ 未知_130
+  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
+  - CH_speednode_0031
+  - 服务器-优选-104.21.127.23
+  - 🇺🇸 美国_13
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - 14|SC_speednode_3
+  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
+  - 🇺🇸 US 70
+  - free公益代理1
+  - 🇺🇸 US 44
+  - 🇭🇰HK_13 |2.7MB/s|NF
+  - 🇺🇸 美国_3
+  - 🇺🇸 US 164
+  - 4Jadi-3920-29772
+  - 🇺🇸US_179 |2.4MB/s|NF
+  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
+  - 🇺🇸 美国_1
+  - ❓ 未知_145
   - 🇸🇬SG_12 |2.5MB/s|GPT|NF|D+
-  - ❓ 未知_57
-  - 🇺🇸US_104 |3.8MB/s
-  - 🇺🇸 US 22
+  - 15|US_speednode_0398
+  - 🇺🇸|US|@wxgqlfx|164
+  - 🇸🇬|SG|@wxgqlfx|104
+  - ❓ 未知_120
+  - '💦 32 - VLESS - IPv4 : 2087'
+  - ❓ 未知_165
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - ❓ 未知_125
+  - 🇺🇸US_145 |2.5MB/s|NF
+  - 官方优选_34
+  - 🇺🇸US_248 |2.3MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|151
+  - ❓ 未知_79
+  - SJC_34
+  - 🇺🇸 美国_57
+  - ❓ 未知_123
+  - SJC_61
+  - 🇸🇬 新加坡_30
+  - 服务器-优选-162.159.241.3
+  - US_7
+  - 🇺🇸 US 87
+  - ❓ 未知_86
+  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
+  - Evoxt+Enterprise+(MY)
+  - 🇺🇸 美国_22
+  - 🇺🇸 US 67
+  - JP_Tokyo_Oracle Corporation_Claude1
+  - DE_Falkenstein_Hetzner Online GmbH_Claude1
+  - 15|US_speednode_0405
+  - 🇺🇸美国28 | ⬇️ 2.0MB/s
+  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
+  - JO_speednode_0165
+  - 14|RU_speednode_4
+  - 🇺🇸 US 55
+  - 🇸🇬 新加坡_20
+  - yandex-476-Gzf7
+  - KR_Seoul_Oracle Corporation_Claude19
+  - 🇭🇰 香港_6
+  - US_speednode_0403
+  - 🇺🇸US-104.192.226.106-0186
+  - 🌐|UN|@wxgqlfx|93
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +119\r\r"
+  - 🇺🇸 US 145
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸|US|@wxgqlfx|114
+  - 🇺🇸 US 299
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - 美国-hPRG
+  - 🇺🇸 US 391
+  - '💦 23 - VLESS - Domain : 2083'
+  - ❓ 未知_88
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +40\r\r"
-  - 🇺🇸 美国_56
-  - ES_speednode_0075
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 🇺🇸 美国_41
-  - 🇺🇸 US 68
+  - 🇺🇸 US 23
   - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
-  - 🇺🇸US_200 |1.4MB/s|NF|D+
-  - 🇺🇸 US 55
-  - 服务器-优选-104.19.31.147
-  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
-  - 🇺🇸 US 19-zlJR
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸9 |  4.6MB/s|Disney|Openai
-  - CFW_443
-  - 🇺🇸US_60 |1.9MB/s|NF|D+
-  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_77 |3.0MB/s|NF|D+
-  - KR_Seoul_Oracle Corporation_Claude5
-  - US_7
-  - 🇨🇦 CA 1
-  - SJC_59
-  - 美国 - 洛杉矶 - NTT America - 92
-  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
-  - 🇺🇸US_107 |1.9MB/s|NF
-  - 🇺🇸US-173.244.56.6-1037
-  - 🇺🇸 美国_64
-  - SJC_17
-  - 🇺🇸 美国_50
-  - 14|CZ_speednode_
-  - 🇺🇸 US 27
-  - 🇺🇸 美国_44
-  - 🇺🇸US-104.192.226.106-0186
-  - SI_speednode_0267
-  - Contabo+Asia+Private+Limited+(SG)
-  - 🇺🇸 美国_16
-  - 0|_143
-  - 🇺🇸US-173.244.56.9-1105
-  - US_speednode_0414
-  - 🇺🇸美国28 | ⬇️ 2.0MB/s
-  - 🇺🇸 美国_28
-  - 🇨🇦 加拿大_3
+  - 🇺🇸[openproxylist.com] ss-US-huKy
+  - SJC_43
   - 🇺🇸 US 303
-  - SG_Singapore_Oracle Corporation_Claude2
-  - 🇺🇸US_222 |3.2MB/s|NF|D+
-  - 🇺🇸US_97 |2.8MB/s|NF
-  - 14|SC_speednode_2
-  - ❓ 未知_127
-  - LT_speednode_0190
-  - SJC_60
-  - SJC_20
-  - 🇺🇸 US 42
-  - 🇺🇸 美国_74
-  - 服务器-优选-104.21.127.23
-  - 🇺🇸 US 158
-  - ❓ 未知_146
-  - 🇺🇸 US 11-AYTU
-  - 14|SC_speednode_3
-  - 15|CZ_speednode_0039
-  - 🇺🇸 US 469
-  - 🇪🇪|EE|@wxgqlfx|130
-  - PENTANET+LIMITED+(AU)
-  - Linknet+fastnet+Asn+(ID)-PNLR
-  - 🌐|UN|@wxgqlfx|110
-  - '💦 16 - VLESS - Domain : 2053'
-  - '@ShadowProxy66 🇨🇦-dCqB'
-  - 🇨🇦CA-79.127.233.170-0167
   - Oracle+Corporation+(SG)-XThx
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S4\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸US_200 |1.4MB/s|NF|D+
+  - '💦 36 - VLESS - Domain : 2096'
+  - 🇺🇸US_106 |4.2MB/s|NF
+  - ❓ 未知_179
+  - 🇨🇦 CA 1
+  - 15|DE_speednode_0060
+  - 🇺🇸 US 22
+  - 🇺🇸US_222 |3.2MB/s|NF|D+
+  - 🇺🇸US_88 |1.6MB/s|NF|D+
+  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
+  - Contabo+Asia+Private+Limited+(SG)
+  - 🏁RELAY-104.21.3.189-0268
+  - 🇺🇸 US 189
+  - ES_speednode_0075
+  - https://t.me/xyfqzy ⚡_15
+  - 🇺🇸US-173.244.56.6-1037
+  - 1服务器-地址池-104.16.210.28
+  - 🇺🇸US_24 |1.4MB/s
+  - 🇺🇸US-173.244.56.9-1105
+  - US_Buffalo_HostPapa_Claude11
   - 🇺🇸US-209.126.84.189-0499
-  - 🇺🇸US-137.175.124.167-0172
-  - 🇨🇦CA-79.127.233.170-0165
-  - 🇺🇸 US 888
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 官方优选_50
-  - US_speednode_0373
-  - SJC_30
-  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
-  - Akamai+Technologies,+Inc.+(SG)
-  - LAX_8
-  - 🇺🇸US_39 |2.6MB/s
-  - 🇺🇸US-206.206.80.227-0188
-  - yandex-455
-  - 15|DE_speednode_0058
-  - ❓Other_7 |1.9MB/s|NF|D+
-  - 🇸🇬 新加坡_16
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
-  - 老油条-香港-cdn2
-  - 🇭🇰HK_13 |2.7MB/s|NF
-  - 🇺🇸 US 145
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 🇬🇧 GB 4
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - ❓ 未知_132
+  - 🇺🇸US_194 |2.7MB/s
   - '@meli_proxyy`'
-  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - LAX_4
-  - ❓ 未知_151
-  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
-  - 🇺🇸US_50 |1.6MB/s|GPT|40%
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - 🇳🇱 NL 1
-  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - 🇺🇸美国22 | ⬇️ 1.1MB/s
+  - 🇺🇸 US 11-AYTU
   - 🇺🇸US_32 |2.2MB/s|GPT|NF|GM|70%
-  - 🇺🇸 US 20
-  - 14|US_speednode_6
-  - KR_Seoul_Oracle Corporation_Claude2
-  - '@meli_proxyy-DKGt'
-  - ❓ 未知_167
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+84\r\r"
-  - yandex-410-JKnw
+  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
+  - 🇨🇦CA-79.127.233.170-0167
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
+  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
+  - 15|ES_speednode_0070
+  - 🇺🇸 US 42
+  - 🇺🇸US_61 |2.5MB/s|NF|D+
+  - yandex-455
+  - 🇺🇸 US 68
+  - 🇺🇸9 |  4.6MB/s|Disney|Openai
+  - 🇨🇦CA-79.127.233.170-0165
+  - 🇺🇸 US 21
+  - 15|DE_speednode_0058
+  - SI_speednode_0267
+  - US_Elk Grove Village_HostPapa_Gemini_Claude
+  - Linknet+fastnet+Asn+(ID)-PNLR
+  - ❓Other_5 |1.5MB/s|NF|D+
+  - 美国 053
+  - 美国(yfuye.com免费节点)_87
+  - 🇺🇸 US 567
+  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
+  - 🇺🇸 US 888
+  - 老油条-香港-cdn2
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - 🇺🇸美国16 | ⬇️ 3.7MB/s
+  - 美国 - 洛杉矶 - NTT America - 92
+  - 🇧🇦|BA|@wxgqlfx|235
+  - ❓ 未知_172
+  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
+  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
+  - 🇺🇸 US 469
+  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
+  - 🇺🇸 US 102
+  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
+  - 🇺🇸US_153 |2.5MB/s|NF
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
-  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
+  - 🇺🇸 US 158
+  - 🇬🇧 GB 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 596
+  - 🇺🇸[openproxylist.com] ss-US
+  - 🇺🇸 US 597
+  - 官方优选_4
+  - 🇺🇸US-137.175.124.167-0172
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 德国_358
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇩🇪 DE 27
-  - 1服务器-地址池-104.16.210.28
-  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
-  - 🇬🇧_GB_英国
-  - 🇳🇱 NL_438
-  - '@meli_proxyy-Bpzt'
-  - 🇳🇱 NL 4-MLSc
-  - 🇱🇹LT-45.87.175.28-0867
-  - 🇺🇸US_544
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 3
-  - 🇱🇹LT-45.87.175.58-4876
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - GB_07
-  - 官方优选_4
-  - 🇪🇸 ES_142
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - https://t.me/xyfqzy ⚡_15
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - US->NL->RTL->@DeamNet_Proxy_76
-  - 0,1,2,3|ChatGPT  DE_58
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[103]_俄罗斯_hamraH_128\r\r"
+  - 15|CZ_speednode_0039
+  - 🇺🇸US_50 |1.6MB/s|GPT|40%
+  - 🇫🇷FR_1 |2.7MB/s
+  - 🇺🇸美国12 | ⬇️ 8.6MB/s
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +104\r\r"
-  - 🇬🇧 GB 15
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - VE->NL->MCI->@DeamNet_Proxy_57
-  - US->NL->RTL->@DeamNet_Proxy_68
-  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - SJC_48
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 🇺🇸 US 137
+  - GB_07
+  - 🇬🇧_GB_英国
+  - yandex-410-JKnw
+  - yandex-660-vPgZ
+  - 🇳🇱 NL 1
+  - '@meli_proxyy-DKGt'
+  - LAX_4
+  - '[112]🇬🇧GB-169.150.210.233-0276'
   - 🇫🇷FR-45.158.171.70-4878
-  - 15|BR_speednode_0023
-  - 🇳🇱NL-185.246.153.12-1108
-  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
-  - 🇦🇪AE-151.242.251.131-0222
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 6
-  - 🇫🇷FR-45.158.171.136-0268
-  - "德国(yudou66.com 玉豆免费节点)\r"
+  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - 🇺🇸US_544
+  - 🇳🇱 NL_438
+  - 🇱🇹LT-45.87.175.28-0867
+  - 🇳🇱 NL 3
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇬🇧 GB 15
+  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 🇳🇱 NL 4-MLSc
+  - 🇱🇹LT-45.87.175.58-4876
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - yandex-530-C5wi
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[103]_RU_俄罗斯_211\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 0,1,2,3|ChatGPT  DE_58
+  - 美国(yfuye.com免费节点)_169
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - '@meli_proxyy-Bpzt'
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
   - 🇳🇱 NL 9-C16w
-  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - 🇫🇷FR-45.158.171.146-0203
-  - 🇺🇸 US 44
-  - "[103]_RU_俄罗斯_213\r\r"
-  - CFW_443-AQoO
-  - yandex-608-tb8h
+  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
+  - US_Buffalo_HostPapa_Claude7
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - 🇺🇸US-206.206.80.227-0188
+  - 🇩🇪[openproxylist.com] ss-DE
+  - "[103]_RU_俄罗斯_123\r\r"
+  - 🇫🇷FR-45.158.171.136-0268
+  - 🇺🇸 US 555
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - US->NL->RTL->@DeamNet_Proxy_68
+  - CFW_8443-E77l
   - 🇳🇱 NL 19
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - 德国_362
-  - 英国United+Kingdom
-  - 🇳🇱NL-193.29.139.217-0212
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - VE->NL->MCI->@DeamNet_Proxy_57
+  - 美国_579
   - "[103]_俄罗斯_hamraH_415\r\r"
-  - 🏁RELAY-104.21.3.189-0268
-  - 🇺🇸 US 162
-  - 🇯🇵JP-149.22.87.204-1116
-  - 🇺🇸 美国_4
-  - 🇺🇸 US 21
+  - "[103]_RU_俄罗斯_213\r\r"
+  - yandex-1058-soOg
+  - 🇻🇪 VE 2
+  - 🇳🇱NL-193.29.139.217-0212
+  - 德国_358
   - 🛡️ @FreakConfigtrojan://telegram-id-privatevpns@63.178.209.45:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigvless://df0680ca-e43c-498d-ed86-8e196eedd012@185.231.205.248:8880?mode=gun&security=none&encryption=none&type=grpc#🛡️
     @FreakConfigvless://05519058-d2ac-4f28-9e4a-2b2a1386749e@63.178.209.45:22224?path=/telegram-channel-vlessconfig&security=tls&encryption=none&type=ws&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigtrojan://telegram-id-directvpn@63.178.209.45:22223?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#Telegram:@config_proxy
     🔥
-  - 美国_579
-  - 🇦🇹[openproxylist.com] ss-AT
-  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
-  - 🇺🇸US_194 |2.7MB/s
-  - 🇬🇧[openproxylist.com] ss-GB
-  - "[103]_RU_俄罗斯_211\r\r"
-  - 🇺🇸US-137.117.8.225-0187
-  - 🇫🇷 FR 8
-  - 🇺🇸 US 567
-  - 0|_101
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - yandex-530-C5wi
-  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
-  - Config🇨🇦@Do_itforyou
-  - 🇦🇹 AT 1
-  - '@meli_proxyy-Bxhq'
-  - 🇻🇪 VE 2
-  - "[103]PE_711\r\r"
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇵🇱PL_448
-  - "18|A_18056\r\r"
-  - 18|A_18069
-  - 德国-WEmq
-  - 🇺🇸US-38.12.23.251-5000
-  - ❓ 未知_101
-  - https://t.me/xyfqzy ⚡_16
-  - "[103]PE_739\r\r"
-  - "[103]PE_748\r\r"
-  - 🇩🇪[openproxylist.com] ss-DE
-  - 🇩🇪 DE 3
-  - "18|A_18063\r\r"
-  - "[103]PE_724\r\r"
-  - "[103]PE_709\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - yandex-608-tb8h
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇳🇱 NL 6
+  - 🇩🇪 DE 27
+  - 🇦🇪AE-151.242.251.131-0222
+  - 英国United+Kingdom
+  - US->NL->RTL->@DeamNet_Proxy_76
   - LAX_2
-  - 🇵🇱 PL 2
-  - 🇺🇸US_153 |2.5MB/s|NF
-  - 🇳🇴NO-185.213.23.226-0249
-  - "18|A_18061\r\r"
+  - LAX_8
+  - 15|FR_speednode_0079
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 🇫🇷FR-45.158.171.146-0203
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 🇺🇸 US 162
+  - 🇪🇸 ES_142
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - 🇦🇹[openproxylist.com] ss-AT
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇬🇧[openproxylist.com] ss-GB
+  - '@meli_proxyy-Bxhq'
+  - US_Buffalo_HostPapa_Claude14
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - 德国-WEmq
+  - 🇩🇪 DE 38
+  - 德国_362
+  - 🇳🇱 NL 15
   - 🇳🇴[openproxylist.com] ss-NO
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - yandex-1058-soOg
-  - "[103]PE_745\r\r"
-  - yandex-674-DFt9
-  - "[103]PE_735\r\r"
-  - 🇺🇸美国12 | ⬇️ 8.6MB/s
-  - 18|A_18102
-  - 18,51|🇵🇱_HAMRAH_147
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 🇫🇮[openproxylist.com] ss-FI-TnsT
-  - "[103]PE_743\r\r"
-  - 🇺🇸美国16 | ⬇️ 3.7MB/s
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 0|_101
+  - 🇳🇴NO-185.213.23.226-0249
+  - 🇫🇷 FR 8
+  - 官方优选_50
+  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
+  - "[103]PE_707\r\r"
+  - 🇦🇹 AT 1
+  - "德国(yudou66.com 玉豆免费节点)\r"
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +122\r\r"
-  - yandex-577
-  - "[103]PE_723\r\r"
-  - "[103]PE_741\r\r"
-  - "[103]PE_730\r\r"
-  - "18|A_5377\r\r"
-  - "18|A_18066\r\r"
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
-  - "[103]PE_721\r\r"
-  - 18|A_18067
-  - SJC_87
-  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "[103]PE_733\r\r"
-  - 🇬🇧GB-64.227.45.92-0263
-  - "[103]PE_737\r\r"
-  - SJC_83
-  - 🇷🇴RO-194.14.217.38-1081
-  - 🇬🇧GB-173.208.51.193-5005
-  - SJC_3
-  - "[103]PE_719\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - 🇺🇸 US 137
-  - '💦 36 - VLESS - Domain : 2096'
-  - 🇪🇪[openproxylist.com] ss-EE
-  - "[103]PE_714\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_729\r\r"
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
-  - CFW_8443-E77l
-  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
-  - US_Buffalo_HostPapa_Claude7
-  - 🇺🇸 US 2-ScE8
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - "[103]PE_707\r\r"
-  - 🇳🇱NL_443
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - 🇷🇴RO-185.126.237.38-0276
-  - 🇺🇸 US 102
-  - US_Elk Grove Village_HostPapa_Gemini_Claude
   - 🇵🇱 PL 3
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
-  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
-  - "[103]PE_712\r\r"
-  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
-  - 🇰🇷KR-154.90.62.168-4918
-  - 🇳🇱 NL 15
-  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
-  - 🇳🇱NL-46.243.3.42-0278
-  - 🇺🇸 US 391
-  - 🇩🇪DE-91.99.185.216-0257
-  - 18|A_18068
+  - 18|A_18102
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - "[103]PE_745\r\r"
+  - 18|A_18067
+  - "[103]PE_743\r\r"
+  - "[103]PE_730\r\r"
   - "[103]PE_749\r\r"
-  - NETHERLANDS-2
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_739\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_748\r\r"
+  - "[103]PE_727\r\r"
+  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
+  - yandex-674-DFt9
+  - 🇩🇪 DE 3
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - "[103]PE_712\r\r"
+  - "18|A_5377\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - 🇫🇮[openproxylist.com] ss-FI-TnsT
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 🇱🇻[openproxylist.com] ss-LV-14SW
+  - "[103]PE_741\r\r"
+  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - "[103]_俄罗斯_hamraH_128\r\r"
+  - yandex-577
+  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
+  - 18|A_18068
+  - "18|A_18063\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_733\r\r"
+  - 🇺🇸US-137.117.8.225-0187
+  - "[103]PE_735\r\r"
+  - "[103]PE_709\r\r"
+  - "[103]PE_737\r\r"
+  - 🇷🇴RO-185.126.237.38-0276
+  - 18,51|🇵🇱_HAMRAH_147
+  - "[103]PE_723\r\r"
+  - 🇬🇧GB-173.208.51.193-5005
+  - 🇯🇵JP-149.22.87.204-1116
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇺🇸 US 634
+  - "[103]PE_716\r\r"
+  - "18|A_18061\r\r"
+  - "[103]PE_714\r\r"
+  - github.com/Ruk1ng001_3836613565346433
+  - "[103]PE_720\r\r"
+  - "[103]PE_729\r\r"
+  - "[103]PE_719\r\r"
+  - 🇬🇧GB-64.227.45.92-0263
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - CFW_443-AQoO
+  - 🇪🇪[openproxylist.com] ss-EE
+  - "[103]PE_724\r\r"
+  - 🇩🇪 DE 42
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - "[103]PE_750\r\r"
+  - 🇷🇴RO-194.14.217.38-1081
   - NETHERLANDS-1
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - 🇸🇬 SG 3
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - 🇺🇸 US 641
+  - Config🇨🇦@Do_itforyou
+  - 18|A_18069
+  - 🇵🇱PL_448
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 791
+  - "18|A_18056\r\r"
+  - 🇳🇱NL-185.246.153.12-1108
+  - "[103]PE_711\r\r"
+  - 🇬🇧GB_165
+  - SJC_83
+  - NETHERLANDS-2
+  - UK-1
+  - 🇳🇱NL-46.243.3.42-0278
+  - ❓ 未知_101
+  - 🇺🇸 US 638
+  - 🇺🇸 US 20
+  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
+  - 🇺🇸 美国_4
+  - 🇵🇱 PL 2
+  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇳🇱NL-92.112.126.90-4910
+  - 🇺🇸_US_美国_2
+  - 🇩🇪DE-91.99.185.216-0257
+  - 🇺🇸_US_美国
+  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
+  - 🇬🇷 GR 1
+  - 🇺🇸US-38.12.23.251-5000
   - 🇫🇷FR-45.67.139.225-0314
-  - 🇩🇪 DE 38
-  - 🇰🇷 KR 2
+  - 🇰🇷KR-154.90.62.168-4918
+  - 🇭🇰HK-18.162.146.85-4987
+  - free公益代理
+  - 🇩🇪DE-46.165.194.96-0326
+  - 🇳🇱NL_443
+  - GERMAN
+  - 🇱🇻LV-216.173.69.250-0337
+  - SJC_3
+  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
   - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+81\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 美国(yfuye.com免费节点)_187
-  - 🇺🇸 US 555
-  - 🇱🇻[openproxylist.com] ss-LV-14SW
-  - 🇦🇷AR-38.54.45.129-4921
-  - 🇬🇷 GR 1
-  - UK-1
-  - "[103]俄罗斯_RU_SSS_109\r\r"
-  - GERMAN
-  - 🇺🇸 US 597
-  - 🇬🇧GB_165
-  - 🇩🇪 DE 42
-  - 🇮🇩 ID 1
-  - '💦 18 - VLESS - IPv4 : 2053'
-  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
-  - "[103]_RU_俄罗斯_123\r\r"
-  - '💦 32 - VLESS - IPv4 : 2087'
-  - 🇺🇸_US_美国_2
-  - 🇦🇺 AU 1
-  - 🇳🇱NL-92.112.126.90-4910
-  - US_Buffalo_HostPapa_Claude3
-  - 🇩🇪DE-46.165.194.96-0326
-  - yandex-406
-  - 🇺🇸_US_美国
-  - 🇹🇭 TH 1
-  - yandex-190-DgYn
-  - 🇺🇸 US 791
-  - 🇱🇻LV-216.173.69.250-0337
-  - US_Buffalo_HostPapa_Claude14
-  - 🇺🇸 US 596
-  - "[freefq]undefined\r\r"
-  - 🇺🇸 US 299
-  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 73
-  - 🇻🇳 VN 232
-  - 美国(yfuye.com免费节点)_87
-  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
-  - 🇻🇳 VN 192
-  - 🇭🇰HK-18.162.146.85-4987
-  - 🏁 ZZ_547
-  - 🇺🇸 US 634
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 310
-  - github.com/Ruk1ng001_3836613565346433
-  - 🇺🇸 US 641
-  - 🇻🇳 VN 21-9rAo
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 155
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 299
-  - github.com/Ruk1ng001_3764613639386561
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 248
-  - 🇮🇱 IL 1
-  - free公益代理
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 280
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 42
-  - 🇺🇸 US 883
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
-  - 🇻🇳 VN 166
-  - 🇻🇳 VN 84
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 45
-  - 🇻🇳 VN 39
-  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
-  - 🌍94@oneclickvpnkeys
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 282
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 6
-  - ❓ 未知_49
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 272
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 183
-  - 🇲🇰[openproxylist.com] ss-MK
-  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 275
-  - 🇻🇳 VN 94
-  - 🇮🇳 IN 2
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 186
+  - SJC_87
   - 🇵🇱[openproxylist.com] ss-PL
-  - 🇻🇳 VN 63
-  - 🇻🇳VN-103.186.155.20-083
-  - 🇻🇳 VN 287
-  - NRT_1
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 3
+  - 🇰🇷 KR 2
+  - yandex-406
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
+  - 🇺🇸 US 30
+  - github.com/Ruk1ng001_3764613639386561
+  - 美国(yfuye.com免费节点)_187
+  - 🇳🇱 NL 29
+  - yandex-190-DgYn
+  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
+  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
+  - 🇮🇳 IN 2
+  - 🇮🇱 IL 1
+  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
   - 美国(yfuye.com免费节点)_176
-  - 🇻🇳 VN 1
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - NRT_9
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 16-78jt
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 305
-  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
-  - 🇻🇳 VN 17
-  - 美国 053
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 2
-  - 日本(yudou77.top 玉豆免费节点)
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 145
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
-    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
-  - 🇻🇳 VN 70
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 266
-  - yandex-660-vPgZ
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 212
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 11
-  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 219
+  - 🇹🇭 TH 1
+  - 🇺🇸 US 883
   - 🇳🇱NL_3 |4.1MB/s|GPT|YT-NL|NF|D+|27%
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 🇦🇷AR-38.54.45.129-4921
+  - US_Buffalo_HostPapa_Claude3
+  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
+  - "[freefq]undefined\r\r"
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 280
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 68
+  - 🇳🇱 NL 32
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 274
+  - 🅼🅴🅷🅳🅸-pbUl
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 192
+  - 🏁 ZZ_547
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 139
+  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 45
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 72
   - 🇻🇳 VN 25
   - 🇻🇳 VN 115
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 44
-  - NRT_7
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 202
   - 🇻🇳 VN 276
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 263
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 171
+  - 🌍94@oneclickvpnkeys
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 250
   - 🇻🇳 VN 59
-  - 🇻🇳 VN 206
+  - 🇻🇳 VN 83
+  - 日本(yudou77.top 玉豆免费节点)
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 11
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 175
+  - 🇮🇩 ID 1
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 279
+  - 🇻🇳VN-103.186.155.20-083
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 270
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 135
-  - NRT_8
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 14
   - 🇻🇳 VN 193
-  - 🇳🇱 NL 29
-  - yandex-862
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 223
-  - NRT_2
-  - Singapore-2
-  - Singapore-1
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 206
   - 🇻🇳 VN 252
-  - yandex-980
-  - 0,79|TR-45.89.52.66-5553 | 1.677MB
-  - yandex-195-ilbM
-  - 🅼🅴🅷🅳🅸-pbUl
-  - yandex-995-m6JD
-  - TW2|@ripaojiedian-22750
-  - 🇮🇩ID-119.235.249.154-0317
-  - 台湾WAP-T-GPT
-  - ❓ 未知_39
-  - 🇳🇱 NL 32
-  - yandex-576
-  - IT-1
-  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
-  - 🇮🇳 IN 1
-  - 🇹🇼 台湾-3A7b
-  - 🇺🇸 US 30
-  - 🇭🇰 HK_168
-  - yandex-333
-  - HKG_1
-  - HKG_2
-  - HKG_5
-  - 🇻🇳VN-103.197.185.204-0329
-  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 142
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 219
+  - NRT_2
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 21-9rAo
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 102
+  - NRT_1
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 16-78jt
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 117
   - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 香港wap-T
-  - 🇺🇸 US 638
-  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
-  - 🇮🇷 IR 1
-  - 美国(yfuye.com免费节点)_169
-  - 🇺🇸 US 33
-  - yandex-863-S1cx
-  - FUK_1
-  - FUK_3
-  - FUK_2
-  - yandex-196-9frM
-  - V1-香港HKBGP01 隧道
-  - yandex-331
-  - 🇭🇰香港3 | ⬇️ 29.3MB/s
-  - TPE
-  - TW|@ripaojiedian-22749
-  - 🇺🇸US-23.184.200.69-0180
-  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
-  - 12|🇺🇸 美国|@ripaojiedian
-  - 美国USLA-T-GPT
-  - yandex-213-yWr0
-  - yandex-578
-  - yandex-458
-  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
-  - yandex-187-cLXw
-  - 新加坡SG-T
-  - 越南VN-T
-  - E 9F AC E 9F E AF A8KH-T-635
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_6139626263326265
+  - 🇻🇳 VN 161
+  - yandex-862
+  - 🇻🇳 VN 202
+  - 0,79|TR-45.89.52.66-5553 | 1.677MB
+  - NRT_9
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 263
+  - NRT_8
+  - 🇻🇳 VN 6
   - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - yandex-1008-5kKE
+  - ❓ 未知_39
+  - TW2|@ripaojiedian-22750
+  - 🇻🇳 VN 176
+  - 香港wap-T
+  - yandex-995-m6JD
+  - IT-1
+  - yandex-980
+  - Singapore-1
+  - Singapore-2
+  - 🇺🇸 US 33
+  - yandex-196-9frM
+  - 🇸🇬 新加坡_1
+  - TPE
+  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
+  - yandex-576
+  - 🇮🇩ID-119.235.249.154-0317
+  - 🇭🇰 HK_168
+  - 🇮🇷 IR 1
   - 🇩🇪[openproxylist.com] vless-DE-gdgV
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_3164386239623931
-  - yandex-216-kxRM
-  - 意大利IT-T
+  - HKG_2
+  - 🇮🇳 IN 1
+  - V1-香港HKBGP01 隧道
+  - NRT_7
+  - 🇻🇳VN-103.197.185.204-0329
+  - HKG_1
+  - 🇻🇳 VN 130
+  - yandex-195-ilbM
+  - yandex-863-S1cx
+  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
+  - CFW_443
+  - 🇹🇼 台湾-3A7b
+  - 12|🇺🇸 美国|@ripaojiedian
+  - FUK_2
+  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
+  - TW|@ripaojiedian-22749
+  - 🇻🇳 VN 73
+  - FUK_3
+  - yandex-578
+  - 🇺🇸_US_美国_2-LWEY
+  - FUK_1
+  - yandex-333
+  - E 9F AC E 9F E AF A8KH-T-635
+  - 越南VN-T
+  - yandex-213-yWr0
+  - 🇭🇰香港3 | ⬇️ 29.3MB/s
+  - yandex-187-cLXw
+  - yandex-331
+  - yandex-458
+  - "[113]undefined\r\r-ZPFE"
+  - 美国USLA-T-GPT
+  - yandex-1008-5kKE
+  - 新加坡SG-T
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
   - yandex-220
   - yandex-678-dgjO
-  - yandex-221
-  - 🇸🇬 新加坡_1
-  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 221
   - 🇺🇸 美国-拉斯维加斯-HY-002-1N-onvz
+  - 意大利IT-T
+  - yandex-216-kxRM
+  - yandex-221
+  - ❓ 未知_49
+  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 304
+  - 台湾WAP-T-GPT
   - yandex-223-AIX1
-  - 🇺🇸_US_美国_2-LWEY
-  - "[113]undefined\r\r-ZPFE"
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -12920,2171 +12767,2143 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - -Fmy9
+  - -6jfK
   - -yNEc
-  - 美国_1126491
+  - -Fmy9
   - -ToYF
   - Telegram:@config_proxy 🔥-qxm0
-  - 🇺🇸US_275 |3.2MB/s|NF|D+
-  - 🇺🇸US_89 |3.9MB/s|NF|D+
-  - 🇺🇸US_213 |1.0MB/s|NF|D+
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸 US 19
+  - US_Phoenix_Oracle Corporation_Claude2
+  - 15|GB_speednode_0157
+  - 🇰🇷KR_3 |2.6MB/s|NF
+  - 🇺🇸US_13 |1.0MB/s|NF|D+
+  - ❓Other_6 |2.0MB/s
+  - LU_speednode_0194
+  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
+  - ❓ 未知_113
+  - 🇳🇱|NL|@wxgqlfx|205
+  - ❓ 未知_124
+  - 🇺🇸US_10 |1.3MB/s|NF|D+
+  - 🇺🇸 美国_12
   - 15|CY_speednode_0032
-  - 🇺🇸 美国_1
-  - 🇸🇬 新加坡_4
-  - 🇺🇸 美国_8
-  - ❓Other_10 |1.3MB/s|NF
-  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|89
+  - 15|DE_speednode_0044
+  - ❓Other_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_275 |3.2MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇨🇦 加拿大_3
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇺🇸 美国_70
+  - 🇺🇸 美国_31
+  - ❓ 未知_71
+  - 🇺🇸US_137 |1.6MB/s|NF|D+
+  - ❓ 未知_59
+  - 🇺🇸US_54 |1.3MB/s|NF
+  - 🇺🇸US_111 |1.1MB/s|D+
+  - 🇺🇸US_39 |2.6MB/s
+  - 🇺🇸US_233 |1.6MB/s|NF|D+
+  - ❓ 未知_118
+  - 🇺🇸US_28 |2.0MB/s|NF
+  - 🇺🇸US_24 |1.1MB/s|NF|D+
+  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
+  - 🇸🇬 新加坡_2
+  - ❓Other_1 |2.0MB/s
+  - 🇯🇵|JP|@wxgqlfx|113
+  - 🇸🇬 新加坡_23
+  - 🇺🇸|US|@wxgqlfx|85
+  - KZ_speednode_0176
+  - 🇺🇸US_205 |1.4MB/s
+  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_6
+  - 🇺🇸US_44 |1.4MB/s
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸|US|@wxgqlfx|213
+  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
+  - DE_Frankfurt am Main_Oracle Corporation_Claude5
+  - 🇺🇸US_72 |1.1MB/s|GPT|NF
+  - 🇺🇸US_40 |1.6MB/s
+  - 🇺🇸 美国_20
+  - 🇺🇸US_42 |1.7MB/s|NF
+  - 🇬🇧|GB|@wxgqlfx|195
+  - 14|US_speednode_2
+  - 🇬🇧|GB|@wxgqlfx|199
+  - ❓ 未知_168
+  - 🇮🇳|IN|@wxgqlfx|234
   - 🇺🇸US_34 |2.5MB/s
-  - 🇸🇬 新加坡_5
+  - 14|CY_speednode_2
+  - SJC_20
+  - GB_speednode_0153
+  - 🇺🇸US_119 |2.7MB/s|NF|5%
+  - 🇺🇸US_48 |4.2MB/s
+  - KR_Seoul_Oracle Corporation_Claude22
+  - 🇺🇸US_77 |3.0MB/s|NF|D+
+  - ❓ 未知_106
+  - 14|US_speednode_20
+  - KZ_speednode_0173
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - 🇸🇬 新加坡_8
-  - 🇺🇸 美国_13
-  - 🇯🇵JP_5 |2.8MB/s|D+
-  - 🇺🇸US_24 |1.1MB/s|NF|D+
-  - 🇺🇸US_13 |1.0MB/s|NF|D+
-  - 🇺🇸US_85 |2.7MB/s|NF
-  - 🇺🇸US_46 |1.4MB/s
-  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_21 |1.4MB/s|NF
-  - ❓ 未知_86
-  - ❓ 未知_95
-  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_2 |1.2MB/s
-  - 15|ES_speednode_0070
-  - 🇺🇸 美国_12
-  - ❓ 未知_72
-  - 🇺🇸US_207 |1.9MB/s|NF|D+
-  - 🇺🇸US_1 |1.1MB/s
-  - 🇸🇬SG_2 |1.2MB/s|GPT
-  - LU_speednode_0194
-  - 🇮🇹IT_1 |1.1MB/s|NF
-  - 🇺🇸US_48 |4.2MB/s
-  - 🇺🇸US_233 |1.6MB/s|NF|D+
-  - 🇺🇸US_40 |1.6MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇺🇸US_12 |1.1MB/s|NF|D+
-  - 🇺🇸US_236 |4.6MB/s|NF
-  - 🇺🇸US_203 |1.3MB/s|NF|D+
-  - 🇺🇸US_10 |1.3MB/s|NF|D+
-  - 🇸🇬 新加坡_2
-  - 🇺🇸 美国_17
-  - 🇺🇸 美国_70
-  - 🇸🇬 新加坡_21
-  - 🇺🇸US_61 |2.5MB/s|NF|D+
-  - 🇺🇸 美国_49
-  - 🇺🇸 US 189
-  - 🇺🇸 美国_3
-  - 14|LT_speednode_2
-  - 🇺🇸US_42 |1.7MB/s|NF
-  - ❓ 未知_61
-  - RU_speednode_0215
-  - 14|US_speednode_11
-  - ❓Other_8 |1.3MB/s
-  - 🇸🇬SG_4 |1.3MB/s
-  - US_speednode_0304
-  - ❓ 未知_62
-  - ❓Other_7 |1.3MB/s
-  - 15|ES_speednode_0073
-  - KR_Seoul_Oracle Corporation_Claude17
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇺🇸US_98 |1.6MB/s|NF|D+
-  - 🇺🇸US_21 |1.2MB/s
-  - 🇺🇸US_43 |4.7MB/s|NF|D+
-  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
-  - ❓Other_6 |2.0MB/s
-  - KZ_speednode_0173
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
-  - US_Elk Grove Village_HostPapa_Claude3
-  - 🇬🇧|GB|@wxgqlfx|132
-  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
-  - 🇺🇸 美国_20
-  - 🇸🇬 新加坡_12
-  - ❓ 未知_59
-  - 🇸🇬 新加坡_20
-  - 🇸🇮|SI|@wxgqlfx|138
-  - 🇺🇸US_68 |1.6MB/s|NF
-  - ❓ 未知_128
-  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
-  - Channel :@vmessorg
-  - 🇺🇸 美国_32
-  - 🇧🇦|BA|@wxgqlfx|235
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - ❓ 未知_135
-  - 🇨🇦 加拿大_7
-  - 14|US_speednode_2
-  - 🇰🇷 韩国_2
-  - 🇯🇵|JP|@wxgqlfx|113
-  - 15|FR_speednode_0081
   - ES_speednode_0072
-  - ❓ 未知_179
-  - 🇺🇸US_133 |1.8MB/s|NF|D+
-  - 14|GB_speednode_2
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - ❓ 未知_56
-  - ❓ 未知_107
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇸🇬 新加坡_28
-  - 🇺🇸US_246 |2.6MB/s|NF|D+
-  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
-  - GB_speednode_0149
-  - KR_Seoul_Oracle Corporation_Claude21
-  - 🇩🇪|DE|@wxgqlfx|131
-  - 🇺🇸US_107 |1.5MB/s|NF|D+
-  - 🇯🇵JP_6 |1.4MB/s|NF
-  - 🇨🇦 加拿大_6
-  - 🇺🇸|US|@wxgqlfx|215
-  - ❓ 未知_113
-  - 🇱🇹|LT|@wxgqlfx|216
-  - 14|US_speednode_14
-  - ❓ 未知_75
+  - 🇺🇸 美国_56
+  - 🇯🇵JP_5 |2.8MB/s|D+
+  - 🇸🇬 新加坡_12
+  - 🇺🇸US_100 |4.3MB/s|NF
+  - ❓ 未知_57
   - 🇸🇬 新加坡_27
-  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
-  - 🇬🇧|GB|@wxgqlfx|92
-  - 15|DE_speednode_0054
-  - ❓ 未知_118
-  - 🇳🇱|NL|@wxgqlfx|123
-  - 15|US_speednode_0379
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸 美国_15
-  - GB_speednode_0153
-  - 🇺🇸 美国_6
-  - 🇸🇬 新加坡_3
-  - ❓ 未知_138
-  - 🇺🇸US_210 |1.7MB/s|NF|D+
-  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
-  - HK香港(mibei77.com 米贝节点分享)-VOUv
-  - 🇺🇸美国20 | ⬇️ 1.1MB/s
-  - 🇺🇸 美国_66
-  - CZ_speednode_0038
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
-  - 🇺🇸US_91 |2.6MB/s|NF|D+
-  - JP_speednode_0167
-  - 🇺🇸 美国_57
-  - KR_Seoul_Oracle Corporation_Claude4
-  - 🇺🇸US_279 |3.1MB/s|NF|0%
-  - 🇺🇸US_177 |2.6MB/s|NF|D+
-  - 🇺🇸 US 69
-  - 🇺🇸US_28 |2.0MB/s|NF
-  - ❓ 未知_129
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 🇺🇸US_119 |2.7MB/s|NF|5%
-  - 🇰🇷KR_3 |2.6MB/s|NF
-  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
-  - 🇮🇳|IN|@wxgqlfx|234
-  - ❓ 未知_150
-  - KR_Seoul_Oracle Corporation_Claude18
-  - 🇺🇸 美国_22
-  - US_Phoenix_Oracle Corporation_Claude3
-  - RU_speednode_0242
-  - 15|DE_speednode_0044
-  - 🇺🇸 美国_34
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +120\r\r"
-  - 14|DE_speednode_4
-  - 🇺🇸US_111 |2.8MB/s
-  - Linknet+fastnet+Asn+(ID)
-  - 🇺🇸US_97 |2.6MB/s
-  - ❓ 未知_168
-  - 🇺🇸 美国_65
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - ❓ 未知_117
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
-  - ❓ 未知_142
-  - RU_speednode_0237
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸|US|@wxgqlfx|197
-  - 🇬🇧|GB|@wxgqlfx|195
-  - US_Buffalo_HostPapa_Claude11
-  - 🇯🇵JP_3 |3.2MB/s|NF|D+
-  - ❓ 未知_177
-  - 15|US_speednode_0393
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 德国(yudou123.top 玉豆免费节点)
-  - US_Dallas_HostPapa_Claude2
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +119\r\r"
-  - 🇷🇺|RU|@wxgqlfx|109
-  - 🇺🇸US_24 |1.4MB/s
-  - 🇺🇸US_80 |1.3MB/s|GPT|NF
-  - 🇺🇸 美国_5
-  - 🇺🇸|US|@wxgqlfx|85
-  - 🇺🇸 美国_25
-  - 🇺🇸US_4 |1.5MB/s|NF|D+
-  - 🇺🇸美国24 | ⬇️ 5.1MB/s
-  - CH_speednode_0031
-  - 🇺🇸US_17 |1.4MB/s
-  - ❓ 未知_81
-  - ❓ 未知_88
-  - 129.146.46.164_Claude
-  - -6jfK
-  - 🇺🇸US_81 |2.2MB/s|GPT|D+
-  - ❓ 未知_109
-  - 14|CY_speednode_2
-  - 🇳🇱|NL|@wxgqlfx|205
-  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
-  - 15|NL_speednode_0209
-  - US_speednode_0407
-  - 🇺🇸US_219 |2.7MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - 🇺🇸US_66 |3.2MB/s|NF|D+
-  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
-  - 14|SI_speednode_
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸 美国_27
-  - 🇸🇬SG_11 |1.7MB/s|NF
-  - 🇺🇸US_237 |4.4MB/s
-  - 🇯🇵JP_7 |1.9MB/s|NF|D+
-  - 🇺🇸|US|@wxgqlfx|164
-  - 官方优选_11
-  - ❓ 未知_71
-  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
-  - 美国(yudou123.top 玉豆免费节点)-goHm
-  - 🇯🇴|JO|@wxgqlfx|122
   - 🇺🇸 美国_58
-  - 🇺🇸|US|@wxgqlfx|128
-  - 15|US_speednode_0372
-  - HK香港(mibei77.com 米贝节点分享)-ezUR
-  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
-  - HK香港(mibei77.com 米贝节点分享)-exnr
-  - 🇱🇹|LT|@wxgqlfx|141
-  - 14|US_speednode_19
-  - GB_speednode_0143
-  - 15|FR_speednode_0078
-  - 🇺🇸 US 46
-  - 🇺🇸 美国_51
-  - 14|RU_speednode_4
-  - JP_Tokyo_Oracle Corporation_Claude1
-  - 🇨🇾|CY|@wxgqlfx|217
-  - SC_speednode_0244
-  - 🇺🇸 美国_48
-  - GB_speednode_0146
-  - 15|US_speednode_0405
-  - 15|GB_speednode_0157
+  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
+  - 官方优选_11
   - 🇺🇸US_27 |2.8MB/s
-  - 🇺🇸US_100 |1.0MB/s|NF|D+
-  - 🇺🇸US_195 |1.1MB/s|GPT|NF
-  - SJC_49
-  - KR_Seoul_Oracle Corporation_Claude3
-  - 🇺🇸US_179 |2.4MB/s|NF
-  - SJC_69
-  - ❓ 未知_145
-  - 🇭🇰HK_20 |2.6MB/s|D+
-  - JO_speednode_0165
-  - SJC_48
-  - 14|US_speednode_8
-  - '💦 21 - VLESS - Clean IP : 2053'
-  - ❓ 未知_79
-  - SJC_80
-  - 🇺🇸 美国_72
-  - 🇺🇸US_141 |2.3MB/s|NF|D+
-  - 🇺🇸US_192 |1.6MB/s|NF|D+
-  - 🇺🇸US_44 |1.4MB/s
-  - 🇺🇸 美国_67
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - SJC_62
-  - JP_Tokyo_Oracle Corporation_Claude2
-  - US_Phoenix_Oracle Corporation_Claude2
-  - SJC_9
-  - 🇸🇬 新加坡_33
-  - 🌐|UN|@wxgqlfx|93
-  - 🇭🇰 香港_2
-  - ❓ 未知_123
-  - ❓ 未知_132
-  - 4Jadi-3920-29772
-  - 15|CY_speednode_0036
-  - 🇺🇸 US 70
-  - 🇺🇸US_187 |2.8MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|224
-  - ❓Other_8 |1.0MB/s|NF
-  - ❓Other_1 |2.0MB/s
-  - KR_Seoul_Oracle Corporation_Claude22
-  - 🇺🇸US_248 |2.3MB/s|NF|D+
-  - 14|ES_speednode_
-  - 🇳🇱|NL|@wxgqlfx|223
-  - 🇺🇦|UA|@wxgqlfx|99
-  - ❓ 未知_130
-  - 🇬🇧|GB|@wxgqlfx|199
-  - 🇺🇸US_51 |3.8MB/s
-  - 15|GB_speednode_0130
-  - 14|US_speednode_20
-  - 15|DE_speednode_0060
-  - KR_Seoul_Oracle Corporation_Claude1
-  - 🇺🇸US_205 |1.4MB/s
-  - ❓ 未知_169
-  - 15|FR_speednode_0079
-  - 🇺🇸 美国_69
-  - 美国-hPRG
-  - 🇺🇸US_106 |4.2MB/s|NF
-  - 🇺🇸US_131 |1.5MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S4\r\r"
-  - 🇺🇸 US 279
-  - SG_Singapore_Oracle Corporation_Claude1
-  - 🇺🇸|US|@wxgqlfx|89
-  - 🇫🇷FR_1 |2.7MB/s
-  - 15|US_speednode_0397
-  - 服务器-地址池-162.159.19.82
-  - 🇱🇹|LT|@wxgqlfx|91
-  - 🇺🇸US_145 |2.5MB/s|NF
-  - 15|NL_speednode_0212
-  - ❓ 未知_105
-  - 🇸🇬 新加坡_17
-  - RU_speednode_0240
-  - 15|US_speednode_0273
-  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
-  - yandex-476-Gzf7
-  - 🇦🇺|AU|@wxgqlfx|225
-  - SJC_31
-  - 🇺🇸US_199 |1.2MB/s|NF|D+
-  - ❓ 未知_76
-  - 🇺🇸US_72 |1.1MB/s|GPT|NF
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸US_10 |2.0MB/s
+  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇸🇬SG_5 |1.4MB/s|NF|D+
   - 🇺🇸 美国_14
-  - ❓ 未知_120
-  - 🇺🇸US_137 |1.6MB/s|NF|D+
-  - SJC_34
-  - 🇺🇸 US 164
-  - US_Elk Grove Village_HostPapa_Claude2
-  - ❓ 未知_106
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - US_Los Angeles_HostPapa_Claude1
-  - 🇺🇸美国2 | ⬇️ 1.1MB/s
-  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - ❓ 未知_72
+  - 14|SI_speednode_
+  - RU_speednode_0237
+  - 🇺🇸 美国_28
+  - 🇬🇧|GB|@wxgqlfx|92
+  - 🇺🇸US_115 |3.0MB/s|NF|0%
+  - 🇺🇸US_21 |1.4MB/s|NF
+  - 🇺🇸 美国_5
+  - ❓ 未知_177
+  - ❓ 未知_76
+  - RU_speednode_0215
+  - 🇸🇬 新加坡_6
+  - 15|US_speednode_0393
+  - ❓Other_8 |1.0MB/s|NF
+  - KR_Seoul_Oracle Corporation_Claude5
+  - 🇺🇸US_21 |1.2MB/s
+  - 🌐|UN|@wxgqlfx|110
+  - 15|NL_speednode_0209
+  - ❓ 未知_128
+  - US_speednode_0375
+  - 🇸🇬 新加坡_21
+  - 🇺🇸US_98 |1.6MB/s|NF|D+
+  - 🇯🇴|JO|@wxgqlfx|122
+  - 🇺🇸|US|@wxgqlfx|144
+  - 🇺🇸US_1 |1.1MB/s
+  - 🇱🇹|LT|@wxgqlfx|141
+  - 🇭🇰 香港_2
+  - ❓ 未知_135
+  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
+  - 🇸🇬 新加坡_28
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
   - 14|US_speednode_9
-  - GB_speednode_0136
-  - SJC_18
-  - US_speednode_0408
-  - 🇸🇨|SC|@wxgqlfx|163
-  - SJC_85
-  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
-  - 🇺🇸美国16 | ⬇️ 2.5MB/s
-  - 🇺🇸US_218 |1.6MB/s|NF|D+
-  - KZ_speednode_0176
-  - 🇺🇸 US 63
-  - 🇷🇺|RU|@wxgqlfx|133
-  - DE_Frankfurt am Main_Oracle Corporation_Claude5
-  - '💦 35 - VLESS - Clean IP : 2087'
-  - KR_Seoul_Oracle Corporation_Claude19
-  - 🇺🇸US_111 |1.1MB/s|D+
-  - SJC_13
+  - 🇸🇬SG_11 |1.7MB/s|NF
+  - ❓ 未知_95
+  - HK香港(mibei77.com 米贝节点分享)-ezUR
+  - 🇺🇸US_94 |1.8MB/s|50%
+  - 15|US_speednode_0273
+  - 🇺🇸US_104 |3.8MB/s
+  - 🇺🇸 美国_51
+  - 🇺🇸US_192 |1.6MB/s|NF|D+
+  - 14|ES_speednode_
+  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
   - 🇺🇸US_126 |1.9MB/s|NF|D+
+  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
+  - US_speednode_0414
+  - 🇺🇦|UA|@wxgqlfx|99
+  - 🇺🇸 美国_64
+  - 14|US_speednode_19
+  - 🇺🇸 美国_16
+  - 🇸🇬 新加坡_32
+  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
+  - 🇺🇸US_42 |4.1MB/s|NF|D+
+  - 15|NL_speednode_0212
+  - 🇸🇬|SG|@wxgqlfx|224
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
+  - 🇺🇸US_227 |3.1MB/s|NF
+  - US_Phoenix_Oracle Corporation_Claude3
+  - ❓Other_8 |1.3MB/s
+  - 14|GB_speednode_2
+  - 🇺🇸US_26 |4.3MB/s
+  - ❓Other_10 |1.3MB/s|NF
+  - 🇺🇸US_12 |1.1MB/s|NF|D+
+  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_236 |4.6MB/s|NF
+  - 🇺🇸US_60 |1.9MB/s|NF|D+
+  - US_speednode_0304
+  - 🇨🇦 加拿大_6
+  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
+  - 🇺🇸US_80 |1.3MB/s|GPT|NF
+  - SC_speednode_0244
+  - SJC_81
+  - 🇯🇵JP_11 |3.1MB/s|NF|D+
+  - 🇺🇸US_2 |1.2MB/s
+  - 🇺🇸US_97 |2.6MB/s
+  - 🇰🇷 韩国_2
+  - 🇺🇸US_66 |3.2MB/s|NF|D+
+  - 🇺🇸US_237 |4.4MB/s
+  - DE_Frankfurt am Main_Oracle Corporation_Claude1
+  - 🇺🇸 美国_68
+  - 🇺🇸US_195 |1.1MB/s|GPT|NF
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸US_207 |1.9MB/s|NF|D+
+  - ❓ 未知_56
+  - ❓ 未知_127
+  - HK香港(mibei77.com 米贝节点分享)-VOUv
+  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
+  - 🇺🇸US_107 |1.5MB/s|NF|D+
+  - SJC_59
+  - 🇺🇸US_246 |2.6MB/s|NF|D+
+  - 🇺🇸美国20 | ⬇️ 1.1MB/s
+  - US_Elk Grove Village_HostPapa_Claude3
+  - 🇷🇺|RU|@wxgqlfx|133
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - ❓ 未知_62
+  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
+  - 🇦🇺|AU|@wxgqlfx|225
+  - 🇺🇸US_187 |2.8MB/s|NF|D+
+  - GB_speednode_0149
+  - 🇺🇸US_68 |1.6MB/s|NF
+  - 🇺🇸 美国_61
+  - ❓ 未知_105
+  - 14|DE_speednode_4
   - SJC_68
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_60
+  - 🇸🇬 新加坡_5
+  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
+  - 🇺🇸US_107 |1.9MB/s|NF
+  - 🇸🇬 新加坡_3
+  - 🇺🇸 美国_17
+  - 🇬🇧|GB|@wxgqlfx|132
+  - US_speednode_0408
+  - ❓ 未知_138
+  - 🇩🇪|DE|@wxgqlfx|131
+  - RU_speednode_0240
+  - 14|FR_speednode_
+  - KR_Seoul_Oracle Corporation_Claude2
+  - 🇺🇸 美国_48
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - 15|FR_speednode_0078
+  - 🇺🇸美国16 | ⬇️ 2.5MB/s
+  - 🇺🇸US_203 |1.3MB/s|NF|D+
+  - 15|ES_speednode_0073
+  - SJC_80
+  - 15|US_speednode_0379
+  - 🇭🇰HK_30 |3.5MB/s|NF
+  - US_Los Angeles_HostPapa_Claude1
+  - US_speednode_0385
+  - 14|US_speednode_11
+  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸 美国_44
+  - 🇺🇸US_77 |1.1MB/s|D+
+  - KR_Seoul_Oracle Corporation_Claude4
+  - 14|US_speednode_8
+  - 🇺🇸 美国_46
+  - 🇺🇸US_91 |2.6MB/s|NF|D+
+  - 🇷🇺|RU|@wxgqlfx|109
+  - 🇺🇸US_6 |1.2MB/s
+  - ❓ 未知_167
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 美国_47
+  - 🇺🇸US_213 |1.0MB/s|NF|D+
+  - KR_Seoul_Oracle Corporation_Claude3
+  - 15|FR_speednode_0081
+  - 🇺🇸 美国_69
+  - 🇺🇸US_100 |1.0MB/s|NF|D+
+  - 🇺🇸 US 46
+  - 🇺🇸US_199 |1.2MB/s|NF|D+
+  - 🇨🇾|CY|@wxgqlfx|217
+  - 14|LT_speednode_2
+  - SJC_49
+  - US_speednode_0373
+  - 🇸🇬 新加坡_17
+  - ❓ 未知_151
+  - SJC_26
+  - 服务器-地址池-162.159.19.82
+  - 🇺🇸 美国_8
+  - 🇺🇸 US 279
+  - 🇺🇸 美国_27
+  - SJC_18
+  - KR_Seoul_Oracle Corporation_Claude18
+  - 🇺🇸 美国_74
+  - Channel :@vmessorg
+  - ❓ 未知_150
+  - CZ_speednode_0038
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - 🇭🇰 香港_9
+  - 🇺🇸US_133 |1.8MB/s|NF|D+
+  - 15|RU_speednode_0241
+  - 🇺🇸US_224 |2.9MB/s|NF|D+
+  - JP_Tokyo_Oracle Corporation_Claude2
+  - JP_speednode_0167
+  - 🇺🇸US_17 |1.4MB/s
+  - 129.146.46.164_Claude
+  - 15|BR_speednode_0023
+  - 🇺🇸 美国_53
+  - Linknet+fastnet+Asn+(ID)
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 美国(yudou123.top 玉豆免费节点)-goHm
+  - 15|US_speednode_0372
+  - '@ShadowProxy66 🇨🇦-dCqB'
+  - 🇺🇸US_75 |2.3MB/s|NF|D+
+  - 🇺🇸 美国_39
+  - 🇸🇮|SI|@wxgqlfx|138
+  - 🇺🇸US_24 |3.3MB/s|GPT
+  - ❓ 未知_75
+  - SJC_47
+  - 🇺🇸 US 69
+  - ❓ 未知_107
+  - 🇳🇱|NL|@wxgqlfx|121
+  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - ❓ 未知_61
+  - GB_speednode_0145
+  - 🇳🇱|NL|@wxgqlfx|123
+  - KR_Seoul_Oracle Corporation_Claude21
+  - ❓ 未知_126
+  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
+  - 🇸🇬SG_4 |1.3MB/s
+  - ❓Other_7 |1.3MB/s
+  - SJC_85
+  - 14|US_speednode_6
+  - 德国(yudou123.top 玉豆免费节点)
+  - SJC_30
+  - 14|CZ_speednode_
+  - 🇺🇸US_97 |2.8MB/s|NF
+  - SJC_31
+  - 🇺🇸US_131 |1.5MB/s|NF|D+
+  - SG_Singapore_Oracle Corporation_Claude2
+  - 🇨🇦 加拿大_5
+  - 🇺🇸|US|@wxgqlfx|140
+  - US_Elk Grove Village_HostPapa_Claude2
+  - '💦 18 - VLESS - IPv4 : 2053'
+  - 🇸🇬 新加坡_16
+  - 🇳🇱|NL|@wxgqlfx|223
+  - SJC_50
+  - 🇱🇹|LT|@wxgqlfx|91
+  - SJC_13
+  - 🇺🇸US_46 |1.4MB/s
+  - 🇭🇰 香港_12
+  - 🇭🇰HK_20 |2.6MB/s|D+
+  - 🇺🇸US_92 |1.3MB/s|NF|D+
+  - 🇺🇸 US 27
+  - PENTANET+LIMITED+(AU)
+  - 15|DE_speednode_0054
+  - 🇺🇸US_79 |1.3MB/s|NF|D+
+  - 🇺🇸US_111 |2.8MB/s
+  - 🇸🇬 新加坡_33
+  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
+  - 🇺🇸 美国_25
+  - 🇺🇸|US|@wxgqlfx|215
+  - 🇸🇬SG_2 |1.2MB/s|GPT
+  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
+  - 🇸🇮|SI|@wxgqlfx|135
+  - ❓ 未知_169
+  - 14|SC_speednode_2
+  - SJC_62
+  - RU_speednode_0242
+  - 🇯🇵JP_6 |1.4MB/s|NF
+  - 🇺🇸 美国_18
+  - 🇺🇸US_43 |4.7MB/s|NF|D+
+  - 🇺🇸 US 19
+  - 服务器-老旧-154.92.9.174
+  - 🇺🇸|US|@wxgqlfx|197
+  - 15|FR_speednode_0080
+  - 15|CY_speednode_0036
+  - 🇸🇬 新加坡_4
+  - 🇺🇸 美国_72
+  - '💦 28 - VLESS - Clean IP : 2083'
+  - 🇺🇸 US 19-zlJR
+  - KR_Seoul_Oracle Corporation_Claude17
+  - KR_Seoul_Oracle Corporation_Claude1
+  - ❓ 未知_81
+  - 15|GB_speednode_0130
+  - 🇺🇸US_218 |1.6MB/s|NF|D+
+  - 15|US_speednode_0397
+  - ❓ 未知_146
+  - 🇺🇸US_177 |2.6MB/s|NF|D+
+  - US_speednode_0407
+  - SJC_24
+  - SJC_17
+  - 15|NL_speednode_0210
+  - ❓ 未知_117
+  - US_Dallas_HostPapa_Claude2
+  - 🇺🇸 US 8
+  - SJC_9
+  - Akamai+Technologies,+Inc.+(SG)
+  - ❓ 未知_109
+  - GB_speednode_0146
+  - '💦 3 - VLESS - IPv4 : 443'
+  - GB_speednode_0136
+  - 🇺🇸US_4 |1.5MB/s|NF|D+
+  - 🇺🇸US_141 |2.3MB/s|NF|D+
+  - '💦 16 - VLESS - Domain : 2053'
+  - ❓ 未知_129
+  - 🇺🇸US_10 |2.0MB/s
+  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_64 |2.5MB/s|D+
+  - US_Buffalo_HostPapa_Claude10
+  - SJC_78
+  - 🇪🇪|EE|@wxgqlfx|130
   - 🇺🇸 美国_43
   - SJC_35
-  - SJC_24
-  - SJC_6
-  - SJC_81
-  - 🇺🇸|US|@wxgqlfx|213
-  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
-  - 🇸🇬 新加坡_32
-  - '💦 28 - VLESS - Clean IP : 2083'
-  - 🇺🇸|US|@wxgqlfx|144
-  - 🇭🇰 香港_9
-  - US_Buffalo_HostPapa_Claude10
-  - ❓ 未知_124
-  - 🇺🇸 美国_31
-  - 服务器-老旧-154.92.9.174
+  - 🇺🇸美国24 | ⬇️ 5.1MB/s
+  - 🇺🇸US_85 |2.7MB/s|NF
   - US_Elk Grove Village_HostPapa_Claude4
-  - SJC_50
-  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
-  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
-  - 🇺🇸 US 8
-  - 🇺🇸 美国_61
-  - 🇭🇰 香港_6
-  - ❓ 未知_126
-  - Evoxt+Enterprise+(MY)
-  - 🇺🇸 US 87
-  - SJC_43
-  - 15|RU_speednode_0241
-  - 🇸🇬 新加坡_23
-  - 🇺🇸|US|@wxgqlfx|140
-  - ❓ 未知_165
-  - 🇺🇸|US|@wxgqlfx|151
-  - 🇭🇰HK_30 |3.5MB/s|NF
-  - 15|NL_speednode_0210
-  - ❓ 未知_125
-  - US_speednode_0375
-  - 🇯🇵JP_11 |3.1MB/s|NF|D+
-  - GB_speednode_0145
-  - 🇺🇸US_227 |3.1MB/s|NF
-  - 🇺🇸美国22 | ⬇️ 1.1MB/s
-  - free公益代理1
-  - US_speednode_0403
-  - 🇺🇸US_224 |2.9MB/s|NF|D+
-  - 🇺🇸US_105 |4.7MB/s|NF|50%
-  - 🇭🇰HK_32 |1.3MB/s|NF|D+
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - DE_Frankfurt am Main_Oracle Corporation_Claude1
-  - 🇺🇸 US 67
-  - 🇺🇸 US 11
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸 美国_39
-  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
-  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
-  - SJC_26
-  - 🇺🇸US_88 |1.6MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|104
-  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - 🇨🇦 加拿大_7
+  - 美国_1126491
+  - 🇱🇹|LT|@wxgqlfx|216
+  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
+  - 🇺🇸 美国_34
+  - 0|_143
   - 🇺🇸US_239 |3.3MB/s|NF
-  - 🇳🇱|NL|@wxgqlfx|121
-  - SJC_78
-  - '💦 3 - VLESS - IPv4 : 443'
-  - 🇸🇮|SI|@wxgqlfx|117
-  - 🇨🇦 加拿大_5
-  - 14|FR_speednode_
-  - '💦 23 - VLESS - Domain : 2083'
-  - 🇭🇰 香港_12
-  - 🇸🇮|SI|@wxgqlfx|135
-  - 🇺🇸 美国_53
-  - SJC_47
-  - 服务器-优选-162.159.241.3
-  - 15|US_speednode_0398
-  - US_speednode_0385
-  - 🇸🇬 新加坡_30
-  - 🇺🇸US_6 |1.2MB/s
-  - 🇺🇸[openproxylist.com] ss-US-huKy
-  - 🇸🇬 新加坡_6
-  - 🇺🇸 美国_68
-  - SJC_33
-  - 🇺🇸 美国_46
-  - 🇺🇸 美国_47
-  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
-  - 🇺🇸 美国_18
-  - ❓ 未知_172
-  - 🇺🇸 US 23
-  - 15|FR_speednode_0080
-  - DE_Falkenstein_Hetzner Online GmbH_Claude1
-  - 官方优选_34
+  - ❓ 未知_142
+  - 🇺🇸 US 63
+  - 🇺🇸 US 11
+  - SG_Singapore_Oracle Corporation_Claude1
+  - 14|US_speednode_14
+  - HK香港(mibei77.com 米贝节点分享)-exnr
+  - GB_speednode_0143
+  - 🇺🇸|US|@wxgqlfx|128
+  - 🇺🇸 美国_67
+  - '💦 35 - VLESS - Clean IP : 2087'
+  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
+  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
+  - 🇺🇸US_210 |1.7MB/s|NF|D+
+  - 🇺🇸 美国_50
+  - 🇺🇸US_51 |3.8MB/s
+  - 🇸🇬 新加坡_8
+  - 🇺🇸US_105 |4.7MB/s|NF|50%
   - 🇺🇸|US|@wxgqlfx|106
-  - 🇺🇸[openproxylist.com] ss-US
-  - 🇺🇸|US|@wxgqlfx|114
-  - SJC_61
-  - 🇺🇸US_100 |4.3MB/s|NF
+  - 🇺🇸 美国_65
+  - 🇸🇮|SI|@wxgqlfx|117
+  - 🇭🇰HK_32 |1.3MB/s|NF|D+
+  - 🇺🇸 US 2-ScE8
+  - 🇺🇸 美国_66
+  - 🇺🇸US_65 |1.0MB/s|NF|D+
+  - SJC_33
+  - SJC_69
+  - 🇺🇸US_279 |3.1MB/s|NF|0%
+  - 🇺🇸 美国_49
+  - 🇺🇸 美国_15
+  - 🇺🇸US_110 |4.2MB/s|GPT
+  - 🇺🇸 美国_6
+  - 🇺🇸US_219 |2.7MB/s|NF|D+
+  - LT_speednode_0190
+  - 🇺🇸美国2 | ⬇️ 1.1MB/s
+  - '💦 21 - VLESS - Clean IP : 2053'
+  - 服务器-优选-104.19.31.147
+  - 🇺🇸 美国_32
+  - 🇸🇨|SC|@wxgqlfx|163
+  - 🇺🇸 美国_41
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - ❓ 未知_130
+  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
+  - CH_speednode_0031
+  - 服务器-优选-104.21.127.23
+  - 🇺🇸 美国_13
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - 14|SC_speednode_3
+  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
+  - 🇺🇸 US 70
+  - free公益代理1
+  - 🇺🇸 US 44
+  - 🇭🇰HK_13 |2.7MB/s|NF
+  - 🇺🇸 美国_3
+  - 🇺🇸 US 164
+  - 4Jadi-3920-29772
+  - 🇺🇸US_179 |2.4MB/s|NF
+  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
+  - 🇺🇸 美国_1
+  - ❓ 未知_145
   - 🇸🇬SG_12 |2.5MB/s|GPT|NF|D+
-  - ❓ 未知_57
-  - 🇺🇸US_104 |3.8MB/s
-  - 🇺🇸 US 22
+  - 15|US_speednode_0398
+  - 🇺🇸|US|@wxgqlfx|164
+  - 🇸🇬|SG|@wxgqlfx|104
+  - ❓ 未知_120
+  - '💦 32 - VLESS - IPv4 : 2087'
+  - ❓ 未知_165
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - ❓ 未知_125
+  - 🇺🇸US_145 |2.5MB/s|NF
+  - 官方优选_34
+  - 🇺🇸US_248 |2.3MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|151
+  - ❓ 未知_79
+  - SJC_34
+  - 🇺🇸 美国_57
+  - ❓ 未知_123
+  - SJC_61
+  - 🇸🇬 新加坡_30
+  - 服务器-优选-162.159.241.3
+  - US_7
+  - 🇺🇸 US 87
+  - ❓ 未知_86
+  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
+  - Evoxt+Enterprise+(MY)
+  - 🇺🇸 美国_22
+  - 🇺🇸 US 67
+  - JP_Tokyo_Oracle Corporation_Claude1
+  - DE_Falkenstein_Hetzner Online GmbH_Claude1
+  - 15|US_speednode_0405
+  - 🇺🇸美国28 | ⬇️ 2.0MB/s
+  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
+  - JO_speednode_0165
+  - 14|RU_speednode_4
+  - 🇺🇸 US 55
+  - 🇸🇬 新加坡_20
+  - yandex-476-Gzf7
+  - KR_Seoul_Oracle Corporation_Claude19
+  - 🇭🇰 香港_6
+  - US_speednode_0403
+  - 🇺🇸US-104.192.226.106-0186
+  - 🌐|UN|@wxgqlfx|93
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +119\r\r"
+  - 🇺🇸 US 145
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸|US|@wxgqlfx|114
+  - 🇺🇸 US 299
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - 美国-hPRG
+  - 🇺🇸 US 391
+  - '💦 23 - VLESS - Domain : 2083'
+  - ❓ 未知_88
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +40\r\r"
-  - 🇺🇸 美国_56
-  - ES_speednode_0075
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 🇺🇸 美国_41
-  - 🇺🇸 US 68
+  - 🇺🇸 US 23
   - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
-  - 🇺🇸US_200 |1.4MB/s|NF|D+
-  - 🇺🇸 US 55
-  - 服务器-优选-104.19.31.147
-  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
-  - 🇺🇸 US 19-zlJR
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸9 |  4.6MB/s|Disney|Openai
-  - CFW_443
-  - 🇺🇸US_60 |1.9MB/s|NF|D+
-  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_77 |3.0MB/s|NF|D+
-  - KR_Seoul_Oracle Corporation_Claude5
-  - US_7
-  - 🇨🇦 CA 1
-  - SJC_59
-  - 美国 - 洛杉矶 - NTT America - 92
-  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
-  - 🇺🇸US_107 |1.9MB/s|NF
-  - 🇺🇸US-173.244.56.6-1037
-  - 🇺🇸 美国_64
-  - SJC_17
-  - 🇺🇸 美国_50
-  - 14|CZ_speednode_
-  - 🇺🇸 US 27
-  - 🇺🇸 美国_44
-  - 🇺🇸US-104.192.226.106-0186
-  - SI_speednode_0267
-  - Contabo+Asia+Private+Limited+(SG)
-  - 🇺🇸 美国_16
-  - 0|_143
-  - 🇺🇸US-173.244.56.9-1105
-  - US_speednode_0414
-  - 🇺🇸美国28 | ⬇️ 2.0MB/s
-  - 🇺🇸 美国_28
-  - 🇨🇦 加拿大_3
+  - 🇺🇸[openproxylist.com] ss-US-huKy
+  - SJC_43
   - 🇺🇸 US 303
-  - SG_Singapore_Oracle Corporation_Claude2
-  - 🇺🇸US_222 |3.2MB/s|NF|D+
-  - 🇺🇸US_97 |2.8MB/s|NF
-  - 14|SC_speednode_2
-  - ❓ 未知_127
-  - LT_speednode_0190
-  - SJC_60
-  - SJC_20
-  - 🇺🇸 US 42
-  - 🇺🇸 美国_74
-  - 服务器-优选-104.21.127.23
-  - 🇺🇸 US 158
-  - ❓ 未知_146
-  - 🇺🇸 US 11-AYTU
-  - 14|SC_speednode_3
-  - 15|CZ_speednode_0039
-  - 🇺🇸 US 469
-  - 🇪🇪|EE|@wxgqlfx|130
-  - PENTANET+LIMITED+(AU)
-  - Linknet+fastnet+Asn+(ID)-PNLR
-  - 🌐|UN|@wxgqlfx|110
-  - '💦 16 - VLESS - Domain : 2053'
-  - '@ShadowProxy66 🇨🇦-dCqB'
-  - 🇨🇦CA-79.127.233.170-0167
   - Oracle+Corporation+(SG)-XThx
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S4\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸US_200 |1.4MB/s|NF|D+
+  - '💦 36 - VLESS - Domain : 2096'
+  - 🇺🇸US_106 |4.2MB/s|NF
+  - ❓ 未知_179
+  - 🇨🇦 CA 1
+  - 15|DE_speednode_0060
+  - 🇺🇸 US 22
+  - 🇺🇸US_222 |3.2MB/s|NF|D+
+  - 🇺🇸US_88 |1.6MB/s|NF|D+
+  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
+  - Contabo+Asia+Private+Limited+(SG)
+  - 🏁RELAY-104.21.3.189-0268
+  - 🇺🇸 US 189
+  - ES_speednode_0075
+  - https://t.me/xyfqzy ⚡_15
+  - 🇺🇸US-173.244.56.6-1037
+  - 1服务器-地址池-104.16.210.28
+  - 🇺🇸US_24 |1.4MB/s
+  - 🇺🇸US-173.244.56.9-1105
+  - US_Buffalo_HostPapa_Claude11
   - 🇺🇸US-209.126.84.189-0499
-  - 🇺🇸US-137.175.124.167-0172
-  - 🇨🇦CA-79.127.233.170-0165
-  - 🇺🇸 US 888
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 官方优选_50
-  - US_speednode_0373
-  - SJC_30
-  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
-  - Akamai+Technologies,+Inc.+(SG)
-  - LAX_8
-  - 🇺🇸US_39 |2.6MB/s
-  - 🇺🇸US-206.206.80.227-0188
-  - yandex-455
-  - 15|DE_speednode_0058
-  - ❓Other_7 |1.9MB/s|NF|D+
-  - 🇸🇬 新加坡_16
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
-  - 老油条-香港-cdn2
-  - 🇭🇰HK_13 |2.7MB/s|NF
-  - 🇺🇸 US 145
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 🇬🇧 GB 4
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - ❓ 未知_132
+  - 🇺🇸US_194 |2.7MB/s
   - '@meli_proxyy`'
-  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - LAX_4
-  - ❓ 未知_151
-  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
-  - 🇺🇸US_50 |1.6MB/s|GPT|40%
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - 🇳🇱 NL 1
-  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - 🇺🇸美国22 | ⬇️ 1.1MB/s
+  - 🇺🇸 US 11-AYTU
   - 🇺🇸US_32 |2.2MB/s|GPT|NF|GM|70%
-  - 🇺🇸 US 20
-  - 14|US_speednode_6
-  - KR_Seoul_Oracle Corporation_Claude2
-  - '@meli_proxyy-DKGt'
-  - ❓ 未知_167
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+84\r\r"
-  - yandex-410-JKnw
+  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
+  - 🇨🇦CA-79.127.233.170-0167
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
+  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
+  - 15|ES_speednode_0070
+  - 🇺🇸 US 42
+  - 🇺🇸US_61 |2.5MB/s|NF|D+
+  - yandex-455
+  - 🇺🇸 US 68
+  - 🇺🇸9 |  4.6MB/s|Disney|Openai
+  - 🇨🇦CA-79.127.233.170-0165
+  - 🇺🇸 US 21
+  - 15|DE_speednode_0058
+  - SI_speednode_0267
+  - US_Elk Grove Village_HostPapa_Gemini_Claude
+  - Linknet+fastnet+Asn+(ID)-PNLR
+  - ❓Other_5 |1.5MB/s|NF|D+
+  - 美国 053
+  - 美国(yfuye.com免费节点)_87
+  - 🇺🇸 US 567
+  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
+  - 🇺🇸 US 888
+  - 老油条-香港-cdn2
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - 🇺🇸美国16 | ⬇️ 3.7MB/s
+  - 美国 - 洛杉矶 - NTT America - 92
+  - 🇧🇦|BA|@wxgqlfx|235
+  - ❓ 未知_172
+  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
+  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
+  - 🇺🇸 US 469
+  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
+  - 🇺🇸 US 102
+  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
+  - 🇺🇸US_153 |2.5MB/s|NF
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
-  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
+  - 🇺🇸 US 158
+  - 🇬🇧 GB 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 596
+  - 🇺🇸[openproxylist.com] ss-US
+  - 🇺🇸 US 597
+  - 官方优选_4
+  - 🇺🇸US-137.175.124.167-0172
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 德国_358
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇩🇪 DE 27
-  - 1服务器-地址池-104.16.210.28
-  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
-  - 🇬🇧_GB_英国
-  - 🇳🇱 NL_438
-  - '@meli_proxyy-Bpzt'
-  - 🇳🇱 NL 4-MLSc
-  - 🇱🇹LT-45.87.175.28-0867
-  - 🇺🇸US_544
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 3
-  - 🇱🇹LT-45.87.175.58-4876
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - GB_07
-  - 官方优选_4
-  - 🇪🇸 ES_142
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - https://t.me/xyfqzy ⚡_15
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - US->NL->RTL->@DeamNet_Proxy_76
-  - 0,1,2,3|ChatGPT  DE_58
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[103]_俄罗斯_hamraH_128\r\r"
+  - 15|CZ_speednode_0039
+  - 🇺🇸US_50 |1.6MB/s|GPT|40%
+  - 🇫🇷FR_1 |2.7MB/s
+  - 🇺🇸美国12 | ⬇️ 8.6MB/s
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +104\r\r"
-  - 🇬🇧 GB 15
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - VE->NL->MCI->@DeamNet_Proxy_57
-  - US->NL->RTL->@DeamNet_Proxy_68
-  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - SJC_48
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 🇺🇸 US 137
+  - GB_07
+  - 🇬🇧_GB_英国
+  - yandex-410-JKnw
+  - yandex-660-vPgZ
+  - 🇳🇱 NL 1
+  - '@meli_proxyy-DKGt'
+  - LAX_4
+  - '[112]🇬🇧GB-169.150.210.233-0276'
   - 🇫🇷FR-45.158.171.70-4878
-  - 15|BR_speednode_0023
-  - 🇳🇱NL-185.246.153.12-1108
-  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
-  - 🇦🇪AE-151.242.251.131-0222
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 6
-  - 🇫🇷FR-45.158.171.136-0268
-  - "德国(yudou66.com 玉豆免费节点)\r"
+  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - 🇺🇸US_544
+  - 🇳🇱 NL_438
+  - 🇱🇹LT-45.87.175.28-0867
+  - 🇳🇱 NL 3
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇬🇧 GB 15
+  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 🇳🇱 NL 4-MLSc
+  - 🇱🇹LT-45.87.175.58-4876
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - yandex-530-C5wi
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[103]_RU_俄罗斯_211\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 0,1,2,3|ChatGPT  DE_58
+  - 美国(yfuye.com免费节点)_169
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - '@meli_proxyy-Bpzt'
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
   - 🇳🇱 NL 9-C16w
-  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - 🇫🇷FR-45.158.171.146-0203
-  - 🇺🇸 US 44
-  - "[103]_RU_俄罗斯_213\r\r"
-  - CFW_443-AQoO
-  - yandex-608-tb8h
+  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
+  - US_Buffalo_HostPapa_Claude7
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - 🇺🇸US-206.206.80.227-0188
+  - 🇩🇪[openproxylist.com] ss-DE
+  - "[103]_RU_俄罗斯_123\r\r"
+  - 🇫🇷FR-45.158.171.136-0268
+  - 🇺🇸 US 555
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - US->NL->RTL->@DeamNet_Proxy_68
+  - CFW_8443-E77l
   - 🇳🇱 NL 19
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - 德国_362
-  - 英国United+Kingdom
-  - 🇳🇱NL-193.29.139.217-0212
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - VE->NL->MCI->@DeamNet_Proxy_57
+  - 美国_579
   - "[103]_俄罗斯_hamraH_415\r\r"
-  - 🏁RELAY-104.21.3.189-0268
-  - 🇺🇸 US 162
-  - 🇯🇵JP-149.22.87.204-1116
-  - 🇺🇸 美国_4
-  - 🇺🇸 US 21
+  - "[103]_RU_俄罗斯_213\r\r"
+  - yandex-1058-soOg
+  - 🇻🇪 VE 2
+  - 🇳🇱NL-193.29.139.217-0212
+  - 德国_358
   - 🛡️ @FreakConfigtrojan://telegram-id-privatevpns@63.178.209.45:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigvless://df0680ca-e43c-498d-ed86-8e196eedd012@185.231.205.248:8880?mode=gun&security=none&encryption=none&type=grpc#🛡️
     @FreakConfigvless://05519058-d2ac-4f28-9e4a-2b2a1386749e@63.178.209.45:22224?path=/telegram-channel-vlessconfig&security=tls&encryption=none&type=ws&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigtrojan://telegram-id-directvpn@63.178.209.45:22223?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#Telegram:@config_proxy
     🔥
-  - 美国_579
-  - 🇦🇹[openproxylist.com] ss-AT
-  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
-  - 🇺🇸US_194 |2.7MB/s
-  - 🇬🇧[openproxylist.com] ss-GB
-  - "[103]_RU_俄罗斯_211\r\r"
-  - 🇺🇸US-137.117.8.225-0187
-  - 🇫🇷 FR 8
-  - 🇺🇸 US 567
-  - 0|_101
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - yandex-530-C5wi
-  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
-  - Config🇨🇦@Do_itforyou
-  - 🇦🇹 AT 1
-  - '@meli_proxyy-Bxhq'
-  - 🇻🇪 VE 2
-  - "[103]PE_711\r\r"
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇵🇱PL_448
-  - "18|A_18056\r\r"
-  - 18|A_18069
-  - 德国-WEmq
-  - 🇺🇸US-38.12.23.251-5000
-  - ❓ 未知_101
-  - https://t.me/xyfqzy ⚡_16
-  - "[103]PE_739\r\r"
-  - "[103]PE_748\r\r"
-  - 🇩🇪[openproxylist.com] ss-DE
-  - 🇩🇪 DE 3
-  - "18|A_18063\r\r"
-  - "[103]PE_724\r\r"
-  - "[103]PE_709\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - yandex-608-tb8h
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇳🇱 NL 6
+  - 🇩🇪 DE 27
+  - 🇦🇪AE-151.242.251.131-0222
+  - 英国United+Kingdom
+  - US->NL->RTL->@DeamNet_Proxy_76
   - LAX_2
-  - 🇵🇱 PL 2
-  - 🇺🇸US_153 |2.5MB/s|NF
-  - 🇳🇴NO-185.213.23.226-0249
-  - "18|A_18061\r\r"
+  - LAX_8
+  - 15|FR_speednode_0079
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 🇫🇷FR-45.158.171.146-0203
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 🇺🇸 US 162
+  - 🇪🇸 ES_142
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - 🇦🇹[openproxylist.com] ss-AT
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇬🇧[openproxylist.com] ss-GB
+  - '@meli_proxyy-Bxhq'
+  - US_Buffalo_HostPapa_Claude14
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - 德国-WEmq
+  - 🇩🇪 DE 38
+  - 德国_362
+  - 🇳🇱 NL 15
   - 🇳🇴[openproxylist.com] ss-NO
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - yandex-1058-soOg
-  - "[103]PE_745\r\r"
-  - yandex-674-DFt9
-  - "[103]PE_735\r\r"
-  - 🇺🇸美国12 | ⬇️ 8.6MB/s
-  - 18|A_18102
-  - 18,51|🇵🇱_HAMRAH_147
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 🇫🇮[openproxylist.com] ss-FI-TnsT
-  - "[103]PE_743\r\r"
-  - 🇺🇸美国16 | ⬇️ 3.7MB/s
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 0|_101
+  - 🇳🇴NO-185.213.23.226-0249
+  - 🇫🇷 FR 8
+  - 官方优选_50
+  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
+  - "[103]PE_707\r\r"
+  - 🇦🇹 AT 1
+  - "德国(yudou66.com 玉豆免费节点)\r"
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +122\r\r"
-  - yandex-577
-  - "[103]PE_723\r\r"
-  - "[103]PE_741\r\r"
-  - "[103]PE_730\r\r"
-  - "18|A_5377\r\r"
-  - "18|A_18066\r\r"
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
-  - "[103]PE_721\r\r"
-  - 18|A_18067
-  - SJC_87
-  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "[103]PE_733\r\r"
-  - 🇬🇧GB-64.227.45.92-0263
-  - "[103]PE_737\r\r"
-  - SJC_83
-  - 🇷🇴RO-194.14.217.38-1081
-  - 🇬🇧GB-173.208.51.193-5005
-  - SJC_3
-  - "[103]PE_719\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - 🇺🇸 US 137
-  - '💦 36 - VLESS - Domain : 2096'
-  - 🇪🇪[openproxylist.com] ss-EE
-  - "[103]PE_714\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_729\r\r"
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
-  - CFW_8443-E77l
-  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
-  - US_Buffalo_HostPapa_Claude7
-  - 🇺🇸 US 2-ScE8
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - "[103]PE_707\r\r"
-  - 🇳🇱NL_443
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - 🇷🇴RO-185.126.237.38-0276
-  - 🇺🇸 US 102
-  - US_Elk Grove Village_HostPapa_Gemini_Claude
   - 🇵🇱 PL 3
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
-  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
-  - "[103]PE_712\r\r"
-  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
-  - 🇰🇷KR-154.90.62.168-4918
-  - 🇳🇱 NL 15
-  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
-  - 🇳🇱NL-46.243.3.42-0278
-  - 🇺🇸 US 391
-  - 🇩🇪DE-91.99.185.216-0257
-  - 18|A_18068
+  - 18|A_18102
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - "[103]PE_745\r\r"
+  - 18|A_18067
+  - "[103]PE_743\r\r"
+  - "[103]PE_730\r\r"
   - "[103]PE_749\r\r"
-  - NETHERLANDS-2
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_739\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_748\r\r"
+  - "[103]PE_727\r\r"
+  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
+  - yandex-674-DFt9
+  - 🇩🇪 DE 3
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - "[103]PE_712\r\r"
+  - "18|A_5377\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - 🇫🇮[openproxylist.com] ss-FI-TnsT
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 🇱🇻[openproxylist.com] ss-LV-14SW
+  - "[103]PE_741\r\r"
+  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - "[103]_俄罗斯_hamraH_128\r\r"
+  - yandex-577
+  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
+  - 18|A_18068
+  - "18|A_18063\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_733\r\r"
+  - 🇺🇸US-137.117.8.225-0187
+  - "[103]PE_735\r\r"
+  - "[103]PE_709\r\r"
+  - "[103]PE_737\r\r"
+  - 🇷🇴RO-185.126.237.38-0276
+  - 18,51|🇵🇱_HAMRAH_147
+  - "[103]PE_723\r\r"
+  - 🇬🇧GB-173.208.51.193-5005
+  - 🇯🇵JP-149.22.87.204-1116
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇺🇸 US 634
+  - "[103]PE_716\r\r"
+  - "18|A_18061\r\r"
+  - "[103]PE_714\r\r"
+  - github.com/Ruk1ng001_3836613565346433
+  - "[103]PE_720\r\r"
+  - "[103]PE_729\r\r"
+  - "[103]PE_719\r\r"
+  - 🇬🇧GB-64.227.45.92-0263
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - CFW_443-AQoO
+  - 🇪🇪[openproxylist.com] ss-EE
+  - "[103]PE_724\r\r"
+  - 🇩🇪 DE 42
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - "[103]PE_750\r\r"
+  - 🇷🇴RO-194.14.217.38-1081
   - NETHERLANDS-1
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - 🇸🇬 SG 3
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - 🇺🇸 US 641
+  - Config🇨🇦@Do_itforyou
+  - 18|A_18069
+  - 🇵🇱PL_448
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 791
+  - "18|A_18056\r\r"
+  - 🇳🇱NL-185.246.153.12-1108
+  - "[103]PE_711\r\r"
+  - 🇬🇧GB_165
+  - SJC_83
+  - NETHERLANDS-2
+  - UK-1
+  - 🇳🇱NL-46.243.3.42-0278
+  - ❓ 未知_101
+  - 🇺🇸 US 638
+  - 🇺🇸 US 20
+  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
+  - 🇺🇸 美国_4
+  - 🇵🇱 PL 2
+  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇳🇱NL-92.112.126.90-4910
+  - 🇺🇸_US_美国_2
+  - 🇩🇪DE-91.99.185.216-0257
+  - 🇺🇸_US_美国
+  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
+  - 🇬🇷 GR 1
+  - 🇺🇸US-38.12.23.251-5000
   - 🇫🇷FR-45.67.139.225-0314
-  - 🇩🇪 DE 38
-  - 🇰🇷 KR 2
+  - 🇰🇷KR-154.90.62.168-4918
+  - 🇭🇰HK-18.162.146.85-4987
+  - free公益代理
+  - 🇩🇪DE-46.165.194.96-0326
+  - 🇳🇱NL_443
+  - GERMAN
+  - 🇱🇻LV-216.173.69.250-0337
+  - SJC_3
+  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
   - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+81\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 美国(yfuye.com免费节点)_187
-  - 🇺🇸 US 555
-  - 🇱🇻[openproxylist.com] ss-LV-14SW
-  - 🇦🇷AR-38.54.45.129-4921
-  - 🇬🇷 GR 1
-  - UK-1
-  - "[103]俄罗斯_RU_SSS_109\r\r"
-  - GERMAN
-  - 🇺🇸 US 597
-  - 🇬🇧GB_165
-  - 🇩🇪 DE 42
-  - 🇮🇩 ID 1
-  - '💦 18 - VLESS - IPv4 : 2053'
-  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
-  - "[103]_RU_俄罗斯_123\r\r"
-  - '💦 32 - VLESS - IPv4 : 2087'
-  - 🇺🇸_US_美国_2
-  - 🇦🇺 AU 1
-  - 🇳🇱NL-92.112.126.90-4910
-  - US_Buffalo_HostPapa_Claude3
-  - 🇩🇪DE-46.165.194.96-0326
-  - yandex-406
-  - 🇺🇸_US_美国
-  - 🇹🇭 TH 1
-  - yandex-190-DgYn
-  - 🇺🇸 US 791
-  - 🇱🇻LV-216.173.69.250-0337
-  - US_Buffalo_HostPapa_Claude14
-  - 🇺🇸 US 596
-  - "[freefq]undefined\r\r"
-  - 🇺🇸 US 299
-  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 73
-  - 🇻🇳 VN 232
-  - 美国(yfuye.com免费节点)_87
-  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
-  - 🇻🇳 VN 192
-  - 🇭🇰HK-18.162.146.85-4987
-  - 🏁 ZZ_547
-  - 🇺🇸 US 634
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 310
-  - github.com/Ruk1ng001_3836613565346433
-  - 🇺🇸 US 641
-  - 🇻🇳 VN 21-9rAo
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 155
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 299
-  - github.com/Ruk1ng001_3764613639386561
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 248
-  - 🇮🇱 IL 1
-  - free公益代理
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 280
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 42
-  - 🇺🇸 US 883
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
-  - 🇻🇳 VN 166
-  - 🇻🇳 VN 84
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 45
-  - 🇻🇳 VN 39
-  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
-  - 🌍94@oneclickvpnkeys
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 282
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 6
-  - ❓ 未知_49
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 272
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 183
-  - 🇲🇰[openproxylist.com] ss-MK
-  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 275
-  - 🇻🇳 VN 94
-  - 🇮🇳 IN 2
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 186
+  - SJC_87
   - 🇵🇱[openproxylist.com] ss-PL
-  - 🇻🇳 VN 63
-  - 🇻🇳VN-103.186.155.20-083
-  - 🇻🇳 VN 287
-  - NRT_1
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 3
+  - 🇰🇷 KR 2
+  - yandex-406
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
+  - 🇺🇸 US 30
+  - github.com/Ruk1ng001_3764613639386561
+  - 美国(yfuye.com免费节点)_187
+  - 🇳🇱 NL 29
+  - yandex-190-DgYn
+  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
+  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
+  - 🇮🇳 IN 2
+  - 🇮🇱 IL 1
+  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
   - 美国(yfuye.com免费节点)_176
-  - 🇻🇳 VN 1
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - NRT_9
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 16-78jt
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 305
-  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
-  - 🇻🇳 VN 17
-  - 美国 053
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 2
-  - 日本(yudou77.top 玉豆免费节点)
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 145
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
-    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
-  - 🇻🇳 VN 70
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 266
-  - yandex-660-vPgZ
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 212
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 11
-  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 219
+  - 🇹🇭 TH 1
+  - 🇺🇸 US 883
   - 🇳🇱NL_3 |4.1MB/s|GPT|YT-NL|NF|D+|27%
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 🇦🇷AR-38.54.45.129-4921
+  - US_Buffalo_HostPapa_Claude3
+  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
+  - "[freefq]undefined\r\r"
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 280
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 68
+  - 🇳🇱 NL 32
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 274
+  - 🅼🅴🅷🅳🅸-pbUl
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 192
+  - 🏁 ZZ_547
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 139
+  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 45
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 72
   - 🇻🇳 VN 25
   - 🇻🇳 VN 115
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 44
-  - NRT_7
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 202
   - 🇻🇳 VN 276
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 263
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 171
+  - 🌍94@oneclickvpnkeys
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 250
   - 🇻🇳 VN 59
-  - 🇻🇳 VN 206
+  - 🇻🇳 VN 83
+  - 日本(yudou77.top 玉豆免费节点)
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 11
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 175
+  - 🇮🇩 ID 1
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 279
+  - 🇻🇳VN-103.186.155.20-083
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 270
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 135
-  - NRT_8
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 14
   - 🇻🇳 VN 193
-  - 🇳🇱 NL 29
-  - yandex-862
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 223
-  - NRT_2
-  - Singapore-2
-  - Singapore-1
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 206
   - 🇻🇳 VN 252
-  - yandex-980
-  - 0,79|TR-45.89.52.66-5553 | 1.677MB
-  - yandex-195-ilbM
-  - 🅼🅴🅷🅳🅸-pbUl
-  - yandex-995-m6JD
-  - TW2|@ripaojiedian-22750
-  - 🇮🇩ID-119.235.249.154-0317
-  - 台湾WAP-T-GPT
-  - ❓ 未知_39
-  - 🇳🇱 NL 32
-  - yandex-576
-  - IT-1
-  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
-  - 🇮🇳 IN 1
-  - 🇹🇼 台湾-3A7b
-  - 🇺🇸 US 30
-  - 🇭🇰 HK_168
-  - yandex-333
-  - HKG_1
-  - HKG_2
-  - HKG_5
-  - 🇻🇳VN-103.197.185.204-0329
-  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 142
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 219
+  - NRT_2
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 21-9rAo
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 102
+  - NRT_1
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 16-78jt
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 117
   - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 香港wap-T
-  - 🇺🇸 US 638
-  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
-  - 🇮🇷 IR 1
-  - 美国(yfuye.com免费节点)_169
-  - 🇺🇸 US 33
-  - yandex-863-S1cx
-  - FUK_1
-  - FUK_3
-  - FUK_2
-  - yandex-196-9frM
-  - V1-香港HKBGP01 隧道
-  - yandex-331
-  - 🇭🇰香港3 | ⬇️ 29.3MB/s
-  - TPE
-  - TW|@ripaojiedian-22749
-  - 🇺🇸US-23.184.200.69-0180
-  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
-  - 12|🇺🇸 美国|@ripaojiedian
-  - 美国USLA-T-GPT
-  - yandex-213-yWr0
-  - yandex-578
-  - yandex-458
-  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
-  - yandex-187-cLXw
-  - 新加坡SG-T
-  - 越南VN-T
-  - E 9F AC E 9F E AF A8KH-T-635
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_6139626263326265
+  - 🇻🇳 VN 161
+  - yandex-862
+  - 🇻🇳 VN 202
+  - 0,79|TR-45.89.52.66-5553 | 1.677MB
+  - NRT_9
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 263
+  - NRT_8
+  - 🇻🇳 VN 6
   - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - yandex-1008-5kKE
+  - ❓ 未知_39
+  - TW2|@ripaojiedian-22750
+  - 🇻🇳 VN 176
+  - 香港wap-T
+  - yandex-995-m6JD
+  - IT-1
+  - yandex-980
+  - Singapore-1
+  - Singapore-2
+  - 🇺🇸 US 33
+  - yandex-196-9frM
+  - 🇸🇬 新加坡_1
+  - TPE
+  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
+  - yandex-576
+  - 🇮🇩ID-119.235.249.154-0317
+  - 🇭🇰 HK_168
+  - 🇮🇷 IR 1
   - 🇩🇪[openproxylist.com] vless-DE-gdgV
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_3164386239623931
-  - yandex-216-kxRM
-  - 意大利IT-T
+  - HKG_2
+  - 🇮🇳 IN 1
+  - V1-香港HKBGP01 隧道
+  - NRT_7
+  - 🇻🇳VN-103.197.185.204-0329
+  - HKG_1
+  - 🇻🇳 VN 130
+  - yandex-195-ilbM
+  - yandex-863-S1cx
+  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
+  - CFW_443
+  - 🇹🇼 台湾-3A7b
+  - 12|🇺🇸 美国|@ripaojiedian
+  - FUK_2
+  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
+  - TW|@ripaojiedian-22749
+  - 🇻🇳 VN 73
+  - FUK_3
+  - yandex-578
+  - 🇺🇸_US_美国_2-LWEY
+  - FUK_1
+  - yandex-333
+  - E 9F AC E 9F E AF A8KH-T-635
+  - 越南VN-T
+  - yandex-213-yWr0
+  - 🇭🇰香港3 | ⬇️ 29.3MB/s
+  - yandex-187-cLXw
+  - yandex-331
+  - yandex-458
+  - "[113]undefined\r\r-ZPFE"
+  - 美国USLA-T-GPT
+  - yandex-1008-5kKE
+  - 新加坡SG-T
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
   - yandex-220
   - yandex-678-dgjO
-  - yandex-221
-  - 🇸🇬 新加坡_1
-  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 221
   - 🇺🇸 美国-拉斯维加斯-HY-002-1N-onvz
+  - 意大利IT-T
+  - yandex-216-kxRM
+  - yandex-221
+  - ❓ 未知_49
+  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 304
+  - 台湾WAP-T-GPT
   - yandex-223-AIX1
-  - 🇺🇸_US_美国_2-LWEY
-  - "[113]undefined\r\r-ZPFE"
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - -Fmy9
+  - -6jfK
   - -yNEc
-  - 美国_1126491
+  - -Fmy9
   - -ToYF
   - Telegram:@config_proxy 🔥-qxm0
-  - 🇺🇸US_275 |3.2MB/s|NF|D+
-  - 🇺🇸US_89 |3.9MB/s|NF|D+
-  - 🇺🇸US_213 |1.0MB/s|NF|D+
-  - 🇺🇸US_26 |4.3MB/s
-  - 🇺🇸US_92 |1.3MB/s|NF|D+
-  - 🇺🇸 US 19
+  - US_Phoenix_Oracle Corporation_Claude2
+  - 15|GB_speednode_0157
+  - 🇰🇷KR_3 |2.6MB/s|NF
+  - 🇺🇸US_13 |1.0MB/s|NF|D+
+  - ❓Other_6 |2.0MB/s
+  - LU_speednode_0194
+  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
+  - ❓ 未知_113
+  - 🇳🇱|NL|@wxgqlfx|205
+  - ❓ 未知_124
+  - 🇺🇸US_10 |1.3MB/s|NF|D+
+  - 🇺🇸 美国_12
   - 15|CY_speednode_0032
-  - 🇺🇸 美国_1
-  - 🇸🇬 新加坡_4
-  - 🇺🇸 美国_8
-  - ❓Other_10 |1.3MB/s|NF
-  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|89
+  - 15|DE_speednode_0044
+  - ❓Other_7 |1.9MB/s|NF|D+
+  - 🇺🇸US_275 |3.2MB/s|NF|D+
+  - 🇯🇵JP_7 |1.9MB/s|NF|D+
+  - 🇨🇦 加拿大_3
+  - 🇺🇸US_89 |3.9MB/s|NF|D+
+  - 🇺🇸 美国_70
+  - 🇺🇸 美国_31
+  - ❓ 未知_71
+  - 🇺🇸US_137 |1.6MB/s|NF|D+
+  - ❓ 未知_59
+  - 🇺🇸US_54 |1.3MB/s|NF
+  - 🇺🇸US_111 |1.1MB/s|D+
+  - 🇺🇸US_39 |2.6MB/s
+  - 🇺🇸US_233 |1.6MB/s|NF|D+
+  - ❓ 未知_118
+  - 🇺🇸US_28 |2.0MB/s|NF
+  - 🇺🇸US_24 |1.1MB/s|NF|D+
+  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
+  - 🇸🇬 新加坡_2
+  - ❓Other_1 |2.0MB/s
+  - 🇯🇵|JP|@wxgqlfx|113
+  - 🇸🇬 新加坡_23
+  - 🇺🇸|US|@wxgqlfx|85
+  - KZ_speednode_0176
+  - 🇺🇸US_205 |1.4MB/s
+  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_6
+  - 🇺🇸US_44 |1.4MB/s
+  - 🇺🇸US_30 |2.4MB/s
+  - 🇺🇸|US|@wxgqlfx|213
+  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
+  - DE_Frankfurt am Main_Oracle Corporation_Claude5
+  - 🇺🇸US_72 |1.1MB/s|GPT|NF
+  - 🇺🇸US_40 |1.6MB/s
+  - 🇺🇸 美国_20
+  - 🇺🇸US_42 |1.7MB/s|NF
+  - 🇬🇧|GB|@wxgqlfx|195
+  - 14|US_speednode_2
+  - 🇬🇧|GB|@wxgqlfx|199
+  - ❓ 未知_168
+  - 🇮🇳|IN|@wxgqlfx|234
   - 🇺🇸US_34 |2.5MB/s
-  - 🇸🇬 新加坡_5
+  - 14|CY_speednode_2
+  - SJC_20
+  - GB_speednode_0153
+  - 🇺🇸US_119 |2.7MB/s|NF|5%
+  - 🇺🇸US_48 |4.2MB/s
+  - KR_Seoul_Oracle Corporation_Claude22
+  - 🇺🇸US_77 |3.0MB/s|NF|D+
+  - ❓ 未知_106
+  - 14|US_speednode_20
+  - KZ_speednode_0173
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +112\r\r"
-  - 🇸🇬 新加坡_8
-  - 🇺🇸 美国_13
-  - 🇯🇵JP_5 |2.8MB/s|D+
-  - 🇺🇸US_24 |1.1MB/s|NF|D+
-  - 🇺🇸US_13 |1.0MB/s|NF|D+
-  - 🇺🇸US_85 |2.7MB/s|NF
-  - 🇺🇸US_46 |1.4MB/s
-  - 🇺🇸US_113 |2.9MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_21 |1.4MB/s|NF
-  - ❓ 未知_86
-  - ❓ 未知_95
-  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
-  - 🇺🇸US_24 |3.3MB/s|GPT
-  - 🇺🇸US_2 |1.2MB/s
-  - 15|ES_speednode_0070
-  - 🇺🇸 美国_12
-  - ❓ 未知_72
-  - 🇺🇸US_207 |1.9MB/s|NF|D+
-  - 🇺🇸US_1 |1.1MB/s
-  - 🇸🇬SG_2 |1.2MB/s|GPT
-  - LU_speednode_0194
-  - 🇮🇹IT_1 |1.1MB/s|NF
-  - 🇺🇸US_48 |4.2MB/s
-  - 🇺🇸US_233 |1.6MB/s|NF|D+
-  - 🇺🇸US_40 |1.6MB/s
-  - 🇺🇸US_65 |1.0MB/s|NF|D+
-  - 🇺🇸US_12 |1.1MB/s|NF|D+
-  - 🇺🇸US_236 |4.6MB/s|NF
-  - 🇺🇸US_203 |1.3MB/s|NF|D+
-  - 🇺🇸US_10 |1.3MB/s|NF|D+
-  - 🇸🇬 新加坡_2
-  - 🇺🇸 美国_17
-  - 🇺🇸 美国_70
-  - 🇸🇬 新加坡_21
-  - 🇺🇸US_61 |2.5MB/s|NF|D+
-  - 🇺🇸 美国_49
-  - 🇺🇸 US 189
-  - 🇺🇸 美国_3
-  - 14|LT_speednode_2
-  - 🇺🇸US_42 |1.7MB/s|NF
-  - ❓ 未知_61
-  - RU_speednode_0215
-  - 14|US_speednode_11
-  - ❓Other_8 |1.3MB/s
-  - 🇸🇬SG_4 |1.3MB/s
-  - US_speednode_0304
-  - ❓ 未知_62
-  - ❓Other_7 |1.3MB/s
-  - 15|ES_speednode_0073
-  - KR_Seoul_Oracle Corporation_Claude17
-  - 🇸🇬SG_5 |1.4MB/s|NF|D+
-  - 🇺🇸US_98 |1.6MB/s|NF|D+
-  - 🇺🇸US_21 |1.2MB/s
-  - 🇺🇸US_43 |4.7MB/s|NF|D+
-  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
-  - ❓Other_6 |2.0MB/s
-  - KZ_speednode_0173
-  - 🇺🇸US_42 |4.1MB/s|NF|D+
-  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
-  - US_Elk Grove Village_HostPapa_Claude3
-  - 🇬🇧|GB|@wxgqlfx|132
-  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
-  - 🇺🇸 美国_20
-  - 🇸🇬 新加坡_12
-  - ❓ 未知_59
-  - 🇸🇬 新加坡_20
-  - 🇸🇮|SI|@wxgqlfx|138
-  - 🇺🇸US_68 |1.6MB/s|NF
-  - ❓ 未知_128
-  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
-  - Channel :@vmessorg
-  - 🇺🇸 美国_32
-  - 🇧🇦|BA|@wxgqlfx|235
-  - 🇺🇸US_110 |4.2MB/s|GPT
-  - ❓ 未知_135
-  - 🇨🇦 加拿大_7
-  - 14|US_speednode_2
-  - 🇰🇷 韩国_2
-  - 🇯🇵|JP|@wxgqlfx|113
-  - 15|FR_speednode_0081
   - ES_speednode_0072
-  - ❓ 未知_179
-  - 🇺🇸US_133 |1.8MB/s|NF|D+
-  - 14|GB_speednode_2
-  - 🇺🇸US_115 |3.0MB/s|NF|0%
-  - ❓ 未知_56
-  - ❓ 未知_107
-  - 🇺🇸US_54 |1.3MB/s|NF
-  - 🇸🇬 新加坡_28
-  - 🇺🇸US_246 |2.6MB/s|NF|D+
-  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
-  - GB_speednode_0149
-  - KR_Seoul_Oracle Corporation_Claude21
-  - 🇩🇪|DE|@wxgqlfx|131
-  - 🇺🇸US_107 |1.5MB/s|NF|D+
-  - 🇯🇵JP_6 |1.4MB/s|NF
-  - 🇨🇦 加拿大_6
-  - 🇺🇸|US|@wxgqlfx|215
-  - ❓ 未知_113
-  - 🇱🇹|LT|@wxgqlfx|216
-  - 14|US_speednode_14
-  - ❓ 未知_75
+  - 🇺🇸 美国_56
+  - 🇯🇵JP_5 |2.8MB/s|D+
+  - 🇸🇬 新加坡_12
+  - 🇺🇸US_100 |4.3MB/s|NF
+  - ❓ 未知_57
   - 🇸🇬 新加坡_27
-  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
-  - 🇬🇧|GB|@wxgqlfx|92
-  - 15|DE_speednode_0054
-  - ❓ 未知_118
-  - 🇳🇱|NL|@wxgqlfx|123
-  - 15|US_speednode_0379
-  - 🇺🇸US_79 |1.3MB/s|NF|D+
-  - 🇺🇸 美国_15
-  - GB_speednode_0153
-  - 🇺🇸 美国_6
-  - 🇸🇬 新加坡_3
-  - ❓ 未知_138
-  - 🇺🇸US_210 |1.7MB/s|NF|D+
-  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
-  - HK香港(mibei77.com 米贝节点分享)-VOUv
-  - 🇺🇸美国20 | ⬇️ 1.1MB/s
-  - 🇺🇸 美国_66
-  - CZ_speednode_0038
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
-  - 🇺🇸US_91 |2.6MB/s|NF|D+
-  - JP_speednode_0167
-  - 🇺🇸 美国_57
-  - KR_Seoul_Oracle Corporation_Claude4
-  - 🇺🇸US_279 |3.1MB/s|NF|0%
-  - 🇺🇸US_177 |2.6MB/s|NF|D+
-  - 🇺🇸 US 69
-  - 🇺🇸US_28 |2.0MB/s|NF
-  - ❓ 未知_129
-  - '[112]🇺🇸US-79.110.53.82-0239'
-  - 🇺🇸US_119 |2.7MB/s|NF|5%
-  - 🇰🇷KR_3 |2.6MB/s|NF
-  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
-  - 🇮🇳|IN|@wxgqlfx|234
-  - ❓ 未知_150
-  - KR_Seoul_Oracle Corporation_Claude18
-  - 🇺🇸 美国_22
-  - US_Phoenix_Oracle Corporation_Claude3
-  - RU_speednode_0242
-  - 15|DE_speednode_0044
-  - 🇺🇸 美国_34
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +120\r\r"
-  - 14|DE_speednode_4
-  - 🇺🇸US_111 |2.8MB/s
-  - Linknet+fastnet+Asn+(ID)
-  - 🇺🇸US_97 |2.6MB/s
-  - ❓ 未知_168
-  - 🇺🇸 美国_65
-  - 🇺🇸US_85 |1.4MB/s|GPT|D+
-  - ❓ 未知_117
-  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
-  - ❓ 未知_142
-  - RU_speednode_0237
-  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
-  - 🇺🇸|US|@wxgqlfx|197
-  - 🇬🇧|GB|@wxgqlfx|195
-  - US_Buffalo_HostPapa_Claude11
-  - 🇯🇵JP_3 |3.2MB/s|NF|D+
-  - ❓ 未知_177
-  - 15|US_speednode_0393
-  - 🇭🇰HK_3 |1.1MB/s|NF
-  - 德国(yudou123.top 玉豆免费节点)
-  - US_Dallas_HostPapa_Claude2
-  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
-  - 🇸🇬SG_10 |4.2MB/s|GPT|NF|D+|17%
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +119\r\r"
-  - 🇷🇺|RU|@wxgqlfx|109
-  - 🇺🇸US_24 |1.4MB/s
-  - 🇺🇸US_80 |1.3MB/s|GPT|NF
-  - 🇺🇸 美国_5
-  - 🇺🇸|US|@wxgqlfx|85
-  - 🇺🇸 美国_25
-  - 🇺🇸US_4 |1.5MB/s|NF|D+
-  - 🇺🇸美国24 | ⬇️ 5.1MB/s
-  - CH_speednode_0031
-  - 🇺🇸US_17 |1.4MB/s
-  - ❓ 未知_81
-  - ❓ 未知_88
-  - 129.146.46.164_Claude
-  - -6jfK
-  - 🇺🇸US_81 |2.2MB/s|GPT|D+
-  - ❓ 未知_109
-  - 14|CY_speednode_2
-  - 🇳🇱|NL|@wxgqlfx|205
-  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
-  - 15|NL_speednode_0209
-  - US_speednode_0407
-  - 🇺🇸US_219 |2.7MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S6\r\r"
-  - 🇺🇸US_66 |3.2MB/s|NF|D+
-  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
-  - 14|SI_speednode_
-  - 🇺🇸US_30 |2.4MB/s
-  - 🇺🇸 美国_27
-  - 🇸🇬SG_11 |1.7MB/s|NF
-  - 🇺🇸US_237 |4.4MB/s
-  - 🇯🇵JP_7 |1.9MB/s|NF|D+
-  - 🇺🇸|US|@wxgqlfx|164
-  - 官方优选_11
-  - ❓ 未知_71
-  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
-  - 美国(yudou123.top 玉豆免费节点)-goHm
-  - 🇯🇴|JO|@wxgqlfx|122
   - 🇺🇸 美国_58
-  - 🇺🇸|US|@wxgqlfx|128
-  - 15|US_speednode_0372
-  - HK香港(mibei77.com 米贝节点分享)-ezUR
-  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
-  - HK香港(mibei77.com 米贝节点分享)-exnr
-  - 🇱🇹|LT|@wxgqlfx|141
-  - 14|US_speednode_19
-  - GB_speednode_0143
-  - 15|FR_speednode_0078
-  - 🇺🇸 US 46
-  - 🇺🇸 美国_51
-  - 14|RU_speednode_4
-  - JP_Tokyo_Oracle Corporation_Claude1
-  - 🇨🇾|CY|@wxgqlfx|217
-  - SC_speednode_0244
-  - 🇺🇸 美国_48
-  - GB_speednode_0146
-  - 15|US_speednode_0405
-  - 15|GB_speednode_0157
+  - 🇺🇸US_232 |1.0MB/s|GPT|NF|D+
+  - 官方优选_11
   - 🇺🇸US_27 |2.8MB/s
-  - 🇺🇸US_100 |1.0MB/s|NF|D+
-  - 🇺🇸US_195 |1.1MB/s|GPT|NF
-  - SJC_49
-  - KR_Seoul_Oracle Corporation_Claude3
-  - 🇺🇸US_179 |2.4MB/s|NF
-  - SJC_69
-  - ❓ 未知_145
-  - 🇭🇰HK_20 |2.6MB/s|D+
-  - JO_speednode_0165
-  - SJC_48
-  - 14|US_speednode_8
-  - '💦 21 - VLESS - Clean IP : 2053'
-  - ❓ 未知_79
-  - SJC_80
-  - 🇺🇸 美国_72
-  - 🇺🇸US_141 |2.3MB/s|NF|D+
-  - 🇺🇸US_192 |1.6MB/s|NF|D+
-  - 🇺🇸US_44 |1.4MB/s
-  - 🇺🇸 美国_67
-  - 🇺🇸US_77 |1.1MB/s|D+
-  - SJC_62
-  - JP_Tokyo_Oracle Corporation_Claude2
-  - US_Phoenix_Oracle Corporation_Claude2
-  - SJC_9
-  - 🇸🇬 新加坡_33
-  - 🌐|UN|@wxgqlfx|93
-  - 🇭🇰 香港_2
-  - ❓ 未知_123
-  - ❓ 未知_132
-  - 4Jadi-3920-29772
-  - 15|CY_speednode_0036
-  - 🇺🇸 US 70
-  - 🇺🇸US_187 |2.8MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|224
-  - ❓Other_8 |1.0MB/s|NF
-  - ❓Other_1 |2.0MB/s
-  - KR_Seoul_Oracle Corporation_Claude22
-  - 🇺🇸US_248 |2.3MB/s|NF|D+
-  - 14|ES_speednode_
-  - 🇳🇱|NL|@wxgqlfx|223
-  - 🇺🇦|UA|@wxgqlfx|99
-  - ❓ 未知_130
-  - 🇬🇧|GB|@wxgqlfx|199
-  - 🇺🇸US_51 |3.8MB/s
-  - 15|GB_speednode_0130
-  - 14|US_speednode_20
-  - 15|DE_speednode_0060
-  - KR_Seoul_Oracle Corporation_Claude1
-  - 🇺🇸US_205 |1.4MB/s
-  - ❓ 未知_169
-  - 15|FR_speednode_0079
-  - 🇺🇸 美国_69
-  - 美国-hPRG
-  - 🇺🇸US_106 |4.2MB/s|NF
-  - 🇺🇸US_131 |1.5MB/s|NF|D+
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S4\r\r"
-  - 🇺🇸 US 279
-  - SG_Singapore_Oracle Corporation_Claude1
-  - 🇺🇸|US|@wxgqlfx|89
-  - 🇫🇷FR_1 |2.7MB/s
-  - 15|US_speednode_0397
-  - 服务器-地址池-162.159.19.82
-  - 🇱🇹|LT|@wxgqlfx|91
-  - 🇺🇸US_145 |2.5MB/s|NF
-  - 15|NL_speednode_0212
-  - ❓ 未知_105
-  - 🇸🇬 新加坡_17
-  - RU_speednode_0240
-  - 15|US_speednode_0273
-  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
-  - yandex-476-Gzf7
-  - 🇦🇺|AU|@wxgqlfx|225
-  - SJC_31
-  - 🇺🇸US_199 |1.2MB/s|NF|D+
-  - ❓ 未知_76
-  - 🇺🇸US_72 |1.1MB/s|GPT|NF
-  - '[112]🇺🇸US-194.5.215.171-0135'
-  - 🇺🇸US_10 |2.0MB/s
+  - 🇮🇹IT_1 |1.1MB/s|NF
+  - 🇸🇬SG_5 |1.4MB/s|NF|D+
   - 🇺🇸 美国_14
-  - ❓ 未知_120
-  - 🇺🇸US_137 |1.6MB/s|NF|D+
-  - SJC_34
-  - 🇺🇸 US 164
-  - US_Elk Grove Village_HostPapa_Claude2
-  - ❓ 未知_106
-  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
-  - US_Los Angeles_HostPapa_Claude1
-  - 🇺🇸美国2 | ⬇️ 1.1MB/s
-  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - ❓ 未知_72
+  - 14|SI_speednode_
+  - RU_speednode_0237
+  - 🇺🇸 美国_28
+  - 🇬🇧|GB|@wxgqlfx|92
+  - 🇺🇸US_115 |3.0MB/s|NF|0%
+  - 🇺🇸US_21 |1.4MB/s|NF
+  - 🇺🇸 美国_5
+  - ❓ 未知_177
+  - ❓ 未知_76
+  - RU_speednode_0215
+  - 🇸🇬 新加坡_6
+  - 15|US_speednode_0393
+  - ❓Other_8 |1.0MB/s|NF
+  - KR_Seoul_Oracle Corporation_Claude5
+  - 🇺🇸US_21 |1.2MB/s
+  - 🌐|UN|@wxgqlfx|110
+  - 15|NL_speednode_0209
+  - ❓ 未知_128
+  - US_speednode_0375
+  - 🇸🇬 新加坡_21
+  - 🇺🇸US_98 |1.6MB/s|NF|D+
+  - 🇯🇴|JO|@wxgqlfx|122
+  - 🇺🇸|US|@wxgqlfx|144
+  - 🇺🇸US_1 |1.1MB/s
+  - 🇱🇹|LT|@wxgqlfx|141
+  - 🇭🇰 香港_2
+  - ❓ 未知_135
+  - 🇺🇸US_138 |2.2MB/s|GPT|NF|48%
+  - 🇸🇬 新加坡_28
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude4
   - 14|US_speednode_9
-  - GB_speednode_0136
-  - SJC_18
-  - US_speednode_0408
-  - 🇸🇨|SC|@wxgqlfx|163
-  - SJC_85
-  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
-  - 🇺🇸美国16 | ⬇️ 2.5MB/s
-  - 🇺🇸US_218 |1.6MB/s|NF|D+
-  - KZ_speednode_0176
-  - 🇺🇸 US 63
-  - 🇷🇺|RU|@wxgqlfx|133
-  - DE_Frankfurt am Main_Oracle Corporation_Claude5
-  - '💦 35 - VLESS - Clean IP : 2087'
-  - KR_Seoul_Oracle Corporation_Claude19
-  - 🇺🇸US_111 |1.1MB/s|D+
-  - SJC_13
+  - 🇸🇬SG_11 |1.7MB/s|NF
+  - ❓ 未知_95
+  - HK香港(mibei77.com 米贝节点分享)-ezUR
+  - 🇺🇸US_94 |1.8MB/s|50%
+  - 15|US_speednode_0273
+  - 🇺🇸US_104 |3.8MB/s
+  - 🇺🇸 美国_51
+  - 🇺🇸US_192 |1.6MB/s|NF|D+
+  - 14|ES_speednode_
+  - 🇺🇸US_211 |1.4MB/s|GPT|NF|0%
   - 🇺🇸US_126 |1.9MB/s|NF|D+
+  - 🇰🇷韩国1 | ⬇️ 9.4MB/s
+  - US_speednode_0414
+  - 🇺🇦|UA|@wxgqlfx|99
+  - 🇺🇸 美国_64
+  - 14|US_speednode_19
+  - 🇺🇸 美国_16
+  - 🇸🇬 新加坡_32
+  - 🇺🇸US_202 |1.7MB/s|GPT|NF|0%
+  - 🇺🇸US_42 |4.1MB/s|NF|D+
+  - 15|NL_speednode_0212
+  - 🇸🇬|SG|@wxgqlfx|224
+  - SG_Singapore_Alibaba (US) Technology Co., Ltd._Claude1
+  - 🇺🇸US_227 |3.1MB/s|NF
+  - US_Phoenix_Oracle Corporation_Claude3
+  - ❓Other_8 |1.3MB/s
+  - 14|GB_speednode_2
+  - 🇺🇸US_26 |4.3MB/s
+  - ❓Other_10 |1.3MB/s|NF
+  - 🇺🇸US_12 |1.1MB/s|NF|D+
+  - 🇺🇸US_9 |2.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_236 |4.6MB/s|NF
+  - 🇺🇸US_60 |1.9MB/s|NF|D+
+  - US_speednode_0304
+  - 🇨🇦 加拿大_6
+  - 🇺🇸US_165 |3.8MB/s|GPT|NF|0%
+  - 🇺🇸US_80 |1.3MB/s|GPT|NF
+  - SC_speednode_0244
+  - SJC_81
+  - 🇯🇵JP_11 |3.1MB/s|NF|D+
+  - 🇺🇸US_2 |1.2MB/s
+  - 🇺🇸US_97 |2.6MB/s
+  - 🇰🇷 韩国_2
+  - 🇺🇸US_66 |3.2MB/s|NF|D+
+  - 🇺🇸US_237 |4.4MB/s
+  - DE_Frankfurt am Main_Oracle Corporation_Claude1
+  - 🇺🇸 美国_68
+  - 🇺🇸US_195 |1.1MB/s|GPT|NF
+  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
+  - 🇺🇸US_207 |1.9MB/s|NF|D+
+  - ❓ 未知_56
+  - ❓ 未知_127
+  - HK香港(mibei77.com 米贝节点分享)-VOUv
+  - 🇸🇬SG_7 |1.5MB/s|GPT|NF|D+|17%
+  - 🇺🇸US_107 |1.5MB/s|NF|D+
+  - SJC_59
+  - 🇺🇸US_246 |2.6MB/s|NF|D+
+  - 🇺🇸美国20 | ⬇️ 1.1MB/s
+  - US_Elk Grove Village_HostPapa_Claude3
+  - 🇷🇺|RU|@wxgqlfx|133
+  - 🇺🇸US_69 |1.4MB/s|GPT|NF|0%
+  - ❓ 未知_62
+  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
+  - 🇦🇺|AU|@wxgqlfx|225
+  - 🇺🇸US_187 |2.8MB/s|NF|D+
+  - GB_speednode_0149
+  - 🇺🇸US_68 |1.6MB/s|NF
+  - 🇺🇸 美国_61
+  - ❓ 未知_105
+  - 14|DE_speednode_4
   - SJC_68
-  - 🇺🇸US_70 |1.1MB/s|NF|D+
+  - SJC_60
+  - 🇸🇬 新加坡_5
+  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
+  - 🇺🇸US_107 |1.9MB/s|NF
+  - 🇸🇬 新加坡_3
+  - 🇺🇸 美国_17
+  - 🇬🇧|GB|@wxgqlfx|132
+  - US_speednode_0408
+  - ❓ 未知_138
+  - 🇩🇪|DE|@wxgqlfx|131
+  - RU_speednode_0240
+  - 14|FR_speednode_
+  - KR_Seoul_Oracle Corporation_Claude2
+  - 🇺🇸 美国_48
+  - 🇯🇵JP_3 |3.2MB/s|NF|D+
+  - 15|FR_speednode_0078
+  - 🇺🇸美国16 | ⬇️ 2.5MB/s
+  - 🇺🇸US_203 |1.3MB/s|NF|D+
+  - 15|ES_speednode_0073
+  - SJC_80
+  - 15|US_speednode_0379
+  - 🇭🇰HK_30 |3.5MB/s|NF
+  - US_Los Angeles_HostPapa_Claude1
+  - US_speednode_0385
+  - 14|US_speednode_11
+  - 🇺🇸US_159 |4.4MB/s|NF|D+
+  - 🇺🇸 美国_44
+  - 🇺🇸US_77 |1.1MB/s|D+
+  - KR_Seoul_Oracle Corporation_Claude4
+  - 14|US_speednode_8
+  - 🇺🇸 美国_46
+  - 🇺🇸US_91 |2.6MB/s|NF|D+
+  - 🇷🇺|RU|@wxgqlfx|109
+  - 🇺🇸US_6 |1.2MB/s
+  - ❓ 未知_167
+  - 🇭🇰HK_3 |1.1MB/s|NF
+  - 🇺🇸 美国_47
+  - 🇺🇸US_213 |1.0MB/s|NF|D+
+  - KR_Seoul_Oracle Corporation_Claude3
+  - 15|FR_speednode_0081
+  - 🇺🇸 美国_69
+  - 🇺🇸US_100 |1.0MB/s|NF|D+
+  - 🇺🇸 US 46
+  - 🇺🇸US_199 |1.2MB/s|NF|D+
+  - 🇨🇾|CY|@wxgqlfx|217
+  - 14|LT_speednode_2
+  - SJC_49
+  - US_speednode_0373
+  - 🇸🇬 新加坡_17
+  - ❓ 未知_151
+  - SJC_26
+  - 服务器-地址池-162.159.19.82
+  - 🇺🇸 美国_8
+  - 🇺🇸 US 279
+  - 🇺🇸 美国_27
+  - SJC_18
+  - KR_Seoul_Oracle Corporation_Claude18
+  - 🇺🇸 美国_74
+  - Channel :@vmessorg
+  - ❓ 未知_150
+  - CZ_speednode_0038
+  - 🇺🇸US_81 |2.2MB/s|GPT|D+
+  - 🇺🇸US_193 |2.0MB/s|NF|D+
+  - 🇭🇰 香港_9
+  - 🇺🇸US_133 |1.8MB/s|NF|D+
+  - 15|RU_speednode_0241
+  - 🇺🇸US_224 |2.9MB/s|NF|D+
+  - JP_Tokyo_Oracle Corporation_Claude2
+  - JP_speednode_0167
+  - 🇺🇸US_17 |1.4MB/s
+  - 129.146.46.164_Claude
+  - 15|BR_speednode_0023
+  - 🇺🇸 美国_53
+  - Linknet+fastnet+Asn+(ID)
+  - 🇸🇬SG_1 |1.1MB/s|GPT|D+|23%
+  - 美国(yudou123.top 玉豆免费节点)-goHm
+  - 15|US_speednode_0372
+  - '@ShadowProxy66 🇨🇦-dCqB'
+  - 🇺🇸US_75 |2.3MB/s|NF|D+
+  - 🇺🇸 美国_39
+  - 🇸🇮|SI|@wxgqlfx|138
+  - 🇺🇸US_24 |3.3MB/s|GPT
+  - ❓ 未知_75
+  - SJC_47
+  - 🇺🇸 US 69
+  - ❓ 未知_107
+  - 🇳🇱|NL|@wxgqlfx|121
+  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - ❓ 未知_61
+  - GB_speednode_0145
+  - 🇳🇱|NL|@wxgqlfx|123
+  - KR_Seoul_Oracle Corporation_Claude21
+  - ❓ 未知_126
+  - 🇺🇸US_186 |2.0MB/s|GPT|NF|D+
+  - 🇸🇬SG_4 |1.3MB/s
+  - ❓Other_7 |1.3MB/s
+  - SJC_85
+  - 14|US_speednode_6
+  - 德国(yudou123.top 玉豆免费节点)
+  - SJC_30
+  - 14|CZ_speednode_
+  - 🇺🇸US_97 |2.8MB/s|NF
+  - SJC_31
+  - 🇺🇸US_131 |1.5MB/s|NF|D+
+  - SG_Singapore_Oracle Corporation_Claude2
+  - 🇨🇦 加拿大_5
+  - 🇺🇸|US|@wxgqlfx|140
+  - US_Elk Grove Village_HostPapa_Claude2
+  - '💦 18 - VLESS - IPv4 : 2053'
+  - 🇸🇬 新加坡_16
+  - 🇳🇱|NL|@wxgqlfx|223
+  - SJC_50
+  - 🇱🇹|LT|@wxgqlfx|91
+  - SJC_13
+  - 🇺🇸US_46 |1.4MB/s
+  - 🇭🇰 香港_12
+  - 🇭🇰HK_20 |2.6MB/s|D+
+  - 🇺🇸US_92 |1.3MB/s|NF|D+
+  - 🇺🇸 US 27
+  - PENTANET+LIMITED+(AU)
+  - 15|DE_speednode_0054
+  - 🇺🇸US_79 |1.3MB/s|NF|D+
+  - 🇺🇸US_111 |2.8MB/s
+  - 🇸🇬 新加坡_33
+  - 🇸🇬SG_9 |1.3MB/s|GPT|NF|D+|17%
+  - 🇺🇸 美国_25
+  - 🇺🇸|US|@wxgqlfx|215
+  - 🇸🇬SG_2 |1.2MB/s|GPT
+  - 🇺🇸US_80 |3.4MB/s|YT-DE|NF|D+
+  - 🇸🇮|SI|@wxgqlfx|135
+  - ❓ 未知_169
+  - 14|SC_speednode_2
+  - SJC_62
+  - RU_speednode_0242
+  - 🇯🇵JP_6 |1.4MB/s|NF
+  - 🇺🇸 美国_18
+  - 🇺🇸US_43 |4.7MB/s|NF|D+
+  - 🇺🇸 US 19
+  - 服务器-老旧-154.92.9.174
+  - 🇺🇸|US|@wxgqlfx|197
+  - 15|FR_speednode_0080
+  - 15|CY_speednode_0036
+  - 🇸🇬 新加坡_4
+  - 🇺🇸 美国_72
+  - '💦 28 - VLESS - Clean IP : 2083'
+  - 🇺🇸 US 19-zlJR
+  - KR_Seoul_Oracle Corporation_Claude17
+  - KR_Seoul_Oracle Corporation_Claude1
+  - ❓ 未知_81
+  - 15|GB_speednode_0130
+  - 🇺🇸US_218 |1.6MB/s|NF|D+
+  - 15|US_speednode_0397
+  - ❓ 未知_146
+  - 🇺🇸US_177 |2.6MB/s|NF|D+
+  - US_speednode_0407
+  - SJC_24
+  - SJC_17
+  - 15|NL_speednode_0210
+  - ❓ 未知_117
+  - US_Dallas_HostPapa_Claude2
+  - 🇺🇸 US 8
+  - SJC_9
+  - Akamai+Technologies,+Inc.+(SG)
+  - ❓ 未知_109
+  - GB_speednode_0146
+  - '💦 3 - VLESS - IPv4 : 443'
+  - GB_speednode_0136
+  - 🇺🇸US_4 |1.5MB/s|NF|D+
+  - 🇺🇸US_141 |2.3MB/s|NF|D+
+  - '💦 16 - VLESS - Domain : 2053'
+  - ❓ 未知_129
+  - 🇺🇸US_10 |2.0MB/s
+  - 🇺🇸US_70 |3.3MB/s|GPT|NF|D+|0%
+  - 🇺🇸US_64 |2.5MB/s|D+
+  - US_Buffalo_HostPapa_Claude10
+  - SJC_78
+  - 🇪🇪|EE|@wxgqlfx|130
   - 🇺🇸 美国_43
   - SJC_35
-  - SJC_24
-  - SJC_6
-  - SJC_81
-  - 🇺🇸|US|@wxgqlfx|213
-  - ❓_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_
-  - 🇸🇬 新加坡_32
-  - '💦 28 - VLESS - Clean IP : 2083'
-  - 🇺🇸|US|@wxgqlfx|144
-  - 🇭🇰 香港_9
-  - US_Buffalo_HostPapa_Claude10
-  - ❓ 未知_124
-  - 🇺🇸 美国_31
-  - 服务器-老旧-154.92.9.174
+  - 🇺🇸美国24 | ⬇️ 5.1MB/s
+  - 🇺🇸US_85 |2.7MB/s|NF
   - US_Elk Grove Village_HostPapa_Claude4
-  - SJC_50
-  - 🇺🇸US_139 |1.4MB/s|GPT|NF|48%
-  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
-  - 🇺🇸 US 8
-  - 🇺🇸 美国_61
-  - 🇭🇰 香港_6
-  - ❓ 未知_126
-  - Evoxt+Enterprise+(MY)
-  - 🇺🇸 US 87
-  - SJC_43
-  - 15|RU_speednode_0241
-  - 🇸🇬 新加坡_23
-  - 🇺🇸|US|@wxgqlfx|140
-  - ❓ 未知_165
-  - 🇺🇸|US|@wxgqlfx|151
-  - 🇭🇰HK_30 |3.5MB/s|NF
-  - 15|NL_speednode_0210
-  - ❓ 未知_125
-  - US_speednode_0375
-  - 🇯🇵JP_11 |3.1MB/s|NF|D+
-  - GB_speednode_0145
-  - 🇺🇸US_227 |3.1MB/s|NF
-  - 🇺🇸美国22 | ⬇️ 1.1MB/s
-  - free公益代理1
-  - US_speednode_0403
-  - 🇺🇸US_224 |2.9MB/s|NF|D+
-  - 🇺🇸US_105 |4.7MB/s|NF|50%
-  - 🇭🇰HK_32 |1.3MB/s|NF|D+
-  - 🇺🇸US_73 |1.1MB/s|NF|D+|5%
-  - DE_Frankfurt am Main_Oracle Corporation_Claude1
-  - 🇺🇸 US 67
-  - 🇺🇸 US 11
-  - 🇺🇸US_64 |2.5MB/s|D+
-  - 🇺🇸 美国_39
-  - 🇺🇸US_184 |2.3MB/s|GPT|NF|D+|0%
-  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
-  - SJC_26
-  - 🇺🇸US_88 |1.6MB/s|NF|D+
-  - 🇸🇬|SG|@wxgqlfx|104
-  - 🇭🇰HK_33 |1.8MB/s|NF|D+|67%
+  - 🇨🇦 加拿大_7
+  - 美国_1126491
+  - 🇱🇹|LT|@wxgqlfx|216
+  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
+  - 🇺🇸 美国_34
+  - 0|_143
   - 🇺🇸US_239 |3.3MB/s|NF
-  - 🇳🇱|NL|@wxgqlfx|121
-  - SJC_78
-  - '💦 3 - VLESS - IPv4 : 443'
-  - 🇸🇮|SI|@wxgqlfx|117
-  - 🇨🇦 加拿大_5
-  - 14|FR_speednode_
-  - '💦 23 - VLESS - Domain : 2083'
-  - 🇭🇰 香港_12
-  - 🇸🇮|SI|@wxgqlfx|135
-  - 🇺🇸 美国_53
-  - SJC_47
-  - 服务器-优选-162.159.241.3
-  - 15|US_speednode_0398
-  - US_speednode_0385
-  - 🇸🇬 新加坡_30
-  - 🇺🇸US_6 |1.2MB/s
-  - 🇺🇸[openproxylist.com] ss-US-huKy
-  - 🇸🇬 新加坡_6
-  - 🇺🇸 美国_68
-  - SJC_33
-  - 🇺🇸 美国_46
-  - 🇺🇸 美国_47
-  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
-  - 🇺🇸 美国_18
-  - ❓ 未知_172
-  - 🇺🇸 US 23
-  - 15|FR_speednode_0080
-  - DE_Falkenstein_Hetzner Online GmbH_Claude1
-  - 官方优选_34
+  - ❓ 未知_142
+  - 🇺🇸 US 63
+  - 🇺🇸 US 11
+  - SG_Singapore_Oracle Corporation_Claude1
+  - 14|US_speednode_14
+  - HK香港(mibei77.com 米贝节点分享)-exnr
+  - GB_speednode_0143
+  - 🇺🇸|US|@wxgqlfx|128
+  - 🇺🇸 美国_67
+  - '💦 35 - VLESS - Clean IP : 2087'
+  - 🇩🇪DE_14 |3.0MB/s|GPT|NF|D+
+  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
+  - 🇺🇸US_210 |1.7MB/s|NF|D+
+  - 🇺🇸 美国_50
+  - 🇺🇸US_51 |3.8MB/s
+  - 🇸🇬 新加坡_8
+  - 🇺🇸US_105 |4.7MB/s|NF|50%
   - 🇺🇸|US|@wxgqlfx|106
-  - 🇺🇸[openproxylist.com] ss-US
-  - 🇺🇸|US|@wxgqlfx|114
-  - SJC_61
-  - 🇺🇸US_100 |4.3MB/s|NF
+  - 🇺🇸 美国_65
+  - 🇸🇮|SI|@wxgqlfx|117
+  - 🇭🇰HK_32 |1.3MB/s|NF|D+
+  - 🇺🇸 US 2-ScE8
+  - 🇺🇸 美国_66
+  - 🇺🇸US_65 |1.0MB/s|NF|D+
+  - SJC_33
+  - SJC_69
+  - 🇺🇸US_279 |3.1MB/s|NF|0%
+  - 🇺🇸 美国_49
+  - 🇺🇸 美国_15
+  - 🇺🇸US_110 |4.2MB/s|GPT
+  - 🇺🇸 美国_6
+  - 🇺🇸US_219 |2.7MB/s|NF|D+
+  - LT_speednode_0190
+  - 🇺🇸美国2 | ⬇️ 1.1MB/s
+  - '💦 21 - VLESS - Clean IP : 2053'
+  - 服务器-优选-104.19.31.147
+  - 🇺🇸 美国_32
+  - 🇸🇨|SC|@wxgqlfx|163
+  - 🇺🇸 美国_41
+  - 🇺🇸US_85 |1.4MB/s|GPT|D+
+  - ❓ 未知_130
+  - 🇺🇸US_1 |1.3MB/s|GPT|NF|40%
+  - CH_speednode_0031
+  - 服务器-优选-104.21.127.23
+  - 🇺🇸 美国_13
+  - '[112]🇺🇸US-194.5.215.171-0135'
+  - 14|SC_speednode_3
+  - 🇦🇪AE_4 |2.5MB/s|GPT|NF|D+|0%
+  - 🇺🇸 US 70
+  - free公益代理1
+  - 🇺🇸 US 44
+  - 🇭🇰HK_13 |2.7MB/s|NF
+  - 🇺🇸 美国_3
+  - 🇺🇸 US 164
+  - 4Jadi-3920-29772
+  - 🇺🇸US_179 |2.4MB/s|NF
+  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
+  - 🇺🇸 美国_1
+  - ❓ 未知_145
   - 🇸🇬SG_12 |2.5MB/s|GPT|NF|D+
-  - ❓ 未知_57
-  - 🇺🇸US_104 |3.8MB/s
-  - 🇺🇸 US 22
+  - 15|US_speednode_0398
+  - 🇺🇸|US|@wxgqlfx|164
+  - 🇸🇬|SG|@wxgqlfx|104
+  - ❓ 未知_120
+  - '💦 32 - VLESS - IPv4 : 2087'
+  - ❓ 未知_165
+  - "[100]加拿大-79.127.200.162-37853\r\r"
+  - ❓ 未知_125
+  - 🇺🇸US_145 |2.5MB/s|NF
+  - 官方优选_34
+  - 🇺🇸US_248 |2.3MB/s|NF|D+
+  - 🇺🇸|US|@wxgqlfx|151
+  - ❓ 未知_79
+  - SJC_34
+  - 🇺🇸 美国_57
+  - ❓ 未知_123
+  - SJC_61
+  - 🇸🇬 新加坡_30
+  - 服务器-优选-162.159.241.3
+  - US_7
+  - 🇺🇸 US 87
+  - ❓ 未知_86
+  - 美国 - 聖荷西 - Cloudflare, Inc. - 28
+  - Evoxt+Enterprise+(MY)
+  - 🇺🇸 美国_22
+  - 🇺🇸 US 67
+  - JP_Tokyo_Oracle Corporation_Claude1
+  - DE_Falkenstein_Hetzner Online GmbH_Claude1
+  - 15|US_speednode_0405
+  - 🇺🇸美国28 | ⬇️ 2.0MB/s
+  - 🇺🇸US_88 |2.6MB/s|GPT|NF|D+|50%
+  - JO_speednode_0165
+  - 14|RU_speednode_4
+  - 🇺🇸 US 55
+  - 🇸🇬 新加坡_20
+  - yandex-476-Gzf7
+  - KR_Seoul_Oracle Corporation_Claude19
+  - 🇭🇰 香港_6
+  - US_speednode_0403
+  - 🇺🇸US-104.192.226.106-0186
+  - 🌐|UN|@wxgqlfx|93
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +119\r\r"
+  - 🇺🇸 US 145
+  - "[1113][68][68][68][68][68][68][68][68][68][82][68][68][82][68][68][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+70\r\r"
+  - 🇺🇸|US|@wxgqlfx|114
+  - 🇺🇸 US 299
+  - '[112]🇺🇸US-79.110.53.82-0239'
+  - 美国-hPRG
+  - 🇺🇸 US 391
+  - '💦 23 - VLESS - Domain : 2083'
+  - ❓ 未知_88
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +40\r\r"
-  - 🇺🇸 美国_56
-  - ES_speednode_0075
-  - "[100]加拿大-79.127.200.162-37853\r\r"
-  - 🇺🇸 美国_41
-  - 🇺🇸 US 68
+  - 🇺🇸 US 23
   - '2,3,24,110,111,161,186,375|🇺🇸US-212.102.47.131-0291 #1'
-  - 🇺🇸US_200 |1.4MB/s|NF|D+
-  - 🇺🇸 US 55
-  - 服务器-优选-104.19.31.147
-  - 🇸🇬SG_15 |3.2MB/s|GPT|NF
-  - 🇺🇸 US 19-zlJR
-  - 🇺🇸US_94 |1.8MB/s|50%
-  - 🇺🇸9 |  4.6MB/s|Disney|Openai
-  - CFW_443
-  - 🇺🇸US_60 |1.9MB/s|NF|D+
-  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
-  - 🇺🇸US_77 |3.0MB/s|NF|D+
-  - KR_Seoul_Oracle Corporation_Claude5
-  - US_7
-  - 🇨🇦 CA 1
-  - SJC_59
-  - 美国 - 洛杉矶 - NTT America - 92
-  - 🇺🇸US_166 |3.1MB/s|GPT|NF|D+
-  - 🇺🇸US_107 |1.9MB/s|NF
-  - 🇺🇸US-173.244.56.6-1037
-  - 🇺🇸 美国_64
-  - SJC_17
-  - 🇺🇸 美国_50
-  - 14|CZ_speednode_
-  - 🇺🇸 US 27
-  - 🇺🇸 美国_44
-  - 🇺🇸US-104.192.226.106-0186
-  - SI_speednode_0267
-  - Contabo+Asia+Private+Limited+(SG)
-  - 🇺🇸 美国_16
-  - 0|_143
-  - 🇺🇸US-173.244.56.9-1105
-  - US_speednode_0414
-  - 🇺🇸美国28 | ⬇️ 2.0MB/s
-  - 🇺🇸 美国_28
-  - 🇨🇦 加拿大_3
+  - 🇺🇸[openproxylist.com] ss-US-huKy
+  - SJC_43
   - 🇺🇸 US 303
-  - SG_Singapore_Oracle Corporation_Claude2
-  - 🇺🇸US_222 |3.2MB/s|NF|D+
-  - 🇺🇸US_97 |2.8MB/s|NF
-  - 14|SC_speednode_2
-  - ❓ 未知_127
-  - LT_speednode_0190
-  - SJC_60
-  - SJC_20
-  - 🇺🇸 US 42
-  - 🇺🇸 美国_74
-  - 服务器-优选-104.21.127.23
-  - 🇺🇸 US 158
-  - ❓ 未知_146
-  - 🇺🇸 US 11-AYTU
-  - 14|SC_speednode_3
-  - 15|CZ_speednode_0039
-  - 🇺🇸 US 469
-  - 🇪🇪|EE|@wxgqlfx|130
-  - PENTANET+LIMITED+(AU)
-  - Linknet+fastnet+Asn+(ID)-PNLR
-  - 🌐|UN|@wxgqlfx|110
-  - '💦 16 - VLESS - Domain : 2053'
-  - '@ShadowProxy66 🇨🇦-dCqB'
-  - 🇨🇦CA-79.127.233.170-0167
   - Oracle+Corporation+(SG)-XThx
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +120\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S4\r\r"
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S6\r\r"
+  - 🇺🇸US_200 |1.4MB/s|NF|D+
+  - '💦 36 - VLESS - Domain : 2096'
+  - 🇺🇸US_106 |4.2MB/s|NF
+  - ❓ 未知_179
+  - 🇨🇦 CA 1
+  - 15|DE_speednode_0060
+  - 🇺🇸 US 22
+  - 🇺🇸US_222 |3.2MB/s|NF|D+
+  - 🇺🇸US_88 |1.6MB/s|NF|D+
+  - 🇺🇸US_169 |1.5MB/s|GPT|NF|D+|48%
+  - Contabo+Asia+Private+Limited+(SG)
+  - 🏁RELAY-104.21.3.189-0268
+  - 🇺🇸 US 189
+  - ES_speednode_0075
+  - https://t.me/xyfqzy ⚡_15
+  - 🇺🇸US-173.244.56.6-1037
+  - 1服务器-地址池-104.16.210.28
+  - 🇺🇸US_24 |1.4MB/s
+  - 🇺🇸US-173.244.56.9-1105
+  - US_Buffalo_HostPapa_Claude11
   - 🇺🇸US-209.126.84.189-0499
-  - 🇺🇸US-137.175.124.167-0172
-  - 🇨🇦CA-79.127.233.170-0165
-  - 🇺🇸 US 888
-  - 🇺🇸US_75 |2.3MB/s|NF|D+
-  - 官方优选_50
-  - US_speednode_0373
-  - SJC_30
-  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
-  - Akamai+Technologies,+Inc.+(SG)
-  - LAX_8
-  - 🇺🇸US_39 |2.6MB/s
-  - 🇺🇸US-206.206.80.227-0188
-  - yandex-455
-  - 15|DE_speednode_0058
-  - ❓Other_7 |1.9MB/s|NF|D+
-  - 🇸🇬 新加坡_16
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
-  - 老油条-香港-cdn2
-  - 🇭🇰HK_13 |2.7MB/s|NF
-  - 🇺🇸 US 145
-  - ❓Other_5 |1.5MB/s|NF|D+
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+97\r\r"
-  - 🇬🇧 GB 4
-  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - ❓ 未知_132
+  - 🇺🇸US_194 |2.7MB/s
   - '@meli_proxyy`'
-  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+98\r\r"
-  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
-  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
-  - LAX_4
-  - ❓ 未知_151
-  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
-  - 🇺🇸US_50 |1.6MB/s|GPT|40%
-  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+88\r\r"
-  - 🇳🇱 NL 1
-  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - 🇺🇸美国22 | ⬇️ 1.1MB/s
+  - 🇺🇸 US 11-AYTU
   - 🇺🇸US_32 |2.2MB/s|GPT|NF|GM|70%
-  - 🇺🇸 US 20
-  - 14|US_speednode_6
-  - KR_Seoul_Oracle Corporation_Claude2
-  - '@meli_proxyy-DKGt'
-  - ❓ 未知_167
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+84\r\r"
-  - yandex-410-JKnw
+  - 🇺🇸US_35 |6.4MB/s|GPT|NF|GM
+  - 🇨🇦CA-79.127.233.170-0167
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3334613931346334
+  - 🇫🇷FR_8 |3.4MB/s|GPT|YT-DE|NF|D+|28%
+  - 15|ES_speednode_0070
+  - 🇺🇸 US 42
+  - 🇺🇸US_61 |2.5MB/s|NF|D+
+  - yandex-455
+  - 🇺🇸 US 68
+  - 🇺🇸9 |  4.6MB/s|Disney|Openai
+  - 🇨🇦CA-79.127.233.170-0165
+  - 🇺🇸 US 21
+  - 15|DE_speednode_0058
+  - SI_speednode_0267
+  - US_Elk Grove Village_HostPapa_Gemini_Claude
+  - Linknet+fastnet+Asn+(ID)-PNLR
+  - ❓Other_5 |1.5MB/s|NF|D+
+  - 美国 053
+  - 美国(yfuye.com免费节点)_87
+  - 🇺🇸 US 567
+  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
+  - 🇺🇸 US 888
+  - 老油条-香港-cdn2
+  - "\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649 S5\r\r"
+  - 🇺🇸美国16 | ⬇️ 3.7MB/s
+  - 美国 - 洛杉矶 - NTT America - 92
+  - 🇧🇦|BA|@wxgqlfx|235
+  - ❓ 未知_172
+  - 荷兰 - 阿姆斯特丹 - Cloudflare, Inc. - 18
+  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
+  - 🇺🇸 US 469
+  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
+  - 🇺🇸 US 102
+  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
+  - 🇺🇸US_153 |2.5MB/s|NF
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+99\r\r"
-  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
-  - '[112]🇬🇧GB-169.150.210.233-0276'
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+97\r\r"
+  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
+  - 🇺🇸 US 158
+  - 🇬🇧 GB 4
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+98\r\r"
+  - 🇺🇸 US 596
+  - 🇺🇸[openproxylist.com] ss-US
+  - 🇺🇸 US 597
+  - 官方优选_4
+  - 🇺🇸US-137.175.124.167-0172
   - "[1113][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+106\r\r"
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+95\r\r"
-  - 德国_358
-  - 🆔@LuxyNet💎❖英国❖GB❖952
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+87\r\r"
-  - 🇩🇪 DE 27
-  - 1服务器-地址池-104.16.210.28
-  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
-  - 🇬🇧_GB_英国
-  - 🇳🇱 NL_438
-  - '@meli_proxyy-Bpzt'
-  - 🇳🇱 NL 4-MLSc
-  - 🇱🇹LT-45.87.175.28-0867
-  - 🇺🇸US_544
-  - 🆔@LuxyNet💎❖法国❖FR❖1037
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+89\r\r"
-  - 🇳🇱 NL 3
-  - 🇱🇹LT-45.87.175.58-4876
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+82\r\r"
-  - GB_07
-  - 官方优选_4
-  - 🇪🇸 ES_142
-  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +123\r\r"
-  - "[103]_俄罗斯_hamraH_411\r\r"
-  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
-  - https://t.me/xyfqzy ⚡_15
-  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
-  - US->NL->RTL->@DeamNet_Proxy_76
-  - 0,1,2,3|ChatGPT  DE_58
-  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
-    \U0001D64B\U0001D649+90\r\r"
-  - "[103]_俄罗斯_hamraH_128\r\r"
+  - 15|CZ_speednode_0039
+  - 🇺🇸US_50 |1.6MB/s|GPT|40%
+  - 🇫🇷FR_1 |2.7MB/s
+  - 🇺🇸美国12 | ⬇️ 8.6MB/s
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +104\r\r"
-  - 🇬🇧 GB 15
-  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
-  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
-  - VE->NL->MCI->@DeamNet_Proxy_57
-  - US->NL->RTL->@DeamNet_Proxy_68
-  - "[103]_俄罗斯_hamraH_419\r\r"
+  - "[102][68][68][68][68][68][68][68][68][82][82][82][82][68][68][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+69\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+95\r\r"
+  - 🇺🇸US_51 |2.9MB/s|GPT|D+|40%
+  - SJC_48
+  - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +123\r\r"
+  - 🇺🇸 US 137
+  - GB_07
+  - 🇬🇧_GB_英国
+  - yandex-410-JKnw
+  - yandex-660-vPgZ
+  - 🇳🇱 NL 1
+  - '@meli_proxyy-DKGt'
+  - LAX_4
+  - '[112]🇬🇧GB-169.150.210.233-0276'
   - 🇫🇷FR-45.158.171.70-4878
-  - 15|BR_speednode_0023
-  - 🇳🇱NL-185.246.153.12-1108
-  - DE_Frankfurt am Main_Leaseweb Deutschland GmbH_Claude
-  - 🇦🇪AE-151.242.251.131-0222
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
-  - 🇳🇱 NL 6
-  - 🇫🇷FR-45.158.171.136-0268
-  - "德国(yudou66.com 玉豆免费节点)\r"
+  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+84\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+87\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+89\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+90\r\r"
+  - 🇺🇸US_544
+  - 🇳🇱 NL_438
+  - 🇱🇹LT-45.87.175.28-0867
+  - 🇳🇱 NL 3
+  - "[103]_俄罗斯_hamraH_419\r\r"
+  - 0,1,2,3,8,372,606|21|🇳🇱NL_610
+  - 🇬🇧 GB 15
+  - "[116][101]All--@V2ray_Alpha+危地马拉\r\r"
+  - 🇳🇱 NL 4-MLSc
+  - 🇱🇹LT-45.87.175.58-4876
+  - 🆔@LuxyNet💎❖英国❖GB❖952
+  - yandex-530-C5wi
+  - 英国◈GB◈Ꮮᝪᑎᑌᑭ𖡺لوناپ◈1349
+  - 🆔@LuxyNet💎❖法国❖FR❖1037
+  - "[103]_RU_俄罗斯_211\r\r"
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+88\r\r"
+  - 英国⊹GB⊹⟪@LonUp_M⟫⊹1
+  - 0,1,2,3|ChatGPT  DE_58
+  - 美国(yfuye.com免费节点)_169
+  - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
+    \U0001D64B\U0001D649+82\r\r"
+  - '@meli_proxyy-Bpzt'
+  - "比利时\U0001691B⟪@LonUp_M⟫\U0001691B386\r"
   - 🇳🇱 NL 9-C16w
-  - 🇺🇸US_33 |2.5MB/s|GPT|NF|D+|33%
-  - "[103]_俄罗斯_hamraH_418\r\r"
-  - 🇫🇷FR-45.158.171.146-0203
-  - 🇺🇸 US 44
-  - "[103]_RU_俄罗斯_213\r\r"
-  - CFW_443-AQoO
-  - yandex-608-tb8h
+  - "[1113][68]r♡ya@vpnbaz\r\r-kGsJ"
+  - US_Buffalo_HostPapa_Claude7
+  - "[103]俄罗斯_RU_SSS_109\r\r"
+  - 🇺🇸US-206.206.80.227-0188
+  - 🇩🇪[openproxylist.com] ss-DE
+  - "[103]_RU_俄罗斯_123\r\r"
+  - 🇫🇷FR-45.158.171.136-0268
+  - 🇺🇸 US 555
+  - '[103]56,95|SS-TCP-NA 🇱🇹 LT-45.87.175.171:...'
+  - US->NL->RTL->@DeamNet_Proxy_68
+  - CFW_8443-E77l
   - 🇳🇱 NL 19
-  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
-    +S1\r\r"
-  - 德国_362
-  - 英国United+Kingdom
-  - 🇳🇱NL-193.29.139.217-0212
-  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - VE->NL->MCI->@DeamNet_Proxy_57
+  - 美国_579
   - "[103]_俄罗斯_hamraH_415\r\r"
-  - 🏁RELAY-104.21.3.189-0268
-  - 🇺🇸 US 162
-  - 🇯🇵JP-149.22.87.204-1116
-  - 🇺🇸 美国_4
-  - 🇺🇸 US 21
+  - "[103]_RU_俄罗斯_213\r\r"
+  - yandex-1058-soOg
+  - 🇻🇪 VE 2
+  - 🇳🇱NL-193.29.139.217-0212
+  - 德国_358
   - 🛡️ @FreakConfigtrojan://telegram-id-privatevpns@63.178.209.45:22222?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigvless://df0680ca-e43c-498d-ed86-8e196eedd012@185.231.205.248:8880?mode=gun&security=none&encryption=none&type=grpc#🛡️
     @FreakConfigvless://05519058-d2ac-4f28-9e4a-2b2a1386749e@63.178.209.45:22224?path=/telegram-channel-vlessconfig&security=tls&encryption=none&type=ws&sni=trojan.burgerip.co.uk#🛡️
     @FreakConfigtrojan://telegram-id-directvpn@63.178.209.45:22223?security=tls&alpn=http/1.1&headerType=none&type=tcp&sni=trojan.burgerip.co.uk#Telegram:@config_proxy
     🔥
-  - 美国_579
-  - 🇦🇹[openproxylist.com] ss-AT
-  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
-  - 🇺🇸US_194 |2.7MB/s
-  - 🇬🇧[openproxylist.com] ss-GB
-  - "[103]_RU_俄罗斯_211\r\r"
-  - 🇺🇸US-137.117.8.225-0187
-  - 🇫🇷 FR 8
-  - 🇺🇸 US 567
-  - 0|_101
-  - "[103]_俄罗斯_hamraH_135\r\r"
-  - "[103]_RU_俄罗斯_214\r\r"
-  - yandex-530-C5wi
-  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
-  - Config🇨🇦@Do_itforyou
-  - 🇦🇹 AT 1
-  - '@meli_proxyy-Bxhq'
-  - 🇻🇪 VE 2
-  - "[103]PE_711\r\r"
-  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
-  - 🇵🇱PL_448
-  - "18|A_18056\r\r"
-  - 18|A_18069
-  - 德国-WEmq
-  - 🇺🇸US-38.12.23.251-5000
-  - ❓ 未知_101
-  - https://t.me/xyfqzy ⚡_16
-  - "[103]PE_739\r\r"
-  - "[103]PE_748\r\r"
-  - 🇩🇪[openproxylist.com] ss-DE
-  - 🇩🇪 DE 3
-  - "18|A_18063\r\r"
-  - "[103]PE_724\r\r"
-  - "[103]PE_709\r\r"
-  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
-  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - yandex-608-tb8h
+  - '1,2,3,8,24,110,111,161,186,193,375|🇨🇭CH-156.146.62.164-0398 #1'
+  - 🆔@LuxyNet💎❖比利时❖BE❖1048
+  - 🇳🇱 NL 6
+  - 🇩🇪 DE 27
+  - 🇦🇪AE-151.242.251.131-0222
+  - 英国United+Kingdom
+  - US->NL->RTL->@DeamNet_Proxy_76
   - LAX_2
-  - 🇵🇱 PL 2
-  - 🇺🇸US_153 |2.5MB/s|NF
-  - 🇳🇴NO-185.213.23.226-0249
-  - "18|A_18061\r\r"
+  - LAX_8
+  - 15|FR_speednode_0079
+  - ⟪@LonUp_M⟫◮比利时◮BE◮8
+  - 🇫🇷FR-45.158.171.146-0203
+  - "[103]_RU_俄罗斯_214\r\r"
+  - 🇺🇸 US 162
+  - 🇪🇸 ES_142
+  - "[103]_俄罗斯_hamraH_411\r\r"
+  - 🇦🇹[openproxylist.com] ss-AT
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][82][82][82][82][82][82][82][82][82][82][82][68][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+27\r\r"
+  - 🇬🇧[openproxylist.com] ss-GB
+  - '@meli_proxyy-Bxhq'
+  - US_Buffalo_HostPapa_Claude14
+  - "[103]_俄罗斯_hamraH_135\r\r"
+  - 德国-WEmq
+  - 🇩🇪 DE 38
+  - 德国_362
+  - 🇳🇱 NL 15
   - 🇳🇴[openproxylist.com] ss-NO
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
-  - yandex-1058-soOg
-  - "[103]PE_745\r\r"
-  - yandex-674-DFt9
-  - "[103]PE_735\r\r"
-  - 🇺🇸美国12 | ⬇️ 8.6MB/s
-  - 18|A_18102
-  - 18,51|🇵🇱_HAMRAH_147
-  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
-  - 🇫🇮[openproxylist.com] ss-FI-TnsT
-  - "[103]PE_743\r\r"
-  - 🇺🇸美国16 | ⬇️ 3.7MB/s
-  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 0|_101
+  - 🇳🇴NO-185.213.23.226-0249
+  - 🇫🇷 FR 8
+  - 官方优选_50
+  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
+  - "[103]PE_707\r\r"
+  - 🇦🇹 AT 1
+  - "德国(yudou66.com 玉豆免费节点)\r"
   - "[1113][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
     +122\r\r"
-  - yandex-577
-  - "[103]PE_723\r\r"
-  - "[103]PE_741\r\r"
-  - "[103]PE_730\r\r"
-  - "18|A_5377\r\r"
-  - "18|A_18066\r\r"
-  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
-  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
-  - "[103]PE_721\r\r"
-  - 18|A_18067
-  - SJC_87
-  - 🇺🇸US_150 |2.7MB/s|GPT|NF|29%
-  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
-  - "[103]PE_733\r\r"
-  - 🇬🇧GB-64.227.45.92-0263
-  - "[103]PE_737\r\r"
-  - SJC_83
-  - 🇷🇴RO-194.14.217.38-1081
-  - 🇬🇧GB-173.208.51.193-5005
-  - SJC_3
-  - "[103]PE_719\r\r"
-  - "[103]PE_720\r\r"
-  - "[103]PE_716\r\r"
-  - 🇺🇸 US 137
-  - '💦 36 - VLESS - Domain : 2096'
-  - 🇪🇪[openproxylist.com] ss-EE
-  - "[103]PE_714\r\r"
-  - "[103]PE_727\r\r"
-  - "[103]PE_750\r\r"
-  - "[103]PE_729\r\r"
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_6138366437663264
-  - CFW_8443-E77l
-  - 德国 - Frankfurt Am Main - Hetzner Online AG - 2
-  - US_Buffalo_HostPapa_Claude7
-  - 🇺🇸 US 2-ScE8
-  - 🆔@LuxyNet💎❖比利时❖BE❖1048
-  - "[103]PE_707\r\r"
-  - 🇳🇱NL_443
-  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
-  - 🇷🇴RO-185.126.237.38-0276
-  - 🇺🇸 US 102
-  - US_Elk Grove Village_HostPapa_Gemini_Claude
   - 🇵🇱 PL 3
-  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
-  - 🇺🇸US_109 |1.1MB/s|GPT|NF|GM|29%
-  - 🟡_🇺🇸_💻_github.com/Ruk1ng001_6333383736646266
-  - "[103]PE_712\r\r"
-  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
-  - 🇰🇷KR-154.90.62.168-4918
-  - 🇳🇱 NL 15
-  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
-  - 🇳🇱NL-46.243.3.42-0278
-  - 🇺🇸 US 391
-  - 🇩🇪DE-91.99.185.216-0257
-  - 18|A_18068
+  - 18|A_18102
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_209\r\r"
+  - "[103]PE_745\r\r"
+  - 18|A_18067
+  - "[103]PE_743\r\r"
+  - "[103]PE_730\r\r"
   - "[103]PE_749\r\r"
-  - NETHERLANDS-2
-  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
-  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
-  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "18,109,110,114|\U0001F1FA_俄罗斯_hamraH_40\r\r"
+  - "[103]PE_739\r\r"
+  - "18|A_18066\r\r"
+  - "[103]PE_748\r\r"
+  - "[103]PE_727\r\r"
+  - 🌀3-SK |  5.0MB/s|0%|Youtube|Op...
+  - yandex-674-DFt9
+  - 🇩🇪 DE 3
+  - 18,26,51,109,110,112,114,115|🇺_RU_ham_37
+  - 🇺🇸US_272 |3.9MB/s|GPT|NF|GM|0%
+  - "18,26,51,109,110,112,114,115|\U0001F1FA_RU_ham_208\r\r"
+  - "[103]PE_712\r\r"
+  - "18|A_5377\r\r"
+  - "18,51,109,110,112,114,115|\U0001F1F7\U0001F1FA_RU_ham_356\r\r"
+  - 🇫🇮[openproxylist.com] ss-FI-TnsT
+  - "[103]_俄罗斯_hamraH_418\r\r"
+  - 🇱🇻[openproxylist.com] ss-LV-14SW
+  - "[103]PE_741\r\r"
+  - 瑞典 - 斯德哥尔摩 - xorek.cloud International LTD - 1
+  - "18,51|\U0001F1F5_HAMRAH_955\r\r"
+  - "[103]_俄罗斯_hamraH_128\r\r"
+  - yandex-577
+  - '66|SS-TCP-NA 🇩🇪 DE-80.92.204.106:... #4'
+  - 18|A_18068
+  - "18|A_18063\r\r"
+  - "[103]PE_721\r\r"
+  - "[103]PE_733\r\r"
+  - 🇺🇸US-137.117.8.225-0187
+  - "[103]PE_735\r\r"
+  - "[103]PE_709\r\r"
+  - "[103]PE_737\r\r"
+  - 🇷🇴RO-185.126.237.38-0276
+  - 18,51|🇵🇱_HAMRAH_147
+  - "[103]PE_723\r\r"
+  - 🇬🇧GB-173.208.51.193-5005
+  - 🇯🇵JP-149.22.87.204-1116
+  - 🆔@LuxyNet💎❖阿富汗❖AF❖1626
+  - 🇺🇸 US 634
+  - "[103]PE_716\r\r"
+  - "18|A_18061\r\r"
+  - "[103]PE_714\r\r"
+  - github.com/Ruk1ng001_3836613565346433
+  - "[103]PE_720\r\r"
+  - "[103]PE_729\r\r"
+  - "[103]PE_719\r\r"
+  - 🇬🇧GB-64.227.45.92-0263
+  - "18,51|\U0001F1F1_HAMRAH_954\r\r"
+  - CFW_443-AQoO
+  - 🇪🇪[openproxylist.com] ss-EE
+  - "[103]PE_724\r\r"
+  - 🇩🇪 DE 42
+  - "[101]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649\
+    +S1\r\r"
+  - "[103]PE_750\r\r"
+  - 🇷🇴RO-194.14.217.38-1081
   - NETHERLANDS-1
-  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
-    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
-  - 🇸🇬 SG 3
+  - "18,26,51,112,114|\U0001F1FA_RU_俄罗斯_33\r\r"
+  - 🇺🇸 US 641
+  - Config🇨🇦@Do_itforyou
+  - 18|A_18069
+  - 🇵🇱PL_448
+  - ⟪@LonUp_M⟫◮塞尔维亚◮RS◮111
+  - 🇺🇸 US 791
+  - "18|A_18056\r\r"
+  - 🇳🇱NL-185.246.153.12-1108
+  - "[103]PE_711\r\r"
+  - 🇬🇧GB_165
+  - SJC_83
+  - NETHERLANDS-2
+  - UK-1
+  - 🇳🇱NL-46.243.3.42-0278
+  - ❓ 未知_101
+  - 🇺🇸 US 638
+  - 🇺🇸 US 20
+  - 🇺🇸US_188 |3.1MB/s|GPT|YT-DE|NF|D+|0%
+  - 🇺🇸 美国_4
+  - 🇵🇱 PL 2
+  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇳🇱NL-92.112.126.90-4910
+  - 🇺🇸_US_美国_2
+  - 🇩🇪DE-91.99.185.216-0257
+  - 🇺🇸_US_美国
+  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
+  - 🇬🇷 GR 1
+  - 🇺🇸US-38.12.23.251-5000
   - 🇫🇷FR-45.67.139.225-0314
-  - 🇩🇪 DE 38
-  - 🇰🇷 KR 2
+  - 🇰🇷KR-154.90.62.168-4918
+  - 🇭🇰HK-18.162.146.85-4987
+  - free公益代理
+  - 🇩🇪DE-46.165.194.96-0326
+  - 🇳🇱NL_443
+  - GERMAN
+  - 🇱🇻LV-216.173.69.250-0337
+  - SJC_3
+  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
   - "[1113][68][68][68][68][68][68][68][68][68][68][68][68][68][82][68][68]\U0001D64F\
     \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+51\r\r"
   - "[1113][68][68][68][68][68][68]\U0001D64F\U0001D642@\U0001D648\U0001D641\U0001D63D\
     \U0001D64B\U0001D649+81\r\r"
-  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
-  - 美国(yfuye.com免费节点)_187
-  - 🇺🇸 US 555
-  - 🇱🇻[openproxylist.com] ss-LV-14SW
-  - 🇦🇷AR-38.54.45.129-4921
-  - 🇬🇷 GR 1
-  - UK-1
-  - "[103]俄罗斯_RU_SSS_109\r\r"
-  - GERMAN
-  - 🇺🇸 US 597
-  - 🇬🇧GB_165
-  - 🇩🇪 DE 42
-  - 🇮🇩 ID 1
-  - '💦 18 - VLESS - IPv4 : 2053'
-  - 🇺🇸[openproxylist.com] vless-US-f0ZJ
-  - "[103]_RU_俄罗斯_123\r\r"
-  - '💦 32 - VLESS - IPv4 : 2087'
-  - 🇺🇸_US_美国_2
-  - 🇦🇺 AU 1
-  - 🇳🇱NL-92.112.126.90-4910
-  - US_Buffalo_HostPapa_Claude3
-  - 🇩🇪DE-46.165.194.96-0326
-  - yandex-406
-  - 🇺🇸_US_美国
-  - 🇹🇭 TH 1
-  - yandex-190-DgYn
-  - 🇺🇸 US 791
-  - 🇱🇻LV-216.173.69.250-0337
-  - US_Buffalo_HostPapa_Claude14
-  - 🇺🇸 US 596
-  - "[freefq]undefined\r\r"
-  - 🇺🇸 US 299
-  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
-  - 🇻🇳 VN 297
-  - 🇻🇳 VN 73
-  - 🇻🇳 VN 232
-  - 美国(yfuye.com免费节点)_87
-  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
-  - 🇻🇳 VN 192
-  - 🇭🇰HK-18.162.146.85-4987
-  - 🏁 ZZ_547
-  - 🇺🇸 US 634
-  - 🇻🇳 VN 274
-  - 🇻🇳 VN 310
-  - github.com/Ruk1ng001_3836613565346433
-  - 🇺🇸 US 641
-  - 🇻🇳 VN 21-9rAo
-  - 🇻🇳 VN 36
-  - 🇻🇳 VN 32
-  - 🇻🇳 VN 156
-  - 🇻🇳 VN 38
-  - 🇻🇳 VN 200
-  - 🇻🇳 VN 155
-  - 🇻🇳 VN 146
-  - 🇻🇳 VN 139
-  - 🇻🇳 VN 215
-  - 🇻🇳 VN 68
-  - 🇻🇳 VN 299
-  - github.com/Ruk1ng001_3764613639386561
-  - 🇻🇳 VN 247
-  - 🇻🇳 VN 248
-  - 🇮🇱 IL 1
-  - free公益代理
-  - 🇻🇳 VN 58
-  - 🇻🇳 VN 83
-  - 🇻🇳 VN 137
-  - 🇻🇳 VN 269
-  - 🇻🇳 VN 280
-  - 🇻🇳 VN 175
-  - 🇻🇳 VN 12
-  - 🇻🇳 VN 42
-  - 🇺🇸 US 883
-  - 🟠_🇺🇸_💻_github.com/Ruk1ng001_3261646537326636
-  - 🇻🇳 VN 166
-  - 🇻🇳 VN 84
-  - 🇻🇳 VN 14
-  - 🇻🇳 VN 220
-  - 🇻🇳 VN 307
-  - 🇻🇳 VN 18
-  - 🇻🇳 VN 270
-  - 🇻🇳 VN 45
-  - 🇻🇳 VN 39
-  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
-  - 🌍94@oneclickvpnkeys
-  - 🇻🇳 VN 123
-  - 🇻🇳 VN 165
-  - 🇻🇳 VN 210
-  - 🇻🇳 VN 148
-  - 🇻🇳 VN 282
-  - 🇻🇳 VN 142
-  - 🇻🇳 VN 261
-  - 🇻🇳 VN 176
-  - 🇻🇳 VN 130
-  - 🇻🇳 VN 163
-  - 🇻🇳 VN 246
-  - 🇻🇳 VN 6
-  - ❓ 未知_49
-  - 🇻🇳 VN 264
-  - 🇻🇳 VN 298
-  - 🇻🇳 VN 272
-  - 🇻🇳 VN 97
-  - 🇻🇳 VN 21
-  - 🇻🇳 VN 183
-  - 🇲🇰[openproxylist.com] ss-MK
-  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
-  - 🇻🇳 VN 98
-  - 🇻🇳 VN 275
-  - 🇻🇳 VN 94
-  - 🇮🇳 IN 2
-  - 🇻🇳 VN 106
-  - 🇻🇳 VN 179
-  - 🇻🇳 VN 283
-  - 🇻🇳 VN 277
-  - 🇻🇳 VN 9
-  - 🇻🇳 VN 273
-  - 🇻🇳 VN 20
-  - 🇻🇳 VN 105
-  - 🇻🇳 VN 186
+  - SJC_87
   - 🇵🇱[openproxylist.com] ss-PL
-  - 🇻🇳 VN 63
-  - 🇻🇳VN-103.186.155.20-083
-  - 🇻🇳 VN 287
-  - NRT_1
-  - 🇻🇳 VN 250
-  - 🇻🇳 VN 164
-  - 🇻🇳 VN 122
-  - 🇻🇳 VN 92
-  - 🇻🇳 VN 169
-  - 🇻🇳 VN 117
-  - 🇻🇳 VN 3
+  - 🇰🇷 KR 2
+  - yandex-406
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][68][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+59\r\r"
+  - 🇸🇬 SG 3
+  - "[1113][68][68][68][68][68][68][68][68][82][82][82][82][82][68][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+46\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][68][82][82][82][82][82][82][68][82][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+61\r\r"
+  - "[1113][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+57\r\r"
+  - "[1113][68][68][68][68][68][68][68][68][68][68][82][82][82][82][82][82][82][82][82][82][82][82][82][82][68]\U0001D64F\
+    \U0001D642@\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+52\r\r"
+  - 🇳🇱NL_6 |2.6MB/s|GPT|YT-NL|NF|D+|0%
+  - 🇺🇸 US 30
+  - github.com/Ruk1ng001_3764613639386561
+  - 美国(yfuye.com免费节点)_187
+  - 🇳🇱 NL 29
+  - yandex-190-DgYn
+  - 🇸🇮SI_2 |1.4MB/s|GPT|YT-RU|NF|D+|44%
+  - 法国 - 奧奈叢林 - Cloudflare, Inc. - 2
+  - 🇮🇳 IN 2
+  - 🇮🇱 IL 1
+  - 🇺🇸US_160 |1.0MB/s|GPT|NF|100%
   - 美国(yfuye.com免费节点)_176
-  - 🇻🇳 VN 1
-  - 🇻🇳 VN 47
-  - 🇻🇳 VN 34
-  - 🇻🇳 VN 81
-  - 🇻🇳 VN 289
-  - NRT_9
-  - 🇻🇳 VN 144
-  - 🇻🇳 VN 304
-  - 🇻🇳 VN 75
-  - 🇻🇳 VN 217
-  - 🇻🇳 VN 15
-  - 🇻🇳 VN 99
-  - 🇻🇳 VN 64
-  - 🇻🇳 VN 221
-  - 🇻🇳 VN 54
-  - 🇻🇳 VN 16-78jt
-  - 🇻🇳 VN 134
-  - 🇻🇳 VN 147
-  - 🇻🇳 VN 305
-  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
-  - 🇻🇳 VN 17
-  - 美国 053
-  - 🇻🇳 VN 31
-  - 🇻🇳 VN 154
-  - 🇻🇳 VN 87
-  - 🇻🇳 VN 100
-  - 🇻🇳 VN 101
-  - 🇻🇳 VN 121
-  - 🇻🇳 VN 279
-  - 🇻🇳 VN 2
-  - 日本(yudou77.top 玉豆免费节点)
-  - 🇻🇳 VN 72
-  - 🇻🇳 VN 145
-  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
-    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
-  - 🇻🇳 VN 70
-  - 🇻🇳 VN 132
-  - 🇻🇳 VN 266
-  - yandex-660-vPgZ
-  - 🇻🇳 VN 226
-  - 🇻🇳 VN 284
-  - 🇻🇳 VN 125
-  - 🇻🇳 VN 212
-  - 🇻🇳 VN 159
-  - 🇻🇳 VN 11
-  - 🇫🇮FI_4 |1.3MB/s|GPT|16%
-  - 🇻🇳 VN 158
-  - 🇻🇳 VN 16
-  - 🇻🇳 VN 218
-  - 🇻🇳 VN 219
+  - 🇹🇭 TH 1
+  - 🇺🇸 US 883
   - 🇳🇱NL_3 |4.1MB/s|GPT|YT-NL|NF|D+|27%
+  - 🆔⟪@LonUp_M⟫🟠ALL⌁1485
+  - 🇦🇷AR-38.54.45.129-4921
+  - US_Buffalo_HostPapa_Claude3
+  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
+  - "[freefq]undefined\r\r"
+  - 🇻🇳 VN 220
+  - 🇻🇳 VN 280
+  - 🇻🇳 VN 3
+  - 🇻🇳 VN 68
+  - 🇳🇱 NL 32
+  - 🇻🇳 VN 18
+  - 🇻🇳 VN 146
+  - 🇻🇳 VN 274
+  - 🅼🅴🅷🅳🅸-pbUl
+  - 🇻🇳 VN 287
+  - 🇻🇳 VN 307
+  - 🇻🇳 VN 84
+  - 🇻🇳 VN 266
+  - 🇻🇳 VN 63
+  - 🇻🇳 VN 9
+  - 🇻🇳 VN 192
+  - 🏁 ZZ_547
+  - 🇻🇳 VN 81
+  - 🇻🇳 VN 247
+  - 🇻🇳 VN 47
+  - 🇻🇳 VN 261
+  - 🇻🇳 VN 139
+  - 🇻🇳VN_2 |1.8MB/s|GPT|0%
+  - 🇻🇳 VN 101
+  - 🇻🇳 VN 217
+  - 🇻🇳 VN 159
+  - 🇻🇳 VN 12
+  - 🇻🇳 VN 170
+  - 🇻🇳 VN 20
+  - 🇻🇳 VN 45
+  - 🇻🇳 VN 232
+  - 🇻🇳 VN 92
+  - 🇻🇳 VN 42
+  - 🇻🇳 VN 310
+  - 🇻🇳 VN 1
+  - 🇻🇳 VN 240
+  - 🇻🇳 VN 32
+  - 🇻🇳 VN 70
+  - 🇻🇳 VN 215
+  - 🇻🇳 VN 72
   - 🇻🇳 VN 25
   - 🇻🇳 VN 115
-  - 🇻🇳 VN 240
-  - 🇻🇳 VN 244
-  - 🇻🇳 VN 44
-  - NRT_7
-  - 🇻🇳 VN 116
-  - 🇻🇳 VN 185
-  - 🇻🇳 VN 198
-  - 🇻🇳 VN 254
-  - 🇻🇳 VN 202
   - 🇻🇳 VN 276
-  - 🇻🇳 VN 170
-  - 🇻🇳 VN 263
+  - 🇻🇳 VN 64
+  - 🇻🇳 VN 198
+  - 🇻🇳 VN 169
+  - 🇻🇳 VN 254
+  - 🇻🇳 VN 277
+  - 🇻🇳 VN 16
+  - 🇻🇳 VN 38
+  - 🇻🇳 VN 31
+  - 🇻🇳 VN 272
+  - 🇻🇳 VN 171
+  - 🌍94@oneclickvpnkeys
+  - 🇻🇳 VN 148
+  - 🇻🇳 VN 250
   - 🇻🇳 VN 59
-  - 🇻🇳 VN 206
+  - 🇻🇳 VN 83
+  - 日本(yudou77.top 玉豆免费节点)
+  - 🇻🇳 VN 34
+  - 🇻🇳 VN 132
+  - 🇻🇳 VN 289
+  - 🇻🇳 VN 156
+  - 🇻🇳 VN 158
+  - 🇻🇳 VN 218
+  - 🇻🇳 VN 125
+  - 🇻🇳 VN 134
+  - 🇻🇳 VN 248
+  - 🇻🇳 VN 212
+  - 🇻🇳 VN 135
+  - 🇻🇳 VN 36
+  - 🇻🇳 VN 200
+  - 🇻🇳 VN 155
+  - 🇻🇳 VN 245
+  - 🇻🇳 VN 87
+  - 🇻🇳 VN 97
+  - 🇻🇳 VN 11
+  - 🇻🇳 VN 163
+  - 🇻🇳 VN 75
+  - 🇻🇳 VN 273
+  - 🇻🇳 VN 175
+  - 🇮🇩 ID 1
+  - 🇻🇳 VN 145
+  - 🇻🇳 VN 165
+  - 🇻🇳 VN 223
+  - 🇻🇳 VN 154
+  - 🇻🇳 VN 54
+  - 🇻🇳 VN 279
+  - 🇻🇳VN-103.186.155.20-083
+  - 🇻🇳 VN 94
+  - 🇻🇳 VN 210
+  - 🇻🇳 VN 270
   - '0,135,143,202,296,300,306,329,338,355,546,548,554,555,565,567,575,576,578,579,580,581,583,589,590,600,643|@Vip_Security
     join us - 208
 
     '
-  - 🇻🇳 VN 245
-  - 🇻🇳 VN 135
-  - NRT_8
+  - 🇻🇳 VN 166
+  - 🇻🇳 VN 264
+  - 🇻🇳 VN 99
+  - 🇻🇳 VN 123
+  - 🇻🇳 VN 14
   - 🇻🇳 VN 193
-  - 🇳🇱 NL 29
-  - yandex-862
-  - 🇻🇳 VN 171
-  - 🇻🇳 VN 102
-  - 🇻🇳 VN 161
-  - 🇻🇳 VN 223
-  - NRT_2
-  - Singapore-2
-  - Singapore-1
+  - 🇻🇳 VN 147
+  - 🇻🇳 VN 206
   - 🇻🇳 VN 252
-  - yandex-980
-  - 0,79|TR-45.89.52.66-5553 | 1.677MB
-  - yandex-195-ilbM
-  - 🅼🅴🅷🅳🅸-pbUl
-  - yandex-995-m6JD
-  - TW2|@ripaojiedian-22750
-  - 🇮🇩ID-119.235.249.154-0317
-  - 台湾WAP-T-GPT
-  - ❓ 未知_39
-  - 🇳🇱 NL 32
-  - yandex-576
-  - IT-1
-  - 🇩🇪DE_8 |2.1MB/s|GPT|20%
-  - 🇮🇳 IN 1
-  - 🇹🇼 台湾-3A7b
-  - 🇺🇸 US 30
-  - 🇭🇰 HK_168
-  - yandex-333
-  - HKG_1
-  - HKG_2
-  - HKG_5
-  - 🇻🇳VN-103.197.185.204-0329
-  - 🇺🇸US_148 |1.1MB/s|GPT|NF|GM|29%
+  - 🇻🇳 VN 122
+  - 🇻🇳 VN 305
+  - 🇻🇳 VN 183
+  - 🇻🇳 VN 283
+  - 🇻🇳 VN 100
+  - 🇻🇳 VN 226
+  - 🇻🇳 VN 185
+  - 🇻🇳 VN 142
+  - 🇻🇳 VN 116
+  - 🇻🇳 VN 219
+  - NRT_2
+  - 🇻🇳 VN 144
+  - 🇻🇳 VN 58
+  - 🇻🇳 VN 121
+  - 🇻🇳 VN 105
+  - 🇻🇳 VN 17
+  - 🇻🇳 VN 284
+  - 🇻🇳 VN 15
+  - 🇻🇳 VN 21-9rAo
+  - 🇻🇳 VN 21
+  - 🇻🇳 VN 102
+  - NRT_1
+  - 🇻🇳 VN 275
+  - 🇻🇳 VN 246
+  - 🇻🇳 VN 98
+  - 🇻🇳 VN 298
+  - 🇻🇳 VN 282
+  - 🇻🇳 VN 16-78jt
+  - 🇻🇳 VN 164
+  - 🇻🇳 VN 117
   - 🇫🇷FR_1 |1.0MB/s|GPT|0%
-  - 香港wap-T
-  - 🇺🇸 US 638
-  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
-  - 🇮🇷 IR 1
-  - 美国(yfuye.com免费节点)_169
-  - 🇺🇸 US 33
-  - yandex-863-S1cx
-  - FUK_1
-  - FUK_3
-  - FUK_2
-  - yandex-196-9frM
-  - V1-香港HKBGP01 隧道
-  - yandex-331
-  - 🇭🇰香港3 | ⬇️ 29.3MB/s
-  - TPE
-  - TW|@ripaojiedian-22749
-  - 🇺🇸US-23.184.200.69-0180
-  - 瑞典 - 斯德哥尔摩 - Kamatera, Inc. - 2
-  - 12|🇺🇸 美国|@ripaojiedian
-  - 美国USLA-T-GPT
-  - yandex-213-yWr0
-  - yandex-578
-  - yandex-458
-  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
-  - yandex-187-cLXw
-  - 新加坡SG-T
-  - 越南VN-T
-  - E 9F AC E 9F E AF A8KH-T-635
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_6139626263326265
+  - 🇻🇳 VN 161
+  - yandex-862
+  - 🇻🇳 VN 202
+  - 0,79|TR-45.89.52.66-5553 | 1.677MB
+  - NRT_9
+  - 🇻🇳 VN 179
+  - 🇻🇳 VN 2
+  - 🇻🇳 VN 106
+  - 🇻🇳 VN 39
+  - 🇻🇳 VN 263
+  - NRT_8
+  - 🇻🇳 VN 6
   - 🆔⟪@LonUp_M⟫🟠ALL⌁1734
-  - yandex-1008-5kKE
+  - ❓ 未知_39
+  - TW2|@ripaojiedian-22750
+  - 🇻🇳 VN 176
+  - 香港wap-T
+  - yandex-995-m6JD
+  - IT-1
+  - yandex-980
+  - Singapore-1
+  - Singapore-2
+  - 🇺🇸 US 33
+  - yandex-196-9frM
+  - 🇸🇬 新加坡_1
+  - TPE
+  - 🇳🇱NL_2 |1.1MB/s|GPT|YT-NL|NF|GM|54%
+  - yandex-576
+  - 🇮🇩ID-119.235.249.154-0317
+  - 🇭🇰 HK_168
+  - 🇮🇷 IR 1
   - 🇩🇪[openproxylist.com] vless-DE-gdgV
-  - 🟡_🇨🇳:🇭🇰_💻_github.com/Ruk1ng001_3164386239623931
-  - yandex-216-kxRM
-  - 意大利IT-T
+  - HKG_2
+  - 🇮🇳 IN 1
+  - V1-香港HKBGP01 隧道
+  - NRT_7
+  - 🇻🇳VN-103.197.185.204-0329
+  - HKG_1
+  - 🇻🇳 VN 130
+  - yandex-195-ilbM
+  - yandex-863-S1cx
+  - 🌀其他10-未识别 | ⬇️ 4.9MB/s
+  - CFW_443
+  - 🇹🇼 台湾-3A7b
+  - 12|🇺🇸 美国|@ripaojiedian
+  - FUK_2
+  - 🇹🇷TR_5 |1.2MB/s|GPT|20%
+  - TW|@ripaojiedian-22749
+  - 🇻🇳 VN 73
+  - FUK_3
+  - yandex-578
+  - 🇺🇸_US_美国_2-LWEY
+  - FUK_1
+  - yandex-333
+  - E 9F AC E 9F E AF A8KH-T-635
+  - 越南VN-T
+  - yandex-213-yWr0
+  - 🇭🇰香港3 | ⬇️ 29.3MB/s
+  - yandex-187-cLXw
+  - yandex-331
+  - yandex-458
+  - "[113]undefined\r\r-ZPFE"
+  - 美国USLA-T-GPT
+  - yandex-1008-5kKE
+  - 新加坡SG-T
+  - "[1113][68][68][68][68][68][68][68][82][82][68][68][68][68][68][68]\U0001D64F\U0001D642\
+    @\U0001D648\U0001D641\U0001D63D\U0001D64B\U0001D649+47\r\r"
+  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
   - yandex-220
   - yandex-678-dgjO
-  - yandex-221
-  - 🇸🇬 新加坡_1
-  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 221
   - 🇺🇸 美国-拉斯维加斯-HY-002-1N-onvz
+  - 意大利IT-T
+  - yandex-216-kxRM
+  - yandex-221
+  - ❓ 未知_49
+  - 哈萨克斯坦KZ-T
+  - 🇻🇳 VN 304
+  - 台湾WAP-T-GPT
   - yandex-223-AIX1
-  - 🇺🇸_US_美国_2-LWEY
-  - "[113]undefined\r\r-ZPFE"
-  - 🇺🇸 美国-拉斯维加斯-HY-002-1J-1jvg
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - DOMAIN,bdtj.tagtic.cn,DIRECT
