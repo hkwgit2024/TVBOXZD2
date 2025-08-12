@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-08-12 23:31:09,url
+2025-08-13 02:15:43,url
 009. AstroArena1,https://wahyu1ptv.pages.dev/AstroArena-HD.m3u8
 010. AstroArena2,https://wahyu1ptv.pages.dev/AstroArena2-HD.m3u8
 011. AstroArenaBola1,https://wahyu1ptv.pages.dev/AstroArenaBola1-HD.m3u8
@@ -94,9 +94,9 @@ AlHijrahTV,https://wahyu1ptv.pages.dev/AstroAlHijrahTV.m3u8
 Aneka (Brunei),https://d1211whpimeups.cloudfront.net/smil:rtb2/chunklist_b1120000_sleng.m3u8
 Aotearoa Hip Hop - The Soundtrack,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/aotearoa_hip_hop_the_soundtrack_801fb80d.m3u8
 Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_10ab0f72.m3u8
-Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_cef22728.m3u8
-Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_5c6a39a2.m3u8
 Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_200ae012.m3u8
+Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_5c6a39a2.m3u8
+Asharq News (1080p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_1080p_cef22728.m3u8
 Asharq News Portrait (1280p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/asharq_news_portrait_1280p_b1d776b4.m3u8
 AshillTV,https://wahyu1ptv.pages.dev/AshiilTV-HD.m3u8
 AsrtoPremierLeague1,https://wahyu1ptv.pages.dev/AstroPremierLeague1-HD.m3u8
@@ -136,7 +136,6 @@ Bloomberg Asia Luve Event,https://bugsfreeweb.github.io/LiveTVCollector/Bugsfree
 Bloomberg EMEA Live Event,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bloomberg_emea_live_event_5762c227.m3u8
 Bloomberg Mongolia,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bloomberg_mongolia_0fe875c0.m3u8
 Bloomberg QuickTake,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/bloomberg_quicktake_9f2772d6.m3u8
-Bungo TV,https://5bf7b725107e5.streamlock.net/bungotv/bungotv/playlist.m3u8
 CABLE CHANNEL 37,http://www5.cabletv.co.th/StreamToCTV/cablechannel/playlist.m3u8
 CNA,https://d2e1asnsl7br7b.cloudfront.net/4e4e0baa3d7b4c129b4f5655219e083d/index.m3u8
 CNA 2 On (R),https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
@@ -255,8 +254,8 @@ JR.,https://d1sq2slp9afh7o.cloudfront.net/smil:jr/chunklist_b2596000_slENG.m3u8
 JakTV,http://khano.nng.cloudns.us/live/m3u8/id/a6e7e966ea54cd3.m3u8
 Jawapos TV,https://jawapostv.siar.us/jawapostv/live/playlist.m3u8
 Jordan Lee In The Mix,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/jordan_lee_in_the_mix_10fc6924.m3u8
-KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_50e7f908.m3u8
 KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_4b0fa008.m3u8
+KAN 11 Israel,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_11_israel_50e7f908.m3u8
 KBS LiveCam DokDo (540p),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kbs_livecam_dokdo_540p_b2615b8f.m3u8
 Kan Kids,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/kan_kids_5fa7bfcf.m3u8
 Kilisuci TV Kediri,https://5bf7b725107e5.streamlock.net:443/kstv/kstv/playlist.m3u8
@@ -266,8 +265,8 @@ LOVE NATURE 4K 🇨🇦,https://d18dyiwu97wm6q.cloudfront.net/playlist.m3u8
 MAGNA TV 🇮🇩,https://edge.medcom.id/live-edge/smil:magna.smil/playlist.m3u8
 MAHAR ESPORTS,https://tv.mahar.live/esports/mahar.stream/esports/mahar2/chunks.m3u8
 MAHAR TV,https://tv.mahar.live/mahar/website.stream/playlist.m3u8
-MBC,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mbc_9a08b74f.m3u8
 MBC,http://211.33.246.4:32954/cj_live/myStream.sdp/playlist.m3u8
+MBC,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mbc_9a08b74f.m3u8
 MCOT,https://live-org-01-cdn.mcot.net/mcothd1080p_edge/smil:mcothd1080p.smil/master.m3u8
 MITV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mitv_60d02423.m3u8
 MNTV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/mntv_9b6e7988.m3u8
@@ -292,6 +291,7 @@ MedsTV,https://WahyuIPTV.short.gy/MedsTV-HD.m3u8
 MojiTV TES,https://wahyu1ptv.pages.dev/Moji-HD.m3u8
 Moonbug Kids,https://moonbug-rokuus.amagi.tv/playlist.m3u8
 My TV,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/my_tv_ae4e029f.m3u8
+NBA TV,http://170.yfvodcdn.com:19980/live/nbaTV2/hls.m3u8
 NBA TV (JN),https://wahyu1ptv.pages.dev/NBATV-HD.m3u8
 NBA TV FHD,http://iptvtree.net:8080/F15554/Tve5ZWQEd485/297426
 NDTV News 24x7,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/ndtv_news_24x7_d79529e7.m3u8
@@ -469,8 +469,8 @@ Zoo Moo,https://zoomoo-samsungau.amagi.tv/playlist.m3u8
 Глас,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_ab0a76ff.m3u8
 ДНІПРО ТВ,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_16635320.m3u8
 ЕСПРЕСО HD,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/hd_ac1d0194.m3u8
-Известия,http://hls-igi.cdnvideo.ru/igi/igi_sq/playlist.m3u8
 Известия,https://igi-hls.cdnvideo.ru/igi/igi_tcode/playlist.m3u8
+Известия,http://hls-igi.cdnvideo.ru/igi/igi_sq/playlist.m3u8
 КИЇВ 24,https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/24_8dfa3956.m3u8
 Круг (Одеса),https://bugsfreeweb.github.io/LiveTVCollector/BugsfreeStreams/StreamsTV-IL/channel_20a727d8.m3u8
 МИР 24,http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mir24_2500/playlist.m3u8
