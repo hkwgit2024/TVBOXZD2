@@ -6,15 +6,14 @@ from urllib.parse import urlparse, unquote, parse_qs
 
 def decode_vmess(link):
     """
-    解码 vmess 链接
+    Decodes a vmess subscription link.
     """
     try:
         data = link.replace("vmess://", "")
-        # Vmess 链接的格式是 base64 编码的 JSON
+        # Vmess links are base64 encoded JSON
         decoded_data = base64.b64decode(data.encode('utf-8')).decode('utf-8')
         vmess_config = yaml.safe_load(decoded_data)
         
-        # 提取所需的配置信息
         name = vmess_config.get('ps', 'Unnamed-Vmess')
         server = vmess_config.get('add')
         port = int(vmess_config.get('port'))
@@ -23,7 +22,6 @@ def decode_vmess(link):
         network = vmess_config.get('net', 'tcp')
         tls = vmess_config.get('tls', '') == 'tls'
         
-        # 根据网络类型构建不同的配置
         config = {
             'name': name,
             'type': 'vmess',
@@ -37,7 +35,6 @@ def decode_vmess(link):
             'skip-cert-verify': tls
         }
 
-        # 处理 websocket 特殊选项
         if network == 'ws':
             config['ws-opts'] = {
                 'path': vmess_config.get('path', '/'),
@@ -53,7 +50,7 @@ def decode_vmess(link):
 
 def decode_ss(link):
     """
-    解码 ss 链接
+    Decodes an ss subscription link.
     """
     try:
         parts = urlparse(link)
@@ -61,7 +58,6 @@ def decode_ss(link):
         server = parts.hostname
         port = parts.port
         
-        # Base64 解码用户信息
         user_info_encoded = parts.netloc.split('@')[0]
         user_info_decoded = base64.b64decode(user_info_encoded.encode('utf-8')).decode('utf-8')
         cipher, password = user_info_decoded.split(':', 1)
@@ -75,12 +71,12 @@ def decode_ss(link):
             'password': password
         }
     except Exception as e:
-        print(f"Failed to decode ss link: {link} with error: {e}")
+        print(f"Failed to decode ss link: {e}")
         return None
 
 def decode_trojan(link):
     """
-    解码 trojan 链接
+    Decodes a trojan subscription link.
     """
     try:
         parts = urlparse(link)
@@ -102,13 +98,14 @@ def decode_trojan(link):
             'skip-cert-verify': query_params.get('allowInsecure', ['0'])[0] == '1'
         }
     except Exception as e:
-        print(f"Failed to decode trojan link: {link} with error: {e}")
+        print(f"Failed to decode trojan link: {e}")
         return None
         
 def main():
+    # The script now only expects one argument: the subscription file
     if len(sys.argv) != 2:
-        print("用法: python convert.py <订阅文件.txt>")
-        print("例如: python convert.py ss.txt")
+        print("Usage: python convert.py <subscription_file.txt>")
+        print("Example: python convert.py ss.txt")
         sys.exit(1)
 
     sub_file = sys.argv[1]
@@ -121,18 +118,17 @@ def main():
                 if not line:
                     continue
                 
-                # 跳过 YAML 格式的非链接行
-                if line.endswith(':'):
-                    print(f"Skipping YAML-like line: {line}")
-                    continue
-                
-                node = None
+                # Check for known protocols to decode the link
                 if line.startswith('ss://'):
                     node = decode_ss(line)
                 elif line.startswith('trojan://'):
                     node = decode_trojan(line)
                 elif line.startswith('vmess://'):
                     node = decode_vmess(line)
+                else:
+                    # Skip lines that are not valid subscription links
+                    print(f"Skipping unrecognized line: {line}")
+                    continue
                 
                 if node:
                     output_proxies.append(node)
