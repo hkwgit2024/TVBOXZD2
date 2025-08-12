@@ -46,7 +46,7 @@ jobs:
                           -max-latency 386ms \
                           -min-download-speed 28.8 \
                           -rename \
-                          -f "日本|韩国|香港|Japan|Korea|Hong Kong|JP|KR|HK"
+                          -f "日本|韩国|香港|台湾|新加坡|马来西亚|菲律宾|越南|泰国|老挝|缅甸|俄罗斯|蒙古|Japan|Korea|Hong Kong|Taiwan|Singapore|Malaysia|Philippines|Vietnam|Thailand|Laos|Myanmar|Russia|Mongolia|JP|KR|HK|TW|SG|MY|PH|VN|TH|LA|MM|RU|MN"
       
       - name: 提交并推送更改
         run: |
