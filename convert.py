@@ -5,7 +5,7 @@ from urllib.parse import urlparse, unquote
 
 def decode_ss(link):
     """
-    Decodes an ss subscription link.
+    Decodes an ss:// subscription link into a Clash-compatible proxy configuration.
     """
     try:
         parts = urlparse(link)
@@ -36,8 +36,8 @@ def main():
         print("Example: python convert.py ss.txt config.yaml")
         sys.exit(1)
 
-    sub_file = sys.argv[1]
-    output_file = sys.argv[2]
+    sub_file = sys.argv[1]  # 输入文件：ss.txt
+    output_file = sys.argv[2]  # 输出文件：config.yaml
     output_proxies = []
 
     try:
@@ -57,7 +57,7 @@ def main():
                     continue
 
     except FileNotFoundError:
-        print(f"Error: The file {sub_file} was not found.")
+        print(f"Error: The file {sub_file} was not found in the root directory.")
         sys.exit(1)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
@@ -67,6 +67,7 @@ def main():
         print("⚠️ Failed to parse any proxies from the subscription file.")
         sys.exit(1)
 
+    # 构造 Clash 格式的 YAML 输出
     output = {
         'proxies': output_proxies,
         'proxy-groups': [
@@ -88,10 +89,13 @@ def main():
         ]
     }
 
-    with open(output_file, 'w', encoding='utf-8') as f:
-        yaml.dump(output, f, allow_unicode=True, sort_keys=False)
-
-    print(f"✅ Successfully generated {output_file} with {len(output_proxies)} proxies.")
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            yaml.dump(output, f, allow_unicode=True, sort_keys=False)
+        print(f"✅ Successfully generated {output_file} with {len(output_proxies)} proxies.")
+    except Exception as e:
+        print(f"Error writing to {output_file}: {e}")
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
