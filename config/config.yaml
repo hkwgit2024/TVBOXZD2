@@ -66,7 +66,7 @@ url_pre_screening:
     - '^https://raw\.githubusercontent\.com/4k5u/test/d96c2e1e511d31b8f6c53194499622d3fc68bec8/log/' 
 # 网络配置
 network:
-  check_timeout: 5                  # 检查单个频道链接可用性的超时时间（秒，默认 20）
+  check_timeout: 20                 # 检查单个频道链接可用性的超时时间（秒，默认 20）
   request_timeout: 10                # HTTP 请求超时时间（秒，默认 10）
   channel_check_workers: 50          # 频道检查的最大线程数（默认 50，视机器性能调整）
   url_fetch_workers: 10              # URL 内容抓取的最大线程数（默认 10）
