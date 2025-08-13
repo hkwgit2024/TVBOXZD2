@@ -1,4 +1,4 @@
-#测试
+# 测试
 import os
 import re
 import subprocess
@@ -225,15 +225,15 @@ def check_http_url(url, timeout):
         布尔值，表示 URL 是否可达
     """
     try:
-        response = session.head(url, timeout=timeout, allow_redirects=True)
+        response = session.head(url, timeout=timeout)
         return 200 <= response.status_code < 400
     except requests.exceptions.RequestException as e:
-        logging.info(f"HTTP URL 检查失败: {url} - {e}")
+        logging.warning(f"HTTP检查失败: {url}, 错误: {e}")
         return False
 
 @performance_monitor
 def check_rtmp_url(url, timeout):
-    """检查 RTMP URL 是否可达
+    """检查 RTMP URL 是否可达，使用 ffprobe
     参数:
         url: 要检查的 URL
         timeout: 超时时间（秒）
@@ -241,23 +241,11 @@ def check_rtmp_url(url, timeout):
         布尔值，表示 URL 是否可达
     """
     try:
-        subprocess.run(['ffprobe', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, timeout=2)
-    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        logging.warning("ffprobe 未找到或不可用，跳过 RTMP 检查")
-        return False
-    try:
-        result = subprocess.run(
-            ['ffprobe', '-v', 'error', '-rtmp_transport', 'tcp', '-i', url],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout
-        )
+        result = subprocess.run(['ffprobe', '-timeout', str(timeout * 1000000), url],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
-    except subprocess.TimeoutExpired:
-        logging.info(f"RTMP URL 检查超时: {url}")
-        return False
     except Exception as e:
-        logging.info(f"RTMP URL 检查错误: {url} - {e}")
+        logging.warning(f"RTMP检查失败: {url}, 错误: {e}")
         return False
 
 @performance_monitor
@@ -269,106 +257,48 @@ def check_rtp_url(url, timeout):
     返回:
         布尔值，表示 URL 是否可达
     """
+    parsed = urlparse(url)
+    host = parsed.hostname
+    port = parsed.port or 5000
     try:
-        parsed_url = urlparse(url)
-        host = parsed_url.hostname
-        port = parsed_url.port
-        if not host or not port:
-            logging.info(f"RTP URL 解析失败（缺少主机或端口）: {url}")
-            return False
-
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.settimeout(timeout)
             s.connect((host, port))
-            s.sendto(b'', (host, port))
-            s.recv(1)
-        return True
-    except (socket.timeout, socket.error) as e:
-        logging.info(f"RTP URL 检查失败: {url} - {e}")
-        return False
+            return True
     except Exception as e:
-        logging.info(f"RTP URL 检查错误: {url} - {e}")
+        logging.warning(f"RTP检查失败: {url}, 错误: {e}")
         return False
 
 @performance_monitor
-def check_channel_validity_and_speed(channel_name, url, url_states, timeout=CONFIG['network']['check_timeout']):
-    """检查单个频道的有效性和速度
+def check_channel_validity_and_speed(name, url, url_states):
+    """检查频道有效性和响应速度
     参数:
-        channel_name: 频道名称
-        url: 频道 URL
+        name: 频道名称
+        url: URL
         url_states: URL 状态字典
-        timeout: 检查超时时间（秒）
     返回:
-        元组 (响应时间, 是否有效)
+        (响应时间, 是否有效)
     """
-    current_time = datetime.now()
-    current_url_state = url_states.get(url, {})
-
-    if 'stream_check_failed_at' in current_url_state:
-        try:
-            last_failed_datetime = datetime.fromisoformat(current_url_state['stream_check_failed_at'])
-            time_since_failed_hours = (current_time - last_failed_datetime).total_seconds() / 3600
-            if time_since_failed_hours < CONFIG['channel_retention']['stream_retention_hours']:
-                return None, False
-        except ValueError:
-            pass
-
     start_time = time.time()
     is_valid = False
+    parsed_url = urlparse(url)
+    protocol = parsed_url.scheme.lower()
 
-    try:
-        if url.startswith("http"):
-            is_valid = check_http_url(url, timeout)
-        elif url.startswith("rtmp"):
-            is_valid = check_rtmp_url(url, timeout)
-        elif url.startswith("rtp"):
-            is_valid = check_rtp_url(url, timeout)
-        else:
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['last_checked_protocol_unsupported'] = current_time.isoformat()
-            url_states[url].pop('stream_check_failed_at', None)
-            url_states[url].pop('stream_fail_count', None)
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            return None, False
-
-        elapsed_time = (time.time() - start_time) * 1000
-
-        if is_valid:
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url].pop('stream_check_failed_at', None)
-            url_states[url].pop('stream_fail_count', None)
-            url_states[url]['last_successful_stream_check'] = current_time.isoformat()
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            return elapsed_time, True
-        else:
-            if url not in url_states:
-                url_states[url] = {}
-            url_states[url]['stream_check_failed_at'] = current_time.isoformat()
-            url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
-            url_states[url]['last_stream_checked'] = current_time.isoformat()
-            return None, False
-    except Exception as e:
-        if url not in url_states:
-            url_states[url] = {}
-        url_states[url]['stream_check_failed_at'] = current_time.isoformat()
-        url_states[url]['stream_fail_count'] = current_url_state.get('stream_fail_count', 0) + 1
-        url_states[url]['last_stream_checked'] = current_time.isoformat()
+    if protocol in ['http', 'https']:
+        is_valid = check_http_url(url, CONFIG['network']['check_timeout'])
+    elif protocol == 'rtmp':
+        is_valid = check_rtmp_url(url, CONFIG['network']['check_timeout'])
+    elif protocol in ['rtp', 'rtsp']:
+        is_valid = check_rtp_url(url, CONFIG['network']['check_timeout'])
+    else:
+        logging.warning(f"不支持的协议: {protocol} for {url}")
         return None, False
 
-@performance_monitor
-def process_single_channel_line(channel_line, url_states):
-    """处理单个频道行以进行有效性检查
-    参数:
-        channel_line: 频道行（格式为 "名称,URL"）
-        url_states: URL 状态字典
-    返回:
-        元组 (响应时间, 频道行)，若无效则返回 (None, None)
-    """
-    if "://" not in channel_line:
-        return None, None
-    parts = channel_line.split(',', 1)
+    elapsed_time = time.time() - start_time if is_valid else None
+    return elapsed_time, is_valid
+
+def process_single_channel_line(line, url_states):
+    parts = line.split(',', 1)
     if len(parts) == 2:
         name, url = parts
         url = url.strip()
@@ -417,10 +347,13 @@ def categorize_channels(channels):
     category_aliases = CATEGORY_CONFIG.get('category_aliases', {})
 
     for name, url in channels:
+        # 规范化频道名称：移除分辨率后缀、HD/SD、数字后缀、连字符等
+        cleaned_name = re.sub(r'\s*\(\d+p\)|HD|SD|ipv6-\d| \d|[-_]', '', name.lower().strip())
         found_category = False
         for category in CATEGORY_CONFIG['ordered_categories']:
             category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
-            if any(keyword.lower() in name.lower() for keyword in category_keywords):
+            # 使用正则匹配关键词，更灵活（词边界匹配）
+            if any(re.search(rf'\b{re.escape(kw.lower())}\b', cleaned_name) for kw in category_keywords):
                 final_category = category_aliases.get(category, category)
                 
                 if final_category not in categorized_data:
