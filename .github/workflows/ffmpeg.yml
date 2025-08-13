@@ -26,14 +26,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch IPTV list
-        run: |
-          curl -o output/iptv.txt https://raw.githubusercontent.com/iptv-org/iptv/main/streams/cn.m3u
-          sed -i 's/#EXTINF:-1,\(.*\)/\1,/' output/iptv.txt
-          if [ ! -s output/iptv.txt ]; then
-            echo "错误：下载的 iptv.txt 为空"
-            exit 1
-          fi
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.8'
 
       - name: Check input file
         run: |
@@ -49,11 +45,6 @@ jobs:
       - name: Create log directory
         run: |
           mkdir -p logs
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.8'
 
       - name: Install dependencies
         run: |
