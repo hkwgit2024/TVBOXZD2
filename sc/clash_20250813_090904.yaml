@@ -1,0 +1,2396 @@
+proxy-providers: {}
+proxies:
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 188.01 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.168
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 173.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.169
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 165.13 MB/s"
+      password: GyZ5Xo0ht41vYmW3H4
+      port: 816
+      server: 149.28.255.6
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 160.37 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.167
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 152.93 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.170
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 120.31 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.234.192.79
+      tls: false
+      type: vless
+      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 90.58 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 137.184.174.93
+      type: ss
+    - flow: ""
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 90.10 MB/s"
+      network: ws
+      port: 443
+      server: proxyip.us.cmliussss.net
+      servername: t.13112221.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 08ca060e-9552-4598-a8fb-f1ccd7e277ba
+      ws-opts:
+        headers:
+            Host: t.13112221.xyz
+        path: /=2048
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 86.07 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 79.127.200.162
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 85.15 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.146.81
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 82.10 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.197.153.10
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 82.03 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.197.141.58
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 72.66 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.199.42.68
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 69.69 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.150.107
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 69.55 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.244
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 69.20 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.160
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.06 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 173.244.56.9
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.82 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.243
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.60 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.151.182.200
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 66.80 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.236
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 66.44 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 173.244.56.6
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 65.84 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.205.124
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 64.53 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.151.182.197
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 64.37 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.193.204
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 63.85 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 62.133.44.68
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 62.37 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.205.14
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 61.62 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.171
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 60.79 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.170
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 59.98 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.175
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 59.07 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.164
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 59.03 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.53.169
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 58.48 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.197.165.21
+      type: ss
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 58.40 MB/s"
+      network: tcp
+      port: 51952
+      server: 51.222.86.7
+      tls: false
+      type: vless
+      uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 58.08 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 178.128.231.214
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 57.76 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.131
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 56.73 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.53.82
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 55.73 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.54.252
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 55.08 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.130
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 53.86 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.132
+      type: ss
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 53.64 MB/s"
+      network: tcp
+      port: 54051
+      server: 51.222.86.157
+      tls: false
+      type: vless
+      uuid: d1e720d6-4ac9-4a03-b781-567960161b13
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 53.64 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.53.89
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 52.57 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 52.21 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.129
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 51.21 MB/s"
+      network: tcp
+      port: 30002
+      server: 38.12.83.217
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+    - cipher: aes-128-gcm
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 51.00 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.22.95.183
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 50.78 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 104.192.226.106
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 50.22 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 23.251.121.242
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 50.10 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 104.192.226.106
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 50.04 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 79.110.54.250
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 49.69 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 194.5.215.59
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 47.85 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.218
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 47.49 MB/s"
+      network: ws
+      port: 2083
+      server: 1747948341.tencentapp.cn
+      servername: 1747948371.speed.zjgza.cccp.freefly.pp.ua
+      tls: true
+      type: vmess
+      uuid: 85bf4641-e155-4e2f-bee9-4b404eaa3efb
+      ws-opts:
+        headers:
+            Host: 1747948371.speed.zjgza.cccp.freefly.pp.ua
+        path: /
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 46.89 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.199.43.167
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 46.35 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 138.199.43.159
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.74 MB/s"
+      network: ws
+      port: 443
+      server: hicai5u.huvicloud.com
+      servername: hicai5u.huvicloud.com
+      tls: true
+      type: vmess
+      uuid: bd33cc6a-5a55-4ae9-8a3a-7960138467c5
+      ws-opts:
+        headers:
+            Host: hicai5u.huvicloud.com
+        path: /hicaispeedtest
+    - cipher: aes-256-cfb
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.26 MB/s"
+      password: 2170f8
+      port: 14293
+      server: 45.55.2.232
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 38.51 MB/s"
+      network: ws
+      port: 443
+      server: 188.114.96.6
+      servername: F1.paRsa.fiLegEar-Sg.Me
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 8df60790-c903-4661-b85d-64c0009378e5
+      ws-opts:
+        headers:
+            Host: F1.paRsa.fiLegEar-Sg.Me
+        path: /
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 37.67 MB/s"
+      network: tcp
+      port: 43728
+      server: 15.204.235.13
+      tls: false
+      type: vless
+      uuid: 1b18b439-5371-4f38-b8d0-71aad09a3a92
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 36.56 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.155.57.51
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 36.29 MB/s"
+      network: ws
+      port: 8880
+      server: 192.200.160.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.52 MB/s"
+      network: ws
+      port: 32391
+      server: 195.58.58.88
+      tls: false
+      type: vless
+      uuid: c84ddb7c-7703-42a3-a22a-3ff9e5513f9a
+      ws-opts:
+        headers:
+            Host: 45f4d22d.Mareza.pages.dev
+        path: /
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.88 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 107.155.57.11
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.66 MB/s"
+      network: tcp
+      port: 24820
+      server: 15.204.236.64
+      tls: false
+      type: vless
+      uuid: 8dbb26f8-8832-46bc-bc0c-a2f17d8d200f
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 34.05 MB/s"
+      network: ws
+      port: 443
+      server: klo.986986.shop
+      servername: klo.986986.shop
+      tls: true
+      type: vmess
+      uuid: b75c9731-408d-4aa6-8ae9-3857205113a1
+      ws-opts:
+        headers:
+            Host: klo.986986.shop
+        path: /nvjx6j7kbDQIQMZvbeVA9
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 33.74 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.78
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 33.58 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.79
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 33.26 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.198
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 32.89 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.197
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 32.57 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.77
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 32.57 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.196
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 32.54 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.80
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 32.40 MB/s"
+      password: Bog0ELmMM9DSxDdQ
+      port: 443
+      server: 85.210.120.237
+      type: ss
+    - cipher: aes-128-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 32.38 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 109.201.152.181
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 32.27 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 79.127.227.198
+      type: ss
+    - cipher: aes-128-gcm
+      name: GB-124
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.194
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 32.07 MB/s"
+      password: shadowsocks
+      port: 443
+      server: uk-dc1.yangon.club
+      type: ss
+    - cipher: aes-128-gcm
+      name: GB-116
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.81
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 32.02 MB/s"
+      network: ws
+      port: 443
+      server: u1.huvicloud.com
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+      ws-opts:
+        headers:
+            Host: u1.huvicloud.com
+        path: /04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+    - cipher: chacha20-ietf-poly1305
+      name: FR-410
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 45.158.171.110
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: NL-12
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.235
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 31.65 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.72
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 31.64 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.80
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 31.64 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 193.29.139.138
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 31.54 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.158.171.150
+      type: ss
+    - cipher: aes-128-gcm
+      name: NL-145
+      password: shadowsocks
+      port: 443
+      server: 149.34.244.68
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 31.19 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.193
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 31.18 MB/s"
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.158.171.146
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 31.10 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 51.15.17.169
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 31.00 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 151.242.251.144
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 30.97 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 193.29.139.157
+      type: ss
+    - flow: ""
+      name: US 555
+      network: ws
+      port: 443
+      server: eeeeeeeeed.999864.xyz
+      servername: EEeeeEeEEd.999864.xyZ
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
+      ws-opts:
+        headers:
+            Host: EEeeeEeEEd.999864.xyZ
+        path: /3zsSOohi9huFfjEPpIlRig3qizHXb
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 30.73 MB/s"
+      network: ws
+      port: 8880
+      server: 104.254.140.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /TelegramU0001F1E8U0001F1F3
+    - cipher: chacha20-ietf-poly1305
+      name: AE-32
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 151.242.251.153
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: FR-118
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.158.171.136
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 30.40 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 151.242.251.147
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 30.30 MB/s"
+      password: cvII85TrW6n0OGyfpHVS1u
+      port: 8080
+      server: 45.87.175.183
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: NL-150
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 193.29.139.227
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 30.07 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.61.37
+      type: ss
+    - cipher: rc4-md5
+      name: GB-157
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.61.51
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 29.88 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.61.18
+      type: ss
+    - cipher: aes-128-gcm
+      name: CH-18
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.162
+      type: ss
+    - name: US 660
+      network: ws
+      port: 8080
+      server: x1-england-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: ca75289b-87aa-40a2-aad8-25212a505a04
+      ws-opts:
+        headers:
+            Host: x1-england-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - flow: ""
+      name: US 594
+      network: ws
+      port: 443
+      server: 3ert.4444916.xyz
+      servername: 3eRt.4444916.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
+      ws-opts:
+        headers:
+            Host: 3ert.4444916.xyz
+        path: /f7vKDX2UecxmlPhIJoo2wcE6Q
+    - name: FR-84
+      network: tcp
+      port: 25921
+      server: 162.19.250.117
+      tls: false
+      type: vless
+      uuid: 598d2298-5e1f-4d07-bc4b-6d1949693852
+    - flow: ""
+      name: US 568
+      network: ws
+      port: 443
+      server: vvvvvvvvvvvv.999864.xyz
+      servername: vVvVVVvVVVvV.999864.xYZ
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: a96cb093-b164-4bc6-bd27-deb0e385de07
+      ws-opts:
+        headers:
+            Host: vvvvvvvvvvvv.999864.xyz
+        path: /3zsSOohi9huFfjEPpIlRig3qizHXb
+    - cipher: chacha20-ietf-poly1305
+      name: LT-56
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.181
+      type: ss
+    - cipher: aes-128-gcm
+      name: CH-20
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.163
+      type: ss
+    - cipher: aes-128-gcm
+      name: CH-08
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.161
+      type: ss
+    - flow: ""
+      name: US 630
+      network: ws
+      port: 443
+      server: tttttttttttt.222769.xyz
+      servername: ttTttttTTTTT.222769.xYz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 2e65577e-8fdb-4bb1-a495-96f3122099a7
+      ws-opts:
+        headers:
+            Host: tttttttttttt.222769.xyz
+        path: /sMrAaoCaOSZb9TPR
+    - cipher: chacha20-ietf-poly1305
+      name: NL-149
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 193.29.139.164
+      type: ss
+    - cipher: aes-256-cfb
+      name: CH-17
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 84.17.53.160
+      type: ss
+    - cipher: rc4-md5
+      name: GB-167
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.46.237
+      type: ss
+    - cipher: rc4-md5
+      name: GB-143
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.46.214
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: CZ-30
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 195.181.160.6
+      type: ss
+    - cipher: aes-128-gcm
+      name: CH-19
+      password: shadowsocks
+      port: 443
+      server: 156.146.62.164
+      type: ss
+    - flow: ""
+      name: GB-239
+      network: ws
+      port: 2096
+      server: 95.164.18.16
+      servername: 95.164.18.16
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.16
+        path: /
+    - cipher: aes-256-cfb
+      name: FR-167
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 195.154.185.174
+      type: ss
+    - cipher: aes-256-cfb
+      name: AT-10
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 185.180.12.81
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: SE-123
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 121.127.46.147
+      type: ss
+    - name: US 704
+      network: ws
+      port: 8080
+      server: x1-ireland-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: 3c85b2b8-3bdb-4e32-b30f-955422f210ba
+      ws-opts:
+        headers:
+            Host: x1-ireland-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - cipher: rc4-md5
+      name: GB-166
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.46.199
+      type: ss
+    - flow: ""
+      name: CY-30
+      network: ws
+      port: 443
+      server: 154.92.9.174
+      servername: ld.laoyoutiao.link
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: rc4-md5
+      name: DE-604
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.82.209
+      type: ss
+    - name: US 716
+      network: ws
+      port: 8080
+      server: x2-ireland-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: d3ddf718-61b1-4cf5-ad13-39deafacf2d2
+      ws-opts:
+        headers:
+            Host: x2-ireland-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - cipher: aes-128-gcm
+      name: JP-243
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.204
+      type: ss
+    - cipher: rc4-md5
+      name: DE-611
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.82.227
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: LT-29
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.164
+      type: ss
+    - cipher: aes-128-gcm
+      name: JP-61
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.240
+      type: ss
+    - cipher: aes-256-cfb
+      name: FR-179
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 195.154.169.198
+      type: ss
+    - cipher: rc4-md5
+      name: GB-158
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.23.32
+      type: ss
+    - cipher: rc4-md5
+      name: GB-154
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 104.166.161.196
+      type: ss
+    - cipher: aes-256-cfb
+      name: SE-120
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 121.127.46.147
+      type: ss
+    - cipher: aes-256-cfb
+      name: SK-04
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 156.146.40.194
+      type: ss
+    - flow: ""
+      name: GB-237
+      network: ws
+      port: 2096
+      server: 95.164.18.29
+      servername: 95.164.18.29
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.29
+        path: /
+    - cipher: rc4-md5
+      name: GB-138
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.207.163
+      type: ss
+    - cipher: aes-256-cfb
+      name: FI-110
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 37.143.129.230
+      type: ss
+    - cipher: rc4-md5
+      name: GB-206
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.46.160
+      type: ss
+    - cipher: rc4-md5
+      name: GB-160
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 169.150.210.243
+      type: ss
+    - flow: ""
+      name: GB-236
+      network: ws
+      port: 443
+      server: 95.164.18.29
+      servername: 95.164.18.29
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.29
+        path: /
+    - cipher: rc4-md5
+      name: GB-162
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.206.228
+      type: ss
+    - cipher: rc4-md5
+      name: GB-210
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.70.35
+      type: ss
+    - name: US 672
+      network: ws
+      port: 8080
+      server: x2-england-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: 71a2880a-0190-4711-8e1e-06a99cd5b98d
+      ws-opts:
+        headers:
+            Host: x2-england-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - cipher: rc4-md5
+      name: GB-165
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.142.161
+      type: ss
+    - cipher: rc4-md5
+      name: DE-605
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.82.211
+      type: ss
+    - flow: ""
+      name: US 645
+      network: ws
+      port: 443
+      server: lllllllllllkjh.222560.xyz
+      servername: LlLLLlLLLLLkjh.222560.xyZ
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: ce921385-2b31-45fe-84c5-1843e8ae845b
+      ws-opts:
+        headers:
+            Host: lllllllllllkjh.222560.xyz
+        path: /1xrOld7e5RpK3I98dxLkez
+    - cipher: rc4-md5
+      name: GB-159
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 169.150.210.244
+      type: ss
+    - cipher: rc4-md5
+      name: GB-208
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 169.150.210.233
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: LV-02
+      network: ws
+      port: 8443
+      server: 216.173.69.250
+      type: vmess
+      uuid: 91382092-2330-455b-8a1c-9c129cfe661a
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - cipher: aes-128-gcm
+      name: JP-60
+      password: shadowsocks
+      port: 443
+      server: 149.22.87.241
+      type: ss
+    - cipher: aes-128-gcm
+      name: GB-119
+      password: shadowsocks
+      port: 443
+      server: 212.102.53.195
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: LT-35
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.154
+      type: ss
+    - cipher: rc4-md5
+      name: JP-83
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 172.105.199.91
+      type: ss
+    - flow: ""
+      name: GB-233
+      network: ws
+      port: 443
+      server: 95.164.18.5
+      servername: 95.164.18.5
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.5
+        path: /
+    - cipher: aes-256-cfb
+      name: RS-03
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 185.186.77.220
+      type: ss
+    - cipher: rc4-md5
+      name: RU-77
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.52.150
+      type: ss
+    - cipher: rc4-md5
+      name: DE-606
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.20.147
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: KR-56
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+    - cipher: rc4-md5
+      name: DE-612
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.20.144
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: NO-01
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 185.213.23.226
+      type: ss
+    - cipher: rc4-md5
+      name: JP-65
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 172.105.199.111
+      type: ss
+    - flow: ""
+      name: Cloudflare Plus - IRDevs 1
+      network: ws
+      port: 443
+      server: fk31lndm4w8uj0yp1drwltdtdko6y-cu.pages.dev
+      servername: fk31lnDM4W8UJ0yP1dRwlTDTDKo6y-cU.PaGeS.DeV
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 826f524a-cea1-4e44-9b49-3381d13b7593
+      ws-opts:
+        headers:
+            Host: fk31lndm4w8uj0yp1drwltdtdko6y-cu.pages.dev
+        path: /XHPTFMTFoBNv6IV6
+    - cipher: rc4-md5
+      name: NL-170
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 108.181.126.135
+      type: ss
+    - cipher: aes-256-cfb
+      name: RO-40
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 194.14.217.38
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: CA-87
+      network: tcp
+      port: 42610
+      server: 51.79.86.182
+      type: vmess
+      uuid: e0957ca6-f613-4017-ff3c-effd1da8871a
+    - alterId: 0
+      cipher: auto
+      name: JP-34
+      network: ws
+      port: 443
+      server: test13.huvicloud.com
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: b7087817-b967-474a-8e38-027e7c92a980
+      ws-opts:
+        headers:
+            Host: test13.huvicloud.com
+        path: /djakjhahf3fg
+    - flow: ""
+      name: US 596
+      network: ws
+      port: 443
+      server: 444444444444r.333756.xyz
+      servername: 444444444444R.333756.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 03e92910-34b1-4245-ac63-04a865f43cd5
+      ws-opts:
+        headers:
+            Host: 444444444444r.333756.xyz
+        path: /f7vKDX2UecxmlPhIJoo2wcE6Q
+    - flow: ""
+      name: WSTLS-khodam3
+      network: ws
+      port: 8443
+      server: 190.93.244.65
+      servername: phdde1.reachheadphones.com
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: edb6b348-9f80-4edd-b842-0aba6e62cdfd
+      ws-opts:
+        headers:
+            Host: cfphdde1.reachheadphones.com
+        path: /WS/2678
+    - cipher: chacha20-ietf-poly1305
+      name: FR-365
+      password: a58fa62b4944ddbf
+      port: 57456
+      server: 81.19.137.222
+      type: ss
+    - name: vless_vmessx-2
+      network: ws
+      port: 8880
+      server: 172.67.141.140
+      tls: false
+      type: vless
+      uuid: 7e948e09-fa6f-4b8e-8c5d-181fa15fbec5
+      ws-opts:
+        headers:
+            Host: v2ngsupply2.ip-ddns.com
+        path: /QaaLdIiGgWNoIxOF?ed=2560
+    - flow: ""
+      name: GB-238
+      network: ws
+      port: 443
+      server: 95.164.18.16
+      servername: 95.164.18.16
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.16
+        path: /
+    - cipher: aes-256-cfb
+      name: BG-03
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 37.19.203.147
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: VMESS-未知英国-NF解锁波兰地区非自制剧-ChatGPT-TikTok-b62a948c-faa2-4e8a-bf8a-3ff3121c875aasoul-avatop443
+      network: ws
+      port: 443
+      server: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+      ws-opts:
+        headers:
+            Host: ""
+        path: /azumase.ren
+    - flow: ""
+      name: US-3096
+      network: ws
+      port: 8443
+      server: 92.118.233.41
+      servername: 92.118.233.41
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 92.118.233.41
+        path: /
+    - cipher: rc4-md5
+      name: NL-166
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 45.84.123.247
+      type: ss
+    - flow: ""
+      name: TR-05
+      network: ws
+      port: 443
+      server: 103.231.75.23
+      servername: 103.231.75.23
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 45cd4cb9-c026-4ab2-814d-090d51f4a59f
+      ws-opts:
+        headers:
+            Host: 103.231.75.23
+        path: /xsgzobws
+    - name: NIM_VPN_ir vless935c990a-9bcc-484b-86a2-2a402f9ad1d4grumpy-buildingseotoolsforyoucouk80encryptionnonesecuritynonetypewspath NIM_VPN_ir vless882b695d-af12-4dba-b653-a8366624a3151851001592849682encryptionnonesecuritynonetypetcpheaderTypehttphostfastcom NIM_VPN_ir vlessd44cb076-22d4-45ce-8643-57559529b7927711010719518207encryptionnonesecurityrealitysniyahoocomfpchromepbk44l4QJ3IgqePj0rrHHiFBcCa1cwubF6JwE5grbtY33Asid10spxtypegrpc NIM_VPN_ir vless51a08234-9b5e-4e8d-804d-bd0a824bb8091851001592816922encryptionnonesecurityrealitysnicloudflarecomfpchromepbkxkCxFXlnv8uM2BeOF6MqOU6N-mY4J8ounFhwmRUO-xYsidccdce4spxtypegrpc NIM_VPN_ir vlesse21789d4-820c-42c9-9729-26fd904e754a7711010719528898encryptionnonesecurityrealitysniyahoocomfprandompbkmVptIpBcUtMqN2tfYE8eNwBrhqNdb0lWJoeRvYen8TYsid2cb4454d18spxtypexhttphostfastcompathmodeautoNIM_VPN_ir
+      network: ws
+      port: 80
+      server: deep-radio.seotoolsforyou.co.uk
+      tls: false
+      type: vless
+      uuid: 5139af95-a453-46c6-831a-a532b6b51305
+      ws-opts:
+        headers:
+            Host: deep-radio.seotoolsforyou.co.uk
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: LT-27
+      password: cvII85TrW6n0OGyfpHVS1u
+      port: 8080
+      server: 45.87.175.190
+      type: ss
+    - cipher: aes-256-cfb
+      name: AU-20
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 143.244.62.106
+      type: ss
+    - alterId: 0
+      cipher: none
+      name: si vmess-ws
+      network: ws
+      port: 80
+      server: test.flha.ru
+      type: vmess
+      uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
+      ws-opts:
+        headers:
+            Host: test.flha.ru
+        path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
+    - cipher: chacha20-ietf-poly1305
+      name: GB-223
+      password: c40641c1f89e7acb
+      port: 57456
+      server: 46.226.163.225
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: PY-01
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 38.165.233.18
+      type: ss
+    - name: PH-09
+      network: ws
+      port: 8880
+      server: 154.83.2.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: "/Telegram\U0001F1E8\U0001F1F3 @WangCai2 /?ed=2560"
+    - flow: ""
+      name: GB-234
+      network: ws
+      port: 8443
+      server: 95.164.18.39
+      servername: 95.164.18.39
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 95.164.18.39
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: IL-02
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 169.150.202.174
+      type: ss
+    - name: CA-03
+      network: ws
+      port: 80
+      server: ov-canada1.09vpn.com
+      tls: false
+      type: vless
+      uuid: 0c77e870-49f2-4737-b52f-e876d1947976
+      ws-opts:
+        headers:
+            Host: ov-canada1.09vpn.com
+        path: /vless/
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 20.15 MB/s"
+      network: ws
+      port: 8880
+      server: 147.185.161.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.07 MB/s"
+      network: ws
+      port: 80
+      server: 104.21.80.1
+      tls: false
+      type: vless
+      uuid: e5b9b393-bac0-4bea-ad96-53acc299e622
+      ws-opts:
+        headers:
+            Host: supercars.gobexor577.workers.dev
+        path: /6m9qzexbs9sqghln?ed=2560
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E6\U0001F1FA AU | ⬇️ 19.96 MB/s"
+      network: tcp
+      port: 43183
+      server: 172.105.174.237
+      type: vmess
+      uuid: aa8b85cf-6153-457f-9eab-7ffe19caee47
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 19.86 MB/s"
+      network: ws
+      port: 443
+      server: new1.huvicloud.com
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 0f02e02f-418d-4434-b0cf-dbdd15892333
+      ws-opts:
+        headers:
+            Host: new1.huvicloud.com
+        path: /0f02e02f-418d-4434-b0cf-dbdd15892333
+    - cipher: rc4-md5
+      name: "\U0001F1E6\U0001F1FA AU | ⬇️ 19.73 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 45.77.234.206
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 19.68 MB/s"
+      network: ws
+      port: 443
+      server: 789156.xyz
+      servername: 789156.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 5f11c240-89df-494c-9c81-8b619023bb58
+      ws-opts:
+        headers:
+            Host: 789156.xyz
+        path: /?ed=2048fp=randomized
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 19.53 MB/s"
+      password: 86DvwOOD3CCeeMiQFbscgn
+      port: 16432
+      server: 89.110.85.176
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 19.41 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.79.198
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 19.35 MB/s"
+      password: c40641c1f89e7acb
+      port: 57456
+      server: uk.vpnsparta.pro
+      type: ss
+    - flow: ""
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 19.19 MB/s"
+      network: ws
+      port: 443
+      server: 92.118.233.43
+      servername: 92.118.233.43
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 92.118.233.43
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 18.94 MB/s"
+      password: 2df393ef-b5fa-4ffd-9af3-761034bf33e3
+      port: 30013
+      server: 192.53.172.74
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 18.72 MB/s"
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.87.175.188
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 18.61 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 98.98.79.197
+      type: ss
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 18.50 MB/s"
+      network: ws
+      port: 8080
+      server: x2-japan-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: 14ad44c8-961a-42d9-9c2e-3ca196a601da
+      ws-opts:
+        headers:
+            Host: x2-japan-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E6\U0001F1F9 AT | ⬇️ 18.42 MB/s"
+      password: 9JeYy8SkViXuSHVs9GFeSe
+      port: 443
+      server: 77.110.110.117
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E6\U0001F1F9 AT | ⬇️ 18.24 MB/s"
+      password: 9JeYy8SkViXuSHVs9GFeSe
+      port: 443
+      server: promo6v.bystrivpn.ru
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 18.03 MB/s"
+      network: ws
+      port: 443
+      server: 162.159.19.82
+      servername: ld.laoyoutiao.link
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.97 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.199.172.224
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.93 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.199.125.131
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.76 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.4
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.68 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.235.122
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.58 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.235.165
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.32 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.236
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.17 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 188.166.249.31
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EB\U0001F1EE FI | ⬇️ 17.15 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      server: rusrv.vmagnum.win
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 17.11 MB/s"
+      network: ws
+      port: 443
+      server: web.xhamster.biz.id
+      servername: web.xhamster.biz.id
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
+      ws-opts:
+        headers:
+            Host: web.xhamster.biz.id
+        path: /Free-CF-Proxy-AT29
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 17.08 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.180
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 16.99 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 104.248.159.99
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 16.98 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.227.216
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 16.97 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.235.240
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 16.83 MB/s"
+      network: ws
+      port: 443
+      server: 104.21.44.248
+      servername: EDfrT.frEEvPNatm2025.DPdNS.oRG
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: ffcf7ec1-3e09-4821-b3d9-b426a107b73b
+      ws-opts:
+        headers:
+            Host: EDfrT.frEEvPNatm2025.DPdNS.oRG
+        path: /O9jlBCbIm3xr1D40NK
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F1\U0001F1FB LV | ⬇️ 16.81 MB/s"
+      password: 360e21d21977dc11
+      port: 57456
+      server: 216.173.70.187
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 16.37 MB/s"
+      network: tcp
+      port: 47682
+      server: 91.228.10.125
+      type: vmess
+      uuid: 6b837ddd-7dfb-4520-dd9c-65d61d640896
+    - name: "\U0001F1EE\U0001F1E9 ID | ⬇️ 16.37 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.232.248.242
+      tls: false
+      type: vless
+      uuid: 0d6b5af6-17df-4bb1-af76-e524f00602a5
+    - name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 16.37 MB/s"
+      network: tcp
+      port: 37171
+      server: 54.38.214.56
+      tls: false
+      type: vless
+      uuid: 19199927-fb46-4203-8872-672fd1daca14
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F9\U0001F1ED TH | ⬇️ 16.34 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 119.59.98.58
+      type: ss
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 15.75 MB/s"
+      network: ws
+      port: 8880
+      server: 195.13.45.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1E6\U0001F1F7 AR | ⬇️ 15.74 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 190.103.176.32
+      type: ss
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 15.74 MB/s"
+      network: ws
+      port: 8880
+      server: 104.16.69.64
+      tls: false
+      type: vless
+      uuid: 02811288-9ef3-42ef-86db-d9b1399c1a59
+      ws-opts:
+        headers:
+            Host: vghavi32.ip-ddns.com
+        path: /7YVyoVNnbaVzgl6D?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 15.63 MB/s"
+      network: ws
+      port: 80
+      server: pq-unitedstates3.09vpn.com
+      tls: false
+      type: vless
+      uuid: b6d6dcc2-640b-411f-8003-620830fbf183
+      ws-opts:
+        headers:
+            Host: pq-unitedstates3.09vpn.com
+        path: /vless/
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 15.61 MB/s"
+      network: ws
+      port: 443
+      server: 104.16.43.164
+      servername: ld.laoyoutiao.link
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 15.36 MB/s"
+      network: ws
+      port: 80
+      server: vless.kensoko.my.id
+      tls: false
+      type: vless
+      uuid: 18906639-ada2-4f91-b94f-332ce7efe9cd
+      ws-opts:
+        headers:
+            Host: vless.kensoko.my.id
+        path: /kr
+    - flow: ""
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 15.08 MB/s"
+      network: ws
+      port: 2096
+      server: 92.118.233.41
+      servername: 92.118.233.41
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 92.118.233.41
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F3F3️ KZ | ⬇️ 15.08 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      server: kz.vmagnum.win
+      type: ss
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 15.04 MB/s"
+      network: tcp
+      port: 24209
+      server: 162.19.250.162
+      tls: false
+      type: vless
+      uuid: decb4fce-bd8a-4d8b-a81f-2e393ee9ee02
+    - name: "\U0001F1EE\U0001F1F3 IN | ⬇️ 14.89 MB/s"
+      network: tcp
+      port: 12794
+      server: 45.88.183.156
+      tls: false
+      type: vless
+      uuid: 08704c01-7edb-454a-98a2-328ccb9936fa
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 14.70 MB/s"
+      network: ws
+      port: 8080
+      server: x1-japan-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+      tls: false
+      type: vless
+      uuid: 058ba9f0-a9d7-44b0-a982-0b1172086b9a
+      ws-opts:
+        headers:
+            Host: x1-japan-amazon-v2.we-are-team-xstack-this-is-free-config-join-us-enjoy.net
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 14.67 MB/s"
+      network: ws
+      port: 80
+      server: handsome-device.oneeat.co
+      tls: false
+      type: vless
+      uuid: 2ad87f95-7a0b-4018-8497-5ecaac2f0ddf
+      ws-opts:
+        headers:
+            Host: handsome-device.oneeat.co
+        path: /
+    - name: "\U0001F1E9\U0001F1EA DE | ⬇️ 14.38 MB/s"
+      network: ws
+      port: 80
+      server: 51.195.119.75
+      tls: false
+      type: vless
+      uuid: 6a2bda17-7dd4-450c-83fb-5ae5db27e04d
+      ws-opts:
+        headers:
+            Host: 51.195.119.75
+        path: /vless/
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F1\U0001F1FB LV | ⬇️ 14.27 MB/s"
+      password: 699hONcp4LmWu8Ck6hEPM34tt89EqAJ50k7FbRBdrBbxjX1n
+      port: 31348
+      server: 195.123.213.12
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 14.24 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 185.220.68.185
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 13.85 MB/s"
+      network: ws
+      port: 20521
+      server: 121.154.187.44
+      type: vmess
+      uuid: efeca8c2-8f63-467b-8d28-d630a7a9dc8f
+      ws-opts:
+        headers:
+            Host: ""
+        path: /
+    - alterId: 0
+      cipher: zero
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 13.84 MB/s"
+      network: ws
+      port: 80
+      server: aio.xtradata.dpdns.org
+      type: vmess
+      uuid: f282b878-8711-45a1-8c69-5564172123c1
+      ws-opts:
+        headers:
+            Host: aio.xtradata.dpdns.org
+        path: /aioproxybot/129.150.49.58-18650
+    - flow: ""
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 13.65 MB/s"
+      network: ws
+      port: 8443
+      server: 92.118.233.43
+      servername: 92.118.233.43
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 92.118.233.43
+        path: /
+    - name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 13.64 MB/s"
+      network: ws
+      port: 8880
+      server: 156.238.18.131
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: sg.laoyoutiao.link
+        path: Telegram@WangCai2/?ed=2048
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1F9\U0001F1FC TW | ⬇️ 13.50 MB/s"
+      network: ws
+      port: 443
+      server: 99.tw-nodes.xyz
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 8a53c2dc-e096-3566-a7b3-4eddaab79de5
+      ws-opts:
+        headers:
+            Host: 99.tw-nodes.xyz
+        path: /biteb
+    - cipher: rc4-md5
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 13.41 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.82.153
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 13.37 MB/s"
+      network: ws
+      port: 443
+      server: 104.19.31.147
+      servername: ld.laoyoutiao.link
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 13.25 MB/s"
+      network: ws
+      port: 443
+      server: vipren.biz.id
+      servername: vipren.biz.id
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: bbbbbbbb-cccc-4ddd-eeee-ffffffffffff
+      ws-opts:
+        headers:
+            Host: vipren.biz.id
+        path: /Neoxide-X/131.186.20.178-27194
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EE\U0001F1F3 IN | ⬇️ 12.78 MB/s"
+      network: tcp
+      port: 49882
+      server: 148.113.6.81
+      type: vmess
+      uuid: 6663a422-875c-44ee-9a25-3f7b334dd9f5
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 12.66 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.186.132
+      type: ss
+    - flow: ""
+      name: "\U0001F1EB\U0001F1EE FI | ⬇️ 12.62 MB/s"
+      network: ws
+      port: 8443
+      server: 45.15.127.187
+      servername: 45.15.127.187
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 9e769ce1-34be-4e3f-b0a6-823f30eb8f69
+      ws-opts:
+        headers:
+            Host: 45.15.127.187
+        path: /
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F5\U0001F1F9 PT | ⬇️ 12.60 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 185.231.233.173
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F1\U0001F1FB LV | ⬇️ 12.52 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      server: 216.173.70.187
+      type: ss
+    - alpn:
+        - h3
+      down: 100mbps
+      name: "\U0001F1F9\U0001F1F7 TR | ⬇️ 12.29 MB/s"
+      obfs: salamander
+      obfs-password: ZDQxZDhjZDk4ZjAwYjIwNA==
+      password: 0a93714f-7944-4cb1-a955-c602db605e85
+      port: 33658
+      server: teq.dport.top
+      skip-cert-verify: true
+      sni: teq.dport.top
+      type: hysteria2
+      up: 100mbps
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F3F3️ KZ | ⬇️ 12.27 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      server: 38.107.234.38
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 12.12 MB/s"
+      password: cvII85TrW6n0OGyfpHVS1u
+      port: 8080
+      server: 45.87.175.171
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 12.08 MB/s"
+      network: ws
+      port: 443
+      server: freexxx.ndeso.web.id
+      servername: freexxx.ndeso.web.id
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
+      ws-opts:
+        headers:
+            Host: freexxx.ndeso.web.id
+        path: /Free-CF-Proxy-AT24
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 12.06 MB/s"
+      network: ws
+      port: 80
+      server: sweet-combination.seotoolsforyou.co.uk
+      tls: false
+      type: vless
+      uuid: 05020a61-3c0c-4ead-b256-7851ff905a75
+      ws-opts:
+        headers:
+            Host: sweet-combination.seotoolsforyou.co.uk
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 11.99 MB/s"
+      network: ws
+      port: 80
+      server: obedient-detail.seotoolsforyou.co.uk
+      tls: false
+      type: vless
+      uuid: 1dd49fb8-6570-4a2a-a236-f410b63159cf
+      ws-opts:
+        headers:
+            Host: obedient-detail.seotoolsforyou.co.uk
+        path: /
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 11.88 MB/s"
+      network: ws
+      port: 443
+      server: 172.66.46.247
+      servername: fk31lnDM4W8uJ0Yp1drWlTdTdkO6Y-Cu.pages.deV
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 826f524a-cea1-4e44-9b49-3381d13b7593
+      ws-opts:
+        headers:
+            Host: fk31lndm4w8uj0yp1drwltdtdko6y-cu.pages.dev
+        path: /laGekhA1Q1IhSqJe
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 11.47 MB/s"
+      network: ws
+      port: 8080
+      server: 104.17.41.52
+      tls: false
+      type: vless
+      uuid: 7e948e09-fa6f-4b8e-8c5d-181fa15fbec5
+      ws-opts:
+        headers:
+            Host: v2ngsupply2.ip-ddns.com
+        path: /ijiDwDw8BcM9ieHc?ed=2560
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 11.36 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 128.1.186.139
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 11.23 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 146.70.29.32
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 11.21 MB/s"
+      network: ws
+      port: 8880
+      server: 199.34.230.251
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            Host: cf.d3z.net
+        path: /
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 11.20 MB/s"
+      network: ws
+      port: 443
+      server: cache.netflix.com.spauu.web.id
+      servername: cache.netflix.com.spauu.web.id
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 2bc40013-44c2-4d92-90e9-617893f7f6ed
+      ws-opts:
+        headers:
+            Host: cache.netflix.com.spauu.web.id
+        path: /sggreen
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F4 NO | ⬇️ 10.96 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      server: 185.213.23.226
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 10.92 MB/s"
+      password: qscavF5UviIL-8V-E4raBA
+      port: 2222
+      server: 2.59.163.106
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 10.89 MB/s"
+      network: ws
+      port: 443
+      server: xcvbnnmklo.00890604.xyz
+      servername: xCVbNNMklo.00890604.xyZ
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: a7c9c017-db10-4d15-b01b-0634db498b57
+      ws-opts:
+        headers:
+            Host: xcvbnnmklo.00890604.xyz
+        path: /xZjr7v1DqrYyamxeTh7sLJtI1
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 10.74 MB/s"
+      network: ws
+      port: 443
+      server: ava.game.naver.com.cf.novantunnel.life
+      servername: ava.game.naver.com.cf.novantunnel.life
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: 01785ba0-a548-4357-91d7-6b6cdd24e88c
+      ws-opts:
+        headers:
+            Host: ava.game.naver.com.cf.novantunnel.life
+        path: /Novan-AE26
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 10.51 MB/s"
+      network: ws
+      port: 443
+      server: 104.16.210.28
+      servername: ld.laoyoutiao.link
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: ld.laoyoutiao.link
+        path: /?ed=2560
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 10.14 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.9
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 10.09 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.32
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 10.03 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.108
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 9.93 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.41
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 9.77 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.53
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-200
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.31
+      type: ss
+    - flow: ""
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 9.44 MB/s"
+      network: ws
+      port: 443
+      server: 104.19.144.33
+      servername: JdYq2881Un.GhEiChI.oRg
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: e999db7a-1b17-4da6-bc37-c9fa24af2e93
+      ws-opts:
+        headers:
+            Host: JdYq2881Un.GhEiChI.oRg
+        path: /?Join---MARAMBASHI---Join---MARAMBASHI?ed=2560
+    - cipher: aes-256-cfb
+      name: VN-261
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.223
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-84
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.29
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-240
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.12
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-222
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.4
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 9.29 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.47
+      type: ss
+    - name: GB-281
+      network: ws
+      port: 8880
+      server: 91.193.58.238
+      tls: false
+      type: vless
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+      ws-opts:
+        headers:
+            Host: us.laoyoutiao.link
+        path: "/Telegram\U0001F1E8\U0001F1F3 @MxlShare @WangCai2 /?ed=2560"
+    - cipher: aes-256-cfb
+      name: "\U0001F1FB\U0001F1F3 VN | ⬇️ 9.21 MB/s"
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.22
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-289
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.54
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-01
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.20
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-18
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.228
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-219
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.101
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-46
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.173
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-27
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.126
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-51
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.232
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-88
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.56
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: US-60
+      network: tcp
+      port: 41100
+      server: 15.204.234.200
+      type: vmess
+      uuid: c7f169a3-2e9a-4894-ba53-7b2fa6fd08b4
+    - cipher: aes-256-cfb
+      name: VN-190
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.9
+      type: ss
+    - name: USvlessinfo_2it_channel10
+      network: ws
+      port: 80
+      server: confident-club.seotoolsforyou.co.uk
+      tls: false
+      type: vless
+      uuid: 9926ee97-4398-48dd-b263-2863c62f5c41
+      ws-opts:
+        headers:
+            Host: confident-club.seotoolsforyou.co.uk
+        path: /?Join---MARAMBASHI---Join---MARAMBASHI---Join---MARAMBASHI---Join---MARAMBASHI?ed=2560
+    - cipher: aes-256-cfb
+      name: VN-188
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.51
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-256
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.63
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-254
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.50
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-181
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.154
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-153
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.210
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-73
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.18
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-179
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.243
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-197
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.206
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-54
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.124
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-291
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.155.36
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-50
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.42
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-145
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.202
+      type: ss
+    - name: EuServer-7
+      network: ws
+      port: 80
+      server: 104.21.112.1
+      tls: false
+      type: vless
+      uuid: 2036e2c3-18a5-4eed-9db4-f91a7f02c7d5
+      ws-opts:
+        headers:
+            Host: zoomgov.vipren.biz.id
+        path: /193.123.81.105=443
+    - cipher: aes-256-cfb
+      name: VN-10
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.183
+      type: ss
+    - cipher: aes-256-cfb
+      name: VN-201
+      password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
+      port: 38388
+      server: 103.186.154.218
+      type: ss
