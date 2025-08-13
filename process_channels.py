@@ -245,7 +245,7 @@ async def main():
 
     # 保存结果
     os.makedirs('output', exist_ok=True)
-    with open('output/iptv.txt', 'w', encoding='utf-8') as f:
+    with open('output/iptv.txt', 'a', encoding='utf-8') as f:
         for name, url in filtered_channels:
             f.write(f"{name},{url}\n")
 
