@@ -1,0 +1,77 @@
+name: 测试 IPTV 频道检查和分类
+
+on:
+  push:
+    paths:
+      - '.github/workflows/ffmpeg.yml'
+      - 'check_and_categorize_channels.py'
+      - 'config/**'
+      - 'output/iptv.txt'
+  workflow_dispatch:
+  schedule:
+    # 每天 00:00（北京时间）运行
+    - cron: '0 0 * * *'
+
+env:
+  TZ: Asia/Shanghai
+
+permissions:
+  contents: write  # 允许推送更改到仓库
+
+jobs:
+  check-and-categorize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # 更新到最新版本
+
+      - name: Set up Python
+        uses: actions/setup-python@v5  # 更新到最新版本
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # 使用 requirements.txt 确保一致性
+          echo -e "PyYAML==6.0\nrequests==2.31.0\ntenacity==8.2.3\ncachetools==5.3.1\ntqdm==4.66.4\npsutil==5.9.5\ndifflib" > requirements.txt
+          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Run channel check and categorization script
+        run: |
+          python check_and_categorize_channels.py
+        continue-on-error: false  # 脚本失败时停止
+
+      - name: Store logs as artifact
+        if: always()  # 即使失败也上传日志
+        uses: actions/upload-artifact@v4
+        with:
+          name: iptv-checker-logs
+          path: logs/iptv_checker.log
+          retention-days: 7
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add .
+          
+          if ! git diff --cached --quiet; then
+            git commit -m "Update categorized IPTV lists and demo.txt"
+            # 使用 --no-verify 避免钩子问题
+            git push origin main --no-verify
+          else
+            echo "没有需要提交的更改，退出。"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Handle push failure
+        if: failure()
+        run: |
+          echo "推送失败，可能是冲突或权限问题。请检查日志。"
+          exit 1
