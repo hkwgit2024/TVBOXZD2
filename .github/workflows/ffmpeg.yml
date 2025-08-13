@@ -20,7 +20,7 @@ permissions:
 jobs:
   check-and-categorize:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 360
 
     steps:
       - name: Checkout repository
