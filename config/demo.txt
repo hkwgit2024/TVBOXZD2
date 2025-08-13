@@ -811,3 +811,13 @@ ABC TV|ABC TV
 
 
 
+娱乐频道,#genre#
+HBO|Showtime|Netflix|Amazon Prime Video|Disney+
+体育频道,#genre#
+ESPN|NBC Sports|FOX Sports|BeIN Sports
+新闻频道,#genre#
+ABC News|CNN|BBC News|MSNBC|Al Jazeera
+儿童频道,#genre#
+Nickelodeon|Cartoon Network|Disney Junior|PBS Kids
+其他频道,#genre#
+Sky Sports|ITV|Canal+|Fuji TV|NHK|Astro|Hulu|HBO Max|Pluto TV|Tubi|Crackle
