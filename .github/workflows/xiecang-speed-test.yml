@@ -43,8 +43,8 @@ jobs:
         run: |
           clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/clash_config.yaml" \
                           -output clash.yaml \
-                          -max-latency 1000ms \
-                          -min-download-speed 8.8 \
+                          -max-latency 808ms \
+                          -min-download-speed 80.8 \
                           -rename \
                           
       
