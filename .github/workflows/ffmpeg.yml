@@ -1,94 +1,90 @@
-name: 测试 IPTV 频道检查和分类
+# 工作流名称，将显示在 GitHub Actions 界面上
+name: 测试
 
+# 触发工作流的事件
 on:
+  # 当代码被推送到仓库时触发
   push:
+    # 仅当 '.github/workflows/ffmpeg.yml' 文件有更改时才触发
     paths:
       - '.github/workflows/ffmpeg.yml'
-      - 'check_and_categorize_channels.py'
-      - 'config/**'
-      - 'output/iptv.txt'
+  # 允许手动从 GitHub Actions 页面运行此工作流
   workflow_dispatch:
+  # 定时任务，每 6 小时运行一次
   schedule:
-    - cron: '0 0 * * *'
+    # cron 表达式的语法: (分 时 日 月 周)
+    # '0 */6 * * *' 表示每小时的第 0 分钟，每隔 6 小时运行一次
+    - cron: '0 */6 * * *'
 
+# 设置环境变量
 env:
+  # 设置时区为亚洲/上海，确保日志和时间戳的准确性
   TZ: Asia/Shanghai
 
-permissions:
-  contents: write
-
+# 定义一个名为 'check-and-categorize' 的工作任务
 jobs:
   check-and-categorize:
+    # 指定此任务运行在 'ubuntu-latest' 虚拟机上
     runs-on: ubuntu-latest
-    timeout-minutes: 360
 
+    # 定义此任务中的执行步骤
     steps:
+      # 步骤 1: 检出仓库代码
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # 使用 actions/checkout@v2，将仓库代码克隆到虚拟机中
+        uses: actions/checkout@v2
 
+      # 步骤 2: 设置 Python 环境
       - name: Set up Python
-        uses: actions/setup-python@v5
+        # 使用 actions/setup-python@v2，配置 Python 环境
+        uses: actions/setup-python@v2
         with:
+          # 指定使用 Python 3.8 版本
           python-version: '3.8'
 
-      - name: Check input file
-        run: |
-          if [ ! -f output/iptv.txt ]; then
-            echo "错误：未找到 output/iptv.txt"
-            exit 1
-          fi
-          if [ ! -s output/iptv.txt ]; then
-            echo "错误：output/iptv.txt 为空"
-            exit 1
-          fi
-
-      - name: Create log directory
-        run: |
-          mkdir -p logs
-
+      # 步骤 3: 安装依赖
       - name: Install dependencies
         run: |
+          # 升级 pip 包管理器
           python -m pip install --upgrade pip
-          echo -e "PyYAML==6.0\nrequests==2.31.0\ntenacity==8.2.3\ncachetools==5.3.1\ntqdm==4.66.4\npsutil==5.9.5" > requirements.txt
-          pip install -r requirements.txt
+          # 安装 Python 脚本所需的库
+          pip install PyYAML requests tenacity cachetools tqdm psutil
+          # 更新 Ubuntu 的软件包列表
           sudo apt-get update
+          # 安装 ffmpeg，这是一个用于处理视频和音频的工具
           sudo apt-get install -y ffmpeg
 
+      # 步骤 4: 运行频道检查和分类脚本
       - name: Run channel check and categorization script
         run: |
+          # 执行名为 'check_and_categorize_channels.py' 的 Python 脚本
           python check_and_categorize_channels.py
-        continue-on-error: false
 
-      - name: Store logs as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iptv-checker-logs
-          path: logs/iptv_checker.log
-          retention-days: 7
-          if-no-files-found: warn
-
+      # 步骤 5: 提交并推送更改
       - name: Commit and push changes
-        if: success()
         run: |
+          # 配置 Git 用户名，用于提交更改时显示
           git config --global user.name 'github-actions[bot]'
+          # 配置 Git 用户邮箱
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # 暂存所有更改，包括新文件和修改过的文件
           git add .
+          
+          # 检查是否有需要提交的更改（如果 git diff --cached --quiet 没有输出，则说明没有更改）
           if ! git diff --cached --quiet; then
-            echo "发现更改，准备提交..."
-            # 在推送前，先拉取最新的远程更改并进行 rebase
-            # 这能确保您的本地分支是最新的，并且提交历史保持干净
+            # 如果有更改，则执行以下操作
+            echo "有更改，准备提交..."
+            # 使用指定的消息提交更改
+            git commit -m "Update categorized IPTV lists"
+            # 拉取远程仓库的最新代码并进行 rebase，以确保本地分支是最新的，并且提交历史保持线性
             git pull --rebase origin main
-            git commit -m "Update categorized IPTV lists and demo.txt"
-            git push origin main --no-verify
+            # 将本地更改推送到 'main' 分支
+            git push origin main
           else
+            # 如果没有更改，则打印一条消息并退出
             echo "没有需要提交的更改，退出。"
           fi
+        # 环境变量，用于身份验证，这里使用了 GitHub 提供的令牌
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "IPTV check failed. Check logs at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          exit 1
