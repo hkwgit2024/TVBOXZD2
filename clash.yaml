@@ -1,47 +1,8 @@
 proxy-providers: {}
 proxies:
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 181.46 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 37.19.198.243
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 164.27 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 37.19.198.160
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 158.09 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 37.19.198.244
-      type: ss
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 151.88 MB/s"
-      network: tcp
-      port: 2321
-      server: 172.234.192.79
-      tls: false
-      type: vless
-      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
     - alterId: 0
       cipher: auto
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 143.71 MB/s"
-      network: ws
-      port: 8443
-      server: v37.emoyes.top
-      servername: v37.emoyes.top
-      tls: true
-      type: vmess
-      uuid: 08b24d8d-10ab-4c5a-990e-4e0e194870af
-      ws-opts:
-        headers:
-            Host: v37.emoyes.top
-        path: /
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 134.03 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 165.65 MB/s"
       network: ws
       port: 443
       server: v36.emoyes.top
@@ -53,143 +14,66 @@ proxies:
         headers:
             Host: v36.emoyes.top
         path: /
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 116.56 MB/s"
-      network: ws
-      port: 80
-      server: 45.8.146.207
-      tls: false
-      type: vless
-      uuid: a6c4db3e-7785-429e-8bc5-9eaf7b1a79b1
-      ws-opts:
-        headers:
-            Host: 45.8.146.207
-        path: /vless/
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 114.18 MB/s"
-      network: tcp
-      port: 43728
-      server: 15.204.235.13
-      tls: false
-      type: vless
-      uuid: 1b18b439-5371-4f38-b8d0-71aad09a3a92
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 107.39 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 990
-      server: 79.127.200.162
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 99.46 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 138.197.153.10
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 98.75 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 68.183.193.204
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 98.74 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 147.182.150.107
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 96.27 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 147.182.146.81
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 93.41 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 178.128.231.214
-      type: ss
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 92.39 MB/s"
-      network: tcp
-      port: 24820
-      server: 15.204.236.64
-      tls: false
-      type: vless
-      uuid: 8dbb26f8-8832-46bc-bc0c-a2f17d8d200f
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 91.25 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 194.5.215.171
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 90.88 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 194.5.215.175
-      type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 88.72 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 137.184.174.93
-      type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 88.34 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 135.61 MB/s"
       password: shadowsocks
       port: 443
-      server: 156.146.38.169
+      server: 37.19.198.236
       type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 86.88 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 132.69 MB/s"
       password: shadowsocks
       port: 443
       server: 156.146.38.167
       type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 86.74 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 127.12 MB/s"
       password: shadowsocks
       port: 443
-      server: 156.146.38.170
+      server: 156.146.38.169
       type: ss
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 84.77 MB/s"
-      network: tcp
-      port: 54051
-      server: 51.222.86.157
-      tls: false
-      type: vless
-      uuid: d1e720d6-4ac9-4a03-b781-567960161b13
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 84.63 MB/s"
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 126.50 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.243
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 100.60 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 178.128.231.214
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 96.08 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.146.81
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 94.06 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.193.204
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 83.76 MB/s"
+      network: ws
+      port: 443
+      server: u1.huvicloud.com
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+      ws-opts:
+        headers:
+            Host: u1.huvicloud.com
+        path: /04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 83.75 MB/s"
       network: tcp
       port: 51952
       server: 51.222.86.7
       tls: false
       type: vless
       uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 84.35 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 138.197.141.58
-      type: ss
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 83.99 MB/s"
-      network: ws
-      port: 80
-      server: communal-loss.oneeat.co
-      tls: false
-      type: vless
-      uuid: a2af50d9-09c7-4a44-90d0-42da35923e9e
-      ws-opts:
-        headers:
-            Host: communal-loss.oneeat.co
-        path: /
-    - cipher: rc4-md5
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 83.03 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 194.5.215.170
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 82.79 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 156.146.38.168
-      type: ss
