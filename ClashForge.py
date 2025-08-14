@@ -44,7 +44,8 @@ results_speed = []
 MAX_CONCURRENT_TESTS = 100
 LIMIT = 1086 # 最多保留LIMIT个节点
 CONFIG_FILE = 'clash_config.yaml'
-INPUT = os.getenv("INPUT", "input") # 从文件中加载代理节点，支持yaml/yml、txt(每条代理链接占一行)
+# 从文件中加载代理节点，支持yaml/yml、txt(每条代理链接占一行)
+# INPUT = os.getenv("INPUT", "input")
 BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
 headers = {
     'Accept-Charset': 'utf-8',
@@ -535,7 +536,7 @@ def generate_clash_config(links,load_nodes):
             config["proxy-groups"][2]["proxies"] = proxies
             config["proxy-groups"][3]["proxies"] = proxies
     config["proxies"] = final_nodes
-    
+
     if config["proxies"]:
         global CONFIG_FILE
         CONFIG_FILE = CONFIG_FILE[:-5] if CONFIG_FILE.endswith('.json') else CONFIG_FILE
@@ -1243,11 +1244,18 @@ def resolve_template_url(template_url):
 
 def work(links,check=False,allowed_types=[],only_check=False):
     try:
+        load_nodes = []
         if not only_check:
-            load_nodes = read_yaml_files(folder_path=INPUT)
+            # 检查 INPUT 是否为本地文件夹路径
+            if os.path.exists('input') and os.path.isdir('input'):
+                load_nodes.extend(read_yaml_files(folder_path='input'))
+                links.extend(read_txt_files(folder_path='input'))
+            
             if allowed_types:
                 load_nodes = filter_by_types_alt(allowed_types,nodes=load_nodes)
-            links = merge_lists(read_txt_files(folder_path=INPUT), links)
+            
+            # 合并所有链接
+            links = merge_lists(links)
             if links or load_nodes:
                 generate_clash_config(links,load_nodes)
 
@@ -1275,7 +1283,13 @@ def work(links,check=False,allowed_types=[],only_check=False):
 
 
 if __name__ == '__main__':
-    links = [
-       
-    ]
-    work(links, check=True, only_check=False, allowed_types=["ss","hysteria2","hy2","vless","vmess","trojan"])
+    # 从环境变量中获取 INPUT
+    input_value = os.getenv("INPUT")
+    links_from_env = []
+    
+    # 检查 INPUT 是否为 URL
+    if input_value and (input_value.startswith('http://') or input_value.startswith('https://')):
+        print(f"从环境变量中读取到 URL: {input_value}")
+        links_from_env.append(input_value)
+    
+    work(links=links_from_env, check=True, only_check=False, allowed_types=["ss","hysteria2","hy2","vless","vmess","trojan"])
