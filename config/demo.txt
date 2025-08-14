@@ -64,26 +64,6 @@ CCTV14|CCTV-14|CCTV14东联
 CCTV15|CCTV-15|CCTV15东联
 CCTV16|CCTV-16
 CCTV17|CCTV-17
-CCTV4K|CCTV-4K
-CCTV8K|CCTV-8K
-CCTV第一剧场|CCTV First Theater
-CCTV怀旧剧场|CCTV Nostalgic Theater
-CCTV风云剧场|CCTV Fengyun Theater
-CCTV风云音乐|CCTV Fengyun Music
-CCTV兵器科技|CCTV Weapon Tech
-CCTV老故事|CCTV新影老故事|CCTV Old Story
-CCTV风云足球|CCTV Fengyun Football
-CCTV高尔夫网球|CCTV Golf Tennis
-CCTV央视台球|CCTV Billiards
-CCTV女性时尚|CCTV Women Fashion
-CCTV电视指南|CCTV TV Guide
-CCTV央视文化精品|CCTV Culture Boutique
-CCTV世界地理|CCTV World Geography
-CCTV发现之旅|CCTV新影发现之旅|CCTV Discovery
-CCTV卫生健康|CCTV Health
-中国天气|China Weather
-CCTV中学生|CCTV Middle School
-CETV早期教育|CETV Early Education
 CETV1|CETV-1
 CETV2|CETV-2
 CETV3|CETV-3
