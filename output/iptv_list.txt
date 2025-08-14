@@ -1,5 +1,5 @@
 更新时间,#genre#
-2025-08-14 22:13:46,url
+2025-08-14 22:32:43,url
 
 央视频道,#genre#
 *CCTV3,http://112.27.145.212:9901/tsfile/live/1502_1.m3u8
@@ -16,354 +16,362 @@ CCTV 06东联,http://123.129.70.178:9901/tsfile/live/0006_1.m3u8
 CCTV 07东联,http://123.129.70.178:9901/tsfile/live/0007_1.m3u8
 CCTV 08东联,http://123.129.70.178:9901/tsfile/live/0008_1.m3u8
 CCTV 09东联,http://123.129.70.178:9901/tsfile/live/0009_1.m3u8
-CCTV 3,http://1.24.190.98:10080/hls/3/index.m3u8
-CCTV 3,http://61.136.172.236:9901/tsfile/live/0003_1.m3u8
 CCTV 3,http://111.61.101.141:199/hls/222/index.m3u8
 CCTV 3,rtp://239.3.1.172:8001
-CCTV 3,http://123.129.70.178:9901/tsfile/live/0003_1.m3u8
-CCTV 3,http://111.126.255.2:808/hls/103/index.m3u8
-CCTV 3,http://36.32.174.67:60080/newlive/live/hls/3/live.m3u8
-CCTV 3,http://120.76.248.139/live/bfgd/4200000062.m3u8
+CCTV 3,http://61.136.172.236:9901/tsfile/live/0003_1.m3u8
 CCTV 3,http://221.7.175.154:8445/tsfile/live/1002_1.m3u8
-CCTV 3,rtsp://27.148.240.181/PLTV/88888888/224/3221227131/55974538.smil
+CCTV 3,http://222.134.245.16:9901/tsfile/live/0003_1.m3u8
+CCTV 3,http://111.126.255.2:808/hls/103/index.m3u8
 CCTV 3,http://8.138.7.223/tv/dl/careryun.php
 CCTV 3,http://101.74.28.209:9901/tsfile/live/0003_1.m3u8
-CCTV 3,http://222.134.245.16:9901/tsfile/live/0003_1.m3u8
-CCTV 4,http://36.32.174.67:60080/newlive/live/hls/4/live.m3u8
-CCTV 4,http://1.24.190.98:10080/hls/4/index.m3u8
+CCTV 3,http://36.32.174.67:60080/newlive/live/hls/3/live.m3u8
+CCTV 3,http://123.129.70.178:9901/tsfile/live/0003_1.m3u8
+CCTV 3,http://120.76.248.139/live/bfgd/4200000062.m3u8
+CCTV 3,http://1.24.190.98:10080/hls/3/index.m3u8
+CCTV 3,rtsp://27.148.240.181/PLTV/88888888/224/3221227131/55974538.smil
+CCTV 3,http://153.0.171.163:9901/tsfile/live/1002_1.m3u8
 CCTV 4,http://120.76.248.139/live/bfgd/4200000063.m3u8
+CCTV 4,http://222.134.245.16:9901/tsfile/live/0004_1.m3u8
+CCTV 4,http://8.138.7.223/tv/migu8.php
+CCTV 4,http://1.24.190.98:10080/hls/4/index.m3u8
+CCTV 4,http://8.138.7.223/tv/dl/careryun.php
 CCTV 4,rtp://239.3.1.105:8092
+CCTV 4,http://36.32.174.67:60080/newlive/live/hls/4/live.m3u8
 CCTV 4,http://106.53.99.30/tv/jzb.php
 CCTV 4,http://111.61.101.141:199/hls/65/index.m3u8
-CCTV 4,http://8.138.7.223/tv/dl/careryun.php
-CCTV 4,http://8.138.7.223/tv/migu8.php
-CCTV 4,http://222.134.245.16:9901/tsfile/live/0004_1.m3u8
-CCTV 4,rtsp://27.148.240.181/PLTV/88888888/224/3221226967/10000100000000060000000001740931_0.smil
 CCTV 4,http://gmxw.7766.org:808/hls/22/index.m3u8
-CCTV 6,rtp://239.3.1.174:8001
-CCTV 6,http://61.136.172.236:9901/tsfile/live/0006_1.m3u8
-CCTV 6,http://8.138.7.223/tv/dl/careryun.php
-CCTV 6,http://1.24.190.98:10080/hls/6/index.m3u8
-CCTV 6,rtsp://27.148.240.181/PLTV/88888888/224/3221227101/55975429.smil
+CCTV 4,rtsp://27.148.240.181/PLTV/88888888/224/3221226967/10000100000000060000000001740931_0.smil
 CCTV 6,http://111.61.101.141:199/hls/224/index.m3u8
-CCTV 6,https://smart.pendy.dpdns.org/Smart.php
-CCTV 6,http://36.32.174.67:60080/newlive/live/hls/6/live.m3u8
-CCTV 6,http://221.7.175.154:8445/tsfile/live/1004_1.m3u8
-CCTV 6,http://101.74.28.209:9901/tsfile/live/0006_1.m3u8
+CCTV 6,http://8.138.7.223/tv/dl/careryun.php
 CCTV 6,http://218.3.138.25:1111/tsfile/live/1005_1.m3u8
+CCTV 6,http://1.24.190.98:10080/hls/6/index.m3u8
+CCTV 6,http://36.32.174.67:60080/newlive/live/hls/6/live.m3u8
+CCTV 6,http://222.134.245.16:9901/tsfile/live/0006_1.m3u8
+CCTV 6,https://smart.pendy.dpdns.org/Smart.php
 CCTV 6,http://116.128.242.83:9901/tsfile/live/0007_1.m3u8
-CCTV 6,http://120.76.248.139/live/bfgd/4200000065.m3u8
+CCTV 6,rtp://239.3.1.174:8001
 CCTV 6,http://106.53.99.30/tv/jzb.php
-CCTV 7,http://123.129.70.178:9901/tsfile/live/0007_1.m3u8
-CCTV 7,http://101.74.28.209:9901/tsfile/live/0007_1.m3u8
-CCTV 7,http://1.24.190.98:10080/hls/7/index.m3u8
+CCTV 6,http://61.136.172.236:9901/tsfile/live/0006_1.m3u8
+CCTV 6,rtsp://27.148.240.181/PLTV/88888888/224/3221227101/55975429.smil
+CCTV 6,http://101.74.28.209:9901/tsfile/live/0006_1.m3u8
+CCTV 6,http://120.76.248.139/live/bfgd/4200000065.m3u8
+CCTV 6,http://112.46.85.60:8009/hls/6/index.m3u8
+CCTV 6,http://221.7.175.154:8445/tsfile/live/1004_1.m3u8
+CCTV 7,http://221.7.175.154:8445/tsfile/live/1005_1.m3u8
 CCTV 7,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
 CCTV 7,http://222.134.245.16:9901/tsfile/live/0007_1.m3u8
-CCTV 7,http://221.7.175.154:8445/tsfile/live/1005_1.m3u8
-CCTV 7,http://120.76.248.139/live/bfgd/4200000127.m3u8
-CCTV 7,http://36.32.174.67:60080/newlive/live/hls/8/live.m3u8
-CCTV 7,http://8.138.7.223/tv/dl/douyincdn.php
-CCTV 7,http://106.53.99.30/tv/jzb.php
-CCTV 7,rtp://239.3.1.61:8104
-CCTV 7,http://8.138.7.223/tv/dl/careryun.php
 CCTV 7,http://111.61.101.141:199/hls/68/index.m3u8
+CCTV 7,http://101.74.28.209:9901/tsfile/live/0007_1.m3u8
+CCTV 7,http://8.138.7.223/tv/dl/careryun.php
+CCTV 7,http://8.138.7.223/tv/dl/douyincdn.php
+CCTV 7,rtp://239.3.1.61:8104
+CCTV 7,http://1.24.190.98:10080/hls/7/index.m3u8
+CCTV 7,http://120.76.248.139/live/bfgd/4200000127.m3u8
+CCTV 7,http://123.129.70.178:9901/tsfile/live/0007_1.m3u8
+CCTV 7,http://36.32.174.67:60080/newlive/live/hls/8/live.m3u8
+CCTV 7,http://106.53.99.30/tv/jzb.php
+CCTV 8,http://153.0.171.163:9901/tsfile/live/1007_1.m3u8
+CCTV 8,http://123.129.70.178:9901/tsfile/live/0008_1.m3u8
+CCTV 8,http://101.74.28.209:9901/tsfile/live/0008_1.m3u8
+CCTV 8,http://8.138.7.223/tv/dl/careryun.php
+CCTV 8,http://8.138.7.223/tv/dl/douyincdn.php
+CCTV 8,http://116.128.242.83:9901/tsfile/live/0009_1.m3u8
 CCTV 8,http://120.76.248.139/live/bfgd/4200000066.m3u8
 CCTV 8,http://111.61.101.141:199/hls/225/index.m3u8
-CCTV 8,rtp://239.3.1.175:8001
-CCTV 8,http://101.74.28.209:9901/tsfile/live/0008_1.m3u8
+CCTV 8,http://221.7.175.154:8445/tsfile/live/1006_1.m3u8
+CCTV 8,http://106.53.99.30/tv/jzb.php
 CCTV 8,http://36.32.174.67:60080/newlive/live/hls/11/live.m3u8
+CCTV 8,rtp://239.3.1.175:8001
 CCTV 8,rtsp://27.148.240.181/PLTV/88888888/224/3221227157/63327076.smil
-CCTV 8,http://1.24.190.98:10080/hls/8/index.m3u8
-CCTV 8,http://222.134.245.16:9901/tsfile/live/0008_1.m3u8
 CCTV 8,http://61.136.172.236:9901/tsfile/live/0008_1.m3u8
 CCTV 8,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
-CCTV 8,http://123.129.70.178:9901/tsfile/live/0008_1.m3u8
-CCTV 8,http://8.138.7.223/tv/dl/douyincdn.php
-CCTV 8,http://106.53.99.30/tv/jzb.php
+CCTV 8,http://222.134.245.16:9901/tsfile/live/0008_1.m3u8
 CCTV 8,http://218.3.138.25:1111/tsfile/live/1007_1.m3u8
-CCTV 8,http://221.7.175.154:8445/tsfile/live/1006_1.m3u8
-CCTV 8,http://116.128.242.83:9901/tsfile/live/0009_1.m3u8
-CCTV 8,http://153.0.171.163:9901/tsfile/live/1007_1.m3u8
-CCTV 8,http://8.138.7.223/tv/dl/careryun.php
-CCTV 9,http://zqh2333.top:2222/rtp/239.93.25.24:5140
-CCTV 9,http://8.138.7.223/tv/dl/douyincdn.php
-CCTV 9,http://106.53.99.30/tv/jzb.php
+CCTV 8,http://1.24.190.98:10080/hls/8/index.m3u8
 CCTV 9,http://36.32.174.67:60080/newlive/live/hls/12/live.m3u8
-CCTV 9,http://120.76.248.139/live/bfgd/4200000128.m3u8
-CCTV 9,http://8.138.7.223/tv/dl/careryun.php
 CCTV 9,http://61.136.172.236:9901/tsfile/live/0009_1.m3u8
 CCTV 9,rtp://239.3.1.62:8112
-CCTV 9,http://221.7.175.154:8445/tsfile/live/1007_1.m3u8
-CCTV 9,http://111.61.101.141:199/hls/122/index.m3u8
-CCTV 9,http://123.129.70.178:9901/tsfile/live/0009_1.m3u8
-CCTV 9,http://222.134.245.16:9901/tsfile/live/0009_1.m3u8
 CCTV 9,http://8.138.7.223/tv/migu3.php
-CCTV 世界地理,http://120.76.248.139/live/bfgd/4200000177.m3u8
-CCTV 女性时尚,http://120.76.248.139/live/bfgd/4200000176.m3u8
-CCTV 女性时尚,http://111.61.236.247:9081/hls/59/index.m3u8
-CCTV 怀旧剧场,http://120.76.248.139/live/bfgd/4200000224.m3u8
-CCTV 风云足球,http://120.76.248.139/live/bfgd/4200000225.m3u8
+CCTV 9,http://123.129.70.178:9901/tsfile/live/0009_1.m3u8
+CCTV 9,http://8.138.7.223/tv/dl/careryun.php
+CCTV 9,http://221.7.175.154:8445/tsfile/live/1007_1.m3u8
+CCTV 9,http://8.138.7.223/tv/dl/douyincdn.php
+CCTV 9,http://111.61.101.141:199/hls/122/index.m3u8
+CCTV 9,http://222.134.245.16:9901/tsfile/live/0009_1.m3u8
+CCTV 9,http://120.76.248.139/live/bfgd/4200000128.m3u8
+CCTV 9,http://106.53.99.30/tv/jzb.php
+CCTV 9,http://zqh2333.top:2222/rtp/239.93.25.24:5140
 CCTV+1,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
-CCTV1,http://php.jdshipin.com:8880/TVOD/iptv.php
-CCTV1,http://120.76.248.139/live/bfgd/4200000488.m3u8
-CCTV1,http://zqh2333.top:2222/rtp/239.93.24.184:5140
-CCTV1,http://120.76.248.139/live/bfgd/4200000201.m3u8
-CCTV1,http://php.jdshipin.com/TVOD/iptv.php
-CCTV1,http://123.146.162.24:8013/tslslive/noEX9SG/hls/live_sd.m3u8
-CCTV1,https://smart.pendy.dpdns.org/Smart.php
-CCTV1,http://221.7.175.154:8445/tsfile/live/1000_1.m3u8
-CCTV1,http://1b6467f415.iok.la:9931/tsfile/live/1020_1.m3u8
+CCTV1,https://cc06.tv12.xyz/1.m3u8
 CCTV1,http://111.61.101.141:199/hls/62/index.m3u8
+CCTV1,http://1b6467f415.iok.la:9931/tsfile/live/1020_1.m3u8
 CCTV1,http://61.136.172.236:9901/tsfile/live/0001_1.m3u8
 CCTV1,http://112.123.206.32:808/hls/1/index.m3u8
-CCTV1,http://183.11.239.36:808/hls/19/index.m3u8
-CCTV1,http://222.134.245.16:9901/tsfile/live/0001_1.m3u8
-CCTV1,http://120.76.248.139/live/bfgd/4200000484.m3u8
-CCTV1,http://58.57.40.22:9901/tsfile/live/0001_1.m3u8
-CCTV1,http://36.32.174.67:60080/newlive/live/hls/1/live.m3u8
-CCTV1,http://120.76.248.139/live/bfgd/4200000489.m3u8
-CCTV1,http://live.catvod.com/catvod.php
-CCTV1,rtp://239.3.1.129:8008
-CCTV1,http://8.138.7.223/tv/dl/careryun.php
-CCTV1,http://116.128.242.83:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://120.76.248.139/live/bfgd/4200000488.m3u8
 CCTV1,http://l.cztvcloud.com/channels/lantian/SXshangyu1/720p.m3u8
-CCTV1,http://111.14.181.15:9901/tsfile/live/0001_1.m3u8
-CCTV1,http://101.74.28.209:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://zqh2333.top:2222/rtp/239.93.24.184:5140
+CCTV1,http://58.57.40.22:9901/tsfile/live/0001_1.m3u8
 CCTV1,http://123.146.162.24:8013/tslslive/noEX9SG/hls/live_sd.m3u8$720x576
-CCTV1,https://cc06.tv12.xyz/1.m3u8
+CCTV1,http://116.128.242.83:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://221.7.175.154:8445/tsfile/live/1000_1.m3u8
+CCTV1,http://111.14.181.15:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://36.32.174.67:60080/newlive/live/hls/1/live.m3u8
+CCTV1,http://php.jdshipin.com/TVOD/iptv.php
+CCTV1,http://120.76.248.139/live/bfgd/4200000484.m3u8
+CCTV1,http://222.134.245.16:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://120.76.248.139/live/bfgd/4200000489.m3u8
+CCTV1,http://8.138.7.223/tv/dl/careryun.php
+CCTV1,http://123.146.162.24:8013/tslslive/noEX9SG/hls/live_sd.m3u8
+CCTV1,http://183.11.239.36:808/hls/19/index.m3u8
+CCTV1,rtp://239.3.1.129:8008
+CCTV1,http://120.76.248.139/live/bfgd/4200000201.m3u8
+CCTV1,http://101.74.28.209:9901/tsfile/live/0001_1.m3u8
+CCTV1,http://php.jdshipin.com:8880/TVOD/iptv.php
+CCTV1,https://smart.pendy.dpdns.org/Smart.php
+CCTV1,http://live.catvod.com/catvod.php
 CCTV1+,http://27.185.1.27:8092/hls/1/index.m3u8
-CCTV10,http://123.130.84.106:8154/tsfile/live/0010_1.m3u8
-CCTV10,http://111.14.181.15:9901/tsfile/live/0010_1.m3u8
-CCTV10,http://182.150.23.74:808/hls/10/index.m3u8
-CCTV10,rtp://239.3.1.63:8116
-CCTV10,http://gmxw.7766.org:808/hls/28/index.m3u8
-CCTV10,https://smart.pendy.dpdns.org/Smart.php
-CCTV10,http://123.129.70.178:9901/tsfile/live/0010_1.m3u8
-CCTV10,http://36.32.174.67:60080/newlive/live/hls/13/live.m3u8
-CCTV10,http://61.136.172.236:9901/tsfile/live/0010_1.m3u8
-CCTV10,http://58.57.40.22:9901/tsfile/live/1010_1.m3u8
-CCTV10,http://1b6467f415.iok.la:9931/tsfile/live/1030_1.m3u8
-CCTV10,http://106.53.99.30/tv/jzb.php
-CCTV10,http://221.7.175.154:8445/tsfile/live/1008_1.m3u8
-CCTV10,http://1.24.190.98:10080/hls/10/index.m3u8
-CCTV10,http://8.138.7.223/tv/dl/careryun.php
-CCTV10,http://120.76.248.139/live/bfgd/4200000129.m3u8
 CCTV10,https://piccpndali.v.myalicdn.com/audio/cctv10_2.m3u8
-CCTV10,http://222.134.245.16:9901/tsfile/live/0010_1.m3u8
-CCTV10,http://111.61.101.141:199/hls/70/index.m3u8
+CCTV10,http://36.32.174.67:60080/newlive/live/hls/13/live.m3u8
+CCTV10,http://123.129.70.178:9901/tsfile/live/0010_1.m3u8
+CCTV10,http://221.7.175.154:8445/tsfile/live/1008_1.m3u8
+CCTV10,http://182.150.23.74:808/hls/10/index.m3u8
+CCTV10,http://111.14.181.15:9901/tsfile/live/0010_1.m3u8
+CCTV10,http://58.57.40.22:9901/tsfile/live/1010_1.m3u8
+CCTV10,http://8.138.7.223/tv/dl/careryun.php
+CCTV10,http://61.136.172.236:9901/tsfile/live/0010_1.m3u8
 CCTV10,http://112.46.105.20:8009/hls/506/index.m3u8
+CCTV10,https://smart.pendy.dpdns.org/Smart.php
+CCTV10,http://1b6467f415.iok.la:9931/tsfile/live/1030_1.m3u8
+CCTV10,http://1.24.190.98:10080/hls/10/index.m3u8
+CCTV10,rtp://239.3.1.63:8116
+CCTV10,http://111.61.101.141:199/hls/70/index.m3u8
+CCTV10,http://gmxw.7766.org:808/hls/28/index.m3u8
+CCTV10,http://222.134.245.16:9901/tsfile/live/0010_1.m3u8
+CCTV10,http://106.53.99.30/tv/jzb.php
+CCTV10,http://123.130.84.106:8154/tsfile/live/0010_1.m3u8
+CCTV10,http://120.76.248.139/live/bfgd/4200000129.m3u8
+CCTV10 科教,http://116.128.242.83:9901/tsfile/live/0011_1.m3u8
 CCTV10+,http://27.185.1.27:8092/hls/10/index.m3u8
+CCTV10-科教,http://111.43.126.240:9003/hls/23/index.m3u8
 CCTV10东联,http://123.129.70.178:9901/tsfile/live/0010_1.m3u8
-CCTV11,http://106.53.99.30/tv/jzb.php
-CCTV11,http://1.24.190.98:10080/hls/11/index.m3u8
-CCTV11,http://8.138.7.223/tv/dl/careryun.php
-CCTV11,http://120.76.248.139/live/bfgd/4200000130.m3u8
-CCTV11,http://123.129.70.178:9901/tsfile/live/0011_1.m3u8
-CCTV11,http://111.14.181.15:9901/tsfile/live/0011_1.m3u8
-CCTV11,http://101.74.28.209:9901/tsfile/live/0011_1.m3u8
-CCTV11,http://112.123.243.37:50085/tsfile/live/0012_1.m3u8
-CCTV11,http://222.134.245.16:9901/tsfile/live/0011_1.m3u8
-CCTV11,http://27.185.1.27:8092/hls/11/index.m3u8
-CCTV11,http://111.61.101.141:199/hls/71/index.m3u8
-CCTV11,http://58.57.40.22:9901/tsfile/live/1011_1.m3u8
-CCTV11,http://60.29.124.66:6080/hls/22/index.m3u8
 CCTV11,http://36.32.174.67:60080/newlive/live/hls/14/live.m3u8
-CCTV11,rtp://239.3.1.152:8120
-CCTV11,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
-CCTV11,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8$426x240
-CCTV11,http://116.128.242.83:9901/tsfile/live/0012_1.m3u8
 CCTV11,http://61.136.172.236:9901/tsfile/live/0011_1.m3u8
-CCTV11,http://113.25.252.226:9901/tsfile/live/0011_1.m3u8
+CCTV11,http://101.74.28.209:9901/tsfile/live/0011_1.m3u8
+CCTV11,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8$426x240
+CCTV11,http://27.185.1.27:8092/hls/11/index.m3u8
+CCTV11,http://116.128.242.83:9901/tsfile/live/0012_1.m3u8
 CCTV11,https://piccpndali.v.myalicdn.com/audio/cctv11_2.m3u8
+CCTV11,http://60.29.124.66:6080/hls/22/index.m3u8
+CCTV11,http://111.14.181.15:9901/tsfile/live/0011_1.m3u8
+CCTV11,http://120.76.248.139/live/bfgd/4200000130.m3u8
+CCTV11,http://1.24.190.98:10080/hls/11/index.m3u8
+CCTV11,http://222.134.245.16:9901/tsfile/live/0011_1.m3u8
+CCTV11,http://8.138.7.223/tv/dl/careryun.php
 CCTV11,http://1b6467f415.iok.la:9931/tsfile/live/1031_1.m3u8
+CCTV11,http://113.25.252.226:9901/tsfile/live/0011_1.m3u8
+CCTV11,http://58.57.40.22:9901/tsfile/live/1011_1.m3u8
+CCTV11,http://106.53.99.30/tv/jzb.php
+CCTV11,http://111.61.101.141:199/hls/71/index.m3u8
+CCTV11,rtp://239.3.1.152:8120
+CCTV11,http://123.129.70.178:9901/tsfile/live/0011_1.m3u8
+CCTV11,https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8
+CCTV11-戏曲,http://111.43.126.240:9003/hls/24/index.m3u8
 CCTV11东联,http://123.129.70.178:9901/tsfile/live/0011_1.m3u8
+CCTV12,http://111.14.181.15:9901/tsfile/live/0012_1.m3u8
+CCTV12,http://116.128.242.83:9901/tsfile/live/0013_1.m3u8
+CCTV12,http://123.129.70.178:9901/tsfile/live/0012_1.m3u8
+CCTV12,http://221.7.175.154:8445/tsfile/live/1010_1.m3u8
+CCTV12,rtp://239.3.1.64:8124
+CCTV12,http://8.138.7.223/tv/dl/careryun.php
 CCTV12,http://120.76.248.139/live/bfgd/4200000131.m3u8
-CCTV12,http://112.46.105.20:8009/hls/507/index.m3u8
 CCTV12,http://8.138.7.223/tv/dl/douyincdn.php
+CCTV12,http://61.136.172.236:9901/tsfile/live/0012_1.m3u8
+CCTV12,http://1.24.190.98:10080/hls/12/index.m3u8
+CCTV12,http://112.46.105.20:8009/hls/507/index.m3u8
+CCTV12,http://1b6467f415.iok.la:9931/tsfile/live/1032_1.m3u8
+CCTV12,http://111.61.101.141:199/hls/72/index.m3u8
 CCTV12,http://112.46.85.60:8009/hls/507/index.m3u8
 CCTV12,http://106.53.99.30/tv/jzb.php
-CCTV12,http://112.123.243.37:50085/tsfile/live/0013_1.m3u8
-CCTV12,http://61.136.172.236:9901/tsfile/live/0012_1.m3u8
-CCTV12,http://36.32.174.67:60080/newlive/live/hls/15/live.m3u8
-CCTV12,http://8.138.7.223/tv/dl/careryun.php
-CCTV12,rtp://239.3.1.64:8124
-CCTV12,http://123.129.70.178:9901/tsfile/live/0012_1.m3u8
-CCTV12,http://111.14.181.15:9901/tsfile/live/0012_1.m3u8
-CCTV12,http://1.24.190.98:10080/hls/12/index.m3u8
-CCTV12,http://116.128.242.83:9901/tsfile/live/0013_1.m3u8
-CCTV12,http://101.74.28.209:9901/tsfile/live/0012_1.m3u8
 CCTV12,http://222.134.245.16:9901/tsfile/live/0012_1.m3u8
-CCTV12,http://1b6467f415.iok.la:9931/tsfile/live/1032_1.m3u8
-CCTV12,http://221.7.175.154:8445/tsfile/live/1010_1.m3u8
-CCTV12,http://111.61.101.141:199/hls/72/index.m3u8
+CCTV12,http://101.74.28.209:9901/tsfile/live/0012_1.m3u8
+CCTV12,http://36.32.174.67:60080/newlive/live/hls/15/live.m3u8
+CCTV12,http://112.123.243.37:50085/tsfile/live/0013_1.m3u8
 CCTV12+,http://27.185.1.27:8092/hls/12/index.m3u8
 CCTV12东联,http://123.129.70.178:9901/tsfile/live/0012_1.m3u8
-CCTV13,rtp://239.3.1.124:8128
-CCTV13,http://36.32.174.67:60080/newlive/live/hls/16/live.m3u8
-CCTV13,http://58.57.40.22:9901/tsfile/live/1013_1.m3u8
-CCTV13,rtsp://111.48.34.138:1554/170000004112/99180001000000050000000000000514
-CCTV13,http://1.24.190.98:10080/hls/13/index.m3u8
-CCTV13,http://183.131.246.250:9901/tsfile/live/0013_1.m3u8
-CCTV13,http://8.138.7.223/tv/dl/careryun.php
-CCTV13,http://120.76.248.139/live/bfgd/4200000067.m3u8
-CCTV13,http://183.215.134.239:19901/tsfile/live/0013_1.m3u8
-CCTV13,http://112.46.105.20:8009/hls/13/index.m3u8
-CCTV13,https://event.pull.hebtv.com/jishi/cp1.m3u8
-CCTV13,http://111.61.101.141:199/hls/73/index.m3u8
-CCTV13,http://218.3.138.25:1111/tsfile/live/1012_1.m3u8
+CCTV13,http://jwplay.hebyun.com.cn/live/cctv13/1500k/tzwj_video.m3u8
 CCTV13,http://61.136.172.236:9901/tsfile/live/0013_1.m3u8
+CCTV13,http://58.57.40.22:9901/tsfile/live/1013_1.m3u8
+CCTV13,http://183.215.134.239:19901/tsfile/live/0013_1.m3u8
+CCTV13,http://111.61.101.141:199/hls/73/index.m3u8
+CCTV13,https://event.pull.hebtv.com/jishi/cp1.m3u8
+CCTV13,http://8.138.7.223/tv/dl/careryun.php
+CCTV13,http://1b6467f415.iok.la:9931/tsfile/live/1033_1.m3u8
+CCTV13,http://1.24.190.98:10080/hls/13/index.m3u8
+CCTV13,rtsp://111.48.34.138:1554/170000004112/99180001000000050000000000000514
+CCTV13,http://36.32.174.67:60080/newlive/live/hls/16/live.m3u8
+CCTV13,http://ali-m-l.cztv.com/channels/lantian/channel21/1080p.m3u8
 CCTV13,https://ldncctvwbcdcnc.v.wscdns.com/ldncctvwbcd/cdrmldcctv13_1/index.m3u8
 CCTV13,http://111.14.181.15:9901/tsfile/live/0013_1.m3u8
+CCTV13,http://120.76.248.139/live/bfgd/4200000067.m3u8
+CCTV13,http://183.131.246.250:9901/tsfile/live/0013_1.m3u8
+CCTV13,http://218.3.138.25:1111/tsfile/live/1012_1.m3u8
+CCTV13,http://112.46.105.20:8009/hls/13/index.m3u8
 CCTV13,http://221.7.175.154:8445/tsfile/live/1011_1.m3u8
-CCTV13,http://ali-m-l.cztv.com/channels/lantian/channel21/1080p.m3u8
-CCTV13,http://1b6467f415.iok.la:9931/tsfile/live/1033_1.m3u8
-CCTV13,http://jwplay.hebyun.com.cn/live/cctv13/1500k/tzwj_video.m3u8
+CCTV13,rtp://239.3.1.124:8128
 CCTV13,http://27.185.1.27:8092/hls/13/index.m3u8
+CCTV13 新闻,http://116.128.242.83:9901/tsfile/live/0014_1.m3u8
+CCTV13-新闻,http://111.43.126.240:9003/hls/26/index.m3u8
 CCTV13东联,http://123.129.70.178:9901/tsfile/live/0013_1.m3u8
 CCTV13新闻 (576p),http://stream4.jlntv.cn/cctv13/sd/live.m3u8
-CCTV14,http://120.76.248.139/live/bfgd/4200000132.m3u8
-CCTV14,http://123.129.70.178:9901/tsfile/live/0014_1.m3u8
-CCTV14,http://8.138.7.223/tv/dl/douyincdn.php
-CCTV14,http://1b6467f415.iok.la:9931/tsfile/live/1034_1.m3u8
-CCTV14,http://106.53.99.30/tv/jzb.php
-CCTV14,http://116.9.204.242:9901/tsfile/live/0014_1.m3u8
-CCTV14,http://8.138.7.223/tv/dl/careryun.php
-CCTV14,http://221.7.175.154:8445/tsfile/live/1012_1.m3u8
-CCTV14,http://43.138.196.212/111.php
-CCTV14,http://1.24.190.98:10080/hls/14/index.m3u8
-CCTV14,http://111.14.181.15:9901/tsfile/live/0014_1.m3u8
-CCTV14,http://112.46.105.20:8009/hls/14/index.m3u8
-CCTV14,http://58.57.40.22:9901/tsfile/live/1014_1.m3u8
-CCTV14,http://yima.eu.org/bestv.php
 CCTV14,https://event.pull.hebtv.com/jishi/cp2.m3u8
 CCTV14,http://58.17.48.228:808/hls/14/index.m3u8
-CCTV14,http://61.136.172.236:9901/tsfile/live/0014_1.m3u8
+CCTV14,http://1b6467f415.iok.la:9931/tsfile/live/1034_1.m3u8
 CCTV14,rtp://239.3.1.65:8132
+CCTV14,http://120.76.248.139/live/bfgd/4200000132.m3u8
+CCTV14,http://1.24.190.98:10080/hls/14/index.m3u8
+CCTV14,http://8.138.7.223/tv/dl/careryun.php
+CCTV14,http://61.136.172.236:9901/tsfile/live/0014_1.m3u8
+CCTV14,http://8.138.7.223/tv/dl/douyincdn.php
+CCTV14,http://43.138.196.212/111.php
+CCTV14,http://112.46.105.20:8009/hls/14/index.m3u8
+CCTV14,http://221.7.175.154:8445/tsfile/live/1012_1.m3u8
+CCTV14,http://111.14.181.15:9901/tsfile/live/0014_1.m3u8
 CCTV14,http://111.61.101.141:199/hls/74/index.m3u8
+CCTV14,http://yima.eu.org/bestv.php
+CCTV14,http://58.57.40.22:9901/tsfile/live/1014_1.m3u8
+CCTV14,http://123.129.70.178:9901/tsfile/live/0014_1.m3u8
+CCTV14,http://116.9.204.242:9901/tsfile/live/0014_1.m3u8
+CCTV14,http://106.53.99.30/tv/jzb.php
 CCTV14+,http://27.185.1.27:8092/hls/14/index.m3u8
+CCTV14-少儿,http://111.43.126.240:9003/hls/27/index.m3u8
 CCTV14东联,http://123.129.70.178:9901/tsfile/live/0014_1.m3u8
-CCTV15,http://183.11.239.36:808/hls/102/index.m3u8
-CCTV15,http://111.61.101.141:199/hls/75/index.m3u8
-CCTV15,https://smart.pendy.dpdns.org/Smart.php
-CCTV15,http://120.76.248.139/live/bfgd/4200000133.m3u8
-CCTV15,http://58.221.214.82:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://111.14.181.15:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://live.catvod.com/catvod.php
-CCTV15,rtp://239.3.1.153:8136
-CCTV15,http://8.138.7.223/tv/dl/careryun.php
-CCTV15,http://123.129.70.178:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://222.134.245.16:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://112.46.85.60:8009/hls/15/index.m3u8
-CCTV15,http://112.46.105.20:8009/hls/15/index.m3u8
-CCTV15,http://58.19.43.46:9901/tsfile/live/1034_1.m3u8
-CCTV15,http://61.136.172.236:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://36.32.174.67:60080/newlive/live/hls/18/live.m3u8
-CCTV15,http://113.57.93.165:9900/tsfile/live/0015_1.m3u8
-CCTV15,http://61.156.228.12:8154/tsfile/live/0015_1.m3u8
-CCTV15,http://101.74.28.209:9901/tsfile/live/0015_1.m3u8
-CCTV15,http://123.130.84.106:8154/tsfile/live/0015_1.m3u8
 CCTV15,http://1.24.190.98:10080/hls/15/index.m3u8
-CCTV15,http://58.57.40.22:9901/tsfile/live/1015_1.m3u8
 CCTV15,http://183.131.246.250:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://111.61.101.141:199/hls/75/index.m3u8
+CCTV15,http://101.74.28.209:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://8.138.7.223/tv/dl/careryun.php
+CCTV15,http://61.156.228.12:8154/tsfile/live/0015_1.m3u8
+CCTV15,http://112.46.85.60:8009/hls/15/index.m3u8
+CCTV15,http://36.32.174.67:60080/newlive/live/hls/18/live.m3u8
+CCTV15,http://58.221.214.82:9901/tsfile/live/0015_1.m3u8
+CCTV15,https://smart.pendy.dpdns.org/Smart.php
+CCTV15,http://222.134.245.16:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://live.catvod.com/catvod.php
+CCTV15,http://183.11.239.36:808/hls/102/index.m3u8
+CCTV15,http://1b6467f415.iok.la:9931/tsfile/live/1035_1.m3u8
+CCTV15,http://113.57.93.165:9900/tsfile/live/0015_1.m3u8
+CCTV15,rtp://239.3.1.153:8136
+CCTV15,http://111.14.181.15:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://58.57.40.22:9901/tsfile/live/1015_1.m3u8
+CCTV15,http://123.129.70.178:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://112.46.105.20:8009/hls/15/index.m3u8
+CCTV15,http://123.130.84.106:8154/tsfile/live/0015_1.m3u8
+CCTV15,http://61.136.172.236:9901/tsfile/live/0015_1.m3u8
+CCTV15,http://58.19.43.46:9901/tsfile/live/1034_1.m3u8
+CCTV15,http://120.76.248.139/live/bfgd/4200000133.m3u8
+CCTV15-音乐,http://111.43.126.240:9003/hls/28/index.m3u8
 CCTV15东联,http://123.129.70.178:9901/tsfile/live/0015_1.m3u8
-CCTV16,rtp://239.3.1.184:8001
-CCTV16,http://gmxw.7766.org:808/hls/169/index.m3u8
+CCTV16,http://183.11.239.36:808/hls/169/index.m3u8
 CCTV16,http://yima.eu.org/bestv.php
-CCTV16,http://111.43.126.240:9003/hls/86/index.m3u8
 CCTV16,http://58.17.48.228:808/hls/25/index.m3u8
 CCTV16,http://58.221.214.82:9901/tsfile/live/0002_2.m3u8
-CCTV16,http://183.11.239.36:808/hls/169/index.m3u8
-CCTV17,http://106.53.99.30/tv/jzb.php
-CCTV17,http://111.43.126.240:9003/hls/30/index.m3u8
-CCTV17,http://221.7.175.154:8445/tsfile/live/1009_1.m3u8
-CCTV17,http://101.74.28.209:9901/tsfile/live/1009_1.m3u8
+CCTV16,http://1b6467f415.iok.la:9931/tsfile/live/1094_1.m3u8
+CCTV16,http://111.43.126.240:9003/hls/86/index.m3u8
+CCTV16,rtp://239.3.1.184:8001
+CCTV16,http://gmxw.7766.org:808/hls/169/index.m3u8
 CCTV17,http://8.138.7.223/tv/dl/careryun.php
-CCTV17,http://61.156.228.12:8154/tsfile/live/0019_1.m3u8
-CCTV17,http://120.76.248.139/live/bfgd/4200000204.m3u8
-CCTV17,http://221.2.148.205:8154/tsfile/live/0019_1.m3u8
-CCTV17,http://58.57.40.22:9901/tsfile/live/0019_1.m3u8
-CCTV17,http://yima.eu.org/bestv.php
 CCTV17,http://58.19.43.46:9901/tsfile/live/1047_1.m3u8
-CCTV17,http://218.13.170.98:9901/tsfile/live/0016_1.m3u8
-CCTV17,http://113.57.111.4:1111/tsfile/live/1014_1.m3u8
-CCTV17,http://zqh2333.top:2222/rtp/239.93.24.92:5140
-CCTV17,http://183.223.157.33:9901/tsfile/live/0016_1.m3u8
-CCTV17,rtp://239.3.1.151:8144
-CCTV17,http://222.134.245.16:9901/tsfile/live/0019_1.m3u8
+CCTV17,http://221.7.175.154:8445/tsfile/live/1009_1.m3u8
+CCTV17,http://120.76.248.139/live/bfgd/4200000204.m3u8
 CCTV17,http://58.221.214.82:9901/tsfile/live/0003_2.m3u8
-CCTV17,http://1b6467f415.iok.la:9931/tsfile/live/1130_1.m3u8
+CCTV17,http://123.130.84.106:8154/tsfile/live/0019_1.m3u8
+CCTV17,http://113.57.111.4:1111/tsfile/live/1014_1.m3u8
+CCTV17,http://58.57.40.22:9901/tsfile/live/0019_1.m3u8
+CCTV17,http://106.53.99.30/tv/jzb.php
+CCTV17,http://yima.eu.org/bestv.php
+CCTV17,http://111.43.126.240:9003/hls/30/index.m3u8
+CCTV17,http://183.223.157.33:9901/tsfile/live/0016_1.m3u8
+CCTV17,http://218.13.170.98:9901/tsfile/live/0016_1.m3u8
+CCTV17,rtp://239.3.1.151:8144
 CCTV17,https://piccpndali.v.myalicdn.com/audio/cctv17_2.m3u8
+CCTV17,http://1b6467f415.iok.la:9931/tsfile/live/1130_1.m3u8
+CCTV17,http://zqh2333.top:2222/rtp/239.93.24.92:5140
+CCTV17,http://101.74.28.209:9901/tsfile/live/1009_1.m3u8
+CCTV17,http://222.134.245.16:9901/tsfile/live/0019_1.m3u8
+CCTV17,http://61.156.228.12:8154/tsfile/live/0019_1.m3u8
 CCTV1港澳版,http://php.jdshipin.com/TVOD/iptv.php
-CCTV2,http://113.25.252.226:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://106.53.99.30/tv/jzb.php
-CCTV2,rtp://239.3.1.60:8084
-CCTV2,http://8.138.7.223/tv/dl/careryun.php
-CCTV2,http://43.138.196.212/111.php
-CCTV2,http://111.61.101.141:199/hls/63/index.m3u8
-CCTV2,http://1b6467f415.iok.la:9931/tsfile/live/1021_1.m3u8
-CCTV2,http://123.129.70.178:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://36.32.174.67:60080/newlive/live/hls/2/live.m3u8
-CCTV2,http://58.57.40.22:9901/tsfile/live/1001_1.m3u8
-CCTV2,http://221.7.175.154:8445/tsfile/live/1001_1.m3u8
-CCTV2,http://60.29.124.66:6080/hls/13/index.m3u8
-CCTV2,http://222.169.85.8:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://183.11.239.36:808/hls/20/index.m3u8
 CCTV2,http://1.24.190.98:10080/hls/2/index.m3u8
 CCTV2,http://101.74.28.209:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://183.131.246.250:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://61.136.172.236:9901/tsfile/live/0002_1.m3u8
-CCTV2,http://120.76.248.139/live/bfgd/4200000061.m3u8
+CCTV2,http://60.29.124.66:6080/hls/13/index.m3u8
 CCTV2,http://111.14.181.15:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://36.32.174.67:60080/newlive/live/hls/2/live.m3u8
+CCTV2,http://183.11.239.36:808/hls/20/index.m3u8
+CCTV2,rtp://239.3.1.60:8084
+CCTV2,http://222.134.245.16:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://113.25.252.226:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://221.7.175.154:8445/tsfile/live/1001_1.m3u8
+CCTV2,http://123.129.70.178:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://106.53.99.30/tv/jzb.php
+CCTV2,http://222.169.85.8:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://58.57.40.22:9901/tsfile/live/1001_1.m3u8
+CCTV2,http://183.131.246.250:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://120.76.248.139/live/bfgd/4200000061.m3u8
+CCTV2,http://111.61.101.141:199/hls/63/index.m3u8
+CCTV2,http://8.138.7.223/tv/dl/careryun.php
+CCTV2,http://61.136.172.236:9901/tsfile/live/0002_1.m3u8
+CCTV2,http://43.138.196.212/111.php
+CCTV2,http://1b6467f415.iok.la:9931/tsfile/live/1021_1.m3u8
 CCTV2+,http://27.185.1.27:8092/hls/2/index.m3u8
-CCTV3,http://183.131.246.250:9901/tsfile/live/0003_1.m3u8
-CCTV3,http://60.29.124.66:6080/hls/14/index.m3u8
-CCTV3,http://gmxw.7766.org:808/hls/91/index.m3u8
+CCTV3,http://111.14.181.15:9901/tsfile/live/0003_1.m3u8
 CCTV3,http://58.17.48.228:808/hls/3/index.m3u8
 CCTV3,rtsp://111.48.34.138:1554/170000004112/99180001000000050000000000000391
 CCTV3,http://123.129.70.178:9901/tsfile/live/0003_1.m3u8
-CCTV3,http://112.46.105.20:8009/hls/3/index.m3u8
+CCTV3,http://gmxw.7766.org:808/hls/91/index.m3u8
 CCTV3,http://120.76.248.139/live/bfgd/4200000062.m3u8
-CCTV3,http://111.14.181.15:9901/tsfile/live/0003_1.m3u8
-CCTV4,http://120.76.248.139/live/bfgd/4200000063.m3u8
-CCTV4,http://58.57.40.22:9901/tsfile/live/1003_1.m3u8
+CCTV3,http://183.131.246.250:9901/tsfile/live/0003_1.m3u8
+CCTV3,http://1b6467f415.iok.la:9931/tsfile/live/1022_1.m3u8
+CCTV3,http://112.46.105.20:8009/hls/3/index.m3u8
+CCTV3,http://60.29.124.66:6080/hls/14/index.m3u8
 CCTV4,http://60.29.124.66:6080/hls/15/index.m3u8
-CCTV5,http://123.129.70.178:9901/tsfile/live/0005_1.m3u8
-CCTV5,http://120.76.248.139/live/bfgd/4200000064.m3u8
+CCTV4,http://58.57.40.22:9901/tsfile/live/1003_1.m3u8
+CCTV4,http://120.76.248.139/live/bfgd/4200000063.m3u8
+CCTV4 CCTV衛視,http://ccczb.top/mk2.php
 CCTV5,http://58.57.40.22:9901/tsfile/live/1004_1.m3u8
-CCTV5,http://112.46.105.20:8009/hls/503/index.m3u8
 CCTV5,http://112.46.85.60:8009/hls/503/index.m3u8
-CCTV5+,http://221.2.148.205:8154/tsfile/live/0016_1.m3u8
-CCTV5+,http://111.43.126.240:9003/hls/81/index.m3u8
+CCTV5,http://120.76.248.139/live/bfgd/4200000064.m3u8
+CCTV5,http://112.46.105.20:8009/hls/503/index.m3u8
+CCTV5,http://123.129.70.178:9901/tsfile/live/0005_1.m3u8
 CCTV5+,http://61.156.228.12:8154/tsfile/live/0016_1.m3u8
-CCTV5+,http://120.76.248.139/live/bfgd/4200000246.m3u8
 CCTV5+,http://58.57.40.22:9901/tsfile/live/1005_1.m3u8
+CCTV5+,http://111.43.126.240:9003/hls/81/index.m3u8
+CCTV5+,http://120.76.248.139/live/bfgd/4200000246.m3u8
+CCTV5+,http://123.130.84.106:8154/tsfile/live/0016_1.m3u8
+CCTV6,http://112.46.105.20:8009/hls/6/index.m3u8
 CCTV6,http://58.57.40.22:9901/tsfile/live/1006_1.m3u8
 CCTV6,http://120.76.248.139/live/bfgd/4200000065.m3u8
-CCTV6,http://112.46.105.20:8009/hls/6/index.m3u8
-CCTV7,http://8.138.7.223/tv/cctv7.m3u8
-CCTV7,http://223.241.247.214:9901/tsfile/live/0007_1.m3u8
-CCTV7,http://123.129.70.178:9901/tsfile/live/0007_1.m3u8
+CCTV6,http://123.130.84.106:8154/tsfile/live/0006_1.m3u8
 CCTV7,http://112.46.105.20:8009/hls/504/index.m3u8
+CCTV7,http://8.138.7.223/tv/cctv7.m3u8
 CCTV7,http://120.76.248.139/live/bfgd/4200000127.m3u8
 CCTV7,http://1b6467f415.iok.la:9931/tsfile/live/1027_1.m3u8
-CCTV8,http://gmxw.7766.org:808/hls/96/index.m3u8
-CCTV8,http://112.46.105.20:8009/hls/8/index.m3u8
+CCTV7,http://123.129.70.178:9901/tsfile/live/0007_1.m3u8
+CCTV7,http://223.241.247.214:9901/tsfile/live/0007_1.m3u8
 CCTV8,http://218.3.138.25:1111/tsfile/live/1007_1.m3u8
+CCTV8,http://gmxw.7766.org:808/hls/96/index.m3u8
 CCTV8,http://120.76.248.139/live/bfgd/4200000066.m3u8
+CCTV8,http://112.46.105.20:8009/hls/8/index.m3u8
 CCTV9,http://58.19.43.46:9901/tsfile/live/1028_1.m3u8
+CCTV9,http://112.46.105.20:8009/hls/509/index.m3u8
 CCTV9,http://120.76.248.139/live/bfgd/4200000128.m3u8
 CCTV9,http://58.57.40.22:9901/tsfile/live/1009_1.m3u8
-CCTV9,http://112.46.105.20:8009/hls/509/index.m3u8
-CCTV新影 发现之旅,http://120.76.248.139/live/bfgd/4200000151.m3u8
-CCTV新影 老故事,http://120.76.248.139/live/bfgd/4200000166.m3u8
-CCTV风云足球,https://epg.pw/stream/ac8062ec9484078061d3bef507c15a423ac57ae4144e3fcc4b0a198dd420f911.m3u8
 CETV-1,http://111.43.126.240:9003/hls/34/index.m3u8
 CETV-4,http://111.43.126.240:9003/hls/36/index.m3u8
 CETV1,http://120.198.95.220:9901/tsfile/live/1039_1.m3u8
-CETV1,https://piccpndali.v.myalicdn.com/audio/cetv1_2.m3u8
 CETV1,http://player.cntv.cn/standard/live_HLSDRM20180524.swf
+CETV1,https://piccpndali.v.myalicdn.com/audio/cetv1_2.m3u8
 CETV2,http://player.cntv.cn/standard/live_HLSDRM20180524.swf
 CETV2,https://piccpndali.v.myalicdn.com/audio/cetv2_2.m3u8
 CETV4,https://piccpndali.v.myalicdn.com/audio/cetv4_2.m3u8
 CETV4,http://player.cntv.cn/standard/live_HLSDRM20180524.swf
 CETV4,https://gcalic.v.myalicdn.com/gc/wgw05_1/index.m3u8
+CTV8,http://dodge.eu5.org/Get
