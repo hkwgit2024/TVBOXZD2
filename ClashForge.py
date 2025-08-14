@@ -40,7 +40,6 @@ CLASH_API_SECRET = ""
 TIMEOUT = 3
 # 存储所有节点的速度测试结果
 SPEED_TEST = False
-SPEED_TEST_LIMIT = 5 # 只测试前30个节点的下行速度，每个节点测试5秒
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
 LIMIT = 1086 # 最多保留LIMIT个节点
@@ -109,7 +108,6 @@ clash_config_template = {
             "type": "url-test",
             "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
             "proxies": [],
-            # "url": "http://www.gstatic.com/generate_204",
             "url": "http://www.pinterest.com",
             "interval": 300,
             "tolerance": 50
@@ -384,7 +382,6 @@ def parse_proxy_link(link):
         elif link.startswith("vmess://"):
             return parse_vmess_link(link)
     except Exception as e:
-        # print(e)
         return None
 
 # 根据server和port共同约束去重
@@ -482,7 +479,6 @@ def generate_clash_config(links,load_nodes):
     def resolve_name_conflicts(node):
         server = node.get("server")
         if not server:
-            # print(f'不存在sever，非节点')
             return
         name = str(node["name"])
         if not_contains(name):
@@ -731,12 +727,9 @@ def kill_clash():
             if cmdline and len(cmdline) >= 3 and cmdline[1] == '-f' and cmdline[2] in config_files:
                 # 强制终止进程
                 proc.kill()
-                # print(f"Clash 进程 (PID: {proc.pid}) 已终止 ({system})")
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             # 忽略进程不存在、权限不足或僵尸进程的异常
             pass
-    
-    # print(f"未找到 Clash 进程 ({system})")
 
 def start_clash():
     download_and_extract_latest_release()
@@ -755,7 +748,6 @@ def start_clash():
     global CONFIG_FILE
     CONFIG_FILE = f'{CONFIG_FILE}.json' if os.path.exists(f'{CONFIG_FILE}.json') else CONFIG_FILE
     while not_started:
-        # print(f'加载配置{CONFIG_FILE}')
         clash_process = subprocess.Popen(
             [clash_binary, '-f', CONFIG_FILE],
             stdout=subprocess.PIPE,
@@ -807,30 +799,6 @@ def is_clash_api_running():
     except requests.exceptions.RequestException:
         # 捕获所有请求异常，包括连接错误等
         return False
-
-# 切换到指定代理节点
-def switch_proxy(proxy_name='DIRECT'):
-    """
-    切换 Clash 中策略组的代理节点。
-    :param proxy_name: 要切换到的代理节点名称
-    :return: 返回切换结果或错误信息
-    """
-    url = f"http://{CLASH_API_HOST}:{CLASH_API_PORTS[0]}/proxies/节点选择"
-    data = {
-        "name": proxy_name
-    }
-
-    try:
-        response = requests.put(url, json=data)
-        # 检查响应状态
-        if response.status_code == 204:  # Clash API 切换成功返回 204 No Content
-            print(f"切换到 '节点选择-{proxy_name}' successfully.")
-            return {"status": "success", "message": f"Switched to proxy '{proxy_name}'."}
-        else:
-            return response.json()
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        return {"status": "error", "message": str(e)}
 
 # 调用ClashAPI
 class ClashAPI:
@@ -919,7 +887,6 @@ class ClashAPI:
                 result = ProxyTestResult(proxy_name)
             except Exception as e:
                 result = ProxyTestResult(proxy_name)
-                # print(e)
             finally:
                 # 更新缓存
                 self._test_results_cache[proxy_name] = result
@@ -982,7 +949,6 @@ class ClashConfig:
                 group["proxies"] = [p for p in group["proxies"] if p not in invalid_proxies]
         global LIMIT
         left = LIMIT if len(self.config['proxies']) > LIMIT else len(self.config['proxies'])
-        # LIMIT = LIMIT if len(self.config['proxies']) > LIMIT else len(self.config['proxies'])
         print(f"已从配置中移除 {len(invalid_proxies)} 个失效节点，最终保留{left}个延迟最小的节点")
 
     def keep_proxies_by_limit(self,proxy_names):
@@ -1013,10 +979,8 @@ class ClashConfig:
             yaml_cfg = self.config_path.strip('.json') if self.config_path.endswith('.json') else self.config_path
             with open(yaml_cfg, 'w', encoding='utf-8') as f:
                 yaml.dump(self.config, f, allow_unicode=True, sort_keys=False)
-            # print(f"新配置已保存到: {yaml_cfg}")
             with open(f'{yaml_cfg}.json', "w", encoding="utf-8") as f:
                 json.dump(self.config,f,ensure_ascii=False)
-            # print(f'新配置已保存到: {yaml_cfg}.json')
 
         except Exception as e:
             print(f"保存配置文件失败: {e}")
@@ -1148,29 +1112,6 @@ async def proxy_clean():
 
             # 保存更新后的配置
             config.save()
-
-            if SPEED_TEST:
-                # 测速
-                print('\n===================检测节点速度======================\n')
-                sorted_proxy_names = start_download_test(proxy_names)
-                # 按测试重新排序
-                new_list = sorted_proxy_names.copy()
-                # 创建一个集合来跟踪已添加的元素
-                added_elements = set(new_list)
-                # 遍历 group_proxies，将不在 added_elements 中的元素添加到 new_list
-                group_proxies = config.get_group_proxies(group_name)
-                for item in group_proxies:
-                    if item not in added_elements:
-                        new_list.append(item)
-                        added_elements.add(item)  # 将新添加的元素加入集合中
-                # 排序好的节点名放入group-proxies
-                for group_name in groups_to_test:
-                    for group in config.proxy_groups:
-                        if group["name"] == group_name:
-                            group["proxies"] = new_list
-                # 保存更新后的配置
-                config.save()
-
             # 显示总耗时
             total_time = (datetime.now() - start_time).total_seconds()
             print(f"\n总耗时: {total_time:.2f} 秒")
@@ -1300,148 +1241,6 @@ def resolve_template_url(template_url):
 
     return resolved_url
 
-def start_download_test(proxy_names,speed_limit=0.1):
-    """
-    开始下载测试
-
-    """
-    # 第一步：测试所有节点的下载速度
-    test_all_proxies(proxy_names[:SPEED_TEST_LIMIT])
-
-    # 过滤出速度大于等于 speed_limit 的节点
-    filtered_list = [item for item in results_speed if float(item[1]) >= float(f'{speed_limit}')]
-
-    # 按下载速度从大到小排序
-    sorted_proxy_names = []
-    sorted_list = sorted(filtered_list, key=lambda x: float(x[1]), reverse=True)
-    print(f'节点速度统计:')
-    for i, result in enumerate(sorted_list[:LIMIT], 1):
-        sorted_proxy_names.append(result[0])
-        print(f"{i}. {result[0]}: {result[1]}Mb/s")
-
-    return sorted_proxy_names
-
-# 测试所有代理节点的下载速度，并排序结果
-def test_all_proxies(proxy_names):
-    try:
-        # 单线程节点速度下载测试
-        i = 0
-        for proxy_name in proxy_names:
-            i += 1
-            print(f"\r正在测速节点【{i}】: {proxy_name}", flush=True, end='')
-            test_proxy_speed(proxy_name)
-
-        print("\r" + " " * 50 + "\r", end='')  # 清空行并返回行首
-    except Exception as e:
-        print(f"测试节点速度时出错: {e}")
-
-# 测试指定代理节点的下载速度（下载5秒后停止）
-def test_proxy_speed(proxy_name):
-    # 切换到该代理节点
-    switch_proxy(proxy_name)
-    # 设置代理
-    proxies = {
-        "http": 'http://127.0.0.1:7890',
-        "https": 'http://127.0.0.1:7890',
-    }
-
-    # 开始下载并测量时间
-    start_time = time.time()
-    # 计算总下载量
-    total_length = 0
-    # 测试下载时间（秒）
-    test_duration = 5  # 逐块下载，直到达到5秒钟为止
-
-    # 不断发起请求直到达到时间限制
-    while time.time() - start_time < test_duration:
-        try:
-            response = requests.get("http://speedtest.tele2.net/100MB.zip", stream=True, proxies=proxies, headers={'Cache-Control': 'no-cache'},
-                                    timeout=test_duration)
-            for data in response.iter_content(chunk_size=524288):
-                total_length += len(data)
-                if time.time() - start_time >= test_duration:
-                    break
-        except Exception as e:
-            print(f"测试节点 {proxy_name} 下载失败: {e}")
-
-    # 计算速度：Bps -> MB/s
-    elapsed_time = time.time() - start_time
-    speed = total_length / elapsed_time if elapsed_time > 0 else 0
-
-    results_speed.append((proxy_name, f"{speed / 1024 / 1024:.2f}"))  # 记录速度测试结果
-    return speed / 1024 / 1024  # 返回 MB/s
-
-def upload_and_generate_urls(file_path=CONFIG_FILE):
-    # api_url = "https://catbox.moe/user/api.php"
-    api_url = "https://f2.252035.xyz/user/api.php"
-    api_url = "https://ade4e1d7-catbox.seczhcom.workers.dev/user/api.php"
-    result = {"clash_url": None, "singbox_url": None}
-
-    try:
-        if not os.path.isfile(file_path):
-            print(f"错误：文件 {file_path} 不存在。")
-            return result
-        if os.path.getsize(file_path) > 209715200:
-            print("错误：文件大小超过 200MB 限制。")
-            return result
-
-        # Upload Clash config
-        with open(file_path, 'rb') as file:
-            response = requests.post(api_url, data={"reqtype": "fileupload"}, files={"fileToUpload": file}, timeout=15, verify=False)
-            if response.status_code == 200:
-                clash_url = response.text.strip()
-                result["clash_url"] = clash_url
-                print(f"Clash 配置文件上传成功！直链：{clash_url}")
- 
-                sb_full_url = f'https://url.v1.mk/sub?target=singbox&url={clash_url}&insert=false&config=https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini&emoji=true&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=false&fdn=false'
-                encoded_url = base64.urlsafe_b64encode(sb_full_url.encode()).decode()
-                response = requests.post("https://v1.mk/short", json={"longUrl": encoded_url})
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("Code") == 1:
-                        singbox_url = data["ShortUrl"]
-                        result["singbox_url"] = singbox_url
-                        print(f"singbox 配置文件上传成功！直链：{singbox_url}")
-
-    except Exception as e:
-        print(f"发生错误：{e}")
-
-    # 记录成功生成的链接到subs.json
-    subs_file = "subs.json"
-    if result["clash_url"] or result["singbox_url"]:
-        try:
-            # 初始化默认结构
-            subs_data = {"clash": [], "singbox": []}
-            
-            # 尝试读取现有文件
-            if os.path.exists(subs_file):
-                try:
-                    with open(subs_file, 'r', encoding='utf-8') as f:
-                        subs_data = json.load(f)
-                except:
-                    pass  # 如果文件损坏，使用默认结构
-            
-            # 添加新链接到记录中(避免重复)
-            if result["clash_url"] and result["clash_url"] not in subs_data.get("clash", []):
-                if "clash" not in subs_data:
-                    subs_data["clash"] = []
-                subs_data["clash"].append(result["clash_url"])
-            
-            if result["singbox_url"] and result["singbox_url"] not in subs_data.get("singbox", []):
-                if "singbox" not in subs_data:
-                    subs_data["singbox"] = []
-                subs_data["singbox"].append(result["singbox_url"])
-            
-            # 保存更新后的数据
-            with open(subs_file, 'w', encoding='utf-8') as f:
-                json.dump(subs_data, f, ensure_ascii=False, indent=2)
-            
-            print(f"已将订阅链接记录到 {subs_file}")
-        except Exception as e:
-            print(f"记录订阅链接失败: {str(e)}")
-
-    return result
-
 def work(links,check=False,allowed_types=[],only_check=False):
     try:
         if not only_check:
@@ -1458,8 +1257,6 @@ def work(links,check=False,allowed_types=[],only_check=False):
                 # 启动clash
                 print(f"===================启动clash并初始化配置======================")
                 clash_process = start_clash()
-                # 切换节点到'节点选择-DIRECT'
-                switch_proxy('DIRECT')
                 asyncio.run(proxy_clean())
                 print(f'批量检测完毕')
             except Exception as e:
@@ -1475,7 +1272,6 @@ def work(links,check=False,allowed_types=[],only_check=False):
     except Exception as e:
         print(f"程序执行失败: {e}")
         sys.exit(1)
-
 
 
 if __name__ == '__main__':
