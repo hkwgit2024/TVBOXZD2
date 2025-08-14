@@ -1,6 +1,6 @@
-# Version 1.2 - Optimized for robust variant clustering and logging
-# Date: August 13, 2025
-# Improvements: Enhanced normalize_name, lowered clustering threshold, dynamic fetch_new_channels_from_web, robust logging
+# Version 1.3 - Enhanced for variant handling, deduplication, and smart appending
+# Date: August 14, 2025
+# Improvements: Lighter normalization, keyword deduplication, similarity-based matching, smart variant appending
 
 import os
 import re
@@ -67,7 +67,7 @@ def load_config(config_path="config/config.yaml"):
 
 # 加载分类配置
 def load_category_config(config_path="config/demo.txt"):
-    """加载并解析分类配置文件"""
+    """加载并解析分类配置文件，去重关键词"""
     category_config = {
         'ordered_categories': [],
         'category_keywords': {},
@@ -85,10 +85,11 @@ def load_category_config(config_path="config/demo.txt"):
                     current_category = category_name
                     if current_category not in category_config['ordered_categories']:
                         category_config['ordered_categories'].append(current_category)
-                    category_config['category_keywords'][current_category] = []
+                    category_config['category_keywords'][current_category] = set()  # 用set去重
                 elif current_category:
                     keywords = [kw.strip() for kw in line.split('|') if kw.strip()]
-                    category_config['category_keywords'][current_category].extend(keywords)
+                    category_config['category_keywords'][current_category].update(keywords)  # update去重
+        category_config['category_keywords'] = {k: list(v) for k, v in category_config['category_keywords'].items()}  # 转回list
         logging.info("分类配置文件 config/demo.txt 加载成功")
         return category_config
     except FileNotFoundError:
@@ -271,15 +272,16 @@ def check_channels_multithreaded(channel_lines, url_states, max_workers=CONFIG.g
 
 # 规范化频道名称
 def normalize_name(name):
-    """规范化频道名称，移除分辨率后缀、HD/SD、数字后缀、连字符、外语字符等"""
-    cleaned = re.sub(r'\s*\(\d+p\)|HD|SD|ipv6-\d| \d|[-_]|Dự phòng|[^\u4e00-\u9fff\w]', '', name.lower().strip())
+    """轻度规范化频道名称，保留繁体、括号等变体"""
+    cleaned = re.sub(r'\s*\(\d+p\)|HD|SD|ipv6-\d| \d|Dự phòng', '', name.lower().strip())  # 移除常见噪声，但不移除- _ [ ] 等
     return cleaned or name.lower()
 
 # 智能聚类变体
-def group_variants(channels, threshold=0.75):
+def group_variants(channels, threshold=0.85):
     """使用相似度聚类频道变体"""
+    unique_channels = list(set(channels))  # 先去重
     groups = defaultdict(list)
-    for name, url in channels:
+    for name, url in unique_channels:
         cleaned = normalize_name(name)
         matched = False
         for existing_group in list(groups.keys()):
@@ -319,20 +321,40 @@ def fetch_new_channels_from_web(channels):
 
 # 自动更新 demo.txt
 def auto_update_demo(new_categories):
-    """自动追加新频道到 demo.txt"""
-    try:
-        with open(CATEGORY_CONFIG_PATH, 'a', encoding='utf-8') as f:
-            for cat, chans in new_categories.items():
-                f.write(f"{cat},#genre#\n")
-                f.write('|'.join(chans) + '\n')
-        logging.info("自动更新 demo.txt 完成")
-    except Exception as e:
-        logging.error(f"自动更新 demo.txt 失败: {e}")
+    """自动追加新频道到 demo.txt，智能追加变体"""
+    with open(CATEGORY_CONFIG_PATH, 'r+', encoding='utf-8') as f:
+        lines = f.readlines()
+        f.seek(0)
+        f.truncate()  # 先清空再重写，避免乱追加
+        category_lines = {}  # 记录每个类别的关键词行索引
+        current_cat = None
+        for i, line in enumerate(lines):
+            if ',#genre#' in line:
+                current_cat = line.strip().replace(',#genre#', '')
+                category_lines[current_cat] = i + 1  # 假设关键词在下一行
+        
+        # 写入原lines（但我们会修改lines）
+        for cat, chans in new_categories.items():
+            unique_chans = set(chans)  # 去重
+            if cat in category_lines:
+                keyword_line_idx = category_lines[cat]
+                if keyword_line_idx < len(lines):
+                    old_keywords = lines[keyword_line_idx].strip()
+                    new_vars = [c for c in unique_chans if difflib.SequenceMatcher(None, normalize_name(c), normalize_name(old_keywords)).ratio() < 0.85]
+                    if new_vars:
+                        lines[keyword_line_idx] = old_keywords + '|' + '|'.join(new_vars) + '\n'
+            else:
+                lines.append(f"{cat},#genre#\n")
+                lines.append('|'.join(unique_chans) + '\n')
+        
+        # 重写文件
+        f.writelines(lines)
+    logging.info("自动更新 demo.txt 完成，智能追加变体")
 
 # 分类频道
 @performance_monitor
 def categorize_channels(channels):
-    """根据关键字分类频道"""
+    """根据关键字分类频道，使用相似度匹配"""
     categorized_data = {category: [] for category in CATEGORY_CONFIG['ordered_categories']}
     uncategorized_data = []
     grouped_variants = group_variants(channels)
@@ -341,15 +363,18 @@ def categorize_channels(channels):
         found_category = False
         for category in CATEGORY_CONFIG['ordered_categories']:
             category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
-            if any(kw.lower() in main_cleaned for kw in category_keywords):
-                for name, url in group:
-                    categorized_data[category].append((name, url))
-                found_category = True
+            for kw in category_keywords:
+                if difflib.SequenceMatcher(None, main_cleaned, normalize_name(kw)).ratio() > 0.85:
+                    for name, url in group:
+                        categorized_data[category].append((name, url))
+                    found_category = True
+                    break
+            if found_category:
                 break
         if not found_category:
             uncategorized_data.extend(group)
             variants = '|'.join([g[0] for g in group])
-            logging.info(f"建议添加新关键词到 demo.txt: {category}:{variants}")
+            logging.info(f"建议添加新关键词到 demo.txt: {variants}")
     
     categorized_data_cleaned = {k: v for k, v in categorized_data.items() if v}
     all_final_categories = list(categorized_data_cleaned.keys())
