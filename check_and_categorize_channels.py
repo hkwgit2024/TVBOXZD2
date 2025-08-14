@@ -1,6 +1,6 @@
-# Version 1.4 - 优化版：增强可用性检查，禁用自动更新
-# Date: August 14, 2025
-# 优化点: 聚焦频道可用性检查，完全禁用 demo.txt 自动更新功能
+# Version 1.5 - 优化版：增强可用性检查与名称匹配的准确性
+# Date: August 15, 2025
+# 优化点: 修正 normalize_name 函数，实现更精准的频道名称匹配
 
 import os
 import re
@@ -37,7 +37,6 @@ def setup_logging(config):
     logger = logging.getLogger()
     logger.setLevel(log_level)
 
-    # 避免重复添加 handlers
     if not logger.handlers:
         file_handler = logging.handlers.RotatingFileHandler(
             log_file, maxBytes=10*1024*1024, backupCount=1
@@ -58,14 +57,14 @@ def setup_logging(config):
     return logger
 
 def load_config(config_path):
-    """加载并解析 YAML 配置文件，增加更详细的错误提示"""
+    """加载并解析 YAML 配置文件"""
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
-            config = yaml.safe_load(file) or {} # 如果文件为空，返回空字典
+            config = yaml.safe_load(file) or {}
             logging.info("配置文件 config.yaml 加载成功")
             return config
     except FileNotFoundError:
-        logging.error(f"错误：未找到配置文件 '{config_path}'。请检查路径是否正确。")
+        logging.error(f"错误：未找到配置文件 '{config_path}'。")
         exit(1)
     except yaml.YAMLError as e:
         logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
@@ -75,10 +74,10 @@ def load_config(config_path):
         exit(1)
 
 def load_category_config(config_path):
-    """加载并解析分类配置文件，去重关键词，并处理别名"""
+    """加载并解析分类配置文件，去重关键词"""
     category_config = {
         'ordered_categories': [],
-        'category_keywords': defaultdict(set), # 使用defaultdict和set简化去重
+        'category_keywords': defaultdict(set),
     }
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
@@ -96,7 +95,6 @@ def load_category_config(config_path):
                     keywords = [kw.strip() for kw in line.split('|') if kw.strip()]
                     category_config['category_keywords'][current_category].update(keywords)
 
-        # 将集合转回列表以便后续遍历
         category_config['category_keywords'] = {k: list(v) for k, v in category_config['category_keywords'].items()}
         logging.info("分类配置文件 config/demo.txt 加载成功")
         return category_config
@@ -112,7 +110,6 @@ CONFIG = load_config(CONFIG_PATH)
 CATEGORY_CONFIG = load_category_config(CATEGORY_CONFIG_PATH)
 setup_logging(CONFIG)
 
-# 配置 requests 会话
 session = requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
@@ -132,7 +129,6 @@ adapter = HTTPAdapter(
 session.mount("http://", adapter)
 session.mount("https://", adapter)
 
-# 性能监控装饰器 (无变化)
 def performance_monitor(func):
     """记录函数执行时间"""
     if not CONFIG.get('performance_monitor', {}).get('enabled', False):
@@ -148,7 +144,7 @@ def performance_monitor(func):
 # --- 频道检查模块 ---
 @performance_monitor
 def read_channels_from_file(file_name):
-    """从本地 TXT 文件读取频道内容，并进行预处理"""
+    """从本地 TXT 文件读取频道内容"""
     channels = []
     try:
         with open(file_name, 'r', encoding='utf-8') as file:
@@ -169,10 +165,9 @@ def read_channels_from_file(file_name):
 
 @performance_monitor
 def check_http_url(url, timeout):
-    """检查 HTTP/HTTPS URL 是否可达，增加异常捕获"""
+    """检查 HTTP/HTTPS URL 是否可达"""
     try:
         response = session.head(url, timeout=timeout, allow_redirects=True)
-        # 认为任何成功的响应（非4xx、5xx错误）都是有效的
         return response.status_code < 400
     except requests.exceptions.RequestException as e:
         logging.debug(f"HTTP检查失败: {url}, 错误: {e}")
@@ -182,8 +177,6 @@ def check_http_url(url, timeout):
 def check_rtmp_url(url, timeout):
     """检查 RTMP URL 是否可达，使用 ffprobe"""
     try:
-        # 使用 -loglevel quiet 减少输出，-exit_on_error 提高效率
-        # 使用 -i 参数来指定输入流
         result = subprocess.run(['ffprobe', '-v', 'quiet', '-timeout', str(timeout), '-i', url],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
         return result.returncode == 0
@@ -232,11 +225,10 @@ def check_channel_validity(channel, url_states, timeout):
 def check_channels_multithreaded(channels, max_workers, timeout):
     """多线程检查频道有效性"""
     valid_channels = []
-    url_states = {} # 缓存已检查URL的状态
+    url_states = {}
     total_channels = len(channels)
     logging.warning(f"开始多线程检查 {total_channels} 个频道的有效性")
 
-    # 使用tqdm进度条显示任务进度
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(check_channel_validity, channel, url_states, timeout): channel for channel in channels}
         for future in tqdm(as_completed(futures), total=total_channels, desc="检查频道有效性"):
@@ -251,14 +243,23 @@ def check_channels_multithreaded(channels, max_workers, timeout):
     return valid_channels
 
 # --- 频道分类和管理模块 ---
+# 修改此函数以保留更多信息
 def normalize_name(name):
-    """轻度规范化频道名称，移除常见噪声但不破坏变体信息"""
-    cleaned = re.sub(r'\(.*?\)|\[.*?\]|\d+p|hd|sd|ipv6|ipv4|预留|备用|测试|网络|直播|在线|live|高清', '', name, flags=re.IGNORECASE).strip()
+    """优化后的规范化频道名称，保留关键数字、字母和特殊字符，移除修饰词"""
+    # 将名称转换为小写
+    cleaned = name.lower()
+    # 定义需要移除的常见修饰词
+    noise_words = ['\(.*?\)', '\[.*?\]', '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'ipv6', 'ipv4', '东联', '港澳版']
+    # 移除修饰词
+    for word in noise_words:
+        cleaned = re.sub(word, '', cleaned, flags=re.IGNORECASE)
+    # 移除多余的空格和横线
+    cleaned = re.sub(r'[\s\-]+', '', cleaned).strip()
     return cleaned or name.strip()
 
 @performance_monitor
 def group_variants(channels, threshold=0.85):
-    """使用相似度聚类频道变体，优化聚类逻辑"""
+    """使用相似度聚类频道变体"""
     groups = defaultdict(list)
     processed_channels = set()
 
@@ -287,7 +288,7 @@ def group_variants(channels, threshold=0.85):
 @performance_monitor
 def categorize_channels(channels):
     """根据关键字分类频道，使用相似度匹配"""
-    categorized_data = {category: [] for category in CATEGORY_CONFIG['ordered_categories']}
+    categorized_data = defaultdict(list)
     uncategorized_data = []
 
     grouped_variants = group_variants(channels)
@@ -297,29 +298,20 @@ def categorize_channels(channels):
         for category in CATEGORY_CONFIG['ordered_categories']:
             category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
             for kw in category_keywords:
-                # 检查主要关键词与分类关键词的相似度
-                if difflib.SequenceMatcher(None, main_cleaned, normalize_name(kw)).ratio() > 0.85:
-                    # 匹配成功，将整个变体组添加到该分类
+                normalized_kw = normalize_name(kw)
+                if difflib.SequenceMatcher(None, main_cleaned, normalized_kw).ratio() > 0.85:
                     categorized_data[category].extend(group)
                     found_category = True
                     break
             if found_category:
                 break
 
-        # 如果所有预设分类都未匹配成功
         if not found_category:
             uncategorized_data.extend(group)
-            variants = '|'.join([g[0] for g in group])
-            logging.info(f"未匹配到任何分类的频道组：{variants}")
 
-    # 过滤掉空的分类
     categorized_data = {k: v for k, v in categorized_data.items() if v}
-
-    # 确保输出的分类顺序正确
     final_ordered_categories = [cat for cat in CATEGORY_CONFIG['ordered_categories'] if cat in categorized_data]
-
     return categorized_data, uncategorized_data, final_ordered_categories
-
 
 # --- 保存模块 ---
 @performance_monitor
@@ -339,7 +331,6 @@ def save_channels_to_files(categorized_data, uncategorized_data, ordered_categor
             for category in ordered_categories:
                 if category in categorized_data and categorized_data[category]:
                     iptv_list_file.write(f"\n{category},#genre#\n")
-                    # 按频道名称排序
                     for name, url in sorted(categorized_data[category], key=lambda x: x[0]):
                         iptv_list_file.write(f"{name},{url}\n")
         logging.warning(f"所有有效频道已分类并保存到: {output_file}")
@@ -364,7 +355,6 @@ def main():
     logging.warning("开始执行 IPTV 频道检查和分类脚本...")
     total_start_time = time.time()
 
-    # 读取所有频道，并进行初步去重
     input_channels = read_channels_from_file(INPUT_CHANNELS_PATH)
     if input_channels is None:
         return
@@ -376,7 +366,6 @@ def main():
         logging.warning(f"输入文件 '{INPUT_CHANNELS_PATH}' 为空或无有效频道行，退出。")
         return
 
-    # 检查有效性
     timeout = CONFIG.get('network', {}).get('check_timeout', 30)
     workers = CONFIG.get('network', {}).get('channel_check_workers', 50)
     valid_channels = check_channels_multithreaded(unique_channels, workers, timeout)
@@ -385,13 +374,8 @@ def main():
         logging.warning("没有发现有效的频道，不生成输出文件。")
         return
 
-    # 分类频道 (禁用自动更新逻辑)
     categorized_channels, uncategorized_channels, ordered_categories = categorize_channels(valid_channels)
-
-    # 保存结果
     save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
-
-    # 此处已移除 auto_update_demo() 函数调用
 
     total_elapsed_time = time.time() - total_start_time
     logging.warning(f"IPTV 频道检查和分类脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
