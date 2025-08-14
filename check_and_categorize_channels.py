@@ -395,7 +395,7 @@ def save_channels_to_final_files(valid_channels, output_file_path, uncategorized
         logging.error(f"写入文件 '{output_file_path}' 失败: {e}")
     
     try:
-        with open(uncategorized_file_path, "w", encoding='utf-8') as uncat_file:
+        with open(uncategorized_file_path, "a", encoding='utf-8') as uncat_file:
             uncat_file.writelines(generate_update_time_header())
             for name, url in sorted(uncategorized_channels_checked, key=lambda x: x[0]):
                 uncat_file.write(f"{name},{url}\n")
