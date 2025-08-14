@@ -1,79 +1,87 @@
 proxy-providers: {}
 proxies:
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 241.44 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.234.192.79
+      tls: false
+      type: vless
+      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
     - alterId: 0
       cipher: auto
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 165.65 MB/s"
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 140.80 MB/s"
       network: ws
-      port: 443
-      server: v36.emoyes.top
-      servername: v36.emoyes.top
-      tls: true
+      port: 20086
+      server: 104.238.162.76
+      skip-cert-verify: true
+      tls: false
       type: vmess
-      uuid: 08b24d8d-10ab-4c5a-990e-4e0e194870af
+      uuid: 6cf93fe6-0062-4212-95aa-2aabca8b11bf
       ws-opts:
         headers:
-            Host: v36.emoyes.top
+            host: ""
         path: /
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 135.61 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 37.19.198.236
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 132.69 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 156.146.38.167
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 127.12 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 156.146.38.169
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 126.50 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 125.59 MB/s"
       password: shadowsocks
       port: 443
       server: 37.19.198.243
       type: ss
-    - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 100.60 MB/s"
-      password: 14fFPrbezE3HDZzsMOr6
-      port: 8080
-      server: 178.128.231.214
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 123.83 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.160
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 123.65 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.170
       type: ss
     - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 96.08 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 107.32 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 137.184.174.93
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 89.16 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
       server: 147.182.146.81
       type: ss
     - cipher: rc4-md5
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 94.06 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 86.09 MB/s"
       password: 14fFPrbezE3HDZzsMOr6
       port: 8080
-      server: 68.183.193.204
+      server: 178.128.231.214
       type: ss
     - alterId: 0
       cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 83.76 MB/s"
+      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 84.37 MB/s"
       network: ws
-      port: 443
-      server: u1.huvicloud.com
-      servername: ""
+      port: 2083
+      server: 1747948341.tencentapp.cn
+      servername: 1747948371.speed.zjgza.cccp.freefly.pp.ua
       tls: true
       type: vmess
-      uuid: 04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+      uuid: 85bf4641-e155-4e2f-bee9-4b404eaa3efb
       ws-opts:
         headers:
-            Host: u1.huvicloud.com
-        path: /04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 83.75 MB/s"
+            Host: 1747948371.speed.zjgza.cccp.freefly.pp.ua
+        path: /
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 82.18 MB/s"
       network: tcp
-      port: 51952
-      server: 51.222.86.7
+      port: 54051
+      server: 51.222.86.157
       tls: false
       type: vless
-      uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
+      uuid: d1e720d6-4ac9-4a03-b781-567960161b13
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 81.40 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.150.107
+      type: ss

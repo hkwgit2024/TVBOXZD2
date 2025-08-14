@@ -1,0 +1,79 @@
+proxy-providers: {}
+proxies:
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 165.65 MB/s"
+      network: ws
+      port: 443
+      server: v36.emoyes.top
+      servername: v36.emoyes.top
+      tls: true
+      type: vmess
+      uuid: 08b24d8d-10ab-4c5a-990e-4e0e194870af
+      ws-opts:
+        headers:
+            Host: v36.emoyes.top
+        path: /
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 135.61 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.236
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 132.69 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.167
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 127.12 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.169
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 126.50 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 37.19.198.243
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 100.60 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 178.128.231.214
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 96.08 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 147.182.146.81
+      type: ss
+    - cipher: rc4-md5
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 94.06 MB/s"
+      password: 14fFPrbezE3HDZzsMOr6
+      port: 8080
+      server: 68.183.193.204
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 83.76 MB/s"
+      network: ws
+      port: 443
+      server: u1.huvicloud.com
+      servername: ""
+      tls: true
+      type: vmess
+      uuid: 04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+      ws-opts:
+        headers:
+            Host: u1.huvicloud.com
+        path: /04ddf6fd-2d5c-46ae-aa6c-6983a8c73725
+    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 83.75 MB/s"
+      network: tcp
+      port: 51952
+      server: 51.222.86.7
+      tls: false
+      type: vless
+      uuid: 3956dd35-4f86-4b48-a1ca-45a3dbe471a0
