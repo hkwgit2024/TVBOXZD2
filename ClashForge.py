@@ -511,7 +511,6 @@ def generate_clash_config(links,load_nodes):
                     resolve_name_conflicts(node)
             if '{' in link:
                 link = resolve_template_url(link)
-            # 删除了这行代码 -> print(f'当前正在处理link: {link}')
             # 处理非特定协议的链接
             try:
                 new_links,isyaml = process_url(link)
@@ -1287,9 +1286,14 @@ if __name__ == '__main__':
     input_value = os.getenv("INPUT")
     links_from_env = []
     
-    # 检查 INPUT 是否为 URL
-    if input_value and (input_value.startswith('http://') or input_value.startswith('https://')):
-        print(f"从环境变量中读取到 URL")
-        links_from_env.append(input_value)
+    # 检查 INPUT 是否存在且不为空
+    if input_value:
+        # 使用逗号分割链接，并去除每个链接前后的空格
+        split_links = [link.strip() for link in input_value.split(',')]
+        
+        for link in split_links:
+            # 检查每个分割后的字符串是否为有效的 URL
+            if link.startswith('http://') or link.startswith('https://'):
+                links_from_env.append(link)
     
     work(links=links_from_env, check=True, only_check=False, allowed_types=["ss","hysteria2","hy2","vless","vmess","trojan"])
