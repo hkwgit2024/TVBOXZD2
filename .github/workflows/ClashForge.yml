@@ -9,7 +9,8 @@ on:
   workflow_dispatch:
 
 env:
-  TZ: Asia/Shanghai # 时区环境变量
+  TZ: Asia/Shanghai 
+  INPUT: ${{ vars.INPUT }} 
 
 jobs:
   run_demo_actions:
@@ -30,13 +31,12 @@ jobs:
           pip install -r ./requirements2.txt
 
       - name: Run ClashForge.py
-        run: |
-          echo "INPUT=${{ vars.INPUT }}" >> $GITHUB_ENV
-          python ClashForge.py
+        run: python ClashForge.py
 
       - name: Commit and push file
         run: |
-          # actions/checkout v2+ 会自动设置 git config，所以这些命令是多余的
+                    git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add clash_config.yaml
           
