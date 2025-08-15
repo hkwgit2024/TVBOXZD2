@@ -1,2 +1,44 @@
 proxy-providers: {}
-proxies: []
+proxies:
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 206.64 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 173.244.56.6
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 175.87 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 173.244.56.9
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 116.14 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.169
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 111.11 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.170
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 91.24 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.168
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 86.41 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.130
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 82.67 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 212.102.47.129
+      type: ss
