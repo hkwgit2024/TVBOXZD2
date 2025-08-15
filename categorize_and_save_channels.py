@@ -2,7 +2,7 @@
 
 import os
 import re
-import difflib
+from thefuzz import fuzz, process
 from collections import defaultdict
 import logging
 from datetime import datetime
@@ -20,7 +20,7 @@ FINAL_IPTV_LIST_PATH = "output/iptv_list.txt"
 UNCATEGORIZED_CHANNELS_PATH = "output/uncategorized.txt"
 
 # 默认相似度匹配阈值
-SIMILARITY_THRESHOLD = 0.85
+SIMILARITY_THRESHOLD = 85 # 更改为百分制，与 TheFuzz 匹配
 
 # --- 辅助函数：配置加载和日志 ---
 def setup_logging():
@@ -107,11 +107,10 @@ def normalize_name(name, name_filter_words, name_replacements):
     noise_words = [
         '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'lv', 'hd', 'uhd', '4k',
         'news', 'tv', 'radio', 'channel', 'feed', 'domestic', 'world', 'version', 'official',
-        'sd', 'fhd', 'r', 'sd', 'hd', 'hq', 'lq', 'gh', 'iptv',
-        '东联', '卫视', '少儿', '新闻', '体育', '综艺', '综合', '影视', '生活', '教育', '公共',
-        '凤凰', '港澳', '海外', '亚洲', '剧场', '娱乐', '中天', '三立', '民视', '华视', '东森',
-        'tvbs', '台视', '寰宇', '经典', '靖天', '镜电视', '开电视', '龙华', '纬来', '中视', '星河', 'tvb',
-        'tv', 'hd', 'news' # 强化通用词汇移除
+        'sd', 'fhd', 'r', 'sd', 'hd', 'hq', 'lq', 'gh', 'iptv', '卫视', '少儿', '新闻', '体育', '综艺',
+        '综合', '影视', '生活', '教育', '公共', '凤凰', '港澳', '海外', '亚洲', '剧场', '娱乐', '中天',
+        '三立', '民视', '华视', '东森', 'tvbs', '台视', '寰宇', '经典', '靖天', '镜电视', '开电视', '龙华',
+        '纬来', '中视', '星河', 'tvb' # 强化通用词汇移除
     ]
     
     # 使用正则表达式匹配并移除这些词汇，使用单词边界来避免误删
@@ -151,35 +150,32 @@ def read_channels_from_file(file_name):
     return channels
 
 def group_variants(channels, similarity_threshold, name_filter_words, name_replacements):
-    """使用相似度聚类频道变体，返回一个字典，键为规范化后的主名称，值为该组所有频道列表"""
+    """使用模糊匹配库聚类频道变体，返回一个字典，键为规范化后的主名称，值为该组所有频道列表"""
     groups = defaultdict(list)
     processed_channels = set()
 
+    # 创建一个包含所有规范化名称的列表，用于模糊匹配
+    normalized_names = {normalize_name(name, name_filter_words, name_replacements): [] for name, _ in channels}
+    
     for name, url in tqdm(channels, desc="聚类频道变体"):
         if (name, url) in processed_channels:
             continue
 
-        # 确保将配置参数传递给 normalize_name
         cleaned_name = normalize_name(name, name_filter_words, name_replacements)
-        matched_group_key = None
         
-        # 寻找最相似的现有组
-        best_ratio = 0
-        best_key = None
-        for key in groups.keys():
-            ratio = difflib.SequenceMatcher(None, cleaned_name, key).ratio()
-            if ratio > best_ratio and ratio >= similarity_threshold:
-                best_ratio = ratio
-                best_key = key
+        # 使用 process.extractOne 在所有规范化名称中找到最佳匹配
+        match = process.extractOne(cleaned_name, normalized_names.keys(), scorer=fuzz.token_sort_ratio)
         
-        if best_key:
-            groups[best_key].append((name, url))
+        if match and match[1] >= similarity_threshold:
+            groups[match[0]].append((name, url))
         else:
+            # 如果没有找到高相似度的匹配，则创建一个新组
             groups[cleaned_name].append((name, url))
 
         processed_channels.add((name, url))
 
     return groups
+
 
 def categorize_channels(channels, category_config, name_filter_words, name_replacements):
     """根据关键字分类频道，使用相似度匹配"""
@@ -214,7 +210,9 @@ def categorize_channels(channels, category_config, name_filter_words, name_repla
                     category_keywords = category_config['category_keywords'].get(category, [])
                     for kw in category_keywords:
                         normalized_kw = normalize_name(kw, name_filter_words, name_replacements)
-                        if difflib.SequenceMatcher(None, main_cleaned, normalized_kw).ratio() >= SIMILARITY_THRESHOLD:
+                        # 使用 token_sort_ratio 进行模糊匹配，更加健壮
+                        score = fuzz.token_sort_ratio(main_cleaned, normalized_kw)
+                        if score >= SIMILARITY_THRESHOLD:
                             categorized_data[category].extend(group)
                             found_category = True
                             break
