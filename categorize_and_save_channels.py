@@ -8,31 +8,43 @@ import logging
 from datetime import datetime
 import yaml
 import time
+from tqdm import tqdm
 
-# --- 配置和加载模块 ---
+# --- 全局配置和常量 ---
+# 将文件路径定义为常量，提高可读性
 CONFIG_PATH = "config/config.yaml"
 CATEGORY_CONFIG_PATH = "config/demo.txt"
-# 假设这个文件现在只包含有效的频道，由 check_channels_validity.py 生成
-INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"  
+INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"
 FINAL_IPTV_LIST_PATH = "output/iptv_list.txt"
 UNCATEGORIZED_CHANNELS_PATH = "output/uncategorized.txt"
+
+# 默认相似度匹配阈值
+SIMILARITY_THRESHOLD = 0.85
+
+# --- 辅助函数：配置加载和日志 ---
+def setup_logging():
+    """配置日志系统，便于调试"""
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
 
 def load_config(config_path):
     """加载并解析 YAML 配置文件"""
     try:
         with open(config_path, 'r', encoding='utf-8') as file:
             config = yaml.safe_load(file) or {}
-            print("配置文件 config.yaml 加载成功")
+            logging.info("配置文件 config.yaml 加载成功")
             return config
     except FileNotFoundError:
-        print(f"错误：未找到配置文件 '{config_path}'。")
-        exit(1)
+        logging.error(f"错误：未找到配置文件 '{config_path}'。")
+        return None
     except yaml.YAMLError as e:
-        print(f"错误：配置文件 '{config_path}' 格式错误: {e}")
-        exit(1)
-    except Exception as e:
-        print(f"错误：加载配置文件 '{config_path}' 失败: {e}")
-        exit(1)
+        logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
+        return None
 
 def load_category_config(config_path):
     """加载并解析分类配置文件，去重关键词"""
@@ -57,42 +69,64 @@ def load_category_config(config_path):
                     category_config['category_keywords'][current_category].update(keywords)
 
         category_config['category_keywords'] = {k: list(v) for k, v in category_config['category_keywords'].items()}
-        print("分类配置文件 config/demo.txt 加载成功")
+        logging.info("分类配置文件 config/demo.txt 加载成功")
         return category_config
     except FileNotFoundError:
-        print(f"错误：未找到分类配置文件 '{config_path}'")
-        exit(1)
+        logging.error(f"错误：未找到分类配置文件 '{config_path}'")
+        return None
     except Exception as e:
-        print(f"错误：加载分类配置文件 '{config_path}' 失败: {e}")
-        exit(1)
+        logging.error(f"错误：加载分类配置文件 '{config_path}' 失败: {e}")
+        return None
 
-# 全局配置
-CONFIG = load_config(CONFIG_PATH)
-CATEGORY_CONFIG = load_category_config(CATEGORY_CONFIG_PATH)
-
-def performance_monitor(func):
-    """记录函数执行时间"""
-    if not CONFIG.get('performance_monitor', {}).get('enabled', False):
-        return func
-    def wrapper(*args, **kwargs):
-        start_time = time.time()
-        result = func(*args, **kwargs)
-        elapsed_time = time.time() - start_time
-        print(f"性能监控：函数 '{func.__name__}' 耗时 {elapsed_time:.2f} 秒")
-        return result
-    return wrapper
-
-# --- 频道分类和管理模块 ---
+# --- 核心业务逻辑：频道处理 ---
 def normalize_name(name):
-    """优化后的规范化频道名称，保留关键数字、字母和特殊字符，移除修饰词"""
+    """
+    基于所有频道名称样本优化的规范化函数。
+    - 移除常见的修饰词、版本和供应商标识。
+    - 移除括号和方括号内的内容。
+    - 统一数字格式。
+    - 移除特殊符号。
+    """
     cleaned = name.lower()
-    noise_words = ['\(.*?\)', '\[.*?\]', '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'ipv6', 'ipv4', '东联', '港澳版']
-    for word in noise_words:
-        cleaned = re.sub(word, '', cleaned, flags=re.IGNORECASE)
-    cleaned = re.sub(r'[\s\-]+', '', cleaned).strip()
-    return cleaned or name.strip()
 
-@performance_monitor
+    # 移除国家或地区旗帜 emoji
+    cleaned = re.sub(r'[\U0001F1E6-\U0001F1FF]', '', cleaned)
+
+    # 将繁体字转换为简体字，这里使用简单的字典映射
+    simplified_map = {'華': '华', '台': '台', '灣': '湾', '衛': '卫', '視': '视', '訊': '讯', '劇': '剧'}
+    for traditional, simplified in simplified_map.items():
+        cleaned = cleaned.replace(traditional.lower(), simplified.lower())
+    
+    # 移除括号和方括号内的内容，包括其中的中文、英文、数字和特殊符号
+    cleaned = re.sub(r'[\(（][^)）\]]*?[\)）\]]', '', cleaned)
+    cleaned = re.sub(r'\[.*?\]', '', cleaned)
+    
+    # 移除常见的修饰词、版本和供应商标识。此列表经过扩展。
+    noise_words = [
+        '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'lv', 'hd', 'uhd', '4k',
+        'news', 'tv', 'radio', 'channel', 'feed', 'domestic', 'world', 'version', 'official', 'official',
+        'sd', 'fhd', 'r', 'sd', 'hd', 'hq', 'lq', 'gh', 'cctv', 'iptv',
+        '东联', '卫视', '少儿', '新闻', '体育', '综艺', '综合', '影视', '生活', '教育', '公共',
+        '凤凰', '港澳', '海外', '央视', '央视频道', '亚洲', '剧场', '娱乐'
+    ]
+    
+    # 使用正则表达式匹配并移除这些词汇，确保它们作为独立的词被移除
+    # 添加单词边界 \b 以避免误删，例如 "news" 不会影响 "channel news"
+    for word in noise_words:
+        cleaned = re.sub(r'\b' + re.escape(word) + r'\b', '', cleaned, flags=re.IGNORECASE)
+
+    # 移除特殊符号和多余的空格，包括 +、-、_、·、*、/
+    cleaned = re.sub(r'[\s\-+_·*/\[\]\(\)（）]+', '', cleaned)
+
+    # 移除重复词语，例如 "CCTV1CCTV1" -> "CCTV1"
+    cleaned = re.sub(r'(?P<word>.+)(?P=word)', r'\1', cleaned)
+    
+    # 特殊处理数字，将01, 02 统一为 1, 2
+    # 适用于 'CCTV 01' -> 'CCTV1'
+    cleaned = re.sub(r'(\D)0(\d)', r'\1\2', cleaned)
+
+    return cleaned.strip() or name.strip()
+
 def read_channels_from_file(file_name):
     """从本地 TXT 文件读取频道内容"""
     channels = []
@@ -104,35 +138,38 @@ def read_channels_from_file(file_name):
                     parts = line.split(',', 1)
                     if len(parts) == 2:
                         channels.append((parts[0].strip(), parts[1].strip()))
-        print(f"从 {file_name} 读取 {len(channels)} 个频道")
+        logging.info(f"从 {file_name} 读取 {len(channels)} 个频道")
     except FileNotFoundError:
-        print(f"错误：未找到输入频道文件 '{file_name}'")
+        logging.error(f"错误：未找到输入频道文件 '{file_name}'")
         return None
     except Exception as e:
-        print(f"读取文件 '{file_name}' 失败: {e}")
+        logging.error(f"读取文件 '{file_name}' 失败: {e}")
         return None
     return channels
 
-@performance_monitor
-def group_variants(channels, threshold=0.85):
-    """使用相似度聚类频道变体"""
+def group_variants(channels):
+    """使用相似度聚类频道变体，返回一个字典，键为规范化后的主名称，值为该组所有频道列表"""
     groups = defaultdict(list)
     processed_channels = set()
 
-    for name, url in channels:
+    for name, url in tqdm(channels, desc="聚类频道变体"):
         if (name, url) in processed_channels:
             continue
 
         cleaned_name = normalize_name(name)
-        matched_group = None
-
+        matched_group_key = None
+        
+        # 寻找最相似的现有组
+        best_ratio = 0
+        best_key = None
         for key in groups.keys():
-            if difflib.SequenceMatcher(None, cleaned_name, key).ratio() > threshold:
-                matched_group = key
-                break
-
-        if matched_group:
-            groups[matched_group].append((name, url))
+            ratio = difflib.SequenceMatcher(None, cleaned_name, key).ratio()
+            if ratio > best_ratio and ratio > SIMILARITY_THRESHOLD:
+                best_ratio = ratio
+                best_key = key
+        
+        if best_key:
+            groups[best_key].append((name, url))
         else:
             groups[cleaned_name].append((name, url))
 
@@ -140,7 +177,6 @@ def group_variants(channels, threshold=0.85):
 
     return groups
 
-@performance_monitor
 def categorize_channels(channels):
     """根据关键字分类频道，使用相似度匹配"""
     categorized_data = defaultdict(list)
@@ -148,28 +184,48 @@ def categorize_channels(channels):
 
     grouped_variants = group_variants(channels)
 
-    for main_cleaned, group in grouped_variants.items():
-        found_category = False
-        for category in CATEGORY_CONFIG['ordered_categories']:
-            category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
-            for kw in category_keywords:
-                normalized_kw = normalize_name(kw)
-                if difflib.SequenceMatcher(None, main_cleaned, normalized_kw).ratio() > 0.85:
-                    categorized_data[category].extend(group)
-                    found_category = True
-                    break
-            if found_category:
-                break
+    logging.info(f"已创建 {len(grouped_variants)} 个频道组")
 
-        if not found_category:
-            uncategorized_data.extend(group)
+    with tqdm(total=len(grouped_variants), desc="分类频道") as pbar:
+        for main_cleaned, group in grouped_variants.items():
+            found_category = False
+            
+            # 优先匹配精确的分类关键词
+            for category in CATEGORY_CONFIG['ordered_categories']:
+                category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
+                for kw in category_keywords:
+                    # 使用 normalize_name 规范化关键词，然后进行精确匹配
+                    normalized_kw = normalize_name(kw)
+                    if normalized_kw == main_cleaned:
+                        categorized_data[category].extend(group)
+                        found_category = True
+                        break
+                if found_category:
+                    break
+            
+            # 如果精确匹配失败，尝试模糊匹配
+            if not found_category:
+                for category in CATEGORY_CONFIG['ordered_categories']:
+                    category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
+                    for kw in category_keywords:
+                        normalized_kw = normalize_name(kw)
+                        if difflib.SequenceMatcher(None, main_cleaned, normalized_kw).ratio() >= SIMILARITY_THRESHOLD:
+                            categorized_data[category].extend(group)
+                            found_category = True
+                            break
+                    if found_category:
+                        break
+
+            if not found_category:
+                uncategorized_data.extend(group)
+            
+            pbar.update(1)
 
     categorized_data = {k: v for k, v in categorized_data.items() if v}
     final_ordered_categories = [cat for cat in CATEGORY_CONFIG['ordered_categories'] if cat in categorized_data]
     return categorized_data, uncategorized_data, final_ordered_categories
 
-# --- 保存模块 ---
-@performance_monitor
+# --- 结果保存模块 ---
 def save_channels_to_files(categorized_data, uncategorized_data, ordered_categories, output_file, uncat_file):
     """将分类结果保存到最终文件"""
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -186,40 +242,50 @@ def save_channels_to_files(categorized_data, uncategorized_data, ordered_categor
             for category in ordered_categories:
                 if category in categorized_data and categorized_data[category]:
                     iptv_list_file.write(f"\n{category},#genre#\n")
+                    # 按频道名称排序
                     for name, url in sorted(categorized_data[category], key=lambda x: x[0]):
                         iptv_list_file.write(f"{name},{url}\n")
-        print(f"所有有效频道已分类并保存到: {output_file}")
+        logging.info(f"所有有效频道已分类并保存到: {output_file}")
     except Exception as e:
-        print(f"写入文件 '{output_file}' 失败: {e}")
+        logging.error(f"写入文件 '{output_file}' 失败: {e}")
 
     try:
         with open(uncat_file, "w", encoding='utf-8') as uncat_file:
             uncat_file.writelines(header)
             if uncategorized_data:
                 uncat_file.write(f"\n未分类频道,#genre#\n")
+                # 按频道名称排序
                 for name, url in sorted(uncategorized_data, key=lambda x: x[0]):
                     uncat_file.write(f"{name},{url}\n")
-        print(f"未分类频道已保存到: {uncat_file}")
+        logging.info(f"未分类频道已保存到: {uncat_file}")
     except Exception as e:
-        print(f"写入未分类文件 '{uncat_file}' 失败: {e}")
+        logging.error(f"写入未分类文件 '{uncat_file}' 失败: {e}")
 
 # --- 主函数 ---
 def main():
     """主函数，执行 IPTV 频道分类和保存流程"""
-    print("开始执行 IPTV 频道分类和保存脚本...")
+    setup_logging()
+    logging.info("开始执行 IPTV 频道分类和保存脚本...")
     total_start_time = time.time()
 
-    # 假设输入文件 output/valid_channels_temp.txt 已经包含了经过检查的有效频道
+    CONFIG = load_config(CONFIG_PATH)
+    if CONFIG is None:
+        return
+
+    CATEGORY_CONFIG = load_category_config(CATEGORY_CONFIG_PATH)
+    if CATEGORY_CONFIG is None:
+        return
+
     valid_channels = read_channels_from_file(INPUT_CHANNELS_PATH)
     if not valid_channels:
-        print("没有可用于分类的频道，退出。")
+        logging.warning("没有可用于分类的频道，退出。")
         return
 
     categorized_channels, uncategorized_channels, ordered_categories = categorize_channels(valid_channels)
     save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
 
     total_elapsed_time = time.time() - total_start_time
-    print(f"IPTV 频道分类和保存脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
+    logging.info(f"IPTV 频道分类和保存脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
 
 if __name__ == "__main__":
     main()
