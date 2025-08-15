@@ -1,16 +1,10 @@
 更新时间,#genre#
-2025-08-15 21:53:19,url
+2025-08-15 22:16:54,url
 
 未分类频道,#genre#
 2025-08-15 17:41:57,url
-CHANNEL NEWS ASIA,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-CHANNEL NEWS ASIA 🇸🇬,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia TV,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia『蓝光』,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel NewsAsia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+CNA台,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+CRTV,http://69.64.57.208/crtv/playlist.m3u8
 Ora News (720p),https://live1.mediadesk.al/oranews.m3u8
 RC TV,https://tv01.zas.media:1936/centraltvweb/centraltvweb/playlist.m3u8
 RCG TV (1080p),https://video1.getstreamhosting.com:1936/8172/8172/playlist.m3u8
@@ -18,12 +12,49 @@ RCG TV (Timeshifted  2 Hours) (432p),https://video1.getstreamhosting.com:1936/82
 RCV TV (712p),https://59d39900ebfb8.streamlock.net/rcv/rcv/playlist.m3u8
 RTV,https://dvrfl03.bozztv.com/hondu/hondu-rtvtv/index.m3u8
 Rlive TV (406p),https://realitatealive.md/tv/rlive.m3u8
+TVBS NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
+TVBS新闻 NESW,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV31.m3u8
+TVBS新闻 NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
+TVBS新闻 NEWS,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV31.m3u8
+TVBS新闻 NEWS[1280*720],http://61.221.215.25:8800/hls/9/index.m3u8
+[]TVBS新闻_asia_*wj,https://stream1.freetv.fun/ec0d141a6cd4d1fe5817c0af6bea8d05b7d1c581b68eab333c7b7d5e62c488f2.ctv
+[]TVBS新闻_news,https://stream1.freetv.fun/5325e5d7ff0449ec19c4c62689170c6410bdfb91394e5b684a473f1633d19252.m3u8
+tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 一频道,#genre#
 二频道,#genre#
 五频道,#genre#
+八大第一台,http://61.221.215.25:8800/hls/55/index.m3u8
+八大第一台,http://108.181.20.197/livehttpplay
+八大综合台,http://pili-live-hdl.qhmywl.com:80/dsdtv/a26d25ad9eaabca42fa6d526199d61e5.m3u8
+凤凰中文台,http://php.jdshipin.com:8880/smt.php
+凤凰中文台,https://playtv-live.ifeng.com/live/06OLEGEGM4G.m3u8
+凤凰中文台,http://r.jdshipin.com/cCCzW
+凤凰中文台,http://iptv.tvfix.org/hls/fhzw.m3u8
+凤凰中文资讯台,http://61.221.215.25:8800/hls/47/index.m3u8
+凤凰中文资讯台,http://php.jdshipin.com:8880/TVOD/iptv.php
+凤凰中文资讯台,https://stream1.freetv.fun/a5857ad51b58a0f7a8c9cbdf291571692b0eed9f5ab2cfce97a211260533c0d8.m3u8
+凤凰中文资讯台,http://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
+凤凰中文资讯台,http://php.jdshipin.com/TVOD/iptv.php
+凤凰中文资讯台,http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8
+凤凰中文资讯台[1280*720],http://php.jdshipin.com/TVOD/iptv.php
+凤凰中文香港台,http://php.jdshipin.com:8880/TVOD/iptv.php
+凤凰中文香港台,http://php.jdshipin.com/TVOD/iptv.php
+凤凰资讯2,http://61.221.215.25:8800/hls/47/index.m3u8
+凤凰资讯台,http://iptv.tvfix.org/hls/fhzx.m3u8
+凤凰资讯台,http://r.jdshipin.com/0Rp07
+凤凰资讯台,https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
+凤凰香港台,http://php.jdshipin.com:8880/smt.php
+凤凰香港台,http://108.181.20.197/livehttpplay
 四频道,#genre#
+寰宇新闻台,http://222.128.55.152:9080/live/hy.m3u8
 新加坡频道,#genre#
-新马|亚洲新闻,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
-新马|亚洲新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
 更新时间,#genre#
+闽壹新闻,http://live4play.uk/livehttpplay
 韓國 ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
+韩·ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
+韩国 ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
+韩国 Ⅰ ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
+韩国 Ⅰ ArirangWORLDworld,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+韩国ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
+韩国ArirangWORLDworld,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
+韩国·ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8

@@ -1,10 +1,9 @@
 更新时间,#genre#
-2025-08-15 21:53:19,url
+2025-08-15 22:16:54,url
 
 一频道,#genre#
 TVB 星河,http://s1.an94tv.cfd/taiwan2/tvb/AKTV.m3u8
 TVB 星河,http://pili-live-hdl.qhmywl.com:80/dsdtv/e70f35708baededbbd1d0963f76981a1.m3u8
-TVBS NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
 TVBS新闻,https://epg.pw/stream/34b62c472f066e823052d269c322b8dc8150262fa8022acd359cd6702296b794.m3u8
 TVBS新闻,https://stream1.freetv.fun/tvbsxin-wen-4.m3u8
 TVBS新闻,https://epg.pw/stream/3a8d129a03f92db91cefa8f474b876f921d9b1b8346b42b1be50e7bcc7287940.m3u8
@@ -26,10 +25,6 @@ TVBS新闻,http://zb.xmzb.xyz/8888.php
 TVBS新闻,http://61.221.215.25:8800/hls/9/index.m3u8
 TVBS新闻,https://epg.pm/stream/215ede58359c29ec190657d813abcc47baf7316e7ed87c97638c7bb733df304a.m3u8
 TVBS新闻,http://ccczb.top/mk2.php
-TVBS新闻 NESW,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV31.m3u8
-TVBS新闻 NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
-TVBS新闻 NEWS,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV31.m3u8
-TVBS新闻 NEWS[1280*720],http://61.221.215.25:8800/hls/9/index.m3u8
 TVBS新闻G,http://38.64.72.148:80/hls/modn/list/4005/chunklist0.m3u8
 TVBS新闻S,http://61.221.215.25:8800/hls/9/index.m3u8
 TVBS新闻[1280*720],http://61.221.215.25:8800/hls/9/index.m3u8
@@ -74,10 +69,7 @@ TVB星河台,http://php.jdshipin.com:8880/smt.php
 [BD]凤凰中文香港,https://stream1.freetv.fun/b9f0de655b9503e058eee63c9df9f1520f0e95826667d01742f6e7a91d33d39f.m3u8
 [BD]凤凰香港,https://stream1.freetv.fun/1d0cd71c154df6f70ed3dbf11b59922a12c9ad1ec4f8f1913fdcc17065a24041.ctv
 [VGA]凤凰中文,https://stream1.freetv.fun/a4e7e8c192fe538f4878412af5f611bf10948212e980cf029ac0500a7cb8962f.ctv
-[]TVBS新闻_asia_*wj,https://stream1.freetv.fun/ec0d141a6cd4d1fe5817c0af6bea8d05b7d1c581b68eab333c7b7d5e62c488f2.ctv
-[]TVBS新闻_news,https://stream1.freetv.fun/5325e5d7ff0449ec19c4c62689170c6410bdfb91394e5b684a473f1633d19252.m3u8
 []TVB娱乐新闻,https://stream1.freetv.fun/9f3cc38c6035c8df21a7055aca8d449b14238eb1d6d3a5fb1d41cc47e2f4785f.ctv
-tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 ★有線綜合娛樂台,http://livetv.dnsfor.me:80/channel.7.m3u8
 凤凰中文,https://stream1.freetv.fun/feng-huang-wei-shi-2.m3u8
 凤凰中文,http://zb.xmzb.xyz/123b.php
@@ -170,19 +162,6 @@ tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 凤凰中文[768*576],https://stream1.freetv.fun/08e5440bb83a804440e341ae792cffc38d6844b04d5a2c7a4fc5ee04a6fe6bc6.m3u8
 凤凰中文[768*576],http://120.198.101.106:9901/tsfile/live/1062_1.m3u8
 凤凰中文[768*576],http://183.237.95.108:9901/tsfile/live/1103_1.m3u8
-凤凰中文台,http://php.jdshipin.com:8880/smt.php
-凤凰中文台,https://playtv-live.ifeng.com/live/06OLEGEGM4G.m3u8
-凤凰中文台,http://r.jdshipin.com/cCCzW
-凤凰中文台,http://iptv.tvfix.org/hls/fhzw.m3u8
-凤凰中文资讯台,http://61.221.215.25:8800/hls/47/index.m3u8
-凤凰中文资讯台,http://php.jdshipin.com:8880/TVOD/iptv.php
-凤凰中文资讯台,https://stream1.freetv.fun/a5857ad51b58a0f7a8c9cbdf291571692b0eed9f5ab2cfce97a211260533c0d8.m3u8
-凤凰中文资讯台,http://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
-凤凰中文资讯台,http://php.jdshipin.com/TVOD/iptv.php
-凤凰中文资讯台,http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8
-凤凰中文资讯台[1280*720],http://php.jdshipin.com/TVOD/iptv.php
-凤凰中文香港台,http://php.jdshipin.com:8880/TVOD/iptv.php
-凤凰中文香港台,http://php.jdshipin.com/TVOD/iptv.php
 凤凰资讯,http://cietv.com/fhzx.m3u8
 凤凰资讯,https://epg.pw/stream/feef91f40b85dafbfec7b968db0c1fc20f8fafdbbef2dfd751cfbcfd51f6ea5d.m3u8
 凤凰资讯,http://cdn5.1678520.xyz:80/live/live2.1.php
@@ -246,7 +225,6 @@ tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 凤凰资讯(),http://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
 凤凰资讯(),https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
 凤凰资讯(),http://playtv-live.ifeng.com:80/live/06OLEEWQKN4.m3u8
-凤凰资讯2,http://61.221.215.25:8800/hls/47/index.m3u8
 凤凰资讯[1024*576],http://120.198.95.220:9901/tsfile/live/1037_1.m3u8
 凤凰资讯[1280*720],https://stream1.freetv.fun/feng-huang-zi-xun-15.m3u8
 凤凰资讯[1280*720],http://61.221.215.25:8800/hls/47/index.m3u8
@@ -254,9 +232,6 @@ tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 凤凰资讯[1280*720],http://203.205.191.53/qctv.fengshows.cn/live/0701pin72.m3u8
 凤凰资讯[1280*720],http://php.jdshipin.com/TVOD/iptv.php
 凤凰资讯[1920*1080],https://stream1.freetv.fun/feng-huang-zi-xun-23.m3u8
-凤凰资讯台,http://iptv.tvfix.org/hls/fhzx.m3u8
-凤凰资讯台,http://r.jdshipin.com/0Rp07
-凤凰资讯台,https://playtv-live.ifeng.com/live/06OLEEWQKN4.m3u8
 凤凰香港,http://zb.xmzb.xyz/123.php
 凤凰香港,http://php.jdshipin.com/PLTV/iptv.php
 凤凰香港,http://122.152.202.33/s/81a8a44f/index.m3u8
@@ -291,8 +266,6 @@ tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 凤凰香港[1920*1080],https://cdn6.163189.xyz/live/fhhk/stream.m3u8
 凤凰香港[1920*1080],https://stream1.freetv.fun/feng-huang-xiang-gang-3.m3u8
 凤凰香港[1920*1080],http://php.jdshipin.com:8880/TVOD/iptv.php
-凤凰香港台,http://php.jdshipin.com:8880/smt.php
-凤凰香港台,http://108.181.20.197/livehttpplay
 凤凰香港频国,http://php.jdshipin.com/TVOD/iptv.php
 凤凰香港频备,http://php.jdshipin.com/TVOD/iptv.php
 明珠台,http://iptv.tvfix.org/hls/pearl2.m3u8
@@ -332,7 +305,6 @@ tvbs闽南,http://61.221.215.25:8800/hls/9/index.m3u8
 Astro華麗台,http://php.jdshipin.com/TVOD/iptv.php
 Astro華麗台,http://php.jdshipin.com:8880/TVOD/iptv.php
 Astro華麗台[1280*720],http://php.jdshipin.com/TVOD/iptv.php
-CRTV,http://69.64.57.208/crtv/playlist.m3u8
 CTV,https://live.ctvbolivia.com/hls/ctv.m3u8
 CTV,https://59a564764e2b6.streamlock.net/ctvbarranquilla/ctv/playlist.m3u8
 东森超视,https://cdn.iptv8k.top/dl/jrys.php
@@ -359,9 +331,6 @@ CTV,https://59a564764e2b6.streamlock.net/ctvbarranquilla/ctv/playlist.m3u8
 八大第一,http://ccczb.top/mk2.php
 八大第一,http://live4play.uk/livehttpplay
 八大第一,http://61.221.215.25:8800/hls/55/index.m3u8
-八大第一台,http://61.221.215.25:8800/hls/55/index.m3u8
-八大第一台,http://108.181.20.197/livehttpplay
-八大综合台,http://pili-live-hdl.qhmywl.com:80/dsdtv/a26d25ad9eaabca42fa6d526199d61e5.m3u8
 八度空间,https://cdn6.163189.xyz/live/8tv/stream.m3u8
 华视,http://ccczb.top/mk2.php
 壹新闻,http://ax.micaesoft.com/YMitv/YMITV_CN_eratv.m3u8
@@ -378,12 +347,12 @@ CTV,https://59a564764e2b6.streamlock.net/ctvbarranquilla/ctv/playlist.m3u8
 寰宇新闻,https://ghp.ci/https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV02.m3u8
 寰宇新闻,https://stream1.freetv.fun/huan-yu-xin-wen-2.m3u8
 寰宇新闻,http://ccczb.top/mk2.php
-寰宇新闻台,http://222.128.55.152:9080/live/hy.m3u8
 年代新聞,http://ccczb.top/mk2.php
 東森財經,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV03.m3u8
-闽壹新闻,http://live4play.uk/livehttpplay
 
 新加坡频道,#genre#
+CHANNEL NEWS ASIA,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+CHANNEL NEWS ASIA 🇸🇬,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 CNA,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u8
 CNA,https://i.mjh.nz/.r/channel-news-asia.m3u8
 CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
@@ -396,9 +365,14 @@ CNA (1080p),https://live1.mediadesk.al/cnatvlive.m3u8
 CNA (Domestic Feed),https://smart.pendy.dpdns.org/Smart.php
 CNA(1080p)[480*270],https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 CNA亞洲新聞,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u8
-CNA台,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 CNA新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 CNA新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
+Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Channel News Asia,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Channel News Asia TV,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Channel News Asia『蓝光』,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
+Channel NewsAsia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 ChannelNewsAsia,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 ChannelNewsAsia FHD,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 []亚洲新闻,https://stream1.freetv.fun/769243f668e6ffa1dfcbf56f1dcc086f47c3a2cbc8f83af53fefbe2f6d7462c4.m3u8
@@ -424,6 +398,8 @@ ChannelNewsAsia FHD,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48e
 新马 Ⅰ 亚洲新闻,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 新马 Ⅰ 亚洲新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
 新马 亚洲新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
+新马|亚洲新闻,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
+新马|亚洲新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_3.m3u8
 新马亚洲新闻,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
 
 四频道,#genre#
@@ -434,19 +410,12 @@ Arirang World,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch
 ArirangWORLD[640*360],http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
 韩Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩·Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
-韩·ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
 韩国 Arirang,http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩国 Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
-韩国 ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
-韩国 Ⅰ ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
-韩国 Ⅰ ArirangWORLDworld,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩国-Arirang,http://amdlive-ch01.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩国-Arirang,https://amdlive-ch01-ctnd-com.akamaized.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩国Arirang (Opt-1),http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
-韩国ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
-韩国ArirangWORLDworld,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
 韩国·Arirang,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8
-韩国·ArirangWORLD,http://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch/master.m3u8
 
 五频道,#genre#
 探索亚洲,http://61.221.215.25:8800/hls/50/index.m3u8
