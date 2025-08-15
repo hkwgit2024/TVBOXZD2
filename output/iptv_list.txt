@@ -1,9 +1,7 @@
 更新时间,#genre#
-2025-08-15 21:09:26,url
+2025-08-15 21:46:28,url
 
 一频道,#genre#
-TVB 星河,http://s1.an94tv.cfd/taiwan2/tvb/AKTV.m3u8
-TVB 星河,http://pili-live-hdl.qhmywl.com:80/dsdtv/e70f35708baededbbd1d0963f76981a1.m3u8
 TVBS NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
 TVBS新闻,https://epg.pw/stream/34b62c472f066e823052d269c322b8dc8150262fa8022acd359cd6702296b794.m3u8
 TVBS新闻,https://stream1.freetv.fun/tvbsxin-wen-4.m3u8
@@ -335,11 +333,6 @@ Astro華麗台[1280*720],http://php.jdshipin.com/TVOD/iptv.php
 CRTV,http://69.64.57.208/crtv/playlist.m3u8
 CTV,https://live.ctvbolivia.com/hls/ctv.m3u8
 CTV,https://59a564764e2b6.streamlock.net/ctvbarranquilla/ctv/playlist.m3u8
-Ora News (720p),https://live1.mediadesk.al/oranews.m3u8
-RC TV,https://tv01.zas.media:1936/centraltvweb/centraltvweb/playlist.m3u8
-RCG TV (1080p),https://video1.getstreamhosting.com:1936/8172/8172/playlist.m3u8
-RCG TV (Timeshifted  2 Hours) (432p),https://video1.getstreamhosting.com:1936/8246/8246/playlist.m3u8
-RCV TV (712p),https://59d39900ebfb8.streamlock.net/rcv/rcv/playlist.m3u8
 RTV,https://dvrfl03.bozztv.com/hondu/hondu-rtvtv/index.m3u8
 东森超视,https://cdn.iptv8k.top/dl/jrys.php
 东森超视,https://stream1.freetv.fun/dong-sen-chao-shi-9.m3u8
@@ -390,8 +383,6 @@ RTV,https://dvrfl03.bozztv.com/hondu/hondu-rtvtv/index.m3u8
 闽壹新闻,http://live4play.uk/livehttpplay
 
 新加坡频道,#genre#
-CHANNEL NEWS ASIA,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-CHANNEL NEWS ASIA 🇸🇬,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 CNA,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u8
 CNA,https://i.mjh.nz/.r/channel-news-asia.m3u8
 CNA,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
@@ -407,12 +398,6 @@ CNA亞洲新聞,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV52.m3u
 CNA台,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 CNA新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 CNA新闻,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_4.m3u8
-Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
-Channel News Asia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia TV,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel News Asia『蓝光』,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
-Channel NewsAsia,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 ChannelNewsAsia,http://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index_5.m3u8
 ChannelNewsAsia FHD,https://d2e1asnsl7br7b.cloudfront.net/7782e205e72f43aeb4a48ec97f66ebbe/index.m3u8
 []亚洲新闻,https://stream1.freetv.fun/769243f668e6ffa1dfcbf56f1dcc086f47c3a2cbc8f83af53fefbe2f6d7462c4.m3u8
