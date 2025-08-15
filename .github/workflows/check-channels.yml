@@ -1,0 +1,64 @@
+# 工作流名称，将显示在 GitHub Actions 界面上
+name: 频道有效性检查
+
+# 触发工作流的事件
+on:
+  push:
+    paths:
+      - '.github/workflows/check-channels.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+
+# 设置环境变量
+env:
+  TZ: Asia/Shanghai
+
+# 定义一个名为 'check-validity' 的工作任务
+jobs:
+  check-validity:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 步骤 1: 检出仓库代码
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 步骤 2: 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      # 步骤 3: 安装依赖
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML requests tenacity cachetools tqdm
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      # 步骤 4: 运行频道检查脚本
+      - name: Run channel validity check script
+        run: |
+          python check_channels_validity.py
+
+      # 步骤 5: 提交并推送更改
+      # 这步是可选的，如果希望保存有效频道列表，就需要保留
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git add .
+          
+          if ! git diff --cached --quiet; then
+            echo "有更改，准备提交..."
+            git commit -m "Update valid channels list"
+            git pull --rebase origin main
+            git push origin main
+          else
+            echo "没有需要提交的更改，退出。"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
