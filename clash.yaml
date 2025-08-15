@@ -1,62 +1,103 @@
 proxy-providers: {}
 proxies:
+    - flow: ""
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 192.22 MB/s"
+      network: ws
+      port: 443
+      server: 143.198.15.103
+      servername: zula.ir
+      skip-cert-verify: true
+      tls: true
+      type: vless
+      uuid: 56eb5545-c337-4a37-881f-78c317e36397
+      ws-opts:
+        headers:
+            Host: 174.138.82.85
+        path: /ws
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 135.33 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 186.14 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.47.131
+      server: 37.19.198.236
       type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 130.41 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 185.72 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.47.130
+      server: 37.19.198.244
       type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 129.15 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 176.82 MB/s"
       password: shadowsocks
       port: 443
-      server: 212.102.47.132
-      type: ss
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 120.70 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 990
-      server: 79.127.233.170
+      server: 37.19.198.243
       type: ss
     - cipher: aes-128-gcm
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 119.74 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 174.57 MB/s"
       password: shadowsocks
       port: 443
-      server: 149.22.95.183
+      server: 37.19.198.160
       type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 118.06 MB/s"
-      password: shadowsocks
+    - grpc-opts: null
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 127.83 MB/s"
+      network: tcp
+      password: xxoo
       port: 443
-      server: 173.244.56.6
-      type: ss
-    - cipher: aes-128-gcm
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 107.58 MB/s"
-      password: shadowsocks
-      port: 443
-      server: 212.102.47.129
-      type: ss
-    - cipher: aes-256-cfb
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 92.97 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      server: 79.127.233.170
-      type: ss
+      server: us.blazeppn.info
+      skip-cert-verify: false
+      sni: us.blazeppn.info
+      type: trojan
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 122.68 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.234.192.79
+      tls: false
+      type: vless
+      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
     - alterId: 0
       cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 89.10 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 112.32 MB/s"
       network: ws
       port: 20086
-      server: 137.175.124.167
+      server: 104.238.162.76
       type: vmess
-      uuid: b4bce500-11fe-4f8f-a344-01ac247af9bd
+      uuid: 6cf93fe6-0062-4212-95aa-2aabca8b11bf
       ws-opts:
         headers:
             Host: ""
         path: /
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 92.31 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.169
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 90.51 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.168
+      type: ss
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 89.82 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.170
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 88.96 MB/s"
+      network: ws
+      port: 80
+      server: 45.8.146.207
+      tls: false
+      type: vless
+      uuid: b186e4de-9f54-426e-9a8d-fbd8927ae5ac
+      ws-opts:
+        headers:
+            Host: '---@External_Net---@External_Net---@External_Net---@External_Net---@External_Net'
+        path: /vless/
+    - cipher: aes-128-gcm
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 83.38 MB/s"
+      password: shadowsocks
+      port: 443
+      server: 156.146.38.167
+      type: ss
