@@ -42,7 +42,7 @@ TIMEOUT = 3
 SPEED_TEST = False
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
-LIMIT = 1086 # 最多保留LIMIT个节点
+LIMIT = 10086 # 最多保留LIMIT个节点
 CONFIG_FILE = 'clash_config.yaml'
 # 从文件中加载代理节点，支持yaml/yml、txt(每条代理链接占一行)
 # INPUT = os.getenv("INPUT", "input")
