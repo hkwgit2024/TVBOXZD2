@@ -1,12 +1,9 @@
 更新时间,#genre#
-2025-08-15 20:55:00,url
+2025-08-15 21:09:26,url
 
 未分类频道,#genre#
 2025-08-15 17:41:57,url
-TVBS NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
-TVBS新闻 NEWS,http://61.221.215.25:8800/hls/9/index.m3u8
-TVBS新闻 NEWS,https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV31.m3u8
-TVBS新闻 NEWS[1280*720],http://61.221.215.25:8800/hls/9/index.m3u8
+Rlive TV (406p),https://realitatealive.md/tv/rlive.m3u8
 一频道,#genre#
 二频道,#genre#
 五频道,#genre#
