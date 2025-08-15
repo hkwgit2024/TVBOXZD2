@@ -1,15 +1,13 @@
 import os
 import re
 from thefuzz import fuzz, process
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import logging
 from datetime import datetime
 import time
 from tqdm import tqdm
-import yaml
 
 # --- 全局配置和常量 ---
-CONFIG_PATH = "config/config.yaml"
 CATEGORY_CONFIG_PATH = "config/demo.txt"
 INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"
 FINAL_IPTV_LIST_PATH = "output/iptv_list.txt"
@@ -23,80 +21,45 @@ def setup_logging():
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
+            logging.FileHandler("function.log", "w", encoding="utf-8"),
             logging.StreamHandler()
         ]
     )
 
-def load_config(config_path):
-    try:
-        with open(config_path, 'r', encoding='utf-8') as file:
-            config = yaml.safe_load(file) or {}
-            logging.info("配置文件 config.yaml 加载成功")
-            return config
-    except FileNotFoundError:
-        logging.error(f"错误：未找到配置文件 '{config_path}'。")
-        return None
-    except yaml.YAMLError as e:
-        logging.error(f"错误：配置文件 '{config_path}' 格式错误: {e}")
-        return None
+def parse_category_template(template_file):
+    """
+    解析模板文件，提取频道分类和频道名称。
+    :param template_file: 模板文件路径
+    :return: 包含频道分类和频道名称的有序字典
+    """
+    template_channels = OrderedDict()
+    current_category = None
+    ordered_categories = []
 
-def load_category_config(config_path):
-    category_config = {
-        'ordered_categories': [],
-        'category_keywords': defaultdict(list),
-    }
     try:
-        with open(config_path, 'r', encoding='utf-8') as file:
-            current_category = None
-            for line in file:
+        with open(template_file, "r", encoding="utf-8") as f:
+            for line in f:
                 line = line.strip()
-                if not line or line.startswith('#'):
+                if not line or line.startswith("#"):
                     continue
-                if line.endswith(',#genre#'):
-                    category_name = line.replace(',#genre#', '').strip()
-                    current_category = category_name
-                    if current_category not in category_config['ordered_categories']:
-                        category_config['ordered_categories'].append(current_category)
+
+                if "#genre#" in line:
+                    current_category = line.split(",")[0].strip()
+                    if current_category not in ordered_categories:
+                        ordered_categories.append(current_category)
+                    template_channels[current_category] = []
                 elif current_category:
                     keywords = [kw.strip() for kw in line.split('|') if kw.strip()]
-                    category_config['category_keywords'][current_category].extend(keywords)
-        logging.info("分类配置文件 config/demo.txt 加载成功")
-        return category_config
+                    template_channels[current_category].extend(keywords)
+
+        logging.info("分类模板文件 demo.txt 加载成功")
+        return template_channels, ordered_categories
     except FileNotFoundError:
-        logging.error(f"错误：未找到分类配置文件 '{config_path}'")
-        return None
+        logging.error(f"错误：未找到分类模板文件 '{template_file}'。请检查路径。")
+        return None, None
     except Exception as e:
-        logging.error(f"错误：加载分类配置文件 '{config_path}' 失败: {e}")
-        return None
-
-# --- 核心业务逻辑：频道处理 ---
-def normalize_name_and_resolve_variant(name, category_keywords):
-    """
-    更智能的归一化和变体解析函数。
-    它不仅清理名称，还尝试将其解析为 category_keywords 中的一个标准变体。
-    """
-    cleaned = name.lower().strip()
-    
-    # 移除括号和方括号内的内容及其本身
-    cleaned = re.sub(r'[\(（][^)）\]]*?[\)）\]]', '', cleaned)
-    cleaned = re.sub(r'\[.*?\]', '', cleaned)
-    
-    # 移除常见的修饰词和符号，防止它们干扰匹配
-    cleaned = re.sub(r'[\s\-+_·*/]+', '', cleaned)
-    
-    # 尝试将清洗后的名称与所有分类关键词进行模糊匹配
-    all_keywords = [kw for sublist in category_keywords.values() for kw in sublist]
-    if not all_keywords:
-        return cleaned, False # 如果没有关键词，只返回清洗后的名称
-
-    best_match, score = process.extractOne(cleaned, all_keywords, scorer=fuzz.token_set_ratio)
-    
-    if score >= SIMILARITY_THRESHOLD:
-        # 找到最佳匹配，返回该关键词作为标准变体
-        return best_match, True
-    
-    # 如果没有找到高分匹配，返回原始清洗后的名称
-    return cleaned, False
+        logging.error(f"解析分类模板文件 '{template_file}' 失败: {e}")
+        return None, None
 
 def read_channels_from_file(file_name):
     """从本地 TXT 文件读取频道内容"""
@@ -111,49 +74,51 @@ def read_channels_from_file(file_name):
                         channels.append((parts[0].strip(), parts[1].strip()))
         logging.info(f"从 {file_name} 读取 {len(channels)} 个频道")
     except FileNotFoundError:
-        logging.error(f"错误：未找到输入频道文件 '{file_name}'")
+        logging.error(f"错误：未找到输入频道文件 '{file_name}'。请确保已运行 check_channels_validity.py。")
         return None
     except Exception as e:
         logging.error(f"读取文件 '{file_name}' 失败: {e}")
         return None
     return channels
 
-def categorize_channels(channels, category_config):
-    """根据关键字分类频道，使用新版归一化和模糊匹配"""
+# --- 核心业务逻辑：频道处理 ---
+def categorize_channels(channels, template_channels, ordered_categories):
+    """根据模板进行频道分类"""
     categorized_data = defaultdict(lambda: defaultdict(list))
     uncategorized_data = []
-
+    
+    # 提取所有模板中的关键词，供模糊匹配使用
+    all_template_keywords = [
+        (keyword, category, main_channel_name)
+        for category, keywords in template_channels.items()
+        for keyword in keywords
+        for main_channel_name in [keywords[0]] # 将列表的第一个关键词作为主频道名
+    ]
+    
     logging.info(f"开始分类 {len(channels)} 个频道...")
     
     for name, url in tqdm(channels, desc="正在分类频道"):
-        found_category = False
+        found_match = False
         
-        # 使用新的归一化函数，它会尝试解析变体
-        resolved_name, is_resolved = normalize_name_and_resolve_variant(name, category_config['category_keywords'])
+        # 尝试与所有模板关键词进行模糊匹配
+        matches = process.extractOne(name, [item[0] for item in all_template_keywords], scorer=fuzz.token_set_ratio)
         
-        # 遍历所有分类，查找 resolved_name 属于哪个分类
-        for category in category_config['ordered_categories']:
-            if resolved_name in category_config['category_keywords'][category]:
-                # 如果 resolved_name 是 demo.txt 中的一个关键词，则将其添加到该分类
-                categorized_data[category][resolved_name].append((name, url))
-                found_category = True
-                break
+        if matches and matches[1] >= SIMILARITY_THRESHOLD:
+            matched_keyword = matches[0]
+            score = matches[1]
+            
+            # 找到匹配的关键词，根据关键词找到其对应的分类和主频道名
+            for keyword, category, main_name in all_template_keywords:
+                if keyword == matched_keyword:
+                    # 使用主频道名作为最终归类名称
+                    categorized_data[category][main_name].append((name, url))
+                    found_match = True
+                    break
         
-        if not found_category:
+        if not found_match:
             uncategorized_data.append((name, url))
 
-    # 格式化最终数据
-    final_categorized_data = {}
-    for category, name_groups in categorized_data.items():
-        # 按主名称（demo.txt 中的关键词）排序，使其有序
-        sorted_names = sorted(name_groups.keys())
-        final_categorized_data[category] = []
-        for resolved_name in sorted_names:
-            final_categorized_data[category].extend(name_groups[resolved_name])
-
-    uncategorized_data.sort(key=lambda x: x[0])
-    
-    return final_categorized_data, uncategorized_data
+    return categorized_data, uncategorized_data
 
 # --- 结果保存模块 ---
 def save_channels_to_files(categorized_data, uncategorized_data, ordered_categories, output_file, uncat_file):
@@ -162,19 +127,25 @@ def save_channels_to_files(categorized_data, uncategorized_data, ordered_categor
     os.makedirs(os.path.dirname(uncat_file), exist_ok=True)
 
     header = [
-        f"更新时间,#genre#\n",
+        f"更新日期,#genre#\n",
         f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')},url\n"
     ]
 
     try:
         with open(output_file, "w", encoding='utf-8') as iptv_list_file:
             iptv_list_file.writelines(header)
+            
+            # 按照 demo.txt 中的类别顺序进行保存
             for category in ordered_categories:
                 if category in categorized_data and categorized_data[category]:
                     iptv_list_file.write(f"\n{category},#genre#\n")
-                    # 按频道名称排序
-                    for name, url in sorted(categorized_data[category], key=lambda x: x[0]):
-                        iptv_list_file.write(f"{name},{url}\n")
+                    # 按主频道名称排序，确保输出顺序稳定
+                    for main_name in sorted(categorized_data[category].keys()):
+                        # 写入主频道名，并只保留一个URL（可根据需要修改）
+                        # 这里我们保留所有原始名称及其URL
+                        for original_name, url in sorted(categorized_data[category][main_name], key=lambda x: x[0]):
+                             iptv_list_file.write(f"{original_name},{url}\n")
+            
         logging.info(f"所有有效频道已分类并保存到: {output_file}")
     except Exception as e:
         logging.error(f"写入文件 '{output_file}' 失败: {e}")
@@ -198,12 +169,13 @@ def main():
     logging.info("开始执行 IPTV 频道分类和保存脚本...")
     total_start_time = time.time()
 
-    CONFIG = load_config(CONFIG_PATH)
-    if CONFIG is None:
-        return
+    if not os.path.exists('output'):
+        os.makedirs('output')
+    if not os.path.exists('config'):
+        os.makedirs('config')
 
-    CATEGORY_CONFIG = load_category_config(CATEGORY_CONFIG_PATH)
-    if CATEGORY_CONFIG is None:
+    template_channels, ordered_categories = parse_category_template(CATEGORY_CONFIG_PATH)
+    if template_channels is None:
         return
 
     valid_channels = read_channels_from_file(INPUT_CHANNELS_PATH)
@@ -211,11 +183,11 @@ def main():
         logging.warning("没有可用于分类的频道，退出。")
         return
 
-    # 将配置参数传递给 categorize_channels 函数
     categorized_channels, uncategorized_channels = categorize_channels(
-        valid_channels, CATEGORY_CONFIG
+        valid_channels, template_channels, ordered_categories
     )
-    save_channels_to_files(categorized_channels, uncategorized_channels, CATEGORY_CONFIG['ordered_categories'], FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
+    
+    save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
 
     total_elapsed_time = time.time() - total_start_time
     logging.info(f"IPTV 频道分类和保存脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
