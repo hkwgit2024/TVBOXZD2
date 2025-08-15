@@ -6,14 +6,15 @@ import difflib
 from collections import defaultdict
 import logging
 from datetime import datetime
-import yaml
 import time
 from tqdm import tqdm
+import yaml
 
 # --- 全局配置和常量 ---
 # 将文件路径定义为常量，提高可读性
 CONFIG_PATH = "config/config.yaml"
 CATEGORY_CONFIG_PATH = "config/demo.txt"
+# 假设这个文件现在只包含有效的频道，由 check_channels_validity.py 生成
 INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"
 FINAL_IPTV_LIST_PATH = "output/iptv_list.txt"
 UNCATEGORIZED_CHANNELS_PATH = "output/uncategorized.txt"
@@ -79,9 +80,10 @@ def load_category_config(config_path):
         return None
 
 # --- 核心业务逻辑：频道处理 ---
-def normalize_name(name):
+def normalize_name(name, name_filter_words, name_replacements):
     """
-    基于所有频道名称样本优化的规范化函数。
+    基于所有频道名称样本和配置文件优化的规范化函数。
+    - 优先应用替换规则，然后应用过滤规则。
     - 移除常见的修饰词、版本和供应商标识。
     - 移除括号和方括号内的内容。
     - 统一数字格式。
@@ -89,10 +91,16 @@ def normalize_name(name):
     """
     cleaned = name.lower()
 
+    # 首先应用替换规则（来自配置文件）
+    if name_replacements:
+        for old, new in name_replacements.items():
+            cleaned = cleaned.replace(old.lower(), new.lower())
+
+    # 其次应用内置的替换和清理规则
     # 移除国家或地区旗帜 emoji
     cleaned = re.sub(r'[\U0001F1E6-\U0001F1FF]', '', cleaned)
 
-    # 将繁体字转换为简体字，这里使用简单的字典映射
+    # 将繁体字转换为简体字
     simplified_map = {'華': '华', '台': '台', '灣': '湾', '衛': '卫', '視': '视', '訊': '讯', '劇': '剧'}
     for traditional, simplified in simplified_map.items():
         cleaned = cleaned.replace(traditional.lower(), simplified.lower())
@@ -101,29 +109,20 @@ def normalize_name(name):
     cleaned = re.sub(r'[\(（][^)）\]]*?[\)）\]]', '', cleaned)
     cleaned = re.sub(r'\[.*?\]', '', cleaned)
     
-    # 移除常见的修饰词、版本和供应商标识。此列表经过扩展。
-    noise_words = [
-        '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'lv', 'hd', 'uhd', '4k',
-        'news', 'tv', 'radio', 'channel', 'feed', 'domestic', 'world', 'version', 'official', 'official',
-        'sd', 'fhd', 'r', 'sd', 'hd', 'hq', 'lq', 'gh', 'cctv', 'iptv',
-        '东联', '卫视', '少儿', '新闻', '体育', '综艺', '综合', '影视', '生活', '教育', '公共',
-        '凤凰', '港澳', '海外', '央视', '央视频道', '亚洲', '剧场', '娱乐'
-    ]
-    
-    # 使用正则表达式匹配并移除这些词汇，确保它们作为独立的词被移除
-    # 添加单词边界 \b 以避免误删，例如 "news" 不会影响 "channel news"
-    for word in noise_words:
-        cleaned = re.sub(r'\b' + re.escape(word) + r'\b', '', cleaned, flags=re.IGNORECASE)
-
-    # 移除特殊符号和多余的空格，包括 +、-、_、·、*、/
-    cleaned = re.sub(r'[\s\-+_·*/\[\]\(\)（）]+', '', cleaned)
-
     # 移除重复词语，例如 "CCTV1CCTV1" -> "CCTV1"
     cleaned = re.sub(r'(?P<word>.+)(?P=word)', r'\1', cleaned)
     
     # 特殊处理数字，将01, 02 统一为 1, 2
     # 适用于 'CCTV 01' -> 'CCTV1'
     cleaned = re.sub(r'(\D)0(\d)', r'\1\2', cleaned)
+
+    # 接着应用过滤规则（来自配置文件）
+    if name_filter_words:
+        for word in name_filter_words:
+            cleaned = cleaned.replace(word.lower(), '')
+
+    # 移除特殊符号和多余的空格，包括 +、-、_、·、*、/
+    cleaned = re.sub(r'[\s\-+_·*/\[\]\(\)（）]+', '', cleaned)
 
     return cleaned.strip() or name.strip()
 
@@ -147,7 +146,7 @@ def read_channels_from_file(file_name):
         return None
     return channels
 
-def group_variants(channels):
+def group_variants(channels, similarity_threshold, name_filter_words, name_replacements):
     """使用相似度聚类频道变体，返回一个字典，键为规范化后的主名称，值为该组所有频道列表"""
     groups = defaultdict(list)
     processed_channels = set()
@@ -156,7 +155,7 @@ def group_variants(channels):
         if (name, url) in processed_channels:
             continue
 
-        cleaned_name = normalize_name(name)
+        cleaned_name = normalize_name(name, name_filter_words, name_replacements)
         matched_group_key = None
         
         # 寻找最相似的现有组
@@ -164,7 +163,7 @@ def group_variants(channels):
         best_key = None
         for key in groups.keys():
             ratio = difflib.SequenceMatcher(None, cleaned_name, key).ratio()
-            if ratio > best_ratio and ratio > SIMILARITY_THRESHOLD:
+            if ratio > best_ratio and ratio >= similarity_threshold:
                 best_ratio = ratio
                 best_key = key
         
@@ -177,12 +176,13 @@ def group_variants(channels):
 
     return groups
 
-def categorize_channels(channels):
+def categorize_channels(channels, category_config, name_filter_words, name_replacements):
     """根据关键字分类频道，使用相似度匹配"""
     categorized_data = defaultdict(list)
     uncategorized_data = []
 
-    grouped_variants = group_variants(channels)
+    # 确保将配置参数传递给 group_variants
+    grouped_variants = group_variants(channels, SIMILARITY_THRESHOLD, name_filter_words, name_replacements)
 
     logging.info(f"已创建 {len(grouped_variants)} 个频道组")
 
@@ -191,11 +191,11 @@ def categorize_channels(channels):
             found_category = False
             
             # 优先匹配精确的分类关键词
-            for category in CATEGORY_CONFIG['ordered_categories']:
-                category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
+            for category in category_config['ordered_categories']:
+                category_keywords = category_config['category_keywords'].get(category, [])
                 for kw in category_keywords:
                     # 使用 normalize_name 规范化关键词，然后进行精确匹配
-                    normalized_kw = normalize_name(kw)
+                    normalized_kw = normalize_name(kw, name_filter_words, name_replacements)
                     if normalized_kw == main_cleaned:
                         categorized_data[category].extend(group)
                         found_category = True
@@ -205,10 +205,10 @@ def categorize_channels(channels):
             
             # 如果精确匹配失败，尝试模糊匹配
             if not found_category:
-                for category in CATEGORY_CONFIG['ordered_categories']:
-                    category_keywords = CATEGORY_CONFIG['category_keywords'].get(category, [])
+                for category in category_config['ordered_categories']:
+                    category_keywords = category_config['category_keywords'].get(category, [])
                     for kw in category_keywords:
-                        normalized_kw = normalize_name(kw)
+                        normalized_kw = normalize_name(kw, name_filter_words, name_replacements)
                         if difflib.SequenceMatcher(None, main_cleaned, normalized_kw).ratio() >= SIMILARITY_THRESHOLD:
                             categorized_data[category].extend(group)
                             found_category = True
@@ -222,7 +222,7 @@ def categorize_channels(channels):
             pbar.update(1)
 
     categorized_data = {k: v for k, v in categorized_data.items() if v}
-    final_ordered_categories = [cat for cat in CATEGORY_CONFIG['ordered_categories'] if cat in categorized_data]
+    final_ordered_categories = [cat for cat in category_config['ordered_categories'] if cat in categorized_data]
     return categorized_data, uncategorized_data, final_ordered_categories
 
 # --- 结果保存模块 ---
@@ -281,7 +281,14 @@ def main():
         logging.warning("没有可用于分类的频道，退出。")
         return
 
-    categorized_channels, uncategorized_channels, ordered_categories = categorize_channels(valid_channels)
+    # 从 CONFIG 中提取 name_filter_words 和 channel_name_replacements
+    name_filter_words = CONFIG.get('name_filter_words', [])
+    name_replacements = CONFIG.get('channel_name_replacements', {})
+
+    # 将配置参数传递给 categorize_channels 函数
+    categorized_channels, uncategorized_channels, ordered_categories = categorize_channels(
+        valid_channels, CATEGORY_CONFIG, name_filter_words, name_replacements
+    )
     save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
 
     total_elapsed_time = time.time() - total_start_time
