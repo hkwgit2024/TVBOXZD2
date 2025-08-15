@@ -1,3 +1,4 @@
+一频道,#genre#
 有線新聞台|有線新聞|香港有線新聞
 TVBS新闻|TVBS新闻G|TVBS新闻S|TVBS新闻[1280*720]|TVBS新闻台
 TVBS新闻國際
@@ -10,9 +11,11 @@ TVB星河|星河台
 有線綜合娛樂台|有線娛樂
 有線財經資訊台|有線財經|無線財經資訊|香港有線財經資訊
 明珠台|明珠台(1)
-新加坡CNA|CNA新闻|亚洲新闻|亚洲新闻720P|亚洲新闻1080P|亚洲新闻台(新加坡)|ChannelNewsAsia|ChannelNewsAsia『蓝光』|CNA|[]亚洲新闻|新 | CNA亞洲新聞台|新马|亚洲新闻|新马亚洲新闻|新马 Ⅰ 亚洲新闻
-韩Arirang|韩国 Ⅰ ArirangWORLD|韩国 Ⅰ ArirangWORLDworld|
-探索亚洲|Discovery Asia
+凤凰香港|鳳凰衛視香港|凤凰卫视香港台|鳳凰衛視香港台|[BD]凤凰中文香港|[BD]凤凰香港|凤凰香港频国|凤凰香港频备
+凤凰中文|鳯凰衛視中文|凤凰卫视中文台|鳳凰衛視中文台|Phoenix Chinese
+凤凰资讯|鳯凰衛視資訊|凤凰卫视资讯台|鳳凰衛視資訊台|[BD]凤凰中文资讯
+
+二频道,#genre#
 年代新聞|Era News
 寰宇新闻|寰宇新闻
 壹新闻|[BD]壹新闻|One News
@@ -27,57 +30,18 @@ TVB星河|星河台
 東森幼幼|Eastson Kids
 非凡商業|Fantastic Business
 非凡新聞|Fantastic News
-凤凰香港|鳳凰衛視香港|凤凰卫视香港台|鳳凰衛視香港台|[BD]凤凰中文香港|[BD]凤凰香港|凤凰香港频国|凤凰香港频备
-凤凰中文|鳯凰衛視中文|凤凰卫视中文台|鳳凰衛視中文台|Phoenix Chinese
-凤凰资讯|鳯凰衛視資訊|凤凰卫视资讯台|鳳凰衛視資訊台|[BD]凤凰中文资讯
-公視|Public TV
+
+三|Public TV
 韓國娛樂台|Korea Entertainment
 华丽台|Astro華麗台|Astro華麗台[1280*720]|Astro Hua Li
 华视|CTV
 鏡電視新聞台|Mirror News
-龍華電影台|龙华电影|龙华经典电影|龙华经典电影台|龙华经典
-龍華卡通台|龙华卡通|Longhua Cartoon
-龍華日韓劇|龙华日韩|龙华日韩台|龍華日韓台
-龙华洋片|龙华洋片[1920*1080]
-龙华戏剧
-龙华偶像
-靖天电影
-靖天映画
-民视|FTV
-民视新聞|FTV News
-千禧经典电影台|千禧经典电影台
-緯來電影|Wei Lai Movie
-緯來日本|Wei Lai Japan
-緯來戲劇|Wei Lai Drama
-緯來綜合|Wei Lai General
-止戈电影|Zhi Ge Movie
-香港卫视|HKSTV
-星空卫视|Star TV
-ChannelV|ChanleV
-TVBS新闻|TVBS News
-公视台语|Public TV Taiwanese
-大爱1|Da Ai 1
-国会频道1|Congress Channel 1
-央视频道,#genre#
-CCTV1|CCTV-1|CCTV01东联|CCTV1港澳版
-CCTV2|CCTV-2|CCTV02东联
-CCTV3|CCTV-3|CCTV03东联
-CCTV4|CCTV-4|CCTV04东联|CCTV4CCTV衛視
-CCTV5|CCTV-5|CCTV05东联
-CCTV5+|CCTV-5+
-CCTV6|CCTV-6|CCTV06东联
-CCTV7|CCTV-7|CCTV07东联
-CCTV8|CCTV-8|CCTV08东联
-CCTV9|CCTV-9|CCTV09东联
-CCTV10|CCTV-10|CCTV10东联
-CCTV11|CCTV-11|CCTV11东联
-CCTV12|CCTV-12|CCTV12东联
-CCTV13|CCTV-13|CCTV13东联
-CCTV14|CCTV-14|CCTV14东联
-CCTV15|CCTV-15|CCTV15东联
-CCTV16|CCTV-16
-CCTV17|CCTV-17
-CETV1|CETV-1
-CETV2|CETV-2
-CETV3|CETV-3
-CETV4|CETV-4
+新加坡频道,#genre#
+新加坡CNA|CNA新闻|亚洲新闻|亚洲新闻720P|亚洲新闻1080P|亚洲新闻台(新加坡)|ChannelNewsAsia|ChannelNewsAsia『蓝光』|CNA|[]亚洲新闻|新 | CNA亞洲新聞台|新马|亚洲新闻|新马亚洲新闻|新马 Ⅰ 亚洲新闻
+
+四频道,#genre#
+韩Arirang|韩国 Ⅰ ArirangWORLD|韩国 Ⅰ ArirangWORLDworld|
+
+五频道,#genre#
+
+探索亚洲|Discovery Asia
