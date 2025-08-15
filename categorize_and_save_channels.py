@@ -83,47 +83,51 @@ def load_category_config(config_path):
 def normalize_name(name, name_filter_words, name_replacements):
     """
     基于所有频道名称样本和配置文件优化的规范化函数。
-    - 优先应用替换规则，然后应用过滤规则。
-    - 移除常见的修饰词、版本和供应商标识。
-    - 移除括号和方括号内的内容。
-    - 统一数字格式。
-    - 移除特殊符号。
+    - 优先应用替换规则，然后应用通用清理和过滤规则。
     """
-    cleaned = name.lower()
+    cleaned = name.lower().strip()
 
-    # 首先应用替换规则（来自配置文件）
+    # 首先，应用配置文件中的精确替换规则
     if name_replacements:
         for old, new in name_replacements.items():
             cleaned = cleaned.replace(old.lower(), new.lower())
-
-    # 其次应用内置的替换和清理规则
-    # 移除国家或地区旗帜 emoji
-    cleaned = re.sub(r'[\U0001F1E6-\U0001F1FF]', '', cleaned)
-
-    # 将繁体字转换为简体字
-    simplified_map = {'華': '华', '台': '台', '灣': '湾', '衛': '卫', '視': '视', '訊': '讯', '劇': '剧'}
-    for traditional, simplified in simplified_map.items():
-        cleaned = cleaned.replace(traditional.lower(), simplified.lower())
     
-    # 移除括号和方括号内的内容，包括其中的中文、英文、数字和特殊符号
-    cleaned = re.sub(r'[\(（][^)）\]]*?[\)）\]]', '', cleaned)
-    cleaned = re.sub(r'\[.*?\]', '', cleaned)
-    
-    # 移除重复词语，例如 "CCTV1CCTV1" -> "CCTV1"
-    cleaned = re.sub(r'(?P<word>.+)(?P=word)', r'\1', cleaned)
-    
-    # 特殊处理数字，将01, 02 统一为 1, 2
-    # 适用于 'CCTV 01' -> 'CCTV1'
-    cleaned = re.sub(r'(\D)0(\d)', r'\1\2', cleaned)
-
-    # 接着应用过滤规则（来自配置文件）
+    # 其次，应用配置文件中的过滤规则
     if name_filter_words:
         for word in name_filter_words:
             cleaned = cleaned.replace(word.lower(), '')
 
+    # 接着，应用一套更通用、更彻底的清理规则
+    
+    # 移除括号和方括号内的内容及其本身
+    cleaned = re.sub(r'[\(（][^)）\]]*?[\)）\]]', '', cleaned)
+    cleaned = re.sub(r'\[.*?\]', '', cleaned)
+    
+    # 移除常见的修饰词、版本和供应商标识（此列表经过扩展和优化）
+    noise_words = [
+        '高清', '超清', '流畅', '备用', '测试', '网络', '直播', '在线', 'live', 'lv', 'hd', 'uhd', '4k',
+        'news', 'tv', 'radio', 'channel', 'feed', 'domestic', 'world', 'version', 'official',
+        'sd', 'fhd', 'r', 'sd', 'hd', 'hq', 'lq', 'gh', 'iptv',
+        '东联', '卫视', '少儿', '新闻', '体育', '综艺', '综合', '影视', '生活', '教育', '公共',
+        '凤凰', '港澳', '海外', '亚洲', '剧场', '娱乐', '中天', '三立', '民视', '华视', '东森',
+        'tvbs', '台视', '寰宇', '经典', '靖天', '镜电视', '开电视', '龙华', '纬来', '中视', '星河', 'tvb',
+        'tv', 'hd', 'news' # 强化通用词汇移除
+    ]
+    
+    # 使用正则表达式匹配并移除这些词汇，使用单词边界来避免误删
+    for word in noise_words:
+        # 使用更灵活的模式，同时处理中文和英文
+        cleaned = re.sub(r'\b' + re.escape(word) + r'\b', '', cleaned, flags=re.IGNORECASE)
+
+    # 统一数字格式，将 'CCTV 01' -> 'CCTV1'
+    cleaned = re.sub(r'(\D)0(\d)', r'\1\2', cleaned)
+
     # 移除特殊符号和多余的空格，包括 +、-、_、·、*、/
     cleaned = re.sub(r'[\s\-+_·*/\[\]\(\)（）]+', '', cleaned)
-
+    
+    # 最后，再次移除可能因替换而产生的多余空格，并移除重复词语
+    cleaned = re.sub(r'(?P<word>.+)(?P=word)', r'\1', cleaned)
+    
     return cleaned.strip() or name.strip()
 
 def read_channels_from_file(file_name):
@@ -155,6 +159,7 @@ def group_variants(channels, similarity_threshold, name_filter_words, name_repla
         if (name, url) in processed_channels:
             continue
 
+        # 确保将配置参数传递给 normalize_name
         cleaned_name = normalize_name(name, name_filter_words, name_replacements)
         matched_group_key = None
         
