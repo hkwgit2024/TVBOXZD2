@@ -2,7 +2,7 @@ name: ClashForge
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */3 * * *'
   push:
     paths:
       - '.github/workflows/ClashForge.yml'
