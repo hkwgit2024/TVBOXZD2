@@ -3,16 +3,16 @@ name: 测速
 on:
   push:
     paths:
-      - '.github/workflows/xiecang-speed-test.yml'
+    - '.github/workflows/xiecang-speed-test.yml'
   
+
   schedule:
     - cron: '0 */3 * * *'
   # 允许手动触发
   workflow_dispatch:
 
 env:
-  # 从仓库 Secrets 中获取订阅链接
-  SOURCES: ${{ secrets.SOURCES }}
+ 
   TZ: Asia/Shanghai
 
 jobs:
@@ -28,54 +28,33 @@ jobs:
         with:
           go-version: '1.21'
       
-      - name: 下载远程配置文件
-        run: |
-          set -e  # 任何命令失败立即退出
-          
-          # 清空旧的 config.yaml
-          echo "" > config.yaml
-          
-          # 将 SOURCES 变量按逗号分割，遍历每个 URL
-          IFS=',' read -ra urls <<< "$SOURCES"
-          
-          for url in "${urls[@]}"; do
-            echo "正在下载: $url"
-            # 使用 curl 下载并追加到 config.yaml
-            curl -s -L "$url" >> config.yaml
-          done
-          
-          # 检查文件是否为空
-          if [ ! -s config.yaml ]; then
-            echo "错误：下载的 config.yaml 文件为空或没有内容。请检查您的 SOURCES 链接是否有效。"
-            exit 1
-          fi
-
       - name: 安装 clash-speedtest 工具
         run: go install github.com/faceair/clash-speedtest@latest
       
-      - name: 创建备份目录
-        run: mkdir -p sc
-
+      - name: 备份上次运行结果
+        run: |
+          # 获取当前日期时间并格式化
+          TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
+          # 直接备份文件，假设 clash.yaml 和 sc 目录都存在
+          cp clash.yaml sc/clash_$TIMESTAMP.yaml
+          echo "已成功备份 clash.yaml 到 sc/clash_$TIMESTAMP.yaml"
+      
       - name: 运行测速并筛选节点
         run: |
-          clash-speedtest -c config.yaml \
-                        -output clash.yaml \
-                        -max-latency 808ms \
-                        -min-download-speed 18.8 \
-                        -rename \
-
-      - name: 备份本次运行结果
-        run: |
-          TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
-          cp clash.yaml sc/clash_$TIMESTAMP.yaml
-
+          clash-speedtest -c config (4).yaml \
+                          -output clash.yaml \
+                          -max-latency 808ms \
+                          -min-download-speed 18.8 \
+                          -rename \
+                          
+      
       - name: 提交并推送更改
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           
-          # 仅添加新生成的 config.yaml 和 clash.yaml 文件
-          git add config.yaml clash.yaml
+          # 添加新生成的 clash.yaml 文件和所有备份文件
+          git add clash.yaml sc/
           
           if ! git diff --cached --quiet; then
             git commit -m "chore: Update and filter Clash nodes via speedtest"
