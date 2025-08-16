@@ -10,10 +10,13 @@ from tqdm import tqdm
 # --- 全局配置和常量 ---
 CATEGORY_CONFIG_PATH = "config/demo.txt"
 INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"
-FINAL_IPTV_LIST_PATH = "output/iptv_list.txt"
+FINAL_IPTV_LIST_PATH = "output/iptv_list.m3u" # 修改为 .m3u 格式
 UNCATEGORIZED_CHANNELS_PATH = "output/uncategorized.txt"
 
 SIMILARITY_THRESHOLD = 90  # 使用更高的阈值，精确匹配
+
+# EPG 节目单链接，你可以根据需要修改
+EPG_URL = "https://epg.112114.xyz/pp.xml"
 
 # --- 辅助函数：配置加载和日志 ---
 def setup_logging():
@@ -120,38 +123,46 @@ def categorize_channels(channels, template_channels, ordered_categories):
 
     return categorized_data, uncategorized_data
 
-# --- 结果保存模块 ---
-def save_channels_to_files(categorized_data, uncategorized_data, ordered_categories, output_file, uncat_file):
-    """将分类结果保存到最终文件"""
+# --- 结果保存模块（已修改为 M3U 格式） ---
+def save_channels_to_files(categorized_data, uncategorized_data, ordered_categories, output_file, uncat_file, epg_url):
+    """将分类结果保存到最终 M3U 文件"""
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     os.makedirs(os.path.dirname(uncat_file), exist_ok=True)
 
-    header = [
-        f"更新日期,#genre#\n",
-        f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')},url\n"
-    ]
-
+    # --- 保存为 M3U 格式 ---
     try:
         with open(output_file, "w", encoding='utf-8') as iptv_list_file:
-            iptv_list_file.writelines(header)
+            # M3U 文件必须以 #EXTM3U 开头
+            # tvg-id 和 tvg-name 的值通常是频道名的拼音，以便与 EPG 节目表匹配
+            iptv_list_file.write(f'#EXTM3U url-tvg="{epg_url}"\n')
             
-            # 按照 demo.txt 中的类别顺序进行保存
+            # 按 demo.txt 中的类别顺序进行保存
             for category in ordered_categories:
                 if category in categorized_data and categorized_data[category]:
-                    iptv_list_file.write(f"\n{category},#genre#\n")
+                    # #EXTGRP 是 M3U 格式中的分组标签
+                    iptv_list_file.write(f'\n#EXTGRP:{category}\n')
+                    
                     # 按主频道名称排序，确保输出顺序稳定
                     for main_name in sorted(categorized_data[category].keys()):
-                        # 写入主频道名，并只保留一个URL（可根据需要修改）
-                        # 这里我们保留所有原始名称及其URL
+                        # 写入主频道名，并只保留一个URL
+                        # 对于每个频道，写入 #EXTINF 标签和 URL
                         for original_name, url in sorted(categorized_data[category][main_name], key=lambda x: x[0]):
-                             iptv_list_file.write(f"{original_name},{url}\n")
+                            # #EXTINF 格式: #EXTINF:-1 tvg-id="频道ID" tvg-name="频道名称" group-title="分类",频道显示名称
+                            # tvg-id 和 tvg-name 通常用于关联 EPG
+                            iptv_list_file.write(f'#EXTINF:-1 tvg-id="{main_name}" tvg-name="{main_name}" group-title="{category}",{original_name}\n')
+                            iptv_list_file.write(f'{url}\n')
             
         logging.info(f"所有有效频道已分类并保存到: {output_file}")
     except Exception as e:
         logging.error(f"写入文件 '{output_file}' 失败: {e}")
 
+    # --- 保存未分类频道，仍使用原来的 TXT 格式 ---
     try:
         with open(uncat_file, "w", encoding='utf-8') as uncat_file:
+            header = [
+                f"更新日期,#genre#\n",
+                f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')},url\n"
+            ]
             uncat_file.writelines(header)
             if uncategorized_data:
                 uncat_file.write(f"\n未分类频道,#genre#\n")
@@ -187,7 +198,8 @@ def main():
         valid_channels, template_channels, ordered_categories
     )
     
-    save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH)
+    # 传递 EPG URL 给保存函数
+    save_channels_to_files(categorized_channels, uncategorized_channels, ordered_categories, FINAL_IPTV_LIST_PATH, UNCATEGORIZED_CHANNELS_PATH, EPG_URL)
 
     total_elapsed_time = time.time() - total_start_time
     logging.info(f"IPTV 频道分类和保存脚本完成，总耗时 {total_elapsed_time:.2f} 秒")
