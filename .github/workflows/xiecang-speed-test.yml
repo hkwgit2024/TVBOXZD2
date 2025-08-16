@@ -30,12 +30,20 @@ jobs:
       
       - name: 下载远程配置文件
         run: |
-          # 使用 curl 下载并保存到 config.yaml
-          curl -o config.yaml -L "${{ env.SOURCES }}"
-          if [ $? -ne 0 ]; then
-            echo "下载配置文件失败，请检查SOURCES链接是否有效。"
-            exit 1
-          fi
+          # 清空旧的 config.yaml，确保文件是干净的
+          echo "" > config.yaml
+          
+          # 将 SOURCES 变量按逗号分割，遍历每个 URL
+          IFS=',' read -ra urls <<< "$SOURCES"
+          
+          for url in "${urls[@]}"; do
+            echo "正在下载: $url"
+            # 使用 curl 下载并追加到 config.yaml
+            curl -s -L "$url" >> config.yaml
+            if [ $? -ne 0 ]; then
+              echo "下载 $url 失败。跳过此链接。"
+            fi
+          done
 
       - name: 安装 clash-speedtest 工具
         run: go install github.com/faceair/clash-speedtest@latest
