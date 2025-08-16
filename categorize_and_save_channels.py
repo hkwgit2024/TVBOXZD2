@@ -10,7 +10,7 @@ from tqdm import tqdm
 # --- 全局配置和常量 ---
 CATEGORY_CONFIG_PATH = "config/demo.txt"
 INPUT_CHANNELS_PATH = "output/valid_channels_temp.txt"
-FINAL_IPTV_LIST_PATH = "output/iptv_list.m3u" # 修改为 .m3u 格式
+FINAL_IPTV_LIST_PATH = "output/iptv_list.m3u"
 UNCATEGORIZED_CHANNELS_PATH = "output/uncategorized.txt"
 
 SIMILARITY_THRESHOLD = 90  # 使用更高的阈值，精确匹配
@@ -125,7 +125,10 @@ def categorize_channels(channels, template_channels, ordered_categories):
 
 # --- 结果保存模块（已修改为 M3U 格式） ---
 def save_channels_to_files(categorized_data, uncategorized_data, ordered_categories, output_file, uncat_file, epg_url):
-    """将分类结果保存到最终 M3U 文件"""
+    """
+    将分类结果保存到最终 M3U 文件，并严格遵守 M3U 格式。
+    排除不符合 #EXTINF: 和 URL 节点配对的条目。
+    """
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     os.makedirs(os.path.dirname(uncat_file), exist_ok=True)
 
@@ -133,13 +136,12 @@ def save_channels_to_files(categorized_data, uncategorized_data, ordered_categor
     try:
         with open(output_file, "w", encoding='utf-8') as iptv_list_file:
             # M3U 文件必须以 #EXTM3U 开头
-            # tvg-id 和 tvg-name 的值通常是频道名的拼音，以便与 EPG 节目表匹配
             iptv_list_file.write(f'#EXTM3U url-tvg="{epg_url}"\n')
             
             # 按 demo.txt 中的类别顺序进行保存
             for category in ordered_categories:
                 if category in categorized_data and categorized_data[category]:
-                    # #EXTGRP 是 M3U 格式中的分组标签
+                    # 严格要求每个分组都有内容才创建 #EXTGRP
                     iptv_list_file.write(f'\n#EXTGRP:{category}\n')
                     
                     # 按主频道名称排序，确保输出顺序稳定
@@ -147,11 +149,15 @@ def save_channels_to_files(categorized_data, uncategorized_data, ordered_categor
                         # 写入主频道名，并只保留一个URL
                         # 对于每个频道，写入 #EXTINF 标签和 URL
                         for original_name, url in sorted(categorized_data[category][main_name], key=lambda x: x[0]):
-                            # #EXTINF 格式: #EXTINF:-1 tvg-id="频道ID" tvg-name="频道名称" group-title="分类",频道显示名称
-                            # tvg-id 和 tvg-name 通常用于关联 EPG
-                            iptv_list_file.write(f'#EXTINF:-1 tvg-id="{main_name}" tvg-name="{main_name}" group-title="{category}",{original_name}\n')
-                            iptv_list_file.write(f'{url}\n')
-            
+                            # 严格检查 URL 是否有效，避免空 URL 导致格式错误
+                            if url and url.startswith(('http://', 'https://')):
+                                # #EXTINF 格式: #EXTINF:-1 tvg-id="频道ID" tvg-name="频道名称" group-title="分类",频道显示名称
+                                # tvg-id 和 tvg-name 通常用于关联 EPG
+                                iptv_list_file.write(f'#EXTINF:-1 tvg-id="{main_name}" tvg-name="{main_name}" group-title="{category}",{original_name}\n')
+                                iptv_list_file.write(f'{url}\n')
+                            else:
+                                logging.warning(f"跳过无效节点：频道名称 '{original_name}', URL '{url}' 不符合M3U标准。")
+
         logging.info(f"所有有效频道已分类并保存到: {output_file}")
     except Exception as e:
         logging.error(f"写入文件 '{output_file}' 失败: {e}")
