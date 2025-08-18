@@ -7,6 +7,7 @@ import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from ip_geolocation import GeoLite2Country
+from tqdm import tqdm
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,7 +50,6 @@ def test_connection(link):
     # 尝试 HTTP
     try:
         requests.head(f"http://{link}", headers=get_headers(), timeout=5)
-        print(f"预测试成功 (HTTP): {link}")
         return link
     except requests.exceptions.RequestException:
         pass
@@ -57,25 +57,22 @@ def test_connection(link):
     # 如果 HTTP 失败，尝试 HTTPS
     try:
         requests.head(f"https://{link}", headers=get_headers(), timeout=5)
-        print(f"预测试成功 (HTTPS): {link}")
         return link
     except requests.exceptions.RequestException:
         pass
         
-    print(f"预测试失败: {link}")
     return None
 
 def pre_test_links(links):
     """并发预测试所有链接，返回可用的链接列表"""
-    print("第一阶段：开始预测试所有链接...")
     working_links = []
     with ThreadPoolExecutor(max_workers=30) as executor:  # 增加预测试的并发数
         future_to_link = {executor.submit(test_connection, link): link for link in links}
-        for future in as_completed(future_to_link):
+        # 使用 tqdm 封装 as_completed
+        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result = future.result()
             if result:
                 working_links.append(result)
-    print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
     return working_links
 
 def get_node_from_url(link, config_name):
@@ -87,7 +84,6 @@ def get_node_from_url(link, config_name):
     try:
         response = requests.get(f"http://{url_with_config}", headers=headers, timeout=5)
         if response.status_code == 200:
-            print(f"成功连接 (HTTP): http://{url_with_config}")
             return response.text, f"http://{url_with_config}"
     except requests.exceptions.RequestException:
         pass
@@ -96,7 +92,6 @@ def get_node_from_url(link, config_name):
     try:
         response = requests.get(f"https://{url_with_config}", headers=headers, timeout=5)
         if response.status_code == 200:
-            print(f"成功连接 (HTTPS): https://{url_with_config}")
             return response.text, f"https://{url_with_config}"
     except requests.exceptions.RequestException:
         pass
@@ -105,7 +100,6 @@ def get_node_from_url(link, config_name):
 
 def process_links(links):
     """第二阶段：处理可用的链接"""
-    print("第二阶段：开始处理可用链接...")
     all_nodes = []
     node_counts = []
     
@@ -113,8 +107,8 @@ def process_links(links):
         # 提交所有任务
         future_to_link = {executor.submit(get_node_from_url, link, config): (link, config) for link in links for config in CONFIG_NAMES}
         
-        # 实时获取结果
-        for future in as_completed(future_to_link):
+        # 使用 tqdm 封装 as_completed
+        for future in tqdm(as_completed(future_to_link), total=len(links) * len(CONFIG_NAMES), desc="获取节点内容"):
             nodes_text, successful_url = future.result()
             if nodes_text:
                 try:
@@ -132,8 +126,8 @@ def process_links(links):
                     
                     all_nodes.extend(nodes)
                     node_counts.append({'url': successful_url, 'count': len(nodes)})
-                except yaml.YAMLError as e:
-                    print(f"解析YAML失败: {successful_url} - {e}")
+                except yaml.YAMLError:
+                    pass
     
     return all_nodes, node_counts
 
@@ -144,9 +138,12 @@ def main():
         links_to_test = [line.strip() for line in f if line.strip()]
 
     # 第一阶段：预测试
+    print("第一阶段：预测试所有链接...")
     working_links = pre_test_links(links_to_test)
+    print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
     
     # 第二阶段：处理可用的链接
+    print("第二阶段：开始处理可用链接...")
     all_nodes, node_counts = process_links(working_links)
     
     # 统计和去重
