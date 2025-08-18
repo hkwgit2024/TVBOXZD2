@@ -1,20 +1,6 @@
 {
   "sites": [
     {
-      "key": "Bili",
-      "name": "📚哔哩合集┃所有资源均为免费提供",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 1,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/bilibili.json"
-    },
-    {
       "key": "csp_woggcli",
       "name": "📚4KHDR┃T4站-A",
       "type": 4,
@@ -22,34 +8,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "优酷",
-      "name": "📚2KHDR┃官源-1",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/youku.js"
-    },
-    {
-      "key": "芒果",
-      "name": "📚2KHDR┃官源-2",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/mangguo.js"
-    },
-    {
-      "key": "爱奇异",
-      "name": "📚2KHDR┃官源-3",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/aiqiyi.js"
-    },
-    {
-      "key": "腾讯",
-      "name": "📚2KHDR┃官源-4",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/tengxun.js"
     },
     {
       "key": "Czsapp",
@@ -61,175 +19,6 @@
       "quickSearch": 1,
       "changeable": 1,
       "ext": "https://www.czzy88.com/"
-    },
-    {
-      "key": "csp_Nmys",
-      "name": "📚2KHDR┃秒播-C",
-      "type": 3,
-      "api": "csp_Nmys",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/nmys.json"
-    },
-    {
-      "key": "Biliych",
-      "name": "📚热门┃歌曲",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 1,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/biliych.json"
-    },
-    {
-      "key": "js58",
-      "name": "📚五八┃动漫",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/58动漫.js"
-    },
-    {
-      "key": "csp_动漫巴士",
-      "name": "📚动漫┃巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/动漫巴士.json"
-    },
-    {
-      "key": "csp_qiumi",
-      "name": "📚Jrs球┃直播",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/JRKAN直播.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "88js",
-      "name": "📚看球┃球迷",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/88看球.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "drpy_js_短剧网",
-      "name": "📚短剧┃大全",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/短剧网.js"
-    },
-    {
-      "key": "戏曲杂苑",
-      "name": "📚戏曲｜大全",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/哔哩戏曲.json"
-    },
-    {
-      "key": "相声小品",
-      "name": "📚相声｜小品",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/哔哩相声.json"
-    },
-    {
-      "key": "dr_兔小贝",
-      "name": "📚教育┃儿童启蒙",
-      "type": 3,
-      "api": "https://agit.ai/hu/hcr/raw/branch/master/lib/apiv167drpy2.min.js",
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/兔小贝.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "少儿教育",
-      "name": "📚教育┃少儿教育",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/少儿教育.json"
-    },
-    {
-      "key": "小学课堂",
-      "name": "📚教育┃小学课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/小学课堂.json"
-    },
-    {
-      "key": "初中课堂",
-      "name": "📚教育┃初中课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/初中课堂.json"
-    },
-    {
-      "key": "高中教育",
-      "name": "📚教育┃高中课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/hu/hcr/raw/branch/master/lib/高中课堂.json"
     },
     {
       "key": "csp_xpath_qiumi",
@@ -304,196 +93,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_xpath_zxzj",
-      "name": "在线之家(XP)",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/zxzjp.json"
-    },
-    {
-      "key": "csp_xpath_dm84",
-      "name": "动漫巴士(XP)",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/dm84.json"
-    },
-    {
-      "key": "饭团影视",
-      "name": "饭团影视(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/ftys.json"
-    },
-    {
-      "key": "abyy",
-      "name": "AB影院(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/abyy.json"
-    },
-    {
-      "key": "蓝光影院",
-      "name": "蓝光(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/lgyy.json"
-    },
-    {
-      "key": "ysgc",
-      "name": "影视工厂(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/ysgc.json"
-    },
-    {
-      "key": "瓜皮",
-      "name": "瓜皮(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/gptv.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "口袋(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/kdyy.json"
-    },
-    {
-      "key": "csp_XBiubiubiubiu_555",
-      "name": "555(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/555dy.json"
-    },
-    {
-      "key": "csp_xpath_wanmeikk",
-      "name": "完美看看(XP)",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/wmkkp.json"
-    },
-    {
-      "key": "csp_xpath_lezhutv",
-      "name": "乐猪TV(XP)",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/lztv.json"
-    },
-    {
-      "key": "csp_xpath_cokemv",
-      "name": "Cokemv(XP)",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/cokep.json"
-    },
-    {
-      "key": "蓝光影院XPF",
-      "name": "蓝光影院(XP)",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/lgyyp.json"
-    },
-    {
-      "key": "Bili",
-      "name": "Bili(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/bili.json"
-    },
-    {
-      "key": "知识",
-      "name": "知识学堂(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/xx1.json"
-    },
-    {
-      "key": "儿童",
-      "name": "儿童(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/xx2.json"
-    },
-    {
-      "key": "小学",
-      "name": "小学(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/xx3.json"
-    },
-    {
-      "key": "初中",
-      "name": "初中(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/xx4.json"
-    },
-    {
-      "key": "高中",
-      "name": "高中(爬虫)",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/xx5.json"
     },
     {
       "key": "csp_AList",
@@ -613,6 +212,26 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
+    },
+    {
+      "key": "蘑菇影视",
+      "name": "🚛蘑菇┃2K",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "http://11111111.moguys.xyz/api.php/app/"
+    },
+    {
+      "key": "csp_xpath_xxj",
+      "name": "新香蕉(XP)",
+      "type": 3,
+      "api": "csp_XPathMacFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://yangyang1975.coding.net/p/free/d/mao/git/raw/master/xpath/2024xxj.json"
     },
     {
       "key": "csp_xpath_saohuo",
@@ -859,66 +478,6 @@
       "ext": "https://gh-proxy.com/https://raw.githubusercontent.com/FongMi/CatVodSpider/main/json/bili.json"
     },
     {
-      "key": "紙條",
-      "name": "紙條",
-      "type": 3,
-      "api": "csp_Paper",
-      "searchable": 1,
-      "filterable": 1,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
-    },
-    {
-      "key": "易搜",
-      "name": "易搜",
-      "type": 3,
-      "api": "csp_YiSo",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
-    },
-    {
-      "key": "盤搜",
-      "name": "盤搜",
-      "type": 3,
-      "api": "csp_PanSou",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
-    },
-    {
-      "key": "UP雲搜",
-      "name": "UP雲搜",
-      "type": 3,
-      "api": "csp_UpYun",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
-    },
-    {
-      "key": "找資源",
-      "name": "找資源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt$$$yingshi$$$abcd1234"
-    },
-    {
-      "key": "push_agent",
-      "name": "推送",
-      "type": 3,
-      "api": "csp_Push",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt"
-    },
-    {
       "key": "Czsapp",
       "name": "厂长┃直连",
       "type": 3,
@@ -949,6 +508,16 @@
       "changeable": 0,
       "ext": "http://www.xb6v.com/",
       "timeout": 30
+    },
+    {
+      "key": "csp_xb_zbk",
+      "name": "影视┃真不卡[XBiu]",
+      "type": 3,
+      "api": "csp_XBiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://www.zbkk.net/vodshow/{cateId}--------{catePg}---.html"
     },
     {
       "key": "csp_xb_ysgc",
@@ -1870,176 +1439,6 @@
       "filterable": 1
     },
     {
-      "key": "csp_biubiu_极品影视",
-      "name": "极品影视XB️",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E6%9E%81%E5%93%81%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_Jianying",
-      "name": "✨简影",
-      "type": 3,
-      "api": "csp_JianYing",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/jy.txt"
-    },
-    {
-      "key": "csp_BBB",
-      "name": "🅱️哔哩哔哩",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E5%93%94%E5%93%A9%E5%A5%97%E9%A4%90.json"
-    },
-    {
-      "key": "儿童",
-      "name": "🐯儿童乐园",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E5%84%BF%E7%AB%A5%E4%B9%90%E5%9B%AD.json"
-    },
-    {
-      "key": "学习",
-      "name": "📝学习园地",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E5%AD%A6%E4%B9%A0%E5%9B%AD%E5%9C%B0.json"
-    },
-    {
-      "key": "软件",
-      "name": "📚软件教程",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E8%BD%AF%E4%BB%B6%E6%95%99%E7%A8%8B.json"
-    },
-    {
-      "key": "美食",
-      "name": "🍔美食合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E7%BE%8E%E9%A3%9F%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "音乐",
-      "name": "🎤音乐现场",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E9%9F%B3%E4%B9%90%E7%8E%B0%E5%9C%BA.json"
-    },
-    {
-      "key": "热舞",
-      "name": "💃女团热舞",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E5%A5%B3%E5%9B%A2%E7%83%AD%E8%88%9E.json"
-    },
-    {
-      "key": "戏曲",
-      "name": "👘戏曲合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/Bili/%E6%88%8F%E6%9B%B2%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "短视频聚合",
-      "name": "📱短视频聚合",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E7%9F%AD%E8%A7%86%E9%A2%91%E8%81%9A%E5%90%88.json"
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%99%8E%E7%89%99.json"
-    },
-    {
-      "key": "csp_biubiu_斗鱼",
-      "name": "🦈斗鱼",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E6%96%97%E9%B1%BC.json"
-    },
-    {
-      "key": "网易CC",
-      "name": "🐠网易CC",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E7%BD%91%E6%98%93CC.json"
-    },
-    {
-      "key": "csp_xpath_酷狗MV",
-      "name": "🐶酷狗MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%85%B7%E7%8B%97MV.json"
-    },
-    {
-      "key": "csp_xpath_kuqimv",
-      "name": "🎤酷奇MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%85%B7%E5%A5%87MV.json"
-    },
-    {
-      "key": "csp_Alist",
-      "name": "🗂Alist合集",
-      "type": 3,
-      "api": "csp_Alist",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/Alist.json"
-    },
-    {
       "key": "T4聚合",
       "name": "🌏T4聚合",
       "type": 4,
@@ -2047,557 +1446,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "Gitcafe",
-      "name": "🔖小纸条",
-      "type": 3,
-      "api": "csp_Gitcafe",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "Upyunso",
-      "name": "🌤UP云搜",
-      "type": 3,
-      "api": "csp_Upyunso",
-      "playerType": 1,
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "FindZY",
-      "name": "🔍找资源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "AliPS",
-      "name": "📀盘搜",
-      "type": 3,
-      "api": "csp_AliPS",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "csp_Yiso",
-      "name": "🎯易搜",
-      "type": 3,
-      "api": "csp_Yiso",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "push_agent",
-      "name": "📨推送",
-      "type": 3,
-      "api": "csp_PushAgent",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/txt/al.txt"
-    },
-    {
-      "key": "17kan",
-      "name": "⚽🏀17看球",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/17%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_88kanqiu",
-      "name": "⚽🏀88看球",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/88%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_XYQBiu_310直播",
-      "name": "⚽🏀310直播",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/310%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_xpath_球迷直播",
-      "name": "⚽🏀球迷直播",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E7%90%83%E8%BF%B7%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_xpath_yinfans",
-      "name": "💥音范丝4K",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%9F%B3%E8%8C%83%E4%B8%9D.json"
-    },
-    {
-      "key": "bdys",
-      "name": "🧲哔嘀磁力",
-      "type": 3,
-      "api": "csp_XPbd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B.json"
-    },
-    {
-      "key": "csp_XYQHiker_氢视频",
-      "name": "🌑氢视频",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E6%B0%A2%E8%A7%86%E9%A2%91.json"
-    },
-    {
-      "key": "csp_XYQHiker_冷曦影视",
-      "name": "❄冷曦影视",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%86%B7%E6%9B%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_在线之家",
-      "name": "🏠在线之家",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%9C%A8%E7%BA%BF%E4%B9%8B%E5%AE%B6.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云影视",
-      "name": "🍨凌云影视",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云韩国",
-      "name": "🍱凌云韩国",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E9%9F%A9%E5%9B%BD.json"
-    },
-    {
-      "key": "csp_XBiubiu_大米星球",
-      "name": "🍚大米星球",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%A4%A7%E7%B1%B3%E6%98%9F%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_chinatv",
-      "name": "🍜中国电影",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E4%B8%AD%E5%9B%BD%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_xp_jLgyy",
-      "name": "💎蓝光影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%93%9D%E5%85%89%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "不卡影院",
-      "name": "🏅不卡影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E4%B8%8D%E5%8D%A1%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "干饭影视",
-      "name": "🍚干饭影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%B9%B2%E9%A5%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "👝口袋影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%8F%A3%E8%A2%8B%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "比特影视",
-      "name": "💰比特影视",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E6%AF%94%E7%89%B9%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_yekong",
-      "name": "🌃夜空蓝光",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%A4%9C%E7%A9%BA%E8%93%9D%E5%85%89.json"
-    },
-    {
-      "key": "花猫影视",
-      "name": "🐱花猫影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%8A%B1%E7%8C%AB%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "利奥影院",
-      "name": "🍪利奥影院",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%88%A9%E5%A5%A5%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "焦炭影视",
-      "name": "💣焦炭影视",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E7%84%A6%E7%82%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_骚火电影",
-      "name": "🔥骚火电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%AA%9A%E7%81%AB%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_biubiu_蓝莓影视",
-      "name": "🧁蓝莓影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%93%9D%E8%8E%93%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "六度影视",
-      "name": "🍨六度影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%85%AD%E5%BA%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_影视工厂",
-      "name": "🎬影视工厂",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%BD%B1%E8%A7%86%E5%B7%A5%E5%8E%82.json"
-    },
-    {
-      "key": "csp_biubiu_555电影",
-      "name": "🏅555 电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/555%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_XBiubiu_UM影视",
-      "name": "🦋UM影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/UM%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_cupfox",
-      "name": "🦊茶杯狐",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%8C%B6%E6%9D%AF%E7%8B%90.json"
-    },
-    {
-      "key": "csp_biubiu_dadagui",
-      "name": "🐢达达龟",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E8%BE%BE%E8%BE%BE%E9%BE%9F.json"
-    },
-    {
-      "key": "csp_XBiubiu_饭团HD",
-      "name": "🍙饭团HD",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%A5%AD%E5%9B%A2HD.json"
-    },
-    {
-      "key": "csp_biubiu_voflix",
-      "name": "🌀voflix",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/voflix.json"
-    },
-    {
-      "key": "csp_XBiubiu_TVB云播",
-      "name": "🌤TVB云播",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/tvb%E4%BA%91%E6%92%AD.json"
-    },
-    {
-      "key": "LIBVIO",
-      "name": "🍲LIBVIO",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/LIBVIO.json"
-    },
-    {
-      "key": "COKEMV",
-      "name": "🥮COKEMV",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/COKEMV.json"
-    },
-    {
-      "key": "Auete影视",
-      "name": "🍬Auete影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/Auete%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu哔嘀影视",
-      "name": "🍠哔嘀影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%93%94%E5%98%80%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "云播看看",
-      "name": "🌨云播看看",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E4%BA%91%E6%92%AD%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "小强影迷",
-      "name": "🐲小强影迷",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%B0%8F%E5%BC%BA%E5%BD%B1%E8%BF%B7.json"
-    },
-    {
-      "key": "人人影视",
-      "name": "👫人人影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E4%BA%BA%E4%BA%BA%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "三九影视",
-      "name": "🐐三九影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E4%B8%89%E4%B9%9D%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_金眼影视",
-      "name": "🌟金眼影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%87%91%E7%9C%BC%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_Nike影视",
-      "name": "🌹Nike影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/Nike%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_0855",
-      "name": "🧳0855影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/0855%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "去看动漫",
-      "name": "🎊去看动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%8E%BB%E7%9C%8B%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "动漫直链",
-      "name": "🎭动漫直链",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E7%9B%B4%E9%93%BE.json"
-    },
-    {
-      "key": "csp_biubiu_风车动漫",
-      "name": "🍭风车动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "csp_xpath___动漫巴士",
-      "name": "🤖动漫巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E5%B7%B4%E5%A3%AB.json"
-    },
-    {
-      "key": "csp_biubiu_OmoFun动漫",
-      "name": "🧚OmoFun动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/OmoFun%E5%8A%A8%E6%BC%AB.json"
     },
     {
       "key": "鑫总资源",
@@ -2628,36 +1476,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "ext": "https://www.zxzjhd.com/"
-    },
-    {
-      "key": "有声小说js",
-      "name": "🎧有声小说",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/有声小说吧.js"
-    },
-    {
-      "key": "88js",
-      "name": "⚽ 88看球",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/lib/drpy.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/js/88看球.js"
-    },
-    {
-      "key": "dr_兔小贝",
-      "name": "📚儿童启蒙",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/lib/drpy.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/js/兔小贝.js"
     },
     {
       "key": "说明",
@@ -2809,27 +1627,6 @@
       "ext": "https://www.czzy66.com/"
     },
     {
-      "key": "csp_Nmys",
-      "name": "🌾农民┃直连",
-      "type": 3,
-      "api": "csp_Nmys",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/nmys.json"
-    },
-    {
-      "key": "贱贱",
-      "name": "🐭贱贱┃p2p",
-      "type": 3,
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "playerType": "1",
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/jp.js"
-    },
-    {
       "key": "新6V",
       "name": "🧲新6V┃磁力",
       "type": 3,
@@ -2838,211 +1635,6 @@
       "quickSearch": 1,
       "changeable": 0,
       "ext": "http://www.xb6v.com/"
-    },
-    {
-      "key": "Jrsjs",
-      "name": "⚽Jrs┃球迷",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/jrk.js",
-      "style": {
-        "type": "list"
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "310js",
-      "name": "⚽310┃看球",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/310直播.js",
-      "style": {
-        "type": "list"
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "企鹅体育xp",
-      "name": "🐧鹅鹅┃体育",
-      "type": 3,
-      "api": "csp_XPath",
-      "style": {
-        "type": "list"
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/企鹅直播.json"
-    },
-    {
-      "key": "酷奇js",
-      "name": "🎤酷奇┃MV",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/酷奇MV.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "MTV",
-      "name": "🎧明星┃MV",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/MTV.json"
-    },
-    {
-      "key": "虎牙直播js",
-      "name": "🐯虎牙┃直播",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/huyazhibo.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "playerType": "1",
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "斗鱼js",
-      "name": "🐟斗鱼┃直播",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/斗鱼直播.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "playerType": "1",
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "聚短视频js",
-      "name": "📽️聚短┃视频",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/短视频.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "有声小说js",
-      "name": "🎧有声┃小说",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/有声小说吧.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "Biliych",
-      "name": "🅱哔哔┃歌曲",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 1,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/biliych.json"
-    },
-    {
-      "key": "dr_兔小贝",
-      "name": "📚儿童┃启蒙",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/%E5%85%94%E5%B0%8F%E8%B4%9D.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "少儿教育",
-      "name": "📚少儿┃教育",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/少儿教育.json"
-    },
-    {
-      "key": "小学课堂",
-      "name": "📚小学┃课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/小学课堂.json"
-    },
-    {
-      "key": "初中课堂",
-      "name": "📚初中┃课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/初中课堂.json"
-    },
-    {
-      "key": "高中教育",
-      "name": "📚高中┃课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/高中课堂.json"
     },
     {
       "key": "T4直播转点播",
@@ -3318,46 +1910,11 @@
       "jar": ""
     },
     {
-      "key": "Bili",
-      "name": "🅱┃哔哔┃合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/json/bilibili.json"
-    },
-    {
       "key": "drpy_js_南瓜影视",
       "name": "🎃┃南瓜┃官解",
       "type": 3,
       "api": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/lib/drpy2.min.js",
       "ext": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/js/%E5%8D%97%E7%93%9C%E5%BD%B1%E8%A7%86.js"
-    },
-    {
-      "key": "贱贱",
-      "name": "🧲┃荐片┃磁力",
-      "type": 3,
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "playerType": "1",
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/js/jp.js"
-    },
-    {
-      "key": "csp_XBPQ_6V",
-      "name": "🧲┃宝盒┃磁力",
-      "type": 3,
-      "api": "csp_XBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/guot54/ygbh/raw/branch/master/XB/6V%e7%a3%81.json"
     },
     {
       "key": "csp_New6v",
@@ -3371,6 +1928,17 @@
       "jar": "https://agit.ai/guot54/ygbh/raw/branch/master/JAR/83.jar"
     },
     {
+      "key": "厂长",
+      "name": "🏭┃厂长┃影视",
+      "type": 3,
+      "api": "csp_Czsapp",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "playerType": 2,
+      "ext": "https://cz01.me/"
+    },
+    {
       "key": "drpy_js_爱看机器人",
       "name": "🎭┃整合┃资源",
       "type": 3,
@@ -3379,26 +1947,6 @@
       "quickSearch": 1,
       "changeable": 1,
       "ext": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/js/爱看机器人.js"
-    },
-    {
-      "key": "相声小品",
-      "name": "😁┃相声┃小品",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/Blixs.json"
-    },
-    {
-      "key": "戏 曲",
-      "name": "😁┃老年┃戏曲",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/Blixq.json"
     },
     {
       "key": "Czsapp",
@@ -3410,16 +1958,6 @@
       "quickSearch": 1,
       "changeable": 1,
       "ext": "https://www.czzy88.com/"
-    },
-    {
-      "key": "Auete",
-      "name": "🏝奥特┃直连",
-      "type": 3,
-      "api": "csp_Auete",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "ext": "https://haozhansou.com/"
     },
     {
       "key": "新6V",
@@ -3828,6 +2366,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_ddg",
+      "name": "达达龟(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dadagui.json"
+    },
+    {
       "key": "csp_xpath_94sm",
       "name": "94神马(XP)",
       "type": 3,
@@ -3886,16 +2434,6 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
-    },
-    {
-      "key": "csp_xpath_dm84",
-      "name": "动漫巴士(XP)",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
     },
     {
       "key": "csp_xpath_pianba",
@@ -3958,6 +2496,26 @@
       "ext": "http://v.i7yc.cn/api.php/v1.vod"
     },
     {
+      "key": "csp_appysv2_渔渔影视",
+      "name": "渔渔影视(萝卜)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
+    },
+    {
+      "key": "csp_appysv2_呀哩动漫",
+      "name": "呀哩动漫(萝卜)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://app.yaliyali.cc/api.php/v1.vod"
+    },
+    {
       "key": "csp_appysv2_月儿影视",
       "name": "月儿影视(萝卜)",
       "type": 3,
@@ -4008,16 +2566,6 @@
       "ext": "https://len.tv/api.php/v1.vod"
     },
     {
-      "key": "csp_appysv2_看剧吧",
-      "name": "看剧吧(萝卜)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://app.ishen520.com/api.php/v1.vod"
-    },
-    {
       "key": "csp_appysv2_天空TV",
       "name": "天空TV(神马)",
       "type": 3,
@@ -4058,197 +2606,6 @@
       "ext": "https://yangyang1975.coding.net/p/free/d/mao/git/raw/master/xpath/2024xxj.json"
     },
     {
-      "key": "短视频聚合",
-      "name": "📱短视频聚合",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%9F%AD%E8%A7%86%E9%A2%91%E8%81%9A%E5%90%88.json"
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%99%8E%E7%89%99.json"
-    },
-    {
-      "key": "csp_biubiu_斗鱼",
-      "name": "🦈斗鱼",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E6%96%97%E9%B1%BC.json"
-    },
-    {
-      "key": "网易CC",
-      "name": "🐠网易CC",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%BD%91%E6%98%93CC.json"
-    },
-    {
-      "key": "csp_xpath_酷狗MV",
-      "name": "🐶酷狗MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%85%B7%E7%8B%97MV.json"
-    },
-    {
-      "key": "csp_xpath_kuqimv",
-      "name": "🎤酷奇MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%85%B7%E5%A5%87MV.json"
-    },
-    {
-      "key": "17kan",
-      "name": "⚽🏀17看球",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/17%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_88kanqiu",
-      "name": "⚽🏀88看球",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/88%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_XYQBiu_310直播",
-      "name": "⚽🏀310直播",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/310%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_xpath_球迷直播",
-      "name": "⚽🏀球迷直播",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%90%83%E8%BF%B7%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_BBB",
-      "name": "🅱️哔哩哔哩",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E5%93%94%E5%93%A9%E5%A5%97%E9%A4%90.json"
-    },
-    {
-      "key": "儿童",
-      "name": "🐯儿童乐园",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E5%84%BF%E7%AB%A5%E4%B9%90%E5%9B%AD.json"
-    },
-    {
-      "key": "学习",
-      "name": "📝学习园地",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E5%AD%A6%E4%B9%A0%E5%9B%AD%E5%9C%B0.json"
-    },
-    {
-      "key": "软件",
-      "name": "📚软件教程",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E8%BD%AF%E4%BB%B6%E6%95%99%E7%A8%8B.json"
-    },
-    {
-      "key": "美食",
-      "name": "🍔美食合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E7%BE%8E%E9%A3%9F%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "音乐",
-      "name": "🎤音乐现场",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E9%9F%B3%E4%B9%90%E7%8E%B0%E5%9C%BA.json"
-    },
-    {
-      "key": "热舞",
-      "name": "💃女团热舞",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E5%A5%B3%E5%9B%A2%E7%83%AD%E8%88%9E.json"
-    },
-    {
-      "key": "戏曲",
-      "name": "👘戏曲合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/Bili/%E6%88%8F%E6%9B%B2%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "csp_Alist",
-      "name": "🗂Alist合集",
-      "type": 3,
-      "api": "csp_Alist",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/Alist.json",
-      "jar": "http://vod.ncncjd.ga/chfs/shared/jar/custom_spider%20(4).jar"
-    },
-    {
       "key": "T4聚合",
       "name": "🎯T4聚合",
       "type": 4,
@@ -4256,476 +2613,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_xpath_clss",
-      "name": "🧲磁搜",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B%E6%90%9C%E7%B4%A2.json"
-    },
-    {
-      "key": "bdys",
-      "name": "🧲哔嘀磁力",
-      "type": 3,
-      "api": "csp_XPbd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B.json"
-    },
-    {
-      "key": "csp_xpath_yinfans",
-      "name": "💥音范丝4K",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%9F%B3%E8%8C%83%E4%B8%9D.json"
-    },
-    {
-      "key": "csp_XYQHiker_氢视频",
-      "name": "🌑氢视频",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E6%B0%A2%E8%A7%86%E9%A2%91.json"
-    },
-    {
-      "key": "csp_XYQHiker_冷曦影视",
-      "name": "❄冷曦影视",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%86%B7%E6%9B%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_在线之家",
-      "name": "🏠在线之家",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%9C%A8%E7%BA%BF%E4%B9%8B%E5%AE%B6.json"
-    },
-    {
-      "key": "csp_biubiu_完美看看",
-      "name": "💯完美看看",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%AE%8C%E7%BE%8E%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云影视",
-      "name": "🍨凌云影视",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云韩国",
-      "name": "🍱凌云韩国",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E9%9F%A9%E5%9B%BD.json"
-    },
-    {
-      "key": "csp_XBiubiu_大米星球",
-      "name": "🍚大米星球",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%A4%A7%E7%B1%B3%E6%98%9F%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_chinatv",
-      "name": "🍜中国电影",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E4%B8%AD%E5%9B%BD%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_xp_jLgyy",
-      "name": "💎蓝光影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%93%9D%E5%85%89%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "不卡影院",
-      "name": "🏅不卡影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E4%B8%8D%E5%8D%A1%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "csp_biubiu_骚火电影",
-      "name": "🔥骚火电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%AA%9A%E7%81%AB%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_biubiu_蓝莓影视",
-      "name": "🧁蓝莓影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%93%9D%E8%8E%93%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "六度影视",
-      "name": "🍨六度影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%85%AD%E5%BA%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_影视工厂",
-      "name": "🎬影视工厂",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%BD%B1%E8%A7%86%E5%B7%A5%E5%8E%82.json"
-    },
-    {
-      "key": "csp_biubiu_555电影",
-      "name": "🏅555 电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/555%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_XBiubiu_UM影视",
-      "name": "🦋UM影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/UM%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_cupfox",
-      "name": "🦊茶杯狐",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%8C%B6%E6%9D%AF%E7%8B%90.json"
-    },
-    {
-      "key": "csp_biubiu_dadagui",
-      "name": "🐢达达龟",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%BE%BE%E8%BE%BE%E9%BE%9F.json"
-    },
-    {
-      "key": "csp_XBiubiu_饭团HD",
-      "name": "🍙饭团HD",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%A5%AD%E5%9B%A2HD.json"
-    },
-    {
-      "key": "csp_biubiu_voflix",
-      "name": "🌀voflix",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/voflix.json"
-    },
-    {
-      "key": "csp_XBiubiu_TVB云播",
-      "name": "🌤TVB云播",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/tvb%E4%BA%91%E6%92%AD.json"
-    },
-    {
-      "key": "LIBVIO",
-      "name": "🍲LIBVIO",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/LIBVIO.json"
-    },
-    {
-      "key": "COKEMV",
-      "name": "🥮COKEMV",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/COKEMV.json"
-    },
-    {
-      "key": "Auete影视",
-      "name": "🍬Auete影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/Auete%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu哔嘀影视",
-      "name": "🍠哔嘀影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%93%94%E5%98%80%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "云播看看",
-      "name": "🌨云播看看",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E4%BA%91%E6%92%AD%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "干饭影视",
-      "name": "🍚干饭影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%B9%B2%E9%A5%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "👝口袋影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%8F%A3%E8%A2%8B%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "比特影视",
-      "name": "💰比特影视",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E6%AF%94%E7%89%B9%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_yekong",
-      "name": "🌃夜空蓝光",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%A4%9C%E7%A9%BA%E8%93%9D%E5%85%89.json"
-    },
-    {
-      "key": "花猫影视",
-      "name": "🐱花猫影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E8%8A%B1%E7%8C%AB%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "利奥影院",
-      "name": "🍪利奥影院",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%88%A9%E5%A5%A5%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "焦炭影视",
-      "name": "💣焦炭影视",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E7%84%A6%E7%82%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "小强影迷",
-      "name": "🐲小强影迷",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%B0%8F%E5%BC%BA%E5%BD%B1%E8%BF%B7.json"
-    },
-    {
-      "key": "人人影视",
-      "name": "👫人人影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E4%BA%BA%E4%BA%BA%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "三九影视",
-      "name": "🐐三九影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E4%B8%89%E4%B9%9D%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_金眼影视",
-      "name": "🌟金眼影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%87%91%E7%9C%BC%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_Nike影视",
-      "name": "🌹Nike影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/Nike%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_0855",
-      "name": "🧳0855影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/0855%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "去看动漫",
-      "name": "🎊去看动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%8E%BB%E7%9C%8B%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "动漫直链",
-      "name": "🎭动漫直链",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E7%9B%B4%E9%93%BE.json"
-    },
-    {
-      "key": "csp_biubiu_风车动漫",
-      "name": "🍭风车动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "csp_xpath___动漫巴士",
-      "name": "🤖动漫巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E5%B7%B4%E5%A3%AB.json"
-    },
-    {
-      "key": "csp_biubiu_OmoFun动漫",
-      "name": "🧚OmoFun动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/go/TVBox/-/raw/main/json/OmoFun%E5%8A%A8%E6%BC%AB.json"
     },
     {
       "key": "鑫总资源",
@@ -4768,25 +2655,14 @@
       "ext": "http://tv.tkys.tv/api.php/iptv/vod/"
     },
     {
-      "key": "csp_biubiu_ting",
-      "name": "🎧听书网（无画面）",
+      "key": "csp_appysv2_渔渔影视〔APP〕",
+      "name": "🐠渔渔影视",
       "type": 3,
-      "api": "csp_XBiubiu",
+      "api": "csp_AppYsV2",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/o/o/raw/branch/o/o/%e5%90%ac%e4%b9%a6%e7%bd%91.json"
-    },
-    {
-      "key": "csp_XYQBiu_短视频",
-      "name": "分享短视频(YXQ)",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "jar": "",
-      "ext": "https://agit.ai/o/o/raw/branch/o/o/%e5%88%86%e4%ba%ab%e7%9f%ad%e8%a7%86%e9%a2%91.json"
+      "filterable": 1,
+      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
     },
     {
       "key": "csp_biubiu_LIBVIO",
@@ -4827,6 +2703,14 @@
       "quickSearch": 0,
       "filterable": 0,
       "ext": "https://pkj99.github.io/demo/tvbox/kuqimv.json"
+    },
+    {
+      "key": "Voflix",
+      "name": "Voflix",
+      "type": 3,
+      "api": "csp_Voflix",
+      "searchable": 1,
+      "ext": "https://www.voflix.me/"
     },
     {
       "key": "我的哔哩(js)",
@@ -4887,176 +2771,6 @@
       "ext": "https://www.agit.ai/fantaiying/dr_py/raw/branch/main/js/子子影视.js"
     },
     {
-      "key": "短视频聚合",
-      "name": "📱短视频聚合",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%9F%AD%E8%A7%86%E9%A2%91%E8%81%9A%E5%90%88.json"
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%99%8E%E7%89%99.json"
-    },
-    {
-      "key": "网易CC",
-      "name": "🐠网易CC",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%BD%91%E6%98%93CC.json"
-    },
-    {
-      "key": "csp_xpath_酷狗MV",
-      "name": "🐶酷狗MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%85%B7%E7%8B%97MV.json"
-    },
-    {
-      "key": "csp_xpath_kuqimv",
-      "name": "🎤酷奇MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%85%B7%E5%A5%87MV.json"
-    },
-    {
-      "key": "17kan",
-      "name": "⚽🏀17看球",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/17%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_XYQBiu_310直播",
-      "name": "⚽🏀310直播",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/310%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_xpath_球迷直播",
-      "name": "⚽🏀球迷直播",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%90%83%E8%BF%B7%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_BBB",
-      "name": "🅱️哔哩哔哩",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%93%94%E5%93%A9%E5%A5%97%E9%A4%90.json"
-    },
-    {
-      "key": "儿童",
-      "name": "🐯儿童乐园",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%84%BF%E7%AB%A5%E4%B9%90%E5%9B%AD.json"
-    },
-    {
-      "key": "学习",
-      "name": "📝学习园地",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%AD%A6%E4%B9%A0%E5%9B%AD%E5%9C%B0.json"
-    },
-    {
-      "key": "软件",
-      "name": "📚软件教程",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%BD%AF%E4%BB%B6%E6%95%99%E7%A8%8B.json"
-    },
-    {
-      "key": "美食",
-      "name": "🍔美食合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%BE%8E%E9%A3%9F%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "音乐",
-      "name": "🎤音乐现场",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%9F%B3%E4%B9%90%E7%8E%B0%E5%9C%BA.json"
-    },
-    {
-      "key": "热舞",
-      "name": "💃女团热舞",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%A5%B3%E5%9B%A2%E7%83%AD%E8%88%9E.json"
-    },
-    {
-      "key": "戏曲",
-      "name": "👘戏曲合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E6%88%8F%E6%9B%B2%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "csp_Alist",
-      "name": "🗂Alist合集",
-      "type": 3,
-      "api": "csp_Alist",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/Alist.json"
-    },
-    {
       "key": "T4聚合",
       "name": "🎯T4聚合",
       "type": 4,
@@ -5064,466 +2778,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_xpath_clss",
-      "name": "🧲磁搜",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%A3%81%E5%8A%9B%E6%90%9C%E7%B4%A2.json"
-    },
-    {
-      "key": "bdys",
-      "name": "🧲哔嘀磁力",
-      "type": 3,
-      "api": "csp_XPbd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%A3%81%E5%8A%9B.json"
-    },
-    {
-      "key": "csp_xpath_yinfans",
-      "name": "💥音范丝4K",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%9F%B3%E8%8C%83%E4%B8%9D.json"
-    },
-    {
-      "key": "csp_XYQHiker_氢视频",
-      "name": "🌑氢视频 XYQH",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E6%B0%A2%E8%A7%86%E9%A2%91.json"
-    },
-    {
-      "key": "csp_XYQHiker_冷曦影视",
-      "name": "❄冷曦影视",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%86%B7%E6%9B%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_在线之家",
-      "name": "🏠在线之家",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%9C%A8%E7%BA%BF%E4%B9%8B%E5%AE%B6.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云影视",
-      "name": "🍨凌云影视",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%87%8C%E4%BA%91%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云韩国",
-      "name": "🍱凌云韩国",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%87%8C%E4%BA%91%E9%9F%A9%E5%9B%BD.json"
-    },
-    {
-      "key": "csp_XBiubiu_大米星球",
-      "name": "🍚大米星球",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%A4%A7%E7%B1%B3%E6%98%9F%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_chinatv",
-      "name": "🍜中国电影",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E4%B8%AD%E5%9B%BD%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_xp_jLgyy",
-      "name": "💎蓝光影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%93%9D%E5%85%89%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "不卡影院",
-      "name": "🏅不卡影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E4%B8%8D%E5%8D%A1%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "csp_biubiu_骚火电影",
-      "name": "🔥骚火电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%AA%9A%E7%81%AB%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_biubiu_蓝莓影视",
-      "name": "🧁蓝莓影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%93%9D%E8%8E%93%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "六度影视",
-      "name": "🍨六度影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%85%AD%E5%BA%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_影视工厂",
-      "name": "🎬影视工厂",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%BD%B1%E8%A7%86%E5%B7%A5%E5%8E%82.json"
-    },
-    {
-      "key": "csp_biubiu_555电影",
-      "name": "🏅555 电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/555%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_XBiubiu_UM影视",
-      "name": "🦋UM影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/UM%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_cupfox",
-      "name": "🦊茶杯狐",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%8C%B6%E6%9D%AF%E7%8B%90.json"
-    },
-    {
-      "key": "csp_biubiu_dadagui",
-      "name": "🐢达达龟",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%BE%BE%E8%BE%BE%E9%BE%9F.json"
-    },
-    {
-      "key": "csp_XBiubiu_饭团HD",
-      "name": "🍙饭团HD",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%A5%AD%E5%9B%A2HD.json"
-    },
-    {
-      "key": "csp_biubiu_voflix",
-      "name": "🌀voflix",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/voflix.json"
-    },
-    {
-      "key": "csp_XBiubiu_TVB云播",
-      "name": "🌤TVB云播",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/tvb%E4%BA%91%E6%92%AD.json"
-    },
-    {
-      "key": "LIBVIO",
-      "name": "🍲LIBVIO",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/LIBVIO.json"
-    },
-    {
-      "key": "COKEMV",
-      "name": "🥮COKEMV",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/COKEMV.json"
-    },
-    {
-      "key": "Auete影视",
-      "name": "🍬Auete影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/Auete%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu哔嘀影视",
-      "name": "🍠哔嘀影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%93%94%E5%98%80%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "云播看看",
-      "name": "🌨云播看看",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E4%BA%91%E6%92%AD%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "干饭影视",
-      "name": "🍚干饭影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%B9%B2%E9%A5%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "👝口袋影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%8F%A3%E8%A2%8B%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "比特影视",
-      "name": "💰比特影视",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E6%AF%94%E7%89%B9%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_yekong",
-      "name": "🌃夜空蓝光",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%A4%9C%E7%A9%BA%E8%93%9D%E5%85%89.json"
-    },
-    {
-      "key": "花猫影视",
-      "name": "🐱花猫影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E8%8A%B1%E7%8C%AB%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "利奥影院",
-      "name": "🍪利奥影院",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%88%A9%E5%A5%A5%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "焦炭影视",
-      "name": "💣焦炭影视",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E7%84%A6%E7%82%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "小强影迷",
-      "name": "🐲小强影迷",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%B0%8F%E5%BC%BA%E5%BD%B1%E8%BF%B7.json"
-    },
-    {
-      "key": "人人影视",
-      "name": "👫人人影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E4%BA%BA%E4%BA%BA%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "三九影视",
-      "name": "🐐三九影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E4%B8%89%E4%B9%9D%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_金眼影视",
-      "name": "🌟金眼影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%87%91%E7%9C%BC%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_Nike影视",
-      "name": "🌹Nike影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/Nike%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_0855",
-      "name": "🧳0855影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/0855%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "去看动漫",
-      "name": "🎊去看动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%8E%BB%E7%9C%8B%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "动漫直链",
-      "name": "🎭动漫直链",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%8A%A8%E6%BC%AB%E7%9B%B4%E9%93%BE.json"
-    },
-    {
-      "key": "csp_biubiu_风车动漫",
-      "name": "🍭风车动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "csp_xpath___动漫巴士",
-      "name": "🤖动漫巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/%E5%8A%A8%E6%BC%AB%E5%B7%B4%E5%A3%AB.json"
-    },
-    {
-      "key": "csp_biubiu_OmoFun动漫",
-      "name": "🧚OmoFun动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/OmoFun%E5%8A%A8%E6%BC%AB.json"
     },
     {
       "key": "鑫总资源",
@@ -5566,25 +2820,14 @@
       "ext": "http://tv.tkys.tv/api.php/iptv/vod/"
     },
     {
-      "key": "csp_biubiu_ting",
-      "name": "🎧听书网（无画面）",
+      "key": "csp_appysv2_渔渔影视〔APP〕",
+      "name": "🐠渔渔影视",
       "type": 3,
-      "api": "csp_XBiubiu",
+      "api": "csp_AppYsV2",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/o/o/raw/branch/o/o/%e5%90%ac%e4%b9%a6%e7%bd%91.json"
-    },
-    {
-      "key": "csp_XYQBiu_短视频",
-      "name": "分享短视频(YXQ)",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "jar": "",
-      "ext": "https://agit.ai/o/o/raw/branch/o/o/%e5%88%86%e4%ba%ab%e7%9f%ad%e8%a7%86%e9%a2%91.json"
+      "filterable": 1,
+      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
     },
     {
       "key": "py",
@@ -5594,826 +2837,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "py_cctv",
-      "name": "🌏央视频道 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctv.py"
-    },
-    {
-      "key": "py_bilibili",
-      "name": "🅱哔哩哔哩 py",
-      "type": 3,
-      "api": "py_bilibili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_bilibili.py"
-    },
-    {
-      "key": "py_bilimd",
-      "name": "🅱哔哩影视 py",
-      "type": 3,
-      "api": "py_bilimd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_bilimd.py"
-    },
-    {
-      "key": "py_huya",
-      "name": "🐯虎牙直播 py",
-      "type": 3,
-      "api": "py_huya",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_huya.py"
-    },
-    {
-      "key": "py_douyu",
-      "name": "🦈斗鱼直播 py",
-      "type": 3,
-      "api": "py_douyu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_douyu.py"
-    },
-    {
-      "key": "py_kuaikan",
-      "name": "👀快看影视 py",
-      "type": 3,
-      "api": "py_kuaikan",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_kuaikan.py"
-    },
-    {
-      "key": "py_lezhu",
-      "name": "🐷乐猪影视 py",
-      "type": 3,
-      "api": "py_lezhu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_lezhu.py"
-    },
-    {
-      "key": "py_3qu",
-      "name": "🥊快播影视 py",
-      "type": 3,
-      "api": "py_3qu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_3qu.py"
-    },
-    {
-      "key": "py_cyys",
-      "name": "🎇创艺影视 py",
-      "type": 3,
-      "api": "py_cyys",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cyys.py"
-    },
-    {
-      "key": "py_star",
-      "name": "✨星光影视 py",
-      "type": 3,
-      "api": "py_star",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_star.py"
-    },
-    {
-      "key": "py_czspp",
-      "name": "🏭厂长资源 py",
-      "type": 3,
-      "api": "py_czspp",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_czspp.py"
-    },
-    {
-      "key": "py_zxzj",
-      "name": "🏠在线之家 py",
-      "type": 3,
-      "api": "py_zxzj",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_zxzj.py"
-    },
-    {
-      "key": "py_gimytv",
-      "name": "💽剧迷影视 py",
-      "type": 3,
-      "api": "py_gimytv",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_gimytv.py"
-    },
-    {
-      "key": "py_genmov",
-      "name": "🎞我爱跟剧 py",
-      "type": 3,
-      "api": "py_genmov",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_genmov.py"
-    },
-    {
-      "key": "py_cokemv",
-      "name": "🎀cokemv py",
-      "type": 3,
-      "api": "py_cokemv",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cokemv.py"
-    },
-    {
-      "key": "py_cup",
-      "name": "🦊茶杯狐 py",
-      "type": 3,
-      "api": "py_cup",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cup.py"
-    },
-    {
-      "key": "py_voflix",
-      "name": "🌀Voflix py",
-      "type": 3,
-      "api": "py_voflix",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_voflix.py"
-    },
-    {
-      "key": "py_xmaomi",
-      "name": "🐱猫咪 py",
-      "type": 3,
-      "api": "py_xmaomi",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_xmaomi.py"
-    },
-    {
-      "key": "py_alist",
-      "name": "🗂Alist py",
-      "type": 3,
-      "api": "py_alist",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_alist.py"
-    },
-    {
-      "key": "py_gitcafe",
-      "name": "🔖小纸条 py",
-      "type": 3,
-      "api": "py_gitcafe",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_gitcafe.py"
-    },
-    {
-      "key": "py_zhaozy",
-      "name": "🔍找资源 py",
-      "type": 3,
-      "api": "py_zhaozy",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_zhaozy.py"
-    },
-    {
-      "key": "py_yiso",
-      "name": "🎯易搜 py",
-      "type": 3,
-      "api": "py_yiso",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_yiso.py"
-    },
-    {
-      "key": "py_pansou",
-      "name": "📀盘搜 py",
-      "type": 3,
-      "api": "py_pansou",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_pansou.py"
-    },
-    {
-      "key": "push_agent2",
-      "name": "📂阿里 py",
-      "type": 3,
-      "api": "py_ali",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_ali.py"
-    },
-    {
-      "key": "py_cctvzh",
-      "name": "📺央视综合 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvzh.py"
-    },
-    {
-      "key": "py_cctvxw",
-      "name": "📺央视新闻 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvxw.py"
-    },
-    {
-      "key": "py_cctvzy",
-      "name": "📺央视综艺 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvzy.py"
-    },
-    {
-      "key": "py_cctvdy",
-      "name": "📺央视电影 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvdy.py"
-    },
-    {
-      "key": "py_cctvty",
-      "name": "📺央视体育 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvty.py"
-    },
-    {
-      "key": "py_cctvfz",
-      "name": "📺央视法治 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctv.py"
-    },
-    {
-      "key": "py_cctvkj",
-      "name": "📺央视科教 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvkj.py"
-    },
-    {
-      "key": "py_cctvyy",
-      "name": "📺央视音乐 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvyy.py"
-    },
-    {
-      "key": "py_cctvse",
-      "name": "📺央视少儿 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvse.py"
-    },
-    {
-      "key": "py_cctvny",
-      "name": "📺央视农业 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvny.py"
-    },
-    {
-      "key": "py_cctvjs",
-      "name": "📺央视军事 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvjs.py"
-    },
-    {
-      "key": "py_cctvxq",
-      "name": "📺央视戏曲 py",
-      "type": 3,
-      "api": "py_cctv",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/l/o/raw/branch/o/o/py_cctvxq.py"
-    },
-    {
-      "key": "csp_xBPQ-说明",
-      "name": "♦未成年人止步！请勿外传！♦",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/四虎影院.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉AV解说",
-      "name": "🏆香蕉解说",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉AV解说.json"
-    },
-    {
-      "key": "csp_xBPQ床吧搜索",
-      "name": "床吧搜索〔xBPQ〕",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/床吧搜索.json"
-    },
-    {
-      "key": "csp_xBPQ床吧",
-      "name": "床吧〔xBPQ〕",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/床吧.json"
-    },
-    {
-      "key": "csp_xBPQ叫床吧",
-      "name": "叫床吧〔xBPQ〕",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/叫床吧.json"
-    },
-    {
-      "key": "dr_猫了个咪",
-      "name": "猫了个咪(drpy)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/猫了个咪.js"
-    },
-    {
-      "key": "dr_HD",
-      "name": "HD(drpy)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/HD.js"
-    },
-    {
-      "key": "dr_18av",
-      "name": "18av(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/18av.js"
-    },
-    {
-      "key": "dr_banan",
-      "name": "banan(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/banan.js"
-    },
-    {
-      "key": "dr_Missav",
-      "name": "Missav(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy2.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/Missav.js"
-    },
-    {
-      "key": "dr_养端",
-      "name": "养端(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/养端.js"
-    },
-    {
-      "key": "dr_吸瓜",
-      "name": "吸瓜(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/吸瓜.js"
-    },
-    {
-      "key": "dr_朱古力",
-      "name": "朱古力(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/朱古力.js"
-    },
-    {
-      "key": "dr_玩偶姐姐",
-      "name": "玩偶姐姐(道长)",
-      "type": 3,
-      "api": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/lib/drpy.min.js",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/js/js/玩偶姐姐.js"
-    },
-    {
-      "key": "csp_xBPQ_香蕉资源",
-      "name": "🏆香蕉资源",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/香蕉资源.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉超清",
-      "name": "🏆香蕉超清",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉超清资源.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉国产",
-      "name": "🏆香蕉国产",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉国产传媒.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉久久热",
-      "name": "🏆香蕉久久热",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉久久热.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉废柴",
-      "name": "🏆香蕉废柴",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉废柴网.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉直播",
-      "name": "🏆香蕉直播",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/新香蕉实时直播.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉搜索",
-      "name": "🏆香蕉搜索",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/香蕉搜索.json"
-    },
-    {
-      "key": "csp_xBPQ_西瓜影视",
-      "name": "🏆西瓜影视",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/西瓜影视.json"
-    },
-    {
-      "key": "csp_xBPQ_女优",
-      "name": "🏆女优",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/女优.json"
-    },
-    {
-      "key": "csp_xBPQ_banban",
-      "name": "🏆banban",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/banban.json"
-    },
-    {
-      "key": "csp_xf_18av",
-      "name": "🏆18av",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/18av.json"
-    },
-    {
-      "key": "csp_xBPQ-爱看影院",
-      "name": "🏆爱看影院️",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/爱看影院️.json"
-    },
-    {
-      "key": "csp_xBPQ_麻豆映画",
-      "name": "🏆麻豆映画",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/麻豆映画.json"
-    },
-    {
-      "key": "csp_xBPQ_香蕉",
-      "name": "🏆香蕉",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/香蕉视频.json"
-    },
-    {
-      "key": "csp_xBPQ_性欲轮回",
-      "name": "🏆性欲轮回",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/性欲轮回.json"
-    },
-    {
-      "key": "csp_xBPQ_性欲轮回[分类]",
-      "name": "🏆性欲轮回[分类]",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/性欲轮回[分类].json"
-    },
-    {
-      "key": "csp_xBPQ_精东影业1",
-      "name": "🏆精东影业1",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/精东影业1.json"
-    },
-    {
-      "key": "csp_xBPQ_精东影业2",
-      "name": "🏆精东影业2",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/精东影业.json"
-    },
-    {
-      "key": "csp_xBPQ_AVideo",
-      "name": "🏆AVideo",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/AVideo.json"
-    },
-    {
-      "key": "csp_xBPQ_黄瓜",
-      "name": "🏆黄瓜",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/xBPQ/黄瓜TV.json"
-    },
-    {
-      "key": "csp_XBiu_香蕉",
-      "name": "🍁香蕉(XB)️",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/香蕉视频.json"
-    },
-    {
-      "key": "csp_XBiu_小丑撸",
-      "name": "🍁小丑撸(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/小丑撸.json"
-    },
-    {
-      "key": "csp_XBiu_国产传媒",
-      "name": "🍁国产传媒(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/国产传媒.json"
-    },
-    {
-      "key": "csp_XBiu_老鸭",
-      "name": "🍁老鸭(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/老鸭.json"
-    },
-    {
-      "key": "csp_XBiu_掏爱撸",
-      "name": "🍁掏爱撸(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/套艾露.json"
-    },
-    {
-      "key": "csp_XBiu_国产屋",
-      "name": "🍁国产屋(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/国产撸.json"
-    },
-    {
-      "key": "csp_XBiu_GAOAA",
-      "name": "🍁GAOAA(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/GAOAA.json"
-    },
-    {
-      "key": "csp_XBiu_黄仓库",
-      "name": "🍁黄仓库(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/23999.json"
-    },
-    {
-      "key": "csp_XBiu_猫咪",
-      "name": "🍁猫咪(XB)",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/猫咪.json"
-    },
-    {
-      "key": "csp_XYQHiker_猫咪",
-      "name": "猫咪",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/海阔猫咪.json"
-    },
-    {
-      "key": "csp_XYQHiker_水果派",
-      "name": "水果派",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/海阔水果派.json"
-    },
-    {
-      "key": "csp_XYQHiker_300分类",
-      "name": "300分类",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/138001380000/MHQTV/raw/branch/master/XBCR/海阔3000.json"
     },
     {
       "key": "AList",
@@ -7513,6 +3936,13 @@
       "ext": "https://meijuchong.com/api.php/v1.vod"
     },
     {
+      "key": "drpy_js_豆瓣",
+      "name": "豆瓣 | 热播[js]",
+      "type": 3,
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/libs/drpy2.min.js",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/js/drpy.js"
+    },
+    {
       "key": "drpy_js_在线之家",
       "name": "影视 | 在线之家[js]",
       "type": 3,
@@ -8017,261 +4447,6 @@
       "ext": "https://www.ysgc.fun"
     },
     {
-      "key": "mtv_小纸条源",
-      "name": "纸条",
-      "type": 3,
-      "api": "csp_Paper",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt",
-      "jar": "http://meow.miaotvs.cn/06.png;md5;69EF6396EB2400C03529C7714D96841A"
-    },
-    {
-      "key": "mtv_云搜资源",
-      "name": "云搜",
-      "type": 3,
-      "api": "csp_UpYun",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt",
-      "jar": "http://meow.miaotvs.cn/06.png;md5;69EF6396EB2400C03529C7714D96841A"
-    },
-    {
-      "key": "mtv_找搜资源",
-      "name": "找搜",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt$$$yingshi$$$abcd1234",
-      "jar": "http://meow.miaotvs.cn/06.png;md5;69EF6396EB2400C03529C7714D96841A"
-    },
-    {
-      "key": "mtv_易搜资源",
-      "name": "易搜",
-      "type": 3,
-      "api": "csp_YiSo",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt",
-      "jar": "http://meow.miaotvs.cn/06.png;md5;69EF6396EB2400C03529C7714D96841A"
-    },
-    {
-      "key": "mtv_盘搜资源",
-      "name": "盘搜",
-      "type": 3,
-      "api": "csp_PanSou",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/token.txt",
-      "jar": "http://meow.miaotvs.cn/06.png;md5;69EF6396EB2400C03529C7714D96841A"
-    },
-    {
-      "key": "csp_XBPQ黑洞影视",
-      "name": "黑洞影视〔XBPQ〕",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%BB%91%E6%B4%9E%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBPQ极品影视",
-      "name": "极品影视〔XBPQ〕",
-      "type": 3,
-      "api": "csp_xBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E6%9E%81%E5%93%81%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "短视频聚合",
-      "name": "📱短视频聚合",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%9F%AD%E8%A7%86%E9%A2%91%E8%81%9A%E5%90%88.json"
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%99%8E%E7%89%99.json"
-    },
-    {
-      "key": "csp_biubiu_斗鱼",
-      "name": "🦈斗鱼",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E6%96%97%E9%B1%BC.json"
-    },
-    {
-      "key": "网易CC",
-      "name": "🐠网易CC",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%BD%91%E6%98%93CC.json"
-    },
-    {
-      "key": "csp_xpath_酷狗MV",
-      "name": "🐶酷狗MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%85%B7%E7%8B%97MV.json"
-    },
-    {
-      "key": "csp_xpath_kuqimv",
-      "name": "🎤酷奇MV",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%85%B7%E5%A5%87MV.json"
-    },
-    {
-      "key": "17kan",
-      "name": "⚽🏀17看球",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/17%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_88kanqiu",
-      "name": "⚽🏀88看球",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/88%E7%9C%8B%E7%90%83.json"
-    },
-    {
-      "key": "csp_XYQBiu_310直播",
-      "name": "⚽🏀310直播",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/310%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_xpath_球迷直播",
-      "name": "⚽🏀球迷直播",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%90%83%E8%BF%B7%E7%9B%B4%E6%92%AD.json"
-    },
-    {
-      "key": "csp_BBB",
-      "name": "🅱️哔哩哔哩",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E5%93%94%E5%93%A9%E5%A5%97%E9%A4%90.json"
-    },
-    {
-      "key": "儿童",
-      "name": "🐯儿童乐园",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E5%84%BF%E7%AB%A5%E4%B9%90%E5%9B%AD.json"
-    },
-    {
-      "key": "学习",
-      "name": "📝学习园地",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E5%AD%A6%E4%B9%A0%E5%9B%AD%E5%9C%B0.json"
-    },
-    {
-      "key": "软件",
-      "name": "📚软件教程",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E8%BD%AF%E4%BB%B6%E6%95%99%E7%A8%8B.json"
-    },
-    {
-      "key": "美食",
-      "name": "🍔美食合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E7%BE%8E%E9%A3%9F%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "音乐",
-      "name": "🎤音乐现场",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E9%9F%B3%E4%B9%90%E7%8E%B0%E5%9C%BA.json"
-    },
-    {
-      "key": "热舞",
-      "name": "💃女团热舞",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E5%A5%B3%E5%9B%A2%E7%83%AD%E8%88%9E.json"
-    },
-    {
-      "key": "戏曲",
-      "name": "👘戏曲合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/Bili/%E6%88%8F%E6%9B%B2%E5%90%88%E9%9B%86.json"
-    },
-    {
       "key": "T4a",
       "name": "📡T4聚合",
       "type": 4,
@@ -8279,456 +4454,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_Alist",
-      "name": "🗂Alist合集",
-      "type": 3,
-      "api": "csp_Alist",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/Alist.json"
-    },
-    {
-      "key": "csp_xpath_clss",
-      "name": "🧲磁力搜索",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B%E6%90%9C%E7%B4%A2.json"
-    },
-    {
-      "key": "bdys",
-      "name": "🧲哔嘀磁力",
-      "type": 3,
-      "api": "csp_XPbd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B.json"
-    },
-    {
-      "key": "csp_xpath_yinfans",
-      "name": "💥音范丝4K",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%9F%B3%E8%8C%83%E4%B8%9D.json"
-    },
-    {
-      "key": "csp_biubiu_在线之家",
-      "name": "🏠在线之家",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%9C%A8%E7%BA%BF%E4%B9%8B%E5%AE%B6.json"
-    },
-    {
-      "key": "csp_biubiu_完美看看",
-      "name": "💯完美看看",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%AE%8C%E7%BE%8E%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云影视",
-      "name": "🍨凌云影视",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XYQBiu_凌云韩国",
-      "name": "🍱凌云韩国",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%87%8C%E4%BA%91%E9%9F%A9%E5%9B%BD.json"
-    },
-    {
-      "key": "csp_XBiubiu_大米星球",
-      "name": "🍚大米星球",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%A4%A7%E7%B1%B3%E6%98%9F%E7%90%83.json"
-    },
-    {
-      "key": "csp_xpath_chinatv",
-      "name": "🍜中国电影",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E4%B8%AD%E5%9B%BD%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_xp_jLgyy",
-      "name": "💎蓝光影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%93%9D%E5%85%89%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "不卡影院",
-      "name": "🏅不卡影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E4%B8%8D%E5%8D%A1%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "干饭影视",
-      "name": "🍚干饭影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%B9%B2%E9%A5%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "👝口袋影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%8F%A3%E8%A2%8B%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "比特影视",
-      "name": "💰比特影视",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E6%AF%94%E7%89%B9%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_yekong",
-      "name": "🌃夜空蓝光",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%A4%9C%E7%A9%BA%E8%93%9D%E5%85%89.json"
-    },
-    {
-      "key": "花猫影视",
-      "name": "🐱花猫影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%8A%B1%E7%8C%AB%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "利奥影院",
-      "name": "🍪利奥影院",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%88%A9%E5%A5%A5%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "焦炭影视",
-      "name": "💣焦炭影视",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E7%84%A6%E7%82%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_骚火电影",
-      "name": "🔥骚火电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%AA%9A%E7%81%AB%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_biubiu_蓝莓影视",
-      "name": "🧁蓝莓影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%93%9D%E8%8E%93%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "六度影视",
-      "name": "🍨六度影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%85%AD%E5%BA%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_影视工厂",
-      "name": "🎬影视工厂",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%BD%B1%E8%A7%86%E5%B7%A5%E5%8E%82.json"
-    },
-    {
-      "key": "csp_biubiu_555电影",
-      "name": "🏅555 电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/555%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_XBiubiu_UM影视",
-      "name": "🦋UM影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/UM%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_cupfox",
-      "name": "🦊茶杯狐",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%8C%B6%E6%9D%AF%E7%8B%90.json"
-    },
-    {
-      "key": "csp_biubiu_dadagui",
-      "name": "🐢达达龟",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E8%BE%BE%E8%BE%BE%E9%BE%9F.json"
-    },
-    {
-      "key": "csp_XBiubiu_饭团HD",
-      "name": "🍙饭团HD",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%A5%AD%E5%9B%A2HD.json"
-    },
-    {
-      "key": "csp_biubiu_voflix",
-      "name": "🌀voflix",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/voflix.json"
-    },
-    {
-      "key": "csp_XBiubiu_TVB云播",
-      "name": "🌤TVB云播",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/tvb%E4%BA%91%E6%92%AD.json"
-    },
-    {
-      "key": "LIBVIO",
-      "name": "🍲LIBVIO",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/LIBVIO.json"
-    },
-    {
-      "key": "COKEMV",
-      "name": "🥮COKEMV",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/COKEMV.json"
-    },
-    {
-      "key": "Auete影视",
-      "name": "🍬Auete影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/Auete%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu哔嘀影视",
-      "name": "🍠哔嘀影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%93%94%E5%98%80%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "云播看看",
-      "name": "🌨云播看看",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E4%BA%91%E6%92%AD%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "小强影迷",
-      "name": "🐲小强影迷",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%B0%8F%E5%BC%BA%E5%BD%B1%E8%BF%B7.json"
-    },
-    {
-      "key": "人人影视",
-      "name": "👫人人影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E4%BA%BA%E4%BA%BA%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "三九影视",
-      "name": "🐐三九影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E4%B8%89%E4%B9%9D%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_金眼影视",
-      "name": "🌟金眼影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%87%91%E7%9C%BC%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_Nike影视",
-      "name": "🌹Nike影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/Nike%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_XBiubiu_0855",
-      "name": "🧳0855影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/0855%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "去看动漫",
-      "name": "🎊去看动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%8E%BB%E7%9C%8B%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "动漫直链",
-      "name": "🎭动漫直链",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E7%9B%B4%E9%93%BE.json"
-    },
-    {
-      "key": "csp_biubiu_风车动漫",
-      "name": "🍭风车动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "csp_biubiu_OmoFun动漫",
-      "name": "🧚OmoFun动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/OmoFun%E5%8A%A8%E6%BC%AB.json"
     },
     {
       "key": "鑫总资源",
@@ -8941,66 +4666,6 @@
       "ext": "https://gitlab.com/fantaiying/ext/-/raw/main/jp.js"
     },
     {
-      "key": "紙條",
-      "name": "紙條",
-      "type": 3,
-      "api": "csp_Paper",
-      "searchable": 1,
-      "filterable": 1,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt"
-    },
-    {
-      "key": "易搜",
-      "name": "易搜",
-      "type": 3,
-      "api": "csp_YiSo",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt"
-    },
-    {
-      "key": "盤搜",
-      "name": "盤搜",
-      "type": 3,
-      "api": "csp_PanSou",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt"
-    },
-    {
-      "key": "UP雲搜",
-      "name": "UP雲搜",
-      "type": 3,
-      "api": "csp_UpYun",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt"
-    },
-    {
-      "key": "找資源",
-      "name": "找資源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt$$$yingshi$$$abcd1234"
-    },
-    {
-      "key": "push_agent",
-      "name": "推送",
-      "type": 3,
-      "api": "csp_Push",
-      "searchable": 1,
-      "filterable": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt"
-    },
-    {
       "key": "音乐",
       "name": "音乐",
       "type": 3,
@@ -9019,72 +4684,6 @@
       "quickSearch": 0,
       "filterable": 1,
       "ext": "https://meet-vip.github.io/xp/女团热舞.json"
-    },
-    {
-      "key": "小纸条",
-      "name": "小纸条",
-      "type": 3,
-      "api": "csp_Paper",
-      "searchable": 1,
-      "filterable": 1,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt",
-      "jar": "./custom_spider.jar"
-    },
-    {
-      "key": "易搜",
-      "name": "易搜",
-      "type": 3,
-      "api": "csp_YiSo",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt",
-      "jar": "./custom_spider.jar"
-    },
-    {
-      "key": "盘搜",
-      "name": "盘搜",
-      "type": 3,
-      "api": "csp_PanSou",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt",
-      "jar": "./custom_spider.jar"
-    },
-    {
-      "key": "UP云搜",
-      "name": "UP云搜",
-      "type": 3,
-      "api": "csp_UpYun",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt",
-      "jar": "./custom_spider.jar"
-    },
-    {
-      "key": "找资源",
-      "name": "找资源",
-      "type": 3,
-      "api": "csp_Zhaozy",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt$$$yingshi$$$abcd1234",
-      "jar": "./custom_spider.jar"
-    },
-    {
-      "key": "push_agent",
-      "name": "推送",
-      "type": 3,
-      "api": "csp_Push",
-      "searchable": 1,
-      "filterable": 0,
-      "switchable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/tok.txt",
-      "jar": "./custom_spider.jar"
     },
     {
       "key": "py_kunyu77",
@@ -9365,16 +4964,6 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
-    },
-    {
-      "key": "csp_appysv2_天空",
-      "name": "天空(M2)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://tkys.tv/xgapp.php/v1/"
     },
     {
       "key": "csp_xpath_tvci",
@@ -9825,16 +5414,6 @@
       "ext": "https://gh.llkk.cc/https://raw.githubusercontent.com/yilishawk/yl/master/好色.json"
     },
     {
-      "key": "dr_豆瓣",
-      "name": "🔍豆瓣首页",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/lib/drpy.min.js",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "http://agit.ai/fantaiying/fty/raw/branch/master/JS/js/drpy.js"
-    },
-    {
       "key": "js_企鹅",
       "name": "🐧企鹅|官源",
       "type": 3,
@@ -10075,26 +5654,6 @@
       "filterable": 1
     },
     {
-      "key": "csp_appysv2_看剧吧",
-      "name": "看剧吧(普通)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://app.ishen520.com/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appys_大猫",
-      "name": "大猫",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://app.ishen520.com/api.php/v1.vod"
-    },
-    {
       "key": "csp_Ysgc",
       "name": "工厂",
       "type": 3,
@@ -10103,17 +5662,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "ext": "https://www.ysgc.fun"
-    },
-    {
-      "key": "csp_AList",
-      "name": "AList",
-      "type": 3,
-      "api": "csp_AList",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 1,
-      "changeable": 0,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/Alist.json"
     },
     {
       "key": "六维",
@@ -10126,46 +5674,11 @@
       "ext": "https://www.xb6v.com"
     },
     {
-      "key": "Bili",
-      "name": "🅱┃哔哔┃合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/json/bilibili.json"
-    },
-    {
       "key": "drpy_js_南瓜影视",
       "name": "🎃┃南瓜┃官解",
       "type": 3,
       "api": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/lib/drpy2.min.js",
       "ext": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/js/%E5%8D%97%E7%93%9C%E5%BD%B1%E8%A7%86.js"
-    },
-    {
-      "key": "贱贱",
-      "name": "🧲┃荐片┃磁力",
-      "type": 3,
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 1,
-      "playerType": "1",
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/JS/js/jp.js"
-    },
-    {
-      "key": "csp_XBPQ_6V",
-      "name": "🧲┃宝盒┃磁力",
-      "type": 3,
-      "api": "csp_XBPQ",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://agit.ai/guot54/ygbh/raw/branch/master/XB/6V%e7%a3%81.json"
     },
     {
       "key": "csp_New6v",
@@ -10179,6 +5692,17 @@
       "jar": "https://agit.ai/guot54/ygbh/raw/branch/master/JAR/83.jar"
     },
     {
+      "key": "厂长",
+      "name": "🏭┃厂长┃影视",
+      "type": 3,
+      "api": "csp_Czsapp",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "playerType": 2,
+      "ext": "https://cz01.me/"
+    },
+    {
       "key": "drpy_js_爱看机器人",
       "name": "🎭┃整合┃资源",
       "type": 3,
@@ -10189,24 +5713,14 @@
       "ext": "https://ghproxy.com/raw.githubusercontent.com/gaotianliuyun/gao/master/js/爱看机器人.js"
     },
     {
-      "key": "相声小品",
-      "name": "😁┃相声┃小品",
+      "key": "csp_xpath_lib",
+      "name": "LIBVIO(XP)",
       "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/Blixs.json"
-    },
-    {
-      "key": "戏 曲",
-      "name": "😁┃老年┃戏曲",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/sub/Blixq.json"
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lib.json"
     },
     {
       "key": "csp_biubiu_厂长资源-蓝光",
@@ -10237,6 +5751,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
+    },
+    {
+      "key": "csp_xpath_ddg",
+      "name": "达达龟(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dadagui.json"
     },
     {
       "key": "csp_xpath_jbb",
@@ -10504,6 +6028,14 @@
       "ext": "https://www.6vdy.org/"
     },
     {
+      "key": "Voflix",
+      "name": "Voflix",
+      "type": 3,
+      "api": "csp_Voflix",
+      "searchable": 1,
+      "ext": "https://www.voflix.me/"
+    },
+    {
       "key": "我的哔哩(js)",
       "name": "我的哔哩(js)",
       "type": 3,
@@ -10682,6 +6214,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_ddg",
+      "name": "达达龟(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dadagui.json"
+    },
+    {
       "key": "csp_xpath_jbb",
       "name": "剧白白(XP)",
       "type": 3,
@@ -10722,6 +6264,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
     },
     {
+      "key": "csp_appysv2_天空",
+      "name": "天空(M2)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://tkys.tv/xgapp.php/v1/"
+    },
+    {
       "key": "csp_xpath_tvci",
       "name": "大师兄(XP)",
       "type": 3,
@@ -10740,16 +6292,6 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
-    },
-    {
-      "key": "csp_xpath_dm84",
-      "name": "动漫巴士(XP)",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
     },
     {
       "key": "csp_xpath_pianba",
@@ -10926,559 +6468,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_BBB",
-      "name": "🅱️哔哩哔哩",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E5%93%94%E5%93%A9%E5%A5%97%E9%A4%90.json"
-    },
-    {
-      "key": "儿童",
-      "name": "🐯儿童乐园",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E5%84%BF%E7%AB%A5%E4%B9%90%E5%9B%AD.json"
-    },
-    {
-      "key": "学习",
-      "name": "📝学习园地",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E5%AD%A6%E4%B9%A0%E5%9B%AD%E5%9C%B0.json"
-    },
-    {
-      "key": "软件",
-      "name": "📚软件教程",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E8%BD%AF%E4%BB%B6%E6%95%99%E7%A8%8B.json"
-    },
-    {
-      "key": "美食",
-      "name": "🍔美食合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E7%BE%8E%E9%A3%9F%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "音乐",
-      "name": "🎤音乐现场",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E9%9F%B3%E4%B9%90%E7%8E%B0%E5%9C%BA.json"
-    },
-    {
-      "key": "热舞",
-      "name": "💃女团热舞",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E5%A5%B3%E5%9B%A2%E7%83%AD%E8%88%9E.json"
-    },
-    {
-      "key": "戏曲",
-      "name": "👘戏曲合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/Bili/%E6%88%8F%E6%9B%B2%E5%90%88%E9%9B%86.json"
-    },
-    {
-      "key": "csp_xpath_yinfans",
-      "name": "💥音范丝4K",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E9%9F%B3%E8%8C%83%E4%B8%9D.json"
-    },
-    {
-      "key": "bdys",
-      "name": "🧲磁力高清",
-      "type": 3,
-      "api": "csp_XPbd",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B.json",
-      "jar": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/jar/cili.jar"
-    },
-    {
-      "key": "csp_xpath_clss",
-      "name": "🧲磁力搜索",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%A3%81%E5%8A%9B%E6%90%9C%E7%B4%A2.json"
-    },
-    {
-      "key": "csp_Alist",
-      "name": "🗂Alist",
-      "type": 3,
-      "api": "csp_Alist",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/Alist.json",
-      "jar": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/jar/77.jar;md5;3FF273ADC74924748C820B8F15FB8C49"
-    },
-    {
-      "key": "csp_xpath_kuqimv",
-      "name": "🎤经典MV",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%BB%8F%E5%85%B8MV.json"
-    },
-    {
-      "key": "短视频聚合",
-      "name": "📱短视频聚合",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%9F%AD%E8%A7%86%E9%A2%91%E8%81%9A%E5%90%88.json",
-      "jar": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/jar/XYQBiu.jar"
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙",
-      "type": 3,
-      "api": "csp_XYQBiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%99%8E%E7%89%99.json"
-    },
-    {
-      "key": "csp_biubiu_斗鱼",
-      "name": "🦈斗鱼",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E6%96%97%E9%B1%BC.json"
-    },
-    {
-      "key": "csp_xpath_球迷1",
-      "name": "⚽🏀球迷1",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%90%83%E8%BF%B71.json"
-    },
-    {
-      "key": "csp_xpath_球迷2",
-      "name": "⚽🏀球迷2",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%90%83%E8%BF%B72.json"
-    },
-    {
-      "key": "csp_biubiu_厂长资源-蓝光",
-      "name": "🏗️厂长蓝光",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%8E%82%E9%95%BF%E8%93%9D%E5%85%89.json"
-    },
-    {
-      "key": "csp_biubiu_555电影",
-      "name": "🍅555 电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/555%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "花猫影视",
-      "name": "🐱花猫影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%8A%B1%E7%8C%AB%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "云播看看",
-      "name": "🌨云播看看",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E4%BA%91%E6%92%AD%E7%9C%8B%E7%9C%8B.json"
-    },
-    {
-      "key": "比特影视",
-      "name": "💰比特影视",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E6%AF%94%E7%89%B9%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "看看影视",
-      "name": "👓看看影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%9C%8B%E7%9C%8B%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "小强影迷",
-      "name": "🐲小强影迷",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%B0%8F%E5%BC%BA%E5%BD%B1%E8%BF%B7.json"
-    },
-    {
-      "key": "超清影视",
-      "name": "🖥超清影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%B6%85%E6%B8%85%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "乌龟影院",
-      "name": "🐢乌龟影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E4%B9%8C%E9%BE%9F%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "人人影视",
-      "name": "👫人人影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E4%BA%BA%E4%BA%BA%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "豆角影视",
-      "name": "🎋豆角影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%B1%86%E8%A7%92%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "三九影视",
-      "name": "🐐三九影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E4%B8%89%E4%B9%9D%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "六度影视",
-      "name": "🍨六度影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%85%AD%E5%BA%A6%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "口袋影院",
-      "name": "👝口袋影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%8F%A3%E8%A2%8B%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "不卡影院",
-      "name": "🏅不卡影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E4%B8%8D%E5%8D%A1%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "干饭影视",
-      "name": "🍚干饭影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%B9%B2%E9%A5%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "霸气影院",
-      "name": "🦁霸气影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E9%9C%B8%E6%B0%94%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "利奥影院",
-      "name": "🍪利奥影院",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%88%A9%E5%A5%A5%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "焦炭影视",
-      "name": "💣焦炭影视",
-      "type": 3,
-      "api": "csp_XPathFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%84%A6%E7%82%AD%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "极品影视",
-      "name": "💝极品影视",
-      "type": 3,
-      "api": "csp_XPathMac",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E6%9E%81%E5%93%81%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_xp_jLgyy",
-      "name": "❄蓝光影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%93%9D%E5%85%89%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "csp_xpath_dianyingn",
-      "name": "🐂电影牛XP",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%94%B5%E5%BD%B1%E7%89%9B.json"
-    },
-    {
-      "key": "csp_biubiu_骚火电影",
-      "name": "🔥骚火电影",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E9%AA%9A%E7%81%AB%E7%94%B5%E5%BD%B1.json"
-    },
-    {
-      "key": "csp_biubiu_影视工厂",
-      "name": "🎬影视工厂",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%BD%B1%E8%A7%86%E5%B7%A5%E5%8E%82.json"
-    },
-    {
-      "key": "csp_biubiu_特狗影视",
-      "name": "🐶特狗影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E7%89%B9%E7%8B%97%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_蓝莓影视",
-      "name": "🧁蓝莓影视",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%93%9D%E8%8E%93%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_biubiu_奇优影院ns",
-      "name": "👔奇优影院",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%A5%87%E4%BC%98%E5%BD%B1%E9%99%A2.json"
-    },
-    {
-      "key": "csp_biubiu_yekong",
-      "name": "🌃夜空高清",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%A4%9C%E7%A9%BA%E9%AB%98%E6%B8%85.json"
-    },
-    {
-      "key": "去看动漫",
-      "name": "🎊去看动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%8E%BB%E7%9C%8B%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "动漫直链",
-      "name": "🎭动漫直链",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E7%9B%B4%E9%93%BE.json"
-    },
-    {
-      "key": "csp_biubiu_风车动漫",
-      "name": "🍭风车动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "csp_xpath___动漫巴士",
-      "name": "🤖动漫巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E5%B7%B4%E5%A3%AB.json"
-    },
-    {
-      "key": "csp_biubiu_OmoFun动漫",
-      "name": "🧚OmoFun动漫",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/OmoFun%E5%8A%A8%E6%BC%AB.json"
-    },
-    {
-      "key": "VIP影视",
-      "name": "💳VIP电影",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/VIP%E5%BD%B1%E8%A7%86.json"
-    },
-    {
-      "key": "csp_xpath_jbb",
-      "name": "💿剧白白",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E5%89%A7%E7%99%BD%E7%99%BD.json"
-    },
-    {
-      "key": "csp_biubiu_voflix",
-      "name": "🌀voflix",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/voflix.json"
-    },
-    {
-      "key": "csp_biubiu_cupfox",
-      "name": "🦊茶杯狐",
-      "type": 3,
-      "api": "csp_XBiubiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/qq_26898231/TVBox/-/raw/main/json/%E8%8C%B6%E6%9D%AF%E7%8B%90.json"
     },
     {
       "key": "鑫总资源",
@@ -11706,132 +6695,6 @@
       "ext": "https://jihulab.com/qiaoji/open/-/raw/main/qiaoji5"
     },
     {
-      "key": "虎牙直播js",
-      "name": "虎牙🐯直播",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/huyazhibo.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "斗鱼js",
-      "name": "斗鱼🐟直播",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/斗鱼直播.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "Bili",
-      "name": "哔哔🅱合集",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/bilibili.json"
-    },
-    {
-      "key": "Biliych",
-      "name": "哔哔🅱歌曲",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/biliych.json"
-    },
-    {
-      "key": "dr_兔小贝",
-      "name": "儿童📚启蒙",
-      "type": 3,
-      "api": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/drpy2.min.js",
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/%E5%85%94%E5%B0%8F%E8%B4%9D.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "少儿教育",
-      "name": "少儿📚教育",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/少儿教育.json"
-    },
-    {
-      "key": "小学课堂",
-      "name": "小学📚课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/小学课堂.json"
-    },
-    {
-      "key": "初中课堂",
-      "name": "初中📚课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/初中课堂.json"
-    },
-    {
-      "key": "高中教育",
-      "name": "高中📚课堂",
-      "type": 3,
-      "api": "csp_Bili",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0,
-      "ext": "https://agit.ai/fantaiying/fty/raw/branch/master/ext/高中课堂.json"
-    },
-    {
       "key": "zhibo3",
       "name": "万首 | MV歌曲",
       "type": 4,
@@ -11867,16 +6730,6 @@
       "quickSearch": 0,
       "filterable": 1,
       "ext": "https://ghproxy.com/https://raw.githubusercontent.com/zengjian0303/han/master/py/py_cctv.py"
-    },
-    {
-      "key": "美剧虫网站",
-      "name": "美剧虫",
-      "type": 3,
-      "api": "csp_AppYs",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://meijuchong.com/api.php/v1.vod"
     },
     {
       "key": "天空影视网站",
@@ -12009,6 +6862,26 @@
       "ext": "https://300ys.xyz/api.php/v1.vod"
     },
     {
+      "key": "csp_appysv2_渔渔影视",
+      "name": "渔渔影视(M)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
+    },
+    {
+      "key": "csp_appysv2_呀哩动漫",
+      "name": "呀哩动漫(M)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://app.yaliyali.cc/api.php/v1.vod"
+    },
+    {
       "key": "csp_appysv2_月儿影视",
       "name": "月儿影视(M)",
       "type": 3,
@@ -12057,16 +6930,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "ext": "https://len.tv/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appysv2_看剧吧",
-      "name": "看剧吧(M)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://app.ishen520.com/api.php/v1.vod"
     },
     {
       "key": "csp_appysv2_天空TV",
@@ -12563,76 +7426,6 @@
       "ext": "https://www.ysgc1.cc/"
     },
     {
-      "key": "88js",
-      "name": "⚽ 88┃看球",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/88看球.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "酷奇js",
-      "name": "🎤酷奇┃MV",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/酷奇MV.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.597
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "虎牙直播js",
-      "name": "🐯虎牙┃直播",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/虎牙直播.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "csp_XYQBiu_斗鱼",
-      "name": "🐟斗鱼┃直播",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/斗鱼直播.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1.755
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
-      "key": "有声小说js",
-      "name": "🎧有声┃小说",
-      "type": 3,
-      "api": "http://xhww.fun:63/js/drpy1.min.js",
-      "ext": "https://agit.ai/fantaiying/dr_py/raw/branch/main/js/有声小说吧.js",
-      "style": {
-        "type": "rect",
-        "ratio": 1
-      },
-      "searchable": 0,
-      "quickSearch": 0,
-      "changeable": 0
-    },
-    {
       "key": "巧技一",
       "name": "巧技一┃App",
       "type": 3,
@@ -12767,6 +7560,26 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_lib",
+      "name": "LIBVIO(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lib.json"
+    },
+    {
+      "key": "csp_xpath_ddg",
+      "name": "达达龟(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dadagui.json"
+    },
+    {
       "key": "csp_xpath_jbb",
       "name": "剧白白(XP)",
       "type": 3,
@@ -12807,16 +7620,6 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
     },
     {
-      "key": "csp_appysv2_天空",
-      "name": "天空(M2)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://tkys.tv/xgapp.php/v1/"
-    },
-    {
       "key": "csp_xpath_tvci",
       "name": "大师兄(XP)",
       "type": 3,
@@ -12835,38 +7638,9 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
-    },
-    {
-      "key": "csp_xpath_dm84",
-      "name": "动漫巴士(XP)",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
-    },
-    {
-      "key": "csp_xpath_pianba",
-      "name": "Pianba(XPath)",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/pianba.json"
     }
   ],
   "lives": [
-    {
-      "name": "live",
-      "type": 0,
-      "url": "https://agit.ai/hu/hcr/raw/branch/master/lib/tvlive.txt",
-      "playerType": 1,
-      "ua": "okhttp/3.15",
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
     {
       "name": "YueChan_IPV6",
       "type": 0,
@@ -12902,20 +7676,18 @@
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
-      "name": "Yoursmile•综合",
+      "name": "俊于•综合",
       "type": 0,
-      "url": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/live.txt",
+      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
       "playerType": 1,
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
-      "name": "饭太硬•综合",
+      "name": "TXT",
       "type": 0,
-      "url": "https://agit.ai/fantaiying/0/raw/branch/main/tvlive.txt",
-      "playerType": 1,
-      "ua": "okhttp/3.15",
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
+      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
+      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
@@ -12950,14 +7722,6 @@
       "ua": "okhttp/3.15",
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png",
-      "name": "直播",
-      "playerType": 1,
-      "type": 0,
-      "url": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/live.txt"
     },
     {
       "name": "雷蒙影视电视直播",
@@ -13063,6 +7827,13 @@
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
     },
     {
+      "name": "直播",
+      "type": 0,
+      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
+      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
       "name": "雷蒙影视电视直播",
       "type": 0,
       "url": "https://cors.isteed.cc/https://raw.githubusercontent.com/n3rddd/CTVLive/main/live.txt",
@@ -13146,6 +7917,13 @@
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
+      "name": "直播",
+      "type": 0,
+      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
+      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
       "name": "TXT",
       "type": 0,
       "url": "http://home.jundie.top:81/Cat/tv/live.txt",
@@ -13214,14 +7992,6 @@
       "boot": false,
       "playerType": 2,
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "直播",
-      "type": 0,
-      "playerType": 1,
-      "url": "https://agit.ai/Yoursmile7/TVBox/raw/branch/master/live.txt",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
@@ -13372,13 +8142,6 @@
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
-      "name": "新世界 电视家4.0",
-      "type": "0",
-      "url": "https://cccimg.com/down.php/3fc12640b9919a7173bed32bc517e261.txt&xsjcm",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
       "name": "HN",
       "type": "0",
       "url": "https://gyssi.link/live/%E6%B9%96%E5%8D%971.m3u?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwMDUxMDAyLCJpYXQiOjE3MjQwMzcwNzQsImV4cCI6MTc1NTU3MzA3NH0.gxE1bAEC1svzY7EhJM19I-YN3LHZa0rdlcwlFFHBkyQ",
@@ -13389,13 +8152,6 @@
       "name": "看电视VIP",
       "type": "0",
       "url": "http://8.138.7.223/2025.txt",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "新世界 电视家高级",
-      "type": "0",
-      "url": "https://cccimg.com/down.php/4deb6aff9477cc57f91cee16522a32ca.txt&xsjcm",
       "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
