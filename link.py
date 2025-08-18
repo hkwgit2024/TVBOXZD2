@@ -112,20 +112,26 @@ def process_links(links):
             if nodes_text:
                 try:
                     data = yaml.safe_load(nodes_text)
-                    nodes = data.get('proxies', [])
-                    
-                    # 处理每个节点，添加地理位置信息
-                    for node in nodes:
-                        ip = re.search(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', node.get('server', ''))
-                        if ip:
-                            ip = ip.group(0)
-                            country_code, country_name = geolocator.get_location(ip)
-                            if country_name:
-                                node['name'] = country_name
-                    
-                    all_nodes.extend(nodes)
-                    node_counts.append({'url': successful_url, 'count': len(nodes)})
+                    # 添加类型检查
+                    if isinstance(data, dict):
+                        nodes = data.get('proxies', [])
+                        
+                        # 处理每个节点，添加地理位置信息
+                        for node in nodes:
+                            ip = re.search(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', node.get('server', ''))
+                            if ip:
+                                ip = ip.group(0)
+                                country_code, country_name = geolocator.get_location(ip)
+                                if country_name:
+                                    node['name'] = country_name
+                        
+                        all_nodes.extend(nodes)
+                        node_counts.append({'url': successful_url, 'count': len(nodes)})
+                    else:
+                        # 忽略非字典类型的内容
+                        pass
                 except yaml.YAMLError:
+                    # 忽略无法解析的YAML内容
                     pass
     
     return all_nodes, node_counts
