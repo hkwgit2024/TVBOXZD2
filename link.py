@@ -7,15 +7,12 @@ import re
 import random
 import json
 import base64
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from functools import reduce
 from ip_geolocation import GeoLite2Country
 from tqdm import tqdm
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
 import time
 
-# 定义文件路径
+# 文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LINKS_FILE = os.path.join(BASE_DIR, 'link.txt')
 OUTPUT_YAML = os.path.join(BASE_DIR, 'link.yaml')
@@ -23,28 +20,26 @@ OUTPUT_CSV = os.path.join(BASE_DIR, 'link.csv')
 GEOLITE_DB = os.path.join(BASE_DIR, 'GeoLite2-Country.mmdb')
 CACHE_FILE = os.path.join(BASE_DIR, 'cache.json')
 
-# 浏览器User-Agent列表
+# User-Agent
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
 ]
 
 # 全局变量
 visited_urls = set()
-MAX_DEPTH = 0  # 禁用 HTML 递归爬取
+MAX_DEPTH = 0
 CHUNK_SIZE = 50
-SLOW_REQUEST_THRESHOLD = 5  # 降低慢请求阈值
+SLOW_REQUEST_THRESHOLD = 5
 BLACKLIST_DOMAINS = {
     'no-ip.com', 'oracle.com', 'canonical.com', 'openvpn.net', 'aagag.com',
     'docs.tagspaces.org', 'build.openvpn.net', 'documentation.ubuntu.com',
-    'fedoraproject.org', 'aws.amazon.com', 'stackoverflow.co', 'ubuntu.com',
-    'discussion.fedoraproject.org', 'cryptolaw.org', 'github.com', 'reddit.com',
-    'twitter.com', 'facebook.com', 'google.com', 'microsoft.com'
+    'fedoraproject.org', 'aws.amazon.com', 'stackoverflow.co', 'discussion.fedoraproject.org',
+    'cryptolaw.org', 'github.com', 'reddit.com', 'twitter.com', 'facebook.com', 'google.com',
+    'microsoft.com'
 }
 
-# 初始化 IP 地理位置解析器
+# 初始化 GeoLite2
 try:
     geolocator = GeoLite2Country(GEOLITE_DB)
     print("GeoLite2-Country 数据库加载成功。")
@@ -56,7 +51,6 @@ def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
 
 async def test_connection(link, session):
-    """异步预测试链接连通性"""
     link = link.replace('http://', '').replace('https://', '')
     if any(domain in link for domain in BLACKLIST_DOMAINS):
         return None
@@ -74,15 +68,14 @@ async def test_connection(link, session):
     return None
 
 async def pre_test_links(links):
-    """异步预测试所有链接"""
-    working_links = []
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=20)) as session:
         tasks = [test_connection(link, session) for link in links]
+        working_links = []
         for future in tqdm(asyncio.as_completed(tasks), total=len(links), desc="预测试链接"):
             result = await future
             if result:
                 working_links.append(result)
-    return working_links
+        return working_links
 
 def parse_vmess(node_link):
     try:
@@ -106,12 +99,11 @@ def parse_vmess(node_link):
         if clash_node['network'] == 'ws':
             clash_node['ws-path'] = node_data.get('path', '/')
             clash_node['ws-headers'] = {'Host': node_data.get('host', node_data['add'])}
-            if node_data.get('host'):
-                clash_node['ws-headers']['Host'] = node_data['host']
         if clash_node['tls']:
             clash_node['servername'] = node_data.get('sni', node_data['add'])
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 vmess 失败: {e}")
         return None
 
 def parse_trojan(node_link):
@@ -131,12 +123,10 @@ def parse_trojan(node_link):
         query = parse_qs(parsed.query)
         if 'security' in query and query['security'][0] == 'tls':
             clash_node['tls'] = True
-            if 'sni' in query:
-                clash_node['sni'] = query['sni'][0]
-            else:
-                clash_node['sni'] = parsed.hostname
+            clash_node['sni'] = query.get('sni', [parsed.hostname])[0]
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 trojan 失败: {e}")
         return None
 
 def parse_ss(node_link):
@@ -159,7 +149,8 @@ def parse_ss(node_link):
             'password': password
         }
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 ss 失败: {e}")
         return None
 
 def parse_vless(node_link):
@@ -186,7 +177,8 @@ def parse_vless(node_link):
         if 'flow' in query:
             clash_node['flow'] = query['flow'][0]
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 vless 失败: {e}")
         return None
 
 def parse_hysteria2(node_link):
@@ -213,7 +205,8 @@ def parse_hysteria2(node_link):
                 clash_node['sni'] = query['sni'][0]
                 clash_node['skip-cert-verify'] = True
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 hysteria2 失败: {e}")
         return None
 
 def parse_ssr(node_link):
@@ -237,7 +230,8 @@ def parse_ssr(node_link):
             'group': base64.b64decode(query.get('group', [''])[0]).decode('utf-8')
         }
         return clash_node
-    except Exception:
+    except Exception as e:
+        print(f"解析 ssr 失败: {e}")
         return None
 
 def convert_to_clash_node(node):
@@ -282,6 +276,7 @@ async def parse_and_fetch(url, session, depth=0):
         return []
     parsed_url = urlparse(url)
     if any(domain in parsed_url.netloc for domain in BLACKLIST_DOMAINS):
+        print(f"跳过黑名单 URL: {url}")
         return []
     visited_urls.add(url)
     all_nodes = []
@@ -289,15 +284,18 @@ async def parse_and_fetch(url, session, depth=0):
     try:
         async with session.get(url, headers=get_headers(), timeout=2) as response:
             if response.status != 200:
+                print(f"请求失败: {url}, 状态码: {response.status}")
                 return []
             content_type = response.headers.get('content-type', '').lower()
             content = await response.text()
+            print(f"请求 {url}, 内容类型: {content_type}, 长度: {len(content)}")
             if 'text/plain' in content_type:
                 try:
                     decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
                     content = decoded_content
+                    print(f"Base64 解码成功: {url}, 长度: {len(content)}")
                 except:
-                    pass
+                    print(f"Base64 解码失败: {url}")
             if 'application/json' in content_type:
                 try:
                     data = json.loads(content)
@@ -305,10 +303,12 @@ async def parse_and_fetch(url, session, depth=0):
                         nodes = data.get('proxies', [])
                         for node in nodes:
                             clash_node = convert_to_clash_node(node)
-                            if clash_node: all_nodes.append(clash_node)
+                            if clash_node:
+                                all_nodes.append(clash_node)
+                        print(f"JSON 解析: {url}, 提取 {len(nodes)} 个节点")
                         return all_nodes
-                except json.JSONDecodeError:
-                    pass
+                except json.JSONDecodeError as e:
+                    print(f"JSON 解析失败: {url}, 错误: {e}")
             elif 'yaml' in content_type:
                 try:
                     data = yaml.safe_load(content)
@@ -316,23 +316,31 @@ async def parse_and_fetch(url, session, depth=0):
                         nodes = data.get('proxies', [])
                         for node in nodes:
                             clash_node = convert_to_clash_node(node)
-                            if clash_node: all_nodes.append(clash_node)
+                            if clash_node:
+                                all_nodes.append(clash_node)
+                        print(f"YAML 解析: {url}, 提取 {len(nodes)} 个节点")
                         return all_nodes
                     elif isinstance(data, list):
                         for node in data:
                             clash_node = convert_to_clash_node(node)
-                            if clash_node: all_nodes.append(clash_node)
+                            if clash_node:
+                                all_nodes.append(clash_node)
+                        print(f"YAML 列表解析: {url}, 提取 {len(data)} 个节点")
                         return all_nodes
-                except yaml.YAMLError:
-                    pass
+                except yaml.YAMLError as e:
+                    print(f"YAML 解析失败: {url}, 错误: {e}")
             regexes = [r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+']
             for pattern in regexes:
                 matches = re.findall(pattern, content)
                 for match in matches:
                     clash_node = convert_to_clash_node(match)
-                    if clash_node: all_nodes.append(clash_node)
+                    if clash_node:
+                        all_nodes.append(clash_node)
+                if matches:
+                    print(f"正则匹配: {url}, 提取 {len(matches)} 个节点")
             return all_nodes
-    except:
+    except Exception as e:
+        print(f"请求错误: {url}, 错误: {e}")
         return []
     finally:
         elapsed = time.time() - start_time
@@ -355,13 +363,13 @@ async def process_links(links):
         with tqdm(total=total_urls, desc="获取节点内容") as pbar:
             for chunk in url_chunks:
                 tasks = [parse_and_fetch(url, session) for url in chunk]
-                for future in asyncio.as_completed(tasks):
+                for i, future in enumerate(asyncio.as_completed(tasks)):
                     nodes = await future
                     if nodes:
-                        node_counts.append({'url': chunk[tasks.index(future)], 'count': len(nodes)})
+                        node_counts.append({'url': chunk[i], 'count': len(nodes)})
                     all_nodes.extend(nodes)
                     pbar.update(1)
-                    save_cache(all_nodes)
+                save_cache(all_nodes)  # 每块保存一次
     return all_nodes, node_counts
 
 def get_node_key(node):
@@ -406,6 +414,7 @@ def main():
         for item in node_counts:
             writer.writerow([item['url'], item['count']])
     print(f"统计信息已保存到 {OUTPUT_CSV}")
+    print(f"最终提取 {len(unique_nodes)} 个唯一节点")
     print("脚本运行结束。")
 
 if __name__ == "__main__":
