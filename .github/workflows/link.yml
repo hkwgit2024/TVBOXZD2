@@ -1,9 +1,15 @@
 name: Run Node Fetcher
 
 on:
-  workflow_dispatch:  # 允许手动触发
+  push:
+    paths:
+      - 'link.py'
+      - 'ip_geolocation.py'
+      - 'link.txt'
+      - '.github/workflows/link.yml'
+  workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 运行一次
+    - cron: '0 0 * * *'
 
 jobs:
   run-script:
@@ -23,7 +29,7 @@ jobs:
           pip install requests pyyaml geoip2
 
       - name: Run the script
-        run: python run.py
+        run: python link.py
 
       - name: Commit and push changes
         run: |
