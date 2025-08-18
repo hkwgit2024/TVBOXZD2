@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'  # 每日0点运行主任务
-    - cron: '0 0 5 * *'  # 每月5号0点更新 GeoLite2-Country.mmdb
+    - cron: '0 7 5 * *'  # 每月5号0:00 PDT（7:00 UTC）更新 GeoLite2-Country.mmdb
 
 jobs:
   run-script:
@@ -30,7 +30,7 @@ jobs:
           pip install requests pyyaml geoip2 tqdm beautifulsoup4
 
       - name: Update GeoLite2-Country database on 5th of each month
-        if: github.event.schedule == '0 0 5 * *'  # 仅在每月5号运行
+        if: github.event.schedule == '0 7 5 * *'
         run: |
           echo "Updating GeoLite2-Country.mmdb..."
           wget -O GeoLite2-Country.mmdb https://git.io/GeoLite2-Country.mmdb
@@ -41,10 +41,10 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true  # 允许下载失败继续运行
+        continue-on-error: true
 
       - name: Verify GeoLite2-Country database
-        if: github.event.schedule != '0 0 5 * *'  # 非每月5号时检查文件
+        if: github.event.schedule != '0 7 5 * *'
         run: |
           if [ ! -f GeoLite2-Country.mmdb ]; then
             echo "Error: GeoLite2-Country.mmdb not found in repository."
@@ -52,15 +52,15 @@ jobs:
           else
             echo "GeoLite2-Country.mmdb found, proceeding."
           fi
-        continue-on-error: false  # 文件缺失时终止
+        continue-on-error: false
 
       - name: Run the script
-        if: github.event.schedule != '0 0 5 * *'  # 非每月5号时运行脚本
+        if: github.event.schedule != '0 7 5 * *'
         run: python link.py
-        continue-on-error: true  # 允许脚本运行出错继续执行
+        continue-on-error: true
 
       - name: Commit and push changes
-        if: github.event.schedule != '0 0 5 * *'  # 非每月5号时提交结果
+        if: github.event.schedule != '0 7 5 * *'
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
