@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4  # 更新到最新版本，支持更快检出
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5  # 更新到最新版本，支持 Python 3.x
         with:
           python-version: '3.x'
 
@@ -28,13 +28,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pyyaml geoip2 tqdm beautifulsoup4
 
+      - name: Download GeoLite2-Country database
+        run: |
+          wget -O GeoLite2-Country.mmdb https://git.io/GeoLite2-Country.mmdb
+          mv GeoLite2-Country.mmdb GeoLite2-Country.mmdb
+
       - name: Run the script
         run: python link.py
+        continue-on-error: true  # 允许脚本运行出错时继续执行后续步骤，方便调试
 
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add link.yaml link.csv
-          git commit -m "Auto update nodes from script"
+          git add link.yaml link.csv cache.json  # 添加 cache.json 到提交
+          git commit -m "Auto update nodes and cache from script" || echo "No changes to commit"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
