@@ -6,15 +6,18 @@ import re
 import random
 import json
 import base64
+import asyncio
+import aiohttp
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from ip_geolocation import GeoLite2Country
-from tqdm import tqdm
+from tqdm.asyncio import tqdm
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
-import time
-from requests.adapters import HTTPAdapter
+from aiohttp import TCPConnector
 from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,8 +42,8 @@ USER_AGENTS = [
 
 # 全局变量用于存储已访问的URL和爬取深度
 visited_urls = set()
-MAX_DEPTH = 2  # 设置最大爬取深度，防止无限循环
-CHUNK_SIZE = 100 # 每次处理的URL批次大小，增加以减少分块次数
+MAX_DEPTH = 1  # 降低爬取深度以提高效率
+CHUNK_SIZE = 100 # 增加批次大小
 
 # 初始化 IP 地理位置解析器
 try:
@@ -53,58 +56,34 @@ except FileNotFoundError:
 def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
 
-def get_session_with_retries():
-    session = requests.Session()
-    retries = Retry(total=2, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
-    session.mount('http://', HTTPAdapter(max_retries=retries))
-    session.mount('https://', HTTPAdapter(max_retries=retries))
-    return session
+def get_node_key(node):
+    """根据关键字段生成节点唯一标识符"""
+    return (node.get('server'), node.get('port'), node.get('uuid'), node.get('password'))
 
-def test_connection(link):
-    """预测试一个链接的连通性"""
-    link = link.replace('http://', '').replace('https://', '')
-    session = get_session_with_retries()
-    
-    # 先尝试 HTTPS
+def load_cache():
+    """从缓存文件加载已处理的URL和节点"""
     try:
-        session.head(f"https://{link}", headers=get_headers(), timeout=3)
-        return link
-    except requests.exceptions.RequestException:
-        pass
-    
-    # 如果 HTTPS 失败，尝试 HTTP
-    try:
-        session.head(f"http://{link}", headers=get_headers(), timeout=3)
-        return link
-    except requests.exceptions.RequestException:
-        pass
-        
-    return None
+        with open(CACHE_FILE, 'r') as f:
+            data = json.load(f)
+            return set(data.get('visited_urls', [])), data.get('nodes', [])
+    except (FileNotFoundError, json.JSONDecodeError):
+        return set(), []
 
-def pre_test_links(links):
-    """并发预测试所有链接，返回可用的链接列表"""
-    working_links = []
-    with ThreadPoolExecutor(max_workers=50) as executor:  # 增加 max_workers
-        future_to_link = {executor.submit(test_connection, link): link for link in links}
-        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
-            result = future.result()
-            if result:
-                working_links.append(result)
-    return working_links
+def save_cache(visited_urls, nodes):
+    """将已处理的URL和节点保存到缓存文件"""
+    with open(CACHE_FILE, 'w') as f:
+        json.dump({'visited_urls': list(visited_urls), 'nodes': nodes}, f, indent=4)
 
 def parse_vmess(node_link):
     try:
-        # Base64 解码并解析 JSON
         encoded_json = node_link.replace('vmess://', '')
         decoded_json = base64.b64decode(encoded_json + '=' * (-len(encoded_json) % 4)).decode('utf-8')
         node_data = json.loads(decoded_json)
 
-        # 严格校验必须参数
         required_params = ['add', 'port', 'id', 'aid']
         if not all(p in node_data for p in required_params):
             return None
 
-        # 构造 Clash 兼容格式
         clash_node = {
             'name': node_data.get('ps', 'Vmess Node'),
             'type': 'vmess',
@@ -117,7 +96,6 @@ def parse_vmess(node_link):
             'tls': node_data.get('tls', '') == 'tls',
         }
 
-        # 更多参数（ws-path, ws-headers, sni等）
         if clash_node['network'] == 'ws':
             clash_node['ws-path'] = node_data.get('path', '/')
             clash_node['ws-headers'] = {'Host': node_data.get('host', node_data['add'])}
@@ -162,12 +140,10 @@ def parse_ss(node_link):
     try:
         parsed = urlparse(node_link)
         
-        # 处理 Base64 编码的 SS
         if parsed.hostname is None:
             decoded_link = base64.b64decode(node_link.replace('ss://', '') + '=' * (-len(node_link) % 4)).decode('utf-8')
             return parse_ss(f'ss://{decoded_link}')
 
-        # 严格校验必须参数
         auth_part = unquote(parsed.username)
         if ':' not in auth_part: return None
         cipher, password = auth_part.split(':', 1)
@@ -206,14 +182,12 @@ def parse_vless(node_link):
         if 'type' in query:
             clash_node['network'] = query['type'][0]
         
-        # TLS 参数
         if query.get('security') == ['tls']:
             clash_node['tls'] = True
             clash_node['skip-cert-verify'] = True
             if 'sni' in query:
                 clash_node['sni'] = query['sni'][0]
 
-        # Vmess参数
         if 'flow' in query:
             clash_node['flow'] = query['flow'][0]
         
@@ -282,15 +256,9 @@ def parse_ssr(node_link):
         return None
 
 def convert_to_clash_node(node):
-    """
-    将不同格式的节点统一转换为 Clash 兼容格式
-    - 严格校验协议，排除不符合规范的节点
-    """
-    # 已经是 Clash 格式的节点
     if isinstance(node, dict) and 'type' in node:
         return node
     
-    # 尝试解析各种协议
     if isinstance(node, str):
         if node.startswith('vmess://'):
             return parse_vmess(node)
@@ -307,51 +275,59 @@ def convert_to_clash_node(node):
     
     return None
 
-def load_cache():
+async def test_connection_async(link, session):
+    """异步预测试一个链接的连通性，优先尝试HTTPS"""
+    link = link.replace('http://', '').replace('https://', '')
+    headers = get_headers()
     try:
-        with open(CACHE_FILE, 'r') as f:
-            cache = json.load(f)
-            visited_urls.update(cache.get('visited_urls', []))
-            return cache.get('nodes', [])
-    except FileNotFoundError:
-        return []
+        async with session.head(f"https://{link}", headers=headers, timeout=3) as resp:
+            return link
+    except Exception:
+        try:
+            async with session.head(f"http://{link}", headers=headers, timeout=3) as resp:
+                return link
+        except Exception:
+            return None
 
-def save_cache(nodes):
-    with open(CACHE_FILE, 'w') as f:
-        json.dump({'visited_urls': list(visited_urls), 'nodes': nodes}, f)
+async def pre_test_links_async(links):
+    """并发预测试所有链接，返回可用的链接列表"""
+    working_links = []
+    # 使用 aiohttp.TCPConnector 提高连接效率
+    conn = TCPConnector(limit=100, ttl_dns_cache=300)
+    async with aiohttp.ClientSession(connector=conn) as session:
+        tasks = [test_connection_async(link, session) for link in links]
+        for future in tqdm(asyncio.as_completed(tasks), total=len(links), desc="预测试链接"):
+            result = await future
+            if result:
+                working_links.append(result)
+    return working_links
 
-def parse_and_fetch(url, depth=0):
-    """
-    通用解析和获取节点内容
-    - 尝试直接下载
-    - 尝试解析 HTML 页面，寻找链接并递归
-    - 尝试解析不同格式的内容
-    """
+async def parse_and_fetch_async(url, session, depth=0):
+    """异步通用解析和获取节点内容"""
     if url in visited_urls or depth > MAX_DEPTH:
         return []
     
     visited_urls.add(url)
     all_nodes = []
-
     headers = get_headers()
-    session = get_session_with_retries()
     start_time = time.time()
-    try:
-        response = session.get(url, headers=headers, timeout=3)
-        if response.status_code == 200:
-            content_type = response.headers.get('content-type', '').lower()
-            content = response.text
 
-            # 尝试 Base64 解码
-            # 新增: 确保内容是 ASCII 编码，避免 Unicode 错误
-            if 'text/plain' in content_type:
-                try:
-                    decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
-                    content = decoded_content
-                except (base64.binascii.Error, UnicodeDecodeError, ValueError):
-                    pass
-                
-            # 根据内容类型选择解析
+    try:
+        async with session.get(url, headers=headers, timeout=5, allow_redirects=True) as response:
+            if response.status != 200:
+                return []
+            
+            content_type = response.headers.get('content-type', '').lower()
+            content = await response.text()
+
+            # 优先尝试 Base64 解码，因为很多节点订阅链接是这种格式
+            try:
+                decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
+                content = decoded_content
+            except Exception:
+                pass
+            
+            # 根据内容类型快速判断并解析
             if 'application/json' in content_type:
                 try:
                     data = json.loads(content)
@@ -360,7 +336,7 @@ def parse_and_fetch(url, depth=0):
                         for node in nodes:
                             clash_node = convert_to_clash_node(node)
                             if clash_node: all_nodes.append(clash_node)
-                        if all_nodes: return all_nodes
+                        return all_nodes
                 except json.JSONDecodeError:
                     pass
             elif 'yaml' in content_type:
@@ -371,29 +347,28 @@ def parse_and_fetch(url, depth=0):
                         for node in nodes:
                             clash_node = convert_to_clash_node(node)
                             if clash_node: all_nodes.append(clash_node)
-                        if all_nodes: return all_nodes
+                        return all_nodes
                 except yaml.YAMLError:
                     pass
             elif 'text/html' in content_type:
                 soup = BeautifulSoup(content, 'html.parser')
                 links_to_visit = set()
-                
-                # 从 <a> 标签中查找链接
                 for link in soup.find_all('a', href=True):
                     href = link.get('href')
                     if href and not href.startswith(('#', 'mailto:', 'tel:')):
                         full_url = requests.compat.urljoin(url, href)
-                        links_to_visit.add(full_url)
+                        # 限制每个页面最多爬取 50 个链接
+                        if len(links_to_visit) < 50:
+                            links_to_visit.add(full_url)
+                        else:
+                            break
                 
-                links_to_visit = list(links_to_visit)[:50]  # 限制每个页面最多爬取 50 个链接
-                
-                # 递归访问找到的链接
-                with ThreadPoolExecutor(max_workers=50) as executor:  # 增加 max_workers
-                    futures = [executor.submit(parse_and_fetch, link, depth + 1) for link in links_to_visit if link not in visited_urls]
-                    for future in as_completed(futures):
-                        all_nodes.extend(future.result())
+                tasks = [parse_and_fetch_async(link, session, depth + 1) for link in links_to_visit if link not in visited_urls]
+                results = await asyncio.gather(*tasks)
+                for res in results:
+                    all_nodes.extend(res)
             else:
-                # 尝试从内容中查找各种协议链接
+                # Fallback to regex matching for plain text content
                 regexes = [
                     r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
                 ]
@@ -402,23 +377,19 @@ def parse_and_fetch(url, depth=0):
                     for match in matches:
                         clash_node = convert_to_clash_node(match)
                         if clash_node: all_nodes.append(clash_node)
-                if all_nodes: return all_nodes
 
-    except requests.exceptions.RequestException:
+    except aiohttp.client_exceptions.ClientError:
         pass
-        
-    elapsed = time.time() - start_time
-    if elapsed > 10:
-        print(f"慢请求警告: {url} 耗时 {elapsed:.2f} 秒")
     
+    elapsed = time.time() - start_time
+    if elapsed > 5:
+        print(f"慢请求警告: {url} 耗时 {elapsed:.2f} 秒")
+        
     return all_nodes
 
-def process_links(links):
-    """
-    第二阶段：处理可用的链接
-    - 将URL列表分块处理以提高稳定性
-    """
-    all_nodes = load_cache()
+async def process_links_async(links):
+    """第二阶段：异步处理可用的链接"""
+    all_nodes = []
     node_counts = []
     
     urls_to_process = []
@@ -432,43 +403,43 @@ def process_links(links):
     url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
 
     total_urls = len(urls_to_process)
-    processed_count = 0
     
-    with tqdm(total=total_urls, desc="获取节点内容") as pbar:
+    async with aiohttp.ClientSession(connector=TCPConnector(limit=100, ttl_dns_cache=300)) as session:
         for chunk in url_chunks:
-            with ThreadPoolExecutor(max_workers=50) as executor:  # 增加 max_workers
-                future_to_url = {executor.submit(parse_and_fetch, url): url for url in chunk}
-                for future in as_completed(future_to_url):
-                    nodes = future.result()
-                    if nodes:
-                        node_counts.append({'url': future_to_url[future], 'count': len(nodes)})
-                    all_nodes.extend(nodes)
-                    pbar.update(1)
-                    save_cache(all_nodes)  # 增量保存缓存
+            tasks = [parse_and_fetch_async(url, session) for url in chunk]
+            for future in tqdm(asyncio.as_completed(tasks), total=len(chunk), desc="获取节点内容"):
+                nodes = await future
+                if nodes:
+                    node_counts.append({'url': '...', 'count': len(nodes)})
+                all_nodes.extend(nodes)
 
     return all_nodes, node_counts
-
-def get_node_key(node):
-    return (node.get('server'), node.get('port'), node.get('uuid'), node.get('password'))
 
 def main():
     print("脚本开始运行...")
     
+    # 加载缓存
+    global visited_urls
+    cache_visited_urls, cache_nodes = load_cache()
+    visited_urls.update(cache_visited_urls)
+    all_nodes = cache_nodes
+
     try:
         with open(LINKS_FILE, 'r') as f:
-            links_to_test = list(set(line.strip() for line in f if line.strip()))  # 提前去重
+            links_to_test = list(set(line.strip() for line in f if line.strip())) # 提前去重
     except FileNotFoundError:
         print(f"错误: 无法找到链接文件 {LINKS_FILE}。请确保文件已上传到仓库根目录。")
         exit(1)
 
     print("第一阶段：预测试所有链接...")
-    working_links = pre_test_links(links_to_test)
+    working_links = asyncio.run(pre_test_links_async(links_to_test))
     print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
     
     print("第二阶段：开始处理可用链接...")
-    all_nodes, node_counts = process_links(working_links)
-    
-    # 统计和去重
+    new_nodes, node_counts = asyncio.run(process_links_async(working_links))
+    all_nodes.extend(new_nodes)
+
+    # 统计和去重 (优化后的逻辑)
     unique_nodes = []
     seen_keys = set()
     names_count = {}
@@ -482,7 +453,7 @@ def main():
                 names_count[name] = 1
         
         key = get_node_key(node)
-        if key not in seen_keys:
+        if key and key not in seen_keys:
             seen_keys.add(key)
             unique_nodes.append(node)
     
@@ -499,6 +470,10 @@ def main():
         for item in node_counts:
             writer.writerow([item['url'], item['count']])
     print(f"统计信息已保存到 {OUTPUT_CSV}")
+
+    # 保存缓存
+    save_cache(visited_urls, unique_nodes)
+    print("缓存已更新。")
     print("脚本运行结束。")
 
 if __name__ == "__main__":
