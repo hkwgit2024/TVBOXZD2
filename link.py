@@ -1,3 +1,4 @@
+
 import os
 import requests
 import yaml
@@ -10,8 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from ip_geolocation import GeoLite2Country
 from tqdm import tqdm
+from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
-import atexit
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +20,6 @@ LINKS_FILE = os.path.join(BASE_DIR, 'link.txt')
 OUTPUT_YAML = os.path.join(BASE_DIR, 'link.yaml')
 OUTPUT_CSV = os.path.join(BASE_DIR, 'link.csv')
 GEOLITE_DB = os.path.join(BASE_DIR, 'GeoLite2-Country.mmdb')
-CACHE_FILE = os.path.join(BASE_DIR, 'cache.json')
 
 # 浏览器User-Agent列表，用于伪装请求头
 USER_AGENTS = [
@@ -34,11 +34,10 @@ USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
 ]
 
-# 全局变量用于存储已访问的URL、爬取深度和缓存
+# 全局变量用于存储已访问的URL和爬取深度
 visited_urls = set()
-MAX_DEPTH = 1  # 禁用 HTML 递归，深度设为1即可
+MAX_DEPTH = 2  # 设置最大爬取深度，防止无限循环
 CHUNK_SIZE = 50 # 每次处理的URL批次大小
-link_cache = {}
 
 # 初始化 IP 地理位置解析器
 try:
@@ -48,48 +47,23 @@ except FileNotFoundError:
     print(f"错误: 无法找到地理位置数据库文件 {GEOLITE_DB}。请确保文件已上传到仓库根目录。")
     exit(1)
 
-def load_cache():
-    """从缓存文件加载数据"""
-    if os.path.exists(CACHE_FILE):
-        with open(CACHE_FILE, 'r', encoding='utf-8') as f:
-            try:
-                data = json.load(f)
-                global link_cache
-                link_cache = data.get('link_cache', {})
-                print(f"从缓存文件 {CACHE_FILE} 中加载了 {len(link_cache)} 条记录。")
-            except json.JSONDecodeError:
-                print("缓存文件损坏，将创建一个新的。")
-                link_cache = {}
-
-def save_cache():
-    """在程序退出时保存缓存数据"""
-    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
-        json.dump({'link_cache': link_cache}, f, ensure_ascii=False, indent=2)
-    print(f"缓存数据已保存到 {CACHE_FILE}。")
-
-# 注册退出函数，确保脚本即使中断也能保存缓存
-atexit.register(save_cache)
-
 def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
 
 def test_connection(link):
-    """
-    预测试一个链接的连通性
-    优化: 优先尝试 HTTPS，失败后再尝试 HTTP。
-    """
+    """预测试一个链接的连通性"""
     link = link.replace('http://', '').replace('https://', '')
     
-    # 优先尝试 HTTPS
+    # 尝试 HTTP
     try:
-        requests.head(f"https://{link}", headers=get_headers(), timeout=5, stream=True)
+        requests.head(f"http://{link}", headers=get_headers(), timeout=5)
         return link
     except requests.exceptions.RequestException:
         pass
     
-    # 如果 HTTPS 失败，尝试 HTTP
+    # 如果 HTTP 失败，尝试 HTTPS
     try:
-        requests.head(f"http://{link}", headers=get_headers(), timeout=5, stream=True)
+        requests.head(f"https://{link}", headers=get_headers(), timeout=5)
         return link
     except requests.exceptions.RequestException:
         pass
@@ -99,40 +73,27 @@ def test_connection(link):
 def pre_test_links(links):
     """并发预测试所有链接，返回可用的链接列表"""
     working_links = []
-    # 优先从缓存中获取结果
-    for link in links:
-        if link_cache.get(link):
-            working_links.append(link)
-    
-    # 找出未在缓存中的链接
-    links_to_test = list(set(links) - set(link_cache.keys()))
-
-    if not links_to_test:
-        print("所有链接都已存在于缓存中，跳过预测试。")
-        return working_links
-
     with ThreadPoolExecutor(max_workers=30) as executor:
-        future_to_link = {executor.submit(test_connection, link): link for link in links_to_test}
-        for future in tqdm(as_completed(future_to_link), total=len(links_to_test), desc="预测试链接"):
-            link = future_to_link[future]
+        future_to_link = {executor.submit(test_connection, link): link for link in links}
+        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result = future.result()
             if result:
                 working_links.append(result)
-                link_cache[link] = True
-            else:
-                link_cache[link] = False
     return working_links
 
 def parse_vmess(node_link):
     try:
+        # Base64 解码并解析 JSON
         encoded_json = node_link.replace('vmess://', '')
         decoded_json = base64.b64decode(encoded_json + '=' * (-len(encoded_json) % 4)).decode('utf-8')
         node_data = json.loads(decoded_json)
 
+        # 严格校验必须参数
         required_params = ['add', 'port', 'id', 'aid']
         if not all(p in node_data for p in required_params):
             return None
 
+        # 构造 Clash 兼容格式
         clash_node = {
             'name': node_data.get('ps', 'Vmess Node'),
             'type': 'vmess',
@@ -145,6 +106,7 @@ def parse_vmess(node_link):
             'tls': node_data.get('tls', '') == 'tls',
         }
 
+        # 更多参数（ws-path, ws-headers, sni等）
         if clash_node['network'] == 'ws':
             clash_node['ws-path'] = node_data.get('path', '/')
             clash_node['ws-headers'] = {'Host': node_data.get('host', node_data['add'])}
@@ -188,10 +150,13 @@ def parse_trojan(node_link):
 def parse_ss(node_link):
     try:
         parsed = urlparse(node_link)
+        
+        # 处理 Base64 编码的 SS
         if parsed.hostname is None:
             decoded_link = base64.b64decode(node_link.replace('ss://', '') + '=' * (-len(node_link) % 4)).decode('utf-8')
             return parse_ss(f'ss://{decoded_link}')
 
+        # 严格校验必须参数
         auth_part = unquote(parsed.username)
         if ':' not in auth_part: return None
         cipher, password = auth_part.split(':', 1)
@@ -230,12 +195,14 @@ def parse_vless(node_link):
         if 'type' in query:
             clash_node['network'] = query['type'][0]
         
+        # TLS 参数
         if query.get('security') == ['tls']:
             clash_node['tls'] = True
             clash_node['skip-cert-verify'] = True
             if 'sni' in query:
                 clash_node['sni'] = query['sni'][0]
 
+        # Vmess参数
         if 'flow' in query:
             clash_node['flow'] = query['flow'][0]
         
@@ -304,10 +271,15 @@ def parse_ssr(node_link):
         return None
 
 def convert_to_clash_node(node):
-    """将不同格式的节点统一转换为 Clash 兼容格式"""
+    """
+    将不同格式的节点统一转换为 Clash 兼容格式
+    - 严格校验协议，排除不符合规范的节点
+    """
+    # 已经是 Clash 格式的节点
     if isinstance(node, dict) and 'type' in node:
         return node
     
+    # 尝试解析各种协议
     if isinstance(node, str):
         if node.startswith('vmess://'):
             return parse_vmess(node)
@@ -324,89 +296,128 @@ def convert_to_clash_node(node):
     
     return None
 
-def fetch_and_parse_nodes(url):
+def parse_and_fetch(url, depth=0):
     """
-    获取并解析单个 URL 的节点内容
-    返回一个元组 (URL, 节点列表)
+    通用解析和获取节点内容
+    - 尝试直接下载
+    - 尝试解析 HTML 页面，寻找链接并递归
+    - 尝试解析不同格式的内容
     """
-    all_nodes = []
+    if url in visited_urls or depth > MAX_DEPTH:
+        return []
     
-    try:
-        response = requests.get(url, headers=get_headers(), timeout=5)
-        response.raise_for_status()
-        content = response.text
-        
-        # 尝试 Base64 解码
-        try:
-            decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
-            content = decoded_content
-        except (base64.binascii.Error, UnicodeDecodeError, ValueError):
-            pass
-            
-        # 尝试解析 YAML 或 JSON 格式的节点
-        try:
-            data = yaml.safe_load(content)
-            if isinstance(data, dict):
-                nodes = data.get('proxies', [])
-                for node in nodes:
-                    clash_node = convert_to_clash_node(node)
-                    if clash_node: all_nodes.append(clash_node)
-        except yaml.YAMLError:
-            pass
+    visited_urls.add(url)
+    all_nodes = []
 
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict) and 'proxies' in data:
-                nodes = data.get('proxies', [])
-                for node in nodes:
-                    clash_node = convert_to_clash_node(node)
-                    if clash_node: all_nodes.append(clash_node)
-        except json.JSONDecodeError:
-            pass
+    headers = get_headers()
+    try:
+        response = requests.get(url, headers=headers, timeout=5)
+        if response.status_code == 200:
+            content_type = response.headers.get('content-type', '').lower()
+            content = response.text
+
+            # 尝试 Base64 解码
+            # 新增: 确保内容是 ASCII 编码，避免 Unicode 错误
+            try:
+                decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
+                content = decoded_content
+            except (base64.binascii.Error, UnicodeDecodeError, ValueError):
+                pass
+                
+            # 尝试解析 YAML
+            try:
+                data = yaml.safe_load(content)
+                if isinstance(data, dict):
+                    nodes = data.get('proxies', [])
+                    for node in nodes:
+                        clash_node = convert_to_clash_node(node)
+                        if clash_node: all_nodes.append(clash_node)
+                    if all_nodes: return all_nodes
+            except yaml.YAMLError:
+                pass
+
+            # 尝试解析 JSON
+            try:
+                data = json.loads(content)
+                if isinstance(data, dict) and 'proxies' in data:
+                    nodes = data.get('proxies', [])
+                    for node in nodes:
+                        clash_node = convert_to_clash_node(node)
+                        if clash_node: all_nodes.append(clash_node)
+                    if all_nodes: return all_nodes
+            except json.JSONDecodeError:
+                pass
             
-        # 从内容中查找各种协议链接
-        regexes = [
-            r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
-        ]
-        for pattern in regexes:
-            matches = re.findall(pattern, content)
-            for match in matches:
-                clash_node = convert_to_clash_node(match)
-                if clash_node: all_nodes.append(clash_node)
-        
+            # 尝试从内容中查找各种协议链接
+            regexes = [
+                r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
+            ]
+            for pattern in regexes:
+                matches = re.findall(pattern, content)
+                for match in matches:
+                    clash_node = convert_to_clash_node(match)
+                    if clash_node: all_nodes.append(clash_node)
+            if all_nodes: return all_nodes
+
+            # 如果内容是 HTML 页面，则继续爬取链接
+            if 'text/html' in content_type:
+                soup = BeautifulSoup(content, 'html.parser')
+                links_to_visit = set()
+                
+                # 从 <a> 标签中查找链接
+                for link in soup.find_all('a', href=True):
+                    href = link.get('href')
+                    if href and not href.startswith(('#', 'mailto:', 'tel:')):
+                        full_url = requests.compat.urljoin(url, href)
+                        links_to_visit.add(full_url)
+                
+                # 递归访问找到的链接
+                with ThreadPoolExecutor(max_workers=20) as executor:
+                    futures = [executor.submit(parse_and_fetch, link, depth + 1) for link in links_to_visit if link not in visited_urls]
+                    for future in as_completed(futures):
+                        all_nodes.extend(future.result())
+
     except requests.exceptions.RequestException:
         pass
         
-    return url, all_nodes
+    return all_nodes
 
 def process_links(links):
     """
-    第二阶段：并发处理可用的链接
+    第二阶段：处理可用的链接
+    - 将URL列表分块处理以提高稳定性
     """
     all_nodes = []
     node_counts = []
     
     urls_to_process = []
     for link in links:
-        urls_to_process.append(f"https://{link}/")
         urls_to_process.append(f"http://{link}/")
+        urls_to_process.append(f"https://{link}/")
     
+    urls_to_process = list(set(urls_to_process))
+    
+    # 分块处理URL列表
+    url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
+
     total_urls = len(urls_to_process)
+    processed_count = 0
     
-    with ThreadPoolExecutor(max_workers=30) as executor:
-        future_to_url = {executor.submit(fetch_and_parse_nodes, url): url for url in urls_to_process}
-        
-        for future in tqdm(as_completed(future_to_url), total=total_urls, desc="获取节点内容"):
-            url, nodes = future.result()
-            if nodes:
-                node_counts.append({'url': url, 'count': len(nodes)})
-            all_nodes.extend(nodes)
+    with tqdm(total=total_urls, desc="获取节点内容") as pbar:
+        for chunk in url_chunks:
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                future_to_url = {executor.submit(parse_and_fetch, url): url for url in chunk}
+                for future in as_completed(future_to_url):
+                    nodes = future.result()
+                    if nodes:
+                        node_counts.append({'url': future_to_url[future], 'count': len(nodes)})
+                    all_nodes.extend(nodes)
+                    pbar.update(1)
 
     return all_nodes, node_counts
 
 def main():
     print("脚本开始运行...")
-    load_cache()
     
     try:
         with open(LINKS_FILE, 'r') as f:
@@ -425,10 +436,6 @@ def main():
     # 统计和去重
     unique_nodes = []
     names_count = {}
-    
-    # 使用一个集合来跟踪已经处理过的节点元组
-    seen_nodes = set()
-    
     for node in all_nodes:
         name = node.get('name')
         if name:
@@ -438,16 +445,7 @@ def main():
             else:
                 names_count[name] = 1
         
-        try:
-            # 使用不可变类型（元组）进行去重
-            node_tuple = tuple(sorted(node.items()))
-        except TypeError:
-            # 如果节点包含不可哈希的类型，跳过去重
-            unique_nodes.append(node)
-            continue
-
-        if node_tuple not in seen_nodes:
-            seen_nodes.add(node_tuple)
+        if node not in unique_nodes:
             unique_nodes.append(node)
     
     # 保存结果
