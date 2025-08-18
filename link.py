@@ -36,6 +36,7 @@ USER_AGENTS = [
 # 全局变量用于存储已访问的URL和爬取深度
 visited_urls = set()
 MAX_DEPTH = 2  # 设置最大爬取深度，防止无限循环
+CHUNK_SIZE = 50 # 每次处理的URL批次大小
 
 # 初始化 IP 地理位置解析器
 try:
@@ -380,37 +381,48 @@ def parse_and_fetch(url, depth=0):
     return all_nodes
 
 def process_links(links):
-    """第二阶段：处理可用的链接"""
+    """
+    第二阶段：处理可用的链接
+    - 将URL列表分块处理以提高稳定性
+    """
     all_nodes = []
     node_counts = []
     
-    # 整理所有待处理的URL，包括直接路径和根目录
     urls_to_process = []
     for link in links:
-        # 尝试根目录以触发HTML解析和爬取
         urls_to_process.append(f"http://{link}/")
         urls_to_process.append(f"https://{link}/")
-        
-    # 去重
+    
     urls_to_process = list(set(urls_to_process))
     
-    with ThreadPoolExecutor(max_workers=20) as executor:
-        future_to_url = {executor.submit(parse_and_fetch, url): url for url in urls_to_process}
-        
-        total_tasks = len(urls_to_process)
-        for future in tqdm(as_completed(future_to_url), total=total_tasks, desc="获取节点内容"):
-            nodes = future.result()
-            if nodes:
-                node_counts.append({'url': future_to_url[future], 'count': len(nodes)})
-            all_nodes.extend(nodes)
+    # 分块处理URL列表
+    url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
+
+    total_urls = len(urls_to_process)
+    processed_count = 0
     
+    with tqdm(total=total_urls, desc="获取节点内容") as pbar:
+        for chunk in url_chunks:
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                future_to_url = {executor.submit(parse_and_fetch, url): url for url in chunk}
+                for future in as_completed(future_to_url):
+                    nodes = future.result()
+                    if nodes:
+                        node_counts.append({'url': future_to_url[future], 'count': len(nodes)})
+                    all_nodes.extend(nodes)
+                    pbar.update(1)
+
     return all_nodes, node_counts
 
 def main():
     print("脚本开始运行...")
     
-    with open(LINKS_FILE, 'r') as f:
-        links_to_test = [line.strip() for line in f if line.strip()]
+    try:
+        with open(LINKS_FILE, 'r') as f:
+            links_to_test = [line.strip() for line in f if line.strip()]
+    except FileNotFoundError:
+        print(f"错误: 无法找到链接文件 {LINKS_FILE}。请确保文件已上传到仓库根目录。")
+        exit(1)
 
     print("第一阶段：预测试所有链接...")
     working_links = pre_test_links(links_to_test)
