@@ -20,6 +20,7 @@ CONFIG_NAMES = ['config.yaml', 'clash_proxies.yaml', 'all.yaml', 'mihomo.yaml']
 # 初始化 IP 地理位置解析器
 try:
     geolocator = GeoLite2Country(GEOLITE_DB)
+    print("GeoLite2-Country 数据库加载成功。")
 except FileNotFoundError:
     print(f"错误: 无法找到地理位置数据库文件 {GEOLITE_DB}。请确保文件已上传到仓库根目录。")
     exit(1)
@@ -29,21 +30,26 @@ def get_node_from_url(url):
     try:
         response = requests.get(f"http://{url}", timeout=10)
         if response.status_code == 200:
+            print(f"成功连接 (HTTP): {url}")
             return response.text, f"http://{url}"
     except requests.exceptions.RequestException:
+        print(f"HTTP连接失败，尝试HTTPS: {url}")
         pass
 
     try:
         response = requests.get(f"https://{url}", timeout=10)
         if response.status_code == 200:
+            print(f"成功连接 (HTTPS): {url}")
             return response.text, f"https://{url}"
     except requests.exceptions.RequestException:
+        print(f"HTTPS连接失败: {url}")
         pass
 
     return None, None
 
 def process_link(link):
     """处理单个链接，返回节点数据和统计信息"""
+    print(f"开始处理链接: {link}")
     link = link.replace('http://', '').replace('https://', '')
     
     for config in CONFIG_NAMES:
@@ -64,20 +70,22 @@ def process_link(link):
                         if country_name:
                             node['name'] = country_name
                 
+                print(f"处理完成: {successful_url}，找到 {len(nodes)} 个节点。")
                 return nodes, {'url': successful_url, 'count': len(nodes)}
             except yaml.YAMLError as e:
                 print(f"解析YAML失败: {successful_url} - {e}")
                 
-    print(f"未能连接: {link}")
+    print(f"未能连接并获取内容: {link}")
     return [], {'url': link, 'count': 0}
 
 def main():
     """主函数，使用线程池处理所有链接"""
+    print("脚本开始运行...")
     all_nodes = []
     node_counts = []
     
     with open(LINKS_FILE, 'r') as f:
-        links = [line.strip() for line in f if line.strip()]
+        links = [line.strip() for line in f if link.strip()]
 
     # 使用线程池并发处理，max_workers 决定并发数量
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -106,15 +114,19 @@ def main():
             unique_nodes.append(node)
     
     # 保存结果
+    print("所有链接处理完毕，开始保存文件。")
     final_data = {'proxies': unique_nodes}
     with open(OUTPUT_YAML, 'w', encoding='utf-8') as f:
         yaml.dump(final_data, f, allow_unicode=True)
+    print(f"节点已保存到 {OUTPUT_YAML}")
     
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(['URL', 'Node Count'])
         for item in node_counts:
             writer.writerow([item['url'], item['count']])
+    print(f"统计信息已保存到 {OUTPUT_CSV}")
+    print("脚本运行结束。")
 
 if __name__ == "__main__":
     main()
