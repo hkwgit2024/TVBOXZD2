@@ -66,6 +66,7 @@ jobs:
           git config --global user.email 'github-actions@github.com'
           git add link.yaml link.csv cache.json
           git commit -m "Auto update nodes and cache from script on $(date +%Y-%m-%d)" || echo "No changes to commit"
+          git pull --rebase
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
