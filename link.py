@@ -1,5 +1,6 @@
 import os
-import requests
+import asyncio
+import aiohttp
 import yaml
 import csv
 import re
@@ -13,8 +14,6 @@ from tqdm import tqdm
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
 import time
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,14 +33,15 @@ USER_AGENTS = [
 
 # 全局变量
 visited_urls = set()
-MAX_DEPTH = 1  # 降低爬取深度，减少无关页面
-CHUNK_SIZE = 50  # 减小分块大小，适应 GitHub Actions
-SLOW_REQUEST_THRESHOLD = 10  # 慢请求阈值（秒）
-BLACKLIST_DOMAINS = {  # 过滤无关域名
+MAX_DEPTH = 0  # 禁用 HTML 递归爬取
+CHUNK_SIZE = 50
+SLOW_REQUEST_THRESHOLD = 5  # 降低慢请求阈值
+BLACKLIST_DOMAINS = {
     'no-ip.com', 'oracle.com', 'canonical.com', 'openvpn.net', 'aagag.com',
     'docs.tagspaces.org', 'build.openvpn.net', 'documentation.ubuntu.com',
     'fedoraproject.org', 'aws.amazon.com', 'stackoverflow.co', 'ubuntu.com',
-    'discussion.fedoraproject.org', 'cryptolaw.org'
+    'discussion.fedoraproject.org', 'cryptolaw.org', 'github.com', 'reddit.com',
+    'twitter.com', 'facebook.com', 'google.com', 'microsoft.com'
 }
 
 # 初始化 IP 地理位置解析器
@@ -55,36 +55,31 @@ except FileNotFoundError:
 def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
 
-def get_session_with_retries():
-    session = requests.Session()
-    retries = Retry(total=2, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
-    session.mount('http://', HTTPAdapter(max_retries=retries))
-    session.mount('https://', HTTPAdapter(max_retries=retries))
-    return session
-
-def test_connection(link):
-    """预测试一个链接的连通性"""
+async def test_connection(link, session):
+    """异步预测试链接连通性"""
     link = link.replace('http://', '').replace('https://', '')
     if any(domain in link for domain in BLACKLIST_DOMAINS):
         return None
-    session = get_session_with_retries()
     try:
-        session.head(f"https://{link}", headers=get_headers(), timeout=2)  # 降低超时
-        return link
-    except requests.exceptions.RequestException:
+        async with session.head(f"https://{link}", headers=get_headers(), timeout=2) as resp:
+            if resp.status == 200:
+                return link
+    except:
         try:
-            session.head(f"http://{link}", headers=get_headers(), timeout=2)
-            return link
-        except requests.exceptions.RequestException:
-            return None
+            async with session.head(f"http://{link}", headers=get_headers(), timeout=2) as resp:
+                if resp.status == 200:
+                    return link
+        except:
+            pass
+    return None
 
-def pre_test_links(links):
-    """并发预测试所有链接"""
+async def pre_test_links(links):
+    """异步预测试所有链接"""
     working_links = []
-    with ThreadPoolExecutor(max_workers=20) as executor:  # 降低并发
-        future_to_link = {executor.submit(test_connection, link): link for link in links}
-        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
-            result = future.result()
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=20)) as session:
+        tasks = [test_connection(link, session) for link in links]
+        for future in tqdm(asyncio.as_completed(tasks), total=len(links), desc="预测试链接"):
+            result = await future
             if result:
                 working_links.append(result)
     return working_links
@@ -268,18 +263,21 @@ def load_cache():
         with open(CACHE_FILE, 'r') as f:
             cache = json.load(f)
             visited_urls.update(cache.get('visited_urls', []))
+            print(f"加载缓存: {len(cache.get('visited_urls', []))} 个 URL, {len(cache.get('nodes', []))} 个节点")
             return cache.get('nodes', [])
     except FileNotFoundError:
+        print("缓存文件不存在，创建新缓存")
         return []
 
 def save_cache(nodes):
     try:
         with open(CACHE_FILE, 'w') as f:
             json.dump({'visited_urls': list(visited_urls), 'nodes': nodes}, f)
+        print(f"保存缓存: {len(visited_urls)} 个 URL, {len(nodes)} 个节点")
     except Exception as e:
         print(f"保存缓存失败: {e}")
 
-def parse_and_fetch(url, depth=0):
+async def parse_and_fetch(url, session, depth=0):
     if url in visited_urls or depth > MAX_DEPTH:
         return []
     parsed_url = urlparse(url)
@@ -287,70 +285,54 @@ def parse_and_fetch(url, depth=0):
         return []
     visited_urls.add(url)
     all_nodes = []
-    headers = get_headers()
-    session = get_session_with_retries()
     start_time = time.time()
     try:
-        response = session.get(url, headers=headers, timeout=2)  # 降低超时
-        if response.status_code != 200:
-            return []
-        content_type = response.headers.get('content-type', '').lower()
-        content = response.text
-        if 'text/plain' in content_type:
-            try:
-                decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
-                content = decoded_content
-            except:
-                pass
-        if 'application/json' in content_type:
-            try:
-                data = json.loads(content)
-                if isinstance(data, dict) and 'proxies' in data:
-                    nodes = data.get('proxies', [])
-                    for node in nodes:
-                        clash_node = convert_to_clash_node(node)
-                        if clash_node: all_nodes.append(clash_node)
-                    return all_nodes
-            except json.JSONDecodeError:
-                pass
-        elif 'yaml' in content_type:
-            try:
-                data = yaml.safe_load(content)
-                if isinstance(data, dict):
-                    nodes = data.get('proxies', [])
-                    for node in nodes:
-                        clash_node = convert_to_clash_node(node)
-                        if clash_node: all_nodes.append(clash_node)
-                    return all_nodes
-                elif isinstance(data, list):  # 处理直接的节点列表
-                    for node in data:
-                        clash_node = convert_to_clash_node(node)
-                        if clash_node: all_nodes.append(clash_node)
-                    return all_nodes
-            except yaml.YAMLError:
-                pass
-        elif 'text/html' in content_type:
-            soup = BeautifulSoup(content, 'html.parser')
-            links_to_visit = set()
-            for link in soup.find_all('a', href=True)[:20]:  # 限制爬取链接数
-                href = link.get('href')
-                if href and not href.startswith(('#', 'mailto:', 'tel:')):
-                    full_url = requests.compat.urljoin(url, href)
-                    if not any(domain in urlparse(full_url).netloc for domain in BLACKLIST_DOMAINS):
-                        links_to_visit.add(full_url)
-            with ThreadPoolExecutor(max_workers=10) as executor:  # 降低并发
-                futures = [executor.submit(parse_and_fetch, link, depth + 1) for link in links_to_visit if link not in visited_urls]
-                for future in as_completed(futures):
-                    all_nodes.extend(future.result())
-        else:
+        async with session.get(url, headers=get_headers(), timeout=2) as response:
+            if response.status != 200:
+                return []
+            content_type = response.headers.get('content-type', '').lower()
+            content = await response.text()
+            if 'text/plain' in content_type:
+                try:
+                    decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
+                    content = decoded_content
+                except:
+                    pass
+            if 'application/json' in content_type:
+                try:
+                    data = json.loads(content)
+                    if isinstance(data, dict) and 'proxies' in data:
+                        nodes = data.get('proxies', [])
+                        for node in nodes:
+                            clash_node = convert_to_clash_node(node)
+                            if clash_node: all_nodes.append(clash_node)
+                        return all_nodes
+                except json.JSONDecodeError:
+                    pass
+            elif 'yaml' in content_type:
+                try:
+                    data = yaml.safe_load(content)
+                    if isinstance(data, dict):
+                        nodes = data.get('proxies', [])
+                        for node in nodes:
+                            clash_node = convert_to_clash_node(node)
+                            if clash_node: all_nodes.append(clash_node)
+                        return all_nodes
+                    elif isinstance(data, list):
+                        for node in data:
+                            clash_node = convert_to_clash_node(node)
+                            if clash_node: all_nodes.append(clash_node)
+                        return all_nodes
+                except yaml.YAMLError:
+                    pass
             regexes = [r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+']
             for pattern in regexes:
                 matches = re.findall(pattern, content)
                 for match in matches:
                     clash_node = convert_to_clash_node(match)
                     if clash_node: all_nodes.append(clash_node)
-        return all_nodes
-    except requests.exceptions.RequestException:
+            return all_nodes
+    except:
         return []
     finally:
         elapsed = time.time() - start_time
@@ -358,7 +340,7 @@ def parse_and_fetch(url, depth=0):
             print(f"慢请求警告: {url} 耗时 {elapsed:.2f} 秒")
     return all_nodes
 
-def process_links(links):
+async def process_links(links):
     all_nodes = load_cache()
     node_counts = []
     urls_to_process = []
@@ -369,14 +351,14 @@ def process_links(links):
     urls_to_process = list(set(urls_to_process))
     url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
     total_urls = len(urls_to_process)
-    with tqdm(total=total_urls, desc="获取节点内容") as pbar:
-        for chunk in url_chunks:
-            with ThreadPoolExecutor(max_workers=10) as executor:  # 降低并发
-                future_to_url = {executor.submit(parse_and_fetch, url): url for url in chunk}
-                for future in as_completed(future_to_url):
-                    nodes = future.result()
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=20)) as session:
+        with tqdm(total=total_urls, desc="获取节点内容") as pbar:
+            for chunk in url_chunks:
+                tasks = [parse_and_fetch(url, session) for url in chunk]
+                for future in asyncio.as_completed(tasks):
+                    nodes = await future
                     if nodes:
-                        node_counts.append({'url': future_to_url[future], 'count': len(nodes)})
+                        node_counts.append({'url': chunk[tasks.index(future)], 'count': len(nodes)})
                     all_nodes.extend(nodes)
                     pbar.update(1)
                     save_cache(all_nodes)
@@ -394,10 +376,10 @@ def main():
         print(f"错误: 无法找到链接文件 {LINKS_FILE}。")
         exit(1)
     print("第一阶段：预测试所有链接...")
-    working_links = pre_test_links(links_to_test)
+    working_links = asyncio.run(pre_test_links(links_to_test))
     print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
     print("第二阶段：开始处理可用链接...")
-    all_nodes, node_counts = process_links(working_links)
+    all_nodes, node_counts = asyncio.run(process_links(working_links))
     unique_nodes = []
     seen_keys = set()
     names_count = {}
