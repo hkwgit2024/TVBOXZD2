@@ -66,9 +66,8 @@ def test_connection(link):
 def pre_test_links(links):
     """并发预测试所有链接，返回可用的链接列表"""
     working_links = []
-    with ThreadPoolExecutor(max_workers=30) as executor:  # 增加预测试的并发数
+    with ThreadPoolExecutor(max_workers=30) as executor:
         future_to_link = {executor.submit(test_connection, link): link for link in links}
-        # 使用 tqdm 封装 as_completed
         for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result = future.result()
             if result:
