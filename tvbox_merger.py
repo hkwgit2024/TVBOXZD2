@@ -19,6 +19,9 @@ logger = logging.getLogger(__name__)
 URL_CACHE = {}
 MAX_CACHE_SIZE = 10000  # Limit cache size to prevent memory issues
 
+# Define the domains to be excluded
+EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net"]
+
 def strip_proxy(url: str) -> str:
     """
     Strip proxy prefixes like 'https://ghproxy.com/' from the URL.
@@ -46,6 +49,16 @@ async def is_valid_url(url: str, session: aiohttp.ClientSession) -> bool:
     # Check if the URL is a local file path
     if not url.startswith(('http://', 'https://')):
         logger.debug(f"Skipping local URL: {url}")
+        return False
+    
+    # New check: Exclude if the domain is in the excluded list
+    try:
+        parsed_url = urlparse(url)
+        if parsed_url.netloc in EXCLUDED_DOMAINS:
+            logger.debug(f"Excluding URL due to domain: {url}")
+            return False
+    except ValueError:
+        logger.debug(f"Invalid URL format: {url}")
         return False
 
     # Check cache first
@@ -147,20 +160,30 @@ async def process_lives(lives_data: List[Dict[str, Any]], file_name: str, sessio
 async def is_valid_site(site: Dict[str, Any], file_name: str, session: aiohttp.ClientSession) -> bool:
     """
     Check if a site configuration is valid.
-    This function has been updated to filter out sites without a valid 'ext' key.
     """
     site_name = site.get('name', 'N/A')
-    
-    # 检查 type 为 3 的 csp 接口，如果缺少 'ext' 或 'ext' 为空，则排除
+
+    # Add a new check for `ext` field to exclude specific domains
+    ext = site.get('ext')
+    if ext:
+        try:
+            parsed_ext_url = urlparse(ext)
+            if parsed_ext_url.netloc in EXCLUDED_DOMAINS:
+                logger.debug(f"Excluding site '{site_name}' from {file_name}: 'ext' URL domain is in the excluded list.")
+                return False
+        except ValueError:
+            logger.debug(f"Invalid 'ext' URL format for site '{site_name}': {ext}")
+            return False
+            
+    # Check for type 3 csp APIs that require 'ext'
     if site.get('type') == 3 and site.get('api', '').startswith('csp_'):
         ext_value = site.get('ext')
         if not ext_value:
             logger.debug(f"Excluding site '{site_name}' from {file_name}: 'ext' is missing or empty for csp type 3 API.")
             return False
-
+            
     api_url = site.get('api')
     url = site.get('url')
-    ext = site.get('ext')
     
     # Check for site types that require a URL
     if site.get('type') in [0, 1]: # Rule and Json types
@@ -196,6 +219,17 @@ async def is_valid_live(live: Dict[str, Any], file_name: str, session: aiohttp.C
     live_name = live.get('name', 'N/A')
     url = live.get('url')
     
+    # Add a new check for `url` field to exclude specific domains
+    if url:
+        try:
+            parsed_url = urlparse(url)
+            if parsed_url.netloc in EXCLUDED_DOMAINS:
+                logger.debug(f"Excluding live '{live_name}' from {file_name}: 'url' domain is in the excluded list.")
+                return False
+        except ValueError:
+            logger.debug(f"Invalid 'url' URL format for live '{live_name}': {url}")
+            return False
+            
     if not url:
         logger.debug(f"Excluding live '{live_name}' from {file_name}: 'url' is missing.")
         return False
