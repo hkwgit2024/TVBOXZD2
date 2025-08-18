@@ -435,7 +435,13 @@ def main():
     # 统计和去重
     unique_nodes = []
     names_count = {}
+    seen_nodes_set = set()
+    
     for node in all_nodes:
+        # 确保 node 是一个字典，如果不是，则跳过
+        if not isinstance(node, dict):
+            continue
+            
         name = node.get('name')
         if name:
             if name in names_count:
@@ -444,15 +450,11 @@ def main():
             else:
                 names_count[name] = 1
         
-        try:
-            node_tuple = tuple(sorted(node.items()))
-        except TypeError:
-            if node not in unique_nodes:
-                unique_nodes.append(node)
-            continue
-
-        if node_tuple not in {tuple(sorted(n.items())) for n in unique_nodes}:
+        # 使用一个可哈希的元组来检查去重
+        node_tuple = tuple(sorted(node.items()))
+        if node_tuple not in seen_nodes_set:
             unique_nodes.append(node)
+            seen_nodes_set.add(node_tuple)
     
     # 保存结果
     print("所有链接处理完毕，开始保存文件。")
