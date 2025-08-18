@@ -316,10 +316,11 @@ def parse_and_fetch(url, depth=0):
             content = response.text
 
             # 尝试 Base64 解码
+            # 新增: 确保内容是 ASCII 编码，避免 Unicode 错误
             try:
-                decoded_content = base64.b64decode(content + '=' * (-len(content) % 4)).decode('utf-8')
+                decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
                 content = decoded_content
-            except (base64.binascii.Error, UnicodeDecodeError):
+            except (base64.binascii.Error, UnicodeDecodeError, ValueError):
                 pass
                 
             # 尝试解析 YAML
