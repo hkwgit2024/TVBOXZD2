@@ -270,16 +270,6 @@
       "ext": "https://cdn.staticaly.com/gh/tvba/x/main/516-qiumi.js"
     },
     {
-      "key": "csp_xpath_libv",
-      "name": "Libvio(XP)",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/kuukey/b/-/raw/master/6/libvp.json"
-    },
-    {
       "key": "VIP1",
       "name": "一(T4)",
       "type": 4,
@@ -625,26 +615,6 @@
       "filterable": 1
     },
     {
-      "key": "蘑菇影视",
-      "name": "🚛蘑菇┃2K",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://11111111.moguys.xyz/api.php/app/"
-    },
-    {
-      "key": "csp_xpath_xxj",
-      "name": "新香蕉(XP)",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://yangyang1975.coding.net/p/free/d/mao/git/raw/master/xpath/2024xxj.json"
-    },
-    {
       "key": "csp_xpath_saohuo",
       "name": "骚火",
       "type": 3,
@@ -979,16 +949,6 @@
       "changeable": 0,
       "ext": "http://www.xb6v.com/",
       "timeout": 30
-    },
-    {
-      "key": "csp_xb_zbk",
-      "name": "影视┃真不卡[XBiu]",
-      "type": 3,
-      "api": "csp_XBiu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://www.zbkk.net/vodshow/{cateId}--------{catePg}---.html"
     },
     {
       "key": "csp_xb_ysgc",
@@ -1908,16 +1868,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "csp_xpath_旧梦影视",
-      "name": "旧梦影视(XPMF)️",
-      "type": 3,
-      "api": "csp_XPathMacFilter",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://gitcode.net/chunchunoooo/TVBox/-/raw/main/json/%E6%97%A7%E6%A2%A6%E5%BD%B1%E8%A7%86.json"
     },
     {
       "key": "csp_biubiu_极品影视",
@@ -3421,17 +3371,6 @@
       "jar": "https://agit.ai/guot54/ygbh/raw/branch/master/JAR/83.jar"
     },
     {
-      "key": "厂长",
-      "name": "🏭┃厂长┃影视",
-      "type": 3,
-      "api": "csp_Czsapp",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "playerType": 2,
-      "ext": "https://cz01.me/"
-    },
-    {
       "key": "drpy_js_爱看机器人",
       "name": "🎭┃整合┃资源",
       "type": 3,
@@ -3889,6 +3828,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_94sm",
+      "name": "94神马(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/94sm.json"
+    },
+    {
       "key": "csp_xpath_age",
       "name": "AGE动漫(XP)",
       "type": 3,
@@ -3899,14 +3848,24 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/agefans.json"
     },
     {
-      "key": "csp_appysv2_天空V2",
-      "name": "天空V2(M2)",
+      "key": "csp_xpath_jpyszl",
+      "name": "极品直链(XP)",
+      "type": 3,
+      "api": "csp_XPathMac",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
+    },
+    {
+      "key": "csp_appysv2_天空",
+      "name": "天空(M2)",
       "type": 3,
       "api": "csp_AppYsV2",
       "searchable": 1,
-      "quickSearch": 0,
+      "quickSearch": 1,
       "filterable": 1,
-      "ext": "https://www.tkys.tv/xgapp.php/v2/"
+      "ext": "https://tkys.tv/xgapp.php/v1/"
     },
     {
       "key": "csp_xpath_tvci",
@@ -3927,6 +3886,26 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
+    },
+    {
+      "key": "csp_xpath_dm84",
+      "name": "动漫巴士(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
+    },
+    {
+      "key": "csp_xpath_pianba",
+      "name": "Pianba(XPath)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/pianba.json"
     },
     {
       "key": "drpy_js_Missav",
@@ -3977,26 +3956,6 @@
       "quickSearch": 0,
       "filterable": 0,
       "ext": "http://v.i7yc.cn/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appysv2_渔渔影视",
-      "name": "渔渔影视(萝卜)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appysv2_呀哩动漫",
-      "name": "呀哩动漫(萝卜)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://app.yaliyali.cc/api.php/v1.vod"
     },
     {
       "key": "csp_appysv2_月儿影视",
@@ -4809,16 +4768,6 @@
       "ext": "http://tv.tkys.tv/api.php/iptv/vod/"
     },
     {
-      "key": "csp_appysv2_渔渔影视〔APP〕",
-      "name": "🐠渔渔影视",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
-    },
-    {
       "key": "csp_biubiu_ting",
       "name": "🎧听书网（无画面）",
       "type": 3,
@@ -4878,14 +4827,6 @@
       "quickSearch": 0,
       "filterable": 0,
       "ext": "https://pkj99.github.io/demo/tvbox/kuqimv.json"
-    },
-    {
-      "key": "Voflix",
-      "name": "Voflix",
-      "type": 3,
-      "api": "csp_Voflix",
-      "searchable": 1,
-      "ext": "https://www.voflix.me/"
     },
     {
       "key": "我的哔哩(js)",
@@ -5623,16 +5564,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "ext": "http://tv.tkys.tv/api.php/iptv/vod/"
-    },
-    {
-      "key": "csp_appysv2_渔渔影视〔APP〕",
-      "name": "🐠渔渔影视",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
     },
     {
       "key": "csp_biubiu_ting",
@@ -7552,6 +7483,16 @@
       "ext": "https://raw.iqiq.io/leevi0709/duo/main/json/555%E7%94%B5%E5%BD%B1.json"
     },
     {
+      "key": "csp_XBiubiu_0855",
+      "name": "🧳0855影视",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://raw.iqiq.io/leevi0709/duo/main/json/0855%E5%BD%B1%E8%A7%86.json"
+    },
+    {
       "key": "csp_XYQHiker_冷曦影视",
       "name": "❄冷曦影视",
       "type": 3,
@@ -7572,11 +7513,11 @@
       "ext": "https://meijuchong.com/api.php/v1.vod"
     },
     {
-      "key": "drpy_js_豆瓣",
-      "name": "豆瓣 | 热播[js]",
+      "key": "drpy_js_在线之家",
+      "name": "影视 | 在线之家[js]",
       "type": 3,
       "api": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/libs/drpy2.min.js",
-      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/js/drpy.js"
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/js/在线之家.js"
     },
     {
       "key": "drpy_js_酷云七七",
@@ -8780,16 +8721,6 @@
       "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E9%A3%8E%E8%BD%A6%E5%8A%A8%E6%BC%AB.json"
     },
     {
-      "key": "csp_xpath___动漫巴士",
-      "name": "🤖动漫巴士",
-      "type": 3,
-      "api": "csp_XPath",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "ext": "https://gitcode.net/LannisterSnow/TVBox/-/raw/main/json/%E5%8A%A8%E6%BC%AB%E5%B7%B4%E5%A3%AB.json"
-    },
-    {
       "key": "csp_biubiu_OmoFun动漫",
       "name": "🧚OmoFun动漫",
       "type": 3,
@@ -9396,6 +9327,26 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_ddg",
+      "name": "达达龟(XP)",
+      "type": 3,
+      "api": "csp_XPathFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dadagui.json"
+    },
+    {
+      "key": "csp_xpath_94sm",
+      "name": "94神马(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/94sm.json"
+    },
+    {
       "key": "csp_xpath_age",
       "name": "AGE动漫(XP)",
       "type": 3,
@@ -9406,6 +9357,26 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/agefans.json"
     },
     {
+      "key": "csp_xpath_jpyszl",
+      "name": "极品直链(XP)",
+      "type": 3,
+      "api": "csp_XPathMac",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
+    },
+    {
+      "key": "csp_appysv2_天空",
+      "name": "天空(M2)",
+      "type": 3,
+      "api": "csp_AppYsV2",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://tkys.tv/xgapp.php/v1/"
+    },
+    {
       "key": "csp_xpath_tvci",
       "name": "大师兄(XP)",
       "type": 3,
@@ -9414,6 +9385,26 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/tvci.json"
+    },
+    {
+      "key": "csp_xpath_duboku",
+      "name": "独播库(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
+    },
+    {
+      "key": "csp_xpath_dm84",
+      "name": "动漫巴士(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
     },
     {
       "key": "csp_xpath_pianba",
@@ -10188,17 +10179,6 @@
       "jar": "https://agit.ai/guot54/ygbh/raw/branch/master/JAR/83.jar"
     },
     {
-      "key": "厂长",
-      "name": "🏭┃厂长┃影视",
-      "type": 3,
-      "api": "csp_Czsapp",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "playerType": 2,
-      "ext": "https://cz01.me/"
-    },
-    {
       "key": "drpy_js_爱看机器人",
       "name": "🎭┃整合┃资源",
       "type": 3,
@@ -10239,6 +10219,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/changzhang.json"
     },
     {
+      "key": "csp_xpath___在线之家",
+      "name": "在线之家(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/zxzj.json"
+    },
+    {
       "key": "csp_xpath_lezhutv",
       "name": "乐猪TV(XP)",
       "type": 3,
@@ -10259,6 +10249,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jubaibai.json"
     },
     {
+      "key": "csp_xpath_94sm",
+      "name": "94神马(XPath)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/94sm.json"
+    },
+    {
       "key": "csp_xpath_age",
       "name": "AGE动漫(XPath)",
       "type": 3,
@@ -10267,6 +10267,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/agefans.json"
+    },
+    {
+      "key": "csp_xpath_jpyszl",
+      "name": "极品直链(XPath)",
+      "type": 3,
+      "api": "csp_XPathMac",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
     },
     {
       "key": "csp_biubiu_喜鹊视频",
@@ -10279,6 +10289,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/喜鹊视频.json"
     },
     {
+      "key": "csp_biubiu_瓜皮TV",
+      "name": "瓜皮TV(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/瓜皮TV.json"
+    },
+    {
       "key": "csp_biubiu_荣耀Glory",
       "name": "荣耀Glory(XB)",
       "type": 3,
@@ -10287,6 +10307,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/荣耀Glory.json"
+    },
+    {
+      "key": "csp_biubiu_OmoFun动漫",
+      "name": "OmoFun动漫(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/OmoFun动漫.json"
     },
     {
       "key": "csp_biubiu_去看吧",
@@ -10299,6 +10329,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/去看吧.json"
     },
     {
+      "key": "csp_biubiu_次元城",
+      "name": "次元城(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/次元城.json"
+    },
+    {
       "key": "csp_biubiu_风车动漫",
       "name": "风车动漫(XB)",
       "type": 3,
@@ -10307,6 +10347,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/风车动漫.json"
+    },
+    {
+      "key": "csp_biubiu_森屋新番",
+      "name": "森屋新番(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/森屋新番.json"
     },
     {
       "key": "csp_biubiu_漫岛动漫",
@@ -10319,6 +10369,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/漫岛动漫.json"
     },
     {
+      "key": "csp_biubiu_打驴动漫",
+      "name": "打驴动漫(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/打驴动漫.json"
+    },
+    {
       "key": "csp_biubiu_维奇动漫",
       "name": "维奇动漫(XB)",
       "type": 3,
@@ -10327,6 +10387,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/维奇动漫.json"
+    },
+    {
+      "key": "csp_biubiu_大象TV",
+      "name": "大象TV(XB)",
+      "type": 3,
+      "api": "csp_XBiubiu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/MeowXB/大象TV.json"
     },
     {
       "key": "SixV",
@@ -10408,6 +10478,16 @@
       }
     },
     {
+      "key": "Alist_local",
+      "name": "我的|Alist本地",
+      "type": 3,
+      "api": "csp_AList",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0,
+      "ext": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/liujuntao123/clean-tvbox-config/main/json/my-alist-local.json"
+    },
+    {
       "key": "荐片",
       "name": "🎬┃荐片┃影视",
       "api": "csp_Jianpian",
@@ -10422,14 +10502,6 @@
       "api": "csp_SixV",
       "searchable": 1,
       "ext": "https://www.6vdy.org/"
-    },
-    {
-      "key": "Voflix",
-      "name": "Voflix",
-      "type": 3,
-      "api": "csp_Voflix",
-      "searchable": 1,
-      "ext": "https://www.voflix.me/"
     },
     {
       "key": "我的哔哩(js)",
@@ -10590,6 +10662,16 @@
       "ext": "https://dxawi.github.io/1/json/xx5.json"
     },
     {
+      "key": "csp_xpath___在线之家",
+      "name": "在线之家(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/zxzj.json"
+    },
+    {
       "key": "csp_xpath_lezhutv",
       "name": "乐猪TV(XP)",
       "type": 3,
@@ -10598,6 +10680,26 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
+    },
+    {
+      "key": "csp_xpath_jbb",
+      "name": "剧白白(XP)",
+      "type": 3,
+      "api": "csp_XPathMacFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jubaibai.json"
+    },
+    {
+      "key": "csp_xpath_94sm",
+      "name": "94神马(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/94sm.json"
     },
     {
       "key": "csp_xpath_age",
@@ -10610,24 +10712,14 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/agefans.json"
     },
     {
-      "key": "csp_appysv2_天空V2",
-      "name": "天空V2(M2)",
+      "key": "csp_xpath_jpyszl",
+      "name": "极品直链(XP)",
       "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 0,
-      "filterable": 1,
-      "ext": "https://www.tkys.tv/xgapp.php/v2/"
-    },
-    {
-      "key": "csp_appysv2_天空",
-      "name": "天空(M2)",
-      "type": 3,
-      "api": "csp_AppYsV2",
+      "api": "csp_XPathMac",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://tkys.tv/xgapp.php/v1/"
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
     },
     {
       "key": "csp_xpath_tvci",
@@ -10648,6 +10740,26 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
+    },
+    {
+      "key": "csp_xpath_dm84",
+      "name": "动漫巴士(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
+    },
+    {
+      "key": "csp_xpath_pianba",
+      "name": "Pianba(XPath)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/pianba.json"
     },
     {
       "key": "AList",
@@ -11767,6 +11879,16 @@
       "ext": "https://meijuchong.com/api.php/v1.vod"
     },
     {
+      "key": "天空影视网站",
+      "name": "天空影视",
+      "type": 3,
+      "api": "csp_AppYs",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://www.tkys.tv/xgapp.php/v1/"
+    },
+    {
       "key": "爱迪影视网站",
       "name": "爱迪影视",
       "type": 3,
@@ -11885,26 +12007,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "ext": "https://300ys.xyz/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appysv2_渔渔影视",
-      "name": "渔渔影视(M)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://luobo.yugenye.site/api.php/v1.vod"
-    },
-    {
-      "key": "csp_appysv2_呀哩动漫",
-      "name": "呀哩动漫(M)",
-      "type": 3,
-      "api": "csp_AppYsV2",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "https://app.yaliyali.cc/api.php/v1.vod"
     },
     {
       "key": "csp_appysv2_月儿影视",
@@ -12645,6 +12747,16 @@
       "ext": "https://www.czzy66.com/"
     },
     {
+      "key": "csp_xpath___在线之家",
+      "name": "在线之家(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/zxzj.json"
+    },
+    {
       "key": "csp_xpath_lezhutv",
       "name": "乐猪TV(XP)",
       "type": 3,
@@ -12655,6 +12767,26 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/lezhutv.json"
     },
     {
+      "key": "csp_xpath_jbb",
+      "name": "剧白白(XP)",
+      "type": 3,
+      "api": "csp_XPathMacFilter",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jubaibai.json"
+    },
+    {
+      "key": "csp_xpath_94sm",
+      "name": "94神马(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/94sm.json"
+    },
+    {
       "key": "csp_xpath_age",
       "name": "AGE动漫(XP)",
       "type": 3,
@@ -12663,6 +12795,16 @@
       "quickSearch": 1,
       "filterable": 0,
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/agefans.json"
+    },
+    {
+      "key": "csp_xpath_jpyszl",
+      "name": "极品直链(XP)",
+      "type": 3,
+      "api": "csp_XPathMac",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/jpys.json"
     },
     {
       "key": "csp_appysv2_天空",
@@ -12695,6 +12837,16 @@
       "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/Duboku.json"
     },
     {
+      "key": "csp_xpath_dm84",
+      "name": "动漫巴士(XP)",
+      "type": 3,
+      "api": "csp_XPath",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0,
+      "ext": "https://kds2.coding.net/p/k/d/k/git/raw/master/xpath/dm84.json"
+    },
+    {
       "key": "csp_xpath_pianba",
       "name": "Pianba(XPath)",
       "type": 3,
@@ -12710,6 +12862,15 @@
       "name": "live",
       "type": 0,
       "url": "https://agit.ai/hu/hcr/raw/branch/master/lib/tvlive.txt",
+      "playerType": 1,
+      "ua": "okhttp/3.15",
+      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
+      "name": "YueChan_IPV6",
+      "type": 0,
+      "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/YueChan/Live/main/IPTV.m3u",
       "playerType": 1,
       "ua": "okhttp/3.15",
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
@@ -12755,21 +12916,6 @@
       "playerType": 1,
       "ua": "okhttp/3.15",
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "俊于•综合",
-      "type": 0,
-      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "TXT",
-      "type": 0,
-      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
-      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
@@ -12917,13 +13063,6 @@
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
     },
     {
-      "name": "直播",
-      "type": 0,
-      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
       "name": "雷蒙影视电视直播",
       "type": 0,
       "url": "https://cors.isteed.cc/https://raw.githubusercontent.com/n3rddd/CTVLive/main/live.txt",
@@ -12999,10 +13138,11 @@
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
     },
     {
-      "name": "直播",
+      "name": "live",
       "type": 0,
-      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+      "url": "https://ghproxy.net/raw.githubusercontent.com/sunkangfu/666/main/adult.txt",
+      "playerType": 1,
+      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
@@ -13018,6 +13158,14 @@
       "url": "http://home.jundie.top:81/Cat/tv/live.txt",
       "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
+      "name": "LIVE",
+      "type": 0,
+      "url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/wwb521/live/refs/heads/main/tv.m3u",
+      "playerType": 1,
+      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
+      "logo": "https://live.fanmingming.com/tv/{name}.png"
     },
     {
       "name": "LIVE_fan",
@@ -13088,6 +13236,14 @@
       "name": "live",
       "type": 0,
       "url": "https://dxawi.github.io/0/tvlive.txt"
+    },
+    {
+      "name": "live",
+      "type": 0,
+      "url": "https://ghproxy.net/raw.githubusercontent.com/sunkangfu/666/main/adult.txt",
+      "playerType": 1,
+      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
       "name": "ST备份",
