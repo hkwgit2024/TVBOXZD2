@@ -85,7 +85,7 @@ def main():
     node_counts = []
     
     with open(LINKS_FILE, 'r') as f:
-        links = [line.strip() for line in f if link.strip()]
+        links = [line.strip() for line in f if line.strip()]
 
     # 使用线程池并发处理，max_workers 决定并发数量
     with ThreadPoolExecutor(max_workers=10) as executor:
