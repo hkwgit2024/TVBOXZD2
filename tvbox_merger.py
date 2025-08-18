@@ -20,7 +20,7 @@ URL_CACHE = {}
 MAX_CACHE_SIZE = 10000  # Limit cache size to prevent memory issues
 
 # Define the domains to be excluded
-EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net"]
+EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net","cccimg.com"]
 
 def strip_proxy(url: str) -> str:
     """
