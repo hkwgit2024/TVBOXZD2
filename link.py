@@ -66,8 +66,10 @@ def load_cache():
     try:
         with open(CACHE_FILE, 'r') as f:
             data = json.load(f)
+            print(f"缓存加载成功，已跳过 {len(data.get('visited_urls', []))} 个历史已处理链接。")
             return set(data.get('visited_urls', [])), data.get('nodes', [])
     except (FileNotFoundError, json.JSONDecodeError):
+        print("未找到或无法解析缓存文件，将从头开始运行。")
         return set(), []
 
 def save_cache(visited_urls, nodes):
@@ -284,6 +286,7 @@ async def pre_test_links_async(links):
 async def parse_and_fetch_async(url, session, depth=0):
     """异步通用解析和获取节点内容"""
     global visited_urls
+    # 检查缓存，跳过已处理的URL
     if url in visited_urls or depth > MAX_DEPTH:
         return []
     
@@ -301,12 +304,14 @@ async def parse_and_fetch_async(url, session, depth=0):
                 content_type = response.headers.get('content-type', '').lower()
                 content = await response.text()
                 
+                # 优先尝试 Base64 解码，因为很多节点订阅链接是这种格式
                 try:
                     decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
                     content = decoded_content
                 except Exception:
                     pass
                 
+                # 根据内容类型快速判断并解析，避免不必要的处理
                 if 'application/json' in content_type:
                     try:
                         data = json.loads(content)
@@ -336,6 +341,7 @@ async def parse_and_fetch_async(url, session, depth=0):
                         href = link.get('href')
                         if href and not href.startswith(('#', 'mailto:', 'tel:')):
                             full_url = requests.compat.urljoin(url, href)
+                            # 限制每个页面最多爬取 50 个链接，避免递归过深
                             if len(links_to_visit) < 50:
                                 links_to_visit.add(full_url)
                             else:
@@ -348,6 +354,7 @@ async def parse_and_fetch_async(url, session, depth=0):
                             continue
                         all_nodes.extend(res)
                 else:
+                    # Fallback to regex matching for plain text content
                     regexes = [
                         r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
                     ]
@@ -374,7 +381,11 @@ async def process_links_async(links):
     """第二阶段：异步处理可用的链接"""
     all_nodes = []
     node_counts = []
-    urls_to_process = list(set(f"http://{link}/" if link.startswith('http') else f"https://{link}/" for link in links))
+    
+    # 过滤已处理的链接，实现断点续传
+    unprocessed_links = [link for link in links if f"http://{link}/" not in visited_urls and f"https://{link}/" not in visited_urls]
+    
+    urls_to_process = list(set(f"http://{link}/" if link.startswith('http') else f"https://{link}/" for link in unprocessed_links))
     
     url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
     
@@ -399,8 +410,9 @@ def main():
 
     try:
         with open(LINKS_FILE, 'r') as f:
-            # 提前去重和过滤
-            links_to_test = list(set(line.strip() for line in f if line.strip() and not any(invalid_domain in line for invalid_domain in ['localhost', '127.0.0.1'])))
+            # 提前去重和过滤无效域名
+            invalid_domains = ['localhost', '127.0.0.1', '0.0.0.0', '192.168.']
+            links_to_test = list(set(line.strip() for line in f if line.strip() and not any(invalid_domain in line for invalid_domain in invalid_domains)))
     except FileNotFoundError:
         print(f"错误: 无法找到链接文件 {LINKS_FILE}。请确保文件已上传到仓库根目录。")
         exit(1)
