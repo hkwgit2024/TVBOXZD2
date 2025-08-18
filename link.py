@@ -10,7 +10,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from ip_geolocation import GeoLite2Country
 from tqdm import tqdm
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
 import atexit
 
@@ -125,7 +124,6 @@ def pre_test_links(links):
     return working_links
 
 def parse_vmess(node_link):
-    # ... (保持原样)
     try:
         encoded_json = node_link.replace('vmess://', '')
         decoded_json = base64.b64decode(encoded_json + '=' * (-len(encoded_json) % 4)).decode('utf-8')
@@ -160,7 +158,6 @@ def parse_vmess(node_link):
         return None
 
 def parse_trojan(node_link):
-    # ... (保持原样)
     try:
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.username]):
@@ -189,7 +186,6 @@ def parse_trojan(node_link):
         return None
 
 def parse_ss(node_link):
-    # ... (保持原样)
     try:
         parsed = urlparse(node_link)
         if parsed.hostname is None:
@@ -216,7 +212,6 @@ def parse_ss(node_link):
         return None
 
 def parse_vless(node_link):
-    # ... (保持原样)
     try:
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.username]):
@@ -249,7 +244,6 @@ def parse_vless(node_link):
         return None
 
 def parse_hysteria2(node_link):
-    # ... (保持原样)
     try:
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.password]):
@@ -281,7 +275,6 @@ def parse_hysteria2(node_link):
         return None
 
 def parse_ssr(node_link):
-    # ... (保持原样)
     try:
         base64_part = node_link.replace('ssr://', '')
         decoded_part = base64.b64decode(base64_part + '=' * (-len(base64_part) % 4)).decode('utf-8')
@@ -331,14 +324,13 @@ def convert_to_clash_node(node):
     
     return None
 
-def parse_and_fetch(url):
+def fetch_and_parse_nodes(url):
     """
-    获取并解析节点内容
-    - 禁用 HTML 递归爬取
+    获取并解析单个 URL 的节点内容
+    返回一个元组 (URL, 节点列表)
     """
     all_nodes = []
     
-    # 尝试 Base64 解码，因为有些订阅链接直接返回 Base64 编码的内容
     try:
         response = requests.get(url, headers=get_headers(), timeout=5)
         response.raise_for_status()
@@ -385,11 +377,11 @@ def parse_and_fetch(url):
     except requests.exceptions.RequestException:
         pass
         
-    return all_nodes
+    return url, all_nodes
 
 def process_links(links):
     """
-    第二阶段：处理可用的链接
+    第二阶段：并发处理可用的链接
     """
     all_nodes = []
     node_counts = []
@@ -398,19 +390,17 @@ def process_links(links):
     for link in links:
         urls_to_process.append(f"https://{link}/")
         urls_to_process.append(f"http://{link}/")
-        
-    urls_to_process = list(set(urls_to_process))
     
     total_urls = len(urls_to_process)
     
-    with tqdm(total=total_urls, desc="获取节点内容") as pbar:
-        # 使用串行执行，确保每个链接的结果都能被正确处理和记录
-        for url in urls_to_process:
-            nodes = parse_and_fetch(url)
+    with ThreadPoolExecutor(max_workers=30) as executor:
+        future_to_url = {executor.submit(fetch_and_parse_nodes, url): url for url in urls_to_process}
+        
+        for future in tqdm(as_completed(future_to_url), total=total_urls, desc="获取节点内容"):
+            url, nodes = future.result()
             if nodes:
                 node_counts.append({'url': url, 'count': len(nodes)})
             all_nodes.extend(nodes)
-            pbar.update(1)
 
     return all_nodes, node_counts
 
@@ -435,13 +425,11 @@ def main():
     # 统计和去重
     unique_nodes = []
     names_count = {}
-    seen_nodes_set = set()
+    
+    # 使用一个集合来跟踪已经处理过的节点元组
+    seen_nodes = set()
     
     for node in all_nodes:
-        # 确保 node 是一个字典，如果不是，则跳过
-        if not isinstance(node, dict):
-            continue
-            
         name = node.get('name')
         if name:
             if name in names_count:
@@ -450,11 +438,17 @@ def main():
             else:
                 names_count[name] = 1
         
-        # 使用一个可哈希的元组来检查去重
-        node_tuple = tuple(sorted(node.items()))
-        if node_tuple not in seen_nodes_set:
+        try:
+            # 使用不可变类型（元组）进行去重
+            node_tuple = tuple(sorted(node.items()))
+        except TypeError:
+            # 如果节点包含不可哈希的类型，跳过去重
             unique_nodes.append(node)
-            seen_nodes_set.add(node_tuple)
+            continue
+
+        if node_tuple not in seen_nodes:
+            seen_nodes.add(node_tuple)
+            unique_nodes.append(node)
     
     # 保存结果
     print("所有链接处理完毕，开始保存文件。")
