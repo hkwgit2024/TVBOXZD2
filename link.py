@@ -18,6 +18,7 @@ from urllib.parse import urlparse, parse_qs, unquote, unquote_plus
 from aiohttp import TCPConnector
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from aiohttp.client_exceptions import ClientError, ClientConnectionError, ClientOSError, ClientPayloadError
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -79,11 +80,9 @@ def parse_vmess(node_link):
         encoded_json = node_link.replace('vmess://', '')
         decoded_json = base64.b64decode(encoded_json + '=' * (-len(encoded_json) % 4)).decode('utf-8')
         node_data = json.loads(decoded_json)
-
         required_params = ['add', 'port', 'id', 'aid']
         if not all(p in node_data for p in required_params):
             return None
-
         clash_node = {
             'name': node_data.get('ps', 'Vmess Node'),
             'type': 'vmess',
@@ -95,7 +94,6 @@ def parse_vmess(node_link):
             'network': node_data.get('net', 'tcp'),
             'tls': node_data.get('tls', '') == 'tls',
         }
-
         if clash_node['network'] == 'ws':
             clash_node['ws-path'] = node_data.get('path', '/')
             clash_node['ws-headers'] = {'Host': node_data.get('host', node_data['add'])}
@@ -103,7 +101,6 @@ def parse_vmess(node_link):
                 clash_node['ws-headers']['Host'] = node_data['host']
         if clash_node['tls']:
             clash_node['servername'] = node_data.get('sni', node_data['add'])
-
         return clash_node
     except Exception:
         return None
@@ -113,7 +110,6 @@ def parse_trojan(node_link):
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.username]):
             return None
-
         clash_node = {
             'name': unquote_plus(parsed.fragment) if parsed.fragment else 'Trojan Node',
             'type': 'trojan',
@@ -123,7 +119,6 @@ def parse_trojan(node_link):
             'network': 'tcp',
             'skip-cert-verify': True
         }
-
         query = parse_qs(parsed.query)
         if 'security' in query and query['security'][0] == 'tls':
             clash_node['tls'] = True
@@ -131,7 +126,6 @@ def parse_trojan(node_link):
                 clash_node['sni'] = query['sni'][0]
             else:
                 clash_node['sni'] = parsed.hostname
-
         return clash_node
     except Exception:
         return None
@@ -139,17 +133,14 @@ def parse_trojan(node_link):
 def parse_ss(node_link):
     try:
         parsed = urlparse(node_link)
-        
         if parsed.hostname is None:
             decoded_link = base64.b64decode(node_link.replace('ss://', '') + '=' * (-len(node_link) % 4)).decode('utf-8')
             return parse_ss(f'ss://{decoded_link}')
-
         auth_part = unquote(parsed.username)
         if ':' not in auth_part: return None
         cipher, password = auth_part.split(':', 1)
         if not all([parsed.hostname, parsed.port, cipher, password]):
             return None
-
         clash_node = {
             'name': unquote_plus(parsed.fragment) if parsed.fragment else 'SS Node',
             'type': 'ss',
@@ -158,7 +149,6 @@ def parse_ss(node_link):
             'cipher': cipher,
             'password': password
         }
-
         return clash_node
     except Exception:
         return None
@@ -168,7 +158,6 @@ def parse_vless(node_link):
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.username]):
             return None
-        
         clash_node = {
             'name': unquote_plus(parsed.fragment) if parsed.fragment else 'Vless Node',
             'type': 'vless',
@@ -177,20 +166,16 @@ def parse_vless(node_link):
             'uuid': parsed.username,
             'network': 'tcp'
         }
-        
         query = parse_qs(parsed.query)
         if 'type' in query:
             clash_node['network'] = query['type'][0]
-        
         if query.get('security') == ['tls']:
             clash_node['tls'] = True
             clash_node['skip-cert-verify'] = True
             if 'sni' in query:
                 clash_node['sni'] = query['sni'][0]
-
         if 'flow' in query:
             clash_node['flow'] = query['flow'][0]
-        
         return clash_node
     except Exception:
         return None
@@ -200,7 +185,6 @@ def parse_hysteria2(node_link):
         parsed = urlparse(node_link)
         if not all([parsed.hostname, parsed.port, parsed.password]):
             return None
-
         clash_node = {
             'name': unquote_plus(parsed.fragment) if parsed.fragment else 'Hysteria2 Node',
             'type': 'hysteria2',
@@ -209,19 +193,16 @@ def parse_hysteria2(node_link):
             'password': parsed.password,
             'network': 'quic',
         }
-        
         query = parse_qs(parsed.query)
         if 'obfs' in query and query['obfs'][0] == 'salamander':
             clash_node['obfs'] = 'salamander'
             if 'obfs-password' in query:
                 clash_node['obfs-password'] = query['obfs-password'][0]
-        
         if 'tls' in query and query['tls'][0] == '1':
             clash_node['tls'] = True
             if 'sni' in query:
                 clash_node['sni'] = query['sni'][0]
                 clash_node['skip-cert-verify'] = True
-            
         return clash_node
     except Exception:
         return None
@@ -230,13 +211,9 @@ def parse_ssr(node_link):
     try:
         base64_part = node_link.replace('ssr://', '')
         decoded_part = base64.b64decode(base64_part + '=' * (-len(base64_part) % 4)).decode('utf-8')
-        
         main_parts, params_str = decoded_part.split('/?', 1)
-        
         server, port, protocol, method, obfs, password = main_parts.split(':')
-        
         query = parse_qs(params_str)
-        
         clash_node = {
             'name': unquote_plus(query.get('remarks', ['SSR Node'])[0]),
             'type': 'ssr',
@@ -250,7 +227,6 @@ def parse_ssr(node_link):
             'obfsparam': base64.b64decode(query.get('obfsparam', [''])[0]).decode('utf-8'),
             'group': base64.b64decode(query.get('group', [''])[0]).decode('utf-8')
         }
-        
         return clash_node
     except Exception:
         return None
@@ -258,7 +234,6 @@ def parse_ssr(node_link):
 def convert_to_clash_node(node):
     if isinstance(node, dict) and 'type' in node:
         return node
-    
     if isinstance(node, str):
         if node.startswith('vmess://'):
             return parse_vmess(node)
@@ -272,22 +247,25 @@ def convert_to_clash_node(node):
             return parse_hysteria2(node)
         elif node.startswith('ssr://'):
             return parse_ssr(node)
-    
     return None
 
 async def test_connection_async(link, session):
-    """异步预测试一个链接的连通性，优先尝试HTTPS"""
+    """异步预测试一个链接的连通性"""
     link = link.replace('http://', '').replace('https://', '')
     headers = get_headers()
+    # 尝试 HTTPS
     try:
-        async with session.head(f"https://{link}", headers=headers, timeout=3) as resp:
+        async with session.head(f"https://{link}", headers=headers, timeout=10, allow_redirects=True) as resp:
             return link
     except Exception:
-        try:
-            async with session.head(f"http://{link}", headers=headers, timeout=3) as resp:
-                return link
-        except Exception:
-            return None
+        pass
+    # 尝试 HTTP
+    try:
+        async with session.head(f"http://{link}", headers=headers, timeout=10, allow_redirects=True) as resp:
+            return link
+    except Exception:
+        pass
+    return None
 
 async def pre_test_links_async(links):
     """并发预测试所有链接，返回可用的链接列表"""
@@ -296,6 +274,7 @@ async def pre_test_links_async(links):
     conn = TCPConnector(limit=100, ttl_dns_cache=300)
     async with aiohttp.ClientSession(connector=conn) as session:
         tasks = [test_connection_async(link, session) for link in links]
+        # 使用 asyncio.as_completed 来处理完成的任务，同时使用 tqdm 展示进度
         for future in tqdm(asyncio.as_completed(tasks), total=len(links), desc="预测试链接"):
             result = await future
             if result:
@@ -304,6 +283,7 @@ async def pre_test_links_async(links):
 
 async def parse_and_fetch_async(url, session, depth=0):
     """异步通用解析和获取节点内容"""
+    global visited_urls
     if url in visited_urls or depth > MAX_DEPTH:
         return []
     
@@ -311,98 +291,92 @@ async def parse_and_fetch_async(url, session, depth=0):
     all_nodes = []
     headers = get_headers()
     start_time = time.time()
-
-    try:
-        async with session.get(url, headers=headers, timeout=5, allow_redirects=True) as response:
-            if response.status != 200:
-                return []
-            
-            content_type = response.headers.get('content-type', '').lower()
-            content = await response.text()
-
-            # 优先尝试 Base64 解码，因为很多节点订阅链接是这种格式
-            try:
-                decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
-                content = decoded_content
-            except Exception:
-                pass
-            
-            # 根据内容类型快速判断并解析
-            if 'application/json' in content_type:
-                try:
-                    data = json.loads(content)
-                    if isinstance(data, dict) and 'proxies' in data:
-                        nodes = data.get('proxies', [])
-                        for node in nodes:
-                            clash_node = convert_to_clash_node(node)
-                            if clash_node: all_nodes.append(clash_node)
-                        return all_nodes
-                except json.JSONDecodeError:
-                    pass
-            elif 'yaml' in content_type:
-                try:
-                    data = yaml.safe_load(content)
-                    if isinstance(data, dict):
-                        nodes = data.get('proxies', [])
-                        for node in nodes:
-                            clash_node = convert_to_clash_node(node)
-                            if clash_node: all_nodes.append(clash_node)
-                        return all_nodes
-                except yaml.YAMLError:
-                    pass
-            elif 'text/html' in content_type:
-                soup = BeautifulSoup(content, 'html.parser')
-                links_to_visit = set()
-                for link in soup.find_all('a', href=True):
-                    href = link.get('href')
-                    if href and not href.startswith(('#', 'mailto:', 'tel:')):
-                        full_url = requests.compat.urljoin(url, href)
-                        # 限制每个页面最多爬取 50 个链接
-                        if len(links_to_visit) < 50:
-                            links_to_visit.add(full_url)
-                        else:
-                            break
-                
-                tasks = [parse_and_fetch_async(link, session, depth + 1) for link in links_to_visit if link not in visited_urls]
-                results = await asyncio.gather(*tasks)
-                for res in results:
-                    all_nodes.extend(res)
-            else:
-                # Fallback to regex matching for plain text content
-                regexes = [
-                    r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
-                ]
-                for pattern in regexes:
-                    matches = re.findall(pattern, content)
-                    for match in matches:
-                        clash_node = convert_to_clash_node(match)
-                        if clash_node: all_nodes.append(clash_node)
-
-    except aiohttp.client_exceptions.ClientError:
-        pass
     
-    elapsed = time.time() - start_time
-    if elapsed > 5:
-        print(f"慢请求警告: {url} 耗时 {elapsed:.2f} 秒")
-        
-    return all_nodes
+    # 简单的重试机制
+    for attempt in range(2):
+        try:
+            async with session.get(url, headers=headers, timeout=10, allow_redirects=True) as response:
+                if response.status != 200:
+                    return []
+                content_type = response.headers.get('content-type', '').lower()
+                content = await response.text()
+                
+                try:
+                    decoded_content = base64.b64decode(content.encode('utf-8') + b'=' * (-len(content) % 4)).decode('utf-8')
+                    content = decoded_content
+                except Exception:
+                    pass
+                
+                if 'application/json' in content_type:
+                    try:
+                        data = json.loads(content)
+                        if isinstance(data, dict) and 'proxies' in data:
+                            nodes = data.get('proxies', [])
+                            for node in nodes:
+                                clash_node = convert_to_clash_node(node)
+                                if clash_node: all_nodes.append(clash_node)
+                            return all_nodes
+                    except json.JSONDecodeError:
+                        pass
+                elif 'yaml' in content_type:
+                    try:
+                        data = yaml.safe_load(content)
+                        if isinstance(data, dict):
+                            nodes = data.get('proxies', [])
+                            for node in nodes:
+                                clash_node = convert_to_clash_node(node)
+                                if clash_node: all_nodes.append(clash_node)
+                            return all_nodes
+                    except yaml.YAMLError:
+                        pass
+                elif 'text/html' in content_type:
+                    soup = BeautifulSoup(content, 'html.parser')
+                    links_to_visit = set()
+                    for link in soup.find_all('a', href=True):
+                        href = link.get('href')
+                        if href and not href.startswith(('#', 'mailto:', 'tel:')):
+                            full_url = requests.compat.urljoin(url, href)
+                            if len(links_to_visit) < 50:
+                                links_to_visit.add(full_url)
+                            else:
+                                break
+                    tasks = [parse_and_fetch_async(link, session, depth + 1) for link in links_to_visit if link not in visited_urls]
+                    results = await asyncio.gather(*tasks, return_exceptions=True) # 捕获内部异常
+                    for res in results:
+                        if isinstance(res, Exception):
+                            print(f"警告: 子任务 {url} 发生异常 - {res}")
+                            continue
+                        all_nodes.extend(res)
+                else:
+                    regexes = [
+                        r'(vmess|trojan|ss|vless|hysteria2|ssr)://[a-zA-Z0-9+\/=?@.:\-%_&;]+'
+                    ]
+                    for pattern in regexes:
+                        matches = re.findall(pattern, content)
+                        for match in matches:
+                            clash_node = convert_to_clash_node(match)
+                            if clash_node: all_nodes.append(clash_node)
+                
+                elapsed = time.time() - start_time
+                if elapsed > 10:
+                    print(f"慢请求警告: {url} 耗时 {elapsed:.2f} 秒")
+                return all_nodes
+        except ClientError as e:
+            print(f"请求 {url} 失败 (尝试 {attempt+1}/2): {e}")
+            if attempt < 1:
+                await asyncio.sleep(1) # 等待1秒后重试
+        except Exception as e:
+            print(f"请求 {url} 发生未知错误: {e}")
+            return []
+    return []
 
 async def process_links_async(links):
     """第二阶段：异步处理可用的链接"""
     all_nodes = []
     node_counts = []
+    urls_to_process = list(set(f"http://{link}/" if link.startswith('http') else f"https://{link}/" for link in links))
     
-    urls_to_process = []
-    for link in links:
-        urls_to_process.append(f"http://{link}/")
-        urls_to_process.append(f"https://{link}/")
-    
-    urls_to_process = list(set(urls_to_process))
-    
-    # 分块处理URL列表
     url_chunks = [urls_to_process[i:i + CHUNK_SIZE] for i in range(0, len(urls_to_process), CHUNK_SIZE)]
-
-    total_urls = len(urls_to_process)
     
     async with aiohttp.ClientSession(connector=TCPConnector(limit=100, ttl_dns_cache=300)) as session:
         for chunk in url_chunks:
@@ -410,15 +384,14 @@ async def process_links_async(links):
             for future in tqdm(asyncio.as_completed(tasks), total=len(chunk), desc="获取节点内容"):
                 nodes = await future
                 if nodes:
+                    # 简化统计信息，只记录获取到节点的URL
                     node_counts.append({'url': '...', 'count': len(nodes)})
                 all_nodes.extend(nodes)
-
     return all_nodes, node_counts
 
 def main():
     print("脚本开始运行...")
     
-    # 加载缓存
     global visited_urls
     cache_visited_urls, cache_nodes = load_cache()
     visited_urls.update(cache_visited_urls)
@@ -426,7 +399,8 @@ def main():
 
     try:
         with open(LINKS_FILE, 'r') as f:
-            links_to_test = list(set(line.strip() for line in f if line.strip())) # 提前去重
+            # 提前去重和过滤
+            links_to_test = list(set(line.strip() for line in f if line.strip() and not any(invalid_domain in line for invalid_domain in ['localhost', '127.0.0.1'])))
     except FileNotFoundError:
         print(f"错误: 无法找到链接文件 {LINKS_FILE}。请确保文件已上传到仓库根目录。")
         exit(1)
@@ -439,7 +413,6 @@ def main():
     new_nodes, node_counts = asyncio.run(process_links_async(working_links))
     all_nodes.extend(new_nodes)
 
-    # 统计和去重 (优化后的逻辑)
     unique_nodes = []
     seen_keys = set()
     names_count = {}
@@ -451,13 +424,11 @@ def main():
                 node['name'] = f"{name}_{names_count[name]:02d}"
             else:
                 names_count[name] = 1
-        
         key = get_node_key(node)
         if key and key not in seen_keys:
             seen_keys.add(key)
             unique_nodes.append(node)
     
-    # 保存结果
     print("所有链接处理完毕，开始保存文件。")
     final_data = {'proxies': unique_nodes}
     with open(OUTPUT_YAML, 'w', encoding='utf-8') as f:
@@ -471,7 +442,6 @@ def main():
             writer.writerow([item['url'], item['count']])
     print(f"统计信息已保存到 {OUTPUT_CSV}")
 
-    # 保存缓存
     save_cache(visited_urls, unique_nodes)
     print("缓存已更新。")
     print("脚本运行结束。")
