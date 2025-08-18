@@ -2,14 +2,14 @@ import json
 import os
 import sys
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 import asyncio
 import aiohttp
 from urllib.parse import urlparse
 
 # Configure logging with DEBUG level
 logging.basicConfig(
-    level=logging.DEBUG,  # Changed to DEBUG for detailed exclusion reasons
+    level=logging.INFO, # 默认改为 INFO，减少不必要的 DEBUG 输出
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
@@ -20,7 +20,7 @@ URL_CACHE = {}
 MAX_CACHE_SIZE = 10000  # Limit cache size to prevent memory issues
 
 # Define the domains to be excluded
-EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net","cccimg.com"]
+EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net", "cccimg.com"]
 
 def strip_proxy(url: str) -> str:
     """
@@ -43,218 +43,123 @@ def strip_proxy(url: str) -> str:
 
 async def is_valid_url(url: str, session: aiohttp.ClientSession) -> bool:
     """
-    Check if a URL is valid and accessible asynchronously.
-    Returns False for local URLs or if the URL does not respond with 200.
+    Check if a URL is valid and accessible.
     """
-    # Check if the URL is a local file path
-    if not url.startswith(('http://', 'https://')):
-        logger.debug(f"Skipping local URL: {url}")
-        return False
-    
-    # New check: Exclude if the domain is in the excluded list
-    try:
-        parsed_url = urlparse(url)
-        if parsed_url.netloc in EXCLUDED_DOMAINS:
-            logger.debug(f"Excluding URL due to domain: {url}")
-            return False
-    except ValueError:
+    url_to_check = strip_proxy(url)
+    parsed_url = urlparse(url_to_check)
+    domain = parsed_url.netloc
+
+    if not all([parsed_url.scheme, parsed_url.netloc]):
         logger.debug(f"Invalid URL format: {url}")
         return False
 
+    if domain in EXCLUDED_DOMAINS:
+        logger.debug(f"URL domain is in excluded list: {domain}")
+        return False
+    
     # Check cache first
-    if url in URL_CACHE:
-        logger.debug(f"Using cached result for URL: {url}")
-        return URL_CACHE[url]
+    if url_to_check in URL_CACHE:
+        logger.debug(f"Using cached result for {url_to_check}: {URL_CACHE[url_to_check]}")
+        return URL_CACHE[url_to_check]
+    
+    # Check if cache is too large and clear if necessary
+    if len(URL_CACHE) > MAX_CACHE_SIZE:
+        URL_CACHE.clear()
+        logger.info("URL cache cleared due to size limit.")
 
-    # Strip proxy for the actual check
-    check_url = strip_proxy(url)
-
-    # Check if the URL is a local file path again after stripping proxy
-    if not check_url.startswith(('http://', 'https://')):
-        logger.debug(f"Skipping local URL after proxy strip: {url}")
-        return False
-        
     try:
-        async with session.get(check_url, timeout=5) as response:
-            result = response.status == 200
-            if result:
-                logger.debug(f"URL is valid: {url}")
+        async with session.head(url_to_check, timeout=5) as response:
+            is_valid = response.status == 200
+            URL_CACHE[url_to_check] = is_valid
+            if not is_valid:
+                logger.debug(f"URL not valid (status {response.status}): {url_to_check}")
+            return is_valid
+    except aiohttp.ClientError as e:
+        logger.debug(f"Failed to connect to {url_to_check}: {e}")
+        URL_CACHE[url_to_check] = False
+        return False
+    except asyncio.TimeoutError:
+        logger.debug(f"Timeout checking URL: {url_to_check}")
+        URL_CACHE[url_to_check] = False
+        return False
+    except Exception as e:
+        logger.debug(f"An unexpected error occurred for URL {url_to_check}: {e}")
+        URL_CACHE[url_to_check] = False
+        return False
+
+async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[str]]:
+    """
+    Read and parse a JSON file, filter sites with valid URLs, and extract sites, lives, and spider.
+    Now supports parsing a single site object in addition to a full config.
+    """
+    sites: List[Dict[str, Any]] = []
+    lives: List[Dict[str, Any]] = []
+    spider: List[str] = []
+
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+            if not content.strip():
+                logger.warning(f"File '{filepath}' is empty. Skipping.")
+                return sites, lives, spider
+            
+            data = json.loads(content)
+            
+            # Case 1: The file is a complete config with 'sites', 'lives', etc.
+            if isinstance(data, dict) and 'sites' in data:
+                all_sites = data.get('sites', [])
+                all_lives = data.get('lives', [])
+                all_spider = [data.get('spider', "")]
+                
+                # Check each site's validity
+                tasks = [is_valid_url(site.get('api', ''), session) for site in all_sites]
+                valid_results = await asyncio.gather(*tasks)
+
+                for site, is_valid in zip(all_sites, valid_results):
+                    if is_valid:
+                        sites.append(site)
+                    else:
+                        logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
+                
+                # Lives don't need URL validation, so just add them
+                lives.extend(all_lives)
+                
+                if all_spider and all_spider[0]:
+                    spider.extend(all_spider)
+
+            # Case 2: The file is a single site object (new format)
+            elif isinstance(data, dict) and 'api' in data and 'name' in data:
+                site_url = data.get('api', '')
+                if site_url:
+                    is_valid = await is_valid_url(site_url, session)
+                    if is_valid:
+                        sites.append(data)
+                    else:
+                        logger.debug(f"Excluding invalid single site from '{filepath}': {data.get('name', 'Unnamed Site')}")
+
             else:
-                logger.debug(f"URL responded with status {response.status}: {url}")
-            
-            # Update cache, managing size
-            if len(URL_CACHE) >= MAX_CACHE_SIZE:
-                # Simple cache eviction: remove the oldest item
-                oldest_key = next(iter(URL_CACHE))
-                del URL_CACHE[oldest_key]
-            URL_CACHE[url] = result
-            
-            return result
-    except (aiohttp.ClientError, asyncio.TimeoutError) as e:
-        logger.debug(f"URL is invalid or inaccessible: {url} -> {e}")
-        # Mark as invalid in cache
-        URL_CACHE[url] = False
-        return False
+                logger.warning(f"File '{filepath}' does not contain a valid sites config. Skipping.")
 
-async def process_file(file_path: str, session: aiohttp.ClientSession, sem: asyncio.Semaphore) -> tuple:
-    """
-    Process a single JSON file to extract and validate configurations.
-    """
-    sites = []
-    lives = []
-    spider = ""
-    file_name = os.path.basename(file_path)
-    async with sem:
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            if isinstance(data, list):
-                # Handle list of configurations
-                for item in data:
-                    if isinstance(item, dict):
-                        if "sites" in item:
-                            sites.extend(await process_sites(item.get("sites", []), file_name, session))
-                        if "lives" in item:
-                            lives.extend(await process_lives(item.get("lives", []), file_name, session))
-                        if "spider" in item and not spider:
-                            spider = item.get("spider", "")
-            elif isinstance(data, dict):
-                # Handle single object configuration
-                sites.extend(await process_sites(data.get("sites", []), file_name, session))
-                lives.extend(await process_lives(data.get("lives", []), file_name, session))
-                if "spider" in data and not spider:
-                    spider = data.get("spider", "")
-            else:
-                logger.warning(f"File {file_name} has an unexpected root element type: {type(data)}")
-
-        except json.JSONDecodeError as e:
-            logger.error(f"Error decoding JSON from file {file_name}: {e}")
-        except FileNotFoundError:
-            logger.error(f"File not found: {file_name}")
-        except Exception as e:
-            logger.error(f"An unexpected error occurred while processing {file_name}: {e}")
-
-    return sites, lives, [spider] if spider else []
-
-async def process_sites(sites_data: List[Dict[str, Any]], file_name: str, session: aiohttp.ClientSession) -> List[Dict[str, Any]]:
-    """
-    Validate and return a list of valid site configurations.
-    """
-    valid_sites = []
-    for site in sites_data:
-        if await is_valid_site(site, file_name, session):
-            valid_sites.append(site)
-    return valid_sites
-
-async def process_lives(lives_data: List[Dict[str, Any]], file_name: str, session: aiohttp.ClientSession) -> List[Dict[str, Any]]:
-    """
-    Validate and return a list of valid live configurations.
-    """
-    valid_lives = []
-    for live in lives_data:
-        if await is_valid_live(live, file_name, session):
-            valid_lives.append(live)
-    return valid_lives
-
-async def is_valid_site(site: Dict[str, Any], file_name: str, session: aiohttp.ClientSession) -> bool:
-    """
-    Check if a site configuration is valid.
-    """
-    site_name = site.get('name', 'N/A')
-
-    # Add a new check for `ext` field to exclude specific domains
-    ext = site.get('ext')
-    if ext:
-        try:
-            parsed_ext_url = urlparse(ext)
-            if parsed_ext_url.netloc in EXCLUDED_DOMAINS:
-                logger.debug(f"Excluding site '{site_name}' from {file_name}: 'ext' URL domain is in the excluded list.")
-                return False
-        except ValueError:
-            logger.debug(f"Invalid 'ext' URL format for site '{site_name}': {ext}")
-            return False
-            
-    # Check for type 3 csp APIs that require 'ext'
-    if site.get('type') == 3 and site.get('api', '').startswith('csp_'):
-        ext_value = site.get('ext')
-        if not ext_value:
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'ext' is missing or empty for csp type 3 API.")
-            return False
-            
-    api_url = site.get('api')
-    url = site.get('url')
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON in file '{filepath}': {e}")
+    except Exception as e:
+        logger.error(f"An error occurred while processing '{filepath}': {e}")
     
-    # Check for site types that require a URL
-    if site.get('type') in [0, 1]: # Rule and Json types
-        if not url:
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'url' is missing.")
-            return False
-        # If URL exists, validate it
-        if not await is_valid_url(url, session):
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'url' is not accessible.")
-            return False
-    
-    # Check for site types that require an API URL
-    elif site.get('type') == 2: # XBP type
-        if not api_url:
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'api' is missing.")
-            return False
-        if not await is_valid_url(api_url, session):
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'api' URL is not accessible.")
-            return False
-            
-    # Check for sites that require 'ext'
-    if ext:
-        if not await is_valid_url(ext, session):
-            logger.debug(f"Excluding site '{site_name}' from {file_name}: 'ext' URL is not accessible.")
-            return False
-    
-    return True
+    return sites, lives, spider
 
-async def is_valid_live(live: Dict[str, Any], file_name: str, session: aiohttp.ClientSession) -> bool:
+async def merge_files(source_files: List[str], output_file: str):
     """
-    Check if a live configuration is valid.
+    Merge multiple JSON configuration files into a single one.
     """
-    live_name = live.get('name', 'N/A')
-    url = live.get('url')
-    
-    # Add a new check for `url` field to exclude specific domains
-    if url:
-        try:
-            parsed_url = urlparse(url)
-            if parsed_url.netloc in EXCLUDED_DOMAINS:
-                logger.debug(f"Excluding live '{live_name}' from {file_name}: 'url' domain is in the excluded list.")
-                return False
-        except ValueError:
-            logger.debug(f"Invalid 'url' URL format for live '{live_name}': {url}")
-            return False
-            
-    if not url:
-        logger.debug(f"Excluding live '{live_name}' from {file_name}: 'url' is missing.")
-        return False
+    logger.info("Starting file merging process...")
+    sites: List[Dict[str, Any]] = []
+    lives: List[Dict[str, Any]] = []
+    spider: List[str] = []
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [process_file(f, session) for f in source_files]
+        results = await asyncio.gather(*tasks)
         
-    if not await is_valid_url(url, session):
-        logger.debug(f"Excluding live '{live_name}' from {file_name}: 'url' is not accessible.")
-        return False
-        
-    return True
-
-async def merge_files(file_list: List[str], output_file: str):
-    """
-    Asynchronously merge TVBox configuration files from a list.
-    """
-    sites = []
-    lives = []
-    spider = []
-
-    timeout = aiohttp.ClientTimeout(total=10)  # Increased timeout
-    connector = aiohttp.TCPConnector(limit=100)  # Increased limit to 100 for better performance
-    sem = asyncio.Semaphore(100)  # Semaphore to control concurrency rate
-    async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
-        tasks = [process_file(file_path, session, sem) for file_path in file_list]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
         for result in results:
             if isinstance(result, tuple):
                 file_sites, file_lives, file_spider = result
@@ -293,4 +198,4 @@ if __name__ == "__main__":
         else:
             logger.error(f"No .json or .txt files found in the '{SOURCE_DIRECTORY}' directory.")
     else:
-        logger.error(f"Source directory '{SOURCE_DIRECTORY}' does not exist.")
+        logger.error(f"Source directory '{SOURCE_DIRECTORY}' not found or is not a directory. Please create it and add your JSON/TXT files.")
