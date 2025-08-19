@@ -9,7 +9,7 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from retrying import retry
 from ip_geolocation import GeoLite2Country
-from tqdm import tqdm
+import tqdm
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
@@ -233,7 +233,7 @@ def process_links(working_links):
     
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(parse_and_fetch_yaml, url): url for url in urls_to_process}
-        for future in tqdm(as_completed(future_to_url), total=len(future_to_url), desc="获取节点内容"):
+        for future in tqdm.tqdm(as_completed(future_to_url), total=len(future_to_url), desc="获取节点内容"):
             nodes_text, successful_url = future.result()
             if nodes_text:
                 try:
@@ -267,7 +267,7 @@ def pre_test_links(links):
     working_links = {}
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
-        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
+        for future in tqdm.tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result_link, result_protocol = future.result()
             if result_link:
                 working_links[result_link] = result_protocol
