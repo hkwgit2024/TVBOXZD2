@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # 升级到最新版本
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5  # 升级到最新版本
+        uses: actions/setup-python@v4
         with:
           python-version: '3.12'
 
@@ -27,7 +27,8 @@ jobs:
 
       - name: Install binary dependencies
         run: |
-          set -e
+          set -e # 确保脚本在任何命令失败时立即退出
+
           mkdir -p bin
           
           echo "Extracting Xray from local file..."
@@ -45,21 +46,13 @@ jobs:
           echo "Extracting Shadowsocks-rust from local file..."
           tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C bin
           
-          # 调试：列出解压后的文件结构
-          echo "Listing files in bin directory..."
-          ls -R bin
-          
-          # 查找 ss-local 或 sslocal
-          echo "Locating ss-local or sslocal..."
-          ss_local_path=$(find . -name "ss-local" -o -name "sslocal" | head -n 1)
-          if [ -z "$ss_local_path" ]; then
-            echo "Error: ss-local or sslocal not found"
-            exit 1
-          fi
-          mv "$ss_local_path" bin/ss-local
+          # 查找并重命名二进制文件，因为其名称可能不一致
+          mv bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu/ss-local bin/ss-local
+          rmdir bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu
           chmod +x bin/ss-local
-          
-          # 清理压缩包
+          echo "ss-local binary successfully moved and permissions set."
+
+          # 清理根目录中的压缩包
           rm -f Xray-linux-64.zip trojan-go-linux-amd64.zip hysteria-linux-amd64 shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz
           echo "All binaries extracted successfully from the repository."
 
@@ -78,11 +71,3 @@ jobs:
           git add node_test_results.yaml node_test_results.csv node_test.log
           git commit -m "Update node test results" || echo "No changes"
           git push
-
-      - name: Upload test log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-test-log
-          path: node_test.log
-          retention-days: 7
