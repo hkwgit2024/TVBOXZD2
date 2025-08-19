@@ -25,7 +25,6 @@ except ImportError as e:
 
 # 定义文件路径
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LINKS_FILE = os.path.join(BASE_DIR, 'link.txt')
 OUTPUT_YAML = os.path.join(BASE_DIR, 'link.yaml')
 OUTPUT_CSV = os.path.join(BASE_DIR, 'link.csv')
 GEOLITE_DB = os.path.join(BASE_DIR, 'GeoLite2-Country.mmdb')
@@ -276,19 +275,11 @@ def pre_test_links(links):
 
 def main():
     logging.info("脚本开始运行...")
-    
-    # 检查link.txt
-    links_to_test = []
-    if os.path.exists(LINKS_FILE):
-        with open(LINKS_FILE, 'r', encoding='utf-8') as f:
-            links_to_test = [line.strip() for line in f if line.strip()]
-    else:
-        logging.warning(f"{LINKS_FILE} 不存在，将仅使用动态爬取的链接。")
-    
+
     # 动态爬取链接
     logging.info("爬取公开代理池和论坛的Clash代理链接...")
     proxy_links = fetch_proxy_links()
-    links_to_test.extend([link for link in proxy_links if 'github' not in link.lower()])
+    links_to_test = [link for link in proxy_links if 'github' not in link.lower()]
     links_to_test = list(set(links_to_test))
     logging.info(f"共收集到 {len(links_to_test)} 个待测试链接。")
     
