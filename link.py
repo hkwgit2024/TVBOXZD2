@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from retrying import retry
 from ip_geolocation import GeoLite2Country
 import tqdm
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from urllib.parse import urljoin
 
 # 设置日志
@@ -79,73 +79,25 @@ def test_connection_and_get_protocol(link):
             logging.debug(f"HTTP失败: {link}, 错误: {e}")
             return None, None
 
-@retry(stop_max_attempt_number=3, wait_fixed=3000)
-def test_node_latency(node):
+def find_raw_nodes(soup_content):
     """
-    测试节点延迟，返回延迟（ms）或None（不可用）。
+    在网页内容中查找并提取原始的节点链接（vmess, ss, trojan等）。
     """
-    server = node.get('server')
-    port = node.get('port')
-    if not server or not port:
-        logging.debug(f"无效节点: {node.get('name', 'Unknown')}, 无server或port")
-        return None
-    try:
-        # 使用1.1.1.1测试，兼容性更高
-        response = requests.get('https://1.1.1.1', proxies={
-            'http': f"{node.get('type', 'http')}://{server}:{port}",
-            'https': f"{node.get('type', 'http')}://{server}:{port}"
-        }, timeout=5)
-        latency = response.elapsed.total_seconds() * 1000
-        logging.debug(f"节点 {node.get('name', 'Unknown')} 延迟: {latency}ms")
-        return latency
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"节点 {node.get('name', 'Unknown')} 测试失败: {e}")
-        return None
+    nodes = []
+    # 查找所有可能包含节点链接的标签
+    tags_to_search = soup_content.find_all(['code', 'samp', 'div', 'p'])
+    # 额外搜索HTML注释
+    comments = soup_content.find_all(string=lambda text: isinstance(text, Comment))
 
-def fetch_proxy_links():
-    """
-    从公开代理池网站和论坛爬取Clash代理链接，排除GitHub。
-    """
-    proxy_sources = [
-        'https://proxypool.link/clash',
-        'https://nodefree.org/',
-        'https://freefq.com/',
-        'https://free-proxy-list.net/',
-        'https://www.proxy-list.download/',
-        'https://www.sslproxies.org/',
-        'https://hidemy.name/en/proxy-list/',
-        'https://spys.one/en/free-proxy-list/',
-        'https://proxyservers.pro/free/',
-        'https://www.blackhatworld.com/forum/proxies/',
-        'https://v2ex.com/?tab=tech',
-    ]
-    links = []
+    for element in tags_to_search + comments:
+        content = element.string
+        if content:
+            # 使用正则表达式匹配节点链接
+            matches = re.findall(r'(vmess://|ss://|trojan://)[^\s]+', content)
+            if matches:
+                nodes.extend([{'type': m.split('://')[0], 'raw': m} for m in matches])
     
-    for source in proxy_sources:
-        try:
-            response = requests.get(source, headers=get_headers(), timeout=10)
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                for a in soup.find_all('a'):
-                    href = a.get('href')
-                    if href and ('http' in href) and 'github' not in href.lower():
-                        clean_url = re.search(r'(https?://[^\s&]+)', href)
-                        if clean_url:
-                            links.append(clean_url.group(1))
-                # 提取潜在的YAML/TXT链接
-                for tag in soup.find_all(['script', 'pre']):
-                    content = tag.string
-                    if content and ('.yaml' in content or '.yml' in content or '.txt' in content or 'proxies.txt' in content):
-                        matches = re.findall(r'(https?://[^\s&]+\.(?:ya?ml|txt|proxies\.txt))', content)
-                        links.extend([m for m in matches if 'github' not in m.lower()])
-            logging.info(f"从 {source} 爬取到 {len(links)} 个链接（未去重）。")
-        except requests.exceptions.RequestException as e:
-            logging.warning(f"爬取 {source} 失败: {e}")
-            continue
-    
-    unique_links = list(set(links))[:40]  # 限制数量
-    logging.info(f"从所有来源爬取到 {len(unique_links)} 个唯一链接。")
-    return unique_links
+    return nodes
 
 @retry(stop_max_attempt_number=3, wait_fixed=3000)
 def parse_and_fetch_yaml(url):
@@ -157,7 +109,7 @@ def parse_and_fetch_yaml(url):
     # 尝试直接下载YAML或TXT
     try:
         response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code == 200 and 'text/html' not in response.headers.get('content-type', '').lower():
+        if response.status_code == 200:
             content_type = response.headers.get('content-type', '').lower()
             if 'yaml' in content_type or url.endswith(('.yaml', '.yml')):
                 logging.debug(f"直接获取YAML: {url}")
@@ -211,14 +163,70 @@ def parse_and_fetch_yaml(url):
                         nodes = [{'type': m.split('://')[0], 'raw': m} for m in matches]
                         logging.debug(f"从HTML标签提取原始节点: {url}")
                         return yaml.dump({'proxies': nodes}), url
+
+            # 策略3: 搜索其他标签和HTML注释
+            raw_nodes = find_raw_nodes(soup)
+            if raw_nodes:
+                logging.debug(f"从其他标签和注释中提取到原始节点: {url}")
+                return yaml.dump({'proxies': raw_nodes}), url
+
     except requests.exceptions.RequestException as e:
         logging.debug(f"HTML解析失败: {url}, 错误: {e}")
     
     return None, None
 
+def fetch_proxy_links():
+    """
+    从公开代理池网站和论坛爬取Clash代理链接，排除GitHub。
+    """
+    proxy_sources = [
+        'https://proxypool.link/clash',
+        'https://nodefree.org/',
+        'https://freefq.com/',
+        'https://free-proxy-list.net/',
+        'https://www.proxy-list.download/',
+        'https://www.sslproxies.org/',
+        'https://hidemy.name/en/proxy-list/',
+        'https://spys.one/en/free-proxy-list/',
+        'https://proxyservers.pro/free/',
+        'https://www.blackhatworld.com/forum/proxies/',
+        'https://v2ex.com/?tab=tech',
+        'https://www.v2rayfree.eu.org/',
+        'https://www.get-proxy.com/clash-nodes',
+        'https://www.freev2ray.com/clash-links',
+        'https://freenode.info/clash-links',
+    ]
+    links = []
+    
+    for source in proxy_sources:
+        try:
+            response = requests.get(source, headers=get_headers(), timeout=10)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                for a in soup.find_all('a'):
+                    href = a.get('href')
+                    if href and ('http' in href) and 'github' not in href.lower():
+                        clean_url = re.search(r'(https?://[^\s&]+)', href)
+                        if clean_url:
+                            links.append(clean_url.group(1))
+                # 提取潜在的YAML/TXT链接
+                for tag in soup.find_all(['script', 'pre']):
+                    content = tag.string
+                    if content and ('.yaml' in content or '.yml' in content or '.txt' in content or 'proxies.txt' in content):
+                        matches = re.findall(r'(https?://[^\s&]+\.(?:ya?ml|txt|proxies\.txt))', content)
+                        links.extend([m for m in matches if 'github' not in m.lower()])
+            logging.info(f"从 {source} 爬取到 {len(links)} 个链接（未去重）。")
+        except requests.exceptions.RequestException as e:
+            logging.warning(f"爬取 {source} 失败: {e}")
+            continue
+    
+    unique_links = list(set(links))[:40]  # 限制数量
+    logging.info(f"从所有来源爬取到 {len(unique_links)} 个唯一链接。")
+    return unique_links
+
 def process_links(working_links):
     """
-    处理可用链接，提取和测试节点。
+    处理可用链接，提取和保存节点。
     """
     all_nodes = []
     node_counts = []
@@ -240,6 +248,7 @@ def process_links(working_links):
                     data = yaml.safe_load(nodes_text)
                     if isinstance(data, dict):
                         nodes = data.get('proxies', [])
+                        logging.info(f"从 {successful_url} 中找到 {len(nodes)} 个原始节点。")
                         for node in nodes:
                             ip = re.search(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', node.get('server', ''))
                             if ip:
@@ -251,27 +260,12 @@ def process_links(working_links):
                                     node['name'] = f"Node_{random.randint(1000, 9999)}"
                             else:
                                 node['name'] = node.get('name', f"Node_{random.randint(1000, 9999)}")
-                            # 测试节点延迟
-                            latency = test_node_latency(node)
-                            if latency and latency < 300:  # 放宽到300ms
-                                node['latency'] = latency
-                                all_nodes.append(node)
+                            all_nodes.append(node)
                         node_counts.append({'url': successful_url, 'count': len(nodes)})
                 except yaml.YAMLError as e:
                     logging.warning(f"YAML解析错误: {successful_url}, 错误: {e}")
     
     return all_nodes, node_counts
-
-def pre_test_links(links):
-    """并发预测试链接"""
-    working_links = {}
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
-        for future in tqdm.tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
-            result_link, result_protocol = future.result()
-            if result_link:
-                working_links[result_link] = result_protocol
-    return working_links
 
 def main():
     logging.info("脚本开始运行...")
