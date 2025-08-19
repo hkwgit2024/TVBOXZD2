@@ -44,17 +44,25 @@ jobs:
           chmod +x bin/hysteria
           
           echo "Extracting Shadowsocks-rust from local file..."
-          tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C bin
+          # 将压缩包解压到一个临时目录
+          mkdir -p temp-ss
+          tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C temp-ss
           
-          # 查找并重命名二进制文件，因为其名称可能不一致
-          mv bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu/ss-local bin/ss-local
-          rmdir bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu
-          chmod +x bin/ss-local
-          echo "ss-local binary successfully moved and permissions set."
-
-          # 清理根目录中的压缩包
+          # 使用 find 命令查找 ss-local 二进制文件，然后移动到 bin 目录
+          SS_LOCAL_PATH=$(find temp-ss -name "ss-local")
+          if [ -n "$SS_LOCAL_PATH" ]; then
+            mv "$SS_LOCAL_PATH" bin/ss-local
+            chmod +x bin/ss-local
+            echo "ss-local binary successfully moved and permissions set."
+          else
+            echo "Error: ss-local binary not found after extraction."
+            exit 1
+          fi
+          
+          # 清理临时目录和根目录中的压缩包
+          rm -rf temp-ss
           rm -f Xray-linux-64.zip trojan-go-linux-amd64.zip hysteria-linux-amd64 shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz
-          echo "All binaries extracted successfully from the repository."
+          echo "All binaries extracted and cleaned up successfully."
 
       - name: Run test script
         env:
