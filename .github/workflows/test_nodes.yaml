@@ -1,6 +1,10 @@
 name: Test Nodes Workflow
 
 on:
+  push:
+    paths:
+      - 'test_nodes.py'
+      - '.github/workflows/test_nodes.yaml'
   schedule:
     - cron: '0 0 1 * *'  # 每月1日0点
   workflow_dispatch:  # 手动触发
@@ -23,37 +27,34 @@ jobs:
 
       - name: Install binary dependencies
         run: |
+          set -e # 确保脚本在任何命令失败时立即退出
+
           mkdir -p bin
           
           echo "Downloading Xray..."
-          curl -L https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip
+          curl -fL --retry 3 https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip
           unzip -o xray.zip -d bin
           chmod +x bin/xray
           
           echo "Downloading trojan-go..."
-          curl -L https://github.com/p4gefau1t/trojan-go/releases/latest/download/trojan-go-linux-amd64.zip -o trojan-go.zip
+          curl -fL --retry 3 https://github.com/p4gefau1t/trojan-go/releases/latest/download/trojan-go-linux-amd64.zip -o trojan-go.zip
           unzip -o trojan-go.zip -d bin
           chmod +x bin/trojan-go
           
           echo "Downloading Hysteria..."
-          curl -L https://github.com/HyNetwork/hysteria/releases/latest/download/hysteria-linux-amd64 -o bin/hysteria
+          curl -fL --retry 3 https://github.com/HyNetwork/hysteria/releases/latest/download/hysteria-linux-amd64 -o bin/hysteria
           chmod +x bin/hysteria
           
           echo "Downloading Shadowsocks-rust..."
-          curl -L https://github.com/shadowsocks/shadowsocks-rust/releases/latest/download/shadowsocks-x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
+          curl -fL --retry 3 https://github.com/shadowsocks/shadowsocks-rust/releases/latest/download/shadowsocks-x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
           
-          # 检查下载文件是否有效，然后解压
-          if [ -s ss.tar.xz ]; then
-            tar -xf ss.tar.xz -C bin
-            chmod +x bin/ss-local
-            echo "Shadowsocks-rust downloaded and extracted successfully."
-          else
-            echo "Error: Failed to download ss.tar.xz. The file is empty or corrupted."
-            exit 1
-          fi
+          # 直接尝试解压，如果文件损坏会立即报错
+          tar -xf ss.tar.xz -C bin
+          chmod +x bin/ss-local
 
           # 清理临时文件
           rm -f xray.zip trojan-go.zip ss.tar.xz
+          echo "All binaries downloaded and installed successfully."
 
       - name: Run test script
         env:
