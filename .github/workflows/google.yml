@@ -1,8 +1,12 @@
 name: Find and Save Proxies via Google
 
 on:
+  push:
+    paths:
+      - 'google.py'
+      - '.github/workflows/google.yml'
   schedule:
-    - cron: '0 12 * * *'  # 每天 UTC 时间中午 12 点运行
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:
@@ -21,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install googlesearch-python beautifulsoup4 PyYAML requests
-      
+          pip install googlesearch-python beautifulsoup4 PyYAML requests geoip2
+          
       - name: Run Google script
         run: |
           python google.py
