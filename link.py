@@ -224,6 +224,17 @@ def fetch_proxy_links():
     logging.info(f"从所有来源爬取到 {len(unique_links)} 个唯一链接。")
     return unique_links
 
+def pre_test_links(links):
+    """并发预测试链接"""
+    working_links = {}
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
+        for future in tqdm.tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
+            result_link, result_protocol = future.result()
+            if result_link:
+                working_links[result_link] = result_protocol
+    return working_links
+
 def process_links(working_links):
     """
     处理可用链接，提取和保存节点。
