@@ -12,6 +12,7 @@ from ip_geolocation import GeoLite2Country
 from tqdm import tqdm
 from bs4 import BeautifulSoup, Comment
 from urllib.parse import urljoin
+from base64 import b64decode
 
 # 设置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -28,9 +29,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_YAML = os.path.join(BASE_DIR, 'link.yaml')
 OUTPUT_CSV = os.path.join(BASE_DIR, 'link.csv')
 GEOLITE_DB = os.path.join(BASE_DIR, 'GeoLite2-Country.mmdb')
-
-# 定义需要尝试的配置文件名
-CONFIG_NAMES = ['config.yaml', 'clash_proxies.yaml', 'all.yaml', 'mihomo.yaml', 'clash.yml', 'proxies.yaml', 'nodes.txt', 'proxies.txt']
 
 # 浏览器User-Agent列表
 USER_AGENTS = [
@@ -57,26 +55,22 @@ def get_headers():
 def test_connection_and_get_protocol(link):
     """
     测试链接连通性，优先HTTPS，返回协议和链接。
-    排除GitHub相关链接。
     """
-    if 'github' in link.lower():
-        logging.debug(f"跳过GitHub链接: {link}")
-        return None, None
     link = link.replace('http://', '').replace('https://', '')
-    time.sleep(random.uniform(0.5, 3))  # 随机延迟
+    time.sleep(random.uniform(0.5, 3))
     
     try:
         response = requests.head(f"https://{link}", headers=get_headers(), timeout=5)
         logging.debug(f"HTTPS成功: {link}")
         return link, "https"
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"HTTPS失败: {link}, 错误: {e}")
+    except requests.exceptions.RequestException:
+        logging.debug(f"HTTPS失败: {link}")
         try:
             response = requests.head(f"http://{link}", headers=get_headers(), timeout=5)
             logging.debug(f"HTTP成功: {link}")
             return link, "http"
-        except requests.exceptions.RequestException as e:
-            logging.debug(f"HTTP失败: {link}, 错误: {e}")
+        except requests.exceptions.RequestException:
+            logging.debug(f"HTTP失败: {link}")
             return None, None
 
 def find_raw_nodes(soup_content):
@@ -85,7 +79,7 @@ def find_raw_nodes(soup_content):
     """
     nodes = []
     # 查找所有可能包含节点链接的标签
-    tags_to_search = soup_content.find_all(['code', 'samp', 'div', 'p', 'textarea'])
+    tags_to_search = soup_content.find_all(['code', 'samp', 'div', 'p', 'textarea', 'pre'])
     # 额外搜索HTML注释
     comments = soup_content.find_all(string=lambda text: isinstance(text, Comment))
 
@@ -95,12 +89,40 @@ def find_raw_nodes(soup_content):
     for element in tags_to_search + comments:
         content = element.string
         if content:
-            # 使用正则表达式匹配节点链接
             matches = re.findall(regex, content)
             if matches:
                 nodes.extend([{'type': m.split('://')[0], 'raw': m} for m in matches])
     
     return nodes
+
+def is_base64(s):
+    """检查字符串是否为有效的 Base64 编码"""
+    return re.match(r'^[A-Za-z0-9+/=]*$', s)
+
+def decode_and_find_nodes(b64_string):
+    """解码 Base64 字符串并从中提取节点"""
+    try:
+        decoded_string = b64decode(b64_string).decode('utf-8')
+        # 尝试将解码后的字符串解析为YAML
+        if 'proxies' in decoded_string.lower():
+            try:
+                data = yaml.safe_load(decoded_string)
+                if isinstance(data, dict) and 'proxies' in data:
+                    return data['proxies']
+            except yaml.YAMLError:
+                pass
+        
+        # 否则，尝试逐行解析节点
+        nodes = []
+        for line in decoded_string.split('\n'):
+            line = line.strip()
+            # 仅匹配我们需要的协议
+            if line.startswith(('vmess://', 'vless://', 'trojan://', 'hy2://')):
+                nodes.append({'raw': line, 'type': line.split('://')[0]})
+        return nodes
+    except Exception as e:
+        logging.debug(f"Base64解码或解析失败: {e}")
+        return []
 
 @retry(stop_max_attempt_number=3, wait_fixed=3000)
 def parse_and_fetch(url):
@@ -108,53 +130,50 @@ def parse_and_fetch(url):
     解析和获取链接内容，根据类型智能处理。
     """
     headers = get_headers()
-    
-    # 策略1: 优先尝试作为文件直链下载
-    try:
-        if url.lower().endswith(tuple(['.yaml', '.yml', '.txt', 'proxies.txt'])):
-            response = requests.get(url, headers=headers, timeout=10)
-            if response.status_code == 200:
-                content_type = response.headers.get('content-type', '').lower()
-                if 'yaml' in content_type or 'text' in content_type:
-                    return response.text, url
-                
-    except requests.exceptions.RequestException:
-        logging.debug(f"文件直链下载失败: {url}")
-    
-    # 策略2: 如果不是文件直链，尝试作为HTML页面爬取
     try:
         response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code == 200 and 'text/html' in response.headers.get('content-type', '').lower():
-            soup = BeautifulSoup(response.text, 'html.parser')
+        if response.status_code == 200:
+            content_type = response.headers.get('content-type', '').lower()
             
-            # 从网页中寻找潜在的.yaml/.yml/.txt链接
-            for link in soup.find_all('a'):
-                href = link.get('href')
-                if href and href.lower().endswith(tuple(['.yaml', '.yml', '.txt'])) and 'github' not in href.lower():
-                    full_url = urljoin(url, href)
-                    try:
-                        yaml_response = requests.get(full_url, headers=headers, timeout=10)
-                        if yaml_response.status_code == 200 and ('yaml' in yaml_response.headers.get('content-type', '').lower() or 'text' in yaml_response.headers.get('content-type', '').lower()):
-                            logging.debug(f"从HTML获取文件: {full_url}")
-                            return yaml_response.text, full_url
-                    except requests.exceptions.RequestException:
-                        logging.debug(f"HTML链接下载失败: {full_url}")
+            # 策略1: 优先尝试作为文件直链下载
+            if 'yaml' in content_type or 'text' in content_type:
+                return response.text, url
             
-            # 从<script>, <pre>等标签或注释中提取原始节点
-            raw_nodes = find_raw_nodes(soup)
-            if raw_nodes:
-                logging.debug(f"从网页中提取到原始节点: {url}")
-                return yaml.dump({'proxies': raw_nodes}), url
+            # 策略2: 如果是Base64编码，尝试解码
+            elif is_base64(response.text.strip()):
+                nodes = decode_and_find_nodes(response.text.strip())
+                if nodes:
+                    logging.info(f"成功解码Base64内容并找到 {len(nodes)} 个节点: {url}")
+                    return yaml.dump({'proxies': nodes}), url
+            
+            # 策略3: 如果是网页，尝试从HTML中爬取
+            elif 'text/html' in content_type:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                # 从网页中寻找潜在的.yaml/.yml/.txt链接
+                for link in soup.find_all('a'):
+                    href = link.get('href')
+                    if href and href.lower().endswith(tuple(['.yaml', '.yml', '.txt'])):
+                        full_url = urljoin(url, href)
+                        # 递归调用以处理找到的子链接
+                        content, source = parse_and_fetch(full_url)
+                        if content:
+                            return content, source
+
+                # 从<script>, <pre>等标签或注释中提取原始节点
+                raw_nodes = find_raw_nodes(soup)
+                if raw_nodes:
+                    logging.debug(f"从网页中提取到原始节点: {url}")
+                    return yaml.dump({'proxies': raw_nodes}), url
     
     except requests.exceptions.RequestException:
-        logging.debug(f"网页下载失败: {url}")
+        logging.debug(f"请求失败: {url}")
     
     return None, None
-
 
 def fetch_proxy_links():
     """
     从公开代理池网站和论坛爬取Clash代理链接，排除GitHub。
+    并加入新的高成功率来源。
     """
     proxy_sources = [
         'https://proxypool.link/clash',
@@ -172,6 +191,11 @@ def fetch_proxy_links():
         'https://www.get-proxy.com/clash-nodes',
         'https://www.freev2ray.com/clash-links',
         'https://freenode.info/clash-links',
+        # 新增来源，提高成功率
+        'https://gfw.press/clash-proxy.html',
+        'https://www.proxyhub.info/proxies.html',
+        'https://free.v2ray.io/',
+        'https://freeclash.xyz/'
     ]
     links = []
     
@@ -180,25 +204,27 @@ def fetch_proxy_links():
             response = requests.get(source, headers=get_headers(), timeout=10)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
+                
                 # 寻找网页中的所有链接
                 for a in soup.find_all('a'):
                     href = a.get('href')
-                    if href and ('http' in href) and 'github' not in href.lower():
+                    if href and ('http' in href):
                         clean_url = re.search(r'(https?://[^\s&]+)', href)
                         if clean_url:
                             links.append(clean_url.group(1))
+
                 # 提取潜在的YAML/TXT链接
-                for tag in soup.find_all(['script', 'pre']):
+                for tag in soup.find_all(['script', 'pre', 'code']):
                     content = tag.string
                     if content and ('.yaml' in content or '.yml' in content or '.txt' in content or 'proxies.txt' in content):
                         matches = re.findall(r'(https?://[^\s&]+\.(?:ya?ml|txt|proxies\.txt))', content)
-                        links.extend([m for m in matches if 'github' not in m.lower()])
+                        links.extend(matches)
             logging.info(f"从 {source} 爬取到 {len(links)} 个链接（未去重）。")
         except requests.exceptions.RequestException as e:
             logging.warning(f"爬取 {source} 失败: {e}")
             continue
     
-    unique_links = list(set(links))[:40]  # 限制数量
+    unique_links = list(set(links))[:40]
     logging.info(f"从所有来源爬取到 {len(unique_links)} 个唯一链接。")
     return unique_links
 
@@ -220,13 +246,7 @@ def process_links(working_links):
     all_nodes = []
     node_counts = []
     
-    urls_to_process = []
-    for link, protocol in working_links.items():
-        for config_name in CONFIG_NAMES:
-            urls_to_process.append(f"{protocol}://{link}/{config_name}")
-        urls_to_process.append(f"{protocol}://{link}/")
-    
-    urls_to_process = list(set(urls_to_process))
+    urls_to_process = list(working_links.keys())
     
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(parse_and_fetch, url): url for url in urls_to_process}
@@ -239,6 +259,9 @@ def process_links(working_links):
                         nodes = data.get('proxies', [])
                         logging.info(f"从 {successful_url} 中找到 {len(nodes)} 个原始节点。")
                         for node in nodes:
+                            if not isinstance(node, dict):
+                                logging.warning(f"跳过无效节点格式: {node}")
+                                continue
                             ip = re.search(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', node.get('server', ''))
                             if ip:
                                 ip = ip.group(0)
@@ -280,6 +303,9 @@ def main():
     names_count = {}
     node_keys = set()
     for node in all_nodes:
+        # 跳过格式不正确的节点
+        if 'server' not in node or 'port' not in node:
+            continue
         key = (node.get('server', ''), node.get('port', ''))
         if key not in node_keys:
             node_keys.add(key)
