@@ -27,8 +27,7 @@ jobs:
 
       - name: Install binary dependencies
         run: |
-          set -e # 确保脚本在任何命令失败时立即退出
-
+          set -e
           mkdir -p bin
           
           echo "Extracting Xray from local file..."
@@ -46,11 +45,21 @@ jobs:
           echo "Extracting Shadowsocks-rust from local file..."
           tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C bin
           
-          # 使用 find 命令查找 ss-local 二进制文件，然后移动到 bin 目录
-          find bin -name "ss-local" -exec mv {} bin/ss-local \;
+          # 调试：列出解压后的文件结构
+          echo "Listing files in bin directory..."
+          ls -R bin
+          
+          # 使用 find 查找 ss-local，增加鲁棒性
+          echo "Locating ss-local..."
+          ss_local_path=$(find . -name "ss-local" | head -n 1)
+          if [ -z "$ss_local_path" ]; then
+            echo "Error: ss-local not found"
+            exit 1
+          fi
+          mv "$ss_local_path" bin/ss-local
           chmod +x bin/ss-local
           
-          # 清理根目录中的压缩包
+          # 清理压缩包
           rm -f Xray-linux-64.zip trojan-go-linux-amd64.zip hysteria-linux-amd64 shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz
           echo "All binaries extracted successfully from the repository."
 
