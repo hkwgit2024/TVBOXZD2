@@ -45,14 +45,12 @@ jobs:
           
           echo "Extracting Shadowsocks-rust from local file..."
           tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C bin
-          # 确认文件解压成功并赋权
-          if [ -f bin/ss-local ]; then
-            chmod +x bin/ss-local
-            echo "ss-local binary found and permissions set."
-          else
-            echo "Error: ss-local binary not found after extraction."
-            exit 1
-          fi
+          
+          # 将 ss-local 从其子目录移到 bin 目录，并清理临时文件夹
+          mv bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu/ss-local bin/ss-local
+          rmdir bin/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu
+          chmod +x bin/ss-local
+          echo "ss-local binary successfully moved and permissions set."
 
           # 清理根目录中的压缩包
           rm -f Xray-linux-64.zip trojan-go-linux-amd64.zip hysteria-linux-amd64 shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz
