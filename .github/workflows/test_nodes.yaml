@@ -26,11 +26,11 @@ jobs:
           mkdir -p bin
           # 下载 Xray
           curl -L https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip
-          unzip xray.zip -d bin
+          unzip -o xray.zip -d bin
           chmod +x bin/xray
           # 下载 trojan-go
           curl -L https://github.com/p4gefau1t/trojan-go/releases/latest/download/trojan-go-linux-amd64.zip -o trojan-go.zip
-          unzip trojan-go.zip -d bin
+          unzip -o trojan-go.zip -d bin
           chmod +x bin/trojan-go
           # 下载 Hysteria
           curl -L https://github.com/HyNetwork/hysteria/releases/latest/download/hysteria-linux-amd64 -o bin/hysteria
@@ -39,6 +39,8 @@ jobs:
           curl -L https://github.com/shadowsocks/shadowsocks-rust/releases/latest/download/shadowsocks-x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
           tar -xf ss.tar.xz -C bin
           chmod +x bin/ss-local
+          # 清理临时文件
+          rm -f xray.zip trojan-go.zip ss.tar.xz
 
       - name: Run test script
         env:
