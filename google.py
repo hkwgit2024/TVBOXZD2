@@ -1,76 +1,120 @@
 import os
-import requests
+import sys
 import yaml
-import csv
-import re
+import requests
+import time
 import random
-import json
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from functools import reduce
-from ip_geolocation import GeoLite2Country
-from tqdm import tqdm
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
+from concurrent.futures import ThreadPoolExecutor
 
-# 定义文件路径
+# 定义文件路径和常量
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# 将文件名从 'link.txt' 更改为 'found_links.txt'
-LINKS_FILE = os.path.join(BASE_DIR, 'found_links.txt')
-OUTPUT_YAML = os.path.join(BASE_DIR, 'link.yaml')
-OUTPUT_CSV = os.path.join(BASE_DIR, 'link.csv')
+OUTPUT_YAML = os.path.join(BASE_DIR, 'google.yaml')
 GEOLITE_DB = os.path.join(BASE_DIR, 'GeoLite2-Country.mmdb')
-
-# 定义需要尝试的 YAML 文件名
-CONFIG_NAMES = ['config.yaml', 'clash_proxies.yaml', 'all.yaml', 'mihomo.yaml']
+GOOGLE_URL = "https://www.google.com/search"
 
 # 浏览器User-Agent列表，用于伪装请求头
 USER_AGENTS = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36'
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
 
-# 辅助函数：根据URL判断是否为有效代理链接
-def is_valid_proxy_url(url):
-    """根据URL特征判断是否为有效的代理链接"""
-    if not url:
-        return False
-    # 简单的规则，可以根据需要扩展
-    return any(name in url.lower() for name in CONFIG_NAMES + ['/subscription', '/sub', '.yaml', '.yml'])
+# 排除这些域名，因为它们通常不包含开放的代理文件
+DOMAIN_BLACKLIST = [
+    'wiley.com', 'researchgate.net', 'thelancet.com', 'sagepub.com',
+    'jamanetwork.com', 'dl.acm.org', 'fraserinstitute.org', 'aps.org',
+    'betterregulation.com', 'onlinelibrary.com', 'github.com', 'gitlab.com'
+]
 
-# 辅助函数：尝试下载URL内容，优先使用HTTPS
-def fetch_url(url, timeout=10):
-    """尝试通过HTTP和HTTPS下载URL内容"""
-    headers = {'User-Agent': random.choice(USER_AGENTS)}
-    schemes = ['https', 'http']
-    for scheme in schemes:
+# 确保 ip_geolocation 已安装
+try:
+    from ip_geolocation import GeoLite2Country
+except ImportError as e:
+    print(f"导入库失败: {e}")
+    print("请确保已安装所有依赖: pip install beautifulsoup4 PyYAML requests geoip2")
+    sys.exit(1)
+
+def is_blacklisted(url):
+    """检查URL是否在黑名单中。"""
+    domain = urlparse(url).netloc
+    for blacklisted_domain in DOMAIN_BLACKLIST:
+        if blacklisted_domain in domain:
+            return True
+    return False
+
+def requests_retry_session(
+    retries=5,
+    backoff_factor=0.3,
+    status_forcelist=(429, 500, 502, 503, 504),
+    session=None,
+):
+    """为 Requests 库创建一个重试会话"""
+    session = session or requests.Session()
+    retry = requests.packages.urllib3.util.retry.Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = requests.adapters.HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+def perform_google_search(queries, num_results=50):
+    """使用更健壮的方式执行谷歌搜索并提取链接。"""
+    found_links = set()
+    session = requests_retry_session()
+
+    for query in queries:
+        print(f"正在执行搜索查询: {query}")
         try:
-            full_url = url.replace('http://', f'{scheme}://').replace('https://', f'{scheme}://')
-            response = requests.get(full_url, headers=headers, timeout=timeout)
-            response.raise_for_status()
-            return response
-        except requests.exceptions.RequestException:
-            continue
-    return None
+            params = {
+                'q': query,
+                'num': num_results,
+                'hl': 'en',  # 使用英文界面以获得更一致的结果
+            }
+            headers = {
+                'User-Agent': random.choice(USER_AGENTS),
+                'Accept-Language': 'en-US,en;q=0.9',
+            }
 
-def pre_test_links(links):
-    """预测试链接，返回可访问的链接"""
-    working_links = []
-    # 使用线程池来加快预测试速度
-    with ThreadPoolExecutor(max_workers=30) as executor:
-        futures = {executor.submit(fetch_url, link): link for link in links if is_valid_proxy_url(link)}
-        for future in tqdm(as_completed(futures), total=len(futures), desc="预测试链接"):
-            response = future.result()
-            if response:
-                working_links.append(response.url)
-    return working_links
+            response = session.get(GOOGLE_URL, params=params, headers=headers, timeout=20)
+            response.raise_for_status()
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            for g in soup.find_all('div', class_='g'):
+                r = g.find('a', href=True)
+                if r:
+                    url = r['href']
+                    if url.startswith('http') and not is_blacklisted(url):
+                        found_links.add(url)
+            
+            # 增加一个更长的随机延迟
+            time.sleep(random.uniform(10, 20))
+            
+        except requests.exceptions.HTTPError as e:
+            print(f"搜索查询 '{query}' 失败: {e}")
+            if e.response.status_code == 429:
+                print("遇到 429 错误，等待并重试...")
+                time.sleep(random.uniform(30, 60))
+        except Exception as e:
+            print(f"搜索查询 '{query}' 发生未知错误: {e}")
+
+    return list(found_links)
 
 def fetch_and_parse_yaml(url):
-    """从URL下载YAML内容并解析代理节点"""
+    """
+    尝试从URL下载YAML内容，并进行解析。
+    """
+    headers = {'User-Agent': random.choice(USER_AGENTS)}
     nodes = []
     try:
-        response = requests.get(url, headers={'User-Agent': random.choice(USER_AGENTS)}, timeout=15)
+        response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         
         try:
@@ -80,88 +124,91 @@ def fetch_and_parse_yaml(url):
         except yaml.YAMLError:
             if 'text/html' in response.headers.get('Content-Type', ''):
                 soup = BeautifulSoup(response.text, 'html.parser')
-                # 递归查找子链接
-                for link in soup.find_all('a', href=True):
-                    href = link['href']
-                    full_url = urljoin(url, href)
-                    if any(name in full_url for name in CONFIG_NAMES):
+                for a_tag in soup.find_all('a', href=True):
+                    href = a_tag['href']
+                    if href.endswith(('.yaml', '.yml')):
+                        full_url = urljoin(url, href)
                         nodes.extend(fetch_and_parse_yaml(full_url))
             else:
                 pass
     except requests.exceptions.RequestException as e:
-        # print(f"处理 {url} 失败: {e}")
-        pass
+        print(f"处理 {url} 失败: {e}")
     return nodes
 
+def validate_node(node):
+    """验证节点是否是有效的代理配置。"""
+    return isinstance(node, dict) and 'server' in node and 'port' in node
+
 def process_links(links):
-    """处理链接并提取代理节点"""
+    """使用多线程处理所有链接，获取代理节点。"""
     all_nodes = []
-    node_counts = {}
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = {executor.submit(fetch_and_parse_yaml, link): link for link in links}
-        for future in tqdm(as_completed(futures), total=len(futures), desc="处理链接"):
+        for future in futures:
             try:
                 nodes = future.result()
                 if nodes:
-                    all_nodes.extend(nodes)
+                    valid_nodes = [node for node in nodes if validate_node(node)]
+                    all_nodes.extend(valid_nodes)
             except Exception as e:
-                # print(f"处理链接失败: {e}")
-                pass
-    
-    return all_nodes, node_counts
+                print(f"处理链接失败: {e}")
+    return all_nodes
 
-def main():
-    print("脚本开始运行...")
-    
-    with open(LINKS_FILE, 'r') as f:
-        links_to_test = [line.strip() for line in f if line.strip()]
-
-    print("第一阶段：预测试所有链接，优先尝试 HTTPS...")
-    working_links = pre_test_links(links_to_test)
-    print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
-    
-    if not working_links:
-        print("未发现任何可用的代理链接，脚本结束。")
-        return
-
-    print("第二阶段：开始处理可用链接...")
-    all_nodes, node_counts = process_links(working_links)
-    
-    # 统计和去重
+def geo_process_nodes(nodes):
+    """对节点进行去重和地理位置命名。"""
     unique_nodes = []
     names_count = {}
-    for node in all_nodes:
-        # 确保node是字典且包含server和port
-        if not isinstance(node, dict) or 'server' not in node or 'port' not in node:
-            continue
-        
-        # 使用GeoLite2进行地理位置命名
-        with GeoLite2Country(GEOLITE_DB) as geo:
-            try:
-                country = geo.get_country_by_ip(node['server'])
-                if country:
-                    name_prefix = f"{country}_{node.get('type', 'unknown')}"
-                    if name_prefix in names_count:
-                        names_count[name_prefix] += 1
-                        node['name'] = f"{name_prefix}_{names_count[name_prefix]:02d}"
-                    else:
-                        names_count[name_prefix] = 1
-                        node['name'] = name_prefix
-            except Exception as e:
-                # print(f"地理位置解析失败: {e}")
-                pass
-        
-        # 检查是否已存在
-        if node not in unique_nodes:
-            unique_nodes.append(node)
     
-    # 保存结果
-    print("所有链接处理完毕，开始保存文件。")
-    final_data = {'proxies': unique_nodes}
-    with open(OUTPUT_YAML, 'w', encoding='utf-8') as f:
-        yaml.dump(final_data, f, allow_unicode=True)
-    print(f"节点已保存到 {OUTPUT_YAML}")
-    print(f"共发现 {len(unique_nodes)} 个唯一代理节点。")
+    with GeoLite2Country(GEOLITE_DB) as geo:
+        for node in nodes:
+            try:
+                if 'server' in node:
+                    country = geo.get_country_by_ip(node['server'])
+                    if country:
+                        name = f"{country}_{node.get('type')}"
+                        if name in names_count:
+                            names_count[name] += 1
+                            node['name'] = f"{name}_{names_count[name]:02d}"
+                        else:
+                            names_count[name] = 1
+                            node['name'] = name
+            except Exception as e:
+                print(f"地理位置解析失败: {e}")
+            
+            if node not in unique_nodes:
+                unique_nodes.append(node)
+                
+    return unique_nodes
+
+def save_to_yaml(nodes, filename):
+    """将节点保存到YAML文件。"""
+    final_data = {'proxies': nodes}
+    with open(filename, 'w', encoding='utf-8') as f:
+        yaml.dump(final_data, f, allow_unicode=True, default_flow_style=False)
+    print(f"已将 {len(nodes)} 个唯一节点保存到 {filename}")
 
 if __name__ == "__main__":
-    main()
+    search_queries = [
+        'intitle:"Index of /" "config.yaml" intext:proxies',
+        'intitle:"Index of /" "clash.yaml" intext:proxies',
+        'intitle:"Index of /" "all.yaml" intext:proxies',
+        'inurl:v2ray "config.yaml" intext:"vmess"',
+        'inurl:subscription "yaml" intext:"proxies"'
+    ]
+    
+    if not os.path.exists(GEOLITE_DB):
+        print("错误: 缺少地理位置数据库文件 GeoLite2-Country.mmdb，请先将其放置在仓库根目录下。")
+        sys.exit(1)
+
+    discovered_links = perform_google_search(search_queries, num_results=50)
+    
+    if discovered_links:
+        all_nodes = process_links(discovered_links)
+        
+        if all_nodes:
+            unique_nodes = geo_process_nodes(all_nodes)
+            save_to_yaml(unique_nodes, OUTPUT_YAML)
+        else:
+            print("未从发现的链接中找到任何代理节点。")
+    else:
+        print("未发现任何潜在链接。")
