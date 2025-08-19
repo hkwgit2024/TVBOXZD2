@@ -49,11 +49,11 @@ jobs:
           echo "Listing files in bin directory..."
           ls -R bin
           
-          # 使用 find 查找 ss-local，增加鲁棒性
-          echo "Locating ss-local..."
-          ss_local_path=$(find . -name "ss-local" | head -n 1)
+          # 查找 ss-local 或 sslocal
+          echo "Locating ss-local or sslocal..."
+          ss_local_path=$(find . -name "ss-local" -o -name "sslocal" | head -n 1)
           if [ -z "$ss_local_path" ]; then
-            echo "Error: ss-local not found"
+            echo "Error: ss-local or sslocal not found"
             exit 1
           fi
           mv "$ss_local_path" bin/ss-local
@@ -78,3 +78,10 @@ jobs:
           git add node_test_results.yaml node_test_results.csv node_test.log
           git commit -m "Update node test results" || echo "No changes"
           git push
+
+      - name: Upload test log
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-test-log
+          path: node_test.log
