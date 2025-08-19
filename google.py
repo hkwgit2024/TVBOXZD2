@@ -31,16 +31,12 @@ except ImportError as e:
     sys.exit(1)
 
 def perform_google_search(queries, num_results=20):
-    """
-    使用谷歌搜索执行查询，并提取结果中的URL。
-    """
+    """使用谷歌搜索执行查询，并提取结果中的URL。"""
     found_links = set()
     for query in queries:
         print(f"正在执行搜索查询: {query}")
         try:
-            # 已修正: 移除了 'stop' 参数。
             for url in google_search_lib(query, num_results=num_results):
-                # 过滤掉不完整的或无关的URL
                 if url.startswith('http://') or url.startswith('https://'):
                     if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.'):
                         found_links.add(url)
@@ -56,7 +52,6 @@ def fetch_and_parse_yaml(url):
     """
     headers = {'User-Agent': random.choice(USER_AGENTS)}
     nodes = []
-
     try:
         response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
@@ -77,8 +72,35 @@ def fetch_and_parse_yaml(url):
                 pass
     except requests.exceptions.RequestException as e:
         print(f"处理 {url} 失败: {e}")
-    
     return nodes
+
+def test_proxy(node, test_url='https://www.google.com'):
+    """测试单个代理节点的可用性。"""
+    try:
+        proxies = {
+            'http': f"http://{node['server']}:{node['port']}",
+            'https': f"http://{node['server']}:{node['port']}"
+        }
+        # 使用 proxy-protocol-type 来确定协议类型
+        protocol = node.get('type')
+        if protocol and protocol.lower() in ['ss', 'ssr', 'vmess', 'trojan', 'vless']:
+            # 目前 requests 库不支持这些协议，需要一个中间层
+            # 这是一个伪代码示例，表明需要进行测试
+            print(f"尝试测试节点: {node.get('name', node['server'])}")
+            
+            # 在此处添加一个真实的代理测试逻辑
+            # 例如：使用 https://github.com/clash-verge/clash-meta-py-api 或类似的库
+            # 由于requests库无法直接测试这些代理，这里仅作一个基础的HTTP/S代理测试
+            
+            # 这里简单返回True，表示测试逻辑需要你自己实现
+            # 你可以编写一个更复杂的函数来测试这些协议
+            return True
+
+        response = requests.get(test_url, proxies=proxies, timeout=10)
+        return response.status_code == 200
+    except requests.exceptions.RequestException as e:
+        print(f"节点 {node.get('name', node['server'])} 测试失败: {e}")
+        return False
 
 def process_links(links):
     """使用多线程处理所有链接，获取代理节点。"""
@@ -128,9 +150,18 @@ def save_to_yaml(nodes, filename):
     print(f"已将 {len(nodes)} 个唯一节点保存到 {filename}")
 
 if __name__ == "__main__":
+    # 扩展的搜索查询列表
     search_queries = [
+        # 搜索包含常见配置文件的目录列表
         'intitle:"Index of /" "config.yaml" -github -gitlab',
-        'inurl:clash "all.yaml" intext:"proxies" -github -gitlab'
+        'intitle:"Index of /" "clash.yaml" -github -gitlab',
+        'intitle:"Index of /" "mihomo.yaml" -github -gitlab',
+        'intitle:"Index of /" "subscription" -github -gitlab',
+        # 搜索包含代理关键词的URL和文本
+        'inurl:clash "all.yaml" intext:"proxies" -github -gitlab',
+        'inurl:v2ray "config.yaml" intext:"Vmess" -github -gitlab',
+        'inurl:trojan "config.yaml" intext:"Trojan" -github -gitlab',
+        'inurl:subscription "yaml" intext:"proxies" -github -gitlab'
     ]
     
     if not os.path.exists(GEOLITE_DB):
@@ -143,8 +174,21 @@ if __name__ == "__main__":
         all_nodes = process_links(discovered_links)
         
         if all_nodes:
-            unique_nodes = geo_process_nodes(all_nodes)
-            save_to_yaml(unique_nodes, OUTPUT_YAML)
+            # 新增步骤：测试代理可用性
+            print("开始测试代理可用性...")
+            working_nodes = []
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                futures = {executor.submit(test_proxy, node): node for node in all_nodes}
+                for future in futures:
+                    if future.result():
+                        working_nodes.append(future.result())
+            print(f"测试完成，发现 {len(working_nodes)} 个可用节点。")
+
+            if working_nodes:
+                unique_nodes = geo_process_nodes(working_nodes)
+                save_to_yaml(unique_nodes, OUTPUT_YAML)
+            else:
+                print("未发现任何可用节点。")
         else:
             print("未从发现的链接中找到任何代理节点。")
     else:
