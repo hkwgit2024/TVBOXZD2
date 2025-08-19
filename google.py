@@ -21,6 +21,13 @@ USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
 
+# 排除这些域名，因为它们通常不包含开放的代理文件
+DOMAIN_BLACKLIST = [
+    'wiley.com', 'researchgate.net', 'thelancet.com', 'sagepub.com',
+    'jamanetwork.com', 'dl.acm.org', 'fraserinstitute.org', 'aps.org',
+    'betterregulation.com', 'onlinelibrary.com',
+]
+
 # 确保 googlesearch-python 和 ip_geolocation 已安装
 try:
     from googlesearch import search as google_search_lib
@@ -29,6 +36,13 @@ except ImportError as e:
     print(f"导入库失败: {e}")
     print("请确保已安装所有依赖: pip install googlesearch-python beautifulsoup4 PyYAML requests geoip2")
     sys.exit(1)
+
+def is_blacklisted(url):
+    """检查URL是否在黑名单中。"""
+    for domain in DOMAIN_BLACKLIST:
+        if domain in url:
+            return True
+    return False
 
 def perform_google_search(query, num_results=50):
     """
@@ -39,7 +53,7 @@ def perform_google_search(query, num_results=50):
     try:
         for url in google_search_lib(query, num_results=num_results):
             if url.startswith('http://') or url.startswith('https://'):
-                if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.'):
+                if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.') and not is_blacklisted(url):
                     found_links.add(url)
         time.sleep(random.uniform(10, 20)) # 增加一个更长的随机延迟
     except Exception as e:
