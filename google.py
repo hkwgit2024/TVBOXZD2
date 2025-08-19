@@ -44,7 +44,7 @@ def perform_google_search(queries, num_results=20):
                 if url.startswith('http://') or url.startswith('https://'):
                     if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.'):
                         found_links.add(url)
-            time.sleep(random.uniform(5, 10)) # 增加一个更长的随机延迟
+            time.sleep(random.uniform(10, 20)) # 增加一个更长的随机延迟
         except Exception as e:
             print(f"搜索查询 '{query}' 失败: {e}")
     return list(found_links)
