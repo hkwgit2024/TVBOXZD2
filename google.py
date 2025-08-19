@@ -30,19 +30,20 @@ except ImportError as e:
     print("请确保已安装所有依赖: pip install googlesearch-python beautifulsoup4 PyYAML requests geoip2")
     sys.exit(1)
 
-def perform_google_search(queries, num_results=20):
-    """使用谷歌搜索执行查询，并提取结果中的URL。"""
+def perform_google_search(query, num_results=50):
+    """
+    使用谷歌搜索执行单个查询，并提取结果中的URL。
+    """
     found_links = set()
-    for query in queries:
-        print(f"正在执行搜索查询: {query}")
-        try:
-            for url in google_search_lib(query, num_results=num_results):
-                if url.startswith('http://') or url.startswith('https://'):
-                    if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.'):
-                        found_links.add(url)
-            time.sleep(random.uniform(10, 20)) # 增加一个更长的随机延迟
-        except Exception as e:
-            print(f"搜索查询 '{query}' 失败: {e}")
+    print(f"正在执行搜索查询: {query}")
+    try:
+        for url in google_search_lib(query, num_results=num_results):
+            if url.startswith('http://') or url.startswith('https://'):
+                if 'github.com' not in url and 'gitlab.com' not in url and not url.startswith('http://webcache.'):
+                    found_links.add(url)
+        time.sleep(random.uniform(10, 20)) # 增加一个更长的随机延迟
+    except Exception as e:
+        print(f"搜索查询 '{query}' 失败: {e}")
     return list(found_links)
 
 def fetch_and_parse_yaml(url):
@@ -128,19 +129,14 @@ def save_to_yaml(nodes, filename):
     print(f"已将 {len(nodes)} 个唯一节点保存到 {filename}")
 
 if __name__ == "__main__":
-    search_queries = [
-        'intitle:"Index of /" "config.yaml" intext:proxies -github -gitlab -readthedocs',
-        'intitle:"Index of /" "clash.yaml" intext:proxies -github -gitlab -readthedocs',
-        'intitle:"Index of /" "all.yaml" intext:proxies -github -gitlab -readthedocs',
-        'inurl:v2ray "config.yaml" intext:"vmess" -github -gitlab -readthedocs',
-        'inurl:subscription "yaml" intext:"proxies" -github -gitlab -readthedocs'
-    ]
+    # 合并后的单一搜索查询，使用 'OR' 逻辑来扩展搜索范围
+    search_query = 'intitle:"Index of /" ("config.yaml" OR "clash.yaml" OR "all.yaml" OR "mihomo.yaml" OR "subscription") intext:proxies -github -gitlab -readthedocs'
     
     if not os.path.exists(GEOLITE_DB):
         print("错误: 缺少地理位置数据库文件 GeoLite2-Country.mmdb，请先将其放置在仓库根目录下。")
         sys.exit(1)
 
-    discovered_links = perform_google_search(search_queries, num_results=50)
+    discovered_links = perform_google_search(search_query, num_results=50)
     
     if discovered_links:
         all_nodes = process_links(discovered_links)
