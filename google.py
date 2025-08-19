@@ -74,33 +74,9 @@ def fetch_and_parse_yaml(url):
         print(f"处理 {url} 失败: {e}")
     return nodes
 
-def test_proxy(node, test_url='https://www.google.com'):
-    """测试单个代理节点的可用性。"""
-    try:
-        proxies = {
-            'http': f"http://{node['server']}:{node['port']}",
-            'https': f"http://{node['server']}:{node['port']}"
-        }
-        # 使用 proxy-protocol-type 来确定协议类型
-        protocol = node.get('type')
-        if protocol and protocol.lower() in ['ss', 'ssr', 'vmess', 'trojan', 'vless']:
-            # 目前 requests 库不支持这些协议，需要一个中间层
-            # 这是一个伪代码示例，表明需要进行测试
-            print(f"尝试测试节点: {node.get('name', node['server'])}")
-            
-            # 在此处添加一个真实的代理测试逻辑
-            # 例如：使用 https://github.com/clash-verge/clash-meta-py-api 或类似的库
-            # 由于requests库无法直接测试这些代理，这里仅作一个基础的HTTP/S代理测试
-            
-            # 这里简单返回True，表示测试逻辑需要你自己实现
-            # 你可以编写一个更复杂的函数来测试这些协议
-            return True
-
-        response = requests.get(test_url, proxies=proxies, timeout=10)
-        return response.status_code == 200
-    except requests.exceptions.RequestException as e:
-        print(f"节点 {node.get('name', node['server'])} 测试失败: {e}")
-        return False
+def validate_node(node):
+    """验证节点是否是有效的代理配置。"""
+    return isinstance(node, dict) and 'server' in node and 'port' in node
 
 def process_links(links):
     """使用多线程处理所有链接，获取代理节点。"""
@@ -111,7 +87,9 @@ def process_links(links):
             try:
                 nodes = future.result()
                 if nodes:
-                    all_nodes.extend(nodes)
+                    # 过滤掉无效节点，只保留有效的代理配置
+                    valid_nodes = [node for node in nodes if validate_node(node)]
+                    all_nodes.extend(valid_nodes)
             except Exception as e:
                 print(f"处理链接失败: {e}")
     return all_nodes
@@ -150,18 +128,12 @@ def save_to_yaml(nodes, filename):
     print(f"已将 {len(nodes)} 个唯一节点保存到 {filename}")
 
 if __name__ == "__main__":
-    # 扩展的搜索查询列表
     search_queries = [
-        # 搜索包含常见配置文件的目录列表
-        'intitle:"Index of /" "config.yaml" -github -gitlab',
-        'intitle:"Index of /" "clash.yaml" -github -gitlab',
-        'intitle:"Index of /" "mihomo.yaml" -github -gitlab',
-        'intitle:"Index of /" "subscription" -github -gitlab',
-        # 搜索包含代理关键词的URL和文本
-        'inurl:clash "all.yaml" intext:"proxies" -github -gitlab',
-        'inurl:v2ray "config.yaml" intext:"Vmess" -github -gitlab',
-        'inurl:trojan "config.yaml" intext:"Trojan" -github -gitlab',
-        'inurl:subscription "yaml" intext:"proxies" -github -gitlab'
+        'intitle:"Index of /" "config.yaml" intext:proxies -github -gitlab -readthedocs',
+        'intitle:"Index of /" "clash.yaml" intext:proxies -github -gitlab -readthedocs',
+        'intitle:"Index of /" "all.yaml" intext:proxies -github -gitlab -readthedocs',
+        'inurl:v2ray "config.yaml" intext:"vmess" -github -gitlab -readthedocs',
+        'inurl:subscription "yaml" intext:"proxies" -github -gitlab -readthedocs'
     ]
     
     if not os.path.exists(GEOLITE_DB):
@@ -174,21 +146,8 @@ if __name__ == "__main__":
         all_nodes = process_links(discovered_links)
         
         if all_nodes:
-            # 新增步骤：测试代理可用性
-            print("开始测试代理可用性...")
-            working_nodes = []
-            with ThreadPoolExecutor(max_workers=10) as executor:
-                futures = {executor.submit(test_proxy, node): node for node in all_nodes}
-                for future in futures:
-                    if future.result():
-                        working_nodes.append(future.result())
-            print(f"测试完成，发现 {len(working_nodes)} 个可用节点。")
-
-            if working_nodes:
-                unique_nodes = geo_process_nodes(working_nodes)
-                save_to_yaml(unique_nodes, OUTPUT_YAML)
-            else:
-                print("未发现任何可用节点。")
+            unique_nodes = geo_process_nodes(all_nodes)
+            save_to_yaml(unique_nodes, OUTPUT_YAML)
         else:
             print("未从发现的链接中找到任何代理节点。")
     else:
