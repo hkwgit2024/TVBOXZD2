@@ -81,94 +81,76 @@ def test_connection_and_get_protocol(link):
 
 def find_raw_nodes(soup_content):
     """
-    在网页内容中查找并提取原始的节点链接（vmess, ss, trojan等）。
+    在网页内容中查找并提取原始的节点链接。
     """
     nodes = []
     # 查找所有可能包含节点链接的标签
-    tags_to_search = soup_content.find_all(['code', 'samp', 'div', 'p'])
+    tags_to_search = soup_content.find_all(['code', 'samp', 'div', 'p', 'textarea'])
     # 额外搜索HTML注释
     comments = soup_content.find_all(string=lambda text: isinstance(text, Comment))
 
+    # 更新后的正则表达式，仅匹配指定的协议
+    regex = r'(vmess://|ss://|trojan://|vless://|hy2://)[^\s]+'
+    
     for element in tags_to_search + comments:
         content = element.string
         if content:
             # 使用正则表达式匹配节点链接
-            matches = re.findall(r'(vmess://|ss://|trojan://)[^\s]+', content)
+            matches = re.findall(regex, content)
             if matches:
                 nodes.extend([{'type': m.split('://')[0], 'raw': m} for m in matches])
     
     return nodes
 
 @retry(stop_max_attempt_number=3, wait_fixed=3000)
-def parse_and_fetch_yaml(url):
+def parse_and_fetch(url):
     """
-    解析和获取YAML内容，支持HTML页面和TXT格式。
+    解析和获取链接内容，根据类型智能处理。
     """
     headers = get_headers()
     
-    # 尝试直接下载YAML或TXT
+    # 策略1: 优先尝试作为文件直链下载
+    try:
+        if url.lower().endswith(tuple(['.yaml', '.yml', '.txt', 'proxies.txt'])):
+            response = requests.get(url, headers=headers, timeout=10)
+            if response.status_code == 200:
+                content_type = response.headers.get('content-type', '').lower()
+                if 'yaml' in content_type or 'text' in content_type:
+                    return response.text, url
+                
+    except requests.exceptions.RequestException:
+        logging.debug(f"文件直链下载失败: {url}")
+    
+    # 策略2: 如果不是文件直链，尝试作为HTML页面爬取
     try:
         response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code == 200:
-            content_type = response.headers.get('content-type', '').lower()
-            if 'yaml' in content_type or url.endswith(('.yaml', '.yml')):
-                logging.debug(f"直接获取YAML: {url}")
-                return response.text, url
-            elif 'text/plain' in content_type or url.endswith('.txt'):
-                text = response.text
-                if 'vmess://' in text or 'ss://' in text or 'trojan://' in text:
-                    nodes = []
-                    for line in text.splitlines():
-                        if line.startswith(('vmess://', 'ss://', 'trojan://')):
-                            nodes.append({'type': line.split('://')[0], 'raw': line})
-                    if nodes:
-                        logging.debug(f"解析TXT节点: {url}")
-                        return yaml.dump({'proxies': nodes}), url
-            # 如果内容是HTML，则进行HTML解析
-            elif 'text/html' in content_type:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                
-                # 策略1: 寻找.yaml/.yml/.txt链接
-                for link in soup.find_all('a'):
-                    href = link.get('href')
-                    if href and href.lower().endswith(('.yaml', '.yml', '.txt')) and 'github' not in href.lower():
-                        full_url = urljoin(url, href)
-                        try:
-                            yaml_response = requests.get(full_url, headers=headers, timeout=10)
-                            if yaml_response.status_code == 200 and ('yaml' in yaml_response.headers.get('content-type', '').lower() or 'text' in yaml_response.headers.get('content-type', '').lower()):
-                                logging.debug(f"从HTML获取文件: {full_url}")
-                                return yaml_response.text, full_url
-                        except requests.exceptions.RequestException as e:
-                            logging.debug(f"HTML链接下载失败: {full_url}, 错误: {e}")
-                
-                # 策略2: 从<script>或<pre>标签提取
-                for tag in soup.find_all(['script', 'pre']):
-                    content = tag.string
-                    if content:
-                        if 'proxies' in content:
-                            try:
-                                data = yaml.safe_load(content)
-                                if isinstance(data, dict) and 'proxies' in data:
-                                    logging.debug(f"从HTML标签提取YAML: {url}")
-                                    return yaml.dump({'proxies': data['proxies']}), url
-                            except yaml.YAMLError as e:
-                                logging.debug(f"YAML解析失败: {url}, 错误: {e}")
-                        matches = re.findall(r'(vmess://|ss://|trojan://)[^\s]+', content)
-                        if matches:
-                            nodes = [{'type': m.split('://')[0], 'raw': m} for m in matches]
-                            logging.debug(f"从HTML标签提取原始节点: {url}")
-                            return yaml.dump({'proxies': nodes}), url
-
-                # 策略3: 搜索其他标签和HTML注释
-                raw_nodes = find_raw_nodes(soup)
-                if raw_nodes:
-                    logging.debug(f"从其他标签和注释中提取到原始节点: {url}")
-                    return yaml.dump({'proxies': raw_nodes}), url
+        if response.status_code == 200 and 'text/html' in response.headers.get('content-type', '').lower():
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # 从网页中寻找潜在的.yaml/.yml/.txt链接
+            for link in soup.find_all('a'):
+                href = link.get('href')
+                if href and href.lower().endswith(tuple(['.yaml', '.yml', '.txt'])) and 'github' not in href.lower():
+                    full_url = urljoin(url, href)
+                    try:
+                        yaml_response = requests.get(full_url, headers=headers, timeout=10)
+                        if yaml_response.status_code == 200 and ('yaml' in yaml_response.headers.get('content-type', '').lower() or 'text' in yaml_response.headers.get('content-type', '').lower()):
+                            logging.debug(f"从HTML获取文件: {full_url}")
+                            return yaml_response.text, full_url
+                    except requests.exceptions.RequestException:
+                        logging.debug(f"HTML链接下载失败: {full_url}")
+            
+            # 从<script>, <pre>等标签或注释中提取原始节点
+            raw_nodes = find_raw_nodes(soup)
+            if raw_nodes:
+                logging.debug(f"从网页中提取到原始节点: {url}")
+                return yaml.dump({'proxies': raw_nodes}), url
     
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"下载失败: {url}, 错误: {e}")
+    except requests.exceptions.RequestException:
+        logging.debug(f"网页下载失败: {url}")
     
     return None, None
+
 
 def fetch_proxy_links():
     """
@@ -198,6 +180,7 @@ def fetch_proxy_links():
             response = requests.get(source, headers=get_headers(), timeout=10)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
+                # 寻找网页中的所有链接
                 for a in soup.find_all('a'):
                     href = a.get('href')
                     if href and ('http' in href) and 'github' not in href.lower():
@@ -224,7 +207,7 @@ def pre_test_links(links):
     working_links = {}
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
-        for future in tqdm.tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
+        for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result_link, result_protocol = future.result()
             if result_link:
                 working_links[result_link] = result_protocol
@@ -246,8 +229,8 @@ def process_links(working_links):
     urls_to_process = list(set(urls_to_process))
     
     with ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(parse_and_fetch_yaml, url): url for url in urls_to_process}
-        for future in tqdm.tqdm(as_completed(future_to_url), total=len(future_to_url), desc="获取节点内容"):
+        future_to_url = {executor.submit(parse_and_fetch, url): url for url in urls_to_process}
+        for future in tqdm(as_completed(future_to_url), total=len(future_to_url), desc="获取节点内容"):
             nodes_text, successful_url = future.result()
             if nodes_text:
                 try:
