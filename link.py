@@ -48,7 +48,7 @@ try:
     geolocator = GeoLite2Country(GEOLITE_DB)
     logging.info("GeoLite2-Country 数据库加载成功。")
 except FileNotFoundError:
-    logging.error(f"无法找到地理位置数据库文件 {GEOLITE_DB}。请从 https://www.maxmind.com 下载 GeoLite2-Country.mmdb 并放置到脚本目录。")
+    logging.error(f"无法找到地理位置数据库文件 {GEOLITE_DB}。请确保 GeoLite2-Country.mmdb 存在于脚本根目录。")
     exit(1)
 
 def get_headers():
@@ -111,15 +111,14 @@ def fetch_proxy_links():
         'https://proxypool.link/clash',
         'https://nodefree.org/',
         'https://freefq.com/',
-        'https://proxyscrape.com/free-proxy-list',
-        'https://openproxy.space/list',
         'https://free-proxy-list.net/',
         'https://www.proxy-list.download/',
         'https://www.sslproxies.org/',
         'https://hidemy.name/en/proxy-list/',
+        'https://spys.one/en/free-proxy-list/',
+        'https://proxyservers.pro/free/',
         'https://www.blackhatworld.com/forum/proxies/',
-        'https://v2ex.com/?tab=tech',  # V2EX tech tab，可能有Clash讨论
-        # 可手动添加更多来源
+        'https://v2ex.com/?tab=tech',
     ]
     links = []
     
@@ -140,12 +139,13 @@ def fetch_proxy_links():
                     if content and ('.yaml' in content or '.yml' in content or '.txt' in content or 'proxies.txt' in content):
                         matches = re.findall(r'(https?://[^\s&]+\.(?:ya?ml|txt|proxies\.txt))', content)
                         links.extend([m for m in matches if 'github' not in m.lower()])
+            logging.info(f"从 {source} 爬取到 {len(links)} 个链接（未去重）。")
         except requests.exceptions.RequestException as e:
             logging.warning(f"爬取 {source} 失败: {e}")
             continue
     
-    unique_links = list(set(links))[:40]  # 扩展限制到40个，避免过多请求
-    logging.info(f"从新增来源爬取到 {len(unique_links)} 个链接。")
+    unique_links = list(set(links))[:40]  # 限制数量
+    logging.info(f"从所有来源爬取到 {len(unique_links)} 个唯一链接。")
     return unique_links
 
 @retry(stop_max_attempt_number=3, wait_fixed=3000)
@@ -254,7 +254,7 @@ def process_links(working_links):
                                 node['name'] = node.get('name', f"Node_{random.randint(1000, 9999)}")
                             # 测试节点延迟
                             latency = test_node_latency(node)
-                            if latency and latency < 200:
+                            if latency and latency < 300:  # 放宽到300ms
                                 node['latency'] = latency
                                 all_nodes.append(node)
                         node_counts.append({'url': successful_url, 'count': len(nodes)})
@@ -266,7 +266,7 @@ def process_links(working_links):
 def pre_test_links(links):
     """并发预测试链接"""
     working_links = {}
-    with ThreadPoolExecutor(max_workers=15) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
         for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
             result_link, result_protocol = future.result()
