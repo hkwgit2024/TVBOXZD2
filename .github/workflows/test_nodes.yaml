@@ -31,31 +31,25 @@ jobs:
 
           mkdir -p bin
           
-          echo "Downloading Xray..."
-          curl -fL --retry 3 https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip
-          unzip -o xray.zip -d bin
+          echo "Extracting Xray from local file..."
+          unzip -o Xray-linux-64.zip -d bin
           chmod +x bin/xray
           
-          echo "Downloading trojan-go..."
-          curl -fL --retry 3 https://github.com/p4gefau1t/trojan-go/releases/latest/download/trojan-go-linux-amd64.zip -o trojan-go.zip
-          unzip -o trojan-go.zip -d bin
+          echo "Extracting trojan-go from local file..."
+          unzip -o trojan-go-linux-amd64.zip -d bin
           chmod +x bin/trojan-go
           
-          echo "Downloading Hysteria..."
-          curl -fL --retry 3 https://github.com/HyNetwork/hysteria/releases/latest/download/hysteria-linux-amd64 -o bin/hysteria
+          echo "Extracting Hysteria from local file..."
+          mv hysteria-linux-amd64 bin/hysteria
           chmod +x bin/hysteria
           
-          echo "Downloading Shadowsocks-rust..."
-          # 使用精确的、适用于 v1.23.5 版本的下载链接
-          curl -fL --retry 3 https://github.com/shadowsocks/shadowsocks-rust/releases/download/v1.23.5/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
-          
-          # 直接尝试解压，如果文件损坏会立即报错
-          tar -xf ss.tar.xz -C bin
+          echo "Extracting Shadowsocks-rust from local file..."
+          tar -xf shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -C bin
           chmod +x bin/ss-local
 
-          # 清理临时文件
-          rm -f xray.zip trojan-go.zip ss.tar.xz
-          echo "All binaries downloaded and installed successfully."
+          # 清理根目录中的压缩包
+          rm -f Xray-linux-64.zip trojan-go-linux-amd64.zip hysteria-linux-amd64 shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz
+          echo "All binaries extracted successfully from the repository."
 
       - name: Run test script
         env:
