@@ -24,21 +24,34 @@ jobs:
       - name: Install binary dependencies
         run: |
           mkdir -p bin
-          # 下载 Xray
+          
+          echo "Downloading Xray..."
           curl -L https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip -o xray.zip
           unzip -o xray.zip -d bin
           chmod +x bin/xray
-          # 下载 trojan-go
+          
+          echo "Downloading trojan-go..."
           curl -L https://github.com/p4gefau1t/trojan-go/releases/latest/download/trojan-go-linux-amd64.zip -o trojan-go.zip
           unzip -o trojan-go.zip -d bin
           chmod +x bin/trojan-go
-          # 下载 Hysteria
+          
+          echo "Downloading Hysteria..."
           curl -L https://github.com/HyNetwork/hysteria/releases/latest/download/hysteria-linux-amd64 -o bin/hysteria
           chmod +x bin/hysteria
-          # 下载 Shadowsocks
+          
+          echo "Downloading Shadowsocks-rust..."
           curl -L https://github.com/shadowsocks/shadowsocks-rust/releases/latest/download/shadowsocks-x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
-          tar -xf ss.tar.xz -C bin
-          chmod +x bin/ss-local
+          
+          # 检查下载文件是否有效，然后解压
+          if [ -s ss.tar.xz ]; then
+            tar -xf ss.tar.xz -C bin
+            chmod +x bin/ss-local
+            echo "Shadowsocks-rust downloaded and extracted successfully."
+          else
+            echo "Error: Failed to download ss.tar.xz. The file is empty or corrupted."
+            exit 1
+          fi
+
           # 清理临时文件
           rm -f xray.zip trojan-go.zip ss.tar.xz
 
