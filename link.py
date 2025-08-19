@@ -45,35 +45,38 @@ except FileNotFoundError:
 def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
 
-def test_connection(link):
-    """预测试一个链接的连通性"""
+def test_connection_and_get_protocol(link):
+    """
+    测试一个链接的连通性，并返回成功的协议。
+    优先测试 HTTPS。
+    """
     link = link.replace('http://', '').replace('https://', '')
     
-    # 尝试 HTTP
+    # 优先尝试 HTTPS
     try:
-        requests.head(f"http://{link}", headers=get_headers(), timeout=5)
-        return link
+        requests.head(f"https://{link}", headers=get_headers(), timeout=5)
+        return link, "https"
     except requests.exceptions.RequestException:
         pass
     
-    # 如果 HTTP 失败，尝试 HTTPS
+    # 如果 HTTPS 失败，尝试 HTTP
     try:
-        requests.head(f"https://{link}", headers=get_headers(), timeout=5)
-        return link
+        requests.head(f"http://{link}", headers=get_headers(), timeout=5)
+        return link, "http"
     except requests.exceptions.RequestException:
         pass
         
-    return None
+    return None, None
 
 def pre_test_links(links):
-    """并发预测试所有链接，返回可用的链接列表"""
-    working_links = []
+    """并发预测试所有链接，返回可用链接及其协议的字典"""
+    working_links = {}
     with ThreadPoolExecutor(max_workers=30) as executor:
-        future_to_link = {executor.submit(test_connection, link): link for link in links}
+        future_to_link = {executor.submit(test_connection_and_get_protocol, link): link for link in links}
         for future in tqdm(as_completed(future_to_link), total=len(links), desc="预测试链接"):
-            result = future.result()
-            if result:
-                working_links.append(result)
+            result_link, result_protocol = future.result()
+            if result_link:
+                working_links[result_link] = result_protocol
     return working_links
 
 def parse_and_fetch_yaml(url):
@@ -87,7 +90,7 @@ def parse_and_fetch_yaml(url):
     # 尝试直接下载 YAML 文件
     try:
         response = requests.get(url, headers=headers, timeout=5)
-        if response.status_code == 200 and response.headers.get('content-type', '').lower() in ['text/plain', 'text/yaml', 'application/x-yaml']:
+        if response.status_code == 200 and 'text/html' not in response.headers.get('content-type', '').lower():
             return response.text, url
     except requests.exceptions.RequestException:
         pass
@@ -116,7 +119,7 @@ def parse_and_fetch_yaml(url):
                     if match:
                         yaml_url = match.group(1)
                         if not yaml_url.startswith(('http://', 'https://')):
-                             yaml_url = requests.compat.urljoin(url, yaml_url)
+                            yaml_url = requests.compat.urljoin(url, yaml_url)
                         
                         yaml_response = requests.get(yaml_url, headers=headers, timeout=5)
                         if yaml_response.status_code == 200:
@@ -126,22 +129,20 @@ def parse_and_fetch_yaml(url):
         
     return None, None
 
-def process_links(links):
+def process_links(working_links):
     """第二阶段：处理可用的链接"""
     all_nodes = []
     node_counts = []
     
     # 整理所有待处理的URL，包括直接路径和根目录
     urls_to_process = []
-    for link in links:
-        # 针对每个可用链接，尝试两种协议和4个默认文件名
+    for link, protocol in working_links.items():
+        # 针对每个可用链接，尝试默认文件名
         for config_name in CONFIG_NAMES:
-            urls_to_process.append(f"http://{link}/{config_name}")
-            urls_to_process.append(f"https://{link}/{config_name}")
-        # 同时，也尝试直接访问根目录以触发HTML解析
-        urls_to_process.append(f"http://{link}/")
-        urls_to_process.append(f"https://{link}/")
-        
+            urls_to_process.append(f"{protocol}://{link}/{config_name}")
+        # 也尝试直接访问根目录以触发HTML解析
+        urls_to_process.append(f"{protocol}://{link}/")
+    
     # 去重
     urls_to_process = list(set(urls_to_process))
     
@@ -180,7 +181,7 @@ def main():
     with open(LINKS_FILE, 'r') as f:
         links_to_test = [line.strip() for line in f if line.strip()]
 
-    print("第一阶段：预测试所有链接...")
+    print("第一阶段：预测试所有链接，优先尝试 HTTPS...")
     working_links = pre_test_links(links_to_test)
     print(f"预测试完成，发现 {len(working_links)} 个可用链接。")
     
