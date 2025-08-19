@@ -6,6 +6,7 @@ import socket
 import subprocess
 import logging
 import os
+import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import multiprocessing
@@ -14,7 +15,7 @@ import multiprocessing
 logging.basicConfig(filename='node_test.log', level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 二进制文件路径（可通过环境变量覆盖）
+# 二进制文件路径
 BINARY_PATHS = {
     'ss-local': os.getenv('SS_LOCAL_PATH', './bin/ss-local'),
     'xray': os.getenv('XRAY_PATH', './bin/xray'),
@@ -22,13 +23,13 @@ BINARY_PATHS = {
     'hysteria': os.getenv('HYSTERIA_PATH', './bin/hysteria')
 }
 
-# 检查二进制文件是否存在
+# 检查二进制文件
 def check_binary(binary_name):
     path = BINARY_PATHS.get(binary_name)
     if path and os.path.isfile(path) and os.access(path, os.X_OK):
         return path
     logging.warning(f"{binary_name} 二进制文件不可用，尝试 PATH 或跳过")
-    return shutil.which(binary_name)  # 查找 PATH 中的二进制
+    return shutil.which(binary_name)
 
 # 读取 link.yaml
 def load_nodes(file_path='link.yaml'):
@@ -36,16 +37,17 @@ def load_nodes(file_path='link.yaml'):
         data = yaml.safe_load(f)
     return data.get('proxies', [])
 
-# 通用延迟测试函数
+# 通用延迟测试
 def test_latency_with_proxy(proxy_config, target_url='https://1.1.1.1', timeout=5, retries=3):
     latencies = []
     status = 'error'
     for _ in range(retries):
         try:
-            if 'proxies' in proxy_config:  # 使用 requests 的代理
+            if 'proxies' in proxy_config:  # 使用 requests
+                start = time.time()
                 response = requests.get(target_url, proxies=proxy_config['proxies'], timeout=timeout)
                 if response.status_code in (200, 204):
-                    latency = (time.time() - response.request.start) * 1000  # ms
+                    latency = (time.time() - start) * 1000  # ms
                     latencies.append(latency)
                     status = 'available'
                     break
@@ -62,21 +64,28 @@ def test_latency_with_proxy(proxy_config, target_url='https://1.1.1.1', timeout=
             logging.error(f"测试失败: {proxy_config.get('name', 'unknown')}, 错误: {str(e)}")
     return min(latencies) if latencies else float('inf'), status
 
-# subprocess 测试（v2ray/trojan/hysteria）
+# subprocess 测试
 def subprocess_test(proxy_config):
     binary = proxy_config['binary']
     config_file = proxy_config['config_file']
+    proc = None
     try:
-        # 启动代理客户端（示例，需根据实际客户端调整命令）
-        proc = subprocess.Popen([binary, '-c', config_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen([binary, '-c', config_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         time.sleep(1)  # 等待代理启动
+        start = time.time()
         response = requests.get('https://1.1.1.1', proxies={'http': 'socks5://127.0.0.1:1080', 'https': 'socks5://127.0.0.1:1080'}, timeout=5)
-        latency = (time.time() - response.request.start) * 1000
-        proc.terminate()
+        latency = (time.time() - start) * 1000
         return latency
-    except:
-        proc.terminate()
+    except Exception as e:
+        logging.error(f"subprocess 测试失败: {proxy_config['name']}, 错误: {str(e)}")
         return float('inf')
+    finally:
+        if proc:
+            proc.terminate()
+            try:
+                proc.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                proc.kill()
 
 # Fallback: ping 测试
 def ping_test(server):
@@ -91,7 +100,7 @@ def ping_test(server):
 
 # 生成代理配置
 def get_proxy_config(node):
-    node_type = node.get('type', '').lower()
+    node costruct node_type = node.get('type', '').lower()
     server = node.get('server')
     port = node.get('port')
     name = node.get('name', 'unknown')
@@ -100,9 +109,8 @@ def get_proxy_config(node):
         return {'name': name, 'latency': 0, 'status': 'direct'}
 
     elif node_type == 'ss':
-        # Shadowsocks
         try:
-            import socks  # 需要 pip install pysocks
+            import socks
             proxy_url = f"socks5://{node.get('password')}@{server}:{port}"
             return {'name': name, 'proxies': {'http': proxy_url, 'https': proxy_url}}
         except ImportError:
@@ -110,7 +118,6 @@ def get_proxy_config(node):
             return {'name': name, 'binary': 'ping', 'server': server}
 
     elif node_type in ('vmess', 'vless'):
-        # VMess/VLESS 使用 Xray
         xray_path = check_binary('xray')
         if not xray_path:
             logging.warning(f"{name}: Xray 未安装，使用 ping 测试")
@@ -140,7 +147,6 @@ def get_proxy_config(node):
         return {'name': name, 'binary': xray_path, 'config_file': config_file}
 
     elif node_type == 'trojan':
-        # Trojan 使用 trojan-go
         trojan_path = check_binary('trojan-go')
         if not trojan_path:
             logging.warning(f"{name}: trojan-go 未安装，使用 ping 测试")
@@ -160,7 +166,6 @@ def get_proxy_config(node):
         return {'name': name, 'binary': trojan_path, 'config_file': config_file}
 
     elif node_type == 'hysteria2':
-        # Hysteria2
         hysteria_path = check_binary('hysteria')
         if not hysteria_path:
             logging.warning(f"{name}: hysteria 未安装，使用 ping 测试")
