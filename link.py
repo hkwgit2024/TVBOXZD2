@@ -9,7 +9,7 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from retrying import retry
 from ip_geolocation import GeoLite2Country
-import tqdm
+from tqdm import tqdm
 from bs4 import BeautifulSoup, Comment
 from urllib.parse import urljoin
 
@@ -124,54 +124,49 @@ def parse_and_fetch_yaml(url):
                     if nodes:
                         logging.debug(f"解析TXT节点: {url}")
                         return yaml.dump({'proxies': nodes}), url
-    except requests.exceptions.RequestException as e:
-        logging.debug(f"直接下载失败: {url}, 错误: {e}")
-    
-    # 解析HTML页面
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code == 200 and 'text/html' in response.headers.get('content-type', '').lower():
-            soup = BeautifulSoup(response.text, 'html.parser')
-            
-            # 策略1: 寻找.yaml/.yml/.txt链接
-            for link in soup.find_all('a'):
-                href = link.get('href')
-                if href and href.lower().endswith(('.yaml', '.yml', '.txt')) and 'github' not in href.lower():
-                    full_url = urljoin(url, href)
-                    try:
-                        yaml_response = requests.get(full_url, headers=headers, timeout=10)
-                        if yaml_response.status_code == 200:
-                            logging.debug(f"从HTML获取文件: {full_url}")
-                            return yaml_response.text, full_url
-                    except requests.exceptions.RequestException as e:
-                        logging.debug(f"HTML链接下载失败: {full_url}, 错误: {e}")
-            
-            # 策略2: 从<script>或<pre>标签提取
-            for tag in soup.find_all(['script', 'pre']):
-                content = tag.string
-                if content:
-                    if 'proxies' in content:
+            # 如果内容是HTML，则进行HTML解析
+            elif 'text/html' in content_type:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # 策略1: 寻找.yaml/.yml/.txt链接
+                for link in soup.find_all('a'):
+                    href = link.get('href')
+                    if href and href.lower().endswith(('.yaml', '.yml', '.txt')) and 'github' not in href.lower():
+                        full_url = urljoin(url, href)
                         try:
-                            data = yaml.safe_load(content)
-                            if isinstance(data, dict) and 'proxies' in data:
-                                logging.debug(f"从HTML标签提取YAML: {url}")
-                                return yaml.dump({'proxies': data['proxies']}), url
-                        except yaml.YAMLError as e:
-                            logging.debug(f"YAML解析失败: {url}, 错误: {e}")
-                    matches = re.findall(r'(vmess://|ss://|trojan://)[^\s]+', content)
-                    if matches:
-                        nodes = [{'type': m.split('://')[0], 'raw': m} for m in matches]
-                        logging.debug(f"从HTML标签提取原始节点: {url}")
-                        return yaml.dump({'proxies': nodes}), url
+                            yaml_response = requests.get(full_url, headers=headers, timeout=10)
+                            if yaml_response.status_code == 200 and ('yaml' in yaml_response.headers.get('content-type', '').lower() or 'text' in yaml_response.headers.get('content-type', '').lower()):
+                                logging.debug(f"从HTML获取文件: {full_url}")
+                                return yaml_response.text, full_url
+                        except requests.exceptions.RequestException as e:
+                            logging.debug(f"HTML链接下载失败: {full_url}, 错误: {e}")
+                
+                # 策略2: 从<script>或<pre>标签提取
+                for tag in soup.find_all(['script', 'pre']):
+                    content = tag.string
+                    if content:
+                        if 'proxies' in content:
+                            try:
+                                data = yaml.safe_load(content)
+                                if isinstance(data, dict) and 'proxies' in data:
+                                    logging.debug(f"从HTML标签提取YAML: {url}")
+                                    return yaml.dump({'proxies': data['proxies']}), url
+                            except yaml.YAMLError as e:
+                                logging.debug(f"YAML解析失败: {url}, 错误: {e}")
+                        matches = re.findall(r'(vmess://|ss://|trojan://)[^\s]+', content)
+                        if matches:
+                            nodes = [{'type': m.split('://')[0], 'raw': m} for m in matches]
+                            logging.debug(f"从HTML标签提取原始节点: {url}")
+                            return yaml.dump({'proxies': nodes}), url
 
-            # 策略3: 搜索其他标签和HTML注释
-            raw_nodes = find_raw_nodes(soup)
-            if raw_nodes:
-                logging.debug(f"从其他标签和注释中提取到原始节点: {url}")
-                return yaml.dump({'proxies': raw_nodes}), url
-
+                # 策略3: 搜索其他标签和HTML注释
+                raw_nodes = find_raw_nodes(soup)
+                if raw_nodes:
+                    logging.debug(f"从其他标签和注释中提取到原始节点: {url}")
+                    return yaml.dump({'proxies': raw_nodes}), url
+    
     except requests.exceptions.RequestException as e:
-        logging.debug(f"HTML解析失败: {url}, 错误: {e}")
+        logging.debug(f"下载失败: {url}, 错误: {e}")
     
     return None, None
 
