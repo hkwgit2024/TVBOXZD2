@@ -46,8 +46,8 @@ jobs:
           chmod +x bin/hysteria
           
           echo "Downloading Shadowsocks-rust..."
-          # 更新为新的下载链接
-          curl -fL --retry 3 https://github.com/shadowsocks/shadowsocks-rust/releases/latest/download/ss-x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
+          # 使用精确的、适用于 v1.23.5 版本的下载链接
+          curl -fL --retry 3 https://github.com/shadowsocks/shadowsocks-rust/releases/download/v1.23.5/shadowsocks-v1.23.5.x86_64-unknown-linux-gnu.tar.xz -o ss.tar.xz
           
           # 直接尝试解压，如果文件损坏会立即报错
           tar -xf ss.tar.xz -C bin
