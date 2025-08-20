@@ -32,18 +32,18 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: CA
+- name: DE
   type: ss
-  server: 142.4.216.225
-  port: 80
+  server: 147.45.178.200
+  port: 57456
   cipher: chacha20-ietf-poly1305
-  password: JIhN6rBKkaEboLNXVSv5rq
-- name: FR
+  password: a58fa62b4944ddbf
+- name: TR
   type: ss
-  server: 45.158.171.136
-  port: 8080
+  server: 185.123.101.241
+  port: 990
   cipher: chacha20-ietf-poly1305
-  password: 1RWwXhwfAB5gAEozU4G2Pg
+  password: f8f7aCzcPKbsF8p3
 - name: MX
   type: ss
   server: 147.78.1.27
@@ -56,48 +56,18 @@ proxies:
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-- name: US-01
+- name: FR
   type: ss
-  server: 64.74.163.130
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: LT
-  type: ss
-  server: 45.87.175.154
+  server: 45.158.171.136
   port: 8080
   cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
+  password: 1RWwXhwfAB5gAEozU4G2Pg
 - name: NL-01
   type: ss
   server: 193.29.139.177
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-- name: MY
-  type: ss
-  server: 103.243.215.17
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: LT-03
-  type: ss
-  server: 45.87.175.166
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-- name: LT-04
-  type: ss
-  server: 45.87.175.183
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-- name: FR-01
-  type: ss
-  server: 45.158.171.146
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
 - name: FI
   type: ss
   server: 83.147.216.70
@@ -128,24 +98,12 @@ proxies:
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-- name: SI
+- name: LT-05
   type: ss
-  server: 192.71.244.150
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: LT-07
-  type: ss
-  server: 45.87.175.58
+  server: 45.87.175.22
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-- name: IN
-  type: ss
-  server: 82.180.146.173
-  port: 35652
-  cipher: aes-128-gcm
-  password: 93498539-7838-4836-b9b3-8311ffc79bcf
 - name: US
   type: ss
   server: 104.192.226.106
@@ -160,69 +118,58 @@ proxies:
   password: 4a2rfixophdjffa8KVA4Aa
 - name: Unnamed Node-03
   type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 042bc3ac-e817-4e43-95b0-c25c64438781
+  network: ws
+  tls: true
+  servername: ava.game.naver.com.yaya.web.id
+  flow: ''
+  ws-opts:
+    path: /incapsula
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Unnamed Node-05
+  type: vless
   server: jio.sandeshsahu.tech
   port: 80
-  uuid: 07a4bb47-1489-45da-a221-3e345e2f7e78
+  uuid: 04d0dd1c-6656-4c8c-aaac-ffd36b7c5e1d
   network: ws
   tls: false
   ws-opts:
-    path: /azure3
+    path: /akamai
     headers:
       Host: cf.vless.sandesh.fr
-- name: Unnamed Node-04
+- name: Unnamed Node-08
   type: vless
   server: jio.sandeshsahu.tech
   port: 443
-  uuid: 02d14613-11b7-4c0c-adb3-e74534a5f488
+  uuid: 0846e067-0058-4708-94a6-121a4b82f5e5
   network: ws
   tls: true
   servername: cf.vless.sandesh.fr
   flow: ''
   ws-opts:
-    path: /gcp2
+    path: /digtalocean4
     headers:
       Host: cf.vless.sandesh.fr
-- name: Unnamed Node-05
+- name: Unnamed Node-09
   type: vless
-  server: zaintest.vuclip.com.yaya.web.id
-  port: 80
-  uuid: 02144f74-5e94-4cc0-82cc-5ac903fcc90d
-  network: ws
-  tls: false
-  ws-opts:
-    path: /do
-    headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-- name: Unnamed Node-06
-  type: vless
-  server: zaintest.vuclip.com.yaya.web.id
+  server: edu.ruangguru.com.yaya.web.id
   port: 443
-  uuid: 0d332b87-5474-4cc5-9b92-89a376b1c50f
+  uuid: 02f1703a-c452-41c7-b8b9-0616ac1ffc25
   network: ws
   tls: true
-  servername: zaintest.vuclip.com.yaya.web.id
+  servername: edu.ruangguru.com.yaya.web.id
   flow: ''
   ws-opts:
-    path: /kr
+    path: /clo
     headers:
-      Host: zaintest.vuclip.com.yaya.web.id
-- name: Unnamed Node-08
-  type: vless
-  server: yaya.web.id
-  port: 443
-  uuid: 06d187f2-8595-4515-be30-cd5554fd9521
-  network: ws
-  tls: true
-  servername: yaya.web.id
-  flow: ''
-  ws-opts:
-    path: /do
-    headers:
-      Host: yaya.web.id
+      Host: edu.ruangguru.com.yaya.web.id
 - name: Unnamed Node-10
   type: vless
   server: bestcf.030101.xyz
-  port: 2052
+  port: 2095
   uuid: 13516920-8ff7-4382-a55b-f0dc2c4378f7
   network: ws
   tls: false
@@ -230,7 +177,7 @@ proxies:
     path: /=2048
     headers:
       Host: 240804.cfsub.cloudns.be
-- name: Unnamed Node-13
+- name: Unnamed Node-12
   type: vless
   server: bestcf.030101.xyz
   port: 2086
@@ -241,10 +188,21 @@ proxies:
     path: /=2048
     headers:
       Host: 240804.cfsub.cloudns.be
-- name: Unnamed Node-15
+- name: Unnamed Node-13
   type: vless
   server: bestcf.030101.xyz
-  port: 2095
+  port: 2052
+  uuid: 13516920-8ff7-4382-a55b-f0dc2c4378f7
+  network: ws
+  tls: false
+  ws-opts:
+    path: /=2048
+    headers:
+      Host: 240804.cfsub.cloudns.be
+- name: Unnamed Node-16
+  type: vless
+  server: bestcf.030101.xyz
+  port: 80
   uuid: 13516920-8ff7-4382-a55b-f0dc2c4378f7
   network: ws
   tls: false
@@ -263,7 +221,7 @@ proxies:
     path: /=2048
     headers:
       Host: 240804.cfsub.cloudns.be
-- name: Unnamed Node-20
+- name: Unnamed Node-21
   type: vless
   server: bestcf.030101.xyz
   port: 8880
@@ -274,123 +232,101 @@ proxies:
     path: /=2048
     headers:
       Host: 240804.cfsub.cloudns.be
-- name: Unnamed Node-21
-  type: vless
-  server: bestcf.030101.xyz
-  port: 80
-  uuid: 13516920-8ff7-4382-a55b-f0dc2c4378f7
-  network: ws
-  tls: false
-  ws-opts:
-    path: /=2048
-    headers:
-      Host: 240804.cfsub.cloudns.be
-- name: Unnamed Node-23
-  type: vless
-  server: ava.game.naver.com.yaya.web.id
-  port: 80
-  uuid: 07593cb7-0235-4b4a-8ce7-123c5dce9553
-  network: ws
-  tls: false
-  ws-opts:
-    path: /ten
-    headers:
-      Host: ava.game.naver.com.yaya.web.id
 - name: Unnamed Node-25
   type: vless
-  server: ava.game.naver.com.yaya.web.id
-  port: 443
-  uuid: 1a6bf1dd-7c54-42e1-88e1-12d2e000a576
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 067b739b-b1db-4b10-ba00-c7e41244bffa
   network: ws
-  tls: true
-  servername: ava.game.naver.com.yaya.web.id
-  flow: ''
+  tls: false
   ws-opts:
-    path: /ten
+    path: /do2
     headers:
-      Host: ava.game.naver.com.yaya.web.id
-- name: Unnamed Node-28
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Unnamed Node-31
   type: vless
-  server: edu.ruangguru.com.yaya.web.id
+  server: yaya.web.id
   port: 443
-  uuid: 0b1c709e-c8e9-4296-9809-f9ec9a7ab883
+  uuid: 19a51a05-f322-4363-8903-daf20492fdd3
   network: ws
   tls: true
-  servername: edu.ruangguru.com.yaya.web.id
+  servername: yaya.web.id
   flow: ''
   ws-opts:
-    path: /kr
+    path: /do2
     headers:
-      Host: edu.ruangguru.com.yaya.web.id
-- name: Unnamed Node-29
+      Host: yaya.web.id
+- name: Unnamed Node-33
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 2103eda7-8a8c-4fb3-9896-7b6a6ea04c23
+  network: ws
+  tls: false
+  ws-opts:
+    path: /akamai
+    headers:
+      Host: yaya.web.id
+- name: Unnamed Node-37
   type: vless
   server: edu.ruangguru.com.yaya.web.id
   port: 80
-  uuid: 03280a31-4a58-477a-a04d-88e87913ad2a
+  uuid: 2d33ff3c-c6ea-455c-83c8-02b5bac69d36
+  network: ws
+  tls: false
+  ws-opts:
+    path: /beon
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Unnamed Node-49
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 41127ea6-0b6e-4650-8b57-1a5a1f6e7601
+  network: ws
+  tls: false
+  ws-opts:
+    path: /clo
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Unnamed Node-55
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: 285ba7d6-8987-4794-8947-aff774039aaf
   network: ws
   tls: false
   ws-opts:
     path: /do
     headers:
-      Host: edu.ruangguru.com.yaya.web.id
-- name: Unnamed Node-45
-  type: vless
-  server: yaya.web.id
-  port: 80
-  uuid: 428499bf-a469-457b-a8ff-a806806debbe
-  network: ws
-  tls: false
-  ws-opts:
-    path: /ten
-    headers:
-      Host: yaya.web.id
-- name: Unnamed Node-55
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Unnamed Node-56
   type: vless
   server: quiz.int.vidio.com.yaya.web.id
   port: 443
-  uuid: 458de244-8b5b-4fd1-998b-99806f6a463d
+  uuid: 41b3c6fd-fe8b-4e84-a0e5-d0e5c44158ff
   network: ws
   tls: true
   servername: quiz.int.vidio.com.yaya.web.id
   flow: ''
   ws-opts:
-    path: /gcp
+    path: /akamai
     headers:
       Host: quiz.int.vidio.com.yaya.web.id
-- name: Unnamed Node-56
+- name: Unnamed Node-66
   type: vless
-  server: quiz.int.vidio.com.yaya.web.id
-  port: 80
-  uuid: 269925e6-c9d2-4b97-8536-fc47d3d5cc35
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 4fe47f39-a080-45f2-8074-db4991a26406
   network: ws
-  tls: false
+  tls: true
+  servername: zaintest.vuclip.com.yaya.web.id
+  flow: ''
   ws-opts:
-    path: /incapsula
+    path: /do
     headers:
-      Host: quiz.int.vidio.com.yaya.web.id
-- name: Unnamed Node-139
-  type: vless
-  server: fearless-change.oneeat.co
-  port: 80
-  uuid: b055036a-2d81-4d46-ab18-4e1898b58cec
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: fearless-change.oneeat.co
-- name: Unnamed Node-147
-  type: vless
-  server: fruitful-exchange.seotoolsforyou.co.uk
-  port: 80
-  uuid: 9570a079-f83f-4454-88d0-884057c57a35
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: fruitful-exchange.seotoolsforyou.co.uk
-- name: Unnamed Node-153
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Unnamed Node-143
   type: vless
   server: communal-loss.oneeat.co
   port: 80
@@ -403,6 +339,17 @@ proxies:
       Host: communal-loss.oneeat.co
 - name: Unnamed Node-159
   type: vless
+  server: fearless-change.oneeat.co
+  port: 80
+  uuid: b055036a-2d81-4d46-ab18-4e1898b58cec
+  network: ws
+  tls: false
+  ws-opts:
+    path: /
+    headers:
+      Host: fearless-change.oneeat.co
+- name: Unnamed Node-169
+  type: vless
   server: 104.18.1.99
   port: 2053
   uuid: e8113a32-b7f8-4bbb-9655-38fcbd57dd46
@@ -414,7 +361,7 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-160
+- name: Unnamed Node-170
   type: vless
   server: 104.18.1.99
   port: 2083
@@ -427,7 +374,7 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-161
+- name: Unnamed Node-171
   type: vless
   server: 104.18.1.99
   port: 2087
@@ -440,7 +387,7 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-162
+- name: Unnamed Node-172
   type: vless
   server: 104.18.1.99
   port: 2096
@@ -453,7 +400,7 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-163
+- name: Unnamed Node-173
   type: vless
   server: 104.18.1.99
   port: 443
@@ -466,7 +413,7 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-164
+- name: Unnamed Node-174
   type: vless
   server: 104.18.1.99
   port: 8443
@@ -479,17 +426,6 @@ proxies:
     path: /=2048
     headers:
       Host: aling.aple.cloudns.be
-- name: Unnamed Node-170
-  type: vless
-  server: famous-danger.oneeat.co
-  port: 80
-  uuid: ddc27bd6-6efa-47cf-8bfc-acaf973ba6b3
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: famous-danger.oneeat.co
 - name: GB
   type: vmess
   server: 64.227.45.92
@@ -514,12 +450,17 @@ proxies:
     path: /
     headers:
       Host: ''
-- name: BR-01
-  type: ss
-  server: 38.54.57.90
-  port: 989
-  cipher: aes-256-cfb
-  password: f8f7aCzcPKbsF8p3
+- name: Unnamed Node-190
+  type: vless
+  server: famous-danger.oneeat.co
+  port: 80
+  uuid: ddc27bd6-6efa-47cf-8bfc-acaf973ba6b3
+  network: ws
+  tls: false
+  ws-opts:
+    path: /
+    headers:
+      Host: famous-danger.oneeat.co
 - name: VN-01
   type: ss
   server: 103.186.155.20
@@ -550,6 +491,17 @@ proxies:
   port: 989
   cipher: aes-256-cfb
   password: f8f7aCzcPKbsF8p3
+- name: IR-01
+  type: vless
+  server: 62.60.192.209
+  port: 80
+  uuid: f5f2458c-5fcb-4820-82c2-2997492c54d5
+  network: ws
+  tls: false
+  ws-opts:
+    path: /
+    headers:
+      Host: /y-?ed
 - name: GB-03
   type: vless
   server: 91.193.58.196
@@ -640,19 +592,6 @@ proxies:
     path: /6m9qzexbs9sqghln?ed=2560
     headers:
       Host: supercars.gobexor577.workers.dev
-- name: Unnamed Node-238
-  type: vless
-  server: 104.18.26.94
-  port: 443
-  uuid: 76bf3c4c-57c6-486d-b964-e0a7cf0882ee
-  network: ws
-  tls: true
-  servername: esetsecuritylicense.kitonap759.workers.dev
-  flow: ''
-  ws-opts:
-    path: /
-    headers:
-      Host: esetsecuritylicense.kitonap759.workers.dev
 - name: SI-01
   type: vless
   server: 92.53.189.177
@@ -686,20 +625,7 @@ proxies:
     path: /telegram🇨🇳
     headers:
       Host: cs.laoyoutiao.link
-- name: Unnamed Node-240
-  type: vless
-  server: invincible.fafa20.shop
-  port: 2053
-  uuid: 376734bc-4db8-4317-b451-af0262cb01c7
-  network: ws
-  tls: true
-  servername: invincible.fafa20.shop
-  flow: ''
-  ws-opts:
-    path: /nvv4c8xwsfs1e4av/mtkzljeymy44ms4xmdu=?ed=2560
-    headers:
-      Host: invincible.fafa20.shop
-- name: US-24
+- name: US-23
   type: vless
   server: 141.193.213.116
   port: 80
@@ -718,6 +644,19 @@ proxies:
   alterId: 0
   cipher: auto
   network: tcp
+- name: Unnamed Node-240
+  type: vless
+  server: invincible.fafa20.shop
+  port: 2053
+  uuid: 376734bc-4db8-4317-b451-af0262cb01c7
+  network: ws
+  tls: true
+  servername: invincible.fafa20.shop
+  flow: ''
+  ws-opts:
+    path: /nvv4c8xwsfs1e4av/mtkzljeymy44ms4xmdu=?ed=2560
+    headers:
+      Host: invincible.fafa20.shop
 - name: FI-05
   type: ss
   server: 83.147.216.70
@@ -735,19 +674,14 @@ proxies:
     path: /
     headers:
       Host: beloved-failure.seotoolsforyou.co.uk
-- name: US-49
-  type: vmess
-  server: 45.8.146.129
-  port: 80
-  uuid: 0704016f-5435-4655-be6a-771a5aba52c3
-  alterId: 0
-  cipher: auto
-  network: ws
-  ws-opts:
-    path: /vmess/
-    headers:
-      Host: ''
-- name: Unnamed Node-332
+- name: FR-20
+  type: vless
+  server: 54.37.205.0
+  port: 59332
+  uuid: d2dc2527-33d5-46f3-f39c-36da72fb1a62
+  network: tcp
+  tls: false
+- name: Unnamed Node-331
   type: vless
   server: 188.114.96.6
   port: 443
@@ -770,19 +704,6 @@ proxies:
   network: tcp
 - name: Unnamed Node-334
   type: vless
-  server: freevpn.xhamster.biz.id
-  port: 443
-  uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
-  network: ws
-  tls: true
-  servername: freevpn.xhamster.biz.id
-  flow: ''
-  ws-opts:
-    path: /Free-CF-Proxy-AM14
-    headers:
-      Host: freevpn.xhamster.biz.id
-- name: Unnamed Node-335
-  type: vless
   server: 190.93.245.232
   port: 8443
   uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
@@ -794,53 +715,36 @@ proxies:
     path: /?ed=2560
     headers:
       Host: bitget1.asdasd.click
-- name: NL-10
+- name: NL-11
   type: ss
   server: 193.29.139.240
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-- name: NL-11
+- name: Unnamed Node-339
   type: vless
-  server: 179.61.219.170
-  port: 22934
-  uuid: 0cd276a5-4501-413a-acf8-b51c54894f02
-  network: tcp
+  server: freevpn.xhamster.biz.id
+  port: 443
+  uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
+  network: ws
+  tls: true
+  servername: freevpn.xhamster.biz.id
+  flow: ''
+  ws-opts:
+    path: /Free-CF-Proxy-AM14
+    headers:
+      Host: freevpn.xhamster.biz.id
+- name: Unnamed Node-341
+  type: vless
+  server: small-meal.oneeat.co
+  port: 80
+  uuid: d1e44075-8c92-4698-9db0-e71d7015b757
+  network: ws
   tls: false
-- name: NL-14
-  type: hysteria2
-  server: yapc-1.adamhayward.co.uk
-  port: 36600
-  password: Yet-Another-Public-Config-1
-  obfs: salamander
-  obfs-password: Yet-Another-Public-Config-1
-  sni: YAPC-1.afshin.ir
-- name: Unnamed Node-342
-  type: vless
-  server: 172.67.193.39
-  port: 443
-  uuid: b0e6a2c9-e667-4e42-9cb3-77d7db3e736b
-  network: ws
-  tls: true
-  servername: bypassfilter.cmyyvat.workers.dev
-  flow: ''
   ws-opts:
-    path: '@bypass_filter/?ed=100'
+    path: /
     headers:
-      Host: bypassfilter.cmyyvat.workers.dev
-- name: Unnamed Node-354
-  type: vless
-  server: 104.21.36.57
-  port: 443
-  uuid: 48f477f3-906a-4bb6-be96-8201d8a62a6d
-  network: ws
-  tls: true
-  servername: banana.fullmargintraders.com
-  flow: ''
-  ws-opts:
-    path: /wsv/48f477f3-906a-4bb6-be96-8201d8a62a6d
-    headers:
-      Host: banana.fullmargintraders.com
+      Host: small-meal.oneeat.co
 - name: GB-13
   type: vmess
   server: 57.129.132.223
@@ -853,18 +757,6 @@ proxies:
     path: /vmess/
     headers:
       Host: google.com
-- name: Unnamed Node-361
-  type: vmess
-  server: test.flha.ru
-  port: 80
-  uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
-  alterId: 0
-  cipher: none
-  network: ws
-  ws-opts:
-    path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
-    headers:
-      Host: test.flha.ru
 - name: FR-33
   type: ss
   server: 45.158.171.60
@@ -877,13 +769,7 @@ proxies:
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-- name: LT-23
-  type: ss
-  server: 45.87.175.35
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-- name: NL-18
+- name: NL-17
   type: ss
   server: 103.104.247.47
   port: 8080
@@ -913,7 +799,7 @@ proxies:
   port: 57456
   cipher: chacha20-ietf-poly1305
   password: 360e21d21977dc11
-- name: DE-70
+- name: DE-71
   type: vless
   server: 5.175.141.63
   port: 8880
@@ -946,20 +832,6 @@ proxies:
     path: /TelegramU0001F1E8U0001F1F3
     headers:
       Host: hk.laoyoutiao.link
-- name: NL-27
-  type: hysteria2
-  server: yapc-1.adamhayward.co.uk
-  port: 35000
-  password: Yet-Another-Public-Config-1
-  obfs: salamander
-  obfs-password: Yet-Another-Public-Config-1
-  sni: YAPC-1.afshin.ir
-- name: PL-07
-  type: ss
-  server: 92.118.205.228
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
 - name: UA-01
   type: ss
   server: 147.78.3.93
@@ -988,30 +860,29 @@ proxies:
     path: /
     headers:
       Host: jp.laoyoutiao.link
-- name: US-83
+- name: US-84
   type: vless
   server: 172.234.192.79
   port: 2321
   uuid: 4c266060-28aa-4fd4-8286-86127e16b260
   network: tcp
   tls: false
-- name: Unnamed Node-410
-  type: vless
-  server: grounded-brother.seotoolsforyou.co.uk
-  port: 80
-  uuid: 52adc6ba-b1c7-4541-a594-08fc698be640
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: grounded-brother.seotoolsforyou.co.uk
-- name: AT-01
-  type: ss
-  server: promo6v.bystrivpn.ru
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9JeYy8SkViXuSHVs9GFeSe
+- name: NL-28
+  type: hysteria2
+  server: yapc-1.adamhayward.co.uk
+  port: 36600
+  password: Yet-Another-Public-Config-1
+  obfs: salamander
+  obfs-password: Yet-Another-Public-Config-1
+  sni: YAPC-1.afshin.ir
+- name: NL-29
+  type: hysteria2
+  server: yapc-1.adamhayward.co.uk
+  port: 35000
+  password: Yet-Another-Public-Config-1
+  obfs: salamander
+  obfs-password: Yet-Another-Public-Config-1
+  sni: YAPC-1.afshin.ir
 - name: LT-28
   type: ss
   server: 45.87.175.65
@@ -1024,6 +895,17 @@ proxies:
   port: 443
   cipher: chacha20-ietf-poly1305
   password: Bog0ELmMM9DSxDdQ
+- name: Unnamed Node-442
+  type: vless
+  server: dedicated-development.seotoolsforyou.co.uk
+  port: 80
+  uuid: 2054405e-70ff-40a2-ae27-16b63d72390a
+  network: ws
+  tls: false
+  ws-opts:
+    path: /
+    headers:
+      Host: dedicated-development.seotoolsforyou.co.uk
 - name: Unnamed Node-444
   type: vless
   server: bewildered-poem.seotoolsforyou.co.uk
@@ -1046,18 +928,31 @@ proxies:
     path: /
     headers:
       Host: jp.laoyoutiao.link
+- name: NL-33
+  type: ss
+  server: 103.104.247.45
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+- name: FR-58
+  type: vless
+  server: ov-germany7.09vpn.com
+  port: 8443
+  uuid: 41918f0b-d0c4-401c-841b-c78ea5e29898
+  network: ws
+  tls: true
+  servername: ov-germany7.09vpn.com
+  flow: ''
+  ws-opts:
+    path: /vless/
+    headers:
+      Host: ov-germany7.09vpn.com
 - name: LT-29
   type: ss
   server: 45.87.175.171
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 1RWwXhwfAB5gAEozU4G2Pg
-- name: LT-30
-  type: ss
-  server: 45.87.175.178
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
 - name: JP-07
   type: vless
   server: 156.238.18.76
@@ -1069,24 +964,18 @@ proxies:
     path: /
     headers:
       Host: yd.laoyoutiao.link
-- name: 'NO'
+- name: DE-95
   type: ss
-  server: 185.213.23.226
+  server: 46.101.245.131
+  port: 44354
+  cipher: chacha20-ietf-poly1305
+  password: 9RviNa4tscjcmCB408vLSg
+- name: EE-02
+  type: ss
+  server: 188.214.36.155
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-- name: RU-15
-  type: ss
-  server: 45.139.24.24
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-- name: LT-34
-  type: ss
-  server: vip.nl-16-07.galaxymc-ssh.ir
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
 - name: DE-116
   type: vless
   server: 91.107.243.12
@@ -1124,18 +1013,18 @@ proxies:
     path: /aioproxybot/8.215.59.6-443
     headers:
       Host: aio.loophole.Biz.iD
-- name: AT-04
-  type: ss
-  server: 77.110.110.117
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9JeYy8SkViXuSHVs9GFeSe
 - name: NL-46
   type: ss
   server: 193.29.139.168
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
+- name: LV
+  type: ss
+  server: 216.173.70.187
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: 360e21d21977dc11
 - name: Unnamed Node-647
   type: vless
   server: modern-promise.seotoolsforyou.co.uk
@@ -1153,12 +1042,6 @@ proxies:
   port: 57456
   cipher: chacha20-ietf-poly1305
   password: 360e21d21977dc11
-- name: JP-08
-  type: ss
-  server: 160.16.123.124
-  port: 10087
-  cipher: aes-128-gcm
-  password: '10086'
 - name: US-133
   type: vless
   server: 62.60.178.19
@@ -1180,25 +1063,6 @@ proxies:
       Host: ''
 - name: Unnamed Node-706
   type: vless
-  server: sweet-combination.seotoolsforyou.co.uk
-  port: 80
-  uuid: 05020a61-3c0c-4ead-b256-7851ff905a75
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: sweet-combination.seotoolsforyou.co.uk
-- name: RU-17
-  type: vmess
-  server: 45.67.230.79
-  port: 11052
-  uuid: 314185f7-931d-4656-922d-0857e7afd224
-  alterId: 0
-  cipher: auto
-  network: tcp
-- name: Unnamed Node-713
-  type: vless
   server: www.visa.com.sg
   port: 2087
   uuid: 90c7ad5e-cd15-4314-b39b-aeabd397d592
@@ -1210,6 +1074,14 @@ proxies:
     path: /?ed=2560
     headers:
       Host: vl.hongkong6.qzz.io
+- name: RU-17
+  type: vmess
+  server: 45.67.230.79
+  port: 11052
+  uuid: 314185f7-931d-4656-922d-0857e7afd224
+  alterId: 0
+  cipher: auto
+  network: tcp
 - name: LT-36
   type: vless
   server: 88.216.67.63
@@ -1221,12 +1093,6 @@ proxies:
     path: '/Telegram 🇨🇳 '
     headers:
       Host: jp.laoyoutiao.link
-- name: NL-52
-  type: ss
-  server: 92.112.126.90
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9tqhMdIrTkgQ46PvhyAtMH
 - name: PL-11
   type: ss
   server: 45.144.49.140
@@ -1251,44 +1117,45 @@ proxies:
   port: 8319
   cipher: chacha20-ietf-poly1305
   password: ljqdalu13..
+- name: DE-165
+  type: ss
+  server: 147.45.178.200
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: c40641c1f89e7acb
 - name: GB-35
   type: ss
   server: 212.102.53.78
   port: 443
   cipher: aes-128-gcm
   password: shadowsocks
-- name: US-149
+- name: CA-06
+  type: vmess
+  server: 15.235.41.200
+  port: 80
+  uuid: 58fe1542-5290-40ad-815a-77707a81afe5
+  alterId: 0
+  cipher: auto
+  network: ws
+  ws-opts:
+    path: /IOebhLMhl1CTbFHbL95myfRX2
+    headers:
+      Host: google.com
+- name: US-150
   type: trojan
   server: 192.3.107.252
   port: 443
   password: 2ee85121-31de-4581-a492-eb00f606e392
   network: tcp
   sni: rc8.freeguard.org
-- name: LT-37
-  type: ss
-  server: 45.87.175.164
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-- name: JP-09
-  type: vmess
-  server: 172.111.146.64
-  port: 80
-  uuid: 05b8c783-7f59-47f9-9923-06a465679f6a
-  alterId: 0
-  cipher: auto
-  network: ws
-  ws-opts:
-    path: /vmess/
-    headers:
-      Host: ''
-- name: US-162
-  type: ss
-  server: 64.74.163.218
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-- name: Unnamed Node-901
+- name: US-151
+  type: trojan
+  server: 198.23.229.250
+  port: 443
+  password: 2ee85121-31de-4581-a492-eb00f606e392
+  network: tcp
+  sni: rc6.freeguard.org
+- name: Unnamed Node-897
   type: vless
   server: magical-fish.seotoolsforyou.co.uk
   port: 80
@@ -1299,12 +1166,12 @@ proxies:
     path: /
     headers:
       Host: magical-fish.seotoolsforyou.co.uk
-- name: NL-66
+- name: US-163
   type: ss
-  server: switcher-nick-croquet.freesocks.work
-  port: 443
+  server: 64.74.163.218
+  port: 990
   cipher: chacha20-ietf-poly1305
-  password: 9tqhMdIrTkgQ46PvhyAtMH
+  password: f8f7aCzcPKbsF8p3
 - name: GB-50
   type: vless
   server: 25.26.27.63
@@ -1316,17 +1183,6 @@ proxies:
     path: /Telegram🇨🇳
     headers:
       Host: jp.laoyoutiao.link
-- name: Unnamed Node-934
-  type: vless
-  server: moody-lock.seotoolsforyou.co.uk
-  port: 80
-  uuid: 82cdcdf0-e772-4d9a-b0a2-d6b605572ac1
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: moody-lock.seotoolsforyou.co.uk
 - name: Unnamed Node-986
   type: vless
   server: confident-club.seotoolsforyou.co.uk
@@ -1344,7 +1200,7 @@ proxies:
   port: 57456
   cipher: chacha20-ietf-poly1305
   password: a58fa62b4944ddbf
-- name: Unnamed Node-996
+- name: Unnamed Node-994
   type: vless
   server: 172.67.251.4
   port: 443
@@ -1357,25 +1213,14 @@ proxies:
     path: /YnqGMcAt/
     headers:
       Host: abc.vpneee.top
-- name: US-177
+- name: US-178
   type: trojan
   server: 198.46.152.83
   port: 443
   password: 2ee85121-31de-4581-a492-eb00f606e392
   network: tcp
   sni: sj3.freeguard.org
-- name: Unnamed Node-1026
-  type: vless
-  server: gleeful-error.seotoolsforyou.co.uk
-  port: 80
-  uuid: 9a37131b-2b68-427f-a2fc-cc7381c2d575
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: gleeful-error.seotoolsforyou.co.uk
-- name: Unnamed Node-1060
+- name: Unnamed Node-1058
   type: vless
   server: 104.26.1.108
   port: 443
@@ -1388,6 +1233,19 @@ proxies:
     path: /sg3?ed=2560/?JKVPNTELEGRAM_CHANEL_JKVPN_JKVPN
     headers:
       Host: blog.ruangguru.com.servpn.my.id
+- name: Unnamed Node-1062
+  type: vless
+  server: malaysia.com
+  port: 443
+  uuid: c4587bda-09fc-4b3b-8221-4450fccc33d1
+  network: ws
+  tls: true
+  servername: yx.yushan.dpdns.org
+  flow: ''
+  ws-opts:
+    path: /?ed=#TELEGRAM-MARAMBASHI_MARAMBASHI_MARAMBASHI?ed=512
+    headers:
+      Host: yx.yushan.dpdns.org
 - name: Unnamed Node-1063
   type: vless
   server: 172.67.74.133
@@ -1401,18 +1259,7 @@ proxies:
     path: /id5?ed=2560/?JKVPNTELEGRAM_CHANEL_JKVPN_JKVPN
     headers:
       Host: blog.ruangguru.com.servpn.my.id
-- name: Unnamed Node-1065
-  type: vless
-  server: brainy-party.seotoolsforyou.co.uk
-  port: 80
-  uuid: 34797f17-09a1-400c-9f4b-275718d62a0f
-  network: ws
-  tls: false
-  ws-opts:
-    path: /
-    headers:
-      Host: brainy-party.seotoolsforyou.co.uk
-- name: Unnamed Node-1067
+- name: Unnamed Node-1066
   type: vless
   server: narrow-passenger.oneeat.co
   port: 80
@@ -1423,20 +1270,31 @@ proxies:
     path: /
     headers:
       Host: narrow-passenger.oneeat.co
-- name: Unnamed Node-1075
+- name: Unnamed Node-1072
   type: vless
-  server: malaysia.com
+  server: ava.game.naver.com.servpn.my.id
   port: 443
-  uuid: c4587bda-09fc-4b3b-8221-4450fccc33d1
+  uuid: 6cc53dc5-55b2-4968-bb7c-ee84e1429c63
   network: ws
   tls: true
-  servername: yx.yushan.dpdns.org
+  servername: ava.game.naver.com.servpn.my.id
   flow: ''
   ws-opts:
-    path: /?ed=#TELEGRAM-MARAMBASHI_MARAMBASHI_MARAMBASHI?ed=512
+    path: /kr1?ed=2560
     headers:
-      Host: yx.yushan.dpdns.org
-- name: Unnamed Node-1123
+      Host: ava.game.naver.com.servpn.my.id
+- name: Unnamed Node-1073
+  type: vless
+  server: wild-bird.seotoolsforyou.co.uk
+  port: 80
+  uuid: 1d0dfde1-9f18-4557-9af8-4f3124ee5dcd
+  network: ws
+  tls: false
+  ws-opts:
+    path: /
+    headers:
+      Host: wild-bird.seotoolsforyou.co.uk
+- name: Unnamed Node-1122
   type: vless
   server: 104.24.248.141
   port: 80
@@ -1447,7 +1305,7 @@ proxies:
     path: /---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1---proNG1?ed=2560
     headers:
       Host: barayeiranmahsang.juveitaly.dpdns.org
-- name: US-196
+- name: US-195
   type: vless
   server: panbehnet.cinemapluss.ir
   port: 20321
@@ -1472,7 +1330,7 @@ proxies:
   uuid: e89ba39d-ae7e-493a-a57b-cdd55b42b4e3
   network: tcp
   tls: false
-- name: Unnamed Node-1133
+- name: Unnamed Node-1132
   type: vless
   server: 104.26.8.156
   port: 443
@@ -1485,7 +1343,7 @@ proxies:
     path: /
     headers:
       Host: yx.yushan.dpdns.org
-- name: Unnamed Node-1159
+- name: Unnamed Node-1170
   type: vless
   server: bakrie.ac.id.servpn.my.id
   port: 443
@@ -1506,7 +1364,7 @@ proxies:
   obfs: salamander
   obfs-password: Yet-Another-Public-Config-1
   sni: YAPC-1.afshin.ir
-- name: FI-51
+- name: FI-52
   type: ss
   server: 83.147.216.70
   port: 64519
@@ -1518,26 +1376,12 @@ proxies:
   port: 34045
   cipher: aes-256-gcm
   password: TG:@Enkelte_notif&&TG:@Notif_Chat
-- name: JP-15
-  type: ss
-  server: 153.121.51.214
-  port: 10087
-  cipher: aes-128-gcm
-  password: '10086'
 - name: AT-10
   type: ss
   server: 95.163.176.37
   port: 8506
   cipher: chacha20-ietf-poly1305
   password: VdswxetVc6AhIps18rtYbm
-- name: SG-30
-  type: vmess
-  server: 62.146.235.193
-  port: 28011
-  uuid: cfc5a87f-3c13-4e25-b556-176cdd6b5c6a
-  alterId: 0
-  cipher: auto
-  network: tcp
 - name: CA-20
   type: vmess
   server: 51.79.102.253
@@ -1550,7 +1394,7 @@ proxies:
     path: /IOebhLMhl1CTbFHbL95myfRX2
     headers:
       Host: ''
-- name: Unnamed Node-1259
+- name: Unnamed Node-1262
   type: vless
   server: privasi.turah.my.id
   port: 443
@@ -1563,12 +1407,6 @@ proxies:
     path: /Free-CF-Proxy-AD192.3.113.4-19318
     headers:
       Host: privasi.turah.my.id
-- name: LT-39
-  type: ss
-  server: 45.87.175.167
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
 - name: FR-102
   type: vless
   server: 141.95.52.109
@@ -1580,19 +1418,6 @@ proxies:
     path: /vless/
     headers:
       Host: 141.95.52.109
-- name: CA-22
-  type: vless
-  server: 51.222.158.243
-  port: 8443
-  uuid: d4af3edf-0a58-492e-b6c8-b3f3238df7c1
-  network: ws
-  tls: true
-  servername: ov-canada3.09vpn.com
-  flow: ''
-  ws-opts:
-    path: /vless/
-    headers:
-      Host: 51.222.158.243
 - name: LT-41
   type: ss
   server: 45.87.175.10
@@ -1631,19 +1456,12 @@ proxies:
   uuid: 08704c01-7edb-454a-98a2-328ccb9936fa
   network: tcp
   tls: false
-- name: Unnamed Node-1466
-  type: vless
-  server: ava.game.naver.com.servpn.my.id
-  port: 443
-  uuid: 6cc53dc5-55b2-4968-bb7c-ee84e1429c63
-  network: ws
-  tls: true
-  servername: ava.game.naver.com.servpn.my.id
-  flow: ''
-  ws-opts:
-    path: /kr1?ed=2560
-    headers:
-      Host: ava.game.naver.com.servpn.my.id
+- name: LV-02
+  type: ss
+  server: 216.173.70.187
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: a58fa62b4944ddbf
 - name: IN-04
   type: vmess
   server: 94.136.185.230
@@ -1652,7 +1470,7 @@ proxies:
   alterId: 0
   cipher: auto
   network: tcp
-- name: US-298
+- name: US-296
   type: vless
   server: 69.84.182.29
   port: 8880
@@ -1712,20 +1530,7 @@ proxies:
     path: /
     headers:
       Host: obedient-menu.seotoolsforyou.co.uk
-- name: US-327
-  type: vless
-  server: ::ffff:3207:55dd
-  port: 443
-  uuid: 89b3cbba-e6ac-485a-9481-976a0415eab9
-  network: ws
-  tls: true
-  servername: tEstBp.fIBiDOB9775921.woRkeRS.DEV
-  flow: ''
-  ws-opts:
-    path: /xUnw05Z6MV3NG29U?ed=2560
-    headers:
-      Host: testbp.fibidob9775921.workers.dev
-- name: GB-93
+- name: GB-94
   type: vless
   server: 102.177.189.29
   port: 8880
@@ -1748,193 +1553,169 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - GB-50
-  - Unnamed Node-03
-  - US-20
-  - Unnamed Node-335
-  - Unnamed Node-160
-  - US-49
-  - Unnamed Node-162
-  - Unnamed Node-163
-  - Unnamed Node-20
-  - Unnamed Node-164
-  - DE-70
-  - DE-74
-  - Unnamed Node-15
-  - Unnamed Node-1611
-  - US-83
-  - Unnamed Node-238
   - ZA
-  - GB-03
-  - Unnamed Node-10
   - SI-01
-  - Unnamed Node-232
-  - LT-36
-  - Unnamed Node-159
-  - US-22
-  - CA
-  - US-19
-  - Unnamed Node-21
-  - GB-93
-  - DE-72
-  - US-74
-  - JP-07
-  - JP-06
-  - Unnamed Node-161
-  - ZA-01
-  - Unnamed Node-18
-  - US-24
-  - US-298
-  - US-129
-  - US-18
-  - US-50
-  - CA-22
-  - US
   - US-13
-  - US-133
-  - NL-10
-  - NL-46
-  - FR-106
-  - CA-02
-  - GB-22
-  - LT-28
-  - FR-33
-  - US-162
-  - NL-18
-  - FR
-  - GB-35
-  - DE-116
-  - NL-55
-  - US-01
-  - PL-04
-  - FR-42
-  - PL-11
-  - AT-04
-  - Unnamed Node-237
-  - US-177
-  - FR-66
-  - CO-01
-  - LT-41
-  - NL-52
-  - LT-07
-  - PT
-  - GB
-  - Unnamed Node-1123
-  - AT-09
-  - NL-01
-  - 'NO'
-  - LT-37
-  - NL-53
-  - AT-10
-  - DE-375
-  - MX
-  - Unnamed Node-29
-  - GB-13
-  - US-247
-  - LT-21
-  - FR-102
-  - LT-03
-  - FI-59
-  - Unnamed Node-45
-  - BR
-  - FI-58
-  - Unnamed Node-342
-  - Unnamed Node-23
-  - PL-07
-  - Unnamed Node-236
-  - RU-17
-  - Unnamed Node-13
-  - LT-39
-  - JP-08
-  - Unnamed Node-1060
-  - JP-15
-  - LV-01
-  - Unnamed Node-713
-  - BG-01
-  - Unnamed Node-1613
-  - Unnamed Node-332
-  - Unnamed Node-55
-  - Unnamed Node-06
-  - Unnamed Node-240
-  - Unnamed Node-1259
-  - LT-25
-  - NL-27
-  - Unnamed Node-1466
-  - Unnamed Node-1063
-  - Unnamed Node-1133
-  - Unnamed Node-04
-  - IN-05
-  - LT-01
-  - NL-14
-  - GT
-  - LT
-  - Unnamed Node-444
-  - Unnamed Node-1067
-  - LT-30
-  - FI-04
-  - US-327
-  - NL-66
-  - UA-01
-  - Unnamed Node-1026
-  - HK-07
-  - LT-29
-  - Unnamed Node-410
-  - IN-03
-  - Unnamed Node-289
-  - Unnamed Node-153
+  - US-74
+  - DE-74
+  - US-296
+  - DE-71
   - Unnamed Node-05
-  - Unnamed Node-1065
-  - Unnamed Node-934
-  - Unnamed Node-56
-  - Unnamed Node-1159
-  - Unnamed Node-647
-  - VN-02
-  - RU-15
-  - VN-03
-  - Unnamed Node-986
-  - Unnamed Node-25
-  - IN-04
-  - NL-74
-  - Unnamed Node-354
-  - Unnamed Node-147
-  - AT-01
-  - VN-01
-  - LT-24
-  - KR
-  - US-196
-  - JP-09
-  - Unnamed Node-08
   - Unnamed Node-334
-  - Unnamed Node-605
-  - Unnamed Node-1075
-  - CO
-  - Unnamed Node-28
-  - IN
-  - SG-30
-  - Unnamed Node-139
-  - KZ-01
-  - US-149
-  - Unnamed Node-901
-  - Unnamed Node-996
-  - Unnamed Node-361
-  - FI
-  - CA-20
-  - FI-51
-  - FI-05
-  - Unnamed Node-608
-  - LT-23
-  - FR-01
+  - JP-07
+  - US
+  - CA-02
+  - LT-36
+  - DE-72
+  - US-19
+  - US-23
+  - Unnamed Node-1611
+  - Unnamed Node-21
+  - US-20
+  - US-22
+  - US-18
+  - Unnamed Node-169
+  - Unnamed Node-18
+  - Unnamed Node-172
+  - GB-50
+  - Unnamed Node-173
+  - Unnamed Node-16
+  - Unnamed Node-174
   - Unnamed Node-706
-  - NL-11
-  - Unnamed Node-1624
-  - BR-01
-  - SI
-  - DE-248
-  - MY
-  - LT-06
-  - LT-04
+  - Unnamed Node-13
+  - Unnamed Node-171
   - Unnamed Node-170
-  - LT-34
+  - GB-03
+  - ZA-01
+  - GB-94
+  - US-84
+  - JP-06
+  - Unnamed Node-10
+  - US-163
+  - CO-01
+  - Unnamed Node-236
+  - US-50
+  - US-129
+  - GB-35
+  - US-178
+  - Unnamed Node-237
+  - HK-07
+  - NL-53
+  - FR-33
+  - NL-11
+  - FR
+  - FR-106
+  - DE-116
+  - DE
+  - PL-11
+  - DE-165
+  - GB-22
+  - Unnamed Node-1122
+  - FR-20
+  - Unnamed Node-12
+  - DE-95
+  - DE-375
+  - PL-04
+  - FR-66
+  - FI-52
+  - FR-42
+  - Unnamed Node-232
+  - AT-09
+  - PT
+  - AT-10
+  - LT-41
+  - LV-02
+  - LV
+  - LT-28
+  - NL-46
+  - FI
+  - KR
+  - FI-58
+  - UA-01
+  - RU-17
+  - Unnamed Node-49
+  - US-133
+  - GB-13
+  - GB
+  - FR-102
+  - US-247
+  - Unnamed Node-55
+  - EE-02
+  - MX
+  - LT-24
+  - Unnamed Node-08
+  - VN-03
+  - IN-05
+  - IN-03
+  - Unnamed Node-608
+  - LV-01
+  - Unnamed Node-1072
+  - FI-04
+  - VN-01
+  - BG-01
+  - US-195
+  - Unnamed Node-331
+  - CO
+  - Unnamed Node-1058
+  - Unnamed Node-289
+  - Unnamed Node-66
+  - LT-21
+  - Unnamed Node-09
+  - NL-33
+  - Unnamed Node-442
+  - Unnamed Node-1063
+  - Unnamed Node-986
+  - Unnamed Node-240
+  - Unnamed Node-31
+  - Unnamed Node-1132
+  - Unnamed Node-1613
+  - VN-02
+  - NL-74
+  - NL-17
+  - Unnamed Node-25
+  - NL-29
+  - Unnamed Node-1073
+  - Unnamed Node-647
+  - BR
+  - GT
+  - NL-55
+  - Unnamed Node-159
+  - Unnamed Node-33
+  - Unnamed Node-1066
+  - Unnamed Node-1624
+  - KZ-01
+  - Unnamed Node-143
+  - Unnamed Node-56
+  - Unnamed Node-1062
+  - NL-01
+  - Unnamed Node-1170
+  - Unnamed Node-37
+  - FR-58
+  - Unnamed Node-339
+  - Unnamed Node-1262
+  - Unnamed Node-03
+  - NL-28
+  - Unnamed Node-605
+  - LT-29
+  - Unnamed Node-897
+  - LT-05
+  - LT-01
+  - CA-20
+  - LT-25
+  - US-150
+  - FI-59
+  - CA-06
+  - Unnamed Node-994
+  - LT-06
+  - TR
+  - Unnamed Node-444
+  - IR-01
+  - DE-248
+  - US-151
+  - FI-05
+  - IN-04
+  - Unnamed Node-341
+  - Unnamed Node-190
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1942,385 +1723,337 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - GB-50
-  - Unnamed Node-03
-  - US-20
-  - Unnamed Node-335
-  - Unnamed Node-160
-  - US-49
-  - Unnamed Node-162
-  - Unnamed Node-163
-  - Unnamed Node-20
-  - Unnamed Node-164
-  - DE-70
-  - DE-74
-  - Unnamed Node-15
-  - Unnamed Node-1611
-  - US-83
-  - Unnamed Node-238
   - ZA
-  - GB-03
-  - Unnamed Node-10
   - SI-01
-  - Unnamed Node-232
-  - LT-36
-  - Unnamed Node-159
-  - US-22
-  - CA
-  - US-19
-  - Unnamed Node-21
-  - GB-93
-  - DE-72
-  - US-74
-  - JP-07
-  - JP-06
-  - Unnamed Node-161
-  - ZA-01
-  - Unnamed Node-18
-  - US-24
-  - US-298
-  - US-129
-  - US-18
-  - US-50
-  - CA-22
-  - US
   - US-13
-  - US-133
-  - NL-10
-  - NL-46
-  - FR-106
-  - CA-02
-  - GB-22
-  - LT-28
-  - FR-33
-  - US-162
-  - NL-18
-  - FR
-  - GB-35
-  - DE-116
-  - NL-55
-  - US-01
-  - PL-04
-  - FR-42
-  - PL-11
-  - AT-04
-  - Unnamed Node-237
-  - US-177
-  - FR-66
-  - CO-01
-  - LT-41
-  - NL-52
-  - LT-07
-  - PT
-  - GB
-  - Unnamed Node-1123
-  - AT-09
-  - NL-01
-  - 'NO'
-  - LT-37
-  - NL-53
-  - AT-10
-  - DE-375
-  - MX
-  - Unnamed Node-29
-  - GB-13
-  - US-247
-  - LT-21
-  - FR-102
-  - LT-03
-  - FI-59
-  - Unnamed Node-45
-  - BR
-  - FI-58
-  - Unnamed Node-342
-  - Unnamed Node-23
-  - PL-07
-  - Unnamed Node-236
-  - RU-17
-  - Unnamed Node-13
-  - LT-39
-  - JP-08
-  - Unnamed Node-1060
-  - JP-15
-  - LV-01
-  - Unnamed Node-713
-  - BG-01
-  - Unnamed Node-1613
-  - Unnamed Node-332
-  - Unnamed Node-55
-  - Unnamed Node-06
-  - Unnamed Node-240
-  - Unnamed Node-1259
-  - LT-25
-  - NL-27
-  - Unnamed Node-1466
-  - Unnamed Node-1063
-  - Unnamed Node-1133
-  - Unnamed Node-04
-  - IN-05
-  - LT-01
-  - NL-14
-  - GT
-  - LT
-  - Unnamed Node-444
-  - Unnamed Node-1067
-  - LT-30
-  - FI-04
-  - US-327
-  - NL-66
-  - UA-01
-  - Unnamed Node-1026
-  - HK-07
-  - LT-29
-  - Unnamed Node-410
-  - IN-03
-  - Unnamed Node-289
-  - Unnamed Node-153
+  - US-74
+  - DE-74
+  - US-296
+  - DE-71
   - Unnamed Node-05
-  - Unnamed Node-1065
-  - Unnamed Node-934
-  - Unnamed Node-56
-  - Unnamed Node-1159
-  - Unnamed Node-647
-  - VN-02
-  - RU-15
-  - VN-03
-  - Unnamed Node-986
-  - Unnamed Node-25
-  - IN-04
-  - NL-74
-  - Unnamed Node-354
-  - Unnamed Node-147
-  - AT-01
-  - VN-01
-  - LT-24
-  - KR
-  - US-196
-  - JP-09
-  - Unnamed Node-08
   - Unnamed Node-334
-  - Unnamed Node-605
-  - Unnamed Node-1075
-  - CO
-  - Unnamed Node-28
-  - IN
-  - SG-30
-  - Unnamed Node-139
-  - KZ-01
-  - US-149
-  - Unnamed Node-901
-  - Unnamed Node-996
-  - Unnamed Node-361
-  - FI
-  - CA-20
-  - FI-51
-  - FI-05
-  - Unnamed Node-608
-  - LT-23
-  - FR-01
+  - JP-07
+  - US
+  - CA-02
+  - LT-36
+  - DE-72
+  - US-19
+  - US-23
+  - Unnamed Node-1611
+  - Unnamed Node-21
+  - US-20
+  - US-22
+  - US-18
+  - Unnamed Node-169
+  - Unnamed Node-18
+  - Unnamed Node-172
+  - GB-50
+  - Unnamed Node-173
+  - Unnamed Node-16
+  - Unnamed Node-174
   - Unnamed Node-706
-  - NL-11
-  - Unnamed Node-1624
-  - BR-01
-  - SI
-  - DE-248
-  - MY
-  - LT-06
-  - LT-04
+  - Unnamed Node-13
+  - Unnamed Node-171
   - Unnamed Node-170
-  - LT-34
+  - GB-03
+  - ZA-01
+  - GB-94
+  - US-84
+  - JP-06
+  - Unnamed Node-10
+  - US-163
+  - CO-01
+  - Unnamed Node-236
+  - US-50
+  - US-129
+  - GB-35
+  - US-178
+  - Unnamed Node-237
+  - HK-07
+  - NL-53
+  - FR-33
+  - NL-11
+  - FR
+  - FR-106
+  - DE-116
+  - DE
+  - PL-11
+  - DE-165
+  - GB-22
+  - Unnamed Node-1122
+  - FR-20
+  - Unnamed Node-12
+  - DE-95
+  - DE-375
+  - PL-04
+  - FR-66
+  - FI-52
+  - FR-42
+  - Unnamed Node-232
+  - AT-09
+  - PT
+  - AT-10
+  - LT-41
+  - LV-02
+  - LV
+  - LT-28
+  - NL-46
+  - FI
+  - KR
+  - FI-58
+  - UA-01
+  - RU-17
+  - Unnamed Node-49
+  - US-133
+  - GB-13
+  - GB
+  - FR-102
+  - US-247
+  - Unnamed Node-55
+  - EE-02
+  - MX
+  - LT-24
+  - Unnamed Node-08
+  - VN-03
+  - IN-05
+  - IN-03
+  - Unnamed Node-608
+  - LV-01
+  - Unnamed Node-1072
+  - FI-04
+  - VN-01
+  - BG-01
+  - US-195
+  - Unnamed Node-331
+  - CO
+  - Unnamed Node-1058
+  - Unnamed Node-289
+  - Unnamed Node-66
+  - LT-21
+  - Unnamed Node-09
+  - NL-33
+  - Unnamed Node-442
+  - Unnamed Node-1063
+  - Unnamed Node-986
+  - Unnamed Node-240
+  - Unnamed Node-31
+  - Unnamed Node-1132
+  - Unnamed Node-1613
+  - VN-02
+  - NL-74
+  - NL-17
+  - Unnamed Node-25
+  - NL-29
+  - Unnamed Node-1073
+  - Unnamed Node-647
+  - BR
+  - GT
+  - NL-55
+  - Unnamed Node-159
+  - Unnamed Node-33
+  - Unnamed Node-1066
+  - Unnamed Node-1624
+  - KZ-01
+  - Unnamed Node-143
+  - Unnamed Node-56
+  - Unnamed Node-1062
+  - NL-01
+  - Unnamed Node-1170
+  - Unnamed Node-37
+  - FR-58
+  - Unnamed Node-339
+  - Unnamed Node-1262
+  - Unnamed Node-03
+  - NL-28
+  - Unnamed Node-605
+  - LT-29
+  - Unnamed Node-897
+  - LT-05
+  - LT-01
+  - CA-20
+  - LT-25
+  - US-150
+  - FI-59
+  - CA-06
+  - Unnamed Node-994
+  - LT-06
+  - TR
+  - Unnamed Node-444
+  - IR-01
+  - DE-248
+  - US-151
+  - FI-05
+  - IN-04
+  - Unnamed Node-341
+  - Unnamed Node-190
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - GB-50
-  - Unnamed Node-03
-  - US-20
-  - Unnamed Node-335
-  - Unnamed Node-160
-  - US-49
-  - Unnamed Node-162
-  - Unnamed Node-163
-  - Unnamed Node-20
-  - Unnamed Node-164
-  - DE-70
-  - DE-74
-  - Unnamed Node-15
-  - Unnamed Node-1611
-  - US-83
-  - Unnamed Node-238
   - ZA
-  - GB-03
-  - Unnamed Node-10
   - SI-01
-  - Unnamed Node-232
-  - LT-36
-  - Unnamed Node-159
-  - US-22
-  - CA
-  - US-19
-  - Unnamed Node-21
-  - GB-93
-  - DE-72
-  - US-74
-  - JP-07
-  - JP-06
-  - Unnamed Node-161
-  - ZA-01
-  - Unnamed Node-18
-  - US-24
-  - US-298
-  - US-129
-  - US-18
-  - US-50
-  - CA-22
-  - US
   - US-13
-  - US-133
-  - NL-10
-  - NL-46
-  - FR-106
-  - CA-02
-  - GB-22
-  - LT-28
-  - FR-33
-  - US-162
-  - NL-18
-  - FR
-  - GB-35
-  - DE-116
-  - NL-55
-  - US-01
-  - PL-04
-  - FR-42
-  - PL-11
-  - AT-04
-  - Unnamed Node-237
-  - US-177
-  - FR-66
-  - CO-01
-  - LT-41
-  - NL-52
-  - LT-07
-  - PT
-  - GB
-  - Unnamed Node-1123
-  - AT-09
-  - NL-01
-  - 'NO'
-  - LT-37
-  - NL-53
-  - AT-10
-  - DE-375
-  - MX
-  - Unnamed Node-29
-  - GB-13
-  - US-247
-  - LT-21
-  - FR-102
-  - LT-03
-  - FI-59
-  - Unnamed Node-45
-  - BR
-  - FI-58
-  - Unnamed Node-342
-  - Unnamed Node-23
-  - PL-07
-  - Unnamed Node-236
-  - RU-17
-  - Unnamed Node-13
-  - LT-39
-  - JP-08
-  - Unnamed Node-1060
-  - JP-15
-  - LV-01
-  - Unnamed Node-713
-  - BG-01
-  - Unnamed Node-1613
-  - Unnamed Node-332
-  - Unnamed Node-55
-  - Unnamed Node-06
-  - Unnamed Node-240
-  - Unnamed Node-1259
-  - LT-25
-  - NL-27
-  - Unnamed Node-1466
-  - Unnamed Node-1063
-  - Unnamed Node-1133
-  - Unnamed Node-04
-  - IN-05
-  - LT-01
-  - NL-14
-  - GT
-  - LT
-  - Unnamed Node-444
-  - Unnamed Node-1067
-  - LT-30
-  - FI-04
-  - US-327
-  - NL-66
-  - UA-01
-  - Unnamed Node-1026
-  - HK-07
-  - LT-29
-  - Unnamed Node-410
-  - IN-03
-  - Unnamed Node-289
-  - Unnamed Node-153
+  - US-74
+  - DE-74
+  - US-296
+  - DE-71
   - Unnamed Node-05
-  - Unnamed Node-1065
-  - Unnamed Node-934
-  - Unnamed Node-56
-  - Unnamed Node-1159
-  - Unnamed Node-647
-  - VN-02
-  - RU-15
-  - VN-03
-  - Unnamed Node-986
-  - Unnamed Node-25
-  - IN-04
-  - NL-74
-  - Unnamed Node-354
-  - Unnamed Node-147
-  - AT-01
-  - VN-01
-  - LT-24
-  - KR
-  - US-196
-  - JP-09
-  - Unnamed Node-08
   - Unnamed Node-334
-  - Unnamed Node-605
-  - Unnamed Node-1075
-  - CO
-  - Unnamed Node-28
-  - IN
-  - SG-30
-  - Unnamed Node-139
-  - KZ-01
-  - US-149
-  - Unnamed Node-901
-  - Unnamed Node-996
-  - Unnamed Node-361
-  - FI
-  - CA-20
-  - FI-51
-  - FI-05
-  - Unnamed Node-608
-  - LT-23
-  - FR-01
+  - JP-07
+  - US
+  - CA-02
+  - LT-36
+  - DE-72
+  - US-19
+  - US-23
+  - Unnamed Node-1611
+  - Unnamed Node-21
+  - US-20
+  - US-22
+  - US-18
+  - Unnamed Node-169
+  - Unnamed Node-18
+  - Unnamed Node-172
+  - GB-50
+  - Unnamed Node-173
+  - Unnamed Node-16
+  - Unnamed Node-174
   - Unnamed Node-706
-  - NL-11
-  - Unnamed Node-1624
-  - BR-01
-  - SI
-  - DE-248
-  - MY
-  - LT-06
-  - LT-04
+  - Unnamed Node-13
+  - Unnamed Node-171
   - Unnamed Node-170
-  - LT-34
+  - GB-03
+  - ZA-01
+  - GB-94
+  - US-84
+  - JP-06
+  - Unnamed Node-10
+  - US-163
+  - CO-01
+  - Unnamed Node-236
+  - US-50
+  - US-129
+  - GB-35
+  - US-178
+  - Unnamed Node-237
+  - HK-07
+  - NL-53
+  - FR-33
+  - NL-11
+  - FR
+  - FR-106
+  - DE-116
+  - DE
+  - PL-11
+  - DE-165
+  - GB-22
+  - Unnamed Node-1122
+  - FR-20
+  - Unnamed Node-12
+  - DE-95
+  - DE-375
+  - PL-04
+  - FR-66
+  - FI-52
+  - FR-42
+  - Unnamed Node-232
+  - AT-09
+  - PT
+  - AT-10
+  - LT-41
+  - LV-02
+  - LV
+  - LT-28
+  - NL-46
+  - FI
+  - KR
+  - FI-58
+  - UA-01
+  - RU-17
+  - Unnamed Node-49
+  - US-133
+  - GB-13
+  - GB
+  - FR-102
+  - US-247
+  - Unnamed Node-55
+  - EE-02
+  - MX
+  - LT-24
+  - Unnamed Node-08
+  - VN-03
+  - IN-05
+  - IN-03
+  - Unnamed Node-608
+  - LV-01
+  - Unnamed Node-1072
+  - FI-04
+  - VN-01
+  - BG-01
+  - US-195
+  - Unnamed Node-331
+  - CO
+  - Unnamed Node-1058
+  - Unnamed Node-289
+  - Unnamed Node-66
+  - LT-21
+  - Unnamed Node-09
+  - NL-33
+  - Unnamed Node-442
+  - Unnamed Node-1063
+  - Unnamed Node-986
+  - Unnamed Node-240
+  - Unnamed Node-31
+  - Unnamed Node-1132
+  - Unnamed Node-1613
+  - VN-02
+  - NL-74
+  - NL-17
+  - Unnamed Node-25
+  - NL-29
+  - Unnamed Node-1073
+  - Unnamed Node-647
+  - BR
+  - GT
+  - NL-55
+  - Unnamed Node-159
+  - Unnamed Node-33
+  - Unnamed Node-1066
+  - Unnamed Node-1624
+  - KZ-01
+  - Unnamed Node-143
+  - Unnamed Node-56
+  - Unnamed Node-1062
+  - NL-01
+  - Unnamed Node-1170
+  - Unnamed Node-37
+  - FR-58
+  - Unnamed Node-339
+  - Unnamed Node-1262
+  - Unnamed Node-03
+  - NL-28
+  - Unnamed Node-605
+  - LT-29
+  - Unnamed Node-897
+  - LT-05
+  - LT-01
+  - CA-20
+  - LT-25
+  - US-150
+  - FI-59
+  - CA-06
+  - Unnamed Node-994
+  - LT-06
+  - TR
+  - Unnamed Node-444
+  - IR-01
+  - DE-248
+  - US-151
+  - FI-05
+  - IN-04
+  - Unnamed Node-341
+  - Unnamed Node-190
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - GEOIP,CN,DIRECT
