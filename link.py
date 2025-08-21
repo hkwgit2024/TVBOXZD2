@@ -5,37 +5,42 @@ import io
 import os
 import csv
 import json
-from urllib.parse import urlparse, unquote
+import re
+from urllib.parse import urlparse, unquote, urljoin
 from collections import OrderedDict
+from html.parser import HTMLParser
+
+class DirectoryLinkParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = []
+        self.in_pre = False
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'pre':
+            self.in_pre = True
+        if self.in_pre and tag == 'a':
+            for name, value in attrs:
+                if name == 'href':
+                    self.links.append(value)
+
+    def handle_endtag(self, tag):
+        if tag == 'pre':
+            self.in_pre = False
 
 def parse_vmess(vmess_url):
     try:
-        if not vmess_url.startswith('vmess://'):
-            return None
-        
+        if not vmess_url.startswith('vmess://'): return None
         base64_content = vmess_url.replace('vmess://', '', 1)
-        decoded_json = base64.b64decode(base64_content).decode('utf-8')
+        decoded_json = base64.b64decode(base64_content.encode('utf-8')).decode('utf-8')
         config = json.loads(decoded_json)
-        
         required_fields = ['v', 'ps', 'add', 'port', 'id']
-        if not all(field in config for field in required_fields):
-            return None
-            
+        if not all(field in config for field in required_fields): return None
         return {
-            'name': config.get('ps', 'Unnamed VMess'),
-            'type': 'vmess',
-            'server': config.get('add'),
-            'port': int(config.get('port')),
-            'uuid': config.get('id'),
-            'alterId': int(config.get('aid', 0)),
-            'cipher': config.get('scy', 'auto'),
-            'network': config.get('net', 'tcp'),
-            'ws-opts': {
-                'path': config.get('path', '/'),
-                'headers': {
-                    'Host': config.get('host', config.get('add'))
-                }
-            }
+            'name': config.get('ps', 'Unnamed VMess'), 'type': 'vmess', 'server': config.get('add'),
+            'port': int(config.get('port')), 'uuid': config.get('id'), 'alterId': int(config.get('aid', 0)),
+            'cipher': config.get('scy', 'auto'), 'network': config.get('net', 'tcp'),
+            'ws-opts': {'path': config.get('path', '/'), 'headers': {'Host': config.get('host', config.get('add'))}}
         }
     except Exception as e:
         print(f"解析VMess链接失败: {e}")
@@ -43,9 +48,7 @@ def parse_vmess(vmess_url):
 
 def parse_ss(ss_url):
     try:
-        if not ss_url.startswith('ss://'):
-            return None
-        
+        if not ss_url.startswith('ss://'): return None
         base64_content = ss_url.replace('ss://', '', 1)
         if '@' in base64_content:
             part1, part2 = base64_content.split('@', 1)
@@ -53,21 +56,14 @@ def parse_ss(ss_url):
             method, password = decoded_part1.split(':', 1)
         else:
             decoded_content = base64.b64decode(base64_content.encode('utf-8')).decode('utf-8')
-            if '@' not in decoded_content:
-                return None
+            if '@' not in decoded_content: return None
             decoded_part1, part2 = decoded_content.split('@', 1)
             method, password = decoded_part1.split(':', 1)
-
         server_info, name = part2.split('#', 1) if '#' in part2 else (part2, None)
         server, port = server_info.split(':', 1)
-
         return {
-            'name': unquote(name) if name else 'Unnamed SS',
-            'type': 'ss',
-            'server': server,
-            'port': int(port),
-            'cipher': method,
-            'password': password
+            'name': unquote(name) if name else 'Unnamed SS', 'type': 'ss', 'server': server,
+            'port': int(port), 'cipher': method, 'password': password
         }
     except Exception as e:
         print(f"解析SS链接失败: {e}")
@@ -75,35 +71,15 @@ def parse_ss(ss_url):
 
 def parse_vless(vless_url):
     try:
-        if not vless_url.startswith('vless://'):
-            return None
-
+        if not vless_url.startswith('vless://'): return None
         parsed_url = urlparse(vless_url)
-        uuid = parsed_url.username
-        server = parsed_url.hostname
-        port = parsed_url.port
-        params = dict(param.split('=') for param in parsed_url.query.split('&'))
-        name = unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed VLESS'
-        
-        if not all([uuid, server, port, name]):
-            return None
-
+        uuid, server, port, name = parsed_url.username, parsed_url.hostname, parsed_url.port, unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed VLESS'
+        if not all([uuid, server, port]): return None
+        params = dict(re.findall(r'([^=&]+)=([^=&]*)', parsed_url.query))
         return {
-            'name': name,
-            'type': 'vless',
-            'server': server,
-            'port': port,
-            'uuid': uuid,
-            'network': params.get('type', 'tcp'),
-            'tls': params.get('security') == 'tls',
-            'flow': params.get('flow'),
-            'sni': params.get('sni'),
-            'ws-opts': {
-                'path': params.get('path'),
-                'headers': {
-                    'Host': params.get('host')
-                }
-            }
+            'name': name, 'type': 'vless', 'server': server, 'port': port, 'uuid': uuid,
+            'network': params.get('type', 'tcp'), 'tls': params.get('security') == 'tls', 'flow': params.get('flow'),
+            'sni': params.get('sni'), 'ws-opts': {'path': params.get('path'), 'headers': {'Host': params.get('host')}}
         }
     except Exception as e:
         print(f"解析VLESS链接失败: {e}")
@@ -111,26 +87,14 @@ def parse_vless(vless_url):
 
 def parse_trojan(trojan_url):
     try:
-        if not trojan_url.startswith('trojan://'):
-            return None
-        
+        if not trojan_url.startswith('trojan://'): return None
         parsed_url = urlparse(trojan_url)
-        password = parsed_url.username
-        server = parsed_url.hostname
-        port = parsed_url.port
-        name = unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed Trojan'
-        
-        if not all([password, server, port, name]):
-            return None
-        
+        password, server, port, name = parsed_url.username, parsed_url.hostname, parsed_url.port, unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed Trojan'
+        if not all([password, server, port]): return None
+        params = dict(re.findall(r'([^=&]+)=([^=&]*)', parsed_url.query))
         return {
-            'name': name,
-            'type': 'trojan',
-            'server': server,
-            'port': port,
-            'password': password,
-            'sni': parsed_url.query.get('sni'),
-            'skip-cert-verify': False
+            'name': name, 'type': 'trojan', 'server': server, 'port': port, 'password': password,
+            'sni': params.get('sni'), 'skip-cert-verify': False
         }
     except Exception as e:
         print(f"解析Trojan链接失败: {e}")
@@ -138,33 +102,18 @@ def parse_trojan(trojan_url):
 
 def parse_ssr(ssr_url):
     try:
-        if not ssr_url.startswith('ssr://'):
-            return None
+        if not ssr_url.startswith('ssr://'): return None
         base64_content = ssr_url.replace('ssr://', '', 1)
         decoded = base64.urlsafe_b64decode(base64_content + '==').decode('utf-8')
-        
         parts = decoded.split(':')
         if len(parts) < 6: return None
-        
         server, port, protocol, method, obfs, password_base64 = parts[:6]
-        
-        params = {}
-        if '#' in decoded:
-            password_base64, fragment = decoded.split('#', 1)
-            params = dict(p.split('=') for p in fragment.split('&') if '=' in p)
-        
+        params = dict(re.findall(r'([^=&]+)=([^=&]*)', decoded.split('#', 1)[1])) if '#' in decoded else {}
         return {
-            'name': unquote(params.get('remarks', 'Unnamed SSR')),
-            'type': 'ssr',
-            'server': server,
-            'port': int(port),
-            'password': base64.urlsafe_b64decode(password_base64 + '==').decode('utf-8'),
-            'cipher': method,
-            'protocol': protocol,
-            'obfs': obfs,
-            'protocol-param': params.get('protoparam'),
-            'obfs-param': params.get('obfsparam'),
-            'group': unquote(params.get('group', 'Default'))
+            'name': unquote(params.get('remarks', 'Unnamed SSR')), 'type': 'ssr', 'server': server,
+            'port': int(port), 'password': base64.urlsafe_b64decode(password_base64 + '==').decode('utf-8'),
+            'cipher': method, 'protocol': protocol, 'obfs': obfs,
+            'protocol-param': params.get('protoparam'), 'obfs-param': params.get('obfsparam')
         }
     except Exception as e:
         print(f"解析SSR链接失败: {e}")
@@ -172,57 +121,31 @@ def parse_ssr(ssr_url):
 
 def parse_hy2(hy2_url):
     try:
-        if not hy2_url.startswith('hy2://'):
-            return None
-        
-        # hy2链接的密码在username部分，其他参数在查询字符串
+        if not hy2_url.startswith('hy2://'): return None
         parsed_url = urlparse(hy2_url)
-        password = parsed_url.username
-        server = parsed_url.hostname
-        port = parsed_url.port
-        name = unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed HY2'
-        params = dict(param.split('=') for param in parsed_url.query.split('&'))
-        
-        if not all([password, server, port, name]):
-            return None
-            
+        password, server, port, name = parsed_url.username, parsed_url.hostname, parsed_url.port, unquote(parsed_url.fragment) if parsed_url.fragment else 'Unnamed HY2'
+        if not all([password, server, port]): return None
+        params = dict(re.findall(r'([^=&]+)=([^=&]*)', parsed_url.query))
         return {
-            'name': name,
-            'type': 'hysteria2',
-            'server': server,
-            'port': port,
-            'password': password,
-            'up': params.get('up'),
-            'down': params.get('down'),
-            'obfs': params.get('obfs'),
-            'obfs-password': params.get('obfs-password'),
-            'fast-open': True
+            'name': name, 'type': 'hysteria2', 'server': server, 'port': port, 'password': password,
+            'up': params.get('up'), 'down': params.get('down'), 'obfs': params.get('obfs'),
+            'obfs-password': params.get('obfs-password'), 'fast-open': True
         }
     except Exception as e:
         print(f"解析HY2链接失败: {e}")
         return None
 
 def parse_node(link):
-    """
-    根据协议类型，调用相应的解析函数。
-    """
-    if link.startswith('vmess://'):
-        return parse_vmess(link)
-    elif link.startswith('ss://'):
-        return parse_ss(link)
-    elif link.startswith('vless://'):
-        return parse_vless(link)
-    elif link.startswith('trojan://'):
-        return parse_trojan(link)
-    elif link.startswith('ssr://'):
-        return parse_ssr(link)
-    elif link.startswith('hy2://'):
-        return parse_hy2(link)
+    if link.startswith('vmess://'): return parse_vmess(link)
+    if link.startswith('ss://'): return parse_ss(link)
+    if link.startswith('vless://'): return parse_vless(link)
+    if link.startswith('trojan://'): return parse_trojan(link)
+    if link.startswith('ssr://'): return parse_ssr(link)
+    if link.startswith('hy2://'): return parse_hy2(link)
     return None
 
 def get_nodes_from_url(url):
     schemes = ['https://', 'http://']
-    
     for scheme in schemes:
         full_url = url
         if not full_url.startswith(('http://', 'https://')):
@@ -233,41 +156,62 @@ def get_nodes_from_url(url):
             headers = {'User-Agent': 'Mozilla/5.0'}
             response = requests.get(full_url, headers=headers, timeout=15)
             response.raise_for_status()
+            content = response.text
 
             nodes = []
-            content = response.text
             
-            # 尝试解析为YAML
+            # 1. 尝试解析为YAML
             try:
                 config = yaml.safe_load(content)
                 if isinstance(config, dict) and 'proxies' in config:
                     for node in config['proxies']:
-                        if isinstance(node, dict) and 'name' in node and 'type' in node:
-                            nodes.append(node)
+                        if isinstance(node, dict) and 'name' in node and 'type' in node: nodes.append(node)
                     print(f"从 {full_url} 解析了 {len(nodes)} 个YAML节点。")
-                    return nodes, len(nodes)
-            except yaml.YAMLError:
-                pass
+                    if nodes: return nodes, len(nodes)
+            except yaml.YAMLError: pass
 
-            # 尝试解析为纯文本或Base64编码的行
+            # 2. 尝试解析为纯文本或Base64编码的行
             lines = content.splitlines()
             for line in lines:
                 line = line.strip()
-                if not line or line.startswith('#'):
-                    continue
-                
+                if not line or line.startswith('#'): continue
                 try:
-                    decoded_line = base64.b64decode(line).decode('utf-8')
+                    decoded_line = base64.b64decode(line.strip().encode('utf-8')).decode('utf-8')
                     parsed_node = parse_node(decoded_line)
-                    if parsed_node:
-                        nodes.append(parsed_node)
+                    if parsed_node: nodes.append(parsed_node)
                 except (base64.binascii.Error, UnicodeDecodeError, ValueError):
                     parsed_node = parse_node(line)
-                    if parsed_node:
-                        nodes.append(parsed_node)
+                    if parsed_node: nodes.append(parsed_node)
+            
+            if nodes:
+                print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
+                return nodes, len(nodes)
+            
+            # 3. 如果以上都失败，尝试解析为HTML目录页面
+            if '<title>Index of /</title>' in content or '<h1>Index of' in content:
+                print(f"识别到目录页，正在搜索有效节点文件...")
+                parser = DirectoryLinkParser()
+                parser.feed(content)
+                
+                # 过滤出可能的节点文件链接
+                potential_links = [
+                    link for link in parser.links 
+                    if link.endswith(('.yaml', '.txt', '.m3u')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'sub' in link.lower()
+                ]
 
-            print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
-            return nodes, len(nodes)
+                total_nodes_found = 0
+                for link in potential_links:
+                    sub_url = urljoin(full_url, link)
+                    sub_nodes, sub_count = get_nodes_from_url(sub_url)
+                    nodes.extend(sub_nodes)
+                    total_nodes_found += sub_count
+                
+                if nodes:
+                    print(f"从 {full_url} 目录页及其子链接中解析了 {total_nodes_found} 个节点。")
+                    return nodes, total_nodes_found
+            
+            print(f"从 {full_url} 无法解析出任何有效节点。")
+            return [], 0
 
         except requests.exceptions.RequestException as e:
             print(f"无法从 {full_url} 获取数据: {e}")
@@ -306,7 +250,6 @@ def save_summary_to_csv(summary_data, filename='link.csv'):
         with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['link', 'node_count']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
             writer.writeheader()
             for row in summary_data:
                 writer.writerow(row)
@@ -318,9 +261,20 @@ if __name__ == "__main__":
     links = get_links_from_local_file()
     all_nodes = []
     nodes_summary = []
+    
+    # 使用一个集合来跟踪已处理的URL，防止无限递归
+    processed_urls = set()
+
+    def process_url_recursively(link):
+        if link in processed_urls:
+            return [], 0
+        processed_urls.add(link)
+        
+        nodes, count = get_nodes_from_url(link)
+        return nodes, count
 
     for link in links:
-        nodes, count = get_nodes_from_url(link)
+        nodes, count = process_url_recursively(link)
         all_nodes.extend(nodes)
         nodes_summary.append({'link': link, 'node_count': count})
     
