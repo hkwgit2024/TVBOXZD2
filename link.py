@@ -5,6 +5,7 @@ import csv
 import re
 import random
 import json
+import base64
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import reduce
 from ip_geolocation import GeoLite2Country
@@ -44,6 +45,47 @@ except FileNotFoundError:
 except Exception as e:
     print(f"初始化地理位置数据库时发生错误: {e}")
     exit(1)
+
+# 新增：核心去重参数定义
+ESSENTIAL_PARAMS = {
+    'hysteria2': ['server', 'port', 'password'],
+    'vmess': ['server', 'port', 'uuid'],
+    'trojan': ['server', 'port', 'password'],
+    'ss': ['server', 'port', 'password', 'cipher'],
+    'ssr': ['server', 'port', 'password', 'method', 'protocol', 'obfs'],
+    'vless': ['server', 'port', 'uuid']
+}
+
+# 新增：根据核心参数对节点进行去重
+def remove_duplicate_nodes(nodes):
+    """
+    根据核心参数对节点进行去重。
+    """
+    unique_nodes = {}
+    total_count = len(nodes)
+    removed_count = 0
+
+    for node in nodes:
+        node_type = node.get('type')
+        if not node_type or node_type not in ESSENTIAL_PARAMS:
+            # 忽略不在指定协议列表中的节点
+            continue
+        
+        essential_params = ESSENTIAL_PARAMS.get(node_type)
+        key_parts = []
+        for param in essential_params:
+            key_parts.append(str(node.get(param, '')))
+        
+        # 将核心参数组合成一个唯一的键
+        node_key = tuple(key_parts)
+        
+        if node_key not in unique_nodes:
+            unique_nodes[node_key] = node
+        else:
+            removed_count += 1
+            
+    print(f"原始节点数: {total_count}，去重后节点数: {len(unique_nodes)}，移除重复节点: {removed_count}")
+    return list(unique_nodes.values())
 
 def get_headers():
     return {'User-Agent': random.choice(USER_AGENTS)}
@@ -222,12 +264,8 @@ def main():
     print("第二阶段：开始处理可用链接...")
     all_nodes, node_counts = process_links(working_links)
     
-    # 统计和去重
-    unique_nodes = []
-    names_count = {}
-    for node in all_nodes:
-        if node not in unique_nodes:
-            unique_nodes.append(node)
+    # 统计和去重 (已优化)
+    unique_nodes = remove_duplicate_nodes(all_nodes)
     
     # 重新为节点命名
     final_nodes = []
