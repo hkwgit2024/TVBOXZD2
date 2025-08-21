@@ -1,20 +1,44 @@
+proxies:
+- "chacha20-ietf-poly1305:f8f7aCzcPKbsF8p3N5m]:\x05|\x10\x05|"
+- "vDAt_u[z?\e\x7Fwo~kΟ}׮ێʖe8{"
+- r*jXܯ*m
+- '`!iaiejx'
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:80?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_80
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:8080?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_8080
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:8880?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_8880
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2052?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2052
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2086?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2086
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2095?encryption=none&security=none&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2095
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:443?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_443
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:8443?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_8443
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2053?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2053
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2096?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2096
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2087?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2087
+- vless://13516920-8ff7-4382-a55b-f0dc2c4378f7@bestcf.030101.xyz:2083?encryption=none&security=tls&sni=240804.cfsub.cloudns.be&fp=random&type=ws&host=240804.cfsub.cloudns.be&path=%2F%3D2048#CFW_2083
+- i>-%
+- "4]\\'\a"
+- zD
+- "x *]yZު笴⢸`y\x17-)\x02Xy+Z5zGy^֦z%MQ\\Z\b\06;\x0E\x066̉貇.)\\%\x12\x14"
+- j[
+- "r+r\x06ܢ{b4"
+- "ނ*'V*x\"pu@)Ή\x02gƿ5?b䖉۝{b^߮)Z*"
+- "{m׻eW*'L{e(\x10\0\0D篆\bϒ"
+- l
+- "XZ&V)ib\"a\x14\x04#=Xo"
+- "T\x1AhKqܨDn"
+- ss://...
+- vmess://...
+- trojan://...
+- "ss://MjAyMi1ibGFrZTMtYWVzLTEyOC1nY206b25hRzU5RlVYTXFNUG94MmhPaWltZz09Cg==@itdog.info:443#good-proxy\
+  \ Ð\x9BÐ¸Ð±Ð¾ QR-ÐºÐ¾Ð´, ÐºÐ¾Ñ\x82Ð¾Ñ\x80Ñ\x8BÐ¹ Ñ\x81Ð¾Ð´ÐµÑ\x80Ð¶Ð¸Ñ\x82 Ñ\x8D\
+  Ñ\x82Ñ\x83 Ð¶Ðµ Ñ\x81Ñ\x82Ñ\x80Ð¾ÐºÑ\x83."
+- kt^w]_uM4m4KlWhyyjav൨jx
+- h.iy
 domains:
-- 165.227.130.174
-- 240804.cfsub.cloudns.be
-- '# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/config.yaml'
-- '# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt'
-- freenode.datasets.cc
-- ava.game.naver.com.yaya.web.id
-- aling.aple.cloudns.be
-- cf.vless.sandesh.fr
-- panel.pocketbrain.ru
-- yaya.web.id
-- tz.xingji.io
-- quiz.int.vidio.com.yaya.web.id
-- nfs.microeco.net
-- archlinux-desktop.sergionator.duckdns.org
-- autodiscover.kiarant.ru
-- edu.ruangguru.com.yaya.web.id
 - '# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt'
-- dev1.irdevs.sbs
-- zaintest.vuclip.com.yaya.web.id
+- '# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/config.yaml'
+- panel.pocketbrain.ru
+- tz.xingji.io
+- '# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt'
+- 165.227.130.174
+- freenode.datasets.cc
