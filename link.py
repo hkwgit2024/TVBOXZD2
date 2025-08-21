@@ -204,7 +204,7 @@ def get_nodes_from_url(url):
             headers = {
                 'User-Agent': random.choice(USER_AGENTS)
             }
-            response = requests.get(full_url, headers=headers, timeout=15)
+            response = requests.get(full_url, headers=headers, timeout=5)
             response.raise_for_status()
             content = response.text
 
@@ -259,7 +259,7 @@ def get_nodes_from_url(url):
                 ]
 
                 all_sub_nodes = []
-                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
                     future_to_url = {executor.submit(get_nodes_from_url, urljoin(full_url, link)): link for link in potential_links}
                     for future in concurrent.futures.as_completed(future_to_url):
                         try:
