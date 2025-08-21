@@ -1,6 +1,6 @@
-https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/config.yaml
-https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt
-https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt
+# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/config.yaml
+# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt
+# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt
 dev1.irdevs.sbs
 edu.ruangguru.com.yaya.web.id
 quiz.int.vidio.com.yaya.web.id
