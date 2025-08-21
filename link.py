@@ -3,11 +3,13 @@ import yaml
 import base64
 import io
 import os
+import csv
 from urllib.parse import urlparse
 
 def get_nodes_from_url(url):
     """
     从给定的URL获取并解析节点信息。
+    返回一个元组：(节点列表, 节点数量)
     """
     try:
         print(f"正在从 {url} 获取数据...")
@@ -26,39 +28,46 @@ def get_nodes_from_url(url):
             if isinstance(config, dict) and 'proxies' in config:
                 nodes.extend(config['proxies'])
                 print(f"从 {url} 解析了 {len(config['proxies'])} 个YAML节点。")
-                return nodes
+                return nodes, len(nodes)
         except yaml.YAMLError:
             pass
 
         # 尝试解析为纯文本，每行一个base64编码的节点
         try:
-            decoded_content = base64.b64decode(content.strip().replace('-', '+').replace('_', '/')).decode('utf-8')
+            # 尝试直接解码整个内容
+            decoded_content = base64.b64decode(content.strip().replace('-', '+').replace('_', '/')).decode('utf-8', errors='ignore')
             for line in decoded_content.splitlines():
                 if line.strip():
                     nodes.append(line.strip())
             print(f"从 {url} 解析了 {len(nodes)} 个Base64编码的节点。")
-            return nodes
-        except (base64.binascii.Error, UnicodeDecodeError):
+            return nodes, len(nodes)
+        except (base64.binascii.Error, UnicodeDecodeError, ValueError):
             pass
             
         # 尝试将纯文本作为base64编码的行
         lines = content.splitlines()
         for line in lines:
-            if line.strip().startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
-                nodes.append(line.strip())
+            line = line.strip()
+            if not line:
+                continue
+            
+            # 直接检查是否是v2ray/ss/trojan协议链接
+            if line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
+                nodes.append(line)
             else:
                 try:
-                    decoded_line = base64.b64decode(line.strip()).decode('utf-8')
-                    if decoded_line.strip().startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
-                        nodes.append(decoded_line.strip())
-                except (base64.binascii.Error, UnicodeDecodeError):
+                    # 尝试解码单行
+                    decoded_line = base64.b64decode(line).decode('utf-8')
+                    if decoded_line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
+                        nodes.append(decoded_line)
+                except (base64.binascii.Error, UnicodeDecodeError, ValueError):
                     pass
         print(f"从 {url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
-        return nodes
+        return nodes, len(nodes)
 
     except requests.exceptions.RequestException as e:
         print(f"无法从 {url} 获取数据: {e}")
-        return []
+        return [], 0
 
 def get_links_from_local_file(filename="link.txt"):
     """
@@ -91,20 +100,36 @@ def save_to_yaml(data, filename='link.yaml'):
     except IOError as e:
         print(f"无法保存文件 {filename}: {e}")
 
+def save_summary_to_csv(summary_data, filename='nodes_summary.csv'):
+    """
+    将节点数量汇总数据保存到CSV文件。
+    """
+    try:
+        with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ['link', 'node_count']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            
+            writer.writeheader()
+            for row in summary_data:
+                writer.writerow(row)
+        print(f"成功将节点数量汇总保存到 {filename}")
+    except IOError as e:
+        print(f"无法保存文件 {filename}: {e}")
+
 if __name__ == "__main__":
     links = get_links_from_local_file()
 
     all_nodes = []
     domains = []
+    nodes_summary = []
 
     for link in links:
-        # 检查链接是否是完整的URL
         parsed_url = urlparse(link)
         if parsed_url.scheme and parsed_url.netloc:
-            # 如果是URL，则尝试获取节点
-            all_nodes.extend(get_nodes_from_url(link))
+            nodes, count = get_nodes_from_url(link)
+            all_nodes.extend(nodes)
+            nodes_summary.append({'link': link, 'node_count': count})
         else:
-            # 如果不是URL，则认为是域名
             domains.append(link)
 
     # 步骤1：对获取到的节点进行去重
@@ -134,3 +159,7 @@ if __name__ == "__main__":
         save_to_yaml(final_data)
     else:
         print("未找到任何节点或域名。")
+
+    # 步骤4：将汇总数据保存到CSV
+    if nodes_summary:
+        save_summary_to_csv(nodes_summary)
