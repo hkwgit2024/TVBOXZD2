@@ -1,20 +1,17 @@
 link,node_count
-# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/config.yaml,0
-# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt,0
-# https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt,0
-dev1.irdevs.sbs,3
-edu.ruangguru.com.yaya.web.id,1
-quiz.int.vidio.com.yaya.web.id,1
-yaya.web.id,1
-ava.game.naver.com.yaya.web.id,1
-cf.vless.sandesh.fr,1
+dev1.irdevs.sbs,53
+edu.ruangguru.com.yaya.web.id,0
+quiz.int.vidio.com.yaya.web.id,0
+yaya.web.id,0
+ava.game.naver.com.yaya.web.id,0
+cf.vless.sandesh.fr,0
 240804.cfsub.cloudns.be,12
-zaintest.vuclip.com.yaya.web.id,1
-aling.aple.cloudns.be,11
+zaintest.vuclip.com.yaya.web.id,0
+aling.aple.cloudns.be,6
 165.227.130.174,0
 autodiscover.kiarant.ru,3
 panel.pocketbrain.ru,0
 archlinux-desktop.sergionator.duckdns.org,1
 freenode.datasets.cc,0
 tz.xingji.io,0
-nfs.microeco.net,2
+nfs.microeco.net,0
