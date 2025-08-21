@@ -6,9 +6,32 @@ import os
 import csv
 import json
 import re
+import random
 from urllib.parse import urlparse, unquote, urljoin
 from collections import OrderedDict
 from html.parser import HTMLParser
+
+# 多样化的User-Agent列表，涵盖多种设备和浏览器
+USER_AGENTS = [
+    # Windows 10 Chrome
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    # Windows 10 Firefox
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+    # macOS Big Sur Safari
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
+    # iPad Pro Safari
+    'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.77 Mobile/15E148 Safari/604.1',
+    # iPhone Chrome
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.80 Mobile/15E148 Safari/604.1',
+    # Android Chrome
+    'Mozilla/5.0 (Linux; Android 10; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+    # HarmonyOS Chrome (模拟)
+    'Mozilla/5.0 (Linux; Android 10; HarmonyOS) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36',
+    # Linux Firefox
+    'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0',
+    # Edge on Windows
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59'
+]
 
 class DirectoryLinkParser(HTMLParser):
     def __init__(self):
@@ -144,6 +167,41 @@ def parse_node(link):
     if link.startswith('hy2://'): return parse_hy2(link)
     return None
 
+def extract_links_from_html(html_content):
+    links = []
+    # 查找所有 class="config" 的 <p> 标签内容
+    matches = re.findall(r'<p class="config".*?>(.*?)</p>', html_content, re.DOTALL)
+    for match in matches:
+        cleaned_link = re.sub(r'<[^>]+>', '', match).strip()
+        if cleaned_link:
+            links.append(cleaned_link)
+    
+    # 查找所有 <textarea> 标签内容
+    matches = re.findall(r'<textarea[^>]*>(.*?)</textarea>', html_content, re.DOTALL)
+    for match in matches:
+        links.extend(match.strip().splitlines())
+        
+    return links
+
+def extract_links_from_script(html_content):
+    links = []
+    # 查找包含 'const fileData =' 的 <script> 标签内容
+    match = re.search(r'const\s+fileData\s*=\s*(\[[^;]+\]);', html_content, re.DOTALL)
+    if match:
+        json_str = match.group(1)
+        try:
+            # 尝试用 JSON 解析
+            data = json.loads(json_str)
+            for item in data:
+                if 'url' in item:
+                    links.append(item['url'])
+        except json.JSONDecodeError:
+            # 如果JSON解析失败，尝试用正则表达式解析
+            matches = re.findall(r"url\s*:\s*'(.*?)'", json_str)
+            for url in matches:
+                links.append(url)
+    return links
+
 def get_nodes_from_url(url):
     schemes = ['https://', 'http://']
     for scheme in schemes:
@@ -153,7 +211,9 @@ def get_nodes_from_url(url):
         
         try:
             print(f"正在从 {full_url} 获取数据...")
-            headers = {'User-Agent': 'Mozilla/5.0'}
+            headers = {
+                'User-Agent': random.choice(USER_AGENTS)
+            }
             response = requests.get(full_url, headers=headers, timeout=15)
             response.raise_for_status()
             content = response.text
@@ -187,16 +247,31 @@ def get_nodes_from_url(url):
                 print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
                 return nodes, len(nodes)
             
-            # 3. 如果以上都失败，尝试解析为HTML目录页面
+            # 3. 尝试从HTML中提取链接
+            html_links = extract_links_from_html(content)
+            for link in html_links:
+                parsed_node = parse_node(link)
+                if parsed_node: nodes.append(parsed_node)
+            
+            # 4. 尝试从JavaScript脚本中提取链接
+            script_links = extract_links_from_script(content)
+            for link in script_links:
+                parsed_node = parse_node(link)
+                if parsed_node: nodes.append(parsed_node)
+            
+            if nodes:
+                print(f"从 {full_url} 解析了 {len(nodes)} 个HTML嵌入节点。")
+                return nodes, len(nodes)
+
+            # 5. 如果以上都失败，尝试解析为HTML目录页面
             if '<title>Index of /</title>' in content or '<h1>Index of' in content:
                 print(f"识别到目录页，正在搜索有效节点文件...")
                 parser = DirectoryLinkParser()
                 parser.feed(content)
                 
-                # 过滤出可能的节点文件链接
                 potential_links = [
                     link for link in parser.links 
-                    if link.endswith(('.yaml', '.txt', '.m3u')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'sub' in link.lower()
+                    if link.endswith(('.yaml', '.txt', '.m3u')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'sub' in link.lower() or 'node' in link.lower()
                 ]
 
                 total_nodes_found = 0
@@ -262,7 +337,6 @@ if __name__ == "__main__":
     all_nodes = []
     nodes_summary = []
     
-    # 使用一个集合来跟踪已处理的URL，防止无限递归
     processed_urls = set()
 
     def process_url_recursively(link):
