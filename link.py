@@ -100,7 +100,7 @@ def save_to_yaml(data, filename='link.yaml'):
     except IOError as e:
         print(f"无法保存文件 {filename}: {e}")
 
-def save_summary_to_csv(summary_data, filename='nodes_summary.csv'):
+def save_summary_to_csv(summary_data, filename='link.csv'):
     """
     将节点数量汇总数据保存到CSV文件。
     """
@@ -130,7 +130,9 @@ if __name__ == "__main__":
             all_nodes.extend(nodes)
             nodes_summary.append({'link': link, 'node_count': count})
         else:
+            # 如果是纯域名，将其添加到域名列表，并在报告中记录节点数量为0
             domains.append(link)
+            nodes_summary.append({'link': link, 'node_count': 0})
 
     # 步骤1：对获取到的节点进行去重
     seen = set()
