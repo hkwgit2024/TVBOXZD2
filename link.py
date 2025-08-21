@@ -11,6 +11,7 @@ import concurrent.futures
 from urllib.parse import urlparse, unquote, urljoin
 from collections import OrderedDict
 from html.parser import HTMLParser
+from tqdm import tqdm
 
 # 多样化的User-Agent列表，涵盖多种设备和浏览器
 USER_AGENTS = [
@@ -67,7 +68,6 @@ def parse_vmess(vmess_url):
             'ws-opts': {'path': config.get('path', '/'), 'headers': {'Host': config.get('host', config.get('add'))}}
         }
     except Exception as e:
-        #print(f"解析VMess链接失败: {e}")
         return None
 
 def parse_ss(ss_url):
@@ -90,7 +90,6 @@ def parse_ss(ss_url):
             'port': int(port), 'cipher': method, 'password': password
         }
     except Exception as e:
-        #print(f"解析SS链接失败: {e}")
         return None
 
 def parse_vless(vless_url):
@@ -106,7 +105,6 @@ def parse_vless(vless_url):
             'sni': params.get('sni'), 'ws-opts': {'path': params.get('path'), 'headers': {'Host': params.get('host')}}
         }
     except Exception as e:
-        #print(f"解析VLESS链接失败: {e}")
         return None
 
 def parse_trojan(trojan_url):
@@ -121,7 +119,6 @@ def parse_trojan(trojan_url):
             'sni': params.get('sni'), 'skip-cert-verify': False
         }
     except Exception as e:
-        #print(f"解析Trojan链接失败: {e}")
         return None
 
 def parse_ssr(ssr_url):
@@ -140,7 +137,6 @@ def parse_ssr(ssr_url):
             'protocol-param': params.get('protoparam'), 'obfs-param': params.get('obfsparam')
         }
     except Exception as e:
-        #print(f"解析SSR链接失败: {e}")
         return None
 
 def parse_hy2(hy2_url):
@@ -156,7 +152,6 @@ def parse_hy2(hy2_url):
             'obfs-password': params.get('obfs-password'), 'fast-open': True
         }
     except Exception as e:
-        #print(f"解析HY2链接失败: {e}")
         return None
 
 def parse_node(link):
@@ -170,14 +165,12 @@ def parse_node(link):
 
 def extract_links_from_html(html_content):
     links = []
-    # 查找所有 class="config" 的 <p> 标签内容
     matches = re.findall(r'<p class="config".*?>(.*?)</p>', html_content, re.DOTALL)
     for match in matches:
         cleaned_link = re.sub(r'<[^>]+>', '', match).strip()
         if cleaned_link:
             links.append(cleaned_link)
     
-    # 查找所有 <textarea> 标签内容
     matches = re.findall(r'<textarea[^>]*>(.*?)</textarea>', html_content, re.DOTALL)
     for match in matches:
         links.extend(match.strip().splitlines())
@@ -186,18 +179,15 @@ def extract_links_from_html(html_content):
 
 def extract_links_from_script(html_content):
     links = []
-    # 查找包含 'const fileData =' 的 <script> 标签内容
     match = re.search(r'const\s+fileData\s*=\s*(\[[^;]+\]);', html_content, re.DOTALL)
     if match:
         json_str = match.group(1)
         try:
-            # 尝试用 JSON 解析
             data = json.loads(json_str)
             for item in data:
                 if 'url' in item:
                     links.append(item['url'])
         except json.JSONDecodeError:
-            # 如果JSON解析失败，尝试用正则表达式解析
             matches = re.findall(r"url\s*:\s*'(.*?)'", json_str)
             for url in matches:
                 links.append(url)
@@ -211,7 +201,6 @@ def get_nodes_from_url(url):
             full_url = f"{scheme}{url}"
         
         try:
-            print(f"正在从 {full_url} 获取数据...")
             headers = {
                 'User-Agent': random.choice(USER_AGENTS)
             }
@@ -227,7 +216,6 @@ def get_nodes_from_url(url):
                 if isinstance(config, dict) and 'proxies' in config:
                     for node in config['proxies']:
                         if isinstance(node, dict) and 'name' in node and 'type' in node: nodes.append(node)
-                    print(f"从 {full_url} 解析了 {len(nodes)} 个YAML节点。")
                     if nodes: return nodes
             except yaml.YAMLError: pass
 
@@ -244,9 +232,7 @@ def get_nodes_from_url(url):
                     parsed_node = parse_node(line)
                     if parsed_node: nodes.append(parsed_node)
             
-            if nodes:
-                print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
-                return nodes
+            if nodes: return nodes
             
             # 3. 尝试从HTML中提取链接
             html_links = extract_links_from_html(content)
@@ -260,13 +246,10 @@ def get_nodes_from_url(url):
                 parsed_node = parse_node(link)
                 if parsed_node: nodes.append(parsed_node)
             
-            if nodes:
-                print(f"从 {full_url} 解析了 {len(nodes)} 个HTML嵌入节点。")
-                return nodes
+            if nodes: return nodes
 
             # 5. 如果以上都失败，尝试解析为HTML目录页面
             if '<title>Index of /</title>' in content or '<h1>Index of' in content:
-                print(f"识别到目录页，正在搜索有效节点文件...")
                 parser = DirectoryLinkParser()
                 parser.feed(content)
                 
@@ -283,21 +266,16 @@ def get_nodes_from_url(url):
                             sub_nodes = future.result()
                             if sub_nodes:
                                 all_sub_nodes.extend(sub_nodes)
-                        except Exception as exc:
-                            print(f"子链接 {future_to_url[future]} 生成了一个异常: {exc}")
+                        except Exception:
+                            pass
                 
-                if all_sub_nodes:
-                    print(f"从 {full_url} 目录页及其子链接中解析了 {len(all_sub_nodes)} 个节点。")
-                    return all_sub_nodes
+                if all_sub_nodes: return all_sub_nodes
             
-            print(f"从 {full_url} 无法解析出任何有效节点。")
             return []
 
-        except requests.exceptions.RequestException as e:
-            print(f"无法从 {full_url} 获取数据: {e}")
+        except requests.exceptions.RequestException:
             continue
     
-    print(f"所有协议都无法从 {url} 获取数据。")
     return []
 
 def get_links_from_local_file(filename="link.txt"):
@@ -342,27 +320,25 @@ if __name__ == "__main__":
     all_nodes = []
     nodes_summary = []
     
-    processed_urls = set()
-
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(get_nodes_from_url, link): link for link in links}
-        for future in concurrent.futures.as_completed(future_to_url):
-            link = future_to_url[future]
+        futures = {executor.submit(get_nodes_from_url, link): link for link in links}
+        
+        for future in tqdm(concurrent.futures.as_completed(futures), total=len(links), desc="处理链接"):
+            link = futures[future]
             try:
                 nodes = future.result()
                 if nodes:
                     all_nodes.extend(nodes)
                     nodes_summary.append({'link': link, 'node_count': len(nodes)})
+                    print(f"\n[成功] 从 {link} 找到 {len(nodes)} 个节点。")
                 else:
                     nodes_summary.append({'link': link, 'node_count': 0})
-            except Exception as exc:
-                print(f"链接 {link} 生成了一个异常: {exc}")
+            except Exception:
                 nodes_summary.append({'link': link, 'node_count': 0})
-    
+
     seen_nodes = set()
     unique_nodes = []
     for node in all_nodes:
-        # 确保字典有序以进行精确去重
         node_key = str(OrderedDict(sorted(node.items())))
         if node_key not in seen_nodes:
             seen_nodes.add(node_key)
@@ -370,9 +346,9 @@ if __name__ == "__main__":
 
     if unique_nodes:
         save_to_yaml({'proxies': unique_nodes})
-        print(f"总共找到 {len(all_nodes)} 个节点，去重后剩下 {len(unique_nodes)} 个。")
+        print(f"\n总共找到 {len(all_nodes)} 个节点，去重后剩下 {len(unique_nodes)} 个。")
     else:
-        print("未找到任何有效节点。")
+        print("\n未找到任何有效节点。")
 
     if nodes_summary:
         save_summary_to_csv(nodes_summary)
