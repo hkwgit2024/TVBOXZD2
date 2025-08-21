@@ -7,6 +7,7 @@ import csv
 import json
 import re
 import random
+import concurrent.futures
 from urllib.parse import urlparse, unquote, urljoin
 from collections import OrderedDict
 from html.parser import HTMLParser
@@ -66,7 +67,7 @@ def parse_vmess(vmess_url):
             'ws-opts': {'path': config.get('path', '/'), 'headers': {'Host': config.get('host', config.get('add'))}}
         }
     except Exception as e:
-        print(f"解析VMess链接失败: {e}")
+        #print(f"解析VMess链接失败: {e}")
         return None
 
 def parse_ss(ss_url):
@@ -89,7 +90,7 @@ def parse_ss(ss_url):
             'port': int(port), 'cipher': method, 'password': password
         }
     except Exception as e:
-        print(f"解析SS链接失败: {e}")
+        #print(f"解析SS链接失败: {e}")
         return None
 
 def parse_vless(vless_url):
@@ -105,7 +106,7 @@ def parse_vless(vless_url):
             'sni': params.get('sni'), 'ws-opts': {'path': params.get('path'), 'headers': {'Host': params.get('host')}}
         }
     except Exception as e:
-        print(f"解析VLESS链接失败: {e}")
+        #print(f"解析VLESS链接失败: {e}")
         return None
 
 def parse_trojan(trojan_url):
@@ -120,7 +121,7 @@ def parse_trojan(trojan_url):
             'sni': params.get('sni'), 'skip-cert-verify': False
         }
     except Exception as e:
-        print(f"解析Trojan链接失败: {e}")
+        #print(f"解析Trojan链接失败: {e}")
         return None
 
 def parse_ssr(ssr_url):
@@ -139,7 +140,7 @@ def parse_ssr(ssr_url):
             'protocol-param': params.get('protoparam'), 'obfs-param': params.get('obfsparam')
         }
     except Exception as e:
-        print(f"解析SSR链接失败: {e}")
+        #print(f"解析SSR链接失败: {e}")
         return None
 
 def parse_hy2(hy2_url):
@@ -155,7 +156,7 @@ def parse_hy2(hy2_url):
             'obfs-password': params.get('obfs-password'), 'fast-open': True
         }
     except Exception as e:
-        print(f"解析HY2链接失败: {e}")
+        #print(f"解析HY2链接失败: {e}")
         return None
 
 def parse_node(link):
@@ -227,7 +228,7 @@ def get_nodes_from_url(url):
                     for node in config['proxies']:
                         if isinstance(node, dict) and 'name' in node and 'type' in node: nodes.append(node)
                     print(f"从 {full_url} 解析了 {len(nodes)} 个YAML节点。")
-                    if nodes: return nodes, len(nodes)
+                    if nodes: return nodes
             except yaml.YAMLError: pass
 
             # 2. 尝试解析为纯文本或Base64编码的行
@@ -245,7 +246,7 @@ def get_nodes_from_url(url):
             
             if nodes:
                 print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
-                return nodes, len(nodes)
+                return nodes
             
             # 3. 尝试从HTML中提取链接
             html_links = extract_links_from_html(content)
@@ -261,7 +262,7 @@ def get_nodes_from_url(url):
             
             if nodes:
                 print(f"从 {full_url} 解析了 {len(nodes)} 个HTML嵌入节点。")
-                return nodes, len(nodes)
+                return nodes
 
             # 5. 如果以上都失败，尝试解析为HTML目录页面
             if '<title>Index of /</title>' in content or '<h1>Index of' in content:
@@ -274,26 +275,30 @@ def get_nodes_from_url(url):
                     if link.endswith(('.yaml', '.txt', '.m3u')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'sub' in link.lower() or 'node' in link.lower()
                 ]
 
-                total_nodes_found = 0
-                for link in potential_links:
-                    sub_url = urljoin(full_url, link)
-                    sub_nodes, sub_count = get_nodes_from_url(sub_url)
-                    nodes.extend(sub_nodes)
-                    total_nodes_found += sub_count
+                all_sub_nodes = []
+                with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                    future_to_url = {executor.submit(get_nodes_from_url, urljoin(full_url, link)): link for link in potential_links}
+                    for future in concurrent.futures.as_completed(future_to_url):
+                        try:
+                            sub_nodes = future.result()
+                            if sub_nodes:
+                                all_sub_nodes.extend(sub_nodes)
+                        except Exception as exc:
+                            print(f"子链接 {future_to_url[future]} 生成了一个异常: {exc}")
                 
-                if nodes:
-                    print(f"从 {full_url} 目录页及其子链接中解析了 {total_nodes_found} 个节点。")
-                    return nodes, total_nodes_found
+                if all_sub_nodes:
+                    print(f"从 {full_url} 目录页及其子链接中解析了 {len(all_sub_nodes)} 个节点。")
+                    return all_sub_nodes
             
             print(f"从 {full_url} 无法解析出任何有效节点。")
-            return [], 0
+            return []
 
         except requests.exceptions.RequestException as e:
             print(f"无法从 {full_url} 获取数据: {e}")
             continue
     
     print(f"所有协议都无法从 {url} 获取数据。")
-    return [], 0
+    return []
 
 def get_links_from_local_file(filename="link.txt"):
     links = []
@@ -339,22 +344,25 @@ if __name__ == "__main__":
     
     processed_urls = set()
 
-    def process_url_recursively(link):
-        if link in processed_urls:
-            return [], 0
-        processed_urls.add(link)
-        
-        nodes, count = get_nodes_from_url(link)
-        return nodes, count
-
-    for link in links:
-        nodes, count = process_url_recursively(link)
-        all_nodes.extend(nodes)
-        nodes_summary.append({'link': link, 'node_count': count})
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_url = {executor.submit(get_nodes_from_url, link): link for link in links}
+        for future in concurrent.futures.as_completed(future_to_url):
+            link = future_to_url[future]
+            try:
+                nodes = future.result()
+                if nodes:
+                    all_nodes.extend(nodes)
+                    nodes_summary.append({'link': link, 'node_count': len(nodes)})
+                else:
+                    nodes_summary.append({'link': link, 'node_count': 0})
+            except Exception as exc:
+                print(f"链接 {link} 生成了一个异常: {exc}")
+                nodes_summary.append({'link': link, 'node_count': 0})
     
     seen_nodes = set()
     unique_nodes = []
     for node in all_nodes:
+        # 确保字典有序以进行精确去重
         node_key = str(OrderedDict(sorted(node.items())))
         if node_key not in seen_nodes:
             seen_nodes.add(node_key)
@@ -362,6 +370,7 @@ if __name__ == "__main__":
 
     if unique_nodes:
         save_to_yaml({'proxies': unique_nodes})
+        print(f"总共找到 {len(all_nodes)} 个节点，去重后剩下 {len(unique_nodes)} 个。")
     else:
         print("未找到任何有效节点。")
 
