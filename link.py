@@ -259,7 +259,7 @@ def get_nodes_from_url(url):
                 ]
 
                 all_sub_nodes = []
-                with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
                     future_to_url = {executor.submit(get_nodes_from_url, urljoin(full_url, link)): link for link in potential_links}
                     for future in concurrent.futures.as_completed(future_to_url):
                         try:
