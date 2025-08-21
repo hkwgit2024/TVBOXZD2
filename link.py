@@ -8,66 +8,76 @@ from urllib.parse import urlparse
 
 def get_nodes_from_url(url):
     """
-    从给定的URL获取并解析节点信息。
+    从给定的URL获取并解析节点信息，并处理HTTPS/HTTP回退。
     返回一个元组：(节点列表, 节点数量)
     """
-    try:
-        print(f"正在从 {url} 获取数据...")
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # 检查请求是否成功
-
-        nodes = []
-        content = response.text
+    schemes = ['https://', 'http://']
+    
+    for scheme in schemes:
+        full_url = url
+        # 确保URL以正确的协议开头
+        if not full_url.startswith(scheme):
+            full_url = f"{scheme}{url}"
         
-        # 尝试解析为YAML
         try:
-            config = yaml.safe_load(content)
-            if isinstance(config, dict) and 'proxies' in config:
-                nodes.extend(config['proxies'])
-                print(f"从 {url} 解析了 {len(config['proxies'])} 个YAML节点。")
+            print(f"正在从 {full_url} 获取数据...")
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            response = requests.get(full_url, headers=headers, timeout=10)
+            response.raise_for_status()  # 检查请求是否成功
+
+            nodes = []
+            content = response.text
+            
+            # 尝试解析为YAML
+            try:
+                config = yaml.safe_load(content)
+                if isinstance(config, dict) and 'proxies' in config:
+                    nodes.extend(config['proxies'])
+                    print(f"从 {full_url} 解析了 {len(config['proxies'])} 个YAML节点。")
+                    return nodes, len(nodes)
+            except yaml.YAMLError:
+                pass
+
+            # 尝试解析为纯文本，每行一个base64编码的节点
+            try:
+                decoded_content = base64.b64decode(content.strip().replace('-', '+').replace('_', '/')).decode('utf-8', errors='ignore')
+                for line in decoded_content.splitlines():
+                    if line.strip():
+                        nodes.append(line.strip())
+                print(f"从 {full_url} 解析了 {len(nodes)} 个Base64编码的节点。")
                 return nodes, len(nodes)
-        except yaml.YAMLError:
-            pass
-
-        # 尝试解析为纯文本，每行一个base64编码的节点
-        try:
-            # 尝试直接解码整个内容
-            decoded_content = base64.b64decode(content.strip().replace('-', '+').replace('_', '/')).decode('utf-8', errors='ignore')
-            for line in decoded_content.splitlines():
-                if line.strip():
-                    nodes.append(line.strip())
-            print(f"从 {url} 解析了 {len(nodes)} 个Base64编码的节点。")
+            except (base64.binascii.Error, UnicodeDecodeError, ValueError):
+                pass
+                
+            # 尝试将纯文本作为base64编码的行
+            lines = content.splitlines()
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                
+                if line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
+                    nodes.append(line)
+                else:
+                    try:
+                        decoded_line = base64.b64decode(line).decode('utf-8')
+                        if decoded_line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
+                            nodes.append(decoded_line)
+                    except (base64.binascii.Error, UnicodeDecodeError, ValueError):
+                        pass
+            print(f"从 {full_url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
             return nodes, len(nodes)
-        except (base64.binascii.Error, UnicodeDecodeError, ValueError):
-            pass
-            
-        # 尝试将纯文本作为base64编码的行
-        lines = content.splitlines()
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-            
-            # 直接检查是否是v2ray/ss/trojan协议链接
-            if line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
-                nodes.append(line)
-            else:
-                try:
-                    # 尝试解码单行
-                    decoded_line = base64.b64decode(line).decode('utf-8')
-                    if decoded_line.startswith(('vmess://', 'vless://', 'ss://', 'trojan://', 'ssr://')):
-                        nodes.append(decoded_line)
-                except (base64.binascii.Error, UnicodeDecodeError, ValueError):
-                    pass
-        print(f"从 {url} 解析了 {len(nodes)} 个纯文本/Base64行节点。")
-        return nodes, len(nodes)
 
-    except requests.exceptions.RequestException as e:
-        print(f"无法从 {url} 获取数据: {e}")
-        return [], 0
+        except requests.exceptions.RequestException as e:
+            print(f"无法从 {full_url} 获取数据: {e}")
+            continue # 继续尝试下一个协议
+    
+    # 如果两个协议都失败，返回空列表和0
+    print(f"所有协议都无法从 {url} 获取数据。")
+    return [], 0
+
 
 def get_links_from_local_file(filename="link.txt"):
     """
@@ -124,16 +134,25 @@ if __name__ == "__main__":
     nodes_summary = []
 
     for link in links:
+        # 检查链接是否是完整的URL（包含协议头）
         parsed_url = urlparse(link)
         if parsed_url.scheme and parsed_url.netloc:
+            # 如果是完整的URL，直接处理
             nodes, count = get_nodes_from_url(link)
             all_nodes.extend(nodes)
             nodes_summary.append({'link': link, 'node_count': count})
         else:
-            # 如果是纯域名，将其添加到域名列表，并在报告中记录节点数量为0
-            domains.append(link)
-            nodes_summary.append({'link': link, 'node_count': 0})
-
+            # 如果不包含协议头，则尝试HTTPS/HTTP回退
+            nodes, count = get_nodes_from_url(link)
+            if count > 0:
+                # 如果找到节点，将其添加到列表中
+                all_nodes.extend(nodes)
+                nodes_summary.append({'link': link, 'node_count': count})
+            else:
+                # 如果没有找到节点，将其视为纯域名
+                domains.append(link)
+                nodes_summary.append({'link': link, 'node_count': 0})
+    
     # 步骤1：对获取到的节点进行去重
     seen = set()
     unique_nodes = []
