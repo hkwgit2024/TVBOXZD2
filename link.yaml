@@ -431,6 +431,1826 @@ proxies:
   port: 80
   cipher: chacha20-ietf-poly1305
   password: JIhN6rBKkaEboLNXVSv5rq
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 72c9e45f-13f5-4eb2-ae32-a3080c3c4d8a
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: b6f8aeeb-2663-4ca1-8766-a0726e65a712
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: b35fbdc6-d7f6-45c0-b29c-e3425c6292b3
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 46c8b478-2f84-4f09-bd8a-7ba02c198a75
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 65aebc98-a275-4909-b66b-42d7e32f4fe4
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: a6629bd9-07f1-465a-bf4d-abb2462bc68d
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 94b21e2d-62d7-4014-b116-bca7c77c1164
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: ffa558c6-0c5d-4f00-81b2-ec1d8a182336
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 5c5a3056-7b9f-4091-8022-31a5d7724a4c
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 6171a579-ce10-405e-b97b-45d4b098895a
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 884b56e0-1a96-4810-8309-c13aafcafcfa
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 0dacf872-e196-45ce-8a3f-b695cb0cd242
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 1973c1a0-e693-4a99-af4c-dc9ebd71ab6d
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: bf518a13-944b-48ee-979d-7b67a9c8180b
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: d34a0b5f-53c6-40e1-a9e2-771968d2cdce
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 17533f77-fc6b-4985-9bf1-74ad92f12408
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 53990033-681d-4bfc-bf65-893921981506
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 83f5bafa-057b-4025-a33d-10c69deb1308
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 25afc749-78ae-4463-8346-fb9562e2f67d
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 9b1a43d1-952a-4eb7-a160-323a30468fbf
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 2b854d14-57cb-4a0f-96da-75d939de31f1
+  network: ws
+  tls: true
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: edu.ruangguru.com.yaya.web.id
+  port: 80
+  uuid: 8389df78-4113-479c-8104-af666b3bb642
+  network: ws
+  tls: false
+  flow: null
+  sni: edu.ruangguru.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 715b8aa0-082e-49f3-990d-26c3096b2c6e
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: fffe45ee-377f-450c-b4a9-bdf341631bed
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: aa4bbc97-e754-44b7-976d-a05206c94621
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: ed95d77b-2778-4f41-be36-bee7e4cdbfd4
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 19591ef5-76d0-46f7-b25d-198eb8a9dac0
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: 2f292cd2-b324-4c3c-83a7-c7048e3fcd92
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 39e765d7-1e4f-4160-a35a-70d244c8ce2a
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: c4c66fa0-ab90-4893-a729-7cecfea6703d
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 559fc32f-7968-4a37-b7f1-07b2cbdf13f1
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: 7276e853-5d12-43bf-be2c-c7aa2b050d73
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 8d69d053-4486-402f-a549-2b01292bd0a8
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: c5982600-f1aa-4f56-9076-66eea27de212
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: c1a4a166-2817-4a31-a3a1-7f7a50112427
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: f87b3efa-5755-442b-9f91-eee012a36ae1
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: ba729a3d-df70-4794-bfb8-de34ef68b2aa
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: 4400add2-b4ae-44a7-8b1d-be952ee2ec44
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 585c761d-5510-42ea-b305-0b2333249c86
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: d23866a8-a593-4127-be9f-82530f86ce5d
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 427ecc56-5244-43a7-a4dd-950eea38d392
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: e868fa08-e3ec-4ef0-b55c-ea10dff7faaa
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: 299248ae-bc27-4cc9-9152-6cd010e8aed6
+  network: ws
+  tls: true
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 80
+  uuid: 5712d0f2-b0a3-43e7-a971-484dacca8804
+  network: ws
+  tls: false
+  flow: null
+  sni: quiz.int.vidio.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: 4b02d752-1493-4bc4-8efa-889fc5a35414
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 3a2619c4-63df-400b-ab00-615159a135dd
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: f5daa380-f6ac-4024-8805-ff916b84027d
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 5c1d4b1b-65c1-4118-b11e-9d4eb2ed48b2
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: 1ca2f141-ec90-43fe-9b78-f0a3b67cd619
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 739e01b1-3551-437a-aec1-3a419986332c
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: f68c1cc0-5529-402e-9670-141793af81e9
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 6041d335-380d-4a5d-ab2f-94c261fe0efa
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: ccc6f951-ee0b-41ed-ae8a-6a44053cae44
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 7e533c5d-e902-479f-89ed-e46f138ac13c
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: a716789a-d3ed-47b0-b110-564aa2ea979e
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: aed99665-f9b4-468f-944c-4ba02b885b78
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: 6c89a0bd-a653-4ed5-9141-0b6af360c45d
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 61c4dd95-3f44-486f-aa60-a600d14a3a98
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: 42954d83-d9ee-4a31-8c52-d404ca444e67
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 5520858c-bf5b-493e-a549-d9aa95af7372
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: 5585ca05-87ef-4f04-a3d4-3af7135146b7
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: 6380657b-4744-4756-8e5e-2136f2a5a48c
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: f12fa233-c34a-42da-ac3e-91526c4d3a17
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: cb1814f6-a170-4c40-a549-ff1b312b67e3
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 443
+  uuid: a07682e8-89fc-4d09-ba70-05ee48558fee
+  network: ws
+  tls: true
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: yaya.web.id
+  port: 80
+  uuid: f20c3671-d6b6-478c-88b4-c9e4a2efce36
+  network: ws
+  tls: false
+  flow: null
+  sni: yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: dc5674c4-7654-4d16-9d3f-34046ba40b2e
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: d4d62c7c-4b6b-45b0-8f63-b97f223403f4
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 13a4dd83-36d9-4d80-8715-fe53648a13f5
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 6c1c41d3-b75d-48d0-bdd4-1da9486d7157
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 20a606b1-a344-4ad5-936a-116e3c1bb978
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 3f9f1dd9-6b02-46cf-82bb-96e7b021578e
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 6d003e0d-316d-460b-8b64-ce74651d3493
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 203a9a25-1aa1-497a-9924-4e7f5c705978
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 15a9a4cc-c634-4463-9afc-e125d1163942
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 842b1d17-94da-46d7-a6cc-1b8bf7dc6b99
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 419fc730-13a2-455a-b157-edf26fb15489
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 7e4150a9-b226-43ca-b000-762c21b757d8
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 952db4d9-d0c6-4089-a8d4-ceb12f03a7e1
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: c3e6eb4c-35f9-4c78-84c2-146c2ecc5d82
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 2328b324-7d76-45a6-8b2f-5591f95ab061
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: d6b0c4ea-075b-4f9b-819f-de0d03f6a7e5
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 451e1119-8f8b-4828-b5e0-5b01f55660b0
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: f72b22b7-aecd-493a-8a4c-6b5fe3755ad0
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 8871173c-6db7-4204-8b99-6bf5f8ff0318
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: f11909e6-bd9a-4e5b-8a75-930fe11877ef
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 443
+  uuid: 21a12112-755b-49b4-8556-1a3a643f1e0a
+  network: ws
+  tls: true
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: ava.game.naver.com.yaya.web.id
+  port: 80
+  uuid: 7d3fb0a3-8736-4bb4-9ac8-86398b39acd2
+  network: ws
+  tls: false
+  flow: null
+  sni: ava.game.naver.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: ava.game.naver.com.yaya.web.id
+- name: Tata+Communications+Limited+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 90e0e29a-7e1f-4114-94a8-df5131a117e0
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fjio'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Tata+Communications+Limited+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 514bb41b-8194-4c24-99a9-ba40b0186283
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fjio'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: The+Constant+Company,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 6be876b9-5082-4552-8203-858a1e7fbe66
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fvultr'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: The+Constant+Company,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 93c3ad33-cd8d-4be5-9733-7834494a816d
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fvultr'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 1971cfd9-8ab1-41ea-9cdb-8a5f7ca78743
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: a7d02d43-e72e-4d89-9528-d965663e68cd
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: b8819cb6-2094-47c2-bf1c-e1f7b8550b1d
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 5961f586-34e5-42e4-9519-7b1ab1093277
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: a7b8d301-9bdc-464a-a6a3-a6ec2edd3ad9
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: eba0129e-13e8-44e5-b76f-98d6f9ea2ec1
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: ded67e8f-dad8-47a5-839e-a33c1f22a9b8
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Google+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 4135332f-869b-4054-af69-a4fe99e67971
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fgcp3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon.com,+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 49cb62a8-4cd7-48ce-8eea-78d55c2c3d9f
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon.com,+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 80ed1bdf-bbb3-4bae-a4c6-0328bf30ce71
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon.com,+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: cbab579c-afe7-451c-b570-d95a681a5ae4
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon.com,+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 48869412-bdd1-4c55-b4aa-3bec02621550
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 5cd296f5-2e83-4705-bbbe-ef71dc89e0bd
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: dd56e225-fb0e-408c-877f-cf668ac4468a
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: dcd43672-67b8-4698-ade0-946cf3b56341
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: c55d6d6a-1be8-4680-b359-272492091a6a
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: b7f1e101-e987-4d0c-b841-36ac01b36fbf
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws5'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc.+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: a642eabc-84e7-46ec-b366-cb40aed4d8eb
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws5'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 7d6787ba-155d-4fac-a72a-6f15b2afa7fe
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws6'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Amazon+Technologies+Inc+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 7045e47d-b044-4dd6-af5f-fd05178d6ccb
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Faws6'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: aae5db95-2f18-4e2e-83ac-bb8063c00ecb
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 84a9e2bb-db1e-43e7-a23f-5f4b68d4675f
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 397177c1-03ab-4539-9fd2-762c65360e39
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: aa46d83e-2429-4404-b8c1-a14c0133a3ca
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 6888c25b-8c00-4dab-b2f8-5245c3f8c40b
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 09b69947-8dc9-41dd-8098-a4a08ba918fc
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 72d9ea95-c9ec-4055-9a93-7ec2246bca81
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Microsoft+Corporation+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 6e4d61ed-d266-40b2-ac49-690e2c040447
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fazure4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Tata+Communications+Limited+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 2755d320-7c26-4aef-a809-59b926db0cce
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Ftata'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Tata+Communications+Limited+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: fc0f7ec6-f071-4f0e-95bf-8185d442bf9c
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Ftata'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: a2a8b7bc-7fe1-4e00-bdad-10f9d0c92f00
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2FIncapsula'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 2e409175-dd71-4446-bb9f-3c5da6de659b
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2FIncapsula'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 0cb5c89e-97d7-4e46-bff2-668f23c2948e
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 72c6bc6c-3696-4de5-b168-525e51bbd696
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 55c743bc-8de4-4177-8859-717a2744ec4b
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: c2a02186-de02-4d32-943d-25f0582c184c
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean2'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 1f60ce54-05a7-4aa2-8419-cde403a2aa19
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 6b12a2b5-df46-441d-970f-6ce30d439149
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean3'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: e459256a-9d3c-42ab-b913-eeb3d79ffba6
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 6dae8dfb-8712-4b21-9d80-053707110564
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean4'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 4dd38d0f-289d-42a1-a1c4-9696c1323640
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean5'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: DigitalOcean,+LLC+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 7ed5704f-db2a-4eab-9919-4c43230029cb
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fdigtalocean5'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: PDR+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: 11cb54ea-a613-415b-a07f-218b0fb6762b
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fpdr'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: PDR+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 78fcda53-e2c3-43be-a04d-53e7bdc9204d
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fpdr'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: The+Pinnacle+Group+Inc+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: b1d783c0-148f-48aa-b89e-02d8bbea4f54
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2FPinnacle'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: The+Pinnacle+Group+Inc+(IN)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: fddc416b-fd7a-4bd8-88eb-a846b00a1ea6
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2FPinnacle'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 443
+  uuid: baeec63e-4b92-4c24-82d0-c226c0481c82
+  network: ws
+  tls: true
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fusa'
+    headers:
+      Host: cf.vless.sandesh.fr
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: jio.sandeshsahu.tech
+  port: 80
+  uuid: 6138ed32-28bc-44fa-a173-39d916bbc983
+  network: ws
+  tls: false
+  flow: null
+  sni: cf.vless.sandesh.fr
+  ws-opts:
+    path: '%2Fusa'
+    headers:
+      Host: cf.vless.sandesh.fr
 - name: CFW_80
   type: vless
   server: bestcf.030101.xyz
@@ -587,6 +2407,292 @@ proxies:
     path: '%2F%3D2048'
     headers:
       Host: 240804.cfsub.cloudns.be
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 9179c57e-45a2-46ac-aa63-01e6ce945d75
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Akamai+Technologies,+Inc.+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 8b20e24c-e2ef-4cbd-8002-302e289d2a60
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: e70f2e56-8b94-47f2-8edc-cdb6793ccd5d
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Microsoft+Corporation+(KR)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: cc9bf0dc-e448-4df7-a12e-f51af8ad0d3b
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fkr'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 197f11ce-12c6-482b-8c1c-7e0524a11ad4
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Virtual+Machine+Solutions+LLC+(US)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 4d83d1c2-f0a3-45e3-8b07-c588deb4ec69
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fus'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: e683fcec-59ff-4761-afe4-c2fd8d495308
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Google+LLC+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 83d6a5e8-e07a-48f8-a3ec-ecff85a76d1f
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fgcp'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 3d9a9d77-b4ba-4973-a70f-87a4a3b59907
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 1b7bcb42-efb3-4f94-abcc-a05d87ef547d
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 39efe063-ae0d-41bf-92a0-e2442022f3ff
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: DigitalOcean,+LLC+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 1e582c32-07da-4f94-b84f-e85a162e1e7f
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fdo2'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 6372c81f-3b12-49fd-8d4a-ae2dbe5bae49
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Incapsula+Inc+(US)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: d855ea05-16a3-4b69-808c-4dc6df82cf8d
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fincapsula'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 12dd46fb-07c9-4ade-b861-4190d975805b
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: OVH+SAS+(SG)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: c5efe70c-4a7b-43b7-9ccc-663bfe901676
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fovh'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 88da8332-6f23-47b0-b783-aad03690a44e
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Alibaba+Cloud+(CN)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 892ca7c9-5675-415e-ad7f-21034db0a0fd
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Ften'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: e790f233-8d82-4a61-a6fb-5fd9a2e543ae
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: PT+Cloud+Teknologi+Nusantara+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 767661be-312f-4593-baf4-f9f1515e4000
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fclo'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 443
+  uuid: 607b1e75-50b6-45c2-8c25-623c2ca84aac
+  network: ws
+  tls: true
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
+- name: Amazon.com,+Inc.+(ID)
+  type: vless
+  server: zaintest.vuclip.com.yaya.web.id
+  port: 80
+  uuid: 284fb9d9-5e6c-4071-b533-57caf5942d68
+  network: ws
+  tls: false
+  flow: null
+  sni: zaintest.vuclip.com.yaya.web.id
+  ws-opts:
+    path: '%2Fbeon'
+    headers:
+      Host: zaintest.vuclip.com.yaya.web.id
 - name: CFW_443
   type: vless
   server: 104.18.1.99
@@ -945,7 +3051,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S25
-  server: 172.67.114.152
+  server: 172.67.64.95
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -959,7 +3065,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S26
-  server: 172.67.196.80
+  server: 172.67.102.178
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -973,7 +3079,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S27
-  server: 172.67.207.21
+  server: 172.67.114.152
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -987,7 +3093,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S28
-  server: 172.67.188.25
+  server: 172.67.196.80
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1001,7 +3107,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S29
-  server: 172.67.138.30
+  server: 172.67.102.135
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1015,7 +3121,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S30
-  server: 172.64.94.148
+  server: 172.64.89.248
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1029,7 +3135,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S31
-  server: 162.159.255.54
+  server: 172.64.94.148
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1043,7 +3149,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S32
-  server: 162.159.240.168
+  server: 172.64.88.124
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1057,7 +3163,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S33
-  server: 141.101.115.156
+  server: 162.159.240.168
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1071,7 +3177,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S34
-  server: 104.27.202.10
+  server: 141.101.115.156
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -1085,7 +3191,7 @@ proxies:
     headers:
       host: vvv.yzqiang.site
 - name: S35
-  server: 172.64.85.155
+  server: 104.27.202.10
   port: 443
   type: vless
   uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
@@ -14471,669 +16577,290 @@ proxies:
     path: '%2F%3Fed%3D2048'
     headers:
       Host: baipiao475.stunning-bassoon.pages.dev
-- name: 🇯🇵 日本NO.2-1A
-  server: xdd.dashuai.cyou
-  port: 45057
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇹🇼 台湾2-1A
-  server: xdd.dashuai.cyou
-  port: 45077
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 香港-线路1-1A
-  server: 156.224.77.215
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 87ff01c2-5d1b-4887-b455-f8ce15fd5bc8
-  udp: true
-- name: 🇹🇼 台湾2-1B
-  server: xdd.dashuai.cyou
-  port: 45077
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇰🇷 韩国1
-  server: 27.102.132.195
-  port: 30001
-  type: ss
-  cipher: aes-128-gcm
-  password: 89a6dc15-405c-4e29-a4c1-a67832b7b1c7
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1C
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 4f1f1b63-3f07-4335-9abc-f6cb7a528c3d
-  udp: true
-- name: 🇭🇰 香港NO.2-1A
-  server: xdd.dashuai.cyou
-  port: 45051
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1G
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 9d3d3bad-ced2-43ab-a3f6-f7f0250b3335
-  udp: true
-- name: 🇹🇼 台湾1-1A
-  server: haa.dashuai.cyou
-  port: 45078
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 VIP 美国01-1B
-  server: tun.tuzivip.pw
-  port: 14848
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1D
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: b81ba1ec-f92e-4819-9fdf-f0c23c3a744e
-  udp: true
-- name: 🇭🇰 VIP 香港01-1B
-  server: tun.tuzivip.pw
-  port: 23764
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
-  udp: true
-- name: 🇮🇳 SS 印度1
-  server: ldu.izenny.com
-  port: 34411
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇸🇬 新加坡NO.2-1A
-  server: xdd.dashuai.cyou
-  port: 45055
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇰🇷 SS 韩国1
-  server: ldu.izenny.com
-  port: 41431
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇹🇼 3x备用专线台湾1-1A
-  server: xh.dashuai.cyou
-  port: 50050
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 VIP 美国01-1A
-  server: tun.tuzivip.pw
-  port: 14848
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 254cf29e-e939-48fc-90fa-09fd09a287fd
-  udp: true
-- name: 🇺🇸 美国NO.1-1B
-  server: haa.dashuai.cyou
-  port: 45052
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 3x备用专线香港1-1A
-  server: xh.dashuai.cyou
-  port: 50051
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇳 印度2-1A
-  server: xdd.dashuai.cyou
-  port: 45073
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 美国NO.2-1B
-  server: xdd.dashuai.cyou
-  port: 45053
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇦🇺 澳大利亚原生1-1A
-  server: haa.dashuai.cyou
-  port: 45062
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇱 SS 以色列1
-  server: ldu.izenny.com
-  port: 18140
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇬🇧 英国1-1A
-  server: haa.dashuai.cyou
-  port: 45066
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇯🇵 日本NO.1-1B
-  server: haa.dashuai.cyou
-  port: 45056
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇰🇷 韩国 专线NO2-1B
-  server: xdd.dashuai.cyou
-  port: 45075
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇦🇺 澳大利亚原生2-1B
-  server: xdd.dashuai.cyou
-  port: 45063
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 香港NO.2-1B
-  server: xdd.dashuai.cyou
-  port: 45051
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇦🇺 澳大利亚原生1-1B
-  server: haa.dashuai.cyou
-  port: 45062
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1F
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 965f2e06-744e-4d70-a911-d234555e0904
-  udp: true
-- name: 🇫🇷 法国1-1B
-  server: haa.dashuai.cyou
-  port: 45072
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 SS 美国2-1
-  server: ldu.izenny.com
-  port: 12589
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇯🇵 SS 日本1
+- name: 🇯🇵 SS 日本1-1C
   server: ldu.izenny.com
   port: 10589
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  password: beb17df2-636d-43f1-8f60-3080cf854191
   udp: true
-- name: 🇭🇰 3x备用专线香港1-1B
-  server: xh.dashuai.cyou
-  port: 50051
+- name: 🇭🇰 香港-V6|06
+  server: greenhk0.616626.xyz
+  port: 10505
   type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇸🇬 SS 新加坡 1
-  server: ldu.izenny.com
-  port: 28063
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇲🇽 SS 墨西哥1
-  server: ldu.izenny.com
-  port: 20149
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇺🇸 SS 美国1
-  server: ldu.izenny.com
-  port: 46197
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇹🇼 台湾1-1B
-  server: haa.dashuai.cyou
-  port: 45078
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇸 SS 冰岛1
-  server: ldu.izenny.com
-  port: 18244
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇹🇭 SS 泰国1
-  server: ldu.izenny.com
-  port: 39037
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇮🇳 印度1-1A
-  server: haa.dashuai.cyou
-  port: 45074
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇬🇧 英国2-1A
-  server: xdd.dashuai.cyou
-  port: 45067
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1H
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 8f8215a3-083f-485e-864f-3dbabd12113d
-  udp: true
-- name: 🇭🇰 香港-线路1-1E
-  server: 156.224.77.215
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 9472c1dd-c908-4404-b40d-557286648a14
-  udp: true
-- name: 🇭🇰 VIP 香港01-1A
+- name: 🇭🇰 VIP 香港01-1D
   server: tun.tuzivip.pw
   port: 23764
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 254cf29e-e939-48fc-90fa-09fd09a287fd
+  password: b0dd2b32-7370-4d87-9c2b-69cf0e5e26b0
   udp: true
-- name: 🇯🇵 SS 日本3
-  server: ldu.izenny.com
-  port: 57927
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1B
+- name: 🇮🇪 爱尔兰-都柏林-1I
   server: 107.175.187.181
   port: 22800
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 1d9b0a6a-edd6-4103-b8de-4aae76e67010
+  password: 97730e77-fc85-4d8d-a25e-de2fb24b82d9
   udp: true
-- name: 🇭🇰 SS 香港1
-  server: ldu.izenny.com
-  port: 34061
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇦🇺 澳大利亚原生2-1A
-  server: xdd.dashuai.cyou
-  port: 45063
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇨🇦 加拿大1-1B
-  server: haa.dashuai.cyou
-  port: 45064
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇹🇼 SS 台湾2-1
-  server: ldu.izenny.com
-  port: 43076
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇸🇬 新加坡NO.2-1B
-  server: xdd.dashuai.cyou
-  port: 45055
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1E
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 9472c1dd-c908-4404-b40d-557286648a14
-  udp: true
-- name: 🇯🇵 日本NO.2-1B
-  server: xdd.dashuai.cyou
-  port: 45057
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇸🇬 VIP 新加坡01-1B
-  server: tun.tuzivip.pw
-  port: 27004
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
-  udp: true
-- name: 🇯🇵 日本NO.1-1A
-  server: haa.dashuai.cyou
-  port: 45056
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇫🇷 法国2-1B
-  server: xdd.dashuai.cyou
-  port: 45071
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 香港-线路1-1B
-  server: 156.224.77.215
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 1d9b0a6a-edd6-4103-b8de-4aae76e67010
-  udp: true
-- name: 🇮🇳 印度1-1B
-  server: haa.dashuai.cyou
-  port: 45074
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇫🇷 法国-1B
-  server: fg.dashuai.cyou
-  port: 19901
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇮🇪 爱尔兰-都柏林-1A
-  server: 107.175.187.181
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 87ff01c2-5d1b-4887-b455-f8ce15fd5bc8
-  udp: true
-- name: 🇫🇷 法国-1A
-  server: fg.dashuai.cyou
-  port: 19901
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇬🇧 英国1-1B
-  server: haa.dashuai.cyou
-  port: 45066
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇹🇼 3x备用专线台湾1-1B
-  server: xh.dashuai.cyou
-  port: 50050
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇰🇷 VIP 韩国01-1A
-  server: tun.tuzivip.pw
-  port: 16087
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 254cf29e-e939-48fc-90fa-09fd09a287fd
-  udp: true
-- name: 🇰🇷 VIP 韩国01-1B
-  server: tun.tuzivip.pw
-  port: 16087
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
+- name: 🇯🇵 日本01
+  server: greenjp2.yueyun.de
+  port: 11030
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: greenjp2.yueyun.de
+  skip-cert-verify: true
   udp: true
 - name: 🇯🇵 VIP 日本01-1A
   server: tun.tuzivip.pw
   port: 47296
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 254cf29e-e939-48fc-90fa-09fd09a287fd
+  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
   udp: true
-- name: 🇫🇷 法国1-1A
-  server: haa.dashuai.cyou
-  port: 45072
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇨🇦 加拿大1-1A
-  server: haa.dashuai.cyou
-  port: 45064
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇧🇷 SS 巴西1
+- name: 🇹🇭 SS 泰国1-1A
   server: ldu.izenny.com
-  port: 55936
+  port: 39037
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 90cbab31-975a-4ece-8e23-fa846906de63
   udp: true
-- name: 🇸🇬 新加坡NO.1-1A
-  server: haa.dashuai.cyou
-  port: 45054
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇹🇼 SS 台湾1
-  server: ldu.izenny.com
-  port: 18148
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 90cbab31-975a-4ece-8e23-fa846906de63
-  udp: true
-- name: 🇨🇦 加拿大2-1A
-  server: xdd.dashuai.cyou
-  port: 45065
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 香港-线路1-1G
+- name: 🇭🇰 香港-线路1-1B
   server: 156.224.77.215
   port: 22800
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 9d3d3bad-ced2-43ab-a3f6-f7f0250b3335
   udp: true
-- name: 🇰🇷 韩国 专线NO1-1A
-  server: haa.dashuai.cyou
-  port: 45076
+- name: 🇹🇷 SS 土耳其1-1A
+  server: ldu.izenny.com
+  port: 33744
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇯🇵 VIP 日本01-1D
+  server: tun.tuzivip.pw
+  port: 47296
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b0dd2b32-7370-4d87-9c2b-69cf0e5e26b0
+  udp: true
+- name: 🇺🇸 美国04
+  server: layercloud.189.ovh
+  port: 10021
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: layercloud.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇸🇬 VIP 新加坡01-1A
+  server: tun.tuzivip.pw
+  port: 27004
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
+  udp: true
+- name: 🇺🇸 美国07
+  server: vir694.189.ovh
+  port: 10021
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: vir694.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇩🇪 德国-V6|03 0.5x
+  server: netcp3.616626.xyz
+  port: 22307
   type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇭🇰 香港-线路1-1H
+- name: 🇰🇷 SS 韩国1-1C
+  server: ldu.izenny.com
+  port: 41431
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇭🇰 香港-线路1-1I
   server: 156.224.77.215
   port: 22800
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 8f8215a3-083f-485e-864f-3dbabd12113d
+  password: 97730e77-fc85-4d8d-a25e-de2fb24b82d9
+  udp: true
+- name: 🇸🇬 SS 新加坡 1-1B
+  server: ldu.izenny.com
+  port: 28063
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇺🇸 SS 美国2-1-1C
+  server: ldu.izenny.com
+  port: 12589
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇮🇸 SS 冰岛1-1A
+  server: ldu.izenny.com
+  port: 18244
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇮🇱 SS 以色列1-1C
+  server: ldu.izenny.com
+  port: 18140
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇺🇸 SS 美国1-1A
+  server: ldu.izenny.com
+  port: 46197
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇹🇼 SS 台湾2-1-1C
+  server: ldu.izenny.com
+  port: 43076
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇰🇷 韩国1-1A
+  server: 27.102.132.195
+  port: 30001
+  type: ss
+  cipher: aes-128-gcm
+  password: 89a6dc15-405c-4e29-a4c1-a67832b7b1c7
+  udp: true
+- name: 🇰🇷 VIP 韩国01-1D
+  server: tun.tuzivip.pw
+  port: 16087
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b0dd2b32-7370-4d87-9c2b-69cf0e5e26b0
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1B
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 9d3d3bad-ced2-43ab-a3f6-f7f0250b3335
+  udp: true
+- name: 🇹🇭 SS 泰国1-1B
+  server: ldu.izenny.com
+  port: 39037
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇯🇵 VIP 日本01-1C
+  server: tun.tuzivip.pw
+  port: 47296
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 713f6d07-03b4-4d47-83e2-32c6643e73ba
+  udp: true
+- name: 🇸🇬 VIP 新加坡01-1D
+  server: tun.tuzivip.pw
+  port: 27004
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b0dd2b32-7370-4d87-9c2b-69cf0e5e26b0
+  udp: true
+- name: 🇯🇵 日本-V6|06
+  server: greenip3.668918.xyz
+  port: 22308
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇲🇾 SS 马来西亚1-1C
+  server: ldu.izenny.com
+  port: 13828
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇯🇵 SS 日本3-1A
+  server: ldu.izenny.com
+  port: 57927
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇸🇬 VIP 新加坡01-1B
+  server: tun.tuzivip.pw
+  port: 27004
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 2272cb3e-f24d-4e27-8c9b-c941477c2116
+  udp: true
+- name: 🇳🇱 荷兰-V6|02 0.5x
+  server: naran2.616626.xyz
+  port: 22306
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇺🇸 美国01
+  server: vir732.189.ovh
+  port: 10026
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: vir732.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 SS 日本3-1B
+  server: ldu.izenny.com
+  port: 57927
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1G
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 965f2e06-744e-4d70-a911-d234555e0904
+  udp: true
+- name: 🇹🇼 台湾高速节点3
+  server: 118.232.199.14
+  port: 443
+  type: trojan
+  password: b3d4086f-7b94-45a6-ac32-1deccc70ded3
+  sni: node3.yuntongclouds.com
+  skip-cert-verify: true
   udp: true
 - name: 🇭🇰 香港-线路1-1F
   server: 156.224.77.215
   port: 22800
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 965f2e06-744e-4d70-a911-d234555e0904
+  password: 4f1f1b63-3f07-4335-9abc-f6cb7a528c3d
   udp: true
-- name: 🇨🇦 加拿大2-1B
-  server: xdd.dashuai.cyou
-  port: 45065
+- name: 🇭🇰 香港-V6|08
+  server: greenhk2.616626.xyz
+  port: 10507
   type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇰🇷 韩国 专线NO1-1B
-  server: haa.dashuai.cyou
-  port: 45076
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇭🇰 香港-线路1-1D
-  server: 156.224.77.215
-  port: 22800
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: b81ba1ec-f92e-4819-9fdf-f0c23c3a744e
-  udp: true
-- name: 🇯🇵 VIP 日本01-1B
-  server: tun.tuzivip.pw
-  port: 47296
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
-  udp: true
-- name: 🇰🇷 韩国 专线NO2-1A
-  server: xdd.dashuai.cyou
-  port: 45075
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇺🇸 美国NO.2-1A
-  server: xdd.dashuai.cyou
-  port: 45053
-  type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
@@ -15143,83 +16870,636 @@ proxies:
   port: 22800
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 4f1f1b63-3f07-4335-9abc-f6cb7a528c3d
+  password: 8f8215a3-083f-485e-864f-3dbabd12113d
   udp: true
-- name: 🇸🇬 VIP 新加坡01-1A
+- name: 🇲🇽 SS 墨西哥1-1C
+  server: ldu.izenny.com
+  port: 20149
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇰🇷 SS 韩国1-1A
+  server: ldu.izenny.com
+  port: 41431
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇮🇳 SS 印度1-1A
+  server: ldu.izenny.com
+  port: 34411
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇰🇷 韩国1-1B
+  server: 27.102.132.195
+  port: 30001
+  type: ss
+  cipher: aes-128-gcm
+  password: f32a0b69-2252-4145-8bf9-572d9b37bf72
+  udp: true
+- name: 🇸🇬 VIP 新加坡01-1C
   server: tun.tuzivip.pw
   port: 27004
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 254cf29e-e939-48fc-90fa-09fd09a287fd
+  password: 713f6d07-03b4-4d47-83e2-32c6643e73ba
   udp: true
-- name: 🇮🇳 印度2-1B
-  server: xdd.dashuai.cyou
-  port: 45073
+- name: 🇮🇳 SS 印度1-1B
+  server: ldu.izenny.com
+  port: 34411
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇸🇬 SS 新加坡 1-1A
+  server: ldu.izenny.com
+  port: 28063
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇭🇰 香港-线路1-1E
+  server: 156.224.77.215
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b81ba1ec-f92e-4819-9fdf-f0c23c3a744e
+  udp: true
+- name: 🇭🇰 香港-V4|02
+  server: hkvm4.656888.xyz
+  port: 30026
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: hkvm4.656888.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇺🇸 美国-V6|01
+  server: crun6.668918.xyz
+  port: 22308
   type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇲🇾 SS 马来西亚1
+- name: 🇲🇾 SS 马来西亚1-1A
   server: ldu.izenny.com
   port: 13828
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 90cbab31-975a-4ece-8e23-fa846906de63
   udp: true
-- name: 🇬🇧 英国2-1B
-  server: xdd.dashuai.cyou
-  port: 45067
-  type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
-  alterId: 0
-  cipher: auto
-  tls: false
-  udp: true
-- name: 🇹🇷 SS 土耳其1
+- name: 🇭🇰 SS 香港1-1A
   server: ldu.izenny.com
-  port: 33744
+  port: 34061
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 90cbab31-975a-4ece-8e23-fa846906de63
   udp: true
-- name: 🇺🇸 美国NO.1-1A
-  server: haa.dashuai.cyou
-  port: 45052
+- name: 🇰🇷 VIP 韩国01-1C
+  server: tun.tuzivip.pw
+  port: 16087
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 713f6d07-03b4-4d47-83e2-32c6643e73ba
+  udp: true
+- name: 🇹🇷 SS 土耳其1-1C
+  server: ldu.izenny.com
+  port: 33744
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇲🇽 SS 墨西哥1-1B
+  server: ldu.izenny.com
+  port: 20149
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇰🇷 VIP 韩国01-1A
+  server: tun.tuzivip.pw
+  port: 16087
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
+  udp: true
+- name: 🇹🇼 SS 台湾2-1-1B
+  server: ldu.izenny.com
+  port: 43076
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇯🇵 日本-V6|05
+  server: greenip2.668918.xyz
+  port: 22307
   type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇸🇬 新加坡NO.1-1B
-  server: haa.dashuai.cyou
-  port: 45054
+- name: 🇯🇵 SS 日本3-1C
+  server: ldu.izenny.com
+  port: 57927
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇭🇰 香港-V6|05 0.5x
+  server: nathk.91ai.de
+  port: 18002
   type: vmess
-  uuid: 612e821e-fea6-431b-a542-c8c42d79b2eb
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇫🇷 法国2-1A
-  server: xdd.dashuai.cyou
-  port: 45071
+- name: 🇭🇰 香港-V6|07
+  server: greenhk1.616626.xyz
+  port: 10506
   type: vmess
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
   tls: false
   udp: true
-- name: 🇯🇵 日本NO.2-1A
+- name: 🇮🇱 SS 以色列1-1A
+  server: ldu.izenny.com
+  port: 18140
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇨🇳 中国联通节点1
+  server: 115.231.220.33
+  port: 5443
+  type: trojan
+  password: b3d4086f-7b94-45a6-ac32-1deccc70ded3
+  sni: nodecn1.jiayinetwork.es
+  skip-cert-verify: true
+  udp: true
+- name: 🇺🇸 VIP 美国01-1A
+  server: tun.tuzivip.pw
+  port: 14848
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
+  udp: true
+- name: 🇯🇵 日本-V6|04
+  server: greenip1.668918.xyz
+  port: 22306
   type: vmess
-  server: xdd.dashuai.cyou
-  port: 45057
-  uuid: 95f603d8-6c1e-4b24-8eca-081d227e6325
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
   alterId: 0
   cipher: auto
-  network: tcp
-  ws-opts:
-    path: /
-    headers:
-      Host: xdd.dashuai.cyou
+  tls: false
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1A
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 1d9b0a6a-edd6-4103-b8de-4aae76e67010
+  udp: true
+- name: 🇭🇰 香港-线路1-1H
+  server: 156.224.77.215
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 87ff01c2-5d1b-4887-b455-f8ce15fd5bc8
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1D
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 9472c1dd-c908-4404-b40d-557286648a14
+  udp: true
+- name: 🇧🇷 SS 巴西1-1C
+  server: ldu.izenny.com
+  port: 55936
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇲🇽 SS 墨西哥1-1A
+  server: ldu.izenny.com
+  port: 20149
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇹🇼 SS 台湾1-1B
+  server: ldu.izenny.com
+  port: 18148
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇩🇪 德国-V6|01 0.5x
+  server: netcp1.616626.xyz
+  port: 22305
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 0.5x-1A
+  server: nara.189.ovh
+  port: 10027
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: nara.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇭🇰 VIP 香港01-1B
+  server: tun.tuzivip.pw
+  port: 23764
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 2272cb3e-f24d-4e27-8c9b-c941477c2116
+  udp: true
+- name: 🇭🇰 香港-线路1-1D
+  server: 156.224.77.215
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 9472c1dd-c908-4404-b40d-557286648a14
+  udp: true
+- name: 🇯🇵 VIP 日本01-1B
+  server: tun.tuzivip.pw
+  port: 47296
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 2272cb3e-f24d-4e27-8c9b-c941477c2116
+  udp: true
+- name: 🇭🇰 VIP 香港01-1C
+  server: tun.tuzivip.pw
+  port: 23764
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 713f6d07-03b4-4d47-83e2-32c6643e73ba
+  udp: true
+- name: 🇳🇱 荷兰-V6|03 0.5x
+  server: naran3.616626.xyz
+  port: 22308
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 0.5x-1B
+  server: netcp4.616626.xyz
+  port: 10027
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: netcp4.616626.xyz
+  skip-cert-verify: true
+  udp: true
+- name: 🇳🇱 荷兰-V6|01 0.5x
+  server: naran1.616626.xyz
+  port: 22305
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇭🇰 香港-线路1-1G
+  server: 156.224.77.215
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 965f2e06-744e-4d70-a911-d234555e0904
+  udp: true
+- name: 🇺🇸 SS 美国2-1-1B
+  server: ldu.izenny.com
+  port: 12589
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇭🇰 VIP 香港01-1A
+  server: tun.tuzivip.pw
+  port: 23764
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: e3ff6156-22be-4fb7-bb27-fc9d519d70fd
+  udp: true
+- name: 🇺🇸 美国05
+  server: advin.189.ovh
+  port: 10027
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: advin.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇺🇸 SS 美国2-1-1A
+  server: ldu.izenny.com
+  port: 12589
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇳🇱 荷兰-V6|04 0.5x
+  server: naran4.616626.xyz
+  port: 22310
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1C
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 8f8215a3-083f-485e-864f-3dbabd12113d
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1E
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b81ba1ec-f92e-4819-9fdf-f0c23c3a744e
+  udp: true
+- name: 🇮🇳 SS 印度1-1C
+  server: ldu.izenny.com
+  port: 34411
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇯🇵 日本02
+  server: vpsjp.yueyun.de
+  port: 13036
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: vpsjp.yueyun.de
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 日本-V6|02
+  server: greenchais2.668918.xyz
+  port: 22307
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇩🇪 德国-V6|02 0.5x
+  server: netcp2.616626.xyz
+  port: 22306
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇹🇼 SS 台湾2-1-1A
+  server: ldu.izenny.com
+  port: 43076
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇹🇼 SS 台湾1-1A
+  server: ldu.izenny.com
+  port: 18148
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1H
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 87ff01c2-5d1b-4887-b455-f8ce15fd5bc8
+  udp: true
+- name: 🇮🇪 爱尔兰-都柏林-1F
+  server: 107.175.187.181
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 4f1f1b63-3f07-4335-9abc-f6cb7a528c3d
+  udp: true
+- name: 🇺🇸 VIP 美国01-1D
+  server: tun.tuzivip.pw
+  port: 14848
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: b0dd2b32-7370-4d87-9c2b-69cf0e5e26b0
+  udp: true
+- name: 🇯🇵 日本-V6|07
+  server: vpsjp1.668918.xyz
+  port: 22306
+  type: vmess
+  uuid: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  alterId: 0
+  cipher: auto
+  tls: false
+  udp: true
+- name: 🇭🇰 SS 香港1-1C
+  server: ldu.izenny.com
+  port: 34061
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇮🇱 SS 以色列1-1B
+  server: ldu.izenny.com
+  port: 18140
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇧🇷 SS 巴西1-1B
+  server: ldu.izenny.com
+  port: 55936
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇯🇵 日本03
+  server: cloud.yueyun.de
+  port: 10389
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: cloud.yueyun.de
+  skip-cert-verify: true
+  udp: true
+- name: 🇧🇷 SS 巴西1-1A
+  server: ldu.izenny.com
+  port: 55936
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇹🇭 SS 泰国1-1C
+  server: ldu.izenny.com
+  port: 39037
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇮🇸 SS 冰岛1-1B
+  server: ldu.izenny.com
+  port: 18244
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇯🇵 SS 日本1-1B
+  server: ldu.izenny.com
+  port: 10589
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇭🇰 香港03
+  server: hytro.91ai.de
+  port: 10022
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: hytro.91ai.de
+  skip-cert-verify: true
+  udp: true
+- name: 🇹🇷 SS 土耳其1-1B
+  server: ldu.izenny.com
+  port: 33744
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇺🇸 VIP 美国01-1B
+  server: tun.tuzivip.pw
+  port: 14848
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 2272cb3e-f24d-4e27-8c9b-c941477c2116
+  udp: true
+- name: 🇺🇸 美国02
+  server: vir11.189.ovh
+  port: 10022
+  type: trojan
+  password: ea847d6d-9b24-4d97-b470-b6b15e15fd95
+  sni: vir11.189.ovh
+  skip-cert-verify: true
+  udp: true
+- name: 🇭🇰 SS 香港1-1B
+  server: ldu.izenny.com
+  port: 34061
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇺🇸 美国高速节点1
+  server: 144.34.178.66
+  port: 1443
+  type: trojan
+  password: b3d4086f-7b94-45a6-ac32-1deccc70ded3
+  sni: node4.yuntongclouds.com
+  skip-cert-verify: true
+  udp: true
+- name: 🇺🇸 SS 美国1-1C
+  server: ldu.izenny.com
+  port: 46197
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇸🇬 SS 新加坡 1-1C
+  server: ldu.izenny.com
+  port: 28063
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇺🇸 VIP 美国01-1C
+  server: tun.tuzivip.pw
+  port: 14848
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 713f6d07-03b4-4d47-83e2-32c6643e73ba
+  udp: true
+- name: 🇹🇼 SS 台湾1-1C
+  server: ldu.izenny.com
+  port: 18148
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇭🇰 香港-线路1-1A
+  server: 156.224.77.215
+  port: 22800
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 1d9b0a6a-edd6-4103-b8de-4aae76e67010
+  udp: true
+- name: 🇹🇼 台湾高速节点2
+  server: 118.232.199.29
+  port: 443
+  type: trojan
+  password: b3d4086f-7b94-45a6-ac32-1deccc70ded3
+  sni: node2.yuntongclouds.com
+  skip-cert-verify: true
+  udp: true
+- name: 🇯🇵 SS 日本1-1A
+  server: ldu.izenny.com
+  port: 10589
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 90cbab31-975a-4ece-8e23-fa846906de63
+  udp: true
+- name: 🇹🇼 台湾高速节点
+  server: 103.137.63.77
+  port: 443
+  type: trojan
+  password: b3d4086f-7b94-45a6-ac32-1deccc70ded3
+  sni: node1.yuntongclouds.com
+  skip-cert-verify: true
+  udp: true
+- name: 🇲🇾 SS 马来西亚1-1B
+  server: ldu.izenny.com
+  port: 13828
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇰🇷 SS 韩国1-1B
+  server: ldu.izenny.com
+  port: 41431
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇮🇸 SS 冰岛1-1C
+  server: ldu.izenny.com
+  port: 18244
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: beb17df2-636d-43f1-8f60-3080cf854191
+  udp: true
+- name: 🇺🇸 SS 美国1-1B
+  server: ldu.izenny.com
+  port: 46197
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 46da3841-4028-4b24-b4f2-4ab8015d40c9
+  udp: true
+- name: 🇰🇷 VIP 韩国01-1B
+  server: tun.tuzivip.pw
+  port: 16087
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 2272cb3e-f24d-4e27-8c9b-c941477c2116
+  udp: true
