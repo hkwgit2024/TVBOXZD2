@@ -3,6 +3,7 @@ import yaml
 import base64
 import re
 from urllib.parse import urlparse, parse_qs
+from collections import defaultdict
 
 # URLs of the source files
 FILE_URLS = {
@@ -14,6 +15,9 @@ FILE_URLS = {
 
 # Output file
 OUTPUT_FILE = "main.yaml"
+
+# Valid VMess ciphers
+VALID_VMESS_CIPHERS = {'auto', 'none', 'aes-128-gcm', 'chacha20-poly1305'}
 
 def download_file(url):
     try:
@@ -38,17 +42,27 @@ def parse_base64_nodes(content):
     except Exception:
         return None
 
-def parse_ss_node(line, name_counts):
-    if not line.startswith('ss://'):
+def parse_ss_node(line, name_counts, seen_nodes):
+    if not line.startswith('ss://') or line.startswith('ss://ss://'):
         return None
     try:
         parsed = urlparse(line)
         cipher_password = parsed.userinfo
-        if '@' not in cipher_password:
+        if not cipher_password or '@' not in cipher_password:
+            print(f"Skipping Shadowsocks node {line[:50]}... (invalid userinfo)")
             return None
         cipher, password = cipher_password.split('@', 1)
         host_port = parsed.netloc
+        if not host_port or ':' not in host_port:
+            print(f"Skipping Shadowsocks node {line[:50]}... (invalid host/port)")
+            return None
         host, port = host_port.rsplit(':', 1)
+        # Deduplicate based on server, port, password
+        node_key = ('ss', host, int(port), password)
+        if node_key in seen_nodes:
+            print(f"Skipping duplicate Shadowsocks node {line[:50]}...")
+            return None
+        seen_nodes.add(node_key)
         base_name = f"ss-{host}-{port}"
         name = generate_unique_name(base_name, name_counts)
         node = {
@@ -59,25 +73,41 @@ def parse_ss_node(line, name_counts):
             'cipher': cipher,
             'password': password
         }
-        if 'obfs' in parse_qs(parsed.query):
+        query = parse_qs(parsed.query)
+        if 'obfs' in query:
             node['plugin'] = 'obfs'
-            node['plugin-opts'] = {'mode': parse_qs(parsed.query)['obfs'][0]}
-            if 'obfs-password' not in parse_qs(parsed.query):
+            node['plugin-opts'] = {'mode': query['obfs'][0]}
+            if 'obfs-password' not in query:
                 print(f"Skipping Shadowsocks node {line[:50]}... (missing obfs password)")
                 return None
-            node['plugin-opts']['password'] = parse_qs(parsed.query)['obfs-password'][0]
+            node['plugin-opts']['password'] = query['obfs-password'][0]
         return node
     except Exception as e:
         print(f"Error parsing Shadowsocks node {line[:50]}...: {e}")
         return None
 
-def parse_vmess_node(line, name_counts):
+def parse_vmess_node(line, name_counts, seen_nodes):
     if not line.startswith('vmess://'):
         return None
     try:
         encoded = line[8:]
         decoded = base64.b64decode(encoded).decode('utf-8')
         config = json.loads(decoded)
+        # Validate required fields
+        if not all(key in config for key in ['add', 'port', 'id']):
+            print(f"Skipping VMess node {line[:50]}... (missing required fields)")
+            return None
+        # Validate cipher
+        cipher = config.get('scy', 'auto')
+        if cipher not in VALID_VMESS_CIPHERS:
+            print(f"Skipping VMess node {line[:50]}... (unsupported cipher: {cipher})")
+            return None
+        # Deduplicate based on server, port, uuid
+        node_key = ('vmess', config['add'], int(config['port']), config['id'])
+        if node_key in seen_nodes:
+            print(f"Skipping duplicate VMess node {line[:50]}...")
+            return None
+        seen_nodes.add(node_key)
         base_name = f"vmess-{config['add']}-{config['port']}"
         name = generate_unique_name(base_name, name_counts)
         node = {
@@ -87,7 +117,7 @@ def parse_vmess_node(line, name_counts):
             'port': int(config['port']),
             'uuid': config['id'],
             'alterId': int(config.get('aid', 0)),
-            'cipher': config.get('scy', 'auto')
+            'cipher': cipher
         }
         if config.get('tls'):
             node['tls'] = True
@@ -105,7 +135,8 @@ def generate_unique_name(base_name, name_counts):
 
 def collect_proxies():
     proxies = []
-    name_counts = {}  # Track used names to ensure uniqueness
+    name_counts = defaultdict(int)  # Track used names
+    seen_nodes = set()  # Track unique nodes for deduplication
     
     for key, url in FILE_URLS.items():
         content = download_file(url)
@@ -127,6 +158,25 @@ def collect_proxies():
                         if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts']:
                             print(f"Skipping proxy {proxy.get('name', 'unnamed')} (missing obfs password)")
                             continue
+                    # Validate VMess cipher
+                    if proxy['type'] == 'vmess':
+                        cipher = proxy.get('cipher', 'auto')
+                        if cipher not in VALID_VMESS_CIPHERS:
+                            print(f"Skipping VMess proxy {proxy.get('name', 'unnamed')} (unsupported cipher: {cipher})")
+                            continue
+                        # Deduplicate based on server, port, uuid
+                        node_key = ('vmess', proxy['server'], proxy['port'], proxy.get('uuid'))
+                        if node_key in seen_nodes:
+                            print(f"Skipping duplicate VMess proxy {proxy.get('name', 'unnamed')}")
+                            continue
+                        seen_nodes.add(node_key)
+                    elif proxy['type'] == 'ss':
+                        # Deduplicate based on server, port, password
+                        node_key = ('ss', proxy['server'], proxy['port'], proxy.get('password'))
+                        if node_key in seen_nodes:
+                            print(f"Skipping duplicate Shadowsocks proxy {proxy.get('name', 'unnamed')}")
+                            continue
+                        seen_nodes.add(node_key)
                     # Ensure unique name
                     base_name = proxy.get('name', f"{proxy['type']}-{proxy['server']}-{proxy['port']}")
                     proxy['name'] = generate_unique_name(base_name, name_counts)
@@ -140,8 +190,7 @@ def collect_proxies():
                 line = line.strip()
                 if not line:
                     continue
-                # Try parsing as Shadowsocks or VMess
-                node = parse_ss_node(line, name_counts) or parse_vmess_node(line, name_counts)
+                node = parse_ss_node(line, name_counts, seen_nodes) or parse_vmess_node(line, name_counts, seen_nodes)
                 if node:
                     proxies.append(node)
                 else:
@@ -162,5 +211,5 @@ def main():
         exit(1)
 
 if __name__ == "__main__":
-    import json  # Import here to avoid undefined reference
+    import json
     main()
