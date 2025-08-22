@@ -2,7 +2,7 @@ import requests
 import yaml
 import base64
 import re
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs, unquote
 from collections import defaultdict
 import json
 
@@ -30,16 +30,29 @@ VALID_VLESS_NETWORKS = {'tcp', 'ws', 'grpc'}
 
 # 验证 Host 字段（域名或 IP）
 def validate_host(host):
+    if not host or not isinstance(host, str):
+        return False
+    # 解码 URL 编码字符
+    host = unquote(host)
+    # 移除空格和非法字符
+    host = host.strip()
     if not host:
         return False
-    # 验证 IPv4 或域名
-    if re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', host):
+    # 验证 IPv4
+    if re.match(r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', host):
         return True
-    if re.match(r'^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$', host):
+    # 验证域名
+    if re.match(r'^[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$', host):
         return True
-    # 简单验证 IPv6（可选）
-    if re.match(r'^[0-9a-fA-F:]+$', host):
-        return True
+    # 验证 IPv6
+    if re.match(r'^[0-9a-fA-F:]+$', host) and ':' in host:
+        try:
+            # 简单检查 IPv6 格式
+            parts = host.split(':')
+            if len(parts) <= 8 and all(len(part) <= 4 for part in parts if part):
+                return True
+        except:
+            return False
     return False
 
 # 下载文件
@@ -80,41 +93,41 @@ def validate_server_port(server, port):
     return True
 
 # 解析 Shadowsocks 节点
-def parse_ss_node(line, name_counts, seen_nodes):
+def parse_ss_node(line, name_counts, seen_nodes, source):
     if not line.startswith('ss://') or line.startswith('ss://ss://'):
         if line.startswith('ss://ss://'):
             line = line[5:]  # 移除外层 ss://
         else:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过无法解析的行: {line[:50]}...\n")
+                f.write(f"跳过无法解析的行（来源: {source}）: {line[:50]}...\n")
             return None
     try:
         parsed = urlparse(line)
         cipher_password = parsed.userinfo
         if not cipher_password or '@' not in cipher_password:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点 {line[:50]}... (无效用户信息)\n")
+                f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (无效用户信息)\n")
             return None
         cipher, password = cipher_password.split('@', 1)
         if cipher not in VALID_SS_CIPHERS:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点 {line[:50]}... (不支持的加密方式: {cipher})\n")
+                f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (不支持的加密方式: {cipher})\n")
             return None
         host_port = parsed.netloc
         if not host_port or ':' not in host_port:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点 {line[:50]}... (无效主机/端口)\n")
+                f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (无效主机/端口)\n")
             return None
         host, port = host_port.rsplit(':', 1)
         port = int(port)
         if not validate_server_port(host, port):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点 {line[:50]}... (无效服务器/端口)\n")
+                f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (无效服务器/端口)\n")
             return None
         node_key = ('ss', host, port, password)
         if node_key in seen_nodes:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复的 Shadowsocks 节点 {line[:50]}...\n")
+                f.write(f"跳过重复的 Shadowsocks 节点（来源: {source}）: {line[:50]}...\n")
             return None
         seen_nodes.add(node_key)
         base_name = f"ss-{host}-{port}"
@@ -133,20 +146,20 @@ def parse_ss_node(line, name_counts, seen_nodes):
             node['plugin-opts'] = {'mode': query['obfs'][0]}
             if 'obfs-password' not in query:
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 Shadowsocks 节点 {line[:50]}... (缺少 obfs 密码)\n")
+                    f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (缺少 obfs 密码)\n")
                 return None
             node['plugin-opts']['password'] = query['obfs-password'][0]
         return node
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Shadowsocks 节点 {line[:50]} 出错: {e}\n")
+            f.write(f"解析 Shadowsocks 节点（来源: {source}）: {line[:50]} 出错: {e}\n")
         return None
 
 # 解析 VMess 节点
-def parse_vmess_node(line, name_counts, seen_nodes):
+def parse_vmess_node(line, name_counts, seen_nodes, source):
     if not line.startswith('vmess://'):
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"跳过无法解析的行: {line[:50]}...\n")
+            f.write(f"跳过无法解析的行（来源: {source}）: {line[:50]}...\n")
         return None
     try:
         encoded = line[8:]
@@ -154,24 +167,24 @@ def parse_vmess_node(line, name_counts, seen_nodes):
         config = json.loads(decoded)
         if not all(key in config for key in ['add', 'port', 'id']):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VMess 节点 {line[:50]}... (缺少必要字段)\n")
+                f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (缺少必要字段)\n")
             return None
         cipher = config.get('scy')
         if not cipher:  # 处理缺失或空的 cipher
             cipher = 'auto'
         if cipher not in VALID_VMESS_CIPHERS:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VMess 节点 {line[:50]}... (不支持的加密方式: {cipher})\n")
+                f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (不支持的加密方式: {cipher})\n")
             return None
         port = int(config['port'])
         if not validate_server_port(config['add'], port):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VMess 节点 {line[:50]}... (无效服务器/端口)\n")
+                f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (无效服务器/端口)\n")
             return None
         node_key = ('vmess', config['add'], port, config['id'])
         if node_key in seen_nodes:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复的 VMess 节点 {line[:50]}...\n")
+                f.write(f"跳过重复的 VMess 节点（来源: {source}）: {line[:50]}...\n")
             return None
         seen_nodes.add(node_key)
         base_name = f"vmess-{config['add']}-{port}"
@@ -193,7 +206,7 @@ def parse_vmess_node(line, name_counts, seen_nodes):
                 host = config.get('host', '')
                 if not validate_host(host):
                     with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                        f.write(f"跳过 VMess 节点 {line[:50]}... (无效 ws-opts.headers[Host]: {host})\n")
+                        f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (无效 ws-opts.headers[Host]: {host})\n")
                     return None
                 node['ws-opts'] = {
                     'path': config.get('path', '/'),
@@ -202,14 +215,14 @@ def parse_vmess_node(line, name_counts, seen_nodes):
         return node
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 VMess 节点 {line[:50]} 出错: {e}\n")
+            f.write(f"解析 VMess 节点（来源: {source}）: {line[:50]} 出错: {e}\n")
         return None
 
 # 解析 Trojan 节点
-def parse_trojan_node(line, name_counts, seen_nodes):
+def parse_trojan_node(line, name_counts, seen_nodes, source):
     if not line.startswith('trojan://'):
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"跳过无法解析的行: {line[:50]}...\n")
+            f.write(f"跳过无法解析的行（来源: {source}）: {line[:50]}...\n")
         return None
     try:
         parsed = urlparse(line)
@@ -217,18 +230,18 @@ def parse_trojan_node(line, name_counts, seen_nodes):
         host_port = parsed.netloc[len(password) + 1:]
         if not host_port or ':' not in host_port:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Trojan 节点 {line[:50]}... (无效主机/端口)\n")
+                f.write(f"跳过 Trojan 节点（来源: {source}）: {line[:50]}... (无效主机/端口)\n")
             return None
         host, port = host_port.rsplit(':', 1)
         port = int(port)
         if not validate_server_port(host, port):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Trojan 节点 {line[:50]}... (无效服务器/端口)\n")
+                f.write(f"跳过 Trojan 节点（来源: {source}）: {line[:50]}... (无效服务器/端口)\n")
             return None
         node_key = ('trojan', host, port, password)
         if node_key in seen_nodes:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复的 Trojan 节点 {line[:50]}...\n")
+                f.write(f"跳过重复的 Trojan 节点（来源: {source}）: {line[:50]}...\n")
             return None
         seen_nodes.add(node_key)
         base_name = f"trojan-{host}-{port}"
@@ -250,14 +263,14 @@ def parse_trojan_node(line, name_counts, seen_nodes):
         return node
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Trojan 节点 {line[:50]} 出错: {e}\n")
+            f.write(f"解析 Trojan 节点（来源: {source}）: {line[:50]} 出错: {e}\n")
         return None
 
 # 解析 Hysteria2 节点
-def parse_hysteria2_node(line, name_counts, seen_nodes):
+def parse_hysteria2_node(line, name_counts, seen_nodes, source):
     if not line.startswith('hysteria2://'):
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"跳过无法解析的行: {line[:50]}...\n")
+            f.write(f"跳过无法解析的行（来源: {source}）: {line[:50]}...\n")
         return None
     try:
         parsed = urlparse(line)
@@ -265,18 +278,18 @@ def parse_hysteria2_node(line, name_counts, seen_nodes):
         host_port = parsed.netloc[len(password) + 1:]
         if not host_port or ':' not in host_port:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Hysteria2 节点 {line[:50]}... (无效主机/端口)\n")
+                f.write(f"跳过 Hysteria2 节点（来源: {source}）: {line[:50]}... (无效主机/端口)\n")
             return None
         host, port = host_port.rsplit(':', 1)
         port = int(port)
         if not validate_server_port(host, port):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Hysteria2 节点 {line[:50]}... (无效服务器/端口)\n")
+                f.write(f"跳过 Hysteria2 节点（来源: {source}）: {line[:50]}... (无效服务器/端口)\n")
             return None
         node_key = ('hysteria2', host, port, password)
         if node_key in seen_nodes:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复的 Hysteria2 节点 {line[:50]}...\n")
+                f.write(f"跳过重复的 Hysteria2 节点（来源: {source}）: {line[:50]}...\n")
             return None
         seen_nodes.add(node_key)
         base_name = f"hysteria2-{host}-{port}"
@@ -295,7 +308,7 @@ def parse_hysteria2_node(line, name_counts, seen_nodes):
             node['obfs'] = query['obfs'][0]
             if 'obfs-password' not in query:
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 Hysteria2 节点 {line[:50]}... (缺少 obfs 密码)\n")
+                    f.write(f"跳过 Hysteria2 节点（来源: {source}）: {line[:50]}... (缺少 obfs 密码)\n")
                 return None
             node['obfs-password'] = query['obfs-password'][0]
         if 'skip-cert-verify' in query:
@@ -303,14 +316,14 @@ def parse_hysteria2_node(line, name_counts, seen_nodes):
         return node
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Hysteria2 节点 {line[:50]} 出错: {e}\n")
+            f.write(f"解析 Hysteria2 节点（来源: {source}）: {line[:50]} 出错: {e}\n")
         return None
 
 # 解析 VLESS 节点
-def parse_vless_node(line, name_counts, seen_nodes):
+def parse_vless_node(line, name_counts, seen_nodes, source):
     if not line.startswith('vless://'):
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"跳过无法解析的行: {line[:50]}...\n")
+            f.write(f"跳过无法解析的行（来源: {source}）: {line[:50]}...\n")
         return None
     try:
         parsed = urlparse(line)
@@ -318,18 +331,18 @@ def parse_vless_node(line, name_counts, seen_nodes):
         host_port = parsed.netloc[len(uuid) + 1:]
         if not host_port or ':' not in host_port:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VLESS 节点 {line[:50]}... (无效主机/端口)\n")
+                f.write(f"跳过 VLESS 节点（来源: {source}）: {line[:50]}... (无效主机/端口)\n")
             return None
         host, port = host_port.rsplit(':', 1)
         port = int(port)
         if not validate_server_port(host, port):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VLESS 节点 {line[:50]}... (无效服务器/端口)\n")
+                f.write(f"跳过 VLESS 节点（来源: {source}）: {line[:50]}... (无效服务器/端口)\n")
             return None
         node_key = ('vless', host, port, uuid)
         if node_key in seen_nodes:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复的 VLESS 节点 {line[:50]}...\n")
+                f.write(f"跳过重复的 VLESS 节点（来源: {source}）: {line[:50]}...\n")
             return None
         seen_nodes.add(node_key)
         base_name = f"vless-{host}-{port}"
@@ -352,7 +365,7 @@ def parse_vless_node(line, name_counts, seen_nodes):
                 host_header = query.get('host', [''])[0]
                 if not validate_host(host_header):
                     with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                        f.write(f"跳过 VLESS 节点 {line[:50]}... (无效 ws-opts.headers[Host]: {host_header})\n")
+                        f.write(f"跳过 VLESS 节点（来源: {source}）: {line[:50]}... (无效 ws-opts.headers[Host]: {host_header})\n")
                     return None
                 node['ws-opts'] = {
                     'path': query.get('path', ['/'])[0],
@@ -363,7 +376,7 @@ def parse_vless_node(line, name_counts, seen_nodes):
         return node
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 VLESS 节点 {line[:50]} 出错: {e}\n")
+            f.write(f"解析 VLESS 节点（来源: {source}）: {line[:50]} 出错: {e}\n")
         return None
 
 # 生成唯一名称
@@ -398,30 +411,30 @@ def collect_proxies():
                     if not all(key in proxy for key in ['type', 'server', 'port']):
                         stats['invalid'] += 1
                         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                            f.write(f"跳过无效代理（缺少必要字段）: {proxy}\n")
+                            f.write(f"跳过无效代理（来源: {key}）: {proxy}\n")
                         continue
                     if not validate_server_port(proxy['server'], proxy['port']):
                         stats['invalid'] += 1
                         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                            f.write(f"跳过代理 {proxy.get('name', '未命名')} (无效服务器/端口)\n")
+                            f.write(f"跳过代理 {proxy.get('name', '未命名')}（来源: {key}）(无效服务器/端口)\n")
                         continue
                     if proxy['type'] == 'ss':
                         if proxy.get('cipher') not in VALID_SS_CIPHERS:
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过 Shadowsocks 代理 {proxy.get('name', '未命名')} (不支持的加密方式: {proxy.get('cipher')})\n")
+                                f.write(f"跳过 Shadowsocks 代理 {proxy.get('name', '未命名')}（来源: {key}）(不支持的加密方式: {proxy.get('cipher')})\n")
                             continue
                         if 'plugin' in proxy and proxy['plugin'] == 'obfs':
                             if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts']:
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过代理 {proxy.get('name', '未命名')} (缺少 obfs 密码)\n")
+                                    f.write(f"跳过代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少 obfs 密码)\n")
                                 continue
                         node_key = ('ss', proxy['server'], proxy['port'], proxy.get('password'))
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过重复的 Shadowsocks 代理 {proxy.get('name', '未命名')}\n")
+                                f.write(f"跳过重复的 Shadowsocks 代理 {proxy.get('name', '未命名')}（来源: {key}）\n")
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'vmess':
@@ -432,20 +445,20 @@ def collect_proxies():
                         if cipher not in VALID_VMESS_CIPHERS:
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')} (不支持的加密方式: {cipher})\n")
+                                f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')}（来源: {key}）(不支持的加密方式: {cipher})\n")
                             continue
                         if 'network' in proxy and proxy['network'] == 'ws' and 'ws-opts' in proxy:
                             host = proxy['ws-opts'].get('headers', {}).get('Host', '')
                             if not validate_host(host):
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')} (无效 ws-opts.headers[Host]: {host})\n")
+                                    f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效 ws-opts.headers[Host]: {host})\n")
                                 continue
                         node_key = ('vmess', proxy['server'], proxy['port'], proxy.get('uuid'))
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过重复的 VMess 代理 {proxy.get('name', '未命名')}\n")
+                                f.write(f"跳过重复的 VMess 代理 {proxy.get('name', '未命名')}（来源: {key}）\n")
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'trojan':
@@ -453,20 +466,20 @@ def collect_proxies():
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过重复的 Trojan 代理 {proxy.get('name', '未命名')}\n")
+                                f.write(f"跳过重复的 Trojan 代理 {proxy.get('name', '未命名')}（来源: {key}）\n")
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'hysteria2':
                         if 'obfs' in proxy and 'obfs-password' not in proxy:
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过 Hysteria2 代理 {proxy.get('name', '未命名')} (缺少 obfs 密码)\n")
+                                f.write(f"跳过 Hysteria2 代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少 obfs 密码)\n")
                             continue
                         node_key = ('hysteria2', proxy['server'], proxy['port'], proxy.get('password'))
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过重复的 Hysteria2 代理 {proxy.get('name', '未命名')}\n")
+                                f.write(f"跳过重复的 Hysteria2 代理 {proxy.get('name', '未命名')}（来源: {key}）\n")
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'vless':
@@ -475,24 +488,24 @@ def collect_proxies():
                             if not validate_host(host):
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')} (无效 ws-opts.headers[Host]: {host})\n")
+                                    f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效 ws-opts.headers[Host]: {host})\n")
                                 continue
                         if 'network' in proxy and proxy['network'] not in VALID_VLESS_NETWORKS:
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')} (不支持的网络类型: {proxy['network']})\n")
+                                f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')}（来源: {key}）(不支持的网络类型: {proxy['network']})\n")
                             continue
                         node_key = ('vless', proxy['server'], proxy['port'], proxy.get('uuid'))
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过重复的 VLESS 代理 {proxy.get('name', '未命名')}\n")
+                                f.write(f"跳过重复的 VLESS 代理 {proxy.get('name', '未命名')}（来源: {key}）\n")
                             continue
                         seen_nodes.add(node_key)
                     else:
                         stats['invalid'] += 1
                         with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                            f.write(f"跳过代理 {proxy.get('name', '未命名')} (不支持的类型: {proxy['type']})\n")
+                            f.write(f"跳过代理 {proxy.get('name', '未命名')}（来源: {key}）(不支持的类型: {proxy['type']})\n")
                         continue
                     base_name = proxy.get('name', f"{proxy['type']}-{proxy['server']}-{proxy['port']}")
                     proxy['name'] = generate_unique_name(base_name, name_counts)
@@ -508,11 +521,11 @@ def collect_proxies():
                 if not line:
                     continue
                 stats['total'] += 1
-                node = (parse_ss_node(line, name_counts, seen_nodes) or
-                        parse_vmess_node(line, name_counts, seen_nodes) or
-                        parse_trojan_node(line, name_counts, seen_nodes) or
-                        parse_hysteria2_node(line, name_counts, seen_nodes) or
-                        parse_vless_node(line, name_counts, seen_nodes))
+                node = (parse_ss_node(line, name_counts, seen_nodes, key) or
+                        parse_vmess_node(line, name_counts, seen_nodes, key) or
+                        parse_trojan_node(line, name_counts, seen_nodes, key) or
+                        parse_hysteria2_node(line, name_counts, seen_nodes, key) or
+                        parse_vless_node(line, name_counts, seen_nodes, key))
                 if node:
                     proxies.append(node)
                     stats['valid'] += 1
