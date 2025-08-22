@@ -1,4 +1,4 @@
-name: Cleanup Proxies in config.yaml
+name: Merge Files to main.yaml
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  cleanup-proxies:
+  merge-files:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,19 +23,19 @@ jobs:
 
       # Install dependencies
       - name: Install PyYAML
-        run: pip install pyyaml
+        run: pip install pyyaml requests
 
-      # Run cleanup script
-      - name: Clean up config.yaml
-        run: python cleanup_proxies.py
+      # Run merge script
+      - name: Merge files to main.yaml
+        run: python merge_files.py
 
       # Commit and push changes
       - name: Commit changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add config.yaml
-          git commit -m 'Clean up proxies in config.yaml'
+          git add main.yaml
+          git commit -m 'Merge files into main.yaml'
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
