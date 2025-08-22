@@ -1,9 +1,9 @@
-name: config
+name: converter.yml
 
 on:
   push:
-   paths:
-   - '.github/workflows/config.yml'
+    paths:
+      - '.github/workflows/converter.yml'
   workflow_dispatch:
     inputs:
       subscription_url:
@@ -12,7 +12,7 @@ on:
         default: 'https://github.com/qjlxg/HA/raw/refs/heads/main/config.yaml'
 
 jobs:
-  convert_and_test:
+  convert:
     runs-on: ubuntu-latest
     steps:
       - name: 🔔 检出仓库
@@ -20,41 +20,40 @@ jobs:
 
       - name: 🔧 启动 Subconverter 服务
         run: |
+          set -e
           # 启动 subconverter 的 Docker 容器
           docker run -d --rm --name subconverter -p 25500:25500 tindy2013/subconverter:latest
 
-          # 检查服务是否启动成功
-          sleep 10
-          curl http://localhost:25500/version
+          # 检查服务是否启动成功，循环等待直到服务可用
+          echo "等待 Subconverter 服务启动..."
+          until $(curl --output /dev/null --silent --head --fail http://localhost:25500/version); do
+            printf '.'
+            sleep 5
+          done
+          echo "服务已启动!"
 
-      - name: 🔄 转换订阅链接
+      - name: 🔄 转换订阅链接并保存
         id: convert
         env:
           SUB_URL: ${{ github.event.inputs.subscription_url }}
         run: |
+          set -e
+          echo "正在转换订阅链接..."
+          
           # 使用 curl 调用 subconverter API 进行转换
           # target=clash：指定输出格式为 Clash
           # url：指定订阅链接
-          # &filename=config.yaml：指定输出文件名，并保存
           curl -s --max-time 300 "http://localhost:25500/sub?target=clash&url=${{ env.SUB_URL }}" -o config.yaml
 
           # 检查文件是否生成
-          if [ ! -f config.yaml ]; then
-            echo "::error::无法生成 config.yaml 文件，请检查订阅链接是否有效。"
+          if [ ! -s config.yaml ]; then
+            echo "::error::无法生成 config.yaml 文件，请检查订阅链接是否有效或重试。"
             exit 1
           fi
           echo "✅ 订阅转换完成，配置文件已保存为 config.yaml"
 
-      - name: 🚀 下载 Clash 内核进行测速
-        run: |
-          # 下载 clash-speedtest，这里使用 mihomo
-          CLASH_VER=v1.18.2
-          wget https://github.com/MetaCubeX/mihomo/releases/download/${CLASH_VER}/mihomo-linux-amd64-${CLASH_VER}.gz
-          gunzip mihomo-linux-amd64-${CLASH_VER}.gz
-          mv mihomo-linux-amd64-${CLASH_VER} clash-test
-          chmod +x clash-test
-
-      - name: 💨 运行节点测速
-        run: |
-          # 运行 clash-test，指定配置文件进行测速
-          ./clash-test -t -c config.yaml
+      - name: 💾 保存结果到仓库
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "feat: 更新 Clash 配置文件"
+          file_pattern: "config.yaml"
