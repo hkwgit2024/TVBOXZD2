@@ -27,7 +27,8 @@ def download_file(url):
 def parse_yaml_content(content):
     try:
         return yaml.safe_load(content)
-    except yaml.YAMLError:
+    except yaml.YAMLError as e:
+        print(f"Error parsing YAML: {e}")
         return None
 
 def parse_base64_nodes(content):
@@ -62,10 +63,12 @@ def parse_ss_node(line, name_counts):
             node['plugin'] = 'obfs'
             node['plugin-opts'] = {'mode': parse_qs(parsed.query)['obfs'][0]}
             if 'obfs-password' not in parse_qs(parsed.query):
-                return None  # Skip if obfs password is missing
+                print(f"Skipping Shadowsocks node {line[:50]}... (missing obfs password)")
+                return None
             node['plugin-opts']['password'] = parse_qs(parsed.query)['obfs-password'][0]
         return node
-    except Exception:
+    except Exception as e:
+        print(f"Error parsing Shadowsocks node {line[:50]}...: {e}")
         return None
 
 def parse_vmess_node(line, name_counts):
@@ -89,7 +92,8 @@ def parse_vmess_node(line, name_counts):
         if config.get('tls'):
             node['tls'] = True
         return node
-    except Exception:
+    except Exception as e:
+        print(f"Error parsing VMess node {line[:50]}...: {e}")
         return None
 
 def generate_unique_name(base_name, name_counts):
@@ -112,16 +116,23 @@ def collect_proxies():
         if 'link' in key:
             # Handle YAML files
             config = parse_yaml_content(content)
-            if config and 'proxies' in config:
+            if config and 'proxies' in config and isinstance(config['proxies'], list):
                 for proxy in config['proxies']:
-                    # Validate proxy
+                    # Validate required fields
+                    if not all(key in proxy for key in ['type', 'server', 'port']):
+                        print(f"Skipping invalid proxy (missing required fields): {proxy}")
+                        continue
+                    # Skip if obfs password is missing
                     if 'plugin' in proxy and proxy['plugin'] == 'obfs':
                         if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts']:
-                            continue  # Skip if obfs password is missing
+                            print(f"Skipping proxy {proxy.get('name', 'unnamed')} (missing obfs password)")
+                            continue
                     # Ensure unique name
                     base_name = proxy.get('name', f"{proxy['type']}-{proxy['server']}-{proxy['port']}")
                     proxy['name'] = generate_unique_name(base_name, name_counts)
                     proxies.append(proxy)
+            else:
+                print(f"No valid proxies found in {key}")
         else:
             # Handle text files (assume Base64 or plain links)
             lines = parse_base64_nodes(content) or content.splitlines()
@@ -133,6 +144,8 @@ def collect_proxies():
                 node = parse_ss_node(line, name_counts) or parse_vmess_node(line, name_counts)
                 if node:
                     proxies.append(node)
+                else:
+                    print(f"Skipping unparsable line in {key}: {line[:50]}...")
 
     return proxies
 
