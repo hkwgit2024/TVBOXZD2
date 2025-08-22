@@ -37,7 +37,7 @@ def parse_base64_nodes(content):
     except Exception:
         return None
 
-def parse_ss_node(line):
+def parse_ss_node(line, name_counts):
     if not line.startswith('ss://'):
         return None
     try:
@@ -48,35 +48,38 @@ def parse_ss_node(line):
         cipher, password = cipher_password.split('@', 1)
         host_port = parsed.netloc
         host, port = host_port.rsplit(':', 1)
-        query = parse_qs(parsed.query)
+        base_name = f"ss-{host}-{port}"
+        name = generate_unique_name(base_name, name_counts)
         node = {
             'type': 'ss',
-            'name': f"ss-{host}-{port}",
+            'name': name,
             'server': host,
             'port': int(port),
             'cipher': cipher,
             'password': password
         }
-        if 'obfs' in query:
+        if 'obfs' in parse_qs(parsed.query):
             node['plugin'] = 'obfs'
-            node['plugin-opts'] = {'mode': query['obfs'][0]}
-            if 'obfs-password' not in query:
+            node['plugin-opts'] = {'mode': parse_qs(parsed.query)['obfs'][0]}
+            if 'obfs-password' not in parse_qs(parsed.query):
                 return None  # Skip if obfs password is missing
-            node['plugin-opts']['password'] = query['obfs-password'][0]
+            node['plugin-opts']['password'] = parse_qs(parsed.query)['obfs-password'][0]
         return node
     except Exception:
         return None
 
-def parse_vmess_node(line):
+def parse_vmess_node(line, name_counts):
     if not line.startswith('vmess://'):
         return None
     try:
         encoded = line[8:]
         decoded = base64.b64decode(encoded).decode('utf-8')
         config = json.loads(decoded)
+        base_name = f"vmess-{config['add']}-{config['port']}"
+        name = generate_unique_name(base_name, name_counts)
         node = {
             'type': 'vmess',
-            'name': f"vmess-{config['add']}-{config['port']}",
+            'name': name,
             'server': config['add'],
             'port': int(config['port']),
             'uuid': config['id'],
@@ -89,8 +92,16 @@ def parse_vmess_node(line):
     except Exception:
         return None
 
+def generate_unique_name(base_name, name_counts):
+    if base_name not in name_counts:
+        name_counts[base_name] = 0
+        return base_name
+    name_counts[base_name] += 1
+    return f"{base_name}_{name_counts[base_name]}"
+
 def collect_proxies():
     proxies = []
+    name_counts = {}  # Track used names to ensure uniqueness
     
     for key, url in FILE_URLS.items():
         content = download_file(url)
@@ -107,6 +118,9 @@ def collect_proxies():
                     if 'plugin' in proxy and proxy['plugin'] == 'obfs':
                         if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts']:
                             continue  # Skip if obfs password is missing
+                    # Ensure unique name
+                    base_name = proxy.get('name', f"{proxy['type']}-{proxy['server']}-{proxy['port']}")
+                    proxy['name'] = generate_unique_name(base_name, name_counts)
                     proxies.append(proxy)
         else:
             # Handle text files (assume Base64 or plain links)
@@ -116,7 +130,7 @@ def collect_proxies():
                 if not line:
                     continue
                 # Try parsing as Shadowsocks or VMess
-                node = parse_ss_node(line) or parse_vmess_node(line)
+                node = parse_ss_node(line, name_counts) or parse_vmess_node(line, name_counts)
                 if node:
                     proxies.append(node)
 
