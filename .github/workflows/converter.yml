@@ -9,7 +9,7 @@ on:
       subscription_url:
         description: '请输入你的订阅链接'
         required: true
-        default: 'https://github.com/qjlxg/HA/raw/refs/heads/main/config.yaml'
+        default: 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt'
 
 jobs:
   convert:
