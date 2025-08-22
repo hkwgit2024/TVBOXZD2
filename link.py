@@ -8,10 +8,13 @@ import json
 import re
 import random
 import concurrent.futures
+import ipaddress
 from urllib.parse import urlparse, unquote, urljoin
 from collections import OrderedDict
 from html.parser import HTMLParser
 from tqdm import tqdm
+from ip_geolocation import GeoLite2Country
+import geoip2.errors
 
 # 多样化的User-Agent列表，涵盖多种设备和浏览器
 USER_AGENTS = [
@@ -26,8 +29,31 @@ USER_AGENTS = [
     # iPhone Chrome
     'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.77 Mobile/15E148 Safari/604.1',
     # Android Chrome
-    'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36'
-]
+    'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36',
+    # Windows 10 Edge
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59',
+    # Windows 7 Firefox
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0',
+    # macOS Monterey Firefox
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 12.0; rv:95.0) Gecko/20100101 Firefox/95.0',
+    # Linux Chrome
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36',
+    # Android Firefox
+    'Mozilla/5.0 (Android 11; Mobile; rv:95.0) Gecko/95.0 Firefox/95.0',
+    # iPhone Safari
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1',
+    # iPad Firefox
+    'Mozilla/5.0 (iPad; CPU OS 15_1 like Mac OS X; rv:95.0) Gecko/95.0 Firefox/95.0',
+    # Googlebot (搜索引擎爬虫，有时可用于绕过某些检测)
+    'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+    # Bingbot
+    'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)',
+    # Baidu Spider
+    'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)',
+    # Old IE (仅用于极少数老旧网站)
+    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)',
+    # Opera
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 OPR/77.0.4054.2
 
 # 全局变量，用于存储和去重所有有效节点
 seen_nodes_set = set()
@@ -88,6 +114,14 @@ def parse_base64_content(content):
     except Exception:
         pass
     return []
+
+def is_ip_address(string):
+    """检查字符串是否为有效的IP地址"""
+    try:
+        ipaddress.ip_address(string)
+        return True
+    except ValueError:
+        return False
 
 def parse_single_node_from_link(link):
     if link.startswith("vmess://"):
@@ -289,7 +323,7 @@ def fetch_content(url):
     except requests.exceptions.RequestException:
         return None, None
 
-def get_nodes_from_url(link):
+def get_nodes_from_url(link, geocoder):
     nodes = []
     effective_link = None
     
@@ -339,6 +373,17 @@ def get_nodes_from_url(link):
         elif content_type == 'base64':
             nodes.extend(parse_base64_content(content))
         
+    # 新增的地理位置查询逻辑
+    if nodes and geocoder:
+        for node in nodes:
+            server = node.get('server')
+            if server and is_ip_address(server):
+                try:
+                    country_code, country_name = geocoder.get_location(server)
+                    node['country'] = country_name
+                except Exception as e:
+                    print(f"查询IP {server} 时发生错误: {e}")
+
     return nodes, effective_link
 
 class LinkExtractor(HTMLParser):
@@ -423,12 +468,26 @@ def save_to_csv(data, filename='link.csv'):
         print(f"无法保存文件 {filename}: {e}")
 
 if __name__ == "__main__":
+    geocoder = None
+    try:
+        # 尝试连接本地 GeoLite2 数据库
+        with GeoLite2Country('GeoLite2-Country.mmdb') as geo_db:
+            geocoder = geo_db
+            print("GeoLite2-Country.mmdb 数据库加载成功，将启用IP地理位置查询功能。")
+    except FileNotFoundError:
+        print("未找到 GeoLite2-Country.mmdb 数据库文件，将跳过IP地理位置查询。")
+    except geoip2.errors.AddressNotFoundError:
+        print("GeoLite2-Country.mmdb 文件可能已损坏或格式不正确，将跳过IP地理位置查询。")
+    except Exception as e:
+        print(f"加载 GeoLite2-Country.mmdb 时发生未知错误: {e}")
+        print("将跳过IP地理位置查询。")
+
     links = get_links_from_local_file()
     all_nodes = []
     nodes_summary = []
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        futures = {executor.submit(get_nodes_from_url, link): link for link in links}
+        futures = {executor.submit(get_nodes_from_url, link, geocoder): link for link in links}
         
         for future in tqdm(concurrent.futures.as_completed(futures), total=len(links), desc="处理链接"):
             link = futures[future]
