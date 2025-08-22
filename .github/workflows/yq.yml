@@ -1,20 +1,16 @@
 name: Clash 节点测速
 
 on:
-  # 在特定文件被推送时触发
   push:
     paths:
     - '.github/workflows/yq.yml'
   
-  # 定时任务，每3小时运行一次
   schedule:
     - cron: '0 */3 * * *'
   
-  # 允许手动触发
   workflow_dispatch:
 
 env:
-  # 设置时区为上海
   TZ: Asia/Shanghai
 
 jobs:
@@ -39,17 +35,17 @@ jobs:
           cp clash.yaml sc/clash_$TIMESTAMP.yaml
           echo "已成功备份 clash.yaml 到 sc/clash_$TIMESTAMP.yaml"
       
-      - name: 下载、安装yq并预处理节点
+      - name: 下载并预处理节点
         run: |
-          # 安装 yq 工具来处理 YAML 文件
+          # 安装 yq
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod a+x /usr/local/bin/yq
           
-          # 下载原始节点文件到 link.yaml
+          # 下载原始节点文件
           wget -qO link.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml"
           
-          # 使用 yq 过滤掉那些 Host 字段无效的节点
-          yq e 'del(.proxies[] | select(.ws-opts.headers.Host | type == "!!str" and length < 1))' -i link.yaml
+          # 使用 yq 深度过滤所有不合法的节点配置
+          yq e 'del(.proxies[] | select( (.type | length < 1) or (.server | length < 1) or (.port | length < 1) ) )' -i link.yaml
       
       - name: 运行测速并筛选节点
         run: |
@@ -64,14 +60,11 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           
-          # 添加新生成的 clash.yaml 文件和所有备份文件
           git add clash.yaml sc/
           
-          # 检查是否有文件更改，如果没有则不提交
           if ! git diff --cached --quiet; then
             git commit -m "chore: Update and filter Clash nodes via speedtest"
             
-            # 尝试推送，最多重试3次
             for i in {1..3}; do
               git pull --rebase
               git push && break
