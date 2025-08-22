@@ -18,6 +18,20 @@ jobs:
       - name: 🔔 检出仓库
         uses: actions/checkout@v4
 
+      - name: 🔧 启动 Subconverter 服务
+        run: |
+          set -e
+          # 启动 subconverter 的 Docker 容器
+          docker run -d --rm --name subconverter -p 25500:25500 tindy2013/subconverter:latest
+
+          # 检查服务是否启动成功，循环等待直到服务可用
+          echo "等待 Subconverter 服务启动..."
+          until $(curl --output /dev/null --silent --head --fail http://localhost:25500/version); do
+            printf '.'
+            sleep 5
+          done
+          echo "服务已启动!"
+
       - name: 🔄 转换订阅链接并保存
         id: convert
         env:
@@ -26,10 +40,10 @@ jobs:
           set -e
           echo "正在转换订阅链接..."
           
-          # 使用另一个公共 subconverter 服务进行转换
+          # 使用 curl 调用 subconverter API 进行转换
           # url：指定你的原始节点列表文件
           # target：指定输出格式为 Clash
-          curl -s --max-time 300 "https://api.v1.georgerain.com/sub?target=clash&url=${{ env.SUB_URL }}" -o config.yaml
+          curl -s --max-time 300 "http://localhost:25500/sub?target=clash&url=${{ env.SUB_URL }}" -o config.yaml
 
           # 检查文件是否生成
           if [ ! -s config.yaml ]; then
