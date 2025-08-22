@@ -42,7 +42,7 @@ jobs:
           sudo chmod a+x /usr/local/bin/yq
           
           # 下载原始节点文件
-          wget -qO link.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml"
+          wget -qO link.yaml "hhttps://github.com/qjlxg/HA/raw/refs/heads/main/config.yaml"
           
           # 使用 yq 深度过滤所有不合法的节点配置
           yq e 'del(.proxies[] | select( (.type | length < 1) or (.server | length < 1) or (.port | length < 1) ) )' -i link.yaml
