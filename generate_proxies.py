@@ -28,6 +28,20 @@ VALID_SS_CIPHERS = {
 VALID_VMESS_CIPHERS = {'auto', 'none', 'aes-128-gcm', 'chacha20-poly1305'}
 VALID_VLESS_NETWORKS = {'tcp', 'ws', 'grpc'}
 
+# 验证 Host 字段（域名或 IP）
+def validate_host(host):
+    if not host:
+        return False
+    # 验证 IPv4 或域名
+    if re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', host):
+        return True
+    if re.match(r'^[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,}$', host):
+        return True
+    # 简单验证 IPv6（可选）
+    if re.match(r'^[0-9a-fA-F:]+$', host):
+        return True
+    return False
+
 # 下载文件
 def download_file(url):
     try:
@@ -176,9 +190,14 @@ def parse_vmess_node(line, name_counts, seen_nodes):
         if config.get('net') in VALID_VLESS_NETWORKS:
             node['network'] = config['net']
             if config['net'] == 'ws':
+                host = config.get('host', '')
+                if not validate_host(host):
+                    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                        f.write(f"跳过 VMess 节点 {line[:50]}... (无效 ws-opts.headers[Host]: {host})\n")
+                    return None
                 node['ws-opts'] = {
                     'path': config.get('path', '/'),
-                    'headers': {'Host': config.get('host', '')}
+                    'headers': {'Host': host}
                 }
         return node
     except Exception as e:
@@ -330,9 +349,14 @@ def parse_vless_node(line, name_counts, seen_nodes):
         if 'type' in query and query['type'][0] in VALID_VLESS_NETWORKS:
             node['network'] = query['type'][0]
             if query['type'][0] == 'ws':
+                host_header = query.get('host', [''])[0]
+                if not validate_host(host_header):
+                    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                        f.write(f"跳过 VLESS 节点 {line[:50]}... (无效 ws-opts.headers[Host]: {host_header})\n")
+                    return None
                 node['ws-opts'] = {
                     'path': query.get('path', ['/'])[0],
-                    'headers': {'Host': query.get('host', [''])[0]}
+                    'headers': {'Host': host_header}
                 }
         if 'flow' in query:
             node['flow'] = query['flow'][0]
@@ -410,6 +434,13 @@ def collect_proxies():
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
                                 f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')} (不支持的加密方式: {cipher})\n")
                             continue
+                        if 'network' in proxy and proxy['network'] == 'ws' and 'ws-opts' in proxy:
+                            host = proxy['ws-opts'].get('headers', {}).get('Host', '')
+                            if not validate_host(host):
+                                stats['invalid'] += 1
+                                with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                                    f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')} (无效 ws-opts.headers[Host]: {host})\n")
+                                continue
                         node_key = ('vmess', proxy['server'], proxy['port'], proxy.get('uuid'))
                         if node_key in seen_nodes:
                             stats['duplicates'] += 1
@@ -439,6 +470,13 @@ def collect_proxies():
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'vless':
+                        if 'network' in proxy and proxy['network'] == 'ws' and 'ws-opts' in proxy:
+                            host = proxy['ws-opts'].get('headers', {}).get('Host', '')
+                            if not validate_host(host):
+                                stats['invalid'] += 1
+                                with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                                    f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')} (无效 ws-opts.headers[Host]: {host})\n")
+                                continue
                         if 'network' in proxy and proxy['network'] not in VALID_VLESS_NETWORKS:
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
