@@ -26,11 +26,10 @@ jobs:
           set -e
           echo "正在转换订阅链接..."
           
-          # 使用公共 subconverter 服务进行转换
+          # 使用另一个公共 subconverter 服务进行转换
           # url：指定你的原始节点列表文件
           # target：指定输出格式为 Clash
-          # filename：指定输出文件名
-          curl -s --max-time 300 "https://sub.acl4ssr.xyz/sub?target=clash&url=${{ env.SUB_URL }}" -o config.yaml
+          curl -s --max-time 300 "https://api.v1.georgerain.com/sub?target=clash&url=${{ env.SUB_URL }}" -o config.yaml
 
           # 检查文件是否生成
           if [ ! -s config.yaml ]; then
