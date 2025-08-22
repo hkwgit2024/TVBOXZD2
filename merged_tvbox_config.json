@@ -138,192 +138,84 @@
       ]
     },
     {
-      "key": "naixxzy.com",
-      "name": "🔞奶香香",
-      "type": 1,
-      "api": "https://naixxzy.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
-      "recordable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "header": {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
-      }
-    },
-    {
-      "key": "apiyutu.com",
-      "name": "🔞玉兔资源",
-      "type": 1,
-      "api": "https://apiyutu.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
-      "recordable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "header": {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
-      }
-    },
-    {
-      "key": "api.11bat.com",
-      "name": "🔞辣椒资源",
-      "type": 1,
-      "api": "http://api.11bat.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
-      "recordable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "header": {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
-      }
-    },
-    {
-      "key": "jisu",
-      "name": "极速(采集)",
-      "type": 1,
-      "searchable": 1,
-      "changeable": 1,
-      "timeout": 60,
-      "api": "https://jszyapi.com/api.php/provide/vod/at/json",
-      "categories": [
-        "内地剧",
-        "欧美剧",
-        "日剧",
-        "韩剧",
-        "台湾剧",
-        "香港剧",
-        "马泰剧",
-        "悬疑片",
-        "喜剧片",
-        "动作片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片",
-        "犯罪片",
-        "记录片",
-        "动画片",
-        "日本动漫",
-        "欧美动漫",
-        "中国动漫",
-        "大陆综艺",
-        "日韩综艺",
-        "港台综艺",
-        "欧美综艺",
-        "体育赛事"
-      ]
-    },
-    {
-      "key": "老张直播频道",
-      "name": "老张直播频道",
-      "type": 4,
-      "api": "http://zhangqun66.com/zh/2241-2.php",
-      "searchable": 1,
-      "changeable": 0,
-      "ext": "1,2,3"
-    },
-    {
       "key": "91md.me",
-      "name": "成人19",
+      "name": "🔞91麻豆",
       "type": 1,
-      "api": "http://91md.me/api.php/provide/vod/",
-      "quickSearch": 1,
-      "searchable": 1,
-      "filterable": 1
-    },
-    {
-      "key": "虎牙",
-      "name": "🐯虎牙采集",
-      "type": 1,
-      "api": "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8",
+      "api": "https://91md.me/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0,
-      "categories": [
-        "内地剧",
-        "动作片",
-        "科幻片",
-        "战争片",
-        "喜剧片",
-        "爱情片",
-        "恐怖片",
-        "犯罪片",
-        "剧情片",
-        "冒险片",
-        "记录片",
-        "韩剧",
-        "香港剧",
-        "台湾剧",
-        "欧美剧",
-        "日剧",
-        "马泰剧",
-        "体育赛事",
-        "综艺",
-        "动画片",
-        "中国动漫",
-        "日本动漫",
-        "欧美动漫"
-      ]
+      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
+      "recordable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36",
+        "jar": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/newrecha/TVBOX/refs/heads/main/jar/o.jar"
+      }
     },
     {
-      "key": "光速资源",
-      "name": "光速｜采集",
+      "key": "laosebizy.com",
+      "name": "🔞老色逼",
       "type": 1,
-      "api": "http://api.guangsuapi.com/api.php/provide/vod/",
-      "searchable": 1,
-      "changeable": 1,
-      "categories": [
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "剧情片",
-        "恐怖片",
-        "战争片",
-        "动漫电影",
-        "大陆剧",
-        "欧美剧",
-        "港澳剧",
-        "韩剧",
-        "日剧",
-        "台湾剧",
-        "泰剧",
-        "综艺",
-        "动漫",
-        "记录片"
-      ]
-    },
-    {
-      "key": "yutu",
-      "name": "yutu",
-      "type": 1,
-      "api": "https://apiyutu.com/api.php/provide/vod/",
+      "api": "https://apilsbzy1.com/api.php/provide/vod/",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0
+      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
+      "recordable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
+      }
     },
     {
-      "key": "江北资源",
-      "name": "江北资源(官)",
-      "type": 1,
-      "api": "https://gfzycj.hnmj.vip/api.php/provide/vod/",
+      "key": "大地专场",
+      "name": "🔞大地采集",
+      "type": 0,
+      "api": "https://dadiapi.com/api.php",
       "searchable": 1,
-      "quickSearch": 1
+      "quickSearch": 1,
+      "filterable": 1,
+      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
+      "recordable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
+      }
+    },
+    {
+      "key": "91md",
+      "name": "91md",
+      "type": 1,
+      "api": "https://91md.me/api.php/provide/vod/from/mdm3u8/",
+      "tag": "qb,tj,rm",
+      "categories": []
+    },
+    {
+      "key": "*91麻豆",
+      "name": "*91麻豆",
+      "type": 1,
+      "api": "https://91md.me/api.php/provide/vod/",
+      "searchable": 0,
+      "quickSearch": 0
+    },
+    {
+      "key": "*色色资源",
+      "name": "*色色资源",
+      "type": 0,
+      "api": "http://secj8.com/inc/sapi.php?ac=videolist",
+      "searchable": 0,
+      "quickSearch": 0
     },
     {
       "key": "卧龙资源",
@@ -334,125 +226,16 @@
       "quickSearch": 1
     },
     {
-      "key": "光速资源",
-      "name": "光速资源(切)",
+      "key": "vod_黑墙",
+      "name": "黑墙｜",
       "type": 1,
-      "api": "https://api.guangsuapi.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1
+      "api": "https://blackwallvideo.online/api.php/provide/vod/",
+      "jar": "./jar/xyqxbpq.jar;md5;fd3cefc7302f3a39a442682f802b11e5"
     },
     {
-      "key": "91md.me",
-      "name": "成人07",
+      "name": "墨斗",
       "type": 1,
-      "api": "http://91md.me/api.php/provide/vod/",
-      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
-      "searchable": 1,
-      "recordable": 0,
-      "style": {
-        "type": "rect",
-        "ratio": 1.33
-      },
-      "header": {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
-      }
-    },
-    {
-      "key": "360资源",
-      "name": "360┃资源",
-      "type": 1,
-      "api": "https://360zy.com/api.php/provide/vod",
-      "playUrl": "",
-      "categories": [
-        "爽文短剧",
-        "国产剧",
-        "国产动漫",
-        "动画电影",
-        "网络电影",
-        "动作片",
-        "喜剧片",
-        "灾难片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片",
-        "港台剧",
-        "日韩剧",
-        "欧美剧",
-        "惊悚片",
-        "犯罪片",
-        "冒险片",
-        "悬疑片",
-        "武侠片",
-        "奇幻片",
-        "国产综艺"
-      ]
-    },
-    {
-      "key": "cjzy_360资源",
-      "name": "🎦360┃资源",
-      "type": 1,
-      "api": "https://360zy.com/api.php/provide/vod",
-      "playUrl": "",
-      "categories": [
-        "国产剧",
-        "国产动漫",
-        "香港剧",
-        "台湾剧",
-        "欧美剧",
-        "日韩动漫",
-        "NBA",
-        "短片",
-        "西部片",
-        "综艺片",
-        "动漫片",
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "惊悚片",
-        "悬疑片",
-        "犯罪片",
-        "剧情片",
-        "战争片",
-        "家庭篇",
-        "记录片",
-        "历史片",
-        "动漫片",
-        "大陆综艺",
-        "港台综艺"
-      ]
-    },
-    {
-      "name": "韩剧看看",
-      "type": 1,
-      "api": "https://www.hanjukankan.com"
-    },
-    {
-      "name": "瓜子 app",
-      "type": 1,
-      "api": "https://api.9cec79d.com"
-    },
-    {
-      "name": "丫丫",
-      "type": 1,
-      "api": "https://cj.yayazy.net/api.php/provide/vod/"
-    },
-    {
-      "name": "虎牙",
-      "type": 1,
-      "api": "https://www.huyaapi.com/api.php/provide/vod/"
-    },
-    {
-      "key": "73b5c89acc8a7c24118857fc514e9218",
-      "name": "33-非凡",
-      "type": 1,
-      "api": "http://ffzy3.tv/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1
+      "api": "https://www.mdzyapi.com/api.php/provide/vod/"
     },
     {
       "key": "ad1116ca9a9b3057570066086c9c9698",
@@ -463,186 +246,155 @@
       "quickSearch": 1
     },
     {
-      "key": "光速资源",
-      "name": "🎀光速┃采集",
+      "key": "hiker-13",
+      "name": "84-hiker",
       "type": 1,
-      "api": "http://api.guangsuapi.com/api.php/provide/vod/",
+      "api": "https://vod38.com/api.php/provide/vod/",
       "searchable": 1,
-      "changeable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "drpy_js_斗鱼直播",
+      "name": "斗鱼┃直播",
+      "type": 3,
+      "api": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/libs/drpy2.min.js",
+      "ext": "https://ghproxy.net/https://raw.githubusercontent.com/hjdhnx/dr_py/main/js/斗鱼直播.js"
+    },
+    {
+      "key": "vod_卧龙",
+      "name": "16-️🚀卧龙",
+      "type": 1,
+      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
+      "api": "https://collect.wolongzyw.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "hiker-4",
+      "name": "76-hiker",
+      "type": 1,
+      "api": "https://m3u8.apiyhzy.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "索尼资源",
+      "name": "索尼┃资源",
+      "type": 1,
+      "api": "https://suoniapi.com/api.php/provide/vod/from/snm3u8/",
       "categories": [
-        "电影",
-        "电视剧",
-        "综艺",
-        "动漫",
         "动作片",
         "喜剧片",
         "爱情片",
         "科幻片",
-        "剧情片",
         "恐怖片",
+        "剧情片",
         "战争片",
-        "大陆剧",
-        "欧美剧",
-        "港澳剧",
-        "韩剧",
-        "动漫电影",
-        "日剧",
-        "台湾剧",
-        "泰剧",
-        "记录片",
-        "伦理片",
-        "体育赛事",
-        "短剧"
-      ]
-    },
-    {
-      "key": "金牌影视",
-      "name": "金牌｜影视",
-      "type": 3,
-      "api": "http://150.158.112.123/jar/py/jp.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "playerType": 2,
-      "ext": {
-        "site": "https://www.hkybqufgh.com,https://www.sizhengxt.com,https://0996zp.com,https://9zhoukj.com/,https://www.sizhengxt.com,https://www.tjrongze.com,https://www.jiabaide.cn,https://cqzuoer.com"
-      }
-    },
-    {
-      "key": "小鸡资源站",
-      "name": "小鸡资源站",
-      "type": 1,
-      "api": "https://xingba111.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
-    },
-    {
-      "key": "番茄资源",
-      "name": "番茄资源",
-      "type": 1,
-      "api": "https://fqzy.me/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
-    },
-    {
-      "key": "玉兔资源",
-      "name": "玉兔资源",
-      "type": 1,
-      "api": "https://yutuzy3.com/api.php/provide/vod/?ac=list",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0
-    },
-    {
-      "key": "3b413ffe4c72f0b8f99ca6a868075d99",
-      "name": "51-U酷",
-      "type": 1,
-      "api": "https://api.ukuapi88.com/api.php/provide/vod/"
-    },
-    {
-      "key": "cc8221d0e6ce9ce89d28e502caeb555d",
-      "name": "91-天涯",
-      "type": 1,
-      "api": "https://ty.tyyszy5.com/api.php/provide/vod/"
-    },
-    {
-      "key": "58动漫网",
-      "name": "动漫🐟58",
-      "type": 3,
-      "api": "https://www.yingm.cc/dm/js/drpy2.min.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "changeable": 1,
-      "ext": "https://www.yingm.cc/dm/js/58动漫.js"
-    },
-    {
-      "name": "瓜子 app",
-      "type": 1,
-      "api": "https://api.9cec79d.com"
-    },
-    {
-      "name": "丫丫",
-      "type": 1,
-      "api": "https://cj.yayazy.net/api.php/provide/vod/"
-    },
-    {
-      "key": "kuaichezy.com",
-      "name": "快车资源",
-      "type": 1,
-      "api": "https://caiji.kuaichezy.org/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "categories": [
         "国产剧",
+        "欧美剧",
         "韩剧",
         "日剧",
-        "欧美剧",
-        "海外剧",
         "港剧",
         "台剧",
         "泰剧",
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "演唱会",
-        "4K电影",
-        "动画片",
-        "战争片",
-        "纪录片",
-        "大陆综艺",
-        "日韩综艺",
-        "港台综艺",
-        "欧美综艺",
-        "伦理",
-        "港台三级",
-        "韩国伦理",
-        "日本伦理",
-        "西方伦理"
-      ]
-    },
-    {
-      "key": "mtzy.me",
-      "name": "茅台资源",
-      "type": 1,
-      "api": "https://caiji.maotaizy.cc/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "categories": [
-        "国产剧",
-        "韩剧",
-        "日本剧",
-        "欧美剧",
-        "香港剧",
-        "台湾剧",
         "海外剧",
-        "泰国剧",
-        "动作片",
-        "爱情片",
-        "喜剧片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片",
-        "惊悚片",
         "纪录片",
-        "综艺片",
-        "伦理片",
-        "演唱会",
         "大陆综艺",
         "日韩综艺",
         "港台综艺",
         "欧美综艺",
         "国产动漫",
-        "日本动漫",
+        "日韩动漫",
         "欧美动漫",
-        "海外动漫"
+        "动画片",
+        "港台动漫",
+        "海外动漫",
+        "演唱会",
+        "体育赛事",
+        "篮球",
+        "足球",
+        "预告片",
+        "斯诺克",
+        "影视解说"
+      ],
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "(18+)SS资源",
+      "name": "(18+)SS资源",
+      "type": 0,
+      "api": "http://secj8.com/inc/sapi.php?ac=videolist",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
+    },
+    {
+      "key": "新浪影视",
+      "name": "新浪影视",
+      "type": 1,
+      "api": "http://api.xinlangapi.com/xinlangapi.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "categories": [
+        "国产剧",
+        "短剧",
+        "韩国剧",
+        "香港剧",
+        "台湾剧",
+        "欧美剧",
+        "动作片",
+        "科幻片",
+        "战争片",
+        "奇幻片",
+        "喜剧片",
+        "爱情片",
+        "恐怖片",
+        "犯罪片",
+        "悬疑片",
+        "惊悚片",
+        "剧情片",
+        "冒险片",
+        "记录片",
+        "动作片",
+        "日本剧",
+        "泰剧",
+        "国产综艺",
+        "港台综艺",
+        "欧美综艺",
+        "日韩综艺",
+        "国产动漫",
+        "港台动漫",
+        "日韩动漫"
       ]
+    },
+    {
+      "key": "樱花采集",
+      "name": "樱花",
+      "type": 1,
+      "searchable": 1,
+      "quickSearch": 1,
+      "api": "https://m3u8.apiyhzy.com/api.php/provide/vod/?ac=list",
+      "playUrl": "https://jx.yhzybf.com/player/jx.php?url="
+    },
+    {
+      "key": "★精工厂资源",
+      "name": "★精工厂资源",
+      "type": 0,
+      "api": "https://www.016caiji.com/home/cjapi/7cbbc409ec990f19c78c75bd1e06f215/vod/xml",
+      "playUrl": "",
+      "categories": [],
+      "quickSearch": 0
+    },
+    {
+      "key": "91md",
+      "name": "老司机②",
+      "type": 1,
+      "api": "https://91md.me/api.php/provide/vod/from/mdm3u8/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
     }
   ],
   "lives": [
@@ -11808,6 +11560,17 @@
           "name": "live",
           "urls": [
             "proxy://do=live&type=txt&ext="
+          ]
+        }
+      ]
+    },
+    {
+      "group": "redirect",
+      "channels": [
+        {
+          "name": "live",
+          "urls": [
+            "proxy://do=live&type=txt&ext=aHR0cHM6Ly9hZ2l0LmFpL2hmcjExMDcvdnZib3gvcmF3L2JyYW5jaC9tYWluL2xpdmUvbGl2ZS50eHQ="
           ]
         }
       ]
