@@ -1,0 +1,41 @@
+name: Cleanup Proxies in config.yaml
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  cleanup-proxies:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Install dependencies
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      # Run cleanup script
+      - name: Clean up config.yaml
+        run: python cleanup_proxies.py
+
+      # Commit and push changes
+      - name: Commit changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add config.yaml
+          git commit -m 'Clean up proxies in config.yaml'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
