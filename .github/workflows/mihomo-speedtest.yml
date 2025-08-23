@@ -20,7 +20,11 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y uuid-runtime yq
+          sudo apt-get install -y uuid-runtime
+          # 安装最新版本的 yq
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+          yq --version
 
       - name: Install Clash
         run: |
@@ -38,17 +42,31 @@ jobs:
       - name: Validate link.yaml
         run: |
           if [ ! -f "link.yaml" ]; then
-            echo "Error: link.yaml not found"
+            echo "Error: link.yaml not found in repository"
+            exit 1
+          fi
+          # 输出 link.yaml 内容供调试
+          echo "link.yaml content:"
+          cat link.yaml
+          # 检查是否为空文件
+          if [ ! -s "link.yaml" ]; then
+            echo "Error: link.yaml is empty"
             exit 1
           fi
           # 检查 proxies 字段
-          if ! yq e '.proxies' link.yaml > /dev/null; then
-            echo "Error: link.yaml must include 'proxies' field"
+          if ! yq eval '.proxies' link.yaml > /dev/null 2>&1; then
+            echo "Error: link.yaml must include a valid 'proxies' field"
+            echo "Possible issues: missing 'proxies' key, invalid YAML syntax, or empty proxies list"
+            exit 1
+          fi
+          # 检查 proxies 是否为空
+          if [ "$(yq eval '.proxies | length' link.yaml)" -eq 0 ]; then
+            echo "Error: 'proxies' field is empty in link.yaml"
             exit 1
           fi
           # 检查 UUID 格式
           echo "Validating proxy UUIDs..."
-          invalid_uuids=$(yq e '.proxies[] | select(.uuid != null and .uuid != "" and .uuid | test("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") | not) | .name' link.yaml)
+          invalid_uuids=$(yq eval '.proxies[] | select(.uuid != null and .uuid != "" and .uuid | test("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") | not) | .name' link.yaml)
           if [ -n "$invalid_uuids" ]; then
             echo "Error: Invalid UUIDs found in the following proxies:"
             echo "$invalid_uuids"
@@ -56,7 +74,7 @@ jobs:
           fi
           # 检查长 Host 头
           echo "Checking for overly long Host headers..."
-          long_hosts=$(yq e '.proxies[] | select(.ws-opts.headers.Host != null and .ws-opts.headers.Host | length > 100) | .name' link.yaml)
+          long_hosts=$(yq eval '.proxies[] | select(.ws-opts.headers.Host != null and .ws-opts.headers.Host | length > 100) | .name' link.yaml)
           if [ -n "$long_hosts" ]; then
             echo "Warning: Overly long Host headers found in proxies:"
             echo "$long_hosts"
@@ -66,7 +84,7 @@ jobs:
         run: |
           cp link.yaml link.yaml.bak
           # 添加全局配置
-          yq e -i '
+          yq eval -i '
             .mixed-port = 7890 |
             .external-controller = "127.0.0.1:9090" |
             .allow-lan = true |
@@ -74,7 +92,7 @@ jobs:
             .log-level = "info"
           ' link.yaml
           # 移除 flow: null
-          yq e -i '.proxies[].flow |= (if . == "null" then null else . end)' link.yaml
+          yq eval -i '.proxies[].flow |= (if . == "null" then null else . end)' link.yaml
           # 输出修改后的内容
           echo "Modified link.yaml content:"
           cat link.yaml
