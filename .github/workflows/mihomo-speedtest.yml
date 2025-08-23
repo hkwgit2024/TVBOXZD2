@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   test:
@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Clash
         run: |
-          # 下载 Clash（请替换为适合的版本和架构，示例为 Clash Meta Linux AMD64）
+          # 下载 Clash Meta（替换为适合的版本和架构）
           wget https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz
           gunzip mihomo-linux-amd64-v1.18.9.gz
           chmod +x mihomo-linux-amd64-v1.18.9
@@ -38,11 +38,30 @@ jobs:
             exit 1
           fi
 
+      - name: Verify Clash Configuration
+        run: |
+          # 检查 link.yaml 是否包含 external-controller
+          if ! grep -q "external-controller" link.yaml; then
+            echo "Error: link.yaml must include external-controller (e.g., 'external-controller: 127.0.0.1:9090')"
+            exit 1
+          fi
+          # 检查代理端口配置
+          if ! grep -q "mixed-port\|port\|socks-port" link.yaml; then
+            echo "Error: link.yaml must include proxy port (e.g., 'mixed-port: 7890')"
+            exit 1
+          fi
+
       - name: Run Clash
         run: |
           clash -f link.yaml &
           CLASH_PID=$!
-          sleep 5  # 等待 Clash 启动
+          sleep 20  # 增加等待时间，确保 Clash 完全启动
+          # 验证 Clash 外部控制器是否可用
+          if ! curl -s --connect-timeout 5 http://127.0.0.1:9090/version; then
+            echo "Error: Failed to connect to Clash external controller at http://127.0.0.1:9090"
+            kill $CLASH_PID
+            exit 1
+          fi
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
 
       - name: Run clash-speedtest
@@ -68,11 +87,12 @@ jobs:
       - name: Cleanup Clash
         if: always()
         run: |
-          if [ -n "${CLASH_PID}" ]; then
+          if [ -n "${CLASH_PID}" ] && ps -p ${CLASH_PID} > /dev/null; then
             kill ${CLASH_PID}
           fi
 
       - name: Upload Results
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: clash-yaml
