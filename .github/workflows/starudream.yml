@@ -34,6 +34,13 @@ jobs:
           chmod +x mihomo-linux-amd64-v1.17.0
           sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
       
+      - name: 下载并安装 yq 工具
+        run: |
+          # 下载 go-yq 的最新版本
+          wget https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64 -O yq_linux_amd64
+          chmod +x yq_linux_amd64
+          sudo mv yq_linux_amd64 /usr/local/bin/yq
+
       - name: 备份上次运行结果
         run: |
           TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
@@ -46,18 +53,15 @@ jobs:
 
       - name: 下载并处理订阅文件
         run: |
-          # 确保安装 yq 工具
-          sudo apt-get update && sudo apt-get install -y yq
-          
           wget -O full-config.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml"
           
-          # 使用 yq 创建一个只包含 proxies 的新 YAML 文件
-          yq -o=json '.proxies' full-config.yaml | yq -P '{"proxies": .}' > clash-config.yaml
+          # 使用 go-yq 创建一个只包含 proxies 的新 YAML 文件
+          yq '.proxies = .proxies' full-config.yaml > clash-config.yaml
       
       - name: 启动 Mihomo
         run: |
           mihomo -f clash-config.yaml -d . &
-          sleep 18 # 增加等待时间，确保 Mihomo 完全启动
+          sleep 10 # 增加等待时间，确保 Mihomo 完全启动
 
       - name: 运行测速并筛选节点
         run: |
