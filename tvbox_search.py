@@ -224,7 +224,7 @@ async def process_query(query: str, github_token: str, processed_urls: Set[str],
 
 async def main():
     """主函数，负责执行搜索和文件处理"""
-    github_token = os.environ.get("GITHUB_TOKEN")
+    github_token = os.environ.get("BOT")
     if not github_token:
         logger.error("请设置 GITHUB_TOKEN 环境变量以使用 GitHub API。")
         sys.exit(1)
