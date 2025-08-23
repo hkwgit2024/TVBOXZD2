@@ -31,14 +31,7 @@ jobs:
           
           # 将可执行文件移动到 PATH 目录
           sudo mv clash-speedtest /usr/local/bin/
-      
-      - name: 下载并安装 mihomo 二进制文件
-        run: |
-          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.17.0/mihomo-linux-amd64-v1.17.0.gz
-          gunzip mihomo-linux-amd64-v1.17.0.gz
-          chmod +x mihomo-linux-amd64-v1.17.0
-          sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
-      
+
       - name: 备份上次运行结果
         run: |
           TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
@@ -48,26 +41,15 @@ jobs:
           else
             echo "clash.yaml 文件不存在，跳过备份。"
           fi
-
-      - name: 下载并启动 Mihomo
-        run: |
-          wget -O clash-config.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml"
-          mihomo -f clash-config.yaml -d . &
-          sleep 25 # 等待 mihomo 启动
-
+      
       - name: 运行测速并筛选节点
         run: |
-          clash-speedtest --clash-proxy "http://127.0.0.1:7890" \
-                          --threads 15 \
-                          --includes ".*" \
-                          --excludes "测试" \
-                          --output clash.yaml
+          clash-speedtest -y \
+                          -i ".*" \
+                          -o clash.yaml \
+                          --clash-proxy "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml" \
+                          --threads 15
       
-      - name: 停止 Mihomo 进程
-        if: always()
-        run: |
-          pkill mihomo || true
-
       - name: 提交并推送更改
         run: |
           git config --global user.name 'github-actions'
