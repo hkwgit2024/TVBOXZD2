@@ -8,11 +8,12 @@ import json
 import re
 import random
 import concurrent.futures
+import socket # 新增：用于域名解析
 from urllib.parse import urlparse, unquote, urljoin, parse_qs
 from collections import OrderedDict, defaultdict
 from html.parser import HTMLParser
 from tqdm import tqdm
-from ip_geolocation import GeoLite2Country # 导入 GeoLite2Country 类
+from ip_geolocation import GeoLite2Country
 
 # 全局变量
 LOG_FILE = "link_processing.log"
@@ -453,18 +454,14 @@ def save_summary_to_csv(summary_data, filename='link.csv'):
         print(f"无法保存文件 {filename}: {e}")
         
 def generate_unique_name(base_name, name_counts):
-    if base_name not in name_counts:
-        name_counts[base_name] = 0
-    name_counts[base_name] += 1
+    name_counts[base_name] = name_counts.get(base_name, 0) + 1
     return f"{base_name}_{name_counts[base_name]}"
-
 
 if __name__ == "__main__":
     links = get_links_from_local_file()
     all_nodes = []
     nodes_summary = []
     
-    # 确保日志文件存在且被清空
     with open(LOG_FILE, 'w', encoding='utf-8') as f:
         f.write("跳过节点日志\n================\n")
     
@@ -493,16 +490,18 @@ if __name__ == "__main__":
     if os.path.exists(db_path):
         with GeoLite2Country(db_path) as geo_locator:
             for node in all_nodes:
-                server_ip = node.get('server')
-                if server_ip and '.' in server_ip: # 仅对IPv4地址进行地理位置查询
+                server = node.get('server')
+                country_name = "未知地区" # 默认值
+                if server:
                     try:
-                        _, country_name = geo_locator.get_location(server_ip)
-                        node['name'] = country_name
-                    except Exception as e:
-                        print(f"无法获取 IP {server_ip} 的地理位置: {e}")
-                        node['name'] = "未知地区"
-                else:
-                    node['name'] = "未知地区" # 非IPv4地址或无效地址的默认命名
+                        # 尝试将服务器地址解析为 IP 地址
+                        ip_address = socket.gethostbyname(server)
+                        # 使用解析出的 IP 地址进行地理位置查询
+                        _, country_name = geo_locator.get_location(ip_address)
+                    except (socket.gaierror, Exception) as e:
+                        print(f"无法解析或获取 IP {server} 的地理位置: {e}")
+                        # 保持默认值 "未知地区"
+                node['name'] = country_name
     else:
         print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
 
