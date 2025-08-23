@@ -42,8 +42,9 @@ jobs:
         run: |
           mihomo-speedtest-rs -u "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml" \
                             --output clash.yaml \
-                            --max-latency 808ms \
-                            --min-download-speed 18.8
+                            --max-latency 500ms \
+                            --min-download-speed 15 \
+                            --max-concurrent 15
       
       - name: 提交并推送更改
         run: |
