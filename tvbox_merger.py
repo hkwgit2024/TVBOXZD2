@@ -7,9 +7,9 @@ import asyncio
 import aiohttp
 from urllib.parse import urlparse
 
-# Configure logging with DEBUG level
+# Configure logging with INFO level
 logging.basicConfig(
-    level=logging.INFO, # 默认改为 INFO，减少不必要的 DEBUG 输出
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
@@ -106,7 +106,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
             data = json.loads(content)
             
             # Case 1: The file is a complete config with 'sites', 'lives', etc.
-            if isinstance(data, dict) and 'sites' in data:
+            if isinstance(data, dict) and ('sites' in data or 'lives' in data or 'spider' in data):
                 all_sites = data.get('sites', [])
                 all_lives = data.get('lives', [])
                 all_spider = [data.get('spider', "")]
@@ -121,8 +121,16 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                     else:
                         logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
                 
-                # Lives don't need URL validation, so just add them
-                lives.extend(all_lives)
+                # Filter live channels to ensure they follow official format and are not proxy links
+                for live_channel in all_lives:
+                    if isinstance(live_channel, dict) and 'url' in live_channel:
+                        # Exclude any entry using the 'proxy://' protocol
+                        if live_channel['url'].startswith('proxy://'):
+                            logger.warning(f"Excluding non-standard proxy live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
+                        else:
+                            lives.append(live_channel)
+                    elif 'channels' in live_channel or 'group' in live_channel:
+                        logger.warning(f"Excluding non-standard grouped live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
                 
                 if all_spider and all_spider[0]:
                     spider.extend(all_spider)
