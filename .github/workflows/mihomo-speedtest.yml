@@ -1,66 +1,79 @@
-name: mihomo-speedtest
+name: Clash Speedtest
 
 on:
   push:
-    paths:
-      - '.github/workflows/mihomo-speedtest.yml'
-      
-  schedule:
-    - cron: '0 */3 * * *'
-  # 允许手动触发
-  workflow_dispatch:
-
-env:
-  TZ: Asia/Shanghai
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
-  run-speedtest:
+  test:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: 检出仓库代码
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      
-      - name: 设置 Rust 环境
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      
-      - name: 安装 mihomo-speedtest-rs 工具
+
+      - name: Install Clash
         run: |
-          cargo install mihomo-speedtest-rs
-          # 将 Rust 安装目录添加到 PATH，以便后续步骤能找到命令
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-      
-      - name: 备份上次运行结果
+          # 下载 Clash（请替换为适合的版本和架构，示例为 Clash Meta Linux AMD64）
+          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz
+          gunzip mihomo-linux-amd64-v1.18.9.gz
+          chmod +x mihomo-linux-amd64-v1.18.9
+          mv mihomo-linux-amd64-v1.18.9 /usr/local/bin/clash
+
+      - name: Download clash-speedtest
         run: |
-          TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
-          cp clash.yaml sc/clash_$TIMESTAMP.yaml
-          echo "已成功备份 clash.yaml 到 sc/clash_$TIMESTAMP.yaml"
-      
-      - name: 运行测速并筛选节点
+          wget https://github.com/starudream/clash-speedtest/releases/download/v3.0.1/clash-speedtest_v3.0.1_linux_amd64.tar.gz
+          tar -zxvf clash-speedtest_v3.0.1_linux_amd64.tar.gz
+          chmod +x clash-speedtest
+
+      - name: Check link.yaml
         run: |
-          mihomo-speedtest-rs -u "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml" \
-                            --output clash.yaml \
-                            --max-latency 500ms \
-                            --min-download-speed 15 \
-                            --max-concurrent 15
-      
-      - name: 提交并推送更改
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          
-          git add clash.yaml sc/
-          
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: Update and filter Clash nodes via speedtest"
-            
-            for i in {1..3}; do
-              git pull --rebase
-              git push && break
-              sleep 5
-            done
-          else
-            echo "没有节点更改，无需提交。"
+          if [ ! -f "link.yaml" ]; then
+            echo "Error: link.yaml not found"
+            exit 1
           fi
+
+      - name: Run Clash
+        run: |
+          clash -f link.yaml &
+          CLASH_PID=$!
+          sleep 5  # 等待 Clash 启动
+          echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
+
+      - name: Run clash-speedtest
+        run: |
+          ./clash-speedtest \
+            --clash-addr http://127.0.0.1:9090 \
+            --clash-proxy http://127.0.0.1:7890 \
+            -d cloudflare \
+            -r 20 \
+            -t 3 \
+            -y \
+            -o ./clash.yaml
+
+      - name: Check clash.yaml
+        run: |
+          if [ -f "clash.yaml" ]; then
+            echo "Test completed, results saved to clash.yaml"
+          else
+            echo "Error: Failed to generate clash.yaml"
+            exit 1
+          fi
+
+      - name: Cleanup Clash
+        if: always()
+        run: |
+          if [ -n "${CLASH_PID}" ]; then
+            kill ${CLASH_PID}
+          fi
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: clash-yaml
+          path: clash.yaml
