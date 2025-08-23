@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Clash
         run: |
-          # 下载 Clash Meta（替换为适合的版本和架构）
+          # 下载 Clash Meta (Mihomo) v1.18.9 Linux AMD64
           wget https://github.com/MetaCubeX/mihomo/releases/download/v1.18.9/mihomo-linux-amd64-v1.18.9.gz
           gunzip mihomo-linux-amd64-v1.18.9.gz
           chmod +x mihomo-linux-amd64-v1.18.9
@@ -42,35 +42,56 @@ jobs:
         run: |
           # 备份原始 link.yaml
           cp link.yaml link.yaml.bak
-          # 检查并添加 external-controller 和 mixed-port
+          
+          # 添加必要的全局配置（如果缺失）
           if ! grep -q "external-controller" link.yaml; then
-            echo "external-controller: 127.0.0.1:9090" >> link.yaml
+            sed -i '1i external-controller: 127.0.0.1:9090' link.yaml
             echo "Added external-controller to link.yaml"
           fi
-          if ! grep -q "mixed-port\|port\|socks-port" link.yaml; then
-            echo "mixed-port: 7890" >> link.yaml
+          if ! grep -q "mixed-port" link.yaml; then
+            sed -i '1i mixed-port: 7890' link.yaml
             echo "Added mixed-port to link.yaml"
           fi
+          if ! grep -q "allow-lan" link.yaml; then
+            sed -i '1i allow-lan: true' link.yaml
+            echo "Added allow-lan to link.yaml"
+          fi
+          if ! grep -q "mode" link.yaml; then
+            sed -i '1i mode: rule' link.yaml
+            echo "Added mode to link.yaml"
+          fi
+          if ! grep -q "log-level" link.yaml; then
+            sed -i '1i log-level: info' link.yaml
+            echo "Added log-level to link.yaml"
+          fi
+          
           # 验证 proxies 字段是否存在
           if ! grep -q "proxies:" link.yaml; then
             echo "Error: link.yaml must include 'proxies' field"
             exit 1
           fi
-          # 输出修改后的 link.yaml 供调试
+          
+          # 输出修改后的 link.yaml 内容供调试
           echo "Modified link.yaml content:"
           cat link.yaml
 
       - name: Run Clash
         run: |
-          clash -f link.yaml &
+          clash -f link.yaml > clash_log.txt 2>&1 &
           CLASH_PID=$!
-          sleep 10  # 等待 Clash 完全启动
+          sleep 15  # 增加等待时间，确保 Clash 完全启动
+          
+          # 输出 Clash 日志供调试
+          echo "Clash startup log:"
+          cat clash_log.txt
+          
           # 验证 Clash 外部控制器
           if ! curl -s --connect-timeout 5 http://127.0.0.1:9090/version; then
             echo "Error: Failed to connect to Clash external controller at http://127.0.0.1:9090"
             kill $CLASH_PID
             exit 1
           fi
+          echo "Clash external controller is ready"
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
 
       - name: Run clash-speedtest
@@ -82,13 +103,18 @@ jobs:
             -r 20 \
             -t 3 \
             -y \
-            -o ./clash.yaml
+            -o ./clash.yaml > speedtest_log.txt 2>&1
+          
+          # 输出 clash-speedtest 日志供调试
+          echo "clash-speedtest log:"
+          cat speedtest_log.txt
 
       - name: Check clash.yaml
         run: |
           if [ -f "clash.yaml" ]; then
             echo "Test completed, results saved to clash.yaml"
-            cat clash.yaml  # 输出 clash.yaml 内容供调试
+            echo "clash.yaml content:"
+            cat clash.yaml
           else
             echo "Error: Failed to generate clash.yaml"
             exit 1
@@ -107,3 +133,12 @@ jobs:
         with:
           name: clash-yaml
           path: clash.yaml
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs
+          path: |
+            clash_log.txt
+            speedtest_log.txt
+            link.yaml.bak
