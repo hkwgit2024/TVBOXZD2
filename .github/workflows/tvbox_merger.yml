@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add box/ merged_tvbox_config.json
+          git add box/ merged_tvbox_config.json query_cache.json query_stats.json
           git commit -m "feat: automatically scrape, merge and update TVbox interfaces" || echo "No changes to commit"
           git pull --rebase origin main
           git push
