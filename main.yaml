@@ -5851,6 +5851,16 @@ proxies:
   servername: www.cdn77.com
   network: tcp
   flow: xtls-rprx-vision
+- type: vless
+  name: vless-sourceforge.net-2052
+  server: sourceforge.net
+  port: 2052
+  uuid: 18161878-c749-40fe-8146-8b061a41bd4f
+  network: ws
+  ws-opts:
+    path: /telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----telegram-@alo_v2rayng----hameV2rayGmSix6.6.6.6.ir.Com.Site.xn--fhq0la447aac5504dea701axr1g
+    headers:
+      Host: v2cityv2raygmsix6.6.6.6.ir.com.site.列列男事的事列上赛男.科斯涅過濾器斯.mobileiraniii.ir
 - type: trojan
   name: trojan-104.21.91.180-443
   server: 104.21.91.180
@@ -10708,6 +10718,16 @@ proxies:
   port: 80
   uuid: 7e90fe5e-4a91-b59d-9227-c562f1285ca2
 - type: vless
+  name: vless-lightning2025.top-621
+  server: lightning2025.top
+  port: 621
+  uuid: 2f7c37b9-6b0e-010c-20b7-b061c60181d7
+  network: ws
+  ws-opts:
+    path: /ws?ed=2048
+    headers:
+      Host: telewebion.com,user.telewebion.com,plus.telewebion.com,api.telewebion.com
+- type: vless
   name: vless-all2.golnar-clod.ir-8880
   server: all2.golnar-clod.ir
   port: 8880
@@ -14764,6 +14784,16 @@ proxies:
   uuid: df681322-6cfb-4ed1-9571-de0e88d7c888
   network: grpc
 - type: vless
+  name: vless-151.101.3.8-80_34
+  server: 151.101.3.8
+  port: 80
+  uuid: afdbecef-a23d-4900-9a1b-da854dad1a97
+  network: ws
+  ws-opts:
+    path: ?=9090
+    headers:
+      Host: External_Net.org
+- type: vless
   name: vless-188.245.182.67-8880
   server: 188.245.182.67
   port: 8880
@@ -15724,6 +15754,16 @@ proxies:
   port: 2020
   uuid: ccbda652-0f5d-4f19-a0fd-485def22d815
   network: tcp
+- type: vless
+  name: vless-ir.lightning2025.top-698
+  server: ir.lightning2025.top
+  port: 698
+  uuid: 7f23bb90-c4ad-0204-2d32-4886fcf69e75
+  network: ws
+  ws-opts:
+    path: /ws?ed=2048
+    headers:
+      Host: telewebion.com,user.telewebion.com,plus.telewebion.com,api.telewebion.com
 - type: vmess
   name: vmess-185.201.49.68-48086
   server: 185.201.49.68
@@ -18684,6 +18724,16 @@ proxies:
   servername: liV2raya.xn--mgbg0fka44dhgc.com
   network: grpc
 - type: vless
+  name: vless-104.31.16.160-80
+  server: 104.31.16.160
+  port: 80
+  uuid: 30bacb3e-a515-42bc-9e0b-5241f32e8080
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: 91.球运列11.tech
+- type: vless
   name: vless-www.visa.com-2083
   server: www.visa.com
   port: 2083
@@ -18805,6 +18855,26 @@ proxies:
   servername: microsoft.com
   network: grpc
 - type: vless
+  name: vless-shhproxy.varzesh3-cnd.site-80
+  server: shhproxy.varzesh3-cnd.site
+  port: 80
+  uuid: 18cabd6b-c83d-4063-a478-3cd7a2a82e34
+  network: ws
+  ws-opts:
+    path: /?ed=2048
+    headers:
+      Host: SHHPROXY-V2ray.斯涅過濾器69.website
+- type: vless
+  name: vless-WWW.SPEEDTEST.NET-2086
+  server: WWW.SPEEDTEST.NET
+  port: 2086
+  uuid: c142dd91-b36b-430b-b0d7-8c9c2a073a1e
+  network: ws
+  ws-opts:
+    path: /Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER-Telegram:@NUFiLTER
+    headers:
+      Host: uusaa.列列男事的事列上赛男78.shop
+- type: vless
   name: vless-abdzgg.teemazad.com-37062
   server: abdzgg.teemazad.com
   port: 37062
@@ -18819,6 +18889,16 @@ proxies:
   cipher: auto
   tls: true
   network: grpc
+- type: vless
+  name: vless-all.mdvpnsec.cfd-80
+  server: all.mdvpnsec.cfd
+  port: 80
+  uuid: 395dc4ac-0719-42ad-85f0-1df6f7cc9e9d
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: new-V2ray.斯涅過濾器69.website
 - type: vless
   name: vless-yb1p-783.f-sub.site-1113
   server: yb1p-783.f-sub.site
@@ -19128,6 +19208,16 @@ proxies:
   cipher: auto
   network: tcp
 - type: vless
+  name: vless-check-host.net-80
+  server: check-host.net
+  port: 80
+  uuid: 5563d1dc-3e84-4e4b-e569-ecfb96e8732a
+  network: ws
+  ws-opts:
+    path: /@client-proo-@client-proo-@client-proo-@client-proo-@client-proo
+    headers:
+      Host: a.列出男人的屁股他妈的哈梅内伊78.website
+- type: vless
   name: vless-91.99.168.213-44017
   server: 91.99.168.213
   port: 44017
@@ -19232,6 +19322,17 @@ proxies:
     path: /?ed=1861
     headers:
       Host: Bluewave.ai
+- type: vless
+  name: vless-cdnjs.com-80
+  server: cdnjs.com
+  port: 80
+  uuid: 6cc5b6b6-b3d2-4c60-8197-5defdc8d6aa1
+  servername: public.satoshi.mom
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      Host: public.列列男事的事列上赛男85.shop
 - type: vless
   name: vless-iranvipen.1dlkimi.ir-248_1
   server: iranvipen.1dlkimi.ir
