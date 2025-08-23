@@ -44,17 +44,27 @@ jobs:
           chmod +x mihomo-linux-amd64-v1.17.0
           sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
       
-
-          
-      - name: 启动 Mihomo
+      - name: 生成节点配置文件
         run: |
-          # 使用你的 link.yaml 文件启动 Mihomo
+          python link.py
+          
+      - name: 启动 Mihomo 并等待
+        run: |
+          # 确保 Mihomo 配置文件包含外部控制器地址
+          echo "external-controller: 127.0.0.1:9090" >> link.yaml
+          
+          # 在后台启动 Mihomo
           mihomo -f link.yaml -d . &
-          sleep 20 # 增加等待时间，确保 Mihomo 完全启动
-
+          
+          # 等待 Mihomo 进程启动并监听端口
+          for i in $(seq 1 10); do
+            nc -z 127.0.0.1 9090 && echo "Mihomo is ready!" && break
+            echo "Waiting for Mihomo to start... ($i/10)"
+            sleep 2
+          done
+          
       - name: 运行测速并筛选节点
         run: |
-          # 连接到正在运行的 Mihomo 实例进行测速
           clash-speedtest --clash-addr "http://127.0.0.1:9090" \
                           --clash-secret "" \
                           --clash-proxy "http://127.0.0.1:7890" \
