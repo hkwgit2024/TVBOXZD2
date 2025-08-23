@@ -46,19 +46,18 @@ jobs:
 
       - name: 下载并处理订阅文件
         run: |
+          # 确保安装 yq 工具
+          sudo apt-get update && sudo apt-get install -y yq
+          
           wget -O full-config.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml"
           
-          # 使用 yq 工具从完整配置中提取 proxies 列表
-          yq '.proxies' full-config.yaml > simple-proxies.yaml
-          
-          # 将提取的代理列表作为 Mihomo 的配置文件
-          mv simple-proxies.yaml clash-config.yaml
+          # 使用 yq 创建一个只包含 proxies 的新 YAML 文件
+          yq -o=json '.proxies' full-config.yaml | yq -P '{"proxies": .}' > clash-config.yaml
       
       - name: 启动 Mihomo
         run: |
-          # 在后台启动 Mihomo，使用仅包含代理列表的文件
           mihomo -f clash-config.yaml -d . &
-          sleep 25 # 增加等待时间，确保 Mihomo 完全启动
+          sleep 18 # 增加等待时间，确保 Mihomo 完全启动
 
       - name: 运行测速并筛选节点
         run: |
