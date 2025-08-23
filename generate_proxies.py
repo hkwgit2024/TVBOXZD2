@@ -35,8 +35,9 @@ def validate_host(host):
     # 解码 URL 编码字符
     host = unquote(host)
     # 移除空格和非法字符
-    host = host.strip()
-    if not host:
+    host = re.sub(r'\s+', '', host)
+    host = re.sub(r'[^a-zA-Z0-9\.:-]', '', host)
+    if not host or re.match(r'.*[\x00-\x1f\x7f-\xff].*', host):
         return False
     # 验证 IPv4
     if re.match(r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$', host):
