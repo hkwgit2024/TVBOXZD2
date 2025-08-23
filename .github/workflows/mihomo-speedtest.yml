@@ -38,25 +38,34 @@ jobs:
             exit 1
           fi
 
-      - name: Verify Clash Configuration
+      - name: Fix link.yaml Configuration
         run: |
-          # 检查 link.yaml 是否包含 external-controller
+          # 备份原始 link.yaml
+          cp link.yaml link.yaml.bak
+          # 检查并添加 external-controller 和 mixed-port
           if ! grep -q "external-controller" link.yaml; then
-            echo "Error: link.yaml must include external-controller (e.g., 'external-controller: 127.0.0.1:9090')"
-            exit 1
+            echo "external-controller: 127.0.0.1:9090" >> link.yaml
+            echo "Added external-controller to link.yaml"
           fi
-          # 检查代理端口配置
           if ! grep -q "mixed-port\|port\|socks-port" link.yaml; then
-            echo "Error: link.yaml must include proxy port (e.g., 'mixed-port: 7890')"
+            echo "mixed-port: 7890" >> link.yaml
+            echo "Added mixed-port to link.yaml"
+          fi
+          # 验证 proxies 字段是否存在
+          if ! grep -q "proxies:" link.yaml; then
+            echo "Error: link.yaml must include 'proxies' field"
             exit 1
           fi
+          # 输出修改后的 link.yaml 供调试
+          echo "Modified link.yaml content:"
+          cat link.yaml
 
       - name: Run Clash
         run: |
           clash -f link.yaml &
           CLASH_PID=$!
-          sleep 20  # 增加等待时间，确保 Clash 完全启动
-          # 验证 Clash 外部控制器是否可用
+          sleep 10  # 等待 Clash 完全启动
+          # 验证 Clash 外部控制器
           if ! curl -s --connect-timeout 5 http://127.0.0.1:9090/version; then
             echo "Error: Failed to connect to Clash external controller at http://127.0.0.1:9090"
             kill $CLASH_PID
@@ -79,6 +88,7 @@ jobs:
         run: |
           if [ -f "clash.yaml" ]; then
             echo "Test completed, results saved to clash.yaml"
+            cat clash.yaml  # 输出 clash.yaml 内容供调试
           else
             echo "Error: Failed to generate clash.yaml"
             exit 1
