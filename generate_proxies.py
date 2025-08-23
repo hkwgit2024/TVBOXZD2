@@ -11,9 +11,9 @@ FILE_URLS = {
     'all_unique_nodes': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt',
     'merged_configs': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt',
     'ha_link': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/link.yaml',
-    'vt_link': 'https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml'
-  #  '520_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml',
- #   'clash_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml'
+    'vt_link': 'https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml',
+   # '520_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml',
+   # 'clash_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml'
 }
 
 # 输出文件
@@ -47,7 +47,6 @@ def validate_host(host):
     # 验证 IPv6
     if re.match(r'^[0-9a-fA-F:]+$', host) and ':' in host:
         try:
-            # 简单检查 IPv6 格式
             parts = host.split(':')
             if len(parts) <= 8 and all(len(part) <= 4 for part in parts if part):
                 return True
@@ -60,6 +59,8 @@ def download_file(url):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"成功下载 {url}\n")
         return response.text
     except requests.RequestException as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
@@ -69,7 +70,10 @@ def download_file(url):
 # 解析 YAML 内容
 def parse_yaml_content(content):
     try:
-        return yaml.safe_load(content)
+        config = yaml.safe_load(content)
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"成功解析 YAML 内容\n")
+        return config
     except yaml.YAMLError as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
             f.write(f"解析 YAML 失败: {e}\n")
@@ -81,13 +85,14 @@ def parse_base64_nodes(content):
         decoded = base64.b64decode(content).decode('utf-8')
         return decoded.splitlines()
     except Exception:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"解析 Base64 内容失败\n")
         return None
 
 # 验证服务器地址和端口
 def validate_server_port(server, port):
     if not server or not isinstance(port, int) or port < 1 or port > 65535:
         return False
-    # 验证 IP 或域名格式
     if not re.match(r'^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|[a-zA-Z0-9][a-zA-Z0-9.-]*\.[a-zA-Z]{2,})$', server):
         return False
     return True
@@ -144,9 +149,9 @@ def parse_ss_node(line, name_counts, seen_nodes, source):
         if 'obfs' in query:
             node['plugin'] = 'obfs'
             node['plugin-opts'] = {'mode': query['obfs'][0]}
-            if 'obfs-password' not in query:
+            if 'obfs-password' not in query or not query['obfs-password'][0]:
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (缺少 obfs 密码)\n")
+                    f.write(f"跳过 Shadowsocks 节点（来源: {source}）: {line[:50]}... (缺少或无效 obfs 密码)\n")
                 return None
             node['plugin-opts']['password'] = query['obfs-password'][0]
         return node
@@ -204,9 +209,9 @@ def parse_vmess_node(line, name_counts, seen_nodes, source):
             node['network'] = config['net']
             if config['net'] == 'ws':
                 host = config.get('host', '')
-                if not validate_host(host):
+                if not host or not validate_host(host):  # 确保 host 不为空且有效
                     with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                        f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (无效 ws-opts.headers[Host]: {host})\n")
+                        f.write(f"跳过 VMess 节点（来源: {source}）: {line[:50]}... (无效或缺失 ws-opts.headers[Host]: {host})\n")
                     return None
                 node['ws-opts'] = {
                     'path': config.get('path', '/'),
@@ -306,9 +311,9 @@ def parse_hysteria2_node(line, name_counts, seen_nodes, source):
             node['sni'] = query['sni'][0]
         if 'obfs' in query:
             node['obfs'] = query['obfs'][0]
-            if 'obfs-password' not in query:
+            if 'obfs-password' not in query or not query['obfs-password'][0]:
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 Hysteria2 节点（来源: {source}）: {line[:50]}... (缺少 obfs 密码)\n")
+                    f.write(f"跳过 Hysteria2 节点（来源: {source}）: {line[:50]}... (缺少或无效 obfs 密码)\n")
                 return None
             node['obfs-password'] = query['obfs-password'][0]
         if 'skip-cert-verify' in query:
@@ -363,9 +368,9 @@ def parse_vless_node(line, name_counts, seen_nodes, source):
             node['network'] = query['type'][0]
             if query['type'][0] == 'ws':
                 host_header = query.get('host', [''])[0]
-                if not validate_host(host_header):
+                if not host_header or not validate_host(host_header):  # 确保 host 不为空且有效
                     with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                        f.write(f"跳过 VLESS 节点（来源: {source}）: {line[:50]}... (无效 ws-opts.headers[Host]: {host_header})\n")
+                        f.write(f"跳过 VLESS 节点（来源: {source}）: {line[:50]}... (无效或缺失 ws-opts.headers[Host]: {host_header})\n")
                     return None
                 node['ws-opts'] = {
                     'path': query.get('path', ['/'])[0],
@@ -399,6 +404,8 @@ def collect_proxies():
         f.write("跳过节点日志\n================\n")
 
     for key, url in FILE_URLS.items():
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"开始处理源文件: {key} ({url})\n")
         content = download_file(url)
         if content is None:
             continue
@@ -406,6 +413,8 @@ def collect_proxies():
         if 'link' in key:
             config = parse_yaml_content(content)
             if config and 'proxies' in config and isinstance(config['proxies'], list):
+                with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                    f.write(f"找到 {len(config['proxies'])} 个代理节点在 {key}\n")
                 for proxy in config['proxies']:
                     stats['total'] += 1
                     if not all(key in proxy for key in ['type', 'server', 'port']):
@@ -425,10 +434,10 @@ def collect_proxies():
                                 f.write(f"跳过 Shadowsocks 代理 {proxy.get('name', '未命名')}（来源: {key}）(不支持的加密方式: {proxy.get('cipher')})\n")
                             continue
                         if 'plugin' in proxy and proxy['plugin'] == 'obfs':
-                            if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts']:
+                            if 'plugin-opts' not in proxy or 'password' not in proxy['plugin-opts'] or not proxy['plugin-opts']['password']:
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少 obfs 密码)\n")
+                                    f.write(f"跳过 Shadowsocks 代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少或无效 obfs 密码)\n")
                                 continue
                         node_key = ('ss', proxy['server'], proxy['port'], proxy.get('password'))
                         if node_key in seen_nodes:
@@ -449,10 +458,10 @@ def collect_proxies():
                             continue
                         if 'network' in proxy and proxy['network'] == 'ws' and 'ws-opts' in proxy:
                             host = proxy['ws-opts'].get('headers', {}).get('Host', '')
-                            if not validate_host(host):
+                            if not host or not validate_host(host):  # 确保 host 不为空且有效
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效 ws-opts.headers[Host]: {host})\n")
+                                    f.write(f"跳过 VMess 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效或缺失 ws-opts.headers[Host]: {host})\n")
                                 continue
                         node_key = ('vmess', proxy['server'], proxy['port'], proxy.get('uuid'))
                         if node_key in seen_nodes:
@@ -470,10 +479,10 @@ def collect_proxies():
                             continue
                         seen_nodes.add(node_key)
                     elif proxy['type'] == 'hysteria2':
-                        if 'obfs' in proxy and 'obfs-password' not in proxy:
+                        if 'obfs' in proxy and ('obfs-password' not in proxy or not proxy.get('obfs-password')):
                             stats['invalid'] += 1
                             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write(f"跳过 Hysteria2 代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少 obfs 密码)\n")
+                                f.write(f"跳过 Hysteria2 代理 {proxy.get('name', '未命名')}（来源: {key}）(缺少或无效 obfs 密码)\n")
                             continue
                         node_key = ('hysteria2', proxy['server'], proxy['port'], proxy.get('password'))
                         if node_key in seen_nodes:
@@ -485,10 +494,10 @@ def collect_proxies():
                     elif proxy['type'] == 'vless':
                         if 'network' in proxy and proxy['network'] == 'ws' and 'ws-opts' in proxy:
                             host = proxy['ws-opts'].get('headers', {}).get('Host', '')
-                            if not validate_host(host):
+                            if not host or not validate_host(host):  # 确保 host 不为空且有效
                                 stats['invalid'] += 1
                                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                                    f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效 ws-opts.headers[Host]: {host})\n")
+                                    f.write(f"跳过 VLESS 代理 {proxy.get('name', '未命名')}（来源: {key}）(无效或缺失 ws-opts.headers[Host]: {host})\n")
                                 continue
                         if 'network' in proxy and proxy['network'] not in VALID_VLESS_NETWORKS:
                             stats['invalid'] += 1
@@ -516,6 +525,8 @@ def collect_proxies():
                     f.write(f"在 {key} 中未找到有效代理\n")
         else:
             lines = parse_base64_nodes(content) or content.splitlines()
+            with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                f.write(f"找到 {len(lines)} 行节点在 {key}\n")
             for line in lines:
                 line = line.strip()
                 if not line:
@@ -531,6 +542,10 @@ def collect_proxies():
                     stats['valid'] += 1
                 else:
                     stats['invalid'] += 1
+    # 确保生成非空的 main.yaml
+    if not proxies:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write("警告: 未生成任何有效代理节点，将生成空的 proxies 列表\n")
     return proxies, stats
 
 # 主函数
@@ -541,9 +556,13 @@ def main():
     try:
         with open(OUTPUT_FILE, 'w', encoding='utf-8') as file:
             yaml.safe_dump(output, file, allow_unicode=True, sort_keys=False)
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"成功创建 {OUTPUT_FILE}，包含 {len(proxies)} 个有效代理\n")
         print(f"成功创建 {OUTPUT_FILE}，包含 {len(proxies)} 个有效代理")
         print(f"统计信息: 总计={stats['total']}, 有效={stats['valid']}, 重复={stats['duplicates']}, 无效={stats['invalid']}")
     except Exception as e:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"写入 {OUTPUT_FILE} 失败: {e}\n")
         print(f"写入 {OUTPUT_FILE} 失败: {e}")
         exit(1)
 
