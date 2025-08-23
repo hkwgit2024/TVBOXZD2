@@ -10,8 +10,8 @@ import json
 FILE_URLS = {
    # 'all_unique_nodes': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt',
    # 'merged_configs': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt',
-   # 'ha_link': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/link.yaml',
-    'vt_link': 'https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml',
+    'ha_link': 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/link.yaml',
+   # 'vt_link': 'https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml',
   #  '520_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/520.yaml',
   #  'clash_link': 'https://raw.githubusercontent.com/qjlxg/aggregator/refs/heads/main/data/clash.yaml'
 }
