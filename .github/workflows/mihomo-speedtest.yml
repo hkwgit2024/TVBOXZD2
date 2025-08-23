@@ -1,4 +1,4 @@
-name: Clash Speedtest
+name: Speedtest with i-abc/Speedtest
 
 on:
   push:
@@ -20,9 +20,9 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y uuid-runtime
-          # 安装最新版本的 yq
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo apt-get install -y curl wget uuid-runtime yq
+          # 安装最新 yq 版本
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.35.2/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
           yq --version
 
@@ -33,108 +33,81 @@ jobs:
           chmod +x mihomo-linux-amd64-v1.18.9
           mv mihomo-linux-amd64-v1.18.9 /usr/local/bin/clash
 
-      - name: Download clash-speedtest
+      - name: Download i-abc/Speedtest
         run: |
-          wget https://github.com/starudream/clash-speedtest/releases/download/v3.0.1/clash-speedtest_v3.0.1_linux_amd64.tar.gz
-          tar -zxvf clash-speedtest_v3.0.1_linux_amd64.tar.gz
-          chmod +x clash-speedtest
+          wget https://raw.githubusercontent.com/i-abc/Speedtest/main/speedtest.sh
+          chmod +x speedtest.sh
 
       - name: Validate link.yaml
         run: |
           if [ ! -f "link.yaml" ]; then
-            echo "Error: link.yaml not found in repository"
+            echo "Error: link.yaml 文件不存在"
             exit 1
           fi
-          # 输出 link.yaml 内容供调试
-          echo "link.yaml content:"
-          cat link.yaml
-          # 检查是否为空文件
+          echo "link.yaml 内容："
+          cat link.yaml || echo "无法读取 link.yaml"
           if [ ! -s "link.yaml" ]; then
-            echo "Error: link.yaml is empty"
+            echo "Error: link.yaml 文件为空"
             exit 1
           fi
-          # 检查 proxies 字段
           if ! yq eval '.proxies' link.yaml > /dev/null 2>&1; then
-            echo "Error: link.yaml must include a valid 'proxies' field"
-            echo "Possible issues: missing 'proxies' key, invalid YAML syntax, or empty proxies list"
+            echo "Error: link.yaml 必须包含有效的 'proxies' 字段"
             exit 1
           fi
-          # 检查 proxies 是否为空
-          if [ "$(yq eval '.proxies | length' link.yaml)" -eq 0 ]; then
-            echo "Error: 'proxies' field is empty in link.yaml"
+          proxies_length=$(yq eval '.proxies | length' link.yaml)
+          if [ "$proxies_length" -eq 0 ]; then
+            echo "Error: proxies 字段为空"
             exit 1
           fi
-          # 检查 UUID 格式
-          echo "Validating proxy UUIDs..."
-          invalid_uuids=$(yq eval '.proxies[] | select(.uuid != null and .uuid != "" and .uuid | test("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") | not) | .name' link.yaml)
-          if [ -n "$invalid_uuids" ]; then
-            echo "Error: Invalid UUIDs found in the following proxies:"
-            echo "$invalid_uuids"
-            exit 1
-          fi
-          # 检查长 Host 头
-          echo "Checking for overly long Host headers..."
-          long_hosts=$(yq eval '.proxies[] | select(.ws-opts.headers.Host != null and .ws-opts.headers.Host | length > 100) | .name' link.yaml)
-          if [ -n "$long_hosts" ]; then
-            echo "Warning: Overly long Host headers found in proxies:"
-            echo "$long_hosts"
-          fi
+          echo "proxies 字段有效，包含 $proxies_length 个代理"
+
+      - name: Convert link.yaml to Speedtest Node List
+        run: |
+          # 创建节点表文件
+          echo "# 自定义代理节点表" > nodes.txt
+          yq eval '.proxies[] | "speedtest-go," + .name + "," + "--custom-url http://" + .server + ":" + (.port | tostring) + "/speedtest/upload.php --ping-mode http"' link.yaml >> nodes.txt
+          echo "节点表内容："
+          cat nodes.txt
 
       - name: Fix link.yaml Configuration
         run: |
           cp link.yaml link.yaml.bak
-          # 添加全局配置
           yq eval -i '
             .mixed-port = 7890 |
             .external-controller = "127.0.0.1:9090" |
             .allow-lan = true |
             .mode = "rule" |
-            .log-level = "info"
+            .log-level = "debug" |
+            .proxies[].flow |= (if . == "null" then null else . end) |
+            .proxies[].ws-opts.path |= (if . == "%2Fakamai" then "/akamai" else . end) |
+            .proxies[].ws-opts.path |= (if . == "%2Fkr" then "/kr" else . end)
           ' link.yaml
-          # 移除 flow: null
-          yq eval -i '.proxies[].flow |= (if . == "null" then null else . end)' link.yaml
-          # 输出修改后的内容
-          echo "Modified link.yaml content:"
+          echo "修改后的 link.yaml 内容："
           cat link.yaml
 
       - name: Run Clash
         run: |
           clash -f link.yaml > clash_log.txt 2>&1 &
           CLASH_PID=$!
-          sleep 15
-          echo "Clash startup log:"
+          sleep 20
+          echo "Clash 启动日志："
           cat clash_log.txt
           if ! curl -s --connect-timeout 5 http://127.0.0.1:9090/version; then
-            echo "Error: Failed to connect to Clash external controller at http://127.0.0.1:9090"
+            echo "Error: 无法连接 Clash 外部控制器 http://127.0.0.1:9090"
             kill $CLASH_PID 2>/dev/null || true
             exit 1
           fi
-          echo "Clash external controller is ready"
+          echo "Clash 外部控制器就绪"
           echo "CLASH_PID=$CLASH_PID" >> $GITHUB_ENV
 
-      - name: Run clash-speedtest
+      - name: Run Speedtest
+        env:
+          http_proxy: http://127.0.0.1:7890
+          https_proxy: http://127.0.0.1:7890
         run: |
-          ./clash-speedtest \
-            --clash-addr http://127.0.0.1:9090 \
-            --clash-proxy http://127.0.0.1:7890 \
-            -d cloudflare \
-            -r 20 \
-            -t 3 \
-            -y \
-            -o ./clash.yaml > speedtest_log.txt 2>&1
-          echo "clash-speedtest log:"
+          ./speedtest.sh -f nodes.txt > speedtest_log.txt 2>&1
+          echo "speedtest.sh 日志："
           cat speedtest_log.txt
-
-      - name: Check clash.yaml
-        run: |
-          if [ -f "clash.yaml" ]; then
-            echo "Test completed, results saved to clash.yaml"
-            echo "clash.yaml content:"
-            cat clash.yaml
-          else
-            echo "Error: Failed to generate clash.yaml"
-            exit 1
-          fi
 
       - name: Cleanup Clash
         if: always()
@@ -142,13 +115,6 @@ jobs:
           if [ -n "${CLASH_PID}" ] && ps -p ${CLASH_PID} > /dev/null; then
             kill ${CLASH_PID}
           fi
-
-      - name: Upload Results
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: clash-yaml
-          path: clash.yaml
 
       - name: Upload Logs
         if: always()
@@ -159,3 +125,4 @@ jobs:
             clash_log.txt
             speedtest_log.txt
             link.yaml.bak
+            nodes.txt
