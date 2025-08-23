@@ -7,9 +7,9 @@ import asyncio
 import aiohttp
 from urllib.parse import urlparse
 
-# Configure logging with INFO level
+# Configure logging with INFO level (DEBUG can be enabled via environment variable)
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG if os.getenv('DEBUG') else logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
@@ -112,36 +112,51 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 
                 # Validate and process sites
                 tasks = [is_valid_url(site.get('api', ''), session) for site in all_sites]
-                valid_results = await asyncio.gather(*tasks)
+                valid_results = await asyncio.gather(*tasks, return_exceptions=True)
 
                 for site, is_valid in zip(all_sites, valid_results):
                     if is_valid:
                         sites.append(site)
                     else:
                         logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
-                
+
                 # Validate and process live channels
                 live_tasks = []
                 valid_lives = []
                 for live_channel in all_lives:
                     if isinstance(live_channel, dict) and 'url' in live_channel:
-                        if not live_channel['url'].startswith('proxy://'):
-                            live_tasks.append(is_valid_url(live_channel['url'], session))
-                            valid_lives.append(live_channel)
-                        else:
+                        if live_channel['url'].startswith(('proxy://', 'plugin://')):
                             logger.warning(f"Excluding non-standard proxy live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
+                            continue
+                        elif live_channel['url'].startswith(('./', '/')):
+                            # Skip URL validation for local file paths
+                            lives.append(live_channel)
+                            logger.debug(f"Accepted local live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
+                            continue
+                        live_tasks.append(is_valid_url(live_channel['url'], session))
+                        valid_lives.append(live_channel)
                     elif 'channels' in live_channel or 'group' in live_channel:
                         logger.warning(f"Excluding non-standard grouped live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
 
-                valid_live_results = await asyncio.gather(*live_tasks)
+                valid_live_results = await asyncio.gather(*live_tasks, return_exceptions=True)
                 for live_channel, is_valid in zip(valid_lives, valid_live_results):
                     if is_valid:
                         lives.append(live_channel)
                     else:
                         logger.warning(f"Excluding invalid live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
                 
+                # Validate spider URL (optional, but recommended)
                 if all_spider and all_spider[0]:
-                    spider.extend(all_spider)
+                    if all_spider[0].startswith(('http://', 'https://')):
+                        if await is_valid_url(all_spider[0], session):
+                            spider.extend(all_spider)
+                            logger.debug(f"Valid spider URL from '{filepath}': {all_spider[0]}")
+                        else:
+                            logger.warning(f"Excluding invalid spider URL from '{filepath}': {all_spider[0]}")
+                    else:
+                        # Allow local spider paths without validation
+                        spider.extend(all_spider)
+                        logger.debug(f"Accepted local spider path from '{filepath}': {all_spider[0]}")
 
             # Case 2: The file is a single site object (new format)
             elif isinstance(data, dict) and 'api' in data and 'name' in data:
@@ -165,7 +180,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
 
 async def merge_files(source_files: List[str], output_file: str):
     """
-    Merge multiple JSON configuration files into a single one.
+    Merge multiple JSON configuration files into a single one, with deduplication.
     """
     logger.info("Starting file merging process...")
     sites: List[Dict[str, Any]] = []
@@ -174,7 +189,7 @@ async def merge_files(source_files: List[str], output_file: str):
 
     async with aiohttp.ClientSession() as session:
         tasks = [process_file(f, session) for f in source_files]
-        results = await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
         
         for result in results:
             if isinstance(result, tuple):
@@ -184,9 +199,13 @@ async def merge_files(source_files: List[str], output_file: str):
                 if file_spider and not spider:
                     spider.extend(file_spider)
 
+    # Deduplicate sites and lives based on 'api' and 'url'
+    unique_sites = {site.get('api', ''): site for site in sites if site.get('api')}.values()
+    unique_lives = {live.get('url', ''): live for live in lives if live.get('url')}.values()
+
     merged_data = {
-        "sites": sites,
-        "lives": lives,
+        "sites": list(unique_sites),
+        "lives": list(unique_lives),
         "spider": spider[0] if spider else ""
     }
 
@@ -194,7 +213,7 @@ async def merge_files(source_files: List[str], output_file: str):
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=2)
         logger.info(f"All configurations successfully merged and saved to '{output_file}'.")
-        logger.info(f"Total valid sites: {len(sites)}, Total lives: {len(lives)}")
+        logger.info(f"Total valid sites: {len(unique_sites)}, Total lives: {len(unique_lives)}")
     except Exception as e:
         logger.error(f"An error occurred while saving the merged file: {e}")
 
