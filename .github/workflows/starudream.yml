@@ -37,17 +37,36 @@ jobs:
           tar -xzvf clash-speedtest_v3.0.1_linux_amd64.tar.gz
           sudo mv clash-speedtest /usr/local/bin/
 
-
+      - name: 下载并安装 Mihomo 二进制文件
+        run: |
+          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.17.0/mihomo-linux-amd64-v1.17.0.gz
+          gunzip mihomo-linux-amd64-v1.17.0.gz
+          chmod +x mihomo-linux-amd64-v1.17.0
+          sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
       
+
+          
+      - name: 启动 Mihomo
+        run: |
+          # 使用你的 link.yaml 文件启动 Mihomo
+          mihomo -f link.yaml -d . &
+          sleep 20 # 增加等待时间，确保 Mihomo 完全启动
+
       - name: 运行测速并筛选节点
         run: |
-          # 明确指定输入文件为 link.yaml
-          clash-speedtest -c link.yaml \
+          # 连接到正在运行的 Mihomo 实例进行测速
+          clash-speedtest --clash-addr "http://127.0.0.1:9090" \
+                          --clash-secret "" \
                           --clash-proxy "http://127.0.0.1:7890" \
                           --threads 15 \
                           --includes ".*" \
                           --excludes "测试" \
                           --output clash.yaml
+      
+      - name: 停止 Mihomo 进程
+        if: always()
+        run: |
+          pkill mihomo || true
       
       - name: 提交并推送更改
         run: |
