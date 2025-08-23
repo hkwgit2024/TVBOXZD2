@@ -134,10 +134,10 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 for site in all_sites:
                     api_url = site.get('api', '')
                     # 检查并删除本地路径的jar和ext
-                    if site.get('jar', '').startswith('.'):
+                    if 'jar' in site and site.get('jar', '').startswith('.'):
                         logger.debug(f"从 '{filepath}' 中删除本地jar路径: {site.get('jar', '')}")
                         del site['jar']
-                    if site.get('ext', '').startswith('.'):
+                    if 'ext' in site and site.get('ext', '').startswith('.'):
                         logger.debug(f"从 '{filepath}' 中删除本地ext路径: {site.get('ext', '')}")
                         del site['ext']
 
@@ -188,10 +188,10 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
             elif isinstance(data, dict) and 'api' in data and 'name' in data:
                 site_url = data.get('api', '')
                 # 检查并删除本地路径的jar和ext
-                if data.get('jar', '').startswith('.'):
+                if 'jar' in data and data.get('jar', '').startswith('.'):
                     logger.debug(f"从 '{filepath}' 中删除本地jar路径: {data.get('jar', '')}")
                     del data['jar']
-                if data.get('ext', '').startswith('.'):
+                if 'ext' in data and data.get('ext', '').startswith('.'):
                     logger.debug(f"从 '{filepath}' 中删除本地ext路径: {data.get('ext', '')}")
                     del data['ext']
                 
