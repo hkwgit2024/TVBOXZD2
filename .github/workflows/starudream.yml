@@ -53,7 +53,7 @@ jobs:
         run: |
           wget -O clash-config.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml"
           mihomo -f clash-config.yaml -d . &
-          sleep 5 # 等待 mihomo 启动
+          sleep 25 # 等待 mihomo 启动
 
       - name: 运行测速并筛选节点
         run: |
