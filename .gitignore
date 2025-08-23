@@ -15,3 +15,4 @@ clash_startup.log
 !skipped_nodes.log
 output/invalid_iptv_sources.log
 output/final_iptv_sources.txt
+link_cache.sqlite
