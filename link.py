@@ -13,7 +13,6 @@ from urllib.parse import urlparse, unquote, urljoin, parse_qs
 from collections import OrderedDict, defaultdict
 from html.parser import HTMLParser
 from tqdm import tqdm
-from ip_geolocation import GeoLite2Country
 
 # 全局变量
 LOG_FILE = "link_processing.log"
@@ -486,8 +485,11 @@ if __name__ == "__main__":
     # 对节点进行地理位置识别和重命名
     db_path = "GeoLite2-Country.mmdb"
     if os.path.exists(db_path):
+        from ip_geolocation import GeoLite2Country
+        success_count = 0
+        failure_count = 0
         with GeoLite2Country(db_path) as geo_locator:
-            for node in all_nodes:
+            for node in tqdm(all_nodes, desc="地理位置识别"):
                 server = node.get('server')
                 country_name = "未知地区" # 默认值
                 if server:
@@ -496,11 +498,14 @@ if __name__ == "__main__":
                         ip_address = socket.gethostbyname(server)
                         # 使用解析出的 IP 地址进行地理位置查询
                         _, country_name = geo_locator.get_location(ip_address)
+                        success_count += 1
                     except (socket.gaierror, Exception) as e:
                         # 如果域名无法解析或发生其他错误，打印警告并使用默认值
-                        print(f"无法解析或获取 IP {server} 的地理位置: {e}")
+                        failure_count += 1
                         pass
                 node['name'] = country_name
+        
+        print(f"\n地理位置识别完成：成功 {success_count} 个，失败 {failure_count} 个。")
     else:
         print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
 
