@@ -89,8 +89,7 @@ async def is_valid_url(url: str, session: aiohttp.ClientSession) -> bool:
 
 async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[str]]:
     """
-    Read and parse a JSON file, filter sites with valid URLs, and extract sites, lives, and spider.
-    Now supports parsing a single site object in addition to a full config.
+    Read and parse a JSON file, filter sites and lives with valid URLs, and extract sites, lives, and spider.
     """
     sites: List[Dict[str, Any]] = []
     lives: List[Dict[str, Any]] = []
@@ -111,7 +110,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 all_lives = data.get('lives', [])
                 all_spider = [data.get('spider', "")]
                 
-                # Check each site's validity
+                # Validate and process sites
                 tasks = [is_valid_url(site.get('api', ''), session) for site in all_sites]
                 valid_results = await asyncio.gather(*tasks)
 
@@ -121,16 +120,25 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                     else:
                         logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
                 
-                # Filter live channels to ensure they follow official format and are not proxy links
+                # Validate and process live channels
+                live_tasks = []
+                valid_lives = []
                 for live_channel in all_lives:
                     if isinstance(live_channel, dict) and 'url' in live_channel:
-                        # Exclude any entry using the 'proxy://' protocol
-                        if live_channel['url'].startswith('proxy://'):
-                            logger.warning(f"Excluding non-standard proxy live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
+                        if not live_channel['url'].startswith('proxy://'):
+                            live_tasks.append(is_valid_url(live_channel['url'], session))
+                            valid_lives.append(live_channel)
                         else:
-                            lives.append(live_channel)
+                            logger.warning(f"Excluding non-standard proxy live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
                     elif 'channels' in live_channel or 'group' in live_channel:
                         logger.warning(f"Excluding non-standard grouped live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
+
+                valid_live_results = await asyncio.gather(*live_tasks)
+                for live_channel, is_valid in zip(valid_lives, valid_live_results):
+                    if is_valid:
+                        lives.append(live_channel)
+                    else:
+                        logger.warning(f"Excluding invalid live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
                 
                 if all_spider and all_spider[0]:
                     spider.extend(all_spider)
