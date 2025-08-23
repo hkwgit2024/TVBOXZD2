@@ -13,6 +13,7 @@ from urllib.parse import urlparse, unquote, urljoin, parse_qs
 from collections import OrderedDict, defaultdict
 from html.parser import HTMLParser
 from tqdm import tqdm
+from ip_geolocation import GeoLite2Country
 
 # 全局变量
 LOG_FILE = "link_processing.log"
@@ -390,7 +391,7 @@ def get_nodes_from_url(url):
                 
                 potential_links = [
                     link for link in parser.links 
-                    if link.endswith(('.yaml', '.txt', '.m3u')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'sub' in link.lower() or 'node' in link.lower()
+                    if link.endswith(('.yaml', '.txt', '.m3u', '.json')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'subscription' in link.lower()
                 ]
 
                 all_sub_nodes = []
