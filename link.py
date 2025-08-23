@@ -25,7 +25,7 @@ USER_AGENTS = [
     # Windows 10 Firefox
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
     # macOS Big Sur Safari
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.15 Safari/605.1.15',
     # iPad Pro Safari
     'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.77 Mobile/15E148 Safari/604.1',
     # iPhone Chrome
@@ -391,7 +391,7 @@ def get_nodes_from_url(url):
                 
                 potential_links = [
                     link for link in parser.links 
-                    if link.endswith(('.yaml', '.txt', '.m3u', '.json')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'subscription' in link.lower()
+                    if link.endswith(('.yaml', '.txt', '.json')) or 'clash' in link.lower() or 'v2ray' in link.lower() or 'subscription' in link.lower()
                 ]
 
                 all_sub_nodes = []
