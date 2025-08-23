@@ -44,9 +44,7 @@ jobs:
           chmod +x mihomo-linux-amd64-v1.17.0
           sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
       
-      - name: 生成节点配置文件
-        run: |
-          python link.py
+   
           
       - name: 启动 Mihomo 并等待
         run: |
