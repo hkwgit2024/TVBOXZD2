@@ -34,7 +34,9 @@ def strip_proxy(url: str) -> str:
         'https://ghp.ci/',
         'https://raw.gitmirror.com/',
         'https://github.3x25.com/',
-        'https://ghfast.top/'
+        'https://ghfast.top/',
+        'https://github.moeyy.xyz/',
+        'https://ghproxy.net/'
     ]
     for proxy in proxies:
         if url.startswith(proxy):
@@ -131,6 +133,14 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 tasks = []
                 for site in all_sites:
                     api_url = site.get('api', '')
+                    # 检查并删除本地路径的jar和ext
+                    if site.get('jar', '').startswith('.'):
+                        logger.debug(f"从 '{filepath}' 中删除本地jar路径: {site.get('jar', '')}")
+                        del site['jar']
+                    if site.get('ext', '').startswith('.'):
+                        logger.debug(f"从 '{filepath}' 中删除本地ext路径: {site.get('ext', '')}")
+                        del site['ext']
+
                     if api_url:
                         stripped_url = strip_proxy(api_url)
                         processed_url = add_gh_proxy_if_needed(stripped_url)
@@ -177,6 +187,14 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
             # 情况2: 文件是单个站点对象
             elif isinstance(data, dict) and 'api' in data and 'name' in data:
                 site_url = data.get('api', '')
+                # 检查并删除本地路径的jar和ext
+                if data.get('jar', '').startswith('.'):
+                    logger.debug(f"从 '{filepath}' 中删除本地jar路径: {data.get('jar', '')}")
+                    del data['jar']
+                if data.get('ext', '').startswith('.'):
+                    logger.debug(f"从 '{filepath}' 中删除本地ext路径: {data.get('ext', '')}")
+                    del data['ext']
+                
                 if site_url:
                     stripped_url = strip_proxy(site_url)
                     processed_url = add_gh_proxy_if_needed(stripped_url)
@@ -195,6 +213,22 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
         logger.error(f"处理文件 '{filepath}' 时发生错误: {e}")
     
     return sites, lives, spider
+
+def deduplicate_sources(sources: List[Dict[str, Any]], key_field: str) -> List[Dict[str, Any]]:
+    """
+    根据给定的字段（例如'api'或'url'）对源列表进行去重。
+    """
+    seen_urls = set()
+    deduplicated_list = []
+    for source in sources:
+        # 使用get方法来避免键不存在时出错
+        url = source.get(key_field)
+        if url and url not in seen_urls:
+            deduplicated_list.append(source)
+            seen_urls.add(url)
+        elif url:
+            logger.debug(f"已移除重复的源: {source.get('name', '未命名')} - {url}")
+    return deduplicated_list
 
 async def merge_files(source_files: List[str], output_file: str):
     """
@@ -216,10 +250,14 @@ async def merge_files(source_files: List[str], output_file: str):
                 lives.extend(file_lives)
                 if file_spider and not spider:
                     spider.extend(file_spider)
+    
+    # 对点播源和直播源进行去重
+    deduplicated_sites = deduplicate_sources(sites, 'api')
+    deduplicated_lives = deduplicate_sources(lives, 'url')
 
     merged_data = {
-        "sites": sites,
-        "lives": lives,
+        "sites": deduplicated_sites,
+        "lives": deduplicated_lives,
         "spider": spider[0] if spider else ""
     }
 
@@ -227,7 +265,7 @@ async def merge_files(source_files: List[str], output_file: str):
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=2)
         logger.info(f"所有配置已成功合并并保存到 '{output_file}'。")
-        logger.info(f"有效点播源总数: {len(sites)}, 有效直播源总数: {len(lives)}")
+        logger.info(f"有效去重后的点播源总数: {len(deduplicated_sites)}, 有效去重后的直播源总数: {len(deduplicated_lives)}")
     except Exception as e:
         logger.error(f"保存合并文件时发生错误: {e}")
 
@@ -235,7 +273,6 @@ if __name__ == "__main__":
     SOURCE_DIRECTORY = "box"
     OUTPUT_FILE = "merged_tvbox_config.json"
 
-    # 获取源目录下所有JSON和TXT文件的列表
     if os.path.exists(SOURCE_DIRECTORY) and os.path.isdir(SOURCE_DIRECTORY):
         source_files = [
             os.path.join(SOURCE_DIRECTORY, f)
