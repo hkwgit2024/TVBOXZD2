@@ -41,7 +41,7 @@ jobs:
       
       - name: 运行测速并筛选节点
         run: |
-          clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/main.yaml" \
+          clash-speedtest -c "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml" \
                           -output clash.yaml \
                           -max-latency 808ms \
                           -min-download-speed 18.8 \
