@@ -8,7 +8,7 @@ import json
 import re
 import random
 import concurrent.futures
-import socket # 新增：用于域名解析
+import socket
 from urllib.parse import urlparse, unquote, urljoin, parse_qs
 from collections import OrderedDict, defaultdict
 from html.parser import HTMLParser
@@ -138,9 +138,7 @@ def parse_vmess(vmess_url):
 def parse_ss(ss_url):
     try:
         if not ss_url.startswith('ss://'): return None
-        # 原始解析逻辑
         base64_content = ss_url.replace('ss://', '', 1)
-        # ... (保持原始逻辑不变)
         if '@' in base64_content:
             part1, part2 = base64_content.split('@', 1)
             decoded_part1 = base64.b64decode(part1.encode('utf-8')).decode('utf-8')
@@ -499,8 +497,9 @@ if __name__ == "__main__":
                         # 使用解析出的 IP 地址进行地理位置查询
                         _, country_name = geo_locator.get_location(ip_address)
                     except (socket.gaierror, Exception) as e:
+                        # 如果域名无法解析或发生其他错误，打印警告并使用默认值
                         print(f"无法解析或获取 IP {server} 的地理位置: {e}")
-                        # 保持默认值 "未知地区"
+                        pass
                 node['name'] = country_name
     else:
         print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
