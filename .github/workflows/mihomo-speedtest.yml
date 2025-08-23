@@ -1,9 +1,9 @@
-name: 测速
+name: mihomo-speedtest
 
 on:
   push:
     paths:
-      - '.github/workflows/xiecang-speed-test.yml'
+      - '.github/workflows/mihomo-speedtest.yml'
       
   schedule:
     - cron: '0 */3 * * *'
