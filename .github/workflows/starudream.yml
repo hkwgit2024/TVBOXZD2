@@ -23,15 +23,17 @@ jobs:
       
       - name: 下载并安装 clash-speedtest 工具
         run: |
-          # 下载最新的 Linux AMD64 版本
           wget https://github.com/starudream/clash-speedtest/releases/download/v3.0.1/clash-speedtest_v3.0.1_linux_amd64.tar.gz
-          
-          # 解压文件
           tar -xzvf clash-speedtest_v3.0.1_linux_amd64.tar.gz
-          
-          # 将可执行文件移动到 PATH 目录
           sudo mv clash-speedtest /usr/local/bin/
 
+      - name: 下载并安装 Mihomo 二进制文件
+        run: |
+          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.17.0/mihomo-linux-amd64-v1.17.0.gz
+          gunzip mihomo-linux-amd64-v1.17.0.gz
+          chmod +x mihomo-linux-amd64-v1.17.0
+          sudo mv mihomo-linux-amd64-v1.17.0 /usr/local/bin/mihomo
+      
       - name: 备份上次运行结果
         run: |
           TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
@@ -41,14 +43,37 @@ jobs:
           else
             echo "clash.yaml 文件不存在，跳过备份。"
           fi
+
+      - name: 下载并处理订阅文件
+        run: |
+          wget -O full-config.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml"
+          
+          # 使用 yq 工具从完整配置中提取 proxies 列表
+          yq '.proxies' full-config.yaml > simple-proxies.yaml
+          
+          # 将提取的代理列表作为 Mihomo 的配置文件
+          mv simple-proxies.yaml clash-config.yaml
       
+      - name: 启动 Mihomo
+        run: |
+          # 在后台启动 Mihomo，使用仅包含代理列表的文件
+          mihomo -f clash-config.yaml -d . &
+          sleep 25 # 增加等待时间，确保 Mihomo 完全启动
+
       - name: 运行测速并筛选节点
         run: |
-          clash-speedtest -y \
-                          -i ".*" \
-                          -o clash.yaml \
-                          --clash-proxy "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/clash_config.yaml" \
-                          --threads 15
+          clash-speedtest --clash-addr "http://127.0.0.1:9090" \
+                          --clash-secret "" \
+                          --clash-proxy "http://127.0.0.1:7890" \
+                          --threads 15 \
+                          --includes ".*" \
+                          --excludes "测试" \
+                          --output clash.yaml
+      
+      - name: 停止 Mihomo 进程
+        if: always()
+        run: |
+          pkill mihomo || true
       
       - name: 提交并推送更改
         run: |
