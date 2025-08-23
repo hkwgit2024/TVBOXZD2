@@ -1,0 +1,816 @@
+{
+    "spider": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1737725007229/f01242.txt;md5;c4745a1b57105d124cf1b429eba5d4bf",
+    "wallpaper": "https://\u6df1\u8272\u58c1\u7eb8.xxooo.cf/",
+    "sites": [
+        {
+            "key": "fyys",
+            "name": "\u2728\ufe0f\u798f\u97f3\u2503\u5f71\u89c6\u2728\ufe0f",
+            "type": 3,
+            "api": "https://gitlab.com/fantaiying/ext/-/raw/main/drpy2.min.js",
+            "ext": "./js/\u798f\u97f3\u5f71\u89c6.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "fzjh",
+            "name": "\u2728\ufe0f\u65b9\u5e84\u2503\u805a\u4f1a\u2728\ufe0f",
+            "type": 3,
+            "api": "https://badboy518714.github.io/TVBOX/libs/drpy2.min.js",
+            "ext": "./js/\u65b9\u5e84.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "fyyy",
+            "name": "\u2728\ufe0f\u798f\u97f3\u2503\u5f71\u9662\u2728\ufe0f",
+            "type": 3,
+            "api": "https://badboy518714.github.io/TVBOX/libs/drpy2.min.js",
+            "ext": "./js/\u798f\u97f3\u5f71\u9662.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "hwjh",
+            "name": "\u2728\ufe0f\u6d77\u5916\u2503\u6559\u4f1a\u2728\ufe0f",
+            "type": 3,
+            "api": "https://badboy518714.github.io/TVBOX/libs/drpy2.min.js",
+            "ext": "./js/\u6d77\u5916\u6559\u4f1a.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "fyfm",
+            "name": "\u2728\ufe0f\u798f\u97f3\u2503FM\u2728\ufe0f",
+            "type": 3,
+            "api": "https://badboy518714.github.io/TVBOX/libs/drpy2.min.js",
+            "ext": "./js/\u798f\u97f3-FM.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "dfzb",
+            "name": "\u2728\ufe0f\u6211\u7231\u2503\u5c71\u4e1c\u2728\ufe0f",
+            "type": 3,
+            "api": "./js/\u5c71\u4e1c\u7535\u89c6\u53f0.js",
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "ldkb",
+            "name": "\u2728\ufe0f\u6765\u70b9\u2503\u770b\u64ad\u2728\ufe0f",
+            "type": 3,
+            "api": "https://gitlab.com/fantaiying/ext/-/raw/main/drpy2.min.js",
+            "ext": "./js/\u6765\u70b9\u770b\u64ad.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "GG51",
+            "name": "\u2728\ufe0fGG\u250351\u2728\ufe0f",
+            "type": 3,
+            "api": "https://gitlab.com/fantaiying/ext/-/raw/main/drpy2.min.js",
+            "ext": "./js/GG51.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "tuxiaobei",
+            "name": "\u2728\ufe0f\u732b|\u5c0f\u8d1d\u2728\ufe0f",
+            "type": 3,
+            "api": "./js/\u5154\u5c0f\u8d1d.js",
+            "searchable": 1,
+            "quickSearch": 1
+        },
+        {
+            "key": "\u8c46",
+            "name": "\u5907\u7528\u516c\u4f17\u53f7\u3010\u53e8\u89c2\u8350\u5f71\u3011",
+            "type": 3,
+            "api": "csp_DouDou",
+            "indexs": 1,
+            "searchable": 0,
+            "quickSearch": 0,
+            "filterable": 0
+        },
+        {
+            "key": "\u73a9\u5076",
+            "name": "\ud83d\udc7d\u73a9\u5076\u54e5\u54e5\u25034K\u5f39\u5e55",
+            "type": 3,
+            "api": "csp_WoGG",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto",
+                "siteUrl": "https://www.wogg.net/",
+                "danMu": "\u5f39"
+            }
+        },
+        {
+            "key": "YGP",
+            "name": "\ud83d\ude80\u53e8\u89c2\u8350\u5f71\u2503\u9884\u544a\u7247",
+            "type": 3,
+            "api": "csp_YGP",
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "alllive",
+            "name": "\ud83d\udcfd\ufe0f\u4e00\u76f4\u64ad\u2503\u76f4\u64ad",
+            "type": 3,
+            "api": "csp_Alllive",
+            "playerType": 2,
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "\u62a0\u641c",
+            "name": "\ud83c\udf44\u62a0\u62a0\u2503\u641c\u641c",
+            "type": 3,
+            "api": "csp_KkSs",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "UC",
+            "name": "\ud83c\udf08\u4f18\u6c50\u2503\u641c\u641c",
+            "type": 3,
+            "api": "csp_UuSs",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "\u539f\u521b",
+            "name": "\u2600\u539f\u521b\u2503\u4e0d\u5361",
+            "type": 3,
+            "api": "csp_YCyz",
+            "timeout": 15,
+            "playerType": 1,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u82f9\u679c",
+            "name": "\ud83c\udf4e\u82f9\u679c\u2503\u4e0d\u5361",
+            "type": 3,
+            "api": "csp_LiteApple",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u767d\u767d",
+            "name": "\ud83d\udc1f\u767d\u767d\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Sbaibai",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u7cef\u7c73",
+            "name": "\ud83c\udf53\u7cef\u7c73\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Nmyswv",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "Lib",
+            "name": "\ud83c\udf1f\u7acb\u64ad\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Libvio",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "\u6587\u91c7",
+            "name": "\ud83d\udcae\u6587\u91c7\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Jpys",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "zxzj",
+            "name": "\ud83c\udf4a\u5728\u7ebf\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Zxzj",
+            "timeout": 15,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "https://www.zxzjhd.com/"
+        },
+        {
+            "key": "csp_Bttoo",
+            "name": "\ud83c\udf44\u6bd4\u7279\u2503\u79d2\u64ad",
+            "type": 3,
+            "api": "csp_Bttwoo",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u8d31\u8d31",
+            "name": "\ud83d\udc2d\u8d31\u8d31\u2503P2P",
+            "type": 3,
+            "api": "csp_JPJ",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0
+        },
+        {
+            "key": "\u4f4e\u7aef",
+            "name": "\u23ee\ufe0f\u4f4e\u7aef\u2503\u5916\u5267",
+            "type": 3,
+            "api": "csp_Ddrk",
+            "playerType": "2",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "AppSj",
+            "name": "\ud83d\udc52\u89c6\u754c\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_AppSj",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u6728\u661f",
+            "name": "\ud83c\udf1e\u6728\u661f\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_AppSx",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "FbjPcVZY48PN/RIZ5QqOrspjLMNAA5xaRiBa8vT6iB4RAYHOp3SFmQTE9v/hX3nlPzHB3X051Sp3XDoyUIN9aRARCZzZk1aDbikK"
+        },
+        {
+            "key": "\u70ed\u64ad",
+            "name": "\ud83d\udcfa\u70ed\u64ad\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_AppTT",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "AO7TcBkd8I/B5wQc4Qma+pU="
+        },
+        {
+            "key": "\u840c\u7c73",
+            "name": "\ud83d\udc40\u840c\u7c73\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_AppTT",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "AO7TcBkd8I2bux0Y8Qze6tVlMg=="
+        },
+        {
+            "key": "\u6b22\u89c6",
+            "name": "\ud83d\udc53\u6b22\u89c6\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_AppTT",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "AO7TcBkd8I/B+Qsa7gqa+pU="
+        },
+        {
+            "key": "\u53ef\u53ef",
+            "name": "\ud83d\udc7b\u53ef\u53ef\u2503\u591a\u7ebf",
+            "type": 3,
+            "api": "csp_Kekys",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "\u5382\u957f",
+            "name": "\ud83d\udcd4\u5382\u957f\u2503\u4e0d\u5361",
+            "type": 3,
+            "api": "csp_NewCz",
+            "playerType": 2,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "https://www.czzyvideo.com/"
+        },
+        {
+            "key": "Auete",
+            "name": "\ud83c\udfdd\u5965\u7279\u2503\u65e0\u5e7f",
+            "type": 3,
+            "api": "csp_Auete",
+            "timeout": 15,
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1,
+            "ext": "https://auete.com/"
+        },
+        {
+            "key": "\u65b06V",
+            "name": "\ud83e\uddf2\u65b06V\u2503\u78c1\u529b",
+            "type": 3,
+            "api": "csp_SixV",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": "https://www.xb6v.com/"
+        },
+        {
+            "key": "Dm84",
+            "name": "\ud83d\ude8c\u5df4\u58eb\u2503\u52a8\u6f2b",
+            "type": 3,
+            "api": "csp_Dm84",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "Ysj",
+            "name": "\ud83c\udf80\u5f02\u754c\u2503\u52a8\u6f2b",
+            "type": 3,
+            "api": "csp_Ysj",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "Anime1",
+            "name": "\ud83d\udc3e\u65e5\u672c\u2503\u52a8\u6f2b",
+            "type": 3,
+            "api": "csp_Anime1",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 1
+        },
+        {
+            "key": "926\u770b\u7403",
+            "name": "\u26bd926\u2503\u770b\u7403",
+            "type": 3,
+            "api": "csp_kanqiu926",
+            "searchable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "list"
+            }
+        },
+        {
+            "key": "88\u770b\u7403",
+            "name": "\u26bd88\u2503\u770b\u7403",
+            "type": 3,
+            "api": "csp_Sir88",
+            "searchable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "list"
+            }
+        },
+        {
+            "key": "Jrsjs",
+            "name": "\u26bd Jrs\u2503\u7403\u8ff7",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/jrk.js",
+            "style": {
+                "type": "list"
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "\u9177\u5947",
+            "name": "\ud83c\udfa4\u9177\u5947\u2503MV",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/\u9177\u5947MV.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "MTV",
+            "name": "\ud83c\udfa7\u660e\u661f\u2503MV",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/MTV.json"
+            }
+        },
+        {
+            "key": "\u864e\u7259\u76f4\u64adjs",
+            "name": "\ud83d\udc2f\u864e\u7259\u2503\u76f4\u64ad",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/huya2.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.755
+            },
+            "playerType": "2",
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "\u6597\u9c7cjs",
+            "name": "\ud83d\udc1f\u6597\u9c7c\u2503\u76f4\u64ad",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/\u6597\u9c7c\u76f4\u64ad.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.755
+            },
+            "playerType": "2",
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "\u6709\u58f0\u5c0f\u8bf4js",
+            "name": "\ud83c\udfa7\u6709\u58f0\u2503\u5c0f\u8bf4",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/\u6709\u58f0\u5c0f\u8bf4\u5427.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "Aid",
+            "name": "\ud83d\ude91\u6025\u6551\u2503\u6559\u5b66",
+            "type": 3,
+            "api": "csp_FirstAid",
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 3.8
+            }
+        },
+        {
+            "key": "PanSso",
+            "name": "\ud83d\udc0c\u76d8\u4ed6\u2503\u4e09\u76d8",
+            "type": 3,
+            "api": "csp_PanSso",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "YpanSo",
+            "name": "\ud83d\udc1f\u76d8\u5979\u2503\u4e09\u76d8",
+            "type": 3,
+            "api": "csp_YpanSo",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "xzso",
+            "name": "\ud83d\udc7b\u76d8\u5b83\u2503\u4e09\u76d8",
+            "type": 3,
+            "api": "csp_xzso",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "\u7c73\u641c",
+            "name": "\ud83e\udd8b\u7c73\u641c\u2503\u5938\u7236",
+            "type": 3,
+            "api": "csp_MIPanSo",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "\u5938\u641c",
+            "name": "\ud83d\ude3b\u5938\u641c\u2503\u5938\u7236",
+            "type": 3,
+            "api": "csp_PanSearch",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "pan": "quark",
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "Aliso",
+            "name": "\ud83d\ude40\u76d8\u641c\u2503\u963f\u72f8",
+            "type": 3,
+            "api": "csp_PanSearch",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "YiSo",
+            "name": "\ud83d\ude39\u6613\u641c\u2503\u963f\u72f8",
+            "type": 3,
+            "api": "csp_YiSo",
+            "searchable": 1,
+            "quickSearch": 1,
+            "changeable": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "push_agent",
+            "name": "\ud83d\udef4\u624b\u673a\u2503\u63a8\u9001",
+            "type": 3,
+            "api": "csp_Push",
+            "searchable": 0,
+            "quickSearch": 0,
+            "ext": {
+                "Cloud-drive": "tvfan/Cloud-drive.txt",
+                "from": "4k|auto"
+            }
+        },
+        {
+            "key": "Bili",
+            "name": "\ud83c\udd71\u54d4\u54d4\u5408\u96c6\u2503\u5f39\u5e55",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce40194194e5a5f7474"
+            }
+        },
+        {
+            "key": "Biliych",
+            "name": "\ud83c\udd71\u54d4\u54d4\u6f14\u5531\u4f1a\u2503\u5f39\u5e55",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 1,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce40194194f4eb2747e"
+            }
+        },
+        {
+            "key": "dr_\u5154\u5c0f\u8d1d",
+            "name": "\ud83d\udcda\u513f\u7ae5\u2503\u542f\u8499",
+            "type": 3,
+            "api": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/drpy2.min.js",
+            "ext": "https://ghfast.top/raw.githubusercontent.com/fantaiying7/EXT/refs/heads/main/%E5%85%94%E5%B0%8F%E8%B4%9D.js",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "\u5c11\u513f\u6559\u80b2",
+            "name": "\ud83d\udcda\u5c11\u513f\u2503\u6559\u80b2",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce4019465168f841292"
+            }
+        },
+        {
+            "key": "\u5c0f\u5b66\u8bfe\u5802",
+            "name": "\ud83d\udcda\u5c0f\u5b66\u2503\u8bfe\u5802",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce401946513bb42128a"
+            }
+        },
+        {
+            "key": "\u521d\u4e2d\u8bfe\u5802",
+            "name": "\ud83d\udcda\u521d\u4e2d\u2503\u8bfe\u5802",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce401946513bb2d1289"
+            }
+        },
+        {
+            "key": "\u9ad8\u4e2d\u6559\u80b2",
+            "name": "\ud83d\udcda\u9ad8\u4e2d\u2503\u8bfe\u5802",
+            "type": 3,
+            "api": "csp_Bili",
+            "style": {
+                "type": "rect",
+                "ratio": 1.597
+            },
+            "searchable": 0,
+            "quickSearch": 0,
+            "changeable": 0,
+            "ext": {
+                "json": "https://im.feelec.com.cn/res/file.html?id=2c9a91099293dce401946513bd90128b"
+            }
+        },
+        {
+            "key": "fan",
+            "name": "\u5bfc\u822a www.\u996d\u592a\u786c.com",
+            "type": 3,
+            "api": "csp_XPath",
+            "searchable": 1,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
+            "key": "cc",
+            "name": "\u8bf7\u52ff\u76f8\u4fe1\u89c6\u9891\u4e2d\u5e7f\u544a",
+            "type": 3,
+            "api": "csp_XPath",
+            "searchable": 1,
+            "quickSearch": 0,
+            "changeable": 0
+        }
+    ],
+    "logo": "https://gitee.com/badboy518/happy/raw/master/res/logo.png",
+    "lives": [
+        {
+            "name": "\u2728\ufe0fIPV4\u76f4\u64ad\u2728\ufe0f",
+            "type": 0,
+            "url": "https://badboy518714.github.io/TV/IPTV_M3U/IPTV4.m3u",
+            "playerType": 1,
+            "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
+            "logo": "https://live.fanmingming.com/tv/{name}.png"
+        },
+        {
+            "name": "\u2728\ufe0f\u5723\u7ecf\u8046\u542c\u2728\ufe0f",
+            "type": 0,
+            "url": "https://badboy518714.github.io/TV/IPTV_M3U/SJ_Audio.m3u",
+            "playerType": 1,
+            "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
+            "logo": "https://live.fanmingming.com/tv/{name}.png"
+        },
+        {
+            "name": "\u2728\ufe0fIPV6\u76f4\u64ad\u2728\ufe0f",
+            "type": 0,
+            "url": "https://badboy518714.github.io/TV/IPTV_M3U/IPTV6.m3u",
+            "playerType": 1,
+            "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
+            "logo": "https://live.fanmingming.com/tv/{name}.png"
+        },
+        {
+            "name": "\u725b\u64ad\u4e00\uff08\u4ec5\u65b0\u7248\u5f71\u89c6\u4ed3/ok\u5f71\u89c6\uff09",
+            "type": 0,
+            "url": "http://127.0.0.1:9978/proxy?do=\u996d\u592a\u786c&type=liveList",
+            "playerType": 1,
+            "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
+            "logo": "https://epg.iill.top/logo/{name}.png"
+        },
+        {
+            "name": "IPV4",
+            "type": 0,
+            "url": "https://ghfast.top/raw.githubusercontent.com/MemoryCollection/IPTV/refs/heads/main/multicast.txt",
+            "playerType": 1,
+            "logo": "https://ghfast.top/raw.githubusercontent.com/fanmingming/live/refs/heads/main/tv/{name}.png"
+        },
+        {
+            "name": "\u8303\u660e\u660e",
+            "type": 0,
+            "url": "https://ghfast.top/raw.githubusercontent.com/fanmingming/live/refs/heads/main/tv/m3u/ipv6.m3u",
+            "playerType": 1
+        },
+        {
+            "name": "\u5e73\u53f0\u76f4\u64ad",
+            "type": 0,
+            "url": "http://tv.iill.top/m3u/Live",
+            "ua": "okhttp/3.15",
+            "playerType": 2
+        }
+    ]
+}

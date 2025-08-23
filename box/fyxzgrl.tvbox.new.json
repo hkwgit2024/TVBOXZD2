@@ -1,0 +1,177 @@
+{
+  "spider": "https://fyxzgrl.cn/uploads/TG_103cf88836.jar",
+  "wallpaper": "荧屏流光曲悠扬，心随律动梦徜徉",
+  "logo": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/logo.jpg",
+  "lives": [
+    {
+      "name": "TGlive",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/yinyue.png"
+    }
+  ],
+  "sites": [
+    {
+      "key": "哔哩",
+      "name": "TG音乐台｜关注公众号《风雨信中故人来》获取更多免费资源",
+      "type": 3,
+      "api": "csp_Bili",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/哔哩MTV.json"
+    },
+    {
+      "key": "js_车载MV",
+      "name": "TG-车载音乐",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/drpy2.min.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/车载MV.js"
+    },
+    {
+      "key": "yinyue",
+      "name": "TG-榜单音乐",
+      "type": 3,
+      "api": "csp_Kugou",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 1,
+      "style": {
+        "type": "rect",
+        "ratio": 1.433
+      }
+    },
+    {
+      "key": "分类音乐",
+      "name": "TG-分类音乐",
+      "type": 3,
+      "api": "csp_Bili",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/yinyue.json"
+    },
+    {
+      "key": "hipy_js_KTV歌厅[听]",
+      "name": "TG-明星歌厅",
+      "type": 3,
+      "api": "https://fyxzgrl.cn/uploads/java/lib/drpy2.min.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "order_num": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/KTV歌厅.js"
+    },
+    {
+      "key": "TAOIktv",
+      "name": "TG-明星备用",
+      "type": 3,
+      "api": "csp_WexIktv",
+      "jar": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/wex.txt",
+      "searchable": 1,
+      "changeable": 0
+    },
+    {
+      "key": "舞蹈音乐",
+      "name": "TG-舞蹈音乐",
+      "type": 3,
+      "api": "csp_Bili",
+      "searchable": 0,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/吾爱舞蹈.json"
+    },
+    {
+      "key": "哟哟音乐",
+      "name": "TG-动感哟哟",
+      "type": 3,
+      "api": "csp_XYQHiker",
+      "searchable": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/DJyyyyw.json"
+    },
+    {
+      "key": "酷奇",
+      "name": "TG-酷奇MV",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/drpy2.min.js",
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/酷奇MV.js",
+      "style": {
+        "type": "rect",
+        "ratio": 1.597
+      },
+      "searchable": 0,
+      "quickSearch": 0,
+      "changeable": 0
+    },
+    {
+      "key": "吾爱演唱会",
+      "name": "TG-哔哩演唱",
+      "type": 3,
+      "api": "csp_Bili",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 1,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/吾爱演唱会.json"
+    },
+    {
+      "key": "直播转点播",
+      "name": "TG-音乐点播",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/zbzdb.js",
+      "ext": "./f_85446651.png"
+    },
+    {
+      "key": "drpy_js_蜻蜓FM",
+      "name": "TG-蜻蜓FM",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/drpy2.min.js",
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/蜻蜓FM.js",
+      "playerType": "2"
+    },
+    {
+      "key": "hipy_js_种子音乐[听]",
+      "name": "TG-种子音乐",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/drpy3.min.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "order_num": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/种子音乐[听].js"
+    },
+    {
+      "key": "hipy_js_贝乐虎[儿]",
+      "name": "TG-贝乐儿歌",
+      "type": 3,
+      "api": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/lib/drpy3.min.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "order_num": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/贝乐虎[儿].js"
+    },
+    {
+      "key": "健身瑜伽",
+      "name": "TG-健身瑜伽",
+      "type": 3,
+      "api": "csp_Bili",
+      "searchable": 0,
+      "filterable": 1,
+      "changeable": 0,
+      "ext": "https://github.moeyy.xyz/https://raw.githubusercontent.com/France113/elmjiejin/refs/heads/main/TVBOX/java/哔哩合集2.json"
+    },
+    {
+      "key": "公告",
+      "name": "music音乐：请定期清缓存",
+      "type": 3,
+      "api": "",
+      "searchable": 1,
+      "changeable": 0
+    }
+  ]
+}
