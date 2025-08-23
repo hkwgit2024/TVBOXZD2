@@ -7,90 +7,106 @@ import asyncio
 import aiohttp
 from urllib.parse import urlparse
 
-# Configure logging with DEBUG level
+# 配置日志系统，将日志输出到控制台
 logging.basicConfig(
-    level=logging.INFO, # 默认改为 INFO，减少不必要的 DEBUG 输出
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
 
-# Cache for checked URLs to avoid redundant requests
+# URL有效性检查缓存，避免重复请求
 URL_CACHE = {}
-MAX_CACHE_SIZE = 10000  # Limit cache size to prevent memory issues
+# 限制缓存大小，防止占用过多内存
+MAX_CACHE_SIZE = 10000
 
-# Define the domains to be excluded
+# 定义需要排除的域名列表，这些域名通常无法访问
 EXCLUDED_DOMAINS = ["agit.ai", "gitcode.net", "cccimg.com"]
 
 def strip_proxy(url: str) -> str:
     """
-    Strip proxy prefixes like 'https://ghproxy.com/' from the URL.
+    剥离URL中现有的加速代理前缀，只保留原始链接。
+    例如：将 'https://ghproxy.com/https://raw.githubusercontent.com/...' 
+    转换为 'https://raw.githubusercontent.com/...'
     """
     proxies = [
         'https://ghproxy.com/',
         'https://ghp.ci/',
         'https://raw.gitmirror.com/',
         'https://github.3x25.com/',
+        'https://ghfast.top/'
     ]
     for proxy in proxies:
         if url.startswith(proxy):
             original_url = url[len(proxy):]
             if not original_url.startswith(('http://', 'https://')):
                 original_url = 'https://' + original_url
-            logger.debug(f"Stripped proxy from URL: {url} -> {original_url}")
+            logger.debug(f"已剥离代理前缀: {url} -> {original_url}")
             return original_url
+    return url
+
+def add_gh_proxy_if_needed(url: str) -> str:
+    """
+    如果URL包含GitHub链接（raw.githubusercontent.com 或 github.com），则在其前统一添加加速代理。
+    """
+    gh_domains = ['raw.githubusercontent.com', 'github.com']
+    for domain in gh_domains:
+        if domain in url:
+            new_url = f"https://ghfast.top/{url}"
+            logger.debug(f"已为GitHub链接添加代理: {url} -> {new_url}")
+            return new_url
     return url
 
 async def is_valid_url(url: str, session: aiohttp.ClientSession) -> bool:
     """
-    Check if a URL is valid and accessible.
+    异步检查URL是否有效且可访问。
     """
-    url_to_check = strip_proxy(url)
-    parsed_url = urlparse(url_to_check)
+    parsed_url = urlparse(url)
     domain = parsed_url.netloc
-
-    if not all([parsed_url.scheme, parsed_url.netloc]):
-        logger.debug(f"Invalid URL format: {url}")
-        return False
-
+    
+    # 优先检查域名是否在排除列表中
     if domain in EXCLUDED_DOMAINS:
-        logger.debug(f"URL domain is in excluded list: {domain}")
+        logger.debug(f"URL域名位于排除列表中: {domain}")
         return False
     
-    # Check cache first
-    if url_to_check in URL_CACHE:
-        logger.debug(f"Using cached result for {url_to_check}: {URL_CACHE[url_to_check]}")
-        return URL_CACHE[url_to_check]
+    # 检查URL格式和本地相对路径
+    if not all([parsed_url.scheme, parsed_url.netloc]) or url.startswith('.'):
+        logger.debug(f"无效的URL格式或本地相对路径: {url}")
+        return False
+
+    # 优先检查缓存
+    if url in URL_CACHE:
+        logger.debug(f"正在使用缓存结果: {url}: {URL_CACHE[url]}")
+        return URL_CACHE[url]
     
-    # Check if cache is too large and clear if necessary
+    # 如果缓存过大，则清空
     if len(URL_CACHE) > MAX_CACHE_SIZE:
         URL_CACHE.clear()
-        logger.info("URL cache cleared due to size limit.")
+        logger.info("URL缓存因达到大小限制已清空。")
 
     try:
-        async with session.head(url_to_check, timeout=5) as response:
+        async with session.head(url, timeout=5) as response:
             is_valid = response.status == 200
-            URL_CACHE[url_to_check] = is_valid
+            URL_CACHE[url] = is_valid
             if not is_valid:
-                logger.debug(f"URL not valid (status {response.status}): {url_to_check}")
+                logger.debug(f"URL无效 (状态码 {response.status}): {url}")
             return is_valid
     except aiohttp.ClientError as e:
-        logger.debug(f"Failed to connect to {url_to_check}: {e}")
-        URL_CACHE[url_to_check] = False
+        logger.debug(f"连接失败 {url}: {e}")
+        URL_CACHE[url] = False
         return False
     except asyncio.TimeoutError:
-        logger.debug(f"Timeout checking URL: {url_to_check}")
-        URL_CACHE[url_to_check] = False
+        logger.debug(f"检查URL超时: {url}")
+        URL_CACHE[url] = False
         return False
     except Exception as e:
-        logger.debug(f"An unexpected error occurred for URL {url_to_check}: {e}")
-        URL_CACHE[url_to_check] = False
+        logger.debug(f"URL {url} 发生意外错误: {e}")
+        URL_CACHE[url] = False
         return False
 
 async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[str]]:
     """
-    Read and parse a JSON file, filter sites with valid URLs, and extract sites, lives, and spider.
-    Now supports parsing a single site object in addition to a full config.
+    读取并解析单个JSON文件，对其中的点播源和直播源进行处理和有效性过滤。
     """
     sites: List[Dict[str, Any]] = []
     lives: List[Dict[str, Any]] = []
@@ -100,58 +116,91 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
             if not content.strip():
-                logger.warning(f"File '{filepath}' is empty. Skipping.")
+                logger.warning(f"文件 '{filepath}' 为空，跳过。")
                 return sites, lives, spider
             
             data = json.loads(content)
             
-            # Case 1: The file is a complete config with 'sites', 'lives', etc.
-            if isinstance(data, dict) and 'sites' in data:
+            # 情况1: 文件是完整的配置，包含 'sites', 'lives' 等键
+            if isinstance(data, dict) and ('sites' in data or 'lives' in data or 'spider' in data):
                 all_sites = data.get('sites', [])
                 all_lives = data.get('lives', [])
                 all_spider = [data.get('spider', "")]
                 
-                # Check each site's validity
-                tasks = [is_valid_url(site.get('api', ''), session) for site in all_sites]
+                # 验证和处理点播源
+                tasks = []
+                for site in all_sites:
+                    api_url = site.get('api', '')
+                    if api_url:
+                        stripped_url = strip_proxy(api_url)
+                        processed_url = add_gh_proxy_if_needed(stripped_url)
+                        site['api'] = processed_url
+                        tasks.append(is_valid_url(processed_url, session))
+                    else:
+                        tasks.append(asyncio.sleep(0, result=False))
+
                 valid_results = await asyncio.gather(*tasks)
 
                 for site, is_valid in zip(all_sites, valid_results):
                     if is_valid:
                         sites.append(site)
                     else:
-                        logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
+                        logger.debug(f"从 '{filepath}' 中排除无效的点播源: {site.get('name', '未命名')}")
                 
-                # Lives don't need URL validation, so just add them
-                lives.extend(all_lives)
+                # 验证和处理直播源
+                live_tasks = []
+                valid_lives = []
+                for live_channel in all_lives:
+                    if isinstance(live_channel, dict) and 'url' in live_channel:
+                        # 确保链接不是proxy://或本地相对路径
+                        if not live_channel['url'].startswith('proxy://') and not live_channel['url'].startswith('.'):
+                            stripped_url = strip_proxy(live_channel['url'])
+                            processed_url = add_gh_proxy_if_needed(stripped_url)
+                            live_channel['url'] = processed_url
+                            live_tasks.append(is_valid_url(processed_url, session))
+                            valid_lives.append(live_channel)
+                        else:
+                            logger.warning(f"从 '{filepath}' 中排除非标准的直播源（代理或本地路径）: {live_channel.get('name', '未命名')}")
+                    elif 'channels' in live_channel or 'group' in live_channel:
+                        logger.warning(f"从 '{filepath}' 中排除非标准分组的直播源: {live_channel.get('name', '未命名')}")
+
+                valid_live_results = await asyncio.gather(*live_tasks)
+                for live_channel, is_valid in zip(valid_lives, valid_live_results):
+                    if is_valid:
+                        lives.append(live_channel)
+                    else:
+                        logger.warning(f"从 '{filepath}' 中排除无效的直播源: {live_channel.get('name', '未命名')}")
                 
                 if all_spider and all_spider[0]:
                     spider.extend(all_spider)
 
-            # Case 2: The file is a single site object (new format)
+            # 情况2: 文件是单个站点对象
             elif isinstance(data, dict) and 'api' in data and 'name' in data:
                 site_url = data.get('api', '')
                 if site_url:
-                    is_valid = await is_valid_url(site_url, session)
+                    stripped_url = strip_proxy(site_url)
+                    processed_url = add_gh_proxy_if_needed(stripped_url)
+                    data['api'] = processed_url
+                    is_valid = await is_valid_url(processed_url, session)
                     if is_valid:
                         sites.append(data)
                     else:
-                        logger.debug(f"Excluding invalid single site from '{filepath}': {data.get('name', 'Unnamed Site')}")
-
+                        logger.debug(f"从 '{filepath}' 中排除无效的单个站点源: {data.get('name', '未命名')}")
             else:
-                logger.warning(f"File '{filepath}' does not contain a valid sites config. Skipping.")
+                logger.warning(f"文件 '{filepath}' 不包含有效的站点配置，跳过。")
 
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse JSON in file '{filepath}': {e}")
+        logger.error(f"解析文件 '{filepath}' 中的JSON失败: {e}")
     except Exception as e:
-        logger.error(f"An error occurred while processing '{filepath}': {e}")
+        logger.error(f"处理文件 '{filepath}' 时发生错误: {e}")
     
     return sites, lives, spider
 
 async def merge_files(source_files: List[str], output_file: str):
     """
-    Merge multiple JSON configuration files into a single one.
+    将多个JSON配置文件合并成一个。
     """
-    logger.info("Starting file merging process...")
+    logger.info("开始合并配置文件...")
     sites: List[Dict[str, Any]] = []
     lives: List[Dict[str, Any]] = []
     spider: List[str] = []
@@ -177,16 +226,16 @@ async def merge_files(source_files: List[str], output_file: str):
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(merged_data, f, ensure_ascii=False, indent=2)
-        logger.info(f"All configurations successfully merged and saved to '{output_file}'.")
-        logger.info(f"Total valid sites: {len(sites)}, Total lives: {len(lives)}")
+        logger.info(f"所有配置已成功合并并保存到 '{output_file}'。")
+        logger.info(f"有效点播源总数: {len(sites)}, 有效直播源总数: {len(lives)}")
     except Exception as e:
-        logger.error(f"An error occurred while saving the merged file: {e}")
+        logger.error(f"保存合并文件时发生错误: {e}")
 
 if __name__ == "__main__":
     SOURCE_DIRECTORY = "box"
     OUTPUT_FILE = "merged_tvbox_config.json"
 
-    # Get a list of all JSON files in the source directory
+    # 获取源目录下所有JSON和TXT文件的列表
     if os.path.exists(SOURCE_DIRECTORY) and os.path.isdir(SOURCE_DIRECTORY):
         source_files = [
             os.path.join(SOURCE_DIRECTORY, f)
@@ -196,6 +245,6 @@ if __name__ == "__main__":
         if source_files:
             asyncio.run(merge_files(source_files, OUTPUT_FILE))
         else:
-            logger.error(f"No .json or .txt files found in the '{SOURCE_DIRECTORY}' directory.")
+            logger.error(f"在 '{SOURCE_DIRECTORY}' 目录下未找到 .json 或 .txt 文件。")
     else:
-        logger.error(f"Source directory '{SOURCE_DIRECTORY}' not found or is not a directory. Please create it and add your JSON/TXT files.")
+        logger.error(f"源目录 '{SOURCE_DIRECTORY}' 不存在或不是一个目录。请创建它并将您的JSON/TXT文件放入其中。")
