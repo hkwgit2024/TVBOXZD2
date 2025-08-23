@@ -27,10 +27,16 @@ def strip_proxy(url: str) -> str:
     Strip proxy prefixes like 'https://ghproxy.com/' from the URL.
     """
     proxies = [
-        'https://ghproxy.com/',
+        'https://ghproxy.net/',
         'https://ghp.ci/',
-        'https://raw.gitmirror.com/',
-        'https://github.3x25.com/',
+        'https://mirror.ghproxy.com/',
+        'https://gh.api.99988866.xyz/',
+        'https://github.site/',
+        'https://github.store/',
+        'https://gh.llkk.cc/',
+        'https://ghps.cc/',
+        'https://gitmirror.com/',
+        'https://gitclone.com/',
     ]
     for proxy in proxies:
         if url.startswith(proxy):
@@ -41,11 +47,23 @@ def strip_proxy(url: str) -> str:
             return original_url
     return url
 
+def add_ghfast_prefix(url: str) -> str:
+    """
+    Add 'https://ghfast.top/' prefix to GitHub-related URLs.
+    """
+    parsed_url = urlparse(url)
+    if parsed_url.netloc in ['github.com', 'raw.githubusercontent.com']:
+        new_url = f"https://ghfast.top/{url}"
+        logger.debug(f"Added ghfast.top prefix to GitHub URL: {url} -> {new_url}")
+        return new_url
+    return url
+
 async def is_valid_url(url: str, session: aiohttp.ClientSession) -> bool:
     """
     Check if a URL is valid and accessible.
     """
     url_to_check = strip_proxy(url)
+    url_to_check = add_ghfast_prefix(url_to_check)  # Add ghfast.top for GitHub URLs
     parsed_url = urlparse(url_to_check)
     domain = parsed_url.netloc
 
@@ -116,6 +134,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
 
                 for site, is_valid in zip(all_sites, valid_results):
                     if is_valid:
+                        site['api'] = add_ghfast_prefix(strip_proxy(site.get('api', '')))  # Update api with ghfast.top
                         sites.append(site)
                     else:
                         logger.debug(f"Excluding invalid site from '{filepath}': {site.get('name', 'Unnamed Site')}")
@@ -141,6 +160,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 valid_live_results = await asyncio.gather(*live_tasks, return_exceptions=True)
                 for live_channel, is_valid in zip(valid_lives, valid_live_results):
                     if is_valid:
+                        live_channel['url'] = add_ghfast_prefix(strip_proxy(live_channel.get('url', '')))  # Update url with ghfast.top
                         lives.append(live_channel)
                     else:
                         logger.warning(f"Excluding invalid live channel from '{filepath}': {live_channel.get('name', 'Unnamed Channel')}")
@@ -148,14 +168,15 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 # Validate spider URL (optional, but recommended)
                 if all_spider and all_spider[0]:
                     if all_spider[0].startswith(('http://', 'https://')):
-                        if await is_valid_url(all_spider[0], session):
-                            spider.extend(all_spider)
-                            logger.debug(f"Valid spider URL from '{filepath}': {all_spider[0]}")
+                        spider_url = add_ghfast_prefix(strip_proxy(all_spider[0]))
+                        if await is_valid_url(spider_url, session):
+                            spider.append(spider_url)
+                            logger.debug(f"Valid spider URL from '{filepath}': {spider_url}")
                         else:
                             logger.warning(f"Excluding invalid spider URL from '{filepath}': {all_spider[0]}")
                     else:
                         # Allow local spider paths without validation
-                        spider.extend(all_spider)
+                        spider.append(all_spider[0])
                         logger.debug(f"Accepted local spider path from '{filepath}': {all_spider[0]}")
 
             # Case 2: The file is a single site object (new format)
@@ -164,6 +185,7 @@ async def process_file(filepath: str, session: aiohttp.ClientSession) -> Tuple[L
                 if site_url:
                     is_valid = await is_valid_url(site_url, session)
                     if is_valid:
+                        data['api'] = add_ghfast_prefix(strip_proxy(site_url))  # Update api with ghfast.top
                         sites.append(data)
                     else:
                         logger.debug(f"Excluding invalid single site from '{filepath}': {data.get('name', 'Unnamed Site')}")
