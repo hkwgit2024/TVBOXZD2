@@ -12,6 +12,7 @@ from urllib.parse import urlparse, unquote, urljoin, parse_qs
 from collections import OrderedDict, defaultdict
 from html.parser import HTMLParser
 from tqdm import tqdm
+from ip_geolocation import GeoLite2Country # 导入 GeoLite2Country 类
 
 # 全局变量
 LOG_FILE = "link_processing.log"
@@ -487,6 +488,24 @@ if __name__ == "__main__":
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
                     f.write(f"处理 {link} 时发生错误: {e}\n")
 
+    # 对节点进行地理位置识别和重命名
+    db_path = "GeoLite2-Country.mmdb"
+    if os.path.exists(db_path):
+        with GeoLite2Country(db_path) as geo_locator:
+            for node in all_nodes:
+                server_ip = node.get('server')
+                if server_ip and '.' in server_ip: # 仅对IPv4地址进行地理位置查询
+                    try:
+                        _, country_name = geo_locator.get_location(server_ip)
+                        node['name'] = country_name
+                    except Exception as e:
+                        print(f"无法获取 IP {server_ip} 的地理位置: {e}")
+                        node['name'] = "未知地区"
+                else:
+                    node['name'] = "未知地区" # 非IPv4地址或无效地址的默认命名
+    else:
+        print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
+
     seen_nodes = set()
     unique_nodes = []
     name_counts = defaultdict(int)
@@ -510,7 +529,7 @@ if __name__ == "__main__":
         
         if node_key not in seen_nodes:
             seen_nodes.add(node_key)
-            base_name = node.get('name', f"{node_type}-{node.get('server')}-{node.get('port')}")
+            base_name = node.get('name', "未知地区")
             node['name'] = generate_unique_name(base_name, name_counts)
             unique_nodes.append(node)
         else:
