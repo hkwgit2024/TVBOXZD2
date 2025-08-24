@@ -1,344 +1,74 @@
 proxy-providers: {}
 proxies:
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 85.00 MB/s"
+      network: ws
+      port: 10085
+      server: 154.17.21.139
+      type: vmess
+      uuid: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      ws-opts:
+        headers:
+            Host: 154.17.21.139
+        path: /vmess
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 73.63 MB/s"
+      password: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      port: 10086
+      server: 154.17.21.139
+      type: ss
     - flow: null
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 188.98 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 61.53 MB/s"
       network: tcp
       port: 2321
       server: 172.234.192.79
       tls: false
       type: vless
       uuid: 4c266060-28aa-4fd4-8286-86127e16b260
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 74.01 MB/s"
-      network: ws
-      password: 23891687-7140-45e1-98c6-df06b614b7c2
-      port: 8443
-      server: tj.cpddx.club
+    - alterId: 64
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 60.98 MB/s"
+      port: 30002
+      region: 美国
+      server: 38.12.83.217
       skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 71.73 MB/s"
-      network: ws
-      password: 29a5891c-98bd-4889-a30b-7bb25cee1eda
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 71.18 MB/s"
-      network: ws
-      password: eca68104-db54-43c0-bfda-320c178cdd8d
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 71.00 MB/s"
-      network: ws
-      password: 95d340d3-1c4e-406b-b761-85b44074fc34
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 69.81 MB/s"
-      network: ws
-      password: d04a2c0a-595f-4259-be2e-a839aa31ac3e
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 69.37 MB/s"
-      network: ws
-      password: bdc7cd12-6783-443c-b0ff-4c54ca429f26
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.99 MB/s"
-      network: ws
-      password: c1c0805b-3014-4fd1-8b8d-bd1300d2b621
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.91 MB/s"
-      network: ws
-      password: b9f0deb1-0426-43ae-b712-32e01a7f1314
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.68 MB/s"
-      network: ws
-      password: 18d6d5c4-0d2d-45aa-a113-165059749209
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.35 MB/s"
-      network: ws
-      password: d75d9ba9-702d-4511-ac85-5d221b110820
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.28 MB/s"
-      network: ws
-      password: 89a2af98-c800-4705-a7e5-af5ba21f8c5a
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.86 MB/s"
-      network: ws
-      password: 218fbdd5-fa99-495e-a4c8-dc7edfaed909
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.77 MB/s"
-      network: ws
-      password: 85a38d33-2d44-47dc-96f7-ea5de35473da
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.72 MB/s"
-      network: ws
-      password: 830981db-6f4a-48ef-82f9-963d249ea879
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
+      tls: false
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
     - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 66.94 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 57.34 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 104.192.226.106
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 56.81 MB/s"
+      network: ws
+      port: 443
+      server: vless.zyttbywy.xyz
+      servername: vless.zyttbywy.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: b340d332-7ee9-450e-80e7-7aaf9ffbb302
+      ws-opts:
+        path: /vws
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 52.24 MB/s"
       password: f8f7aCzcPKbsF8p3
       port: 990
       server: 79.127.233.170
       type: ss
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 66.80 MB/s"
-      network: ws
-      password: 9d0025b7-2ede-4ee2-90fc-390d7cf3481c
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - alterId: 0
-      cipher: none
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 66.80 MB/s"
-      network: ws
-      port: 80
-      server: test.flha.ru
-      type: vmess
-      uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
-      ws-opts:
-        headers:
-            Host: test.flha.ru
-        path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 65.81 MB/s"
-      network: ws
-      password: b2670e9c-ee37-4012-9993-2a39faf72014
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 65.67 MB/s"
-      network: ws
-      password: 3f4a7307-5762-4a03-9c87-bf41929ec8ff
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 65.60 MB/s"
-      network: ws
-      password: 431f8b2e-17bd-4c91-bfc9-8a963aa883e8
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 65.01 MB/s"
-      network: ws
-      password: aedb83b9-9506-47c6-a849-bc501b374d5e
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 63.95 MB/s"
-      network: ws
-      password: 65eb670d-4cb2-4fbb-85c9-84a523b62e61
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 63.73 MB/s"
-      network: ws
-      password: 72f1a0fb-9472-4954-b8e6-d051330ff46d
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 62.63 MB/s"
-      network: ws
-      password: 1907e63f-c930-43cd-8b90-7b7b719aa650
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 62.37 MB/s"
-      network: ws
-      password: 2f9223a3-f705-43d2-a9f9-52b2c34d3540
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 59.10 MB/s"
-      network: ws
-      password: 1a1620a8-de00-4810-bbad-cff2943a7a9f
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 57.74 MB/s"
+    - cipher: aes-256-cfb
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 45.15 MB/s"
+      obfs: plain
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      protocol: origin
+      region: 加拿大
+      server: 79.127.233.170
+      type: ssr
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 40.59 MB/s"
       network: ws
       password: 4ab77dd7-8399-47b3-83ea-b7a95f850991
       port: 8443
@@ -351,42 +81,9 @@ proxies:
         headers:
             Host: tj.cpddx.club
         path: ""
-    - flow: null
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 57.01 MB/s"
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 40.17 MB/s"
       network: ws
-      port: 80
-      server: light-presence.oneeat.co
-      tls: false
-      type: vless
-      uuid: 7e74ff43-3a90-48b3-8372-7d92a045c2d4
-      ws-opts:
-        headers:
-            Host: light-presence.oneeat.co
-        path: '%2F'
-    - cipher: aes-256-cfb
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 55.86 MB/s"
-      obfs: plain
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      protocol: origin
-      region: 加拿大
-      server: 79.127.233.170
-      type: ssr
-    - flow: null
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 53.99 MB/s"
-      network: ws
-      port: 443
-      server: 188.114.96.6
-      tls: true
-      type: vless
-      uuid: 8df60790-c903-4661-b85d-64c0009378e5
-      ws-opts:
-        headers:
-            Host: F1.paRsa.fiLegEar-Sg.Me
-        path: '%2F'
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 52.31 MB/s"
-      network: ws
-      password: b69255b9-40d0-4366-ad97-b1c908ac8251
+      password: 2f9223a3-f705-43d2-a9f9-52b2c34d3540
       port: 8443
       server: tj.cpddx.club
       skip-cert-verify: true
@@ -397,165 +94,87 @@ proxies:
         headers:
             Host: tj.cpddx.club
         path: ""
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 52.28 MB/s"
-      password: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
-      port: 10086
-      server: 154.17.21.139
-      type: ss
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 51.73 MB/s"
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.84 MB/s"
       network: ws
-      port: 10085
-      server: 154.17.21.139
-      type: vmess
-      uuid: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
-      ws-opts:
-        headers:
-            Host: 154.17.21.139
-        path: /vmess
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 51.28 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 990
-      server: 64.74.163.130
-      type: ss
-    - alterId: 64
-      cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.60 MB/s"
-      port: 30002
-      region: 美国
-      server: 38.12.83.217
+      password: 72f1a0fb-9472-4954-b8e6-d051330ff46d
+      port: 8443
+      server: tj.cpddx.club
       skip-cert-verify: true
-      tls: false
-      type: vmess
-      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 41.13 MB/s"
-      password: 20050105zhu
-      port: 51541
-      server: 204.44.110.129
-      skip-cert-verify: true
-      sni: www.bing.com
-      type: hysteria2
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.46 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 990
-      server: 104.192.226.106
-      type: ss
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 36.12 MB/s"
-      password: 1RWwXhwfAB5gAEozU4G2Pg
-      port: 8080
-      server: 45.158.171.136
-      type: ss
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 35.94 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 193.29.139.235
-      type: ss
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.60 MB/s"
-      password: 4a2rfixophdjffa8KVA4Aa
-      port: 8080
-      server: 45.87.175.154
-      type: ss
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.02 MB/s"
-      network: ws
-      port: 443
-      server: vless.zyttbywy.xyz
-      servername: vless.zyttbywy.xyz
-      skip-cert-verify: false
-      tls: true
-      type: vless
-      uuid: b340d332-7ee9-450e-80e7-7aaf9ffbb302
-      ws-opts:
-        path: /vws
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 34.97 MB/s"
-      password: QCXDxuDlTTMD7jtgHUjIoj
-      port: 8080
-      server: 45.158.171.146
-      type: ss
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 34.22 MB/s"
-      network: ws
-      port: 20086
-      server: 64.227.45.92
-      type: vmess
-      uuid: 5e02bc01-42a7-4609-b20a-4d93feea65c6
-      ws-opts:
-        headers:
-            Host: 64.227.45.92
-        path: /
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.09 MB/s"
-      port: 32566
-      server: vps.my-youth.asia
-      type: socks5
-      udp: false
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 32.84 MB/s"
-      network: tcp
-      port: 42610
-      server: 51.79.86.182
-      type: vmess
-      uuid: e0957ca6-f613-4017-ff3c-effd1da8871a
-    - alpn:
-        - h3
-        - h2
-        - http/1.1
-      alterId: 0
-      cipher: auto
-      client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 32.63 MB/s"
-      network: tcp
-      port: 17891
-      server: vps.my-youth.asia
-      servername: vps.my-youth.asia
-      tls: true
-      type: vmess
+      sni: tj.cpddx.club
+      type: trojan
       udp: true
-      uuid: 8f2d400c-0879-4076-9b87-2302f00a135b
-    - cipher: aes-256-cfb
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 32.28 MB/s"
-      password: f8f7aCzcPKbsF8p3
-      port: 989
-      region: 英国
-      server: 51.15.17.169
-      type: ss
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 31.87 MB/s"
-      network: tcp
-      port: 32020
-      server: s3.ipyar.org
-      type: vmess
-      uuid: 78b4fb57-39d7-4e9d-dd38-c9a38322bcb2
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 29.88 MB/s"
-      password: dongtaiwang.com
-      port: 63015
-      region: 印度
-      server: 108.181.5.130
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.37 MB/s"
+      network: ws
+      password: 89a2af98-c800-4705-a7e5-af5ba21f8c5a
+      port: 8443
+      server: tj.cpddx.club
       skip-cert-verify: true
-      sni: apple.com
-      tls: false
-      type: hysteria2
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 29.19 MB/s"
-      password: dongtaiwang.com
-      port: 22222
-      region: 印度尼西亚
-      server: 208.87.243.187
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.25 MB/s"
+      network: ws
+      password: 85a38d33-2d44-47dc-96f7-ea5de35473da
+      port: 8443
+      server: tj.cpddx.club
       skip-cert-verify: true
-      sni: www.bing.com
-      tls: false
-      type: hysteria2
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.18 MB/s"
+      network: ws
+      password: dfb1e3ff-b22a-4e0b-9569-8bbca0535e47
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.12 MB/s"
+      network: ws
+      password: aedb83b9-9506-47c6-a849-bc501b374d5e
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 39.10 MB/s"
+      network: ws
+      password: f97fb142-1a5b-432b-a12f-6119eca68a43
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
     - client-fingerprint: chrome
       flow: xtls-rprx-vision
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 28.08 MB/s"
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.96 MB/s"
       port: 5847
       reality-opts:
         public-key: NpqF483u4nXH0cztdyX7VbkpbDEW0sO07cGya0WvCHM
@@ -568,50 +187,272 @@ proxies:
       udp: true
       uuid: 67f0fefa-a922-428c-ac02-37e1d5aaed72
       xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.87 MB/s"
+      network: ws
+      password: 65eb670d-4cb2-4fbb-85c9-84a523b62e61
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.84 MB/s"
+      network: ws
+      password: 431f8b2e-17bd-4c91-bfc9-8a963aa883e8
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.06 MB/s"
+      network: ws
+      password: 18d6d5c4-0d2d-45aa-a113-165059749209
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 37.87 MB/s"
+      network: ws
+      password: 23891687-7140-45e1-98c6-df06b614b7c2
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 37.85 MB/s"
+      network: ws
+      password: 8ca0f224-dad7-4cc2-8b22-d85301dde94f
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
     - alterId: 0
-      cipher: auto
-      name: "\U0001F1EB\U0001F1EE FI | ⬇️ 27.84 MB/s"
-      network: tcp
-      port: 32017
-      server: panel3.ipyar.org
-      type: vmess
-      uuid: c0ccdeb9-784c-4d67-b904-20dcaac9902a
-    - flow: null
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 26.51 MB/s"
+      cipher: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 36.22 MB/s"
       network: ws
       port: 80
-      server: 104.21.80.1
+      server: test.flha.ru
+      type: vmess
+      uuid: 2bab6b8f-8d6e-463a-8331-b9de3d56921d
+      ws-opts:
+        headers:
+            Host: test.flha.ru
+        path: /2bab6b8f-8d6e-463a-8331-b9de3d56921d-vmess
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.84 MB/s"
+      network: ws
+      password: b2670e9c-ee37-4012-9993-2a39faf72014
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.63 MB/s"
+      network: ws
+      password: 5d28d006-7e85-44b2-b3e2-2851b2778e41
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.03 MB/s"
+      port: 32566
+      server: vps.my-youth.asia
+      type: socks5
+      udp: false
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.61 MB/s"
+      network: ws
+      password: ade193da-8e1e-4dee-b105-cfbe0d0a60d9
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.06 MB/s"
+      network: ws
+      password: b9f0deb1-0426-43ae-b712-32e01a7f1314
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 32.10 MB/s"
+      password: dongtaiwang.com
+      port: 22222
+      region: 印度尼西亚
+      server: 208.87.243.187
+      skip-cert-verify: true
+      sni: www.bing.com
+      tls: false
+      type: hysteria2
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 31.97 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 31.83 MB/s"
+      network: ws
+      password: 95d340d3-1c4e-406b-b761-85b44074fc34
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - alterId: 1
+      cipher: auto
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 29.60 MB/s"
+      port: 666
+      server: nqpus-g05.jp06-vm5.entry.rtysjur.quest
+      skip-cert-verify: false
+      tls: false
+      type: vmess
+      udp: true
+      uuid: 2b30da31-c82a-3c2a-bb35-e9e2bb142781
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 28.66 MB/s"
+      network: ws
+      password: 218fbdd5-fa99-495e-a4c8-dc7edfaed909
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 27.88 MB/s"
+      password: 20050105zhu
+      port: 51541
+      server: 204.44.110.129
+      skip-cert-verify: true
+      sni: www.bing.com
+      type: hysteria2
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 27.24 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.235
+      type: ss
+    - name: "\U0001F1EE\U0001F1E9 ID | ⬇️ 27.19 MB/s"
+      network: ws
+      port: 8880
+      server: 46.254.92.252
+      servername: cf.d3z.net
       tls: false
       type: vless
-      uuid: e5b9b393-bac0-4bea-ad96-53acc299e622
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
       ws-opts:
         headers:
-            Host: supercars.gobexor577.workers.dev
-        path: '%2F6m9qzexbs9sqghln%3Fed%3D2560'
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 25.81 MB/s"
-      network: ws
-      port: 443
-      server: 104.17.28.121
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
+            host: cf.d3z.net
+        path: Telegram @freecodes /?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 26.83 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.154
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 26.29 MB/s"
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 26.24 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.171
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 26.05 MB/s"
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.158.171.136
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 25.98 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 45.158.171.146
+      type: ss
     - alterId: 0
       cipher: auto
-      name: "\U0001F1F7\U0001F1FA RU | ⬇️ 25.77 MB/s"
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 25.56 MB/s"
       network: tcp
-      port: 11052
-      server: 45.67.230.79
+      port: 32020
+      server: s3.ipyar.org
       type: vmess
-      uuid: 314185f7-931d-4656-922d-0857e7afd224
+      uuid: 78b4fb57-39d7-4e9d-dd38-c9a38322bcb2
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      alterId: 0
+      cipher: auto
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 25.49 MB/s"
+      network: tcp
+      port: 17891
+      server: vps.my-youth.asia
+      servername: vps.my-youth.asia
+      tls: true
+      type: vmess
+      udp: true
+      uuid: 8f2d400c-0879-4076-9b87-2302f00a135b
     - cipher: auto
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 25.44 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 25.03 MB/s"
       network: ws
       port: 80
       server: 162.159.134.61
@@ -625,101 +466,18 @@ proxies:
         headers:
             Host: xite.oyenpadu.shop
         path: /vless
-    - alterId: 0
-      cipher: auto
-      h2-opts: {}
-      http-opts: {}
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 25.19 MB/s"
-      network: ws
-      port: 443
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 24.60 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
       region: 英国
-      server: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
-      skip-cert-verify: true
-      tls: true
-      type: vmess
-      uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
-      ws-opts:
-        headers:
-            Host: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
-        path: /azumase.ren
-    - flow: null
-      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 24.96 MB/s"
-      network: tcp
-      port: 59332
-      server: 54.37.205.0
-      tls: false
-      type: vless
-      uuid: d2dc2527-33d5-46f3-f39c-36da72fb1a62
-    - alterId: 1
-      cipher: auto
-      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 24.93 MB/s"
-      port: 666
-      server: nqpus-g05.jp06-vm5.entry.rtysjur.quest
-      skip-cert-verify: false
-      tls: false
-      type: vmess
-      udp: true
-      uuid: 2b30da31-c82a-3c2a-bb35-e9e2bb142781
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.68 MB/s"
-      network: ws
-      port: 443
-      server: v2ray.codefyinc.com
-      servername: v2ray.codefyinc.com
-      skip-cert-verify: false
-      tls: false
-      type: vmess
-      uuid: 2c981164-9b93-4bca-94ff-b78d3f8498d7
-      ws-opts:
-        headers:
-            Host: v2ray.codefyinc.com
-        path: /vmessws
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 24.08 MB/s"
-      network: ws
-      port: 443
-      server: 104.17.21.17
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - flow: null
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 24.01 MB/s"
-      network: ws
-      port: 443
-      server: web.xhamster.biz.id
-      tls: true
-      type: vless
-      uuid: aaaaaaa1-bbbb-4ccc-accc-eeeeeeeeeee1
-      ws-opts:
-        headers:
-            Host: web.xhamster.biz.id
-        path: '%2FFree-CF-Proxy-AT4'
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 23.91 MB/s"
-      network: tcp
-      port: 28213
-      server: 135.125.182.74
-      type: vmess
-      uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F5\U0001F1F1 PL | ⬇️ 23.34 MB/s"
-      password: 360e21d21977dc11
-      port: 57456
-      server: 45.144.49.140
+      server: 51.15.17.169
       type: ss
     - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 23.23 MB/s"
+      name: 加拿大_23
       network: ws
       port: 443
-      server: 104.17.21.18
+      server: 23.227.39.171
       sni: c379b284.vs-494.pages.dev
       tls: true
       type: vless
@@ -730,39 +488,10 @@ proxies:
             host: c379b284.vs-494.pages.dev
         path: /?ed=2560
     - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 23.13 MB/s"
+      name: None_2016
       network: ws
       port: 443
-      server: a5_alist.yzqiang.site
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 22.38 MB/s"
-      password: dongtaiwang.com
-      port: 5355
-      region: 意大利
-      server: 51.159.111.32
-      skip-cert-verify: true
-      sni: www.bing.com
-      tls: false
-      type: hysteria2
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E6\U0001F1F9 AT | ⬇️ 22.31 MB/s"
-      password: 9JeYy8SkViXuSHVs9GFeSe
-      port: 443
-      server: 77.110.110.117
-      type: ss
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 22.28 MB/s"
-      network: ws
-      port: 443
-      server: 172.67.201.134
+      server: 172.67.186.58
       sni: c379b284.vs-494.pages.dev
       tls: true
       type: vless
@@ -773,55 +502,79 @@ proxies:
             host: c379b284.vs-494.pages.dev
         path: /?ed=2560
     - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 21.89 MB/s"
-      password: b25727df-15ea-453c-a006-13fe98fee1d2
-      port: 30936
-      server: 141.164.63.32
-      type: ss
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 21.19 MB/s"
-      password: Kuiqk2cP0BMWrgme9IfEvp
-      port: 443
-      server: 38.180.211.126
-      type: ss
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.84 MB/s"
-      network: ws
-      port: 443
-      server: 104.24.87.184
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1EE\U0001F1E9 ID | ⬇️ 20.75 MB/s"
-      network: ws
-      port: 8880
-      server: 46.254.93.251
-      servername: Telegram-channel-freecodes
-      tls: false
-      type: vless
-      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
-      ws-opts:
-        headers:
-            host: cf.d3z.net
-        path: /Telegram
-    - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 20.63 MB/s"
+      name: 法国_10
       password: a58fa62b4944ddbf
       port: 57456
       region: 法国
       server: 81.19.137.222
       type: ss
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.58 MB/s"
+    - flow: null
+      name: None_2304
       network: ws
       port: 443
-      server: 198.41.198.176
+      server: 188.114.96.6
+      tls: true
+      type: vless
+      uuid: 8df60790-c903-4661-b85d-64c0009378e5
+      ws-opts:
+        headers:
+            Host: F1.paRsa.fiLegEar-Sg.Me
+        path: '%2F'
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      client-fingerprint: chrome
+      encryption: none
+      name: None_114
+      network: ws
+      port: 8443
+      server: 104.19.26.126
+      servername: jp.20051212.xyz
+      tls: true
+      type: vless
+      uuid: 0124aa8d-c1a4-46e4-8973-7160e8021425
+      ws-opts:
+        headers:
+            Host: jp.20051212.xyz
+        path: /0124aa8d
+    - alterId: 0
+      cipher: auto
+      name: 俄罗斯联邦_109
+      network: tcp
+      port: 11052
+      server: 45.67.230.79
+      type: vmess
+      uuid: 314185f7-931d-4656-922d-0857e7afd224
+    - client-fingerprint: chrome
+      flow: xtls-rprx-vision
+      name: 香港_428
+      port: 8443
+      reality-opts:
+        public-key: POAZKZyD98MlYa3A5bSOayTPHdofqXynPAT1_QWEwjo
+        short-id: dfeff076987e2d34
+      server: 5.102.124.78
+      servername: www.microsoft.com
+      tls: true
+      type: vless
+      uuid: 79091265-a298-4205-a559-d04ed045c38b
+    - flow: null
+      name: None_711
+      network: ws
+      port: 443
+      server: zaintest.vuclip.com.yaya.web.id
+      tls: true
+      type: vless
+      uuid: 0b37476c-6aa4-41a3-83fc-124b4e7eec9b
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.yaya.web.id
+        path: '%2Fkr'
+    - client-fingerprint: chrome
+      name: None_2050
+      network: ws
+      port: 443
+      server: 104.17.21.6
       sni: c379b284.vs-494.pages.dev
       tls: true
       type: vless
@@ -831,43 +584,16 @@ proxies:
         headers:
             host: c379b284.vs-494.pages.dev
         path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 19.19 MB/s"
+    - name: 美国_390
       network: ws
-      port: 443
-      server: 104.17.21.15
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      password: eca68104-db54-43c0-bfda-320c178cdd8d
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
       ws-opts:
         headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 19.01 MB/s"
-      network: ws
-      port: 8880
-      server: 167.68.11.251
-      servername: Telegram-channel-freecodes
-      tls: false
-      type: vless
-      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
-      ws-opts:
-        headers:
-            host: cf.d3z.net
-        path: /Telegram
-    - client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 18.85 MB/s"
-      network: ws
-      port: 443
-      server: 162.159.251.165
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
+            Host: tj.cpddx.club
+        path: ""
