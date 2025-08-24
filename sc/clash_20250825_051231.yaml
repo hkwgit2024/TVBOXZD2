@@ -1,0 +1,225 @@
+proxy-providers: {}
+proxies:
+    - flow: null
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 121.77 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.234.192.79
+      tls: false
+      type: vless
+      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 48.07 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 79.127.233.170
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 45.68 MB/s"
+      password: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      port: 10086
+      server: 154.17.21.139
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 44.63 MB/s"
+      obfs: plain
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      protocol: origin
+      region: 加拿大
+      server: 79.127.233.170
+      type: ssr
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.09 MB/s"
+      network: ws
+      port: 10085
+      server: 154.17.21.139
+      type: vmess
+      uuid: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      ws-opts:
+        headers:
+            Host: 154.17.21.139
+        path: /vmess
+    - alterId: 64
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.67 MB/s"
+      port: 30002
+      region: 美国
+      server: 38.12.83.217
+      skip-cert-verify: true
+      tls: false
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 37.28 MB/s"
+      password: 20050105zhu
+      port: 51541
+      server: 204.44.110.129
+      skip-cert-verify: true
+      sni: www.bing.com
+      type: hysteria2
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 35.25 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      region: 英国
+      server: 51.15.17.169
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 34.89 MB/s"
+      network: ws
+      port: 443
+      server: vless.zyttbywy.xyz
+      servername: vless.zyttbywy.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: b340d332-7ee9-450e-80e7-7aaf9ffbb302
+      ws-opts:
+        path: /vws
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 33.56 MB/s"
+      port: 32566
+      server: vps.my-youth.asia
+      type: socks5
+      udp: false
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 32.05 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 104.192.226.106
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 30.95 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 29.88 MB/s"
+      network: ws
+      port: 8880
+      server: 159.246.55.251
+      servername: cf.d3z.net
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: /Telegram
+    - alterId: 0
+      cipher: auto
+      h2-opts: {}
+      http-opts: {}
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.66 MB/s"
+      network: ws
+      port: 443
+      region: 英国
+      server: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
+      skip-cert-verify: true
+      tls: true
+      type: vmess
+      uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+      ws-opts:
+        headers:
+            Host: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
+        path: /azumase.ren
+    - flow: null
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.02 MB/s"
+      network: ws
+      port: 443
+      server: 188.114.96.6
+      tls: true
+      type: vless
+      uuid: 8df60790-c903-4661-b85d-64c0009378e5
+      ws-opts:
+        headers:
+            Host: F1.paRsa.fiLegEar-Sg.Me
+        path: '%2F'
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 24.27 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      region: 法国
+      server: 81.19.137.222
+      type: ss
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      alterId: 0
+      cipher: auto
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.37 MB/s"
+      network: tcp
+      port: 17891
+      server: vps.my-youth.asia
+      servername: vps.my-youth.asia
+      tls: true
+      type: vmess
+      udp: true
+      uuid: 8f2d400c-0879-4076-9b87-2302f00a135b
+    - alterId: 1
+      cipher: auto
+      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 22.00 MB/s"
+      port: 666
+      server: nqpus-g05.jp06-vm5.entry.rtysjur.quest
+      skip-cert-verify: false
+      tls: false
+      type: vmess
+      udp: true
+      uuid: 2b30da31-c82a-3c2a-bb35-e9e2bb142781
+    - flow: null
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.84 MB/s"
+      network: ws
+      port: 80
+      server: 104.21.80.1
+      tls: false
+      type: vless
+      uuid: e5b9b393-bac0-4bea-ad96-53acc299e622
+      ws-opts:
+        headers:
+            Host: supercars.gobexor577.workers.dev
+        path: '%2F6m9qzexbs9sqghln%3Fed%3D2560'
+    - name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 20.62 MB/s"
+      network: ws
+      port: 8880
+      server: 45.149.12.251
+      servername: cf.d3z.net
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: /Telegram@freecodes/?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 19.70 MB/s"
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 19.22 MB/s"
+      password: Kuiqk2cP0BMWrgme9IfEvp
+      port: 443
+      server: 38.180.211.126
+      type: ss
+    - name: "\U0001F1EE\U0001F1E9 ID | ⬇️ 19.11 MB/s"
+      network: ws
+      port: 8880
+      server: 46.254.92.2
+      servername: ' [By EbraSha]'
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: / [By EbraSha]
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1EB\U0001F1EE FI | ⬇️ 19.05 MB/s"
+      network: tcp
+      port: 32017
+      server: panel3.ipyar.org
+      type: vmess
+      uuid: c0ccdeb9-784c-4d67-b904-20dcaac9902a
