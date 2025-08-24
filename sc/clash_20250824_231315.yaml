@@ -1,0 +1,235 @@
+proxy-providers: {}
+proxies:
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 79.72 MB/s"
+      password: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      port: 10086
+      server: 154.17.21.139
+      type: ss
+    - alterId: 0
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 67.92 MB/s"
+      network: ws
+      port: 10085
+      server: 154.17.21.139
+      type: vmess
+      uuid: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
+      ws-opts:
+        headers:
+            Host: 154.17.21.139
+        path: /vmess
+    - flow: null
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 63.93 MB/s"
+      network: tcp
+      port: 2321
+      server: 172.234.192.79
+      tls: false
+      type: vless
+      uuid: 4c266060-28aa-4fd4-8286-86127e16b260
+    - alterId: 64
+      cipher: auto
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 62.54 MB/s"
+      port: 30002
+      region: 美国
+      server: 38.12.83.217
+      skip-cert-verify: true
+      tls: false
+      type: vmess
+      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 60.42 MB/s"
+      network: ws
+      port: 443
+      server: vless.zyttbywy.xyz
+      servername: vless.zyttbywy.xyz
+      skip-cert-verify: false
+      tls: true
+      type: vless
+      uuid: b340d332-7ee9-450e-80e7-7aaf9ffbb302
+      ws-opts:
+        path: /vws
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 53.69 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 79.127.233.170
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 46.04 MB/s"
+      obfs: plain
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      protocol: origin
+      region: 加拿大
+      server: 79.127.233.170
+      type: ssr
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 43.78 MB/s"
+      network: ws
+      port: 8880
+      server: 167.68.11.251
+      servername: Telegram-channel-freecodes
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: /Telegram
+    - client-fingerprint: chrome
+      flow: xtls-rprx-vision
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.94 MB/s"
+      port: 5847
+      reality-opts:
+        public-key: NpqF483u4nXH0cztdyX7VbkpbDEW0sO07cGya0WvCHM
+      server: 84.33.244.7
+      servername: www.microsoft.com
+      skip-cert-verify: false
+      tfo: false
+      tls: true
+      type: vless
+      udp: true
+      uuid: 67f0fefa-a922-428c-ac02-37e1d5aaed72
+      xudp: true
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 35.03 MB/s"
+      network: ws
+      port: 8880
+      server: 159.246.55.251
+      servername: cf.d3z.net
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: /Telegram
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 27.29 MB/s"
+      password: 20050105zhu
+      port: 51541
+      server: 204.44.110.129
+      skip-cert-verify: true
+      sni: www.bing.com
+      type: hysteria2
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F0\U0001F1F7 KR | ⬇️ 26.66 MB/s"
+      password: b25727df-15ea-453c-a006-13fe98fee1d2
+      port: 30936
+      server: 141.164.63.32
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 26.00 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 25.32 MB/s"
+      password: QCXDxuDlTTMD7jtgHUjIoj
+      port: 8080
+      server: 45.158.171.146
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FB\U0001F1EA VE | ⬇️ 24.19 MB/s"
+      password: 1RWwXhwfAB5gAEozU4G2Pg
+      port: 8080
+      server: 45.158.171.136
+      type: ss
+    - cipher: aes-256-cfb
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 23.28 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 989
+      region: 英国
+      server: 51.15.17.169
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.23 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 45.87.175.154
+      type: ss
+    - name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 22.43 MB/s"
+      network: ws
+      port: 8880
+      server: 185.16.110.251
+      servername: cf.d3z.net
+      tls: false
+      type: vless
+      uuid: 0132166f-e702-48ed-a9e7-b07af768faf8
+      ws-opts:
+        headers:
+            host: cf.d3z.net
+        path: /Telegram @freecodes /?ed=2560fp=chrome
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 22.38 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.235
+      type: ss
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      client-fingerprint: chrome
+      encryption: none
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.60 MB/s"
+      network: ws
+      port: 8443
+      server: 104.19.26.126
+      servername: jp.20051212.xyz
+      tls: true
+      type: vless
+      uuid: 0124aa8d-c1a4-46e4-8973-7160e8021425
+      ws-opts:
+        headers:
+            Host: jp.20051212.xyz
+        path: /0124aa8d
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1EB\U0001F1F7 FR | ⬇️ 20.44 MB/s"
+      password: a58fa62b4944ddbf
+      port: 57456
+      region: 法国
+      server: 81.19.137.222
+      type: ss
+    - client-fingerprint: chrome
+      flow: xtls-rprx-vision
+      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 19.90 MB/s"
+      port: 8443
+      reality-opts:
+        public-key: POAZKZyD98MlYa3A5bSOayTPHdofqXynPAT1_QWEwjo
+        short-id: dfeff076987e2d34
+      server: 5.102.124.78
+      servername: www.microsoft.com
+      tls: true
+      type: vless
+      uuid: 79091265-a298-4205-a559-d04ed045c38b
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      alterId: 0
+      cipher: auto
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 19.37 MB/s"
+      network: tcp
+      port: 17891
+      server: vps.my-youth.asia
+      servername: vps.my-youth.asia
+      tls: true
+      type: vmess
+      udp: true
+      uuid: 8f2d400c-0879-4076-9b87-2302f00a135b
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 19.26 MB/s"
+      port: 32566
+      server: vps.my-youth.asia
+      type: socks5
+      udp: false
+    - flow: null
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 18.97 MB/s"
+      network: ws
+      port: 443
+      server: zaintest.vuclip.com.yaya.web.id
+      tls: true
+      type: vless
+      uuid: 0b37476c-6aa4-41a3-83fc-124b4e7eec9b
+      ws-opts:
+        headers:
+            Host: zaintest.vuclip.com.yaya.web.id
+        path: '%2Fkr'
