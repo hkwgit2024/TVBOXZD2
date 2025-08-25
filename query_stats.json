@@ -1,30 +1,30 @@
 {
   "filename:tvbox.json tvbox in:file": {
-    "valid": 27,
-    "total": 115
+    "valid": 28,
+    "total": 125
   },
   "filename:tv.json tvbox in:file": {
     "valid": 1,
-    "total": 109
+    "total": 122
   },
   "filename:TVBox.json tvbox in:file": {
     "valid": 47,
-    "total": 158
+    "total": 166
   },
   "filename:home.json tvbox in:file": {
     "valid": 1,
-    "total": 3
+    "total": 4
   },
   "filename:config.json tvbox in:file": {
-    "valid": 2,
-    "total": 107
+    "valid": 4,
+    "total": 128
   },
   "extension:json tvbox in:file path:tvbox": {
     "valid": 44,
-    "total": 327
+    "total": 345
   },
   "extension:json tvbox in:file path:tv": {
-    "valid": 67,
-    "total": 270
+    "valid": 75,
+    "total": 322
   }
 }
