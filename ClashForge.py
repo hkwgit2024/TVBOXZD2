@@ -182,52 +182,65 @@ def parse_ss_link(link):
         "udp": True
     }
 
-# 解析 Trojan 链接
+# 修正后的 Trojan 解析函数，增加了对关键字段的校验
 def parse_trojan_link(link):
-    link = link[9:]
-    config_part, name = link.split('#')
-    user_info, host_info = config_part.split('@')
-    username, password = user_info.split(':') if ":" in user_info else ("", user_info)
-    host, port_and_query = host_info.split(':') if ":" in host_info else (host_info, "")
-    port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
+    try:
+        link = link[9:]
+        config_part, name = link.split('#')
+        user_info, host_info = config_part.split('@')
+        username, password = user_info.split(':') if ":" in user_info else ("", user_info)
+        host, port_and_query = host_info.split(':', 1) if ':' in host_info else (host_info, "")
+        port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
 
-    return {
-        "name": urllib.parse.unquote(name),
-        "type": "trojan",
-        "server": host,
-        "port": int(port),
-        "password": password,
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
-        "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
-    }
+        if not all([password, host, port]):
+            return None
+            
+        return {
+            "name": urllib.parse.unquote(name),
+            "type": "trojan",
+            "server": host,
+            "port": int(port),
+            "password": password,
+            "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+            "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
+        }
+    except Exception:
+        return None
 
-# 解析 VLESS 链接
+# 修正后的 VLESS 解析函数，增加了对关键字段的校验
 def parse_vless_link(link):
-    link = link[8:]
-    config_part, name = link.split('#')
-    user_info, host_info = config_part.split('@')
-    uuid = user_info
-    host, query = host_info.split('?', 1) if '?' in host_info else (host_info, "")
-    port = host.split(':')[-1] if ':' in host else ""
-    host = host.split(':')[0] if ':' in host else ""
-    return {
-        "name": urllib.parse.unquote(name),
-        "type": "vless",
-        "server": host,
-        "port": int(port),
-        "uuid": uuid,
-        "security": urllib.parse.parse_qs(query).get("security", ["none"])[0],
-        "tls": urllib.parse.parse_qs(query).get("security", ["none"])[0] == "tls",
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
-        "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true",
-        "network": urllib.parse.parse_qs(query).get("type", ["tcp"])[0],
-        "ws-opts": {
-            "path": urllib.parse.parse_qs(query).get("path", [""])[0],
-            "headers": {
-                "Host": urllib.parse.parse_qs(query).get("host", [""])[0]
-            }
-        } if urllib.parse.parse_qs(query).get("type", ["tcp"])[0] == "ws" else {}
-    }
+    try:
+        link = link[8:]
+        config_part, name = link.split('#')
+        user_info, host_info = config_part.split('@')
+        uuid = user_info
+        host, query = host_info.split('?', 1) if '?' in host_info else (host_info, "")
+        port = host.split(':')[-1] if ':' in host else ""
+        host = host.split(':')[0] if ':' in host else ""
+        
+        if not all([uuid, host, port]):
+            return None
+            
+        return {
+            "name": urllib.parse.unquote(name),
+            "type": "vless",
+            "server": host,
+            "port": int(port),
+            "uuid": uuid,
+            "security": urllib.parse.parse_qs(query).get("security", ["none"])[0],
+            "tls": urllib.parse.parse_qs(query).get("security", ["none"])[0] == "tls",
+            "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+            "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true",
+            "network": urllib.parse.parse_qs(query).get("type", ["tcp"])[0],
+            "ws-opts": {
+                "path": urllib.parse.parse_qs(query).get("path", [""])[0],
+                "headers": {
+                    "Host": urllib.parse.parse_qs(query).get("host", [""])[0]
+                }
+            } if urllib.parse.parse_qs(query).get("type", ["tcp"])[0] == "ws" else {}
+        }
+    except Exception:
+        return None
 
 # 解析 VMESS 链接
 def parse_vmess_link(link):
@@ -385,12 +398,22 @@ def parse_proxy_link(link):
     except Exception as e:
         return None
 
-# 根据server和port共同约束去重
+# 修正后的去重函数，增加了对关键字段的校验
 def deduplicate_proxies(proxies_list):
     unique_proxies = []
     seen = set()
     for proxy in proxies_list:
-        key = (proxy['server'], proxy['port'], proxy['type'], proxy['password']) if proxy.get("password") else (proxy['server'], proxy['port'], proxy['type'])
+        # 使用 .get() 方法安全地访问键，以防止 KeyError
+        server = proxy.get('server')
+        port = proxy.get('port')
+        node_type = proxy.get('type')
+        password = proxy.get('password')
+        
+        # 如果任一关键字段缺失，则跳过此节点
+        if not all([server, port, node_type]):
+            continue
+            
+        key = (server, port, node_type, password) if password else (server, port, node_type)
         if key not in seen:
             seen.add(key)
             unique_proxies.append(proxy)
