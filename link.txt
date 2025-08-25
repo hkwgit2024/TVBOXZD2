@@ -1,5 +1,6 @@
 https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt
 https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt
+https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/config/url_states.txt
 205.198.71.21:8088
 46.62.174.233
 104.225.155.135
