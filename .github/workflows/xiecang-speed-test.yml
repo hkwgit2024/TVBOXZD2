@@ -1,4 +1,4 @@
-name: 测速
+name: 下载测速
 
 on:
   push:
