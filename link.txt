@@ -1,5 +1,8 @@
 https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt
 https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/merged_configs.txt
+205.198.71.21:8088
+46.62.174.233
+104.225.155.135
 dy.kkr.qzz.io
 clash.spdt.work
 82.157.140.187:3000
