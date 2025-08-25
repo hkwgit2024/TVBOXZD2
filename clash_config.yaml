@@ -32,23 +32,8 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 韩国_42
-  server: 152.67.209.237
-  port: 22053
-  client-fingerprint: random
-  type: vless
-  uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
-  tls: true
-  tfo: false
-  skip-cert-verify: false
-  servername: bp.singbox.ggff.net
-  network: ws
-  ws-opts:
-    path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
-    headers:
-      Host: bp.singbox.ggff.net
-- name: None_22
-  server: 172.64.40.161
+- name: 新加坡_23
+  server: 13.250.131.37
   port: 443
   client-fingerprint: random
   type: vless
@@ -62,22 +47,23 @@ proxies:
     path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
     headers:
       Host: bp.singbox.ggff.net
-- name: 越南_12
-  server: 103.186.155.19
-  port: 38388
-  type: ss
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  region: 其他地区
-- name: 越南_14
-  server: 103.186.154.37
-  port: 38388
-  type: ss
-  cipher: aes-256-cfb
-  password: Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV
-  region: 其他地区
-- name: None_170
-  server: 190.93.247.159
+- name: 德国_21
+  server: 194.87.148.148
+  port: 2053
+  client-fingerprint: random
+  type: vless
+  uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
+  tls: true
+  tfo: false
+  skip-cert-verify: false
+  servername: bp.singbox.ggff.net
+  network: ws
+  ws-opts:
+    path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
+    headers:
+      Host: bp.singbox.ggff.net
+- name: None_207
+  server: 104.24.230.10
   port: 443
   type: vless
   uuid: 72982133-27fb-46fc-9061-61113e77e201
@@ -92,25 +78,20 @@ proxies:
     headers:
       Host: jack.jack-cq.click
   region: 其他地区
-- name: 台湾_23
-  server: a05.taipeicitygovernment.co.ua
-  port: 3462
-  type: trojan
-  password: 6e1b9a65-884f-3aa9-9469-bf6ec0f08610
-  sni: 45.32.28.232
+- name: 德国_51
+  network: ws
+  port: 443
+  server: 212.95.34.22
   skip-cert-verify: true
-  region: 台湾
-- name: 德国_39
-  type: ss
-  server: 185.177.229.245
-  port: 1866
-  password: oXGp1+ihlfKg826H
-  cipher: chacha20-ietf-poly1305
+  tls: true
+  type: vless
+  udp: true
+  uuid: 784646e5-8e84-4672-8670-efc9cafcd2cc
   region: 德国
-- name: 巴西_6
+- name: 新西兰_1
   network: ws
   port: 8880
-  server: 185.133.35.251
+  server: 114.129.43.251
   servername: Telegram-channel-WangCai2
   skip-cert-verify: false
   tls: false
@@ -120,63 +101,126 @@ proxies:
   ws-opts:
     headers:
       Host: cf.d3z.net
-    path: /Telegramًں‡¨ًں‡³
+    path: /TelegramU0001F1E8U0001F1F3 @WangCai2 /?ed=2560
   region: 德国
-- name: 美国_254
-  server: hk2.sanfen001.pics
-  port: 443
-  type: trojan
-  password: 8800c518-e68a-4441-a45c-cd67855784c8
-  sni: hk2.sanfen001.pics
-  skip-cert-verify: true
-  region: 美国
-- name: 香港_434
-  password: XK52yierGckONMJWbJnuskD3unI
-  port: 12854
-  server: 47.242.195.121
+- name: 俄罗斯联邦_17
+  network: ws
+  port: 8880
+  server: 185.148.107.213
+  servername: jp.laoyoutiao.link
+  skip-cert-verify: false
+  tls: false
+  type: vless
+  udp: true
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  ws-opts:
+    headers:
+      Host: jp.laoyoutiao.link
+    path: /?ed=2560
+  region: 德国
+- name: 新加坡_113
+  password: 3hszBhqVsUhqOOFWJlev6k6Tkc
+  port: 22509
+  server: 47.129.224.62
   skip-cert-verify: true
   sni: bing.com
   tls: false
   type: hysteria2
-  region: 香港
-- name: 加拿大_17
+  region: 芬兰
+- name: 加拿大_12
+  type: hysteria2
+  server: 40.233.83.189
+  port: 54530
+  password: 862e90e1-2f26-4506-b8b9-0adf20da05fc
+  sni: www.bing.com
+  skip-cert-verify: true
+  alpn:
+  - h3
+  fast-open: true
+- name: None_467
   type: vless
-  server: 40.233.102.224
-  port: 42557
-  uuid: 2429bee3-e0c1-47dd-b420-75e6512b184b
-  network: tcp
-  udp: true
+  server: bestcf.030101.xyz
+  port: 2095
+  uuid: 13516920-8ff7-4382-a55b-f0dc2c4378f7
+  network: ws
+  tls: false
+  flow: null
+  ws-opts:
+    path: '%2F%3D2048'
+    headers:
+      Host: 240804.cfsub.cloudns.be
+- name: None_474
+  type: vless
+  server: quiz.int.vidio.com.yaya.web.id
+  port: 443
+  uuid: b9d383aa-717f-4200-9108-42a9ffc0860e
+  network: ws
   tls: true
-  flow: xtls-rprx-vision
-  servername: www.yahoo.com
-  reality-opts:
-    public-key: LiHpb4jWrgHBSpi1mjKH3I8m2ahpVNexeNDh-sMW3Xo
-    short-id: f430927d
-  client-fingerprint: chrome
-- name: 美国_500
+  flow: null
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: quiz.int.vidio.com.yaya.web.id
+- name: None_496
   type: vless
-  server: 108.165.216.177
+  server: edu.ruangguru.com.yaya.web.id
+  port: 443
+  uuid: 5dbb5436-9e88-43e7-a122-26a121d6872f
+  network: ws
+  tls: true
+  flow: null
+  ws-opts:
+    path: '%2Fakamai'
+    headers:
+      Host: edu.ruangguru.com.yaya.web.id
+- name: None_544
+  type: vless
+  server: 104.18.1.99
+  port: 2087
+  uuid: e8113a32-b7f8-4bbb-9655-38fcbd57dd46
+  network: ws
+  tls: true
+  flow: null
+  ws-opts:
+    path: '%2F%3D2048'
+    headers:
+      Host: aling.aple.cloudns.be
+- name: 美国_503
+  type: vless
+  server: 195.13.44.168
   port: 8880
-  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   tls: false
-  servername: ip.langmanshanxi.top
+  servername: kjgx.laoyoutiao.link
   network: ws
   ws-opts:
-    path: /Telegram @freecodes /?ed
+    path: Telegram @ CoinTech2U2 /?ed=2560
     headers:
-      host: ip.langmanshanxi.top
-- name: 荷兰_48
+      host: kjgx.laoyoutiao.link
+- name: 美国_504
   type: vless
-  server: 185.176.24.3
+  server: 45.159.217.165
   port: 8880
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   tls: false
-  servername: Telegram-channel-freecodes
+  servername: sg.laoyoutiao.link
   network: ws
   ws-opts:
-    path: /
+    path: Telegram @freecodes /?ed=2560
     headers:
-      host: bitget1.asdasd.click
+      host: sg.laoyoutiao.link
+- name: 沙特阿拉伯_3
+  type: vless
+  server: 91.209.253.168
+  port: 8880
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  tls: false
+  servername: kjgx.laoyoutiao.link
+  network: ws
+  ws-opts:
+    path: Telegram@freecodes/?ed=2560
+    headers:
+      host: kjgx.laoyoutiao.link
 - name: 美国_515
   type: vless
   server: 167.68.5.177
@@ -189,134 +233,174 @@ proxies:
     path: /Telegram@CoinTech2U2/?ed
     headers:
       host: ip.langmanshanxi.top
-- name: 美国_541
+- name: 美国_517
   type: vless
-  server: 139.64.235.3
+  server: 170.114.45.177
   port: 8880
-  uuid: b5441b0d-2147-4898-8a6a-9b2c87f58382
+  uuid: 583ceab3-4022-4553-9158-9bedc625ad4e
   tls: false
-  servername: Telegram-channel- CoinTech2U2
+  servername: ip.langmanshanxi.top
   network: ws
   ws-opts:
-    path: /Telegram
+    path: /
     headers:
-      host: bitget1.asdasd.click
-- name: 日本_187
-  server: 50w1l-g05.jp02-9a99-vm0.entry.fr0307a.art
-  port: 11777
-  type: vmess
-  uuid: 2b30da31-c82a-3c2a-bb35-e9e2bb142781
-  alterId: 1
-  cipher: auto
+      host: ip.langmanshanxi.top
+- name: 美国_534
+  type: vless
+  server: 168.100.6.63
+  port: 8880
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
   tls: false
-  skip-cert-verify: false
-  udp: true
-- name: 日本_188
-  server: a59bn-g05.jp03-7d22-vm0.entry.fr0307a.art
-  port: 21585
-  type: vmess
-  uuid: 2b30da31-c82a-3c2a-bb35-e9e2bb142781
-  alterId: 1
-  cipher: auto
+  servername: jp.laoyoutiao.link
+  network: ws
+  ws-opts:
+    path: /
+    headers:
+      host: jp.laoyoutiao.link
+- name: 英国_72
+  type: vless
+  server: 91.193.58.119
+  port: 8880
+  uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
+  tls: false
+  servername: kjgx.laoyoutiao.link
+  network: ws
+  ws-opts:
+    path: Telegram@ CoinTech2U2/?ed=2560
+    headers:
+      host: kjgx.laoyoutiao.link
+- name: None_855
+  server: 188.114.96.125
+  port: 443
+  type: vless
+  uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+  network: ws
   tls: true
-  skip-cert-verify: false
-  udp: true
-- name: 台湾_108
-  server: 36.232.84.27
-  port: 10150
+  udp: false
+  sni: vvv.yzqiang.site
+  client-fingerprint: chrome
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      host: vvv.yzqiang.site
+- name: None_866
+  server: 172.67.199.116
+  port: 443
+  type: vless
+  uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+  network: ws
+  tls: true
+  udp: false
+  sni: vvv.yzqiang.site
+  client-fingerprint: chrome
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      host: vvv.yzqiang.site
+- name: None_872
+  server: 162.159.235.254
+  port: 443
+  type: vless
+  uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+  network: ws
+  tls: true
+  udp: false
+  sni: vvv.yzqiang.site
+  client-fingerprint: chrome
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      host: vvv.yzqiang.site
+- name: 台湾_58
+  server: 1.170.53.35
+  port: 10106
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 33f49e36-7dc4-4948-822a-15f619016e00
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
   udp: true
-- name: 台湾_132
-  server: 1.170.2.14
-  port: 10091
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_133
-  server: 1.170.15.229
-  port: 10109
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_167
-  server: 114.46.69.196
-  port: 10043
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 0d80c4af-f334-4491-9dac-a393b52e430e
-  udp: true
-- name: 台湾_189
-  server: 36.234.92.136
-  port: 10055
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 33f49e36-7dc4-4948-822a-15f619016e00
-  udp: true
-- name: 台湾_225
-  server: 125.231.86.134
-  port: 10048
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_227
-  server: 114.46.91.182
-  port: 10071
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_261
+- name: 台湾_60
   server: 1.170.2.154
   port: 10100
   type: ss
   cipher: chacha20-ietf-poly1305
+  password: 0d80c4af-f334-4491-9dac-a393b52e430e
+  udp: true
+- name: 台湾_110
+  server: 125.228.162.163
+  port: 10137
+  type: ss
+  cipher: chacha20-ietf-poly1305
   password: 33f49e36-7dc4-4948-822a-15f619016e00
   udp: true
-- name: 台湾_289
-  server: 36.235.10.223
-  port: 10107
+- name: 台湾_130
+  server: 1.170.39.247
+  port: 10087
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5950073b-6786-4325-bad8-c1d26600172a
+  udp: true
+- name: 台湾_145
+  server: 1.165.73.91
+  port: 10010
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 0d80c4af-f334-4491-9dac-a393b52e430e
+  udp: true
+- name: 台湾_212
+  server: 118.170.231.42
+  port: 10031
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
+  udp: true
+- name: 台湾_251
+  server: 36.232.70.36
+  port: 10130
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 07db8506-88cf-463e-89d5-938572b4ba03
   udp: true
-- name: 台湾_304
-  server: 1.170.29.178
-  port: 10119
+- name: 台湾_264
+  server: 1.170.50.80
+  port: 10099
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
+  password: 07db8506-88cf-463e-89d5-938572b4ba03
   udp: true
-- name: 台湾_316
-  server: 1.170.12.144
-  port: 10104
+- name: 台湾_279
+  server: 36.232.91.227
+  port: 10147
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
+  password: 07db8506-88cf-463e-89d5-938572b4ba03
   udp: true
-- name: 美国_622
-  server: tj.cpddx.club
-  port: 8443
-  type: trojan
-  password: ef0f8959-041a-4c43-8bca-6ee1cf347140
-  sni: tj.cpddx.club
-  skip-cert-verify: true
-  network: ws
-  ws-opts:
-    path: ''
-    headers:
-      Host: tj.cpddx.club
-  udp: true
-- name: 台湾_346
-  server: 114.46.112.253
-  port: 10053
+- name: 台湾_300
+  server: 114.46.92.220
+  port: 10038
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_303
+  server: 1.170.4.249
+  port: 10112
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
+  udp: true
+- name: 台湾_341
+  server: 36.234.95.185
+  port: 10078
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_363
+  server: 111.253.192.138
+  port: 10151
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
   udp: true
 - name: 台湾_374
   server: 36.232.83.98
@@ -325,173 +409,242 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
   udp: true
-- name: 台湾_397
-  server: 1.170.50.80
-  port: 10099
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
-  udp: true
-- name: 台湾_454
-  server: 125.229.88.58
-  port: 10121
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_481
-  server: 36.235.17.93
-  port: 10082
+- name: 台湾_413
+  server: 114.46.125.40
+  port: 10052
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
   udp: true
-- name: 台湾_483
-  server: 59.126.32.188
-  port: 10073
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_527
-  server: 1.165.71.150
-  port: 10009
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_534
-  server: 118.170.224.63
-  port: 10017
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f5f728b9-7846-47e6-a537-dca12abae9fb
-  udp: true
-- name: 台湾_575
-  server: cdntwa.xiaomispeed.com
-  port: 39765
-  type: trojan
-  password: 36f7f120-2ec8-4ed6-915f-5d9577c24f30
-  sni: cdntwa.xiaomispeed.com
-  skip-cert-verify: true
-  udp: true
-- name: 台湾_601
-  server: 36.234.79.175
-  port: 10062
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_638
-  server: 1.165.72.251
-  port: 10016
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_647
-  server: 36.232.92.83
-  port: 10098
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
-  udp: true
-- name: 台湾_649
-  server: 1.170.51.75
-  port: 10084
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_670
-  server: 1.165.67.48
-  port: 10002
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_704
-  server: 125.229.191.101
-  port: 10007
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_720
-  server: 1.165.127.41
-  port: 10061
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_752
-  server: 1.165.103.13
-  port: 10041
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_771
-  server: 1.170.37.241
-  port: 10108
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_780
-  server: 36.234.106.51
-  port: 10051
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f5f728b9-7846-47e6-a537-dca12abae9fb
-  udp: true
-- name: 台湾_793
-  server: 36.232.92.83
-  port: 10098
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f5f728b9-7846-47e6-a537-dca12abae9fb
-  udp: true
-- name: 台湾_803
-  server: 125.229.191.104
-  port: 10033
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_811
-  server: 118.170.246.125
-  port: 10006
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_844
-  server: 36.232.71.250
-  port: 10141
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_870
-  server: 118.170.224.156
-  port: 10011
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
-  udp: true
-- name: 台湾_894
-  server: 1.165.71.211
-  port: 10040
+- name: 台湾_418
+  server: 1.170.43.234
+  port: 10120
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 07db8506-88cf-463e-89d5-938572b4ba03
   udp: true
-- name: 美国_636
+- name: 台湾_472
+  server: 1.165.71.150
+  port: 10009
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_537
+  server: 1.165.100.2
+  port: 10032
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5950073b-6786-4325-bad8-c1d26600172a
+  udp: true
+- name: 台湾_581
+  server: 125.231.68.107
+  port: 10050
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
+  udp: true
+- name: 台湾_587
+  server: 1.170.38.202
+  port: 10086
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
+  udp: true
+- name: 台湾_612
+  server: 1.170.43.234
+  port: 10120
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5950073b-6786-4325-bad8-c1d26600172a
+  udp: true
+- name: 台湾_618
+  server: 36.232.100.121
+  port: 10146
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_626
+  server: 36.234.97.113
+  port: 10003
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_650
+  server: 36.232.83.160
+  port: 10142
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_661
+  server: 125.228.162.163
+  port: 10137
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
+  udp: true
+- name: 台湾_665
+  server: 1.170.37.241
+  port: 10108
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_672
+  server: 36.232.127.4
+  port: 10122
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
+  udp: true
+- name: 台湾_688
+  server: 125.228.162.233
+  port: 10145
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5950073b-6786-4325-bad8-c1d26600172a
+  udp: true
+- name: 台湾_714
+  server: 1.170.23.40
+  port: 10103
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
+  udp: true
+- name: 台湾_795
+  server: 125.231.70.75
+  port: 10008
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
+  udp: true
+- name: 台湾_861
+  server: 36.235.1.4
+  port: 10116
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
+  udp: true
+- name: 台湾_905
+  server: 1.165.83.47
+  port: 10025
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_927
+  server: 1.165.93.28
+  port: 10005
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
+  udp: true
+- name: 台湾_961
+  server: 1.170.43.234
+  port: 10120
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
+  udp: true
+- name: 台湾_980
+  server: 36.232.80.11
+  port: 10134
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 07db8506-88cf-463e-89d5-938572b4ba03
+  udp: true
+- name: 台湾_1017
+  server: 36.234.116.8
+  port: 10042
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_1035
+  server: 114.46.90.10
+  port: 10056
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
+  udp: true
+- name: 台湾_1046
+  server: 125.229.191.103
+  port: 10023
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_1057
+  server: 36.232.76.188
+  port: 10125
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_1085
+  server: 1.165.72.140
+  port: 10024
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  udp: true
+- name: 台湾_1127
+  server: 1.165.73.91
+  port: 10010
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
+  udp: true
+- name: 台湾_1143
+  server: 114.33.53.80
+  port: 10047
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  udp: true
+- name: 台湾_1180
+  server: 125.228.31.10
+  port: 10113
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
+  udp: true
+- name: 台湾_1193
+  server: 1.170.18.49
+  port: 10117
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
+  udp: true
+- name: 台湾_1226
+  server: 125.229.191.102
+  port: 10019
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 0d80c4af-f334-4491-9dac-a393b52e430e
+  udp: true
+- name: 台湾_1238
+  server: 114.46.107.33
+  port: 10049
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5950073b-6786-4325-bad8-c1d26600172a
+  udp: true
+- name: 台湾_1252
+  server: 118.170.224.156
+  port: 10011
+  type: ss
+  cipher: chacha20-ietf-poly1305
+  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
+  udp: true
+- name: 美国_658
   server: tj.cpddx.club
   port: 8443
   type: trojan
-  password: f4a944e2-1d76-4726-b79d-aa3ff83e1a0e
+  password: 9d43dec8-3f8d-4f93-ba8c-da162d13f69a
   sni: tj.cpddx.club
   skip-cert-verify: true
   network: ws
@@ -500,220 +653,126 @@ proxies:
     headers:
       Host: tj.cpddx.club
   udp: true
-- name: 台湾_934
-  server: 1.170.2.14
-  port: 10091
+- name: 台湾_1318
+  server: 36.232.119.217
+  port: 10139
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 0d80c4af-f334-4491-9dac-a393b52e430e
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
   udp: true
-- name: 台湾_942
-  server: 36.232.94.99
-  port: 10131
+- name: 台湾_1374
+  server: 1.170.15.229
+  port: 10109
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
+  password: 33f49e36-7dc4-4948-822a-15f619016e00
   udp: true
-- name: 台湾_946
-  server: 1.170.6.140
-  port: 10133
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_963
-  server: 36.232.71.250
-  port: 10141
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_989
-  server: 36.234.97.104
-  port: 10072
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_991
-  server: 118.170.224.156
-  port: 10011
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
-  udp: true
-- name: 台湾_1052
-  server: 1.165.83.47
-  port: 10025
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_1081
-  server: 36.234.79.175
-  port: 10062
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
-  udp: true
-- name: 台湾_1087
-  server: 1.165.69.73
-  port: 10029
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
-  udp: true
-- name: 台湾_1111
+- name: 台湾_1400
   server: 125.228.180.250
   port: 10081
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: f5f728b9-7846-47e6-a537-dca12abae9fb
+  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
   udp: true
-- name: 台湾_1116
-  server: 36.234.75.219
-  port: 10079
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 0d80c4af-f334-4491-9dac-a393b52e430e
-  udp: true
-- name: 台湾_1150
-  server: 36.234.106.51
-  port: 10051
+- name: 台湾_1437
+  server: 125.228.31.10
+  port: 10113
   type: ss
   cipher: chacha20-ietf-poly1305
   password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
   udp: true
-- name: 台湾_1171
-  server: 1.170.47.127
-  port: 10115
+- name: 台湾_1451
+  server: 36.232.70.36
+  port: 10130
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
+  password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
   udp: true
-- name: 台湾_1266
-  server: 1.165.71.211
-  port: 10040
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_1279
-  server: 114.46.87.46
-  port: 10080
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 33f49e36-7dc4-4948-822a-15f619016e00
-  udp: true
-- name: 台湾_1312
-  server: 1.165.88.120
-  port: 10069
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_1326
+- name: 台湾_1487
   server: 1.165.83.47
   port: 10025
   type: ss
   cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_1333
-  server: 36.234.75.219
-  port: 10079
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_1365
-  server: 1.165.72.251
-  port: 10016
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: f5f728b9-7846-47e6-a537-dca12abae9fb
-  udp: true
-- name: 台湾_1439
-  server: 1.170.6.140
-  port: 10133
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 0d80c4af-f334-4491-9dac-a393b52e430e
-  udp: true
-- name: 台湾_1442
-  server: 118.170.206.97
-  port: 10028
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ab3696b7-e2ab-4b92-b904-cb9386d42d30
-  udp: true
-- name: 台湾_1460
-  server: 111.253.211.207
-  port: 10124
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: ffe839b1-756c-40ff-bfc6-8dfb5678afc1
-  udp: true
-- name: 台湾_1507
-  server: 36.232.84.27
-  port: 10150
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 23ee8717-f4b7-40ed-ad7a-b418e2715ff8
-  udp: true
-- name: 台湾_1518
-  server: 1.165.98.106
-  port: 10021
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 33f49e36-7dc4-4948-822a-15f619016e00
-  udp: true
-- name: 台湾_1537
-  server: 118.170.211.57
-  port: 10013
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5950073b-6786-4325-bad8-c1d26600172a
-  udp: true
-- name: 台湾_1546
-  server: 118.170.218.123
-  port: 10026
-  type: ss
-  cipher: chacha20-ietf-poly1305
-  password: 5223742f-1675-4ca3-854e-57d06dd60dd5
-  udp: true
-- name: 台湾_1549
-  server: 36.234.109.221
-  port: 10063
-  type: ss
-  cipher: chacha20-ietf-poly1305
   password: 3babe1aa-953b-4b53-801d-be9e5c548d7a
   udp: true
-- name: 葡萄牙_2
+- name: 台湾_1581
+  server: 125.228.180.215
+  port: 10089
   type: ss
-  server: 185.231.233.173
+  cipher: chacha20-ietf-poly1305
+  password: 07db8506-88cf-463e-89d5-938572b4ba03
+  udp: true
+- name: 哥伦比亚_2
+  type: ss
+  server: 181.119.30.20
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-- name: 法国_55
+- name: 立陶宛_33
   type: ss
-  server: 45.158.171.146
+  server: 45.87.175.192
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+- name: 美国_681
+  type: hysteria2
+  server: 204.44.110.129
+  port: 51541
+  password: 20050105zhu
+  sni: www.bing.com
+  skip-cert-verify: true
+- name: None_1051
+  server: 104.24.87.184
+  port: 443
+  type: vless
+  uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+  network: ws
+  tls: true
+  udp: false
+  sni: c379b284.vs-494.pages.dev
+  client-fingerprint: chrome
+  ws-opts:
+    path: /?ed=2560
+    headers:
+      host: c379b284.vs-494.pages.dev
+- name: None_1124
+  type: vless
+  server: 190.93.245.101
+  port: 2087
+  uuid: 3df93bd0-ae17-46db-92e5-90bff99762c0
+  network: ws
+  tls: true
+  flow: null
+  ws-opts:
+    path: /
+    headers:
+      Host: cmp.danjun.ddns-ip.net
+- name: 印度_15
+  type: vless
+  server: 45.88.183.156
+  port: 12794
+  uuid: 08704c01-7edb-454a-98a2-328ccb9936fa
+  network: tcp
+  tls: false
+  flow: null
+- name: 法国_114
+  type: ss
+  server: 77.105.166.12
+  port: 8594
+  cipher: chacha20-ietf-poly1305
+  password: 7OrvL0JH9f2LvIE45MT7WN
+- name: 阿联酋_35
+  type: ss
+  server: 151.242.251.153
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-- name: 日本_301
-  type: trojan
-  server: tk-tr-4.cats22.net
-  port: 443
-  password: 18844%40zxcvbn
-  sni: null
-  skip-cert-verify: false
-- name: 荷兰_192
+- name: 立陶宛_57
   type: ss
-  server: 193.29.139.202
+  server: 45.87.175.157
   port: 8080
   cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
+  password: QCXDxuDlTTMD7jtgHUjIoj
 proxy-groups:
 - name: 节点选择
   type: select
@@ -726,92 +785,92 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 美国_541
-  - 美国_500
-  - 巴西_6
-  - 荷兰_48
-  - None_170
+  - 美国_534
   - 美国_515
-  - 台湾_704
-  - 台湾_1116
-  - 台湾_1365
-  - 台湾_638
-  - 美国_254
-  - 台湾_534
-  - 台湾_780
-  - 台湾_894
-  - 台湾_1460
-  - 台湾_304
-  - 台湾_989
-  - 台湾_108
-  - 台湾_793
-  - 台湾_527
-  - 台湾_1111
+  - 美国_503
+  - None_866
+  - 俄罗斯联邦_17
+  - None_855
+  - 新西兰_1
+  - 沙特阿拉伯_3
+  - 美国_517
+  - None_1124
+  - 英国_72
+  - None_207
+  - 美国_504
+  - None_872
+  - None_544
+  - 加拿大_12
+  - 立陶宛_57
+  - 法国_114
+  - 阿联酋_35
+  - 美国_681
+  - None_1051
+  - None_496
+  - None_467
+  - 台湾_927
+  - 台湾_472
+  - 台湾_145
+  - 台湾_618
+  - 台湾_1226
+  - 台湾_1487
+  - 台湾_688
+  - 台湾_279
+  - 台湾_1046
+  - 台湾_1451
   - 台湾_374
-  - 台湾_261
-  - 台湾_397
-  - 台湾_963
-  - 台湾_481
-  - 加拿大_17
-  - 台湾_991
-  - 台湾_942
-  - 台湾_1507
-  - 台湾_454
-  - 台湾_647
-  - 台湾_946
-  - 台湾_316
-  - 台湾_844
-  - 德国_39
-  - 台湾_1333
-  - 台湾_133
-  - 台湾_289
-  - 美国_636
-  - 台湾_752
-  - None_22
-  - 台湾_189
-  - 台湾_870
-  - 台湾_1546
-  - 台湾_720
-  - 台湾_670
-  - 台湾_346
-  - 台湾_1052
-  - 台湾_1150
-  - 台湾_1266
-  - 台湾_132
-  - 台湾_225
-  - 台湾_934
-  - 法国_55
-  - 荷兰_192
-  - 台湾_1081
-  - 台湾_1087
-  - 台湾_1171
-  - 台湾_483
-  - 台湾_803
-  - 台湾_1312
-  - 台湾_1439
-  - 台湾_1326
-  - 台湾_227
-  - 台湾_167
-  - 台湾_601
-  - 台湾_1549
-  - 台湾_1537
-  - 葡萄牙_2
-  - 台湾_1279
-  - 台湾_649
-  - 台湾_771
-  - 台湾_1442
-  - 台湾_1518
-  - 台湾_811
-  - 日本_187
-  - 越南_14
-  - 日本_301
-  - 越南_12
-  - 台湾_575
-  - 韩国_42
-  - 美国_622
-  - 日本_188
-  - 台湾_23
-  - 香港_434
+  - 台湾_1437
+  - 台湾_303
+  - 台湾_587
+  - 台湾_1238
+  - 台湾_300
+  - 美国_658
+  - 台湾_1143
+  - 台湾_1057
+  - 台湾_626
+  - 台湾_795
+  - 台湾_1017
+  - 台湾_980
+  - 台湾_264
+  - 台湾_110
+  - 台湾_60
+  - 台湾_661
+  - 台湾_672
+  - 台湾_58
+  - 台湾_961
+  - 台湾_714
+  - 台湾_612
+  - 台湾_650
+  - 台湾_1180
+  - 台湾_341
+  - None_474
+  - 台湾_1581
+  - 台湾_130
+  - 台湾_537
+  - 哥伦比亚_2
+  - 台湾_251
+  - 台湾_1318
+  - 台湾_1127
+  - 台湾_1252
+  - 台湾_1193
+  - 台湾_665
+  - 台湾_1085
+  - 印度_15
+  - 台湾_1374
+  - 台湾_581
+  - 台湾_418
+  - 台湾_905
+  - 台湾_861
+  - 台湾_1400
+  - 台湾_413
+  - 德国_51
+  - 台湾_1035
+  - 台湾_212
+  - 德国_21
+  - 新加坡_113
+  - 立陶宛_33
+  - 新加坡_23
+  - 台湾_363
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -819,183 +878,183 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 美国_541
-  - 美国_500
-  - 巴西_6
-  - 荷兰_48
-  - None_170
+  - 美国_534
   - 美国_515
-  - 台湾_704
-  - 台湾_1116
-  - 台湾_1365
-  - 台湾_638
-  - 美国_254
-  - 台湾_534
-  - 台湾_780
-  - 台湾_894
-  - 台湾_1460
-  - 台湾_304
-  - 台湾_989
-  - 台湾_108
-  - 台湾_793
-  - 台湾_527
-  - 台湾_1111
+  - 美国_503
+  - None_866
+  - 俄罗斯联邦_17
+  - None_855
+  - 新西兰_1
+  - 沙特阿拉伯_3
+  - 美国_517
+  - None_1124
+  - 英国_72
+  - None_207
+  - 美国_504
+  - None_872
+  - None_544
+  - 加拿大_12
+  - 立陶宛_57
+  - 法国_114
+  - 阿联酋_35
+  - 美国_681
+  - None_1051
+  - None_496
+  - None_467
+  - 台湾_927
+  - 台湾_472
+  - 台湾_145
+  - 台湾_618
+  - 台湾_1226
+  - 台湾_1487
+  - 台湾_688
+  - 台湾_279
+  - 台湾_1046
+  - 台湾_1451
   - 台湾_374
-  - 台湾_261
-  - 台湾_397
-  - 台湾_963
-  - 台湾_481
-  - 加拿大_17
-  - 台湾_991
-  - 台湾_942
-  - 台湾_1507
-  - 台湾_454
-  - 台湾_647
-  - 台湾_946
-  - 台湾_316
-  - 台湾_844
-  - 德国_39
-  - 台湾_1333
-  - 台湾_133
-  - 台湾_289
-  - 美国_636
-  - 台湾_752
-  - None_22
-  - 台湾_189
-  - 台湾_870
-  - 台湾_1546
-  - 台湾_720
-  - 台湾_670
-  - 台湾_346
-  - 台湾_1052
-  - 台湾_1150
-  - 台湾_1266
-  - 台湾_132
-  - 台湾_225
-  - 台湾_934
-  - 法国_55
-  - 荷兰_192
-  - 台湾_1081
-  - 台湾_1087
-  - 台湾_1171
-  - 台湾_483
-  - 台湾_803
-  - 台湾_1312
-  - 台湾_1439
-  - 台湾_1326
-  - 台湾_227
-  - 台湾_167
-  - 台湾_601
-  - 台湾_1549
-  - 台湾_1537
-  - 葡萄牙_2
-  - 台湾_1279
-  - 台湾_649
-  - 台湾_771
-  - 台湾_1442
-  - 台湾_1518
-  - 台湾_811
-  - 日本_187
-  - 越南_14
-  - 日本_301
-  - 越南_12
-  - 台湾_575
-  - 韩国_42
-  - 美国_622
-  - 日本_188
-  - 台湾_23
-  - 香港_434
+  - 台湾_1437
+  - 台湾_303
+  - 台湾_587
+  - 台湾_1238
+  - 台湾_300
+  - 美国_658
+  - 台湾_1143
+  - 台湾_1057
+  - 台湾_626
+  - 台湾_795
+  - 台湾_1017
+  - 台湾_980
+  - 台湾_264
+  - 台湾_110
+  - 台湾_60
+  - 台湾_661
+  - 台湾_672
+  - 台湾_58
+  - 台湾_961
+  - 台湾_714
+  - 台湾_612
+  - 台湾_650
+  - 台湾_1180
+  - 台湾_341
+  - None_474
+  - 台湾_1581
+  - 台湾_130
+  - 台湾_537
+  - 哥伦比亚_2
+  - 台湾_251
+  - 台湾_1318
+  - 台湾_1127
+  - 台湾_1252
+  - 台湾_1193
+  - 台湾_665
+  - 台湾_1085
+  - 印度_15
+  - 台湾_1374
+  - 台湾_581
+  - 台湾_418
+  - 台湾_905
+  - 台湾_861
+  - 台湾_1400
+  - 台湾_413
+  - 德国_51
+  - 台湾_1035
+  - 台湾_212
+  - 德国_21
+  - 新加坡_113
+  - 立陶宛_33
+  - 新加坡_23
+  - 台湾_363
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 美国_541
-  - 美国_500
-  - 巴西_6
-  - 荷兰_48
-  - None_170
+  - 美国_534
   - 美国_515
-  - 台湾_704
-  - 台湾_1116
-  - 台湾_1365
-  - 台湾_638
-  - 美国_254
-  - 台湾_534
-  - 台湾_780
-  - 台湾_894
-  - 台湾_1460
-  - 台湾_304
-  - 台湾_989
-  - 台湾_108
-  - 台湾_793
-  - 台湾_527
-  - 台湾_1111
+  - 美国_503
+  - None_866
+  - 俄罗斯联邦_17
+  - None_855
+  - 新西兰_1
+  - 沙特阿拉伯_3
+  - 美国_517
+  - None_1124
+  - 英国_72
+  - None_207
+  - 美国_504
+  - None_872
+  - None_544
+  - 加拿大_12
+  - 立陶宛_57
+  - 法国_114
+  - 阿联酋_35
+  - 美国_681
+  - None_1051
+  - None_496
+  - None_467
+  - 台湾_927
+  - 台湾_472
+  - 台湾_145
+  - 台湾_618
+  - 台湾_1226
+  - 台湾_1487
+  - 台湾_688
+  - 台湾_279
+  - 台湾_1046
+  - 台湾_1451
   - 台湾_374
-  - 台湾_261
-  - 台湾_397
-  - 台湾_963
-  - 台湾_481
-  - 加拿大_17
-  - 台湾_991
-  - 台湾_942
-  - 台湾_1507
-  - 台湾_454
-  - 台湾_647
-  - 台湾_946
-  - 台湾_316
-  - 台湾_844
-  - 德国_39
-  - 台湾_1333
-  - 台湾_133
-  - 台湾_289
-  - 美国_636
-  - 台湾_752
-  - None_22
-  - 台湾_189
-  - 台湾_870
-  - 台湾_1546
-  - 台湾_720
-  - 台湾_670
-  - 台湾_346
-  - 台湾_1052
-  - 台湾_1150
-  - 台湾_1266
-  - 台湾_132
-  - 台湾_225
-  - 台湾_934
-  - 法国_55
-  - 荷兰_192
-  - 台湾_1081
-  - 台湾_1087
-  - 台湾_1171
-  - 台湾_483
-  - 台湾_803
-  - 台湾_1312
-  - 台湾_1439
-  - 台湾_1326
-  - 台湾_227
-  - 台湾_167
-  - 台湾_601
-  - 台湾_1549
-  - 台湾_1537
-  - 葡萄牙_2
-  - 台湾_1279
-  - 台湾_649
-  - 台湾_771
-  - 台湾_1442
-  - 台湾_1518
-  - 台湾_811
-  - 日本_187
-  - 越南_14
-  - 日本_301
-  - 越南_12
-  - 台湾_575
-  - 韩国_42
-  - 美国_622
-  - 日本_188
-  - 台湾_23
-  - 香港_434
+  - 台湾_1437
+  - 台湾_303
+  - 台湾_587
+  - 台湾_1238
+  - 台湾_300
+  - 美国_658
+  - 台湾_1143
+  - 台湾_1057
+  - 台湾_626
+  - 台湾_795
+  - 台湾_1017
+  - 台湾_980
+  - 台湾_264
+  - 台湾_110
+  - 台湾_60
+  - 台湾_661
+  - 台湾_672
+  - 台湾_58
+  - 台湾_961
+  - 台湾_714
+  - 台湾_612
+  - 台湾_650
+  - 台湾_1180
+  - 台湾_341
+  - None_474
+  - 台湾_1581
+  - 台湾_130
+  - 台湾_537
+  - 哥伦比亚_2
+  - 台湾_251
+  - 台湾_1318
+  - 台湾_1127
+  - 台湾_1252
+  - 台湾_1193
+  - 台湾_665
+  - 台湾_1085
+  - 印度_15
+  - 台湾_1374
+  - 台湾_581
+  - 台湾_418
+  - 台湾_905
+  - 台湾_861
+  - 台湾_1400
+  - 台湾_413
+  - 德国_51
+  - 台湾_1035
+  - 台湾_212
+  - 德国_21
+  - 新加坡_113
+  - 立陶宛_33
+  - 新加坡_23
+  - 台湾_363
 rules:
 - DOMAIN,app.adjust.com,DIRECT
 - GEOIP,CN,DIRECT
