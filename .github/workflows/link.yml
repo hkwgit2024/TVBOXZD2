@@ -76,7 +76,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add link.yaml link.csv 
+          git add link.yaml 
           git commit -m "Auto update nodes and cache from script on $(date +%Y-%m-%d)" || echo "No changes to commit"
           
           # Add a retry loop for race conditions
