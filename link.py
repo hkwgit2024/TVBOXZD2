@@ -560,9 +560,9 @@ def get_links_from_local_file(filename="link.txt"):
     """
     env_content = os.getenv('LINK_TXT_CONTENT')
     if env_content:
-        print("正在从环境变量 LINK_TXT_CONTENT 读取链接...")
+        print("正在从 LINK_TXT_CONTENT 读取链接...")
         links = [line.strip() for line in env_content.splitlines() if line.strip() and not line.strip().startswith('#')]
-        print(f"从环境变量中读取了 {len(links)} 个链接。")
+        print(f"读取了 {len(links)} 个链接。")
         return links
         
     links = []
@@ -578,7 +578,7 @@ def get_links_from_local_file(filename="link.txt"):
         except IOError as e:
             print(f"无法读取文件 {filename}: {e}")
     else:
-        print(f"环境变量和文件 {filename} 都不存在。")
+        print(f"LINK_TXT和文件 {filename} 都不存在。")
     return links
 
 def save_to_yaml(data, filename='link.yaml'):
