@@ -5,7 +5,6 @@ on:
     paths:
       - 'link.py'
       - 'ip_geolocation.py'
-      - 'link.txt'
       - '.github/workflows/link.yml'
   workflow_dispatch:
   schedule:
@@ -28,7 +27,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: link_cache.sqlite
-          key: ${{ runner.os }}-requests-cache-${{ hashFiles('link.txt') }}
+          key: ${{ runner.os }}-requests-cache-v1
           restore-keys: |
             ${{ runner.os }}-requests-cache-
 
@@ -68,6 +67,8 @@ jobs:
       - name: Run the script
         if: github.event.schedule != '0 7 5 * *'
         run: python link.py
+        env:
+          LINK_TXT_CONTENT: ${{ vars.link.txt }}
         continue-on-error: true
 
       - name: Commit and push changes
