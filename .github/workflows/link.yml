@@ -68,7 +68,7 @@ jobs:
         if: github.event.schedule != '0 7 5 * *'
         run: python link.py
         env:
-          LINK_TXT_CONTENT: ${{ vars.link.txt }}
+          LINK_TXT_CONTENT: ${{ vars.link }}
         continue-on-error: true
 
       - name: Commit and push changes
