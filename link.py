@@ -131,7 +131,7 @@ def parse_vmess(vmess_url):
             host = config.get('host') or config.get('add')
             if not validate_host(host):
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 VMess 节点（无效或缺失 ws-opts.headers[Host]）: {vmess_url[:50]}...\n")
+                    f.write(f"跳过 VMess 节点（无效或缺失 ws-opts.headers[Host]）: {vmess_url}\n")
                 return None
             
             node['ws-opts'] = {
@@ -170,13 +170,13 @@ def parse_ss(ss_url):
         # 验证加密方式
         if method not in VALID_SS_CIPHERS:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点（不支持的加密方式: {method}）: {ss_url[:50]}...\n")
+                f.write(f"跳过 Shadowsocks 节点（不支持的加密方式: {method}）: {ss_url}\n")
             return None
         
         # 验证服务器和端口
         if not validate_server_port(server, int(port)):
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 Shadowsocks 节点（无效服务器/端口）: {ss_url[:50]}...\n")
+                f.write(f"跳过 Shadowsocks 节点（无效服务器/端口）: {ss_url}\n")
             return None
 
         return {
@@ -207,7 +207,7 @@ def parse_vless(vless_url):
         network = params.get('type', 'tcp')
         if network not in VALID_VLESS_NETWORKS:
             with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过 VLESS 节点（不支持的网络类型: {network}）: {vless_url[:50]}...\n")
+                f.write(f"跳过 VLESS 节点（不支持的网络类型: {network}）: {vless_url}\n")
             return None
         
         node = {
@@ -220,7 +220,7 @@ def parse_vless(vless_url):
             host_header = params.get('host', '')
             if not validate_host(host_header):
                 with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"跳过 VLESS 节点（无效或缺失 ws-opts.headers[Host]）: {vless_url[:50]}...\n")
+                    f.write(f"跳过 VLESS 节点（无效或缺失 ws-opts.headers[Host]）: {vless_url}\n")
                 return None
             node['ws-opts'] = {
                 'path': params.get('path'),
@@ -346,7 +346,22 @@ def extract_links_from_html(html_content):
     matches = re.findall(r'<textarea[^>]*>(.*?)</textarea>', html_content, re.DOTALL)
     for match in matches:
         links.extend(match.strip().splitlines())
-        
+    
+    # 添加对纯文本内容的解析
+    if soup.text:
+        lines = soup.text.splitlines()
+        for line in lines:
+            line = line.strip()
+            if line and (line.startswith(('vmess://', 'ss://', 'vless://', 'trojan://', 'ssr://', 'hy2://'))):
+                links.append(line)
+    
+    # 添加对脚本中的链接提取
+    scripts = soup.find_all('script')
+    for script in scripts:
+        if script.string:
+            matches = re.findall(r'["\']((?:vmess|ss|vless|trojan|ssr|hy2)://[^"\']+)["\']', script.string)
+            links.extend(matches)
+    
     return links
 
 def extract_links_from_script(html_content):
@@ -372,10 +387,18 @@ def get_nodes_with_playwright(url):
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page()
-            page.goto(url)
-            # 等待所有网络请求都完成，以确保动态内容加载完毕
-            page.wait_for_load_state("networkidle")
+            page.goto(url, timeout=60000)  # 增加超时时间
+            # 等待特定元素或超时
+            try:
+                page.wait_for_selector('textarea, p.config, script', timeout=30000)
+            except:
+                pass  # 如果没有特定元素，继续处理
+            page.wait_for_load_state("networkidle", timeout=60000)
             content = page.content()
+            # 保存页面内容以便调试
+            safe_filename = url.replace('://', '_').replace('/', '_').replace(':', '_')
+            with open(f'playwright_output_{safe_filename}.html', 'w', encoding='utf-8') as f:
+                f.write(content)
             browser.close()
 
             # 使用静态解析函数处理渲染后的内容
@@ -407,10 +430,19 @@ def get_nodes_with_playwright(url):
                 except (base64.binascii.Error, UnicodeDecodeError, ValueError):
                     pass
 
+        if nodes:
+            print(f"Playwright 成功从 {url} 找到 {len(nodes)} 个节点。")
+
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
             f.write(f"使用 Playwright 处理 {url} 时发生错误: {e}\n")
     return nodes
+
+def is_valid_url(url):
+    """验证 URL 格式是否有效"""
+    import re
+    pattern = re.compile(r'^https?://[a-zA-Z0-9.-]+(:[0-9]+)?(/.*)?$')
+    return bool(pattern.match(url))
 
 def get_nodes_from_url(url):
     schemes = ['https://', 'http://']
@@ -418,6 +450,11 @@ def get_nodes_from_url(url):
         full_url = url
         if not full_url.startswith(('http://', 'https://')):
             full_url = f"{scheme}{url}"
+        
+        if not is_valid_url(full_url):
+            with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                f.write(f"无效 URL: {full_url}\n")
+            continue
         
         try:
             session = requests_cache.CachedSession(
@@ -502,7 +539,7 @@ def get_nodes_from_url(url):
             
             # 新增：如果所有静态解析都失败，则使用 Playwright
             if not nodes:
-                print(f"使用 Playwright 渲染 {full_url}...")
+                print(f"使用 Playwright 渲染 {full_url}")
                 nodes = get_nodes_with_playwright(full_url)
                 if nodes:
                     print(f"Playwright 成功从 {full_url} 找到 {len(nodes)} 个节点。")
