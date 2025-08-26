@@ -1,0 +1,51 @@
+proxy-providers: {}
+proxies:
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 58.04 MB/s"
+      password: oZIoA69Q8yhcQV8ka3Pa3A
+      port: 8080
+      server: 193.29.139.235
+      type: ss
+    - client-fingerprint: random
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 32.96 MB/s"
+      network: ws
+      port: 443
+      server: 104.19.150.163
+      servername: bp.singbox.ggff.net
+      skip-cert-verify: false
+      tfo: false
+      tls: true
+      type: vless
+      uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
+      ws-opts:
+        headers:
+            Host: bp.singbox.ggff.net
+        path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
+    - client-fingerprint: random
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.00 MB/s"
+      network: ws
+      port: 2087
+      server: 104.27.94.254
+      servername: bp.singbox.ggff.net
+      skip-cert-verify: false
+      tfo: false
+      tls: true
+      type: vless
+      uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
+      ws-opts:
+        headers:
+            Host: bp.singbox.ggff.net
+        path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.25 MB/s"
+      network: ws
+      password: 57f79a11-e931-40c9-98db-695b12767cc9
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
