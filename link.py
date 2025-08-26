@@ -555,6 +555,16 @@ def get_nodes_from_url(url):
     return []
 
 def get_links_from_local_file(filename="link.txt"):
+    """
+    优先从环境变量LINK_TXT_CONTENT读取链接，如果不存在则从本地文件读取。
+    """
+    env_content = os.getenv('LINK_TXT_CONTENT')
+    if env_content:
+        print("正在从环境变量 LINK_TXT_CONTENT 读取链接...")
+        links = [line.strip() for line in env_content.splitlines() if line.strip() and not line.strip().startswith('#')]
+        print(f"从环境变量中读取了 {len(links)} 个链接。")
+        return links
+        
     links = []
     if os.path.exists(filename):
         print(f"正在从本地文件 {filename} 读取链接...")
@@ -568,7 +578,7 @@ def get_links_from_local_file(filename="link.txt"):
         except IOError as e:
             print(f"无法读取文件 {filename}: {e}")
     else:
-        print(f"文件 {filename} 不存在。请创建一个包含链接的 {filename} 文件。")
+        print(f"环境变量和文件 {filename} 都不存在。")
     return links
 
 def save_to_yaml(data, filename='link.yaml'):
