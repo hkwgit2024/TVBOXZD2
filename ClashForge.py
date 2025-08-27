@@ -156,138 +156,158 @@ def validate_proxy(proxy: Dict) -> Optional[Dict]:
         if field not in proxy or not proxy[field]:
             print(f"[-] 排除节点: {proxy.get('name', '未知')}，原因: 缺少或值为空的必要字段 '{field}'")
             return None
+    
+    # 验证端口为整数
+    try:
+        if proxy_type in ['ss', 'trojan', 'vless', 'vmess', 'hysteria2'] and 'port' in proxy:
+            proxy['port'] = int(proxy['port'])
+    except (ValueError, KeyError):
+        print(f"[-] 排除节点: {proxy.get('name', '未知')}，原因: 端口不是有效的整数")
+        return None
 
     # 移除额外不必要的字段，确保格式严格
-    cleaned_proxy = {k: v for k, v in proxy.items() if k in required_fields[proxy_type] or k in ['network', 'ws-opts', 'tls', 'sni', 'skip-cert-verify', 'alterId', 'udp']}
+    cleaned_proxy = {k: v for k, v in proxy.items() if k in required_fields[proxy_type] or k in ['network', 'ws-opts', 'tls', 'sni', 'skip-cert-verify', 'alterId', 'udp', 'client-fingerprint']}
     
     return cleaned_proxy
 
 
 # 解析 Hysteria2 链接
 def parse_hysteria2_link(link):
-    link = link[14:]
-    parts = link.split('@')
-    if len(parts) < 2: return None
-    uuid = parts[0]
-    server_info = parts[1].split('?')
-    server_port_part = server_info[0].split('/')
-    if not server_port_part or ':' not in server_port_part[0]: return None
-    server_part = server_port_part[0].split(':')
-    server = server_part[0]
-    port = int(server_part[1].strip())
+    try:
+        link = link[14:]
+        parts = link.split('@')
+        if len(parts) < 2: return None
+        uuid = parts[0]
+        server_info = parts[1].split('?')
+        server_port_part = server_info[0].split('/')
+        if not server_port_part or ':' not in server_port_part[0]: return None
+        server_part = server_port_part[0].split(':')
+        server = server_part[0]
+        port = int(server_part[1].strip())
+        
+        query_params = urllib.parse.parse_qs(server_info[1] if len(server_info) > 1 else '')
+        insecure = '1' in query_params.get('insecure', ['0'])
+        sni = query_params.get('sni', [''])[0]
+        name_part = link.split('#')
+        name = urllib.parse.unquote(name_part[-1].strip()) if len(name_part) > 1 else 'hysteria2_node'
     
-    query_params = urllib.parse.parse_qs(server_info[1] if len(server_info) > 1 else '')
-    insecure = '1' in query_params.get('insecure', ['0'])
-    sni = query_params.get('sni', [''])[0]
-    name_part = link.split('#')
-    name = urllib.parse.unquote(name_part[-1].strip()) if len(name_part) > 1 else 'hysteria2_node'
-
-    return validate_proxy({
-        "name": f"{name}",
-        "server": server,
-        "port": port,
-        "type": "hysteria2",
-        "password": uuid,
-        "auth": uuid,
-        "sni": sni,
-        "skip-cert-verify": insecure,
-        "client-fingerprint": "chrome"
-    })
+        return validate_proxy({
+            "name": f"{name}",
+            "server": server,
+            "port": port,
+            "type": "hysteria2",
+            "password": uuid,
+            "auth": uuid,
+            "sni": sni,
+            "skip-cert-verify": insecure,
+            "client-fingerprint": "chrome"
+        })
+    except Exception as e:
+        print(f"[-] 解析Hysteria2链接失败: {link}, 错误: {e}")
+        return None
 
 
 # 解析 Shadowsocks 链接
 def parse_ss_link(link):
-    link = link[5:]
-    if "#" in link:
-        config_part, name = link.split('#')
-    else:
-        config_part, name = link, "ss_node"
-    
     try:
+        link = link[5:]
+        if "#" in link:
+            config_part, name = link.split('#')
+        else:
+            config_part, name = link, "ss_node"
+        
         decoded = base64.urlsafe_b64decode(config_part.split('@')[0] + '=' * (-len(config_part.split('@')[0]) % 4)).decode('utf-8')
         method_passwd = decoded.split(':')
         cipher, password = method_passwd if len(method_passwd) == 2 else (method_passwd[0], "")
         server_info = config_part.split('@')[1]
         server, port = server_info.split(':') if ":" in server_info else (server_info, "")
+    
+        return validate_proxy({
+            "name": urllib.parse.unquote(name),
+            "type": "ss",
+            "server": server,
+            "port": int(port),
+            "cipher": cipher,
+            "password": password,
+            "udp": True
+        })
     except Exception as e:
-        print(f"[-] 排除无效的SS链接: {link}, 错误: {e}")
+        print(f"[-] 解析SS链接失败: {link}, 错误: {e}")
         return None
-
-    return validate_proxy({
-        "name": urllib.parse.unquote(name),
-        "type": "ss",
-        "server": server,
-        "port": int(port),
-        "cipher": cipher,
-        "password": password,
-        "udp": True
-    })
 
 
 # 解析 Trojan 链接
 def parse_trojan_link(link):
-    link = link[9:]
-    if '#' not in link: return None
-    config_part, name = link.split('#')
-    if '@' not in config_part: return None
-    user_info, host_info = config_part.split('@')
-    username, password = user_info.split(':') if ":" in user_info else ("", user_info)
-    host, port_and_query = host_info.split(':') if ":" in host_info else (host_info, "")
-    port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
-
-    return validate_proxy({
-        "name": urllib.parse.unquote(name),
-        "type": "trojan",
-        "server": host,
-        "port": int(port),
-        "password": password,
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
-        "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
-    })
+    try:
+        link = link[9:]
+        if '#' not in link: return None
+        config_part, name = link.split('#')
+        if '@' not in config_part: return None
+        user_info, host_info = config_part.split('@')
+        username, password = user_info.split(':') if ":" in user_info else ("", user_info)
+        host, port_and_query = host_info.split(':') if ":" in host_info else (host_info, "")
+        port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
+    
+        return validate_proxy({
+            "name": urllib.parse.unquote(name),
+            "type": "trojan",
+            "server": host,
+            "port": int(port),
+            "password": password,
+            "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+            "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
+        })
+    except Exception as e:
+        print(f"[-] 解析Trojan链接失败: {link}, 错误: {e}")
+        return None
 
 
 # 解析 VLESS 链接
 def parse_vless_link(link):
-    link = link[8:]
-    if '#' not in link or '@' not in link: return None
-    config_part, name = link.split('#')
-    user_info, host_info = config_part.split('@')
-    uuid = user_info
-    host_part = host_info.split('?', 1)
-    host_port = host_part[0]
-    query_str = host_part[1] if len(host_part) > 1 else ""
-
-    host_parts = host_port.split(':')
-    host = host_parts[0]
-    port = host_parts[1] if len(host_parts) > 1 else ""
+    try:
+        link = link[8:]
+        if '#' not in link or '@' not in link: return None
+        config_part, name = link.split('#')
+        user_info, host_info = config_part.split('@')
+        uuid = user_info
+        host_part = host_info.split('?', 1)
+        host_port = host_part[0]
+        query_str = host_part[1] if len(host_part) > 1 else ""
     
-    query_params = urllib.parse.parse_qs(query_str)
-    security = query_params.get("security", ["none"])[0]
-    
-    return validate_proxy({
-        "name": urllib.parse.unquote(name),
-        "type": "vless",
-        "server": host,
-        "port": int(port),
-        "uuid": uuid,
-        "security": security,
-        "tls": security == "tls",
-        "sni": query_params.get("sni", [""])[0],
-        "skip-cert-verify": query_params.get("skip-cert-verify", ["false"])[0] == "true",
-        "network": query_params.get("type", ["tcp"])[0],
-        "ws-opts": {
-            "path": query_params.get("path", [""])[0],
-            "headers": {
-                "Host": query_params.get("host", [""])[0]
-            }
-        } if query_params.get("type", ["tcp"])[0] == "ws" else {}
-    })
+        host_parts = host_port.split(':')
+        host = host_parts[0]
+        port = host_parts[1] if len(host_parts) > 1 else ""
+        
+        query_params = urllib.parse.parse_qs(query_str)
+        security = query_params.get("security", ["none"])[0]
+        
+        return validate_proxy({
+            "name": urllib.parse.unquote(name),
+            "type": "vless",
+            "server": host,
+            "port": int(port),
+            "uuid": uuid,
+            "security": security,
+            "tls": security == "tls",
+            "sni": query_params.get("sni", [""])[0],
+            "skip-cert-verify": query_params.get("skip-cert-verify", ["false"])[0] == "true",
+            "network": query_params.get("type", ["tcp"])[0],
+            "ws-opts": {
+                "path": query_params.get("path", [""])[0],
+                "headers": {
+                    "Host": query_params.get("host", [""])[0]
+                }
+            } if query_params.get("type", ["tcp"])[0] == "ws" else {}
+        })
+    except Exception as e:
+        print(f"[-] 解析VLESS链接失败: {link}, 错误: {e}")
+        return None
 
 
 # 解析 VMESS 链接
 def parse_vmess_link(link):
-    link = link[8:]
     try:
+        link = link[8:]
         decoded_link = base64.urlsafe_b64decode(link + '=' * (-len(link) % 4)).decode("utf-8")
         vmess_info = json.loads(decoded_link)
     except Exception as e:
@@ -441,10 +461,13 @@ def deduplicate_proxies(proxies_list):
     unique_proxies = []
     seen = set()
     for proxy in proxies_list:
-        key = (proxy['server'], proxy['port'], proxy['type'])
-        if key not in seen:
-            seen.add(key)
-            unique_proxies.append(proxy)
+        try:
+            key = (proxy['server'], proxy['port'], proxy['type'])
+            if key not in seen:
+                seen.add(key)
+                unique_proxies.append(proxy)
+        except KeyError:
+            continue
     return unique_proxies
 
 
@@ -576,11 +599,15 @@ def generate_clash_config(links, load_nodes):
     if config["proxies"]:
         global CONFIG_FILE
         CONFIG_FILE = CONFIG_FILE[:-5] if CONFIG_FILE.endswith('.json') else CONFIG_FILE
-        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            yaml.dump(config, f, allow_unicode=True, default_flow_style=False)
-        with open(f'{CONFIG_FILE}.json', "w", encoding="utf-8") as f:
-            json.dump(config, f, ensure_ascii=False)
-        print(f"[*] 已生成Clash配置文件 {CONFIG_FILE} 和 {CONFIG_FILE}.json")
+        try:
+            with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+                yaml.dump(config, f, allow_unicode=True, default_flow_style=False)
+            with open(f'{CONFIG_FILE}.json', "w", encoding="utf-8") as f:
+                json.dump(config, f, ensure_ascii=False)
+            print(f"[*] 已生成Clash配置文件 {CONFIG_FILE} 和 {CONFIG_FILE}.json")
+        except Exception as e:
+            print(f"[-] 写入配置文件失败: {e}")
+            sys.exit(1)
     else:
         print('[-] 没有节点数据可供更新')
 
@@ -608,38 +635,6 @@ class ProxyTestResult:
 def ensure_executable(file_path):
     if platform.system().lower() in ['linux', 'darwin']:
         os.chmod(file_path, 0o755)
-
-
-def handle_clash_error(error_message, config_file_path):
-    start_time = time.time()
-    config_file_path = f'{config_file_path}.json' if os.path.exists(f'{config_file_path}.json') else config_file_path
-    
-    proxy_index_match = re.search(r'proxy (\d+):', error_message)
-    if not proxy_index_match:
-        return False
-    problem_index = int(proxy_index_match.group(1))
-
-    try:
-        with open(config_file_path, 'r', encoding='utf-8') as file:
-            config = json.load(file)
-        problem_proxy_name = config['proxies'][problem_index]['name']
-        del config['proxies'][problem_index]
-        
-        proxies = config['proxy-groups'][1]["proxies"]
-        if problem_proxy_name in proxies:
-            proxies.remove(problem_proxy_name)
-        for group in config["proxy-groups"][1:]:
-            group["proxies"] = proxies
-        
-        with open(config_file_path, 'w', encoding='utf-8') as file:
-            file.write(json.dumps(config, ensure_ascii=False))
-        
-        print(f"[*] 配置异常，已移除无效节点: {problem_proxy_name}")
-        return True
-
-    except Exception as e:
-        print(f"[-] 处理配置文件时出错: {str(e)}")
-        return False
 
 
 def download_and_extract_latest_release():
@@ -764,46 +759,48 @@ def start_clash():
     global CONFIG_FILE
     CONFIG_FILE = f'{CONFIG_FILE}.json' if os.path.exists(f'{CONFIG_FILE}.json') else CONFIG_FILE
 
-    while True:
-        print(f'[*] 正在启动 Clash，加载配置: {CONFIG_FILE}')
-        clash_process = subprocess.Popen(
-            [clash_binary, '-f', CONFIG_FILE],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            encoding='utf-8'
-        )
+    # 在启动Clash之前，对配置文件进行预验证
+    print(f'[*] 正在预先验证配置文件: {CONFIG_FILE}')
+    try:
+        with open(CONFIG_FILE, 'r', encoding='utf-8') as file:
+            config_data = json.load(file)
+            # 尝试加载为YAML，Clash core实际是YAML解析器
+            yaml.safe_load(json.dumps(config_data))
+            print(f"[*] 配置文件 {CONFIG_FILE} 格式验证通过。")
+    except (json.JSONDecodeError, yaml.YAMLError) as e:
+        raise ValueError(f"配置文件 {CONFIG_FILE} 格式错误，无法启动Clash: {e}")
+    except FileNotFoundError:
+        raise FileNotFoundError(f"配置文件 {CONFIG_FILE} 不存在。")
+    
+    print(f'[*] 正在启动 Clash，加载配置: {CONFIG_FILE}')
+    clash_process = subprocess.Popen(
+        [clash_binary, '-f', CONFIG_FILE],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding='utf-8'
+    )
 
-        output_lines = []
-        stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, output_lines))
-        stdout_thread.daemon = True
-        stdout_thread.start()
+    output_lines = []
+    stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, output_lines))
+    stdout_thread.daemon = True
+    stdout_thread.start()
 
-        timeout = 20
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            stdout_thread.join(timeout=0.5)
-            if output_lines:
-                last_line = output_lines[-1].strip()
-                if "Parse config error" in last_line:
-                    print("[-] 检测到配置解析错误，正在尝试修复...")
-                    clash_process.kill()
-                    if handle_clash_error(last_line, CONFIG_FILE):
-                        output_lines = []
-                        continue
-                    else:
-                        raise ValueError("无法修复配置错误，请手动检查配置文件。")
-            
-            if is_clash_api_running():
-                print("[*] Clash API 成功启动。")
-                return clash_process
-            
-            if clash_process.poll() is not None:
-                print("[-] Clash 进程意外终止，请检查日志或配置。")
-                raise RuntimeError("Clash 进程无法启动。")
-
-        clash_process.kill()
-        raise TimeoutError("[-] Clash 在预设时间内未能启动。")
+    timeout = 20
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        stdout_thread.join(timeout=0.5)
+        if clash_process.poll() is not None:
+            stderr_output = clash_process.stderr.read()
+            print(f"[-] Clash 进程意外终止，错误信息:\n{stderr_output}")
+            raise RuntimeError("Clash 进程无法启动，请检查日志。")
+        
+        if is_clash_api_running():
+            print("[*] Clash API 成功启动。")
+            return clash_process
+        
+    clash_process.kill()
+    raise TimeoutError("[-] Clash 在预设时间内未能启动。")
 
 
 def is_clash_api_running():
