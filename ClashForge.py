@@ -40,7 +40,7 @@ TIMEOUT = 3
 SPEED_TEST = False
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
-LIMIT = 1086
+LIMIT = 186
 CONFIG_FILE = 'clash_config.yaml'
 BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
 headers = {
@@ -137,7 +137,7 @@ def parse_hysteria2_link(link):
         uuid = parts[0]
         server_info = parts[1].split('?')
         server = server_info[0].split(':')[0]
-        port = int(server_info[0].split(':')[1].split('/')[0].strip())
+        port = server_info[0].split(':')[1].split('/')[0].strip()
         query_params = urllib.parse.parse_qs(server_info[1] if len(server_info) > 1 else '')
         insecure = '1' in query_params.get('insecure', ['0'])
         sni = query_params.get('sni', [''])[0]
@@ -145,7 +145,7 @@ def parse_hysteria2_link(link):
         return {
             "name": f"{name}",
             "server": server,
-            "port": port,
+            "port": str(port),
             "type": "hysteria2",
             "password": uuid,
             "auth": uuid,
@@ -172,7 +172,7 @@ def parse_ss_link(link):
             "name": urllib.parse.unquote(name),
             "type": "ss",
             "server": server,
-            "port": int(port),
+            "port": str(port),
             "cipher": cipher,
             "password": password,
             "udp": True
@@ -194,7 +194,7 @@ def parse_trojan_link(link):
             "name": urllib.parse.unquote(name),
             "type": "trojan",
             "server": host,
-            "port": int(port),
+            "port": str(port),
             "password": password,
             "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
             "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
@@ -228,7 +228,7 @@ def parse_vless_link(link):
             "name": urllib.parse.unquote(name),
             "type": "vless",
             "server": host,
-            "port": int(port),
+            "port": str(port),
             "uuid": uuid,
             "security": security,
             "tls": security == "tls",
@@ -258,7 +258,7 @@ def parse_vmess_link(link):
             "name": urllib.parse.unquote(vmess_info.get("ps", "vmess")),
             "type": "vmess",
             "server": vmess_info["add"],
-            "port": int(vmess_info["port"]),
+            "port": str(vmess_info["port"]),
             "uuid": vmess_info["id"],
             "alterId": int(vmess_info.get("aid", 0)),
             "cipher": "auto",
@@ -277,7 +277,7 @@ async def parse_ss_sub(link):
             response = await client.get(link)
             response.raise_for_status()
             data = response.json()
-            new_links = [{"name": x['remarks'], "type": "ss", "server": x['server'], "port": x['server_port'], "cipher": x['method'],"password": x['password'], "udp": True} for x in data]
+            new_links = [{"name": x['remarks'], "type": "ss", "server": x['server'], "port": str(x['server_port']), "cipher": x['method'],"password": x['password'], "udp": True} for x in data]
             return new_links
     except httpx.RequestError as e:
         print(f"请求错误: {e}")
@@ -497,6 +497,9 @@ async def generate_clash_config(links, load_nodes):
                 name = add_random_suffix(name, existing_names)
             existing_names.add(name)
             node["name"] = name
+            # 确保端口号为字符串类型
+            if 'port' in node and isinstance(node['port'], int):
+                node['port'] = str(node['port'])
             final_nodes.append(node)
     
     # 异步处理所有链接
@@ -505,6 +508,9 @@ async def generate_clash_config(links, load_nodes):
 
     # 处理本地加载的节点
     for node in load_nodes:
+        # 确保端口号为字符串类型
+        if 'port' in node and isinstance(node['port'], int):
+            node['port'] = str(node['port'])
         resolve_name_conflicts(node)
     
     # 去重
