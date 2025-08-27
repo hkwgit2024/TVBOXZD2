@@ -149,11 +149,12 @@ def validate_proxy(proxy: Dict) -> Optional[Dict]:
 
     proxy_type = proxy.get('type')
     if not proxy_type or proxy_type not in required_fields:
+        print(f"[-] 排除节点: {proxy.get('name', '未知') if proxy else '未知'}，原因: 类型不正确或缺失")
         return None
 
     for field in required_fields[proxy_type]:
         if field not in proxy or not proxy[field]:
-            print(f"[-] 排除节点: {proxy.get('name', '未知')}，缺少必要字段 '{field}'")
+            print(f"[-] 排除节点: {proxy.get('name', '未知')}，原因: 缺少或值为空的必要字段 '{field}'")
             return None
 
     # 移除额外不必要的字段，确保格式严格
@@ -252,11 +253,15 @@ def parse_vless_link(link):
     config_part, name = link.split('#')
     user_info, host_info = config_part.split('@')
     uuid = user_info
-    host, query = host_info.split('?', 1) if '?' in host_info else (host_info, "")
-    port = host.split(':')[-1] if ':' in host else ""
-    host = host.split(':')[0] if ':' in host else ""
+    host_part = host_info.split('?', 1)
+    host_port = host_part[0]
+    query_str = host_part[1] if len(host_part) > 1 else ""
+
+    host_parts = host_port.split(':')
+    host = host_parts[0]
+    port = host_parts[1] if len(host_parts) > 1 else ""
     
-    query_params = urllib.parse.parse_qs(query)
+    query_params = urllib.parse.parse_qs(query_str)
     security = query_params.get("security", ["none"])[0]
     
     return validate_proxy({
