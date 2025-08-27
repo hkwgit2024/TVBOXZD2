@@ -704,10 +704,9 @@ async def proxy_clean():
         logger.error(f"代理清理和测速失败: {e}")
         return []
 
-def main():
+def main(links):
     check = True
     only_check = False
-    links = []
     allowed_types = ['ss', 'hysteria2', 'hy2', 'vless', 'vmess', 'trojan']
 
     try:
@@ -716,9 +715,16 @@ def main():
             load_nodes = read_yaml_files(folder_path=INPUT)
             if allowed_types:
                 load_nodes = filter_by_types_alt(allowed_types, nodes=load_nodes)
-            links = merge_lists(read_txt_files(folder_path=INPUT), links)
-            if links or load_nodes:
-                generate_clash_config(links, load_nodes)
+            
+            # 修正后的链接合并逻辑
+            all_links = merge_lists(read_txt_files(folder_path=INPUT), links)
+
+            if all_links or load_nodes:
+                generate_clash_config(all_links, load_nodes)
+            else:
+                logger.error("没有可用的链接或节点，无法生成配置文件。")
+                return
+        
         if check or only_check:
             clash_process = None
             try:
@@ -744,7 +750,7 @@ def main():
         sys.exit(1)
 
 if __name__ == '__main__':
-    links = [
+    initial_links = [
         "https://raw.githubusercontent.com/qjlxg/HA/main/link.yaml"
     ]
-    main()
+    main(links=initial_links)
