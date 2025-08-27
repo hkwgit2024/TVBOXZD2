@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - '.github/workflows/ClashForge.yml'
+      - 'ClashForge.py'
   workflow_dispatch:
 
 env:
