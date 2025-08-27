@@ -34,11 +34,10 @@ jobs:
 
       - name: Setup mihomo
         run: |
-          mkdir -p /mihomo
-          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.19.13/mihomo-linux-amd64-compatible-v1.19.13.gz -O /mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
-          gunzip /mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
-          chmod +x /mihomo/mihomo-linux-amd64-compatible-v1.19.13
-          ls -l /mihomo  # 输出目录内容以便调试
+          ls -l ./mihomo  # 检查 mihomo 目录内容
+          gunzip -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
+          chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
+          ls -l ./mihomo  # 确认解压后的文件
         continue-on-error: false
 
       - name: Run ClashForge.py
