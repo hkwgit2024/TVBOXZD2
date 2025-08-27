@@ -17,9 +17,6 @@ from itertools import chain
 from typing import Dict, List, Optional
 import sys
 import requests
-import zipfile
-import gzip
-import shutil
 import platform
 import os
 from datetime import datetime
@@ -50,7 +47,7 @@ TIMEOUT = 3
 SPEED_TEST = False
 SPEED_TEST_LIMIT = 5
 results_speed = []
-MAX_CONCURRENT_TESTS = 50  # 降低并发数量，减少资源压力
+MAX_CONCURRENT_TESTS = 30  # 降低并发数量，适应 GitHub 环境
 LIMIT = 10000
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"
@@ -456,7 +453,6 @@ def generate_clash_config(links, load_nodes):
     logger.info(f"当前时间: {now}")
     final_nodes = []
     existing_names = set()
-
     config = clash_config_template.copy()
 
     def resolve_name_conflicts(node):
@@ -575,66 +571,6 @@ def handle_clash_error(error_message, config_file_path):
         logger.error(f"处理配置文件错误: {e}")
         return False
 
-def download_and_extract_latest_release():
-    logger.info("下载最新 mihomo 版本")
-    url = "https://api.github.com/repos/MetaCubeX/mihomo/releases/latest"
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            logger.error("无法获取 GitHub 最新版本数据")
-            return
-        data = response.json()
-        assets = data.get("assets", [])
-        os_type = platform.system().lower()
-        targets = {
-            "darwin": "mihomo-darwin-amd64-compatible",
-            "linux": "mihomo-linux-amd64-compatible",
-            "windows": "mihomo-windows-amd64-compatible"
-        }
-        download_url = None
-        new_name = f"clash-{os_type}" if os_type != "windows" else "clash.exe"
-        if os.path.exists(new_name):
-            logger.info(f"二进制文件 {new_name} 已存在，跳过下载")
-            return
-        for asset in assets:
-            name = asset.get("name", "")
-            if os_type == "darwin" and targets["darwin"] in name and name.endswith('.gz'):
-                download_url = asset["browser_download_url"]
-                break
-            elif os_type == "linux" and targets["linux"] in name and name.endswith('.gz'):
-                download_url = asset["browser_download_url"]
-                break
-            elif os_type == "windows" and targets["windows"] in name and name.endswith('.zip'):
-                download_url = asset["browser_download_url"]
-                break
-        if download_url:
-            logger.info(f"开始下载文件: {download_url}")
-            filename = download_url.split('/')[-1]
-            response = requests.get(download_url, timeout=30)
-            with open(filename, 'wb') as f:
-                f.write(response.content)
-            extracted_files = []
-            if filename.endswith('.zip'):
-                with zipfile.ZipFile(filename, 'r') as zip_ref:
-                    zip_ref.extractall()
-                    extracted_files = zip_ref.namelist()
-            elif filename.endswith('.gz'):
-                with gzip.open(filename, 'rb') as f_in:
-                    output_filename = filename[:-3]
-                    with open(output_filename, 'wb') as f_out:
-                        shutil.copyfileobj(f_in, f_out)
-                        extracted_files.append(output_filename)
-            for file_name in extracted_files:
-                if os.path.exists(file_name):
-                    os.rename(file_name, new_name)
-                    break
-            os.remove(filename)
-            logger.info(f"成功下载并解压文件到 {new_name}")
-        else:
-            logger.error("未找到适合当前操作系统的版本")
-    except Exception as e:
-        logger.error(f"下载或解压 mihomo 失败: {e}")
-
 def read_output(pipe, output_lines):
     while True:
         line = pipe.readline()
@@ -648,9 +584,9 @@ def kill_clash():
     logger.info("尝试终止 Clash 进程")
     system = platform.system()
     clash_process_names = {
-        "Windows": "clash.exe",
-        "Linux": "clash-linux",
-        "Darwin": "clash-darwin"
+        "Windows": "mihomo",
+        "Linux": "mihomo",
+        "Darwin": "mihomo"
     }
     config_files = ["clash_config.yaml", "clash_config.yaml.json"]
     if system not in clash_process_names:
@@ -671,12 +607,9 @@ def kill_clash():
 
 def start_clash():
     logger.info("启动 Clash 进程")
-    download_and_extract_latest_release()
     system_platform = platform.system().lower()
-    if system_platform == 'windows':
-        clash_binary = '.\\clash.exe'
-    elif system_platform in ["linux", "darwin"]:
-        clash_binary = f'./clash-{system_platform}'
+    clash_binary = 'mihomo'  # 假设 GitHub 环境中已安装 mihomo
+    if system_platform in ["linux", "darwin"]:
         ensure_executable(clash_binary)
     else:
         logger.error("不支持的操作系统")
@@ -1175,36 +1108,6 @@ def test_proxy_speed(proxy_name):
     results_speed.append((proxy_name, f"{speed / 1024 / 1024:.2f}"))
     logger.info(f"节点 {proxy_name} 速度: {speed / 1024 / 1024:.2f} MB/s")
     return speed / 1024 / 1024
-
-def upload_and_generate_urls(file_path=CONFIG_FILE):
-    logger.info(f"上传配置文件并生成 URL: {file_path}")
-    api_url = "https://f2.252035.xyz/user/api.php"
-    result = {"clash_url": None, "singbox_url": None}
-    try:
-        if not os.path.isfile(file_path):
-            logger.error(f"文件 {file_path} 不存在")
-            return result
-        if os.path.getsize(file_path) > 209715200:
-            logger.error("文件大小超过 200MB 限制")
-            return result
-        with open(file_path, 'rb') as file:
-            response = requests.post(api_url, data={"reqtype": "fileupload"}, files={"fileToUpload": file}, timeout=30)
-            if response.status_code == 200:
-                clash_url = response.text.strip()
-                result["clash_url"] = clash_url
-                logger.info(f"Clash 配置文件上传成功: {clash_url}")
-                sb_full_url = f'https://url.v1.mk/sub?target=singbox&url={clash_url}&insert=false&config=https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini&emoji=true&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=false&fdn=false'
-                encoded_url = base64.urlsafe_b64encode(sb_full_url.encode()).decode()
-                response = requests.post("https://v1.mk/short", json={"longUrl": encoded_url}, timeout=30)
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("Code") == 1:
-                        singbox_url = data["ShortUrl"]
-                        result["singbox_url"] = singbox_url
-                        logger.info(f"singbox 配置文件上传成功: {singbox_url}")
-    except Exception as e:
-        logger.error(f"上传配置文件错误: {e}")
-    return result
 
 def work(links, check=False, allowed_types=[], only_check=False):
     logger.info("开始执行主程序")
