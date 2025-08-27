@@ -1,4 +1,4 @@
-name: Run Node Fetcher
+name: Run link.yml
 
 on:
   push:
