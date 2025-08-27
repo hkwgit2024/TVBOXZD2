@@ -781,19 +781,26 @@ def start_clash():
         encoding='utf-8'
     )
 
-    output_lines = []
-    stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, output_lines))
+    stdout_lines = []
+    stderr_lines = []
+    stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, stdout_lines))
+    stderr_thread = threading.Thread(target=read_output, args=(clash_process.stderr, stderr_lines))
     stdout_thread.daemon = True
+    stderr_thread.daemon = True
     stdout_thread.start()
+    stderr_thread.start()
 
     timeout = 20
     start_time = time.time()
     while time.time() - start_time < timeout:
         stdout_thread.join(timeout=0.5)
+        stderr_thread.join(timeout=0.5)
         if clash_process.poll() is not None:
-            stderr_output = clash_process.stderr.read()
-            print(f"[-] Clash 进程意外终止，错误信息:\n{stderr_output}")
-            raise RuntimeError("Clash 进程无法启动，请检查日志。")
+            stdout_output = "".join(stdout_lines)
+            stderr_output = "".join(stderr_lines)
+            full_output = f"Clash 进程意外终止，stdout:\n{stdout_output}\nstderr:\n{stderr_output}"
+            print(full_output)
+            raise RuntimeError(f"Clash 进程无法启动，请检查日志。详细信息:\n{full_output}")
         
         if is_clash_api_running():
             print("[*] Clash API 成功启动。")
