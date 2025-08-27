@@ -1,28 +1,56 @@
 proxy-providers: {}
 proxies:
-    - alterId: 64
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 76.45 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 64.74.163.130
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 58.21 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: 193.29.139.173
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 54.96 MB/s"
+      password: cvII85TrW6n0OGyfpHVS1u
+      port: 8080
+      server: 45.87.175.200
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 50.82 MB/s"
+      password: 4a2rfixophdjffa8KVA4Aa
+      port: 8080
+      server: beesyar.org
+      type: ss
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F3\U0001F1F4 NO | ⬇️ 40.08 MB/s"
+      password: f8f7aCzcPKbsF8p3
+      port: 990
+      server: 185.213.23.226
+      type: ss
+    - alpn:
+        - h3
+        - h2
+        - http/1.1
+      alterId: 0
       cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 68.33 MB/s"
-      port: 30002
-      region: 美国
-      server: 38.12.83.217
-      skip-cert-verify: true
-      tls: false
-      type: vmess
-      uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-    - alterId: 0
-      cipher: auto
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 38.50 MB/s"
+      client-fingerprint: chrome
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 36.37 MB/s"
       network: tcp
-      port: 15361
-      server: 15.204.11.190
+      port: 17891
+      server: vps.my-youth.asia
+      servername: vps.my-youth.asia
+      tls: true
       type: vmess
-      uuid: 5d7bf9e3-415c-40f3-c66d-a54ea0fd860e
+      udp: true
+      uuid: 8f2d400c-0879-4076-9b87-2302f00a135b
     - client-fingerprint: random
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 36.07 MB/s"
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 31.29 MB/s"
       network: ws
       port: 2096
-      server: 172.64.229.228
+      server: 162.159.153.222
       servername: bp.singbox.ggff.net
       skip-cert-verify: false
       tfo: false
@@ -34,45 +62,219 @@ proxies:
             Host: bp.singbox.ggff.net
         path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
     - client-fingerprint: chrome
-      flow: xtls-rprx-vision
-      name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 33.06 MB/s"
-      port: 8443
-      reality-opts:
-        public-key: POAZKZyD98MlYa3A5bSOayTPHdofqXynPAT1_QWEwjo
-        short-id: dfeff076987e2d34
-      server: 5.102.124.78
-      servername: www.microsoft.com
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.10 MB/s"
+      network: ws
+      port: 443
+      server: 172.67.130.135
+      sni: c379b284.vs-494.pages.dev
       tls: true
       type: vless
-      uuid: 79091265-a298-4205-a559-d04ed045c38b
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 29.01 MB/s"
+      network: ws
+      port: 443
+      server: www.baipiao.eu.org
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 28.56 MB/s"
+      network: ws
+      port: 443
+      server: 104.18.76.29
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 26.84 MB/s"
+      network: ws
+      password: f2718baa-c165-4f69-88d5-b050c615413a
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 26.83 MB/s"
+      network: ws
+      port: 443
+      server: 23.227.38.244
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 25.41 MB/s"
+      network: ws
+      port: 443
+      server: www.visa.com.sg
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - cipher: chacha20-ietf-poly1305
+      name: "\U0001F1F8\U0001F1EC SG | ⬇️ 24.95 MB/s"
+      password: oXGp1+ihlfKg826H
+      port: 1866
+      server: 64.176.85.73
+      type: ss
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.70 MB/s"
+      network: ws
+      password: 84d4c16a-ff1c-4dfe-8716-276c257924c3
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.53 MB/s"
+      network: ws
+      password: 9730d345-d66f-4b1b-93cf-2426f83a460a
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 24.50 MB/s"
+      network: ws
+      port: 443
+      server: 172.67.216.216
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.46 MB/s"
+      network: ws
+      password: 6100036a-fd7c-45f5-a6c6-e9fc7bca737f
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.72 MB/s"
+      network: ws
+      password: ce4689cc-b006-4c7f-8c30-71ecb911f23f
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
+    - client-fingerprint: random
+      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.72 MB/s"
+      network: ws
+      port: 35375
+      server: 64.64.227.118
+      servername: bp.singbox.ggff.net
+      skip-cert-verify: false
+      tfo: false
+      tls: true
+      type: vless
+      uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
+      ws-opts:
+        headers:
+            Host: bp.singbox.ggff.net
+        path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
+    - client-fingerprint: chrome
+      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 23.24 MB/s"
+      network: ws
+      port: 443
+      server: a7_alist.yzqiang.site
+      sni: c379b284.vs-494.pages.dev
+      tls: true
+      type: vless
+      udp: false
+      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      ws-opts:
+        headers:
+            host: c379b284.vs-494.pages.dev
+        path: /?ed=2560
+    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 20.45 MB/s"
+      network: ws
+      password: 780675c9-bb8c-4b98-979b-e132331ee141
+      port: 8443
+      server: tj.cpddx.club
+      skip-cert-verify: true
+      sni: tj.cpddx.club
+      type: trojan
+      udp: true
+      ws-opts:
+        headers:
+            Host: tj.cpddx.club
+        path: ""
     - alterId: 0
       cipher: auto
-      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 31.66 MB/s"
-      network: tcp
-      port: 30878
-      server: 203.137.78.45
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 19.39 MB/s"
+      network: ws
+      port: 80
+      server: 51.68.191.233
       type: vmess
-      uuid: d9d00c3d-257e-4c3f-dce9-c12acc6d1b2d
-    - name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 26.84 MB/s"
-      network: ws
-      port: 443
-      region: 其他地区
-      server: bestcf.030101.xyz
-      servername: xv6.jpmj.dpdns.org
-      skip-cert-verify: true
-      tfo: false
-      tls: true
-      type: vless
-      uuid: 897a4bec-26b8-11e8-94be-00505695472c
+      uuid: f0eda072-9ae8-494c-a495-215fa5729467
       ws-opts:
         headers:
-            Host: xv6.jpmj.dpdns.org
-        path: /bbs?ed=2048
+            Host: 51.68.191.233
+        path: /vmess/
     - client-fingerprint: random
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 26.74 MB/s"
+      name: "\U0001F1EC\U0001F1E7 GB | ⬇️ 19.26 MB/s"
       network: ws
-      port: 443
-      server: 172.64.40.175
+      port: 80
+      server: 178.62.76.86
       servername: bp.singbox.ggff.net
       skip-cert-verify: false
       tfo: false
@@ -83,192 +285,11 @@ proxies:
         headers:
             Host: bp.singbox.ggff.net
         path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 26.68 MB/s"
-      network: ws
-      password: 7f53a417-8d5f-4668-a3d0-90db4e28eb7b
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 26.20 MB/s"
-      network: ws
-      password: 07df4f18-b6ab-4b1b-ac27-9be99d8f0632
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 25.17 MB/s"
-      network: ws
-      password: a0854485-6c12-49b0-9988-8a633ae9df15
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.76 MB/s"
-      password: 20050105zhu
-      port: 51541
-      server: 204.44.110.129
-      skip-cert-verify: true
-      sni: www.bing.com
-      type: hysteria2
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 24.08 MB/s"
-      network: ws
-      password: 4be9ed57-6c07-4e17-838e-bed5f4301615
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 23.51 MB/s"
-      network: ws
-      port: 443
-      server: 172.67.114.195
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.42 MB/s"
-      network: ws
-      password: 29edf594-3881-49d3-8e13-0e573e6f840d
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.31 MB/s"
-      network: ws
-      password: 61b4f295-2d51-42e5-828c-f6d5f73d1af7
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 23.29 MB/s"
-      network: ws
-      password: 083bd27f-5344-49bc-bafb-341fffca40df
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 23.09 MB/s"
-      network: ws
-      port: 443
-      server: 104.18.164.69
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 22.77 MB/s"
-      network: ws
-      password: 4acca07d-fab2-4f5d-9702-7aa92e52bc2e
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 22.52 MB/s"
-      network: ws
-      port: 443
-      server: a9_alist.yzqiang.site
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 22.14 MB/s"
-      network: ws
-      port: 443
-      server: www.visa.co.jp
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 21.60 MB/s"
-      network: ws
-      port: 443
-      server: 162.159.251.165
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
     - client-fingerprint: random
-      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 21.39 MB/s"
+      name: "\U0001F1E9\U0001F1EA DE | ⬇️ 17.16 MB/s"
       network: ws
       port: 443
-      server: 18.183.158.211
+      server: 64.227.114.71
       servername: bp.singbox.ggff.net
       skip-cert-verify: false
       tfo: false
@@ -279,107 +300,27 @@ proxies:
         headers:
             Host: bp.singbox.ggff.net
         path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
-    - client-fingerprint: chrome
-      name: "\U0001F1FA\U0001F1F8 US | ⬇️ 20.81 MB/s"
+    - name: "\U0001F1ED\U0001F1F0 HK | ⬇️ 16.87 MB/s"
       network: ws
-      port: 443
-      server: 162.159.249.49
-      sni: c379b284.vs-494.pages.dev
-      tls: true
+      port: 8880
+      server: 45.192.224.126
+      servername: yd.laoyoutiao.link
+      tls: false
       type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
+      uuid: fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf
       ws-opts:
         headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - name: "\U0001F1FA\U0001F1F8 US | ⬇️ 20.65 MB/s"
-      network: ws
-      password: 9c5f1eed-227f-4e13-a3c2-5492f7bf056f
-      port: 8443
-      server: tj.cpddx.club
-      skip-cert-verify: true
-      sni: tj.cpddx.club
-      type: trojan
-      udp: true
-      ws-opts:
-        headers:
-            Host: tj.cpddx.club
-        path: ""
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 20.35 MB/s"
-      network: ws
-      port: 443
-      server: www.visaeurope.ch
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 19.75 MB/s"
-      network: ws
-      port: 443
-      server: www.glassdoor.com
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 18.82 MB/s"
-      network: ws
-      port: 443
-      server: 104.24.87.184
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: chrome
-      name: "\U0001F1E8\U0001F1E6 CA | ⬇️ 18.02 MB/s"
-      network: ws
-      port: 443
-      server: 172.67.240.192
-      sni: c379b284.vs-494.pages.dev
-      tls: true
-      type: vless
-      udp: false
-      uuid: b940be1b-3998-45d2-bf7b-06e7b6c4987a
-      ws-opts:
-        headers:
-            host: c379b284.vs-494.pages.dev
-        path: /?ed=2560
-    - client-fingerprint: random
-      name: "\U0001F1EF\U0001F1F5 JP | ⬇️ 17.59 MB/s"
-      network: ws
-      port: 37043
-      server: 141.147.178.249
-      servername: bp.singbox.ggff.net
-      skip-cert-verify: false
-      tfo: false
-      tls: true
-      type: vless
-      uuid: 222a1c34-96f5-45fd-bedd-b9ac4b477b98
-      ws-opts:
-        headers:
-            Host: bp.singbox.ggff.net
-        path: /r6PSatuYdS9gZH6L/c2pjLm8wMG8ub29v
+            host: yd.laoyoutiao.link
+        path: Telegram @freecodes /?ed=2560
     - cipher: chacha20-ietf-poly1305
-      name: "\U0001F1F3\U0001F1F1 NL | ⬇️ 16.21 MB/s"
-      password: oZIoA69Q8yhcQV8ka3Pa3A
-      port: 8080
-      server: 103.104.247.47
+      name: "\U0001F1EB\U0001F1EE FI | ⬇️ 16.83 MB/s"
+      password: 360e21d21977dc11
+      port: 57456
+      server: 185.193.102.7
+      type: ss
+    - cipher: aes-256-gcm
+      name: "\U0001F1E6\U0001F1F9 AT | ⬇️ 16.54 MB/s"
+      password: a7f082c1-0d12-4609-b6bf-e760b668cf23
+      port: 443
+      server: 77.110.110.240
       type: ss
