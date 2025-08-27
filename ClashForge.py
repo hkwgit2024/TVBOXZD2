@@ -39,6 +39,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# 添加新函数：移除 YAML 中不允许的控制字符
+def remove_invalid_yaml_chars(text):
+    """移除 YAML 中不允许的控制字符"""
+    if not isinstance(text, str):
+        return text
+    # 移除除制表符(\t), 换行符(\n), 回车符(\r) 之外的所有 ASCII 控制字符
+    cleaned_text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
+    return cleaned_text
+
 TEST_URL = "http://www.pinterest.com"
 CLASH_API_PORTS = [9090]
 CLASH_API_HOST = "127.0.0.1"
@@ -218,7 +227,7 @@ def parse_vless_link(link):
         "uuid": uuid,
         "security": urllib.parse.parse_qs(query).get("security", ["none"])[0],
         "tls": urllib.parse.parse_qs(query).get("security", ["none"])[0] == "tls",
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+        "sni": urllib.parse.parse_qs(query).get("sni", ""),
         "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true",
         "network": urllib.parse.parse_qs(query).get("type", ["tcp"])[0],
         "ws-opts": {
@@ -501,6 +510,11 @@ def generate_clash_config(links, load_nodes):
             else:
                 handle_links(new_links, resolve_name_conflicts)
     final_nodes = deduplicate_proxies(final_nodes)
+
+    # 在写入文件前，清理代理名称中的非法字符
+    for node in final_nodes:
+        node['name'] = remove_invalid_yaml_chars(node['name'])
+
     config["proxy-groups"][1]["proxies"] = []
     for node in final_nodes:
         name = str(node["name"])
@@ -608,8 +622,7 @@ def kill_clash():
 def start_clash():
     logger.info("启动 Clash 进程")
     system_platform = platform.system().lower()
-    # 更改为相对路径，以便在 GitHub Actions 的工作目录中找到文件
-    clash_binary = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
+    clash_binary = '/mihomo/mihomo-linux-amd64-compatible-v1.19.13'  # 指定正确的 mihomo 路径
     if not os.path.exists(clash_binary):
         logger.error(f"Clash 二进制文件 {clash_binary} 不存在")
         raise FileNotFoundError(f"No such file or directory: '{clash_binary}'")
