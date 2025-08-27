@@ -608,7 +608,10 @@ def kill_clash():
 def start_clash():
     logger.info("启动 Clash 进程")
     system_platform = platform.system().lower()
-    clash_binary = 'mihomo'  # 假设 GitHub 环境中已安装 mihomo
+    clash_binary = '/mihomo/mihomo-linux-amd64-compatible-v1.19.13'  # 指定正确的 mihomo 路径
+    if not os.path.exists(clash_binary):
+        logger.error(f"Clash 二进制文件 {clash_binary} 不存在")
+        raise FileNotFoundError(f"No such file or directory: '{clash_binary}'")
     if system_platform in ["linux", "darwin"]:
         ensure_executable(clash_binary)
     else:
