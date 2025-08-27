@@ -63,7 +63,7 @@ clash_config_template = {
     "log-level": "info",
     "external-controller": "127.0.0.1:9090",
     "geodata-mode": True,
-    'geox-url': {'geoip': 'https://slink.ltd/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat', 'mmdb': 'https://slink.ltd/https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'},
+    'geox-url': {'geoip': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat', 'mmdb': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'},
     "dns": {
         "enable": True,
         "ipv6": False,
@@ -1749,7 +1749,7 @@ def download_and_extract_latest_release():
             break
 
     if download_url:
-        download_url = f"https://slink.ltd/{download_url}"
+        download_url = f"{download_url}"
         print(f"Downloading file from {download_url}")
         filename = download_url.split('/')[-1]
         response = requests.get(download_url)
