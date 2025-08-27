@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  TZ: Asia/Shanghai 
-  INPUT: ${{ vars.INPUT }} 
+  TZ: Asia/Shanghai
+  INPUT: ${{ vars.INPUT }}
 
 jobs:
   run_demo_actions:
@@ -23,16 +23,28 @@ jobs:
           token: ${{ secrets.BOT }}
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10.10'
 
       - name: Install requirements.txt
         run: |
           pip install -r ./requirements2.txt
+        continue-on-error: false
+
+      - name: Setup mihomo
+        run: |
+          mkdir -p /mihomo
+          wget https://github.com/MetaCubeX/mihomo/releases/download/v1.19.13/mihomo-linux-amd64-compatible-v1.19.13.gz -O /mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
+          gunzip /mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
+          chmod +x /mihomo/mihomo-linux-amd64-compatible-v1.19.13
+          ls -l /mihomo  # 输出目录内容以便调试
+        continue-on-error: false
 
       - name: Run ClashForge.py
-        run: python ClashForge.py
+        run: |
+          python ClashForge.py
+        continue-on-error: false
 
       - name: Commit and push file
         run: |
