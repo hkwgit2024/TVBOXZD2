@@ -28,6 +28,7 @@ warnings.filterwarnings('ignore')
 from requests_html import HTMLSession
 import psutil
 import logging
+from tqdm import tqdm
 
 # 配置日志
 logging.basicConfig(
@@ -57,10 +58,10 @@ SPEED_TEST = False
 SPEED_TEST_LIMIT = 5
 results_speed = []
 MAX_CONCURRENT_TESTS = 30  # 降低并发数量，适应 GitHub 环境
-LIMIT = 10000
+NODE_OUTPUT_LIMIT = 386  # 限制最终配置文件的节点数量
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"
-BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
+BAN = ["中国", "China", "CN", "香港", "Hong Kong", "HK", "台湾", "Taiwan", "TW", "澳门", "Macau", "MO", "电信", "移动", "联通"]
 headers = {
     'Accept-Charset': 'utf-8',
     'Accept': 'text/html,application/x-yaml,*/*',
@@ -120,7 +121,7 @@ clash_config_template = {
         {
             "name": "自动选择",
             "type": "url-test",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动|联通",
             "proxies": [],
             "url": "http://www.pinterest.com",
             "interval": 300,
@@ -129,7 +130,7 @@ clash_config_template = {
         {
             "name": "故障转移",
             "type": "fallback",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动|联通",
             "proxies": [],
             "url": "http://www.gstatic.com/generate_204",
             "interval": 300
@@ -532,7 +533,7 @@ def generate_clash_config(links, load_nodes):
     # 更新代理组
     for group in clash_config["proxy-groups"]:
         if group["name"] in ["自动选择", "故障转移", "手动选择"]:
-            group["proxies"] = [p["name"] for p in unique_proxies if "中国" not in p["name"] and "电信" not in p["name"] and "移动" not in p["name"] and "联通" not in p["name"]][:1000]
+            group["proxies"] = [p["name"] for p in unique_proxies if not any(b in p["name"] for b in BAN)]
 
     with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
         yaml.dump(clash_config, f, allow_unicode=True, sort_keys=False)
@@ -668,10 +669,16 @@ async def proxy_clean():
                 return proxy_name, delay
 
         tasks = [test_proxy(p) for p in proxies_to_test]
-        results = await asyncio.gather(*tasks)
+
+        # 添加进度条
+        wrapped_tasks = tqdm(tasks, total=len(tasks), desc="测速进度", unit="节点")
+        results = await asyncio.gather(*wrapped_tasks)
 
         sorted_results = sorted(results, key=lambda x: x[1])
-        valid_proxies = [name for name, delay in sorted_results if delay > 0 and '中国' not in name and '移动' not in name and '联通' not in name and '电信' not in name]
+        valid_proxies = [
+            name for name, delay in sorted_results 
+            if delay > 0 and not any(b in name for b in BAN)
+        ][:NODE_OUTPUT_LIMIT]
         
         if not valid_proxies:
             logger.warning("没有可用的代理节点。")
