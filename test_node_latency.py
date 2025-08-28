@@ -210,7 +210,8 @@ def test_node_latency(node, mihomo_path):
             text=True
         )
         
-        time.sleep(5)
+        # 增加等待时间，确保 mihomo 进程有足够时间启动
+        time.sleep(10)
         
         start_time = time.time()
         response = requests.get('http://www.google.com', proxies={
@@ -248,10 +249,11 @@ def main():
     nodes = config['proxies']
     results = []
     
-    # 限制只测试前 100 个节点
-    nodes_to_test = nodes[:100]
+    # 将测试节点数量增加到200个
+    nodes_to_test = nodes[:200]
     print(f"开始测试 {len(nodes_to_test)} 个节点的延迟")
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    # 将并行测试数量增加到10个
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes_to_test]
         for future in futures:
             results.append(future.result())
