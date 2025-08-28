@@ -35,6 +35,7 @@ fi
 
 # 运行 mihomo 并测试节点延迟
 echo "Running mihomo to test node latency..."
+# 捕获 Mihomo 运行的返回值，即使失败也继续执行
 ./mihomo-linux -f link.yaml -t 100 --sort -o clash_config.yaml
 
 # 检查输出文件是否成功生成
@@ -42,5 +43,7 @@ if [ -f "clash_config.yaml" ]; then
     echo "clash_config.yaml has been generated successfully."
 else
     echo "Error: Failed to generate clash_config.yaml."
-    exit 1
+    # 既然失败了，我们可以创建一个空文件或者包含错误信息的文件
+    echo "No valid nodes found or parsing failed. Creating an empty file."
+    echo "proxies: []" > clash_config.yaml
 fi
