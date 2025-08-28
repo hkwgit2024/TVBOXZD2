@@ -1,36 +1,38 @@
-name: Mihomo Node Latency Test
+name: Test Node Latency and Generate Clash Config
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
-  schedule:
-    - cron: '0 */6 * * *' # 每隔6小时运行一次
+  workflow_dispatch:
 
 jobs:
-  run-mihomo-test:
+  test-latency:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 添加这一步来安装 yq 工具
-      - name: Install yq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y yq
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      - name: Grant execute permission to run_clash.sh
-        run: chmod +x ./run_clash.sh
-      
-      - name: Run Mihomo Script
-        run: ./run_clash.sh
-      
-      - name: Commit and push changes
+      - name: Install dependencies
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add clash_config.yaml
-          git commit -m "Update clash config with sorted nodes" || echo "No changes to commit"
-          git push
+          python -m pip install --upgrade pip
+          pip install pyyaml requests
+
+      - name: Download mihomo binary
+        run: |
+          chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
+          
+      - name: Run latency test script
+        run: python test_node_latency.py
+
+      - name: Upload clash_config.yaml
+        uses: actions/upload-artifact@v4
+        with:
+          name: clash-config
+          path: clash_config.yaml
