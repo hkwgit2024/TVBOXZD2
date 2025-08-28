@@ -36,13 +36,13 @@ jobs:
           pip install -r ./requirements2.txt
         continue-on-error: false
 
-      - name: Setup mihomo
-        run: |
-          ls -l ./mihomo
-          gunzip -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
-          chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
-          ls -l ./mihomo
-        continue-on-error: false
+  #    - name: Setup mihomo
+   #     run: |
+ #         ls -l ./mihomo
+  #        gunzip -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
+   #       chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
+  #        ls -l ./mihomo
+  #      continue-on-error: false
 
       - name: Run ClashForge.py
         run: |
