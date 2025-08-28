@@ -7,14 +7,28 @@ import base64
 import json
 import urllib.parse
 import re
+import maxminddb
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from collections import defaultdict
 
 def sanitize_filename(name):
     """移除或替换文件名中的非法字符"""
     sanitized = re.sub(r'[\\/:*?"<>| ]', '_', name)
     # 限制文件名长度，避免系统限制
     return sanitized[:100]
+
+def get_country_name(ip):
+    """根据 IP 地址获取国家名称"""
+    try:
+        with maxminddb.open_database('./GeoLite2-Country.mmdb') as reader:
+            match = reader.get(ip)
+            if match and 'country' in match and 'names' in match['country'] and 'zh-CN' in match['country']['names']:
+                return match['country']['names']['zh-CN']
+            elif match and 'country' in match and 'names' in match['country'] and 'en' in match['country']['names']:
+                return match['country']['names']['en']
+    except Exception as e:
+        print(f"GeoLite2 数据库查询失败: {e}")
+    return "Unknown"
 
 def load_yaml(url):
     print(f"开始加载 YAML 文件: {url}")
@@ -206,7 +220,6 @@ def test_node_latency(node, mihomo_path):
             'rules': ['MATCH,auto']
         }
         
-        # 修复：使用清理过的节点名称来创建文件
         sanitized_name = sanitize_filename(node['name'])
         temp_file = f"temp_config_{sanitized_name}.yaml"
         
@@ -220,7 +233,6 @@ def test_node_latency(node, mihomo_path):
             text=True
         )
         
-        # 增加等待时间，确保 mihomo 进程有足够时间启动
         time.sleep(10)
         
         start_time = time.time()
@@ -251,18 +263,33 @@ def main():
         print(f"错误: mihomo 可执行文件 {mihomo_path} 不存在")
         return
     
+    # 检查 GeoLite2 数据库文件
+    if not os.path.exists('./GeoLite2-Country.mmdb'):
+        print("错误: GeoLite2-Country.mmdb 文件不存在。请将其放在脚本的同一目录下。")
+        return
+
     config = load_yaml(yaml_url)
     if not config or 'proxies' not in config:
         print("无法加载节点列表或节点列表为空")
         return
     
     nodes = config['proxies']
-    results = []
     
-    # 将测试节点数量增加到200个
+    # 根据地理位置重命名节点
+    country_counts = defaultdict(int)
+    for node in nodes:
+        ip = node.get('server')
+        if ip:
+            country = get_country_name(ip)
+            country_counts[country] += 1
+            node['name'] = f"{country}-{country_counts[country]}"
+        else:
+            node['name'] = f"Unknown-{len(nodes)}"
+    
+    results = []
     nodes_to_test = nodes[:200]
     print(f"开始测试 {len(nodes_to_test)} 个节点的延迟")
-    # 将并行测试数量增加到10个
+    
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes_to_test]
         for future in futures:
