@@ -30,6 +30,7 @@ import psutil
 import logging
 from tqdm import tqdm
 import socket
+import gzip
 
 # 配置日志
 logging.basicConfig(
@@ -54,24 +55,39 @@ TEST_URL = "http://www.pinterest.com"
 CLASH_API_PORTS = [9090]
 CLASH_API_HOSTS = ['127.0.0.1', 'localhost']
 TIMEOUT = 3
-CLASH_PATH_DIR = 'clash'
-if platform.system() == 'Windows':
-    CLASH_EXEC = 'clash-win64.exe'
-elif platform.system() == 'Linux':
-    CLASH_EXEC = 'clash-linux64'
-elif platform.system() == 'Darwin':
-    CLASH_EXEC = 'clash-darwin64'
-else:
-    CLASH_EXEC = ''
-    logger.error("不支持的操作系统，请手动设置 Clash 可执行文件路径。")
-
-CLASH_EXEC_PATH = os.path.join(CLASH_PATH_DIR, CLASH_EXEC)
+CLASH_PATH_DIR = 'mihomo'
+CLASH_GZ_PATH = os.path.join(CLASH_PATH_DIR, 'mihomo-linux-amd64-compatible-v1.19.13.gz')
+CLASH_EXEC_NAME = 'mihomo-linux-amd64-compatible-v1.19.13'
+CLASH_EXEC_PATH = os.path.join(CLASH_PATH_DIR, CLASH_EXEC_NAME)
 INPUT = 'links'
 OUTPUT = 'configs'
 NODE_OUTPUT_LIMIT = 386
 MAX_CONCURRENT_TESTS = 30
 NODE_REJECT_TYPES = ['trojan-go']
 SOURCE_LINK = "https://raw.githubusercontent.com/qjlxg/HA/main/link.yaml"
+
+# 检查并解压 mihomo 可执行文件
+def ensure_clash_executable():
+    """确保 Clash 可执行文件存在且可执行"""
+    if not os.path.exists(CLASH_EXEC_PATH):
+        if os.path.exists(CLASH_GZ_PATH):
+            logger.info(f"发现压缩包 {CLASH_GZ_PATH}, 正在解压...")
+            try:
+                with gzip.open(CLASH_GZ_PATH, 'rb') as f_in, open(CLASH_EXEC_PATH, 'wb') as f_out:
+                    f_out.write(f_in.read())
+                os.chmod(CLASH_EXEC_PATH, 0o755) # 添加可执行权限
+                logger.info(f"解压完成，文件已保存到 {CLASH_EXEC_PATH}")
+                return True
+            except Exception as e:
+                logger.error(f"解压文件失败: {e}")
+                return False
+        else:
+            logger.error(f"Clash 可执行文件或压缩包均不存在: {CLASH_EXEC_PATH} 或 {CLASH_GZ_PATH}")
+            return False
+    else:
+        logger.info(f"Clash 可执行文件已存在: {CLASH_EXEC_PATH}")
+        return True
+
 
 # 获取clash的api端口
 def get_clash_api_port():
@@ -152,7 +168,7 @@ def start_clash(config_path=os.path.join(OUTPUT, 'config.yaml')):
     
     # 检查是否有正在运行的 Clash 进程并终止它们
     for proc in psutil.process_iter(['name']):
-        if proc.name() in [CLASH_EXEC, 'clash-win64.exe', 'clash-linux64', 'clash-darwin64']:
+        if proc.name() in [CLASH_EXEC_NAME]:
             logger.info(f"发现正在运行的 Clash 进程: {proc.name()}, 正在终止...")
             try:
                 proc.kill()
@@ -413,6 +429,10 @@ def main(links, check, allowed_types, only_check):
     """主程序"""
     clash_process = None
     try:
+        # Step 0: 确保 Clash 可执行文件存在
+        if not ensure_clash_executable():
+            return
+            
         # Step 1: 从正确的来源获取所有节点
         logger.info(f"正在从 {SOURCE_LINK} 获取节点...")
         try:
