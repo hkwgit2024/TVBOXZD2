@@ -1,3 +1,4 @@
+```yaml
 name: Test Node Latency and Generate Clash Config
 
 on:
@@ -24,10 +25,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml requests
 
-      - name: Download mihomo binary
+      - name: Extract mihomo binary
         run: |
+          if [[ -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz ]]; then
+            gunzip ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
+          elif [[ -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.zip ]]; then
+            unzip ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.zip -d ./mihomo
+          fi
           chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
-          
+          ls -l ./mihomo/
+
       - name: Run latency test script
         run: python test_node_latency.py
 
@@ -36,3 +43,4 @@ jobs:
         with:
           name: clash-config
           path: clash_config.yaml
+```
