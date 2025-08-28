@@ -35,9 +35,8 @@ fi
 
 # 使用 yq 过滤掉无效的代理节点
 echo "正在过滤无效的代理节点..."
-# 这个 yq 表达式更加通用，可以解决之前的语法错误
-# 它筛选出所有 port 为数字的代理，并生成一个新的 YAML 文件
-yq e 'select(.proxies[] | has("port") and (.port | type == "number"))' link.yaml > filtered_link.yaml
+# 使用管道模式，这种语法更加通用和可靠
+cat link.yaml | yq '.proxies = [.proxies[] | select(has("port") and (.port | type == "number"))]' > filtered_link.yaml
 
 # 检查过滤后的文件是否生成
 if [ ! -f "filtered_link.yaml" ]; then
