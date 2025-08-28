@@ -1,21 +1,21 @@
 #!/bin/bash
 
-# 定义 mihomo 压缩包的路径
-MIHOMO_TAR="mihomo/mihomo-linux-amd64-compatible-v1.19.13"
+# 定义 mihomo 可执行文件的路径
+MIHOMO_EXE="mihomo/mihomo-linux-amd64-compatible-v1.19.13"
 
-# 检查压缩包是否存在
-if [ ! -f "$MIHOMO_TAR" ]; then
-    echo "Error: mihomo archive not found at $MIHOMO_TAR."
+# 检查可执行文件是否存在
+if [ ! -f "$MIHOMO_EXE" ]; then
+    echo "Error: mihomo executable not found at $MIHOMO_EXE."
     exit 1
 fi
 
-# 解压 mihomo
-echo "Extracting mihomo binary..."
-tar -zxvf "$MIHOMO_TAR" --strip-components=1 mihomo-linux-amd64-compatible -O > mihomo-linux
+# 将 mihomo 可执行文件移动到根目录并重命名
+echo "Moving mihomo executable to a simpler name..."
+mv "$MIHOMO_EXE" mihomo-linux
 
-# 检查解压是否成功
+# 检查移动是否成功
 if [ ! -f "./mihomo-linux" ]; then
-    echo "Error: Failed to extract mihomo binary."
+    echo "Error: Failed to move mihomo executable."
     exit 1
 fi
 
@@ -35,9 +35,6 @@ fi
 
 # 运行 mihomo 并测试节点延迟
 echo "Running mihomo to test node latency..."
-# -t 100：只测试前100个节点
-# --sort：按延迟大小排序
-# -o：输出文件
 ./mihomo-linux -f link.yaml -t 100 --sort -o clash_config.yaml
 
 # 检查输出文件是否成功生成
