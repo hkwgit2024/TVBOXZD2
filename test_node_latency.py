@@ -1,4 +1,3 @@
-
 import yaml
 import requests
 import subprocess
@@ -8,19 +7,19 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 def load_yaml(url):
-    """从指定 URL 加载 YAML 文件"""
+    print(f"开始加载 YAML 文件: {url}")
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
+        print("YAML 文件加载成功")
         return yaml.safe_load(response.text)
     except Exception as e:
         print(f"加载 YAML 文件失败: {e}")
         return None
 
 def test_node_latency(node, mihomo_path):
-    """测试单个节点的延迟"""
+    print(f"开始测试节点: {node['name']}")
     try:
-        # 创建临时配置文件
         temp_config = {
             'port': 7890,
             'proxies': [node],
@@ -36,28 +35,25 @@ def test_node_latency(node, mihomo_path):
         with open(temp_file, 'w', encoding='utf-8') as f:
             yaml.safe_dump(temp_config, f, allow_unicode=True)
         
-        # 启动 mihomo
         process = subprocess.Popen(
             [mihomo_path, '-f', temp_file],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
         
-        # 等待 mihomo 启动
         time.sleep(2)
         
-        # 测试延迟
         start_time = time.time()
         response = requests.get('http://www.google.com', proxies={
             'http': 'http://localhost:7890',
             'https': 'http://localhost:7890'
         }, timeout=5)
-        latency = (time.time() - start_time) * 1000  # 转换为毫秒
+        latency = (time.time() - start_time) * 1000
         
-        # 清理
         process.terminate()
         os.remove(temp_file)
         
+        print(f"节点 {node['name']} 测试完成，延迟: {latency:.2f}ms")
         return {'node': node, 'latency': latency}
     except Exception as e:
         print(f"测试节点 {node['name']} 失败: {e}")
@@ -67,7 +63,11 @@ def main():
     mihomo_path = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
     yaml_url = 'https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml'
     
-    # 加载 YAML 文件
+    print("检查 mihomo 可执行文件")
+    if not os.path.exists(mihomo_path):
+        print(f"错误: mihomo 可执行文件 {mihomo_path} 不存在")
+        return
+    
     config = load_yaml(yaml_url)
     if not config or 'proxies' not in config:
         print("无法加载节点列表或节点列表为空")
@@ -76,18 +76,15 @@ def main():
     nodes = config['proxies']
     results = []
     
-    # 使用线程池并行测试延迟
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    print(f"开始测试 {len(nodes)} 个节点的延迟")
+    with ThreadPoolExecutor(max_workers=5) as executor:
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes]
         for future in futures:
-            result = future.result()
-            results.append(result)
+            results.append(future.result())
     
-    # 按延迟排序，过滤掉无效节点
     valid_results = [r for r in results if r['latency'] != float('inf')]
     sorted_results = sorted(valid_results, key=lambda x: x['latency'])[:100]
     
-    # 生成输出配置文件
     output_config = {
         'port': 7890,
         'socks-port': 7891,
@@ -106,7 +103,6 @@ def main():
         'rules': ['MATCH,auto']
     }
     
-    # 保存到 clash_config.yaml
     with open('clash_config.yaml', 'w', encoding='utf-8') as f:
         yaml.safe_dump(output_config, f, allow_unicode=True)
     
@@ -114,4 +110,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
