@@ -1,4 +1,4 @@
-```yaml
+
 name: Test Node Latency and Generate Clash Config
 
 on:
@@ -43,4 +43,4 @@ jobs:
         with:
           name: clash-config
           path: clash_config.yaml
-```
+
