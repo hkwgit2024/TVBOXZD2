@@ -1530,7 +1530,7 @@ def work(links, check=False, allowed_types=[], only_check=False):
 
 if __name__ == '__main__':
     links = [
-        "https://snippet.host/oouyda/raw"
+        "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml"
 
        
     ]
