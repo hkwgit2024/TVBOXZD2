@@ -2,20 +2,20 @@ name: ClashForge
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # 每3小时运行一次
+    - cron: '0 */3 * * *'
   push:
     paths:
       - '.github/workflows/ClashForge.yml'
       - 'ClashForge.py'
-  workflow_dispatch:  # 支持手动触发
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true  # 避免并发工作流冲突
+  cancel-in-progress: true
 
 env:
-  TZ: Asia/Shanghai  # 设置时区为上海
-  INPUT: ${{ vars.INPUT }}  # 使用 GitHub 变量
+  TZ: Asia/Shanghai
+  INPUT: ${{ vars.INPUT }}
 
 jobs:
   run_demo_actions:
@@ -24,17 +24,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.BOT }}  # 使用 bot token 进行代码检出
+          token: ${{ secrets.BOT }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10.10'  # 使用 Python 3.10.10
+          python-version: '3.10.10'
 
       - name: Install requirements.txt
         run: |
           pip install -r ./requirements2.txt
-        continue-on-error: false  # 安装依赖失败时停止
+        continue-on-error: false
 
       - name: Setup mihomo
         run: |
@@ -42,25 +42,29 @@ jobs:
           gunzip -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
           chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
           ls -l ./mihomo
-        continue-on-error: false  # mihomo 设置失败时停止
+        continue-on-error: false
 
       - name: Run ClashForge.py
         run: |
           python ClashForge.py
-        continue-on-error: false  # 脚本运行失败时停止
+        continue-on-error: false
 
-      - name: Reset working directory
+      - name: Debug file status
         run: |
-          git reset --hard  # 重置已追踪文件的更改
-          git clean -fd     # 清理未追踪的文件和目录
-        continue-on-error: true  # 如果重置失败，继续执行
+          echo "Listing files after running ClashForge.py:"
+          ls -l
+          echo "Checking content of clash_config.yaml (if exists):"
+          cat clash_config.yaml || echo "clash_config.yaml not found"
+          echo "Checking content of clash_config.yaml.json (if exists):"
+          cat clash_config.yaml.json || echo "clash_config.yaml.json not found"
+        continue-on-error: true
 
       - name: Commit and push file
         run: |
           git config user.name "github-actions[bot]"
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # 添加所有更改（包括新文件和修改）
+          # 添加所有更改
           git add .
           
           # 检查是否有更改
@@ -72,10 +76,10 @@ jobs:
             git commit --allow-empty -m "update: No changes detected"
           fi
           
-          # 清理未追踪文件和目录
+          # 清理未追踪文件
           git clean -fd
           
-          # 尝试拉取和推送（最多重试3次）
+          # 尝试拉取和推送
           for i in {1..3}; do
             echo "Attempt $i to pull, rebase, and push..."
             git fetch origin
@@ -87,12 +91,11 @@ jobs:
                 exit 0
               fi
             else
-              echo "Rebase failed, attempting to reset and merge..."
+              echo "Rebase failed, attempting to merge..."
               git rebase --abort
-              git reset --hard origin/main
-              git merge origin/main
+              git merge origin/main --no-edit
               git add .
-              git commit -m "merge: Resolve conflicts and update" || echo "No changes to commit after merge"
+              git commit -m "merge: Resolve conflicts and update" || true
               git push origin main
               if [ $? -eq 0 ]; then
                 echo "Push successful after merge on attempt $i."
@@ -102,5 +105,5 @@ jobs:
             sleep 5
           done
           
-          echo "Failed to push after multiple attempts. Manual intervention may be required."
+          echo "Failed to push after multiple attempts."
           exit 1
