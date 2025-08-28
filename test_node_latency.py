@@ -279,7 +279,7 @@ def test_node_latency(node, mihomo_path):
 
 def main():
     mihomo_path = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
-    yaml_url = 'https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/link.yaml'
+    yaml_url = 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/link.yaml'
     
     print("检查 mihomo 可执行文件")
     if not os.path.exists(mihomo_path):
@@ -300,7 +300,7 @@ def main():
     country_counts = defaultdict(int)
     for node in nodes:
         server = node.get('server')
-        if server:
+        if server and isinstance(server, str):
             # 尝试解析域名
             try:
                 ip_address = socket.gethostbyname(server)
