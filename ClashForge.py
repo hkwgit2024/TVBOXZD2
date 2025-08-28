@@ -28,7 +28,7 @@ warnings.filterwarnings('ignore')
 from requests_html import HTMLSession
 import psutil
 import logging
-from tqdm import tqdm
+# from tqdm import tqdm # 移除 tqdm 库
 import socket
 import gzip
 
@@ -123,7 +123,7 @@ clash_config_template = {
         {
             "name": "自动选择",
             "type": "url-test",
-            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动",
+            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动|联通",
             "proxies": [],
             "url": "http://www.pinterest.com",
             "interval": 300,
@@ -132,7 +132,7 @@ clash_config_template = {
         {
             "name": "故障转移",
             "type": "fallback",
-            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动",
+            "exclude-filter": "(?i)中国|China|CN|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macau|MO|电信|移动|联通",
             "proxies": [],
             "url": "http://www.gstatic.com/generate_204",
             "interval": 300
@@ -568,9 +568,7 @@ def kill_clash():
     logger.info("Clash 进程终止检查完成")
 
 def start_clash():
-    # 使用os.path.abspath确保路径是绝对的
-    clash_binary = os.path.abspath("./mihomo/mihomo-linux-amd64-compatible-v1.19.13")
-    config_file = os.path.abspath(CONFIG_FILE)
+    clash_binary = "./mihomo/mihomo-linux-amd64-compatible-v1.19.13"
     
     if not os.path.exists(clash_binary):
         logger.error(f"Clash 二进制文件 {clash_binary} 不存在")
@@ -580,7 +578,7 @@ def start_clash():
     logger.info(f"设置文件 {clash_binary} 为可执行")
 
     clash_process = subprocess.Popen(
-        [clash_binary, "-f", config_file],
+        [clash_binary, "-f", CONFIG_FILE, "-d", "."],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True
@@ -661,22 +659,25 @@ async def proxy_clean():
         all_proxies = proxies_data.keys()
         exclude_proxies = ['DIRECT', '节点选择', '自动选择', '故障转移', '手动选择']
         proxies_to_test = [p for p in all_proxies if p not in exclude_proxies]
+        total_proxies = len(proxies_to_test)
         
-        logger.info(f"共找到 {len(proxies_to_test)} 个代理需要测速。")
+        logger.info(f"共找到 {total_proxies} 个代理需要测速。")
 
         results = []
         semaphore = Semaphore(MAX_CONCURRENT_TESTS)
+        tested_count = 0
 
-        async def test_proxy(proxy_name):
+        async def test_proxy_with_progress(proxy_name):
+            nonlocal tested_count
             async with semaphore:
                 delay = get_proxy_delay(proxy_name)
+                tested_count += 1
+                if tested_count % 50 == 0 or tested_count == total_proxies:
+                    logger.info(f"已测速 {tested_count}/{total_proxies} 个节点...")
                 return proxy_name, delay
 
-        tasks = [test_proxy(p) for p in proxies_to_test]
-
-        # 添加进度条
-        wrapped_tasks = tqdm(tasks, total=len(tasks), desc="测速进度", unit="节点")
-        results = await asyncio.gather(*wrapped_tasks)
+        tasks = [test_proxy_with_progress(p) for p in proxies_to_test]
+        results = await asyncio.gather(*tasks)
 
         sorted_results = sorted(results, key=lambda x: x[1])
         valid_proxies = [
