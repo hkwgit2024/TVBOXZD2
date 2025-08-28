@@ -175,8 +175,11 @@ def start_clash(config_path=os.path.join(OUTPUT, 'config.yaml')):
                 pass
             time.sleep(1) # 等待进程完全关闭
 
+    # 修正配置文件路径为相对 mihomo 目录的路径
+    rel_config_path = os.path.relpath(config_path, CLASH_PATH_DIR)
+
     # 修正后的命令：使用相对路径的可执行文件名
-    clash_cmd = [CLASH_EXEC_NAME, '-f', config_path]
+    clash_cmd = [CLASH_EXEC_NAME, '-f', rel_config_path]
     
     # 检查 Clash 可执行文件是否存在
     if not os.path.exists(CLASH_EXEC_PATH):
