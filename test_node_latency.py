@@ -3,6 +3,8 @@ import requests
 import subprocess
 import time
 import os
+import base64
+import json
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
@@ -12,18 +14,41 @@ def load_yaml(url):
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         print("YAML 文件加载成功")
-        # 将文本内容按行分割并处理为 YAML 格式
+        
         nodes = []
         for line in response.text.splitlines():
-            if line.strip():
+            line = line.strip()
+            if line.startswith('vmess://'):
                 try:
-                    node = yaml.safe_load(line)
-                    if isinstance(node, dict) and 'name' in node:
-                        nodes.append(node)
-                    else:
-                        print(f"跳过无效节点配置: {line}")
-                except yaml.YAMLError as e:
-                    print(f"解析节点失败: {line} - {e}")
+                    # 去除前缀并进行 base64 解码
+                    vmess_data = base64.b64decode(line[8:]).decode('utf-8')
+                    node_dict = json.loads(vmess_data)
+                    
+                    # 转换 vmess 格式为 mihomo/clash 兼容的 YAML 格式
+                    clash_node = {
+                        'name': node_dict.get('ps', f"Node_{len(nodes) + 1}"),
+                        'type': 'vmess',
+                        'server': node_dict.get('add'),
+                        'port': int(node_dict.get('port')),
+                        'uuid': node_dict.get('id'),
+                        'alterId': int(node_dict.get('aid', 0)),
+                        'cipher': node_dict.get('scy', 'auto'),
+                        'network': node_dict.get('net'),
+                        'tls': True if node_dict.get('tls') == 'tls' else False,
+                        'udp': True,
+                    }
+                    if 'host' in node_dict:
+                        clash_node['servername'] = node_dict.get('host')
+                    if 'path' in node_dict:
+                        clash_node['ws-path'] = node_dict.get('path')
+                    
+                    nodes.append(clash_node)
+                    print(f"成功解析节点: {clash_node['name']}")
+                    
+                except Exception as e:
+                    print(f"跳过无效节点配置 (解码失败): {line} - {e}")
+            else:
+                print(f"跳过无效节点配置 (非 vmess 协议): {line}")
 
         return {'proxies': nodes}
 
@@ -56,7 +81,6 @@ def test_node_latency(node, mihomo_path):
             text=True
         )
         
-        # 增加等待时间，确保 mihomo 代理启动
         time.sleep(5)
         
         start_time = time.time()
@@ -80,8 +104,7 @@ def test_node_latency(node, mihomo_path):
 
 def main():
     mihomo_path = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
-    # 更改为新的明文节点来源
-    yaml_url = 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt'
+    yaml_url = 'https://raw.githubusercontent.com/qjlxg/HA/raw/refs/heads/main/all_unique_nodes.txt'
     
     print("检查 mihomo 可执行文件")
     if not os.path.exists(mihomo_path):
