@@ -315,7 +315,7 @@ def main():
         print(f"节点已重命名为: {node['name']}")
 
     results = []
-    nodes_to_test = nodes[:200]
+    nodes_to_test = nodes[:3505]
     print(f"开始测试 {len(nodes_to_test)} 个节点的延迟")
     
     with ThreadPoolExecutor(max_workers=10) as executor:
