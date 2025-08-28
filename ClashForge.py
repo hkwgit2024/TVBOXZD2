@@ -88,7 +88,6 @@ def ensure_clash_executable():
         logger.info(f"Clash 可执行文件已存在: {CLASH_EXEC_PATH}")
         return True
 
-
 # 获取clash的api端口
 def get_clash_api_port():
     for port in CLASH_API_PORTS:
@@ -176,7 +175,8 @@ def start_clash(config_path=os.path.join(OUTPUT, 'config.yaml')):
                 pass
             time.sleep(1) # 等待进程完全关闭
 
-    clash_cmd = [CLASH_EXEC_PATH, '-f', config_path]
+    # 修正后的命令：使用相对路径的可执行文件名
+    clash_cmd = [CLASH_EXEC_NAME, '-f', config_path]
     
     # 检查 Clash 可执行文件是否存在
     if not os.path.exists(CLASH_EXEC_PATH):
@@ -186,6 +186,7 @@ def start_clash(config_path=os.path.join(OUTPUT, 'config.yaml')):
     # 增加日志
     logger.info(f"正在启动 Clash 进程，命令: {' '.join(clash_cmd)}")
     
+    # 确保在正确的目录下执行
     clash_process = subprocess.Popen(clash_cmd, cwd=CLASH_PATH_DIR, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     # 等待 Clash API 启动
