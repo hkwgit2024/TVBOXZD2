@@ -50,25 +50,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # 强制重置并清理工作区，避免未追踪的文件干扰
-          git reset --hard
-          git clean -fd
+          # ⚠️ 修复：删除了 git reset --hard 和 git clean -fd
           
-          # 添加两个配置文件到暂存区
           git add clash_config.yaml
           git add clash_config.yaml.json
           
-          # 检查暂存区是否有变化
           if ! git diff --staged --quiet; then
-            # 如果没有变化，创建一个空提交来强制更新
             echo "No changes detected, creating an empty commit to force update."
             git commit --allow-empty -m "update: No changes detected"
           else
-            # 如果有变化，正常提交
             git commit -m "update"
           fi
           
-          # 开始循环拉取、变基和推送，处理可能出现的并发冲突
           for i in {1..3}; do
             echo "Attempt $i to pull, rebase, and push..."
             git pull --rebase origin main
