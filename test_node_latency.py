@@ -42,25 +42,35 @@ def test_node_latency(node, mihomo_path):
             text=True
         )
         
-        time.sleep(2)
+        time.sleep(5)  # 增加等待时间，确保 mihomo 启动
         
         start_time = time.time()
         response = requests.get('http://www.google.com', proxies={
             'http': 'http://localhost:7890',
             'https': 'http://localhost:7890'
-        }, timeout=5)
+        }, timeout=10)  # 增加请求超时时间
         latency = (time.time() - start_time) * 1000
         
-        stdout, stderr = process.communicate(timeout=5)
+        stdout, stderr = process.communicate(timeout=10)  # 增加进程通信超时
         if stderr:
             print(f"节点 {node['name']} mihomo 错误: {stderr}")
         process.terminate()
+        try:
+            process.kill()  # 确保进程被终止
+        except:
+            pass
         os.remove(temp_file)
         
         print(f"节点 {node['name']} 测试完成，延迟: {latency:.2f}ms")
         return {'node': node, 'latency': latency}
     except Exception as e:
         print(f"测试节点 {node['name']} 失败: {e}")
+        try:
+            process.terminate()
+            process.kill()
+            os.remove(temp_file)
+        except:
+            pass
         return {'node': node, 'latency': float('inf')}
 
 def main():
@@ -81,7 +91,7 @@ def main():
     results = []
     
     print(f"开始测试 {len(nodes)} 个节点的延迟")
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=2) as executor:  # 减少并行线程
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes]
         for future in futures:
             results.append(future.result())
