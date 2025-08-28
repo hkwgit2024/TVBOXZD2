@@ -50,8 +50,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-          # ⚠️ 修复：删除了 git reset --hard 和 git clean -fd
-          
+          # 直接添加由 ClashForge.py 生成的文件，不再进行任何清理操作
           git add clash_config.yaml
           git add clash_config.yaml.json
           
