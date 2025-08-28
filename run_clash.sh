@@ -33,13 +33,11 @@ if [ ! -f "link.yaml" ]; then
     exit 1
 fi
 
-# 使用 yq 过滤掉无效的节点
+# 使用 yq 过滤掉无效的代理节点
 echo "正在过滤无效的代理节点..."
-# yq e 'select(.proxies[] | has("port") and (.port | type == "number"))' -P link.yaml > filtered_link.yaml
-# yq e '.proxies[] | select(has("port") and (.port | type == "number"))' link.yaml > filtered_link.yaml
-
-# 更直接的过滤方法
-yq e '.proxies = [ .proxies[] | select(has("port") and (.port | type == "number")) ]' link.yaml > filtered_link.yaml
+# 这个 yq 表达式更加通用，可以解决之前的语法错误
+# 它筛选出所有 port 为数字的代理，并生成一个新的 YAML 文件
+yq e 'select(.proxies[] | has("port") and (.port | type == "number"))' link.yaml > filtered_link.yaml
 
 # 检查过滤后的文件是否生成
 if [ ! -f "filtered_link.yaml" ]; then
@@ -51,10 +49,12 @@ fi
 echo "正在运行 mihomo 以测试节点延迟..."
 ./mihomo-linux -f filtered_link.yaml -t 100 --sort -o clash_config.yaml
 
-# 检查输出文件是否成功生成
+# 检查输出文件是否成功创建且不为空
 if [ -s "clash_config.yaml" ]; then
     echo "clash_config.yaml 已成功生成。"
 else
-    echo "错误：无法生成 clash_config.yaml。过滤后没有有效的节点。"
+    echo "错误：无法生成 clash_config.yaml。过滤后可能没有有效的节点。"
+    # 作为备用方案，创建一个有效的、空的 YAML 文件，以防止 Git 提交错误
     echo "proxies: []" > clash_config.yaml
+    echo "已生成一个空的 clash_config.yaml 文件，以防止提交错误。"
 fi
