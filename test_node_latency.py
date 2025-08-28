@@ -221,6 +221,8 @@ def load_yaml(url):
 
 def test_node_latency(node, mihomo_path):
     print(f"开始测试节点: {node['name']}")
+    process = None
+    temp_file = None
     try:
         temp_config = {
             'port': 7890,
@@ -258,14 +260,22 @@ def test_node_latency(node, mihomo_path):
         stdout, stderr = process.communicate(timeout=5)
         if stderr:
             print(f"节点 {node['name']} mihomo 错误: {stderr}")
-        process.terminate()
-        os.remove(temp_file)
         
         print(f"节点 {node['name']} 测试完成，延迟: {latency:.2f}ms")
         return {'node': node, 'latency': latency}
     except Exception as e:
         print(f"测试节点 {node['name']} 失败: {e}")
         return {'node': node, 'latency': float('inf')}
+    finally:
+        if process and process.poll() is None:
+            print(f"正在终止进程: {process.pid}")
+            process.terminate()
+            time.sleep(1)
+            if process.poll() is None:
+                print(f"强制杀死进程: {process.pid}")
+                process.kill()
+        if temp_file and os.path.exists(temp_file):
+            os.remove(temp_file)
 
 def main():
     mihomo_path = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
