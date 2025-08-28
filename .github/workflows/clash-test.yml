@@ -1,4 +1,4 @@
-name: Clash Node Latency Test
+name: Mihomo Node Latency Test
 
 on:
   workflow_dispatch:
@@ -9,24 +9,18 @@ on:
     - cron: '0 */6 * * *' # 每隔6小时运行一次
 
 jobs:
-  run-clash-test:
+  run-mihomo-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup environment and download clash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
-          # 如果你的仓库中没有clash-linux，请在这里添加下载步骤
-          # 例如: curl -L -o clash-linux.tar.gz https://github.com/Dreamacro/clash/releases/download/v1.17.0/clash-linux-amd64-v1.17.0.tar.gz
-          # tar -xzf clash-linux.tar.gz && mv clash-linux-amd64-v1.17.0/clash-linux-amd64 ./clash-linux
-          # 假设你的 clash-linux 已经放在了仓库根目录
-
-      - name: Run Clash Script
+      - name: Grant execute permission to run_clash.sh
         run: chmod +x ./run_clash.sh
-
+      
+      - name: Run Mihomo Script
+        run: ./run_clash.sh
+      
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
