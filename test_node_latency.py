@@ -81,7 +81,7 @@ def test_node_latency(node, mihomo_path):
 def main():
     mihomo_path = './mihomo/mihomo-linux-amd64-compatible-v1.19.13'
     # 更改为新的明文节点来源
-    yaml_url = 'https://raw.githubusercontent.com/qjlxg/HA/raw/refs/heads/main/all_unique_nodes.txt'
+    yaml_url = 'https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/all_unique_nodes.txt'
     
     print("检查 mihomo 可执行文件")
     if not os.path.exists(mihomo_path):
