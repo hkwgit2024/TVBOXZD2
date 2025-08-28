@@ -8,6 +8,7 @@ import json
 import urllib.parse
 import re
 import maxminddb
+import socket
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 
@@ -263,7 +264,6 @@ def main():
         print(f"错误: mihomo 可执行文件 {mihomo_path} 不存在")
         return
     
-    # 检查 GeoLite2 数据库文件
     if not os.path.exists('./GeoLite2-Country.mmdb'):
         print("错误: GeoLite2-Country.mmdb 文件不存在。请将其放在脚本的同一目录下。")
         return
@@ -275,17 +275,23 @@ def main():
     
     nodes = config['proxies']
     
-    # 根据地理位置重命名节点
     country_counts = defaultdict(int)
     for node in nodes:
-        ip = node.get('server')
-        if ip:
-            country = get_country_name(ip)
-            country_counts[country] += 1
-            node['name'] = f"{country}-{country_counts[country]}"
+        server = node.get('server')
+        if server:
+            # 尝试解析域名
+            try:
+                ip_address = socket.gethostbyname(server)
+                country = get_country_name(ip_address)
+            except (socket.gaierror, UnicodeError):
+                country = "Unknown"
         else:
-            node['name'] = f"Unknown-{len(nodes)}"
-    
+            country = "Unknown"
+            
+        country_counts[country] += 1
+        node['name'] = f"{country}-{country_counts[country]}"
+        print(f"节点已重命名为: {node['name']}")
+
     results = []
     nodes_to_test = nodes[:200]
     print(f"开始测试 {len(nodes_to_test)} 个节点的延迟")
