@@ -1530,11 +1530,8 @@ def work(links, check=False, allowed_types=[], only_check=False):
 
 if __name__ == '__main__':
     links = [
-        "https://c7dabe95.proxy-978.pages.dev/767b6340-96dc-4aa0-8013-a8af7513d920?clash",
-        "https://cdn.jsdelivr.net/gh/xiaoji235/airport-free/clash/naidounode.txt",
-        "https://cdn.jsdelivr.net/gh/yangxiaoge/tvbox_cust@master/clash/Clash2.yml",
-        "https://gy.xiaozi.us.kg/sub?token=lzj666",
-        "https://igdux.top/5Hna"
+        "https://snippet.host/oouyda/raw"
+
        
     ]
     work(links, check=True, only_check=False, allowed_types=["ss", "hysteria2", "hy2", "vless", "vmess", "trojan"])
