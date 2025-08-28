@@ -34,10 +34,10 @@ jobs:
 
       - name: Setup mihomo
         run: |
-          ls -l ./mihomo  # 检查 mihomo 目录内容
+          ls -l ./mihomo
           gunzip -f ./mihomo/mihomo-linux-amd64-compatible-v1.19.13.gz
           chmod +x ./mihomo/mihomo-linux-amd64-compatible-v1.19.13
-          ls -l ./mihomo  # 确认解压后的文件
+          ls -l ./mihomo
         continue-on-error: false
 
       - name: Run ClashForge.py
@@ -49,6 +49,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # ⚠️ 添加了这两行，用于清理所有未追踪和未暂存的更改
+          git reset --hard
+          git clean -fd
           
           git add clash_config.yaml
           
