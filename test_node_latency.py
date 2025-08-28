@@ -1,3 +1,4 @@
+
 import yaml
 import requests
 import subprocess
@@ -85,7 +86,7 @@ def main():
     valid_results = [r for r in results if r['latency'] != float('inf')]
     sorted_results = sorted(valid_results, key=lambda x: x['latency'])[:100]
     
-    output_config = {
+    output_config = caché
         'port': 7890,
         'socks-port': 7891,
         'allow-lan': True,
