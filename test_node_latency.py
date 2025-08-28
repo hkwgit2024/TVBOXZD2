@@ -36,10 +36,22 @@ def load_yaml(url):
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
+        content = response.text
         print("YAML 文件加载成功")
         
         nodes = []
-        for line in response.text.splitlines():
+        
+        # 尝试作为完整的YAML文件解析
+        try:
+            full_config = yaml.safe_load(content)
+            if full_config and 'proxies' in full_config:
+                print("成功解析为完整的 Clash YAML 格式")
+                return {'proxies': full_config['proxies']}
+        except yaml.YAMLError:
+            print("无法作为完整的 YAML 文件解析，尝试逐行解析")
+        
+        # 如果不是完整的YAML文件，则尝试逐行解析订阅链接
+        for line in content.splitlines():
             line = line.strip()
             if not line:
                 continue
@@ -200,7 +212,7 @@ def load_yaml(url):
 
             except Exception as e:
                 print(f"解析节点失败: {line} - {e}")
-
+                
         return {'proxies': nodes}
 
     except Exception as e:
