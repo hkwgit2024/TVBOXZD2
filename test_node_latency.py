@@ -6,8 +6,15 @@ import os
 import base64
 import json
 import urllib.parse
+import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+
+def sanitize_filename(name):
+    """移除或替换文件名中的非法字符"""
+    sanitized = re.sub(r'[\\/:*?"<>| ]', '_', name)
+    # 限制文件名长度，避免系统限制
+    return sanitized[:100]
 
 def load_yaml(url):
     print(f"开始加载 YAML 文件: {url}")
@@ -199,7 +206,10 @@ def test_node_latency(node, mihomo_path):
             'rules': ['MATCH,auto']
         }
         
-        temp_file = f"temp_config_{node['name']}.yaml"
+        # 修复：使用清理过的节点名称来创建文件
+        sanitized_name = sanitize_filename(node['name'])
+        temp_file = f"temp_config_{sanitized_name}.yaml"
+        
         with open(temp_file, 'w', encoding='utf-8') as f:
             yaml.safe_dump(temp_config, f, allow_unicode=True)
         
