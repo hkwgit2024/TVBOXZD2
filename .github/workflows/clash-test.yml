@@ -25,7 +25,7 @@ jobs:
           # 假设你的 clash-linux 已经放在了仓库根目录
 
       - name: Run Clash Script
-        run: ./run_clash.sh
+        run: chmod +x ./run_clash.sh
 
       - name: Commit and push changes
         run: |
