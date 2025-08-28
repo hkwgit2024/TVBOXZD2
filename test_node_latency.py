@@ -5,6 +5,7 @@ import time
 import os
 import base64
 import json
+import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
@@ -18,13 +19,15 @@ def load_yaml(url):
         nodes = []
         for line in response.text.splitlines():
             line = line.strip()
-            if line.startswith('vmess://'):
-                try:
-                    # 去除前缀并进行 base64 解码
+            if not line:
+                continue
+
+            try:
+                if line.startswith('vmess://'):
+                    # 处理 VMess
                     vmess_data = base64.b64decode(line[8:]).decode('utf-8')
                     node_dict = json.loads(vmess_data)
                     
-                    # 转换 vmess 格式为 mihomo/clash 兼容的 YAML 格式
                     clash_node = {
                         'name': node_dict.get('ps', f"Node_{len(nodes) + 1}"),
                         'type': 'vmess',
@@ -43,12 +46,138 @@ def load_yaml(url):
                         clash_node['ws-path'] = node_dict.get('path')
                     
                     nodes.append(clash_node)
-                    print(f"成功解析节点: {clash_node['name']}")
+                    print(f"成功解析 VMess 节点: {clash_node['name']}")
+                
+                elif line.startswith('ss://'):
+                    # 处理 Shadowsocks
+                    parsed_url = urllib.parse.urlparse(line)
+                    if not parsed_url.fragment:
+                        print(f"跳过无效 SS 节点 (缺少名称): {line}")
+                        continue
                     
-                except Exception as e:
-                    print(f"跳过无效节点配置 (解码失败): {line} - {e}")
-            else:
-                print(f"跳过无效节点配置 (非 vmess 协议): {line}")
+                    base64_data = parsed_url.netloc
+                    
+                    try:
+                        decoded_data = base64.b64decode(base64_data + '=' * (-len(base64_data) % 4)).decode('utf-8')
+                        method, password_and_server = decoded_data.split(':', 1)
+                        password, server_and_port = password_and_server.split('@', 1)
+                    except:
+                        password_and_server = base64_data
+                        method = 'auto'
+                        password, server_and_port = password_and_server.split('@', 1)
+                    
+                    server, port = server_and_port.split(':', 1)
+
+                    clash_node = {
+                        'name': urllib.parse.unquote(parsed_url.fragment),
+                        'type': 'ss',
+                        'server': server,
+                        'port': int(port),
+                        'password': password,
+                        'cipher': method,
+                        'udp': True,
+                    }
+                    nodes.append(clash_node)
+                    print(f"成功解析 SS 节点: {clash_node['name']}")
+                    
+                elif line.startswith('hy2://'):
+                    # 处理 Hysteria 2
+                    parsed_url = urllib.parse.urlparse(line)
+                    if not parsed_url.fragment:
+                        print(f"跳过无效 HY2 节点 (缺少名称): {line}")
+                        continue
+                        
+                    server, port = parsed_url.netloc.split(':', 1)
+                    
+                    clash_node = {
+                        'name': urllib.parse.unquote(parsed_url.fragment),
+                        'type': 'hysteria2',
+                        'server': server,
+                        'port': int(port),
+                        'auth': parsed_url.username,
+                        'udp': True,
+                    }
+                    
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    if 'obfs' in query_params:
+                        clash_node['obfs'] = query_params['obfs'][0]
+                    if 'obfs-password' in query_params:
+                        clash_node['obfs-password'] = query_params['obfs-password'][0]
+                    if 'sni' in query_params:
+                        clash_node['tls'] = True
+                        clash_node['sni'] = query_params['sni'][0]
+                    
+                    nodes.append(clash_node)
+                    print(f"成功解析 HY2 节点: {clash_node['name']}")
+
+                elif line.startswith('trojan://'):
+                    # 处理 Trojan
+                    parsed_url = urllib.parse.urlparse(line)
+                    if not parsed_url.fragment:
+                        print(f"跳过无效 Trojan 节点 (缺少名称): {line}")
+                        continue
+                    
+                    clash_node = {
+                        'name': urllib.parse.unquote(parsed_url.fragment),
+                        'type': 'trojan',
+                        'server': parsed_url.hostname,
+                        'port': parsed_url.port,
+                        'password': parsed_url.username,
+                        'udp': True,
+                    }
+                    
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    if 'sni' in query_params:
+                        clash_node['sni'] = query_params['sni'][0]
+                    if 'alpn' in query_params:
+                        clash_node['alpn'] = query_params['alpn'][0]
+                    if 'allowInsecure' in query_params:
+                        clash_node['skip-cert-verify'] = True
+                    
+                    nodes.append(clash_node)
+                    print(f"成功解析 Trojan 节点: {clash_node['name']}")
+                    
+                elif line.startswith('vless://'):
+                    # 处理 VLESS
+                    parsed_url = urllib.parse.urlparse(line)
+                    if not parsed_url.fragment:
+                        print(f"跳过无效 VLESS 节点 (缺少名称): {line}")
+                        continue
+                    
+                    clash_node = {
+                        'name': urllib.parse.unquote(parsed_url.fragment),
+                        'type': 'vless',
+                        'server': parsed_url.hostname,
+                        'port': parsed_url.port,
+                        'uuid': parsed_url.username,
+                        'udp': True,
+                    }
+                    
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    if 'encryption' in query_params:
+                        clash_node['cipher'] = query_params['encryption'][0]
+                    if 'security' in query_params and query_params['security'][0] == 'tls':
+                        clash_node['tls'] = True
+                    if 'sni' in query_params:
+                        clash_node['servername'] = query_params['sni'][0]
+                    if 'flow' in query_params:
+                        clash_node['flow'] = query_params['flow'][0]
+                    if 'network' in query_params:
+                        clash_node['network'] = query_params['network'][0]
+                        if clash_node['network'] == 'ws':
+                            if 'path' in query_params:
+                                clash_node['ws-path'] = query_params['path'][0]
+                            if 'host' in query_params:
+                                clash_node['ws-headers'] = {'Host': query_params['host'][0]}
+
+                    nodes.append(clash_node)
+                    print(f"成功解析 VLESS 节点: {clash_node['name']}")
+                    
+                else:
+                    print(f"跳过无效节点配置 (协议不支持): {line}")
+
+            except Exception as e:
+                print(f"解析节点失败: {line} - {e}")
 
         return {'proxies': nodes}
 
