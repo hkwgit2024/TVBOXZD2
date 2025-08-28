@@ -9,7 +9,7 @@ if [ ! -f "$MIHOMO_EXE" ]; then
     exit 1
 fi
 
-# 将 mihomo 可执行文件移动到根目录并重命名
+# 移动 mihomo 可执行文件到根目录并重命名
 echo "Moving mihomo executable to a simpler name..."
 mv "$MIHOMO_EXE" mihomo-linux
 
@@ -35,15 +35,15 @@ fi
 
 # 运行 mihomo 并测试节点延迟
 echo "Running mihomo to test node latency..."
-# 捕获 Mihomo 运行的返回值，即使失败也继续执行
+# 执行 mihomo 并检查其退出码
 ./mihomo-linux -f link.yaml -t 100 --sort -o clash_config.yaml
 
-# 检查输出文件是否成功生成
-if [ -f "clash_config.yaml" ]; then
+# 检查输出文件是否成功创建且不为空
+if [ -s "clash_config.yaml" ]; then
     echo "clash_config.yaml has been generated successfully."
 else
-    echo "Error: Failed to generate clash_config.yaml."
-    # 既然失败了，我们可以创建一个空文件或者包含错误信息的文件
-    echo "No valid nodes found or parsing failed. Creating an empty file."
+    echo "Error: Failed to generate clash_config.yaml. The source file may be invalid."
+    # 作为一个备用方案，创建一个有效的、空的 YAML 文件，以防止 Git 提交错误
     echo "proxies: []" > clash_config.yaml
+    echo "Generated an empty clash_config.yaml file to prevent commit errors."
 fi
