@@ -139,128 +139,168 @@ clash_config_template = {
 
 # 解析 Hysteria2 链接
 def parse_hysteria2_link(link):
-    link = link[14:]
-    parts = link.split('@')
-    uuid = parts[0]
-    server_info = parts[1].split('?')
-    server = server_info[0].split(':')[0]
-    port = int(server_info[0].split(':')[1].split('/')[0].strip())
-    query_params = urllib.parse.parse_qs(server_info[1] if len(server_info) > 1 else '')
-    insecure = '1' in query_params.get('insecure', ['0'])
-    sni = query_params.get('sni', [''])[0]
-    name = urllib.parse.unquote(link.split('#')[-1].strip())
+    try:
+        link = link[14:]
+        parts = link.split('@')
+        if len(parts) < 2:
+            print(f"Invalid hysteria2 link format: {link}")
+            return None
+        uuid = parts[0]
+        server_info = parts[1].split('?')
+        server_port = server_info[0].split('/')
+        server_parts = server_port[0].split(':')
+        if len(server_parts) < 2:
+            print(f"Missing port in hysteria2 link: {link}")
+            return None
+        server = server_parts[0]
+        port = server_parts[1].strip()
+        if not port.isdigit():
+            print(f"Invalid port in hysteria2 link: {port}")
+            return None
+        query_params = urllib.parse.parse_qs(server_info[1] if len(server_info) > 1 else '')
+        insecure = '1' in query_params.get('insecure', ['0'])
+        sni = query_params.get('sni', [''])[0]
+        name = urllib.parse.unquote(link.split('#')[-1].strip())
 
-    return {
-        "name": f"{name}",
-        "server": server,
-        "port": port,
-        "type": "hysteria2",
-        "password": uuid,
-        "auth": uuid,
-        "sni": sni,
-        "skip-cert-verify": not insecure,
-        "client-fingerprint": "chrome"
-    }
+        return {
+            "name": f"{name}",
+            "server": server,
+            "port": int(port),
+            "type": "hysteria2",
+            "password": uuid,
+            "auth": uuid,
+            "sni": sni,
+            "skip-cert-verify": not insecure,
+            "client-fingerprint": "chrome"
+        }
+    except Exception as e:
+        print(f"Error parsing hysteria2 link {link}: {e}")
+        return None
 
 
 # 解析 Shadowsocks 链接
 def parse_ss_link(link):
-    link = link[5:]
-    if "#" in link:
-        config_part, name = link.split('#')
-    else:
-        config_part, name = link, ""
-    decoded = base64.urlsafe_b64decode(config_part.split('@')[0] + '=' * (-len(config_part.split('@')[0]) % 4)).decode(
-        'utf-8')
-    method_passwd = decoded.split(':')
-    cipher, password = method_passwd if len(method_passwd) == 2 else (method_passwd[0], "")
-    server_info = config_part.split('@')[1]
-    server, port = server_info.split(':') if ":" in server_info else (server_info, "")
-
-    return {
-        "name": urllib.parse.unquote(name),
-        "type": "ss",
-        "server": server,
-        "port": int(port),
-        "cipher": cipher,
-        "password": password,
-        "udp": True
-    }
+    try:
+        link = link[5:]
+        if "#" in link:
+            config_part, name = link.split('#')
+        else:
+            config_part, name = link, ""
+        decoded = base64.urlsafe_b64decode(config_part.split('@')[0] + '=' * (-len(config_part.split('@')[0]) % 4)).decode('utf-8')
+        method_passwd = decoded.split(':')
+        cipher, password = method_passwd if len(method_passwd) == 2 else (method_passwd[0], "")
+        server_info = config_part.split('@')[1]
+        server, port = server_info.split(':') if ":" in server_info else (server_info, "")
+        if not port.isdigit():
+            print(f"Invalid port in ss link: {port}")
+            return None
+        return {
+            "name": urllib.parse.unquote(name),
+            "type": "ss",
+            "server": server,
+            "port": int(port),
+            "cipher": cipher,
+            "password": password,
+            "udp": True
+        }
+    except Exception as e:
+        print(f"Error parsing ss link {link}: {e}")
+        return None
 
 
 # 解析 Trojan 链接
 def parse_trojan_link(link):
-    link = link[9:]
-    config_part, name = link.split('#')
-    user_info, host_info = config_part.split('@')
-    username, password = user_info.split(':') if ":" in user_info else ("", user_info)
-    host, port_and_query = host_info.split(':') if ":" in host_info else (host_info, "")
-    port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
-
-    return {
-        "name": urllib.parse.unquote(name),
-        "type": "trojan",
-        "server": host,
-        "port": int(port),
-        "password": password,
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
-        "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
-    }
+    try:
+        link = link[9:]
+        config_part, name = link.split('#')
+        user_info, host_info = config_part.split('@')
+        username, password = user_info.split(':') if ":" in user_info else ("", user_info)
+        host, port_and_query = host_info.split(':') if ":" in host_info else (host_info, "")
+        port, query = port_and_query.split('?', 1) if '?' in port_and_query else (port_and_query, "")
+        if not port.isdigit():
+            print(f"Invalid port in trojan link: {port}")
+            return None
+        return {
+            "name": urllib.parse.unquote(name),
+            "type": "trojan",
+            "server": host,
+            "port": int(port),
+            "password": password,
+            "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+            "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true"
+        }
+    except Exception as e:
+        print(f"Error parsing trojan link {link}: {e}")
+        return None
 
 
 # 解析 VLESS 链接
 def parse_vless_link(link):
-    link = link[8:]
-    config_part, name = link.split('#')
-    user_info, host_info = config_part.split('@')
-    uuid = user_info
-    host, query = host_info.split('?', 1) if '?' in host_info else (host_info, "")
-    port = host.split(':')[-1] if ':' in host else ""
-    host = host.split(':')[0] if ':' in host else ""
-    return {
-        "name": urllib.parse.unquote(name),
-        "type": "vless",
-        "server": host,
-        "port": int(port),
-        "uuid": uuid,
-        "security": urllib.parse.parse_qs(query).get("security", ["none"])[0],
-        "tls": urllib.parse.parse_qs(query).get("security", ["none"])[0] == "tls",
-        "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
-        "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true",
-        "network": urllib.parse.parse_qs(query).get("type", ["tcp"])[0],
-        "ws-opts": {
-            "path": urllib.parse.parse_qs(query).get("path", [""])[0],
-            "headers": {
-                "Host": urllib.parse.parse_qs(query).get("host", [""])[0]
-            }
-        } if urllib.parse.parse_qs(query).get("type", ["tcp"])[0] == "ws" else {}
-    }
+    try:
+        link = link[8:]
+        config_part, name = link.split('#')
+        user_info, host_info = config_part.split('@')
+        uuid = user_info
+        host, query = host_info.split('?', 1) if '?' in host_info else (host_info, "")
+        port = host.split(':')[-1] if ':' in host else ""
+        host = host.split(':')[0] if ':' in host else ""
+        if not port.isdigit():
+            print(f"Invalid port in vless link: {port}")
+            return None
+        return {
+            "name": urllib.parse.unquote(name),
+            "type": "vless",
+            "server": host,
+            "port": int(port),
+            "uuid": uuid,
+            "security": urllib.parse.parse_qs(query).get("security", ["none"])[0],
+            "tls": urllib.parse.parse_qs(query).get("security", ["none"])[0] == "tls",
+            "sni": urllib.parse.parse_qs(query).get("sni", [""])[0],
+            "skip-cert-verify": urllib.parse.parse_qs(query).get("skip-cert-verify", ["false"])[0] == "true",
+            "network": urllib.parse.parse_qs(query).get("type", ["tcp"])[0],
+            "ws-opts": {
+                "path": urllib.parse.parse_qs(query).get("path", [""])[0],
+                "headers": {
+                    "Host": urllib.parse.parse_qs(query).get("host", [""])[0]
+                }
+            } if urllib.parse.parse_qs(query).get("type", ["tcp"])[0] == "ws" else {}
+        }
+    except Exception as e:
+        print(f"Error parsing vless link {link}: {e}")
+        return None
 
 
 # 解析 VMESS 链接
 def parse_vmess_link(link):
-    link = link[8:]
-    decoded_link = base64.urlsafe_b64decode(link + '=' * (-len(link) % 4)).decode("utf-8")
-    vmess_info = json.loads(decoded_link)
-
-    return {
-        "name": urllib.parse.unquote(vmess_info.get("ps", "vmess")),
-        "type": "vmess",
-        "server": vmess_info["add"],
-        "port": int(vmess_info["port"]),
-        "uuid": vmess_info["id"],
-        "alterId": int(vmess_info.get("aid", 0)),
-        "cipher": "auto",
-        "network": vmess_info.get("net", "tcp"),
-        "tls": vmess_info.get("tls", "") == "tls",
-        "sni": vmess_info.get("sni", ""),
-        "ws-opts": {
-            "path": vmess_info.get("path", ""),
-            "headers": {
-                "Host": vmess_info.get("host", "")
-            }
-        } if vmess_info.get("net", "tcp") == "ws" else {}
-    }
+    try:
+        link = link[8:]
+        decoded_link = base64.urlsafe_b64decode(link + '=' * (-len(link) % 4)).decode("utf-8")
+        vmess_info = json.loads(decoded_link)
+        port = str(vmess_info.get("port", ""))
+        if not port.isdigit():
+            print(f"Invalid port in vmess link: {port}")
+            return None
+        return {
+            "name": urllib.parse.unquote(vmess_info.get("ps", "vmess")),
+            "type": "vmess",
+            "server": vmess_info["add"],
+            "port": int(port),
+            "uuid": vmess_info["id"],
+            "alterId": int(vmess_info.get("aid", 0)),
+            "cipher": "auto",
+            "network": vmess_info.get("net", "tcp"),
+            "tls": vmess_info.get("tls", "") == "tls",
+            "sni": vmess_info.get("sni", ""),
+            "ws-opts": {
+                "path": vmess_info.get("path", ""),
+                "headers": {
+                    "Host": vmess_info.get("host", "")
+                }
+            } if vmess_info.get("net", "tcp") == "ws" else {}
+        }
+    except Exception as e:
+        print(f"Error parsing vmess link {link}: {e}")
+        return None
 
 
 # 解析ss订阅源
@@ -342,11 +382,27 @@ def process_url(url):
                     content = content.replace('<pre style="word-wrap: break-word; white-space: pre-wrap;">',
                                               '').replace('</pre>', '')
                 # YAML格式
-                yaml_data = yaml.safe_load(content)
-                if 'proxies' in yaml_data:
+                try:
+                    yaml_data = yaml.safe_load(content)
+                    if not yaml_data or 'proxies' not in yaml_data:
+                        print(f"No valid proxies found in YAML from {url}")
+                        return [], isyaml
+                    proxies = yaml_data['proxies']
+                    # 验证每个代理节点是否包含必要的字段
+                    valid_proxies = []
+                    for proxy in proxies:
+                        if not isinstance(proxy, dict) or 'server' not in proxy or 'port' not in proxy:
+                            print(f"Invalid proxy format in {url}: {proxy}")
+                            continue
+                        if not isinstance(proxy['port'], int) or proxy['port'] <= 0:
+                            print(f"Invalid port in proxy from {url}: {proxy}")
+                            continue
+                        valid_proxies.append(proxy)
                     isyaml = True
-                    proxies = yaml_data['proxies'] if yaml_data['proxies'] else []
-                    return proxies, isyaml
+                    return valid_proxies, isyaml
+                except yaml.YAMLError as e:
+                    print(f"YAML parsing error for {url}: {e}")
+                    return [], isyaml
             else:
                 # 尝试Base64解码
                 try:
@@ -363,11 +419,18 @@ def process_url(url):
                                 yaml_data = yaml.safe_load(res.html.text)
                             except Exception as e:
                                 yaml_data = match_nodes(res.html.text)
-                            finally:
-                                if 'proxies' in yaml_data:
-                                    isyaml = True
-                                    return yaml_data['proxies'], isyaml
-
+                            if 'proxies' in yaml_data:
+                                isyaml = True
+                                valid_proxies = []
+                                for proxy in yaml_data['proxies']:
+                                    if not isinstance(proxy, dict) or 'server' not in proxy or 'port' not in proxy:
+                                        print(f"Invalid proxy format in JS-rendered {url}: {proxy}")
+                                        continue
+                                    if not isinstance(proxy['port'], int) or proxy['port'] <= 0:
+                                        print(f"Invalid port in proxy from JS-rendered {url}: {proxy}")
+                                        continue
+                                    valid_proxies.append(proxy)
+                                return valid_proxies, isyaml
                         else:
                             pattern = r'([A-Za-z0-9_+/\-]+={0,2})'
                             matches = re.findall(pattern, res.html.text)
@@ -376,7 +439,7 @@ def process_url(url):
                             decoded_content = decoded_bytes.decode('utf-8')
                             return decoded_content.splitlines(), isyaml
                     except Exception as e:
-                        # 如果不是Base64编码，直接按行处理
+                        print(f"Error processing JS-rendered content from {url}: {e}")
                         return [], isyaml
         else:
             print(f"Failed to retrieve data from {url}, status code: {response.status_code}")
@@ -1531,7 +1594,5 @@ def work(links, check=False, allowed_types=[], only_check=False):
 if __name__ == '__main__':
     links = [
         "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml"
-
-       
     ]
     work(links, check=True, only_check=False, allowed_types=["ss", "hysteria2", "hy2", "vless", "vmess", "trojan"])
