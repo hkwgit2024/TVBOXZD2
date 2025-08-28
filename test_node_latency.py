@@ -1,4 +1,3 @@
-
 import yaml
 import requests
 import subprocess
@@ -39,7 +38,8 @@ def test_node_latency(node, mihomo_path):
         process = subprocess.Popen(
             [mihomo_path, '-f', temp_file],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            text=True
         )
         
         time.sleep(2)
@@ -51,6 +51,9 @@ def test_node_latency(node, mihomo_path):
         }, timeout=5)
         latency = (time.time() - start_time) * 1000
         
+        stdout, stderr = process.communicate(timeout=5)
+        if stderr:
+            print(f"节点 {node['name']} mihomo 错误: {stderr}")
         process.terminate()
         os.remove(temp_file)
         
@@ -78,7 +81,7 @@ def main():
     results = []
     
     print(f"开始测试 {len(nodes)} 个节点的延迟")
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes]
         for future in futures:
             results.append(future.result())
@@ -86,7 +89,7 @@ def main():
     valid_results = [r for r in results if r['latency'] != float('inf')]
     sorted_results = sorted(valid_results, key=lambda x: x['latency'])[:100]
     
-    output_config = caché
+    output_config = {
         'port': 7890,
         'socks-port': 7891,
         'allow-lan': True,
