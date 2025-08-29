@@ -1,7 +1,10 @@
+
 import requests
-import yaml
-import hashlib
+import base64
 import json
+import urllib.parse
+import hashlib
+import yaml
 from collections import defaultdict
 
 # 文件 URL
@@ -18,101 +21,99 @@ def validate_server_port(server, port):
         return False
     return True
 
-def parse_node_from_dict(node):
-    """验证节点是否符合官方要求"""
-    if not isinstance(node, dict):
-        return None
-    node_type = node.get('type')
-    if node_type == 'ss':
-        required = {'server', 'port', 'cipher', 'password'}
-        if not all(k in node for k in required) or node.get('cipher') not in VALID_SS_CIPHERS or not validate_server_port(node.get('server'), node.get('port')):
+def parse_vmess_url(url):
+    """解析 vmess:// URL"""
+    try:
+        if not url.startswith('vmess://'):
             return None
-        return {k: node[k] for k in required}
-    elif node_type == 'vmess':
+        encoded = url[8:].strip()
+        decoded = base64.b64decode(encoded).decode('utf-8')
+        config = json.loads(decoded)
+        node = {
+            'type': 'vmess',
+            'server': config.get('add'),
+            'port': config.get('port'),
+            'uuid': config.get('id'),
+            'cipher': config.get('scy', 'auto'),
+            'name': config.get('ps', 'unnamed')
+        }
         required = {'server', 'port', 'uuid', 'cipher'}
-        if not all(k in node for k in required) or node.get('cipher') not in VALID_VMESS_CIPHERS or not validate_server_port(node.get('server'), node.get('port')):
+        if not all(k in node for k in required) or node['cipher'] not in VALID_VMESS_CIPHERS or not validate_server_port(node['server'], node['port']):
             return None
-        return {k: node[k] for k in required}
-    elif node_type == 'vless':
-        required = {'server', 'port', 'uuid'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
+        return node
+    except Exception as e:
+        return None
+
+def parse_trojan_url(url):
+    """解析 trojan:// URL"""
+    try:
+        if not url.startswith('trojan://'):
             return None
-        return {k: node[k] for k in required}
-    elif node_type == 'trojan':
+        parsed = urllib.parse.urlparse(url)
+        password = parsed.netloc.split('@')[0]
+        server_port = parsed.netloc.split('@')[1].split('?')[0]
+        server, port = server_port.split(':') if ':' in server_port else (server_port, None)
+        name = urllib.parse.unquote(parsed.fragment) if parsed.fragment else 'unnamed'
+        node = {
+            'type': 'trojan',
+            'server': server,
+            'port': port,
+            'password': password,
+            'name': name
+        }
         required = {'server', 'port', 'password'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
+        if not all(k in node for k in required) or not validate_server_port(node['server'], node['port']):
             return None
-        return {k: node[k] for k in required}
-    elif node_type == 'ssr':
-        required = {'server', 'port', 'password', 'cipher', 'protocol', 'obfs'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'hysteria2':
-        required = {'server', 'port', 'password'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
+        return node
+    except Exception as e:
+        return None
+
+def parse_node_from_url(line):
+    """解析单行代理 URL"""
+    line = line.strip()
+    if line.startswith('vmess://'):
+        return parse_vmess_url(line)
+    elif line.startswith('trojan://'):
+        return parse_trojan_url(line)
     return None
 
 def get_node_key(node):
     """生成节点的哈希键，仅基于官方要求字段，忽略 name"""
-    node_type = node.get('type')
     key_dict = {k: node.get(k) for k in node if k != 'name'}
     key_str = json.dumps(key_dict, sort_keys=True)
     return hashlib.sha256(key_str.encode('utf-8')).hexdigest()
 
 def analyze_nodes(url, file_name):
-    """下载并分析 YAML 文件的节点"""
+    """逐行下载并分析代理 URL"""
     try:
-        response = requests.get(url, timeout=60)
+        response = requests.get(url, stream=True, timeout=60)
         response.raise_for_status()
+        proxies = []
+        for line in response.iter_lines(decode_unicode=True):
+            if line:
+                node = parse_node_from_url(line)
+                if node:
+                    proxies.append(node)
+                else:
+                    with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                        f.write(f"无效节点: {line[:50]}... (解析失败或无效格式)\n")
         
-        # 尝试解析 YAML 文件
-        try:
-            data = yaml.safe_load(response.text)
-        except yaml.YAMLError as e:
-            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                f.write(f"YAML 解析错误: {e}\n")
-            with open('stats.txt', 'a', encoding='utf-8') as f:
-                f.write(f"处理 {url} 失败: YAML 解析错误\n")
-            return [], [], set(), 0
-
-        # 检查是否为预期的结构
-        if not isinstance(data, dict) or 'proxies' not in data or not isinstance(data['proxies'], list):
-            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                f.write("文件结构不符: 缺少 'proxies' 键或其值不是列表\n")
-            with open('stats.txt', 'a', encoding='utf-8') as f:
-                f.write(f"处理 {url} 失败: 文件结构不符\n")
-            return [], [], set(), 0
-
-        proxies = data['proxies']
         seen_keys = set()
         unique_nodes = []
         name_counts = defaultdict(int)
         invalid_count = 0
         
         for node in proxies:
-            if not isinstance(node, dict):
+            if not node:
                 invalid_count += 1
-                with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                    f.write(f"无效节点: 非字典类型 ({node})\n")
                 continue
-            
-            parsed_node = parse_node_from_dict(node)
-            if not parsed_node:
-                invalid_count += 1
-                with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                    f.write(f"无效节点: {node.get('name', '未命名')} (缺失必须字段或无效参数)\n")
-                continue
-            
-            node_key = get_node_key(parsed_node)
+            node_key = get_node_key(node)
             if node_key not in seen_keys:
                 seen_keys.add(node_key)
-                base_name = f"{parsed_node['type']}-{parsed_node.get('server')}-{parsed_node.get('port')}"
-                parsed_node['name'] = f"{base_name}_{name_counts[base_name] + 1}"
+                base_name = f"{node['type']}-{node.get('server')}-{node.get('port')}"
+                node['name'] = f"{base_name}_{name_counts[base_name] + 1}"
                 name_counts[base_name] += 1
-                unique_nodes.append(parsed_node)
+                unique_nodes.append(node)
             else:
                 with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
                     f.write(f"重复节点: {node.get('name', '未命名')} ({node_key})\n")
@@ -129,13 +130,9 @@ def save_to_yaml(data, filename):
         yaml.dump(data, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 if __name__ == "__main__":
-    # 初始化 stats.txt 和日志文件
+    # 初始化 stats.txt
     with open('stats.txt', 'w', encoding='utf-8') as f:
         f.write("分析开始...\n")
-    with open('compare_link.log', 'w', encoding='utf-8') as f:
-        f.write("link.yaml 日志\n")
-    with open('compare_link1.log', 'w', encoding='utf-8') as f:
-        f.write("link (1).yaml 日志\n")
     
     # 分析 link.yaml
     proxies1, unique_nodes1, keys1, invalid1 = analyze_nodes(URL1, "link")
