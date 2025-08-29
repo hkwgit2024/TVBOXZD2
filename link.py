@@ -685,17 +685,17 @@ if __name__ == "__main__":
     for node in all_nodes:
         node_type = node.get('type')
         if node_type == 'ss':
-            node_key = ('ss', node.get('server'), node.get('port'), node.get('password'), node.get('cipher'))
+            node_key = ('ss', node.get('server'), node.get('port'), node.get('password'))
         elif node_type == 'vmess':
-            node_key = ('vmess', node.get('server'), node.get('port'), node.get('uuid'), node.get('alterId'), node.get('cipher'), node.get('network'), node.get('tls', False), str(node.get('ws-opts', {})))
+            node_key = ('vmess', node.get('server'), node.get('port'), node.get('uuid'))
         elif node_type == 'vless':
-            node_key = ('vless', node.get('server'), node.get('port'), node.get('uuid'), node.get('network'), node.get('tls', False), node.get('flow'), str(node.get('ws-opts', {})))
+            node_key = ('vless', node.get('server'), node.get('port'), node.get('uuid'))
         elif node_type == 'trojan':
-            node_key = ('trojan', node.get('server'), node.get('port'), node.get('password'), node.get('sni'), node.get('network'), str(node.get('ws-opts', {})))
+            node_key = ('trojan', node.get('server'), node.get('port'), node.get('password'))
         elif node_type == 'ssr':
-            node_key = ('ssr', node.get('server'), node.get('port'), node.get('password'), node.get('cipher'), node.get('protocol'), node.get('obfs'), node.get('protocol-param'), node.get('obfs-param'))
+            node_key = ('ssr', node.get('server'), node.get('port'), node.get('password'))
         elif node_type == 'hysteria2':
-            node_key = ('hysteria2', node.get('server'), node.get('port'), node.get('password'), node.get('up'), node.get('down'), node.get('obfs'), node.get('obfs-password'), node.get('sni'))
+            node_key = ('hysteria2', node.get('server'), node.get('port'), node.get('password'))
         else:
             node_key = str(OrderedDict(sorted(node.items())))
         
