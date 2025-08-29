@@ -31,8 +31,8 @@ jobs:
     # 下载 YAML 文件
     - name: Download YAML files
       run: |
-        curl -o link.yaml https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml
-        curl -o link1.yaml https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link%20(1).yaml
+        curl -o link.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link.yaml"
+        curl -o link1.yaml "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link%20(1).yaml"
 
     # 运行去重脚本
     - name: Run deduplication script
@@ -49,6 +49,7 @@ jobs:
           unique_link1.yaml
           compare_link.log
           compare_link1.log
+          stats.txt
 
     # 打印统计信息
     - name: Display statistics
