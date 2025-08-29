@@ -1,4 +1,3 @@
-
 import requests
 import yaml
 import hashlib
@@ -63,40 +62,31 @@ def get_node_key(node):
     key_str = json.dumps(key_dict, sort_keys=True)
     return hashlib.sha256(key_str.encode('utf-8')).hexdigest()
 
-def analyze_nodes(url, file_name, chunk_size=10000):
-    """分块下载并分析 YAML 文件的节点"""
+def analyze_nodes(url, file_name):
+    """下载并分析 YAML 文件的节点"""
     try:
-        response = requests.get(url, stream=True, timeout=60)
+        response = requests.get(url, timeout=60)
         response.raise_for_status()
-        chunk = []
-        proxies = []
-        for line in response.iter_lines(decode_unicode=True):
-            if line:
-                chunk.append(line)
-                if len(chunk) >= chunk_size:
-                    try:
-                        data = yaml.safe_load('\n'.join(chunk))
-                        if isinstance(data, dict) and 'proxies' in data:
-                            proxies.extend(data['proxies'])
-                        elif data:
-                            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                                f.write(f"无效 YAML 块: 非预期的结构\n")
-                    except yaml.YAMLError as e:
-                        with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                            f.write(f"YAML 解析错误: {e}\n")
-                    chunk = []
-        if chunk:
-            try:
-                data = yaml.safe_load('\n'.join(chunk))
-                if isinstance(data, dict) and 'proxies' in data:
-                    proxies.extend(data['proxies'])
-                elif data:
-                    with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                        f.write(f"无效 YAML 块: 非预期的结构\n")
-            except yaml.YAMLError as e:
-                with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
-                    f.write(f"YAML 解析错误: {e}\n")
         
+        # 尝试解析 YAML 文件
+        try:
+            data = yaml.safe_load(response.text)
+        except yaml.YAMLError as e:
+            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                f.write(f"YAML 解析错误: {e}\n")
+            with open('stats.txt', 'a', encoding='utf-8') as f:
+                f.write(f"处理 {url} 失败: YAML 解析错误\n")
+            return [], [], set(), 0
+
+        # 检查是否为预期的结构
+        if not isinstance(data, dict) or 'proxies' not in data or not isinstance(data['proxies'], list):
+            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                f.write("文件结构不符: 缺少 'proxies' 键或其值不是列表\n")
+            with open('stats.txt', 'a', encoding='utf-8') as f:
+                f.write(f"处理 {url} 失败: 文件结构不符\n")
+            return [], [], set(), 0
+
+        proxies = data['proxies']
         seen_keys = set()
         unique_nodes = []
         name_counts = defaultdict(int)
@@ -108,12 +98,14 @@ def analyze_nodes(url, file_name, chunk_size=10000):
                 with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
                     f.write(f"无效节点: 非字典类型 ({node})\n")
                 continue
+            
             parsed_node = parse_node_from_dict(node)
             if not parsed_node:
                 invalid_count += 1
                 with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
                     f.write(f"无效节点: {node.get('name', '未命名')} (缺失必须字段或无效参数)\n")
                 continue
+            
             node_key = get_node_key(parsed_node)
             if node_key not in seen_keys:
                 seen_keys.add(node_key)
@@ -137,9 +129,13 @@ def save_to_yaml(data, filename):
         yaml.dump(data, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
 if __name__ == "__main__":
-    # 初始化 stats.txt
+    # 初始化 stats.txt 和日志文件
     with open('stats.txt', 'w', encoding='utf-8') as f:
         f.write("分析开始...\n")
+    with open('compare_link.log', 'w', encoding='utf-8') as f:
+        f.write("link.yaml 日志\n")
+    with open('compare_link1.log', 'w', encoding='utf-8') as f:
+        f.write("link (1).yaml 日志\n")
     
     # 分析 link.yaml
     proxies1, unique_nodes1, keys1, invalid1 = analyze_nodes(URL1, "link")
