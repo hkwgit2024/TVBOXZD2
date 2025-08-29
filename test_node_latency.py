@@ -318,7 +318,7 @@ def main():
     nodes_to_test = nodes[:3505]
     print(f"开始测试 {len(nodes_to_test)} 个节点的延迟")
     
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=100) as executor:
         futures = [executor.submit(test_node_latency, node, mihomo_path) for node in nodes_to_test]
         for future in futures:
             results.append(future.result())
