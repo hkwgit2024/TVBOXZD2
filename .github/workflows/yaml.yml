@@ -10,6 +10,7 @@ on:
 jobs:
   deduplicate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10  # 设置工作流超时为 10 分钟
 
     steps:
     # 检出仓库代码
@@ -54,4 +55,8 @@ jobs:
     # 打印统计信息
     - name: Display statistics
       run: |
-        cat stats.txt
+        if [ -f stats.txt ]; then
+          cat stats.txt
+        else
+          echo "stats.txt 未找到，脚本可能失败"
+        fi
