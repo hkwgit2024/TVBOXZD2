@@ -1,3 +1,4 @@
+
 import requests
 import yaml
 import hashlib
@@ -16,15 +17,12 @@ def validate_server_port(server, port):
     """验证服务器地址和端口"""
     if not server or not isinstance(port, (int, str)) or (isinstance(port, str) and not port.isdigit()) or int(port) < 1 or int(port) > 65535:
         return False
-    try:
-        import socket
-        socket.getaddrinfo(server, None)
-        return True
-    except socket.gaierror:
-        return False
+    return True
 
 def parse_node_from_dict(node):
     """验证节点是否符合官方要求"""
+    if not isinstance(node, dict):
+        return None
     node_type = node.get('type')
     if node_type == 'ss':
         required = {'server', 'port', 'cipher', 'password'}
@@ -65,13 +63,39 @@ def get_node_key(node):
     key_str = json.dumps(key_dict, sort_keys=True)
     return hashlib.sha256(key_str.encode('utf-8')).hexdigest()
 
-def analyze_nodes(url, file_name):
-    """下载并分析 YAML 文件的节点"""
+def analyze_nodes(url, file_name, chunk_size=10000):
+    """分块下载并分析 YAML 文件的节点"""
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, stream=True, timeout=60)
         response.raise_for_status()
-        data = yaml.safe_load(response.text)
-        proxies = data.get('proxies', [])
+        chunk = []
+        proxies = []
+        for line in response.iter_lines(decode_unicode=True):
+            if line:
+                chunk.append(line)
+                if len(chunk) >= chunk_size:
+                    try:
+                        data = yaml.safe_load('\n'.join(chunk))
+                        if isinstance(data, dict) and 'proxies' in data:
+                            proxies.extend(data['proxies'])
+                        elif data:
+                            with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                                f.write(f"无效 YAML 块: 非预期的结构\n")
+                    except yaml.YAMLError as e:
+                        with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                            f.write(f"YAML 解析错误: {e}\n")
+                    chunk = []
+        if chunk:
+            try:
+                data = yaml.safe_load('\n'.join(chunk))
+                if isinstance(data, dict) and 'proxies' in data:
+                    proxies.extend(data['proxies'])
+                elif data:
+                    with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                        f.write(f"无效 YAML 块: 非预期的结构\n")
+            except yaml.YAMLError as e:
+                with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                    f.write(f"YAML 解析错误: {e}\n")
         
         seen_keys = set()
         unique_nodes = []
@@ -79,6 +103,11 @@ def analyze_nodes(url, file_name):
         invalid_count = 0
         
         for node in proxies:
+            if not isinstance(node, dict):
+                invalid_count += 1
+                with open(f"compare_{file_name}.log", 'a', encoding='utf-8') as f:
+                    f.write(f"无效节点: 非字典类型 ({node})\n")
+                continue
             parsed_node = parse_node_from_dict(node)
             if not parsed_node:
                 invalid_count += 1
@@ -98,38 +127,44 @@ def analyze_nodes(url, file_name):
         
         return proxies, unique_nodes, seen_keys, invalid_count
     except Exception as e:
-        print(f"处理 {url} 失败: {e}")
+        with open('stats.txt', 'a', encoding='utf-8') as f:
+            f.write(f"处理 {url} 失败: {e}\n")
         return [], [], set(), 0
 
 def save_to_yaml(data, filename):
     """保存到 YAML 文件"""
     with open(filename, 'w', encoding='utf-8') as f:
         yaml.dump(data, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
-    print(f"已保存到 {filename}")
 
 if __name__ == "__main__":
+    # 初始化 stats.txt
+    with open('stats.txt', 'w', encoding='utf-8') as f:
+        f.write("分析开始...\n")
+    
     # 分析 link.yaml
-    print(f"分析 {URL1}...")
     proxies1, unique_nodes1, keys1, invalid1 = analyze_nodes(URL1, "link")
-    print(f"link.yaml: 总节点数 {len(proxies1)}, 独特节点数 {len(unique_nodes1)}, 无效节点数 {invalid1}")
+    with open('stats.txt', 'a', encoding='utf-8') as f:
+        f.write(f"link.yaml: 总节点数 {len(proxies1)}, 独特节点数 {len(unique_nodes1)}, 无效节点数 {invalid1}\n")
     
     # 分析 link (1).yaml
-    print(f"\n分析 {URL2}...")
     proxies2, unique_nodes2, keys2, invalid2 = analyze_nodes(URL2, "link1")
-    print(f"link (1).yaml: 总节点数 {len(proxies2)}, 独特节点数 {len(unique_nodes2)}, 无效节点数 {invalid2}")
+    with open('stats.txt', 'a', encoding='utf-8') as f:
+        f.write(f"link (1).yaml: 总节点数 {len(proxies2)}, 独特节点数 {len(unique_nodes2)}, 无效节点数 {invalid2}\n")
     
     # 比较重复和差异
     common_keys = keys1.intersection(keys2)
     unique_to_file1 = keys1 - keys2
     unique_to_file2 = keys2 - keys1
     
-    print(f"\n比较结果:")
-    print(f"两个文件中共同的独特节点数: {len(common_keys)}")
-    print(f"仅在 link.yaml 中的独特节点数: {len(unique_to_file1)}")
-    print(f"仅在 link (1).yaml 中的独特节点数: {len(unique_to_file2)}")
+    with open('stats.txt', 'a', encoding='utf-8') as f:
+        f.write("\n比较结果:\n")
+        f.write(f"两个文件中共同的独特节点数: {len(common_keys)}\n")
+        f.write(f"仅在 link.yaml 中的独特节点数: {len(unique_to_file1)}\n")
+        f.write(f"仅在 link (1).yaml 中的独特节点数: {len(unique_to_file2)}\n")
     
     # 保存去重后的节点
     save_to_yaml({'proxies': unique_nodes1}, "unique_link.yaml")
     save_to_yaml({'proxies': unique_nodes2}, "unique_link1.yaml")
     
-    print("\n去重后的节点已保存到 unique_link.yaml 和 unique_link1.yaml")
+    with open('stats.txt', 'a', encoding='utf-8') as f:
+        f.write("\n去重后的节点已保存到 unique_link.yaml 和 unique_link1.yaml\n")
