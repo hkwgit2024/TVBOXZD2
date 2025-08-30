@@ -249,7 +249,8 @@ def parse_vmess_link(link):
         "server": vmess_info["add"],
         "port": int(vmess_info["port"]),
         "uuid": vmess_info["id"],
-        "alterId": int(vmess_info.get("aid", 0)),
+        # 修正点：为 alterId 提供一个默认值
+        "alterId": int(vmess_info.get("aid", 0)), 
         "cipher": "auto",
         "network": vmess_info.get("net", "tcp"),
         "tls": vmess_info.get("tls", "") == "tls",
