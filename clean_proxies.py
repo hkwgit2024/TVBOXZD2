@@ -1,25 +1,15 @@
 import yaml
-import socket
 import sys
-
-def get_ip_from_hostname(hostname):
-    """通过域名获取IP地址"""
-    try:
-        # 使用getaddrinfo来处理IPv4和IPv6，并获取第一个IP
-        info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
-        return info[0][4][0]
-    except (socket.gaierror, IndexError):
-        return None
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    清理并去重代理节点，采用最严格的去重规则：协议、服务器IP地址完全一致则视为重复。
+    清理并去重代理节点，采用协议、服务器和端口作为去重键，并提供实时进度。
     """
-    # 整合协议定义，新增对 'hysteria2' 的 'auth' 参数支持
+    # 整合协议定义，同时接受 'hy2' 和 'hysteria2'
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
         'ss': ['type', 'server', 'port', 'cipher', 'password'],
-        'hy2': ['type', 'server', 'port', 'password'],
+        'hy2': ['type', 'server', 'port', 'password', 'auth'],
         'hysteria2': ['type', 'server', 'port', 'password', 'auth'],
         'trojan': ['type', 'server', 'port', 'password'],
         'vless': ['type', 'server', 'port', 'uuid']
@@ -43,25 +33,32 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             'missing_params': 0,
             'duplicates': 0
         }
+        
+        # 实时进度计数器
+        progress_counter = 0
 
         for proxy in proxies:
+            progress_counter += 1
+            if progress_counter % 1000 == 0:
+                print(f"处理进度：已处理 {progress_counter} 个节点...")
+
             proxy_type = proxy.get('type')
-            server = proxy.get('server')
             
-            # 检查协议支持和服务器参数
-            if proxy_type not in required_params or not server:
+            # 兼容处理 hy2 和 hysteria2
+            if proxy_type not in required_params:
                 discarded_stats['unsupported_protocol'] += 1
                 continue
             
-            # 将域名解析成IP地址用于去重
-            resolved_ip = get_ip_from_hostname(server)
-            if not resolved_ip:
-                # 如果解析失败，则该节点被视为无效
+            # 检查必要参数，这里采用协议+服务器+端口
+            server = proxy.get('server')
+            port = proxy.get('port')
+            if not server or not port:
                 discarded_stats['missing_params'] += 1
                 continue
             
-            # 创建唯一的去重键：协议和服务器IP
-            unique_key = (proxy_type, resolved_ip)
+            # 创建唯一的去重键：协议、服务器和端口
+            # 这样既能快速去重，又能保留同一IP不同端口的节点
+            unique_key = (proxy_type, str(server), str(port))
             
             # 去重
             if unique_key in seen_keys:
@@ -69,14 +66,16 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             else:
                 seen_keys.add(unique_key)
                 # 保留所有必要参数
-                cleaned_proxy_data = {param: proxy[param] for param in required_params[proxy_type] if param in proxy}
+                cleaned_proxy_data = {}
+                params = required_params[proxy_type]
+                for param in params:
+                    if param in proxy:
+                        cleaned_proxy_data[param] = proxy[param]
                 
-                # 兼容Hysteria2的auth参数
+                # 特别处理 Hysteria2 的 password/auth 兼容性
                 if proxy_type in ['hy2', 'hysteria2']:
-                    if 'auth' in proxy:
-                        cleaned_proxy_data['auth'] = proxy['auth']
-                    elif 'password' in proxy:
-                        cleaned_proxy_data['password'] = proxy['password']
+                    if 'password' not in cleaned_proxy_data and 'auth' in proxy:
+                        cleaned_proxy_data['password'] = proxy['auth']
 
                 cleaned_proxies.append(cleaned_proxy_data)
 
