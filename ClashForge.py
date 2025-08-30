@@ -47,7 +47,7 @@ MAX_CONCURRENT_TESTS = 100
 LIMIT = 1386 # 最多保留LIMIT个节点
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"  # 从文件中加载代理节点，支持yaml/yml、txt(每条代理链接占一行)
-BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
+BAN = ["中国", "China", "CN", "电信", "移动", "联通", "香港", "Hong Kong", "HK", "台湾", "Taiwan", "TW", "澳门", "Macao", "MO", "越南", "Vietnam", "VN"]
 headers = {
     'Accept-Charset': 'utf-8',
     'Accept': 'text/html,application/x-yaml,*/*',
@@ -109,7 +109,7 @@ clash_config_template = {
         {
             "name": "自动选择",
             "type": "url-test",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macao|MO|越南|Vietnam|VN",
             "proxies": [],
             # "url": "http://www.gstatic.com/generate_204",
             "url": "http://www.pinterest.com",
@@ -119,7 +119,7 @@ clash_config_template = {
         {
             "name": "故障转移",
             "type": "fallback",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
+            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macao|MO|越南|Vietnam|VN",
             "proxies": [],
             "url": "http://www.gstatic.com/generate_204",
             "interval": 300
