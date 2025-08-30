@@ -88,8 +88,8 @@ def parse_vmess(vmess_url):
         decoded_json = base64.b64decode(base64_content.encode('utf-8')).decode('utf-8')
         config = json.loads(decoded_json)
         
-        # V2Ray 官方要求字段：add, port, id, scy (cipher)
-        required_fields = ['add', 'port', 'id', 'scy']
+        # V2Ray 官方要求字段：add, port, id, scy (cipher), aid (alterId)
+        required_fields = ['add', 'port', 'id', 'scy', 'aid']
         if not all(field in config for field in required_fields): return None
         
         if not validate_server_port(config.get('add'), config.get('port')): return None
@@ -97,7 +97,7 @@ def parse_vmess(vmess_url):
         
         return {
             'type': 'vmess', 'server': config.get('add'), 'port': int(config.get('port')),
-            'uuid': config.get('id'), 'cipher': config.get('scy')
+            'uuid': config.get('id'), 'cipher': config.get('scy'), 'alterId': int(config.get('aid'))
         }
     except Exception as e:
         with open(LOG_FILE, 'a', encoding='utf-8') as f:
@@ -282,6 +282,7 @@ def extract_links_from_script(html_content):
 def get_nodes_with_playwright(url):
     nodes = []
     try:
+        from playwright.sync_api import sync_playwright
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page()
@@ -430,7 +431,7 @@ def parse_node_from_dict(node):
             return None
         return {k: node[k] for k in required}
     elif node_type == 'vmess':
-        required = {'server', 'port', 'uuid', 'cipher'}
+        required = {'server', 'port', 'uuid', 'cipher', 'alterId'}
         if not all(k in node for k in required) or node.get('cipher') not in VALID_VMESS_CIPHERS or not validate_server_port(node.get('server'), node.get('port')):
             return None
         return {k: node[k] for k in required}
