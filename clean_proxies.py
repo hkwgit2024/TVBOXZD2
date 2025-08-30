@@ -1,21 +1,26 @@
 import yaml
 import socket
+import sys
 
 def get_ip_from_hostname(hostname):
     """通过域名获取IP地址"""
     try:
-        return socket.gethostbyname(hostname)
-    except socket.gaierror:
+        # 使用getaddrinfo来处理IPv4和IPv6，并获取第一个IP
+        info = socket.getaddrinfo(hostname, None, 0, socket.SOCK_STREAM)
+        return info[0][4][0]
+    except (socket.gaierror, IndexError):
         return None
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
     清理并去重代理节点，采用最严格的去重规则：协议、服务器IP地址完全一致则视为重复。
     """
+    # 整合协议定义，新增对 'hysteria2' 的 'auth' 参数支持
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
         'ss': ['type', 'server', 'port', 'cipher', 'password'],
         'hy2': ['type', 'server', 'port', 'password'],
+        'hysteria2': ['type', 'server', 'port', 'password', 'auth'],
         'trojan': ['type', 'server', 'port', 'password'],
         'vless': ['type', 'server', 'port', 'uuid']
     }
@@ -49,16 +54,11 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 continue
             
             # 将域名解析成IP地址用于去重
-            if not any(c.isalpha() for c in server):
-                # 已经是IP地址，直接使用
-                resolved_ip = server
-            else:
-                # 是域名，进行解析
-                resolved_ip = get_ip_from_hostname(server)
-                if not resolved_ip:
-                    # 如果解析失败，跳过该节点
-                    discarded_stats['missing_params'] += 1
-                    continue
+            resolved_ip = get_ip_from_hostname(server)
+            if not resolved_ip:
+                # 如果解析失败，则该节点被视为无效
+                discarded_stats['missing_params'] += 1
+                continue
             
             # 创建唯一的去重键：协议和服务器IP
             unique_key = (proxy_type, resolved_ip)
@@ -68,7 +68,16 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['duplicates'] += 1
             else:
                 seen_keys.add(unique_key)
+                # 保留所有必要参数
                 cleaned_proxy_data = {param: proxy[param] for param in required_params[proxy_type] if param in proxy}
+                
+                # 兼容Hysteria2的auth参数
+                if proxy_type in ['hy2', 'hysteria2']:
+                    if 'auth' in proxy:
+                        cleaned_proxy_data['auth'] = proxy['auth']
+                    elif 'password' in proxy:
+                        cleaned_proxy_data['password'] = proxy['password']
+
                 cleaned_proxies.append(cleaned_proxy_data)
 
         total_nodes_after = len(cleaned_proxies)
