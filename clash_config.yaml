@@ -37,6 +37,18 @@ proxies:
   port: 443
   uuid: 4ef3e4ad-49a0-45e8-b9f7-3de98a3aca67
   name: 伊朗_1
+- name: 日本_1
+  type: vless
+  server: jp.infts.fyi
+  port: '443'
+  uuid: a81f3f43-3eeb-4958-971a-a5bade9a4b88
+  alterId: '0'
+  cipher: auto
+  tls: true
+  network: ws
+  ws-opts:
+    path: /123test
+  _index: 5
 - name: 新加坡_1
   server: free1.regar-store.xyz
   port: 443
@@ -147,6 +159,28 @@ proxies:
   type: hysteria2
 - alterId: 0
   cipher: auto
+  h2-opts: {}
+  http-opts: {}
+  name: None_70
+  network: ws
+  port: 443
+  server: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
+  skip-cert-verify: true
+  tls: true
+  type: vmess
+  uuid: 5f726fe3-d82e-4da5-a711-8af0cbb2b682
+  ws-opts:
+    headers:
+      Host: b62a948c-faa2-4e8a-bf8a-3ff3121c875a.asoul-ava.top
+    path: /azumase.ren
+- cipher: chacha20-ietf-poly1305
+  name: 越南_1
+  password: Nk9asglDzHzjktVzTkvhaA
+  port: 443
+  server: arxfw2b78fi2q9hzylhn.freesocks.work
+  type: ss
+- alterId: 0
+  cipher: auto
   name: 塞浦路斯_1
   network: ws
   port: 80
@@ -173,21 +207,6 @@ proxies:
     headers:
       Host: hkt.gotochinatown.net
     path: /
-- alterId: 32
-  cipher: auto
-  client-fingerprint: chrome
-  name: 美国_39
-  network: ws
-  port: 443
-  server: vc.fly.dev
-  skip-cert-verify: true
-  tls: true
-  type: vmess
-  uuid: 35379219-6535-4f2e-a4fe-3e44f61e0eee
-  ws-opts:
-    headers:
-      host: vc.fly.dev
-    path: /vc
 - cipher: chacha20-ietf-poly1305
   name: 法国_1
   password: oZIoA69Q8yhcQV8ka3Pa3A
@@ -210,15 +229,17 @@ proxy-groups:
   - 香港_2
   - 新加坡_2
   - None_6
-  - 伊朗_1
-  - 新加坡_3
-  - 新加坡_5
   - 新加坡_1
-  - 荷兰_1
+  - 新加坡_5
+  - 新加坡_3
   - 新加坡_4
-  - 香港_3
+  - None_70
+  - 伊朗_1
+  - 日本_1
   - 塞浦路斯_1
-  - 美国_39
+  - 荷兰_1
+  - 越南_1
+  - 香港_3
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -230,15 +251,17 @@ proxy-groups:
   - 香港_2
   - 新加坡_2
   - None_6
-  - 伊朗_1
-  - 新加坡_3
-  - 新加坡_5
   - 新加坡_1
-  - 荷兰_1
+  - 新加坡_5
+  - 新加坡_3
   - 新加坡_4
-  - 香港_3
+  - None_70
+  - 伊朗_1
+  - 日本_1
   - 塞浦路斯_1
-  - 美国_39
+  - 荷兰_1
+  - 越南_1
+  - 香港_3
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
@@ -248,14 +271,16 @@ proxy-groups:
   - 香港_2
   - 新加坡_2
   - None_6
-  - 伊朗_1
-  - 新加坡_3
-  - 新加坡_5
   - 新加坡_1
-  - 荷兰_1
+  - 新加坡_5
+  - 新加坡_3
   - 新加坡_4
-  - 香港_3
+  - None_70
+  - 伊朗_1
+  - 日本_1
   - 塞浦路斯_1
-  - 美国_39
+  - 荷兰_1
+  - 越南_1
+  - 香港_3
 rules:
 - MATCH,节点选择
