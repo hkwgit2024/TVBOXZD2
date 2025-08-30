@@ -44,10 +44,10 @@ SPEED_TEST = False
 SPEED_TEST_LIMIT = 5  # 只测试前30个节点的下行速度，每个节点测试5秒
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
-LIMIT = 586 # 最多保留LIMIT个节点
+LIMIT = 10000  # 最多保留LIMIT个节点
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"  # 从文件中加载代理节点，支持yaml/yml、txt(每条代理链接占一行)
-BAN = ["中国", "China", "CN", "电信", "移动", "联通", "香港", "Hong Kong", "HK", "台湾", "Taiwan", "TW", "澳门", "Macao", "MO", "越南", "Vietnam", "VN"]
+BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
 headers = {
     'Accept-Charset': 'utf-8',
     'Accept': 'text/html,application/x-yaml,*/*',
@@ -109,7 +109,7 @@ clash_config_template = {
         {
             "name": "自动选择",
             "type": "url-test",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macao|MO|越南|Vietnam|VN",
+            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
             "proxies": [],
             # "url": "http://www.gstatic.com/generate_204",
             "url": "http://www.pinterest.com",
@@ -119,7 +119,7 @@ clash_config_template = {
         {
             "name": "故障转移",
             "type": "fallback",
-            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通|香港|Hong Kong|HK|台湾|Taiwan|TW|澳门|Macao|MO|越南|Vietnam|VN",
+            "exclude-filter": "(?i)中国|China|CN|电信|移动|联通",
             "proxies": [],
             "url": "http://www.gstatic.com/generate_204",
             "interval": 300
@@ -131,7 +131,7 @@ clash_config_template = {
         },
     ],
     "rules": [
-
+    
         "MATCH,节点选择"
     ]
 }
@@ -492,125 +492,75 @@ def handle_links(new_links, resolve_name_conflicts):
         pass
 
 
-def filter_proxies(proxies, limit=898989):
-    filtered_proxies = []
-    seen = set()
-    for p in proxies:
-        # 过滤掉缺失关键字段的节点
-        if not all(key in p for key in ['server', 'port', 'name', 'type']):
-            continue
-        # 根据名字过滤
-        BAN = ["中国", "China", "CN", "电信", "移动", "联通"]
-        if any(b.lower() in p['name'].lower() for b in BAN):
-            continue
-        
-        # 使用一个可哈希的元组作为节点的唯一标识
-        identifier = (p['server'], p['port'], p['type'])
-        if identifier not in seen:
-            filtered_proxies.append(p)
-            seen.add(identifier)
-            if len(filtered_proxies) >= limit:
-                break
-    return filtered_proxies
-
-
 # 生成 Clash 配置文件
 def generate_clash_config(links, load_nodes):
     now = datetime.now()
     print(f"当前时间: {now}\n---")
 
-    all_proxies = []
-    # 转换远程订阅链接
+    final_nodes = []
+    existing_names = set()  # 存储所有节点名字以检查重复
+    config = clash_config_template.copy()
+
+    # 名称已存在的节点加随机后缀
+    def resolve_name_conflicts(node):
+        server = node.get("server")
+        if not server:
+            # print(f'不存在sever，非节点')
+            return
+        name = str(node["name"])
+        if not_contains(name):
+            if name in existing_names:
+                name = add_random_suffix(name, existing_names)
+            existing_names.add(name)
+            node["name"] = name
+            final_nodes.append(node)
+
+    for node in load_nodes:
+        resolve_name_conflicts(node)
+
     for link in links:
         if link.startswith(("hysteria2://", "hy2://", "trojan://", "ss://", "vless://", "vmess://")):
             node = parse_proxy_link(link)
-            if node:
-                all_proxies.append(node)
-            continue
-        if '|links' in link or '.md' in link:
-            link = link.replace('|links', '')
-            new_links = parse_md_link(link)
-            for new_link in new_links:
-                node = parse_proxy_link(new_link)
-                if node:
-                    all_proxies.append(node)
-            continue
-        if '|ss' in link:
-            link = link.replace('|ss', '')
-            new_links = parse_ss_sub(link)
-            for node in new_links:
-                all_proxies.append(node)
-            continue
-        if '{' in link:
-            link = resolve_template_url(link)
-        print(f'当前正在处理link: {link}')
-        # 处理非特定协议的链接
-        try:
-            new_links, isyaml = process_url(link)
-        except Exception as e:
-            print(f"error: {e}")
-            continue
-        if isyaml:
-            for node in new_links:
-                all_proxies.append(node)
+            if not node:
+                continue
+            resolve_name_conflicts(node)
         else:
-            for new_link in new_links:
-                node = parse_proxy_link(new_link)
-                if node:
-                    all_proxies.append(node)
-    
-    # 合并本地加载的节点
-    all_proxies.extend(load_nodes)
-    
-    # 过滤掉转换失败的节点(None)和重复、无效的节点
-    proxies = filter_proxies([p for p in all_proxies if p is not None])
-    
-    # ==========================
-    # 修复：自动移除不兼容的 alterId 键
-    # ==========================
-    cleaned_proxies = []
-    for p in proxies:
-        # 定义不需要 alterId 的代理类型
-        incompatible_types = ["ss", "trojan", "hysteria2"]
-        if p.get("type") in incompatible_types and "alterId" in p:
-            print(f"警告：正在从代理 '{p.get('name')}' 中移除不兼容的 'alterId' 键。")
-            del p["alterId"]
-        cleaned_proxies.append(p)
-    proxies = cleaned_proxies
-    # ==========================
-    
-    if not proxies:
-        print("警告：没有可用的代理节点。")
-        return
-        
-    global PROXY_NODES
-    PROXY_NODES = proxies
-    
-    proxy_names = []
-    existing_names = set()
-    for p in proxies:
-        name = str(p['name'])
-        if name in existing_names:
-            name = add_random_suffix(name, existing_names)
-            p['name'] = name
-        existing_names.add(name)
-        proxy_names.append(name)
-    
-    config = clash_config_template.copy()
-    
+            if '|links' in link or '.md' in link:
+                link = link.replace('|links', '')
+                new_links = parse_md_link(link)
+                handle_links(new_links, resolve_name_conflicts)
+            if '|ss' in link:
+                link = link.replace('|ss', '')
+                new_links = parse_ss_sub(link)
+                for node in new_links:
+                    resolve_name_conflicts(node)
+            if '{' in link:
+                link = resolve_template_url(link)
+            print(f'当前正在处理link: {link}')
+            # 处理非特定协议的链接
+            try:
+                new_links, isyaml = process_url(link)
+            except Exception as e:
+                print(f"error: {e}")
+                continue
+            if isyaml:
+                for node in new_links:
+                    resolve_name_conflicts(node)
+            else:
+                handle_links(new_links, resolve_name_conflicts)
+    final_nodes = deduplicate_proxies(final_nodes)
     # 重置group中节点name
     config["proxy-groups"][1]["proxies"] = []
-    for name in proxy_names:
+    for node in final_nodes:
+        name = str(node["name"])
         if not_contains(name):
             # 0节点选择 1 自动选择 2故障转移 3手动选择
             config["proxy-groups"][1]["proxies"].append(name)
-    
-    proxies_set = list(set(config["proxy-groups"][1]["proxies"]))
-    config["proxy-groups"][1]["proxies"] = proxies_set
-    config["proxy-groups"][2]["proxies"] = proxies_set
-    config["proxy-groups"][3]["proxies"] = proxies_set
-
-    config["proxies"] = proxies
+            proxies = list(set(config["proxy-groups"][1]["proxies"]))
+            config["proxy-groups"][1]["proxies"] = proxies
+            config["proxy-groups"][2]["proxies"] = proxies
+            config["proxy-groups"][3]["proxies"] = proxies
+    config["proxies"] = final_nodes
 
     if config["proxies"]:
         global CONFIG_FILE
@@ -679,8 +629,7 @@ def handle_clash_error(error_message, config_file_path):
 
         # 从所有proxy-groups中删除该节点引用
         proxies = config['proxy-groups'][1]["proxies"]
-        if problem_proxy_name in proxies:     
-            proxies.remove(problem_proxy_name)
+        proxies.remove(problem_proxy_name)
         for group in config["proxy-groups"][1:]:
             group["proxies"] = proxies
 
@@ -1581,7 +1530,6 @@ def work(links, check=False, allowed_types=[], only_check=False):
 
 if __name__ == '__main__':
     links = [
-        "https://raw.githubusercontent.com/qjlxg/VT/refs/heads/main/link_cleaned.yaml"
-      
-    ]
+        "https://raw.githubusercontent.com/qjlxg/HA/refs/heads/main/link.yaml"
+           ]
     work(links, check=True, only_check=False, allowed_types=["ss", "hysteria2", "hy2", "vless", "vmess", "trojan"])
