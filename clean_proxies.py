@@ -2,9 +2,8 @@ import yaml
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    清理并去重代理节点，只保留必要参数，确保没有重复节点，并输出详细清理报告。
+    清理并去重代理节点，采用更严格的去重规则：协议、服务器和端口完全一致则视为重复。
     """
-    # 定义各协议的必要参数，新增 vmess 的 alterId
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
         'ss': ['type', 'server', 'port', 'cipher', 'password'],
@@ -25,7 +24,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             return
 
         cleaned_proxies = []
-        seen_proxies = set()
+        seen_keys = set()
         discarded_stats = {
             'unsupported_protocol': 0,
             'missing_params': 0,
@@ -34,40 +33,35 @@ def clean_and_deduplicate_proxies(input_file, output_file):
 
         for proxy in proxies:
             proxy_type = proxy.get('type')
-
-            # 跳过不支持的协议
+            
+            # 检查协议支持
             if proxy_type not in required_params:
                 discarded_stats['unsupported_protocol'] += 1
                 continue
-
+            
             # 检查必要参数
-            # 特别处理 vmess 协议，如果 alterId 不存在则设为默认值 '0'
-            if proxy_type == 'vmess' and 'alterId' not in proxy:
-                proxy['alterId'] = '0'
-
-            if not all(param in proxy for param in required_params[proxy_type]):
+            if not all(param in proxy for param in ['type', 'server', 'port']):
                 discarded_stats['missing_params'] += 1
                 continue
-
-            # 只保留必要参数
-            cleaned_proxy_data = {param: proxy[param] for param in required_params[proxy_type]}
-            unique_key = tuple(sorted(cleaned_proxy_data.items()))
-
+            
+            # 创建唯一的去重键：协议、服务器和端口
+            unique_key = (proxy_type, proxy.get('server'), str(proxy.get('port')))
+            
             # 去重
-            if unique_key in seen_proxies:
+            if unique_key in seen_keys:
                 discarded_stats['duplicates'] += 1
             else:
-                seen_proxies.add(unique_key)
+                seen_keys.add(unique_key)
+                # 保留所有必要参数以确保可用性
+                cleaned_proxy_data = {param: proxy[param] for param in required_params[proxy_type] if param in proxy}
                 cleaned_proxies.append(cleaned_proxy_data)
 
         total_nodes_after = len(cleaned_proxies)
         total_discarded = total_nodes_before - total_nodes_after
 
-        # 写入输出文件
         with open(output_file, 'w', encoding='utf-8') as f:
             yaml.safe_dump({'proxies': cleaned_proxies}, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
 
-        # 打印详细报告
         print("🎉 节点清理报告")
         print("--------------------")
         print(f"📦 清理前节点总数: {total_nodes_before} 个")
