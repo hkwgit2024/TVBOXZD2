@@ -496,7 +496,22 @@ def handle_links(new_links, resolve_name_conflicts):
 def generate_clash_config(links, load_nodes):
     now = datetime.now()
     print(f"当前时间: {now}\n---")
+ # 过滤掉转换失败的节点(None)和重复、无效的节点
+    proxies = filter_proxies([p for p in all_proxies if p is not None])
 
+    # ==========================
+    # 修复：自动移除不兼容的 alterId 键
+    # ==========================
+    cleaned_proxies = []
+    for p in proxies:
+        # 定义不需要 alterId 的代理类型
+        incompatible_types = ["ss", "trojan", "hysteria2"]
+        if p.get("type") in incompatible_types and "alterId" in p:
+            print(f"警告：正在从代理 '{p.get('name')}' 中移除不兼容的 'alterId' 键。")
+            del p["alterId"]
+        cleaned_proxies.append(p)
+    proxies = cleaned_proxies
+    # ==========================
     final_nodes = []
     existing_names = set()  # 存储所有节点名字以检查重复
     config = clash_config_template.copy()
