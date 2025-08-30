@@ -1,49 +1,191 @@
 {
-  "sites": [
-    {
-      "key": "suoniapi",
-      "name": "索尼资源(代理,GitHub)",
-      "type": 1,
-      "api": "https://tvbox.xukzhao.dpdns.org/api/suoni?key=Zhao_2025@TV!",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "lziapi",
-      "name": "量子资源(代理,GitHub)",
-      "type": 1,
-      "api": "https://tvbox.xukzhao.dpdns.org/api/lzi?key=Zhao_2025@TV!",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "wwzy",
-      "name": "五五资源(代理,GitHub)",
-      "type": 1,
-      "api": "https://tvbox.xukzhao.dpdns.org/api/wwzy?key=Zhao_2025@TV!",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "wujinapi",
-      "name": "无尽资源(代理,GitHub)",
-      "type": 1,
-      "api": "https://tvbox.xukzhao.dpdns.org/api/wujin?key=Zhao_2025@TV!",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "apiyhzy",
-      "name": "影汇资源(代理,GitHub)",
-      "type": 1,
-      "api": "https://tvbox.xukzhao.dpdns.org/api/apiyhzy?key=Zhao_2025@TV!",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    }
-  ]
+   "spider":"https://github.com/4TVBox/TVBox/raw/refs/heads/main/custom_spider.jar",
+   "wallpaper":"https://深色壁纸.xxooo.cf/",
+   "sites":[
+      {
+         "key":"豆瓣首页",
+         "name":"豆瓣首页",
+         "type":4,
+         "api":"https://tvbot.ggff.net/douban",
+         "quickserch":0,
+         "searchable":0
+      },
+      {
+         "key":"天堂影视",
+         "name":"天堂影视",
+         "type":1,
+         "api":"https://heimuer.ggff.net/api.php/tvbox"
+      },
+      {
+         "key":"嗷呜小苹果",
+         "name":"嗷呜小苹果",
+         "type":4,
+         "api":"https://tvbot.ggff.net/pingguo"
+      },
+      {
+         "key":"嗷呜爱瓜TV",
+         "name":"嗷呜爱瓜TV",
+         "type":4,
+         "api":"https://tvbot.ggff.net/aigua"
+      },
+      {
+         "key":"瓜子影视",
+         "name":"瓜子影视",
+         "type":3,
+         "api":"./api/drpy2.min.js",
+         "ext":"./js/瓜子.js"
+      },
+      {
+         "key":"嗷呜金牌影院",
+         "name":"嗷呜金牌影院",
+         "type":3,
+         "api":"./py/py_jinpai.py"
+      },
+      {
+         "key":"沐辰欧乐影院",
+         "name":"沐辰欧乐影院",
+         "type":4,
+         "api":"https://py.doube.eu.org/spider?site=OleVod"
+      },
+      {
+         "key":"Qile优视频",
+         "name":"Qile优视频",
+         "type":3,
+         "api":"csp_Uvod",
+         "playerType":2,
+         "filterable":1
+      },
+      {
+         "key":"独播库",
+         "name":"独播库",
+         "type":4,
+         "api":"https://tvbot.ggff.net/duboku"
+      },
+      {
+         "key":"荐片",
+         "name":"荐片",
+         "type":3,
+         "api":"./py/py_jianpian.py"
+      },
+      {
+         "key":"Cori爱壹帆",
+         "name":"Cori爱壹帆",
+         "type":3,
+         "style":{
+            "type":"rect",
+            "ratio":0.75
+         },
+         "api":"csp_GM",
+         "ext":{
+            "userScript":"https://github.com/CatVodSpider-GM/SFW-Spiders/raw/refs/heads/main/userScripts/ysfp.user.js",
+            "debug":false,
+            "webViewSettings":{
+               "blockNetworkImage":true,
+               "blockList":[
+                  "*.png*",
+                  "*.mp3*",
+                  "*.css*",
+                  "https://*.googletagmanager.com/*",
+                  "https://*.google-analytics.com/*"
+               ]
+            },
+            "spider":{
+               "homeContent":{
+                  "loadUrl":"https://m.yfsp.tv/"
+               },
+               "categoryContent":{
+                  "loadUrl":"https://m.yfsp.tv/list/${tid}?type=${index-0:-0}${index-1:-,0}${index-2:-,0}${index-3:-,0}${index-4:-,0}${index-5:-}"
+               },
+               "detailContent":{
+                  "loadUrl":"https://m.yfsp.tv/play/${id}"
+               },
+               "playerContent":{
+                  "loadUrl":"https://m.yfsp.tv/play/${mediaKey}?id=${episodeKey}"
+               },
+               "searchContent":{
+                  "loadUrl":"https://m.yfsp.tv/search"
+               }
+            }
+         },
+         "jar":"https://github.com/CatVodSpider-GM/SFW-Spiders/raw/refs/heads/main/Spiders-Lib/GM.jar"
+      },
+      {
+         "key":"老张直播频道",
+         "name":"老张直播频道",
+         "type":4,
+         "api":"http://zhangqun66.com/zh/2241-2.php",
+         "searchable":0,
+         "quickserch":0,
+         "changeable":0,
+         "ext":"1,2,3"
+      }
+   ],
+   "lives":[
+      {
+         "name":"肥羊直播",
+         "type":0,
+         "url":"https://raw.githubusercontent.com/mursor1985/LIVE/refs/heads/main/iptv.m3u",
+         "timeout":10,
+        "header":{"User-Agent":"okHttp/Mod-1.1.0"}
+      },
+      {
+         "name":"咪咕直播",
+         "url":"https://raw.githubusercontent.com/develop202/migu_video/refs/heads/main/interface.txt"
+      },
+      {
+         "name":"BeeSport直播",
+         "type":3,
+         "api":"./py/live_beesports.py",
+         "ext":{
+            
+         },
+         "header":{
+            "Referer":"https://p.m82xg4z0cdbz7.com/"
+         }
+      }
+   ],
+   "doh":[
+      {
+         "name":"Google",
+         "url":"https://dns.google/dns-query",
+         "ips":[
+            "8.8.4.4",
+            "8.8.8.8"
+         ]
+      },
+      {
+         "name":"Cloudflare",
+         "url":"https://cloudflare-dns.com/dns-query",
+         "ips":[
+            "1.1.1.1",
+            "1.0.0.1",
+            "2606:4700:4700::1111",
+            "2606:4700:4700::1001"
+         ]
+      },
+      {
+         "name":"AdGuard",
+         "url":"https://dns.adguard.com/dns-query",
+         "ips":[
+            "94.140.14.140",
+            "94.140.14.141"
+         ]
+      },
+      {
+         "name":"DNSWatch",
+         "url":"https://resolver2.dns.watch/dns-query",
+         "ips":[
+            "84.200.69.80",
+            "84.200.70.40"
+         ]
+      },
+      {
+         "name":"Quad9",
+         "url":"https://dns.quad9.net/dns-quer",
+         "ips":[
+            "9.9.9.9",
+            "149.112.112.112"
+         ]
+      }
+   ]
 }

@@ -280,15 +280,6 @@
       ]
     },
     {
-      "key": "csp_xml_39影视",
-      "name": "🐝3 9影视",
-      "type": 1,
-      "api": "https://www.39kan.com/api.php/provide/vod/",
-      "playUrl": "",
-      "searchable": 1,
-      "quickSearch": 1
-    },
-    {
       "key": "花猫",
       "name": "花猫",
       "type": 1,
@@ -610,33 +601,6 @@
       "quickSearch": 1
     },
     {
-      "key": "如意资源",
-      "name": "22-如意",
-      "type": 1,
-      "api": "https://www.ryzy.tv/api.php/provide/vod/",
-      "searchable": 1,
-      "changeable": 1,
-      "categories": [
-        "动作片",
-        "喜剧片",
-        "爱情片",
-        "科幻片",
-        "恐怖片",
-        "剧情片",
-        "战争片",
-        "国产剧",
-        "港澳剧",
-        "日剧",
-        "欧美剧",
-        "台湾剧",
-        "泰剧",
-        "韩剧",
-        "纪录片",
-        "动漫电影"
-      ],
-      "quickSearch": 1
-    },
-    {
       "key": "1a217dd1a106df937e230b605726d197",
       "name": "23-极速",
       "type": 0,
@@ -888,14 +852,6 @@
       "quickSearch": 1
     },
     {
-      "key": "39影视",
-      "name": "39影视",
-      "type": 0,
-      "api": "https://www.39kan.com/api.php/provide/vod/at/xml",
-      "playUrl": "",
-      "categories": []
-    },
-    {
       "key": "好趣网",
       "name": "电视 | 好趣网[js]",
       "type": 3,
@@ -1106,23 +1062,174 @@
       "api": "https://collect.wolongzyw.com/api.php/provide/vod/at/xml",
       "searchable": 0,
       "quickSearch": 0
+    },
+    {
+      "key": "ikun资源",
+      "name": "64-影視ikun资源[直连]",
+      "type": 1,
+      "api": "https://www.ikunzy.com/api.php/provide/vod/",
+      "searchable": 1,
+      "categories": [
+        "动作片",
+        "喜剧片",
+        "爱情片",
+        "科幻片",
+        "恐怖片",
+        "剧情片",
+        "战争片",
+        "国产剧",
+        "香港剧",
+        "台湾剧",
+        "韩国剧",
+        "纪录片",
+        "动画片",
+        "日本剧",
+        "泰国剧",
+        "欧美剧",
+        "国产动漫",
+        " 日本动漫",
+        "欧美动漫",
+        "海外动漫",
+        "电影解说",
+        "大陆综艺",
+        "港台综艺",
+        "日韩综艺",
+        "欧美综艺"
+      ],
+      "quickSearch": 1
+    },
+    {
+      "key": "hiker-7",
+      "name": "79-hiker",
+      "type": 1,
+      "api": "https://api.wwzy.tv/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "39影视",
+      "name": "💯39影视",
+      "type": 1,
+      "api": "https://www.39kan.com/api.php/provide/vod/",
+      "playUrl": "",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "name": "瓜子web",
+      "type": 1,
+      "api": "https://api.zaqohu.com"
+    },
+    {
+      "key": "vod_索隆",
+      "name": "索隆｜",
+      "type": 4,
+      "api": "http://zhangqun66.com/sn.php"
+    },
+    {
+      "key": "閃電资源",
+      "name": "閃電资源",
+      "type": 1,
+      "api": "https://sdzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "dbzy.com",
+      "name": "豆瓣资源",
+      "type": 1,
+      "api": "https://caiji.dbzy5.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "categories": [
+        "国产剧",
+        "韩剧",
+        "日本剧",
+        "香港剧",
+        "欧美剧",
+        "台湾剧",
+        "泰国剧",
+        "海外剧",
+        "剧情片",
+        "动作片",
+        "爱情片",
+        "喜剧片",
+        "科幻片",
+        "恐怖片",
+        "惊悚片",
+        "战争片",
+        "纪录片",
+        "演唱会",
+        "伦理片",
+        "动漫电影",
+        "大陆综艺",
+        "日韩综艺",
+        "港台综艺",
+        "欧美综艺",
+        "国产动漫",
+        "日本动漫",
+        "欧美动漫",
+        "海外动漫"
+      ]
+    },
+    {
+      "key": "chujia.cc",
+      "name": "🔞精东资源",
+      "type": 1,
+      "api": "http://chujia.cc/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "playUrl": "json:http://127.0.0.1:10079/parse/?thread=0&proxy=&url=",
+      "recordable": 0,
+      "style": {
+        "type": "rect",
+        "ratio": 1.33
+      },
+      "header": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "User-Agent": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/117.0.0.0Safari/537.36"
+      }
+    },
+    {
+      "key": "ffc08730-71ad-56b8-a153-e2e563e6d64c",
+      "name": "奶香",
+      "api": "https://Naixxzy.com/api.php/provide/vod/?ac=list",
+      "playUrl": "https://nxxzynxp.com/?url=",
+      "group": "18+",
+      "search": 2,
+      "status": true,
+      "type": 1,
+      "id": 93
+    },
+    {
+      "key": "be2647749acad7d9ad787c87cb03e9d4",
+      "name": "58-牛牛",
+      "type": 1,
+      "api": "https://niuniuzy3.com/api.php/provide/vod/"
+    },
+    {
+      "key": "★siwa资源",
+      "name": "★siwa资源",
+      "type": 1,
+      "api": "https://siwazyw.net/api.php/provide/vod/",
+      "playUrl": "",
+      "categories": [],
+      "quickSearch": 0
     }
   ],
   "lives": [
     {
-      "name": "看电视VIP",
-      "type": "0",
-      "url": "http://8.138.7.223/2025.txt",
-      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
+      "name": "16万•MV",
+      "type": 0,
+      "url": "https://fongmi.cachefly.net/lystv/short/main/影视/tvb/MTV.txt"
     },
     {
-      "name": "YOUTUBE直播",
+      "name": "YOUTUBE音乐",
       "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/n3rddd/N3RD/master/JN/EXT/JS/YTTV.txt",
+      "url": "http://yt.850930.xyz",
       "ua": "okhttp/3.15",
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
+      "logo": "http://5b0988e595225.cdn.sohucs.com/images/20190313/ad9ebfafbec640b7b41b9250156dff39.png"
     },
     {
       "name": "YOUTUBE榜单",
@@ -1133,128 +1240,19 @@
       "logo": "http://5b0988e595225.cdn.sohucs.com/images/20190313/ad9ebfafbec640b7b41b9250156dff39.png"
     },
     {
-      "name": "YanG•综合",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/YanG-1989/m3u/main/Gather.m3u",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "drang•ipv6",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/drangjchen/IPTV/main/M3U/ipv6.m3u",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "YueChan•综合",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/YueChan/Live/main/IPTV.m3u",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "Ray•综合",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/dxawi/0/main/tvlive.txt",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "俊于•综合",
-      "type": 0,
-      "url": "http://home.jundie.top:81/Cat/tv/live.txt",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "16万•MV",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/lystv/short/main/影视/tvb/MTV.txt"
-    },
-    {
-      "name": "YuanHsing•油管",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/YuanHsing/YouTube_to_m3u/main/youtube.m3u"
-    },
-    {
-      "name": "山东电信",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/geekzsp/ImagesRepository/master/sd-iptv.txt",
-      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "tv",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/bizopps/tv/refs/heads/main/tv.m3u",
-      "playerType": 2,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
-    },
-    {
-      "name": "a",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/bizopps/tv/refs/heads/main/a.m3u",
-      "playerType": 2,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
-    },
-    {
-      "name": "Sports",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/kgasaz/4kuhd/master/sports-channels-4k.m3u",
-      "playerType": 2,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
-    },
-    {
-      "name": "综合",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/Supprise0901/TVBox_live/main/live.txt",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}"
-    },
-    {
-      "name": "live",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/sunkangfu/666/main/adult.txt",
-      "playerType": 1,
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "LIVE_Gather",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/YanG-1989/m3u/refs/heads/main/Gather.m3u",
-      "playerType": 1,
-      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}",
-      "logo": "https://live.fanmingming.com/tv/{name}.png"
-    },
-    {
-      "name": "tv543",
+      "name": "ST备份",
       "type": "0",
       "pass": true,
-      "url": "https://tv543.cc/173.txt",
+      "url": "https://gitea.moe/STLHF/iptv/raw/branch/main/st1.txt",
       "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
-      "name": "BMCH",
+      "name": "看电视VIP",
       "type": "0",
-      "pass": true,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/big-mouth-cn/tv/main/iptv-ok.m3u",
-      "epg": "https://epg.v1.mk/json?ch={name}&date={date}",
-      "logo": "https://epg.v1.mk/logo/{name}.png"
-    },
-    {
-      "name": "IPV6②",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/wwb521/live/main/tv.m3u",
-      "playerType": 1,
-      "logo": "https://live.fanmingming.com/tv/{name}.png"
+      "url": "http://8.138.7.223/2025.txt",
+      "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
     }
   ],
   "spider": "./jar/xs.jar"
