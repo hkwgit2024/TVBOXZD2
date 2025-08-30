@@ -3,7 +3,7 @@ import sys
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    清理并去重代理节点，确保每个节点都有唯一的名称，并提供实时进度。
+    清理并去重代理节点，确保每个节点都有唯一的名称，并进行严格的参数检查。
     """
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
@@ -63,6 +63,13 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 # 提取必要参数
                 cleaned_proxy_data = {}
                 params = required_params[proxy_type]
+                
+                # 严格检查所有必要参数是否都存在
+                is_valid = all(param in proxy for param in params if param != 'auth')
+                if not is_valid:
+                    discarded_stats['missing_params'] += 1
+                    continue
+                
                 for param in params:
                     if param in proxy:
                         cleaned_proxy_data[param] = proxy[param]
@@ -72,7 +79,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                     if 'password' not in cleaned_proxy_data and 'auth' in proxy:
                         cleaned_proxy_data['password'] = proxy['auth']
 
-                # 增加名称参数，这是解决客户端报错的关键
+                # 增加名称参数
                 if 'name' in proxy and proxy['name']:
                     cleaned_proxy_data['name'] = proxy['name']
                 else:
