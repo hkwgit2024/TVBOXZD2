@@ -1,8 +1,16 @@
 import yaml
+import socket
+
+def get_ip_from_hostname(hostname):
+    """通过域名获取IP地址"""
+    try:
+        return socket.gethostbyname(hostname)
+    except socket.gaierror:
+        return None
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    清理并去重代理节点，采用更严格的去重规则：协议、服务器和端口完全一致则视为重复。
+    清理并去重代理节点，采用最严格的去重规则：协议、服务器IP地址完全一致则视为重复。
     """
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
@@ -33,26 +41,33 @@ def clean_and_deduplicate_proxies(input_file, output_file):
 
         for proxy in proxies:
             proxy_type = proxy.get('type')
+            server = proxy.get('server')
             
-            # 检查协议支持
-            if proxy_type not in required_params:
+            # 检查协议支持和服务器参数
+            if proxy_type not in required_params or not server:
                 discarded_stats['unsupported_protocol'] += 1
                 continue
             
-            # 检查必要参数
-            if not all(param in proxy for param in ['type', 'server', 'port']):
-                discarded_stats['missing_params'] += 1
-                continue
+            # 将域名解析成IP地址用于去重
+            if not any(c.isalpha() for c in server):
+                # 已经是IP地址，直接使用
+                resolved_ip = server
+            else:
+                # 是域名，进行解析
+                resolved_ip = get_ip_from_hostname(server)
+                if not resolved_ip:
+                    # 如果解析失败，跳过该节点
+                    discarded_stats['missing_params'] += 1
+                    continue
             
-            # 创建唯一的去重键：协议、服务器和端口
-            unique_key = (proxy_type, proxy.get('server'), str(proxy.get('port')))
+            # 创建唯一的去重键：协议和服务器IP
+            unique_key = (proxy_type, resolved_ip)
             
             # 去重
             if unique_key in seen_keys:
                 discarded_stats['duplicates'] += 1
             else:
                 seen_keys.add(unique_key)
-                # 保留所有必要参数以确保可用性
                 cleaned_proxy_data = {param: proxy[param] for param in required_params[proxy_type] if param in proxy}
                 cleaned_proxies.append(cleaned_proxy_data)
 
