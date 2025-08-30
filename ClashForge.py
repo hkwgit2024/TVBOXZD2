@@ -492,7 +492,7 @@ def handle_links(new_links, resolve_name_conflicts):
         pass
 
 
-def filter_proxies(proxies, limit=386):
+def filter_proxies(proxies, limit=898989):
     filtered_proxies = []
     seen = set()
     for p in proxies:
