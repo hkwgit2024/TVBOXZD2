@@ -679,7 +679,8 @@ def handle_clash_error(error_message, config_file_path):
 
         # 从所有proxy-groups中删除该节点引用
         proxies = config['proxy-groups'][1]["proxies"]
-        proxies.remove(problem_proxy_name)
+        if problem_proxy_name in proxies:     
+            proxies.remove(problem_proxy_name)
         for group in config["proxy-groups"][1:]:
             group["proxies"] = proxies
 
