@@ -32,18 +32,6 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- name: 日本_1
-  type: vless
-  server: jp.infts.fyi
-  port: '443'
-  uuid: a81f3f43-3eeb-4958-971a-a5bade9a4b88
-  alterId: '0'
-  cipher: auto
-  tls: true
-  network: ws
-  ws-opts:
-    path: /123test
-  _index: 5
 - type: vless
   server: ger1.kacivil.ir
   port: 443
@@ -91,20 +79,6 @@ proxies:
     headers:
       host: cdn-node-oss-99.paofu.de
     path: /profile/telegram@ssrsub
-- alterId: 2
-  cipher: auto
-  name: 香港_1
-  network: ws
-  port: 80
-  server: hkt.gotochinatown.net
-  skip-cert-verify: false
-  tls: false
-  type: vmess
-  uuid: 93fb69fc-77cf-11ee-85ee-f23c91369f2d
-  ws-opts:
-    headers:
-      Host: hkt.gotochinatown.net
-    path: /
 - alterId: 0
   cipher: auto
   client-fingerprint: chrome
@@ -120,33 +94,6 @@ proxies:
     headers:
       host: test3.flha.ru
     path: /9a81340d-f81b-4c76-8abb-f4d305c535c0-vmess
-- alterId: 32
-  cipher: auto
-  client-fingerprint: chrome
-  name: 美国_7
-  network: ws
-  port: 443
-  server: vc.fly.dev
-  skip-cert-verify: true
-  tls: true
-  type: vmess
-  uuid: 35379219-6535-4f2e-a4fe-3e44f61e0eee
-  ws-opts:
-    headers:
-      host: vc.fly.dev
-    path: /vc
-- cipher: aes-128-gcm
-  name: 英国_1
-  password: shadowsocks
-  port: 443
-  server: uk-dc1.yangon.club
-  type: ss
-- cipher: chacha20-ietf-poly1305
-  name: 立陶宛_1
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  port: 8080
-  server: 45.87.175.35
-  type: ss
 proxy-groups:
 - name: 节点选择
   type: select
@@ -159,17 +106,12 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 英国_1
   - 荷兰_1
-  - 香港_1
-  - 伊朗_1
+  - None_2
   - 美国_6
   - 越南_1
+  - 伊朗_1
   - 塞浦路斯_1
-  - 日本_1
-  - None_2
-  - 立陶宛_1
-  - 美国_7
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -177,32 +119,22 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - 英国_1
   - 荷兰_1
-  - 香港_1
-  - 伊朗_1
+  - None_2
   - 美国_6
   - 越南_1
+  - 伊朗_1
   - 塞浦路斯_1
-  - 日本_1
-  - None_2
-  - 立陶宛_1
-  - 美国_7
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - 英国_1
   - 荷兰_1
-  - 香港_1
-  - 伊朗_1
+  - None_2
   - 美国_6
   - 越南_1
+  - 伊朗_1
   - 塞浦路斯_1
-  - 日本_1
-  - None_2
-  - 立陶宛_1
-  - 美国_7
 rules:
 - MATCH,节点选择
