@@ -770,6 +770,7 @@ def kill_clash():
     # print(f"未找到 Clash 进程 ({system})")
 
 
+# 优化后的 start_clash 函数
 def start_clash():
     download_and_extract_latest_release()
     system_platform = platform.system().lower()
@@ -782,50 +783,52 @@ def start_clash():
     else:
         raise OSError("Unsupported operating system.")
 
-    not_started = True
-
     global CONFIG_FILE
     CONFIG_FILE = f'{CONFIG_FILE}.json' if os.path.exists(f'{CONFIG_FILE}.json') else CONFIG_FILE
-    while not_started:
-        # print(f'加载配置{CONFIG_FILE}')
-        clash_process = subprocess.Popen(
-            [clash_binary, '-f', CONFIG_FILE],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            encoding='utf-8'
-        )
 
-        output_lines = []
+    print(f"尝试启动 Clash 进程: {clash_binary} -f {CONFIG_FILE}")
+    
+    clash_process = subprocess.Popen(
+        [clash_binary, '-f', CONFIG_FILE],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding='utf-8'
+    )
 
-        # 启动线程来读取标准输出和标准错误
-        stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, output_lines))
+    start_time = time.time()
+    api_ready = False
+    
+    # 等待 Clash API 启动，最长等待 15 秒
+    while time.time() - start_time < 15:
+        if is_clash_api_running():
+            api_ready = True
+            break
+        
+        # 从 stderr 和 stdout 读取并打印日志
+        stderr_output = clash_process.stderr.readline()
+        if stderr_output:
+            print(f"Clash stderr: {stderr_output.strip()}")
+            if "Parse config error" in stderr_output:
+                # 配置文件有误，直接退出
+                print("配置文件有误，请检查。")
+                clash_process.kill()
+                return None
+        
+        stdout_output = clash_process.stdout.readline()
+        if stdout_output:
+            print(f"Clash stdout: {stdout_output.strip()}")
+            
+        time.sleep(1) # 每隔 1 秒检查一次
 
-        stdout_thread.start()
-
-        timeout = 3
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            stdout_thread.join(timeout=0.5)
-            if output_lines:
-                # 检查输出是否包含错误信息
-                if 'GeoIP.dat' in output_lines[-1]:
-                    print(output_lines[-1])
-                    time.sleep(5)
-                    if is_clash_api_running():
-                        return clash_process
-
-                if "Parse config error" in output_lines[-1]:
-                    if handle_clash_error(output_lines[-1], CONFIG_FILE):
-                        clash_process.kill()
-                        output_lines = []
-            if is_clash_api_running():
-                return clash_process
-
-        if not_started:
-            clash_process.kill()
-            continue
+    if api_ready:
+        print("Clash API 启动成功！")
         return clash_process
+    else:
+        print("Clash API 未能在 15 秒内启动，可能存在问题。")
+        clash_process.kill() # 确保进程被终止
+        return None
+
 
 
 def is_clash_api_running():
@@ -1510,9 +1513,10 @@ def work(links, check=False, allowed_types=[], only_check=False):
                 print(f"===================启动clash并初始化配置======================")
                 clash_process = start_clash()
                 # 切换节点到'节点选择-DIRECT'
-                switch_proxy('DIRECT')
-                asyncio.run(proxy_clean())
-                print(f'批量检测完毕')
+                if clash_process:
+                  switch_proxy('DIRECT')
+                  asyncio.run(proxy_clean())
+                  print(f'批量检测完毕')
             except Exception as e:
                 print("Error calling Clash API:", e)
             finally:
