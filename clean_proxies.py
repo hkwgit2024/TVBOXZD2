@@ -32,6 +32,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             'missing_params': 0,
             'duplicates': 0
         }
+        name_counter = {}
 
         progress_counter = 0
 
@@ -45,11 +46,18 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             port = proxy.get('port')
             
             # 检查基本参数和协议
-            if proxy_type not in required_params or not server or not port:
+            if proxy_type not in required_params or not server:
                 if proxy_type not in required_params:
                     discarded_stats['unsupported_protocol'] += 1
                 else:
                     discarded_stats['missing_params'] += 1
+                continue
+            
+            # 增加对 port 类型的严格校验
+            try:
+                port = int(port)
+            except (ValueError, TypeError):
+                discarded_stats['missing_params'] += 1
                 continue
             
             # 提取必要参数
@@ -57,7 +65,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             params = required_params[proxy_type]
             
             # 严格检查所有必要参数是否存在且不为空
-            is_valid = all(proxy.get(param) for param in params if param != 'auth')
+            is_valid = all(param in proxy and proxy.get(param) is not None for param in params if param != 'auth')
             if not is_valid:
                 discarded_stats['missing_params'] += 1
                 continue
@@ -78,12 +86,15 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['duplicates'] += 1
             else:
                 seen_keys.add(unique_key)
-
-                # 增加名称参数
-                if 'name' in proxy and proxy['name']:
-                    cleaned_proxy_data['name'] = proxy['name']
+                
+                # 为自动生成的名称添加唯一标识
+                base_name = f"[{proxy_type.upper()}] {server}:{port}"
+                if base_name not in name_counter:
+                    name_counter[base_name] = 1
+                    cleaned_proxy_data['name'] = base_name
                 else:
-                    cleaned_proxy_data['name'] = f"[{proxy_type.upper()}] {server}:{port}"
+                    name_counter[base_name] += 1
+                    cleaned_proxy_data['name'] = f"{base_name} ({name_counter[base_name]})"
                 
                 cleaned_proxies.append(cleaned_proxy_data)
 
