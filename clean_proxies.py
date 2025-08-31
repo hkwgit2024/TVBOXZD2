@@ -1,6 +1,7 @@
 import yaml
 import sys
 import re
+import urllib.parse
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
@@ -17,16 +18,20 @@ def clean_and_deduplicate_proxies(input_file, output_file):
     
     # 定义合法的加密方法列表和UUID、域名、IP的正则表达式
     legal_ciphers = ['chacha20-ietf-poly1305', 'aes-128-gcm', 'aes-256-gcm', 'auto', 'none']
-    uuid_regex = re.compile(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$|%[0-9a-fA-F]{2}')
+    uuid_regex = re.compile(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
     ip_regex = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
     domain_regex = re.compile(r'^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$')
 
     def is_valid_server(server):
         return ip_regex.match(server) or domain_regex.match(server)
 
-    def is_valid_uuid(uuid):
-        # 允许百分号编码的UUID，如 %619013c%65%65...
-        return uuid_regex.match(uuid) or '%' in uuid
+    def is_valid_uuid(uuid_str):
+        # 尝试URL解码，然后验证解码后的字符串是否为标准UUID格式
+        try:
+            decoded_uuid = urllib.parse.unquote(uuid_str)
+            return uuid_regex.match(decoded_uuid) is not None
+        except Exception:
+            return False
 
     def is_valid_cipher(cipher):
         return cipher in legal_ciphers
@@ -105,7 +110,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                     break
             
             if not is_valid:
-                discarded_stats['missing_params'] += 1
+                discarded_stats['invalid_params'] += 1
                 continue
 
             # 提取必要参数
