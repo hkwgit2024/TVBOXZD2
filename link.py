@@ -596,12 +596,17 @@ async def main():
     print("开始处理代理链接...")
 
     links_to_process = []
-    if os.path.exists("link.txt"):
+    
+    # 优先从环境变量获取链接，如果不存在则尝试从文件读取
+    env_links = os.environ.get('LINK_URLS')
+    if env_links:
+        links_to_process.extend([link.strip() for link in env_links.split(',') if link.strip()])
+    elif os.path.exists("link.txt"):
         with open("link.txt", 'r', encoding='utf-8') as f:
             links_to_process.extend([line.strip() for line in f if line.strip()])
     
     if not links_to_process:
-        print("未找到 link.txt 文件或文件中没有链接，请提供链接。")
+        print("未找到任何链接。请在环境变量 LINK_URLS 中提供，或在 link.txt 文件中提供链接。")
         return
 
     seen_keys = set()
