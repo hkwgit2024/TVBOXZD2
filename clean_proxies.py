@@ -69,7 +69,8 @@ def clean_and_deduplicate_proxies(input_file, output_file):
     def is_valid_password(password, proxy_type):
         if proxy_type == 'trojan':
             try:
-                base64.b64decode(password, validate=True)
+                # Ensure the password is a string and encode it to bytes before decoding Base64.
+                base64.b64decode(str(password).encode('utf-8'), validate=True)
                 return True
             except (base64.binascii.Error, TypeError):
                 return False
