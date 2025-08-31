@@ -52,6 +52,20 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         except (ValueError, TypeError):
             return False
 
+    def is_valid_port(port, proxy_type):
+        try:
+            port = int(port)
+            if proxy_type == 'trojan':
+                # Common ports for Trojan
+                return port in [80, 443, 8443]
+            elif proxy_type in ['hy2', 'hysteria2']:
+                # Hysteria2 is UDP-based, so specific ports might be preferred.
+                # Here we will allow a wider range but a more specific implementation might check for common UDP ports.
+                return 1 <= port <= 65535
+            return 1 <= port <= 65535
+        except (ValueError, TypeError):
+            return False
+
     def is_valid_password(password, proxy_type):
         if proxy_type == 'trojan':
             try:
@@ -59,7 +73,11 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 return True
             except (base64.binascii.Error, TypeError):
                 return False
-        return isinstance(password, str) and len(password) >= 8
+        
+        # For other protocols, require a minimum length of 8 and a mix of letters and numbers.
+        if isinstance(password, str) and len(password) >= 8:
+            return bool(re.search(r'[a-zA-Z]', password) and re.search(r'[0-9]', password))
+        return False
 
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
@@ -109,12 +127,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['invalid_params'] += 1
                 continue
             
-            try:
-                port = int(port)
-                if not 1 <= port <= 65535:
-                    discarded_stats['invalid_params'] += 1
-                    continue
-            except (ValueError, TypeError):
+            if not is_valid_port(port, proxy_type):
                 discarded_stats['invalid_params'] += 1
                 continue
             
