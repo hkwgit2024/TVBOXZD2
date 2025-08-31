@@ -33,7 +33,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 return True
             # 验证百分号编码的 UUID 是否解码后为有效 UUID
             if '%' in uuid_str:
-                # 移除 % 和连字符，检查是否为 32 个十六进制字符
+                # 移除 % 并连接，检查是否为 32 个十六进制字符
                 decoded_chars = ''.join(c for c in decoded_uuid if c.lower() in '0123456789abcdef')
                 return len(decoded_chars) == 32
             return False
@@ -42,6 +42,15 @@ def clean_and_deduplicate_proxies(input_file, output_file):
 
     def is_valid_cipher(cipher):
         return cipher in legal_ciphers
+        
+    def is_valid_alter_id(alter_id):
+        try:
+            return isinstance(alter_id, int) and alter_id >= 0
+        except (ValueError, TypeError):
+            return False
+
+    def is_valid_password(password):
+        return isinstance(password, str) and len(password) > 0
 
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
@@ -113,6 +122,12 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                     is_valid = False
                     break
                 if param == 'cipher' and not is_valid_cipher(str(value)):
+                    is_valid = False
+                    break
+                if param == 'alterId' and not is_valid_alter_id(value):
+                    is_valid = False
+                    break
+                if param == 'password' and not is_valid_password(str(value)):
                     is_valid = False
                     break
             
