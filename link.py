@@ -528,6 +528,24 @@ def get_node_key(node):
     key_str = json.dumps(key_dict, sort_keys=True)
     return hashlib.sha256(key_str.encode('utf-8')).hexdigest()
 
+# 新整合的去重逻辑（从之前的清理脚本中整合）
+def deduplicate_nodes(all_nodes):
+    seen_keys = set()
+    unique_nodes = []
+    name_counts = defaultdict(int)
+    
+    for node in all_nodes:
+        node_key = get_node_key(node)
+        if node_key not in seen_keys:
+            seen_keys.add(node_key)
+            base_name = node.get('name', f"{node['type']}-{node.get('server')}-{node.get('port')}")
+            node['name'] = generate_unique_name(base_name, name_counts)
+            unique_nodes.append(node)
+        else:
+            with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                f.write(f"跳过重复节点: {node.get('name', '未命名')} ({node_key})\n")
+    return unique_nodes
+
 if __name__ == "__main__":
     links = get_links_from_local_file()
     all_nodes = []
@@ -580,20 +598,7 @@ if __name__ == "__main__":
         print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
 
     # 去重
-    seen_nodes = set()
-    unique_nodes = []
-    name_counts = defaultdict(int)
-    
-    for node in all_nodes:
-        node_key = get_node_key(node)
-        if node_key not in seen_nodes:
-            seen_nodes.add(node_key)
-            base_name = node.get('name', f"{node['type']}-{node.get('server')}-{node.get('port')}")
-            node['name'] = generate_unique_name(base_name, name_counts)
-            unique_nodes.append(node)
-        else:
-            with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复节点: {node.get('name', '未命名')} ({node_key})\n")
+    unique_nodes = deduplicate_nodes(all_nodes)
 
     if unique_nodes:
         save_to_yaml({'proxies': unique_nodes})
