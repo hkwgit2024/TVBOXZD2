@@ -1202,55 +1202,171 @@
       "id": 93
     },
     {
-      "key": "be2647749acad7d9ad787c87cb03e9d4",
-      "name": "58-牛牛",
+      "key": "索尼",
+      "name": "索尼┃采集",
       "type": 1,
-      "api": "https://niuniuzy3.com/api.php/provide/vod/"
+      "api": "https://suoniapi.com/api.php/provide/vod",
+      "searchable": 1,
+      "changeable": 1
     },
     {
-      "key": "★siwa资源",
-      "name": "★siwa资源",
+      "key": "*鲨鱼资源",
+      "name": "*鲨鱼资源",
       "type": 1,
-      "api": "https://siwazyw.net/api.php/provide/vod/",
-      "playUrl": "",
-      "categories": [],
+      "api": "https://shayuapi.com/api.php/provide/vod/",
+      "searchable": 0,
       "quickSearch": 0
+    },
+    {
+      "key": "辣椒",
+      "name": "🥈辣椒",
+      "type": 1,
+      "api": "http://api.11bat.com/api.php/provide/vod/at/xml/",
+      "quickSearch": 1,
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "key": "api.11bat.com",
+      "name": "成人30",
+      "type": 0,
+      "api": "http://api.11bat.com/api.php/provide/vod/at/xml",
+      "searchable": 1,
+      "filterable": 1
+    },
+    {
+      "name": "奇艺┃官源",
+      "key": "qysp",
+      "type": 3,
+      "api": "http://www.meowtv.cn/js/drpy2.min.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 1,
+      "filterable": 1,
+      "extType": "text",
+      "ext": ""
+    },
+    {
+      "key": "vod_闪电资源",
+      "name": "閃電｜",
+      "type": 1,
+      "api": "https://xsd.sdzyapi.com/api.php/provide/vod/",
+      "playerType": 2,
+      "categories": [
+        "国产剧",
+        "韩国剧",
+        "国产动漫",
+        "欧美剧",
+        "香港剧",
+        "台湾剧",
+        "日剧",
+        "海外剧",
+        "日本动漫",
+        "欧美动漫",
+        "港台动漫",
+        "海外动漫",
+        "动作片",
+        "喜剧片",
+        "科幻片",
+        "恐怖片",
+        "爱情片",
+        "剧情片",
+        "战争片",
+        "纪录片",
+        "犯罪片",
+        "其他片",
+        "悬疑片",
+        "奇幻片",
+        "动画片",
+        "大陆综艺",
+        "港台综艺",
+        "日韩综艺",
+        "欧美综艺"
+      ]
+    },
+    {
+      "name": "通用官方采集",
+      "type": 1,
+      "api": "https://zy.hls.one/api.php/provide/vod"
+    },
+    {
+      "name": "丫丫",
+      "type": 1,
+      "api": "https://cj.yayazy.net/api.php/provide/vod/"
+    },
+    {
+      "name": "闪电",
+      "type": 1,
+      "api": "http://sdzyapi.com/api.php/provide/vod/"
+    },
+    {
+      "key": "iqiyizy.com",
+      "name": "爱奇艺源",
+      "type": 1,
+      "api": "https://iqiyizyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "categories": [
+        "国产剧",
+        "韩国剧",
+        "日本剧",
+        "欧美剧",
+        "香港剧",
+        "台湾剧",
+        "海外剧",
+        "泰国剧",
+        "动作片",
+        "喜剧片",
+        "爱情片",
+        "科幻片",
+        "恐怖片",
+        "剧情片",
+        "惊悚片",
+        "家庭片",
+        "古装片",
+        "历史片",
+        "悬疑片",
+        "犯罪片",
+        "灾难片",
+        "战争片",
+        "记录片",
+        "伦理片",
+        "大陆综艺",
+        "港台综艺",
+        "日韩综艺",
+        "欧美综艺"
+      ]
+    },
+    {
+      "key": "网民电影",
+      "name": "网民电影(聚)",
+      "type": 1,
+      "api": "https://www.prinevillesda.org/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "胖猫影视",
+      "name": "胖猫影视(聚)",
+      "type": 1,
+      "api": "http://www.pangmaotv.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
     }
   ],
   "lives": [
     {
-      "name": "16万•MV",
-      "type": 0,
-      "url": "https://fongmi.cachefly.net/lystv/short/main/影视/tvb/MTV.txt"
-    },
-    {
-      "name": "YOUTUBE音乐",
-      "type": 0,
-      "url": "http://yt.850930.xyz",
-      "ua": "okhttp/3.15",
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "http://5b0988e595225.cdn.sohucs.com/images/20190313/ad9ebfafbec640b7b41b9250156dff39.png"
-    },
-    {
-      "name": "YOUTUBE榜单",
-      "type": 0,
-      "url": "http://yt.850930.xyz/playlist.txt",
-      "ua": "okhttp/3.15",
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "http://5b0988e595225.cdn.sohucs.com/images/20190313/ad9ebfafbec640b7b41b9250156dff39.png"
-    },
-    {
-      "name": "ST备份",
+      "name": "看电视VIP",
       "type": "0",
-      "pass": true,
-      "url": "https://gitea.moe/STLHF/iptv/raw/branch/main/st1.txt",
+      "url": "http://8.138.7.223/2025.txt",
       "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     },
     {
-      "name": "看电视VIP",
+      "name": "榴芒TV",
       "type": "0",
-      "url": "http://8.138.7.223/2025.txt",
+      "pass": true,
+      "url": "http://8.138.7.223/live.txt",
       "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
     }
