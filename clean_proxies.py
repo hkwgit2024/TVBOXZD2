@@ -1,9 +1,10 @@
 import yaml
 import sys
+import re
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    清理并去重代理节点，确保每个节点都有唯一的名称，并进行严格的参数检查。
+    清理并去重代理节点，确保每个节点都有唯一的名称，并进行严格的参数和参数值检查。
     """
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId', 'cipher'],
@@ -13,6 +14,22 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         'trojan': ['type', 'server', 'port', 'password'],
         'vless': ['type', 'server', 'port', 'uuid']
     }
+    
+    # 定义合法的加密方法列表和UUID、域名、IP的正则表达式
+    legal_ciphers = ['chacha20-ietf-poly1305', 'aes-128-gcm', 'aes-256-gcm', 'auto', 'none']
+    uuid_regex = re.compile(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$|%[0-9a-fA-F]{2}')
+    ip_regex = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
+    domain_regex = re.compile(r'^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$')
+
+    def is_valid_server(server):
+        return ip_regex.match(server) or domain_regex.match(server)
+
+    def is_valid_uuid(uuid):
+        # 允许百分号编码的UUID，如 %619013c%65%65...
+        return uuid_regex.match(uuid) or '%' in uuid
+
+    def is_valid_cipher(cipher):
+        return cipher in legal_ciphers
 
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
@@ -30,6 +47,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         discarded_stats = {
             'unsupported_protocol': 0,
             'missing_params': 0,
+            'invalid_params': 0,
             'duplicates': 0
         }
         name_counter = {}
@@ -42,45 +60,65 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 print(f"处理进度：已处理 {progress_counter} 个节点...")
 
             proxy_type = proxy.get('type')
-            server = proxy.get('server')
-            port = proxy.get('port')
             
             # 1. 检查基本参数和协议
-            if not proxy_type or proxy_type not in required_params or not server:
-                if proxy_type not in required_params:
-                    discarded_stats['unsupported_protocol'] += 1
-                else:
-                    discarded_stats['missing_params'] += 1
+            if not proxy_type or proxy_type not in required_params:
+                discarded_stats['unsupported_protocol'] += 1
                 continue
             
-            # 2. 检查 port 类型和范围
+            server = proxy.get('server')
+            port = proxy.get('port')
+
+            # 2. 检查 server 和 port
+            if not server or not port:
+                discarded_stats['missing_params'] += 1
+                continue
+            
+            # 3. 严格的参数值验证
+            if not is_valid_server(str(server)):
+                discarded_stats['invalid_params'] += 1
+                continue
+            
             try:
                 port = int(port)
                 if not 1 <= port <= 65535:
-                    discarded_stats['missing_params'] += 1
+                    discarded_stats['invalid_params'] += 1
                     continue
             except (ValueError, TypeError):
-                discarded_stats['missing_params'] += 1
+                discarded_stats['invalid_params'] += 1
                 continue
             
-            # 3. 检查特定协议的必要参数
-            is_valid = all(param in proxy and proxy.get(param) is not None for param in required_params[proxy_type] if param != 'auth')
+            # 4. 检查特定协议的必要参数及其值
+            is_valid = True
+            for param in required_params[proxy_type]:
+                value = proxy.get(param)
+                if value is None:
+                    is_valid = False
+                    break
+                
+                # 特定参数的验证
+                if param == 'uuid' and not is_valid_uuid(str(value)):
+                    is_valid = False
+                    break
+                if param == 'cipher' and not is_valid_cipher(str(value)):
+                    is_valid = False
+                    break
+            
             if not is_valid:
                 discarded_stats['missing_params'] += 1
                 continue
-            
+
             # 提取必要参数
             cleaned_proxy_data = {}
             for param in required_params[proxy_type]:
-                if param in proxy:
-                    cleaned_proxy_data[param] = proxy[param]
+                cleaned_proxy_data[param] = proxy[param]
             
             # 特别处理 Hysteria2 的 password/auth 兼容性
             if proxy_type in ['hy2', 'hysteria2']:
                 if 'password' not in cleaned_proxy_data and 'auth' in proxy:
                     cleaned_proxy_data['password'] = proxy['auth']
                     
-            # 4. 创建唯一的去重键并检查重复
+            # 5. 创建唯一的去重键并检查重复
             unique_key = (proxy_type, server, port)
             
             if unique_key in seen_keys:
@@ -88,7 +126,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             else:
                 seen_keys.add(unique_key)
                 
-                # 5. 为自动生成的名称添加唯一标识
+                # 6. 为自动生成的名称添加唯一标识
                 base_name = f"[{proxy_type.upper()}] {server}:{port}"
                 if base_name not in name_counter:
                     name_counter[base_name] = 1
@@ -100,7 +138,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 cleaned_proxies.append(cleaned_proxy_data)
 
         total_nodes_after = len(cleaned_proxies)
-        total_discarded = total_nodes_before - total_nodes_after
+        total_discarded = discarded_stats['unsupported_protocol'] + discarded_stats['missing_params'] + discarded_stats['invalid_params'] + discarded_stats['duplicates']
 
         with open(output_file, 'w', encoding='utf-8') as f:
             yaml.safe_dump({'proxies': cleaned_proxies}, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
@@ -111,6 +149,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         print("🗑️ 丢弃节点详情:")
         print(f"  - 协议不支持: {discarded_stats['unsupported_protocol']} 个")
         print(f"  - 缺少必要参数: {discarded_stats['missing_params']} 个")
+        print(f"  - 参数值无效: {discarded_stats['invalid_params']} 个")
         print(f"  - 重复节点: {discarded_stats['duplicates']} 个")
         print(f"  - 丢弃总数: {total_discarded} 个")
         print(f"✅ 清理后节点总数: {total_nodes_after} 个")
