@@ -45,32 +45,33 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             server = proxy.get('server')
             port = proxy.get('port')
             
-            # 检查基本参数和协议
-            if proxy_type not in required_params or not server:
+            # 1. 检查基本参数和协议
+            if not proxy_type or proxy_type not in required_params or not server:
                 if proxy_type not in required_params:
                     discarded_stats['unsupported_protocol'] += 1
                 else:
                     discarded_stats['missing_params'] += 1
                 continue
             
-            # 增加对 port 类型的严格校验
+            # 2. 检查 port 类型和范围
             try:
                 port = int(port)
+                if not 1 <= port <= 65535:
+                    discarded_stats['missing_params'] += 1
+                    continue
             except (ValueError, TypeError):
+                discarded_stats['missing_params'] += 1
+                continue
+            
+            # 3. 检查特定协议的必要参数
+            is_valid = all(param in proxy and proxy.get(param) is not None for param in required_params[proxy_type] if param != 'auth')
+            if not is_valid:
                 discarded_stats['missing_params'] += 1
                 continue
             
             # 提取必要参数
             cleaned_proxy_data = {}
-            params = required_params[proxy_type]
-            
-            # 严格检查所有必要参数是否存在且不为空
-            is_valid = all(param in proxy and proxy.get(param) is not None for param in params if param != 'auth')
-            if not is_valid:
-                discarded_stats['missing_params'] += 1
-                continue
-            
-            for param in params:
+            for param in required_params[proxy_type]:
                 if param in proxy:
                     cleaned_proxy_data[param] = proxy[param]
             
@@ -79,15 +80,15 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 if 'password' not in cleaned_proxy_data and 'auth' in proxy:
                     cleaned_proxy_data['password'] = proxy['auth']
                     
-            # 创建唯一的去重键：协议、服务器和端口
-            unique_key = (proxy_type, str(server), str(port))
+            # 4. 创建唯一的去重键并检查重复
+            unique_key = (proxy_type, server, port)
             
             if unique_key in seen_keys:
                 discarded_stats['duplicates'] += 1
             else:
                 seen_keys.add(unique_key)
                 
-                # 为自动生成的名称添加唯一标识
+                # 5. 为自动生成的名称添加唯一标识
                 base_name = f"[{proxy_type.upper()}] {server}:{port}"
                 if base_name not in name_counter:
                     name_counter[base_name] = 1
