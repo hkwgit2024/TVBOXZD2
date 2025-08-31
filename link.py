@@ -21,8 +21,6 @@ import warnings
 
 # 全局变量
 LOG_FILE = "link_processing.log"
-
-# 多样化的User-Agent列表
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
@@ -30,14 +28,15 @@ USER_AGENTS = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.80 Mobile/15E148 Safari/604.1',
     'Mozilla/5.0 (Linux; Android 10; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'
 ]
-
-# 有效加密方式
 VALID_SS_CIPHERS = {'aes-128-gcm', 'aes-256-gcm', 'chacha20-ietf-poly1305', '2022-blake3-aes-128-gcm', '2022-blake3-aes-256-gcm', '2022-blake3-chacha20-poly1305'}
 VALID_VMESS_CIPHERS = {'auto', 'none', 'aes-128-gcm', 'chacha20-poly1305'}
 VALID_VLESS_NETWORKS = {'tcp', 'ws', 'grpc'}
-
-# 忽略 XMLParsedAsHTMLWarning 警告
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
+
+def log_error(message):
+    """记录错误日志"""
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write(message + '\n')
 
 class DirectoryLinkParser(HTMLParser):
     def __init__(self):
@@ -72,11 +71,52 @@ def validate_host(host):
 
 def validate_server_port(server, port):
     """验证服务器地址和端口"""
-    if not server or not isinstance(port, (int, str)) or (isinstance(port, str) and not port.isdigit()) or int(port) < 1 or int(port) > 65535:
+    if not server or not isinstance(port, (int, str)) or (isinstance(port, str) and not port.isdigit()):
+        return False
+    port = int(port)
+    if not (1 <= port <= 65535):
         return False
     if not validate_host(server):
         return False
     return True
+
+def validate_node(node):
+    """统一验证节点是否符合要求"""
+    node_type = node.get('type')
+    if not node_type:
+        return None
+
+    required_fields = {
+        'ss': {'server', 'port', 'cipher', 'password'},
+        'vmess': {'server', 'port', 'uuid', 'cipher', 'alterId'},
+        'vless': {'server', 'port', 'uuid'},
+        'trojan': {'server', 'port', 'password'},
+        'ssr': {'server', 'port', 'password', 'cipher', 'protocol', 'obfs'},
+        'hysteria2': {'server', 'port', 'password'}
+    }
+
+    if node_type not in required_fields:
+        log_error(f"无效协议类型: {node_type}")
+        return None
+        
+    for field in required_fields[node_type]:
+        if field not in node:
+            log_error(f"节点缺少必要字段 '{field}'：{node}")
+            return None
+
+    if not validate_server_port(node.get('server'), node.get('port')):
+        log_error(f"服务器地址或端口无效：{node}")
+        return None
+
+    if node_type == 'ss' and node.get('cipher') not in VALID_SS_CIPHERS:
+        log_error(f"无效的 SS 加密方式：{node.get('cipher')}")
+        return None
+
+    if node_type == 'vmess' and node.get('cipher') not in VALID_VMESS_CIPHERS:
+        log_error(f"无效的 VMess 加密方式：{node.get('cipher')}")
+        return None
+    
+    return node
 
 def parse_vmess(vmess_url):
     try:
@@ -87,21 +127,16 @@ def parse_vmess(vmess_url):
             base64_content += '=' * (4 - padding)
         decoded_json = base64.b64decode(base64_content.encode('utf-8')).decode('utf-8')
         config = json.loads(decoded_json)
-        
-        # V2Ray 官方要求字段：add, port, id, scy (cipher), aid (alterId)
-        required_fields = ['add', 'port', 'id', 'scy', 'aid']
-        if not all(field in config for field in required_fields): return None
-        
-        if not validate_server_port(config.get('add'), config.get('port')): return None
-        if config.get('scy') not in VALID_VMESS_CIPHERS: return None
-        
-        return {
-            'type': 'vmess', 'server': config.get('add'), 'port': int(config.get('port')),
-            'uuid': config.get('id'), 'cipher': config.get('scy'), 'alterId': int(config.get('aid'))
-        }
+        return validate_node({
+            'type': 'vmess',
+            'server': config.get('add'),
+            'port': int(config.get('port')),
+            'uuid': config.get('id'),
+            'cipher': config.get('scy'),
+            'alterId': int(config.get('aid'))
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 VMess 节点出错: {e}\n")
+        log_error(f"解析 VMess 节点出错: {e}")
         return None
 
 def parse_ss(ss_url):
@@ -111,6 +146,7 @@ def parse_ss(ss_url):
         padding = len(base64_content) % 4
         if padding > 0:
             base64_content += '=' * (4 - padding)
+        
         if '@' in base64_content:
             part1, part2 = base64_content.split('@', 1)
             decoded_part1 = base64.b64decode(part1.encode('utf-8')).decode('utf-8')
@@ -120,20 +156,19 @@ def parse_ss(ss_url):
             if '@' not in decoded_content: return None
             decoded_part1, part2 = decoded_content.split('@', 1)
             method, password = decoded_part1.split(':', 1)
+        
         server_info = part2.split('#', 1)[0]
         server, port = server_info.split(':', 1)
         
-        # Shadowsocks 官方要求字段：server, port, cipher, password
-        if not validate_server_port(server, port): return None
-        if method not in VALID_SS_CIPHERS: return None
-        
-        return {
-            'type': 'ss', 'server': server, 'port': int(port),
-            'cipher': method, 'password': password
-        }
+        return validate_node({
+            'type': 'ss',
+            'server': server,
+            'port': int(port),
+            'cipher': method,
+            'password': password
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Shadowsocks 节点出错: {e}\n")
+        log_error(f"解析 Shadowsocks 节点出错: {e}")
         return None
 
 def parse_vless(vless_url):
@@ -141,17 +176,14 @@ def parse_vless(vless_url):
         if not vless_url.startswith('vless://'): return None
         parsed_url = urlparse(vless_url)
         uuid, server, port = parsed_url.username, parsed_url.hostname, parsed_url.port
-        if not all([uuid, server, port]): return None
-        
-        # VLESS 官方要求字段：uuid, server, port
-        if not validate_server_port(server, port): return None
-        
-        return {
-            'type': 'vless', 'server': server, 'port': int(port), 'uuid': uuid
-        }
+        return validate_node({
+            'type': 'vless',
+            'server': server,
+            'port': int(port),
+            'uuid': uuid
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 VLESS 节点出错: {e}\n")
+        log_error(f"解析 VLESS 节点出错: {e}")
         return None
 
 def parse_trojan(trojan_url):
@@ -159,17 +191,14 @@ def parse_trojan(trojan_url):
         if not trojan_url.startswith('trojan://'): return None
         parsed_url = urlparse(trojan_url)
         password, server, port = parsed_url.username, parsed_url.hostname, parsed_url.port
-        if not all([password, server, port]): return None
-        
-        # Trojan 官方要求字段：password, server, port
-        if not validate_server_port(server, port): return None
-        
-        return {
-            'type': 'trojan', 'server': server, 'port': int(port), 'password': password
-        }
+        return validate_node({
+            'type': 'trojan',
+            'server': server,
+            'port': int(port),
+            'password': password
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Trojan 节点出错: {e}\n")
+        log_error(f"解析 Trojan 节点出错: {e}")
         return None
 
 def parse_ssr(ssr_url):
@@ -184,20 +213,21 @@ def parse_ssr(ssr_url):
         if len(parts) < 6: return None
         server, port, protocol, method, obfs, password_base64 = parts[:6]
         
-        # SSR 官方要求字段：server, port, password, cipher, protocol, obfs
-        if not validate_server_port(server, port): return None
         padding = len(password_base64) % 4
         if padding > 0:
             password_base64 += '=' * (4 - padding)
         
-        return {
-            'type': 'ssr', 'server': server, 'port': int(port),
+        return validate_node({
+            'type': 'ssr',
+            'server': server,
+            'port': int(port),
             'password': base64.urlsafe_b64decode(password_base64).decode('utf-8'),
-            'cipher': method, 'protocol': protocol, 'obfs': obfs
-        }
+            'cipher': method,
+            'protocol': protocol,
+            'obfs': obfs
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 SSR 节点出错: {e}\n")
+        log_error(f"解析 SSR 节点出错: {e}")
         return None
 
 def parse_hy2(hy2_url):
@@ -205,17 +235,14 @@ def parse_hy2(hy2_url):
         if not hy2_url.startswith('hy2://'): return None
         parsed_url = urlparse(hy2_url)
         password, server, port = parsed_url.username, parsed_url.hostname, parsed_url.port
-        if not all([password, server, port]): return None
-        
-        # Hysteria2 官方要求字段：server, port, password
-        if not validate_server_port(server, port): return None
-        
-        return {
-            'type': 'hysteria2', 'server': server, 'port': int(port), 'password': password
-        }
+        return validate_node({
+            'type': 'hysteria2',
+            'server': server,
+            'port': int(port),
+            'password': password
+        })
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"解析 Hysteria2 节点出错: {e}\n")
+        log_error(f"解析 Hysteria2 节点出错: {e}")
         return None
 
 def parse_node(link):
@@ -293,9 +320,6 @@ def get_nodes_with_playwright(url):
                 pass
             page.wait_for_load_state("networkidle", timeout=60000)
             content = page.content()
-            safe_filename = url.replace('://', '_').replace('/', '_').replace(':', '_')
-            with open(f'playwright_output_{safe_filename}.html', 'w', encoding='utf-8') as f:
-                f.write(content)
             browser.close()
 
             html_links = extract_links_from_html(content)
@@ -307,27 +331,27 @@ def get_nodes_with_playwright(url):
             for link in script_links:
                 parsed_node = parse_node(link)
                 if parsed_node: nodes.append(parsed_node)
-
+            
             lines = content.splitlines()
             for line in lines:
                 line = line.strip()
                 if not line or line.startswith('#'): continue
+                
                 parsed_node = parse_node(line)
                 if parsed_node:
                     nodes.append(parsed_node)
                     continue
+                
                 try:
                     decoded_line = base64.b64decode(line.strip().encode('utf-8')).decode('utf-8')
                     parsed_node = parse_node(decoded_line)
                     if parsed_node: nodes.append(parsed_node)
                 except (base64.binascii.Error, UnicodeDecodeError, ValueError):
                     pass
-
         if nodes:
             print(f"Playwright 成功从 {url} 找到 {len(nodes)} 个节点。")
     except Exception as e:
-        with open(LOG_FILE, 'a', encoding='utf-8') as f:
-            f.write(f"使用 Playwright 处理 {url} 时发生错误: {e}\n")
+        log_error(f"使用 Playwright 处理 {url} 时发生错误: {e}")
     return nodes
 
 def is_valid_url(url):
@@ -342,8 +366,7 @@ def get_nodes_from_url(url):
             full_url = f"{scheme}{url}"
         
         if not is_valid_url(full_url):
-            with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"无效 URL: {full_url}\n")
+            log_error(f"无效 URL: {full_url}")
             continue
         
         try:
@@ -354,21 +377,27 @@ def get_nodes_from_url(url):
             content = response.text
 
             nodes = []
+            
+            # 尝试解析 YAML
             try:
                 config = yaml.safe_load(content)
                 if isinstance(config, dict) and 'proxies' in config:
-                    return [node for node in config['proxies'] if parse_node_from_dict(node)]
+                    parsed_nodes = [validate_node(node) for node in config['proxies']]
+                    return [node for node in parsed_nodes if node]
             except yaml.YAMLError:
                 pass
-
+            
+            # 尝试解析纯文本或 Base64
             lines = content.splitlines()
             for line in lines:
                 line = line.strip()
                 if not line or line.startswith('#'): continue
+                
                 parsed_node = parse_node(line)
                 if parsed_node:
                     nodes.append(parsed_node)
                     continue
+                
                 try:
                     decoded_line = base64.b64decode(line.strip().encode('utf-8')).decode('utf-8')
                     parsed_node = parse_node(decoded_line)
@@ -378,6 +407,7 @@ def get_nodes_from_url(url):
             
             if nodes: return nodes
             
+            # 尝试解析 HTML
             html_links = extract_links_from_html(content)
             for link in html_links:
                 parsed_node = parse_node(link)
@@ -385,6 +415,7 @@ def get_nodes_from_url(url):
             
             if nodes: return nodes
             
+            # 尝试解析 JavaScript
             script_links = extract_links_from_script(content)
             for link in script_links:
                 parsed_node = parse_node(link)
@@ -392,6 +423,7 @@ def get_nodes_from_url(url):
             
             if nodes: return nodes
 
+            # 目录列表
             if '<title>Index of /</title>' in content or '<h1>Index of' in content:
                 parser = DirectoryLinkParser()
                 parser.feed(content)
@@ -404,58 +436,20 @@ def get_nodes_from_url(url):
                             sub_nodes = future.result()
                             if sub_nodes:
                                 all_sub_nodes.extend(sub_nodes)
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            log_error(f"处理目录链接 {urljoin(full_url, future_to_url[future])} 时发生错误: {e}")
                 if all_sub_nodes: return all_sub_nodes
             
-            if not nodes:
-                print(f"使用 Playwright 渲染 {full_url}")
-                nodes = get_nodes_with_playwright(full_url)
-                if nodes:
-                    print(f"Playwright 成功从 {full_url} 找到 {len(nodes)} 个节点。")
-                    return nodes
+            # Playwright 备用方案
+            print(f"尝试使用 Playwright 渲染 {full_url}")
+            nodes = get_nodes_with_playwright(full_url)
+            if nodes: return nodes
 
             return []
         except requests.exceptions.RequestException as e:
-            with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"处理 {full_url} 时发生网络错误: {e}\n")
+            log_error(f"处理 {full_url} 时发生网络错误: {e}")
             continue
     return []
-
-def parse_node_from_dict(node):
-    """从 YAML 字典验证节点是否符合官方要求"""
-    node_type = node.get('type')
-    if node_type == 'ss':
-        required = {'server', 'port', 'cipher', 'password'}
-        if not all(k in node for k in required) or node.get('cipher') not in VALID_SS_CIPHERS or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'vmess':
-        required = {'server', 'port', 'uuid', 'cipher', 'alterId'}
-        if not all(k in node for k in required) or node.get('cipher') not in VALID_VMESS_CIPHERS or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'vless':
-        required = {'server', 'port', 'uuid'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'trojan':
-        required = {'server', 'port', 'password'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'ssr':
-        required = {'server', 'port', 'password', 'cipher', 'protocol', 'obfs'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    elif node_type == 'hysteria2':
-        required = {'server', 'port', 'password'}
-        if not all(k in node for k in required) or not validate_server_port(node.get('server'), node.get('port')):
-            return None
-        return {k: node[k] for k in required}
-    return None
 
 def get_links_from_local_file(filename="link.txt"):
     env_content = os.getenv('LINK_TXT_CONTENT')
@@ -522,9 +516,25 @@ def process_node_with_geolocation(node, geo_locator):
     return node, success
 
 def get_node_key(node):
-    """生成节点的哈希键，仅基于官方要求字段，忽略 name"""
+    """根据协议类型，生成节点的哈希键"""
     node_type = node.get('type')
-    key_dict = {k: node.get(k) for k in node if k != 'name'}
+    if not node_type:
+        return None
+        
+    # 定义每种协议用于去重的核心字段
+    key_fields = {
+        'ss': ['type', 'server', 'port', 'cipher', 'password'],
+        'vmess': ['type', 'server', 'port', 'uuid'],
+        'vless': ['type', 'server', 'port', 'uuid'],
+        'trojan': ['type', 'server', 'port', 'password'],
+        'ssr': ['type', 'server', 'port', 'password', 'cipher', 'protocol', 'obfs'],
+        'hysteria2': ['type', 'server', 'port', 'password']
+    }
+    
+    if node_type not in key_fields:
+        return None
+    
+    key_dict = {field: node.get(field) for field in key_fields[node_type]}
     key_str = json.dumps(key_dict, sort_keys=True)
     return hashlib.sha256(key_str.encode('utf-8')).hexdigest()
 
@@ -548,12 +558,10 @@ if __name__ == "__main__":
                     print(f"\n[成功] 从 {link} 找到 {len(nodes)} 个节点。")
                 else:
                     nodes_summary.append({'link': link, 'node_count': 0})
-                    with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                        f.write(f"从 {link} 未找到任何节点。\n")
+                    log_error(f"从 {link} 未找到任何有效节点。")
             except Exception as e:
                 nodes_summary.append({'link': link, 'node_count': 0})
-                with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                    f.write(f"处理 {link} 时发生错误: {e}\n")
+                log_error(f"处理 {link} 时发生错误: {e}")
 
     # 地理位置识别
     db_path = "GeoLite2-Country.mmdb"
@@ -586,14 +594,13 @@ if __name__ == "__main__":
     
     for node in all_nodes:
         node_key = get_node_key(node)
-        if node_key not in seen_nodes:
+        if node_key and node_key not in seen_nodes:
             seen_nodes.add(node_key)
             base_name = node.get('name', f"{node['type']}-{node.get('server')}-{node.get('port')}")
             node['name'] = generate_unique_name(base_name, name_counts)
             unique_nodes.append(node)
         else:
-            with open(LOG_FILE, 'a', encoding='utf-8') as f:
-                f.write(f"跳过重复节点: {node.get('name', '未命名')} ({node_key})\n")
+            log_error(f"跳过重复或无效节点: {node.get('name', '未命名')} (Key: {node_key})")
 
     if unique_nodes:
         save_to_yaml({'proxies': unique_nodes})
