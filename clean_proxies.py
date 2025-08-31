@@ -26,10 +26,17 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         return ip_regex.match(server) or domain_regex.match(server)
 
     def is_valid_uuid(uuid_str):
-        # 尝试URL解码，然后验证解码后的字符串是否为标准UUID格式
         try:
             decoded_uuid = urllib.parse.unquote(uuid_str)
-            return uuid_regex.match(decoded_uuid) is not None
+            # 标准 UUID 格式
+            if uuid_regex.match(decoded_uuid):
+                return True
+            # 验证百分号编码的 UUID 是否解码后为有效 UUID
+            if '%' in uuid_str:
+                # 移除 % 和连字符，检查是否为 32 个十六进制字符
+                decoded_chars = ''.join(c for c in decoded_uuid if c.lower() in '0123456789abcdef')
+                return len(decoded_chars) == 32
+            return False
         except Exception:
             return False
 
