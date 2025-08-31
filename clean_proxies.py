@@ -6,7 +6,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
     清理并去重代理节点，确保每个节点都有唯一的名称，并进行严格的参数检查。
     """
     required_params = {
-        'vmess': ['type', 'server', 'port', 'uuid', 'alterId'],
+        'vmess': ['type', 'server', 'port', 'uuid', 'alterId', 'cipher'],
         'ss': ['type', 'server', 'port', 'cipher', 'password'],
         'hy2': ['type', 'server', 'port', 'password', 'auth'],
         'hysteria2': ['type', 'server', 'port', 'password', 'auth'],
