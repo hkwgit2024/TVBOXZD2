@@ -594,19 +594,32 @@ async def main():
         os.remove(LOG_FILE)
     
     print("开始处理代理链接...")
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write(f"开始处理代理链接...\n")
 
     links_to_process = []
     
     # 优先从环境变量获取链接，如果不存在则尝试从文件读取
     env_links = os.environ.get('LINK')
     if env_links:
-        links_to_process.extend([link.strip() for link in env_links.split(',') if link.strip()])
+        # 修改点：按行分割 LINK 变量
+        links_to_process.extend([link.strip() for link in env_links.splitlines() if link.strip()])
+        print("从环境变量 LINK 读取的原始值:", env_links)
+        print("按行分割后的链接:", links_to_process)
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"从环境变量 LINK 读取的原始值: {env_links}\n")
+            f.write(f"按行分割后的链接: {links_to_process}\n")
     elif os.path.exists("link.txt"):
         with open("link.txt", 'r', encoding='utf-8') as f:
             links_to_process.extend([line.strip() for line in f if line.strip()])
+        print("从 link.txt 读取的链接:", links_to_process)
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"从 link.txt 读取的链接: {links_to_process}\n")
     
     if not links_to_process:
         print("未找到任何链接。请在环境变量 LINK 中提供，或在 link.txt 文件中提供链接。")
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write("未找到任何链接。请在环境变量 LINK 中提供，或在 link.txt 文件中提供链接。\n")
         return
 
     seen_keys = set()
@@ -627,6 +640,8 @@ async def main():
         geo_locator = GeoLite2Country(db_path)
     else:
         print(f"警告：未找到 {db_path}，无法进行地理位置重命名。")
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"警告：未找到 {db_path}，无法进行地理位置重命名。\n")
 
     # Playwright 页面并发限制
     concurrency_limit = 5
@@ -667,6 +682,8 @@ async def main():
                             
                     except Exception as e:
                         print(f"处理任务时发生意外错误: {e}")
+                        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                            f.write(f"处理任务时发生意外错误: {e}\n")
                         
         await browser.close()
     
@@ -675,8 +692,13 @@ async def main():
 
     print(f"\n去重后共处理 {total_unique_nodes} 个节点。")
     print(f"已将所有节点信息写入 {yaml_file_path} 和 {csv_file_path}。")
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write(f"\n去重后共处理 {total_unique_nodes} 个节点。\n")
+        f.write(f"已将所有节点信息写入 {yaml_file_path} 和 {csv_file_path}。\n")
         
     print("处理完成！")
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write("处理完成！\n")
 
 if __name__ == "__main__":
     asyncio.run(main())
