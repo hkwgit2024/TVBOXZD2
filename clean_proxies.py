@@ -52,6 +52,25 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                     discarded_stats['missing_params'] += 1
                 continue
             
+            # 提取必要参数
+            cleaned_proxy_data = {}
+            params = required_params[proxy_type]
+            
+            # 严格检查所有必要参数是否都存在
+            is_valid = all(param in proxy for param in params if param != 'auth')
+            if not is_valid:
+                discarded_stats['missing_params'] += 1
+                continue
+            
+            for param in params:
+                if param in proxy:
+                    cleaned_proxy_data[param] = proxy[param]
+            
+            # 特别处理 Hysteria2 的 password/auth 兼容性
+            if proxy_type in ['hy2', 'hysteria2']:
+                if 'password' not in cleaned_proxy_data and 'auth' in proxy:
+                    cleaned_proxy_data['password'] = proxy['auth']
+                    
             # 创建唯一的去重键：协议、服务器和端口
             unique_key = (proxy_type, str(server), str(port))
             
@@ -59,25 +78,6 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['duplicates'] += 1
             else:
                 seen_keys.add(unique_key)
-                
-                # 提取必要参数
-                cleaned_proxy_data = {}
-                params = required_params[proxy_type]
-                
-                # 严格检查所有必要参数是否都存在
-                is_valid = all(param in proxy for param in params if param != 'auth')
-                if not is_valid:
-                    discarded_stats['missing_params'] += 1
-                    continue
-                
-                for param in params:
-                    if param in proxy:
-                        cleaned_proxy_data[param] = proxy[param]
-                
-                # 特别处理 Hysteria2 的 password/auth 兼容性
-                if proxy_type in ['hy2', 'hysteria2']:
-                    if 'password' not in cleaned_proxy_data and 'auth' in proxy:
-                        cleaned_proxy_data['password'] = proxy['auth']
 
                 # 增加名称参数
                 if 'name' in proxy and proxy['name']:
