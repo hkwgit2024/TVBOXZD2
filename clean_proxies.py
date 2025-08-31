@@ -2,6 +2,7 @@ import yaml
 import sys
 import re
 import urllib.parse
+import base64
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
@@ -51,9 +52,14 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         except (ValueError, TypeError):
             return False
 
-    def is_valid_password(password):
-        # Password must be a non-empty string
-        return isinstance(password, str) and len(password) > 0
+    def is_valid_password(password, proxy_type):
+        if proxy_type == 'trojan':
+            try:
+                base64.b64decode(password, validate=True)
+                return True
+            except (base64.binascii.Error, TypeError):
+                return False
+        return isinstance(password, str) and len(password) >= 8
 
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
@@ -130,7 +136,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 if param == 'alterId' and not is_valid_alter_id(value):
                     is_valid = False
                     break
-                if param == 'password' and not is_valid_password(str(value)):
+                if param == 'password' and not is_valid_password(str(value), proxy_type):
                     is_valid = False
                     break
             
