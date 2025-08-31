@@ -598,7 +598,7 @@ async def main():
     links_to_process = []
     
     # 优先从环境变量获取链接，如果不存在则尝试从文件读取
-    env_links = os.environ.get('LINK_URLS')
+    env_links = os.environ.get('LINK')
     if env_links:
         links_to_process.extend([link.strip() for link in env_links.split(',') if link.strip()])
     elif os.path.exists("link.txt"):
