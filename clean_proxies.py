@@ -6,8 +6,7 @@ import base64
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
-    Cleans and deduplicates proxy nodes from a YAML file, ensuring unique names
-    and performing strict validation of parameters and their values.
+    从 YAML 文件中清理和去重代理节点，确保名称唯一性并对参数及其值进行严格验证。
     """
     required_params = {
         'vmess': ['type', 'server', 'port', 'uuid', 'alterId', 'cipher'],
@@ -18,7 +17,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         'vless': ['type', 'server', 'port', 'uuid']
     }
     
-    # Define valid ciphers, UUID, domain, and IP regex patterns.
+    # 定义有效的加密方式、UUID、域名和IP正则表达式。
     legal_ciphers = ['chacha20-ietf-poly1305', 'aes-128-gcm', 'aes-256-gcm', 'auto', 'none']
     uuid_regex = re.compile(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
     ip_regex = re.compile(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$')
@@ -29,12 +28,12 @@ def clean_and_deduplicate_proxies(input_file, output_file):
 
     def is_valid_uuid(uuid_str):
         try:
-            # First, attempt URL decoding
+            # 首先，尝试进行 URL 解码
             decoded_uuid = urllib.parse.unquote(uuid_str)
-            # Check for standard UUID format
+            # 检查标准的 UUID 格式
             if uuid_regex.match(decoded_uuid):
                 return True
-            # If it contains '%' but doesn't match standard UUID, check for a 32-char hex string
+            # 如果包含 '%' 但不匹配标准 UUID，则检查是否为32位十六进制字符串
             if '%' in uuid_str:
                 decoded_chars = ''.join(c for c in decoded_uuid if c.lower() in '0123456789abcdef')
                 return len(decoded_chars) == 32
@@ -47,7 +46,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         
     def is_valid_alter_id(alter_id):
         try:
-            # Must be an integer within a standard range
+            # 必须是标准范围内的整数
             return isinstance(alter_id, int) and 0 <= alter_id <= 65535
         except (ValueError, TypeError):
             return False
@@ -56,11 +55,11 @@ def clean_and_deduplicate_proxies(input_file, output_file):
         try:
             port = int(port)
             if proxy_type == 'trojan':
-                # Common ports for Trojan
+                # 常见的 Trojan 端口
                 return port in [80, 443, 8443]
             elif proxy_type in ['hy2', 'hysteria2']:
-                # Hysteria2 is UDP-based, so specific ports might be preferred.
-                # Here we will allow a wider range but a more specific implementation might check for common UDP ports.
+                # Hysteria2 基于 UDP，因此可能会有特定的偏好端口。
+                # 这里我们允许更宽的范围，但更具体的实现可能会检查常见的 UDP 端口。
                 return 1 <= port <= 65535
             return 1 <= port <= 65535
         except (ValueError, TypeError):
@@ -69,13 +68,13 @@ def clean_and_deduplicate_proxies(input_file, output_file):
     def is_valid_password(password, proxy_type):
         if proxy_type == 'trojan':
             try:
-                # Ensure the password is a string and encode it to bytes before decoding Base64.
+                # 在解码 Base64 之前，确保密码是字符串并将其编码为字节串。
                 base64.b64decode(str(password).encode('utf-8'), validate=True)
                 return True
             except (base64.binascii.Error, TypeError):
                 return False
         
-        # For other protocols, require a minimum length of 8 and a mix of letters and numbers.
+        # 对于其他协议，要求最小长度为8，并且包含字母和数字。
         if isinstance(password, str) and len(password) >= 8:
             return bool(re.search(r'[a-zA-Z]', password) and re.search(r'[0-9]', password))
         return False
@@ -110,7 +109,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
 
             proxy_type = proxy.get('type')
             
-            # 1. Check for basic parameters and protocol type
+            # 1. 检查基本参数和协议类型
             if not proxy_type or proxy_type not in required_params:
                 discarded_stats['unsupported_protocol'] += 1
                 continue
@@ -118,12 +117,12 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             server = proxy.get('server')
             port = proxy.get('port')
 
-            # 2. Check for existence of server and port
+            # 2. 检查 server 和 port 是否存在
             if not server or not port:
                 discarded_stats['missing_params'] += 1
                 continue
             
-            # 3. Strict value validation for server and port
+            # 3. 对 server 和 port 进行严格的值验证
             if not is_valid_server(str(server)):
                 discarded_stats['invalid_params'] += 1
                 continue
@@ -132,7 +131,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['invalid_params'] += 1
                 continue
             
-            # 4. Check for necessary parameters and their values based on protocol
+            # 4. 根据协议检查必要的参数及其值
             is_valid = True
             for param in required_params[proxy_type]:
                 value = proxy.get(param)
@@ -140,7 +139,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                     is_valid = False
                     break
                 
-                # Specific parameter validation
+                # 特定参数验证
                 if param == 'uuid' and not is_valid_uuid(str(value)):
                     is_valid = False
                     break
@@ -158,17 +157,17 @@ def clean_and_deduplicate_proxies(input_file, output_file):
                 discarded_stats['invalid_params'] += 1
                 continue
 
-            # Extract only the necessary parameters
+            # 仅提取必要的参数
             cleaned_proxy_data = {}
             for param in required_params[proxy_type]:
                 cleaned_proxy_data[param] = proxy[param]
             
-            # Handle Hysteria2 password/auth compatibility
+            # 处理 Hysteria2 密码/认证兼容性
             if proxy_type in ['hy2', 'hysteria2']:
                 if 'password' not in cleaned_proxy_data and 'auth' in proxy:
                     cleaned_proxy_data['password'] = proxy['auth']
                     
-            # 5. Create unique key and check for duplicates
+            # 5. 创建唯一键并检查重复项
             unique_key = (proxy_type, server, port)
             
             if unique_key in seen_keys:
@@ -176,7 +175,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             else:
                 seen_keys.add(unique_key)
                 
-                # 6. Assign unique names
+                # 6. 分配唯一的名称
                 base_name = f"[{proxy_type.upper()}] {server}:{port}"
                 if base_name not in name_counter:
                     name_counter[base_name] = 1
