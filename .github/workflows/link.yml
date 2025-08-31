@@ -64,18 +64,18 @@ jobs:
             echo "GeoLite2-Country.mmdb found, proceeding."
           fi
         continue-on-error: false
-      - name: Debug environment variables
-        run: |
-          echo "LINK=$LINK"
-          echo "LINK_TXT_CONTENT=${{ vars.link }}"
-          env
+    #  - name: Debug environment variables
+   #     run: |
+    #      echo "LINK=$LINK"
+    #      echo "LINK_TXT_CONTENT=${{ vars.link }}"
+    #      env
       - name: Run the script
         if: github.event.schedule != '0 7 5 * *'
        
         run: python link.py
         env:
-          LINK: ${{ vars.link }}
-         # LINK_TXT_CONTENT: ${{ vars.link }}
+       #   LINK: ${{ vars.link }}
+         LINK_TXT_CONTENT: ${{ vars.link }}
         continue-on-error: true
 
       - name: Commit and push changes
