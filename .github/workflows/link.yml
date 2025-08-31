@@ -38,7 +38,7 @@ jobs:
           pip install playwright
           playwright install
           pip install lxml
-          aiohttp
+          pip aiohttp
 
       - name: Update GeoLite2-Country database on 5th of each month
         if: github.event.schedule == '0 7 5 * *'
