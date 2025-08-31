@@ -17,28 +17,34 @@ jobs:
     - name: 🚀 步骤1：检出代码仓库
       uses: actions/checkout@v4
 
-    - name: ⚙️ 步骤2：设置Python环境
+    - name: 🧹 步骤2：清理GitHub Actions缓存
+      run: |
+        rm -f link_cleaned.yaml
+        rm -f dns_cache.json
+      # 这里可以根据您的其他文件添加更多清理命令
+    
+    - name: ⚙️ 步骤3：设置Python环境
       uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
-    - name: 🛠️ 步骤3：安装依赖库
+    - name: 🛠️ 步骤4：安装依赖库
       run: |
         python -m pip install --upgrade pip
         pip install pyyaml
 
-    - name: 🧹 步骤4：运行清理脚本
+    - name: 🧹 步骤5：运行清理脚本
       run: |
         python clean_proxies.py
 
-    - name: 💾 步骤5：提交清理后的文件
+    - name: 💾 步骤6：提交清理后的文件
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add link_cleaned.yaml
         git commit -m "chore(auto): Clean and update proxy links" || echo "No changes to commit"
 
-    - name: 📤 步骤6：推送更改到仓库
+    - name: 📤 步骤7：推送更改到仓库
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
