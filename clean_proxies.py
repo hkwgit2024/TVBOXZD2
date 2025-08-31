@@ -1,5 +1,5 @@
-import sys
 import yaml
+import sys
 
 def clean_and_deduplicate_proxies(input_file, output_file):
     """
@@ -44,7 +44,7 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             server = proxy.get('server')
             port = proxy.get('port')
             
-            # 检查必要参数和协议
+            # 检查基本参数和协议
             if proxy_type not in required_params or not server or not port:
                 if proxy_type not in required_params:
                     discarded_stats['unsupported_protocol'] += 1
@@ -56,8 +56,8 @@ def clean_and_deduplicate_proxies(input_file, output_file):
             cleaned_proxy_data = {}
             params = required_params[proxy_type]
             
-            # 严格检查所有必要参数是否都存在
-            is_valid = all(param in proxy for param in params if param != 'auth')
+            # 严格检查所有必要参数是否存在且不为空
+            is_valid = all(proxy.get(param) for param in params if param != 'auth')
             if not is_valid:
                 discarded_stats['missing_params'] += 1
                 continue
