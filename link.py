@@ -606,7 +606,7 @@ async def main():
             links_to_process.extend([line.strip() for line in f if line.strip()])
     
     if not links_to_process:
-        print("未找到任何链接。请在环境变量 LINK_URLS 中提供，或在 link.txt 文件中提供链接。")
+        print("未找到任何链接。请在环境变量 LINK 中提供，或在 link.txt 文件中提供链接。")
         return
 
     seen_keys = set()
