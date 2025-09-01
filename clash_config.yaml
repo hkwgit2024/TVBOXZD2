@@ -39,25 +39,6 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] 165.140.216.141:443'
-- type: ss
-  server: arxfw2b78fi2q9hzylhn.freesocks.work
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: Nk9asglDzHzjktVzTkvhaA
-  name: '[SS] arxfw2b78fi2q9hzylhn.freesocks.work:443'
-- type: ss
-  server: switcher-nick-croquet.freesocks.work
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9tqhMdIrTkgQ46PvhyAtMH
-  name: '[SS] switcher-nick-croquet.freesocks.work:443'
-- type: vmess
-  server: 103.151.217.190
-  port: 8080
-  uuid: cb48b2f1-e55c-4fa0-bfba-a46bd824dd07
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 103.151.217.190:8080'
 - type: vless
   server: ger1.kacivil.ir
   port: 443
@@ -71,12 +52,6 @@ proxies:
   cipher: auto
   name: '[VMESS] 165.140.216.141:443 (2)'
 - type: ss
-  server: 193.29.139.177
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.177:8080'
-- type: ss
   server: 185.192.124.188
   port: 990
   cipher: chacha20-ietf-poly1305
@@ -88,6 +63,12 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 45.87.175.28:8080'
+- type: ss
+  server: 45.87.175.154
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  name: '[SS] 45.87.175.154:8080'
 - type: ss
   server: 181.119.30.20
   port: 990
@@ -131,17 +112,17 @@ proxies:
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 103.243.215.17:990'
 - type: ss
+  server: 185.123.101.241
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 185.123.101.241:990'
+- type: ss
   server: 185.231.233.173
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 185.231.233.173:990'
-- type: ss
-  server: 83.147.216.70
-  port: 64519
-  cipher: chacha20-ietf-poly1305
-  password: YXgS8ComTam7qoesPlzlMo
-  name: '[SS] 83.147.216.70:64519'
 - type: ss
   server: 45.87.175.192
   port: 8080
@@ -167,12 +148,6 @@ proxies:
   password: 4a2rfixophdjffa8KVA4Aa
   name: '[SS] 45.87.175.171:8080'
 - type: ss
-  server: 45.87.175.166
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 45.87.175.166:8080'
-- type: ss
   server: 193.29.139.189
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -191,6 +166,12 @@ proxies:
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 193.29.139.235:8080'
 - type: ss
+  server: 64.74.163.130
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 64.74.163.130:990'
+- type: ss
   server: 147.45.178.200
   port: 57456
   cipher: chacha20-ietf-poly1305
@@ -203,25 +184,12 @@ proxies:
   password: JIhN6rBKkaEboLNXVSv5rq
   name: '[SS] 142.4.216.225:80'
 - type: vmess
-  server: 51.38.64.209
-  port: 44023
-  uuid: 7da457da-ed0f-437d-c81d-6c35885bbea3
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 51.38.64.209:44023'
-- type: vmess
   server: 135.125.182.74
   port: 28213
   uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
   alterId: 0
   cipher: auto
   name: '[VMESS] 135.125.182.74:28213'
-- type: ss
-  server: 185.21.14.103
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 185.21.14.103:2222'
 - type: vmess
   server: 15.204.234.200
   port: 41100
@@ -261,101 +229,17 @@ proxies:
   password: 1ce1df7962f71c6f
   name: '[TROJAN] uk-03.allhubb.info:8443'
 - type: ss
-  server: 36.234.97.190
-  port: 10012
-  cipher: chacha20-ietf-poly1305
-  password: ecf2306b-7cee-4428-b506-d0afbdf5034c
-  name: '[SS] 36.234.97.190:10012'
-- type: ss
-  server: 36.232.102.66
-  port: 10098
-  cipher: chacha20-ietf-poly1305
-  password: 1aad42d9-b1da-4e34-addc-44a0cc7c465e
-  name: '[SS] 36.232.102.66:10098'
-- type: ss
-  server: 114.46.116.245
-  port: 10079
-  cipher: chacha20-ietf-poly1305
-  password: cedbb9b8-a681-4b8b-be71-ff30be2e782d
-  name: '[SS] 114.46.116.245:10079'
-- type: ss
   server: 36.232.102.152
   port: 10142
   cipher: chacha20-ietf-poly1305
   password: 1aad42d9-b1da-4e34-addc-44a0cc7c465e
   name: '[SS] 36.232.102.152:10142'
 - type: ss
-  server: 36.235.4.98
-  port: 10096
-  cipher: chacha20-ietf-poly1305
-  password: 8573cfbb-f04c-49cd-be14-fb7da03e23ca
-  name: '[SS] 36.235.4.98:10096'
-- type: ss
-  server: 1.170.1.209
-  port: 10133
-  cipher: chacha20-ietf-poly1305
-  password: 1aad42d9-b1da-4e34-addc-44a0cc7c465e
-  name: '[SS] 1.170.1.209:10133'
-- type: ss
-  server: 118.170.240.247
-  port: 10041
-  cipher: chacha20-ietf-poly1305
-  password: ffb73d37-c1f3-46af-87ce-e43072620863
-  name: '[SS] 118.170.240.247:10041'
-- type: ss
-  server: 36.235.0.63
-  port: 10083
-  cipher: chacha20-ietf-poly1305
-  password: b2203799-ee15-4299-969f-6a3e1efcf441
-  name: '[SS] 36.235.0.63:10083'
-- type: ss
   server: 36.234.118.214
   port: 10074
   cipher: chacha20-ietf-poly1305
   password: 1aad42d9-b1da-4e34-addc-44a0cc7c465e
   name: '[SS] 36.234.118.214:10074'
-- type: ss
-  server: 111.253.210.82
-  port: 10150
-  cipher: chacha20-ietf-poly1305
-  password: b2203799-ee15-4299-969f-6a3e1efcf441
-  name: '[SS] 111.253.210.82:10150'
-- type: ss
-  server: 1.165.121.169
-  port: 10017
-  cipher: chacha20-ietf-poly1305
-  password: cedbb9b8-a681-4b8b-be71-ff30be2e782d
-  name: '[SS] 1.165.121.169:10017'
-- type: ss
-  server: 36.235.2.37
-  port: 10092
-  cipher: chacha20-ietf-poly1305
-  password: ffb73d37-c1f3-46af-87ce-e43072620863
-  name: '[SS] 36.235.2.37:10092'
-- type: ss
-  server: 118.170.229.112
-  port: 10030
-  cipher: chacha20-ietf-poly1305
-  password: 8573cfbb-f04c-49cd-be14-fb7da03e23ca
-  name: '[SS] 118.170.229.112:10030'
-- type: ss
-  server: 125.228.162.233
-  port: 10145
-  cipher: chacha20-ietf-poly1305
-  password: 1aad42d9-b1da-4e34-addc-44a0cc7c465e
-  name: '[SS] 125.228.162.233:10145'
-- type: ss
-  server: 125.229.191.103
-  port: 10023
-  cipher: chacha20-ietf-poly1305
-  password: ecf2306b-7cee-4428-b506-d0afbdf5034c
-  name: '[SS] 125.229.191.103:10023'
-- type: ss
-  server: 111.253.200.231
-  port: 10126
-  cipher: chacha20-ietf-poly1305
-  password: 8573cfbb-f04c-49cd-be14-fb7da03e23ca
-  name: '[SS] 111.253.200.231:10126'
 - type: ss
   server: 154.17.21.139
   port: 10086
@@ -394,12 +278,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 79.127.233.170:990'
-- type: ss
-  server: 223.165.4.173
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 223.165.4.173:990'
 - type: vmess
   server: 45.121.48.174
   port: 20788
@@ -419,12 +297,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 195.181.160.6:990'
-- type: ss
-  server: 185.245.107.250
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 185.245.107.250:2222'
 - type: vmess
   server: 62.146.235.193
   port: 28011
@@ -432,13 +304,6 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] 62.146.235.193:28011'
-- type: vmess
-  server: 82.197.69.131
-  port: 39674
-  uuid: 5a89386a-827b-4f54-8778-2f1b5122c6ef
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 82.197.69.131:39674'
 - type: ss
   server: 185.47.253.227
   port: 990
@@ -470,26 +335,6 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] 38.60.134.249:443'
-- type: vmess
-  server: 216.227.168.157
-  port: 45417
-  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 216.227.168.157:45417'
-- type: vmess
-  server: lt.fxlcn.com
-  port: 45417
-  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] lt.fxlcn.com:45417'
-- type: ss
-  server: 91.84.104.133
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 91.84.104.133:2222'
 - type: ss
   server: 213.109.147.242
   port: 62685
@@ -521,13 +366,6 @@ proxies:
   password: ljqdalu13..
   name: '[SS] 18.162.146.85:8319'
 - type: vmess
-  server: 188.208.141.177
-  port: 443
-  uuid: 0970834f-5b4d-44da-d890-19dcb2a72d4c
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 188.208.141.177:443'
-- type: vmess
   server: 154.93.37.21
   port: 443
   uuid: 64a37ce5-e713-4ad4-c1de-b68761e9fef6
@@ -541,12 +379,6 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] ye.fxlcn.com:45245'
-- type: ss
-  server: 77.110.110.117
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9JeYy8SkViXuSHVs9GFeSe
-  name: '[SS] 77.110.110.117:443'
 - type: ss
   server: 45.87.175.181
   port: 8080
@@ -566,12 +398,6 @@ proxies:
   password: QCXDxuDlTTMD7jtgHUjIoj
   name: '[SS] 45.87.175.157:8080'
 - type: ss
-  server: 45.87.175.69
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.69:8080'
-- type: ss
   server: 45.87.175.164
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -589,12 +415,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 45.87.175.35:8080'
-- type: ss
-  server: 45.87.175.92
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.92:8080'
 - type: ss
   server: 45.87.175.65
   port: 8080
@@ -692,18 +512,6 @@ proxies:
   password: QCXDxuDlTTMD7jtgHUjIoj
   name: '[SS] 193.29.139.217:8080'
 - type: ss
-  server: 193.29.139.138
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.138:8080'
-- type: ss
-  server: 193.29.139.251
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.251:8080'
-- type: ss
   server: 151.242.251.144
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -751,13 +559,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: 360e21d21977dc11
   name: '[SS] 45.139.24.24:57456'
-- type: vmess
-  server: lt.fxlcn.com
-  port: 45287
-  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] lt.fxlcn.com:45287'
 - type: ss
   server: 154.205.159.100
   port: 990
@@ -765,41 +566,11 @@ proxies:
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 154.205.159.100:990'
 - type: ss
-  server: 94.131.21.174
-  port: 54075
-  cipher: chacha20-ietf-poly1305
-  password: o38yuvzSe3m5aDNpHtUPH1zGwbGEXXMDsGwVaub2SYEmHUa2WGZUjiezX3Vvva9CCzpjxYtuJLgKsSnsyKBf9ciPVba3y4o3
-  name: '[SS] 94.131.21.174:54075'
-- type: ss
-  server: 23.157.40.101
-  port: 8000
-  cipher: aes-256-gcm
-  password: KixLvKzwjekG00rm
-  name: '[SS] 23.157.40.101:8000'
-- type: ss
-  server: 104.167.197.25
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] 104.167.197.25:57456'
-- type: ss
-  server: 23.157.40.101
-  port: 8009
-  cipher: aes-256-gcm
-  password: XKFKl2rULjIp74
-  name: '[SS] 23.157.40.101:8009'
-- type: ss
   server: exchange.gameaurela.click
   port: 52952
   cipher: chacha20-ietf-poly1305
   password: LMSNh21TrXjR2ok25Q2nE8ENT2zoBmPvka3RCCUAHZELCnWoekVjvaf89qwcRkdbxEfep2bc2aUtmnxqvF1ayQRez1JHjULj
   name: '[SS] exchange.gameaurela.click:52952'
-- type: ss
-  server: beta.mattenadene.org
-  port: 54075
-  cipher: chacha20-ietf-poly1305
-  password: o38yuvzSe3m5aDNpHtUPH1zGwbGEXXMDsGwVaub2SYEmHUa2WGZUjiezX3Vvva9CCzpjxYtuJLgKsSnsyKBf9ciPVba3y4o3
-  name: '[SS] beta.mattenadene.org:54075'
 - type: ss
   server: 45.158.171.66
   port: 8080
@@ -813,26 +584,19 @@ proxies:
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 45.158.171.70:8080'
 - type: vmess
+  server: 38.102.7.181
+  port: 24528
+  uuid: eab989e0-0622-4d37-9c41-1fdda8d988fc
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] 38.102.7.181:24528'
+- type: vmess
   server: 38.12.83.217
   port: 30002
   uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
   alterId: 64
   cipher: auto
   name: '[VMESS] 38.12.83.217:30002'
-- type: vmess
-  server: 103.124.107.144
-  port: 29800
-  uuid: cc31ddfc-d92e-4dab-cd06-00dfb84af8ac
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 103.124.107.144:29800'
-- type: vmess
-  server: 2.58.87.221
-  port: 46628
-  uuid: f6ba9e5a-711c-496f-be60-ac5464dec2b8
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 2.58.87.221:46628'
 - type: trojan
   server: myvps.lol
   port: 443
@@ -856,35 +620,17 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
   name: '[SS] 193.29.139.157:8080'
-- type: ss
-  server: 83.217.9.128
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 83.217.9.128:2222'
 - type: vless
   server: 172.234.192.79
   port: 2321
   uuid: 4c266060-28aa-4fd4-8286-86127e16b260
   name: '[VLESS] 172.234.192.79:2321'
 - type: ss
-  server: promo6v.bystrivpn.ru
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9JeYy8SkViXuSHVs9GFeSe
-  name: '[SS] promo6v.bystrivpn.ru:443'
-- type: ss
   server: 193.46.56.185
   port: 6683
   cipher: chacha20-ietf-poly1305
   password: iw8GoN42dciNxDBd0RwAdL
   name: '[SS] 193.46.56.185:6683'
-- type: ss
-  server: 92.112.126.90
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 9tqhMdIrTkgQ46PvhyAtMH
-  name: '[SS] 92.112.126.90:443'
 - type: ss
   server: 141.164.63.32
   port: 30936
@@ -912,11 +658,6 @@ proxies:
   cipher: auto
   name: '[VMESS] 94.136.185.230:10534'
 - type: vless
-  server: 54.37.205.0
-  port: 59332
-  uuid: d2dc2527-33d5-46f3-f39c-36da72fb1a62
-  name: '[VLESS] 54.37.205.0:59332'
-- type: vless
   server: 45.88.183.156
   port: 12794
   uuid: 08704c01-7edb-454a-98a2-328ccb9936fa
@@ -928,19 +669,19 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] 45.67.230.79:11052'
-- type: vmess
-  server: fa.fxlcn.com
-  port: 45208
-  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] fa.fxlcn.com:45208'
 - type: ss
   server: 185.177.229.245
   port: 1866
   cipher: chacha20-ietf-poly1305
   password: oXGp1+ihlfKg826H
   name: '[SS] 185.177.229.245:1866'
+- type: vmess
+  server: lt.fxlcn.com
+  port: 45228
+  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] lt.fxlcn.com:45228'
 - type: ss
   server: 81.19.137.222
   port: 57456
@@ -954,17 +695,23 @@ proxies:
   password: oXGp1+ihlfKg826H
   name: '[SS] 204.136.10.115:1866'
 - type: ss
-  server: 103.111.114.29
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] 103.111.114.29:57456'
-- type: ss
   server: 193.29.139.227
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
   name: '[SS] 193.29.139.227:8080'
+- type: ss
+  server: ss.036.node-for-bigairport.win
+  port: 16688
+  cipher: aes-256-gcm
+  password: 5f00e880-45d9-444c-af13-12820eb13ffc
+  name: '[SS] ss.036.node-for-bigairport.win:16688'
+- type: ss
+  server: 38.107.226.159
+  port: 2376
+  cipher: aes-256-gcm
+  password: faBAoD54k87UJG7
+  name: '[SS] 38.107.226.159:2376'
 - type: ss
   server: 193.29.139.173
   port: 8080
@@ -977,24 +724,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: 360e21d21977dc11
   name: '[SS] 185.193.102.7:57456'
-- type: ss
-  server: 216.173.70.187
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] 216.173.70.187:57456'
-- type: ss
-  server: 45.144.49.140
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] 45.144.49.140:57456'
-- type: ss
-  server: 45.87.175.167
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 45.87.175.167:8080'
 - type: ss
   server: desrv.vmagnum.win
   port: 57456
@@ -1026,6 +755,12 @@ proxies:
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 64.74.163.218:990'
 - type: ss
+  server: desrv.ssvpnapp.win
+  port: 57456
+  cipher: chacha20-ietf-poly1305
+  password: fe166c5b3465540f
+  name: '[SS] desrv.ssvpnapp.win:57456'
+- type: ss
   server: 64.176.85.73
   port: 1866
   cipher: chacha20-ietf-poly1305
@@ -1037,24 +772,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 193.29.139.168:8080'
-- type: ss
-  server: 45.87.175.10
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.10:8080'
-- type: ss
-  server: 62.133.63.226
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 62.133.63.226:2222'
-- type: ss
-  server: 83.217.9.125
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 83.217.9.125:2222'
 - type: ss
   server: 82.180.146.173
   port: 30607
@@ -1072,11 +789,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: 2df393ef-b5fa-4ffd-9af3-761034bf33e3
   name: '[SS] 192.53.172.74:30013'
-- type: vless
-  server: cdn29.saloonak.ir
-  port: 8443
-  uuid: 789d4f30-c31b-4762-8116-ed42574d5e85
-  name: '[VLESS] cdn29.saloonak.ir:8443'
 - type: ss
   server: 65.20.115.194
   port: 808
@@ -1152,12 +864,6 @@ proxies:
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 176.103.53.105:990'
 - type: ss
-  server: 185.47.253.171
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.47.253.171:990'
-- type: ss
   server: 192.36.61.59
   port: 990
   cipher: chacha20-ietf-poly1305
@@ -1175,18 +881,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
   name: '[SS] 193.29.139.132:8080'
-- type: ss
-  server: 193.29.139.133
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 193.29.139.133:8080'
-- type: ss
-  server: 193.29.139.143
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 1RWwXhwfAB5gAEozU4G2Pg
-  name: '[SS] 193.29.139.143:8080'
 - type: ss
   server: 193.29.139.144
   port: 8080
@@ -1218,12 +912,6 @@ proxies:
   password: 1RWwXhwfAB5gAEozU4G2Pg
   name: '[SS] 193.29.139.175:8080'
 - type: ss
-  server: 193.29.139.206
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.206:8080'
-- type: ss
   server: 193.29.139.209
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -1235,12 +923,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
   name: '[SS] 193.29.139.233:8080'
-- type: ss
-  server: 2.59.163.105
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 2.59.163.105:2222'
 - type: ss
   server: 2.ilgm.saint.ydns.eu
   port: 8080
@@ -1260,6 +942,12 @@ proxies:
   password: f8f7aCzcPKbsF8p3
   name: '[SS] 38.54.2.182:990'
 - type: ss
+  server: 38.54.30.197
+  port: 808
+  cipher: chacha20-ietf-poly1305
+  password: tvX1v#NSFP_LG_bJ
+  name: '[SS] 38.54.30.197:808'
+- type: ss
   server: 45.87.175.165
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -1278,18 +966,6 @@ proxies:
   password: QCXDxuDlTTMD7jtgHUjIoj
   name: '[SS] 45.87.175.180:8080'
 - type: ss
-  server: 46.183.185.15
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 46.183.185.15:990'
-- type: ss
-  server: 62.60.233.173
-  port: 2222
-  cipher: chacha20-ietf-poly1305
-  password: qscavF5UviIL-8V-E4raBA
-  name: '[SS] 62.60.233.173:2222'
-- type: ss
   server: 64.176.184.129
   port: 1866
   cipher: chacha20-ietf-poly1305
@@ -1301,30 +977,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: gqkUCvmeOTghYJXF1YIuk5
   name: '[SS] 71.19.148.74:443'
-- type: ss
-  server: de.vpnsparta.pro
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: c40641c1f89e7acb
-  name: '[SS] de.vpnsparta.pro:57456'
-- type: ss
-  server: hackney-latest-strike.freesocks.work
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: XUMTygEM1jVYIvysXKqA5T
-  name: '[SS] hackney-latest-strike.freesocks.work:443'
-- type: ss
-  server: id.vpnsparta.pro
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] id.vpnsparta.pro:57456'
-- type: ss
-  server: ltnl11.saint.ydns.eu
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] ltnl11.saint.ydns.eu:8080'
 - type: ss
   server: ltnl12.saint.ydns.eu
   port: 8080
@@ -1338,12 +990,6 @@ proxies:
   password: cvII85TrW6n0OGyfpHVS1u
   name: '[SS] ltnl13.saint.ydns.eu:8080'
 - type: ss
-  server: ltnl15.saint.ydns.eu
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] ltnl15.saint.ydns.eu:8080'
-- type: ss
   server: ltnl16.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
@@ -1356,59 +1002,17 @@ proxies:
   password: cvII85TrW6n0OGyfpHVS1u
   name: '[SS] ltnl17.saint.ydns.eu:8080'
 - type: ss
-  server: lv.vmagnum.win
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: a58fa62b4944ddbf
-  name: '[SS] lv.vmagnum.win:57456'
-- type: ss
-  server: lv.vpnsparta.pro
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] lv.vpnsparta.pro:57456'
-- type: ss
-  server: pl.vmagnum.win
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: a58fa62b4944ddbf
-  name: '[SS] pl.vmagnum.win:57456'
-- type: ss
-  server: pl.vpnsparta.pro
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] pl.vpnsparta.pro:57456'
-- type: ss
   server: pupas-shirting-unsung.freesocks.work
   port: 443
   cipher: chacha20-ietf-poly1305
   password: p78naCf2EfOlRSLTX0wFVx
   name: '[SS] pupas-shirting-unsung.freesocks.work:443'
 - type: ss
-  server: rusrv.vmagnum.win
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: a58fa62b4944ddbf
-  name: '[SS] rusrv.vmagnum.win:57456'
-- type: ss
   server: rusrv.vpnsparta.pro
   port: 57456
   cipher: chacha20-ietf-poly1305
   password: 360e21d21977dc11
   name: '[SS] rusrv.vpnsparta.pro:57456'
-- type: ss
-  server: us.vmagnum.win
-  port: 57456
-  cipher: chacha20-ietf-poly1305
-  password: 360e21d21977dc11
-  name: '[SS] us.vmagnum.win:57456'
-- type: ss
-  server: vip.nl-16-07.galaxymc-ssh.ir
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
 - type: trojan
   server: www.ddwhm.com
   port: 443
@@ -1430,6 +1034,16 @@ proxies:
   uuid: 45471789-5063-4721-949a-7d3fdaa07b9f
   name: '[VLESS] 165.227.149.23:49968'
 - type: vless
+  server: 38.244.163.100
+  port: 35048
+  uuid: 5690f021-86a7-4712-b143-7944c7380436
+  name: '[VLESS] 38.244.163.100:35048'
+- type: vless
+  server: cdn25.saloonak.ir
+  port: 8443
+  uuid: 789d4f30-c31b-4762-8116-ed42574d5e85
+  name: '[VLESS] cdn25.saloonak.ir:8443'
+- type: vless
   server: tab1.mgpingmg.shop
   port: 8880
   uuid: 9ac0168d-dffd-44bf-87cb-ad16055ca8cc
@@ -1440,20 +1054,10 @@ proxies:
   uuid: d3daa900-0377-4575-9ebc-c4d88cb8486c
   name: '[VLESS] 45.88.183.158:44629'
 - type: vless
-  server: 109.120.132.142
-  port: 40617
-  uuid: d8d05386-e381-40a4-bb63-715c208b3ed3
-  name: '[VLESS] 109.120.132.142:40617'
-- type: vless
   server: 172.105.57.184
   port: 2321
   uuid: da1668a7-3a7f-405d-874e-c28652c68c4d
   name: '[VLESS] 172.105.57.184:2321'
-- type: vless
-  server: 45.88.183.164
-  port: 49355
-  uuid: ef246c6f-6e7d-4286-af33-5485544b0ba8
-  name: '[VLESS] 45.88.183.164:49355'
 - type: vmess
   server: 146.56.112.110
   port: 8888
@@ -1461,11 +1065,30 @@ proxies:
   alterId: 0
   cipher: auto
   name: '[VMESS] 146.56.112.110:8888'
+- type: vmess
+  server: 216.227.168.157
+  port: 45263
+  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] 216.227.168.157:45263'
+- type: vmess
+  server: 216.227.168.157
+  port: 45273
+  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] 216.227.168.157:45273'
 - type: vless
   server: 172.234.221.94
   port: 56224
   uuid: e3d0de50-7673-4d13-be7b-e508632ed430
   name: '[VLESS] 172.234.221.94:56224'
+- type: vless
+  server: 38.47.176.134
+  port: 59967
+  uuid: a19fd311-c343-4b54-9ca3-fe6dcd84c0fc
+  name: '[VLESS] 38.47.176.134:59967'
 - type: vless
   server: 78.47.239.61
   port: 8880
@@ -1488,11 +1111,6 @@ proxies:
   cipher: chacha20-ietf-poly1305
   password: 741ddced-e6ee-4175-9c1a-e524009f9045
   name: '[SS] 144.126.146.38:30100'
-- type: vless
-  server: cdn27.saloonak.ir
-  port: 8443
-  uuid: 789d4f30-c31b-4762-8116-ed42574d5e85
-  name: '[VLESS] cdn27.saloonak.ir:8443'
 proxy-groups:
 - name: 节点选择
   type: select
@@ -1505,248 +1123,185 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[VMESS] 103.124.107.144:29800'
-  - '[SS] 154.17.21.139:10086'
-  - '[SS] 154.44.15.133:44642'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 79.127.233.170:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 64.74.163.218:990'
-  - '[SS] 114.46.116.245:10079'
-  - '[SS] 64.74.163.82:990'
-  - '[SS] hackney-latest-strike.freesocks.work:443'
-  - '[VMESS] 165.140.216.141:443 (2)'
-  - '[VMESS] 15.204.234.200:41100'
-  - '[SS] 104.192.226.106:990'
-  - '[SS] 71.19.148.74:443'
-  - '[SS] 111.253.200.231:10126'
-  - '[SS] 147.78.1.27:990'
-  - '[SS] 1.170.1.209:10133'
-  - '[SS] 45.87.175.166:8080'
-  - '[SS] 45.87.175.28:8080'
-  - '[SS] 36.235.4.98:10096'
-  - '[SS] 142.4.216.225:80'
-  - '[SS] 185.245.107.250:2222'
-  - '[VLESS] 172.234.221.94:56224'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[VLESS] 78.47.239.61:8880'
-  - '[SS] 45.87.175.69:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 45.87.175.181:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[VMESS] 103.57.249.204:443'
-  - '[SS] 144.126.146.38:30941'
-  - '[SS] 185.192.124.188:990'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 38.54.112.154:808'
-  - '[SS] 45.87.175.164:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 77.110.110.117:443'
-  - '[SS] 18.162.146.85:8313'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 193.29.139.168:8080'
-  - '[VLESS] 172.234.192.79:2321'
-  - '[SS] 45.87.175.175:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 45.87.175.180:8080'
-  - '[SS] 38.165.233.18:990'
-  - '[SS] 45.87.175.157:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[VMESS] ye.fxlcn.com:45245'
-  - '[SS] 45.87.175.190:8080'
-  - '[TROJAN] www.ddwhm.com:443'
-  - '[SS] 77.105.166.12:8594'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 151.242.251.131:8080'
-  - '[SS] 81.19.137.222:57456'
-  - '[SS] 193.29.139.160:8080'
-  - '[SS] 103.104.247.49:8080'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] 92.118.205.228:990'
-  - '[VMESS] 51.79.86.182:42610'
-  - '[SS] 45.87.175.178:8080'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 36.235.0.63:10083'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 65.20.115.194:808'
-  - '[SS] 95.163.176.37:8506'
-  - '[SS] 213.109.147.242:62685'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 45.87.175.199:8080'
-  - '[SS] 45.87.175.171:8080'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 154.205.159.100:990'
-  - '[SS] 2.59.163.105:2222'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 193.46.56.185:6683'
-  - '[SS] 45.158.171.70:8080'
-  - '[VMESS] 146.56.112.110:8888'
-  - '[SS] 193.29.139.138:8080'
-  - '[SS] 144.126.146.38:30100'
-  - '[VMESS] 38.60.134.249:443'
-  - '[SS] 125.228.162.233:10145'
-  - '[SS] 185.231.233.173:990'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[SS] 193.29.139.157:8080'
-  - '[SS] 185.193.102.7:57456'
-  - '[SS] 45.158.171.66:8080'
-  - '[SS] lv.vmagnum.win:57456'
-  - '[VMESS] 46.250.243.56:50394'
-  - '[SS] 45.87.175.10:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 36.232.102.66:10098'
-  - '[SS] 193.29.139.202:8080'
   - '[SS] 45.87.175.65:8080'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[SS] 185.47.253.227:990'
-  - '[SS] 141.98.4.67:52952'
-  - '[SS] 18.162.146.85:8316'
-  - '[SS] 193.29.139.251:8080'
-  - '[SS] 64.176.85.73:1866'
-  - '[VLESS] 135.125.182.74:38413'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 62.60.233.173:2222'
-  - '[SS] 103.104.247.47:8080'
-  - '[SS] 192.53.172.74:30013'
-  - '[SS] 1.165.121.169:10017'
-  - '[SS] 193.29.139.132:8080'
-  - '[SS] 36.234.97.190:10012'
-  - '[SS] 193.29.139.177:8080'
+  - '[VMESS] 165.140.216.141:443 (2)'
+  - '[SS] 64.74.163.82:990'
+  - '[SS] 142.4.216.225:80'
+  - '[SS] 149.28.212.97:808'
+  - '[VMESS] 51.79.86.182:42610'
   - '[VMESS] 85.195.101.122:40878'
-  - '[VLESS] 45.130.214.192:20992'
-  - '[VMESS] lt.fxlcn.com:45417'
-  - '[SS] 83.217.9.125:2222'
-  - '[VMESS] 103.151.217.190:8080'
-  - '[VLESS] 172.105.57.184:2321'
-  - '[SS] 103.104.247.45:8080'
-  - '[VMESS] fa.fxlcn.com:45208'
-  - '[SS] 193.29.139.206:8080'
-  - '[SS] 45.87.175.165:8080'
-  - '[SS] ca225.vpnbook.com:80'
-  - '[SS] 91.84.104.133:2222'
-  - '[VMESS] 45.67.230.79:11052'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 118.170.229.112:10030'
-  - '[SS] 111.253.210.82:10150'
-  - '[SS] 36.234.118.214:10074'
-  - '[SS] 36.232.102.152:10142'
-  - '[SS] 193.29.139.189:8080'
-  - '[SS] 181.119.30.20:990'
-  - '[SS] 104.167.197.25:57456'
-  - '[SS] 185.21.14.103:2222'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 193.29.139.235:8080'
-  - '[SS] 216.173.70.187:57456'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] 82.180.146.173:30607'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 119.59.98.58:990'
-  - '[VLESS] 54.37.205.0:59332'
-  - '[VMESS] 216.227.168.157:45417'
-  - '[SS] 160.19.78.75:443'
-  - '[VLESS] 109.120.132.142:40617'
-  - '[SS] 83.217.9.128:2222'
-  - '[VMESS] 62.146.235.193:28011'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] 45.87.175.200:8080'
-  - '[SS] 103.163.218.2:990'
-  - '[SS] 193.29.139.209:8080'
-  - '[SS] 45.144.49.140:57456'
-  - '[SS] 18.162.146.85:8319'
-  - '[SS] 118.170.240.247:10041'
-  - '[VMESS] 2.58.87.221:46628'
-  - '[SS] 141.164.63.32:30936'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 64.74.163.130:990'
+  - '[SS] 103.104.247.47:8080'
+  - '[VLESS] 172.234.192.79:2321'
+  - '[SS] 154.17.21.139:10086'
   - '[SS] 64.176.184.129:1866'
-  - '[SS] 193.29.139.240:8080'
-  - '[SS] 195.181.160.6:990'
-  - '[VMESS] 45.121.48.174:20788'
-  - '[SS] 36.235.2.37:10092'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 185.47.253.171:990'
-  - '[SS] 208.67.105.196:42029'
-  - '[SS] 45.87.175.188:8080'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] 45.87.175.192:8080'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[SS] 83.147.216.70:64519'
-  - '[SS] 94.131.21.174:54075'
-  - '[SS] 185.47.255.22:990'
-  - '[VLESS] tab1.mgpingmg.shop:8880'
-  - '[SS] 45.87.175.183:8080'
-  - '[SS] 103.111.114.29:57456'
-  - '[SS] de.vpnsparta.pro:57456'
-  - '[TROJAN] myvps.lol:443'
-  - '[SS] 45.139.24.24:57456'
-  - '[VMESS] lt.fxlcn.com:45287'
-  - '[SS] rusrv.vpnsparta.pro:57456'
-  - '[SS] pl.vmagnum.win:57456'
-  - '[SS] 45.87.175.35:8080'
-  - '[SS] 62.133.63.226:2222'
-  - '[SS] 45.158.171.110:8080'
-  - '[SS] 204.136.10.115:1866'
-  - '[SS] rusrv.vmagnum.win:57456'
-  - '[SS] 185.47.254.87:990'
-  - '[SS] 45.87.175.167:8080'
-  - '[SS] 193.29.139.133:8080'
-  - '[VMESS] 154.93.37.21:443'
-  - '[SS] beesyar.org:8080'
-  - '[SS] 147.45.178.200:57456'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[VLESS] cdn29.saloonak.ir:8443'
-  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
-  - '[TROJAN] uk-03.allhubb.info:8443'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[SS] 134.209.147.198:990'
-  - '[VLESS] cdn27.saloonak.ir:8443'
-  - '[VMESS] 89.31.120.192:443'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 38.54.2.182:990'
-  - '[SS] pl.vpnsparta.pro:57456'
-  - '[VMESS] 38.54.14.110:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 134.255.210.49:990'
-  - '[SS] 193.29.139.175:8080'
-  - '[VLESS] 45.88.183.164:49355'
-  - '[SS] ltnl15.saint.ydns.eu:8080'
-  - '[SS] beta.mattenadene.org:54075'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
   - '[VLESS] 165.227.149.23:49968'
-  - '[SS] 23.157.40.101:8000'
-  - '[SS] 169.150.202.174:990'
+  - '[SS] 193.29.139.233:8080'
+  - '[SS] 193.29.139.240:8080'
+  - '[SS] 45.158.171.70:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[VMESS] 38.12.83.217:30002'
+  - '[SS] 79.127.233.170:990'
+  - '[VLESS] 38.244.163.100:35048'
+  - '[SS] 65.20.115.194:808'
+  - '[SS] 104.192.226.106:990'
+  - '[SS] 193.29.139.235:8080'
+  - '[SS] 144.126.146.38:30941'
+  - '[VMESS] 165.140.216.141:443'
+  - '[SS] 38.107.226.159:2376'
+  - '[SS] 185.193.102.7:57456'
+  - '[SS] 103.104.247.49:8080'
+  - '[VMESS] 38.102.7.181:24528'
+  - '[SS] 151.242.251.131:8080'
+  - '[SS] 193.29.139.164:8080'
+  - '[SS] 154.44.15.133:44642'
+  - '[VMESS] 38.60.134.249:443'
+  - '[SS] 185.192.124.188:990'
   - '[SS] 176.103.53.105:990'
-  - '[SS] ltnl12.saint.ydns.eu:8080'
-  - '[SS] promo6v.bystrivpn.ru:443'
-  - '[VMESS] 82.197.69.131:39674'
-  - '[SS] arxfw2b78fi2q9hzylhn.freesocks.work:443'
-  - '[SS] lv.vpnsparta.pro:57456'
-  - '[SS] us.vmagnum.win:57456'
-  - '[SS] ltnl17.saint.ydns.eu:8080'
-  - '[SS] ltnl13.saint.ydns.eu:8080'
-  - '[SS] 192.71.166.102:990'
-  - '[SS] switcher-nick-croquet.freesocks.work:443'
-  - '[SS] exchange.gameaurela.click:52952'
-  - '[SS] ru.vmagnum.win:57456'
-  - '[SS] 145.14.131.37:990'
-  - '[SS] 23.157.40.101:8009'
-  - '[SS] 46.183.185.15:990'
-  - '[SS] 92.112.126.90:443'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] id.vpnsparta.pro:57456'
-  - '[SS] 223.165.4.173:990'
-  - '[VMESS] 188.208.141.177:443'
+  - '[SS] 193.29.139.202:8080'
+  - '[SS] 45.158.171.110:8080'
+  - '[SS] 95.163.176.37:8506'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 45.158.171.60:8080'
+  - '[VMESS] lt.fxlcn.com:45228'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.144:8080'
+  - '[SS] 195.181.160.6:990'
+  - '[SS] 193.29.139.175:8080'
+  - '[SS] 193.29.139.157:8080'
+  - '[SS] 193.29.139.209:8080'
+  - '[VLESS] 172.234.221.94:56224'
+  - '[SS] 38.165.233.18:990'
+  - '[SS] 64.74.163.218:990'
+  - '[SS] 193.29.139.132:8080'
+  - '[SS] 204.136.10.115:1866'
+  - '[SS] 141.98.4.67:52952'
+  - '[SS] 45.87.175.180:8080'
+  - '[SS] 185.213.23.226:990'
+  - '[VMESS] 146.56.112.110:8888'
+  - '[SS] 45.87.175.165:8080'
+  - '[SS] 45.87.175.175:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 92.118.205.228:990'
+  - '[SS] 77.105.166.12:8594'
+  - '[SS] 181.119.30.20:990'
+  - '[SS] 45.87.175.181:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[VMESS] 103.57.249.204:443'
+  - '[SS] 193.29.139.160:8080'
+  - '[SS] 45.87.175.183:8080'
+  - '[VLESS] 148.113.180.24:44809'
+  - '[SS] 208.67.105.196:42029'
+  - '[SS] desrv.ssvpnapp.win:57456'
+  - '[VMESS] 216.227.168.157:45263'
+  - '[SS] 36.234.118.214:10074'
+  - '[SS] 185.177.229.245:1866'
+  - '[SS] 18.162.146.85:8316'
+  - '[VMESS] 154.93.37.21:443'
+  - '[SS] 18.162.146.85:8319'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 45.87.175.164:8080'
+  - '[SS] 213.109.147.242:62685'
+  - '[VMESS] 216.227.168.157:45273'
+  - '[SS] 45.154.206.192:990'
+  - '[SS] 45.87.175.178:8080'
+  - '[SS] 45.87.175.188:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 45.87.175.190:8080'
+  - '[TROJAN] myvps.lol:443'
+  - '[SS] 36.232.102.152:10142'
+  - '[VLESS] 135.125.182.74:38413'
+  - '[SS] 152.42.245.170:38450'
+  - '[SS] 45.87.175.35:8080'
+  - '[SS] 64.176.85.73:1866'
+  - '[SS] 81.19.137.222:57456'
+  - '[SS] 193.29.139.168:8080'
+  - '[VLESS] 172.105.57.184:2321'
+  - '[SS] 169.150.202.174:990'
+  - '[VLESS] 45.130.214.192:20992'
+  - '[VMESS] 46.250.243.56:50394'
+  - '[SS] 147.45.178.200:57456'
+  - '[SS] 71.19.148.74:443'
+  - '[SS] 51.195.119.47:1080'
+  - '[SS] 154.205.159.100:990'
+  - '[SS] ca225.vpnbook.com:80'
+  - '[VMESS] 45.67.230.79:11052'
+  - '[SS] 18.162.146.85:8313'
+  - '[VLESS] 45.88.183.156:12794'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 141.164.63.32:30936'
+  - '[SS] 144.126.146.38:30100'
+  - '[VLESS] tab1.mgpingmg.shop:8880'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] 193.29.139.189:8080'
+  - '[SS] 134.209.147.198:990'
+  - '[SS] 192.53.172.74:30013'
+  - '[SS] rusrv.vpnsparta.pro:57456'
+  - '[SS] 38.54.112.154:808'
+  - '[SS] 103.243.215.17:990'
+  - '[VMESS] 45.128.54.84:37313'
+  - '[SS] 151.242.251.144:8080'
   - '[SS] 192.36.61.59:990'
+  - '[SS] 185.231.233.173:990'
+  - '[SS] 147.78.1.27:990'
+  - '[SS] beesyar.org:8080'
+  - '[SS] 167.71.235.238:47347'
+  - '[VMESS] 89.31.120.192:443'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] ltnl12.saint.ydns.eu:8080'
+  - '[SS] ru.vmagnum.win:57456'
+  - '[SS] ltnl13.saint.ydns.eu:8080'
+  - '[SS] 160.19.78.75:443'
+  - '[SS] 103.104.247.45:8080'
+  - '[VMESS] 62.146.235.193:28011'
+  - '[VMESS] ye.fxlcn.com:45245'
+  - '[SS] 45.139.24.24:57456'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 45.87.175.154:8080'
+  - '[SS] 82.180.146.173:30607'
+  - '[SS] 185.123.101.241:990'
+  - '[SS] 45.87.175.157:8080'
+  - '[SS] 38.54.2.182:990'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
+  - '[TROJAN] www.ddwhm.com:443'
+  - '[SS] 45.87.175.28:8080'
+  - '[SS] 134.255.210.49:990'
+  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] ltnl17.saint.ydns.eu:8080'
+  - '[SS] ss.036.node-for-bigairport.win:16688'
+  - '[SS] 185.47.255.22:990'
+  - '[SS] exchange.gameaurela.click:52952'
+  - '[TROJAN] uk-03.allhubb.info:8443'
+  - '[SS] 45.158.171.66:8080'
+  - '[SS] 185.47.254.87:990'
+  - '[SS] 45.87.175.199:8080'
+  - '[VMESS] 15.204.234.200:41100'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.173:8080'
+  - '[VLESS] ger1.kacivil.ir:443'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 45.87.175.171:8080'
+  - '[SS] 193.46.56.185:6683'
+  - '[VMESS] 38.54.14.110:443'
+  - '[SS] 103.163.218.2:990'
+  - '[SS] 45.87.175.200:8080'
+  - '[VLESS] 78.47.239.61:8880'
+  - '[SS] 38.54.30.197:808'
+  - '[SS] 192.71.166.102:990'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[VMESS] 45.121.48.174:20788'
+  - '[VLESS] 38.47.176.134:59967'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 145.14.131.37:990'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.192:8080'
+  - '[VLESS] cdn25.saloonak.ir:8443'
+  - '[SS] 185.47.253.227:990'
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -1754,494 +1309,368 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[VMESS] 103.124.107.144:29800'
-  - '[SS] 154.17.21.139:10086'
-  - '[SS] 154.44.15.133:44642'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 79.127.233.170:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 64.74.163.218:990'
-  - '[SS] 114.46.116.245:10079'
-  - '[SS] 64.74.163.82:990'
-  - '[SS] hackney-latest-strike.freesocks.work:443'
-  - '[VMESS] 165.140.216.141:443 (2)'
-  - '[VMESS] 15.204.234.200:41100'
-  - '[SS] 104.192.226.106:990'
-  - '[SS] 71.19.148.74:443'
-  - '[SS] 111.253.200.231:10126'
-  - '[SS] 147.78.1.27:990'
-  - '[SS] 1.170.1.209:10133'
-  - '[SS] 45.87.175.166:8080'
-  - '[SS] 45.87.175.28:8080'
-  - '[SS] 36.235.4.98:10096'
-  - '[SS] 142.4.216.225:80'
-  - '[SS] 185.245.107.250:2222'
-  - '[VLESS] 172.234.221.94:56224'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[VLESS] 78.47.239.61:8880'
-  - '[SS] 45.87.175.69:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 45.87.175.181:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[VMESS] 103.57.249.204:443'
-  - '[SS] 144.126.146.38:30941'
-  - '[SS] 185.192.124.188:990'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 38.54.112.154:808'
-  - '[SS] 45.87.175.164:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 77.110.110.117:443'
-  - '[SS] 18.162.146.85:8313'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 193.29.139.168:8080'
-  - '[VLESS] 172.234.192.79:2321'
-  - '[SS] 45.87.175.175:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 45.87.175.180:8080'
-  - '[SS] 38.165.233.18:990'
-  - '[SS] 45.87.175.157:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[VMESS] ye.fxlcn.com:45245'
-  - '[SS] 45.87.175.190:8080'
-  - '[TROJAN] www.ddwhm.com:443'
-  - '[SS] 77.105.166.12:8594'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 151.242.251.131:8080'
-  - '[SS] 81.19.137.222:57456'
-  - '[SS] 193.29.139.160:8080'
-  - '[SS] 103.104.247.49:8080'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] 92.118.205.228:990'
-  - '[VMESS] 51.79.86.182:42610'
-  - '[SS] 45.87.175.178:8080'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 36.235.0.63:10083'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 65.20.115.194:808'
-  - '[SS] 95.163.176.37:8506'
-  - '[SS] 213.109.147.242:62685'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 45.87.175.199:8080'
-  - '[SS] 45.87.175.171:8080'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 154.205.159.100:990'
-  - '[SS] 2.59.163.105:2222'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 193.46.56.185:6683'
-  - '[SS] 45.158.171.70:8080'
-  - '[VMESS] 146.56.112.110:8888'
-  - '[SS] 193.29.139.138:8080'
-  - '[SS] 144.126.146.38:30100'
-  - '[VMESS] 38.60.134.249:443'
-  - '[SS] 125.228.162.233:10145'
-  - '[SS] 185.231.233.173:990'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[SS] 193.29.139.157:8080'
-  - '[SS] 185.193.102.7:57456'
-  - '[SS] 45.158.171.66:8080'
-  - '[SS] lv.vmagnum.win:57456'
-  - '[VMESS] 46.250.243.56:50394'
-  - '[SS] 45.87.175.10:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 36.232.102.66:10098'
-  - '[SS] 193.29.139.202:8080'
   - '[SS] 45.87.175.65:8080'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[SS] 185.47.253.227:990'
-  - '[SS] 141.98.4.67:52952'
-  - '[SS] 18.162.146.85:8316'
-  - '[SS] 193.29.139.251:8080'
-  - '[SS] 64.176.85.73:1866'
-  - '[VLESS] 135.125.182.74:38413'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 62.60.233.173:2222'
-  - '[SS] 103.104.247.47:8080'
-  - '[SS] 192.53.172.74:30013'
-  - '[SS] 1.165.121.169:10017'
-  - '[SS] 193.29.139.132:8080'
-  - '[SS] 36.234.97.190:10012'
-  - '[SS] 193.29.139.177:8080'
+  - '[VMESS] 165.140.216.141:443 (2)'
+  - '[SS] 64.74.163.82:990'
+  - '[SS] 142.4.216.225:80'
+  - '[SS] 149.28.212.97:808'
+  - '[VMESS] 51.79.86.182:42610'
   - '[VMESS] 85.195.101.122:40878'
-  - '[VLESS] 45.130.214.192:20992'
-  - '[VMESS] lt.fxlcn.com:45417'
-  - '[SS] 83.217.9.125:2222'
-  - '[VMESS] 103.151.217.190:8080'
-  - '[VLESS] 172.105.57.184:2321'
-  - '[SS] 103.104.247.45:8080'
-  - '[VMESS] fa.fxlcn.com:45208'
-  - '[SS] 193.29.139.206:8080'
-  - '[SS] 45.87.175.165:8080'
-  - '[SS] ca225.vpnbook.com:80'
-  - '[SS] 91.84.104.133:2222'
-  - '[VMESS] 45.67.230.79:11052'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 118.170.229.112:10030'
-  - '[SS] 111.253.210.82:10150'
-  - '[SS] 36.234.118.214:10074'
-  - '[SS] 36.232.102.152:10142'
-  - '[SS] 193.29.139.189:8080'
-  - '[SS] 181.119.30.20:990'
-  - '[SS] 104.167.197.25:57456'
-  - '[SS] 185.21.14.103:2222'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 193.29.139.235:8080'
-  - '[SS] 216.173.70.187:57456'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] 82.180.146.173:30607'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 119.59.98.58:990'
-  - '[VLESS] 54.37.205.0:59332'
-  - '[VMESS] 216.227.168.157:45417'
-  - '[SS] 160.19.78.75:443'
-  - '[VLESS] 109.120.132.142:40617'
-  - '[SS] 83.217.9.128:2222'
-  - '[VMESS] 62.146.235.193:28011'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] 45.87.175.200:8080'
-  - '[SS] 103.163.218.2:990'
-  - '[SS] 193.29.139.209:8080'
-  - '[SS] 45.144.49.140:57456'
-  - '[SS] 18.162.146.85:8319'
-  - '[SS] 118.170.240.247:10041'
-  - '[VMESS] 2.58.87.221:46628'
-  - '[SS] 141.164.63.32:30936'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 64.74.163.130:990'
+  - '[SS] 103.104.247.47:8080'
+  - '[VLESS] 172.234.192.79:2321'
+  - '[SS] 154.17.21.139:10086'
   - '[SS] 64.176.184.129:1866'
-  - '[SS] 193.29.139.240:8080'
-  - '[SS] 195.181.160.6:990'
-  - '[VMESS] 45.121.48.174:20788'
-  - '[SS] 36.235.2.37:10092'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 185.47.253.171:990'
-  - '[SS] 208.67.105.196:42029'
-  - '[SS] 45.87.175.188:8080'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] 45.87.175.192:8080'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[SS] 83.147.216.70:64519'
-  - '[SS] 94.131.21.174:54075'
-  - '[SS] 185.47.255.22:990'
-  - '[VLESS] tab1.mgpingmg.shop:8880'
-  - '[SS] 45.87.175.183:8080'
-  - '[SS] 103.111.114.29:57456'
-  - '[SS] de.vpnsparta.pro:57456'
-  - '[TROJAN] myvps.lol:443'
-  - '[SS] 45.139.24.24:57456'
-  - '[VMESS] lt.fxlcn.com:45287'
-  - '[SS] rusrv.vpnsparta.pro:57456'
-  - '[SS] pl.vmagnum.win:57456'
-  - '[SS] 45.87.175.35:8080'
-  - '[SS] 62.133.63.226:2222'
-  - '[SS] 45.158.171.110:8080'
-  - '[SS] 204.136.10.115:1866'
-  - '[SS] rusrv.vmagnum.win:57456'
-  - '[SS] 185.47.254.87:990'
-  - '[SS] 45.87.175.167:8080'
-  - '[SS] 193.29.139.133:8080'
-  - '[VMESS] 154.93.37.21:443'
-  - '[SS] beesyar.org:8080'
-  - '[SS] 147.45.178.200:57456'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[VLESS] cdn29.saloonak.ir:8443'
-  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
-  - '[TROJAN] uk-03.allhubb.info:8443'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[SS] 134.209.147.198:990'
-  - '[VLESS] cdn27.saloonak.ir:8443'
-  - '[VMESS] 89.31.120.192:443'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 38.54.2.182:990'
-  - '[SS] pl.vpnsparta.pro:57456'
-  - '[VMESS] 38.54.14.110:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 134.255.210.49:990'
-  - '[SS] 193.29.139.175:8080'
-  - '[VLESS] 45.88.183.164:49355'
-  - '[SS] ltnl15.saint.ydns.eu:8080'
-  - '[SS] beta.mattenadene.org:54075'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
   - '[VLESS] 165.227.149.23:49968'
-  - '[SS] 23.157.40.101:8000'
-  - '[SS] 169.150.202.174:990'
+  - '[SS] 193.29.139.233:8080'
+  - '[SS] 193.29.139.240:8080'
+  - '[SS] 45.158.171.70:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[VMESS] 38.12.83.217:30002'
+  - '[SS] 79.127.233.170:990'
+  - '[VLESS] 38.244.163.100:35048'
+  - '[SS] 65.20.115.194:808'
+  - '[SS] 104.192.226.106:990'
+  - '[SS] 193.29.139.235:8080'
+  - '[SS] 144.126.146.38:30941'
+  - '[VMESS] 165.140.216.141:443'
+  - '[SS] 38.107.226.159:2376'
+  - '[SS] 185.193.102.7:57456'
+  - '[SS] 103.104.247.49:8080'
+  - '[VMESS] 38.102.7.181:24528'
+  - '[SS] 151.242.251.131:8080'
+  - '[SS] 193.29.139.164:8080'
+  - '[SS] 154.44.15.133:44642'
+  - '[VMESS] 38.60.134.249:443'
+  - '[SS] 185.192.124.188:990'
   - '[SS] 176.103.53.105:990'
-  - '[SS] ltnl12.saint.ydns.eu:8080'
-  - '[SS] promo6v.bystrivpn.ru:443'
-  - '[VMESS] 82.197.69.131:39674'
-  - '[SS] arxfw2b78fi2q9hzylhn.freesocks.work:443'
-  - '[SS] lv.vpnsparta.pro:57456'
-  - '[SS] us.vmagnum.win:57456'
-  - '[SS] ltnl17.saint.ydns.eu:8080'
-  - '[SS] ltnl13.saint.ydns.eu:8080'
-  - '[SS] 192.71.166.102:990'
-  - '[SS] switcher-nick-croquet.freesocks.work:443'
-  - '[SS] exchange.gameaurela.click:52952'
-  - '[SS] ru.vmagnum.win:57456'
-  - '[SS] 145.14.131.37:990'
-  - '[SS] 23.157.40.101:8009'
-  - '[SS] 46.183.185.15:990'
-  - '[SS] 92.112.126.90:443'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] id.vpnsparta.pro:57456'
-  - '[SS] 223.165.4.173:990'
-  - '[VMESS] 188.208.141.177:443'
+  - '[SS] 193.29.139.202:8080'
+  - '[SS] 45.158.171.110:8080'
+  - '[SS] 95.163.176.37:8506'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 45.158.171.60:8080'
+  - '[VMESS] lt.fxlcn.com:45228'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.144:8080'
+  - '[SS] 195.181.160.6:990'
+  - '[SS] 193.29.139.175:8080'
+  - '[SS] 193.29.139.157:8080'
+  - '[SS] 193.29.139.209:8080'
+  - '[VLESS] 172.234.221.94:56224'
+  - '[SS] 38.165.233.18:990'
+  - '[SS] 64.74.163.218:990'
+  - '[SS] 193.29.139.132:8080'
+  - '[SS] 204.136.10.115:1866'
+  - '[SS] 141.98.4.67:52952'
+  - '[SS] 45.87.175.180:8080'
+  - '[SS] 185.213.23.226:990'
+  - '[VMESS] 146.56.112.110:8888'
+  - '[SS] 45.87.175.165:8080'
+  - '[SS] 45.87.175.175:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 92.118.205.228:990'
+  - '[SS] 77.105.166.12:8594'
+  - '[SS] 181.119.30.20:990'
+  - '[SS] 45.87.175.181:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[VMESS] 103.57.249.204:443'
+  - '[SS] 193.29.139.160:8080'
+  - '[SS] 45.87.175.183:8080'
+  - '[VLESS] 148.113.180.24:44809'
+  - '[SS] 208.67.105.196:42029'
+  - '[SS] desrv.ssvpnapp.win:57456'
+  - '[VMESS] 216.227.168.157:45263'
+  - '[SS] 36.234.118.214:10074'
+  - '[SS] 185.177.229.245:1866'
+  - '[SS] 18.162.146.85:8316'
+  - '[VMESS] 154.93.37.21:443'
+  - '[SS] 18.162.146.85:8319'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 45.87.175.164:8080'
+  - '[SS] 213.109.147.242:62685'
+  - '[VMESS] 216.227.168.157:45273'
+  - '[SS] 45.154.206.192:990'
+  - '[SS] 45.87.175.178:8080'
+  - '[SS] 45.87.175.188:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 45.87.175.190:8080'
+  - '[TROJAN] myvps.lol:443'
+  - '[SS] 36.232.102.152:10142'
+  - '[VLESS] 135.125.182.74:38413'
+  - '[SS] 152.42.245.170:38450'
+  - '[SS] 45.87.175.35:8080'
+  - '[SS] 64.176.85.73:1866'
+  - '[SS] 81.19.137.222:57456'
+  - '[SS] 193.29.139.168:8080'
+  - '[VLESS] 172.105.57.184:2321'
+  - '[SS] 169.150.202.174:990'
+  - '[VLESS] 45.130.214.192:20992'
+  - '[VMESS] 46.250.243.56:50394'
+  - '[SS] 147.45.178.200:57456'
+  - '[SS] 71.19.148.74:443'
+  - '[SS] 51.195.119.47:1080'
+  - '[SS] 154.205.159.100:990'
+  - '[SS] ca225.vpnbook.com:80'
+  - '[VMESS] 45.67.230.79:11052'
+  - '[SS] 18.162.146.85:8313'
+  - '[VLESS] 45.88.183.156:12794'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 141.164.63.32:30936'
+  - '[SS] 144.126.146.38:30100'
+  - '[VLESS] tab1.mgpingmg.shop:8880'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] 193.29.139.189:8080'
+  - '[SS] 134.209.147.198:990'
+  - '[SS] 192.53.172.74:30013'
+  - '[SS] rusrv.vpnsparta.pro:57456'
+  - '[SS] 38.54.112.154:808'
+  - '[SS] 103.243.215.17:990'
+  - '[VMESS] 45.128.54.84:37313'
+  - '[SS] 151.242.251.144:8080'
   - '[SS] 192.36.61.59:990'
+  - '[SS] 185.231.233.173:990'
+  - '[SS] 147.78.1.27:990'
+  - '[SS] beesyar.org:8080'
+  - '[SS] 167.71.235.238:47347'
+  - '[VMESS] 89.31.120.192:443'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] ltnl12.saint.ydns.eu:8080'
+  - '[SS] ru.vmagnum.win:57456'
+  - '[SS] ltnl13.saint.ydns.eu:8080'
+  - '[SS] 160.19.78.75:443'
+  - '[SS] 103.104.247.45:8080'
+  - '[VMESS] 62.146.235.193:28011'
+  - '[VMESS] ye.fxlcn.com:45245'
+  - '[SS] 45.139.24.24:57456'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 45.87.175.154:8080'
+  - '[SS] 82.180.146.173:30607'
+  - '[SS] 185.123.101.241:990'
+  - '[SS] 45.87.175.157:8080'
+  - '[SS] 38.54.2.182:990'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
+  - '[TROJAN] www.ddwhm.com:443'
+  - '[SS] 45.87.175.28:8080'
+  - '[SS] 134.255.210.49:990'
+  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] ltnl17.saint.ydns.eu:8080'
+  - '[SS] ss.036.node-for-bigairport.win:16688'
+  - '[SS] 185.47.255.22:990'
+  - '[SS] exchange.gameaurela.click:52952'
+  - '[TROJAN] uk-03.allhubb.info:8443'
+  - '[SS] 45.158.171.66:8080'
+  - '[SS] 185.47.254.87:990'
+  - '[SS] 45.87.175.199:8080'
+  - '[VMESS] 15.204.234.200:41100'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.173:8080'
+  - '[VLESS] ger1.kacivil.ir:443'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 45.87.175.171:8080'
+  - '[SS] 193.46.56.185:6683'
+  - '[VMESS] 38.54.14.110:443'
+  - '[SS] 103.163.218.2:990'
+  - '[SS] 45.87.175.200:8080'
+  - '[VLESS] 78.47.239.61:8880'
+  - '[SS] 38.54.30.197:808'
+  - '[SS] 192.71.166.102:990'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[VMESS] 45.121.48.174:20788'
+  - '[VLESS] 38.47.176.134:59967'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 145.14.131.37:990'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.192:8080'
+  - '[VLESS] cdn25.saloonak.ir:8443'
+  - '[SS] 185.47.253.227:990'
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - '[VMESS] 103.124.107.144:29800'
-  - '[SS] 154.17.21.139:10086'
-  - '[SS] 154.44.15.133:44642'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 79.127.233.170:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 64.74.163.218:990'
-  - '[SS] 114.46.116.245:10079'
-  - '[SS] 64.74.163.82:990'
-  - '[SS] hackney-latest-strike.freesocks.work:443'
-  - '[VMESS] 165.140.216.141:443 (2)'
-  - '[VMESS] 15.204.234.200:41100'
-  - '[SS] 104.192.226.106:990'
-  - '[SS] 71.19.148.74:443'
-  - '[SS] 111.253.200.231:10126'
-  - '[SS] 147.78.1.27:990'
-  - '[SS] 1.170.1.209:10133'
-  - '[SS] 45.87.175.166:8080'
-  - '[SS] 45.87.175.28:8080'
-  - '[SS] 36.235.4.98:10096'
-  - '[SS] 142.4.216.225:80'
-  - '[SS] 185.245.107.250:2222'
-  - '[VLESS] 172.234.221.94:56224'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[VLESS] 78.47.239.61:8880'
-  - '[SS] 45.87.175.69:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 45.87.175.181:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[VMESS] 103.57.249.204:443'
-  - '[SS] 144.126.146.38:30941'
-  - '[SS] 185.192.124.188:990'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 38.54.112.154:808'
-  - '[SS] 45.87.175.164:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 77.110.110.117:443'
-  - '[SS] 18.162.146.85:8313'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 193.29.139.168:8080'
-  - '[VLESS] 172.234.192.79:2321'
-  - '[SS] 45.87.175.175:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 45.87.175.180:8080'
-  - '[SS] 38.165.233.18:990'
-  - '[SS] 45.87.175.157:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[VMESS] ye.fxlcn.com:45245'
-  - '[SS] 45.87.175.190:8080'
-  - '[TROJAN] www.ddwhm.com:443'
-  - '[SS] 77.105.166.12:8594'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 151.242.251.131:8080'
-  - '[SS] 81.19.137.222:57456'
-  - '[SS] 193.29.139.160:8080'
-  - '[SS] 103.104.247.49:8080'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] 92.118.205.228:990'
-  - '[VMESS] 51.79.86.182:42610'
-  - '[SS] 45.87.175.178:8080'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 36.235.0.63:10083'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 65.20.115.194:808'
-  - '[SS] 95.163.176.37:8506'
-  - '[SS] 213.109.147.242:62685'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 45.87.175.199:8080'
-  - '[SS] 45.87.175.171:8080'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 154.205.159.100:990'
-  - '[SS] 2.59.163.105:2222'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 193.46.56.185:6683'
-  - '[SS] 45.158.171.70:8080'
-  - '[VMESS] 146.56.112.110:8888'
-  - '[SS] 193.29.139.138:8080'
-  - '[SS] 144.126.146.38:30100'
-  - '[VMESS] 38.60.134.249:443'
-  - '[SS] 125.228.162.233:10145'
-  - '[SS] 185.231.233.173:990'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[SS] 193.29.139.157:8080'
-  - '[SS] 185.193.102.7:57456'
-  - '[SS] 45.158.171.66:8080'
-  - '[SS] lv.vmagnum.win:57456'
-  - '[VMESS] 46.250.243.56:50394'
-  - '[SS] 45.87.175.10:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 36.232.102.66:10098'
-  - '[SS] 193.29.139.202:8080'
   - '[SS] 45.87.175.65:8080'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[SS] 185.47.253.227:990'
-  - '[SS] 141.98.4.67:52952'
-  - '[SS] 18.162.146.85:8316'
-  - '[SS] 193.29.139.251:8080'
-  - '[SS] 64.176.85.73:1866'
-  - '[VLESS] 135.125.182.74:38413'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 62.60.233.173:2222'
-  - '[SS] 103.104.247.47:8080'
-  - '[SS] 192.53.172.74:30013'
-  - '[SS] 1.165.121.169:10017'
-  - '[SS] 193.29.139.132:8080'
-  - '[SS] 36.234.97.190:10012'
-  - '[SS] 193.29.139.177:8080'
+  - '[VMESS] 165.140.216.141:443 (2)'
+  - '[SS] 64.74.163.82:990'
+  - '[SS] 142.4.216.225:80'
+  - '[SS] 149.28.212.97:808'
+  - '[VMESS] 51.79.86.182:42610'
   - '[VMESS] 85.195.101.122:40878'
-  - '[VLESS] 45.130.214.192:20992'
-  - '[VMESS] lt.fxlcn.com:45417'
-  - '[SS] 83.217.9.125:2222'
-  - '[VMESS] 103.151.217.190:8080'
-  - '[VLESS] 172.105.57.184:2321'
-  - '[SS] 103.104.247.45:8080'
-  - '[VMESS] fa.fxlcn.com:45208'
-  - '[SS] 193.29.139.206:8080'
-  - '[SS] 45.87.175.165:8080'
-  - '[SS] ca225.vpnbook.com:80'
-  - '[SS] 91.84.104.133:2222'
-  - '[VMESS] 45.67.230.79:11052'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 118.170.229.112:10030'
-  - '[SS] 111.253.210.82:10150'
-  - '[SS] 36.234.118.214:10074'
-  - '[SS] 36.232.102.152:10142'
-  - '[SS] 193.29.139.189:8080'
-  - '[SS] 181.119.30.20:990'
-  - '[SS] 104.167.197.25:57456'
-  - '[SS] 185.21.14.103:2222'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 193.29.139.235:8080'
-  - '[SS] 216.173.70.187:57456'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] 82.180.146.173:30607'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 119.59.98.58:990'
-  - '[VLESS] 54.37.205.0:59332'
-  - '[VMESS] 216.227.168.157:45417'
-  - '[SS] 160.19.78.75:443'
-  - '[VLESS] 109.120.132.142:40617'
-  - '[SS] 83.217.9.128:2222'
-  - '[VMESS] 62.146.235.193:28011'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] 45.87.175.200:8080'
-  - '[SS] 103.163.218.2:990'
-  - '[SS] 193.29.139.209:8080'
-  - '[SS] 45.144.49.140:57456'
-  - '[SS] 18.162.146.85:8319'
-  - '[SS] 118.170.240.247:10041'
-  - '[VMESS] 2.58.87.221:46628'
-  - '[SS] 141.164.63.32:30936'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 64.74.163.130:990'
+  - '[SS] 103.104.247.47:8080'
+  - '[VLESS] 172.234.192.79:2321'
+  - '[SS] 154.17.21.139:10086'
   - '[SS] 64.176.184.129:1866'
-  - '[SS] 193.29.139.240:8080'
-  - '[SS] 195.181.160.6:990'
-  - '[VMESS] 45.121.48.174:20788'
-  - '[SS] 36.235.2.37:10092'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 185.47.253.171:990'
-  - '[SS] 208.67.105.196:42029'
-  - '[SS] 45.87.175.188:8080'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] 45.87.175.192:8080'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[SS] 83.147.216.70:64519'
-  - '[SS] 94.131.21.174:54075'
-  - '[SS] 185.47.255.22:990'
-  - '[VLESS] tab1.mgpingmg.shop:8880'
-  - '[SS] 45.87.175.183:8080'
-  - '[SS] 103.111.114.29:57456'
-  - '[SS] de.vpnsparta.pro:57456'
-  - '[TROJAN] myvps.lol:443'
-  - '[SS] 45.139.24.24:57456'
-  - '[VMESS] lt.fxlcn.com:45287'
-  - '[SS] rusrv.vpnsparta.pro:57456'
-  - '[SS] pl.vmagnum.win:57456'
-  - '[SS] 45.87.175.35:8080'
-  - '[SS] 62.133.63.226:2222'
-  - '[SS] 45.158.171.110:8080'
-  - '[SS] 204.136.10.115:1866'
-  - '[SS] rusrv.vmagnum.win:57456'
-  - '[SS] 185.47.254.87:990'
-  - '[SS] 45.87.175.167:8080'
-  - '[SS] 193.29.139.133:8080'
-  - '[VMESS] 154.93.37.21:443'
-  - '[SS] beesyar.org:8080'
-  - '[SS] 147.45.178.200:57456'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[VLESS] cdn29.saloonak.ir:8443'
-  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
-  - '[TROJAN] uk-03.allhubb.info:8443'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[SS] 134.209.147.198:990'
-  - '[VLESS] cdn27.saloonak.ir:8443'
-  - '[VMESS] 89.31.120.192:443'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 38.54.2.182:990'
-  - '[SS] pl.vpnsparta.pro:57456'
-  - '[VMESS] 38.54.14.110:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 134.255.210.49:990'
-  - '[SS] 193.29.139.175:8080'
-  - '[VLESS] 45.88.183.164:49355'
-  - '[SS] ltnl15.saint.ydns.eu:8080'
-  - '[SS] beta.mattenadene.org:54075'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
   - '[VLESS] 165.227.149.23:49968'
-  - '[SS] 23.157.40.101:8000'
-  - '[SS] 169.150.202.174:990'
+  - '[SS] 193.29.139.233:8080'
+  - '[SS] 193.29.139.240:8080'
+  - '[SS] 45.158.171.70:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[VMESS] 38.12.83.217:30002'
+  - '[SS] 79.127.233.170:990'
+  - '[VLESS] 38.244.163.100:35048'
+  - '[SS] 65.20.115.194:808'
+  - '[SS] 104.192.226.106:990'
+  - '[SS] 193.29.139.235:8080'
+  - '[SS] 144.126.146.38:30941'
+  - '[VMESS] 165.140.216.141:443'
+  - '[SS] 38.107.226.159:2376'
+  - '[SS] 185.193.102.7:57456'
+  - '[SS] 103.104.247.49:8080'
+  - '[VMESS] 38.102.7.181:24528'
+  - '[SS] 151.242.251.131:8080'
+  - '[SS] 193.29.139.164:8080'
+  - '[SS] 154.44.15.133:44642'
+  - '[VMESS] 38.60.134.249:443'
+  - '[SS] 185.192.124.188:990'
   - '[SS] 176.103.53.105:990'
-  - '[SS] ltnl12.saint.ydns.eu:8080'
-  - '[SS] promo6v.bystrivpn.ru:443'
-  - '[VMESS] 82.197.69.131:39674'
-  - '[SS] arxfw2b78fi2q9hzylhn.freesocks.work:443'
-  - '[SS] lv.vpnsparta.pro:57456'
-  - '[SS] us.vmagnum.win:57456'
-  - '[SS] ltnl17.saint.ydns.eu:8080'
-  - '[SS] ltnl13.saint.ydns.eu:8080'
-  - '[SS] 192.71.166.102:990'
-  - '[SS] switcher-nick-croquet.freesocks.work:443'
-  - '[SS] exchange.gameaurela.click:52952'
-  - '[SS] ru.vmagnum.win:57456'
-  - '[SS] 145.14.131.37:990'
-  - '[SS] 23.157.40.101:8009'
-  - '[SS] 46.183.185.15:990'
-  - '[SS] 92.112.126.90:443'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] id.vpnsparta.pro:57456'
-  - '[SS] 223.165.4.173:990'
-  - '[VMESS] 188.208.141.177:443'
+  - '[SS] 193.29.139.202:8080'
+  - '[SS] 45.158.171.110:8080'
+  - '[SS] 95.163.176.37:8506'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 45.158.171.60:8080'
+  - '[VMESS] lt.fxlcn.com:45228'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.144:8080'
+  - '[SS] 195.181.160.6:990'
+  - '[SS] 193.29.139.175:8080'
+  - '[SS] 193.29.139.157:8080'
+  - '[SS] 193.29.139.209:8080'
+  - '[VLESS] 172.234.221.94:56224'
+  - '[SS] 38.165.233.18:990'
+  - '[SS] 64.74.163.218:990'
+  - '[SS] 193.29.139.132:8080'
+  - '[SS] 204.136.10.115:1866'
+  - '[SS] 141.98.4.67:52952'
+  - '[SS] 45.87.175.180:8080'
+  - '[SS] 185.213.23.226:990'
+  - '[VMESS] 146.56.112.110:8888'
+  - '[SS] 45.87.175.165:8080'
+  - '[SS] 45.87.175.175:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 92.118.205.228:990'
+  - '[SS] 77.105.166.12:8594'
+  - '[SS] 181.119.30.20:990'
+  - '[SS] 45.87.175.181:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[VMESS] 103.57.249.204:443'
+  - '[SS] 193.29.139.160:8080'
+  - '[SS] 45.87.175.183:8080'
+  - '[VLESS] 148.113.180.24:44809'
+  - '[SS] 208.67.105.196:42029'
+  - '[SS] desrv.ssvpnapp.win:57456'
+  - '[VMESS] 216.227.168.157:45263'
+  - '[SS] 36.234.118.214:10074'
+  - '[SS] 185.177.229.245:1866'
+  - '[SS] 18.162.146.85:8316'
+  - '[VMESS] 154.93.37.21:443'
+  - '[SS] 18.162.146.85:8319'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 45.87.175.164:8080'
+  - '[SS] 213.109.147.242:62685'
+  - '[VMESS] 216.227.168.157:45273'
+  - '[SS] 45.154.206.192:990'
+  - '[SS] 45.87.175.178:8080'
+  - '[SS] 45.87.175.188:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 45.87.175.190:8080'
+  - '[TROJAN] myvps.lol:443'
+  - '[SS] 36.232.102.152:10142'
+  - '[VLESS] 135.125.182.74:38413'
+  - '[SS] 152.42.245.170:38450'
+  - '[SS] 45.87.175.35:8080'
+  - '[SS] 64.176.85.73:1866'
+  - '[SS] 81.19.137.222:57456'
+  - '[SS] 193.29.139.168:8080'
+  - '[VLESS] 172.105.57.184:2321'
+  - '[SS] 169.150.202.174:990'
+  - '[VLESS] 45.130.214.192:20992'
+  - '[VMESS] 46.250.243.56:50394'
+  - '[SS] 147.45.178.200:57456'
+  - '[SS] 71.19.148.74:443'
+  - '[SS] 51.195.119.47:1080'
+  - '[SS] 154.205.159.100:990'
+  - '[SS] ca225.vpnbook.com:80'
+  - '[VMESS] 45.67.230.79:11052'
+  - '[SS] 18.162.146.85:8313'
+  - '[VLESS] 45.88.183.156:12794'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 141.164.63.32:30936'
+  - '[SS] 144.126.146.38:30100'
+  - '[VLESS] tab1.mgpingmg.shop:8880'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] 193.29.139.189:8080'
+  - '[SS] 134.209.147.198:990'
+  - '[SS] 192.53.172.74:30013'
+  - '[SS] rusrv.vpnsparta.pro:57456'
+  - '[SS] 38.54.112.154:808'
+  - '[SS] 103.243.215.17:990'
+  - '[VMESS] 45.128.54.84:37313'
+  - '[SS] 151.242.251.144:8080'
   - '[SS] 192.36.61.59:990'
+  - '[SS] 185.231.233.173:990'
+  - '[SS] 147.78.1.27:990'
+  - '[SS] beesyar.org:8080'
+  - '[SS] 167.71.235.238:47347'
+  - '[VMESS] 89.31.120.192:443'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] ltnl12.saint.ydns.eu:8080'
+  - '[SS] ru.vmagnum.win:57456'
+  - '[SS] ltnl13.saint.ydns.eu:8080'
+  - '[SS] 160.19.78.75:443'
+  - '[SS] 103.104.247.45:8080'
+  - '[VMESS] 62.146.235.193:28011'
+  - '[VMESS] ye.fxlcn.com:45245'
+  - '[SS] 45.139.24.24:57456'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 45.87.175.154:8080'
+  - '[SS] 82.180.146.173:30607'
+  - '[SS] 185.123.101.241:990'
+  - '[SS] 45.87.175.157:8080'
+  - '[SS] 38.54.2.182:990'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[VLESS] freevpn.vizzpn.join.channel.vizzfrag.ir:12794'
+  - '[TROJAN] www.ddwhm.com:443'
+  - '[SS] 45.87.175.28:8080'
+  - '[SS] 134.255.210.49:990'
+  - '[SS] desrv.vmagnum.win:57456'
+  - '[SS] ltnl17.saint.ydns.eu:8080'
+  - '[SS] ss.036.node-for-bigairport.win:16688'
+  - '[SS] 185.47.255.22:990'
+  - '[SS] exchange.gameaurela.click:52952'
+  - '[TROJAN] uk-03.allhubb.info:8443'
+  - '[SS] 45.158.171.66:8080'
+  - '[SS] 185.47.254.87:990'
+  - '[SS] 45.87.175.199:8080'
+  - '[VMESS] 15.204.234.200:41100'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.173:8080'
+  - '[VLESS] ger1.kacivil.ir:443'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 45.87.175.171:8080'
+  - '[SS] 193.46.56.185:6683'
+  - '[VMESS] 38.54.14.110:443'
+  - '[SS] 103.163.218.2:990'
+  - '[SS] 45.87.175.200:8080'
+  - '[VLESS] 78.47.239.61:8880'
+  - '[SS] 38.54.30.197:808'
+  - '[SS] 192.71.166.102:990'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[VMESS] 45.121.48.174:20788'
+  - '[VLESS] 38.47.176.134:59967'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 145.14.131.37:990'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.192:8080'
+  - '[VLESS] cdn25.saloonak.ir:8443'
+  - '[SS] 185.47.253.227:990'
 rules:
 - MATCH,节点选择
