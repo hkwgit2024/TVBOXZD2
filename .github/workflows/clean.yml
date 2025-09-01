@@ -5,7 +5,7 @@ on:
     - cron: '0 */3 * * *'
   push:
     paths:
-      - 'clean.yml'
+      - '.github/workflows/clean.yml'
       - 'clean_proxies.py'
   workflow_dispatch:
 
