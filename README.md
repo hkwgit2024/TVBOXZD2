@@ -12,7 +12,7 @@
 你可以使用以下链接导入相应客户端：
 
 - **IPTv 列表**: https://github.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
-- **Clash 配置**: https://raw.githubusercontent.com/qjlxg/speedtest/refs/heads/main/clash.yaml
+- **Clash 配置**: https://raw.githubusercontent.com/qjlxg/mihomo/refs/heads/main/clash.yaml
 
 ---
 
