@@ -555,13 +555,13 @@ if __name__ == "__main__":
                 if nodes:
                     all_nodes.extend(nodes)
                     nodes_summary.append({'link': link, 'node_count': len(nodes)})
-                    print(f"\n[成功] 从 {link} 找到 {len(nodes)} 个节点。")
+                    print(f"\n[成功] 找到 {len(nodes)} 个节点。")
                 else:
                     nodes_summary.append({'link': link, 'node_count': 0})
-                    log_error(f"从 {link} 未找到任何有效节点。")
+                    log_error(f"未找到任何有效节点。")
             except Exception as e:
                 nodes_summary.append({'link': link, 'node_count': 0})
-                log_error(f"处理 {link} 时发生错误: {e}")
+                log_error(f"处理时发生错误: {e}")
 
     # 地理位置识别
     db_path = "GeoLite2-Country.mmdb"
