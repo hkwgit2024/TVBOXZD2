@@ -23,7 +23,6 @@ jobs:
       run: |
         rm -f link_cleaned.yaml
         rm -f dns_cache.json
-      # 这里可以根据您的其他文件添加更多清理命令
     
     - name: ⚙️ 步骤3：设置Python环境
       uses: actions/setup-python@v5
@@ -46,7 +45,11 @@ jobs:
         git add link_cleaned.yaml
         git commit -m "chore(auto): Clean and update proxy links" || echo "No changes to commit"
 
-    - name: 📤 步骤7：推送更改到仓库
+    - name: 🔄 步骤7：拉取最新代码并合并
+      run: |
+        git pull --rebase origin ${{ github.ref }}
+
+    - name: 📤 步骤8：推送更改到仓库
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
