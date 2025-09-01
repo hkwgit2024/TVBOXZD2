@@ -1,6 +1,8 @@
 name: Clean Proxy Links
 
 on:
+  schedule:
+    - cron: '0 */3 * * *'
   push:
     paths:
       - 'clean.yml'
