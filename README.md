@@ -1,8 +1,6 @@
-好的，这是为你整理好的**GitHub格式**的 `README.md` 文件。它包含了你提供的所有内容，并进行了结构化和格式优化，使其更适合在GitHub上展示。
 
-你可以直接复制下面的内容，粘贴到你的 GitHub 仓库的 `README.md` 文件中。
 
-````markdown
+
 # 代理节点测速与管理
 
 这是一个关于如何使用 `clash-speedtest` 工具进行代理节点测速和筛选的指南。
@@ -13,8 +11,8 @@
 
 你可以使用以下链接导入相应客户端：
 
-- **IPTv 列表**: `https://github.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt`
-- **Clash 配置**: `https://raw.githubusercontent.com/qjlxg/speedtest/refs/heads/main/clash.yaml`
+- **IPTv 列表**: https://github.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
+- **Clash 配置**: https://raw.githubusercontent.com/qjlxg/speedtest/refs/heads/main/clash.yaml
 
 ---
 
