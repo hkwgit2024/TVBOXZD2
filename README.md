@@ -1,6 +1,6 @@
 https://github.com/qjlxg/VT/refs/heads/main/output/iptv_list.txt
 
-
+https://raw.githubusercontent.com/qjlxg/speedtest/refs/heads/main/clash.yaml
 
 ## 致谢  
 本项目深受以下开源项目启发，在此向各位作者致以诚挚感谢！
