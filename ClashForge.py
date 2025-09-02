@@ -34,14 +34,14 @@ from requests_html import HTMLSession
 import psutil
 
 # TEST_URL = "http://www.gstatic.com/generate_204"
-TEST_URL = "http://www.pinterest.com"
+TEST_URL = "https://x.com/home"
 CLASH_API_PORTS = [9090]
 CLASH_API_HOST = "127.0.0.1"
 CLASH_API_SECRET = ""
 TIMEOUT = 3
 # 存储所有节点的速度测试结果
-SPEED_TEST = False
-SPEED_TEST_LIMIT = 5  # 只测试前30个节点的下行速度，每个节点测试5秒
+SPEED_TEST = True #False
+SPEED_TEST_LIMIT = 138  # 只测试前138个节点的下行速度，每个节点测试5秒
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
 LIMIT = 10000  # 最多保留LIMIT个节点
