@@ -42,18 +42,16 @@
          "api":"./py/py_jinpai.py"
       },
       {
-         "key":"沐辰欧乐影院",
-         "name":"沐辰欧乐影院",
-         "type":4,
-         "api":"https://py.doube.eu.org/spider?site=OleVod"
-      },
-      {
          "key":"Qile优视频",
          "name":"Qile优视频",
-         "type":3,
-         "api":"csp_Uvod",
-         "playerType":2,
-         "filterable":1
+         "type":4,
+         "api":"https://tvbot.ggff.net/uvod"
+      },
+      {
+         "key":"欧乐影院",
+         "name":"欧乐影院",
+         "type":4,
+         "api":"https://tvbot.ggff.net/oule"
       },
       {
          "key":"独播库",
@@ -126,7 +124,7 @@
          "type":0,
          "url":"https://raw.githubusercontent.com/mursor1985/LIVE/refs/heads/main/iptv.m3u",
          "timeout":10,
-        "header":{"User-Agent":"okHttp/Mod-1.1.0"}
+        "header":{"User-Agent":"okHttp/Mod-1.2.0"}
       },
       {
          "name":"咪咕直播",
