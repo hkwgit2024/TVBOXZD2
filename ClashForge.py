@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/env python3
+
 import base64
 import subprocess
 import threading
@@ -34,9 +35,15 @@ import warnings
 warnings.filterwarnings('ignore')
 from requests_html import HTMLSession
 import psutil
-
+# https://x.com/home
+# https://www.instagram.com
+# https://www.okok.llc
+# https://www.facebook.com
+# https://telegram.org
+# https://mail.google.com
+# https://translate.google.com
 # TEST_URL = "http://www.gstatic.com/generate_204"
-TEST_URL = "https://x.com/home"
+TEST_URL = "https://www.instagram.com"
 # 添加第二个测试网址以增强稳定性检查
 SECONDARY_TEST_URL = "https://www.youtube.com"
 CLASH_API_PORTS = [9090]
@@ -46,7 +53,7 @@ TIMEOUT = 3
 # 存储所有节点的速度测试结果
 SPEED_TEST = True
 SPEED_TEST_URL = "http://speed.cloudflare.com/__down?bytes=52428800"  # 50MB测试文件
-SPEED_TEST_LIMIT = 468  # 只测试前468个节点的下行速度，每个节点测试5秒
+SPEED_TEST_LIMIT = 968  # 只测试前468个节点的下行速度，每个节点测试5秒
 results_speed = []
 MAX_CONCURRENT_TESTS = 100
 LIMIT = 10000  # 最多保留LIMIT个节点
@@ -69,8 +76,8 @@ clash_config_template = {
     "log-level": "info",
     "external-controller": "127.0.0.1:9090",
     "geodata-mode": True,
-    'geox-url': {'geoip': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat',
-                 'mmdb': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'},
+    'geox-url': {'geoip': 'https://raw.bgithub.xyz/Loyalsoldier/geoip/release/geoip.dat',
+                 'mmdb': 'https://raw.bgithub.xyz/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'},
     "dns": {
         "enable": True,
         "ipv6": False,
@@ -1208,7 +1215,7 @@ def strip_proxy_prefix(url):
 
 # 判断是否为GitHub raw URL
 def is_github_raw_url(url):
-    return 'raw.githubusercontent.com' in url
+    return 'raw.bgithub.xyz' in url
 
 
 # 从URL中提取文件模式，返回占位符前后的部分
@@ -1418,7 +1425,7 @@ def upload_and_generate_urls(file_path=CONFIG_FILE):
                 result["clash_url"] = clash_url
                 print(f"Clash 配置文件上传成功！直链：{clash_url}")
 
-                sb_full_url = f'https://url.v1.mk/sub?target=singbox&url={clash_url}&insert=false&config=https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini&emoji=true&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=false&fdn=false'
+                sb_full_url = f'https://url.v1.mk/sub?target=singbox&url={clash_url}&insert=false&config=https://raw.bgithub.xyz/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini&emoji=true&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=false&fdn=false'
                 encoded_url = base64.urlsafe_b64encode(sb_full_url.encode()).decode()
                 response = requests.post("https://v1.mk/short", json={"longUrl": encoded_url})
                 if response.status_code == 200:
@@ -1505,6 +1512,6 @@ def work(links, check=False, allowed_types=[], only_check=False):
 
 if __name__ == '__main__':
     links = [
-        "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/link_cleaned.yaml"
+        "https://raw.bgithub.xyz/qjlxg/vt/refs/heads/main/link_cleaned.yaml"
     ]
     work(links, check=True, only_check=False, allowed_types=["ss", "hysteria2", "hy2", "vless", "vmess", "trojan"])
