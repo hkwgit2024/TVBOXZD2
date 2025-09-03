@@ -136,7 +136,6 @@ clash_config_template = {
         },
     ],
     "rules": [
-    
         "MATCH,节点选择"
     ]
 }
@@ -717,151 +716,89 @@ def download_and_extract_latest_release():
         for file_name in extracted_files:
             if os.path.exists(file_name):
                 os.rename(file_name, new_name)
-                break
-
-        os.remove(filename)  # 删除下载的压缩文件
-    else:
-        print("No suitable release found for the current operating system.")
-
-
-def read_output(pipe, output_lines):
-    while True:
-        line = pipe.readline()
-        if line:
-            output_lines.append(line)
-        else:
-            break
-
-
-def kill_clash():
-    """
-    在 macOS、Linux 和 Windows 上强制杀掉 Clash 进程。
-    支持配置文件：clash_config.yaml 和 clash_config.yaml.json
-    """
-    # 根据操作系统定义 Clash 进程名
-    system = platform.system()
-    clash_process_names = {
-        "Windows": "clash.exe",
-        "Linux": "clash-linux",
-        "Darwin": "clash-darwin"  # macOS
-    }
-    config_files = ["clash_config.yaml", "clash_config.yaml.json"]
-
-    # 检查是否支持当前操作系统
-    if system not in clash_process_names:
-        print("不支持的操作系统")
-        return
-
-    # 获取当前系统的 Clash 进程名
-    process_name = clash_process_names[system]
-
-    # 遍历所有进程，查找并终止 Clash 进程
-    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        try:
-            # 如果进程名不匹配，跳过
-            if proc.info['name'] != process_name:
-                continue
-
-            # 获取命令行参数并检查配置文件
-            cmdline = proc.info['cmdline']
-            if cmdline and len(cmdline) >= 3 and cmdline[1] == '-f' and cmdline[2] in config_files:
-                # 强制终止进程
-                proc.kill()
-                # print(f"Clash 进程 (PID: {proc.pid}) 已终止 ({system})")
-        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-            # 忽略进程不存在、权限不足或僵尸进程的异常
-            pass
-
-    # print(f"未找到 Clash 进程 ({system})")
+                ensure_executable(new_name)
+        os.remove(filename)
+        print(f"Downloaded and extracted {new_name}")
 
 
 def start_clash():
     download_and_extract_latest_release()
-    system_platform = platform.system().lower()
+    os_type = platform.system().lower()
+    clash_binary = f"clash-{os_type}" if os_type != "windows" else "clash.exe"
+    
+    if not os.path.exists(clash_binary):
+        print(f"Clash binary {clash_binary} not found!")
+        sys.exit(1)
 
-    if system_platform == 'windows':
-        clash_binary = '.\\clash.exe'
-    elif system_platform in ["linux", "darwin"]:
-        clash_binary = f'./clash-{system_platform}'
-        ensure_executable(clash_binary)
-    else:
-        raise OSError("Unsupported operating system.")
+    config_path = CONFIG_FILE
+    if not os.path.exists(config_path):
+        config_path = f"{CONFIG_FILE}.json"
+        if not os.path.exists(config_path):
+            print(f"Config file {config_path} not found!")
+            sys.exit(1)
 
-    not_started = True
+    command = [f"./{clash_binary}", "-f", config_path]
+    if os_type == "windows":
+        command = [clash_binary, "-f", config_path]
 
-    global CONFIG_FILE
-    CONFIG_FILE = f'{CONFIG_FILE}.json' if os.path.exists(f'{CONFIG_FILE}.json') else CONFIG_FILE
-    while not_started:
-        # print(f'加载配置{CONFIG_FILE}')
-        clash_process = subprocess.Popen(
-            [clash_binary, '-f', CONFIG_FILE],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            encoding='utf-8'
-        )
-
-        output_lines = []
-
-        # 启动线程来读取标准输出和标准错误
-        stdout_thread = threading.Thread(target=read_output, args=(clash_process.stdout, output_lines))
-
-        stdout_thread.start()
-
-        timeout = 3
-        start_time = time.time()
-        while time.time() - start_time < timeout:
-            stdout_thread.join(timeout=0.5)
-            if output_lines:
-                # 检查输出是否包含错误信息
-                if 'GeoIP.dat' in output_lines[-1]:
-                    print(output_lines[-1])
-                    time.sleep(5)
-                    if is_clash_api_running():
-                        return clash_process
-
-                if "Parse config error" in output_lines[-1]:
-                    if handle_clash_error(output_lines[-1], CONFIG_FILE):
-                        clash_process.kill()
-                        output_lines = []
-            if is_clash_api_running():
-                return clash_process
-
-        if not_started:
-            clash_process.kill()
-            continue
-        return clash_process
+    process = None
+    for _ in range(3):  # Retry up to 3 times
+        try:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding='utf-8'
+            )
+            time.sleep(2)  # Wait for Clash to start
+            if process.poll() is None:  # Check if process is still running
+                print(f"Clash started successfully with PID {process.pid}")
+                return process
+            else:
+                stderr_output = process.stderr.read()
+                print(f"Clash failed to start: {stderr_output}")
+                if handle_clash_error(stderr_output, config_path):
+                    continue
+                else:
+                    print("Failed to handle Clash error")
+                    sys.exit(1)
+        except Exception as e:
+            print(f"Error starting Clash: {e}")
+            if process:
+                process.kill()
+            sys.exit(1)
+    print("Failed to start Clash after multiple attempts")
+    sys.exit(1)
 
 
-def is_clash_api_running():
+def kill_clash():
+    """杀死所有 Clash 进程"""
+    for proc in psutil.process_iter(['name']):
+        try:
+            if proc.name().lower() in ['clash', 'clash.exe', 'clash-linux', 'clash-darwin']:
+                proc.kill()
+                print(f"Killed Clash process with PID {proc.pid}")
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+
+
+def switch_proxy(proxy_name: str) -> Dict:
+    """切换到指定代理节点"""
     try:
-        url = f"http://{CLASH_API_HOST}:{CLASH_API_PORTS[0]}/configs"
-        response = requests.get(url)
-        # 检查响应状态码，200表示正常
-        print(f'Clash API启动成功，开始批量检测')
-        return response.status_code == 200
-    except requests.exceptions.RequestException:
-        # 捕获所有请求异常，包括连接错误等
-        return False
-
-
-# 切换到指定代理节点
-def switch_proxy(proxy_name='DIRECT'):
-    """
-    切换 Clash 中策略组的代理节点。
-    :param proxy_name: 要切换到的代理节点名称
-    :return: 返回切换结果或错误信息
-    """
-    url = f"http://{CLASH_API_HOST}:{CLASH_API_PORTS[0]}/proxies/节点选择"
-    data = {
-        "name": proxy_name
-    }
-
-    try:
-        response = requests.put(url, json=data)
-        # 检查响应状态
-        if response.status_code == 204:  # Clash API 切换成功返回 204 No Content
-            print(f"切换到 '节点选择-{proxy_name}' successfully.")
+        for port in CLASH_API_PORTS:
+            url = f"http://{CLASH_API_HOST}:{port}/proxies/%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9"
+            response = requests.put(
+                url,
+                headers={
+                    "Authorization": f"Bearer {CLASH_API_SECRET}" if CLASH_API_SECRET else "",
+                    "Content-Type": "application/json",
+                },
+                json={"name": proxy_name},
+                timeout=TIMEOUT
+            )
+            response.raise_for_status()
+            print(f"Switched to proxy '{proxy_name}' on port {port}")
             return {"status": "success", "message": f"Switched to proxy '{proxy_name}'."}
         else:
             return response.json()
@@ -931,24 +868,26 @@ class ClashAPI:
         except httpx.RequestError as e:
             raise ClashAPIException(f"请求错误: {e}")
 
-    async def test_proxy_delay(self, proxy_name: str) -> ProxyTestResult:
+    async def test_proxy_delay(self, proxy_name: str, secondary_test: bool = False) -> ProxyTestResult:
         """测试指定代理节点的延迟，使用缓存避免重复测试"""
         if not self.base_url:
             raise ClashAPIException("未建立与 Clash API 的连接")
 
         # 检查缓存
-        if proxy_name in self._test_results_cache:
-            cached_result = self._test_results_cache[proxy_name]
+        cache_key = f"{proxy_name}_{'secondary' if secondary_test else 'primary'}"
+        if cache_key in self._test_results_cache:
+            cached_result = self._test_results_cache[cache_key]
             # 如果测试结果不超过60秒，直接返回缓存的结果
             if (datetime.now() - cached_result.tested_time).total_seconds() < 60:
                 return cached_result
 
         async with self.semaphore:
             try:
+                test_url = SECONDARY_TEST_URL if secondary_test else TEST_URL
                 response = await self.client.get(
                     f"{self.base_url}/proxies/{urllib.parse.quote(proxy_name, safe='')}/delay",
                     headers=self.headers,
-                    params={"url": TEST_URL, "timeout": int(TIMEOUT * 1000)}
+                    params={"url": test_url, "timeout": int(TIMEOUT * 1000)}
                 )
                 response.raise_for_status()
                 delay = response.json().get("delay")
@@ -960,7 +899,7 @@ class ClashAPI:
                 # print(e)
             finally:
                 # 更新缓存
-                self._test_results_cache[proxy_name] = result
+                self._test_results_cache[cache_key] = result
                 return result
 
 
@@ -1046,6 +985,16 @@ class ClashConfig:
                 break
         return proxy_names
 
+    def update_proxies_names(self, name_mapping: Dict[str, str]):
+        """更新代理节点的名称"""
+        if "proxies" in self.config:
+            for proxy in self.config["proxies"]:
+                if proxy["name"] in name_mapping:
+                    proxy["name"] = name_mapping[proxy["name"]]
+        for group in self.proxy_groups:
+            if "proxies" in group:
+                group["proxies"] = [name_mapping.get(p, p) for p in group["proxies"]]
+
     def save(self):
         """保存配置到文件"""
         try:
@@ -1064,7 +1013,7 @@ class ClashConfig:
 
 
 # 打印测试结果摘要
-def print_test_summary(group_name: str, results: List[ProxyTestResult]):
+def print_test_summary(group_name: str, results: List[ProxyTestResult], test_type: str = "Primary"):
     """打印测试结果摘要"""
     valid_results = [r for r in results if r.is_valid]
     invalid_results = [r for r in results if not r.is_valid]
@@ -1072,7 +1021,7 @@ def print_test_summary(group_name: str, results: List[ProxyTestResult]):
     valid = len(valid_results)
     invalid = len(invalid_results)
 
-    print(f"\n策略组 '{group_name}' 测试结果:")
+    print(f"\n策略组 '{group_name}' {test_type} 测试结果:")
     print(f"总节点数: {total}")
     print(f"可用节点数: {valid}")
     print(f"失效节点数: {invalid}")
@@ -1082,7 +1031,7 @@ def print_test_summary(group_name: str, results: List[ProxyTestResult]):
     if valid > 0:
         avg_delay = sum(r.delay for r in valid_results) / valid
         print(f"平均延迟: {avg_delay:.2f}ms")
-        print("\n节点延迟统计:")
+        print(f"\n{test_type} 节点延迟统计:")
         sorted_results = sorted(valid_results, key=lambda x: x.delay)
         for i, result in enumerate(sorted_results[:LIMIT], 1):
             delays.append({"name": result.name, "Delay_ms": round(result.delay, 2)})
@@ -1091,12 +1040,13 @@ def print_test_summary(group_name: str, results: List[ProxyTestResult]):
 
 
 # 测试一组代理节点
-async def test_group_proxies(clash_api: ClashAPI, proxies: List[str]) -> List[ProxyTestResult]:
+async def test_group_proxies(clash_api: ClashAPI, proxies: List[str], secondary_test: bool = False) -> List[ProxyTestResult]:
     """测试一组代理节点"""
-    print(f"开始测试 {len(proxies)} 个节点 (最大并发: {MAX_CONCURRENT_TESTS})")
+    test_type = "Secondary" if secondary_test else "Primary"
+    print(f"开始{test_type}测试 {len(proxies)} 个节点 (最大并发: {MAX_CONCURRENT_TESTS})")
 
     # 创建所有测试任务
-    tasks = [clash_api.test_proxy_delay(proxy_name) for proxy_name in proxies]
+    tasks = [clash_api.test_proxy_delay(proxy_name, secondary_test=secondary_test) for proxy_name in proxies]
 
     # 使用进度显示执行所有任务
     results = []
@@ -1106,8 +1056,9 @@ async def test_group_proxies(clash_api: ClashAPI, proxies: List[str]) -> List[Pr
         # 显示进度
         done = len(results)
         total = len(tasks)
-        print(f"\r进度: {done}/{total} ({done / total * 100:.1f}%)", end="", flush=True)
+        print(f"\r{test_type} 测试进度: {done}/{total} ({done / total * 100:.1f}%)", end="", flush=True)
 
+    print()  # 换行
     return results
 
 
@@ -1155,17 +1106,37 @@ async def proxy_clean():
 
             # 测试策略组，只需要测试其中一个即可
             group_name = groups_to_test[0]
-            print(f"\n======================== 开始测试策略组: {group_name} ====================")
+            print(f"\n======================== 开始 Primary 测试策略组: {group_name} ====================")
             proxies = config.get_group_proxies(group_name)
 
             if not proxies:
                 print(f"策略组 '{group_name}' 中没有代理节点")
-            else:
-                # 测试该组的所有节点
-                results = await test_group_proxies(clash_api, proxies)
-                all_test_results.extend(results)
-                # 打印测试结果摘要
-                delays = print_test_summary(group_name, results)
+                return
+
+            # Primary 测试 (TEST_URL)
+            primary_results = await test_group_proxies(clash_api, proxies, secondary_test=False)
+            all_test_results.extend(primary_results)
+            # 打印 Primary 测试结果摘要
+            delays = print_test_summary(group_name, primary_results, test_type="Primary")
+
+            # 筛选通过 Primary 测试的节点
+            valid_proxies = [r.name for r in primary_results if r.is_valid]
+            if not valid_proxies:
+                print(f"没有节点通过 Primary 测试，停止后续测试")
+                return
+
+            print(f"\n======================== 开始 Secondary 测试策略组: {group_name} ====================")
+            # Secondary 测试 (SECONDARY_TEST_URL)
+            secondary_results = await test_group_proxies(clash_api, valid_proxies, secondary_test=True)
+            all_test_results.extend(secondary_results)
+            # 打印 Secondary 测试结果摘要
+            secondary_delays = print_test_summary(group_name, secondary_results, test_type="Secondary")
+
+            # 筛选通过 Secondary 测试的节点
+            valid_proxies = [r.name for r in secondary_results if r.is_valid]
+            if not valid_proxies:
+                print(f"没有节点通过 Secondary 测试，停止后续测试")
+                return
 
             print('\n===================移除失效节点并按延迟排序======================\n')
             # 一次性移除所有失效节点并更新配置
@@ -1175,7 +1146,7 @@ async def proxy_clean():
             proxy_names = set()
             # 只对一个group的proxies排序即可
             group_proxies = config.get_group_proxies(group_name)
-            group_results = [r for r in all_test_results if r.name in group_proxies]
+            group_results = [r for r in secondary_results if r.name in group_proxies and r.is_valid]
             if LIMIT:
                 group_results = group_results[:LIMIT]
             for r in group_results:
@@ -1194,22 +1165,9 @@ async def proxy_clean():
             if SPEED_TEST:
                 # 测速
                 print('\n===================检测节点速度======================\n')
-                sorted_proxy_names = start_download_test(proxy_names)
-                # 按测试重新排序
-                new_list = sorted_proxy_names.copy()
-                # 创建一个集合来跟踪已添加的元素
-                added_elements = set(new_list)
-                # 遍历 group_proxies，将不在 added_elements 中的元素添加到 new_list
-                group_proxies = config.get_group_proxies(group_name)
-                for item in group_proxies:
-                    if item not in added_elements:
-                        new_list.append(item)
-                        added_elements.add(item)  # 将新添加的元素加入集合中
-                # 排序好的节点名放入group-proxies
-                for group_name in groups_to_test:
-                    for group in config.proxy_groups:
-                        if group["name"] == group_name:
-                            group["proxies"] = new_list
+                name_mapping = start_download_test(proxy_names, speed_limit=0.1)
+                # 更新节点名称（附加速度）
+                config.update_proxies_names(name_mapping)
                 # 保存更新后的配置
                 config.save()
 
@@ -1352,8 +1310,8 @@ def resolve_template_url(template_url):
 
 def start_download_test(proxy_names, speed_limit=0.1):
     """
-    开始下载测试
-
+    开始下载测试，并将速度附加到节点名称
+    返回名称映射字典 {旧名称: 新名称}
     """
     # 第一步：测试所有节点的下载速度
     test_all_proxies(proxy_names[:SPEED_TEST_LIMIT])
@@ -1363,13 +1321,25 @@ def start_download_test(proxy_names, speed_limit=0.1):
 
     # 按下载速度从大到小排序
     sorted_proxy_names = []
+    name_mapping = {}
     sorted_list = sorted(filtered_list, key=lambda x: float(x[1]), reverse=True)
     print(f'节点速度统计:')
-    for i, result in enumerate(sorted_list[:LIMIT], 1):
-        sorted_proxy_names.append(result[0])
-        print(f"{i}. {result[0]}: {result[1]}Mb/s")
+    for i, (proxy_name, speed) in enumerate(sorted_list[:LIMIT], 1):
+        new_name = f"{proxy_name}_{speed}Mb/s"
+        sorted_proxy_names.append(new_name)
+        name_mapping[proxy_name] = new_name
+        print(f"{i}. {new_name}: {speed}Mb/s")
 
-    return sorted_proxy_names
+    # 保留未测试速度的节点（按原顺序）
+    added_elements = set(sorted_proxy_names)
+    for item in proxy_names:
+        if item not in [x[0] for x in sorted_list]:
+            if item not in added_elements:
+                sorted_proxy_names.append(item)
+                name_mapping[item] = item  # 保持原名称
+                added_elements.add(item)
+
+    return name_mapping
 
 
 # 测试所有代理节点的下载速度，并排序结果
@@ -1536,5 +1506,5 @@ def work(links, check=False, allowed_types=[], only_check=False):
 if __name__ == '__main__':
     links = [
         "https://raw.githubusercontent.com/qjlxg/vt/refs/heads/main/link_cleaned.yaml"
-           ]
+    ]
     work(links, check=True, only_check=False, allowed_types=["ss", "hysteria2", "hy2", "vless", "vmess", "trojan"])
