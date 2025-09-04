@@ -80,13 +80,15 @@ jobs:
           fi
         continue-on-error: false
 
-      - name: Cache speed test results
+      - name: Cache test results
         uses: actions/cache@v3
         with:
-          path: speed_cache.json
-          key: ${{ runner.os }}-speed-cache-${{ github.run_id }}
+          path: |
+            speed_cache.json
+            exclusion_cache.json
+          key: ${{ runner.os }}-cache-${{ github.run_id }}
           restore-keys: |
-            ${{ runner.os }}-speed-cache-
+            ${{ runner.os }}-cache-
 
       - name: Run ClashForge.py
         run: |
@@ -105,6 +107,8 @@ jobs:
           cat clash_config.yaml || echo "clash_config.yaml not found"
           echo "Checking content of clash_config.yaml.json (if exists):"
           cat clash_config.yaml.json || echo "clash_config.yaml.json not found"
+          echo "Checking content of exclusion_cache.json (if exists):"
+          cat exclusion_cache.json || echo "exclusion_cache.json not found"
         continue-on-error: true
 
       - name: Commit and push changes
