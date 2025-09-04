@@ -31,6 +31,7 @@ import concurrent.futures
 import statistics
 from geoip2.database import Reader as GeoIPReader
 from playwright.async_api import async_playwright
+import socket
 
 ssl._create_default_https_context = ssl._create_unverified_context
 import warnings
@@ -509,8 +510,13 @@ def not_contains(name, server=None):
         if any(k in name for k in BAN):
             return False
         if server and os.path.exists(GEOIP_DB_PATH):
+            try:
+                ip_address = socket.gethostbyname(server)
+            except (socket.gaierror, ValueError):
+                # 如果无法解析为主机名，或者不是有效的IP，则跳过GeoIP检查
+                return True
             with GeoIPReader(GEOIP_DB_PATH) as reader:
-                response = reader.country(server)
+                response = reader.country(ip_address)
                 if response.country.iso_code == "CN":
                     return False
         return True
