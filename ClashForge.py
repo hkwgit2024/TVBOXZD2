@@ -53,7 +53,7 @@ MAX_CONCURRENT_TESTS = 120
 LIMIT = 10000
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"
-BAN = ["中国", "China", "CN", "电信", "移动", "联通", "Hong Kong", "Taiwan", "HK", "TW"]
+BAN = ["中国", "China", "CN", "电信", "移动", "联通", "Hong Kong", "Taiwan", "HK", "TW", "澳门", "Macao", "MO"]
 headers = {
     'Accept-Charset': 'utf-8',
     'Accept': 'text/html,application/x-yaml,*/*',
@@ -419,13 +419,13 @@ def filter_by_types_alt(allowed_types, nodes):
 def merge_lists(*lists):
     return [item for item in chain.from_iterable(lists) if item != '']
 
-def handle_links(new_links, resolve_name_conflicts):
+def handle_links(new_links, resolve_name_conflicts, cache):
     try:
         for new_link in new_links:
             if new_link.startswith(("hysteria2://", "hy2://", "trojan://", "ss://", "vless://", "vmess://")):
                 node = parse_proxy_link(new_link)
                 if node:
-                    resolve_name_conflicts(node)
+                    resolve_name_conflicts(node, cache)
             else:
                 print(f"跳过无效或不支持的链接: {new_link}")
     except Exception as e:
@@ -437,13 +437,15 @@ def generate_clash_config(links, load_nodes):
     final_nodes = []
     existing_names = set()
     config = clash_config_template.copy()
+    cache = ExclusionCache()
 
-    def resolve_name_conflicts(node):
+    def resolve_name_conflicts(node, cache):
         server = node.get("server")
-        if not server:
-            return
         name = str(node["name"])
-        if not_contains(name, server):
+        if cache.is_excluded(name):
+            print(f"节点 '{name}' 在排除缓存中，跳过。")
+            return
+        if not_contains(name, server, cache):
             if name in existing_names:
                 name = add_random_suffix(name, existing_names)
             existing_names.add(name)
@@ -451,24 +453,24 @@ def generate_clash_config(links, load_nodes):
             final_nodes.append(node)
 
     for node in load_nodes:
-        resolve_name_conflicts(node)
+        resolve_name_conflicts(node, cache)
 
     for link in links:
         if link.startswith(("hysteria2://", "hy2://", "trojan://", "ss://", "vless://", "vmess://")):
             node = parse_proxy_link(link)
             if not node:
                 continue
-            resolve_name_conflicts(node)
+            resolve_name_conflicts(node, cache)
         else:
             if '|links' in link or '.md' in link:
                 link = link.replace('|links', '')
                 new_links = parse_md_link(link)
-                handle_links(new_links, resolve_name_conflicts)
+                handle_links(new_links, resolve_name_conflicts, cache)
             if '|ss' in link:
                 link = link.replace('|ss', '')
                 new_links = parse_ss_sub(link)
                 for node in new_links:
-                    resolve_name_conflicts(node)
+                    resolve_name_conflicts(node, cache)
             if '{' in link:
                 link = resolve_template_url(link)
             print(f'当前正在处理link: {link}')
@@ -479,14 +481,14 @@ def generate_clash_config(links, load_nodes):
                 continue
             if isyaml:
                 for node in new_links:
-                    resolve_name_conflicts(node)
+                    resolve_name_conflicts(node, cache)
             else:
-                handle_links(new_links, resolve_name_conflicts)
+                handle_links(new_links, resolve_name_conflicts, cache)
     final_nodes = deduplicate_proxies(final_nodes)
     config["proxy-groups"][1]["proxies"] = []
     for node in final_nodes:
         name = str(node["name"])
-        if not_contains(name, node["server"]):
+        if not_contains(name, node["server"], cache):
             config["proxy-groups"][1]["proxies"].append(name)
             proxies = list(set(config["proxy-groups"][1]["proxies"]))
             config["proxy-groups"][1]["proxies"] = proxies
@@ -504,25 +506,61 @@ def generate_clash_config(links, load_nodes):
         print(f"已经生成Clash配置文件{CONFIG_FILE}|{CONFIG_FILE}.json")
     else:
         print('没有节点数据更新')
+    cache.save()
 
-def not_contains(name, server=None):
+def not_contains(name, server=None, cache=None):
+    if not cache:
+        cache = ExclusionCache()
     try:
         if any(k in name for k in BAN):
+            cache.add_excluded(name, '名称或GeoIP过滤')
             return False
         if server and os.path.exists(GEOIP_DB_PATH):
             try:
                 ip_address = socket.gethostbyname(server)
             except (socket.gaierror, ValueError):
-                # 如果无法解析为主机名，或者不是有效的IP，则跳过GeoIP检查
                 return True
             with GeoIPReader(GEOIP_DB_PATH) as reader:
                 response = reader.country(ip_address)
                 if response.country.iso_code == "CN":
+                    cache.add_excluded(name, 'GeoIP过滤')
                     return False
         return True
     except Exception as e:
         print(f"GeoIP 过滤错误: {e}")
         return not any(k in name for k in BAN)
+
+class ExclusionCache:
+    def __init__(self, filename="exclusion_cache.json"):
+        self.filename = filename
+        self.cache = self.load()
+
+    def load(self):
+        try:
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    def save(self):
+        try:
+            with open(self.filename, 'w', encoding='utf-8') as f:
+                json.dump(self.cache, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"保存排除缓存失败: {e}")
+
+    def add_excluded(self, name, reason="未知原因"):
+        self.cache[name] = {"reason": reason, "timestamp": datetime.now().isoformat()}
+
+    def is_excluded(self, name):
+        if name in self.cache:
+            timestamp_str = self.cache[name].get("timestamp")
+            if timestamp_str:
+                cached_time = datetime.fromisoformat(timestamp_str)
+                # 缓存有效期为7天，可自行调整
+                if (datetime.now() - cached_time).total_seconds() < 7 * 24 * 3600:
+                    return True
+        return False
 
 class ClashAPIException(Exception):
     pass
@@ -748,9 +786,12 @@ class ClashAPI:
             print(f"请求错误: {e}")
             return False
 
-    async def test_proxy_delay(self, proxy_name: str, secondary_test: bool = False) -> ProxyTestResult:
+    async def test_proxy_delay(self, proxy_name: str, secondary_test: bool = False, cache=None) -> ProxyTestResult:
         if not self.base_url:
             raise ClashAPIException("未建立与 Clash API 的连接")
+        if cache and cache.is_excluded(proxy_name):
+            print(f"节点 '{proxy_name}' 在排除缓存中，跳过测试。")
+            return ProxyTestResult(proxy_name, delays=[None])
         cache_key = f"{proxy_name}_{'secondary' if secondary_test else 'primary'}"
         if cache_key in self._test_results_cache:
             cached_result = self._test_results_cache[cache_key]
@@ -771,8 +812,12 @@ class ClashAPI:
                     delays.append(delay)
                 except httpx.HTTPError:
                     delays.append(None)
+                    if cache:
+                        cache.add_excluded(proxy_name, f"{'Secondary' if secondary_test else 'Primary'} 测试失败")
                 except Exception as e:
                     delays.append(None)
+                    if cache:
+                        cache.add_excluded(proxy_name, f"{'Secondary' if secondary_test else 'Primary'} 测试失败")
                 if _ < STABILITY_TESTS - 1:
                     await asyncio.sleep(STABILITY_INTERVAL)
             result = ProxyTestResult(proxy_name, delays)
@@ -885,10 +930,10 @@ def print_test_summary(group_name: str, results: List[ProxyTestResult], test_typ
             print(f"{i}. {result.name}: 平均 {result.average_delay:.2f}ms, 标准差 {result.std_dev:.2f}ms, 成功率 {result.success_rate * 100:.2f}%")
     return delays
 
-async def test_group_proxies(clash_api: ClashAPI, proxies: List[str], secondary_test: bool = False) -> List[ProxyTestResult]:
+async def test_group_proxies(clash_api: ClashAPI, proxies: List[str], secondary_test: bool = False, cache=None) -> List[ProxyTestResult]:
     test_type = "Secondary" if secondary_test else "Primary"
     print(f"开始{test_type}测试 {len(proxies)} 个节点 (最大并发: {MAX_CONCURRENT_TESTS})")
-    tasks = [clash_api.test_proxy_delay(proxy_name, secondary_test=secondary_test) for proxy_name in proxies]
+    tasks = [clash_api.test_proxy_delay(proxy_name, secondary_test=secondary_test, cache=cache) for proxy_name in proxies]
     results = []
     for future in asyncio.as_completed(tasks):
         result = await future
@@ -923,6 +968,7 @@ async def proxy_clean():
         return
     print(f"\n将测试以下策略组: {', '.join(groups_to_test)}")
     start_time = datetime.now()
+    cache = ExclusionCache()
     async with ClashAPI(CLASH_API_HOST, CLASH_API_PORTS, CLASH_API_SECRET) as clash_api:
         if not await clash_api.check_connection():
             return
@@ -934,7 +980,7 @@ async def proxy_clean():
             if not proxies:
                 print(f"策略组 '{group_name}' 中没有代理节点")
                 return
-            primary_results = await test_group_proxies(clash_api, proxies, secondary_test=False)
+            primary_results = await test_group_proxies(clash_api, proxies, secondary_test=False, cache=cache)
             all_test_results.extend(primary_results)
             delays = print_test_summary(group_name, primary_results, test_type="Primary")
             valid_proxies = [r.name for r in primary_results if r.is_valid]
@@ -942,7 +988,7 @@ async def proxy_clean():
                 print(f"没有节点通过 Primary 测试，停止后续测试")
                 return
             print(f"\n======================== 开始 Secondary 测试策略组: {group_name} ====================")
-            secondary_results = await test_group_proxies(clash_api, valid_proxies, secondary_test=True)
+            secondary_results = await test_group_proxies(clash_api, valid_proxies, secondary_test=True, cache=cache)
             all_test_results.extend(secondary_results)
             secondary_delays = print_test_summary(group_name, secondary_results, test_type="Secondary")
             valid_proxies = [r.name for r in secondary_results if r.is_valid]
@@ -966,11 +1012,12 @@ async def proxy_clean():
             config.save()
             if SPEED_TEST:
                 print('\n===================检测节点速度======================\n')
-                name_mapping = start_download_test(proxy_names, speed_limit=0.1)
+                name_mapping = start_download_test(proxy_names, speed_limit=0.1, cache=cache)
                 config.update_proxies_names(name_mapping)
                 config.save()
             total_time = (datetime.now() - start_time).total_seconds()
             print(f"\n总耗时: {total_time:.2f} 秒")
+            cache.save()
             return delays
         except ClashAPIException as e:
             print(f"Clash API 错误: {e}")
@@ -1076,8 +1123,10 @@ def save_speed_cache(cache):
     except Exception as e:
         print(f"保存速度缓存失败: {e}")
 
-def start_download_test(proxy_names, speed_limit=0.1):
-    test_all_proxies(proxy_names[:SPEED_TEST_LIMIT])
+def start_download_test(proxy_names, speed_limit=0.1, cache=None):
+    if not cache:
+        cache = ExclusionCache()
+    test_all_proxies(proxy_names[:SPEED_TEST_LIMIT], cache)
     filtered_list = [item for item in results_speed if float(item[1]) >= float(f'{speed_limit}')]
     sorted_proxy_names = []
     name_mapping = {}
@@ -1098,31 +1147,36 @@ def start_download_test(proxy_names, speed_limit=0.1):
                 added_elements.add(item)
     return name_mapping
 
-def test_all_proxies(proxy_names):
+def test_all_proxies(proxy_names, cache):
     try:
+        proxies_to_test = [name for name in proxy_names if not cache.is_excluded(name)]
+        if not proxies_to_test:
+            print("所有节点都在排除缓存中，跳过测速。")
+            return
         with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_CONCURRENT_TESTS) as executor:
-            futures = [executor.submit(test_proxy_speed, proxy_name) for proxy_name in proxy_names]
+            futures = [executor.submit(test_proxy_speed, proxy_name, cache) for proxy_name in proxies_to_test]
             for i, future in enumerate(concurrent.futures.as_completed(futures), 1):
                 try:
                     future.result()
-                    print(f"\r测速进度: {i}/{len(proxy_names)} ({i / len(proxy_names) * 100:.1f}%)", end="", flush=True)
+                    print(f"\r测速进度: {i}/{len(proxies_to_test)} ({i / len(proxies_to_test) * 100:.1f}%)", end="", flush=True)
                 except Exception as e:
                     print(f"\n测速任务出错: {e}")
         print("\r" + " " * 50 + "\r", end='')
     except Exception as e:
         print(f"测试节点速度时出错: {e}")
 
-def test_proxy_speed(proxy_name):
-    cache = load_speed_cache()
+def test_proxy_speed(proxy_name, cache):
+    cache_speed = load_speed_cache()
     cache_key = proxy_name
-    if cache_key in cache:
-        cached = cache[cache_key]
+    if cache_key in cache_speed:
+        cached = cache_speed[cache_key]
         if (datetime.now() - datetime.fromisoformat(cached['timestamp'])).total_seconds() < 24 * 3600:
             speed = cached['speed']
             results_speed.append((proxy_name, f"{speed:.2f}"))
             print(f"\r正在测速节点: {proxy_name} (缓存: {speed:.2f}Mb/s)", flush=True, end='')
             return speed
     if not switch_proxy(proxy_name):
+        cache.add_excluded(proxy_name, "切换失败")
         print(f"\n节点 {proxy_name} 切换失败，跳过速度测试")
         return 0
     proxies = {
@@ -1147,14 +1201,15 @@ def test_proxy_speed(proxy_name):
                 retry_count += 1
                 print(f"\n测试节点 {proxy_name} 下载失败 (重试 {retry_count}/{max_retries}): {e}")
                 if retry_count == max_retries:
+                    cache.add_excluded(proxy_name, f"测速失败")
                     print(f"节点 {proxy_name} 测试失败，跳过")
                     return 0
                 time.sleep(1)
     elapsed_time = time.time() - start_time
     speed = total_length / elapsed_time / 1024 / 1024 if elapsed_time > 0 else 0
     results_speed.append((proxy_name, f"{speed:.2f}"))
-    cache[cache_key] = {"speed": speed, "timestamp": datetime.now().isoformat()}
-    save_speed_cache(cache)
+    cache_speed[cache_key] = {"speed": speed, "timestamp": datetime.now().isoformat()}
+    save_speed_cache(cache_speed)
     print(f"\r正在测速节点: {proxy_name} ({speed:.2f}Mb/s)", flush=True, end='')
     return speed
 
