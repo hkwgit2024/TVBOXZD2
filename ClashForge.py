@@ -48,7 +48,7 @@ SPEED_TEST = True
 SPEED_TEST_URL = "http://speed.cloudflare.com/__down?bytes=52428800"
 SPEED_TEST_LIMIT = 968
 results_speed = []
-MAX_CONCURRENT_TESTS = 20
+MAX_CONCURRENT_TESTS = 120
 LIMIT = 10000
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"
