@@ -37,622 +37,560 @@ proxies:
   port: 1866
   cipher: chacha20-ietf-poly1305
   password: oXGp1+ihlfKg826H
-  name: '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s'
+  name: '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s_5.28Mb/s'
 - type: ss
   server: 45.87.175.28
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s'
+  name: '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s_14.56Mb/s'
 - type: ss
   server: 104.192.226.106
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s'
+  name: '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s_7.98Mb/s'
 - type: vmess
   server: 15.204.11.190
   port: 15361
   uuid: 5d7bf9e3-415c-40f3-c66d-a54ea0fd860e
   alterId: 0
   cipher: auto
-  name: '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s'
+  name: '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s_5.58Mb/s'
 - type: ss
   server: 92.118.205.228
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s'
+  name: '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s_5.29Mb/s'
 - type: ss
   server: 64.74.163.130
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s'
+  name: '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s_5.39Mb/s'
 - type: ss
   server: 103.104.247.45
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s'
+  name: '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s_5.09Mb/s'
 - type: vmess
   server: 45.128.54.84
   port: 37313
   uuid: 72feb833-4196-4a70-a3f5-aeb011f7d534
   alterId: 0
   cipher: auto
-  name: '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s'
+  name: '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s_8.40Mb/s'
 - type: ss
   server: 45.87.175.199
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 1RWwXhwfAB5gAEozU4G2Pg
-  name: '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s'
+  name: '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s_7.66Mb/s'
 - type: ss
   server: 45.158.171.146
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s'
+  name: '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s_5.05Mb/s'
 - type: ss
   server: 185.231.233.173
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s'
+  name: '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s_8.58Mb/s'
 - type: ss
   server: 103.243.215.17
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s'
+  name: '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s_8.05Mb/s'
 - type: ss
   server: 167.71.235.238
   port: 47347
   cipher: chacha20-ietf-poly1305
   password: WgACwLy1BPk47JOzHyA7zu
-  name: '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s'
+  name: '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s_8.65Mb/s'
 - type: ss
   server: 45.87.175.188
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s'
-- type: ss
-  server: 185.192.124.188
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.192.124.188:990_8.09Mb/s_17.67Mb/s_1.48Mb/s_8.96Mb/s_9.85Mb/s'
+  name: '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s_8.38Mb/s'
 - type: ss
   server: 147.78.1.27
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s'
+  name: '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s_14.90Mb/s'
 - type: ss
   server: 45.87.175.22
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s'
+  name: '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s_14.20Mb/s'
 - type: ss
   server: 193.29.139.189
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s'
+  name: '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s_5.16Mb/s'
 - type: ss
   server: 193.29.139.235
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s'
+  name: '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s_7.90Mb/s'
 - type: vless
   server: 172.234.192.79
   port: 2321
   uuid: 4c266060-28aa-4fd4-8286-86127e16b260
-  name: '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s'
+  name: '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s_5.13Mb/s'
 - type: ss
   server: 51.195.119.47
   port: 1080
   cipher: chacha20-ietf-poly1305
   password: qXvO7zYU7KeaB0Md7DQLow
-  name: '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s'
+  name: '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s_5.27Mb/s'
 - type: ss
   server: 141.164.63.32
   port: 30936
   cipher: chacha20-ietf-poly1305
   password: b25727df-15ea-453c-a006-13fe98fee1d2
-  name: '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s'
+  name: '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s_8.59Mb/s'
 - type: vmess
   server: 135.125.182.74
   port: 28213
   uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
   alterId: 0
   cipher: auto
-  name: '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s'
+  name: '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s_5.26Mb/s'
 - type: vmess
   server: 51.79.86.182
   port: 42610
   uuid: e0957ca6-f613-4017-ff3c-effd1da8871a
   alterId: 0
   cipher: auto
-  name: '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s'
+  name: '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s_8.44Mb/s'
 - type: vless
   server: 54.37.205.0
   port: 59332
   uuid: d2dc2527-33d5-46f3-f39c-36da72fb1a62
-  name: '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s'
+  name: '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s_4.98Mb/s'
 - type: vmess
   server: 15.204.234.200
   port: 41100
   uuid: c7f169a3-2e9a-4894-ba53-7b2fa6fd08b4
   alterId: 0
   cipher: auto
-  name: '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s'
+  name: '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s_14.38Mb/s'
 - type: vmess
   server: 38.12.83.217
   port: 30002
   uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
   alterId: 64
   cipher: auto
-  name: '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s'
-- type: ss
-  server: 154.17.21.139
-  port: 10086
-  cipher: chacha20-ietf-poly1305
-  password: 919f8a37-fe4f-4654-ba61-fb8fc364ac64
-  name: '[SS] 154.17.21.139:10086_0.18Mb/s_0.67Mb/s_10.87Mb/s_8.86Mb/s_16.78Mb/s'
-- type: ss
-  server: 36.232.116.119
-  port: 10124
-  cipher: chacha20-ietf-poly1305
-  password: 2d1b6be9-50c1-44b2-97a5-ce9550f28d0e
-  name: '[SS] 36.232.116.119:10124_4.53Mb/s_6.13Mb/s_5.48Mb/s_5.60Mb/s'
-- type: ss
-  server: 118.170.241.129
-  port: 10054
-  cipher: chacha20-ietf-poly1305
-  password: f17f2e56-7a7a-425a-90d8-5b34c6d394b9
-  name: '[SS] 118.170.241.129:10054_2.36Mb/s_0.64Mb/s_0.38Mb/s_8.45Mb/s_5.97Mb/s'
-- type: ss
-  server: 1.170.41.9
-  port: 10152
-  cipher: chacha20-ietf-poly1305
-  password: 2a1a941c-dd9f-42c8-ac64-a0bb9be8874f
-  name: '[SS] 1.170.41.9:10152_9.68Mb/s_0.66Mb/s_0.38Mb/s_7.12Mb/s_9.04Mb/s'
-- type: ss
-  server: 125.231.72.47
-  port: 10057
-  cipher: chacha20-ietf-poly1305
-  password: f17f2e56-7a7a-425a-90d8-5b34c6d394b9
-  name: '[SS] 125.231.72.47:10057_0.28Mb/s_1.19Mb/s_0.89Mb/s_18.19Mb/s_8.96Mb/s'
-- type: ss
-  server: 1.170.56.125
-  port: 10108
-  cipher: chacha20-ietf-poly1305
-  password: 2d1b6be9-50c1-44b2-97a5-ce9550f28d0e
-  name: '[SS] 1.170.56.125:10108_3.89Mb/s_7.78Mb/s_3.49Mb/s_3.67Mb/s_9.30Mb/s'
+  name: '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s_5.35Mb/s'
 - type: vmess
   server: 89.31.120.192
   port: 443
   uuid: 44537595-9ccc-4b83-8936-5f9ad3229019
   alterId: 0
   cipher: auto
-  name: '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s'
-- type: vmess
-  server: 103.57.249.204
-  port: 443
-  uuid: f13143a7-542d-49ec-9428-098142b6977c
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 103.57.249.204:443_0.59Mb/s_0.39Mb/s_24.35Mb/s_5.97Mb/s'
+  name: '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s_8.48Mb/s'
 - type: ss
   server: 151.242.251.153
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s'
+  name: '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s_8.08Mb/s'
 - type: ss
   server: 151.242.251.144
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s'
+  name: '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s_14.60Mb/s'
 - type: ss
   server: 45.87.175.69
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s'
+  name: '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s_5.07Mb/s'
 - type: ss
   server: 193.29.139.157
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s'
+  name: '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s_8.08Mb/s'
 - type: ss
   server: 193.29.139.217
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s'
+  name: '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s_5.15Mb/s'
 - type: ss
   server: 45.158.171.66
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s'
+  name: '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s_8.18Mb/s'
 - type: ss
   server: 45.158.171.70
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s'
+  name: '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s_14.19Mb/s'
 - type: ss
   server: 45.158.171.60
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s'
+  name: '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s_8.65Mb/s'
 - type: vmess
   server: 38.60.134.249
   port: 443
   uuid: beb28159-7f4c-4c09-9313-6283515f150b
   alterId: 0
   cipher: auto
-  name: '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s'
+  name: '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s_8.54Mb/s'
 - type: vmess
   server: 165.140.216.141
   port: 443
   uuid: e7d72a8d-26f2-4b54-b366-0c43e0bcba7d
   alterId: 0
   cipher: auto
-  name: '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s'
+  name: '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s_8.76Mb/s'
 - type: ss
   server: 38.54.45.129
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s'
+  name: '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s_5.27Mb/s'
 - type: ss
   server: 79.127.233.170
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s'
+  name: '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s_8.29Mb/s'
 - type: ss
   server: 195.181.160.6
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s'
-- type: vmess
-  server: 82.197.69.131
-  port: 39674
-  uuid: 5a89386a-827b-4f54-8778-2f1b5122c6ef
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 82.197.69.131:39674_5.38Mb/s_6.20Mb/s_12.86Mb/s_8.92Mb/s'
+  name: '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s_5.24Mb/s'
 - type: ss
   server: 45.154.206.192
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s'
+  name: '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s_8.75Mb/s'
 - type: ss
   server: 45.87.175.35
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s'
+  name: '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s_8.44Mb/s'
 - type: ss
   server: 193.29.139.251
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s'
+  name: '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s_8.10Mb/s'
 - type: ss
   server: 45.158.171.110
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s'
+  name: '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s_5.10Mb/s'
 - type: ss
   server: 208.67.105.196
   port: 42029
   cipher: chacha20-ietf-poly1305
   password: SjdGCHwafjktt1rzpGxTKYTvVBWb8Xa6E5DTr6MzbdHQSwvpLiDczj3n6MBjy2uyFSzgqgvCWsDQmpM4VQzfPzyGYF58wdyD
-  name: '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s'
+  name: '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s_8.28Mb/s'
 - type: ss
   server: 38.110.1.122
   port: 7306
   cipher: aes-256-gcm
   password: FoOiGlkAA9yPEGP
-  name: '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s'
+  name: '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s_8.46Mb/s'
 - type: ss
   server: 193.29.139.173
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s'
+  name: '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s_5.29Mb/s'
 - type: ss
   server: promo1o.bystrivpn.ru
   port: 443
   cipher: chacha20-ietf-poly1305
   password: 0NeN5ta7FLa5B9DLytU0um
-  name: '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s'
+  name: '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s_5.44Mb/s'
 - type: ss
   server: 45.87.175.190
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s'
+  name: '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s_8.17Mb/s'
 - type: ss
   server: 45.87.175.200
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s'
+  name: '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s_8.34Mb/s'
 - type: ss
   server: 147.78.3.93
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s'
+  name: '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s_8.49Mb/s'
 - type: ss
   server: 64.176.85.73
   port: 1866
   cipher: chacha20-ietf-poly1305
   password: oXGp1+ihlfKg826H
-  name: '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s'
+  name: '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s_8.67Mb/s'
 - type: ss
   server: 45.87.175.10
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s'
+  name: '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s_4.96Mb/s'
 - type: vmess
   server: 51.38.64.209
   port: 44023
   uuid: 7da457da-ed0f-437d-c81d-6c35885bbea3
   alterId: 0
   cipher: auto
-  name: '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s'
+  name: '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s_8.21Mb/s'
 - type: ss
   server: 193.29.139.227
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s'
+  name: '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s_8.29Mb/s'
 - type: ss
   server: 38.107.226.159
   port: 7307
   cipher: aes-256-gcm
   password: FoOiGlkAA9yPEGP
-  name: '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s'
+  name: '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s_4.59Mb/s'
 - type: ss
   server: 38.107.226.159
   port: 2376
   cipher: aes-256-gcm
   password: faBAoD54k87UJG7
-  name: '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s'
+  name: '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s_7.99Mb/s'
 - type: vmess
   server: 165.154.195.38
   port: 35034
   uuid: 959a8caf-4cea-43d0-a548-3628e7ddfafc
   alterId: 0
   cipher: auto
-  name: '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s'
+  name: '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s_14.18Mb/s'
 - type: ss
   server: 119.59.98.58
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s'
+  name: '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s_8.58Mb/s'
 - type: ss
   server: 135.125.219.2
   port: 25930
   cipher: chacha20-ietf-poly1305
   password: 38f34312c73acae2
-  name: '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s'
+  name: '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s_14.39Mb/s'
 - type: ss
   server: 149.28.212.97
   port: 808
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s'
+  name: '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s_5.27Mb/s'
 - type: ss
   server: 169.150.202.174
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s'
+  name: '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s_15.00Mb/s'
 - type: ss
   server: 193.29.139.132
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s'
+  name: '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s_8.59Mb/s'
 - type: ss
   server: 193.29.139.141
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s'
+  name: '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s_8.53Mb/s'
 - type: ss
   server: 193.29.139.144
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s'
+  name: '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s_13.49Mb/s'
 - type: ss
   server: 193.29.139.162
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s'
+  name: '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s_8.34Mb/s'
 - type: ss
   server: 193.29.139.164
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s'
+  name: '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s_5.15Mb/s'
 - type: ss
   server: 193.29.139.175
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: 1RWwXhwfAB5gAEozU4G2Pg
-  name: '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s'
+  name: '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s_8.00Mb/s'
 - type: ss
   server: 193.29.139.233
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s'
+  name: '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s_7.79Mb/s'
 - type: ss
   server: 2.ilgm.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s'
+  name: '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s_5.08Mb/s'
 - type: ss
   server: 217.170.194.203
   port: 808
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s'
+  name: '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s_5.55Mb/s'
 - type: ss
   server: 45.87.175.165
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s'
-- type: ss
-  server: 52.213.50.72
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: wchV4YUUanCPEXcNfd8U6Z
-  name: '[SS] 52.213.50.72:443_5.78Mb/s_1.46Mb/s_18.58Mb/s_0.62Mb/s_20.62Mb/s'
+  name: '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s_5.40Mb/s'
 - type: ss
   server: 64.176.184.129
   port: 1866
   cipher: chacha20-ietf-poly1305
   password: oXGp1+ihlfKg826H
-  name: '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s'
+  name: '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s_8.26Mb/s'
 - type: ss
   server: 64.74.163.82
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s'
+  name: '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s_13.78Mb/s'
 - type: ss
   server: 65.20.115.194
   port: 800
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s'
+  name: '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s_8.29Mb/s'
 - type: ss
   server: ltnl12.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s'
+  name: '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s_13.53Mb/s'
 - type: ss
   server: ltnl16.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s'
+  name: '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s_8.58Mb/s'
 - type: vless
   server: 135.125.182.74
   port: 38413
   uuid: 0a30769a-400b-4501-a7f0-47d4eea82ae3
-  name: '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s'
+  name: '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s_5.18Mb/s'
 - type: vless
   server: 38.244.163.100
   port: 35048
   uuid: 5690f021-86a7-4712-b143-7944c7380436
-  name: '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s'
+  name: '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s_8.36Mb/s'
 - type: vless
   server: 172.105.57.184
   port: 2321
   uuid: da1668a7-3a7f-405d-874e-c28652c68c4d
-  name: '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s'
+  name: '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s_8.85Mb/s'
 - type: vless
   server: 172.234.221.94
   port: 56224
   uuid: e3d0de50-7673-4d13-be7b-e508632ed430
-  name: '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s'
+  name: '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s_14.27Mb/s'
 - type: vless
   server: 45.130.214.192
   port: 20992
   uuid: e0042666-497b-4fde-bf4a-c5281df24d15
-  name: '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s'
+  name: '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s_5.20Mb/s'
 - type: vless
   server: 45.88.183.158
   port: 44629
   uuid: d3daa900-0377-4575-9ebc-c4d88cb8486c
-  name: '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s'
+  name: '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s_15.30Mb/s'
 - type: vmess
   server: 146.56.112.110
   port: 8888
   uuid: e7c302f3-90d6-42dd-9d7d-94a3683a3707
   alterId: 0
   cipher: auto
-  name: '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s'
+  name: '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s_8.06Mb/s'
 - type: ss
   server: 207.90.239.80
   port: 808
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s'
+  name: '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s_8.88Mb/s'
 - type: hysteria2
   server: zp1.eyucdn.xyz
   port: 2056
   password: 16461a78-363c-457a-92f9-83b0a68edc37
   auth: 16461a78-363c-457a-92f9-83b0a68edc37
-  name: '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s'
+  name: '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s_4.89Mb/s'
 - type: ss
   server: pupas-shirting-unsung.freesocks.work
   port: 443
   cipher: chacha20-ietf-poly1305
   password: p78naCf2EfOlRSLTX0wFVx
-  name: '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s'
+  name: '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s_8.17Mb/s'
 - type: ss
   server: 154.205.149.250
   port: 808
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s'
+  name: '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s_8.85Mb/s'
 - type: ss
   server: 65.20.115.194
   port: 808
   cipher: chacha20-ietf-poly1305
   password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s'
+  name: '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s_8.58Mb/s'
 - type: vmess
   server: 206.119.191.9
   port: 7998
   uuid: 984429ed-3959-4022-e248-cbcb19c96f9a
   alterId: 0
   cipher: auto
-  name: '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s'
+  name: '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s_8.57Mb/s'
 - type: vmess
   server: 206.119.191.20
   port: 7998
   uuid: 984429ed-3959-4022-e248-cbcb19c96f9a
   alterId: 0
   cipher: auto
-  name: '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s'
+  name: '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s_14.98Mb/s'
 - type: vmess
   server: 165.140.216.141
   port: '443'
   uuid: e7d72a8d-26f2-4b54-b366-0c43e0bcba7d
   alterId: 0
   cipher: auto
-  name: '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s'
+  name: '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s_8.39Mb/s'
 proxy-groups:
 - name: 节点选择
   type: select
@@ -665,108 +603,98 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s'
-  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s'
-  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s'
-  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s'
-  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s'
-  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s'
-  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s'
-  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s'
-  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s'
-  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s'
-  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s'
-  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s'
-  - '[SS] 52.213.50.72:443_5.78Mb/s_1.46Mb/s_18.58Mb/s_0.62Mb/s_20.62Mb/s'
-  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s'
-  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s'
-  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s'
-  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s'
-  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s'
-  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s'
-  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s'
-  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s'
-  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s'
-  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s'
-  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s'
-  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s'
-  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s'
-  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s'
-  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s'
-  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s'
-  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s'
-  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s'
-  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s'
-  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s'
-  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s'
-  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s'
-  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s'
-  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s'
-  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s'
-  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s'
-  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s'
-  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s'
-  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s'
-  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s'
-  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s'
-  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s'
-  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s'
-  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s'
-  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s'
-  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s'
-  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s'
-  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s'
-  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s'
-  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s'
-  - '[SS] 154.17.21.139:10086_0.18Mb/s_0.67Mb/s_10.87Mb/s_8.86Mb/s_16.78Mb/s'
-  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s'
-  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s'
-  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s'
-  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s'
-  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s'
-  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s'
-  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s'
-  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s'
-  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s'
-  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s'
-  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s'
-  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s'
-  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s'
-  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s'
-  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s'
-  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s'
-  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s'
-  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s'
-  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s'
-  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s'
-  - '[SS] 185.192.124.188:990_8.09Mb/s_17.67Mb/s_1.48Mb/s_8.96Mb/s_9.85Mb/s'
-  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s'
-  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s'
-  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s'
-  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s'
-  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s'
-  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s'
-  - '[SS] 1.170.41.9:10152_9.68Mb/s_0.66Mb/s_0.38Mb/s_7.12Mb/s_9.04Mb/s'
-  - '[SS] 36.232.116.119:10124_4.53Mb/s_6.13Mb/s_5.48Mb/s_5.60Mb/s'
-  - '[SS] 118.170.241.129:10054_2.36Mb/s_0.64Mb/s_0.38Mb/s_8.45Mb/s_5.97Mb/s'
-  - '[SS] 1.170.56.125:10108_3.89Mb/s_7.78Mb/s_3.49Mb/s_3.67Mb/s_9.30Mb/s'
-  - '[SS] 125.231.72.47:10057_0.28Mb/s_1.19Mb/s_0.89Mb/s_18.19Mb/s_8.96Mb/s'
-  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s'
-  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s'
-  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s'
-  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s'
-  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s'
-  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s'
-  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s'
-  - '[VMESS] 82.197.69.131:39674_5.38Mb/s_6.20Mb/s_12.86Mb/s_8.92Mb/s'
-  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s'
-  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s'
-  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s'
-  - '[VMESS] 103.57.249.204:443_0.59Mb/s_0.39Mb/s_24.35Mb/s_5.97Mb/s'
-  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s'
-  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s'
+  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s_4.59Mb/s'
+  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s_7.99Mb/s'
+  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s_14.38Mb/s'
+  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s_5.39Mb/s'
+  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s_13.78Mb/s'
+  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s_8.44Mb/s'
+  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s_5.13Mb/s'
+  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s_14.27Mb/s'
+  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s_8.46Mb/s'
+  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s_7.79Mb/s'
+  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s_8.65Mb/s'
+  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s_8.08Mb/s'
+  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s_8.08Mb/s'
+  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s_5.05Mb/s'
+  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s_14.19Mb/s'
+  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s_13.53Mb/s'
+  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s_8.44Mb/s'
+  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s_7.90Mb/s'
+  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s_8.21Mb/s'
+  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s_5.29Mb/s'
+  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s_8.17Mb/s'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s_5.08Mb/s'
+  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s_5.09Mb/s'
+  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s_14.20Mb/s'
+  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s_8.18Mb/s'
+  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s_8.28Mb/s'
+  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s_7.66Mb/s'
+  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s_13.49Mb/s'
+  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s_14.56Mb/s'
+  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s_5.07Mb/s'
+  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s_8.58Mb/s'
+  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s_8.10Mb/s'
+  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s_8.59Mb/s'
+  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s_14.39Mb/s'
+  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s_8.53Mb/s'
+  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s_5.44Mb/s'
+  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s_5.10Mb/s'
+  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s_5.16Mb/s'
+  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s_8.38Mb/s'
+  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s_8.00Mb/s'
+  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s_4.96Mb/s'
+  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s_8.88Mb/s'
+  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s_7.98Mb/s'
+  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s_8.26Mb/s'
+  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s_5.40Mb/s'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s_8.17Mb/s'
+  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s_8.36Mb/s'
+  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s_8.29Mb/s'
+  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s_8.29Mb/s'
+  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s_8.54Mb/s'
+  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s_8.58Mb/s'
+  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s_5.18Mb/s'
+  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s_5.35Mb/s'
+  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s_5.24Mb/s'
+  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s_5.27Mb/s'
+  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s_8.75Mb/s'
+  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s_4.98Mb/s'
+  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s_14.90Mb/s'
+  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s_5.55Mb/s'
+  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s_14.60Mb/s'
+  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s_5.29Mb/s'
+  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s_5.26Mb/s'
+  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s_8.29Mb/s'
+  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s_5.28Mb/s'
+  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s_5.27Mb/s'
+  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s_5.58Mb/s'
+  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s_8.39Mb/s'
+  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s_8.76Mb/s'
+  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s_5.20Mb/s'
+  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s_8.58Mb/s'
+  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s_8.85Mb/s'
+  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s_15.00Mb/s'
+  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s_8.49Mb/s'
+  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s_5.27Mb/s'
+  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s_14.18Mb/s'
+  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s_4.89Mb/s'
+  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s_8.85Mb/s'
+  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s_8.67Mb/s'
+  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s_14.98Mb/s'
+  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s_8.65Mb/s'
+  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s_15.30Mb/s'
+  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s_8.57Mb/s'
+  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s_8.05Mb/s'
+  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s_8.06Mb/s'
+  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s_8.48Mb/s'
+  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s_8.59Mb/s'
+  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s_8.40Mb/s'
+  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s_8.58Mb/s'
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -774,214 +702,194 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s'
-  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s'
-  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s'
-  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s'
-  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s'
-  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s'
-  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s'
-  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s'
-  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s'
-  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s'
-  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s'
-  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s'
-  - '[SS] 52.213.50.72:443_5.78Mb/s_1.46Mb/s_18.58Mb/s_0.62Mb/s_20.62Mb/s'
-  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s'
-  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s'
-  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s'
-  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s'
-  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s'
-  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s'
-  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s'
-  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s'
-  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s'
-  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s'
-  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s'
-  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s'
-  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s'
-  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s'
-  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s'
-  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s'
-  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s'
-  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s'
-  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s'
-  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s'
-  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s'
-  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s'
-  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s'
-  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s'
-  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s'
-  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s'
-  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s'
-  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s'
-  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s'
-  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s'
-  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s'
-  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s'
-  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s'
-  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s'
-  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s'
-  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s'
-  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s'
-  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s'
-  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s'
-  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s'
-  - '[SS] 154.17.21.139:10086_0.18Mb/s_0.67Mb/s_10.87Mb/s_8.86Mb/s_16.78Mb/s'
-  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s'
-  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s'
-  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s'
-  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s'
-  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s'
-  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s'
-  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s'
-  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s'
-  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s'
-  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s'
-  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s'
-  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s'
-  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s'
-  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s'
-  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s'
-  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s'
-  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s'
-  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s'
-  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s'
-  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s'
-  - '[SS] 185.192.124.188:990_8.09Mb/s_17.67Mb/s_1.48Mb/s_8.96Mb/s_9.85Mb/s'
-  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s'
-  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s'
-  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s'
-  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s'
-  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s'
-  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s'
-  - '[SS] 1.170.41.9:10152_9.68Mb/s_0.66Mb/s_0.38Mb/s_7.12Mb/s_9.04Mb/s'
-  - '[SS] 36.232.116.119:10124_4.53Mb/s_6.13Mb/s_5.48Mb/s_5.60Mb/s'
-  - '[SS] 118.170.241.129:10054_2.36Mb/s_0.64Mb/s_0.38Mb/s_8.45Mb/s_5.97Mb/s'
-  - '[SS] 1.170.56.125:10108_3.89Mb/s_7.78Mb/s_3.49Mb/s_3.67Mb/s_9.30Mb/s'
-  - '[SS] 125.231.72.47:10057_0.28Mb/s_1.19Mb/s_0.89Mb/s_18.19Mb/s_8.96Mb/s'
-  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s'
-  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s'
-  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s'
-  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s'
-  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s'
-  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s'
-  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s'
-  - '[VMESS] 82.197.69.131:39674_5.38Mb/s_6.20Mb/s_12.86Mb/s_8.92Mb/s'
-  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s'
-  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s'
-  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s'
-  - '[VMESS] 103.57.249.204:443_0.59Mb/s_0.39Mb/s_24.35Mb/s_5.97Mb/s'
-  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s'
-  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s'
+  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s_4.59Mb/s'
+  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s_7.99Mb/s'
+  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s_14.38Mb/s'
+  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s_5.39Mb/s'
+  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s_13.78Mb/s'
+  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s_8.44Mb/s'
+  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s_5.13Mb/s'
+  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s_14.27Mb/s'
+  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s_8.46Mb/s'
+  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s_7.79Mb/s'
+  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s_8.65Mb/s'
+  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s_8.08Mb/s'
+  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s_8.08Mb/s'
+  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s_5.05Mb/s'
+  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s_14.19Mb/s'
+  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s_13.53Mb/s'
+  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s_8.44Mb/s'
+  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s_7.90Mb/s'
+  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s_8.21Mb/s'
+  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s_5.29Mb/s'
+  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s_8.17Mb/s'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s_5.08Mb/s'
+  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s_5.09Mb/s'
+  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s_14.20Mb/s'
+  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s_8.18Mb/s'
+  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s_8.28Mb/s'
+  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s_7.66Mb/s'
+  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s_13.49Mb/s'
+  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s_14.56Mb/s'
+  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s_5.07Mb/s'
+  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s_8.58Mb/s'
+  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s_8.10Mb/s'
+  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s_8.59Mb/s'
+  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s_14.39Mb/s'
+  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s_8.53Mb/s'
+  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s_5.44Mb/s'
+  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s_5.10Mb/s'
+  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s_5.16Mb/s'
+  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s_8.38Mb/s'
+  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s_8.00Mb/s'
+  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s_4.96Mb/s'
+  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s_8.88Mb/s'
+  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s_7.98Mb/s'
+  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s_8.26Mb/s'
+  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s_5.40Mb/s'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s_8.17Mb/s'
+  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s_8.36Mb/s'
+  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s_8.29Mb/s'
+  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s_8.29Mb/s'
+  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s_8.54Mb/s'
+  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s_8.58Mb/s'
+  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s_5.18Mb/s'
+  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s_5.35Mb/s'
+  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s_5.24Mb/s'
+  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s_5.27Mb/s'
+  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s_8.75Mb/s'
+  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s_4.98Mb/s'
+  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s_14.90Mb/s'
+  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s_5.55Mb/s'
+  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s_14.60Mb/s'
+  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s_5.29Mb/s'
+  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s_5.26Mb/s'
+  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s_8.29Mb/s'
+  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s_5.28Mb/s'
+  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s_5.27Mb/s'
+  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s_5.58Mb/s'
+  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s_8.39Mb/s'
+  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s_8.76Mb/s'
+  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s_5.20Mb/s'
+  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s_8.58Mb/s'
+  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s_8.85Mb/s'
+  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s_15.00Mb/s'
+  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s_8.49Mb/s'
+  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s_5.27Mb/s'
+  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s_14.18Mb/s'
+  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s_4.89Mb/s'
+  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s_8.85Mb/s'
+  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s_8.67Mb/s'
+  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s_14.98Mb/s'
+  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s_8.65Mb/s'
+  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s_15.30Mb/s'
+  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s_8.57Mb/s'
+  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s_8.05Mb/s'
+  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s_8.06Mb/s'
+  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s_8.48Mb/s'
+  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s_8.59Mb/s'
+  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s_8.40Mb/s'
+  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s_8.58Mb/s'
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s'
-  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s'
-  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s'
-  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s'
-  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s'
-  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s'
-  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s'
-  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s'
-  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s'
-  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s'
-  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s'
-  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s'
-  - '[SS] 52.213.50.72:443_5.78Mb/s_1.46Mb/s_18.58Mb/s_0.62Mb/s_20.62Mb/s'
-  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s'
-  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s'
-  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s'
-  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s'
-  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s'
-  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s'
-  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s'
-  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s'
-  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s'
-  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s'
-  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s'
-  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s'
-  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s'
-  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s'
-  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s'
-  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s'
-  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s'
-  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s'
-  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s'
-  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s'
-  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s'
-  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s'
-  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s'
-  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s'
-  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s'
-  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s'
-  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s'
-  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s'
-  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s'
-  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s'
-  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s'
-  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s'
-  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s'
-  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s'
-  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s'
-  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s'
-  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s'
-  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s'
-  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s'
-  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s'
-  - '[SS] 154.17.21.139:10086_0.18Mb/s_0.67Mb/s_10.87Mb/s_8.86Mb/s_16.78Mb/s'
-  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s'
-  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s'
-  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s'
-  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s'
-  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s'
-  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s'
-  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s'
-  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s'
-  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s'
-  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s'
-  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s'
-  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s'
-  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s'
-  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s'
-  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s'
-  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s'
-  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s'
-  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s'
-  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s'
-  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s'
-  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s'
-  - '[SS] 185.192.124.188:990_8.09Mb/s_17.67Mb/s_1.48Mb/s_8.96Mb/s_9.85Mb/s'
-  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s'
-  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s'
-  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s'
-  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s'
-  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s'
-  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s'
-  - '[SS] 1.170.41.9:10152_9.68Mb/s_0.66Mb/s_0.38Mb/s_7.12Mb/s_9.04Mb/s'
-  - '[SS] 36.232.116.119:10124_4.53Mb/s_6.13Mb/s_5.48Mb/s_5.60Mb/s'
-  - '[SS] 118.170.241.129:10054_2.36Mb/s_0.64Mb/s_0.38Mb/s_8.45Mb/s_5.97Mb/s'
-  - '[SS] 1.170.56.125:10108_3.89Mb/s_7.78Mb/s_3.49Mb/s_3.67Mb/s_9.30Mb/s'
-  - '[SS] 125.231.72.47:10057_0.28Mb/s_1.19Mb/s_0.89Mb/s_18.19Mb/s_8.96Mb/s'
-  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s'
-  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s'
-  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s'
-  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s'
-  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s'
-  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s'
-  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s'
-  - '[VMESS] 82.197.69.131:39674_5.38Mb/s_6.20Mb/s_12.86Mb/s_8.92Mb/s'
-  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s'
-  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s'
-  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s'
-  - '[VMESS] 103.57.249.204:443_0.59Mb/s_0.39Mb/s_24.35Mb/s_5.97Mb/s'
-  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s'
-  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s'
+  - '[SS] 38.107.226.159:7307_0.57Mb/s_13.19Mb/s_2.47Mb/s_20.34Mb/s_8.99Mb/s_4.59Mb/s'
+  - '[SS] 38.107.226.159:2376_0.57Mb/s_3.67Mb/s_0.38Mb/s_1.09Mb/s_19.99Mb/s_7.99Mb/s'
+  - '[VMESS] 15.204.234.200:41100_0.57Mb/s_5.40Mb/s_0.38Mb/s_20.32Mb/s_21.43Mb/s_14.38Mb/s'
+  - '[SS] 64.74.163.130:990_2.49Mb/s_15.58Mb/s_2.76Mb/s_6.36Mb/s_9.28Mb/s_5.39Mb/s'
+  - '[SS] 64.74.163.82:990_0.60Mb/s_3.28Mb/s_0.38Mb/s_8.86Mb/s_5.20Mb/s_13.78Mb/s'
+  - '[VMESS] 51.79.86.182:42610_1.38Mb/s_9.59Mb/s_3.56Mb/s_10.91Mb/s_9.76Mb/s_8.44Mb/s'
+  - '[VLESS] 172.234.192.79:2321_0.63Mb/s_4.05Mb/s_3.36Mb/s_1.88Mb/s_9.09Mb/s_5.13Mb/s'
+  - '[VLESS] 172.234.221.94:56224_6.94Mb/s_9.47Mb/s_0.39Mb/s_19.74Mb/s_5.50Mb/s_14.27Mb/s'
+  - '[SS] 38.110.1.122:7306_0.61Mb/s_0.65Mb/s_0.38Mb/s_8.57Mb/s_9.28Mb/s_8.46Mb/s'
+  - '[SS] 193.29.139.164:8080_0.62Mb/s_0.65Mb/s_17.80Mb/s_4.85Mb/s_5.60Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.233:8080_1.29Mb/s_1.08Mb/s_8.07Mb/s_3.38Mb/s_9.21Mb/s_7.79Mb/s'
+  - '[SS] 45.158.171.60:8080_0.60Mb/s_0.98Mb/s_2.37Mb/s_21.27Mb/s_5.68Mb/s_8.65Mb/s'
+  - '[SS] 193.29.139.157:8080_1.58Mb/s_0.64Mb/s_16.84Mb/s_8.07Mb/s_9.14Mb/s_8.08Mb/s'
+  - '[SS] 151.242.251.153:8080_0.10Mb/s_5.79Mb/s_11.48Mb/s_4.70Mb/s_9.69Mb/s_8.08Mb/s'
+  - '[SS] 45.158.171.146:8080_2.88Mb/s_14.46Mb/s_0.38Mb/s_2.24Mb/s_5.56Mb/s_5.05Mb/s'
+  - '[SS] 45.158.171.70:8080_0.62Mb/s_2.78Mb/s_2.97Mb/s_0.63Mb/s_19.95Mb/s_14.19Mb/s'
+  - '[SS] ltnl12.saint.ydns.eu:8080_5.64Mb/s_1.19Mb/s_0.38Mb/s_7.97Mb/s_2.57Mb/s_13.53Mb/s'
+  - '[SS] 45.87.175.35:8080_0.60Mb/s_0.65Mb/s_0.38Mb/s_2.39Mb/s_15.50Mb/s_8.44Mb/s'
+  - '[SS] 193.29.139.217:8080_5.27Mb/s_0.64Mb/s_0.38Mb/s_4.48Mb/s_9.38Mb/s_5.15Mb/s'
+  - '[SS] 193.29.139.235:8080_4.25Mb/s_0.65Mb/s_11.54Mb/s_4.98Mb/s_5.59Mb/s_7.90Mb/s'
+  - '[VMESS] 51.38.64.209:44023_7.38Mb/s_16.23Mb/s_2.40Mb/s_21.88Mb/s_5.60Mb/s_8.21Mb/s'
+  - '[SS] 193.29.139.173:8080_0.60Mb/s_0.66Mb/s_6.27Mb/s_5.43Mb/s_9.08Mb/s_5.29Mb/s'
+  - '[SS] 45.87.175.190:8080_9.38Mb/s_14.94Mb/s_18.72Mb/s_15.79Mb/s_8.17Mb/s'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080_2.65Mb/s_0.88Mb/s_3.25Mb/s_0.60Mb/s_5.99Mb/s_5.08Mb/s'
+  - '[SS] 103.104.247.45:8080_0.59Mb/s_0.65Mb/s_3.40Mb/s_2.78Mb/s_6.09Mb/s_5.09Mb/s'
+  - '[SS] 45.87.175.22:8080_0.62Mb/s_15.65Mb/s_4.07Mb/s_4.80Mb/s_5.68Mb/s_14.20Mb/s'
+  - '[SS] 45.158.171.66:8080_2.15Mb/s_0.48Mb/s_1.28Mb/s_5.80Mb/s_8.18Mb/s'
+  - '[SS] 208.67.105.196:42029_0.35Mb/s_3.58Mb/s_0.38Mb/s_16.82Mb/s_9.03Mb/s_8.28Mb/s'
+  - '[SS] 45.87.175.199:8080_1.75Mb/s_6.17Mb/s_0.38Mb/s_16.17Mb/s_5.34Mb/s_7.66Mb/s'
+  - '[SS] 193.29.139.162:8080_6.37Mb/s_3.55Mb/s_8.89Mb/s_5.77Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.144:8080_0.60Mb/s_0.62Mb/s_0.38Mb/s_1.56Mb/s_9.13Mb/s_13.49Mb/s'
+  - '[SS] 45.87.175.28:8080_0.59Mb/s_0.65Mb/s_3.89Mb/s_11.49Mb/s_5.68Mb/s_14.56Mb/s'
+  - '[SS] 45.87.175.69:8080_10.19Mb/s_2.94Mb/s_3.59Mb/s_9.44Mb/s_8.98Mb/s_5.07Mb/s'
+  - '[SS] ltnl16.saint.ydns.eu:8080_0.60Mb/s_0.62Mb/s_2.29Mb/s_0.64Mb/s_5.49Mb/s_8.58Mb/s'
+  - '[SS] 193.29.139.251:8080_4.66Mb/s_0.66Mb/s_3.55Mb/s_5.36Mb/s_5.28Mb/s_8.10Mb/s'
+  - '[SS] 45.87.175.200:8080_0.18Mb/s_0.64Mb/s_3.88Mb/s_10.98Mb/s_5.55Mb/s_8.34Mb/s'
+  - '[SS] 193.29.139.132:8080_1.68Mb/s_8.27Mb/s_2.96Mb/s_8.60Mb/s_5.79Mb/s_8.59Mb/s'
+  - '[SS] 135.125.219.2:25930_1.87Mb/s_7.65Mb/s_0.58Mb/s_5.76Mb/s_20.29Mb/s_14.39Mb/s'
+  - '[SS] 193.29.139.141:8080_0.58Mb/s_0.65Mb/s_0.38Mb/s_4.53Mb/s_5.60Mb/s_8.53Mb/s'
+  - '[SS] promo1o.bystrivpn.ru:443_0.89Mb/s_15.59Mb/s_1.28Mb/s_8.87Mb/s_5.68Mb/s_5.44Mb/s'
+  - '[SS] 45.158.171.110:8080_0.63Mb/s_0.67Mb/s_19.76Mb/s_4.28Mb/s_9.77Mb/s_5.10Mb/s'
+  - '[SS] 193.29.139.189:8080_4.88Mb/s_3.50Mb/s_8.97Mb/s_9.86Mb/s_5.16Mb/s'
+  - '[SS] 45.87.175.188:8080_3.39Mb/s_1.18Mb/s_9.44Mb/s_2.87Mb/s_9.77Mb/s_8.38Mb/s'
+  - '[SS] 193.29.139.175:8080_4.10Mb/s_4.06Mb/s_1.69Mb/s_22.68Mb/s_5.57Mb/s_8.00Mb/s'
+  - '[SS] 45.87.175.10:8080_0.63Mb/s_3.05Mb/s_0.38Mb/s_19.13Mb/s_20.16Mb/s_4.96Mb/s'
+  - '[SS] 207.90.239.80:808_13.64Mb/s_0.64Mb/s_0.50Mb/s_1.06Mb/s_5.77Mb/s_8.88Mb/s'
+  - '[SS] 104.192.226.106:990_0.62Mb/s_11.66Mb/s_0.73Mb/s_0.74Mb/s_15.97Mb/s_7.98Mb/s'
+  - '[SS] 64.176.184.129:1866_0.53Mb/s_4.59Mb/s_11.18Mb/s_3.56Mb/s_2.35Mb/s_8.26Mb/s'
+  - '[SS] 45.87.175.165:8080_8.49Mb/s_2.37Mb/s_0.37Mb/s_5.55Mb/s_9.18Mb/s_5.40Mb/s'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443_10.02Mb/s_4.56Mb/s_0.39Mb/s_8.69Mb/s_9.39Mb/s_8.17Mb/s'
+  - '[VLESS] 38.244.163.100:35048_1.18Mb/s_7.67Mb/s_0.38Mb/s_18.08Mb/s_9.08Mb/s_8.36Mb/s'
+  - '[SS] 79.127.233.170:990_1.58Mb/s_0.29Mb/s_8.49Mb/s_0.68Mb/s_5.78Mb/s_8.29Mb/s'
+  - '[SS] 65.20.115.194:800_2.90Mb/s_0.59Mb/s_7.96Mb/s_6.12Mb/s_16.18Mb/s_8.29Mb/s'
+  - '[VMESS] 38.60.134.249:443_0.53Mb/s_0.59Mb/s_0.38Mb/s_18.64Mb/s_8.99Mb/s_8.54Mb/s'
+  - '[SS] 65.20.115.194:808_2.19Mb/s_2.00Mb/s_3.59Mb/s_19.74Mb/s_8.58Mb/s'
+  - '[VLESS] 135.125.182.74:38413_7.09Mb/s_2.96Mb/s_2.75Mb/s_6.53Mb/s_9.18Mb/s_5.18Mb/s'
+  - '[VMESS] 38.12.83.217:30002_0.58Mb/s_15.65Mb/s_1.19Mb/s_8.38Mb/s_9.02Mb/s_5.35Mb/s'
+  - '[SS] 195.181.160.6:990_0.65Mb/s_13.48Mb/s_3.36Mb/s_9.04Mb/s_5.24Mb/s'
+  - '[SS] 149.28.212.97:808_2.69Mb/s_0.68Mb/s_0.49Mb/s_0.66Mb/s_5.76Mb/s_5.27Mb/s'
+  - '[SS] 45.154.206.192:990_0.56Mb/s_0.64Mb/s_11.17Mb/s_8.47Mb/s_9.88Mb/s_8.75Mb/s'
+  - '[VLESS] 54.37.205.0:59332_7.96Mb/s_0.38Mb/s_8.34Mb/s_5.36Mb/s_4.98Mb/s'
+  - '[SS] 147.78.1.27:990_1.39Mb/s_0.57Mb/s_6.24Mb/s_5.36Mb/s_4.10Mb/s_14.90Mb/s'
+  - '[SS] 217.170.194.203:808_3.06Mb/s_11.57Mb/s_15.57Mb/s_6.19Mb/s_5.55Mb/s'
+  - '[SS] 151.242.251.144:8080_0.56Mb/s_19.51Mb/s_1.08Mb/s_8.44Mb/s_9.23Mb/s_14.60Mb/s'
+  - '[SS] 92.118.205.228:990_1.96Mb/s_0.90Mb/s_4.16Mb/s_4.78Mb/s_9.59Mb/s_5.29Mb/s'
+  - '[VMESS] 135.125.182.74:28213_18.57Mb/s_0.71Mb/s_0.38Mb/s_6.08Mb/s_16.69Mb/s_5.26Mb/s'
+  - '[SS] 193.29.139.227:8080_0.70Mb/s_0.64Mb/s_0.38Mb/s_2.48Mb/s_9.41Mb/s_8.29Mb/s'
+  - '[SS] 204.136.10.115:1866_2.30Mb/s_0.65Mb/s_0.38Mb/s_9.28Mb/s_5.46Mb/s_5.28Mb/s'
+  - '[SS] 51.195.119.47:1080_2.78Mb/s_0.59Mb/s_1.09Mb/s_7.10Mb/s_20.57Mb/s_5.27Mb/s'
+  - '[VMESS] 15.204.11.190:15361_1.86Mb/s_0.39Mb/s_8.45Mb/s_5.28Mb/s_5.58Mb/s'
+  - '[VMESS] 165.140.216.141:443 (2)_0.64Mb/s_4.49Mb/s_0.38Mb/s_11.65Mb/s_5.34Mb/s_8.39Mb/s'
+  - '[VMESS] 165.140.216.141:443_5.19Mb/s_8.97Mb/s_0.38Mb/s_2.35Mb/s_6.73Mb/s_8.76Mb/s'
+  - '[VLESS] 45.130.214.192:20992_1.18Mb/s_2.85Mb/s_10.59Mb/s_5.79Mb/s_8.89Mb/s_5.20Mb/s'
+  - '[SS] 185.231.233.173:990_0.50Mb/s_2.56Mb/s_1.67Mb/s_6.33Mb/s_5.78Mb/s_8.58Mb/s'
+  - '[SS] 154.205.149.250:808_4.19Mb/s_0.65Mb/s_5.69Mb/s_20.35Mb/s_9.39Mb/s_8.85Mb/s'
+  - '[SS] 169.150.202.174:990_17.69Mb/s_1.09Mb/s_6.19Mb/s_7.68Mb/s_5.57Mb/s_15.00Mb/s'
+  - '[SS] 147.78.3.93:990_7.19Mb/s_0.60Mb/s_3.59Mb/s_4.99Mb/s_7.98Mb/s_8.49Mb/s'
+  - '[SS] 38.54.45.129:990_1.29Mb/s_0.38Mb/s_5.84Mb/s_5.49Mb/s_5.27Mb/s'
+  - '[VMESS] 165.154.195.38:35034_3.30Mb/s_5.77Mb/s_13.28Mb/s_4.55Mb/s_5.67Mb/s_14.18Mb/s'
+  - '[HYSTERIA2] zp1.eyucdn.xyz:2056_0.80Mb/s_0.64Mb/s_2.18Mb/s_2.29Mb/s_16.20Mb/s_4.89Mb/s'
+  - '[VLESS] 172.105.57.184:2321_0.65Mb/s_0.38Mb/s_5.18Mb/s_2.23Mb/s_8.85Mb/s'
+  - '[SS] 64.176.85.73:1866_18.31Mb/s_0.60Mb/s_2.38Mb/s_5.24Mb/s_9.22Mb/s_8.67Mb/s'
+  - '[VMESS] 206.119.191.20:7998_19.34Mb/s_0.63Mb/s_4.38Mb/s_3.72Mb/s_8.99Mb/s_14.98Mb/s'
+  - '[SS] 167.71.235.238:47347_0.64Mb/s_0.38Mb/s_6.06Mb/s_5.60Mb/s_8.65Mb/s'
+  - '[VLESS] 45.88.183.158:44629_3.49Mb/s_0.68Mb/s_1.15Mb/s_15.49Mb/s_5.58Mb/s_15.30Mb/s'
+  - '[VMESS] 206.119.191.9:7998_2.98Mb/s_1.96Mb/s_0.38Mb/s_3.94Mb/s_5.60Mb/s_8.57Mb/s'
+  - '[SS] 103.243.215.17:990_1.88Mb/s_2.57Mb/s_0.37Mb/s_2.59Mb/s_9.67Mb/s_8.05Mb/s'
+  - '[VMESS] 146.56.112.110:8888_0.62Mb/s_1.88Mb/s_3.33Mb/s_5.76Mb/s_8.06Mb/s'
+  - '[VMESS] 89.31.120.192:443_8.33Mb/s_0.60Mb/s_0.38Mb/s_20.16Mb/s_5.97Mb/s_8.48Mb/s'
+  - '[SS] 141.164.63.32:30936_0.59Mb/s_0.38Mb/s_15.15Mb/s_15.79Mb/s_8.59Mb/s'
+  - '[VMESS] 45.128.54.84:37313_0.79Mb/s_0.38Mb/s_5.31Mb/s_5.77Mb/s_8.40Mb/s'
+  - '[SS] 119.59.98.58:990_0.65Mb/s_0.39Mb/s_4.91Mb/s_15.79Mb/s_8.58Mb/s'
 rules:
 - MATCH,节点选择
