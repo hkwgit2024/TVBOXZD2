@@ -710,182 +710,155 @@ def download_and_extract_latest_release():
 
     if download_url:
         download_url = f"{download_url}"
-        print(f"Downloading file from {download_url}")
-        filename = download_url.split('/')[-1]
-        response = requests.get(download_url)
-
-        # 保存下载的文件
-        with open(filename, 'wb') as f:
-            f.write(response.content)
-
-        # 解压文件并重命名
-        extracted_files = []
-        if filename.endswith('.zip'):
-            with zipfile.ZipFile(filename, 'r') as zip_ref:
-                zip_ref.extractall()
-                extracted_files = zip_ref.namelist()
-        elif filename.endswith('.gz'):
-            with gzip.open(filename, 'rb') as f_in:
-                output_filename = filename[:-3]
-                with open(output_filename, 'wb') as f_out:
-                    shutil.copyfileobj(f_in, f_out)
-                    extracted_files.append(output_filename)
-
-        # 重命名并删除下载的文件
-        for file_name in extracted_files:
-            if os.path.exists(file_name):
-                os.rename(file_name, new_name)
-                ensure_executable(new_name)
-        os.remove(filename)
-        print(f"Downloaded and extracted {new_name}")
+        print(f"正在下载最新 Clash 核心: {download_url}")
+        response = requests.get(download_url, stream=True)
+        if response.status_code == 200:
+            if os_type == "windows":
+                with open("clash.zip", "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                with zipfile.ZipFile("clash.zip", "r") as zip_ref:
+                    zip_ref.extractall()
+                os.remove("clash.zip")
+                for file in os.listdir():
+                    if targets["windows"] in file:
+                        os.rename(file, new_name)
+                        break
+            else:
+                with open("clash.gz", "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                with gzip.open("clash.gz", "rb") as f_in:
+                    with open(new_name, "wb") as f_out:
+                        shutil.copyfileobj(f_in, f_out)
+                os.remove("clash.gz")
+            ensure_executable(new_name)
+            print(f"已下载并解压 Clash 核心到: {new_name}")
+        else:
+            print(f"下载失败，状态码: {response.status_code}")
 
 
 def start_clash():
+    """启动 Clash 进程并加载配置"""
     download_and_extract_latest_release()
+
     os_type = platform.system().lower()
     clash_binary = f"clash-{os_type}" if os_type != "windows" else "clash.exe"
-    
+
     if not os.path.exists(clash_binary):
-        print(f"Clash binary {clash_binary} not found!")
+        print(f"未找到 Clash 可执行文件: {clash_binary}")
         sys.exit(1)
 
-    config_path = CONFIG_FILE
-    if not os.path.exists(config_path):
-        config_path = f"{CONFIG_FILE}.json"
-        if not os.path.exists(config_path):
-            print(f"Config file {config_path} not found!")
-            sys.exit(1)
+    # 确保配置文件存在
+    global CONFIG_FILE
+    config_file = CONFIG_FILE
+    if not os.path.exists(config_file):
+        config_file = f'{CONFIG_FILE}.json'
 
-    command = [f"./{clash_binary}", "-f", config_path]
-    if os_type == "windows":
-        command = [clash_binary, "-f", config_path]
+    if not os.path.exists(config_file):
+        print(f"未找到配置文件: {config_file}")
+        sys.exit(1)
 
-    process = None
-    for _ in range(3):  # Retry up to 3 times
-        try:
-            process = subprocess.Popen(
-                command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                encoding='utf-8'
-            )
-            time.sleep(2)  # Wait for Clash to start
-            if process.poll() is None:  # Check if process is still running
-                print(f"Clash started successfully with PID {process.pid}")
-                return process
-            else:
-                stderr_output = process.stderr.read()
-                print(f"Clash failed to start: {stderr_output}")
-                if handle_clash_error(stderr_output, config_path):
-                    continue
-                else:
-                    print("Failed to handle Clash error")
-                    sys.exit(1)
-        except Exception as e:
-            print(f"Error starting Clash: {e}")
-            if process:
-                process.kill()
-            sys.exit(1)
-    print("Failed to start Clash after multiple attempts")
-    sys.exit(1)
-
-
-def kill_clash():
-    """杀死所有 Clash 进程"""
+    # 检查是否有正在运行的 Clash 进程
     for proc in psutil.process_iter(['name']):
+        if proc.info['name'].startswith('clash'):
+            proc.kill()
+            time.sleep(1)  # 等待进程完全终止
+
+    # 启动 Clash 进程
+    cmd = [f"./{clash_binary}", "-f", config_file]
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding='utf-8'
+    )
+
+    # 等待 Clash 启动并检查是否成功
+    time.sleep(2)
+    if process.poll() is not None:
+        stdout, stderr = process.communicate()
+        if "Fatal error" in stderr:
+            if handle_clash_error(stderr, config_file):
+                # 修复配置后重新启动 Clash
+                process = subprocess.Popen(
+                    cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    encoding='utf-8'
+                )
+                time.sleep(2)
+                if process.poll() is not None:
+                    stdout, stderr = process.communicate()
+                    print(f"Clash 启动失败: {stderr}")
+                    sys.exit(1)
+            else:
+                print(f"Clash 启动失败: {stderr}")
+                sys.exit(1)
+
+    return process
+
+
+# 切换代理节点
+def switch_proxy(proxy_name):
+    """通过 Clash API 切换代理节点"""
+    for port in CLASH_API_PORTS:
         try:
-            if proc.name().lower() in ['clash', 'clash.exe', 'clash-linux', 'clash-darwin']:
-                proc.kill()
-                print(f"Killed Clash process with PID {proc.pid}")
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-
-
-def switch_proxy(proxy_name: str) -> Dict:
-    """切换到指定代理节点"""
-    try:
-        for port in CLASH_API_PORTS:
-            url = f"http://{CLASH_API_HOST}:{port}/proxies/%E8%8A%82%E7%82%B9%E9%80%89%E6%8B%A9"
-            response = requests.put(
-                url,
-                headers={
-                    "Authorization": f"Bearer {CLASH_API_SECRET}" if CLASH_API_SECRET else "",
-                    "Content-Type": "application/json",
-                },
-                json={"name": proxy_name},
-                timeout=TIMEOUT
-            )
+            url = f"http://{CLASH_API_HOST}:{port}/proxies/节点选择"
+            headers = {"Authorization": f"Bearer {CLASH_API_SECRET}"} if CLASH_API_SECRET else {}
+            data = {"name": proxy_name}
+            response = requests.put(url, headers=headers, json=data, timeout=TIMEOUT)
             response.raise_for_status()
-            print(f"Switched to proxy '{proxy_name}' on port {port}")
-            return {"status": "success", "message": f"Switched to proxy '{proxy_name}'."}
-        else:
-            return response.json()
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        return {"status": "error", "message": str(e)}
+            return True
+        except requests.RequestException as e:
+            print(f"切换代理节点 {proxy_name} 失败: {e}")
+    return False
 
 
-# 调用ClashAPI
 class ClashAPI:
+    """Clash API 客户端类"""
+
     def __init__(self, host: str, ports: List[int], secret: str = ""):
         self.host = host
         self.ports = ports
-        self.base_url = None  # 将在连接检查时设置
-        self.headers = {
-            "Authorization": f"Bearer {secret}" if secret else "",
-            "Content-Type": "application/json",
-            'Accept-Charset': 'utf-8',
-            'Accept': 'text/html,application/x-yaml,*/*',
-            'User-Agent': 'Clash Verge/1.7.7'
-        }
-        self.client = httpx.AsyncClient(timeout=TIMEOUT)
+        self.secret = secret
+        self.base_url = None
+        self.client = httpx.AsyncClient(verify=False)
         self.semaphore = Semaphore(MAX_CONCURRENT_TESTS)
-        self._test_results_cache: Dict[str, ProxyTestResult] = {}
+        self.headers = {"Authorization": f"Bearer {secret}"} if secret else {}
+        self._test_results_cache = {}  # 缓存测试结果
 
     async def __aenter__(self):
+        for port in self.ports:
+            base_url = f"http://{self.host}:{port}"
+            if await self.check_connection(base_url):
+                self.base_url = base_url
+                break
+        if not self.base_url:
+            raise ClashAPIException("无法连接到任何 Clash API 端口")
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.client.aclose()
 
-    async def check_connection(self) -> bool:
-        """检查与 Clash API 的连接状态，自动尝试不同端口"""
-        for port in self.ports:
-            try:
-                test_url = f"http://{self.host}:{port}"
-                response = await self.client.get(f"{test_url}/version")
-                if response.status_code == 200:
-                    version = response.json().get('version', 'unknown')
-                    print(f"成功连接到 Clash API (端口 {port})，版本: {version}")
-                    self.base_url = test_url
-                    return True
-            except httpx.RequestError:
-                print(f"端口 {port} 连接失败，尝试下一个端口...")
-                continue
-
-        print("所有端口均连接失败")
-        print(f"请确保 Clash 正在运行，并且 External Controller 已启用于以下端口之一: {', '.join(map(str, self.ports))}")
-        return False
-
-    async def get_proxies(self) -> Dict:
-        """获取所有代理节点信息"""
-        if not self.base_url:
-            raise ClashAPIException("未建立与 Clash API 的连接")
-
+    async def check_connection(self, base_url: str = None) -> bool:
+        """检查与 Clash API 的连接"""
+        base_url = base_url or self.base_url
+        if not base_url:
+            return False
         try:
-            response = await self.client.get(
-                f"{self.base_url}/proxies",
-                headers=self.headers
-            )
+            response = await self.client.get(f"{base_url}/version", headers=self.headers, timeout=TIMEOUT)
             response.raise_for_status()
-            return response.json()
+            print(f"成功连接到 Clash API: {base_url}")
+            return True
         except httpx.HTTPStatusError as e:
-            if e.response.status_code == 401:
-                print("认证失败，请检查 API Secret 是否正确")
-            raise ClashAPIException(f"HTTP 错误: {e}")
+            print(f"HTTP 错误: {e}")
+            return False
         except httpx.RequestError as e:
-            raise ClashAPIException(f"请求错误: {e}")
+            print(f"请求错误: {e}")
+            return False
 
     async def test_proxy_delay(self, proxy_name: str, secondary_test: bool = False) -> ProxyTestResult:
         """测试指定代理节点的延迟，使用缓存避免重复测试（优化：多次测试评估稳定性）"""
@@ -1424,9 +1397,6 @@ def test_proxy_speed(proxy_name):
 
 
 def upload_and_generate_urls(file_path=CONFIG_FILE):
-    # api_url = "https://catbox.moe/user/api.php"
-    # api_url = "https://f2.252035.xyz/user/api.php"
-    api_url = "https://ade4e1d7-catbox.seczhcom.workers.dev/user/api.php"
     result = {"clash_url": None, "singbox_url": None}
 
     try:
@@ -1437,31 +1407,8 @@ def upload_and_generate_urls(file_path=CONFIG_FILE):
             print("错误：文件大小超过 200MB 限制。")
             return result
 
-        # Upload Clash config
-        with open(file_path, 'rb') as file:
-            response = requests.post(api_url, data={"reqtype": "fileupload"}, files={"fileToUpload": file}, timeout=15,
-                                     verify=False)
-            if response.status_code == 200:
-                clash_url = response.text.strip()
-                result["clash_url"] = clash_url
-                print(f"Clash 配置文件上传成功！直链：{clash_url}")
-
-                sb_full_url = f'https://url.v1.mk/sub?target=singbox&url={clash_url}&insert=false&config=https://raw.bgithub.xyz/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Full_NoAuto.ini&emoji=true&list=false&xudp=false&udp=false&tfo=false&expand=true&scv=false&fdn=false'
-                encoded_url = base64.urlsafe_b64encode(sb_full_url.encode()).decode()
-                response = requests.post("https://v1.mk/short", json={"longUrl": encoded_url})
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("Code") == 1:
-                        singbox_url = data["ShortUrl"]
-                        result["singbox_url"] = singbox_url
-                        print(f"singbox 配置文件上传成功！直链：{singbox_url}")
-
-    except Exception as e:
-        print(f"发生错误：{e}")
-
-    # 记录成功生成的链接到subs.json
-    subs_file = "subs.json"
-    if result["clash_url"] or result["singbox_url"]:
+        # 记录成功生成的链接到subs.json
+        subs_file = "subs.json"
         try:
             # 初始化默认结构
             subs_data = {"clash": [], "singbox": []}
@@ -1474,17 +1421,6 @@ def upload_and_generate_urls(file_path=CONFIG_FILE):
                 except:
                     pass  # 如果文件损坏，使用默认结构
 
-            # 添加新链接到记录中(避免重复)
-            if result["clash_url"] and result["clash_url"] not in subs_data.get("clash", []):
-                if "clash" not in subs_data:
-                    subs_data["clash"] = []
-                subs_data["clash"].append(result["clash_url"])
-
-            if result["singbox_url"] and result["singbox_url"] not in subs_data.get("singbox", []):
-                if "singbox" not in subs_data:
-                    subs_data["singbox"] = []
-                subs_data["singbox"].append(result["singbox_url"])
-
             # 保存更新后的数据
             with open(subs_file, 'w', encoding='utf-8') as f:
                 json.dump(subs_data, f, ensure_ascii=False, indent=2)
@@ -1492,6 +1428,9 @@ def upload_and_generate_urls(file_path=CONFIG_FILE):
             print(f"已将订阅链接记录到 {subs_file}")
         except Exception as e:
             print(f"记录订阅链接失败: {str(e)}")
+
+    except Exception as e:
+        print(f"发生错误：{e}")
 
     return result
 
