@@ -48,7 +48,7 @@ SPEED_TEST = True
 SPEED_TEST_URL = "http://speed.cloudflare.com/__down?bytes=52428800"
 SPEED_TEST_LIMIT = 968
 results_speed = []
-MAX_CONCURRENT_TESTS = 20  # 降低到 20，减少 API 冲突
+MAX_CONCURRENT_TESTS = 20
 LIMIT = 10000
 CONFIG_FILE = 'clash_config.yaml'
 INPUT = "input"
@@ -63,8 +63,6 @@ STABILITY_INTERVAL = 2
 MIN_SUCCESS_RATE = 0.8
 MAX_STD_DEV = 200
 GEOIP_DB_PATH = "GeoLite2-Country.mmdb"
-
-# 添加锁以防止并发冲突
 switch_lock = threading.Lock()
 
 clash_config_template = {
@@ -76,8 +74,10 @@ clash_config_template = {
     "log-level": "info",
     "external-controller": "127.0.0.1:9090",
     "geodata-mode": True,
-    'geox-url': {'geoip': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat',
-                 'mmdb': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'},
+    'geox-url': {
+        'geoip': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat',
+        'mmdb': 'https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb'
+    },
     "dns": {
         "enable": True,
         "ipv6": False,
@@ -175,8 +175,7 @@ def parse_ss_link(link):
         config_part, name = link.split('#')
     else:
         config_part, name = link, ""
-    decoded = base64.urlsafe_b64decode(config_part.split('@')[0] + '=' * (-len(config_part.split('@')[0]) % 4)).decode(
-        'utf-8')
+    decoded = base64.urlsafe_b64decode(config_part.split('@')[0] + '=' * (-len(config_part.split('@')[0]) % 4)).decode('utf-8')
     method_passwd = decoded.split(':')
     cipher, password = method_passwd if len(method_passwd) == 2 else (method_passwd[0], "")
     server_info = config_part.split('@')[1]
@@ -559,8 +558,7 @@ def handle_clash_error(error_message, config_file_path):
             group["proxies"] = proxies
         with open(config_file_path, 'w', encoding='utf-8') as file:
             file.write(json.dumps(config, ensure_ascii=False))
-        print(
-            f'配置异常：{error_message}修复配置异常，移除proxy[{problem_index}] {problem_proxy_name} 完毕，耗时{time.time() - start_time}s\n')
+        print(f'配置异常：{error_message}修复配置异常，移除proxy[{problem_index}] {problem_proxy_name} 完毕，耗时{time.time() - start_time}s\n')
         return True
     except Exception as e:
         print(f"处理配置文件时出错: {str(e)}")
@@ -669,7 +667,6 @@ def start_clash():
             else:
                 print(f"Clash 启动失败: {stderr}")
                 sys.exit(1)
-    # 验证 Clash API 是否可达
     for port in CLASH_API_PORTS:
         try:
             response = requests.get(f"http://{CLASH_API_HOST}:{port}/version", timeout=2)
@@ -996,7 +993,7 @@ def strip_proxy_prefix(url):
     return url, None
 
 def is_github_raw_url(url):
-    return 'raw.bgithub.xyz' in url
+    return 'raw.githubusercontent.com' in url
 
 def extract_file_pattern(url):
     match = re.search(r'\{x\}(\.[a-zA-Z0-9]+)(?:/|$)', url)
@@ -1081,7 +1078,6 @@ def start_download_test(proxy_names, speed_limit=0.1):
     sorted_list = sorted(filtered_list, key=lambda x: float(x[1]), reverse=True)
     print(f'节点速度统计:')
     for i, (proxy_name, speed) in enumerate(sorted_list[:LIMIT], 1):
-        # 清理节点名称，去除重复速度后缀
         base_name = re.sub(r'(_\d+\.\d+Mb/s)+$', '', proxy_name)
         new_name = f"{base_name}_{speed}Mb/s"
         sorted_proxy_names.append(new_name)
