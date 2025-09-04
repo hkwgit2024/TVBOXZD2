@@ -28,6 +28,7 @@ from asyncio import Semaphore
 import ssl
 import logging
 import concurrent.futures
+import statistics  # 新增：用于计算标准差
 
 ssl._create_default_https_context = ssl._create_unverified_context
 import warnings
@@ -65,6 +66,12 @@ headers = {
     'Accept': 'text/html,application/x-yaml,*/*',
     'User-Agent': 'Clash Verge/1.7.7'
 }
+
+# 新增：稳定性测试配置
+STABILITY_TESTS = 3  # 每个节点的测试次数（用于评估稳定性）
+STABILITY_INTERVAL = 2  # 每次测试的间隔秒数
+MIN_SUCCESS_RATE = 0.8  # 最小成功率阈值（低于此值视为不稳定）
+MAX_STD_DEV = 200  # 最大标准差阈值（ms），超过视为波动太大、不稳定
 
 # Clash 配置文件的基础结构
 clash_config_template = {
@@ -596,19 +603,24 @@ class ClashAPIException(Exception):
     pass
 
 
-# 代理测试结果类
+# 代理测试结果类（优化：添加稳定性指标）
 class ProxyTestResult:
     """代理测试结果类"""
 
-    def __init__(self, name: str, delay: Optional[float] = None):
+    def __init__(self, name: str, delays: List[Optional[float]] = None):
         self.name = name
-        self.delay = delay if delay is not None else float('inf')
-        self.status = "ok" if delay is not None else "fail"
+        self.delays = delays if delays is not None else []  # 存储多次测试的延迟列表
+        valid_delays = [d for d in self.delays if d is not None]
+        self.success_rate = len(valid_delays) / len(self.delays) if self.delays else 0
+        self.average_delay = sum(valid_delays) / len(valid_delays) if valid_delays else float('inf')
+        self.std_dev = statistics.stdev(valid_delays) if len(valid_delays) > 1 else 0
+        self.status = "ok" if self.is_valid else "fail"
         self.tested_time = datetime.now()
 
     @property
     def is_valid(self) -> bool:
-        return self.status == "ok"
+        # 优化：加入成功率和标准差判断稳定性
+        return self.success_rate >= MIN_SUCCESS_RATE and self.std_dev <= MAX_STD_DEV
 
 
 def ensure_executable(file_path):
@@ -876,7 +888,7 @@ class ClashAPI:
             raise ClashAPIException(f"请求错误: {e}")
 
     async def test_proxy_delay(self, proxy_name: str, secondary_test: bool = False) -> ProxyTestResult:
-        """测试指定代理节点的延迟，使用缓存避免重复测试"""
+        """测试指定代理节点的延迟，使用缓存避免重复测试（优化：多次测试评估稳定性）"""
         if not self.base_url:
             raise ClashAPIException("未建立与 Clash API 的连接")
 
@@ -889,25 +901,30 @@ class ClashAPI:
                 return cached_result
 
         async with self.semaphore:
-            try:
-                test_url = SECONDARY_TEST_URL if secondary_test else TEST_URL
-                response = await self.client.get(
-                    f"{self.base_url}/proxies/{urllib.parse.quote(proxy_name, safe='')}/delay",
-                    headers=self.headers,
-                    params={"url": test_url, "timeout": int(TIMEOUT * 1000)}
-                )
-                response.raise_for_status()
-                delay = response.json().get("delay")
-                result = ProxyTestResult(proxy_name, delay)
-            except httpx.HTTPError:
-                result = ProxyTestResult(proxy_name)
-            except Exception as e:
-                result = ProxyTestResult(proxy_name)
-                # print(e)
-            finally:
-                # 更新缓存
-                self._test_results_cache[cache_key] = result
-                return result
+            delays = []
+            for _ in range(STABILITY_TESTS):
+                try:
+                    test_url = SECONDARY_TEST_URL if secondary_test else TEST_URL
+                    response = await self.client.get(
+                        f"{self.base_url}/proxies/{urllib.parse.quote(proxy_name, safe='')}/delay",
+                        headers=self.headers,
+                        params={"url": test_url, "timeout": int(TIMEOUT * 1000)}
+                    )
+                    response.raise_for_status()
+                    delay = response.json().get("delay")
+                    delays.append(delay)
+                except httpx.HTTPError:
+                    delays.append(None)
+                except Exception as e:
+                    delays.append(None)
+                    # print(e)
+                if _ < STABILITY_TESTS - 1:
+                    await asyncio.sleep(STABILITY_INTERVAL)  # 间隔等待下一次测试
+
+            result = ProxyTestResult(proxy_name, delays)
+            # 更新缓存
+            self._test_results_cache[cache_key] = result
+            return result
 
 
 # 更新clash配置
@@ -979,10 +996,10 @@ class ClashConfig:
         # 移除失效节点
         self.remove_invalid_proxies(results)
 
-        # 获取有效节点并按延迟排序
+        # 获取有效节点并按平均延迟排序
         valid_results = [r for r in results if r.is_valid]
         valid_results = list(set(valid_results))
-        valid_results.sort(key=lambda x: x.delay)
+        valid_results.sort(key=lambda x: x.average_delay)
 
         # 更新代理组
         proxy_names = [r.name for r in valid_results]
@@ -1019,7 +1036,7 @@ class ClashConfig:
             sys.exit(1)
 
 
-# 打印测试结果摘要
+# 打印测试结果摘要（优化：添加稳定性指标打印）
 def print_test_summary(group_name: str, results: List[ProxyTestResult], test_type: str = "Primary"):
     """打印测试结果摘要"""
     valid_results = [r for r in results if r.is_valid]
@@ -1036,13 +1053,17 @@ def print_test_summary(group_name: str, results: List[ProxyTestResult], test_typ
     delays = []
 
     if valid > 0:
-        avg_delay = sum(r.delay for r in valid_results) / valid
+        avg_delay = sum(r.average_delay for r in valid_results) / valid
+        avg_std_dev = sum(r.std_dev for r in valid_results) / valid
+        avg_success_rate = sum(r.success_rate * 100 for r in valid_results) / valid
         print(f"平均延迟: {avg_delay:.2f}ms")
-        print(f"\n{test_type} 节点延迟统计:")
-        sorted_results = sorted(valid_results, key=lambda x: x.delay)
+        print(f"平均标准差: {avg_std_dev:.2f}ms (波动性)")
+        print(f"平均成功率: {avg_success_rate:.2f}%")
+        print(f"\n{test_type} 节点延迟统计 (按平均延迟排序):")
+        sorted_results = sorted(valid_results, key=lambda x: x.average_delay)
         for i, result in enumerate(sorted_results[:LIMIT], 1):
-            delays.append({"name": result.name, "Delay_ms": round(result.delay, 2)})
-            print(f"{i}. {result.name}: {result.delay:.2f}ms")
+            delays.append({"name": result.name, "Avg_Delay_ms": round(result.average_delay, 2), "Std_Dev": round(result.std_dev, 2), "Success_Rate": round(result.success_rate * 100, 2)})
+            print(f"{i}. {result.name}: 平均 {result.average_delay:.2f}ms, 标准差 {result.std_dev:.2f}ms, 成功率 {result.success_rate * 100:.2f}%")
     return delays
 
 
