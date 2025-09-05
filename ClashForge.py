@@ -724,13 +724,13 @@ def start_clash():
                 sys.exit(1)
     return process
 
-def switch_proxy(proxy_name):
+def switch_proxy(group_name, proxy_name):
     with switch_lock:
         max_retries = 3
         for attempt in range(max_retries):
             for port in CLASH_API_PORTS:
                 try:
-                    url = f"http://{CLASH_API_HOST}:{port}/proxies/自动选择"
+                    rl = f"http://{CLASH_API_HOST}:{port}/proxies/{urllib.parse.quote(group_name, safe='')}" urllib.parse.quote
                     headers = {"Authorization": f"Bearer {CLASH_API_SECRET}"} if CLASH_API_SECRET else {}
                     data = {"name": urllib.parse.quote(proxy_name, safe='')}
                     response = requests.put(url, headers=headers, json=data, timeout=TIMEOUT)
@@ -1254,7 +1254,7 @@ def work(links, check=False, allowed_types=[], only_check=False):
             try:
                 print(f"===================启动clash并初始化配置======================")
                 clash_process = start_clash()
-                switch_proxy('DIRECT')
+                switch_proxy('节点选择', 'DIRECT')
                 asyncio.run(proxy_clean())
                 print(f'批量检测完毕')
             except Exception as e:
