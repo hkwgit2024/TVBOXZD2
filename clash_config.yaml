@@ -32,253 +32,79 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
+- type: ss
+  server: 185.213.23.226
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 185.213.23.226:990'
 - type: vmess
-  server: ys.fxlcn.com
-  port: 45264
-  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
+  server: 135.125.182.74
+  port: 28213
+  uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
   alterId: 0
   cipher: auto
-  name: '[VMESS] ys.fxlcn.com:45264'
+  name: '[VMESS] 135.125.182.74:28213'
 - type: ss
-  server: west.cutecloud.link
-  port: 52601
+  server: 36.234.114.126
+  port: 10067
   cipher: chacha20-ietf-poly1305
-  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
-  name: '[SS] west.cutecloud.link:52601'
+  password: 06fb60b0-2309-4c91-a9a6-771d34aff22d
+  name: '[SS] 36.234.114.126:10067'
 - type: ss
-  server: west.cutecloud.link
-  port: 52905
-  cipher: chacha20-ietf-poly1305
-  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
-  name: '[SS] west.cutecloud.link:52905'
-- type: ss
-  server: west.cutecloud.link
-  port: 53908
-  cipher: chacha20-ietf-poly1305
-  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
-  name: '[SS] west.cutecloud.link:53908'
-- type: ss
-  server: most.cutecloud.link
-  port: 52801
-  cipher: chacha20-ietf-poly1305
-  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
-  name: '[SS] most.cutecloud.link:52801'
-- type: ss
-  server: west.cutecloud.link
-  port: 52917
-  cipher: chacha20-ietf-poly1305
-  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
-  name: '[SS] west.cutecloud.link:52917'
-- type: ss
-  server: 203.23.128.33
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 203.23.128.33:990'
-- type: ss
-  server: 103.104.247.45
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 103.104.247.45:8080'
-- type: ss
-  server: 77.110.110.240
-  port: 443
-  cipher: aes-256-gcm
-  password: a7f082c1-0d12-4609-b6bf-e760b668cf23
-  name: '[SS] 77.110.110.240:443'
-- type: ss
-  server: 45.158.171.146
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 45.158.171.146:8080'
-- type: ss
-  server: 103.243.215.17
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 103.243.215.17:990'
-- type: ss
-  server: 193.29.139.177
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.177:8080'
-- type: ss
-  server: 45.87.175.22
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.22:8080'
-- type: ss
-  server: 45.87.175.58
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.58:8080'
-- type: ss
-  server: 82.180.146.173
-  port: 35652
-  cipher: aes-128-gcm
-  password: 93498539-7838-4836-b9b3-8311ffc79bcf
-  name: '[SS] 82.180.146.173:35652'
-- type: vmess
-  server: 94.136.185.230
-  port: 10534
-  uuid: b01c7ef9-33ec-41f6-bfbf-77ddc4d21649
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 94.136.185.230:10534'
-- type: ss
-  server: 36.234.85.71
-  port: 10063
-  cipher: chacha20-ietf-poly1305
-  password: 38ba1469-0480-47b4-b90c-3c8e9ec96510
-  name: '[SS] 36.234.85.71:10063'
-- type: ss
-  server: 36.232.97.250
-  port: 10125
-  cipher: chacha20-ietf-poly1305
-  password: 0986061b-bdaf-43cc-b6a7-16cca20b854e
-  name: '[SS] 36.232.97.250:10125'
-- type: ss
-  server: 1.170.34.91
-  port: 10088
-  cipher: chacha20-ietf-poly1305
-  password: 5364e955-cf26-4a4c-ba1b-c47c5c728c3d
-  name: '[SS] 1.170.34.91:10088'
-- type: ss
-  server: 114.46.98.152
-  port: 10062
-  cipher: chacha20-ietf-poly1305
-  password: fd97f5b9-b854-4515-b044-42f53db580ba
-  name: '[SS] 114.46.98.152:10062'
-- type: ss
-  server: 1.165.84.18
-  port: 10015
-  cipher: chacha20-ietf-poly1305
-  password: 2f3c3e85-5a6a-415a-ad4d-d534c05707b2
-  name: '[SS] 1.165.84.18:10015'
-- type: ss
-  server: 118.170.241.115
-  port: 10025
-  cipher: chacha20-ietf-poly1305
-  password: a5074111-bef9-4276-b987-a1783c8c4df3
-  name: '[SS] 118.170.241.115:10025'
-- type: ss
-  server: 151.242.251.144
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 151.242.251.144:8080'
-- type: ss
-  server: 151.242.251.147
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 151.242.251.147:8080'
-- type: ss
-  server: 151.242.251.153
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 151.242.251.153:8080'
-- type: ss
-  server: 193.29.139.217
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.217:8080'
-- type: ss
-  server: 185.126.237.38
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.126.237.38:990'
-- type: ss
-  server: 38.54.45.129
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 38.54.45.129:990'
-- type: ss
-  server: 45.87.175.65
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.65:8080'
-- type: ss
-  server: 193.29.139.179
+  server: beesyar.org
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 193.29.139.179:8080'
-- type: ss
-  server: 38.110.1.122
-  port: 7306
-  cipher: aes-256-gcm
-  password: FoOiGlkAA9yPEGP
-  name: '[SS] 38.110.1.122:7306'
-- type: ss
-  server: 193.29.139.227
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.227:8080'
-- type: ss
-  server: 119.59.98.58
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 119.59.98.58:990'
-- type: ss
-  server: 159.89.173.112
-  port: 42377
-  cipher: chacha20-ietf-poly1305
-  password: d99SkU8aAZFll44iOLxntL
-  name: '[SS] 159.89.173.112:42377'
-- type: ss
-  server: 193.29.139.143
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 1RWwXhwfAB5gAEozU4G2Pg
-  name: '[SS] 193.29.139.143:8080'
-- type: ss
-  server: 193.29.139.162
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.162:8080'
-- type: ss
-  server: 91.149.203.137
-  port: 808
-  cipher: chacha20-ietf-poly1305
-  password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 91.149.203.137:808'
-- type: ss
-  server: azjnac1.uksouth.cloudapp.azure.com
+  name: '[SS] beesyar.org:8080'
+- type: vmess
+  server: 154.93.37.21
   port: 443
-  cipher: chacha20-ietf-poly1305
-  password: ksg929BWf1K220dG
-  name: '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
+  uuid: 64a37ce5-e713-4ad4-c1de-b68761e9fef6
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] 154.93.37.21:443'
 - type: ss
-  server: ltnl16.saint.ydns.eu
+  server: 45.87.175.92
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] ltnl16.saint.ydns.eu:8080'
+  name: '[SS] 45.87.175.92:8080'
 - type: ss
-  server: fr09.giamping.com
+  server: 147.78.3.93
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 147.78.3.93:990'
+- type: ss
+  server: 2.ilgm.saint.ydns.eu
   port: 8080
   cipher: chacha20-ietf-poly1305
-  password: 42000e02-6b4d-46ad-a572-80db7db2a9ce
-  name: '[SS] fr09.giamping.com:8080'
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] 2.ilgm.saint.ydns.eu:8080'
 - type: vless
-  server: 45.88.183.158
-  port: 44629
-  uuid: d3daa900-0377-4575-9ebc-c4d88cb8486c
-  name: '[VLESS] 45.88.183.158:44629'
+  server: randomsecretcloud.ferdowsi-rgb.ir
+  port: 36802
+  uuid: 2ef737f5-d66a-4788-98b4-6dff2850954d
+  name: '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
+- type: ss
+  server: pupas-shirting-unsung.freesocks.work
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: p78naCf2EfOlRSLTX0wFVx
+  name: '[SS] pupas-shirting-unsung.freesocks.work:443'
+- type: ss
+  server: vip.nl-16-07.galaxymc-ssh.ir
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  name: '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
+- type: ss
+  server: backup.fleetfoxi.link
+  port: 44884
+  cipher: chacha20-ietf-poly1305
+  password: 2DGq3jvVRg5n3CcxmysGK2kmrgJeSNof12A76cZvVxqPpetyC1XEciCFufq5xKvRWGGnKVembpThuUSQhbZ7GMsZY4UVxEBw
+  name: '[SS] backup.fleetfoxi.link:44884'
 proxy-groups:
 - name: 节点选择
   type: select
@@ -291,47 +117,18 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.110.1.122:7306'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] fr09.giamping.com:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 103.104.247.45:8080'
-  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 193.29.139.177:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 91.149.203.137:808'
-  - '[SS] 45.87.175.65:8080'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 118.170.241.115:10025'
-  - '[SS] 36.232.97.250:10125'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 1.170.34.91:10088'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 114.46.98.152:10062'
-  - '[VMESS] ys.fxlcn.com:45264'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 36.234.85.71:10063'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] 1.165.84.18:10015'
-  - '[SS] 119.59.98.58:990'
-  - '[SS] 159.89.173.112:42377'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] west.cutecloud.link:52905'
-  - '[SS] west.cutecloud.link:52917'
-  - '[SS] west.cutecloud.link:52601'
-  - '[SS] most.cutecloud.link:52801'
-  - '[SS] west.cutecloud.link:53908'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.92:8080'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] beesyar.org:8080'
+  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
+  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[SS] 185.213.23.226:990'
+  - '[SS] backup.fleetfoxi.link:44884'
+  - '[SS] 36.234.114.126:10067'
+  - '[SS] 147.78.3.93:990'
+  - '[VMESS] 154.93.37.21:443'
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -339,92 +136,34 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.110.1.122:7306'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] fr09.giamping.com:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 103.104.247.45:8080'
-  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 193.29.139.177:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 91.149.203.137:808'
-  - '[SS] 45.87.175.65:8080'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 118.170.241.115:10025'
-  - '[SS] 36.232.97.250:10125'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 1.170.34.91:10088'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 114.46.98.152:10062'
-  - '[VMESS] ys.fxlcn.com:45264'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 36.234.85.71:10063'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] 1.165.84.18:10015'
-  - '[SS] 119.59.98.58:990'
-  - '[SS] 159.89.173.112:42377'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] west.cutecloud.link:52905'
-  - '[SS] west.cutecloud.link:52917'
-  - '[SS] west.cutecloud.link:52601'
-  - '[SS] most.cutecloud.link:52801'
-  - '[SS] west.cutecloud.link:53908'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.92:8080'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] beesyar.org:8080'
+  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
+  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[SS] 185.213.23.226:990'
+  - '[SS] backup.fleetfoxi.link:44884'
+  - '[SS] 36.234.114.126:10067'
+  - '[SS] 147.78.3.93:990'
+  - '[VMESS] 154.93.37.21:443'
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - '[SS] 38.110.1.122:7306'
-  - '[SS] 45.158.171.146:8080'
-  - '[SS] 45.87.175.58:8080'
-  - '[SS] fr09.giamping.com:8080'
-  - '[SS] 193.29.139.217:8080'
-  - '[SS] 193.29.139.227:8080'
-  - '[SS] 151.242.251.144:8080'
-  - '[SS] 193.29.139.162:8080'
-  - '[SS] 151.242.251.147:8080'
-  - '[SS] 45.87.175.22:8080'
-  - '[SS] 151.242.251.153:8080'
-  - '[SS] 103.104.247.45:8080'
-  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
-  - '[SS] ltnl16.saint.ydns.eu:8080'
-  - '[SS] 193.29.139.179:8080'
-  - '[SS] 193.29.139.177:8080'
-  - '[SS] 193.29.139.143:8080'
-  - '[SS] 77.110.110.240:443'
-  - '[SS] 91.149.203.137:808'
-  - '[SS] 45.87.175.65:8080'
-  - '[SS] 38.54.45.129:990'
-  - '[SS] 185.126.237.38:990'
-  - '[SS] 118.170.241.115:10025'
-  - '[SS] 36.232.97.250:10125'
-  - '[SS] 82.180.146.173:35652'
-  - '[SS] 1.170.34.91:10088'
-  - '[SS] 103.243.215.17:990'
-  - '[SS] 114.46.98.152:10062'
-  - '[VMESS] ys.fxlcn.com:45264'
-  - '[SS] 203.23.128.33:990'
-  - '[SS] 36.234.85.71:10063'
-  - '[VLESS] 45.88.183.158:44629'
-  - '[SS] 1.165.84.18:10015'
-  - '[SS] 119.59.98.58:990'
-  - '[SS] 159.89.173.112:42377'
-  - '[VMESS] 94.136.185.230:10534'
-  - '[SS] west.cutecloud.link:52905'
-  - '[SS] west.cutecloud.link:52917'
-  - '[SS] west.cutecloud.link:52601'
-  - '[SS] most.cutecloud.link:52801'
-  - '[SS] west.cutecloud.link:53908'
+  - '[SS] pupas-shirting-unsung.freesocks.work:443'
+  - '[SS] 45.87.175.92:8080'
+  - '[SS] 2.ilgm.saint.ydns.eu:8080'
+  - '[SS] beesyar.org:8080'
+  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
+  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
+  - '[VMESS] 135.125.182.74:28213'
+  - '[SS] 185.213.23.226:990'
+  - '[SS] backup.fleetfoxi.link:44884'
+  - '[SS] 36.234.114.126:10067'
+  - '[SS] 147.78.3.93:990'
+  - '[VMESS] 154.93.37.21:443'
 rules:
 - MATCH,节点选择
