@@ -246,40 +246,6 @@
       "filterable": 1
     },
     {
-      "key": "虎牙",
-      "name": "🐯虎牙采集",
-      "type": 1,
-      "api": "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 0,
-      "categories": [
-        "内地剧",
-        "动作片",
-        "科幻片",
-        "战争片",
-        "喜剧片",
-        "爱情片",
-        "恐怖片",
-        "犯罪片",
-        "剧情片",
-        "冒险片",
-        "记录片",
-        "韩剧",
-        "香港剧",
-        "台湾剧",
-        "欧美剧",
-        "日剧",
-        "马泰剧",
-        "体育赛事",
-        "综艺",
-        "动画片",
-        "中国动漫",
-        "日本动漫",
-        "欧美动漫"
-      ]
-    },
-    {
       "key": "花猫",
       "name": "花猫",
       "type": 1,
@@ -1236,29 +1202,130 @@
       "api": "https://jyzyapi.com/api.php/provide/vod/"
     },
     {
-      "key": "guangsuzy",
-      "name": "光速资源",
+      "key": "虎牙",
+      "name": "🐯虎牙采集",
       "type": 1,
-      "api": "https://api.guangsuapi.com/api.php/provide/vod/josn",
+      "api": "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8",
       "searchable": 1,
       "quickSearch": 1,
+      "filterable": 0,
+      "categories": [
+        "内地剧",
+        "动作片",
+        "科幻片",
+        "战争片",
+        "喜剧片",
+        "爱情片",
+        "恐怖片",
+        "犯罪片",
+        "剧情片",
+        "冒险片",
+        "记录片",
+        "韩剧",
+        "香港剧",
+        "台湾剧",
+        "欧美剧",
+        "日剧",
+        "马泰剧",
+        "体育赛事",
+        "综艺",
+        "动画片",
+        "中国动漫",
+        "日本动漫",
+        "欧美动漫"
+      ]
+    },
+    {
+      "key": "39影视",
+      "name": "39影视",
+      "type": 0,
+      "api": "https://www.39kan.com/api.php/provide/vod/at/xml",
+      "playUrl": "",
+      "categories": []
+    },
+    {
+      "key": "apilj.com",
+      "name": "成人11",
+      "type": 1,
+      "api": "http://apilj.com/api.php/provide/vod/at/json/",
+      "searchable": 1,
       "filterable": 1
     },
     {
-      "key": "niuniuzy",
-      "name": "牛牛资源",
+      "key": "雨哥影视",
+      "name": "🍟雨哥影视(聚)",
       "type": 1,
-      "api": "https://api.niuniuzy.me/api.php/provide/vod",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "小鸟动漫",
-      "name": "🍚小鸟动漫(聚)",
-      "type": 1,
-      "api": "http://xydm.baicai.buzz/api.php/provide/vod/",
+      "api": "http://cj.baozi66.top:66/api.php/provide/vod/",
       "searchable": 0,
+      "quickSearch": 0
+    },
+    {
+      "key": "9d8974ba-ddfc-5e53-b008-29f37e5fc88b",
+      "name": "155",
+      "type": 1,
+      "api": "https://155api.com/api.php/provide/vod/?ac=list",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "name": "瓜子 app",
+      "type": 1,
+      "api": "https://api.9cec79d.com"
+    },
+    {
+      "name": "金鹰",
+      "type": 1,
+      "api": "https://jinyingzy.com/api.php/provide/vod/"
+    },
+    {
+      "key": "搜av资源站",
+      "name": "搜av资源站",
+      "type": 1,
+      "api": "https://api.souavzy.vip/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
+    },
+    {
+      "key": "鲨鱼采集",
+      "name": "鲨鱼采集",
+      "type": 1,
+      "api": "http://shayuzy5.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
+    },
+    {
+      "key": "胖猫影视",
+      "name": "🐱胖猫影视(聚)",
+      "type": 1,
+      "api": "https://www.pangmaotv.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
+    },
+    {
+      "key": "胖猫影视",
+      "name": "胖猫影视(聚)",
+      "type": 1,
+      "api": "http://www.pangmaotv.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1
+    },
+    {
+      "key": "a7309ad5614fb7c13fa6d3e49639f8be",
+      "name": "80-丫丫",
+      "type": 1,
+      "api": "https://yayazy2.com/api.php/provide/vod/"
+    },
+    {
+      "key": "★siwa资源",
+      "name": "★siwa资源",
+      "type": 1,
+      "api": "https://siwazyw.net/api.php/provide/vod/",
+      "playUrl": "",
+      "categories": [],
       "quickSearch": 0
     }
   ],
@@ -1301,11 +1368,6 @@
       "playerType": 1,
       "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
-      "name": "16万•MV",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/lystv/short/main/影视/tvb/MTV.txt"
     },
     {
       "name": "YuanHsing•油管",
@@ -1351,20 +1413,26 @@
       "logo": "https://live.fanmingming.com/tv/{name}.png"
     },
     {
-      "name": "YOUTUBE直播",
-      "type": 0,
-      "url": "https://ghfast.top/https://raw.githubusercontent.com/n3rddd/N3RD/master/JN/EXT/JS/YTTV.txt",
-      "ua": "okhttp/3.15",
-      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
-      "logo": "https://epg.112114.xyz/logo/{name}.png"
-    },
-    {
       "name": "榴芒TV",
       "type": "0",
       "pass": true,
       "url": "http://8.138.7.223/live.txt",
       "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
       "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
+      "name": "IPV6",
+      "type": 0,
+      "url": "https://live.fanmingming.com/tv/m3u/ipv6.m3u",
+      "playerType": 1,
+      "ua": "okhttp/3.15",
+      "epg": "http://epg.112114.xyz/?ch={name}&date={date}",
+      "logo": "https://epg.112114.xyz/logo/{name}.png"
+    },
+    {
+      "name": "16万•MV",
+      "type": 0,
+      "url": "https://ghfast.top/https://raw.githubusercontent.com/lystv/short/main/影视/tvb/MTV.txt"
     }
   ],
   "spider": "./jar/xs.jar"
