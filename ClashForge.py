@@ -553,6 +553,7 @@ class ExclusionCache:
         self.cache[name] = {"reason": reason, "timestamp": datetime.now().isoformat()}
 
     def is_excluded(self, name):
+        return False #暂时禁用节点缓存
         if name in self.cache:
             timestamp_str = self.cache[name].get("timestamp")
             if timestamp_str:
