@@ -1,26 +1,11 @@
-port: 7890
-socks-port: 7891
-redir-port: 7892
 allow-lan: true
-mode: rule
-log-level: info
-external-controller: 127.0.0.1:9090
-geodata-mode: true
-geox-url:
-  geoip: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat
-  mmdb: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb
 dns:
-  enable: true
-  ipv6: false
   default-nameserver:
   - 223.5.5.5
   - 119.29.29.29
+  enable: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  use-hosts: true
-  nameserver:
-  - https://doh.pub/dns-query
-  - https://dns.alidns.com/dns-query
   fallback:
   - https://doh.dns.sb/dns-query
   - https://dns.cloudflare.com/dns-query
@@ -31,139 +16,59 @@ dns:
     ipcidr:
     - 240.0.0.0/4
     - 0.0.0.0/32
+  ipv6: false
+  nameserver:
+  - https://doh.pub/dns-query
+  - https://dns.alidns.com/dns-query
+  use-hosts: true
+external-controller: 127.0.0.1:9090
+geodata-mode: true
+geox-url:
+  geoip: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/geoip.dat
+  mmdb: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-Country.mmdb
+log-level: info
+mode: rule
+port: 7890
 proxies:
-- type: ss
-  server: 185.213.23.226
-  port: 990
-  cipher: chacha20-ietf-poly1305
+- cipher: aes-128-gcm
+  name: '[SS] east.cutecloud.link:52923'
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  port: 52923
+  server: east.cutecloud.link
+  type: ss
+- cipher: chacha20-ietf-poly1305
+  name: '[SS] 103.163.218.2:990'
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.213.23.226:990'
-- type: vmess
-  server: 135.125.182.74
-  port: 28213
-  uuid: 81852771-76fb-4e94-e4f1-4e37a698a49a
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 135.125.182.74:28213'
-- type: ss
-  server: 36.234.114.126
-  port: 10067
-  cipher: chacha20-ietf-poly1305
-  password: 06fb60b0-2309-4c91-a9a6-771d34aff22d
-  name: '[SS] 36.234.114.126:10067'
-- type: ss
-  server: beesyar.org
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] beesyar.org:8080'
-- type: vmess
-  server: 154.93.37.21
-  port: 443
-  uuid: 64a37ce5-e713-4ad4-c1de-b68761e9fef6
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 154.93.37.21:443'
-- type: ss
-  server: 45.87.175.92
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.87.175.92:8080'
-- type: ss
-  server: 147.78.3.93
   port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 147.78.3.93:990'
-- type: ss
-  server: 2.ilgm.saint.ydns.eu
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 2.ilgm.saint.ydns.eu:8080'
-- type: vless
-  server: randomsecretcloud.ferdowsi-rgb.ir
-  port: 36802
-  uuid: 2ef737f5-d66a-4788-98b4-6dff2850954d
-  name: '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
-- type: ss
-  server: pupas-shirting-unsung.freesocks.work
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: p78naCf2EfOlRSLTX0wFVx
-  name: '[SS] pupas-shirting-unsung.freesocks.work:443'
-- type: ss
-  server: vip.nl-16-07.galaxymc-ssh.ir
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-- type: ss
-  server: backup.fleetfoxi.link
-  port: 44884
-  cipher: chacha20-ietf-poly1305
-  password: 2DGq3jvVRg5n3CcxmysGK2kmrgJeSNof12A76cZvVxqPpetyC1XEciCFufq5xKvRWGGnKVembpThuUSQhbZ7GMsZY4UVxEBw
-  name: '[SS] backup.fleetfoxi.link:44884'
+  server: 103.163.218.2
+  type: ss
 proxy-groups:
 - name: 节点选择
-  type: select
   proxies:
   - 自动选择
   - 故障转移
   - DIRECT
   - 手动选择
-- name: 自动选择
-  type: url-test
-  exclude-filter: (?i)中国|China|CN|电信|移动|联通
-  proxies:
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] beesyar.org:8080'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] backup.fleetfoxi.link:44884'
-  - '[SS] 36.234.114.126:10067'
-  - '[SS] 147.78.3.93:990'
-  - '[VMESS] 154.93.37.21:443'
-  url: http://www.pinterest.com
-  interval: 300
-  tolerance: 50
-- name: 故障转移
-  type: fallback
-  exclude-filter: (?i)中国|China|CN|电信|移动|联通
-  proxies:
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] beesyar.org:8080'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] backup.fleetfoxi.link:44884'
-  - '[SS] 36.234.114.126:10067'
-  - '[SS] 147.78.3.93:990'
-  - '[VMESS] 154.93.37.21:443'
-  url: http://www.gstatic.com/generate_204
-  interval: 300
-- name: 手动选择
   type: select
-  proxies:
-  - '[SS] pupas-shirting-unsung.freesocks.work:443'
-  - '[SS] 45.87.175.92:8080'
-  - '[SS] 2.ilgm.saint.ydns.eu:8080'
-  - '[SS] beesyar.org:8080'
-  - '[SS] vip.nl-16-07.galaxymc-ssh.ir:8080'
-  - '[VLESS] randomsecretcloud.ferdowsi-rgb.ir:36802'
-  - '[VMESS] 135.125.182.74:28213'
-  - '[SS] 185.213.23.226:990'
-  - '[SS] backup.fleetfoxi.link:44884'
-  - '[SS] 36.234.114.126:10067'
-  - '[SS] 147.78.3.93:990'
-  - '[VMESS] 154.93.37.21:443'
+- exclude-filter: (?i)中国|China|CN|电信|移动|联通
+  interval: 300
+  name: 自动选择
+  proxies: &id001
+  - '[SS] 103.163.218.2:990'
+  - '[SS] east.cutecloud.link:52923'
+  tolerance: 50
+  type: url-test
+  url: http://www.pinterest.com
+- exclude-filter: (?i)中国|China|CN|电信|移动|联通
+  interval: 300
+  name: 故障转移
+  proxies: *id001
+  type: fallback
+  url: http://www.gstatic.com/generate_204
+- name: 手动选择
+  proxies: *id001
+  type: select
+redir-port: 7892
 rules:
 - MATCH,节点选择
+socks-port: 7891
