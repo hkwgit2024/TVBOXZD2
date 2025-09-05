@@ -730,7 +730,7 @@ def switch_proxy(group_name, proxy_name):
         for attempt in range(max_retries):
             for port in CLASH_API_PORTS:
                 try:
-                    rl = f"http://{CLASH_API_HOST}:{port}/proxies/{urllib.parse.quote(group_name, safe='')}" urllib.parse.quote
+                    url = f"http://{CLASH_API_HOST}:{port}/proxies/{urllib.parse.quote(group_name, safe='')}"
                     headers = {"Authorization": f"Bearer {CLASH_API_SECRET}"} if CLASH_API_SECRET else {}
                     data = {"name": urllib.parse.quote(proxy_name, safe='')}
                     response = requests.put(url, headers=headers, json=data, timeout=TIMEOUT)
