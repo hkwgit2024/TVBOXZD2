@@ -32,335 +32,253 @@ dns:
     - 240.0.0.0/4
     - 0.0.0.0/32
 proxies:
-- type: vless
-  server: ger1.kacivil.ir
-  port: 443
-  uuid: 4ef3e4ad-49a0-45e8-b9f7-3de98a3aca67
-  name: '[VLESS] ger1.kacivil.ir:443'
-- type: ss
-  server: 204.136.10.115
-  port: 1866
-  cipher: chacha20-ietf-poly1305
-  password: oXGp1+ihlfKg826H
-  name: '[SS] 204.136.10.115:1866'
-- type: ss
-  server: 185.177.229.245
-  port: 1866
-  cipher: chacha20-ietf-poly1305
-  password: oXGp1+ihlfKg826H
-  name: '[SS] 185.177.229.245:1866'
-- type: vless
-  server: 148.113.180.24
-  port: 44809
-  uuid: 0128b29c-1359-4da4-c181-5125415188c7
-  name: '[VLESS] 148.113.180.24:44809'
 - type: vmess
-  server: 45.128.54.84
-  port: 37313
-  uuid: 72feb833-4196-4a70-a3f5-aeb011f7d534
+  server: ys.fxlcn.com
+  port: 45264
+  uuid: 469e0b31-30c3-4dab-800d-711232634ce1
   alterId: 0
   cipher: auto
-  name: '[VMESS] 45.128.54.84:37313'
+  name: '[VMESS] ys.fxlcn.com:45264'
 - type: ss
-  server: 185.231.233.173
+  server: west.cutecloud.link
+  port: 52601
+  cipher: chacha20-ietf-poly1305
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  name: '[SS] west.cutecloud.link:52601'
+- type: ss
+  server: west.cutecloud.link
+  port: 52905
+  cipher: chacha20-ietf-poly1305
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  name: '[SS] west.cutecloud.link:52905'
+- type: ss
+  server: west.cutecloud.link
+  port: 53908
+  cipher: chacha20-ietf-poly1305
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  name: '[SS] west.cutecloud.link:53908'
+- type: ss
+  server: most.cutecloud.link
+  port: 52801
+  cipher: chacha20-ietf-poly1305
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  name: '[SS] most.cutecloud.link:52801'
+- type: ss
+  server: west.cutecloud.link
+  port: 52917
+  cipher: chacha20-ietf-poly1305
+  password: 8970876e-9e14-3ed7-b0ad-15211a64eec9
+  name: '[SS] west.cutecloud.link:52917'
+- type: ss
+  server: 203.23.128.33
   port: 990
   cipher: chacha20-ietf-poly1305
   password: f8f7aCzcPKbsF8p3
-  name: '[SS] 185.231.233.173:990'
+  name: '[SS] 203.23.128.33:990'
 - type: ss
-  server: 167.71.235.238
-  port: 47347
+  server: 103.104.247.45
+  port: 8080
   cipher: chacha20-ietf-poly1305
-  password: WgACwLy1BPk47JOzHyA7zu
-  name: '[SS] 167.71.235.238:47347'
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] 103.104.247.45:8080'
 - type: ss
-  server: 147.78.1.27
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 147.78.1.27:990'
-- type: vmess
-  server: 38.12.83.217
-  port: 30002
-  uuid: 418048af-a293-4b99-9b0c-98ca3580dd24
-  alterId: 64
-  cipher: auto
-  name: '[VMESS] 38.12.83.217:30002'
-- type: ss
-  server: 125.231.72.47
-  port: 10057
-  cipher: chacha20-ietf-poly1305
-  password: ab7c2ede-bbf7-4be7-9173-ecb36cd2c5bb
-  name: '[SS] 125.231.72.47:10057'
-- type: ss
-  server: 1.165.105.25
-  port: 10016
-  cipher: chacha20-ietf-poly1305
-  password: ba508130-3332-4f2a-822d-2c9583a9aa13
-  name: '[SS] 1.165.105.25:10016'
-- type: ss
-  server: 118.170.220.47
-  port: 10025
-  cipher: chacha20-ietf-poly1305
-  password: ab7c2ede-bbf7-4be7-9173-ecb36cd2c5bb
-  name: '[SS] 118.170.220.47:10025'
-- type: ss
-  server: 125.229.191.103
-  port: 10023
-  cipher: chacha20-ietf-poly1305
-  password: fd97f5b9-b854-4515-b044-42f53db580ba
-  name: '[SS] 125.229.191.103:10023'
-- type: ss
-  server: 1.170.8.182
-  port: 10100
-  cipher: chacha20-ietf-poly1305
-  password: b4f5209d-c1ee-4d5e-94bf-77eb9c0a982c
-  name: '[SS] 1.170.8.182:10100'
-- type: ss
-  server: 36.235.10.60
-  port: 10116
-  cipher: chacha20-ietf-poly1305
-  password: 572efc77-4312-4371-adfa-2814f2cf699b
-  name: '[SS] 36.235.10.60:10116'
-- type: ss
-  server: 114.46.127.151
-  port: 10070
-  cipher: chacha20-ietf-poly1305
-  password: b8753365-21dc-4d1c-ba07-11b3bab0cda5
-  name: '[SS] 114.46.127.151:10070'
-- type: ss
-  server: 1.170.48.251
-  port: 10082
-  cipher: chacha20-ietf-poly1305
-  password: 4a8a11e5-3025-423e-8e3f-b36892f8e1f0
-  name: '[SS] 1.170.48.251:10082'
-- type: ss
-  server: 36.235.4.240
-  port: 10115
-  cipher: chacha20-ietf-poly1305
-  password: c1f122ed-c27a-4ebc-a2b5-13443d753bc8
-  name: '[SS] 36.235.4.240:10115'
-- type: ss
-  server: 1.165.77.67
-  port: 10005
-  cipher: chacha20-ietf-poly1305
-  password: be9e8eae-2b65-4aea-b864-b5f03beeef21
-  name: '[SS] 1.165.77.67:10005'
-- type: ss
-  server: 125.229.191.104
-  port: 10033
-  cipher: chacha20-ietf-poly1305
-  password: fd97f5b9-b854-4515-b044-42f53db580ba
-  name: '[SS] 125.229.191.104:10033'
-- type: ss
-  server: 51.195.119.47
-  port: 1080
-  cipher: chacha20-ietf-poly1305
-  password: qXvO7zYU7KeaB0Md7DQLow
-  name: '[SS] 51.195.119.47:1080'
-- type: ss
-  server: 154.44.15.133
-  port: 44642
+  server: 77.110.110.240
+  port: 443
   cipher: aes-256-gcm
-  password: iHapGY8XoW
-  name: '[SS] 154.44.15.133:44642'
-- type: vless
-  server: 45.88.183.156
-  port: 12794
-  uuid: 08704c01-7edb-454a-98a2-328ccb9936fa
-  name: '[VLESS] 45.88.183.156:12794'
-- type: vmess
-  server: 45.121.48.174
-  port: 20788
-  uuid: bfc630aa-4598-4481-9338-cac15e3e6b65
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 45.121.48.174:20788'
+  password: a7f082c1-0d12-4609-b6bf-e760b668cf23
+  name: '[SS] 77.110.110.240:443'
 - type: ss
-  server: 45.158.171.60
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 45.158.171.60:8080'
-- type: vmess
-  server: 165.140.216.141
-  port: 443
-  uuid: e7d72a8d-26f2-4b54-b366-0c43e0bcba7d
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 165.140.216.141:443'
-- type: ss
-  server: 45.154.206.192
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 45.154.206.192:990'
-- type: ss
-  server: 38.165.233.18
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 38.165.233.18:990'
-- type: vmess
-  server: 38.102.7.181
-  port: 24528
-  uuid: eab989e0-0622-4d37-9c41-1fdda8d988fc
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 38.102.7.181:24528'
-- type: ss
-  server: 193.29.139.173
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 4a2rfixophdjffa8KVA4Aa
-  name: '[SS] 193.29.139.173:8080'
-- type: ss
-  server: promo1o.bystrivpn.ru
-  port: 443
-  cipher: chacha20-ietf-poly1305
-  password: 0NeN5ta7FLa5B9DLytU0um
-  name: '[SS] promo1o.bystrivpn.ru:443'
-- type: ss
-  server: 135.125.219.2
-  port: 25930
-  cipher: chacha20-ietf-poly1305
-  password: 38f34312c73acae2
-  name: '[SS] 135.125.219.2:25930'
-- type: ss
-  server: 170.80.110.29
-  port: 8443
-  cipher: chacha20-ietf-poly1305
-  password: NCPL991SRxT79QuGtUjoRn
-  name: '[SS] 170.80.110.29:8443'
-- type: ss
-  server: 193.29.139.168
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.168:8080'
-- type: vmess
-  server: 51.38.64.209
-  port: 44023
-  uuid: 7da457da-ed0f-437d-c81d-6c35885bbea3
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 51.38.64.209:44023'
-- type: ss
-  server: 38.107.226.159
-  port: 2376
-  cipher: aes-256-gcm
-  password: faBAoD54k87UJG7
-  name: '[SS] 38.107.226.159:2376'
-- type: ss
-  server: 65.20.115.194
-  port: 800
-  cipher: chacha20-ietf-poly1305
-  password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 65.20.115.194:800'
-- type: ss
-  server: 176.103.53.105
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 176.103.53.105:990'
-- type: vmess
-  server: 165.154.195.38
-  port: 35034
-  uuid: 959a8caf-4cea-43d0-a548-3628e7ddfafc
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 165.154.195.38:35034'
-- type: ss
-  server: 149.28.212.97
-  port: 808
-  cipher: chacha20-ietf-poly1305
-  password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 149.28.212.97:808'
-- type: ss
-  server: 152.42.245.170
-  port: 38450
-  cipher: chacha20-ietf-poly1305
-  password: TWRxYKr1fIkQQjRgJIWeCU
-  name: '[SS] 152.42.245.170:38450'
-- type: ss
-  server: 169.150.202.174
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 169.150.202.174:990'
-- type: ss
-  server: 192.36.61.59
-  port: 990
-  cipher: chacha20-ietf-poly1305
-  password: f8f7aCzcPKbsF8p3
-  name: '[SS] 192.36.61.59:990'
-- type: ss
-  server: 193.29.139.144
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.144:8080'
-- type: ss
-  server: 193.29.139.164
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] 193.29.139.164:8080'
-- type: ss
-  server: 193.29.139.209
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.209:8080'
-- type: ss
-  server: 193.29.139.233
+  server: 45.158.171.146
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: QCXDxuDlTTMD7jtgHUjIoj
-  name: '[SS] 193.29.139.233:8080'
+  name: '[SS] 45.158.171.146:8080'
 - type: ss
-  server: ltnl11.saint.ydns.eu
-  port: 8080
+  server: 103.243.215.17
+  port: 990
   cipher: chacha20-ietf-poly1305
-  password: cvII85TrW6n0OGyfpHVS1u
-  name: '[SS] ltnl11.saint.ydns.eu:8080'
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 103.243.215.17:990'
 - type: ss
-  server: 23.94.67.166
-  port: 8080
-  cipher: chacha20-ietf-poly1305
-  password: 42000e02-6b4d-46ad-a572-80db7db2a9ce
-  name: '[SS] 23.94.67.166:8080'
-- type: ss
-  server: 43.205.208.0
-  port: 80
-  cipher: aes-256-gcm
-  password: dada0801
-  name: '[SS] 43.205.208.0:80'
-- type: hysteria2
-  server: us2.xilucloud.top
-  port: 14558
-  password: dd46e5b4-e678-4862-9c27-0c04eb36e148
-  auth: dd46e5b4-e678-4862-9c27-0c04eb36e148
-  name: '[HYSTERIA2] us2.xilucloud.top:14558'
-- type: ss
-  server: 217.170.194.203
-  port: 808
-  cipher: chacha20-ietf-poly1305
-  password: tvX1v#NSFP_LG_bJ
-  name: '[SS] 217.170.194.203:808'
-- type: vmess
-  server: 206.119.191.9
-  port: 7998
-  uuid: 984429ed-3959-4022-e248-cbcb19c96f9a
-  alterId: 0
-  cipher: auto
-  name: '[VMESS] 206.119.191.9:7998'
-- type: ss
-  server: 193.29.139.188
+  server: 193.29.139.177
   port: 8080
   cipher: chacha20-ietf-poly1305
   password: oZIoA69Q8yhcQV8ka3Pa3A
-  name: '[SS] 193.29.139.188:8080'
+  name: '[SS] 193.29.139.177:8080'
+- type: ss
+  server: 45.87.175.22
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] 45.87.175.22:8080'
+- type: ss
+  server: 45.87.175.58
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] 45.87.175.58:8080'
+- type: ss
+  server: 82.180.146.173
+  port: 35652
+  cipher: aes-128-gcm
+  password: 93498539-7838-4836-b9b3-8311ffc79bcf
+  name: '[SS] 82.180.146.173:35652'
+- type: vmess
+  server: 94.136.185.230
+  port: 10534
+  uuid: b01c7ef9-33ec-41f6-bfbf-77ddc4d21649
+  alterId: 0
+  cipher: auto
+  name: '[VMESS] 94.136.185.230:10534'
+- type: ss
+  server: 36.234.85.71
+  port: 10063
+  cipher: chacha20-ietf-poly1305
+  password: 38ba1469-0480-47b4-b90c-3c8e9ec96510
+  name: '[SS] 36.234.85.71:10063'
+- type: ss
+  server: 36.232.97.250
+  port: 10125
+  cipher: chacha20-ietf-poly1305
+  password: 0986061b-bdaf-43cc-b6a7-16cca20b854e
+  name: '[SS] 36.232.97.250:10125'
+- type: ss
+  server: 1.170.34.91
+  port: 10088
+  cipher: chacha20-ietf-poly1305
+  password: 5364e955-cf26-4a4c-ba1b-c47c5c728c3d
+  name: '[SS] 1.170.34.91:10088'
+- type: ss
+  server: 114.46.98.152
+  port: 10062
+  cipher: chacha20-ietf-poly1305
+  password: fd97f5b9-b854-4515-b044-42f53db580ba
+  name: '[SS] 114.46.98.152:10062'
+- type: ss
+  server: 1.165.84.18
+  port: 10015
+  cipher: chacha20-ietf-poly1305
+  password: 2f3c3e85-5a6a-415a-ad4d-d534c05707b2
+  name: '[SS] 1.165.84.18:10015'
+- type: ss
+  server: 118.170.241.115
+  port: 10025
+  cipher: chacha20-ietf-poly1305
+  password: a5074111-bef9-4276-b987-a1783c8c4df3
+  name: '[SS] 118.170.241.115:10025'
+- type: ss
+  server: 151.242.251.144
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  name: '[SS] 151.242.251.144:8080'
+- type: ss
+  server: 151.242.251.147
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  name: '[SS] 151.242.251.147:8080'
+- type: ss
+  server: 151.242.251.153
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  name: '[SS] 151.242.251.153:8080'
+- type: ss
+  server: 193.29.139.217
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  name: '[SS] 193.29.139.217:8080'
+- type: ss
+  server: 185.126.237.38
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 185.126.237.38:990'
+- type: ss
+  server: 38.54.45.129
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 38.54.45.129:990'
+- type: ss
+  server: 45.87.175.65
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] 45.87.175.65:8080'
+- type: ss
+  server: 193.29.139.179
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: cvII85TrW6n0OGyfpHVS1u
+  name: '[SS] 193.29.139.179:8080'
+- type: ss
+  server: 38.110.1.122
+  port: 7306
+  cipher: aes-256-gcm
+  password: FoOiGlkAA9yPEGP
+  name: '[SS] 38.110.1.122:7306'
+- type: ss
+  server: 193.29.139.227
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: QCXDxuDlTTMD7jtgHUjIoj
+  name: '[SS] 193.29.139.227:8080'
+- type: ss
+  server: 119.59.98.58
+  port: 990
+  cipher: chacha20-ietf-poly1305
+  password: f8f7aCzcPKbsF8p3
+  name: '[SS] 119.59.98.58:990'
+- type: ss
+  server: 159.89.173.112
+  port: 42377
+  cipher: chacha20-ietf-poly1305
+  password: d99SkU8aAZFll44iOLxntL
+  name: '[SS] 159.89.173.112:42377'
+- type: ss
+  server: 193.29.139.143
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 1RWwXhwfAB5gAEozU4G2Pg
+  name: '[SS] 193.29.139.143:8080'
+- type: ss
+  server: 193.29.139.162
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 4a2rfixophdjffa8KVA4Aa
+  name: '[SS] 193.29.139.162:8080'
+- type: ss
+  server: 91.149.203.137
+  port: 808
+  cipher: chacha20-ietf-poly1305
+  password: tvX1v#NSFP_LG_bJ
+  name: '[SS] 91.149.203.137:808'
+- type: ss
+  server: azjnac1.uksouth.cloudapp.azure.com
+  port: 443
+  cipher: chacha20-ietf-poly1305
+  password: ksg929BWf1K220dG
+  name: '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
+- type: ss
+  server: ltnl16.saint.ydns.eu
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: oZIoA69Q8yhcQV8ka3Pa3A
+  name: '[SS] ltnl16.saint.ydns.eu:8080'
+- type: ss
+  server: fr09.giamping.com
+  port: 8080
+  cipher: chacha20-ietf-poly1305
+  password: 42000e02-6b4d-46ad-a572-80db7db2a9ce
+  name: '[SS] fr09.giamping.com:8080'
+- type: vless
+  server: 45.88.183.158
+  port: 44629
+  uuid: d3daa900-0377-4575-9ebc-c4d88cb8486c
+  name: '[VLESS] 45.88.183.158:44629'
 proxy-groups:
 - name: 节点选择
   type: select
@@ -373,60 +291,47 @@ proxy-groups:
   type: url-test
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.107.226.159:2376'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 65.20.115.194:800'
-  - '[SS] 154.44.15.133:44642'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] promo1o.bystrivpn.ru:443'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 147.78.1.27:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
-  - '[SS] 217.170.194.203:808'
-  - '[SS] 193.29.139.209:8080'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 193.29.139.168:8080'
-  - '[SS] 23.94.67.166:8080'
-  - '[VMESS] 38.102.7.181:24528'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 185.231.233.173:990'
-  - '[SS] 192.36.61.59:990'
-  - '[SS] 176.103.53.105:990'
-  - '[SS] 204.136.10.115:1866'
-  - '[HYSTERIA2] us2.xilucloud.top:14558'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 36.235.4.240:10115'
-  - '[SS] 169.150.202.174:990'
-  - '[SS] 38.165.233.18:990'
-  - '[VMESS] 165.154.195.38:35034'
-  - '[SS] 1.170.48.251:10082'
-  - '[SS] 170.80.110.29:8443'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 114.46.127.151:10070'
-  - '[SS] 1.170.8.182:10100'
-  - '[SS] 118.170.220.47:10025'
-  - '[SS] 1.165.105.25:10016'
-  - '[SS] 36.235.10.60:10116'
-  - '[SS] 1.165.77.67:10005'
-  - '[SS] 125.231.72.47:10057'
-  - '[SS] 125.229.191.104:10033'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 135.125.219.2:25930'
-  - '[SS] 43.205.208.0:80'
-  - '[SS] 193.29.139.188:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[VMESS] 206.119.191.9:7998'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[VMESS] 45.121.48.174:20788'
+  - '[SS] 38.110.1.122:7306'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] fr09.giamping.com:8080'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[SS] 151.242.251.144:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 103.104.247.45:8080'
+  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 193.29.139.177:8080'
+  - '[SS] 193.29.139.143:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 91.149.203.137:808'
+  - '[SS] 45.87.175.65:8080'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 118.170.241.115:10025'
+  - '[SS] 36.232.97.250:10125'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 1.170.34.91:10088'
+  - '[SS] 103.243.215.17:990'
+  - '[SS] 114.46.98.152:10062'
+  - '[VMESS] ys.fxlcn.com:45264'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] 36.234.85.71:10063'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 1.165.84.18:10015'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 159.89.173.112:42377'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[SS] west.cutecloud.link:52905'
+  - '[SS] west.cutecloud.link:52917'
+  - '[SS] west.cutecloud.link:52601'
+  - '[SS] most.cutecloud.link:52801'
+  - '[SS] west.cutecloud.link:53908'
   url: http://www.pinterest.com
   interval: 300
   tolerance: 50
@@ -434,118 +339,92 @@ proxy-groups:
   type: fallback
   exclude-filter: (?i)中国|China|CN|电信|移动|联通
   proxies:
-  - '[SS] 38.107.226.159:2376'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 65.20.115.194:800'
-  - '[SS] 154.44.15.133:44642'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] promo1o.bystrivpn.ru:443'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 147.78.1.27:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
-  - '[SS] 217.170.194.203:808'
-  - '[SS] 193.29.139.209:8080'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 193.29.139.168:8080'
-  - '[SS] 23.94.67.166:8080'
-  - '[VMESS] 38.102.7.181:24528'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 185.231.233.173:990'
-  - '[SS] 192.36.61.59:990'
-  - '[SS] 176.103.53.105:990'
-  - '[SS] 204.136.10.115:1866'
-  - '[HYSTERIA2] us2.xilucloud.top:14558'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 36.235.4.240:10115'
-  - '[SS] 169.150.202.174:990'
-  - '[SS] 38.165.233.18:990'
-  - '[VMESS] 165.154.195.38:35034'
-  - '[SS] 1.170.48.251:10082'
-  - '[SS] 170.80.110.29:8443'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 114.46.127.151:10070'
-  - '[SS] 1.170.8.182:10100'
-  - '[SS] 118.170.220.47:10025'
-  - '[SS] 1.165.105.25:10016'
-  - '[SS] 36.235.10.60:10116'
-  - '[SS] 1.165.77.67:10005'
-  - '[SS] 125.231.72.47:10057'
-  - '[SS] 125.229.191.104:10033'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 135.125.219.2:25930'
-  - '[SS] 43.205.208.0:80'
-  - '[SS] 193.29.139.188:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[VMESS] 206.119.191.9:7998'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[VMESS] 45.121.48.174:20788'
+  - '[SS] 38.110.1.122:7306'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] fr09.giamping.com:8080'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[SS] 151.242.251.144:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 103.104.247.45:8080'
+  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 193.29.139.177:8080'
+  - '[SS] 193.29.139.143:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 91.149.203.137:808'
+  - '[SS] 45.87.175.65:8080'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 118.170.241.115:10025'
+  - '[SS] 36.232.97.250:10125'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 1.170.34.91:10088'
+  - '[SS] 103.243.215.17:990'
+  - '[SS] 114.46.98.152:10062'
+  - '[VMESS] ys.fxlcn.com:45264'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] 36.234.85.71:10063'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 1.165.84.18:10015'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 159.89.173.112:42377'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[SS] west.cutecloud.link:52905'
+  - '[SS] west.cutecloud.link:52917'
+  - '[SS] west.cutecloud.link:52601'
+  - '[SS] most.cutecloud.link:52801'
+  - '[SS] west.cutecloud.link:53908'
   url: http://www.gstatic.com/generate_204
   interval: 300
 - name: 手动选择
   type: select
   proxies:
-  - '[SS] 38.107.226.159:2376'
-  - '[VLESS] 148.113.180.24:44809'
-  - '[SS] 193.29.139.233:8080'
-  - '[SS] 193.29.139.144:8080'
-  - '[SS] 193.29.139.164:8080'
-  - '[SS] 45.158.171.60:8080'
-  - '[SS] 65.20.115.194:800'
-  - '[SS] 154.44.15.133:44642'
-  - '[VMESS] 51.38.64.209:44023'
-  - '[SS] promo1o.bystrivpn.ru:443'
-  - '[SS] 193.29.139.173:8080'
-  - '[SS] 185.177.229.245:1866'
-  - '[SS] 149.28.212.97:808'
-  - '[SS] 147.78.1.27:990'
-  - '[VMESS] 38.12.83.217:30002'
-  - '[SS] ltnl11.saint.ydns.eu:8080'
-  - '[SS] 217.170.194.203:808'
-  - '[SS] 193.29.139.209:8080'
-  - '[VMESS] 165.140.216.141:443'
-  - '[SS] 193.29.139.168:8080'
-  - '[SS] 23.94.67.166:8080'
-  - '[VMESS] 38.102.7.181:24528'
-  - '[SS] 45.154.206.192:990'
-  - '[SS] 185.231.233.173:990'
-  - '[SS] 192.36.61.59:990'
-  - '[SS] 176.103.53.105:990'
-  - '[SS] 204.136.10.115:1866'
-  - '[HYSTERIA2] us2.xilucloud.top:14558'
-  - '[SS] 51.195.119.47:1080'
-  - '[SS] 36.235.4.240:10115'
-  - '[SS] 169.150.202.174:990'
-  - '[SS] 38.165.233.18:990'
-  - '[VMESS] 165.154.195.38:35034'
-  - '[SS] 1.170.48.251:10082'
-  - '[SS] 170.80.110.29:8443'
-  - '[SS] 125.229.191.103:10023'
-  - '[SS] 114.46.127.151:10070'
-  - '[SS] 1.170.8.182:10100'
-  - '[SS] 118.170.220.47:10025'
-  - '[SS] 1.165.105.25:10016'
-  - '[SS] 36.235.10.60:10116'
-  - '[SS] 1.165.77.67:10005'
-  - '[SS] 125.231.72.47:10057'
-  - '[SS] 125.229.191.104:10033'
-  - '[SS] 152.42.245.170:38450'
-  - '[SS] 135.125.219.2:25930'
-  - '[SS] 43.205.208.0:80'
-  - '[SS] 193.29.139.188:8080'
-  - '[SS] 167.71.235.238:47347'
-  - '[VLESS] 45.88.183.156:12794'
-  - '[VMESS] 206.119.191.9:7998'
-  - '[VMESS] 45.128.54.84:37313'
-  - '[VLESS] ger1.kacivil.ir:443'
-  - '[VMESS] 45.121.48.174:20788'
+  - '[SS] 38.110.1.122:7306'
+  - '[SS] 45.158.171.146:8080'
+  - '[SS] 45.87.175.58:8080'
+  - '[SS] fr09.giamping.com:8080'
+  - '[SS] 193.29.139.217:8080'
+  - '[SS] 193.29.139.227:8080'
+  - '[SS] 151.242.251.144:8080'
+  - '[SS] 193.29.139.162:8080'
+  - '[SS] 151.242.251.147:8080'
+  - '[SS] 45.87.175.22:8080'
+  - '[SS] 151.242.251.153:8080'
+  - '[SS] 103.104.247.45:8080'
+  - '[SS] azjnac1.uksouth.cloudapp.azure.com:443'
+  - '[SS] ltnl16.saint.ydns.eu:8080'
+  - '[SS] 193.29.139.179:8080'
+  - '[SS] 193.29.139.177:8080'
+  - '[SS] 193.29.139.143:8080'
+  - '[SS] 77.110.110.240:443'
+  - '[SS] 91.149.203.137:808'
+  - '[SS] 45.87.175.65:8080'
+  - '[SS] 38.54.45.129:990'
+  - '[SS] 185.126.237.38:990'
+  - '[SS] 118.170.241.115:10025'
+  - '[SS] 36.232.97.250:10125'
+  - '[SS] 82.180.146.173:35652'
+  - '[SS] 1.170.34.91:10088'
+  - '[SS] 103.243.215.17:990'
+  - '[SS] 114.46.98.152:10062'
+  - '[VMESS] ys.fxlcn.com:45264'
+  - '[SS] 203.23.128.33:990'
+  - '[SS] 36.234.85.71:10063'
+  - '[VLESS] 45.88.183.158:44629'
+  - '[SS] 1.165.84.18:10015'
+  - '[SS] 119.59.98.58:990'
+  - '[SS] 159.89.173.112:42377'
+  - '[VMESS] 94.136.185.230:10534'
+  - '[SS] west.cutecloud.link:52905'
+  - '[SS] west.cutecloud.link:52917'
+  - '[SS] west.cutecloud.link:52601'
+  - '[SS] most.cutecloud.link:52801'
+  - '[SS] west.cutecloud.link:53908'
 rules:
 - MATCH,节点选择
