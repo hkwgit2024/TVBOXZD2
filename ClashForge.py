@@ -557,8 +557,8 @@ class ExclusionCache:
             timestamp_str = self.cache[name].get("timestamp")
             if timestamp_str:
                 cached_time = datetime.fromisoformat(timestamp_str)
-                # 缓存有效期为7天，可自行调整
-                if (datetime.now() - cached_time).total_seconds() < 7 * 24 * 3600:
+                # 缓存有效期为31天，可自行调整
+                if (datetime.now() - cached_time).total_seconds() < 31 * 24 * 3600:
                     return True
         return False
 
